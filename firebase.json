@@ -1,0 +1,9 @@
+{
+  "hosting": [
+    {
+      "target": "predyc-v3",
+      "source": ".",
+      "frameworksBackend": {}
+    }
+  ]
+}

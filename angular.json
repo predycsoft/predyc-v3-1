@@ -26,7 +26,6 @@
             ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "src/custom-theme.scss",
               "src/styles.css"
             ],
             "scripts": []
@@ -92,6 +91,13 @@
               "src/styles.css"
             ],
             "scripts": []
+          }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {
+            "version": 2,
+            "browserTarget": "predyc-v3:build:production"
           }
         }
       }

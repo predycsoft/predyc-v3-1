@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "predyc2023": {
+      "hosting": {
+        "predyc-v3": [
+          "predyc2023"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "predyc2023"
+  }
+}
