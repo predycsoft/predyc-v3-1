@@ -10,17 +10,25 @@ import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { AngularFireFunctionsModule } from '@angular/fire/compat/functions';
-import { InicioComponent } from './inicio/inicio.component';
 import { FormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { RouterModule } from '@angular/router';
 
+// Angular Material
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule, } from '@angular/material/list';
 
-
+// Components
+import { LoginComponent } from './login/login.component';
+import { SideNavComponent } from './sidenav/sidenav.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    InicioComponent
+    LoginComponent,
+    SideNavComponent,
+    DashboardComponent
   ],
   imports: [
     BrowserModule,
@@ -33,7 +41,10 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     AngularFireAuthModule,
     AngularFireFunctionsModule,
     FormsModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    MatSidenavModule,
+    MatListModule,
+    RouterModule
   ],
   providers: [
   ],

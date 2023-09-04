@@ -1,0 +1,12 @@
+<mat-sidenav-container>
+    <mat-sidenav #leftSidenav mode="side" opened>
+      <app-sidenav></app-sidenav>
+    </mat-sidenav>
+    <mat-sidenav-content [@onMainContentChange]="onSideNavChange ? 'open': 'close'">
+      <div class="main_content_container">
+          <div class="main_content">
+            Your content
+          </div>
+      </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>
