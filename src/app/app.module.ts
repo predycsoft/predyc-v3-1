@@ -17,18 +17,26 @@ import { RouterModule } from '@angular/router';
 // Angular Material
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule, } from '@angular/material/list';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 // Components
 import { LoginComponent } from './login/login.component';
 import { SideNavComponent } from './sidenav/sidenav.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { UserListComponent } from './users/user-list/user-list.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     SideNavComponent,
-    DashboardComponent
+    DashboardComponent,
+    UserListComponent
   ],
   imports: [
     BrowserModule,
@@ -42,9 +50,15 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     AngularFireFunctionsModule,
     FormsModule,
     FlexLayoutModule,
+    RouterModule,
     MatSidenavModule,
     MatListModule,
-    RouterModule
+    MatFormFieldModule,
+    MatInputModule,
+    MatTableModule,
+    MatSortModule,
+    MatPaginatorModule,
+    MatCheckboxModule
   ],
   providers: [
   ],

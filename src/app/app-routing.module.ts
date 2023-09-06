@@ -1,13 +1,15 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { LoginComponent } from './login/login.component';
-import { SideNavComponent } from './sidenav/sidenav.component';
+// import { LoginComponent } from './login/login.component';
+// import { SideNavComponent } from './sidenav/sidenav.component';
 import { DashboardComponent } from './dashboard/dashboard.component'
+import { UserListComponent } from './users/user-list/user-list.component'
 
 
 const routes: Routes = [
   // {path:"", component: LoginComponent},
   {path:"", component: DashboardComponent},
+  {path:"users/user-list", component: UserListComponent},
 ];
 
 @NgModule({

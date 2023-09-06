@@ -1,4 +1,18 @@
-<div class="contenido">
-  <!-- <app-sidebar></app-sidebar> -->
-  <router-outlet></router-outlet>
-</div>
+<mat-sidenav-container *ngIf="userSignedIn; else signInForm">
+  <mat-sidenav #leftSidenav mode="side" opened>
+    <app-sidenav></app-sidenav>
+  </mat-sidenav>
+  <mat-sidenav-content
+    [@onMainContentChange]="onSideNavChange ? 'open' : 'close'"
+  >
+    <div class="main_content_container">
+      <div class="main_content">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
+<ng-template #signInForm>
+  <app-login></app-login>
+</ng-template>
