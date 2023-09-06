@@ -4,11 +4,19 @@ import { RouterModule, Routes } from '@angular/router';
 // import { SideNavComponent } from './sidenav/sidenav.component';
 import { DashboardComponent } from './dashboard/dashboard.component'
 import { UserListComponent } from './users/user-list/user-list.component'
+import { ManagementComponent } from './management/management.component';
+import { CoursesComponent } from './courses/courses.component';
+import { ValidationComponent } from './validation/validation.component';
+import { SettingsComponent } from './settings/settings.component';
 
 
 const routes: Routes = [
   // {path:"", component: LoginComponent},
   {path:"", component: DashboardComponent},
+  {path:"gestion", component: ManagementComponent},
+  {path:"cursos", component: CoursesComponent},
+  {path:"validacion", component: ValidationComponent},
+  {path:"configuracion", component: SettingsComponent},
   {path:"users/user-list", component: UserListComponent},
 ];
 

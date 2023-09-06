@@ -21,11 +21,11 @@ export class SideNavComponent {
   public linkText: boolean = false;
 
   public pages: Page[] = [
-    {name: 'Dashboard', link:'some-link', icon: '../../assets/iconsUI/sidenav_app.svg'},
-    {name: 'Gestión', link:'some-link', icon: '../../assets/iconsUI/sidenav_manage_accounts.svg'},
-    {name: 'Cursos', link:'some-link', icon: '../../assets/iconsUI/sidenav_collections_bookmark.svg'},
-    {name: 'Validación', link:'some-link', icon: '../../assets/iconsUI/sidenav_fact_check.svg'},
-    {name: 'Config', link:'some-link', icon: '../../assets/iconsUI/sidenav_config.svg'},
+    {name: 'Dashboard', link:'', icon: '../../assets/iconsUI/sidenav_app.svg'},
+    {name: 'Gestión', link:'gestion', icon: '../../assets/iconsUI/sidenav_manage_accounts.svg'},
+    {name: 'Cursos', link:'cursos', icon: '../../assets/iconsUI/sidenav_collections_bookmark.svg'},
+    {name: 'Validación', link:'validacion', icon: '../../assets/iconsUI/sidenav_fact_check.svg'},
+    {name: 'Config', link:'configuracion', icon: '../../assets/iconsUI/sidenav_config.svg'},
   ]
 
   constructor(
