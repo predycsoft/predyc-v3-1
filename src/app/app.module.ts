@@ -29,6 +29,10 @@ import { LoginComponent } from './login/login.component';
 import { SideNavComponent } from './sidenav/sidenav.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { UserListComponent } from './users/user-list/user-list.component';
+import { ManagementComponent } from './management/management.component';
+import { CoursesComponent } from './courses/courses.component';
+import { ValidationComponent } from './validation/validation.component';
+import { SettingsComponent } from './settings/settings.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +40,11 @@ import { UserListComponent } from './users/user-list/user-list.component';
     LoginComponent,
     SideNavComponent,
     DashboardComponent,
-    UserListComponent
+    UserListComponent,
+    ManagementComponent,
+    CoursesComponent,
+    ValidationComponent,
+    SettingsComponent
   ],
   imports: [
     BrowserModule,
