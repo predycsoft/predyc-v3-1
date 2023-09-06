@@ -33,8 +33,8 @@ import { ManagementComponent } from './management/management.component';
 import { CoursesComponent } from './courses/courses.component';
 import { ValidationComponent } from './validation/validation.component';
 import { SettingsComponent } from './settings/settings.component';
-import { DepartmentsProfilesComponent } from './management/departments-profiles/departments-profiles.component';
-import { MyTeamComponent } from './management/my-team/my-team.component';
+import { DepartmentsProfilesComponent } from './departments-profiles/departments-profiles.component';
+import { MyTeamComponent } from './my-team/my-team.component';
 
 @NgModule({
   declarations: [

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { IconService } from '../services/icon.service';
 
 @Component({
   selector: 'app-departments-profiles',
@@ -6,5 +7,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./departments-profiles.component.css']
 })
 export class DepartmentsProfilesComponent {
-
+  constructor(
+    public icon: IconService,
+  ){}
 }
