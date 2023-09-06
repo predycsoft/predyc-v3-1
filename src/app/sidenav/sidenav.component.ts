@@ -21,7 +21,7 @@ export class SideNavComponent {
   public linkText: boolean = false;
 
   public pages: Page[] = [
-    {name: 'Dashboard', link:'', icon: '../../assets/iconsUI/sidenav_app.svg'},
+    {name: 'Dashboard', link:'dashboard', icon: '../../assets/iconsUI/sidenav_app.svg'},
     {name: 'Gestión', link:'gestion', icon: '../../assets/iconsUI/sidenav_manage_accounts.svg'},
     {name: 'Cursos', link:'cursos', icon: '../../assets/iconsUI/sidenav_collections_bookmark.svg'},
     {name: 'Validación', link:'validacion', icon: '../../assets/iconsUI/sidenav_fact_check.svg'},

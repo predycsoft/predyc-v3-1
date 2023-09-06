@@ -7,10 +7,10 @@
 
     <div fxLayout="column" fxLayoutAlign=" center" style="height: 100vh;">
         <div fxLayout="column" [fxLayoutGap]="linkText ? '50px' : '60px'">
-            <a routerLink="/">
+            <a routerLink="dashboard">
                 <img [src]="icon.predyc" class="h24px">
             </a>
-            <a *ngFor="let page of pages" fxLayout="column" fxLayoutGap="10px" [routerLink]="page.link">
+            <a *ngFor="let page of pages" fxLayout="column" fxLayoutGap="10px" [routerLink]="page.link" routerLinkActive="backGray3">
                 <img [src]="page?.icon" class="h24px">
                 <span [@animateText]="linkText ? 'show' : 'hide'">{{ page?.name }} </span>
             </a>

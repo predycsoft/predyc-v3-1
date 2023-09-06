@@ -14,7 +14,8 @@ import { MyTeamComponent } from './my-team/my-team.component';
 
 const routes: Routes = [
   // {path:"", component: LoginComponent},
-  {path:"", component: DashboardComponent},
+  {path:"", redirectTo: "/dashboard", pathMatch:"full"},
+  {path:"dashboard", component: DashboardComponent},
   {path:"gestion", component: ManagementComponent},
   {path:"departamentos-perfiles", component: DepartmentsProfilesComponent},
   {path:"mi-equipo", component: MyTeamComponent},
