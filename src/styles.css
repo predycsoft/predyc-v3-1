@@ -529,6 +529,13 @@ body {
 
 /* -----------------------------------------------------------------  FONTS STYLING */
 
+.page-title {
+  font-size: 1.5625rem!important;
+  font-family: "Inter-bold";
+  font-weight: 500!important;
+  margin-bottom: 20px;
+}
+
 .ft300{  font-weight: 300!important;
   font-family: "Gordita-light", "Helvetica Neue", sans-serif; }
 .ft400{  font-weight: 400!important; }

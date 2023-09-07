@@ -1,0 +1,9 @@
+<div fxLayout="row" fxLayoutAlign="space-between center">
+  <h2 mat-dialog-title>YouTube Video</h2>
+  <mat-dialog-actions>
+    <button mat-button mat-dialog-close>Close</button>
+  </mat-dialog-actions>
+</div>
+<mat-dialog-content>
+  <iframe width="560" height="315" [src]="videoUrl | safe" frameborder="0" allowfullscreen></iframe>
+</mat-dialog-content>

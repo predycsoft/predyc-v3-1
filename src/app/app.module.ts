@@ -23,18 +23,25 @@ import { MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDialogModule } from '@angular/material/dialog';
 
 // Components
 import { LoginComponent } from './login/login.component';
-import { SideNavComponent } from './sidenav/sidenav.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { UserListComponent } from './users/user-list/user-list.component';
-import { ManagementComponent } from './management/management.component';
-import { CoursesComponent } from './courses/courses.component';
-import { ValidationComponent } from './validation/validation.component';
-import { SettingsComponent } from './settings/settings.component';
-import { DepartmentsProfilesComponent } from './departments-profiles/departments-profiles.component';
-import { MyTeamComponent } from './my-team/my-team.component';
+import { SideNavComponent } from './shared/components/sidenav/sidenav.component';
+import { DashboardComponent } from './main-components/dashboard/dashboard.component';
+import { StudentListComponent } from './shared/components/users/student-list/student-list.component';
+import { ManagementComponent } from './main-components/management/management.component';
+import { CoursesComponent } from './main-components/management/courses/courses.component';
+import { ValidationComponent } from './main-components/validation/validation.component';
+import { SettingsComponent } from './main-components/settings/settings.component';
+import { DepartmentsProfilesComponent } from './main-components/management/departments-profiles/departments-profiles.component';
+import { MyTeamComponent } from './main-components/management/my-team/my-team.component';
+import { NavigationCardComponent } from './shared/widgets/navigation-card/navigation-card.component';
+import { VideoDialogComponent } from './main-components/management/management-dashboard/video-dialog/video-dialog.component';
+import { SafePipe } from './shared/pipes/safe.pipe';
+import { NotificationsComponent } from './shared/components/notifications/notifications.component';
+import { ManagementDashboardComponent } from './main-components/management/management-dashboard/management-dashboard.component';
+import { NavigateBackComponent } from './shared/widgets/navigate-back/navigate-back.component';
 
 @NgModule({
   declarations: [
@@ -42,13 +49,19 @@ import { MyTeamComponent } from './my-team/my-team.component';
     LoginComponent,
     SideNavComponent,
     DashboardComponent,
-    UserListComponent,
+    StudentListComponent,
     ManagementComponent,
     CoursesComponent,
     ValidationComponent,
     SettingsComponent,
     DepartmentsProfilesComponent,
-    MyTeamComponent
+    MyTeamComponent,
+    NavigationCardComponent,
+    VideoDialogComponent,
+    SafePipe,
+    ManagementDashboardComponent,
+    NavigateBackComponent,
+    NotificationsComponent
   ],
   imports: [
     BrowserModule,
@@ -70,7 +83,8 @@ import { MyTeamComponent } from './my-team/my-team.component';
     MatTableModule,
     MatSortModule,
     MatPaginatorModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatDialogModule
   ],
   providers: [
   ],

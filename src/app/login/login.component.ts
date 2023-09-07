@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { IconService } from '../services/icon.service';
+import { IconService } from '../shared/services/icon.service';
 
 
 @Component({

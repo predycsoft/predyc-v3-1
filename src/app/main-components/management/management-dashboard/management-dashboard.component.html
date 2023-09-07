@@ -1,0 +1,40 @@
+<h3 class="page-title">Gestión de personal</h3>
+<div fxLayout="column" fxLayoutGap="30px">
+    <div class="fh" fxLayout="row" fxLayoutAlign="space-between center">
+        <!-- <div class="card-container card-container--md card-container--border"></div>
+        <div class="card-container card-container--md card-container--border"></div> -->
+        <app-navigation-card
+            backgroundColor="#FFF8ED"
+            imageUrl="../../../assets/images/design/tools.jpg"
+            title="Departamentos y perfiles"
+            description="Organiza tus departamentos, crea perfiles y planes de estudios inteligentes"
+            buttonText="Ir"
+            buttonColor="white"
+            buttonBackgroundColor="#FCBD01"
+            (onBtnClick)="navigateTo('departments-and-profiles')"
+            ></app-navigation-card>
+        <app-navigation-card
+            backgroundColor="#EDF8FF"
+            imageUrl="../../../assets/images/design/industry.jpg"
+            title="Mi equipo"
+            description="Administra y supervisa los cronogramas de tu personal"
+            buttonText="Ir"
+            buttonColor="white"
+            buttonBackgroundColor="#008CE3"
+            (onBtnClick)="navigateTo('students')"
+            ></app-navigation-card>
+        <div class="card-container card-container--sm card-container--border"></div>
+        <div class="card-container card-container--bg card-container--border">
+            <p class="ft15 mt-4 mb-0" style="text-align: center">¿Cómo funciona la gestión de personal?</p>
+            <p class="ft500 ft12 mt-2" style="text-align: center">Te lo explicamos en 1 min</p>
+            <div class="cursorPointer" (click)="openVideo()" style="overflow: hidden; position: relative; margin: 0 auto; height: 125px; width: 210px; border-radius: 10px;" fxLayout="row" fxLayoutAlign="center center">
+                <img [src]="icon.playCircle" alt="" style="z-index: 1">
+                <img src="https://i3.ytimg.com/vi/QUNrBEhvXWQ/maxresdefault.jpg" alt="demo video" style="position: absolute; height: 100%; object-fit: cover;">
+            </div>
+        </div>
+    </div>
+    <div class="card-container card-container--border" style="height: 320px">
+        <div class="cursorPointer" routerLink="notifications">Notificaciones</div>
+        <div class="card-container card-container--border" style="width: 45%; height: 30px"></div>
+    </div>
+</div>

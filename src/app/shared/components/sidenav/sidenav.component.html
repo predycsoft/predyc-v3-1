@@ -1,0 +1,38 @@
+<div class="sidenav_container" 
+    fxLayout="column" 
+    fxLayoutAlign="space-between">
+
+    <div fxLayout="column" fxLayoutAlign=" center" style="height: 100vh;" >
+        <div fxLayout="column" fxLayoutGap="60px">
+            <a routerLink="dashboard">
+                <img
+                    [src]="icon.predyc"
+                    class="h24px">
+            </a>
+            <a
+                *ngFor="let page of pages"
+                fxLayout="column"
+                fxLayoutGap="10px"
+                fxLayoutAlign="center center"
+                [routerLink]="page.link"
+                class="menu-item"
+                routerLinkActive="backBlue1"
+                [routerLinkActiveOptions]="{ exact: true }">
+                <img
+                    [src]="page?.icon"
+                    class="h24px"
+                    routerLinkActive="makeBlue opacity1"
+                    [routerLinkActiveOptions]="{ exact: true }">
+            </a>
+        </div>
+    </div>
+
+    <div fxLayout="column" fxLayoutAlign="center">
+        <div>
+            <a mat-list-item>
+                <img style="height: 2rem; width: 2rem; border-radius: 50%;" src="https://a57.foxnews.com/media2.foxnews.com/BrightCove/694940094001/2018/06/21/931/524/694940094001_5800293009001_5800284148001-vs.jpg?ve=1&tl=1" alt="">
+            </a>
+        </div>
+    </div>
+
+</div>
