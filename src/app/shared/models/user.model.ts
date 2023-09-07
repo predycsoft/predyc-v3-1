@@ -50,6 +50,7 @@ export class User {
     public phoneNumber: string,
     public photoUrl: string,
     public profileId: string,
+    // public role: string,
     public specialty: string, // related to job
     public status: string,
     public stripeId: string,
