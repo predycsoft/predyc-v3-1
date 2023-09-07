@@ -10,7 +10,7 @@ import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { AngularFireFunctionsModule } from '@angular/fire/compat/functions';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { RouterModule } from '@angular/router';
 
@@ -42,6 +42,8 @@ import { SafePipe } from './shared/pipes/safe.pipe';
 import { NotificationsComponent } from './shared/components/notifications/notifications.component';
 import { ManagementDashboardComponent } from './main-components/management/management-dashboard/management-dashboard.component';
 import { NavigateBackComponent } from './shared/widgets/navigate-back/navigate-back.component';
+import { NewStudentComponent } from './shared/components/users/new-student/new-student.component';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   declarations: [
@@ -61,7 +63,8 @@ import { NavigateBackComponent } from './shared/widgets/navigate-back/navigate-b
     SafePipe,
     ManagementDashboardComponent,
     NavigateBackComponent,
-    NotificationsComponent
+    NotificationsComponent,
+    NewStudentComponent
   ],
   imports: [
     BrowserModule,
@@ -74,6 +77,7 @@ import { NavigateBackComponent } from './shared/widgets/navigate-back/navigate-b
     AngularFireAuthModule,
     AngularFireFunctionsModule,
     FormsModule,
+    ReactiveFormsModule,
     FlexLayoutModule,
     RouterModule,
     MatSidenavModule,
@@ -84,7 +88,9 @@ import { NavigateBackComponent } from './shared/widgets/navigate-back/navigate-b
     MatSortModule,
     MatPaginatorModule,
     MatCheckboxModule,
-    MatDialogModule
+    MatDialogModule,
+    MatSelectModule,
+
   ],
   providers: [
   ],

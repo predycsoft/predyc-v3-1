@@ -1,0 +1,87 @@
+<div fxLayout="column" fxLayoutAlign="center" class="fw pd10">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+        <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign=" center" class="pdl05 pdr05 pdt05 pdb05">
+            <span class="ft500 ft20">Nuevo usuario</span>
+        </div>
+        <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
+            <div class="iconContainer backGray2 cursorPointer mgl05 mgt05" fxLayoutAlign="center center" (click)="hide()">
+                <img [src]="icon.close" class="  makeGray h20px">
+            </div>
+        </div>
+    </div>
+    <!-- Foto del usuario -->
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" >
+        <div class="mgt10 fw" fxLayoutAlign="center center">
+            <div (click)="fileInput.click()" class="avatar5 cursorPointer mgt05 positionRelative">
+                <img onerror="this.src='../../assets/images/default/default-user-image.jpg'" class="avatar5" alt="">
+            </div>
+        </div>
+        <input #fileInput type="file" style="display: none;">
+        <!-- Nombre del usuario -->
+        <div class="fw mgt10">
+            <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap=".5rem" class=" ft500 gray-10  fw" >
+                <textarea #textareaName placeholder="Nombre del usuario"
+                    class="profileEdit ft16 centertext" formControlName="name">
+                </textarea>
+            </div>
+            <span *ngIf="!form.get('name')?.valid && form.get('name')?.touched" class="redText mgt03">Debes introducir un nombre</span>
+        </div>
+        <div class="mgt10 fw" fxLayout="column">
+            <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" class="inputContainer">
+                <img [src]="icon.email" class="makeGray h16px" alt="">
+                <input type="email" placeholder="Correo electrónico" class="input fw" formControlName="email">
+            </div>
+            <span *ngIf="!form.get('email')?.valid && form.get('email')?.touched" class="redText mgt03">
+                Debes introducir una dirección de correo electrónico válida
+            </span>
+            <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" class="inputContainer mgt10">
+                <img [src]="icon.phone" class="makeGray h16px" alt="">
+                <input type="number" class="input fw" placeholder="Teléfono" formControlName="phoneNumber"/>
+            </div>
+            <span *ngIf="!form.get('phoneNumber')?.valid && form.get('phoneNumber')?.touched" class="redText mgt03">
+                Debes introducir un número de teléfono
+            </span>
+            <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" class="inputContainer mgt10">
+                <img [src]="icon.location" class="makeGray h16px" alt="">
+                <input type="text" class="input fw" placeholder="País de residencia" formControlName="country">
+            </div>
+            <span *ngIf="!form.get('country')?.valid && form.get('country')?.touched" class="redText mgt03">
+                Debes introducir un país de residencia
+            </span>
+            <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" class="inputContainer mgt10">
+                <img [src]="icon.calendarAdd" class="makeGray h16px" alt="">
+                <input id="datePicker" type="text" placeholder="Fecha de nacimiento" 
+                    class="input fw" onclick="this.type='date'" formControlName="birthDate">
+                </div>
+                <span *ngIf="!form.get('birthDate')?.valid && form.get('birthDate')?.touched" class="redText mgt03">
+                    Debes introducir una fecha de nacimiento
+                </span>
+            <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" class="inputContainer mgt10">
+                <img [src]="icon.suitcase" class="makeGray h16px" alt="">
+                <input type="text" placeholder="Cargo" class="input fw" formControlName="job">
+            </div>
+            <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="space-between center" class="inputContainer mgt10">
+                <img [src]="icon.calendarAdd" class="makeGray h16px" alt="">
+                <input id="datePicker" type="text" placeholder="Fecha de ingreso" 
+                    class="input fw" onclick="this.type='date'" formControlName="hiringDate">
+            </div>
+            <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" class="inputContainer mgt10" >
+                <img [src]="icon.clock" class="makeGray h16px" alt="">
+                <input type="text" placeholder="Años de experiencia" class="input fw" formControlName="experience">
+            </div>
+            <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" class="inputContainer mgt10">
+                <img [src]="icon.enterprise" class="makeGray h16px" alt="">
+                <input type="text" placeholder="Departamento" class="input fw" formControlName="departmentId">
+            </div>
+            <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" class="inputContainer mgt10">
+                <img [src]="icon.userProfile" class="makeGray h16px" alt="">
+                <input type="text" placeholder="Perfil" class="input fw" formControlName="profileId">
+            </div>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="center center">
+            <button *ngIf="form.valid" class="blueButton mgt10 radius20" type="submit">Guardar</button>
+            <button *ngIf="!form.valid" class="graybutton mgt10 radius20" type="submit">Guardar</button> <!-- BORRAR ESTE-->
+            <!-- <button *ngIf="!form.valid" class="grayButton mgt10 radius20" disabled >Guardar</button> -->
+        </div>
+    </form>
+</div>

@@ -10,4 +10,6 @@ export class MyTeamComponent {
   constructor(
     public icon: IconService,
   ){}
+
+  creatingStudent = false
 }

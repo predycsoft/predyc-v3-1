@@ -1,2 +1,6 @@
 <app-navigate-back targetUrl="../">Mi equipo</app-navigate-back>
+<button *ngIf="!creatingStudent" class="blueButton" (click)="creatingStudent = true" >Nuevo usuario</button>
+<div class="w400px mgb10">
+    <app-new-student *ngIf="creatingStudent" (hideEmit)="creatingStudent = false" ></app-new-student>
+</div>
 <app-student-list></app-student-list>
