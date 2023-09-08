@@ -3,6 +3,9 @@
         <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign=" center" class="pdl05 pdr05 pdt05 pdb05">
             <span class="ft500 ft20">Nuevo usuario</span>
         </div>
+        <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign=" center" class="pdl05 pdr05 pdt05 pdb05">
+            <span *ngIf="isSaved" (click)="onEdit()" >Editar</span>
+        </div>
         <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
             <div class="iconContainer backGray2 cursorPointer mgl05 mgt05" fxLayoutAlign="center center" (click)="hide()">
                 <img [src]="icon.close" class="  makeGray h20px">
@@ -21,61 +24,65 @@
         <div class="fw mgt10">
             <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap=".5rem" class=" ft500 gray-10  fw" >
                 <textarea #textareaName placeholder="Nombre del usuario"
-                    class="profileEdit ft16 centertext" formControlName="name">
+                    class="nameField ft16 centertext" formControlName="name">
                 </textarea>
             </div>
-            <span *ngIf="!form.get('name')?.valid && form.get('name')?.touched" class="redText mgt03">Debes introducir un nombre</span>
+            <span *ngIf="!form.get('name')?.valid && !form.get('name')?.disabled && form.get('name')?.touched" 
+                class="redText mgt03">
+                Debes introducir un nombre
+            </span>
         </div>
         <div class="mgt10 fw" fxLayout="column">
-            <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" class="inputContainer">
+            <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" [ngClass]="!isSaved? 'inputContainer mgt10' : 'disabledInputContainer mgt10'">
                 <img [src]="icon.email" class="makeGray h16px" alt="">
-                <input type="email" placeholder="Correo electrónico" class="input fw" formControlName="email">
+                <input type="email" placeholder="Correo electrónico" [ngClass]="isSaved?'disabledInput':''" class="input fw" formControlName="email">
             </div>
-            <span *ngIf="!form.get('email')?.valid && form.get('email')?.touched" class="redText mgt03">
+            <span *ngIf="!form.get('email')?.valid && !form.get('email')?.disabled && form.get('email')?.touched" 
+                class="redText mgt03">
                 Debes introducir una dirección de correo electrónico válida
             </span>
-            <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" class="inputContainer mgt10">
+            <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" [ngClass]="!isSaved? 'inputContainer mgt10' : 'disabledInputContainer mgt10'">
                 <img [src]="icon.phone" class="makeGray h16px" alt="">
-                <input type="number" class="input fw" placeholder="Teléfono" formControlName="phoneNumber"/>
+                <input type="number" [ngClass]="isSaved?'disabledInput':''" class="input fw" placeholder="Teléfono" formControlName="phoneNumber"/>
             </div>
-            <span *ngIf="!form.get('phoneNumber')?.valid && form.get('phoneNumber')?.touched" class="redText mgt03">
+            <span *ngIf="!form.get('phoneNumber')?.valid && !form.get('phoneNumber')?.disabled && form.get('phoneNumber')?.touched" class="redText mgt03">
                 Debes introducir un número de teléfono
             </span>
-            <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" class="inputContainer mgt10">
+            <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" [ngClass]="!isSaved? 'inputContainer mgt10' : 'disabledInputContainer mgt10'">
                 <img [src]="icon.location" class="makeGray h16px" alt="">
-                <input type="text" class="input fw" placeholder="País de residencia" formControlName="country">
+                <input type="text" [ngClass]="isSaved?'disabledInput':''" class="input fw" placeholder="País de residencia" formControlName="country">
             </div>
-            <span *ngIf="!form.get('country')?.valid && form.get('country')?.touched" class="redText mgt03">
+            <span *ngIf="!form.get('country')?.valid && !form.get('country')?.disabled && form.get('country')?.touched" class="redText mgt03">
                 Debes introducir un país de residencia
             </span>
-            <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" class="inputContainer mgt10">
+            <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" [ngClass]="!isSaved? 'inputContainer mgt10' : 'disabledInputContainer mgt10'">
                 <img [src]="icon.calendarAdd" class="makeGray h16px" alt="">
                 <input id="datePicker" type="text" placeholder="Fecha de nacimiento" 
-                    class="input fw" onclick="this.type='date'" formControlName="birthDate">
+                    [ngClass]="isSaved?'disabledInput':''" class="input fw" onclick="this.type='date'" formControlName="birthDate">
                 </div>
-                <span *ngIf="!form.get('birthDate')?.valid && form.get('birthDate')?.touched" class="redText mgt03">
+                <span *ngIf="!form.get('birthDate')?.valid && !form.get('birthDate')?.disabled && form.get('birthDate')?.touched" class="redText mgt03">
                     Debes introducir una fecha de nacimiento
                 </span>
-            <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" class="inputContainer mgt10">
+            <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" [ngClass]="!isSaved? 'inputContainer mgt10' : 'disabledInputContainer mgt10'">
                 <img [src]="icon.suitcase" class="makeGray h16px" alt="">
-                <input type="text" placeholder="Cargo" class="input fw" formControlName="job">
+                <input type="text" placeholder="Cargo" [ngClass]="isSaved?'disabledInput':''" class="input fw" formControlName="job">
             </div>
-            <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="space-between center" class="inputContainer mgt10">
+            <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="space-between center" [ngClass]="!isSaved? 'inputContainer mgt10' : 'disabledInputContainer mgt10'">
                 <img [src]="icon.calendarAdd" class="makeGray h16px" alt="">
                 <input id="datePicker" type="text" placeholder="Fecha de ingreso" 
-                    class="input fw" onclick="this.type='date'" formControlName="hiringDate">
+                    [ngClass]="isSaved?'disabledInput':''" class="input fw" onclick="this.type='date'" formControlName="hiringDate">
             </div>
-            <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" class="inputContainer mgt10" >
+            <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" [ngClass]="!isSaved? 'inputContainer mgt10' : 'disabledInputContainer mgt10'" >
                 <img [src]="icon.clock" class="makeGray h16px" alt="">
-                <input type="text" placeholder="Años de experiencia" class="input fw" formControlName="experience">
+                <input type="text" placeholder="Años de experiencia" [ngClass]="isSaved?'disabledInput':''" class="input fw" formControlName="experience">
             </div>
-            <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" class="inputContainer mgt10">
+            <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" [ngClass]="!isSaved? 'inputContainer mgt10' : 'disabledInputContainer mgt10'">
                 <img [src]="icon.enterprise" class="makeGray h16px" alt="">
-                <input type="text" placeholder="Departamento" class="input fw" formControlName="departmentId">
+                <input type="text" placeholder="Departamento" [ngClass]="isSaved?'disabledInput':''" class="input fw" formControlName="departmentId">
             </div>
-            <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" class="inputContainer mgt10">
+            <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" [ngClass]="!isSaved? 'inputContainer mgt10' : 'disabledInputContainer mgt10'">
                 <img [src]="icon.userProfile" class="makeGray h16px" alt="">
-                <input type="text" placeholder="Perfil" class="input fw" formControlName="profileId">
+                <input type="text" placeholder="Perfil" [ngClass]="isSaved?'disabledInput':''" class="input fw" formControlName="profileId">
             </div>
         </div>
         <div fxLayout="row" fxLayoutAlign="center center">

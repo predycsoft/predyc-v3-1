@@ -34,6 +34,9 @@ export class NewStudentComponent implements OnInit {
     "profileId": new FormControl(null),
   })
 
+  isSaved = false
+  isEditing = false
+
   hide(){
     this.hideEmit.emit()
   }
@@ -45,12 +48,16 @@ export class NewStudentComponent implements OnInit {
     if (this.form.status === "VALID") {
       console.log("El usuario se ha creado satisfactoriamente")
       await this.saveUser()
-      this.hide()
+      this.isSaved = true      
+      Object.keys(controls).forEach(prop => {
+        this.form.get(prop)?.disable();
+      });
+      // this.hide()
     }
     else {
       console.log("INVALIDO")
       Object.keys(controls).forEach(prop => {
-        if (!controls[prop].valid) {
+        if (!controls[prop].valid && !controls[prop].disabled ) {
           if (controls[prop].touched) {
             console.log(`El valor de "${prop}" es invalido`)
           }
@@ -75,6 +82,17 @@ export class NewStudentComponent implements OnInit {
     const experience = formData.experience ? formData.experience : null 
     const departmentId = formData.departmentId ? formData.departmentId : null 
     const profileId = formData.profileId ? formData.profileId : null 
+  }
+
+  onEdit() {
+    this.isEditing = true
+    this.isSaved = false
+    const controls = this.form.controls
+
+    Object.keys(controls).forEach(prop => {
+      this.form.get(prop)?.enable();
+    });
+
   }
 
 
