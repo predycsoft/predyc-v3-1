@@ -1,5 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Form, FormControl, FormGroup, Validators } from '@angular/forms';
+import { DatesService } from 'src/app/shared/services/dates.service';
 import { IconService } from 'src/app/shared/services/icon.service';
 
 @Component({
@@ -11,6 +12,7 @@ export class NewStudentComponent implements OnInit {
 
   constructor(
     public icon:IconService,
+    public dates: DatesService
   ){}
 
   ngOnInit(): void {
@@ -32,6 +34,9 @@ export class NewStudentComponent implements OnInit {
     "profileId": new FormControl(null),
   })
 
+  isSaved = false
+  isEditing = false
+
   hide(){
     this.hideEmit.emit()
   }
@@ -43,12 +48,16 @@ export class NewStudentComponent implements OnInit {
     if (this.form.status === "VALID") {
       console.log("El usuario se ha creado satisfactoriamente")
       await this.saveUser()
-      this.hide()
+      this.isSaved = true      
+      Object.keys(controls).forEach(prop => {
+        this.form.get(prop)?.disable();
+      });
+      // this.hide()
     }
     else {
       console.log("INVALIDO")
       Object.keys(controls).forEach(prop => {
-        if (!controls[prop].valid) {
+        if (!controls[prop].valid && !controls[prop].disabled ) {
           if (controls[prop].touched) {
             console.log(`El valor de "${prop}" es invalido`)
           }
@@ -62,31 +71,30 @@ export class NewStudentComponent implements OnInit {
 
   async saveUser(){
     const formData = this.form.value 
-    console.log("formData.birthDate")
-    console.log(formData.birthDate)
-    const birthDate = this.stringDateToTimestamp(formData.birthDate)
-    console.log("birthDate")
-    console.log(new Date(birthDate).toISOString())
-    const hiringDate = formData.hiringDate? this.stringDateToTimestamp(formData.hiringDate) : null
-    const name = formData.name
     const photoUrl = formData.photoUrl ? formData.photoUrl : null 
+    const name = formData.name
     const email = formData.email
     const phoneNumber = formData.phoneNumber
     const country = formData.country ? formData.country : null 
+    const birthDate = this.dates.dateFromCalendarToTimestamp(formData.birthDate)
     const job = formData.job ? formData.job : null 
+    const hiringDate = formData.hiringDate? this.dates.dateFromCalendarToTimestamp(formData.hiringDate) : null
     const experience = formData.experience ? formData.experience : null 
     const departmentId = formData.departmentId ? formData.departmentId : null 
     const profileId = formData.profileId ? formData.profileId : null 
   }
 
-  stringDateToTimestamp(date: string) {
-    const parts = date.split("-");
-    const year = parseInt(parts[0], 10);
-    const month = parseInt(parts[1], 10) - 1; 
-    const day = parseInt(parts[2], 10);
-    const timestamp = Date.UTC(year, month, day);
-    return timestamp
+  onEdit() {
+    this.isEditing = true
+    this.isSaved = false
+    const controls = this.form.controls
+
+    Object.keys(controls).forEach(prop => {
+      this.form.get(prop)?.enable();
+    });
+
   }
+
 
 
 
