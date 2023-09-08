@@ -1,3 +1,10 @@
+.nameFieldContainer {
+    position: relative;
+    font-weight: 700!important; 
+    font-family: "Inter-medium", "Helvetica Neue", sans-serif; 
+    width: 100%;
+}
+
 .nameField {
     background-color: transparent !important;
     border-radius: 0px !important;
@@ -8,7 +15,7 @@
     font-weight: 500;
     font-family: "Inter-medium", "Helvetica Neue", sans-serif;
     color: var(--gray-10);
-    width: 80%;
+    width: 90%;
     max-width: 100%;
     overflow: hidden;
     resize: none;
@@ -20,6 +27,7 @@
 }
 
 .inputContainer{
+    position: relative;
     border: 1px solid var(--gray-3);
     padding: .5rem;
     background-color: var(--gray-1);
@@ -28,6 +36,7 @@
 }
 
 .disabledInputContainer{
+    position: relative;
     padding: .5rem;
     border-radius: 6px;
     height: 32px;
@@ -46,4 +55,14 @@
     padding: 0px !important;
     font-size: 11px !important;
     opacity: .75 !important;
+}
+
+.asterisk {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-weight: bold;
+    color: red;  /* O el color que prefieras para el asterisco */
+    margin-top: 3px;
+    margin-right: 8px;
 }

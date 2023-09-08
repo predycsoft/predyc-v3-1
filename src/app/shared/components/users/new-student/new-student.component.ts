@@ -1,6 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Form, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DatesService } from 'src/app/shared/services/dates.service';
+import { GeneralService } from 'src/app/shared/services/general.service';
 import { IconService } from 'src/app/shared/services/icon.service';
 
 @Component({
@@ -12,21 +13,34 @@ export class NewStudentComponent implements OnInit {
 
   constructor(
     public icon:IconService,
-    public dates: DatesService
+    public dates: DatesService,
+    public general: GeneralService
   ){}
 
   ngOnInit(): void {
+    this.countries = this.general.countries
+    this.departments = this.general.departments
+    this.profiles = this.general.profiles
+    this.experienceOptions = this.general.experienceOptions
   }
   
   @Output() hideEmit: EventEmitter<void> = new EventEmitter<void>()
 
+  isSaved = false
+  isEditing = false
+  countries: {name: string, code: string, isoCode: string}[]
+  departments: {name: string, id: string}[]
+  profiles: {name: string, id: string}[]
+  experienceOptions: string[]
+  requiredValidator = Validators.required;
+
   form: FormGroup = new FormGroup({
-    "name": new FormControl(null, Validators.required),
+    "name": new FormControl(null, this.requiredValidator),
     "photoUrl": new FormControl(null),
-    "email": new FormControl(null, [Validators.required, Validators.email]),
-    "phoneNumber": new FormControl(null, Validators.required),
-    "country": new FormControl(null, Validators.required),
-    "birthDate": new FormControl(null, Validators.required),    //
+    "email": new FormControl(null, [this.requiredValidator, Validators.email]),
+    "phoneNumber": new FormControl(null, this.requiredValidator),
+    "country": new FormControl(null, this.requiredValidator),
+    "birthDate": new FormControl(null, this.requiredValidator),    //
     "job": new FormControl(null),                              //
     "hiringDate": new FormControl(null,),                     //
     "experience": new FormControl(null,),                     //
@@ -34,8 +48,7 @@ export class NewStudentComponent implements OnInit {
     "profileId": new FormControl(null),
   })
 
-  isSaved = false
-  isEditing = false
+
 
   hide(){
     this.hideEmit.emit()
