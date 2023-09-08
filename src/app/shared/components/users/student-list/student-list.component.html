@@ -1,11 +1,8 @@
-<mat-form-field>
-    <mat-label fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="20px">
+    <!-- <mat-label fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="20px">
         <span>Buscar en mi equipo</span>
         <img [src]="icon.search" class="h12px" alt=""
             onerror="this.src='assets/images/default/default-user-image.jpg'">
-    </mat-label>
-    <input matInput (keyup)="applyFilter($event)" #input>
-</mat-form-field>
+    </mat-label> -->
 
 <div>
     <table mat-table [dataSource]="dataSource" matSort>
@@ -80,7 +77,7 @@
 
     <!-- Row shown when there is no matching data. -->
     <tr class="mat-row" *matNoDataRow>
-        <td class="mat-cell" colspan="4">No existen usuarios compatibles con el filtro: "{{input.value}}"</td>
+        <td class="mat-cell" colspan="4">No existen usuarios compatibles con el filtro: ""</td>
     </tr>
     </table>
 

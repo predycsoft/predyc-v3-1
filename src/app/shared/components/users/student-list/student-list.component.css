@@ -21,15 +21,3 @@ th {
     border-top: none !important;
     border-bottom: none !important;
 }
-
-.mat-form-field {
-    /* Añade un borde al contenedor */
-    border: 2px solid rgba(0,0,0,0.3);
-    border-radius: 5px;
-    padding: 10px;
-
-    /* Otros estilos que quieras aplicar */
-    background-color: rgba(253, 30, 30, 0.5);
-    transition: all 0.3s;
-
-}

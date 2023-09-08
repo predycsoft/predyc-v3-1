@@ -7,7 +7,7 @@ import { IconService } from '../../services/icon.service';
   styleUrls: ['./navigate-back.component.css']
 })
 export class NavigateBackComponent {
-  @Input() targetUrl!: string
+  @Input() targetUrl: string
 
   constructor(public icon: IconService) {}
 }

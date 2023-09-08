@@ -44,6 +44,7 @@ import { ManagementDashboardComponent } from './main-components/management/manag
 import { NavigateBackComponent } from './shared/widgets/navigate-back/navigate-back.component';
 import { NewStudentComponent } from './shared/components/users/new-student/new-student.component';
 import { MatSelectModule } from '@angular/material/select';
+import { SearchInputBoxComponent } from './shared/widgets/search-input-box/search-input-box.component';
 
 @NgModule({
   declarations: [
@@ -64,7 +65,8 @@ import { MatSelectModule } from '@angular/material/select';
     ManagementDashboardComponent,
     NavigateBackComponent,
     NotificationsComponent,
-    NewStudentComponent
+    NewStudentComponent,
+    SearchInputBoxComponent
   ],
   imports: [
     BrowserModule,

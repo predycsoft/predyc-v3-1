@@ -11,5 +11,10 @@ export class MyTeamComponent {
     public icon: IconService,
   ){}
 
-  creatingStudent = false
+  studentSelected = false
+
+  applyFilter(event: Event) {
+    
+  }
+
 }

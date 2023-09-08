@@ -44,7 +44,7 @@ export class User {
     public gender: string,
     public hasCollegeDegree: boolean,
     public industry: string, // Required?
-    public isSystemUser: string,
+    // public isSystemUser: string,
     public lastConnection: number, // timestamp
     public mailchimpTag: string,
     public name: string,
