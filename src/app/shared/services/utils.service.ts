@@ -3,10 +3,13 @@ import { Injectable } from '@angular/core';
 @Injectable({
   providedIn: 'root'
 })
-export class DatesService {
+export class UtilsService {
 
   constructor() { }
 
+  capitalizeFirstLetter(str: string) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+  }
 
   dateFromCalendarToTimestamp(date: string): number {
     let [año, mes, día] = date.split('-').map(Number);

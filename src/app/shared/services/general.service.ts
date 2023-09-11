@@ -7,8 +7,6 @@ export class GeneralService {
 
   constructor() { }
 
-
-
   countries = [
     {
       name: 'Afghanistan',
@@ -1235,7 +1233,7 @@ export class GeneralService {
 
   profiles = [
     {
-      name: "Técinico de mantenimiento",
+      name: "Técnico de mantenimiento",
       id: "15645641895645121654"
     },
     {
