@@ -29,7 +29,7 @@ export class UserService {
     'programming', // specialty
     'Active', // status
     'test_stripeId', // stripeId
-    'testUid', // uid
+    'testUid1', // uid
     1987, // yearOfBirth
     87, // avgScore
     'High', // performance
@@ -60,7 +60,7 @@ export class UserService {
       'programming', // specialty
       'Active', // status
       'test_stripeId', // stripeId
-      'testUid', // uid
+      'testUid2', // uid
       1987, // yearOfBirth
       87, // avgScore
       'High', // performance
@@ -89,7 +89,7 @@ export class UserService {
       'programming', // specialty
       'Inactive', // status
       'test_stripeId', // stripeId
-      'testUid', // uid
+      'testUid3', // uid
       1987, // yearOfBirth
       87, // avgScore
       'High', // performance
@@ -118,7 +118,7 @@ export class UserService {
       'programming', // specialty
       'Active', // status
       'test_stripeId', // stripeId
-      'testUid', // uid
+      'testUid4', // uid
       1987, // yearOfBirth
       87, // avgScore
       'High', // performance
@@ -147,7 +147,7 @@ export class UserService {
       'programming', // specialty
       'Active', // status
       'test_stripeId', // stripeId
-      'testUid', // uid
+      'testUid5', // uid
       1987, // yearOfBirth
       87, // avgScore
       'High', // performance
@@ -176,7 +176,7 @@ export class UserService {
       'programming', // specialty
       'Active', // status
       'test_stripeId', // stripeId
-      'testUid', // uid
+      'testUid6', // uid
       1987, // yearOfBirth
       87, // avgScore
       'High', // performance
@@ -205,7 +205,7 @@ export class UserService {
       'programming', // specialty
       'Active', // status
       'test_stripeId', // stripeId
-      'testUid', // uid
+      'testUid7', // uid
       1987, // yearOfBirth
       87, // avgScore
       'High', // performance

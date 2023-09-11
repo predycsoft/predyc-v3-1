@@ -12,6 +12,7 @@ import { DepartmentsProfilesComponent } from './main-components/management/depar
 import { MyTeamComponent } from './main-components/management/my-team/my-team.component';
 import { ManagementDashboardComponent } from './main-components/management/management-dashboard/management-dashboard.component';
 import { NotificationsComponent } from './shared/components/notifications/notifications.component'
+import { StudentComponent } from './main-components/management/my-team/student/student.component';
 
 const MAIN_TITLE = 'Predyc - '
 
@@ -28,6 +29,7 @@ const routes: Routes = [
       {path:"departments-and-profiles", title: MAIN_TITLE + 'Departamentos y perfiles', component: DepartmentsProfilesComponent},
       {path:"notifications", title: MAIN_TITLE + 'Notificaciones', component: NotificationsComponent},
       {path:"students", title: MAIN_TITLE + 'Mi equipo', component: MyTeamComponent},
+      {path:"students/:uid", title: MAIN_TITLE + 'Mi equipo', component: StudentComponent},
     ]
   },
   {path:"validation", title: MAIN_TITLE + 'Validación de competencias', component: ValidationComponent},
