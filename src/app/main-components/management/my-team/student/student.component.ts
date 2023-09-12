@@ -19,7 +19,7 @@ export class StudentComponent implements OnInit {
 
   ngOnInit(): void {
     this.uid = this.route.snapshot.paramMap.get('uid');
-    this.student = this.userService.getUsers().find(x => x.uid === this.uid)
+    // this.student = this.userService.getUsers().find(x => x.uid === this.uid)
   } 
 
 }

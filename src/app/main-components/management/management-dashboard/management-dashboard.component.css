@@ -13,9 +13,9 @@
 }
 
 .card-container--md {
-    min-width: 300px;
+    min-width: 270px;
 }
 
 .card-container--bg {
-    min-width: 400px;   
+    min-width: 300px;   
 }

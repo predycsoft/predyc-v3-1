@@ -42,12 +42,17 @@ import { SafePipe } from './shared/pipes/safe.pipe';
 import { NotificationsComponent } from './shared/components/notifications/notifications.component';
 import { ManagementDashboardComponent } from './main-components/management/management-dashboard/management-dashboard.component';
 import { NavigateBackComponent } from './shared/widgets/navigate-back/navigate-back.component';
-import { NewStudentComponent } from './shared/components/users/new-student/new-student.component';
+import { StudentProfileComponent } from './shared/components/users/student-profile/student-profile.component';
 import { MatSelectModule } from '@angular/material/select';
 import { SearchInputBoxComponent } from './shared/widgets/search-input-box/search-input-box.component';
 import { StudentComponent } from './main-components/management/my-team/student/student.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatMenuModule } from '@angular/material/menu';
+
+// Emulators
+import { USE_EMULATOR as USE_AUTH_EMULATOR } from '@angular/fire/compat/auth';
+import { USE_EMULATOR as USE_FIRESTORE_EMULATOR } from '@angular/fire/compat/firestore';
+import { USE_EMULATOR as USE_FUNCTIONS_EMULATOR } from '@angular/fire/compat/functions';
 
 @NgModule({
   declarations: [
@@ -68,9 +73,9 @@ import { MatMenuModule } from '@angular/material/menu';
     ManagementDashboardComponent,
     NavigateBackComponent,
     NotificationsComponent,
-    NewStudentComponent,
     SearchInputBoxComponent,
-    StudentComponent
+    StudentComponent,
+    StudentProfileComponent,
   ],
   imports: [
     BrowserModule,
@@ -101,6 +106,14 @@ import { MatMenuModule } from '@angular/material/menu';
 
   ],
   providers: [
+    {
+      provide: USE_FIRESTORE_EMULATOR,
+      useValue: environment.useEmulators ? ['localhost', 8080] : undefined,
+    },
+    {
+      provide: USE_FUNCTIONS_EMULATOR,
+      useValue: environment.useEmulators ? ['localhost', 5001] : undefined,
+    },
   ],
   bootstrap: [AppComponent]
 })

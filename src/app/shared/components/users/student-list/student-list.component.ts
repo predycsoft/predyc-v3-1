@@ -51,8 +51,8 @@ export class StudentListComponent {
     this.dataSource.sort = this.sort;
   }
 
-  ngOnInit() {
-    const users = this.userService.getUsers()
+  async ngOnInit() {
+    const users = await this.userService.getUsers(10, 'default')
     // const deparments = this.deparmentService.getDeparments()
     // const profiles = this.profileService.getProfiles()
     // users.forEach(user => {
