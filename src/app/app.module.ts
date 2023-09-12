@@ -45,6 +45,9 @@ import { NavigateBackComponent } from './shared/widgets/navigate-back/navigate-b
 import { NewStudentComponent } from './shared/components/users/new-student/new-student.component';
 import { MatSelectModule } from '@angular/material/select';
 import { SearchInputBoxComponent } from './shared/widgets/search-input-box/search-input-box.component';
+import { StudentComponent } from './main-components/management/my-team/student/student.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatMenuModule } from '@angular/material/menu';
 
 @NgModule({
   declarations: [
@@ -66,7 +69,8 @@ import { SearchInputBoxComponent } from './shared/widgets/search-input-box/searc
     NavigateBackComponent,
     NotificationsComponent,
     NewStudentComponent,
-    SearchInputBoxComponent
+    SearchInputBoxComponent,
+    StudentComponent
   ],
   imports: [
     BrowserModule,
@@ -92,6 +96,8 @@ import { SearchInputBoxComponent } from './shared/widgets/search-input-box/searc
     MatCheckboxModule,
     MatDialogModule,
     MatSelectModule,
+    MatTabsModule,
+    MatMenuModule, 
 
   ],
   providers: [

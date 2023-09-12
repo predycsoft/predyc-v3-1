@@ -34,18 +34,19 @@ export class NewStudentComponent implements OnInit {
   experienceOptions: string[]
   requiredValidator = Validators.required;
 
+  // Colocar "this.requiredValidator" en los campos que se consideren requeridos
   form: FormGroup = new FormGroup({
     "name": new FormControl(null, this.requiredValidator),
     "photoUrl": new FormControl(null),
     "email": new FormControl(null, [this.requiredValidator, Validators.email]),
-    "phoneNumber": new FormControl(null, this.requiredValidator),
-    "country": new FormControl(null, this.requiredValidator),
-    "birthDate": new FormControl(null, this.requiredValidator),    //
+    "phoneNumber": new FormControl(null),
+    "country": new FormControl(null),
+    "birthDate": new FormControl(null),    //
     "job": new FormControl(null),                              //
     "hiringDate": new FormControl(null,),                     //
     "experience": new FormControl(null,),                     //
     "departmentId": new FormControl(null),
-    "profileId": new FormControl(null),
+    "profileId": new FormControl(null, this.requiredValidator),
   })
 
 
@@ -85,30 +86,40 @@ export class NewStudentComponent implements OnInit {
   async saveUser(){
     const formData = this.form.value 
     const photoUrl = formData.photoUrl ? formData.photoUrl : null 
-    const name = formData.name
-    const email = formData.email
-    const phoneNumber = formData.phoneNumber
+    const name = formData.name ? formData.name : null
+    const email = formData.email ? formData.email : null
+    const phoneNumber = formData.phoneNumber ? formData.phoneNumber : null
     const country = formData.country ? formData.country : null 
-    const birthDate = this.utilsService.dateFromCalendarToTimestamp(formData.birthDate)
+    const birthDate = formData.birthDate ? this.utilsService.dateFromCalendarToTimestamp(formData.birthDate): null
     const job = formData.job ? formData.job : null 
     const hiringDate = formData.hiringDate? this.utilsService.dateFromCalendarToTimestamp(formData.hiringDate) : null
     const experience = formData.experience ? formData.experience : null 
     const departmentId = formData.departmentId ? formData.departmentId : null 
     const profileId = formData.profileId ? formData.profileId : null 
+    // Guardar en en firebase ...
   }
 
   onEdit() {
     this.isEditing = true
     this.isSaved = false
     const controls = this.form.controls
-
     Object.keys(controls).forEach(prop => {
       this.form.get(prop)?.enable();
     });
 
   }
 
-
+  showAlert(property: string){
+    if(this.form.get(property)?.hasValidator(this.requiredValidator)){
+      if (!this.form.get(property)?.valid && !this.form.get(property)?.disabled && this.form.get(property)?.touched){
+        return true
+      }
+      return false
+    }
+    else {
+      return false
+    }
+  }
 
 
 }

@@ -31,7 +31,8 @@ export class StudentListComponent {
     'departmentId',
     'profileId',
     'ratingPoints',
-    'performance'
+    'performance',
+    'options',
   ];
   dataSource!: MatTableDataSource<User>;
   selection!: SelectionModel<User>
