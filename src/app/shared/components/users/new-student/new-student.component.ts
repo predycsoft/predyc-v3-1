@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Form, FormControl, FormGroup, Validators } from '@angular/forms';
-import { DatesService } from 'src/app/shared/services/dates.service';
+import { UtilsService } from 'src/app/shared/services/utils.service';
 import { GeneralService } from 'src/app/shared/services/general.service';
 import { IconService } from 'src/app/shared/services/icon.service';
 
@@ -13,7 +13,7 @@ export class NewStudentComponent implements OnInit {
 
   constructor(
     public icon:IconService,
-    public dates: DatesService,
+    public utilsService: UtilsService,
     public general: GeneralService
   ){}
 
@@ -89,9 +89,9 @@ export class NewStudentComponent implements OnInit {
     const email = formData.email
     const phoneNumber = formData.phoneNumber
     const country = formData.country ? formData.country : null 
-    const birthDate = this.dates.dateFromCalendarToTimestamp(formData.birthDate)
+    const birthDate = this.utilsService.dateFromCalendarToTimestamp(formData.birthDate)
     const job = formData.job ? formData.job : null 
-    const hiringDate = formData.hiringDate? this.dates.dateFromCalendarToTimestamp(formData.hiringDate) : null
+    const hiringDate = formData.hiringDate? this.utilsService.dateFromCalendarToTimestamp(formData.hiringDate) : null
     const experience = formData.experience ? formData.experience : null 
     const departmentId = formData.departmentId ? formData.departmentId : null 
     const profileId = formData.profileId ? formData.profileId : null 
