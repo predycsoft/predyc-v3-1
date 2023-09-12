@@ -3,7 +3,7 @@
     fxLayoutAlign="space-between">
 
     <div fxLayout="column" fxLayoutAlign=" center" style="height: 100vh;" >
-        <div fxLayout="column" fxLayoutGap="60px">
+        <div fxLayout="column" fxLayoutGap="10px">
             <a routerLink="dashboard">
                 <img
                     [src]="icon.predyc"
@@ -12,7 +12,7 @@
             <a
                 *ngFor="let page of pages"
                 fxLayout="column"
-                fxLayoutGap="10px"
+                fxLayoutGap="2px"
                 fxLayoutAlign="center center"
                 [routerLink]="page.link"
                 class="menu-item"

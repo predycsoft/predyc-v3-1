@@ -1,27 +1,25 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Form, FormControl, FormGroup, Validators } from '@angular/forms';
 import { UtilsService } from 'src/app/shared/services/utils.service';
-import { GeneralService } from 'src/app/shared/services/general.service';
 import { IconService } from 'src/app/shared/services/icon.service';
 
 @Component({
-  selector: 'app-new-student',
-  templateUrl: './new-student.component.html',
-  styleUrls: ['./new-student.component.css']
+  selector: 'app-student-profile',
+  templateUrl: './student-profile.component.html',
+  styleUrls: ['./student-profile.component.css']
 })
-export class NewStudentComponent implements OnInit {
+export class StudentProfileComponent implements OnInit {
 
   constructor(
     public icon:IconService,
     public utilsService: UtilsService,
-    public general: GeneralService
   ){}
 
   ngOnInit(): void {
-    this.countries = this.general.countries
-    this.departments = this.general.departments
-    this.profiles = this.general.profiles
-    this.experienceOptions = this.general.experienceOptions
+    this.countries = this.utilsService.countries
+    this.departments = this.utilsService.departments
+    this.profiles = this.utilsService.profiles
+    this.experienceOptions = this.utilsService.experienceOptions
   }
   
   @Output() hideEmit: EventEmitter<void> = new EventEmitter<void>()
@@ -56,8 +54,6 @@ export class NewStudentComponent implements OnInit {
   }
 
   async onSubmit(){
-    console.log("this.form")
-    console.log(this.form)
     const controls = this.form.controls
     if (this.form.status === "VALID") {
       console.log("El usuario se ha creado satisfactoriamente")
@@ -92,7 +88,7 @@ export class NewStudentComponent implements OnInit {
     const country = formData.country ? formData.country : null 
     const birthDate = formData.birthDate ? this.utilsService.dateFromCalendarToTimestamp(formData.birthDate): null
     const job = formData.job ? formData.job : null 
-    const hiringDate = formData.hiringDate? this.utilsService.dateFromCalendarToTimestamp(formData.hiringDate) : null
+    const hiringDate = formData.hiringDate ? this.utilsService.dateFromCalendarToTimestamp(formData.hiringDate) : null
     const experience = formData.experience ? formData.experience : null 
     const departmentId = formData.departmentId ? formData.departmentId : null 
     const profileId = formData.profileId ? formData.profileId : null 

@@ -1,10 +1,11 @@
-<app-navigate-back targetUrl="../">Mi equipo</app-navigate-back>
-<div fxLayout="row" fxLayoutAlign="space-between center">
-    <app-search-input-box></app-search-input-box>
-    <button *ngIf="!studentSelected" class="blueButton" (click)="studentSelected = true" >Nuevo usuario</button>
-</div>
-
 <div fxLayout="row" fxLayoutGap="20px">
-    <app-student-list [ngStyle]="{'width': studentSelected ? '80%' : '100%'}"></app-student-list>
-    <app-new-student *ngIf="studentSelected" (hideEmit)="studentSelected = false" class="w300px mgb10" ></app-new-student>
+    <div [ngStyle]="{'width': studentSelected ? '80%' : '100%'}">
+        <app-navigate-back targetUrl="../">Mi equipo</app-navigate-back>
+        <div fxLayout="row" fxLayoutAlign="space-between center">
+            <app-search-input-box></app-search-input-box>
+            <button *ngIf="!studentSelected" class="blueButton" (click)="studentSelected = true" >Nuevo usuario</button>
+        </div>
+        <app-student-list></app-student-list>
+    </div>
+    <app-student-profile *ngIf="studentSelected" (hideEmit)="studentSelected = false" class="w300px mgb10" ></app-student-profile>
 </div>
