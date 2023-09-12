@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Notification } from '../../models/notification.model';
+import { LoaderService } from '../../services/loader.service';
+import { AfterOnInitResetLoading } from '../../decorators/loading.decorator';
 
 const ELEMENT_DATA: Notification[] = [
   {
@@ -35,12 +37,18 @@ const ELEMENT_DATA: Notification[] = [
   },
 ];
 
+@AfterOnInitResetLoading
 @Component({
   selector: 'app-notifications',
   templateUrl: './notifications.component.html',
   styleUrls: ['./notifications.component.css']
 })
 export class NotificationsComponent {
+
+  constructor(
+    private loaderService: LoaderService,
+  ) {}
+
   displayedColumns: string[] = [
     'position',
     'name',

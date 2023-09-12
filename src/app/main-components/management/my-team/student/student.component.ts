@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { AfterOnInitResetLoading } from 'src/app/shared/decorators/loading.decorator';
+import { LoaderService } from 'src/app/shared/services/loader.service';
 import { UserService } from 'src/app/shared/services/user.service';
 
+@AfterOnInitResetLoading
 @Component({
   selector: 'app-student',
   templateUrl: './student.component.html',
@@ -15,6 +18,7 @@ export class StudentComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private userService: UserService,
+    private loaderService: LoaderService,
   ){}
 
   ngOnInit(): void {

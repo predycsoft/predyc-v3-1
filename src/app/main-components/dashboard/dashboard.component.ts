@@ -1,5 +1,10 @@
 import { Component } from '@angular/core';
+import { AfterOnInitResetLoading } from 'src/app/shared/decorators/loading.decorator';
+import { LoaderService } from 'src/app/shared/services/loader.service';
 
+
+
+@AfterOnInitResetLoading
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -7,8 +12,11 @@ import { Component } from '@angular/core';
 })
 export class DashboardComponent {
 
-  constructor() {}
+  constructor(
+    private loaderService: LoaderService,
+  ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
 }

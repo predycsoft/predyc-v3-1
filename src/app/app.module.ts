@@ -48,7 +48,7 @@ import { SearchInputBoxComponent } from './shared/widgets/search-input-box/searc
 import { StudentComponent } from './main-components/management/my-team/student/student.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatMenuModule } from '@angular/material/menu';
-
+import { SpinnerComponent } from './shared/components/spinner/spinner.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -70,7 +70,8 @@ import { MatMenuModule } from '@angular/material/menu';
     NotificationsComponent,
     NewStudentComponent,
     SearchInputBoxComponent,
-    StudentComponent
+    StudentComponent,
+    SpinnerComponent,
   ],
   imports: [
     BrowserModule,

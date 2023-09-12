@@ -1,3 +1,4 @@
+<app-spinner *ngIf="loading"></app-spinner>
 <mat-sidenav-container *ngIf="userSignedIn; else signInForm">
   <mat-sidenav #leftSidenav mode="side" opened>
     <app-sidenav></app-sidenav>
