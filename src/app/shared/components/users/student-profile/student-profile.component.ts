@@ -39,8 +39,8 @@ export class StudentProfileComponent implements OnInit {
     "job": new FormControl(null),
     "hiringDate": new FormControl(null,),
     "experience": new FormControl(null,),
-    "departmentId": new FormControl(null),
-    "profileId": new FormControl(null),
+    // "departmentId": new FormControl(null),
+    // "profileId": new FormControl(null),
   })
 
   ngOnInit(): void {
@@ -128,8 +128,8 @@ export class StudentProfileComponent implements OnInit {
     this.student.job = formData.job ? formData.job : null 
     this.student.hiringDate = formData.hiringDate ? this.utilsService.dateFromCalendarToTimestamp(formData.hiringDate) : null
     this.student.experience = formData.experience ? formData.experience : null 
-    this.student.departmentId = formData.departmentId ? formData.departmentId : null 
-    this.student.profileId = formData.profileId ? formData.profileId : null
+    // this.student.departmentId = formData.departmentId ? formData.departmentId : null 
+    // this.student.profileId = formData.profileId ? formData.profileId : null
     if (!this.student.uid) {
       this.student.email = formData.email ? formData.email : null
     }

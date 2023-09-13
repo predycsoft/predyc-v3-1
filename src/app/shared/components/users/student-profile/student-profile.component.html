@@ -110,7 +110,7 @@
             <span *ngIf="showAlert('experience')" class="redText mgt03">
                 Debes elegir una opción
             </span>
-            <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" [ngClass]="(isNewUser || isEditing) ? 'inputContainer mgt10' : 'disabledInputContainer mgt10'">
+            <!-- <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" [ngClass]="(isNewUser || isEditing) ? 'inputContainer mgt10' : 'disabledInputContainer mgt10'">
                 <img [src]="icon.enterprise" class="makeGray h16px" alt="">
                 <select *ngIf="isNewUser || isEditing" [ngClass]="!isNewUser ? 'disabledInput': !form.get('departmentId')?.value? 'makeGray' : ''" 
                     class="input fw" formControlName="departmentId">
@@ -125,8 +125,8 @@
             </div>
             <span *ngIf="showAlert('departmentId')" class="redText mgt03">
                 Debes elegir una opción
-            </span>
-            <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" [ngClass]="(isNewUser || isEditing) ? 'inputContainer mgt10' : 'disabledInputContainer mgt10'">
+            </span> -->
+            <!-- <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" [ngClass]="(isNewUser || isEditing) ? 'inputContainer mgt10' : 'disabledInputContainer mgt10'">
                 <img [src]="icon.userProfile" class="makeGray h16px" alt="">
                 <select *ngIf="isNewUser || isEditing" [ngClass]="!isNewUser ? 'disabledInput': !form.get('profileId')?.value? 'makeGray' : ''"
                     class="input fw" formControlName="profileId">
@@ -141,7 +141,7 @@
             </div>
             <span *ngIf="showAlert('profileId')" class="redText mgt03">
                 Debes elegir una opción
-            </span>
+            </span> -->
         </div>
         <div fxLayout="row" fxLayoutAlign="center center">
             <button *ngIf="form.valid" [ngClass]="form.valid ? 'blueButton' : 'graybutton'" class="mgt10 radius20" type="submit">Guardar</button>

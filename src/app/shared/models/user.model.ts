@@ -7,11 +7,13 @@ export interface UserJson {
   createdAt: number | null // timestamp
   currentlyWorking: boolean
   degree: string | null
-  departmentId: string | null
+  // departmentId: string | null
+  department: DocumentReference | null,
   displayName: string | null
   email: string | null
   employer: string | null // This could be obtained from the enterprise ref
-  enterpriseId: string | null
+  enterpriseId: string | null // Remove after replacing of methods that reference it
+  enterprise: DocumentReference | null
   experience: number | null
   gender: string | null
   hasCollegeDegree: boolean
@@ -24,7 +26,8 @@ export interface UserJson {
   name: string | null
   phoneNumber: string | null
   photoUrl: string | null
-  profileId: string | null
+  // profileId: string | null
+  profile: DocumentReference | null
   role: 'admin' | 'student'
   status: string
   stripeId: string | null
@@ -43,12 +46,13 @@ export class User {
     public createdAt: number | null, // timestamp
     public currentlyWorking: boolean,
     public degree: string | null,
-    public departmentId: string | null,
-    // public department: DocumentReference | null,
+    // public departmentId: string | null,
+    public department: DocumentReference | null,
     public displayName: string | null,
     public email: string | null,
     public employer: string | null, // This could be obtained from the enterprise ref
-    public enterpriseId: string | null,
+    public enterpriseId: string | null, // Remove after replacing of methods that reference it
+    public enterprise: DocumentReference | null,
     public experience: number | null,
     public gender: string | null,
     public hasCollegeDegree: boolean,
@@ -61,7 +65,8 @@ export class User {
     public name: string | null,
     public phoneNumber: string | null,
     public photoUrl: string | null,
-    public profileId: string | null,
+    // public profileId: string | null,
+    public profile: DocumentReference | null,
     public role: 'admin' | 'student',
     public status: string,
     public stripeId: string | null,
@@ -125,11 +130,13 @@ export class User {
       createdAt: null,
       currentlyWorking: false,
       degree: null,
-      departmentId: null,
+      // departmentId: null,
+      department: null,
       displayName: null,
       email: null,
       employer: configObj.employer ? configObj.employer : null,
-      enterpriseId: configObj.enterpriseId ? configObj.enterpriseId : null,
+      enterpriseId: configObj.enterpriseId ? configObj.enterpriseId : null, // Remove after replacing of methods that reference it
+      enterprise: null, 
       experience: null,
       gender: null,
       hasCollegeDegree: false,
@@ -142,7 +149,8 @@ export class User {
       name: null,
       phoneNumber: null,
       photoUrl: null,
-      profileId: null,
+      // profileId: null,
+      profile: null,
       role: configObj.role,
       status: 'active',
       stripeId: null,
@@ -161,11 +169,13 @@ export class User {
       userJson.createdAt,
       userJson.currentlyWorking,
       userJson.degree,
-      userJson.departmentId,
+      // userJson.departmentId,
+      userJson.department,
       userJson.displayName,
       userJson.email,
       userJson.employer,
-      userJson.enterpriseId,
+      userJson.enterpriseId, // Remove after replacing of methods that reference it
+      userJson.enterprise, 
       userJson.experience,
       userJson.gender,
       userJson.hasCollegeDegree,
@@ -178,7 +188,8 @@ export class User {
       userJson.name,
       userJson.phoneNumber,
       userJson.photoUrl,
-      userJson.profileId,
+      // userJson.profileId,
+      userJson.profile,
       userJson.role,
       userJson.status,
       userJson.stripeId,
@@ -197,11 +208,13 @@ export class User {
       createdAt: this.createdAt,
       currentlyWorking: this.currentlyWorking,
       degree: this.degree,
-      departmentId: this.departmentId,
+      // departmentId: this.departmentId,
+      department: this.department,
       displayName: this.displayName,
       email: this.email,
       employer: this.employer,
-      enterpriseId: this.enterpriseId,
+      enterpriseId: this.enterpriseId, // Remove after replacing of methods that reference it
+      enterprise: this.enterprise,
       experience: this.experience,
       gender: this.gender,
       hasCollegeDegree: this.hasCollegeDegree,
@@ -214,7 +227,8 @@ export class User {
       name: this.name,
       phoneNumber: this.phoneNumber,
       photoUrl: this.photoUrl,
-      profileId: this.profileId,
+      // profileId: this.profileId,
+      profile: this.profile,
       role: this.role,
       status: this.status,
       stripeId: this.stripeId,
