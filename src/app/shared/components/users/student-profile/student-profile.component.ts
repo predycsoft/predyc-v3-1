@@ -72,8 +72,15 @@ export class StudentProfileComponent implements OnInit {
       //   profileId: this.student.profileId,
       // })
       this.form.patchValue(this.student)
+      if (this.student.birthdate) {
+        const birthdate = this.utilsService.timestampToDateNumbers(this.student.birthdate)
+        this.form.get('birthdate')?.setValue(`${birthdate.year}-${birthdate.month}-${birthdate.day}`);
+      }
+      if (this.student.hiringDate) {
+        const hiringDate = this.utilsService.timestampToDateNumbers(this.student.hiringDate)
+        this.form.get('hiringDate')?.setValue(`${hiringDate.year}-${hiringDate.month}-${hiringDate.day}`);
+      }
     }
-
     console.log("this.form.value")
     console.log(this.form.value)
   }
@@ -108,12 +115,16 @@ export class StudentProfileComponent implements OnInit {
 
   async saveUser(){
     const formData = this.form.value 
+    console.log("this.form.value")
+    console.log(this.form.value)
     this.student.photoUrl = formData.photoUrl ? formData.photoUrl : null 
     this.student.name = formData.name ? formData.name : null
     this.student.displayName = formData.name ? formData.name : null
     this.student.phoneNumber = formData.phoneNumber ? formData.phoneNumber : null
     this.student.country = formData.country ? formData.country : null 
-    this.student.birthdate = formData.birthDate ? this.utilsService.dateFromCalendarToTimestamp(formData.birthDate): null
+    console.log("formData.birthdate")
+    console.log(formData.birthdate)
+    this.student.birthdate = formData.birthdate ? this.utilsService.dateFromCalendarToTimestamp(formData.birthdate): null
     this.student.job = formData.job ? formData.job : null 
     this.student.hiringDate = formData.hiringDate ? this.utilsService.dateFromCalendarToTimestamp(formData.hiringDate) : null
     this.student.experience = formData.experience ? formData.experience : null 

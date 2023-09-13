@@ -21,7 +21,7 @@ export class UtilsService {
     return Math.floor(100000 + Math.random() * 900000);
   };
 
-  timestampToDateNumbers(timestamp: number): object {
+  timestampToDateNumbers(timestamp: number): {minutes:number, hours:number, day:number, month:number, year:number } {
     const date: Date = new Date(timestamp); 
     const minutes: number = date.getUTCMinutes()
     const hours: number = date.getUTCHours();
