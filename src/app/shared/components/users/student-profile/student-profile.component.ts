@@ -52,25 +52,12 @@ export class StudentProfileComponent implements OnInit {
     if (!this.student.uid) {
       this.isNewUser = true
     } else {
-      this.onEdit()
+      // this.onEdit()
 
-      // Object.keys(this.form.controls).forEach(prop => {
-      //   this.form.get(prop)?.disable();
-      // });
+      Object.keys(this.form.controls).forEach(prop => {
+        this.form.get(prop)?.disable();
+      });
 
-      // this.form.patchValue({
-      //   name: this.student.name,
-      //   photoUrl: this.student.photoUrl,
-      //   email: this.student.email,
-      //   phoneNumber: this.student.phoneNumber,
-      //   country: this.student.country,
-      //   birthdate: this.student.birthdate,
-      //   job: this.student.job,
-      //   hiringDate: this.student.hiringDate,
-      //   experience: this.student.experience,
-      //   departmentId: this.student.departmentId,
-      //   profileId: this.student.profileId,
-      // })
       this.form.patchValue(this.student)
       if (this.student.birthdate) {
         const birthdate = this.utilsService.timestampToDateNumbers(this.student.birthdate)
