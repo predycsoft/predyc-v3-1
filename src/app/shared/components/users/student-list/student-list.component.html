@@ -84,7 +84,7 @@
                             <!-- <img [src]="icon.user" alt="" class="h16px mg0"> -->
                             <span class="pdl05 ft12 gray-10" [routerLink]="user.uid">Ver usuario</span>
                         </div> 
-                        <div mat-menu-item fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="2rem">
+                        <div mat-menu-item fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="2rem" (click)="onSelectUser(user)">
                             <!-- <img [src]="icon.trash" class="h16px mg0" alt=""> -->
                             <span class="pdl05 ft12 gray-10">Editar usuario</span>
                         </div>

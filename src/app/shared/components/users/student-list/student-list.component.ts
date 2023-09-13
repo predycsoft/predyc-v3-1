@@ -1,11 +1,11 @@
-import { SelectionModel } from '@angular/cdk/collections';
-import { Component, Renderer2, ViewChild } from '@angular/core';
+import { DataSource, SelectionModel } from '@angular/cdk/collections';
+import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
 import { IconService } from '../../../../shared/services/icon.service';
 import { UserService } from '../../../../shared/services/user.service';
 import { User } from '../../../../shared/models/user.model';
+import { Observable } from 'rxjs';
 
 interface UserInfo {
   displayName: string,
@@ -34,40 +34,29 @@ export class StudentListComponent {
     'performance',
     'options',
   ];
-  dataSource!: MatTableDataSource<User>;
+  dataSource!: UserDataSource;
   selection!: SelectionModel<User>
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+  @Output() onSelectStudentEvent = new EventEmitter<User>()
 
   constructor(
     private userService: UserService,
     public icon: IconService,
-    private renderer: Renderer2
   ) {}
 
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-  }
-
-  async ngOnInit() {
-    const users = await this.userService.getUsers(10, 'default')
-    // const deparments = this.deparmentService.getDeparments()
-    // const profiles = this.profileService.getProfiles()
-    // users.forEach(user => {
-    //   return {
-
-    //   }
-    // })
-    // Assign the data to the data source for the table to render
-    this.dataSource = new MatTableDataSource(users);
-
+  ngOnInit() {
     const initialSelection: User[] = [];
     const allowMultiSelect = true;
     this.selection = new SelectionModel<User>(
       allowMultiSelect, initialSelection
     );
+    this.dataSource = new UserDataSource(this.userService, this.paginator, this.sort);
+  }
+
+  onSelectUser(user: User) {
+    this.onSelectStudentEvent.emit(user)
   }
 
   // applyFilter(event: Event) {
@@ -81,15 +70,36 @@ export class StudentListComponent {
 
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {
-    const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
-    return numSelected == numRows;
+    // const numSelected = this.selection.selected.length;
+    // const numRows = this.dataSource.data.length;
+    // return numSelected == numRows;
+    return false
   }
 
   /** Selects all rows if they are not all selected; otherwise clear selection. */
   toggleAllRows() {
-    this.isAllSelected() ?
-        this.selection.clear() :
-        this.dataSource.data.forEach(row => this.selection.select(row));
+    // this.isAllSelected() ?
+    //     this.selection.clear() :
+    //     this.dataSource.data.forEach(row => this.selection.select(row));
+  }
+}
+
+class UserDataSource extends DataSource<User> {
+
+  constructor(
+    private userService: UserService,
+    private paginator: MatPaginator,
+    private sort: MatSort
+  ) {
+    super();
+    this.userService = userService
+  }
+
+  connect(): Observable<User[]> {
+    return this.userService.users$;
+  }
+
+  disconnect() {
+
   }
 }

@@ -9,7 +9,7 @@ import { User } from 'src/app/shared/models/user.model';
 @Component({
   selector: 'app-my-team',
   templateUrl: './my-team.component.html',
-  styleUrls: ['./my-team.component.css']
+  styleUrls: ['./my-team.component.css'],
 })
 export class MyTeamComponent {
   constructor(
@@ -18,13 +18,40 @@ export class MyTeamComponent {
     private userService: UserService
   ){}
 
-  studentSelected = false
+  studentSelected: User | null = null
 
   users: User[]
   pageSize: number = 10
   sortBy: string = 'default'
+
+  // ?sortBy=Deparment&pageSize=25&page=2&name=searchText
   async ngOnInit() {
-    const users = this.userService.getUsers(this.pageSize, this.sortBy)
+    this.userService.getUsers(this.pageSize, this.sortBy)
+  }
+
+  createNewStudent() {
+    this.studentSelected = User.getEnterpriseStudentUser('empresa1', 'Nombre de la empresa')
+  }
+
+  onStudentSaveHandler(student: User) {
+    try {
+      if (student.uid) {
+        this.userService.editUser(student)
+      } else {
+        this.userService.addUser(student)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  addUser() {
+    try {
+      // await this.userService.addUser(user)
+      // sweetAlert.success
+    } catch (error) {
+      // sweetAlert.error(error)
+    }
   }
 
   applyFilter(event: Event) {

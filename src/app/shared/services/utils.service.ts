@@ -17,6 +17,10 @@ export class UtilsService {
     return timestamp
   }
 
+  generateSixDigitRandomNumber = () => {
+    return Math.floor(100000 + Math.random() * 900000);
+  };
+
   timestampToDateNumbers(timestamp: number): object {
     const date: Date = new Date(timestamp); 
     const minutes: number = date.getUTCMinutes()

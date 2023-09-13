@@ -113,6 +113,10 @@ import { USE_EMULATOR as USE_FUNCTIONS_EMULATOR } from '@angular/fire/compat/fun
       useValue: environment.useEmulators ? ['localhost', 8080] : undefined,
     },
     {
+      provide: USE_AUTH_EMULATOR,
+      useValue: environment.useEmulators ? ['http://localhost:9099'] : undefined,
+    },
+    {
       provide: USE_FUNCTIONS_EMULATOR,
       useValue: environment.useEmulators ? ['localhost', 5001] : undefined,
     },

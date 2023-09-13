@@ -3,7 +3,8 @@ import { User } from '../../shared/models/user.model';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { UtilsService } from './utils.service';
-import { firstValueFrom } from 'rxjs'
+import { BehaviorSubject, firstValueFrom } from 'rxjs'
+import { EnterpriseService } from './enterprise.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -12,35 +13,52 @@ export class UserService {
   constructor(
     private afAuth: AngularFireAuth,
     private afs: AngularFirestore,
-    private utilsService: UtilsService
+    private utilsService: UtilsService,
+    private enterpriseService: EnterpriseService,
   ) {}
 
-  private users: User[] = []
+  // private users: User[] = []
 
+
+  private users: User[] = []
+  private usersSubject = new BehaviorSubject<User[]>([]);
+  public users$ = this.usersSubject.asObservable();
+  // Necesito ver como valido que el usuario previamente no exista, aunque creo que tirara un error
   async addUser(newUser: User): Promise<void> {
     try {
-      const email = newUser.email
-      const password = `${this.utilsService.capitalizeFirstLetter(newUser.name.replace(' ', ''))}`
+      const email = newUser.email ? newUser.email : 'test@email.com'
+      const password = `${this.utilsService.generateSixDigitRandomNumber()}`
       const userCredential = await this.afAuth.createUserWithEmailAndPassword(email, password);
       const user = userCredential.user;
-      await this.afs.collection('users').doc(user?.uid).set(newUser);
+      if (!user) {
+        throw new Error("User does not exist")
+      }
+      newUser.uid = user.uid
+      await this.afs.collection('users').doc(user?.uid).set(newUser.toJson());
       this.users.push(newUser)
+      this.usersSubject.next(this.users)
       console.log('User created successfully!');
     } catch (error) {
-      console.error('Error during signup:', error);
+      // console.error('Error during signup:', error);
       throw error;  // Rethrow for handling in the component
     }
   }
 
-  async getUsers(pageSize: number, sort: string): Promise<User[]> {
-    const users = await firstValueFrom(this.afs.collection('user').valueChanges())
+  async editUser(user: User): Promise<void> {
+    console.log(user)
+  }
+
+  async getUsers(pageSize: number, sort: string): Promise<void> {
+    const users = await firstValueFrom(this.afs.collection<User>('users').valueChanges())
+    console.log("users")
     console.log(users)
+    this.users = users
+    this.usersSubject.next(this.users)
     // const users: User[] = await firstValueFrom(this.afs.collection<User>('user', ref => 
     //   ref.where('enterpriseId', '==', 1)
     //      .orderBy('name')
     //      .limit(pageSize)
     // ).valueChanges());
     // return users ? users : []
-    return []
   }
 }
