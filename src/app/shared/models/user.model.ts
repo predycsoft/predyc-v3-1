@@ -29,7 +29,7 @@ export interface UserJson {
   // profileId: string | null
   profile: DocumentReference | null
   role: 'admin' | 'student'
-  status: string
+  isActive: boolean
   stripeId: string | null
   uid: string | null
   avgScore: number
@@ -68,7 +68,7 @@ export class User {
     // public profileId: string | null,
     public profile: DocumentReference | null,
     public role: 'admin' | 'student',
-    public status: string,
+    public isActive: boolean,
     public stripeId: string | null,
     public uid: string | null,
 
@@ -152,7 +152,7 @@ export class User {
       // profileId: null,
       profile: null,
       role: configObj.role,
-      status: 'active',
+      isActive: true,
       stripeId: null,
       uid: null,
       avgScore: 0,
@@ -191,7 +191,7 @@ export class User {
       // userJson.profileId,
       userJson.profile,
       userJson.role,
-      userJson.status,
+      userJson.isActive,
       userJson.stripeId,
       userJson.uid,
       userJson.avgScore,
@@ -230,7 +230,7 @@ export class User {
       // profileId: this.profileId,
       profile: this.profile,
       role: this.role,
-      status: this.status,
+      isActive: this.isActive,
       stripeId: this.stripeId,
       uid: this.uid,
       avgScore: this.avgScore,
