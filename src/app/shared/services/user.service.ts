@@ -46,6 +46,14 @@ export class UserService {
 
   async editUser(user: User): Promise<void> {
     console.log(user)
+    try {
+      await this.afs.collection('users').doc(user.uid as string).set(
+        user, { merge: true }
+      );
+      console.log('User edited successfully!');
+    } catch (error) {
+      throw error;
+    }
   }
 
   async getUsers(pageSize: number, sort: string): Promise<void> {
