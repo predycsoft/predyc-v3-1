@@ -50,12 +50,14 @@ export class StudentProfileComponent implements OnInit {
     this.experienceOptions = this.utilsService.experienceOptions
 
     if (!this.student.uid) {
-      this.isEditing = true
-    } else {
       this.isNewUser = true
-      Object.keys(this.form.controls).forEach(prop => {
-        this.form.get(prop)?.disable();
-      });
+    } else {
+      this.onEdit()
+
+      // Object.keys(this.form.controls).forEach(prop => {
+      //   this.form.get(prop)?.disable();
+      // });
+
       // this.form.patchValue({
       //   name: this.student.name,
       //   photoUrl: this.student.photoUrl,
