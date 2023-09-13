@@ -42,7 +42,7 @@ export class UserService {
   }
 
   async delete(user: User): Promise<void> {
-    user.status = 'inactive'
+    user.isActive = false
     await this.editUser(user)
     // try {
     //   await this.afs.collection('users').doc(user.uid as string).delete();
