@@ -5,6 +5,7 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { UtilsService } from './utils.service';
 import { BehaviorSubject, firstValueFrom } from 'rxjs'
 import { EnterpriseService } from './enterprise.service';
+import { AlertsService } from './alerts.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -15,6 +16,7 @@ export class UserService {
     private afs: AngularFirestore,
     private utilsService: UtilsService,
     private enterpriseService: EnterpriseService,
+    private alertService: AlertsService
   ) {}
 
   // private users: User[] = []
@@ -35,15 +37,17 @@ export class UserService {
       this.users.push(newUser)
       this.usersSubject.next(this.users)
       console.log('User created successfully!');
+      this.alertService.succesAlert('Has agregado un nuevo usuario exitosamente.')
     } catch (error) {
       // console.error('Error during signup:', error);
+      this.alertService.errorAlert()
       throw error;  // Rethrow for handling in the component
     }
   }
 
   async delete(user: User): Promise<void> {
     user.isActive = false
-    await this.editUser(user)
+    await this.editUser(user, "delete")
     // try {
     //   await this.afs.collection('users').doc(user.uid as string).delete();
     //   const index= this.users.findIndex(x => x.uid === user.uid)
@@ -55,13 +59,22 @@ export class UserService {
     // }
   }
 
-  async editUser(user: User): Promise<void> {
+  async editUser(user: User, mode: ("edit" | "delete")): Promise<void> {
     console.log(user)
     try {
       await this.afs.collection('users').doc(user.uid as string).set(
         user, { merge: true }
       );
-      console.log('User edited successfully!');
+      const editText = 'Has editado la informacion del usuario exitosamente.'
+      const deleteText = 'Has eliminado al usuario exitosamente.'
+      if (mode === "edit") {
+        console.log('User edited successfully!');
+        this.alertService.infoAlert(editText, 'edit')
+      }
+      else if (mode === "delete") {
+        console.log('User deleted successfully!');
+        this.alertService.infoAlert(deleteText, 'delete')
+      }
     } catch (error) {
       throw error;
     }
