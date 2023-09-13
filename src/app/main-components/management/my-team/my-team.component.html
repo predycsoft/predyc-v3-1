@@ -5,7 +5,7 @@
             <app-search-input-box></app-search-input-box>
             <button *ngIf="!studentSelected" class="blueButton" (click)="createNewStudent()">Nuevo usuario</button>
         </div>
-        <app-student-list (onSelectStudentEvent)="studentSelected = $event"></app-student-list>
+        <app-student-list (onSelectStudentEvent)="studentSelected = $event" (onDeleteStudentEvent)="onStudentDeleteHandler($event)"></app-student-list>
     </div>
     <app-student-profile *ngIf="studentSelected" [student]="studentSelected" (hideEmit)="studentSelected = null" (onStudentSave)="onStudentSaveHandler($event)" class="w300px mgb10"></app-student-profile>
 </div>
