@@ -26,7 +26,7 @@ export class MyTeamComponent {
 
   // ?sortBy=Deparment&pageSize=25&page=2&name=searchText
   async ngOnInit() {
-    this.userService.getUsers(this.pageSize, this.sortBy)
+    await this.userService.getUsers(this.pageSize, this.sortBy)
   }
 
   createNewStudent() {

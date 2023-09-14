@@ -13,19 +13,15 @@ import { AuthService } from './shared/services/auth.service';
 export class AppComponent{
 
   userSignedIn: boolean = true;
-  loading = false
-  visitedRoutes: Set<string> = new Set<string>();
 
 
   constructor(
-    private loaderService: LoaderService,
+    public loaderService: LoaderService,
     private router: Router,
     private authService: AuthService
   ) {}
 
   ngOnInit() {
-    this.router.navigate(['dashboard'])
-
     // ESTO ES LO QUE ESTOY TRABAJANDO
     // this.authService.user$.subscribe(user => {
     //   if (user) {
@@ -37,23 +33,6 @@ export class AppComponent{
     //   }
     // })
 
-    // CODIGO DEL LOADER COMENTADO MOMENTANEAMENTE
-    // this.router.events.subscribe(event => {
-    //   if (event instanceof NavigationStart) {
-    //     if (this.visitedRoutes.has(event.url)) {
-    //       console.log(`Ya has visitado la ruta: ${event.url}`);
-    //     } else {
-    //       this.visitedRoutes.add(event.url);
-    //       this.loading = true; // Muestra el spinner al empezar la navegación
-    //     }
-    //   }
-    //   // if (event instanceof NavigationEnd || event instanceof NavigationError || event instanceof NavigationCancel) {
-    //   //   // this.loading = false; // Oculta el spinner al terminar la navegación
-    //   // }
-    // })
-    // this.loaderService.loading$.subscribe(loading => {
-    //   this.loading = loading;
-    // });
       
   }
 
