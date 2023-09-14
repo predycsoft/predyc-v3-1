@@ -40,6 +40,7 @@ export class StudentListComponent {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   @Output() onSelectStudentEvent = new EventEmitter<User>()
+  @Output() onDeleteStudentEvent = new EventEmitter<User>()
 
   constructor(
     private userService: UserService,
@@ -57,6 +58,10 @@ export class StudentListComponent {
 
   onSelectUser(user: User) {
     this.onSelectStudentEvent.emit(user)
+  }
+
+  onDeleteUser(user: User) {
+    this.onDeleteStudentEvent.emit(user)
   }
 
   // applyFilter(event: Event) {

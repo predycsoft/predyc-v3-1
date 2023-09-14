@@ -44,6 +44,13 @@ export class MyTeamComponent {
       console.log(error)
     }
   }
+  onStudentDeleteHandler (student: User) {
+    try {
+      this.userService.delete(student)
+    } catch (error) {
+      
+    }
+  }
 
   addUser() {
     try {
