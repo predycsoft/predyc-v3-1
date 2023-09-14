@@ -20,7 +20,7 @@ export class AlertsService {
     Swal.fire({
       icon: 'error',
       title: '¡Error!',
-      text: `Algo salió mal. Por favor, intenta nuevamente. \n${errorText}`
+      text: `Algo salió mal. Por favor, intenta nuevamente.\n${errorText}`
     });
   }
 
