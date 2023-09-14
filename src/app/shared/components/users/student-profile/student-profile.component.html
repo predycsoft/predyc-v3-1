@@ -71,15 +71,15 @@
             </span>
             <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" [ngClass]="(isNewUser || isEditing) ? 'inputContainer mgt10' : 'disabledInputContainer mgt10'">
                 <img [src]="icon.calendarAdd" class="makeGray h16px" alt="">
-                <input id="datePicker" type="text" placeholder="Fecha de nacimiento" 
-                    [ngClass]="(isNewUser || isEditing) ? '' : 'disabledInput'" class="input fw" onclick="this.type='date'" formControlName="birthdate">
+                <input (click)="(isNewUser || isEditing) && birthdate.toggle()" placeholder="Fecha de nacimiento" name="birthdate" formControlName="birthdate" 
+                    [ngClass]="(isNewUser || isEditing) ? '' : 'disabledInput'" class="input fw"ngbDatepicker #birthdate="ngbDatepicker">
                 <span *ngIf="isNewUser && form.get('birthdate')?.hasValidator(requiredValidator)" class="asterisk">*</span>
             </div>
             <span *ngIf="showAlert('birthdate')" class="redText mgt03">
                 Debes introducir una fecha de nacimiento
             </span>
             <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" [ngClass]="(isNewUser || isEditing) ? 'inputContainer mgt10' : 'disabledInputContainer mgt10'">
-                <img [src]="icon.suitcase" class="makeGray h16px" alt="">
+                <img [src]="icon.suitcase" class="makeGray h1px" alt="">
                 <input type="text" placeholder="Cargo" [ngClass]="(isNewUser || isEditing) ? '' : 'disabledInput'" class="input fw" formControlName="job">
                 <span *ngIf="isNewUser && form.get('job')?.hasValidator(requiredValidator)" class="asterisk">*</span>
             </div>
@@ -88,8 +88,8 @@
             </span>
             <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="space-between center" [ngClass]="(isNewUser || isEditing) ? 'inputContainer mgt10' : 'disabledInputContainer mgt10'">
                 <img [src]="icon.calendarAdd" class="makeGray h16px" alt="">
-                <input id="datePicker" type="text" placeholder="Fecha de ingreso" 
-                    [ngClass]="(isNewUser || isEditing) ? '' : 'disabledInput'" class="input fw" onclick="this.type='date'" formControlName="hiringDate">
+                <input (click)="(isNewUser || isEditing) && hiringDate.toggle()" placeholder="Fecha de ingreso" name="hiringDate" formControlName="hiringDate" 
+                    [ngClass]="(isNewUser || isEditing) ? '' : 'disabledInput'" class="input fw"ngbDatepicker #hiringDate="ngbDatepicker">
                 <span *ngIf="isNewUser && form.get('hiringDate')?.hasValidator(requiredValidator)" class="asterisk">*</span>
             </div>
             <span *ngIf="showAlert('hiringDate')" class="redText mgt03">

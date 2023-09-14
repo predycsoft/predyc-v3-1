@@ -24,6 +24,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSelectModule } from '@angular/material/select';
 
 // Components
 import { LoginComponent } from './login/login.component';
@@ -38,17 +41,16 @@ import { DepartmentsProfilesComponent } from './main-components/management/depar
 import { MyTeamComponent } from './main-components/management/my-team/my-team.component';
 import { NavigationCardComponent } from './shared/widgets/navigation-card/navigation-card.component';
 import { VideoDialogComponent } from './main-components/management/management-dashboard/video-dialog/video-dialog.component';
-import { SafePipe } from './shared/pipes/safe.pipe';
 import { NotificationsComponent } from './shared/components/notifications/notifications.component';
 import { ManagementDashboardComponent } from './main-components/management/management-dashboard/management-dashboard.component';
 import { NavigateBackComponent } from './shared/widgets/navigate-back/navigate-back.component';
 import { StudentProfileComponent } from './shared/components/users/student-profile/student-profile.component';
-import { MatSelectModule } from '@angular/material/select';
 import { SearchInputBoxComponent } from './shared/widgets/search-input-box/search-input-box.component';
 import { StudentComponent } from './main-components/management/my-team/student/student.component';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatMenuModule } from '@angular/material/menu';
 import { SpinnerComponent } from './shared/components/spinner/spinner.component';
+
+//
+import { SafePipe } from './shared/pipes/safe.pipe';
 
 // Emulators
 import { USE_EMULATOR as USE_AUTH_EMULATOR } from '@angular/fire/compat/auth';
