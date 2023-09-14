@@ -16,11 +16,11 @@ export class AlertsService {
     }); 
   }
   
-  errorAlert() {
+  errorAlert(errorText: string) {
     Swal.fire({
       icon: 'error',
       title: '¡Error!',
-      text: 'Algo salió mal. Por favor, intenta nuevamente.'
+      text: `Algo salió mal. Por favor, intenta nuevamente. \n${errorText}`
     });
   }
 
