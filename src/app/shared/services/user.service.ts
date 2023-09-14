@@ -26,14 +26,11 @@ export class UserService {
   // Necesito ver como valido que el usuario previamente no exista, aunque creo que tirara un error
   async addUser(newUser: User): Promise<void> {
     try {
-      const email = newUser.email ? newUser.email : 'test@email.com'
+      const email = newUser.email as string
       const password = `${this.utilsService.generateSixDigitRandomNumber()}`
       const userCredential = await this.afAuth.createUserWithEmailAndPassword(email, password);
       const user = userCredential.user;
-      if (!user) {
-        throw new Error("User does not exist")
-      }
-      newUser.uid = user.uid
+      newUser.uid = user?.uid as string
       await this.afs.collection('users').doc(user?.uid).set(newUser.toJson());
       this.users.push(newUser)
       this.usersSubject.next(this.users)
