@@ -13,12 +13,13 @@ import { MyTeamComponent } from './main-components/management/my-team/my-team.co
 import { ManagementDashboardComponent } from './main-components/management/management-dashboard/management-dashboard.component';
 import { NotificationsComponent } from './shared/components/notifications/notifications.component'
 import { StudentComponent } from './main-components/management/my-team/student/student.component';
+import { LoginComponent } from './login/login.component';
 
 const MAIN_TITLE = 'Predyc - '
 
 const routes: Routes = [
-  // {path:"", component: LoginComponent},
-  {path:"", redirectTo: "/dashboard", pathMatch:"full"},
+  {path:"", component: LoginComponent},
+  // {path:"", redirectTo: "/dashboard", pathMatch:"full"},
   {path:"dashboard", title: MAIN_TITLE + 'Dashboard',component: DashboardComponent},
   {
     path:"management",

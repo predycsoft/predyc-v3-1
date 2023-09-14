@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Form, FormControl, FormGroup, Validators } from '@angular/forms';
 import { UtilsService } from 'src/app/shared/services/utils.service';
 import { IconService } from 'src/app/shared/services/icon.service';
@@ -43,6 +43,8 @@ export class StudentProfileComponent implements OnInit {
     // "profileId": new FormControl(null),
   })
 
+  @ViewChild('closeButton') closeButton: ElementRef;
+
   ngOnInit(): void {
     this.countries = this.utilsService.countries
     this.departments = this.utilsService.departments
@@ -70,6 +72,13 @@ export class StudentProfileComponent implements OnInit {
     }
     console.log("this.form.value")
     console.log(this.form.value)
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.key === 'Escape') {
+      this.closeButton.nativeElement.click();
+    }
   }
 
   hide(){
@@ -105,8 +114,8 @@ export class StudentProfileComponent implements OnInit {
     console.log("this.form.value")
     console.log(this.form.value)
     this.student.photoUrl = formData.photoUrl ? formData.photoUrl : null 
-    this.student.name = formData.name ? formData.name : null
-    this.student.displayName = formData.name ? formData.name : null
+    this.student.name = formData.name ? this.utilsService.capitalizeFirstLetter(formData.name) : null
+    this.student.displayName = formData.name ? this.utilsService.capitalizeFirstLetter(formData.name) : null
     this.student.phoneNumber = formData.phoneNumber ? formData.phoneNumber : null
     this.student.country = formData.country ? formData.country : null 
     console.log("formData.birthdate")
@@ -118,7 +127,7 @@ export class StudentProfileComponent implements OnInit {
     // this.student.departmentId = formData.departmentId ? formData.departmentId : null 
     // this.student.profileId = formData.profileId ? formData.profileId : null
     if (!this.student.uid) {
-      this.student.email = formData.email ? formData.email : null
+      this.student.email = formData.email ? formData.email.toLowerCase() : null
     }
     // Guardar en en firebase ...
     this.onStudentSave.emit(this.student)

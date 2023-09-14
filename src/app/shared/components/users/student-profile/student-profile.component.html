@@ -9,7 +9,7 @@
             <button *ngIf="!isNewUser && !isEditing" class="blueButton radius4" (click)="onEdit()" >Editar</button>
         </div>
         <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
-            <div class="iconContainer backGray2 cursorPointer mgl05" fxLayoutAlign="center center" (click)="hide()">
+            <div class="iconContainer backGray2 cursorPointer mgl05" fxLayoutAlign="center center" (click)="hide()" #closeButton>
                 <img [src]="icon.close" class="  makeGray h20px">
             </div>
         </div>

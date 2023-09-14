@@ -19,71 +19,75 @@ export class UserService {
     private alertService: AlertsService
   ) {}
 
-  // private users: User[] = []
-
-
   private users: User[] = []
   private usersSubject = new BehaviorSubject<User[]>([]);
   public users$ = this.usersSubject.asObservable();
+
   // Necesito ver como valido que el usuario previamente no exista, aunque creo que tirara un error
   async addUser(newUser: User): Promise<void> {
     try {
-      const email = newUser.email as string
-      const password = `${this.utilsService.generateSixDigitRandomNumber()}`
-      const userCredential = await this.afAuth.createUserWithEmailAndPassword(email, password);
-      const user = userCredential.user;
-      newUser.uid = user?.uid as string
-      await this.afs.collection('users').doc(user?.uid).set(newUser.toJson());
+      try {
+        const email = newUser.email as string
+        const password = `${this.utilsService.generateSixDigitRandomNumber()}`
+        const userCredential = await this.afAuth.createUserWithEmailAndPassword(email, password);
+        const user = userCredential.user;
+        newUser.uid = user?.uid as string
+        await this.afs.collection('users').doc(user?.uid).set(newUser.toJson());
+      } catch (error) {
+        console.log(error)
+        if (false) {
+          this.activateUser()
+        }
+        throw error
+      }
       this.users.push(newUser)
       this.usersSubject.next(this.users)
-      console.log('User created successfully!');
       this.alertService.succesAlert('Has agregado un nuevo usuario exitosamente.')
     } catch (error) {
-      // console.error('Error during signup:', error);
-      this.alertService.errorAlert()
-      throw error;  // Rethrow for handling in the component
+      console.log(error)
+      this.alertService.errorAlert(JSON.stringify(error))
     }
   }
 
-  async delete(user: User): Promise<void> {
-    user.isActive = false
-    await this.editUser(user, "delete")
-    // try {
-    //   await this.afs.collection('users').doc(user.uid as string).delete();
-    //   const index= this.users.findIndex(x => x.uid === user.uid)
-    //   this.users.splice(index, 1)
-    //   this.usersSubject.next(this.users)
-    //   console.log('User deleted successfully!');
-    // } catch (error) {
-    //   throw error;
-    // }
+  private async activateUser() {
+
   }
 
-  async editUser(user: User, mode: ("edit" | "delete")): Promise<void> {
-    console.log(user)
+  async delete(user: User): Promise<void> {
+    try {
+      await this.afs.collection('users').doc(user.uid as string).set(
+        {
+          ...user,
+          isActive: false
+        }, { merge: true }
+      );
+      const index= this.users.findIndex(x => x.uid === user.uid)
+      this.users.splice(index, 1)
+      this.usersSubject.next(this.users)
+      this.alertService.infoAlert('Has eliminado al usuario exitosamente.', 'delete')
+    } catch (error) {
+      console.log(error)
+      this.alertService.errorAlert(JSON.stringify(error))
+    }
+  }
+
+  async editUser(user: User): Promise<void> {
     try {
       await this.afs.collection('users').doc(user.uid as string).set(
         user, { merge: true }
       );
-      const editText = 'Has editado la informacion del usuario exitosamente.'
-      const deleteText = 'Has eliminado al usuario exitosamente.'
-      if (mode === "edit") {
-        console.log('User edited successfully!');
-        this.alertService.infoAlert(editText, 'edit')
-      }
-      else if (mode === "delete") {
-        console.log('User deleted successfully!');
-        this.alertService.infoAlert(deleteText, 'delete')
-      }
+      this.alertService.infoAlert('Has editado la informacion del usuario exitosamente.', 'edit')
     } catch (error) {
-      throw error;
+      console.log(error)
+      this.alertService.errorAlert(JSON.stringify(error))
     }
   }
 
   async getUsers(pageSize: number, sort: string): Promise<void> {
-    const users = await firstValueFrom(this.afs.collection<User>('users').valueChanges())
-    console.log("users")
-    console.log(users)
+    const users = await firstValueFrom(this.afs.collection<User>('users', ref => 
+      ref.where('enterpriseId', '==', this.enterpriseService.enterprise.id)
+         .where('isActive', '==', true)
+    ).valueChanges())
     this.users = users
     this.usersSubject.next(this.users)
     // const users: User[] = await firstValueFrom(this.afs.collection<User>('user', ref => 
@@ -97,13 +101,5 @@ export class UserService {
   async getUser(uid: string): Promise<User | undefined> {
     const user = await firstValueFrom(this.afs.collection<User>('users').doc(uid).valueChanges())
     return user?.enterpriseId === this.enterpriseService.enterprise.id ? user : undefined
-    // const users = await firstValueFrom(this.afs.collection<User>('users', ref => 
-    //   ref.where('enterpriseId', '==', 1)
-    //      .where('uid', '==', uid)
-    // ).valueChanges())
-    // if (users.length > 0) {
-    //   return users[0]
-    // }
-    // return undefined
   }
 }

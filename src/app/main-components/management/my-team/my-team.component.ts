@@ -36,7 +36,7 @@ export class MyTeamComponent {
   onStudentSaveHandler(student: User) {
     try {
       if (student.uid) {
-        this.userService.editUser(student, "edit")
+        this.userService.editUser(student)
       } else {
         this.userService.addUser(student)
       }
