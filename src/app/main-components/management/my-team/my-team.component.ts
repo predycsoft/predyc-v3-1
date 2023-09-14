@@ -30,7 +30,7 @@ export class MyTeamComponent {
   }
 
   createNewStudent() {
-    this.studentSelected = User.getEnterpriseStudentUser('empresa1', 'Nombre de la empresa')
+    this.studentSelected = User.getEnterpriseStudentUser('empresaPruebaId', 'Empresa prueba')
   }
 
   onStudentSaveHandler(student: User) {

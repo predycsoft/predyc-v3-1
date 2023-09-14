@@ -79,4 +79,17 @@ export class UserService {
     // ).valueChanges());
     // return users ? users : []
   }
+
+  async getUser(uid: string): Promise<User | undefined> {
+    const user = await firstValueFrom(this.afs.collection<User>('users').doc(uid).valueChanges())
+    return user?.enterpriseId === this.enterpriseService.enterprise.id ? user : undefined
+    // const users = await firstValueFrom(this.afs.collection<User>('users', ref => 
+    //   ref.where('enterpriseId', '==', 1)
+    //      .where('uid', '==', uid)
+    // ).valueChanges())
+    // if (users.length > 0) {
+    //   return users[0]
+    // }
+    // return undefined
+  }
 }

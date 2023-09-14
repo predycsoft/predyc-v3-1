@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { ActivatedRoute, Router } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 import { AfterOnInitResetLoading } from 'src/app/shared/decorators/loading.decorator';
 import { LoaderService } from 'src/app/shared/services/loader.service';
 import { UserService } from 'src/app/shared/services/user.service';
@@ -19,11 +21,19 @@ export class StudentComponent implements OnInit {
     private route: ActivatedRoute,
     private userService: UserService,
     private loaderService: LoaderService,
+    private router: Router,
+    private afs: AngularFirestore
   ){}
 
-  ngOnInit(): void {
+  async ngOnInit() {
     this.uid = this.route.snapshot.paramMap.get('uid');
-    // this.student = this.userService.getUsers().find(x => x.uid === this.uid)
+    this.student = await this.userService.getUser(this.uid)
+    if (!this.student) {
+      this.router.navigate(['management/students'])
+    }
+    const enterprise = await firstValueFrom(this.afs.collection('enterprise').valueChanges())
+    console.log("enterprise")
+    console.log(enterprise)
   } 
 
 }

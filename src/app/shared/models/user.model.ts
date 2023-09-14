@@ -1,3 +1,5 @@
+import { DocumentReference } from "@angular/fire/compat/firestore"
+
 export interface UserJson {
   birthdate: number | null
   country: string | null
@@ -8,7 +10,7 @@ export interface UserJson {
   departmentId: string | null
   displayName: string | null
   email: string | null
-  employer: string | null
+  employer: string | null // This could be obtained from the enterprise ref
   enterpriseId: string | null
   experience: number | null
   gender: string | null
@@ -42,9 +44,10 @@ export class User {
     public currentlyWorking: boolean,
     public degree: string | null,
     public departmentId: string | null,
+    // public department: DocumentReference | null,
     public displayName: string | null,
     public email: string | null,
-    public employer: string | null,
+    public employer: string | null, // This could be obtained from the enterprise ref
     public enterpriseId: string | null,
     public experience: number | null,
     public gender: string | null,
