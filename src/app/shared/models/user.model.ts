@@ -144,7 +144,7 @@ export class User {
       photoUrl: null,
       profileId: null,
       role: configObj.role,
-      status: 'inactive',
+      status: 'active',
       stripeId: null,
       uid: null,
       avgScore: 0,

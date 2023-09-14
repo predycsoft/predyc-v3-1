@@ -42,16 +42,17 @@ export class UserService {
   }
 
   async delete(user: User): Promise<void> {
-    console.log(user)
-    try {
-      await this.afs.collection('users').doc(user.uid as string).delete();
-      const index= this.users.findIndex(x => x.uid === user.uid)
-      this.users.splice(index, 1)
-      this.usersSubject.next(this.users)
-      console.log('User deleted successfully!');
-    } catch (error) {
-      throw error;
-    }
+    user.status = 'inactive'
+    await this.editUser(user)
+    // try {
+    //   await this.afs.collection('users').doc(user.uid as string).delete();
+    //   const index= this.users.findIndex(x => x.uid === user.uid)
+    //   this.users.splice(index, 1)
+    //   this.usersSubject.next(this.users)
+    //   console.log('User deleted successfully!');
+    // } catch (error) {
+    //   throw error;
+    // }
   }
 
   async editUser(user: User): Promise<void> {
