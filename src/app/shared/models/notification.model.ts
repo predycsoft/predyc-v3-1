@@ -4,7 +4,7 @@ export interface Notification {
     readByAdmin: boolean,
     message: string,
     date: number, // timestamp
-    userId: string,
+    userId: string, // it should be a reference
     empresaId: string,
     type: 'alert' | 'activity' | 'request'
 }
