@@ -6,9 +6,11 @@ import { AfterOnInitResetLoading } from '../../decorators/loading.decorator';
 import { DataSource, SelectionModel } from '@angular/cdk/collections';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
+import { BehaviorSubject, Observable, combineLatest, map, switchMap } from 'rxjs';
 import { NotificationService } from '../../services/notification.service';
 import { IconService } from '../../services/icon.service';
+import { UserService } from '../../services/user.service';
+import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 
 @AfterOnInitResetLoading
 @Component({
@@ -22,6 +24,10 @@ export class NotificationsComponent {
     private loaderService: LoaderService,
     public icon: IconService,
     private notificationService: NotificationService,
+    private userService: UserService,
+    //
+    private afs: AngularFirestore,
+
   ) {}
 
   displayedColumns: string[] = [
@@ -36,11 +42,6 @@ export class NotificationsComponent {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   
-  // filteredData: Element[] = [...this.dataSource];
-
-  // applyFilter(filterValue: string) {
-  //   this.filteredData = this.dataSource.filter(element => element.hiddenAttribute.includes(filterValue));
-  // }
 
   async ngOnInit() {
     const initialSelection: Notification[] = [];
@@ -48,88 +49,95 @@ export class NotificationsComponent {
     this.selection = new SelectionModel<Notification>(
       allowMultiSelect, initialSelection
     );
-    this.dataSource = new NotificationDataSource(this.notificationService, this.paginator, this.sort);
+    this.dataSource = new NotificationDataSource(this.notificationService, this.userService, this.paginator, this.sort);
     console.log("this.dataSource")
     console.log(this.dataSource)
+
+    // Para crear notificaciones en firebase
+    // await this.userService.getUsers(10, "default")
+    // this.users = this.userService.users
+    // console.log("this.users")
+    // console.log(this.users)
+    //
   }
 
-  async onAddButton() {
-    const notifications: Notification[] = [
-      {
-        id: "notId1",
-        readByUsers: [],
-        readByAdmin: false,
-        message: "tiene 14 horas de retraso en el curso Estrategias de Mantenimiento",
-        date: +new Date(), // timestamp
-        userId: "userId1",
-        empresaId: "companyId",
-        type: 'alert' 
-      },
-      {
-        id: "notId2",
-        readByUsers: [],
-        readByAdmin: false,
-        message: "ha completado el diagnostico inicial de Direccion de Proyectos",
-        date: +new Date(), // timestamp
-        userId: "userId2",
-        empresaId: "companyId",
-        type: "activity" 
-      },
-      {
-        id: "notId3",
-        readByUsers: [],
-        readByAdmin: false,
-        message: "esta solicitando acceso al diplomado Diplomado de Mantenimiento 2023",
-        date: +new Date(), // timestamp
-        userId: "userId3",
-        empresaId: "companyId",
-        type: "request"
-      },
-      {
-        id: "notId4",
-        readByUsers: [],
-        readByAdmin: false,
-        message: "tiene 14 horas de retraso en el curso Estrategias de Mantenimiento",
-        date: +new Date(), // timestamp
-        userId: "userId4",
-        empresaId: "companyId",
-        type: 'alert' 
-      },
-      {
-        id: "notId5",
-        readByUsers: [],
-        readByAdmin: false,
-        message: "esta solicitando acceso al diplomado Diplomado de Mantenimiento 2023",
-        date: +new Date(), // timestamp
-        userId: "userId3",
-        empresaId: "companyId",
-        type: "request"
-      },
-      {
-        id: "notId6",
-        readByUsers: [],
-        readByAdmin: false,
-        message: "tiene 14 horas de retraso en el curso Estrategias de Mantenimiento",
-        date: +new Date(), // timestamp
-        userId: "userId4",
-        empresaId: "companyId",
-        type: 'alert' 
-      },
-      {
-        id: "notId7",
-        readByUsers: [],
-        readByAdmin: false,
-        message: "esta solicitando acceso al diplomado Diplomado de Mantenimiento 2023",
-        date: +new Date(), // timestamp
-        userId: "userId3",
-        empresaId: "companyId",
-        type: "request"
-      },
-    ]
-    for (const notification of notifications) {
-      await this.notificationService.addNotification(notification)
-    }
-  }
+  // async onAddButton() {
+  //   const notifications: Notification[] = [
+  //     {
+  //       id: "notId1",
+  //       readByUsers: [],
+  //       readByAdmin: false,
+  //       message: "tiene 14 horas de retraso en el curso Estrategias de Mantenimiento",
+  //       date: +new Date(), // timestamp
+  //       user: this.afs.collection<User>('users').doc(this.users[0].uid).ref,
+  //       empresaId: "companyId",
+  //       type: 'alert' 
+  //     },
+  //     {
+  //       id: "notId2",
+  //       readByUsers: [],
+  //       readByAdmin: false,
+  //       message: "ha completado el diagnostico inicial de Direccion de Proyectos",
+  //       date: +new Date(), // timestamp
+  //       user: this.afs.collection<User>('users').doc(this.users[1].uid).ref,
+  //       empresaId: "companyId",
+  //       type: "activity" 
+  //     },
+  //     {
+  //       id: "notId3",
+  //       readByUsers: [],
+  //       readByAdmin: false,
+  //       message: "esta solicitando acceso al diplomado Diplomado de Mantenimiento 2023",
+  //       date: +new Date(), // timestamp
+  //       user: this.afs.collection<User>('users').doc(this.users[2].uid).ref,
+  //       empresaId: "companyId",
+  //       type: "request"
+  //     },
+  //     {
+  //       id: "notId4",
+  //       readByUsers: [],
+  //       readByAdmin: false,
+  //       message: "tiene 14 horas de retraso en el curso Estrategias de Mantenimiento",
+  //       date: +new Date(), // timestamp
+  //       user: this.afs.collection<User>('users').doc(this.users[3].uid).ref,
+  //       empresaId: "companyId",
+  //       type: 'alert' 
+  //     },
+  //     {
+  //       id: "notId5",
+  //       readByUsers: [],
+  //       readByAdmin: false,
+  //       message: "esta solicitando acceso al diplomado Diplomado de Mantenimiento 2023",
+  //       date: +new Date(), // timestamp
+  //       user: this.afs.collection<User>('users').doc(this.users[0].uid).ref,
+  //       empresaId: "companyId",
+  //       type: "request"
+  //     },
+  //     {
+  //       id: "notId6",
+  //       readByUsers: [],
+  //       readByAdmin: false,
+  //       message: "tiene 14 horas de retraso en el curso Estrategias de Mantenimiento",
+  //       date: +new Date(), // timestamp
+  //       user: this.afs.collection<User>('users').doc(this.users[1].uid).ref,
+  //       empresaId: "companyId",
+  //       type: 'alert' 
+  //     },
+  //     {
+  //       id: "notId7",
+  //       readByUsers: [],
+  //       readByAdmin: false,
+  //       message: "esta solicitando acceso al diplomado Diplomado de Mantenimiento 2023",
+  //       date: +new Date(), // timestamp
+  //       user: this.afs.collection<User>('users').doc(this.users[2].uid).ref,
+  //       empresaId: "companyId",
+  //       type: "request"
+  //     },
+  //   ]
+  //   for (const notification of notifications) {
+  //     await this.notificationService.addNotification(notification)
+  //   }
+  // }
 
   applyFilter(type: 'all' |'alert' | 'activity' | 'request' | '') {
     this.dataSource.filter = type;
@@ -140,6 +148,7 @@ export class NotificationsComponent {
 
     constructor(
       private notificationService: NotificationService,
+      private userService: UserService,
       private paginator: MatPaginator,
       private sort: MatSort
     ) {
@@ -158,18 +167,33 @@ export class NotificationsComponent {
     }
   
     connect(): Observable<Notification[]> {
+      // Combina los 3 observables. tomará el último valor emitido por cada uno de estos observables y 
+      // emitirá un array con esos valores cada vez que cualquiera de ellos emita un nuevo valor.
       return combineLatest([
         this.notificationService.notifications$,
+        this.userService.users$,
         this._filterChange
       ]).pipe(
-        map(([notifications, filterString]) => {
+        // Se desestructura el array en tres constantes
+        map(([notifications, users, filterString]) => {
+          // Mapea cada notificación para anexar la información del usuario
+          const notificationsWithUser = notifications.map(notification => {
+            const user = users.find(u => u.uid === notification.user!.id);
+            return {
+              ...notification,
+              userData: user ? user : undefined  // asignar el dato del usuario al campo userData
+            };
+          });
+          // aplicamos el filtro seleccionado
           if (filterString === 'all') {
-            return notifications;
+            return notificationsWithUser;
           }
-          return notifications.filter(notification => notification.type === filterString);
+          return notificationsWithUser.filter(notification => notification.type === this.filter);
         })
       );
     }
+    
+    
   
     disconnect() {
   

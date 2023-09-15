@@ -58,7 +58,6 @@ export class StudentListComponent {
       allowMultiSelect, initialSelection
     );
     this.dataSource = new UserDataSource(this.userService, this.paginator, this.sort);
-    await new Promise(resolve => setTimeout(resolve, 5000));
   }
 
   onSelectUser(user: User) {
