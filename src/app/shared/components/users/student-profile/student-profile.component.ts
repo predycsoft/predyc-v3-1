@@ -61,14 +61,9 @@ export class StudentProfileComponent implements OnInit {
       });
 
       this.form.patchValue(this.student)
-      if (this.student.birthdate) {
-        const birthdate = this.utilsService.timestampToDateNumbers(this.student.birthdate)
-        this.form.get('birthdate')?.setValue(`${birthdate.year}-${birthdate.month}-${birthdate.day}`);
-      }
-      if (this.student.hiringDate) {
-        const hiringDate = this.utilsService.timestampToDateNumbers(this.student.hiringDate)
-        this.form.get('hiringDate')?.setValue(`${hiringDate.year}-${hiringDate.month}-${hiringDate.day}`);
-      }
+      this.student.birthdate ? this.timestampToFormFormat(this.student.birthdate, "birthdate") : null
+      this.student.hiringDate ? this.timestampToFormFormat(this.student.hiringDate, "hiringDate") : null
+
     }
     console.log("this.form.value")
     console.log(this.form.value)
@@ -79,6 +74,13 @@ export class StudentProfileComponent implements OnInit {
     if (event.key === 'Escape') {
       this.closeButton.nativeElement.click();
     }
+  }
+
+  timestampToFormFormat(timestamp: number, property: ("birthdate" | "hiringDate")) {
+    const date = this.utilsService.timestampToDateNumbers(timestamp)
+    this.form.get(property)?.setValue({
+      day: date.day, month: date.month, year: date.year
+    });
   }
 
   hide(){

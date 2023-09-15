@@ -11,10 +11,8 @@ export class UtilsService {
       return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
-  dateFromCalendarToTimestamp(date: string): number {
-    let [año, mes, día] = date.split('-').map(Number);
-    let timestamp = Date.UTC(año, mes - 1, día); 
-    return timestamp
+  dateFromCalendarToTimestamp(date: {day: number, month: number, year: number}): number {
+    return Date.UTC(date.year, date.month - 1, date.day); 
   }
 
   generateSixDigitRandomNumber = () => {

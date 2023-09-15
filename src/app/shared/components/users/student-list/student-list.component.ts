@@ -6,6 +6,8 @@ import { IconService } from '../../../../shared/services/icon.service';
 import { UserService } from '../../../../shared/services/user.service';
 import { User } from '../../../../shared/models/user.model';
 import { Observable } from 'rxjs';
+import { AfterOnInitResetLoading } from 'src/app/shared/decorators/loading.decorator';
+import { LoaderService } from 'src/app/shared/services/loader.service';
 
 interface UserInfo {
   displayName: string,
@@ -18,6 +20,7 @@ interface UserInfo {
   inProgressCourses: number,
 }
 
+@AfterOnInitResetLoading
 @Component({
   selector: 'app-student-list',
   templateUrl: './student-list.component.html',
@@ -45,15 +48,17 @@ export class StudentListComponent {
   constructor(
     private userService: UserService,
     public icon: IconService,
+    private loaderService: LoaderService,
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     const initialSelection: User[] = [];
     const allowMultiSelect = true;
     this.selection = new SelectionModel<User>(
       allowMultiSelect, initialSelection
     );
     this.dataSource = new UserDataSource(this.userService, this.paginator, this.sort);
+    await new Promise(resolve => setTimeout(resolve, 5000));
   }
 
   onSelectUser(user: User) {
