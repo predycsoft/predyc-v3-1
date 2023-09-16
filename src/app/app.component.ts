@@ -18,10 +18,26 @@ export class AppComponent{
   constructor(
     public loaderService: LoaderService,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
   ) {}
 
   ngOnInit() {
+    setTimeout(() => {console.log(this.router.url)}, 1)
+    // this.authService.user$.subscribe(user => {
+    //   setTimeout(() => {console.log(this.router.url)}, 1)
+    //   console.log(this.router)
+    //   console.log(this.router.url)
+    //   const testBool = this.router.url === '/'
+    //   console.log(testBool)
+    //   const replaceThisWithUser = true
+    //   if (replaceThisWithUser && this.router.url === '/') {
+    //     console.log("Caigo aqui?")
+    //     // this.router.navigate(['dashboard']);
+    //   } else if (!replaceThisWithUser) {
+    //     // this.router.navigate(['']);
+    //   }
+    // });
+
     // ESTO ES LO QUE ESTOY TRABAJANDO
     // this.authService.user$.subscribe(user => {
     //   if (user) {
