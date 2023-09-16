@@ -5,6 +5,7 @@ import { IconService } from '../../../shared/services/icon.service';
 import { VideoDialogComponent } from './video-dialog/video-dialog.component';
 import { AfterOnInitResetLoading } from 'src/app/shared/decorators/loading.decorator';
 import { LoaderService } from 'src/app/shared/services/loader.service';
+import { NotificationService } from 'src/app/shared/services/notification.service';
 
 
 @AfterOnInitResetLoading
@@ -19,11 +20,17 @@ export class ManagementDashboardComponent {
     private router: Router,
     private dialog: MatDialog,
     public icon: IconService,
+    private notificationService: NotificationService,
     private loaderService: LoaderService,
 
   ) {}
 
-  ngOnInit() {
+  pageSize: number = 10
+  sortBy: string = 'default'
+  async ngOnInit() {
+    // console.log("cargando notificaciones")
+    // await this.notificationService.getNotifications(this.pageSize, this.sortBy)
+
   }
 
   navigateTo(url: string) {

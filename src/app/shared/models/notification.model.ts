@@ -1,10 +1,14 @@
+import { DocumentReference } from "@angular/fire/compat/firestore";
+import { User } from "./user.model";
+
 export interface Notification {
     id: string,
     readByUsers: [],
     readByAdmin: boolean,
     message: string,
     date: number, // timestamp
-    userId: string,
+    user: DocumentReference | null,
+    userData?: User; 
     empresaId: string,
     type: 'alert' | 'activity' | 'request'
 }
