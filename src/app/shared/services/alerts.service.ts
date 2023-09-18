@@ -24,12 +24,12 @@ export class AlertsService {
     });
   }
 
-  infoAlert(text: string, mode: ("edit" | "delete")) {
+  infoAlert(text: string) {
     Swal.fire({
       icon: 'info',
-      iconColor: mode === 'delete' ? 'red' : '',
+      iconColor:'',
       title: '¡Éxito!',
-      confirmButtonColor: mode === 'delete' ? 'red' : '',
+      confirmButtonColor: '',
       text: text
     }); 
   }

@@ -78,8 +78,6 @@ export class StudentProfileComponent implements OnInit {
       this.student.hiringDate ? this.timestampToFormFormat(this.student.hiringDate, "hiringDate") : null
 
     }
-    console.log("this.form.value")
-    console.log(this.form.value)
   }
 
   @HostListener('document:keydown', ['$event'])
