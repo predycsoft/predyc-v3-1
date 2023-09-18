@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { onSideNavChange, animateText } from '../../animations/animations'
+import { AuthService } from '../../services/auth.service';
 import { IconService } from '../../services/icon.service';
 import { SidenavService } from '../../services/sidenav.service';
 
@@ -20,7 +21,7 @@ export class SideNavComponent {
   public linkText: boolean = false;
 
   public pages: Page[] = [
-    {name: 'Dashboard', link:'dashboard', icon: '../../assets/iconsUI/sidenav_app.svg'},
+    {name: 'Dashboard', link:'', icon: '../../assets/iconsUI/sidenav_app.svg'},
     {name: 'Gestión', link:'management', icon: '../../assets/iconsUI/sidenav_manage_accounts.svg'},
     {name: 'Cursos', link:'management/courses', icon: '../../assets/iconsUI/sidenav_collections_bookmark.svg'},
     {name: 'Validación', link:'validation', icon: '../../assets/iconsUI/sidenav_fact_check.svg'},
@@ -29,9 +30,11 @@ export class SideNavComponent {
 
   constructor(
     public icon: IconService,
+    private authService: AuthService
   ) {}
 
-  ngOnInit() {
+  signOut() {
+    this.authService.signOut();
   }
 
 }

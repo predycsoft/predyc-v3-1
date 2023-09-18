@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
 import { Observable, map } from 'rxjs';
 import { AuthService } from '../services/auth.service';
@@ -8,27 +9,24 @@ import { AuthService } from '../services/auth.service';
 })
 export class AuthGuard {
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router, private afAuth: AngularFireAuth) {}
 
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean> {
-    return this.authService.user$.pipe(
+    return this.afAuth.authState.pipe(
         map(user => {
             const isLoginPath = state.url === '/login';
-            console.log(`User is logged in: ${user}`)
-            console.log(`Path going ${state.url}`)
-            if (true && isLoginPath) {
+            // console.log(`User is logged in: ${user}`)
+            // console.log(`Path going ${state.url}`)
+            if (user && isLoginPath) {
                 this.router.navigate(['']);
-                console.log("Should go to dashboard")
                 return false;
-            } else if (!true && !isLoginPath) {
+            } else if (!user && !isLoginPath) {
                 this.router.navigate(['login']);
-                console.log("Should go to login")
                 return false;
             }
-            console.log("Can navigate no problem")
             return true;
         })
     )

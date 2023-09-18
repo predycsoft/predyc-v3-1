@@ -4,7 +4,7 @@
 
     <div fxLayout="column" fxLayoutAlign=" center" style="height: 100vh;" >
         <div fxLayout="column" fxLayoutGap="10px">
-            <a routerLink="dashboard">
+            <a routerLink="">
                 <img
                     [src]="icon.predyc"
                     class="h24px">
@@ -28,7 +28,7 @@
     </div>
 
     <div fxLayout="column" fxLayoutAlign="center">
-        <div>
+        <div (click)="signOut()" class="cursorPointer">
             <a mat-list-item>
                 <img style="height: 2rem; width: 2rem; border-radius: 50%;" src="https://a57.foxnews.com/media2.foxnews.com/BrightCove/694940094001/2018/06/21/931/524/694940094001_5800293009001_5800284148001-vs.jpg?ve=1&tl=1" alt="">
             </a>

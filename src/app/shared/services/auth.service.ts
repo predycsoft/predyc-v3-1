@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { BehaviorSubject, Observable, firstValueFrom, of, switchMap } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { User } from '../models/user.model';
 import { Router } from '@angular/router';
 
@@ -13,19 +13,12 @@ export class AuthService {
   private userSubject = new BehaviorSubject<User | null>(null);
   public user$ = this.userSubject.asObservable();
 
-  // public isLoggedInSubject = new BehaviorSubject<boolean>(false)
-  // public isLoggedIn$ = this.isLoggedInSubject.asObservable()
-
   constructor(
     private afAuth: AngularFireAuth,
     private afs: AngularFirestore,
     private router: Router
-  ) {}
-
-  ngOnInit() {
+  ) {
     this.afAuth.authState.subscribe(user => {
-      console.log("user")
-      console.log(user)
       if (user && user.uid) {
         // User logged in
         this.afs.collection<User>('users').doc(user.uid).valueChanges().subscribe(userDoc => {
@@ -44,6 +37,7 @@ export class AuthService {
   async signIn(email: string, password: string) {
     try {
       await this.afAuth.signInWithEmailAndPassword(email, password)
+      this.router.navigate(['/'])
     } catch (error: any) {
       const errorCode = error['code'];
       const errorMessage = error['message'];
@@ -57,5 +51,6 @@ export class AuthService {
 
   async signOut() {
     await this.afAuth.signOut();
+    this.router.navigate(['login'])
   }
 }

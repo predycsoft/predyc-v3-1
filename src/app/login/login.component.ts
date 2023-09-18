@@ -51,7 +51,6 @@ export class LoginComponent {
         throw Error(`El ${email} no existe o no tiene permiso para acceder a la herramienta`)
       }
       await this.authService.signIn(email, password)
-      // this.router.navigate(['/']);
       // Handle successful login, navigate or update UI
     } catch (error) {
       // Handle login error
