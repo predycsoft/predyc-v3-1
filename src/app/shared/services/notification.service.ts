@@ -46,6 +46,7 @@ export class NotificationService {
   async getNotifications(pageSize: number, sort: string): Promise<void> {
     const notifications = await firstValueFrom(this.afs.collection<Notification>('notifications').valueChanges())
     this.notifications = notifications
+    console.log(this.notifications)
     this.notificationsSubject.next(this.notifications)
   }
 }

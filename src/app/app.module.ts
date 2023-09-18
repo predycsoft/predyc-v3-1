@@ -56,6 +56,7 @@ import { SafePipe } from './shared/pipes/safe.pipe';
 import { USE_EMULATOR as USE_AUTH_EMULATOR } from '@angular/fire/compat/auth';
 import { USE_EMULATOR as USE_FIRESTORE_EMULATOR } from '@angular/fire/compat/firestore';
 import { USE_EMULATOR as USE_FUNCTIONS_EMULATOR } from '@angular/fire/compat/functions';
+import { USE_EMULATOR as USE_STORAGE_EMULATOR } from '@angular/fire/compat/storage';
 import { MainComponent } from './main-components/main.component';
 
 @NgModule({
@@ -119,6 +120,10 @@ import { MainComponent } from './main-components/main.component';
     {
       provide: USE_AUTH_EMULATOR,
       useValue: environment.useEmulators ? ['http://localhost:9099'] : undefined,
+    },
+    {
+      provide: USE_STORAGE_EMULATOR,
+      useValue: environment.useEmulators ? ['http://localhost:9199'] : undefined,
     },
     {
       provide: USE_FUNCTIONS_EMULATOR,

@@ -11,6 +11,7 @@ import { NotificationService } from '../../services/notification.service';
 import { IconService } from '../../services/icon.service';
 import { UserService } from '../../services/user.service';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
+import { User } from '../../models/user.model';
 
 @AfterOnInitResetLoading
 @Component({
@@ -43,6 +44,8 @@ export class NotificationsComponent {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+
+  users: User[]
   
 
   async ngOnInit() {
@@ -56,90 +59,91 @@ export class NotificationsComponent {
     console.log(this.dataSource)
 
     // Para crear notificaciones en firebase
-    // await this.userService.getUsers(10, "default")
-    // this.users = this.userService.users
-    // console.log("this.users")
-    // console.log(this.users)
-    //
+    await this.userService.getUsers(10, "default")
+    this.userService.users$.subscribe(users => {
+      this.users = users
+      console.log("this.users")
+      console.log(this.users)
+    })
   }
 
-  // async onAddButton() {
-  //   const notifications: Notification[] = [
-  //     {
-  //       id: "notId1",
-  //       readByUsers: [],
-  //       readByAdmin: false,
-  //       message: "tiene 14 horas de retraso en el curso Estrategias de Mantenimiento",
-  //       date: +new Date(), // timestamp
-  //       user: this.afs.collection<User>('users').doc(this.users[0].uid).ref,
-  //       empresaId: "companyId",
-  //       type: 'alert' 
-  //     },
-  //     {
-  //       id: "notId2",
-  //       readByUsers: [],
-  //       readByAdmin: false,
-  //       message: "ha completado el diagnostico inicial de Direccion de Proyectos",
-  //       date: +new Date(), // timestamp
-  //       user: this.afs.collection<User>('users').doc(this.users[1].uid).ref,
-  //       empresaId: "companyId",
-  //       type: "activity" 
-  //     },
-  //     {
-  //       id: "notId3",
-  //       readByUsers: [],
-  //       readByAdmin: false,
-  //       message: "esta solicitando acceso al diplomado Diplomado de Mantenimiento 2023",
-  //       date: +new Date(), // timestamp
-  //       user: this.afs.collection<User>('users').doc(this.users[2].uid).ref,
-  //       empresaId: "companyId",
-  //       type: "request"
-  //     },
-  //     {
-  //       id: "notId4",
-  //       readByUsers: [],
-  //       readByAdmin: false,
-  //       message: "tiene 14 horas de retraso en el curso Estrategias de Mantenimiento",
-  //       date: +new Date(), // timestamp
-  //       user: this.afs.collection<User>('users').doc(this.users[3].uid).ref,
-  //       empresaId: "companyId",
-  //       type: 'alert' 
-  //     },
-  //     {
-  //       id: "notId5",
-  //       readByUsers: [],
-  //       readByAdmin: false,
-  //       message: "esta solicitando acceso al diplomado Diplomado de Mantenimiento 2023",
-  //       date: +new Date(), // timestamp
-  //       user: this.afs.collection<User>('users').doc(this.users[0].uid).ref,
-  //       empresaId: "companyId",
-  //       type: "request"
-  //     },
-  //     {
-  //       id: "notId6",
-  //       readByUsers: [],
-  //       readByAdmin: false,
-  //       message: "tiene 14 horas de retraso en el curso Estrategias de Mantenimiento",
-  //       date: +new Date(), // timestamp
-  //       user: this.afs.collection<User>('users').doc(this.users[1].uid).ref,
-  //       empresaId: "companyId",
-  //       type: 'alert' 
-  //     },
-  //     {
-  //       id: "notId7",
-  //       readByUsers: [],
-  //       readByAdmin: false,
-  //       message: "esta solicitando acceso al diplomado Diplomado de Mantenimiento 2023",
-  //       date: +new Date(), // timestamp
-  //       user: this.afs.collection<User>('users').doc(this.users[2].uid).ref,
-  //       empresaId: "companyId",
-  //       type: "request"
-  //     },
-  //   ]
-  //   for (const notification of notifications) {
-  //     await this.notificationService.addNotification(notification)
-  //   }
-  // }
+  async onAddButton() {
+    const notifications: Notification[] = [
+      {
+        id: "notId1",
+        readByUsers: [],
+        readByAdmin: false,
+        message: "tiene 14 horas de retraso en el curso Estrategias de Mantenimiento",
+        date: +new Date(), // timestamp
+        user: this.afs.collection<User>('users').doc(this.users[0].uid as string).ref,
+        empresaId: "companyId",
+        type: 'alert' 
+      },
+      {
+        id: "notId2",
+        readByUsers: [],
+        readByAdmin: false,
+        message: "ha completado el diagnostico inicial de Direccion de Proyectos",
+        date: +new Date(), // timestamp
+        user: this.afs.collection<User>('users').doc(this.users[1].uid as string).ref,
+        empresaId: "companyId",
+        type: "activity" 
+      },
+      {
+        id: "notId3",
+        readByUsers: [],
+        readByAdmin: false,
+        message: "esta solicitando acceso al diplomado Diplomado de Mantenimiento 2023",
+        date: +new Date(), // timestamp
+        user: this.afs.collection<User>('users').doc(this.users[2].uid as string).ref,
+        empresaId: "companyId",
+        type: "request"
+      },
+      {
+        id: "notId4",
+        readByUsers: [],
+        readByAdmin: false,
+        message: "tiene 14 horas de retraso en el curso Estrategias de Mantenimiento",
+        date: +new Date(), // timestamp
+        user: this.afs.collection<User>('users').doc(this.users[3].uid as string).ref,
+        empresaId: "companyId",
+        type: 'alert' 
+      },
+      {
+        id: "notId5",
+        readByUsers: [],
+        readByAdmin: false,
+        message: "esta solicitando acceso al diplomado Diplomado de Mantenimiento 2023",
+        date: +new Date(), // timestamp
+        user: this.afs.collection<User>('users').doc(this.users[0].uid as string).ref,
+        empresaId: "companyId",
+        type: "request"
+      },
+      {
+        id: "notId6",
+        readByUsers: [],
+        readByAdmin: false,
+        message: "tiene 14 horas de retraso en el curso Estrategias de Mantenimiento",
+        date: +new Date(), // timestamp
+        user: this.afs.collection<User>('users').doc(this.users[1].uid as string).ref,
+        empresaId: "companyId",
+        type: 'alert' 
+      },
+      {
+        id: "notId7",
+        readByUsers: [],
+        readByAdmin: false,
+        message: "esta solicitando acceso al diplomado Diplomado de Mantenimiento 2023",
+        date: +new Date(), // timestamp
+        user: this.afs.collection<User>('users').doc(this.users[2].uid as string).ref,
+        empresaId: "companyId",
+        type: "request"
+      },
+    ]
+    for (const notification of notifications) {
+      await this.notificationService.addNotification(notification)
+    }
+  }
 
   applyFilter(type: 'all' |'alert' | 'activity' | 'request' | '') {
     this.dataSource.filter = type;

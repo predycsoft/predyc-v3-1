@@ -19,11 +19,11 @@ export class AuthGuard {
             const isLoginPath = state.url === '/login';
             console.log(`User is logged in: ${user}`)
             console.log(`Path going ${state.url}`)
-            if (user && isLoginPath) {
+            if (true && isLoginPath) {
                 this.router.navigate(['']);
                 console.log("Should go to dashboard")
                 return false;
-            } else if (!user && !isLoginPath) {
+            } else if (!true && !isLoginPath) {
                 this.router.navigate(['login']);
                 console.log("Should go to login")
                 return false;
