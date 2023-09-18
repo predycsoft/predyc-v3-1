@@ -13,6 +13,9 @@ export class AuthService {
   private userSubject = new BehaviorSubject<User | null>(null);
   public user$ = this.userSubject.asObservable();
 
+  public isLoggedInSubject = new BehaviorSubject<boolean>(true)
+  public isLoggedIn$ = this.isLoggedInSubject.asObservable()
+
   constructor(
     private afAuth: AngularFireAuth,
     private afs: AngularFirestore,
