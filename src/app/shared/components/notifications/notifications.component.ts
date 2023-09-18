@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Notification } from '../../models/notification.model';
 import { LoaderService } from '../../services/loader.service';
@@ -19,6 +19,8 @@ import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firest
   styleUrls: ['./notifications.component.css']
 })
 export class NotificationsComponent {
+
+  @Input() isDetail: boolean = true
 
   constructor(
     private loaderService: LoaderService,

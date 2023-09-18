@@ -25,6 +25,7 @@ export class ManagementDashboardComponent {
 
   ) {}
 
+  isDetail = false
   pageSize: number = 10
   sortBy: string = 'default'
   async ngOnInit() {

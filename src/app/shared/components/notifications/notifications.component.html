@@ -1,4 +1,4 @@
-<app-navigate-back [targetUrl]="'../'">Notificaciones</app-navigate-back>
+<app-navigate-back *ngIf="isDetail" [targetUrl]="'../'">Notificaciones</app-navigate-back>
 
 <!-- <button (click)="onAddButton()">Añadir notificaciones</button> -->
 
