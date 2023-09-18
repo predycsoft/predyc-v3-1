@@ -39,8 +39,6 @@ export class UserService {
         // }
         throw error
       }
-      // this.users.push(newUser)
-      // this.usersSubject.next(this.users)
       this.alertService.succesAlert('Has agregado un nuevo usuario exitosamente.')
     } catch (error) {
       console.log(error)
@@ -60,9 +58,6 @@ export class UserService {
           isActive: false
         }, { merge: true }
       );
-      // const index = this.users.findIndex(x => x.uid === user.uid)
-      // this.users.splice(index, 1)
-      // this.usersSubject.next(this.users)
       this.alertService.succesAlert('Has eliminado al usuario exitosamente.')
     } catch (error) {
       console.log(error)
