@@ -120,8 +120,6 @@ export class StudentProfileComponent implements OnInit {
     this.student.displayName = formData.name ? this.utilsService.capitalizeFirstLetter(formData.name) : null
     this.student.phoneNumber = formData.phoneNumber ? formData.phoneNumber : null
     this.student.country = formData.country ? formData.country : null 
-    console.log("formData.birthdate")
-    console.log(formData.birthdate)
     this.student.birthdate = formData.birthdate ? this.utilsService.dateFromCalendarToTimestamp(formData.birthdate): null
     this.student.job = formData.job ? formData.job : null 
     this.student.hiringDate = formData.hiringDate ? this.utilsService.dateFromCalendarToTimestamp(formData.hiringDate) : null

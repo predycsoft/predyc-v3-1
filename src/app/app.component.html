@@ -1,17 +1,2 @@
 <app-spinner *ngIf="loaderService.loading"></app-spinner>
-<mat-sidenav-container *ngIf="userSignedIn; else signInForm">
-  <mat-sidenav #leftSidenav mode="side" opened>
-    <app-sidenav></app-sidenav>
-  </mat-sidenav>
-  <mat-sidenav-content>
-    <div class="main_content_container">
-      <div class="main_content">
-        <router-outlet></router-outlet>
-      </div>
-    </div>
-  </mat-sidenav-content>
-</mat-sidenav-container>
-
-<ng-template #signInForm>
-  <app-login></app-login>
-</ng-template>
+<router-outlet></router-outlet>

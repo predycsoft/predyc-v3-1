@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
 import { Observable, map } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 
@@ -10,18 +10,25 @@ export class AuthGuard {
 
   constructor(private authService: AuthService, private router: Router) {}
 
-  canActivate(): Observable<boolean> {
-    return this.authService.isLoggedIn$.pipe(
-        map(isLoggedIn => {
-            // const isRoot = this.router.url === '/';
-            const isRoot = false;
-            if (isLoggedIn && isRoot) {
-                // this.router.navigate(['dashboard']);
+  canActivate(
+    next: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Observable<boolean> {
+    return this.authService.user$.pipe(
+        map(user => {
+            const isLoginPath = state.url === '/login';
+            console.log(`User is logged in: ${user}`)
+            console.log(`Path going ${state.url}`)
+            if (user && isLoginPath) {
+                this.router.navigate(['']);
+                console.log("Should go to dashboard")
                 return false;
-            } else if (!isLoggedIn && !isRoot) {
-                // this.router.navigate(['']);
+            } else if (!user && !isLoginPath) {
+                this.router.navigate(['login']);
+                console.log("Should go to login")
                 return false;
             }
+            console.log("Can navigate no problem")
             return true;
         })
     )

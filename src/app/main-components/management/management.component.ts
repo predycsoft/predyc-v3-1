@@ -21,13 +21,8 @@ export class ManagementComponent {
   pageSize: number = 10
   sortBy: string = 'default'
   async ngOnInit() {
-    console.log("Inicio de managment component")
-    console.log("cargando notificaciones")
     await this.notificationService.getNotifications(this.pageSize, this.sortBy)
-    console.log("cargando users")
     await this.userService.getUsers(this.pageSize, this.sortBy)
-
-
   }
 
 }

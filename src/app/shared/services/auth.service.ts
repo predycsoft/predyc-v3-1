@@ -13,8 +13,8 @@ export class AuthService {
   private userSubject = new BehaviorSubject<User | null>(null);
   public user$ = this.userSubject.asObservable();
 
-  public isLoggedInSubject = new BehaviorSubject<boolean>(true)
-  public isLoggedIn$ = this.isLoggedInSubject.asObservable()
+  // public isLoggedInSubject = new BehaviorSubject<boolean>(false)
+  // public isLoggedIn$ = this.isLoggedInSubject.asObservable()
 
   constructor(
     private afAuth: AngularFireAuth,
@@ -22,8 +22,9 @@ export class AuthService {
     private router: Router
   ) {}
 
-  async ngOnInit() {
+  ngOnInit() {
     this.afAuth.authState.subscribe(user => {
+      console.log("user")
       console.log(user)
       if (user && user.uid) {
         // User logged in
@@ -49,7 +50,7 @@ export class AuthService {
       if (errorCode === 'auth/wrong-password') {
         throw Error('Wrong password.');
       } else {
-        alert(errorMessage);
+        console.log(errorMessage);
       }
     }
   }

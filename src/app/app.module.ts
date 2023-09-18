@@ -56,6 +56,7 @@ import { SafePipe } from './shared/pipes/safe.pipe';
 import { USE_EMULATOR as USE_AUTH_EMULATOR } from '@angular/fire/compat/auth';
 import { USE_EMULATOR as USE_FIRESTORE_EMULATOR } from '@angular/fire/compat/firestore';
 import { USE_EMULATOR as USE_FUNCTIONS_EMULATOR } from '@angular/fire/compat/functions';
+import { MainComponent } from './main-components/main.component';
 
 @NgModule({
   declarations: [
@@ -80,6 +81,7 @@ import { USE_EMULATOR as USE_FUNCTIONS_EMULATOR } from '@angular/fire/compat/fun
     StudentComponent,
     SpinnerComponent,
     StudentProfileComponent,
+    MainComponent,
   ],
   imports: [
     BrowserModule,
