@@ -20,14 +20,7 @@ export class MyTeamComponent {
 
   studentSelected: User | null = null
 
-  users: User[]
-  pageSize: number = 10
-  sortBy: string = 'default'
-
   // ?sortBy=Deparment&pageSize=25&page=2&name=searchText
-  async ngOnInit() {
-    // await this.userService.getUsers(this.pageSize, this.sortBy)
-  }
 
   createNewStudent() {
     this.studentSelected = User.getEnterpriseStudentUser('empresaPruebaId', 'Empresa prueba')
@@ -52,14 +45,6 @@ export class MyTeamComponent {
     }
   }
 
-  addUser() {
-    try {
-      // await this.userService.addUser(user)
-      // sweetAlert.success
-    } catch (error) {
-      // sweetAlert.error(error)
-    }
-  }
 
   applyFilter(event: Event) {
     

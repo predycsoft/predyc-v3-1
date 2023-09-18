@@ -45,6 +45,9 @@ export class StudentListComponent {
   @Output() onSelectStudentEvent = new EventEmitter<User>()
   @Output() onDeleteStudentEvent = new EventEmitter<User>()
 
+  pageSize: number = 10
+  sortBy: string = 'default'
+
   constructor(
     private userService: UserService,
     public icon: IconService,
@@ -52,6 +55,7 @@ export class StudentListComponent {
   ) {}
 
   async ngOnInit() {
+    this.userService.getUsers(this.pageSize, this.sortBy)
     const initialSelection: User[] = [];
     const allowMultiSelect = true;
     this.selection = new SelectionModel<User>(
@@ -105,7 +109,7 @@ class UserDataSource extends DataSource<User> {
   }
 
   connect(): Observable<User[]> {
-    return this.userService.users$;
+    return this.userService.getUsersObservable();
   }
 
   disconnect() {

@@ -65,8 +65,6 @@ export class StudentProfileComponent implements OnInit {
       this.student.hiringDate ? this.timestampToFormFormat(this.student.hiringDate, "hiringDate") : null
 
     }
-    console.log("this.form.value")
-    console.log(this.form.value)
   }
 
   @HostListener('document:keydown', ['$event'])
@@ -113,8 +111,6 @@ export class StudentProfileComponent implements OnInit {
 
   async saveUser(){
     const formData = this.form.value 
-    console.log("this.form.value")
-    console.log(this.form.value)
     this.student.photoUrl = formData.photoUrl ? formData.photoUrl : null 
     this.student.name = formData.name ? this.utilsService.capitalizeFirstLetter(formData.name) : null
     this.student.displayName = formData.name ? this.utilsService.capitalizeFirstLetter(formData.name) : null

@@ -60,7 +60,7 @@ export class NotificationsComponent {
 
     // Para crear notificaciones en firebase
     await this.userService.getUsers(10, "default")
-    this.userService.users$.subscribe(users => {
+    this.userService.getUsersObservable().subscribe(users => {
       this.users = users
       console.log("this.users")
       console.log(this.users)
@@ -177,7 +177,7 @@ export class NotificationsComponent {
       // emitirá un array con esos valores cada vez que cualquiera de ellos emita un nuevo valor.
       return combineLatest([
         this.notificationService.notifications$,
-        this.userService.users$,
+        this.userService.getUsersObservable(),
         this._filterChange
       ]).pipe(
         // Se desestructura el array en tres constantes

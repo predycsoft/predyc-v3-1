@@ -48,7 +48,7 @@ export class LoginComponent {
         .where('role', '==', 'admin')
       ).valueChanges())
       if (adminUsers.length === 0) { 
-        throw Error(`El ${email} no existe o no tiene permiso para acceder a la herramienta`)
+        throw Error(`El correo ${email} no existe o no tiene permiso para acceder a la herramienta`)
       }
       await this.authService.signIn(email, password)
       // Handle successful login, navigate or update UI
