@@ -19,7 +19,6 @@ export class UserService {
     private alertService: AlertsService
   ) {}
 
-  private users: User[] = []
   private usersSubject = new BehaviorSubject<User[]>([]);
   private users$ = this.usersSubject.asObservable();
 
@@ -91,8 +90,7 @@ export class UserService {
          .where('isActive', '==', true)
     ).valueChanges().subscribe({
       next: users => {
-        this.users = users
-        this.usersSubject.next(this.users)
+        this.usersSubject.next(users)
       },
       error: error => {
         console.log(error)
