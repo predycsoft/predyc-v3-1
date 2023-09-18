@@ -32,6 +32,8 @@ export class UserService {
         const userCredential = await this.afAuth.createUserWithEmailAndPassword(email, password);
         const user = userCredential.user;
         newUser.uid = user?.uid as string
+        console.log("newUser")
+        console.log(newUser)
         await this.afs.collection('users').doc(user?.uid).set(newUser.toJson());
       } catch (error) {
         console.log(error)
@@ -40,6 +42,7 @@ export class UserService {
         }
         throw error
       }
+
       this.users.push(newUser)
       this.usersSubject.next(this.users)
       this.alertService.succesAlert('Has agregado un nuevo usuario exitosamente.')
@@ -84,11 +87,15 @@ export class UserService {
   }
 
   async getUsers(pageSize: number, sort: string): Promise<void> {
-    const users = await firstValueFrom(this.afs.collection<User>('users', ref => 
-      ref.where('enterpriseId', '==', this.enterpriseService.enterprise.id)
-         .where('isActive', '==', true)
-    ).valueChanges())
+    // const users = await firstValueFrom(this.afs.collection<User>('users', ref => 
+    //   ref.where('enterpriseId', '==', this.enterpriseService.enterprise.id)
+    //      .where('isActive', '==', true)
+    // ).valueChanges())
+    const users= await firstValueFrom(this.afs.collection<User>('users').valueChanges())
+    console.log("users")
+    console.log(users)
     this.users = users
+    // console.log(this.users)
     this.usersSubject.next(this.users)
     // const users: User[] = await firstValueFrom(this.afs.collection<User>('user', ref => 
     //   ref.where('enterpriseId', '==', 1)

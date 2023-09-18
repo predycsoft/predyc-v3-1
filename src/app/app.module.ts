@@ -123,7 +123,7 @@ import { MainComponent } from './main-components/main.component';
     },
     {
       provide: USE_STORAGE_EMULATOR,
-      useValue: environment.useEmulators ? ['http://localhost:9199'] : undefined,
+      useValue: environment.useEmulators ? ['localhost', 9199] : undefined,
     },
     {
       provide: USE_FUNCTIONS_EMULATOR,
