@@ -155,7 +155,8 @@ export class StudentProfileComponent implements OnInit {
     console.log(this.form.value)
     // Guarda la imagen
     await this.saveStudentPhoto()
-
+    console.log("Despues de guardar la foto")
+    console.log(this.student.photoUrl)
     // this.student.photoUrl = formData.photoUrl ? formData.photoUrl : null 
     this.student.name = formData.name ? this.utilsService.capitalizeFirstLetter(formData.name) : null
     this.student.displayName = formData.name ? this.utilsService.capitalizeFirstLetter(formData.name) : null
@@ -179,8 +180,8 @@ export class StudentProfileComponent implements OnInit {
     if (this.uploadedImage) {
       if (this.student.photoUrl) {
         // Existing image must be deleted before
-        firstValueFrom(
-          this.storage.ref(this.student.photoUrl).delete()
+        await firstValueFrom(
+          this.storage.refFromURL(this.student.photoUrl).delete()
         ).catch((error) => console.log(error));
         console.log('Old image has been deleted!');
       }
@@ -191,15 +192,22 @@ export class StudentProfileComponent implements OnInit {
       console.log("fileRef")
       console.log(fileRef)
       const task = this.storage.upload(filePath, this.uploadedImage);
-      task.snapshotChanges().pipe(
-        finalize(async () => {
-          this.student.photoUrl = await firstValueFrom(fileRef.getDownloadURL());
-          console.log("Se ha guardado la imagen");
-        })
-      ).subscribe();
+      await new Promise<void>((resolve, reject) => {
+        task.snapshotChanges().pipe(
+          finalize(async () => {
+            this.student.photoUrl = await firstValueFrom(fileRef.getDownloadURL());
+            console.log(this.student.photoUrl)
+            console.log("Se ha guardado la imagen");
+            resolve();
+          })
+        ).subscribe(
+          () => {},
+          error => reject(error)
+        );
+      });
     } else {
       console.log("No se introdujo imagen")
-      // this.student.photoUrl = null
+      this.student.photoUrl = null
     }
 
   }
