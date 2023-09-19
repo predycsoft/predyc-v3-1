@@ -16,10 +16,11 @@
     </div>
     <form [formGroup]="form" (ngSubmit)="onSubmit()" >
         <div class="mgt10 fw" fxLayoutAlign="center center">
-            <div (click)="fileInput.click()" class="avatar5 cursorPointer mgt05 positionRelative">
+            <div (click)="isNewUser || isEditing ? fileInput.click() : null" class="avatar5 mgt05 positionRelative" 
+                [ngClass]="(isNewUser || isEditing) ? 'cursorPointer' : ''">
                 <img onerror="this.src='../../../../assets/images/default/default-user-image.jpg'" 
                     [src]="imageUrl" class="avatar5" alt="">
-                <div class="cambioFoto cursorPointer" fxLayoutAlign="center center">
+                <div class="cambioFoto" fxLayoutAlign="center center">
                     <img [src]="icon.camera" class="fw makeGray" alt="">
                 </div>
             </div>
