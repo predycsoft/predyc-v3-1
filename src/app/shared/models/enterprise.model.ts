@@ -1,8 +1,63 @@
-export interface Enterprise {
-    createdAt: string,
-    description: string, // Is this required?
+export interface EnterpriseJson {
+    createdAt: number,
+    description: string | null, // Is this required?
     id: string,
     name: string,
-    photoUrl: string,
-    website: string
+    photoUrl: string | null,
+    vimeoFolderId: string | null,
+    vimeoFolderUri: string | null,
+    website: string | null
 }
+
+export class Enterprise {
+
+    public static collection = 'enterprise'
+
+    constructor(
+        public createdAt: number,
+        public description: string | null, // Is this required?
+        public id: string,
+        public name: string,
+        public photoUrl: string | null,
+        public vimeoFolderId: string | null,
+        public vimeoFolderUri: string | null,
+        public website: string | null
+    ) {}
+
+    public static fromJson(enterpriseJson: EnterpriseJson): Enterprise {
+        return new Enterprise(
+            enterpriseJson.createdAt,
+            enterpriseJson.description,
+            enterpriseJson.id,
+            enterpriseJson.name,
+            enterpriseJson.photoUrl,
+            enterpriseJson.vimeoFolderId,
+            enterpriseJson.vimeoFolderUri,
+            enterpriseJson.website,
+        )
+    }
+
+    public toJson(): EnterpriseJson {
+        return {
+            createdAt: this.createdAt,
+            description: this.description,
+            id: this.id,
+            name: this.name,
+            photoUrl: this.photoUrl,
+            vimeoFolderId: this.vimeoFolderId,
+            vimeoFolderUri: this.vimeoFolderUri,
+            website: this.website,
+        }
+    }
+}
+
+export const testEnterprise = Enterprise.fromJson({
+    createdAt: 1695141743802,
+    description: "Esta es una empresa de prueba",
+    id: "1",
+    name: "Empresa de prueba",
+    photoUrl: null,
+    vimeoFolderId: null,
+    vimeoFolderUri: null,
+    website: null,
+})

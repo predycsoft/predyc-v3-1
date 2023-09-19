@@ -21,7 +21,7 @@ export class AuthService {
     this.afAuth.authState.subscribe(user => {
       if (user && user.uid) {
         // User logged in
-        this.afs.collection<User>('users').doc(user.uid).valueChanges().subscribe(userDoc => {
+        this.afs.collection<User>(User.collection).doc(user.uid).valueChanges().subscribe(userDoc => {
           if (userDoc) {
             this.userSubject.next(userDoc)
           }

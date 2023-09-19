@@ -55,7 +55,7 @@ export class StudentListComponent {
   ) {}
 
   async ngOnInit() {
-    this.userService.getUsers()
+    // this.userService.getUsers()
     const initialSelection: User[] = [];
     const allowMultiSelect = true;
     this.selection = new SelectionModel<User>(

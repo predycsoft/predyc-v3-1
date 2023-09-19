@@ -75,7 +75,7 @@ export class NotificationsComponent {
   //       readByAdmin: false,
   //       message: "tiene 14 horas de retraso en el curso Estrategias de Mantenimiento",
   //       date: +new Date(), // timestamp
-  //       user: this.afs.collection<User>('users').doc(this.users[0].uid as string).ref,
+  //       user: this.afs.collection<User>(User.collection).doc(this.users[0].uid as string).ref,
   //       empresaId: "companyId",
   //       type: 'alert' 
   //     },
@@ -85,7 +85,7 @@ export class NotificationsComponent {
   //       readByAdmin: false,
   //       message: "ha completado el diagnostico inicial de Direccion de Proyectos",
   //       date: +new Date(), // timestamp
-  //       user: this.afs.collection<User>('users').doc(this.users[1].uid as string).ref,
+  //       user: this.afs.collection<User>(User.collection).doc(this.users[1].uid as string).ref,
   //       empresaId: "companyId",
   //       type: "activity" 
   //     },
@@ -95,7 +95,7 @@ export class NotificationsComponent {
   //       readByAdmin: false,
   //       message: "esta solicitando acceso al diplomado Diplomado de Mantenimiento 2023",
   //       date: +new Date(), // timestamp
-  //       user: this.afs.collection<User>('users').doc(this.users[2].uid as string).ref,
+  //       user: this.afs.collection<User>(User.collection).doc(this.users[2].uid as string).ref,
   //       empresaId: "companyId",
   //       type: "request"
   //     },
@@ -105,7 +105,7 @@ export class NotificationsComponent {
   //       readByAdmin: false,
   //       message: "tiene 14 horas de retraso en el curso Estrategias de Mantenimiento",
   //       date: +new Date(), // timestamp
-  //       user: this.afs.collection<User>('users').doc(this.users[3].uid as string).ref,
+  //       user: this.afs.collection<User>(User.collection).doc(this.users[3].uid as string).ref,
   //       empresaId: "companyId",
   //       type: 'alert' 
   //     },
@@ -115,7 +115,7 @@ export class NotificationsComponent {
   //       readByAdmin: false,
   //       message: "esta solicitando acceso al diplomado Diplomado de Mantenimiento 2023",
   //       date: +new Date(), // timestamp
-  //       user: this.afs.collection<User>('users').doc(this.users[0].uid as string).ref,
+  //       user: this.afs.collection<User>(User.collection).doc(this.users[0].uid as string).ref,
   //       empresaId: "companyId",
   //       type: "request"
   //     },
@@ -125,7 +125,7 @@ export class NotificationsComponent {
   //       readByAdmin: false,
   //       message: "tiene 14 horas de retraso en el curso Estrategias de Mantenimiento",
   //       date: +new Date(), // timestamp
-  //       user: this.afs.collection<User>('users').doc(this.users[1].uid as string).ref,
+  //       user: this.afs.collection<User>(User.collection).doc(this.users[1].uid as string).ref,
   //       empresaId: "companyId",
   //       type: 'alert' 
   //     },
@@ -135,7 +135,7 @@ export class NotificationsComponent {
   //       readByAdmin: false,
   //       message: "esta solicitando acceso al diplomado Diplomado de Mantenimiento 2023",
   //       date: +new Date(), // timestamp
-  //       user: this.afs.collection<User>('users').doc(this.users[2].uid as string).ref,
+  //       user: this.afs.collection<User>(User.collection).doc(this.users[2].uid as string).ref,
   //       empresaId: "companyId",
   //       type: "request"
   //     },

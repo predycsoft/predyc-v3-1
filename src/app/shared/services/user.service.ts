@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { User } from '../../shared/models/user.model';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { UtilsService } from './utils.service';
 import { BehaviorSubject, firstValueFrom } from 'rxjs'
 import { EnterpriseService } from './enterprise.service';
 import { AlertsService } from './alerts.service';
+import { Enterprise } from '../models/enterprise.model';
 @Injectable({
   providedIn: 'root'
 })
@@ -18,11 +19,18 @@ export class UserService {
     private enterpriseService: EnterpriseService,
     private alertService: AlertsService
   ) {
-    this.getUsers()
+    this.enterpriseService.getEnterpriseObservable().subscribe(enterprise => {
+      if (!enterprise) {
+        return
+      }
+      this.enterpriseRef = this.afs.collection<Enterprise>(Enterprise.collection).doc(enterprise.id).ref
+      this.getUsers()
+    })
   }
 
   private usersSubject = new BehaviorSubject<User[]>([]);
   private users$ = this.usersSubject.asObservable();
+  private enterpriseRef: DocumentReference
 
   async addUser(newUser: User): Promise<void> {
     try {
@@ -32,9 +40,7 @@ export class UserService {
         const userCredential = await this.afAuth.createUserWithEmailAndPassword(email, password);
         const user = userCredential.user;
         newUser.uid = user?.uid as string
-        console.log("newUser")
-        console.log(newUser)
-        await this.afs.collection('users').doc(user?.uid).set(newUser.toJson());
+        await this.afs.collection(User.collection).doc(user?.uid).set(newUser.toJson());
       } catch (error) {
         console.log(error)
         // if (false) {
@@ -51,7 +57,7 @@ export class UserService {
 
   private async activateUser(user: User) {
     try {
-      await this.afs.collection('users').doc(user.uid as string).set(
+      await this.afs.collection(User.collection).doc(user.uid as string).set(
         {
           ...user,
           isActive: true
@@ -66,7 +72,7 @@ export class UserService {
 
   async delete(user: User): Promise<void> {
     try {
-      await this.afs.collection('users').doc(user.uid as string).set(
+      await this.afs.collection(User.collection).doc(user.uid as string).set(
         {
           ...user,
           isActive: false
@@ -81,7 +87,7 @@ export class UserService {
 
   async transformUserToAdmin(user: User): Promise<void> {
     try {
-      await this.afs.collection('users').doc(user.uid as string).set(
+      await this.afs.collection(User.collection).doc(user.uid as string).set(
         {
           ...user,
           role: 'admin'
@@ -96,7 +102,7 @@ export class UserService {
 
   async editUser(user: User): Promise<void> {
     try {
-      await this.afs.collection('users').doc(user.uid as string).set(
+      await this.afs.collection(User.collection).doc(user.uid as string).set(
         user, { merge: true }
       );
       this.alertService.infoAlert('Has editado la informacion del usuario exitosamente.')
@@ -108,8 +114,8 @@ export class UserService {
 
   // Arguments could be pageSize, sort, currentPage
   getUsers() {
-    this.afs.collection<User>('users', ref => 
-      ref.where('enterpriseId', '==', this.enterpriseService.enterprise.id)
+    this.afs.collection<User>(User.collection, ref => 
+      ref.where('enterprise', '==', this.enterpriseRef)
          .where('isActive', '==', true)
          .orderBy('displayName')
         //  .limit(pageSize)
@@ -127,8 +133,8 @@ export class UserService {
   }
 
   async getUser(uid: string): Promise<User | undefined> {
-    const user = await firstValueFrom(this.afs.collection<User>('users').doc(uid).valueChanges())
-    return user?.enterpriseId === this.enterpriseService.enterprise.id ? user : undefined
+    const user = await firstValueFrom(this.afs.collection<User>(User.collection).doc(uid).valueChanges())
+    return user?.enterprise === this.enterpriseRef ? user : undefined
   }
 
   getUsersObservable() {

@@ -11,8 +11,6 @@ export interface UserJson {
   department: DocumentReference | null,
   displayName: string | null
   email: string | null
-  employer: string | null // This could be obtained from the enterprise ref
-  enterpriseId: string | null // Remove after replacing of methods that reference it
   enterprise: DocumentReference | null
   experience: number | null
   gender: string | null
@@ -39,6 +37,8 @@ export interface UserJson {
 
 export class User {
 
+  public static collection = 'user'
+
   constructor(
     public birthdate: number | null,
     public country: string | null,
@@ -50,8 +50,6 @@ export class User {
     public department: DocumentReference | null,
     public displayName: string | null,
     public email: string | null,
-    public employer: string | null, // This could be obtained from the enterprise ref
-    public enterpriseId: string | null, // Remove after replacing of methods that reference it
     public enterprise: DocumentReference | null,
     public experience: number | null,
     public gender: string | null,
@@ -78,21 +76,19 @@ export class User {
     public ratingPoints: number,
   ) {}
 
-  public static getEnterpriseAdminUser(enterpriseId: string, enterpriseName: string) {
+  public static getEnterpriseAdminUser(enterprise: DocumentReference) {
     return User.getNewUser({
       isSystemUser: false,
       role: 'admin',
-      enterpriseId: enterpriseId,
-      employer: enterpriseName,
+      enterprise: enterprise,
     })
   }
 
-  public static getEnterpriseStudentUser(enterpriseId: string, enterpriseName: string) {
+  public static getEnterpriseStudentUser(enterprise: DocumentReference) {
     return User.getNewUser({
       isSystemUser: false,
       role: 'student',
-      enterpriseId: enterpriseId,
-      employer: enterpriseName,
+      enterprise: enterprise
     })
   }
 
@@ -120,8 +116,7 @@ export class User {
   private static getNewUser(configObj: {
     isSystemUser: boolean,
     role: 'student' | 'admin',
-    enterpriseId?: string,
-    employer?: string
+    enterprise?: DocumentReference,
   }): User {
     return User.fromJson({
       birthdate: null,
@@ -134,9 +129,7 @@ export class User {
       department: null,
       displayName: null,
       email: null,
-      employer: configObj.employer ? configObj.employer : null,
-      enterpriseId: configObj.enterpriseId ? configObj.enterpriseId : null, // Remove after replacing of methods that reference it
-      enterprise: null, 
+      enterprise: configObj.enterprise ? configObj.enterprise : null, 
       experience: null,
       gender: null,
       hasCollegeDegree: false,
@@ -173,8 +166,6 @@ export class User {
       userJson.department,
       userJson.displayName,
       userJson.email,
-      userJson.employer,
-      userJson.enterpriseId, // Remove after replacing of methods that reference it
       userJson.enterprise, 
       userJson.experience,
       userJson.gender,
@@ -212,8 +203,6 @@ export class User {
       department: this.department,
       displayName: this.displayName,
       email: this.email,
-      employer: this.employer,
-      enterpriseId: this.enterpriseId, // Remove after replacing of methods that reference it
       enterprise: this.enterprise,
       experience: this.experience,
       gender: this.gender,
