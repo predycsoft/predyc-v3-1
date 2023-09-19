@@ -43,10 +43,10 @@ export class StudentListComponent {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   @Output() onSelectStudentEvent = new EventEmitter<User>()
-  @Output() onDeleteStudentEvent = new EventEmitter<User>()
 
-  pageSize: number = 10
-  sortBy: string = 'default'
+  // pageSize: number = 5
+  // sortBy: string = 'default'
+  // currentPage: number = 0
 
   constructor(
     private userService: UserService,
@@ -55,7 +55,7 @@ export class StudentListComponent {
   ) {}
 
   async ngOnInit() {
-    this.userService.getUsers(this.pageSize, this.sortBy)
+    this.userService.getUsers()
     const initialSelection: User[] = [];
     const allowMultiSelect = true;
     this.selection = new SelectionModel<User>(
@@ -69,7 +69,11 @@ export class StudentListComponent {
   }
 
   onDeleteUser(user: User) {
-    this.onDeleteStudentEvent.emit(user)
+    this.userService.delete(user)
+  }
+
+  transformUserToAdmin(user: User) {
+    this.userService.transformUserToAdmin(user)
   }
 
   // applyFilter(event: Event) {

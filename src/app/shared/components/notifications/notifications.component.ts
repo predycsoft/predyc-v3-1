@@ -59,7 +59,7 @@ export class NotificationsComponent {
     console.log(this.dataSource)
 
     // Para crear notificaciones en firebase
-    await this.userService.getUsers(10, "default")
+    await this.userService.getUsers()
     this.userService.getUsersObservable().subscribe(users => {
       this.users = users
       console.log("this.users")

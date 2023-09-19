@@ -1394,6 +1394,7 @@ h6{
   font-weight: 500;
   color: var(--default-title-color);
 }
+
 p, span, li{
   font-size: 0.8125rem;
   /* letter-spacing: 0.04245rem; */
@@ -1401,10 +1402,18 @@ p, span, li{
   color: var(--default-font-color);
 }
 
-a{
+a {
   font-size: 0.8125rem;
   text-decoration: none !important;
 }
+
+.swal2-success-line-tip, .swal2-success-line-long {
+  font-size: 16px !important;
+}
+
+.swal2-x-mark-line-right, .swal2-x-mark-line-left {
+  font-size: 16px !important;
+} 
 
 caption{
   font-size: 0.75rem;
@@ -1412,6 +1421,7 @@ caption{
   font-weight: 400;
   color: var(--default-font-color);
 }
+
 .overline{
   font-size: 0.625rem;
   letter-spacing: 0.09375rem;

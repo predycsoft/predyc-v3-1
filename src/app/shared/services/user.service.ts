@@ -17,7 +17,9 @@ export class UserService {
     private utilsService: UtilsService,
     private enterpriseService: EnterpriseService,
     private alertService: AlertsService
-  ) {}
+  ) {
+    this.getUsers()
+  }
 
   private usersSubject = new BehaviorSubject<User[]>([]);
   private users$ = this.usersSubject.asObservable();
@@ -45,8 +47,19 @@ export class UserService {
     }
   }
 
-  private async activateUser() {
-
+  private async activateUser(user: User) {
+    try {
+      await this.afs.collection('users').doc(user.uid as string).set(
+        {
+          ...user,
+          isActive: true
+        }, { merge: true }
+      );
+      this.alertService.succesAlert('Has reactivado al usuario exitosamente.')
+    } catch (error) {
+      console.log(error)
+      this.alertService.errorAlert(JSON.stringify(error))
+    }
   }
 
   async delete(user: User): Promise<void> {
@@ -58,6 +71,21 @@ export class UserService {
         }, { merge: true }
       );
       this.alertService.succesAlert('Has eliminado al usuario exitosamente.')
+    } catch (error) {
+      console.log(error)
+      this.alertService.errorAlert(JSON.stringify(error))
+    }
+  }
+
+  async transformUserToAdmin(user: User): Promise<void> {
+    try {
+      await this.afs.collection('users').doc(user.uid as string).set(
+        {
+          ...user,
+          role: 'admin'
+        }, { merge: true }
+      );
+      this.alertService.succesAlert(`El usuario ${user.displayName} ha sido convertido en administrador.`)
     } catch (error) {
       console.log(error)
       this.alertService.errorAlert(JSON.stringify(error))
@@ -76,20 +104,16 @@ export class UserService {
     }
   }
 
-  getUsers(pageSize: number, sort: string) {
-    // this.afs.collection<User>('users').valueChanges().subscribe({next: users => {
-    //   this.users = users
-    //   console.log("users")
-    //   console.log(users)
-    //   this.usersSubject.next(this.users)
-    // }, error: error => {
-
-    // }})
+  // Arguments could be pageSize, sort, currentPage
+  getUsers() {
     this.afs.collection<User>('users', ref => 
       ref.where('enterpriseId', '==', this.enterpriseService.enterprise.id)
          .where('isActive', '==', true)
+         .orderBy('displayName')
+        //  .limit(pageSize)
     ).valueChanges().subscribe({
       next: users => {
+        // console.log(users)
         this.usersSubject.next(users)
       },
       error: error => {
@@ -97,13 +121,7 @@ export class UserService {
         this.alertService.errorAlert(JSON.stringify(error))
       }
     })
-    
-    // const users: User[] = await firstValueFrom(this.afs.collection<User>('user', ref => 
-    //   ref.where('enterpriseId', '==', 1)
-    //      .orderBy('name')
-    //      .limit(pageSize)
-    // ).valueChanges());
-    // return users ? users : []
+
   }
 
   async getUser(uid: string): Promise<User | undefined> {
