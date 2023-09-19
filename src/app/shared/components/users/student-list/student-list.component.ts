@@ -1,24 +1,13 @@
 import { DataSource, SelectionModel } from '@angular/cdk/collections';
 import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatSort, Sort } from '@angular/material/sort';
 import { IconService } from '../../../../shared/services/icon.service';
 import { UserService } from '../../../../shared/services/user.service';
 import { User } from '../../../../shared/models/user.model';
-import { Observable } from 'rxjs';
+import { combineLatest, map, Observable, Subscription } from 'rxjs';
 import { AfterOnInitResetLoading } from 'src/app/shared/decorators/loading.decorator';
 import { LoaderService } from 'src/app/shared/services/loader.service';
-
-interface UserInfo {
-  displayName: string,
-  status: string,
-  department: string,
-  profile: string,
-  ratingPoints: number,
-  totalCourses: number,
-  completedCourses: number,
-  inProgressCourses: number,
-}
 
 @AfterOnInitResetLoading
 @Component({
@@ -38,7 +27,12 @@ export class StudentListComponent {
     'options',
   ];
   dataSource!: UserDataSource;
-  selection!: SelectionModel<User>
+
+  initialSelection: User[] = [];
+  allowMultiSelect = true;
+  selection: SelectionModel<User> = new SelectionModel<User>(
+    this.allowMultiSelect, this.initialSelection
+  );
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -54,15 +48,11 @@ export class StudentListComponent {
     private loaderService: LoaderService,
   ) {}
 
-  async ngOnInit() {
-    // this.userService.getUsers()
-    const initialSelection: User[] = [];
-    const allowMultiSelect = true;
-    this.selection = new SelectionModel<User>(
-      allowMultiSelect, initialSelection
-    );
-    this.dataSource = new UserDataSource(this.userService, this.paginator, this.sort);
+  ngAfterViewInit() {
+    this.dataSource = new UserDataSource(this.userService.getUsersObservable(), this.paginator, this.sort);
   }
+
+  ngOnInit() {}
 
   onSelectUser(user: User) {
     this.onSelectStudentEvent.emit(user)
@@ -76,47 +66,65 @@ export class StudentListComponent {
     this.userService.transformUserToAdmin(user)
   }
 
-  // applyFilter(event: Event) {
-  //   const filterValue = (event.target as HTMLInputElement).value;
-  //   this.dataSource.filter = filterValue.trim().toLowerCase();
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
 
-  //   if (this.dataSource.paginator) {
-  //     this.dataSource.paginator.firstPage();
-  //   }
-  // }
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+  }
 
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {
-    // const numSelected = this.selection.selected.length;
-    // const numRows = this.dataSource.data.length;
-    // return numSelected == numRows;
-    return false
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected == numRows;
   }
 
   /** Selects all rows if they are not all selected; otherwise clear selection. */
   toggleAllRows() {
-    // this.isAllSelected() ?
-    //     this.selection.clear() :
-    //     this.dataSource.data.forEach(row => this.selection.select(row));
+    this.isAllSelected() ?
+        this.selection.clear() :
+        this.dataSource.data.forEach(row => this.selection.select(row));
   }
 }
 
 class UserDataSource extends DataSource<User> {
 
+  public data: User[]
+  public filter: string = '';
+  private userSubscription: Subscription
+
   constructor(
-    private userService: UserService,
-    private paginator: MatPaginator,
+    private users$: Observable<User[]>,
+    public paginator: MatPaginator,
     private sort: MatSort
   ) {
     super();
-    this.userService = userService
   }
-
+  
   connect(): Observable<User[]> {
-    return this.userService.getUsersObservable();
+    this.userSubscription = this.users$.subscribe(users => {
+      this.data = users;
+    });
+    // return combineLatest<[User[], PageEvent, Sort]>([
+    //     this.users$,
+    //     this.paginator.page,
+    //     this.sort.sortChange
+    //   ]).pipe(map(([users]) => {
+    //     return users.filter(user => {
+    //       if (this.filter != '' && this.filter !== null) {
+    //         const searchStr = (user.name as string + user.email as string).toLowerCase();
+    //         return searchStr.indexOf(this.filter.toLowerCase()) !== -1;
+    //       }
+    //       return true
+    //     });
+    //   }));
+    return combineLatest([this.users$]).pipe(map(([users]) => users))
   }
 
   disconnect() {
-
+    this.userSubscription.unsubscribe();
   }
 }

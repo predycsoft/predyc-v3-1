@@ -3,7 +3,7 @@ import { User } from '../../shared/models/user.model';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { UtilsService } from './utils.service';
-import { BehaviorSubject, firstValueFrom } from 'rxjs'
+import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs'
 import { EnterpriseService } from './enterprise.service';
 import { AlertsService } from './alerts.service';
 import { Enterprise } from '../models/enterprise.model';
@@ -137,7 +137,7 @@ export class UserService {
     return user?.enterprise === this.enterpriseRef ? user : undefined
   }
 
-  getUsersObservable() {
+  getUsersObservable(): Observable<User[]> {
     return this.users$
   }
 }
