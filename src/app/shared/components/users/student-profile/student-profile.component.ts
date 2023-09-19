@@ -155,9 +155,6 @@ export class StudentProfileComponent implements OnInit {
     console.log(this.form.value)
     // Guarda la imagen
     await this.saveStudentPhoto()
-    console.log("Despues de guardar la foto")
-    console.log(this.student.photoUrl)
-    // this.student.photoUrl = formData.photoUrl ? formData.photoUrl : null 
     this.student.name = formData.name ? this.utilsService.capitalizeFirstLetter(formData.name) : null
     this.student.displayName = formData.name ? this.utilsService.capitalizeFirstLetter(formData.name) : null
     this.student.phoneNumber = formData.phoneNumber ? formData.phoneNumber : null
@@ -185,12 +182,10 @@ export class StudentProfileComponent implements OnInit {
         ).catch((error) => console.log(error));
         console.log('Old image has been deleted!');
       }
-      // Upload new image and associate to activity question
+      // Upload new image
       const fileName = this.uploadedImage.name.replace(' ', '-');
       const filePath = `Imagenes/${fileName}`;
       const fileRef = this.storage.ref(filePath);
-      console.log("fileRef")
-      console.log(fileRef)
       const task = this.storage.upload(filePath, this.uploadedImage);
       await new Promise<void>((resolve, reject) => {
         task.snapshotChanges().pipe(
@@ -206,7 +201,6 @@ export class StudentProfileComponent implements OnInit {
         );
       });
     } else {
-      console.log("No se introdujo imagen")
       this.student.photoUrl = null
     }
 
