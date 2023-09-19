@@ -3,6 +3,9 @@ import { Form, FormControl, FormGroup, Validators } from '@angular/forms';
 import { UtilsService } from 'src/app/shared/services/utils.service';
 import { IconService } from 'src/app/shared/services/icon.service';
 import { User } from 'src/app/shared/models/user.model';
+import { AlertsService } from 'src/app/shared/services/alerts.service';
+import { finalize, firstValueFrom } from 'rxjs';
+import { AngularFireStorage } from '@angular/fire/compat/storage';
 
 @Component({
   selector: 'app-student-profile',
@@ -13,13 +16,19 @@ export class StudentProfileComponent implements OnInit {
 
   constructor(
     public icon:IconService,
+    private alertService: AlertsService,
     public utilsService: UtilsService,
+    private storage: AngularFireStorage
+
   ){}
 
   @Input() student: User
   @Output() hideEmit: EventEmitter<void> = new EventEmitter<void>()
   @Output() onStudentSave: EventEmitter<User> = new EventEmitter<User>()
 
+  imageUrl: string | ArrayBuffer | null = null
+  uploadedImage: File | null = null
+  
   countries: {name: string, code: string, isoCode: string}[]
   departments: {name: string, id: string}[]
   experienceOptions: string[]
@@ -50,7 +59,7 @@ export class StudentProfileComponent implements OnInit {
     this.departments = this.utilsService.departments
     this.profiles = this.utilsService.profiles
     this.experienceOptions = this.utilsService.experienceOptions
-
+    
     if (!this.student.uid) {
       this.isNewUser = true
     } else {
@@ -59,6 +68,10 @@ export class StudentProfileComponent implements OnInit {
       Object.keys(this.form.controls).forEach(prop => {
         this.form.get(prop)?.disable();
       });
+
+      if (this.student.photoUrl) {
+        this.imageUrl = this.student.photoUrl;
+      }
 
       this.form.patchValue(this.student)
       this.student.birthdate ? this.timestampToFormFormat(this.student.birthdate, "birthdate") : null
@@ -72,6 +85,33 @@ export class StudentProfileComponent implements OnInit {
     if (event.key === 'Escape') {
       this.closeButton.nativeElement.click();
     }
+  }
+
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input || !input.files || !input.files[0] || input.files[0].length === 0) {
+      this.alertService.errorAlert(`Debe seleccionar una imagen`);
+      return;
+    }
+    const file = input.files[0];
+    if (file.type !== 'image/webp') {
+      this.alertService.errorAlert(`La imagen seleccionada debe tener formato:  WEBP`);
+      return;
+    }
+    /* checking size here - 1MB */
+    const imageMaxSize = 1000000;
+    if (file.size > imageMaxSize) {
+      this.alertService.errorAlert(`El archivo es mayor a 1MB por favor incluya una imagen de menor tamaño`);
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (_event) => {
+      this.imageUrl = reader.result;
+      this.uploadedImage = file;
+    };
+
   }
 
   timestampToFormFormat(timestamp: number, property: ("birthdate" | "hiringDate")) {
@@ -111,7 +151,13 @@ export class StudentProfileComponent implements OnInit {
 
   async saveUser(){
     const formData = this.form.value 
-    this.student.photoUrl = formData.photoUrl ? formData.photoUrl : null 
+    console.log("this.form.value")
+    console.log(this.form.value)
+    // Guarda la imagen
+    await this.saveStudentPhoto()
+    console.log("Despues de guardar la foto")
+    console.log(this.student.photoUrl)
+    // this.student.photoUrl = formData.photoUrl ? formData.photoUrl : null 
     this.student.name = formData.name ? this.utilsService.capitalizeFirstLetter(formData.name) : null
     this.student.displayName = formData.name ? this.utilsService.capitalizeFirstLetter(formData.name) : null
     this.student.phoneNumber = formData.phoneNumber ? formData.phoneNumber : null
@@ -125,8 +171,45 @@ export class StudentProfileComponent implements OnInit {
     if (!this.student.uid) {
       this.student.email = formData.email ? formData.email.toLowerCase() : null
     }
+
     // Guardar en en firebase ...
     this.onStudentSave.emit(this.student)
+  }
+
+  async saveStudentPhoto() {
+    if (this.uploadedImage) {
+      if (this.student.photoUrl) {
+        // Existing image must be deleted before
+        await firstValueFrom(
+          this.storage.refFromURL(this.student.photoUrl).delete()
+        ).catch((error) => console.log(error));
+        console.log('Old image has been deleted!');
+      }
+      // Upload new image and associate to activity question
+      const fileName = this.uploadedImage.name.replace(' ', '-');
+      const filePath = `Imagenes/${fileName}`;
+      const fileRef = this.storage.ref(filePath);
+      console.log("fileRef")
+      console.log(fileRef)
+      const task = this.storage.upload(filePath, this.uploadedImage);
+      await new Promise<void>((resolve, reject) => {
+        task.snapshotChanges().pipe(
+          finalize(async () => {
+            this.student.photoUrl = await firstValueFrom(fileRef.getDownloadURL());
+            console.log(this.student.photoUrl)
+            console.log("Se ha guardado la imagen");
+            resolve();
+          })
+        ).subscribe(
+          () => {},
+          error => reject(error)
+        );
+      });
+    } else {
+      console.log("No se introdujo imagen")
+      this.student.photoUrl = null
+    }
+
   }
 
   onEdit() {

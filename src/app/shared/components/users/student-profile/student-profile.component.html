@@ -18,13 +18,13 @@
         <div class="mgt10 fw" fxLayoutAlign="center center">
             <div (click)="fileInput.click()" class="avatar5 cursorPointer mgt05 positionRelative">
                 <img onerror="this.src='../../../../assets/images/default/default-user-image.jpg'" 
-                    [src]="form.get('photoUrl')?.value" class="avatar5" alt="">
+                    [src]="imageUrl" class="avatar5" alt="">
                 <div class="cambioFoto cursorPointer" fxLayoutAlign="center center">
                     <img [src]="icon.camera" class="fw makeGray" alt="">
                 </div>
             </div>
         </div>
-        <input #fileInput type="file" style="display: none;">
+        <input #fileInput type="file" style="display: none;" (change)="onFileSelected($event)" formControlName="photoUrl">
         <div class="fw mgt10">
             <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap=".5rem" class="nameFieldContainer gray-10" >
                 <textarea #textareaName placeholder="Nombre del usuario"

@@ -32,6 +32,8 @@ export class UserService {
         const userCredential = await this.afAuth.createUserWithEmailAndPassword(email, password);
         const user = userCredential.user;
         newUser.uid = user?.uid as string
+        console.log("newUser")
+        console.log(newUser)
         await this.afs.collection('users').doc(user?.uid).set(newUser.toJson());
       } catch (error) {
         console.log(error)
