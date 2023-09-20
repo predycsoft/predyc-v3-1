@@ -1,0 +1,50 @@
+<div style="overflow: hidden;" class="w-100 height350 pd03 mgt05 mgb10">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+        <span class="ft20 gray-10 ft600" style="font-weight: 700 !important;">Descargar reporte</span>
+        <img [src]="icon.close" (click)="closeModal()" class="makeGray h20px cursorPointer">
+    </div>
+    <div class="linea mgt10"></div>
+    <div class="mgt10" fxLayout="row" fxLayoutAlign="space-around center">
+        <!-- <div style="height: 277px;"> -->
+        <div style="height: 277px; width: 500px;" fxLayout="column" fxLayoutAlign="space-between ">
+            <div>
+                <span class="ft16">Selecciona el rango de fechas en que deseas descargar tu reporte</span>
+            </div>
+            <div style="margin: 0 auto;" fxLayout="column" fxLayoutAlign="space-between ">
+                <div style="display: flex; gap: 10px;">
+                    <input  (change)="getGeneralStats(startDate, endDate, 'semanal')" type="radio" id="week" name="dates" [value]="startWeekDate" [(ngModel)]="startDate" checked/>
+                    <label class="ft16 ft600" for="week">Última semana</label>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <input (change)="getGeneralStats(startDate, endDate, 'mensual')" type="radio" id="month" name="dates" [value]="startMonthDate" [(ngModel)]="startDate" />
+                    <label class="ft16 ft600" for="month">Último mes</label>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <input (change)="getGeneralStats(startDate, endDate, 'anual')" type="radio" id="year" name="dates" [value]="startYearDate" [(ngModel)]="startDate" />
+                    <label class="ft16 ft600" for="year">Último año</label>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <input (change)="getGeneralStats(startDate, endDate, 'histórico')" type="radio" id="historic" name="dates" [value]="0" [(ngModel)]="startDate" />
+                    <label class="ft16 ft600" for="historic">Histórico</label>
+                </div>
+            </div>
+            <div class="mgt10" fxLayoutAlign="end end">
+                <button *ngIf="showButton && loaded && startDate >= 0" class="blueButton radius6 h40px ft12" id="btn" (click)="download()">
+                    <img [src]="icon.download" class="makeWhite" alt="">
+                    Descargar reporte
+                </button>
+                <button *ngIf="showButton && loaded && startDate === undefined" class="lightButton radius6 h40px ft12 border grayLink shadow8" disabled>
+                    <img [src]="icon.download" class="makeGray" alt="">
+                    Descargar reporte
+                </button>
+            </div>
+        </div>
+        <div fxLayout="column">
+            <img src="assets/images/design/personajereportes.svg" alt="">
+        </div>
+    </div>
+    <div >
+        <canvas id="myChart"></canvas>
+    </div>
+
+</div>

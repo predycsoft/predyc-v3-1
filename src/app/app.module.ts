@@ -27,6 +27,13 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
+import { MatIconModule } from '@angular/material/icon';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatExpansionModule } from "@angular/material/expansion";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { MatTooltipModule } from '@angular/material/tooltip';
+
+
 
 // Components
 import { LoginComponent } from './login/login.component';
@@ -48,9 +55,13 @@ import { StudentProfileComponent } from './shared/components/users/student-profi
 import { SearchInputBoxComponent } from './shared/widgets/search-input-box/search-input-box.component';
 import { StudentComponent } from './main-components/management/my-team/student/student.component';
 import { SpinnerComponent } from './shared/components/spinner/spinner.component';
+import { CreateCourseComponent } from './main-components/management/create-course/create-course.component';
+import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 
 //
 import { SafePipe } from './shared/pipes/safe.pipe';
+import { CustomDatePipe } from './shared/pipes/custom-date.pipe';
+
 
 // Emulators
 import { USE_EMULATOR as USE_AUTH_EMULATOR } from '@angular/fire/compat/auth';
@@ -58,6 +69,11 @@ import { USE_EMULATOR as USE_FIRESTORE_EMULATOR } from '@angular/fire/compat/fir
 import { USE_EMULATOR as USE_FUNCTIONS_EMULATOR } from '@angular/fire/compat/functions';
 import { USE_EMULATOR as USE_STORAGE_EMULATOR } from '@angular/fire/compat/storage';
 import { MainComponent } from './main-components/main.component';
+import { AlertComponent } from './shared/services/dialogs/alert/alert.component';
+import { DialogConfirmarComponent } from './shared/components/dialogs/dialog-confirmar/dialog-confirmar.component';
+import { ExitoComponent } from './shared/components/dialogs/exito/exito.component';
+import { VimeoUploadService } from './shared/services/vimeo-upload.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -75,6 +91,7 @@ import { MainComponent } from './main-components/main.component';
     NavigationCardComponent,
     VideoDialogComponent,
     SafePipe,
+    CustomDatePipe,
     ManagementDashboardComponent,
     NavigateBackComponent,
     NotificationsComponent,
@@ -83,6 +100,10 @@ import { MainComponent } from './main-components/main.component';
     SpinnerComponent,
     StudentProfileComponent,
     MainComponent,
+    CreateCourseComponent,
+    AlertComponent,
+    DialogConfirmarComponent,
+    ExitoComponent
   ],
   imports: [
     BrowserModule,
@@ -110,6 +131,14 @@ import { MainComponent } from './main-components/main.component';
     MatSelectModule,
     MatTabsModule,
     MatMenuModule, 
+    MatIconModule,
+    MatListModule,
+    MatExpansionModule,
+    MatProgressBarModule,
+    MatChipsModule,
+    MatTooltipModule,
+    HttpClientModule,
+    NgxExtendedPdfViewerModule
 
   ],
   providers: [
@@ -128,7 +157,7 @@ import { MainComponent } from './main-components/main.component';
     {
       provide: USE_FUNCTIONS_EMULATOR,
       useValue: environment.useEmulators ? ['localhost', 5001] : undefined,
-    },
+    },VimeoUploadService
   ],
   bootstrap: [AppComponent]
 })
