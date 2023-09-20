@@ -249,13 +249,14 @@ export class CreateCourseComponent implements OnInit {
     //   this.empresa = empresa
     // })
 
-    this.enterpriseService.getEnterpriseObservable().subscribe(empresa => {
-      if (!empresa) {
-        return
-      }
-      console.log('empresa',empresa)
-      this.empresa = empresa
-    })
+    // this.enterpriseService.getEnterpriseObservable().subscribe(empresa => {
+    //   if (!empresa) {
+    //     return
+    //   }
+    //   console.log('empresa',empresa)
+    //   this.empresa = empresa
+    // })
+    this.empresa = this.enterpriseService.getEnterprise()
   }
 
   obtenerCompetenciasAlAzar(n: number): Competencia[] {
