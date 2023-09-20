@@ -1,0 +1,13 @@
+<div class="w300px pd10" fxLayout="column" fxLayoutAlign=" center">
+    <img [src]="icon.information" class="makeBlue h32px" alt="">
+    <span *ngIf="data == 'move'" class="gray-8 ft12 mgt10 centertext">
+        Estas intentando editar un curso que ya debería haber iniciado. Esta acción afectará los indicadores de rendimiento. ¿Deseas continuar?
+    </span>
+    <span *ngIf="data == 'remove'" class="gray-8 ft12 mgt10 centertext">
+        ¿Estas seguro que deseas eliminar este curso?
+    </span>
+    <div class="mgt10" fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
+        <button class="fw ft12 ft500 blueButton" (click)="guardar()">Continuar</button>
+        <button class="fw ft12 ft500 redButton" (click)="salir()">Cancelar</button>
+    </div>
+</div>

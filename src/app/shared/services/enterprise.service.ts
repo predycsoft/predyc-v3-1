@@ -7,6 +7,7 @@ import { AuthService } from './auth.service';
   providedIn: 'root'
 })
 export class EnterpriseService {
+  
 
   private enterpriseLoaded: Promise<void>
   private enterprise: Enterprise

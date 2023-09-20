@@ -130,6 +130,7 @@ body {
   --green-3: #58F5D9;
   --green-4: #006908;
   --green-5: #00BF9C;
+  --green-6: #5cb85c;
   --blue-1: #EDF8FF;
   --blue-2: #95E0FF;
   --blue-3: #32C1FF;
@@ -664,7 +665,7 @@ body {
 .mgb100{  margin-bottom: 160px; }
 .mgl01{  margin-left: 2px; }
 .mgl03{  margin-left: 4px; }
-.mgl05{  margin-left: 8px; }
+.mgl05{  margin-left: 8px !important; }
 .mgl08{  margin-left: 12px; }
 .mgl10{  margin-left: 16px; }
 .mgl20{  margin-left: 32px; }
@@ -1394,7 +1395,6 @@ h6{
   font-weight: 500;
   color: var(--default-title-color);
 }
-
 p, span, li{
   font-size: 0.8125rem;
   /* letter-spacing: 0.04245rem; */
@@ -1473,7 +1473,7 @@ input::-ms-input-placeholder {
   color: var(--gray-5); /* Para Microsoft Edge */
 }
   
-button:not(.swal-overlay *) {
+button:not(.swal-overlay *):not(.mat-mdc-chip *) {
   /* Tus estilos aquí */
   color: #fff;
   border-radius: 3px;
@@ -1687,7 +1687,7 @@ angular-editor-toolbar button.ae-picker-label {
 }
 
 .smallScroll::-webkit-scrollbar { /* Para Chrome, Safari y Edge */
-  width: 5px;
+  width: 1px;
 }
 
 .no-select {
@@ -1741,6 +1741,3 @@ span{
 .overflowHidden::-webkit-scrollbar { /* Para Chrome, Safari y Edge */
   width: 0px;
 }
-
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

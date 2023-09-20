@@ -15,6 +15,7 @@ import { StudentComponent } from './main-components/management/my-team/student/s
 import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './shared/guards/auth.guard';
 import { MainComponent } from './main-components/main.component';
+import { CreateCourseComponent } from './main-components/management/create-course/create-course.component';
 
 const MAIN_TITLE = 'Predyc - '
 
@@ -37,6 +38,7 @@ const routes: Routes = [
         children: [
           {path:"", title: MAIN_TITLE +'Gestión de personal', component: ManagementDashboardComponent, canActivate: [AuthGuard]},
           {path:"courses", title: MAIN_TITLE + 'Cursos', component: CoursesComponent, canActivate: [AuthGuard]},
+          {path:"create-course", title: MAIN_TITLE + 'Crear curso', component: CreateCourseComponent, canActivate: [AuthGuard]},
           {path:"departments-and-profiles", title: MAIN_TITLE + 'Departamentos y perfiles', component: DepartmentsProfilesComponent, canActivate: [AuthGuard]},
           // {path:"notifications", title: MAIN_TITLE + 'Notificaciones', component: NotificationsComponent, canActivate: [AuthGuard]},
           {path:"students", title: MAIN_TITLE + 'Mi equipo', component: MyTeamComponent, canActivate: [AuthGuard]},

@@ -58,6 +58,7 @@ export class IconService {
   linkedin_gray = "assets/iconsUI/linkedin-gray.svg"
   instagram_gray = "assets/iconsUI/instagram-gray.svg"
   email = "assets/iconsUI/email-2.svg"
+  emailForward = "assets/iconsUI/mailForward.svg"
   consultas = "assets/iconsUI/consultas.svg"
   headsetBlue = "assets/iconsUI/headsetBlue.svg"
   graphSQ = "assets/iconsUI/graphSQ.svg"
@@ -231,6 +232,11 @@ videoChat : string = 'assets/images/icons/video--chat.svg';
 chess : string = 'assets/images/icons/gamification.svg';
 folderUp: string = 'assets/images/icons/folder--parent.svg';
 pdf: string = 'assets/images/icons/document--pdf.svg';
+
+taskAdd: string ='assets/iconsUI/task--add.svg'
+globe: string ='assets/iconsUI/wikis.svg'
+flash: string ='assets/iconsUI/flash.svg'
+
 
 
 
