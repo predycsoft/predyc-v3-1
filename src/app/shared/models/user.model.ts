@@ -26,7 +26,7 @@ export interface UserJson {
   photoUrl: string | null
   // profileId: string | null
   profile: DocumentReference | null
-  role: 'admin' | 'student'
+  role: typeof User.ROLE_ADMIN | typeof User.ROLE_STUDENT
   isActive: boolean
   stripeId: string | null
   uid: string | null
@@ -38,6 +38,8 @@ export interface UserJson {
 export class User {
 
   public static collection = 'user'
+  public static ROLE_ADMIN = 'admin'
+  public static ROLE_STUDENT = 'student'
 
   constructor(
     public birthdate: number | null,
@@ -65,7 +67,7 @@ export class User {
     public photoUrl: string | null,
     // public profileId: string | null,
     public profile: DocumentReference | null,
-    public role: 'admin' | 'student',
+    public role: typeof User.ROLE_ADMIN | typeof User.ROLE_STUDENT,
     public isActive: boolean,
     public stripeId: string | null,
     public uid: string | null,
@@ -79,7 +81,7 @@ export class User {
   public static getEnterpriseAdminUser(enterprise: DocumentReference) {
     return User.getNewUser({
       isSystemUser: false,
-      role: 'admin',
+      role: User.ROLE_ADMIN,
       enterprise: enterprise,
     })
   }
@@ -87,7 +89,7 @@ export class User {
   public static getEnterpriseStudentUser(enterprise: DocumentReference) {
     return User.getNewUser({
       isSystemUser: false,
-      role: 'student',
+      role: User.ROLE_STUDENT,
       enterprise: enterprise
     })
   }
@@ -95,27 +97,27 @@ export class User {
   public static getSystemAdminUser() {
     return User.getNewUser({
       isSystemUser: true,
-      role: 'admin',
+      role: User.ROLE_ADMIN,
     })
   }
 
   public static getSystemStudentUser() {
     return User.getNewUser({
       isSystemUser: true,
-      role: 'student',
+      role: User.ROLE_STUDENT,
     })
   }
 
   public static getStudentUser() {
     return User.getNewUser({
       isSystemUser: false,
-      role: 'student',
+      role: User.ROLE_STUDENT,
     })
   }
 
   private static getNewUser(configObj: {
     isSystemUser: boolean,
-    role: 'student' | 'admin',
+    role: typeof User.ROLE_ADMIN | typeof User.ROLE_STUDENT,
     enterprise?: DocumentReference,
   }): User {
     return User.fromJson({

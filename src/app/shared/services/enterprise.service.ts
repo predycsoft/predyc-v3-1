@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { Enterprise } from '../models/enterprise.model';
 import { AuthService } from './auth.service';
 
@@ -8,27 +8,38 @@ import { AuthService } from './auth.service';
 })
 export class EnterpriseService {
 
-  private enterpriseSubject = new BehaviorSubject<Enterprise | null>(null);
-  private enterprise$ = this.enterpriseSubject.asObservable();
+  private enterpriseLoaded: Promise<void>
+  private enterprise: Enterprise
+  private enterpriseRef: DocumentReference
 
-  constructor(private authService: AuthService) {
-    this.authService.user$.subscribe(async user => {
-      const enterpriseDocumentReference = await user?.enterprise?.get()
-      if (enterpriseDocumentReference) {
-        const enterprise = enterpriseDocumentReference.data() as Enterprise
-        this.enterpriseSubject.next(enterprise)
-      } else {
-        this.enterpriseSubject.next(null)
-      }
-    })
+  constructor(private authService: AuthService, private afs: AngularFirestore) {
+    this.loadEnterpriseData()
   }
 
-  public getEnterpriseObservable() {
-    return this.enterprise$
+  private async loadEnterpriseData() {
+    this.enterpriseLoaded = new Promise<void>((resolve) => {
+      this.authService.user$.subscribe(async (user) => {
+        if (user) {
+          // Load the enterprise data based on the authenticated user
+          const enterpriseDocumentReference = await ((user.enterprise as DocumentReference).get())
+          this.enterprise = enterpriseDocumentReference.data() as Enterprise
+          this.enterpriseRef = this.afs.collection<Enterprise>(Enterprise.collection).doc(this.enterprise.id).ref
+          resolve();
+        }
+      });
+    });
   }
 
-  public enterprise = {
-    id: 'empresaPruebaId',
-    name: 'Empresa prueba'
+  whenEnterpriseLoaded(): Promise<void> {
+    return this.enterpriseLoaded;
   }
+
+  public getEnterprise() {
+    return this.enterprise
+  }
+
+  public getEnterpriseRef() {
+    return this.enterpriseRef
+  }
+
 }

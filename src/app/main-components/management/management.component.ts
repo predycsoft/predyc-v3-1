@@ -13,8 +13,7 @@ import { UserService } from 'src/app/shared/services/user.service';
 export class ManagementComponent {
 
   constructor(
-    private notificationService: NotificationService,
-    private userService: UserService,
+    // private notificationService: NotificationService,
     private loaderService: LoaderService,
   ) {}
 

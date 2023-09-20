@@ -6,11 +6,15 @@ import { UtilsService } from './utils.service';
 import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs'
 import { EnterpriseService } from './enterprise.service';
 import { AlertsService } from './alerts.service';
-import { Enterprise } from '../models/enterprise.model';
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
+
+  private usersLoaded: Promise<void>
+
+  private usersSubject = new BehaviorSubject<User[]>([]);
+  private users$ = this.usersSubject.asObservable();
 
   constructor(
     private afAuth: AngularFireAuth,
@@ -19,18 +23,24 @@ export class UserService {
     private enterpriseService: EnterpriseService,
     private alertService: AlertsService
   ) {
-    this.enterpriseService.getEnterpriseObservable().subscribe(enterprise => {
-      if (!enterprise) {
-        return
-      }
-      this.enterpriseRef = this.afs.collection<Enterprise>(Enterprise.collection).doc(enterprise.id).ref
-      this.getUsers()
-    })
+    this.loadUsers()
   }
 
-  private usersSubject = new BehaviorSubject<User[]>([]);
-  private users$ = this.usersSubject.asObservable();
-  private enterpriseRef: DocumentReference
+  private async loadUsers() {
+    await this.enterpriseService.whenEnterpriseLoaded()
+    this.getUsers()
+    this.usersLoaded = new Promise<void>((resolve) => {
+      this.users$.subscribe(async (users) => {
+        if (users) {
+          resolve();
+        }
+      });
+    });
+  }
+
+  whenUsersLoaded(): Promise<void> {
+    return this.usersLoaded;
+  }
 
   async addUser(newUser: User): Promise<void> {
     try {
@@ -113,15 +123,15 @@ export class UserService {
   }
 
   // Arguments could be pageSize, sort, currentPage
-  getUsers() {
+  private getUsers() {
     this.afs.collection<User>(User.collection, ref => 
-      ref.where('enterprise', '==', this.enterpriseRef)
+      ref
+         .where('enterprise', '==', this.enterpriseService.getEnterpriseRef())
          .where('isActive', '==', true)
          .orderBy('displayName')
         //  .limit(pageSize)
     ).valueChanges().subscribe({
       next: users => {
-        // console.log(users)
         this.usersSubject.next(users)
       },
       error: error => {
@@ -133,8 +143,9 @@ export class UserService {
   }
 
   async getUser(uid: string): Promise<User | undefined> {
-    const user = await firstValueFrom(this.afs.collection<User>(User.collection).doc(uid).valueChanges())
-    return user?.enterprise === this.enterpriseRef ? user : undefined
+    // const user = await firstValueFrom(this.afs.collection<User>(User.collection).doc(uid).valueChanges())
+    // return user?.enterprise === this.enterpriseService.getEnterpriseRef() ? user : undefined
+    return this.usersSubject.value.find(x => x.uid === uid)
   }
 
   getUsersObservable(): Observable<User[]> {

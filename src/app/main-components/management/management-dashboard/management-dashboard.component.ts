@@ -25,14 +25,12 @@ export class ManagementDashboardComponent {
 
   ) {}
 
-  isDetail = false
   pageSize: number = 10
-  sortBy: string = 'default'
-  async ngOnInit() {
-    // console.log("cargando notificaciones")
-    // await this.notificationService.getNotifications(this.pageSize, this.sortBy)
+  sortBy: string = 'createdAt'
 
-  }
+  // this.notificationService.getNotifications({
+  //   pageSize: this.pageSize
+  // })
 
   navigateTo(url: string) {
     this.router.navigate([url], {relativeTo: this.activatedRoute})

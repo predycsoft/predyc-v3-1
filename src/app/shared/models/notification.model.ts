@@ -1,61 +1,39 @@
 import { DocumentReference } from "@angular/fire/compat/firestore";
-import { User } from "./user.model";
 
-export interface Notification {
-    id: string,
-    readByUsers: [],
-    readByAdmin: boolean,
-    message: string,
-    date: number, // timestamp
-    user: DocumentReference | null,
-    userData?: User; 
-    empresaId: string,
-    type: 'alert' | 'activity' | 'request'
+export interface NotificationJson {
+    date: number // timestamp
+    // enterprise?: Enterprise
+    enterpriseRef: DocumentReference
+    id: string
+    message: string
+    readByUsers: []
+    readByAdmin: boolean
+    type: typeof Notification.TYPE_ALERT |
+          typeof Notification.TYPE_ACTIVITY |
+          typeof Notification.TYPE_REQUEST
+    // user?: User
+    userRef: DocumentReference
 }
 
-// export interface NotificationJson {
-//     id: string,
-//     readByUsers: [],
-//     readByAdmin: boolean,
-//     message: string,
-//     date: number, // timestamp
-//     userId: string,
-//     empresaId: string,
-//     type: 'alert' | 'activity' | 'request'
-// }
+export class Notification {
 
-// export class Notification {
+    public static collection: string = 'notification'
 
-//     public static TYPE_ALERT: string = 'alert'
-//     public static TYPE_ACTIVITY: string = 'activity'
-//     public static TYPE_REQUEST: string = 'request'
+    public static TYPE_ALERT: string = 'alert'
+    public static TYPE_ACTIVITY: string = 'activity'
+    public static TYPE_REQUEST: string = 'request'
 
-//     public id: string
-//     public readByUsers: []
-//     public readByAdmin: boolean
-//     public message: string
-//     public date: number // timestamp
-//     public userId: string
-//     public empresaId: string
-//     public type: 'alert' | 'activity' | 'request'
-
-//     constructor(
-//         id: string,
-//         readByUsers: [],
-//         readByAdmin: boolean,
-//         message: string,
-//         date: number, // timestamp
-//         userId: string,
-//         empresaId: string,
-//         type: string
-//     ) {
-//         this.id = 
-//         this.readByUsers = 
-//         this.readByAdmin = 
-//         this.message = 
-//         this.date = 
-//         this.userId = 
-//         this.empresaId = 
-//         this.type = 
-//     }
-// }
+    constructor(
+        public date: number, // timestamp
+        // public enterprise: Enterprise,
+        public enterpriseRef: DocumentReference,
+        public id: string,
+        public message: string,
+        public readByUsers: [],
+        public readByAdmin: boolean,
+        public type: typeof Notification.TYPE_ALERT |
+                    typeof Notification.TYPE_ACTIVITY |
+                    typeof Notification.TYPE_REQUEST,
+        public userRef: DocumentReference
+    ) {}
+}

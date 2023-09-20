@@ -77,15 +77,6 @@ export class StudentListComponent {
     this.userService.transformUserToAdmin(user)
   }
 
-  // applyFilter(event: Event) {
-  //   const filterValue = (event.target as HTMLInputElement).value;
-  //   this.dataSource.filter = filterValue.trim().toLowerCase();
-
-  //   if (this.dataSource.paginator) {
-  //     this.dataSource.paginator.firstPage();
-  //   }
-  // }
-
   applyFilter(filterValue: string) {
     this.dataSource.setFilter(filterValue.trim().toLowerCase());
   }
