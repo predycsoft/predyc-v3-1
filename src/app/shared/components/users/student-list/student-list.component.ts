@@ -1,13 +1,15 @@
-import { DataSource, SelectionModel } from '@angular/cdk/collections';
+import { CollectionViewer, DataSource, SelectionModel } from '@angular/cdk/collections';
 import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
 import { IconService } from '../../../../shared/services/icon.service';
 import { UserService } from '../../../../shared/services/user.service';
 import { User } from '../../../../shared/models/user.model';
-import { combineLatest, map, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, catchError, combineLatest, map, merge, Observable, of, Subject, Subscription } from 'rxjs';
 import { AfterOnInitResetLoading } from 'src/app/shared/decorators/loading.decorator';
 import { LoaderService } from 'src/app/shared/services/loader.service';
+import { UtilsService } from 'src/app/shared/services/utils.service';
+import { SearchInputService } from 'src/app/shared/services/search-input.service';
 
 @AfterOnInitResetLoading
 @Component({
@@ -38,21 +40,30 @@ export class StudentListComponent {
   @ViewChild(MatSort) sort: MatSort;
   @Output() onSelectStudentEvent = new EventEmitter<User>()
 
-  // pageSize: number = 5
-  // sortBy: string = 'default'
-  // currentPage: number = 0
+  searchSubscription: Subscription
 
   constructor(
     private userService: UserService,
     public icon: IconService,
     private loaderService: LoaderService,
+    private utilsService: UtilsService,
+    private searchInputService: SearchInputService
   ) {}
 
   ngAfterViewInit() {
-    this.dataSource = new UserDataSource(this.userService.getUsersObservable(), this.paginator, this.sort);
+    this.dataSource = new UserDataSource(
+      this.userService.getUsersObservable(),
+      this.paginator,
+      this.sort,
+      this.utilsService
+    );
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.searchSubscription = this.searchInputService.dataObservable$.subscribe(
+      filter => this.dataSource.setFilter(filter)
+    )
+  }
 
   onSelectUser(user: User) {
     this.onSelectStudentEvent.emit(user)
@@ -66,13 +77,17 @@ export class StudentListComponent {
     this.userService.transformUserToAdmin(user)
   }
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+  // applyFilter(event: Event) {
+  //   const filterValue = (event.target as HTMLInputElement).value;
+  //   this.dataSource.filter = filterValue.trim().toLowerCase();
 
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
+  //   if (this.dataSource.paginator) {
+  //     this.dataSource.paginator.firstPage();
+  //   }
+  // }
+
+  applyFilter(filterValue: string) {
+    this.dataSource.setFilter(filterValue.trim().toLowerCase());
   }
 
   /** Whether the number of selected elements matches the total number of rows. */
@@ -88,40 +103,86 @@ export class StudentListComponent {
         this.selection.clear() :
         this.dataSource.data.forEach(row => this.selection.select(row));
   }
+
+  ngOnDestroy() {
+    this.searchSubscription.unsubscribe()
+  }
 }
 
 class UserDataSource extends DataSource<User> {
 
   public data: User[]
-  public filter: string = '';
-  private userSubscription: Subscription
+  private dataSubject = new BehaviorSubject<User[]>([]);
+  private filterSubject = new BehaviorSubject<string>('');
+  private paginatorSubject = new Subject<void>();
+  private sortSubject = new Subject<void>();
+  private userSubscription: Subscription;
 
   constructor(
     private users$: Observable<User[]>,
-    public paginator: MatPaginator,
-    private sort: MatSort
+    private paginator: MatPaginator,
+    private sort: MatSort,
+    private utilsService: UtilsService
   ) {
     super();
+    this.paginator.pageSize = 5
+    this.paginator.page.subscribe(() => this.paginatorSubject.next());
+    this.sort.sortChange.subscribe(() => this.sortSubject.next());
   }
   
   connect(): Observable<User[]> {
+
     this.userSubscription = this.users$.subscribe(users => {
-      this.data = users;
+      this.data = users
+      this.dataSubject.next(users);
     });
-    // return combineLatest<[User[], PageEvent, Sort]>([
-    //     this.users$,
-    //     this.paginator.page,
-    //     this.sort.sortChange
-    //   ]).pipe(map(([users]) => {
-    //     return users.filter(user => {
-    //       if (this.filter != '' && this.filter !== null) {
-    //         const searchStr = (user.name as string + user.email as string).toLowerCase();
-    //         return searchStr.indexOf(this.filter.toLowerCase()) !== -1;
-    //       }
-    //       return true
-    //     });
-    //   }));
-    return combineLatest([this.users$]).pipe(map(([users]) => users))
+
+    return merge(this.users$, this.filterSubject, this.paginatorSubject, this.sortSubject).pipe(
+      map(() => {
+        // Filtering
+        let users = this.dataSubject.value
+        let filteredUsers = users.filter(user => {
+          const searchStr = (user.name as string + user.email as string).toLowerCase();
+          return searchStr.indexOf(this.filterSubject.value.toLowerCase()) !== -1;
+        });
+
+        this.paginator.length = filteredUsers.length
+
+  
+        // Sorting
+        if (this.sort.active && this.sort.direction !== '') {
+          filteredUsers = filteredUsers.sort((a, b) => {
+            const isAsc = this.sort.direction === 'asc';
+            console.log('this.sort.active')
+            console.log(this.sort.active)
+            switch (this.sort.active) {
+              case 'displayName': return this.utilsService.compare(a.displayName as string, b.displayName as string, isAsc);
+              // case 'status': return this.utilsService.compare(a.status as string, b.status as string, isAsc);
+              // case 'departament': return 0
+              // case 'profile': return 0
+              // case 'ratingPoints': return 0
+              // case 'performance': return 0
+              // Add more fields to sort by as needed.
+              default: return 0;
+            }
+          });
+        }
+  
+        // Pagination
+        const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+        return filteredUsers.splice(startIndex, this.paginator.pageSize);
+      }),
+      catchError(error => {
+        console.error('Error occurred:', error);
+        return of([]);  // Return an empty array as a fallback.
+      })
+    );
+    
+  }
+
+  setFilter(filter: string) {
+    this.filterSubject.next(filter)
+    this.paginator.firstPage();
   }
 
   disconnect() {

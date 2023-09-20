@@ -28,7 +28,6 @@ export class MyTeamComponent {
   enterpriseRef: DocumentReference
 
   // ?sortBy=Deparment&pageSize=25&page=2&name=searchText
-
   ngOnInit() {
     this.loaderService.setLoading(true)
     this.enterpriseService.getEnterpriseObservable().subscribe(enterprise => {
@@ -55,10 +54,5 @@ export class MyTeamComponent {
       console.log(error)
     }
   }
-
-
-  // applyFilter(event: Event) {
-    
-  // }
 
 }
