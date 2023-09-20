@@ -1,4 +1,5 @@
 import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
+import { SearchInputService } from '../../services/search-input.service';
 
 @Component({
   selector: 'app-search-input-box',
@@ -7,11 +8,12 @@ import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular
 })
 export class SearchInputBoxComponent {
 
-  @Output() inputChanged = new EventEmitter<string>();
   @ViewChild('input') inputElement: ElementRef
 
+  constructor(private searchInputService: SearchInputService) {}
+
   onInputChanged() {
-    this.inputChanged.emit(this.inputElement.nativeElement.value)
+    this.searchInputService.sendData(this.inputElement.nativeElement.value)
   }
 
 }
