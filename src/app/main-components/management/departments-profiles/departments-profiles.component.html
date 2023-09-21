@@ -2,8 +2,13 @@
 <!-- <button class="blueButton" (click)="submitProfiles()">Click</button>
 <button class="redButton" (click)="submitDepartments()">Click</button> -->
 <div fxLayout="row" fxLayoutAlign="space-between center">
-    <h6>Tus Departamentos</h6>
-    <button class="yellowButton">Nuevo departamento</button>
+    <div fxLayout="row">
+        <h6>Tus Departamentos</h6>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="space-between end" fxLayoutGap="1rem">
+        <app-search-input-box></app-search-input-box>
+        <button class="yellowButton">Nuevo departamento</button>
+    </div>
 </div>
 <div fxLayout="row" fxLayoutGap="1rem">
     <div class="containerLeft mgt03">
