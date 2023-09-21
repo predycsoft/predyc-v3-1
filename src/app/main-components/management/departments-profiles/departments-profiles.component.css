@@ -1,0 +1,10 @@
+.containerLeft {
+    padding-bottom: 1rem !important;
+    width: 320px;
+    border-right: 1px solid var(--gray-3);
+}
+
+.containerRight {
+    /* width: 612px; */
+    width: 100%;
+  }
