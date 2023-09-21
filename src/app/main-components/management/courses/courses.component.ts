@@ -3,7 +3,13 @@ import { AfterOnInitResetLoading } from 'src/app/shared/decorators/loading.decor
 import { LoaderService } from 'src/app/shared/services/loader.service';
 import { IconService } from '../../../shared/services/icon.service';
 import { Curso } from 'src/app/shared/models/curses.model';
+import { CategoryService } from 'src/app/shared/services/category.service';
 
+import * as competencias from '../../../../assets/data/competencias.json';
+import { Category } from 'src/app/shared/models/category.model';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { SkillService } from '../../../shared/services/skill.service';
+import { Skill } from '../../../shared/models/skill.model';
 
 
 export class category {
@@ -24,9 +30,14 @@ export class CoursesComponent {
   constructor(
     private loaderService: LoaderService,
     public icon: IconService,
+    public categoryService : CategoryService,
+    public SkillService: SkillService,
+    private afs: AngularFirestore,
+
   ) {}
 
-  
+  competenciasArray: any = (competencias as any).default;
+
   cursos: Curso[] = []
   selectedCourse: Curso = null
   categories: category[] = []
@@ -35,9 +46,13 @@ export class CoursesComponent {
   creatingCategory = false
   newCategory: category = new category
 
-  async ngOnInit() {
+  ngOnInit() {
     this.cursos = []
     this.buildCategories()
+
+    this.categoryService.getCategoriesObservable().subscribe(category => {
+      console.log(category);
+    })
   }
 
   getRounded(num: number): number {
@@ -88,6 +103,33 @@ export class CoursesComponent {
     this.categories.push(this.newCategory)
     this.creatingCategory=false
     this.newCategory = new category
+  }
+
+  createCategories(){
+    console.log(this.competenciasArray.categorias)
+    let id = Date.now()
+    this.competenciasArray.categorias.forEach(async categoria => {
+      id++;
+      let idtext = id.toString();
+      let category = new Category(idtext,categoria.name,null)
+      console.log(category);
+      await this.categoryService.addCategory(category);
+      let CategoryRef = this.afs.collection<Category>(Category.collection).doc(idtext).ref
+      console.log(CategoryRef);
+
+      let competencias = this.competenciasArray.competencias.filter(competencia => competencia.categoriaId == categoria.id)
+
+      competencias.forEach(async competencia => {
+        id++;
+        let idtext = id.toString();
+        let skill = new Skill(idtext,competencia.name,CategoryRef)
+        await this.SkillService.addSkill(skill)
+      });
+
+
+    });
+
+    
   }
 
 }
