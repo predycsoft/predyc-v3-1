@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, CollectionReference, Query } from '@angular/fire/compat/firestore';
-import { UtilsService } from './utils.service';
 import { AlertsService } from './alerts.service';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { Notification } from 'src/app/shared/models/notification.model';

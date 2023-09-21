@@ -28,7 +28,7 @@ export class InitScriptComponent {
     // Create Departments and profiles
 
     // Create admin and student users
-    const users: User[] = usersJson.map(user => {
+    const users: User[] = Array.from(usersJson).map(user => {
       return User.fromJson({
         ...user,
         birthdate: Date.parse(user.birthdate),

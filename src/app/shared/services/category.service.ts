@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { User } from '../../shared/models/user.model';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
-import { UtilsService } from './utils.service';
 import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs'
 import { EnterpriseService } from './enterprise.service';
 import { AlertsService } from './alerts.service';
@@ -22,7 +21,6 @@ export class CategoryService {
   constructor(
     private afAuth: AngularFireAuth,
     private afs: AngularFirestore,
-    private utilsService: UtilsService,
     private enterpriseService: EnterpriseService,
     private alertService: AlertsService
   ) 
