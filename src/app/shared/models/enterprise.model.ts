@@ -50,14 +50,3 @@ export class Enterprise {
         }
     }
 }
-
-export const testEnterprise = Enterprise.fromJson({
-    createdAt: 1695141743802,
-    description: "Esta es una empresa de prueba",
-    id: "1",
-    name: "Empresa de prueba",
-    photoUrl: null,
-    vimeoFolderId: null,
-    vimeoFolderUri: null,
-    website: null,
-})

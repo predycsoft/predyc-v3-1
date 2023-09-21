@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { User } from '../../shared/models/user.model';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
-import { UtilsService } from './utils.service';
 import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs'
 import { EnterpriseService } from './enterprise.service';
 import { AlertsService } from './alerts.service';
+import { generateSixDigitRandomNumber } from '../utils';
 @Injectable({
   providedIn: 'root'
 })
@@ -19,14 +19,11 @@ export class UserService {
   constructor(
     private afAuth: AngularFireAuth,
     private afs: AngularFirestore,
-    private utilsService: UtilsService,
     private enterpriseService: EnterpriseService,
     private alertService: AlertsService
-  ) {
-    this.loadUsers()
-  }
+  ) {}
 
-  private async loadUsers() {
+  public async loadUsers() {
     await this.enterpriseService.whenEnterpriseLoaded()
     this.getUsers()
     this.usersLoaded = new Promise<void>((resolve) => {
@@ -44,20 +41,12 @@ export class UserService {
 
   async addUser(newUser: User): Promise<void> {
     try {
-      try {
-        const email = newUser.email as string
-        const password = `${this.utilsService.generateSixDigitRandomNumber()}`
-        const userCredential = await this.afAuth.createUserWithEmailAndPassword(email, password);
-        const user = userCredential.user;
-        newUser.uid = user?.uid as string
-        await this.afs.collection(User.collection).doc(user?.uid).set(newUser.toJson());
-      } catch (error) {
-        console.log(error)
-        // if (false) {
-        //   this.activateUser()
-        // }
-        throw error
-      }
+      const email = newUser.email as string
+      const password = `${generateSixDigitRandomNumber()}`
+      const userCredential = await this.afAuth.createUserWithEmailAndPassword(email, password);
+      const user = userCredential.user;
+      newUser.uid = user?.uid as string
+      await this.afs.collection(User.collection).doc(user?.uid).set(newUser.toJson());
       this.alertService.succesAlert('Has agregado un nuevo usuario exitosamente.')
     } catch (error) {
       console.log(error)

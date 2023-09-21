@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-// import { LoginComponent } from './login/login.component';
-// import { SideNavComponent } from './sidenav/sidenav.component';
 import { DashboardComponent } from './main-components/dashboard/dashboard.component'
 import { ManagementComponent } from './main-components/management/management.component';
 import { CoursesComponent } from './main-components/management/courses/courses.component';
@@ -16,6 +14,7 @@ import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './shared/guards/auth.guard';
 import { MainComponent } from './main-components/main.component';
 import { CreateCourseComponent } from './main-components/management/create-course/create-course.component';
+import { InitScriptComponent } from './shared/components/init-script/init-script.component';
 
 const MAIN_TITLE = 'Predyc - '
 
@@ -40,7 +39,7 @@ const routes: Routes = [
           {path:"courses", title: MAIN_TITLE + 'Cursos', component: CoursesComponent, canActivate: [AuthGuard]},
           {path:"create-course", title: MAIN_TITLE + 'Crear curso', component: CreateCourseComponent, canActivate: [AuthGuard]},
           {path:"departments-and-profiles", title: MAIN_TITLE + 'Departamentos y perfiles', component: DepartmentsProfilesComponent, canActivate: [AuthGuard]},
-          // {path:"notifications", title: MAIN_TITLE + 'Notificaciones', component: NotificationsComponent, canActivate: [AuthGuard]},
+          {path:"notifications", title: MAIN_TITLE + 'Notificaciones', component: NotificationsComponent, canActivate: [AuthGuard]},
           {path:"students", title: MAIN_TITLE + 'Mi equipo', component: MyTeamComponent, canActivate: [AuthGuard]},
           {path:"students/:uid", title: MAIN_TITLE + 'Mi equipo', component: StudentComponent, canActivate: [AuthGuard]},
         ]
@@ -57,6 +56,10 @@ const routes: Routes = [
       // other non-authenticated routes like signup...
     ]
   },
+  {
+    path: 'init-script',
+    component: InitScriptComponent
+  }
 ];
 
 @NgModule({

@@ -75,6 +75,7 @@ import { DialogConfirmarComponent } from './shared/components/dialogs/dialog-con
 import { ExitoComponent } from './shared/components/dialogs/exito/exito.component';
 import { VimeoUploadService } from './shared/services/vimeo-upload.service';
 import { HttpClientModule } from '@angular/common/http';
+import { InitScriptComponent } from './shared/components/init-script/init-script.component';
 
 @NgModule({
   declarations: [
@@ -105,7 +106,8 @@ import { HttpClientModule } from '@angular/common/http';
     CreateCourseComponent,
     AlertComponent,
     DialogConfirmarComponent,
-    ExitoComponent
+    ExitoComponent,
+    InitScriptComponent
   ],
   imports: [
     BrowserModule,

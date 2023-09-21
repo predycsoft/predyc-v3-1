@@ -8,8 +8,8 @@ import { User } from '../../../../shared/models/user.model';
 import { BehaviorSubject, catchError, combineLatest, map, merge, Observable, of, Subject, Subscription } from 'rxjs';
 import { AfterOnInitResetLoading } from 'src/app/shared/decorators/loading.decorator';
 import { LoaderService } from 'src/app/shared/services/loader.service';
-import { UtilsService } from 'src/app/shared/services/utils.service';
 import { SearchInputService } from 'src/app/shared/services/search-input.service';
+import { orderByValueAndDirection } from 'src/app/shared/utils';
 
 @AfterOnInitResetLoading
 @Component({
@@ -46,7 +46,6 @@ export class StudentListComponent {
     private userService: UserService,
     public icon: IconService,
     private loaderService: LoaderService,
-    private utilsService: UtilsService,
     private searchInputService: SearchInputService
   ) {}
 
@@ -55,7 +54,6 @@ export class StudentListComponent {
       this.userService.getUsersObservable(),
       this.paginator,
       this.sort,
-      this.utilsService
     );
   }
 
@@ -113,7 +111,6 @@ class UserDataSource extends DataSource<User> {
     private users$: Observable<User[]>,
     private paginator: MatPaginator,
     private sort: MatSort,
-    private utilsService: UtilsService
   ) {
     super();
     this.paginator.pageSize = 5
@@ -147,7 +144,7 @@ class UserDataSource extends DataSource<User> {
             console.log('this.sort.active')
             console.log(this.sort.active)
             switch (this.sort.active) {
-              case 'displayName': return this.utilsService.compare(a.displayName as string, b.displayName as string, isAsc);
+              case 'displayName': return orderByValueAndDirection(a.displayName as string, b.displayName as string, isAsc);
               // case 'status': return this.utilsService.compare(a.status as string, b.status as string, isAsc);
               // case 'departament': return 0
               // case 'profile': return 0
