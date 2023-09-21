@@ -16,12 +16,14 @@ import { AngularFirestore,DocumentReference } from '@angular/fire/compat/firesto
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Activity, Question,QuestionOption,QuestionType, QuestionValidationResponse } from '../../../shared/models/activity-classes.model';
 //import { compareByString } from 'src/app/utils';
-import * as competencias from '../../../../assets/data/competencias.json';
+//import * as competencias from '../../../../assets/data/competencias.json';
 import { DialogService } from 'src/app/shared/services/dialog.service';
 import { VimeoUploadService } from 'src/app/shared/services/vimeo-upload.service';
 import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
 import { CategoryService } from 'src/app/shared/services/category.service';
 import { SkillService } from '../../../shared/services/skill.service';
+import { Category } from 'src/app/shared/models/category.model';
+import { Skill } from 'src/app/shared/models/skill.model';
 
 
 export const compareByString = (a: string, b: string): number => {
@@ -77,7 +79,7 @@ export class CreateCourseComponent implements OnInit {
   formNuevaComptencia: FormGroup;
   questionTypesIn = QuestionType;
 
-  competenciasArray: any = (competencias as any).default;
+  competenciasArray
 
   curso : Curso;
 
@@ -153,7 +155,10 @@ export class CreateCourseComponent implements OnInit {
 
     this.categoriasArray.forEach(categoria => {
       let selected = categoria.competencias.filter(competencia => competencia.selected)
-      if(selected.length>0){
+      selected = selected.map(({ category, ...rest }) => ({
+        ...rest,
+        category: { id: category.id }
+      }));      if(selected.length>0){
         let obj = {
           categoria : {name:categoria.name, id:categoria.id},
           competencias : selected,
@@ -163,8 +168,8 @@ export class CreateCourseComponent implements OnInit {
       }
     });
 
-    console.log(respuesta)
     this.updateCompetenciasClases(competencia)
+    console.log('respuesta',respuesta)
     this.competenciasSelected = respuesta;
   }
 
@@ -218,11 +223,11 @@ export class CreateCourseComponent implements OnInit {
     return container.scrollHeight > container.clientHeight;
   }
 
-  anidarCompetencias(categorias: Categoria[], competencias: Competencia[]): any[] {
+  anidarCompetencias(categorias: any[], competencias: any[]): any[] {
     return categorias.map(categoria => {
       return {
         ...categoria,
-        competencias: competencias.filter(comp => comp.categoriaId === categoria.id)
+        competencias: competencias.filter(comp => comp.category.id === categoria.id)
       };
     });
   }
@@ -235,14 +240,8 @@ export class CreateCourseComponent implements OnInit {
     console.log(this.competenciasArray)
 
     // Usando la función:
-    const categorias: Categoria[] = this.competenciasArray.categorias;
-    const competencias: Competencia[] = this.competenciasArray.competencias;
-
-    this.categoriasArray = this.anidarCompetencias(categorias,competencias)
-    console.log(this.categoriasArray)
-
-    this.competenciasEmpresa = this.obtenerCompetenciasAlAzar(5);
-
+    // const categorias: Categoria[] = this.competenciasArray.categorias;
+    // const competencias: Competencia[] = this.competenciasArray.competencias;
 
     this.inicializarFormNuevoCurso();
     this.activeStep = 1;
@@ -250,11 +249,20 @@ export class CreateCourseComponent implements OnInit {
 
 
     this.categoryService.getCategoriesObservable().subscribe(category => {
-      console.log(category);
+      console.log('category from service',category);
+      this.skillService.getSkillsObservable().subscribe(skill => {
+        console.log('skill from service',skill);
+
+        this.categoriasArray = this.anidarCompetencias(category,skill)
+        console.log(this.categoriasArray)
+    
+
+        this.competenciasEmpresa = this.obtenerCompetenciasAlAzar(5);
+        
+
+      })
     })
-    this.skillService.getSkillsObservable().subscribe(skill => {
-      console.log(skill);
-    })
+
 
     
     // this.enterpriseService.getEnterpriseObservable().subscribe(empresa => {
@@ -792,7 +800,7 @@ export class CreateCourseComponent implements OnInit {
           competenciasTotalProcesdo.push(competencia)
         });
       });
-      console.log(competencias);
+      //console.log(competencias);
       pregunta.competencias.forEach(competencia => {
         console.log(competencia)
         let competenciaP = competenciasTotalProcesdo.find(competenciaeach => competenciaeach.id == competencia.id);
@@ -855,6 +863,7 @@ export class CreateCourseComponent implements OnInit {
     if(clase.competencias.length > 0){
 
       this.competenciasSelectedClase=[]; //estoy aqui
+      console.log('this.competenciasSelected',this.competenciasSelected)
       let competenciasTotal = structuredClone(this.competenciasSelected);
       let competenciasTotalProcesdo=[]
       let categorias=[];
@@ -867,7 +876,7 @@ export class CreateCourseComponent implements OnInit {
           competenciasTotalProcesdo.push(competencia)
         });
       });
-      console.log(competencias);
+      //console.log(competencias);
       clase.competencias.forEach(competencia => {
         console.log(competencia)
         let competenciaP = competenciasTotalProcesdo.find(competenciaeach => competenciaeach.id == competencia.id);
@@ -1695,7 +1704,7 @@ export class CreateCourseComponent implements OnInit {
                 competenciasTotalProcesdo.push(competencia)
               });
             });
-            console.log(competencias);
+            //console.log(competencias);
             question.competencias.forEach(competencia => {
               console.log(competencia)
               let competenciaP = competenciasTotalProcesdo.find(competenciaeach => competenciaeach.id == competencia.id);
