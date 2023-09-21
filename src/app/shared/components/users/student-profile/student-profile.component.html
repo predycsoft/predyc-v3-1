@@ -31,9 +31,9 @@
                 <textarea #textareaName placeholder="Nombre del usuario"
                     class="nameField ft16 centertext" formControlName="name">
                 </textarea>
-                <span *ngIf="isNewUser && form.get('name')?.hasValidator(requiredValidator)" class="asterisk">*</span>
+                <span *ngIf="isNewUser && form.get('name').hasValidator(requiredValidator)" class="asterisk">*</span>
             </div>
-            <span *ngIf="!form.get('name')?.valid && !form.get('name')?.disabled && form.get('name')?.touched" 
+            <span *ngIf="!form.get('name').valid && !form.get('name').disabled && form.get('name').touched" 
                 class="redText mgt03">
                 Debes introducir un nombre
             </span>
@@ -42,7 +42,7 @@
             <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" [ngClass]="(isNewUser || isEditing) ? 'inputContainer mgt10' : 'disabledInputContainer mgt10'">
                 <img [src]="icon.email" class="makeGray h16px" alt="">
                 <input type="email" placeholder="Correo electrónico" [ngClass]="(isNewUser || isEditing) ? '' : 'disabledInput'" class="input fw" formControlName="email">
-                <span *ngIf="isNewUser && form.get('email')?.hasValidator(requiredValidator)" class="asterisk">*</span>
+                <span *ngIf="isNewUser && form.get('email').hasValidator(requiredValidator)" class="asterisk">*</span>
             </div>
             <span *ngIf="showAlert('email')" class="redText mgt03">
                 Debes introducir una dirección de correo electrónico válida
@@ -50,21 +50,21 @@
             <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" [ngClass]="(isNewUser || isEditing)? 'inputContainer mgt10' : 'disabledInputContainer mgt10'">
                 <img [src]="icon.phone" class="makeGray h16px" alt="">
                 <input type="number" [ngClass]="(isNewUser || isEditing) ? '' : 'disabledInput'" class="input fw" placeholder="Teléfono" formControlName="phoneNumber"/>
-                <span *ngIf="isNewUser && form.get('phoneNumber')?.hasValidator(requiredValidator)" class="asterisk">*</span>
+                <span *ngIf="isNewUser && form.get('phoneNumber').hasValidator(requiredValidator)" class="asterisk">*</span>
             </div>
             <span *ngIf="showAlert('phoneNumber')" class="redText mgt03">
                 Debes introducir un número de teléfono
             </span>
             <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" [ngClass]="(isNewUser || isEditing)? 'inputContainer mgt10' : 'disabledInputContainer mgt10'">
                 <img [src]="icon.location" class="makeGray h16px" alt="">
-                <select *ngIf="isNewUser || isEditing" [ngClass]="!isNewUser ? 'disabledInput': !form.get('country')?.value ? 'makeGray' : ''" 
+                <select *ngIf="isNewUser || isEditing" [ngClass]="!isNewUser ? 'disabledInput': !form.get('country').value ? 'makeGray' : ''" 
                     class="input fw" formControlName="country">
                     <option [value]="null" disabled>País de residencia</option>
                     <option *ngFor="let country of countries" [value]="country.name">{{country.name}}</option>
                 </select>
-                <span *ngIf="isNewUser && form.get('country')?.hasValidator(requiredValidator)" class="asterisk">*</span>
-                <span *ngIf="!isNewUser && !isEditing" [ngClass]="!form.get('country')?.value ? 'noValue' : '' " class="disabledInput">
-                    {{form.get('country')?.value ? form.get('country')?.value : "País de residencia"}}
+                <span *ngIf="isNewUser && form.get('country').hasValidator(requiredValidator)" class="asterisk">*</span>
+                <span *ngIf="!isNewUser && !isEditing" [ngClass]="!form.get('country').value ? 'noValue' : '' " class="disabledInput">
+                    {{form.get('country').value ? form.get('country').value : "País de residencia"}}
                 </span>
             </div>
             <span *ngIf="showAlert('country')" class="redText mgt03">
@@ -74,7 +74,7 @@
                 <img [src]="icon.calendarAdd" class="makeGray h16px" alt="">
                 <input (click)="(isNewUser || isEditing) && birthdate.toggle()" placeholder="Fecha de nacimiento" name="birthdate" formControlName="birthdate" 
                     [ngClass]="(isNewUser || isEditing) ? '' : 'disabledInput'" class="input fw"ngbDatepicker #birthdate="ngbDatepicker">
-                <span *ngIf="isNewUser && form.get('birthdate')?.hasValidator(requiredValidator)" class="asterisk">*</span>
+                <span *ngIf="isNewUser && form.get('birthdate').hasValidator(requiredValidator)" class="asterisk">*</span>
             </div>
             <span *ngIf="showAlert('birthdate')" class="redText mgt03">
                 Debes introducir una fecha de nacimiento
@@ -82,7 +82,7 @@
             <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" [ngClass]="(isNewUser || isEditing) ? 'inputContainer mgt10' : 'disabledInputContainer mgt10'">
                 <img [src]="icon.suitcase" class="makeGray h1px" alt="">
                 <input type="text" placeholder="Cargo" [ngClass]="(isNewUser || isEditing) ? '' : 'disabledInput'" class="input fw" formControlName="job">
-                <span *ngIf="isNewUser && form.get('job')?.hasValidator(requiredValidator)" class="asterisk">*</span>
+                <span *ngIf="isNewUser && form.get('job').hasValidator(requiredValidator)" class="asterisk">*</span>
             </div>
             <span *ngIf="showAlert('job')" class="redText mgt03">
                 Debes introducir un cargo
@@ -91,21 +91,21 @@
                 <img [src]="icon.calendarAdd" class="makeGray h16px" alt="">
                 <input (click)="(isNewUser || isEditing) && hiringDate.toggle()" placeholder="Fecha de ingreso" name="hiringDate" formControlName="hiringDate" 
                     [ngClass]="(isNewUser || isEditing) ? '' : 'disabledInput'" class="input fw"ngbDatepicker #hiringDate="ngbDatepicker">
-                <span *ngIf="isNewUser && form.get('hiringDate')?.hasValidator(requiredValidator)" class="asterisk">*</span>
+                <span *ngIf="isNewUser && form.get('hiringDate').hasValidator(requiredValidator)" class="asterisk">*</span>
             </div>
             <span *ngIf="showAlert('hiringDate')" class="redText mgt03">
                 Debes introducir una fecha de ingreso
             </span>
             <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" [ngClass]="(isNewUser || isEditing) ? 'inputContainer mgt10' : 'disabledInputContainer mgt10'" >
                 <img [src]="icon.clock" class="makeGray h16px" alt="">
-                <select *ngIf="isNewUser || isEditing" [ngClass]="!isNewUser ? 'disabledInput': !form.get('experience')?.value? 'makeGray' : ''"
+                <select *ngIf="isNewUser || isEditing" [ngClass]="!isNewUser ? 'disabledInput': !form.get('experience').value? 'makeGray' : ''"
                     class="input fw" formControlName="experience">
                     <option [value]="null" disabled>Años de experiencia</option>
                     <option *ngFor="let experience of experienceOptions" [value]="experience">{{experience}}</option>
                 </select>
-                <span *ngIf="isNewUser && form.get('experience')?.hasValidator(requiredValidator)" class="asterisk">*</span>
-                <span *ngIf="!isNewUser && !isEditing" [ngClass]="!form.get('experience')?.value ? 'noValue' : '' " class="disabledInput">
-                    {{form.get('experience')?.value ? form.get('experience')?.value : "Años de experiencia"}}
+                <span *ngIf="isNewUser && form.get('experience').hasValidator(requiredValidator)" class="asterisk">*</span>
+                <span *ngIf="!isNewUser && !isEditing" [ngClass]="!form.get('experience').value ? 'noValue' : '' " class="disabledInput">
+                    {{form.get('experience').value ? form.get('experience').value : "Años de experiencia"}}
                 </span>
             </div>
             <span *ngIf="showAlert('experience')" class="redText mgt03">
@@ -113,15 +113,15 @@
             </span>
             <!-- <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" [ngClass]="(isNewUser || isEditing) ? 'inputContainer mgt10' : 'disabledInputContainer mgt10'">
                 <img [src]="icon.enterprise" class="makeGray h16px" alt="">
-                <select *ngIf="isNewUser || isEditing" [ngClass]="!isNewUser ? 'disabledInput': !form.get('departmentId')?.value? 'makeGray' : ''" 
+                <select *ngIf="isNewUser || isEditing" [ngClass]="!isNewUser ? 'disabledInput': !form.get('departmentId').value? 'makeGray' : ''" 
                     class="input fw" formControlName="departmentId">
                     <option [value]="null" disabled>Departamento</option>
                     <option [value]="'Sin departamento'">Asignar luego</option>
                     <option *ngFor="let department of departments" [value]="department.name">{{department.name}}</option>
                 </select>
-                <span *ngIf="isNewUser && form.get('departmentId')?.hasValidator(requiredValidator)" class="asterisk">*</span>
-                <span *ngIf="!isNewUser && !isEditing" [ngClass]="!form.get('departmentId')?.value ? 'noValue' : '' " class="disabledInput">
-                    {{form.get('departmentId')?.value ? form.get('departmentId')?.value : "Departamento"}}
+                <span *ngIf="isNewUser && form.get('departmentId').hasValidator(requiredValidator)" class="asterisk">*</span>
+                <span *ngIf="!isNewUser && !isEditing" [ngClass]="!form.get('departmentId').value ? 'noValue' : '' " class="disabledInput">
+                    {{form.get('departmentId').value ? form.get('departmentId').value : "Departamento"}}
                 </span>
             </div>
             <span *ngIf="showAlert('departmentId')" class="redText mgt03">
@@ -129,15 +129,15 @@
             </span> -->
             <!-- <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" [ngClass]="(isNewUser || isEditing) ? 'inputContainer mgt10' : 'disabledInputContainer mgt10'">
                 <img [src]="icon.userProfile" class="makeGray h16px" alt="">
-                <select *ngIf="isNewUser || isEditing" [ngClass]="!isNewUser ? 'disabledInput': !form.get('profileId')?.value? 'makeGray' : ''"
+                <select *ngIf="isNewUser || isEditing" [ngClass]="!isNewUser ? 'disabledInput': !form.get('profileId').value? 'makeGray' : ''"
                     class="input fw" formControlName="profileId">
                     <option [value]="null" disabled>Perfil</option>
                     <option [value]="'Sin perfil'">Asignar luego</option>
                     <option *ngFor="let profile of profiles" [value]="profile.name">{{profile.name}}</option>
                 </select>
-                <span *ngIf="isNewUser && form.get('profileId')?.hasValidator(requiredValidator)" class="asterisk">*</span>
-                <span *ngIf="!isNewUser && !isEditing" [ngClass]="!form.get('profileId')?.value ? 'noValue' : '' " class="disabledInput">
-                    {{form.get('profileId')?.value ? form.get('profileId')?.value : "Perfil"}}
+                <span *ngIf="isNewUser && form.get('profileId').hasValidator(requiredValidator)" class="asterisk">*</span>
+                <span *ngIf="!isNewUser && !isEditing" [ngClass]="!form.get('profileId').value ? 'noValue' : '' " class="disabledInput">
+                    {{form.get('profileId').value ? form.get('profileId').value : "Perfil"}}
                 </span>
             </div>
             <span *ngIf="showAlert('profileId')" class="redText mgt03">

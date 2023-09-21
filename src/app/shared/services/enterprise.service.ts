@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { Enterprise } from '../models/enterprise.model';
 import { AuthService } from './auth.service';
-import { AlertsService } from './alerts.service';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 @Injectable({
   providedIn: 'root'
@@ -11,52 +9,38 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 export class EnterpriseService {
   
 
-  private enterpriseSubject = new BehaviorSubject<Enterprise | null>(null);
-  private enterprise$ = this.enterpriseSubject.asObservable();
+  private enterpriseLoaded: Promise<void>
+  private enterprise: Enterprise
+  private enterpriseRef: DocumentReference
 
-  constructor(
-    private authService: AuthService,
-    private alertService: AlertsService,
-    private afs: AngularFirestore,
-
-    ) {
-    this.authService.user$.subscribe(async user => {
-      const enterpriseDocumentReference = await user?.enterprise?.get()
-      if (enterpriseDocumentReference) {
-        const enterprise = enterpriseDocumentReference.data() as Enterprise
-        this.enterpriseSubject.next(enterprise)
-      } else {
-        this.enterpriseSubject.next(null)
-      }
-    })
+  constructor(private authService: AuthService, private afs: AngularFirestore) {
+    this.loadEnterpriseData()
   }
 
-  public getEnterpriseObservable() {
-    return this.enterprise$
+  private async loadEnterpriseData() {
+    this.enterpriseLoaded = new Promise<void>((resolve) => {
+      this.authService.user$.subscribe(async (user) => {
+        if (user) {
+          // Load the enterprise data based on the authenticated user
+          const enterpriseDocumentReference = await ((user.enterprise as DocumentReference).get())
+          this.enterprise = enterpriseDocumentReference.data() as Enterprise
+          this.enterpriseRef = this.afs.collection<Enterprise>(Enterprise.collection).doc(this.enterprise.id).ref
+          resolve();
+        }
+      });
+    });
   }
 
-  async addEnterprise(newEnterprise: Enterprise): Promise<void> {
-    try {
-      try {
-        // const email = newUser.email as string
-        // const password = `${this.utilsService.generateSixDigitRandomNumber()}`
-        // const userCredential = await this.afAuth.createUserWithEmailAndPassword(email, password);
-        // const user = userCredential.user;
-        // newUser.uid = user?.uid as string
-        await this.afs.collection(Enterprise.collection).doc(newEnterprise?.id).set(newEnterprise.toJson());
-      } catch (error) {
-        console.log(error)
-        throw error
-      }
-      this.alertService.succesAlert('Has agregado un nuevo usuario exitosamente.')
-    } catch (error) {
-      console.log(error)
-      this.alertService.errorAlert(JSON.stringify(error))
-    }
+  whenEnterpriseLoaded(): Promise<void> {
+    return this.enterpriseLoaded;
   }
 
-  public enterprise = {
-    id: 'empresaPruebaId',
-    name: 'Empresa prueba'
+  public getEnterprise() {
+    return this.enterprise
   }
+
+  public getEnterpriseRef() {
+    return this.enterpriseRef
+  }
+
 }

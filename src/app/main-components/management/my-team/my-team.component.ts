@@ -25,22 +25,11 @@ export class MyTeamComponent {
 
   studentSelected: User | null = null
 
-  enterpriseRef: DocumentReference
-
   // ?sortBy=Deparment&pageSize=25&page=2&name=searchText
-  ngOnInit() {
-    this.loaderService.setLoading(true)
-    this.enterpriseService.getEnterpriseObservable().subscribe(enterprise => {
-      if (!enterprise) {
-        return
-      }
-      this.enterpriseRef = this.afs.collection<Enterprise>(Enterprise.collection).doc(enterprise.id).ref
-      this.loaderService.setLoading(false)
-    })
-  }
+  ngOnInit() {}
 
   createNewStudent() {
-    this.studentSelected = User.getEnterpriseStudentUser(this.enterpriseRef)
+    this.studentSelected = User.getEnterpriseStudentUser(this.enterpriseService.getEnterpriseRef())
   }
 
   onStudentSaveHandler(student: User) {

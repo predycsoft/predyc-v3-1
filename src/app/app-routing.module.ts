@@ -10,7 +10,7 @@ import { SettingsComponent } from './main-components/settings/settings.component
 import { DepartmentsProfilesComponent } from './main-components/management/departments-profiles/departments-profiles.component';
 import { MyTeamComponent } from './main-components/management/my-team/my-team.component';
 import { ManagementDashboardComponent } from './main-components/management/management-dashboard/management-dashboard.component';
-import { NotificationsComponent } from './shared/components/notifications/notifications.component'
+import { NotificationsComponent } from './main-components/management/notifications/notifications.component'
 import { StudentComponent } from './main-components/management/my-team/student/student.component';
 import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './shared/guards/auth.guard';
@@ -40,7 +40,7 @@ const routes: Routes = [
           {path:"courses", title: MAIN_TITLE + 'Cursos', component: CoursesComponent, canActivate: [AuthGuard]},
           {path:"create-course", title: MAIN_TITLE + 'Crear curso', component: CreateCourseComponent, canActivate: [AuthGuard]},
           {path:"departments-and-profiles", title: MAIN_TITLE + 'Departamentos y perfiles', component: DepartmentsProfilesComponent, canActivate: [AuthGuard]},
-          {path:"notifications", title: MAIN_TITLE + 'Notificaciones', component: NotificationsComponent, canActivate: [AuthGuard]},
+          // {path:"notifications", title: MAIN_TITLE + 'Notificaciones', component: NotificationsComponent, canActivate: [AuthGuard]},
           {path:"students", title: MAIN_TITLE + 'Mi equipo', component: MyTeamComponent, canActivate: [AuthGuard]},
           {path:"students/:uid", title: MAIN_TITLE + 'Mi equipo', component: StudentComponent, canActivate: [AuthGuard]},
         ]

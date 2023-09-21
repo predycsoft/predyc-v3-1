@@ -48,7 +48,7 @@ import { DepartmentsProfilesComponent } from './main-components/management/depar
 import { MyTeamComponent } from './main-components/management/my-team/my-team.component';
 import { NavigationCardComponent } from './shared/widgets/navigation-card/navigation-card.component';
 import { VideoDialogComponent } from './main-components/management/management-dashboard/video-dialog/video-dialog.component';
-import { NotificationsComponent } from './shared/components/notifications/notifications.component';
+import { NotificationsComponent } from './main-components/management/notifications/notifications.component';
 import { ManagementDashboardComponent } from './main-components/management/management-dashboard/management-dashboard.component';
 import { NavigateBackComponent } from './shared/widgets/navigate-back/navigate-back.component';
 import { StudentProfileComponent } from './shared/components/users/student-profile/student-profile.component';
@@ -69,6 +69,7 @@ import { USE_EMULATOR as USE_FIRESTORE_EMULATOR } from '@angular/fire/compat/fir
 import { USE_EMULATOR as USE_FUNCTIONS_EMULATOR } from '@angular/fire/compat/functions';
 import { USE_EMULATOR as USE_STORAGE_EMULATOR } from '@angular/fire/compat/storage';
 import { MainComponent } from './main-components/main.component';
+import { NotificationListComponent } from './shared/components/notifications/notification-list/notification-list.component';
 import { AlertComponent } from './shared/services/dialogs/alert/alert.component';
 import { DialogConfirmarComponent } from './shared/components/dialogs/dialog-confirmar/dialog-confirmar.component';
 import { ExitoComponent } from './shared/components/dialogs/exito/exito.component';
@@ -100,6 +101,7 @@ import { HttpClientModule } from '@angular/common/http';
     SpinnerComponent,
     StudentProfileComponent,
     MainComponent,
+    NotificationListComponent,
     CreateCourseComponent,
     AlertComponent,
     DialogConfirmarComponent,
@@ -157,7 +159,8 @@ import { HttpClientModule } from '@angular/common/http';
     {
       provide: USE_FUNCTIONS_EMULATOR,
       useValue: environment.useEmulators ? ['localhost', 5001] : undefined,
-    },VimeoUploadService
+    },
+    VimeoUploadService
   ],
   bootstrap: [AppComponent]
 })

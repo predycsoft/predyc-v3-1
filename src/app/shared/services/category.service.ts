@@ -27,20 +27,22 @@ export class CategoryService {
     private alertService: AlertsService
   ) 
   {
-    //this.getCateogies()
-    this.enterpriseService.getEnterpriseObservable().subscribe(enterprise => {
-      if (!enterprise) {
-        return
-      }
-      this.enterpriseRef = this.afs.collection<Enterprise>(Enterprise.collection).doc(enterprise.id).ref
-      this.getCategories()
-    })
+    this.getCategories(this.enterpriseService.getEnterpriseRef())
+    
+    // this.enterpriseService.getEnterpriseObservable().subscribe(enterprise => {
+    //   if (!enterprise) {
+    //     return
+    //   }
+    //   this.enterpriseRef = this.afs.collection<Enterprise>(Enterprise.collection).doc(enterprise.id).ref
+    //   this.getCategories()
+    // })
   }
 
   private categorySubject = new BehaviorSubject<Category[]>([]);
   private category$ = this.categorySubject.asObservable();
   private categoryRef: DocumentReference
   private enterpriseRef: DocumentReference
+  private empresa
 
 
   async addCategory(newCategory: Category): Promise<void> {
@@ -60,10 +62,10 @@ export class CategoryService {
   }
 
   // Arguments could be pageSize, sort, currentPage
-  getCategories() {
+  getCategories(enterpriseRef) {
     // Query para traer por enterprise match
     const enterpriseMatch$ = this.afs.collection<Category>(Category.collection, ref => 
-      ref.where('enterprise', '==', this.enterpriseRef)
+      ref.where('enterprise', '==', enterpriseRef)
           .orderBy('name')
     ).valueChanges();
 

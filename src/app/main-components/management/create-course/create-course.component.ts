@@ -249,21 +249,6 @@ export class CreateCourseComponent implements OnInit {
     this.activeStepActividad = 1;
 
 
-    // this.service.empresa.subscribe(empresa => {
-    //   if (!empresa) {
-    //     return
-    //   }
-    //   this.empresa = empresa
-    // })
-
-    this.enterpriseService.getEnterpriseObservable().subscribe(empresa => {
-      if (!empresa) {
-        return
-      }
-      console.log('empresa',empresa)
-      this.empresa = empresa
-    })
-
     this.categoryService.getCategoriesObservable().subscribe(category => {
       console.log(category);
     })
@@ -272,6 +257,14 @@ export class CreateCourseComponent implements OnInit {
     })
 
     
+    // this.enterpriseService.getEnterpriseObservable().subscribe(empresa => {
+    //   if (!empresa) {
+    //     return
+    //   }
+    //   console.log('empresa',empresa)
+    //   this.empresa = empresa
+    // })
+    this.empresa = this.enterpriseService.getEnterprise()
   }
 
   obtenerCompetenciasAlAzar(n: number): Competencia[] {
