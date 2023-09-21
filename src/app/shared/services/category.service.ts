@@ -27,8 +27,12 @@ export class CategoryService {
     private alertService: AlertsService
   ) 
   {
-    this.getCategories(this.enterpriseService.getEnterpriseRef())
-    
+    //this.getCateogies()
+    this.empresa = this.enterpriseService.getEnterprise()
+    console.log('empresa category service', this.empresa)
+    this.getCategories()
+
+
     // this.enterpriseService.getEnterpriseObservable().subscribe(enterprise => {
     //   if (!enterprise) {
     //     return
@@ -62,10 +66,13 @@ export class CategoryService {
   }
 
   // Arguments could be pageSize, sort, currentPage
-  getCategories(enterpriseRef) {
+  async getCategories() {
+    await this.enterpriseService.whenEnterpriseLoaded()
+    this.enterpriseRef =this.enterpriseService.getEnterpriseRef()
+
     // Query para traer por enterprise match
     const enterpriseMatch$ = this.afs.collection<Category>(Category.collection, ref => 
-      ref.where('enterprise', '==', enterpriseRef)
+      ref.where('enterprise', '==', this.enterpriseRef)
           .orderBy('name')
     ).valueChanges();
 

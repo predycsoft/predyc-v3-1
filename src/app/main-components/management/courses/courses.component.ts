@@ -10,6 +10,7 @@ import { Category } from 'src/app/shared/models/category.model';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { SkillService } from '../../../shared/services/skill.service';
 import { Skill } from '../../../shared/models/skill.model';
+import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
 
 
 export class category {
@@ -33,7 +34,7 @@ export class CoursesComponent {
     public categoryService : CategoryService,
     public SkillService: SkillService,
     private afs: AngularFirestore,
-
+    private enterpriseService: EnterpriseService,
   ) {}
 
   competenciasArray: any = (competencias as any).default;
@@ -46,14 +47,20 @@ export class CoursesComponent {
   creatingCategory = false
   newCategory: category = new category
 
-  ngOnInit() {
+  async ngOnInit() {
     this.cursos = []
     this.buildCategories()
+    await this.enterpriseService.whenEnterpriseLoaded()
+    let enterpriseRef = this.enterpriseService.getEnterpriseRef();
+    console.log(enterpriseRef)
 
     this.categoryService.getCategoriesObservable().subscribe(category => {
       console.log(category);
     })
   }
+
+
+
 
   getRounded(num: number): number {
     return Math.round(num);
