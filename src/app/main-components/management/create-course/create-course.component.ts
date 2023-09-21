@@ -11,7 +11,7 @@ import { AngularFireStorage } from '@angular/fire/compat/storage';
 import Swal from 'sweetalert2';
 import { Observable, Subject, finalize, firstValueFrom, switchMap, tap, filter } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { AngularFirestore,DocumentReference } from '@angular/fire/compat/firestore';
 
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Activity, Question,QuestionOption,QuestionType, QuestionValidationResponse } from '../../../shared/models/activity-classes.model';
@@ -20,6 +20,10 @@ import * as competencias from '../../../../assets/data/competencias.json';
 import { DialogService } from 'src/app/shared/services/dialog.service';
 import { VimeoUploadService } from 'src/app/shared/services/vimeo-upload.service';
 import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
+import { CategoryService } from 'src/app/shared/services/category.service';
+import { SkillService } from '../../../shared/services/skill.service';
+
+
 export const compareByString = (a: string, b: string): number => {
   if (a > b) {
     return 1;
@@ -60,7 +64,10 @@ export class CreateCourseComponent implements OnInit {
     private afs: AngularFirestore,
     private dialog: DialogService,
     public sanitizer: DomSanitizer,
-    private enterpriseService: EnterpriseService
+    private enterpriseService: EnterpriseService,
+    public categoryService : CategoryService,
+    public skillService: SkillService
+
 
   ) { }
 
@@ -256,6 +263,15 @@ export class CreateCourseComponent implements OnInit {
       console.log('empresa',empresa)
       this.empresa = empresa
     })
+
+    this.categoryService.getCategoriesObservable().subscribe(category => {
+      console.log(category);
+    })
+    this.skillService.getSkillsObservable().subscribe(skill => {
+      console.log(skill);
+    })
+
+    
   }
 
   obtenerCompetenciasAlAzar(n: number): Competencia[] {
