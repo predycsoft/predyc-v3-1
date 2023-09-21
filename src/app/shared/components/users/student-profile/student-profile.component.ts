@@ -1,11 +1,13 @@
 import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Form, FormControl, FormGroup, Validators } from '@angular/forms';
-import { UtilsService } from 'src/app/shared/services/utils.service';
 import { IconService } from 'src/app/shared/services/icon.service';
 import { User } from 'src/app/shared/models/user.model';
 import { AlertsService } from 'src/app/shared/services/alerts.service';
 import { finalize, firstValueFrom } from 'rxjs';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
+
+import * as countries from 'src/assets/data/countries.json'
+import { capitalizeFirstLetter, dateFromCalendarToTimestamp, timestampToDateNumbers } from 'src/app/shared/utils';
 
 @Component({
   selector: 'app-student-profile',
@@ -17,7 +19,6 @@ export class StudentProfileComponent implements OnInit {
   constructor(
     public icon:IconService,
     private alertService: AlertsService,
-    public utilsService: UtilsService,
     private storage: AngularFireStorage
 
   ){}
@@ -29,9 +30,16 @@ export class StudentProfileComponent implements OnInit {
   imageUrl: string | ArrayBuffer | null = null
   uploadedImage: File | null = null
   
-  countries: {name: string, code: string, isoCode: string}[]
+  countries: {name: string, code: string, isoCode: string}[] = countries
   departments: {name: string, id: string}[]
-  experienceOptions: string[]
+  experienceOptions: string[] = [
+    "Menos de 1 año",
+    "1-2 años",
+    "3-5 años",
+    "6-10 años",
+    "11-20 años",
+    "Mas de 20 años",
+  ]
   isEditing = false
   isNewUser = false
   profiles: {name: string, id: string}[]
@@ -55,10 +63,8 @@ export class StudentProfileComponent implements OnInit {
   @ViewChild('closeButton') closeButton: ElementRef;
 
   ngOnInit(): void {
-    this.countries = this.utilsService.countries
-    this.departments = this.utilsService.departments
-    this.profiles = this.utilsService.profiles
-    this.experienceOptions = this.utilsService.experienceOptions
+    // this.departments = this.utilsService.departments
+    // this.profiles = this.utilsService.profiles
     
     if (!this.student.uid) {
       this.isNewUser = true
@@ -115,7 +121,7 @@ export class StudentProfileComponent implements OnInit {
   }
 
   timestampToFormFormat(timestamp: number, property: ("birthdate" | "hiringDate")) {
-    const date = this.utilsService.timestampToDateNumbers(timestamp)
+    const date = timestampToDateNumbers(timestamp)
     this.form.get(property)?.setValue({
       day: date.day, month: date.month, year: date.year
     });
@@ -155,13 +161,13 @@ export class StudentProfileComponent implements OnInit {
     console.log(this.form.value)
     // Guarda la imagen
     await this.saveStudentPhoto()
-    this.student.name = formData.name ? this.utilsService.capitalizeFirstLetter(formData.name) : null
-    this.student.displayName = formData.name ? this.utilsService.capitalizeFirstLetter(formData.name) : null
+    this.student.name = formData.name ? capitalizeFirstLetter(formData.name) : null
+    this.student.displayName = formData.name ? capitalizeFirstLetter(formData.name) : null
     this.student.phoneNumber = formData.phoneNumber ? formData.phoneNumber : null
     this.student.country = formData.country ? formData.country : null 
-    this.student.birthdate = formData.birthdate ? this.utilsService.dateFromCalendarToTimestamp(formData.birthdate): null
+    this.student.birthdate = formData.birthdate ? dateFromCalendarToTimestamp(formData.birthdate): null
     this.student.job = formData.job ? formData.job : null 
-    this.student.hiringDate = formData.hiringDate ? this.utilsService.dateFromCalendarToTimestamp(formData.hiringDate) : null
+    this.student.hiringDate = formData.hiringDate ? dateFromCalendarToTimestamp(formData.hiringDate) : null
     this.student.experience = formData.experience ? formData.experience : null 
     // this.student.departmentId = formData.departmentId ? formData.departmentId : null 
     // this.student.profileId = formData.profileId ? formData.profileId : null
@@ -195,10 +201,10 @@ export class StudentProfileComponent implements OnInit {
             console.log("Se ha guardado la imagen");
             resolve();
           })
-        ).subscribe(
-          () => {},
-          error => reject(error)
-        );
+        ).subscribe({
+          next: () => {},
+          error: error => reject(error),
+        });
       });
     } else {
       this.student.photoUrl = null

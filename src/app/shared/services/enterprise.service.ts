@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { Enterprise } from '../models/enterprise.model';
+import { AlertsService } from './alerts.service';
 import { AuthService } from './auth.service';
 
 @Injectable({
@@ -13,7 +14,11 @@ export class EnterpriseService {
   private enterprise: Enterprise
   private enterpriseRef: DocumentReference
 
-  constructor(private authService: AuthService, private afs: AngularFirestore) {
+  constructor(
+    private authService: AuthService,
+    private afs: AngularFirestore,
+    private alertService: AlertsService
+  ) {
     this.loadEnterpriseData()
   }
 
@@ -31,7 +36,23 @@ export class EnterpriseService {
     });
   }
 
-  whenEnterpriseLoaded(): Promise<void> {
+  async addEnterprise(enterprise: Enterprise): Promise<void> {
+    try {
+      const ref = this.afs.collection<Enterprise>(Enterprise.collection).doc().ref;
+      enterprise.id = ref.id;
+      await ref.set(enterprise.toJson(), { merge: true });
+      this.alertService.succesAlert('Has agregado una nueva empresa exitosamente.')
+    } catch (error) {
+      console.log(error)
+      this.alertService.errorAlert(JSON.stringify(error))
+    }
+  }
+
+  public getEnterpriseRefById(enterpriseId: string): DocumentReference<Enterprise> {
+    return this.afs.collection<Enterprise>(Enterprise.collection).doc(enterpriseId).ref
+  }
+
+  public whenEnterpriseLoaded(): Promise<void> {
     return this.enterpriseLoaded;
   }
 
