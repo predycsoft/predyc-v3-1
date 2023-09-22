@@ -12,21 +12,21 @@
     border-radius: 10px;
     overflow: hidden;
     border: 2px solid #D5DCE0;
-    height: 120px;
+    height: 140px;
 }
 
 .card-container-lg {
     border-radius: 10px;
     overflow: hidden;
     border: 2px solid #D5DCE0;
-    height: 320px;
+    height: 340px;
 }
 
 .card-container-xl {
     border-radius: 10px;
     overflow: hidden;
     border: 2px solid #D5DCE0;
-    height: 450px;
+    height: 490px;
 }
 
 .question {

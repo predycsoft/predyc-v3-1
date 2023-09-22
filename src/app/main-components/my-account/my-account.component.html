@@ -12,16 +12,16 @@
                     </div>
                     <div>
                         <div fxLayout="row">
-                            <img [src]="icon.camera" class=" makeGray h14px" alt=""><span>facebook</span>
+                            <img [src]="icon.camera" class=" makeGray h14px" alt=""><span class="mgl03">facebook</span>
                         </div>
                         <div fxLayout="row" class="mgt05">
-                            <img [src]="icon.instagram_gray" class=" makeGray h14px" alt=""><span>instagram</span>
+                            <img [src]="icon.instagram_gray" class=" makeGray h14px" alt=""><span class="mgl03">instagram</span>
                         </div>
                         <div fxLayout="row" class="mgt05">
-                            <img [src]="icon.camera" class=" makeGray h14px" alt=""><span>www.sitioweb.com</span>
+                            <img [src]="icon.camera" class=" makeGray h14px" alt=""><span class="mgl03">www.sitioweb.com</span>
                         </div>
                         <div fxLayout="row" class="mgt05">
-                            <img [src]="icon.linkedin_gray" class=" makeGray h14px" alt=""><span>linkedin</span>
+                            <img [src]="icon.linkedin_gray" class=" makeGray h14px" alt=""><span class="mgl03">linkedin</span>
                         </div>
                     </div>
                     <div fxFlexAlign="start">
@@ -36,16 +36,16 @@
                     <div class="mgl05">
                         <span class="makeGray">Descripción de la empresa</span>
                         <span>{{enterprise.description}}</span>
-                        <div fxLayout="row" fxLayoutAlign="space-between center">
-                            <div>
+                        <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt05">
+                            <div fxLayout="column">
                                 <span class="makeGray">Sector de la empresa</span>
                                 <span>Energías renovables</span>
                             </div>
-                            <div>
+                            <div fxLayout="column">
                                 <span class="makeGray">Tamaño de la empresa</span>
                                 <span>Mediana</span>
                             </div>
-                            <div>
+                            <div fxLayout="column">
                                 <span class="makeGray">No. Empleados</span>
                                 <span>234</span>
                             </div>
@@ -97,22 +97,22 @@
                     <div fxLayout="column" class="mgl05">
                         <div fxLayout="row" fxLayoutAlign="space-between start">
 
-                            <div fxLayout="column">
+                            <div fxLayout="column" class="mgt05">
                                 <span class="makeGray">Nombre (s)</span>
                                 <span>Carlos</span>
 
-                                <span class="makeGray">Mail</span>
+                                <span class="makeGray mgt03">Mail</span>
                                 <span>carlosmtz@gmail.com</span>
 
-                                <span class="makeGray">Cargo</span>
+                                <span class="makeGray mgt03">Cargo</span>
                                 <span>Ing. Industrial</span>
                             </div>
 
-                            <div fxLayout="column">
+                            <div fxLayout="column" class="mgt05">
                                 <span class="makeGray">Apellido (s)</span>
                                 <span>Martínez Encinas</span>
 
-                                <span class="makeGray">Teléfono</span>
+                                <span class="makeGray mgt03">Teléfono</span>
                                 <span>123 45 67 89</span>
                             </div>
 
@@ -141,7 +141,9 @@
                 </div>
             </div>
         </div>
-        <button class="redButton" (click)="signOut()" fxLayout="row" fxLayoutAlign="end end">Cerrar sesión</button>
+        <div fxLayout="row" fxLayoutAlign="end center">
+            <button class="redButton btn" (click)="signOut()" >Cerrar sesión</button>
+        </div>
     </mat-tab>
 
     <mat-tab label="Soporte"> 
@@ -160,7 +162,7 @@
                         </div>
                         <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="center center">
                             <img [src]="icon.whatsapp_gray" class="makeGray h24px" alt="">
-                            <button class="blueButton">Contactar vía email</button>
+                            <button class="blueButton btn">Contactar vía email</button>
                         </div>
                     </div>
                     <div class="mgt05">
@@ -191,6 +193,6 @@
                 </div>
             </div>
         </div>
-    </mat-tab>
+    </mat-tab>    
 </mat-tab-group>
 
