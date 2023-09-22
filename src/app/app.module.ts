@@ -76,6 +76,7 @@ import { ExitoComponent } from './shared/components/dialogs/exito/exito.componen
 import { VimeoUploadService } from './shared/services/vimeo-upload.service';
 import { HttpClientModule } from '@angular/common/http';
 import { InitScriptComponent } from './shared/components/init-script/init-script.component';
+import { MyAccountComponent } from './main-components/my-account/my-account.component';
 
 @NgModule({
   declarations: [
@@ -107,7 +108,8 @@ import { InitScriptComponent } from './shared/components/init-script/init-script
     AlertComponent,
     DialogConfirmarComponent,
     ExitoComponent,
-    InitScriptComponent
+    InitScriptComponent,
+    MyAccountComponent
   ],
   imports: [
     BrowserModule,

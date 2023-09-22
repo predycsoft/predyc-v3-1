@@ -15,6 +15,7 @@ import { AuthGuard } from './shared/guards/auth.guard';
 import { MainComponent } from './main-components/main.component';
 import { CreateCourseComponent } from './main-components/management/create-course/create-course.component';
 import { InitScriptComponent } from './shared/components/init-script/init-script.component';
+import { MyAccountComponent } from './main-components/my-account/my-account.component';
 
 const MAIN_TITLE = 'Predyc - '
 
@@ -46,6 +47,7 @@ const routes: Routes = [
       },
       {path:"validation", title: MAIN_TITLE + 'Validación de competencias', component: ValidationComponent, canActivate: [AuthGuard]},
       {path:"settings", title: MAIN_TITLE + 'Configuración', component: SettingsComponent, canActivate: [AuthGuard]},
+      {path:"my-account", title: MAIN_TITLE + 'Mi cuenta', component: MyAccountComponent, canActivate: [AuthGuard]},
     ]
   },
   {
