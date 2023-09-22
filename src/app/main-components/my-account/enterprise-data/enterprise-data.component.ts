@@ -7,4 +7,33 @@ import { Component } from '@angular/core';
 })
 export class EnterpriseDataComponent {
 
+  presentationData = {}
+  infoData = {}
+
+
+  onEnterprisePresentationChangeHandler(data) {
+    try {
+      console.log("Enterprise presentation data")
+      console.log(data)
+      this.presentationData = data
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  onEnterpriseInfoChangeHandler(data) {
+    try {
+      console.log("Enterprise info data")
+      console.log(data)
+      this.infoData = data
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  onUpdate() {
+    const enterpriseNewData = {...this.presentationData, ...this.infoData}
+    console.log("enterpriseNewData")
+    console.log(enterpriseNewData)
+  }
 }

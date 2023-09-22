@@ -36,26 +36,6 @@ export class MyAccountComponent {
     "¿Puedo personalizar los informes y estadísticas para obtener información específica sobre el progreso de los empleados?",
   ]
 
-  isEditing = false
-
-  enterpriseSocialDataForm: FormGroup = new FormGroup({
-    "enterprisePhotoUrl": new FormControl(null),
-    "enterpriseName": new FormControl(null),
-    "enterpriseFacebook": new FormControl(null),
-    "enterpriseInstagram": new FormControl(null),
-    "enterpriseWebsite": new FormControl(null),
-    "enterpriseLinkedin": new FormControl(null),
-  })
-  enterpriseGeneralDataForm: FormGroup = new FormGroup({
-    "enterpriseDescription": new FormControl(null),
-    "enterpriseSector": new FormControl(null),
-    "enterpriseSize": new FormControl(null),
-    "enterpriseEmployesNo": new FormControl(null),
-    "enterpriseCountry": new FormControl(null),
-    "enterpriseCity": new FormControl(null),
-    "enterprisePostalCode": new FormControl(null),
-  })
-
   adminSocialDataForm: FormGroup = new FormGroup({
     "adminPhotoUrl": new FormControl(null),
     "adminFullName": new FormControl(null),

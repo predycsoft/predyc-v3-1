@@ -1,25 +1,44 @@
-<span class="gray-10">Empresa</span>    
-<div fxLayout="row" fxLayoutAlign="space-between center" class="card-container-sm mgr10 pd05">
-    <div>
-        <img onerror="this.src='assets/images/default/default-user-image.jpg'" 
-        [src]="user.photoUrl" class="avatar5" alt="">
-        <span class="mgl10 ft16 ft600 gray-10">{{enterprise.name}}</span>
+<span class="gray-10">Empresa</span> 
+<form [formGroup]="form" (ngSubmit)="onSubmit()" >
+    <div fxLayout="row" fxLayoutAlign="space-between center" class="card-container-sm mgr10 pd05">
+        <div fxLayout="row" fxLayoutAlign=" center">
+            <div (click)="isEditing ? fileInput.click() : null" [ngClass]="isEditing ? 'cursorPointer' : ''">
+                <img onerror="this.src='assets/images/default/default-user-image.jpg'" 
+                    [src]="user.photoUrl" class="avatar5" alt="">
+            </div>
+            <input #fileInput type="file" style="display: none;" (change)="onFileSelected($event)" formControlName="photoUrl">
+            <span *ngIf="!isEditing" class="mgl10 ft16 ft600 gray-10">{{form.get('name').value}}</span>
+            <input *ngIf="isEditing" type="text" placeholder="name AAAAA" [ngClass]="isEditing ? '' : 'disabledInput'" 
+            class="input mgl10" formControlName="name">
+        </div>
+        <div>
+            <div fxLayout="row">
+                <img [src]="icon.camera" class=" makeGray h14px" alt="">
+                <span *ngIf="!isEditing" class="mgl03">{{form.get('facebook').value}}</span>
+                <input *ngIf="isEditing" type="text" placeholder="facebook BBBBBB" [ngClass]="isEditing ? '' : 'disabledInput'" 
+                class="input fw mgl03" formControlName="facebook">
+            </div>
+            <div fxLayout="row" class="mgt05">
+                <img [src]="icon.instagram_gray" class=" makeGray h14px" alt="">
+                <span *ngIf="!isEditing" class="mgl03">{{form.get('instagram').value}}</span>
+                <input *ngIf="isEditing" type="text" placeholder="instagram CCCC" [ngClass]="isEditing ? '' : 'disabledInput'" 
+                class="input fw mgl03" formControlName="instagram">
+            </div>
+            <div fxLayout="row" class="mgt05">
+                <img [src]="icon.camera" class=" makeGray h14px" alt="">
+                <span *ngIf="!isEditing" class="mgl03">{{form.get('website').value}}</span>
+                <input *ngIf="isEditing" type="text" placeholder="website" [ngClass]="isEditing ? '' : 'disabledInput'" 
+                class="input fw mgl03" formControlName="website">
+            </div>
+            <div fxLayout="row" class="mgt05">
+                <img [src]="icon.linkedin_gray" class=" makeGray h14px" alt="">
+                <span *ngIf="!isEditing" class="mgl03">{{form.get('linkedin').value}}</span>
+                <input *ngIf="isEditing" type="text" placeholder="linkedin" [ngClass]="isEditing ? '' : 'disabledInput'" 
+                class="input fw mgl03" formControlName="linkedin">
+            </div>
+        </div>
+        <div fxFlexAlign="start" (click)="onClick()">
+            <img [src]="icon.licencias" class=" makeGray h20px cursorPointer" alt="">
+        </div>
     </div>
-    <div>
-        <div fxLayout="row">
-            <img [src]="icon.camera" class=" makeGray h14px" alt=""><span class="mgl03">facebook</span>
-        </div>
-        <div fxLayout="row" class="mgt05">
-            <img [src]="icon.instagram_gray" class=" makeGray h14px" alt=""><span class="mgl03">instagram</span>
-        </div>
-        <div fxLayout="row" class="mgt05">
-            <img [src]="icon.camera" class=" makeGray h14px" alt=""><span class="mgl03">www.sitioweb.com</span>
-        </div>
-        <div fxLayout="row" class="mgt05">
-            <img [src]="icon.linkedin_gray" class=" makeGray h14px" alt=""><span class="mgl03">linkedin</span>
-        </div>
-    </div>
-    <div fxFlexAlign="start">
-        <img [src]="icon.licencias" class=" makeGray h20px cursorPointer" alt="">
-    </div>
-</div>
+</form>
