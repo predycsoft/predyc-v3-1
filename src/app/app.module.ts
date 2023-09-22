@@ -77,6 +77,12 @@ import { VimeoUploadService } from './shared/services/vimeo-upload.service';
 import { HttpClientModule } from '@angular/common/http';
 import { InitScriptComponent } from './shared/components/init-script/init-script.component';
 import { MyAccountComponent } from './main-components/my-account/my-account.component';
+import { EnterpriseInfoFormComponent } from './main-components/my-account/enterprise-data/enterprise-info-form/enterprise-info-form.component';
+import { AdminInfoFormComponent } from './main-components/my-account/admin-data/admin-info-form/admin-info-form.component';
+import { EnterpriseDataComponent } from './main-components/my-account/enterprise-data/enterprise-data.component';
+import { AdminDataComponent } from './main-components/my-account/admin-data/admin-data.component';
+import { EnterprisePresentationFormComponent } from './main-components/my-account/enterprise-data/enterprise-presentation-form/enterprise-presentation-form.component';
+import { AdminPresentationFormComponent } from './main-components/my-account/admin-data/admin-presentation-form/admin-presentation-form.component';
 
 @NgModule({
   declarations: [
@@ -109,7 +115,13 @@ import { MyAccountComponent } from './main-components/my-account/my-account.comp
     DialogConfirmarComponent,
     ExitoComponent,
     InitScriptComponent,
-    MyAccountComponent
+    MyAccountComponent,
+    EnterprisePresentationFormComponent,
+    EnterpriseInfoFormComponent,
+    AdminPresentationFormComponent,
+    AdminInfoFormComponent,
+    EnterpriseDataComponent,
+    AdminDataComponent
   ],
   imports: [
     BrowserModule,

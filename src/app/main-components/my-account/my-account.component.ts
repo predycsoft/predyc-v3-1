@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Enterprise } from 'src/app/shared/models/enterprise.model';
 import { User } from 'src/app/shared/models/user.model';
 import { AuthService } from 'src/app/shared/services/auth.service';
@@ -34,6 +35,44 @@ export class MyAccountComponent {
     "¿Cuál es el proceso de configuración inicial de la plataforma para mi empresa?",
     "¿Puedo personalizar los informes y estadísticas para obtener información específica sobre el progreso de los empleados?",
   ]
+
+  isEditing = false
+
+  enterpriseSocialDataForm: FormGroup = new FormGroup({
+    "enterprisePhotoUrl": new FormControl(null),
+    "enterpriseName": new FormControl(null),
+    "enterpriseFacebook": new FormControl(null),
+    "enterpriseInstagram": new FormControl(null),
+    "enterpriseWebsite": new FormControl(null),
+    "enterpriseLinkedin": new FormControl(null),
+  })
+  enterpriseGeneralDataForm: FormGroup = new FormGroup({
+    "enterpriseDescription": new FormControl(null),
+    "enterpriseSector": new FormControl(null),
+    "enterpriseSize": new FormControl(null),
+    "enterpriseEmployesNo": new FormControl(null),
+    "enterpriseCountry": new FormControl(null),
+    "enterpriseCity": new FormControl(null),
+    "enterprisePostalCode": new FormControl(null),
+  })
+
+  adminSocialDataForm: FormGroup = new FormGroup({
+    "adminPhotoUrl": new FormControl(null),
+    "adminFullName": new FormControl(null),
+    "adminJob": new FormControl(null),
+  })
+  adminGeneralDataForm: FormGroup = new FormGroup({
+    "adminName": new FormControl(null),
+    "adminEmail": new FormControl(null),
+    "adminJob": new FormControl(null),
+    "adminLastName": new FormControl(null),
+    "adminPhone": new FormControl(null),
+    "adminCountry": new FormControl(null),
+    "adminCity": new FormControl(null),
+    "adminPostalCode": new FormControl(null),
+  })
+
+  
 
   async ngOnInit(){
     this.authService.user$.subscribe(user=> {
