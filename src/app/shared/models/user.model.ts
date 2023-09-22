@@ -2,6 +2,7 @@ import { DocumentReference } from "@angular/fire/compat/firestore"
 
 export interface UserJson {
   birthdate: number | null
+  city: string | null
   country: string | null
   courseQty: number
   createdAt: number | null // timestamp
@@ -25,6 +26,7 @@ export interface UserJson {
   phoneNumber: string | null
   photoUrl: string | null
   // profileId: string | null
+  postalCode: number | null
   profile: DocumentReference | null
   role: typeof User.ROLE_ADMIN | typeof User.ROLE_STUDENT
   isActive: boolean
@@ -43,6 +45,7 @@ export class User {
 
   constructor(
     public birthdate: number | null,
+    public city: string | null,
     public country: string | null,
     public courseQty: number,
     public createdAt: number | null, // timestamp
@@ -66,6 +69,7 @@ export class User {
     public phoneNumber: string | null,
     public photoUrl: string | null,
     // public profileId: string | null,
+    public postalCode: number | null,
     public profile: DocumentReference | null,
     public role: typeof User.ROLE_ADMIN | typeof User.ROLE_STUDENT,
     public isActive: boolean,
@@ -122,6 +126,7 @@ export class User {
   }): User {
     return User.fromJson({
       birthdate: null,
+      city: null,
       country: null,
       courseQty: 0,
       createdAt: null,
@@ -145,6 +150,7 @@ export class User {
       phoneNumber: null,
       photoUrl: null,
       // profileId: null,
+      postalCode: null,
       profile: null,
       role: configObj.role,
       isActive: true,
@@ -159,6 +165,7 @@ export class User {
   public static fromJson(userJson: UserJson): User {
     return new User(
       userJson.birthdate,
+      userJson.city,
       userJson.country,
       userJson.courseQty,
       userJson.createdAt,
@@ -182,6 +189,7 @@ export class User {
       userJson.phoneNumber,
       userJson.photoUrl,
       // userJson.profileId,
+      userJson.postalCode,
       userJson.profile,
       userJson.role,
       userJson.isActive,
@@ -196,6 +204,7 @@ export class User {
   toJson(): UserJson {
     return {
       birthdate: this.birthdate,
+      city: this.city,
       country: this.country,
       courseQty: this.courseQty,
       createdAt: this.createdAt,
@@ -219,6 +228,7 @@ export class User {
       phoneNumber: this.phoneNumber,
       photoUrl: this.photoUrl,
       // profileId: this.profileId,
+      postalCode: this.postalCode,
       profile: this.profile,
       role: this.role,
       isActive: this.isActive,
