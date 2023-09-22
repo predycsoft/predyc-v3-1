@@ -6,8 +6,8 @@
     "id": null,
     "name": "Empresa de prueba",
     "photoUrl": null,
-    "postalCode": 78904,
-    "sector": "Energías renovables",
+    "zipCode": 78904,
+    "workField": "Energías renovables",
     "socialNetworks": {
         "facebook": null,
         "instagram": null,
