@@ -1,8 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { User } from 'src/app/shared/models/user.model';
-import { AlertsService } from 'src/app/shared/services/alerts.service';
-import { AuthService } from 'src/app/shared/services/auth.service';
 import { IconService } from 'src/app/shared/services/icon.service';
 import { UserService } from 'src/app/shared/services/user.service';
 
@@ -14,9 +12,7 @@ import { UserService } from 'src/app/shared/services/user.service';
 export class AdminInfoFormComponent {
 
   constructor(
-    private authService: AuthService,
     public icon:IconService,
-    private alertService: AlertsService,
     private userService: UserService,
 
   ) {}
@@ -24,7 +20,6 @@ export class AdminInfoFormComponent {
   @Output() onAdminInfoChange: EventEmitter<any> = new EventEmitter<any>()
 
 
-  user: User
   adminUser: User
 
   isEditing = false
@@ -32,17 +27,11 @@ export class AdminInfoFormComponent {
   form: FormGroup
 
   async ngOnInit(){
-    this.authService.user$.subscribe(user=> {
-      this.user = user
-      
-    })
 
     this.userService.getUsersObservable().subscribe(users => {
       if(users.length > 0) {
         const adminUsers = users.filter(x => x.role === "admin")
         this.adminUser = adminUsers.length > 0? adminUsers[0]: null
-        console.log("this.adminUser")
-        console.log(this.adminUser)
         this.initForm()
       }
     })

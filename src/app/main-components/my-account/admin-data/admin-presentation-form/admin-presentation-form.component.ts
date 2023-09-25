@@ -1,10 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Enterprise } from 'src/app/shared/models/enterprise.model';
 import { User } from 'src/app/shared/models/user.model';
 import { AlertsService } from 'src/app/shared/services/alerts.service';
-import { AuthService } from 'src/app/shared/services/auth.service';
-import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
 import { IconService } from 'src/app/shared/services/icon.service';
 import { UserService } from 'src/app/shared/services/user.service';
 
@@ -16,7 +13,6 @@ import { UserService } from 'src/app/shared/services/user.service';
 export class AdminPresentationFormComponent {
 
   constructor(
-    private authService: AuthService,
     public icon:IconService,
     private alertService: AlertsService,
     private userService: UserService,
@@ -25,7 +21,6 @@ export class AdminPresentationFormComponent {
 
   @Output() onAdminPresentationChange: EventEmitter<any> = new EventEmitter<any>()
 
-  user: User
   adminUser: User
 
   imageUrl: string | ArrayBuffer | null = null
@@ -36,9 +31,6 @@ export class AdminPresentationFormComponent {
   form: FormGroup
 
   async ngOnInit(){
-    this.authService.user$.subscribe(user=> {
-      this.user = user
-    })
 
     this.userService.getUsersObservable().subscribe(users => {
       if(users.length > 0) {

@@ -4,7 +4,7 @@
         <div fxLayout="row" fxLayoutAlign="center center">
             <div (click)="isEditing ? fileInput.click() : null" [ngClass]="isEditing ? 'cursorPointer' : ''">
                 <img onerror="this.src='assets/images/default/default-user-image.jpg'" 
-                    [src]="user.photoUrl" class="avatar5" alt="">
+                    [src]="adminUser.photoUrl" class="avatar5" alt="">
             </div>
             <input #fileInput type="file" style="display: none;" (change)="onFileSelected($event)" formControlName="photoUrl">
             <div fxLayout="column" class="mgl10">

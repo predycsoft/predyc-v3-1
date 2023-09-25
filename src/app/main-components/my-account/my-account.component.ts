@@ -34,38 +34,14 @@ export class MyAccountComponent {
     "¿Qué opciones de facturación y pago están disponibles para licencias de acceso?",
     "¿Cuál es el proceso de configuración inicial de la plataforma para mi empresa?",
     "¿Puedo personalizar los informes y estadísticas para obtener información específica sobre el progreso de los empleados?",
-  ]
-
-  adminSocialDataForm: FormGroup = new FormGroup({
-    "adminPhotoUrl": new FormControl(null),
-    "adminFullName": new FormControl(null),
-    "adminJob": new FormControl(null),
-  })
-  adminGeneralDataForm: FormGroup = new FormGroup({
-    "adminName": new FormControl(null),
-    "adminEmail": new FormControl(null),
-    "adminJob": new FormControl(null),
-    "adminLastName": new FormControl(null),
-    "adminPhone": new FormControl(null),
-    "adminCountry": new FormControl(null),
-    "adminCity": new FormControl(null),
-    "adminPostalCode": new FormControl(null),
-  })
-
-  
+  ]  
 
   async ngOnInit(){
     this.authService.user$.subscribe(user=> {
       this.user = user
-      console.log("user")
-      console.log(user)
     })
-
     await this.enterpriseService.whenEnterpriseLoaded()
     this.enterprise = this.enterpriseService.getEnterprise()
-    console.log("this.enterprise")
-    console.log(this.enterprise)
-
   }
 
   signOut() {
