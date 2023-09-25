@@ -14,7 +14,6 @@ export const createUserWithEmailAndPassword = functions.https.onCall(
             return { uid: userRecord.uid };
         } catch (error: any) {
             throw new functions.https.HttpsError('unknown', error.message);
-        }
-        
+        } 
     }
   );

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { User } from '../models/user.model';
 import { Router } from '@angular/router';
 
@@ -18,14 +18,14 @@ export class AuthService {
     private afs: AngularFirestore,
     private router: Router
   ) {
-    this.afAuth.authState.subscribe(user => {
+    this.afAuth.authState.subscribe(async user => {
       if (user && user.uid) {
         // User logged in
-        this.afs.collection<User>(User.collection).doc(user.uid).valueChanges().subscribe(userDoc => {
-          if (userDoc) {
-            this.userSubject.next(userDoc)
-          }
-        })
+        const userDoc = await firstValueFrom(this.afs.collection<User>(User.collection).doc(user.uid).valueChanges())
+        this.userSubject.next(userDoc)
+        // this.afs.collection<User>(User.collection).doc(user.uid).valueChanges().subscribe(user => {
+        //   this.userSubject.next(user)
+        // })
       } else {
         // User not logged in
         this.signOut()

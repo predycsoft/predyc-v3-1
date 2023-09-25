@@ -1,4 +1,4 @@
-{
+export const enterpriseData = {
     "city": "Santiago de Querétaro",
     "country": "México",
     "createdAt": 1695141743802,
