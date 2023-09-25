@@ -1,4 +1,4 @@
-[
+export const countriesData = [
     {
       "name": "Afghanistan",
       "code": "+93",

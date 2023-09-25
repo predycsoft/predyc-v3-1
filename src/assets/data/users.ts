@@ -1,4 +1,4 @@
-[
+export const usersData = [
     {
         "birthdate": "1995-04-12T14:00:00Z",
         "city": "Caracas",

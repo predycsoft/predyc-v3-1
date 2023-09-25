@@ -5,6 +5,7 @@ export interface SkillJson {
     id: string,
     name: string,
     category: DocumentReference,
+    enterprise: DocumentReference,
 }
 
 export class Skill {
@@ -15,6 +16,7 @@ export class Skill {
         public id: string,
         public name: string,
         public category: DocumentReference,
+        public enterprise: DocumentReference
     ){}
 
     public static fromJson(skillJson: SkillJson): Skill {
@@ -22,6 +24,7 @@ export class Skill {
             skillJson.id,
             skillJson.name,
             skillJson.category,
+            skillJson.enterprise,
         )
     }
 
@@ -29,7 +32,9 @@ export class Skill {
         return {
             id: this.id,
             name: this.name,
-            category: this.category
+            category: this.category,
+            enterprise: this.enterprise
+
         }
     }
 }

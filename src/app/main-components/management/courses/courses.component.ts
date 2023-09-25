@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { AfterOnInitResetLoading } from 'src/app/shared/decorators/loading.decorator';
 import { LoaderService } from 'src/app/shared/services/loader.service';
 import { IconService } from '../../../shared/services/icon.service';
-import { Curso } from 'src/app/shared/models/curses.model';
+import { Curso } from 'src/app/shared/models/course.model';
 import { CategoryService } from 'src/app/shared/services/category.service';
 
 import * as competencias from '../../../../assets/data/competencias.json';
@@ -129,11 +129,9 @@ export class CoursesComponent {
       competencias.forEach(async competencia => {
         id++;
         let idtext = id.toString();
-        let skill = new Skill(idtext,competencia.name,CategoryRef)
+        let skill = new Skill(idtext,competencia.name,CategoryRef,null)
         await this.SkillService.addSkill(skill)
       });
-
-
     });
 
     

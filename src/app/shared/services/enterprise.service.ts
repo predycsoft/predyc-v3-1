@@ -18,15 +18,14 @@ export class EnterpriseService {
     private authService: AuthService,
     private afs: AngularFirestore,
     private alertService: AlertsService
-  ) {
-    this.loadEnterpriseData()
-  }
+  ) {}
 
-  private async loadEnterpriseData() {
+  public loadEnterpriseData() {
     this.enterpriseLoaded = new Promise<void>((resolve) => {
       this.authService.user$.subscribe(async (user) => {
         if (user) {
           // Load the enterprise data based on the authenticated user
+          console.log("This runs by only calling this function")
           const enterpriseDocumentReference = await ((user.enterprise as DocumentReference).get())
           this.enterprise = enterpriseDocumentReference.data() as Enterprise
           this.enterpriseRef = this.afs.collection<Enterprise>(Enterprise.collection).doc(this.enterprise.id).ref
@@ -39,8 +38,8 @@ export class EnterpriseService {
   async addEnterprise(enterprise: Enterprise): Promise<void> {
     try {
       const ref = this.afs.collection<Enterprise>(Enterprise.collection).doc().ref;
+      await ref.set({id: ref.id, ...enterprise.toJson()}, { merge: true });
       enterprise.id = ref.id;
-      await ref.set(enterprise.toJson(), { merge: true });
       this.alertService.succesAlert('Has agregado una nueva empresa exitosamente.')
     } catch (error) {
       console.log(error)
@@ -48,8 +47,8 @@ export class EnterpriseService {
     }
   }
 
-  public getEnterpriseRefById(enterpriseId: string): DocumentReference<Enterprise> {
-    return this.afs.collection<Enterprise>(Enterprise.collection).doc(enterpriseId).ref
+  public getEnterpriseRefById(id: string): DocumentReference<Enterprise> {
+    return this.afs.collection<Enterprise>(Enterprise.collection).doc(id).ref
   }
 
   public whenEnterpriseLoaded(): Promise<void> {

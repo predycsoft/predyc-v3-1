@@ -6,7 +6,7 @@ import { AlertsService } from 'src/app/shared/services/alerts.service';
 import { finalize, firstValueFrom } from 'rxjs';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 
-import * as countries from 'src/assets/data/countries.json'
+import { countriesData } from 'src/assets/data/countries'
 import { capitalizeFirstLetter, dateFromCalendarToTimestamp, timestampToDateNumbers } from 'src/app/shared/utils';
 
 @Component({
@@ -30,7 +30,7 @@ export class StudentProfileComponent implements OnInit {
   imageUrl: string | ArrayBuffer | null = null
   uploadedImage: File | null = null
   
-  countries: {name: string, code: string, isoCode: string}[] = countries
+  countries: {name: string, code: string, isoCode: string}[] = countriesData
   departments: {name: string, id: string}[]
   experienceOptions: string[] = [
     "Menos de 1 año",

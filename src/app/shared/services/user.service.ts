@@ -6,6 +6,7 @@ import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs'
 import { EnterpriseService } from './enterprise.service';
 import { AlertsService } from './alerts.service';
 import { generateSixDigitRandomNumber } from '../utils';
+import { AngularFireFunctions } from '@angular/fire/compat/functions';
 @Injectable({
   providedIn: 'root'
 })
@@ -19,16 +20,18 @@ export class UserService {
   constructor(
     private afAuth: AngularFireAuth,
     private afs: AngularFirestore,
+    private fireFunctions: AngularFireFunctions,
     private enterpriseService: EnterpriseService,
     private alertService: AlertsService
   ) {}
 
   public async loadUsers() {
     await this.enterpriseService.whenEnterpriseLoaded()
-    this.getUsers()
     this.usersLoaded = new Promise<void>((resolve) => {
+      this.getUsers()
       this.users$.subscribe(async (users) => {
-        if (users) {
+        if (users.length > 0) {
+          console.log("This runs everytime the load user method is called", users)
           resolve();
         }
       });
@@ -43,10 +46,16 @@ export class UserService {
     try {
       const email = newUser.email as string
       const password = `${generateSixDigitRandomNumber()}`
-      const userCredential = await this.afAuth.createUserWithEmailAndPassword(email, password);
-      const user = userCredential.user;
-      newUser.uid = user?.uid as string
-      await this.afs.collection(User.collection).doc(user?.uid).set(newUser.toJson());
+      const { uid } = await firstValueFrom(
+        this.fireFunctions.httpsCallable('createUserWithEmailAndPassword')({
+          email: email,
+          password: password,
+        })
+      );
+      // const userCredential = await this.afAuth.createUserWithEmailAndPassword(email, password);
+      // const user = userCredential.user;
+      await this.afs.collection(User.collection).doc(uid).set(newUser.toJson());
+      newUser.uid = uid
       this.alertService.succesAlert('Has agregado un nuevo usuario exitosamente.')
     } catch (error) {
       console.log(error)
@@ -112,7 +121,8 @@ export class UserService {
   }
 
   // Arguments could be pageSize, sort, currentPage
-  private getUsers() {
+  public getUsers() {
+    console.log("Esto esta corriendo dos veces? tambien")
     this.afs.collection<User>(User.collection, ref => 
       ref
          .where('enterprise', '==', this.enterpriseService.getEnterpriseRef())
@@ -128,13 +138,16 @@ export class UserService {
         this.alertService.errorAlert(JSON.stringify(error))
       }
     })
-
   }
 
   async getUser(uid: string): Promise<User | undefined> {
     // const user = await firstValueFrom(this.afs.collection<User>(User.collection).doc(uid).valueChanges())
     // return user?.enterprise === this.enterpriseService.getEnterpriseRef() ? user : undefined
     return this.usersSubject.value.find(x => x.uid === uid)
+  }
+
+  public getUserRefById(id: string): DocumentReference<User> {
+    return this.afs.collection<User>(User.collection).doc(id).ref
   }
 
   getUsersObservable(): Observable<User[]> {

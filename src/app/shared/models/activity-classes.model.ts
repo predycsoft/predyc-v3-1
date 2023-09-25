@@ -1,3 +1,5 @@
+import { DocumentReference } from "@angular/fire/compat/firestore"
+
 export const compareByString = (a: string, b: string): number => {
   if (a > b) {
     return 1;
@@ -365,6 +367,8 @@ export interface QuestionJson {
 }
 
 export class Question {
+
+  public static collection = 'question'
   id: string = '';
   text: string = '';
   type: QuestionType = QuestionType.TYPES.sort((a, b) =>
@@ -373,7 +377,8 @@ export class Question {
   image?: string = '';
   options: QuestionOption[] = [];
   points: number = 0;
-  competencias =[]
+  skills: DocumentReference[]=[];
+  
 
   isValidForm(): QuestionValidationResponse {
     const formValidationMethod = QuestionType.FORM_VALIDATION_METHODS.find(
@@ -465,6 +470,9 @@ export interface ActivityJson {
 }
 
 export class Activity {
+
+  public static collection = 'activity'
+  
   id: string = '';
   title: string = '';
   createdAt: number = +new Date();
@@ -474,6 +482,31 @@ export class Activity {
   description: string = '';
   duration: number = 0;
   instrucciones: string = '';
+  claseRef: DocumentReference;
+  enterpriseRef: DocumentReference;
+  courseRef: DocumentReference;
+  archivos: any[] = [];
+  idVideo: number = 0
+  idVideoNew : string = ""
+
+  public toJson() {
+    return {
+      id:this.id,
+      title:this.title,
+      createdAt:this.createdAt,
+      questions:this.questions,
+      isTest:this.isTest,
+      //nuevas Arturo
+      description:this.description,
+      duration:this.duration,
+      instrucciones:this.instrucciones,
+      claseRef:this.claseRef,
+      enterpriseRef:this.enterpriseRef,
+      archivos: this.archivos,
+      idVideo: this.idVideo,
+      idVideoNew: this.idVideoNew,
+    }
+  }
 
   public static fromJson(obj: ActivityJson): Activity {
     let activity = new Activity();
