@@ -1,0 +1,21 @@
+<span class="mgl10 gray-10">Usuario administrador</span>
+<form [formGroup]="form" (ngSubmit)="onSubmit()" >
+    <div fxLayout="row" fxLayoutAlign="space-between center" class="card-container-sm mgl10 pd05">
+        <div fxLayout="row" fxLayoutAlign="center center">
+            <div (click)="isEditing ? fileInput.click() : null" [ngClass]="isEditing ? 'cursorPointer' : ''">
+                <img onerror="this.src='assets/images/default/default-user-image.jpg'" 
+                    [src]="adminUser.photoUrl" class="avatar5" alt="">
+            </div>
+            <input #fileInput type="file" style="display: none;" (change)="onFileSelected($event)" formControlName="photoUrl">
+            <div fxLayout="column" class="mgl10">
+                <span *ngIf="!isEditing" class="ft16 ft600 gray-10">{{form.get('name').value}}</span>
+                <input *ngIf="isEditing" type="text" placeholder="name" [ngClass]="isEditing ? '' : 'disabledInput'" 
+                class="input" formControlName="name"> 
+                <span >{{form.get('job').value}}</span>
+            </div>
+        </div>
+        <div fxFlexAlign="start" (click)="onClick()">
+            <img [src]="icon.licencias" class=" makeGray h20px cursorPointer" alt="">
+        </div>
+    </div>
+</form>

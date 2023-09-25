@@ -1,0 +1,66 @@
+<h3 class="page-title">Mi cuenta</h3>
+<mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" class="swal-overlay">
+    <mat-tab label="Información" class="tab">  
+        <div fxLayout="row" fxLayoutAlign="center">
+            <div class="containerLeft mgt03">
+                <app-enterprise-data></app-enterprise-data>
+            </div>
+            <div class="containerRight mgt03">
+                <app-admin-data></app-admin-data>
+            </div>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="end center">
+            <button class="redButton btn" (click)="signOut()" >Cerrar sesión</button>
+        </div>
+    </mat-tab>
+
+    <mat-tab label="Soporte"> 
+        <div fxLayout="row" fxLayoutAlign="center">
+            <div class="containerLeft mgt03" style="border-right: none;">
+                <span class="gray-10">Account manager</span>
+                <div fxLayout="column" class="card-container-xl mgt05 mgr10 pd05">
+                    <div fxLayout="row" fxLayoutAlign="space-between center">
+                        <div fxLayout="row"  fxLayoutAlign="center center">
+                            <img onerror="this.src='assets/images/default/default-user-image.jpg'" 
+                            [src]="user.photoUrl" class="avatar5" alt="">
+                            <div fxLayout="column" fxLAyout="center center">
+                                <span class="mgl10 ft16 ft600 gray-10">{{enterprise.name}}</span>
+                                <span class="mgl10">Account manager</span>
+                            </div>
+                        </div>
+                        <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="center center">
+                            <img [src]="icon.whatsapp_gray" class="makeGray h24px" alt="">
+                            <button class="blueButton btn">Contactar vía email</button>
+                        </div>
+                    </div>
+                    <div class="mgt05">
+                        <span>
+                            Hola, soy Kevin Grajales, estoy aqui como tu account manager en esta aplicación. Si tienes
+                            alguna pregunta o necesitas asistencia, no dudes en contactarme.
+                        </span>
+                        <span>
+                            Además, cada mes, te proporcionaré un reporte detallado para mantenerte al tanto de los progresos 
+                            y rendimiento
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="containerRight mgt03" >
+                <span class="gray-10 mgl10">Preguntas frecuentes</span>
+                <div fxLayout="column" class="card-container-xl mgt05 mgl10 pd05">
+
+                    <ng-container *ngFor="let question of questions; let i = index; let last = last">
+                        <div fxLayout="row" fxLayoutAlign="space-between center" class="question" [style.border-bottom]="last ? 'none' : ''">
+                            <div fxLayout="row" fxLayoutAlign="start center">
+                                <span>{{i + 1}}.</span>
+                                <span class="mgl05">{{question}}</span>
+                            </div>
+                            <img [src]="icon.addNew" class="makeGray h10px">
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </mat-tab>    
+</mat-tab-group>
+

@@ -1,0 +1,15 @@
+.containerLeft {
+    padding-bottom: 1rem !important;
+    width: 100%;
+    border-right: 1px solid var(--gray-3);
+}
+
+.containerRight {
+    width: 100%;
+}
+
+.question {
+    margin-top: 12px;
+    border-bottom: 1px solid var(--gray-3);
+    padding-bottom: 12px;
+} 
