@@ -353,7 +353,7 @@
                             </div>
                             <!-- Contenedor de las clases -->
                             <div *ngIf="modulo['expanded']">
-                                <div *ngFor="let clase of modulo.clases; trackBy: trackByClase" fxLayout="row" class="fw">
+                                <div *ngFor="let clase of modulo['clases']; trackBy: trackByClase" fxLayout="row" class="fw">
                                     <div class="mgl40 mgr10 fw">
                                         <div class="fw mgb10">
                                             <mat-accordion multi="false" class="fw">
@@ -455,10 +455,10 @@
                                                             <button (click)="openModalAsignarCompetencia(modalAsignarCompetenciasClases,clase)"class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                                                                 <img [src]="icon.flash" class="h16px pdr05" alt="">
                                                                 <!-- Seleccionar competencias -->
-                                                                <ng-container *ngIf="clase.competencias.length == 0">
+                                                                <ng-container *ngIf="clase.competencias && clase.competencias?.length == 0">
                                                                     Agregar competencias
                                                                 </ng-container>
-                                                                <ng-container *ngIf="clase.competencias.length> 0">
+                                                                <ng-container *ngIf="clase.competencias?.length> 0">
                                                                     Cantidad competencias : {{clase.competencias.length}}
                                                                 </ng-container>
                                                             </button>
@@ -749,11 +749,11 @@
                                     <div>
                                         <button (click)="openModalAsignarCompetenciaExamen(modalAsignarCompetenciasExamen,pregunta)" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                                             <img [src]="icon.flash" class="h16px pdr05" alt="">
-                                            <ng-container *ngIf="pregunta.competencias.length == 0">
+                                            <ng-container *ngIf="pregunta['competencias'].length == 0">
                                                 Agregar competencias
                                             </ng-container>
-                                            <ng-container *ngIf="pregunta.competencias.length> 0">
-                                                Cantidad competencias : {{pregunta.competencias.length}}
+                                            <ng-container *ngIf="pregunta['competencias'].length> 0">
+                                                Cantidad competencias : {{pregunta['competencias'].length}}
                                             </ng-container>
                                         </button>
                                     </div>
@@ -971,7 +971,7 @@
                                 </div>
                                 <!-- Contenedor de las clases -->
                                 <div *ngIf="modulo['expanded']">
-                                    <div *ngFor="let clase of modulo.clases; trackBy: trackByClase" fxLayout="row" class="fw">
+                                    <div *ngFor="let clase of modulo['clases']; trackBy: trackByClase" fxLayout="row" class="fw">
                                         <div class="mgl40 mgr10 fw">
                                             <div class="fw mgb10">
                                                 <mat-accordion multi="false" class="fw">
@@ -1046,10 +1046,10 @@
                                                                     <img [src]="icon.taskAdd" class="h16px pdr05" alt="">
                                                                     Revisar estructura actividad
                                                                 </button>
-                                                                <button *ngIf="clase.competencias.length> 0" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                                <button *ngIf="clase.competencias?.length> 0" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                                                                     <img [src]="icon.flash" class="h16px pdr05" alt="">
                                                                     <!-- Seleccionar competencias -->
-                                                                    <ng-container *ngIf="clase.competencias.length> 0">
+                                                                    <ng-container *ngIf="clase.competencias?.length> 0">
                                                                         Cantidad competencias : {{clase.competencias.length}}
                                                                     </ng-container>
                                                                 </button>
@@ -1119,7 +1119,7 @@
             </button>        
             <!-- Contenedor para los dos botones de la derecha -->
             <div fxLayout="row" fxLayoutGap="10px">
-                <button class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                <button (click)="saveBorrador()" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                     Guardar borrador
                 </button>
                 <button *ngIf="activeStep<6" class="blueButton radius4 ft12 h28px mgr10 gray-1" (click)="advanceTab()" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">

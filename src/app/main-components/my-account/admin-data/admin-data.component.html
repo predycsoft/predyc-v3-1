@@ -1,3 +1,4 @@
 
-<app-admin-presentation-form></app-admin-presentation-form>
-<app-admin-info-form></app-admin-info-form>
+<app-admin-presentation-form (onAdminPresentationChange)="onAdminPresentationChangeHandler($event)"></app-admin-presentation-form>
+<app-admin-info-form (onAdminInfoChange)="onAdminInfoChangeHandler($event)"></app-admin-info-form>
+<button class="blueButton btn mgl10 mgt03" (click)="onUpdate()">Actualizar datos del administrador</button>

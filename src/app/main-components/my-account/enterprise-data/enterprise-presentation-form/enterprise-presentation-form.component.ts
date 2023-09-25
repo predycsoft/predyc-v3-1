@@ -1,9 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Enterprise } from 'src/app/shared/models/enterprise.model';
-import { User } from 'src/app/shared/models/user.model';
 import { AlertsService } from 'src/app/shared/services/alerts.service';
-import { AuthService } from 'src/app/shared/services/auth.service';
 import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
 import { IconService } from 'src/app/shared/services/icon.service';
 
@@ -15,7 +13,6 @@ import { IconService } from 'src/app/shared/services/icon.service';
 export class EnterprisePresentationFormComponent {
 
   constructor(
-    private authService: AuthService,
     public icon:IconService,
     private alertService: AlertsService,
     private enterpriseService: EnterpriseService,
@@ -25,7 +22,6 @@ export class EnterprisePresentationFormComponent {
   @Output() onEnterprisePresentationChange: EventEmitter<any> = new EventEmitter<any>()
 
 
-  user: User
   enterprise: Enterprise
 
   imageUrl: string | ArrayBuffer | null = null
@@ -36,9 +32,6 @@ export class EnterprisePresentationFormComponent {
   form: FormGroup
 
   async ngOnInit(){
-    this.authService.user$.subscribe(user=> {
-      this.user = user
-    })
     await this.enterpriseService.whenEnterpriseLoaded()
     this.enterprise = this.enterpriseService.getEnterprise()
 

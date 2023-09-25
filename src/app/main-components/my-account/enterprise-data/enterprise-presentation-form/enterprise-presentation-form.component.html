@@ -4,24 +4,24 @@
         <div fxLayout="row" fxLayoutAlign=" center">
             <div (click)="isEditing ? fileInput.click() : null" [ngClass]="isEditing ? 'cursorPointer' : ''">
                 <img onerror="this.src='assets/images/default/default-user-image.jpg'" 
-                    [src]="user.photoUrl" class="avatar5" alt="">
+                    [src]="enterprise.photoUrl" class="avatar5" alt="">
             </div>
             <input #fileInput type="file" style="display: none;" (change)="onFileSelected($event)" formControlName="photoUrl">
             <span *ngIf="!isEditing" class="mgl10 ft16 ft600 gray-10">{{form.get('name').value}}</span>
-            <input *ngIf="isEditing" type="text" placeholder="name AAAAA" [ngClass]="isEditing ? '' : 'disabledInput'" 
+            <input *ngIf="isEditing" type="text" placeholder="name" [ngClass]="isEditing ? '' : 'disabledInput'" 
             class="input mgl10" formControlName="name">
         </div>
         <div>
             <div fxLayout="row">
                 <img [src]="icon.camera" class=" makeGray h14px" alt="">
                 <span *ngIf="!isEditing" class="mgl03">{{form.get('facebook').value}}</span>
-                <input *ngIf="isEditing" type="text" placeholder="facebook BBBBBB" [ngClass]="isEditing ? '' : 'disabledInput'" 
+                <input *ngIf="isEditing" type="text" placeholder="facebook" [ngClass]="isEditing ? '' : 'disabledInput'" 
                 class="input fw mgl03" formControlName="facebook">
             </div>
             <div fxLayout="row" class="mgt05">
                 <img [src]="icon.instagram_gray" class=" makeGray h14px" alt="">
                 <span *ngIf="!isEditing" class="mgl03">{{form.get('instagram').value}}</span>
-                <input *ngIf="isEditing" type="text" placeholder="instagram CCCC" [ngClass]="isEditing ? '' : 'disabledInput'" 
+                <input *ngIf="isEditing" type="text" placeholder="instagram" [ngClass]="isEditing ? '' : 'disabledInput'" 
                 class="input fw mgl03" formControlName="instagram">
             </div>
             <div fxLayout="row" class="mgt05">
