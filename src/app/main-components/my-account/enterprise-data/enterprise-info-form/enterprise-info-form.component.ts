@@ -28,6 +28,16 @@ export class EnterpriseInfoFormComponent {
 
   form: FormGroup
 
+  onNullFormValues = {
+    description : "Sin descripción",
+    workField : "Sector desconocido",
+    size : "Tamaño desconocido",
+    employesNo : "Cantidad desconocida",
+    country : "País desconocido",
+    city : "Ciudad desconocida",
+    zipCode : "Código postal desconocido",
+  }
+
   async ngOnInit(){
     await this.enterpriseService.whenEnterpriseLoaded()
     this.enterprise = this.enterpriseService.getEnterprise()
@@ -37,26 +47,20 @@ export class EnterpriseInfoFormComponent {
   }
 
   initForm() {
-    let description = "Sin descripción"
-    let workField = "Sector desconocido"
-    let size = "Tamaño desconocido"
-    let employesNo = "Cantidad desconocida"
-    let country = "País desconocido"
-    let city = "Ciudad desconocida"
-    let zipCode = "Código postal desconocido"
 
     // Aqui calculamos de size, employesNo
-    
+    // let size =
+    // let employesNo = 
     //
 
     this.form =  new FormGroup({
-      "description": new FormControl(description),
-      "workField": new FormControl(workField),
-      "size": new FormControl(size),
-      "employesNo": new FormControl(employesNo),
-      "country": new FormControl(country),
-      "city": new FormControl(city),
-      "zipCode": new FormControl(zipCode),
+      "description": new FormControl(null),
+      "workField": new FormControl(null),
+      "size": new FormControl(null),
+      "employesNo": new FormControl(null),
+      "country": new FormControl(null),
+      "city": new FormControl(null),
+      "zipCode": new FormControl(null),
     })
 
     if (this.enterprise){
