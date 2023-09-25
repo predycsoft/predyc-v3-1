@@ -1,0 +1,63 @@
+<div fxLayout="column" class="card-container-lg mgt05 mgr10 pd05">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+        <span class="gray-10">Datos generales de la empresa</span>
+        <img [src]="icon.licencias" class="makeGray h20px cursorPointer" alt="" (click)="onClick()">
+    </div>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" > 
+        <div class="mgl05">
+            <div fxLayout="column" class="mgt05">
+                <span class="makeGray">Descripción de la empresa</span>
+                <span *ngIf="!isEditing">{{form.get('description').value}}</span>
+                <textarea *ngIf="isEditing" #textareaName placeholder="Nombre del usuario"
+                 formControlName="description">
+                </textarea>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt05">
+                <div fxLayout="column">
+                    <span class="makeGray">Sector de la empresa</span>
+                    <span *ngIf="!isEditing">{{form.get('workField').value}}</span>
+                    <input *ngIf="isEditing" type="text" placeholder="workField" [ngClass]="isEditing ? '' : 'disabledInput'" 
+                        class="input fw" formControlName="workField">
+                </div>
+                <div fxLayout="column">
+                    <span class="makeGray">Tamaño de la empresa</span>
+                    <span *ngIf="!isEditing">{{form.get('size').value}}</span>
+                    <input *ngIf="isEditing" type="text" placeholder="size" [ngClass]="isEditing ? '' : 'disabledInput'" 
+                    class="input fw" formControlName="size">
+                </div>
+                <div fxLayout="column">
+                    <span class="makeGray">No. Empleados</span>
+                    <span *ngIf="!isEditing">{{form.get('employesNo').value}}</span>
+                    <input *ngIf="isEditing" type="text" placeholder="employesNo" [ngClass]="isEditing ? '' : 'disabledInput'" 
+                    class="input fw" formControlName="employesNo">
+                </div>
+            </div>
+        </div>
+        <span class="mgt20 mgb05 gray-10">Dirección</span>
+        <div fxLayout="column" class="mgl05">
+            <div fxLayout="row" fxLayoutAlign="space-between center">
+                <div fxLayout="column">
+                    <span class="makeGray">País</span>
+                    <span *ngIf="!isEditing">{{form.get('country').value}}</span>
+                    <input *ngIf="isEditing" type="text" placeholder="country" [ngClass]="isEditing ? '' : 'disabledInput'" 
+                    class="input" formControlName="country">
+                </div>
+                <div fxLayout="column">
+                    <span class="makeGray">Ciudad / Estado</span>
+                    <span *ngIf="!isEditing">{{form.get('city').value}}</span>
+                    <input *ngIf="isEditing" type="text" placeholder="city" [ngClass]="isEditing ? '' : 'disabledInput'" 
+                    class="input" formControlName="city">
+                </div>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="space-between center">
+                <div fxLayout="column" class="mgt03">
+                    <span class="makeGray">CP</span>
+                    <span *ngIf="!isEditing">{{form.get('zipCode').value}}</span>
+                    <input *ngIf="isEditing" type="text" placeholder="zipCode" [ngClass]="isEditing ? '' : 'disabledInput'" 
+                    class="input" formControlName="zipCode">
+                </div>
+    
+            </div>
+        </div>
+    </form>
+</div>

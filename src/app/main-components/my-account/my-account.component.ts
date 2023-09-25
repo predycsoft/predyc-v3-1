@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Enterprise } from 'src/app/shared/models/enterprise.model';
 import { User } from 'src/app/shared/models/user.model';
 import { AuthService } from 'src/app/shared/services/auth.service';
@@ -34,6 +35,24 @@ export class MyAccountComponent {
     "¿Cuál es el proceso de configuración inicial de la plataforma para mi empresa?",
     "¿Puedo personalizar los informes y estadísticas para obtener información específica sobre el progreso de los empleados?",
   ]
+
+  adminSocialDataForm: FormGroup = new FormGroup({
+    "adminPhotoUrl": new FormControl(null),
+    "adminFullName": new FormControl(null),
+    "adminJob": new FormControl(null),
+  })
+  adminGeneralDataForm: FormGroup = new FormGroup({
+    "adminName": new FormControl(null),
+    "adminEmail": new FormControl(null),
+    "adminJob": new FormControl(null),
+    "adminLastName": new FormControl(null),
+    "adminPhone": new FormControl(null),
+    "adminCountry": new FormControl(null),
+    "adminCity": new FormControl(null),
+    "adminPostalCode": new FormControl(null),
+  })
+
+  
 
   async ngOnInit(){
     this.authService.user$.subscribe(user=> {

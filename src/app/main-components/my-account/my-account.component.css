@@ -8,29 +8,8 @@
     width: 100%;
 }
 
-.card-container-sm {
-    border-radius: 10px;
-    overflow: hidden;
-    border: 2px solid #D5DCE0;
-    height: 120px;
-}
-
-.card-container-lg {
-    border-radius: 10px;
-    overflow: hidden;
-    border: 2px solid #D5DCE0;
-    height: 320px;
-}
-
-.card-container-xl {
-    border-radius: 10px;
-    overflow: hidden;
-    border: 2px solid #D5DCE0;
-    height: 450px;
-}
-
 .question {
     margin-top: 12px;
     border-bottom: 1px solid var(--gray-3);
     padding-bottom: 12px;
-}
+} 
