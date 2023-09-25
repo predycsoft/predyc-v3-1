@@ -23,10 +23,12 @@ export class NotificationService {
 
   ngOnInit() {}
 
-  async addNotification(newNotification: Notification): Promise<void> {
+  async addNotification(notification: Notification): Promise<void> {
     try {
-      await this.afs.collection(Notification.collection).doc(newNotification.id).set(newNotification);
-        console.log("Notification added succesfully")
+      const ref = this.afs.collection<Notification>(Notification.collection).doc().ref;
+      await ref.set({id: ref.id, ...notification.toJson()}, { merge: true });
+      notification.id = ref.id;
+      console.log("Notification added succesfully")
       this.alertService.succesAlert('Has agregado una nueva notificacion exitosamente.')
     } catch (error) {
       console.log(error)
