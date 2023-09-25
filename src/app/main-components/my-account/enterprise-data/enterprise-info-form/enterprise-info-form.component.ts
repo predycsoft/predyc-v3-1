@@ -18,7 +18,7 @@ export class EnterpriseInfoFormComponent {
 
   ) {}
 
-  @Output() onEnterpriseInfoChange: EventEmitter<any> = new EventEmitter<any>()
+  @Output() onEnterpriseInfoChange: EventEmitter<{ formValue: FormGroup; isEditing: boolean }> = new EventEmitter<{ formValue: FormGroup; isEditing: boolean }>()
 
 
   user: User
@@ -67,20 +67,34 @@ export class EnterpriseInfoFormComponent {
       this.form.patchValue(this.enterprise)
     }
 
+    this.onEnterpriseInfoChange.emit({
+      formValue: this.form,
+      isEditing: false
+    })
+
   }
 
 
   onClick() {
+    this.isEditing = !this.isEditing;
     if (this.isEditing) {
+      this.onEnterpriseInfoChange.emit({
+        formValue: null,
+        isEditing: true
+      })
+    }
+    else {
       this.onSubmit();
     }
-    this.isEditing = !this.isEditing;
   }
 
   async onSubmit(){
     const controls = this.form.controls
     if (this.form.status === "VALID") {
-      this.onEnterpriseInfoChange.emit(this.form.value)
+      this.onEnterpriseInfoChange.emit({
+        formValue: this.form,
+        isEditing: false
+      })
     }
     else {
       Object.keys(controls).forEach(prop => {
