@@ -1,21 +1,24 @@
 export interface EnterpriseJson {
-    city: string | null,
-    country: string | null,
-    createdAt: number,
-    description: string | null, // Is this required?
-    id: string,
-    name: string,
-    photoUrl: string | null,
-    zipCode: number | null,
-    workField: string | null,
+    city: string | null
+    country: string | null
+    createdAt: number
+    description: string | null // Is this required?
+    id: string
+    name: string
+    photoUrl: string | null
+    totalActivityNotifications: number
+    totalAlertNotifications: number
+    totalRequestNotifications: number
+    zipCode: number | null
+    workField: string | null
     socialNetworks: {
-        facebook: string | null,
-        instagram: string | null,
+        facebook: string | null
+        instagram: string | null
         website: string | null
         linkedin: string | null
     }
-    vimeoFolderId: string | null,
-    vimeoFolderUri: string | null,
+    vimeoFolderId: string | null
+    vimeoFolderUri: string | null
 }
 
 export class Enterprise {
@@ -30,6 +33,9 @@ export class Enterprise {
         public id: string,
         public name: string,
         public photoUrl: string | null,
+        public totalActivityNotifications: number,
+        public totalAlertNotifications: number,
+        public totalRequestNotifications: number,
         public zipCode: number | null,
         public workField: string | null,
         public socialNetworks: {
@@ -51,6 +57,9 @@ export class Enterprise {
             enterpriseJson.id,
             enterpriseJson.name,
             enterpriseJson.photoUrl,
+            enterpriseJson.totalActivityNotifications,
+            enterpriseJson.totalAlertNotifications,
+            enterpriseJson.totalRequestNotifications,
             enterpriseJson.zipCode,
             enterpriseJson.workField,
             enterpriseJson.socialNetworks,
@@ -68,6 +77,9 @@ export class Enterprise {
             id: this.id,
             name: this.name,
             photoUrl: this.photoUrl,
+            totalActivityNotifications: this.totalActivityNotifications,
+            totalAlertNotifications: this.totalAlertNotifications,
+            totalRequestNotifications: this.totalRequestNotifications,
             zipCode: this.zipCode,
             workField: this.workField,
             socialNetworks: this.socialNetworks,

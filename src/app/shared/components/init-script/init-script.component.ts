@@ -64,43 +64,30 @@ export class InitScriptComponent {
     const enterpriseRef = this.enterpriseService.getEnterpriseRef()
     const users = await firstValueFrom(this.userService.getUsersObservable())
     console.log('********* Creating Notifications *********')
-    notificationsData.forEach(notification => {
+    const notifications: Notification[] = notificationsData.map(notification => {
       const randomUser = users[Math.floor(Math.random()*users.length)];
-      console.log("randomUser", randomUser)
       const userRef = this.userService.getUserRefById(randomUser.uid)
-      // console.log("userRef", userRef)
+      console.log("userRef", userRef)
       console.log("enterpriseRef", enterpriseRef)
       console.log("notification", Notification.fromJson({
         ...notification,
         readByUser: notification.readByUser,
-        // userRef: userRef,
+        userRef: userRef,
         enterpriseRef: enterpriseRef
       }))
+      return Notification.fromJson({
+        ...notification,
+        readByUser: notification.readByUser,
+        userRef: userRef,
+        enterpriseRef: enterpriseRef
+      })
     })
-    // const notifications: Notification[] = notificationsData.map(notification => {
-    //   const randomUser = users[Math.floor(Math.random()*users.length)];
-    //   const userRef = this.userService.getUserRefById(randomUser.uid)
-    //   console.log("userRef", userRef)
-    //   console.log("enterpriseRef", enterpriseRef)
-    //   console.log("notification", Notification.fromJson({
-    //     ...notification,
-    //     readByUser: notification.readByUser,
-    //     userRef: userRef,
-    //     enterpriseRef: enterpriseRef
-    //   }))
-    //   return Notification.fromJson({
-    //     ...notification,
-    //     readByUser: notification.readByUser,
-    //     userRef: userRef,
-    //     enterpriseRef: enterpriseRef
-    //   })
-    // })
-    // console.log("notifications", notifications)
+    console.log("notifications", notifications)
 
 
-    // for (let notification of notifications) {
-    //   await this.notificationService.addNotification(notification)
-    // }
+    for (let notification of notifications) {
+      await this.notificationService.addNotification(notification)
+    }
     console.log(`Finished Creating Notification`)
 
   }
