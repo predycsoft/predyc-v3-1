@@ -26,6 +26,17 @@ export class AdminInfoFormComponent {
 
   form: FormGroup
 
+  onNullFormValues = {
+    firstName: "Nombres",
+    email: "Email desconocido",
+    job: "Cargo desconocido",
+    secondName: "Apellidos",
+    phoneNumber: "Teléfono desconocido",
+    country: "País desconocido",
+    city: "Ciudad desconocida",
+    zipCode: "Código postal desconocido",
+  }
+
   async ngOnInit(){
 
     this.userService.getUsersObservable().subscribe(users => {
@@ -39,28 +50,22 @@ export class AdminInfoFormComponent {
   }
 
   initForm() {
-    let firstName = "Carlos"
-    let email = "Email desconocido"
-    let job = "Cargo desconocido"
-    let secondName = "Martínez Encinas"
-    let phoneNumber = "Teléfono desconocido"
-    let country = "País desconocido"
-    let city = "Ciudad desconocida"
-    let zipCode = "Código postal desconocido"
+
 
     // Aqui podemos definir firstName y secondName a partir del name del adminUser
-
+    // let firstName = ""
+    // let secondName = ""
     //
     
     this.form =  new FormGroup({
-      "firstName": new FormControl(firstName),
-      "email": new FormControl(email),
-      "job": new FormControl(job),
-      "secondName": new FormControl(secondName),
-      "phoneNumber": new FormControl(phoneNumber),
-      "country": new FormControl(country),
-      "city": new FormControl(city),
-      "zipCode": new FormControl(zipCode),
+      "firstName": new FormControl(null),
+      "email": new FormControl(null),
+      "job": new FormControl(null),
+      "secondName": new FormControl(null),
+      "phoneNumber": new FormControl(null),
+      "country": new FormControl(null),
+      "city": new FormControl(null),
+      "zipCode": new FormControl(null),
     })
 
     if (this.adminUser) {

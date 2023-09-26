@@ -30,6 +30,12 @@ export class AdminPresentationFormComponent {
 
   form: FormGroup
 
+  onNullFormValues = {
+    photoUrl : "",
+    name : "Administrador",
+    job: null,
+  }
+
   async ngOnInit(){
 
     this.userService.getUsersObservable().subscribe(users => {
@@ -48,14 +54,11 @@ export class AdminPresentationFormComponent {
   }
 
   initForm() {
-    let photoUrl = null
-    let name = "Administrador desconocido"
-    let job = null
 
     this.form = new FormGroup({
-      "photoUrl": new FormControl(photoUrl),
-      "name": new FormControl(name),
-      "job": new FormControl(job)
+      "photoUrl": new FormControl(null),
+      "name": new FormControl(null),
+      "job": new FormControl(null)
     })
 
     if (this.adminUser) {

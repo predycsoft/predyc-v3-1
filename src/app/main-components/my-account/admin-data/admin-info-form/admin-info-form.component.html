@@ -9,30 +9,40 @@
     
                 <div fxLayout="column" class="mgt05">
                     <span class="makeGray">Nombre (s)</span>
-                    <span *ngIf="!isEditing">{{form.get('firstName').value}}</span>
-                    <input *ngIf="isEditing" type="text" placeholder="Nombre (s)" [ngClass]="isEditing ? '' : 'disabledInput'" 
+                    <span *ngIf="!isEditing">
+                        {{form.get('firstName').value ? form.get('firstName').value : onNullFormValues.firstName}}
+                    </span>
+                    <input *ngIf="isEditing" type="text" placeholder="Introduzca el (los) Nombre (s)" [ngClass]="isEditing ? '' : 'disabledInput'" 
                     class="input" formControlName="firstName">
     
                     <span class="makeGray mgt03">Mail</span>
-                    <span *ngIf="!isEditing">{{form.get('email').value}}</span>
-                    <input *ngIf="isEditing" type="text" placeholder="Correo electrónico" [ngClass]="isEditing ? '' : 'disabledInput'" 
+                    <span *ngIf="!isEditing">
+                        {{form.get('email').value ? form.get('email').value : onNullFormValues.email}}
+                    </span>
+                    <input *ngIf="isEditing" type="text" placeholder="Introduzca el Correo electrónico" [ngClass]="isEditing ? '' : 'disabledInput'" 
                     class="input" formControlName="email">
     
                     <span class="makeGray mgt03">Cargo</span>
-                    <span *ngIf="!isEditing">{{form.get('job').value}}</span>
-                    <input *ngIf="isEditing" type="text" placeholder="Cargo" [ngClass]="isEditing ? '' : 'disabledInput'" 
+                    <span *ngIf="!isEditing">
+                        {{form.get('job').value ? form.get('job').value : onNullFormValues.job}}
+                    </span>
+                    <input *ngIf="isEditing" type="text" placeholder="Introduzca el Cargo" [ngClass]="isEditing ? '' : 'disabledInput'" 
                     class="input" formControlName="job">
                 </div>
     
                 <div fxLayout="column" class="mgt05">
                     <span class="makeGray">Apellido (s)</span>
-                    <span *ngIf="!isEditing">{{form.get('secondName').value}}</span>
-                    <input *ngIf="isEditing" type="text" placeholder="Apellido (s)" [ngClass]="isEditing ? '' : 'disabledInput'" 
+                    <span *ngIf="!isEditing">
+                        {{form.get('secondName').value ? form.get('secondName').value : onNullFormValues.secondName}}
+                    </span>
+                    <input *ngIf="isEditing" type="text" placeholder="Introduzca el (los) Apellido (s)" [ngClass]="isEditing ? '' : 'disabledInput'" 
                     class="input" formControlName="secondName">
     
                     <span class="makeGray mgt03">Teléfono</span>
-                    <span *ngIf="!isEditing">{{form.get('phoneNumber').value? form.get('phoneNumber').value : "Teléfono desconocido"}}</span>
-                    <input *ngIf="isEditing" type="number" placeholder="Teléfono" [ngClass]="isEditing ? '' : 'disabledInput'" 
+                    <span *ngIf="!isEditing">
+                        {{form.get('phoneNumber').value ? form.get('phoneNumber').value : onNullFormValues.phoneNumber}}
+                    </span>
+                    <input *ngIf="isEditing" type="number" placeholder="Introduzca el Teléfono" [ngClass]="isEditing ? '' : 'disabledInput'" 
                     class="input" formControlName="phoneNumber">
                 </div>
     
@@ -44,22 +54,28 @@
             <div fxLayout="row" fxLayoutAlign="space-between center">
                 <div fxLayout="column">
                     <span class="makeGray">País</span>
-                    <span *ngIf="!isEditing">{{form.get('country').value}}</span>
-                    <input *ngIf="isEditing" type="text" placeholder="País" [ngClass]="isEditing ? '' : 'disabledInput'" 
+                    <span *ngIf="!isEditing">
+                        {{form.get('country').value ? form.get('country').value : onNullFormValues.country}}
+                    </span>
+                    <input *ngIf="isEditing" type="text" placeholder="Introduzca el País" [ngClass]="isEditing ? '' : 'disabledInput'" 
                     class="input" formControlName="country">
                 </div>
                 <div fxLayout="column">
                     <span class="makeGray">Ciudad / Estado</span>
-                    <span *ngIf="!isEditing">{{form.get('city').value}}</span>
-                    <input *ngIf="isEditing" type="text" placeholder="Ciudad" [ngClass]="isEditing ? '' : 'disabledInput'" 
+                    <span *ngIf="!isEditing">
+                        {{form.get('city').value ? form.get('city').value : onNullFormValues.city}}
+                    </span>
+                    <input *ngIf="isEditing" type="text" placeholder="Introduzca la Ciudad" [ngClass]="isEditing ? '' : 'disabledInput'" 
                     class="input" formControlName="city">
                 </div>
             </div>
             <div fxLayout="row" fxLayoutAlign="space-between center">
                 <div fxLayout="column" class="mgt03">
                     <span class="makeGray">CP</span>
-                    <span *ngIf="!isEditing">{{form.get('zipCode').value}}</span>
-                    <input *ngIf="isEditing" type="text" placeholder="Código Postal" [ngClass]="isEditing ? '' : 'disabledInput'" 
+                    <span *ngIf="!isEditing">
+                        {{form.get('zipCode').value ? form.get('zipCode').value : onNullFormValues.zipCode}}
+                    </span>
+                    <input *ngIf="isEditing" type="text" placeholder="Introduzca el Código Postal" [ngClass]="isEditing ? '' : 'disabledInput'" 
                     class="input" formControlName="zipCode">
                 </div>
             </div>
