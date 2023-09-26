@@ -18,7 +18,7 @@ export class EnterpriseInfoFormComponent {
 
   ) {}
 
-  @Output() onEnterpriseInfoChange: EventEmitter<{ formValue: FormGroup; isEditing: boolean }> = new EventEmitter<{ formValue: FormGroup; isEditing: boolean }>()
+  @Output() onEnterpriseInfoChange: EventEmitter<{ formValue: Object; isEditing: boolean }> = new EventEmitter<{ formValue: Object; isEditing: boolean }>()
 
 
   user: User
@@ -68,7 +68,7 @@ export class EnterpriseInfoFormComponent {
     }
 
     this.onEnterpriseInfoChange.emit({
-      formValue: this.form,
+      formValue: this.form.value,
       isEditing: false
     })
 
@@ -92,7 +92,7 @@ export class EnterpriseInfoFormComponent {
     const controls = this.form.controls
     if (this.form.status === "VALID") {
       this.onEnterpriseInfoChange.emit({
-        formValue: this.form,
+        formValue: this.form.value,
         isEditing: false
       })
     }

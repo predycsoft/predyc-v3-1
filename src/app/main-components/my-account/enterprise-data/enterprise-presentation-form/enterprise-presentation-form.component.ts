@@ -69,7 +69,7 @@ export class EnterprisePresentationFormComponent {
     })
 
     this.onEnterprisePresentationChange.emit({
-      formValue: this.form,
+      formValue: this.form.value,
       isEditing: false
     })
   }
@@ -91,7 +91,7 @@ export class EnterprisePresentationFormComponent {
     const controls = this.form.controls
     if (this.form.status === "VALID") {
       this.onEnterprisePresentationChange.emit({
-        formValue: this.form,
+        formValue: this.form.value,
         isEditing: false
       })
     }

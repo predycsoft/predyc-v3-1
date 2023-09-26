@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-enterprise-data',
@@ -8,24 +7,25 @@ import { FormGroup } from '@angular/forms';
 })
 export class EnterpriseDataComponent {
 
+  // From presentation form (above form)
   presentationData = {}
   presentationEditingFlag = false
+  originalPresentationData: any; 
+  // From info form (below form)
   infoData = {}
   infoEditingFlag = false
-
   originalInfoData: any; 
-  originalPresentationData: any; 
 
 
-  onEnterprisePresentationChangeHandler(data: { formValue: FormGroup; isEditing: boolean }) {
+  onEnterprisePresentationChangeHandler(data: { formValue: Object; isEditing: boolean }) {
     try {
       if (data.formValue){
         // Si es la primera carga, almacenar el valor original.
         if(!this.originalPresentationData){ 
-          this.originalPresentationData = data.formValue.value
+          this.originalPresentationData = data.formValue
         };
         // Almacena el valor actual del formulario.
-        this.presentationData = data.formValue.value;
+        this.presentationData = data.formValue;
       }
       this.presentationEditingFlag = data.isEditing;
     } catch (error) {
@@ -33,13 +33,13 @@ export class EnterpriseDataComponent {
     }
   }
 
-  onEnterpriseInfoChangeHandler(data: { formValue: FormGroup; isEditing: boolean }) {
+  onEnterpriseInfoChangeHandler(data: { formValue: Object; isEditing: boolean }) {
     try {
       if (data.formValue){
         if(!this.originalInfoData){ 
-          this.originalInfoData = data.formValue.value
+          this.originalInfoData = data.formValue
         };
-        this.infoData = data.formValue.value;
+        this.infoData = data.formValue;
       }
       this.infoEditingFlag = data.isEditing;
     } catch (error) {

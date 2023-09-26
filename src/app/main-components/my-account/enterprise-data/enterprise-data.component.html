@@ -1,6 +1,5 @@
 
 <app-enterprise-presentation-form (onEnterprisePresentationChange)="onEnterprisePresentationChangeHandler($event)"></app-enterprise-presentation-form>
 <app-enterprise-info-form (onEnterpriseInfoChange)="onEnterpriseInfoChangeHandler($event)"></app-enterprise-info-form>
-<!-- Mostrar solo cuando no se este editando en ninguno de los 2 componentes -->
 <button *ngIf="showButton()" class="blueButton btn mgt03" (click)="onUpdate()">Actualizar datos de la empresa</button>
 
