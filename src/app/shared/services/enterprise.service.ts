@@ -38,7 +38,7 @@ export class EnterpriseService {
   async addEnterprise(enterprise: Enterprise): Promise<void> {
     try {
       const ref = this.afs.collection<Enterprise>(Enterprise.collection).doc().ref;
-      await ref.set({id: ref.id, ...enterprise.toJson()}, { merge: true });
+      await ref.set({...enterprise.toJson(), id: ref.id}, { merge: true });
       enterprise.id = ref.id;
       this.alertService.succesAlert('Has agregado una nueva empresa exitosamente.')
     } catch (error) {
