@@ -58,13 +58,13 @@ export class AdminInfoFormComponent {
     //
     
     this.form =  new FormGroup({
-      "firstName": new FormControl(null),
-      "email": new FormControl(null),
-      "job": new FormControl(null),
-      "secondName": new FormControl(null),
+      "firstName": new FormControl(""),
+      "email": new FormControl(""),
+      "job": new FormControl(""),
+      "secondName": new FormControl(""),
       "phoneNumber": new FormControl(null),
-      "country": new FormControl(null),
-      "city": new FormControl(null),
+      "country": new FormControl(""),
+      "city": new FormControl(""),
       "zipCode": new FormControl(null),
     })
 

@@ -31,6 +31,15 @@ export class EnterprisePresentationFormComponent {
 
   form: FormGroup
 
+  onNullFormValues = {
+    photoUrl: null,
+    name: "Empresa",
+    facebook: "Facebook desconocido",
+    instagram: "Instagram desconocido",
+    website: "Página web desconocida",
+    linkedin: "Linkedin desconocido",
+  }
+
   async ngOnInit(){
     await this.enterpriseService.whenEnterpriseLoaded()
     this.enterprise = this.enterpriseService.getEnterprise()
@@ -43,21 +52,23 @@ export class EnterprisePresentationFormComponent {
   }
 
   initForm() {
-    let photoUrl = null
-    let name = "Empresa"
-    let facebook = "Facebook desconocido"
-    let instagram = "Instagram desconocido"
-    let website = "Página web desconocida"
-    let linkedin = "Linkedin desconocido"
 
     const socialNetworks = this.enterprise.socialNetworks
+    let facebook = ""
+    let instagram = ""
+    let website = ""
+    let linkedin = ""
+    let name = ""
+    let photoUrl = ""
     if (socialNetworks) {
-      facebook = socialNetworks.facebook ? socialNetworks.facebook : facebook 
-      instagram = socialNetworks.instagram ? socialNetworks.instagram : instagram 
-      website = socialNetworks.website ? socialNetworks.website : website 
-      linkedin = socialNetworks.linkedin ? socialNetworks.linkedin : linkedin 
+      facebook = socialNetworks.facebook ? socialNetworks.facebook : facebook
+      instagram = socialNetworks.instagram ? socialNetworks.instagram : instagram
+      website = socialNetworks.website ? socialNetworks.website : website
+      linkedin = socialNetworks.linkedin ? socialNetworks.linkedin : linkedin
     }
-    name = this.enterprise.name
+    name = this.enterprise.name ? this.enterprise.name : name
+    photoUrl = this.enterprise.photoUrl ? this.enterprise.photoUrl : photoUrl
+    
 
     this.form = new FormGroup({
       "photoUrl": new FormControl(photoUrl),

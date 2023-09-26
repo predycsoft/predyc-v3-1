@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Enterprise } from 'src/app/shared/models/enterprise.model';
-import { User } from 'src/app/shared/models/user.model';
 import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
 import { IconService } from 'src/app/shared/services/icon.service';
 
@@ -21,7 +20,6 @@ export class EnterpriseInfoFormComponent {
   @Output() onEnterpriseInfoChange: EventEmitter<{ formValue: Object; isEditing: boolean }> = new EventEmitter<{ formValue: Object; isEditing: boolean }>()
 
 
-  user: User
   enterprise: Enterprise
 
   isEditing = false
@@ -54,12 +52,12 @@ export class EnterpriseInfoFormComponent {
     //
 
     this.form =  new FormGroup({
-      "description": new FormControl(null),
-      "workField": new FormControl(null),
-      "size": new FormControl(null),
-      "employesNo": new FormControl(null),
-      "country": new FormControl(null),
-      "city": new FormControl(null),
+      "description": new FormControl(""),
+      "workField": new FormControl(""),
+      "size": new FormControl(""),
+      "employesNo": new FormControl(""),
+      "country": new FormControl(""),
+      "city": new FormControl(""),
       "zipCode": new FormControl(null),
     })
 

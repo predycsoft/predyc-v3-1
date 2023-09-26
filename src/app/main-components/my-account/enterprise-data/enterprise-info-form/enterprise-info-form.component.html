@@ -53,7 +53,7 @@
                 <div fxLayout="column" class="mgt03">
                     <span class="makeGray">CP</span>
                     <span *ngIf="!isEditing">{{form.get('zipCode').value ? form.get('zipCode').value : onNullFormValues.zipCode}}</span>
-                    <input *ngIf="isEditing" type="text" placeholder="Introduzca el código postal" [ngClass]="isEditing ? '' : 'disabledInput'" 
+                    <input *ngIf="isEditing" type="number" placeholder="Introduzca el código postal" [ngClass]="isEditing ? '' : 'disabledInput'" 
                     class="input" formControlName="zipCode">
                 </div>
     

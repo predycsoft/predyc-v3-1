@@ -56,9 +56,9 @@ export class AdminPresentationFormComponent {
   initForm() {
 
     this.form = new FormGroup({
-      "photoUrl": new FormControl(null),
-      "name": new FormControl(null),
-      "job": new FormControl(null)
+      "photoUrl": new FormControl(""),
+      "name": new FormControl(""),
+      "job": new FormControl("")
     })
 
     if (this.adminUser) {

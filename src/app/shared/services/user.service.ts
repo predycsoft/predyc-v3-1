@@ -108,7 +108,7 @@ export class UserService {
     }
   }
 
-  async editUser(user: User): Promise<void> {
+  async editUser(user): Promise<void> {
     try {
       await this.afs.collection(User.collection).doc(user.uid as string).set(
         user, { merge: true }

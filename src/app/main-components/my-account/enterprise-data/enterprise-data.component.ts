@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Enterprise } from 'src/app/shared/models/enterprise.model';
+import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
 
 @Component({
   selector: 'app-enterprise-data',
@@ -7,57 +9,99 @@ import { Component } from '@angular/core';
 })
 export class EnterpriseDataComponent {
 
+  constructor (
+    private enterpriseService: EnterpriseService,
+  ){}
+
+  enterprise: Enterprise
+
   // From presentation form (above form)
   presentationData = {}
-  presentationEditingFlag = false
   originalPresentationData: any; 
   // From info form (below form)
   infoData = {}
-  infoEditingFlag = false
   originalInfoData: any; 
 
+  async ngOnInit(){
+    await this.enterpriseService.whenEnterpriseLoaded()
+    this.enterprise = this.enterpriseService.getEnterprise()
+  }
 
-  onEnterprisePresentationChangeHandler(data: { formValue: Object; isEditing: boolean }) {
-    try {
-      if (data.formValue){
-        // Si es la primera carga, almacenar el valor original.
-        if(!this.originalPresentationData){ 
-          this.originalPresentationData = data.formValue
-        };
-        // Almacena el valor actual del formulario.
-        this.presentationData = data.formValue;
-      }
-      this.presentationEditingFlag = data.isEditing;
-    } catch (error) {
-      console.log(error)
+    onEnterprisePresentationChangeHandler(data: { formValue: Object; isEditing: boolean }) {
+      this.handleDataChange(data, 'presentation');
     }
-  }
-
-  onEnterpriseInfoChangeHandler(data: { formValue: Object; isEditing: boolean }) {
-    try {
-      if (data.formValue){
-        if(!this.originalInfoData){ 
-          this.originalInfoData = data.formValue
-        };
-        this.infoData = data.formValue;
-      }
-      this.infoEditingFlag = data.isEditing;
-    } catch (error) {
-      console.log(error)
+  
+    onEnterpriseInfoChangeHandler(data: { formValue: Object; isEditing: boolean }) {
+      this.handleDataChange(data, 'info');
     }
-  }
+  
+    handleDataChange(data: { formValue: Object; isEditing: boolean }, type: string) {
+      try {
+        if (data.formValue) {
+          if (type === 'presentation') {
+            if(!this.originalPresentationData){ 
+              this.originalPresentationData = data.formValue
+            };
+            this.presentationData = data.formValue;
+            if (!data.isEditing && this.hasDataChanged('presentation')) {
+              this.onUpdate()
+            }
+          } 
+          else if (type === 'info') {
+            if(!this.originalInfoData){ 
+              this.originalInfoData = data.formValue
+            };
+            this.infoData = data.formValue;
+            if (!data.isEditing && this.hasDataChanged('info')) {
+              this.onUpdate()
+            }
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  
+    hasDataChanged(type: string): boolean {
+      if (type === 'presentation') {
+        return JSON.stringify(this.originalPresentationData) !== JSON.stringify(this.presentationData);
+      } 
+      else if (type === 'info') {
+        return JSON.stringify(this.originalInfoData) !== JSON.stringify(this.infoData);
+      }
+      return false;
+    }
+  
+    async onUpdate() {
+      const newData = { 
+        photoUrl: this.presentationData["photoUrl"],
+        name: this.presentationData["name"],
+        socialNetworks: {
+          facebook: this.presentationData["facebook"],
+          instagram: this.presentationData["instagram"],
+          linkedin: this.presentationData["linkedin"],
+          website: this.presentationData["website"]
+        }, 
+        ...this.infoData 
+      }
 
-  showButton(): boolean {
-    return !this.presentationEditingFlag && !this.infoEditingFlag && 
-    (JSON.stringify(this.originalInfoData) !== JSON.stringify(this.infoData) || JSON.stringify(this.originalPresentationData) !== JSON.stringify(this.presentationData));
-  }
+      // let updatedEnterprise: Enterprise = {...this.enterprise}
+      let updatedEnterprise = {...this.enterprise}
 
-  onUpdate() {
-    const enterpriseNewData = {...this.presentationData, ...this.infoData}
-    console.log("enterpriseNewData")
-    console.log(enterpriseNewData)
+      for (const key in newData) {
+        if (Object.hasOwnProperty.call(updatedEnterprise, key)) {
+          updatedEnterprise[key] = newData[key];
+        }
+      }
+      
+      console.log("updatedEnterprise nuevo")
+      console.log(updatedEnterprise)
 
-    this.originalInfoData = this.infoData
-    this.originalPresentationData = this.presentationData
-  }
+      await this.enterpriseService.editEnterprise(updatedEnterprise)
+      
+      // Descomentar la siguiente linea
+      // this.enterprise = { ...updatedEnterprise}
+      this.originalInfoData = { ...this.infoData }
+      this.originalPresentationData = { ...this.presentationData }
+    }
 }

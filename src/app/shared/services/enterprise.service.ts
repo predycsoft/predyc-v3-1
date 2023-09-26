@@ -47,6 +47,18 @@ export class EnterpriseService {
     }
   }
 
+  async editEnterprise(enteprise): Promise<void> {
+    try {
+      await this.afs.collection(Enterprise.collection).doc(enteprise.id as string).set(
+        enteprise, { merge: true }
+      );
+      this.alertService.infoAlert('Has editado la informacion de la empresa exitosamente.')
+    } catch (error) {
+      console.log(error)
+      this.alertService.errorAlert(JSON.stringify(error))
+    }
+  }
+
   public getEnterpriseRefById(id: string): DocumentReference<Enterprise> {
     return this.afs.collection<Enterprise>(Enterprise.collection).doc(id).ref
   }

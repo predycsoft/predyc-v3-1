@@ -75,7 +75,7 @@
                     <span *ngIf="!isEditing">
                         {{form.get('zipCode').value ? form.get('zipCode').value : onNullFormValues.zipCode}}
                     </span>
-                    <input *ngIf="isEditing" type="text" placeholder="Introduzca el Código Postal" [ngClass]="isEditing ? '' : 'disabledInput'" 
+                    <input *ngIf="isEditing" type="number" placeholder="Introduzca el Código Postal" [ngClass]="isEditing ? '' : 'disabledInput'" 
                     class="input" formControlName="zipCode">
                 </div>
             </div>

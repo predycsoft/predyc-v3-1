@@ -7,32 +7,42 @@
                     [src]="enterprise.photoUrl" class="avatar5" alt="">
             </div>
             <input #fileInput type="file" style="display: none;" (change)="onFileSelected($event)" formControlName="photoUrl">
-            <span *ngIf="!isEditing" class="mgl10 ft16 ft600 gray-10">{{form.get('name').value}}</span>
+            <span *ngIf="!isEditing" class="mgl10 ft16 ft600 gray-10">
+                {{form.get('name').value ? form.get('name').value : onNullFormValues.name}}
+            </span>
             <input *ngIf="isEditing" type="text" placeholder="Introduzca el nombre" [ngClass]="isEditing ? '' : 'disabledInput'" 
             class="input mgl10" formControlName="name">
         </div>
         <div>
             <div fxLayout="row">
                 <img [src]="icon.camera" class=" makeGray h14px" alt="">
-                <span *ngIf="!isEditing" class="mgl03">{{form.get('facebook').value}}</span>
+                <span *ngIf="!isEditing" class="mgl03">
+                    {{form.get('facebook').value ? form.get('facebook').value : onNullFormValues.facebook}}
+                </span>
                 <input *ngIf="isEditing" type="text" placeholder="Introduzca el facebook" [ngClass]="isEditing ? '' : 'disabledInput'" 
                 class="input fw mgl03" formControlName="facebook">
             </div>
             <div fxLayout="row" class="mgt05">
                 <img [src]="icon.instagram_gray" class=" makeGray h14px" alt="">
-                <span *ngIf="!isEditing" class="mgl03">{{form.get('instagram').value}}</span>
+                <span *ngIf="!isEditing" class="mgl03">
+                    {{form.get('instagram').value ? form.get('instagram').value : onNullFormValues.instagram}}
+                </span>
                 <input *ngIf="isEditing" type="text" placeholder="Introduzca el instagram" [ngClass]="isEditing ? '' : 'disabledInput'" 
                 class="input fw mgl03" formControlName="instagram">
             </div>
             <div fxLayout="row" class="mgt05">
                 <img [src]="icon.camera" class=" makeGray h14px" alt="">
-                <span *ngIf="!isEditing" class="mgl03">{{form.get('website').value}}</span>
+                <span *ngIf="!isEditing" class="mgl03">
+                    {{form.get('website').value ? form.get('website').value : onNullFormValues.website}}
+                </span>
                 <input *ngIf="isEditing" type="text" placeholder="Introduzca la página web" [ngClass]="isEditing ? '' : 'disabledInput'" 
                 class="input fw mgl03" formControlName="website">
             </div>
             <div fxLayout="row" class="mgt05">
                 <img [src]="icon.linkedin_gray" class=" makeGray h14px" alt="">
-                <span *ngIf="!isEditing" class="mgl03">{{form.get('linkedin').value}}</span>
+                <span *ngIf="!isEditing" class="mgl03">
+                    {{form.get('linkedin').value ? form.get('linkedin').value : onNullFormValues.linkedin}}
+                </span>
                 <input *ngIf="isEditing" type="text" placeholder="Introduzca el linkedin" [ngClass]="isEditing ? '' : 'disabledInput'" 
                 class="input fw mgl03" formControlName="linkedin">
             </div>
