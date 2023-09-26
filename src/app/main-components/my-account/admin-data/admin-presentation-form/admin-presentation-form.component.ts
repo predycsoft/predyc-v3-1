@@ -19,7 +19,7 @@ export class AdminPresentationFormComponent {
 
   ) {}
 
-  @Output() onAdminPresentationChange: EventEmitter<any> = new EventEmitter<any>()
+  @Output() onAdminPresentationChange: EventEmitter<{ formValue: FormGroup; isEditing: boolean }> = new EventEmitter<{ formValue: FormGroup; isEditing: boolean }>()
 
   adminUser: User
 
@@ -65,19 +65,33 @@ export class AdminPresentationFormComponent {
       this.form.patchValue(this.adminUser)
     }
 
+    this.onAdminPresentationChange.emit({
+      formValue: this.form.value,
+      isEditing: false
+    })
+
   }
 
   onClick() {
+    this.isEditing = !this.isEditing;
     if (this.isEditing) {
+      this.onAdminPresentationChange.emit({
+        formValue: null,
+        isEditing: true
+      })
+    }
+    else {
       this.onSubmit();
     }
-    this.isEditing = !this.isEditing;
   }
 
   async onSubmit(){
     const controls = this.form.controls
     if (this.form.status === "VALID") {
-      this.onAdminPresentationChange.emit(this.form.value)
+      this.onAdminPresentationChange.emit({
+        formValue: this.form.value,
+        isEditing: false
+      })
     }
     else {
       Object.keys(controls).forEach(prop => {

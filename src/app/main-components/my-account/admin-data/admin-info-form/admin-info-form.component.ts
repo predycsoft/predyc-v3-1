@@ -17,7 +17,7 @@ export class AdminInfoFormComponent {
 
   ) {}
 
-  @Output() onAdminInfoChange: EventEmitter<any> = new EventEmitter<any>()
+  @Output() onAdminInfoChange: EventEmitter<{ formValue: Object; isEditing: boolean }> = new EventEmitter<{ formValue: Object; isEditing: boolean }>()
 
 
   adminUser: User
@@ -72,19 +72,33 @@ export class AdminInfoFormComponent {
       this.form.patchValue(this.adminUser)
     }
 
+    this.onAdminInfoChange.emit({
+      formValue: this.form.value,
+      isEditing: false
+    })
+
   }
   
   onClick() {
+    this.isEditing = !this.isEditing;
     if (this.isEditing) {
+      this.onAdminInfoChange.emit({
+        formValue: null,
+        isEditing: true
+      })
+    }
+    else {
       this.onSubmit();
     }
-    this.isEditing = !this.isEditing;
   }
 
   async onSubmit(){
     const controls = this.form.controls
     if (this.form.status === "VALID") {
-      this.onAdminInfoChange.emit(this.form.value)
+      this.onAdminInfoChange.emit({
+        formValue: this.form.value,
+        isEditing: false
+      })
     }
     else {
       Object.keys(controls).forEach(prop => {
