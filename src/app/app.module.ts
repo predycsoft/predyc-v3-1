@@ -83,6 +83,7 @@ import { EnterpriseDataComponent } from './main-components/my-account/enterprise
 import { AdminDataComponent } from './main-components/my-account/admin-data/admin-data.component';
 import { EnterprisePresentationFormComponent } from './main-components/my-account/enterprise-data/enterprise-presentation-form/enterprise-presentation-form.component';
 import { AdminPresentationFormComponent } from './main-components/my-account/admin-data/admin-presentation-form/admin-presentation-form.component';
+import { SkillsSelectorComponent } from './shared/components/skills-selector/skills-selector.component';
 
 @NgModule({
   declarations: [
@@ -121,7 +122,8 @@ import { AdminPresentationFormComponent } from './main-components/my-account/adm
     AdminPresentationFormComponent,
     AdminInfoFormComponent,
     EnterpriseDataComponent,
-    AdminDataComponent
+    AdminDataComponent,
+    SkillsSelectorComponent
   ],
   imports: [
     BrowserModule,

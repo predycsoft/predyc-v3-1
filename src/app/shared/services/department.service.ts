@@ -54,5 +54,21 @@ export class DepartmentService {
     return this.departmentSubject.value.find(x => x.id === id)
   }
 
+  async addDepartment(newDepartment: Department): Promise<void> {
+    try {
+      try {
+        await this.afs.collection(Department.collection).doc(newDepartment?.id).set(newDepartment.toJson());
+      } catch (error) {
+        console.log(error)
+        throw error
+      }
+      console.log('Has agregado una departamento exitosamente.')
+      //this.alertService.succesAlert('Has agregado una nueva categoria exitosamente.')
+    } catch (error) {
+      console.log(error)
+      this.alertService.errorAlert(JSON.stringify(error))
+    }
+  }
+
 
 }

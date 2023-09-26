@@ -21,5 +21,7 @@ export class MainComponent {
     this.enterpriseService.loadEnterpriseData()
     await this.userService.loadUsers()
     await this.userService.whenUsersLoaded()
+    // await this.userService.loadUsers()
+    // await this.userService.whenUsersLoaded()
   }
 }

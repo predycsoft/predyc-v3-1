@@ -9,6 +9,8 @@ import { firstValueFrom } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { DepartmentService } from 'src/app/shared/services/department.service';
+import { deparmentsData } from '../../../../assets/data/departments'
+import { SelectionModel } from '@angular/cdk/collections';
 
 @AfterOnInitResetLoading
 @Component({
@@ -29,7 +31,12 @@ export class DepartmentsProfilesComponent {
   departments: Department[]
   displayedColumns: string[] = [
     'name'
-  ] 
+  ]
+  panelOpenState = false;
+
+  openedDepartment: string | null = null;
+
+
 
   async ngOnInit() {
     // ---- Esto es para crear departamentos en firestore
@@ -39,6 +46,8 @@ export class DepartmentsProfilesComponent {
     //   this.profilesRefs.push(ref)
     // });
     // -----
+
+    console.log(deparmentsData)
 
     this.departmentService.loadDepartmens()
     this.departmentService.getDepartmentsObservable().subscribe(departments => {
@@ -52,6 +61,42 @@ export class DepartmentsProfilesComponent {
     if (this.dataSource) {
       this.dataSource.paginator = this.paginator;
     }
+  }
+
+  // Define a SelectionModel instance to manage the chip selection
+  chipSelection = new SelectionModel<string>(true);
+  
+  // Initialize the userTriggered flag as false
+  userTriggered = false;
+
+  onChipClick(departmentName: string) {
+    // Set the userTriggered flag to true when the chip is clicked
+    this.userTriggered = true;
+    
+    // Toggle the selection of the corresponding department in the SelectionModel
+    this.chipSelection.toggle(departmentName);
+  }
+
+  toggleAccordion(departmentName: string) {
+    // If the accordion is manually toggled, update the userTriggered flag and synchronize the chip selection
+    if (!this.userTriggered) {
+      this.chipSelection.toggle(departmentName);
+    }
+    
+    // Reset the userTriggered flag after the accordion is toggled
+    this.userTriggered = false;
+  }
+
+  createDepartmentsCollection(){
+
+    deparmentsData.forEach(department => {
+      console.log(department)
+      let departmentready = new Department(department.id,department.name)
+      this.departmentService.addDepartment(departmentready)
+      
+    });
+
+
   }
 
 

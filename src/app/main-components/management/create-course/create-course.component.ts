@@ -9,7 +9,7 @@ import { Clase } from "../../../shared/models/course-class.model"
 
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import Swal from 'sweetalert2';
-import { Observable, Subject, finalize, firstValueFrom, switchMap, tap, filter } from 'rxjs';
+import { Observable, Subject, finalize, firstValueFrom, switchMap, tap, filter, take } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AngularFirestore,DocumentReference } from '@angular/fire/compat/firestore';
 
@@ -164,11 +164,7 @@ export class CreateCourseComponent implements OnInit {
     console.log(this.categoriasArray)
 
     this.categoriasArray.forEach(categoria => {
-      let selected = categoria.competencias.filter(competencia => competencia.selected)
-      // selected = selected.map(({ category, ...rest }) => ({
-      //   ...rest,
-      //   category: { id: category.id }
-      // }));      
+      let selected = categoria.competencias.filter(competencia => competencia.selected)     
       if(selected.length>0){
         let obj = {
           categoria : {name:categoria.name, id:categoria.id},
@@ -179,7 +175,7 @@ export class CreateCourseComponent implements OnInit {
       }
     });
 
-    this.updateCompetenciasClases(competencia)
+    //this.updateCompetenciasClases(competencia)
     console.log('respuesta',respuesta)
     this.competenciasSelected = respuesta;
   }
@@ -216,17 +212,7 @@ export class CreateCourseComponent implements OnInit {
     });
 
     console.log(respuesta)
-    //this.updateCompetenciasClases(competencia)
     this.competenciasSelecttedClase = respuesta;
-  }
-
-
-  updateCompetenciasClases(competencia){
-    this.modulos.forEach(modulo => {
-      modulo['clases'].forEach(clase => {
-        console.log(clase,competencia);
-      });
-    });
   }
 
   isOverflowRequired(): boolean {
@@ -267,7 +253,8 @@ export class CreateCourseComponent implements OnInit {
   }
 
   categoriasArray;
-
+  categoriesObservable
+  skillsObservable
 
   async ngOnInit(): Promise<void> {
 
@@ -284,17 +271,14 @@ export class CreateCourseComponent implements OnInit {
 
     this.categoryService.getCategoriesObservable().subscribe(category => {
       console.log('category from service',category);
-      this.skillService.getSkillsObservable().subscribe(skill => {
-        console.log('skill from service',skill);
-
-        this.categoriasArray = this.anidarCompetenciasInicial(category,skill)
-        console.log('categoriasArray',this.categoriasArray)
-    
-
+      this.skillService.getSkillsObservable().pipe(
+        take(1)
+      ).subscribe(skill => {
+        console.log('skill from service', skill);
+        this.categoriasArray = this.anidarCompetenciasInicial(category, skill)
+        console.log('categoriasArray', this.categoriasArray)
         this.competenciasEmpresa = this.obtenerCompetenciasAlAzar(5);
-        
-
-      })
+      });
     })
 
 
@@ -791,31 +775,6 @@ export class CreateCourseComponent implements OnInit {
   modalCompetencia;
   modalCompetenciaAsignar;
 
-  twoWordsOrLess(control: AbstractControl): { [key: string]: any } | null {
-    const words = (control.value || '').trim().split(/\s+/);
-    return words.length <= 3 ? null : { tooManyWords: true };
-  }
-
-  openModalCompetencia(content,competencia){
-
-    this.showErrorCompetencia = false
-
-    this.formNuevaComptencia = new FormGroup({
-      nombre: new FormControl(null, [Validators.required, this.twoWordsOrLess])
-    })
-
-    this.categoriaNuevaCompetencia = competencia
-
-     this.modalCompetencia = this.modalService.open(content, {
-      ariaLabelledBy: 'modal-basic-title',
-      centered: true
-    });
-  }
-
-
-
-  
-
   competenciasSelectedClase;
   selectedPregunta;
 
@@ -943,7 +902,9 @@ export class CreateCourseComponent implements OnInit {
       clase.competencias.forEach(competencia => {
         console.log(competencia)
         let competenciaP = competenciasTotalProcesdo.find(competenciaeach => competenciaeach.id == competencia.id);
-        competenciaP.selected = true;
+        if(competenciaP){
+          competenciaP.selected = true;
+        }
       });
 
       console.log(competenciasTotalProcesdo);
@@ -1773,7 +1734,9 @@ export class CreateCourseComponent implements OnInit {
             question.competencias.forEach(competencia => {
               console.log(competencia)
               let competenciaP = competenciasTotalProcesdo.find(competenciaeach => competenciaeach.id == competencia.id);
-              competenciaP.selected = true;
+              if(competenciaP){
+                competenciaP.selected = true;
+              }
             });
       
             console.log(competenciasTotalProcesdo);
@@ -2024,37 +1987,6 @@ export class CreateCourseComponent implements OnInit {
 
   }
 
-
-  GuardarNuevaCompetencia(){
-    this.showErrorCompetencia = false
-    console.log(this.formNuevaComptencia)
-    if(this.formNuevaComptencia.valid){
-
-      console.log(this.categoriaNuevaCompetencia)
-
-      let competencia = {
-        id:Date.now(),
-        name: this.formNuevaComptencia.value.nombre,
-        selected: false,
-        new : true,
-        categoriaId: this.categoriaNuevaCompetencia.id
-        
-      }
-      this.categoriaNuevaCompetencia.competencias.unshift(competencia);
-      this.modalCompetencia.close();
-    }
-    else{
-      this.showErrorCompetencia = true;
-    }
-  }
-
-
-  deleteCompetencia(categoria,competenciaIn){
-    let competencias = categoria.competencias.filter(competencia => competencia.name != competenciaIn.name)
-    categoria.competencias = competencias;
-  }
-
-
   finalizarCurso(content){
 
     this.openModalFonalizarCurso(content)
@@ -2128,7 +2060,7 @@ export class CreateCourseComponent implements OnInit {
           claseLocal.titulo = clase.titulo;
           claseLocal.vigente = clase.vigente;
           
-          const arrayRefSkills = clase.competencias?.map(skillClase => this.curso.skillsRef.find(skill => skill.id == skillClase.id)) || [];
+          const arrayRefSkills = (clase.competencias?.map(skillClase => this.curso.skillsRef.find(skill => skill.id == skillClase.id)).filter(Boolean) ) || [];
           claseLocal.sillsRef = arrayRefSkills;
           console.log('claseLocal', claseLocal);
           await this.courseClassService.saveClass(claseLocal);
@@ -2153,7 +2085,7 @@ export class CreateCourseComponent implements OnInit {
             await this.activityClassesService.saveActivity(activityClass);
 
             questions.forEach(pregunta => {
-              const arrayRefSkills = pregunta['competencias']?.map(skillClase => this.curso.skillsRef.find(skill => skill.id == skillClase.id)) || [];
+              const arrayRefSkills = (pregunta['competencias']?.map(skillClase => this.curso.skillsRef.find(skill => skill.id == skillClase.id)).filter(Boolean) ) || [];
               claseLocal.sillsRef = arrayRefSkills;
               console.log('refSkills', arrayRefSkills)
               pregunta.skills= arrayRefSkills;
@@ -2215,7 +2147,8 @@ export class CreateCourseComponent implements OnInit {
     await this.activityClassesService.saveActivity(activityClass);
 
     questions.forEach(pregunta => {
-      const arrayRefSkills = pregunta['competencias']?.map(skillClase => this.curso.skillsRef.find(skill => skill.id == skillClase.id)) || [];
+      //const arrayRefSkills = pregunta['competencias']?.map(skillClase => this.curso.skillsRef.find(skill => skill.id == skillClase.id)) || [];
+      const arrayRefSkills = (pregunta['competencias']?.map(skillClase => this.curso.skillsRef.find(skill => skill.id == skillClase.id)).filter(Boolean) ) || [];
       //claseLocal.sillsRef = arrayRefSkills;
       console.log('refSkills', arrayRefSkills)
       pregunta.skills= arrayRefSkills;

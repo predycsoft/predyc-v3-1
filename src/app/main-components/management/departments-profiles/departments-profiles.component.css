@@ -1,10 +1,14 @@
 .containerLeft {
     padding-bottom: 1rem !important;
     width: 320px;
-    border-right: 1px solid var(--gray-3);
+    /* border-right: 1px solid var(--gray-3); */
 }
 
 .containerRight {
     /* width: 612px; */
     width: 100%;
-  }
+}
+
+.mat-mdc-row .mat-mdc-cell {
+    border: 1px solid transparent;
+}
