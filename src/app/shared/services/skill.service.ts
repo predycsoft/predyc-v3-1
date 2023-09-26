@@ -77,4 +77,19 @@ export class SkillService {
   getSkillsObservable(): Observable<Skill[]> {
     return this.skill$
   }
+
+  async deleteSkill(skillId: string): Promise<void> {
+    try {
+      if (!skillId) throw new Error('El ID de la competencia no puede ser nulo o indefinido');
+  
+      await this.afs.collection(Skill.collection).doc(skillId).delete();
+      console.log('Has eliminado la competencia exitosamente.');
+      // Puedes descomentar la siguiente línea si quieres mostrar una alerta de éxito al usuario
+      // this.alertService.succesAlert('Has eliminado una competencia exitosamente.');
+      
+    } catch (error) {
+      console.error('Error al eliminar la competencia: ', error);
+      this.alertService.errorAlert(JSON.stringify(error));
+    }
+  }
 }
