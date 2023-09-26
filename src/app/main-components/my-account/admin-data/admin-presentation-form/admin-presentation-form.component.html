@@ -8,10 +8,14 @@
             </div>
             <input #fileInput type="file" style="display: none;" (change)="onFileSelected($event)" formControlName="photoUrl">
             <div fxLayout="column" class="mgl10">
-                <span *ngIf="!isEditing" class="ft16 ft600 gray-10">{{form.get('name').value}}</span>
-                <input *ngIf="isEditing" type="text" placeholder="name" [ngClass]="isEditing ? '' : 'disabledInput'" 
+                <span *ngIf="!isEditing" class="ft16 ft600 gray-10">
+                    {{form.get('name').value ? form.get('name').value : onNullFormValues.name }}
+                </span>
+                <input *ngIf="isEditing" type="text" placeholder="Introduzca el nombre" [ngClass]="isEditing ? '' : 'disabledInput'" 
                 class="input" formControlName="name"> 
-                <span >{{form.get('job').value}}</span>
+                <span >
+                    {{form.get('job').value ? form.get('job').value : onNullFormValues.job }}      
+                </span>
             </div>
         </div>
         <div fxFlexAlign="start" (click)="onClick()">

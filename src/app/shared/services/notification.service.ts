@@ -26,7 +26,7 @@ export class NotificationService {
   async addNotification(notification: Notification): Promise<void> {
     try {
       const ref = this.afs.collection<Notification>(Notification.collection).doc().ref;
-      await ref.set({id: ref.id, ...notification.toJson()}, { merge: true });
+      await ref.set({...notification.toJson(), id: ref.id}, { merge: true });
       notification.id = ref.id;
       console.log("Notification added succesfully")
       this.alertService.succesAlert('Has agregado una nueva notificacion exitosamente.')
@@ -69,25 +69,25 @@ export class NotificationService {
             'all'
     ): number {
       let length = 0
-      // switch (filter) {
-      //   case Notification.TYPE_ACTIVITY:
-      //     // do something
-      //     length = this.enterpriseService.getEnterprise().totalActivityNotifications
-      //     break;
-      //   case Notification.TYPE_ALERT:
-      //     // do something
-      //     length = this.enterpriseService.getEnterprise().totalAlertNotifications
-      //     break;
-      //   case Notification.TYPE_REQUEST:
-      //     // do something
-      //     length = this.enterpriseService.getEnterprise().totalRequestNotifications
-      //     break;
-      //   default:
-      //     length = this.enterpriseService.getEnterprise().totalActivityNotifications
-      //              + this.enterpriseService.getEnterprise().totalAlertNotifications
-      //              + this.enterpriseService.getEnterprise().totalRequestNotifications
-      //     break;
-      // }
+      switch (filter) {
+        case Notification.TYPE_ACTIVITY:
+          // do something
+          length = this.enterpriseService.getEnterprise().totalActivityNotifications
+          break;
+        case Notification.TYPE_ALERT:
+          // do something
+          length = this.enterpriseService.getEnterprise().totalAlertNotifications
+          break;
+        case Notification.TYPE_REQUEST:
+          // do something
+          length = this.enterpriseService.getEnterprise().totalRequestNotifications
+          break;
+        default:
+          length = this.enterpriseService.getEnterprise().totalActivityNotifications
+                   + this.enterpriseService.getEnterprise().totalAlertNotifications
+                   + this.enterpriseService.getEnterprise().totalRequestNotifications
+          break;
+      }
       return length
   }
 }

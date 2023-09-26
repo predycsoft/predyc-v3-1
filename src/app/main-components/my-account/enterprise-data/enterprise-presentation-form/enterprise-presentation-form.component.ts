@@ -19,7 +19,7 @@ export class EnterprisePresentationFormComponent {
 
   ) {}
 
-  @Output() onEnterprisePresentationChange: EventEmitter<any> = new EventEmitter<any>()
+  @Output() onEnterprisePresentationChange: EventEmitter<{ formValue: FormGroup; isEditing: boolean }> = new EventEmitter<{ formValue: FormGroup; isEditing: boolean }>()
 
 
   enterprise: Enterprise
@@ -67,19 +67,33 @@ export class EnterprisePresentationFormComponent {
       "website": new FormControl(website),
       "linkedin": new FormControl(linkedin),
     })
+
+    this.onEnterprisePresentationChange.emit({
+      formValue: this.form,
+      isEditing: false
+    })
   }
 
   onClick() {
+    this.isEditing = !this.isEditing;
     if (this.isEditing) {
+      this.onEnterprisePresentationChange.emit({
+        formValue: null,
+        isEditing: true
+      })
+    }
+    else {
       this.onSubmit();
     }
-    this.isEditing = !this.isEditing;
   }
 
   async onSubmit(){
     const controls = this.form.controls
     if (this.form.status === "VALID") {
-      this.onEnterprisePresentationChange.emit(this.form.value)
+      this.onEnterprisePresentationChange.emit({
+        formValue: this.form,
+        isEditing: false
+      })
     }
     else {
       Object.keys(controls).forEach(prop => {

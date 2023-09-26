@@ -18,7 +18,7 @@ export class MainComponent {
   ) {}
 
   async ngOnInit() {
-    await this.enterpriseService.loadEnterpriseData()
+    this.enterpriseService.loadEnterpriseData()
     await this.userService.loadUsers()
     await this.userService.whenUsersLoaded()
     // await this.userService.loadUsers()
