@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
+import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { FormControl, FormGroup } from '@angular/forms';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, finalize, firstValueFrom } from 'rxjs';
 import { Enterprise } from 'src/app/shared/models/enterprise.model';
 import { AlertsService } from 'src/app/shared/services/alerts.service';
 import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
@@ -16,6 +17,7 @@ export class EnterprisePresentationFormComponent {
   constructor(
     public icon:IconService,
     private alertService: AlertsService,
+    private storage: AngularFireStorage,
     private enterpriseService: EnterpriseService,
 
   ) {}
@@ -107,6 +109,8 @@ export class EnterprisePresentationFormComponent {
   async onSubmit(){
     const controls = this.form.controls
     if (this.form.status === "VALID") {
+      await this.saveEnterprisePhoto()
+      if (this.enterprise.photoUrl) this.form.patchValue({photoUrl: this.enterprise.photoUrl});
       this.onEnterprisePresentationChange.emit({
         formValue: this.form.value,
         isEditing: false
@@ -149,7 +153,43 @@ export class EnterprisePresentationFormComponent {
     reader.onload = (_event) => {
       this.imageUrl = reader.result;
       this.uploadedImage = file;
+      input.value = '';
     };
+
+  }
+
+  async saveEnterprisePhoto() {
+    if (this.uploadedImage) {
+      if (this.enterprise.photoUrl) {
+        // Existing image must be deleted before
+        // await firstValueFrom(
+        //   this.storage.refFromURL(this.enterprise.photoUrl).delete()
+        // ).catch((error) => console.log(error));
+        console.log('Old image has been deleted!');
+      }
+      // Upload new image
+      const fileName = this.uploadedImage.name.replace(' ', '-');
+      const filePath = `Enterprise/Imagenes/${fileName}`;
+      const fileRef = this.storage.ref(filePath);
+      console.log("fileRef")
+      console.log(fileRef)
+      const task = this.storage.upload(filePath, this.uploadedImage);
+      await new Promise<void>((resolve, reject) => {
+        task.snapshotChanges().pipe(
+          finalize(async () => {
+            this.enterprise.photoUrl = await firstValueFrom(fileRef.getDownloadURL());
+            console.log(this.enterprise.photoUrl)
+            console.log("Se ha guardado la imagen");
+            resolve();
+          })
+        ).subscribe({
+          next: () => {},
+          error: error => reject(error),
+        });
+      });
+    } else {
+      this.enterprise.photoUrl = null
+    }
 
   }
 
