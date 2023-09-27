@@ -1,4 +1,4 @@
-<div *ngIf="loaderService.loading !== 0">
+<div *ngIf="loaded">
     <app-navigate-back targetUrl="../">{{student.displayName}}</app-navigate-back>
 
     <mat-tab-group class="swal-overlay">

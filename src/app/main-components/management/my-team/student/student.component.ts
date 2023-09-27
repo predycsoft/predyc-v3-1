@@ -1,11 +1,9 @@
 import { Component } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AfterOnInitResetLoading } from 'src/app/shared/decorators/loading.decorator';
 import { LoaderService } from 'src/app/shared/services/loader.service';
 import { UserService } from 'src/app/shared/services/user.service';
 
-@AfterOnInitResetLoading
 @Component({
   selector: 'app-student',
   templateUrl: './student.component.html',
@@ -16,6 +14,8 @@ export class StudentComponent {
   student: any
   uid: any
 
+  loaded = false
+
   constructor(
     private route: ActivatedRoute,
     private userService: UserService,
@@ -25,11 +25,14 @@ export class StudentComponent {
   ){}
 
   ngOnInit() {
+    this.loaderService.setLoading(true)
     this.userService.usersLoaded$.subscribe(async isLoaded => {
       if (isLoaded) {
         this.uid = this.route.snapshot.paramMap.get('uid');
         this.student = this.userService.getUser(this.uid)
+        this.loaderService.setLoading(false)
         if (!this.student) {
+          this.loaded = true
           this.router.navigate(['management/students'])
         }
       }

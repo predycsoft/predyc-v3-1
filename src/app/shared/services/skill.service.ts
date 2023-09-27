@@ -66,36 +66,38 @@ export class SkillService {
   // }
 
   // Arguments could be pageSize, sort, currentPage
-  async getSkills() {
-    await this.enterpriseService.whenEnterpriseLoaded()
-    this.enterpriseRef =this.enterpriseService.getEnterpriseRef();
+  getSkills() {
+    this.enterpriseService.enterpriseLoaded$.subscribe(isLoaded => {
+      if (isLoaded) {
+        this.enterpriseRef =this.enterpriseService.getEnterpriseRef();
+        console.log('enterprise',this.enterpriseRef)
+        // Query para traer por enterprise match
+        const enterpriseMatch$ = this.afs.collection<Skill>(Skill.collection, ref => 
+          ref.where('enterprise', '==', this.enterpriseRef)
+        ).valueChanges();
 
-    console.log('enterprise',this.enterpriseRef)
+        // Query para traer donde enterprise está vacío
+        const enterpriseEmpty$ = this.afs.collection<Skill>(Skill.collection, ref => 
+          ref.where('enterprise', '==', null) // Suponiendo que el valor vacío es null. Ajusta según tu caso.
+        ).valueChanges();
 
-    // Query para traer por enterprise match
-    const enterpriseMatch$ = this.afs.collection<Skill>(Skill.collection, ref => 
-      ref.where('enterprise', '==', this.enterpriseRef)
-    ).valueChanges();
-
-    // Query para traer donde enterprise está vacío
-    const enterpriseEmpty$ = this.afs.collection<Skill>(Skill.collection, ref => 
-      ref.where('enterprise', '==', null) // Suponiendo que el valor vacío es null. Ajusta según tu caso.
-    ).valueChanges();
-
-    // Combinar ambos queries
-    combineLatest([enterpriseMatch$, enterpriseEmpty$])
-      .pipe(
-        map(([matched, empty]) => [...matched, ...empty])
-      )
-      .subscribe({
-        next: categories => {
-          this.skillsSubject.next(categories);
-        },
-        error: error => {
-          console.log(error);
-          this.alertService.errorAlert(JSON.stringify(error));
-        }
-      });
+        // Combinar ambos queries
+        combineLatest([enterpriseMatch$, enterpriseEmpty$])
+          .pipe(
+            map(([matched, empty]) => [...matched, ...empty])
+          )
+          .subscribe({
+            next: categories => {
+              this.skillsSubject.next(categories);
+            },
+            error: error => {
+              console.log(error);
+              this.alertService.errorAlert(JSON.stringify(error));
+            }
+          });
+      }
+    })
+    
   }
 
   getSkillsObservable(): Observable<Skill[]> {
