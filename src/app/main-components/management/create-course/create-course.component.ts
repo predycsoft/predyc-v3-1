@@ -272,7 +272,7 @@ export class CreateCourseComponent implements OnInit {
     this.categoryService.getCategoriesObservable().subscribe(category => {
       console.log('category from service',category);
       this.skillService.getSkillsObservable().pipe(
-        take(1)
+        take(2)
       ).subscribe(skill => {
         console.log('skill from service', skill);
         this.categoriasArray = this.anidarCompetenciasInicial(category, skill)
@@ -327,7 +327,7 @@ export class CreateCourseComponent implements OnInit {
   }
 
   returnCursos(){
-    this.router.navigate(["empresa/catalogo"])
+    this.router.navigate(["management/courses"])
   }
 
   addClassMode = false;
