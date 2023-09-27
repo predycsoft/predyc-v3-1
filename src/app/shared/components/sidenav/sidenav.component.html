@@ -28,10 +28,13 @@
     </div>
 
     <div fxLayout="column" fxLayoutAlign="center">
-        <div class="cursorPointer">
-            <a mat-list-item routerLink="my-account">
-                <img style="height: 2rem; width: 2rem; border-radius: 50%;" src="https://a57.foxnews.com/media2.foxnews.com/BrightCove/694940094001/2018/06/21/931/524/694940094001_5800293009001_5800284148001-vs.jpg?ve=1&tl=1" alt="">
-            </a>
+        <div *ngIf="user$ | async as user" fxLayout="column" fxLayoutAlign="center">
+            <div class="cursorPointer">
+                <a mat-list-item routerLink="my-account">
+                    <img onerror="this.src='assets/images/default/default-user-image.jpg'" 
+                    [src]="user.photoUrl" style="height: 2rem; width: 2rem; border-radius: 50%;"  alt="">
+                </a>
+            </div>
         </div>
     </div>
 
