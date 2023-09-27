@@ -6,7 +6,7 @@ import { AlertsService } from 'src/app/shared/services/alerts.service';
 import { finalize, firstValueFrom } from 'rxjs';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 
-import { countriesData } from 'src/assets/data/countries'
+import { countriesData } from 'src/assets/data/countries.data'
 import { capitalizeFirstLetter, dateFromCalendarToTimestamp, timestampToDateNumbers } from 'src/app/shared/utils';
 
 @Component({
