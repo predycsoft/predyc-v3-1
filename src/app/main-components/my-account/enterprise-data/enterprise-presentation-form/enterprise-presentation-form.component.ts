@@ -40,19 +40,19 @@ export class EnterprisePresentationFormComponent {
     linkedin: "Linkedin desconocido",
   }
 
-  async ngOnInit(){
-    await this.enterpriseService.whenEnterpriseLoaded()
-    this.enterprise = this.enterpriseService.getEnterprise()
-
-    if (this.enterprise.photoUrl) {
-      this.imageUrl = this.enterprise.photoUrl;
-    }
-
-    this.initForm()
+  ngOnInit(){
+    this.enterpriseService.enterprise$.subscribe(enterprise => {
+      if (!enterprise) {
+        return
+      }
+      if (this.enterprise.photoUrl) {
+        this.imageUrl = this.enterprise.photoUrl;
+      }
+      this.initForm()
+    })
   }
 
   initForm() {
-
     const socialNetworks = this.enterprise.socialNetworks
     let facebook = ""
     let instagram = ""

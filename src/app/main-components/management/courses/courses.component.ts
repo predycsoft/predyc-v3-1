@@ -50,9 +50,12 @@ export class CoursesComponent {
   async ngOnInit() {
     this.cursos = []
     this.buildCategories()
-    await this.enterpriseService.whenEnterpriseLoaded()
-    let enterpriseRef = this.enterpriseService.getEnterpriseRef();
-    console.log(enterpriseRef)
+    this.enterpriseService.enterpriseLoaded$.subscribe(isLoaded => {
+      if (isLoaded) {
+        let enterpriseRef = this.enterpriseService.getEnterpriseRef();
+        console.log(enterpriseRef)
+      }
+    })
 
     this.categoryService.getCategoriesObservable().subscribe(category => {
       console.log(category);

@@ -14,14 +14,20 @@ export class NotificationService {
 
   private notificationsSubject = new BehaviorSubject<Notification[]>([]);
   public notifications$ = this.notificationsSubject.asObservable();
+  private notificationsLoadedSubject = new BehaviorSubject<boolean>(false)
+  public notificationsLoaded$ = this.notificationsLoadedSubject.asObservable()
 
   constructor(
     private afs: AngularFirestore,
     private enterpriseService: EnterpriseService,
     private alertService: AlertsService
-  ) {}
-
-  ngOnInit() {}
+  ) {
+    this.enterpriseService.enterpriseLoaded$.subscribe(isLoaded => {
+      if (isLoaded) {
+        this.notificationsLoadedSubject.next(true)
+      }
+    })
+  }
 
   async addNotification(notification: Notification): Promise<void> {
     try {
@@ -44,18 +50,20 @@ export class NotificationService {
                 typeof Notification.TYPE_ALERT |
                 typeof Notification.TYPE_REQUEST
   }) {
+    console.log("queryObj", queryObj)
     this.afs.collection<Notification>(Notification.collection, ref => {
         let query: CollectionReference | Query = ref;
         query = query.where('enterpriseRef', '==', this.enterpriseService.getEnterpriseRef())
         if (queryObj.typeFilter) {
           query = query.where('type', '==', queryObj.typeFilter)
         }
+        query = query.orderBy('date', 'desc')
         if (queryObj.startAt) {
           query = query.startAt(queryObj.startAt)
         } else if (queryObj.startAfter) {
           query = query.startAfter(queryObj.startAfter)
         }
-        return query.limit(queryObj.pageSize).orderBy('date', 'desc')
+        return query.limit(queryObj.pageSize)
       }
     ).valueChanges().subscribe(notifications => {
       this.notificationsSubject.next(notifications)

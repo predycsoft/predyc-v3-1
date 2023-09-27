@@ -36,12 +36,13 @@ export class EnterpriseInfoFormComponent {
     zipCode : "Código postal desconocido",
   }
 
-  async ngOnInit(){
-    await this.enterpriseService.whenEnterpriseLoaded()
-    this.enterprise = this.enterpriseService.getEnterprise()
-
-    this.initForm()
-  
+  ngOnInit(){
+    this.enterpriseService.enterprise$.subscribe(enterprise => {
+      if (enterprise) {
+        this.enterprise = enterprise
+        this.initForm()
+      }
+    })
   }
 
   initForm() {

@@ -51,7 +51,7 @@ export class StudentListComponent {
 
   ngAfterViewInit() {
     this.dataSource = new UserDataSource(
-      this.userService.getUsersObservable(),
+      this.userService.users$,
       this.paginator,
       this.sort,
     );
@@ -116,14 +116,13 @@ class UserDataSource extends DataSource<User> {
     this.paginator.pageSize = 5
     this.paginator.page.subscribe(() => this.paginatorSubject.next());
     this.sort.sortChange.subscribe(() => this.sortSubject.next());
-  }
-  
-  connect(): Observable<User[]> {
-
     this.userSubscription = this.users$.subscribe(users => {
       this.data = users
       this.dataSubject.next(users);
     });
+  }
+  
+  connect(): Observable<User[]> {
 
     return merge(this.users$, this.filterSubject, this.paginatorSubject, this.sortSubject).pipe(
       map(() => {

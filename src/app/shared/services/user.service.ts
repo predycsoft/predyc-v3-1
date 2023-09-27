@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { User } from '../../shared/models/user.model';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
-import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs'
+import { BehaviorSubject, firstValueFrom, Observable, Subscription } from 'rxjs'
 import { EnterpriseService } from './enterprise.service';
 import { AlertsService } from './alerts.service';
 import { generateSixDigitRandomNumber } from '../utils';
@@ -12,10 +12,12 @@ import { AngularFireFunctions } from '@angular/fire/compat/functions';
 })
 export class UserService {
 
-  private usersLoaded: Promise<void>
-
   private usersSubject = new BehaviorSubject<User[]>([]);
-  private users$ = this.usersSubject.asObservable();
+  public users$ = this.usersSubject.asObservable();
+  private usersLoadedSubject = new BehaviorSubject<boolean>(false)
+  public usersLoaded$ = this.usersLoadedSubject.asObservable()
+
+  private userCollectionSubscription: Subscription
 
   constructor(
     private afAuth: AngularFireAuth,
@@ -23,24 +25,15 @@ export class UserService {
     private fireFunctions: AngularFireFunctions,
     private enterpriseService: EnterpriseService,
     private alertService: AlertsService
-  ) {}
-
-  public async loadUsers() {
-    await this.enterpriseService.whenEnterpriseLoaded()
-    this.usersLoaded = new Promise<void>((resolve) => {
-      this.getUsers()
-      this.users$.subscribe(async (users) => {
-        if (users.length > 0) {
-          console.log("This runs everytime the load user method is called", users)
-          resolve();
-        }
-      });
-    });
+  ) {
+    console.log("Se instancio el user service")
+    this.enterpriseService.enterpriseLoaded$.subscribe(enterpriseIsLoaded => {
+      if (enterpriseIsLoaded) {
+        this.getUsers()
+      }
+    })
   }
 
-  whenUsersLoaded(): Promise<void> {
-    return this.usersLoaded;
-  }
 
   async addUser(newUser: User): Promise<void> {
     try {
@@ -121,9 +114,11 @@ export class UserService {
   }
 
   // Arguments could be pageSize, sort, currentPage
-  public getUsers() {
-    console.log("Esto esta corriendo dos veces? tambien")
-    this.afs.collection<User>(User.collection, ref => 
+  private getUsers() {
+    if (this.userCollectionSubscription) {
+      this.userCollectionSubscription.unsubscribe();
+    }
+    this.userCollectionSubscription = this.afs.collection<User>(User.collection, ref => 
       ref
          .where('enterprise', '==', this.enterpriseService.getEnterpriseRef())
          .where('isActive', '==', true)
@@ -132,6 +127,8 @@ export class UserService {
     ).valueChanges().subscribe({
       next: users => {
         this.usersSubject.next(users)
+        this.usersLoadedSubject.next(true)
+        console.log("Los usuarios fueron cargados", users)
       },
       error: error => {
         console.log(error)
@@ -140,7 +137,7 @@ export class UserService {
     })
   }
 
-  async getUser(uid: string): Promise<User | undefined> {
+  getUser(uid: string): User {
     // const user = await firstValueFrom(this.afs.collection<User>(User.collection).doc(uid).valueChanges())
     // return user?.enterprise === this.enterpriseService.getEnterpriseRef() ? user : undefined
     return this.usersSubject.value.find(x => x.uid === uid)
@@ -150,7 +147,7 @@ export class UserService {
     return this.afs.collection<User>(User.collection).doc(id).ref
   }
 
-  getUsersObservable(): Observable<User[]> {
-    return this.users$
+  public usersAreLoaded(): boolean {
+    return this.usersLoadedSubject.value;
   }
 }

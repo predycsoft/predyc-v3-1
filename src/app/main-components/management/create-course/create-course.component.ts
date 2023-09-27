@@ -290,8 +290,11 @@ export class CreateCourseComponent implements OnInit {
     //   console.log('empresa',empresa)
     //   this.empresa = empresa
     // })
-    await this.enterpriseService.whenEnterpriseLoaded()
-    this.empresa = this.enterpriseService.getEnterprise()
+    this.enterpriseService.enterprise$.subscribe(enterprise => {
+      if (enterprise) {
+        this.empresa = enterprise
+      }
+    })
   }
 
   obtenerCompetenciasAlAzar(n: number): Competencia[] {

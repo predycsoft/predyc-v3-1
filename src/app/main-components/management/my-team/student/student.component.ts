@@ -19,17 +19,21 @@ export class StudentComponent {
   constructor(
     private route: ActivatedRoute,
     private userService: UserService,
-    private loaderService: LoaderService,
+    public loaderService: LoaderService,
     private router: Router,
     private afs: AngularFirestore
   ){}
 
-  async ngOnInit() {
-    this.uid = this.route.snapshot.paramMap.get('uid');
-    this.student = await this.userService.getUser(this.uid)
-    if (!this.student) {
-      this.router.navigate(['management/students'])
-    }
+  ngOnInit() {
+    this.userService.usersLoaded$.subscribe(async isLoaded => {
+      if (isLoaded) {
+        this.uid = this.route.snapshot.paramMap.get('uid');
+        this.student = await this.userService.getUser(this.uid)
+        if (!this.student) {
+          this.router.navigate(['management/students'])
+        }
+      }
+    })
   } 
 
 }

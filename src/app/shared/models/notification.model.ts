@@ -1,4 +1,5 @@
 import { DocumentReference } from "@angular/fire/compat/firestore";
+import { User } from "./user.model";
 
 export interface NotificationJson {
     date: number // timestamp
@@ -20,6 +21,8 @@ export class Notification {
     public static TYPE_ALERT: string = 'alert'
     public static TYPE_ACTIVITY: string = 'activity'
     public static TYPE_REQUEST: string = 'request'
+
+    public user: User
 
     constructor(
         public date: number, // timestamp

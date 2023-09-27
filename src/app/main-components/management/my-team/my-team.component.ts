@@ -26,7 +26,6 @@ export class MyTeamComponent {
   studentSelected: User | null = null
 
   // ?sortBy=Deparment&pageSize=25&page=2&name=searchText
-  ngOnInit() {}
 
   createNewStudent() {
     this.studentSelected = User.getEnterpriseStudentUser(this.enterpriseService.getEnterpriseRef())

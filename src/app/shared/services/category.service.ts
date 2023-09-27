@@ -26,7 +26,11 @@ export class CategoryService {
   ) 
   {
     //this.getCateogies()
-    this.empresa = this.enterpriseService.getEnterprise()
+    this.enterpriseService.enterprise$.subscribe(enterprise => {
+      if (enterprise) {
+        this.empresa = enterprise
+      }
+    })
     console.log('empresa category service', this.empresa)
     this.getCategories()
 
@@ -64,9 +68,12 @@ export class CategoryService {
   }
 
   // Arguments could be pageSize, sort, currentPage
-  async getCategories() {
-    await this.enterpriseService.whenEnterpriseLoaded()
-    this.enterpriseRef =this.enterpriseService.getEnterpriseRef()
+  getCategories() {
+    this.enterpriseService.enterpriseLoaded$.subscribe(isLoaded => {
+      if (!isLoaded) {
+        return
+      }
+      this.enterpriseRef =this.enterpriseService.getEnterpriseRef()
 
     // Query para traer por enterprise match
     const enterpriseMatch$ = this.afs.collection<Category>(Category.collection, ref => 
@@ -94,6 +101,7 @@ export class CategoryService {
           this.alertService.errorAlert(JSON.stringify(error));
         }
       });
+    })
   }
 
   getCategoriesObservable(): Observable<Category[]> {

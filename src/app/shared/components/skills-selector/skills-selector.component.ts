@@ -57,10 +57,14 @@ export class SkillsSelectorComponent implements OnInit {
 
 
 
-  async ngOnInit(): Promise<void> {
-    await this.enterpriseService.whenEnterpriseLoaded()
-    this.enterpriseRef =this.enterpriseService.getEnterpriseRef()
+  ngOnInit() {
+    this.enterpriseService.enterpriseLoaded$.subscribe(isLoaded => {
+      if (isLoaded) {
+        this.enterpriseRef =this.enterpriseService.getEnterpriseRef()
+      }
+    })
   }
+
   twoWordsOrLess(control: AbstractControl): { [key: string]: any } | null {
     const words = (control.value || '').trim().split(/\s+/);
     return words.length <= 3 ? null : { tooManyWords: true };

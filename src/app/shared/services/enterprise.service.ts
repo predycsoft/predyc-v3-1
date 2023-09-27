@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { Enterprise } from '../models/enterprise.model';
 import { AlertsService } from './alerts.service';
 import { AuthService } from './auth.service';
@@ -10,28 +11,29 @@ import { AuthService } from './auth.service';
 export class EnterpriseService {
   
 
-  private enterpriseLoaded: Promise<void>
-  private enterprise: Enterprise
-  private enterpriseRef: DocumentReference
+  private enterpriseSubject = new BehaviorSubject<Enterprise | null>(null)
+  public enterprise$ = this.enterpriseSubject.asObservable()
+  private enterpriseLoadedSubject = new BehaviorSubject<boolean>(false)
+  public enterpriseLoaded$ = this.enterpriseLoadedSubject.asObservable()
+  private enterpriseRef: DocumentReference<Enterprise>
+
 
   constructor(
     private authService: AuthService,
     private afs: AngularFirestore,
     private alertService: AlertsService
-  ) {}
-
-  public loadEnterpriseData() {
-    this.enterpriseLoaded = new Promise<void>((resolve) => {
-      this.authService.user$.subscribe(async (user) => {
-        if (user) {
-          // Load the enterprise data based on the authenticated user
-          console.log("This runs by only calling this function")
-          const enterpriseDocumentReference = await ((user.enterprise as DocumentReference).get())
-          this.enterprise = enterpriseDocumentReference.data() as Enterprise
-          this.enterpriseRef = this.afs.collection<Enterprise>(Enterprise.collection).doc(this.enterprise.id).ref
-          resolve();
-        }
-      });
+  ) {
+    console.log("Se instancio el enterprise service")
+    this.authService.user$.subscribe(async (user) => {
+      if (user) {
+        // Load the enterprise data based on the authenticated user
+        const enterpriseDocumentReference = await ((user.enterprise as DocumentReference).get())
+        const enterprise = enterpriseDocumentReference.data() as Enterprise
+        this.enterpriseSubject.next(enterprise)
+        this.enterpriseRef = this.afs.collection<Enterprise>(Enterprise.collection).doc(enterprise.id).ref
+        this.enterpriseLoadedSubject.next(true)
+        console.log("La empresa fue cargada", enterprise)
+      }
     });
   }
 
@@ -63,16 +65,16 @@ export class EnterpriseService {
     return this.afs.collection<Enterprise>(Enterprise.collection).doc(id).ref
   }
 
-  public whenEnterpriseLoaded(): Promise<void> {
-    return this.enterpriseLoaded;
+  public enterpriseIsLoaded(): boolean {
+    return this.enterpriseLoadedSubject.value;
+  }
+
+  public getEnterpriseRef(): DocumentReference<Enterprise> {
+    return this.enterpriseRef
   }
 
   public getEnterprise() {
-    return this.enterprise
-  }
-
-  public getEnterpriseRef() {
-    return this.enterpriseRef
+    return this.enterpriseSubject.value
   }
 
 }

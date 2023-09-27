@@ -38,7 +38,7 @@ export class AdminPresentationFormComponent {
 
   async ngOnInit(){
 
-    this.userService.getUsersObservable().subscribe(users => {
+    this.userService.users$.subscribe(users => {
       if(users.length > 0) {
         const adminUsers = users.filter(x => x.role === "admin")
         this.adminUser = adminUsers.length > 0? adminUsers[0]: null
