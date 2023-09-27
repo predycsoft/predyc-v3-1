@@ -1,11 +1,11 @@
-import { CollectionViewer, DataSource, SelectionModel } from '@angular/cdk/collections';
+import { DataSource, SelectionModel } from '@angular/cdk/collections';
 import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { MatSort, Sort } from '@angular/material/sort';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 import { IconService } from '../../../../shared/services/icon.service';
 import { UserService } from '../../../../shared/services/user.service';
 import { User } from '../../../../shared/models/user.model';
-import { BehaviorSubject, catchError, combineLatest, map, merge, Observable, of, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, catchError, map, merge, Observable, of, Subject, Subscription } from 'rxjs';
 import { AfterOnInitResetLoading } from 'src/app/shared/decorators/loading.decorator';
 import { LoaderService } from 'src/app/shared/services/loader.service';
 import { SearchInputService } from 'src/app/shared/services/search-input.service';

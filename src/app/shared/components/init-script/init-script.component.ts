@@ -9,7 +9,6 @@ import { usersData } from 'src/assets/data/users.data'
 import { notificationsData } from 'src/assets/data/notifications.data'
 import { Notification } from '../../models/notification.model';
 import { NotificationService } from '../../services/notification.service';
-import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-init-script',
