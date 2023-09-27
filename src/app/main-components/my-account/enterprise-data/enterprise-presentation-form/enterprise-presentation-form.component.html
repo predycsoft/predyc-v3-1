@@ -1,10 +1,10 @@
 <span class="gray-10">Empresa</span> 
-<form [formGroup]="form" (ngSubmit)="onSubmit()" >
+<form *ngIf="isEnterpriseLoaded" [formGroup]="form" (ngSubmit)="onSubmit()" >
     <div fxLayout="row" fxLayoutAlign="space-between center" class="card-container-sm mgr10 pd05">
         <div fxLayout="row" fxLayoutAlign=" center">
             <div (click)="isEditing ? fileInput.click() : null" [ngClass]="isEditing ? 'cursorPointer' : ''">
                 <img onerror="this.src='assets/images/default/default-user-image.jpg'" 
-                    [src]="enterprise.photoUrl" class="avatar5" alt="">
+                    [src]="enterprise?.photoUrl" class="avatar5" alt="">
             </div>
             <input #fileInput type="file" style="display: none;" (change)="onFileSelected($event)" formControlName="photoUrl">
             <span *ngIf="!isEditing" class="mgl10 ft16 ft600 gray-10">

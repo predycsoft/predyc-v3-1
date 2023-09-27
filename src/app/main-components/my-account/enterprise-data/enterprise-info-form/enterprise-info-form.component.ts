@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
+import { BehaviorSubject } from 'rxjs';
 import { Enterprise } from 'src/app/shared/models/enterprise.model';
 import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
 import { IconService } from 'src/app/shared/services/icon.service';
@@ -21,6 +22,7 @@ export class EnterpriseInfoFormComponent {
 
 
   enterprise: Enterprise
+  isEnterpriseLoaded = false;
 
   isEditing = false
 
@@ -37,12 +39,15 @@ export class EnterpriseInfoFormComponent {
   }
 
   ngOnInit(){
+    this.enterprise = this.enterpriseService.getEnterprise()
     this.enterpriseService.enterprise$.subscribe(enterprise => {
       if (enterprise) {
         this.enterprise = enterprise
         this.initForm()
+        this.isEnterpriseLoaded = true;
       }
     })
+  
   }
 
   initForm() {

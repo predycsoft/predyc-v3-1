@@ -11,6 +11,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { DepartmentService } from 'src/app/shared/services/department.service';
 import { deparmentsData } from '../../../../assets/data/departments'
 import { SelectionModel } from '@angular/cdk/collections';
+import { Router } from '@angular/router';
 
 @AfterOnInitResetLoading
 @Component({
@@ -23,7 +24,8 @@ export class DepartmentsProfilesComponent {
     public icon: IconService,
     private afs: AngularFirestore,
     private loaderService: LoaderService,
-    private departmentService: DepartmentService, 
+    private departmentService: DepartmentService,
+    private router: Router,
   ){}
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -87,6 +89,10 @@ export class DepartmentsProfilesComponent {
     this.userTriggered = false;
   }
 
+  isPanelExpanded(departmentName: string): boolean {
+    return this.chipSelection.isSelected(departmentName);
+  }
+
   createDepartmentsCollection(){
 
     deparmentsData.forEach(department => {
@@ -95,6 +101,14 @@ export class DepartmentsProfilesComponent {
       this.departmentService.addDepartment(departmentready)
       
     });
+
+
+  }
+
+  createProfileDepartment(department){
+
+    console.log(department);
+    this.router.navigate(["management/create-profile/", department.id])
 
 
   }

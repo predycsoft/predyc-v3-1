@@ -3,7 +3,7 @@
         <span class="gray-10">Datos generales de la empresa</span>
         <img [src]="icon.licencias" class="makeGray h20px cursorPointer" alt="" (click)="onClick()">
     </div>
-    <form [formGroup]="form" (ngSubmit)="onSubmit()" > 
+    <form *ngIf="isEnterpriseLoaded" [formGroup]="form" (ngSubmit)="onSubmit()" > 
         <div class="mgl05">
             <div fxLayout="column" class="mgt05">
                 <span class="makeGray">Descripción de la empresa</span>

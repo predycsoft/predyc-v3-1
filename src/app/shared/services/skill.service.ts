@@ -26,16 +26,7 @@ export class SkillService {
     private alertService: AlertsService
   ) 
   {
-    //this.getCateogies()
-    // this.enterpriseService.getEnterpriseObservable().subscribe(enterprise => {
-    //   if (!enterprise) {
-    //     return
-    //   }
-    //   this.enterpriseRef = this.afs.collection<Enterprise>(Enterprise.collection).doc(enterprise.id).ref
-    //   this.getSkills()
-    // })
     this.getSkills()
-
   }
 
   private skillsSubject = new BehaviorSubject<Skill[]>([]);
@@ -61,17 +52,50 @@ export class SkillService {
   }
 
   // Arguments could be pageSize, sort, currentPage
-  getSkills() {
-    this.afs.collection<Skill>(Skill.collection).valueChanges().subscribe({
-      next: skill => {
-        this.skillsSubject.next(skill)
-      },
-      error: error => {
-        console.log(error)
-        this.alertService.errorAlert(JSON.stringify(error))
-      }
-    })
+  // getSkills() {
+  //   this.afs.collection<Skill>(Skill.collection).valueChanges().subscribe({
+  //     next: skill => {
+  //       this.skillsSubject.next(skill)
+  //     },
+  //     error: error => {
+  //       console.log(error)
+  //       this.alertService.errorAlert(JSON.stringify(error))
+  //     }
+  //   })
 
+  // }
+
+  // Arguments could be pageSize, sort, currentPage
+  async getSkills() {
+    await this.enterpriseService.whenEnterpriseLoaded()
+    this.enterpriseRef =this.enterpriseService.getEnterpriseRef();
+
+    console.log('enterprise',this.enterpriseRef)
+
+    // Query para traer por enterprise match
+    const enterpriseMatch$ = this.afs.collection<Skill>(Skill.collection, ref => 
+      ref.where('enterprise', '==', this.enterpriseRef)
+    ).valueChanges();
+
+    // Query para traer donde enterprise está vacío
+    const enterpriseEmpty$ = this.afs.collection<Skill>(Skill.collection, ref => 
+      ref.where('enterprise', '==', null) // Suponiendo que el valor vacío es null. Ajusta según tu caso.
+    ).valueChanges();
+
+    // Combinar ambos queries
+    combineLatest([enterpriseMatch$, enterpriseEmpty$])
+      .pipe(
+        map(([matched, empty]) => [...matched, ...empty])
+      )
+      .subscribe({
+        next: categories => {
+          this.skillsSubject.next(categories);
+        },
+        error: error => {
+          console.log(error);
+          this.alertService.errorAlert(JSON.stringify(error));
+        }
+      });
   }
 
   getSkillsObservable(): Observable<Skill[]> {

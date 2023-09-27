@@ -28,7 +28,7 @@ export class StudentComponent {
     this.userService.usersLoaded$.subscribe(async isLoaded => {
       if (isLoaded) {
         this.uid = this.route.snapshot.paramMap.get('uid');
-        this.student = await this.userService.getUser(this.uid)
+        this.student = this.userService.getUser(this.uid)
         if (!this.student) {
           this.router.navigate(['management/students'])
         }

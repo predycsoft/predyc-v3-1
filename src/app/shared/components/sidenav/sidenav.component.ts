@@ -3,6 +3,8 @@ import { onSideNavChange, animateText } from '../../animations/animations'
 import { AuthService } from '../../services/auth.service';
 import { IconService } from '../../services/icon.service';
 import { SidenavService } from '../../services/sidenav.service';
+import { User } from '../../models/user.model';
+import { Observable, firstValueFrom } from 'rxjs';
 
 interface Page {
   link: string;
@@ -18,6 +20,9 @@ interface Page {
 })
 export class SideNavComponent {
 
+  user: User
+  user$: Observable<User>
+
   public linkText: boolean = false;
 
   public pages: Page[] = [
@@ -32,6 +37,10 @@ export class SideNavComponent {
     public icon: IconService,
     private authService: AuthService
   ) {}
+  
+  ngOnInit() {
+    this.user$ = this.authService.user$
+  }
 
   signOut() {
     this.authService.signOut();

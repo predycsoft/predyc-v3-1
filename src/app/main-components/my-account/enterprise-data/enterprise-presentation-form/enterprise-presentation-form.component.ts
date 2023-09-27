@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { BehaviorSubject } from 'rxjs';
 import { Enterprise } from 'src/app/shared/models/enterprise.model';
 import { AlertsService } from 'src/app/shared/services/alerts.service';
 import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
@@ -23,6 +24,7 @@ export class EnterprisePresentationFormComponent {
 
 
   enterprise: Enterprise
+  isEnterpriseLoaded = false;
 
   imageUrl: string | ArrayBuffer | null = null
   uploadedImage: File | null = null
@@ -40,15 +42,16 @@ export class EnterprisePresentationFormComponent {
     linkedin: "Linkedin desconocido",
   }
 
-  ngOnInit(){
+  async ngOnInit(){
     this.enterpriseService.enterprise$.subscribe(enterprise => {
-      if (!enterprise) {
-        return
+      if (enterprise) {
+        this.enterprise = enterprise
+        this.initForm()
+        this.isEnterpriseLoaded = true;
+        if (this.enterprise.photoUrl) {
+          this.imageUrl = this.enterprise.photoUrl;
+        }
       }
-      if (this.enterprise.photoUrl) {
-        this.imageUrl = this.enterprise.photoUrl;
-      }
-      this.initForm()
     })
   }
 

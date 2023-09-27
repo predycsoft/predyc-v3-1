@@ -40,7 +40,6 @@ export class SkillsSelectorComponent implements OnInit {
   @Input() modulos
   @Input()competenciasSelected
   @Input() origin = 'Crear Curso'
-  @Input() skillsObservable
 
   @Output() competenciasSelectedOut  = new EventEmitter<any>();
   

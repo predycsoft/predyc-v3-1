@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, CollectionReference, Query } from '@angular/fire/compat/firestore';
 import { AlertsService } from './alerts.service';
-import { BehaviorSubject, firstValueFrom } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, Subscription } from 'rxjs';
 import { Notification } from 'src/app/shared/models/notification.model';
 import { EnterpriseService } from './enterprise.service';
 
@@ -16,6 +16,8 @@ export class NotificationService {
   public notifications$ = this.notificationsSubject.asObservable();
   private notificationsLoadedSubject = new BehaviorSubject<boolean>(false)
   public notificationsLoaded$ = this.notificationsLoadedSubject.asObservable()
+
+  notificationCollectionSubscription: Subscription
 
   constructor(
     private afs: AngularFirestore,
@@ -51,7 +53,10 @@ export class NotificationService {
                 typeof Notification.TYPE_REQUEST
   }) {
     console.log("queryObj", queryObj)
-    this.afs.collection<Notification>(Notification.collection, ref => {
+    if (this.notificationCollectionSubscription) {
+      this.notificationCollectionSubscription.unsubscribe();
+    }
+    this.notificationCollectionSubscription = this.afs.collection<Notification>(Notification.collection, ref => {
         let query: CollectionReference | Query = ref;
         query = query.where('enterpriseRef', '==', this.enterpriseService.getEnterpriseRef())
         if (queryObj.typeFilter) {

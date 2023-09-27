@@ -1,10 +1,11 @@
 export const deparmentsData = [
-    { id: '1', name: 'Contabilidad' },
-    { id: '2', name: 'Recursos Humanos' },
-    { id: '3', name: 'Producción' },
-    { id: '4', name: 'Ventas' },
-    { id: '5', name: 'Marketing' },
-    { id: '6', name: 'TI' },
-    { id: '7', name: 'Legal' },
-    { id: '8', name: 'Servicio al Cliente' }
-  ];
+  { id: '1', name: 'Mantenimiento'},
+  { id: '2', name: 'Seguridad Industrial'},
+  { id: '3', name: 'Equipos Dinámicos'},
+  { id: '4', name: 'Gestión de Proyectos'},
+  { id: '5', name: 'Confiabilidad'},
+  { id: '6', name: 'Operaciones'},
+  { id: '7', name: 'Equipos Estáticos'}
+];
+
+  
