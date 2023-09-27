@@ -1,0 +1,134 @@
+<app-navigate-back targetUrl="../../departments-and-profiles">Nuevo perfil</app-navigate-back>
+
+<div class="fw" class="fw backWhite radius10" fxLayout="column">
+    <span class="pdl10 ft600">Departamento: {{department.name}}</span>
+    <div class="fw fh" fxLayout="column">
+        <div fxLayout="row">
+            <div class="fw pdl10 pdr10 pdt10">
+                <div class="fw border-b">
+                    <div class="stepper pdb10">
+                        <div class="step" *ngFor="let item of steps; let i = index">
+                            <div class= "no-select {{activeStep == i+1? 'circleStepActive': 'circleStep'}} {{  activeStep > i ? 'cursorPointer' : ''}}">{{ i + 1 }}</div>
+                            <div (click)="activeStep > i ? activeStep=i+1 : '' " class="no-select {{activeStep == i+1? 'titleActive ft400': 'title'}}  {{  activeStep > i ? 'cursorPointer' : ''}}">{{ item }}</div>
+                            <div class="mgr05" *ngIf="i < steps.length - 1">
+                                <img [src]="icon.chevronRight" class=" {{activeStep == i+1? 'makeGray8': 'makeGray'}}" alt="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Tab 1 Informacion del curso -->
+        <ng-container *ngIf="activeStep == 1">
+            <div fxFlex fxLayout="row" class="contanier">
+                <div fxFlex="60%" class="pdl10 pdr10 pdt10">
+                    <div fxLayout="column" class="fw fh smallScroll" style="overflow-y: auto;">
+                        <form [formGroup]="formNewProfile" class="mgr20">
+
+                            <div class="form-group pdt10">
+                                <label>Título</label>
+                                <input
+                                [class.is-invalid]="formNewProfile.controls['name'].errors && showErrorProfile"
+                                formControlName="name" type="text" class="form-control inputAlajandraLoQuisoAsi" placeholder="Escriba el nombre del perfil aquí">
+                                <div class="invalid-feedback" *ngIf="formNewProfile.controls['name'].errors && showErrorProfile"> 
+                                    Debe indicar el nombre del perfil
+                                </div>
+                            </div>
+                            <div class="form-group pdt10">
+                                <label>Descripción del perfil</label>
+                                <textarea 
+                                [class.is-invalid]="formNewProfile.controls['descripcion'].errors && showErrorProfile"
+                                rows="5" formControlName="descripcion" type="text" class="form-control inputAlajandraLoQuisoAsi" placeholder="Escriba la descripción del perfil aquí" style="resize: none;"></textarea>
+                                <div class="invalid-feedback" *ngIf="formNewProfile.controls['descripcion'].errors && showErrorProfile"> 
+                                    Debe indicar la descripción del perfil
+                                </div>
+                            </div>
+                            <div class="form-group pdt10">
+                                <label>Responsabilidades del perfil</label>
+                                <textarea 
+                                [class.is-invalid]="formNewProfile.controls['responsabilities'].errors && showErrorProfile"
+                                rows="5" formControlName="responsabilities" type="text" class="form-control inputAlajandraLoQuisoAsi" placeholder="Escriba las responsabilidades del perfil aquí" style="resize: none;"></textarea>
+                                <div class="invalid-feedback" *ngIf="formNewProfile.controls['responsabilities'].errors && showErrorProfile"> 
+                                    Debe indicar las responsabilidades del perfil
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div fxFlex="40%" class="pdl10 pdr10 pdt10">
+                    <div fxLayout="column" fxLayoutAlign="center center" class="fw fh">
+                        <img class="pd10" src="../../../../assets/images/perfiles/amico.svg " class="w-90" alt="Mi SVG">
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="activeStep == 2">
+            <app-skills-selector
+            [competenciasEmpresa]="competenciasEmpresa" 
+            [categoriasArray]="categoriasArray"
+            [competenciasSelected]="competenciasSelected"
+            (competenciasSelectedOut)="competenciasSelected = $event">
+        </app-skills-selector>
+        </ng-container>
+        <ng-container *ngIf="activeStep == 3">
+            <div fxFlex fxLayout="row" class="contanier">
+                <div fxFlex="60%" class="pdl10 pdr10 pdt10">
+                    <div fxLayout="column" class="fw fh smallScroll" style="overflow-y: auto;">
+
+                    </div>
+                </div>
+                <div fxFlex="40%" class="pdl10 pdr10 pdt10">
+
+                </div>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="activeStep == 4">
+            <div fxFlex fxLayout="row" class="contanier">
+                <div fxFlex="60%" class="pdl10 pdr10 pdt10">
+                    <div fxLayout="column" class="fw fh smallScroll" style="overflow-y: auto;">
+
+                    </div>
+                </div>
+                <div fxFlex="40%" class="pdl10 pdr10 pdt10">
+                    <img class="pd10" src="../../../../assets/images/perfiles/Online test-pana.svg " class="w-90" alt="Mi SVG">
+                </div>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="activeStep == 5">
+            <div fxFlex fxLayout="row" class="contanier">
+                <div fxFlex="60%" class="pdl10 pdr10 pdt10">
+                    <div fxLayout="column" class="fw fh smallScroll" style="overflow-y: auto;">
+
+                    </div>
+                </div>
+                <div fxFlex="40%" class="pdl10 pdr10 pdt10">
+                    <img class="pd10" src="../../../../assets/images/perfiles/Software engineer-pana 1.svg " class="w-90" alt="Mi SVG">
+                </div>
+            </div>
+        </ng-container>
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt10">
+            <!-- Botón a la izquierda -->
+            <button  (click)="activeStep >1 ? activeStep = activeStep-1 : returnCursos() " class="blueButton radius4 ft12 h28px mgr10 gray-1" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                <img [src]="icon.chevronLeft" class="h16px pdr05 makeWhite" alt="">
+                Regresar
+            </button>        
+            <!-- Contenedor para los dos botones de la derecha -->
+            <div fxLayout="row" fxLayoutGap="10px">
+                <button *ngIf="activeStep<5" class="blueButton radius4 ft12 h28px mgr10 gray-1" (click)="advanceTab()" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                    Continuar
+                    <img [src]="icon.chevronRight" class="h16px pdl05 makeWhite" alt="">
+                </button>
+                <button (click)="finishProfile()" *ngIf="activeStep==5" class="blueButton radius4 ft12 h28px mgr10 gray-1" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                    Continuar
+                    <img [src]="icon.chevronRight" class="h16px pdl05 makeWhite" alt="">
+                </button>        
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+

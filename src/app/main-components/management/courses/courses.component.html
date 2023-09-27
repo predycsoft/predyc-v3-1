@@ -24,7 +24,7 @@
                         </div>
                     </div>
                 </div>
-                <div fxLayout="row" class="fw">
+                <!-- <div fxLayout="row" class="fw">
                     <div class="w-100 pd10">
                         <div id="" class="mgt10 hideScroll" style="height: 36vh; overflow: auto;">
                             <div class="fw mgb05 borderLight radius6 " *ngFor="let category of categories">
@@ -58,7 +58,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
                 <div fxLayout="row" class="fw pdt10 pdl10 pdr10">
                     <div fxLayout="row" class="fw" fxLayoutAlign="start center">
                         <span class="ft16 ft600 gray-10">Cursos Propios</span>
@@ -160,7 +160,7 @@
                             </div>
                         </div>
                         <div fxLayout="column" class="contentContainer pd10 hideScroll" *ngIf="tab == 0">
-                            <div  *ngFor="let modulo of selectedCourse.modulos" fxLayout="column" class="fw  mgb05 backWhite radius6">
+                            <div  *ngFor="let modulo of selectedCourse['modules']" fxLayout="column" class="fw  mgb05 backWhite radius6">
                                 <div class=" pd05"  fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="space-between center">
                                     <div fxLayout="row" fxLayoutGap="0.6rem" fxLayoutAlign=" center">
                                         <img *ngIf="modulo['expanded'] == false" (click)="modulo['expanded']=true" [src]="icon.chevronRight"
@@ -173,6 +173,7 @@
                                         <span class="gray-6 ft12 nowrap">{{getFloor(modulo.duracion/60) |number:"1.0-0"}}:{{modulo.duracion%60 |number:"2.0-0"}} hrs</span>
                                     </div>
                                 </div>
+                                <!-- {{modulo['clases'] | json}} -->
                                 <div [class]="modulo['expanded']?'bodyClasesExpanded':'bodyClases'" *ngFor="let clase of modulo['clases']" fxLayout="column">
                                     <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem" class="pd05 pdl10  border-tl">
                                         <div fxLayoutGap=".6rem" fxLayout="row" fxLayoutAlign=" center">
@@ -333,15 +334,4 @@
             </div>
         </div>
     </div>
-    <!-- <div fxLayout="column" class="right">
-        <div fxLayout="row" class="fw">
-            <span>Mis grupos</span>
-            <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="1rem">
-                <img [src]="icon.addBlue" class="makeBlue h16px" alt="">
-                <span class="ft14 blue-5">Nueva grupo</span>
-            </div>
-        </div>
-    </div> -->
-
-
 </div>

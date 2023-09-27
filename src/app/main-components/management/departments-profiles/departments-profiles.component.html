@@ -13,8 +13,9 @@
 </div>
 <div fxLayout="row" fxLayoutGap="1rem">
     <div class="containerLeft mgt03">
-        <mat-chip-listbox class="mat-mdc-chip-set-stacked" aria-label="Color selection">
+        <mat-chip-listbox class="mat-mdc-chip-set-stacked contenedor-chips" aria-label="Color selection">
             <mat-chip-option
+                class="custom-chip"
                 *ngFor="let chip of departments"
                 [selected]="chipSelection.isSelected(chip.name)"
                 (click)="onChipClick(chip.name)">
@@ -32,8 +33,15 @@
                 (opened)="toggleAccordion(department.name)"
                 (closed)="toggleAccordion(department.name)">
                 <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    {{department.name}}
+                  <mat-panel-title (click)="$event.stopPropagation()" fxLayout="row" fxLayoutAlign="space-between center">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        {{department.name}}
+                    </div>
+                    <div>
+                        <img [src]="icon.licencias" class="h16px pdr05 edit cursorPointer" alt="">
+                        <img [src]="icon.trash" class="h16px pdr05 trash cursorPointer" alt="">
+                        <button (click)="createProfileDepartment(department)" class="blueButton radius4 ft12 h28px mgr10 gray-1" *ngIf="isPanelExpanded(department.name)">Nuevo perfil</button>
+                    </div>
                   </mat-panel-title>
                 </mat-expansion-panel-header>
                 <p>I'm visible because I am open</p>
