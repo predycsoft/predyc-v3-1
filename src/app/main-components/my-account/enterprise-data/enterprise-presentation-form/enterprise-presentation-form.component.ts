@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { BehaviorSubject } from 'rxjs';
 import { Enterprise } from 'src/app/shared/models/enterprise.model';
 import { AlertsService } from 'src/app/shared/services/alerts.service';
 import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
@@ -23,6 +24,7 @@ export class EnterprisePresentationFormComponent {
 
 
   enterprise: Enterprise
+  isEnterpriseLoaded$ = new BehaviorSubject<boolean>(false);
 
   imageUrl: string | ArrayBuffer | null = null
   uploadedImage: File | null = null
@@ -44,11 +46,15 @@ export class EnterprisePresentationFormComponent {
     await this.enterpriseService.whenEnterpriseLoaded()
     this.enterprise = this.enterpriseService.getEnterprise()
 
-    if (this.enterprise.photoUrl) {
-      this.imageUrl = this.enterprise.photoUrl;
+    if(this.enterprise) {
+      this.initForm()
+      this.isEnterpriseLoaded$.next(true);
+      if (this.enterprise.photoUrl) {
+        this.imageUrl = this.enterprise.photoUrl;
+      }
+  
     }
 
-    this.initForm()
   }
 
   initForm() {

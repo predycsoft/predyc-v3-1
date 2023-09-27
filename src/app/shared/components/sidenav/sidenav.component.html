@@ -27,14 +27,12 @@
         </div>
     </div>
 
-    <div fxLayout="column" fxLayoutAlign="center">
-        <div *ngIf="user$ | async as user" fxLayout="column" fxLayoutAlign="center">
-            <div class="cursorPointer">
-                <a mat-list-item routerLink="my-account">
-                    <img onerror="this.src='assets/images/default/default-user-image.jpg'" 
-                    [src]="user.photoUrl" style="height: 2rem; width: 2rem; border-radius: 50%;"  alt="">
-                </a>
-            </div>
+    <div *ngIf="user$ | async as user" fxLayout="column" fxLayoutAlign="center">
+        <div class="cursorPointer">
+            <a mat-list-item routerLink="my-account">
+                <img onerror="this.src='assets/images/default/default-user-image.jpg'" 
+                [src]="user.photoUrl" style="height: 2rem; width: 2rem; border-radius: 50%;"  alt="">
+            </a>
         </div>
     </div>
 
