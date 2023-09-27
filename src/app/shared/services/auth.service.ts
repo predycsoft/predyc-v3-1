@@ -17,7 +17,9 @@ export class AuthService {
     private afAuth: AngularFireAuth,
     private afs: AngularFirestore,
     private router: Router
-  ) {
+  ) {}
+
+  subscribeToAuthState() {
     this.afAuth.authState.subscribe(async user => {
       if (user && user.uid) {
         // User logged in

@@ -28,28 +28,28 @@ export class InitScriptComponent {
 
   async initDatabase() {
     // Create base enterprise
-    // console.log('********* Creating Enterprise *********')
-    // const enterprise: Enterprise = Enterprise.fromJson(enterpriseJson)
-    // await this.enterpriseService.addEnterprise(enterprise)
-    // const enterpriseRef = this.enterpriseService.getEnterpriseRefById(enterprise.id)
-    // console.log(`Finished Creating Enterprise`)
+    console.log('********* Creating Enterprise *********')
+    const enterprise: Enterprise = Enterprise.fromJson(enterpriseData)
+    await this.enterpriseService.addEnterprise(enterprise)
+    const enterpriseRef = this.enterpriseService.getEnterpriseRefById(enterprise.id)
+    console.log(`Finished Creating Enterprise`)
   
     // Create Departments and profiles
 
     // Create admin and student users
-    // console.log('********* Creating Users *********')
-    // const users: User[] = Array.from(usersJson).map(user => {
-    //   return User.fromJson({
-    //     ...user,
-    //     birthdate: Date.parse(user.birthdate),
-    //     createdAt: Date.parse(user.createdAt),
-    //     enterprise: enterpriseRef
-    //   })
-    // })
-    // for (let user of users) {
-    //   await this.userService.addUser(user)
-    // }
-    // console.log(`Finished Creating Users`)
+    console.log('********* Creating Users *********')
+    const users: User[] = usersData.map(user => {
+      return User.fromJson({
+        ...user,
+        birthdate: Date.parse(user.birthdate),
+        createdAt: Date.parse(user.createdAt),
+        enterprise: enterpriseRef
+      })
+    })
+    for (let user of users) {
+      await this.userService.addUser(user)
+    }
+    console.log(`Finished Creating Users`)
 
     // Create skills
 
@@ -58,23 +58,15 @@ export class InitScriptComponent {
     // Create coursesClasses and courses
 
     // Create notifications
-    this.enterpriseService.loadEnterpriseData()
-    await this.userService.loadUsers()
-    await this.userService.whenUsersLoaded()
-    const enterpriseRef = this.enterpriseService.getEnterpriseRef()
-    const users = await firstValueFrom(this.userService.getUsersObservable())
+    // this.enterpriseService.loadEnterpriseData()
+    // await this.userService.loadUsers()
+    // await this.userService.whenUsersLoaded()
+    // const enterpriseRef = this.enterpriseService.getEnterpriseRef()
+    // const users = await firstValueFrom(this.userService.getUsersObservable())
     console.log('********* Creating Notifications *********')
     const notifications: Notification[] = notificationsData.map(notification => {
       const randomUser = users[Math.floor(Math.random()*users.length)];
       const userRef = this.userService.getUserRefById(randomUser.uid)
-      console.log("userRef", userRef)
-      console.log("enterpriseRef", enterpriseRef)
-      console.log("notification", Notification.fromJson({
-        ...notification,
-        readByUser: notification.readByUser,
-        userRef: userRef,
-        enterpriseRef: enterpriseRef
-      }))
       return Notification.fromJson({
         ...notification,
         readByUser: notification.readByUser,
@@ -82,8 +74,6 @@ export class InitScriptComponent {
         enterpriseRef: enterpriseRef
       })
     })
-    console.log("notifications", notifications)
-
 
     for (let notification of notifications) {
       await this.notificationService.addNotification(notification)

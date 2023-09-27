@@ -1,7 +1,9 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { Observable } from 'rxjs';
 import { User } from 'src/app/shared/models/user.model';
 import { AlertsService } from 'src/app/shared/services/alerts.service';
+import { AuthService } from 'src/app/shared/services/auth.service';
 import { IconService } from 'src/app/shared/services/icon.service';
 import { UserService } from 'src/app/shared/services/user.service';
 
@@ -15,13 +17,15 @@ export class AdminPresentationFormComponent {
   constructor(
     public icon:IconService,
     private alertService: AlertsService,
-    private userService: UserService,
+    private authService: AuthService,
+    // private userService: UserService,
 
   ) {}
 
-  @Output() onAdminPresentationChange: EventEmitter<any> = new EventEmitter<any>()
+  @Output() onAdminPresentationChange: EventEmitter<{ formValue: FormGroup; isEditing: boolean }> = new EventEmitter<{ formValue: FormGroup; isEditing: boolean }>()
 
-  adminUser: User
+  // adminUser: User
+  adminUser$: Observable<User>
 
   imageUrl: string | ArrayBuffer | null = null
   uploadedImage: File | null = null
@@ -38,46 +42,57 @@ export class AdminPresentationFormComponent {
 
   async ngOnInit(){
 
-    this.userService.getUsersObservable().subscribe(users => {
-      if(users.length > 0) {
-        const adminUsers = users.filter(x => x.role === "admin")
-        this.adminUser = adminUsers.length > 0? adminUsers[0]: null
-        this.initForm()
+    this.adminUser$ = this.authService.user$
+    this.adminUser$.subscribe(adminUser => {
+      if(adminUser){
+        this.initForm(adminUser)
+        if (adminUser.photoUrl) {
+          this.imageUrl = adminUser.photoUrl;
+        }
       }
     })
 
-    if (this.adminUser.photoUrl) {
-      this.imageUrl = this.adminUser.photoUrl;
-    }
-
-
   }
 
-  initForm() {
+  initForm(adminUser: User) {
 
     this.form = new FormGroup({
-      "photoUrl": new FormControl(null),
-      "name": new FormControl(null),
-      "job": new FormControl(null)
+      "photoUrl": new FormControl(""),
+      "name": new FormControl(""),
+      "job": new FormControl("")
     })
 
-    if (this.adminUser) {
-      this.form.patchValue(this.adminUser)
+    if (adminUser) {
+      this.form.patchValue(adminUser)
     }
+
+    this.onAdminPresentationChange.emit({
+      formValue: this.form.value,
+      isEditing: false
+    })
 
   }
 
   onClick() {
+    this.isEditing = !this.isEditing;
     if (this.isEditing) {
+      this.onAdminPresentationChange.emit({
+        formValue: null,
+        isEditing: true
+      })
+    }
+    else {
       this.onSubmit();
     }
-    this.isEditing = !this.isEditing;
   }
 
   async onSubmit(){
     const controls = this.form.controls
     if (this.form.status === "VALID") {
-      this.onAdminPresentationChange.emit(this.form.value)
+      this.onAdminPresentationChange.emit({
+        formValue: this.form.value,
+        isEditing: false
+      })
     }
     else {
       Object.keys(controls).forEach(prop => {

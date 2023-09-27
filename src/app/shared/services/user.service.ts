@@ -54,7 +54,7 @@ export class UserService {
       );
       // const userCredential = await this.afAuth.createUserWithEmailAndPassword(email, password);
       // const user = userCredential.user;
-      await this.afs.collection(User.collection).doc(uid).set({...newUser.toJson(), id: uid});
+      await this.afs.collection(User.collection).doc(uid).set({...newUser.toJson(), uid: uid});
       newUser.uid = uid
       this.alertService.succesAlert('Has agregado un nuevo usuario exitosamente.')
     } catch (error) {
@@ -108,7 +108,7 @@ export class UserService {
     }
   }
 
-  async editUser(user: User): Promise<void> {
+  async editUser(user): Promise<void> {
     try {
       await this.afs.collection(User.collection).doc(user.uid as string).set(
         user, { merge: true }

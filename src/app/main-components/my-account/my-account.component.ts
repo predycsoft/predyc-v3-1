@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
 import { Enterprise } from 'src/app/shared/models/enterprise.model';
 import { User } from 'src/app/shared/models/user.model';
 import { AuthService } from 'src/app/shared/services/auth.service';
@@ -37,9 +36,6 @@ export class MyAccountComponent {
   ]  
 
   async ngOnInit(){
-    this.authService.user$.subscribe(user=> {
-      this.user = user
-    })
     await this.enterpriseService.whenEnterpriseLoaded()
     this.enterprise = this.enterpriseService.getEnterprise()
   }

@@ -16,22 +16,8 @@ export class AppComponent{
     public loaderService: LoaderService,
     private router: Router,
     private authService: AuthService,
-  ) {}
-
-  ngOnInit() {
-    // ESTO ES LO QUE ESTOY TRABAJANDO
-    // this.authService.user$.subscribe(user => {
-    //   if (user) {
-    //     this.userSignedIn = true
-    //     this.router.navigate(['dashboard'])
-    //   } else {
-    //     this.userSignedIn = false
-    //     this.router.navigate([''])
-    //   }
-    // })
-
-      
+  ) {
+    this.authService.subscribeToAuthState()
   }
-
 
 }

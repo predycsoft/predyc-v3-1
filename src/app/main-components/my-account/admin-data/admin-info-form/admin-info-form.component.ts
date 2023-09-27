@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { Observable } from 'rxjs';
 import { User } from 'src/app/shared/models/user.model';
+import { AuthService } from 'src/app/shared/services/auth.service';
 import { IconService } from 'src/app/shared/services/icon.service';
 import { UserService } from 'src/app/shared/services/user.service';
 
@@ -13,14 +15,16 @@ export class AdminInfoFormComponent {
 
   constructor(
     public icon:IconService,
+    private authService: AuthService,
     private userService: UserService,
 
   ) {}
 
-  @Output() onAdminInfoChange: EventEmitter<any> = new EventEmitter<any>()
+  @Output() onAdminInfoChange: EventEmitter<{ formValue: Object; isEditing: boolean }> = new EventEmitter<{ formValue: Object; isEditing: boolean }>()
 
 
-  adminUser: User
+  // adminUser: User
+  adminUser$: Observable<User>
 
   isEditing = false
 
@@ -39,17 +43,24 @@ export class AdminInfoFormComponent {
 
   async ngOnInit(){
 
-    this.userService.getUsersObservable().subscribe(users => {
-      if(users.length > 0) {
-        const adminUsers = users.filter(x => x.role === "admin")
-        this.adminUser = adminUsers.length > 0? adminUsers[0]: null
-        this.initForm()
+    // this.userService.getUsersObservable().subscribe(users => {
+    //   if(users.length > 0) {
+    //     const adminUsers = users.filter(x => x.role === "admin")
+    //     this.adminUser = adminUsers.length > 0? adminUsers[0]: null
+    //     this.initForm()
+    //   }
+    // })
+
+    this.adminUser$ = this.authService.user$
+    this.adminUser$.subscribe(adminUser => {
+      if(adminUser){
+        this.initForm(adminUser)
       }
     })
 
   }
 
-  initForm() {
+  initForm(adminUser) {
 
 
     // Aqui podemos definir firstName y secondName a partir del name del adminUser
@@ -58,33 +69,47 @@ export class AdminInfoFormComponent {
     //
     
     this.form =  new FormGroup({
-      "firstName": new FormControl(null),
-      "email": new FormControl(null),
-      "job": new FormControl(null),
-      "secondName": new FormControl(null),
+      "firstName": new FormControl(""),
+      "email": new FormControl(""),
+      "job": new FormControl(""),
+      "secondName": new FormControl(""),
       "phoneNumber": new FormControl(null),
-      "country": new FormControl(null),
-      "city": new FormControl(null),
+      "country": new FormControl(""),
+      "city": new FormControl(""),
       "zipCode": new FormControl(null),
     })
 
-    if (this.adminUser) {
-      this.form.patchValue(this.adminUser)
+    if (adminUser) {
+      this.form.patchValue(adminUser)
     }
+
+    this.onAdminInfoChange.emit({
+      formValue: this.form.value,
+      isEditing: false
+    })
 
   }
   
   onClick() {
+    this.isEditing = !this.isEditing;
     if (this.isEditing) {
+      this.onAdminInfoChange.emit({
+        formValue: null,
+        isEditing: true
+      })
+    }
+    else {
       this.onSubmit();
     }
-    this.isEditing = !this.isEditing;
   }
 
   async onSubmit(){
     const controls = this.form.controls
     if (this.form.status === "VALID") {
-      this.onAdminInfoChange.emit(this.form.value)
+      this.onAdminInfoChange.emit({
+        formValue: this.form.value,
+        isEditing: false
+      })
     }
     else {
       Object.keys(controls).forEach(prop => {
