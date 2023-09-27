@@ -69,23 +69,24 @@ export class NotificationService {
             'all'
     ): number {
       let length = 0
+      const enterprise = this.enterpriseService.getEnterprise()
       switch (filter) {
         case Notification.TYPE_ACTIVITY:
           // do something
-          length = this.enterpriseService.getEnterprise().totalActivityNotifications
+          length = enterprise.totalActivityNotifications
           break;
         case Notification.TYPE_ALERT:
           // do something
-          length = this.enterpriseService.getEnterprise().totalAlertNotifications
+          length = enterprise.totalAlertNotifications
           break;
         case Notification.TYPE_REQUEST:
           // do something
-          length = this.enterpriseService.getEnterprise().totalRequestNotifications
+          length = enterprise.totalRequestNotifications
           break;
         default:
-          length = this.enterpriseService.getEnterprise().totalActivityNotifications
-                   + this.enterpriseService.getEnterprise().totalAlertNotifications
-                   + this.enterpriseService.getEnterprise().totalRequestNotifications
+          length = enterprise.totalActivityNotifications
+                   + enterprise.totalAlertNotifications
+                   + enterprise.totalRequestNotifications
           break;
       }
       return length
