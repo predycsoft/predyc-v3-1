@@ -14,8 +14,6 @@ export class StudentComponent {
   student: any
   uid: any
 
-  loaded = false
-
   constructor(
     private route: ActivatedRoute,
     private userService: UserService,
@@ -32,11 +30,11 @@ export class StudentComponent {
         this.student = this.userService.getUser(this.uid)
         this.loaderService.setLoading(false)
         if (!this.student) {
-          this.loaded = true
           this.router.navigate(['management/students'])
         }
       }
     })
+
   } 
 
 }
