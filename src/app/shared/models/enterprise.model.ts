@@ -9,6 +9,7 @@ export interface EnterpriseJson {
     totalActivityNotifications: number
     totalAlertNotifications: number
     totalRequestNotifications: number
+    totalReadedNotifications: number
     zipCode: number | null
     workField: string | null
     socialNetworks: {
@@ -37,6 +38,7 @@ export class Enterprise {
         public totalActivityNotifications: number,
         public totalAlertNotifications: number,
         public totalRequestNotifications: number,
+        public totalReadedNotifications: number,
         public zipCode: number | null,
         public workField: string | null,
         public socialNetworks: {
@@ -61,6 +63,7 @@ export class Enterprise {
             enterpriseJson.totalActivityNotifications,
             enterpriseJson.totalAlertNotifications,
             enterpriseJson.totalRequestNotifications,
+            enterpriseJson.totalReadedNotifications,
             enterpriseJson.zipCode,
             enterpriseJson.workField,
             enterpriseJson.socialNetworks,
@@ -81,6 +84,7 @@ export class Enterprise {
             totalActivityNotifications: this.totalActivityNotifications,
             totalAlertNotifications: this.totalAlertNotifications,
             totalRequestNotifications: this.totalRequestNotifications,
+            totalReadedNotifications: this.totalReadedNotifications,
             zipCode: this.zipCode,
             workField: this.workField,
             socialNetworks: this.socialNetworks,

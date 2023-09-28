@@ -21,6 +21,7 @@ export class Notification {
     public static TYPE_ALERT: string = 'alert'
     public static TYPE_ACTIVITY: string = 'activity'
     public static TYPE_REQUEST: string = 'request'
+    public static ARCHIVED: string = 'archived'
 
     public user: User
 

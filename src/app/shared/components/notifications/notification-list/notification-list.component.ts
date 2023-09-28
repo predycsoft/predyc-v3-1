@@ -75,7 +75,9 @@ export class NotificationListComponent {
   async setReaded(notification) {
     this.notificationService.setNotificationReadedByAdmin(notification)
     console.log("notification readed")    
-    console.log(notification)    
+    console.log(notification)   
+    
+    
   }
 
 }
@@ -112,7 +114,8 @@ class NotificationDataSource extends DataSource<Notification> {
         startAfter?: Notification
         typeFilter?: typeof Notification.TYPE_ACTIVITY |
                     typeof Notification.TYPE_ALERT |
-                    typeof Notification.TYPE_REQUEST
+                    typeof Notification.TYPE_REQUEST |
+                    typeof Notification.ARCHIVED 
       } = {
         pageSize: this.pageSize,
       }
@@ -142,7 +145,8 @@ class NotificationDataSource extends DataSource<Notification> {
     startAfter?: Notification
     typeFilter?: typeof Notification.TYPE_ACTIVITY |
                 typeof Notification.TYPE_ALERT |
-                typeof Notification.TYPE_REQUEST
+                typeof Notification.TYPE_REQUEST |
+                typeof Notification.ARCHIVED
   }) {
     this.notificationService.getNotifications(queryObj)
   }

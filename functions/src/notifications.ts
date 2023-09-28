@@ -45,6 +45,64 @@ export const onNotificationAdded = functions.firestore
           });
   });
 
+  export const onNotificationReadedByAdmin = functions.firestore
+  .document('notification/{doc}')
+  .onUpdate(async (change, context) => {
+    const beforeData = change.before.data();
+    const afterData = change.after.data();
+
+    if (afterData?.readByAdmin && !beforeData?.readByAdmin) {
+      const notification = afterData;
+      if (!notification.type || !notification.enterpriseRef) {
+        console.error('Notification type or enterpriseRef missing');
+        return;
+      }
+      const enterprise = (await notification.enterpriseRef.get()).data();
+      if (!enterprise) {
+        console.error('Enterprise document not found');
+        return;
+      }
+
+      // Determinar el campo a decrementar basado en el type de notificación
+      let fieldToDecrement: string = '';
+      switch (notification.type) {
+        case 'activity':
+          fieldToDecrement = 'totalActivityNotifications';
+          break;
+        case 'alert':
+          fieldToDecrement = 'totalAlertNotifications';
+          break;
+        case 'request':
+          fieldToDecrement = 'totalRequestNotifications';
+          break;
+        default:
+          console.error('Invalid notification type');
+          return;
+      }
+
+      // Actualizar el documento de Enterprise
+      return db.collection('enterprise').doc(enterprise.id).update({
+          [fieldToDecrement]: admin.firestore.FieldValue.increment(-1),
+          totalReadedNotifications: admin.firestore.FieldValue.increment(1),
+        })
+        .then(() => {
+          console.log(                `Updated enterprise: ${enterprise.name} notifications quantity to:
+          ${'activity'}: ${notification.type == 'activity' ? enterprise.totalActivityNotifications - 1 : enterprise.totalActivityNotifications}
+          ${'alert'}: ${notification.type == 'alert' ? enterprise.totalAlertNotifications - 1 : enterprise.totalAlertNotifications}
+          ${'request'}: ${notification.type == 'request' ? enterprise.totalRequestNotifications - 1 : enterprise.totalRequestNotifications}
+          ${'readByAdmin'}: ${enterprise.totalReadedNotifications + 1 }
+          
+      `)
+          return console.log(`Updated enterprise: ${enterprise.name} notifications count`);
+        })
+        .catch((error) => {
+          return console.error('Error updating Enterprise document:', error);
+        });
+    }
+    return null;
+  });
+
+
 // export const onNotificationAdded = functions.firestore
 //   .document('notification/{doc}')
 //   .onCreate(async (snap, _) => {

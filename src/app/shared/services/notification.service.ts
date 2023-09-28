@@ -5,6 +5,7 @@ import { AlertsService } from './alerts.service';
 import { BehaviorSubject, firstValueFrom, Subscription } from 'rxjs';
 import { Notification } from 'src/app/shared/models/notification.model';
 import { EnterpriseService } from './enterprise.service';
+import { AngularFireFunctions } from '@angular/fire/compat/functions';
 
 
 @Injectable({
@@ -21,6 +22,7 @@ export class NotificationService {
 
   constructor(
     private afs: AngularFirestore,
+    private fireFunctions: AngularFireFunctions,
     private enterpriseService: EnterpriseService,
     private alertService: AlertsService
   ) {
@@ -50,7 +52,8 @@ export class NotificationService {
     startAfter?: Notification
     typeFilter?: typeof Notification.TYPE_ACTIVITY |
                 typeof Notification.TYPE_ALERT |
-                typeof Notification.TYPE_REQUEST
+                typeof Notification.TYPE_REQUEST |
+                typeof Notification.ARCHIVED
   }) {
     console.log("queryObj", queryObj)
     if (this.notificationCollectionSubscription) {

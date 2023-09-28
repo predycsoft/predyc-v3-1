@@ -17,6 +17,10 @@
         <img *ngIf="selectedFilter === 'request'" [src]="icon.check" class="h20px pdr08" alt="">        
         <span>Solicitudes</span>
     </div>
+    <div [ngClass]="{'active': selectedFilter === 'archived'}" class="filter-item" (click)="applyFilter('archived')">
+        <img *ngIf="selectedFilter === 'archived'" [src]="icon.check" class="h20px pdr08" alt="">        
+        <span>Archivados</span>
+    </div>
 </div>
 
 <div>
