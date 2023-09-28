@@ -7,5 +7,5 @@ admin.initializeApp(functions.config().firebase);
 import { createUserWithEmailAndPassword } from './authentication';
 export { createUserWithEmailAndPassword }
 
-import { onNotificationAdded, onNotificationReadedByAdmin } from './notifications'
-export { onNotificationAdded, onNotificationReadedByAdmin }
+import { onNotificationAdded, onNotificationReadByAdmin } from './notifications'
+export { onNotificationAdded, onNotificationReadByAdmin }

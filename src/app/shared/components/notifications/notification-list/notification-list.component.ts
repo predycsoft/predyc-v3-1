@@ -72,12 +72,10 @@ export class NotificationListComponent {
   }
 
   
-  async setReaded(notification) {
-    this.notificationService.setNotificationReadedByAdmin(notification)
-    console.log("notification readed")    
+  async setRead(notification) {
+    this.notificationService.setNotificationReadByAdmin(notification)
+    console.log("notification read")    
     console.log(notification)   
-    
-    
   }
 
 }

@@ -45,7 +45,7 @@ export const onNotificationAdded = functions.firestore
           });
   });
 
-  export const onNotificationReadedByAdmin = functions.firestore
+  export const onNotificationReadByAdmin = functions.firestore
   .document('notification/{doc}')
   .onUpdate(async (change, context) => {
     const beforeData = change.before.data();
@@ -83,14 +83,14 @@ export const onNotificationAdded = functions.firestore
       // Actualizar el documento de Enterprise
       return db.collection('enterprise').doc(enterprise.id).update({
           [fieldToDecrement]: admin.firestore.FieldValue.increment(-1),
-          totalReadedNotifications: admin.firestore.FieldValue.increment(1),
+          totalReadByAdminNotifications: admin.firestore.FieldValue.increment(1),
         })
         .then(() => {
           console.log(                `Updated enterprise: ${enterprise.name} notifications quantity to:
           ${'activity'}: ${notification.type == 'activity' ? enterprise.totalActivityNotifications - 1 : enterprise.totalActivityNotifications}
           ${'alert'}: ${notification.type == 'alert' ? enterprise.totalAlertNotifications - 1 : enterprise.totalAlertNotifications}
           ${'request'}: ${notification.type == 'request' ? enterprise.totalRequestNotifications - 1 : enterprise.totalRequestNotifications}
-          ${'readByAdmin'}: ${enterprise.totalReadedNotifications + 1 }
+          ${'readByAdmin'}: ${enterprise.totalReadByAdminNotifications + 1 }
           
       `)
           return console.log(`Updated enterprise: ${enterprise.name} notifications count`);

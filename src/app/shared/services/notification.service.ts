@@ -65,17 +65,14 @@ export class NotificationService {
         query = query.where('enterpriseRef', '==', this.enterpriseService.getEnterpriseRef())
         if (queryObj.typeFilter) {
           console.log(`Filter has been set as ${queryObj.typeFilter}`)
-          query = query.where('type', '==', queryObj.typeFilter)
+          if (queryObj.typeFilter === 'archived') {
+            query = query.where('readByAdmin', '==', true)
+          } else {
+            query = query.where('type', '==', queryObj.typeFilter).where('readByAdmin', '==', false)
+          }
+        } else {
+          query = query.where('readByAdmin', '==', false)
         }
-        // IF I WANT TO FILTER BY READBYADMIN FALSE
-        // if (queryObj.typeFilter) {
-        //   console.log(`Filter has been set as ${queryObj.typeFilter}`)
-        //   if (queryObj.typeFilter === 'archived') {
-        //     query = query.where('readByAdmin', '==', true)
-        //   } else {
-        //     query = query.where('type', '==', queryObj.typeFilter).where('readByAdmin', '==', false)
-        //   }
-        // }
         query = query.orderBy('date', 'desc')
         if (queryObj.startAt) {
           query = query.startAt(queryObj.startAt.date)
@@ -94,6 +91,7 @@ export class NotificationService {
     filter: typeof Notification.TYPE_ACTIVITY |
             typeof Notification.TYPE_ALERT |
             typeof Notification.TYPE_REQUEST |
+            typeof Notification.ARCHIVED |
             'all'
     ): number {
       let length = 0
@@ -111,6 +109,10 @@ export class NotificationService {
           // do something
           length = enterprise.totalRequestNotifications
           break;
+        case Notification.ARCHIVED:
+          // do something
+          length = enterprise.totalReadByAdminNotifications
+          break;
         default:
           length = enterprise.totalActivityNotifications
                    + enterprise.totalAlertNotifications
@@ -120,7 +122,7 @@ export class NotificationService {
       return length
   }
   
-  public async setNotificationReadedByAdmin(notification: Notification) {
+  public async setNotificationReadByAdmin(notification: Notification) {
     try {
       await this.afs.collection(Notification.collection).doc(notification.id).set(
         {

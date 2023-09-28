@@ -10,7 +10,7 @@ export const enterpriseData: EnterpriseJson = {
     totalActivityNotifications: 0,
     totalAlertNotifications: 0,
     totalRequestNotifications: 0,
-    totalReadedNotifications: 0,
+    totalReadByAdminNotifications: 0,
     photoUrl: null,
     zipCode: 78904,
     workField: "Energías renovables",

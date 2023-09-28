@@ -62,8 +62,8 @@
         </ng-container>
         <!-- Check Column -->
         <ng-container matColumnDef="check">
-            <td mat-cell *matCellDef="let notification" class="cursorPointer"> 
-                <div (click)="setReaded(notification)">
+            <td mat-cell *matCellDef="let notification" [ngClass]="!notification.readByAdmin? 'cursorPointer' : ''"> 
+                <div (click)="!notification.readByAdmin ? setRead(notification) : null">
                     <img [src]="icon.check" class="h20px" alt="">
                     {{notification.readByAdmin ? "Leído" : "Marcar como leido"}} 
                 </div>
