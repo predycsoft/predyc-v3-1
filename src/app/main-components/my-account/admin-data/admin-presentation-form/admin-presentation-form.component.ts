@@ -6,7 +6,6 @@ import { User } from 'src/app/shared/models/user.model';
 import { AlertsService } from 'src/app/shared/services/alerts.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { IconService } from 'src/app/shared/services/icon.service';
-import { UserService } from 'src/app/shared/services/user.service';
 
 @Component({
   selector: 'app-admin-presentation-form',
@@ -37,7 +36,7 @@ export class AdminPresentationFormComponent {
 
   onNullFormValues = {
     photoUrl : "",
-    name : "Administrador",
+    displayName : "Administrador",
     job: null,
   }
 
@@ -48,9 +47,7 @@ export class AdminPresentationFormComponent {
       if(adminUser){
         this.adminUser = adminUser
         this.initForm()
-        if (this.adminUser.photoUrl) {
-          this.imageUrl = this.adminUser.photoUrl;
-        }
+        if (this.adminUser.photoUrl) this.imageUrl = this.adminUser.photoUrl;
       }
     })
 
@@ -60,13 +57,12 @@ export class AdminPresentationFormComponent {
 
     this.form = new FormGroup({
       "photoUrl": new FormControl(""),
-      "name": new FormControl(""),
+      "displayName": new FormControl(""),
       "job": new FormControl("")
     })
 
-    if (this.adminUser) {
-      this.form.patchValue(this.adminUser)
-    }
+    if (this.adminUser) this.form.patchValue(this.adminUser)
+    
     this.onAdminPresentationChange.emit({
       formValue: this.form.value,
       isEditing: false
@@ -142,23 +138,20 @@ export class AdminPresentationFormComponent {
     if (this.uploadedImage) {
       if (this.adminUser.photoUrl) {
         // Existing image must be deleted before
-        // await firstValueFrom(
-        //   this.storage.refFromURL(this.adminUser$.photoUrl).delete()
-        // ).catch((error) => console.log(error));
+        await firstValueFrom(
+          this.storage.refFromURL(this.adminUser.photoUrl).delete()
+        ).catch((error) => console.log(error));
         console.log('Old image has been deleted!');
       }
       // Upload new image
       const fileName = this.uploadedImage.name.replace(' ', '-');
-      const filePath = `admin/Imagenes/${fileName}`;
+      const filePath = `${User.storageProfilePhotoFolder}/${fileName}`;
       const fileRef = this.storage.ref(filePath);
-      console.log("fileRef")
-      console.log(fileRef)
       const task = this.storage.upload(filePath, this.uploadedImage);
       await new Promise<void>((resolve, reject) => {
         task.snapshotChanges().pipe(
           finalize(async () => {
             this.adminUser.photoUrl = await firstValueFrom(fileRef.getDownloadURL());
-            console.log(this.adminUser.photoUrl)
             console.log("Se ha guardado la imagen");
             resolve();
           })

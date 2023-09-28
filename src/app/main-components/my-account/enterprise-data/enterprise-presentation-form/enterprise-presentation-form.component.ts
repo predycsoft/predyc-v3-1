@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { FormControl, FormGroup } from '@angular/forms';
-import { BehaviorSubject, finalize, firstValueFrom } from 'rxjs';
+import { finalize, firstValueFrom } from 'rxjs';
 import { Enterprise } from 'src/app/shared/models/enterprise.model';
 import { AlertsService } from 'src/app/shared/services/alerts.service';
 import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
@@ -50,9 +50,7 @@ export class EnterprisePresentationFormComponent {
         this.enterprise = enterprise
         this.initForm()
         this.isEnterpriseLoaded = true;
-        if (this.enterprise.photoUrl) {
-          this.imageUrl = this.enterprise.photoUrl;
-        }
+        if (this.enterprise.photoUrl) this.imageUrl = this.enterprise.photoUrl;
       }
     })
   }
@@ -71,10 +69,7 @@ export class EnterprisePresentationFormComponent {
       website = socialNetworks.website ? socialNetworks.website : website
       linkedin = socialNetworks.linkedin ? socialNetworks.linkedin : linkedin
     }
-    name = this.enterprise.name ? this.enterprise.name : name
-    photoUrl = this.enterprise.photoUrl ? this.enterprise.photoUrl : photoUrl
     
-
     this.form = new FormGroup({
       "photoUrl": new FormControl(photoUrl),
       "name": new FormControl(name),
@@ -83,6 +78,8 @@ export class EnterprisePresentationFormComponent {
       "website": new FormControl(website),
       "linkedin": new FormControl(linkedin),
     })
+    
+    if (this.enterprise) this.form.patchValue(this.enterprise)
 
     this.onEnterprisePresentationChange.emit({
       formValue: this.form.value,
@@ -150,7 +147,6 @@ export class EnterprisePresentationFormComponent {
     reader.onload = (_event) => {
       this.imageUrl = reader.result;
       this.uploadedImage = file;
-      input.value = '';
     };
 
   }
@@ -159,23 +155,20 @@ export class EnterprisePresentationFormComponent {
     if (this.uploadedImage) {
       if (this.enterprise.photoUrl) {
         // Existing image must be deleted before
-        // await firstValueFrom(
-        //   this.storage.refFromURL(this.enterprise.photoUrl).delete()
-        // ).catch((error) => console.log(error));
+        await firstValueFrom(
+          this.storage.refFromURL(this.enterprise.photoUrl).delete()
+        ).catch((error) => console.log(error));
         console.log('Old image has been deleted!');
       }
       // Upload new image
       const fileName = this.uploadedImage.name.replace(' ', '-');
-      const filePath = `Enterprise/Imagenes/${fileName}`;
+      const filePath = `${Enterprise.storageProfilePhotoFolder}/${fileName}`;
       const fileRef = this.storage.ref(filePath);
-      console.log("fileRef")
-      console.log(fileRef)
       const task = this.storage.upload(filePath, this.uploadedImage);
       await new Promise<void>((resolve, reject) => {
         task.snapshotChanges().pipe(
           finalize(async () => {
             this.enterprise.photoUrl = await firstValueFrom(fileRef.getDownloadURL());
-            console.log(this.enterprise.photoUrl)
             console.log("Se ha guardado la imagen");
             resolve();
           })

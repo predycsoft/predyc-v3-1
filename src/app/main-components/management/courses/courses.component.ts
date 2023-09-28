@@ -73,9 +73,6 @@ export class CoursesComponent {
         take(2)
       ).subscribe(skill => {
         this.categories = this.anidarCompetenciasInicial(category, skill);
-
-        
-
         //this.competenciasEmpresa = this.obtenerCompetenciasAlAzar(5);
         this.courseService.getCoursesObservable().subscribe(courses => {
           courses.forEach(curso => {
@@ -111,24 +108,24 @@ export class CoursesComponent {
             let filteredCourses = courses.filter(course => 
               course['categories'].some(cat => cat.id === category.id)
             );
+            let filteredCoursesPropios = courses.filter(course => 
+              course['categories'].some(cat => cat.id === category.id) && course.enterpriseRef!=null
+            );
+            let filteredCoursesPredyc = courses.filter(course => 
+              course['categories'].some(cat => cat.id === category.id) && course.enterpriseRef==null
+            );
             category.expanded = false;
+            category.expandedPropios = false;
+            category.expandedPredyc = false;
+
             category.courses = filteredCourses;
-
+            category.coursesPropios = filteredCoursesPropios;
+            category.coursesPredyc = filteredCoursesPredyc;
           });
-
           console.log('this.categories',this.categories)
-
-
-
-
-
-
         })
       });
     })
-
-
-
   }
 
   anidarCompetenciasInicial(categorias: any[], competencias: any[]): any[] {

@@ -24,6 +24,7 @@ export interface EnterpriseJson {
 export class Enterprise {
 
     public static collection = 'enterprise'
+    public static storageProfilePhotoFolder = 'Enterprise/Profile photos'
 
     constructor(
         public city: string | null,
