@@ -51,6 +51,9 @@ export class CoursesComponent {
   creatingCategory = false
   newCategory: category = new category
   categories
+
+  categoriesPredyc;
+  categoriesPropios;
   courses;
   
 
@@ -69,13 +72,11 @@ export class CoursesComponent {
       this.skillService.getSkillsObservable().pipe(
         take(2)
       ).subscribe(skill => {
-        console.log('skill from service', skill);
-        this.categories = this.anidarCompetenciasInicial(category, skill)
-        console.log('categoriasArray', this.categories)
+        this.categories = this.anidarCompetenciasInicial(category, skill);
         //this.competenciasEmpresa = this.obtenerCompetenciasAlAzar(5);
         this.courseService.getCoursesObservable().subscribe(courses => {
-          console.log('courseService',courses)
           courses.forEach(curso => {
+            //curso.foto = '../../../../assets/images/cursos/placeholder1.jpg'
             let skillIds = new Set();
             curso.skillsRef.forEach(skillRef => {
               skillIds.add(skillRef.id); // Assuming skillRef has an id property
@@ -88,37 +89,43 @@ export class CoursesComponent {
             let filteredCategories = category.filter(categoryIn => categoryIds.has(categoryIn.id));
             curso['skills'] = filteredSkills;
             curso['categories'] = filteredCategories;
-            console.log('curso detail',curso)
-            console.log('curso modules', curso['modules'])
             let modulos = curso['modules']
+            let duracionCourse = 0;
             modulos.forEach(modulo => {
-              //console.log('modulo',modulo)
+              console.log('modulo',modulo)
               modulo.expanded = false;
+              let duracion = 0;
+              modulo.clases.forEach(clase => {
+                duracion+=clase.duracion
+              });
+              modulo.duracion = duracion
+              duracionCourse+=duracion
             });
+            curso['duracion'] = duracionCourse;
 
           });
           this.categories.forEach(category => {
             let filteredCourses = courses.filter(course => 
               course['categories'].some(cat => cat.id === category.id)
             );
+            let filteredCoursesPropios = courses.filter(course => 
+              course['categories'].some(cat => cat.id === category.id) && course.enterpriseRef!=null
+            );
+            let filteredCoursesPredyc = courses.filter(course => 
+              course['categories'].some(cat => cat.id === category.id) && course.enterpriseRef==null
+            );
             category.expanded = false;
+            category.expandedPropios = false;
+            category.expandedPredyc = false;
+
             category.courses = filteredCourses;
-
+            category.coursesPropios = filteredCoursesPropios;
+            category.coursesPredyc = filteredCoursesPredyc;
           });
-
           console.log('this.categories',this.categories)
-
-
-
-
-
-
         })
       });
     })
-
-
-
   }
 
   anidarCompetenciasInicial(categorias: any[], competencias: any[]): any[] {
