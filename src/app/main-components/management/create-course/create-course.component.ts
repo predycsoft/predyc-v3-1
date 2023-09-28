@@ -1094,6 +1094,40 @@ export class CreateCourseComponent implements OnInit {
 
     clase['videoUpload'] = 0;
 
+    // Create URL for the file
+    const url = URL.createObjectURL(file);
+
+    // Create a video element
+    const video = document.createElement('video');
+
+    // Error Handling: if there are any errors loading the video file
+    video.addEventListener('error', (e) => {
+      console.error('Error loading video file:', e);
+    });
+
+  // Set the source object of the video element to the object URL of the file
+    video.src = url;
+    
+    // When metadata is loaded get the duration
+    video.addEventListener('loadedmetadata', () => {
+      const duration = video.duration;
+      console.log('Video Duration: ', duration);
+
+      if(clase.tipo == 'video'){
+        clase.duracion = Math.ceil(duration/60);
+      }
+
+      // You can proceed with your Vimeo upload logic here
+      // Your logic to use duration.
+      
+      // Important to revoke the URL after its use to release the reference
+      URL.revokeObjectURL(url);
+    }, { once: true }); // Use the once option to ensure that the event listener is invoked only once.
+    
+    // Load the video metadata manually
+    video.load();
+  
+
     // Crea el video en Vimeo
     //clase['uploading'] = true;
     this.uploadControl.createVideo(access_token,videoName,videoDescription)
@@ -1630,6 +1664,14 @@ export class CreateCourseComponent implements OnInit {
             valid = false;
             modulo['InvalidMessages'].push('El módulo tiene clases invalidas');
             clase['InvalidMessages'].push('La clase debe tener título');
+          }
+
+          if(clase.duracion==0){
+            modulo['isInvalid'] = true;
+            clase['isInvalid'] = true;
+            valid = false;
+            modulo['InvalidMessages'].push('El módulo tiene clases invalidas');
+            clase['InvalidMessages'].push('La clase debe tener duración');
           }
 
           if (clase.tipo == 'video'){

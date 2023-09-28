@@ -338,6 +338,16 @@
                                                                 <img [src]="icon.flash" class="h16px pdr05" alt="">
                                                                 Seleccionar competencias
                                                             </button>
+                                                            <ng-container *ngIf="clase.tipo == 'lectura'">
+                                                                <!-- <button (click)="openModalAsignarCompetencia(modalAsignarCompetenciasClases,clase)" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                                    <img [src]="icon.flash" class="h16px pdr05" alt="">
+                                                                    Seleccionar sas
+                                                                </button> -->
+                                                                <span class="pdr05">Duración:</span>
+                                                                <div class="w-40"><input [(ngModel)]="clase.duracion" type="number" min="1" class="form-control inputAlajandraLoQuisoAsi"></div>
+                                                                <span class="pdl05">minutos</span>
+                                                            </ng-container>
+                                                            
                                                         </div>
                                                             <input (change)="onFileSelected($event,clase,false,modulo)" type="file" accept="{{clase.tipo == 'lectura'?'.pdf' : 'video/mp4'}}"  #FileInput style="display: none;">
                                                     </ng-container>
