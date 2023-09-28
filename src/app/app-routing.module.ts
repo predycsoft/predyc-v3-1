@@ -64,7 +64,8 @@ const routes: Routes = [
   {
     path: 'init-script',
     component: InitScriptComponent
-  }
+  },
+  { path: '**', redirectTo: '', pathMatch: 'full' }, // Wildcard Route
 ];
 
 @NgModule({

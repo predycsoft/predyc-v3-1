@@ -32,6 +32,8 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatExpansionModule } from "@angular/material/expansion";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+
 
 
 
@@ -152,7 +154,8 @@ import { CreateProfileComponent } from './main-components/management/create-prof
     MatDialogModule,
     MatSelectModule,
     MatTabsModule,
-    MatMenuModule, 
+    MatMenuModule,
+    MatButtonToggleModule, 
     MatIconModule,
     MatListModule,
     MatExpansionModule,

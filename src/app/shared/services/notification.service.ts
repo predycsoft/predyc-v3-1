@@ -54,23 +54,26 @@ export class NotificationService {
   }) {
     console.log("queryObj", queryObj)
     if (this.notificationCollectionSubscription) {
+      console.log("Has to unsubscribe before")
       this.notificationCollectionSubscription.unsubscribe();
     }
     this.notificationCollectionSubscription = this.afs.collection<Notification>(Notification.collection, ref => {
         let query: CollectionReference | Query = ref;
         query = query.where('enterpriseRef', '==', this.enterpriseService.getEnterpriseRef())
         if (queryObj.typeFilter) {
+          console.log(`Filter has been set as ${queryObj.typeFilter}`)
           query = query.where('type', '==', queryObj.typeFilter)
         }
         query = query.orderBy('date', 'desc')
         if (queryObj.startAt) {
-          query = query.startAt(queryObj.startAt)
+          query = query.startAt(queryObj.startAt.date)
         } else if (queryObj.startAfter) {
-          query = query.startAfter(queryObj.startAfter)
+          query = query.startAfter(queryObj.startAfter.date)
         }
         return query.limit(queryObj.pageSize)
       }
     ).valueChanges().subscribe(notifications => {
+      console.log("New notifications", notifications)
       this.notificationsSubject.next(notifications)
     })
   }

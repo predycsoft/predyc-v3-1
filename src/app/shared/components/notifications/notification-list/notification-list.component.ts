@@ -79,8 +79,9 @@ class NotificationDataSource extends DataSource<Notification> {
   private notificationSubscription: Subscription;
 
   private selectedFilter: string = 'all'
-  private firstNotification: Notification
-  private lastNotification: Notification
+
+  private currentNotifications: Notification[]
+  private previousPageNotification: Notification
 
   constructor(
     private userService: UserService,
@@ -114,11 +115,13 @@ class NotificationDataSource extends DataSource<Notification> {
         // first page
       } else if (eventObj.pageIndex > eventObj.previousPageIndex) {
         // next page
-        queryObj.startAfter = this.lastNotification
+        queryObj.startAfter = this.currentNotifications[this.currentNotifications.length - 1]
+        this.previousPageNotification = this.currentNotifications[0]
       } else {
         // previous page
-        queryObj.startAt = this.firstNotification
+        queryObj.startAt = this.previousPageNotification
       }
+      console.log("queryObj inside datasource", queryObj)
       this.getNotifications(queryObj)
     });
 
@@ -140,17 +143,18 @@ class NotificationDataSource extends DataSource<Notification> {
 
     return this.notificationService.notifications$.pipe(
       map(notifications => {
+        // this.lastNotification = notifications[notifications.length - 1]
+        // if (this.paginator.pageIndex !== 0) {
+          //   this.firstNotification = notifications[0]
+          // }
         // update paginator length
-        this.lastNotification = notifications[notifications.length - 1]
-        if (this.paginator.pageIndex !== 0) {
-          this.firstNotification = notifications[0]
-        }
         this.paginator.length = this.notificationService.getNotificationsLengthByFilter(this.selectedFilter)
+
+        this.currentNotifications = [...notifications]
   
         // Pagination
         return notifications.map(notification => {
           const notificationUser = this.userService.getUser(notification.userRef.id)
-          console.log("notificationUser", notificationUser)
           notification.user = notificationUser
           return notification
         });
@@ -166,6 +170,11 @@ class NotificationDataSource extends DataSource<Notification> {
   setFilter(filter: string) {
     this.selectedFilter = filter
     this.paginator.firstPage();
+    this.paginator.page.emit({
+      pageIndex: this.paginator.pageIndex,
+      pageSize: this.paginator.pageSize,
+      length: this.paginator.length
+    });
   }
 
   disconnect() {
