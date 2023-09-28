@@ -22,7 +22,7 @@ export class EnterpriseInfoFormComponent {
 
 
   enterprise: Enterprise
-  isEnterpriseLoaded$ = new BehaviorSubject<boolean>(false);
+  isEnterpriseLoaded = false;
 
   isEditing = false
 
@@ -38,14 +38,15 @@ export class EnterpriseInfoFormComponent {
     zipCode : "Código postal desconocido",
   }
 
-  async ngOnInit(){
-    await this.enterpriseService.whenEnterpriseLoaded()
+  ngOnInit(){
     this.enterprise = this.enterpriseService.getEnterprise()
-
-    if(this.enterprise) {
-      this.initForm()
-      this.isEnterpriseLoaded$.next(true);
-    }
+    this.enterpriseService.enterprise$.subscribe(enterprise => {
+      if (enterprise) {
+        this.enterprise = enterprise
+        this.initForm()
+        this.isEnterpriseLoaded = true;
+      }
+    })
   
   }
 

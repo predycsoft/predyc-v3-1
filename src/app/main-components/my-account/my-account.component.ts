@@ -36,8 +36,16 @@ export class MyAccountComponent {
   ]  
 
   async ngOnInit(){
-    await this.enterpriseService.whenEnterpriseLoaded()
-    this.enterprise = this.enterpriseService.getEnterprise()
+    this.authService.user$.subscribe(user=> {
+      if (user) {
+        this.user = user
+      }
+    })
+     this.enterpriseService.enterprise$.subscribe(enterprise => {
+      if (enterprise) {
+        this.enterprise = enterprise
+      }
+    })
   }
 
   signOut() {

@@ -4,12 +4,11 @@ import { UserService } from '../../services/user.service';
 import { Enterprise } from '../../models/enterprise.model';
 import { User } from '../../models/user.model';
 
-import { enterpriseData } from 'src/assets/data/enterprise'
-import { usersData } from 'src/assets/data/users'
-import { notificationsData } from 'src/assets/data/notifications'
+import { enterpriseData } from 'src/assets/data/enterprise.data'
+import { usersData } from 'src/assets/data/users.data'
+import { notificationsData } from 'src/assets/data/notifications.data'
 import { Notification } from '../../models/notification.model';
 import { NotificationService } from '../../services/notification.service';
-import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-init-script',

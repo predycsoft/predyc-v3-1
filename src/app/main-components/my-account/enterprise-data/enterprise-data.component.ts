@@ -22,9 +22,12 @@ export class EnterpriseDataComponent {
   infoData = {}
   originalInfoData: any; 
 
-  async ngOnInit(){
-    await this.enterpriseService.whenEnterpriseLoaded()
-    this.enterprise = this.enterpriseService.getEnterprise()
+  ngOnInit(){
+    this.enterpriseService.enterprise$.subscribe(enterprise => {
+      if (enterprise) {
+        this.enterprise = enterprise
+      }
+    })
   }
 
     onEnterprisePresentationChangeHandler(data: { formValue: Object; isEditing: boolean }) {

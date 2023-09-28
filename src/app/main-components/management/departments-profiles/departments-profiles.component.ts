@@ -9,7 +9,7 @@ import { firstValueFrom } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { DepartmentService } from 'src/app/shared/services/department.service';
-import { deparmentsData } from '../../../../assets/data/departments'
+import { deparmentsData } from '../../../../assets/data/departments.data'
 import { SelectionModel } from '@angular/cdk/collections';
 import { Router } from '@angular/router';
 

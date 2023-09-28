@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
+import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, finalize, firstValueFrom } from 'rxjs';
 import { User } from 'src/app/shared/models/user.model';
 import { AlertsService } from 'src/app/shared/services/alerts.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
@@ -17,14 +18,14 @@ export class AdminPresentationFormComponent {
   constructor(
     public icon:IconService,
     private alertService: AlertsService,
+    private storage: AngularFireStorage,
     private authService: AuthService,
-    // private userService: UserService,
 
   ) {}
 
   @Output() onAdminPresentationChange: EventEmitter<{ formValue: FormGroup; isEditing: boolean }> = new EventEmitter<{ formValue: FormGroup; isEditing: boolean }>()
 
-  // adminUser: User
+  adminUser: User
   adminUser$: Observable<User>
 
   imageUrl: string | ArrayBuffer | null = null
@@ -45,16 +46,17 @@ export class AdminPresentationFormComponent {
     this.adminUser$ = this.authService.user$
     this.adminUser$.subscribe(adminUser => {
       if(adminUser){
-        this.initForm(adminUser)
-        if (adminUser.photoUrl) {
-          this.imageUrl = adminUser.photoUrl;
+        this.adminUser = adminUser
+        this.initForm()
+        if (this.adminUser.photoUrl) {
+          this.imageUrl = this.adminUser.photoUrl;
         }
       }
     })
 
   }
 
-  initForm(adminUser: User) {
+  initForm() {
 
     this.form = new FormGroup({
       "photoUrl": new FormControl(""),
@@ -62,10 +64,9 @@ export class AdminPresentationFormComponent {
       "job": new FormControl("")
     })
 
-    if (adminUser) {
-      this.form.patchValue(adminUser)
+    if (this.adminUser) {
+      this.form.patchValue(this.adminUser)
     }
-
     this.onAdminPresentationChange.emit({
       formValue: this.form.value,
       isEditing: false
@@ -89,6 +90,8 @@ export class AdminPresentationFormComponent {
   async onSubmit(){
     const controls = this.form.controls
     if (this.form.status === "VALID") {
+      await this.saveAdminPhoto()
+      if (this.adminUser.photoUrl) this.form.patchValue({photoUrl: this.adminUser.photoUrl});
       this.onAdminPresentationChange.emit({
         formValue: this.form.value,
         isEditing: false
@@ -132,6 +135,41 @@ export class AdminPresentationFormComponent {
       this.imageUrl = reader.result;
       this.uploadedImage = file;
     };
+
+  }
+
+  async saveAdminPhoto() {
+    if (this.uploadedImage) {
+      if (this.adminUser.photoUrl) {
+        // Existing image must be deleted before
+        // await firstValueFrom(
+        //   this.storage.refFromURL(this.adminUser$.photoUrl).delete()
+        // ).catch((error) => console.log(error));
+        console.log('Old image has been deleted!');
+      }
+      // Upload new image
+      const fileName = this.uploadedImage.name.replace(' ', '-');
+      const filePath = `admin/Imagenes/${fileName}`;
+      const fileRef = this.storage.ref(filePath);
+      console.log("fileRef")
+      console.log(fileRef)
+      const task = this.storage.upload(filePath, this.uploadedImage);
+      await new Promise<void>((resolve, reject) => {
+        task.snapshotChanges().pipe(
+          finalize(async () => {
+            this.adminUser.photoUrl = await firstValueFrom(fileRef.getDownloadURL());
+            console.log(this.adminUser.photoUrl)
+            console.log("Se ha guardado la imagen");
+            resolve();
+          })
+        ).subscribe({
+          next: () => {},
+          error: error => reject(error),
+        });
+      });
+    } else {
+      this.adminUser.photoUrl = null
+    }
 
   }
 

@@ -42,15 +42,6 @@ export class AdminInfoFormComponent {
   }
 
   async ngOnInit(){
-
-    // this.userService.getUsersObservable().subscribe(users => {
-    //   if(users.length > 0) {
-    //     const adminUsers = users.filter(x => x.role === "admin")
-    //     this.adminUser = adminUsers.length > 0? adminUsers[0]: null
-    //     this.initForm()
-    //   }
-    // })
-
     this.adminUser$ = this.authService.user$
     this.adminUser$.subscribe(adminUser => {
       if(adminUser){

@@ -32,6 +32,8 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatExpansionModule } from "@angular/material/expansion";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+
 
 
 
@@ -154,7 +156,8 @@ import { CourseSelectorComponent } from './shared/components/course-selector/cou
     MatDialogModule,
     MatSelectModule,
     MatTabsModule,
-    MatMenuModule, 
+    MatMenuModule,
+    MatButtonToggleModule, 
     MatIconModule,
     MatListModule,
     MatExpansionModule,

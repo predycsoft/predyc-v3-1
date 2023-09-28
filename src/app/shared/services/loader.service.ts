@@ -17,6 +17,4 @@ export class LoaderService {
         this.loading--;
     }
 }
-
-
 }

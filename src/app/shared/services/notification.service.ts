@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, CollectionReference, Query } from '@angular/fire/compat/firestore';
 import { AlertsService } from './alerts.service';
-import { BehaviorSubject, firstValueFrom } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, Subscription } from 'rxjs';
 import { Notification } from 'src/app/shared/models/notification.model';
 import { EnterpriseService } from './enterprise.service';
 
@@ -14,14 +14,22 @@ export class NotificationService {
 
   private notificationsSubject = new BehaviorSubject<Notification[]>([]);
   public notifications$ = this.notificationsSubject.asObservable();
+  private notificationsLoadedSubject = new BehaviorSubject<boolean>(false)
+  public notificationsLoaded$ = this.notificationsLoadedSubject.asObservable()
+
+  notificationCollectionSubscription: Subscription
 
   constructor(
     private afs: AngularFirestore,
     private enterpriseService: EnterpriseService,
     private alertService: AlertsService
-  ) {}
-
-  ngOnInit() {}
+  ) {
+    this.enterpriseService.enterpriseLoaded$.subscribe(isLoaded => {
+      if (isLoaded) {
+        this.notificationsLoadedSubject.next(true)
+      }
+    })
+  }
 
   async addNotification(notification: Notification): Promise<void> {
     try {
@@ -44,20 +52,28 @@ export class NotificationService {
                 typeof Notification.TYPE_ALERT |
                 typeof Notification.TYPE_REQUEST
   }) {
-    this.afs.collection<Notification>(Notification.collection, ref => {
+    console.log("queryObj", queryObj)
+    if (this.notificationCollectionSubscription) {
+      console.log("Has to unsubscribe before")
+      this.notificationCollectionSubscription.unsubscribe();
+    }
+    this.notificationCollectionSubscription = this.afs.collection<Notification>(Notification.collection, ref => {
         let query: CollectionReference | Query = ref;
         query = query.where('enterpriseRef', '==', this.enterpriseService.getEnterpriseRef())
         if (queryObj.typeFilter) {
+          console.log(`Filter has been set as ${queryObj.typeFilter}`)
           query = query.where('type', '==', queryObj.typeFilter)
         }
+        query = query.orderBy('date', 'desc')
         if (queryObj.startAt) {
-          query = query.startAt(queryObj.startAt)
+          query = query.startAt(queryObj.startAt.date)
         } else if (queryObj.startAfter) {
-          query = query.startAfter(queryObj.startAfter)
+          query = query.startAfter(queryObj.startAfter.date)
         }
-        return query.limit(queryObj.pageSize).orderBy('date', 'desc')
+        return query.limit(queryObj.pageSize)
       }
     ).valueChanges().subscribe(notifications => {
+      console.log("New notifications", notifications)
       this.notificationsSubject.next(notifications)
     })
   }

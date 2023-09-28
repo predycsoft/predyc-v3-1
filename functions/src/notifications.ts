@@ -15,7 +15,7 @@ export const onNotificationAdded = functions.firestore
     const enterprise = (await notification.enterpriseRef.get()).data()
     let fieldToIncrement: string = ''
     switch (notification.type) {
-        case 'actity':
+        case 'activity':
             fieldToIncrement = 'totalActivityNotifications'
             break;
         case 'alert':

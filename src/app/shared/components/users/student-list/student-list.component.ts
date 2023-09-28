@@ -1,11 +1,11 @@
-import { CollectionViewer, DataSource, SelectionModel } from '@angular/cdk/collections';
+import { DataSource, SelectionModel } from '@angular/cdk/collections';
 import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { MatSort, Sort } from '@angular/material/sort';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 import { IconService } from '../../../../shared/services/icon.service';
 import { UserService } from '../../../../shared/services/user.service';
 import { User } from '../../../../shared/models/user.model';
-import { BehaviorSubject, catchError, combineLatest, map, merge, Observable, of, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, catchError, map, merge, Observable, of, Subject, Subscription } from 'rxjs';
 import { AfterOnInitResetLoading } from 'src/app/shared/decorators/loading.decorator';
 import { LoaderService } from 'src/app/shared/services/loader.service';
 import { SearchInputService } from 'src/app/shared/services/search-input.service';
@@ -51,7 +51,7 @@ export class StudentListComponent {
 
   ngAfterViewInit() {
     this.dataSource = new UserDataSource(
-      this.userService.getUsersObservable(),
+      this.userService.users$,
       this.paginator,
       this.sort,
     );
@@ -116,14 +116,13 @@ class UserDataSource extends DataSource<User> {
     this.paginator.pageSize = 5
     this.paginator.page.subscribe(() => this.paginatorSubject.next());
     this.sort.sortChange.subscribe(() => this.sortSubject.next());
-  }
-  
-  connect(): Observable<User[]> {
-
     this.userSubscription = this.users$.subscribe(users => {
       this.data = users
       this.dataSubject.next(users);
     });
+  }
+  
+  connect(): Observable<User[]> {
 
     return merge(this.users$, this.filterSubject, this.paginatorSubject, this.sortSubject).pipe(
       map(() => {
