@@ -67,6 +67,15 @@ export class NotificationService {
           console.log(`Filter has been set as ${queryObj.typeFilter}`)
           query = query.where('type', '==', queryObj.typeFilter)
         }
+        // IF I WANT TO FILTER BY READBYADMIN FALSE
+        // if (queryObj.typeFilter) {
+        //   console.log(`Filter has been set as ${queryObj.typeFilter}`)
+        //   if (queryObj.typeFilter === 'archived') {
+        //     query = query.where('readByAdmin', '==', true)
+        //   } else {
+        //     query = query.where('type', '==', queryObj.typeFilter).where('readByAdmin', '==', false)
+        //   }
+        // }
         query = query.orderBy('date', 'desc')
         if (queryObj.startAt) {
           query = query.startAt(queryObj.startAt.date)
