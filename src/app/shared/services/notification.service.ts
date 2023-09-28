@@ -107,4 +107,17 @@ export class NotificationService {
       }
       return length
   }
+  
+  public async setNotificationReadedByAdmin(notification: Notification) {
+    try {
+      await this.afs.collection(Notification.collection).doc(notification.id).set(
+        {
+          readByAdmin: true
+        }, { merge: true }
+      );
+    } catch (error) {
+      console.log(error)
+      this.alertService.errorAlert(JSON.stringify(error))
+    }
+  }
 }

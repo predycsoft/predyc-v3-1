@@ -67,7 +67,15 @@ export class NotificationListComponent {
   }
 
   ngOnDestroy() {
-    this.combinedObservableSubscription.unsubscribe();
+    this.
+    combinedObservableSubscription.unsubscribe();
+  }
+
+  
+  async setReaded(notification) {
+    this.notificationService.setNotificationReadedByAdmin(notification)
+    console.log("notification readed")    
+    console.log(notification)    
   }
 
 }
