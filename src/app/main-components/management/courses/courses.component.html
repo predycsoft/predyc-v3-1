@@ -89,7 +89,7 @@
                                 <div fxLayout="column" fxLayoutAlign="start start" [ngClass]="category.expanded?'bodyCategoryExpanded':'bodyCategory'">
                                     <div class="fw pd05 h40px border-tl cursorPointer hoverBlue" [ngClass]="selectedCourse == course?'backBlue1':''" (click)="selectedCourse = course" *ngFor="let course of filteredCourses(category.courses)" fxLayout="row" fxLayoutAlign="space-between center">
                                         <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
-                                            <img [src]="course.foto" class="h24px w24px radius4" alt="">
+                                            <img [src]="course['imagen']" class="h24px w24px radius4" alt="">
                                             <span class="ft12" [ngClass]="selectedCourse == course?'blue-5 ft500':'gray-10'" >{{course.titulo}}</span>
                                         </div>
                                         <div fxLayoutAlign="center center">
@@ -138,12 +138,12 @@
                     <div class="borderLight fh radius6 mgt20" *ngIf="selectedCourse" style="height: 83vh;">
                         <div class="border-bl pdl10 pdt10 pdr10 h220px" fxLayout="column" fxLayoutAlign="space-between">
                             <div fxLayout="row" fxLayoutGap="1rem">
-                                <img [src]="selectedCourse.foto" class="avatarSquare8 radius6" alt="">
+                                <img [src]="selectedCourse['imagen']" class="avatarSquare8 radius6" alt="">
                                 <div fxLayout="column" class="containerTitulo">
                                     <span class="gray-10 ft16 ft500">{{selectedCourse.titulo}}</span>
                                     <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" class="mgt05">
                                         <span class="chip backGray2 gray-8 ft10">Nivel: {{selectedCourse.nivel}}</span>
-                                        <span class="chip backGray2 gray-8 ft10">Instructor: {{selectedCourse.instructorNombre}}</span>
+                                        <span class="chip backGray2 gray-8 ft10">Instructor: {{selectedCourse.instructorNombre? selectedCourse.instructorNombre : selectedCourse['instructor'] }}</span>
                                     </div> 
                                     <p class="gray-8 ft11 mgt05 descriptionContainer">{{selectedCourse.descripcion}}</p>
                                 </div>
@@ -246,7 +246,7 @@
                             fxLayoutAlign="space-between center">
                             <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
                                 <img [src]="icon.drag" class="h14px" alt="">
-                                <img [src]="course.foto" class="h24px w24px radius4" alt="">
+                                <img [src]="course['imagen']" class="h24px w24px radius4" alt="">
                                 <span class="ft12" [ngClass]="selectedCourse == course?'blue-5 ft500':'gray-10'" >{{course.titulo}}</span>
                             </div>
                             <div fxLayoutAlign="center center">
@@ -272,7 +272,7 @@
             <div class="borderLight fh radius6" *ngIf="selectedCourse">
                 <div class="border-bl pdl10 pdt10 pdr10 h220px" fxLayout="column" fxLayoutAlign="space-between">
                     <div fxLayout="row" fxLayoutGap="1rem">
-                        <img [src]="selectedCourse.foto" class="avatarSquare8 radius6" alt="">
+                        <img [src]="selectedCourse['imagen']" class="avatarSquare8 radius6" alt="">
                         <div fxLayout="column" class="containerTitulo">
                             <span class="gray-10 ft16 ft500">{{selectedCourse.titulo}}</span>
                             <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" class="mgt05">
