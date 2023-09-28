@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
 import { IconService } from '../../../shared/services/icon.service';
 
 
@@ -11,10 +11,34 @@ export class CourseSelectorComponent {
 
 
   @Input() categories
+  @Input() type = 'propios'
   @Input() searchValue
   @Output() selectedCourseOut = new EventEmitter<any>();
+  
 
+  processedCategories
   selectedCourse
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['categories'] && changes['categories'].currentValue) {
+      console.log('changes categories',changes['categories']);
+      this.processedCategories = this.structuredClone(changes['categories'].currentValue);
+      console.log('this.processedCategories',this.processedCategories)
+    }
+  }
+
+  structuredClone(categories) {
+
+    return categories
+
+    console.log('categories original',categories)
+
+    let categoriesOut = JSON.stringify(categories);
+    categoriesOut = JSON.parse(categoriesOut)
+    
+    return categoriesOut;
+
+  }
 
   
   constructor(    
@@ -56,7 +80,12 @@ export class CourseSelectorComponent {
         });
         categoryIds.forEach(categoryId => {
           let category = this.categories.find(x => x.id == categoryId);
-          category.expanded = true;
+          if(this.type == 'propios'){
+            category.expandedPropios = true;
+          }
+          else{
+            category.expandedPredyc = true;
+          }
         });
        // this.categories.find(x => displayedCourses[0].categoria == x.name).expanded = true
       }

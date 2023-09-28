@@ -74,7 +74,22 @@
             <div fxFlex fxLayout="row" class="contanier">
                 <div fxFlex="60%" class="pdl10 pdr10 pdt10">
                     <div fxLayout="column" class="fw fh smallScroll" style="overflow-y: auto;">
-
+                        <ng-container>
+                            <app-course-selector
+                                type="predyc"
+                                [searchValue]="searchValue"
+                                (selectedCourseOut)="selectedCourse = $event"
+                                [categories]="categories">
+                            </app-course-selector>
+                        </ng-container>
+                        <span class="ft16 ft600 gray-10 pdb05">Cursos Propios</span>
+                        <ng-container>
+                            <app-course-selector
+                                [searchValue]="searchValue"
+                                (selectedCourseOut)="selectedCourse = $event"
+                                [categories]="categories">
+                            </app-course-selector>
+                        </ng-container>
                     </div>
                 </div>
                 <div fxFlex="40%" class="pdl10 pdr10 pdt10">
