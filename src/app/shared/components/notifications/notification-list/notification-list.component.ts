@@ -6,6 +6,7 @@ import { IconService } from 'src/app/shared/services/icon.service';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { Notification } from 'src/app/shared/models/notification.model';
 import { UserService } from 'src/app/shared/services/user.service';
+import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
 
 @Component({
   selector: 'app-notification-list',
@@ -34,7 +35,8 @@ export class NotificationListComponent {
   constructor(
     public icon: IconService,
     private userService: UserService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private enterpriseService: EnterpriseService
   ) {}
 
   ngAfterViewInit() {
@@ -51,6 +53,7 @@ export class NotificationListComponent {
         this.dataSource = new NotificationDataSource(
           this.userService,
           this.notificationService,
+          this.enterpriseService,
           this.paginator,
           this.pageSize
         );
@@ -74,17 +77,11 @@ export class NotificationListComponent {
   
   async setRead(notification) {
     this.notificationService.setNotificationReadByAdmin(notification)
-    console.log("notification read")    
-    console.log(notification)   
   }
 
 }
 
 class NotificationDataSource extends DataSource<Notification> {
-
-  private dataSubject = new BehaviorSubject<Notification[]>([]);
-  // private filterSubject = new BehaviorSubject<string>('');
-  private notificationSubscription: Subscription;
 
   private selectedFilter: string = 'all'
 
@@ -94,14 +91,12 @@ class NotificationDataSource extends DataSource<Notification> {
   constructor(
     private userService: UserService,
     private notificationService: NotificationService,
+    private enterpriseService: EnterpriseService,
     private paginator: MatPaginator,
     private pageSize: number
   ) {
     super();
     this.paginator.pageSize = this.pageSize
-    this.notificationSubscription = this.notificationService.notifications$.subscribe(notifications => {
-      this.dataSubject.next(notifications);
-    });
     // this.filterSubject.subscribe(filter => {
     //   // this.notifications
     // })
@@ -151,12 +146,8 @@ class NotificationDataSource extends DataSource<Notification> {
   
   connect(): Observable<Notification[]> {
 
-    return this.notificationService.notifications$.pipe(
-      map(notifications => {
-        // this.lastNotification = notifications[notifications.length - 1]
-        // if (this.paginator.pageIndex !== 0) {
-          //   this.firstNotification = notifications[0]
-          // }
+    return combineLatest([this.notificationService.notifications$, this.enterpriseService.enterprise$]).pipe(
+      map(([notifications, _]) => {
         // update paginator length
         this.paginator.length = this.notificationService.getNotificationsLengthByFilter(this.selectedFilter)
 
@@ -187,7 +178,5 @@ class NotificationDataSource extends DataSource<Notification> {
     });
   }
 
-  disconnect() {
-    this.notificationSubscription.unsubscribe();
-  }
+  disconnect() {}
 }
