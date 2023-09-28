@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { User } from '../../shared/models/user.model';
+import { User, UserJson } from '../../shared/models/user.model';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { BehaviorSubject, firstValueFrom, Observable, Subscription } from 'rxjs'
@@ -101,7 +101,7 @@ export class UserService {
     }
   }
 
-  async editUser(user): Promise<void> {
+  async editUser(user: UserJson): Promise<void> {
     try {
       await this.afs.collection(User.collection).doc(user.uid as string).set(
         user, { merge: true }

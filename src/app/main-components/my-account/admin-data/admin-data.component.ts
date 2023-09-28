@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { User } from 'src/app/shared/models/user.model';
+import { AuthService } from 'src/app/shared/services/auth.service';
 import { UserService } from 'src/app/shared/services/user.service';
 
 @Component({
@@ -10,6 +11,7 @@ import { UserService } from 'src/app/shared/services/user.service';
 export class AdminDataComponent {
 
   constructor(
+    private authService: AuthService,
     private userService: UserService,
   ){}
 
@@ -23,11 +25,8 @@ export class AdminDataComponent {
   adminUser: User
 
   async ngOnInit(){
-    this.userService.users$.subscribe(users => {
-      if(users.length > 0) {
-        const adminUsers = users.filter(x => x.role === "admin")
-        this.adminUser = adminUsers.length > 0? adminUsers[0]: null
-      }
+    this.authService.user$.subscribe(user => {
+      this.adminUser = user
     })
 
   }
@@ -80,8 +79,7 @@ export class AdminDataComponent {
   async onUpdate() {
     const newData = { ...this.presentationData, ...this.infoData }
 
-    // let updatedAdmin: User = {...this.enterprise}
-    let updatedAdmin = {...this.adminUser}
+    let updatedAdmin: User = User.fromJson({...this.adminUser}) 
 
     for (const key in newData) {
       if (Object.hasOwnProperty.call(updatedAdmin, key)) {
@@ -89,14 +87,13 @@ export class AdminDataComponent {
       }
     }
 
-
     console.log("updatedAdmin nuevo")
     console.log(updatedAdmin)
 
-    await this.userService.editUser(updatedAdmin)
+    await this.userService.editUser(updatedAdmin.toJson())
 
     // Descomentar la siguiente linea
-    // this.adminUser = { ...updatedAdmin}
+    this.adminUser = User.fromJson({ ...updatedAdmin})
     this.originalInfoData = { ...this.infoData }
     this.originalPresentationData = { ...this.presentationData }
   }

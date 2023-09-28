@@ -40,6 +40,7 @@ export interface UserJson {
 export class User {
 
   public static collection = 'user'
+  public static storageProfilePhotoFolder = 'User/Profile photos'
   public static ROLE_ADMIN = 'admin'
   public static ROLE_STUDENT = 'student'
 

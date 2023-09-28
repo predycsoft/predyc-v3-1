@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { Enterprise } from '../models/enterprise.model';
+import { Enterprise, EnterpriseJson } from '../models/enterprise.model';
 import { AlertsService } from './alerts.service';
 import { AuthService } from './auth.service';
 
@@ -49,7 +49,7 @@ export class EnterpriseService {
     }
   }
 
-  async editEnterprise(enteprise): Promise<void> {
+  async editEnterprise(enteprise: EnterpriseJson): Promise<void> {
     try {
       await this.afs.collection(Enterprise.collection).doc(enteprise.id as string).set(
         enteprise, { merge: true }
