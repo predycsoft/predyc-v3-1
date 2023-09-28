@@ -7,7 +7,7 @@
         </div>
     </div>
     <div fxLayout="column" fxLayoutAlign="start start" [ngClass]="category.expanded?'bodyCategoryExpanded':'bodyCategory'">
-        <div class="fw pd05 h40px border-tl cursorPointer hoverBlue" [ngClass]="selectedCourse == course?'backBlue1':''" (click)="selectedCourse = course" *ngFor="let course of filteredCourses(category.courses)" fxLayout="row" fxLayoutAlign="space-between center">
+        <div class="fw pd05 h40px border-tl cursorPointer hoverBlue" [ngClass]="selectedCourse == course?'backBlue1':''" (click)="selectCourse(course)" *ngFor="let course of filteredCourses(category.courses)" fxLayout="row" fxLayoutAlign="space-between center">
             <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
                 <img [src]="course['imagen']" class="h24px w24px radius4" alt="">
                 <span class="ft12" [ngClass]="selectedCourse == course?'blue-5 ft500':'gray-10'" >{{course.titulo}}</span>

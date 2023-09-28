@@ -78,26 +78,13 @@
                 <div fxLayout="row">
                     <div class="w-100 pd10">
                         <div id="" class="mgt10 hideScroll" style="height: 36vh; overflow: auto;">
-                            <div class="fw mgb05 borderLight radius6 " *ngFor="let category of categories">
-                                <div [ngClass]="category.expanded?'headCategoryExpanded hoverBlue':'headCategory hoverBlue'" fxLayout="row" fxLayoutAlign="space-between center" (click)="category.expanded=!category.expanded">
-                                    <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
-                                        <img *ngIf="category.expanded == false" [src]="icon.chevronRight" class="makeBlue cursorPointer" alt="">
-                                        <img *ngIf="category.expanded == true" [src]="icon.chevronDown" class="makeBlue cursorPointer" alt="">
-                                        <span [ngClass]="category.expanded?'ft12 blue-5 ft500':'ft12 gray-10 ft500'">{{category.name}}</span>
-                                    </div>
-                                </div>
-                                <div fxLayout="column" fxLayoutAlign="start start" [ngClass]="category.expanded?'bodyCategoryExpanded':'bodyCategory'">
-                                    <div class="fw pd05 h40px border-tl cursorPointer hoverBlue" [ngClass]="selectedCourse == course?'backBlue1':''" (click)="selectedCourse = course" *ngFor="let course of filteredCourses(category.courses)" fxLayout="row" fxLayoutAlign="space-between center">
-                                        <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
-                                            <img [src]="course['imagen']" class="h24px w24px radius4" alt="">
-                                            <span class="ft12" [ngClass]="selectedCourse == course?'blue-5 ft500':'gray-10'" >{{course.titulo}}</span>
-                                        </div>
-                                        <div fxLayoutAlign="center center">
-                                            <span class="gray-6 ft12 nowrap">{{ getRounded(course.duracion / 60) }} {{getRounded(course.duracion / 60) == 1?'hora':'horas'}}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <ng-container>
+                                <app-course-selector
+                                    [categories]="categories" 
+                                    [searchValue]="searchValue" 
+                                    (selectedCourseOut)="selectedCourse = $event">
+                                </app-course-selector>
+                            </ng-container>
                             <div *ngIf="creatingCategory" class="fw mgb05 borderLight radius6">
                                 <div class="closeButton" fxLayout="row" fxLayoutAlign="end" (click)="creatingCategory = false">
                                     <div class="iconContainer backGray2 cursorPointer mgl05 mgt05" fxLayoutAlign="center center">

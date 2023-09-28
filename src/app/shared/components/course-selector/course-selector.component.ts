@@ -10,10 +10,12 @@ import { IconService } from '../../../shared/services/icon.service';
 export class CourseSelectorComponent {
 
 
-  selectedCourse
-  @Input()categories
+  @Input() categories
   @Input() searchValue
   @Output() selectedCourseOut = new EventEmitter<any>();
+
+  selectedCourse
+
   
   constructor(    
     public icon: IconService,
@@ -21,8 +23,23 @@ export class CourseSelectorComponent {
     
   }
 
+  ngOnInit(): void {
+
+    console.log('categories select course component',this.categories)
+    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
+    //Add 'implements OnInit' to the class.
+    
+  }
+
   getRounded(num: number): number {
     return Math.round(num);
+  }
+
+  selectCourse(course){
+
+    this.selectedCourse = course
+    this.selectedCourseOut.emit(course);
+
   }
 
   filteredCourses(categoryCourses) {

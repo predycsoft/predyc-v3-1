@@ -51,6 +51,9 @@ export class CoursesComponent {
   creatingCategory = false
   newCategory: category = new category
   categories
+
+  categoriesPredyc;
+  categoriesPropios;
   courses;
   
 
@@ -69,7 +72,10 @@ export class CoursesComponent {
       this.skillService.getSkillsObservable().pipe(
         take(2)
       ).subscribe(skill => {
-        this.categories = this.anidarCompetenciasInicial(category, skill)
+        this.categories = this.anidarCompetenciasInicial(category, skill);
+
+        
+
         //this.competenciasEmpresa = this.obtenerCompetenciasAlAzar(5);
         this.courseService.getCoursesObservable().subscribe(courses => {
           courses.forEach(curso => {
