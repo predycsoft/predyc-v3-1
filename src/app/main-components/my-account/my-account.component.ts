@@ -51,7 +51,6 @@ export class MyAccountComponent {
       }
     })
     this.route.queryParams.subscribe(params => {
-      console.log("params", params)
       this.activeTab = params['activeTab'] === 'soporte' ? 1 : 0;
     });
   }
