@@ -127,8 +127,10 @@ export class UserService {
     ).valueChanges().subscribe({
       next: users => {
         this.usersSubject.next(users)
-        this.usersLoadedSubject.next(true)
-        console.log("Los usuarios fueron cargados", users)
+        if (!this.usersLoadedSubject.value) {
+          this.usersLoadedSubject.next(true)
+          console.log("Los usuarios fueron cargados", users)
+        }
       },
       error: error => {
         console.log(error)

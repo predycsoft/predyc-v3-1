@@ -27,7 +27,7 @@ export class NotificationService {
     private alertService: AlertsService
   ) {
     this.enterpriseService.enterpriseLoaded$.subscribe(isLoaded => {
-      if (isLoaded) {
+      if (isLoaded && !this.notificationsLoadedSubject.value) {
         this.notificationsLoadedSubject.next(true)
       }
     })
