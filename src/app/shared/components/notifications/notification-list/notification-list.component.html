@@ -53,13 +53,13 @@
                     </div>
                 </div> 
                 <div *ngIf="notification.type === 'activity'">
-                    <div *ngIf="!clickedNotifications[notification.id]">
+                    <div [routerLink]="['/management/students', notification.user.uid]" class="cursorPointer">
                         <img [src]="icon.panel" class="h20px" alt="">
                         <span style="color: var(--gray-7);">Ir al panel</span>
                     </div>
                 </div> 
-                <div *ngIf="notification.type === 'request'" (click)="sendMail(notification)">
-                    <div *ngIf="!clickedNotifications[notification.id]">
+                <div *ngIf="notification.type === 'request'">
+                    <div [routerLink]="['/my-account']" [queryParams]="{ activeTab: 'soporte' }" class="cursorPointer">
                         <img [src]="icon.chat" class="h20px" alt="">
                         <span style="color: var(--gray-7);">Contactar a Predyc</span>
                     </div>
