@@ -1,11 +1,14 @@
 import { DataSource } from '@angular/cdk/collections';
 import { Component, Input, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
-import { BehaviorSubject, catchError, combineLatest, map, merge, Observable, of, Subscription } from 'rxjs';
+import { BehaviorSubject, catchError, combineLatest, firstValueFrom, map, merge, Observable, of, Subscription } from 'rxjs';
 import { IconService } from 'src/app/shared/services/icon.service';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { Notification } from 'src/app/shared/models/notification.model';
 import { UserService } from 'src/app/shared/services/user.service';
+import { AngularFireFunctions } from '@angular/fire/compat/functions';
+import { User } from 'src/app/shared/models/user.model';
+import { AlertsService } from 'src/app/shared/services/alerts.service';
 
 @Component({
   selector: 'app-notification-list',
@@ -31,9 +34,13 @@ export class NotificationListComponent {
 
   combinedObservableSubscription: Subscription
 
+  clickedNotifications: { [id: string]: boolean } = {};
+
   constructor(
     public icon: IconService,
     private userService: UserService,
+    private fireFunctions: AngularFireFunctions,
+    private alertService: AlertsService,
     private notificationService: NotificationService
   ) {}
 
@@ -72,10 +79,42 @@ export class NotificationListComponent {
   }
 
   
-  async setRead(notification) {
+  async setRead(notification: Notification) {
     this.notificationService.setNotificationReadByAdmin(notification)
     console.log("notification read")    
     console.log(notification)   
+  }
+
+  async sendMail(notification: Notification) {
+    this.clickedNotifications[notification.id] = true;
+    const user = this.userService.getUser(notification.userRef.id) as User
+    let sender = "capacitacion@predyc.com"
+    let recipients = [user.email]
+    let subject = ""
+    let text = ""
+
+    if (notification.type === Notification.TYPE_ALERT) {
+      subject = "Retraso en curso"
+      text = `${user.displayName} ${notification.message}`
+    }
+    else if (notification.type === Notification.TYPE_REQUEST) {
+      subject = "Solicitud de acceso"
+      text = `${user.displayName} ${notification.message}`
+    }
+    await firstValueFrom(this.fireFunctions.httpsCallable('sendMail')({
+      sender: sender,
+      recipients: recipients,
+      subject: subject,
+      text: text,
+    }));    
+    if (notification.type === Notification.TYPE_ALERT) {
+      this.alertService.succesAlert('Has notificado al usuario exitosamente.')
+    }
+    else if (notification.type === Notification.TYPE_REQUEST) {
+      this.alertService.succesAlert('Has contactado a predyc exitosamente.')
+    }
+    // COMO MOSTRAR ALERTA EN CASO DE ERROR? HACERLO DENTRO DE LA CLOUD FUNCTION?
+    console.log("Email enviado")
   }
 
 }

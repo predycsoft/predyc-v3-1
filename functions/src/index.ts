@@ -9,3 +9,6 @@ export { createUserWithEmailAndPassword }
 
 import { onNotificationAdded, onNotificationReadByAdmin } from './notifications'
 export { onNotificationAdded, onNotificationReadByAdmin }
+
+import { sendMail } from './email';
+export { sendMail }
