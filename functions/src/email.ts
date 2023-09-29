@@ -8,7 +8,7 @@ import { error } from 'firebase-functions/logger';
 const db = admin.firestore();
 
 
-const _sendMail = (data: {sender: string, recipients: string[], subject: string, text: string}) => {
+export const _sendMail = (data: {sender: string, recipients: string[], subject: string, text: string}) => {
     const APP_NAME = 'Predyc';
 
     let sender = process.env.EMAIL_USER
@@ -34,13 +34,7 @@ const _sendMail = (data: {sender: string, recipients: string[], subject: string,
     } as SMTPTransport.Options);
     const mailOptions = {
         from: `${APP_NAME} <${data.sender}>`,
-        to: [
-          // data.target_email,
-          'diegonegrette42@gmail.com',
-          // 'liliana.giraldo@predyc.com',
-          // 'alejandro.godoy@predyc.com',
-        ],
-        // to: data.recipients,
+        to: process.env.PRODUCTION ? data.recipients : ['diegonegrette42@gmail.com'],
         subject: data.subject,
         text: data.text,
     };
