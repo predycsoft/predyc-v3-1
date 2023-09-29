@@ -21,15 +21,11 @@
                 </div>
                 <div fxLayout="column">
                     <span class="makeGray">Tamaño de la empresa</span>
-                    <span *ngIf="!isEditing">{{form.get('size').value ? form.get('size').value : onNullFormValues.size}}</span>
-                    <input *ngIf="isEditing" type="text" placeholder="Introduzca el tamaño" [ngClass]="isEditing ? '' : 'disabledInput'" 
-                    class="input fw" formControlName="size">
+                    <span>{{enterpriseSize ? enterpriseSize : "Tamaño desconocido"}}</span>
                 </div>
                 <div fxLayout="column">
                     <span class="makeGray">No. Empleados</span>
-                    <span *ngIf="!isEditing">{{form.get('employesNo').value ? form.get('employesNo').value : onNullFormValues.employesNo}}</span>
-                    <input *ngIf="isEditing" type="text" placeholder="Introduzca el No. empleados" [ngClass]="isEditing ? '' : 'disabledInput'" 
-                    class="input fw" formControlName="employesNo">
+                    <span>{{form.get('employesNo').value ? form.get('employesNo').value : onNullFormValues.employesNo}}</span>
                 </div>
             </div>
         </div>

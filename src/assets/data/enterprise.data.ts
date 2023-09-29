@@ -5,6 +5,7 @@ export const enterpriseData: EnterpriseJson = {
     country: "México",
     createdAt: 1695141743802,
     description: "Esta es una empresa de prueba",
+    employesNo: 0,
     id: null,
     name: "Empresa de prueba",
     totalActivityNotifications: 0,

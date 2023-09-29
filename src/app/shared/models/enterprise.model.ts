@@ -3,7 +3,8 @@ export interface EnterpriseJson {
     country: string | null
     createdAt: number
     description: string | null // Is this required?
-    id: string
+    employesNo: number
+    id: string    
     name: string
     photoUrl: string | null
     totalActivityNotifications: number
@@ -32,6 +33,7 @@ export class Enterprise {
         public country: string | null,
         public createdAt: number,
         public description: string | null, // Is this required?
+        public employesNo: number,        
         public id: string,
         public name: string,
         public photoUrl: string | null,
@@ -57,6 +59,7 @@ export class Enterprise {
             enterpriseJson.country,
             enterpriseJson.createdAt,
             enterpriseJson.description,
+            enterpriseJson.employesNo,            
             enterpriseJson.id,
             enterpriseJson.name,
             enterpriseJson.photoUrl,
@@ -78,6 +81,7 @@ export class Enterprise {
             country: this.country,
             createdAt: this.createdAt,
             description: this.description,
+            employesNo: this.employesNo,            
             id: this.id,
             name: this.name,
             photoUrl: this.photoUrl,

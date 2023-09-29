@@ -8,19 +8,11 @@
             <div fxLayout="row" fxLayoutAlign="space-between start">
     
                 <div fxLayout="column" class="mgt05">
-                    <span class="makeGray">Nombre (s)</span>
-                    <span *ngIf="!isEditing">
-                        {{form.get('firstName').value ? form.get('firstName').value : onNullFormValues.firstName}}
-                    </span>
-                    <input *ngIf="isEditing" type="text" placeholder="Introduzca el (los) Nombre (s)" [ngClass]="isEditing ? '' : 'disabledInput'" 
-                    class="input" formControlName="firstName">
     
                     <span class="makeGray mgt03">Mail</span>
-                    <span *ngIf="!isEditing">
-                        {{form.get('email').value ? form.get('email').value : onNullFormValues.email}}
+                    <span>
+                        {{adminUser.email}}
                     </span>
-                    <input *ngIf="isEditing" type="text" placeholder="Introduzca el Correo electrónico" [ngClass]="isEditing ? '' : 'disabledInput'" 
-                    class="input" formControlName="email">
     
                     <span class="makeGray mgt03">Cargo</span>
                     <span *ngIf="!isEditing">
@@ -31,12 +23,6 @@
                 </div>
     
                 <div fxLayout="column" class="mgt05">
-                    <span class="makeGray">Apellido (s)</span>
-                    <span *ngIf="!isEditing">
-                        {{form.get('secondName').value ? form.get('secondName').value : onNullFormValues.secondName}}
-                    </span>
-                    <input *ngIf="isEditing" type="text" placeholder="Introduzca el (los) Apellido (s)" [ngClass]="isEditing ? '' : 'disabledInput'" 
-                    class="input" formControlName="secondName">
     
                     <span class="makeGray mgt03">Teléfono</span>
                     <span *ngIf="!isEditing">

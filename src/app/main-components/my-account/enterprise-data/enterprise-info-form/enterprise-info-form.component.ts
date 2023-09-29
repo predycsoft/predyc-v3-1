@@ -31,18 +31,20 @@ export class EnterpriseInfoFormComponent {
   onNullFormValues = {
     description : "Sin descripción",
     workField : "Sector desconocido",
-    size : "Tamaño desconocido",
     employesNo : "Cantidad desconocida",
     country : "País desconocido",
     city : "Ciudad desconocida",
     zipCode : "Código postal desconocido",
   }
 
+  enterpriseSize: string
+
   ngOnInit(){
     this.enterprise = this.enterpriseService.getEnterprise()
     this.enterpriseService.enterprise$.subscribe(enterprise => {
       if (enterprise) {
         this.enterprise = enterprise
+        if (this.enterprise.employesNo) this.getEnterpriseSize() 
         this.initForm()
         this.isEnterpriseLoaded = true;
       }
@@ -111,6 +113,18 @@ export class EnterpriseInfoFormComponent {
           }
         }
       });
+    }
+  }
+
+  getEnterpriseSize() {
+    if (0 <= this.enterprise.employesNo && this.enterprise.employesNo <= 10) {
+      this.enterpriseSize = "Pequeña"
+    }
+    else if (11 <= this.enterprise.employesNo && this.enterprise.employesNo <= 20) {
+      this.enterpriseSize = "Mediana"
+    }
+    else {
+      this.enterpriseSize = "Grande"
     }
   }
 
