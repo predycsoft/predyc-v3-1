@@ -102,20 +102,25 @@ export class NotificationListComponent {
       subject = "Solicitud de acceso"
       text = `${user.displayName} ${notification.message}`
     }
-    await firstValueFrom(this.fireFunctions.httpsCallable('sendMail')({
-      sender: sender,
-      recipients: recipients,
-      subject: subject,
-      text: text,
-    }));    
-    if (notification.type === Notification.TYPE_ALERT) {
-      this.alertService.succesAlert('Has notificado al usuario exitosamente.')
+    try {
+      await firstValueFrom(this.fireFunctions.httpsCallable('sendMail')({
+        sender: sender,
+        recipients: recipients,
+        subject: subject,
+        text: text,
+      }));    
+      if (notification.type === Notification.TYPE_ALERT) {
+        this.alertService.succesAlert('Has notificado al usuario exitosamente.')
+      }
+      else if (notification.type === Notification.TYPE_REQUEST) {
+        this.alertService.succesAlert('Has contactado a predyc exitosamente.')
+      }    
+      console.log("Email enviado")
+    } catch (error) {
+      console.log("error", error)
+      this.alertService.errorAlert("")
     }
-    else if (notification.type === Notification.TYPE_REQUEST) {
-      this.alertService.succesAlert('Has contactado a predyc exitosamente.')
-    }
-    // COMO MOSTRAR ALERTA EN CASO DE ERROR? HACERLO DENTRO DE LA CLOUD FUNCTION?
-    console.log("Email enviado")
+
   }
 
 }

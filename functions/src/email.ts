@@ -2,6 +2,7 @@ import * as SMTPTransport from 'nodemailer/lib/smtp-transport';
 import * as functions from 'firebase-functions';
 import * as nodemailer from 'nodemailer';
 import * as admin from 'firebase-admin';
+import { error } from 'firebase-functions/logger';
 
 
 const db = admin.firestore();
@@ -50,11 +51,13 @@ const _sendMail = (data: {sender: string, recipients: string[], subject: string,
             console.log(error);
             smtpTransport.close();
         }
-        // PONER UNA ALERTA DE SUCCESSFULL???
         return 'mail sent';
         });
-    } catch (error) {
-        return console.log(error);
+    } catch (error: any) {
+        console.log("error")
+        console.log(error)
+        throw new functions.https.HttpsError('unknown', error.message);
+        ;
     }
 };
   
