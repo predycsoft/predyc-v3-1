@@ -2,13 +2,12 @@ import * as SMTPTransport from 'nodemailer/lib/smtp-transport';
 import * as functions from 'firebase-functions';
 import * as nodemailer from 'nodemailer';
 import * as admin from 'firebase-admin';
-import { error } from 'firebase-functions/logger';
 
 
 const db = admin.firestore();
 
 
-export const _sendMail = (data: {sender: string, recipients: string[], subject: string, text: string}) => {
+export const _sendMail = async (data: {sender: string, recipients: string[], subject: string, text: string}) => {
     const APP_NAME = 'Predyc';
 
     let sender = process.env.EMAIL_USER
@@ -34,7 +33,8 @@ export const _sendMail = (data: {sender: string, recipients: string[], subject: 
     } as SMTPTransport.Options);
     const mailOptions = {
         from: `${APP_NAME} <${data.sender}>`,
-        to: process.env.PRODUCTION ? data.recipients : ['diegonegrette42@gmail.com'],
+        to: process.env.PRODUCTION === "true" ? data.recipients : ['diegonegrette42@gmail.com'],
+        // to: ['diegonegrette42@gmail.com'],
         subject: data.subject,
         text: data.text,
     };

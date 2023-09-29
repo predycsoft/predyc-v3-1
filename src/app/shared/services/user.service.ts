@@ -49,7 +49,9 @@ export class UserService {
       // const user = userCredential.user;
       await this.afs.collection(User.collection).doc(uid).set({...newUser.toJson(), uid: uid});
       newUser.uid = uid
-      this.alertService.succesAlert('Has agregado un nuevo usuario exitosamente.')
+      this.alertService.succesAlert(
+        'Has agregado un nuevo usuario exitosamente. Hemos enviado un correo para que pueda establecer su contraseña.'
+      )
     } catch (error) {
       console.log(error)
       this.alertService.errorAlert(JSON.stringify(error))

@@ -1,5 +1,6 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
+import { _sendMail } from './email'
 
 // const db = admin.firestore();
 
@@ -11,6 +12,18 @@ export const createUserWithEmailAndPassword = functions.https.onCall(
               email: data.email,
               password: data.password,
             });
+
+            // Enlace de restablecimiento de contraseña
+            const link = await admin.auth().generatePasswordResetLink(data.email);
+
+            const sender = "capacitacion@predyc.com"
+            const recipients = [data.email]
+            const subject = "Reestablece tu contraseña"
+            const text = `Hola, \nHaz clic en el siguiente enlace para establecer tu contraseña: ${link}`
+            
+            await _sendMail({sender, recipients, subject, text,})
+            console.log("Email enviado")
+            
             return { uid: userRecord.uid };
         } catch (error: any) {
             throw new functions.https.HttpsError('unknown', error.message);
