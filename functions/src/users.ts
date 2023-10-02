@@ -48,3 +48,40 @@ export const onUserDeleted = functions.firestore.document('user/{doc}').onDelete
             return console.error(error);
         });
 });
+
+export const onUserUpdated = functions.firestore.document('user/{doc}').onUpdate(async (change, context) => {
+    const afterData = change.after.data();
+    const beforeData = change.before.data();
+
+    let changed = false;
+
+    for (const field in beforeData) {
+      if(field === 'updatedAt') continue;
+
+      const beforeValue = beforeData[field];
+      const afterValue = afterData[field];
+
+      // Si el campo es un DocumentReference
+      if (beforeValue instanceof admin.firestore.DocumentReference) {
+        changed = beforeValue.id !== (afterValue ? afterValue.id : null);
+      } else {
+        changed = beforeValue !== afterValue;
+      }
+
+      if(changed) break;
+    }
+
+    if(changed) {
+        return db.collection('user').doc(afterData.uid).update({
+            updatedAt: +new Date()
+        })
+        .then(() => {
+            return console.log(`Updated new user: ${afterData.displayName}`);
+        })
+        .catch((error) => {
+            return console.error('Error updating updatedAt in User document:', error);
+        });
+    }
+    return null
+
+});

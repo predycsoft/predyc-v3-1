@@ -13,5 +13,5 @@ export { onNotificationAdded, onNotificationReadByAdmin }
 import { sendMail } from './email';
 export { sendMail }
 
-import { onUserAdded, onUserDeleted } from './users'
-export { onUserAdded, onUserDeleted }
+import { onUserAdded, onUserDeleted, onUserUpdated } from './users'
+export { onUserAdded, onUserDeleted, onUserUpdated }
