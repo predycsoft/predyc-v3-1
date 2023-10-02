@@ -38,10 +38,9 @@
         <!-- Last edited. Column -->
         <ng-container matColumnDef="lastEdited">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Ult. Modificación </th>
-            <!-- Chequear valor a mostrar -->
             <td mat-cell *matCellDef="let user"> 
                 <div fxLayout="row" fxLayoutAlign="center center">
-                    <span>{{user.lastConnection | date: 'dd/MM/yy'}}</span>
+                    <span>{{user.updatedAt | date: 'dd/MM/yy'}}</span>
                 </div>
             </td>
         </ng-container>
