@@ -103,6 +103,21 @@ export class UserService {
     }
   }
 
+  async transformUserToStudent(user: User): Promise<void> {
+    try {
+      await this.afs.collection(User.collection).doc(user.uid as string).set(
+        {
+          ...user,
+          role: 'student'
+        }, { merge: true }
+      );
+      this.alertService.succesAlert(`El usuario ${user.displayName} ha sido convertido en estudiante.`)
+    } catch (error) {
+      console.log(error)
+      this.alertService.errorAlert(JSON.stringify(error))
+    }
+  }
+
   async editUser(user: UserJson): Promise<void> {
     try {
       await this.afs.collection(User.collection).doc(user.uid as string).set(

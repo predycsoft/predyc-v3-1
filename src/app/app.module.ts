@@ -88,6 +88,7 @@ import { AdminPresentationFormComponent } from './main-components/my-account/adm
 import { SkillsSelectorComponent } from './shared/components/skills-selector/skills-selector.component';
 import { CreateProfileComponent } from './main-components/management/create-profile/create-profile.component';
 import { CourseSelectorComponent } from './shared/components/course-selector/course-selector.component';
+import { MembersComponent } from './main-components/settings/members/members.component';
 
 @NgModule({
   declarations: [
@@ -129,7 +130,8 @@ import { CourseSelectorComponent } from './shared/components/course-selector/cou
     AdminDataComponent,
     SkillsSelectorComponent,
     CreateProfileComponent,
-    CourseSelectorComponent
+    CourseSelectorComponent,
+    MembersComponent
   ],
   imports: [
     BrowserModule,
