@@ -668,6 +668,7 @@ body {
 .mgl05{  margin-left: 8px !important; }
 .mgl08{  margin-left: 12px; }
 .mgl10{  margin-left: 16px; }
+.mgl15{  margin-left: 24px; }
 .mgl20{  margin-left: 32px; }
 .mgl30{  margin-left: 48px; }
 .mgl40{  margin-left: 64px; }
@@ -708,6 +709,7 @@ body {
 .pd90{  padding: 144px; }
 .pd100{  padding: 160px; }
 .pdl03{  padding-left: 4px; }
+.pd15{  padding-left: 24px; }
 .pdt0{  padding-top: 0px; }
 .pdt03{  padding-top: 3px; }
 .pdt05{  padding-top: 8px; }

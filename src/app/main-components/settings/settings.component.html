@@ -6,6 +6,15 @@
     <mat-tab label="Miembros"> 
         <app-members></app-members>
     </mat-tab>
-    <mat-tab label="Licencias"> Contenido de licencias </mat-tab>
+    <mat-tab label="Licencias"> 
+        <div fxLayout="row" fxLayoutGap=".7rem" fxLayoutAlign="space-between" class="mgt15">
+            <div class="w900px">
+                <app-plans-card></app-plans-card>
+            </div>
+            <div>
+                <app-licences-data></app-licences-data>
+            </div> 
+        </div>
+    </mat-tab>
 </mat-tab-group>
   
