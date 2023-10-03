@@ -2,7 +2,19 @@
     <app-navigate-back targetUrl="../">{{student.displayName}}</app-navigate-back>
 
     <mat-tab-group class="swal-overlay">
-        <mat-tab label="Cronograma de capacitación"> Content 1 </mat-tab>
+        <mat-tab label="Cronograma de capacitación"> 
+            <div fxLayout="row" fxLayoutGap=".7rem" fxLayoutAlign="space-between">
+                <div>
+                    <span>Progreso General</span>
+                </div>
+                <div>
+                    <span>Plan de estudio</span>
+                </div>
+                <div class="w300px">
+                    <app-student-profile [student]="student" [isStudentProfile]="true"></app-student-profile>
+                </div>
+            </div>     
+        </mat-tab>
         <mat-tab label="Validación de competencias"> Content 2 </mat-tab>
         <mat-tab label="Estadísticas"> Content 3 </mat-tab>
         <mat-tab label="Detalles"> Content 4 </mat-tab>
