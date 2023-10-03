@@ -1,10 +1,14 @@
+import { DocumentReference } from "@angular/fire/compat/firestore"
+import { License } from "./license.model"
+
 export interface EnterpriseJson {
     city: string | null
     country: string | null
     createdAt: number
     description: string | null // Is this required?
     employesNo: number
-    id: string    
+    id: string 
+    license: DocumentReference<License>   
     name: string
     photoUrl: string | null
     totalActivityNotifications: number
@@ -35,6 +39,7 @@ export class Enterprise {
         public description: string | null, // Is this required?
         public employesNo: number,        
         public id: string,
+        public license: DocumentReference<License>,
         public name: string,
         public photoUrl: string | null,
         public totalActivityNotifications: number,
@@ -61,6 +66,7 @@ export class Enterprise {
             enterpriseJson.description,
             enterpriseJson.employesNo,            
             enterpriseJson.id,
+            enterpriseJson.license,
             enterpriseJson.name,
             enterpriseJson.photoUrl,
             enterpriseJson.totalActivityNotifications,
@@ -83,6 +89,7 @@ export class Enterprise {
             description: this.description,
             employesNo: this.employesNo,            
             id: this.id,
+            license: this.license,
             name: this.name,
             photoUrl: this.photoUrl,
             totalActivityNotifications: this.totalActivityNotifications,

@@ -89,9 +89,9 @@ import { SkillsSelectorComponent } from './shared/components/skills-selector/ski
 import { CreateProfileComponent } from './main-components/management/create-profile/create-profile.component';
 import { CourseSelectorComponent } from './shared/components/course-selector/course-selector.component';
 import { MembersComponent } from './main-components/settings/members/members.component';
-import { LicencesComponent } from './main-components/settings/licences/licences.component';
-import { PlansCardComponent } from './main-components/settings/licences/plans-card/plans-card.component';
-import { LicencesDataComponent } from './main-components/settings/licences/licences-data/licences-data.component';
+import { LicensesComponent } from './main-components/settings/licenses/licenses.component';
+import { PlansCardComponent } from './main-components/settings/licenses/plans-card/plans-card.component';
+import { LicensesDataComponent } from './main-components/settings/licenses/licenses-data/licenses-data.component';
 
 @NgModule({
   declarations: [
@@ -135,9 +135,9 @@ import { LicencesDataComponent } from './main-components/settings/licences/licen
     CreateProfileComponent,
     CourseSelectorComponent,
     MembersComponent,
-    LicencesComponent,
+    LicensesComponent,
     PlansCardComponent,
-    LicencesDataComponent
+    LicensesDataComponent
   ],
   imports: [
     BrowserModule,

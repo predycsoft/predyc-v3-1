@@ -1,12 +1,14 @@
+import { DocumentReference } from "@angular/fire/compat/firestore";
 import { Coupon } from "./coupon.model";
 import { PaypalInfo } from "./paypal.model";
 import { StripeInfo } from "./stripe.model";
+import { Product } from "./product.model";
 
 export interface PriceJson {
     id: string;
     active: boolean;
-    productId: string;
-    couponId: string | null;
+    product: DocumentReference<Product>;
+    coupon: DocumentReference<Coupon> | null;
     amount: number;
     currency: string;
     interval: string;
@@ -20,8 +22,8 @@ export interface PriceJson {
 export class Price {
     id: string;
     active: boolean;
-    productId: string;
-    couponId: string | null;
+    product: DocumentReference<Product>;
+    coupon: DocumentReference<Coupon> | null;
     amount: number;
     currency: string;
     interval: string;
@@ -42,8 +44,8 @@ export class Price {
       let price = new Price();
       price.id = obj.id;
       price.active = obj.active;
-      price.productId = obj.productId;
-      price.couponId = obj.couponId;
+      price.product = obj.product;
+      price.coupon = obj.coupon;
       price.amount = obj.amount;
       price.currency = obj.currency;
       price.interval = obj.interval;
@@ -58,7 +60,7 @@ export class Price {
     public toStripeCreateParams() {
       let priceCreateParams = {
         active: this.active,
-        product: this.productId,
+        product: this.product.id,
         unit_amount: this.amount * 100,
         currency: this.currency,
         recurring: {
