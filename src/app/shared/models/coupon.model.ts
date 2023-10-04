@@ -1,60 +1,60 @@
 import { StripeInfo } from "./stripe.model";
 
 export interface CouponJson {
-    id: string;
-    name: string;
+    active: boolean;
+    activeBanner: boolean;
     amountOff: number | null;
+    currency: string; // force to USD
     duration: string; // once, repeating, forever
     durationInMonths: number | null;
-    currency: string; // force to USD
-    percentOff: number | null; // gt 0 lt 100
+    id: string;
+    isGlobal: boolean;
     maxRedemptions: number | null;
     maxRedemptionsPerUser: number | null;
-    redeemBy: number | null; // Timestamp
-    isGlobal: boolean;
-    active: boolean;
-    stripeInfo: StripeInfo;
-    activeBanner: boolean;
-    textBanner: string | null;
+    name: string;
+    percentOff: number | null; // gt 0 lt 100
     promoCode: string | null;
+    redeemBy: number | null; // Timestamp
+    stripeInfo: StripeInfo;
+    textBanner: string | null;
 }
 
 export class Coupon {
-    id: string;
-    name: string;
-    amountOff: number | null;
-    duration: string; // once, repeating, forever
-    durationInMonths: number | null;
-    currency: string; // force to USD
-    percentOff: number | null; // gt 0 lt 100
-    maxRedemptions: number | null;
-    maxRedemptionsPerUser: number | null;
-    redeemBy: number | null; // Timestamp
-    isGlobal: boolean;
     active: boolean;
     activeBanner: boolean;
-    textBanner: string | null;
-    stripeInfo: StripeInfo;
+    amountOff: number | null;
+    currency: string; // force to USD
+    duration: string; // once, repeating, forever
+    durationInMonths: number | null;
+    id: string;
+    isGlobal: boolean;
+    maxRedemptions: number | null;
+    maxRedemptionsPerUser: number | null;
+    name: string;
+    percentOff: number | null; // gt 0 lt 100
     promoCode: string | null;
+    redeemBy: number | null; // Timestamp
+    stripeInfo: StripeInfo;
+    textBanner: string | null;
   
     public static fromJson(obj: CouponJson): Coupon {
       let coupon = new Coupon();
-      coupon.id = obj.id;
-      coupon.name = obj.name;
-      coupon.amountOff = obj.amountOff;
-      coupon.duration = obj.duration;
-      coupon.durationInMonths = obj.durationInMonths;
-      coupon.currency = obj.currency;
-      coupon.percentOff = obj.percentOff;
-      coupon.maxRedemptions = obj.maxRedemptions;
-      coupon.maxRedemptionsPerUser = obj.maxRedemptionsPerUser;
-      coupon.redeemBy = obj.redeemBy;
-      coupon.isGlobal = obj.isGlobal;
       coupon.active = obj.active;
       coupon.activeBanner = obj.activeBanner;
-      coupon.textBanner = obj.textBanner;
+      coupon.amountOff = obj.amountOff;
+      coupon.currency = obj.currency;
+      coupon.duration = obj.duration;
+      coupon.durationInMonths = obj.durationInMonths;
+      coupon.id = obj.id;
+      coupon.isGlobal = obj.isGlobal;
+      coupon.maxRedemptions = obj.maxRedemptions;
+      coupon.maxRedemptionsPerUser = obj.maxRedemptionsPerUser;
+      coupon.name = obj.name;
+      coupon.percentOff = obj.percentOff;
       coupon.promoCode = obj.promoCode;
+      coupon.redeemBy = obj.redeemBy;
       coupon.stripeInfo = obj.stripeInfo;
+      coupon.textBanner = obj.textBanner;
       return coupon;
     }
   
@@ -69,22 +69,22 @@ export class Coupon {
   
     public toJson(): CouponJson {
       return {
-        id: this.id,
-        name: this.name,
-        amountOff: this.amountOff,
-        duration: this.duration,
-        durationInMonths: this.durationInMonths,
-        currency: this.currency,
-        percentOff: this.percentOff,
-        maxRedemptions: this.maxRedemptions,
-        maxRedemptionsPerUser: this.maxRedemptionsPerUser,
-        redeemBy: this.redeemBy,
-        isGlobal: this.isGlobal,
         active: this.active,
         activeBanner: this.activeBanner,
-        textBanner: this.textBanner,
+        amountOff: this.amountOff,
+        currency: this.currency,
+        duration: this.duration,
+        durationInMonths: this.durationInMonths,
+        id: this.id,
+        isGlobal: this.isGlobal,
+        name: this.name,
+        maxRedemptions: this.maxRedemptions,
+        maxRedemptionsPerUser: this.maxRedemptionsPerUser,
+        percentOff: this.percentOff,
         promoCode: this.promoCode,
+        redeemBy: this.redeemBy,
         stripeInfo: this.stripeInfo,
+        textBanner: this.textBanner,
       };
     }
   

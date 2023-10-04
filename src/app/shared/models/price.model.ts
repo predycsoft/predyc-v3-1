@@ -5,32 +5,32 @@ import { StripeInfo } from "./stripe.model";
 import { Product } from "./product.model";
 
 export interface PriceJson {
-    id: string;
     active: boolean;
-    product: DocumentReference<Product>;
-    coupon: DocumentReference<Coupon> | null;
     amount: number;
+    coupon: DocumentReference<Coupon> | null;
     currency: string;
+    freeTrialDays: number;
+    id: string;
     interval: string;
     intervalCount: number;
-    stripeInfo: StripeInfo;
     paypalInfo: PaypalInfo;
-    freeTrialDays: number;
+    product: DocumentReference<Product>; //Could not be null?
+    stripeInfo: StripeInfo;
     type: string;
 }
 
 export class Price {
-    id: string;
     active: boolean;
-    product: DocumentReference<Product>;
-    coupon: DocumentReference<Coupon> | null;
     amount: number;
+    coupon: DocumentReference<Coupon> | null;
     currency: string;
+    freeTrialDays: number;
+    id: string;
     interval: string;
     intervalCount: number;
-    stripeInfo: StripeInfo;
     paypalInfo: PaypalInfo;
-    freeTrialDays: number;
+    product: DocumentReference<Product>;
+    stripeInfo: StripeInfo;
     type: string;
     // Coupon could be part of price or could be an individual object
   
@@ -42,31 +42,48 @@ export class Price {
   
     public static fromJson(obj: PriceJson): Price {
       let price = new Price();
-      price.id = obj.id;
       price.active = obj.active;
-      price.product = obj.product;
-      price.coupon = obj.coupon;
       price.amount = obj.amount;
+      price.coupon = obj.coupon;
       price.currency = obj.currency;
+      price.freeTrialDays = obj.freeTrialDays;
+      price.id = obj.id;
       price.interval = obj.interval;
       price.intervalCount = obj.intervalCount;
-      price.stripeInfo = obj.stripeInfo;
       price.paypalInfo = obj.paypalInfo;
-      price.freeTrialDays = obj.freeTrialDays;
+      price.product = obj.product;
+      price.stripeInfo = obj.stripeInfo;
       price.type = obj.type;
       return price;
+    }
+
+    public toJson(): PriceJson {
+      return {
+        active: this.active,
+        amount: this.amount,
+        coupon: this.coupon,
+        currency: this.currency,
+        freeTrialDays: this.freeTrialDays,
+        id: this.id,
+        interval: this.interval,
+        intervalCount: this.intervalCount,
+        paypalInfo: this.paypalInfo,
+        product: this.product,
+        stripeInfo: this.stripeInfo,
+        type: this.type,
+      };
     }
   
     public toStripeCreateParams() {
       let priceCreateParams = {
         active: this.active,
-        product: this.product.id,
-        unit_amount: this.amount * 100,
         currency: this.currency,
+        product: this.product.id,
         recurring: {
           interval: this.interval,
           interval_count: this.intervalCount,
         },
+        unit_amount: this.amount * 100,
       };
       return priceCreateParams;
     }
