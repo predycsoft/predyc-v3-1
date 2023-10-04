@@ -55,19 +55,17 @@ export class DepartmentService {
   }
 
   async addDepartment(newDepartment: Department): Promise<void> {
-    try {
       try {
-        await this.afs.collection(Department.collection).doc(newDepartment?.id).set(newDepartment.toJson());
+        const ref = this.afs.collection<Department>(Department.collection).doc().ref;
+        await ref.set({...newDepartment.toJson(), id: ref.id}, { merge: true });
+        newDepartment.id = ref.id;
+        console.log('Has agregado una departamento exitosamente.')
+        //await this.afs.collection(Department.collection).doc(newDepartment?.id).set(newDepartment.toJson());
       } catch (error) {
         console.log(error)
-        throw error
+        this.alertService.errorAlert(JSON.stringify(error))
       }
-      console.log('Has agregado una departamento exitosamente.')
       //this.alertService.succesAlert('Has agregado una nueva categoria exitosamente.')
-    } catch (error) {
-      console.log(error)
-      this.alertService.errorAlert(JSON.stringify(error))
-    }
   }
 
 
