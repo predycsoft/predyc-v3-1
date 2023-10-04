@@ -75,6 +75,7 @@ export class CoursesComponent {
         this.categories = this.anidarCompetenciasInicial(category, skill);
         //this.competenciasEmpresa = this.obtenerCompetenciasAlAzar(5);
         this.courseService.getCoursesObservable().subscribe(courses => {
+          console.log('courses',courses)
           courses.forEach(curso => {
             //curso.foto = '../../../../assets/images/cursos/placeholder1.jpg'
             let skillIds = new Set();
@@ -185,7 +186,7 @@ export class CoursesComponent {
   }
 
   filteredCourses(categoryCourses) {
-    console.log('categoryCourses',categoryCourses)
+    //console.log('categoryCourses',categoryCourses)
     let displayedCourses = categoryCourses
     if (this.searchValue) {
       displayedCourses= categoryCourses.filter(x => x.titulo.toLocaleLowerCase().includes(this.searchValue.toLocaleLowerCase()))

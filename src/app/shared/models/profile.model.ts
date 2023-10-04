@@ -1,32 +1,39 @@
+import { DocumentReference } from "@angular/fire/compat/firestore"
 
 export interface ProfileJson {
     id: string,
     name: string,
-    studyPlan: []
+    description: string,
+    responsabilities: string,
+    departmentRef: DocumentReference 
 }
 
 export class Profile {
     public static collection: string = 'profile'
 
-    constructor(
-        public id: string,
-        public name: string,
-        public studyPlan: []
-    ) {}
+    public id: string;
+    public name: string;
+    public description: string;
+    public responsabilities: string;
+    public departmentRef: DocumentReference
 
     public static fromJson(profileJson: ProfileJson): Profile {
-    return new Profile(
-        profileJson.id,
-        profileJson.name,
-        profileJson.studyPlan
-        )
+        let profile = new Profile();
+        profile.id = profileJson.id
+        profile.name = profileJson.name
+        profile.description = profileJson.description
+        profile.responsabilities = profileJson.responsabilities
+        profile.departmentRef = profileJson.departmentRef
+        return profile
     }
       
     toJson(): ProfileJson {
         return {
-        id: this.id,
-        name: this.name,
-        studyPlan: this.studyPlan
+            id: this.id,
+            name: this.name,
+            description: this.description,
+            responsabilities: this.responsabilities,
+            departmentRef: this.departmentRef
         }
     }
 }

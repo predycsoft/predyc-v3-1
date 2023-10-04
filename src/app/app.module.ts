@@ -59,6 +59,8 @@ import { StudentComponent } from './main-components/management/my-team/student/s
 import { SpinnerComponent } from './shared/components/spinner/spinner.component';
 import { CreateCourseComponent } from './main-components/management/create-course/create-course.component';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+
 
 //
 import { SafePipe } from './shared/pipes/safe.pipe';
@@ -165,7 +167,8 @@ import { CourseSelectorComponent } from './shared/components/course-selector/cou
     MatChipsModule,
     MatTooltipModule,
     HttpClientModule,
-    NgxExtendedPdfViewerModule
+    NgxExtendedPdfViewerModule,
+    DragDropModule
 
   ],
   providers: [
