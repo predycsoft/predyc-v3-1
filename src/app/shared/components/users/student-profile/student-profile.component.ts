@@ -24,6 +24,7 @@ export class StudentProfileComponent implements OnInit {
   ){}
 
   @Input() student: User
+  @Input() isStudentProfile: boolean = false
   @Output() hideEmit: EventEmitter<void> = new EventEmitter<void>()
   @Output() onStudentSave: EventEmitter<User> = new EventEmitter<User>()
 

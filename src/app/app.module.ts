@@ -90,6 +90,10 @@ import { AdminPresentationFormComponent } from './main-components/my-account/adm
 import { SkillsSelectorComponent } from './shared/components/skills-selector/skills-selector.component';
 import { CreateProfileComponent } from './main-components/management/create-profile/create-profile.component';
 import { CourseSelectorComponent } from './shared/components/course-selector/course-selector.component';
+import { MembersComponent } from './main-components/settings/members/members.component';
+import { LicenseComponent } from './main-components/settings/license/license.component';
+import { PlanCardComponent } from './main-components/settings/license/plan-card/plan-card.component';
+import { LicenseDataComponent } from './main-components/settings/license/license-data/license-data.component';
 
 @NgModule({
   declarations: [
@@ -131,7 +135,11 @@ import { CourseSelectorComponent } from './shared/components/course-selector/cou
     AdminDataComponent,
     SkillsSelectorComponent,
     CreateProfileComponent,
-    CourseSelectorComponent
+    CourseSelectorComponent,
+    MembersComponent,
+    LicenseComponent,
+    PlanCardComponent,
+    LicenseDataComponent
   ],
   imports: [
     BrowserModule,

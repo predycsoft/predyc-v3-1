@@ -32,6 +32,7 @@ export interface UserJson {
   isActive: boolean
   stripeId: string | null
   uid: string | null
+  updatedAt: number | null
   avgScore: number
   performance: string | null
   ratingPoints: number
@@ -40,6 +41,7 @@ export interface UserJson {
 export class User {
 
   public static collection = 'user'
+  public static storageProfilePhotoFolder = 'User/Profile photos'
   public static ROLE_ADMIN = 'admin'
   public static ROLE_STUDENT = 'student'
 
@@ -75,6 +77,8 @@ export class User {
     public isActive: boolean,
     public stripeId: string | null,
     public uid: string | null,
+    public updatedAt: number | null,
+    
 
     // metrics
     public avgScore: number,
@@ -156,6 +160,7 @@ export class User {
       isActive: true,
       stripeId: null,
       uid: null,
+      updatedAt: null,
       avgScore: 0,
       performance: null,
       ratingPoints: 0,
@@ -195,6 +200,7 @@ export class User {
       userJson.isActive,
       userJson.stripeId,
       userJson.uid,
+      userJson.updatedAt,
       userJson.avgScore,
       userJson.performance,
       userJson.ratingPoints,
@@ -234,6 +240,7 @@ export class User {
       isActive: this.isActive,
       stripeId: this.stripeId,
       uid: this.uid,
+      updatedAt: this.updatedAt,
       avgScore: this.avgScore,
       performance: this.performance,
       ratingPoints: this.ratingPoints,

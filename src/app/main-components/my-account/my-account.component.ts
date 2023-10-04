@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Enterprise } from 'src/app/shared/models/enterprise.model';
 import { User } from 'src/app/shared/models/user.model';
 import { AuthService } from 'src/app/shared/services/auth.service';
@@ -16,6 +17,7 @@ export class MyAccountComponent {
     private authService: AuthService,
     public icon:IconService,
     private enterpriseService: EnterpriseService,
+    private route: ActivatedRoute
 
   ) {}
 
@@ -35,6 +37,8 @@ export class MyAccountComponent {
     "¿Puedo personalizar los informes y estadísticas para obtener información específica sobre el progreso de los empleados?",
   ]  
 
+  activeTab: number = 0;
+
   async ngOnInit(){
     this.authService.user$.subscribe(user=> {
       if (user) {
@@ -46,6 +50,9 @@ export class MyAccountComponent {
         this.enterprise = enterprise
       }
     })
+    this.route.queryParams.subscribe(params => {
+      this.activeTab = params['activeTab'] === 'soporte' ? 1 : 0;
+    });
   }
 
   signOut() {

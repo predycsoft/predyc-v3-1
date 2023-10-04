@@ -213,9 +213,9 @@ image =  "assets/iconsUI/image.svg"
 
 arrowForward = "assets/iconsUI/arrowForward.svg"
 checkCircle = "assets/iconsUI/checkCircle.svg"
-checkCircleBlue = "assets/icons/checkCircleBlue.svg"
+checkCircleBlue = "assets/iconsUI/checkCircleBlue.svg"
 
-closeCircle = "assets/icons/closeCircle.svg"
+closeCircle = "assets/iconsUI/closeCircle.svg"
 logo: string = "assets/images/logos/logo.svg"
 
 

@@ -4,9 +4,9 @@
         <div fxLayout="row" fxLayoutAlign=" center">
             <div (click)="isEditing ? fileInput.click() : null" [ngClass]="isEditing ? 'cursorPointer' : ''">
                 <img onerror="this.src='assets/images/default/default-user-image.jpg'" 
-                    [src]="enterprise.photoUrl" class="avatar5" alt="">
+                    [src]="imageUrl" class="avatar5" alt="">
             </div>
-            <input #fileInput type="file" style="display: none;" (change)="onFileSelected($event)" formControlName="photoUrl">
+            <input #fileInput type="file" style="display: none;" (change)="onFileSelected($event)">
             <span *ngIf="!isEditing" class="mgl10 ft16 ft600 gray-10">
                 {{form.get('name').value ? form.get('name').value : onNullFormValues.name}}
             </span>

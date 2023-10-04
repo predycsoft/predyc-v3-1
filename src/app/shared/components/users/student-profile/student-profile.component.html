@@ -6,7 +6,7 @@
             </span>
         </div>
         <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign=" center" class="pdl05 pdr05 pdt05 pdb05">
-            <button *ngIf="!isNewUser && !isEditing" class="blueButton radius4" (click)="onEdit()" >Editar</button>
+            <button *ngIf="!isNewUser && !isEditing && !isStudentProfile" class="blueButton radius4" (click)="onEdit()" >Editar</button>
         </div>
         <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
             <div class="iconContainer backGray2 cursorPointer mgl05" fxLayoutAlign="center center" (click)="hide()" #closeButton>
@@ -145,7 +145,7 @@
             </span> -->
         </div>
         <div fxLayout="row" fxLayoutAlign="center center">
-            <button [ngClass]="form.valid ? 'blueButton' : 'graybutton'" class="mgt10 radius20" type="submit">Guardar</button>
+            <button *ngIf="!isStudentProfile" [ngClass]="form.valid ? 'blueButton' : 'graybutton'" class="mgt10 radius20" type="submit">Guardar</button>
         </div>
     </form>
 </div>

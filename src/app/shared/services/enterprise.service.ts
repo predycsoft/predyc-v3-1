@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { Enterprise } from '../models/enterprise.model';
+import { Enterprise, EnterpriseJson } from '../models/enterprise.model';
 import { AlertsService } from './alerts.service';
 import { AuthService } from './auth.service';
 
@@ -27,12 +27,16 @@ export class EnterpriseService {
     this.authService.user$.subscribe(async (user) => {
       if (user) {
         // Load the enterprise data based on the authenticated user
-        const enterpriseDocumentReference = await ((user.enterprise as DocumentReference).get())
-        const enterprise = enterpriseDocumentReference.data() as Enterprise
-        this.enterpriseSubject.next(enterprise)
-        this.enterpriseRef = this.afs.collection<Enterprise>(Enterprise.collection).doc(enterprise.id).ref
-        this.enterpriseLoadedSubject.next(true)
-        console.log("La empresa fue cargada", enterprise)
+        // const enterpriseDocumentReference = await ((user.enterprise as DocumentReference).get())
+        // const enterprise = enterpriseDocumentReference.data() as Enterprise
+        this.afs.doc<Enterprise>((user.enterprise as DocumentReference).path).valueChanges().subscribe(enterprise => {
+          this.enterpriseSubject.next(enterprise)
+          this.enterpriseRef = this.afs.collection<Enterprise>(Enterprise.collection).doc(enterprise.id).ref
+          if (!this.enterpriseLoadedSubject.value) {
+            this.enterpriseLoadedSubject.next(true)
+            console.log("La empresa fue cargada", enterprise)
+          }
+        })
       }
     });
   }
@@ -49,7 +53,7 @@ export class EnterpriseService {
     }
   }
 
-  async editEnterprise(enteprise): Promise<void> {
+  async editEnterprise(enteprise: EnterpriseJson): Promise<void> {
     try {
       await this.afs.collection(Enterprise.collection).doc(enteprise.id as string).set(
         enteprise, { merge: true }

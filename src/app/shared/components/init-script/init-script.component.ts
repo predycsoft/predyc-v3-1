@@ -42,6 +42,7 @@ export class InitScriptComponent {
         ...user,
         birthdate: Date.parse(user.birthdate),
         createdAt: Date.parse(user.createdAt),
+        updatedAt: Date.parse(user.updatedAt),
         enterprise: enterpriseRef
       })
     })

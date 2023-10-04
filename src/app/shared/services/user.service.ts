@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { User } from '../../shared/models/user.model';
+import { User, UserJson } from '../../shared/models/user.model';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { BehaviorSubject, firstValueFrom, Observable, Subscription } from 'rxjs'
@@ -49,7 +49,9 @@ export class UserService {
       // const user = userCredential.user;
       await this.afs.collection(User.collection).doc(uid).set({...newUser.toJson(), uid: uid});
       newUser.uid = uid
-      this.alertService.succesAlert('Has agregado un nuevo usuario exitosamente.')
+      this.alertService.succesAlert(
+        'Has agregado un nuevo usuario exitosamente. Hemos enviado un correo para que pueda establecer su contraseña.'
+      )
     } catch (error) {
       console.log(error)
       this.alertService.errorAlert(JSON.stringify(error))
@@ -101,7 +103,22 @@ export class UserService {
     }
   }
 
-  async editUser(user): Promise<void> {
+  async transformUserToStudent(user: User): Promise<void> {
+    try {
+      await this.afs.collection(User.collection).doc(user.uid as string).set(
+        {
+          ...user,
+          role: 'student'
+        }, { merge: true }
+      );
+      this.alertService.succesAlert(`El usuario ${user.displayName} ha sido convertido en estudiante.`)
+    } catch (error) {
+      console.log(error)
+      this.alertService.errorAlert(JSON.stringify(error))
+    }
+  }
+
+  async editUser(user: UserJson): Promise<void> {
     try {
       await this.afs.collection(User.collection).doc(user.uid as string).set(
         user, { merge: true }
@@ -127,8 +144,10 @@ export class UserService {
     ).valueChanges().subscribe({
       next: users => {
         this.usersSubject.next(users)
-        this.usersLoadedSubject.next(true)
-        console.log("Los usuarios fueron cargados", users)
+        if (!this.usersLoadedSubject.value) {
+          this.usersLoadedSubject.next(true)
+          console.log("Los usuarios fueron cargados", users)
+        }
       },
       error: error => {
         console.log(error)

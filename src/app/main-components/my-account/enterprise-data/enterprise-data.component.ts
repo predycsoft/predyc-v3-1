@@ -88,8 +88,7 @@ export class EnterpriseDataComponent {
         ...this.infoData 
       }
 
-      // let updatedEnterprise: Enterprise = {...this.enterprise}
-      let updatedEnterprise = {...this.enterprise}
+      let updatedEnterprise: Enterprise = Enterprise.fromJson({...this.enterprise})
 
       for (const key in newData) {
         if (Object.hasOwnProperty.call(updatedEnterprise, key)) {
@@ -100,10 +99,10 @@ export class EnterpriseDataComponent {
       console.log("updatedEnterprise nuevo")
       console.log(updatedEnterprise)
 
-      await this.enterpriseService.editEnterprise(updatedEnterprise)
+      await this.enterpriseService.editEnterprise(updatedEnterprise.toJson())
       
       // Descomentar la siguiente linea
-      // this.enterprise = { ...updatedEnterprise}
+      this.enterprise = Enterprise.fromJson({ ...updatedEnterprise})
       this.originalInfoData = { ...this.infoData }
       this.originalPresentationData = { ...this.presentationData }
     }

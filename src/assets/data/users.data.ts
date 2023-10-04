@@ -28,7 +28,8 @@ export const usersData = [
         "role": "admin",
         "isActive": true,
         "stripeId": null,
-        "uid": null,
+        "uid": null,        
+        "updatedAt": "2023-09-21T00:00:00Z",
         "avgScore": null,
         "performance": null,
         "ratingPoints": null
@@ -62,7 +63,8 @@ export const usersData = [
         "role": "student",
         "isActive": true,
         "stripeId": null,
-        "uid": null,
+        "uid": null,        
+        "updatedAt": "2023-09-21T00:00:00Z",
         "avgScore": null,
         "performance": null,
         "ratingPoints": null
@@ -96,7 +98,8 @@ export const usersData = [
         "role": "student",
         "isActive": true,
         "stripeId": null,
-        "uid": null,
+        "uid": null,        
+        "updatedAt": "2023-09-21T00:00:00Z",
         "avgScore": null,
         "performance": null,
         "ratingPoints": null
@@ -130,7 +133,8 @@ export const usersData = [
         "role": "student",
         "isActive": true,
         "stripeId": null,
-        "uid": null,
+        "uid": null,        
+        "updatedAt": "2023-09-21T00:00:00Z",
         "avgScore": null,
         "performance": null,
         "ratingPoints": null
@@ -164,7 +168,8 @@ export const usersData = [
         "role": "student",
         "isActive": true,
         "stripeId": null,
-        "uid": null,
+        "uid": null,        
+        "updatedAt": "2023-09-21T00:00:00Z",
         "avgScore": null,
         "performance": null,
         "ratingPoints": null
@@ -198,7 +203,8 @@ export const usersData = [
         "role": "student",
         "isActive": true,
         "stripeId": null,
-        "uid": null,
+        "uid": null,        
+        "updatedAt": "2023-09-21T00:00:00Z",
         "avgScore": null,
         "performance": null,
         "ratingPoints": null
@@ -232,7 +238,8 @@ export const usersData = [
         "role": "student",
         "isActive": true,
         "stripeId": null,
-        "uid": null,
+        "uid": null,        
+        "updatedAt": "2023-09-21T00:00:00Z",
         "avgScore": null,
         "performance": null,
         "ratingPoints": null
@@ -266,7 +273,8 @@ export const usersData = [
         "role": "student",
         "isActive": true,
         "stripeId": null,
-        "uid": null,
+        "uid": null,        
+        "updatedAt": "2023-09-21T00:00:00Z",
         "avgScore": null,
         "performance": null,
         "ratingPoints": null
@@ -300,7 +308,8 @@ export const usersData = [
         "role": "student",
         "isActive": true,
         "stripeId": null,
-        "uid": null,
+        "uid": null,        
+        "updatedAt": "2023-09-21T00:00:00Z",
         "avgScore": null,
         "performance": null,
         "ratingPoints": null
@@ -334,7 +343,8 @@ export const usersData = [
         "role": "student",
         "isActive": true,
         "stripeId": null,
-        "uid": null,
+        "uid": null,        
+        "updatedAt": "2023-09-21T00:00:00Z",
         "avgScore": null,
         "performance": null,
         "ratingPoints": null
@@ -368,7 +378,8 @@ export const usersData = [
         "role": "student",
         "isActive": true,
         "stripeId": null,
-        "uid": null,
+        "uid": null,        
+        "updatedAt": "2023-09-21T00:00:00Z",
         "avgScore": null,
         "performance": null,
         "ratingPoints": null

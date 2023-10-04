@@ -5,6 +5,7 @@ import { AlertsService } from './alerts.service';
 import { BehaviorSubject, firstValueFrom, Subscription } from 'rxjs';
 import { Notification } from 'src/app/shared/models/notification.model';
 import { EnterpriseService } from './enterprise.service';
+import { AngularFireFunctions } from '@angular/fire/compat/functions';
 
 
 @Injectable({
@@ -21,11 +22,12 @@ export class NotificationService {
 
   constructor(
     private afs: AngularFirestore,
+    private fireFunctions: AngularFireFunctions,
     private enterpriseService: EnterpriseService,
     private alertService: AlertsService
   ) {
     this.enterpriseService.enterpriseLoaded$.subscribe(isLoaded => {
-      if (isLoaded) {
+      if (isLoaded && !this.notificationsLoadedSubject.value) {
         this.notificationsLoadedSubject.next(true)
       }
     })
@@ -50,7 +52,8 @@ export class NotificationService {
     startAfter?: Notification
     typeFilter?: typeof Notification.TYPE_ACTIVITY |
                 typeof Notification.TYPE_ALERT |
-                typeof Notification.TYPE_REQUEST
+                typeof Notification.TYPE_REQUEST |
+                typeof Notification.ARCHIVED
   }) {
     console.log("queryObj", queryObj)
     if (this.notificationCollectionSubscription) {
@@ -62,7 +65,13 @@ export class NotificationService {
         query = query.where('enterpriseRef', '==', this.enterpriseService.getEnterpriseRef())
         if (queryObj.typeFilter) {
           console.log(`Filter has been set as ${queryObj.typeFilter}`)
-          query = query.where('type', '==', queryObj.typeFilter)
+          if (queryObj.typeFilter === 'archived') {
+            query = query.where('readByAdmin', '==', true)
+          } else {
+            query = query.where('type', '==', queryObj.typeFilter).where('readByAdmin', '==', false)
+          }
+        } else {
+          query = query.where('readByAdmin', '==', false)
         }
         query = query.orderBy('date', 'desc')
         if (queryObj.startAt) {
@@ -82,6 +91,7 @@ export class NotificationService {
     filter: typeof Notification.TYPE_ACTIVITY |
             typeof Notification.TYPE_ALERT |
             typeof Notification.TYPE_REQUEST |
+            typeof Notification.ARCHIVED |
             'all'
     ): number {
       let length = 0
@@ -99,6 +109,10 @@ export class NotificationService {
           // do something
           length = enterprise.totalRequestNotifications
           break;
+        case Notification.ARCHIVED:
+          // do something
+          length = enterprise.totalReadByAdminNotifications
+          break;
         default:
           length = enterprise.totalActivityNotifications
                    + enterprise.totalAlertNotifications
@@ -106,5 +120,18 @@ export class NotificationService {
           break;
       }
       return length
+  }
+  
+  public async setNotificationReadByAdmin(notification: Notification) {
+    try {
+      await this.afs.collection(Notification.collection).doc(notification.id).set(
+        {
+          readByAdmin: true
+        }, { merge: true }
+      );
+    } catch (error) {
+      console.log(error)
+      this.alertService.errorAlert(JSON.stringify(error))
+    }
   }
 }

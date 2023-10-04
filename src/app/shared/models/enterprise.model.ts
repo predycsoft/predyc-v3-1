@@ -1,14 +1,20 @@
+import { DocumentReference } from "@angular/fire/compat/firestore"
+import { License } from "./license.model"
+
 export interface EnterpriseJson {
     city: string | null
     country: string | null
     createdAt: number
     description: string | null // Is this required?
-    id: string
+    employesNo: number
+    id: string 
+    license: DocumentReference<License>   
     name: string
     photoUrl: string | null
     totalActivityNotifications: number
     totalAlertNotifications: number
     totalRequestNotifications: number
+    totalReadByAdminNotifications: number
     zipCode: number | null
     workField: string | null
     socialNetworks: {
@@ -24,18 +30,22 @@ export interface EnterpriseJson {
 export class Enterprise {
 
     public static collection = 'enterprise'
+    public static storageProfilePhotoFolder = 'Enterprise/Profile photos'
 
     constructor(
         public city: string | null,
         public country: string | null,
         public createdAt: number,
         public description: string | null, // Is this required?
+        public employesNo: number,        
         public id: string,
+        public license: DocumentReference<License>,
         public name: string,
         public photoUrl: string | null,
         public totalActivityNotifications: number,
         public totalAlertNotifications: number,
         public totalRequestNotifications: number,
+        public totalReadByAdminNotifications: number,
         public zipCode: number | null,
         public workField: string | null,
         public socialNetworks: {
@@ -54,12 +64,15 @@ export class Enterprise {
             enterpriseJson.country,
             enterpriseJson.createdAt,
             enterpriseJson.description,
+            enterpriseJson.employesNo,            
             enterpriseJson.id,
+            enterpriseJson.license,
             enterpriseJson.name,
             enterpriseJson.photoUrl,
             enterpriseJson.totalActivityNotifications,
             enterpriseJson.totalAlertNotifications,
             enterpriseJson.totalRequestNotifications,
+            enterpriseJson.totalReadByAdminNotifications,
             enterpriseJson.zipCode,
             enterpriseJson.workField,
             enterpriseJson.socialNetworks,
@@ -74,12 +87,15 @@ export class Enterprise {
             country: this.country,
             createdAt: this.createdAt,
             description: this.description,
+            employesNo: this.employesNo,            
             id: this.id,
+            license: this.license,
             name: this.name,
             photoUrl: this.photoUrl,
             totalActivityNotifications: this.totalActivityNotifications,
             totalAlertNotifications: this.totalAlertNotifications,
             totalRequestNotifications: this.totalRequestNotifications,
+            totalReadByAdminNotifications: this.totalReadByAdminNotifications,
             zipCode: this.zipCode,
             workField: this.workField,
             socialNetworks: this.socialNetworks,

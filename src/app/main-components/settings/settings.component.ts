@@ -11,7 +11,6 @@ import { LoaderService } from 'src/app/shared/services/loader.service';
 export class SettingsComponent {
 
   constructor(
-    private loaderService: LoaderService,
   ) {}
 
 }

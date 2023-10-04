@@ -31,10 +31,7 @@ export class AdminInfoFormComponent {
   form: FormGroup
 
   onNullFormValues = {
-    firstName: "Nombres",
-    email: "Email desconocido",
     job: "Cargo desconocido",
-    secondName: "Apellidos",
     phoneNumber: "Teléfono desconocido",
     country: "País desconocido",
     city: "Ciudad desconocida",
@@ -60,10 +57,7 @@ export class AdminInfoFormComponent {
     //
     
     this.form =  new FormGroup({
-      "firstName": new FormControl(""),
-      "email": new FormControl(""),
       "job": new FormControl(""),
-      "secondName": new FormControl(""),
       "phoneNumber": new FormControl(null),
       "country": new FormControl(""),
       "city": new FormControl(""),
