@@ -5,11 +5,8 @@ import { IconService } from '../../../shared/services/icon.service';
 import { Curso } from 'src/app/shared/models/course.model';
 import { CategoryService } from 'src/app/shared/services/category.service';
 
-import * as competencias from '../../../../assets/data/competencias.json';
-import { Category } from 'src/app/shared/models/category.model';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { SkillService } from '../../../shared/services/skill.service';
-import { Skill } from '../../../shared/models/skill.model';
 import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
 import { take } from 'rxjs';
 import { CourseService } from 'src/app/shared/services/course.service';
@@ -40,8 +37,6 @@ export class CoursesComponent {
     private afs: AngularFirestore,
     private enterpriseService: EnterpriseService,
   ) {}
-
-  competenciasArray: any = (competencias as any).default;
 
   cursos: Curso[] = []
   selectedCourse: Curso = null
@@ -75,6 +70,7 @@ export class CoursesComponent {
         this.categories = this.anidarCompetenciasInicial(category, skill);
         //this.competenciasEmpresa = this.obtenerCompetenciasAlAzar(5);
         this.courseService.getCoursesObservable().subscribe(courses => {
+          console.log('courses',courses)
           courses.forEach(curso => {
             //curso.foto = '../../../../assets/images/cursos/placeholder1.jpg'
             let skillIds = new Set();
@@ -185,7 +181,7 @@ export class CoursesComponent {
   }
 
   filteredCourses(categoryCourses) {
-    console.log('categoryCourses',categoryCourses)
+    //console.log('categoryCourses',categoryCourses)
     let displayedCourses = categoryCourses
     if (this.searchValue) {
       displayedCourses= categoryCourses.filter(x => x.titulo.toLocaleLowerCase().includes(this.searchValue.toLocaleLowerCase()))
@@ -212,32 +208,6 @@ export class CoursesComponent {
     this.creatingCategory=false
     this.newCategory = new category
   }
-
-  createCategories(){
-    console.log(this.competenciasArray.categorias)
-    let id = Date.now()
-    this.competenciasArray.categorias.forEach(async categoria => {
-      id++;
-      let idtext = id.toString();
-      let category = new Category(idtext,categoria.name,null)
-      console.log(category);
-      await this.categoryService.addCategory(category);
-      let CategoryRef = this.afs.collection<Category>(Category.collection).doc(idtext).ref
-      console.log(CategoryRef);
-
-      let competencias = this.competenciasArray.competencias.filter(competencia => competencia.categoriaId == categoria.id)
-
-      competencias.forEach(async competencia => {
-        id++;
-        let idtext = id.toString();
-        let skill = new Skill(idtext,competencia.name,CategoryRef,null)
-        await this.skillService.addSkill(skill)
-      });
-    });
-
-    
-  }
-
 
 }
 

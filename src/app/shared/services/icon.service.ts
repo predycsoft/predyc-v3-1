@@ -137,7 +137,6 @@ export class IconService {
   trash = "assets/iconsUI/trash-can.svg"
   warning = "assets/iconsUI/warning-black.svg"
 
-
   chevronDown = "assets/iconsUI/chevron--down.svg"
   chevronUp = "assets/iconsUI/chevron--up.svg"
   chevronLeft = "assets/iconsUI/chevron--left.svg"
@@ -149,98 +148,70 @@ export class IconService {
 
   search = "assets/iconsUI/search.svg"
   chat = "assets/iconsUI/chat.svg"
-  
 
+  arrowUp = "assets/iconsUI/arrow--up.svg"
+  arrowDown = "assets/iconsUI/arrow--down.svg"
 
+  activity = "assets/iconsUI/license--draft.svg"
 
+  // Industria
+  addBox = "assets/icons/add-box.svg"
+  apple = "assets/icons/apple.svg"
+  car = "assets/icons/car.svg"
+  chemistry = "assets/iconsUI/chemistry.svg"
+  construction = "assets/iconsUI/construction.svg"
+  fish = "assets/icons/fish.svg"
+  gearList = "assets/icons/gear-list.svg"
+  lightning = "assets/icons/lightning.svg"
+  pills = "assets/icons/pills.svg"
 
+  // Para mi y empresa
+  userCertification = "assets/icons/user-certification.svg"
+  manyPeople = "assets/icons/many-people.svg"
 
+  // Tipo de estudiante
+  bat = "assets/icons/bat.svg"
+  suitcase = "assets/iconsUI/suitcase.svg"
+  searchAlt = "assets/icons/search-alt.svg"
+  education = "assets/iconsUI/education.svg"
+  notification = "assets/iconsUI/notification.svg"
 
-arrowUp = "assets/iconsUI/arrow--up.svg"
-arrowDown = "assets/iconsUI/arrow--down.svg"
+  // menu
+  home = "assets/icons/home.svg"
+  user = "assets/iconsUI/user.svg"
+  rocket = "assets/iconsUI/rocket.svg"
+  location = "assets/iconsUI/location.svg"
+  save = "assets/iconsUI/save.svg"
 
+  userProfile = "assets/iconsUI/user--profile.svg"
+  enterprise = "assets/iconsUI/enterprise.svg"
+  grid = "assets/iconsUI/grid.svg"
+  catalog = "assets/iconsUI/catalog.svg"
 
+  image =  "assets/iconsUI/image.svg"
 
+  arrowForward = "assets/iconsUI/arrowForward.svg"
+  checkCircle = "assets/iconsUI/checkCircle.svg"
+  checkCircleBlue = "assets/iconsUI/checkCircleBlue.svg"
 
+  closeCircle = "assets/iconsUI/closeCircle.svg"
+  logo: string = "assets/images/logos/logo.svg"
 
+  google: string = 'assets/images/ui/google.svg';
+  facebook: string = 'assets/images/ui/facebook.svg';
+  linkedin: string = 'assets/images/ui/linkedin.svg';
 
-activity = "assets/iconsUI/license--draft.svg"
+  document: string = 'assets/images/icons/document--blank.svg';
+  catelog: string = 'assets/images/icons/catalog.svg';
 
-// Industria
-addBox = "assets/icons/add-box.svg"
-apple = "assets/icons/apple.svg"
-car = "assets/icons/car.svg"
-chemistry = "assets/iconsUI/chemistry.svg"
-construction = "assets/iconsUI/construction.svg"
-fish = "assets/icons/fish.svg"
-gearList = "assets/icons/gear-list.svg"
-lightning = "assets/icons/lightning.svg"
-pills = "assets/icons/pills.svg"
+  videoChat : string = 'assets/images/icons/video--chat.svg';
+  chess : string = 'assets/images/icons/gamification.svg';
+  folderUp: string = 'assets/images/icons/folder--parent.svg';
+  pdf: string = 'assets/images/icons/document--pdf.svg';
 
-// Para mi y empresa
-userCertification = "assets/icons/user-certification.svg"
-manyPeople = "assets/icons/many-people.svg"
-
-// Tipo de estudiante
-bat = "assets/icons/bat.svg"
-suitcase = "assets/iconsUI/suitcase.svg"
-searchAlt = "assets/icons/search-alt.svg"
-education = "assets/iconsUI/education.svg"
-notification = "assets/iconsUI/notification.svg"
-
-
-
-// menu
-home = "assets/icons/home.svg"
-user = "assets/iconsUI/user.svg"
-rocket = "assets/iconsUI/rocket.svg"
-location = "assets/iconsUI/location.svg"
-save = "assets/iconsUI/save.svg"
-
-
-
-
-
-// report = "assets/iconsUI/enterprise.svg"
-
-
-userProfile = "assets/iconsUI/user--profile.svg"
-enterprise = "assets/iconsUI/enterprise.svg"
-grid = "assets/iconsUI/grid.svg"
-catalog = "assets/iconsUI/catalog.svg"
-
-image =  "assets/iconsUI/image.svg"
-
-arrowForward = "assets/iconsUI/arrowForward.svg"
-checkCircle = "assets/iconsUI/checkCircle.svg"
-checkCircleBlue = "assets/iconsUI/checkCircleBlue.svg"
-
-closeCircle = "assets/iconsUI/closeCircle.svg"
-logo: string = "assets/images/logos/logo.svg"
-
-
-
-
-google: string = 'assets/images/ui/google.svg';
-facebook: string = 'assets/images/ui/facebook.svg';
-linkedin: string = 'assets/images/ui/linkedin.svg';
-
-document: string = 'assets/images/icons/document--blank.svg';
-catelog: string = 'assets/images/icons/catalog.svg';
-
-videoChat : string = 'assets/images/icons/video--chat.svg';
-chess : string = 'assets/images/icons/gamification.svg';
-folderUp: string = 'assets/images/icons/folder--parent.svg';
-pdf: string = 'assets/images/icons/document--pdf.svg';
-
-taskAdd: string ='assets/iconsUI/task--add.svg'
-globe: string ='assets/iconsUI/wikis.svg'
-flash: string ='assets/iconsUI/flash.svg'
-
-
-
-
-
+  taskAdd: string ='assets/iconsUI/task--add.svg'
+  globe: string ='assets/iconsUI/wikis.svg'
+  flash: string ='assets/iconsUI/flash.svg'
 
   constructor() { }
 }

@@ -30,80 +30,77 @@ export class EnterpriseDataComponent {
     })
   }
 
-    onEnterprisePresentationChangeHandler(data: { formValue: Object; isEditing: boolean }) {
-      this.handleDataChange(data, 'presentation');
-    }
+  onEnterprisePresentationChangeHandler(data: { formValue: Object; isEditing: boolean }) {
+    this.handleDataChange(data, 'presentation');
+  }
   
-    onEnterpriseInfoChangeHandler(data: { formValue: Object; isEditing: boolean }) {
-      this.handleDataChange(data, 'info');
-    }
-  
-    handleDataChange(data: { formValue: Object; isEditing: boolean }, type: string) {
-      try {
-        if (data.formValue) {
-          if (type === 'presentation') {
-            if(!this.originalPresentationData){ 
-              this.originalPresentationData = data.formValue
-            };
-            this.presentationData = data.formValue;
-            if (!data.isEditing && this.hasDataChanged('presentation')) {
-              this.onUpdate()
-            }
-          } 
-          else if (type === 'info') {
-            if(!this.originalInfoData){ 
-              this.originalInfoData = data.formValue
-            };
-            this.infoData = data.formValue;
-            if (!data.isEditing && this.hasDataChanged('info')) {
-              this.onUpdate()
-            }
+  onEnterpriseInfoChangeHandler(data: { formValue: Object; isEditing: boolean }) {
+    this.handleDataChange(data, 'info');
+  }
+
+  handleDataChange(data: { formValue: Object; isEditing: boolean }, type: string) {
+    try {
+      if (data.formValue) {
+        if (type === 'presentation') {
+          if(!this.originalPresentationData){ 
+            this.originalPresentationData = data.formValue
+          };
+          this.presentationData = data.formValue;
+          if (!data.isEditing && this.hasDataChanged('presentation')) {
+            this.onUpdate()
+          }
+        } 
+        else if (type === 'info') {
+          if(!this.originalInfoData){ 
+            this.originalInfoData = data.formValue
+          };
+          this.infoData = data.formValue;
+          if (!data.isEditing && this.hasDataChanged('info')) {
+            this.onUpdate()
           }
         }
-      } catch (error) {
-        console.log(error);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  hasDataChanged(type: string): boolean {
+    if (type === 'presentation') {
+      return JSON.stringify(this.originalPresentationData) !== JSON.stringify(this.presentationData);
+    } 
+    else if (type === 'info') {
+      return JSON.stringify(this.originalInfoData) !== JSON.stringify(this.infoData);
+    }
+    return false;
+  }
+
+  async onUpdate() {
+    const newData = { 
+      photoUrl: this.presentationData["photoUrl"],
+      name: this.presentationData["name"],
+      socialNetworks: {
+        facebook: this.presentationData["facebook"],
+        instagram: this.presentationData["instagram"],
+        linkedin: this.presentationData["linkedin"],
+        website: this.presentationData["website"]
+      }, 
+      ...this.infoData 
+    }
+
+    let updatedEnterprise: Enterprise = Enterprise.fromJson({...this.enterprise})
+
+    for (const key in newData) {
+      if (Object.hasOwnProperty.call(updatedEnterprise, key)) {
+        updatedEnterprise[key] = newData[key];
       }
     }
-  
-    hasDataChanged(type: string): boolean {
-      if (type === 'presentation') {
-        return JSON.stringify(this.originalPresentationData) !== JSON.stringify(this.presentationData);
-      } 
-      else if (type === 'info') {
-        return JSON.stringify(this.originalInfoData) !== JSON.stringify(this.infoData);
-      }
-      return false;
-    }
-  
-    async onUpdate() {
-      const newData = { 
-        photoUrl: this.presentationData["photoUrl"],
-        name: this.presentationData["name"],
-        socialNetworks: {
-          facebook: this.presentationData["facebook"],
-          instagram: this.presentationData["instagram"],
-          linkedin: this.presentationData["linkedin"],
-          website: this.presentationData["website"]
-        }, 
-        ...this.infoData 
-      }
 
-      let updatedEnterprise: Enterprise = Enterprise.fromJson({...this.enterprise})
-
-      for (const key in newData) {
-        if (Object.hasOwnProperty.call(updatedEnterprise, key)) {
-          updatedEnterprise[key] = newData[key];
-        }
-      }
-      
-      console.log("updatedEnterprise nuevo")
-      console.log(updatedEnterprise)
-
-      await this.enterpriseService.editEnterprise(updatedEnterprise.toJson())
-      
-      // Descomentar la siguiente linea
-      this.enterprise = Enterprise.fromJson({ ...updatedEnterprise})
-      this.originalInfoData = { ...this.infoData }
-      this.originalPresentationData = { ...this.presentationData }
-    }
+    await this.enterpriseService.editEnterprise(updatedEnterprise.toJson())
+    
+    // Descomentar la siguiente linea
+    this.enterprise = Enterprise.fromJson({ ...updatedEnterprise})
+    this.originalInfoData = { ...this.infoData }
+    this.originalPresentationData = { ...this.presentationData }
+  }
 }

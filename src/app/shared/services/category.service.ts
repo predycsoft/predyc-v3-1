@@ -31,17 +31,7 @@ export class CategoryService {
         this.empresa = enterprise
       }
     })
-    console.log('empresa category service', this.empresa)
     this.getCategories()
-
-
-    // this.enterpriseService.getEnterpriseObservable().subscribe(enterprise => {
-    //   if (!enterprise) {
-    //     return
-    //   }
-    //   this.enterpriseRef = this.afs.collection<Enterprise>(Enterprise.collection).doc(enterprise.id).ref
-    //   this.getCategories()
-    // })
   }
 
   private categorySubject = new BehaviorSubject<Category[]>([]);
@@ -53,14 +43,10 @@ export class CategoryService {
 
   async addCategory(newCategory: Category): Promise<void> {
     try {
-      try {
-        await this.afs.collection(Category.collection).doc(newCategory?.id).set(newCategory.toJson());
-      } catch (error) {
-        console.log(error)
-        throw error
-      }
-      console.log('Has agregado una nueva categoria exitosamente.')
-      //this.alertService.succesAlert('Has agregado una nueva categoria exitosamente.')
+      const ref = this.afs.collection<Category>(Category.collection).doc().ref;
+      await ref.set({...newCategory.toJson(), id: ref.id}, { merge: true });
+      newCategory.id = ref.id;
+      this.alertService.succesAlert('Has agregado una nueva categoria exitosamente.')
     } catch (error) {
       console.log(error)
       this.alertService.errorAlert(JSON.stringify(error))
@@ -106,5 +92,9 @@ export class CategoryService {
 
   getCategoriesObservable(): Observable<Category[]> {
     return this.category$
+  }
+
+  public getCategoryRefById(id: string): DocumentReference<Category> {
+    return this.afs.collection<Category>(Category.collection).doc(id).ref
   }
 }

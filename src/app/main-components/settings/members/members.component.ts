@@ -58,8 +58,6 @@ export class MembersComponent {
   }
 
   onDeleteUser(user: User) {
-    console.log("user")
-    console.log(user)
     this.userService.delete(user)
   }
 
@@ -114,8 +112,6 @@ class UserDataSource extends DataSource<User> {
         if (this.sort.active && this.sort.direction !== '') {
           filteredUsers = filteredUsers.sort((a, b) => {
             const isAsc = this.sort.direction === 'asc';
-            console.log('this.sort.active')
-            console.log(this.sort.active)
             switch (this.sort.active) {
               case 'displayName': return orderByValueAndDirection(a.displayName as string, b.displayName as string, isAsc);
               // case 'status': return this.utilsService.compare(a.status as string, b.status as string, isAsc);

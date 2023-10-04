@@ -1,17 +1,10 @@
 import { Injectable } from '@angular/core';
-import { User } from '../../shared/models/user.model';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, DocumentReference} from '@angular/fire/compat/firestore';
 import { BehaviorSubject, Observable } from 'rxjs'
 import { EnterpriseService } from './enterprise.service';
 import { AlertsService } from './alerts.service';
-import { Enterprise } from '../models/enterprise.model';
 
-
-import { Category } from '../models/category.model';
-
-import { combineLatest } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { Skill } from '../models/skill.model';
 import { Curso } from '../models/course.model';
 import { Clase } from '../models/course-class.model';
@@ -36,10 +29,6 @@ export class CourseClassService {
   }
 
   private skillsSubject = new BehaviorSubject<Skill[]>([]);
-  private skill$ = this.skillsSubject.asObservable();
-
-  private enterpriseRef: DocumentReference
-
 
   async saveClass(newClass: Clase): Promise<void> {
     try {

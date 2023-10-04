@@ -67,7 +67,7 @@ export class CourseSelectorComponent {
   }
 
   filteredCourses(categoryCourses) {
-    console.log('categoryCourses',categoryCourses)
+    //console.log('categoryCourses',categoryCourses)
     let displayedCourses = categoryCourses
     if (this.searchValue) {
       displayedCourses= categoryCourses.filter(x => x.titulo.toLocaleLowerCase().includes(this.searchValue.toLocaleLowerCase()))
