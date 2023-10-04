@@ -13,7 +13,7 @@ import { Notification } from '../../models/notification.model';
 import { NotificationService } from '../../services/notification.service';
 import { Coupon } from '../../models/coupon.model';
 import { couponsData } from 'src/assets/data/coupon.data';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { productsData } from 'src/assets/data/product.data';
 import { Product } from '../../models/product.model';
 import { Price } from '../../models/price.model';
@@ -70,25 +70,42 @@ export class InitScriptComponent {
       await productRef.set({...product.toJson()}, { merge: true });
     }
     console.log(`Finished Creating Products`)
-    
+
     // Create Prices
     console.log('********* Creating Prices *********')
     const prices: Price[] = pricesData.map(price => {
       return Price.fromJson(price)
     })
     let pricesRef = []
-    for (let price of prices) {
-      let priceRef = this.afs.collection<Price>("price").doc(price.id).ref;
-      pricesRef.push(priceRef)
-      await priceRef.set({...price.toJson()}, { merge: true });
+
+    for (let index = 0; index < prices.length; index++) {
+    const price = prices[index];
+    let priceRef = this.afs.collection<Price>("price").doc(price.id).ref;
+    pricesRef.push(priceRef)
+    let productRef = index <= productsRef.length - 1 ? productsRef[index] : productsRef[index - (productsRef.length)]
+    await priceRef.set(
+      {
+        ...price.toJson(), 
+        coupon: couponsRef[index],
+        product: productRef
+      }, { merge: true });
     }
-    console.log(`Finished Creating Products`)
+    console.log(`Finished Creating Prices`)
 
     // Create License
     console.log('********* Creating Licenses *********')
     const license: License = License.fromJson(licensesData)
     const licenseRef = this.afs.collection<License>("license").doc(license.id).ref;
-    await licenseRef.set({...license.toJson()}, {merge: true})
+    const licensePriceRef = pricesRef[0] 
+    const licensePriceValue = (await ((licensePriceRef as DocumentReference).get())).data() as Price
+    const couponPriceRef = licensePriceValue.coupon
+    await licenseRef.set(
+      {
+        ...license.toJson(),
+        price: licensePriceRef,
+        coupon: couponPriceRef,
+      }, {merge: true}
+    )
     console.log(`Finished Creating License`)
 
     // Create base enterprise
