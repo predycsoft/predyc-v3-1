@@ -37,14 +37,10 @@ export class SkillService {
 
   async addSkill(newSkill: Skill): Promise<void> {
     try {
-      try {
-        await this.afs.collection(Skill.collection).doc(newSkill?.id).set(newSkill.toJson());
-      } catch (error) {
-        console.log(error)
-        throw error
-      }
-      console.log('Has agregado una nueva competencia exitosamente.')
-      //this.alertService.succesAlert('Has agregado una nueva categoria exitosamente.')
+      const ref = this.afs.collection<Skill>(Skill.collection).doc().ref;
+      await ref.set({...newSkill.toJson(), id: ref.id}, { merge: true });
+      newSkill.id = ref.id;
+      this.alertService.succesAlert('Has agregado un nuevo skill exitosamente.')
     } catch (error) {
       console.log(error)
       this.alertService.errorAlert(JSON.stringify(error))

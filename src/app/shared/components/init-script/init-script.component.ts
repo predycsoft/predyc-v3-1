@@ -3,12 +3,19 @@ import { EnterpriseService } from '../../services/enterprise.service';
 import { UserService } from '../../services/user.service';
 import { Enterprise } from '../../models/enterprise.model';
 import { User } from '../../models/user.model';
+import { Category } from '../../models/category.model'
+import { Skill } from '../../models/skill.model';
 
 import { enterpriseData } from 'src/assets/data/enterprise.data'
 import { usersData } from 'src/assets/data/users.data'
 import { notificationsData } from 'src/assets/data/notifications.data'
 import { Notification } from '../../models/notification.model';
 import { NotificationService } from '../../services/notification.service';
+import { categoriesData } from 'src/assets/data/categories.data';
+import { CategoryService } from '../../services/category.service';
+import { skillsData } from 'src/assets/data/skills.data';
+import { SkillService } from '../../services/skill.service';
+// import { coursesData } from 'src/assets/data/courses.data'
 
 @Component({
   selector: 'app-init-script',
@@ -20,7 +27,9 @@ export class InitScriptComponent {
   constructor(
     private enterpriseService: EnterpriseService,
     private notificationService: NotificationService,
-    private userService: UserService
+    private userService: UserService,
+    private categoryService: CategoryService,
+    private skillService: SkillService
   ) {}
 
   async ngOnInit() {}
@@ -51,18 +60,39 @@ export class InitScriptComponent {
     }
     console.log(`Finished Creating Users`)
 
-    // Create skills
-
     // Create categories
+    console.log('********* Creating Categories *********')
+    const categories: Category[] = categoriesData.map(category => {
+      return Category.fromJson({
+        ...category,
+        enterprise: enterpriseRef
+      })
+    })
+    console.log("categories", categories)
+    for (let category of categories) {
+      await this.categoryService.addCategory(category)
+    }
+    console.log(`Finished Creating Categories`)
 
+    // Create skills
+    console.log('********* Creating Skills *********')
+    const skills: Skill[] = skillsData.map(skill => {
+      const randomCategory = categories[Math.floor(Math.random()*categories.length)];
+      const categoryRef = this.categoryService.getCategoryRefById(randomCategory.id)
+      return Skill.fromJson({
+        ...skill,
+        category: categoryRef,
+        enterprise: enterpriseRef,
+      })
+    })
+    for (let skill of skills) {
+      await this.skillService.addSkill(skill)
+    }
+    console.log(`Finished Creating Skills`)
+  
     // Create coursesClasses and courses
 
-    // Create notifications
-    // this.enterpriseService.loadEnterpriseData()
-    // await this.userService.loadUsers()
-    // await this.userService.whenUsersLoaded()
-    // const enterpriseRef = this.enterpriseService.getEnterpriseRef()
-    // const users = await firstValueFrom(this.userService.getUsersObservable())
+    // Create notifications 
     console.log('********* Creating Notifications *********')
     const notifications: Notification[] = notificationsData.map(notification => {
       const randomUser = users[Math.floor(Math.random()*users.length)];
@@ -79,6 +109,6 @@ export class InitScriptComponent {
       await this.notificationService.addNotification(notification)
     }
     console.log(`Finished Creating Notification`)
-
   }
+
 }

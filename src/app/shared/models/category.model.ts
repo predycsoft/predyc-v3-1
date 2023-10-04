@@ -1,9 +1,9 @@
 import { DocumentReference } from "@angular/fire/compat/firestore"
 
 export interface CategoryJson {
-    id: string,
+    id: string | null,
     name: string,
-    enterprise : DocumentReference
+    enterprise: DocumentReference | null
 }
 
 
@@ -12,9 +12,9 @@ export class Category {
     public static collection = 'category'
 
     constructor(
-        public id: string,
+        public id: string | null,
         public name: string,
-        public enterprise: DocumentReference
+        public enterprise: DocumentReference | null
     ){}
 
     public static fromJson(categoryJson: CategoryJson): Category {
