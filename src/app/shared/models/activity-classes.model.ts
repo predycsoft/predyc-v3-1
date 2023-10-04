@@ -484,7 +484,8 @@ export class Activity {
   instrucciones: string = '';
   claseRef: DocumentReference;
   enterpriseRef: DocumentReference;
-  courseRef: DocumentReference;
+  courseRef: DocumentReference[]=[];
+  profileRef: DocumentReference;
   archivos: any[] = [];
   idVideo: number = 0
   idVideoNew : string = ""
@@ -502,6 +503,7 @@ export class Activity {
       instrucciones:this.instrucciones,
       claseRef:this.claseRef,
       enterpriseRef:this.enterpriseRef,
+      profileRef:this.profileRef,
       archivos: this.archivos,
       idVideo: this.idVideo,
       idVideoNew: this.idVideoNew,

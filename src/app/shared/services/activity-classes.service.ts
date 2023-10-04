@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
-import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs'
+import { BehaviorSubject, firstValueFrom, map, Observable, of, switchMap, zip } from 'rxjs'
 import { EnterpriseService } from './enterprise.service';
 import { AlertsService } from './alerts.service';
 
@@ -60,6 +60,38 @@ export class ActivityClassesService {
       console.log(error)
       this.alertService.errorAlert(JSON.stringify(error))
     }
+  }
+
+  getQuestionsCourses(courseIds: string[]): Observable<any> {
+    // Convert string IDs to DocumentReferences
+    const courseRefs: DocumentReference[] = courseIds.map(id => this.afs.doc(`course/${id}`).ref);
+
+    return this.afs.collection('activity', ref => ref.where('courseRef', 'array-contains-any', courseRefs))
+    .get()
+    .pipe(
+      switchMap(activitiesSnap => {
+        const questionsObservables = activitiesSnap.docs.map(activityDoc => {
+          return this.afs.collection(`activity/${activityDoc.id}/question`).valueChanges();
+        });
+        
+        if (questionsObservables.length > 0) {
+          return zip(...questionsObservables);
+        }
+        return of([]);
+      }),
+      map(questionsArray => {
+        // Flatten the array
+        return [].concat(...questionsArray);
+      })
+    );
+}
+
+  deleteQuestion(idActivity: string, idQuestion: string) {
+    // Access the specific 'question' document within the 'activity' document
+    const questionRef = this.afs.doc(`activity/${idActivity}/question/${idQuestion}`);
+  
+    // Delete the document
+    return questionRef.delete();
   }
 
 

@@ -1478,6 +1478,7 @@ export class CreateCourseComponent implements OnInit {
         this.selectedClase.activity.title =  this.formNuevaActividadBasica.value.titulo;
         this.selectedClase.activity.description =  this.formNuevaActividadBasica.value.descripcion;
         this.selectedClase.activity.duration = this.formNuevaActividadBasica.value.duracion;
+        this.selectedClase.duracion = this.formNuevaActividadBasica.value.duracion;
       }
       else{
         this.showErrorActividad = true;
@@ -2110,6 +2111,7 @@ export class CreateCourseComponent implements OnInit {
           console.log('claseLocal', claseLocal);
           await this.courseClassService.saveClass(claseLocal);
           let refClass = await this.afs.collection<Clase>(Clase.collection).doc(claseLocal.id).ref;
+          let courseRef = await this.afs.collection<Curso>(Curso.collection).doc(this.curso.id).ref;
           console.log('refClass', refClass);
           arrayClasesRef.push(refClass);
 
@@ -2123,6 +2125,9 @@ export class CreateCourseComponent implements OnInit {
             activityClass = structuredClone(clase.activity)
             activityClass.enterpriseRef = this.curso.enterpriseRef
             activityClass.claseRef = refClass;
+            activityClass.courseRef = [courseRef];
+            activityClass.isTest = false;
+
             delete activityClass.questions;
             delete activityClass['recursosBase64'] 
             console.log('activityClass',activityClass)
@@ -2185,7 +2190,9 @@ export class CreateCourseComponent implements OnInit {
     questions = structuredClone(this.examen.questions);
     activityClass = structuredClone(this.examen);
     activityClass.enterpriseRef = this.curso.enterpriseRef
-    activityClass.courseRef = courseRef;
+    activityClass.courseRef = [courseRef];
+    activityClass.isTest = true;
+    activityClass.questions=[];
 
     console.log('activityExamen',activityClass)
 
