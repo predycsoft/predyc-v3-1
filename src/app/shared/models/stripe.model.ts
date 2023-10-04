@@ -1,4 +1,4 @@
 export interface StripeInfo {
     stripeId: string | null;
-    updatedAt: number | null;
+    updatedAt: Object | null;
 }
