@@ -37,6 +37,7 @@ export class SkillService {
 
   async addSkill(newSkill: Skill): Promise<void> {
     try {
+      console.log('skill add',newSkill)
       const ref = this.afs.collection<Skill>(Skill.collection).doc().ref;
       await ref.set({...newSkill.toJson(), id: ref.id}, { merge: true });
       newSkill.id = ref.id;

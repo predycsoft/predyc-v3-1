@@ -856,26 +856,14 @@ export class CreateCourseComponent implements OnInit {
   }
 
   adjustSkills(){
-    return this.competenciasSelected
-    let respuesta = [];
-    let skills = this.competenciasSelected;
-    console.log('skills original',skills)
-    skills.forEach(category => {
-      let selected = category.competencias
-      selected = selected.map(({ category, ...rest }) => ({
-        ...rest,
-        category: { id: category.id }
-      })); 
-      let obj = {
-        categoria : {name:category.name, id:category.id},
-        competencias : selected,
-        expanded: true
-      }
-      respuesta.push(obj)
-    });
-    return respuesta
-    
 
+    this.competenciasSelected.forEach(category => {
+      category.competencias.forEach(competencia => {
+        competencia.enterprise=null;
+      });
+    });
+
+    return this.competenciasSelected
   }
 
 
@@ -917,6 +905,7 @@ export class CreateCourseComponent implements OnInit {
       this.competenciasSelectedClase = respueta;
     }
     else{
+      console.log('competenciasSelected',this.competenciasSelected)
       this.competenciasSelectedClase = structuredClone(this.adjustSkills());
       this.competenciasSelectedClase.forEach(categoria => {
         categoria.competencias.forEach(competencia=> {

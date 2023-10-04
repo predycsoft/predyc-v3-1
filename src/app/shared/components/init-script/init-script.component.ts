@@ -15,6 +15,9 @@ import { categoriesData } from 'src/assets/data/categories.data';
 import { CategoryService } from '../../services/category.service';
 import { skillsData } from 'src/assets/data/skills.data';
 import { SkillService } from '../../services/skill.service';
+import {deparmentsData} from 'src/assets/data/departments.data'
+import { Department } from '../../models/department.model';
+import { DepartmentService } from '../../services/department.service';
 // import { coursesData } from 'src/assets/data/courses.data'
 
 @Component({
@@ -29,7 +32,8 @@ export class InitScriptComponent {
     private notificationService: NotificationService,
     private userService: UserService,
     private categoryService: CategoryService,
-    private skillService: SkillService
+    private skillService: SkillService,
+    private departmentService:DepartmentService
   ) {}
 
   async ngOnInit() {}
@@ -109,6 +113,17 @@ export class InitScriptComponent {
       await this.notificationService.addNotification(notification)
     }
     console.log(`Finished Creating Notification`)
+
+
+    // Create Departments 
+    console.log('********* Creating Departments *********')
+
+    deparmentsData.forEach(department => {
+      console.log(department)
+      let departmentready = new Department(department.id,department.name)
+      this.departmentService.addDepartment(departmentready)
+      
+    });
   }
 
 }
