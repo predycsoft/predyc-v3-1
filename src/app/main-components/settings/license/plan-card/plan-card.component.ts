@@ -2,11 +2,11 @@ import { Component } from '@angular/core';
 import { IconService } from 'src/app/shared/services/icon.service';
 
 @Component({
-  selector: 'app-plans-card',
-  templateUrl: './plans-card.component.html',
-  styleUrls: ['./plans-card.component.css']
+  selector: 'app-plan-card',
+  templateUrl: './plan-card.component.html',
+  styleUrls: ['./plan-card.component.css']
 })
-export class PlansCardComponent {
+export class PlanCardComponent {
   constructor(
     public icon: IconService,
   ) {}

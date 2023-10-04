@@ -1,7 +1,7 @@
 import { DataSource } from '@angular/cdk/collections';
 import { Component, Input, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
-import { BehaviorSubject, catchError, combineLatest, firstValueFrom, map, merge, Observable, of, Subscription } from 'rxjs';
+import { BehaviorSubject, catchError, combineLatest, firstValueFrom, map, merge, Observable, of, Subject, Subscription } from 'rxjs';
 import { IconService } from 'src/app/shared/services/icon.service';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { Notification } from 'src/app/shared/models/notification.model';
@@ -18,6 +18,7 @@ import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
 })
 export class NotificationListComponent {
 
+  // This is not being used
   @Input() enablePagination: boolean = true
   @Input() pageSize: number = 10
 
@@ -62,7 +63,8 @@ export class NotificationListComponent {
           this.notificationService,
           this.enterpriseService,
           this.paginator,
-          this.pageSize
+          this.pageSize,
+          this.enablePagination
         );
       }
     })
@@ -77,8 +79,7 @@ export class NotificationListComponent {
   }
 
   ngOnDestroy() {
-    this.
-    combinedObservableSubscription.unsubscribe();
+    this.combinedObservableSubscription.unsubscribe();
   }
 
   
@@ -127,6 +128,8 @@ export class NotificationListComponent {
 
 class NotificationDataSource extends DataSource<Notification> {
 
+  private pageIndex: number = 0;
+  private previousPageIndex: number = 0;
   private selectedFilter: string = 'all'
 
   private currentNotifications: Notification[]
@@ -137,54 +140,49 @@ class NotificationDataSource extends DataSource<Notification> {
     private notificationService: NotificationService,
     private enterpriseService: EnterpriseService,
     private paginator: MatPaginator,
-    private pageSize: number
+    private pageSize: number,
+    private enablePagination: boolean
   ) {
     super();
-    this.paginator.pageSize = this.pageSize
-    // this.filterSubject.subscribe(filter => {
-    //   // this.notifications
-    // })
-    this.paginator.page.subscribe(eventObj => {
-      let queryObj: {
-        pageSize: number
-        startAt?: Notification
-        startAfter?: Notification
-        typeFilter?: typeof Notification.TYPE_ACTIVITY |
-                    typeof Notification.TYPE_ALERT |
-                    typeof Notification.TYPE_REQUEST |
-                    typeof Notification.ARCHIVED 
-      } = {
-        pageSize: this.pageSize,
-      }
-      if (this.selectedFilter !== 'all') {
-        queryObj.typeFilter = this.selectedFilter
-      }
-      if (eventObj.pageIndex == 0) {
-        // first page
-      } else if (eventObj.pageIndex > eventObj.previousPageIndex) {
-        // next page
-        queryObj.startAfter = this.currentNotifications[this.currentNotifications.length - 1]
-        this.previousPageNotification = this.currentNotifications[0]
-      } else {
-        // previous page
-        queryObj.startAt = this.previousPageNotification
-      }
-      console.log("queryObj inside datasource", queryObj)
-      this.getNotifications(queryObj)
-    });
 
-    this.getNotifications({pageSize: this.pageSize})
+
+    if (this.enablePagination) {
+      this.paginator.pageSize = this.pageSize
+      this.paginator.page.subscribe(eventObj => {
+        this.pageIndex = eventObj.pageIndex
+        this.previousPageIndex = eventObj.previousPageIndex
+        this.getNotifications()
+      });
+    }
+
+    this.getNotifications()
   }
 
-  getNotifications(queryObj: {
-    pageSize: number
-    startAt?: Notification
-    startAfter?: Notification
-    typeFilter?: typeof Notification.TYPE_ACTIVITY |
-                typeof Notification.TYPE_ALERT |
-                typeof Notification.TYPE_REQUEST |
-                typeof Notification.ARCHIVED
-  }) {
+  getNotifications() {
+    let queryObj: {
+      pageSize: number
+      startAt?: Notification
+      startAfter?: Notification
+      typeFilter?: typeof Notification.TYPE_ACTIVITY |
+                  typeof Notification.TYPE_ALERT |
+                  typeof Notification.TYPE_REQUEST |
+                  typeof Notification.ARCHIVED 
+    } = {
+      pageSize: this.pageSize,
+    }
+    if (this.selectedFilter !== 'all') {
+      queryObj.typeFilter = this.selectedFilter
+    }
+    if (this.pageIndex == 0) {
+      // first page
+    } else if (this.pageIndex > this.previousPageIndex) {
+      // next page
+      queryObj.startAfter = this.currentNotifications[this.currentNotifications.length - 1]
+      this.previousPageNotification = this.currentNotifications[0]
+    } else {
+      // previous page
+      queryObj.startAt = this.previousPageNotification
+    }
     this.notificationService.getNotifications(queryObj)
   }
   
@@ -193,7 +191,9 @@ class NotificationDataSource extends DataSource<Notification> {
     return combineLatest([this.notificationService.notifications$, this.enterpriseService.enterprise$]).pipe(
       map(([notifications, _]) => {
         // update paginator length
-        this.paginator.length = this.notificationService.getNotificationsLengthByFilter(this.selectedFilter)
+        if (this.enablePagination) {
+          this.paginator.length = this.notificationService.getNotificationsLengthByFilter(this.selectedFilter)
+        }
 
         this.currentNotifications = [...notifications]
   
@@ -214,12 +214,12 @@ class NotificationDataSource extends DataSource<Notification> {
 
   setFilter(filter: string) {
     this.selectedFilter = filter
-    this.paginator.firstPage();
-    this.paginator.page.emit({
-      pageIndex: this.paginator.pageIndex,
-      pageSize: this.paginator.pageSize,
-      length: this.paginator.length
-    });
+    if (this.enablePagination) {
+      this.pageIndex = 0
+      this.previousPageIndex = 0
+      this.paginator.firstPage();
+    }
+    this.getNotifications()
   }
 
   disconnect() {}
