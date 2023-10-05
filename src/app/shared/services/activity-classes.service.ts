@@ -30,13 +30,11 @@ export class ActivityClassesService {
 
   async saveActivity(newActivity: Activity): Promise<void> {
     try {
-      try {
-        await this.afs.collection(Activity.collection).doc(newActivity?.id).set(newActivity, { merge: true });
-      } catch (error) {
-        console.log(error)
-        throw error
-      }
-      console.log('Has agregado una actividad exitosamente.')
+      const ref = this.afs.collection<Activity>(Activity.collection).doc().ref;
+      await ref.set({...newActivity.toJson(), id: ref.id}, { merge: true });
+      newActivity.id = ref.id;
+      console.log("Activity added succesfully")
+      this.alertService.succesAlert('Has agregado una actividad exitosamente.')
     } catch (error) {
       console.log(error)
       this.alertService.errorAlert(JSON.stringify(error))

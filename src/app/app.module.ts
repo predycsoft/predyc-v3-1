@@ -94,6 +94,7 @@ import { MembersComponent } from './main-components/settings/members/members.com
 import { LicenseComponent } from './main-components/settings/license/license.component';
 import { PlanCardComponent } from './main-components/settings/license/plan-card/plan-card.component';
 import { LicenseDataComponent } from './main-components/settings/license/license-data/license-data.component';
+import { ValidationListComponent } from './main-components/validation/validation-list/validation-list.component';
 
 @NgModule({
   declarations: [
@@ -139,7 +140,8 @@ import { LicenseDataComponent } from './main-components/settings/license/license
     MembersComponent,
     LicenseComponent,
     PlanCardComponent,
-    LicenseDataComponent
+    LicenseDataComponent,
+    ValidationListComponent
   ],
   imports: [
     BrowserModule,
