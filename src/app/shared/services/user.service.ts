@@ -2,22 +2,30 @@ import { Injectable } from '@angular/core';
 import { User, UserJson } from '../../shared/models/user.model';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
-import { BehaviorSubject, firstValueFrom, Observable, Subscription } from 'rxjs'
+import { BehaviorSubject, firstValueFrom, map, Observable, Subscription, switchMap } from 'rxjs'
 import { EnterpriseService } from './enterprise.service';
 import { AlertsService } from './alerts.service';
 import { generateSixDigitRandomNumber } from '../utils';
 import { AngularFireFunctions } from '@angular/fire/compat/functions';
+import { Profile } from '../models/profile.model';
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
   private usersSubject = new BehaviorSubject<User[]>([]);
+  private usersWithoutProfileSubject = new BehaviorSubject<User[]>([]);
   public users$ = this.usersSubject.asObservable();
+  public usersWithoutProfile$ = this.usersWithoutProfileSubject.asObservable();
   private usersLoadedSubject = new BehaviorSubject<boolean>(false)
-  public usersLoaded$ = this.usersLoadedSubject.asObservable()
+  private usersithoutProfileLoadedSubject = new BehaviorSubject<boolean>(false)
+
+  public usersLoaded$ = this.usersLoadedSubject.asObservable();
+  public usersWithoutProfileLoaded$ = this.usersithoutProfileLoadedSubject.asObservable();
 
   private userCollectionSubscription: Subscription
+  private userCollectionProfileSubscription: Subscription
+
 
   constructor(
     private afAuth: AngularFireAuth,
@@ -29,7 +37,8 @@ export class UserService {
     console.log("Se instancio el user service")
     this.enterpriseService.enterpriseLoaded$.subscribe(enterpriseIsLoaded => {
       if (enterpriseIsLoaded) {
-        this.getUsers()
+        this.getUsers();
+        this.getUsersWithoutProfile();
       }
     })
   }
@@ -169,4 +178,47 @@ export class UserService {
   public usersAreLoaded(): boolean {
     return this.usersLoadedSubject.value;
   }
+
+  private getUsersWithoutProfile() {
+    if (this.userCollectionProfileSubscription) {
+        this.userCollectionProfileSubscription.unsubscribe();
+    }
+    // Step 1: Get all profiles and gather all user references
+    this.afs.collection(Profile.collection).get().pipe(
+        switchMap(profilesSnap => {
+            const userRefsFromProfiles: DocumentReference[] = [];
+            profilesSnap.docs.forEach(doc => {
+                const data = doc.data() as Profile;
+                if (data.userRef && Array.isArray(data.userRef)) {
+                    userRefsFromProfiles.push(...data.userRef);
+                }
+            });
+
+            // Convert DocumentReferences to their path strings for easier comparison
+            const userRefPaths = userRefsFromProfiles.map(ref => ref.path);
+
+            // Step 2: Fetch users based on criteria and exclude those from step 1
+            return this.afs.collection<User>(User.collection, ref =>
+                ref.where('enterprise', '==', this.enterpriseService.getEnterpriseRef())
+                   .where('isActive', '==', true)
+                   .orderBy('displayName')
+            ).valueChanges({idField: 'id'}).pipe(
+                map(users => users.filter(user => !userRefPaths.includes(`User/${user.id}`)))
+            );
+        })
+    ).subscribe({
+        next: users => {
+            this.usersWithoutProfileSubject.next(users);
+            if (!this.usersithoutProfileLoadedSubject.value) {
+                this.usersithoutProfileLoadedSubject.next(true);
+                console.log("Los usuarios sin perfil fueron cargados", users);
+            }
+        },
+        error: error => {
+            console.log(error);
+            this.alertService.errorAlert(JSON.stringify(error));
+        }
+    });
+}
+
 }

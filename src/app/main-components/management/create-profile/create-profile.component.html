@@ -1,7 +1,10 @@
 <app-navigate-back targetUrl="../../departments-and-profiles">Nuevo perfil</app-navigate-back>
 
 <div class="fw" class="fw backWhite radius10" fxLayout="column">
-    <span class="pdl10 ft600">Departamento: {{department.name}}</span>
+    <div fxLayout="row" fxLayoutGap="1rem" class="pdl10">
+        <span class="ft600">Departamento: {{department.name}}</span>
+        <span *ngIf="formNewProfile.value.name" class="ft600">Perfil: {{formNewProfile.value.name}}</span>
+    </div>
     <div class="fw fh" fxLayout="column">
         <div fxLayout="row">
             <div class="fw pdl10 pdr10 pdt10">
@@ -230,6 +233,45 @@
                 <div fxFlex="60%" class="pdl10 pdr10 pdt10">
                     <div fxLayout="column" class="fw fh smallScroll" style="overflow-y: auto;">
 
+                        <div fxLayout="row" fxLayoutGap="10px" class="pdt10">
+                            <span class="ft600 ft16">{{formNewProfile.value.name | titlecase}}</span>
+                        </div>
+                        <div fxLayout="row" fxLayoutGap="10px" class="pdt05">
+                            <span>{{formNewProfile.value.description}}</span>
+                        </div>
+                        <div fxLayout="row" fxLayoutGap="10px" class="pdt10">
+                            <span class="ft600 ft16">Responsabilidades</span>
+                        </div>
+                        <div fxLayout="row" fxLayoutGap="10px" class="pdt05">
+                            <span>{{formNewProfile.value.responsabilities}}</span>
+                        </div>
+                        <div fxLayout="row" fxLayoutGap="10px" class="pdt10">
+                            <span class="ft600 ft16">Comptencias</span>
+                        </div>
+                        <div *ngFor="let categoria of competenciasSelected" fxLayout="row" fxLayoutGap="10px" class="pdt05">
+                            <span>{{categoria.categoria.name}}: {{categoria.competencias.length}}</span>
+                        </div>
+                        <div fxLayout="row" fxLayoutGap="10px" class="pdt10">
+                            <span class="ft600 ft16">Examen diagnostico</span>
+                        </div>
+                        <div fxLayout="row" fxLayoutGap="10px" class="pdt10">
+                            <span>{{examAutoQuestions}} Preguntas por sistema automatizado</span>
+                        </div>
+                        <div fxLayout="row" fxLayoutGap="10px" class="pdt10">
+                            <span>{{examManualQuestions}} Preguntas seleccionadas manualmente</span>
+                        </div>
+                        <div fxLayout="row" fxLayoutGap="10px" class="pdt10">
+                            <span class="ft600 ft16">Asignar Perfil</span>
+                        </div>
+                        <div fxLayout="row" fxLayoutGap="10px" class="pdt10">
+                            <span>Estos son los usuarios sin perfil asignado, seleccione el usuario si le desea asignar este perfil</span>
+                        </div>
+                        <div fxLayout="row" fxLayoutGap="10px" class="pdt10">
+                            <app-search-input-box></app-search-input-box>
+                        </div>
+                        <div fxLayout="row" fxLayoutGap="10px" class="pdt05">
+                            <app-student-list origin="create perfil"></app-student-list>
+                        </div>
                     </div>
                 </div>
                 <div fxFlex="40%" class="pdl10 pdr10 pdt10">

@@ -1838,7 +1838,6 @@ export class CreateCourseComponent implements OnInit {
         valid = false;
         this.mensageCompetencias = "Por favor seleccione una competencia";
         this.comepetenciaValid = false;
-
       }
     }
     if(this.activeStep == 3){

@@ -1,5 +1,5 @@
 import { DataSource, SelectionModel } from '@angular/cdk/collections';
-import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { IconService } from '../../../../shared/services/icon.service';
@@ -26,7 +26,7 @@ export class StudentListComponent {
     'profileId',
     'ratingPoints',
     'performance',
-    'options',
+    // 'options',
   ];
   dataSource!: UserDataSource;
 
@@ -38,6 +38,7 @@ export class StudentListComponent {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+  @Input() origin='user list'
   @Output() onSelectStudentEvent = new EventEmitter<User>()
 
   searchSubscription: Subscription
@@ -50,14 +51,30 @@ export class StudentListComponent {
   ) {}
 
   ngAfterViewInit() {
+     
+
+    console.log('usuarios',this.userService.users$)
+    console.log('usuarios sin perfil',this.userService.usersWithoutProfile$)
+
+    let obervable = this.userService.users$;
+
+    if(this.origin == 'create perfil'){
+      obervable = this.userService.usersWithoutProfile$;
+    }
+
+
     this.dataSource = new UserDataSource(
-      this.userService.users$,
+      obervable,
       this.paginator,
       this.sort,
     );
   }
 
   ngOnInit() {
+
+    if(this.origin !='create perfil'){
+      this.displayedColumns.push('options')
+    }
     this.searchSubscription = this.searchInputService.dataObservable$.subscribe(
       filter => this.dataSource.setFilter(filter)
     )
