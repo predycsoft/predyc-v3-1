@@ -7,7 +7,6 @@ export const enterpriseData: EnterpriseJson = {
     description: "Esta es una empresa de prueba",
     employesNo: 0,
     id: null,
-    license: null,
     name: "Empresa de prueba",
     totalActivityNotifications: 0,
     totalAlertNotifications: 0,

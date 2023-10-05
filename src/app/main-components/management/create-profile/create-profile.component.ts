@@ -21,6 +21,8 @@ import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Profile } from 'src/app/shared/models/profile.model';
 import { Department } from 'src/app/shared/models/department.model';
+import { ProfileService } from '../../../shared/services/profile.service';
+import { Skill } from 'src/app/shared/models/skill.model';
 
 export const compareByString = (a: string, b: string): number => {
   if (a > b) {
@@ -63,6 +65,7 @@ export class CreateProfileComponent {
     private enterpriseService: EnterpriseService,
     private storage: AngularFireStorage,
     public sanitizer: DomSanitizer,
+    private profileService: ProfileService
 
   ){}
 
@@ -242,7 +245,7 @@ export class CreateProfileComponent {
       coursesId.push(curso.id);
     });
     console.log(coursesId);
-    this.activityClassesService.getQuestionsCourses(coursesId).subscribe(questions => {
+    this.activityClassesService.getQuestionsCourses(coursesId).subscribe(async questions => {
       questions.forEach(question => {
         let skillsName = [];
         let skillsIdQuestion = question.skills.map(skill => {
@@ -279,42 +282,76 @@ export class CreateProfileComponent {
     });
   }
 
+  async saveProfile(){
+    if(!this.profile){
+      let departmentRef = await this.afs.collection<Department>(Department.collection).doc(this.departmentId).ref;
+      this.profile= new Profile()
+      //this.profile.id = this.formNewProfile.value.id;
+      this.profile.departmentRef = departmentRef;
+    }
+    this.profile.name = this.formNewProfile.value.name;
+    this.profile.description = this.formNewProfile.value.description;
+    this.profile.responsabilities = this.formNewProfile.value.responsabilities;
+    await this.profileService.saveProfile(this.profile);
+    console.log('profile',this.profile)
+    this.formNewProfile.get('id').patchValue(this.profile.id);
+  }
+  
+  mensageCompetencias;
+  comepetenciaValid;
+  examAutoQuestions=0;
+  examManualQuestions=0
 
-  async advanceTab(){
+
+  advanceTab(){
 
     let valid = true
     console.log('tab actividad',this.activeStep);
-
     if(this.activeStep == 1){
       console.log('formNewProfile',this.formNewProfile)
-      if(this.formNewProfile.valid){
-        if(!this.profile){
-          let departmentRef = await this.afs.collection<Department>(Department.collection).doc(this.departmentId).ref;
-          this.profile= new Profile()
-          this.profile.id = this.formNewProfile.value.id;
-          this.profile.departmentRef = departmentRef;
-        }
-        this.profile.name = this.formNewProfile.value.name;
-        this.profile.description = this.formNewProfile.value.description;
-        this.profile.responsabilities = this.formNewProfile.value.responsabilities;
-        console.log('profile',this.profile)
-      }
-      else{
+      if(!this.formNewProfile.valid){
         this.showErrorProfile = true;
         valid = false;
       }
     }
     if(this.activeStep == 2){
 
+      console.log('competencias selected',this.competenciasSelected)
+      if(!this.competenciasSelected || this.competenciasSelected.length == 0){
+        valid = false;
+        this.mensageCompetencias = "Por favor seleccione una competencia";
+        this.comepetenciaValid = false;
+      }
+
     }
     if(this.activeStep == 3){
+      console.log('this.examen',this.examen)
       if(!this.examen){
         this.createExam(); 
       }
+      else{
+        console.log('prguntas',this.examen.questions)
+      }
     }
     if(this.activeStep == 4){
+      this.examAutoQuestions=0;
+      this.examManualQuestions=0
+    
+      console.log('prguntas',this.examen.questions)
+      this.examen.questions.forEach(question => {
+        if(question?.skillsNames?.length>0){
+          this.examAutoQuestions++
+        }
+        else{
+          this.examManualQuestions++
+        }
+      });
+
+      //validador examen
     }
     if(this.activeStep == 5){
+
+      
     }
 
     valid = true; // comentar luego de probar
@@ -394,7 +431,31 @@ export class CreateProfileComponent {
   }
 
   async saveBorrador(){
+
+    if(this.formNewProfile.valid){
+      this.saveProfile();
+    }
+
+    if(this.competenciasSelected?.length > 0){
+      console.log('guardar competencias');
+      let skills = [];
+      for (const category of this.competenciasSelected) {
+        for (const skill of category.competencias) {
+          console.log(skill.id);
+          let skillRef = await this.afs.collection<Skill>(Skill.collection).doc(skill.id).ref;
+          skills.push(skillRef);
+        }
+      }
+      this.profile.skillsRef=skills;
+      console.log('this.profile with skills',this.profile)
+      this.saveProfile();
+    }
+
     if(this.examen){
+      let profileRef = await this.afs.collection<Profile>(Profile.collection).doc(this.profile.id).ref;
+      this.examen.profileRef = profileRef;
+      
+      console.log(this.examen);
       let activityClass = new Activity
       let questions: any[]= [];
 
@@ -416,6 +477,7 @@ export class CreateProfileComponent {
       activityClass.questions=[];
       console.log('activityExamen',activityClass)
       activityClass = structuredClone(activityClass)
+      activityClass.profileRef = profileRef;
       await this.activityClassesService.saveActivity(activityClass);
       questions.forEach(pregunta => {
         pregunta.skills = this.examen.questions.find(preguntaIn => preguntaIn.id == pregunta.id).skills;

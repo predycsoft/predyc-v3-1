@@ -96,6 +96,13 @@ export class InitScriptComponent {
     }
     console.log(`Finished Creating Prices`)
 
+    // Create base enterprise
+    console.log('********* Creating Enterprise *********')
+    const enterprise: Enterprise = Enterprise.fromJson(enterpriseData)
+    await this.enterpriseService.addEnterprise(enterprise)
+    const enterpriseRef = this.enterpriseService.getEnterpriseRefById(enterprise.id)
+    console.log(`Finished Creating Enterprise`)
+
     // Create License
     console.log('********* Creating Licenses *********')
     const license: License = License.fromJson(licensesData)
@@ -108,17 +115,10 @@ export class InitScriptComponent {
         ...license.toJson(),
         price: licensePriceRef,
         coupon: couponPriceRef,
+        enterprise: enterpriseRef
       }, {merge: true}
     )
     console.log(`Finished Creating License`)
-
-    // Create base enterprise
-    console.log('********* Creating Enterprise *********')
-    const enterprise: Enterprise = Enterprise.fromJson(enterpriseData)
-    enterprise.license = licenseRef
-    await this.enterpriseService.addEnterprise(enterprise)
-    const enterpriseRef = this.enterpriseService.getEnterpriseRefById(enterprise.id)
-    console.log(`Finished Creating Enterprise`)
   
     // Create Departments and profiles
 
