@@ -1,13 +1,12 @@
-<div *ngIf="loaded" class="mgt05">
-  <div fxLayout="column" fxLayoutGap="1rem" fxLayoutAlign="space-between" class="backGray2 radius10 pdt10 pdb10" 
-    >
-    <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="space-between center" class="mgt05 mgl15">
+  <div *ngIf="!loaderService.loading" fxLayout="column" fxLayoutAlign="space-around" 
+    class="backGray2 pdt05 pdb05 radius40 fh border">
+    <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="space-between center" class="mgt15 mgl15">
       <span class="ft500 ft30 gray-10">{{ product.name }}</span>
       <div class="adq fh">
         <span style="color: white !important;">Adquirido</span>
       </div>
     </div> 
-    <div *ngIf="!product.isACompanyProduct" fxLayout="row" fxLayoutGap="0.2rem" fxLayoutAlign="start" class="mgt05 mgl15">
+    <div *ngIf="!product.isACompanyProduct" fxLayout="row" fxLayoutGap="0.2rem" fxLayoutAlign="start" class="mgl15 mgb20">
       <span class="ft600 ft18 gray-10 lnh1">
         {{coupon ? price.getTotalAmount([coupon]) : price.getTotalAmount([]) }}
       </span>
@@ -18,11 +17,11 @@
         {{price.currency}} {{ price.getIntervalDisplayValue() }}
       </span>
     </div>
-    <div *ngIf="product.isACompanyProduct" fxLayout="row" fxLayoutAlign="start" class="mgt05 mgl15">
+    <div *ngIf="product.isACompanyProduct" fxLayout="row" fxLayoutAlign="start" class="mgl15 mgb20">
       <span class="ft600 ft18 gray-10 lnh1">Precio Personalizado</span>
     </div>
-    <div class="fw mgl15 mgt05 pdr20" fxLayoutAlign="center">
-      <div class="fw listaPlan mgt03" fxLayoutAlign="center " fxLayout="column">
+    <div class="fw mgl15 pdr20 mgb10" fxLayoutAlign="center">
+      <div class="fw listaPlan" fxLayoutAlign="center " fxLayout="column">
         <div class="ft12 gray-6 mgt03" fxLayout="row" fxLayoutGap=".3rem" fxLayoutAlign=" center" *ngFor="let feature of product.features">
             <div>
                 <img *ngIf="feature.isActive" [src]="icon.checkCircleBlue" class="h20px" alt=""/>
@@ -34,5 +33,4 @@
         </div>
       </div>
     </div>
-  </div>
 </div>

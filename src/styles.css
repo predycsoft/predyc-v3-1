@@ -998,6 +998,7 @@ body {
 .radius10{ border-radius: 10px !important;}
 .radius15{ border-radius: 15px !important;}
 .radius20{ border-radius: 20px !important;}
+.radius40{ border-radius: 40px !important;}
 .radius50{ border-radius: 50% !important;}
 
 .avatar1{ height: 1rem; width: 1rem; border-radius: 50%;}

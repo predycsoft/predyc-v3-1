@@ -1,3 +1,8 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
 .plan {
     border: 2px solid var(--gray-4);
     color: var(--gray-7);
@@ -58,4 +63,6 @@
     float: right;
     padding: 1px 15px;
   }
+
+
   
