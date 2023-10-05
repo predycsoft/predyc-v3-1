@@ -102,10 +102,10 @@
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <ng-container *ngIf="origin !='create perfil'">
+        <ng-container *ngIf="origin !='create profile'">
             <tr mat-row *matRowDef="let user; columns: displayedColumns;" class="cursorPointer" [routerLink]="user.uid"></tr>
         </ng-container>
-        <ng-container *ngIf="origin =='create perfil'">
+        <ng-container *ngIf="origin =='create profile'">
             <tr mat-row *matRowDef="let user; columns: displayedColumns;" class="cursorPointer"></tr>
         </ng-container>
 

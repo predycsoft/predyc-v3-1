@@ -784,6 +784,14 @@ export class CreateProfileComponent {
   }
 
 
+  usersProfile = []
+
+  handleSelectedUsers(selected: any[]) {
+    console.log(selected); // This will give you the selected items from the table.
+    this.usersProfile = selected
+  }
+
+
 
   
 

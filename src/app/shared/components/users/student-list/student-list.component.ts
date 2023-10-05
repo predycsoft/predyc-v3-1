@@ -1,5 +1,5 @@
 import { DataSource, SelectionModel } from '@angular/cdk/collections';
-import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { IconService } from '../../../../shared/services/icon.service';
@@ -40,6 +40,9 @@ export class StudentListComponent {
   @ViewChild(MatSort) sort: MatSort;
   @Input() origin='user list'
   @Output() onSelectStudentEvent = new EventEmitter<User>()
+  @Output() selectedUsers = new EventEmitter<any[]>();
+  @Input() initialSelectedUsers: any[];
+
 
   searchSubscription: Subscription
 
@@ -58,26 +61,41 @@ export class StudentListComponent {
 
     let obervable = this.userService.users$;
 
-    if(this.origin == 'create perfil'){
+    if(this.origin == 'create profile'){
       obervable = this.userService.usersWithoutProfile$;
     }
-
-
     this.dataSource = new UserDataSource(
       obervable,
       this.paginator,
       this.sort,
     );
+
+    if (this.initialSelectedUsers && this.dataSource && (this.origin =='create profile')) {
+      //this.selection.clear();
+      console.log('test data',this.initialSelectedUsers,this.dataSource.data)
+      // Find and select the initial items
+      this.initialSelectedUsers.forEach(item => {
+        const matchingRow = this.dataSource.data.find(row => row.uid === item.uid);  // You can modify the comparison logic here
+        console.log('matchingRow',matchingRow);
+        if (matchingRow) {
+          this.selection.select(matchingRow);
+        }
+      });
+    }
   }
 
   ngOnInit() {
 
-    if(this.origin !='create perfil'){
+    if(this.origin !='create profile'){
       this.displayedColumns.push('options')
     }
     this.searchSubscription = this.searchInputService.dataObservable$.subscribe(
       filter => this.dataSource.setFilter(filter)
     )
+
+    this.selection.changed.subscribe(() => {
+      this.selectedUsers.emit(this.selection.selected);
+    });
   }
 
   onSelectUser(user: User) {
@@ -192,4 +210,6 @@ class UserDataSource extends DataSource<User> {
   disconnect() {
     this.userSubscription.unsubscribe();
   }
+
+  
 }
