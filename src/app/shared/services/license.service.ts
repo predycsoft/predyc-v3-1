@@ -12,7 +12,7 @@ export class LicenseService {
     private afs: AngularFirestore,
   ) { }
 
-  getLicenseByEnterpriseRef(enterpriseDocRef: any): Observable<License[]> {
+  getLicensesObservableByEnterpriseRef(enterpriseDocRef: any): Observable<License[]> {
     return this.afs.collection<License>(License.collection, ref => 
       ref.where('enterprise', '==', enterpriseDocRef).orderBy('createdAt', 'desc')
     ).valueChanges()

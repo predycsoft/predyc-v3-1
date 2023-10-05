@@ -38,17 +38,14 @@ export class PlanCardComponent {
     this.enterpriseService.enterpriseLoaded$.subscribe(isLoaded => {
       if (isLoaded) {
         const enterpriseRef = this.enterpriseService.getEnterpriseRef();
-        this.licenseService.getLicenseByEnterpriseRef(enterpriseRef).subscribe(async licenses => {
+        this.licenseService.getLicensesObservableByEnterpriseRef(enterpriseRef).subscribe(async licenses => {
           this.license = licenses[0]
           if (this.license) {
             this.price = await this.priceService.getPriceByRef(this.license.price as DocumentReference)
-            console.log("this.price", this.price)
             this.product = await this.productService.getProductByRef(this.price.product as DocumentReference)
-            console.log("this.product", this.product)
             this.coupon = this.price.coupon 
                           ? await this.couponService.getCouponByRef(this.price.coupon as DocumentReference)
                           : null
-            console.log("this.coupon", this.coupon)
             this.loaded = true
           }
         })
