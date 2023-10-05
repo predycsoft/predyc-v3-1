@@ -179,31 +179,32 @@ export class UserService {
     return this.usersLoadedSubject.value;
   }
 
-  private getUsersWithoutProfile() {
+  getUsersWithoutProfile() {
+    console.log('esto');
     if (this.userCollectionProfileSubscription) {
         this.userCollectionProfileSubscription.unsubscribe();
     }
     // Step 1: Get all profiles and gather all user references
-    this.afs.collection(Profile.collection).get().pipe(
+    this.userCollectionProfileSubscription = this.afs.collection(Profile.collection).get().pipe(
         switchMap(profilesSnap => {
             const userRefsFromProfiles: DocumentReference[] = [];
             profilesSnap.docs.forEach(doc => {
                 const data = doc.data() as Profile;
-                if (data.userRef && Array.isArray(data.userRef)) {
-                    userRefsFromProfiles.push(...data.userRef);
+                if (data.usersRef && Array.isArray(data.usersRef)) {
+                    userRefsFromProfiles.push(...data.usersRef);
                 }
             });
 
             // Convert DocumentReferences to their path strings for easier comparison
             const userRefPaths = userRefsFromProfiles.map(ref => ref.path);
-
+            console.log('userRefPaths',userRefPaths)
             // Step 2: Fetch users based on criteria and exclude those from step 1
             return this.afs.collection<User>(User.collection, ref =>
                 ref.where('enterprise', '==', this.enterpriseService.getEnterpriseRef())
                    .where('isActive', '==', true)
                    .orderBy('displayName')
             ).valueChanges({idField: 'id'}).pipe(
-                map(users => users.filter(user => !userRefPaths.includes(`User/${user.id}`)))
+                map(users => users.filter(user => !userRefPaths.includes(`user/${user.id}`)))
             );
         })
     ).subscribe({

@@ -7,7 +7,9 @@ export interface ProfileJson {
     responsabilities: string,
     departmentRef: DocumentReference
     skillsRef: DocumentReference[]
-    userRef: DocumentReference[]
+    usersRef: DocumentReference[]
+    coursesRef: DocumentReference[]
+
 }
 
 export class Profile {
@@ -19,7 +21,9 @@ export class Profile {
     public responsabilities: string;
     public departmentRef: DocumentReference
     public skillsRef: DocumentReference [] = []
-    public userRef: DocumentReference [] = []
+    public usersRef: DocumentReference [] = []
+    public coursesRef: DocumentReference [] = []
+
 
     public static fromJson(profileJson: ProfileJson): Profile {
         let profile = new Profile();
@@ -29,7 +33,9 @@ export class Profile {
         profile.responsabilities = profileJson.responsabilities
         profile.departmentRef = profileJson.departmentRef
         profile.skillsRef = profileJson.skillsRef
-        profile.userRef = profileJson.userRef
+        profile.usersRef = profileJson.usersRef
+        profile.coursesRef = profileJson.coursesRef
+
         return profile
     }
       
@@ -41,7 +47,8 @@ export class Profile {
             responsabilities: this.responsabilities,
             departmentRef: this.departmentRef,
             skillsRef: this.skillsRef,
-            userRef: this.userRef,
+            usersRef: this.usersRef,
+            coursesRef: this.coursesRef,
         }
     }
 }

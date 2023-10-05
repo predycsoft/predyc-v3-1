@@ -23,6 +23,8 @@ import { Profile } from 'src/app/shared/models/profile.model';
 import { Department } from 'src/app/shared/models/department.model';
 import { ProfileService } from '../../../shared/services/profile.service';
 import { Skill } from 'src/app/shared/models/skill.model';
+import { User } from 'src/app/shared/models/user.model';
+import { UserService } from 'src/app/shared/services/user.service';
 
 export const compareByString = (a: string, b: string): number => {
   if (a > b) {
@@ -65,7 +67,8 @@ export class CreateProfileComponent {
     private enterpriseService: EnterpriseService,
     private storage: AngularFireStorage,
     public sanitizer: DomSanitizer,
-    private profileService: ProfileService
+    private profileService: ProfileService,
+    private userService: UserService
 
   ){}
 
@@ -104,6 +107,13 @@ export class CreateProfileComponent {
         this.empresa = enterprise
       }
     })
+
+    this.userService.usersLoaded$.subscribe(async isLoaded => {
+      if (isLoaded) {
+        this.userService.getUsersWithoutProfile();
+      }
+    })
+
 
     this.departmentService.loadDepartmens()
     this.departmentService.getDepartmentsObservable().subscribe(departments => {
@@ -223,6 +233,7 @@ export class CreateProfileComponent {
   }
 
   finishProfile(){
+    this.saveBorrador()
 
   }
 
@@ -275,7 +286,7 @@ export class CreateProfileComponent {
       console.log('relevant and sorted questions', relevantQuestions);
       if(!this.examen){
         this.examen = new Activity;
-        this.examen.id = Date.now().toString();
+        //this.examen.id = Date.now().toString();
       }
       this.examen.questions = relevantQuestions;
       console.log('this.examen',this.examen)
@@ -450,6 +461,22 @@ export class CreateProfileComponent {
       console.log('this.profile with skills',this.profile)
       this.saveProfile();
     }
+    console.log('this.coursesSelectedPerfil',this.coursesSelectedPerfil)
+    if(this.coursesSelectedPerfil){
+      console.log('save coruses',this.coursesSelectedPerfil)
+
+      let refCursos = []
+
+      for (let i = 0; i < this.coursesSelectedPerfil.length; i++) {
+        let cursoIn = this.coursesSelectedPerfil[i];
+        console.log('cursoIn', cursoIn.id);
+        let ref = await this.afs.collection<Curso>(Curso.collection).doc(cursoIn.id).ref;
+        console.log('refCurso', ref);
+        refCursos.push(ref);
+      }
+      this.profile.coursesRef=refCursos;
+      this.saveProfile();
+    }
 
     if(this.examen){
       let profileRef = await this.afs.collection<Profile>(Profile.collection).doc(this.profile.id).ref;
@@ -473,16 +500,26 @@ export class CreateProfileComponent {
 
       activityClass.questions = structuredClone(questions);
       activityClass.id = this.examen.id;
-      activityClass.isTest = true;
+      activityClass.type = Activity.TYPE_SKILL_TEST;
       activityClass.questions=[];
       console.log('activityExamen',activityClass)
       activityClass = structuredClone(activityClass)
       activityClass.profileRef = profileRef;
-      await this.activityClassesService.saveActivity(activityClass);
+      await this.activityClassesService.saveActivityJson(activityClass);
       questions.forEach(pregunta => {
         pregunta.skills = this.examen.questions.find(preguntaIn => preguntaIn.id == pregunta.id).skills;
         this.activityClassesService.saveQuestion(pregunta,activityClass.id)
       });
+    }
+
+    if(this.usersProfile){
+      console.log('users',this.usersProfile); 
+      let arrayRef=this.usersProfile.map(user => {
+        return user.ref
+      });
+      console.log('arrayRef users',arrayRef)
+      this.profile.usersRef = arrayRef;
+      this.saveProfile();
     }
 
   }
@@ -788,7 +825,11 @@ export class CreateProfileComponent {
 
   handleSelectedUsers(selected: any[]) {
     console.log(selected); // This will give you the selected items from the table.
-    this.usersProfile = selected
+    this.usersProfile = selected;
+    this.usersProfile.forEach(async user => {
+      let userRef = await this.afs.collection<User>(User.collection).doc(user.id).ref;
+      user.ref = userRef
+    });
   }
 
 

@@ -7,12 +7,12 @@ import { DocumentReference } from "@angular/fire/compat/firestore"
 
     HTMLcontent: string = ""
     archivos: any[] = [];
-    sillsRef: DocumentReference[] = []
+    skillsRef: DocumentReference[] = []
     descripcion: string = ""
     duracion: number = 0
     id: string = '0'
-    idVideo: number = 0
-    idVideoNew : string = ""
+    vimeoId1: number = 0
+    vimeoId2 : string = ""
     tipo: string = "video"
     titulo: string = ""
     vigente: boolean = true
@@ -22,12 +22,12 @@ import { DocumentReference } from "@angular/fire/compat/firestore"
       return {
         HTMLcontent: this.HTMLcontent,
         archivos: this.archivos,
-        sillsRef: this.sillsRef,
+        skillsRef: this.skillsRef,
         descripcion: this.descripcion,
         duracion: this.duracion,
         id: this.id,
-        idVideo: this.idVideo,
-        idVideoNew : this.idVideoNew,
+        vimeoId1: this.vimeoId1,
+        vimeoId2 : this.vimeoId2,
         tipo: this.tipo,
         titulo: this.titulo,
         vigente: this.vigente,

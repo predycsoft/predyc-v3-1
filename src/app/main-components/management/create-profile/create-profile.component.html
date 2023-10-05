@@ -125,6 +125,12 @@
             <div fxFlex fxLayout="row" class="contanier">
                 <div fxFlex="60%" class="pdl10 pdr10 pdt10">
                     <div fxLayout="column" class="fw fh smallScroll" style="overflow-y: auto;">
+                        <div fxLayout="row" class="pdb10">
+                            <span (click)="createNewQuestion(modalCreateQuestion)" class="yellowLink ft12 h28px no-select" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign=" center">
+                                <img src="../../../assets/images/icons/addNew.svg " class="h12px pdr05 makeYellow" alt="">
+                                Agregar pregunta
+                            </span>
+                        </div>
                         <ng-container>
                             <!-- aqui van los preguntas que se van creando -->
                             <div *ngFor="let question of examen?.questions; let questionIndex = index" class="{{question['isInvalid']?'ContainerModuloInvalid':'ContainerModulo'}}">
@@ -215,12 +221,6 @@
                                 
                             </div>
                         </ng-container>
-                        <div fxLayout="row">
-                            <span (click)="createNewQuestion(modalCreateQuestion)" class="yellowLink ft12 h28px no-select" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign=" center">
-                                <img src="../../../assets/images/icons/addNew.svg " class="h12px pdr05 makeYellow" alt="">
-                                Agregar pregunta
-                            </span>
-                        </div>
                     </div>
                 </div>
                 <div fxFlex="40%" class="pdl10 pdr10 pdt10">
