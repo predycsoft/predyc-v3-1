@@ -466,29 +466,36 @@ export interface ActivityJson {
   title: string;
   createdAt: number;
   questions: Array<QuestionJson>;
-  isTest: boolean;
+  type: typeof Activity.TYPE_REGULAR |
+        typeof Activity.TYPE_TEST |
+        typeof Activity.TYPE_SKILL_TEST;
 }
 
 export class Activity {
 
   public static collection = 'activity'
+
+  public static TYPE_REGULAR: string = 'regular'
+  public static TYPE_TEST: string = 'test'
+  public static TYPE_SKILL_TEST: string = 'skill-test'
   
   id: string = '';
   title: string = '';
   createdAt: number = +new Date();
   questions: Array<Question> = [];
-  isTest: boolean;
-  //nuevas Arturo
+  type: typeof Activity.TYPE_REGULAR |
+        typeof Activity.TYPE_TEST |
+        typeof Activity.TYPE_SKILL_TEST;
   description: string = '';
   duration: number = 0;
-  instrucciones: string = '';
+  instructions: string = '';
   claseRef: DocumentReference;
   enterpriseRef: DocumentReference;
-  courseRef: DocumentReference[]=[];
+  courseRef: DocumentReference[] = [];
   profileRef: DocumentReference;
-  archivos: any[] = [];
-  idVideo: number = 0
-  idVideoNew : string = ""
+  files: any[] = [];
+  vimeoId1: number = 0
+  vimeoId2: string = ""
 
   public toJson() {
     return {
@@ -496,17 +503,16 @@ export class Activity {
       title:this.title,
       createdAt:this.createdAt,
       questions:this.questions,
-      isTest:this.isTest,
-      //nuevas Arturo
+      type:this.type,
       description:this.description,
       duration:this.duration,
-      instrucciones:this.instrucciones,
+      instructions:this.instructions,
       claseRef:this.claseRef,
       enterpriseRef:this.enterpriseRef,
       profileRef:this.profileRef,
-      archivos: this.archivos,
-      idVideo: this.idVideo,
-      idVideoNew: this.idVideoNew,
+      files: this.files,
+      vimeoId1: this.vimeoId1,
+      vimeoId2: this.vimeoId2,
     }
   }
 
@@ -515,7 +521,7 @@ export class Activity {
     activity.id = obj.id;
     activity.title = obj.title;
     activity.createdAt = obj.createdAt;
-    activity.isTest = obj.isTest;
+    activity.type = obj.type;
     for (const question of obj.questions) {
       const newQuestion = Question.fromJson(question);
       activity.questions = [...activity.questions, newQuestion];
