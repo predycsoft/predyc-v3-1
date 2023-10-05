@@ -39,6 +39,9 @@ export class Price {
       day: 'Diario',
       year: 'Anual',
     };
+
+    public static collection = 'price'
+
   
     public static fromJson(obj: PriceJson): Price {
       let price = new Price();

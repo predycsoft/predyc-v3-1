@@ -56,7 +56,7 @@ export class InitScriptComponent {
     })
     let couponsRef = []
     for (let coupon of coupons ) {
-      let couponRef = this.afs.collection<Coupon>("coupon").doc(coupon.id).ref;
+      let couponRef = this.afs.collection<Coupon>(Coupon.collection).doc(coupon.id).ref;
       couponsRef.push(couponRef)
       await couponRef.set({...coupon.toJson()}, { merge: true });
     }
@@ -69,7 +69,7 @@ export class InitScriptComponent {
     })
     let productsRef = []
     for (let product of products) {
-      let productRef = this.afs.collection<Product>("product").doc(product.id).ref;
+      let productRef = this.afs.collection<Product>(Product.collection).doc(product.id).ref;
       productsRef.push(productRef)
       await productRef.set({...product.toJson()}, { merge: true });
     }
@@ -84,7 +84,7 @@ export class InitScriptComponent {
 
     for (let index = 0; index < prices.length; index++) {
     const price = prices[index];
-    let priceRef = this.afs.collection<Price>("price").doc(price.id).ref;
+    let priceRef = this.afs.collection<Price>(Price.collection).doc(price.id).ref;
     pricesRef.push(priceRef)
     let productRef = index <= productsRef.length - 1 ? productsRef[index] : productsRef[index - (productsRef.length)]
     await priceRef.set(
@@ -106,7 +106,7 @@ export class InitScriptComponent {
     // Create License
     console.log('********* Creating Licenses *********')
     const license: License = License.fromJson(licensesData)
-    const licenseRef = this.afs.collection<License>("license").doc(license.id).ref;
+    const licenseRef = this.afs.collection<License>(License.collection).doc(license.id).ref;
     const licensePriceRef = pricesRef[0] 
     const licensePriceValue = (await ((licensePriceRef as DocumentReference).get())).data() as Price
     const couponPriceRef = licensePriceValue.coupon

@@ -36,6 +36,9 @@ export class Coupon {
     redeemBy: number | null; // Timestamp
     stripeInfo: StripeInfo;
     textBanner: string | null;
+
+    public static collection = 'coupon'
+
   
     public static fromJson(obj: CouponJson): Coupon {
       let coupon = new Coupon();
