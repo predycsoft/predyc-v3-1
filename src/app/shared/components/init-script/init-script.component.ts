@@ -43,7 +43,7 @@ export class InitScriptComponent {
     private userService: UserService,
     private categoryService: CategoryService,
     private skillService: SkillService,
-    private departmentService:DepartmentService
+    private departmentService:DepartmentService,
   ) {}
 
   async ngOnInit() {}
@@ -198,6 +198,11 @@ export class InitScriptComponent {
       this.departmentService.addDepartment(departmentready)
       
     });
+    console.log(`Finished Creating Departments`)
+
+    // Create validation tests
+    console.log('********* Creating Validation Tests *********')
+    console.log(`Finished Creating Validation Tests`)
   }
 
 }

@@ -145,7 +145,6 @@ class NotificationDataSource extends DataSource<Notification> {
   ) {
     super();
 
-
     if (this.enablePagination) {
       this.paginator.pageSize = this.pageSize
       this.paginator.page.subscribe(eventObj => {
