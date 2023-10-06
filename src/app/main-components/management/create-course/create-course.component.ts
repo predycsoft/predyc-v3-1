@@ -311,10 +311,12 @@ export class CreateCourseComponent implements OnInit {
     return todasLasCompetencias.slice(0, n);
   }
 
-  inicializarFormNuevoCurso () {
+  async inicializarFormNuevoCurso () {
+
+    let id = await this.afs.collection<Curso>(Curso.collection).doc().ref.id;
 
     this.formNuevoCurso = new FormGroup({
-      id: new FormControl(Date.now().toString(), Validators.required),
+      id: new FormControl(id, Validators.required),
       titulo: new FormControl(null, Validators.required),
       resumen: new FormControl(null, Validators.required),
       descripcion: new FormControl(null, Validators.required),
@@ -346,7 +348,7 @@ export class CreateCourseComponent implements OnInit {
 }
 
 
-  addClase(tipo,moduloIn){
+  async addClase(tipo,moduloIn){
 
     let modulo = this.modulos.find(modulo => modulo.numero == moduloIn.numero)
     console.log('modulo',modulo);
@@ -354,7 +356,8 @@ export class CreateCourseComponent implements OnInit {
     let clase = new Clase;
     clase.tipo = tipo;
     clase['modulo'];
-    clase.id = Date.now().toString();
+    //clase.id = Date.now().toString();
+    clase.id = await this.afs.collection<Clase>(Clase.collection).doc().ref.id;
     clase['modulo'] = moduloIn.numero;
 
     let numero = this.obtenerNumeroMasGrande()+1;
@@ -366,7 +369,7 @@ export class CreateCourseComponent implements OnInit {
 
     if(clase.tipo == 'actividad'){
       let actividad = new Activity();
-      actividad.id = Date.now().toString();
+      //actividad.id = Date.now().toString();
       actividad.title = clase.titulo;
       //this.actividades.push(actividad);
       console.log('actividades', this.actividades)
@@ -430,10 +433,11 @@ export class CreateCourseComponent implements OnInit {
     })
   }
 
-  crearPreguntaActividad(){
+  async crearPreguntaActividad(){
 
+    let id = await this.afs.collection<Question>(Question.collection).doc().ref.id;
     let pregunta = new Question;
-    pregunta.id = Date.now().toString();
+    pregunta.id = id;
     this.hideOtherQuestion(pregunta);
     pregunta['expanded'] = true;
     pregunta['competencias'] = [];
@@ -978,7 +982,7 @@ export class CreateCourseComponent implements OnInit {
 
       this.formNuevaActividadGeneral = new FormGroup({
         instrucciones: new FormControl(activity.description, Validators.required),
-        video: new FormControl(clase.idVideo, [Validators.required, this.NotZeroValidator()]),
+        video: new FormControl(clase.vimeoId1, [Validators.required, this.NotZeroValidator()]),
         recursos: new FormControl(clase.archivos[0]?.nombre ? clase.archivos[0].nombre : null, Validators.required),
 
       });
@@ -1179,8 +1183,8 @@ export class CreateCourseComponent implements OnInit {
                         let link = videoData.link;
                         link = link.split('/');
                         console.log(link);
-                        clase.idVideo=link[3];
-                        clase.idVideoNew=link[4];
+                        clase.vimeoId1=link[3];
+                        clase.vimeoId2=link[4];
                         if(origen == 'actividad'){
                           this.formNuevaActividadGeneral.get('video').patchValue(link[3]);
                         }
@@ -1478,7 +1482,7 @@ export class CreateCourseComponent implements OnInit {
     if(this.activeStepActividad == 2){
       console.log(this.formNuevaActividadGeneral)
       if(this.formNuevaActividadGeneral.valid){
-        this.selectedClase.activity.instrucciones =  this.formNuevaActividadGeneral.value.instrucciones;
+        this.selectedClase.activity.instructions =  this.formNuevaActividadGeneral.value.instrucciones;
       }
       else{
         this.showErrorActividad = true;
@@ -1559,11 +1563,13 @@ export class CreateCourseComponent implements OnInit {
 
     if(!this.examen){
       this.examen = new Activity;
-      this.examen.id = Date.now().toString();
+      //this.examen.id = Date.now().toString();
     }
 
+    let id =  this.afs.collection<Question>(Question.collection).doc().ref.id;
+
     let pregunta = new Question;
-    pregunta.id = Date.now().toString();
+    pregunta.id = id;
     this.hideOtherQuestionExamen(pregunta);
     pregunta['expanded'] = true;
     pregunta['competencias'] = [];
@@ -1665,7 +1671,7 @@ export class CreateCourseComponent implements OnInit {
           }
 
           if (clase.tipo == 'video'){
-            if(clase.idVideo==0){
+            if(clase.vimeoId1==0){
               modulo['isInvalid'] = true;
               clase['isInvalid'] = true;
               valid = false;
@@ -2087,15 +2093,15 @@ export class CreateCourseComponent implements OnInit {
           claseLocal.descripcion = clase.descripcion;
           claseLocal.duracion = clase.duracion;
           claseLocal.id = clase.id;
-          claseLocal.idVideo = clase.idVideo;
-          claseLocal.idVideoNew = clase.idVideoNew;
-          claseLocal.sillsRef = clase.sillsRef;
+          claseLocal.vimeoId1 = clase.vimeoId1;
+          claseLocal.vimeoId2 = clase.vimeoId2;
+          claseLocal.skillsRef = clase.skillsRef;
           claseLocal.tipo = clase.tipo;
           claseLocal.titulo = clase.titulo;
           claseLocal.vigente = clase.vigente;
           
           const arrayRefSkills = (clase.competencias?.map(skillClase => this.curso.skillsRef.find(skill => skill.id == skillClase.id)).filter(Boolean) ) || [];
-          claseLocal.sillsRef = arrayRefSkills;
+          claseLocal.skillsRef = arrayRefSkills;
           console.log('claseLocal', claseLocal);
           await this.courseClassService.saveClass(claseLocal);
           let refClass = await this.afs.collection<Clase>(Clase.collection).doc(claseLocal.id).ref;
@@ -2110,21 +2116,22 @@ export class CreateCourseComponent implements OnInit {
             let activityClass = new Activity
             let questions: Question[]= []
             questions = structuredClone(clase.activity.questions);
-            activityClass = structuredClone(clase.activity)
+            activityClass = structuredClone(clase.activity) as Activity;
             activityClass.enterpriseRef = this.curso.enterpriseRef
             activityClass.claseRef = refClass;
             activityClass.courseRef = [courseRef];
-            activityClass.isTest = false;
+            activityClass.type = Activity.TYPE_REGULAR;
 
             delete activityClass.questions;
             delete activityClass['recursosBase64'] 
             console.log('activityClass',activityClass)
 
-            await this.activityClassesService.saveActivity(activityClass);
+            await this.activityClassesService.saveActivityJson(activityClass);
+            clase.activity.id = activityClass.id;
 
             questions.forEach(pregunta => {
               const arrayRefSkills = (pregunta['competencias']?.map(skillClase => this.curso.skillsRef.find(skill => skill.id == skillClase.id)).filter(Boolean) ) || [];
-              claseLocal.sillsRef = arrayRefSkills;
+              claseLocal.skillsRef = arrayRefSkills;
               console.log('refSkills', arrayRefSkills)
               pregunta.skills= arrayRefSkills;
               delete pregunta['competencias_tmp'];
@@ -2145,7 +2152,10 @@ export class CreateCourseComponent implements OnInit {
       
       console.log('arrayClasesRef',arrayClasesRef)
 
-      let id = Date.now().toString();
+      //let id = Date.now().toString();
+
+      let idRef = await this.afs.collection<Modulo>(Modulo.collection).doc().ref.id;
+
       //moduleService
       let module = new Modulo;
       module.clasesRef=null
@@ -2156,8 +2166,8 @@ export class CreateCourseComponent implements OnInit {
       module.clasesRef = arrayClasesRef;
       
       if(!modulo.id){
-        module.id = id;
-        modulo.id = id
+        module.id = idRef;
+        modulo.id = idRef
       }
       console.log('module save',module)
       this.moduleService.saveModulo(module,this.curso.id)
@@ -2176,20 +2186,20 @@ export class CreateCourseComponent implements OnInit {
     let activityClass = new Activity
     let questions: Question[]= []
     questions = structuredClone(this.examen.questions);
-    activityClass = structuredClone(this.examen);
+    activityClass = structuredClone(this.examen)  as Activity;
     activityClass.enterpriseRef = this.curso.enterpriseRef
     activityClass.courseRef = [courseRef];
-    activityClass.isTest = true;
+    activityClass.type = Activity.TYPE_TEST;
     activityClass.questions=[];
 
     console.log('activityExamen',activityClass)
-
-    await this.activityClassesService.saveActivity(activityClass);
+    await this.activityClassesService.saveActivityJson(activityClass);
+    this.examen.id = activityClass.id
 
     questions.forEach(pregunta => {
       //const arrayRefSkills = pregunta['competencias']?.map(skillClase => this.curso.skillsRef.find(skill => skill.id == skillClase.id)) || [];
       const arrayRefSkills = (pregunta['competencias']?.map(skillClase => this.curso.skillsRef.find(skill => skill.id == skillClase.id)).filter(Boolean) ) || [];
-      //claseLocal.sillsRef = arrayRefSkills;
+      //claseLocal.skillsRef = arrayRefSkills;
       console.log('refSkills', arrayRefSkills)
       pregunta.skills= arrayRefSkills;
       delete pregunta['competencias_tmp'];

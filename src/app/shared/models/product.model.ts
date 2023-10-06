@@ -35,6 +35,9 @@ export class Product {
     paypalInfo: PaypalInfo;
     priority: number;
     stripeInfo: StripeInfo;
+
+    public static collection = 'product'
+
   
     public static fromJson(obj: ProductJson): Product {
       let product = new Product();

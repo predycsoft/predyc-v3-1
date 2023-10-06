@@ -45,7 +45,7 @@ function generateNotification(): NotificationJson {
 }
 
 export const notificationsData = Array.from({ length: 30 }, () => generateNotification());
-console.log(notificationsData)
+// console.log(notificationsData)
 // export const notificationsData: NotificationJson[] = [
 //   {
 //     id: null,

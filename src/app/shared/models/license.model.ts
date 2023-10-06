@@ -18,6 +18,9 @@ export interface LicenseJson {
 }
 
 export class License {
+
+    public static collection = 'license'
+
     constructor(
         public coupon: DocumentReference<Coupon> | null,
         public createdAt: number | null,

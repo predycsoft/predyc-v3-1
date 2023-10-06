@@ -31,13 +31,31 @@ export class ActivityClassesService {
   async saveActivity(newActivity: Activity): Promise<void> {
     try {
       const ref = this.afs.collection<Activity>(Activity.collection).doc().ref;
-      await ref.set({...newActivity.toJson(), id: ref.id}, { merge: true });
+      await ref.set({...newActivity?.toJson(), id: ref.id}, { merge: true });
       newActivity.id = ref.id;
       console.log("Activity added succesfully")
       this.alertService.succesAlert('Has agregado una actividad exitosamente.')
     } catch (error) {
       console.log(error)
       this.alertService.errorAlert(JSON.stringify(error))
+    }
+  }
+  async saveActivityJson(newActivity: Activity): Promise<void> {
+    try {
+      let ref: DocumentReference;
+      // If profile has an ID, then it's an update
+      if (newActivity.id) {
+        ref = this.afs.collection<Activity>(Activity.collection).doc(newActivity.id).ref;
+      } else {
+        // Else, it's a new profile
+        ref = this.afs.collection<Activity>(Activity.collection).doc().ref;
+        newActivity.id = ref.id; // Assign the generated ID to the profile
+      }
+      await ref.set(newActivity, { merge: true });
+      console.log('Operation successful.')
+    } catch (error) {
+      console.log(error);
+      this.alertService.errorAlert(JSON.stringify(error));
     }
   }
 
