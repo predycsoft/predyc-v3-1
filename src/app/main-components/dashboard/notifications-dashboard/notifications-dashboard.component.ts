@@ -27,7 +27,7 @@ export class NotificationsDashboardComponent {
     private enterpriseService: EnterpriseService,
   ){}
 
-  pageSize: number = 9
+  pageSize: number = 7
 
   selectedFilter: string = 'all'
   tabNotificaciones = 0
