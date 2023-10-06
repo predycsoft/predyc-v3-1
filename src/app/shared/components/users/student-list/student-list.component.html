@@ -103,7 +103,7 @@
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <ng-container>
-            <tr mat-row *matRowDef="let user; columns: displayedColumns;" class="cursorPointer" [routerLink]="enableNavigateToUser ? ['/' + user.uid] : []"></tr>
+            <tr mat-row *matRowDef="let user; columns: displayedColumns;" class="cursorPointer" [routerLink]="enableNavigateToUser ? [user.uid] : []"></tr>
         </ng-container>
         <!-- <ng-container *ngIf="origin !='create perfil'">
             <tr mat-row *matRowDef="let user; columns: displayedColumns;" class="cursorPointer" [routerLink]="user.uid"></tr>
