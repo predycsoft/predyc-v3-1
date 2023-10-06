@@ -17,6 +17,7 @@ import { CreateCourseComponent } from './main-components/management/create-cours
 import { InitScriptComponent } from './shared/components/init-script/init-script.component';
 import { MyAccountComponent } from './main-components/my-account/my-account.component';
 import { CreateProfileComponent } from './main-components/management/create-profile/create-profile.component';
+import { CreateValidationTestComponent } from './main-components/management/create-validation-test/create-validation-test.component';
 
 const MAIN_TITLE = 'Predyc - '
 
@@ -45,7 +46,7 @@ const routes: Routes = [
           {path:"students", title: MAIN_TITLE + 'Mi equipo', component: MyTeamComponent, canActivate: [AuthGuard]},
           {path:"students/:uid", title: MAIN_TITLE + 'Mi equipo', component: StudentComponent, canActivate: [AuthGuard]},
           {path:"create-profile/:id", title: MAIN_TITLE + 'Crear perfil', component: CreateProfileComponent, canActivate: [AuthGuard]},
-
+          {path:"create-validation-test", title: MAIN_TITLE + 'Crear examen de validación', component: CreateValidationTestComponent, canActivate: [AuthGuard]},
         ]
       },
       {path:"validation", title: MAIN_TITLE + 'Validación de competencias', component: ValidationComponent, canActivate: [AuthGuard]},

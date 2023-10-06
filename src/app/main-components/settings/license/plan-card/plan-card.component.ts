@@ -34,8 +34,6 @@ export class PlanCardComponent {
   coupon: Coupon
   product: Product
 
-  loaded: boolean = false
-
   async ngOnInit() {
     this.loaderService.setLoading(true)
     this.enterpriseService.enterpriseLoaded$.subscribe(isLoaded => {
@@ -49,7 +47,6 @@ export class PlanCardComponent {
             this.coupon = this.price.coupon 
                           ? await this.couponService.getCouponByRef(this.price.coupon as DocumentReference)
                           : null
-            this.loaded = true
             this.loaderService.setLoading(false)
           }
         })
