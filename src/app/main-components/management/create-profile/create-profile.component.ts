@@ -505,7 +505,7 @@ export class CreateProfileComponent {
       console.log('activityExamen',activityClass)
       activityClass = structuredClone(activityClass)
       activityClass.profileRef = profileRef;
-      await this.activityClassesService.saveActivityJson(activityClass);
+      await this.activityClassesService.saveActivity(activityClass);
       questions.forEach(pregunta => {
         pregunta.skills = this.examen.questions.find(preguntaIn => preguntaIn.id == pregunta.id).skills;
         this.activityClassesService.saveQuestion(pregunta,activityClass.id)
