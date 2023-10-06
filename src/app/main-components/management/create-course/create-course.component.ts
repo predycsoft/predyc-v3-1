@@ -2143,31 +2143,25 @@ export class CreateCourseComponent implements OnInit {
 
       //moduleService
       let module = new Modulo;
-      module.clasesRef=null
-      module.duracion=modulo.duracion;
-      module.id=modulo.id;
-      module.numero=modulo.numero;
-      module.titulo=modulo.titulo;
+      module.clasesRef = null
+      module.duracion = modulo.duracion;
+      module.id = modulo.id;
+      module.numero = modulo.numero;
+      module.titulo = modulo.titulo;
       module.clasesRef = arrayClasesRef;
       
       if(!modulo.id){
         module.id = idRef;
         modulo.id = idRef
       }
-      console.log('module save',module)
-      this.moduleService.saveModulo(module,this.curso.id)
+      console.log('module save', module)
+      this.moduleService.saveModulo(module, this.curso.id)
     });
 
   }
 
   if(this.examen){
-    
-    console.log('examen',this.examen);
-
     let courseRef = await this.afs.collection<Curso>(Curso.collection).doc(this.curso.id).ref;
-
-    console.log('courseRef',courseRef)
-
     let activityClass = new Activity
     let questions: Question[]= []
     questions = structuredClone(this.examen.questions);
@@ -2197,16 +2191,8 @@ export class CreateCourseComponent implements OnInit {
       delete pregunta['uploading'];
       this.activityClassesService.saveQuestion(pregunta,activityClass.id)
     });
-
-
   }
-
-
-
  }
-
-  
-
 
 }
 
