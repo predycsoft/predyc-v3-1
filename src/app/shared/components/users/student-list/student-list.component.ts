@@ -38,7 +38,9 @@ export class StudentListComponent {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  @Input() origin='user list'
+  @Input() selectedUsers: 'all' | 'usersWithoutProfile'
+  @Input() enableNavigateToUser: boolean = true
+  @Input() displayOptionsColumn: boolean = true
   @Output() onSelectStudentEvent = new EventEmitter<User>()
 
   searchSubscription: Subscription
@@ -51,28 +53,27 @@ export class StudentListComponent {
   ) {}
 
   ngAfterViewInit() {
-     
 
-    console.log('usuarios',this.userService.users$)
-    console.log('usuarios sin perfil',this.userService.usersWithoutProfile$)
+    let usersObservable: Observable<User[]>;
 
-    let obervable = this.userService.users$;
-
-    if(this.origin == 'create perfil'){
-      obervable = this.userService.usersWithoutProfile$;
+    switch (this.selectedUsers) {
+      case 'usersWithoutProfile':
+        usersObservable = this.userService.usersWithoutProfile$;
+        break;
+      default:
+        usersObservable = this.userService.users$;
+        break;
     }
 
-
     this.dataSource = new UserDataSource(
-      obervable,
+      usersObservable,
       this.paginator,
       this.sort,
     );
   }
 
   ngOnInit() {
-
-    if(this.origin !='create perfil'){
+    if(this.displayOptionsColumn){
       this.displayedColumns.push('options')
     }
     this.searchSubscription = this.searchInputService.dataObservable$.subscribe(

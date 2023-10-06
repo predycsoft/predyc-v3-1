@@ -270,7 +270,12 @@
                             <app-search-input-box></app-search-input-box>
                         </div>
                         <div fxLayout="row" fxLayoutGap="10px" class="pdt05">
-                            <app-student-list origin="create perfil"></app-student-list>
+                            <app-student-list 
+                                [selectedUsers]="'usersWithoutProfile'"
+                                [displayOptionsColumn]="true"
+                                [enableNavigateToUser]="false"
+                                >
+                            </app-student-list>
                         </div>
                     </div>
                 </div>
