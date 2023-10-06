@@ -1,6 +1,5 @@
 import { DataSource } from '@angular/cdk/collections';
-import { Component, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
+import { Component } from '@angular/core';
 import { Subscription, combineLatest, map, catchError, of, firstValueFrom, Observable } from 'rxjs';
 import { Enterprise } from 'src/app/shared/models/enterprise.model';
 import { User } from 'src/app/shared/models/user.model';
@@ -28,9 +27,7 @@ export class NotificationsDashboardComponent {
     private enterpriseService: EnterpriseService,
   ){}
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  enablePagination: boolean = false
-  pageSize: number = 10
+  pageSize: number = 7
 
   selectedFilter: string = 'all'
   tabNotificaciones = 0
@@ -63,9 +60,7 @@ export class NotificationsDashboardComponent {
           this.userService,
           this.notificationService,
           this.enterpriseService,
-          this.paginator,
           this.pageSize,
-          this.enablePagination
         );
       }
     })
@@ -130,20 +125,15 @@ export class NotificationsDashboardComponent {
 
 class NotificationDataSource extends DataSource<Notification> {
 
-  private pageIndex: number = 0;
-  private previousPageIndex: number = 0;
   private selectedFilter: string = 'all'
 
   private currentNotifications: Notification[]
-  private previousPageNotification: Notification
 
   constructor(
     private userService: UserService,
     private notificationService: NotificationService,
     private enterpriseService: EnterpriseService,
-    private paginator: MatPaginator,
     private pageSize: number,
-    private enablePagination: boolean
   ) {
     super();
     this.getNotifications()
@@ -164,16 +154,6 @@ class NotificationDataSource extends DataSource<Notification> {
     if (this.selectedFilter !== 'all') {
       queryObj.typeFilter = this.selectedFilter
     }
-    if (this.pageIndex == 0) {
-      // first page
-    } else if (this.pageIndex > this.previousPageIndex) {
-      // next page
-      queryObj.startAfter = this.currentNotifications[this.currentNotifications.length - 1]
-      this.previousPageNotification = this.currentNotifications[0]
-    } else {
-      // previous page
-      queryObj.startAt = this.previousPageNotification
-    }
     this.notificationService.getNotifications(queryObj)
   }
   
@@ -181,13 +161,7 @@ class NotificationDataSource extends DataSource<Notification> {
 
     return combineLatest([this.notificationService.notifications$, this.enterpriseService.enterprise$]).pipe(
       map(([notifications, _]) => {
-        // update paginator length
-        if (this.enablePagination) {
-          this.paginator.length = this.notificationService.getNotificationsLengthByFilter(this.selectedFilter)
-        }
-
         this.currentNotifications = [...notifications]
-  
         // Pagination
         return notifications.map(notification => {
           const notificationUser = this.userService.getUser(notification.userRef.id)
@@ -205,11 +179,6 @@ class NotificationDataSource extends DataSource<Notification> {
 
   setFilter(filter: string) {
     this.selectedFilter = filter
-    if (this.enablePagination) {
-      this.pageIndex = 0
-      this.previousPageIndex = 0
-      this.paginator.firstPage();
-    }
     this.getNotifications()
   }
 
