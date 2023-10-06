@@ -4,7 +4,6 @@ import { LoaderService } from 'src/app/shared/services/loader.service';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { UserService } from 'src/app/shared/services/user.service';
 
-@AfterOnInitResetLoading
 @Component({
   selector: 'app-management',
   templateUrl: './management.component.html',
@@ -14,7 +13,6 @@ export class ManagementComponent {
 
   constructor(
     // private notificationService: NotificationService,
-    private loaderService: LoaderService,
   ) {}
 
 }

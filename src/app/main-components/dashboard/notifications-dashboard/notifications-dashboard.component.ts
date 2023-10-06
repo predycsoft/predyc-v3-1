@@ -26,14 +26,15 @@ export class NotificationsDashboardComponent {
     private alertService: AlertsService,
     private enterpriseService: EnterpriseService,
   ){}
+  
+  enterprise: Enterprise
+  enterpriseSubscription: Subscription
+  totalNotifications: number
 
   pageSize: number = 7
 
   selectedFilter: string = 'all'
   tabNotificaciones = 0
-  alerts = []
-  notifications = []
-  empresa: Enterprise = null
   combinedObservableSubscription: Subscription
   dataSource!: NotificationDataSource;
 
@@ -63,11 +64,21 @@ export class NotificationsDashboardComponent {
           this.pageSize,
         );
       }
+    })                  
+  }
+
+  ngOnInit() {
+    this.enterpriseSubscription = this.enterpriseService.enterprise$.subscribe(enterprise => {
+      if (enterprise) {
+        this.enterprise = enterprise
+        this.totalNotifications = enterprise.totalActivityNotifications + enterprise.totalAlertNotifications + enterprise.totalRequestNotifications 
+      }
     })
   }
 
   ngOnDestroy() {
     this.combinedObservableSubscription.unsubscribe();
+    this.enterpriseSubscription.unsubscribe()
   }
 
   applyFilter(filter: string) {
@@ -80,7 +91,8 @@ export class NotificationsDashboardComponent {
   }
 
   async setRead(notification: Notification) {
-    this.notificationService.setNotificationReadByAdmin(notification)
+    await this.notificationService.setNotificationReadByAdmin(notification)
+    // this.calculateTotalNotifications()
   }
 
   async sendMail(notification: Notification) {

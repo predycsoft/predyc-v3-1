@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { AfterOnInitResetLoading } from 'src/app/shared/decorators/loading.decorator';
 import { Enterprise } from 'src/app/shared/models/enterprise.model';
 import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
@@ -15,6 +16,7 @@ import { LoaderService } from 'src/app/shared/services/loader.service';
 export class DashboardComponent {
 
   enterprise: Enterprise
+  enterpriseSubscription: Subscription
 
   constructor(
     public loaderService: LoaderService,
@@ -23,11 +25,15 @@ export class DashboardComponent {
 
   ngOnInit() {
     this.loaderService.setLoading(true)
-    this.enterpriseService.enterprise$.subscribe(enterprise => {
+    this.enterpriseSubscription = this.enterpriseService.enterprise$.subscribe(enterprise => {
       if (enterprise) {
         this.enterprise = enterprise
         this.loaderService.setLoading(false)
       }
     })
+  }
+
+  ngOnDestroy() {
+    this.enterpriseSubscription.unsubscribe()
   }
 }
