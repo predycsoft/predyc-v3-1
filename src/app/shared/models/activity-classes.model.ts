@@ -482,6 +482,7 @@ export class Activity {
   id: string = '';
   title: string = '';
   createdAt: number = +new Date();
+  updatedAt: number = +new Date();
   questions: Array<Question> = [];
   type: typeof Activity.TYPE_REGULAR |
         typeof Activity.TYPE_TEST |
@@ -496,12 +497,14 @@ export class Activity {
   files: any[] = [];
   vimeoId1: number = 0
   vimeoId2: string = ""
+  activityTakersQty: number = 0
 
   public toJson() {
     return {
       id:this.id,
       title:this.title,
       createdAt:this.createdAt,
+      updatedAt:this.updatedAt,
       questions:this.questions,
       type:this.type,
       description:this.description,
@@ -513,6 +516,7 @@ export class Activity {
       files: this.files,
       vimeoId1: this.vimeoId1,
       vimeoId2: this.vimeoId2,
+      activityTakersQty: this.activityTakersQty,
     }
   }
 

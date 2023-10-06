@@ -945,7 +945,7 @@ export class CreateCourseComponent implements OnInit {
 
   }
 
-  openModal(content,clase,modulo,tipo = 'crear'){
+  openModal(content,clase,modulo,tipo = 'crear') {
 
     this.selectedClase = clase
     this.selectedModulo = modulo
@@ -966,12 +966,7 @@ export class CreateCourseComponent implements OnInit {
       this.fileViewTipe = 'video'
     }
     else if(clase.tipo == 'actividad'){
-
       let activity : Activity = this.selectedClase.activity
-
-      console.log('activity',activity)
-
-      console.log(clase.titulo)
 
       this.formNuevaActividadBasica = new FormGroup({
         titulo: new FormControl(clase.titulo , Validators.required),
@@ -979,19 +974,14 @@ export class CreateCourseComponent implements OnInit {
         duracion: new FormControl(activity.duration, Validators.required),
       });
 
-
       this.formNuevaActividadGeneral = new FormGroup({
         instrucciones: new FormControl(activity.description, Validators.required),
         video: new FormControl(clase.vimeoId1, [Validators.required, this.NotZeroValidator()]),
         recursos: new FormControl(clase.archivos[0]?.nombre ? clase.archivos[0].nombre : null, Validators.required),
-
       });
-
-
     }
 
     if(tipo == 'crear'){
-      console.log('modal crear actividad')
       this.modalService.open(content, {
         windowClass: 'custom-modal',
         ariaLabelledBy: 'modal-basic-title',
@@ -1000,17 +990,12 @@ export class CreateCourseComponent implements OnInit {
       });
     }
     else{
-      console.log('modal revisar actividad')
       this.modalService.open(content, {
         ariaLabelledBy: 'modal-basic-title',
         centered: true,
         size:'lg'
       });
     }
-
-
-
-
   }
 
   NotZeroValidator(): ValidatorFn {
@@ -2029,11 +2014,11 @@ export class CreateCourseComponent implements OnInit {
 
   finalizarCurso(content){
 
-    this.openModalFonalizarCurso(content)
+    this.openModalFinalizarCurso(content)
 
   }
 
-  openModalFonalizarCurso(content){
+  openModalFinalizarCurso(content){
 
 
     this.modalCompetencia = this.modalService.open(content, {
