@@ -1,7 +1,7 @@
 <div *ngIf="!loaderService.loading">
     <div fxLayout="row" fxLayoutAlign=" center">
         <img onerror="this.src='assets/images/default/default-user-image.jpg'" 
-            [src]="enterprise.photoUrl" class="avatar5" alt="">
+            [src]="enterprise?.photoUrl" class="avatar5" alt="">
         <span class="mgl10 ft16 ft600 gray-10">
             {{enterprise.name}}
         </span>
