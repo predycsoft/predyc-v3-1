@@ -72,7 +72,7 @@ export class ActivityClassesService {
     // Convert string IDs to DocumentReferences
     const courseRefs: DocumentReference[] = courseIds.map(id => this.afs.doc(`course/${id}`).ref);
 
-    return this.afs.collection('activity', ref => ref.where('courseRef', 'array-contains-any', courseRefs))
+    return this.afs.collection('activity', ref => ref.where('coursesRef', 'array-contains-any', courseRefs))
     .get()
     .pipe(
       switchMap(activitiesSnap => {
