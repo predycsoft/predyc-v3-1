@@ -95,6 +95,7 @@ import { LicenseComponent } from './main-components/settings/license/license.com
 import { PlanCardComponent } from './main-components/settings/license/plan-card/plan-card.component';
 import { LicenseDataComponent } from './main-components/settings/license/license-data/license-data.component';
 import { ValidationListComponent } from './main-components/validation/validation-list/validation-list.component';
+import { NotificationsDashboardComponent } from './main-components/dashboard/notifications-dashboard/notifications-dashboard.component';
 
 @NgModule({
   declarations: [
@@ -141,7 +142,8 @@ import { ValidationListComponent } from './main-components/validation/validation
     LicenseComponent,
     PlanCardComponent,
     LicenseDataComponent,
-    ValidationListComponent
+    ValidationListComponent,
+    NotificationsDashboardComponent
   ],
   imports: [
     BrowserModule,
