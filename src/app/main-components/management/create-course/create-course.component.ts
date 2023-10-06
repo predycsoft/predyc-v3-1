@@ -2170,6 +2170,7 @@ export class CreateCourseComponent implements OnInit {
     activityClass.coursesRef = [courseRef];
     activityClass.type = Activity.TYPE_TEST;
     activityClass.questions=[];
+    delete activityClass.questions
 
     console.log('activityExamen',activityClass)
     await this.activityClassesService.saveActivity(activityClass);
