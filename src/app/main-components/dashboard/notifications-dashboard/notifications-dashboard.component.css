@@ -49,3 +49,10 @@
     width: 23px !important;
 
 }
+
+td {
+    padding: 0px 4px 0px 4px !important;
+    border-left: none;
+    border-right: none;
+    line-height: normal;
+}

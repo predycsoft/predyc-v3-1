@@ -1,13 +1,13 @@
 <div class="fw" fxLayout="column">
     <div fxLayout="column" class="backWhite radius6 pd10 fw secondColumnItem">
-        <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="start center" class="fw pd05">
+        <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="start center" class="fw pdl05">
             <div class="iconContainer" fxLayoutAlign="center center">
                 <img [src]="icon.notification" class="makeBlue" alt="">
             </div>
             <span class="ft12 gray-10 ft600 ">Notificaciones</span>
         </div>
 
-        <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="1.5rem" class="fw pd05">
+        <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="1.5rem" class="fw pdr05">
             <div (click)="applyFilter('all')" class="positionRelative"
                 [ngClass]="tabNotificaciones == 0?'chipBlueSelected ft11 ft500':'chipBlue ft500 ft11'">
                 Todas
@@ -26,7 +26,7 @@
                 <!-- Content Column -->
                 <ng-container matColumnDef="content">
                     <td mat-cell *matCellDef="let notification"> 
-                        <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign=" center">
+                        <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign=" center">
                             <img [src]="notification.user?.photoURL" class="avatar2" alt=""
                                 onerror="this.src='assets/images/default/default-user-image.jpg'">
                             <div class="ft10 gray-10">
@@ -69,11 +69,6 @@
                     <td class="mat-cell" colspan="4">No posees notificaciones en este momento</td>
                 </tr>
             </table>
-        
-            <mat-paginator
-                *ngIf="enablePagination"
-                aria-label="Select page of notifications"
-            ></mat-paginator>
         </div>
     </div>
 </div>
