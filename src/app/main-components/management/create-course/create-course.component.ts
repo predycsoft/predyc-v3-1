@@ -2111,7 +2111,7 @@ export class CreateCourseComponent implements OnInit {
             delete activityClass['recursosBase64'] 
             console.log('activityClass',activityClass)
 
-            await this.activityClassesService.saveActivityJson(activityClass);
+            await this.activityClassesService.saveActivity(activityClass);
             clase.activity.id = activityClass.id;
 
             questions.forEach(pregunta => {
@@ -2171,14 +2171,14 @@ export class CreateCourseComponent implements OnInit {
     let activityClass = new Activity
     let questions: Question[]= []
     questions = structuredClone(this.examen.questions);
-    activityClass = structuredClone(this.examen)  as Activity;
+    activityClass = structuredClone(this.examen) as Activity;
     activityClass.enterpriseRef = this.curso.enterpriseRef
     activityClass.courseRef = [courseRef];
     activityClass.type = Activity.TYPE_TEST;
     activityClass.questions=[];
 
     console.log('activityExamen',activityClass)
-    await this.activityClassesService.saveActivityJson(activityClass);
+    await this.activityClassesService.saveActivity(activityClass);
     this.examen.id = activityClass.id
 
     questions.forEach(pregunta => {
