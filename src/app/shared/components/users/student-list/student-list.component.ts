@@ -38,10 +38,12 @@ export class StudentListComponent {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  @Input() origin='user list'
+  @Input() usersListed: 'all' | 'usersWithoutProfile'
+  @Input() enableNavigateToUser: boolean = true
+  @Input() displayOptionsColumn: boolean = true
   @Output() onSelectStudentEvent = new EventEmitter<User>()
   @Output() selectedUsers = new EventEmitter<any[]>();
-  @Input() initialSelectedUsers: any[];
+  @Input() initialSelectedUsers: any[] = [];
 
 
   searchSubscription: Subscription
@@ -54,25 +56,26 @@ export class StudentListComponent {
   ) {}
 
   ngAfterViewInit() {
-     
 
-    console.log('usuarios',this.userService.users$)
-    console.log('usuarios sin perfil',this.userService.usersWithoutProfile$)
+    let usersObservable: Observable<User[]>;
 
-    let obervable = this.userService.users$;
-
-    if(this.origin == 'create profile'){
-      obervable = this.userService.usersWithoutProfile$;
+    switch (this.usersListed) {
+      case 'usersWithoutProfile':
+        usersObservable = this.userService.usersWithoutProfile$;
+        break;
+      default:
+        usersObservable = this.userService.users$;
+        break;
     }
+
     this.dataSource = new UserDataSource(
-      obervable,
+      usersObservable,
       this.paginator,
       this.sort,
     );
 
-    if (this.initialSelectedUsers && this.dataSource && (this.origin =='create profile')) {
+    if (this.initialSelectedUsers && this.dataSource && this.initialSelectedUsers.length > 0) {
       //this.selection.clear();
-      console.log('test data',this.initialSelectedUsers,this.dataSource.data)
       // Find and select the initial items
       this.initialSelectedUsers.forEach(item => {
         const matchingRow = this.dataSource.data.find(row => row.uid === item.uid);  // You can modify the comparison logic here
@@ -85,8 +88,7 @@ export class StudentListComponent {
   }
 
   ngOnInit() {
-
-    if(this.origin !='create profile'){
+    if(this.displayOptionsColumn){
       this.displayedColumns.push('options')
     }
     this.searchSubscription = this.searchInputService.dataObservable$.subscribe(

@@ -5,7 +5,7 @@ export const licensesData: LicenseJson = {
     createdAt: 1690920188024,
     currentPeriodEnd: 1722488400000,
     currentPeriodStart: 1690920188024,
-    enterprise: null,
+    enterpriseRef: null,
     id: "1690920188024",
     price: null,
     quantity: 26,

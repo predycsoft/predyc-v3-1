@@ -328,7 +328,7 @@
                                                         <div fxLayout="row" fxLayoutAlign="center center" class="mgt15 mgb05">
                                                             <button (click)="FileInput.click()" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                                                                 <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
-                                                                {{ ((clase.tipo == 'lectura' && !clase.archivos[0]) || (clase.tipo == 'video' && !clase.idVideo))? 'Seleccionar archivo' : 'Remplazar archivo'}}
+                                                                {{ ((clase.tipo == 'lectura' && !clase.archivos[0]) || (clase.tipo == 'video' && !clase.vimeoId1))? 'Seleccionar archivo' : 'Remplazar archivo'}}
                                                             </button>
                                                             <button (click)="openModal(modalClaseDetail,clase,modulo)"  *ngIf="clase.archivos[0] || clase.tipo == 'video' && clase['base64Video']" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                                                                 <img [src]="icon.folderUp" class="h16px pdr05" alt="">
@@ -1237,7 +1237,7 @@
                                                 <span *ngIf="selectedClase['videoUpload']<100" class="pdl05">{{selectedClase['videoUpload']}}%</span>
                                                 <img *ngIf="selectedClase['videoUpload']>=100" [src]="icon.check" class="h16px pdl05" alt="">
                                             </div>
-                                            <div fxLayout="row" *ngIf="selectedClase.idVideo" >
+                                            <div fxLayout="row" *ngIf="selectedClase.vimeoId1" >
                                                 <span>{{selectedClase.videoFileName}}&nbsp;</span>
                                                 <span (click)="viewVideoActivity=!viewVideoActivity;" class="blueLink cursorPointer">{{viewVideoActivity? 'Ocultar video':'Ver video'}}</span>
                                             </div>

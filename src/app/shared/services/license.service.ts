@@ -14,7 +14,7 @@ export class LicenseService {
 
   getLicensesObservableByEnterpriseRef(enterpriseDocRef: any): Observable<License[]> {
     return this.afs.collection<License>(License.collection, ref => 
-      ref.where('enterprise', '==', enterpriseDocRef).orderBy('createdAt', 'desc')
+      ref.where('enterpriseRef', '==', enterpriseDocRef).orderBy('createdAt', 'desc')
     ).valueChanges()
   }
 }
