@@ -271,7 +271,7 @@
                         </div>
                         <div fxLayout="row" fxLayoutGap="10px" class="pdt05">
                             <app-student-list 
-                                [selectedUsers]="'usersWithoutProfile'"
+                                [usersListed]="'usersWithoutProfile'"
                                 [displayOptionsColumn]="true"
                                 [enableNavigateToUser]="false"
                                 [initialSelectedUsers]="usersProfile"
@@ -302,7 +302,7 @@
                     <img [src]="icon.chevronRight" class="h16px pdl05 makeWhite" alt="">
                 </button>
                 <button (click)="finishProfile()" *ngIf="activeStep==5" class="blueButton radius4 ft12 h28px mgr10 gray-1" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
-                    Gurdar
+                    Guardar
                     <img [src]="icon.save" class="h16px pdl05 makeWhite" alt="">
                 </button>        
             </div>

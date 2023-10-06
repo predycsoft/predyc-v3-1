@@ -53,11 +53,4 @@ export class PlanCardComponent {
     })
   }
 
-  getLicenseByEnterpriseRef(enterpriseDocRef: any) {
-    return this.afs.collection<License>(License.collection, ref => 
-      ref.where('enterprise', '==', enterpriseDocRef).orderBy('createdAt', 'desc')
-    ).valueChanges()
-  }
-
-
 }

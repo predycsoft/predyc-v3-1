@@ -115,7 +115,7 @@ export class InitScriptComponent {
         ...license.toJson(),
         price: licensePriceRef,
         coupon: couponPriceRef,
-        enterprise: enterpriseRef
+        enterpriseRef: enterpriseRef
       }, {merge: true}
     )
     console.log(`Finished Creating License`)
