@@ -5,13 +5,14 @@ import { AfterOnInitResetLoading } from 'src/app/shared/decorators/loading.decor
 import { Profile } from 'src/app/shared/models/profile.model';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Department } from 'src/app/shared/models/department.model';
-import { firstValueFrom } from 'rxjs';
+import { combineLatest, firstValueFrom, forkJoin } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { DepartmentService } from 'src/app/shared/services/department.service';
 import { deparmentsData } from '../../../../assets/data/departments.data'
 import { SelectionModel } from '@angular/cdk/collections';
 import { Router } from '@angular/router';
+import { ProfileService } from '../../../shared/services/profile.service';
 
 @AfterOnInitResetLoading
 @Component({
@@ -26,11 +27,13 @@ export class DepartmentsProfilesComponent {
     private loaderService: LoaderService,
     private departmentService: DepartmentService,
     private router: Router,
+    private profileService: ProfileService
   ){}
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   dataSource = new MatTableDataSource<Department>;
   departments: Department[]
+  profiles: Profile[];
   displayedColumns: string[] = [
     'name'
   ]
@@ -48,15 +51,21 @@ export class DepartmentsProfilesComponent {
     //   this.profilesRefs.push(ref)
     // });
     // -----
-
     console.log(deparmentsData)
+    this.departmentService.loadDepartmens();
+    this.profileService.loadProfiles();
 
-    this.departmentService.loadDepartmens()
-    this.departmentService.getDepartmentsObservable().subscribe(departments => {
-      this.departments = departments
+    combineLatest([
+      this.departmentService.getDepartmentsObservable(),
+      this.profileService.getProfilesObservable()
+    ]).subscribe(([departments, profiles]) => {
+      this.departments = departments;
       this.dataSource = new MatTableDataSource<Department>(this.departments);
-    })
-    
+      this.profiles = profiles;
+      //console.log('perfiles another ', profiles);
+
+      console.log('respuestas observables dep perf',this.departments)
+    });
   }
 
   ngAfterViewInit() {
@@ -93,17 +102,17 @@ export class DepartmentsProfilesComponent {
     return this.chipSelection.isSelected(departmentName);
   }
 
-  createDepartmentsCollection(){
+  // createDepartmentsCollection(){
 
-    deparmentsData.forEach(department => {
-      console.log(department)
-      let departmentready = new Department(department.id,department.name)
-      this.departmentService.addDepartment(departmentready)
+  //   deparmentsData.forEach(department => {
+  //     console.log(department)
+  //     let departmentready = new Department(department.id,department.name)
+  //     this.departmentService.addDepartment(departmentready)
       
-    });
+  //   });
 
 
-  }
+  // }
 
   createProfileDepartment(department){
 

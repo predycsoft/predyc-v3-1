@@ -3,6 +3,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Profile } from '../models/profile.model';
 import { AlertsService } from './alerts.service';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
+import { EnterpriseService } from './enterprise.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,10 +17,12 @@ export class ProfileService {
   constructor(
     private alertService: AlertsService,
     private afs: AngularFirestore,
+    private enterpriseService: EnterpriseService,
+
   ) {
    }
 
-  public async loadDepartmens() {
+  public async loadProfiles() {
     this.getProfiles()
     this.profilesLoaded = new Promise<void>((resolve) => {
       this.profiles$.subscribe(async (profile) => {
@@ -30,16 +33,26 @@ export class ProfileService {
     });
   }
 
+  enterpriseRef
+
   private getProfiles() {
-    this.afs.collection<Profile>(Profile.collection).valueChanges().subscribe({
-      next: profile => {
-        this.profileSubject.next(profile)
-      },
-      error: error => {
-        console.log(error)
-        this.alertService.errorAlert(JSON.stringify(error))
+    this.enterpriseService.enterpriseLoaded$.subscribe(isLoaded => {    
+
+      if (!isLoaded) {
+        return
       }
+      this.enterpriseRef =this.enterpriseService.getEnterpriseRef()
+      this.afs.collection<Profile>(Profile.collection, ref=> ref.where('enterpriseRef', '==', this.enterpriseRef)).valueChanges().subscribe({
+        next: profile => {
+          this.profileSubject.next(profile)
+        },
+        error: error => {
+          console.log(error)
+          this.alertService.errorAlert(JSON.stringify(error))
+        }
+      })
     })
+
   }
 
   public getProfilesObservable(): Observable<Profile[]> {

@@ -492,7 +492,7 @@ export class Activity {
   instructions: string = '';
   claseRef: DocumentReference;
   enterpriseRef: DocumentReference;
-  courseRef: DocumentReference[] = [];
+  coursesRef: DocumentReference[] = [];
   profileRef: DocumentReference;
   files: any[] = [];
   vimeoId1: number = 0
@@ -510,7 +510,7 @@ export class Activity {
       description:this.description,
       duration:this.duration,
       instructions:this.instructions,
-      claseRef:this.claseRef,
+      coursesRef:this.coursesRef,
       enterpriseRef:this.enterpriseRef,
       profileRef:this.profileRef,
       files: this.files,

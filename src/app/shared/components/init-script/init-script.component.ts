@@ -194,7 +194,7 @@ export class InitScriptComponent {
 
     deparmentsData.forEach(department => {
       console.log(department)
-      let departmentready = new Department(department.id,department.name)
+      let departmentready = new Department(department.id,department.name,enterpriseRef)
       this.departmentService.addDepartment(departmentready)
       
     });

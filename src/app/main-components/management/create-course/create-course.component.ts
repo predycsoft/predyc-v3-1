@@ -2104,7 +2104,7 @@ export class CreateCourseComponent implements OnInit {
             activityClass = structuredClone(clase.activity) as Activity;
             activityClass.enterpriseRef = this.curso.enterpriseRef
             activityClass.claseRef = refClass;
-            activityClass.courseRef = [courseRef];
+            activityClass.coursesRef = [courseRef];
             activityClass.type = Activity.TYPE_REGULAR;
 
             delete activityClass.questions;
@@ -2173,7 +2173,7 @@ export class CreateCourseComponent implements OnInit {
     questions = structuredClone(this.examen.questions);
     activityClass = structuredClone(this.examen) as Activity;
     activityClass.enterpriseRef = this.curso.enterpriseRef
-    activityClass.courseRef = [courseRef];
+    activityClass.coursesRef = [courseRef];
     activityClass.type = Activity.TYPE_TEST;
     activityClass.questions=[];
 

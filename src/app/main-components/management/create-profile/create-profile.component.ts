@@ -97,10 +97,19 @@ export class CreateProfileComponent {
     'Resumen'
   ];
   empresa
+  enterpriseRef
 
   profile: Profile;
 
   async ngOnInit() {
+
+    this.enterpriseService.enterpriseLoaded$.subscribe(isLoaded => {
+      if (isLoaded) {
+        let enterpriseRef = this.enterpriseService.getEnterpriseRef();
+        console.log(enterpriseRef)
+        this.enterpriseRef = enterpriseRef; 
+      }
+    })
 
     this.enterpriseService.enterprise$.subscribe(enterprise => {
       if (enterprise) {
@@ -299,6 +308,7 @@ export class CreateProfileComponent {
       this.profile= new Profile()
       //this.profile.id = this.formNewProfile.value.id;
       this.profile.departmentRef = departmentRef;
+      this.profile.enterpriseRef = this.enterpriseRef;
     }
     this.profile.name = this.formNewProfile.value.name;
     this.profile.description = this.formNewProfile.value.description;

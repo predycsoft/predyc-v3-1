@@ -9,6 +9,8 @@ export interface ProfileJson {
     skillsRef: DocumentReference[]
     usersRef: DocumentReference[]
     coursesRef: DocumentReference[]
+    enterpriseRef: DocumentReference[]
+
 
 }
 
@@ -23,6 +25,7 @@ export class Profile {
     public skillsRef: DocumentReference [] = []
     public usersRef: DocumentReference [] = []
     public coursesRef: DocumentReference [] = []
+    public enterpriseRef: DocumentReference [] = []
 
 
     public static fromJson(profileJson: ProfileJson): Profile {
@@ -35,6 +38,7 @@ export class Profile {
         profile.skillsRef = profileJson.skillsRef
         profile.usersRef = profileJson.usersRef
         profile.coursesRef = profileJson.coursesRef
+        profile.enterpriseRef = profileJson.enterpriseRef
 
         return profile
     }
@@ -49,6 +53,7 @@ export class Profile {
             skillsRef: this.skillsRef,
             usersRef: this.usersRef,
             coursesRef: this.coursesRef,
+            enterpriseRef: this.enterpriseRef,
         }
     }
 }

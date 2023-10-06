@@ -3,6 +3,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Department } from '../models/department.model';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AlertsService } from './alerts.service';
+import { EnterpriseService } from './enterprise.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,22 +17,30 @@ export class DepartmentService {
   constructor(
     private alertService: AlertsService,
     private afs: AngularFirestore,
+    private enterpriseService: EnterpriseService,
+
   ) {
    }
 
   public async loadDepartmens() {
-    this.getDepartments()
-    this.departmentsLoaded = new Promise<void>((resolve) => {
-      this.departments$.subscribe(async (department) => {
-        if (department) {
-          resolve();
-        }
-      });
-    });
+
+    console.log("Se instancio el user service")
+    this.enterpriseService.enterpriseLoaded$.subscribe(enterpriseIsLoaded => {
+      if (enterpriseIsLoaded) {
+        this.getDepartments()
+        this.departmentsLoaded = new Promise<void>((resolve) => {
+          this.departments$.subscribe(async (department) => {
+            if (department) {
+              resolve();
+            }
+          });
+        });
+      }
+    })
   }
 
   private getDepartments() {
-    this.afs.collection<Department>(Department.collection).valueChanges().subscribe({
+    this.afs.collection<Department>(Department.collection, ref => ref.where('enterpriseRef', '==', this.enterpriseService.getEnterpriseRef())).valueChanges().subscribe({
       next: department => {
         this.departmentSubject.next(department)
       },
