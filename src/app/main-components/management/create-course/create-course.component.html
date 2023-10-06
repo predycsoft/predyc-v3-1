@@ -1031,7 +1031,7 @@
                     Continuar
                     <img [src]="icon.chevronRight" class="h16px pdl05 makeWhite" alt="">
                 </button>
-                <button (click)="finalizarCurso(modalFonalizarCurso)" *ngIf="activeStep==6" class="blueButton radius4 ft12 h28px mgr10 gray-1" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                <button (click)="finalizarCurso(modalFinalizarCurso)" *ngIf="activeStep==6" class="blueButton radius4 ft12 h28px mgr10 gray-1" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                     Continuar
                     <img [src]="icon.chevronRight" class="h16px pdl05 makeWhite" alt="">
                 </button>        
@@ -1891,7 +1891,7 @@
 
 
 <!-- CLASE COMPETENCIAS MODAL -->
-<ng-template #modalFonalizarCurso let-modal>
+<ng-template #modalFinalizarCurso let-modal>
     <div class="modal-header bg-web-primary text-white px-3 py-1">
         <div class="modal-title pd10" fxLayout="row" fxLayoutAlign="start center">
             <img [src]="icon.catalog" class="h18px pdr05" alt="">
