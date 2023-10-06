@@ -3,12 +3,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IconService } from '../../../shared/services/icon.service';
 import { VideoDialogComponent } from './video-dialog/video-dialog.component';
-import { AfterOnInitResetLoading } from 'src/app/shared/decorators/loading.decorator';
-import { LoaderService } from 'src/app/shared/services/loader.service';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 
 
-@AfterOnInitResetLoading
 @Component({
   selector: 'app-management-dashboard',
   templateUrl: './management-dashboard.component.html',
@@ -21,7 +18,6 @@ export class ManagementDashboardComponent {
     private dialog: MatDialog,
     public icon: IconService,
     private notificationService: NotificationService,
-    private loaderService: LoaderService,
 
   ) {}
 

@@ -49,8 +49,6 @@ export class DepartmentsProfilesComponent {
     // });
     // -----
 
-    console.log(deparmentsData)
-
     this.departmentService.loadDepartmens()
     this.departmentService.getDepartmentsObservable().subscribe(departments => {
       this.departments = departments

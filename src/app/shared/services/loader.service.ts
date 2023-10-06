@@ -13,7 +13,7 @@ export class LoaderService {
   setLoading(value: boolean) {
     if (value) {
         this.loading++;
-    } else {
+    } else if (this.loading > 0) {
         this.loading--;
     }
 }
