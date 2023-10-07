@@ -8,7 +8,7 @@
     <div fxLayout="row" fxLayoutAlign="space-between end" fxLayoutGap="1rem">
         <app-search-input-box></app-search-input-box>
         <!-- <button (click)="createDepartmentsCollection()" class="yellowButton">Cable departamentos</button> -->
-        <button class="yellowButton">Nuevo departamento</button>
+        <button (click)="createDepartment(modalDepartment)" class="yellowButton">Nuevo departamento</button>
     </div>
 </div>
 <div fxLayout="row" fxLayoutGap="1rem">
@@ -38,13 +38,26 @@
                         {{department.name}}
                     </div>
                     <div>
-                        <img [src]="icon.licencias" class="h16px pdr05 edit cursorPointer" alt="">
-                        <img [src]="icon.trash" class="h16px pdr05 trash cursorPointer" alt="">
+                        <img (click)="editDepartment(department,modalDepartment)" [src]="icon.licencias" class="h16px pdr05 edit cursorPointer" alt="">
+                        <img (click)="deleteDepartment(department.id)" *ngIf="department.profiles.length==0" [src]="icon.trash" class="h16px pdr05 trash cursorPointer" alt="">
+                        <!-- <img [src]="icon.trash" class="h16px pdr05 trash cursorPointer" alt=""> -->
                         <button (click)="createProfileDepartment(department)" class="blueButton radius4 ft12 h28px mgr10 gray-1" *ngIf="isPanelExpanded(department.name)">Nuevo perfil</button>
                     </div>
                   </mat-panel-title>
                 </mat-expansion-panel-header>
-                <p>I'm visible because I am open</p>
+                <table class="fw">
+                    <tr *ngFor="let profile of department.profiles">
+                        <td>{{profile.name}}</td>
+                        <td>{{profile.coursesRef.length}} Curso{{profile.coursesRef.length>1?'s':''}}</td>
+                        <td>{{profile.skillsRef.length}} Competencia{{profile.skillsRef.length>1?'s':''}}</td>
+                        <td>{{profile.usersRef.length}} Usuario{{profile.usersRef.length>1?'s':''}}</td>
+                        <td><span class="pill">completado</span></td>
+                        <td>
+                            <img (click)="editProfile(department,profile)" [src]="icon.licencias" class="h16px pdr05 edit cursorPointer" alt="">
+                            <img [src]="icon.trash" class="h16px pdr05 trash cursorPointer" alt="">
+                        </td>
+                    </tr>
+                </table>
               </mat-expansion-panel>
             </td>
             </mat-accordion>
@@ -57,3 +70,38 @@
     <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
     </div>
 </div>
+
+<!-- CLASE COMPETENCIAS MODAL -->
+<ng-template #modalDepartment let-modal>
+    <div class="modal-header bg-web-primary text-white px-3 py-1">
+        <div class="modal-title pd10" fxLayout="row" fxLayoutAlign="start center">
+            <img [src]="icon.catalog" class="h18px pdr05" alt="">
+            <span class="ft16 ft600 gray-10">Nuevo departamento</span>
+        </div>
+        <img style="cursor: pointer;" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px"  alt="">
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="formNewDepartment" class="mgr20">
+            <div class="form-group pdt10">
+                <label>Nombre</label>
+                <input
+                [class.is-invalid]="formNewDepartment.controls['name'].errors && showErrorDeparment"
+                formControlName="name" type="text" class="form-control inputAlajandraLoQuisoAsi" placeholder="Escriba el título del curso aquí">
+                <div class="invalid-feedback" *ngIf="formNewDepartment.controls['name'].errors && showErrorDeparment"> 
+                    Debe indicar el nombre del departamento
+                </div>
+            </div>
+        </form>
+
+    </div>
+    <div class="modal-footer">
+        <button (click)="modal.dismiss()" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+            Cancelar
+        </button>  
+        <button (click)="saveDepartment()" class="blueButton radius4 ft12 h28px mgr10 gray-1" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+            <img [src]="icon.save" class="h16px pdr05 makeWhite" alt="">
+            Guadar
+        </button>
+    </div>
+</ng-template>
+

@@ -45,7 +45,7 @@ const routes: Routes = [
           {path:"notifications", title: MAIN_TITLE + 'Notificaciones', component: NotificationsComponent, canActivate: [AuthGuard]},
           {path:"students", title: MAIN_TITLE + 'Mi equipo', component: MyTeamComponent, canActivate: [AuthGuard]},
           {path:"students/:uid", title: MAIN_TITLE + 'Mi equipo', component: StudentComponent, canActivate: [AuthGuard]},
-          {path:"create-profile/:id", title: MAIN_TITLE + 'Crear perfil', component: CreateProfileComponent, canActivate: [AuthGuard]},
+          {path:"create-profile/:idDepartment/:mode/:idProfile", title: MAIN_TITLE + 'Crear / editar perfil', component: CreateProfileComponent, canActivate: [AuthGuard]},
           {path:"create-validation-test", title: MAIN_TITLE + 'Crear examen de validación', component: CreateValidationTestComponent, canActivate: [AuthGuard]},
         ]
       },

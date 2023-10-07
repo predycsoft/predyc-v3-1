@@ -36,6 +36,7 @@ export class ActivityClassesService {
         ref = this.afs.collection<Activity>(Activity.collection).doc(newActivity.id).ref;
       } else {
         ref = this.afs.collection<Activity>(Activity.collection).doc().ref;
+        newActivity.id = ref.id;
       }
       //const ref = this.afs.collection<Activity>(Activity.collection).doc().ref;
       const dataToSave = typeof newActivity.toJson === 'function' ? newActivity.toJson() : newActivity;
@@ -44,6 +45,7 @@ export class ActivityClassesService {
       console.log("Activity added succesfully")
       this.alertService.succesAlert('Has agregado una actividad exitosamente.')
   } catch (error) {
+      newActivity.id = null;
       console.log(error)
       this.alertService.errorAlert(JSON.stringify(error))
     }

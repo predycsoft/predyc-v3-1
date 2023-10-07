@@ -14,6 +14,10 @@ export class ProfileService {
   private profileSubject = new BehaviorSubject<Profile[]>([]);
   private profiles$ = this.profileSubject.asObservable();
 
+  private profilesLoadedSubject = new BehaviorSubject<boolean>(false)
+  public profilesLoaded$ = this.profilesLoadedSubject.asObservable();
+
+
   constructor(
     private alertService: AlertsService,
     private afs: AngularFirestore,
@@ -36,8 +40,7 @@ export class ProfileService {
   enterpriseRef
 
   private getProfiles() {
-    this.enterpriseService.enterpriseLoaded$.subscribe(isLoaded => {    
-
+    this.enterpriseService.enterpriseLoaded$.subscribe(isLoaded => {
       if (!isLoaded) {
         return
       }
@@ -45,6 +48,10 @@ export class ProfileService {
       this.afs.collection<Profile>(Profile.collection, ref=> ref.where('enterpriseRef', '==', this.enterpriseRef)).valueChanges().subscribe({
         next: profile => {
           this.profileSubject.next(profile)
+          if (!this.profilesLoadedSubject.value) {
+            this.profilesLoadedSubject.next(true)
+            console.log("Los perfiles fueron cargados", profile)
+          }
         },
         error: error => {
           console.log(error)
@@ -67,6 +74,10 @@ export class ProfileService {
     return this.profileSubject.value.find(x => x.id === id)
   }
 
+  public getProfileObject(id: string): Profile {
+    return this.profileSubject.value.find(x => x.id === id)
+  }
+
   async saveProfile(profile: Profile): Promise<void> {
     try {
       let ref: DocumentReference;
@@ -79,8 +90,10 @@ export class ProfileService {
         profile.id = ref.id; // Assign the generated ID to the profile
       }
       await ref.set(profile.toJson(), { merge: true });
+      profile.id = ref.id; // Assign the generated ID to the profile
       console.log('Operation successful.')
     } catch (error) {
+      profile.id = null; // Assign the generated ID to the profile
       console.log(error);
       this.alertService.errorAlert(JSON.stringify(error));
     }

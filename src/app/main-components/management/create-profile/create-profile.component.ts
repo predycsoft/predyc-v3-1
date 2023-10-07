@@ -74,7 +74,10 @@ export class CreateProfileComponent {
 
   departments
   department;
-  departmentId = this.route.snapshot.paramMap.get("id")
+  departmentId = this.route.snapshot.paramMap.get("idDepartment")
+  profileId = this.route.snapshot.paramMap.get("idProfile")
+  mode = this.route.snapshot.paramMap.get("mode")
+
   activeStep = 1
   showErrorProfile = false;
   formNewProfile: FormGroup;
@@ -123,29 +126,52 @@ export class CreateProfileComponent {
       }
     })
 
+    this.inicialiceFormNewProfile();
+
+    if(this.mode == 'edit'){
+      console.log('idPerfil',this.profileId);
+      this.profileService.loadProfiles();
+      this.profileService.profilesLoaded$.subscribe(async isLoaded => {
+        console.log('profileService Loaded edit',isLoaded)
+        if (isLoaded) {
+          this.profile = this.profileService.getProfileObject(this.profileId)
+          console.log('profile data',this.profile)
+          this.formNewProfile.get('id').patchValue(this.profile.id);
+          this.formNewProfile.get('name').patchValue(this.profile.name);
+          this.formNewProfile.get('description').patchValue(this.profile.description);
+          this.formNewProfile.get('responsabilities').patchValue(this.profile.responsabilities);
+        }
+      })
+    }
+
 
     this.departmentService.loadDepartmens()
     this.departmentService.getDepartmentsObservable().subscribe(departments => {
       this.departments = departments
-      console.log('profileId',this.departmentId);
+      console.log('departmentId',this.departmentId);
       this.department = departments.find(department =>department.id == this.departmentId )
       console.log('this.department',this.department);
-
-      this.inicialiceFormNewProfile();
     })
-
     this.categoryService.getCategoriesObservable().subscribe(category => {
-      console.log('category from service',category);
       this.skillService.getSkillsObservable().pipe(
         take(2)
       ).subscribe(skill => {
-        console.log('skill from service', skill);
         this.skillsArray = skill;
+        console.log('skill from service', skill);
+        skill.map(skillIn => {
+          delete skillIn['selected']
+        });
+        if(this.mode == 'edit'){
+          let skillsProfile = this.profile.skillsRef;
+          skillsProfile.forEach(skillIn => {
+            let skillSelect = skill.find(skillSelectIn=>skillSelectIn.id == skillIn.id) 
+            skillSelect['selected'] = true;
+          });
+        }
         this.categoriasArray = this.anidarCompetenciasInicial(category, skill);
         this.categories = this.categoriasArray;
         console.log('categoriasArray', this.categoriasArray)
         this.competenciasEmpresa = this.obtenerCompetenciasAlAzar(5);
-
         this.courseService.getCoursesObservable().subscribe(courses => {
           courses.forEach(curso => {
             //curso.foto = '../../../../assets/images/cursos/placeholder1.jpg'
@@ -174,7 +200,6 @@ export class CreateProfileComponent {
               duracionCourse+=duracion
             });
             curso['duracion'] = duracionCourse;
-
           });
           this.categories.forEach(category => {
             let filteredCourses = courses.filter(course => 
@@ -189,18 +214,58 @@ export class CreateProfileComponent {
             category.expanded = false;
             category.expandedPropios = false;
             category.expandedPredyc = false;
-
             category.courses = filteredCourses;
             category.coursesPropios = filteredCoursesPropios;
             category.coursesPredyc = filteredCoursesPredyc;
           });
-          console.log('this.categories',this.categories)
+          console.log('this.categories',this.categories);
+
+          if(this.mode == 'edit'){
+            this.getSelectedCategoriasCompetencias();
+            let arrayCorusesRef = this.profile.coursesRef.map(cursoIn=>{
+              return cursoIn.id
+            })
+            let cateogorias = this.categoriasArray;
+            cateogorias.forEach(categoria => {
+              let courses = categoria.courses.filter(courseIn => arrayCorusesRef.includes(courseIn.id));
+              courses.forEach(cursoSelect => {
+                this.selectCourse(cursoSelect);
+              });
+
+            });
+            // this.categoriasArray.forEach(categoria => {
+            //   console.log('pruebas de cursos del perfil categoria',categoria)
+            //   console.log('categoria.courses', categoria.courses)
+            //   let courses = categoria.courses.filter(courseIn => this.profile.coursesRef.includes(courseIn.id));
+            //   console.log('pruebas de cursos del perfil',courses)
+            // });
+          }
         })
       });
     })
-
-    
   }
+
+  getSelectedCategoriasCompetencias(){
+    console.log('getSelectedCategoriasCompetencias')
+    let respuesta = [];
+    console.log(this.categoriasArray)
+
+    this.categoriasArray.forEach(categoria => {
+      let selected = categoria.competencias.filter(competencia => competencia.selected)
+      if(selected.length>0){
+        let obj = {
+          categoria : {name:categoria.name, id:categoria.id},
+          competencias : selected,
+          expanded: true
+        }
+        respuesta.push(obj)
+      }
+    });
+
+    console.log('respuesta',respuesta)
+    this.competenciasSelected = respuesta;
+  }
+
 
   anidarCompetenciasInicial(categorias: any[], competencias: any[]): any[] {
     return categorias.map(categoria => {
@@ -259,6 +324,7 @@ export class CreateProfileComponent {
       });
     });
     console.log('cursos plan de estudio',this.coursesSelectedPerfil);
+    console.log('skills plan de estudio',skillsId);
     //this.activityClassesService.getQuestionsCourseSkills(this.coursesSelectedPerfil,null)
     let coursesId = [];
     this.coursesSelectedPerfil.forEach(curso => {
@@ -267,6 +333,7 @@ export class CreateProfileComponent {
     console.log(coursesId);
     this.activityClassesService.getQuestionsCourses(coursesId).subscribe(async questions => {
       questions.forEach(question => {
+        console.log('preguntas poeibles test',question)
         let skillsName = [];
         let skillsIdQuestion = question.skills.map(skill => {
           let skillname = this.skillsArray.find(skillFind => skillFind.id == skill.id);
@@ -403,6 +470,8 @@ export class CreateProfileComponent {
 
 
   selectCourse(curso){
+
+    console.log('categories',this.categories)
 
     console.log('curso selected',curso);
     let findCurso = this.coursesSelectedPerfil.find(cursoFilter => cursoFilter.id == curso.id)

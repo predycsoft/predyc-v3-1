@@ -13,6 +13,10 @@ import { deparmentsData } from '../../../../assets/data/departments.data'
 import { SelectionModel } from '@angular/cdk/collections';
 import { Router } from '@angular/router';
 import { ProfileService } from '../../../shared/services/profile.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
+import { AlertsService } from 'src/app/shared/services/alerts.service';
 
 @AfterOnInitResetLoading
 @Component({
@@ -27,11 +31,14 @@ export class DepartmentsProfilesComponent {
     private loaderService: LoaderService,
     private departmentService: DepartmentService,
     private router: Router,
-    private profileService: ProfileService
+    private profileService: ProfileService,
+    private modalService: NgbModal,
+    private enterpriseService: EnterpriseService,
+    private alertService: AlertsService
   ){}
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  dataSource = new MatTableDataSource<Department>;
+  dataSource = new MatTableDataSource<any>;
   departments: Department[]
   profiles: Profile[];
   displayedColumns: string[] = [
@@ -60,11 +67,21 @@ export class DepartmentsProfilesComponent {
       this.profileService.getProfilesObservable()
     ]).subscribe(([departments, profiles]) => {
       this.departments = departments;
-      this.dataSource = new MatTableDataSource<Department>(this.departments);
       this.profiles = profiles;
+      console.log('respuestas observables dep perf',this.departments,this.profiles)
       //console.log('perfiles another ', profiles);
 
-      console.log('respuestas observables dep perf',this.departments)
+      const departmentsWithProfiles = departments.map(department => {
+        return {
+          ...department,
+          profiles: profiles.filter(profile => profile.departmentRef.id === department.id)
+        };
+      });
+
+      console.log('new array',departmentsWithProfiles);
+      this.dataSource = new MatTableDataSource<any>(departmentsWithProfiles);
+
+
     });
   }
 
@@ -115,12 +132,90 @@ export class DepartmentsProfilesComponent {
   // }
 
   createProfileDepartment(department){
+    this.router.navigate(["management/create-profile/", department.id,'create','new'])
+  }
 
-    console.log(department);
-    this.router.navigate(["management/create-profile/", department.id])
+  editProfile(department,profile){
+    this.router.navigate(["management/create-profile/", department.id,'edit',profile.id])
+  }
 
+
+  modalCreateDepartment
+  formNewDepartment: FormGroup;
+  showErrorDeparment = false
+
+
+  openModalDepartment(content){
+
+    this.modalCreateDepartment = this.modalService.open(content, {
+     ariaLabelledBy: 'modal-basic-title',
+     centered: true,
+     size:'lg'
+   });
+ }
+
+  createDepartment(content){
+
+    this.showErrorDeparment=false;
+    this.formNewDepartment = new FormGroup({
+      id: new FormControl(null),
+      enterpriseRef: new FormControl(null),
+      name: new FormControl(null, Validators.required),
+    })
+
+    this.openModalDepartment(content)
+  }
+
+  editDepartment(department,content){
+    this.showErrorDeparment=false;
+
+    this.formNewDepartment = new FormGroup({
+      id: new FormControl(department.id),
+      enterpriseRef: new FormControl(null),
+      name: new FormControl(department.name, Validators.required),
+    })
+
+    this.openModalDepartment(content)
+  }
+
+  async saveDepartment(){
+
+    this.showErrorDeparment=false;
+
+    if(this.formNewDepartment.valid){
+      let enterpriseRef =this.enterpriseService.getEnterpriseRef();
+      let name = this.formNewDepartment.get('name').value
+      let id = this.formNewDepartment.get('id').value
+      let departent = new Department(id,name,enterpriseRef);
+      console.log(departent);
+      this.modalCreateDepartment.close()
+      const isSuccess = await this.departmentService.saveDepartment(departent)
+
+      if (isSuccess) {
+        console.log('Department saved successfully.');
+        this.alertService.succesAlert('Has agregado un departamento exitosamente.')
+        // Do other things if successful, e.g., show a success message or navigate elsewhere.
+      } else {
+        console.error('Failed to save department.');
+        // Handle the failure case. You can show an error message or take some other action.
+      }
+    }
+    else{
+      this.showErrorDeparment = true
+    }
+    
+  }
+
+  async deleteDepartment(departmentId){
+
+    let statusDelete = await this.departmentService.deleteDepartment(departmentId);
+
+    if(statusDelete){
+      this.alertService.succesAlert('Has eliminado un departamento exitosamente.')
+    }
 
   }
+
 
 
 

@@ -38,3 +38,16 @@
   .custom-chip.mat-chip-selected .mat-chip-label {
     color: white !important; /* Puedes cambiarlo si lo necesitas */
   }
+
+  .pill {
+    display: inline-block;
+    padding:2px; /* Reduced padding for smaller design */
+    border-radius: 12px; /* Adjusted border-radius for smaller pill */
+    background-color: var(--blue-5); /* Color of the Material Design primary */
+    color: #ffffff; /* White text color */
+    font-size: 10px; /* Reduced font size */
+    text-align: center;
+    user-select: none; /* Prevent text selection */
+    pointer-events: none; /* Makes it not clickable or focusable */
+  }
+  
