@@ -96,7 +96,7 @@ import { PlanCardComponent } from './main-components/settings/license/plan-card/
 import { LicenseDataComponent } from './main-components/settings/license/license-data/license-data.component';
 import { ValidationListComponent } from './main-components/validation/validation-list/validation-list.component';
 import { NotificationsDashboardComponent } from './main-components/dashboard/notifications-dashboard/notifications-dashboard.component';
-import { CreateValidationTestComponent } from './main-components/management/create-validation-test/create-validation-test.component';
+import { EditValidationTestComponent } from './main-components/management/edit-validation-test/edit-validation-test.component';
 
 @NgModule({
   declarations: [
@@ -145,7 +145,7 @@ import { CreateValidationTestComponent } from './main-components/management/crea
     LicenseDataComponent,
     ValidationListComponent,
     NotificationsDashboardComponent,
-    CreateValidationTestComponent
+    EditValidationTestComponent
   ],
   imports: [
     BrowserModule,
