@@ -30,6 +30,7 @@ import { category } from '../courses/courses.component';
 import { ModuleService } from '../../../shared/services/module.service';
 import { CourseClassService } from '../../../shared/services/course-class.service';
 import { ActivityClassesService } from 'src/app/shared/services/activity-classes.service';
+import { Enterprise } from 'src/app/shared/models/enterprise.model';
 
 
 export const compareByString = (a: string, b: string): number => {
@@ -2102,7 +2103,7 @@ export class CreateCourseComponent implements OnInit {
             let questions: Question[]= []
             questions = structuredClone(clase.activity.questions);
             activityClass = structuredClone(clase.activity) as Activity;
-            activityClass.enterpriseRef = this.curso.enterpriseRef
+            activityClass.enterpriseRef = this.curso.enterpriseRef as DocumentReference<Enterprise>
             activityClass.claseRef = refClass;
             activityClass.coursesRef = [courseRef];
             activityClass.type = Activity.TYPE_REGULAR;
@@ -2166,7 +2167,7 @@ export class CreateCourseComponent implements OnInit {
     let questions: Question[]= []
     questions = structuredClone(this.examen.questions);
     activityClass = structuredClone(this.examen) as Activity;
-    activityClass.enterpriseRef = this.curso.enterpriseRef
+    activityClass.enterpriseRef = this.curso.enterpriseRef as DocumentReference<Enterprise>
     activityClass.coursesRef = [courseRef];
     activityClass.type = Activity.TYPE_TEST;
     activityClass.questions=[];

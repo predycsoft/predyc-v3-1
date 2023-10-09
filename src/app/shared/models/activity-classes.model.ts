@@ -1,4 +1,8 @@
 import { DocumentReference } from "@angular/fire/compat/firestore"
+import { Enterprise } from "./enterprise.model";
+import { Clase } from "./course-class.model";
+import { Curso } from "./course.model";
+import { Profile } from "./profile.model";
 
 export const compareByString = (a: string, b: string): number => {
   if (a > b) {
@@ -490,10 +494,10 @@ export class Activity {
   description: string = '';
   duration: number = 0;
   instructions: string = '';
-  claseRef: DocumentReference;
-  enterpriseRef: DocumentReference;
-  coursesRef: DocumentReference[] = [];
-  profileRef: DocumentReference;
+  claseRef: DocumentReference<Clase>;
+  enterpriseRef: DocumentReference<Enterprise>;
+  coursesRef: DocumentReference<Curso>[] = [];
+  profileRef: DocumentReference<Profile>;
   files: any[] = [];
   vimeoId1: number = 0
   vimeoId2: string = ""
