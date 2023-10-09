@@ -99,6 +99,7 @@ import { NotificationsDashboardComponent } from './main-components/dashboard/not
 import { CreateValidationTestComponent } from './main-components/management/create-validation-test/create-validation-test.component';
 import { RankingListComponent } from './main-components/dashboard/ranking-list/ranking-list.component';
 import { TooltipPointsComponent } from './shared/components/tooltip-points/tooltip-points.component';
+import { StudyPlanComponent } from './shared/components/study-plan/study-plan.component';
 
 @NgModule({
   declarations: [
@@ -149,7 +150,8 @@ import { TooltipPointsComponent } from './shared/components/tooltip-points/toolt
     NotificationsDashboardComponent,
     CreateValidationTestComponent,
     RankingListComponent,
-    TooltipPointsComponent
+    TooltipPointsComponent,
+    StudyPlanComponent
   ],
   imports: [
     BrowserModule,
