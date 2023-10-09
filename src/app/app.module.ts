@@ -97,6 +97,8 @@ import { LicenseDataComponent } from './main-components/settings/license/license
 import { ValidationListComponent } from './main-components/validation/validation-list/validation-list.component';
 import { NotificationsDashboardComponent } from './main-components/dashboard/notifications-dashboard/notifications-dashboard.component';
 import { CreateValidationTestComponent } from './main-components/management/create-validation-test/create-validation-test.component';
+import { RankingListComponent } from './main-components/dashboard/ranking-list/ranking-list.component';
+import { TooltipPointsComponent } from './shared/components/tooltip-points/tooltip-points.component';
 
 @NgModule({
   declarations: [
@@ -145,7 +147,9 @@ import { CreateValidationTestComponent } from './main-components/management/crea
     LicenseDataComponent,
     ValidationListComponent,
     NotificationsDashboardComponent,
-    CreateValidationTestComponent
+    CreateValidationTestComponent,
+    RankingListComponent,
+    TooltipPointsComponent
   ],
   imports: [
     BrowserModule,
