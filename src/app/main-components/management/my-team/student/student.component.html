@@ -3,14 +3,19 @@
 
     <mat-tab-group class="swal-overlay">
         <mat-tab label="Cronograma de capacitación"> 
-            <div fxLayout="row" fxLayoutGap=".7rem" fxLayoutAlign="space-between">
-                <div>
-                    <span>Progreso General</span>
+            <div fxLayout="row" fxLayoutAlign="space-between" class="mgt05">
+                <div class="w-25" fxLayout="column" fxLayoutGap="0.3rem">
+                    <div class="radius10 border fw" style="height: 35vh;">
+                        <span>Progreso General</span>
+                    </div>
+                    <div class="radius10 border fw" style="height: 35vh;">
+                        <span>Calendar</span>
+                    </div>
                 </div>
-                <div>
-                    <span>Plan de estudio</span>
+                <div class="w-50" >
+                    <app-study-plan></app-study-plan>
                 </div>
-                <div class="w300px">
+                <div class="w-20">
                     <app-student-profile [student]="student" [isStudentProfile]="true"></app-student-profile>
                 </div>
             </div>     
