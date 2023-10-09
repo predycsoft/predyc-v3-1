@@ -162,7 +162,7 @@ export class CreateProfileComponent {
           console.log('profile data',this.profile)
           let users = this.profile.usersRef.map(userRef => {
             console.log('userRef',userRef.id)
-            return {uid:userRef.id}
+            return {uid:userRef.id,ref:userRef}
           });
           console.log('users edit',users)
           this.usersProfile = users;

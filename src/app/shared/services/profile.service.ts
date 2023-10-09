@@ -90,6 +90,8 @@ export class ProfileService {
         profile.id = ref.id; // Assign the generated ID to the profile
       }
       const dataToSave = typeof profile.toJson === 'function' ? profile.toJson() : profile;
+
+      console.log('dataToSave',dataToSave)
       await ref.set(dataToSave, { merge: true });
       profile.id = ref.id; // Assign the generated ID to the profile
       console.log('Operation successful.')
