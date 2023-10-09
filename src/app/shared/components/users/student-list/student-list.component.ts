@@ -77,6 +77,7 @@ export class StudentListComponent {
     if (this.initialSelectedUsers && this.dataSource && this.initialSelectedUsers.length > 0) {
       //this.selection.clear();
       // Find and select the initial items
+      console.log('initialSelectedUsers',this.initialSelectedUsers)
       this.initialSelectedUsers.forEach(item => {
         const matchingRow = this.dataSource.data.find(row => row.uid === item.uid);  // You can modify the comparison logic here
         console.log('matchingRow',matchingRow);

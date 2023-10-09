@@ -89,7 +89,8 @@ export class ProfileService {
         ref = this.afs.collection<Profile>(Profile.collection).doc().ref;
         profile.id = ref.id; // Assign the generated ID to the profile
       }
-      await ref.set(profile.toJson(), { merge: true });
+      const dataToSave = typeof profile.toJson === 'function' ? profile.toJson() : profile;
+      await ref.set(dataToSave, { merge: true });
       profile.id = ref.id; // Assign the generated ID to the profile
       console.log('Operation successful.')
     } catch (error) {
