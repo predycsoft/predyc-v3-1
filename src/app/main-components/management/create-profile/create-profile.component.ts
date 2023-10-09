@@ -101,8 +101,32 @@ export class CreateProfileComponent {
   ];
   empresa
   enterpriseRef
-
   profile: Profile;
+
+  getexamProfile(idProfile){
+    console.log('idProfile', idProfile);
+    this.activityClassesService.getActivityProfile(idProfile)
+      .pipe(take(1))
+      .subscribe(data => {
+        if (data) {
+          console.log('Activity:', data);
+          console.log('Questions:', data.questions);
+
+          data.questions.forEach(question => {
+            console.log('preguntas posibles test',question)
+            let skillsName = [];
+            let skillsIdQuestion = question.skills.map(skill => {
+              let skillname = this.skillsArray.find(skillFind => skillFind.id == skill.id);
+              skillsName.push(skillname.name);
+              return skill.id
+            });
+            question.skillsNames=skillsName;
+            question.skillsId = skillsIdQuestion;
+          });
+          this.examen = data;
+        }
+      });
+  }
 
   async ngOnInit() {
 
@@ -122,7 +146,7 @@ export class CreateProfileComponent {
 
     this.userService.usersLoaded$.subscribe(async isLoaded => {
       if (isLoaded) {
-        this.userService.getUsersWithoutProfile();
+        this.userService.getUsersWithoutProfile(this.profileId);
       }
     })
 
@@ -136,12 +160,18 @@ export class CreateProfileComponent {
         if (isLoaded) {
           this.profile = this.profileService.getProfileObject(this.profileId)
           console.log('profile data',this.profile)
+          let users = this.profile.usersRef.map(userRef => {
+            console.log('userRef',userRef.id)
+            return {uid:userRef.id,ref:userRef}
+          });
+          console.log('users edit',users)
+          this.usersProfile = users;
           this.formNewProfile.get('id').patchValue(this.profile.id);
           this.formNewProfile.get('name').patchValue(this.profile.name);
           this.formNewProfile.get('description').patchValue(this.profile.description);
           this.formNewProfile.get('responsabilities').patchValue(this.profile.responsabilities);
         }
-      })
+      })      
     }
 
 
@@ -226,19 +256,19 @@ export class CreateProfileComponent {
               return cursoIn.id
             })
             let cateogorias = this.categoriasArray;
+            let arrayCourses=[]
             cateogorias.forEach(categoria => {
               let courses = categoria.courses.filter(courseIn => arrayCorusesRef.includes(courseIn.id));
               courses.forEach(cursoSelect => {
-                this.selectCourse(cursoSelect);
+                arrayCourses.push(cursoSelect);
               });
-
             });
-            // this.categoriasArray.forEach(categoria => {
-            //   console.log('pruebas de cursos del perfil categoria',categoria)
-            //   console.log('categoria.courses', categoria.courses)
-            //   let courses = categoria.courses.filter(courseIn => this.profile.coursesRef.includes(courseIn.id));
-            //   console.log('pruebas de cursos del perfil',courses)
-            // });
+            arrayCourses = Array.from(new Map(arrayCourses.map(obj => [obj.id, obj])).values());
+            arrayCourses.sort((a, b) => arrayCorusesRef.indexOf(a.id) - arrayCorusesRef.indexOf(b.id));
+            arrayCourses.forEach(cursoSelect => {
+              this.selectCourse(cursoSelect);
+            });
+            this.getexamProfile(this.profileId);
           }
         })
       });
@@ -333,7 +363,7 @@ export class CreateProfileComponent {
     console.log(coursesId);
     this.activityClassesService.getQuestionsCourses(coursesId).subscribe(async questions => {
       questions.forEach(question => {
-        console.log('preguntas poeibles test',question)
+        console.log('preguntas posibles test',question)
         let skillsName = [];
         let skillsIdQuestion = question.skills.map(skill => {
           let skillname = this.skillsArray.find(skillFind => skillFind.id == skill.id);
@@ -599,6 +629,10 @@ export class CreateProfileComponent {
       console.log('arrayRef users',arrayRef)
       this.profile.usersRef = arrayRef;
       this.saveProfile();
+      let profileRef = await this.afs.collection<Profile>(Profile.collection).doc(this.profile.id).ref;
+      arrayRef.forEach(userRef => {//creo que deberia ser un cloud funtion
+        this.profileService.saveUserProfileLog(userRef,profileRef)
+      });
     }
 
   }

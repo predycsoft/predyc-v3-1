@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { IconService } from '../../../shared/services/icon.service';
 import { FormControl, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { Curso } from "../../../shared/models/course.model"
 import { Modulo } from "../../../shared/models/module.model"
@@ -30,6 +30,7 @@ import { category } from '../courses/courses.component';
 import { ModuleService } from '../../../shared/services/module.service';
 import { CourseClassService } from '../../../shared/services/course-class.service';
 import { ActivityClassesService } from 'src/app/shared/services/activity-classes.service';
+import { Enterprise } from 'src/app/shared/models/enterprise.model';
 
 
 export const compareByString = (a: string, b: string): number => {
@@ -78,7 +79,9 @@ export class CreateCourseComponent implements OnInit {
     public courseService: CourseService,
     public moduleService: ModuleService,
     public courseClassService: CourseClassService,
-    public activityClassesService:ActivityClassesService
+    public activityClassesService:ActivityClassesService,
+    private route: ActivatedRoute,
+
 
   ) { }
 
@@ -274,10 +277,22 @@ export class CreateCourseComponent implements OnInit {
       this.skillService.getSkillsObservable().pipe(
         take(2)
       ).subscribe(skill => {
+
+        console.log('skill from service', skill);
+        skill.map(skillIn => {
+          delete skillIn['selected']
+        });
+        if(this.mode == 'edit'){
+
+        }
+
         console.log('skill from service', skill);
         this.categoriasArray = this.anidarCompetenciasInicial(category, skill)
         console.log('categoriasArray', this.categoriasArray)
         this.competenciasEmpresa = this.obtenerCompetenciasAlAzar(5);
+
+
+
       });
     })
 
@@ -336,6 +351,7 @@ export class CreateCourseComponent implements OnInit {
   }
 
   addClassMode = false;
+  mode = this.route.snapshot.paramMap.get("mode")
 
   obtenerNumeroMasGrande(): number {
     return this.modulos.reduce((maximoActual, modulo) => {
@@ -2102,7 +2118,7 @@ export class CreateCourseComponent implements OnInit {
             let questions: Question[]= []
             questions = structuredClone(clase.activity.questions);
             activityClass = structuredClone(clase.activity) as Activity;
-            activityClass.enterpriseRef = this.curso.enterpriseRef
+            activityClass.enterpriseRef = this.curso.enterpriseRef as DocumentReference<Enterprise>
             activityClass.claseRef = refClass;
             activityClass.coursesRef = [courseRef];
             activityClass.type = Activity.TYPE_REGULAR;
@@ -2166,7 +2182,7 @@ export class CreateCourseComponent implements OnInit {
     let questions: Question[]= []
     questions = structuredClone(this.examen.questions);
     activityClass = structuredClone(this.examen) as Activity;
-    activityClass.enterpriseRef = this.curso.enterpriseRef
+    activityClass.enterpriseRef = this.curso.enterpriseRef as DocumentReference<Enterprise>
     activityClass.coursesRef = [courseRef];
     activityClass.type = Activity.TYPE_TEST;
     activityClass.questions=[];

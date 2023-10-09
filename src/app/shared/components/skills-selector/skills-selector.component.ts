@@ -57,6 +57,7 @@ export class SkillsSelectorComponent implements OnInit {
 
 
   ngOnInit() {
+    console.log('categoriasArray',this.categoriasArray)
     this.enterpriseService.enterpriseLoaded$.subscribe(isLoaded => {
       if (isLoaded) {
         this.enterpriseRef =this.enterpriseService.getEnterpriseRef()

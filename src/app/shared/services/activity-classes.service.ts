@@ -10,6 +10,7 @@ import { Clase } from '../models/course-class.model';
 
 import { Activity } from '../models/activity-classes.model';
 import { Question } from '../models/activity-classes.model';
+import { Profile } from '../models/profile.model';
 
 
 @Injectable({
@@ -100,6 +101,28 @@ export class ActivityClassesService {
   
     // Delete the document
     return questionRef.delete();
+  }
+
+  getActivityProfile(idProfile) {
+    const profileRef: DocumentReference = this.afs.doc(`profile/${idProfile}`).ref;
+    // Fetch activity using the profileRef
+    return this.afs.collection('activity', ref => ref.where('profileRef', '==', profileRef))
+      .valueChanges() // or .get() based on your needs
+      .pipe(
+        switchMap(activities => {
+          if (activities && activities.length > 0) {
+            const activity = activities[0] as Activity; // Assuming only one activity matches
+            // Fetch questions of the matched activity
+            return this.afs.collection(`${Activity.collection}/${activity.id}/${Question.collection}`).valueChanges()
+              .pipe(
+                map(questions => {
+                  return { ...activity as any, questions };
+                })
+              );
+          }
+          return of(null); // or you can return an empty object or handle it another way
+        })
+      );
   }
 
 

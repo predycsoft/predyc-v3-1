@@ -81,6 +81,7 @@ export class ProfileService {
   async saveProfile(profile: Profile): Promise<void> {
     try {
       let ref: DocumentReference;
+      console.log('profile save',profile)
       // If profile has an ID, then it's an update
       if (profile.id) {
         ref = this.afs.collection<Profile>(Profile.collection).doc(profile.id).ref;
@@ -89,7 +90,10 @@ export class ProfileService {
         ref = this.afs.collection<Profile>(Profile.collection).doc().ref;
         profile.id = ref.id; // Assign the generated ID to the profile
       }
-      await ref.set(profile.toJson(), { merge: true });
+      const dataToSave = typeof profile.toJson === 'function' ? profile.toJson() : profile;
+
+      console.log('dataToSave',dataToSave)
+      await ref.set(dataToSave, { merge: true });
       profile.id = ref.id; // Assign the generated ID to the profile
       console.log('Operation successful.')
     } catch (error) {
@@ -97,7 +101,21 @@ export class ProfileService {
       console.log(error);
       this.alertService.errorAlert(JSON.stringify(error));
     }
-}
+  }
+
+  saveUserProfileLog(userRef,ProfileRef){
+
+    let object = {
+      userRef:userRef,
+      profileRef:ProfileRef,
+      updatedAt: new Date()
+    }
+    let ref: DocumentReference;
+    ref = this.afs.collection('userProfile').doc().ref;
+    ref.set(object, { merge: true });
+
+  }
+  
 
 
 }

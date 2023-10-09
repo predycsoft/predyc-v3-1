@@ -179,32 +179,43 @@ export class UserService {
     return this.usersLoadedSubject.value;
   }
 
-  getUsersWithoutProfile() {
-    console.log('esto');
+  getUsersWithoutProfile(idProfile = null) {
     if (this.userCollectionProfileSubscription) {
         this.userCollectionProfileSubscription.unsubscribe();
     }
+
     // Step 1: Get all profiles and gather all user references
     this.userCollectionProfileSubscription = this.afs.collection(Profile.collection).get().pipe(
         switchMap(profilesSnap => {
             const userRefsFromProfiles: DocumentReference[] = [];
+            let usersOfProvidedProfile: DocumentReference[] = []; // Users of the provided profile
+
             profilesSnap.docs.forEach(doc => {
                 const data = doc.data() as Profile;
                 if (data.usersRef && Array.isArray(data.usersRef)) {
                     userRefsFromProfiles.push(...data.usersRef);
+                    if (doc.id === idProfile) {
+                        usersOfProvidedProfile = data.usersRef; // Extract users of the provided profile
+                    }
                 }
             });
 
             // Convert DocumentReferences to their path strings for easier comparison
             const userRefPaths = userRefsFromProfiles.map(ref => ref.path);
-            console.log('userRefPaths',userRefPaths)
-            // Step 2: Fetch users based on criteria and exclude those from step 1
+            const usersOfProfilePaths = usersOfProvidedProfile.map(ref => ref.path);
+
+            // Step 2: Fetch users based on criteria and exclude/include as required
             return this.afs.collection<User>(User.collection, ref =>
                 ref.where('enterprise', '==', this.enterpriseService.getEnterpriseRef())
                    .where('isActive', '==', true)
                    .orderBy('displayName')
             ).valueChanges({idField: 'id'}).pipe(
-                map(users => users.filter(user => !userRefPaths.includes(`user/${user.id}`)))
+                map(users => 
+                    users.filter(user => 
+                        !userRefPaths.includes(`user/${user.id}`) || // User is not in any profile
+                        usersOfProfilePaths.includes(`user/${user.id}`)  // User is in the provided profile
+                    )
+                )
             );
         })
     ).subscribe({
@@ -212,7 +223,7 @@ export class UserService {
             this.usersWithoutProfileSubject.next(users);
             if (!this.usersithoutProfileLoadedSubject.value) {
                 this.usersithoutProfileLoadedSubject.next(true);
-                console.log("Los usuarios sin perfil fueron cargados", users);
+                console.log("Los usuarios sin perfil y los del perfil proporcionado fueron cargados", users);
             }
         },
         error: error => {

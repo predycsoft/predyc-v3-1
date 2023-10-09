@@ -32,7 +32,7 @@
                                 <label>Título</label>
                                 <input
                                 [class.is-invalid]="formNewProfile.controls['name'].errors && showErrorProfile"
-                                formControlName="name" type="text" class="form-control inputAlajandraLoQuisoAsi" placeholder="Escriba el nombre del perfil aquí">
+                                formControlName="name" type="text" class="form-control curstomInput" placeholder="Escriba el nombre del perfil aquí">
                                 <div class="invalid-feedback" *ngIf="formNewProfile.controls['name'].errors && showErrorProfile"> 
                                     Debe indicar el nombre del perfil
                                 </div>
@@ -41,7 +41,7 @@
                                 <label>Descripción del perfil</label>
                                 <textarea 
                                 [class.is-invalid]="formNewProfile.controls['description'].errors && showErrorProfile"
-                                rows="5" formControlName="description" type="text" class="form-control inputAlajandraLoQuisoAsi" placeholder="Escriba la descripción del perfil aquí" style="resize: none;"></textarea>
+                                rows="5" formControlName="description" type="text" class="form-control curstomInput" placeholder="Escriba la descripción del perfil aquí" style="resize: none;"></textarea>
                                 <div class="invalid-feedback" *ngIf="formNewProfile.controls['description'].errors && showErrorProfile"> 
                                     Debe indicar la descripción del perfil
                                 </div>
@@ -50,7 +50,7 @@
                                 <label>Responsabilidades del perfil</label>
                                 <textarea 
                                 [class.is-invalid]="formNewProfile.controls['responsabilities'].errors && showErrorProfile"
-                                rows="5" formControlName="responsabilities" type="text" class="form-control inputAlajandraLoQuisoAsi" placeholder="Escriba las responsabilidades del perfil aquí" style="resize: none;"></textarea>
+                                rows="5" formControlName="responsabilities" type="text" class="form-control curstomInput" placeholder="Escriba las responsabilidades del perfil aquí" style="resize: none;"></textarea>
                                 <div class="invalid-feedback" *ngIf="formNewProfile.controls['responsabilities'].errors && showErrorProfile"> 
                                     Debe indicar las responsabilidades del perfil
                                 </div>
@@ -110,14 +110,14 @@
                         <div *ngFor="let course of coursesSelectedPerfil; let i = index" class="course-item" cdkDrag>
                           <div fxLayout="row" fxLayoutAlign="space-between center" class="course-row">
                             <div fxLayout="row" fxLayoutAlign="start center">
-                              <img  [src]="icon.drag" class="drag-icon cursorPointer" cdkDragHandle alt="Drag"> <!-- drag icon -->
+                              <img  [src]="icon.drag" class="drag-icon cursorPointer" cdkDragHandle alt="Drag">
                               <div class="order-number pdl05">{{ i + 1 }}</div>
                               <div class="course-name">{{ course.titulo }}</div>
                             </div>
-                            <img (click)="retirarCursoPlandeEstudio(course)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash" alt="Delete"> <!-- trash icon -->
+                            <img (click)="retirarCursoPlandeEstudio(course)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash" alt="Delete">
                           </div>
                         </div>
-                      </div>
+                    </div>
                 </div>
             </div>
         </ng-container>
@@ -271,7 +271,7 @@
                         </div>
                         <div fxLayout="row" fxLayoutGap="10px" class="pdt05">
                             <app-student-list 
-                                [usersListed]="'usersWithoutProfile'"
+                                usersListed="usersWithoutProfile"
                                 [displayOptionsColumn]="true"
                                 [enableNavigateToUser]="false"
                                 [initialSelectedUsers]="usersProfile"
@@ -351,7 +351,7 @@
                         <!-- Label y input alineados a la derecha -->
                         <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px">
                             <label>Puntos</label>
-                            <input [(ngModel)]="pregunta.points" type="number" min="0" class="form-control inputAlajandraLoQuisoAsi w-25">
+                            <input [(ngModel)]="pregunta.points" type="number" min="0" class="form-control curstomInput w-25">
                         </div>
                     </div>
                     <div fxLayout="row" fxLayoutAlign="start center" class="pdt10">
@@ -381,7 +381,7 @@
                     </div>
                     <div fxLayout="row">
                         <div class="form-group pdt10 fw">
-                            <textarea [(ngModel)]="pregunta.text" rows="3"  type="text" class="form-control inputAlajandraLoQuisoAsi" placeholder="Escriba aqui la pregunta" style="resize: none;"></textarea>
+                            <textarea [(ngModel)]="pregunta.text" rows="3"  type="text" class="form-control curstomInput" placeholder="Escriba aqui la pregunta" style="resize: none;"></textarea>
                             <div class="invalid-feedback">
                                 Debe indicar la pregunta.
                             </div>
@@ -419,7 +419,7 @@
                                         <div *ngIf="option.placeholder == placeHolder" fxLayout="row" fxLayoutAlign="space-between center" class="fw pdb05">
 
                                             <!-- Input field -->
-                                            <input [(ngModel)]="option.text" type="text" class="form-control inputAlajandraLoQuisoAsi w-40" placeholder="">
+                                            <input [(ngModel)]="option.text" type="text" class="form-control curstomInput w-40" placeholder="">
                                             <!-- Contenedor para el checkbox y el icono de trash -->
                                             <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
                                                 <input (change)="toggleOptionValue(pregunta,optIndex)" [checked]="option.isCorrect" type="checkbox" value="{{ optIndex }}"/>
@@ -453,7 +453,7 @@
                                     <!-- Contenedor para el número y el input -->
                                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
                                         <span class="gray-6">{{ optIndex + 1 }}.</span>
-                                        <input [(ngModel)]="option.text" type="text" class="form-control inputAlajandraLoQuisoAsi" placeholder="">
+                                        <input [(ngModel)]="option.text" type="text" class="form-control curstomInput" placeholder="">
                                     </div>
                             
                                     <!-- Contenedor para el checkbox y el icono de trash -->
@@ -477,7 +477,7 @@
                                     <!-- Contenedor para el número y el input -->
                                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
                                         <span class="gray-6">{{ optIndex + 1 }}.</span>
-                                        <input [(ngModel)]="option.text" type="text" class="form-control inputAlajandraLoQuisoAsi" placeholder="">
+                                        <input [(ngModel)]="option.text" type="text" class="form-control curstomInput" placeholder="">
                                     </div>
                             
                                     <!-- Contenedor para el checkbox y el icono de trash -->
@@ -501,7 +501,7 @@
                                     <!-- Contenedor para el número y el input -->
                                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
                                         <span class="gray-6">{{ optIndex + 1 }}.</span>
-                                        <input [(ngModel)]="option.text" type="text" class="form-control inputAlajandraLoQuisoAsi" placeholder="">
+                                        <input [(ngModel)]="option.text" type="text" class="form-control curstomInput" placeholder="">
                                     </div>
                                     <!-- Contenedor para el checkbox y el icono de trash -->
                                     <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">

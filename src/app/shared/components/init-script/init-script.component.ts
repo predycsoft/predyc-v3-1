@@ -130,7 +130,8 @@ export class InitScriptComponent {
         birthdate: Date.parse(user.birthdate),
         createdAt: Date.parse(user.createdAt),
         updatedAt: Date.parse(user.updatedAt),
-        enterprise: enterpriseRef
+        enterprise: enterpriseRef,
+        performance: user.performance as 'no plan' | 'low' | 'medium' | 'high' | null
       })
     })
     for (let user of users) {
