@@ -628,10 +628,11 @@ export class CreateProfileComponent {
       });
       console.log('arrayRef users',arrayRef)
       this.profile.usersRef = arrayRef;
-      
-
-      //this.courseService.addCourseUser()
       this.saveProfile();
+      let profileRef = await this.afs.collection<Profile>(Profile.collection).doc(this.profile.id).ref;
+      arrayRef.forEach(userRef => {//creo que deberia ser un cloud funtion
+        this.profileService.saveUserProfileLog(userRef,profileRef)
+      });
     }
 
   }
