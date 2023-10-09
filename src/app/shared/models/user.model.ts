@@ -8,7 +8,6 @@ export interface UserJson {
   createdAt: number | null // timestamp
   currentlyWorking: boolean
   degree: string | null
-  // departmentId: string | null
   department: DocumentReference | null,
   displayName: string | null
   email: string | null
@@ -25,7 +24,6 @@ export interface UserJson {
   name: string | null
   phoneNumber: string | null
   photoUrl: string | null
-  // profileId: string | null
   zipCode: number | null
   profile: DocumentReference | null
   role: typeof User.ROLE_ADMIN | typeof User.ROLE_STUDENT
@@ -34,7 +32,7 @@ export interface UserJson {
   uid: string | null
   updatedAt: number | null
   avgScore: number
-  performance: string | null
+  performance: 'no plan'| 'low'| 'medium'| 'high'| null
   ratingPoints: number
 }
 
@@ -53,7 +51,6 @@ export class User {
     public createdAt: number | null, // timestamp
     public currentlyWorking: boolean,
     public degree: string | null,
-    // public departmentId: string | null,
     public department: DocumentReference | null,
     public displayName: string | null,
     public email: string | null,
@@ -70,7 +67,6 @@ export class User {
     public name: string | null,
     public phoneNumber: string | null,
     public photoUrl: string | null,
-    // public profileId: string | null,
     public zipCode: number | null,
     public profile: DocumentReference | null,
     public role: typeof User.ROLE_ADMIN | typeof User.ROLE_STUDENT,
@@ -82,7 +78,7 @@ export class User {
 
     // metrics
     public avgScore: number,
-    public performance: string | null,
+    public performance: 'no plan'| 'low'| 'medium'| 'high'| null,
     public ratingPoints: number,
   ) {}
 
@@ -136,7 +132,6 @@ export class User {
       createdAt: null,
       currentlyWorking: false,
       degree: null,
-      // departmentId: null,
       department: null,
       displayName: null,
       email: null,
@@ -153,7 +148,6 @@ export class User {
       name: null,
       phoneNumber: null,
       photoUrl: null,
-      // profileId: null,
       zipCode: null,
       profile: null,
       role: configObj.role,
@@ -176,7 +170,6 @@ export class User {
       userJson.createdAt,
       userJson.currentlyWorking,
       userJson.degree,
-      // userJson.departmentId,
       userJson.department,
       userJson.displayName,
       userJson.email,
@@ -193,7 +186,6 @@ export class User {
       userJson.name,
       userJson.phoneNumber,
       userJson.photoUrl,
-      // userJson.profileId,
       userJson.zipCode,
       userJson.profile,
       userJson.role,
@@ -216,7 +208,6 @@ export class User {
       createdAt: this.createdAt,
       currentlyWorking: this.currentlyWorking,
       degree: this.degree,
-      // departmentId: this.departmentId,
       department: this.department,
       displayName: this.displayName,
       email: this.email,
@@ -233,7 +224,6 @@ export class User {
       name: this.name,
       phoneNumber: this.phoneNumber,
       photoUrl: this.photoUrl,
-      // profileId: this.profileId,
       zipCode: this.zipCode,
       profile: this.profile,
       role: this.role,

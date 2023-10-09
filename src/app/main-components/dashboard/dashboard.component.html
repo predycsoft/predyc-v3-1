@@ -7,14 +7,23 @@
         </span>
     </div>
     <div fxLayout="row" fxLayoutAlign="space-between" class="mgt15">
-        <div class="w-35 radius10 border">
-            <span>Horas de estudio</span>
+        <div fxLayout="column" fxLayoutGap="0.75rem" class="w-35">
+            <div class="radius10 border fw">
+                <span>Horas de estudio</span>
+            </div>
         </div>
-        <div class="w-30 radius10 border">
-            <span>Ritmo de usuarios</span>
+        <div fxLayout="column" fxLayoutGap="0.75rem" class="w-30">
+            <div class="radius10 border fw">
+                <span>Ritmo de usuarios</span>
+            </div>
+            <div class="radius10 border fw">
+                <app-ranking-list></app-ranking-list>
+            </div>
         </div>
-        <div class="w-30 radius10 border fh">
-            <app-notifications-dashboard></app-notifications-dashboard>
+        <div fxLayout="column" class="w-30">
+            <div class="radius10 border fh fw">
+                <app-notifications-dashboard></app-notifications-dashboard>
+            </div>
         </div>
     </div>     
 </div>

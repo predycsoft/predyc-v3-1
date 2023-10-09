@@ -31,8 +31,8 @@ export const usersData = [
         "uid": null,        
         "updatedAt": "2023-09-21T00:00:00Z",
         "avgScore": null,
-        "performance": null,
-        "ratingPoints": null
+        "performance": "high",
+        "ratingPoints": 100
     },
     {
         "birthdate": "1995-04-12T14:00:00Z",
@@ -66,8 +66,8 @@ export const usersData = [
         "uid": null,        
         "updatedAt": "2023-09-21T00:00:00Z",
         "avgScore": null,
-        "performance": null,
-        "ratingPoints": null
+        "performance": "high",
+        "ratingPoints": 90
     },
     {
         "birthdate": "1996-03-20T14:00:00Z",
@@ -101,8 +101,8 @@ export const usersData = [
         "uid": null,        
         "updatedAt": "2023-09-21T00:00:00Z",
         "avgScore": null,
-        "performance": null,
-        "ratingPoints": null
+        "performance": "high",
+        "ratingPoints": 80
     },
     {
         "birthdate": "1996-09-13T14:00:00Z",
@@ -136,8 +136,8 @@ export const usersData = [
         "uid": null,        
         "updatedAt": "2023-09-21T00:00:00Z",
         "avgScore": null,
-        "performance": null,
-        "ratingPoints": null
+        "performance": "medium",
+        "ratingPoints": 75
     },
     {
         "birthdate": "1995-07-27T14:00:00Z",
@@ -171,8 +171,8 @@ export const usersData = [
         "uid": null,        
         "updatedAt": "2023-09-21T00:00:00Z",
         "avgScore": null,
-        "performance": null,
-        "ratingPoints": null
+        "performance": "medium",
+        "ratingPoints": 70
     },
     {
         "birthdate": "1990-04-12T14:00:00Z",
@@ -206,8 +206,8 @@ export const usersData = [
         "uid": null,        
         "updatedAt": "2023-09-21T00:00:00Z",
         "avgScore": null,
-        "performance": null,
-        "ratingPoints": null
+        "performance": "medium",
+        "ratingPoints": 50
     },
     {
         "birthdate": "1995-04-12T14:00:00Z",
@@ -241,8 +241,8 @@ export const usersData = [
         "uid": null,        
         "updatedAt": "2023-09-21T00:00:00Z",
         "avgScore": null,
-        "performance": null,
-        "ratingPoints": null
+        "performance": "low",
+        "ratingPoints": 45
     },
     {
         "birthdate": "1992-01-27T14:00:00Z",
@@ -276,8 +276,8 @@ export const usersData = [
         "uid": null,        
         "updatedAt": "2023-09-21T00:00:00Z",
         "avgScore": null,
-        "performance": null,
-        "ratingPoints": null
+        "performance": "no plan",
+        "ratingPoints": 35
     },
     {
         "birthdate": "1985-04-13T14:00:00Z",
@@ -311,7 +311,7 @@ export const usersData = [
         "uid": null,        
         "updatedAt": "2023-09-21T00:00:00Z",
         "avgScore": null,
-        "performance": null,
+        "performance": "no plan",
         "ratingPoints": null
     },
     {
@@ -346,7 +346,7 @@ export const usersData = [
         "uid": null,        
         "updatedAt": "2023-09-21T00:00:00Z",
         "avgScore": null,
-        "performance": null,
+        "performance": "no plan",
         "ratingPoints": null
     },
     {
