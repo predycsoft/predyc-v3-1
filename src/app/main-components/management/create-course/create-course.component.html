@@ -30,7 +30,7 @@
                                 <label>Título</label>
                                 <input
                                 [class.is-invalid]="formNuevoCurso.controls['titulo'].errors && showErrorCusro"
-                                formControlName="titulo" type="text" class="form-control inputAlajandraLoQuisoAsi" placeholder="Escriba el título del curso aquí">
+                                formControlName="titulo" type="text" class="form-control curstomInput" placeholder="Escriba el título del curso aquí">
                                 <div class="invalid-feedback" *ngIf="formNuevoCurso.controls['titulo'].errors && showErrorCusro"> 
                                     Debe indicar el título del curso
                                 </div>
@@ -39,7 +39,7 @@
                                 <label>Resumen del curso</label>
                                 <textarea 
                                 [class.is-invalid]="formNuevoCurso.controls['resumen'].errors && showErrorCusro"
-                                rows="3" formControlName="resumen" type="text" class="form-control inputAlajandraLoQuisoAsi" placeholder="Escriba el resumen del curso aquí" style="resize: none;"></textarea>
+                                rows="3" formControlName="resumen" type="text" class="form-control curstomInput" placeholder="Escriba el resumen del curso aquí" style="resize: none;"></textarea>
                                 <div class="invalid-feedback" *ngIf="formNuevoCurso.controls['resumen'].errors && showErrorCusro"> 
                                     Debe indicar el resumen del curso
                                 </div>
@@ -48,7 +48,7 @@
                                 <label>Descripción del curso</label>
                                 <textarea
                                 [class.is-invalid]="formNuevoCurso.controls['descripcion'].errors && showErrorCusro"
-                                 rows="3"  formControlName="descripcion" type="text" class="form-control inputAlajandraLoQuisoAsi" placeholder="Escriba la descripción del curso aquí" style="resize: none;"></textarea>
+                                 rows="3"  formControlName="descripcion" type="text" class="form-control curstomInput" placeholder="Escriba la descripción del curso aquí" style="resize: none;"></textarea>
                                  <div class="invalid-feedback" *ngIf="formNuevoCurso.controls['descripcion'].errors && showErrorCusro"> 
                                     Debe indicar la descripción del curso
                                 </div>
@@ -76,7 +76,7 @@
                                         <label>Categoría</label>
                                         <select 
                                         [class.is-invalid]="formNuevoCurso.controls['categoria'].errors && showErrorCusro"
-                                        class="form-control inputAlajandraLoQuisoAsi" formControlName="categoria">
+                                        class="form-control curstomInput" formControlName="categoria">
                                             <option value=null>Selecciona una categoría</option>
                                             <option *ngFor="let categoria of categoriasArray" value="categoria.categoria">{{categoria.categoria | titlecase}}</option>
                                         </select>
@@ -90,7 +90,7 @@
                                         <label>Nivel del curso</label>
                                         <select
                                         [class.is-invalid]="formNuevoCurso.controls['nivel'].errors && showErrorCusro"
-                                        class="form-control inputAlajandraLoQuisoAsi" formControlName="nivel">
+                                        class="form-control curstomInput" formControlName="nivel">
                                             <option value=null>Selecciona el nivel</option>
                                             <option value="Básico">Básico</option>
                                             <option value="Intermedio">Intermedio</option>
@@ -106,7 +106,7 @@
                                         <label>Idioma</label>
                                         <select
                                         [class.is-invalid]="formNuevoCurso.controls['idioma'].errors && showErrorCusro"
-                                        class="form-control inputAlajandraLoQuisoAsi" formControlName="idioma">
+                                        class="form-control curstomInput" formControlName="idioma">
                                             <option value=null>Selecciona el idioma</option>
                                             <option value="Español">Español</option>
                                             <option value="Inglés">Inglés</option>
@@ -124,7 +124,7 @@
                                         <label>Nivel del curso</label>
                                         <select
                                         [class.is-invalid]="formNuevoCurso.controls['nivel'].errors && showErrorCusro"
-                                        class="form-control inputAlajandraLoQuisoAsi" formControlName="nivel">
+                                        class="form-control curstomInput" formControlName="nivel">
                                             <option value=null>Selecciona el nivel</option>
                                             <option value="Básico">Básico</option>
                                             <option value="Intermedio">Intermedio</option>
@@ -142,7 +142,7 @@
                             <div class="form-group pdt10">
                                 <label>A quién va dirigido</label>
                                 <textarea [class.is-invalid]="formNuevoCurso.controls['descripcion'].errors && showErrorCusro"
-                                rows="3"  formControlName="descripcion" type="text" class="form-control inputAlajandraLoQuisoAsi" placeholder="Escriba a qué público va dirigido aquí" style="resize: none;"></textarea>
+                                rows="3"  formControlName="descripcion" type="text" class="form-control curstomInput" placeholder="Escriba a qué público va dirigido aquí" style="resize: none;"></textarea>
                                 <div class="invalid-feedback" *ngIf="formNuevoCurso.controls['descripcion'].errors && showErrorCusro"> 
                                     Debe indicar a qué público va dirigido aquí.
                                 </div>
@@ -150,7 +150,7 @@
     
                             <div class="form-group pdt10">
                                 <label>Qué aprenderas</label>
-                                <textarea rows="3" [class.is-invalid]="formNuevoCurso.controls['contenido'].errors && showErrorCusro"  formControlName="contenido" type="text" class="form-control inputAlajandraLoQuisoAsi" placeholder="Escriba qué se aprenderá durante el curso." style="resize: none;"></textarea>
+                                <textarea rows="3" [class.is-invalid]="formNuevoCurso.controls['contenido'].errors && showErrorCusro"  formControlName="contenido" type="text" class="form-control curstomInput" placeholder="Escriba qué se aprenderá durante el curso." style="resize: none;"></textarea>
                                 <div class="invalid-feedback" *ngIf="formNuevoCurso.controls['contenido'].errors && showErrorCusro"> 
                                     Debe indicar que se aprenderá durante el curso.
                                 </div>
@@ -158,7 +158,7 @@
     
                             <div class="form-group pdt10">
                                 <label>Nombre del instructor</label>
-                                <input formControlName="instructor" [class.is-invalid]="formNuevoCurso.controls['instructor'].errors && showErrorCusro" type="text" class="form-control inputAlajandraLoQuisoAsi" placeholder="Escriba el nombre del instructor del curso aquí">
+                                <input formControlName="instructor" [class.is-invalid]="formNuevoCurso.controls['instructor'].errors && showErrorCusro" type="text" class="form-control curstomInput" placeholder="Escriba el nombre del instructor del curso aquí">
                                 <div class="invalid-feedback" *ngIf="formNuevoCurso.controls['instructor'].errors && showErrorCusro"> 
                                     Debe indicar el nombre del instructor.
                                 </div>
@@ -166,7 +166,7 @@
     
                             <div class="form-group pdt10">
                                 <label>Resumen del instructor</label>
-                                <textarea rows="3" [class.is-invalid]="formNuevoCurso.controls['resumen_instructor'].errors && showErrorCusro"  formControlName="resumen_instructor" type="text" class="form-control inputAlajandraLoQuisoAsi" placeholder="Escriba el resumen del instructor aquí." style="resize: none;"></textarea>
+                                <textarea rows="3" [class.is-invalid]="formNuevoCurso.controls['resumen_instructor'].errors && showErrorCusro"  formControlName="resumen_instructor" type="text" class="form-control curstomInput" placeholder="Escriba el resumen del instructor aquí." style="resize: none;"></textarea>
                                 <div class="invalid-feedback" *ngIf="formNuevoCurso.controls['resumen_instructor'].errors && showErrorCusro"> 
                                     Debe indicar el resumen del instructor.
                                 </div>
@@ -344,7 +344,7 @@
                                                                     Seleccionar sas
                                                                 </button> -->
                                                                 <span class="pdr05">Duración:</span>
-                                                                <div class="w-40"><input [(ngModel)]="clase.duracion" type="number" min="1" class="form-control inputAlajandraLoQuisoAsi"></div>
+                                                                <div class="w-40"><input [(ngModel)]="clase.duracion" type="number" min="1" class="form-control curstomInput"></div>
                                                                 <span class="pdl05">minutos</span>
                                                             </ng-container>
                                                             
@@ -484,7 +484,7 @@
                                         <!-- Label y input alineados a la derecha -->
                                         <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px">
                                             <label>Puntos</label>
-                                            <input [(ngModel)]="pregunta.points" type="number" min="0" class="form-control inputAlajandraLoQuisoAsi w-25">
+                                            <input [(ngModel)]="pregunta.points" type="number" min="0" class="form-control curstomInput w-25">
                                         </div>
                                     </div>
                                     <div fxLayout="row" fxLayoutAlign="start center" class="pdt10">
@@ -514,7 +514,7 @@
                                     </div>
                                     <div fxLayout="row">
                                         <div class="form-group pdt10 fw">
-                                            <textarea [(ngModel)]="pregunta.text" rows="3"  type="text" class="form-control inputAlajandraLoQuisoAsi" placeholder="Escriba aqui la pregunta" style="resize: none;"></textarea>
+                                            <textarea [(ngModel)]="pregunta.text" rows="3"  type="text" class="form-control curstomInput" placeholder="Escriba aqui la pregunta" style="resize: none;"></textarea>
                                             <div class="invalid-feedback">
                                                 Debe indicar la pregunta.
                                             </div>
@@ -552,7 +552,7 @@
                                                         <div *ngIf="option.placeholder == placeHolder" fxLayout="row" fxLayoutAlign="space-between center" class="fw pdb05">
 
                                                             <!-- Input field -->
-                                                            <input [(ngModel)]="option.text" type="text" class="form-control inputAlajandraLoQuisoAsi w-40" placeholder="">
+                                                            <input [(ngModel)]="option.text" type="text" class="form-control curstomInput w-40" placeholder="">
                                                             <!-- Contenedor para el checkbox y el icono de trash -->
                                                             <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
                                                                 <input (change)="toggleOptionValue(pregunta,optIndex)" [checked]="option.isCorrect" type="checkbox" value="{{ optIndex }}"/>
@@ -586,7 +586,7 @@
                                                     <!-- Contenedor para el número y el input -->
                                                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
                                                         <span class="gray-6">{{ optIndex + 1 }}.</span>
-                                                        <input [(ngModel)]="option.text" type="text" class="form-control inputAlajandraLoQuisoAsi" placeholder="">
+                                                        <input [(ngModel)]="option.text" type="text" class="form-control curstomInput" placeholder="">
                                                     </div>
                                             
                                                     <!-- Contenedor para el checkbox y el icono de trash -->
@@ -610,7 +610,7 @@
                                                     <!-- Contenedor para el número y el input -->
                                                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
                                                         <span class="gray-6">{{ optIndex + 1 }}.</span>
-                                                        <input [(ngModel)]="option.text" type="text" class="form-control inputAlajandraLoQuisoAsi" placeholder="">
+                                                        <input [(ngModel)]="option.text" type="text" class="form-control curstomInput" placeholder="">
                                                     </div>
                                             
                                                     <!-- Contenedor para el checkbox y el icono de trash -->
@@ -634,7 +634,7 @@
                                                     <!-- Contenedor para el número y el input -->
                                                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
                                                         <span class="gray-6">{{ optIndex + 1 }}.</span>
-                                                        <input [(ngModel)]="option.text" type="text" class="form-control inputAlajandraLoQuisoAsi" placeholder="">
+                                                        <input [(ngModel)]="option.text" type="text" class="form-control curstomInput" placeholder="">
                                                     </div>
                                                     <!-- Contenedor para el checkbox y el icono de trash -->
                                                     <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
@@ -1170,7 +1170,7 @@
                                             <input formControlName="titulo"
                                                 [class.is-invalid]="formNuevaActividadBasica.controls['titulo'].errors && showErrorActividad"
                                                 type="text" 
-                                                class="form-control inputAlajandraLoQuisoAsi custom-input" placeholder="Escriba el título de la actividad aquí">
+                                                class="form-control curstomInput custom-input" placeholder="Escriba el título de la actividad aquí">
                                         </div>
                                         <div class="custom-invalid-feedback" *ngIf="formNuevaActividadBasica.controls['titulo'].errors && showErrorActividad"> 
                                             Debe indicar el título de la actividad
@@ -1180,7 +1180,7 @@
                                         <label>Descripción</label>
                                         <textarea rows="4" 
                                         [class.is-invalid]="formNuevaActividadBasica.controls['descripcion'].errors && showErrorActividad"
-                                        formControlName="descripcion" type="text" class="form-control inputAlajandraLoQuisoAsi" placeholder="Escriba una pequeña descripción" style="resize: none;"></textarea>
+                                        formControlName="descripcion" type="text" class="form-control curstomInput" placeholder="Escriba una pequeña descripción" style="resize: none;"></textarea>
                                         <div class="invalid-feedback" *ngIf="formNuevaActividadBasica.controls['descripcion'].errors && showErrorActividad"> 
                                             Debe indicar la Descripción de la actividad
                                         </div>
@@ -1189,7 +1189,7 @@
                                         <label>Duración estimada (minutos)</label>
                                         <input formControlName="duracion"
                                         [class.is-invalid]="formNuevaActividadBasica.controls['duracion'].errors && showErrorActividad"
-                                        type="number" min="1" class="form-control inputAlajandraLoQuisoAsi">
+                                        type="number" min="1" class="form-control curstomInput">
                                         <div class="invalid-feedback" *ngIf="formNuevaActividadBasica.controls['duracion'].errors && showErrorActividad"> 
                                             Es obligatorio la duracion minima de al menos 1 minuto
                                         </div>
@@ -1254,7 +1254,7 @@
                                         <label>Instrucciones</label>
                                         <textarea formControlName="instrucciones"
                                         [class.is-invalid]="formNuevaActividadGeneral.controls['instrucciones'].errors && showErrorActividad" 
-                                        rows="3"  type="text" class="form-control inputAlajandraLoQuisoAsi" placeholder="Escriba el resumen del curso aquí" style="resize: none;"></textarea>
+                                        rows="3"  type="text" class="form-control curstomInput" placeholder="Escriba el resumen del curso aquí" style="resize: none;"></textarea>
                                         <div class="invalid-feedback" *ngIf="formNuevaActividadGeneral.controls['instrucciones'].errors && showErrorActividad">
                                             Debe indicar las instrucciones de la actividad.
                                         </div>
@@ -1266,7 +1266,7 @@
                                             <img [src]="icon.pdf" class="h20px input-icon" alt="">
                                             <input 
                                             [class.is-invalid]="formNuevaActividadGeneral.controls['recursos'].errors && showErrorActividad"
-                                            (change)="onFileSelected($event,selectedClase,false,selectedModulo,true,'archivoActividad')" type="file" accept=".pdf"   #fileActivityImput class="form-control inputAlajandraLoQuisoAsi custom-input">
+                                            (change)="onFileSelected($event,selectedClase,false,selectedModulo,true,'archivoActividad')" type="file" accept=".pdf"   #fileActivityImput class="form-control curstomInput custom-input">
                                             <!-- <button class="custom-button ">Botón</button> -->
                                             <button (click)="fileActivityImput.click()" class="custom-button grayButton ft500 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                                                 <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
@@ -1335,7 +1335,7 @@
                                             <!-- Label y input alineados a la derecha -->
                                             <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px">
                                                 <label>Puntos</label>
-                                                <input [(ngModel)]="pregunta.points" type="number" min="0" class="form-control inputAlajandraLoQuisoAsi w-25">
+                                                <input [(ngModel)]="pregunta.points" type="number" min="0" class="form-control curstomInput w-25">
                                             </div>
                                         </div>
                                         <div fxLayout="row" fxLayoutAlign="start center" class="pdt10">
@@ -1365,7 +1365,7 @@
                                         </div>
                                         <div fxLayout="row">
                                             <div class="form-group pdt10 fw">
-                                                <textarea [(ngModel)]="pregunta.text" rows="3"  type="text" class="form-control inputAlajandraLoQuisoAsi" placeholder="Escriba aqui la pregunta" style="resize: none;"></textarea>
+                                                <textarea [(ngModel)]="pregunta.text" rows="3"  type="text" class="form-control curstomInput" placeholder="Escriba aqui la pregunta" style="resize: none;"></textarea>
                                                 <div class="invalid-feedback">
                                                     Debe indicar la pregunta.
                                                 </div>
@@ -1403,7 +1403,7 @@
                                                             <div *ngIf="option.placeholder == placeHolder" fxLayout="row" fxLayoutAlign="space-between center" class="fw pdb05">
     
                                                                 <!-- Input field -->
-                                                                <input [(ngModel)]="option.text" type="text" class="form-control inputAlajandraLoQuisoAsi w-40" placeholder="">
+                                                                <input [(ngModel)]="option.text" type="text" class="form-control curstomInput w-40" placeholder="">
                                                                 <!-- Contenedor para el checkbox y el icono de trash -->
                                                                 <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
                                                                     <input (change)="toggleOptionValue(pregunta,optIndex)" [checked]="option.isCorrect" type="checkbox" value="{{ optIndex }}"/>
@@ -1437,7 +1437,7 @@
                                                         <!-- Contenedor para el número y el input -->
                                                         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
                                                             <span class="gray-6">{{ optIndex + 1 }}.</span>
-                                                            <input [(ngModel)]="option.text" type="text" class="form-control inputAlajandraLoQuisoAsi" placeholder="">
+                                                            <input [(ngModel)]="option.text" type="text" class="form-control curstomInput" placeholder="">
                                                         </div>
                                                 
                                                         <!-- Contenedor para el checkbox y el icono de trash -->
@@ -1461,7 +1461,7 @@
                                                         <!-- Contenedor para el número y el input -->
                                                         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
                                                             <span class="gray-6">{{ optIndex + 1 }}.</span>
-                                                            <input [(ngModel)]="option.text" type="text" class="form-control inputAlajandraLoQuisoAsi" placeholder="">
+                                                            <input [(ngModel)]="option.text" type="text" class="form-control curstomInput" placeholder="">
                                                         </div>
                                                 
                                                         <!-- Contenedor para el checkbox y el icono de trash -->
@@ -1485,7 +1485,7 @@
                                                         <!-- Contenedor para el número y el input -->
                                                         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
                                                             <span class="gray-6">{{ optIndex + 1 }}.</span>
-                                                            <input [(ngModel)]="option.text" type="text" class="form-control inputAlajandraLoQuisoAsi" placeholder="">
+                                                            <input [(ngModel)]="option.text" type="text" class="form-control curstomInput" placeholder="">
                                                         </div>
                                                         <!-- Contenedor para el checkbox y el icono de trash -->
                                                         <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">

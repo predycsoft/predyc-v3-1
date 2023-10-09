@@ -86,7 +86,7 @@
                 <label>Nombre</label>
                 <input
                 [class.is-invalid]="formNewDepartment.controls['name'].errors && showErrorDeparment"
-                formControlName="name" type="text" class="form-control inputAlajandraLoQuisoAsi" placeholder="Escriba el título del curso aquí">
+                formControlName="name" type="text" class="form-control curstomInput" placeholder="Escriba el título del curso aquí">
                 <div class="invalid-feedback" *ngIf="formNewDepartment.controls['name'].errors && showErrorDeparment"> 
                     Debe indicar el nombre del departamento
                 </div>

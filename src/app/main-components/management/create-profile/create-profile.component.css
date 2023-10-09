@@ -169,29 +169,29 @@
   padding: 0px !important;
 }
 
-.inputAlajandraLoQuisoAsi{
+.curstomInput{
   color: var(--gray-9) !important;
 }
 
 /* Estilo para el placeholder de la clase personalizada */
-.inputAlajandraLoQuisoAsi::placeholder {
+.curstomInput::placeholder {
   color: var(--gray-5) !important; /* Color del texto del placeholder */
 }
 
 /* En caso de que quieras estilos para navegadores específicos */
-.inputAlajandraLoQuisoAsi::-webkit-input-placeholder {
+.curstomInput::-webkit-input-placeholder {
   color: var(--gray-5) !important; /* Para navegadores basados en WebKit como Safari y Chrome antiguos */
 }
 
-.inputAlajandraLoQuisoAsi::-moz-placeholder {
+.curstomInput::-moz-placeholder {
   color: var(--gray-5) !important; /* Para Firefox antiguos */
 }
 
-.inputAlajandraLoQuisoAsi:-ms-input-placeholder {
+.curstomInput:-ms-input-placeholder {
   color: var(--gray-5) !important; /* Para Internet Explorer 10+ */
 }
 
-.inputAlajandraLoQuisoAsi::-ms-input-placeholder {
+.curstomInput::-ms-input-placeholder {
   color: var(--gray-5) !important; /* Para Microsoft Edge */
 }
 
