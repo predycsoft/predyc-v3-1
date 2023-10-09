@@ -110,14 +110,14 @@
                         <div *ngFor="let course of coursesSelectedPerfil; let i = index" class="course-item" cdkDrag>
                           <div fxLayout="row" fxLayoutAlign="space-between center" class="course-row">
                             <div fxLayout="row" fxLayoutAlign="start center">
-                              <img  [src]="icon.drag" class="drag-icon cursorPointer" cdkDragHandle alt="Drag"> <!-- drag icon -->
+                              <img  [src]="icon.drag" class="drag-icon cursorPointer" cdkDragHandle alt="Drag">
                               <div class="order-number pdl05">{{ i + 1 }}</div>
                               <div class="course-name">{{ course.titulo }}</div>
                             </div>
-                            <img (click)="retirarCursoPlandeEstudio(course)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash" alt="Delete"> <!-- trash icon -->
+                            <img (click)="retirarCursoPlandeEstudio(course)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash" alt="Delete">
                           </div>
                         </div>
-                      </div>
+                    </div>
                 </div>
             </div>
         </ng-container>
