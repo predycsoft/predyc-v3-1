@@ -256,12 +256,17 @@ export class CreateProfileComponent {
               return cursoIn.id
             })
             let cateogorias = this.categoriasArray;
+            let arrayCourses=[]
             cateogorias.forEach(categoria => {
               let courses = categoria.courses.filter(courseIn => arrayCorusesRef.includes(courseIn.id));
               courses.forEach(cursoSelect => {
-                this.selectCourse(cursoSelect);
+                arrayCourses.push(cursoSelect);
               });
-
+            });
+            arrayCourses = Array.from(new Map(arrayCourses.map(obj => [obj.id, obj])).values());
+            arrayCourses.sort((a, b) => arrayCorusesRef.indexOf(a.id) - arrayCorusesRef.indexOf(b.id));
+            arrayCourses.forEach(cursoSelect => {
+              this.selectCourse(cursoSelect);
             });
             this.getexamProfile(this.profileId);
           }
@@ -623,6 +628,9 @@ export class CreateProfileComponent {
       });
       console.log('arrayRef users',arrayRef)
       this.profile.usersRef = arrayRef;
+      
+
+      //this.courseService.addCourseUser()
       this.saveProfile();
     }
 
