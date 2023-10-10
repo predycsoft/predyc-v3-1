@@ -1,5 +1,12 @@
 import { Component } from '@angular/core';
 import { IconService } from '../../services/icon.service';
+import { studyPlanData } from 'src/assets/data/studyPlan.data';
+import { ActivatedRoute } from '@angular/router';
+import { UserService } from '../../services/user.service';
+import { User } from '../../models/user.model';
+import { firstValueFrom } from 'rxjs';
+import { AngularFireFunctions } from '@angular/fire/compat/functions';
+import { AlertsService } from '../../services/alerts.service';
 
 @Component({
   selector: 'app-study-plan',
@@ -8,81 +15,44 @@ import { IconService } from '../../services/icon.service';
 })
 export class StudyPlanComponent {
 
-  firstStartDate = 1680528000000 //1 oct
-  oneDay = 24 * 60 * 60 * 1000
   today = Date.now()
+  studyPlanData = studyPlanData
+  student: User
+  clickedCourse: { [id: string]: boolean } = {};
 
-  studyPlanArr = [
-    [
-      { courseTitle: "Venta del valor generado en el de mantenimiento", startDate: this.firstStartDate, endDate: 0, completionDate: 0 },
-      { courseTitle: "Gestión y optimización del mantneimiento", startDate: 0, endDate: 0, completionDate: 0 },
-      { courseTitle: "Fundamentos en proyectos de confiabilidad", startDate: 0, endDate: 0, completionDate: 0 },
-      { courseTitle: "Análisis de fluidos lubricantes", startDate: 0, endDate: 0, completionDate: 0 },
-      { courseTitle: "Gestión de paradas de mantenimiento", startDate: 0, endDate: 0, completionDate: 0 },
-      { courseTitle: "Aplicación de lubricantes en la industria", startDate: 0, endDate: 0, completionDate: 0 },
-      { courseTitle: "Transición a la industriA 4.0", startDate: 0, endDate: 0, completionDate: 0 },
-      { courseTitle: "Proceso de gestión de mantenimiento", startDate: 0, endDate: 0, completionDate: 0 },
-    ],
-    [
-      { courseTitle: "Contabilidad financiera para ingenieros", startDate: 0, endDate: 0, completionDate: 0},
-      { courseTitle: "Gestión de alcance", startDate: 0, endDate: 0, completionDate: 0},
-      { courseTitle: "Ventas del valor generado en la gestion del mantenimiento", startDate: 0, endDate: 0, completionDate: 0},
-    ],
-    [
-      { courseTitle: "Autocad para gestión de proyectos", startDate: 0, endDate: 0, completionDate: 0},
-      { courseTitle: "Fundamentos de direccion de proyectos", startDate: 0, endDate: 0, completionDate: 0},
-      { courseTitle: "Mantenimiento productivo total", startDate: 0, endDate: 0, completionDate: 0},
-      { courseTitle: "Gestión del alcance", startDate: 0, endDate: 0, completionDate: 0},
-    ],
-    [
-      { courseTitle: "Autoevaluación de mantenimiento", startDate: 0, endDate: 0, completionDate: 0},
-      { courseTitle: "Gestión de mantenimiento", startDate: 0, endDate: 0, completionDate: 0},
-    ],
-  ];
-
-  data = [
-    { month: "Octubre", year: "2023", studyPlan: this.studyPlanArr[0] },
-    { month: "Novimebre", year: "2023", studyPlan: this.studyPlanArr[1] },
-    { month: "Diciembre", year: "2023", studyPlan: this.studyPlanArr[2] },
-    { month: "Enero", year: "2024", studyPlan: this.studyPlanArr[3] },
-  ];
   constructor(
     public icon: IconService,
+    private userService: UserService,
+    private fireFunctions: AngularFireFunctions,
+    private alertService: AlertsService,
+    private route: ActivatedRoute,
   ) {}
 
   ngOnInit() {
-    let lastCompletionDate = 0; // Fecha de completacion del curso anterior
-
-    this.studyPlanArr.forEach(studyPlan => {
-      for(let i = 0; i < studyPlan.length; i++) {
-        let randomDays = this.getRandomDays();
-        studyPlan[i].endDate = studyPlan[i].startDate + (randomDays * 24 * 60 * 60 * 1000);
-
-        if (i > 0) lastCompletionDate = studyPlan[i - 1].completionDate;
-        
-        studyPlan[i].completionDate = this.getRandomTimestamp(studyPlan[i].startDate, this.today, lastCompletionDate);
-        
-        if(i + 1 < studyPlan.length) {
-          studyPlan[i + 1].startDate = studyPlan[i].endDate + (24 * 60 * 60 * 1000);
-        }
-      }
-    });
-    console.log("this.data", this.data)
+    const studentUid = this.route.snapshot.paramMap.get('uid');
+    if (studentUid) this.student = this.userService.getUser(studentUid)
   }
 
-  getRandomDays() {
-    return Math.floor(Math.random() * 5) + 1; // Retorna un número aleatorio entre 1 y 5
-  }
+  async sendEmail(course) {
+    this.clickedCourse[course.courseTitle] = true;
+    let sender = "capacitacion@predyc.com"
+    let recipients = [this.student.email]
+    let subject = "Retraso en curso."
+    let text = `Tienes un retraso en tu curso ${course.courseTitle}.`
 
-  getRandomTimestamp(start: number, end: number, lastCompletion: number): number {
-    let date;
-    do {
-      date = start + Math.random() * (end - start);
-    } while (date <= lastCompletion);
-    return date;
-  }
 
-  sendEmail(course) {
+    try {
+      await firstValueFrom(this.fireFunctions.httpsCallable('sendMail')({
+        sender: sender,
+        recipients: recipients,
+        subject: subject,
+        text: text,
+      }));    
+      console.log("Email enviado")
+    } catch (error) {
+      console.log("error", error)
+      this.alertService.errorAlert("")
+    }
 
   }
 }
