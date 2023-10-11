@@ -1,6 +1,7 @@
 
-<div class="mgl03 mgt10">
+<div class="mgl03 mgt10" fxLayout="row" fxLayoutAlign="space-between center">
     <app-search-input-box></app-search-input-box>
+    <button class="blueButton btn radius40" (click)="showAddUserModal(modal)">Agregar usuario</button>
 </div>
 <div class="mgt10">
     <table mat-table [dataSource]="dataSource" matSort>
@@ -95,3 +96,22 @@
         aria-label="Select page of users"
         ></mat-paginator>
 </div>
+
+<!-- MODAL -->
+<ng-template #modal let-modal>
+    <div class="modal-header bg-web-primary text-white px-3 py-1">
+        <div class="modal-title pd10" fxLayout="row" fxLayoutAlign="start center">
+            <span class="ft16 ft600 gray-10">Crear nuevo usuario</span>
+        </div>
+        <img style="cursor: pointer;" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px" alt="">
+    </div>
+    <div class="modal-body pd20">
+        <p>¿Deseas crear un usuario para <span class="ft600 gray-10">Mi Equipo</span> o solamente como <span class="ft600 gray-10">Administrador</span>?</p>
+        <p>Recuerda que crear un usuario como parte de <span class="ft600 gray-10">Mi Equipo</span> le permitirá acceder como usuario estandar</p>
+        <div class="dialog-buttons" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="8px">
+            <button class="blueButton radius40">Crear en Mi Equipo</button>
+            <span>o</span>
+            <button class="blueButton radius40">Crear como Administrador</button>
+        </div>
+    </div>
+</ng-template>

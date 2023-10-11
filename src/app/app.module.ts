@@ -155,7 +155,7 @@ import { StudentDetailsComponent } from './main-components/management/my-team/st
     TooltipPointsComponent,
     StudyPlanComponent,
     StudentStatsComponent,
-    StudentDetailsComponent
+    StudentDetailsComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,7 +1,9 @@
 import { DataSource } from '@angular/cdk/collections';
 import { Component, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BehaviorSubject, Observable, Subject, Subscription, catchError, map, merge, of } from 'rxjs';
 import { User } from 'src/app/shared/models/user.model';
 import { IconService } from 'src/app/shared/services/icon.service';
@@ -32,10 +34,14 @@ export class MembersComponent {
   @ViewChild(MatSort) sort: MatSort;
 
   searchSubscription: Subscription
+
+  modal
   
   constructor(
     private userService: UserService,
     public icon: IconService,
+    private dialog: MatDialog,
+    private modalService: NgbModal,
     private searchInputService: SearchInputService,
     ) {}
 
@@ -67,6 +73,14 @@ export class MembersComponent {
 
   transformUserToStudent(user: User) {
     this.userService.transformUserToStudent(user)
+  }
+
+  showAddUserModal(content) {
+    this.modal = this.modalService.open(content, {
+      ariaLabelledBy: 'modal-basic-title',
+      centered: true,
+      size:'lg',
+    });
   }
 
 }
