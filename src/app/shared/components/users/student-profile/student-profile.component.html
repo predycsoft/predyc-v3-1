@@ -2,14 +2,14 @@
     <div fxLayout="row" fxLayoutAlign="space-between center">
         <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign=" center" class="pdl05 pdr05 pdt05 pdb05">
             <span class="ft500 ft20">
-                {{student.uid ? student.name : "Nuevo usuario"}}
+                {{student.uid ? student.name : student.role === "admin" ? "Nuevo administrador" : "Nuevo usuario"}}
             </span>
         </div>
         <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign=" center" class="pdl05 pdr05 pdt05 pdb05">
-            <button *ngIf="!isNewUser && !isEditing && !isStudentProfile" class="blueButton radius4" (click)="onEdit()" >Editar</button>
+            <button *ngIf="!isNewUser && !isEditing && !isStudentProfile" class="blueButton btn radius4" (click)="onEdit()" >Editar</button>
         </div>
         <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
-            <div class="iconContainer backGray2 cursorPointer mgl05" fxLayoutAlign="center center" (click)="hide()" #closeButton>
+            <div *ngIf="!isStudentProfile" class="iconContainer backGray2 cursorPointer mgl05" fxLayoutAlign="center center" (click)="hide()" #closeButton>
                 <img [src]="icon.close" class="  makeGray h20px">
             </div>
         </div>
@@ -145,7 +145,7 @@
             </span> -->
         </div>
         <div fxLayout="row" fxLayoutAlign="center center">
-            <button *ngIf="!isStudentProfile" [ngClass]="form.valid ? 'blueButton' : 'graybutton'" class="mgt10 radius20" type="submit">Guardar</button>
+            <button *ngIf="!isStudentProfile" [ngClass]="form.valid ? 'blueButton btn' : 'graybutton btn'" class="mgt10 radius20" type="submit">Guardar</button>
         </div>
     </form>
 </div>
