@@ -28,7 +28,7 @@ export class AlertsService {
     Swal.fire({
       icon: 'info',
       iconColor:'',
-      title: '¡Éxito!',
+      title: 'Information',
       confirmButtonColor: '',
       text: text
     }); 

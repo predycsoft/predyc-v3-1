@@ -15,34 +15,37 @@ export class ValidationComponent {
     private modalService: NgbModal
   ) {}
 
-  openEditValidationTestModal(): NgbModalRef {
+  openEditValidationTestModal(targetActivity=null): NgbModalRef {
     const modalRef = this.modalService.open(EditValidationTestComponent, {
       animation: true,
       centered: true,
-      size: 'lg'
+      size: 'xl'
     })
-    modalRef.componentInstance.testObject = {
-      attr1: "hola",
-      attr2: "hola1"
+    if (targetActivity) {
+      modalRef.componentInstance.existingActivity = targetActivity
     }
     return modalRef
   }
 
   createValidationTest() {
-    // const modalRef = this.openEditValidationTestModal({
-    //   attr1: "hola",
-    //   attr2: "hola1"
-    // })
+    const modalRef = this.openEditValidationTestModal()
     // modalRef.closed(result => {
     //   // this.activityService.addActivity()
     // })
+    modalRef.result.then(result => {
+      console.log("result", result)
+    }).catch(error => console.log("error", error))
   }
 
   editValidationTest() {
-    // this.openEditValidationTestModal({
-    //   attr1: "hola",
-    //   attr2: "hola1"
-    // })
+    const modalRef = this.openEditValidationTestModal({
+      title: 'test activity',
+      description: 'test description',
+      instructions: 'test instructions',
+    })
+    modalRef.result.then(result => {
+      console.log("result", result)
+    }).catch(error => console.log("error", error))
   }
 
 }

@@ -1,4 +1,538 @@
-<div class="modal-header bg-web-primary px-3 py-1">
+<!-- <div class="modal-header bg-web-primary px-3 py-1">
     HOLAAAA
-    {{ testObject | json }}
-</div>
+    {{ existingActivity | json }}
+    <button class="blueButton" (click)="onSubmit()">Submit</button>
+</div> -->
+
+<form [formGroup]="mainForm" (ngSubmit)="onSubmit()">
+    <div class="modal-header bg-web-primary text-white px-3 py-1" >
+        <div class="modal-title pd10 ">
+            <img [src]="icon.chess" class="h18px pdr05" alt="">
+            <span class="ft16 ft600 gray-10">{{ mainForm.get('modalPage1.title').value ? 'Vista previa - ' + mainForm.get('modalPage1.title').value : 'Crear actividad'}}</span>
+        </div>
+    </div>
+    <div class="modal-body">
+        <div fxLayout="row">
+            <div class="fw pdl10 pdr10 pdt10">
+                <div class="fw">
+                    <div class="stepper pdb10">
+                        <div class="step" *ngFor="let item of stepsActividad; let i = index">
+                            <div (click)="activeStep > i ? activeStep = i+1 : '' " class="no-select {{activeStep == i+1 ? 'titleActive ft400' : 'title'}}  {{ activeStep > i ? 'cursorPointer' : ''}}">{{ item }}</div>
+                            <div class="mgr05" *ngIf="i < stepsActividad.length - 1">
+                                <img [src]="icon.chevronRight" class=" {{activeStep == i+1 ? 'makeGray8' :  'makeGray'}}" alt="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div  fxLayout="row" fxLayoutGap="20px">
+            <div fxFlex="60%" class="smallScroll" style="overflow-y: auto;">
+                <div class="pdr05">
+                    <!-- Informacion basica -->
+                    <ng-container *ngIf="activeStep == 1">
+                        <div formGroupName="modalPage1" fxLayout="column" class="container pdl10 pdt10">
+                            <div fxLayout="row">
+                                <span class="titleActive ft400">Información básica</span>
+                            </div>
+                            <div fxLayout="column mgr20 fw">
+                                <!-- formulario de avtividad -->
+                                <div class="form-group pdt10">
+                                    <label>Título</label>
+                                    <div class="position-relative custom-input-container">
+                                        <img [src]="icon.chess" class="h20px input-icon" alt="">
+                                        <input
+                                            formControlName="title"
+                                            type="text" 
+                                            class="form-control custom-input"
+                                            placeholder="Escriba el título de la actividad aquí"
+                                            >
+                                    </div>
+                                    <div 
+                                        class="custom-invalid-feedback"
+                                        *ngIf="mainForm.get('modalPage1.title').errors && mainForm.get('modalPage1.title').touched"
+                                        > 
+                                        Debe indicar el título de la actividad
+                                    </div>
+                                </div>
+                                <div class="form-group pdt10">
+                                    <label>Descripción</label>
+                                    <textarea rows="4" 
+                                    [class.is-invalid]="mainForm.get('modalPage1.description').errors && mainForm.get('modalPage1.duration').touched"
+                                    formControlName="description" type="text" class="form-control" placeholder="Escriba una pequeña descripción" style="resize: none;"></textarea>
+                                    <div 
+                                        class="invalid-feedback"
+                                        *ngIf="mainForm.get('modalPage1.description').errors && mainForm.get('modalPage1.description').touched"
+                                        > 
+                                        Debe indicar la Descripción de la actividad
+                                    </div>
+                                </div>
+                                <div class="form-group pdt10 w-40">
+                                    <label>Duración estimada (minutos)</label>
+                                    <input formControlName="duration"
+                                        [class.is-invalid]="mainForm.get('modalPage1.duration').errors && mainForm.get('modalPage1.duration').touched"
+                                        type="number"
+                                        min="1"
+                                        class="form-control"
+                                        >
+                                    <div
+                                        class="invalid-feedback"
+                                        *ngIf="mainForm.get('modalPage1.duration').errors && mainForm.get('modalPage1.duration').touched"
+                                        >
+                                        <div *ngIf="mainForm.get('modalPage1.duration').errors?.required">
+                                            Es obligatorio especificar la duración de la actividad
+                                        </div>
+                                        <div *ngIf="mainForm.get('modalPage1.duration').errors?.min">
+                                            Es obligatorio la duracion minima de al menos 1 minuto
+                                        </div>
+                                        <div *ngIf="mainForm.get('modalPage1.duration').errors?.pattern">
+                                            La duración de la actividad debe ser un número
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>   
+                        </div>
+                    </ng-container>
+                    <!-- Instrucciones generales -->
+                    <!-- <ng-container *ngIf="activeStep == 2"> 
+                        <div formGroupName="modalPage2" fxFlex fxLayout="column" class="contanier pdl10 pdt10">
+                            <div fxLayout="row">
+                                <span class="titleActive ft400">Instrucciones generales de la actividad</span>
+                            </div>
+                            <div fxLayout="row" style="overflow-y: auto;">
+                                <div class="form-group pdt10">
+                                    <label>Video explicativo</label>
+                                    <div class="position-relative custom-input-container">
+                                        <img [src]="icon.videoChat" class="h20px input-icon" alt="">
+                                        <input 
+                                            [class.is-invalid]="mainForm.get('modalPage2.video').errors"
+                                            (change)="onFileSelected($event)"
+                                            type="file"
+                                            accept="video/mp4" 
+                                            #videoActivityInput
+                                            class="form-control custom-input"
+                                            placeholder="Escriba el título de la actividad aquí"
+                                            >
+                                        <button (click)="videoActivityInput.click()" class="custom-button grayButton ft500 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                            <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
+                                            Adjuntar
+                                        </button>
+                                    </div>
+                                    <div
+                                        class="custom-invalid-feedback"
+                                        *ngIf="mainForm.get('modalPage2.video').errors"
+                                    >
+                                        Debe adjuntar el video explicativo
+                                    </div>
+                                    <div>
+                                        <span class="ft800 ft10">Nota:</span><span class="ft10">&nbsp;se recomienda que los videos tenga al menos una resolucion de 720P y pesen menso de 4 Gb</span>
+                                    </div>
+                                </div>
+                                <div *ngIf="selectedClase['uploading'] && selectedClase['videoFileName']" class="form-group pdt10">
+                                    <div fxLayout="column">
+                                        <div fxFlex="25" fxLayout="row" fxLayoutAlign="center center" class="w-25">
+                                            <mat-progress-bar class="h10px radius6 {{selectedClase['videoUpload'] >= 100 ? 'complete-progress-bar' : '' }}" mode="determinate" [value]="selectedClase['videoUpload']"></mat-progress-bar>
+                                            <span *ngIf="selectedClase['videoUpload'] < 100" class="pdl05">{{ selectedClase['videoUpload'] }}%</span>
+                                            <img *ngIf="selectedClase['videoUpload'] >= 100" [src]="icon.check" class="h16px pdl05" alt="">
+                                        </div>
+                                        <div fxLayout="row" *ngIf="selectedClase.vimeoId1" >
+                                            <span>{{selectedClase.videoFileName}}&nbsp;</span>
+                                            <span (click)="viewVideoActivity=!viewVideoActivity;" class="blueLink cursorPointer">{{viewVideoActivity? 'Ocultar video':'Ver video'}}</span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="form-group pdt10">
+                                    <label>Instrucciones</label>
+                                    <textarea
+                                        formControlName="instructions"
+                                        [class.is-invalid]="mainForm.get('modalPage2.instructions').errors" 
+                                        rows="3"
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="Escriba el resumen del curso aquí"
+                                        style="resize: none;"
+                                        >
+                                    </textarea>
+                                    <div class="invalid-feedback" *ngIf="mainForm.get('modalPage2.instructions').errors">
+                                        Debe indicar las instrucciones de la actividad.
+                                    </div>
+                                </div>
+                                <div class="form-group pdt10">
+                                    <label>Recursos descargables</label>
+                                    <div class="position-relative custom-input-container">
+                                        <img [src]="icon.pdf" class="h20px input-icon" alt="">
+                                        <input 
+                                            [class.is-invalid]="mainForm.get('modalPage2.files').errors"
+                                            (change)="onFileSelected($event,selectedClase,false,selectedModulo,true,'archivoActividad')"
+                                            type="file"
+                                            accept=".pdf"
+                                            #fileActivityInput
+                                            class="form-control custom-input"
+                                            >
+                                        <button
+                                            (click)="fileActivityInput.click()"
+                                            class="custom-button grayButton ft500 gray-8"
+                                            fxLayout="row"
+                                            fxLayoutGap="0.625"
+                                            fxLayoutAlign="center center"
+                                            >
+                                            <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
+                                            Adjuntar
+                                        </button>
+                                    </div>
+                                    <div class="custom-invalid-feedback" *ngIf="mainForm.get('modalPage2.files').errors && showErrorActividad">
+                                        Debe adjuntar algun recurso adicional
+                                    </div>
+                                </div>
+                                <div *ngIf="selectedClase?.archivos[0]?.uploading_file_progress > 0" class="form-group pdt10">
+                                    <div fxLayout="column">
+                                        <div fxLayout="row" fxLayoutAlign="center center" class="w-25">
+                                            <mat-progress-bar
+                                                class="h10px radius6 {{selectedClase.archivos[0].uploading_file_progress >= 100 ? 'complete-progress-bar': ''}}"
+                                                mode="determinate"
+                                                [value]="selectedClase.archivos[0].uploading_file_progress"
+                                                >
+                                            </mat-progress-bar>
+                                            <span
+                                                *ngIf="selectedClase.archivos[0].uploading_file_progress < 100"
+                                                class="pdl05"
+                                                >
+                                                {{ selectedClase.archivos[0].uploading_file_progress }}%
+                                            </span>
+                                            <img *ngIf="selectedClase.archivos[0].uploading_file_progress >= 100" [src]="icon.check" class="h16px pdl05" alt="">
+                                        </div>
+                                        <div fxLayout="row" *ngIf="selectedClase.archivos[0].uploading_file_progress>=100" >
+                                            <span>{{ selectedClase.archivos[0].nombre }}&nbsp;</span>
+                                            <span (click)="viewFileActivity =! viewFileActivity" class="blueLink cursorPointer">{{ viewFileActivity? 'Ocultar archivo':'Ver archivo' }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container> -->
+                    <!-- Preguntas -->
+                    <ng-container *ngIf="activeStep == 2">
+                        <div formGroupName="modalPage2" fxFlex fxLayout="column" class="contanier pdl10 pdt10">
+                            <ng-container formArrayName="questions">
+                                <!-- aqui van los preguntas que se van creando -->
+                                <div
+                                    *ngFor="let question of questions.controls; let i = index"
+                                    [formGroupName]="i"
+                                    class="{{true ? 'containerQuestions--invalid' : ''}} containerQuestions pdt05"
+                                    >
+                                    <div fxLayout="row" fxLayoutAlign="space-between start" class="fw pd10 pdt05 pdb5">
+                                        <div fxLayout="row" fxLayoutGap="10px" class="fw">
+                                            <div class="ft500 ft12">
+                                                <!-- numero pregunta -->
+                                                Pregunta {{i+1}} {{ question.get('text').value ? '- ' + (question.get('text').value.length > questionMaxSize ? (question.get('text').value | slice:0:questionMaxSize) + '...' : question.get('text').value) : '' }}
+                                            </div>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="0.625">
+                                            <img (click)="removeQuestion(i)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash" alt="remove question button">
+                                            <img 
+                                                (click)="toggleExpandedQuestion(i)"
+                                                [src]="questionStatus[i].expanded ? icon.chevronUp : icon.chevronDown"
+                                                class="h16px pdr05 cursorPointer" alt="expand questions button"
+                                                >
+                                        </div>
+                                    </div>
+                                    <!-- Contenedor de las preguntas -->
+                                    <div *ngIf="questionStatus[i].expanded" class="pd10">
+                                        <div fxLayout="row" fxLayoutAlign="space-between center">
+                                            <!-- Botones alineados a la izquierda -->
+                                            <div fxLayout="row" fxLayoutGap="0.625">
+                                                <div *ngFor="let questionType of questionTypes" class="pdr05">
+                                                    <button
+                                                        (click)="onQuestionTypeChange(i, questionType.value)"
+                                                        class="{{ question.get('type').value === questionType.value ? 'backGray4': 'grayButton' }} radius4 ft12 h28px gray-8"
+                                                        type="button"
+                                                        >
+                                                        {{ questionType.displayName }}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Label y input alineados a la derecha -->
+                                            <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px">
+                                                <label>Puntos</label>
+                                                <input formControlName="points" type="number" min="0" class="form-control w-50">
+                                            </div>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="start center" class="pdt10">
+                                            <button
+                                                (click)="questionImage.click()"
+                                                class="grayButton radius4 ft12 h28px mgr10 gray-8"
+                                                fxLayout="row"
+                                                fxLayoutGap="0.625"
+                                                fxLayoutAlign="center center"
+                                                type="button"
+                                                >
+                                                <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
+                                                Adjuntar imagen
+                                            </button>
+                                            <input #questionImage type="file" (change)="uploadQuestionImage(i, $event)" hidden accept="image/webp" />
+                                        </div>
+                                        <div *ngIf="question.get('image.url').value" class="form-group pdt10">
+                                            <div fxLayout="column">
+                                                <div fxLayout="row">
+                                                    <span>{{ question.get('image.file').value.name }}&nbsp;</span>
+                                                    <span
+                                                        (click)="questionStatus[i].visibleImage = !questionStatus[i].visibleImage"
+                                                        class="blueLink cursorPointer"
+                                                        > {{ questionStatus[i].visibleImage ? 'Ocultar archivo' : 'Ver archivo'}} 
+                                                    </span>
+                                                    <img (click)="deleteQuestionImage(i)" [src]="icon.close" class="h18px pdr05 makeRed cursorPointer" alt="">
+                                                 </div>
+                                                <div fxLayout="row" *ngIf="questionStatus[i].visibleImage" >
+                                                    <img [src]="question.get('image.url').value" style="max-height: 200px;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div fxLayout="row">
+                                            <div class="form-group pdt10 fw">
+                                                <textarea formControlName="text" rows="3"  type="text" class="form-control" placeholder="Escriba aqui la pregunta" style="resize: none;">
+                                                    <input type="text" placeholder="prueba" class="form-control w-40"/>
+                                                </textarea>
+                                                <div class="invalid-feedback">
+                                                    Debe indicar la pregunta.
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div fxLayout="row" class="pdt05">
+                                            <span [innerHTML]="questionInstruction(i)"></span>
+                                        </div>
+                                        <!-- area dependiente de la pregunta -->
+                                        <div fxLayout="row" class="pdt05 fw">
+                                            <!-- Completación -->
+                                            <div class="fw" fxLayout="column" *ngIf="question.get('type').value == questionTypeClass.TYPE_COMPLETE_VALUE">
+                                                <div>POR DEFINIR</div>
+                                                <!-- <div fxLayout="row" class="mgt10">
+                                                    <span>Haga click en confirmar cuando haya terminado de escribir la pregunta</span>
+                                                </div>
+                                                <div fxLayout="row" class="pdt05 pdb05">
+                                                    <button
+                                                        (click)="parseQuestionText(i)"
+                                                        class="grayButton radius4 ft12 h28px mgr10 gray-8"
+                                                        fxLayout="row"
+                                                        fxLayoutGap="0.625"
+                                                        fxLayoutAlign="center center"
+                                                        type="button"
+                                                        >
+                                                        <img [src]="icon.check" class="h16px pdr05" alt="">
+                                                        Confirmar
+                                                    </button>
+                                                </div>
+                                                <div *ngFor="let placeHolder of questionStatus[i].placeholders; let placeholderIndex = index" class="ContainerModulo fw pd05">        
+                                                    <div fxLayout="row" fxLayoutAlign="start center">
+                                                        {{ placeholderIndex + 1 }}. {{placeHolder}}
+                                                    </div>
+                                                    <div fxLayout="column">
+                                                        <div fxLayout="row" class="pdb05">
+                                                            <span class="gray-8 ft700">Opciones</span>
+                                                        </div>
+                                                        <div 
+                                                            *ngFor="let option of options(i).controls; let optIndex = index"
+                                                            fxLayout="row"
+                                                            [formGroupName]="optIndex"
+                                                            >
+                                                            <div *ngIf="option.get('placeholder').value === placeHolder" fxLayout="row" fxLayoutAlign="space-between center" class="fw pdb05">    
+                                                                <input formControlName="text" type="text" class="form-control w-40" placeholder="">
+                                                                <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
+                                                                    <input formControlName="isCorrect" type="checkbox" value="{{ optIndex }}"/>
+                                                                    <img (click)="removeOption(i, optIndex)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash pdl05" alt="">
+                                                                </div>
+                                                            </div>              
+                                                        </div>
+                                                        <div fxLayout="row">
+                                                            <span (click)="addOption(i, placeHolder)" class="blueLink radius4 ft12 h28px no-select">
+                                                                <img [src]="icon.addNew" class="h12px pdr05 makeBlue" alt="">
+                                                                Agregar opción
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div *ngIf="questionStatus[i].placeholders.length > 0">
+                                                    <button
+                                                        (click)="showDisplayText(i)"
+                                                        class="grayButton radius4 ft12 h28px mgr10 gray-8"
+                                                        fxLayout="row"
+                                                        fxLayoutGap="0.625"
+                                                        fxLayoutAlign="center center"
+                                                        >
+                                                        <img [src]="icon.check" class="h16px pdr05" alt="">
+                                                        Renderizar pregunta
+                                                    </button>
+                                                </div>
+                                                <div
+                                                    *ngIf="questionStatus[i].textToRender"
+                                                    [innerHTML]="questionStatus[i].textToRender"
+                                                    class="gray-8 ft12 pdt10"
+                                                    >
+                                                </div> -->
+                                            </div>
+                                            <!-- opcion multiple -->
+                                            <div class="fw" *ngIf="question.get('type').value === questionTypeClass.TYPE_MULTIPLE_CHOICE_VALUE">
+                                                <div fxLayout="column" formArrayName="options">                                                    
+                                                    <div
+                                                        *ngFor="let option of options(i).controls; let optIndex = index"
+                                                        fxLayout="row"
+                                                        class="fw"
+                                                        [formGroupName]="optIndex"
+                                                        >
+                                                        <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem" class="mgb10 fw">             
+                                                            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+                                                                <span class="gray-6">{{ optIndex + 1 }}.</span>
+                                                                <input formControlName="text" type="text" class="form-control" placeholder="">
+                                                            </div>
+                                                    
+                                                            <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
+                                                                <input formControlName="isCorrect" type="checkbox" value="{{ optIndex }}"/>
+                                                                <img (click)="removeOption(i, optIndex)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash pdl05" alt="">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div fxLayout="row">
+                                                        <span (click)="addOption(i)" class="blueLink radius4 ft12 h28px no-select">
+                                                            <img [src]="icon.addNew" class="h12px pdr05 makeBlue" alt="">
+                                                            Agregar opción
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- opcion simple -->
+                                            <div class="fw" fxLayout="column" *ngIf="question.get('type').value == questionTypeClass.TYPE_SINGLE_CHOICE_VALUE">
+                                                <div fxLayout="column" formArrayName="options">                                                    
+                                                    <div
+                                                        *ngFor="let option of options(i).controls; let optIndex = index"
+                                                        fxLayout="row"
+                                                        class="fw"
+                                                        [formGroupName]="optIndex"
+                                                        >
+                                                        <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem" class="mgb10 fw">             
+                                                            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+                                                                <span class="gray-6">{{ optIndex + 1 }}.</span>
+                                                                <input formControlName="text" type="text" class="form-control" placeholder="">
+                                                            </div>
+                                                    
+                                                            <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
+                                                                <input [name]="'radioGroup' + i" type="radio" (change)="onSingleOptionSelected(i, optIndex)" [value]="optIndex"/>
+                                                                <img (click)="removeOption(i, optIndex)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash pdl05" alt="">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div fxLayout="row">
+                                                        <span (click)="addOption(i)" class="blueLink radius4 ft12 h28px no-select">
+                                                            <img [src]="icon.addNew" class="h12px pdr05 makeBlue" alt="">
+                                                            Agregar opción
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- opcion true or false -->
+                                            <!-- <div class="fw" fxLayout="column" *ngIf="pregunta.type.value == questionTypesIn.TYPE_TRUE_OR_FALSE_VALUE">
+                                                <div *ngFor="let option of pregunta.options; let optIndex = index" fxLayout="row" class="fw">
+                                                    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem" class="mgb10 fw">
+                                                        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+                                                            <span class="gray-6">{{ optIndex + 1 }}.</span>
+                                                            <input [(ngModel)]="option.text" type="text" class="form-control inputAlajandraLoQuisoAsi" placeholder="">
+                                                        </div>
+                                                        <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
+                                                            <input (change)="toggleOptionValue(pregunta,optIndex)" [checked]="option.isCorrect" type="checkbox" value="{{ optIndex }}"/>
+                                                            <img (click)="deleteOption(pregunta,optIndex)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash pdl05" alt="">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div fxLayout="row">
+                                                    <span (click)="addChoice(pregunta)" class="blueLink radius4 ft12 h28px no-select">
+                                                        <img [src]="icon.addNew" class="h12px pdr05 makeBlue" alt="">
+                                                        Agregar opción
+                                                    </span>
+                                                </div>
+                                            </div> -->
+                                        </div>
+                                        <!-- <ng-container *ngIf="pregunta.isInvalid">
+                                            <div fxLayout="row" *ngFor="let mensaje of pregunta.InvalidMessages" fxLayoutAlign="start center">
+                                                <mat-icon class="red-5 ft16">info</mat-icon>
+                                                <span class="redText">{{mensaje}}</span>
+                                            </div>
+                                        </ng-container> -->
+                                    </div>
+                                </div>
+                            </ng-container>
+                            <div fxLayout="row" class="fw">
+                                <div class="mgl40 mgr10 fw">
+                                    <div class="fw mgb10">
+                                        <span (click)="addQuestion()" class="yellowLink radius4 ft12 h28px no-select" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign=" center">
+                                            <img [src]="icon.addNew" class="h12px pdr05 makeYellow" alt="">
+                                            Agregar pregunta
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <!-- tab vista actividad -->
+                    <div></div>
+                </div>
+            </div>
+            <div fxFlex="40%" fxLayout="column" fxLayoutAlign="center center">            
+                <div fxLayout="column" fxLayoutAlign="center center" class="fw fh">
+                    <img  class="pd10" src="../../../assets/images/cursos/Next steps-pana.svg" class="fw" alt="Mi SVG">
+                </div>
+            </div>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt10">
+            <!-- Botón a la izquierda -->
+            <button
+                *ngIf="activeStep > 1"
+                (click)="previousPage()"
+                class="blueButton radius4 ft12 h28px mgr10 gray-1"
+                fxLayout="row"
+                fxLayoutGap="0.625"
+                fxLayoutAlign="center center"
+                type="button"
+                >
+                <img [src]="icon.chevronLeft" class="h16px pdr05 makeWhite" alt="">
+                Regresar
+            </button>        
+            <!-- Contenedor para los dos botones de la derecha -->
+            <div fxLayout="row" fxLayoutGap="10px">               
+                <button
+                    *ngIf="activeStep < 4"
+                    class="blueButton radius4 ft12 h28px mgr10 gray-1"
+                    (click)="nextPage();"
+                    fxLayout="row"
+                    fxLayoutGap="0.625"
+                    fxLayoutAlign="center center"
+                    type="button"
+                    >
+                    Continuar
+                    <img [src]="icon.chevronRight" class="h16px pdl05 makeWhite" alt="">
+                </button>
+                <!-- [disabled]="!form.valid" -->
+                <button
+                    *ngIf="activeStep == 4" 
+                    class="blueButton radius4 ft12 h28px mgr10 gray-1"
+                    fxLayout="row"
+                    fxLayoutGap="0.625"
+                    fxLayoutAlign="center center"
+                    type="submit"
+                    >
+                    Finalizar
+                    <img [src]="icon.chevronRight" class="h16px pdl05 makeWhite" alt="">
+                </button>        
+                <button
+                    class="blueButton radius4 ft12 h28px mgr10 gray-1"
+                    fxLayout="row"
+                    fxLayoutGap="0.625"
+                    fxLayoutAlign="center center"
+                    type="button"
+                    (click)="showCurrentForm()"
+                    >
+                    DEBUG
+                </button>        
+            </div>
+        </div>
+    </div>
+</form>

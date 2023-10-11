@@ -81,4 +81,11 @@ export class EnterpriseService {
     return this.enterpriseSubject.value
   }
 
+  public async updateVimeoFolder(enterprise: Enterprise, idFolder: string, folderUri: string): Promise<void> {
+    await this.afs.collection(Enterprise.collection).doc(enterprise.id).update({
+      vimeoFolderId: idFolder,
+      vimeoFolderUri: folderUri
+    })
+  }
+
 }

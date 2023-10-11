@@ -1,21 +1,127 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpEvent, HttpEventType, HttpHeaders, HttpParams, HttpRequest } from '@angular/common/http';
-import { BehaviorSubject, Observable, catchError, filter, map, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, filter, map, throwError, tap, switchMap } from 'rxjs';
+import { Enterprise } from '../models/enterprise.model';
+import { EnterpriseService } from './enterprise.service';
+import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class VimeoUploadService {
 
+  private readonly accessToken: string = environment.vimeoAccessToken
+  private readonly VIMEO_URL = 'https://api.vimeo.com/me/videos';
   vimeoObsShare: Observable<string>;
   vimeoResult: string;
 
   private vimeoLink = new BehaviorSubject('');
   vimeoLinkObs = this.vimeoLink.asObservable();
 
-  constructor(private http: HttpClient) { }
+  private loadedSubject = new BehaviorSubject<boolean>(false)
+  public loaded$ = this.loadedSubject.asObservable()
+  private enterprise: Enterprise
+
+  constructor(
+    private http: HttpClient,
+    private enterpriseService: EnterpriseService
+  ) {
+    this.enterpriseService.enterprise$.subscribe(enterprise => {
+      if (!enterprise) {
+        return
+      }
+      this.enterprise = enterprise
+      if (!this.loadedSubject.value) {
+        this.loadedSubject.next(true)
+      }
+    })
+  }
+
+  public uploadProgress: number = 0
+  public uploading: boolean = false
+
+
+  // addVideo1(file: File, name: string, description: string): Observable<{vimeoId1: number, vimeoId2: number}> {
+  //   return new Observable()
+  // }
+
+  // addVideo(file: File, name: string, description: string) {
+  //   this.createVideo(name, description).subscribe({
+  //     next : response =>{
+  //       // Una vez creado el video, sube el archivo
+  //       this.uploadProgress = 0
+  //       this.uploading = true
+  //       this.uploadVideo(file, response.upload.upload_link)
+  //       .subscribe({
+  //         // Maneja las notificaciones de progreso
+  //         next: progress => {
+  //           this.uploadProgress = progress-1
+  //         },
+  //         // Maneja las notificaciones de error
+  //         error: error => {
+  //           this.uploadProgress = 0;
+  //           this.uploading = false;
+  //           console.log('Upload Error:', error);
+  //         },
+  //         // Maneja las notificaciones de completado
+  //         complete: () => {
+  //           console.log('Upload successful');
+  //           this.getProjects().subscribe(projects => {
+  //             let projectOperation: Observable<any>;
+  //             if (this.enterprise.vimeoFolderId) { // si la empresa sitiene una carpeta
+  //               // Si ya existe un proyecto con el nombre del video, agrega el video a él
+  //               projectOperation = this.addVideoToProject(this.enterprise.vimeoFolderId, response.uri);
+  //             } else {
+  //               projectOperation = this.createProject(this.enterprise.name).pipe(
+  //                   tap(newProject => { 
+  //                     // Aquí es donde actualizamos Firebase
+  //                     const projectId = newProject.uri.split('/').pop();
+  //                     this.enterpriseService.updateVimeoFolder(this.enterprise, projectId, newProject.uri)
+  //                   }),
+  //                   switchMap(newProject => this.addVideoToProject(newProject.uri.split('/').pop(), response.uri))
+  //               );
+  //             }
+  //             projectOperation.subscribe({
+  //               complete: () => {
+  //                 console.log('Video added to Project successfully!');
+  //                 this.getVideoData(response.uri).subscribe({
+  //                   next: videoData => {
+  //                       this.uploadProgress = 100;
+  //                       let link = videoData.link;
+  //                       link = link.split('/');
+  //                       this.uploadResult.next({
+  //                         vimeoId1: link[3],
+  //                         vimeoId1: link[4]
+  //                       })
+  //                       // clase.vimeoId1=link[3];
+  //                       // clase.vimeoId2=link[4];
+  //                       // link[3]
+  //                     },
+  //                   error: (error) => {
+  //                     console.log("error", error);
+  //                     this.uploadProgress = 0
+  //                     this.uploading = false
+  //                   }
+  //                 })
+  //               },
+  //               error: (error)=>{
+  //                 console.log("error", error);
+  //                 this.uploadProgress = 0
+  //                 this.uploading = false
+  //               }
+  //             })
+  //           });
+  //         }
+  //       });
+  //     },
+  //     error: (error) => {
+  //       console.log("error", error);
+  //     }
+  //   })
+  // }
 
   updateVimeoLink(val) {
     this.vimeoLink.next(val);
   }
+
 
   createVimeo(options, fileSize): Observable<any> {
     // CUSTOM HEADERS FOR A FIRST INIT CALL
@@ -86,20 +192,17 @@ export class VimeoUploadService {
 
   }
 
-
-  // nuevas funciones Arturo
-
-  getProjects(access_token: string): Observable<any> {
+  getProjects(): Observable<any> {
     const headers = {
-      'Authorization': `Bearer ${access_token}`,
+      'Authorization': `Bearer ${this.accessToken}`,
       'Content-Type': 'application/json'
     };
     return this.http.get(`https://api.vimeo.com/me/projects`, { headers });
   }
 
-  createProject(access_token: string, projectName: string): Observable<any> {
+  createProject(projectName: string): Observable<any> {
     const headers = {
-      'Authorization': `Bearer ${access_token}`,
+      'Authorization': `Bearer ${this.accessToken}`,
       'Content-Type': 'application/json'
     };
     const body = {
@@ -121,29 +224,25 @@ export class VimeoUploadService {
 // }
   
 
-  addVideoToProject(access_token: string, projectId: string, videoUri): Observable<any> {
+  addVideoToProject(projectId: string, videoUri): Observable<any> {
     const headers = {
-      'Authorization': `Bearer ${access_token}`,
+      'Authorization': `Bearer ${this.accessToken}`,
       'Content-Type': 'application/json'
     };
     return this.http.put(`https://api.vimeo.com/me/projects/${projectId}${videoUri}`, {}, { headers });
   }
 
-  getVideoData( access_token: string,videoUri: string,): Observable<any> {
+  getVideoData(videoUri: string,): Observable<any> {
     const headers = {
-      'Authorization': `Bearer ${access_token}`,
+      'Authorization': `Bearer ${this.accessToken}`,
       'Content-Type': 'application/json'
     };
     return this.http.get(`https://api.vimeo.com${videoUri}`, { headers });
   }
 
-
-
-  private readonly VIMEO_URL = 'https://api.vimeo.com/me/videos';
-
-  createVideo(access_token: string, videoName: string = 'Untitled', videoDescription: string = 'No description'): Observable<any> {
+  createVideo(videoName: string = 'Untitled', videoDescription: string = 'No description'): Observable<any> {
     const headers = {
-      'Authorization': `Bearer ${access_token}`
+      'Authorization': `Bearer ${this.accessToken}`
     };
     const body = {
       'name': videoName,
