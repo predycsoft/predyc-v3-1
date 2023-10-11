@@ -10,7 +10,14 @@ export class Curso {
 
   categoria: string = ""
   descripcion: string = ""
+  resumen: string = ""
+  idioma: string = ""
   duracion: number = 0
+  imagen: string = ""
+  contenido: string = ""
+  instructor: string = ""
+  imagen_instructor: string = ""
+  resumen_instructor: string = ""
   foto: string = ""
   id: string = ""
   instructorFoto: string = ""

@@ -85,6 +85,9 @@ export class CreateCourseComponent implements OnInit {
 
   ) { }
 
+  mode = this.route.snapshot.paramMap.get("mode")
+  idCurso = this.route.snapshot.paramMap.get("idCurso")
+
   formNuevoCurso: FormGroup;
   formNuevaActividadBasica: FormGroup;
   formNuevaActividadGeneral: FormGroup;
@@ -259,6 +262,58 @@ export class CreateCourseComponent implements OnInit {
   categoriesObservable
   skillsObservable
 
+  initSkills(){
+
+    this.categoryService.getCategoriesObservable().subscribe(category => {
+      console.log('category from service',category);
+      this.skillService.getSkillsObservable().pipe(
+        take(2)
+      ).subscribe(skill => {
+        console.log('skill from service', skill);
+        skill.map(skillIn => {
+          delete skillIn['selected']
+        });
+        if(this.mode == 'edit'){
+          console.log('curso edit',this.curso)
+          let skillsProfile = this.curso.skillsRef;
+          skillsProfile.forEach(skillIn => {
+            let skillSelect = skill.find(skillSelectIn=>skillSelectIn.id == skillIn.id) 
+            skillSelect['selected'] = true;
+          });
+        }
+        console.log('skill from service', skill);
+        this.categoriasArray = this.anidarCompetenciasInicial(category, skill)
+        console.log('categoriasArray', this.categoriasArray)
+        this.competenciasEmpresa = this.obtenerCompetenciasAlAzar(5);
+
+        if(this.mode == 'edit'){
+          this.getSelectedCategoriasCompetencias();
+          this.getexamCourse(this.curso.id)
+        }
+      });
+    })
+
+
+  }
+
+  getexamCourse(idCourse){
+    console.log('idCourse search activity', idCourse);
+    this.activityClassesService.getActivityCoruse(idCourse)
+      .pipe()
+      .subscribe(data => {
+        if (data) {
+          console.log('Activity:', data);
+          console.log('Questions:', data.questions);
+          data.questions.forEach(question => {
+            console.log('preguntas posibles test',question)
+            question.competencias = question.skills
+          });
+          this.examen = data;
+          console.log('examen data edit',this.examen)
+        }
+      });
+  }
+
   async ngOnInit(): Promise<void> {
 
     console.log(this.competenciasArray)
@@ -268,36 +323,12 @@ export class CreateCourseComponent implements OnInit {
     // const competencias: Competencia[] = this.competenciasArray.competencias;
 
     this.inicializarFormNuevoCurso();
+    //this.initSkills();
+
     this.activeStep = 1;
     this.activeStepActividad = 1;
 
 
-    this.categoryService.getCategoriesObservable().subscribe(category => {
-      console.log('category from service',category);
-      this.skillService.getSkillsObservable().pipe(
-        take(2)
-      ).subscribe(skill => {
-
-        console.log('skill from service', skill);
-        skill.map(skillIn => {
-          delete skillIn['selected']
-        });
-        if(this.mode == 'edit'){
-
-        }
-
-        console.log('skill from service', skill);
-        this.categoriasArray = this.anidarCompetenciasInicial(category, skill)
-        console.log('categoriasArray', this.categoriasArray)
-        this.competenciasEmpresa = this.obtenerCompetenciasAlAzar(5);
-
-
-
-      });
-    })
-
-
-    
     // this.enterpriseService.getEnterpriseObservable().subscribe(empresa => {
     //   if (!empresa) {
     //     return
@@ -328,22 +359,49 @@ export class CreateCourseComponent implements OnInit {
 
   async inicializarFormNuevoCurso () {
 
-    let id = await this.afs.collection<Curso>(Curso.collection).doc().ref.id;
+    let id;
 
-    this.formNuevoCurso = new FormGroup({
-      id: new FormControl(id, Validators.required),
-      titulo: new FormControl(null, Validators.required),
-      resumen: new FormControl(null, Validators.required),
-      descripcion: new FormControl(null, Validators.required),
-      nivel: new FormControl(null, Validators.required),
-      //categoria: new FormControl(null, Validators.required),
-      idioma: new FormControl(null, Validators.required),
-      contenido: new FormControl(null, Validators.required),
-      instructor: new FormControl(null, Validators.required),
-      resumen_instructor: new FormControl(null, Validators.required),
-      imagen: new FormControl(null, Validators.required),
-      imagen_instructor: new FormControl(null, Validators.required),
-    })
+    if(this.mode == 'create'){
+      id = await this.afs.collection<Curso>(Curso.collection).doc().ref.id;
+      this.formNuevoCurso = new FormGroup({
+        id: new FormControl(id, Validators.required),
+        titulo: new FormControl(null, Validators.required),
+        resumen: new FormControl(null, Validators.required),
+        descripcion: new FormControl(null, Validators.required),
+        nivel: new FormControl(null, Validators.required),
+        //categoria: new FormControl(null, Validators.required),
+        idioma: new FormControl(null, Validators.required),
+        contenido: new FormControl(null, Validators.required),
+        instructor: new FormControl(null, Validators.required),
+        resumen_instructor: new FormControl(null, Validators.required),
+        imagen: new FormControl(null, Validators.required),
+        imagen_instructor: new FormControl(null, Validators.required),
+      })
+      this.initSkills();
+    }
+    else{
+      this.courseService.getCoursesObservable().pipe(take(2)).subscribe(courses => {
+        console.log('cursos',courses)
+        let curso = courses.find(course => course.id == this.idCurso)
+        console.log('curso edit',curso)
+        this.curso = curso
+        this.formNuevoCurso = new FormGroup({
+          id: new FormControl(curso.id, Validators.required),
+          titulo: new FormControl(curso.titulo, Validators.required),
+          resumen: new FormControl(curso.resumen, Validators.required),
+          descripcion: new FormControl(curso.descripcion, Validators.required),
+          nivel: new FormControl(curso.nivel, Validators.required),
+          idioma: new FormControl(curso.idioma, Validators.required),
+          contenido: new FormControl(curso.contenido, Validators.required),
+          instructor: new FormControl(curso.instructor, Validators.required),
+          resumen_instructor: new FormControl(curso.resumen_instructor, Validators.required),
+          imagen: new FormControl(curso.imagen, Validators.required),
+          imagen_instructor: new FormControl(curso.imagen_instructor, Validators.required),
+        })
+        this.initSkills();
+      })
+    }
+
   }
 
   returnCursos(){
@@ -351,8 +409,6 @@ export class CreateCourseComponent implements OnInit {
   }
 
   addClassMode = false;
-  mode = this.route.snapshot.paramMap.get("mode")
-
   obtenerNumeroMasGrande(): number {
     return this.modulos.reduce((maximoActual, modulo) => {
         const maximoModulo = modulo['clases'].reduce((maximoClase, clase) => {
@@ -810,7 +866,7 @@ export class CreateCourseComponent implements OnInit {
     if(pregunta.competencias.length > 0){
 
       this.competenciasSelectedClase=[]; //estoy aqui
-      let competenciasTotal = structuredClone(this.competenciasSelected);
+      let competenciasTotal = structuredClone(this.adjustSkills());
       let competenciasTotalProcesdo=[]
       let categorias=[];
       competenciasTotal.forEach(categoria => {
@@ -836,17 +892,14 @@ export class CreateCourseComponent implements OnInit {
       this.competenciasSelectedClase = respueta;
     }
     else{
-      this.competenciasSelectedClase = structuredClone(this.competenciasSelected);
+      this.competenciasSelectedClase = structuredClone(this.adjustSkills());
       this.competenciasSelectedClase.forEach(categoria => {
         categoria.competencias.forEach(competencia=> {
           competencia.selected = false
         });
       });
-
       console.log(this.competenciasSelectedClase)
-
     }
-
 
     this.modalCompetenciaAsignar = this.modalCompetencia = this.modalService.open(content, {
       ariaLabelledBy: 'modal-basic-title',
