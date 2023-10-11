@@ -3,16 +3,7 @@ import { Enterprise } from "./enterprise.model";
 import { Clase } from "./course-class.model";
 import { Curso } from "./course.model";
 import { Profile } from "./profile.model";
-
-export const compareByString = (a: string, b: string): number => {
-  if (a > b) {
-    return 1;
-  } else if (a < b) {
-    return -1;
-  } else {
-    return 0;
-  }
-};
+import { compareByString } from "../utils";
 
 export interface QuestionOptionJson {
   text: string;

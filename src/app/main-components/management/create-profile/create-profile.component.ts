@@ -25,17 +25,7 @@ import { ProfileService } from '../../../shared/services/profile.service';
 import { Skill } from 'src/app/shared/models/skill.model';
 import { User } from 'src/app/shared/models/user.model';
 import { UserService } from 'src/app/shared/services/user.service';
-
-export const compareByString = (a: string, b: string): number => {
-  if (a > b) {
-    return 1;
-  } else if (a < b) {
-    return -1;
-  } else {
-    return 0;
-  }
-};
-
+import { compareByString } from 'src/app/shared/utils';
 
 interface Competencia {
   id: number;
@@ -639,7 +629,7 @@ export class CreateProfileComponent {
   modalCreateQuestion
   
   questionTypes: Array<QuestionType> = QuestionType.TYPES.sort((a, b) =>
-  compareByString(a.displayName, b.displayName)
+    compareByString(a.displayName, b.displayName)
   );
 
   onQuestionTypeChange(pregunta: Question,questionTypeValue: string): void {

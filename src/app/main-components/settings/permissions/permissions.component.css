@@ -1,0 +1,9 @@
+.level-bar {
+    width: 100px;
+    height: 20px;
+    background: #eaeaea; /* Color de fondo básico para la barra */
+}
+
+.level-bar.standard {
+    background: linear-gradient(to right, green 0%, green 50%, #eaeaea 50%, #eaeaea 100%); /* Ajusta el porcentaje según lo que necesites */
+}

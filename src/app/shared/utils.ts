@@ -23,3 +23,36 @@ export const timestampToDateNumbers = (timestamp: number): {minutes:number, hour
 export const orderByValueAndDirection = (a: number|string, b: number|string, isAsc: boolean) => {
     return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
 }
+
+export const fileToBase64 = async (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (event: any) => {
+        const base64content = event.target.result.split(',')[1];
+        resolve(base64content);
+      };
+      reader.onerror = (error) => {
+        reject(error);
+      };
+      reader.readAsDataURL(file);
+    });
+}
+
+export const compareByString = (a: string, b: string): number => {
+  if (a > b) {
+    return 1;
+  } else if (a < b) {
+    return -1;
+  } else {
+    return 0;
+  }
+};
+
+export const getPlaceholders = (text: string): string[] => {
+  let placeholders = [];
+  let matches = text.matchAll(/\[([^\[\]]*)\]/g);
+  for (let match of matches) {
+    placeholders.push(match[1]);
+  }
+  return placeholders;
+}

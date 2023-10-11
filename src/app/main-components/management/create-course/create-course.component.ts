@@ -15,7 +15,6 @@ import { AngularFirestore,DocumentReference } from '@angular/fire/compat/firesto
 
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Activity, Question, QuestionOption, QuestionType, QuestionValidationResponse } from '../../../shared/models/activity-classes.model';
-//import { compareByString } from 'src/app/utils';
 //import * as competencias from '../../../../assets/data/competencias.json';
 import { DialogService } from 'src/app/shared/services/dialog.service';
 import { VimeoUploadService } from 'src/app/shared/services/vimeo-upload.service';
@@ -31,17 +30,7 @@ import { ModuleService } from '../../../shared/services/module.service';
 import { CourseClassService } from '../../../shared/services/course-class.service';
 import { ActivityClassesService } from 'src/app/shared/services/activity-classes.service';
 import { Enterprise } from 'src/app/shared/models/enterprise.model';
-
-
-export const compareByString = (a: string, b: string): number => {
-  if (a > b) {
-    return 1;
-  } else if (a < b) {
-    return -1;
-  } else {
-    return 0;
-  }
-};
+import { compareByString } from 'src/app/shared/utils';
 
 
 interface Categoria {
@@ -102,7 +91,7 @@ export class CreateCourseComponent implements OnInit {
   courseRef;
 
   questionTypes: Array<QuestionType> = QuestionType.TYPES.sort((a, b) =>
-  compareByString(a.displayName, b.displayName)
+    compareByString(a.displayName, b.displayName)
   );
 
   modulos : Modulo[] = [];
@@ -1196,7 +1185,7 @@ export class CreateCourseComponent implements OnInit {
 
     // Crea el video en Vimeo
     //clase['uploading'] = true;
-    this.uploadControl.createVideo(access_token,videoName,videoDescription)
+    this.uploadControl.createVideo(videoName, videoDescription)
     .subscribe({
       next : response =>{
         // Una vez creado el video, sube el archivo
@@ -1224,31 +1213,31 @@ export class CreateCourseComponent implements OnInit {
             console.log('Upload successful');
             //clase['uploading'] = false;
             // Obtén todos los proyectos
-            this.uploadControl.getProjects(access_token).subscribe(projects => {
+            this.uploadControl.getProjects().subscribe(projects => {
               console.log(this.empresa);
               // Busca un proyecto con el mismo nombre que el video
               // const project = projects.data.find(p => p.name === this.empresa.nombre);
               let projectOperation: Observable<any>;
               if (this.empresa.vimeoFolderId) { // si la empresa sitiene una carpeta
                 // Si ya existe un proyecto con el nombre del video, agrega el video a él
-                projectOperation = this.uploadControl.addVideoToProject(access_token, this.empresa.vimeoFolderId, response.uri);
+                projectOperation = this.uploadControl.addVideoToProject(this.empresa.vimeoFolderId, response.uri);
               } else {
                 console.log('aqui')
-                projectOperation = this.uploadControl.createProject(access_token, this.empresa.name).pipe(
+                projectOperation = this.uploadControl.createProject(this.empresa.name).pipe(
                     tap(newProject => { 
                         // Aquí es donde actualizamos Firebase
                         const projectId = newProject.uri.split('/').pop();
                         console.log('parent uri',newProject.uri)
                         this.updateForderVimeoEmperesa(projectId,newProject.uri);
                     }),
-                    switchMap(newProject => this.uploadControl.addVideoToProject(access_token, newProject.uri.split('/').pop(), response.uri))
+                    switchMap(newProject => this.uploadControl.addVideoToProject(newProject.uri.split('/').pop(), response.uri))
                 );
             }
               projectOperation.subscribe({
                 complete: () => {
                   console.log('Video added to Project successfully!');
                   console.log(response.uri)
-                  this.uploadControl.getVideoData(access_token, response.uri).subscribe({
+                  this.uploadControl.getVideoData(response.uri).subscribe({
                     next: videoData => {
                         //this.dialog.dialogExito();
                         clase['videoUpload'] = 100;

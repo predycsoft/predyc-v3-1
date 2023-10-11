@@ -34,9 +34,6 @@ import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
-
-
-
 // Components
 import { LoginComponent } from './login/login.component';
 import { SideNavComponent } from './shared/components/sidenav/sidenav.component';
@@ -61,11 +58,9 @@ import { CreateCourseComponent } from './main-components/management/create-cours
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 
-
 //
 import { SafePipe } from './shared/pipes/safe.pipe';
 import { CustomDatePipe } from './shared/pipes/custom-date.pipe';
-
 
 // Emulators
 import { USE_EMULATOR as USE_AUTH_EMULATOR } from '@angular/fire/compat/auth';
@@ -96,12 +91,13 @@ import { PlanCardComponent } from './main-components/settings/license/plan-card/
 import { LicenseDataComponent } from './main-components/settings/license/license-data/license-data.component';
 import { ValidationListComponent } from './main-components/validation/validation-list/validation-list.component';
 import { NotificationsDashboardComponent } from './main-components/dashboard/notifications-dashboard/notifications-dashboard.component';
-import { CreateValidationTestComponent } from './main-components/management/create-validation-test/create-validation-test.component';
+import { EditValidationTestComponent } from './main-components/management/edit-validation-test/edit-validation-test.component';
 import { RankingListComponent } from './main-components/dashboard/ranking-list/ranking-list.component';
 import { TooltipPointsComponent } from './shared/components/tooltip-points/tooltip-points.component';
 import { StudyPlanComponent } from './shared/components/study-plan/study-plan.component';
 import { StudentStatsComponent } from './main-components/management/my-team/student/student-stats/student-stats.component';
 import { StudentDetailsComponent } from './main-components/management/my-team/student/student-details/student-details.component';
+import { PermissionsComponent } from './main-components/settings/permissions/permissions.component';
 
 @NgModule({
   declarations: [
@@ -150,12 +146,13 @@ import { StudentDetailsComponent } from './main-components/management/my-team/st
     LicenseDataComponent,
     ValidationListComponent,
     NotificationsDashboardComponent,
-    CreateValidationTestComponent,
+    EditValidationTestComponent,
     RankingListComponent,
     TooltipPointsComponent,
     StudyPlanComponent,
     StudentStatsComponent,
     StudentDetailsComponent,
+    PermissionsComponent,
   ],
   imports: [
     BrowserModule,
