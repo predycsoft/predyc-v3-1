@@ -125,5 +125,31 @@ export class ActivityClassesService {
       );
   }
 
+  getActivityCoruse(idCourse) {
+    const courseRef: DocumentReference = this.afs.doc(`course/${idCourse}`).ref;
+    // Fetch activity using the courseRef
+    console.log('courseRef getActivityCoruse',courseRef)
+    return this.afs.collection('activity', ref => 
+      ref.where('coursesRef', 'array-contains', courseRef)
+      .where('type', '==', 'test')
+      )
+      .valueChanges() // or .get() based on your needs
+      .pipe(
+        switchMap(activities => {
+          if (activities && activities.length > 0) {
+            const activity = activities[0] as Activity; // Assuming only one activity matches
+            // Fetch questions of the matched activity
+            return this.afs.collection(`${Activity.collection}/${activity.id}/${Question.collection}`).valueChanges()
+              .pipe(
+                map(questions => {
+                  return { ...activity as any, questions };
+                })
+              );
+          }
+          return of(null); // or you can return an empty object or handle it another way
+        })
+      );
+  }
+
 
 }

@@ -97,6 +97,7 @@ import { TooltipPointsComponent } from './shared/components/tooltip-points/toolt
 import { StudyPlanComponent } from './shared/components/study-plan/study-plan.component';
 import { StudentStatsComponent } from './main-components/management/my-team/student/student-stats/student-stats.component';
 import { StudentDetailsComponent } from './main-components/management/my-team/student/student-details/student-details.component';
+import { PermissionsComponent } from './main-components/settings/permissions/permissions.component';
 
 @NgModule({
   declarations: [
@@ -150,7 +151,8 @@ import { StudentDetailsComponent } from './main-components/management/my-team/st
     TooltipPointsComponent,
     StudyPlanComponent,
     StudentStatsComponent,
-    StudentDetailsComponent
+    StudentDetailsComponent,
+    PermissionsComponent,
   ],
   imports: [
     BrowserModule,

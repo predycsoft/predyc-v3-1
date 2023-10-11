@@ -1,0 +1,109 @@
+<div fxLayout="column" fxLayoutAlign="space-between start" fxLayoutGap="10px">
+    <!-- Permisos generales -->
+    <div>
+        <img [src]="icon.checkCircle" alt="Ícono">
+        <span class="ft600 gray-10">Permisos generales</span>
+    </div>
+
+    <form [formGroup]="form">
+        <div fxLayout="column" fxLayoutAlign="space-between start" fxLayoutGap="10px">
+            <!-- Horas por semana -->
+            <div fxLayout="row" fxLayoutGap="30px" fxLayoutAlign="space-between center" class="border radius10 w1000px h80px pdl05">
+                <div fxLayout="column" fxLayoutAlign="start start" class="w600px">
+                    <div fxLayout="row" fxLayoutGap="5px" class="mgb10">
+                        <img [src]="icon.checkCircle" alt="Ícono">
+                        <span class="ft600 gray-8">Horas por semana</span>
+                    </div>
+                    <span class="ft11 gray-10">Establece el propósito global para la cantidad de horas que los usuarios deben cumplir cada semana.</span>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="center stretch">
+                    <input type="number" placeholder="Horas" class="w70px" formControlName="hours"/>
+                </div>
+                <div fxLayout="column" fxLayoutAlign="space-evenly center" class="backGray2 fh w180px">
+                    <span class="ft12 gray-10">Nivel de estudio</span>
+                    <div fxLayout="row" fxLayoutGap="10px">
+                        <span class="ft600 ft11 gray-10">Estándar</span>
+                        <div class="level-bar standard"></div>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Libertad de estudio -->
+            <div fxLayout="row" fxLayoutGap="30px" fxLayoutAlign="space-between center" class="border radius10 w1000px h80px pdl05">
+                <div fxLayout="column" fxLayoutAlign="start start" class="w600px">
+                    <div fxLayout="row" fxLayoutGap="5px" class="mgb10">
+                        <img [src]="icon.checkCircle" alt="Ícono">
+                        <span class="ft600 gray-8">Libertad de estudio</span>
+                        <img [src]="icon.information" alt="Ícono" class="mgl05">
+                    </div>
+                    <span class="ft11 gray-10">Establece las restricciones sobre lo que los usuarios tienen permitido observar dentro de la aplicación.</span>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="center stretch">
+                    <select formControlName="liberty">
+                        <option *ngFor="let option of options" [value]="option">{{option}}</option>
+                    </select>
+                </div>
+                <div fxLayout="column" fxLayoutAlign="space-evenly center" class="backGray2 fh w180px">
+                    <span class="ft12  gray-10">Nivel de estudio</span>
+                    <div fxLayout="row" fxLayoutGap="10px">
+                        <span class="ft11 ft600 gray-10">{{form.get('liberty').value}}</span>
+                        <div class="level-bar standard"></div>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Generación del cronograma -->
+            <div fxLayout="row" fxLayoutGap="30px" fxLayoutAlign="space-between center" class="border radius10 w1000px h80px pdl05">
+                <div fxLayout="column" fxLayoutAlign="start start" class="w600px">
+                    <div fxLayout="row" fxLayoutGap="5px" class="mgb10">
+                        <img [src]="icon.checkCircle" alt="Ícono">
+                        <span class="ft600 gray-8">Generación del cronograna</span>
+                        <img [src]="icon.information" alt="Ícono" class="mgl05">
+                    </div>
+                    <span class="ft11 gray-10">Establece el tipo de generación del cronograma. El algoritmo de la IA.</span>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="center stretch">
+                    <select formControlName="generation">
+                        <option *ngFor="let option of options" [value]="option">{{option}}</option>
+                    </select>
+                </div>
+                <div fxLayout="column" fxLayoutAlign="space-evenly center" class="backGray2 fh w180px">
+                    <span class="ft12 gray-10">Nivel de estudio</span>
+                    <div fxLayout="row" fxLayoutGap="10px">
+                        <span class="ft11 ft600 gray-10">{{form.get('generation').value}}</span>
+                        <div class="level-bar standard"></div>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Intentos por examen -->
+            <div fxLayout="row" fxLayoutGap="30px" fxLayoutAlign="space-between center" class="border radius10 w1000px h80px pdl05">
+                <div fxLayout="column" fxLayoutAlign="start start" class="w600px">
+                    <div fxLayout="row" fxLayoutGap="5px" class="mgb10">
+                        <img [src]="icon.checkCircle" alt="Ícono">
+                        <span class="ft600 gray-8">Intentos por examen</span>
+                    </div>
+                    <span class="ft11 gray-10">Establece el propósito global para la cantidad de horas que los usuarios deben cumplir cada semana.</span>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="center stretch">
+                    <input type="number" placeholder="Intentos" class="w70px" formControlName="attempts"/>
+                </div>
+                <div fxLayout="column" fxLayoutAlign="space-evenly center" class="backGray2 fh w180px">
+                    <span class="ft12 gray-10">Nivel de estudio</span>
+                    <div fxLayout="row" fxLayoutGap="10px">
+                        <span class="ft11 ft600 gray-10">Estándar</span>
+                        <div class="level-bar standard"></div>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Filtros avanzados -->
+            <div fxLayout="row" fxLayoutGap="20px">
+                <div class="section-header">
+                    <img [src]="icon.checkCircle" alt="Ícono">
+                    <span class="section-title">Filtros avanzados</span>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
