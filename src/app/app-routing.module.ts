@@ -40,12 +40,12 @@ const routes: Routes = [
         children: [
           {path:"", title: MAIN_TITLE +'Gestión de personal', component: ManagementDashboardComponent, canActivate: [AuthGuard]},
           {path:"courses", title: MAIN_TITLE + 'Cursos', component: CoursesComponent, canActivate: [AuthGuard]},
-          {path:"create-course", title: MAIN_TITLE + 'Crear curso', component: CreateCourseComponent, canActivate: [AuthGuard]},
+          {path:"create-course/:mode/:idCurso", title: MAIN_TITLE + 'Crear / Editar curso', component: CreateCourseComponent, canActivate: [AuthGuard]},
           {path:"departments-and-profiles", title: MAIN_TITLE + 'Departamentos y perfiles', component: DepartmentsProfilesComponent, canActivate: [AuthGuard]},
           {path:"notifications", title: MAIN_TITLE + 'Notificaciones', component: NotificationsComponent, canActivate: [AuthGuard]},
           {path:"students", title: MAIN_TITLE + 'Mi equipo', component: MyTeamComponent, canActivate: [AuthGuard]},
           {path:"students/:uid", title: MAIN_TITLE + 'Mi equipo', component: StudentComponent, canActivate: [AuthGuard]},
-          {path:"create-profile/:idDepartment/:mode/:idProfile", title: MAIN_TITLE + 'Crear / editar perfil', component: CreateProfileComponent, canActivate: [AuthGuard]},
+          {path:"create-profile/:idDepartment/:mode/:idProfile", title: MAIN_TITLE + 'Crear / Editar perfil', component: CreateProfileComponent, canActivate: [AuthGuard]},
           {path:"create-validation-test", title: MAIN_TITLE + 'Crear examen de validación', component: CreateValidationTestComponent, canActivate: [AuthGuard]},
         ]
       },

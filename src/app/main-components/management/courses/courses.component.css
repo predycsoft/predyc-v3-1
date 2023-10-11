@@ -103,9 +103,9 @@
 }
 
 .h220px{
-    height: 208x;
-    min-height: 208px;
-    max-height: 208px;
+    height: 150px;
+    min-height: 150px;
+    max-height: 150px;
     overflow: hidden;
 }
 
@@ -160,4 +160,9 @@
     margin-left: 10px;
   }
   
-
+  .align-right-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    flex: 1;
+}
