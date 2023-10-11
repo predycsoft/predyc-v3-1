@@ -30,7 +30,7 @@
             <div fxFlex="60%" class="smallScroll" style="overflow-y: auto;">
                 <div class="pdr05">
                     <!-- Informacion basica -->
-                    <ng-container *ngIf="activeStep == 1">
+                    <ng-container *ngIf="activeStep === 1">
                         <div formGroupName="modalPage1" fxLayout="column" class="container pdl10 pdt10">
                             <div fxLayout="row">
                                 <span class="titleActive ft400">Información básica</span>
@@ -94,7 +94,7 @@
                         </div>
                     </ng-container>
                     <!-- Instrucciones generales -->
-                    <!-- <ng-container *ngIf="activeStep == 2"> 
+                    <!-- <ng-container *ngIf="activeStep === 2"> 
                         <div formGroupName="modalPage2" fxFlex fxLayout="column" class="contanier pdl10 pdt10">
                             <div fxLayout="row">
                                 <span class="titleActive ft400">Instrucciones generales de la actividad</span>
@@ -212,8 +212,8 @@
                         </div>
                     </ng-container> -->
                     <!-- Preguntas -->
-                    <ng-container *ngIf="activeStep == 2">
-                        <div formGroupName="modalPage2" fxFlex fxLayout="column" class="contanier pdl10 pdt10">
+                    <ng-container *ngIf="activeStep === 2">
+                        <div formGroupName="modalPage2" fxFlex fxLayout="column" class="container pdl10 pdt10">
                             <ng-container formArrayName="questions">
                                 <!-- aqui van los preguntas que se van creando -->
                                 <div
@@ -306,8 +306,8 @@
                                         <div fxLayout="row" class="pdt05 fw">
                                             <!-- Completación -->
                                             <div class="fw" fxLayout="column" *ngIf="question.get('type').value == questionTypeClass.TYPE_COMPLETE_VALUE">
-                                                <div>POR DEFINIR</div>
-                                                <!-- <div fxLayout="row" class="mgt10">
+                                                <!-- <div>POR DEFINIR</div> -->
+                                                <div fxLayout="row" class="mgt10">
                                                     <span>Haga click en confirmar cuando haya terminado de escribir la pregunta</span>
                                                 </div>
                                                 <div fxLayout="row" class="pdt05 pdb05">
@@ -327,7 +327,7 @@
                                                     <div fxLayout="row" fxLayoutAlign="start center">
                                                         {{ placeholderIndex + 1 }}. {{placeHolder}}
                                                     </div>
-                                                    <div fxLayout="column">
+                                                    <div fxLayout="column" formArrayName="options">
                                                         <div fxLayout="row" class="pdb05">
                                                             <span class="gray-8 ft700">Opciones</span>
                                                         </div>
@@ -339,7 +339,7 @@
                                                             <div *ngIf="option.get('placeholder').value === placeHolder" fxLayout="row" fxLayoutAlign="space-between center" class="fw pdb05">    
                                                                 <input formControlName="text" type="text" class="form-control w-40" placeholder="">
                                                                 <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
-                                                                    <input formControlName="isCorrect" type="checkbox" value="{{ optIndex }}"/>
+                                                                    <input [name]="'radioGroup' + i + placeholderIndex" type="radio" (change)="onSingleOptionSelected(i, optIndex)" [value]="optIndex"/>
                                                                     <img (click)="removeOption(i, optIndex)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash pdl05" alt="">
                                                                 </div>
                                                             </div>              
@@ -359,6 +359,7 @@
                                                         fxLayout="row"
                                                         fxLayoutGap="0.625"
                                                         fxLayoutAlign="center center"
+                                                        type="button"
                                                         >
                                                         <img [src]="icon.check" class="h16px pdr05" alt="">
                                                         Renderizar pregunta
@@ -369,7 +370,7 @@
                                                     [innerHTML]="questionStatus[i].textToRender"
                                                     class="gray-8 ft12 pdt10"
                                                     >
-                                                </div> -->
+                                                </div>
                                             </div>
                                             <!-- opcion multiple -->
                                             <div class="fw" *ngIf="question.get('type').value === questionTypeClass.TYPE_MULTIPLE_CHOICE_VALUE">
@@ -430,26 +431,34 @@
                                                 </div>
                                             </div>
                                             <!-- opcion true or false -->
-                                            <!-- <div class="fw" fxLayout="column" *ngIf="pregunta.type.value == questionTypesIn.TYPE_TRUE_OR_FALSE_VALUE">
-                                                <div *ngFor="let option of pregunta.options; let optIndex = index" fxLayout="row" class="fw">
-                                                    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem" class="mgb10 fw">
-                                                        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
-                                                            <span class="gray-6">{{ optIndex + 1 }}.</span>
-                                                            <input [(ngModel)]="option.text" type="text" class="form-control inputAlajandraLoQuisoAsi" placeholder="">
-                                                        </div>
-                                                        <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
-                                                            <input (change)="toggleOptionValue(pregunta,optIndex)" [checked]="option.isCorrect" type="checkbox" value="{{ optIndex }}"/>
-                                                            <img (click)="deleteOption(pregunta,optIndex)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash pdl05" alt="">
+                                            <div class="fw" fxLayout="column" *ngIf="question.get('type').value == questionTypeClass.TYPE_TRUE_OR_FALSE_VALUE">
+                                                <div fxLayout="column" formArrayName="options">                                                    
+                                                    <div
+                                                        *ngFor="let option of options(i).controls; let optIndex = index"
+                                                        fxLayout="row"
+                                                        class="fw"
+                                                        [formGroupName]="optIndex"
+                                                        >
+                                                        <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem" class="mgb10 fw">             
+                                                            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+                                                                <span class="gray-6">{{ optIndex + 1 }}.</span>
+                                                                <input formControlName="text" type="text" class="form-control" placeholder="">
+                                                            </div>
+                                                    
+                                                            <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
+                                                                <input formControlName="isCorrect" type="checkbox" value="{{ optIndex }}"/>
+                                                                <img (click)="removeOption(i, optIndex)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash pdl05" alt="">
+                                                            </div>
                                                         </div>
                                                     </div>
+                                                    <div fxLayout="row">
+                                                        <span (click)="addOption(i)" class="blueLink radius4 ft12 h28px no-select">
+                                                            <img [src]="icon.addNew" class="h12px pdr05 makeBlue" alt="">
+                                                            Agregar opción
+                                                        </span>
+                                                    </div>
                                                 </div>
-                                                <div fxLayout="row">
-                                                    <span (click)="addChoice(pregunta)" class="blueLink radius4 ft12 h28px no-select">
-                                                        <img [src]="icon.addNew" class="h12px pdr05 makeBlue" alt="">
-                                                        Agregar opción
-                                                    </span>
-                                                </div>
-                                            </div> -->
+                                            </div>
                                         </div>
                                         <!-- <ng-container *ngIf="pregunta.isInvalid">
                                             <div fxLayout="row" *ngFor="let mensaje of pregunta.InvalidMessages" fxLayoutAlign="start center">
@@ -473,7 +482,111 @@
                         </div>
                     </ng-container>
                     <!-- tab vista actividad -->
-                    <div></div>
+                    <ng-container *ngIf="activeStep === 3">
+                        <div fxFlex fxLayout="column" class="container pdl10 pdt10">
+                            <ng-container>
+                                <!-- aqui van los preguntas que se van creando -->
+                                <div
+                                    *ngFor="let question of questions.controls; let questionIndex = index"
+                                    class="{{ true ? 'containerQuestions--invalid' : ''}} containerQuestions pdt05"
+                                    >
+                                    <div fxLayout="row" fxLayoutAlign="space-between start" class="fw pd05 pdb0">
+                                        <div fxLayout="row" fxLayoutGap="10px" class="fw">
+                                            <div class="ft500 ft12">
+                                                <!-- numero pregunta -->
+                                                Pregunta {{ questionIndex + 1 }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Contenedor de las preguntas -->
+                                    <div class="pd05">
+                                        <div fxLayout="row" fxLayoutAlign="space-between center">
+                                            <div fxLayout="row" fxLayoutGap="0.625">
+                                                <div class="pdr05">
+                                                    {{ getQuestionTypeDisplayNameByValue(question.get('type').value) }}
+                                                </div>
+                                            </div>
+                                            <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px">
+                                                <label>Puntos:</label>
+                                                <span>{{ question.get('points').value }}</span>
+                                            </div>
+                                        </div>
+                                    
+                                        <div fxLayout="row" class="pdt10">
+                                            <!-- imagen -->
+                                            <div *ngIf="question.get('image.url').value" fxFlex="30">
+                                                <img [src]="question.get('image.url').value" alt="" class="w-90" style="max-height: 200px;">
+                                            </div>
+                                            
+                                            <!-- area dependiente de la pregunta -->
+                                            <div [fxFlex]="question.get('image.url').value ? '30' : '100'" fxLayout="column" class="pdt05 fw">
+                                                <div *ngIf="question.get('type').value == questionTypeClass.TYPE_COMPLETE_VALUE">
+                                                    <span class="ft14 ft500"> {{ question.get('text').value }} </span>
+                                                    <div class="mgt10" fxLayout="row" fxLayoutGap="40px">
+                                                        <div 
+                                                            *ngFor="let placeholder of questionStatus[questionIndex].placeholders;"
+                                                            fxLayout="column"
+                                                            fxLayoutAlign=" center"
+                                                            >
+                                                            <span class="ft12 ft500"> {{ placeholder }} </span>
+                                                            <div *ngFor="let option of options(questionIndex).controls; let optionIndex = index">
+                                                                <span *ngIf="option.get('placeholder').value === placeholder" class="{{ option.get('isCorrect').value ? 'blue-5': '' }} pdr05 mgt05">
+                                                                    {{ option.get('text').value }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div *ngIf="question.get('type').value == questionTypeClass.TYPE_SINGLE_CHOICE_VALUE">
+                                                    <span class="ft14 ft500"> {{ question.get('text').value }} </span>
+                                                    <div class="mgt10" fxLayout="column">
+                                                        <div fxLayout="row" fxLayoutAlign="space-between center" *ngFor="let option of options(questionIndex).controls; let optionIndex = index" class="mgt05">
+                                                            <span class="{{ option.get('isCorrect').value ? 'blue-5': '' }} pdr05">
+                                                                {{ optionIndex + 1 }}. {{ option.get('text').value }}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                    
+                                                <div *ngIf="question.get('type').value == questionTypeClass.TYPE_MULTIPLE_CHOICE_VALUE">
+                                                    <span class="ft14 ft500"> {{ question.get('text').value }} </span>
+                                                    <div class="mgt10" fxLayout="column">
+                                                        <div fxLayout="row" fxLayoutAlign="space-between center" *ngFor="let option of options(questionIndex).controls; let optionIndex = index" class="mgt05">
+                                                            <span class="{{ option.get('isCorrect').value ? 'blue-5': '' }} pdr05">
+                                                                {{ optionIndex + 1 }}. {{ option.get('text').value }}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                    
+                                                <div *ngIf="question.get('type').value == questionTypeClass.TYPE_TRUE_OR_FALSE_VALUE">
+                                                    <span class="ft14 ft500"> {{ question.get('text').value }} </span>
+                                                    <div class="mgt10" fxLayout="column">
+                                                        <div fxLayout="row" fxLayoutAlign="space-between center">
+                                                            <span fxFlex="60" class="ft14 ft500">Enunciado</span>
+                                                            <div class="centertext w200px">
+                                                                <span fxFlex="50" class="ft14 ft500">V</span>
+                                                                <span fxFlex="50" class="ft14 ft500">F</span>
+                                                            </div>
+                                                        </div>
+                                                        <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt05" *ngFor="let option of options(questionIndex).controls; let optionIndex = index">
+                                                            <div fxFlex="60" fxLayout="row" fxLayoutGap="1rem">
+                                                                <span>{{ optionIndex + 1 }}. {{ option.get('text').value }}</span>
+                                                            </div>
+                                                            <div class="centertext w200px">
+                                                                <input fxFlex="50" [name]="questionIndex.toString() + optionIndex.toString()" type="radio" [checked]="option.get('isCorrect').value" [value]="true">
+                                                                <input fxFlex="50" [name]="questionIndex.toString() + optionIndex.toString()" type="radio" [checked]="!option.get('isCorrect').value" [value]="false" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </ng-container>
                 </div>
             </div>
             <div fxFlex="40%" fxLayout="column" fxLayoutAlign="center center">            
@@ -499,7 +612,7 @@
             <!-- Contenedor para los dos botones de la derecha -->
             <div fxLayout="row" fxLayoutGap="10px">               
                 <button
-                    *ngIf="activeStep < 4"
+                    *ngIf="activeStep < 3"
                     class="blueButton radius4 ft12 h28px mgr10 gray-1"
                     (click)="nextPage();"
                     fxLayout="row"
@@ -512,7 +625,7 @@
                 </button>
                 <!-- [disabled]="!form.valid" -->
                 <button
-                    *ngIf="activeStep == 4" 
+                    *ngIf="activeStep == 3" 
                     class="blueButton radius4 ft12 h28px mgr10 gray-1"
                     fxLayout="row"
                     fxLayoutGap="0.625"

@@ -155,6 +155,12 @@ export class EditValidationTestComponent {
 
   onQuestionTypeChange(questionIndex: number, typeValue: string) {
     this.questions.at(questionIndex)['controls']['type'].setValue(typeValue)
+    this.options(questionIndex).setValue([])
+    this.questionStatus[questionIndex] = {
+      ...this.questionStatus[questionIndex],
+      placeholders: [],
+      textToRender: null
+    }
   }
 
   uploadQuestionImage(questionIndex: number, event) {
@@ -188,40 +194,47 @@ export class EditValidationTestComponent {
   }
 
   onSingleOptionSelected(questionIndex: number, optionIndex: number): void {
+    const targetPlaceholder = this.options(questionIndex).at(optionIndex).get('placeholder').value
     for (let index = 0; index < this.options(questionIndex).controls.length; index++) {
-      this.options(questionIndex).at(optionIndex).get('isCorrect').setValue(index === optionIndex ? true : false)
+      if (this.options(questionIndex).at(index).get('placeholder').value === targetPlaceholder) {
+        this.options(questionIndex).at(index).get('isCorrect').setValue(index === optionIndex ? true : false)
+      }
     }
   }
 
-  // parseQuestionText(questionIndex: number): void {
-  //   const existingPlaceholders = getPlaceholders(this.questions.at(questionIndex)['controls']['text'].value)
-  //   this.questionStatus[questionIndex].placeholders = existingPlaceholders;
-  //   this.options(questionIndex).setValue([])
-  // }
+  getQuestionTypeDisplayNameByValue(value: string): string {
+    return QuestionType.TYPES.find(type => type.value === value).displayName
+  }
 
-  // showDisplayText(questionIndex) {
-  //   this.questionStatus[questionIndex].textToRender = this.sanitizer.bypassSecurityTrustHtml(
-  //     this.getDisplayText(questionIndex)
-  //   );
-  // }
+  parseQuestionText(questionIndex: number): void {
+    const existingPlaceholders = getPlaceholders(this.questions.at(questionIndex)['controls']['text'].value)
+    this.questionStatus[questionIndex].placeholders = existingPlaceholders;
+    this.options(questionIndex).setValue([])
+  }
 
-  // getDisplayText(questionIndex: number): string {
-  //   let displayText = this.questions[questionIndex].get('text').value;
-  //   const placeholders = getPlaceholders(displayText);
-  //   for (const placeholder of placeholders) {
-  //     const options = this.options(questionIndex)['controls'].filter(
-  //       (option) => option.get('placeholder').value == placeholder
-  //     );
-  //     let optionsHtml =
-  //       '<option disabled selected value> -- Selecciona una opcion -- </option>';
-  //     for (const option of options) {
-  //       optionsHtml += `<option value="${option.get('text').value}">${option.get('text').value}</option>`;
-  //     }
-  //     const placeholderHtml = `<select class="">${optionsHtml}</select>`;
-  //     displayText = displayText.replace(`[${placeholder}]`, placeholderHtml);
-  //   }
-  //   return displayText;
-  // }
+  showDisplayText(questionIndex) {
+    this.questionStatus[questionIndex].textToRender = this.sanitizer.bypassSecurityTrustHtml(
+      this.getDisplayText(questionIndex)
+    );
+  }
+
+  getDisplayText(questionIndex: number): string {
+    let displayText = this.questions.at(questionIndex).get('text').value;
+    const placeholders = getPlaceholders(displayText);
+    for (const placeholder of placeholders) {
+      const options = this.options(questionIndex)['controls'].filter(
+        (option) => option.get('placeholder').value == placeholder
+      );
+      let optionsHtml =
+        '<option disabled selected value> -- Selecciona una opcion -- </option>';
+      for (const option of options) {
+        optionsHtml += `<option value="${option.get('text').value}">${option.get('text').value}</option>`;
+      }
+      const placeholderHtml = `<select class="">${optionsHtml}</select>`;
+      displayText = displayText.replace(`[${placeholder}]`, placeholderHtml);
+    }
+    return displayText;
+  }
 
   showCurrentForm() {
     console.log(this.mainForm.value)
