@@ -898,11 +898,8 @@ export class CreateCourseComponent implements OnInit {
           competencia.selected = false
         });
       });
-
       console.log(this.competenciasSelectedClase)
-
     }
-
 
     this.modalCompetenciaAsignar = this.modalCompetencia = this.modalService.open(content, {
       ariaLabelledBy: 'modal-basic-title',
