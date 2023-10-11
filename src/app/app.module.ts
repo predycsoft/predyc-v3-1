@@ -95,6 +95,8 @@ import { EditValidationTestComponent } from './main-components/management/edit-v
 import { RankingListComponent } from './main-components/dashboard/ranking-list/ranking-list.component';
 import { TooltipPointsComponent } from './shared/components/tooltip-points/tooltip-points.component';
 import { StudyPlanComponent } from './shared/components/study-plan/study-plan.component';
+import { StudentStatsComponent } from './main-components/management/my-team/student/student-stats/student-stats.component';
+import { StudentDetailsComponent } from './main-components/management/my-team/student/student-details/student-details.component';
 
 @NgModule({
   declarations: [
@@ -146,7 +148,9 @@ import { StudyPlanComponent } from './shared/components/study-plan/study-plan.co
     EditValidationTestComponent,
     RankingListComponent,
     TooltipPointsComponent,
-    StudyPlanComponent
+    StudyPlanComponent,
+    StudentStatsComponent,
+    StudentDetailsComponent
   ],
   imports: [
     BrowserModule,

@@ -161,7 +161,7 @@ export class IconService {
   chemistry = "assets/iconsUI/chemistry.svg"
   construction = "assets/iconsUI/construction.svg"
   fish = "assets/icons/fish.svg"
-  gearList = "assets/icons/gear-list.svg"
+  gearList = "assets/iconsUI/gear-list.svg"
   lightning = "assets/icons/lightning.svg"
   pills = "assets/icons/pills.svg"
 
