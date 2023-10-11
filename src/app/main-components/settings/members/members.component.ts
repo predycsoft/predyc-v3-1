@@ -1,11 +1,12 @@
 import { DataSource } from '@angular/cdk/collections';
 import { Component, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BehaviorSubject, Observable, Subject, Subscription, catchError, map, merge, of } from 'rxjs';
 import { User } from 'src/app/shared/models/user.model';
+import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
 import { IconService } from 'src/app/shared/services/icon.service';
 import { SearchInputService } from 'src/app/shared/services/search-input.service';
 import { UserService } from 'src/app/shared/services/user.service';
@@ -36,13 +37,15 @@ export class MembersComponent {
   searchSubscription: Subscription
 
   modal
+  studentSelected: User | null = null
   
   constructor(
     private userService: UserService,
     public icon: IconService,
-    private dialog: MatDialog,
     private modalService: NgbModal,
     private searchInputService: SearchInputService,
+    private enterpriseService: EnterpriseService,
+    private router: Router
     ) {}
 
   ngAfterViewInit() {
@@ -82,6 +85,27 @@ export class MembersComponent {
       size:'lg',
     });
   }
+
+  navigateToMyTeam() {
+    this.modalService.dismissAll();
+    this.router.navigate(['/management/students'], {fragment: 'createNewStudent'});
+  }
+
+  createNewStudent() {
+    this.modalService.dismissAll();
+    this.studentSelected = User.getEnterpriseAdminUser(this.enterpriseService.getEnterpriseRef())
+    console.log("this.studentSelected", this.studentSelected)
+  }
+
+  onStudentSaveHandler(student: User) {
+    try {
+      this.studentSelected = null
+      this.userService.addUser(student)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
 
 }
 

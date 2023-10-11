@@ -3,8 +3,7 @@ import { IconService } from '../../../shared/services/icon.service';
 import { UserService } from 'src/app/shared/services/user.service';
 import { User } from 'src/app/shared/models/user.model';
 import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
-import { Enterprise } from 'src/app/shared/models/enterprise.model';
-import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-my-team',
@@ -16,12 +15,21 @@ export class MyTeamComponent {
     public icon: IconService,
     private userService: UserService,
     private enterpriseService: EnterpriseService,
-    private afs: AngularFirestore
+    private route: ActivatedRoute,
   ){}
 
   studentSelected: User | null = null
 
   // ?sortBy=Deparment&pageSize=25&page=2&name=searchText
+
+  ngOnInit() {
+    this.route.fragment.subscribe((fragment: string) => {
+      if (fragment === 'createNewStudent') {
+          this.createNewStudent();
+      }
+  });
+
+  }
 
   createNewStudent() {
     this.studentSelected = User.getEnterpriseStudentUser(this.enterpriseService.getEnterpriseRef())

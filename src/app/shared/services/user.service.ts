@@ -59,7 +59,8 @@ export class UserService {
       await this.afs.collection(User.collection).doc(uid).set({...newUser.toJson(), uid: uid});
       newUser.uid = uid
       this.alertService.succesAlert(
-        'Has agregado un nuevo usuario exitosamente. Hemos enviado un correo para que pueda establecer su contraseña.'
+        `Has agregado un nuevo ${newUser.role === "admin" ? "administrador" : "usuario"} exitosamente. 
+        Hemos enviado un correo para que pueda establecer su contraseña.`
       )
     } catch (error) {
       console.log(error)
