@@ -11,6 +11,7 @@ import { Clase } from '../models/course-class.model';
 import { Activity } from '../models/activity-classes.model';
 import { Question } from '../models/activity-classes.model';
 import { Profile } from '../models/profile.model';
+import { CourseService } from './course.service';
 
 
 @Injectable({
@@ -22,7 +23,8 @@ export class ActivityClassesService {
     private afAuth: AngularFireAuth,
     private afs: AngularFirestore,
     private enterpriseService: EnterpriseService,
-    private alertService: AlertsService
+    private alertService: AlertsService,
+    private courseService : CourseService
   ) 
   {
 
@@ -44,7 +46,7 @@ export class ActivityClassesService {
       await ref.set({ ...dataToSave, id: ref.id }, { merge: true });
       newActivity.id = ref.id;
       console.log("Activity added succesfully")
-      this.alertService.succesAlert('Has agregado una actividad exitosamente.')
+      //this.alertService.succesAlert('Has agregado una actividad exitosamente.')
   } catch (error) {
       newActivity.id = null;
       console.log(error)
@@ -93,6 +95,39 @@ export class ActivityClassesService {
         return [].concat(...questionsArray);
       })
     );
+}
+
+getActivityAndQuestionsForCourse(courseId: string): Observable<any[]> {
+
+  const courseRef = this.courseService.getCourseRefById(courseId);
+  console.log('courseRef getActivityAndQuestionsForCourse',courseRef);
+  return this.afs.collection('activity', ref => 
+    ref.where('coursesRef', 'array-contains', courseRef)
+        .where('type', '==', 'regular')
+    )
+  .get()
+  .pipe(
+    switchMap(activitiesSnap => {
+      const activities = activitiesSnap.docs.map(doc => doc.data());
+      const questionsObservables = activitiesSnap.docs.map(activityDoc => {
+        return this.afs.collection(`${Activity.collection}/${activityDoc.id}/${Question.collection}`).valueChanges();
+      });
+      if (questionsObservables.length > 0) {
+        return zip(...questionsObservables).pipe(
+          map(questionsArray => {
+            return activities.map((activity, index) => {
+              return {
+                ...activity as Activity,
+                questions: questionsArray[index]
+              }
+            });
+          })
+        );
+      }
+      // In case no questions are found, return the activities as they are
+      return of(activities);
+    })
+  );
 }
 
   deleteQuestion(idActivity: string, idQuestion: string) {

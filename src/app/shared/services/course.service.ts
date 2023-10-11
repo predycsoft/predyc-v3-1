@@ -163,11 +163,13 @@ export class CourseService {
       // Handle the error appropriately
     }
   }
-  
-  
-
   getCoursesObservable(): Observable<Curso[]> {
     return this.course$
+  }
+
+
+  public getCourseRefById(id: string): DocumentReference<Curso> {
+    return this.afs.collection<Curso>(Curso.collection).doc(id).ref
   }
 
 }

@@ -94,6 +94,8 @@ export class CreateCourseComponent implements OnInit {
   formNuevaComptencia: FormGroup;
   questionTypesIn = QuestionType;
 
+  activitiesCourse;
+
   competenciasArray
 
   curso : Curso;
@@ -385,6 +387,8 @@ export class CreateCourseComponent implements OnInit {
         let curso = courses.find(course => course.id == this.idCurso)
         console.log('curso edit',curso)
         this.curso = curso
+
+        this.modulos = curso['modules'];
         this.formNuevoCurso = new FormGroup({
           id: new FormControl(curso.id, Validators.required),
           titulo: new FormControl(curso.titulo, Validators.required),
@@ -399,6 +403,21 @@ export class CreateCourseComponent implements OnInit {
           imagen_instructor: new FormControl(curso.imagen_instructor, Validators.required),
         })
         this.initSkills();
+        this.activityClassesService.getActivityAndQuestionsForCourse(this.idCurso).subscribe(activities => {
+          console.log('activities clases',activities)
+          this.activitiesCourse = activities;
+          this.modulos.forEach(module => {
+            let clases = module['clases']
+            clases.forEach(clase => {
+              if(clase.tipo == 'actividad'){
+                console.log('activities clases clase',clase)
+                let activity = activities.find(activity => activity.claseRef.id == clase.id)
+                console.log('activities clases activity',activity)
+                clase.activity = activity;
+              }
+            });
+          });
+        });
       })
     }
 
@@ -1591,7 +1610,16 @@ export class CreateCourseComponent implements OnInit {
 
       console.log('pregunta',pregunta)
 
-      let response: QuestionValidationResponse = pregunta.isValidForm();
+      let pregunta_local = new Question;
+      pregunta_local.id = pregunta.id
+      pregunta_local.type = pregunta.type
+      pregunta_local.options = pregunta.options
+      pregunta_local.points = pregunta.points
+      pregunta_local.skills = pregunta.skills
+      pregunta_local.text = pregunta.text
+      pregunta_local.image = pregunta.image
+
+      let response: QuestionValidationResponse = pregunta_local.isValidForm();
       if (!response.result) {
         console.log(response.messages)
         pregunta['isInvalid'] = true;
@@ -1943,7 +1971,19 @@ export class CreateCourseComponent implements OnInit {
 
       console.log('pregunta',pregunta)
 
-      let response: QuestionValidationResponse = pregunta.isValidForm();
+      let pregunta_local = new Question;
+
+      console.log('pregunas examen',pregunta_local,pregunta)
+
+      pregunta_local.id = pregunta.id
+      pregunta_local.type = pregunta.type
+      pregunta_local.options = pregunta.options
+      pregunta_local.points = pregunta.points
+      pregunta_local.skills = pregunta.skills
+      pregunta_local.text = pregunta.text
+      pregunta_local.image = pregunta.image
+
+      let response: QuestionValidationResponse = pregunta_local.isValidForm();
       if (!response.result) {
         console.log(response.messages)
         pregunta['isInvalid'] = true;
