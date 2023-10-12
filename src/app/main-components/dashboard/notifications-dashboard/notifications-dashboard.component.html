@@ -31,8 +31,11 @@
                             <img [src]="notification.user?.photoURL" class="avatar2" alt=""
                                 onerror="this.src='assets/images/default/default-user-image.jpg'">
                             <div class="ft10 gray-10">
-                                {{ notification.user.displayName | titlecase }} {{notification.message}}
+                                    <span class="mgr05 mgt05" style=" color: var(--gray-9);">{{ notification.user.displayName | titlecase }} </span> <span style="color: var(--gray-6);">{{ notification.message}}</span>
                             </div>
+                            
+
+
                         </div>
                     </td>
                 </ng-container>
