@@ -1,9 +1,24 @@
 .level-bar {
-    width: 100px;
+    /* display: flex; */
+    width: 45px;
     height: 20px;
+}
+
+.block {
+    width: 33.33%; /* Divide la barra de nivel en tres partes iguales */
+    height: 100%;
     background: #eaeaea; /* Color de fondo básico para la barra */
 }
 
-.level-bar.standard {
-    background: linear-gradient(to right, green 0%, green 50%, #eaeaea 50%, #eaeaea 100%); /* Ajusta el porcentaje según lo que necesites */
+.block.standard {
+    background-color: green;
+}
+
+.block.strict {
+    background-color: rgb(255, 208, 0);
+}
+
+.block.strict.op {
+    background-color: rgb(255, 208, 0);
+    opacity: 0.4;
 }

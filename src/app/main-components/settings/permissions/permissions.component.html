@@ -21,9 +21,13 @@
                 </div>
                 <div fxLayout="column" fxLayoutAlign="space-evenly center" class="backGray2 fh w180px">
                     <span class="ft12 gray-10">Nivel de estudio</span>
-                    <div fxLayout="row" fxLayoutGap="10px">
+                    <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign=" center">
                         <span class="ft600 ft11 gray-10">Estándar</span>
-                        <div class="level-bar standard"></div>
+                        <div class="level-bar" fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="space-between center">
+                            <div class="block standard"></div>
+                            <div class="block standard"></div>
+                            <div class="block standard"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -40,14 +44,18 @@
                 </div>
                 <div fxLayout="row" fxLayoutAlign="center stretch">
                     <select formControlName="liberty">
-                        <option *ngFor="let option of options" [value]="option">{{option}}</option>
+                        <option *ngFor="let option of modelOptions" [value]="option">{{mapOptions(option)}}</option>
                     </select>
                 </div>
                 <div fxLayout="column" fxLayoutAlign="space-evenly center" class="backGray2 fh w180px">
                     <span class="ft12  gray-10">Nivel de estudio</span>
-                    <div fxLayout="row" fxLayoutGap="10px">
-                        <span class="ft11 ft600 gray-10">{{form.get('liberty').value}}</span>
-                        <div class="level-bar standard"></div>
+                    <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign=" center">
+                        <span class="ft11 ft600 gray-10">{{mapOptions(form.get('liberty').value)}}</span>
+                        <div class="level-bar" fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="space-between center">
+                            <div class="block strict"></div>
+                            <div class="block strict"></div>
+                            <div class="block strict op"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -64,14 +72,18 @@
                 </div>
                 <div fxLayout="row" fxLayoutAlign="center stretch">
                     <select formControlName="generation">
-                        <option *ngFor="let option of options" [value]="option">{{option}}</option>
+                        <option *ngFor="let option of modelOptions" [value]="option">{{mapOptions(option)}}</option>
                     </select>
                 </div>
                 <div fxLayout="column" fxLayoutAlign="space-evenly center" class="backGray2 fh w180px">
                     <span class="ft12 gray-10">Nivel de estudio</span>
-                    <div fxLayout="row" fxLayoutGap="10px">
-                        <span class="ft11 ft600 gray-10">{{form.get('generation').value}}</span>
-                        <div class="level-bar standard"></div>
+                    <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign=" center">
+                        <span class="ft11 ft600 gray-10">{{mapOptions(form.get('generation').value)}}</span>
+                        <div class="level-bar" fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="space-between center">
+                            <div class="block standard"></div>
+                            <div class="block standard"></div>
+                            <div class="block standard"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -90,9 +102,13 @@
                 </div>
                 <div fxLayout="column" fxLayoutAlign="space-evenly center" class="backGray2 fh w180px">
                     <span class="ft12 gray-10">Nivel de estudio</span>
-                    <div fxLayout="row" fxLayoutGap="10px">
+                    <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign=" center">
                         <span class="ft11 ft600 gray-10">Estándar</span>
-                        <div class="level-bar standard"></div>
+                        <div class="level-bar" fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="space-between center">
+                            <div class="block standard"></div>
+                            <div class="block standard"></div>
+                            <div class="block standard"></div>
+                        </div>
                     </div>
                 </div>
             </div>
