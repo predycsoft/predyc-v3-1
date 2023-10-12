@@ -1,26 +1,48 @@
 <div *ngIf="!loaderService.loading">
-    <div fxLayout="row" fxLayoutAlign=" center">
-        <img onerror="this.src='assets/images/default/default-user-image.jpg'" 
-            [src]="enterprise?.photoUrl" class="avatar5" alt="">
+    <div fxLayout="row" fxLayoutAlign=" center" >
+        <img class="photo-shadow" onerror="this.src='assets/images/default/default-user-image.jpg'" 
+            [src]="enterprise?.photoUrl" class="avatarshadow " alt="">
         <span class="mgl10 ft16 ft600 gray-10">
             {{enterprise.name}}
         </span>
     </div>
-    <div fxLayout="row" fxLayoutAlign="space-between" class="mgt15">
-        <div fxLayout="column" fxLayoutGap="0.75rem" class="w-35">
-            <div class="radius10 border fw">
-                <span>Horas de estudio</span>
+
+
+    <div fxLayout="row" fxLayoutAlign="space-between " class="mgt15 pdr10 ">
+
+        <!--primera -->
+
+        <div fxLayout="column" fxLayoutGap="0.75rem" class="w-35 mgr10 ">
+            <!--horas de estudio-->
+            <div class="radius10 border fw h-30">
+                <span class=" w40px pdl10 pdr10">Horas de estudio</span>     
+            </div>
+            <!--hitos-->
+            <div class="radius10 border fw h-30">
+                <span class=" w40px pdl10 pdr10">hitos</span>   
             </div>
         </div>
-        <div fxLayout="column" fxLayoutGap="0.75rem" class="w-30">
-            <div class="radius10 border fw">
-                <span>Ritmo de usuarios</span>
+
+        <!-- segunda-->
+
+
+        <div fxLayout="column" fxLayoutGap="0.75rem" class="w-35 mgr10">
+            <!-- ritmo de usuarios-->
+            <div class="radius10 border fw h-90" >
+                <span class="pdl10 pdr10">Ritmo de usuarios 
+                    -users-rhythm-
+                </span>
             </div>
+            <!--ranking-->
             <div class="radius10 border fw">
                 <app-ranking-list></app-ranking-list>
             </div>
         </div>
+        
+
+        <!--tercera-->
         <div fxLayout="column" class="w-30">
+             <!-- ritmo de usuarios-->
             <div class="radius10 border fh fw">
                 <app-notifications-dashboard></app-notifications-dashboard>
             </div>

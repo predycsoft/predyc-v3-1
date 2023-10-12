@@ -3,11 +3,11 @@
     fxLayoutAlign="space-between">
 
     <div fxLayout="column" fxLayoutAlign=" center" style="height: 100vh;" >
-        <div fxLayout="column" fxLayoutGap="10px">
+        <div fxLayout="column" fxLayoutGap="32px">
             <a routerLink="">
                 <img
                     [src]="icon.predyc"
-                    class="h24px">
+                    class="h24px mgt10 ">
             </a>
             <a
                 *ngFor="let page of pages"
@@ -16,12 +16,12 @@
                 fxLayoutAlign="center center"
                 [routerLink]="page.link"
                 class="menu-item"
-                routerLinkActive="backBlue1"
+                routerLinkActive="backYellow4 "
                 [routerLinkActiveOptions]="{ exact: true }">
                 <img
                     [src]="page?.icon"
                     class="h24px"
-                    routerLinkActive="makeBlue opacity1"
+                    routerLinkActive=" opacity1"
                     [routerLinkActiveOptions]="{ exact: true }">
             </a>
         </div>

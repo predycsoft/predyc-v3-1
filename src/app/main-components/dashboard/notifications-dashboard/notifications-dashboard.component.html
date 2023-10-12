@@ -4,7 +4,8 @@
             <div class="iconContainer" fxLayoutAlign="center center">
                 <img [src]="icon.notification" class="makeBlue" alt="">
             </div>
-            <span class="ft12 gray-10 ft600 ">Notificaciones</span>
+            <span class="pd10 ft12 gray-9 ft600 ">Notificaciones</span>
+
         </div>
 
         <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="1.5rem" class="fw pdr05">
@@ -40,17 +41,17 @@
                     <td mat-cell *matCellDef="let notification" class="cursorPointer">
                         <div *ngIf="notification.type === 'alert'" (click)="sendMail(notification)">
                             <div *ngIf="!clickedNotifications[notification.id]">
-                                <img [src]="icon.email" class="h20px" alt="">
+                                <img [src]="icon.email" class="h20px makeGray9" alt="">
                             </div>
                         </div> 
                         <div *ngIf="notification.type === 'activity'">
                             <div [routerLink]="['/management/students', notification.user.uid]" class="cursorPointer">
-                                <img [src]="icon.panel" class="h20px" alt="">
+                                <img [src]="icon.panel" class="h20px  makeGray9" alt="">
                             </div>
                         </div> 
                         <div *ngIf="notification.type === 'request'">
                             <div [routerLink]="['/my-account']" [queryParams]="{ activeTab: 'soporte' }" class="cursorPointer">
-                                <img [src]="icon.chat" class="h20px" alt="">
+                                <img [src]="icon.chat" class="h20px makeGray9" alt="">
                             </div>
                         </div> 
                     </td>
@@ -59,7 +60,7 @@
                 <ng-container matColumnDef="check">
                     <td mat-cell *matCellDef="let notification" [ngClass]="!notification.readByAdmin? 'cursorPointer' : ''"> 
                         <div *ngIf="!notification.readByAdmin" (click)="setRead(notification)">
-                            <img [src]="icon.check" class="h20px" alt="">
+                            <img [src]="icon.check" class="h20px makeGray9" alt="">
                         </div>
                     </td>
                 </ng-container>

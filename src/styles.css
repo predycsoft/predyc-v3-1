@@ -84,7 +84,7 @@ body {
   height: 100%;
   font-family: "Inter", "Helvetica Neue", sans-serif;
   line-height: 1.7;
-  font-size: 16px
+  font-size: 16px;
 }
 
 :root {
@@ -110,7 +110,6 @@ body {
   --backBlue: #4186E0;
   --backPurple: #7D72F0;
   --backOrange: #FD612C;
-  --backYellow: #FD9A00;
   --light-link-color: #cbd4db;
   --soft-gray: #fafcfe;
   --gray-1: #F6F8F9;
@@ -144,7 +143,7 @@ body {
   --yellow-1: #FFFEDE;
   --yellow-2: #FFF78F;
   --yellow-3: #FFE01B;
-  --yellow-4: #FCBD01;
+  --yellow-4: #FFE084;
   --yellow-5: #F2A100;
   --darkDegraded: linear-gradient(#222B37 50%, #151B26) !important;
   --orange-1: #F9DC00;
@@ -493,7 +492,17 @@ body {
 .grayButton:hover{  background-color: #e3e4e5!important; transition: .3s; }
 .greenButton{  background-color: #00BF9C!important; transition: .3s; }
 .greenButton:hover{  background-color: #00aa8b!important; transition: .3s; }
-.blueButton{  background-color: #008CE3!important; transition: .3s; }
+.blueButton{    background-color: #008CE3;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 24px !important;
+  padding: 10px 20px !important; 
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  text-align: center; 
+  line-height: 1.2!important; 
+  margin: 5px;}
 .blueButton:hover{  background-color: #007fc9!important; transition: .3s; }
 .blackButton{  background-color: var(--gray-10)!important; transition: .3s; }
 .blackButton:hover{  background-color: var(--gray-9)!important; transition: .3s; }
@@ -755,7 +764,7 @@ body {
 .pdr03{  padding-right: 4px; }
 .pdr05{  padding-right: 8px; }
 .pdr08{  padding-right: 12px; }
-.pdr10{  padding-right: 16px; }
+.pdr10{  padding-right: 16px!important; }
 .pdr20{  padding-right: 32px; }
 .pdr30{  padding-right: 48px; }
 .pdr40{  padding-right: 64px; }
@@ -1016,6 +1025,13 @@ body {
 .avatar8{ height: 8rem; width: 8rem; border-radius: 50%; }
 .avatar9{ height: 9rem; width: 9rem; border-radius: 50%; }
 .avatar10{ height: 10rem; width: 10rem; border-radius: 50%; }
+
+.avatarshadow {
+  height: 5rem; width: 5rem; border-radius: 50%; 
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.25);
+  outline: 5px solid #ffffff;
+}
+
 
 .avatarSquare1{ height: 1rem; width: 1rem;  }
 .avatarSquare2{ height: 2rem; width: 2rem;  }
@@ -1514,6 +1530,7 @@ button:not(.swal-overlay *):not(.mat-mdc-chip *) {
   text-decoration: none;
   white-space: nowrap;
 }
+
 
 .inline{
   display: inline;

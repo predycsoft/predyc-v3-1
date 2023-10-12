@@ -1,6 +1,6 @@
 <!-- <button (click)="onAddButton()">Añadir notificaciones</button> -->
 
-<div class="filter-container" fxLayout="row" fxLayoutAlign="start center">
+<div class="filter-container rounded-container" fxLayout="row" fxLayoutAlign="start center">
     <div [ngClass]="{'active': selectedFilter === 'all'}" class="filter-item active" (click)="applyFilter('all')">
         <img *ngIf="selectedFilter === 'all'" [src]="icon.check" class="h20px pdr08" alt="">        
         <span>Todas</span>
@@ -17,61 +17,62 @@
         <img *ngIf="selectedFilter === 'request'" [src]="icon.check" class="h20px pdr08" alt="">        
         <span>Solicitudes</span>
     </div>
-    <div [ngClass]="{'active': selectedFilter === 'archived'}" class="filter-item" (click)="applyFilter('archived')">
+    <div [ngClass]="{'active': selectedFilter === 'archived'}" class="filter-item right-rounded-container" (click)="applyFilter('archived')">
         <img *ngIf="selectedFilter === 'archived'" [src]="icon.check" class="h20px pdr08" alt="">        
         <span>Archivados</span>
     </div>
 </div>
 
 <div>
-    <table mat-table [dataSource]="dataSource">
+    <table mat-table [dataSource]="dataSource" class="item-container">
         <!-- Content Column -->
         <ng-container matColumnDef="content">
-            <td mat-cell *matCellDef="let notification"> 
-                <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign=" center">
+            <td mat-cell *matCellDef="let notification" class="item-container "> 
+                <div fxLayout="row" fxLayoutGap="24px" fxLayoutAlign=" left">
                     <img [src]="notification.user?.photoURL" class="avatar2 " alt=""
                         onerror="this.src='assets/images/default/default-user-image.jpg'">
-                    <div>
-                        {{ notification.user.displayName | titlecase }} {{notification.message}}
+                    <div >
+                        
+                        <span class="mgr05 mgt05" style=" color: var(--gray-9);">{{ notification.user.displayName | titlecase }} </span> <span style="color: var(--gray-6);">{{ notification.message}}</span>
                     </div>
                 </div>
             </td>
         </ng-container>
         <!-- Date Column -->
-        <ng-container matColumnDef="date">
+        <ng-container matColumnDef="date" >
             <!-- <td mat-cell *matCellDef="let notification"> {{ notification.date }} </td> -->
-            <td mat-cell *matCellDef="let notification"> {{ notification.date | date }} </td>
+            <td mat-cell *matCellDef="let notification" class=" item-container"> {{ notification.date | date }} </td >
             <!-- <td mat-cell *matCellDef="let notification"> {{ notification.date | date:"d MMM" }} </td> -->
         </ng-container>
         <!-- Action Column -->
-        <ng-container matColumnDef="action">
-            <td mat-cell *matCellDef="let notification" class="cursorPointer">
+        <ng-container matColumnDef="action" class="mgr08 makeGray9  " >
+            <td mat-cell *matCellDef="let notification" class="cursorPointer item-container ">
                 <div *ngIf="notification.type === 'alert'" (click)="sendMail(notification)">
-                    <div *ngIf="!clickedNotifications[notification.id]">
-                        <img [src]="icon.email" class="h20px" alt="">
-                        <span style="color: var(--gray-7);">Enviar aviso</span>
+                    <div *ngIf="!clickedNotifications[notification.id]" class="actions-container">
+                        <img [src]="icon.email" class="h24px makeGray9 mgr08" alt="">
+                        <span style="color: var(--gray-9);">Enviar aviso</span>
                     </div>
                 </div> 
                 <div *ngIf="notification.type === 'activity'">
-                    <div [routerLink]="['/management/students', notification.user.uid]" class="cursorPointer">
-                        <img [src]="icon.panel" class="h20px" alt="">
-                        <span style="color: var(--gray-7);">Ir al panel</span>
+                    <div [routerLink]="['/management/students', notification.user.uid]" class="cursorPointer filter-item2 actions-container ">
+                        <img [src]="icon.panel" class="h24px makeGray9 mgr08" alt="">
+                        <span style="color: var(--gray-9);">Ir al panel</span>
                     </div>
                 </div> 
                 <div *ngIf="notification.type === 'request'">
-                    <div [routerLink]="['/my-account']" [queryParams]="{ activeTab: 'soporte' }" class="cursorPointer">
-                        <img [src]="icon.chat" class="h20px" alt="">
-                        <span style="color: var(--gray-7);">Contactar a Predyc</span>
+                    <div [routerLink]="['/my-account']" [queryParams]="{ activeTab: 'soporte' }" class="cursorPointer actions-container">
+                        <img [src]="icon.chat" class="h24px mgr08 makeGray9" alt="">
+                        <span style="color: var(--gray-9);">Contactar a Predyc</span>
                     </div>
                 </div> 
             </td>
         </ng-container>
         <!-- Check Column -->
         <ng-container matColumnDef="check">
-            <td mat-cell *matCellDef="let notification" [ngClass]="!notification.readByAdmin? 'cursorPointer' : ''"> 
-                <div (click)="!notification.readByAdmin ? setRead(notification) : null">
-                    <img [src]="icon.check" class="h20px" alt="">
-                    {{notification.readByAdmin ? "Leído" : "Marcar como leido"}} 
+            <td mat-cell *matCellDef="let notification" [ngClass]="!notification.readByAdmin? 'cursorPointer' : '' " class="item-container "> 
+                <div (click)="!notification.readByAdmin ? setRead(notification) : null" class="actions-container">
+                    <img [src]="icon.check" class="h24px mgr05 makeGray9" alt="">
+                    <span style="color: var(--gray-9);">{{notification.readByAdmin ? "Leído" : "Marcar como leido"}}  </span>
                 </div>
             </td>
         </ng-container>

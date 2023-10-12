@@ -89,3 +89,19 @@
 .noValue {
     color: #b2b2b2;
 }
+.disabled-button {
+    background-color: #CCCCCC;
+    color: #777777;
+    cursor: not-allowed;
+} 
+.savebutton{
+    background-color: #007BFF;
+    color: #cb0000;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  

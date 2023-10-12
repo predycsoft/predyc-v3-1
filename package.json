@@ -25,6 +25,7 @@
     "@ng-bootstrap/ng-bootstrap": "^15.1.1",
     "@popperjs/core": "^2.11.6",
     "bootstrap": "^5.2.3",
+    "chart.js": "^4.4.0",
     "ngx-extended-pdf-viewer": "^18.0.0",
     "rxjs": "~7.8.0",
     "sweetalert2": "^11.7.27",

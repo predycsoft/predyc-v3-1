@@ -1,0 +1,30 @@
+:host {
+    display: block;
+    width: 100%;
+  }
+  
+  svg {
+    display: block;
+    margin: 0 auto;
+  }
+  
+  path {
+    fill: none;
+    stroke: #008CE3; 
+    stroke-width: 10; 
+  }
+  
+  .card-container {
+    width: 310px;
+    height: 300px;
+    position: relative;
+  }
+  
+  /* Estilos para el gráfico */
+  .chart-canvas {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }

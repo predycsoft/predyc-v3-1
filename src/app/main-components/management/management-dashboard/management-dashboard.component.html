@@ -1,6 +1,6 @@
 <h3 class="page-title">Gestión de personal</h3>
-<div fxLayout="column" fxLayoutGap="30px">
-    <div class="fh" fxLayout="row" fxLayoutAlign="space-between center">
+<div fxLayout="column" fxLayoutGap="10px">
+    <div class="fh  pd2 "  fxLayoutGap="0px" fxLayoutAlign="space-between center" >
         <!-- <div class="card-container card-container--md card-container--border"></div>
         <div class="card-container card-container--md card-container--border"></div> -->
         <app-navigation-card
@@ -23,19 +23,29 @@
             buttonBackgroundColor="#008CE3"
             (onBtnClick)="navigateTo('students')"
             ></app-navigation-card>
-        <div class="card-container card-container--sm card-container--border"></div>
-        <div class="card-container card-container--bg card-container--border">
+        <div class="card-container card-container--sm card-container--border" style=" width: 310px; height: 300px; padding: 10px; ">
+            <div fxFlex.xs="100" fxFlex.gt-xs="50">
+                <app-semigauge-chart  ></app-semigauge-chart>
+                   
+            </div>
+            
+
+        </div>
+        <div class="card-container card-container--bg card-container--border" style="width: 450px; height: 300px;">
             <p class="ft15 mt-4 mb-0" style="text-align: center">¿Cómo funciona la gestión de personal?</p>
-            <p class="ft500 ft12 mt-2" style="text-align: center">Te lo explicamos en 1 min</p>
-            <div class="cursorPointer" (click)="openVideo()" style="overflow: hidden; position: relative; margin: 0 auto; height: 125px; width: 210px; border-radius: 10px;" fxLayout="row" fxLayoutAlign="center center">
-                <img [src]="icon.playCircle" alt="" style="z-index: 1">
-                <img src="https://i3.ytimg.com/vi/QUNrBEhvXWQ/maxresdefault.jpg" alt="demo video" style="position: absolute; height: 100%; object-fit: cover;">
+            <p class="ft500 ft12 mb-1" style="text-align: center">Te lo explicamos en 1 min</p>
+            <div class="cursorPointer" (click)="openVideo()" style="overflow: hidden; position: relative; margin: 0 auto; height: 225px; width: 400px; border-radius: 10px;">
+                <img src="https://i3.ytimg.com/vi/QUNrBEhvXWQ/maxresdefault.jpg" alt="demo video" style="position: absolute; height: 90%; width: 100%; object-fit: cover;">
+                <img [src]="icon.playCircle" alt="" style="z-index: 1; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: 10px 10px 10px 10px!important;">
             </div>
         </div>
+        
+        
+        
     </div>
     <div class="card-container" style="height: 320px">
-        <div class="cursorPointer ft600 ft20 mgt03" style="color: black" routerLink="notifications">Notificaciones</div>
-        <button routerLink="notifications" class="blueButton" style="float: right">Ir a notificationes</button>
-        <app-notification-list [pageSize]="4" [enablePagination]="false"></app-notification-list>
+        <div class="cursorPointer ft600 ft20 mgt03" style="color: gray-9;" routerLink="notifications">Notificaciones</div>
+        <button routerLink="notifications" class="blueButton" style="float: right">Ir a notificaciones</button>
+        <app-notification-list [pageSize]="4" [enablePagination]="false" ></app-notification-list>
     </div>
 </div>

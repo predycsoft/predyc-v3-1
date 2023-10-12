@@ -5,7 +5,6 @@ import { IconService } from '../../../shared/services/icon.service';
 import { VideoDialogComponent } from './video-dialog/video-dialog.component';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 
-
 @Component({
   selector: 'app-management-dashboard',
   templateUrl: './management-dashboard.component.html',
@@ -17,19 +16,14 @@ export class ManagementDashboardComponent {
     private router: Router,
     private dialog: MatDialog,
     public icon: IconService,
-    private notificationService: NotificationService,
-
+    private notificationService: NotificationService
   ) {}
 
-  pageSize: number = 10
-  sortBy: string = 'createdAt'
-
-  // this.notificationService.getNotifications({
-  //   pageSize: this.pageSize
-  // })
+  pageSize: number = 10;
+  sortBy: string = 'createdAt';
 
   navigateTo(url: string) {
-    this.router.navigate([url], {relativeTo: this.activatedRoute})
+    this.router.navigate([url], { relativeTo: this.activatedRoute });
   }
 
   openVideo(): void {

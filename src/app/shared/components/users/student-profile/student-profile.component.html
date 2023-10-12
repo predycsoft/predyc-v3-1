@@ -145,7 +145,11 @@
             </span> -->
         </div>
         <div fxLayout="row" fxLayoutAlign="center center">
-            <button *ngIf="!isStudentProfile" [ngClass]="form.valid ? 'blueButton btn' : 'graybutton btn'" class="mgt10 radius20" type="submit">Guardar</button>
+            <button *ngIf="!isStudentProfile" [ngClass]="{'savebutton btn': form.valid, 'disabled-button btn': !form.valid}" 
+            [disabled]="!form.valid" 
+            class="mgt10 radius20" 
+            type="submit">Guardar</button>
         </div>
+
     </form>
 </div>
