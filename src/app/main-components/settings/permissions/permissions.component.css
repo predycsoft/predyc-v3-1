@@ -36,15 +36,29 @@
     background: #eaeaea; /* Color de fondo básico para la barra */
 }
 
-.block.standard {
+.block.green {
     background-color: green;
 }
 
-.block.strict {
+.block.yellow {
     background-color: rgb(255, 208, 0);
 }
 
-.block.strict.op {
+.block.yellow-op {
     background-color: rgb(255, 208, 0);
     opacity: 0.4;
+}
+
+.block.red {
+    background-color: red;
+}
+
+.block.red-op {
+    background-color: red;
+    opacity: 0.4;
+}
+
+.block.red-op2 {
+    background-color: red;
+    opacity: 0.1;
 }
