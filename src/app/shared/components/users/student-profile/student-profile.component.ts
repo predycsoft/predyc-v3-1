@@ -48,7 +48,7 @@ export class StudentProfileComponent implements OnInit {
 
   // Colocar "this.requiredValidator" en los campos que se consideren requeridos
   form: FormGroup = new FormGroup({
-    "name": new FormControl(null, Validators.required),
+    "displayName": new FormControl(null, Validators.required),
     "photoUrl": new FormControl(null),
     "email": new FormControl(null, [Validators.required, Validators.email]),
     "phoneNumber": new FormControl(null),
@@ -162,8 +162,8 @@ export class StudentProfileComponent implements OnInit {
     console.log(this.form.value)
     // Guarda la imagen
     await this.saveStudentPhoto()
-    this.student.name = formData.name ? capitalizeFirstLetter(formData.name) : null
-    this.student.displayName = formData.name ? capitalizeFirstLetter(formData.name) : null
+    this.student.name = formData.displayName ? capitalizeFirstLetter(formData.displayName) : null
+    this.student.displayName = formData.displayName ? capitalizeFirstLetter(formData.displayName) : null
     this.student.phoneNumber = formData.phoneNumber ? formData.phoneNumber : null
     this.student.country = formData.country ? formData.country : null 
     this.student.birthdate = formData.birthdate ? dateFromCalendarToTimestamp(formData.birthdate): null
