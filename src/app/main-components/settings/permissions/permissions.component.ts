@@ -4,30 +4,49 @@ import { IconService } from 'src/app/shared/services/icon.service';
 
 export interface ModelJson  {
   hours: number | null
-  liberty: "strict" |"optimum" |"standard" |"average" | null
-  generation: "strict" |"optimum" |"standard" |"average" | null
+  liberty: "free" |"strict" |"request" | null
+  generation: "optimum" |"confirm" |"default" | null
   attempts: number | null
 }
 
 export class Model {  
   hours: number | null
-  liberty: "strict" |"optimum" |"standard" |"average" | null
-  generation: "strict" |"optimum" |"standard" |"average" | null
+  liberty: "free" |"strict" |"request" | null
+  generation: "optimum" |"confirm" |"default" | null
   attempts: number | null
 
+  public static OPTION_FREE: string = 'free'
   public static OPTION_STRICT: string = 'strict'
+  public static OPTION_REQUEST: string = 'request'
   public static OPTION_OPTIMUM: string = 'optimum'
-  public static OPTION_STANDARD: string = 'standard'
-  public static OPTION_AVERAGE: string = 'average'
+  public static OPTION_CONFIRM: string = 'confirm'
+  public static OPTION_DEFAULT: string = 'default'
 
-  public static OPTIONS_TO_DISPLAY = ["Estricto", "Óptimo", "Estándar", "Promedio"]
-  public static OPTIONS = [this.OPTION_STRICT, this.OPTION_OPTIMUM, this.OPTION_STANDARD, this.OPTION_AVERAGE]
+  public static LIBERTY_OPTIONS_TO_DISPLAY = ["Libre", "Estricto", "Solicitudes"]
+  public static GENERATION_OPTIONS_TO_DISPLAY = ["Óptimo", "Confirmar", "Por defecto"]
+  public static LIBERTY_OPTIONS = [this.OPTION_FREE, this.OPTION_STRICT, this.OPTION_REQUEST]
+  public static GENERATION_OPTIONS = [this.OPTION_OPTIMUM, this.OPTION_CONFIRM, this.OPTION_DEFAULT]
 
 
-  public static mapOptions(option: typeof Model.OPTION_STRICT | typeof Model.OPTION_OPTIMUM | typeof Model.OPTION_STANDARD | typeof Model.OPTION_AVERAGE): string {
-    const index = this.OPTIONS.indexOf(option);
-    if (index > -1) {
-      return this.OPTIONS_TO_DISPLAY[index];
+  public static mapOptions(option: 
+    typeof Model.OPTION_FREE | 
+    typeof Model.OPTION_STRICT | 
+    typeof Model.OPTION_REQUEST | 
+    typeof Model.OPTION_OPTIMUM | 
+    typeof Model.OPTION_CONFIRM | 
+    typeof Model.OPTION_DEFAULT
+  ): string {
+    let index: number
+    if (option === Model.OPTION_FREE || option === Model.OPTION_STRICT || option === Model.OPTION_REQUEST ) {
+      index = this.LIBERTY_OPTIONS.indexOf(option);
+      if (index > -1) {
+        return this.LIBERTY_OPTIONS_TO_DISPLAY[index];
+      }
+    } else {
+      index = this.GENERATION_OPTIONS.indexOf(option);
+      if (index > -1) {
+        return this.GENERATION_OPTIONS_TO_DISPLAY[index];
+      }
     }
     return option;  // retorna el valor original si no hay equivalencia
   }
@@ -42,16 +61,19 @@ export class PermissionsComponent {
   constructor(
     public icon: IconService,
   ){}
-
-  optionsToDisplay = Model.OPTIONS_TO_DISPLAY
-  modelOptions = Model.OPTIONS
+  showLibertyTooltip = false
+  showGenerationTooltip = false
+  libertyOptionsToDisplay = Model.LIBERTY_OPTIONS_TO_DISPLAY
+  GenerationOptionsToDisplay = Model.GENERATION_OPTIONS_TO_DISPLAY
+  libertyOptions = Model.LIBERTY_OPTIONS
+  generationOptions = Model.GENERATION_OPTIONS
   form: FormGroup
 
   // From firebase
   values: Model = {
     hours : 9,
-    liberty : "strict",
-    generation : "average",
+    liberty : "request",
+    generation : "confirm",
     attempts : 2,
   }
 
@@ -86,7 +108,14 @@ export class PermissionsComponent {
     console.log("this.form.value", this.form.value)
   }
 
-  mapOptions(option: typeof Model.OPTION_STRICT | typeof Model.OPTION_OPTIMUM | typeof Model.OPTION_STANDARD | typeof Model.OPTION_AVERAGE): string {
+  mapOptions(option: 
+    typeof Model.OPTION_FREE | 
+    typeof Model.OPTION_STRICT | 
+    typeof Model.OPTION_REQUEST | 
+    typeof Model.OPTION_OPTIMUM | 
+    typeof Model.OPTION_CONFIRM | 
+    typeof Model.OPTION_DEFAULT
+  ): string {
     return Model.mapOptions(option)
   }
 

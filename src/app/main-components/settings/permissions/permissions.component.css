@@ -1,3 +1,29 @@
+.libertyTooltip{
+    position: absolute;
+    left: 12rem;
+    top: 0rem;
+    padding: 0.5rem;
+    border-radius: 6px;
+    box-shadow: var(--shadow16);
+    background-color: white;
+    z-index: 1000;
+}
+
+.generationTooltip{
+    position: absolute;
+    left: 15rem;
+    top: 0rem;
+    padding: 0.5rem;
+    border-radius: 6px;
+    box-shadow: var(--shadow16);
+    background-color: white;
+    z-index: 1000;
+}
+
+.positionRelative{
+    position: relative;
+}
+
 .level-bar {
     /* display: flex; */
     width: 45px;

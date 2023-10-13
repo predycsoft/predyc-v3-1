@@ -1,10 +1,9 @@
-<div fxLayout="column" fxLayoutAlign="space-between start" fxLayoutGap="10px">
+<div fxLayout="column" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="mgt15">
     <!-- Permisos generales -->
-    <div>
+    <div fxLayout="row" fxLayoutGap="10px">
         <img [src]="icon.checkCircle" alt="Ícono">
         <span class="ft600 gray-10">Permisos generales</span>
     </div>
-
     <form [formGroup]="form">
         <div fxLayout="column" fxLayoutAlign="space-between start" fxLayoutGap="10px">
             <!-- Horas por semana -->
@@ -33,56 +32,96 @@
             </div>
         
             <!-- Libertad de estudio -->
-            <div fxLayout="row" fxLayoutGap="30px" fxLayoutAlign="space-between center" class="border radius10 w1000px h80px pdl05">
-                <div fxLayout="column" fxLayoutAlign="start start" class="w600px">
-                    <div fxLayout="row" fxLayoutGap="5px" class="mgb10">
-                        <img [src]="icon.checkCircle" alt="Ícono">
-                        <span class="ft600 gray-8">Libertad de estudio</span>
-                        <img [src]="icon.information" alt="Ícono" class="mgl05">
+            <div class="positionRelative">
+                <div fxLayout="row" fxLayoutGap="30px" fxLayoutAlign="space-between center" class="border radius10 w1000px h80px pdl05">
+                    <div fxLayout="column" fxLayoutAlign="start start" class="w600px">
+                        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px" class="mgb10">
+                            <img [src]="icon.checkCircle" alt="Ícono">
+                            <span class="ft600 gray-8">Libertad de estudio</span>
+                            <div (mouseover)="showLibertyTooltip = true" (mouseleave)="showLibertyTooltip = false">
+                                <img [src]="icon.information" alt="Ícono" class="mgl05">
+                            </div>
+                        </div>
+                        <span class="ft11 gray-10">Establece las restricciones sobre lo que los usuarios tienen permitido observar dentro de la aplicación.</span>
                     </div>
-                    <span class="ft11 gray-10">Establece las restricciones sobre lo que los usuarios tienen permitido observar dentro de la aplicación.</span>
+                    <div fxLayout="row" fxLayoutAlign="center stretch">
+                        <select formControlName="liberty">
+                            <option *ngFor="let option of libertyOptions" [value]="option">{{mapOptions(option)}}</option>
+                        </select>
+                    </div>
+                    <div fxLayout="column" fxLayoutAlign="space-evenly center" class="backGray2 fh w180px">
+                        <span class="ft12  gray-10">Nivel de estudio</span>
+                        <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign=" center">
+                            <span class="ft11 ft600 gray-10">{{mapOptions(form.get('liberty').value)}}</span>
+                            <div class="level-bar" fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="space-between center">
+                                <div class="block strict"></div>
+                                <div class="block strict"></div>
+                                <div class="block strict op"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div fxLayout="row" fxLayoutAlign="center stretch">
-                    <select formControlName="liberty">
-                        <option *ngFor="let option of modelOptions" [value]="option">{{mapOptions(option)}}</option>
-                    </select>
-                </div>
-                <div fxLayout="column" fxLayoutAlign="space-evenly center" class="backGray2 fh w180px">
-                    <span class="ft12  gray-10">Nivel de estudio</span>
-                    <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign=" center">
-                        <span class="ft11 ft600 gray-10">{{mapOptions(form.get('liberty').value)}}</span>
-                        <div class="level-bar" fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="space-between center">
-                            <div class="block strict"></div>
-                            <div class="block strict"></div>
-                            <div class="block strict op"></div>
+                <div class="libertyTooltip mgt05" [fxShow]="showLibertyTooltip" (mouseover)="showLibertyTooltip = true" (mouseleave)="showLibertyTooltip = false">
+                    <div fxLayout="column">
+                        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
+                            <span class="ft10 ft600 gray-10 w60px">Libre</span>
+                            <span class="ft10 gray-10">El usuario puede acceder solo a las asignacioes</span>
+                        </div>
+                        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px" class="mgt05">
+                            <span class="ft10 ft600 gray-10 w60px">Estricto</span>
+                            <span class="ft10 gray-10">El usuario tiene acceso a todos los cursos</span>
+                        </div>
+                        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px" class="mgt05">
+                            <span class="ft10 ft600 gray-10 w60px">Solicitud</span>
+                            <span class="ft10 gray-10">El usuario tiene acceso solo bajo solicitud a nuevos cursos</span>
                         </div>
                     </div>
                 </div>
             </div>
         
             <!-- Generación del cronograma -->
-            <div fxLayout="row" fxLayoutGap="30px" fxLayoutAlign="space-between center" class="border radius10 w1000px h80px pdl05">
-                <div fxLayout="column" fxLayoutAlign="start start" class="w600px">
-                    <div fxLayout="row" fxLayoutGap="5px" class="mgb10">
-                        <img [src]="icon.checkCircle" alt="Ícono">
-                        <span class="ft600 gray-8">Generación del cronograna</span>
-                        <img [src]="icon.information" alt="Ícono" class="mgl05">
+            <div class="positionRelative">
+                <div fxLayout="row" fxLayoutGap="30px" fxLayoutAlign="space-between center" class="border radius10 w1000px h80px pdl05">
+                    <div fxLayout="column" fxLayoutAlign="start start" class="w600px">
+                        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px" class="mgb10">
+                            <img [src]="icon.checkCircle" alt="Ícono">
+                            <span class="ft600 gray-8">Generación del cronograna</span>
+                            <div (mouseover)="showGenerationTooltip = true" (mouseleave)="showGenerationTooltip = false" class="positionRelative">
+                                <img [src]="icon.information" alt="Ícono" class="mgl05">
+                            </div>
+                        </div>
+                        <span class="ft11 gray-10">Establece el tipo de generación del cronograma. El algoritmo de la IA.</span>
                     </div>
-                    <span class="ft11 gray-10">Establece el tipo de generación del cronograma. El algoritmo de la IA.</span>
+                    <div fxLayout="row" fxLayoutAlign="center stretch">
+                        <select formControlName="generation">
+                            <option *ngFor="let option of generationOptions" [value]="option">{{mapOptions(option)}}</option>
+                        </select>
+                    </div>
+                    <div fxLayout="column" fxLayoutAlign="space-evenly center" class="backGray2 fh w180px">
+                        <span class="ft12 gray-10">Nivel de estudio</span>
+                        <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign=" center">
+                            <span class="ft11 ft600 gray-10">{{mapOptions(form.get('generation').value)}}</span>
+                            <div class="level-bar" fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="space-between center">
+                                <div class="block standard"></div>
+                                <div class="block standard"></div>
+                                <div class="block standard"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div fxLayout="row" fxLayoutAlign="center stretch">
-                    <select formControlName="generation">
-                        <option *ngFor="let option of modelOptions" [value]="option">{{mapOptions(option)}}</option>
-                    </select>
-                </div>
-                <div fxLayout="column" fxLayoutAlign="space-evenly center" class="backGray2 fh w180px">
-                    <span class="ft12 gray-10">Nivel de estudio</span>
-                    <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign=" center">
-                        <span class="ft11 ft600 gray-10">{{mapOptions(form.get('generation').value)}}</span>
-                        <div class="level-bar" fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="space-between center">
-                            <div class="block standard"></div>
-                            <div class="block standard"></div>
-                            <div class="block standard"></div>
+                <div class="generationTooltip mgt05" [fxShow]="showGenerationTooltip" (mouseover)="showGenerationTooltip = true" (mouseleave)="showGenerationTooltip = false">
+                    <div fxLayout="column">
+                        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
+                            <span class="ft10 ft600 gray-10 w60px">Óptimo</span>
+                            <span class="ft10 gray-10">Generado 100% por algoritmo IA</span>
+                        </div>
+                        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px" class="mgt05">
+                            <span class="ft10 ft600 gray-10 w60px">Confirmar</span>
+                            <span class="ft10 gray-10">Generado por IA y realizar confirmaciones de su contenido</span>
+                        </div>
+                        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px" class="mgt05">
+                            <span class="ft10 ft600 gray-10 w60px">Por defecto</span>
+                            <span class="ft10 gray-10">Generado por IA sin necesidad de evaluarlo, confía en el algoritmo</span>
                         </div>
                     </div>
                 </div>
@@ -112,14 +151,12 @@
                     </div>
                 </div>
             </div>
-        
-            <!-- Filtros avanzados -->
-            <div fxLayout="row" fxLayoutGap="20px">
-                <div class="section-header">
-                    <img [src]="icon.checkCircle" alt="Ícono">
-                    <span class="section-title">Filtros avanzados</span>
-                </div>
-            </div>
         </div>
     </form>
+    <!-- Filtros avanzados -->
+    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+        <img [src]="icon.checkCircle" alt="Ícono" class="h20px">
+        <span class="ft600 gray-10">Filtros avanzados</span>
+        <img [src]="icon.arrowDown" alt="Ícono" class="cursorPointer h20px">
+    </div>
 </div>
