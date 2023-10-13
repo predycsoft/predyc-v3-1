@@ -33,6 +33,7 @@ import { MatExpansionModule } from "@angular/material/expansion";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatSliderModule } from '@angular/material/slider';
 
 // Components
 import { LoginComponent } from './login/login.component';
@@ -189,6 +190,7 @@ import { SemigaugeChartComponent } from './main-components/management/management
     MatProgressBarModule,
     MatChipsModule,
     MatTooltipModule,
+    MatSliderModule,
     HttpClientModule,
     NgxExtendedPdfViewerModule,
     DragDropModule

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { MatSliderChange } from '@angular/material/slider';
 import { IconService } from 'src/app/shared/services/icon.service';
 
 export interface ModelJson  {
@@ -165,4 +166,19 @@ export class PermissionsComponent {
     return styles[field] && styles[field][value] ? styles[field][value][position - 1] : '';
   }
 
+
+  // ----------------------
+  displayedColumns: string[] = ['departamento', 'perfil', 'horas', 'libertad', 'generacion', 'intentos'];
+  dataSource = [
+    {departamento: 'Confiabilidad', perfil: 'Ingeniero de Confiabilidad', horas: '7:00', libertad: 'Libre', generacion: 'Optimizada', intentos: 5},
+    {departamento: 'Planificación', perfil: 'Especialista en Programación de la Producción', horas: '8:00', libertad: 'Estricto', generacion: 'Confirmar', intentos: 3},
+    {departamento: 'Mantenimiento', perfil: 'Técnico de Mantenimiento Eléctrico', horas: '4:00', libertad: 'Solicitudes', generacion: 'Por Defecto', intentos: 4}
+  ];
+
+  sliderValue: number = 1; // Valor inicial
+
+  guardarValor(event) {
+    console.log('Valor seleccionado:', event);
+    // Aquí puedes hacer algo más con el valor si lo deseas
+  }
 }

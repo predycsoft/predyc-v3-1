@@ -62,3 +62,38 @@
     background-color: red;
     opacity: 0.1;
 }
+
+/* ------------------------ */
+table {
+    width: 100%;
+    overflow-x: auto;
+    display: block;
+}
+
+tr {
+    height: 20px !important;
+}
+
+thead {
+    border: none !important;
+    text-align: center !important;
+    padding: 0px !important;
+}
+
+
+mat-slider {
+    width: 200px; /* Ajusta según tus necesidades */
+  }
+  
+  mat-slider .mat-slider-thumb-label-text {
+    font-size: 12px;
+    color: #000;
+  }
+  
+  mat-slider .mat-slider-track-wrapper {
+    background-color: #d0d0d0;
+  }
+  
+  mat-slider .mat-slider-thumb {
+    border: 2px solid #000;
+  }

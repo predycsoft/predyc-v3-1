@@ -152,11 +152,71 @@
                 </div>
             </div>
         </div>
-    </form>
-    <!-- Filtros avanzados -->
-    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
-        <img [src]="icon.checkCircle" alt="Ícono" class="h20px">
-        <span class="ft600 gray-10">Filtros avanzados</span>
-        <img [src]="icon.arrowDown" alt="Ícono" class="cursorPointer h20px">
+    </form>      
+</div>
+<!-- Filtros avanzados -->
+<div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px" class="mgt15">
+    <img [src]="icon.checkCircle" alt="Ícono" class="h20px">
+    <span class="ft600 gray-10">Filtros avanzados</span>
+    <img [src]="icon.arrowDown" alt="Ícono" class="cursorPointer h20px">
+</div>
+    
+<div fxLayout="column fw" fxLayoutGap="10px" class="mgb10">
+    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px">
+        <!-- Aquí podrías agregar controles adicionales o títulos para tu página -->
     </div>
+    
+    <table mat-table [dataSource]="dataSource">
+    
+        <!-- Departamento Column -->
+        <ng-container matColumnDef="departamento">
+            <th class="ft10 gray-10" mat-header-cell *matHeaderCellDef>Departamento</th>
+            <td class="ft10 gray-10" mat-cell *matCellDef="let row">{{row.departamento}}</td>
+        </ng-container>
+    
+        <!-- Perfil Column -->
+        <ng-container matColumnDef="perfil">
+            <th class="w-25 ft10 gray-10" mat-header-cell *matHeaderCellDef>Perfil</th>
+            <td class="w-25 ft10 gray-10" mat-cell *matCellDef="let row">{{row.perfil}}</td>
+        </ng-container>
+    
+        <!-- Horas Column -->
+        <ng-container matColumnDef="horas">
+            <th class="w-10 ft10 gray-10" mat-header-cell *matHeaderCellDef>Horas por semana</th>
+            <!-- <td class="w-10 ft10 gray-10" mat-cell *matCellDef="let row">{{row.horas}}</td> -->
+            <td class="w-10 ft10 gray-10" mat-cell *matCellDef="let row">
+                <input type="number" placeholder="Horas" class="w30px" min="1" max="8" value="3"/>
+            </td>
+        </ng-container>
+    
+        <!-- Libertad Column -->
+        <ng-container matColumnDef="libertad">
+            <th class="w-20 ft10 gray-10" mat-header-cell *matHeaderCellDef>Libertad de estudio</th>
+            <td class="w-20 ft10 gray-10" mat-cell *matCellDef="let row">{{row.libertad}}</td>
+        </ng-container>
+    
+        <!-- Generación Column -->
+        <ng-container matColumnDef="generacion">
+            <th class="w-15 ft10 gray-10" mat-header-cell *matHeaderCellDef>Generación de cronograma</th>
+            <td class="w-15 ft10 gray-10" mat-cell *matCellDef="let row">{{row.generacion}}</td>
+        </ng-container>
+    
+        <!-- Intentos Column -->
+        <ng-container matColumnDef="intentos">
+            <th class="w-20 ft10 gray-10" mat-header-cell *matHeaderCellDef>Intentos por examen</th>
+            <!-- <td class="w-20 ft10 gray-10" mat-cell *matCellDef="let row">{{row.intentos}}</td> -->
+            <td class="w-20 ft10 gray-10" mat-cell *matCellDef="let row">
+                <mat-slider
+                    min="1"
+                    max="5"
+                    step="1"
+                    tickInterval="1"
+                    thumbLabel>
+                </mat-slider>
+            </td>
+        </ng-container>
+        
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
 </div>
