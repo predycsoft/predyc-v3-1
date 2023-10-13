@@ -20,8 +20,8 @@
                 </div>
                 <div fxLayout="column" fxLayoutAlign="space-evenly center" class="backGray2 fh w180px">
                     <span class="ft12 gray-10">Nivel de estudio</span>
-                    <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign=" center">
-                        <span class="ft600 ft11 gray-10">{{mapNumberOptions(form.get('hours').value, "hours")}}</span>
+                    <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="space-between center">
+                        <span class="ft600 ft11 gray-10 w60px">{{mapNumberOptions(form.get('hours').value, "hours")}}</span>
                         <div class="level-bar" fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="space-between center">
                             <div class="block" [ngClass]="getBlockClass(form.get('hours').value, 1, 'hours')"></div>
                             <div class="block" [ngClass]="getBlockClass(form.get('hours').value, 2, 'hours')"></div>
@@ -50,9 +50,9 @@
                         </select>
                     </div>
                     <div fxLayout="column" fxLayoutAlign="space-evenly center" class="backGray2 fh w180px">
-                        <span class="ft12  gray-10">Nivel de estudio</span>
-                        <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign=" center">
-                            <span class="ft11 ft600 gray-10">{{mapStringOptions(form.get('liberty').value)}}</span>
+                        <span class="ft12 gray-10">Nivel de estudio</span>
+                        <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="space-between center">
+                            <span class="ft11 ft600 gray-10 w60px">{{mapStringOptions(form.get('liberty').value)}}</span>
                             <div class="level-bar" fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="space-between center">
                                 <div class="block" [ngClass]="getBlockClass(form.get('liberty').value, 1, 'liberty')"></div>
                                 <div class="block" [ngClass]="getBlockClass(form.get('liberty').value, 2, 'liberty')"></div>
@@ -99,8 +99,8 @@
                     </div>
                     <div fxLayout="column" fxLayoutAlign="space-evenly center" class="backGray2 fh w180px">
                         <span class="ft12 gray-10">Nivel de estudio</span>
-                        <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign=" center">
-                            <span class="ft11 ft600 gray-10">{{mapStringOptions(form.get('generation').value)}}</span>
+                        <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="space-between center">
+                            <span class="ft11 ft600 gray-10 w60px">{{mapStringOptions(form.get('generation').value)}}</span>
                             <div class="level-bar" fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="space-between center">
                                 <div class="block" [ngClass]="getBlockClass(form.get('generation').value, 1, 'generation')"></div>
                                 <div class="block" [ngClass]="getBlockClass(form.get('generation').value, 2, 'generation')"></div>
@@ -141,8 +141,8 @@
                 </div>
                 <div fxLayout="column" fxLayoutAlign="space-evenly center" class="backGray2 fh w180px">
                     <span class="ft12 gray-10">Nivel de estudio</span>
-                    <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign=" center">
-                        <span class="ft11 ft600 gray-10">{{mapNumberOptions(form.get('attempts').value, "attempts")}}</span>
+                    <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="space-between center">
+                        <span class="ft11 ft600 gray-10 w60px">{{mapNumberOptions(form.get('attempts').value, "attempts")}}</span>
                         <div class="level-bar" fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="space-between center">
                             <div class="block" [ngClass]="getBlockClass(form.get('attempts').value, 1, 'attempts')"></div>
                             <div class="block" [ngClass]="getBlockClass(form.get('attempts').value, 2, 'attempts')"></div>

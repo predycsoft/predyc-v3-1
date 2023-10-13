@@ -25,13 +25,9 @@ export class Model {
   public static OPTION_CONFIRM: 'confirm' = 'confirm'
   public static OPTION_DEFAULT: 'default' = 'default'
 
-  public static HOURS_OPTIONS = [Model.OPTION_BASIC, Model.OPTION_AVERAGE, Model.OPTION_STANDARD]
   public static LIBERTY_OPTIONS = [Model.OPTION_FREE, Model.OPTION_STRICT, Model.OPTION_REQUEST]
   public static GENERATION_OPTIONS = [Model.OPTION_OPTIMUM, Model.OPTION_CONFIRM, Model.OPTION_DEFAULT]
-  public static ATTEMPTS_OPTIONS = [Model.OPTION_STRICT, Model.OPTION_BASIC, Model.OPTION_AVERAGE]
 
-  public static LIBERTY_OPTIONS_TO_DISPLAY = ["Libre", "Estricto", "Solicitudes"]
-  public static GENERATION_OPTIONS_TO_DISPLAY = ["Óptimo", "Confirmar", "Por defecto"]
 
   private static OPTIONS_MAP = {
     [Model.OPTION_FREE]: "Libre",
@@ -75,8 +71,6 @@ export class PermissionsComponent {
   ){}
   showLibertyTooltip = false
   showGenerationTooltip = false
-  libertyOptionsToDisplay = Model.LIBERTY_OPTIONS_TO_DISPLAY
-  GenerationOptionsToDisplay = Model.GENERATION_OPTIONS_TO_DISPLAY
   libertyOptions = Model.LIBERTY_OPTIONS
   generationOptions = Model.GENERATION_OPTIONS
   form: FormGroup
