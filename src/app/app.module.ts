@@ -100,6 +100,7 @@ import { StudentStatsComponent } from './main-components/management/my-team/stud
 import { StudentDetailsComponent } from './main-components/management/my-team/student/student-details/student-details.component';
 import { PermissionsComponent } from './main-components/settings/permissions/permissions.component';
 import { SemigaugeChartComponent } from './main-components/management/management-dashboard/chart-gauge/semigauge-chart.component';
+import { PermissionsAdvancedFiltersComponent } from './main-components/settings/permissions/permissions-advanced-filters/permissions-advanced-filters.component';
 
 @NgModule({
   declarations: [
@@ -156,6 +157,7 @@ import { SemigaugeChartComponent } from './main-components/management/management
     StudentDetailsComponent,
     PermissionsComponent,
     SemigaugeChartComponent,
+    PermissionsAdvancedFiltersComponent,
   ],
   imports: [
     BrowserModule,

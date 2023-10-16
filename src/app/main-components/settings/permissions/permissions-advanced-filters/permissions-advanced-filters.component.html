@@ -1,0 +1,85 @@
+<table mat-table [dataSource]="dataSource">
+
+    <!-- Departamento Column -->
+    <ng-container matColumnDef="departamento">
+        <th class="ft10 gray-10" mat-header-cell *matHeaderCellDef>Departamento</th>
+        <td class="ft10 gray-10" mat-cell *matCellDef="let row">{{row.departamento}}</td>
+    </ng-container>
+
+    <!-- Perfil Column -->
+    <ng-container matColumnDef="perfil">
+        <th class="w-25 ft10 gray-10" mat-header-cell *matHeaderCellDef>Perfil</th>
+        <td class="w-25 ft10 gray-10" mat-cell *matCellDef="let row">{{row.perfil}}</td>
+    </ng-container>
+
+    <!-- Horas Column -->
+    <ng-container matColumnDef="horas">
+        <th class="w-10 ft10 gray-10" mat-header-cell *matHeaderCellDef>Horas por semana</th>
+        <!-- <td class="w-10 ft10 gray-10" mat-cell *matCellDef="let row">{{row.horas}}</td> -->
+        <td class="w-10 ft10 gray-10" mat-cell *matCellDef="let row">
+            <div fxLayout="row" fxLayoutAlign="center center">
+                <input type="number" placeholder="Horas" class="w30px" min="1" max="8" value="3"/>
+            </div>
+        </td>
+    </ng-container>
+
+    <!-- Libertad Column -->
+    <ng-container matColumnDef="libertad">
+        <th class="w-15 ft10 gray-10" mat-header-cell *matHeaderCellDef>Libertad de estudio</th>
+        <td class="w-15 ft10 gray-10" mat-cell *matCellDef="let row">
+            <div fxLayout="row" fxLayoutAlign="space-between center" class="fw">
+                <span class="ft10 gray-10">Libre</span>
+                <span class="ft10 gray-10 mgl15">Estricto</span>
+                <span class="ft10 gray-10 mgl05">Solicitudes</span>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="center center" class="h24px">
+                <mat-slider min="1" max="3" step="1" showTickMarks>
+                    <input matSliderThumb>
+                </mat-slider>
+            </div>
+        </td>
+    </ng-container>
+
+    <!-- Generación Column -->
+    <ng-container matColumnDef="generacion">
+        <th class="w-20 ft10 gray-10" mat-header-cell *matHeaderCellDef>Generación de cronograma</th>
+        <!-- <td class="w-15 ft10 gray-10" mat-cell *matCellDef="let row">{{row.generacion}}</td> -->
+        <td class="w-20" mat-cell *matCellDef="let row">
+            <div fxLayout="row" fxLayoutAlign="space-between center" class="fw">
+                <span class="ft10 gray-10">Optimizada</span>
+                <span class="ft10 gray-10">Confirmar</span>
+                <span class="ft10 gray-10">Por defecto</span>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="center center" class="h24px">
+                <mat-slider min="1" max="3" step="1" showTickMarks>
+                    <input matSliderThumb>
+                </mat-slider>
+            </div>
+        </td>
+    </ng-container>
+
+    <!-- Intentos Column -->
+    <ng-container matColumnDef="intentos">
+        <th class="w-20 ft10 gray-10" mat-header-cell *matHeaderCellDef>Intentos por examen</th>
+        <!-- <td class="w-20 ft10 gray-10" mat-cell *matCellDef="let row">{{row.intentos}}</td> -->
+        <td class="w-20 ft10 gray-10" mat-cell *matCellDef="let row">
+            <div fxLayout="row" fxLayoutAlign="space-between center" class="w-90 mgl05">
+                <span class="ft10 gray-10">1</span>
+                <span class="ft10 gray-10">2</span>
+                <span class="ft10 gray-10">3</span>
+                <span class="ft10 gray-10">4</span>
+                <span class="ft10 gray-10">5</span>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="center center" class="h24px">
+                <mat-slider min="1" max="5" step="1" showTickMarks >
+                    <input matSliderThumb [(ngModel)]="row.intentos" (ngModelChange)="debug2($event)">
+                </mat-slider>
+            </div>
+        </td>
+    </ng-container>
+    
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+<button class="blueButton btn" (click)="debug()">DEBUG</button>
+<!-- <button class="redButton btn" (click)="addProfiles()">PERFILES</button> -->
