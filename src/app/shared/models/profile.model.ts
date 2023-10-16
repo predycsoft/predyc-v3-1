@@ -8,7 +8,7 @@ export interface ProfileJson {
     departmentRef: DocumentReference
     skillsRef: DocumentReference[]
     usersRef: DocumentReference[]
-    coursesRef: DocumentReference[]
+    coursesRef: DocumentReference[] | []
     enterpriseRef: DocumentReference[]
 
 
@@ -24,7 +24,7 @@ export class Profile {
     public departmentRef: DocumentReference
     public skillsRef: DocumentReference [] = []
     public usersRef: DocumentReference [] = []
-    public coursesRef: DocumentReference [] = []
+    public coursesRef: DocumentReference [] | [] = []
     public enterpriseRef: DocumentReference [] = []
 
 

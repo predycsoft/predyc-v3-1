@@ -101,6 +101,10 @@ export class SkillService {
     return this.skill$
   }
 
+  public getSkill(id: string) {
+    return this.skillsSubject.value.find(x => x.id === id)
+  }
+
   async deleteSkill(skillId: string): Promise<void> {
     try {
       if (!skillId) throw new Error('El ID de la competencia no puede ser nulo o indefinido');
