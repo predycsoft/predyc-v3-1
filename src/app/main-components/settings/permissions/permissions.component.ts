@@ -181,4 +181,14 @@ export class PermissionsComponent {
     console.log('Valor seleccionado:', event);
     // Aquí puedes hacer algo más con el valor si lo deseas
   }
+
+  formatLabel(value: number): string {
+    if (value >= 1000) {
+      return Math.round(value / 1000) + 'k';
+    }
+
+    console.log("value", value)
+
+    return `${value}`;
+  }
 }

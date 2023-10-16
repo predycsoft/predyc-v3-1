@@ -192,13 +192,29 @@
         <!-- Libertad Column -->
         <ng-container matColumnDef="libertad">
             <th class="w-20 ft10 gray-10" mat-header-cell *matHeaderCellDef>Libertad de estudio</th>
-            <td class="w-20 ft10 gray-10" mat-cell *matCellDef="let row">{{row.libertad}}</td>
+            <td class="w-20 ft10 gray-10" mat-cell *matCellDef="let row">
+                <mat-slider min="1" max="3" step="1" showTickMarks [displayWith]="formatLabel">
+                    <input matSliderThumb>
+                </mat-slider>
+            </td>
         </ng-container>
     
         <!-- Generación Column -->
         <ng-container matColumnDef="generacion">
             <th class="w-15 ft10 gray-10" mat-header-cell *matHeaderCellDef>Generación de cronograma</th>
-            <td class="w-15 ft10 gray-10" mat-cell *matCellDef="let row">{{row.generacion}}</td>
+            <!-- <td class="w-15 ft10 gray-10" mat-cell *matCellDef="let row">{{row.generacion}}</td> -->
+            <td class="w-15" mat-cell *matCellDef="let row">
+                <div fxLayout="column" fxLayoutGap="1px" fxLayoutAlign="end center">
+                    <div fxLayout="row" fxLayoutAlign="space-between center" class="fw">
+                        <span class="ft10 gray-10">Libre</span>
+                        <span class="ft10 gray-10">Estricto</span>
+                        <span class="ft10 gray-10">Solicitudes</span>
+                    </div>
+                    <mat-slider min="1" max="3" step="1" showTickMarks [displayWith]="formatLabel">
+                        <input matSliderThumb>
+                    </mat-slider>
+                </div>
+            </td>
         </ng-container>
     
         <!-- Intentos Column -->
@@ -206,12 +222,8 @@
             <th class="w-20 ft10 gray-10" mat-header-cell *matHeaderCellDef>Intentos por examen</th>
             <!-- <td class="w-20 ft10 gray-10" mat-cell *matCellDef="let row">{{row.intentos}}</td> -->
             <td class="w-20 ft10 gray-10" mat-cell *matCellDef="let row">
-                <mat-slider
-                    min="1"
-                    max="5"
-                    step="1"
-                    tickInterval="1"
-                    thumbLabel>
+                <mat-slider min="1" max="5" step="1" showTickMarks [displayWith]="formatLabel" class="fw">
+                    <input matSliderThumb>
                 </mat-slider>
             </td>
         </ng-container>

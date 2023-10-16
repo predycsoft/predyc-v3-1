@@ -71,7 +71,11 @@ table {
 }
 
 tr {
-    height: 20px !important;
+    height: 10px !important;
+}
+
+td {
+    padding: 0px 10px !important;    
 }
 
 thead {
@@ -80,20 +84,8 @@ thead {
     padding: 0px !important;
 }
 
-
-mat-slider {
-    width: 200px; /* Ajusta según tus necesidades */
-  }
-  
-  mat-slider .mat-slider-thumb-label-text {
-    font-size: 12px;
-    color: #000;
-  }
-  
-  mat-slider .mat-slider-track-wrapper {
-    background-color: #d0d0d0;
-  }
-  
-  mat-slider .mat-slider-thumb {
-    border: 2px solid #000;
-  }
+.mat-mdc-slider {
+    margin: 0px;
+    width: 80%;
+    min-width: 80%;
+}
