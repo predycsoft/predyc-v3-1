@@ -98,7 +98,6 @@ import { StudyPlanComponent } from './shared/components/study-plan/study-plan.co
 import { StudentStatsComponent } from './main-components/management/my-team/student/student-stats/student-stats.component';
 import { StudentDetailsComponent } from './main-components/management/my-team/student/student-details/student-details.component';
 import { PermissionsComponent } from './main-components/settings/permissions/permissions.component';
-import { SemigaugeChartComponent } from './main-components/management/management-dashboard/chart-gauge/semigauge-chart.component';
 
 @NgModule({
   declarations: [
@@ -154,7 +153,6 @@ import { SemigaugeChartComponent } from './main-components/management/management
     StudentStatsComponent,
     StudentDetailsComponent,
     PermissionsComponent,
-    SemigaugeChartComponent,
   ],
   imports: [
     BrowserModule,

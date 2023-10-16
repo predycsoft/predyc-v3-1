@@ -67,11 +67,11 @@
         </ng-container>
         <ng-container *ngIf="activeStep == 2">
             <app-skills-selector
-            [competenciasEmpresa]="competenciasEmpresa" 
-            [categoriasArray]="categoriasArray"
-            [competenciasSelected]="competenciasSelected"
-            (competenciasSelectedOut)="competenciasSelected = $event">
-        </app-skills-selector>
+                [competenciasEmpresa]="competenciasEmpresa" 
+                [categoriasArray]="categoriasArray"
+                [competenciasSelected]="competenciasSelected"
+                (competenciasSelectedOut)="competenciasSelected = $event">
+            </app-skills-selector>
         </ng-container>
         <ng-container *ngIf="activeStep == 3">
             <div fxFlex fxLayout="row" class="contanier">

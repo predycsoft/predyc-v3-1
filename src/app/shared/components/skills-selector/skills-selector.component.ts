@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { IconService } from '../../../shared/services/icon.service';
 import { CategoryService } from '../../services/category.service';
 import { SkillService } from '../../services/skill.service';
-import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Skill } from '../../models/skill.model';
 import { EnterpriseService } from '../../services/enterprise.service';
@@ -15,6 +15,11 @@ interface Competencia {
   name: string;
   selected: boolean;
   categoriaId: number;
+}
+
+function twoWordsOrLess(control: AbstractControl): ValidationErrors | null {
+  const words = (control.value || '').trim().split(/\s+/);
+  return words.length <= 3 ? null : { tooManyWords: true };
 }
 
 @Component({
@@ -37,7 +42,6 @@ export class SkillsSelectorComponent implements OnInit {
 
   @Input() competenciasEmpresa;
   @Input() categoriasArray;
-  @Input() modulos
   @Input()competenciasSelected
   @Input() origin = 'Crear Curso'
 
@@ -57,7 +61,6 @@ export class SkillsSelectorComponent implements OnInit {
 
 
   ngOnInit() {
-    console.log('categoriasArray',this.categoriasArray)
     this.enterpriseService.enterpriseLoaded$.subscribe(isLoaded => {
       if (isLoaded) {
         this.enterpriseRef =this.enterpriseService.getEnterpriseRef()
@@ -65,21 +68,12 @@ export class SkillsSelectorComponent implements OnInit {
     })
   }
 
-  twoWordsOrLess(control: AbstractControl): { [key: string]: any } | null {
-    const words = (control.value || '').trim().split(/\s+/);
-    return words.length <= 3 ? null : { tooManyWords: true };
-  }
-
   openModalCompetencia(content,competencia){
-
     this.showErrorCompetencia = false
-
     this.formNuevaComptencia = new FormGroup({
-      nombre: new FormControl(null, [Validators.required, this.twoWordsOrLess])
+      nombre: new FormControl(null, [Validators.required, twoWordsOrLess])
     })
-
     this.categoriaNuevaCompetencia = competencia
-
      this.modalCompetencia = this.modalService.open(content, {
       ariaLabelledBy: 'modal-basic-title',
       centered: true
