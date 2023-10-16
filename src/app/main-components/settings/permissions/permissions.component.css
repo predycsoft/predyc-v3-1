@@ -1,3 +1,29 @@
+.libertyTooltip{
+    position: absolute;
+    left: 12rem;
+    top: 0rem;
+    padding: 0.5rem;
+    border-radius: 6px;
+    box-shadow: var(--shadow16);
+    background-color: white;
+    z-index: 1000;
+}
+
+.generationTooltip{
+    position: absolute;
+    left: 15rem;
+    top: 0rem;
+    padding: 0.5rem;
+    border-radius: 6px;
+    box-shadow: var(--shadow16);
+    background-color: white;
+    z-index: 1000;
+}
+
+.positionRelative{
+    position: relative;
+}
+
 .level-bar {
     /* display: flex; */
     width: 45px;
@@ -10,15 +36,64 @@
     background: #eaeaea; /* Color de fondo básico para la barra */
 }
 
-.block.standard {
+.block.green {
     background-color: green;
 }
 
-.block.strict {
+.block.yellow {
     background-color: rgb(255, 208, 0);
 }
 
-.block.strict.op {
+.block.yellow-op {
     background-color: rgb(255, 208, 0);
     opacity: 0.4;
 }
+
+.block.red {
+    background-color: red;
+}
+
+.block.red-op {
+    background-color: red;
+    opacity: 0.4;
+}
+
+.block.red-op2 {
+    background-color: red;
+    opacity: 0.1;
+}
+
+/* ------------------------ */
+table {
+    width: 100%;
+    overflow-x: auto;
+    display: block;
+}
+
+tr {
+    height: 20px !important;
+}
+
+thead {
+    border: none !important;
+    text-align: center !important;
+    padding: 0px !important;
+}
+
+
+mat-slider {
+    width: 200px; /* Ajusta según tus necesidades */
+  }
+  
+  mat-slider .mat-slider-thumb-label-text {
+    font-size: 12px;
+    color: #000;
+  }
+  
+  mat-slider .mat-slider-track-wrapper {
+    background-color: #d0d0d0;
+  }
+  
+  mat-slider .mat-slider-thumb {
+    border: 2px solid #000;
+  }

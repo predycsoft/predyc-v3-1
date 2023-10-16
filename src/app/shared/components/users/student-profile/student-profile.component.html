@@ -2,7 +2,7 @@
     <div fxLayout="row" fxLayoutAlign="space-between center">
         <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign=" center" class="pdl05 pdr05 pdt05 pdb05">
             <span class="ft500 ft20">
-                {{student.uid ? student.name : student.role === "admin" ? "Nuevo administrador" : "Nuevo usuario"}}
+                {{student.uid ? student.displayName : student.role === "admin" ? "Nuevo administrador" : "Nuevo usuario"}}
             </span>
         </div>
         <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign=" center" class="pdl05 pdr05 pdt05 pdb05">
@@ -29,11 +29,11 @@
         <div class="fw mgt10">
             <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap=".5rem" class="nameFieldContainer gray-10" >
                 <textarea #textareaName placeholder="Nombre del usuario"
-                    class="nameField ft16 centertext" formControlName="name">
+                    class="nameField ft16 centertext" formControlName="displayName">
                 </textarea>
-                <span *ngIf="isNewUser && form.get('name').hasValidator(requiredValidator)" class="asterisk">*</span>
+                <span *ngIf="isNewUser && form.get('displayName').hasValidator(requiredValidator)" class="asterisk">*</span>
             </div>
-            <span *ngIf="!form.get('name').valid && !form.get('name').disabled && form.get('name').touched" 
+            <span *ngIf="!form.get('displayName').valid && !form.get('displayName').disabled && form.get('displayName').touched" 
                 class="redText mgt03">
                 Debes introducir un nombre
             </span>
