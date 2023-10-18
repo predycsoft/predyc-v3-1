@@ -1,4 +1,8 @@
 import { DocumentReference } from "@angular/fire/compat/firestore"
+import { User } from "./user.model"
+import { Department } from "./department.model"
+import { Skill } from "./skill.model"
+import { Enterprise } from "./enterprise.model"
 
 export interface ProfileJson {
     id: string,
@@ -8,7 +12,7 @@ export interface ProfileJson {
     departmentRef: DocumentReference
     skillsRef: DocumentReference[]
     usersRef: DocumentReference[]
-    coursesRef: DocumentReference[]
+    coursesRef: DocumentReference[] | []
     enterpriseRef: DocumentReference[]
 
 
@@ -24,8 +28,13 @@ export class Profile {
     public departmentRef: DocumentReference
     public skillsRef: DocumentReference [] = []
     public usersRef: DocumentReference [] = []
-    public coursesRef: DocumentReference [] = []
+    public coursesRef: DocumentReference [] | [] = []
     public enterpriseRef: DocumentReference [] = []
+
+    public department?: Department
+    public skills?: Skill[]
+    public users?: User[]
+    public enterprises?: Enterprise[]
 
 
     public static fromJson(profileJson: ProfileJson): Profile {

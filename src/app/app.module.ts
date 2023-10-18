@@ -100,6 +100,7 @@ import { StudentStatsComponent } from './main-components/management/my-team/stud
 import { StudentDetailsComponent } from './main-components/management/my-team/student/student-details/student-details.component';
 import { PermissionsComponent } from './main-components/settings/permissions/permissions.component';
 import { SkillsSelectorV2Component } from './shared/components/skills-selector-v2/skills-selector-v2.component';
+import { PermissionsAdvancedFiltersComponent } from './main-components/settings/permissions/permissions-advanced-filters/permissions-advanced-filters.component';
 
 @NgModule({
   declarations: [
@@ -156,6 +157,7 @@ import { SkillsSelectorV2Component } from './shared/components/skills-selector-v
     StudentDetailsComponent,
     PermissionsComponent,
     SkillsSelectorV2Component,
+    PermissionsAdvancedFiltersComponent,
   ],
   imports: [
     BrowserModule,

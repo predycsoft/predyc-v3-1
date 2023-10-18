@@ -169,6 +169,7 @@ export class UserService {
   getUser(uid: string): User {
     // const user = await firstValueFrom(this.afs.collection<User>(User.collection).doc(uid).valueChanges())
     // return user?.enterprise === this.enterpriseService.getEnterpriseRef() ? user : undefined
+    console.log()
     return this.usersSubject.value.find(x => x.uid === uid)
   }
 

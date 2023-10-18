@@ -14,6 +14,11 @@ export class DepartmentService {
   private departmentSubject = new BehaviorSubject<Department[]>([]);
   private departments$ = this.departmentSubject.asObservable();
 
+  private departmentsLoadedSubject = new BehaviorSubject<boolean>(false)
+  public departmentsLoaded$ = this.departmentsLoadedSubject.asObservable();
+
+
+
   constructor(
     private alertService: AlertsService,
     private afs: AngularFirestore,
@@ -24,14 +29,18 @@ export class DepartmentService {
 
   public async loadDepartmens() {
 
-    console.log("Se instancio el user service")
+    // console.log("Se instancio el user service")
     this.enterpriseService.enterpriseLoaded$.subscribe(enterpriseIsLoaded => {
       if (enterpriseIsLoaded) {
         this.getDepartments()
         this.departmentsLoaded = new Promise<void>((resolve) => {
-          this.departments$.subscribe(async (department) => {
-            if (department) {
+          this.departments$.subscribe(async (departments) => {
+            if (departments.length>0) {
               resolve();
+              if (!this.departmentsLoadedSubject.value) {
+                this.departmentsLoadedSubject.next(true)
+                console.log("Los departamentos fueron cargadps", departments)
+              }
             }
           });
         });
@@ -59,7 +68,7 @@ export class DepartmentService {
     return this.departmentsLoaded;
   }
 
-  public async getDepartment(id: string): Promise<Department | undefined> {
+  public getDepartment(id: string) {
     return this.departmentSubject.value.find(x => x.id === id)
   }
 

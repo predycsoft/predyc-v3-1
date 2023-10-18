@@ -67,7 +67,7 @@ export class SkillService {
     this.enterpriseService.enterpriseLoaded$.subscribe(isLoaded => {
       if (isLoaded) {
         this.enterpriseRef =this.enterpriseService.getEnterpriseRef();
-        console.log('enterprise',this.enterpriseRef)
+        // console.log('enterprise',this.enterpriseRef)
         // Query para traer por enterprise match
         const enterpriseMatch$ = this.afs.collection<Skill>(Skill.collection, ref => 
           ref.where('enterprise', '==', this.enterpriseRef)
@@ -99,6 +99,10 @@ export class SkillService {
 
   getSkillsObservable(): Observable<Skill[]> {
     return this.skill$
+  }
+
+  public getSkill(id: string) {
+    return this.skillsSubject.value.find(x => x.id === id)
   }
 
   async deleteSkill(skillId: string): Promise<void> {

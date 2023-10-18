@@ -62,30 +62,3 @@
     background-color: red;
     opacity: 0.1;
 }
-
-/* ------------------------ */
-table {
-    width: 100%;
-    overflow-x: auto;
-    display: block;
-}
-
-tr {
-    height: 10px !important;
-}
-
-td {
-    padding: 0px 10px !important;    
-}
-
-thead {
-    border: none !important;
-    text-align: center !important;
-    padding: 0px !important;
-}
-
-.mat-mdc-slider {
-    margin: 0px;
-    width: 80%;
-    min-width: 80%;
-}
