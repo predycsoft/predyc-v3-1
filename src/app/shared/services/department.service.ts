@@ -29,7 +29,7 @@ export class DepartmentService {
 
   public async loadDepartmens() {
 
-    console.log("Se instancio el user service")
+    // console.log("Se instancio el user service")
     this.enterpriseService.enterpriseLoaded$.subscribe(enterpriseIsLoaded => {
       if (enterpriseIsLoaded) {
         this.getDepartments()

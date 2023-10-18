@@ -67,7 +67,7 @@ export class SkillService {
     this.enterpriseService.enterpriseLoaded$.subscribe(isLoaded => {
       if (isLoaded) {
         this.enterpriseRef =this.enterpriseService.getEnterpriseRef();
-        console.log('enterprise',this.enterpriseRef)
+        // console.log('enterprise',this.enterpriseRef)
         // Query para traer por enterprise match
         const enterpriseMatch$ = this.afs.collection<Skill>(Skill.collection, ref => 
           ref.where('enterprise', '==', this.enterpriseRef)

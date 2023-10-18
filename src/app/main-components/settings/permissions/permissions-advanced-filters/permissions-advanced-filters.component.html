@@ -1,30 +1,29 @@
 <table mat-table [dataSource]="dataSource">
 
     <!-- Departamento Column -->
-    <ng-container matColumnDef="departamento">
+    <ng-container matColumnDef="departmentName">
         <th class="ft10 gray-10" mat-header-cell *matHeaderCellDef>Departamento</th>
-        <td class="ft10 gray-10" mat-cell *matCellDef="let profile">{{profile.departament.name}}</td>
+        <td class="ft10 gray-10" mat-cell *matCellDef="let profile">{{profile.department.name}}</td>
     </ng-container>
 
     <!-- Perfil Column -->
-    <ng-container matColumnDef="perfil">
+    <ng-container matColumnDef="profileName">
         <th class="w-25 ft10 gray-10" mat-header-cell *matHeaderCellDef>Perfil</th>
         <td class="w-25 ft10 gray-10" mat-cell *matCellDef="let profile">{{profile.name}}</td>
     </ng-container>
 
     <!-- Horas Column -->
-    <ng-container matColumnDef="horas">
+    <ng-container matColumnDef="hours">
         <th class="w-10 ft10 gray-10" mat-header-cell *matHeaderCellDef>Horas por semana</th>
-        <!-- <td class="w-10 ft10 gray-10" mat-cell *matCellDef="let profile">{{profile.horas}}</td> -->
         <td class="w-10 ft10 gray-10" mat-cell *matCellDef="let profile">
             <div fxLayout="row" fxLayoutAlign="center center">
-                <input type="number" placeholder="Horas" class="w30px" min="1" max="8" value="3"/>
+                <input type="number" placeholder="Horas" class="w30px" min="1" max="8" [(ngModel)] ="profile.hours"/>
             </div>
         </td>
     </ng-container>
 
     <!-- Libertad Column -->
-    <ng-container matColumnDef="libertad">
+    <ng-container matColumnDef="liberty">
         <th class="w-15 ft10 gray-10" mat-header-cell *matHeaderCellDef>Libertad de estudio</th>
         <td class="w-15 ft10 gray-10" mat-cell *matCellDef="let profile">
             <div fxLayout="row" fxLayoutAlign="space-between center" class="fw">
@@ -34,16 +33,15 @@
             </div>
             <div fxLayout="row" fxLayoutAlign="center center" class="h24px">
                 <mat-slider min="1" max="3" step="1" showTickMarks>
-                    <input matSliderThumb>
+                    <input matSliderThumb [(ngModel)] ="profile.liberty">
                 </mat-slider>
             </div>
         </td>
     </ng-container>
 
     <!-- Generación Column -->
-    <ng-container matColumnDef="generacion">
+    <ng-container matColumnDef="generation">
         <th class="w-20 ft10 gray-10" mat-header-cell *matHeaderCellDef>Generación de cronograma</th>
-        <!-- <td class="w-15 ft10 gray-10" mat-cell *matCellDef="let profile">{{profile.generacion}}</td> -->
         <td class="w-20" mat-cell *matCellDef="let profile">
             <div fxLayout="row" fxLayoutAlign="space-between center" class="fw">
                 <span class="ft10 gray-10">Optimizada</span>
@@ -52,16 +50,15 @@
             </div>
             <div fxLayout="row" fxLayoutAlign="center center" class="h24px">
                 <mat-slider min="1" max="3" step="1" showTickMarks>
-                    <input matSliderThumb>
+                    <input matSliderThumb [(ngModel)] ="profile.generation">
                 </mat-slider>
             </div>
         </td>
     </ng-container>
 
     <!-- Intentos Column -->
-    <ng-container matColumnDef="intentos">
+    <ng-container matColumnDef="attempts">
         <th class="w-20 ft10 gray-10" mat-header-cell *matHeaderCellDef>Intentos por examen</th>
-        <!-- <td class="w-20 ft10 gray-10" mat-cell *matCellDef="let profile">{{profile.intentos}}</td> -->
         <td class="w-20 ft10 gray-10" mat-cell *matCellDef="let profile">
             <div fxLayout="row" fxLayoutAlign="space-between center" class="w-90 mgl05">
                 <span class="ft10 gray-10">1</span>
@@ -72,7 +69,7 @@
             </div>
             <div fxLayout="row" fxLayoutAlign="center center" class="h24px">
                 <mat-slider min="1" max="5" step="1" showTickMarks >
-                    <input matSliderThumb>
+                    <input matSliderThumb [(ngModel)] ="profile.attempts">
                 </mat-slider>
             </div>
         </td>
@@ -81,10 +78,10 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let profile; columns: displayedColumns;"></tr>
 
-    <mat-paginator
-        *ngIf="enablePagination"
-        aria-label="Select page of notifications"
-    ></mat-paginator>
 </table>
+<mat-paginator
+    *ngIf="enablePagination"
+    aria-label="Select page of table"
+></mat-paginator>
 <button class="blueButton btn" (click)="debug()">DEBUG</button>
 <!-- <button class="redButton btn" (click)="addProfiles()">PERFILES</button> -->
