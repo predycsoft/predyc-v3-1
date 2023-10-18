@@ -10,13 +10,6 @@ import { EnterpriseService } from '../../services/enterprise.service';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Category } from '../../models/category.model';
 
-interface Competencia {
-  id: number;
-  name: string;
-  selected: boolean;
-  categoriaId: number;
-}
-
 function twoWordsOrLess(control: AbstractControl): ValidationErrors | null {
   const words = (control.value || '').trim().split(/\s+/);
   return words.length <= 3 ? null : { tooManyWords: true };
@@ -42,13 +35,10 @@ export class SkillsSelectorComponent implements OnInit {
 
   @Input() competenciasEmpresa;
   @Input() categoriasArray;
-  @Input()competenciasSelected
+  @Input() competenciasSelected
   @Input() origin = 'Crear Curso'
 
   @Output() competenciasSelectedOut  = new EventEmitter<any>();
-  
-
-
 
   showErrorCompetencia = false
   formNuevaComptencia: FormGroup;
@@ -57,8 +47,6 @@ export class SkillsSelectorComponent implements OnInit {
   comepetenciaValid= true
   mensageCompetencias = "Selecciona una competencia para asignarla al curso";
   enterpriseRef
-
-
 
   ngOnInit() {
     this.enterpriseService.enterpriseLoaded$.subscribe(isLoaded => {
@@ -134,13 +122,9 @@ export class SkillsSelectorComponent implements OnInit {
       await this.skillService.addSkill(skill)
 
 
-    }
-    else{
+    } else {
       this.showErrorCompetencia = true;
     }
   }
-
-
-
 
 }

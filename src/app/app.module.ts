@@ -99,6 +99,7 @@ import { StudyPlanComponent } from './shared/components/study-plan/study-plan.co
 import { StudentStatsComponent } from './main-components/management/my-team/student/student-stats/student-stats.component';
 import { StudentDetailsComponent } from './main-components/management/my-team/student/student-details/student-details.component';
 import { PermissionsComponent } from './main-components/settings/permissions/permissions.component';
+import { SkillsSelectorV2Component } from './shared/components/skills-selector-v2/skills-selector-v2.component';
 
 @NgModule({
   declarations: [
@@ -154,6 +155,7 @@ import { PermissionsComponent } from './main-components/settings/permissions/per
     StudentStatsComponent,
     StudentDetailsComponent,
     PermissionsComponent,
+    SkillsSelectorV2Component,
   ],
   imports: [
     BrowserModule,
