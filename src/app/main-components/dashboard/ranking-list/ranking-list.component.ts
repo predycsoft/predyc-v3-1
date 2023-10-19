@@ -37,7 +37,7 @@ export class RankingListComponent {
             return 0; // a y b son iguales
           });
           this.ranking = students.sort((a, b) => b.ratingPoints - a.ratingPoints)
-          console.log("this.ranking", this.ranking)
+          // console.log("this.ranking", this.ranking)
           this.loaderService.setLoading(false)
         })
       }

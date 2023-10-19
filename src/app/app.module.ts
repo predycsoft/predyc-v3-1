@@ -34,6 +34,7 @@ import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatProgressSpinnerModule} from "@angular/material/progress-spinner"
 
 // Components
 import { LoginComponent } from './login/login.component';
@@ -103,6 +104,8 @@ import { SkillsSelectorV2Component } from './shared/components/skills-selector-v
 import { PermissionsAdvancedFiltersComponent } from './main-components/settings/permissions/permissions-advanced-filters/permissions-advanced-filters.component';
 import { UsersRhythmComponent } from './main-components/dashboard/users-rhythm/users-rhythm.component';
 import { UsersStudyTimeContainerComponent } from './main-components/dashboard/users-study-time-container/users-study-time-container.component';
+import { StudyTimeWeeklyChartComponent } from './main-components/dashboard/users-study-time-container/study-time-weekly-chart/study-time-weekly-chart.component';
+import { StudyTimeMonthlyChartComponent } from './main-components/dashboard/users-study-time-container/study-time-monthly-chart/study-time-monthly-chart.component';
 
 @NgModule({
   declarations: [
@@ -162,6 +165,8 @@ import { UsersStudyTimeContainerComponent } from './main-components/dashboard/us
     PermissionsAdvancedFiltersComponent,
     UsersRhythmComponent,
     UsersStudyTimeContainerComponent,
+    StudyTimeWeeklyChartComponent,
+    StudyTimeMonthlyChartComponent,
   ],
   imports: [
     BrowserModule,
@@ -197,6 +202,7 @@ import { UsersStudyTimeContainerComponent } from './main-components/dashboard/us
     MatChipsModule,
     MatTooltipModule,
     MatSliderModule,
+    MatProgressSpinnerModule,
     HttpClientModule,
     NgxExtendedPdfViewerModule,
     DragDropModule

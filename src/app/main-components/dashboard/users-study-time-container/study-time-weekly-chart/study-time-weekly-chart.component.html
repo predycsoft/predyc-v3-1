@@ -1,0 +1,15 @@
+<div class="contenedor" fxLayout="row">
+    <div *ngFor="let item of data; let i = index" class="fw" fxLayout="column" fxLayoutAlign=" center">
+        <div class="w-60 fh">
+            <div class="value" fxLayout="column" fxLayoutAlign="start center">
+                <span class="value-text gray-6 nowrap" *ngIf="item.value > 0">{{item.value | number:"1.1-1"}}h</span>
+            </div>
+            <div class="barra" fxLayout="column" fxLayoutAlign="end">
+                <div class="barra-fill" [style.height.%]="item.value*100/max"></div>
+            </div>
+            <div class="label" fxLayout="column" fxLayoutAlign="end center">
+                <span class="label-text gray-6" [ngClass]="item.label == 'Jue'?'ft600 blue-5':'gray-6'">{{item.label}}</span>
+            </div>
+        </div>
+    </div>
+</div>

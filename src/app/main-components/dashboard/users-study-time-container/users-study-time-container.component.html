@@ -5,7 +5,6 @@
         </div>
         <span class="ft12 gray-10 ft600" *ngIf="chartTab == 0">Tiempo de estudio esta semana</span>
         <span class="ft12 gray-10 ft600" *ngIf="chartTab == 1">Tiempo de estudio 12 meses</span>
-
     </div>
 
     <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap=".7rem" class="">
@@ -19,28 +18,28 @@
         </div>
     </div>
 </div>
-<span class="ft11 mgt10 gray-10">Tu equipo ha acumulado  <span class="ft11 gray-10 ft500">{{(chartTab == 0 ? timeWeek : timeMonth) | number:"1.1-1"}}
-        horas</span> de estudio {{chartTab == 0 ? 'esta semana' : 'este mes'}}</span>
-<div *ngIf="chartTab == 1" class="fw fh mgt15">
-    <!-- <app-grafica-meses [logs]="logs"></app-grafica-meses> -->
-</div>
-
-<div *ngIf="chartTab == 0" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="2rem" class="mgt15 fh">
+<span class="ft11 mgt10 gray-10">Tu equipo ha acumulado  <span class="ft11 gray-10 ft500">{{(chartTab == 0 ? hoursTimeWeek : hoursTimeMonth) | number:"1.1-1"}}
+        horas</span> de estudio {{chartTab == 0 ? 'esta semana' : 'este mes'}}
+</span>
+<div *ngIf="chartTab == 0" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="2rem" class="mgt08 h-75">
     <div fxLayout="column" fxLayoutAlign="center center" class="fh w-40 positionRelative">
-        <span class="ft11 gray-10">Objetivo de la semana: </span>
-        <div class="fh fw" fxLayoutAlign="center center">
+        <span class="ft11 gray-10">Objetivo semanal</span>
+        <div class="fh fw" fxLayoutAlign="start center">
             <div class="backProgressSpinner" fxLayoutAlign="center center">
                 <div class="textoSpinner">
-                    <span class="ft10 gray-10"><span class="ft500 ft10 gray-10">{{timeWeek | number:"1.1-1"}}</span> / 20 hrs</span>
+                    <span class="ft10 gray-10"><span class="ft500 ft10 gray-10">{{hoursTimeWeek | number:"1.1-1"}}</span> / 20 hrs</span>
                 </div>
                 <div class="">
-                    <!-- <mat-progress-spinner [value]="this.timeWeek*100/20" class=""></mat-progress-spinner> -->
+                    <mat-progress-spinner [value]="this.hoursTimeWeek*100/20" class=""></mat-progress-spinner>
                 </div>
             </div>
         </div>
     </div>
-
-    <div class="w-60 fh" fxLayout="column" fxLayoutAlign="center">
-        <!-- <app-grafica-semana fxFlex="100" [logs]="logs" ></app-grafica-semana> -->
+    <div class="fw fh" fxLayout="column" fxLayoutAlign="start center">
+        <span class="ft11 gray-10">Calificación promedio</span>
+        <app-study-time-weekly-chart [logs]="logs" class="fw h-90 mgt05"></app-study-time-weekly-chart>
     </div>
+</div>
+<div *ngIf="chartTab == 1" class="fw h-75 mgt08">
+    <app-study-time-monthly-chart [logs]="logs" class="fw fh"></app-study-time-monthly-chart>
 </div>
