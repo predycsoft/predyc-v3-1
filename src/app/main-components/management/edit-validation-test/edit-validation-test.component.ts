@@ -1,13 +1,68 @@
 import { Component, Input } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { Observable } from 'rxjs';
+import { combineLatest, Observable, Subscription } from 'rxjs';
 import { IconService } from 'src/app/shared/services/icon.service';
 import { VimeoUploadService } from 'src/app/shared/services/vimeo-upload.service';
 import { Question, QuestionType } from 'src/app/shared/models/activity-classes.model'
 import { compareByString, getPlaceholders } from 'src/app/shared/utils';
 import { AlertsService } from 'src/app/shared/services/alerts.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { CategoryService } from 'src/app/shared/services/category.service';
+import { SkillService } from 'src/app/shared/services/skill.service';
+import { DocumentData, DocumentReference } from '@angular/fire/compat/firestore';
+import { Skill } from 'src/app/shared/models/skill.model';
+
+function optionsLengthValidator(question: FormGroup): ValidationErrors | null {
+  const options = question.get('options') as FormArray
+  const minOptionsLength = 2
+  return options.length < minOptionsLength ? { wrongOptionsLength: true } : null;
+}
+
+function singleCorrectOptionValidator(question: FormGroup): ValidationErrors | null {
+  const options = question.get('options') as FormArray
+  const correctOptionsLength = 1
+  const correctOptions = options.controls.filter(option => option.get('isCorrect').value).length
+  return correctOptions !== correctOptionsLength ? { wrongCorrectOptionsLength: true } : null
+}
+
+function atLeastOneCorrectOptionValidator(question: FormGroup): ValidationErrors | null {
+  const options = question.get('options') as FormArray
+  const minCorrectOptionsLength = 1
+  const correctOptions = options.controls.filter(option => option.get('isCorrect').value).length
+  return correctOptions < minCorrectOptionsLength ? { lessThanMinCorrectOptionsLength: true } : null
+}
+
+function atLeastOnePlaceholderValidator(question: FormGroup): ValidationErrors | null {
+  const minPlaceholdersLength = 1
+  const questionPlaceholders = getPlaceholders(question.get('text').value).length
+  return questionPlaceholders < minPlaceholdersLength ? { wrongPlaceholdersLength: true } : null
+}
+
+function singleCorrectOptionPerPlaceholderValidator(question: FormGroup): ValidationErrors | null {
+  const questionPlaceholders = getPlaceholders(question.get('text').value)
+  const options = question.get('options') as FormArray
+  const correctOptionsLengthPerPlaceholder = 1
+  for (let placeholder of questionPlaceholders) {
+    const correctOptions = options.controls.filter(option => option.get('placeholder').value === placeholder && option.get('isCorrect').value).length
+    if (correctOptions !== correctOptionsLengthPerPlaceholder) {
+      return { wrongCorrectOptionsLengthPerPlaceholder: true }
+    }
+  }
+  return null
+}
+
+const singleOptionQuestionTypeValidators: ValidatorFn[] = [optionsLengthValidator, singleCorrectOptionValidator]
+const completeQuestionTypeValidators: ValidatorFn[] = [optionsLengthValidator, atLeastOnePlaceholderValidator, singleCorrectOptionPerPlaceholderValidator]
+const multipleChoiceQuestionTypeValidators: ValidatorFn[] = [optionsLengthValidator, atLeastOneCorrectOptionValidator]
+const trueOrFalseQuestionTypeValidators: ValidatorFn[] = [optionsLengthValidator]
+
+const questionTypeToValidators = {
+  [QuestionType.TYPE_SINGLE_CHOICE_VALUE]: singleOptionQuestionTypeValidators,
+  [QuestionType.TYPE_COMPLETE_VALUE]: completeQuestionTypeValidators,
+  [QuestionType.TYPE_MULTIPLE_CHOICE_VALUE]: multipleChoiceQuestionTypeValidators,
+  [QuestionType.TYPE_TRUE_OR_FALSE_VALUE]: trueOrFalseQuestionTypeValidators,
+}
 
 @Component({
   selector: 'app-edit-validation-test',
@@ -20,16 +75,14 @@ export class EditValidationTestComponent {
 
   stepsActividad = [
     'Información básica',
-    // 'Instrucciones generales de la actividad',
+    'Competencias',
     'Preguntas',
     'Previsualización de preguntas',
   ];
 
   activeStep: number = 2
-  // displayVideoPreview: boolean = false
-  // displayFilePreview: boolean = false
 
-  questionStatus: {expanded: boolean, visibleImage: boolean, placeholders: string[], textToRender: SafeHtml}[] = []
+  questionStatus: { expanded: boolean, visibleImage: boolean, placeholders: string[], textToRender: SafeHtml }[] = []
 
   mainForm: FormGroup
 
@@ -38,6 +91,14 @@ export class EditValidationTestComponent {
 
   questionMaxSize: number = 50
 
+  displayErrors: boolean = false
+  
+  initialSkills = []
+  enterpriseSkills: Skill[]
+  universalSkills: Skill[]
+  recommendedSkills: Skill[]
+  categories: { skills: Skill[]; id: string; name: string; enterprise: DocumentReference<DocumentData>}[]
+
   constructor(
     public icon: IconService,
     public activeModal: NgbActiveModal,
@@ -45,22 +106,28 @@ export class EditValidationTestComponent {
     // private vimeoService: VimeoUploadService,
     private alertService: AlertsService,
     public sanitizer: DomSanitizer,
+    private categoryService: CategoryService,
+    private skillService: SkillService
   ) {}
 
+  dataSubscription: Subscription
+
   ngOnInit() {
+    this.setupSkillsData()
+    this.setupForm()
+  }
+
+  setupForm() {
     this.mainForm = this.fb.group({
       modalPage1: this.fb.group({
         title: ['', [Validators.required]],
         description: ['', [Validators.required]],
         duration: [0, [Validators.required, Validators.min(1), Validators.pattern(/^\d*$/)]],
       }),
-      // modalPage2: this.fb.group({
-      //   vimeoId1: [0],
-      //   vimeoId2: [''],
-      //   instructions: ['', [Validators.required]],
-      //   files: [''],
-      // }),
       modalPage2: this.fb.group({
+        skills: this.fb.array([])
+      }),
+      modalPage3: this.fb.group({
         questions: this.fb.array([])
       })
     });
@@ -70,14 +137,38 @@ export class EditValidationTestComponent {
     }
   }
 
+  setupSkillsData() {
+    this.dataSubscription = combineLatest([
+      this.skillService.getSkillsObservable(),
+      this.categoryService.getCategoriesObservable()
+    ]).subscribe(([skills, categories]) => {
+      console.log("skills", skills)
+      console.log("categories", categories)
+      this.enterpriseSkills = skills.filter(skill => skill.enterprise !== null)
+      this.universalSkills = skills.filter(skill => skill.enterprise === null)
+      // to be fixed by algorithm
+      this.recommendedSkills = [...this.enterpriseSkills]
+      this.categories = categories.map(category => {
+        return {
+          ...category,
+          skills: this.universalSkills.filter(skill => skill.category.id === category.id)
+        }
+      })
+    })
+  }
+
+  ngOnDestroy() {
+    this.dataSubscription.unsubscribe()
+  }
+
   validateCurrentModalPage(currentModalPage: string) {
     const currentPageGroup = this.mainForm.get(currentModalPage);
     
     if (currentPageGroup && currentPageGroup.invalid) {
-      Object.keys(currentPageGroup['controls']).forEach(field => {
-        const control = currentPageGroup.get(field);
-        control.markAsTouched({ onlySelf: true });
-      });
+      // Object.keys(currentPageGroup['controls']).forEach(field => {
+      //   const control = currentPageGroup.get(field);
+      //   control.markAsTouched({ onlySelf: true });
+      // });
       return false; // Indicate that the form is invalid
     }
     return true; // Indicate that the form is valid
@@ -89,9 +180,15 @@ export class EditValidationTestComponent {
 
   nextPage() {
     if (this.validateCurrentModalPage(`modalPage${this.activeStep}`)) {
+      this.displayErrors = false
       this.activeStep++;
+    } else {
+      this.displayErrors = true
     }
-    // this.activeStep++;
+  }
+
+  onSkillSelected(skills) {
+    console.log("skills", skills)
   }
 
   get questions(): FormArray {
@@ -99,17 +196,18 @@ export class EditValidationTestComponent {
   }
 
   addQuestion(): void {
+    const defaultQuestionType = QuestionType.TYPE_COMPLETE_VALUE
     this.questions.push(this.fb.group({
       text: ['', [Validators.required]],
-      type: [QuestionType.TYPE_COMPLETE_VALUE],
+      type: [defaultQuestionType],
       image: this.fb.group({
         url: [''],
         file: [null]
       }),
-      options: this.fb.array([]),
+      options: this.fb.array([], []),
       points: ['', [Validators.required, Validators.min(1), Validators.pattern(/^\d*$/)]],
       skills: this.fb.array([]),
-    }));
+    }, { validators: questionTypeToValidators[defaultQuestionType] }));
     this.questionStatus.push({
       expanded: true,
       visibleImage: false,
@@ -154,13 +252,18 @@ export class EditValidationTestComponent {
   }
 
   onQuestionTypeChange(questionIndex: number, typeValue: string) {
-    this.questions.at(questionIndex)['controls']['type'].setValue(typeValue)
-    this.options(questionIndex).setValue([])
+    const question = this.questions.at(questionIndex)
+    question['controls']['type'].setValue(typeValue)
+    this.options(questionIndex).clear()
     this.questionStatus[questionIndex] = {
       ...this.questionStatus[questionIndex],
       placeholders: [],
       textToRender: null
     }
+    question.clearValidators()
+    const validators: ValidatorFn[] = questionTypeToValidators[typeValue]
+    question.setValidators(validators)
+    question.updateValueAndValidity()
   }
 
   uploadQuestionImage(questionIndex: number, event) {
@@ -187,7 +290,7 @@ export class EditValidationTestComponent {
     };
   }
 
-  questionInstruction(questionIndex: number) {
+  getQuestionInstruction(questionIndex: number) {
     return this.sanitizer.bypassSecurityTrustHtml(
       QuestionType.TYPES.find(type => type.value === this.questions.at(questionIndex)['controls']['type'].value).createInstructions
     );

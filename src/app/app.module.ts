@@ -99,7 +99,7 @@ import { StudyPlanComponent } from './shared/components/study-plan/study-plan.co
 import { StudentStatsComponent } from './main-components/management/my-team/student/student-stats/student-stats.component';
 import { StudentDetailsComponent } from './main-components/management/my-team/student/student-details/student-details.component';
 import { PermissionsComponent } from './main-components/settings/permissions/permissions.component';
-import { SemigaugeChartComponent } from './main-components/management/management-dashboard/chart-gauge/semigauge-chart.component';
+import { SkillsSelectorV2Component } from './shared/components/skills-selector-v2/skills-selector-v2.component';
 import { PermissionsAdvancedFiltersComponent } from './main-components/settings/permissions/permissions-advanced-filters/permissions-advanced-filters.component';
 import { UsersRhythmComponent } from './main-components/dashboard/users-rhythm/users-rhythm.component';
 import { UsersStudyTimeContainerComponent } from './main-components/dashboard/users-study-time-container/users-study-time-container.component';
@@ -158,7 +158,7 @@ import { UsersStudyTimeContainerComponent } from './main-components/dashboard/us
     StudentStatsComponent,
     StudentDetailsComponent,
     PermissionsComponent,
-    SemigaugeChartComponent,
+    SkillsSelectorV2Component,
     PermissionsAdvancedFiltersComponent,
     UsersRhythmComponent,
     UsersStudyTimeContainerComponent,

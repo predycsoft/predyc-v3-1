@@ -84,8 +84,8 @@ export class SkillService {
             map(([matched, empty]) => [...matched, ...empty])
           )
           .subscribe({
-            next: categories => {
-              this.skillsSubject.next(categories);
+            next: skills => {
+              this.skillsSubject.next(skills);
             },
             error: error => {
               console.log(error);

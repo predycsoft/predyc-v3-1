@@ -27,7 +27,7 @@
             </div>
         </div>
         <div  fxLayout="row" fxLayoutGap="20px">
-            <div fxFlex="60%" class="smallScroll" style="overflow-y: auto;">
+            <div fxFlex="65%" class="smallScroll" style="overflow-y: auto;">
                 <div class="pdr05">
                     <!-- Informacion basica -->
                     <ng-container *ngIf="activeStep === 1">
@@ -43,6 +43,7 @@
                                         <img [src]="icon.chess" class="h20px input-icon" alt="">
                                         <input
                                             formControlName="title"
+                                            [class.is-invalid]="mainForm.get('modalPage1.title').errors && displayErrors"
                                             type="text" 
                                             class="form-control custom-input"
                                             placeholder="Escriba el título de la actividad aquí"
@@ -50,7 +51,7 @@
                                     </div>
                                     <div 
                                         class="custom-invalid-feedback"
-                                        *ngIf="mainForm.get('modalPage1.title').errors && mainForm.get('modalPage1.title').touched"
+                                        *ngIf="mainForm.get('modalPage1.title').errors && displayErrors"
                                         > 
                                         Debe indicar el título de la actividad
                                     </div>
@@ -58,11 +59,11 @@
                                 <div class="form-group pdt10">
                                     <label>Descripción</label>
                                     <textarea rows="4" 
-                                    [class.is-invalid]="mainForm.get('modalPage1.description').errors && mainForm.get('modalPage1.duration').touched"
+                                    [class.is-invalid]="mainForm.get('modalPage1.description').errors && displayErrors"
                                     formControlName="description" type="text" class="form-control" placeholder="Escriba una pequeña descripción" style="resize: none;"></textarea>
                                     <div 
-                                        class="invalid-feedback"
-                                        *ngIf="mainForm.get('modalPage1.description').errors && mainForm.get('modalPage1.description').touched"
+                                        class="custom-invalid-feedback"
+                                        *ngIf="mainForm.get('modalPage1.description').errors && displayErrors"
                                         > 
                                         Debe indicar la Descripción de la actividad
                                     </div>
@@ -70,20 +71,20 @@
                                 <div class="form-group pdt10 w-40">
                                     <label>Duración estimada (minutos)</label>
                                     <input formControlName="duration"
-                                        [class.is-invalid]="mainForm.get('modalPage1.duration').errors && mainForm.get('modalPage1.duration').touched"
+                                        [class.is-invalid]="mainForm.get('modalPage1.duration').errors && displayErrors"
                                         type="number"
                                         min="1"
                                         class="form-control"
                                         >
                                     <div
-                                        class="invalid-feedback"
-                                        *ngIf="mainForm.get('modalPage1.duration').errors && mainForm.get('modalPage1.duration').touched"
+                                        class="custom-invalid-feedback"
+                                        *ngIf="mainForm.get('modalPage1.duration').errors && displayErrors"
                                         >
                                         <div *ngIf="mainForm.get('modalPage1.duration').errors?.required">
                                             Es obligatorio especificar la duración de la actividad
                                         </div>
                                         <div *ngIf="mainForm.get('modalPage1.duration').errors?.min">
-                                            Es obligatorio la duracion minima de al menos 1 minuto
+                                            La duracion minima de la actividad debe ser al menos 1 minuto
                                         </div>
                                         <div *ngIf="mainForm.get('modalPage1.duration').errors?.pattern">
                                             La duración de la actividad debe ser un número
@@ -93,135 +94,26 @@
                             </div>   
                         </div>
                     </ng-container>
-                    <!-- Instrucciones generales -->
-                    <!-- <ng-container *ngIf="activeStep === 2"> 
-                        <div formGroupName="modalPage2" fxFlex fxLayout="column" class="contanier pdl10 pdt10">
-                            <div fxLayout="row">
-                                <span class="titleActive ft400">Instrucciones generales de la actividad</span>
-                            </div>
-                            <div fxLayout="row" style="overflow-y: auto;">
-                                <div class="form-group pdt10">
-                                    <label>Video explicativo</label>
-                                    <div class="position-relative custom-input-container">
-                                        <img [src]="icon.videoChat" class="h20px input-icon" alt="">
-                                        <input 
-                                            [class.is-invalid]="mainForm.get('modalPage2.video').errors"
-                                            (change)="onFileSelected($event)"
-                                            type="file"
-                                            accept="video/mp4" 
-                                            #videoActivityInput
-                                            class="form-control custom-input"
-                                            placeholder="Escriba el título de la actividad aquí"
-                                            >
-                                        <button (click)="videoActivityInput.click()" class="custom-button grayButton ft500 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
-                                            <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
-                                            Adjuntar
-                                        </button>
-                                    </div>
-                                    <div
-                                        class="custom-invalid-feedback"
-                                        *ngIf="mainForm.get('modalPage2.video').errors"
-                                    >
-                                        Debe adjuntar el video explicativo
-                                    </div>
-                                    <div>
-                                        <span class="ft800 ft10">Nota:</span><span class="ft10">&nbsp;se recomienda que los videos tenga al menos una resolucion de 720P y pesen menso de 4 Gb</span>
-                                    </div>
-                                </div>
-                                <div *ngIf="selectedClase['uploading'] && selectedClase['videoFileName']" class="form-group pdt10">
-                                    <div fxLayout="column">
-                                        <div fxFlex="25" fxLayout="row" fxLayoutAlign="center center" class="w-25">
-                                            <mat-progress-bar class="h10px radius6 {{selectedClase['videoUpload'] >= 100 ? 'complete-progress-bar' : '' }}" mode="determinate" [value]="selectedClase['videoUpload']"></mat-progress-bar>
-                                            <span *ngIf="selectedClase['videoUpload'] < 100" class="pdl05">{{ selectedClase['videoUpload'] }}%</span>
-                                            <img *ngIf="selectedClase['videoUpload'] >= 100" [src]="icon.check" class="h16px pdl05" alt="">
-                                        </div>
-                                        <div fxLayout="row" *ngIf="selectedClase.vimeoId1" >
-                                            <span>{{selectedClase.videoFileName}}&nbsp;</span>
-                                            <span (click)="viewVideoActivity=!viewVideoActivity;" class="blueLink cursorPointer">{{viewVideoActivity? 'Ocultar video':'Ver video'}}</span>
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <div class="form-group pdt10">
-                                    <label>Instrucciones</label>
-                                    <textarea
-                                        formControlName="instructions"
-                                        [class.is-invalid]="mainForm.get('modalPage2.instructions').errors" 
-                                        rows="3"
-                                        type="text"
-                                        class="form-control"
-                                        placeholder="Escriba el resumen del curso aquí"
-                                        style="resize: none;"
-                                        >
-                                    </textarea>
-                                    <div class="invalid-feedback" *ngIf="mainForm.get('modalPage2.instructions').errors">
-                                        Debe indicar las instrucciones de la actividad.
-                                    </div>
-                                </div>
-                                <div class="form-group pdt10">
-                                    <label>Recursos descargables</label>
-                                    <div class="position-relative custom-input-container">
-                                        <img [src]="icon.pdf" class="h20px input-icon" alt="">
-                                        <input 
-                                            [class.is-invalid]="mainForm.get('modalPage2.files').errors"
-                                            (change)="onFileSelected($event,selectedClase,false,selectedModulo,true,'archivoActividad')"
-                                            type="file"
-                                            accept=".pdf"
-                                            #fileActivityInput
-                                            class="form-control custom-input"
-                                            >
-                                        <button
-                                            (click)="fileActivityInput.click()"
-                                            class="custom-button grayButton ft500 gray-8"
-                                            fxLayout="row"
-                                            fxLayoutGap="0.625"
-                                            fxLayoutAlign="center center"
-                                            >
-                                            <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
-                                            Adjuntar
-                                        </button>
-                                    </div>
-                                    <div class="custom-invalid-feedback" *ngIf="mainForm.get('modalPage2.files').errors && showErrorActividad">
-                                        Debe adjuntar algun recurso adicional
-                                    </div>
-                                </div>
-                                <div *ngIf="selectedClase?.archivos[0]?.uploading_file_progress > 0" class="form-group pdt10">
-                                    <div fxLayout="column">
-                                        <div fxLayout="row" fxLayoutAlign="center center" class="w-25">
-                                            <mat-progress-bar
-                                                class="h10px radius6 {{selectedClase.archivos[0].uploading_file_progress >= 100 ? 'complete-progress-bar': ''}}"
-                                                mode="determinate"
-                                                [value]="selectedClase.archivos[0].uploading_file_progress"
-                                                >
-                                            </mat-progress-bar>
-                                            <span
-                                                *ngIf="selectedClase.archivos[0].uploading_file_progress < 100"
-                                                class="pdl05"
-                                                >
-                                                {{ selectedClase.archivos[0].uploading_file_progress }}%
-                                            </span>
-                                            <img *ngIf="selectedClase.archivos[0].uploading_file_progress >= 100" [src]="icon.check" class="h16px pdl05" alt="">
-                                        </div>
-                                        <div fxLayout="row" *ngIf="selectedClase.archivos[0].uploading_file_progress>=100" >
-                                            <span>{{ selectedClase.archivos[0].nombre }}&nbsp;</span>
-                                            <span (click)="viewFileActivity =! viewFileActivity" class="blueLink cursorPointer">{{ viewFileActivity? 'Ocultar archivo':'Ver archivo' }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </ng-container> -->
-                    <!-- Preguntas -->
+                    <!-- Skills -->
                     <ng-container *ngIf="activeStep === 2">
+                        <app-skills-selector-v2
+                            [recommendedSkills]="enterpriseSkills"
+                            [categories]="categories"
+                            [selectedSkills]="initialSkills"
+                            (onSelectedSkillsUpdate)="onSkillSelected($event)">
+                        </app-skills-selector-v2>
+                    </ng-container>
+                    <!-- Preguntas -->
+                    <ng-container *ngIf="activeStep === 3">
                         <div formGroupName="modalPage2" fxFlex fxLayout="column" class="container pdl10 pdt10">
                             <ng-container formArrayName="questions">
                                 <!-- aqui van los preguntas que se van creando -->
                                 <div
                                     *ngFor="let question of questions.controls; let i = index"
                                     [formGroupName]="i"
-                                    class="{{true ? 'containerQuestions--invalid' : ''}} containerQuestions pdt05"
+                                    class="{{ question.invalid && displayErrors ? 'containerQuestions--invalid' : ''}} containerQuestions pd10"
                                     >
-                                    <div fxLayout="row" fxLayoutAlign="space-between start" class="fw pd10 pdt05 pdb5">
+                                    <div fxLayout="row" fxLayoutAlign="space-between start" class="fw">
                                         <div fxLayout="row" fxLayoutGap="10px" class="fw">
                                             <div class="ft500 ft12">
                                                 <!-- numero pregunta -->
@@ -238,7 +130,7 @@
                                         </div>
                                     </div>
                                     <!-- Contenedor de las preguntas -->
-                                    <div *ngIf="questionStatus[i].expanded" class="pd10">
+                                    <div *ngIf="questionStatus[i].expanded" class="mgt05">
                                         <div fxLayout="row" fxLayoutAlign="space-between center">
                                             <!-- Botones alineados a la izquierda -->
                                             <div fxLayout="row" fxLayoutGap="0.625">
@@ -256,7 +148,13 @@
                                             <!-- Label y input alineados a la derecha -->
                                             <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px">
                                                 <label>Puntos</label>
-                                                <input formControlName="points" type="number" min="0" class="form-control w-50">
+                                                <input
+                                                    formControlName="points"
+                                                    [class.is-invalid]="question.get('points').errors && displayErrors"
+                                                    type="number"
+                                                    min="0"
+                                                    class="form-control w-50"
+                                                    >
                                             </div>
                                         </div>
                                         <div fxLayout="row" fxLayoutAlign="start center" class="pdt10">
@@ -291,16 +189,25 @@
                                         </div>
                                         <div fxLayout="row">
                                             <div class="form-group pdt10 fw">
-                                                <textarea formControlName="text" rows="3"  type="text" class="form-control" placeholder="Escriba aqui la pregunta" style="resize: none;">
-                                                    <input type="text" placeholder="prueba" class="form-control w-40"/>
+                                                <textarea
+                                                    formControlName="text"
+                                                    [class.is-invalid]="question.get('text').errors && displayErrors"
+                                                    rows="3" 
+                                                    type="text"
+                                                    class="form-control"
+                                                    placeholder="Escriba aqui la pregunta"
+                                                    style="resize: none;">
                                                 </textarea>
-                                                <div class="invalid-feedback">
+                                                <div
+                                                    class="custom-invalid-feedback"
+                                                    *ngIf="question.get('text').errors && displayErrors"
+                                                    >
                                                     Debe indicar la pregunta.
                                                 </div>
                                             </div>
                                         </div>
                                         <div fxLayout="row" class="pdt05">
-                                            <span [innerHTML]="questionInstruction(i)"></span>
+                                            <span [innerHTML]="getQuestionInstruction(i)"></span>
                                         </div>
                                         <!-- area dependiente de la pregunta -->
                                         <div fxLayout="row" class="pdt05 fw">
@@ -336,13 +243,26 @@
                                                             fxLayout="row"
                                                             [formGroupName]="optIndex"
                                                             >
-                                                            <div *ngIf="option.get('placeholder').value === placeHolder" fxLayout="row" fxLayoutAlign="space-between center" class="fw pdb05">    
-                                                                <input formControlName="text" type="text" class="form-control w-40" placeholder="">
-                                                                <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
-                                                                    <input [name]="'radioGroup' + i + placeholderIndex" type="radio" (change)="onSingleOptionSelected(i, optIndex)" [value]="optIndex"/>
-                                                                    <img (click)="removeOption(i, optIndex)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash pdl05" alt="">
+                                                            <div *ngIf="option.get('placeholder').value === placeHolder">
+                                                                <div fxLayout="column" class="mgb10">
+                                                                    <div fxLayout="row" fxLayoutAlign="space-between center" class="fw">
+                                                                        <input
+                                                                            formControlName="text"
+                                                                            [class.is-invalid]="option.get('text').errors && displayErrors"
+                                                                            type="text"
+                                                                            class="form-control w-40"
+                                                                            placeholder=""
+                                                                        >
+                                                                        <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
+                                                                            <input [name]="'radioGroup' + i + placeholderIndex" type="radio" (change)="onSingleOptionSelected(i, optIndex)" [value]="optIndex"/>
+                                                                            <img (click)="removeOption(i, optIndex)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash pdl05" alt="">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="custom-invalid-feedback" *ngIf="option.get('text').errors && displayErrors">
+                                                                        Debe indicar la opción
+                                                                    </div>
                                                                 </div>
-                                                            </div>              
+                                                            </div>
                                                         </div>
                                                         <div fxLayout="row">
                                                             <span (click)="addOption(i, placeHolder)" class="blueLink radius4 ft12 h28px no-select">
@@ -381,15 +301,26 @@
                                                         class="fw"
                                                         [formGroupName]="optIndex"
                                                         >
-                                                        <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem" class="mgb10 fw">             
-                                                            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
-                                                                <span class="gray-6">{{ optIndex + 1 }}.</span>
-                                                                <input formControlName="text" type="text" class="form-control" placeholder="">
+                                                        <div fxLayout="column" class="mgb10">
+                                                            <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem" class="fw">             
+                                                                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+                                                                    <span class="gray-6">{{ optIndex + 1 }}.</span>
+                                                                    <input
+                                                                        formControlName="text"
+                                                                        [class.is-invalid]="option.get('text').errors && displayErrors"
+                                                                        type="text"
+                                                                        class="form-control"
+                                                                        placeholder=""
+                                                                        >
+                                                                </div>
+                                                        
+                                                                <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
+                                                                    <input formControlName="isCorrect" type="checkbox" value="{{ optIndex }}"/>
+                                                                    <img (click)="removeOption(i, optIndex)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash pdl05" alt="">
+                                                                </div>
                                                             </div>
-                                                    
-                                                            <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
-                                                                <input formControlName="isCorrect" type="checkbox" value="{{ optIndex }}"/>
-                                                                <img (click)="removeOption(i, optIndex)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash pdl05" alt="">
+                                                            <div class="custom-invalid-feedback" *ngIf="option.get('text').errors && displayErrors">
+                                                                Debe indicar la opción
                                                             </div>
                                                         </div>
                                                     </div>
@@ -403,22 +334,36 @@
                                             </div>
                                             <!-- opcion simple -->
                                             <div class="fw" fxLayout="column" *ngIf="question.get('type').value == questionTypeClass.TYPE_SINGLE_CHOICE_VALUE">
-                                                <div fxLayout="column" formArrayName="options">                                                    
+                                                <div
+                                                    fxLayout="column"
+                                                    formArrayName="options"
+                                                    >
                                                     <div
                                                         *ngFor="let option of options(i).controls; let optIndex = index"
                                                         fxLayout="row"
                                                         class="fw"
                                                         [formGroupName]="optIndex"
                                                         >
-                                                        <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem" class="mgb10 fw">             
-                                                            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
-                                                                <span class="gray-6">{{ optIndex + 1 }}.</span>
-                                                                <input formControlName="text" type="text" class="form-control" placeholder="">
+                                                        <div fxLayout="column" class="mgb10">
+                                                            <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem" class="fw">             
+                                                                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+                                                                    <span class="gray-6">{{ optIndex + 1 }}.</span>
+                                                                    <input
+                                                                        formControlName="text"
+                                                                        [class.is-invalid]="option.get('text').errors && displayErrors"
+                                                                        type="text"
+                                                                        class="form-control"
+                                                                        placeholder=""
+                                                                        >
+                                                                </div>
+                                                        
+                                                                <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
+                                                                    <input [name]="'radioGroup' + i" type="radio" (change)="onSingleOptionSelected(i, optIndex)" [value]="optIndex"/>
+                                                                    <img (click)="removeOption(i, optIndex)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash pdl05" alt="">
+                                                                </div>
                                                             </div>
-                                                    
-                                                            <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
-                                                                <input [name]="'radioGroup' + i" type="radio" (change)="onSingleOptionSelected(i, optIndex)" [value]="optIndex"/>
-                                                                <img (click)="removeOption(i, optIndex)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash pdl05" alt="">
+                                                            <div class="custom-invalid-feedback" *ngIf="option.get('text').errors && displayErrors">
+                                                                Debe indicar la opción
                                                             </div>
                                                         </div>
                                                     </div>
@@ -432,22 +377,35 @@
                                             </div>
                                             <!-- opcion true or false -->
                                             <div class="fw" fxLayout="column" *ngIf="question.get('type').value == questionTypeClass.TYPE_TRUE_OR_FALSE_VALUE">
-                                                <div fxLayout="column" formArrayName="options">                                                    
+                                                <div
+                                                    fxLayout="column"
+                                                    formArrayName="options">
                                                     <div
                                                         *ngFor="let option of options(i).controls; let optIndex = index"
                                                         fxLayout="row"
                                                         class="fw"
                                                         [formGroupName]="optIndex"
                                                         >
-                                                        <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem" class="mgb10 fw">             
-                                                            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
-                                                                <span class="gray-6">{{ optIndex + 1 }}.</span>
-                                                                <input formControlName="text" type="text" class="form-control" placeholder="">
+                                                        <div fxLayout="column" class="mgb10">
+                                                            <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem" class="fw">             
+                                                                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+                                                                    <span class="gray-6">{{ optIndex + 1 }}.</span>
+                                                                    <input
+                                                                        formControlName="text"
+                                                                        [class.is-invalid]="option.get('text').errors && displayErrors"
+                                                                        type="text"
+                                                                        class="form-control"
+                                                                        placeholder=""
+                                                                        >
+                                                                </div>
+                                                        
+                                                                <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
+                                                                    <input formControlName="isCorrect" type="checkbox" value="{{ optIndex }}"/>
+                                                                    <img (click)="removeOption(i, optIndex)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash pdl05" alt="">
+                                                                </div>
                                                             </div>
-                                                    
-                                                            <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
-                                                                <input formControlName="isCorrect" type="checkbox" value="{{ optIndex }}"/>
-                                                                <img (click)="removeOption(i, optIndex)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash pdl05" alt="">
+                                                            <div class="custom-invalid-feedback" *ngIf="option.get('text').errors && displayErrors">
+                                                                Debe indicar la opción
                                                             </div>
                                                         </div>
                                                     </div>
@@ -467,6 +425,43 @@
                                             </div>
                                         </ng-container> -->
                                     </div>
+                                    <!-- Contenedor de los errores -->
+                                    <!-- <div class="pd10" *ngIf="question.errors && question.touched"> -->
+                                    <div 
+                                        class="custom-invalid-feedback"
+                                        *ngIf="question.invalid && displayErrors"
+                                        >
+                                        <!-- <div *ngIf="question.get('text').errors?.required">
+                                            El texto de la pregunta es requerido
+                                        </div> -->
+                                        <div *ngIf="question.get('points').errors && displayErrors"
+                                        >
+                                            <div *ngIf="question.get('points').errors?.required">
+                                                Es obligatorio especificar el puntaje de la actividad
+                                            </div>
+                                            <div *ngIf="question.get('points').errors?.min">
+                                                La actividad debe tener un puntaje distinto de cero
+                                            </div>
+                                            <div *ngIf="question.get('points').errors?.pattern">
+                                                El puntaje de la actividad debe ser un número
+                                            </div>
+                                        </div>
+                                        <div *ngIf="question.errors?.wrongOptionsLength">
+                                            La pregunta debe tener más de una opción
+                                        </div>
+                                        <div *ngIf="question.errors?.wrongCorrectOptionsLength">
+                                            La pregunta debe tener una sola opción correcta
+                                        </div>
+                                        <div *ngIf="question.errors?.lessThanMinCorrectOptionsLength">
+                                            La pregunta debe tener una o mas opciones correctas
+                                        </div>
+                                        <div *ngIf="question.errors?.wrongPlaceholdersLength">
+                                            La pregunta debe tener al menos un marcador de referencia
+                                        </div>
+                                        <div *ngIf="question.errors?.wrongCorrectOptionsLengthPerPlaceholder">
+                                            Cada marcador de referencia de la pregunta debe tener al menos una opción correcta
+                                        </div>
+                                    </div>
                                 </div>
                             </ng-container>
                             <div fxLayout="row" class="fw">
@@ -482,13 +477,13 @@
                         </div>
                     </ng-container>
                     <!-- tab vista actividad -->
-                    <ng-container *ngIf="activeStep === 3">
+                    <ng-container *ngIf="activeStep === 4">
                         <div fxFlex fxLayout="column" class="container pdl10 pdt10">
                             <ng-container>
                                 <!-- aqui van los preguntas que se van creando -->
                                 <div
                                     *ngFor="let question of questions.controls; let questionIndex = index"
-                                    class="{{ true ? 'containerQuestions--invalid' : ''}} containerQuestions pdt05"
+                                    class="containerQuestions pdt05"
                                     >
                                     <div fxLayout="row" fxLayoutAlign="space-between start" class="fw pd05 pdb0">
                                         <div fxLayout="row" fxLayoutGap="10px" class="fw">
@@ -589,7 +584,7 @@
                     </ng-container>
                 </div>
             </div>
-            <div fxFlex="40%" fxLayout="column" fxLayoutAlign="center center">            
+            <div fxFlex="35%" fxLayout="column" fxLayoutAlign="center center">            
                 <div fxLayout="column" fxLayoutAlign="center center" class="fw fh">
                     <img  class="pd10" src="../../../assets/images/cursos/Next steps-pana.svg" class="fw" alt="Mi SVG">
                 </div>

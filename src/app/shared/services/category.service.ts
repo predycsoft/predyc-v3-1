@@ -25,7 +25,6 @@ export class CategoryService {
     private alertService: AlertsService
   ) 
   {
-    //this.getCateogies()
     this.enterpriseService.enterprise$.subscribe(enterprise => {
       if (enterprise) {
         this.empresa = enterprise

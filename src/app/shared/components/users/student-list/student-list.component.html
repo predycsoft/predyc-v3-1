@@ -80,16 +80,16 @@
                     [matMenuTriggerFor]="userOptions" (click)="$event.stopPropagation()">
                 <mat-menu #userOptions="matMenu" class="radius6 shadow16 pd0">
                     <div fxLayout="column" class="fw pd0">
-                        <div mat-menu-item fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="2rem">
+                        <div mat-menu-item fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="2rem" [routerLink]="[user.uid]">
                             <img [src]="icon.user" alt="" class="h16px mg0">
-                            <span class="pdl05 ft12 gray-10" [routerLink]="user.uid">Ver usuario</span>
+                            <span class="pdl05 ft12 gray-10">Ver usuario</span>
                         </div> 
                         <div mat-menu-item fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="2rem" (click)="onSelectUser(user)">
-                            <img [src]="icon.trash" class="h16px mg0" alt="">
+                            <img [src]="icon.user" class="h16px mg0" alt="">
                             <span class="pdl05 ft12 gray-10">Editar usuario</span>
                         </div>
                         <div *ngIf="user.role === 'student'" mat-menu-item fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="2rem" (click)="transformUserToAdmin(user)">
-                            <img [src]="icon.trash" class="h16px mg0" alt="">
+                            <img [src]="icon.user" class="h16px mg0" alt="">
                             <span class="pdl05 ft12 gray-10">Convertir usuario a admin</span>
                         </div>
                         <div mat-menu-item fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="2rem" (click)="onDeleteUser(user)">
