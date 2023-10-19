@@ -18,7 +18,7 @@ export const onUserAdded = functions.firestore.document('user/{doc}').onCreate(a
         }
     ).then(() => {
     return console.log(
-        `Updated enterprise: ${enterprise.name} notifications quantity to: ${enterprise.employesNo + 1}`
+        `Updated enterprise: ${enterprise.name} employes quantity to: ${enterprise.employesNo + 1}`
         );
     }).catch((error) => {
         return console.log(error);

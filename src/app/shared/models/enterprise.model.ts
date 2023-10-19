@@ -10,6 +10,7 @@ export interface EnterpriseJson {
     id: string 
     name: string
     photoUrl: string | null
+    profilesNo: number
     totalActivityNotifications: number
     totalAlertNotifications: number
     totalRequestNotifications: number
@@ -40,6 +41,7 @@ export class Enterprise {
         public id: string,
         public name: string,
         public photoUrl: string | null,
+        public profilesNo: number,
         public totalActivityNotifications: number,
         public totalAlertNotifications: number,
         public totalRequestNotifications: number,
@@ -66,6 +68,7 @@ export class Enterprise {
             enterpriseJson.id,
             enterpriseJson.name,
             enterpriseJson.photoUrl,
+            enterpriseJson.profilesNo,
             enterpriseJson.totalActivityNotifications,
             enterpriseJson.totalAlertNotifications,
             enterpriseJson.totalRequestNotifications,
@@ -88,6 +91,7 @@ export class Enterprise {
             id: this.id,
             name: this.name,
             photoUrl: this.photoUrl,
+            profilesNo: this.profilesNo,
             totalActivityNotifications: this.totalActivityNotifications,
             totalAlertNotifications: this.totalAlertNotifications,
             totalRequestNotifications: this.totalRequestNotifications,
