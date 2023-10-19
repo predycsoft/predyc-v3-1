@@ -97,10 +97,13 @@
                     <!-- Skills -->
                     <ng-container *ngIf="activeStep === 2">
                         <app-skills-selector-v2
-                            [recommendedSkills]="enterpriseSkills"
+                            [selectedSkills]="[]"
+                            [skills]="skills"
                             [categories]="categories"
-                            [selectedSkills]="initialSkills"
-                            (onSelectedSkillsUpdate)="onSkillSelected($event)">
+                            [arrangeByCategory]="false"
+                            (onSelectedSkill)="addSkillToTest($event)"
+                            (onRemovedSkill)="removeSkillFromTest($event)"
+                            >
                         </app-skills-selector-v2>
                     </ng-container>
                     <!-- Preguntas -->

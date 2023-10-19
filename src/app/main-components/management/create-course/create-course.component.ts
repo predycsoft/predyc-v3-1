@@ -155,8 +155,7 @@ export class CreateCourseComponent implements OnInit {
 
   competenciasSelected;
 
-  getSelectedCategoriasCompetencias(competencia = null){
-    console.log('getSelectedCategoriasCompetencias')
+  getSelectedCategoriasCompetencias(){
     let respuesta = [];
     console.log(this.categoriasArray)
 
@@ -173,14 +172,12 @@ export class CreateCourseComponent implements OnInit {
     });
 
     //this.updateCompetenciasClases(competencia)
-    console.log('respuesta',respuesta)
     this.competenciasSelected = respuesta;
   }
 
   competenciasSelecttedClase = [];
 
-  getSelectedCategoriasCompetenciasClase(competencia = null){//estoy aqui
-    console.log('getSelectedCategoriasCompetencias')
+  getSelectedCategoriasCompetenciasClase(){//estoy aqui
     let respuesta = [];
     console.log(this.competenciasSelectedClase)
 
