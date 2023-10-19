@@ -101,6 +101,8 @@ import { StudentDetailsComponent } from './main-components/management/my-team/st
 import { PermissionsComponent } from './main-components/settings/permissions/permissions.component';
 import { SemigaugeChartComponent } from './main-components/management/management-dashboard/chart-gauge/semigauge-chart.component';
 import { PermissionsAdvancedFiltersComponent } from './main-components/settings/permissions/permissions-advanced-filters/permissions-advanced-filters.component';
+import { UsersRhythmComponent } from './main-components/dashboard/users-rhythm/users-rhythm.component';
+import { UsersStudyTimeContainerComponent } from './main-components/dashboard/users-study-time-container/users-study-time-container.component';
 
 @NgModule({
   declarations: [
@@ -158,6 +160,8 @@ import { PermissionsAdvancedFiltersComponent } from './main-components/settings/
     PermissionsComponent,
     SemigaugeChartComponent,
     PermissionsAdvancedFiltersComponent,
+    UsersRhythmComponent,
+    UsersStudyTimeContainerComponent,
   ],
   imports: [
     BrowserModule,

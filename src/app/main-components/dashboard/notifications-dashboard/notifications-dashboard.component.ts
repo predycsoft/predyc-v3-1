@@ -31,7 +31,7 @@ export class NotificationsDashboardComponent {
   enterpriseSubscription: Subscription
   totalNotifications: number
 
-  pageSize: number = 7
+  pageSize: number = 9
 
   selectedFilter: string = 'all'
   tabNotificaciones = 0
