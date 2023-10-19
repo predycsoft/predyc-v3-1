@@ -1,0 +1,39 @@
+<div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
+    <div class="iconContainer" fxLayoutAlign="center center">
+        <img [src]="icon.cronograma" class="makeBlue" alt="">
+    </div>
+    <span class="ft12 gray-10 ft600 ">Ritmo de usuarios</span>
+</div>
+<div fxLayout="column" class="mgt15">
+    <span class="ft11 gray-10 ">
+        <span class=" ft500 ft11 gray-10"> {{(high+medium)*100/(high+medium+low+noPlan) | number:"1.0-0"}}%</span> de tu equipo lleva un buen ritmo
+    </span>
+</div>
+
+<div fxLayout="row" fxLayoutGap="1.2rem" fxLayoutAlign="center center" class="fh fw">
+    <div class="" fxLayout="row" fxLayoutAlign="start center">
+        <!-- COLOCAR GRAFICA AQUI -->
+    </div>
+    <div fxLayout="column" fxLayoutGap=".5rem">
+        <div fxLayout="row" fxLayoutGap="0rem" fxLayoutAlign=" center">
+            <div class="cuadrito backPurple5"></div>
+            <span class="gray-10 ft11 nowrap w150px">Ritmo optimo</span>
+            <span class="gray-10 ft11 nowrap ft500">{{(high)*100/(high+medium+low+noPlan) | number:"1.0-0"}}%</span>
+        </div>
+        <div fxLayout="row" fxLayoutGap="0rem" fxLayoutAlign=" center">
+            <div class="cuadrito backGreen5"></div>
+            <span class="gray-10 ft11 nowrap w150px">Ritmo medio</span>
+            <span class="gray-10 ft11 nowrap ft500">{{(medium)*100/(high+medium+low+noPlan) | number:"1.0-0"}}%</span>
+        </div>
+        <div fxLayout="row" fxLayoutGap="0rem" fxLayoutAlign=" center">
+            <div class="cuadrito backRed5"></div>
+            <span class="gray-10 ft11 nowrap w150px">Ritmo bajo</span>
+            <span class="gray-10 ft11 nowrap ft500">{{(low)*100/(high+medium+low+noPlan) | number:"1.0-0"}}%</span>
+        </div>
+        <div fxLayout="row" fxLayoutGap="0rem" fxLayoutAlign=" center">
+            <div class="cuadrito backGray4"></div>
+            <span class="gray-10 ft11 nowrap w150px">sin asignaciones</span>
+            <span class="gray-10 ft11 nowrap ft500">{{(noPlan)*100/(high+medium+low+noPlan) | number:"1.0-0"}}%</span>
+        </div>
+    </div>
+</div>

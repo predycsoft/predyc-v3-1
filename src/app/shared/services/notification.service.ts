@@ -55,7 +55,7 @@ export class NotificationService {
                 typeof Notification.TYPE_REQUEST |
                 typeof Notification.ARCHIVED
   }) {
-    console.log("queryObj", queryObj)
+    // console.log("queryObj", queryObj)
     if (this.notificationCollectionSubscription) {
       console.log("Has to unsubscribe before")
       this.notificationCollectionSubscription.unsubscribe();

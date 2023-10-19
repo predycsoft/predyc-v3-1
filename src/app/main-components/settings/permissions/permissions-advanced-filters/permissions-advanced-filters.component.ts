@@ -1,9 +1,10 @@
 import { DataSource } from '@angular/cdk/collections';
 import { Component, ViewChild } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { MatPaginator } from '@angular/material/paginator';
-import { BehaviorSubject, Observable, of, catchError, Subscription, combineLatest} from 'rxjs';
+import { BehaviorSubject, Observable, of, catchError, Subscription, combineLatest, firstValueFrom} from 'rxjs';
 import { map } from 'rxjs/operators';
+import { Department } from 'src/app/shared/models/department.model';
 import { Profile } from 'src/app/shared/models/profile.model';
 import { DepartmentService } from 'src/app/shared/services/department.service';
 import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
@@ -21,6 +22,12 @@ export class PermissionsAdvancedFiltersComponent {
     private departmentService: DepartmentService,
     private profileService: ProfileService,
   ){}
+
+  displayedColumns: string[] = ['departmentName', 'profileName', 'hours', 'liberty', 'generation', 'attempts'];
+  dataSource!: ProfileDataSource;
+  enablePagination: boolean = true
+  pageSize: number = 4
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   combinedObservableSubscription: Subscription
 
@@ -46,7 +53,7 @@ export class PermissionsAdvancedFiltersComponent {
         this.dataSource = new ProfileDataSource(
           this.enterpriseService,
           this.departmentService,
-          this.profileService,
+          // this.profileService,
           this.afs,
           this.paginator,
           this.pageSize,
@@ -86,93 +93,127 @@ export class PermissionsAdvancedFiltersComponent {
   }
 
 
-  // profiles = [
-  //   {
-  //     id: null,
-  //     name: "Ingeniero de Confiabilidad",
-  //     description: "Descripcion del 2do perfil",
-  //     responsabilities: "Responsabilidad del 2do perfil",
-  //     departmentRef: null,
-  //     skillsRef: [],
-  //     usersRef: [],
-  //     coursesRef:[],
-  //     enterpriseRef: [],
-  //   },
-  //   {
-  //     id: null,
-  //     name: "Especialista en Programación de la Producción",
-  //     description: "Descripcion del 3er perfil",
-  //     responsabilities: "Responsabilidad del 3er perfil",
-  //     departmentRef: null,
-  //     skillsRef: [],
-  //     usersRef: [],
-  //     coursesRef:[],
-  //     enterpriseRef: [],
-  //   },
-  //   {
-  //     id: null,
-  //     name: "Técnico de Mantenimiento Eléctrico",
-  //     description: "Descripcion del 4to perfil",
-  //     responsabilities: "Responsabilidad del 4to perfil",
-  //     departmentRef: null,
-  //     skillsRef: [],
-  //     usersRef: [],
-  //     coursesRef:[],
-  //     enterpriseRef: [],
-  //   },
-  //   {
-  //     id: null,
-  //     name: "Especialista en seguridad industrial",
-  //     description: "Descripcion del 5to perfil",
-  //     responsabilities: "Responsabilidad del 5to perfil",
-  //     departmentRef: null,
-  //     skillsRef: [],
-  //     usersRef: [],
-  //     coursesRef:[],
-  //     enterpriseRef: [],
-  //   },
-  //   {
-  //     id: null,
-  //     name: "Especialista en vibraciones",
-  //     description: "Descripcion del 6to perfil",
-  //     responsabilities: "Responsabilidad del 6to perfil",
-  //     departmentRef: null,
-  //     skillsRef: [],
-  //     usersRef: [],
-  //     coursesRef:[],
-  //     enterpriseRef: [],
-  //   },
-  // ]
+  // CREACION DE PERFILES DE PRUEBA
+  // DESPUES DE CREAR PERFILES CON EL BOTON, IR AL ARRAY data Y HARDCODEAR LOS ids CREADOS EN LA BASE DE DATOS
+  profiles = [
+    {
+      id: null,
+      name: "Ingeniero de Confiabilidad",
+      description: "Descripcion del 2do perfil",
+      responsabilities: "Responsabilidad del 2do perfil",
+      departmentRef: null,
+      skillsRef: [],
+      usersRef: [],
+      coursesRef:[],
+      enterpriseRef: [],
+    },
+    {
+      id: null,
+      name: "Especialista en Programación de la Producción",
+      description: "Descripcion del 3er perfil",
+      responsabilities: "Responsabilidad del 3er perfil",
+      departmentRef: null,
+      skillsRef: [],
+      usersRef: [],
+      coursesRef:[],
+      enterpriseRef: [],
+    },
+    {
+      id: null,
+      name: "Técnico de Mantenimiento Eléctrico",
+      description: "Descripcion del 4to perfil",
+      responsabilities: "Responsabilidad del 4to perfil",
+      departmentRef: null,
+      skillsRef: [],
+      usersRef: [],
+      coursesRef:[],
+      enterpriseRef: [],
+    },
+    {
+      id: null,
+      name: "Especialista en seguridad industrial",
+      description: "Descripcion del 5to perfil",
+      responsabilities: "Responsabilidad del 5to perfil",
+      departmentRef: null,
+      skillsRef: [],
+      usersRef: [],
+      coursesRef:[],
+      enterpriseRef: [],
+    },
+    {
+      id: null,
+      name: "Especialista en vibraciones",
+      description: "Descripcion del 6to perfil",
+      responsabilities: "Responsabilidad del 6to perfil",
+      departmentRef: null,
+      skillsRef: [],
+      usersRef: [],
+      coursesRef:[],
+      enterpriseRef: [],
+    },
+  ]
+
+  profiles2 = [
+    {
+      id: null,
+      name: "Pruebaaaaa",
+      description: "Descripcion del 2do perfil",
+      responsabilities: "Responsabilidad del 2do perfil",
+      departmentRef: null,
+      skillsRef: [],
+      usersRef: [],
+      coursesRef:[],
+      enterpriseRef: [],
+    },
+  ]
 
 
-  // async addProfiles() {
-  //   const departmentRef: DocumentReference = this.afs.doc('department/GV7Mn8c0e4inIBaqY3TC').ref;
-  //   const skillsRef: DocumentReference = this.afs.doc('skill/6WqV0sdn0gi8DMsjvsAt').ref;
-  //   const usersRef: DocumentReference = this.afs.doc('user/4S2my2ixk0imeZq0HKhQOAaHXx81').ref;
-  //   const enterpriseRef: DocumentReference = this.afs.doc('enterprise/CT6ApoO3YMFvIbOEMzVM').ref;
-  //   for (const profile of this.profiles) {
-  //     const docRef = this.afs.collection(Profile.collection).doc();
-  //     const id = docRef.ref.id;
-  //     await docRef.set({
-  //       ...profile, 
-  //       id: id,
-  //       departmentRef: departmentRef,
-  //       skillsRef: [skillsRef],
-  //       usersRef: [usersRef],
-  //       enterpriseRef: [enterpriseRef],
+  async addProfiles() {
+    const departmentSnapshot = await firstValueFrom(this.afs.collection('department').get());
+    const departmentRefs = departmentSnapshot.docs.map(doc => doc.ref);
+    const skillSnapshot = await firstValueFrom(this.afs.collection('skill').get());
+    const skillRefs = skillSnapshot.docs.map(doc => doc.ref);
+    const userSnapshot = await firstValueFrom(this.afs.collection('user').get());
+    const userRefs = userSnapshot.docs.map(doc => doc.ref);
+    const enterpriseSnapshot = await firstValueFrom(this.afs.collection('enterprise').get());
+    const enterpriseRefs = enterpriseSnapshot.docs.map(doc => doc.ref);
+    
 
-  //     });
-  //     console.log("id", id)
-  //   }
-  // }
+    let departmentIndex = 0;
+    let skillIndex = 0;
+    let userIndex = 0;
+    let enterpriseIndex = 0;
+    
+    for (const profile of this.profiles) {
+        const docRef = this.afs.collection(Profile.collection).doc();
+        const id = docRef.ref.id;
+    
+        // Obtener las referencias correspondientes y avanzar los índices
+        const currentDepartmentRef = departmentRefs[departmentIndex % departmentRefs.length];
+        const currentSkillRef = skillRefs[skillIndex % skillRefs.length];
+        const currentUserRef = userRefs[userIndex % userRefs.length];
+        const currentEnterpriseRef = enterpriseRefs[enterpriseIndex % enterpriseRefs.length];
+    
+        await docRef.set({
+            ...profile,
+            id: id,
+            departmentRef: currentDepartmentRef,
+            skillsRef: [currentSkillRef],
+            usersRef: [currentUserRef],
+            enterpriseRef: [currentEnterpriseRef],
+        });
+    
+        console.log("id", id);
+    
+        // Incrementar los índices para el siguiente profile
+        departmentIndex++;
+        skillIndex++;
+        userIndex++;
+        enterpriseIndex++;
+    }
 
+  }
 
-  displayedColumns: string[] = ['departmentName', 'profileName', 'hours', 'liberty', 'generation', 'attempts'];
-
-  dataSource!: ProfileDataSource;
-  enablePagination: boolean = true
-  pageSize: number =4
-  @ViewChild(MatPaginator) paginator: MatPaginator;
 
 }
 
@@ -190,7 +231,7 @@ class ProfileDataSource extends DataSource<Profile> {
   constructor(
     private enterpriseService: EnterpriseService,
     private departmentService: DepartmentService,
-    private profileService: ProfileService,
+    // private profileService: ProfileService,
     private afs: AngularFirestore,
     private paginator: MatPaginator,
     private pageSize: number,
@@ -210,11 +251,12 @@ class ProfileDataSource extends DataSource<Profile> {
   }
 
     // Proveniente de firebase
+    // ARREGLAR ids MANUALMENTE CON LOS QUE HAY EN LA BASE DE DATOS
     data = [
       {
         departmentName: 'Confiabilidad',
         profileName: 'Ingeniero de Confiabilidad',
-        profilesId: 'DqdsI5e7gZup7tXVc5X5',
+        profilesId: '2zw6f6qqnIztZ6LtKqR8',
         hours: 7,
         liberty: 'Libre',
         generation: 'Optimizada',
@@ -223,7 +265,7 @@ class ProfileDataSource extends DataSource<Profile> {
       {
         departmentName: 'Planificación', 
         profileName: 'Especialista en Programación de la Producción', 
-        profilesId: 'LHwYQPJIUI7wzk99xYUO',
+        profilesId: '4ewwIV73vxxOkHm9LKAg',
         hours: 8, 
         liberty: 'Estricto', 
         generation: 'Confirmar', 
@@ -232,7 +274,7 @@ class ProfileDataSource extends DataSource<Profile> {
       {
         departmentName: 'Mantenimiento', 
         profileName: 'Técnico de Mantenimiento Eléctrico', 
-        profilesId: 'TSzxIiYrU6DHFw0UeEXH',
+        profilesId: '4gJVwujYU2kuzf0hHmNs',
         hours: 4, 
         liberty: 'Solicitudes', 
         generation: 'Por defecto', 
@@ -241,7 +283,7 @@ class ProfileDataSource extends DataSource<Profile> {
       {
         departmentName: 'Seguridad Industrial', 
         profileName: 'Especialista en seguridad industrial', 
-        profilesId: 'aBx3B1lGKSXSr2ooEcKs',
+        profilesId: 'NWGiHed01LHQ2o51f0yu',
         hours: 6, 
         liberty: 'Solicitudes', 
         generation: 'Confirmar', 
@@ -250,7 +292,7 @@ class ProfileDataSource extends DataSource<Profile> {
       {
         departmentName: 'Equipos dinamicos', 
         profileName: 'Especialista en vibraciones', 
-        profilesId: 'wjj7rnfn7IuWg8cpI2AU',
+        profilesId: 'm8EfN04KMneLaFmXZFTR',
         hours: 5, 
         liberty: 'Estricto', 
         generation: 'Optimizada', 
@@ -315,7 +357,8 @@ class ProfileDataSource extends DataSource<Profile> {
         console.log("profiles", profiles)
         if (this.enablePagination) {
           // this.paginator.length = profiles.length
-          this.paginator.length = 5
+          console.log("getEnterpriseProfilesNo", this.enterpriseService.getEnterprise().profilesNo)
+          this.paginator.length = this.enterpriseService.getEnterprise().profilesNo
         }
         this.currentProfiles = profiles.map(profile => {
           const profileDepartment = this.departmentService.getDepartment(profile.departmentRef.id)

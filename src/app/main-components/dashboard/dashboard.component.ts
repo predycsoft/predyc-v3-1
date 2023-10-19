@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs';
 import { AfterOnInitResetLoading } from 'src/app/shared/decorators/loading.decorator';
 import { Enterprise } from 'src/app/shared/models/enterprise.model';
 import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
+import { IconService } from 'src/app/shared/services/icon.service';
 import { LoaderService } from 'src/app/shared/services/loader.service';
 
 
@@ -20,8 +21,18 @@ export class DashboardComponent {
 
   constructor(
     public loaderService: LoaderService,
+    public icon: IconService,
     private enterpriseService: EnterpriseService
   ) {}
+
+
+  // -----
+  totalHours = 83.48
+  averageHours = 3.25 
+
+  certificates: number = 3
+  averageGrade: number = 80.2
+  // ----
 
   ngOnInit() {
     this.loaderService.setLoading(true)

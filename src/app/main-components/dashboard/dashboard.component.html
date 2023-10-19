@@ -1,44 +1,68 @@
 <div *ngIf="!loaderService.loading">
-    <div fxLayout="row" fxLayoutAlign=" center" >
-        <img class="photo-shadow" onerror="this.src='assets/images/default/default-user-image.jpg'" 
-            [src]="enterprise?.photoUrl" class="avatarshadow " alt="">
-        <span class="mgl10 ft16 ft600 gray-10">
-            {{enterprise.name}}
-        </span>
-        <button class="blueButton align-left mgl1000" style="float: right ">Descargar reporte</button>
-
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+        <div fxLayout="row" fxLayoutAlign="start center">
+            <img class="photo-shadow" onerror="this.src='assets/images/default/default-user-image.jpg'" 
+                [src]="enterprise?.photoUrl" class="avatarshadow " alt="">
+            <span class="mgl10 ft16 ft600 gray-10">
+                {{enterprise.name}}
+            </span>
+        </div>
+        <button class="blueButton">Descargar reporte</button>
     </div>
-
-
 
     <div fxLayout="row" fxLayoutAlign="space-between " class="mgt15 pdr10 h700px ">
 
-        <!--primera -->
-
-        <div fxLayout="column" fxLayoutGap="0.75rem" class="w-35 mgr10 ">
+        <!--primera columna -->
+        <div fxLayout="column" fxLayoutGap="0.75rem" class="w-40 mgr10" >
             <!--horas de estudio-->
-            <div class="radius10 border fw h-25">
-                <span class=" w40 pdb10 pdl10 pdr10">Horas de estudio</span>     
+            <div class="radius10 border fw h-25 pd10" fxLayout="column" fxLayoutAlign="center">
+                <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
+                    <div class="iconContainer" fxLayoutAlign="center center">
+                        <img [src]="icon.clockBlue" class="makeBlue" alt="">
+                    </div>
+                    <span class="ft12 gray-10 ft600 ">Horas de estudio</span>
+                </div>
+                <div fxLayout="row" class="fw pdb10" fxLayoutGap="1rem">
+                    <div fxLayout="column" class="fh fw" fxLayoutAlign="center center">
+                        <span class="ft500 ft24 mgt10 gray-10">{{totalHours | number:"1.2-2"}} hrs</span>
+                        <span class="ft500 gray-6 ft11">Total del grupo</span>
+                    </div>
+                    <div fxLayout="column" class="fh fw" fxLayoutAlign="center center">
+                        <span class="ft500 ft24 mgt10 gray-10">{{averageHours | number:"1.2-2"}} hrs</span>
+                        <span class="ft500 gray-6 ft11">Promedio por estudiante</span>
+                    </div>
+                </div>   
             </div>
             <!--hitos-->
-            <div class="radius10 border fw h-25">
-                <span class=" w40 pdb10 pdl10 pdr10">hitos</span>   
+            <div class="radius10 border fw h-25 pd10" fxLayout="column" fxLayoutAlign="center">
+                <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
+                    <div class="iconContainer" fxLayoutAlign="center center">
+                        <img [src]="icon.certificado" class="makeBlue h16px" alt="">
+                    </div>
+                    <span class="ft12 gray-10 ft600 ">Hitos</span>
+                </div>
+                <div fxLayout="row" class="fw pdb10" fxLayoutGap="1rem">
+                    <div fxLayout="column" class="fh fw" fxLayoutAlign="center center">
+                        <span class="ft500 ft24 mgt10 gray-10">{{certificates}}</span>
+                        <span class="ft500 gray-6 ft11">Certificados emitidos</span>
+                    </div>
+                    <div fxLayout="column" class="fh fw" fxLayoutAlign="center center">
+                        <span class="ft500 ft24 mgt10 gray-10">{{averageGrade | number:"1.0-0"}}%</span>
+                        <span class="ft500 gray-6 ft11">Calificación promedio</span>
+                    </div>
+                </div>  
             </div> 
             <!--Tiempo de estudio esta semana-->
-            <div class="radius10 border fw h-40">
-                <span class=" w40  pdl10 pdr10">Tiempo de estudio esta semana</span>   
+            <div class="radius10 border fw h-40 pd10" fxLayout="column" fxLayoutAlign="start">
+                <app-users-study-time-container class="fh"></app-users-study-time-container>
             </div>
         </div>
 
-        <!-- segunda-->
-
-
-        <div fxLayout="column" fxLayoutGap="0.75rem" class="w-35 mgr10">
+        <!-- segunda columna-->
+        <div fxLayout="column" fxLayoutGap="0.75rem" class="w-30 mgr10">
             <!-- ritmo de usuarios-->
-            <div class="radius10 border fw h-40" >
-                <span class="pdl10 pdr10">Ritmo de usuarios 
-                    -users-rhythm-
-                </span>
+            <div class="radius10 border fw h-40 pd10" fxLayout="column" fxLayoutAlign="start">
+                <app-users-rhythm></app-users-rhythm>
             </div>
             <!--ranking-->
             <div class="radius10 border fw h-52">
@@ -46,8 +70,7 @@
             </div>
         </div>
         
-
-        <!--tercera-->
+        <!--tercera columna-->
         <div fxLayout="column" class="w-30">
              <!-- ritmo de usuarios-->
             <div class="radius10 border  fw h-95">

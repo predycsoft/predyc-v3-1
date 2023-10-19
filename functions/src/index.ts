@@ -19,3 +19,6 @@ export { onNotificationAdded, onNotificationReadByAdmin }
 
 import { onUserAdded, onUserDeleted, onUserUpdated } from './users'
 export { onUserAdded, onUserDeleted, onUserUpdated }
+
+import { onProfileAdded, } from './profile'
+export { onProfileAdded, }
