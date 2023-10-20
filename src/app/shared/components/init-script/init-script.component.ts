@@ -245,9 +245,9 @@ export class InitScriptComponent {
           usersRef: [currentUserRef],
           enterpriseRef: currentEnterpriseRef,
       });
-      console.log("id", id);
+      // console.log("id", id);
 
-      // Obtener el documento actual del departamento
+      // Actualizamos documento actual del Departamento
       const deptSnap = await currentDepartmentRef.get();
       if (deptSnap.exists) {
         const deptData = departments.find(x => x.id === currentDepartmentRef.id)
@@ -259,9 +259,18 @@ export class InitScriptComponent {
         }
         // Actualizar el departamento con la referencia del nuevo perfil
         await currentDepartmentRef.update({
-            profilesRef: currentProfilesRef
+          profilesRef: currentProfilesRef
         });
       }
+
+      // Actualizamos el documento actual del Usuario
+      const userSnap = await currentUserRef.get();
+      if (userSnap.exists) {
+        await currentUserRef.update({
+          profile: profileRef.ref
+        });
+      }
+
       // Incrementar los índices para el siguiente profile
       departmentIndex++;
       skillIndex++;
