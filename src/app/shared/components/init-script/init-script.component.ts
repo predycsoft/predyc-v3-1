@@ -27,6 +27,9 @@ import { SkillService } from '../../services/skill.service';
 import {deparmentsData} from 'src/assets/data/departments.data'
 import { Department } from '../../models/department.model';
 import { DepartmentService } from '../../services/department.service';
+import { firstValueFrom } from 'rxjs';
+import { profilesData } from 'src/assets/data/profiles.data';
+import { Profile } from '../../models/profile.model';
 // import { coursesData } from 'src/assets/data/courses.data'
 
 @Component({
@@ -120,8 +123,6 @@ export class InitScriptComponent {
     )
     console.log(`Finished Creating License`)
   
-    // Create Departments and profiles
-
     // Create admin and student users
     console.log('********* Creating Users *********')
     const users: User[] = usersData.map(user => {
@@ -147,7 +148,7 @@ export class InitScriptComponent {
         enterprise: enterpriseRef
       })
     })
-    console.log("categories", categories)
+    // console.log("categories", categories)
     for (let category of categories) {
       await this.categoryService.addCategory(category)
     }
@@ -195,15 +196,62 @@ export class InitScriptComponent {
 
     deparmentsData.forEach(department => {
       console.log(department)
-      let departmentready = new Department(department.id,department.name,enterpriseRef)
+      let departmentready = new Department(department.id, department.name, enterpriseRef)
       this.departmentService.addDepartment(departmentready)
-      
     });
     console.log(`Finished Creating Departments`)
 
+    // Create profiles
+    console.log('********* Creating Profiles *********')
+    await this.addProfiles()
+    console.log(`Finished Creating Profiles`)
     // Create validation tests
-    console.log('********* Creating Validation Tests *********')
-    console.log(`Finished Creating Validation Tests`)
+    // console.log('********* Creating Validation Tests *********')
+    // console.log(`Finished Creating Validation Tests`)
+  }
+
+
+  async addProfiles() {
+    const departmentSnapshot = await firstValueFrom(this.afs.collection(Department.collection).get());
+    const departmentRefs = departmentSnapshot.docs.map(doc => doc.ref);
+    const skillSnapshot = await firstValueFrom(this.afs.collection(Skill.collection).get());
+    const skillRefs = skillSnapshot.docs.map(doc => doc.ref);
+    const userSnapshot = await firstValueFrom(this.afs.collection(User.collection).get());
+    const userRefs = userSnapshot.docs.map(doc => doc.ref);
+    const enterpriseSnapshot = await firstValueFrom(this.afs.collection(Enterprise.collection).get());
+    const enterpriseRefs = enterpriseSnapshot.docs.map(doc => doc.ref);
+    
+    let departmentIndex = 0;
+    let skillIndex = 0;
+    let userIndex = 0;
+    let enterpriseIndex = 0;
+    
+    for (const profile of profilesData) {
+      const profileRef = this.afs.collection(Profile.collection).doc();
+      const id = profileRef.ref.id;
+  
+      // Obtener las referencias correspondientes y avanzar los índices
+      const currentDepartmentRef = departmentRefs[departmentIndex % departmentRefs.length];
+      const currentSkillRef = skillRefs[skillIndex % skillRefs.length];
+      const currentUserRef = userRefs[userIndex % userRefs.length];
+      const currentEnterpriseRef = enterpriseRefs[enterpriseIndex % enterpriseRefs.length];
+
+      await profileRef.set({
+          ...profile,
+          id: id,
+          departmentRef: currentDepartmentRef,
+          skillsRef: [currentSkillRef],
+          usersRef: [currentUserRef],
+          enterpriseRef: [currentEnterpriseRef],
+      });
+      console.log("id", id);
+      // Incrementar los índices para el siguiente profile
+      departmentIndex++;
+      skillIndex++;
+      userIndex++;
+      enterpriseIndex++;
+    }
+
   }
 
 }
