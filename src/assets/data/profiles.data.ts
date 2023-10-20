@@ -10,7 +10,7 @@ export const profilesData: ProfileJson[] = [
       skillsRef: [],
       usersRef: [],
       coursesRef:[],
-      enterpriseRef: [],
+      enterpriseRef: null,
     },
     {
       id: null,
@@ -21,7 +21,7 @@ export const profilesData: ProfileJson[] = [
       skillsRef: [],
       usersRef: [],
       coursesRef:[],
-      enterpriseRef: [],
+      enterpriseRef: null,
     },
     {
       id: null,
@@ -32,7 +32,7 @@ export const profilesData: ProfileJson[] = [
       skillsRef: [],
       usersRef: [],
       coursesRef:[],
-      enterpriseRef: [],
+      enterpriseRef: null,
     },
     {
       id: null,
@@ -43,7 +43,7 @@ export const profilesData: ProfileJson[] = [
       skillsRef: [],
       usersRef: [],
       coursesRef:[],
-      enterpriseRef: [],
+      enterpriseRef: null,
     },
     {
       id: null,
@@ -54,6 +54,6 @@ export const profilesData: ProfileJson[] = [
       skillsRef: [],
       usersRef: [],
       coursesRef:[],
-      enterpriseRef: [],
+      enterpriseRef: null,
     },
   ]

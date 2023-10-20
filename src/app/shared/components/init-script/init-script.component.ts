@@ -243,7 +243,7 @@ export class InitScriptComponent {
           departmentRef: currentDepartmentRef,
           skillsRef: [currentSkillRef],
           usersRef: [currentUserRef],
-          enterpriseRef: [currentEnterpriseRef],
+          enterpriseRef: currentEnterpriseRef,
       });
       console.log("id", id);
 
@@ -251,7 +251,7 @@ export class InitScriptComponent {
       const deptSnap = await currentDepartmentRef.get();
       if (deptSnap.exists) {
         const deptData = departments.find(x => x.id === currentDepartmentRef.id)
-        console.log("depData", deptData)
+        // console.log("depData", deptData)
         const currentProfilesRef = deptData.profilesRef;
         // Aseguramos de que la referencia no esté ya en el array
         if (!currentProfilesRef.some(ref => ref.id === profileRef.ref.id)) {
