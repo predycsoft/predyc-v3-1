@@ -194,10 +194,10 @@ export class InitScriptComponent {
     // Create Departments 
     console.log('********* Creating Departments *********')
 
-    deparmentsData.forEach(department => {
-      console.log(department)
-      let departmentready = new Department(department.id, department.name, enterpriseRef)
-      this.departmentService.addDepartment(departmentready)
+    deparmentsData.forEach(async department => {
+      // console.log(department)
+      let departmentready = new Department(department.id, department.name, enterpriseRef, [])
+      await this.departmentService.addDepartment(departmentready)
     });
     console.log(`Finished Creating Departments`)
 
@@ -210,10 +210,11 @@ export class InitScriptComponent {
     // console.log(`Finished Creating Validation Tests`)
   }
 
-
+  // Crea perfiles y agrega la referencia al departamento respectivo
   async addProfiles() {
     const departmentSnapshot = await firstValueFrom(this.afs.collection(Department.collection).get());
     const departmentRefs = departmentSnapshot.docs.map(doc => doc.ref);
+    const departments = departmentSnapshot.docs.map(doc => doc.data()) as Department[];
     const skillSnapshot = await firstValueFrom(this.afs.collection(Skill.collection).get());
     const skillRefs = skillSnapshot.docs.map(doc => doc.ref);
     const userSnapshot = await firstValueFrom(this.afs.collection(User.collection).get());
@@ -245,6 +246,22 @@ export class InitScriptComponent {
           enterpriseRef: [currentEnterpriseRef],
       });
       console.log("id", id);
+
+      // Obtener el documento actual del departamento
+      const deptSnap = await currentDepartmentRef.get();
+      if (deptSnap.exists) {
+        const deptData = departments.find(x => x.id === currentDepartmentRef.id)
+        console.log("depData", deptData)
+        const currentProfilesRef = deptData.profilesRef;
+        // Aseguramos de que la referencia no esté ya en el array
+        if (!currentProfilesRef.some(ref => ref.id === profileRef.ref.id)) {
+          currentProfilesRef.push(profileRef.ref);
+        }
+        // Actualizar el departamento con la referencia del nuevo perfil
+        await currentDepartmentRef.update({
+            profilesRef: currentProfilesRef
+        });
+      }
       // Incrementar los índices para el siguiente profile
       departmentIndex++;
       skillIndex++;

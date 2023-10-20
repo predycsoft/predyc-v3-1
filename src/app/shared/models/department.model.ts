@@ -4,7 +4,7 @@ export interface DepartmentJson {
     //color: string,
     id: string,
     name: string,
-    //profiles: DocumentReference[] | null,
+    profilesRef: DocumentReference[] | null,
     enterpriseRef: DocumentReference | null,
 }
 
@@ -15,8 +15,8 @@ export class Department {
         //public color: string,
         public id: string,
         public name: string,
-        public enterpriseRef: DocumentReference | null
-        //public profiles: DocumentReference[] | null,
+        public enterpriseRef: DocumentReference | null,
+        public profilesRef: DocumentReference[] | null,
         //public users?: DocumentReference[] 
     ) {}
 
@@ -26,7 +26,7 @@ export class Department {
         departmentJson.id,
         departmentJson.name,
         departmentJson.enterpriseRef,
-        //departmentJson.profiles,
+        departmentJson.profilesRef,
         //departmentJson?.users,
       )
     }
@@ -37,7 +37,7 @@ export class Department {
         id: this.id,
         name: this.name,
         enterpriseRef: this.enterpriseRef,
-        //profiles: this.profiles,
+        profilesRef: this.profilesRef,
       }
     }
 }
