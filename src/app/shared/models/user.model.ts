@@ -1,4 +1,7 @@
 import { DocumentReference } from "@angular/fire/compat/firestore"
+import { Profile } from "./profile.model"
+import { Department } from "./department.model"
+import { Enterprise } from "./enterprise.model"
 
 export interface UserJson {
   birthdate: number | null
@@ -42,6 +45,10 @@ export class User {
   public static storageProfilePhotoFolder = 'User/Profile photos'
   public static ROLE_ADMIN = 'admin'
   public static ROLE_STUDENT = 'student'
+
+  public departmentData?: Department
+  public enterpriseData?: Enterprise
+  public profileData?: Profile
 
   constructor(
     public birthdate: number | null,

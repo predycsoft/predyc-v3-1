@@ -10,6 +10,8 @@ import { AfterOnInitResetLoading } from 'src/app/shared/decorators/loading.decor
 import { LoaderService } from 'src/app/shared/services/loader.service';
 import { SearchInputService } from 'src/app/shared/services/search-input.service';
 import { orderByValueAndDirection } from 'src/app/shared/utils';
+import { DepartmentService } from 'src/app/shared/services/department.service';
+import { ProfileService } from 'src/app/shared/services/profile.service';
 
 @AfterOnInitResetLoading
 @Component({
@@ -52,7 +54,9 @@ export class StudentListComponent {
     private userService: UserService,
     public icon: IconService,
     private loaderService: LoaderService,
-    private searchInputService: SearchInputService
+    private searchInputService: SearchInputService, 
+    private profileService: ProfileService,
+    private departmentService: DepartmentService,
   ) {}
 
   ngAfterViewInit() {
@@ -72,6 +76,8 @@ export class StudentListComponent {
       usersObservable,
       this.paginator,
       this.sort,
+      this.profileService,
+      this.departmentService,
     );
 
     if (this.initialSelectedUsers && this.dataSource && this.initialSelectedUsers.length > 0) {
@@ -149,8 +155,12 @@ class UserDataSource extends DataSource<User> {
     private users$: Observable<User[]>,
     private paginator: MatPaginator,
     private sort: MatSort,
+    private profileService: ProfileService,
+    private departmentService: DepartmentService,
   ) {
     super();
+    this.departmentService.loadDepartmens()
+    this.profileService.loadProfiles()
     this.paginator.pageSize = 5
     this.paginator.page.subscribe(() => this.paginatorSubject.next());
     this.sort.sortChange.subscribe(() => this.sortSubject.next());
@@ -166,6 +176,11 @@ class UserDataSource extends DataSource<User> {
       map(() => {
         // Filtering
         let users = this.dataSubject.value
+        users.map(user => {
+          user.profileData = user.profile ? this.profileService.getProfile(user.profile.id) : null
+          user.departmentData = user.profileData ? this.departmentService.getDepartment(user.profileData.departmentRef.id) : 
+                                user.department ? this.departmentService.getDepartment(user.department.id) : null
+        })
         let filteredUsers = users.filter(user => {
           const searchStr = (user.name as string + user.email as string).toLowerCase();
           return searchStr.indexOf(this.filterSubject.value.toLowerCase()) !== -1;
