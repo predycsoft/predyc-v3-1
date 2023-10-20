@@ -1,4 +1,6 @@
 import { DocumentReference } from "@angular/fire/compat/firestore";
+import { Profile } from "./profile.model";
+import { Enterprise } from "./enterprise.model";
 
 export interface DepartmentJson {
     //color: string,
@@ -10,6 +12,9 @@ export interface DepartmentJson {
 
 export class Department {
     public static collection: string = 'department'
+
+    public profiles?: Profile[]
+    public enterprise?: Enterprise
 
     constructor(
         //public color: string,
