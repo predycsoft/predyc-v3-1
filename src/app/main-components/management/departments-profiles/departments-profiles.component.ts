@@ -186,7 +186,7 @@ export class DepartmentsProfilesComponent {
       let enterpriseRef =this.enterpriseService.getEnterpriseRef();
       let name = this.formNewDepartment.get('name').value
       let id = this.formNewDepartment.get('id').value
-      let departent = new Department(id,name,enterpriseRef);
+      let departent = new Department(id,name,enterpriseRef, []);
       console.log(departent);
       this.modalCreateDepartment.close()
       const isSuccess = await this.departmentService.saveDepartment(departent)

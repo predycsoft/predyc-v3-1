@@ -70,7 +70,8 @@ export class ProfileService {
     return this.profilesLoaded;
   }
 
-  public async getProfile(id: string): Promise<Profile | undefined> {
+  public getProfile(id: string):Profile {
+    console.log("Esta buscando el perfil en:", this.profileSubject.value)
     return this.profileSubject.value.find(x => x.id === id)
   }
 

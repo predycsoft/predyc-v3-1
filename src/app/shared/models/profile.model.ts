@@ -13,7 +13,7 @@ export interface ProfileJson {
     skillsRef: DocumentReference[]
     usersRef: DocumentReference[]
     coursesRef: DocumentReference[] | []
-    enterpriseRef: DocumentReference[]
+    enterpriseRef: DocumentReference | null
 
 
 }
@@ -29,12 +29,12 @@ export class Profile {
     public skillsRef: DocumentReference [] = []
     public usersRef: DocumentReference [] = []
     public coursesRef: DocumentReference [] | [] = []
-    public enterpriseRef: DocumentReference [] = []
+    public enterpriseRef: DocumentReference | null
 
     public department?: Department
     public skills?: Skill[]
     public users?: User[]
-    public enterprises?: Enterprise[]
+    public enterprise?: Enterprise
 
 
     public static fromJson(profileJson: ProfileJson): Profile {
