@@ -5,7 +5,7 @@ import { MatSort } from '@angular/material/sort';
 import { IconService } from '../../../../shared/services/icon.service';
 import { UserService } from '../../../../shared/services/user.service';
 import { User } from '../../../../shared/models/user.model';
-import { BehaviorSubject, catchError, map, merge, Observable, of, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, catchError, combineLatest, map, merge, Observable, of, Subject, Subscription } from 'rxjs';
 import { AfterOnInitResetLoading } from 'src/app/shared/decorators/loading.decorator';
 import { LoaderService } from 'src/app/shared/services/loader.service';
 import { SearchInputService } from 'src/app/shared/services/search-input.service';
@@ -50,6 +50,8 @@ export class StudentListComponent {
 
   searchSubscription: Subscription
 
+  combinedObservableSubscription
+
   constructor(
     private userService: UserService,
     public icon: IconService,
@@ -72,29 +74,46 @@ export class StudentListComponent {
         break;
     }
 
-    this.dataSource = new UserDataSource(
-      usersObservable,
-      this.paginator,
-      this.sort,
-      this.profileService,
-      this.departmentService,
-    );
-
-    if (this.initialSelectedUsers && this.dataSource && this.initialSelectedUsers.length > 0) {
-      //this.selection.clear();
-      // Find and select the initial items
-      console.log('initialSelectedUsers',this.initialSelectedUsers)
-      this.initialSelectedUsers.forEach(item => {
-        const matchingRow = this.dataSource.data.find(row => row.uid === item.uid);  // You can modify the comparison logic here
-        console.log('matchingRow',matchingRow);
-        if (matchingRow) {
-          this.selection.select(matchingRow);
+    this.combinedObservableSubscription = combineLatest([this.departmentService.departmentsLoaded$, this.profileService.profilesLoaded$]).pipe(
+      map(([departmentsLoaded, profilesLoaded]) => {
+        console.log("departmentsLoaded", departmentsLoaded)
+        console.log("profilesLoaded", profilesLoaded)
+        return departmentsLoaded && profilesLoaded
+      }),
+      catchError(error => {
+        console.error('Error occurred:', error);
+        return of([]);  // Return an empty array as a fallback.
+      })
+    ).subscribe(isLoaded => {
+      if (isLoaded) {
+        console.log("Esta loaded")
+        this.dataSource = new UserDataSource(
+          usersObservable,
+          this.paginator,
+          this.sort,
+          this.profileService,
+          this.departmentService,
+        );
+        if (this.initialSelectedUsers && this.dataSource && this.initialSelectedUsers.length > 0) {
+          console.log("aqui tambien")
+          //this.selection.clear();
+          // Find and select the initial items
+          console.log('initialSelectedUsers',this.initialSelectedUsers)
+          this.initialSelectedUsers.forEach(item => {
+            const matchingRow = this.dataSource.data.find(row => row.uid === item.uid);  // You can modify the comparison logic here
+            console.log('matchingRow',matchingRow);
+            if (matchingRow) {
+              this.selection.select(matchingRow);
+            }
+          });
         }
-      });
-    }
+      }
+    })
   }
 
   ngOnInit() {
+    this.departmentService.loadDepartmens()
+    this.profileService.loadProfiles()
     if(this.displayOptionsColumn){
       this.displayedColumns.push('options')
     }
@@ -159,8 +178,6 @@ class UserDataSource extends DataSource<User> {
     private departmentService: DepartmentService,
   ) {
     super();
-    this.departmentService.loadDepartmens()
-    this.profileService.loadProfiles()
     this.paginator.pageSize = 5
     this.paginator.page.subscribe(() => this.paginatorSubject.next());
     this.sort.sortChange.subscribe(() => this.sortSubject.next());
@@ -171,7 +188,6 @@ class UserDataSource extends DataSource<User> {
   }
   
   connect(): Observable<User[]> {
-
     return merge(this.users$, this.filterSubject, this.paginatorSubject, this.sortSubject).pipe(
       map(() => {
         // Filtering
