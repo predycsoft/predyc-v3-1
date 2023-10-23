@@ -76,8 +76,6 @@ export class StudentListComponent {
 
     this.combinedObservableSubscription = combineLatest([this.departmentService.departmentsLoaded$, this.profileService.profilesLoaded$]).pipe(
       map(([departmentsLoaded, profilesLoaded]) => {
-        console.log("departmentsLoaded", departmentsLoaded)
-        console.log("profilesLoaded", profilesLoaded)
         return departmentsLoaded && profilesLoaded
       }),
       catchError(error => {
@@ -86,7 +84,6 @@ export class StudentListComponent {
       })
     ).subscribe(isLoaded => {
       if (isLoaded) {
-        console.log("Esta loaded")
         this.dataSource = new UserDataSource(
           usersObservable,
           this.paginator,
@@ -95,7 +92,6 @@ export class StudentListComponent {
           this.departmentService,
         );
         if (this.initialSelectedUsers && this.dataSource && this.initialSelectedUsers.length > 0) {
-          console.log("aqui tambien")
           //this.selection.clear();
           // Find and select the initial items
           console.log('initialSelectedUsers',this.initialSelectedUsers)
@@ -194,8 +190,7 @@ class UserDataSource extends DataSource<User> {
         let users = this.dataSubject.value
         users.map(user => {
           user.profileData = user.profile ? this.profileService.getProfile(user.profile.id) : null
-          user.departmentData = user.profileData ? this.departmentService.getDepartment(user.profileData.departmentRef.id) : 
-                                user.department ? this.departmentService.getDepartment(user.department.id) : null
+          user.departmentData = user.profileData ? this.departmentService.getDepartment(user.profileData.departmentRef.id) : null
         })
         let filteredUsers = users.filter(user => {
           const searchStr = (user.name as string + user.email as string).toLowerCase();
