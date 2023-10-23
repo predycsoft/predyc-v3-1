@@ -5,7 +5,7 @@ import { AfterOnInitResetLoading } from 'src/app/shared/decorators/loading.decor
 import { Profile } from 'src/app/shared/models/profile.model';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Department } from 'src/app/shared/models/department.model';
-import { combineLatest, firstValueFrom, forkJoin } from 'rxjs';
+import { Subscription, combineLatest } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { DepartmentService } from 'src/app/shared/services/department.service';
@@ -17,6 +17,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
 import { AlertsService } from 'src/app/shared/services/alerts.service';
+import { SearchInputService } from 'src/app/shared/services/search-input.service';
 
 @AfterOnInitResetLoading
 @Component({
@@ -34,7 +35,9 @@ export class DepartmentsProfilesComponent {
     private profileService: ProfileService,
     private modalService: NgbModal,
     private enterpriseService: EnterpriseService,
-    private alertService: AlertsService
+    private alertService: AlertsService,
+    private searchInputService: SearchInputService, 
+
   ){}
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -47,6 +50,7 @@ export class DepartmentsProfilesComponent {
   panelOpenState = false;
 
   openedDepartment: string | null = null;
+  searchSubscription: Subscription
 
 
 
@@ -80,7 +84,6 @@ export class DepartmentsProfilesComponent {
 
       console.log('new array',departmentsWithProfiles);
       this.dataSource = new MatTableDataSource<any>(departmentsWithProfiles);
-
 
     });
   }
@@ -216,7 +219,14 @@ export class DepartmentsProfilesComponent {
 
   }
 
-
+  applyFilter() {
+    this.searchSubscription = this.searchInputService.dataObservable$.subscribe(filter => {
+      this.dataSource.filter = filter.trim().toLowerCase();
+    })
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+  }
 
 
   // ------- Para crear perfiles y departamentos en firestore

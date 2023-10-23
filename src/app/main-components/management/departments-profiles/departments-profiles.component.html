@@ -6,7 +6,7 @@
         <h6>Tus Departamentos</h6>
     </div>
     <div fxLayout="row" fxLayoutAlign="space-between end" fxLayoutGap="1rem">
-        <app-search-input-box></app-search-input-box>
+        <app-search-input-box (keyup)="applyFilter()"></app-search-input-box>
         <!-- <button (click)="createDepartmentsCollection()" class="yellowButton">Cable departamentos</button> -->
         <button (click)="createDepartment(modalDepartment)" class="yellowButton">Nuevo departamento</button>
     </div>
