@@ -71,7 +71,6 @@ export class ProfileService {
   }
 
   public getProfile(id: string):Profile {
-    console.log("Esta buscando el perfil en:", this.profileSubject.value)
     return this.profileSubject.value.find(x => x.id === id)
   }
 
@@ -115,6 +114,10 @@ export class ProfileService {
     ref = this.afs.collection('userProfile').doc().ref;
     ref.set(object, { merge: true });
 
+  }
+
+  public getProfileRefById(id: string): DocumentReference<Profile> {
+    return this.afs.collection<Profile>(Profile.collection).doc(id).ref
   }
   
 

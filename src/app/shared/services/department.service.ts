@@ -68,7 +68,7 @@ export class DepartmentService {
     return this.departmentsLoaded;
   }
 
-  public getDepartment(id: string) {
+  public getDepartment(id: string): Department {
     return this.departmentSubject.value.find(x => x.id === id)
   }
 
@@ -120,6 +120,13 @@ export class DepartmentService {
     }
   }
 
-
+  getDepartmentByProfileId(profileId: string) {
+    // Encuentra el primer departamento que contiene el profileId en su array de profilesRef
+    const department = this.departmentSubject.value.find(dep => 
+      dep.profilesRef.some(docRef => docRef.id === profileId)
+    );
+      console.log("department by profile id", department)
+    return department;
+  }
 
 }

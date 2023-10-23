@@ -15,6 +15,7 @@
         </div>
     </div>
     <form [formGroup]="form" (ngSubmit)="onSubmit()" >
+        <!-- Photo -->
         <div class="mgt10 fw" fxLayoutAlign="center center">
             <div (click)="isNewUser || isEditing ? fileInput.click() : null" class="avatar5 mgt05 positionRelative" 
                 [ngClass]="(isNewUser || isEditing) ? 'cursorPointer' : ''">
@@ -26,6 +27,7 @@
             </div>
         </div>
         <input #fileInput type="file" style="display: none;" (change)="onFileSelected($event)" formControlName="photoUrl">
+        <!-- Name -->
         <div class="fw mgt10">
             <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap=".5rem" class="nameFieldContainer gray-10" >
                 <textarea #textareaName placeholder="Nombre del usuario"
@@ -39,6 +41,7 @@
             </span>
         </div>
         <div class="mgt10 fw" fxLayout="column">
+            <!-- Email -->
             <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" [ngClass]="(isNewUser || isEditing) ? 'inputContainer mgt10' : 'disabledInputContainer mgt10'">
                 <img [src]="icon.email" class="makeGray h16px" alt="">
                 <input type="email" placeholder="Correo electrónico" [ngClass]="(isNewUser || isEditing) ? '' : 'disabledInput'" class="input fw" formControlName="email">
@@ -47,6 +50,7 @@
             <span *ngIf="showAlert('email')" class="redText mgt03">
                 Debes introducir una dirección de correo electrónico válida
             </span>
+            <!-- Phone number -->
             <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" [ngClass]="(isNewUser || isEditing)? 'inputContainer mgt10' : 'disabledInputContainer mgt10'">
                 <img [src]="icon.phone" class="makeGray h16px" alt="">
                 <input type="number" [ngClass]="(isNewUser || isEditing) ? '' : 'disabledInput'" class="input fw" placeholder="Teléfono" formControlName="phoneNumber"/>
@@ -55,6 +59,7 @@
             <span *ngIf="showAlert('phoneNumber')" class="redText mgt03">
                 Debes introducir un número de teléfono
             </span>
+            <!-- Country -->
             <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" [ngClass]="(isNewUser || isEditing)? 'inputContainer mgt10' : 'disabledInputContainer mgt10'">
                 <img [src]="icon.location" class="makeGray h16px" alt="">
                 <select *ngIf="isNewUser || isEditing" [ngClass]="!isNewUser ? 'disabledInput': !form.get('country').value ? 'makeGray' : ''" 
@@ -70,6 +75,7 @@
             <span *ngIf="showAlert('country')" class="redText mgt03">
                 Debes introducir un país de residencia
             </span>
+            <!-- Birth Date -->
             <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" [ngClass]="(isNewUser || isEditing) ? 'inputContainer mgt10' : 'disabledInputContainer mgt10'">
                 <img [src]="icon.calendarAdd" class="makeGray h16px" alt="">
                 <input (click)="(isNewUser || isEditing) && birthdate.toggle()" placeholder="Fecha de nacimiento" name="birthdate" formControlName="birthdate" 
@@ -79,6 +85,7 @@
             <span *ngIf="showAlert('birthdate')" class="redText mgt03">
                 Debes introducir una fecha de nacimiento
             </span>
+            <!-- Job -->
             <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" [ngClass]="(isNewUser || isEditing) ? 'inputContainer mgt10' : 'disabledInputContainer mgt10'">
                 <img [src]="icon.suitcase" class="makeGray h1px" alt="">
                 <input type="text" placeholder="Cargo" [ngClass]="(isNewUser || isEditing) ? '' : 'disabledInput'" class="input fw" formControlName="job">
@@ -87,6 +94,7 @@
             <span *ngIf="showAlert('job')" class="redText mgt03">
                 Debes introducir un cargo
             </span>
+            <!-- Hiring date -->
             <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="space-between center" [ngClass]="(isNewUser || isEditing) ? 'inputContainer mgt10' : 'disabledInputContainer mgt10'">
                 <img [src]="icon.calendarAdd" class="makeGray h16px" alt="">
                 <input (click)="(isNewUser || isEditing) && hiringDate.toggle()" placeholder="Fecha de ingreso" name="hiringDate" formControlName="hiringDate" 
@@ -96,6 +104,7 @@
             <span *ngIf="showAlert('hiringDate')" class="redText mgt03">
                 Debes introducir una fecha de ingreso
             </span>
+            <!-- Experience -->
             <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" [ngClass]="(isNewUser || isEditing) ? 'inputContainer mgt10' : 'disabledInputContainer mgt10'" >
                 <img [src]="icon.clock" class="makeGray h16px" alt="">
                 <select *ngIf="isNewUser || isEditing" [ngClass]="!isNewUser ? 'disabledInput': !form.get('experience').value? 'makeGray' : ''"
@@ -111,38 +120,40 @@
             <span *ngIf="showAlert('experience')" class="redText mgt03">
                 Debes elegir una opción
             </span>
-            <!-- <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" [ngClass]="(isNewUser || isEditing) ? 'inputContainer mgt10' : 'disabledInputContainer mgt10'">
+            <!-- Department -->
+            <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" [ngClass]="(isNewUser || isEditing) ? 'inputContainer mgt10' : 'disabledInputContainer mgt10'">
                 <img [src]="icon.enterprise" class="makeGray h16px" alt="">
-                <select *ngIf="isNewUser || isEditing" [ngClass]="!isNewUser ? 'disabledInput': !form.get('departmentId').value? 'makeGray' : ''" 
-                    class="input fw" formControlName="departmentId">
+                <select *ngIf="isNewUser || isEditing" [ngClass]="!isNewUser ? 'disabledInput': !form.get('department').value? 'makeGray' : ''" 
+                    class="input fw" formControlName="department" (change)="onDepartmentChange()">
                     <option [value]="null" disabled>Departamento</option>
-                    <option [value]="'Sin departamento'">Asignar luego</option>
-                    <option *ngFor="let department of departments" [value]="department.name">{{department.name}}</option>
+                    <!-- <option [value]="'Sin departamento'">Asignar luego</option> -->
+                    <option *ngFor="let department of departments" [value]="department.id">{{department.name}}</option>
                 </select>
-                <span *ngIf="isNewUser && form.get('departmentId').hasValidator(requiredValidator)" class="asterisk">*</span>
-                <span *ngIf="!isNewUser && !isEditing" [ngClass]="!form.get('departmentId').value ? 'noValue' : '' " class="disabledInput">
-                    {{form.get('departmentId').value ? form.get('departmentId').value : "Departamento"}}
+                <span *ngIf="isNewUser && form.get('department').hasValidator(requiredValidator)" class="asterisk">*</span>
+                <span *ngIf="!isNewUser && !isEditing" [ngClass]="!form.get('department').value ? 'noValue' : '' " class="disabledInput">
+                    {{form.get('department').value ? displayName(form.get('department').value) : "Departamento"}}
                 </span>
             </div>
-            <span *ngIf="showAlert('departmentId')" class="redText mgt03">
+            <span *ngIf="showAlert('department')" class="redText mgt03">
                 Debes elegir una opción
-            </span> -->
-            <!-- <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" [ngClass]="(isNewUser || isEditing) ? 'inputContainer mgt10' : 'disabledInputContainer mgt10'">
+            </span>
+            <!-- Profile -->
+            <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" [ngClass]="(isNewUser || isEditing) ? 'inputContainer mgt10' : 'disabledInputContainer mgt10'">
                 <img [src]="icon.userProfile" class="makeGray h16px" alt="">
-                <select *ngIf="isNewUser || isEditing" [ngClass]="!isNewUser ? 'disabledInput': !form.get('profileId').value? 'makeGray' : ''"
-                    class="input fw" formControlName="profileId">
+                <select *ngIf="isNewUser || isEditing" [ngClass]="!isNewUser ? 'disabledInput': !form.get('profile').value? 'makeGray' : ''"
+                    class="input fw" formControlName="profile">
                     <option [value]="null" disabled>Perfil</option>
-                    <option [value]="'Sin perfil'">Asignar luego</option>
-                    <option *ngFor="let profile of profiles" [value]="profile.name">{{profile.name}}</option>
+                    <!-- <option [value]="'Sin perfil'">Asignar luego</option> -->
+                    <option *ngFor="let profile of selectedDepartmentProfiles" [value]="profile.id">{{profile.name}}</option>
                 </select>
-                <span *ngIf="isNewUser && form.get('profileId').hasValidator(requiredValidator)" class="asterisk">*</span>
-                <span *ngIf="!isNewUser && !isEditing" [ngClass]="!form.get('profileId').value ? 'noValue' : '' " class="disabledInput">
-                    {{form.get('profileId').value ? form.get('profileId').value : "Perfil"}}
+                <span *ngIf="isNewUser && form.get('profile').hasValidator(requiredValidator)" class="asterisk">*</span>
+                <span *ngIf="!isNewUser && !isEditing" [ngClass]="!form.get('profile').value ? 'noValue' : '' " class="disabledInput">
+                    {{form.get('profile').value ? displayName(form.get('profile').value) : "Perfil"}}
                 </span>
             </div>
-            <span *ngIf="showAlert('profileId')" class="redText mgt03">
+            <span *ngIf="showAlert('profile')" class="redText mgt03">
                 Debes elegir una opción
-            </span> -->
+            </span>
         </div>
         <div fxLayout="row" fxLayoutAlign="center center">
             <button *ngIf="!isStudentProfile" [ngClass]="{'savebutton btn': form.valid, 'disabled-button btn': !form.valid}" 
