@@ -5,7 +5,7 @@ import { AfterOnInitResetLoading } from 'src/app/shared/decorators/loading.decor
 import { Profile } from 'src/app/shared/models/profile.model';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Department } from 'src/app/shared/models/department.model';
-import { Subscription, combineLatest } from 'rxjs';
+import { Subscription, catchError, combineLatest, map, of } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { DepartmentService } from 'src/app/shared/services/department.service';
@@ -52,6 +52,7 @@ export class DepartmentsProfilesComponent {
   openedDepartment: string | null = null;
   searchSubscription: Subscription
 
+  combinedObservableSubscription
 
 
   async ngOnInit() {
@@ -62,36 +63,44 @@ export class DepartmentsProfilesComponent {
     //   this.profilesRefs.push(ref)
     // });
     // -----
-    console.log(deparmentsData)
+    // console.log(deparmentsData)
     this.departmentService.loadDepartmens();
     this.profileService.loadProfiles();
-
-    combineLatest([
-      this.departmentService.getDepartmentsObservable(),
-      this.profileService.getProfilesObservable()
-    ]).subscribe(([departments, profiles]) => {
-      this.departments = departments;
-      this.profiles = profiles;
-      console.log('respuestas observables dep perf',this.departments,this.profiles)
-      //console.log('perfiles another ', profiles);
-
-      const departmentsWithProfiles = departments.map(department => {
-        return {
-          ...department,
-          profiles: profiles.filter(profile => profile.departmentRef.id === department.id)
-        };
-      });
-
-      console.log('new array',departmentsWithProfiles);
-      this.dataSource = new MatTableDataSource<any>(departmentsWithProfiles);
-
-    });
   }
 
   ngAfterViewInit() {
-    if (this.dataSource) {
-      this.dataSource.paginator = this.paginator;
-    }
+    this.combinedObservableSubscription = combineLatest([this.departmentService.departmentsLoaded$, this.profileService.profilesLoaded$]).pipe(
+      map(([departmentsLoaded, profilesLoaded]) => {
+        return departmentsLoaded && profilesLoaded
+      }),
+      catchError(error => {
+        console.error('Error occurred:', error);
+        return of([]);  // Return an empty array as a fallback.
+      })
+    ).subscribe(isLoaded => {
+      if (isLoaded) {
+        this.departmentService.getDepartmentsObservable().subscribe(departments => {
+          this.departments = departments
+        });
+        this.profileService.getProfilesObservable().subscribe(profiles => {
+          this.profiles = profiles
+        })
+        // console.log('respuestas observables dep perf',this.departments,this.profiles)
+        //console.log('perfiles another ', profiles);
+  
+        const departmentsWithProfiles = this.departments.map(department => {
+          return {
+            ...department,
+            profiles: this.profiles.filter(profile => profile.departmentRef.id === department.id)
+          };
+        });
+        // console.log('new array',departmentsWithProfiles);
+        this.dataSource = new MatTableDataSource<any>(departmentsWithProfiles);  
+        if (this.dataSource) {
+          this.dataSource.paginator = this.paginator;
+        }
+      }
+    })
   }
 
   // Define a SelectionModel instance to manage the chip selection
