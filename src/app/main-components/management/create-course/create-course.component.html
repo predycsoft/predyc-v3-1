@@ -1690,7 +1690,7 @@
                     </div>
                     <!-- Displaying Chips -->
                     <mat-chip-listbox *ngIf="categoria['expanded']" selectable multiple aria-label="Fish selection" class="fw contenedor-chips pdt05" style="max-height: 100vh !important;">
-                        <mat-chip-option class="custom-chip" *ngFor="let competencia of categoria.competencias" (click)="competencia.selected = !competencia.selected;getSelectedCategoriasCompetencias(competencia)" [selected]="competencia.selected">
+                        <mat-chip-option class="custom-chip" *ngFor="let competencia of categoria.competencias" (click)="competencia.selected = !competencia.selected;getSelectedCategoriasCompetencias()" [selected]="competencia.selected">
                             {{competencia.name | titlecase}}
                             <img *ngIf="competencia.selected" [src]="icon.close" class="makeWhite h16px pdl05" alt="">
                             <img *ngIf="!competencia.selected" [src]="icon.addNew" class="makeGray h14px pdl05" alt="">
@@ -1867,7 +1867,7 @@
                     </div>
                     <!-- Displaying Chips -->
                     <mat-chip-listbox *ngIf="categoria['expanded']" selectable multiple aria-label="Fish selection" class="fw contenedor-chips pdt05" style="max-height: 100vh !important;">
-                        <mat-chip-option class="custom-chip" *ngFor="let competencia of categoria.competencias" (click)="competencia.selected = !competencia.selected;getSelectedCategoriasCompetencias(competencia)" [selected]="competencia.selected">
+                        <mat-chip-option class="custom-chip" *ngFor="let competencia of categoria.competencias" (click)="competencia.selected = !competencia.selected;getSelectedCategoriasCompetencias()" [selected]="competencia.selected">
                             {{competencia.name | titlecase}}
                             <img *ngIf="competencia.selected" [src]="icon.close" class="makeWhite h16px pdl05" alt="">
                             <img *ngIf="!competencia.selected" [src]="icon.addNew" class="makeGray h14px pdl05" alt="">

@@ -12,6 +12,7 @@ import { CategoryService } from 'src/app/shared/services/category.service';
 import { SkillService } from 'src/app/shared/services/skill.service';
 import { DocumentData, DocumentReference } from '@angular/fire/compat/firestore';
 import { Skill } from 'src/app/shared/models/skill.model';
+import { Category } from 'src/app/shared/models/category.model';
 
 function optionsLengthValidator(question: FormGroup): ValidationErrors | null {
   const options = question.get('options') as FormArray
@@ -93,11 +94,14 @@ export class EditValidationTestComponent {
 
   displayErrors: boolean = false
   
-  initialSkills = []
-  enterpriseSkills: Skill[]
-  universalSkills: Skill[]
-  recommendedSkills: Skill[]
-  categories: { skills: Skill[]; id: string; name: string; enterprise: DocumentReference<DocumentData>}[]
+  // initialSkills = []
+  // enterpriseSkills: Skill[]
+  // universalSkills: Skill[]
+  // recommendedSkills: Skill[]
+  // categories: { skills: Skill[]; id: string; name?: string; enterprise?: DocumentReference<DocumentData>}[]
+
+  skills: Skill[]
+  categories: Category[]
 
   constructor(
     public icon: IconService,
@@ -113,8 +117,8 @@ export class EditValidationTestComponent {
   dataSubscription: Subscription
 
   ngOnInit() {
-    this.setupSkillsData()
     this.setupForm()
+    this.setupSkillsData()
   }
 
   setupForm() {
@@ -125,7 +129,7 @@ export class EditValidationTestComponent {
         duration: [0, [Validators.required, Validators.min(1), Validators.pattern(/^\d*$/)]],
       }),
       modalPage2: this.fb.group({
-        skills: this.fb.array([])
+        testSkills: this.fb.array([])
       }),
       modalPage3: this.fb.group({
         questions: this.fb.array([])
@@ -142,18 +146,9 @@ export class EditValidationTestComponent {
       this.skillService.getSkillsObservable(),
       this.categoryService.getCategoriesObservable()
     ]).subscribe(([skills, categories]) => {
-      console.log("skills", skills)
-      console.log("categories", categories)
-      this.enterpriseSkills = skills.filter(skill => skill.enterprise !== null)
-      this.universalSkills = skills.filter(skill => skill.enterprise === null)
-      // to be fixed by algorithm
-      this.recommendedSkills = [...this.enterpriseSkills]
-      this.categories = categories.map(category => {
-        return {
-          ...category,
-          skills: this.universalSkills.filter(skill => skill.category.id === category.id)
-        }
-      })
+      // Need to add logic to selectedSkills
+      this.skills = skills
+      this.categories = categories
     })
   }
 
@@ -187,12 +182,27 @@ export class EditValidationTestComponent {
     }
   }
 
-  onSkillSelected(skills) {
-    console.log("skills", skills)
+  get testSkills(): FormArray {
+    return <FormArray>this.mainForm.get('modalPage2.testSkills')
+  }
+
+  addSkillToTest(skill: Skill) {
+    console.log("Skill added from activity")
+    // this.questions.push(this.fb.group({
+    //   id: [skill.id],
+    //   name: [skill.name],
+    //   categoryId: [skill.category.id]
+    // }));    
+  }
+
+  removeSkillFromTest(skill: Skill) {
+    console.log("Skill removed from activity")
+    // const targetIndex = this.selectedSkills.findIndex(item => item.id === skill.id)
+    // this.selectedSkills.splice(targetIndex, 1)
   }
 
   get questions(): FormArray {
-    return <FormArray>this.mainForm.get('modalPage2.questions');
+    return <FormArray>this.mainForm.get('modalPage3.questions');
   }
 
   addQuestion(): void {

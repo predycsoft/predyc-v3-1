@@ -68,8 +68,7 @@ export class SkillsSelectorComponent implements OnInit {
     });
   }
 
-  getSelectedCategoriasCompetencias(competencia = null){
-    console.log('getSelectedCategoriasCompetencias')
+  getSelectedCategoriasCompetencias(){
     let respuesta = [];
     console.log(this.categoriasArray)
 
@@ -85,7 +84,6 @@ export class SkillsSelectorComponent implements OnInit {
       }
     });
 
-    console.log('respuesta',respuesta)
     this.competenciasSelected = respuesta;
 
     this.competenciasSelectedOut.emit(respuesta);

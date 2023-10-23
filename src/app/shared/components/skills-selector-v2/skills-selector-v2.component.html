@@ -1,29 +1,23 @@
 <div fxLayout="column" class="fw fh smallScroll pd05" style="overflow-y: auto;">
     <div class="mgr20">
-        <div class="input-group input-group-sm pdb10 fw">
-            <div class="input-group-prepend">
-                <span class="input-group-text">Competencias</span>
-            </div>
-            <div class="position-relative custom-input-container d-flex align-items-center" style="flex-grow: 1;">
-                <input type="text" class="form-control curstomInput custom-input" placeholder="Buscar competencias" style="flex-grow: 1;">
-                <img [src]="icon.search" class="h20px input-icon" alt="">
-            </div>
+        <!-- Search input box -->
+        <!-- <div class="position-relative custom-input-container d-flex align-items-center" style="flex-grow: 1;">
+            <input type="text" class="form-control curstomInput custom-input" placeholder="Buscar competencias" style="flex-grow: 1;">
+            <img [src]="icon.search" class="h20px input-icon" alt="">
         </div>
         <div fxLayout="row" fxLayoutAlign="start start" class="fw pdb05">
             <span class="ft400 pdb05">Recomendaciones según la actividad de su empresa</span>
-        </div>
+        </div> -->
 
         <div fxLayout="column" class="fw pdb10">
-            <mat-chip-listbox selectable multiple aria-label="Fish selection" class="fw contenedor-chips ">
+            <mat-chip-listbox *ngIf="!arrangeByCategory" selectable multiple aria-label="Fish selection" class="fw contenedor-chips ">
                 <mat-chip-option
                     class="custom-chip"
-                    *ngFor="let skill of recommendedSkills"
-                    (click)="skill.selected = !skill.selected; getSelectedSkills()"
-                    [selected]="skill.selected"
+                    *ngFor="let skill of skills"
+                    (click)="toggleSkill(skill)"
+                    [selected]="skill['selected'] ? skill['selected'] : false"
                     >
                     {{ skill.name | titlecase }}
-                    <img *ngIf="skill.selected" [src]="icon.close" class="makeWhite h16px pdl05" alt="">
-                    <img *ngIf="!skill.selected" [src]="icon.addNew" class="makeGray h14px pdl05" alt="">
                 </mat-chip-option>
             </mat-chip-listbox>
         </div>

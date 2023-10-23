@@ -97,15 +97,18 @@
                     <!-- Skills -->
                     <ng-container *ngIf="activeStep === 2">
                         <app-skills-selector-v2
-                            [recommendedSkills]="enterpriseSkills"
+                            [selectedSkills]="[]"
+                            [skills]="skills"
                             [categories]="categories"
-                            [selectedSkills]="initialSkills"
-                            (onSelectedSkillsUpdate)="onSkillSelected($event)">
+                            [arrangeByCategory]="false"
+                            (onSelectedSkill)="addSkillToTest($event)"
+                            (onRemovedSkill)="removeSkillFromTest($event)"
+                            >
                         </app-skills-selector-v2>
                     </ng-container>
                     <!-- Preguntas -->
                     <ng-container *ngIf="activeStep === 3">
-                        <div formGroupName="modalPage2" fxFlex fxLayout="column" class="container pdl10 pdt10">
+                        <div formGroupName="modalPage3" fxFlex fxLayout="column" class="container pdl10 pdt10">
                             <ng-container formArrayName="questions">
                                 <!-- aqui van los preguntas que se van creando -->
                                 <div
@@ -607,7 +610,7 @@
             <!-- Contenedor para los dos botones de la derecha -->
             <div fxLayout="row" fxLayoutGap="10px">               
                 <button
-                    *ngIf="activeStep < 3"
+                    *ngIf="activeStep <= 3"
                     class="blueButton radius4 ft12 h28px mgr10 gray-1"
                     (click)="nextPage();"
                     fxLayout="row"
@@ -620,7 +623,7 @@
                 </button>
                 <!-- [disabled]="!form.valid" -->
                 <button
-                    *ngIf="activeStep == 3" 
+                    *ngIf="activeStep == 4" 
                     class="blueButton radius4 ft12 h28px mgr10 gray-1"
                     fxLayout="row"
                     fxLayoutGap="0.625"

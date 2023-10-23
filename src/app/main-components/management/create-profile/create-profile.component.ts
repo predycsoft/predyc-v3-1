@@ -266,7 +266,6 @@ export class CreateProfileComponent {
   }
 
   getSelectedCategoriasCompetencias(){
-    console.log('getSelectedCategoriasCompetencias')
     let respuesta = [];
     console.log(this.categoriasArray)
 
