@@ -29,7 +29,6 @@ export class DepartmentService {
 
   public async loadDepartmens() {
 
-    // console.log("Se instancio el user service")
     this.enterpriseService.enterpriseLoaded$.subscribe(enterpriseIsLoaded => {
       if (enterpriseIsLoaded) {
         this.getDepartments()
@@ -39,7 +38,7 @@ export class DepartmentService {
               resolve();
               if (!this.departmentsLoadedSubject.value) {
                 this.departmentsLoadedSubject.next(true)
-                console.log("Los departamentos fueron cargadps", departments)
+                console.log("Los departamentos fueron cargados", departments)
               }
             }
           });

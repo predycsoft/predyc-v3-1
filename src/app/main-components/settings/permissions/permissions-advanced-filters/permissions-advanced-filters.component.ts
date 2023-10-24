@@ -49,7 +49,7 @@ export class PermissionsAdvancedFiltersComponent {
       })
     ).subscribe(isLoaded => {
       if (isLoaded) {
-        console.log("Esta loaded")
+        console.log("Permisos esta loaded")
         this.dataSource = new ProfileDataSource(
           this.enterpriseService,
           this.departmentService,
