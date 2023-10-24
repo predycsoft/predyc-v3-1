@@ -27,7 +27,7 @@ export class Profile {
     public responsabilities: string;
     public departmentRef: DocumentReference
     public skillsRef: DocumentReference [] = []
-    public usersRef: DocumentReference [] = []
+    public usersRef: DocumentReference [] = [] //Eliminar de auqi
     public coursesRef: DocumentReference [] | [] = []
     public enterpriseRef: DocumentReference | null
 

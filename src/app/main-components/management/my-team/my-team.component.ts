@@ -4,6 +4,7 @@ import { UserService } from 'src/app/shared/services/user.service';
 import { User } from 'src/app/shared/models/user.model';
 import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
 import { ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-my-team',
@@ -20,6 +21,8 @@ export class MyTeamComponent {
 
   studentSelected: User | null = null
 
+  users$: Observable<User[]> = this.userService.users$
+
   // ?sortBy=Deparment&pageSize=25&page=2&name=searchText
 
   ngOnInit() {
@@ -27,7 +30,7 @@ export class MyTeamComponent {
       if (fragment === 'createNewStudent') {
           this.createNewStudent();
       }
-  });
+    });
 
   }
 

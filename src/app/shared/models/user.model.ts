@@ -11,7 +11,7 @@ export interface UserJson {
   createdAt: number | null // timestamp
   currentlyWorking: boolean
   degree: string | null
-  department: DocumentReference | null,
+  department: DocumentReference | null, // Eliminar de aqui (con el perfil es suficiente)
   displayName: string | null
   email: string | null
   enterprise: DocumentReference | null

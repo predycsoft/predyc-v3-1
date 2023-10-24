@@ -240,7 +240,7 @@ export class InitScriptComponent {
       await profileRef.set({
           ...profile,
           id: id,
-          departmentRef: currentDepartmentRef,
+          departmentRef: currentDepartmentRef, //Eliminar este campo
           skillsRef: [currentSkillRef],
           usersRef: [currentUserRef],
           enterpriseRef: currentEnterpriseRef,

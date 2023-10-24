@@ -43,9 +43,11 @@ export class StudentListComponent {
   @Input() usersListed: 'all' | 'usersWithoutProfile'
   @Input() enableNavigateToUser: boolean = true
   @Input() displayOptionsColumn: boolean = true
+  @Input() initialSelectedUsers: any[] = [];
+  @Input() usersObservable: Observable<User[]>
   @Output() onSelectStudentEvent = new EventEmitter<User>()
   @Output() selectedUsers = new EventEmitter<any[]>();
-  @Input() initialSelectedUsers: any[] = [];
+
 
 
   searchSubscription: Subscription
@@ -65,14 +67,15 @@ export class StudentListComponent {
 
     let usersObservable: Observable<User[]>;
 
-    switch (this.usersListed) {
-      case 'usersWithoutProfile':
-        usersObservable = this.userService.usersWithoutProfile$;
-        break;
-      default:
-        usersObservable = this.userService.users$;
-        break;
-    }
+    usersObservable = this.usersObservable
+    // switch (this.usersListed) {
+    //   case 'usersWithoutProfile':
+    //     usersObservable = this.userService.usersWithoutProfile$;
+    //     break;
+    //   default:
+    //     usersObservable = this.userService.users$;
+    //     break;
+    // }
 
     this.combinedObservableSubscription = combineLatest([this.departmentService.departmentsLoaded$, this.profileService.profilesLoaded$]).pipe(
       map(([departmentsLoaded, profilesLoaded]) => {
