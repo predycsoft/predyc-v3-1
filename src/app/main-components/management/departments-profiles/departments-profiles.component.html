@@ -50,7 +50,7 @@
                         <td>{{profile.name}}</td>
                         <td>{{profile.coursesRef.length}} Curso{{profile.coursesRef.length>1?'s':''}}</td>
                         <td>{{profile.skillsRef.length}} Competencia{{profile.skillsRef.length>1?'s':''}}</td>
-                        <td>{{profile.usersRef.length}} Usuario{{profile.usersRef.length>1?'s':''}}</td>
+                        <td>{{getProfileUsers(profile.id).length}} Usuario{{getProfileUsers(profile.id).length>1?'s':''}}</td>
                         <td><span class="pill">completado</span></td>
                         <td>
                             <img (click)="editProfile(department,profile)" [src]="icon.licencias" class="h16px pdr05 edit cursorPointer" alt="">

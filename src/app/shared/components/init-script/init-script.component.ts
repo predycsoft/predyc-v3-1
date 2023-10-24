@@ -242,7 +242,6 @@ export class InitScriptComponent {
           id: id,
           departmentRef: currentDepartmentRef, //Eliminar este campo
           skillsRef: [currentSkillRef],
-          usersRef: [currentUserRef],
           enterpriseRef: currentEnterpriseRef,
       });
       // console.log("id", id);

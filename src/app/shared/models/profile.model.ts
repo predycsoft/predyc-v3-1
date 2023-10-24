@@ -11,7 +11,6 @@ export interface ProfileJson {
     responsabilities: string,
     departmentRef: DocumentReference
     skillsRef: DocumentReference[]
-    usersRef: DocumentReference[]
     coursesRef: DocumentReference[] | []
     enterpriseRef: DocumentReference | null
 
@@ -27,7 +26,6 @@ export class Profile {
     public responsabilities: string;
     public departmentRef: DocumentReference
     public skillsRef: DocumentReference [] = []
-    public usersRef: DocumentReference [] = [] //Eliminar de auqi
     public coursesRef: DocumentReference [] | [] = []
     public enterpriseRef: DocumentReference | null
 
@@ -45,7 +43,6 @@ export class Profile {
         profile.responsabilities = profileJson.responsabilities
         profile.departmentRef = profileJson.departmentRef
         profile.skillsRef = profileJson.skillsRef
-        profile.usersRef = profileJson.usersRef
         profile.coursesRef = profileJson.coursesRef
         profile.enterpriseRef = profileJson.enterpriseRef
 
@@ -60,7 +57,6 @@ export class Profile {
             responsabilities: this.responsabilities,
             departmentRef: this.departmentRef,
             skillsRef: this.skillsRef,
-            usersRef: this.usersRef,
             coursesRef: this.coursesRef,
             enterpriseRef: this.enterpriseRef,
         }

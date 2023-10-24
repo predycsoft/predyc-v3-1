@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { User, UserJson } from '../../shared/models/user.model';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
-import { BehaviorSubject, firstValueFrom, map, Observable, Subscription, switchMap } from 'rxjs'
+import { BehaviorSubject, filter, firstValueFrom, map, Observable, Subscription, switchMap } from 'rxjs'
 import { EnterpriseService } from './enterprise.service';
 import { AlertsService } from './alerts.service';
 import { generateSixDigitRandomNumber } from '../utils';
@@ -18,10 +18,10 @@ export class UserService {
   public users$ = this.usersSubject.asObservable();
   public usersWithoutProfile$ = this.usersWithoutProfileSubject.asObservable();
   private usersLoadedSubject = new BehaviorSubject<boolean>(false)
-  private usersithoutProfileLoadedSubject = new BehaviorSubject<boolean>(false)
+  private usersWithoutProfileLoadedSubject = new BehaviorSubject<boolean>(false)
 
   public usersLoaded$ = this.usersLoadedSubject.asObservable();
-  public usersWithoutProfileLoaded$ = this.usersithoutProfileLoadedSubject.asObservable();
+  public usersWithoutProfileLoaded$ = this.usersWithoutProfileLoadedSubject.asObservable();
 
   private userCollectionSubscription: Subscription
   private userCollectionProfileSubscription: Subscription
@@ -38,7 +38,6 @@ export class UserService {
     this.enterpriseService.enterpriseLoaded$.subscribe(enterpriseIsLoaded => {
       if (enterpriseIsLoaded) {
         this.getUsers();
-        this.getUsersWithoutProfile();
       }
     })
   }
@@ -181,58 +180,64 @@ export class UserService {
     return this.usersLoadedSubject.value;
   }
 
-  getUsersWithoutProfile(idProfile = null) {
-    if (this.userCollectionProfileSubscription) {
-        this.userCollectionProfileSubscription.unsubscribe();
-    }
+  public getUsersByProfile(idProfile: string | null) {
+    // const userRefsFromProfiles: DocumentReference[] = []; // Users of all profiles
+    idProfile = "7pHn0t0ue5AYf4ri3eXI"
+    let usersOfProvidedProfile: DocumentReference[] = []; // Users of the provided profile
 
-    // Step 1: Get all profiles and gather all user references
-    this.userCollectionProfileSubscription = this.afs.collection(Profile.collection).get().pipe(
-        switchMap(profilesSnap => {
-            const userRefsFromProfiles: DocumentReference[] = [];
-            let usersOfProvidedProfile: DocumentReference[] = []; // Users of the provided profile
+    // profilesSnap.docs.forEach(doc => {
+    //     const data = doc.data() as Profile;
+    //     if (data.usersRef && Array.isArray(data.usersRef)) {
+    //         userRefsFromProfiles.push(...data.usersRef);
+    //         if (doc.id === idProfile) {
+    //             usersOfProvidedProfile = data.usersRef; // Extract users of the provided profile
+    //         }
+    //     }
+    // });
+    // // -----
+    // usersOfProvidedProfile = this.getUsersByProfileId(idProfile)
+    // const userRefsFromProfiles = this.getUsersWithProfile()
+    // console.log("usersOfProvidedProfile", usersOfProvidedProfile)
+    // console.log("userRefsFromProfiles", userRefsFromProfiles)
+    // -----
+    // Convert DocumentReferences to their path strings for easier comparison
+    // const userRefPaths = userRefsFromProfiles.map(ref => ref.path);
+    // const usersOfProfilePaths = usersOfProvidedProfile.map(ref => ref.path);
 
-            profilesSnap.docs.forEach(doc => {
-                const data = doc.data() as Profile;
-                if (data.usersRef && Array.isArray(data.usersRef)) {
-                    userRefsFromProfiles.push(...data.usersRef);
-                    if (doc.id === idProfile) {
-                        usersOfProvidedProfile = data.usersRef; // Extract users of the provided profile
-                    }
-                }
-            });
+    // Step 2: Fetch users based on criteria and exclude/include as required
+    return this.users$.pipe(
+      map(users => 
+          users.filter(user => user.profile.id === idProfile)
+      )
+  )
 
-            // Convert DocumentReferences to their path strings for easier comparison
-            const userRefPaths = userRefsFromProfiles.map(ref => ref.path);
-            const usersOfProfilePaths = usersOfProvidedProfile.map(ref => ref.path);
+    // return this.afs.collection<User>(User.collection, ref =>
+    //     ref.where('enterprise', '==', this.enterpriseService.getEnterpriseRef())
+    //         .where('isActive', '==', true)
+    //         .orderBy('displayName')
+    // ).valueChanges({idField: 'id'}).pipe(
+    //     map(users => 
+    //         users.filter(user => 
+    //             !userRefPaths.includes(`user/${user.id}`) || // User is not in any profile
+    //             usersOfProfilePaths.includes(`user/${user.id}`)  // User is in the provided profile
+    //         )
+    //     )
+    // );
+  }
 
-            // Step 2: Fetch users based on criteria and exclude/include as required
-            return this.afs.collection<User>(User.collection, ref =>
-                ref.where('enterprise', '==', this.enterpriseService.getEnterpriseRef())
-                   .where('isActive', '==', true)
-                   .orderBy('displayName')
-            ).valueChanges({idField: 'id'}).pipe(
-                map(users => 
-                    users.filter(user => 
-                        !userRefPaths.includes(`user/${user.id}`) || // User is not in any profile
-                        usersOfProfilePaths.includes(`user/${user.id}`)  // User is in the provided profile
-                    )
-                )
-            );
-        })
-    ).subscribe({
-        next: users => {
-            this.usersWithoutProfileSubject.next(users);
-            if (!this.usersithoutProfileLoadedSubject.value) {
-                this.usersithoutProfileLoadedSubject.next(true);
-                console.log("Los usuarios sin perfil y los del perfil proporcionado fueron cargados", users);
-            }
-        },
-        error: error => {
-            console.log(error);
-            this.alertService.errorAlert(JSON.stringify(error));
-        }
-    });
+  getUsersRefByProfileId(profileId: string | null): DocumentReference<User>[] {
+    // Filtrar usuarios basados en el profileId y mapear a sus referencias
+    const userRefs = this.usersSubject.value
+      .filter(user => user.profile && user.profile.path === `${Profile.collection}/${profileId}`)
+      .map(user => this.afs.doc<User>(`${User.collection}/${user.uid}`).ref);
+    return userRefs;
+  }
+
+  getUsersRefsWithProfile(): DocumentReference<User>[] {
+    // Filtrar usuarios que tienen un perfil y mapear a sus referencias
+    return this.usersSubject.value.filter(user => user.profile).map(user => this.afs.doc<User>(`${User.collection}/${user.uid}`).ref);
 }
+
+
 
 }

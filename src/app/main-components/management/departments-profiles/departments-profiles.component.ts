@@ -3,7 +3,7 @@ import { IconService } from '../../../shared/services/icon.service';
 import { LoaderService } from 'src/app/shared/services/loader.service';
 import { AfterOnInitResetLoading } from 'src/app/shared/decorators/loading.decorator';
 import { Profile } from 'src/app/shared/models/profile.model';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { Department } from 'src/app/shared/models/department.model';
 import { Subscription, catchError, combineLatest, map, of } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
@@ -18,6 +18,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
 import { AlertsService } from 'src/app/shared/services/alerts.service';
 import { SearchInputService } from 'src/app/shared/services/search-input.service';
+import { UserService } from 'src/app/shared/services/user.service';
+import { User } from 'src/app/shared/models/user.model';
 
 @AfterOnInitResetLoading
 @Component({
@@ -37,6 +39,7 @@ export class DepartmentsProfilesComponent {
     private enterpriseService: EnterpriseService,
     private alertService: AlertsService,
     private searchInputService: SearchInputService, 
+    private userService: UserService
 
   ){}
 
@@ -236,6 +239,11 @@ export class DepartmentsProfilesComponent {
       this.dataSource.paginator.firstPage();
     }
   }
+
+  getProfileUsers(profileId: string): DocumentReference<User>[] {
+    return this.userService.getUsersRefByProfileId(profileId);
+  }
+
 
 
   // ------- Para crear perfiles y departamentos en firestore
