@@ -181,49 +181,16 @@ export class UserService {
   }
 
   public getUsersByProfile(idProfile: string | null) {
-    // const userRefsFromProfiles: DocumentReference[] = []; // Users of all profiles
-    idProfile = "7pHn0t0ue5AYf4ri3eXI"
-    let usersOfProvidedProfile: DocumentReference[] = []; // Users of the provided profile
-
-    // profilesSnap.docs.forEach(doc => {
-    //     const data = doc.data() as Profile;
-    //     if (data.usersRef && Array.isArray(data.usersRef)) {
-    //         userRefsFromProfiles.push(...data.usersRef);
-    //         if (doc.id === idProfile) {
-    //             usersOfProvidedProfile = data.usersRef; // Extract users of the provided profile
-    //         }
-    //     }
-    // });
-    // // -----
-    // usersOfProvidedProfile = this.getUsersByProfileId(idProfile)
-    // const userRefsFromProfiles = this.getUsersWithProfile()
-    // console.log("usersOfProvidedProfile", usersOfProvidedProfile)
-    // console.log("userRefsFromProfiles", userRefsFromProfiles)
-    // -----
-    // Convert DocumentReferences to their path strings for easier comparison
-    // const userRefPaths = userRefsFromProfiles.map(ref => ref.path);
-    // const usersOfProfilePaths = usersOfProvidedProfile.map(ref => ref.path);
-
-    // Step 2: Fetch users based on criteria and exclude/include as required
     return this.users$.pipe(
       map(users => 
-          users.filter(user => user.profile.id === idProfile)
+          users.filter(user => 
+              (idProfile === null && user.profile === null) || 
+              (user.profile && user.profile.id === idProfile)
+          )
       )
-  )
+    )
+}
 
-    // return this.afs.collection<User>(User.collection, ref =>
-    //     ref.where('enterprise', '==', this.enterpriseService.getEnterpriseRef())
-    //         .where('isActive', '==', true)
-    //         .orderBy('displayName')
-    // ).valueChanges({idField: 'id'}).pipe(
-    //     map(users => 
-    //         users.filter(user => 
-    //             !userRefPaths.includes(`user/${user.id}`) || // User is not in any profile
-    //             usersOfProfilePaths.includes(`user/${user.id}`)  // User is in the provided profile
-    //         )
-    //     )
-    // );
-  }
 
   getUsersRefByProfileId(profileId: string | null): DocumentReference<User>[] {
     // Filtrar usuarios basados en el profileId y mapear a sus referencias

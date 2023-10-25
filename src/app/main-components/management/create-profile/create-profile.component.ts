@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { take, map, firstValueFrom, Observable, finalize, merge } from 'rxjs';
@@ -62,8 +62,8 @@ export class CreateProfileComponent {
 
   ){}
 
-  departments
-  department;
+  departments: Department[]
+  department: Department
   departmentId = this.route.snapshot.paramMap.get("idDepartment")
   profileId = this.route.snapshot.paramMap.get("idProfile")
   mode = this.route.snapshot.paramMap.get("mode")
@@ -96,16 +96,16 @@ export class CreateProfileComponent {
   profile: Profile;
 
   getexamProfile(idProfile){
-    console.log('idProfile', idProfile);
+    // console.log('idProfile', idProfile);
     this.activityClassesService.getActivityProfile(idProfile)
       .pipe(take(1))
       .subscribe(data => {
         if (data) {
-          console.log('Activity:', data);
-          console.log('Questions:', data.questions);
+          // console.log('Activity:', data);
+          // console.log('Questions:', data.questions);
 
           data.questions.forEach(question => {
-            console.log('preguntas posibles test',question)
+            // console.log('preguntas posibles test',question)
             let skillsName = [];
             let skillsIdQuestion = question.skills.map(skill => {
               let skillname = this.skillsArray.find(skillFind => skillFind.id == skill.id);
@@ -121,12 +121,20 @@ export class CreateProfileComponent {
   }
 
   async ngOnInit() {
-    this.usersWithoutProfile$ = merge([this.userService.getUsersByProfile(null), this.userService.getUsersByProfile(this.profileId)])
+    const prueba = this.userService.getUsersByProfile(null)
+    console.log("this.profileId", this.profileId)
+    prueba.subscribe(p => {
+      console.log("pruebaaaaa", p)
+    })
+    
+    this.usersWithoutProfile$ = merge(this.userService.getUsersByProfile(this.profileId), this.userService.getUsersByProfile(null))
+    this.usersWithoutProfile$.subscribe(resp => {
+      console.log("resp", resp)
+    })
 
     this.enterpriseService.enterpriseLoaded$.subscribe(isLoaded => {
       if (isLoaded) {
         let enterpriseRef = this.enterpriseService.getEnterpriseRef();
-        console.log(enterpriseRef)
         this.enterpriseRef = enterpriseRef; 
       }
     })
@@ -140,15 +148,16 @@ export class CreateProfileComponent {
     this.inicialiceFormNewProfile();
 
     if(this.mode == 'edit'){
-      console.log('idPerfil',this.profileId);
+      console.log("--------------------Modo edicion--------------------")
+      // console.log('idPerfil',this.profileId);
       this.profileService.loadProfiles();
       this.profileService.profilesLoaded$.subscribe(async isLoaded => {
         console.log('profileService Loaded edit',isLoaded)
         if (isLoaded) {
           this.profile = this.profileService.getProfileObject(this.profileId)
-          console.log('profile data',this.profile)
+          // console.log('profile data',this.profile)
           let users = this.userService.getUsersRefByProfileId(this.profileId).map(userRef => {
-          console.log('userRef',userRef.id)
+          // console.log('userRef',userRef.id)
           return {uid: userRef.id, ref: userRef}
           });
           console.log('users edit',users)
@@ -162,16 +171,16 @@ export class CreateProfileComponent {
     this.departmentService.loadDepartmens()
     this.departmentService.getDepartmentsObservable().subscribe(departments => {
       this.departments = departments
-      console.log('departmentId',this.departmentId);
+      // console.log('departmentId',this.departmentId);
       this.department = departments.find(department =>department.id == this.departmentId )
-      console.log('this.department',this.department);
+      // console.log('this.department',this.department);
     })
     this.categoryService.getCategoriesObservable().subscribe(category => {
       this.skillService.getSkillsObservable().pipe(
         take(2)
       ).subscribe(skill => {
         this.skillsArray = skill;
-        console.log('skill from service', skill);
+        // console.log('skill from service', skill);
         skill.map(skillIn => {
           delete skillIn['selected']
         });
@@ -184,7 +193,7 @@ export class CreateProfileComponent {
         }
         this.categoriasArray = this.anidarCompetenciasInicial(category, skill);
         this.categories = this.categoriasArray;
-        console.log('categoriasArray', this.categoriasArray)
+        // console.log('categoriasArray', this.categoriasArray)
         this.competenciasEmpresa = this.obtenerCompetenciasAlAzar(5);
         this.courseService.getCoursesObservable().subscribe(courses => {
           courses.forEach(curso => {
@@ -204,7 +213,7 @@ export class CreateProfileComponent {
             let modulos = curso['modules']
             let duracionCourse = 0;
             modulos.forEach(modulo => {
-              console.log('modulo',modulo)
+              // console.log('modulo',modulo)
               modulo.expanded = false;
               let duracion = 0;
               modulo.clases.forEach(clase => {
@@ -232,7 +241,7 @@ export class CreateProfileComponent {
             category.coursesPropios = filteredCoursesPropios;
             category.coursesPredyc = filteredCoursesPredyc;
           });
-          console.log('this.categories',this.categories);
+          // console.log('this.categories',this.categories);
 
           if(this.mode == 'edit'){
             this.getSelectedCategoriasCompetencias();
@@ -261,7 +270,7 @@ export class CreateProfileComponent {
 
   getSelectedCategoriasCompetencias(){
     let respuesta = [];
-    console.log(this.categoriasArray)
+    // console.log(this.categoriasArray)
 
     this.categoriasArray.forEach(categoria => {
       let selected = categoria.competencias.filter(competencia => competencia.selected)
@@ -275,7 +284,7 @@ export class CreateProfileComponent {
       }
     });
 
-    console.log('respuesta',respuesta)
+    // console.log('respuesta',respuesta)
     this.competenciasSelected = respuesta;
   }
 
@@ -329,24 +338,25 @@ export class CreateProfileComponent {
 
 
   createExam(){
-    console.log('skills',this.competenciasSelected);
+    // console.log('skills',this.competenciasSelected);
     let skillsId = [];
     this.competenciasSelected.forEach(categoria => {
       categoria.competencias.forEach(skill => {
         skillsId.push(skill.id)
       });
     });
-    console.log('cursos plan de estudio',this.coursesSelectedPerfil);
-    console.log('skills plan de estudio',skillsId);
+    // console.log('cursos plan de estudio',this.coursesSelectedPerfil);
+    // console.log('skills plan de estudio',skillsId);
     //this.activityClassesService.getQuestionsCourseSkills(this.coursesSelectedPerfil,null)
     let coursesId = [];
     this.coursesSelectedPerfil.forEach(curso => {
       coursesId.push(curso.id);
     });
-    console.log(coursesId);
+    // console.log(coursesId);
+    // ----
     this.activityClassesService.getQuestionsCourses(coursesId).subscribe(async questions => {
       questions.forEach(question => {
-        console.log('preguntas posibles test',question)
+        // console.log('preguntas posibles test',question)
         let skillsName = [];
         let skillsIdQuestion = question.skills.map(skill => {
           let skillname = this.skillsArray.find(skillFind => skillFind.id == skill.id);
@@ -356,8 +366,8 @@ export class CreateProfileComponent {
         question.skillsNames=skillsName;
         question.skillsId = skillsIdQuestion;
       });
-      console.log('questions',questions);
-      console.log('skillsId',skillsId);
+      // console.log('questions',questions);
+      // console.log('skillsId',skillsId);
       // Function to compute the number of common elements between two arrays
       const commonElementsCount = (arr1: any[], arr2: any[]): number => {
           return arr1.filter(item => arr2.includes(item)).length;
@@ -372,33 +382,39 @@ export class CreateProfileComponent {
       relevantQuestions.sort((a, b) => {
           return commonElementsCount(b.skillsId, skillsId) - commonElementsCount(a.skillsId, skillsId);
       });
-      console.log('relevant and sorted questions', relevantQuestions);
+      // console.log('relevant and sorted questions', relevantQuestions);
       if(!this.examen){
         this.examen = new Activity;
         //this.examen.id = Date.now().toString();
       }
       this.examen.questions = relevantQuestions;
-      console.log('this.examen',this.examen)
+      // console.log('this.examen',this.examen)
     });
   }
 
   async saveProfile(){
+    // Este metodo se ejecuta varias veces
     if(!this.profile){
       this.profile= new Profile()
       //this.profile.id = this.formNewProfile.value.id;
       // this.profile.departmentRef = departmentRef;
-      // GUARDAR PERFIL EN COLECCION DE DEPARTAMENTO
       this.profile.enterpriseRef = this.enterpriseRef;
     }
     this.profile.name = this.formNewProfile.value.name;
     this.profile.description = this.formNewProfile.value.description;
     this.profile.responsabilities = this.formNewProfile.value.responsabilities;
     await this.profileService.saveProfile(this.profile);
-    console.log('profile',this.profile)
-
-    await this.afs.collection<Department>(Department.collection).doc(this.departmentId).update({
-      profilesRef: [this.profileService.getProfileRefById(this.profile.id)]
-    });
+    // console.log('profile',this.profile)
+    // Actualizamos profilesRef del departamento respectivo
+    let newProfileRef: DocumentReference = this.profileService.getProfileRefById(this.profile.id);
+    let newProfilesRefs: DocumentReference[] = this.department.profilesRef ? [...this.department.profilesRef] : [];
+    // Verifica si el profileRef ya está en el array
+    if (!newProfilesRefs.some(ref => ref.id === newProfileRef.id)) {
+        newProfilesRefs.push(newProfileRef);
+        await this.afs.collection<Department>(Department.collection).doc(this.departmentId).update({
+          profilesRef: newProfilesRefs
+        });
+    }
 
     this.formNewProfile.get('id').patchValue(this.profile.id);
   }
@@ -414,7 +430,7 @@ export class CreateProfileComponent {
     let valid = true
     console.log('tab actividad',this.activeStep);
     if(this.activeStep == 1){
-      console.log('formNewProfile',this.formNewProfile)
+      // console.log('formNewProfile',this.formNewProfile)
       if(!this.formNewProfile.valid){
         this.showErrorProfile = true;
         valid = false;
@@ -422,7 +438,7 @@ export class CreateProfileComponent {
     }
     if(this.activeStep == 2){
 
-      console.log('competencias selected',this.competenciasSelected)
+      // console.log('competencias selected',this.competenciasSelected)
       if(!this.competenciasSelected || this.competenciasSelected.length == 0){
         valid = false;
         this.mensageCompetencias = "Por favor seleccione una competencia";
@@ -431,19 +447,19 @@ export class CreateProfileComponent {
 
     }
     if(this.activeStep == 3){
-      console.log('this.examen',this.examen)
+      // console.log('this.examen',this.examen)
       if(!this.examen){
         this.createExam(); 
       }
       else{
-        console.log('prguntas',this.examen.questions)
+        // console.log('prguntas',this.examen.questions)
       }
     }
     if(this.activeStep == 4){
       this.examAutoQuestions=0;
       this.examManualQuestions=0
     
-      console.log('prguntas',this.examen.questions)
+      // console.log('prguntas',this.examen.questions)
       this.examen.questions.forEach(question => {
         if(question?.skillsNames?.length>0){
           this.examAutoQuestions++
@@ -489,15 +505,15 @@ export class CreateProfileComponent {
 
   selectCourse(curso){
 
-    console.log('categories',this.categories)
+    // console.log('categories',this.categories)
 
-    console.log('curso selected',curso);
+    // console.log('curso selected',curso);
     let findCurso = this.coursesSelectedPerfil.find(cursoFilter => cursoFilter.id == curso.id)
     if(!findCurso){
       this.coursesSelectedPerfil.push(curso);
     }
 
-    console.log('cursos', this.coursesSelectedPerfil)
+    // console.log('cursos', this.coursesSelectedPerfil)
 
 
   }
@@ -541,11 +557,12 @@ export class CreateProfileComponent {
   async saveBorrador(){
 
     if(this.formNewProfile.valid){
+      console.log("Formulario valido")
       this.saveProfile();
     }
 
     if(this.competenciasSelected?.length > 0){
-      console.log('guardar competencias');
+      // console.log('guardar competencias');
       let skills = [];
       for (const category of this.competenciasSelected) {
         for (const skill of category.competencias) {
@@ -555,20 +572,20 @@ export class CreateProfileComponent {
         }
       }
       this.profile.skillsRef=skills;
-      console.log('this.profile with skills',this.profile)
+      // console.log('this.profile with skills',this.profile)
       this.saveProfile();
     }
-    console.log('this.coursesSelectedPerfil',this.coursesSelectedPerfil)
+    // console.log('this.coursesSelectedPerfil',this.coursesSelectedPerfil)
     if(this.coursesSelectedPerfil){
-      console.log('save coruses',this.coursesSelectedPerfil)
+      // console.log('save coruses',this.coursesSelectedPerfil)
 
       let refCursos = []
 
       for (let i = 0; i < this.coursesSelectedPerfil.length; i++) {
         let cursoIn = this.coursesSelectedPerfil[i];
-        console.log('cursoIn', cursoIn.id);
+        // console.log('cursoIn', cursoIn.id);
         let ref = await this.afs.collection<Curso>(Curso.collection).doc(cursoIn.id).ref;
-        console.log('refCurso', ref);
+        // console.log('refCurso', ref);
         refCursos.push(ref);
       }
       this.profile.coursesRef=refCursos;
@@ -579,7 +596,7 @@ export class CreateProfileComponent {
       let profileRef = await this.afs.collection<Profile>(Profile.collection).doc(this.profile.id).ref;
       this.examen.profileRef = profileRef;
       
-      console.log(this.examen);
+      // console.log(this.examen);
       let activityClass = new Activity
       let questions: any[]= [];
 
@@ -599,7 +616,7 @@ export class CreateProfileComponent {
       activityClass.id = this.examen.id;
       activityClass.type = Activity.TYPE_SKILL_TEST;
       activityClass.questions=[];
-      console.log('activityExamen',activityClass)
+      // console.log('activityExamen',activityClass)
       activityClass = structuredClone(activityClass)
       activityClass.profileRef = profileRef;
       await this.activityClassesService.saveActivity(activityClass);
@@ -610,13 +627,14 @@ export class CreateProfileComponent {
     }
     
     if(this.usersProfile){ //editando
+      console.log("------------Actualizando usuario------------")
       console.log('users',this.usersProfile); 
       let arrayRef=this.usersProfile.map(user => {
         return user.ref
       });
       console.log('arrayRef users',arrayRef)
       // this.profile.usersRef = arrayRef;
-      this.saveProfile(); // Quitar?
+      // this.saveProfile(); // Quitar?
       let profileRef = this.profileService.getProfileRefById(this.profile.id)
 
       arrayRef.forEach(userRef => {//creo que deberia ser un cloud funtion
@@ -635,7 +653,7 @@ export class CreateProfileComponent {
   );
 
   onQuestionTypeChange(pregunta: Question,questionTypeValue: string): void {
-    console.log(questionTypeValue,pregunta)
+    // console.log(questionTypeValue,pregunta)
     pregunta.type = QuestionType.TYPES.find(
       (questionType) => questionType.value == questionTypeValue
     );
@@ -792,8 +810,8 @@ export class CreateProfileComponent {
   // QuestionType Single Choice
   changeCorrectOption(question: Question,optionIndex: number): void {
     const placeholder = question.options[optionIndex].placeholder;
-    console.log(optionIndex);
-    console.log(question.options)
+    // console.log(optionIndex);
+    // console.log(question.options)
     question.options.forEach((option, index) => {
       if (index == optionIndex && option.placeholder === placeholder) {
         option.isCorrect = true;
@@ -806,7 +824,7 @@ export class CreateProfileComponent {
 
   parseQuestionText(pregunta: Question): void {
 
-    console.log('pregunta',pregunta)
+    // console.log('pregunta',pregunta)
 
     let existingPlaceholders = pregunta.getPlaceholders();
     pregunta['placeHolders'] = existingPlaceholders;
@@ -823,7 +841,7 @@ export class CreateProfileComponent {
     pregunta.id = Date.now().toString();
     pregunta['expanded'] = true;
     pregunta['competencias'] = [];
-    console.log('questions',pregunta);
+    // console.log('questions',pregunta);
     this.newQuestions.push(pregunta)
     this.modalCreateQuestion = this.modalService.open(content, {
       ariaLabelledBy: 'modal-basic-title',
@@ -839,7 +857,7 @@ export class CreateProfileComponent {
     let response: QuestionValidationResponse = pregunta.isValidForm();
 
     if (!response.result) {
-      console.log(response.messages)
+      // console.log(response.messages)
       pregunta['isInvalid'] = true;
       pregunta['InvalidMessages'] = response.messages;
       valid = false;
@@ -850,7 +868,7 @@ export class CreateProfileComponent {
       }
       pregunta['isInvalid'] = false;
       pregunta['InvalidMessages'] = null;
-      console.log('pregunta new',pregunta)
+      // console.log('pregunta new',pregunta)
 
       let preguntaNew = structuredClone(pregunta)
       delete preguntaNew['isInvalid'];
@@ -885,7 +903,7 @@ export class CreateProfileComponent {
         }
       });
     }
-    console.log(question.options);
+    // console.log(question.options);
   }
 
   addChoice(question: Question, placeholder: string = ''): void {
@@ -898,7 +916,7 @@ export class CreateProfileComponent {
       placeholder: placeholder,
     };
     question.options = [...question.options, newOption];
-    console.log(question.options);
+    // console.log(question.options);
   }
 
   deleteOption(question: Question,optIndex: number): void {
@@ -915,8 +933,8 @@ export class CreateProfileComponent {
   
   hideOtherQuestion(questionIn){
 
-    console.log(questionIn);
-    console.log(this.examen.questions)
+    // console.log(questionIn);
+    // console.log(this.examen.questions)
 
     this.examen.questions.questions.map( question => {
       if(questionIn.id != question.id)
@@ -928,11 +946,11 @@ export class CreateProfileComponent {
 
   usersProfile = []
 
-  handleSelectedUsers(selected: any[]) {
+  handleSelectedUsers(selected: User[]) {
     console.log(selected); // This will give you the selected items from the table.
     this.usersProfile = selected;
     this.usersProfile.forEach(async user => {
-      let userRef = await this.afs.collection<User>(User.collection).doc(user.id).ref;
+      let userRef = this.afs.collection<User>(User.collection).doc(user.uid).ref;
       user.ref = userRef
     });
   }

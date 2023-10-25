@@ -21,7 +21,7 @@
                 </div>
             </div>
         </div>
-        <!-- Tab 1 Informacion del curso -->
+        <!-- Tab 1 Informacion del perfil -->
         <ng-container *ngIf="activeStep == 1">
             <div fxFlex fxLayout="row" class="contanier">
                 <div fxFlex="60%" class="pdl10 pdr10 pdt10">
@@ -65,6 +65,7 @@
                 </div>
             </div>
         </ng-container>
+        <!-- Tab 2 Competencias del perfil -->
         <ng-container *ngIf="activeStep == 2">
             <app-skills-selector
                 [competenciasEmpresa]="competenciasEmpresa" 
@@ -73,6 +74,7 @@
                 (competenciasSelectedOut)="competenciasSelected = $event">
             </app-skills-selector>
         </ng-container>
+        <!-- Tab 3 Plan de estudio -->
         <ng-container *ngIf="activeStep == 3">
             <div fxFlex fxLayout="row" class="contanier">
                 <div fxFlex="55%" class="pdl10 pdr10 pdt10">
@@ -121,6 +123,7 @@
                 </div>
             </div>
         </ng-container>
+        <!-- Tab 4 Examen -->
         <ng-container *ngIf="activeStep == 4">
             <div fxFlex fxLayout="row" class="contanier">
                 <div fxFlex="60%" class="pdl10 pdr10 pdt10">
@@ -228,6 +231,7 @@
                 </div>
             </div>
         </ng-container>
+        <!-- Tab 5 Resumen -->
         <ng-container *ngIf="activeStep == 5">
             <div fxFlex fxLayout="row" class="contanier">
                 <div fxFlex="60%" class="pdl10 pdr10 pdt10">

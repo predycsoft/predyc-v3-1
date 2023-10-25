@@ -65,9 +65,6 @@ export class StudentListComponent {
 
   ngAfterViewInit() {
 
-    let usersObservable: Observable<User[]>;
-
-    usersObservable = this.usersObservable
     // switch (this.usersListed) {
     //   case 'usersWithoutProfile':
     //     usersObservable = this.userService.usersWithoutProfile$;
@@ -88,7 +85,7 @@ export class StudentListComponent {
     ).subscribe(isLoaded => {
       if (isLoaded) {
         this.dataSource = new UserDataSource(
-          usersObservable,
+          this.usersObservable,
           this.paginator,
           this.sort,
           this.profileService,
