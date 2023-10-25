@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { take, map, firstValueFrom, Observable, finalize } from 'rxjs';
+import { take, map, firstValueFrom, Observable, finalize, merge } from 'rxjs';
 import { Curso } from 'src/app/shared/models/course.model';
 import { CategoryService } from 'src/app/shared/services/category.service';
 import { CourseService } from 'src/app/shared/services/course.service';
@@ -82,6 +82,8 @@ export class CreateProfileComponent {
   searchValue = ""
   selectedCourse: Curso = null
 
+  usersWithoutProfile$
+
   steps = [
     'Información del perfil',
     'Competencias del perfil',
@@ -119,6 +121,7 @@ export class CreateProfileComponent {
   }
 
   async ngOnInit() {
+    this.usersWithoutProfile$ = merge([this.userService.getUsersByProfile(null), this.userService.getUsersByProfile(this.profileId)])
 
     this.enterpriseService.enterpriseLoaded$.subscribe(isLoaded => {
       if (isLoaded) {
@@ -134,12 +137,6 @@ export class CreateProfileComponent {
       }
     })
 
-    this.userService.usersLoaded$.subscribe(async isLoaded => {
-      if (isLoaded) {
-        this.userService.getUsersWithoutProfile(this.profileId);
-      }
-    })
-
     this.inicialiceFormNewProfile();
 
     if(this.mode == 'edit'){
@@ -150,16 +147,13 @@ export class CreateProfileComponent {
         if (isLoaded) {
           this.profile = this.profileService.getProfileObject(this.profileId)
           console.log('profile data',this.profile)
-          let users = this.profile.usersRef.map(userRef => {
-            console.log('userRef',userRef.id)
-            return {uid:userRef.id,ref:userRef}
+          let users = this.userService.getUsersRefByProfileId(this.profileId).map(userRef => {
+          console.log('userRef',userRef.id)
+          return {uid: userRef.id, ref: userRef}
           });
           console.log('users edit',users)
           this.usersProfile = users;
-          this.formNewProfile.get('id').patchValue(this.profile.id);
-          this.formNewProfile.get('name').patchValue(this.profile.name);
-          this.formNewProfile.get('description').patchValue(this.profile.description);
-          this.formNewProfile.get('responsabilities').patchValue(this.profile.responsabilities);
+          this.formNewProfile.patchValue(this.profile)
         }
       })      
     }
@@ -390,10 +384,10 @@ export class CreateProfileComponent {
 
   async saveProfile(){
     if(!this.profile){
-      let departmentRef = await this.afs.collection<Department>(Department.collection).doc(this.departmentId).ref;
       this.profile= new Profile()
       //this.profile.id = this.formNewProfile.value.id;
-      this.profile.departmentRef = departmentRef;
+      // this.profile.departmentRef = departmentRef;
+      // GUARDAR PERFIL EN COLECCION DE DEPARTAMENTO
       this.profile.enterpriseRef = this.enterpriseRef;
     }
     this.profile.name = this.formNewProfile.value.name;
@@ -401,6 +395,11 @@ export class CreateProfileComponent {
     this.profile.responsabilities = this.formNewProfile.value.responsabilities;
     await this.profileService.saveProfile(this.profile);
     console.log('profile',this.profile)
+
+    await this.afs.collection<Department>(Department.collection).doc(this.departmentId).update({
+      profilesRef: [this.profileService.getProfileRefById(this.profile.id)]
+    });
+
     this.formNewProfile.get('id').patchValue(this.profile.id);
   }
   
@@ -609,17 +608,21 @@ export class CreateProfileComponent {
         this.activityClassesService.saveQuestion(pregunta,activityClass.id)
       });
     }
-
-    if(this.usersProfile){
+    
+    if(this.usersProfile){ //editando
       console.log('users',this.usersProfile); 
       let arrayRef=this.usersProfile.map(user => {
         return user.ref
       });
       console.log('arrayRef users',arrayRef)
-      this.profile.usersRef = arrayRef;
-      this.saveProfile();
-      let profileRef = await this.afs.collection<Profile>(Profile.collection).doc(this.profile.id).ref;
+      // this.profile.usersRef = arrayRef;
+      this.saveProfile(); // Quitar?
+      let profileRef = this.profileService.getProfileRefById(this.profile.id)
+
       arrayRef.forEach(userRef => {//creo que deberia ser un cloud funtion
+        userRef.update({
+          profile: profileRef
+        })
         this.profileService.saveUserProfileLog(userRef,profileRef)
       });
     }

@@ -193,7 +193,7 @@ class UserDataSource extends DataSource<User> {
         let users = this.dataSubject.value
         users.map(user => {
           user.profileData = user.profile ? this.profileService.getProfile(user.profile.id) : null
-          user.departmentData = user.profileData ? this.departmentService.getDepartment(user.profileData.departmentRef.id) : null
+          user.departmentData = user.profileData ? this.departmentService.getDepartmentByProfileId(user.profile.id) : null
         })
         let filteredUsers = users.filter(user => {
           const searchStr = (user.name as string + user.email as string).toLowerCase();

@@ -22,7 +22,6 @@ export class Department {
         public name: string,
         public enterpriseRef: DocumentReference | null,
         public profilesRef: DocumentReference[] | null,
-        //public users?: DocumentReference[] 
     ) {}
 
     public static fromJson(departmentJson: DepartmentJson): Department {
@@ -32,7 +31,6 @@ export class Department {
         departmentJson.name,
         departmentJson.enterpriseRef,
         departmentJson.profilesRef,
-        //departmentJson?.users,
       )
     }
   

@@ -92,12 +92,15 @@ export class DepartmentsProfilesComponent {
         //console.log('perfiles another ', profiles);
   
         const departmentsWithProfiles = this.departments.map(department => {
+          const departmentProfiles = department.profilesRef
+          .map(profileRef => this.profiles.find(profile => profile.id === profileRef.id))
+          .filter(profile => profile);  // Filtrar cualquier perfil undefined
           return {
             ...department,
-            profiles: this.profiles.filter(profile => profile.departmentRef.id === department.id)
+            profiles: departmentProfiles
           };
         });
-        // console.log('new array',departmentsWithProfiles);
+        console.log('Departments with profiles',departmentsWithProfiles);
         this.dataSource = new MatTableDataSource<any>(departmentsWithProfiles);  
         if (this.dataSource) {
           this.dataSource.paginator = this.paginator;

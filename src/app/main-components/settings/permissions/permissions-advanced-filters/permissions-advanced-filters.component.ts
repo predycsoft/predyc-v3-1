@@ -188,8 +188,7 @@ class ProfileDataSource extends DataSource<Profile> {
           this.paginator.length = this.enterpriseService.getEnterprise().profilesNo
         }
         this.currentProfiles = profiles.map(profile => {
-          const profileDepartment = this.departmentService.getDepartment(profile.departmentRef.id)
-          profile.department = profileDepartment
+          const profileDepartment = this.departmentService.getDepartmentByProfileId(profile.id)
           // Valores por defecto
           let hours = 1
           let liberty = 1

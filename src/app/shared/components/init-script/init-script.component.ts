@@ -210,7 +210,7 @@ export class InitScriptComponent {
     // console.log(`Finished Creating Validation Tests`)
   }
 
-  // Crea perfiles y agrega la referencia al departamento respectivo
+  // Crea perfiles y agrega la referencia al departamento y usuario respectivo
   async addProfiles() {
     const departmentSnapshot = await firstValueFrom(this.afs.collection(Department.collection).get());
     const departmentRefs = departmentSnapshot.docs.map(doc => doc.ref);
@@ -240,7 +240,6 @@ export class InitScriptComponent {
       await profileRef.set({
           ...profile,
           id: id,
-          departmentRef: currentDepartmentRef, //Eliminar este campo
           skillsRef: [currentSkillRef],
           enterpriseRef: currentEnterpriseRef,
       });

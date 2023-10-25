@@ -9,7 +9,6 @@ export interface ProfileJson {
     name: string,
     description: string,
     responsabilities: string,
-    departmentRef: DocumentReference
     skillsRef: DocumentReference[]
     coursesRef: DocumentReference[] | []
     enterpriseRef: DocumentReference | null
@@ -24,12 +23,9 @@ export class Profile {
     public name: string;
     public description: string;
     public responsabilities: string;
-    public departmentRef: DocumentReference
     public skillsRef: DocumentReference [] = []
     public coursesRef: DocumentReference [] | [] = []
     public enterpriseRef: DocumentReference | null
-
-    public department?: Department
     public skills?: Skill[]
     public users?: User[]
     public enterprise?: Enterprise
@@ -41,7 +37,6 @@ export class Profile {
         profile.name = profileJson.name
         profile.description = profileJson.description
         profile.responsabilities = profileJson.responsabilities
-        profile.departmentRef = profileJson.departmentRef
         profile.skillsRef = profileJson.skillsRef
         profile.coursesRef = profileJson.coursesRef
         profile.enterpriseRef = profileJson.enterpriseRef
@@ -55,7 +50,6 @@ export class Profile {
             name: this.name,
             description: this.description,
             responsabilities: this.responsabilities,
-            departmentRef: this.departmentRef,
             skillsRef: this.skillsRef,
             coursesRef: this.coursesRef,
             enterpriseRef: this.enterpriseRef,
