@@ -11,7 +11,6 @@ export interface UserJson {
   createdAt: number | null // timestamp
   currentlyWorking: boolean
   degree: string | null
-  department: DocumentReference | null, // Eliminar de aqui (con el perfil es suficiente)
   displayName: string | null
   email: string | null
   enterprise: DocumentReference | null
@@ -58,7 +57,6 @@ export class User {
     public createdAt: number | null, // timestamp
     public currentlyWorking: boolean,
     public degree: string | null,
-    public department: DocumentReference | null,
     public displayName: string | null,
     public email: string | null,
     public enterprise: DocumentReference | null,
@@ -139,7 +137,6 @@ export class User {
       createdAt: null,
       currentlyWorking: false,
       degree: null,
-      department: null,
       displayName: null,
       email: null,
       enterprise: configObj.enterprise ? configObj.enterprise : null, 
@@ -177,7 +174,6 @@ export class User {
       userJson.createdAt,
       userJson.currentlyWorking,
       userJson.degree,
-      userJson.department,
       userJson.displayName,
       userJson.email,
       userJson.enterprise, 
@@ -215,7 +211,6 @@ export class User {
       createdAt: this.createdAt,
       currentlyWorking: this.currentlyWorking,
       degree: this.degree,
-      department: this.department,
       displayName: this.displayName,
       email: this.email,
       enterprise: this.enterprise,
