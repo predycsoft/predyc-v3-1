@@ -103,17 +103,15 @@ export class ProfileService {
     }
   }
 
-  saveUserProfileLog(userRef,ProfileRef){
-
+  async saveUserProfileLog(userRef: DocumentReference, ProfileRef: DocumentReference){
     let object = {
-      userRef:userRef,
-      profileRef:ProfileRef,
+      userRef: userRef,
+      profileRef: ProfileRef,
       updatedAt: new Date()
     }
     let ref: DocumentReference;
     ref = this.afs.collection('userProfile').doc().ref;
-    ref.set(object, { merge: true });
-
+    await ref.set(object, { merge: true });
   }
 
   public getProfileRefById(id: string): DocumentReference<Profile> {

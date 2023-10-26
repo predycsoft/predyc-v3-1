@@ -8,6 +8,7 @@ import { AlertsService } from './alerts.service';
 import { generateSixDigitRandomNumber } from '../utils';
 import { AngularFireFunctions } from '@angular/fire/compat/functions';
 import { Profile } from '../models/profile.model';
+import { ProfileService } from './profile.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -32,6 +33,7 @@ export class UserService {
     private afs: AngularFirestore,
     private fireFunctions: AngularFireFunctions,
     private enterpriseService: EnterpriseService,
+    private profileService: ProfileService,
     private alertService: AlertsService
   ) {
     console.log("Se instancio el user service")
@@ -57,6 +59,14 @@ export class UserService {
       // const user = userCredential.user;
       await this.afs.collection(User.collection).doc(uid).set({...newUser.toJson(), uid: uid});
       newUser.uid = uid
+     
+      if (newUser.profile) {
+        console.log("El nuevo usuario tiene perfil")
+        const userRef = this.getUserRefById(uid)
+        const profileRef = this.profileService.getProfileRefById(newUser.profile.id)
+        await this.profileService.saveUserProfileLog(userRef, profileRef)
+      }
+      
       this.alertService.succesAlert(
         `Has agregado un nuevo ${newUser.role === "admin" ? "administrador" : "usuario"} exitosamente. 
         Hemos enviado un correo para que pueda establecer su contraseña.`
@@ -132,6 +142,12 @@ export class UserService {
       await this.afs.collection(User.collection).doc(user.uid as string).set(
         user, { merge: true }
       );
+      if (user.profile) {
+        console.log("Se agrego un perfil al usuario")
+        const userRef = this.getUserRefById(user.uid)
+        const profileRef = this.profileService.getProfileRefById(user.profile.id)
+        await this.profileService.saveUserProfileLog(userRef, profileRef)
+      }
       this.alertService.infoAlert('Has editado la informacion del usuario exitosamente.')
     } catch (error) {
       console.log(error)

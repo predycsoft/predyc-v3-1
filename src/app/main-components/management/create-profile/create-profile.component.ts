@@ -637,11 +637,11 @@ export class CreateProfileComponent {
       // this.saveProfile(); // Quitar?
       let profileRef = this.profileService.getProfileRefById(this.profile.id)
 
-      arrayRef.forEach(userRef => {//creo que deberia ser un cloud funtion
+      arrayRef.forEach(async userRef => {//creo que deberia ser un cloud funtion
         userRef.update({
           profile: profileRef
         })
-        this.profileService.saveUserProfileLog(userRef,profileRef)
+        await this.profileService.saveUserProfileLog(userRef,profileRef)
       });
     }
 
