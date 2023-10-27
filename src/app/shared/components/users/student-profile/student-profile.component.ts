@@ -98,7 +98,7 @@ export class StudentProfileComponent implements OnInit {
       this.form.get("profile")?.setValue((this.student.profile && this.student.profile.id) ? this.student.profile.id : null)
       const department = (this.student.profile && this.student.profile.id) ? this.departmentService.getDepartmentByProfileId(this.student.profile.id) : null
       this.form.get("department")?.setValue((department && department.id)? department.id : null)
-      if (this.form.get("department").value) this.onDepartmentChange()
+      if (this.form.get("department").value) this.onDepartmentChange(true)
     }
   }
 
@@ -249,11 +249,12 @@ export class StudentProfileComponent implements OnInit {
     return false
   }
 
-  onDepartmentChange() {
+  onDepartmentChange(isFirsLoad: boolean = false) {
+    const profileControl = this.form.get('profile');
+    if (!isFirsLoad) profileControl.setValue(null)
     const selectedDepartmentId = this.form.get('department')?.value;
     const selectedDepartment: Department = this.departments.find(department => department.id === selectedDepartmentId)
     console.log("selectedDepartment", selectedDepartment)
-    const profileControl = this.form.get('profile');
     if (selectedDepartment && selectedDepartment.profilesRef.length > 0) {
       this.selectedDepartmentProfiles = this.profiles.filter(profile => 
         selectedDepartment.profilesRef.some(docRef => docRef.id === profile.id)
