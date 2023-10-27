@@ -6,7 +6,7 @@ import { LoaderService } from '../../services/loader.service';
 import { SkillService } from '../../services/skill.service';
 import { Skill } from '../../models/skill.model'
 import { Category } from '../../models/category.model';
-import { compareByString } from '../../utils';
+import { cloneArrayOfObjects, compareByString } from '../../utils';
 
 @Component({
   selector: 'app-skills-selector-v2',
@@ -23,11 +23,13 @@ export class SkillsSelectorV2Component {
   ) {}
 
   @Input() selectedSkills: Skill[]
-  @Input() skills: Skill[]
+  @Input() inputSkills: Skill[]
   @Input() categories: Category[]
   @Input() arrangeByCategory: boolean
   @Output() onSelectedSkill: EventEmitter<Skill>  = new EventEmitter<Skill>();
   @Output() onRemovedSkill: EventEmitter<Skill>  = new EventEmitter<Skill>();
+
+  skills
 
   ngOnInit() {
     // console.log("onInit")
@@ -44,15 +46,19 @@ export class SkillsSelectorV2Component {
   }
 
   updateData() {
-    this.selectedSkills.forEach(skill => {
-      const targetSkill = this.skills.find(item => item.id === skill.id)
+    this.skills = cloneArrayOfObjects(this.inputSkills)
+    console.log("this.skills", this.skills)
+    console.log("this.selectedSkills", this.selectedSkills)
+    this.selectedSkills.forEach(selectedSkill => {
+      const targetSkill = this.skills.find(item => item.id === selectedSkill.id)
       targetSkill["selected"] = true
     })
+    console.log("this.skills", this.skills)
     if (this.arrangeByCategory) {
       this.categories.map(category => {
         return {
           ...category,
-          skills: [...this.skills.filter(skill => category.id === skill.category.id)]
+          skills: [...this.skills.filter(skill => skill.categoryId === category.id)]
         }
       })
     } else {

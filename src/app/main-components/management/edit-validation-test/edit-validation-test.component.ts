@@ -4,13 +4,12 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { combineLatest, Observable, Subscription } from 'rxjs';
 import { IconService } from 'src/app/shared/services/icon.service';
 import { VimeoUploadService } from 'src/app/shared/services/vimeo-upload.service';
-import { Question, QuestionType } from 'src/app/shared/models/activity-classes.model'
-import { compareByString, getPlaceholders } from 'src/app/shared/utils';
+import { QuestionType } from 'src/app/shared/models/activity-classes.model'
+import { cloneArrayOfObjects, compareByString, getPlaceholders } from 'src/app/shared/utils';
 import { AlertsService } from 'src/app/shared/services/alerts.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { CategoryService } from 'src/app/shared/services/category.service';
 import { SkillService } from 'src/app/shared/services/skill.service';
-import { DocumentData, DocumentReference } from '@angular/fire/compat/firestore';
 import { Skill } from 'src/app/shared/models/skill.model';
 import { Category } from 'src/app/shared/models/category.model';
 
@@ -100,8 +99,10 @@ export class EditValidationTestComponent {
   // recommendedSkills: Skill[]
   // categories: { skills: Skill[]; id: string; name?: string; enterprise?: DocumentReference<DocumentData>}[]
 
-  skills: Skill[]
-  categories: Category[]
+  skills
+  categories
+  selectedTestSkills = []
+  selectedQuestionSkills = []
 
   constructor(
     public icon: IconService,
@@ -114,7 +115,8 @@ export class EditValidationTestComponent {
     private skillService: SkillService
   ) {}
 
-  dataSubscription: Subscription
+  skillServiceSubscription: Subscription
+  categoryServiceSubscription: Subscription
 
   ngOnInit() {
     this.setupForm()
@@ -142,18 +144,19 @@ export class EditValidationTestComponent {
   }
 
   setupSkillsData() {
-    this.dataSubscription = combineLatest([
-      this.skillService.getSkillsObservable(),
-      this.categoryService.getCategoriesObservable()
-    ]).subscribe(([skills, categories]) => {
-      // Need to add logic to selectedSkills
-      this.skills = skills
-      this.categories = categories
-    })
+    this.skillServiceSubscription = this.skillService.getSkillsObservable().subscribe(skills => {
+      this.skills = cloneArrayOfObjects(skills.map(skill => {
+        return {id: skill.id, name: skill.name, categoryId: skill.category.id}
+      }))
+    }) 
+    this.categoryServiceSubscription = this.categoryService.getCategoriesObservable().subscribe(categories => {
+      this.categories = cloneArrayOfObjects(categories)
+    }) 
   }
 
   ngOnDestroy() {
-    this.dataSubscription.unsubscribe()
+    this.skillServiceSubscription.unsubscribe()
+    this.categoryServiceSubscription.unsubscribe()
   }
 
   validateCurrentModalPage(currentModalPage: string) {
@@ -186,19 +189,22 @@ export class EditValidationTestComponent {
     return <FormArray>this.mainForm.get('modalPage2.testSkills')
   }
 
-  addSkillToTest(skill: Skill) {
+  addSkillToTest(skill) {
+    this.testSkills.push(this.fb.group({
+      id: [skill.id],
+      name: [skill.name],
+      categoryId: [skill.categoryId]
+    }));    
     console.log("Skill added from activity")
-    // this.questions.push(this.fb.group({
-    //   id: [skill.id],
-    //   name: [skill.name],
-    //   categoryId: [skill.category.id]
-    // }));    
+    this.selectedTestSkills.push(skill)
   }
 
-  removeSkillFromTest(skill: Skill) {
+  removeSkillFromTest(skill) {
+    const index = this.testSkills.controls.findIndex(control => control.get('id').value === skill.id)
+    this.testSkills.removeAt(index);
     console.log("Skill removed from activity")
-    // const targetIndex = this.selectedSkills.findIndex(item => item.id === skill.id)
-    // this.selectedSkills.splice(targetIndex, 1)
+    this.selectedTestSkills.splice(index, 1)
+    // REMOVE SKILL FROM QUESTIONS
   }
 
   get questions(): FormArray {
@@ -231,7 +237,25 @@ export class EditValidationTestComponent {
     this.questionStatus.splice(index, 1)
   }
 
-  // Method to get inner array by outer array's index
+  // questionSkills(index: number): FormArray {
+  //   return <FormArray>this.questions.at(index).get('skills');
+  // }
+
+  // addQuestionSkill(questionIndex: number, skill): void {
+  //   this.questionSkills(questionIndex).push(this.fb.group({
+  //     id: [skill.id],
+  //     name: [skill.name],
+  //     categoryId: [skill.categoryId]
+  //   }));
+  //   // Add skill to question skills array
+  // }
+
+  // removeQuestionSkill(questionIndex: number, skill): void {
+  //   const index = this.questionSkills(questionIndex).controls.findIndex(control => control.get('id').value === skill.id)
+  //   this.questionSkills(questionIndex).removeAt(index)
+  //   // Remove skill from question skills array
+  // }
+
   options(index: number): FormArray {
     return <FormArray>this.questions.at(index).get('options');
   }
@@ -351,6 +375,7 @@ export class EditValidationTestComponent {
 
   showCurrentForm() {
     console.log(this.mainForm.value)
+    console.log("selectedTestSkills", this.selectedTestSkills)
   }
 
   // async onFileSelected(event) {
