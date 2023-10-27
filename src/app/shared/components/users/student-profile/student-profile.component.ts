@@ -95,10 +95,10 @@ export class StudentProfileComponent implements OnInit {
       this.student.birthdate ? this.timestampToFormFormat(this.student.birthdate, "birthdate") : null
       this.student.hiringDate ? this.timestampToFormFormat(this.student.hiringDate, "hiringDate") : null
       
-      this.form.get("profile")?.setValue(this.student.profile.id)
-      const department = this.departmentService.getDepartmentByProfileId(this.student.profile.id)
-      this.form.get("department")?.setValue(department.id)
-
+      this.form.get("profile")?.setValue((this.student.profile && this.student.profile.id) ? this.student.profile.id : null)
+      const department = (this.student.profile && this.student.profile.id) ? this.departmentService.getDepartmentByProfileId(this.student.profile.id) : null
+      this.form.get("department")?.setValue((department && department.id)? department.id : null)
+      if (this.form.get("department").value) this.onDepartmentChange()
     }
   }
 
