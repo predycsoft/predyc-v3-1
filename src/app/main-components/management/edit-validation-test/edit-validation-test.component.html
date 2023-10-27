@@ -97,8 +97,8 @@
                     <!-- Skills -->
                     <ng-container *ngIf="activeStep === 2">
                         <app-skills-selector-v2
-                            [selectedSkills]="[]"
-                            [skills]="skills"
+                            [selectedSkills]="selectedTestSkills"
+                            [inputSkills]="skills"
                             [categories]="categories"
                             [arrangeByCategory]="false"
                             (onSelectedSkill)="addSkillToTest($event)"

@@ -56,3 +56,9 @@ export const getPlaceholders = (text: string): string[] => {
   }
   return placeholders;
 }
+
+export const cloneArrayOfObjects = (inputArray: Object[]): Object[] => {
+  return inputArray.map(obj => {
+    return {...obj}
+  })
+}

@@ -131,10 +131,10 @@ export class EnterprisePresentationFormComponent {
       return;
     }
     const file = input.files[0];
-    if (file.type !== 'image/webp') {
-      this.alertService.errorAlert(`La imagen seleccionada debe tener formato:  WEBP`);
-      return;
-    }
+    // if (file.type !== 'image/webp') {
+    //   this.alertService.errorAlert(`La imagen seleccionada debe tener formato:  WEBP`);
+    //   return;
+    // }
     /* checking size here - 1MB */
     const imageMaxSize = 1000000;
     if (file.size > imageMaxSize) {
