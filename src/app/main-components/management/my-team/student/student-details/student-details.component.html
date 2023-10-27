@@ -1,60 +1,43 @@
 <!-- Contenido principal -->
 <div class="content-container" fxLayout="row" fxLayoutAlign="space-between center">
-    <div class="details-section" fxFlex="50">
-        <div class="details-content">
-            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="0.5rem">   
-                <img [src]="icon.checkCircle" alt="Ícono">
-                <span class="ft600 gray-10">2021 - 2023 |</span>
-                <img [src]="icon.notification" alt="Ícono">  
-                <span class="ft600 gray-10">Ingeniero de ventas</span>
-            </div>
-            <div class="basic-info pdl60 mgt20">
-                <span class="ft600 gray-10">Información básica del perfil:</span>
-                <ul>
-                    <li>Nombre completo.</li>
-                    <li>Título o cargo (Ingeniero en Ventas Industriales).</li>
-                    <li>Ubicación (si es relevante).</li>
-                </ul>
-            </div>
-    
-            <div class="description pdl60">
-                <span class="ft600 gray-10">Descripción</span>
-                <ul>
-                    <li style="line-height: normal;">
-                        Una breve descripción que destaque el perfil asignado al usuario, 
-                        una breve descripción que destaque el perfil asignado al usuario 
-                        una breve descripción que destaque el perfil asignado al usuario 
-                        una breve descripción que destaque.
-                    </li>
-                </ul>
-            </div>
-    
-            <div class="competences pdl60">
-                <span class="ft600 gray-10">Competencias del perfil</span>
-                <ul>
-                    <div class="underline">Mecánica</div>
-                    <li>Rodamientos</li>
-                    <li>Acoples</li>
-                    <li>Sellos mecánicos</li>
-                    <li>Balanaceo</li>
-                    <li>Compresores</li>
-                    <li>Turbinas</li>
-                    <li>Alineación</li>
-                </ul>
-                <ul>
-                    <div class="underline">Mantenimiento</div>
-                    <li>Planificacón</li>
-                    <li>Programación</li>
-                    <li>Administración</li>
-                    <li>SAP</li>
-                    <li>Basado en condición</li>
-                    <li>Inventarios</li>
-                    <li>Gestión</li>
-                </ul>
+    <div fxLayout="column" class="fw fh scroll">
+        <div *ngFor="let profileHistoricData of profilesHistoricData" class="details-section fw mgb20" >
+            <div class="details-content">
+                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="0.5rem">   
+                    <img [src]="icon.checkCircle" alt="Ícono">
+                    <span class="ft600 gray-10">{{profileHistoricData.updatedAt}} |</span>
+                    <img [src]="icon.notification" alt="Ícono">  
+                    <span class="ft600 gray-10">{{profileHistoricData.profileName}}</span> 
+                </div>
+                <div class="basic-info pdl60 mgt20">
+                    <span class="ft600 gray-10">Información básica del perfil:</span>
+                    <ul>
+                        <li>Nombre completo.</li> <!-- ???? -->
+                        <li>Título o cargo (Ingeniero en Ventas Industriales).</li> <!-- Profile name -->
+                        <li>Ubicación (si es relevante).</li> <!-- ???? -->
+                    </ul>
+                </div>
+        
+                <div class="description pdl60">
+                    <span class="ft600 gray-10">Descripción</span>
+                    <ul>
+                        <li style="line-height: normal;"> 
+                            {{profileHistoricData.description}}
+                        </li>
+                    </ul>
+                </div>
+        
+                <div class="competences pdl60">
+                    <span class="ft600 gray-10">Competencias del perfil</span> 
+                    <ul *ngFor="let category of profileHistoricData.skillsByCategory">
+                        <div class="underline">{{category.name}}</div> 
+                        <li *ngFor="let skill of category.skills">{{skill.name}}</li> 
+
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
-
     <div class="illustration" fxFlex="50" fxLayout="row" fxLayoutAlign="center center">
         <img [src]="'../../../../../assets/images/cursos/placeHolderCurso.svg'" alt="Ilustración">
     </div>
