@@ -8,6 +8,7 @@ import { AlertsService } from './alerts.service';
 import { generateSixDigitRandomNumber } from '../utils';
 import { AngularFireFunctions } from '@angular/fire/compat/functions';
 import { Profile } from '../models/profile.model';
+import { ProfileService } from './profile.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -32,6 +33,7 @@ export class UserService {
     private afs: AngularFirestore,
     private fireFunctions: AngularFireFunctions,
     private enterpriseService: EnterpriseService,
+    private profileService: ProfileService,
     private alertService: AlertsService
   ) {
     console.log("Se instancio el user service")
@@ -57,6 +59,14 @@ export class UserService {
       // const user = userCredential.user;
       await this.afs.collection(User.collection).doc(uid).set({...newUser.toJson(), uid: uid});
       newUser.uid = uid
+     
+      if (newUser.profile) {
+        console.log("El nuevo usuario tiene perfil")
+        const userRef = this.getUserRefById(uid)
+        const profileRef = this.profileService.getProfileRefById(newUser.profile.id)
+        await this.profileService.saveUserProfileLog(userRef, profileRef)
+      }
+      
       this.alertService.succesAlert(
         `Has agregado un nuevo ${newUser.role === "admin" ? "administrador" : "usuario"} exitosamente. 
         Hemos enviado un correo para que pueda establecer su contraseña.`
@@ -127,17 +137,30 @@ export class UserService {
     }
   }
 
+
   async editUser(user: UserJson): Promise<void> {
     try {
+      const userRef = this.getUserRefById(user.uid)
+      // Obtener el documento actual
+      const currentDocument = await firstValueFrom(this.afs.collection(User.collection).doc(user.uid as string).get())
+      const currentData = currentDocument.data() as UserJson;
+  
       await this.afs.collection(User.collection).doc(user.uid as string).set(
         user, { merge: true }
       );
-      this.alertService.infoAlert('Has editado la informacion del usuario exitosamente.')
+      // Comparar el valor original con el nuevo
+      if (currentData.profile && user.profile && currentData.profile.id !== user.profile.id) {
+        console.log("Se cambió el perfil del usuario");
+        const profileRef = this.profileService.getProfileRefById(user.profile.id);
+        await this.profileService.saveUserProfileLog(userRef, profileRef);
+      }
+      this.alertService.infoAlert('Has editado la informacion del usuario exitosamente.');
     } catch (error) {
-      console.log(error)
-      this.alertService.errorAlert(JSON.stringify(error))
+      console.log(error);
+      this.alertService.errorAlert(JSON.stringify(error));
     }
   }
+  
 
   // Arguments could be pageSize, sort, currentPage
   private getUsers() {
@@ -168,7 +191,6 @@ export class UserService {
   getUser(uid: string): User {
     // const user = await firstValueFrom(this.afs.collection<User>(User.collection).doc(uid).valueChanges())
     // return user?.enterprise === this.enterpriseService.getEnterpriseRef() ? user : undefined
-    console.log()
     return this.usersSubject.value.find(x => x.uid === uid)
   }
 

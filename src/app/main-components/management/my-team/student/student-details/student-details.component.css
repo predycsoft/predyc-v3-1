@@ -6,12 +6,15 @@
     overflow: hidden;
 }
 
+.scroll {
+    overflow-y: auto; /* Permitir desplazamiento vertical si es necesario */
+}
+
 .details-section {
     position: relative; 
-    width: 50%;
+    width: 100%;
     padding: 1rem;
     max-height: 100%;
-    overflow-y: auto; /* Permitir desplazamiento vertical si es necesario */
     padding-right: 20px; /* Agregado para evitar que el contenido se superponga con la barra de desplazamiento */
 }
 
@@ -40,9 +43,7 @@
     margin-left: 1.5rem !important;
 }
 
-.details-section::-webkit-scrollbar {
-    width: 0; /* Ocultar scroll bar para Chrome, Safari y Opera */
-}
+
 
 .illustration {
     width: 50%;

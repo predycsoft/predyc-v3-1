@@ -5,6 +5,7 @@ import { User } from 'src/app/shared/models/user.model';
 import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
+import { ProfileService } from 'src/app/shared/services/profile.service';
 
 @Component({
   selector: 'app-my-team',
@@ -17,6 +18,8 @@ export class MyTeamComponent {
     private userService: UserService,
     private enterpriseService: EnterpriseService,
     private route: ActivatedRoute,
+    private profileService: ProfileService,
+
   ){}
 
   studentSelected: User | null = null
@@ -38,12 +41,12 @@ export class MyTeamComponent {
     this.studentSelected = User.getEnterpriseStudentUser(this.enterpriseService.getEnterpriseRef())
   }
 
-  onStudentSaveHandler(student: User) {
+  async onStudentSaveHandler(student: User) {
     try {
       if (student.uid) {
-        this.userService.editUser(student)
+        await this.userService.editUser(student)
       } else {
-        this.userService.addUser(student)
+        await this.userService.addUser(student)
       }
     } catch (error) {
       console.log(error)

@@ -140,6 +140,7 @@ class ProfileDataSource extends DataSource<Profile> {
     }
 
   getProfiles() {
+    console.log("Corriendo get profiles")
     let queryObj: {
       pageSize: number
       startAt?: any
@@ -163,7 +164,7 @@ class ProfileDataSource extends DataSource<Profile> {
     // ---- Estoy pidiendo aqui porque en el servicio no me funciona ----
     this.afs.collection<Profile>(Profile.collection, ref => {
       let query = ref as any
-      query = query.where('enterpriseRef', 'array-contains', this.enterpriseService.getEnterpriseRef())
+      query = query.where('enterpriseRef', '==', this.enterpriseService.getEnterpriseRef())
       query = query.orderBy('name', 'asc')
       if (queryObj.startAt) {
         query = query.startAt(queryObj.startAt.name)

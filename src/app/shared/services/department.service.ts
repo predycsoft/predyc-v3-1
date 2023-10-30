@@ -48,7 +48,11 @@ export class DepartmentService {
   }
 
   private getDepartments() {
-    this.afs.collection<Department>(Department.collection, ref => ref.where('enterpriseRef', '==', this.enterpriseService.getEnterpriseRef())).valueChanges().subscribe({
+    this.afs.collection<Department>(Department.collection, ref => 
+      ref
+      .where('enterpriseRef', '==', this.enterpriseService.getEnterpriseRef())
+      .orderBy('name', 'asc')
+      ).valueChanges().subscribe({
       next: department => {
         this.departmentSubject.next(department)
       },

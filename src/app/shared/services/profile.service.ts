@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, firstValueFrom } from 'rxjs';
 import { Profile } from '../models/profile.model';
 import { AlertsService } from './alerts.service';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { EnterpriseService } from './enterprise.service';
+import { User } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -103,17 +104,20 @@ export class ProfileService {
     }
   }
 
-  saveUserProfileLog(userRef,ProfileRef){
-
+  async getUserProfileLogs(userRef: DocumentReference): Promise<any>{
+    return await firstValueFrom(this.afs.collection('userProfile', ref => ref
+    .where('userRef', '==', userRef).orderBy("updatedAt", "desc")).valueChanges())    
+  }
+  
+  async saveUserProfileLog(userRef: DocumentReference, ProfileRef: DocumentReference){
     let object = {
-      userRef:userRef,
-      profileRef:ProfileRef,
+      userRef: userRef,
+      profileRef: ProfileRef,
       updatedAt: new Date()
     }
     let ref: DocumentReference;
     ref = this.afs.collection('userProfile').doc().ref;
-    ref.set(object, { merge: true });
-
+    await ref.set(object, { merge: true });
   }
 
   public getProfileRefById(id: string): DocumentReference<Profile> {
