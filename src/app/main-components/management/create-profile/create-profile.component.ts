@@ -26,6 +26,7 @@ import { Skill } from 'src/app/shared/models/skill.model';
 import { User } from 'src/app/shared/models/user.model';
 import { UserService } from 'src/app/shared/services/user.service';
 import { compareByString } from 'src/app/shared/utils';
+import { AlertsService } from 'src/app/shared/services/alerts.service';
 
 interface Competencia {
   id: number;
@@ -58,8 +59,8 @@ export class CreateProfileComponent {
     private storage: AngularFireStorage,
     public sanitizer: DomSanitizer,
     private profileService: ProfileService,
-    private userService: UserService
-
+    private userService: UserService,
+    private alertService: AlertsService
   ){}
 
   departments: Department[]
@@ -328,9 +329,11 @@ export class CreateProfileComponent {
 
   }
 
-  finishProfile(){
-    this.saveBorrador()
-
+  async finishProfile(){
+    const text = this.mode == 'create' ? 'agregado un nuevo' : 'editado el'
+    this.alertService.succesAlert(`Has ${text} perfil satisfactoriamente`)
+    await this.saveBorrador()
+    this.router.navigate(["management/departments-and-profiles"])
   }
 
   examen;
@@ -573,7 +576,7 @@ export class CreateProfileComponent {
       }
       this.profile.skillsRef=skills;
       // console.log('this.profile with skills',this.profile)
-      this.saveProfile();
+      await this.saveProfile();
     }
     // console.log('this.coursesSelectedPerfil',this.coursesSelectedPerfil)
     if(this.coursesSelectedPerfil){
