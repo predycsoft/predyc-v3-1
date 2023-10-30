@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { IconService } from '../../../shared/services/icon.service';
 import { LoaderService } from 'src/app/shared/services/loader.service';
 import { AfterOnInitResetLoading } from 'src/app/shared/decorators/loading.decorator';
@@ -39,7 +39,8 @@ export class DepartmentsProfilesComponent {
     private enterpriseService: EnterpriseService,
     private alertService: AlertsService,
     private searchInputService: SearchInputService, 
-    private userService: UserService
+    private userService: UserService,
+    private changeDetectorRef: ChangeDetectorRef
 
   ){}
 
@@ -56,17 +57,10 @@ export class DepartmentsProfilesComponent {
   searchSubscription: Subscription
 
   combinedObservableSubscription
+  pageSize = 5
 
 
   async ngOnInit() {
-    // ---- Esto es para crear departamentos en firestore
-    // const profiles = await firstValueFrom(this.afs.collection("profile").valueChanges()) as Profile[]
-    // profiles.forEach(perfil => {
-    //   let ref = this.afs.collection<Profile>("profile").doc(perfil.id).ref
-    //   this.profilesRefs.push(ref)
-    // });
-    // -----
-    // console.log(deparmentsData)
     this.departmentService.loadDepartmens();
     this.profileService.loadProfiles();
   }
@@ -103,33 +97,66 @@ export class DepartmentsProfilesComponent {
         console.log('Departments with profiles',departmentsWithProfiles);
         this.dataSource = new MatTableDataSource<any>(departmentsWithProfiles);  
         if (this.dataSource) {
+          this.paginator.pageSize = this.pageSize
           this.dataSource.paginator = this.paginator;
         }
       }
     })
   }
 
+  // ngAfterViewChecked() {
+  //   // Establece la propiedad userTriggered a false después de que se hayan completado las detecciones de cambios
+  //   if (this.userTriggered) {
+  //     this.userTriggered = false;
+  //   }
+  // }
+
   // Define a SelectionModel instance to manage the chip selection
   chipSelection = new SelectionModel<string>(true);
   
-  // Initialize the userTriggered flag as false
   userTriggered = false;
+  selectedChip: string | null = null;
 
   onChipClick(departmentName: string) {
-    // Set the userTriggered flag to true when the chip is clicked
     this.userTriggered = true;
+
+    // Deseleccionar todos los chips
+    // this.chipSelection.clear();
+    let selection: string[] = []
+    if (this.selectedChip === departmentName) {
+      // Si el chip seleccionado es el mismo que el actual, deselecciónalo
+      this.selectedChip = null;
+    } else {
+      // Si el chip seleccionado es diferente, selecciónalo
+      console.log("chipClick")
+      // this.chipSelection.select(departmentName);
+      this.selectedChip = departmentName;
+      selection = [departmentName]
+    }
     
-    // Toggle the selection of the corresponding department in the SelectionModel
-    this.chipSelection.toggle(departmentName);
+    this.chipSelection.setSelection(...selection)
+    // Verificar si el departamento seleccionado no está en la página actual
+    const indexOfDepartment = this.departments.findIndex(department => department.name === departmentName);
+    if (indexOfDepartment > -1) {
+      // Obtener el índice de la página actual y la cantidad de elementos por página
+      const pageIndex = Math.floor(indexOfDepartment / this.paginator.pageSize);
+      // Verificar si es necesario cambiar de página
+      if (pageIndex !== this.paginator.pageIndex) {
+        // Navegar a la página que contiene el departamento
+        this.paginator.pageIndex = pageIndex;
+        this.paginator.page.emit({
+          pageIndex: pageIndex,
+          pageSize: this.paginator.pageSize,
+          length: this.paginator.length,
+        });
+      }
+    }
   }
 
-  // Actualizar la variable chipSelection al cambiar la página
+
   paginatorPageChange(event: PageEvent) {
-    this.departments.forEach(department => {
-      if (this.chipSelection.isSelected(department.name)) {
-        this.chipSelection.deselect(department.name);
-      }
-    });
+    // Restablecer el chip seleccionado cuando cambia de página
+    this.selectedChip = null;
   }
 
   toggleAccordion(departmentName: string) {
