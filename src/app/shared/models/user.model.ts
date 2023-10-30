@@ -34,8 +34,10 @@ export interface UserJson {
   uid: string | null
   updatedAt: number | null
   avgScore: number
+  certificatesQty: number
   performance: 'no plan'| 'low'| 'medium'| 'high'| null
   ratingPoints: number
+  studyHours: number
 }
 
 export class User {
@@ -83,8 +85,10 @@ export class User {
 
     // metrics
     public avgScore: number,
+    public certificatesQty: number,
     public performance: 'no plan'| 'low'| 'medium'| 'high'| null,
     public ratingPoints: number,
+    public studyHours: number
   ) {}
 
   public static getEnterpriseAdminUser(enterprise: DocumentReference) {
@@ -160,8 +164,10 @@ export class User {
       uid: null,
       updatedAt: null,
       avgScore: 0,
+      certificatesQty: 0,
       performance: null,
       ratingPoints: 0,
+      studyHours: 0
     })
   }
 
@@ -197,8 +203,10 @@ export class User {
       userJson.uid,
       userJson.updatedAt,
       userJson.avgScore,
+      userJson.certificatesQty,
       userJson.performance,
       userJson.ratingPoints,
+      userJson.studyHours
     )
   }
 
@@ -234,8 +242,10 @@ export class User {
       uid: this.uid,
       updatedAt: this.updatedAt,
       avgScore: this.avgScore,
+      certificatesQty: this.certificatesQty,
       performance: this.performance,
       ratingPoints: this.ratingPoints,
+      studyHours: this.studyHours
     }
   }
 

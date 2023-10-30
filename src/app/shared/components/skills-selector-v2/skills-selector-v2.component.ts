@@ -4,9 +4,15 @@ import { CategoryService } from '../../services/category.service';
 import { IconService } from '../../services/icon.service';
 import { LoaderService } from '../../services/loader.service';
 import { SkillService } from '../../services/skill.service';
-import { Skill } from '../../models/skill.model'
 import { Category } from '../../models/category.model';
 import { cloneArrayOfObjects, compareByString } from '../../utils';
+
+
+interface Skill {
+  id: string,
+  name: string,
+  categoryId: string
+}
 
 @Component({
   selector: 'app-skills-selector-v2',
@@ -24,12 +30,14 @@ export class SkillsSelectorV2Component {
 
   @Input() selectedSkills: Skill[]
   @Input() inputSkills: Skill[]
-  @Input() categories: Category[]
+  @Input() inputCategories
   @Input() arrangeByCategory: boolean
   @Output() onSelectedSkill: EventEmitter<Skill>  = new EventEmitter<Skill>();
   @Output() onRemovedSkill: EventEmitter<Skill>  = new EventEmitter<Skill>();
 
   skills
+  skillsWithoutCategories
+  categories
 
   ngOnInit() {
     // console.log("onInit")
@@ -47,20 +55,19 @@ export class SkillsSelectorV2Component {
 
   updateData() {
     this.skills = cloneArrayOfObjects(this.inputSkills)
-    console.log("this.skills", this.skills)
-    console.log("this.selectedSkills", this.selectedSkills)
     this.selectedSkills.forEach(selectedSkill => {
       const targetSkill = this.skills.find(item => item.id === selectedSkill.id)
       targetSkill["selected"] = true
     })
-    console.log("this.skills", this.skills)
     if (this.arrangeByCategory) {
-      this.categories.map(category => {
+      this.skillsWithoutCategories = this.skills.filter(skill => skill.categoryId === null)
+      this.categories = this.inputCategories.map(category => {
         return {
           ...category,
           skills: [...this.skills.filter(skill => skill.categoryId === category.id)]
         }
       })
+      console.log("this.categories", this.categories)
     } else {
       this.skills = this.skills.sort((a, b) => compareByString(a.name, b.name))
     }
@@ -68,10 +75,15 @@ export class SkillsSelectorV2Component {
 
   toggleSkill(skill) {
     skill["selected"] = skill["selected"] ? !skill["selected"] : true
+    const skillToEmit: Skill = {
+      id: skill.id,
+      name: skill.name,
+      categoryId: skill.categoryId
+    }
     if (skill["selected"]){
-      this.onSelectedSkill.emit(skill)
+      this.onSelectedSkill.emit(skillToEmit)
     } else {
-      this.onRemovedSkill.emit(skill)
+      this.onRemovedSkill.emit(skillToEmit)
     }
   }
 

@@ -93,7 +93,7 @@ import { PlanCardComponent } from './main-components/settings/license/plan-card/
 import { LicenseDataComponent } from './main-components/settings/license/license-data/license-data.component';
 import { ValidationListComponent } from './main-components/validation/validation-list/validation-list.component';
 import { NotificationsDashboardComponent } from './main-components/dashboard/notifications-dashboard/notifications-dashboard.component';
-import { EditValidationTestComponent } from './main-components/management/edit-validation-test/edit-validation-test.component';
+import { EditValidationTestComponent } from './main-components/validation/edit-validation-test/edit-validation-test.component';
 import { RankingListComponent } from './main-components/dashboard/ranking-list/ranking-list.component';
 import { TooltipPointsComponent } from './shared/components/tooltip-points/tooltip-points.component';
 import { StudyPlanComponent } from './shared/components/study-plan/study-plan.component';

@@ -1,22 +1,26 @@
 import { Component, Input } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { combineLatest, Observable, Subscription } from 'rxjs';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Subscription } from 'rxjs';
 import { IconService } from 'src/app/shared/services/icon.service';
-import { VimeoUploadService } from 'src/app/shared/services/vimeo-upload.service';
+// import { VimeoUploadService } from 'src/app/shared/services/vimeo-upload.service';
 import { QuestionType } from 'src/app/shared/models/activity-classes.model'
 import { cloneArrayOfObjects, compareByString, getPlaceholders } from 'src/app/shared/utils';
 import { AlertsService } from 'src/app/shared/services/alerts.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { CategoryService } from 'src/app/shared/services/category.service';
 import { SkillService } from 'src/app/shared/services/skill.service';
-import { Skill } from 'src/app/shared/models/skill.model';
-import { Category } from 'src/app/shared/models/category.model';
 
 function optionsLengthValidator(question: FormGroup): ValidationErrors | null {
   const options = question.get('options') as FormArray
   const minOptionsLength = 2
   return options.length < minOptionsLength ? { wrongOptionsLength: true } : null;
+}
+
+function skillsLengthValidator(question: FormGroup): ValidationErrors | null {
+  const options = question.get('skills') as FormArray
+  const minOptionsLength = 1
+  return options.length < minOptionsLength ? { wrongSkillsLength: true } : null;
 }
 
 function singleCorrectOptionValidator(question: FormGroup): ValidationErrors | null {
@@ -52,10 +56,16 @@ function singleCorrectOptionPerPlaceholderValidator(question: FormGroup): Valida
   return null
 }
 
-const singleOptionQuestionTypeValidators: ValidatorFn[] = [optionsLengthValidator, singleCorrectOptionValidator]
-const completeQuestionTypeValidators: ValidatorFn[] = [optionsLengthValidator, atLeastOnePlaceholderValidator, singleCorrectOptionPerPlaceholderValidator]
-const multipleChoiceQuestionTypeValidators: ValidatorFn[] = [optionsLengthValidator, atLeastOneCorrectOptionValidator]
-const trueOrFalseQuestionTypeValidators: ValidatorFn[] = [optionsLengthValidator]
+function testSkillsMinLength(min: number) {
+  return (fa: FormArray): {[key: string]: any} | null => {
+    return fa.length >= min ? null : { minLengthArray: { valid: false }};
+  }
+}
+
+const singleOptionQuestionTypeValidators: ValidatorFn[] = [optionsLengthValidator, skillsLengthValidator, singleCorrectOptionValidator]
+const completeQuestionTypeValidators: ValidatorFn[] = [optionsLengthValidator, skillsLengthValidator, atLeastOnePlaceholderValidator, singleCorrectOptionPerPlaceholderValidator]
+const multipleChoiceQuestionTypeValidators: ValidatorFn[] = [optionsLengthValidator, skillsLengthValidator, atLeastOneCorrectOptionValidator]
+const trueOrFalseQuestionTypeValidators: ValidatorFn[] = [optionsLengthValidator, skillsLengthValidator]
 
 const questionTypeToValidators = {
   [QuestionType.TYPE_SINGLE_CHOICE_VALUE]: singleOptionQuestionTypeValidators,
@@ -80,7 +90,7 @@ export class EditValidationTestComponent {
     'Previsualización de preguntas',
   ];
 
-  activeStep: number = 2
+  activeStep: number = 1
 
   questionStatus: { expanded: boolean, visibleImage: boolean, placeholders: string[], textToRender: SafeHtml }[] = []
 
@@ -102,7 +112,9 @@ export class EditValidationTestComponent {
   skills
   categories
   selectedTestSkills = []
-  selectedQuestionSkills = []
+  selectedQuestionsSkills = []
+  selectedQuestionIndex: number | null = null
+  selectedQuestionSkills: [] | null = null
 
   constructor(
     public icon: IconService,
@@ -112,7 +124,8 @@ export class EditValidationTestComponent {
     private alertService: AlertsService,
     public sanitizer: DomSanitizer,
     private categoryService: CategoryService,
-    private skillService: SkillService
+    private skillService: SkillService,
+    private modalService: NgbModal
   ) {}
 
   skillServiceSubscription: Subscription
@@ -131,7 +144,7 @@ export class EditValidationTestComponent {
         duration: [0, [Validators.required, Validators.min(1), Validators.pattern(/^\d*$/)]],
       }),
       modalPage2: this.fb.group({
-        testSkills: this.fb.array([])
+        testSkills: this.fb.array([], [testSkillsMinLength(1)])
       }),
       modalPage3: this.fb.group({
         questions: this.fb.array([])
@@ -195,16 +208,16 @@ export class EditValidationTestComponent {
       name: [skill.name],
       categoryId: [skill.categoryId]
     }));    
-    console.log("Skill added from activity")
     this.selectedTestSkills.push(skill)
   }
 
   removeSkillFromTest(skill) {
     const index = this.testSkills.controls.findIndex(control => control.get('id').value === skill.id)
     this.testSkills.removeAt(index);
-    console.log("Skill removed from activity")
     this.selectedTestSkills.splice(index, 1)
-    // REMOVE SKILL FROM QUESTIONS
+    for (let questionIndex = 0; questionIndex < this.questions.controls.length; questionIndex++) {
+      this.removeQuestionSkill(questionIndex, skill)
+    }
   }
 
   get questions(): FormArray {
@@ -230,31 +243,50 @@ export class EditValidationTestComponent {
       placeholders: [],
       textToRender: null
     })
+    this.selectedQuestionsSkills.push([])
   }
 
   removeQuestion(index: number): void {
     this.questions.removeAt(index);
     this.questionStatus.splice(index, 1)
+    this.selectedQuestionsSkills.splice(index, 1)
+
   }
 
-  // questionSkills(index: number): FormArray {
-  //   return <FormArray>this.questions.at(index).get('skills');
-  // }
+  modifyQuestionSkills(modalTemplate, questionIndex) {
+    const modalRef = this.modalService.open(modalTemplate, {
+      animation: true,
+      centered: true,
+      size: 'md'
+    })
+    this.selectedQuestionIndex = questionIndex
+    this.selectedQuestionSkills = this.selectedQuestionsSkills[questionIndex]
+    modalRef.closed.subscribe(_ => {
+      this.selectedQuestionIndex = null
+      this.selectedQuestionSkills = null
+    })
+  }
 
-  // addQuestionSkill(questionIndex: number, skill): void {
-  //   this.questionSkills(questionIndex).push(this.fb.group({
-  //     id: [skill.id],
-  //     name: [skill.name],
-  //     categoryId: [skill.categoryId]
-  //   }));
-  //   // Add skill to question skills array
-  // }
+  questionSkills(index: number): FormArray {
+    return <FormArray>this.questions.at(index).get('skills');
+  }
 
-  // removeQuestionSkill(questionIndex: number, skill): void {
-  //   const index = this.questionSkills(questionIndex).controls.findIndex(control => control.get('id').value === skill.id)
-  //   this.questionSkills(questionIndex).removeAt(index)
-  //   // Remove skill from question skills array
-  // }
+  addQuestionSkill(questionIndex: number, skill): void {
+    this.questionSkills(questionIndex).push(this.fb.group({
+      id: [skill.id],
+      name: [skill.name],
+      categoryId: [skill.categoryId]
+    }));
+    this.selectedQuestionsSkills[questionIndex].push(skill)
+  }
+
+  removeQuestionSkill(questionIndex: number, skill): void {
+    const index = this.questionSkills(questionIndex).controls.findIndex(control => control.get('id').value === skill.id)
+    if (index >= 0) {
+      this.questionSkills(questionIndex).removeAt(index)
+      this.selectedQuestionsSkills[questionIndex].splice(index, 1)
+    }
+  }
 
   options(index: number): FormArray {
     return <FormArray>this.questions.at(index).get('options');
@@ -375,7 +407,6 @@ export class EditValidationTestComponent {
 
   showCurrentForm() {
     console.log(this.mainForm.value)
-    console.log("selectedTestSkills", this.selectedTestSkills)
   }
 
   // async onFileSelected(event) {

@@ -44,7 +44,7 @@ export class EnterprisePresentationFormComponent {
     linkedin: "Linkedin desconocido",
   }
 
-  async ngOnInit(){
+  async ngOnInit() {
     this.enterpriseService.enterprise$.subscribe(enterprise => {
       if (enterprise) {
         this.enterprise = enterprise
@@ -100,7 +100,7 @@ export class EnterprisePresentationFormComponent {
     }
   }
 
-  async onSubmit(){
+  async onSubmit() {
     const controls = this.form.controls
     if (this.form.status === "VALID") {
       await this.saveEnterprisePhoto()
@@ -182,6 +182,5 @@ export class EnterprisePresentationFormComponent {
     }
 
   }
-
 
 }

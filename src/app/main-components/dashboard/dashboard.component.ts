@@ -2,9 +2,11 @@ import { Component } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { AfterOnInitResetLoading } from 'src/app/shared/decorators/loading.decorator';
 import { Enterprise } from 'src/app/shared/models/enterprise.model';
+import { User } from 'src/app/shared/models/user.model';
 import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
 import { IconService } from 'src/app/shared/services/icon.service';
 import { LoaderService } from 'src/app/shared/services/loader.service';
+import { UserService } from 'src/app/shared/services/user.service';
 
 
 
@@ -17,21 +19,24 @@ import { LoaderService } from 'src/app/shared/services/loader.service';
 export class DashboardComponent {
 
   enterprise: Enterprise
+  users: User[]
   enterpriseSubscription: Subscription
+  userServiceSubscription: Subscription
 
   constructor(
     public loaderService: LoaderService,
     public icon: IconService,
-    private enterpriseService: EnterpriseService
+    private enterpriseService: EnterpriseService,
+    private userService: UserService
   ) {}
 
 
   // -----
-  totalHours = 83.48
-  averageHours = 3.25 
+  totalHours: number
+  avgHours: number
 
-  certificates: number = 3
-  averageGrade: number = 80.2
+  certificatesQty: number
+  avgScore: number
   // ----
 
   ngOnInit() {
@@ -42,9 +47,23 @@ export class DashboardComponent {
         this.loaderService.setLoading(false)
       }
     })
+    this.userServiceSubscription = this.userService.users$.subscribe(users => {
+      this.users = users
+      this.totalHours = 0
+      this.certificatesQty = 0
+      let accumulatedAvgGrade = 0
+      this.users.forEach(user => {
+        this.totalHours += user.studyHours
+        this.certificatesQty += user.certificatesQty
+        accumulatedAvgGrade += user.avgScore
+      })
+      this.avgHours = this.users.length > 0 ? this.totalHours / this.users.length : 0
+      this.avgScore = this.users.length > 0 ? accumulatedAvgGrade / this.users.length : 0
+    })
   }
 
   ngOnDestroy() {
     this.enterpriseSubscription.unsubscribe()
+    this.userServiceSubscription.unsubscribe()
   }
 }
