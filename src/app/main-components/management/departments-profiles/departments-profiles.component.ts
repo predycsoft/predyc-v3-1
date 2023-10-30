@@ -210,6 +210,7 @@ export class DepartmentsProfilesComponent {
       const isSuccess = await this.departmentService.saveDepartment(departent)
 
       if (isSuccess) {
+        this.refreshDataSource()
         console.log('Department saved successfully.');
         this.alertService.succesAlert('Has agregado un departamento exitosamente.')
         // Do other things if successful, e.g., show a success message or navigate elsewhere.
@@ -223,12 +224,30 @@ export class DepartmentsProfilesComponent {
     }
     
   }
+  
+  refreshDataSource() {
+    const departmentsWithProfiles = this.departments.map(department => {
+      const departmentProfiles = department.profilesRef
+      .map(profileRef => this.profiles.find(profile => profile.id === profileRef.id))
+      .filter(profile => profile); 
+      return {
+        ...department,
+        profiles: departmentProfiles
+      };
+    });
+    this.dataSource = new MatTableDataSource<any>(departmentsWithProfiles);  
+    if (this.dataSource) {
+      this.dataSource.paginator = this.paginator;
+    }
+  }
+  
 
   async deleteDepartment(departmentId){
 
     let statusDelete = await this.departmentService.deleteDepartment(departmentId);
 
     if(statusDelete){
+      this.refreshDataSource()
       this.alertService.succesAlert('Has eliminado un departamento exitosamente.')
     }
 
