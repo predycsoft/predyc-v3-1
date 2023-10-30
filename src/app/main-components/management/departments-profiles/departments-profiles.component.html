@@ -67,7 +67,7 @@
         <td class="mat-cell" colspan="4">No se han encontrado departamentos</td>
         </tr>
     </table>
-    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+    <mat-paginator (page)="paginatorPageChange($event)" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
     </div>
 </div>
 

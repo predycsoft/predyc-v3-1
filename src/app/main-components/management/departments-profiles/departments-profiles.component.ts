@@ -7,7 +7,7 @@ import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firest
 import { Department } from 'src/app/shared/models/department.model';
 import { Subscription, catchError, combineLatest, map, of } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { DepartmentService } from 'src/app/shared/services/department.service';
 import { deparmentsData } from '../../../../assets/data/departments.data'
 import { SelectionModel } from '@angular/cdk/collections';
@@ -121,6 +121,15 @@ export class DepartmentsProfilesComponent {
     
     // Toggle the selection of the corresponding department in the SelectionModel
     this.chipSelection.toggle(departmentName);
+  }
+
+  // Actualizar la variable chipSelection al cambiar la página
+  paginatorPageChange(event: PageEvent) {
+    this.departments.forEach(department => {
+      if (this.chipSelection.isSelected(department.name)) {
+        this.chipSelection.deselect(department.name);
+      }
+    });
   }
 
   toggleAccordion(departmentName: string) {
