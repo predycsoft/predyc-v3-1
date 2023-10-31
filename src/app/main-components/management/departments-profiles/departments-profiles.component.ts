@@ -41,7 +41,6 @@ export class DepartmentsProfilesComponent {
     private searchInputService: SearchInputService, 
     private userService: UserService,
     private changeDetectorRef: ChangeDetectorRef
-
   ){}
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -51,14 +50,12 @@ export class DepartmentsProfilesComponent {
   displayedColumns: string[] = [
     'name'
   ]
-  panelOpenState = false;
 
   openedDepartment: string | null = null;
   searchSubscription: Subscription
 
   combinedObservableSubscription
   pageSize = 5
-
 
   async ngOnInit() {
     this.departmentService.loadDepartmens();
@@ -104,39 +101,12 @@ export class DepartmentsProfilesComponent {
     })
   }
 
-  // ngAfterViewChecked() {
-  //   // Establece la propiedad userTriggered a false después de que se hayan completado las detecciones de cambios
-  //   if (this.userTriggered) {
-  //     this.userTriggered = false;
-  //   }
-  // }
-
   // Define a SelectionModel instance to manage the chip selection
-  chipSelection = new SelectionModel<string>(true);
-  
-  userTriggered = false;
-  selectedChip: string | null = null;
+  departmentSelection = new SelectionModel(false);
 
-  onChipClick(departmentName: string) {
-    this.userTriggered = true;
-
-    // Deseleccionar todos los chips
-    // this.chipSelection.clear();
-    let selection: string[] = []
-    if (this.selectedChip === departmentName) {
-      // Si el chip seleccionado es el mismo que el actual, deselecciónalo
-      this.selectedChip = null;
-    } else {
-      // Si el chip seleccionado es diferente, selecciónalo
-      console.log("chipClick")
-      // this.chipSelection.select(departmentName);
-      this.selectedChip = departmentName;
-      selection = [departmentName]
-    }
-    
-    this.chipSelection.setSelection(...selection)
+  toggleDepartmentOpenState(department) {
     // Verificar si el departamento seleccionado no está en la página actual
-    const indexOfDepartment = this.departments.findIndex(department => department.name === departmentName);
+    const indexOfDepartment = this.departments.findIndex(item => item.id === department.id);
     if (indexOfDepartment > -1) {
       // Obtener el índice de la página actual y la cantidad de elementos por página
       const pageIndex = Math.floor(indexOfDepartment / this.paginator.pageSize);
@@ -151,39 +121,8 @@ export class DepartmentsProfilesComponent {
         });
       }
     }
+    this.departmentSelection.toggle(department.id)
   }
-
-
-  paginatorPageChange(event: PageEvent) {
-    // Restablecer el chip seleccionado cuando cambia de página
-    this.selectedChip = null;
-  }
-
-  toggleAccordion(departmentName: string) {
-    // If the accordion is manually toggled, update the userTriggered flag and synchronize the chip selection
-    if (!this.userTriggered) {
-      this.chipSelection.toggle(departmentName);
-    }
-    
-    // Reset the userTriggered flag after the accordion is toggled
-    this.userTriggered = false;
-  }
-
-  isPanelExpanded(departmentName: string): boolean {
-    return this.chipSelection.isSelected(departmentName);
-  }
-
-  // createDepartmentsCollection(){
-
-  //   deparmentsData.forEach(department => {
-  //     console.log(department)
-  //     let departmentready = new Department(department.id,department.name)
-  //     this.departmentService.addDepartment(departmentready)
-      
-  //   });
-
-
-  // }
 
   createProfileDepartment(department){
     this.router.navigate(["management/create-profile/", department.id,'create','new'])
@@ -193,24 +132,20 @@ export class DepartmentsProfilesComponent {
     this.router.navigate(["management/create-profile/", department.id,'edit',profile.id])
   }
 
-
   modalCreateDepartment
   formNewDepartment: FormGroup;
-  showErrorDeparment = false
-
+  showErrorDepartment = false
 
   openModalDepartment(content){
-
     this.modalCreateDepartment = this.modalService.open(content, {
-     ariaLabelledBy: 'modal-basic-title',
-     centered: true,
-     size:'lg'
-   });
- }
+      ariaLabelledBy: 'modal-basic-title',
+      centered: true,
+      size:'lg'
+    });
+  }
 
-  createDepartment(content){
-
-    this.showErrorDeparment=false;
+  createDepartment(content) {
+    this.showErrorDepartment=false;
     this.formNewDepartment = new FormGroup({
       id: new FormControl(null),
       enterpriseRef: new FormControl(null),
@@ -220,9 +155,8 @@ export class DepartmentsProfilesComponent {
     this.openModalDepartment(content)
   }
 
-  editDepartment(department,content){
-    this.showErrorDeparment=false;
-
+  editDepartment(department,content) {
+    this.showErrorDepartment=false;
     this.formNewDepartment = new FormGroup({
       id: new FormControl(department.id),
       enterpriseRef: new FormControl(null),
@@ -232,9 +166,8 @@ export class DepartmentsProfilesComponent {
     this.openModalDepartment(content)
   }
 
-  async saveDepartment(){
-
-    this.showErrorDeparment=false;
+  async saveDepartment() {
+    this.showErrorDepartment=false;
 
     if(this.formNewDepartment.valid){
       let enterpriseRef =this.enterpriseService.getEnterpriseRef();
@@ -256,7 +189,7 @@ export class DepartmentsProfilesComponent {
       }
     }
     else{
-      this.showErrorDeparment = true
+      this.showErrorDepartment = true
     }
     
   }
@@ -277,9 +210,7 @@ export class DepartmentsProfilesComponent {
     }
   }
   
-
   async deleteDepartment(departmentId){
-
     let statusDelete = await this.departmentService.deleteDepartment(departmentId);
 
     if(statusDelete){

@@ -14,13 +14,15 @@
 <div fxLayout="row" fxLayoutGap="1rem">
     <div class="containerLeft mgt03">
         <mat-chip-listbox class="mat-mdc-chip-set-stacked contenedor-chips" aria-label="Color selection">
+            <!-- (click)="onChipClick(chip.name)" -->
             <mat-chip-option
                 class="custom-chip"
-                *ngFor="let chip of departments"
-                [selected]="chipSelection.isSelected(chip.name)"
-                (click)="onChipClick(chip.name)">
-                {{chip.name}}
-          </mat-chip-option>
+                *ngFor="let department of departments"
+                [selected]="departmentSelection.isSelected(department.id)"
+                (click)="toggleDepartmentOpenState(department)"
+                >
+                {{ department.name }}
+            </mat-chip-option>
         </mat-chip-listbox>
       </div>   
     <div class="containerRight mgt03">
@@ -28,21 +30,29 @@
         <ng-container matColumnDef="name">
             <mat-accordion>
                 <td mat-cell *matCellDef="let department">
-                    <!-- [expanded]="chipSelection.isSelected(department.name)" -->
-                    <mat-expansion-panel
-                    [expanded]="selectedChip === department.name" 
+                    <!-- [expanded]="departmentSelection.isSelected(department.name)" -->
+                    <!-- [expanded]="selectedChip === department.name"
                     (opened)="toggleAccordion(department.name)"
-                    (closed)="toggleAccordion(department.name)">
-                        <mat-expansion-panel-header>
-                            <mat-panel-title (click)="$event.stopPropagation()" fxLayout="row" fxLayoutAlign="space-between center">
+                    (closed)="toggleAccordion(department.name)" -->
+                    <!-- (click)="toggleDeparmentOpenState(department)" -->
+                    <mat-expansion-panel
+                        [expanded]="departmentSelection.isSelected(department.id)"
+                        >
+                        <mat-expansion-panel-header
+                            (click)="toggleDepartmentOpenState(department)"
+                            >
+                            <mat-panel-title
+                                fxLayout="row"
+                                fxLayoutAlign="space-between center"
+                                >
                                 <div fxLayout="row" fxLayoutAlign="start center">
                                     {{department.name}}
                                 </div>
                                 <div>
-                                    <img (click)="editDepartment(department,modalDepartment)" [src]="icon.licencias" class="h16px pdr05 edit cursorPointer" alt="">
-                                    <img (click)="deleteDepartment(department.id)" *ngIf="department.profiles.length==0" [src]="icon.trash" class="h16px pdr05 trash cursorPointer" alt="">
+                                    <img (click)="$event.stopPropagation(); editDepartment(department,modalDepartment)" [src]="icon.licencias" class="h16px pdr05 edit cursorPointer" alt="">
+                                    <img (click)="$event.stopPropagation(); deleteDepartment(department.id)" *ngIf="department.profiles.length==0" [src]="icon.trash" class="h16px pdr05 trash cursorPointer" alt="">
                                     <!-- <img [src]="icon.trash" class="h16px pdr05 trash cursorPointer" alt=""> -->
-                                    <button (click)="createProfileDepartment(department)" class="blueButton radius4 ft12 h28px mgr10 gray-1" *ngIf="isPanelExpanded(department.name)">Nuevo perfil</button>
+                                    <button (click)="$event.stopPropagation(); createProfileDepartment(department)" class="blueButton radius4 ft12 h28px mgr10 gray-1" *ngIf="departmentSelection.isSelected(department.id)">Nuevo perfil</button>
                                 </div>
                             </mat-panel-title>
                         </mat-expansion-panel-header>
@@ -68,7 +78,7 @@
         <td class="mat-cell" colspan="4">No se han encontrado departamentos</td>
         </tr>
     </table>
-    <mat-paginator (page)="paginatorPageChange($event)" showFirstLastButtons></mat-paginator>
+    <mat-paginator showFirstLastButtons></mat-paginator>
     </div>
 </div>
 
@@ -86,9 +96,9 @@
             <div class="form-group pdt10">
                 <label>Nombre</label>
                 <input
-                [class.is-invalid]="formNewDepartment.controls['name'].errors && showErrorDeparment"
+                [class.is-invalid]="formNewDepartment.controls['name'].errors && showErrorDepartment"
                 formControlName="name" type="text" class="form-control curstomInput" placeholder="Escriba el título del curso aquí">
-                <div class="invalid-feedback" *ngIf="formNewDepartment.controls['name'].errors && showErrorDeparment"> 
+                <div class="invalid-feedback" *ngIf="formNewDepartment.controls['name'].errors && showErrorDepartment"> 
                     Debe indicar el nombre del departamento
                 </div>
             </div>
