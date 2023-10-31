@@ -19,7 +19,7 @@
             </div>
         </div>
         <div fxFlexAlign="start" (click)="onClick()">
-            <img [src]="icon.licencias" class=" makeGray h20px cursorPointer" alt="">
+            <img [src]="isEditing ? icon.check : icon.licencias" class=" makeGray h20px cursorPointer" alt="">
         </div>
     </div>
 </form>

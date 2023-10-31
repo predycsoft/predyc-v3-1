@@ -1,7 +1,9 @@
 <div fxLayout="column" class="card-container-lg mgt05 mgl10 pd05">
     <div fxLayout="row" fxLayoutAlign="space-between center">
         <span class="gray-10" >Información personal</span>
-        <img [src]="icon.licencias" class=" makeGray h20px cursorPointer" alt="" (click)="onClick()">
+        <div fxFlexAlign="start" (click)="onClick()">
+            <img [src]="isEditing ? icon.check : icon.licencias" class=" makeGray h20px cursorPointer" alt="">
+        </div>
     </div>
     <form *ngIf="adminUser$ | async as adminUser" [formGroup]="form" (ngSubmit)="onSubmit()" > 
         <div fxLayout="column" class="mgl05">
