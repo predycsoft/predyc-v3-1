@@ -105,7 +105,6 @@ export class DepartmentsProfilesComponent {
   departmentSelection = new SelectionModel(false);
 
   toggleDepartmentOpenState(department) {
-    console.log("Clicked department", department)
     // Verificar si el departamento seleccionado no está en la página actual
     const indexOfDepartment = this.departments.findIndex(item => item.id === department.id);
     if (indexOfDepartment > -1) {
@@ -123,7 +122,6 @@ export class DepartmentsProfilesComponent {
       }
     }
     this.departmentSelection.toggle(department.id)
-    console.log("departmentSelection", this.departmentSelection.selected)
   }
 
   createProfileDepartment(department){
@@ -234,126 +232,4 @@ export class DepartmentsProfilesComponent {
   getProfileUsers(profileId: string): DocumentReference<User>[] {
     return this.userService.getUsersRefByProfileId(profileId);
   }
-
-
-  // ------- Para crear perfiles y departamentos en firestore
-  // profilesRefs = []
-  // profiles: Profile[] = [
-  //   {
-  //     id:"profileId1",
-  //     name: "Primer Perfil",
-  //     studyPlan: []
-  //   },
-  //   {
-  //     id:"profileId2",
-  //     name: "Segundo Perfil",
-  //     studyPlan: []
-  //   },
-  //   {
-  //     id:"profileId3",
-  //     name: "Tercer Perfil",
-  //     studyPlan: []
-  //   },
-  //   {
-  //     id:"profileId4",
-  //     name: "Cuarto Perfil",
-  //     studyPlan: []
-  //   },
-  //   {
-  //     id:"profileId5",
-  //     name: "Quinto Perfil",
-  //     studyPlan: []
-  //   },
-  //   {
-  //     id:"profileId6",
-  //     name: "Sexto Perfil",
-  //     studyPlan: []
-  //   },
-  //   {
-  //     id:"profileId7",
-  //     name: "Septimo Perfil",
-  //     studyPlan: []
-  //   },
-  //   {
-  //     id:"profileId8",
-  //     name: "Octavo Perfil",
-  //     studyPlan: []
-  //   },
-  //   {
-  //     id:"profileId9",
-  //     name: "Noveno Perfil",
-  //     studyPlan: []
-  //   },
-  //   {
-  //     id:"profileId10",
-  //     name: "Decimo Perfil",
-  //     studyPlan: []
-  //   },
-  //   {
-  //     id:"profileId11",
-  //     name: "undecimo Perfil",
-  //     studyPlan: []
-  //   },
-  //   {
-  //     id:"profileId12",
-  //     name: "duodecimo Perfil",
-  //     studyPlan: []
-  //   },
-  // ]
-  // async submitProfiles() {
-  //   this.profiles.forEach(async perfil => {
-  //     await this.afs.collection("profile").doc(perfil.id).set(perfil);
-  //   });
-  // }
-  // async submitDepartments() {
-  //   const departments: Department[] = [
-  //     {
-  //       color: "red",
-  //       id: "departmentId1",
-  //       name: "Mantenimiento",
-  //       profiles: [this.profilesRefs[0], this.profilesRefs[1], this.profilesRefs[8]],
-  //     },
-  //     {
-  //       color: "blue",
-  //       id: "departmentId2",
-  //       name: "Seguridad Industrial",
-  //       profiles: [this.profilesRefs[2], this.profilesRefs[9]],
-  //     },
-  //     {
-  //       color: "yellow",
-  //       id: "departmentId3",
-  //       name: "Equipos Dinámicos",
-  //       profiles: [this.profilesRefs[3], this.profilesRefs[10]],
-  //     },
-  //     {
-  //       color: "green",
-  //       id: "departmentId4",
-  //       name: "Gesti{on de proyectos",
-  //       profiles: [this.profilesRefs[4]],
-  //     },
-  //     {
-  //       color: "orange",
-  //       id: "departmentId5",
-  //       name: "Confiabilidad",
-  //       profiles: [this.profilesRefs[5]],
-  //     },
-  //     {
-  //       color: "pink",
-  //       id: "departmentId6",
-  //       name: "Operaciones",
-  //       profiles: [this.profilesRefs[6]],
-  //     },
-  //     {
-  //       color: "black",
-  //       id: "departmentId7",
-  //       name: "Equipos estáticos",
-  //       profiles: null,
-  //     },
-  //   ]
-  //   departments.forEach(async department => {
-  //     await this.afs.collection("department").doc(department.id).set(department);
-  //   });
-  // }
-  // ------
-
 }
