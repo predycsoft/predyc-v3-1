@@ -149,7 +149,7 @@ export class UserService {
         user, { merge: true }
       );
       // Comparar el valor original con el nuevo
-      if (currentData.profile && user.profile && currentData.profile.id !== user.profile.id) {
+      if (user.profile && !currentData.profile || (currentData.profile && currentData.profile.id !== user.profile.id)) {
         console.log("Se cambió el perfil del usuario");
         const profileRef = this.profileService.getProfileRefById(user.profile.id);
         await this.profileService.saveUserProfileLog(userRef, profileRef);

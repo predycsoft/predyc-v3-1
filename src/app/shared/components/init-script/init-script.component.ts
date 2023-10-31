@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { EnterpriseService } from '../../services/enterprise.service';
 import { UserService } from '../../services/user.service';
 import { Enterprise } from '../../models/enterprise.model';
-import { User } from '../../models/user.model';
+import { User, UserJson } from '../../models/user.model';
 import { Category } from '../../models/category.model'
 import { Skill } from '../../models/skill.model';
 
@@ -27,7 +27,7 @@ import { SkillService } from '../../services/skill.service';
 import {deparmentsData} from 'src/assets/data/departments.data'
 import { Department } from '../../models/department.model';
 import { DepartmentService } from '../../services/department.service';
-import { firstValueFrom } from 'rxjs';
+import { first, firstValueFrom, lastValueFrom } from 'rxjs';
 import { profilesData } from 'src/assets/data/profiles.data';
 import { Profile } from '../../models/profile.model';
 // import { coursesData } from 'src/assets/data/courses.data'
@@ -125,7 +125,7 @@ export class InitScriptComponent {
   
     // Create admin and student users
     console.log('********* Creating Users *********')
-    const users: User[] = usersData.map(user => {
+    const users: User[] = usersData.map(user => { 
       return User.fromJson({
         ...user,
         birthdate: Date.parse(user.birthdate),
@@ -208,6 +208,27 @@ export class InitScriptComponent {
     // Create validation tests
     // console.log('********* Creating Validation Tests *********')
     // console.log(`Finished Creating Validation Tests`)
+
+    // Create global collection
+    console.log('********* Creating Global collection *********')
+    try {
+      await new Promise(resolve => setTimeout(resolve, 5000)); // Wait for 5 seconds
+      const users: User[] = await firstValueFrom(this.afs.collection<User>(User.collection).valueChanges());
+      if (users && users.length > 0) {
+        console.log("users", users);
+        const kevinUser = users.find((user) => user.name === "Kevin Grajales Predyc"); 
+        const lilianaUser = users.find((user) => user.name === "Liliana Giraldo Predyc"); 
+        console.log("Kevin:", kevinUser);
+        console.log("Liliana:", lilianaUser);
+        await this.afs.collection("general").doc("config").set({
+          salesManagerRef: this.userService.getUserRefById(lilianaUser.uid),
+          accountManagerRef: this.userService.getUserRefById(kevinUser.uid),
+        });
+      }
+    } catch (error) {
+      console.error("Hubo un error al obtener los usuarios:", error);
+    }
+    console.log(`Finished Creating Global collection`)
   }
 
   // Crea perfiles y agrega la referencia al departamento y usuario respectivo
@@ -264,9 +285,12 @@ export class InitScriptComponent {
       // Actualizamos el documento actual del Usuario
       const userSnap = await currentUserRef.get();
       if (userSnap.exists) {
-        await currentUserRef.update({
-          profile: profileRef.ref
-        });
+        let currentUser: any = userSnap.data()
+        currentUser.profile = profileRef.ref
+        await this.userService.editUser(currentUser as UserJson)
+        // await currentUserRef.update({
+        //   profile: profileRef.ref
+        // });
       }
 
       // Incrementar los índices para el siguiente profile
