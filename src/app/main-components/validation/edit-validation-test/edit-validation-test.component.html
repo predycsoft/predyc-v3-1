@@ -96,11 +96,17 @@
                     </ng-container>
                     <!-- Skills -->
                     <ng-container *ngIf="activeStep === 2">
+                        <div
+                            *ngIf="mainForm.get('modalPage2.testSkills').hasError('minLengthArray') && displayErrors"
+                            class="custom-invalid-feedback"
+                            >
+                            Debe seleccionar al menos una competencia
+                        </div>
                         <app-skills-selector-v2
                             [selectedSkills]="selectedTestSkills"
                             [inputSkills]="skills"
-                            [categories]="categories"
-                            [arrangeByCategory]="false"
+                            [inputCategories]="categories"
+                            [arrangeByCategory]="true"
                             (onSelectedSkill)="addSkillToTest($event)"
                             (onRemovedSkill)="removeSkillFromTest($event)"
                             >
@@ -427,9 +433,26 @@
                                                 <span class="redText">{{mensaje}}</span>
                                             </div>
                                         </ng-container> -->
+                                        <div>
+                                            <button
+                                                type="button"
+                                                (click)="modifyQuestionSkills(modalTemplate, i)"
+                                                class="grayButton radius4 ft12 h28px mgr10 gray-8"
+                                                fxLayout="row"
+                                                fxLayoutGap="0.625"
+                                                fxLayoutAlign="center center"
+                                                >
+                                                <img [src]="icon.flash" class="h16px pdr05" alt="">
+                                                <!-- Seleccionar competencias -->
+                                                <div>
+                                                    Modificar competencias
+                                                </div>
+                                            </button>
+                                        </div>
                                     </div>
                                     <!-- Contenedor de los errores -->
                                     <!-- <div class="pd10" *ngIf="question.errors && question.touched"> -->
+                                    
                                     <div 
                                         class="custom-invalid-feedback"
                                         *ngIf="question.invalid && displayErrors"
@@ -451,6 +474,9 @@
                                         </div>
                                         <div *ngIf="question.errors?.wrongOptionsLength">
                                             La pregunta debe tener más de una opción
+                                        </div>
+                                        <div *ngIf="question.errors?.wrongSkillsLength">
+                                            La pregunta debe tener al menos una competencia
                                         </div>
                                         <div *ngIf="question.errors?.wrongCorrectOptionsLength">
                                             La pregunta debe tener una sola opción correcta
@@ -647,3 +673,26 @@
         </div>
     </div>
 </form>
+
+<!-- CLASE COMPETENCIAS MODAL -->
+<ng-template #modalTemplate let-modal>
+    <div class="modal-header bg-web-primary text-white px-3 py-1">
+        <div class="modal-title pd10" fxLayout="row" fxLayoutAlign="start center">
+            <img [src]="icon.flash" class="h18px pdr05" alt="">
+            <span class="ft16 ft600 gray-10">Asignar competencias</span>
+        </div>
+        <img style="cursor: pointer;" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px"  alt="">
+    </div>
+    <div class="modal-body">
+        <!-- <div>Modal body</div> -->
+        <app-skills-selector-v2
+            [selectedSkills]="selectedQuestionSkills"
+            [inputSkills]="selectedTestSkills"
+            [inputCategories]="[]"
+            [arrangeByCategory]="false"
+            (onSelectedSkill)="addQuestionSkill(selectedQuestionIndex, $event)"
+            (onRemovedSkill)="removeQuestionSkill(selectedQuestionIndex, $event)"
+            >
+        </app-skills-selector-v2>
+    </div>
+</ng-template>

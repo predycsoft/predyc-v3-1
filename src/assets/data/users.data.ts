@@ -30,9 +30,11 @@ export const usersData = [
         "stripeId": null,
         "uid": null,        
         "updatedAt": "2023-09-21T00:00:00Z",
-        "avgScore": null,
+        "avgScore": 0,
+        "certificatesQty": 0,
         "performance": "high",
-        "ratingPoints": 100
+        "ratingPoints": 100,
+        "studyHours": 0
     },
     {
         "birthdate": "1995-04-12T14:00:00Z",
@@ -65,9 +67,11 @@ export const usersData = [
         "stripeId": null,
         "uid": null,        
         "updatedAt": "2023-09-21T00:00:00Z",
-        "avgScore": null,
+        "avgScore": 0,
+        "certificatesQty": 0,
         "performance": "high",
-        "ratingPoints": 90
+        "ratingPoints": 90,
+        "studyHours": 0
     },
     {
         "birthdate": "1996-03-20T14:00:00Z",
@@ -100,9 +104,11 @@ export const usersData = [
         "stripeId": null,
         "uid": null,        
         "updatedAt": "2023-09-21T00:00:00Z",
-        "avgScore": null,
+        "avgScore": 0,
+        "certificatesQty": 0,
         "performance": "high",
-        "ratingPoints": 80
+        "ratingPoints": 80,
+        "studyHours": 0
     },
     {
         "birthdate": "1996-09-13T14:00:00Z",
@@ -135,9 +141,11 @@ export const usersData = [
         "stripeId": null,
         "uid": null,        
         "updatedAt": "2023-09-21T00:00:00Z",
-        "avgScore": null,
+        "avgScore": 0,
+        "certificatesQty": 0,
         "performance": "medium",
-        "ratingPoints": 75
+        "ratingPoints": 75,
+        "studyHours": 0
     },
     {
         "birthdate": "1995-07-27T14:00:00Z",
@@ -170,9 +178,11 @@ export const usersData = [
         "stripeId": null,
         "uid": null,        
         "updatedAt": "2023-09-21T00:00:00Z",
-        "avgScore": null,
+        "avgScore": 0,
+        "certificatesQty": 0,
         "performance": "medium",
-        "ratingPoints": 70
+        "ratingPoints": 70,
+        "studyHours": 0
     },
     {
         "birthdate": "1990-04-12T14:00:00Z",
@@ -205,9 +215,11 @@ export const usersData = [
         "stripeId": null,
         "uid": null,        
         "updatedAt": "2023-09-21T00:00:00Z",
-        "avgScore": null,
+        "avgScore": 0,
+        "certificatesQty": 0,
         "performance": "medium",
-        "ratingPoints": 50
+        "ratingPoints": 50,
+        "studyHours": 0
     },
     {
         "birthdate": "1995-04-12T14:00:00Z",
@@ -240,9 +252,11 @@ export const usersData = [
         "stripeId": null,
         "uid": null,        
         "updatedAt": "2023-09-21T00:00:00Z",
-        "avgScore": null,
+        "avgScore": 0,
+        "certificatesQty": 0,
         "performance": "low",
-        "ratingPoints": 45
+        "ratingPoints": 45,
+        "studyHours": 0
     },
     {
         "birthdate": "1992-01-27T14:00:00Z",
@@ -275,9 +289,11 @@ export const usersData = [
         "stripeId": null,
         "uid": null,        
         "updatedAt": "2023-09-21T00:00:00Z",
-        "avgScore": null,
+        "avgScore": 0,
+        "certificatesQty": 0,
         "performance": "no plan",
-        "ratingPoints": 35
+        "ratingPoints": 35,
+        "studyHours": 0
     },
     {
         "birthdate": "1985-04-13T14:00:00Z",
@@ -310,9 +326,11 @@ export const usersData = [
         "stripeId": null,
         "uid": null,        
         "updatedAt": "2023-09-21T00:00:00Z",
-        "avgScore": null,
+        "avgScore": 0,
+        "certificatesQty": 0,
         "performance": "no plan",
-        "ratingPoints": null
+        "ratingPoints": null,
+        "studyHours": 0
     },
     {
         "birthdate": "1997-01-17T14:00:00Z",
@@ -345,9 +363,11 @@ export const usersData = [
         "stripeId": null,
         "uid": null,        
         "updatedAt": "2023-09-21T00:00:00Z",
-        "avgScore": null,
+        "avgScore": 0,
+        "certificatesQty": 0,
         "performance": "no plan",
-        "ratingPoints": null
+        "ratingPoints": null,
+        "studyHours": 0
     },
     {
         "birthdate": "1997-11-06T14:00:00Z",
@@ -380,8 +400,10 @@ export const usersData = [
         "stripeId": null,
         "uid": null,        
         "updatedAt": "2023-09-21T00:00:00Z",
-        "avgScore": null,
+        "avgScore": 0,
+        "certificatesQty": 0,
         "performance": null,
-        "ratingPoints": null
+        "ratingPoints": null,
+        "studyHours": 0
     }
 ]

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { LoaderService } from 'src/app/shared/services/loader.service';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { EditValidationTestComponent } from '../management/edit-validation-test/edit-validation-test.component';
+import { EditValidationTestComponent } from './edit-validation-test/edit-validation-test.component';
 
 @Component({
   selector: 'app-validation',
@@ -34,6 +34,7 @@ export class ValidationComponent {
     // })
     modalRef.result.then(result => {
       console.log("result", result)
+      
     }).catch(error => console.log("error", error))
   }
 

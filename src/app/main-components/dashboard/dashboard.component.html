@@ -28,7 +28,7 @@
                         <span class="ft500 gray-6 ft11">Total del grupo</span>
                     </div>
                     <div fxLayout="column" class="fh fw" fxLayoutAlign="center center">
-                        <span class="ft500 ft24 mgt10 gray-10">{{averageHours | number:"1.2-2"}} hrs</span>
+                        <span class="ft500 ft24 mgt10 gray-10">{{avgHours | number:"1.2-2"}} hrs</span>
                         <span class="ft500 gray-6 ft11">Promedio por estudiante</span>
                     </div>
                 </div>   
@@ -43,11 +43,11 @@
                 </div>
                 <div fxLayout="row" class="fw pdb10" fxLayoutGap="1rem">
                     <div fxLayout="column" class="fh fw" fxLayoutAlign="center center">
-                        <span class="ft500 ft24 mgt10 gray-10">{{certificates}}</span>
+                        <span class="ft500 ft24 mgt10 gray-10">{{ certificatesQty }}</span>
                         <span class="ft500 gray-6 ft11">Certificados emitidos</span>
                     </div>
                     <div fxLayout="column" class="fh fw" fxLayoutAlign="center center">
-                        <span class="ft500 ft24 mgt10 gray-10">{{averageGrade | number:"1.0-0"}}%</span>
+                        <span class="ft500 ft24 mgt10 gray-10">{{avgScore | number:"1.0-0"}}%</span>
                         <span class="ft500 gray-6 ft11">Calificación promedio</span>
                     </div>
                 </div>  
@@ -62,7 +62,12 @@
         <div fxLayout="column" fxLayoutGap="0.75rem" class="w-30 mgr10">
             <!-- ritmo de usuarios-->
             <div class="radius10 border fw h-40 pd10" fxLayout="column" fxLayoutAlign="start">
-                <app-users-rhythm></app-users-rhythm>
+                <app-users-rhythm
+                    [high]="0"
+                    [medium]="0"
+                    [low]="0"
+                    [noPlan]="0"
+                    ></app-users-rhythm>
             </div>
             <!--ranking-->
             <div class="radius10 border fw h-52">
