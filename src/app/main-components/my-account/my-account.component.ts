@@ -15,7 +15,6 @@ export class MyAccountComponent {
 
   constructor(
     private authService: AuthService,
-    public icon:IconService,
     private enterpriseService: EnterpriseService,
     private route: ActivatedRoute
 
