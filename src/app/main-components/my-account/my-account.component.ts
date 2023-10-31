@@ -1,11 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Enterprise } from 'src/app/shared/models/enterprise.model';
 import { User } from 'src/app/shared/models/user.model';
 import { AuthService } from 'src/app/shared/services/auth.service';
-import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
-import { IconService } from 'src/app/shared/services/icon.service';
-
 @Component({
   selector: 'app-my-account',
   templateUrl: './my-account.component.html',
@@ -15,13 +11,12 @@ export class MyAccountComponent {
 
   constructor(
     private authService: AuthService,
-    private enterpriseService: EnterpriseService,
     private route: ActivatedRoute
 
   ) {}
 
   user: User
-  enterprise: Enterprise
+  salesManager
 
   questions = [
     "¿Cómo agrego nuevos empleados a la plataforma?",
@@ -42,11 +37,6 @@ export class MyAccountComponent {
     this.authService.user$.subscribe(user=> {
       if (user) {
         this.user = user
-      }
-    })
-     this.enterpriseService.enterprise$.subscribe(enterprise => {
-      if (enterprise) {
-        this.enterprise = enterprise
       }
     })
     this.route.queryParams.subscribe(params => {

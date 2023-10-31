@@ -225,8 +225,16 @@ export class UserService {
   getUsersRefsWithProfile(): DocumentReference<User>[] {
     // Filtrar usuarios que tienen un perfil y mapear a sus referencias
     return this.usersSubject.value.filter(user => user.profile).map(user => this.afs.doc<User>(`${User.collection}/${user.uid}`).ref);
-}
+  }
 
+  async getGeneralUserData(key: string): Promise<User> {
+    // Hacer peticion aqui o globalmente cuando se inicie el servicio
+    // Crear modelo para nombre de coleccion y documento
+    const configData = await firstValueFrom(this.afs.collection("general").doc("config").valueChanges());
+    const userRef: DocumentReference = configData[key]
+    console.log("general user data", this.getUser(userRef.id))
+    return this.getUser(userRef.id)
+  }
 
 
 }
