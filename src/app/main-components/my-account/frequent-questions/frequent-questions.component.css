@@ -7,3 +7,12 @@
     border-bottom: 1px solid var(--gray-3);
     padding-bottom: 12px;
 } 
+
+.card-container {
+    border-radius: 20px;
+    overflow: hidden;
+    border: 2px solid #D5DCE0;
+    min-width: 240px;
+    padding: 12px;
+
+}
