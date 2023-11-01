@@ -116,12 +116,12 @@ export class StudentProfileComponent implements OnInit {
       return;
     }
     const file = input.files[0];
-    if (file.type !== 'image/webp') {
-      this.alertService.errorAlert(`La imagen seleccionada debe tener formato:  WEBP`);
-      return;
-    }
-    /* checking size here - 1MB */
-    const imageMaxSize = 1000000;
+    // if (file.type !== 'image/webp') {
+    //   this.alertService.errorAlert(`La imagen seleccionada debe tener formato:  WEBP`);
+    //   return;
+    // }
+    /* checking size here - 10MB */
+    const imageMaxSize = 10000000;
     if (file.size > imageMaxSize) {
       this.alertService.errorAlert(`El archivo es mayor a 1MB por favor incluya una imagen de menor tamaño`);
       return;
