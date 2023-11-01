@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { LoaderService } from 'src/app/shared/services/loader.service';
 
 @Component({
@@ -9,6 +9,14 @@ import { LoaderService } from 'src/app/shared/services/loader.service';
 export class LicenseDataComponent {
   constructor(
     private loaderService: LoaderService,
-  ) {}
+    ) {}
+    
+  supportFlag = false
+
+  @Output() supportFlagChanged: EventEmitter<boolean> = new EventEmitter();
+
+  onContactoDeVentasClicked() {
+    this.supportFlagChanged.emit(true);
+  }
 
 }
