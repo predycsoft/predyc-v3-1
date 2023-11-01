@@ -3,9 +3,9 @@
 }
 
 .question {
-    margin-top: 12px;
+    margin-top: 4px;
     border-bottom: 1px solid var(--gray-3);
-    padding-bottom: 12px;
+    padding-bottom: 9px;
 } 
 
 .card-container {
@@ -13,6 +13,12 @@
     overflow: hidden;
     border: 2px solid #D5DCE0;
     min-width: 240px;
-    padding: 12px;
-
+    /* padding: 12px; */
 }
+
+.mat-expansion-panel {
+    border: none !important; 
+    border-radius: none !important;
+    box-shadow: none !important; 
+  }
+  

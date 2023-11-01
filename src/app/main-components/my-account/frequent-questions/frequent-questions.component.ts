@@ -14,5 +14,11 @@ export class FrequentQuestionsComponent {
     public icon:IconService,
   ){}
 
+  public panelOpenStates: boolean[] = [];
+
+  ngOnInit() {
+    this.panelOpenStates = Array(this.questions.length).fill(false);
+  }
+  
 
 }
