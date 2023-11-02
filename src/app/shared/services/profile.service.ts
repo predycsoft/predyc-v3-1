@@ -97,6 +97,8 @@ export class ProfileService {
       await ref.set(dataToSave, { merge: true });
       profile.id = ref.id; // Assign the generated ID to the profile
       console.log('Operation successful.')
+      this.alertService.infoAlert('Has editado la informacion del perfil exitosamente.');
+
     } catch (error) {
       profile.id = null; // Assign the generated ID to the profile
       console.log(error);
