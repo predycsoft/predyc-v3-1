@@ -1,14 +1,14 @@
 import { DataSource } from '@angular/cdk/collections';
 import { Component, ViewChild } from '@angular/core';
-import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { MatPaginator } from '@angular/material/paginator';
-import { BehaviorSubject, Observable, of, catchError, Subscription, combineLatest, firstValueFrom} from 'rxjs';
+import { BehaviorSubject, Observable, of, catchError, Subscription, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Department } from 'src/app/shared/models/department.model';
 import { Profile } from 'src/app/shared/models/profile.model';
 import { DepartmentService } from 'src/app/shared/services/department.service';
 import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
 import { ProfileService } from 'src/app/shared/services/profile.service';
+import { Permissions } from 'src/app/shared/models/permissions.model';
 
 @Component({
   selector: 'app-permissions-advanced-filters',
@@ -73,23 +73,30 @@ export class PermissionsAdvancedFiltersComponent {
         return key;
       }
     }
-    return null; // Retornar null (o cualquier otro valor) si el valor no se encuentra en el objeto
+    return null;
   }
   
-  debug() {
-    const currentProfiles = this.dataSource.getCurrentProfiles();
-    console.log("currentProfiles", currentProfiles);
-    // Formato de "data"
-    const advancedFilterescontent = currentProfiles.map(profile => {
-      const libertyString = this.getKeyByValue(this.dataSource.libertyOpts, profile.liberty)
-      const generationString = this.getKeyByValue(this.dataSource.generationOpts, profile.generation)
-      return {
-        ...profile,
-        liberty: libertyString,
-        generation: generationString,
+  onSave() {
+    const tableData = this.dataSource.getTableData();
+    // console.log("tableData", tableData);
+    // Transformamos a formato del modelo
+    tableData.map(async data => {
+      const libertyString = this.getKeyByValue(Permissions.STUDY_LIBERTY_NUMBER_OPTS, data.liberty)
+      const generationString = this.getKeyByValue(Permissions.STUDYPLAN_GENERATION_NUMBER_OPTS, data.generation)
+      const currentProfilePermissions = this.profileService.getProfile(data.id).permissions
+      let newProfilePermissions = {...currentProfilePermissions} as Permissions
+      newProfilePermissions.attemptsPerTest = data.attempts
+      newProfilePermissions.studyplanGeneration = generationString
+      newProfilePermissions.hoursPerWeek = data.hours
+      newProfilePermissions.studyLiberty = libertyString
+      if (JSON.stringify(currentProfilePermissions) != JSON.stringify(newProfilePermissions)) {
+        let newProfile = this.profileService.getProfile(data.id)
+        newProfile.permissions = newProfilePermissions
+        await this.profileService.saveProfile(newProfile)
+        console.log(`Los permisos de ${newProfile.name} cambiaron`)
       }
+      
     })
-    console.log("advancedFilterescontent", advancedFilterescontent)
   }
 
 }
@@ -97,7 +104,7 @@ export class PermissionsAdvancedFiltersComponent {
 class ProfileDataSource extends DataSource<Profile> {
   private pageIndex: number = 0;
   private previousPageIndex: number = 0;
-  private currentProfiles: any[]
+  private tableData: any[]
   private previousPageProfile: any
 
   // Borrar cuando funcione el servicio
@@ -127,20 +134,8 @@ class ProfileDataSource extends DataSource<Profile> {
     this.getProfiles()
   }
 
-    libertyOpts = {
-      "Libre": 1,
-      "Estricto": 2,
-      "Solicitudes": 3,
-    }
-  
-    generationOpts = {
-      "Optimizada": 1,
-      "Confirmar": 2,
-      "Por defecto": 3,
-    }
-
   getProfiles() {
-    console.log("Corriendo get profiles")
+    // console.log("Corriendo get profiles")
     let queryObj: {
       pageSize: number
       startAt?: any
@@ -152,8 +147,8 @@ class ProfileDataSource extends DataSource<Profile> {
       // first page
     } else if (this.pageIndex > this.previousPageIndex) {
       // next page
-      queryObj.startAfter = this.currentProfiles[this.currentProfiles.length - 1]
-      this.previousPageProfile = this.currentProfiles[0]
+      queryObj.startAfter = this.tableData[this.tableData.length - 1]
+      this.previousPageProfile = this.tableData[0]
     } else {
       // previous page
       queryObj.startAt = this.previousPageProfile
@@ -188,24 +183,19 @@ class ProfileDataSource extends DataSource<Profile> {
           // this.paginator.length = profiles.length
           this.paginator.length = this.enterpriseService.getEnterprise().profilesNo
         }
-        this.currentProfiles = profiles.map(profile => {
-          const profileDepartment = this.departmentService.getDepartmentByProfileId(profile.id)
-          // Valores por defecto
-          let hours = 1
-          let liberty = 1
-          let generation = 1
-          let attempts = 4
+        this.tableData = profiles.map(profile => {
+          const departmentName = this.departmentService.getDepartmentByProfileId(profile.id).name //Solo hace falta departmentName
           return {
             id: profile.id,
             name: profile.name,
-            department: profileDepartment,
-            hours,
-            liberty,
-            generation,
-            attempts
+            departmentName: departmentName,
+            hours: profile.permissions.hoursPerWeek,
+            liberty: Permissions.STUDY_LIBERTY_NUMBER_OPTS[profile.permissions.studyLiberty],
+            generation: Permissions.STUDYPLAN_GENERATION_NUMBER_OPTS[profile.permissions.studyplanGeneration],
+            attempts: profile.permissions.attemptsPerTest
           }
         });
-        return this.currentProfiles
+        return this.tableData
       }),
       catchError(error => {
         console.error('Error occurred:', error);
@@ -216,8 +206,8 @@ class ProfileDataSource extends DataSource<Profile> {
 
   disconnect() {}
 
-  getCurrentProfiles(): any[] {
-    return this.currentProfiles;
+  getTableData(): any[] {
+    return this.tableData;
   }
 
   

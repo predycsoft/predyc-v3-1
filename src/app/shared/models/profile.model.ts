@@ -2,6 +2,7 @@ import { DocumentReference } from "@angular/fire/compat/firestore"
 import { User } from "./user.model"
 import { Skill } from "./skill.model"
 import { Enterprise } from "./enterprise.model"
+import { Permissions } from "./permissions.model"
 
 export interface ProfileJson {
     id: string,
@@ -11,7 +12,7 @@ export interface ProfileJson {
     skillsRef: DocumentReference[]
     coursesRef: DocumentReference[] | []
     enterpriseRef: DocumentReference | null
-    permissions: Permissions[] | []
+    permissions: Permissions
 
 }
 
@@ -25,7 +26,7 @@ export class Profile {
     public skillsRef: DocumentReference [] = []
     public coursesRef: DocumentReference [] | [] = []
     public enterpriseRef: DocumentReference | null
-    public permissions: Permissions[] | [] = []
+    public permissions: Permissions
 
     public skills?: Skill[]
     public users?: User[]

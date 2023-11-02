@@ -3,7 +3,7 @@
     <!-- Departamento Column -->
     <ng-container matColumnDef="departmentName">
         <th class="ft10 gray-10" mat-header-cell *matHeaderCellDef>Departamento</th>
-        <td class="ft10 gray-10" mat-cell *matCellDef="let profile">{{profile.department.name}}</td>
+        <td class="ft10 gray-10" mat-cell *matCellDef="let profile">{{profile.departmentName}}</td>
     </ng-container>
 
     <!-- Perfil Column -->
@@ -83,5 +83,4 @@
     *ngIf="enablePagination"
     aria-label="Select page of table"
 ></mat-paginator>
-<button class="blueButton btn" (click)="debug()">DEBUG</button>
-<!-- <button class="redButton btn" (click)="addProfiles()">PERFILES</button> -->
+<button class="blueButton btn" (click)="onSave()">Guardar cambios</button>

@@ -9,7 +9,12 @@ export const profilesData: ProfileJson[] = [
       skillsRef: [],
       coursesRef:[],
       enterpriseRef: null,
-      permissions: []
+      permissions: {
+        hoursPerWeek: 1,
+        studyLiberty: 'Libre',
+        studyplanGeneration: 'Optimizada',
+        attemptsPerTest: 1
+      }
     },
     {
       id: null,
@@ -19,7 +24,12 @@ export const profilesData: ProfileJson[] = [
       skillsRef: [],
       coursesRef:[],
       enterpriseRef: null,
-      permissions: []
+      permissions: {
+        hoursPerWeek: 2,
+        studyLiberty: 'Estricto',
+        studyplanGeneration: 'Optimizada',
+        attemptsPerTest: 4
+      }
     },
     {
       id: null,
@@ -29,7 +39,12 @@ export const profilesData: ProfileJson[] = [
       skillsRef: [],
       coursesRef:[],
       enterpriseRef: null,
-      permissions: []
+      permissions: {
+        hoursPerWeek: 3,
+        studyLiberty: 'Solicitudes',
+        studyplanGeneration: 'Confirmar',
+        attemptsPerTest: 2
+      }
     },
     {
       id: null,
@@ -39,7 +54,12 @@ export const profilesData: ProfileJson[] = [
       skillsRef: [],
       coursesRef:[],
       enterpriseRef: null,
-      permissions: []
+      permissions: {
+        hoursPerWeek: 7,
+        studyLiberty: 'Estricto',
+        studyplanGeneration: 'Optimizada',
+        attemptsPerTest: 3
+      }
     },
     {
       id: null,
@@ -49,6 +69,11 @@ export const profilesData: ProfileJson[] = [
       skillsRef: [],
       coursesRef:[],
       enterpriseRef: null,
-      permissions: []
+      permissions: {
+        hoursPerWeek: 8,
+        studyLiberty: 'Estricto',
+        studyplanGeneration: 'Confirmar',
+        attemptsPerTest: 5
+      }
     },
   ]
