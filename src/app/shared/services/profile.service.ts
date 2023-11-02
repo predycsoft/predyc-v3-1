@@ -24,8 +24,7 @@ export class ProfileService {
     private afs: AngularFirestore,
     private enterpriseService: EnterpriseService,
 
-  ) {
-   }
+  ) {}
 
   public async loadProfiles() {
     this.getProfiles()

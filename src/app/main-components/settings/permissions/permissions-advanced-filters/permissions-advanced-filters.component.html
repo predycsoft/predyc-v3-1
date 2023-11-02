@@ -17,7 +17,7 @@
         <th class="w-10 ft10 gray-10" mat-header-cell *matHeaderCellDef>Horas por semana</th>
         <td class="w-10 ft10 gray-10" mat-cell *matCellDef="let profile">
             <div fxLayout="row" fxLayoutAlign="center center">
-                <input type="number" placeholder="Horas" class="w30px" min="1" max="8" [(ngModel)] ="profile.hours"/>
+                <input type="number" placeholder="Horas" class="w30px" min="1" max="8" [(ngModel)] ="profile.hours" (ngModelChange)="hasFormChanged = true"/>
             </div>
         </td>
     </ng-container>
@@ -33,7 +33,7 @@
             </div>
             <div fxLayout="row" fxLayoutAlign="center center" class="h24px">
                 <mat-slider min="1" max="3" step="1" showTickMarks>
-                    <input matSliderThumb [(ngModel)] ="profile.liberty">
+                    <input matSliderThumb [(ngModel)] ="profile.liberty" (ngModelChange)="hasFormChanged = true">
                 </mat-slider>
             </div>
         </td>
@@ -50,7 +50,7 @@
             </div>
             <div fxLayout="row" fxLayoutAlign="center center" class="h24px">
                 <mat-slider min="1" max="3" step="1" showTickMarks>
-                    <input matSliderThumb [(ngModel)] ="profile.generation">
+                    <input matSliderThumb [(ngModel)] ="profile.generation" (ngModelChange)="hasFormChanged = true">
                 </mat-slider>
             </div>
         </td>
@@ -69,7 +69,7 @@
             </div>
             <div fxLayout="row" fxLayoutAlign="center center" class="h24px">
                 <mat-slider min="1" max="5" step="1" showTickMarks >
-                    <input matSliderThumb [(ngModel)] ="profile.attempts">
+                    <input matSliderThumb [(ngModel)] ="profile.attempts" (ngModelChange)="hasFormChanged = true">
                 </mat-slider>
             </div>
         </td>
@@ -83,4 +83,4 @@
     *ngIf="enablePagination"
     aria-label="Select page of table"
 ></mat-paginator>
-<button class="blueButton btn" (click)="onSave()">Guardar cambios</button>
+<button *ngIf="hasFormChanged" class="blueButton btn" (click)="onSave()">Guardar cambios</button>

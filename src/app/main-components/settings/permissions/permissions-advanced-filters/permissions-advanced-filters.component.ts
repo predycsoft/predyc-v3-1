@@ -30,7 +30,8 @@ export class PermissionsAdvancedFiltersComponent {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   combinedObservableSubscription: Subscription
-
+    
+  hasFormChanged = false
 
   ngOnInit() {
     this.departmentService.loadDepartmens()
@@ -53,7 +54,7 @@ export class PermissionsAdvancedFiltersComponent {
         this.dataSource = new ProfileDataSource(
           this.enterpriseService,
           this.departmentService,
-          // this.profileService,
+          this.profileService,
           this.afs,
           this.paginator,
           this.pageSize,
@@ -77,10 +78,11 @@ export class PermissionsAdvancedFiltersComponent {
   }
   
   onSave() {
+    this.hasFormChanged = false
     const tableData = this.dataSource.getTableData();
     // console.log("tableData", tableData);
-    // Transformamos a formato del modelo
     tableData.map(async data => {
+      // liberty y generation vienen como numbers. Los transformamos al formato de nuestro modelo
       const libertyString = this.getKeyByValue(Permissions.STUDY_LIBERTY_NUMBER_OPTS, data.liberty)
       const generationString = this.getKeyByValue(Permissions.STUDYPLAN_GENERATION_NUMBER_OPTS, data.generation)
       const currentProfilePermissions = this.profileService.getProfile(data.id).permissions
@@ -99,6 +101,11 @@ export class PermissionsAdvancedFiltersComponent {
     })
   }
 
+  onFormChange() {
+    console.log('Cambio a true')
+    if (!this.hasFormChanged) this.hasFormChanged = true
+  }
+
 }
 
 class ProfileDataSource extends DataSource<Profile> {
@@ -115,7 +122,7 @@ class ProfileDataSource extends DataSource<Profile> {
   constructor(
     private enterpriseService: EnterpriseService,
     private departmentService: DepartmentService,
-    // private profileService: ProfileService,
+    private profileService: ProfileService,
     private afs: AngularFirestore,
     private paginator: MatPaginator,
     private pageSize: number,
