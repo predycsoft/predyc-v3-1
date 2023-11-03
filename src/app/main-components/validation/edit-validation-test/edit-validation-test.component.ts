@@ -4,12 +4,12 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs';
 import { IconService } from 'src/app/shared/services/icon.service';
 // import { VimeoUploadService } from 'src/app/shared/services/vimeo-upload.service';
-import { QuestionType } from 'src/app/shared/models/activity-classes.model'
 import { cloneArrayOfObjects, compareByString, getPlaceholders } from 'src/app/shared/utils';
 import { AlertsService } from 'src/app/shared/services/alerts.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { CategoryService } from 'src/app/shared/services/category.service';
 import { SkillService } from 'src/app/shared/services/skill.service';
+import { Question } from 'src/app/shared/models/activity-classes.model';
 
 function optionsLengthValidator(question: FormGroup): ValidationErrors | null {
   const options = question.get('options') as FormArray
@@ -68,10 +68,10 @@ const multipleChoiceQuestionTypeValidators: ValidatorFn[] = [optionsLengthValida
 const trueOrFalseQuestionTypeValidators: ValidatorFn[] = [optionsLengthValidator, skillsLengthValidator]
 
 const questionTypeToValidators = {
-  [QuestionType.TYPE_SINGLE_CHOICE_VALUE]: singleOptionQuestionTypeValidators,
-  [QuestionType.TYPE_COMPLETE_VALUE]: completeQuestionTypeValidators,
-  [QuestionType.TYPE_MULTIPLE_CHOICE_VALUE]: multipleChoiceQuestionTypeValidators,
-  [QuestionType.TYPE_TRUE_OR_FALSE_VALUE]: trueOrFalseQuestionTypeValidators,
+  [Question.TYPE_SINGLE_CHOICE]: singleOptionQuestionTypeValidators,
+  [Question.TYPE_COMPLETE]: completeQuestionTypeValidators,
+  [Question.TYPE_MULTIPLE_CHOICE]: multipleChoiceQuestionTypeValidators,
+  [Question.TYPE_TRUE_OR_FALSE]: trueOrFalseQuestionTypeValidators,
 }
 
 @Component({
@@ -96,8 +96,8 @@ export class EditValidationTestComponent {
 
   mainForm: FormGroup
 
-  questionTypes: QuestionType[] = QuestionType.TYPES.sort((a, b) => compareByString(a.displayName, b.displayName))
-  questionTypeClass = QuestionType
+  questionTypes = Question.TYPES_INFO
+  QuestionClass = Question
 
   questionMaxSize: number = 50
 
@@ -225,7 +225,7 @@ export class EditValidationTestComponent {
   }
 
   addQuestion(): void {
-    const defaultQuestionType = QuestionType.TYPE_COMPLETE_VALUE
+    const defaultQuestionType = Question.TYPE_COMPLETE
     this.questions.push(this.fb.group({
       text: ['', [Validators.required]],
       type: [defaultQuestionType],
@@ -358,7 +358,7 @@ export class EditValidationTestComponent {
 
   getQuestionInstruction(questionIndex: number) {
     return this.sanitizer.bypassSecurityTrustHtml(
-      QuestionType.TYPES.find(type => type.value === this.questions.at(questionIndex)['controls']['type'].value).createInstructions
+      Question.typeToInfoDict[this.questions.at(questionIndex)['controls']['type'].value].createInstructions
     );
   }
 
@@ -372,7 +372,7 @@ export class EditValidationTestComponent {
   }
 
   getQuestionTypeDisplayNameByValue(value: string): string {
-    return QuestionType.TYPES.find(type => type.value === value).displayName
+    return Question.typeToInfoDict[value].displayName
   }
 
   parseQuestionText(questionIndex: number): void {

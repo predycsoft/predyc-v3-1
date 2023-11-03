@@ -2,6 +2,11 @@ import { Component } from '@angular/core';
 import { LoaderService } from 'src/app/shared/services/loader.service';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { EditValidationTestComponent } from './edit-validation-test/edit-validation-test.component';
+import { SkillService } from 'src/app/shared/services/skill.service';
+import { ActivityClassesService } from 'src/app/shared/services/activity-classes.service';
+import { Activity } from 'src/app/shared/models/activity-classes.model';
+import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
+import { AlertsService } from 'src/app/shared/services/alerts.service';
 
 @Component({
   selector: 'app-validation',
@@ -12,7 +17,11 @@ export class ValidationComponent {
 
   constructor(
     private loaderService: LoaderService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private skillsService: SkillService,
+    private activityService: ActivityClassesService,
+    private enterpriseService: EnterpriseService,
+    private alertService: AlertsService
   ) {}
 
   openEditValidationTestModal(targetActivity=null): NgbModalRef {
@@ -32,9 +41,39 @@ export class ValidationComponent {
     // modalRef.closed(result => {
     //   // this.activityService.addActivity()
     // })
-    modalRef.result.then(result => {
+    modalRef.result.then(async result => {
       console.log("result", result)
-      
+      const skillsRef = result.modalPage2.testSkills.map(skill => {
+        return this.skillsService.getSkillRefById(skill.id)
+      })
+      const questions = result.modalPage3.questions.map(question => {
+        const skillsRef = question.skills.map(skill => {
+          return this.skillsService.getSkillRefById(skill.id)
+        })
+        return {
+          id: null,
+          ...question,
+          image: question.image.url,
+          skillsRef
+        }
+      })
+      const skillTest = {
+        ...result.modalPage1,
+        enterpriseRef: this.enterpriseService.getEnterpriseRef(),
+        skills: skillsRef,
+      }
+      const activity = Activity.createSkillTest(skillTest)
+      try {
+        await this.activityService.addActivity(activity)
+        for (let question of questions) {
+          await this.activityService.addQuestion(activity.id, question)
+        }
+        this.alertService.succesAlert('Examen de validación agregado exitosamente')
+      } catch (error) {
+        this.alertService.errorAlert(error)
+      }
+      // this.activityService.saveQuestion(question, activity.id)
+      console.log(activity)
     }).catch(error => console.log("error", error))
   }
 
@@ -50,3 +89,79 @@ export class ValidationComponent {
   }
 
 }
+
+// {
+//   "modalPage1": {
+//       "title": "Titulo",
+//       "description": "descripcion",
+//       "duration": 60
+//   },
+//   "modalPage2": {
+//       "testSkills": [
+//           {
+//               "id": "9sqOPfIwMy6MFDpMvPBz",
+//               "name": "Desgaste y fallos",
+//               "categoryId": "pTNp9maHykYmi7ed8aSZ"
+//           },
+//           {
+//               "id": "Hz0edH9w7ageUCUXZKCC",
+//               "name": "Mecánica de materiales",
+//               "categoryId": "pTNp9maHykYmi7ed8aSZ"
+//           },
+//           {
+//               "id": "zjK7tu4WGMEflAkiFPI1",
+//               "name": "Diagnóstico de problemas",
+//               "categoryId": "pTNp9maHykYmi7ed8aSZ"
+//           }
+//       ]
+//   },
+//   "modalPage3": {
+//       "questions": [
+//           {
+//               "text": "Pregunta",
+//               "type": "single_choice",
+//               "image": {
+//                   "url": "",
+//                   "file": null
+//               },
+//               "options": [
+//                   {
+//                       "text": "Opcion 1",
+//                       "isCorrect": true,
+//                       "placeholder": null
+//                   },
+//                   {
+//                       "text": "Opcion 2",
+//                       "isCorrect": false,
+//                       "placeholder": null
+//                   }
+//               ],
+//               "points": 10,
+//               "skills": [
+//                   {
+//                       "id": "9sqOPfIwMy6MFDpMvPBz",
+//                       "name": "Desgaste y fallos",
+//                       "categoryId": "pTNp9maHykYmi7ed8aSZ"
+//                   }
+//               ]
+//           }
+//       ]
+//   }
+// }
+
+// En la actividad:
+// activityTakersQty esto va por cloud functions
+// coursesRef = []
+// description
+// duration
+// files = []
+// id
+// instructions = null
+// profileRef = null
+// type "skill-test"
+// updatedAt
+// vimeoId1 null
+// vimeoId2 null
+
+// Subcoleccion de preguntas
+// para el type solo necesito el value

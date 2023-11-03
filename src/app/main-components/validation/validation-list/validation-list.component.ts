@@ -18,7 +18,7 @@ export class ValidationListComponent {
   ) {}
 }
 
-// class ValidationDataSource extends DataSource<Validation> {
+// class ActivityDataSource extends DataSource<Activity> {
 
 //   // private pageIndex: number = 0;
 //   // private previousPageIndex: number = 0;

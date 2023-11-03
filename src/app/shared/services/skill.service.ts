@@ -119,4 +119,8 @@ export class SkillService {
       this.alertService.errorAlert(JSON.stringify(error));
     }
   }
+
+  public getSkillRefById(id: string): DocumentReference<Skill> {
+    return this.afs.collection<Skill>(Skill.collection).doc(id).ref
+  }
 }
