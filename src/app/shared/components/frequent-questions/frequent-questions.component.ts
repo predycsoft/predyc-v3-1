@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { IconService } from 'src/app/shared/services/icon.service';
+import { IconService } from '../../services/icon.service';
 
 @Component({
   selector: 'app-frequent-questions',
@@ -7,7 +7,6 @@ import { IconService } from 'src/app/shared/services/icon.service';
   styleUrls: ['./frequent-questions.component.css']
 })
 export class FrequentQuestionsComponent {
-
   @Input() questions: string[]
 
   constructor(
@@ -19,6 +18,4 @@ export class FrequentQuestionsComponent {
   ngOnInit() {
     this.panelOpenStates = Array(this.questions.length).fill(false);
   }
-  
-
 }
