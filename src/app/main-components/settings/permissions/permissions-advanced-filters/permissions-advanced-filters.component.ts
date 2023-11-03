@@ -1,8 +1,8 @@
 import { DataSource } from '@angular/cdk/collections';
-import { Component, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { MatPaginator } from '@angular/material/paginator';
-import { BehaviorSubject, Observable, of, catchError, Subscription, combineLatest } from 'rxjs';
+import { BehaviorSubject, Observable, of, catchError, Subscription, combineLatest, merge } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Profile } from 'src/app/shared/models/profile.model';
 import { DepartmentService } from 'src/app/shared/services/department.service';
@@ -22,6 +22,9 @@ export class PermissionsAdvancedFiltersComponent {
     private departmentService: DepartmentService,
     private profileService: ProfileService,
   ){}
+
+  @Input() changedField: string;
+  @Input() changedValue: any;
 
   displayedColumns: string[] = ['departmentName', 'profileName', 'hours', 'liberty', 'generation', 'attempts'];
   dataSource!: ProfileDataSource;
@@ -55,13 +58,15 @@ export class PermissionsAdvancedFiltersComponent {
           this.enterpriseService,
           this.departmentService,
           this.profileService,
-          this.afs,
           this.paginator,
           this.pageSize,
-          this.enablePagination,
         );
       }
     })
+  }
+
+  ngOnChanges() {
+    console.log(`El campo ${this.changedField} cambió a:`, this.changedValue);
   }
 
   ngOnDestroy() {
@@ -80,16 +85,16 @@ export class PermissionsAdvancedFiltersComponent {
   onSave() {
     this.hasFormChanged = false
     const tableData = this.dataSource.getTableData();
-    // console.log("tableData", tableData);
+    console.log("tableData", tableData);
     tableData.map(async data => {
       // liberty y generation vienen como numbers. Los transformamos al formato de nuestro modelo
-      const libertyString = this.getKeyByValue(Permissions.STUDY_LIBERTY_NUMBER_OPTS, data.liberty)
-      const generationString = this.getKeyByValue(Permissions.STUDYPLAN_GENERATION_NUMBER_OPTS, data.generation)
+      const libertyString = this.getKeyByValue(Permissions.STUDY_LIBERTY_NUMBER_OPTS, data.studyLiberty)
+      const generationString = this.getKeyByValue(Permissions.STUDYPLAN_GENERATION_NUMBER_OPTS, data.studyplanGeneration)
       const currentProfilePermissions = this.profileService.getProfile(data.id).permissions
       let newProfilePermissions = {...currentProfilePermissions} as Permissions
-      newProfilePermissions.attemptsPerTest = data.attempts
+      newProfilePermissions.attemptsPerTest = data.attemptsPerTest
       newProfilePermissions.studyplanGeneration = generationString
-      newProfilePermissions.hoursPerWeek = data.hours
+      newProfilePermissions.hoursPerWeek = data.hoursPerWeek
       newProfilePermissions.studyLiberty = libertyString
       if (JSON.stringify(currentProfilePermissions) != JSON.stringify(newProfilePermissions)) {
         let newProfile = this.profileService.getProfile(data.id)
@@ -101,18 +106,13 @@ export class PermissionsAdvancedFiltersComponent {
     })
   }
 
-  onFormChange() {
-    console.log('Cambio a true')
-    if (!this.hasFormChanged) this.hasFormChanged = true
-  }
 
 }
 
 class ProfileDataSource extends DataSource<Profile> {
-  private pageIndex: number = 0;
-  private previousPageIndex: number = 0;
+
   private tableData: any[]
-  private previousPageProfile: any
+  // private startIndex = this.paginator.pageIndex * this.paginator.pageSize;
 
   // Borrar cuando funcione el servicio
   public profilesSubject = new BehaviorSubject<Profile[]>([]);
@@ -123,86 +123,62 @@ class ProfileDataSource extends DataSource<Profile> {
     private enterpriseService: EnterpriseService,
     private departmentService: DepartmentService,
     private profileService: ProfileService,
-    private afs: AngularFirestore,
     private paginator: MatPaginator,
     private pageSize: number,
-    private enablePagination: boolean
   ) {
     super();
-
-    if (this.enablePagination) {
-      this.paginator.pageSize = this.pageSize
-      this.paginator.page.subscribe(eventObj => {
-        this.pageIndex = eventObj.pageIndex
-        this.previousPageIndex = eventObj.previousPageIndex
-        this.getProfiles()
-      });
-    }
-    this.getProfiles()
+    this.paginator.pageSize = this.pageSize
   }
 
-  getProfiles() {
-    // console.log("Corriendo get profiles")
-    let queryObj: {
-      pageSize: number
-      startAt?: any
-      startAfter?: any
-    } = {
-      pageSize: this.pageSize,
-    }
-    if (this.pageIndex == 0) {
-      // first page
-    } else if (this.pageIndex > this.previousPageIndex) {
-      // next page
-      queryObj.startAfter = this.tableData[this.tableData.length - 1]
-      this.previousPageProfile = this.tableData[0]
-    } else {
-      // previous page
-      queryObj.startAt = this.previousPageProfile
-    }
-    // Actualmente los perfiles se piden apenas se inicializa el servicio.
-    // Cambiar para que se pidan con un metodo que acepte el queryObj como param de entrada
-
-    // ---- Estoy pidiendo aqui porque en el servicio no me funciona ----
-    this.afs.collection<Profile>(Profile.collection, ref => {
-      let query = ref as any
-      query = query.where('enterpriseRef', '==', this.enterpriseService.getEnterpriseRef())
-      query = query.orderBy('name', 'asc')
-      if (queryObj.startAt) {
-        query = query.startAt(queryObj.startAt.name)
-      } else if (queryObj.startAfter) {
-        query = query.startAfter(queryObj.startAfter.name)
-      }
-      return query.limit(queryObj.pageSize)
-    }
-    ).valueChanges().subscribe(profiles => {
-      // console.log("New profiles", profiles)
-      this.profilesSubject.next(profiles)
-    })
-  }
 
   connect(): Observable<any[]> {
-    // return this.profileService.getProfilesObservable().pipe(
-    return this.profiles$.pipe( // Quitar cuando funcione el servicio
-      map(profiles => {
-        // console.log("profiles", profiles)
-        if (this.enablePagination) {
-          // this.paginator.length = profiles.length
-          this.paginator.length = this.enterpriseService.getEnterprise().profilesNo
-        }
-        this.tableData = profiles.map(profile => {
+    // return merge(this.profileService.getProfilesObservable(), this.paginator.page, this.sort.sortChange).pipe(
+    return merge(this.profileService.getProfilesObservable(), this.paginator.page).pipe(
+      map(() => {
+        const profiles = this.profileService.getProfilesSubjectValue()
+        this.paginator.length = profiles.length
+        
+        const data = profiles.map(profile => {
           const departmentName = this.departmentService.getDepartmentByProfileId(profile.id).name //Solo hace falta departmentName
           return {
             id: profile.id,
             name: profile.name,
             departmentName: departmentName,
-            hours: profile.permissions.hoursPerWeek,
-            liberty: Permissions.STUDY_LIBERTY_NUMBER_OPTS[profile.permissions.studyLiberty],
-            generation: Permissions.STUDYPLAN_GENERATION_NUMBER_OPTS[profile.permissions.studyplanGeneration],
-            attempts: profile.permissions.attemptsPerTest
+            hoursPerWeek: profile.permissions.hoursPerWeek,
+            studyLiberty: Permissions.STUDY_LIBERTY_NUMBER_OPTS[profile.permissions.studyLiberty],
+            studyplanGeneration: Permissions.STUDYPLAN_GENERATION_NUMBER_OPTS[profile.permissions.studyplanGeneration],
+            attemptsPerTest: profile.permissions.attemptsPerTest
           }
         });
-        return this.tableData
+
+        // Sorting
+        // if (this.sort.active && this.sort.direction !== '') {
+        //   filteredUsers = filteredUsers.sort((a, b) => {
+        //     const isAsc = this.sort.direction === 'asc';
+        //     console.log('this.sort.active')
+        //     console.log(this.sort.active)
+        //     switch (this.sort.active) {
+        //       case 'displayName': return orderByValueAndDirection(a.displayName as string, b.displayName as string, isAsc);
+        //       // case 'status': return this.utilsService.compare(a.status as string, b.status as string, isAsc);
+        //       // case 'departament': return 0
+        //       // case 'profile': return 0
+        //       // case 'ratingPoints': return 0
+        //       // case 'performance': return 0
+        //       // Add more fields to sort by as needed.
+        //       default: return 0;
+        //     }
+        //   });
+        // }
+
+        // Pagination
+        const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+        // return filteredUsers.splice(startIndex, this.paginator.pageSize);
+        console.log("startIndex", startIndex)
+        console.log("this.paginator.pageSize", this.paginator.pageSize)
+        // console.log(this.tableData.splice(this.startIndex, this.paginator.pageSize))
+
+        this.tableData = data.splice(startIndex, this.paginator.pageSize)
+        return this.tableData;
       }),
       catchError(error => {
         console.error('Error occurred:', error);

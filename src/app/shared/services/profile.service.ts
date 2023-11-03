@@ -12,8 +12,8 @@ import { User } from '../models/user.model';
 export class ProfileService {
 
   private profilesLoaded: Promise<void>
-  private profileSubject = new BehaviorSubject<Profile[]>([]);
-  private profiles$ = this.profileSubject.asObservable();
+  private profilesSubject = new BehaviorSubject<Profile[]>([]);
+  private profiles$ = this.profilesSubject.asObservable();
 
   private profilesLoadedSubject = new BehaviorSubject<boolean>(false)
   public profilesLoaded$ = this.profilesLoadedSubject.asObservable();
@@ -47,7 +47,7 @@ export class ProfileService {
       this.enterpriseRef =this.enterpriseService.getEnterpriseRef()
       this.afs.collection<Profile>(Profile.collection, ref=> ref.where('enterpriseRef', '==', this.enterpriseRef)).valueChanges().subscribe({
         next: profile => {
-          this.profileSubject.next(profile)
+          this.profilesSubject.next(profile)
           if (!this.profilesLoadedSubject.value) {
             this.profilesLoadedSubject.next(true)
             console.log("Los perfiles fueron cargados", profile)
@@ -70,13 +70,18 @@ export class ProfileService {
     return this.profilesLoaded;
   }
 
+  public getProfilesSubjectValue(): Profile[] {
+    return this.profilesSubject.value
+  }
+
   public getProfile(id: string):Profile {
-    return this.profileSubject.value.find(x => x.id === id)
+    return this.profilesSubject.value.find(x => x.id === id)
   }
 
   public getProfileObject(id: string): Profile {
-    return this.profileSubject.value.find(x => x.id === id)
+    return this.profilesSubject.value.find(x => x.id === id)
   }
+
 
   async saveProfile(profile: Profile): Promise<void> {
     try {
