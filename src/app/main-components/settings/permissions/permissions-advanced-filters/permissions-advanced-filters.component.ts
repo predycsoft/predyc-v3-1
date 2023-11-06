@@ -139,6 +139,7 @@ class ProfileDataSource extends DataSource<Profile> {
     return merge(this.profileService.getProfilesObservable(), this.paginator.page).pipe(
       map(() => {
         const profiles = this.profileService.getProfilesSubjectValue()
+        console.log('Perfiles:', profiles);
         this.paginator.length = profiles.length
         
         const data = profiles.map(profile => {

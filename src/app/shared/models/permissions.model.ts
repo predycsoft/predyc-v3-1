@@ -8,6 +8,8 @@ export interface PermissionsJson {
 
 export class Permissions {
 
+    public hasDefaultPermissions?: boolean
+
     public static STUDY_LIBERTY_FREE_OPTION = 'Libre'
     public static STUDY_LIBERTY_STRICT_OPTION = 'Estricto'
     public static STUDY_LIBERTY_REQUESTS_OPTION = 'Solicitudes'

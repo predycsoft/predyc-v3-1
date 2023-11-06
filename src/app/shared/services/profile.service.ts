@@ -86,15 +86,20 @@ export class ProfileService {
   async saveProfile(profile: Profile): Promise<void> {
     try {
       let ref: DocumentReference;
-      console.log('profile save',profile)
+      // console.log('profile save',profile)
+      let hasDefaultPermissions = true
       // If profile has an ID, then it's an update
       if (profile.id) {
         ref = this.afs.collection<Profile>(Profile.collection).doc(profile.id).ref;
+        const currentProfile = (await ref.get()).data()
+        // console.log("currentProfile", currentProfile)
+        if (JSON.stringify(currentProfile.permissions) !== JSON.stringify(profile.permissions)) hasDefaultPermissions = false
       } else {
         // Else, it's a new profile
         ref = this.afs.collection<Profile>(Profile.collection).doc().ref;
         profile.id = ref.id; // Assign the generated ID to the profile
       }
+      profile.permissions.hasDefaultPermissions = hasDefaultPermissions
       const dataToSave = typeof profile.toJson === 'function' ? profile.toJson() : profile;
 
       console.log('dataToSave',dataToSave)

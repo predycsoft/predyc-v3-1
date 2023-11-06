@@ -247,6 +247,9 @@ export class InitScriptComponent {
     let skillIndex = 0;
     let userIndex = 0;
     let enterpriseIndex = 0;
+
+    const enterprise = (await enterpriseRefs[0].get()).data() as Enterprise
+    console.log("-------------------------enterprise", enterprise)
     
     for (const profile of profilesData) {
       const profileRef = this.afs.collection(Profile.collection).doc();
@@ -258,6 +261,8 @@ export class InitScriptComponent {
       const currentUserRef = userRefs[userIndex % userRefs.length];
       const currentEnterpriseRef = enterpriseRefs[enterpriseIndex % enterpriseRefs.length];
 
+      profile.permissions = enterprise.permissions
+      profile.permissions.hasDefaultPermissions = true
       await profileRef.set({
           ...profile,
           id: id,
