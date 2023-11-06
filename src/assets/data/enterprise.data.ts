@@ -12,6 +12,12 @@ export const enterpriseData: EnterpriseJson = {
     totalAlertNotifications: 0,
     totalRequestNotifications: 0,
     totalReadByAdminNotifications: 0,
+    permissions: {
+        hoursPerWeek: 8,
+        studyLiberty: 'Estricto',
+        studyplanGeneration: 'Confirmar',
+        attemptsPerTest: 5
+    },
     photoUrl: null,
     profilesNo: 0,
     zipCode: 78904,
