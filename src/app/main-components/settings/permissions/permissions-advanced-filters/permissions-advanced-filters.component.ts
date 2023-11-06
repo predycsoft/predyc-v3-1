@@ -53,7 +53,7 @@ export class PermissionsAdvancedFiltersComponent {
       })
     ).subscribe(isLoaded => {
       if (isLoaded) {
-        console.log("Permisos esta loaded")
+        // console.log("Permisos esta loaded")
         this.dataSource = new ProfileDataSource(
           this.enterpriseService,
           this.departmentService,
@@ -66,7 +66,11 @@ export class PermissionsAdvancedFiltersComponent {
   }
 
   ngOnChanges() {
-    console.log(`El campo ${this.changedField} cambió a:`, this.changedValue);
+    // console.log(`El campo ${this.changedField} cambió a:`, this.changedValue);
+    if (this.changedField && this.changedValue) {
+      this.dataSource.updateTableData(this.changedField, this.changedValue);
+      this.hasFormChanged = true
+    }
   }
 
   ngOnDestroy() {
@@ -85,7 +89,7 @@ export class PermissionsAdvancedFiltersComponent {
   onSave() {
     this.hasFormChanged = false
     const tableData = this.dataSource.getTableData();
-    console.log("tableData", tableData);
+    // console.log("tableData", tableData);
     tableData.map(async data => {
       // liberty y generation vienen como numbers. Los transformamos al formato de nuestro modelo
       const libertyString = this.getKeyByValue(Permissions.STUDY_LIBERTY_NUMBER_OPTS, data.studyLiberty)
@@ -100,7 +104,7 @@ export class PermissionsAdvancedFiltersComponent {
         let newProfile = this.profileService.getProfile(data.id)
         newProfile.permissions = newProfilePermissions
         await this.profileService.saveProfile(newProfile)
-        console.log(`Los permisos de ${newProfile.name} cambiaron`)
+        // console.log(`Los permisos de ${newProfile.name} cambiaron`)
       }
       
     })
@@ -139,7 +143,7 @@ class ProfileDataSource extends DataSource<Profile> {
         this.paginator.length = profiles.length
         
         const data = profiles.map(profile => {
-          const departmentName = this.departmentService.getDepartmentByProfileId(profile.id).name //Solo hace falta departmentName
+          const departmentName = this.departmentService.getDepartmentByProfileId(profile.id).name
           return {
             id: profile.id,
             name: profile.name,
@@ -172,11 +176,6 @@ class ProfileDataSource extends DataSource<Profile> {
 
         // Pagination
         const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
-        // return filteredUsers.splice(startIndex, this.paginator.pageSize);
-        console.log("startIndex", startIndex)
-        console.log("this.paginator.pageSize", this.paginator.pageSize)
-        // console.log(this.tableData.splice(this.startIndex, this.paginator.pageSize))
-
         this.tableData = data.splice(startIndex, this.paginator.pageSize)
         return this.tableData;
       }),
@@ -191,6 +190,34 @@ class ProfileDataSource extends DataSource<Profile> {
 
   getTableData(): any[] {
     return this.tableData;
+  }
+  
+  updateTableData(field: string, value: any) {
+    this.tableData.forEach((row) => {
+      // Actualiza el valor correspondiente según el campo
+      switch (field) {
+        case 'hoursPerWeek':
+          // console.log("Caso de hours")
+          row.hoursPerWeek = value;
+          break;
+        case 'studyLiberty':
+          // console.log("Caso de liberty")
+          row.studyLiberty = Permissions.STUDY_LIBERTY_NUMBER_OPTS[value];
+          break;
+        case 'studyplanGeneration':
+          // console.log("Caso de generation")
+          row.studyplanGeneration = Permissions.STUDYPLAN_GENERATION_NUMBER_OPTS[value];
+          break;
+        case 'attemptsPerTest':
+          // console.log("Caso de attempts")
+          row.attemptsPerTest = value;
+          break;
+        default:
+          break;
+      }
+    });
+    // Notifica a los observadores sobre el cambio en los datos
+    this.profilesSubject.next([...this.tableData]);
   }
 
   
