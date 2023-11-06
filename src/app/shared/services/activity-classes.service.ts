@@ -31,6 +31,19 @@ export class ActivityClassesService {
   }
   private skillsSubject = new BehaviorSubject<Skill[]>([]);
 
+  async addActivity(newActivity: Activity): Promise<void> {
+    const ref = this.afs.collection<Activity>(Activity.collection).doc().ref;
+    await ref.set({ ...newActivity.toJson(), id: ref.id }, { merge: true });
+    newActivity.id = ref.id;
+  }
+
+  async addQuestion(activityId: string, newQuestion: Question): Promise<void> {
+    const ref = this.afs.collection<Question>(Activity.collection)
+      .doc(activityId).collection(Question.collection).doc().ref;
+    await ref.set({ ...newQuestion, id: ref.id }, { merge: true });
+    newQuestion.id = ref.id;
+  }
+
   async saveActivity(newActivity: Activity): Promise<void> {
     try {
 
@@ -54,7 +67,7 @@ export class ActivityClassesService {
     }
   }
 
-  async saveQuestion(newQuestion: Question,idActivity): Promise<void> {
+  async saveQuestion(newQuestion: Question, idActivity): Promise<void> {
     try {
       try {
         await this.afs.collection(Activity.collection) // Referenciamos la colección principal

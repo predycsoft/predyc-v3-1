@@ -221,7 +221,7 @@
                                         <!-- area dependiente de la pregunta -->
                                         <div fxLayout="row" class="pdt05 fw">
                                             <!-- Completación -->
-                                            <div class="fw" fxLayout="column" *ngIf="question.get('type').value == questionTypeClass.TYPE_COMPLETE_VALUE">
+                                            <div class="fw" fxLayout="column" *ngIf="question.get('type').value == QuestionClass.TYPE_COMPLETE">
                                                 <!-- <div>POR DEFINIR</div> -->
                                                 <div fxLayout="row" class="mgt10">
                                                     <span>Haga click en confirmar cuando haya terminado de escribir la pregunta</span>
@@ -302,7 +302,7 @@
                                                 </div>
                                             </div>
                                             <!-- opcion multiple -->
-                                            <div class="fw" *ngIf="question.get('type').value === questionTypeClass.TYPE_MULTIPLE_CHOICE_VALUE">
+                                            <div class="fw" *ngIf="question.get('type').value === QuestionClass.TYPE_MULTIPLE_CHOICE">
                                                 <div fxLayout="column" formArrayName="options">                                                    
                                                     <div
                                                         *ngFor="let option of options(i).controls; let optIndex = index"
@@ -342,7 +342,7 @@
                                                 </div>
                                             </div>
                                             <!-- opcion simple -->
-                                            <div class="fw" fxLayout="column" *ngIf="question.get('type').value == questionTypeClass.TYPE_SINGLE_CHOICE_VALUE">
+                                            <div class="fw" fxLayout="column" *ngIf="question.get('type').value == QuestionClass.TYPE_SINGLE_CHOICE">
                                                 <div
                                                     fxLayout="column"
                                                     formArrayName="options"
@@ -385,7 +385,7 @@
                                                 </div>
                                             </div>
                                             <!-- opcion true or false -->
-                                            <div class="fw" fxLayout="column" *ngIf="question.get('type').value == questionTypeClass.TYPE_TRUE_OR_FALSE_VALUE">
+                                            <div class="fw" fxLayout="column" *ngIf="question.get('type').value == QuestionClass.TYPE_TRUE_OR_FALSE">
                                                 <div
                                                     fxLayout="column"
                                                     formArrayName="options">
@@ -544,7 +544,7 @@
                                             
                                             <!-- area dependiente de la pregunta -->
                                             <div [fxFlex]="question.get('image.url').value ? '30' : '100'" fxLayout="column" class="pdt05 fw">
-                                                <div *ngIf="question.get('type').value == questionTypeClass.TYPE_COMPLETE_VALUE">
+                                                <div *ngIf="question.get('type').value == QuestionClass.TYPE_COMPLETE">
                                                     <span class="ft14 ft500"> {{ question.get('text').value }} </span>
                                                     <div class="mgt10" fxLayout="row" fxLayoutGap="40px">
                                                         <div 
@@ -561,7 +561,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div *ngIf="question.get('type').value == questionTypeClass.TYPE_SINGLE_CHOICE_VALUE">
+                                                <div *ngIf="question.get('type').value == QuestionClass.TYPE_SINGLE_CHOICE">
                                                     <span class="ft14 ft500"> {{ question.get('text').value }} </span>
                                                     <div class="mgt10" fxLayout="column">
                                                         <div fxLayout="row" fxLayoutAlign="space-between center" *ngFor="let option of options(questionIndex).controls; let optionIndex = index" class="mgt05">
@@ -572,7 +572,7 @@
                                                     </div>
                                                 </div>
                                     
-                                                <div *ngIf="question.get('type').value == questionTypeClass.TYPE_MULTIPLE_CHOICE_VALUE">
+                                                <div *ngIf="question.get('type').value == QuestionClass.TYPE_MULTIPLE_CHOICE">
                                                     <span class="ft14 ft500"> {{ question.get('text').value }} </span>
                                                     <div class="mgt10" fxLayout="column">
                                                         <div fxLayout="row" fxLayoutAlign="space-between center" *ngFor="let option of options(questionIndex).controls; let optionIndex = index" class="mgt05">
@@ -583,7 +583,7 @@
                                                     </div>
                                                 </div>
                                     
-                                                <div *ngIf="question.get('type').value == questionTypeClass.TYPE_TRUE_OR_FALSE_VALUE">
+                                                <div *ngIf="question.get('type').value == QuestionClass.TYPE_TRUE_OR_FALSE">
                                                     <span class="ft14 ft500"> {{ question.get('text').value }} </span>
                                                     <div class="mgt10" fxLayout="column">
                                                         <div fxLayout="row" fxLayoutAlign="space-between center">

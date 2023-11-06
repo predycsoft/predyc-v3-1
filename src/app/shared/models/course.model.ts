@@ -5,7 +5,6 @@ import { DocumentReference } from "@angular/fire/compat/firestore"
 
 export class Curso {
 
-
   public static collection = 'course'
 
   categoria: string = ""
@@ -30,8 +29,5 @@ export class Curso {
   instructorDescripcion: string = ""
   vimeoFolderId: string = ""
   enterpriseRef: DocumentReference = null
-
-
-
 
   }
