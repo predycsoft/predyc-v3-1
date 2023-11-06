@@ -1,8 +1,7 @@
 import { Component, Input } from '@angular/core';
-import { Enterprise } from 'src/app/shared/models/enterprise.model';
-import { User } from 'src/app/shared/models/user.model';
-import { IconService } from 'src/app/shared/services/icon.service';
-import { UserService } from 'src/app/shared/services/user.service';
+import { User } from '../../models/user.model';
+import { UserService } from '../../services/user.service';
+import { IconService } from '../../services/icon.service';
 
 @Component({
   selector: 'app-support-contact',

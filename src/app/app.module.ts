@@ -106,8 +106,10 @@ import { UsersRhythmComponent } from './main-components/dashboard/users-rhythm/u
 import { UsersStudyTimeContainerComponent } from './main-components/dashboard/users-study-time-container/users-study-time-container.component';
 import { StudyTimeWeeklyChartComponent } from './main-components/dashboard/users-study-time-container/study-time-weekly-chart/study-time-weekly-chart.component';
 import { StudyTimeMonthlyChartComponent } from './main-components/dashboard/users-study-time-container/study-time-monthly-chart/study-time-monthly-chart.component';
-import { SupportContactComponent } from './main-components/my-account/support-contact/support-contact.component';
-import { FrequentQuestionsComponent } from './main-components/my-account/frequent-questions/frequent-questions.component';
+// import { SupportContactComponent } from './main-components/my-account/support-contact/support-contact.component';
+import { FrequentQuestionsComponent } from './shared/components/frequent-questions/frequent-questions.component';
+import { SupportContactComponent } from './shared/components/support-contact/support-contact.component';
+// import { FrequentQuestionsComponent } from './main-components/my-account/frequent-questions/frequent-questions.component';
 
 @NgModule({
   declarations: [

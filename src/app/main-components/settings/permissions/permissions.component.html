@@ -16,16 +16,16 @@
                     <span class="ft11 gray-10">Establece el propósito global para la cantidad de horas que los usuarios deben cumplir cada semana.</span>
                 </div>
                 <div fxLayout="row" fxLayoutAlign="center stretch">
-                    <input type="number" placeholder="Horas" class="w70px" formControlName="hours" min="1" max="8"/>
+                    <input type="number" placeholder="Horas" class="w70px" formControlName="hoursPerWeek" min="1" max="8"/>
                 </div>
                 <div fxLayout="column" fxLayoutAlign="space-evenly center" class="backGray2 fh w180px">
                     <span class="ft12 gray-10">Nivel de estudio</span>
                     <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="space-between center">
-                        <span class="ft600 ft11 gray-10 w60px">{{mapNumberOptions(form.get('hours').value, "hours")}}</span>
+                        <span class="ft600 ft11 gray-10 w60px">{{mapNumberOptions(form.get('hoursPerWeek').value, "hoursPerWeek")}}</span>
                         <div class="level-bar" fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="space-between center">
-                            <div class="block" [ngClass]="getBlockClass(form.get('hours').value, 1, 'hours')"></div>
-                            <div class="block" [ngClass]="getBlockClass(form.get('hours').value, 2, 'hours')"></div>
-                            <div class="block" [ngClass]="getBlockClass(form.get('hours').value, 3, 'hours')"></div>
+                            <div class="block" [ngClass]="getBlockClass(form.get('hoursPerWeek').value, 1, 'hoursPerWeek')"></div>
+                            <div class="block" [ngClass]="getBlockClass(form.get('hoursPerWeek').value, 2, 'hoursPerWeek')"></div>
+                            <div class="block" [ngClass]="getBlockClass(form.get('hoursPerWeek').value, 3, 'hoursPerWeek')"></div>
                         </div>
                     </div>
                 </div>
@@ -45,18 +45,18 @@
                         <span class="ft11 gray-10">Establece las restricciones sobre lo que los usuarios tienen permitido observar dentro de la aplicación.</span>
                     </div>
                     <div fxLayout="row" fxLayoutAlign="center stretch">
-                        <select formControlName="liberty">
-                            <option *ngFor="let option of libertyOptions" [value]="option">{{mapStringOptions(option)}}</option>
+                        <select formControlName="studyLiberty">
+                            <option *ngFor="let option of libertyOptions" [value]="option">{{option}}</option>
                         </select>
                     </div>
                     <div fxLayout="column" fxLayoutAlign="space-evenly center" class="backGray2 fh w180px">
                         <span class="ft12 gray-10">Nivel de estudio</span>
                         <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="space-between center">
-                            <span class="ft11 ft600 gray-10 w60px">{{mapStringOptions(form.get('liberty').value)}}</span>
+                            <span class="ft11 ft600 gray-10 w60px">{{form.get('studyLiberty').value}}</span>
                             <div class="level-bar" fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="space-between center">
-                                <div class="block" [ngClass]="getBlockClass(form.get('liberty').value, 1, 'liberty')"></div>
-                                <div class="block" [ngClass]="getBlockClass(form.get('liberty').value, 2, 'liberty')"></div>
-                                <div class="block" [ngClass]="getBlockClass(form.get('liberty').value, 3, 'liberty')"></div>
+                                <div class="block" [ngClass]="getBlockClass(form.get('studyLiberty').value, 1, 'studyLiberty')"></div>
+                                <div class="block" [ngClass]="getBlockClass(form.get('studyLiberty').value, 2, 'studyLiberty')"></div>
+                                <div class="block" [ngClass]="getBlockClass(form.get('studyLiberty').value, 3, 'studyLiberty')"></div>
                             </div>
                         </div>
                     </div>
@@ -93,18 +93,18 @@
                         <span class="ft11 gray-10">Establece el tipo de generación del cronograma. El algoritmo de la IA.</span>
                     </div>
                     <div fxLayout="row" fxLayoutAlign="center stretch">
-                        <select formControlName="generation">
-                            <option *ngFor="let option of generationOptions" [value]="option">{{mapStringOptions(option)}}</option>
+                        <select formControlName="studyplanGeneration">
+                            <option *ngFor="let option of generationOptions" [value]="option">{{option}}</option>
                         </select>
                     </div>
                     <div fxLayout="column" fxLayoutAlign="space-evenly center" class="backGray2 fh w180px">
                         <span class="ft12 gray-10">Nivel de estudio</span>
                         <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="space-between center">
-                            <span class="ft11 ft600 gray-10 w60px">{{mapStringOptions(form.get('generation').value)}}</span>
+                            <span class="ft11 ft600 gray-10 w60px">{{form.get('studyplanGeneration').value}}</span>
                             <div class="level-bar" fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="space-between center">
-                                <div class="block" [ngClass]="getBlockClass(form.get('generation').value, 1, 'generation')"></div>
-                                <div class="block" [ngClass]="getBlockClass(form.get('generation').value, 2, 'generation')"></div>
-                                <div class="block" [ngClass]="getBlockClass(form.get('generation').value, 3, 'generation')"></div>
+                                <div class="block" [ngClass]="getBlockClass(form.get('studyplanGeneration').value, 1, 'studyplanGeneration')"></div>
+                                <div class="block" [ngClass]="getBlockClass(form.get('studyplanGeneration').value, 2, 'studyplanGeneration')"></div>
+                                <div class="block" [ngClass]="getBlockClass(form.get('studyplanGeneration').value, 3, 'studyplanGeneration')"></div>
                             </div>
                         </div>
                     </div>
@@ -137,16 +137,16 @@
                     <span class="ft11 gray-10">Establece el propósito global para la cantidad de horas que los usuarios deben cumplir cada semana.</span>
                 </div>
                 <div fxLayout="row" fxLayoutAlign="center stretch">
-                    <input type="number" placeholder="Intentos" class="w70px" formControlName="attempts" min="1" max="5"/>
+                    <input type="number" placeholder="Intentos" class="w70px" formControlName="attemptsPerTest" min="1" max="5"/>
                 </div>
                 <div fxLayout="column" fxLayoutAlign="space-evenly center" class="backGray2 fh w180px">
                     <span class="ft12 gray-10">Nivel de estudio</span>
                     <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="space-between center">
-                        <span class="ft11 ft600 gray-10 w60px">{{mapNumberOptions(form.get('attempts').value, "attempts")}}</span>
+                        <span class="ft11 ft600 gray-10 w60px">{{mapNumberOptions(form.get('attemptsPerTest').value, "attemptsPerTest")}}</span>
                         <div class="level-bar" fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="space-between center">
-                            <div class="block" [ngClass]="getBlockClass(form.get('attempts').value, 1, 'attempts')"></div>
-                            <div class="block" [ngClass]="getBlockClass(form.get('attempts').value, 2, 'attempts')"></div>
-                            <div class="block" [ngClass]="getBlockClass(form.get('attempts').value, 3, 'attempts')"></div>
+                            <div class="block" [ngClass]="getBlockClass(form.get('attemptsPerTest').value, 1, 'attemptsPerTest')"></div>
+                            <div class="block" [ngClass]="getBlockClass(form.get('attemptsPerTest').value, 2, 'attemptsPerTest')"></div>
+                            <div class="block" [ngClass]="getBlockClass(form.get('attemptsPerTest').value, 3, 'attemptsPerTest')"></div>
                         </div>
                     </div>
                 </div>
@@ -162,5 +162,5 @@
 </div>
     
 <div fxLayout="column fw" fxLayoutGap="10px" class="mgt10 mgb10">
-    <app-permissions-advanced-filters></app-permissions-advanced-filters>
+    <app-permissions-advanced-filters [changedField]="changedFieldName" [changedValue]="changedFieldValue"></app-permissions-advanced-filters>
 </div>
