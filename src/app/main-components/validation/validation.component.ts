@@ -50,6 +50,7 @@ export class ValidationComponent {
         const skillsRef = question.skills.map(skill => {
           return this.skillsService.getSkillRefById(skill.id)
         })
+        delete question['skills']
         return {
           id: null,
           ...question,
@@ -60,7 +61,7 @@ export class ValidationComponent {
       const skillTest = {
         ...result.modalPage1,
         enterpriseRef: this.enterpriseService.getEnterpriseRef(),
-        skills: skillsRef,
+        skillsRef,
       }
       const activity = Activity.createSkillTest(skillTest)
       try {
@@ -72,7 +73,6 @@ export class ValidationComponent {
       } catch (error) {
         this.alertService.errorAlert(error)
       }
-      // this.activityService.saveQuestion(question, activity.id)
       console.log(activity)
     }).catch(error => console.log("error", error))
   }
@@ -90,6 +90,7 @@ export class ValidationComponent {
 
 }
 
+// Formato que devuelve el modal
 // {
 //   "modalPage1": {
 //       "title": "Titulo",
@@ -148,20 +149,3 @@ export class ValidationComponent {
 //       ]
 //   }
 // }
-
-// En la actividad:
-// activityTakersQty esto va por cloud functions
-// coursesRef = []
-// description
-// duration
-// files = []
-// id
-// instructions = null
-// profileRef = null
-// type "skill-test"
-// updatedAt
-// vimeoId1 null
-// vimeoId2 null
-
-// Subcoleccion de preguntas
-// para el type solo necesito el value
