@@ -17,7 +17,6 @@ import { Permissions } from 'src/app/shared/models/permissions.model';
 })
 export class PermissionsAdvancedFiltersComponent {
   constructor(
-    private afs: AngularFirestore,
     private enterpriseService: EnterpriseService,
     private departmentService: DepartmentService,
     private profileService: ProfileService,

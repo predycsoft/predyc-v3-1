@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { IconService } from 'src/app/shared/services/icon.service';
 import { Permissions } from 'src/app/shared/models/permissions.model';
+import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
 
 
 
@@ -13,8 +14,13 @@ import { Permissions } from 'src/app/shared/models/permissions.model';
 })
 export class PermissionsComponent {
   constructor(
+    private enterpriseService: EnterpriseService,
     public icon: IconService,
   ){}
+
+  generalPermissionsData
+
+  hasFormChanged = false
 
   changedFieldName: string;
   changedFieldValue: any;
@@ -25,22 +31,6 @@ export class PermissionsComponent {
   generationOptions = Permissions.STUDYPLAN_GENERATION_OPTIONS;
   form: FormGroup
 
-  // From firebase
-  values: Permissions = {
-    hoursPerWeek : 1,
-    studyLiberty :"Solicitudes",
-    studyplanGeneration : null,
-    attemptsPerTest : 2,
-  }
-
-  // Actualización de valores por defecto
-  defaultFormValues: Permissions = {
-    hoursPerWeek: 4,
-    studyLiberty: Permissions.STUDY_LIBERTY_STRICT_OPTION,
-    studyplanGeneration: Permissions.STUDYPLAN_GENERATION_OPTIMIZED_OPTION,
-    attemptsPerTest: 3
-  };
-
   ngOnInit() {
     this.initializeForm();
     this.subscribeToFormChanges()
@@ -48,21 +38,15 @@ export class PermissionsComponent {
 
   initializeForm() {
     this.form = new FormGroup({
-      "hoursPerWeek": new FormControl(this.defaultFormValues.hoursPerWeek),
-      "studyLiberty": new FormControl(this.defaultFormValues.studyLiberty),
-      "studyplanGeneration": new FormControl(this.defaultFormValues.studyplanGeneration),
-      "attemptsPerTest": new FormControl(this.defaultFormValues.attemptsPerTest),
+      "hoursPerWeek": new FormControl(null),
+      "studyLiberty": new FormControl(null),
+      "studyplanGeneration": new FormControl(null),
+      "attemptsPerTest": new FormControl(null),
     });
 
-    if (this.values) {
-      const nonNullValues = Object.keys(this.values).reduce((acc, key) => {
-        if (this.values[key] !== null) {
-          acc[key] = this.values[key];
-        }
-        return acc;
-      }, {});
-      this.form.patchValue(nonNullValues);
-    }
+    this.generalPermissionsData = this.enterpriseService.getEnterprise().permissions
+    // console.log("generalPermissionsData", generalPermissionsData)
+    this.form.patchValue(this.generalPermissionsData);
     console.log("this.form.value", this.form.value)
   }
 
@@ -114,6 +98,21 @@ export class PermissionsComponent {
     };
 
     return styles[field] && styles[field][value] ? styles[field][value][position - 1] : '';
+  }
+
+  async onSave() {
+    this.hasFormChanged = false
+    let newProfilePermissions = {...this.generalPermissionsData} as Permissions
+    newProfilePermissions.attemptsPerTest = this.form.get('attemptsPerTest').value
+    newProfilePermissions.studyplanGeneration = this.form.get('studyplanGeneration').value
+    newProfilePermissions.hoursPerWeek = this.form.get('hoursPerWeek').value
+    newProfilePermissions.studyLiberty = this.form.get('studyLiberty').value
+    if (JSON.stringify(this.generalPermissionsData) != JSON.stringify(newProfilePermissions)) {
+      let newEnterprise = this.enterpriseService.getEnterprise()
+      newEnterprise.permissions = newProfilePermissions
+      await this.enterpriseService.editEnterprise(newEnterprise)
+      // console.log(`Los permisos han cambiado a: `, newProfilePermissions)
+    }
   }
 
 }

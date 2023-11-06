@@ -16,12 +16,12 @@
                     <span class="ft11 gray-10">Establece el propósito global para la cantidad de horas que los usuarios deben cumplir cada semana.</span>
                 </div>
                 <div fxLayout="row" fxLayoutAlign="center stretch">
-                    <input type="number" placeholder="Horas" class="w70px" formControlName="hoursPerWeek" min="1" max="8"/>
+                    <input type="number" placeholder="Horas" class="w70px" formControlName="hoursPerWeek" min="1" max="8" (ngModelChange)="hasFormChanged = true"/>
                 </div>
                 <div fxLayout="column" fxLayoutAlign="space-evenly center" class="backGray2 fh w180px">
                     <span class="ft12 gray-10">Nivel de estudio</span>
                     <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="space-between center">
-                        <span class="ft600 ft11 gray-10 w60px">{{mapNumberOptions(form.get('hoursPerWeek').value, "hoursPerWeek")}}</span>
+                        <span class="ft600 ft11 gray-10 w65px">{{mapNumberOptions(form.get('hoursPerWeek').value, "hoursPerWeek")}}</span>
                         <div class="level-bar" fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="space-between center">
                             <div class="block" [ngClass]="getBlockClass(form.get('hoursPerWeek').value, 1, 'hoursPerWeek')"></div>
                             <div class="block" [ngClass]="getBlockClass(form.get('hoursPerWeek').value, 2, 'hoursPerWeek')"></div>
@@ -45,14 +45,14 @@
                         <span class="ft11 gray-10">Establece las restricciones sobre lo que los usuarios tienen permitido observar dentro de la aplicación.</span>
                     </div>
                     <div fxLayout="row" fxLayoutAlign="center stretch">
-                        <select formControlName="studyLiberty">
+                        <select formControlName="studyLiberty" (ngModelChange)="hasFormChanged = true">
                             <option *ngFor="let option of libertyOptions" [value]="option">{{option}}</option>
                         </select>
                     </div>
                     <div fxLayout="column" fxLayoutAlign="space-evenly center" class="backGray2 fh w180px">
-                        <span class="ft12 gray-10">Nivel de estudio</span>
+                        <span class="ft12 gray-10">Libertad de estudio</span>
                         <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="space-between center">
-                            <span class="ft11 ft600 gray-10 w60px">{{form.get('studyLiberty').value}}</span>
+                            <span class="ft11 ft600 gray-10 w65px">{{form.get('studyLiberty').value}}</span>
                             <div class="level-bar" fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="space-between center">
                                 <div class="block" [ngClass]="getBlockClass(form.get('studyLiberty').value, 1, 'studyLiberty')"></div>
                                 <div class="block" [ngClass]="getBlockClass(form.get('studyLiberty').value, 2, 'studyLiberty')"></div>
@@ -93,14 +93,14 @@
                         <span class="ft11 gray-10">Establece el tipo de generación del cronograma. El algoritmo de la IA.</span>
                     </div>
                     <div fxLayout="row" fxLayoutAlign="center stretch">
-                        <select formControlName="studyplanGeneration">
+                        <select formControlName="studyplanGeneration" (ngModelChange)="hasFormChanged = true">
                             <option *ngFor="let option of generationOptions" [value]="option">{{option}}</option>
                         </select>
                     </div>
                     <div fxLayout="column" fxLayoutAlign="space-evenly center" class="backGray2 fh w180px">
-                        <span class="ft12 gray-10">Nivel de estudio</span>
+                        <span class="ft12 gray-10">Libertad de estudio</span>
                         <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="space-between center">
-                            <span class="ft11 ft600 gray-10 w60px">{{form.get('studyplanGeneration').value}}</span>
+                            <span class="ft11 ft600 gray-10 w65px">{{form.get('studyplanGeneration').value}}</span>
                             <div class="level-bar" fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="space-between center">
                                 <div class="block" [ngClass]="getBlockClass(form.get('studyplanGeneration').value, 1, 'studyplanGeneration')"></div>
                                 <div class="block" [ngClass]="getBlockClass(form.get('studyplanGeneration').value, 2, 'studyplanGeneration')"></div>
@@ -137,12 +137,12 @@
                     <span class="ft11 gray-10">Establece el propósito global para la cantidad de horas que los usuarios deben cumplir cada semana.</span>
                 </div>
                 <div fxLayout="row" fxLayoutAlign="center stretch">
-                    <input type="number" placeholder="Intentos" class="w70px" formControlName="attemptsPerTest" min="1" max="5"/>
+                    <input type="number" placeholder="Intentos" class="w70px" formControlName="attemptsPerTest" min="1" max="5" (ngModelChange)="hasFormChanged = true"/>
                 </div>
                 <div fxLayout="column" fxLayoutAlign="space-evenly center" class="backGray2 fh w180px">
-                    <span class="ft12 gray-10">Nivel de estudio</span>
+                    <span class="ft12 gray-10">Política de intentos</span>
                     <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="space-between center">
-                        <span class="ft11 ft600 gray-10 w60px">{{mapNumberOptions(form.get('attemptsPerTest').value, "attemptsPerTest")}}</span>
+                        <span class="ft11 ft600 gray-10 w65px">{{mapNumberOptions(form.get('attemptsPerTest').value, "attemptsPerTest")}}</span>
                         <div class="level-bar" fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="space-between center">
                             <div class="block" [ngClass]="getBlockClass(form.get('attemptsPerTest').value, 1, 'attemptsPerTest')"></div>
                             <div class="block" [ngClass]="getBlockClass(form.get('attemptsPerTest').value, 2, 'attemptsPerTest')"></div>
@@ -153,6 +153,7 @@
             </div>
         </div>
     </form>      
+    <button *ngIf="hasFormChanged" class="blueButton btn" (click)="onSave()">Guardar cambios</button>
 </div>
 <!-- Filtros avanzados -->
 <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px" class="mgt15">
