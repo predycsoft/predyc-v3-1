@@ -3,13 +3,16 @@
     <!-- Departamento Column -->
     <ng-container matColumnDef="departmentName">
         <th class="ft10 gray-10" mat-header-cell *matHeaderCellDef>Departamento</th>
-        <td class="ft10 gray-10" mat-cell *matCellDef="let profile">{{profile.departmentName}}</td>
+        <td class="ft10 gray-10" mat-cell *matCellDef="let profile">
+            <img *ngIf="!profile.hasDefaultPermissions" [src]="icon.information" alt="Ícono" class="h12px cursorPointer" (click)="setToDefaultValues(profile)" >
+            {{profile.departmentName}}
+        </td>
     </ng-container>
 
     <!-- Perfil Column -->
     <ng-container matColumnDef="profileName">
-        <th class="w-25 ft10 gray-10" mat-header-cell *matHeaderCellDef>Perfil</th>
-        <td class="w-25 ft10 gray-10" mat-cell *matCellDef="let profile">{{profile.name}}</td>
+        <th class="ft10 gray-10" style="width: 22%;" mat-header-cell *matHeaderCellDef>Perfil</th>
+        <td class="ft10 gray-10" style="width: 22%;" mat-cell *matCellDef="let profile">{{profile.name}}</td>
     </ng-container>
 
     <!-- Horas Column -->

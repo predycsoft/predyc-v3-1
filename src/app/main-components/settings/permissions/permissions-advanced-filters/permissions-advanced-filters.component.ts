@@ -1,6 +1,5 @@
 import { DataSource } from '@angular/cdk/collections';
 import { Component, Input, ViewChild } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { MatPaginator } from '@angular/material/paginator';
 import { BehaviorSubject, Observable, of, catchError, Subscription, combineLatest, merge } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -9,6 +8,7 @@ import { DepartmentService } from 'src/app/shared/services/department.service';
 import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
 import { ProfileService } from 'src/app/shared/services/profile.service';
 import { Permissions } from 'src/app/shared/models/permissions.model';
+import { IconService } from 'src/app/shared/services/icon.service';
 
 @Component({
   selector: 'app-permissions-advanced-filters',
@@ -19,6 +19,7 @@ export class PermissionsAdvancedFiltersComponent {
   constructor(
     private enterpriseService: EnterpriseService,
     private departmentService: DepartmentService,
+    public icon: IconService,
     private profileService: ProfileService,
   ){}
 
@@ -83,6 +84,20 @@ export class PermissionsAdvancedFiltersComponent {
       }
     }
     return null;
+  }
+
+  setToDefaultValues(profile){
+    console.log('profile', profile)
+    const defaultPermissions = this.enterpriseService.getEnterprise().permissions
+
+    profile.hoursPerWeek = defaultPermissions.hoursPerWeek;
+    profile.studyLiberty = Permissions.STUDY_LIBERTY_NUMBER_OPTS[defaultPermissions.studyLiberty];
+    profile.studyplanGeneration = Permissions.STUDYPLAN_GENERATION_NUMBER_OPTS[defaultPermissions.studyplanGeneration];    
+    profile.attemptsPerTest = defaultPermissions.attemptsPerTest;
+    profile.hasDefaultPermissions = true
+
+    this.hasFormChanged = true;
+
   }
   
   onSave() {

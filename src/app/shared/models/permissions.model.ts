@@ -28,12 +28,12 @@ export class Permissions {
         this.STUDYPLAN_GENERATION_DEFAULT_OPTION
     ]
 
+    // En los mat-slider necesitamos pasar numeros
     public static STUDY_LIBERTY_NUMBER_OPTS = {
         [Permissions.STUDY_LIBERTY_FREE_OPTION]: 1,
         [Permissions.STUDY_LIBERTY_STRICT_OPTION]: 2,
         [Permissions.STUDY_LIBERTY_REQUESTS_OPTION]: 3,
     };
-
     public static STUDYPLAN_GENERATION_NUMBER_OPTS = {
         [Permissions.STUDYPLAN_GENERATION_OPTIMIZED_OPTION]: 1,
         [Permissions.STUDYPLAN_GENERATION_CONFIRMED_OPTION]: 2,
