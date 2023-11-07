@@ -109,6 +109,11 @@ export class PermissionsAdvancedFiltersComponent {
     })
   }
 
+  onSaveInChild() {
+    // Lógica adicional después de que onSave() se ejecuta en el componente hijo
+    // Puedes agregar aquí cualquier lógica que desees ejecutar después de onSave() en el componente hijo.
+  }
+
 
 }
 
@@ -177,6 +182,7 @@ class ProfileDataSource extends DataSource<Profile> {
         // Pagination
         const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
         this.tableData = data.splice(startIndex, this.paginator.pageSize)
+        console.log("this.tableData", this.tableData)
         return this.tableData;
       }),
       catchError(error => {
@@ -216,7 +222,6 @@ class ProfileDataSource extends DataSource<Profile> {
           break;
       }
     });
-    // Notifica a los observadores sobre el cambio en los datos
     this.profilesSubject.next([...this.tableData]);
   }
 

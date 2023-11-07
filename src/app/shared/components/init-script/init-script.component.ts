@@ -249,7 +249,6 @@ export class InitScriptComponent {
     let enterpriseIndex = 0;
 
     const enterprise = (await enterpriseRefs[0].get()).data() as Enterprise
-    console.log("-------------------------enterprise", enterprise)
     
     for (const profile of profilesData) {
       const profileRef = this.afs.collection(Profile.collection).doc();

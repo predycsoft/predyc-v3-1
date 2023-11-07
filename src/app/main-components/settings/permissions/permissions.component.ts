@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { IconService } from 'src/app/shared/services/icon.service';
 import { Permissions } from 'src/app/shared/models/permissions.model';
 import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
+import { PermissionsAdvancedFiltersComponent } from './permissions-advanced-filters/permissions-advanced-filters.component';
 
 
 
@@ -17,6 +18,8 @@ export class PermissionsComponent {
     private enterpriseService: EnterpriseService,
     public icon: IconService,
   ){}
+
+  @ViewChild(PermissionsAdvancedFiltersComponent) childComponent: PermissionsAdvancedFiltersComponent;
 
   generalPermissionsData
 
@@ -107,11 +110,13 @@ export class PermissionsComponent {
     newProfilePermissions.studyplanGeneration = this.form.get('studyplanGeneration').value
     newProfilePermissions.hoursPerWeek = this.form.get('hoursPerWeek').value
     newProfilePermissions.studyLiberty = this.form.get('studyLiberty').value
+    // Comparamos valores viejos con los nuevos
     if (JSON.stringify(this.generalPermissionsData) != JSON.stringify(newProfilePermissions)) {
       let newEnterprise = this.enterpriseService.getEnterprise()
       newEnterprise.permissions = newProfilePermissions
       await this.enterpriseService.editEnterprise(newEnterprise)
-      // console.log(`Los permisos han cambiado a: `, newProfilePermissions)
+      // Guardamos datos del formulario de permisos avanzados
+      this.childComponent.onSave();
     }
   }
 
