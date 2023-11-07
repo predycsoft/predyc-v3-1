@@ -93,6 +93,7 @@ export class PermissionsAdvancedFiltersComponent {
       // liberty y generation vienen como numbers. Los transformamos al formato de nuestro modelo
       const libertyString = this.getKeyByValue(Permissions.STUDY_LIBERTY_NUMBER_OPTS, data.studyLiberty)
       const generationString = this.getKeyByValue(Permissions.STUDYPLAN_GENERATION_NUMBER_OPTS, data.studyplanGeneration)
+
       const currentProfilePermissions = this.profileService.getProfile(data.id).permissions
       let newProfilePermissions = {...currentProfilePermissions} as Permissions
       newProfilePermissions.attemptsPerTest = data.attemptsPerTest
@@ -197,26 +198,29 @@ class ProfileDataSource extends DataSource<Profile> {
   
   updateTableData(field: string, value: any) {
     this.tableData.forEach((row) => {
-      // Actualiza el valor correspondiente según el campo
-      switch (field) {
-        case 'hoursPerWeek':
-          // console.log("Caso de hours")
-          row.hoursPerWeek = value;
-          break;
-        case 'studyLiberty':
-          // console.log("Caso de liberty")
-          row.studyLiberty = Permissions.STUDY_LIBERTY_NUMBER_OPTS[value];
-          break;
-        case 'studyplanGeneration':
-          // console.log("Caso de generation")
-          row.studyplanGeneration = Permissions.STUDYPLAN_GENERATION_NUMBER_OPTS[value];
-          break;
-        case 'attemptsPerTest':
-          // console.log("Caso de attempts")
-          row.attemptsPerTest = value;
-          break;
-        default:
-          break;
+      console.log('row', row)
+      if (row.hasDefaultPermissions) {
+        // Actualiza el valor correspondiente según el campo
+        switch (field) {
+          case 'hoursPerWeek':
+            // console.log("Caso de hours")
+            row.hoursPerWeek = value;
+            break;
+          case 'studyLiberty':
+            // console.log("Caso de liberty")
+            row.studyLiberty = Permissions.STUDY_LIBERTY_NUMBER_OPTS[value];
+            break;
+          case 'studyplanGeneration':
+            // console.log("Caso de generation")
+            row.studyplanGeneration = Permissions.STUDYPLAN_GENERATION_NUMBER_OPTS[value];
+            break;
+          case 'attemptsPerTest':
+            // console.log("Caso de attempts")
+            row.attemptsPerTest = value;
+            break;
+          default:
+            break;
+        }
       }
     });
     this.profilesSubject.next([...this.tableData]);
