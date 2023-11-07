@@ -5,6 +5,9 @@ import { AlertsService } from './alerts.service';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { EnterpriseService } from './enterprise.service';
 import { User } from '../models/user.model';
+import { Enterprise } from '../models/enterprise.model';
+import { Permissions } from 'src/app/shared/models/permissions.model';
+
 
 @Injectable({
   providedIn: 'root'
@@ -87,19 +90,21 @@ export class ProfileService {
     try {
       let ref: DocumentReference;
       // console.log('profile save',profile)
-      let hasDefaultPermissions = true
       // If profile has an ID, then it's an update
       if (profile.id) {
         ref = this.afs.collection<Profile>(Profile.collection).doc(profile.id).ref;
-        const currentProfile = (await ref.get()).data()
-        // console.log("currentProfile", currentProfile)
-        if (JSON.stringify(currentProfile.permissions) !== JSON.stringify(profile.permissions)) hasDefaultPermissions = false
+        const oldProfile = (await ref.get()).data()
+        // Si los permisos del perfil cambiaron
+        if (JSON.stringify(oldProfile.permissions) !== JSON.stringify(profile.permissions)) {
+          const haveSamePermissions = this.checkPermissionsChange(profile.permissions)
+          profile.permissions.hasDefaultPermissions = haveSamePermissions
+        }
       } else {
         // Else, it's a new profile
         ref = this.afs.collection<Profile>(Profile.collection).doc().ref;
         profile.id = ref.id; // Assign the generated ID to the profile
       }
-      profile.permissions.hasDefaultPermissions = hasDefaultPermissions
+      // profile.permissions.hasDefaultPermissions = hasDefaultPermissions
       const dataToSave = typeof profile.toJson === 'function' ? profile.toJson() : profile;
 
       console.log('dataToSave',dataToSave)
@@ -113,6 +118,23 @@ export class ProfileService {
       console.log(error);
       this.alertService.errorAlert(JSON.stringify(error));
     }
+  }
+
+  checkPermissionsChange(newPermissions: Permissions): boolean {
+    // console.log("oldPermissions", oldPermissions)
+    const enterprisePermissions = this.enterpriseService.getEnterprise().permissions
+    let haveSamePermissions = true
+    const profPermissionsKeys = Object.keys(newPermissions).filter(key => key !== 'hasDefaultPermissions');
+    // Comparamos permisos de la empresa y el perfil, sin tomar en cuenta el campo hasDefaultPermissions del perfil
+    for (const key of profPermissionsKeys) {
+      if (newPermissions[key] !== enterprisePermissions[key]) {
+        haveSamePermissions = false;
+        console.log(newPermissions[key], enterprisePermissions[key])
+        break;
+      }
+    }
+    console.log('haveSamePermissions', haveSamePermissions)
+    return haveSamePermissions
   }
 
   async getUserProfileLogs(userRef: DocumentReference): Promise<any>{
