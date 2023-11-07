@@ -109,11 +109,6 @@ export class PermissionsAdvancedFiltersComponent {
     })
   }
 
-  onSaveInChild() {
-    // Lógica adicional después de que onSave() se ejecuta en el componente hijo
-    // Puedes agregar aquí cualquier lógica que desees ejecutar después de onSave() en el componente hijo.
-  }
-
 
 }
 
@@ -156,7 +151,8 @@ class ProfileDataSource extends DataSource<Profile> {
             hoursPerWeek: profile.permissions.hoursPerWeek,
             studyLiberty: Permissions.STUDY_LIBERTY_NUMBER_OPTS[profile.permissions.studyLiberty],
             studyplanGeneration: Permissions.STUDYPLAN_GENERATION_NUMBER_OPTS[profile.permissions.studyplanGeneration],
-            attemptsPerTest: profile.permissions.attemptsPerTest
+            attemptsPerTest: profile.permissions.attemptsPerTest,
+            hasDefaultPermissions: profile.permissions.hasDefaultPermissions
           }
         });
 
@@ -181,6 +177,7 @@ class ProfileDataSource extends DataSource<Profile> {
 
         // Pagination
         const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+        data.sort((a, b) => (a.hasDefaultPermissions ? 1 : 0) - (b.hasDefaultPermissions ? 1 : 0));
         this.tableData = data.splice(startIndex, this.paginator.pageSize)
         console.log("this.tableData", this.tableData)
         return this.tableData;

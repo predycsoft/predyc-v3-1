@@ -76,7 +76,7 @@
     </ng-container>
     
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let profile; columns: displayedColumns;" [ngClass]="profile.permissions && !profile.permissions.hasDefaultPermissions ? 'backGray1' : ''"></tr>
+    <tr mat-row *matRowDef="let profile; columns: displayedColumns;" [ngClass]="!profile.hasDefaultPermissions ? 'backGray1' : ''"></tr>
 
 
 </table>
