@@ -4,7 +4,7 @@
     <ng-container matColumnDef="departmentName">
         <th class="ft10 gray-10" mat-header-cell *matHeaderCellDef>Departamento</th>
         <td class="ft10 gray-10" mat-cell *matCellDef="let profile">
-            <img *ngIf="!profile.hasDefaultPermissions" [src]="icon.information" alt="Ícono" class="h12px cursorPointer" (click)="setToDefaultValues(profile)" >
+            <img *ngIf="!profile.hasDefaultPermissions && !hasGeneralFormChanged" [src]="icon.information" alt="Ícono" class="h12px cursorPointer" (click)="setToDefaultValues(profile)" >
             {{profile.departmentName}}
         </td>
     </ng-container>
@@ -20,7 +20,7 @@
         <th class="w-10 ft10 gray-10" mat-header-cell *matHeaderCellDef>Horas por semana</th>
         <td class="w-10 ft10 gray-10" mat-cell *matCellDef="let profile">
             <div fxLayout="row" fxLayoutAlign="center center">
-                <input type="number" placeholder="Horas" class="w30px" min="1" max="8" [(ngModel)] ="profile.hoursPerWeek" (ngModelChange)="hasFormChanged = true"/>
+                <input type="number" placeholder="Horas" class="w30px" min="1" max="8" [(ngModel)] ="profile.hoursPerWeek" (ngModelChange)="onFieldChange()" [disabled]="hasGeneralFormChanged"/>
             </div>
         </td>
     </ng-container>
@@ -35,8 +35,8 @@
                 <span class="ft10 gray-10 mgl05">Solicitudes</span>
             </div>
             <div fxLayout="row" fxLayoutAlign="center center" class="h24px">
-                <mat-slider min="1" max="3" step="1" showTickMarks>
-                    <input matSliderThumb [(ngModel)] ="profile.studyLiberty" (ngModelChange)="hasFormChanged = true">
+                <mat-slider min="1" max="3" step="1" showTickMarks [disabled]="hasGeneralFormChanged">
+                    <input matSliderThumb [(ngModel)] ="profile.studyLiberty" (ngModelChange)="onFieldChange()">
                 </mat-slider>
             </div>
         </td>
@@ -52,8 +52,8 @@
                 <span class="ft10 gray-10">Por defecto</span>
             </div>
             <div fxLayout="row" fxLayoutAlign="center center" class="h24px">
-                <mat-slider min="1" max="3" step="1" showTickMarks>
-                    <input matSliderThumb [(ngModel)] ="profile.studyplanGeneration" (ngModelChange)="hasFormChanged = true">
+                <mat-slider min="1" max="3" step="1" showTickMarks [disabled]="hasGeneralFormChanged">
+                    <input matSliderThumb [(ngModel)] ="profile.studyplanGeneration" (ngModelChange)="onFieldChange()">
                 </mat-slider>
             </div>
         </td>
@@ -71,8 +71,8 @@
                 <span class="ft10 gray-10">5</span>
             </div>
             <div fxLayout="row" fxLayoutAlign="center center" class="h24px">
-                <mat-slider min="1" max="5" step="1" showTickMarks >
-                    <input matSliderThumb [(ngModel)] ="profile.attemptsPerTest" (ngModelChange)="hasFormChanged = true">
+                <mat-slider min="1" max="5" step="1" showTickMarks [disabled]="hasGeneralFormChanged">
+                    <input matSliderThumb [(ngModel)] ="profile.attemptsPerTest" (ngModelChange)="onFieldChange()">
                 </mat-slider>
             </div>
         </td>
@@ -87,4 +87,4 @@
     *ngIf="enablePagination"
     aria-label="Select page of table"
 ></mat-paginator>
-<button *ngIf="hasFormChanged" class="blueButton btn" (click)="onSave()">Guardar cambios</button>
+<button *ngIf="hasAdvancedFormChanged && !hasGeneralFormChanged" class="blueButton btn" (click)="onSave()">Guardar cambios</button>

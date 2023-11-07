@@ -16,7 +16,7 @@
                     <span class="ft11 gray-10">Establece el propósito global para la cantidad de horas que los usuarios deben cumplir cada semana.</span>
                 </div>
                 <div fxLayout="row" fxLayoutAlign="center stretch">
-                    <input type="number" placeholder="Horas" class="w70px" formControlName="hoursPerWeek" min="1" max="8" (ngModelChange)="hasFormChanged = true"/>
+                    <input type="number" placeholder="Horas" class="w70px" formControlName="hoursPerWeek" min="1" max="8" (ngModelChange)="hasGeneralFormChanged = true"/>
                 </div>
                 <div fxLayout="column" fxLayoutAlign="space-evenly center" class="backGray2 fh w180px">
                     <span class="ft12 gray-10">Nivel de estudio</span>
@@ -45,7 +45,7 @@
                         <span class="ft11 gray-10">Establece las restricciones sobre lo que los usuarios tienen permitido observar dentro de la aplicación.</span>
                     </div>
                     <div fxLayout="row" fxLayoutAlign="center stretch">
-                        <select formControlName="studyLiberty" (ngModelChange)="hasFormChanged = true">
+                        <select formControlName="studyLiberty" (ngModelChange)="hasGeneralFormChanged = true">
                             <option *ngFor="let option of libertyOptions" [value]="option">{{option}}</option>
                         </select>
                     </div>
@@ -93,7 +93,7 @@
                         <span class="ft11 gray-10">Establece el tipo de generación del cronograma. El algoritmo de la IA.</span>
                     </div>
                     <div fxLayout="row" fxLayoutAlign="center stretch">
-                        <select formControlName="studyplanGeneration" (ngModelChange)="hasFormChanged = true">
+                        <select formControlName="studyplanGeneration" (ngModelChange)="hasGeneralFormChanged = true">
                             <option *ngFor="let option of generationOptions" [value]="option">{{option}}</option>
                         </select>
                     </div>
@@ -137,7 +137,7 @@
                     <span class="ft11 gray-10">Establece el propósito global para la cantidad de horas que los usuarios deben cumplir cada semana.</span>
                 </div>
                 <div fxLayout="row" fxLayoutAlign="center stretch">
-                    <input type="number" placeholder="Intentos" class="w70px" formControlName="attemptsPerTest" min="1" max="5" (ngModelChange)="hasFormChanged = true"/>
+                    <input type="number" placeholder="Intentos" class="w70px" formControlName="attemptsPerTest" min="1" max="5" (ngModelChange)="hasGeneralFormChanged = true"/>
                 </div>
                 <div fxLayout="column" fxLayoutAlign="space-evenly center" class="backGray2 fh w180px">
                     <span class="ft12 gray-10">Política de intentos</span>
@@ -153,7 +153,7 @@
             </div>
         </div>
     </form>      
-    <button *ngIf="hasFormChanged" class="blueButton btn" (click)="onSave()">Guardar cambios</button>
+    <button *ngIf="hasGeneralFormChanged" class="blueButton btn" (click)="onSave()">Guardar cambios</button>
 </div>
 <!-- Filtros avanzados -->
 <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px" class="mgt15">
@@ -163,5 +163,9 @@
 </div>
     
 <div fxLayout="column fw" fxLayoutGap="10px" class="mgt10 mgb10">
-    <app-permissions-advanced-filters [changedField]="changedFieldName" [changedValue]="changedFieldValue"></app-permissions-advanced-filters>
+    <app-permissions-advanced-filters 
+    [changedField]="changedFieldName" 
+    [changedValue]="changedFieldValue" 
+    [hasGeneralFormChanged]="hasGeneralFormChanged"
+    (hasAdvancedFormChangedEmitter)="onAdvancedFormChange($event)"></app-permissions-advanced-filters>
 </div>

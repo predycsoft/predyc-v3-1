@@ -23,7 +23,8 @@ export class PermissionsComponent {
 
   generalPermissionsData
 
-  hasFormChanged = false
+  hasGeneralFormChanged = false
+  hasAdvancedFormChanged = false //Valor proveniente del formulario de abajo
 
   changedFieldName: string;
   changedFieldValue: any;
@@ -103,8 +104,24 @@ export class PermissionsComponent {
     return styles[field] && styles[field][value] ? styles[field][value][position - 1] : '';
   }
 
+  onAdvancedFormChange(hasAdvancedFormChanged: boolean) {
+    this.hasAdvancedFormChanged = hasAdvancedFormChanged
+    Object.keys(this.form.controls).forEach(field => {
+      const control = this.form.get(field);
+      if (control) {
+        if (hasAdvancedFormChanged) {
+          control.disable();
+        } else {
+          control.enable();
+        }
+      } else console.log('No existe el control.')
+    });
+
+  }
+
+
   async onSave() {
-    this.hasFormChanged = false
+    this.hasGeneralFormChanged = false
     let newProfilePermissions = {...this.generalPermissionsData} as Permissions
     newProfilePermissions.attemptsPerTest = this.form.get('attemptsPerTest').value
     newProfilePermissions.studyplanGeneration = this.form.get('studyplanGeneration').value

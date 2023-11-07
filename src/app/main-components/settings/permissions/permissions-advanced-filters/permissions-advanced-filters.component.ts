@@ -1,5 +1,5 @@
 import { DataSource } from '@angular/cdk/collections';
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { BehaviorSubject, Observable, of, catchError, Subscription, combineLatest, merge } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -25,6 +25,9 @@ export class PermissionsAdvancedFiltersComponent {
 
   @Input() changedField: string;
   @Input() changedValue: any;
+  @Input() hasGeneralFormChanged: boolean;
+  @Output() hasAdvancedFormChangedEmitter = new EventEmitter<boolean>();
+
 
   displayedColumns: string[] = ['departmentName', 'profileName', 'hours', 'liberty', 'generation', 'attempts'];
   dataSource!: ProfileDataSource;
@@ -34,7 +37,7 @@ export class PermissionsAdvancedFiltersComponent {
 
   combinedObservableSubscription: Subscription
     
-  hasFormChanged = false
+  hasAdvancedFormChanged = false
 
   ngOnInit() {
     this.departmentService.loadDepartmens()
@@ -67,14 +70,20 @@ export class PermissionsAdvancedFiltersComponent {
 
   ngOnChanges() {
     // console.log(`El campo ${this.changedField} cambió a:`, this.changedValue);
+    // Cambios en el formulario general implica actualizar la tabla
     if (this.changedField && this.changedValue) {
       this.dataSource.updateTableData(this.changedField, this.changedValue);
-      this.hasFormChanged = true
+      // this.hasAdvancedFormChanged = false
     }
   }
 
   ngOnDestroy() {
     this.combinedObservableSubscription.unsubscribe();
+  }
+
+  onFieldChange() {
+    this.hasAdvancedFormChanged = true;
+    this.hasAdvancedFormChangedEmitter.emit(this.hasAdvancedFormChanged);
   }
 
   getKeyByValue(object, value) {
@@ -96,12 +105,14 @@ export class PermissionsAdvancedFiltersComponent {
     profile.attemptsPerTest = defaultPermissions.attemptsPerTest;
     profile.hasDefaultPermissions = true
 
-    this.hasFormChanged = true;
+    this.hasAdvancedFormChanged = true;
 
   }
   
   onSave() {
-    this.hasFormChanged = false
+    this.hasAdvancedFormChanged = false
+    this.hasAdvancedFormChangedEmitter.emit(this.hasAdvancedFormChanged);
+
     const tableData = this.dataSource.getTableData();
     // console.log("tableData", tableData);
     tableData.map(async data => {
@@ -155,7 +166,7 @@ class ProfileDataSource extends DataSource<Profile> {
     return merge(this.profileService.getProfilesObservable(), this.paginator.page).pipe(
       map(() => {
         const profiles = this.profileService.getProfilesSubjectValue()
-        console.log('Perfiles:', profiles);
+        // console.log('Perfiles:', profiles);
         this.paginator.length = profiles.length
         
         const data = profiles.map(profile => {
@@ -195,7 +206,7 @@ class ProfileDataSource extends DataSource<Profile> {
         const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
         data.sort((a, b) => (a.hasDefaultPermissions ? 1 : 0) - (b.hasDefaultPermissions ? 1 : 0));
         this.tableData = data.splice(startIndex, this.paginator.pageSize)
-        console.log("this.tableData", this.tableData)
+        // console.log("this.tableData", this.tableData)
         return this.tableData;
       }),
       catchError(error => {
@@ -213,7 +224,6 @@ class ProfileDataSource extends DataSource<Profile> {
   
   updateTableData(field: string, value: any) {
     this.tableData.forEach((row) => {
-      console.log('row', row)
       if (row.hasDefaultPermissions) {
         // Actualiza el valor correspondiente según el campo
         switch (field) {
