@@ -103,6 +103,9 @@ export class ProfileService {
         // Else, it's a new profile
         ref = this.afs.collection<Profile>(Profile.collection).doc().ref;
         profile.id = ref.id; // Assign the generated ID to the profile
+        const enterprise = this.enterpriseService.getEnterprise()
+        profile.permissions = enterprise.permissions
+        profile.permissions.hasDefaultPermissions = true
       }
       // profile.permissions.hasDefaultPermissions = hasDefaultPermissions
       const dataToSave = typeof profile.toJson === 'function' ? profile.toJson() : profile;
@@ -127,6 +130,7 @@ export class ProfileService {
     const profPermissionsKeys = Object.keys(newPermissions).filter(key => key !== 'hasDefaultPermissions');
     // Comparamos permisos de la empresa y el perfil, sin tomar en cuenta el campo hasDefaultPermissions del perfil
     for (const key of profPermissionsKeys) {
+      // Si algun permiso no es igual al de la empresa, entonces no tiene los permisos por defecto
       if (newPermissions[key] !== enterprisePermissions[key]) {
         haveSamePermissions = false;
         console.log(newPermissions[key], enterprisePermissions[key])
