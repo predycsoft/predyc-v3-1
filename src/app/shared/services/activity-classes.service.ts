@@ -230,5 +230,33 @@ export class ActivityClassesService {
     return this.activitiesSubject.value
   }
 
+  async deleteActivity(activityId: string) {
+    try {
+      // Verificar si hay una subcolección
+      const subcollectionRef = this.afs.collection(Activity.collection).doc(activityId).collection(Activity.questionSubCollection);
+      const subcollectionSnapshot = await firstValueFrom(subcollectionRef.get());
+      if (!subcollectionSnapshot.empty) {
+        // Si existe la eliminamos
+        await this.deleteSubcollection(activityId, subcollectionSnapshot);
+        console.log("subcoleccion eliminada")
+      }
+      // Eliminamos el documento principal
+      await this.afs.collection(Activity.collection).doc(activityId).delete();
+      console.log("Actividad eliminada")
+      this.alertService.infoAlert('Has eliminado la actividad exitosamente.')
+
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async deleteSubcollection(activityId: string, subcollectionSnapshot: any): Promise<void> {
+    subcollectionSnapshot.forEach(async doc => {
+      console.log("doc", doc)
+      await this.afs.collection(Activity.collection).doc(activityId).collection(Activity.questionSubCollection).doc(doc.id).delete();
+    });
+  }
+  
+
 
 }

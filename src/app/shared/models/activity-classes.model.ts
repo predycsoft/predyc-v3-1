@@ -569,6 +569,7 @@ export interface ActivityJson {
 export class Activity {
 
   public static collection = 'activity'
+  public static questionSubCollection = 'question'
 
   public static TYPE_REGULAR: string = 'regular'
   public static TYPE_TEST: string = 'test'

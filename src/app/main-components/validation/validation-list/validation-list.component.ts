@@ -54,6 +54,10 @@ export class ValidationListComponent {
     this.searchSubscription.unsubscribe()
   }
 
+  async onDelete(activity: Activity) {
+    this.activityService.deleteActivity(activity.id)
+  }
+
 }
 
 class ActivityDataSource extends DataSource<Activity> {
