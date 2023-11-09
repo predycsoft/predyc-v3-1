@@ -28,9 +28,12 @@ export class ActivityClassesService {
     private enterpriseService: EnterpriseService,
     private alertService: AlertsService,
     private courseService : CourseService
-  ) 
-  {
-
+  ) {
+    this.enterpriseService.enterpriseLoaded$.subscribe(enterpriseIsLoaded => {
+      if (enterpriseIsLoaded) {
+        this.getActivities();
+      }
+    })
   }
 
   private activitiesSubject = new BehaviorSubject<Activity[]>([]);
@@ -208,28 +211,23 @@ export class ActivityClassesService {
       );
   }
 
-  getActivities(queryObj: {pageSize: number, startAt?: Activity, startAfter?: Activity}) {
-    // console.log("queryObj", queryObj)
+  getActivities() {
     if (this.activityCollectionSubscription) {
       console.log("Has to unsubscribe before")
       this.activityCollectionSubscription.unsubscribe();
     }
-    this.activityCollectionSubscription = this.afs.collection<Activity>(Activity.collection, ref => {
-        let query: CollectionReference | Query = ref;
-        query = query.where('enterpriseRef', '==', this.enterpriseService.getEnterpriseRef())
-
-        query = query.orderBy('updatedAt', 'desc')
-        if (queryObj.startAt) {
-          query = query.startAt(queryObj.startAt.updatedAt)
-        } else if (queryObj.startAfter) {
-          query = query.startAfter(queryObj.startAfter.updatedAt)
-        }
-        return query.limit(queryObj.pageSize)
-      }
-    ).valueChanges().subscribe(activities => {
+    this.activityCollectionSubscription = this.afs.collection<Activity>(Activity.collection, ref => 
+      ref
+        .where('enterpriseRef', '==', this.enterpriseService.getEnterpriseRef())
+        .orderBy('updatedAt', 'desc')
+      ).valueChanges().subscribe(activities => {
       console.log("New activities", activities)
       this.activitiesSubject.next(activities)
     })
+  }
+
+  getActivitesSubjectValue() {
+    return this.activitiesSubject.value
   }
 
 
