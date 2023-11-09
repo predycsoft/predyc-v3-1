@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
-import { BehaviorSubject, firstValueFrom, map, Observable, of, switchMap, zip } from 'rxjs'
+import { AngularFirestore, CollectionReference, DocumentReference, Query } from '@angular/fire/compat/firestore';
+import { BehaviorSubject, firstValueFrom, map, Observable, of, Subscription, switchMap, zip } from 'rxjs'
 import { EnterpriseService } from './enterprise.service';
 import { AlertsService } from './alerts.service';
 
@@ -12,6 +12,9 @@ import { Activity } from '../models/activity-classes.model';
 import { Question } from '../models/activity-classes.model';
 import { Profile } from '../models/profile.model';
 import { CourseService } from './course.service';
+
+
+
 
 
 @Injectable({
@@ -29,7 +32,13 @@ export class ActivityClassesService {
   {
 
   }
+
+  private activitiesSubject = new BehaviorSubject<Activity[]>([]);
+  public activities$ = this.activitiesSubject.asObservable();
+  activityCollectionSubscription: Subscription
   private skillsSubject = new BehaviorSubject<Skill[]>([]);
+  
+
 
   async addActivity(newActivity: Activity): Promise<void> {
     const ref = this.afs.collection<Activity>(Activity.collection).doc().ref;
@@ -108,40 +117,40 @@ export class ActivityClassesService {
         return [].concat(...questionsArray);
       })
     );
-}
+  }
 
-getActivityAndQuestionsForCourse(courseId: string): Observable<any[]> {
+  getActivityAndQuestionsForCourse(courseId: string): Observable<any[]> {
 
-  const courseRef = this.courseService.getCourseRefById(courseId);
-  console.log('courseRef getActivityAndQuestionsForCourse',courseRef);
-  return this.afs.collection('activity', ref => 
-    ref.where('coursesRef', 'array-contains', courseRef)
-        .where('type', '==', 'regular')
-    )
-  .get()
-  .pipe(
-    switchMap(activitiesSnap => {
-      const activities = activitiesSnap.docs.map(doc => doc.data());
-      const questionsObservables = activitiesSnap.docs.map(activityDoc => {
-        return this.afs.collection(`${Activity.collection}/${activityDoc.id}/${Question.collection}`).valueChanges();
-      });
-      if (questionsObservables.length > 0) {
-        return zip(...questionsObservables).pipe(
-          map(questionsArray => {
-            return activities.map((activity, index) => {
-              return {
-                ...activity as Activity,
-                questions: questionsArray[index]
-              }
-            });
-          })
-        );
-      }
-      // In case no questions are found, return the activities as they are
-      return of(activities);
-    })
-  );
-}
+    const courseRef = this.courseService.getCourseRefById(courseId);
+    console.log('courseRef getActivityAndQuestionsForCourse',courseRef);
+    return this.afs.collection('activity', ref => 
+      ref.where('coursesRef', 'array-contains', courseRef)
+          .where('type', '==', 'regular')
+      )
+    .get()
+    .pipe(
+      switchMap(activitiesSnap => {
+        const activities = activitiesSnap.docs.map(doc => doc.data());
+        const questionsObservables = activitiesSnap.docs.map(activityDoc => {
+          return this.afs.collection(`${Activity.collection}/${activityDoc.id}/${Question.collection}`).valueChanges();
+        });
+        if (questionsObservables.length > 0) {
+          return zip(...questionsObservables).pipe(
+            map(questionsArray => {
+              return activities.map((activity, index) => {
+                return {
+                  ...activity as Activity,
+                  questions: questionsArray[index]
+                }
+              });
+            })
+          );
+        }
+        // In case no questions are found, return the activities as they are
+        return of(activities);
+      })
+    );
+  }
 
   deleteQuestion(idActivity: string, idQuestion: string) {
     // Access the specific 'question' document within the 'activity' document
@@ -197,6 +206,30 @@ getActivityAndQuestionsForCourse(courseId: string): Observable<any[]> {
           return of(null); // or you can return an empty object or handle it another way
         })
       );
+  }
+
+  getActivities(queryObj: {pageSize: number, startAt?: Activity, startAfter?: Activity}) {
+    // console.log("queryObj", queryObj)
+    if (this.activityCollectionSubscription) {
+      console.log("Has to unsubscribe before")
+      this.activityCollectionSubscription.unsubscribe();
+    }
+    this.activityCollectionSubscription = this.afs.collection<Activity>(Activity.collection, ref => {
+        let query: CollectionReference | Query = ref;
+        query = query.where('enterpriseRef', '==', this.enterpriseService.getEnterpriseRef())
+
+        query = query.orderBy('updatedAt', 'desc')
+        if (queryObj.startAt) {
+          query = query.startAt(queryObj.startAt.updatedAt)
+        } else if (queryObj.startAfter) {
+          query = query.startAfter(queryObj.startAfter.updatedAt)
+        }
+        return query.limit(queryObj.pageSize)
+      }
+    ).valueChanges().subscribe(activities => {
+      console.log("New activities", activities)
+      this.activitiesSubject.next(activities)
+    })
   }
 
 

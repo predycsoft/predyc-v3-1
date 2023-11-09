@@ -1,93 +1,73 @@
 <div>Validation List</div>
-<!-- <mat-label fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="20px">
+<!-- <mat-label fxLayout="row" fxLayoutAlign="center" fxLayoutGap="20px">
     <span>Buscar en validaciones</span>
     <img [src]="icon.search" class="h12px" alt=""
         onerror="this.src='assets/images/default/default-user-image.jpg'">
-</mat-label>
+</mat-label> -->
 
 <div>
     <table mat-table [dataSource]="dataSource" matSort>
         
-        <ng-container matColumnDef="displayName">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre </th>
-            <td mat-cell *matCellDef="let user"> 
-                <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign=" center">
-                    <img [src]="user.photoUrl" class="avatar2 " alt=""
-                        onerror="this.src='assets/images/default/default-user-image.jpg'">
-                    <div fxLayout="column" fxLayoutAlign="center ">
-                        <div>
-                            {{ user.displayName | titlecase }}
-                        </div>
-                        <div>
-                            {{ user.email }}
-                        </div>
-                    </div>
+        <ng-container matColumnDef="title">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Título </th>
+            <td mat-cell *matCellDef="let activity"> 
+                <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign=" center">
+                    <img [src]="activity?.photoUrl" class="avatar2 " alt=""
+                    onerror="this.src='assets/images/default/default-user-image.jpg'">
+                    <span>{{ activity.title }}</span>
                 </div>
             </td>
         </ng-container>
 
         <ng-container matColumnDef="status">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Estatus </th>
-            <td mat-cell *matCellDef="let user"> {{ 'Activo (hardcodeado)' }} </td>
+            <td mat-cell *matCellDef="let activity"> ACTIVO (HARD) </td>
         </ng-container>
 
-        <ng-container matColumnDef="departmentId">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Departamento </th>
-            <td mat-cell *matCellDef="let user"> {{ user.departmentId }} </td>
+        <ng-container matColumnDef="createdAt">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Creación </th>
+            <td mat-cell *matCellDef="let activity"> {{ activity.createdAt | date: 'dd/MM/yy' }} </td>
         </ng-container>
 
-        <ng-container matColumnDef="profileId">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Perfil </th>
-            <td mat-cell *matCellDef="let user"> {{ user.profileId }} </td>
+        <ng-container matColumnDef="updatedAt">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Ult. Modificación </th>
+            <td mat-cell *matCellDef="let activity"> {{ activity.updatedAt | date: 'dd/MM/yy' }} </td>
         </ng-container>
 
-        <ng-container matColumnDef="ratingPoints">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Puntos </th>
-            <td mat-cell *matCellDef="let user"> {{ user.ratingPoints }} </td>
+        <ng-container matColumnDef="grade">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Promedio </th>
+            <!-- <td mat-cell *matCellDef="let activity"> {{ activity.grade }}/100 </td> -->
+            <td mat-cell *matCellDef="let activity"> 100/100 (HARD)</td>
+        </ng-container>
+
+        <ng-container matColumnDef="assigned">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Asignados </th>
+            <td mat-cell *matCellDef="let activity"> 23 (HARD) </td>
         </ng-container>
 
         <ng-container matColumnDef="performance">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Desempeño </th>
-            <td mat-cell *matCellDef="let user"> {{ user.performance }} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="options">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
-            <td mat-cell *matCellDef="let user">
-                <img [src]="icon.menuVertical" class="iconButton h32px" alt=""
-                    [matMenuTriggerFor]="userOptions" (click)="$event.stopPropagation()">
-                <mat-menu #userOptions="matMenu" class="radius6 shadow16 pd0">
-                    <div fxLayout="column" class="fw pd0">
-                        <div mat-menu-item fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="2rem">
-                            <img [src]="icon.user" alt="" class="h16px mg0">
-                            <span class="pdl05 ft12 gray-10" [routerLink]="user.uid">Ver usuario</span>
-                        </div> 
-                        <div mat-menu-item fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="2rem" (click)="onSelectUser(user)">
-                            <img [src]="icon.trash" class="h16px mg0" alt="">
-                            <span class="pdl05 ft12 gray-10">Editar usuario</span>
-                        </div>
-                        <div *ngIf="user.role === 'student'" mat-menu-item fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="2rem" (click)="transformUserToAdmin(user)">
-                            <img [src]="icon.trash" class="h16px mg0" alt="">
-                            <span class="pdl05 ft12 gray-10">Convertir usuario a admin</span>
-                        </div>
-                        <div mat-menu-item fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="2rem" (click)="onDeleteUser(user)">
-                            <img [src]="icon.trash" class="h16px mg0" alt="">
-                            <span class="pdl05 ft12 gray-10">Eliminar usuario</span>
-                        </div>
-                    </div>
-                </mat-menu>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Desempeños </th>
+            <td mat-cell *matCellDef="let activity"> 
+                ... (HARD) 
             </td>
         </ng-container>
 
+        <!-- <ng-container matColumnDef="options">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+            <td mat-cell *matCellDef="let activity">
+            </td>
+        </ng-container> -->
+
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let user; columns: displayedColumns;" class="cursorPointer" [routerLink]="user.uid"></tr>
+        <tr mat-row *matRowDef="let activity; columns: displayedColumns;" class="cursorPointer"></tr>
 
         <tr class="mat-row" *matNoDataRow>
-            <td class="mat-cell" colspan="4">No se han encontrado usuarios para el criterio de busqueda</td>
+            <td class="mat-cell" colspan="7">No se han encontrado validaciones para el criterio de búsqueda</td>
         </tr>
     </table>
     
     <mat-paginator
-        aria-label="Select page of users"
-        ></mat-paginator>
-</div> -->
+    *ngIf="enablePagination"
+    aria-label="Select page of activities"
+    ></mat-paginator>
+</div>
