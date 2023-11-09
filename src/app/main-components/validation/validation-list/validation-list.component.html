@@ -1,10 +1,3 @@
-<div>Validation List</div>
-<!-- <mat-label fxLayout="row" fxLayoutAlign="center" fxLayoutGap="20px">
-    <span>Buscar en validaciones</span>
-    <img [src]="icon.search" class="h12px" alt=""
-        onerror="this.src='assets/images/default/default-user-image.jpg'">
-</mat-label> -->
-
 <div>
     <table mat-table [dataSource]="dataSource" matSort>
         
@@ -52,11 +45,26 @@
             </td>
         </ng-container>
 
-        <!-- <ng-container matColumnDef="options">
+        <ng-container matColumnDef="options">
             <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
             <td mat-cell *matCellDef="let activity">
+                <img [src]="icon.menuVertical" class="iconButton h32px" alt=""
+                    [matMenuTriggerFor]="activityOptions" (click)="$event.stopPropagation()">
+                <mat-menu #activityOptions="matMenu" class="radius6 shadow16 pd0">
+                    <div fxLayout="column" class="fw pd0">
+                        <div mat-menu-item fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="2rem">
+                            <span class="pdl05 ft12 gray-10">Ver detalles</span>
+                        </div> 
+                        <div mat-menu-item fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="2rem">
+                            <span class="pdl05 ft12 gray-10">Editar examen</span>
+                        </div>
+                        <div mat-menu-item fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="2rem">
+                            <span class="pdl05 ft12 gray-10">Eliminar examen</span>
+                        </div>
+                    </div>
+                </mat-menu>
             </td>
-        </ng-container> -->
+        </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let activity; columns: displayedColumns;" class="cursorPointer"></tr>

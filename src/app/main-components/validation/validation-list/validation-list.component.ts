@@ -22,7 +22,7 @@ export class ValidationListComponent {
     private searchInputService: SearchInputService, 
   ) {}
 
-  displayedColumns: string[] = ['title', 'status', 'createdAt', 'updatedAt', 'grade', 'assigned', 'performance'];
+  displayedColumns: string[] = ['title', 'status', 'createdAt', 'updatedAt', 'grade', 'assigned', 'performance', 'options'];
   dataSource!: ActivityDataSource;
   enablePagination: boolean = true
   pageSize: number = 4
