@@ -7,9 +7,9 @@
                 <option [value]="null" >Especialista en Programación de la Producción</option>
             </select>
             <app-search-input-box></app-search-input-box>
-            <img [src]="icon.user" class="h16px" alt="">
-            <img [src]="icon.user" class="h16px makeBlue" alt="">
-            <button class="grayButton" style="border-radius: 24px !important;">
+            <img [src]="icon.user" class="h16px" alt="" [ngClass]="isListView ? 'makeBlue' : 'cursorPointer'" (click)="isListView = true">
+            <img [src]="icon.user" class="h16px" alt="" [ngClass]="!isListView ? 'makeBlue' : 'cursorPointer'" (click)="isListView = false">
+            <button *ngIf="isListView" class="grayButton" style="border-radius: 24px !important;">
                 <span class="makeBlue" style="font-size: 14px;">Detalles del perfil</span> 
             </button>
             <button class="blueButton" >
@@ -21,7 +21,8 @@
                 Nuevo Usuario
             </button>
         </div>
-        <app-student-list (onSelectStudentEvent)="studentSelected = $event" [usersObservable]= "users$"></app-student-list>
+        <app-student-list *ngIf="isListView" (onSelectStudentEvent)="studentSelected = $event" [usersObservable]= "users$"></app-student-list>
+        <app-student-grid *ngIf="!isListView" (onSelectStudentEvent)="studentSelected = $event" [usersArray]= "users"></app-student-grid>
     </div>
     <app-student-profile *ngIf="studentSelected" [student]="studentSelected" (hideEmit)="studentSelected = null" (onStudentSave)="onStudentSaveHandler($event)" class="w300px mgb10"></app-student-profile>
 </div>

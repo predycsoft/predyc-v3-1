@@ -18,13 +18,14 @@ export class MyTeamComponent {
     private userService: UserService,
     private enterpriseService: EnterpriseService,
     private route: ActivatedRoute,
-    private profileService: ProfileService,
-
   ){}
 
   studentSelected: User | null = null
 
   users$: Observable<User[]> = this.userService.users$
+  users: User[] 
+
+  isListView = true
 
   // ?sortBy=Deparment&pageSize=25&page=2&name=searchText
 
@@ -35,6 +36,7 @@ export class MyTeamComponent {
       }
     });
 
+    this.users$.subscribe(users => {if (users) this.users = users})
   }
 
   createNewStudent() {

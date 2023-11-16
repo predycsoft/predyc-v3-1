@@ -1,0 +1,31 @@
+<div fxLayout="row wrap" fxLayout.xs="column" fxLayoutAlign="start space-between" class="fw mgt20">
+    <div *ngFor="let user of usersArray" fxLayout="row" fxFlex="31%" fxFlex.xs="100%" 
+    class="radius10 border pd10 w-90 mgb10 cursorPointer mgr10" fxLayoutAlign="space-between " 
+    [routerLink]="enableNavigateToUser ? [user.uid] : []"> <!--Quitar mgr10 y hacer funcionar space-between del primer div-->
+        <div class="" fxLayout="column" fxLayoutAlign="center center">
+            <img onerror="this.src='assets/images/default/default-user-image.jpg'" 
+            [src]="user.photoUrl" class="avatar5" alt="">
+            <span>Activo (hardcode)</span>
+        </div>
+        <div class="contenedor" fxLayout="column" fxLayoutAlign="center">
+            <span class="underline fw mgb05">{{ user.displayName }}</span>
+            <div class="mgl05" fxLayout="column" fxLayoutAlign="center">
+                <div fxLayuot="row" fxLayoutAlign=" center" fxLayoutGap="0.5rem" class="mgb03">
+                    <img [src]="icon.suitcase" class="makeYellow h1px" alt="">
+                    <span class="">{{user.email}}</span>
+                </div>
+                <div fxLayuot="row" fxLayoutAlign=" center" fxLayoutGap="0.5rem" class="mgb03">
+                    <img [src]="icon.suitcase" class="makeYellow h1px" alt="">
+                    <span class="">{{'medio (hardcode)'}}</span>
+                </div>
+                <div fxLayuot="row" fxLayoutAlign=" center" fxLayoutGap="0.5rem">
+                    <img [src]="icon.suitcase" class="makeYellow h1px" alt="">
+                    <span>{{user.performance}}</span>
+                </div>
+            </div>
+        </div>
+        <div class="" fxLayout="column" fxLayoutAlign="start end">
+            <img [src]="icon.menuVertical" class="iconButton h32px" alt="">
+        </div>
+    </div>
+</div>

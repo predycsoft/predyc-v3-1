@@ -1,0 +1,5 @@
+.underline {
+    text-decoration: underline;
+    text-decoration-color: #ffca2e; /* Color de la línea subrayada */
+    text-decoration-thickness: 0.2em; /* Grosor de la línea subrayada */
+  }
