@@ -6,6 +6,7 @@ import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ProfileService } from 'src/app/shared/services/profile.service';
+import { Profile } from 'src/app/shared/models/profile.model';
 
 @Component({
   selector: 'app-my-team',
@@ -18,12 +19,15 @@ export class MyTeamComponent {
     private userService: UserService,
     private enterpriseService: EnterpriseService,
     private route: ActivatedRoute,
+    private profileService: ProfileService,
   ){}
 
   studentSelected: User | null = null
 
   users$: Observable<User[]> = this.userService.users$
   users: User[] 
+  profiles: Profile[]
+  selectedProfileId: string = "all";
 
   isListView = true
 
@@ -37,6 +41,7 @@ export class MyTeamComponent {
     });
 
     this.users$.subscribe(users => {if (users) this.users = users})
+    this.profileService.getProfilesObservable().subscribe(profiles => {if (profiles) this.profiles = profiles})
   }
 
   createNewStudent() {

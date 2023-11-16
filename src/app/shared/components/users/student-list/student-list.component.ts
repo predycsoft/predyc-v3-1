@@ -47,6 +47,7 @@ export class StudentListComponent {
   @Input() displayOptionsColumn: boolean = true
   @Input() initialSelectedUsers: any[] = [];
   @Input() usersObservable: Observable<User[]>
+  @Input() selectedProfileId: string | null = null;
   @Output() onSelectStudentEvent = new EventEmitter<User>()
   @Output() selectedUsers = new EventEmitter<any[]>();
 

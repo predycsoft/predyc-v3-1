@@ -1,5 +1,5 @@
 <div fxLayout="row wrap" fxLayout.xs="column" fxLayoutAlign="start space-between" class="fw mgt20">
-    <div *ngFor="let user of usersArray" fxLayout="row" fxFlex="31%" fxFlex.xs="100%" 
+    <div *ngFor="let user of filteredUsers" fxLayout="row" fxFlex="31%" fxFlex.xs="100%" 
     class="radius10 border pd10 w-90 mgb10 cursorPointer mgr10" fxLayoutAlign="space-between " 
     [routerLink]="enableNavigateToUser ? [user.uid] : []"> <!--Quitar mgr10 y hacer funcionar space-between del primer div-->
         <div class="" fxLayout="column" fxLayoutAlign="center center">
