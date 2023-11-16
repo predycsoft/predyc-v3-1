@@ -1,9 +1,25 @@
 <div fxLayout="row" fxLayoutGap="20px">
     <div [ngStyle]="{'width': studentSelected ? '80%' : '100%'}">
-        <app-navigate-back targetUrl="../">Mi equipo</app-navigate-back>
+        <app-navigate-back targetUrl="../">Usuarios y Perfiles</app-navigate-back>
         <div fxLayout="row" fxLayoutAlign="space-between center">
+            <select class="" >
+                <option [value]="null" selected>Planificador de mantenimiento</option>
+                <option [value]="null" >Especialista en Programación de la Producción</option>
+            </select>
             <app-search-input-box></app-search-input-box>
-            <button *ngIf="!studentSelected" class="blueButton" (click)="createNewStudent()">Nuevo usuario</button>
+            <img [src]="icon.user" class="h16px" alt="">
+            <img [src]="icon.user" class="h16px makeBlue" alt="">
+            <button class="grayButton" style="border-radius: 24px !important;">
+                <span class="makeBlue" style="font-size: 14px;">Detalles del perfil</span> 
+            </button>
+            <button class="blueButton" >
+                <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="">
+                Nuevo Perfil
+            </button>
+             <button *ngIf="!studentSelected" class="yellowButton" style="border-radius: 24px !important;" (click)="createNewStudent()">
+                <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="">
+                Nuevo Usuario
+            </button>
         </div>
         <app-student-list (onSelectStudentEvent)="studentSelected = $event" [usersObservable]= "users$"></app-student-list>
     </div>
