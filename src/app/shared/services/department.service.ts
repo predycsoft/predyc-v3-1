@@ -128,7 +128,7 @@ export class DepartmentService {
     const department = this.departmentSubject.value.find(dep => 
       dep.profilesRef.some(docRef => docRef.id === profileId)
     );
-      console.log("department by profile id", department)
+      // console.log("department by profile id", department)
     return department;
   }
 

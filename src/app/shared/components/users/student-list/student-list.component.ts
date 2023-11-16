@@ -21,12 +21,14 @@ import { ProfileService } from 'src/app/shared/services/profile.service';
 })
 export class StudentListComponent {
   displayedColumns: string[] = [
-    'select',
+    // 'select',
     'displayName',
     'status',
-    'departmentId',
-    'profileId',
-    'ratingPoints',
+    'email',
+    'rhythm',
+    // 'departmentId',
+    // 'profileId',
+    // 'ratingPoints',
     'performance',
     // 'options',
   ];

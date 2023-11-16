@@ -8,7 +8,7 @@
     <table mat-table [dataSource]="dataSource" matSort>
 
         <!-- Checkbox Column -->
-        <ng-container matColumnDef="select">
+        <!-- <ng-container matColumnDef="select">
             <th mat-header-cell *matHeaderCellDef>
                 <mat-checkbox (change)="$event ? toggleAllRows() : null"
                             [checked]="selection.hasValue() && isAllSelected()"
@@ -21,7 +21,7 @@
                             [checked]="selection.isSelected(row)">
                 </mat-checkbox>
             </td>
-        </ng-container>
+        </ng-container> -->
 
         <!-- Nombre Column -->
         <ng-container matColumnDef="displayName">
@@ -30,14 +30,7 @@
                 <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign=" center">
                     <img [src]="user.photoUrl" class="avatar2 " alt=""
                         onerror="this.src='assets/images/default/default-user-image.jpg'">
-                    <div fxLayout="column" fxLayoutAlign="center ">
-                        <div>
-                            {{ user.displayName | titlecase }}
-                        </div>
-                        <div>
-                            {{ user.email }}
-                        </div>
-                    </div>
+                    <div>{{ user.displayName | titlecase }}</div>
                 </div>
             </td>
         </ng-container>
@@ -48,27 +41,39 @@
             <td mat-cell *matCellDef="let user"> {{ 'Activo (hardcodeado)' }} </td>
         </ng-container>
 
+        <!-- Email Column -->
+        <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Correo </th>
+            <td mat-cell *matCellDef="let user"> {{ user.email }} </td>
+        </ng-container>
+
+        <!-- Rhythm Column -->
+        <ng-container matColumnDef="rhythm">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Ritmo </th>
+            <td mat-cell *matCellDef="let user"> {{ 'medio (hardcodeado)' }} </td>
+        </ng-container>
+
         <!-- Department Column -->
-        <ng-container matColumnDef="departmentId">
+        <!-- <ng-container matColumnDef="departmentId">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Departamento </th>
             <td mat-cell *matCellDef="let user"> {{ user.departmentData ? user.departmentData.name : "N/A" }} </td>
-        </ng-container>
+        </ng-container> -->
 
         <!-- Profile Column -->
-        <ng-container matColumnDef="profileId">
+        <!-- <ng-container matColumnDef="profileId">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Perfil </th>
             <td mat-cell *matCellDef="let user"> {{ user.profileData ? user.profileData.name : "N/A" }} </td>
-        </ng-container>
+        </ng-container> -->
 
         <!-- RatingPoints Column -->
-        <ng-container matColumnDef="ratingPoints">
+        <!-- <ng-container matColumnDef="ratingPoints">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Puntos </th>
             <td mat-cell *matCellDef="let user"> {{ user.ratingPoints }} </td>
-        </ng-container>
+        </ng-container> -->
 
         <!-- Performance Column -->
         <ng-container matColumnDef="performance">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Desempeño </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Desempeño (cursos) </th>
             <td mat-cell *matCellDef="let user"> {{ user.performance }} </td>
         </ng-container>
 
