@@ -28,4 +28,7 @@
             <img [src]="icon.menuVertical" class="iconButton h32px" alt="">
         </div>
     </div>
+    <div *ngIf="filteredUsers.length == 0">
+        <span>No se han encontrado usuarios para el criterio de busqueda</span>
+    </div>
 </div>

@@ -93,6 +93,7 @@ export class StudentListComponent {
           this.sort,
           this.profileService,
           this.departmentService,
+          this.searchInputService
         );
         if (this.initialSelectedUsers && this.dataSource && this.initialSelectedUsers.length > 0) {
           //this.selection.clear();
@@ -117,9 +118,9 @@ export class StudentListComponent {
     if(this.displayOptionsColumn){
       this.displayedColumns.push('options')
     }
-    this.searchSubscription = this.searchInputService.dataObservable$.subscribe(
-      filter => this.dataSource.setFilter(filter)
-    )
+    this.searchSubscription = this.searchInputService.dataObservable$.subscribe(filter => {
+      if(this.dataSource) this.dataSource.setFilter(filter)
+    })
 
     this.selection.changed.subscribe(() => {
       this.selectedUsers.emit(this.selection.selected);
@@ -182,8 +183,10 @@ class UserDataSource extends DataSource<User> {
     private sort: MatSort,
     private profileService: ProfileService,
     private departmentService: DepartmentService,
+    private searchInputService: SearchInputService, 
   ) {
     super();
+    this.filterSubject.next(this.searchInputService.getData())
     this.paginator.pageSize = 5
     this.paginator.page.subscribe(() => this.paginatorSubject.next());
     this.sort.sortChange.subscribe(() => this.sortSubject.next());
@@ -203,10 +206,12 @@ class UserDataSource extends DataSource<User> {
           user.departmentData = user.profileData ? this.departmentService.getDepartmentByProfileId(user.profile.id) : null
         })
         let filteredUsers =users
+        // Search bar
         filteredUsers = filteredUsers.filter(user => {
           const searchStr = (user.name as string + user.email as string).toLowerCase();
           return searchStr.indexOf(this.filterSubject.value.toLowerCase()) !== -1;
         });
+        // Profile selector
         if (this.selectedProfileIdSubject.value !== "all" ) {
           filteredUsers = filteredUsers.filter(user => {
             const profileMatches = this.selectedProfileIdSubject.value
