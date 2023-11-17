@@ -47,7 +47,7 @@ export class StudentListComponent {
   @Input() displayOptionsColumn: boolean = true
   @Input() initialSelectedUsers: any[] = [];
   @Input() usersObservable: Observable<User[]>
-  @Input() selectedProfileId: string | null = null;
+  @Input() selectedProfileId: string = "all";
   @Output() onSelectStudentEvent = new EventEmitter<User>()
   @Output() selectedUsers = new EventEmitter<any[]>();
 
@@ -106,6 +106,7 @@ export class StudentListComponent {
             }
           });
         }
+        this.dataSource.setSelectedProfileId(this.selectedProfileId);
       }
     })
   }
@@ -123,6 +124,11 @@ export class StudentListComponent {
     this.selection.changed.subscribe(() => {
       this.selectedUsers.emit(this.selection.selected);
     });
+  }
+
+  ngOnChanges() {
+    // Ena la primera carga, ngOnChange se ejecuta primero que ngAfterViewInit y this.dataSource no se ha inicializado
+    if (this.dataSource) this.dataSource.setSelectedProfileId(this.selectedProfileId);
   }
 
   onSelectUser(user: User) {
@@ -168,6 +174,7 @@ class UserDataSource extends DataSource<User> {
   private paginatorSubject = new Subject<void>();
   private sortSubject = new Subject<void>();
   private userSubscription: Subscription;
+  private selectedProfileIdSubject = new BehaviorSubject<string>("all");
 
   constructor(
     private users$: Observable<User[]>,
@@ -187,7 +194,7 @@ class UserDataSource extends DataSource<User> {
   }
   
   connect(): Observable<User[]> {
-    return merge(this.users$, this.filterSubject, this.paginatorSubject, this.sortSubject).pipe(
+    return merge(this.users$, this.filterSubject, this.paginatorSubject, this.sortSubject, this.selectedProfileIdSubject).pipe(
       map(() => {
         // Filtering
         let users = this.dataSubject.value
@@ -195,10 +202,19 @@ class UserDataSource extends DataSource<User> {
           user.profileData = user.profile ? this.profileService.getProfile(user.profile.id) : null
           user.departmentData = user.profileData ? this.departmentService.getDepartmentByProfileId(user.profile.id) : null
         })
-        let filteredUsers = users.filter(user => {
+        let filteredUsers =users
+        filteredUsers = filteredUsers.filter(user => {
           const searchStr = (user.name as string + user.email as string).toLowerCase();
           return searchStr.indexOf(this.filterSubject.value.toLowerCase()) !== -1;
         });
+        if (this.selectedProfileIdSubject.value !== "all" ) {
+          filteredUsers = filteredUsers.filter(user => {
+            const profileMatches = this.selectedProfileIdSubject.value
+              ? user.profile && user.profile.id === this.selectedProfileIdSubject.value
+              : true;
+            return profileMatches;
+          });
+        }
 
         this.paginator.length = filteredUsers.length
 
@@ -243,5 +259,10 @@ class UserDataSource extends DataSource<User> {
     this.userSubscription.unsubscribe();
   }
 
+  setSelectedProfileId(selectedProfileId: string) {
+    // console.log("seteando filtro de perfil")
+    this.selectedProfileIdSubject.next(selectedProfileId);
+    this.paginator.firstPage();
+  }
   
 }

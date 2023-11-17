@@ -3,7 +3,7 @@
         <app-navigate-back targetUrl="../">Usuarios y Perfiles</app-navigate-back>
         <div fxLayout="row" fxLayoutAlign="space-between center">
             <select class="w-30" [(ngModel)]="selectedProfileId">
-                <option [value]="'all'" selected>Todos los perfiles</option>
+                <option [value]="'all'">Todos los perfiles</option>
                 <option *ngFor="let profile of profiles" [value]="profile.id">{{profile.name}}</option>
             </select>
             <app-search-input-box></app-search-input-box>
