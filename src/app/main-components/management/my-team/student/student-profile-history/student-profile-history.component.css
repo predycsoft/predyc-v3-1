@@ -1,0 +1,74 @@
+.content-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 64vh; 
+    overflow: hidden;
+}
+
+.scroll {
+    overflow-y: auto; /* Permitir desplazamiento vertical si es necesario */
+}
+
+.details-section {
+    position: relative; 
+    width: 100%;
+    padding: 1rem;
+    max-height: 100%;
+    padding-right: 20px; /* Agregado para evitar que el contenido se superponga con la barra de desplazamiento */
+}
+
+.details-content {
+    position: relative;
+}
+
+.details-content::before {
+    content: ""; /* Esto es necesario para que el pseudo-elemento se muestre */
+    position: absolute;
+    top: 15px;
+    bottom: 0;
+    left: 7px;
+    width: 2px; /* Ajusta el ancho según lo que necesites */
+    background: repeating-linear-gradient(
+        180deg,
+        rgb(253, 202, 33), /* Color de las líneas */
+        rgb(253, 202, 33) 1%, /* Ajusta para cambiar el largo de las líneas */
+        transparent 1%, /* Comienzo del espacio entre líneas */
+        transparent 2% /* Ajusta para cambiar el espacio entre líneas */
+    );
+}
+
+.details-section ul {
+    list-style-type: disc !important;
+    margin-left: 1.5rem !important;
+}
+
+
+
+.illustration {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.illustration img {
+    max-width: 100%;
+    height: auto;
+}
+
+.underline {
+    position: relative;
+    display: inline-block; 
+}
+
+.underline::before {
+    content: ""; 
+    position: absolute;
+    left: -30px; /*Extiende a la izquierda */
+    right: -30px; /*Extiende a la derecha */
+    bottom: 0;
+    height: 2px; 
+    background-color: currentColor;
+}
+

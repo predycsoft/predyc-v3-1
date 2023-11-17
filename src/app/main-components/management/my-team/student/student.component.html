@@ -2,88 +2,11 @@
     <app-navigate-back targetUrl="../">{{student.displayName}}</app-navigate-back>
 
     <mat-tab-group class="swal-overlay">
-        <mat-tab label="Cronograma de capacitación"> 
-            <div fxLayout="row" fxLayoutAlign="space-between" class="mgt05">
-                <div class="w-25" fxLayout="column" fxLayoutGap="0.3rem">
-                    <div class="radius10 border fw" style="height: 35vh; padding: 5px 10px;">
-                        <span class="gray-10 ft14 nowrap ft500">Progreso General</span>
-                        <div fxLayout="row" fxLayoutAlign="center center">
-                            <div class="border radius50 h100px w100px"></div>
-                        </div>
-                    
-                        <div fxLayout="column" fxLayoutGap="2px" class="">
-                            <!-- Retrasado -->
-                            <div fxLayout="row" fxLayoutAlign="space-between center">
-                                <div class="cuadrito backRed5"></div>
-                                <div class="w80px h20px" fxLayout="column" fxLayoutAlign="center">
-                                    <span class="gray-10 ft11 nowrap">Retrasado</span>
-                                </div>
-                                <div class="w10px h20px" fxLayout="column" fxLayoutAlign="center center">
-                                    <span class="gray-10 ft11 nowrap ft500">3</span>
-                                </div>
-                                <div class="w60px h20px" fxLayout="row" fxLayoutAlign="space-between center">
-                                    <span class="gray-10 ft11 nowrap">23.3 </span>
-                                    <span class="gray-10 ft11 nowrap">hrs</span>
-                                </div>
-                            </div>
-                            <!-- En progreso -->
-                            <div fxLayout="row" fxLayoutAlign="space-between center">
-                                <div class="cuadrito backGreen5"></div>
-                                <div class="w80px h20px" fxLayout="column" fxLayoutAlign="center">
-                                    <span class="gray-10 ft11 nowrap">En progreso</span>
-                                </div>
-                                <div class="w10px h20px" fxLayout="column" fxLayoutAlign="center center">
-                                    <span class="gray-10 ft11 nowrap ft500">2</span>
-                                </div>
-                                <div class="w60px h20px" fxLayout="row" fxLayoutAlign="space-between center">
-                                    <span class="gray-10 ft11 nowrap">5.5 </span>
-                                    <span class="gray-10 ft11 nowrap">hrs</span>
-                                </div>
-                            </div>
-                            <!-- Completado -->
-                            <div fxLayout="row" fxLayoutAlign="space-between center">
-                                <div class="cuadrito backBlue5"></div>
-                                <div class="w80px h20px" fxLayout="column" fxLayoutAlign="center">
-                                    <span class="gray-10 ft11 nowrap">Completado</span>
-                                </div>
-                                <div class="w10px h20px" fxLayout="column" fxLayoutAlign="center center">
-                                    <span class="gray-10 ft11 nowrap ft500">13</span>
-                                </div>
-                                <div class="w60px h20px" fxLayout="row" fxLayoutAlign="space-between center">
-                                    <span class="gray-10 ft11 nowrap">86.5 </span>
-                                    <span class="gray-10 ft11 nowrap">hrs</span>
-                                </div>
-                            </div>
-                            <!-- Restantes -->
-                            <div fxLayout="row" fxLayoutAlign="space-between center">
-                                <div class="cuadrito backGray4"></div>
-                                <div class="w80px" fxLayout="column" fxLayoutAlign="center">
-                                    <span class="gray-10 ft11 nowrap">Restantes</span>
-                                </div>
-                                <div class="w10px h20px" fxLayout="column" fxLayoutAlign="center center">
-                                    <span class="gray-10 ft11 nowrap ft500">8</span>
-                                </div>
-                                <div class="w60px h20px" fxLayout="row" fxLayoutAlign="space-between center">
-                                    <span class="gray-10 ft11 nowrap">33.5 </span>
-                                    <span class="gray-10 ft11 nowrap">hrs</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="radius10 border fw" style="height: 35vh;">
-                        <span>Calendar</span>
-                    </div>
-                </div>
-                <div class="w-50" >
-                    <app-study-plan></app-study-plan>
-                </div>
-                <div class="w-20">
-                    <app-student-profile [student]="student" [isStudentProfile]="true"></app-student-profile>
-                </div>
-            </div>     
+        <mat-tab label="Detalles"> 
+            <app-student-details [student]="student" class="fh"></app-student-details> 
         </mat-tab>
-        <mat-tab label="Validación de competencias"> Content 2 </mat-tab>
-        <mat-tab label="Estadísticas"><app-student-stats></app-student-stats></mat-tab>
-        <mat-tab label="Detalles"><app-student-details [student]="student"></app-student-details></mat-tab>
+        <!-- <mat-tab label="Estadísticas"><app-student-stats></app-student-stats></mat-tab> -->
+        <mat-tab label="Historial de perfil"><app-student-profile-history [student]="student"></app-student-profile-history></mat-tab>
+        <mat-tab label="Pruebas de validación"> Content 2 </mat-tab>
     </mat-tab-group>
 </div> 

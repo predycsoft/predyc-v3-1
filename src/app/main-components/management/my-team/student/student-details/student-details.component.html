@@ -1,44 +1,27 @@
-<!-- Contenido principal -->
-<div class="content-container" fxLayout="row" fxLayoutAlign="space-between center">
-    <div fxLayout="column" class="fw fh scroll">
-        <div *ngFor="let profileHistoricData of profilesHistoricData" class="details-section fw mgb20" >
-            <div class="details-content">
-                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="0.5rem">   
-                    <img [src]="icon.checkCircle" alt="Ícono">
-                    <span class="ft600 gray-10">{{profileHistoricData.updatedAt}} |</span>
-                    <img [src]="icon.notification" alt="Ícono">  
-                    <span class="ft600 gray-10">{{profileHistoricData.profileName}}</span> 
-                </div>
-                <div class="basic-info pdl60 mgt20">
-                    <span class="ft600 gray-10">Información básica del perfil:</span>
-                    <ul>
-                        <li>Nombre completo.</li> <!-- ???? -->
-                        <li>Título o cargo (Ingeniero en Ventas Industriales).</li> <!-- Profile name -->
-                        <li>Ubicación (si es relevante).</li> <!-- ???? -->
-                    </ul>
-                </div>
-        
-                <div class="description pdl60">
-                    <span class="ft600 gray-10">Descripción</span>
-                    <ul>
-                        <li style="line-height: normal;"> 
-                            {{profileHistoricData.description}}
-                        </li>
-                    </ul>
-                </div>
-        
-                <div class="competences pdl60">
-                    <span class="ft600 gray-10">Competencias del perfil</span> 
-                    <ul *ngFor="let category of profileHistoricData.skillsByCategory">
-                        <div class="underline">{{category.name}}</div> 
-                        <li *ngFor="let skill of category.skills">{{skill.name}}</li> 
-
-                    </ul>
-                </div>
+<div fxLayout="row" fxLayoutAlign="space-between" class="mgt05">
+    <div class="w-30" fxLayout="column" fxLayoutGap="0.3rem" >
+        <app-student-profile [student]="student" [isStudentProfile]="true"></app-student-profile>
+    </div>
+    <div fxLayout="column" class="w-30 radius10 border pd10">
+        <div fxLayout="row" fxLayoutAlign="center center" class="mgb20">
+            <span>Información básica</span>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="space-between" class="mgt05">
+            <div fxLayout="column" fxLayoutAlign=" start" fxLayoutGap="0.5rem" class="">
+                <span>Horas asignadas</span>
+                <span>Inicio de plan de estudios</span>
+                <span>Descripción del perfil</span>
+            </div>
+            <div fxLayout="column" fxLayoutAlign=" end" fxLayoutGap="0.5rem" class="">
+                <span>{{"N/A"}}</span>
+                <span>{{"N/A"}}</span>
+                <span>{{"N/A"}}</span>
             </div>
         </div>
     </div>
-    <div class="illustration" fxFlex="50" fxLayout="row" fxLayoutAlign="center center">
-        <img [src]="'../../../../../assets/images/cursos/placeHolderCurso.svg'" alt="Ilustración">
+    <div class="w-30">
+        <div class="radius10 border fw">
+            <app-ranking-list></app-ranking-list>
+        </div>
     </div>
-</div>
+</div>    

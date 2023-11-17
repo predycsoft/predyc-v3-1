@@ -110,6 +110,7 @@ import { StudyTimeMonthlyChartComponent } from './main-components/dashboard/user
 import { FrequentQuestionsComponent } from './shared/components/frequent-questions/frequent-questions.component';
 import { SupportContactComponent } from './shared/components/support-contact/support-contact.component';
 import { StudentGridComponent } from './shared/components/users/student-grid/student-grid.component';
+import { StudentProfileHistoryComponent } from './main-components/management/my-team/student/student-profile-history/student-profile-history.component';
 // import { FrequentQuestionsComponent } from './main-components/my-account/frequent-questions/frequent-questions.component';
 
 @NgModule({
@@ -175,6 +176,7 @@ import { StudentGridComponent } from './shared/components/users/student-grid/stu
     SupportContactComponent,
     FrequentQuestionsComponent,
     StudentGridComponent,
+    StudentProfileHistoryComponent,
   ],
   imports: [
     BrowserModule,

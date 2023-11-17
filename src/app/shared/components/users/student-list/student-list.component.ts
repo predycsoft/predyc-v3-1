@@ -47,7 +47,7 @@ export class StudentListComponent {
   @Input() displayOptionsColumn: boolean = true
   @Input() initialSelectedUsers: any[] = [];
   @Input() usersObservable: Observable<User[]>
-  @Input() selectedProfileId: string = "all";
+  @Input() selectedProfileId: string;
   @Output() onSelectStudentEvent = new EventEmitter<User>()
   @Output() selectedUsers = new EventEmitter<any[]>();
 
@@ -175,7 +175,7 @@ class UserDataSource extends DataSource<User> {
   private paginatorSubject = new Subject<void>();
   private sortSubject = new Subject<void>();
   private userSubscription: Subscription;
-  private selectedProfileIdSubject = new BehaviorSubject<string>("all");
+  private selectedProfileIdSubject = new BehaviorSubject<string>(null);
 
   constructor(
     private users$: Observable<User[]>,
@@ -212,7 +212,7 @@ class UserDataSource extends DataSource<User> {
           return searchStr.indexOf(this.filterSubject.value.toLowerCase()) !== -1;
         });
         // Profile selector
-        if (this.selectedProfileIdSubject.value !== "all" ) {
+        if (this.selectedProfileIdSubject.value !== null ) {
           filteredUsers = filteredUsers.filter(user => {
             const profileMatches = this.selectedProfileIdSubject.value
               ? user.profile && user.profile.id === this.selectedProfileIdSubject.value

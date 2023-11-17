@@ -27,7 +27,7 @@ export class MyTeamComponent {
   users$: Observable<User[]> = this.userService.users$
   users: User[] 
   profiles: Profile[]
-  selectedProfileId: string = "all";
+  selectedProfileId: string = null;
 
   isListView = true
 
@@ -58,6 +58,10 @@ export class MyTeamComponent {
     } catch (error) {
       console.log(error)
     }
+  }
+
+  log() {
+    console.log(this.selectedProfileId)
   }
 
 }

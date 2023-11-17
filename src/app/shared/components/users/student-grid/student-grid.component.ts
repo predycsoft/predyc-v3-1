@@ -27,8 +27,8 @@ export class StudentGridComponent {
 
   ngOnInit() {
     this.filterUsersByProfile();
+    const filteredUsersByProfile = [...this.filteredUsers]
     this.searchSubscription = this.searchInputService.dataObservable$.subscribe(filter => {
-      const filteredUsersByProfile = [...this.filteredUsers]
       this.filterUsersBySearchBar(filter, filteredUsersByProfile)
     })
   }
@@ -38,7 +38,7 @@ export class StudentGridComponent {
   }
 
   filterUsersByProfile() {
-    if (this.selectedProfileId === "all") {
+    if (this.selectedProfileId === null) {
       // Si no hay un perfil seleccionado, muestra todos los usuarios
       this.filteredUsers = this.usersArray;
     } else {
