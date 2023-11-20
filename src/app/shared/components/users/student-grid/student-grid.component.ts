@@ -38,7 +38,7 @@ export class StudentGridComponent {
   }
 
   filterUsersByProfile() {
-    if (this.selectedProfileId === null) {
+    if (this.selectedProfileId === "all") {
       // Si no hay un perfil seleccionado, muestra todos los usuarios
       this.filteredUsers = this.usersArray;
     } else {

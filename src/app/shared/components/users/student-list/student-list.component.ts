@@ -175,7 +175,7 @@ class UserDataSource extends DataSource<User> {
   private paginatorSubject = new Subject<void>();
   private sortSubject = new Subject<void>();
   private userSubscription: Subscription;
-  private selectedProfileIdSubject = new BehaviorSubject<string>(null);
+  private selectedProfileIdSubject = new BehaviorSubject<string>("all");
 
   constructor(
     private users$: Observable<User[]>,
@@ -212,7 +212,7 @@ class UserDataSource extends DataSource<User> {
           return searchStr.indexOf(this.filterSubject.value.toLowerCase()) !== -1;
         });
         // Profile selector
-        if (this.selectedProfileIdSubject.value !== null ) {
+        if (this.selectedProfileIdSubject.value !== "all" ) {
           filteredUsers = filteredUsers.filter(user => {
             const profileMatches = this.selectedProfileIdSubject.value
               ? user.profile && user.profile.id === this.selectedProfileIdSubject.value
