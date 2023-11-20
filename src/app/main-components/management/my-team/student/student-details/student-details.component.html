@@ -1,27 +1,34 @@
-<div fxLayout="row" fxLayoutAlign="space-between" class="mgt05">
-    <div class="w-30" fxLayout="column" fxLayoutGap="0.3rem" >
-        <app-student-profile [student]="student" [isStudentProfile]="true"></app-student-profile>
+<div fxLayout="column" class="mgt10">
+    <div fxLayout="row" fxLayoutAlign="start center">
+        <img [src]="icon.checkCircle" alt="Ícono">
+        <span class="ft600 gray-10">Presente | </span>
+        <img [src]="icon.notification" alt="Ícono">  
+        <span class="ft600 gray-10">{{studentProfile.name}}</span> 
     </div>
-    <div fxLayout="column" class="w-30 radius10 border pd10">
-        <div fxLayout="row" fxLayoutAlign="center center" class="mgb20">
-            <span>Información básica</span>
+    <div fxLayout="row" fxLayoutAlign="space-between" class="mgt10">
+        <div class="w-30" fxLayout="column" fxLayoutGap="0.3rem" >
+            <app-student-profile [student]="student" [isStudentProfile]="true" style="height: 300px;"></app-student-profile>
         </div>
-        <div fxLayout="row" fxLayoutAlign="space-between" class="mgt05">
-            <div fxLayout="column" fxLayoutAlign=" start" fxLayoutGap="0.5rem" class="">
-                <span>Horas asignadas</span>
-                <span>Inicio de plan de estudios</span>
-                <span>Descripción del perfil</span>
+        <div fxLayout="column" class="w-30 radius10 border pd10" style="height: 300px;">
+            <div fxLayout="row" fxLayoutAlign="center center" class="mgb20">
+                <span class="ft500 ft20">Información básica</span>
             </div>
-            <div fxLayout="column" fxLayoutAlign=" end" fxLayoutGap="0.5rem" class="">
-                <span>{{"N/A"}}</span>
-                <span>{{"N/A"}}</span>
-                <span>{{"N/A"}}</span>
+            <div fxLayout="row" fxLayoutAlign="space-between" class="mgt05">
+                <div fxLayout="column" fxLayoutAlign=" start" fxLayoutGap="0.5rem">
+                    <span>Horas asignadas</span>
+                    <span>Inicio de plan de estudios</span>
+                    <span>Descripción del perfil</span>
+                </div>
+                <div fxLayout="column" fxLayoutAlign=" end" fxLayoutGap="0.5rem">
+                    <span>{{"N/A"}}</span>
+                    <span>{{"N/A"}}</span>
+                    <span>{{"N/A"}}</span>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="w-30">
-        <div class="radius10 border fw">
-            <app-ranking-list></app-ranking-list>
+        <div class="w-30 radius10 border">
+            <app-ranking-list style="height: 300px;"></app-ranking-list>
         </div>
-    </div>
-</div>    
+    </div>    
+    <div class="radius10 border mgt10" style="height: 400px;"></div>
+</div>

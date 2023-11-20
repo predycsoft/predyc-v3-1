@@ -52,3 +52,8 @@ tr .selected:hover{
 .minWidth{
     width: fit-content;
 }
+
+:host {
+    display: block;
+    overflow-y: auto;
+ }

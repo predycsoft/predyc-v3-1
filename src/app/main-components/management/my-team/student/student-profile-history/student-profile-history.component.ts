@@ -33,8 +33,6 @@ export class StudentProfileHistoryComponent {
   profilesHistoricData: any[]
 
   async ngOnInit() {
-    // this.skillService
-    // this.categoryService
     await this.profileService.loadProfiles(); // Caso es en recargar la pagina
 
     this.userProfileData = await this.profileService.getUserProfileLogs(this.userService.getUserRefById(this.student.uid))
@@ -51,7 +49,7 @@ export class StudentProfileHistoryComponent {
     this.profilesHistoricData = this.userProfileData.map(profileData => 
       this.getSkillsByCategoryForProfile(profileData)
     );
-    console.log("this.profilesHistoricData", this.profilesHistoricData)
+    // console.log("this.profilesHistoricData", this.profilesHistoricData)
 
   }
 
@@ -60,7 +58,6 @@ export class StudentProfileHistoryComponent {
     const profile = this.profileService.getProfile(profileId);
     const userSkillsRefs = profile.skillsRef.map(skillRef => skillRef.id); // Obtener los IDs de skills para el perfil dado
     
-    // return this.categories.map(category => {
     const categorizedSkills = this.categories.map(category => {
       let skills = this.skills
         .filter(skill => {

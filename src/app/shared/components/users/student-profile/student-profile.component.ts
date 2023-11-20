@@ -70,7 +70,7 @@ export class StudentProfileComponent implements OnInit {
   @ViewChild('closeButton') closeButton: ElementRef;
 
   ngOnInit(): void {
-    console.log("this.student", this.student)
+    // console.log("this.student", this.student)
     this.departmentService.getDepartmentsObservable().subscribe(departments => {
       if (departments) this.departments = departments   
     })
