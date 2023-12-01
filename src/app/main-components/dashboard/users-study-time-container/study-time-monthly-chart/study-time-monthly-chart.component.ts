@@ -18,13 +18,15 @@ export class StudyTimeMonthlyChartComponent {
   data = []
   dayGoalHour = 1
   max = 0
+  currentLabel
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes["logs"]) {
       let now = new Date();
+      let currentMonth = now.getMonth();
       for(let i=0; i<12; i++) {
           let month = subMonths(now, i);
-          let label = format(month, 'MMM-yy');
+          let label = format(month, 'MMM');
           let value = this.logs.reduce((total, log) => {
               let logDate = new Date(log.timestamp);
               if(logDate.getMonth() === month.getMonth() && logDate.getFullYear() === month.getFullYear()) {
@@ -33,6 +35,9 @@ export class StudyTimeMonthlyChartComponent {
               return total;
           }, 0);
           this.data.unshift({value, label});
+          if (month.getMonth() === currentMonth) {
+            this.currentLabel = label;
+        }
       }
       
       this.max = this.dayGoalHour
@@ -49,9 +54,11 @@ export class StudyTimeMonthlyChartComponent {
   ngOnInit(): void {
     this.data = []
     let now = new Date();
+    let currentMonth = now.getMonth();
+
     for(let i=0; i<12; i++) {
         let month = subMonths(now, i);
-        let label = format(month, 'MMM-yy');
+        let label = format(month, 'MMM');
         let value = this.logs.reduce((total, log) => {
             let logDate = new Date(log.timestamp);
             if(logDate.getMonth() === month.getMonth() && logDate.getFullYear() === month.getFullYear()) {
@@ -60,6 +67,9 @@ export class StudyTimeMonthlyChartComponent {
             return total;
         }, 0);
         this.data.unshift({value, label});
+        if (month.getMonth() === currentMonth) {
+          this.currentLabel = label;
+      }
     }
     
     this.max = this.dayGoalHour
@@ -67,8 +77,8 @@ export class StudyTimeMonthlyChartComponent {
     if(max > this.max){
         this.max = max;
     }
-    // console.log("this.data")
-    // console.log(this.data)
+    console.log("this.data")
+    console.log(this.data)
     // console.log("this.max")
     // console.log(this.max)
   }
