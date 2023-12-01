@@ -18,7 +18,7 @@ export class RankingListComponent {
   ){}
 
   ranking: User[]
-  listLength: number = 6
+  listLength: number = 5
   showPointsTooltip = false
 
   ngOnInit() {

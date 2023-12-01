@@ -14,12 +14,14 @@
         </div>
         <table class="fw">
             <tr>
-                <td></td>
+                <td class="gray-10 ft500 ft10 centertext">Nombre</td>
+                <td class="gray-10 ft500 ft10 centertext">Horas</td>
                 <td class="gray-10 ft500 ft10 centertext">Puntos</td>
                 <td class="gray-10 ft500 ft10 centertext">Ritmo</td>
+                <td class="gray-10 ft500 ft10 centertext">Perfil</td>
             </tr>
             <tr *ngFor="let item of ranking | slice:0:listLength; let i = index" class="selected">
-                <td class="fw">
+                <td class="h-20">
                     <div fxLayout="row" fxLayoutAlign=" center">
                         <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
                             <div class="avatar2 positionRelative">
@@ -33,9 +35,10 @@
                         </div>
                     </div>
                 </td>
+                <td class="centertext gray-10 ft10">{{"Horas"}}</td>
                 <td class="centertext gray-10 ft10">{{item.ratingPoints | number: "1.0-0"}}</td>
                 <td class="centertext">
-                    <div class="minWidth centertext">
+                    <div class=" centertext">
                         <span *ngIf="item.performance == 'no plan' || item.performance == null "class="gray-6 ft9 ft600 nowrap">
                             Sin asignación
                         </span>
@@ -50,6 +53,7 @@
                         </span>
                     </div>
                 </td>
+                <td class="gray-10 ft10">{{"Perfil"}}</td>
             </tr>
         </table>
     </div>
