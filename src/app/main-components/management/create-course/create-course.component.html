@@ -1,1 +1,245 @@
-<div>Works</div>
+<div class="fw" class="fw backWhite radius10 pd20" fxLayout="column">
+    <div class="fw fh" fxLayout="column">
+        <div fxLayout="row">
+            <div class="pdl10 pdr10 pdt10">
+                <span class=" gray-10 ft600 ft16">Crear nuevo curso</span>
+            </div>
+        </div>
+        <div fxLayout="row">
+            <div class="fw pdl10 pdr10 pdt10">
+                <div class="fw border-b">
+                    <div class="stepper pdb10">
+                        <div class="step" *ngFor="let item of steps; let i = index">
+                            <div class= "no-select {{activeStep == i+1 ? 'circleStepActive': 'circleStep'}} {{  activeStep > i ? 'cursorPointer' : ''}}">{{ i + 1 }}</div>
+                            <div (click)="activeStep > i ? activeStep = i+1 : '' " class="no-select {{ activeStep == i+1 ? 'titleActive ft400': 'title' }}  {{ activeStep > i ? 'cursorPointer' : '' }}">{{ item }}</div>
+                            <div class="mgr05" *ngIf="i < steps.length - 1">
+                                <img [src]="icon.chevronRight" class="{{ activeStep == i+1 ? 'makeGray8': 'makeGray' }}" alt="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Tab 1 Informacion del curso -->
+        <ng-container *ngIf="activeStep == 1">
+            <div fxFlex fxLayout="row" class="contanier">
+                <div fxFlex="60%" class="pdl10 pdr10 pdt10">
+                    <div fxLayout="column" class="fw fh smallScroll" style="overflow-y: auto;">
+                        <form [formGroup]="formNewCourse" class="mgr20">
+                            <div class="form-group pdt10">
+                                <label>Título</label>
+                                <input
+                                [class.is-invalid]="formNewCourse.controls['titulo'].errors && showErrorCurso"
+                                formControlName="titulo" type="text" class="form-control customInput" placeholder="Escriba el título del curso aquí">
+                                <div class="invalid-feedback" *ngIf="formNewCourse.controls['titulo'].errors && showErrorCurso"> 
+                                    Debe indicar el título del curso
+                                </div>
+                            </div>
+                            <div class="form-group pdt10">
+                                <label>Resumen del curso</label>
+                                <textarea 
+                                [class.is-invalid]="formNewCourse.controls['resumen'].errors && showErrorCurso"
+                                rows="3" formControlName="resumen" type="text" class="form-control customInput" placeholder="Escriba el resumen del curso aquí" style="resize: none;"></textarea>
+                                <div class="invalid-feedback" *ngIf="formNewCourse.controls['resumen'].errors && showErrorCurso"> 
+                                    Debe indicar el resumen del curso
+                                </div>
+                            </div>
+                            <div class="form-group pdt10">
+                                <label>Descripción del curso</label>
+                                <textarea
+                                [class.is-invalid]="formNewCourse.controls['descripcion'].errors && showErrorCurso"
+                                 rows="3"  formControlName="descripcion" type="text" class="form-control customInput" placeholder="Escriba la descripción del curso aquí" style="resize: none;"></textarea>
+                                 <div class="invalid-feedback" *ngIf="formNewCourse.controls['descripcion'].errors && showErrorCurso"> 
+                                    Debe indicar la descripción del curso
+                                </div>
+                            </div>
+                            <div class="form-group pdt10">
+                                <label>Foto del curso</label>
+                                <div class="image-selector">
+                                    <!-- <button class="add-button">Adjuntar nueva</button> -->
+                                    <button (click)="cursoImage.click()" class="grayButton radius4 ft12 ft500 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                        <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
+                                        Adjuntar imagen
+                                    </button>
+                                    <input #cursoImage type="file" (change)="uploadCourseImage($event,'curso')" hidden accept="image/jpeg, image/png" />
+                                    <div class="image-scroll">
+                                        <img *ngFor="let imagen of imagenesCurso" (click)="seleccionarImagenCurso(imagen)" [src]="imagen" alt="Imagen seleccionada" class="image cursorPointer {{this.formNewCourse.get('imagen').value == imagen? 'img-active': ''}}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div *ngIf="formNewCourse.controls['imagen'].errors && showErrorCurso" class="custom-invalid-feedback pdt05">
+                                Debe seleccionar o subir la imagen del curso
+                            </div>
+                            <div fxLayout="row" class="fw" fxLayoutGap="1rem">
+                                <div  fxFlex="50%" >
+                                    <div class="form-group pdt10">
+                                        <label>Nivel del curso</label>
+                                        <select
+                                        [class.is-invalid]="formNewCourse.controls['nivel'].errors && showErrorCurso"
+                                        class="form-control customInput" formControlName="nivel">
+                                            <option value=null>Selecciona el nivel</option>
+                                            <option value="básico">Básico</option>
+                                            <option value="intermedio">Intermedio</option>
+                                            <option value="avanzado">Avanzado</option>
+                                        </select>
+                                        <div class="invalid-feedback" *ngIf="formNewCourse.controls['nivel'].errors && showErrorCurso"> 
+                                            Debe seleccionar el nivel del curso
+                                        </div>
+                                    </div>
+                                </div>
+                                <div  fxFlex="50%" >
+                                    <div class="form-group pdt10">
+                                        <label>Idioma</label>
+                                        <select
+                                        [class.is-invalid]="formNewCourse.controls['idioma'].errors && showErrorCurso"
+                                        class="form-control customInput" formControlName="idioma">
+                                            <option value=null>Selecciona el idioma</option>
+                                            <option value="Español">Español</option>
+                                            <option value="Inglés">Inglés</option>
+                                        </select>
+                                        <div class="invalid-feedback" *ngIf="formNewCourse.controls['idioma'].errors && showErrorCurso"> 
+                                            Debe seleccionar el idioma del curso
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group pdt10">
+                                <label>A quién va dirigido</label>
+                                <textarea [class.is-invalid]="formNewCourse.controls['descripcion'].errors && showErrorCurso"
+                                rows="3"  formControlName="descripcion" type="text" class="form-control customInput" placeholder="Escriba a qué público va dirigido aquí" style="resize: none;"></textarea>
+                                <div class="invalid-feedback" *ngIf="formNewCourse.controls['descripcion'].errors && showErrorCurso"> 
+                                    Debe indicar a qué público va dirigido aquí.
+                                </div>
+                            </div>
+    
+                            <div class="form-group pdt10">
+                                <label>Qué aprenderas</label>
+                                <textarea rows="3" [class.is-invalid]="formNewCourse.controls['contenido'].errors && showErrorCurso"  formControlName="contenido" type="text" class="form-control customInput" placeholder="Escriba qué se aprenderá durante el curso." style="resize: none;"></textarea>
+                                <div class="invalid-feedback" *ngIf="formNewCourse.controls['contenido'].errors && showErrorCurso"> 
+                                    Debe indicar que se aprenderá durante el curso.
+                                </div>
+                            </div>
+    
+                            <div class="form-group pdt10">
+                                <label>Nombre del instructor</label>
+                                <input formControlName="instructor" [class.is-invalid]="formNewCourse.controls['instructor'].errors && showErrorCurso" type="text" class="form-control customInput" placeholder="Escriba el nombre del instructor del curso aquí">
+                                <div class="invalid-feedback" *ngIf="formNewCourse.controls['instructor'].errors && showErrorCurso"> 
+                                    Debe indicar el nombre del instructor.
+                                </div>
+                            </div>
+    
+                            <div class="form-group pdt10">
+                                <label>Resumen del instructor</label>
+                                <textarea rows="3" [class.is-invalid]="formNewCourse.controls['resumen_instructor'].errors && showErrorCurso"  formControlName="resumen_instructor" type="text" class="form-control customInput" placeholder="Escriba el resumen del instructor aquí." style="resize: none;"></textarea>
+                                <div class="invalid-feedback" *ngIf="formNewCourse.controls['resumen_instructor'].errors && showErrorCurso"> 
+                                    Debe indicar el resumen del instructor.
+                                </div>
+                            </div>
+                            <div class="form-group pdt10">
+                                <label>Foto del instructor</label><label class="pdl30">o seleccione un avátar</label>
+                                <div class="avatar-selector">
+                                    <!-- <button class="add-button">Adjuntar nueva</button> -->
+                                    <button (click)="instructorImage.click()" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                        <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
+                                        Adjuntar imagen
+                                    </button>
+                                    <input #instructorImage type="file" (change)="uploadCourseImage($event,'instructor')" hidden accept="image/jpeg, image/png" />
+                                    <div class="avatar-scroll">
+                                        <img *ngFor="let imagen of avatarInstructor" (click)="seleccionarImagenInstructor(imagen)" [src]="imagen" alt="Imagen seleccionada" class="image shadow8 cursorPointer {{this.formNewCourse.get('imagen_instructor').value == imagen? 'img-active':''}}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div *ngIf="formNewCourse.controls['imagen_instructor'].errors && showErrorCurso" class="custom-invalid-feedback pdt05">
+                                Debe seleccinar o subir la imagen del instructor
+                            </div>
+    
+                        </form>
+                    </div>
+                </div>
+                <div fxFlex="40%" class="pdl10 pdr10 pdt10">
+                    <div fxLayout="column" fxLayoutAlign="center center" class="fw fh">
+                        <img class="pd10" src="../../../assets/images/cursos/computadoramacho.svg" class="fw" alt="Mi SVG">
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+        <!-- Tab 2  Competencias -->
+        <ng-container *ngIf="activeStep == 2">
+            <app-skills-selector
+                [competenciasEmpresa]="competenciasEmpresa" 
+                [categoriasArray]="categoriasArray"
+                [competenciasSelected]="competenciasSelected"
+                (competenciasSelectedOut)="competenciasSelected = $event">
+            </app-skills-selector>
+        </ng-container>
+        <!-- Tab 3 Clases -->
+        <!-- Tab 4 Examen -->
+        <!-- Tab 5  Vista previa examen -->
+        <!-- Tab 6  Resumen -->
+
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt10">
+            <!-- Botón a la izquierda -->
+            <button
+                (click)="previousTab()"
+                class="blueButton radius4 ft12 h28px mgr10 gray-1"
+                fxLayout="row"
+                fxLayoutGap="0.625"
+                fxLayoutAlign="center center"
+                type="button"
+                >
+                <img [src]="icon.chevronLeft" class="h16px pdr05 makeWhite" alt="">
+                Regresar
+            </button>         
+            <!-- Contenedor para los dos botones de la derecha -->
+            <div fxLayout="row" fxLayoutGap="10px">
+                <button (click)="saveDraft()" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                    Guardar borrador
+                </button>
+                <button class="blueButton radius4 ft12 h28px mgr10 gray-1" (click)="avanceTab()" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                    {{ activeStep < 6 ? 'Continuar' : 'Finalizar'}}
+                    <img [src]="icon.chevronRight" class="h16px pdl05 makeWhite" alt="">
+                </button>   
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- endCourseModal -->
+<ng-template #endCourseModal let-modal>
+    <div class="modal-header bg-web-primary text-white px-3 py-1">
+        <div class="modal-title pd10" fxLayout="row" fxLayoutAlign="start center">
+            <img [src]="icon.catalog" class="h18px pdr05" alt="">
+            <span class="ft16 ft600 gray-10">¡Creaste un nuevo curso!</span>
+        </div>
+        <img style="cursor: pointer;" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px"  alt="">
+    </div>
+    <div class="modal-body">
+        <div fxLayout="row" class="fw">
+            <!-- Espacio para la imagen -->
+            <div fxFlex="50" fxLayout="row" fxLayoutAlign="center center">
+                <img src="../../../assets/images/cursos/teamwork high five-pana.svg" alt="Descripción" class="w-80">
+            </div>
+    
+            <!-- Espacio para el texto y los botones -->
+            <div fxFlex="50" fxLayout="column" fxLayoutAlign="center center">
+                <!-- Texto encima de los botones -->
+                <div class="text-center mb-3">
+                    ¿Deseas publicar el curso?
+                </div>
+    
+                <!-- Botones -->
+                <div fxLayout="row" fxLayoutAlign="space-around center">
+                    <button class="yellowButton radius4 ft12 h28px" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                        <img [src]="icon.save" class="h16px makeWhite pdr05" alt="">
+                        Más tarde
+                    </button>
+                    <button class="blueButton radius4 ft12 h28px mgl10 gray-1" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                        Publicar
+                        <img [src]="icon.send" class="h16px makeWhite pdl05" alt="">
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { IconService } from '../../../shared/services/icon.service';
 import { FormControl, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -52,51 +52,627 @@ interface Competencia {
 })
 export class CreateCourseComponent {
 
-//   constructor(
-//     public icon: IconService,
-//     public router: Router,
-//     private storage: AngularFireStorage,
-//     //private service: GeneralService,
-//     private modalService: NgbModal,
-//     private uploadControl: VimeoUploadService,
-//     private afs: AngularFirestore,
-//     private dialog: DialogService,
-//     public sanitizer: DomSanitizer,
-//     private enterpriseService: EnterpriseService,
-//     public categoryService : CategoryService,
-//     public skillService: SkillService,
-//     public courseService: CourseService,
-//     public moduleService: ModuleService,
-//     public courseClassService: CourseClassService,
-//     public activityClassesService:ActivityClassesService,
-//     private route: ActivatedRoute,
+  constructor(
+    public icon: IconService,
+    public router: Router,
+    private storage: AngularFireStorage,
+    // //private service: GeneralService,
+    private modalService: NgbModal,
+    // private uploadControl: VimeoUploadService,
+    private afs: AngularFirestore,
+    // private dialog: DialogService,
+    // public sanitizer: DomSanitizer,
+    private enterpriseService: EnterpriseService,
+    public categoryService : CategoryService,
+    public skillService: SkillService,
+    public courseService: CourseService,
+    // public moduleService: ModuleService,
+    // public courseClassService: CourseClassService,
+    public activityClassesService:ActivityClassesService,
+    private route: ActivatedRoute,
+  ) { }
 
+  activeStep = 1;
+  steps = [
+    'Información del curso',
+    'Competencias',
+    'Clases',
+    'Examen',
+    'Vista previa examen',
+    'Resumen'
+  ];
 
-//   ) { }
+  mode = this.route.snapshot.paramMap.get("mode")
 
-//   mode = this.route.snapshot.paramMap.get("mode")
-//   idCurso = this.route.snapshot.paramMap.get("idCurso")
+  idCurso = this.route.snapshot.paramMap.get("idCurso")
+  curso : Curso;
+  modulos : Modulo[] = [];
+  activitiesCourse;
+  examen : Activity;
+  categoriasArray;
+  competenciasArray
+  competenciasEmpresa = []
+  competenciasSelected;
+  empresa;
 
-//   formNuevoCurso: FormGroup;
+  currentModal;
+  @ViewChild('endCourseModal') endCourseModal: ElementRef;
+
+  formNewCourse: FormGroup;
+
+  async ngOnInit(): Promise<void> {
+    console.log(this.competenciasArray)
+
+    this.inicializarformNewCourse();
+  
+    this.enterpriseService.enterprise$.subscribe(enterprise => {
+      if (enterprise) {
+        this.empresa = enterprise
+      }
+    })
+  }
+
+  getExamCourse(idCourse){
+    console.log('idCourse search activity', idCourse);
+    this.activityClassesService.getActivityCoruse(idCourse)
+      .pipe()
+      .subscribe(data => {
+        if (data) {
+          console.log('Activity:', data);
+          console.log('Questions:', data.questions);
+          data.questions.forEach(question => {
+            console.log('preguntas posibles test',question)
+            question.competencias = question.skills
+          });
+          this.examen = data;
+          console.log('examen data edit',this.examen)
+        }
+      });
+  }
+
+  anidarCompetenciasInicial(categorias: any[], competencias: any[]): any[] {
+    return categorias.map(categoria => {
+      let skills = competencias
+        .filter(comp => comp.category.id === categoria.id)
+        .map(skill => {
+          // Por cada skill, retornamos un nuevo objeto sin la propiedad category,
+          // pero añadimos la propiedad categoryId con el valor de category.id
+          const { category, ...rest } = skill;
+          return {
+            ...rest,
+            categoriaId: category.id
+          };
+        });
+  
+      return {
+        ...categoria,
+        competencias: skills
+      };
+    });
+  }
+
+  obtenerCompetenciasAlAzar(n: number): Competencia[] {
+    // Aplanamos la estructura para obtener todas las competencias en un solo arreglo
+    const todasLasCompetencias = this.categoriasArray.flatMap(categoria => categoria.competencias);
+  
+    // Barajamos (shuffle) el arreglo
+    for (let i = todasLasCompetencias.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [todasLasCompetencias[i], todasLasCompetencias[j]] = [todasLasCompetencias[j], todasLasCompetencias[i]]; // Intercambio
+    }
+  
+    // Tomamos las primeras 'n' competencias del arreglo barajado
+    return todasLasCompetencias.slice(0, n);
+  }
+
+  getSelectedCategoriasCompetencias(){
+    let respuesta = [];
+    console.log(this.categoriasArray)
+
+    this.categoriasArray.forEach(categoria => {
+      let selected = categoria.competencias.filter(competencia => competencia.selected)     
+      if(selected.length>0){
+        let obj = {
+          categoria : {name:categoria.name, id:categoria.id},
+          competencias : selected,
+          expanded: true
+        }
+        respuesta.push(obj)
+      }
+    });
+
+    //this.updateCompetenciasClases(competencia)
+    this.competenciasSelected = respuesta;
+  }
+
+  initSkills(){
+    this.categoryService.getCategoriesObservable().subscribe(category => {
+      console.log('category from service',category);
+      this.skillService.getSkillsObservable().pipe(
+        take(2)
+      ).subscribe(skill => {
+        console.log('skill from service', skill);
+        skill.map(skillIn => {
+          delete skillIn['selected']
+        });
+        if(this.mode == 'edit'){
+          console.log('curso edit',this.curso)
+          let skillsProfile = this.curso.skillsRef;
+          skillsProfile.forEach(skillIn => {
+            let skillSelect = skill.find(skillSelectIn=>skillSelectIn.id == skillIn.id) 
+            skillSelect['selected'] = true;
+          });
+        }
+        console.log('skill from service', skill);
+        this.categoriasArray = this.anidarCompetenciasInicial(category, skill)
+        console.log('categoriasArray', this.categoriasArray)
+        this.competenciasEmpresa = this.obtenerCompetenciasAlAzar(5);
+
+        if(this.mode == 'edit'){
+          this.getSelectedCategoriasCompetencias();
+          this.getExamCourse(this.curso.id)
+        }
+      });
+    })
+  }
+
+  async inicializarformNewCourse () {
+    let id;
+    if(this.mode == 'create') {
+      id = await this.afs.collection<Curso>(Curso.collection).doc().ref.id;
+      this.formNewCourse = new FormGroup({
+        id: new FormControl(id, Validators.required),
+        titulo: new FormControl(null, Validators.required),
+        resumen: new FormControl(null, Validators.required),
+        descripcion: new FormControl(null, Validators.required),
+        nivel: new FormControl(null, Validators.required),
+        //categoria: new FormControl(null, Validators.required),
+        idioma: new FormControl(null, Validators.required),
+        contenido: new FormControl(null, Validators.required),
+        instructor: new FormControl(null, Validators.required),
+        resumen_instructor: new FormControl(null, Validators.required),
+        imagen: new FormControl(null, Validators.required),
+        imagen_instructor: new FormControl(null, Validators.required),
+      })
+      this.initSkills();
+    }
+    else {
+      this.courseService.getCoursesObservable().pipe(take(2)).subscribe(courses => {
+        console.log('cursos',courses)
+        let curso = courses.find(course => course.id == this.idCurso)
+        console.log('curso edit',curso)
+        this.curso = curso
+
+        this.modulos = curso['modules'];
+        this.formNewCourse = new FormGroup({
+          id: new FormControl(curso.id, Validators.required),
+          titulo: new FormControl(curso.titulo, Validators.required),
+          resumen: new FormControl(curso.resumen, Validators.required),
+          descripcion: new FormControl(curso.descripcion, Validators.required),
+          nivel: new FormControl(curso.nivel, Validators.required),
+          idioma: new FormControl(curso.idioma, Validators.required),
+          contenido: new FormControl(curso.contenido, Validators.required),
+          instructor: new FormControl(curso.instructor, Validators.required),
+          resumen_instructor: new FormControl(curso.resumen_instructor, Validators.required),
+          imagen: new FormControl(curso.imagen, Validators.required),
+          imagen_instructor: new FormControl(curso.imagen_instructor, Validators.required),
+        })
+        this.initSkills();
+        this.activityClassesService.getActivityAndQuestionsForCourse(this.idCurso).subscribe(activities => {
+          console.log('activities clases',activities)
+          this.activitiesCourse = activities;
+          this.modulos.forEach(module => {
+            let clases = module['clases']
+            clases.forEach(clase => {
+              if(clase.tipo == 'actividad'){
+                console.log('activities clases clase',clase)
+                let activity = activities.find(activity => activity.claseRef.id == clase.id)
+                console.log('activities clases activity',activity)
+                clase.activity = activity;
+              }
+            });
+          });
+        });
+      })
+    }
+  }
+
+  openModal(content){
+    this.currentModal = this.modalService.open(content, {
+      ariaLabelledBy: 'modal-basic-title',
+      centered: true,
+      size:'lg'
+    });
+  }
+
+  async saveDraft(){
+    console.log('----- save borrador ------');
+
+  // if(this.curso){
+  //   console.log('datos curso',this.curso)
+  //   let enterpriseRef =this.enterpriseService.getEnterpriseRef()
+  //   this.curso.enterpriseRef = enterpriseRef;
+  //   this.courseService.saveCourse(this.curso)
+  // }
+  // if(this.competenciasSelected?.length>0){
+  //   console.log('datos competencias curso',this.competenciasSelected);
+  //   let skills = [];
+  //   for (const category of this.competenciasSelected) {
+  //     for (const skill of category.competencias) {
+  //       console.log(skill.id);
+  //       let skillRef = await this.afs.collection<Skill>(Skill.collection).doc(skill.id).ref;
+  //       skills.push(skillRef);
+  //     }
+  //   }
+  //   this.curso.skillsRef=skills;
+  //   await this.courseService.saveCourse(this.curso)
+  //   this.courseRef = await this.afs.collection<Curso>(Curso.collection).doc(this.curso.id).ref;
+
+  // }
+  // if(this.modulos.length>0){
+  //   console.log('datos modulos',this.modulos);
+  //   let validModules = this.modulos.filter(moduleCheck => !moduleCheck['isInvalid'])
+  //   console.log('validModules save',validModules);
+  //   validModules.forEach(async modulo => {
+  //     //console.log('modulo clase borrador add/edit',modulo)
+
+  //     let arrayClasesRef = [];
+  //     const clases = modulo['clases'];
+  //     for (let i = 0; i < clases.length; i++) {
+  //       try {
+  //         let clase = clases[i];
+  //         console.log('clase borrador add/edit',clase)
+  //         let claseLocal = new Clase;
+  //         claseLocal.HTMLcontent = clase.HTMLcontent;
+  //         claseLocal.archivos = clase.archivos.map(archivo => ({ // Usando map aquí para transformar la estructura del archivo.
+  //           id: archivo.id,
+  //           nombre: archivo.nombre,
+  //           size: archivo.size,
+  //           type: archivo.type,
+  //           url: archivo.url
+  //         }));
+  //         claseLocal.descripcion = clase.descripcion;
+  //         claseLocal.duracion = clase.duracion;
+  //         claseLocal.id = clase.id;
+  //         claseLocal.vimeoId1 = clase.vimeoId1;
+  //         claseLocal.vimeoId2 = clase.vimeoId2;
+  //         claseLocal.skillsRef = clase.skillsRef;
+  //         claseLocal.tipo = clase.tipo;
+  //         claseLocal.titulo = clase.titulo;
+  //         claseLocal.vigente = clase.vigente;
+          
+  //         const arrayRefSkills = (clase.competencias?.map(skillClase => this.curso.skillsRef.find(skill => skill.id == skillClase.id)).filter(Boolean) ) || [];
+  //         claseLocal.skillsRef = arrayRefSkills;
+  //         console.log('claseLocal', claseLocal);
+  //         await this.courseClassService.saveClass(claseLocal);
+  //         let refClass = await this.afs.collection<Clase>(Clase.collection).doc(claseLocal.id).ref;
+  //         let courseRef = await this.afs.collection<Curso>(Curso.collection).doc(this.curso.id).ref;
+  //         console.log('refClass', refClass);
+  //         arrayClasesRef.push(refClass);
+
+  //         console.log('clase.activity',clase.activity)
+
+  //         if(clase.activity){
+
+  //           let activityClass = new Activity
+  //           let questions: Question[]= []
+  //           questions = structuredClone(clase.activity.questions);
+  //           activityClass = structuredClone(clase.activity) as Activity;
+  //           activityClass.enterpriseRef = this.curso.enterpriseRef as DocumentReference<Enterprise>
+  //           activityClass.claseRef = refClass;
+  //           activityClass.coursesRef = [courseRef];
+  //           activityClass.type = Activity.TYPE_REGULAR;
+
+  //           delete activityClass.questions;
+  //           delete activityClass['recursosBase64'] 
+  //           console.log('activityClass',activityClass)
+
+  //           await this.activityClassesService.saveActivity(activityClass);
+  //           clase.activity.id = activityClass.id;
+
+  //           questions.forEach(pregunta => {
+  //             const arrayRefSkills = (pregunta['competencias']?.map(skillClase => this.curso.skillsRef.find(skill => skill.id == skillClase.id)).filter(Boolean) ) || [];
+  //             claseLocal.skillsRef = arrayRefSkills;
+  //             console.log('refSkills', arrayRefSkills)
+  //             pregunta.skills= arrayRefSkills;
+  //             delete pregunta['competencias_tmp'];
+  //             delete pregunta['competencias'];
+  //             delete pregunta['isInvalid'];
+  //             delete pregunta['InvalidMessages'];
+  //             delete pregunta['expanded_categorias'];
+  //             delete pregunta['expanded'];
+  //             delete pregunta['uploading_file_progress'];
+  //             delete pregunta['uploading'];
+  //             this.activityClassesService.saveQuestion(pregunta,activityClass.id)
+  //           });
+  //         }
+  //       } catch (error) {
+  //         console.error('Error processing clase', error);
+  //       }
+  //     }
+      
+  //     console.log('arrayClasesRef',arrayClasesRef)
+
+  //     //let id = Date.now().toString();
+
+  //     let idRef = await this.afs.collection<Modulo>(Modulo.collection).doc().ref.id;
+
+  //     //moduleService
+  //     let module = new Modulo;
+  //     module.clasesRef = null
+  //     module.duracion = modulo.duracion;
+  //     module.id = modulo.id;
+  //     module.numero = modulo.numero;
+  //     module.titulo = modulo.titulo;
+  //     module.clasesRef = arrayClasesRef;
+      
+  //     if(!modulo.id){
+  //       module.id = idRef;
+  //       modulo.id = idRef
+  //     }
+  //     console.log('module save', module)
+  //     this.moduleService.saveModulo(module, this.curso.id)
+  //   });
+
+  // }
+
+  // if(this.examen){
+  //   let courseRef = await this.afs.collection<Curso>(Curso.collection).doc(this.curso.id).ref;
+  //   let activityClass = new Activity
+  //   let questions: Question[]= []
+  //   questions = structuredClone(this.examen.questions);
+  //   activityClass = structuredClone(this.examen) as Activity;
+  //   activityClass.enterpriseRef = this.curso.enterpriseRef as DocumentReference<Enterprise>
+  //   activityClass.coursesRef = [courseRef];
+  //   activityClass.type = Activity.TYPE_TEST;
+  //   activityClass.questions=[];
+  //   delete activityClass.questions
+
+  //   console.log('activityExamen',activityClass)
+  //   await this.activityClassesService.saveActivity(activityClass);
+  //   this.examen.id = activityClass.id
+
+  //   questions.forEach(pregunta => {
+  //     //const arrayRefSkills = pregunta['competencias']?.map(skillClase => this.curso.skillsRef.find(skill => skill.id == skillClase.id)) || [];
+  //     const arrayRefSkills = (pregunta['competencias']?.map(skillClase => this.curso.skillsRef.find(skill => skill.id == skillClase.id)).filter(Boolean) ) || [];
+  //     //claseLocal.skillsRef = arrayRefSkills;
+  //     console.log('refSkills', arrayRefSkills)
+  //     pregunta.skills= arrayRefSkills;
+  //     delete pregunta['competencias_tmp'];
+  //     delete pregunta['competencias'];
+  //     delete pregunta['isInvalid'];
+  //     delete pregunta['InvalidMessages'];
+  //     delete pregunta['expanded_categorias'];
+  //     delete pregunta['expanded'];
+  //     delete pregunta['uploading_file_progress'];
+  //     delete pregunta['uploading'];
+  //     this.activityClassesService.saveQuestion(pregunta,activityClass.id)
+  //   });
+  // }
+  }
+
+  previousTab(){
+    if (this.activeStep > 1) {
+      this.activeStep--
+    } else {
+      this.router.navigate(["management/courses"])
+    }
+  }
+
+  avanceTab(){
+    if (this.activeStep < 6) {
+      this.showErrorCurso = false;
+      // this.mensageCompetencias = "Selecciona una competencia para asignarla al curso";
+      // this.comepetenciaValid= true
+
+      let valid = true;
+    
+      // if(this.activeStep == 1){
+      //   console.log(this.formNewCourse)
+      //   if(!this.formNewCourse.valid){
+      //     valid = false;
+      //   }
+      //   else{
+      //     console.log('datos curso',this.formNewCourse.value)
+      //     if(this.curso){
+      //       this.curso = this.formNewCourse.value;
+      //     }
+      //     else{
+      //       let newCurso = new Curso;
+      //       newCurso = this.formNewCourse.value;
+      //       this.curso = newCurso
+      //     }
+      //     console.log('this.curso',this.curso)
+      //   }
+      // }
+      // if(this.activeStep == 2){
+      //   this.getSelectedCategoriasCompetencias()
+      //   console.log(this.competenciasSelected);
+      //   if(!this.competenciasSelected || this.competenciasSelected?.length==0){
+      //     valid = false;
+      //     this.mensageCompetencias = "Por favor seleccione una competencia";
+      //     this.comepetenciaValid = false;
+      //   }
+      // }
+      // if(this.activeStep == 3){
+      //   if(!this.validarModulosClases()){
+      //     valid = false;
+      //   }
+      // }
+      // if(this.activeStep == 4){
+      //   if(!this.validatePreguntasExamen()){
+      //     valid = false;
+      //   }
+      //   else{
+      //     this.closeAllModulos();
+      //   }
+      // }
+
+      valid = true; // comentar luego de probar
+    
+      if(valid) {
+        this.activeStep++
+      }
+      else {
+        this.showErrorCurso = true;
+      }
+    } else {
+      this.openModal(this.endCourseModal)
+    }
+  }
+
+  uploadingImgCurso = false;
+  uploadingImgInstuctor = false;
+  fileNameImgCurso = ''
+  fileNameImgInstuctor = ''
+  uploading_file_progressImgCurso = 0
+  uploading_file_progressImgInstuctor = 0
+  uploadProgress$: Observable<number>
+
+  imagenesCurso = [
+    "../../../assets/images/cursos/placeholder1.jpg",
+    "../../../assets/images/cursos/placeholder2.jpg",
+    "../../../assets/images/cursos/placeholder3.jpg",
+    "../../../assets/images/cursos/placeholder4.jpg",
+  ];
+
+  avatarInstructor = [
+    "../../../assets/images/cursos/avatar1.svg",
+    "../../../assets/images/cursos/avatar2.svg",
+    "../../../assets/images/cursos/avatar3.svg",
+    "../../../assets/images/cursos/avatar4.svg",
+  ];
+
+  async fileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (event: any) => {
+        const base64content = event.target.result.split(',')[1];
+        resolve(base64content);
+      };
+      reader.onerror = (error) => {
+        reject(error);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  uploadCourseImage(event,tipo){
+    if (!event.target.files[0] || event.target.files[0].length === 0) {
+
+      Swal.fire({
+        title:'Borrado!',
+        text:`Debe seleccionar una imagen`,
+        icon:'warning',
+        confirmButtonColor: 'var(--blue-5)',
+      })
+      return;
+    }
+    const file = event.target.files[0];
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = async (_event) => {
+      //this.deleteQuestionImage(pregunta);
+
+      if (file) {
+        if(tipo == 'instructor'){
+          this.uploadingImgInstuctor = true;
+        }
+        else{
+          this.uploadingImgCurso = true;
+        }
+        let fileBaseName = file.name.split('.').slice(0, -1).join('.');
+        let fileExtension = file.name.split('.').pop();
+
+        let nombre = fileBaseName+'.'+fileExtension;
+        if(tipo == 'instructor'){
+          this.fileNameImgInstuctor = nombre
+        }
+        else{
+          this.fileNameImgCurso = nombre
+        }
+        console.log(nombre)
+
+        // Reorganizar el nombre para que el timestamp esté antes de la extensión
+        let newName = `${fileBaseName}-${Date.now().toString()}.${fileExtension}`;
+  
+        let nombreCurso = this.formNewCourse.get('titulo').value?  this.formNewCourse.get('titulo').value : 'Temporal';
+        let nombreinstructor = this.formNewCourse.get('instructor').value?  this.formNewCourse.get('instructor').value : 'Temporal';
+
+        let filePath;
+
+        if(tipo == 'instructor'){
+          filePath = `Clientes/${this.empresa.name}/Instructor/${nombreinstructor}/${newName}`;
+        }
+        else{
+          filePath = `Clientes/${this.empresa.name}/Cursos/${nombreCurso}/Imagen/${newName}`;
+        }
+  
+        const task = this.storage.upload(filePath, file);
+  
+        // Crea una referencia a la ruta del archivo.
+        const fileRef = this.storage.ref(filePath);
+  
+        // Obtener el progreso como un Observable
+        this.uploadProgress$ = task.percentageChanges();
+  
+        // Suscríbete al Observable para actualizar tu componente de barra de progreso
+        this.uploadProgress$.subscribe(progress => {
+          console.log(progress);
+          if(tipo == 'instructor'){
+            this.uploading_file_progressImgInstuctor = Math.floor(progress) ;
+          }
+          else{
+            this.uploading_file_progressImgCurso = Math.floor(progress) ;
+          }
+        });
+  
+        // Observa el progreso de la carga del archivo y haz algo cuando se complete.
+        task.snapshotChanges().pipe(
+          finalize(() => {
+            // Obtén la URL de descarga del archivo.
+            fileRef.getDownloadURL().subscribe(url => {
+              if(tipo == 'instructor'){
+                this.uploadingImgInstuctor = false;
+                this.formNewCourse.get('imagen_instructor').patchValue(url);
+                this.avatarInstructor.unshift(url);
+              }
+              else{
+                this.uploadingImgCurso = false;
+                this.formNewCourse.get('imagen').patchValue(url);
+                this.imagenesCurso.unshift(url)
+
+              }
+              console.log(`File URL: ${url}`);
+            });
+          })
+        ).subscribe();
+      }
+
+    };
+  }
+
+  seleccionarImagenCurso(imagen){
+    this.formNewCourse.get('imagen').patchValue(imagen);
+  }
+
+  seleccionarImagenInstructor(imagen){
+    this.formNewCourse.get('imagen_instructor').patchValue(imagen);
+  }
+
 //   formNuevaActividadBasica: FormGroup;
 //   formNuevaActividadGeneral: FormGroup;
 //   formNuevaComptencia: FormGroup;
 //   questionTypesIn = QuestionType;
 
-//   activitiesCourse;
-
-//   competenciasArray
-
-//   curso : Curso;
 //   courseRef;
 
 //   questionTypes: Array<QuestionType> = QuestionType.TYPES.sort((a, b) =>
 //     compareByString(a.displayName, b.displayName)
 //   );
 
-//   modulos : Modulo[] = [];
 //   actividades : Activity[] = [];
-//   examen : Activity;
 //   public zoom = '100%';
 
 //   private access_token = "73f2eb055ec905e9a48175cd3c87b6af" // token  de vimeo
@@ -104,30 +680,6 @@ export class CreateCourseComponent {
 //   //859408918?h=6e44212c1a&amp nuevo formato de id en vimeo
 
 //   panelOpenState = false;
-
-//   imagenesCurso = [
-//     "../../../assets/images/cursos/placeholder1.jpg",
-//     "../../../assets/images/cursos/placeholder2.jpg",
-//     "../../../assets/images/cursos/placeholder3.jpg",
-//     "../../../assets/images/cursos/placeholder4.jpg",
-//   ];
-
-//   avatarInstructor = [
-//     "../../../assets/images/cursos/avatar1.svg",
-//     "../../../assets/images/cursos/avatar2.svg",
-//     "../../../assets/images/cursos/avatar3.svg",
-//     "../../../assets/images/cursos/avatar4.svg",
-//   ];
-
-//   steps = [
-//     'Información del curso',
-//     'Competencias',
-//     'Clases',
-//     // 'Exámenen',
-//     'Examen',
-//     'Vista previa examen',
-//     'Resumen'
-//   ];
 
 //   stepsActividad = [
 //     'Información básica',
@@ -145,35 +697,9 @@ export class CreateCourseComponent {
 //       event.stopPropagation();
 //   }
 
-//   activeStep = 1;
 //   activeStepActividad = 1;
 //   activeStepCompetencias = 1;
 
-
-//   empresa;
-//   competenciasEmpresa=[]
-
-//   competenciasSelected;
-
-//   getSelectedCategoriasCompetencias(){
-//     let respuesta = [];
-//     console.log(this.categoriasArray)
-
-//     this.categoriasArray.forEach(categoria => {
-//       let selected = categoria.competencias.filter(competencia => competencia.selected)     
-//       if(selected.length>0){
-//         let obj = {
-//           categoria : {name:categoria.name, id:categoria.id},
-//           competencias : selected,
-//           expanded: true
-//         }
-//         respuesta.push(obj)
-//       }
-//     });
-
-//     //this.updateCompetenciasClases(competencia)
-//     this.competenciasSelected = respuesta;
-//   }
 
 //   competenciasSelecttedClase = [];
 
@@ -214,27 +740,6 @@ export class CreateCourseComponent {
 //     return container.scrollHeight > container.clientHeight;
 //   }
 
-//   anidarCompetenciasInicial(categorias: any[], competencias: any[]): any[] {
-//     return categorias.map(categoria => {
-//       let skills = competencias
-//         .filter(comp => comp.category.id === categoria.id)
-//         .map(skill => {
-//           // Por cada skill, retornamos un nuevo objeto sin la propiedad category,
-//           // pero añadimos la propiedad categoryId con el valor de category.id
-//           const { category, ...rest } = skill;
-//           return {
-//             ...rest,
-//             categoriaId: category.id
-//           };
-//         });
-  
-//       return {
-//         ...categoria,
-//         competencias: skills
-//       };
-//     });
-//   }
-
 //   anidarCompetencias(categorias: any[], competencias: any[]): any[] {
 //     return categorias.map(categoria => {
 //       let skills = competencias.filter(comp =>comp.categoriaId  === categoria.id)
@@ -246,172 +751,8 @@ export class CreateCourseComponent {
 //     });
 //   }
 
-//   categoriasArray;
 //   categoriesObservable
 //   skillsObservable
-
-//   initSkills(){
-
-//     this.categoryService.getCategoriesObservable().subscribe(category => {
-//       console.log('category from service',category);
-//       this.skillService.getSkillsObservable().pipe(
-//         take(2)
-//       ).subscribe(skill => {
-//         console.log('skill from service', skill);
-//         skill.map(skillIn => {
-//           delete skillIn['selected']
-//         });
-//         if(this.mode == 'edit'){
-//           console.log('curso edit',this.curso)
-//           let skillsProfile = this.curso.skillsRef;
-//           skillsProfile.forEach(skillIn => {
-//             let skillSelect = skill.find(skillSelectIn=>skillSelectIn.id == skillIn.id) 
-//             skillSelect['selected'] = true;
-//           });
-//         }
-//         console.log('skill from service', skill);
-//         this.categoriasArray = this.anidarCompetenciasInicial(category, skill)
-//         console.log('categoriasArray', this.categoriasArray)
-//         this.competenciasEmpresa = this.obtenerCompetenciasAlAzar(5);
-
-//         if(this.mode == 'edit'){
-//           this.getSelectedCategoriasCompetencias();
-//           this.getexamCourse(this.curso.id)
-//         }
-//       });
-//     })
-
-
-//   }
-
-//   getexamCourse(idCourse){
-//     console.log('idCourse search activity', idCourse);
-//     this.activityClassesService.getActivityCoruse(idCourse)
-//       .pipe()
-//       .subscribe(data => {
-//         if (data) {
-//           console.log('Activity:', data);
-//           console.log('Questions:', data.questions);
-//           data.questions.forEach(question => {
-//             console.log('preguntas posibles test',question)
-//             question.competencias = question.skills
-//           });
-//           this.examen = data;
-//           console.log('examen data edit',this.examen)
-//         }
-//       });
-//   }
-
-//   async ngOnInit(): Promise<void> {
-
-//     console.log(this.competenciasArray)
-
-//     // Usando la función:
-//     // const categorias: Categoria[] = this.competenciasArray.categorias;
-//     // const competencias: Competencia[] = this.competenciasArray.competencias;
-
-//     this.inicializarFormNuevoCurso();
-//     //this.initSkills();
-
-//     this.activeStep = 1;
-//     this.activeStepActividad = 1;
-
-
-//     // this.enterpriseService.getEnterpriseObservable().subscribe(empresa => {
-//     //   if (!empresa) {
-//     //     return
-//     //   }
-//     //   console.log('empresa',empresa)
-//     //   this.empresa = empresa
-//     // })
-//     this.enterpriseService.enterprise$.subscribe(enterprise => {
-//       if (enterprise) {
-//         this.empresa = enterprise
-//       }
-//     })
-//   }
-
-//   obtenerCompetenciasAlAzar(n: number): Competencia[] {
-//     // Aplanamos la estructura para obtener todas las competencias en un solo arreglo
-//     const todasLasCompetencias = this.categoriasArray.flatMap(categoria => categoria.competencias);
-  
-//     // Barajamos (shuffle) el arreglo
-//     for (let i = todasLasCompetencias.length - 1; i > 0; i--) {
-//       const j = Math.floor(Math.random() * (i + 1));
-//       [todasLasCompetencias[i], todasLasCompetencias[j]] = [todasLasCompetencias[j], todasLasCompetencias[i]]; // Intercambio
-//     }
-  
-//     // Tomamos las primeras 'n' competencias del arreglo barajado
-//     return todasLasCompetencias.slice(0, n);
-//   }
-
-//   async inicializarFormNuevoCurso () {
-
-//     let id;
-
-//     if(this.mode == 'create'){
-//       id = await this.afs.collection<Curso>(Curso.collection).doc().ref.id;
-//       this.formNuevoCurso = new FormGroup({
-//         id: new FormControl(id, Validators.required),
-//         titulo: new FormControl(null, Validators.required),
-//         resumen: new FormControl(null, Validators.required),
-//         descripcion: new FormControl(null, Validators.required),
-//         nivel: new FormControl(null, Validators.required),
-//         //categoria: new FormControl(null, Validators.required),
-//         idioma: new FormControl(null, Validators.required),
-//         contenido: new FormControl(null, Validators.required),
-//         instructor: new FormControl(null, Validators.required),
-//         resumen_instructor: new FormControl(null, Validators.required),
-//         imagen: new FormControl(null, Validators.required),
-//         imagen_instructor: new FormControl(null, Validators.required),
-//       })
-//       this.initSkills();
-//     }
-//     else{
-//       this.courseService.getCoursesObservable().pipe(take(2)).subscribe(courses => {
-//         console.log('cursos',courses)
-//         let curso = courses.find(course => course.id == this.idCurso)
-//         console.log('curso edit',curso)
-//         this.curso = curso
-
-//         this.modulos = curso['modules'];
-//         this.formNuevoCurso = new FormGroup({
-//           id: new FormControl(curso.id, Validators.required),
-//           titulo: new FormControl(curso.titulo, Validators.required),
-//           resumen: new FormControl(curso.resumen, Validators.required),
-//           descripcion: new FormControl(curso.descripcion, Validators.required),
-//           nivel: new FormControl(curso.nivel, Validators.required),
-//           idioma: new FormControl(curso.idioma, Validators.required),
-//           contenido: new FormControl(curso.contenido, Validators.required),
-//           instructor: new FormControl(curso.instructor, Validators.required),
-//           resumen_instructor: new FormControl(curso.resumen_instructor, Validators.required),
-//           imagen: new FormControl(curso.imagen, Validators.required),
-//           imagen_instructor: new FormControl(curso.imagen_instructor, Validators.required),
-//         })
-//         this.initSkills();
-//         this.activityClassesService.getActivityAndQuestionsForCourse(this.idCurso).subscribe(activities => {
-//           console.log('activities clases',activities)
-//           this.activitiesCourse = activities;
-//           this.modulos.forEach(module => {
-//             let clases = module['clases']
-//             clases.forEach(clase => {
-//               if(clase.tipo == 'actividad'){
-//                 console.log('activities clases clase',clase)
-//                 let activity = activities.find(activity => activity.claseRef.id == clase.id)
-//                 console.log('activities clases activity',activity)
-//                 clase.activity = activity;
-//               }
-//             });
-//           });
-//         });
-//       })
-//     }
-
-//   }
-
-//   returnCursos(){
-//     this.router.navigate(["management/courses"])
-//   }
 
 //   addClassMode = false;
 //   obtenerNumeroMasGrande(): number {
@@ -725,24 +1066,6 @@ export class CreateCourseComponent {
 //     return filteredFiles;
 //   }
 
-
-//   uploadProgress$: Observable<number>
-
-//   async fileToBase64(file: File): Promise<string> {
-//     return new Promise((resolve, reject) => {
-//       const reader = new FileReader();
-//       reader.onload = (event: any) => {
-//         const base64content = event.target.result.split(',')[1];
-//         resolve(base64content);
-//       };
-//       reader.onerror = (error) => {
-//         reject(error);
-//       };
-//       reader.readAsDataURL(file);
-//     });
-//   }
-
-
 //   base64view;
 
 
@@ -796,7 +1119,7 @@ export class CreateCourseComponent {
 //         // Reorganizar el nombre para que el timestamp esté antes de la extensión
 //         let newName = `${fileBaseName}-${Date.now().toString()}.${fileExtension}`;
   
-//         let nombreCurso = this.formNuevoCurso.get('titulo').value?  this.formNuevoCurso.get('titulo').value : 'Temporal';
+//         let nombreCurso = this.formNewCourse.get('titulo').value?  this.formNewCourse.get('titulo').value : 'Temporal';
   
 //         const filePath = `Clientes/${this.empresa.name}/Cursos/${nombreCurso}/${newName}`;
 //         const task = this.storage.upload(filePath, file);
@@ -856,7 +1179,6 @@ export class CreateCourseComponent {
 //   selectedModulo;
 //   fileViewTipe= null;
 //   categoriaNuevaCompetencia;
-//   modalCompetencia;
 //   modalCompetenciaAsignar;
 
 //   competenciasSelectedClase;
@@ -1136,7 +1458,7 @@ export class CreateCourseComponent {
 //     // Supongamos que tienes el token de acceso almacenado en la variable `access_token`
 //     const access_token = this.access_token;
 
-//     let nombreCurso = this.formNuevoCurso.get('titulo').value?  this.formNuevoCurso.get('titulo').value : 'Temporal';
+//     let nombreCurso = this.formNewCourse.get('titulo').value?  this.formNewCourse.get('titulo').value : 'Temporal';
     
 //     console.log('modulo video',modulo);
 //     console.log('clase video',clase)
@@ -1370,7 +1692,7 @@ export class CreateCourseComponent {
 //         // Reorganizar el nombre para que el timestamp esté antes de la extensión
 //         let newName = `${fileBaseName}-${Date.now().toString()}.${fileExtension}`;
   
-//         let nombreCurso = this.formNuevoCurso.get('titulo').value?  this.formNuevoCurso.get('titulo').value : 'Temporal';
+//         let nombreCurso = this.formNewCourse.get('titulo').value?  this.formNewCourse.get('titulo').value : 'Temporal';
   
 //         const filePath = `Clientes/${this.empresa.name}/Cursos/${nombreCurso}/Activities/${newName}`;
 //         const task = this.storage.upload(filePath, file);
@@ -1783,7 +2105,7 @@ export class CreateCourseComponent {
 
 //   }
 
-//   showErrorCusro = false;
+  showErrorCurso = false;
 
 //   mensageCompetencias = "Selecciona una competencia para asignarla al curso";
 //   comepetenciaValid= true
@@ -1878,67 +2200,6 @@ export class CreateCourseComponent {
 //     }
 //   }
 
-//   advanceTab(){
-
-//     this.showErrorCusro = false;
-//     this.mensageCompetencias = "Selecciona una competencia para asignarla al curso";
-//     this.comepetenciaValid= true
-
-
-//     let valid = true;
-//     console.log('tab general',this.activeStep);
-//     if(this.activeStep == 1){
-//       console.log(this.formNuevoCurso)
-//       if(!this.formNuevoCurso.valid){
-//         valid = false;
-//       }
-//       else{
-//         console.log('datos curso',this.formNuevoCurso.value)
-//         if(this.curso){
-//           this.curso = this.formNuevoCurso.value;
-//         }
-//         else{
-//           let newCurso = new Curso;
-//           newCurso = this.formNuevoCurso.value;
-//           this.curso = newCurso
-//         }
-//         console.log('this.curso',this.curso)
-//       }
-//     }
-//     if(this.activeStep == 2){
-//       this.getSelectedCategoriasCompetencias()
-//       console.log(this.competenciasSelected);
-//       if(!this.competenciasSelected || this.competenciasSelected?.length==0){
-//         valid = false;
-//         this.mensageCompetencias = "Por favor seleccione una competencia";
-//         this.comepetenciaValid = false;
-//       }
-//     }
-//     if(this.activeStep == 3){
-//       if(!this.validarModulosClases()){
-//         valid = false;
-//       }
-//     }
-//     if(this.activeStep == 4){
-//       if(!this.validatePreguntasExamen()){
-//         valid = false;
-//       }
-//       else{
-//         this.closeAllModulos();
-//       }
-//     }
-
-
-//     valid = true; // comentar luego de probar
-//     if(valid){
-//       this.activeStep = this.activeStep+1
-//     }
-//     else{
-//       this.showErrorCusro = true;
-//     }
-
-//   }
-
 //   validatePreguntasExamen(){
 
 //     this.isInvaliExamen= false; 
@@ -1989,306 +2250,6 @@ export class CreateCourseComponent {
 //     return valid;
 
 //   }
-
-//   seleccionarImagenCurso(imagen){
-//     this.formNuevoCurso.get('imagen').patchValue(imagen);
-//   }
-
-//   seleccionarImagenInstructor(imagen){
-//     this.formNuevoCurso.get('imagen_instructor').patchValue(imagen);
-//   }
-
-
-//   uploadingImgCurso = false;
-//   uploadingImgInstuctor = false;
-//   fileNameImgCurso = ''
-//   fileNameImgInstuctor = ''
-//   uploading_file_progressImgCurso=0
-//   uploading_file_progressImgInstuctor=0
-
-
-//   uploadCursoImage(event,tipo){
-
-//     if (!event.target.files[0] || event.target.files[0].length === 0) {
-
-//       Swal.fire({
-//         title:'Borrado!',
-//         text:`Debe seleccionar una imagen`,
-//         icon:'warning',
-//         confirmButtonColor: 'var(--blue-5)',
-//       })
-//       return;
-//     }
-//     const file = event.target.files[0];
-
-//     const reader = new FileReader();
-//     reader.readAsDataURL(file);
-//     reader.onload = async (_event) => {
-//       //this.deleteQuestionImage(pregunta);
-
-//       if (file) {
-//         if(tipo == 'instructor'){
-//           this.uploadingImgInstuctor = true;
-//         }
-//         else{
-//           this.uploadingImgCurso = true;
-//         }
-//         let fileBaseName = file.name.split('.').slice(0, -1).join('.');
-//         let fileExtension = file.name.split('.').pop();
-  
-//         const base64content = await this.fileToBase64(file);
-
-//         let nombre = fileBaseName+'.'+fileExtension;
-//         if(tipo == 'instructor'){
-//           this.fileNameImgInstuctor = nombre
-//         }
-//         else{
-//           this.fileNameImgCurso = nombre
-//         }
-//         console.log(nombre)
-
-//         // Reorganizar el nombre para que el timestamp esté antes de la extensión
-//         let newName = `${fileBaseName}-${Date.now().toString()}.${fileExtension}`;
-  
-//         let nombreCurso = this.formNuevoCurso.get('titulo').value?  this.formNuevoCurso.get('titulo').value : 'Temporal';
-//         let nombreinstructor = this.formNuevoCurso.get('instructor').value?  this.formNuevoCurso.get('instructor').value : 'Temporal';
-
-//         let filePath;
-
-//         if(tipo == 'instructor'){
-//           filePath = `Clientes/${this.empresa.name}/Instructor/${nombreinstructor}/${newName}`;
-//         }
-//         else{
-//           filePath = `Clientes/${this.empresa.name}/Cursos/${nombreCurso}/Imagen/${newName}`;
-//         }
-  
-//         const task = this.storage.upload(filePath, file);
-  
-//         // Crea una referencia a la ruta del archivo.
-//         const fileRef = this.storage.ref(filePath);
-  
-//         // Obtener el progreso como un Observable
-//         this.uploadProgress$ = task.percentageChanges();
-  
-//         // Suscríbete al Observable para actualizar tu componente de barra de progreso
-//         this.uploadProgress$.subscribe(progress => {
-//           console.log(progress);
-//           if(tipo == 'instructor'){
-//             this.uploading_file_progressImgInstuctor = Math.floor(progress) ;
-//           }
-//           else{
-//             this.uploading_file_progressImgCurso = Math.floor(progress) ;
-//           }
-//         });
-  
-//         // Observa el progreso de la carga del archivo y haz algo cuando se complete.
-//         task.snapshotChanges().pipe(
-//           finalize(() => {
-//             // Obtén la URL de descarga del archivo.
-//             fileRef.getDownloadURL().subscribe(url => {
-//               if(tipo == 'instructor'){
-//                 this.uploadingImgInstuctor = false;
-//                 this.formNuevoCurso.get('imagen_instructor').patchValue(url);
-//                 this.avatarInstructor.unshift(url);
-//               }
-//               else{
-//                 this.uploadingImgCurso = false;
-//                 this.formNuevoCurso.get('imagen').patchValue(url);
-//                 this.imagenesCurso.unshift(url)
-
-//               }
-//               console.log(`File URL: ${url}`);
-//             });
-//           })
-//         ).subscribe();
-//       }
-
-//     };
-
-//   }
-
-//   finalizarCurso(content){
-
-//     this.openModalFinalizarCurso(content)
-
-//   }
-
-//   openModalFinalizarCurso(content){
-
-
-//     this.modalCompetencia = this.modalService.open(content, {
-//      ariaLabelledBy: 'modal-basic-title',
-//      centered: true,
-//      size:'lg'
-
-//    });
-//  }
-
-//  async saveBorrador(){
-//   console.log('----- save borrador ------');
-
-//   if(this.curso){
-//     console.log('datos curso',this.curso)
-//     let enterpriseRef =this.enterpriseService.getEnterpriseRef()
-//     this.curso.enterpriseRef = enterpriseRef;
-//     this.courseService.saveCourse(this.curso)
-//   }
-//   if(this.competenciasSelected?.length>0){
-//     console.log('datos competencias curso',this.competenciasSelected);
-//     let skills = [];
-//     for (const category of this.competenciasSelected) {
-//       for (const skill of category.competencias) {
-//         console.log(skill.id);
-//         let skillRef = await this.afs.collection<Skill>(Skill.collection).doc(skill.id).ref;
-//         skills.push(skillRef);
-//       }
-//     }
-//     this.curso.skillsRef=skills;
-//     await this.courseService.saveCourse(this.curso)
-//     this.courseRef = await this.afs.collection<Curso>(Curso.collection).doc(this.curso.id).ref;
-
-//   }
-//   if(this.modulos.length>0){
-//     console.log('datos modulos',this.modulos);
-//     let validModules = this.modulos.filter(moduleCheck => !moduleCheck['isInvalid'])
-//     console.log('validModules save',validModules);
-//     validModules.forEach(async modulo => {
-//       //console.log('modulo clase borrador add/edit',modulo)
-
-//       let arrayClasesRef = [];
-//       const clases = modulo['clases'];
-//       for (let i = 0; i < clases.length; i++) {
-//         try {
-//           let clase = clases[i];
-//           console.log('clase borrador add/edit',clase)
-//           let claseLocal = new Clase;
-//           claseLocal.HTMLcontent = clase.HTMLcontent;
-//           claseLocal.archivos = clase.archivos.map(archivo => ({ // Usando map aquí para transformar la estructura del archivo.
-//             id: archivo.id,
-//             nombre: archivo.nombre,
-//             size: archivo.size,
-//             type: archivo.type,
-//             url: archivo.url
-//           }));
-//           claseLocal.descripcion = clase.descripcion;
-//           claseLocal.duracion = clase.duracion;
-//           claseLocal.id = clase.id;
-//           claseLocal.vimeoId1 = clase.vimeoId1;
-//           claseLocal.vimeoId2 = clase.vimeoId2;
-//           claseLocal.skillsRef = clase.skillsRef;
-//           claseLocal.tipo = clase.tipo;
-//           claseLocal.titulo = clase.titulo;
-//           claseLocal.vigente = clase.vigente;
-          
-//           const arrayRefSkills = (clase.competencias?.map(skillClase => this.curso.skillsRef.find(skill => skill.id == skillClase.id)).filter(Boolean) ) || [];
-//           claseLocal.skillsRef = arrayRefSkills;
-//           console.log('claseLocal', claseLocal);
-//           await this.courseClassService.saveClass(claseLocal);
-//           let refClass = await this.afs.collection<Clase>(Clase.collection).doc(claseLocal.id).ref;
-//           let courseRef = await this.afs.collection<Curso>(Curso.collection).doc(this.curso.id).ref;
-//           console.log('refClass', refClass);
-//           arrayClasesRef.push(refClass);
-
-//           console.log('clase.activity',clase.activity)
-
-//           if(clase.activity){
-
-//             let activityClass = new Activity
-//             let questions: Question[]= []
-//             questions = structuredClone(clase.activity.questions);
-//             activityClass = structuredClone(clase.activity) as Activity;
-//             activityClass.enterpriseRef = this.curso.enterpriseRef as DocumentReference<Enterprise>
-//             activityClass.claseRef = refClass;
-//             activityClass.coursesRef = [courseRef];
-//             activityClass.type = Activity.TYPE_REGULAR;
-
-//             delete activityClass.questions;
-//             delete activityClass['recursosBase64'] 
-//             console.log('activityClass',activityClass)
-
-//             await this.activityClassesService.saveActivity(activityClass);
-//             clase.activity.id = activityClass.id;
-
-//             questions.forEach(pregunta => {
-//               const arrayRefSkills = (pregunta['competencias']?.map(skillClase => this.curso.skillsRef.find(skill => skill.id == skillClase.id)).filter(Boolean) ) || [];
-//               claseLocal.skillsRef = arrayRefSkills;
-//               console.log('refSkills', arrayRefSkills)
-//               pregunta.skills= arrayRefSkills;
-//               delete pregunta['competencias_tmp'];
-//               delete pregunta['competencias'];
-//               delete pregunta['isInvalid'];
-//               delete pregunta['InvalidMessages'];
-//               delete pregunta['expanded_categorias'];
-//               delete pregunta['expanded'];
-//               delete pregunta['uploading_file_progress'];
-//               delete pregunta['uploading'];
-//               this.activityClassesService.saveQuestion(pregunta,activityClass.id)
-//             });
-//           }
-//         } catch (error) {
-//           console.error('Error processing clase', error);
-//         }
-//       }
-      
-//       console.log('arrayClasesRef',arrayClasesRef)
-
-//       //let id = Date.now().toString();
-
-//       let idRef = await this.afs.collection<Modulo>(Modulo.collection).doc().ref.id;
-
-//       //moduleService
-//       let module = new Modulo;
-//       module.clasesRef = null
-//       module.duracion = modulo.duracion;
-//       module.id = modulo.id;
-//       module.numero = modulo.numero;
-//       module.titulo = modulo.titulo;
-//       module.clasesRef = arrayClasesRef;
-      
-//       if(!modulo.id){
-//         module.id = idRef;
-//         modulo.id = idRef
-//       }
-//       console.log('module save', module)
-//       this.moduleService.saveModulo(module, this.curso.id)
-//     });
-
-//   }
-
-//   if(this.examen){
-//     let courseRef = await this.afs.collection<Curso>(Curso.collection).doc(this.curso.id).ref;
-//     let activityClass = new Activity
-//     let questions: Question[]= []
-//     questions = structuredClone(this.examen.questions);
-//     activityClass = structuredClone(this.examen) as Activity;
-//     activityClass.enterpriseRef = this.curso.enterpriseRef as DocumentReference<Enterprise>
-//     activityClass.coursesRef = [courseRef];
-//     activityClass.type = Activity.TYPE_TEST;
-//     activityClass.questions=[];
-//     delete activityClass.questions
-
-//     console.log('activityExamen',activityClass)
-//     await this.activityClassesService.saveActivity(activityClass);
-//     this.examen.id = activityClass.id
-
-//     questions.forEach(pregunta => {
-//       //const arrayRefSkills = pregunta['competencias']?.map(skillClase => this.curso.skillsRef.find(skill => skill.id == skillClase.id)) || [];
-//       const arrayRefSkills = (pregunta['competencias']?.map(skillClase => this.curso.skillsRef.find(skill => skill.id == skillClase.id)).filter(Boolean) ) || [];
-//       //claseLocal.skillsRef = arrayRefSkills;
-//       console.log('refSkills', arrayRefSkills)
-//       pregunta.skills= arrayRefSkills;
-//       delete pregunta['competencias_tmp'];
-//       delete pregunta['competencias'];
-//       delete pregunta['isInvalid'];
-//       delete pregunta['InvalidMessages'];
-//       delete pregunta['expanded_categorias'];
-//       delete pregunta['expanded'];
-//       delete pregunta['uploading_file_progress'];
-//       delete pregunta['uploading'];
-//       this.activityClassesService.saveQuestion(pregunta,activityClass.id)
-//     });
-//   }
-//  }
 
 }
 

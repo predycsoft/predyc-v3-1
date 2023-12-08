@@ -169,29 +169,29 @@
   padding: 0px !important;
 }
 
-.curstomInput{
+.customInput{
   color: var(--gray-9) !important;
 }
 
 /* Estilo para el placeholder de la clase personalizada */
-.curstomInput::placeholder {
+.customInput::placeholder {
   color: var(--gray-5) !important; /* Color del texto del placeholder */
 }
 
 /* En caso de que quieras estilos para navegadores específicos */
-.curstomInput::-webkit-input-placeholder {
+.customInput::-webkit-input-placeholder {
   color: var(--gray-5) !important; /* Para navegadores basados en WebKit como Safari y Chrome antiguos */
 }
 
-.curstomInput::-moz-placeholder {
+.customInput::-moz-placeholder {
   color: var(--gray-5) !important; /* Para Firefox antiguos */
 }
 
-.curstomInput:-ms-input-placeholder {
+.customInput:-ms-input-placeholder {
   color: var(--gray-5) !important; /* Para Internet Explorer 10+ */
 }
 
-.curstomInput::-ms-input-placeholder {
+.customInput::-ms-input-placeholder {
   color: var(--gray-5) !important; /* Para Microsoft Edge */
 }
 
