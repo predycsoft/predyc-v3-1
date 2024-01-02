@@ -62,3 +62,7 @@ export const cloneArrayOfObjects = (inputArray: Object[]): Object[] => {
     return {...obj}
   })
 }
+
+export const roundNumber = (num: number): number => {
+  return Math.round(num);
+}

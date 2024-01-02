@@ -1,7 +1,7 @@
 import { DocumentReference } from "@angular/fire/compat/firestore"
 import { Profile } from "./profile.model"
-import { Department } from "./department.model"
 import { Enterprise } from "./enterprise.model"
+import { Department } from "./department.model"
 
 export interface UserJson {
   birthdate: number | null
@@ -11,6 +11,7 @@ export interface UserJson {
   createdAt: number | null // timestamp
   currentlyWorking: boolean
   degree: string | null
+  departmentRef: DocumentReference<Department> | null
   displayName: string | null
   email: string | null
   enterprise: DocumentReference | null
@@ -47,7 +48,6 @@ export class User {
   public static ROLE_ADMIN = 'admin'
   public static ROLE_STUDENT = 'student'
 
-  public departmentData?: Department
   public enterpriseData?: Enterprise
   public profileData?: Profile
 
@@ -59,6 +59,7 @@ export class User {
     public createdAt: number | null, // timestamp
     public currentlyWorking: boolean,
     public degree: string | null,
+    public departmentRef: DocumentReference<Department> | null,
     public displayName: string | null,
     public email: string | null,
     public enterprise: DocumentReference | null,
@@ -141,6 +142,7 @@ export class User {
       createdAt: null,
       currentlyWorking: false,
       degree: null,
+      departmentRef: null,
       displayName: null,
       email: null,
       enterprise: configObj.enterprise ? configObj.enterprise : null, 
@@ -180,6 +182,7 @@ export class User {
       userJson.createdAt,
       userJson.currentlyWorking,
       userJson.degree,
+      userJson.departmentRef,
       userJson.displayName,
       userJson.email,
       userJson.enterprise, 
@@ -219,6 +222,7 @@ export class User {
       createdAt: this.createdAt,
       currentlyWorking: this.currentlyWorking,
       degree: this.degree,
+      departmentRef: this.departmentRef,
       displayName: this.displayName,
       email: this.email,
       enterprise: this.enterprise,
@@ -247,6 +251,12 @@ export class User {
       ratingPoints: this.ratingPoints,
       studyHours: this.studyHours
     }
+  }
+
+  patchValue(obj: Object) {
+    Object.keys(obj).forEach(key => {
+      if (this.hasOwnProperty(key)) this[key] = obj[key]
+    })
   }
 
 }

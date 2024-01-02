@@ -6,7 +6,6 @@ import { BehaviorSubject, Observable, Subject, Subscription, catchError, combine
 import { Activity } from 'src/app/shared/models/activity-classes.model';
 import { ActivityClassesService } from 'src/app/shared/services/activity-classes.service';
 import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
-import { SearchInputService } from 'src/app/shared/services/search-input.service';
 import { MatSort } from '@angular/material/sort';
 import { orderByValueAndDirection } from 'src/app/shared/utils';
 
@@ -21,7 +20,6 @@ export class ValidationListComponent {
     public icon: IconService,
     public activityService: ActivityClassesService,
     private enterpriseService: EnterpriseService,
-    private searchInputService: SearchInputService, 
   ) {}
 
   displayedColumns: string[] = ['title', 'status', 'createdAt', 'updatedAt', 'grade', 'assigned', 'performance', 'options'];
@@ -37,10 +35,11 @@ export class ValidationListComponent {
   combinedObservableSubscription: Subscription
 
   ngOnInit() {
-    this.searchSubscription = this.searchInputService.dataObservable$.subscribe(
-      filter => this.dataSource.setFilter(filter)
-    )
+    // this.searchSubscription = this.searchInputService.dataObservable$.subscribe(
+    //   filter => this.dataSource.setFilter(filter)
+    // )
   }
+
   ngAfterViewInit() {
     this.enterpriseService.enterpriseLoaded$.subscribe(isLoaded => {
       if(isLoaded){
@@ -56,7 +55,7 @@ export class ValidationListComponent {
   }
   
   ngOnDestroy() {
-    this.searchSubscription.unsubscribe()
+    // this.searchSubscription.unsubscribe()
   }
 
   async onDelete(activity: Activity) {

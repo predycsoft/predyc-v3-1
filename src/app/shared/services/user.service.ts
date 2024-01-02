@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { User, UserJson } from '../../shared/models/user.model';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
+import { AngularFirestore, CollectionReference, DocumentReference, Query } from '@angular/fire/compat/firestore';
 import { BehaviorSubject, filter, firstValueFrom, map, Observable, Subscription, switchMap } from 'rxjs'
 import { EnterpriseService } from './enterprise.service';
 import { AlertsService } from './alerts.service';
@@ -46,34 +46,21 @@ export class UserService {
 
 
   async addUser(newUser: User): Promise<void> {
-    try {
-      const email = newUser.email as string
-      const password = `${generateSixDigitRandomNumber()}`
-      const { uid } = await firstValueFrom(
-        this.fireFunctions.httpsCallable('createUserWithEmailAndPassword')({
-          email: email,
-          password: password,
-        })
-      );
-      // const userCredential = await this.afAuth.createUserWithEmailAndPassword(email, password);
-      // const user = userCredential.user;
-      await this.afs.collection(User.collection).doc(uid).set({...newUser.toJson(), uid: uid});
-      newUser.uid = uid
-     
-      if (newUser.profile) {
-        console.log("El nuevo usuario tiene perfil")
-        const userRef = this.getUserRefById(uid)
-        const profileRef = this.profileService.getProfileRefById(newUser.profile.id)
-        await this.profileService.saveUserProfileLog(userRef, profileRef)
-      }
-      
-      this.alertService.succesAlert(
-        `Has agregado un nuevo ${newUser.role === "admin" ? "administrador" : "usuario"} exitosamente. 
-        Hemos enviado un correo para que pueda establecer su contraseña.`
-      )
-    } catch (error) {
-      console.log(error)
-      this.alertService.errorAlert(JSON.stringify(error))
+    console.log(newUser)
+    const email = newUser.email as string
+    const password = `${generateSixDigitRandomNumber()}`
+    const { uid } = await firstValueFrom(
+      this.fireFunctions.httpsCallable('createUserWithEmailAndPassword')({
+        email: email,
+        password: password,
+      })
+    );
+    await this.afs.collection(User.collection).doc(uid).set({...newUser.toJson(), uid: uid});
+    newUser.uid = uid
+    if (newUser.profile) {
+      const userRef = this.getUserRefById(uid)
+      const profileRef = this.profileService.getProfileRefById(newUser.profile.id)
+      await this.profileService.saveUserProfileLog(userRef, profileRef)
     }
   }
 
@@ -137,7 +124,6 @@ export class UserService {
     }
   }
 
-
   async editUser(user: UserJson): Promise<void> {
     try {
       const userRef = this.getUserRefById(user.uid)
@@ -160,7 +146,23 @@ export class UserService {
       this.alertService.errorAlert(JSON.stringify(error));
     }
   }
-  
+
+  getUsers$(searchTerm, profileFilter): Observable<User[]> {
+    return this.afs.collection<User>(User.collection, ref => {
+      let query: CollectionReference | Query = ref;
+      // query = query.where('enterprise', '==', this.enterpriseService.getEnterpriseRef())
+      query = query.where('isActive', '==', true)
+      if (searchTerm) {
+        // query = query.where('displayName', '==', searchTerm)
+        query = query.where('displayName', '>=', searchTerm).where('displayName', '<=', searchTerm+ '\uf8ff')
+      }
+      if (profileFilter) {
+        const profileRef = this.profileService.getProfileRefById(profileFilter)
+        query = query.where('profile', '==', profileRef)
+      }
+      return query.orderBy('displayName')
+    }).valueChanges()
+  }
 
   // Arguments could be pageSize, sort, currentPage
   private getUsers() {
@@ -178,7 +180,6 @@ export class UserService {
         this.usersSubject.next(users)
         if (!this.usersLoadedSubject.value) {
           this.usersLoadedSubject.next(true)
-          console.log("Los usuarios fueron cargados", users)
         }
       },
       error: error => {

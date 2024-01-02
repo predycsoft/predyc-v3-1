@@ -1,31 +1,28 @@
-<!-- <div fxLayout="column" fxLayoutAlign="start end" class="h80px backWhite pdl10 ft18 ft600 gray-10">Cursos</div> -->
-
-<!-- <div fxLayout="row"  fxLayoutAlign="start end" class="h80px backWhite pdl20 ft18 ft600 gray-10 pdb05">
-    <div>Cursos</div>
- </div> -->
-
  <div class="">
     <div fxLayout="row">
     <!-- Columna izquierda que ocupa todo el alto -->
         <div fxFlex="60%" class="pdr20 pdb20">
             <div class="left backWhite radius10" fxLayout="column">
-                <div fxLayout="row" class="fw pdt10 pdl10 pdr10">
-                    <div fxLayout="row" class="fw" fxLayoutAlign="start center">
-                        <span class="ft16 ft600 gray-10">Lista de cursos</span>
-                        <div fxLayout="row" class="searchAndFilter" fxLayoutAlign="end center" fxFlex>
-                            <div class="search-container w-60 h28px">
-                                <img [src]="icon.search" class="h16px makeGray search-icon" alt="">
-                                <input [(ngModel)]="searchValue" type="text" class="newInput w-50 input radius6 backWhite h28px" placeholder="¿Qué curso está buscando?" />
-                            </div>
-                            <button class="yellowButton radius4 ft12 ft500 h28px mgl05" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
-                                <img [src]="icon.filter" class="h16px makeWhite pdr05" alt="">
+                <div fxLayout="row" class="fw mgt10 mgl30 mgr30">
+                    <div fxLayout="row" class="fw" fxLayoutAlign=" center" fxLayoutGap="50px">
+                        <div class="ft600 ft20">Lista de cursos</div>
+                        <div fxLayout="row" class="searchAndFilter" fxLayoutAlign=" center" fxLayoutGap="20px" fxFlex>
+                            <input [(ngModel)]="searchValue" type="text" class="input-box" placeholder="Search" />
+                            <button
+                                fxLayout="row"
+                                fxLayoutGap="0.625"
+                                fxLayoutAlign="center center"
+                                class="yellowButton"
+                                style="border-radius: 24px !important;"
+                                >
+                                <img [src]="icon.filter" class="h16px pdr05 makeWhite" alt="">
                                 Filtrar
                             </button>
                         </div>
                     </div>
                 </div>
                 <div fxLayout="row" class="fw">
-                    <div class="w-100 pd10">
+                    <div class="w-100 mgl30 mgr30">
                         <div id="" class="mgt10 hideScroll" style="height: 36vh; overflow: auto;">
                             <ng-container>
                                 <app-course-selector
@@ -47,11 +44,18 @@
                         </div>
                     </div>
                 </div>
-                <div fxLayout="row" class="fw pdt10 pdl10 pdr10">
-                    <div fxLayout="row" class="fw" fxLayoutAlign="start center">
-                        <span class="ft16 ft600 gray-10">Cursos Propios</span>
-                        <div fxLayout="row" class="searchAndFilter" fxLayoutAlign="end center" fxFlex>
-                            <button  routerLink="/management/create-course/create/new" class="blueButton radius4 ft12 ft500 h28px mgl05" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                <div fxLayout="row" class="fw mgt10 mgl30 mgr30">
+                    <div fxLayout="row" class="fw" fxLayoutAlign=" center" fxLayoutGap="50px">
+                        <div class="ft600 ft20">Cursos Propios</div>
+                        <div fxLayout="row" class="searchAndFilter" fxLayoutAlign=" center" fxFlex>
+                            <button
+                                fxLayout="row"
+                                fxLayoutGap="0.625"
+                                fxLayoutAlign="center center"
+                                class="blueButton"
+                                style="border-radius: 24px !important;"
+                                routerLink="/management/create-course/create/new"
+                                >
                                 <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="">
                                 Agregar curso
                             </button>
@@ -59,7 +63,7 @@
                     </div>
                 </div>
                 <div fxLayout="row">
-                    <div class="w-100 pd10">
+                    <div class="w-100 mgl30 mgr30">
                         <div id="" class="mgt10 hideScroll" style="height: 36vh; overflow: auto;">
                             <ng-container>
                                 <app-course-selector

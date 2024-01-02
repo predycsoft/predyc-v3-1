@@ -1,5 +1,6 @@
-import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
-import { SearchInputService } from '../../services/search-input.service';
+import { Component } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { debounceTime, Subject, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-search-input-box',
@@ -8,12 +9,40 @@ import { SearchInputService } from '../../services/search-input.service';
 })
 export class SearchInputBoxComponent {
 
-  @ViewChild('input') inputElement: ElementRef
+  public inputText: string
+  private queryParamsSubscription: Subscription
+  private searchTerm = new Subject<string>();
 
-  constructor(private searchInputService: SearchInputService) {}
+  DEBOUNCE_TIME: number = 300
 
-  onInputChanged() {
-    this.searchInputService.sendData(this.inputElement.nativeElement.value)
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
+  ) {}
+
+  ngOnInit() {
+    // this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
+    //   const searchTerm = params['search'] || '';
+    //   this.inputText = searchTerm;
+    // })
+    this.inputText = this.activatedRoute.snapshot.queryParams['search'] || ''
+    this.searchTerm.pipe(
+      debounceTime(this.DEBOUNCE_TIME)
+    ).subscribe(term => {
+      this.router.navigate([], {
+        queryParams: { search: term ? term : null, page: 1 },
+        queryParamsHandling: 'merge'
+      });
+    })
+  }
+
+  search() {
+    this.searchTerm.next(this.inputText.toLowerCase());
+  }
+
+  ngOnDestroy() {
+    this.searchTerm.unsubscribe()
+    // this.queryParamsSubscription.unsubscribe()
   }
 
 }

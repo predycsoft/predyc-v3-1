@@ -8,7 +8,6 @@ import { BehaviorSubject, Observable, Subject, Subscription, catchError, map, me
 import { User } from 'src/app/shared/models/user.model';
 import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
 import { IconService } from 'src/app/shared/services/icon.service';
-import { SearchInputService } from 'src/app/shared/services/search-input.service';
 import { UserService } from 'src/app/shared/services/user.service';
 import { orderByValueAndDirection } from 'src/app/shared/utils';
 
@@ -43,7 +42,6 @@ export class MembersComponent {
     private userService: UserService,
     public icon: IconService,
     private modalService: NgbModal,
-    private searchInputService: SearchInputService,
     private enterpriseService: EnterpriseService,
     private router: Router
     ) {}
@@ -57,13 +55,13 @@ export class MembersComponent {
   }
 
   ngOnInit() {
-    this.searchSubscription = this.searchInputService.dataObservable$.subscribe(
-      filter => this.dataSource.setFilter(filter)
-    )
+    // this.searchSubscription = this.searchInputService.dataObservable$.subscribe(
+    //   filter => this.dataSource.setFilter(filter)
+    // )
   }
 
   ngOnDestroy() {
-    this.searchSubscription.unsubscribe()
+    // this.searchSubscription.unsubscribe()
   }
 
   onDeleteUser(user: User) {
@@ -124,7 +122,7 @@ class UserDataSource extends DataSource<User> {
     private sort: MatSort,
   ) {
     super();
-    this.paginator.pageSize = 10
+    this.paginator.pageSize = 5
     this.paginator.page.subscribe(() => this.paginatorSubject.next());
     this.sort.sortChange.subscribe(() => this.sortSubject.next());
     this.userSubscription = this.users$.subscribe(users => {

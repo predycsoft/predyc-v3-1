@@ -77,10 +77,6 @@ export class StudyTimeMonthlyChartComponent {
     if(max > this.max){
         this.max = max;
     }
-    console.log("this.data")
-    console.log(this.data)
-    // console.log("this.max")
-    // console.log(this.max)
   }
 
 }

@@ -24,10 +24,10 @@ import { categoriesData } from 'src/assets/data/categories.data';
 import { CategoryService } from '../../services/category.service';
 import { skillsData } from 'src/assets/data/skills.data';
 import { SkillService } from '../../services/skill.service';
-import {deparmentsData} from 'src/assets/data/departments.data'
+import { first, firstValueFrom, lastValueFrom } from 'rxjs';
+import { departmentsData } from 'src/assets/data/departments.data'
 import { Department } from '../../models/department.model';
 import { DepartmentService } from '../../services/department.service';
-import { first, firstValueFrom, lastValueFrom } from 'rxjs';
 import { profilesData } from 'src/assets/data/profiles.data';
 import { Profile } from '../../models/profile.model';
 // import { coursesData } from 'src/assets/data/courses.data'
@@ -46,7 +46,7 @@ export class InitScriptComponent {
     private userService: UserService,
     private categoryService: CategoryService,
     private skillService: SkillService,
-    private departmentService:DepartmentService,
+    private departmentService: DepartmentService
   ) {}
 
   async ngOnInit() {}
@@ -128,10 +128,13 @@ export class InitScriptComponent {
     const users: User[] = usersData.map(user => { 
       return User.fromJson({
         ...user,
+        name: user.name.toLowerCase(),
+        displayName: user.name.toLowerCase(),
         birthdate: Date.parse(user.birthdate),
         createdAt: Date.parse(user.createdAt),
         updatedAt: Date.parse(user.updatedAt),
         enterprise: enterpriseRef,
+        departmentRef: null,
         performance: user.performance as 'no plan' | 'low' | 'medium' | 'high' | null
       })
     })
@@ -190,14 +193,13 @@ export class InitScriptComponent {
     }
     console.log(`Finished Creating Notification`)
 
-
     // Create Departments 
     console.log('********* Creating Departments *********')
 
-    deparmentsData.forEach(async department => {
+    departmentsData.forEach(async department => {
       // console.log(department)
-      let departmentready = new Department(department.id, department.name, enterpriseRef, [])
-      await this.departmentService.addDepartment(departmentready)
+      const departmentReady = new Department(department.id, department.name, enterpriseRef)
+      await this.departmentService.add(departmentReady)
     });
     console.log(`Finished Creating Departments`)
 
@@ -233,9 +235,6 @@ export class InitScriptComponent {
 
   // Crea perfiles y agrega la referencia al departamento y usuario respectivo
   async addProfiles() {
-    const departmentSnapshot = await firstValueFrom(this.afs.collection(Department.collection).get());
-    const departmentRefs = departmentSnapshot.docs.map(doc => doc.ref);
-    const departments = departmentSnapshot.docs.map(doc => doc.data()) as Department[];
     const skillSnapshot = await firstValueFrom(this.afs.collection(Skill.collection).get());
     const skillRefs = skillSnapshot.docs.map(doc => doc.ref);
     const userSnapshot = await firstValueFrom(this.afs.collection(User.collection).get());
@@ -243,7 +242,6 @@ export class InitScriptComponent {
     const enterpriseSnapshot = await firstValueFrom(this.afs.collection(Enterprise.collection).get());
     const enterpriseRefs = enterpriseSnapshot.docs.map(doc => doc.ref);
     
-    let departmentIndex = 0;
     let skillIndex = 0;
     let userIndex = 0;
     let enterpriseIndex = 0;
@@ -255,7 +253,6 @@ export class InitScriptComponent {
       const id = profileRef.ref.id;
   
       // Obtener las referencias correspondientes y avanzar los índices
-      const currentDepartmentRef = departmentRefs[departmentIndex % departmentRefs.length];
       const currentSkillRef = skillRefs[skillIndex % skillRefs.length];
       const currentUserRef = userRefs[userIndex % userRefs.length];
       const currentEnterpriseRef = enterpriseRefs[enterpriseIndex % enterpriseRefs.length];
@@ -270,22 +267,6 @@ export class InitScriptComponent {
       });
       // console.log("id", id);
 
-      // Actualizamos documento actual del Departamento
-      const deptSnap = await currentDepartmentRef.get();
-      if (deptSnap.exists) {
-        const deptData = departments.find(x => x.id === currentDepartmentRef.id)
-        // console.log("depData", deptData)
-        const currentProfilesRef = deptData.profilesRef;
-        // Aseguramos de que la referencia no esté ya en el array
-        if (!currentProfilesRef.some(ref => ref.id === profileRef.ref.id)) {
-          currentProfilesRef.push(profileRef.ref);
-        }
-        // Actualizar el departamento con la referencia del nuevo perfil
-        await currentDepartmentRef.update({
-          profilesRef: currentProfilesRef
-        });
-      }
-
       // Actualizamos el documento actual del Usuario
       const userSnap = await currentUserRef.get();
       if (userSnap.exists) {
@@ -298,7 +279,6 @@ export class InitScriptComponent {
       }
 
       // Incrementar los índices para el siguiente profile
-      departmentIndex++;
       skillIndex++;
       userIndex++;
       enterpriseIndex++;

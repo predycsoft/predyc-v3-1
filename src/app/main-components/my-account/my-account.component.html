@@ -1,27 +1,28 @@
-<h3 class="page-title">Mi cuenta</h3>
-<mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" class="swal-overlay" [selectedIndex]="activeTab">
-    <mat-tab label="Información" class="tab">  
-        <div fxLayout="row" fxLayoutAlign="center">
-            <div class="containerLeft mgt03">
-                <app-enterprise-data></app-enterprise-data>
+<div class="mgt10 mgl30 mgr30">
+    <h3 class="page-title">Mi cuenta</h3>
+    <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" class="swal-overlay" [selectedIndex]="activeTab">
+        <mat-tab label="Información" class="tab">  
+            <div fxLayout="row" fxLayoutAlign="center">
+                <div class="containerLeft mgt03">
+                    <app-enterprise-data></app-enterprise-data>
+                </div>
+                <div class="containerRight mgt03">
+                    <app-admin-data></app-admin-data>
+                </div>
             </div>
-            <div class="containerRight mgt03">
-                <app-admin-data></app-admin-data>
+            <div fxLayout="row" fxLayoutAlign="end center">
+                <button class="redButton btn" (click)="signOut()" >Cerrar sesión</button>
             </div>
-        </div>
-        <div fxLayout="row" fxLayoutAlign="end center">
-            <button class="redButton btn" (click)="signOut()" >Cerrar sesión</button>
-        </div>
-    </mat-tab>
-    <mat-tab label="Soporte"> 
-        <div fxLayout="row" fxLayoutAlign="center">
-            <div class="containerLeft mgt03" style="border-right: none;">
-                <app-support-contact [type]="'account'"></app-support-contact>
+        </mat-tab>
+        <mat-tab label="Soporte"> 
+            <div fxLayout="row" fxLayoutAlign="center">
+                <div class="containerLeft mgt03" style="border-right: none;">
+                    <app-support-contact [type]="'account'"></app-support-contact>
+                </div>
+                <div class="containerRight mgt03" >
+                    <app-frequent-questions [questions] = "questions"></app-frequent-questions>
+                </div>
             </div>
-            <div class="containerRight mgt03" >
-                <app-frequent-questions [questions] = "questions"></app-frequent-questions>
-            </div>
-        </div>
-    </mat-tab>    
-</mat-tab-group>
-
+        </mat-tab>    
+    </mat-tab-group>
+</div>    

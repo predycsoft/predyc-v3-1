@@ -213,5 +213,10 @@ export class IconService {
   globe: string ='assets/iconsUI/wikis.svg'
   flash: string ='assets/iconsUI/flash.svg'
 
+  credentials: string ='assets/iconsUI/credentials.svg'
+  list: string ='assets/iconsUI/list.svg'
+  resultsPresentation: string ='assets/iconsUI/results-presentation.svg'
+  ticTacToe: string ='assets/iconsUI/tic-tac-toe.svg'
+
   constructor() { }
 }

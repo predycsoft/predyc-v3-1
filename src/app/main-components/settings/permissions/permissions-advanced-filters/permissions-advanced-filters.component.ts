@@ -4,7 +4,6 @@ import { MatPaginator } from '@angular/material/paginator';
 import { BehaviorSubject, Observable, of, catchError, Subscription, combineLatest, merge } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Profile } from 'src/app/shared/models/profile.model';
-import { DepartmentService } from 'src/app/shared/services/department.service';
 import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
 import { ProfileService } from 'src/app/shared/services/profile.service';
 import { Permissions } from 'src/app/shared/models/permissions.model';
@@ -18,7 +17,6 @@ import { IconService } from 'src/app/shared/services/icon.service';
 export class PermissionsAdvancedFiltersComponent {
   constructor(
     private enterpriseService: EnterpriseService,
-    private departmentService: DepartmentService,
     public icon: IconService,
     private profileService: ProfileService,
   ){}
@@ -40,15 +38,14 @@ export class PermissionsAdvancedFiltersComponent {
   hasAdvancedFormChanged = false
 
   ngOnInit() {
-    this.departmentService.loadDepartmens()
     this.profileService.loadProfiles()
   }
 
   ngAfterViewInit() {
     this.combinedObservableSubscription = combineLatest(
-      [this.departmentService.departmentsLoaded$, this.profileService.profilesLoaded$]).pipe(
-      map(([departmentsLoaded, profilesLoaded]) => {
-        return departmentsLoaded && profilesLoaded
+      [this.profileService.profilesLoaded$]).pipe(
+      map(([profilesLoaded]) => {
+        return profilesLoaded
       }),
       catchError(error => {
         console.error('Error occurred:', error);
@@ -59,7 +56,6 @@ export class PermissionsAdvancedFiltersComponent {
         // console.log("Permisos esta loaded")
         this.dataSource = new ProfileDataSource(
           this.enterpriseService,
-          this.departmentService,
           this.profileService,
           this.paginator,
           this.pageSize,
@@ -151,7 +147,6 @@ class ProfileDataSource extends DataSource<Profile> {
 
   constructor(
     private enterpriseService: EnterpriseService,
-    private departmentService: DepartmentService,
     private profileService: ProfileService,
     private paginator: MatPaginator,
     private pageSize: number,
@@ -170,11 +165,9 @@ class ProfileDataSource extends DataSource<Profile> {
         this.paginator.length = profiles.length
         
         const data = profiles.map(profile => {
-          const departmentName = this.departmentService.getDepartmentByProfileId(profile.id).name
           return {
             id: profile.id,
             name: profile.name,
-            departmentName: departmentName,
             hoursPerWeek: profile.permissions.hoursPerWeek,
             studyLiberty: Permissions.STUDY_LIBERTY_NUMBER_OPTS[profile.permissions.studyLiberty],
             studyplanGeneration: Permissions.STUDYPLAN_GENERATION_NUMBER_OPTS[profile.permissions.studyplanGeneration],

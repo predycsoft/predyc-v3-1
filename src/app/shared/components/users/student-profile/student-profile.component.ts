@@ -8,9 +8,7 @@ import { AngularFireStorage } from '@angular/fire/compat/storage';
 
 import { countriesData } from 'src/assets/data/countries.data'
 import { capitalizeFirstLetter, dateFromCalendarToTimestamp, timestampToDateNumbers } from 'src/app/shared/utils';
-import { DepartmentService } from 'src/app/shared/services/department.service';
 import { ProfileService } from 'src/app/shared/services/profile.service';
-import { Department } from 'src/app/shared/models/department.model';
 import { Profile } from 'src/app/shared/models/profile.model';
 
 @Component({
@@ -24,7 +22,6 @@ export class StudentProfileComponent implements OnInit {
     public icon:IconService,
     private alertService: AlertsService,
     private storage: AngularFireStorage,
-    private departmentService: DepartmentService,
     private profileService: ProfileService,
   ){}
 
@@ -38,7 +35,6 @@ export class StudentProfileComponent implements OnInit {
   selectedDepartmentProfiles: Profile[] = [];
   
   countries: {name: string, code: string, isoCode: string}[] = countriesData
-  departments: Department[]
   profiles: Profile[]
   experienceOptions: string[] = [
     "Menos de 1 año",
@@ -64,16 +60,13 @@ export class StudentProfileComponent implements OnInit {
     "hiringDate": new FormControl(null,),
     "experience": new FormControl(null,),
     "department": new FormControl(null),
-    "profile": new FormControl(null),
+    "profile": new FormControl(null, [Validators.required]),
   })
 
   @ViewChild('closeButton') closeButton: ElementRef;
 
   ngOnInit(): void {
     // console.log("this.student", this.student)
-    this.departmentService.getDepartmentsObservable().subscribe(departments => {
-      if (departments) this.departments = departments   
-    })
     this.profileService.getProfilesObservable().subscribe(profiles => {
       if (profiles) this.profiles = profiles   
     })
@@ -96,9 +89,6 @@ export class StudentProfileComponent implements OnInit {
       this.student.hiringDate ? this.timestampToFormFormat(this.student.hiringDate, "hiringDate") : null
       
       this.form.get("profile")?.setValue((this.student.profile && this.student.profile.id) ? this.student.profile.id : null)
-      const department = (this.student.profile && this.student.profile.id) ? this.departmentService.getDepartmentByProfileId(this.student.profile.id) : null
-      this.form.get("department")?.setValue((department && department.id)? department.id : null)
-      if (this.form.get("department").value) this.onDepartmentChange(true)
     }
   }
 
@@ -252,34 +242,11 @@ export class StudentProfileComponent implements OnInit {
   onDepartmentChange(isFirsLoad: boolean = false) {
     const profileControl = this.form.get('profile');
     if (!isFirsLoad) profileControl.setValue(null)
-    const selectedDepartmentId = this.form.get('department')?.value;
-    const selectedDepartment: Department = this.departments.find(department => department.id === selectedDepartmentId)
-    console.log("selectedDepartment", selectedDepartment)
-    if (selectedDepartment && selectedDepartment.profilesRef.length > 0) {
-      this.selectedDepartmentProfiles = this.profiles.filter(profile => 
-        selectedDepartment.profilesRef.some(docRef => docRef.id === profile.id)
-      );
-      // Si existen perfiles asociados al departamento, establecemos como requerido el campo de perfil
-      if (this.selectedDepartmentProfiles.length > 0) {
-        profileControl.setValidators(Validators.required);
-        profileControl.updateValueAndValidity();  // Esto actualizará el estado del FormControl
-      }
-      console.log("this.selectedDepartmentProfiles", this.selectedDepartmentProfiles)
-    } else {
-      this.selectedDepartmentProfiles = [];
-      // Si no hay perfiles en el departamento, quitamos el requerido al campo de perfil
-      profileControl.clearValidators();
-      profileControl.updateValueAndValidity();
-    }
   }
 
   displayName(id: string): string {
-    const department: Department = this.departments.find(x => x.id === id)
-    if (department) return department.name
-    else {
-      const profile: Profile = this.profiles.find(x => x.id === id)
-      if (profile) return profile.name
-    }
+    const profile: Profile = this.profiles.find(x => x.id === id)
+    if (profile) return profile.name
     return null
   }
 

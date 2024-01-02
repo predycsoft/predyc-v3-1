@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, CollectionReference, Query } from '@angular/fire/compat/firestore';
 import { AlertsService } from './alerts.service';
-import { BehaviorSubject, firstValueFrom, Subscription } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, Observable, Subscription } from 'rxjs';
 import { Notification } from 'src/app/shared/models/notification.model';
 import { EnterpriseService } from './enterprise.service';
 import { AngularFireFunctions } from '@angular/fire/compat/functions';
@@ -46,13 +46,43 @@ export class NotificationService {
     }
   }
 
+  getNotifications$(queryObj: {
+    pageSize: number
+    startAt?: Notification
+    startAfter?: Notification
+    typeFilter?: typeof Notification.TYPE_EVENT |
+                typeof Notification.TYPE_ALERT |
+                typeof Notification.ARCHIVED
+  }): Observable<Notification[]> {
+    return this.afs.collection<Notification>(Notification.collection, ref => {
+      let query: CollectionReference | Query = ref;
+        query = query.where('enterpriseRef', '==', this.enterpriseService.getEnterpriseRef())
+        if (queryObj.typeFilter) {
+          console.log(`Filter has been set as ${queryObj.typeFilter}`)
+          if (queryObj.typeFilter === 'archived') {
+            query = query.where('readByAdmin', '==', true)
+          } else {
+            query = query.where('type', '==', queryObj.typeFilter).where('readByAdmin', '==', false)
+          }
+        } else {
+          query = query.where('readByAdmin', '==', false)
+        }
+        query = query.orderBy('date', 'desc')
+        if (queryObj.startAt) {
+          query = query.startAt(queryObj.startAt.date)
+        } else if (queryObj.startAfter) {
+          query = query.startAfter(queryObj.startAfter.date)
+        }
+        return query.limit(queryObj.pageSize)
+    }).valueChanges()
+  }
+
   public getNotifications(queryObj: {
     pageSize: number
     startAt?: Notification
     startAfter?: Notification
-    typeFilter?: typeof Notification.TYPE_ACTIVITY |
+    typeFilter?: typeof Notification.TYPE_EVENT |
                 typeof Notification.TYPE_ALERT |
-                typeof Notification.TYPE_REQUEST |
                 typeof Notification.ARCHIVED
   }) {
     // console.log("queryObj", queryObj)
@@ -88,35 +118,29 @@ export class NotificationService {
   }
 
   public getNotificationsLengthByFilter(
-    filter: typeof Notification.TYPE_ACTIVITY |
+    filter: typeof Notification.TYPE_EVENT |
             typeof Notification.TYPE_ALERT |
-            typeof Notification.TYPE_REQUEST |
             typeof Notification.ARCHIVED |
             'all'
     ): number {
       let length = 0
       const enterprise = this.enterpriseService.getEnterprise()
       switch (filter) {
-        case Notification.TYPE_ACTIVITY:
+        case Notification.TYPE_EVENT:
           // do something
-          length = enterprise.totalActivityNotifications
+          length = enterprise.totalEventNotifications
           break;
         case Notification.TYPE_ALERT:
           // do something
           length = enterprise.totalAlertNotifications
-          break;
-        case Notification.TYPE_REQUEST:
-          // do something
-          length = enterprise.totalRequestNotifications
           break;
         case Notification.ARCHIVED:
           // do something
           length = enterprise.totalReadByAdminNotifications
           break;
         default:
-          length = enterprise.totalActivityNotifications
+          length = enterprise.totalEventNotifications
                    + enterprise.totalAlertNotifications
-                   + enterprise.totalRequestNotifications
           break;
       }
       return length

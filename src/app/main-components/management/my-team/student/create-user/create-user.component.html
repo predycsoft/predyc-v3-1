@@ -1,0 +1,200 @@
+<form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+    <div class="modal-header bg-web-primary text-white px-3 py-1" >
+        <div class="modal-title pd10 ">
+            <span class="ft16 ft600 gray-10">Crear nuevo usuario</span>
+        </div>
+        <img [src]="icon.close" class="h16px pdl05" alt="" (click)="dismiss()">
+    </div>
+    <div fxLayout="row" fxLayoutAlign="center center" class="modal-body">
+        <div class="w-80">
+            <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign=" center">
+                <div>
+                    <div (click)="fileInput.click()" class="cursorPointer">
+                        <img
+                            [src]="false ? '' : 'assets/images/default/default-user-image.jpg'"
+                            class="avatar5"
+                            alt=""
+                            >
+                    </div>
+                    <input #fileInput type="file" style="display: none;" (change)="onFileSelected($event)">
+                </div>
+                <div class="w-80" fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="center ">
+                    <input
+                        formControlName="name"
+                        [class.is-invalid]="userForm.get('name').errors && displayErrors"
+                        type="text" 
+                        class="form-control"
+                        placeholder="Nombre del usuario"
+                        >
+                    <div
+                        class="custom-invalid-feedback"
+                        *ngIf="userForm.get('name').errors && displayErrors"
+                        >
+                        <div *ngIf="userForm.get('name').errors?.required">
+                            Es obligatorio especificar el nombre del usuario
+                        </div>
+                    </div>             
+                    <div style="position: relative">
+                        <img [src]="icon.userProfile" class="makeGray h16px" alt="" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
+                        <select formControlName="profile" class="form-control select">
+                            <option [value]="null">Sin perfil</option>
+                            <option *ngFor="let profile of profiles" [value]="profile.id">{{profile.name}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div fxLayout="row" fxLayoutGap="15px" fxLayoutAlign="center " class="mgt10">
+                <div fxLayout="column" fxLayoutGap="10px" fxLayoutAlign=" center" class="w-45">
+                    <div style="position: relative">
+                        <img [src]="icon.phone" class="makeGray h16px" alt="" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
+                        <input
+                            formControlName="phoneNumber"
+                            [class.is-invalid]="userForm.get('phoneNumber').errors && displayErrors"
+                            type="text" 
+                            class="form-control pdl20"
+                            placeholder="Teléfono"
+                            >
+                    </div>
+                    <div style="position: relative">
+                        <img [src]="icon.location" class="makeGray h16px" alt="" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
+                        <select
+                            class="form-control select"
+                            formControlName="country"
+                            >
+                            <option [value]="null">País de residencia</option>
+                            <option *ngFor="let country of countries" [value]="country.name">{{country.name}}</option>
+                        </select>
+                    </div>
+                    <div style="position: relative">
+                        <img [src]="icon.calendarAdd" class="makeGray h16px" alt="" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
+                        <input
+                            formControlName="birthdate"
+                            [class.is-invalid]="userForm.get('birthdate').errors && displayErrors"
+                            type="text" 
+                            class="form-control pdl20"
+                            name="birhtdate"
+                            (click)="birthdate.toggle()"
+                            ngbDatepicker
+                            #birthdate="ngbDatepicker"
+                            placeholder="Fecha de nacimiento"
+                            >
+                    </div>
+                    <div style="position: relative">
+                        <img [src]="icon.email" class="makeGray h16px" alt="" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
+                        <input
+                            formControlName="email"
+                            [class.is-invalid]="userForm.get('email').errors && displayErrors"
+                            type="text" 
+                            class="form-control pdl20"
+                            placeholder="Correo electrónico"
+                            >
+                    </div>
+                    <div
+                        class="custom-invalid-feedback"
+                        *ngIf="userForm.get('email').errors && displayErrors"
+                        >
+                        <div *ngIf="userForm.get('email').errors?.required">
+                            Es obligatorio especificar el correo del usuario
+                        </div>
+                        <div *ngIf="userForm.get('email').errors?.email">
+                            El correo electrónico posee un formato incorrecto
+                        </div>
+                    </div>
+                </div>
+                <div fxLayout="column" fxLayoutGap="10px" fxLayoutAlign=" center" class="w-45">
+                    <div style="position: relative">
+                        <img [src]="icon.suitcase" class="makeGray h16px" alt="" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
+                        <input
+                            formControlName="job"
+                            [class.is-invalid]="userForm.get('job').errors && displayErrors"
+                            type="text" 
+                            class="form-control pdl20"
+                            placeholder="Cargo"
+                            >
+                    </div>
+                    <div style="position: relative">
+                        <img [src]="icon.calendarAdd" class="makeGray h16px" alt="" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
+                        <input
+                            formControlName="hiringDate"
+                            [class.is-invalid]="userForm.get('hiringDate').errors && displayErrors"
+                            type="text" 
+                            class="form-control pdl20"
+                            name="hiringDate"
+                            (click)="hiringDate.toggle()"
+                            ngbDatepicker
+                            #hiringDate="ngbDatepicker"
+                            placeholder="Fecha de ingreso"
+                            >
+                    </div>
+                    <div style="position: relative">
+                        <img [src]="icon.clock" class="makeGray h16px" alt="" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
+                        <input
+                            formControlName="experience"
+                            [class.is-invalid]="userForm.get('experience').errors && displayErrors"
+                            type="text" 
+                            class="form-control pdl20"
+                            placeholder="Años de experiencia"
+                            >
+                    </div>
+                    <div style="position: relative">
+                        <img [src]="icon.enterprise" class="makeGray h16px" alt="" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
+                        <input
+                            type="text" 
+                            class="form-control pdl20"
+                            placeholder="Departamento"
+                            aria-label="Number"
+                            matInput
+                            formControlName="department"
+                            [matAutocomplete]="auto"
+                        >
+                        <mat-autocomplete
+                            #auto="matAutocomplete"
+                        >
+                            <mat-option 
+                                *ngFor="let option of filteredDepartments | async"
+                                [value]="option"
+                                >
+                                {{option}}
+                            </mat-option>
+                            <!-- <mat-option
+                                class="multiline-mat-option"
+                                value="null"
+                                (click)="createDepartment()"
+                                >
+                                <div fxLayout="row" fxLayoutAlign=" center">
+                                    <div>Crear departamento</div>
+                                    <img [src]="icon.addNew" alt="Crear nuevo departamento" class="mgl20">
+                                </div>
+                            </mat-option> -->
+                        </mat-autocomplete>
+                    </div>
+                    <!-- <div *ngFor="let option of departments | async">
+                        {{option.name}}
+                    </div> -->
+                </div>
+            </div>
+            <div class="mgt10" style="display: flex; align-items: center; justify-content: center">
+                <!-- Contenedor para los dos botones de la derecha -->
+                <button
+                    class="blueButton radius4 ft12 h28px mgr10 gray-1"
+                    fxLayout="row"
+                    fxLayoutGap="0.625"
+                    fxLayoutAlign="center center"
+                    type="submit"
+                    >
+                    Guardar usuario
+                </button>        
+                <!-- <button
+                    class="blueButton radius4 ft12 h28px mgr10 gray-1"
+                    fxLayout="row"
+                    fxLayoutGap="0.625"
+                    fxLayoutAlign="center center"
+                    type="button"
+                    (click)="showCurrentForm()"
+                    >
+                    DEBUG
+                </button>         -->
+            </div>
+        </div>
+    </div>
+</form>

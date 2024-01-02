@@ -20,7 +20,7 @@ export class NotificationListComponent {
 
   // This is not being used
   @Input() enablePagination: boolean = true
-  @Input() pageSize: number = 10
+  @Input() pageSize: number = 5
 
   displayedColumns: string[] = [
     'content',
@@ -99,8 +99,8 @@ export class NotificationListComponent {
       subject = "Retraso en curso"
       text = `${user.displayName} ${notification.message}`
     }
-    else if (notification.type === Notification.TYPE_REQUEST) {
-      subject = "Solicitud de acceso"
+    else if (notification.type === Notification.TYPE_EVENT) {
+      subject = "Nuevo evento"
       text = `${user.displayName} ${notification.message}`
     }
     try {
@@ -110,12 +110,7 @@ export class NotificationListComponent {
         subject: subject,
         text: text,
       }));    
-      if (notification.type === Notification.TYPE_ALERT) {
-        this.alertService.succesAlert('Has notificado al usuario exitosamente.')
-      }
-      else if (notification.type === Notification.TYPE_REQUEST) {
-        this.alertService.succesAlert('Has contactado a predyc exitosamente.')
-      }    
+      this.alertService.succesAlert('Has notificado al usuario exitosamente.')
       console.log("Email enviado")
     } catch (error) {
       console.log("error", error)
@@ -162,9 +157,8 @@ class NotificationDataSource extends DataSource<Notification> {
       pageSize: number
       startAt?: Notification
       startAfter?: Notification
-      typeFilter?: typeof Notification.TYPE_ACTIVITY |
+      typeFilter?: typeof Notification.TYPE_EVENT |
                   typeof Notification.TYPE_ALERT |
-                  typeof Notification.TYPE_REQUEST |
                   typeof Notification.ARCHIVED 
     } = {
       pageSize: this.pageSize,

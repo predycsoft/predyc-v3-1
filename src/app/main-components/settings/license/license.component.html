@@ -1,14 +1,14 @@
 
-<div *ngIf="!supportFlag" fxLayout="row" class="mgt30">
-    <div class="w900px">
+<div *ngIf="!supportFlag" fxLayout="row" class="fh fw mgt10" fxLayoutAlign="space-between ">
+    <div class="w-30 fh">
         <app-plan-card></app-plan-card>
     </div>
-    <div>
+    <div class="w-65 fh">
         <app-license-data (supportFlagChanged)="supportFlag = $event"></app-license-data>
     </div> 
 </div>
 
-<div *ngIf="supportFlag" fxLayout="column" class="mgt0">
+<div *ngIf="supportFlag" fxLayout="column" class="w-60">
     <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="20px">
         <div class=" w24px h24px backGray2 radius50 cursorPointer" fxLayoutAlign="center center" (click)="supportFlag = false">
             <img [src]="icon.chevronLeft" class="  makeGray h20px">

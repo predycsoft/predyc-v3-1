@@ -1,9 +1,6 @@
 .card-container {
     border-radius: 10px;
     overflow: hidden;
-    height: 100px;
     border: 2px solid #D5DCE0;
-    min-width: 240px;
     padding: 8px;
-
 }

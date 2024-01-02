@@ -47,13 +47,12 @@ export class ProfileService {
       if (!isLoaded) {
         return
       }
-      this.enterpriseRef =this.enterpriseService.getEnterpriseRef()
+      this.enterpriseRef = this.enterpriseService.getEnterpriseRef()
       this.afs.collection<Profile>(Profile.collection, ref=> ref.where('enterpriseRef', '==', this.enterpriseRef)).valueChanges().subscribe({
         next: profile => {
           this.profilesSubject.next(profile)
           if (!this.profilesLoadedSubject.value) {
             this.profilesLoadedSubject.next(true)
-            console.log("Los perfiles fueron cargados", profile)
           }
         },
         error: error => {
@@ -161,6 +160,4 @@ export class ProfileService {
     return this.afs.collection<Profile>(Profile.collection).doc(id).ref
   }
   
-
-
 }

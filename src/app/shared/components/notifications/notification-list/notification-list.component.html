@@ -1,6 +1,6 @@
 <!-- <button (click)="onAddButton()">Añadir notificaciones</button> -->
 
-<div class="filter-container rounded-container" fxLayout="row" fxLayoutAlign="start center">
+<div class="rounded-container" fxLayout="row" fxLayoutAlign="start center">
     <div [ngClass]="{'active': selectedFilter === 'all'}" class="filter-item active" (click)="applyFilter('all')">
         <img *ngIf="selectedFilter === 'all'" [src]="icon.check" class="h20px pdr08" alt="">        
         <span>Todas</span>
@@ -9,13 +9,9 @@
         <img *ngIf="selectedFilter === 'alert'" [src]="icon.check" class="h20px pdr08" alt="">        
         <span>Alertas</span>
     </div>
-    <div [ngClass]="{'active': selectedFilter === 'activity'}" class="filter-item" (click)="applyFilter('activity')">
-        <img *ngIf="selectedFilter === 'activity'" [src]="icon.check" class="h20px pdr08" alt="">        
-        <span>Actividades</span>
-    </div>
-    <div [ngClass]="{'active': selectedFilter === 'request'}" class="filter-item" (click)="applyFilter('request')">
-        <img *ngIf="selectedFilter === 'request'" [src]="icon.check" class="h20px pdr08" alt="">        
-        <span>Solicitudes</span>
+    <div [ngClass]="{'active': selectedFilter === 'event'}" class="filter-item" (click)="applyFilter('event')">
+        <img *ngIf="selectedFilter === 'event'" [src]="icon.check" class="h20px pdr08" alt="">        
+        <span>Eventos</span>
     </div>
     <div [ngClass]="{'active': selectedFilter === 'archived'}" class="filter-item right-rounded-container" (click)="applyFilter('archived')">
         <img *ngIf="selectedFilter === 'archived'" [src]="icon.check" class="h20px pdr08" alt="">        
@@ -51,18 +47,6 @@
                     <div *ngIf="!clickedNotifications[notification.id]" class="actions-container">
                         <img [src]="icon.email" class="h24px makeGray9 mgr08" alt="">
                         <span style="color: var(--gray-9);">Enviar aviso</span>
-                    </div>
-                </div> 
-                <div *ngIf="notification.type === 'activity'">
-                    <div [routerLink]="['/management/students', notification.user.uid]" class="cursorPointer filter-item2 actions-container ">
-                        <img [src]="icon.panel" class="h24px makeGray9 mgr08" alt="">
-                        <span style="color: var(--gray-9);">Ir al panel</span>
-                    </div>
-                </div> 
-                <div *ngIf="notification.type === 'request'">
-                    <div [routerLink]="['/my-account']" [queryParams]="{ activeTab: 'soporte' }" class="cursorPointer actions-container">
-                        <img [src]="icon.chat" class="h24px mgr08 makeGray9" alt="">
-                        <span style="color: var(--gray-9);">Contactar a Predyc</span>
                     </div>
                 </div> 
             </td>

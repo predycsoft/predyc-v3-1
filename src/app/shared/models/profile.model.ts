@@ -13,7 +13,6 @@ export interface ProfileJson {
     coursesRef: DocumentReference[] | []
     enterpriseRef: DocumentReference | null
     permissions: Permissions
-
 }
 
 export class Profile {

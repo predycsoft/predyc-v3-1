@@ -1,39 +1,40 @@
 .card-container {
-    min-width: 230px;
-    width: 310px;
+    /* min-width: 230px; */
+    /* width: 310px; */
     border-radius: 10px;
-    overflow: hidden;
-    height: 300px;
-
+    height: 100%;
+    width: 100%;
+    /* overflow: hidden; */
+    /* height: 300px; */
 }
 
 img {
     object-fit: cover;
     height: 45%;
-    width: 120%;
+    width: 100%;
 }
 
 .card-info {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 24px!important;
-    height: 60%;
+    height: 50%;
+    padding: 8px;
+    position: relative;
 }
 
 button {
     width: 70px;
     border-radius: 20px!important;
-    margin-left: auto;
-    font-size: 16px;
+    font-size: 2rem;
     transition: background-color 0.3s;
     text-align: center; 
     line-height: 1.2!important; 
-
-
-
-    
+    position: absolute;
+    right: 8px;
+    bottom: 0;
 }
+
 .video-preview {
     width: 100%;
     height: 100%;

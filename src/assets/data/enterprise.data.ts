@@ -8,9 +8,8 @@ export const enterpriseData: EnterpriseJson = {
     employesNo: 0,
     id: null,
     name: "Empresa de prueba",
-    totalActivityNotifications: 0,
     totalAlertNotifications: 0,
-    totalRequestNotifications: 0,
+    totalEventNotifications: 0,
     totalReadByAdminNotifications: 0,
     permissions: {
         hoursPerWeek: 8,

@@ -9,8 +9,8 @@ export interface NotificationJson {
     readByUser: boolean
     readByAdmin: boolean
     type: typeof Notification.TYPE_ALERT |
-          typeof Notification.TYPE_ACTIVITY |
-          typeof Notification.TYPE_REQUEST
+          typeof Notification.TYPE_EVENT |
+          typeof Notification.ARCHIVED
     userRef: DocumentReference | null
 }
 
@@ -19,8 +19,7 @@ export class Notification {
     public static collection: string = 'notification'
 
     public static TYPE_ALERT: string = 'alert'
-    public static TYPE_ACTIVITY: string = 'activity'
-    public static TYPE_REQUEST: string = 'request'
+    public static TYPE_EVENT: string = 'event'
     public static ARCHIVED: string = 'archived'
 
     public user: User
@@ -34,8 +33,7 @@ export class Notification {
         public readByUser: boolean,
         public readByAdmin: boolean,
         public type: typeof Notification.TYPE_ALERT |
-                    typeof Notification.TYPE_ACTIVITY |
-                    typeof Notification.TYPE_REQUEST,
+                    typeof Notification.TYPE_EVENT,
         public userRef: DocumentReference | null
     ) {}
 

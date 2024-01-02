@@ -1,35 +1,29 @@
-<div *ngIf="!loaderService.loading">
-    <div fxLayout="row" fxLayoutAlign="space-between center">
+<div *ngIf="!loaderService.loading" class="fh mgt10 mgl30 mgr30">
+    <div fxLayout="row" fxLayoutAlign="space-between center" class="pdr10 pdl10">
         <div fxLayout="row" fxLayoutAlign="start center">
-            <img class="photo-shadow" onerror="this.src='assets/images/default/default-user-image.jpg'" 
-                [src]="enterprise?.photoUrl" class="avatarshadow " alt="">
+            <img class="photo-shadow avatarshadow" onerror="this.src='assets/images/default/default-user-image.jpg'" [src]="enterprise?.photoUrl" alt="">
             <span class="mgl10 ft16 ft600 gray-10">
                 {{enterprise.name}}
             </span>
         </div>
         <button class="blueButton">Descargar reporte</button>
     </div>   
-
-    <div fxLayout="column" fxLayoutGap="2rem" class="mgt15 fw">
-        <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem" class="h250px">
-            <div class="radius10 border w-60 fh pd10" fxLayout="column" fxLayoutAlign="start">
-                <app-users-study-time-container class="fh"></app-users-study-time-container>
-            </div>
-            <div class="radius10 border w-40 fh pd10" fxLayout="column" fxLayoutAlign="start">
-                <app-users-rhythm class="fh"
-                    [high]="0"
-                    [medium]="0"
-                    [low]="0"
-                    [noPlan]="0"
-                ></app-users-rhythm>
-            </div>
+    <div fxLayout="row" fxLayoutAlign="space-between " fxLayoutGap="1rem" class="h-30 mgt10">
+        <div class="radius10 border w-60 pd10">
+            <app-users-study-time-container class="fh"></app-users-study-time-container>
         </div>
-        <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="0.75rem" class="fw 250px">
-            <div class="radius10 border fw h-52">
-                <app-ranking-list></app-ranking-list>
-            </div>
+        <div class="radius10 border w-40 pd10">
+            <app-users-rhythm
+                [high]="0"
+                [medium]="0"
+                [low]="0"
+                [noPlan]="0"
+            ></app-users-rhythm>
         </div>
     </div>
-
-
+    <div class="fw h-50 mgt10">
+        <div class="radius10 border fw pdr10 pdl10">
+            <app-ranking-list></app-ranking-list>
+        </div>
+    </div>
 </div>

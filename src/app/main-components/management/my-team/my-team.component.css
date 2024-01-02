@@ -1,0 +1,30 @@
+.profile-container {
+    position: relative;
+    display: inline-block;
+    /* color: var(--gray-6) */
+}
+
+.profile-arrow {
+    filter: invert(77%) sepia(43%) saturate(602%) hue-rotate(172deg) brightness(103%) contrast(102%);
+    position: absolute;
+    right: 10px;
+    display: none;
+    width: 20px;
+    height: auto;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.profile-container:hover {
+    background-color: var(--blue-1);
+    cursor: pointer;
+}
+
+.profile-container:hover .profile-arrow {
+    display: block;
+    /* filter: invert(62%) sepia(42%) saturate(1721%) hue-rotate(169deg) brightness(102%) contrast(101%); */
+}
+
+.profile-arrow:hover {
+    filter: invert(48%) sepia(25%) saturate(4622%) hue-rotate(175deg) brightness(86%) contrast(108%);
+}

@@ -4,33 +4,32 @@
     </div>
     <span class="ft12 gray-10 ft600 ">Ritmo de usuarios</span>
 </div>
-<div fxLayout="column" class="mgt15">
-    <span class="ft11 gray-10 ">
+<div fxLayout="column" class="mgt10">
+    <span class="ft11 gray-10">
         <span class=" ft500 ft11 gray-10"> {{goodRhythmPercentage | number:"1.0-0"}}%</span> de tu equipo lleva un buen ritmo
     </span>
 </div>
-
-<div fxLayout="row" fxLayoutGap="1.2rem" fxLayoutAlign="center center" class="fh fw">
+<div fxLayout="row" fxLayoutGap="1.2rem" fxLayoutAlign="center center" class="fw mgt05">
     <div class="" fxLayout="row" fxLayoutAlign="start center">
-        <!-- COLOCAR GRAFICA AQUI -->
+        <!-- COLOCAR GRAFICA AQUI ABAJO -->
     </div>
     <div fxLayout="column" fxLayoutGap=".5rem">
-        <div fxLayout="row" fxLayoutGap="0rem" fxLayoutAlign=" center">
+        <div fxLayout="row" fxLayoutAlign=" center">
             <div class="cuadrito backPurple5"></div>
             <span class="gray-10 ft11 nowrap w150px">Ritmo optimo</span>
             <span class="gray-10 ft11 nowrap ft500">{{highPercentage | number:"1.0-0"}}%</span>
         </div>
-        <div fxLayout="row" fxLayoutGap="0rem" fxLayoutAlign=" center">
+        <div fxLayout="row" fxLayoutAlign=" center">
             <div class="cuadrito backGreen5"></div>
             <span class="gray-10 ft11 nowrap w150px">Ritmo medio</span>
             <span class="gray-10 ft11 nowrap ft500">{{mediumPercentage | number:"1.0-0"}}%</span>
         </div>
-        <div fxLayout="row" fxLayoutGap="0rem" fxLayoutAlign=" center">
+        <div fxLayout="row" fxLayoutAlign=" center">
             <div class="cuadrito backRed5"></div>
             <span class="gray-10 ft11 nowrap w150px">Ritmo bajo</span>
             <span class="gray-10 ft11 nowrap ft500">{{lowPercentage | number:"1.0-0"}}%</span>
         </div>
-        <div fxLayout="row" fxLayoutGap="0rem" fxLayoutAlign=" center">
+        <div fxLayout="row" fxLayoutAlign=" center">
             <div class="cuadrito backGray4"></div>
             <span class="gray-10 ft11 nowrap w150px">Sin asignaciones</span>
             <span class="gray-10 ft11 nowrap ft500">{{noPlanPercentage | number:"1.0-0"}}%</span>

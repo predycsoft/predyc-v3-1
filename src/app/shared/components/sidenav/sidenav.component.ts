@@ -27,9 +27,10 @@ export class SideNavComponent {
 
   public pages: Page[] = [
     {name: 'Dashboard', link:'', icon: '../../assets/iconsUI/sidenav_app.svg'},
-    {name: 'Gestión', link:'management', icon: '../../assets/iconsUI/sidenav_manage_accounts.svg'},
+    {name: 'Estudiantes', link:'management/students', icon: '../../assets/iconsUI/sidenav_manage_accounts.svg'},
     {name: 'Cursos', link:'management/courses', icon: '../../assets/iconsUI/sidenav_collections_bookmark.svg'},
     {name: 'Validación', link:'validation', icon: '../../assets/iconsUI/sidenav_fact_check.svg'},
+    {name: 'Notificaciones', link:'management/notifications', icon: '../../assets/iconsUI/notification.svg'},
     {name: 'Config', link:'settings', icon: '../../assets/iconsUI/sidenav_config.svg'},
   ]
 

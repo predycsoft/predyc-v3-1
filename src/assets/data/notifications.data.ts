@@ -1,6 +1,6 @@
 import { NotificationJson } from "src/app/shared/models/notification.model";
 
-const notificationTypes = ['alert', 'activity', 'request'];
+const notificationTypes = ['alert', 'event'];
 const randomCourse = ['Planificacion de mantenimiento', 'Analisis causa raiz', 'Gestion de riesgo', 'Herramientas de planeamiento', 'Gestion de costo de mantenimiento'];
 const randomCertification = ['Programa 1', 'Programa 2', 'Programa 3'];
 
@@ -22,12 +22,15 @@ function getRandomCertification() {
 function generateNotification(): NotificationJson {
   const type = getRandomType();
   let message;
-  if (type === 'activity') {
-    message = 'ha completado el diagnostico inicial de ' + getRandomCourse();
+  if (type === 'event') {
+    const randomBool = Math.random() < 0.5;
+    if (randomBool) {
+      message = 'ha completado el diagnostico inicial de ' + getRandomCourse();
+    } else {
+      message = 'esta solicitando acceso al diplomado ' + getRandomCertification();
+    }
   } else if (type === 'alert') {
     message = `tiene ${Math.floor(Math.random() * 20) + 1} horas de retraso en el curso ${getRandomCourse()}`;
-  } else if (type === 'request') {
-    message = 'esta solicitando acceso al diplomado ' + getRandomCertification();
   }
 
   const now = new Date();

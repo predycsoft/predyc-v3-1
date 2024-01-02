@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { NgChartsModule } from 'ng2-charts';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -34,7 +35,8 @@ import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatSliderModule } from '@angular/material/slider';
-import { MatProgressSpinnerModule} from "@angular/material/progress-spinner"
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner"
+import { MatAutocompleteModule } from "@angular/material/autocomplete"
 
 // Components
 import { LoginComponent } from './login/login.component';
@@ -45,12 +47,9 @@ import { ManagementComponent } from './main-components/management/management.com
 import { CoursesComponent } from './main-components/management/courses/courses.component';
 import { ValidationComponent } from './main-components/validation/validation.component';
 import { SettingsComponent } from './main-components/settings/settings.component';
-import { DepartmentsProfilesComponent } from './main-components/management/departments-profiles/departments-profiles.component';
 import { MyTeamComponent } from './main-components/management/my-team/my-team.component';
 import { NavigationCardComponent } from './shared/widgets/navigation-card/navigation-card.component';
-import { VideoDialogComponent } from './main-components/management/management-dashboard/video-dialog/video-dialog.component';
 import { NotificationsComponent } from './main-components/management/notifications/notifications.component';
-import { ManagementDashboardComponent } from './main-components/management/management-dashboard/management-dashboard.component';
 import { NavigateBackComponent } from './shared/widgets/navigate-back/navigate-back.component';
 import { StudentProfileComponent } from './shared/components/users/student-profile/student-profile.component';
 import { SearchInputBoxComponent } from './shared/widgets/search-input-box/search-input-box.component';
@@ -85,14 +84,12 @@ import { AdminDataComponent } from './main-components/my-account/admin-data/admi
 import { EnterprisePresentationFormComponent } from './main-components/my-account/enterprise-data/enterprise-presentation-form/enterprise-presentation-form.component';
 import { AdminPresentationFormComponent } from './main-components/my-account/admin-data/admin-presentation-form/admin-presentation-form.component';
 import { SkillsSelectorComponent } from './shared/components/skills-selector/skills-selector.component';
-import { CreateProfileComponent } from './main-components/management/create-profile/create-profile.component';
 import { CourseSelectorComponent } from './shared/components/course-selector/course-selector.component';
 import { MembersComponent } from './main-components/settings/members/members.component';
 import { LicenseComponent } from './main-components/settings/license/license.component';
 import { PlanCardComponent } from './main-components/settings/license/plan-card/plan-card.component';
 import { LicenseDataComponent } from './main-components/settings/license/license-data/license-data.component';
 import { ValidationListComponent } from './main-components/validation/validation-list/validation-list.component';
-import { NotificationsDashboardComponent } from './main-components/dashboard/notifications-dashboard/notifications-dashboard.component';
 import { EditValidationTestComponent } from './main-components/validation/edit-validation-test/edit-validation-test.component';
 import { RankingListComponent } from './main-components/dashboard/ranking-list/ranking-list.component';
 import { TooltipPointsComponent } from './shared/components/tooltip-points/tooltip-points.component';
@@ -109,8 +106,11 @@ import { StudyTimeMonthlyChartComponent } from './main-components/dashboard/user
 // import { SupportContactComponent } from './main-components/my-account/support-contact/support-contact.component';
 import { FrequentQuestionsComponent } from './shared/components/frequent-questions/frequent-questions.component';
 import { SupportContactComponent } from './shared/components/support-contact/support-contact.component';
-import { StudentGridComponent } from './shared/components/users/student-grid/student-grid.component';
 import { StudentProfileHistoryComponent } from './main-components/management/my-team/student/student-profile-history/student-profile-history.component';
+import { ProfileSelectorComponent } from './shared/widgets/profile-selector/profile-selector.component';
+import { CreateUserComponent } from './main-components/management/my-team/student/create-user/create-user.component';
+import { ProfilesComponent } from './main-components/management/profiles/profiles.component';
+import { NotificationList2Component } from './shared/components/notifications/notification-list2/notification-list2.component';
 // import { FrequentQuestionsComponent } from './main-components/my-account/frequent-questions/frequent-questions.component';
 
 @NgModule({
@@ -124,13 +124,10 @@ import { StudentProfileHistoryComponent } from './main-components/management/my-
     CoursesComponent,
     ValidationComponent,
     SettingsComponent,
-    DepartmentsProfilesComponent,
     MyTeamComponent,
     NavigationCardComponent,
-    VideoDialogComponent,
     SafePipe,
     CustomDatePipe,
-    ManagementDashboardComponent,
     NavigateBackComponent,
     NotificationsComponent,
     SearchInputBoxComponent,
@@ -152,14 +149,12 @@ import { StudentProfileHistoryComponent } from './main-components/management/my-
     EnterpriseDataComponent,
     AdminDataComponent,
     SkillsSelectorComponent,
-    CreateProfileComponent,
     CourseSelectorComponent,
     MembersComponent,
     LicenseComponent,
     PlanCardComponent,
     LicenseDataComponent,
     ValidationListComponent,
-    NotificationsDashboardComponent,
     EditValidationTestComponent,
     RankingListComponent,
     TooltipPointsComponent,
@@ -175,11 +170,15 @@ import { StudentProfileHistoryComponent } from './main-components/management/my-
     StudyTimeMonthlyChartComponent,
     SupportContactComponent,
     FrequentQuestionsComponent,
-    StudentGridComponent,
     StudentProfileHistoryComponent,
+    ProfileSelectorComponent,
+    CreateUserComponent,
+    ProfilesComponent,
+    NotificationList2Component,
   ],
   imports: [
     BrowserModule,
+    NgChartsModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     NgbModule,
@@ -213,6 +212,7 @@ import { StudentProfileHistoryComponent } from './main-components/management/my-
     MatTooltipModule,
     MatSliderModule,
     MatProgressSpinnerModule,
+    MatAutocompleteModule,
     HttpClientModule,
     NgxExtendedPdfViewerModule,
     DragDropModule

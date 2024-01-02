@@ -1,0 +1,135 @@
+<div class="fh">
+    <div [ngClass]="isEditing ? 'header--edit' : ''" fxLayout="row" fxLayoutAlign="space-between center" class="header pdr30 pdl30">
+        <app-navigate-back targetUrl="/management/students">
+            {{ isEditing ? '' : 'Perfil prueba'}}
+        </app-navigate-back>
+        <div *ngIf="isEditing; else profileTitle" fxLayout="row" fxLayoutAlign="space-between center" class="fw" >
+            <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign=" center">
+                <input class="input-box" placeholder="Nombre del perfil">
+                <div class="edit-button">
+                    Modo de edición
+                </div>
+            </div>
+            <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign=" center">
+                <span (click)="onCancel()">
+                    Cancelar
+                </span>
+                <div
+                    fxLayout="row"
+                    fxLayoutGap="0.625"
+                    fxLayoutAlign="center center"
+                    class="blueButton"
+                    style="border-radius: 24px !important;"
+                    (click)="isEditing = !isEditing"
+                    >
+                    Guardar cambios
+                    <img [src]="icon.save" class="h16px pdl05 makeWhite" alt="">
+                </div>
+            </div>
+        </div>
+        <ng-template #profileTitle>
+            <div
+                fxLayout="row"
+                fxLayoutGap="0.625"
+                fxLayoutAlign="center center"
+                class="blueButton"
+                style="border-radius: 24px !important;"
+                (click)="isEditing = !isEditing"
+                >
+                Editar
+                <img [src]="icon.licencias" class="h16px pdl05 makeWhite" alt="">
+            </div>
+        </ng-template>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="space-between center" class="main-content mgt05 pdr30 pdl30">
+        <div class="containers" fxLayout="column" fxLayoutGap="20px">
+            <div class="container" style="height: 28%; padding: 5px">
+                <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign=" center">
+                    <img [src]="icon.credentials" alt="Información del perfil">
+                    <span class="ft500 ft12 undrl gray-10">Detalles del perfil</span>
+                </div>
+                <p>
+                    Lorem ipsum dolor sit amet consectetur. Egestas sit ullamcorper diam augue parturient dolor. Eros scelerisque diam turpis cras ac mattis cras sed sequat egestas nam vivamus ac ut purus lacus. Non elit facilisis risus etiam turpis diam sit. 
+                </p>
+            </div>
+            <div class="container" style="height: 35%; border: 2px solid black; border-radius: 20px; padding: 5px">
+                <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign=" center">
+                    <img [src]="icon.resultsPresentation" alt="Desempeño por pilares">
+                    <span class="ft500 ft12 undrl gray-10">Desempeño por pilares</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="chart"></canvas>
+                </div>
+            </div>
+            <div class="container" style="height: 35%; border: 2px solid black; border-radius: 20px; padding: 5px">
+                <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign=" center">
+                    <img [src]="icon.list" alt="Competencias">
+                    <span class="ft500 ft12 undrl gray-10">Resumen de competencias</span>
+                </div>
+            </div>
+        </div>
+        <div class="study-plan" style="padding: 5px; overflow: hidden;">
+            <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign=" center">
+                <img [src]="icon.ticTacToe" alt="Plan de estudios">
+                <span class="ft500 ft12 undrl gray-10">Plan de estudios</span>
+            </div>
+            <!-- <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign=" center">
+
+            </div> -->
+            <div class="mgt10">
+                <span class="ft500 ft12 gray-8">Estudio mensual</span>
+                <input *ngIf="isEditing; else timeTemplate" type="number" min="0" class="mgl05 input-number">
+                <ng-template #timeTemplate>
+                    <span class="mgl05">5</span>
+                </ng-template>
+                <span class="mgl05">horas</span>
+                <span class="ft500 ft12 gray-8 mgl20">Meses estimados</span>
+                <input *ngIf="isEditing; else timeTemplate2" type="number" min="0" class="mgl05 input-number">
+                <ng-template #timeTemplate2>
+                    <span class="mgl05">10</span>
+                </ng-template>
+                <span class="mgl05">meses</span>
+            </div>
+            <div *ngIf="isEditing" class="mgt05 mgb05 radius40 border" style="margin: 8px auto; width: 100%; height: 7%; overflow: hidden" fxLayout="row">
+                <div fxLayout="row" fxLayoutAlign="space-between center" style="width: 25%; height: 100%; padding: 0 10px; background-color: #cbd4db;">
+                    <span>Categorias</span>
+                    <img [src]="icon.chevronDown" alt="Open categories">
+                </div>
+                <div style="width: 75%; height: 100%; overflow: hidden; padding: 0 10px; position: relative">
+                    <input type="text" placeholder="Search" style="width: 100%; height: 100%; outline: none; border: 0;">
+                    <img [src]="icon.search" alt="Search" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%)">
+                </div>
+            </div>
+            <div [ngStyle]="{'height': isEditing ? '75%' : '90%'}" style="height: 80%; overflow-y: scroll; overflow-x: hidden">
+                <!-- [ngClass]="selectedCourse == course ? 'backBlue1' : ''"
+                (click)="selectedCourse = course"
+                cdkDrag
+                [cdkDragData]="course"
+                *ngFor="let course of profile.studyPlan; let i = index" -->
+                <div
+                    class="fw pd05 h40px border-bl backWhite hoverBlue"
+                    fxLayout="row"
+                    fxLayoutAlign="space-between center"
+                    fxLayoutGap="1rem"
+                    *ngFor="let item of studyPlan; let i = index"
+                >
+                    <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
+                        <img *ngIf="isEditing" [src]="icon.drag" class="h14px" alt="Drag item">            
+                            <!-- [ngClass]="selectedCourse == course ? 'blue-5 ft500' : 'gray-10'" -->
+                        <span
+                            class="ft11"
+                            >
+                            {{ item.title }}
+                        </span>
+                    </div>
+                    <div fxLayoutAlign="center center" fxLayout="row" fxLayoutGap="1rem">
+                        <span class="gray-6 ft11 nowrap">
+                            {{ roundNumber(item.duration / 60) }} hrs
+                        </span>
+                        <img *ngIf="isEditing" [src]="icon.trash" class="h14px makeGray cursorPointer" (click)="removeItemFromPlan()" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

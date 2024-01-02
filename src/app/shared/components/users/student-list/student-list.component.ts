@@ -1,273 +1,129 @@
-import { DataSource, SelectionModel } from '@angular/cdk/collections';
-import { Component, EventEmitter, Input, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
 import { IconService } from '../../../../shared/services/icon.service';
 import { UserService } from '../../../../shared/services/user.service';
-import { User } from '../../../../shared/models/user.model';
-import { BehaviorSubject, catchError, combineLatest, map, merge, Observable, of, Subject, Subscription } from 'rxjs';
-import { AfterOnInitResetLoading } from 'src/app/shared/decorators/loading.decorator';
-import { LoaderService } from 'src/app/shared/services/loader.service';
-import { SearchInputService } from 'src/app/shared/services/search-input.service';
-import { orderByValueAndDirection } from 'src/app/shared/utils';
-import { DepartmentService } from 'src/app/shared/services/department.service';
+import { Subscription } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MatTableDataSource } from '@angular/material/table';
 import { ProfileService } from 'src/app/shared/services/profile.service';
+import { Profile } from 'src/app/shared/models/profile.model';
 
-@AfterOnInitResetLoading
+interface User {
+  displayName: string,
+  profile: string,
+  ratingPoints: number,
+  rhythm: string
+}
+
 @Component({
   selector: 'app-student-list',
   templateUrl: './student-list.component.html',
   styleUrls: ['./student-list.component.css']
 })
 export class StudentListComponent {
-  displayedColumns: string[] = [
-    // 'select',
-    'displayName',
-    'status',
-    'email',
-    'rhythm',
-    // 'departmentId',
-    // 'profileId',
-    // 'ratingPoints',
-    'performance',
-    // 'options',
-  ];
-  dataSource!: UserDataSource;
 
-  initialSelection: User[] = [];
-  allowMultiSelect = true;
-  selection: SelectionModel<User> = new SelectionModel<User>(
-    this.allowMultiSelect, this.initialSelection
-  );
+  displayedColumns: string[] = [
+    'displayName',
+    'rhythm',
+    'ratingPoints',
+  ];
+
+  dataSource = new MatTableDataSource<User>(); // Replace 'any' with your data type;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
-  @Input() usersListed: 'all' | 'usersWithoutProfile'
   @Input() enableNavigateToUser: boolean = true
-  @Input() displayOptionsColumn: boolean = true
-  @Input() initialSelectedUsers: any[] = [];
-  @Input() usersObservable: Observable<User[]>
-  @Input() selectedProfileId: string;
-  @Output() onSelectStudentEvent = new EventEmitter<User>()
-  @Output() selectedUsers = new EventEmitter<any[]>();
+  @Output() onStudentSelected = new EventEmitter<User>()
 
-
-
-  searchSubscription: Subscription
-
-  combinedObservableSubscription
+  queryParamsSubscription: Subscription
+  profilesSubscription: Subscription
+  userServiceSubscription: Subscription
+  pageSize: number = 7
+  totalLength: number
+  profiles: Profile[] = []
 
   constructor(
-    private userService: UserService,
+    private activatedRoute: ActivatedRoute,
     public icon: IconService,
-    private loaderService: LoaderService,
-    private searchInputService: SearchInputService, 
     private profileService: ProfileService,
-    private departmentService: DepartmentService,
+    private router: Router,
+    private userService: UserService,
   ) {}
 
-  ngAfterViewInit() {
-
-    // switch (this.usersListed) {
-    //   case 'usersWithoutProfile':
-    //     usersObservable = this.userService.usersWithoutProfile$;
-    //     break;
-    //   default:
-    //     usersObservable = this.userService.users$;
-    //     break;
-    // }
-
-    this.combinedObservableSubscription = combineLatest([this.departmentService.departmentsLoaded$, this.profileService.profilesLoaded$]).pipe(
-      map(([departmentsLoaded, profilesLoaded]) => {
-        return departmentsLoaded && profilesLoaded
-      }),
-      catchError(error => {
-        console.error('Error occurred:', error);
-        return of([]);  // Return an empty array as a fallback.
-      })
-    ).subscribe(isLoaded => {
-      if (isLoaded) {
-        this.dataSource = new UserDataSource(
-          this.usersObservable,
-          this.paginator,
-          this.sort,
-          this.profileService,
-          this.departmentService,
-          this.searchInputService
-        );
-        if (this.initialSelectedUsers && this.dataSource && this.initialSelectedUsers.length > 0) {
-          //this.selection.clear();
-          // Find and select the initial items
-          console.log('initialSelectedUsers',this.initialSelectedUsers)
-          this.initialSelectedUsers.forEach(item => {
-            const matchingRow = this.dataSource.data.find(row => row.uid === item.uid);  // You can modify the comparison logic here
-            console.log('matchingRow',matchingRow);
-            if (matchingRow) {
-              this.selection.select(matchingRow);
-            }
-          });
-        }
-        this.dataSource.setSelectedProfileId(this.selectedProfileId);
+  ngOnInit() {
+    this.profileService.loadProfiles()
+    this.profilesSubscription = this.profileService.getProfilesObservable().subscribe(profiles => {
+      if (profiles) {
+        this.profiles = profiles
+        this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
+          const page = Number(params['page']) || 1;
+          const searchTerm = params['search'] || '';
+          const profileFilter = params['profile'] || '';
+          this.performSearch(searchTerm, page, profileFilter);
+        })
       }
     })
   }
 
-  ngOnInit() {
-    this.departmentService.loadDepartmens()
-    this.profileService.loadProfiles()
-    if(this.displayOptionsColumn){
-      this.displayedColumns.push('options')
-    }
-    this.searchSubscription = this.searchInputService.dataObservable$.subscribe(filter => {
-      if(this.dataSource) this.dataSource.setFilter(filter)
-    })
-
-    this.selection.changed.subscribe(() => {
-      this.selectedUsers.emit(this.selection.selected);
-    });
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.paginator.pageSize = this.pageSize;
   }
 
-  ngOnChanges() {
-    // Ena la primera carga, ngOnChange se ejecuta primero que ngAfterViewInit y this.dataSource no se ha inicializado
-    if (this.dataSource) this.dataSource.setSelectedProfileId(this.selectedProfileId);
+  performSearch(searchTerm: string, page: number, profileFilter: string) {
+    if (this.userServiceSubscription) {
+      this.userServiceSubscription.unsubscribe()
+    }
+    this.userServiceSubscription = this.userService.getUsers$(searchTerm, profileFilter).subscribe(
+      response => {
+        const users: User[] = response.map(item => {
+          const profile = this.profiles.find(profile => {
+            if(item.profile) {
+              return profile.id === item.profile.id
+            }
+            return false
+          })
+          let profileName = ''
+          if (profile) {
+            profileName = profile.name
+          }
+          const user = {
+            displayName: item.displayName,
+            profile: profileName,
+            ratingPoints: item.ratingPoints,
+            rhythm: 'Medio (hardcodeado)' // Calculation pending
+          }
+          return user
+        })
+        this.paginator.pageIndex = page - 1; // Update the paginator's page index
+        this.dataSource.data = users; // Assuming the data is in 'items'
+        // // this.paginator.length = response.count; // Assuming total length is returned
+        this.totalLength = response.length; // Assuming total length is returned
+      }
+    );
+  }
+
+  onPageChange(page: number): void {
+    this.router.navigate([], {
+      queryParams: { page },
+      queryParamsHandling: 'merge'
+    });
   }
 
   onSelectUser(user: User) {
-    this.onSelectStudentEvent.emit(user)
+    this.onStudentSelected.emit(user)
   }
 
-  onDeleteUser(user: User) {
-    this.userService.delete(user)
-  }
+  // onDeleteUser(user: User) {
+  //   this.userService.delete(user)
+  // }
 
-  transformUserToAdmin(user: User) {
-    this.userService.transformUserToAdmin(user)
-  }
-
-  applyFilter(filterValue: string) {
-    this.dataSource.setFilter(filterValue.trim().toLowerCase());
-  }
-
-  /** Whether the number of selected elements matches the total number of rows. */
-  isAllSelected() {
-    const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
-    return numSelected == numRows;
-  }
-
-  /** Selects all rows if they are not all selected; otherwise clear selection. */
-  toggleAllRows() {
-    this.isAllSelected() ?
-        this.selection.clear() :
-        this.dataSource.data.forEach(row => this.selection.select(row));
-  }
+  // transformUserToAdmin(user: User) {
+  //   this.userService.transformUserToAdmin(user)
+  // }
 
   ngOnDestroy() {
-    this.searchSubscription.unsubscribe()
+    this.queryParamsSubscription.unsubscribe()
+    this.userServiceSubscription.unsubscribe()
+    this.profilesSubscription.unsubscribe()
   }
-}
-
-class UserDataSource extends DataSource<User> {
-
-  public data: User[]
-  private dataSubject = new BehaviorSubject<User[]>([]);
-  private filterSubject = new BehaviorSubject<string>('');
-  private paginatorSubject = new Subject<void>();
-  private sortSubject = new Subject<void>();
-  private userSubscription: Subscription;
-  private selectedProfileIdSubject = new BehaviorSubject<string>("all");
-
-  constructor(
-    private users$: Observable<User[]>,
-    private paginator: MatPaginator,
-    private sort: MatSort,
-    private profileService: ProfileService,
-    private departmentService: DepartmentService,
-    private searchInputService: SearchInputService, 
-  ) {
-    super();
-    this.filterSubject.next(this.searchInputService.getData())
-    this.paginator.pageSize = 5
-    this.paginator.page.subscribe(() => this.paginatorSubject.next());
-    this.sort.sortChange.subscribe(() => this.sortSubject.next());
-    this.userSubscription = this.users$.subscribe(users => {
-      this.data = users
-      this.dataSubject.next(users);
-    });
-  }
-  
-  connect(): Observable<User[]> {
-    return merge(this.users$, this.filterSubject, this.paginatorSubject, this.sortSubject, this.selectedProfileIdSubject).pipe(
-      map(() => {
-        // Filtering
-        let users = this.dataSubject.value
-        users.map(user => {
-          user.profileData = user.profile ? this.profileService.getProfile(user.profile.id) : null
-          user.departmentData = user.profileData ? this.departmentService.getDepartmentByProfileId(user.profile.id) : null
-        })
-        let filteredUsers =users
-        // Search bar
-        filteredUsers = filteredUsers.filter(user => {
-          const searchStr = (user.name as string + user.email as string).toLowerCase();
-          return searchStr.indexOf(this.filterSubject.value.toLowerCase()) !== -1;
-        });
-        // Profile selector
-        if (this.selectedProfileIdSubject.value !== "all" ) {
-          filteredUsers = filteredUsers.filter(user => {
-            const profileMatches = this.selectedProfileIdSubject.value
-              ? user.profile && user.profile.id === this.selectedProfileIdSubject.value
-              : true;
-            return profileMatches;
-          });
-        }
-
-        this.paginator.length = filteredUsers.length
-
-  
-        // Sorting
-        if (this.sort.active && this.sort.direction !== '') {
-          filteredUsers = filteredUsers.sort((a, b) => {
-            const isAsc = this.sort.direction === 'asc';
-            console.log('this.sort.active')
-            console.log(this.sort.active)
-            switch (this.sort.active) {
-              case 'displayName': return orderByValueAndDirection(a.displayName as string, b.displayName as string, isAsc);
-              // case 'status': return this.utilsService.compare(a.status as string, b.status as string, isAsc);
-              // case 'departament': return 0
-              // case 'profile': return 0
-              // case 'ratingPoints': return 0
-              // case 'performance': return 0
-              // Add more fields to sort by as needed.
-              default: return 0;
-            }
-          });
-        }
-  
-        // Pagination
-        const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
-        return filteredUsers.splice(startIndex, this.paginator.pageSize);
-      }),
-      catchError(error => {
-        console.error('Error occurred:', error);
-        return of([]);  // Return an empty array as a fallback.
-      })
-    );
-    
-  }
-
-  setFilter(filter: string) {
-    this.filterSubject.next(filter)
-    this.paginator.firstPage();
-  }
-
-  disconnect() {
-    this.userSubscription.unsubscribe();
-  }
-
-  setSelectedProfileId(selectedProfileId: string) {
-    // console.log("seteando filtro de perfil")
-    this.selectedProfileIdSubject.next(selectedProfileId);
-    this.paginator.firstPage();
-  }
-  
 }

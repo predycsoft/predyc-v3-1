@@ -1,5 +1,5 @@
 
-.contanier{
+.container{
     min-height: calc(100vh - 17rem);
     max-height: calc(100vh - 17rem);
     /* width: calc((100% - 1rem)*2/3);
@@ -7,9 +7,8 @@
     /* overflow: auto; */
 }
 
-.contanierCrearCurso{
+.containerCrearCurso{
   height: calc(100vh);
-
 }
 
 .stepper {
@@ -64,11 +63,8 @@
 
 }
 
-.contanierFormCurso {
-
+.containerFormCurso {
   overflow-y: auto;
-
-
 }
 
 .form-control {

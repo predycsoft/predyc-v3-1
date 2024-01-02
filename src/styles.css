@@ -74,9 +74,17 @@
   src: local("Inter-bold"), url(./assets/fonts/Inter/Inter-Bold.ttf) format("truetype");
 }
 
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.firebase-emulator-warning {
+  display: none;
+}
+
 html,
-
-
 body {
   margin: 0;
   padding: 0;
@@ -596,7 +604,7 @@ body {
 .noBullet{  list-style: NA!important; }
 .overl{  text-decoration: overline!important; }
 .line-th{  text-decoration: line-through!important; }
-.undrl{  font-style: underline!important; }
+.undrl{  text-decoration: underline!important; }
 .ital{  font-style: italic!important; }
 .obliq{  font-style: oblique!important; }
 .linkIcon{ font-size: 1em; padding: 0px; margin: 0; height: auto !important; width: auto !important; }
@@ -800,8 +808,10 @@ body {
 .w-30{width: 30%;}
 .w-35{width: 35%;}
 .w-40{width: 40%;}
+.w-45{width: 45%;}
 .w-50{width: 50%;}
 .w-60{width: 60%;}
+.w-65{width: 65%;}
 .w-70{width: 70%;}
 .w-75{width: 75%;}
 .w-80{width: 80%;}
@@ -1044,7 +1054,7 @@ body {
 .avatar10{ height: 10rem; width: 10rem; border-radius: 50%; }
 
 .avatarshadow {
-  height: 5rem; width: 5rem; border-radius: 50%; 
+  height: 4rem; width: 4rem; border-radius: 50%; 
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.25);
   outline: 5px solid #ffffff;
 }
@@ -1477,7 +1487,7 @@ label{
 
 hr{  border-top: var(--lineColor) 1px solid !important;}
   
-input :not(.toolbarField):not(.pageNumber), textarea, select:not(#scaleSelect){
+input :not(.toolbarField):not(.pageNumber), textarea, select:not(#scaleSelect):not(.select){
   color: var(--gray-9);
   font-size: 0.8125rem !important;
   font-weight: 400 !important;
@@ -1799,4 +1809,10 @@ span{
 
 .overflowHidden::-webkit-scrollbar { /* Para Chrome, Safari y Edge */
   width: 0px;
+}
+
+.cdk-overlay-connected-position-bounding-box,
+.cdk-global-overlay-wrapper,
+.cdk-overlay-container{
+    z-index: 99999 !important;
 }

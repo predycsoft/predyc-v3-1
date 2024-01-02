@@ -8,6 +8,7 @@ export const createUserWithEmailAndPassword = functions.https.onCall(
     async (data, _) => {
         try {
             // data should contain the email and password
+            console.log(data)
             const userRecord = await admin.auth().createUser({
               email: data.email,
               password: data.password,
@@ -26,6 +27,7 @@ export const createUserWithEmailAndPassword = functions.https.onCall(
             
             return { uid: userRecord.uid };
         } catch (error: any) {
+            console.log(error)
             throw new functions.https.HttpsError('unknown', error.message);
         } 
     }

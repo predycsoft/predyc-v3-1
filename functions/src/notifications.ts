@@ -15,14 +15,11 @@ export const onNotificationAdded = functions.firestore
     const enterprise = (await notification.enterpriseRef.get()).data()
     let fieldToIncrement: string = ''
     switch (notification.type) {
-        case 'activity':
-            fieldToIncrement = 'totalActivityNotifications'
+        case 'event':
+            fieldToIncrement = 'totalEventNotifications'
             break;
         case 'alert':
             fieldToIncrement = 'totalAlertNotifications'
-            break;
-        case 'request':
-            fieldToIncrement = 'totalRequestNotifications'
             break;
     }
     return db
@@ -34,9 +31,8 @@ export const onNotificationAdded = functions.firestore
           .then(() => {
             return console.log(
                 `Updated enterprise: ${enterprise.name} notifications quantity to:
-                    ${'activity'}: ${notification.type == 'activity' ? enterprise.totalActivityNotifications + 1 : enterprise.totalActivityNotifications}
+                    ${'event'}: ${notification.type == 'event' ? enterprise.totalEventNotifications + 1 : enterprise.totalEventNotifications}
                     ${'alert'}: ${notification.type == 'alert' ? enterprise.totalAlertNotifications + 1 : enterprise.totalAlertNotifications}
-                    ${'request'}: ${notification.type == 'request' ? enterprise.totalRequestNotifications + 1 : enterprise.totalRequestNotifications}
                 `
             );
           })
@@ -66,14 +62,11 @@ export const onNotificationAdded = functions.firestore
       // Determinar el campo a decrementar basado en el type de notificación
       let fieldToDecrement: string = '';
       switch (notification.type) {
-        case 'activity':
-          fieldToDecrement = 'totalActivityNotifications';
+        case 'event':
+          fieldToDecrement = 'totalEventNotifications';
           break;
         case 'alert':
           fieldToDecrement = 'totalAlertNotifications';
-          break;
-        case 'request':
-          fieldToDecrement = 'totalRequestNotifications';
           break;
         default:
           console.error('Invalid notification type');
@@ -86,13 +79,10 @@ export const onNotificationAdded = functions.firestore
           totalReadByAdminNotifications: admin.firestore.FieldValue.increment(1),
         })
         .then(() => {
-          console.log(                `Updated enterprise: ${enterprise.name} notifications quantity to:
-          ${'activity'}: ${notification.type == 'activity' ? enterprise.totalActivityNotifications - 1 : enterprise.totalActivityNotifications}
+          console.log(`Updated enterprise: ${enterprise.name} notifications quantity to:
+          ${'event'}: ${notification.type == 'event' ? enterprise.totalEventNotifications - 1 : enterprise.totalEventNotifications}
           ${'alert'}: ${notification.type == 'alert' ? enterprise.totalAlertNotifications - 1 : enterprise.totalAlertNotifications}
-          ${'request'}: ${notification.type == 'request' ? enterprise.totalRequestNotifications - 1 : enterprise.totalRequestNotifications}
-          ${'readByAdmin'}: ${enterprise.totalReadByAdminNotifications + 1 }
-          
-      `)
+          ${'readByAdmin'}: ${enterprise.totalReadByAdminNotifications + 1 }`)
           return console.log(`Updated enterprise: ${enterprise.name} notifications count`);
         })
         .catch((error) => {
