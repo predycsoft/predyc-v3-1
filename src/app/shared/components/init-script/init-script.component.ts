@@ -32,6 +32,10 @@ import { profilesData } from 'src/assets/data/profiles.data';
 import { Profile } from '../../models/profile.model';
 // import { coursesData } from 'src/assets/data/courses.data'
 
+import {instructorsData} from 'src/assets/data/instructors.data'
+import { InstructorsService } from '../../services/instructors.service';
+
+
 @Component({
   selector: 'app-init-script',
   templateUrl: './init-script.component.html',
@@ -46,7 +50,9 @@ export class InitScriptComponent {
     private userService: UserService,
     private categoryService: CategoryService,
     private skillService: SkillService,
-    private departmentService: DepartmentService
+    private departmentService: DepartmentService,
+    private instructorsService: InstructorsService
+
   ) {}
 
   async ngOnInit() {}
@@ -148,30 +154,35 @@ export class InitScriptComponent {
     const categories: Category[] = categoriesData.map(category => {
       return Category.fromJson({
         ...category,
-        enterprise: enterpriseRef
+        //enterprise: enterpriseRef
       })
     })
     // console.log("categories", categories)
     for (let category of categories) {
       await this.categoryService.addCategory(category)
+      console.log('new category',category)
+      const categoryRef = this.categoryService.getCategoryRefById(category.id)
+      let skill = new Skill (null,category.name,categoryRef,enterpriseRef)
+      console.log('********* Creating Skills *********')
+      await this.skillService.addSkill(skill)
     }
     console.log(`Finished Creating Categories`)
 
     // Create skills
-    console.log('********* Creating Skills *********')
-    const skills: Skill[] = skillsData.map(skill => {
-      const randomCategory = categories[Math.floor(Math.random()*categories.length)];
-      const categoryRef = this.categoryService.getCategoryRefById(randomCategory.id)
-      return Skill.fromJson({
-        ...skill,
-        category: categoryRef,
-        enterprise: enterpriseRef,
-      })
-    })
-    for (let skill of skills) {
-      await this.skillService.addSkill(skill)
-    }
-    console.log(`Finished Creating Skills`)
+    // console.log('********* Creating Skills *********')
+    // const skills: Skill[] = skillsData.map(skill => {
+    //   const randomCategory = categories[Math.floor(Math.random()*categories.length)];
+    //   const categoryRef = this.categoryService.getCategoryRefById(randomCategory.id)
+    //   return Skill.fromJson({
+    //     ...skill,
+    //     category: categoryRef,
+    //     enterprise: enterpriseRef,
+    //   })
+    // })
+    // for (let skill of skills) {
+    //   await this.skillService.addSkill(skill)
+    // }
+    // console.log(`Finished Creating Skills`)
   
     // Create coursesClasses and courses
 
@@ -213,6 +224,15 @@ export class InitScriptComponent {
 
     // Create global collection
     console.log('********* Creating Global collection *********')
+
+
+    // Create Instructors (OLD) 
+    console.log('********* Creating Instructors *********')
+    instructorsData.forEach(async instructor => {
+      await this.instructorsService.addInstructor(instructor)
+    });
+    console.log(`Finished Creating Instructors`)
+
     try {
       await new Promise(resolve => setTimeout(resolve, 5000)); // Wait for 5 seconds
       const users: User[] = await firstValueFrom(this.afs.collection<User>(User.collection).valueChanges());
