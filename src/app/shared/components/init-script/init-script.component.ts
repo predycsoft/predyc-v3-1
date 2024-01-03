@@ -32,8 +32,21 @@ import { profilesData } from 'src/assets/data/profiles.data';
 import { Profile } from '../../models/profile.model';
 // import { coursesData } from 'src/assets/data/courses.data'
 
+import { Curso } from 'src/app/shared/models/course.model';
+import { Clase } from "../../../shared/models/course-class.model"
+
+
+
 import {instructorsData} from 'src/assets/data/instructors.data'
 import { InstructorsService } from '../../services/instructors.service';
+import { CourseService } from '../../services/course.service';
+import { Activity} from '../../../shared/models/activity-classes.model';
+import { ActivityClassesService } from '../../services/activity-classes.service';
+import { CourseClassService } from '../../services/course-class.service';
+import { Modulo } from '../../../shared/models/module.model';
+import { ModuleService } from '../../services/module.service';
+import { coursesData } from 'src/assets/data/courses.data';
+
 
 
 @Component({
@@ -51,9 +64,16 @@ export class InitScriptComponent {
     private categoryService: CategoryService,
     private skillService: SkillService,
     private departmentService: DepartmentService,
-    private instructorsService: InstructorsService
+    private instructorsService: InstructorsService,
+    public courseService : CourseService,
+    public activityClassesService:ActivityClassesService,
+    public courseClassService: CourseClassService,
+    public moduleService: ModuleService,
 
   ) {}
+
+  instructors = [];
+
 
   async ngOnInit() {}
 
@@ -227,11 +247,16 @@ export class InitScriptComponent {
 
 
     // Create Instructors (OLD) 
-    console.log('********* Creating Instructors *********')
-    instructorsData.forEach(async instructor => {
-      await this.instructorsService.addInstructor(instructor)
-    });
-    console.log(`Finished Creating Instructors`)
+    console.log('********* Creating Instructors *********');
+    for (let i = 0; i < instructorsData.length; i++) {
+      const instructor = instructorsData[i];
+      await this.instructorsService.addInstructor(instructor);
+      this.instructors.push(instructor);
+    }
+    console.log(`Finished Creating Instructors`, this.instructors);
+
+    this.uploadCurosLegacy();
+
 
     try {
       await new Promise(resolve => setTimeout(resolve, 5000)); // Wait for 5 seconds
@@ -251,6 +276,166 @@ export class InitScriptComponent {
       console.error("Hubo un error al obtener los usuarios:", error);
     }
     console.log(`Finished Creating Global collection`)
+  }
+
+
+  async uploadCurosLegacy() {
+
+    let jsonData = coursesData.slice(0,3)
+    console.log('cursos a cargar',jsonData)
+    // Now you can use the jsonData object locally
+
+    jsonData = jsonData.filter(x=>x?.publicado)
+    console.log('cursos Insert',jsonData)
+    for (let index = 0; index < jsonData.length; index++) {
+      let curso = jsonData[index]
+      let cursoIn = new Curso
+      cursoIn = structuredClone(cursoIn)
+      let courseRef = await this.afs.collection<Curso>(Curso.collection).doc().ref;
+      cursoIn.id = courseRef.id
+      cursoIn.descripcion = curso.descripcion
+      cursoIn.instructorNombre = curso.instructorNombre
+      // cursoIn.instructorFoto = curso.instructorFoto
+      cursoIn.imagen_instructor = curso.instructorFoto
+      cursoIn.instructor = curso.instructorNombre
+      cursoIn.imagen = curso.foto
+      cursoIn.foto = curso.foto
+      cursoIn.idOld = curso.id
+      //cursoIn.descripcion = curso.descripcion
+      //cursoIn.idioma = curso.idioma no se tenia anteriormete 
+      //cursoIn.instructorResumen = curso.instructorResumen
+      cursoIn.nivel = curso.nivel
+      cursoIn.titulo = curso.titulo
+      let instructor = this.instructors.find(x=> x.idOld == curso.instructorId)
+      console.log('Instructor',instructor,this.instructors)
+      let instructorRef = await this.afs.collection<any>('instructors').doc(instructor.id).ref;
+      cursoIn.instructorRef = instructorRef
+      cursoIn.resumen_instructor = instructor.resumen
+      //cursoIn.descripcion = instructor.descripcion
+      //console.log('cursoIn',curso,cursoIn)
+      //let competenciaTest = await this.afs.collection<any>('skill').doc('AjnLM3sTWFnprVzRxyZ7').ref;
+      let competenciaTest = await this.getSkillRefByName(curso.categoria)
+      cursoIn.skillsRef=[competenciaTest]
+      await this.courseService.saveCourse(cursoIn)
+      console.log('curso save',cursoIn)
+      let clasesData = curso.clases;
+      console.log('clasesData',clasesData)
+      let modulos = clasesData.modulos
+      let clases = clasesData.clases
+      let actividades = curso.actividades
+
+      //console.log('modulos',modulos)
+      //console.log('clases',clases)
+
+      modulos.sort(function(a, b) {
+        var keyA = new Date(a.numero),
+          keyB = new Date(b.numero);
+        // Compare the 2 dates
+        if (keyA < keyB) return -1;
+        if (keyA > keyB) return 1;
+        return 0;
+      });
+
+      console.log('modulos crear ordenados',modulos)
+
+      for (let index = 0; index < modulos.length; index++) {
+        const modulo = modulos[index];
+        let clasesModulo = clases.filter(x=> x.modulo == modulo.numero)
+        let arrayClassesRef = []
+        //console.log('detalles modulo clases',modulo,clasesModulo)
+        for (let index = 0; index < clasesModulo.length; index++) {
+          const clase = clasesModulo[index];
+          let claseLocal = new Clase;
+          let claseRef = await this.afs.collection<Clase>(Clase.collection).doc().ref;
+          arrayClassesRef.push(claseRef)
+          claseLocal.id = claseRef.id
+          claseLocal.HTMLcontent = clase.HTMLcontent;
+          claseLocal.archivos = clase.archivos.map(archivo => ({ // Usando map aquí para transformar la estructura del archivo.
+            id: Date.now(),
+            nombre: archivo.nombre,
+            size: archivo.size,
+            type: archivo.type,
+            url: archivo.url
+          }));
+          claseLocal.tipo = clase.tipo
+          claseLocal.vimeoId1 = clase.idVideo
+          claseLocal.instructorRef = instructorRef
+          claseLocal.duracion = clase.duracion
+          claseLocal.descripcion = clase.descripcion
+          claseLocal.titulo = clase.titulo
+          claseLocal.date = clase.id
+
+          console.log('clase save',clase)
+          if(clase.tipo == 'actividad'){
+            let idActividad = clase.idVideo
+            let actividadIn = actividades.find(x=> x.id == idActividad)
+            if(actividadIn){
+              let actividad = new Activity
+              actividad.type = 'regular'
+              actividad.title = actividadIn.title
+              actividad.createdAt = actividadIn.createdAt
+              actividad.coursesRef = [courseRef]
+              // actividad.description = actividadIn.titulo
+              actividad.claseRef = claseRef
+              console.log('actividadIn',actividad)
+              await this.activityClassesService.saveActivity(actividad);
+              let preguntas = actividadIn.questions
+              for (let index = 0; index < preguntas.length; index++) {
+                const pregunta = preguntas[index];
+                this.activityClassesService.saveQuestion(pregunta,actividad.id)
+              }
+            }
+          }
+          await this.courseClassService.saveClass(claseLocal);
+        }
+        let idRef = await this.afs.collection<Modulo>(Modulo.collection).doc().ref.id;
+        //console.log('modulo',modulo)
+        let module = new Modulo;
+        module.id = idRef;
+        module.numero = modulo.numero;
+        module.titulo = modulo.titulo;
+        module.clasesRef = arrayClassesRef;
+        console.log('module save', module)
+        await this.moduleService.saveModulo(module, courseRef.id)
+      }
+      let test = curso.actividades.find(x=> x.isTest) // se llama asi porque es un examen
+      if(test){
+        let examen = new Activity
+        examen.type = 'test'
+        examen.title = test.title
+        examen.createdAt = test.createdAt
+        examen.coursesRef = [courseRef]
+        console.log('examen',examen)
+        await this.activityClassesService.saveActivity(examen);
+        let preguntas = test.questions
+        for (let index = 0; index < preguntas.length; index++) {
+          const pregunta = preguntas[index];
+          await this.activityClassesService.saveQuestion(pregunta,examen.id)
+        }
+
+      }
+    }
+
+  }
+
+  getSkillRefByName(skillName): Promise<any | null> {
+    return new Promise(async (resolve, reject) => {
+      await this.afs.collection<any>('skill', ref =>
+        ref.where('name', '==', skillName)
+           .where('enterprise', '==', null)
+      ).get().subscribe(querySnapshot => {
+        if (!querySnapshot.empty) {
+          // Resolving with the first document reference
+          resolve(querySnapshot.docs[0].ref);
+        } else {
+          console.log('No skill found with the given name and enterprise null');
+          resolve(null);
+        }
+      }, error => {
+        console.error('Error fetching skill:', error);
+        reject(error);
+      });
+    });
   }
 
   // Crea perfiles y agrega la referencia al departamento y usuario respectivo

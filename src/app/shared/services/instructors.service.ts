@@ -25,8 +25,10 @@ export class InstructorsService {
   async addInstructor(Instructor): Promise<void> {
     try {
       const ref = this.afs.collection('instructors').doc().ref;
+      let idOld = Instructor.id
       await ref.set({...Instructor,idOld:Instructor.id,id:ref.id}, { merge: true });
-      //Instructor.id = ref.id;
+      Instructor.id = ref.id;
+      Instructor.idOld = idOld
       console.log('Instructor agregado',Instructor);
     } catch (error) {
       console.log(error)

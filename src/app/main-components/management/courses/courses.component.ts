@@ -162,7 +162,7 @@ export class CoursesComponent {
     categoriasStrings.forEach(cat => {
       let category: category = {
         name: cat,
-        courses: this.cursos.filter(x => x.categoria == cat),
+        courses: this.cursos.filter(x => x['categoria'] == cat),
         expanded: false
       }
       categories.push(category)

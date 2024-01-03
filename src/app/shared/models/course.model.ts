@@ -5,13 +5,16 @@ import { DocumentReference } from "@angular/fire/compat/firestore"
 
 export class Curso {
 
+
   public static collection = 'course'
 
-  categoria: string = ""
+  //categoria: string = ""
   descripcion: string = ""
   resumen: string = ""
-  idioma: string = ""
-  duracion: number = 0
+  nuevo: boolean = false
+  proximamente: boolean = false;
+  idioma: string = "Español"
+  //duracion: number = 0
   imagen: string = ""
   contenido: string = ""
   instructor: string = ""
@@ -19,15 +22,20 @@ export class Curso {
   resumen_instructor: string = ""
   foto: string = ""
   id: string = ""
-  instructorFoto: string = ""
+  //instructorFoto: string = ""
+  instructorRef: DocumentReference = null
   instructorNombre: string = ""
-  instructorResumen: string = ""
-  modulos: Modulo[] = []
+  //instructorResumen: string = ""
+  //modulos: Modulo[] = []
   skillsRef: DocumentReference[] = []
   nivel: string = ""
   titulo: string = ""
   instructorDescripcion: string = ""
   vimeoFolderId: string = ""
   enterpriseRef: DocumentReference = null
+  idOld: string = ""
+
+
+
 
   }

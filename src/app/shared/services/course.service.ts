@@ -104,6 +104,73 @@ export class CourseService {
     try {
       this.enterpriseService.enterpriseLoaded$.subscribe(isLoaded => {
         if (isLoaded) {
+          this.enterpriseRef = this.enterpriseService.getEnterpriseRef();
+  
+          // Fetch all classes once
+          const allClasses$ = this.afs.collection<Clase>(Clase.collection).valueChanges();
+  
+          // Query to get by enterprise match
+          const enterpriseMatch$ = this.afs.collection<Curso>(Curso.collection, ref => 
+            ref.where('enterpriseRef', '==', this.enterpriseRef)
+          ).valueChanges();
+  
+          // Query to get where enterprise is empty
+          const enterpriseEmpty$ = this.afs.collection<Curso>(Curso.collection, ref => 
+            ref.where('enterpriseRef', '==', null)
+          ).valueChanges();
+  
+          this.course$ = combineLatest([enterpriseMatch$, enterpriseEmpty$, allClasses$]).pipe(
+            map(([matched, empty, allClasses]) => {
+              // Combine matched and empty courses
+              const combinedCourses = [...matched, ...empty];
+  
+              // Process each course
+              return combinedCourses.map(course => {
+                // Fetch modules for each course
+                const modules$ = this.afs.collection(`${Curso.collection}/${course.id}/${Modulo.collection}`).valueChanges();
+  
+                return modules$.pipe(
+                  map(modules => {
+                    // For each module, find and attach the relevant classes
+                    const modulesWithClasses = modules.map(module => {
+                      const classes = module['clasesRef'].map(claseRef => 
+                        allClasses.find(clase => clase.id === claseRef.id)
+                      );
+  
+                      return { ...module as Modulo, clases: classes };
+                    });
+  
+                    return { ...course, modules: modulesWithClasses };
+                  })
+                );
+              });
+            }),
+            switchMap(courseModulesObservables => combineLatest(courseModulesObservables))
+          );
+  
+          // Subscribing to the final Observable
+          this.course$.subscribe({
+            next: courses => {
+              this.coursesSubject.next(courses);
+            },
+            error: error => {
+              console.error(error);
+              this.alertService.errorAlert(JSON.stringify(error));
+            }
+          });
+        }
+      });
+    } catch (error) {
+      console.error(error);
+      // Handle the error appropriately
+    }
+  }
+  
+
+  __getCourses() {
+    try {
+      this.enterpriseService.enterpriseLoaded$.subscribe(isLoaded => {
+        if (isLoaded) {
           
           this.enterpriseRef = this.enterpriseService.getEnterpriseRef();
       
@@ -163,6 +230,7 @@ export class CourseService {
       // Handle the error appropriately
     }
   }
+
   getCoursesObservable(): Observable<Curso[]> {
     return this.course$
   }

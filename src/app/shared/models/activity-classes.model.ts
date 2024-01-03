@@ -586,10 +586,10 @@ export class Activity {
   description: string = '';
   duration: number = 0;
   instructions: string | null = null;
-  claseRef: DocumentReference<Clase>;
-  enterpriseRef: DocumentReference<Enterprise>;
+  claseRef: DocumentReference<Clase> = null;
+  enterpriseRef: DocumentReference<Enterprise> = null;
   coursesRef: DocumentReference<Curso>[] = [];
-  profileRef: DocumentReference<Profile>;
+  profileRef: DocumentReference<Profile> = null;
   files: any[] = [];
   skillsRef: DocumentReference<Skill>[] = []
   vimeoId1: number | null = null

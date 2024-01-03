@@ -74,7 +74,7 @@ export class ActivityClassesService {
       //this.alertService.succesAlert('Has agregado una actividad exitosamente.')
   } catch (error) {
       newActivity.id = null;
-      console.log(error)
+      console.log('error',error,newActivity)
       this.alertService.errorAlert(JSON.stringify(error))
     }
   }

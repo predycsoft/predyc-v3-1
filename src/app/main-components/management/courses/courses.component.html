@@ -275,7 +275,7 @@
                     </div>
                 </div>
                 <div fxLayout="column" class="contentContainer pd10" *ngIf="tab == 0">
-                    <div  *ngFor="let modulo of selectedCourse.modulos" fxLayout="column" class="fw  mgb05 backWhite radius6">
+                    <div  *ngFor="let modulo of selectedCourse['modulos']" fxLayout="column" class="fw  mgb05 backWhite radius6">
                         <div class=" pd05"  fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="space-between center">
                             <div fxLayout="row" fxLayoutGap="0.6rem" fxLayoutAlign=" center">
                                 <img *ngIf="modulo.expanded == false" (click)="modulo.expanded=true" [src]="icon.chevronRight"
