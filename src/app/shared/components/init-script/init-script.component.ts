@@ -182,7 +182,7 @@ export class InitScriptComponent {
       await this.categoryService.addCategory(category)
       console.log('new category',category)
       const categoryRef = this.categoryService.getCategoryRefById(category.id)
-      let skill = new Skill (null,category.name,categoryRef,enterpriseRef)
+      let skill = new Skill (null,category.name,categoryRef,null)
       console.log('********* Creating Skills *********')
       await this.skillService.addSkill(skill)
     }
