@@ -905,6 +905,2724 @@ export const coursesData = [
       ]
     },
     {
+      "instructorFoto": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Instructores%2FPablo-Malianni%2FFotos-Instructores.png?alt=media&token=e96ddcb3-c7b7-474c-971d-b266eb927f38",
+      "precioOriginal": 95,
+      "nuevo": true,
+      "miniPicture": "",
+      "id": "Transición-a-la-industria-4-0",
+      "duracion": 514,
+      "cantInscritos": 129,
+      "empresaFoto": "",
+      "precioFinal": 95,
+      "resumen": "Internet de las Cosas, Big Data, Analítica de datos, Inteligencia Artificial, Nube y  Ciberseguridad",
+      "porcentajeDescuento": 0,
+      "titulo": "Transición a la industria 4.0",
+      "foto": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Cursos%2FTransici%C3%B3n-a-la-industria-4-0%2F4.0.webp?alt=media&token=c23d3307-b3b4-4573-b6f4-d08f92b4a054",
+      "cantVentas": 0,
+      "empresaId": "",
+      "descripcion": "El conocimiento de todas las tecnologías habilitadoras de la Industria 4.0, y, por consiguiente de la Cuarta Revolución Industrial, desde la Internet de las Cosas, Big Data, Analítica de datos, la Inteligencia Artificial y la Nube, a la Ciberseguridad pasando por la Nueva Transformación Digital de las ciudades en Smart Cities (Ciudades\nInteligentes) y la Robotización de la industria.",
+      "empresaNombre": "",
+      "instructorPorcentaje": 50,
+      "rectPicture": "",
+      "instructorId": "Pablo-Malianni",
+      "nivel": "Básico",
+      "instructorNombre": "Pablo Malianni",
+      "valoracion": 4,
+      "publicado": true,
+      "prioridad": 2,
+      "categoria": "Industria 4.0",
+      "proximamente": false,
+      "programaId": "",
+      "sqrPicture": "",
+      "fechaCreacion": {
+        "seconds": 1661629097,
+        "nanoseconds": 605000000
+      },
+      "clases": {
+        "duracion": 514,
+        "clases": [
+          {
+            "numero": 1,
+            "idVideo": "743992900",
+            "vigente": true,
+            "duracion": 14,
+            "titulo": "Repaso histórico desde la primera a la cuarta revolución industrial",
+            "HTMLcontent": "",
+            "modulo": 1,
+            "id": 0,
+            "descripcion": "",
+            "tipo": "video",
+            "archivos": []
+          },
+          {
+            "idVideo": "745216106",
+            "HTMLcontent": "",
+            "vigente": true,
+            "archivos": [],
+            "duracion": 11,
+            "modulo": 1,
+            "descripcion": "",
+            "titulo": "Tecnologías Disruptivas pilares de la Industria 4.0",
+            "numero": 2,
+            "tipo": "video",
+            "id": 1
+          },
+          {
+            "vigente": true,
+            "titulo": "La era de la Internet de las cosas IOT",
+            "tipo": "video",
+            "idVideo": "745217347",
+            "modulo": 1,
+            "descripcion": "",
+            "duracion": 11,
+            "archivos": [
+              {
+                "type": "application/pdf",
+                "nombre": "Industria-40-Fabricando-el-Futuro-UIA.pdf",
+                "size": 1515661,
+                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2FIndustria-40-Fabricando-el-Futuro-UIA.pdf?alt=media&token=35111915-69c9-4e31-b4dc-0b6a652853de"
+              },
+              {
+                "type": "application/pdf",
+                "nombre": "Paper-de secretaría de planeamiento y políticas.pdf",
+                "size": 444860,
+                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2FPaper-de%20secretar%C3%ADa%20de%20planeamiento%20y%20pol%C3%ADticas.pdf?alt=media&token=9e9cac0d-cf7d-4a7a-b787-12db01ae295e"
+              }
+            ],
+            "HTMLcontent": "",
+            "id": 2,
+            "numero": 3
+          },
+          {
+            "tipo": "actividad",
+            "vigente": true,
+            "modulo": 1,
+            "archivos": [],
+            "descripcion": "",
+            "HTMLcontent": "",
+            "idVideo": "Hacia-la-revolución-industrial-4.0",
+            "id": 3,
+            "duracion": 5,
+            "titulo": "Hacia la revolución industrial 4.0",
+            "numero": 4
+          },
+          {
+            "HTMLcontent": "",
+            "descripcion": "",
+            "titulo": "Tecnologías wearables: Aparatos y dispositivos electrónicos que se incorporan en la industria",
+            "modulo": 2,
+            "archivos": [],
+            "duracion": 14,
+            "id": 4,
+            "numero": 5,
+            "tipo": "video",
+            "idVideo": "745221110",
+            "vigente": true
+          },
+          {
+            "vigente": true,
+            "idVideo": "744005171",
+            "titulo": "Realidad virtual, realidad aumentada y mixta",
+            "numero": 6,
+            "HTMLcontent": "",
+            "archivos": [],
+            "modulo": 2,
+            "descripcion": "",
+            "duracion": 4,
+            "id": 5,
+            "tipo": "video"
+          },
+          {
+            "tipo": "video",
+            "vigente": true,
+            "idVideo": "744590729",
+            "numero": 7,
+            "HTMLcontent": "",
+            "id": 6,
+            "titulo": "Tecnología celular. Sistemas Ciber - Físicos",
+            "duracion": 4,
+            "modulo": 2,
+            "descripcion": "",
+            "archivos": []
+          },
+          {
+            "HTMLcontent": "",
+            "duracion": 10,
+            "numero": 8,
+            "vigente": true,
+            "modulo": 2,
+            "tipo": "video",
+            "archivos": [
+              {
+                "type": "application/pdf",
+                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2FLogo!-como%20%20tecnologia%20facilitadora.pdf?alt=media&token=ab37e211-a90b-4ea9-a8dd-ba4a468797ee",
+                "nombre": "Logo!-como  tecnologia facilitadora.pdf",
+                "size": 642185
+              },
+              {
+                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2FTecnologia-facilitadora.pdf?alt=media&token=01fe7a3b-94d8-42eb-b083-290b48f206d6",
+                "size": 1684241,
+                "nombre": "Tecnologia-facilitadora.pdf",
+                "type": "application/pdf"
+              }
+            ],
+            "id": 7,
+            "idVideo": "744598836",
+            "titulo": "Configuración del Logo! Como IIoT",
+            "descripcion": ""
+          },
+          {
+            "archivos": [
+              {
+                "nombre": "revista-mercado.pdf",
+                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2Frevista-mercado.pdf?alt=media&token=8e1cc6a9-59a3-4511-9718-75a7a0158c67",
+                "type": "application/pdf",
+                "size": 5596889
+              }
+            ],
+            "HTMLcontent": "",
+            "idVideo": "745219263",
+            "duracion": 11,
+            "titulo": "Configuración Logo! V8.3",
+            "descripcion": "",
+            "id": 8,
+            "modulo": 2,
+            "vigente": true,
+            "tipo": "video",
+            "numero": 9
+          },
+          {
+            "archivos": [],
+            "descripcion": "",
+            "titulo": "Configuración AWS",
+            "id": 9,
+            "HTMLcontent": "",
+            "tipo": "video",
+            "vigente": true,
+            "idVideo": "744009210",
+            "numero": 10,
+            "modulo": 2,
+            "duracion": 6
+          },
+          {
+            "archivos": [],
+            "id": 10,
+            "idVideo": "743787910",
+            "HTMLcontent": "",
+            "titulo": "Datos del Logo en AWS",
+            "descripcion": "",
+            "tipo": "video",
+            "duracion": 7,
+            "numero": 11,
+            "modulo": 2,
+            "vigente": true
+          },
+          {
+            "HTMLcontent": "",
+            "id": 11,
+            "idVideo": "Tecnologías-facilitadoras-de-la-industria-4.0-V2",
+            "archivos": [],
+            "descripcion": "",
+            "titulo": "Tecnologías facilitadoras de la industria 4.0",
+            "modulo": 2,
+            "numero": 12,
+            "tipo": "actividad",
+            "duracion": 5,
+            "vigente": true
+          },
+          {
+            "descripcion": "",
+            "archivos": [],
+            "vigente": true,
+            "HTMLcontent": "",
+            "tipo": "video",
+            "idVideo": "744618054",
+            "modulo": 3,
+            "numero": 13,
+            "titulo": "Modelos de nube",
+            "duracion": 7,
+            "id": 12
+          },
+          {
+            "HTMLcontent": "",
+            "titulo": "Proveedores de la nube",
+            "vigente": true,
+            "idVideo": "744012958",
+            "descripcion": "",
+            "modulo": 3,
+            "archivos": [],
+            "duracion": 14,
+            "numero": 14,
+            "id": 13,
+            "tipo": "video"
+          },
+          {
+            "tipo": "video",
+            "idVideo": "745223821",
+            "modulo": 3,
+            "titulo": "Seguridad de la nube",
+            "vigente": true,
+            "duracion": 6,
+            "numero": 15,
+            "descripcion": "",
+            "id": 14,
+            "archivos": [],
+            "HTMLcontent": ""
+          },
+          {
+            "idVideo": "744639304",
+            "duracion": 8,
+            "descripcion": "",
+            "tipo": "video",
+            "numero": 16,
+            "titulo": "Configuración de una nube",
+            "archivos": [
+              {
+                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2FNUBE-INFORMATICA.pdf?alt=media&token=ceb26b59-ba02-4b79-9ad4-585783edeb68",
+                "type": "application/pdf",
+                "size": 201767,
+                "nombre": "NUBE-INFORMATICA.pdf"
+              },
+              {
+                "nombre": "Aplicaciones-Mindsphere Control y Monitoreo.pptx.pdf",
+                "type": "application/pdf",
+                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2FAplicaciones-Mindsphere%20Control%20y%20Monitoreo.pptx.pdf?alt=media&token=dc136dbf-4b96-4687-b559-cc2fc98fc40b",
+                "size": 2473073
+              },
+              {
+                "size": 112328,
+                "nombre": "Infraestructura-de la red de Instrumento a la Nube.pdf",
+                "type": "application/pdf",
+                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2FInfraestructura-de%20la%20red%20de%20Instrumento%20a%20la%20Nube.pdf?alt=media&token=33a5d0aa-b02b-4412-925d-10abe210d407"
+              }
+            ],
+            "id": 15,
+            "modulo": 3,
+            "HTMLcontent": "",
+            "vigente": true
+          },
+          {
+            "modulo": 3,
+            "idVideo": "La-nube-aplicada-a-la-industria-4.0-V2",
+            "HTMLcontent": "",
+            "vigente": true,
+            "tipo": "actividad",
+            "numero": 17,
+            "duracion": 5,
+            "archivos": [],
+            "descripcion": "",
+            "titulo": "La nube aplicada a la industria 4.0",
+            "id": 16
+          },
+          {
+            "tipo": "video",
+            "duracion": 4,
+            "descripcion": "",
+            "idVideo": "743771361",
+            "archivos": [],
+            "numero": 18,
+            "titulo": "Tipos de datos",
+            "HTMLcontent": "",
+            "vigente": true,
+            "modulo": 4,
+            "id": 17
+          },
+          {
+            "idVideo": "743771547",
+            "tipo": "video",
+            "descripcion": "",
+            "vigente": true,
+            "id": 18,
+            "HTMLcontent": "",
+            "duracion": 5,
+            "titulo": "Características",
+            "numero": 19,
+            "archivos": [],
+            "modulo": 4
+          },
+          {
+            "titulo": "Data Analytics",
+            "modulo": 4,
+            "numero": 20,
+            "vigente": true,
+            "descripcion": "",
+            "id": 19,
+            "HTMLcontent": "",
+            "archivos": [
+              {
+                "type": "application/pdf",
+                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2FMQTT-Client%20and%20Gateway.pdf?alt=media&token=4bcdc0fe-be42-4491-9a69-27208a36d0ec",
+                "nombre": "MQTT-Client and Gateway.pdf",
+                "size": 322350
+              },
+              {
+                "size": 2682393,
+                "nombre": "IOT.pdf",
+                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2FIOT.pdf?alt=media&token=62958816-5f83-4233-9814-0236c4e55adc",
+                "type": "application/pdf"
+              },
+              {
+                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2FIoT2040-Primeros-pasos-programacion.pdf?alt=media&token=7d474cb9-6721-4b78-8434-63b0705d5784",
+                "size": 5397688,
+                "nombre": "IoT2040-Primeros-pasos-programacion.pdf",
+                "type": "application/pdf"
+              }
+            ],
+            "idVideo": "743771746",
+            "tipo": "video",
+            "duracion": 12
+          },
+          {
+            "HTMLcontent": "",
+            "duracion": 6,
+            "vigente": true,
+            "id": 20,
+            "archivos": [],
+            "titulo": "Programa Node Red",
+            "descripcion": "",
+            "modulo": 4,
+            "numero": 21,
+            "idVideo": "743770940",
+            "tipo": "video"
+          },
+          {
+            "descripcion": "",
+            "archivos": [],
+            "numero": 22,
+            "HTMLcontent": "",
+            "tipo": "video",
+            "id": 21,
+            "modulo": 4,
+            "titulo": "Instalación del programa Node Red",
+            "vigente": true,
+            "duracion": 6,
+            "idVideo": "745224458"
+          },
+          {
+            "id": 22,
+            "descripcion": "",
+            "numero": 23,
+            "archivos": [],
+            "titulo": "Big Data",
+            "vigente": true,
+            "modulo": 4,
+            "duracion": 5,
+            "HTMLcontent": "",
+            "tipo": "actividad",
+            "idVideo": "Big-Data-V2"
+          },
+          {
+            "archivos": [],
+            "idVideo": "743773632",
+            "id": 23,
+            "titulo": "Definición de IIoT",
+            "duracion": 4,
+            "numero": 24,
+            "tipo": "video",
+            "vigente": true,
+            "descripcion": "",
+            "modulo": 5,
+            "HTMLcontent": ""
+          },
+          {
+            "tipo": "video",
+            "id": 24,
+            "descripcion": "",
+            "vigente": true,
+            "idVideo": "743773741",
+            "HTMLcontent": "",
+            "titulo": "Concepto IPv6. Desarrollo del internet de las cosas",
+            "modulo": 5,
+            "numero": 25,
+            "duracion": 6,
+            "archivos": []
+          },
+          {
+            "titulo": "Cosas (objetos) Tecnología de los dispositivos conectados",
+            "archivos": [],
+            "duracion": 7,
+            "modulo": 5,
+            "idVideo": "743774126",
+            "vigente": true,
+            "numero": 26,
+            "id": 25,
+            "HTMLcontent": "",
+            "tipo": "video",
+            "descripcion": ""
+          },
+          {
+            "archivos": [],
+            "id": 26,
+            "tipo": "video",
+            "titulo": "Tipos de dispositivos conectados",
+            "duracion": 4,
+            "idVideo": "743774430",
+            "modulo": 5,
+            "HTMLcontent": "",
+            "numero": 27,
+            "vigente": true,
+            "descripcion": ""
+          },
+          {
+            "idVideo": "743772262",
+            "id": 27,
+            "HTMLcontent": "",
+            "duracion": 4,
+            "modulo": 5,
+            "numero": 28,
+            "archivos": [],
+            "vigente": true,
+            "tipo": "video",
+            "titulo": "Cómo agregar nuevas bibliotecas de nodos",
+            "descripcion": ""
+          },
+          {
+            "tipo": "video",
+            "archivos": [],
+            "idVideo": "743773084",
+            "HTMLcontent": "",
+            "titulo": "Primer flujo en Node Red",
+            "duracion": 8,
+            "numero": 29,
+            "modulo": 5,
+            "descripcion": "",
+            "vigente": true,
+            "id": 28
+          },
+          {
+            "id": 29,
+            "vigente": true,
+            "archivos": [],
+            "HTMLcontent": "",
+            "idVideo": "743773437",
+            "descripcion": "",
+            "duracion": 6,
+            "tipo": "video",
+            "modulo": 5,
+            "numero": 30,
+            "titulo": "Segundo flujo en Node Red"
+          },
+          {
+            "vigente": true,
+            "numero": 31,
+            "idVideo": "743772429",
+            "id": 30,
+            "archivos": [],
+            "HTMLcontent": "",
+            "tipo": "video",
+            "titulo": "Lectura y escritura entre S71200 y Node Red",
+            "duracion": 11,
+            "modulo": 5,
+            "descripcion": ""
+          },
+          {
+            "modulo": 5,
+            "HTMLcontent": "",
+            "tipo": "actividad",
+            "vigente": true,
+            "archivos": [],
+            "descripcion": "",
+            "numero": 32,
+            "idVideo": "Internet-industrial-de-las-cosas-V2",
+            "duracion": 5,
+            "id": 31,
+            "titulo": "Internet industrial de las cosas"
+          },
+          {
+            "numero": 33,
+            "duracion": 9,
+            "titulo": "Inteligencia artificial relacionada a la industria 4.0",
+            "modulo": 6,
+            "archivos": [
+              {
+                "size": 447120,
+                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2F%C2%BFQu%C3%A9-es%20la%20inteligencia%20artificial%20(IA)_%20_%20Oracle%20Argentina.pdf?alt=media&token=90faf1ba-42a7-4494-a9a4-200d1a4c0f73",
+                "type": "application/pdf",
+                "nombre": "¿Qué-es la inteligencia artificial (IA)_ _ Oracle Argentina.pdf"
+              }
+            ],
+            "tipo": "video",
+            "vigente": true,
+            "idVideo": "743774606",
+            "id": 32,
+            "descripcion": "",
+            "HTMLcontent": ""
+          },
+          {
+            "tipo": "video",
+            "modulo": 6,
+            "idVideo": "743775253",
+            "vigente": true,
+            "titulo": "Asistentes virtuales. Bots y Chatbots",
+            "duracion": 2,
+            "HTMLcontent": "",
+            "descripcion": "",
+            "id": 33,
+            "archivos": [],
+            "numero": 34
+          },
+          {
+            "descripcion": "",
+            "tipo": "video",
+            "titulo": "Robots Colaborativos (Cobots)",
+            "vigente": true,
+            "duracion": 3,
+            "modulo": 6,
+            "numero": 35,
+            "idVideo": "743775358",
+            "HTMLcontent": "",
+            "id": 34,
+            "archivos": []
+          },
+          {
+            "tipo": "video",
+            "idVideo": "744744322",
+            "titulo": "Conexión de Node Red con un Logo",
+            "duracion": 13,
+            "archivos": [],
+            "modulo": 6,
+            "numero": 36,
+            "descripcion": "",
+            "vigente": true,
+            "id": 35,
+            "HTMLcontent": ""
+          },
+          {
+            "modulo": 6,
+            "numero": 37,
+            "idVideo": "744655319",
+            "titulo": "Instalación y ajuste con Raspbian",
+            "archivos": [],
+            "vigente": true,
+            "duracion": 13,
+            "HTMLcontent": "",
+            "descripcion": "",
+            "id": 36,
+            "tipo": "video"
+          },
+          {
+            "id": 37,
+            "archivos": [],
+            "HTMLcontent": "",
+            "modulo": 6,
+            "vigente": true,
+            "duracion": 13,
+            "tipo": "video",
+            "descripcion": "",
+            "idVideo": "744692864",
+            "numero": 38,
+            "titulo": "Instalación y ajustes de Raspbian 2"
+          },
+          {
+            "duracion": 10,
+            "id": 38,
+            "idVideo": "744725493",
+            "descripcion": "",
+            "tipo": "video",
+            "archivos": [],
+            "vigente": true,
+            "titulo": "Publicar y suscribir con Ubidots",
+            "HTMLcontent": "",
+            "numero": 39,
+            "modulo": 6
+          },
+          {
+            "archivos": [],
+            "modulo": 6,
+            "id": 39,
+            "duracion": 5,
+            "descripcion": "",
+            "titulo": "Inteligencia artificial relacionada a la industria 4.0",
+            "tipo": "actividad",
+            "idVideo": "Inteligencia-artificial-relacionada-a-la-industria-4.0-V2",
+            "HTMLcontent": "",
+            "numero": 40,
+            "vigente": true
+          },
+          {
+            "modulo": 7,
+            "HTMLcontent": "",
+            "duracion": 7,
+            "id": 40,
+            "tipo": "video",
+            "titulo": "Ciberseguridad",
+            "idVideo": "745229589",
+            "descripcion": "",
+            "numero": 41,
+            "archivos": [],
+            "vigente": true
+          },
+          {
+            "vigente": true,
+            "numero": 42,
+            "duracion": 5,
+            "HTMLcontent": "",
+            "idVideo": "745230461",
+            "descripcion": "",
+            "titulo": "Ciberamenazas",
+            "archivos": [],
+            "tipo": "video",
+            "id": 41,
+            "modulo": 7
+          },
+          {
+            "numero": 43,
+            "id": 42,
+            "descripcion": "",
+            "modulo": 7,
+            "tipo": "video",
+            "HTMLcontent": "",
+            "vigente": true,
+            "duracion": 5,
+            "idVideo": "745231183",
+            "titulo": "Ciberataques",
+            "archivos": [
+              {
+                "type": "application/pdf",
+                "size": 1540505,
+                "nombre": "sophos-2022-threat-report_ciberataques.pdf",
+                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2Fsophos-2022-threat-report_ciberataques.pdf?alt=media&token=7b2a8751-213c-4524-833f-5ee70cda33f5"
+              }
+            ]
+          },
+          {
+            "modulo": 7,
+            "numero": 44,
+            "id": 43,
+            "tipo": "video",
+            "archivos": [
+              {
+                "size": 1849571,
+                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2Fconsideraciones-ciberseguridad-2022-kpmg.pdf?alt=media&token=10762026-c566-4b02-aa6f-7994f8261ffc",
+                "nombre": "consideraciones-ciberseguridad-2022-kpmg.pdf",
+                "type": "application/pdf"
+              }
+            ],
+            "duracion": 6,
+            "vigente": true,
+            "descripcion": "",
+            "titulo": "Tendencias en ciberseguridad",
+            "HTMLcontent": "",
+            "idVideo": "745232031"
+          },
+          {
+            "tipo": "video",
+            "vigente": true,
+            "modulo": 7,
+            "descripcion": "",
+            "archivos": [],
+            "titulo": "Envio de datos de forma segura ",
+            "HTMLcontent": "",
+            "duracion": 8,
+            "id": 44,
+            "idVideo": "745225906",
+            "numero": 45
+          },
+          {
+            "vigente": true,
+            "HTMLcontent": "",
+            "modulo": 7,
+            "archivos": [],
+            "tipo": "video",
+            "duracion": 4,
+            "idVideo": "744779618",
+            "titulo": "Qué es MQTT",
+            "numero": 46,
+            "descripcion": "",
+            "id": 45
+          },
+          {
+            "duracion": 9,
+            "tipo": "video",
+            "idVideo": "745227910",
+            "vigente": true,
+            "modulo": 7,
+            "HTMLcontent": "",
+            "titulo": "Registrar valores locales con Node Red",
+            "id": 46,
+            "numero": 47,
+            "archivos": [],
+            "descripcion": ""
+          },
+          {
+            "descripcion": "",
+            "numero": 48,
+            "duracion": 5,
+            "modulo": 7,
+            "idVideo": "Ciberseguridad-V2",
+            "archivos": [],
+            "titulo": "Ciberseguridad",
+            "tipo": "actividad",
+            "vigente": true,
+            "HTMLcontent": "",
+            "id": 47
+          },
+          {
+            "idVideo": "745242029",
+            "duracion": 5,
+            "tipo": "video",
+            "vigente": true,
+            "modulo": 8,
+            "HTMLcontent": "",
+            "archivos": [],
+            "titulo": "Definición de la transformación digital",
+            "numero": 49,
+            "descripcion": "",
+            "id": 48
+          },
+          {
+            "idVideo": "745242626",
+            "titulo": "Pilares de la transformación digital",
+            "numero": 50,
+            "tipo": "video",
+            "archivos": [],
+            "id": 49,
+            "modulo": 8,
+            "HTMLcontent": "",
+            "duracion": 7,
+            "vigente": true,
+            "descripcion": ""
+          },
+          {
+            "id": 50,
+            "titulo": "Modelo de una empresa digital",
+            "numero": 51,
+            "idVideo": "745243117",
+            "vigente": true,
+            "duracion": 8,
+            "descripcion": "",
+            "archivos": [],
+            "HTMLcontent": "",
+            "tipo": "video",
+            "modulo": 8
+          },
+          {
+            "vigente": true,
+            "duracion": 3,
+            "titulo": "10 tendencias para la transformación digital",
+            "HTMLcontent": "",
+            "id": 51,
+            "tipo": "video",
+            "modulo": 8,
+            "idVideo": "745244191",
+            "numero": 52,
+            "descripcion": "",
+            "archivos": [
+              {
+                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2FDigitalizacion-Instrumentos%20de%20Procesos.pdf?alt=media&token=eb9ba55d-b6df-48b9-bac5-b0ec3f2052b5",
+                "type": "application/pdf",
+                "size": 356578,
+                "nombre": "Digitalizacion-Instrumentos de Procesos.pdf"
+              },
+              {
+                "size": 795711,
+                "type": "application/pdf",
+                "nombre": "Digitalización_SCW.pdf",
+                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2FDigitalizaci%C3%B3n_SCW.pdf?alt=media&token=d7529154-0b2a-4666-a3a3-5e5eb827880b"
+              },
+              {
+                "nombre": "estudio-de-digitalizacion-arg-pagina.pdf",
+                "type": "application/pdf",
+                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2Festudio-de-digitalizacion-arg-pagina.pdf?alt=media&token=67537ee5-90c6-42dc-b3c0-aa41b5c34651",
+                "size": 2054757
+              },
+              {
+                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2FDigitalizacion-con%20variadores%20y%20motores.pdf?alt=media&token=07808359-ec51-4e1c-a3ca-fd4bb018bbae",
+                "nombre": "Digitalizacion-con variadores y motores.pdf",
+                "size": 5531863,
+                "type": "application/pdf"
+              }
+            ]
+          },
+          {
+            "descripcion": "",
+            "HTMLcontent": "",
+            "id": 52,
+            "idVideo": "745233457",
+            "numero": 53,
+            "duracion": 9,
+            "archivos": [],
+            "vigente": true,
+            "modulo": 8,
+            "titulo": "Crear un Bot en Telegram",
+            "tipo": "video"
+          },
+          {
+            "modulo": 8,
+            "vigente": true,
+            "descripcion": "",
+            "tipo": "video",
+            "HTMLcontent": "",
+            "archivos": [],
+            "duracion": 17,
+            "id": 53,
+            "idVideo": "745235227",
+            "numero": 54,
+            "titulo": "Dashboard en Node Red"
+          },
+          {
+            "tipo": "video",
+            "HTMLcontent": "",
+            "descripcion": "",
+            "modulo": 8,
+            "numero": 55,
+            "duracion": 14,
+            "titulo": "Lectura de una variable del PLC con Telegram",
+            "id": 54,
+            "archivos": [],
+            "vigente": true,
+            "idVideo": "745237639"
+          },
+          {
+            "vigente": true,
+            "archivos": [],
+            "HTMLcontent": "",
+            "modulo": 8,
+            "tipo": "video",
+            "descripcion": "",
+            "id": 55,
+            "duracion": 7,
+            "titulo": "Mensajeria con twilio en Node Red",
+            "numero": 56,
+            "idVideo": "745240015"
+          },
+          {
+            "tipo": "actividad",
+            "titulo": "Transformación digital en la industria",
+            "duracion": 5,
+            "id": 56,
+            "modulo": 8,
+            "vigente": true,
+            "HTMLcontent": "",
+            "archivos": [],
+            "numero": 57,
+            "idVideo": "Transformación-digital-en-la-industria-V2",
+            "descripcion": ""
+          },
+          {
+            "descripcion": "",
+            "numero": 58,
+            "vigente": true,
+            "titulo": "Digitalización para la gestión de energía",
+            "modulo": 9,
+            "idVideo": "745245790",
+            "duracion": 13,
+            "tipo": "video",
+            "HTMLcontent": "",
+            "id": 57,
+            "archivos": []
+          },
+          {
+            "descripcion": "",
+            "titulo": "Tips para aumentar la transparencia energética",
+            "idVideo": "745247878",
+            "numero": 59,
+            "duracion": 5,
+            "vigente": true,
+            "HTMLcontent": "",
+            "modulo": 9,
+            "tipo": "video",
+            "archivos": [],
+            "id": 58
+          },
+          {
+            "idVideo": "745248534",
+            "numero": 60,
+            "modulo": 9,
+            "id": 59,
+            "tipo": "video",
+            "titulo": "Solución mínima. Gestión de energía con S7 - 1200",
+            "vigente": true,
+            "duracion": 15,
+            "descripcion": "",
+            "archivos": [],
+            "HTMLcontent": ""
+          },
+          {
+            "titulo": "Energy Manager PRO",
+            "archivos": [
+              {
+                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2FEficiencia-Energetica.pdf?alt=media&token=f1751528-281f-422f-b4ec-4ecff51a11ec",
+                "type": "application/pdf",
+                "size": 3550658,
+                "nombre": "Eficiencia-Energetica.pdf"
+              }
+            ],
+            "numero": 61,
+            "duracion": 10,
+            "descripcion": "",
+            "idVideo": "745250607",
+            "tipo": "video",
+            "id": 60,
+            "HTMLcontent": "",
+            "modulo": 9,
+            "vigente": true
+          },
+          {
+            "duracion": 8,
+            "descripcion": "",
+            "idVideo": "745244587",
+            "id": 61,
+            "vigente": true,
+            "HTMLcontent": "",
+            "numero": 62,
+            "tipo": "video",
+            "modulo": 9,
+            "titulo": "Energy Manager PRO",
+            "archivos": []
+          },
+          {
+            "idVideo": "Monitoreo-de-Plantas-Industriales-para-La-Industria-4.0-V2",
+            "numero": 63,
+            "id": 62,
+            "duracion": 5,
+            "modulo": 9,
+            "HTMLcontent": "",
+            "vigente": true,
+            "descripcion": "",
+            "titulo": "Monitoreo de Plantas Industriales para La Industria 4.0",
+            "archivos": [],
+            "tipo": "actividad"
+          },
+          {
+            "modulo": 10,
+            "duracion": 7,
+            "id": 63,
+            "HTMLcontent": "",
+            "numero": 64,
+            "titulo": "El futuro tecnológico y nuevas tendencias ",
+            "descripcion": "",
+            "idVideo": "745251806",
+            "vigente": true,
+            "archivos": [],
+            "tipo": "video"
+          },
+          {
+            "titulo": "Los nuevos roles profesionales",
+            "idVideo": "745252502",
+            "modulo": 10,
+            "numero": 65,
+            "descripcion": "",
+            "id": 64,
+            "duracion": 4,
+            "tipo": "video",
+            "HTMLcontent": "",
+            "vigente": true,
+            "archivos": []
+          },
+          {
+            "archivos": [
+              {
+                "size": 1451298,
+                "type": "application/pdf",
+                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2FIntroduccin-a%20la%20tecnologia%20Blockchain.pdf?alt=media&token=4fd7d754-d711-491f-85df-b6956342dc95",
+                "nombre": "Introduccin-a la tecnologia Blockchain.pdf"
+              }
+            ],
+            "tipo": "video",
+            "numero": 66,
+            "vigente": true,
+            "modulo": 10,
+            "idVideo": "745252789",
+            "descripcion": "",
+            "titulo": "Blockchain (Cadena de bloques)",
+            "duracion": 6,
+            "id": 65,
+            "HTMLcontent": ""
+          },
+          {
+            "archivos": [
+              {
+                "size": 1058450,
+                "type": "application/pdf",
+                "nombre": "Conceptos-para-el-diseño-de-modelos-de-negocio.docx.pdf",
+                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2FConceptos-para-el-dise%C3%B1o-de-modelos-de-negocio.docx.pdf?alt=media&token=0ba38f12-5fee-41a9-903a-eb6210dc0613"
+              }
+            ],
+            "idVideo": "745253249",
+            "vigente": true,
+            "id": 66,
+            "duracion": 4,
+            "modulo": 10,
+            "numero": 67,
+            "tipo": "video",
+            "titulo": "Algoritmo como modelo de negocios",
+            "descripcion": "",
+            "HTMLcontent": ""
+          },
+          {
+            "HTMLcontent": "",
+            "idVideo": "745225114",
+            "modulo": 10,
+            "duracion": 5,
+            "id": 67,
+            "archivos": [
+              {
+                "size": 640270,
+                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2FEconom%C3%ADa-Colaborativa.pdf?alt=media&token=6ed1da06-832d-402b-a034-77c63cca5e34",
+                "nombre": "Economía-Colaborativa.pdf",
+                "type": "application/pdf"
+              }
+            ],
+            "descripcion": "",
+            "titulo": "Economía colaborativa",
+            "tipo": "video",
+            "numero": 68,
+            "vigente": true
+          },
+          {
+            "duracion": 5,
+            "titulo": "Nuevos Profesionales En La Industria 4.0",
+            "idVideo": "Nuevos-Profesionales-En-La-Industria-4.0-V2",
+            "tipo": "actividad",
+            "numero": 69,
+            "id": 68,
+            "descripcion": "",
+            "archivos": [],
+            "modulo": 10,
+            "HTMLcontent": "",
+            "vigente": true
+          }
+        ],
+        "modulosFlag": true,
+        "modulos": [
+          {
+            "numero": 1,
+            "titulo": "Hacia la revolución industrial 4.0"
+          },
+          {
+            "titulo": "Tecnologías facilitadoras de la industria 4.0",
+            "numero": 2
+          },
+          {
+            "numero": 3,
+            "titulo": "La nube aplicada a la industria 4.0"
+          },
+          {
+            "titulo": "Big data",
+            "numero": 4
+          },
+          {
+            "titulo": "IIot internet industrial de las cosas",
+            "numero": 5
+          },
+          {
+            "titulo": "Inteligencia artificial relacionada a la industria 4.0",
+            "numero": 6
+          },
+          {
+            "titulo": "Ciberseguridad",
+            "numero": 7
+          },
+          {
+            "titulo": "Transformación digital en la industria",
+            "numero": 8
+          },
+          {
+            "numero": 9,
+            "titulo": "Monitoreo de Plantas Industriales para La Industria 4.0"
+          },
+          {
+            "titulo": "Nuevos Profesionales En La Industria 4.0",
+            "numero": 10
+          }
+        ]
+      },
+      "examen": [
+        {
+          "pregunta": "El concepto de Industria 4.0 nació en 2011 en Alemania para describir la digitalización y procesos industriales mediante la interconexión de Internet de las Cosas.",
+          "opciones": [
+            {
+              "numero": 0,
+              "texto": "Verdadero"
+            },
+            {
+              "numero": 1,
+              "texto": "Falso"
+            }
+          ],
+          "correctas": [
+            0
+          ],
+          "imagen": ""
+        },
+        {
+          "pregunta": "La realidad aumentada incrusta informacion digital en el mundo real, mientras que la realidad virtual crea contexto digitales que imitan el mundo real.",
+          "imagen": "",
+          "opciones": [
+            {
+              "texto": "Verdadero",
+              "numero": 0
+            },
+            {
+              "texto": "Falso",
+              "numero": 1
+            }
+          ],
+          "correctas": [
+            0
+          ]
+        },
+        {
+          "pregunta": "¿Cuáles son los dos grandes modelos de la Nube?",
+          "correctas": [
+            1
+          ],
+          "imagen": "",
+          "opciones": [
+            {
+              "numero": 0,
+              "texto": "Servicio y contratación"
+            },
+            {
+              "numero": 1,
+              "texto": "Servicio y despliegue"
+            },
+            {
+              "numero": 2,
+              "texto": "Servicio y software"
+            }
+          ]
+        },
+        {
+          "opciones": [
+            {
+              "texto": "Veracidad, Velocidad, Volumen.",
+              "numero": 0
+            },
+            {
+              "numero": 1,
+              "texto": "Volumen, Velocidad, Variedad."
+            },
+            {
+              "texto": "Volumen, Velocidad, Valoración.",
+              "numero": 2
+            }
+          ],
+          "correctas": [
+            1
+          ],
+          "imagen": "",
+          "pregunta": "¿A qué hace referencia el modelo 3V en el mundo de Big Data?"
+        },
+        {
+          "pregunta": "Internet de las cosas es la definición de Internet de los objetos con el mismo protocolo IP que conecta a la red.",
+          "imagen": "",
+          "correctas": [
+            1
+          ],
+          "opciones": [
+            {
+              "numero": 0,
+              "texto": "Verdadero"
+            },
+            {
+              "numero": 1,
+              "texto": "Falso"
+            }
+          ]
+        },
+        {
+          "opciones": [
+            {
+              "texto": "Robots autónomos",
+              "numero": 0
+            },
+            {
+              "texto": "Robots colaborativos",
+              "numero": 1
+            },
+            {
+              "numero": 2,
+              "texto": "Bots conversacionales"
+            }
+          ],
+          "correctas": [
+            2
+          ],
+          "pregunta": "¿Cómo se definen los Bots y Chatbots?",
+          "imagen": ""
+        },
+        {
+          "correctas": [
+            1
+          ],
+          "pregunta": "Las propiedades principales de la Seguridad de la Información y la Ciberseguridad son:",
+          "imagen": "",
+          "opciones": [
+            {
+              "texto": "Volumen, Velocidad y Veracidad.",
+              "numero": 0
+            },
+            {
+              "numero": 1,
+              "texto": "Disponibilidad, Integridad y Confidencialidad. "
+            },
+            {
+              "texto": "Ninguna de las anteriores.",
+              "numero": 2
+            }
+          ]
+        },
+        {
+          "imagen": "",
+          "pregunta": "La conectividad es uno de los pilares fundamentales en la transformación digital de una empresa.",
+          "opciones": [
+            {
+              "texto": "Verdadero",
+              "numero": 0
+            },
+            {
+              "texto": "Falso",
+              "numero": 1
+            }
+          ],
+          "correctas": [
+            0
+          ]
+        },
+        {
+          "pregunta": "Una de las medidas a tomar para la eficiencia energética es:",
+          "correctas": [
+            2
+          ],
+          "imagen": "",
+          "opciones": [
+            {
+              "numero": 0,
+              "texto": "La potencia contratada."
+            },
+            {
+              "texto": "Utilización de equipos inteligentes.",
+              "numero": 1
+            },
+            {
+              "texto": "Transparencia sobre el consumo de energía. ",
+              "numero": 2
+            }
+          ]
+        },
+        {
+          "opciones": [
+            {
+              "numero": 0,
+              "texto": "Verdadero"
+            },
+            {
+              "texto": "Falso",
+              "numero": 1
+            }
+          ],
+          "imagen": "",
+          "correctas": [],
+          "pregunta": "El algoritmo como modelo de negocio en la economía digital es una realidad en el mundo."
+        }
+      ],
+      "actividades": [
+        {
+          "isTest": true,
+          "questions": [
+            {
+              "image": "",
+              "text": "El concepto de Industria 4.0 nació en 2011 en Alemania para describir la digitalización y procesos industriales mediante la interconexión de Internet de las Cosas.",
+              "points": 1,
+              "type": {
+                "createInstructions": "",
+                "value": "single_choice",
+                "solveInstructions": "Seleccione la opción correcta del listado de opciones",
+                "displayName": "Opción Simple",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta"
+              },
+              "options": [
+                {
+                  "isCorrect": true,
+                  "text": "Verdadero"
+                },
+                {
+                  "text": "Falso",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "image": "",
+              "points": 1,
+              "options": [
+                {
+                  "isCorrect": true,
+                  "text": "Verdadero"
+                },
+                {
+                  "isCorrect": false,
+                  "text": "Falso"
+                }
+              ],
+              "text": "La realidad aumentada incrusta informacion digital en el mundo real, mientras que la realidad virtual crea contexto digitales que imitan el mundo real.",
+              "type": {
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
+                "displayName": "Opción Simple",
+                "solveInstructions": "Seleccione la opción correcta del listado de opciones",
+                "createInstructions": "",
+                "value": "single_choice"
+              }
+            },
+            {
+              "type": {
+                "value": "single_choice",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
+                "solveInstructions": "Seleccione la opción correcta del listado de opciones",
+                "displayName": "Opción Simple",
+                "createInstructions": ""
+              },
+              "text": "¿Cuáles son los dos grandes modelos de la Nube?",
+              "options": [
+                {
+                  "isCorrect": false,
+                  "text": "Servicio y contratación"
+                },
+                {
+                  "isCorrect": true,
+                  "text": "Servicio y despliegue"
+                },
+                {
+                  "text": "Servicio y software",
+                  "isCorrect": false
+                }
+              ],
+              "points": 1,
+              "image": ""
+            },
+            {
+              "points": 1,
+              "options": [
+                {
+                  "text": "Veracidad, Velocidad, Volumen.",
+                  "isCorrect": false
+                },
+                {
+                  "text": "Volumen, Velocidad, Variedad.",
+                  "isCorrect": true
+                },
+                {
+                  "isCorrect": false,
+                  "text": "Volumen, Velocidad, Valoración."
+                }
+              ],
+              "text": "¿A qué hace referencia el modelo 3V en el mundo de Big Data?",
+              "image": "",
+              "type": {
+                "displayName": "Opción Simple",
+                "value": "single_choice",
+                "solveInstructions": "Seleccione la opción correcta del listado de opciones",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
+                "createInstructions": ""
+              }
+            },
+            {
+              "text": "Internet de las cosas es la definición de Internet de los objetos con el mismo protocolo IP que conecta a la red.",
+              "type": {
+                "solveInstructions": "Seleccione la opción correcta del listado de opciones",
+                "createInstructions": "",
+                "value": "single_choice",
+                "displayName": "Opción Simple",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta"
+              },
+              "options": [
+                {
+                  "isCorrect": false,
+                  "text": "Verdadero"
+                },
+                {
+                  "isCorrect": true,
+                  "text": "Falso"
+                }
+              ],
+              "points": 1,
+              "image": ""
+            },
+            {
+              "points": 1,
+              "options": [
+                {
+                  "text": "Robots autónomos",
+                  "isCorrect": false
+                },
+                {
+                  "text": "Robots colaborativos",
+                  "isCorrect": false
+                },
+                {
+                  "text": "Bots conversacionales",
+                  "isCorrect": true
+                }
+              ],
+              "type": {
+                "solveInstructions": "Seleccione la opción correcta del listado de opciones",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
+                "createInstructions": "",
+                "value": "single_choice",
+                "displayName": "Opción Simple"
+              },
+              "image": "",
+              "text": "¿Cómo se definen los Bots y Chatbots?"
+            },
+            {
+              "points": 1,
+              "type": {
+                "value": "single_choice",
+                "displayName": "Opción Simple",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
+                "createInstructions": "",
+                "solveInstructions": "Seleccione la opción correcta del listado de opciones"
+              },
+              "options": [
+                {
+                  "isCorrect": false,
+                  "text": "Volumen, Velocidad y Veracidad."
+                },
+                {
+                  "isCorrect": true,
+                  "text": "Disponibilidad, Integridad y Confidencialidad. "
+                },
+                {
+                  "isCorrect": false,
+                  "text": "Ninguna de las anteriores."
+                }
+              ],
+              "text": "Las propiedades principales de la Seguridad de la Información y la Ciberseguridad son:",
+              "image": ""
+            },
+            {
+              "options": [
+                {
+                  "text": "Verdadero",
+                  "isCorrect": true
+                },
+                {
+                  "isCorrect": false,
+                  "text": "Falso"
+                }
+              ],
+              "type": {
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
+                "createInstructions": "",
+                "displayName": "Opción Simple",
+                "solveInstructions": "Seleccione la opción correcta del listado de opciones",
+                "value": "single_choice"
+              },
+              "text": "La conectividad es uno de los pilares fundamentales en la transformación digital de una empresa.",
+              "image": "",
+              "points": 1
+            },
+            {
+              "text": "Una de las medidas a tomar para la eficiencia energética es:",
+              "image": "",
+              "type": {
+                "displayName": "Opción Simple",
+                "createInstructions": "",
+                "value": "single_choice",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
+                "solveInstructions": "Seleccione la opción correcta del listado de opciones"
+              },
+              "options": [
+                {
+                  "text": "La potencia contratada.",
+                  "isCorrect": false
+                },
+                {
+                  "isCorrect": false,
+                  "text": "Utilización de equipos inteligentes."
+                },
+                {
+                  "isCorrect": true,
+                  "text": "Transparencia sobre el consumo de energía. "
+                }
+              ],
+              "points": 1
+            },
+            {
+              "points": 1,
+              "image": "",
+              "text": "El algoritmo como modelo de negocio en la economía digital es una realidad en el mundo.",
+              "type": {
+                "value": "single_choice",
+                "displayName": "Opción Simple",
+                "createInstructions": "",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
+                "solveInstructions": "Seleccione la opción correcta del listado de opciones"
+              },
+              "options": [
+                {
+                  "isCorrect": true,
+                  "text": "Verdadero"
+                },
+                {
+                  "isCorrect": false,
+                  "text": "Falso"
+                }
+              ]
+            }
+          ],
+          "title": "Cuestionario final: Transición a la industria 4.0",
+          "id": "Examen-1",
+          "createdAt": 1675378201488
+        },
+        {
+          "id": "Monitoreo-de-Plantas-Industriales-para-La-Industria-4.0-V2",
+          "questions": [
+            {
+              "points": 1,
+              "image": "",
+              "text": "Una de las medidas a tomar para la eficiencia energética es:",
+              "options": [
+                {
+                  "text": "Transparencia sobre el consumo de energía.",
+                  "isCorrect": true
+                },
+                {
+                  "isCorrect": false,
+                  "text": "La potencia contratada."
+                },
+                {
+                  "text": "Utilización de equipos inteligentes.",
+                  "isCorrect": false
+                }
+              ],
+              "type": {
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
+                "createInstructions": "",
+                "solveInstructions": "Instruccion Dummy para single choice",
+                "displayName": "Opción Simple",
+                "value": "single_choice"
+              }
+            },
+            {
+              "image": "",
+              "text": "El mundo está experimentando cambios significativos que son: Demográfico, Climático, Transformación Digital, Urbanización y Globalización.",
+              "options": [
+                {
+                  "placeholder": "",
+                  "text": "Verdadero",
+                  "isCorrect": true
+                },
+                {
+                  "text": "Falso",
+                  "placeholder": "",
+                  "isCorrect": false
+                }
+              ],
+              "points": 1,
+              "type": {
+                "displayName": "Opción Simple",
+                "value": "single_choice",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
+                "createInstructions": "",
+                "solveInstructions": "Instruccion Dummy para single choice"
+              }
+            },
+            {
+              "points": 1,
+              "image": "",
+              "text": "La emisión de Dióxido de Carbono, en la energía eléctrica consumida, se calcula como un factor que depende del origen del combustible que se utiliza para su generación.",
+              "options": [
+                {
+                  "isCorrect": true,
+                  "text": "Verdadero",
+                  "placeholder": ""
+                },
+                {
+                  "placeholder": "",
+                  "text": "Falso",
+                  "isCorrect": false
+                }
+              ],
+              "type": {
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
+                "value": "single_choice",
+                "solveInstructions": "Instruccion Dummy para single choice",
+                "createInstructions": "",
+                "displayName": "Opción Simple"
+              }
+            },
+            {
+              "image": "",
+              "text": "La pirámide de eficiencia energética la podemos considerar que incluye los niveles de adquisición, monitoreo y análisis energético de una planta.",
+              "options": [
+                {
+                  "isCorrect": true,
+                  "text": "Verdadero",
+                  "placeholder": ""
+                },
+                {
+                  "text": "Falso",
+                  "placeholder": "",
+                  "isCorrect": false
+                }
+              ],
+              "type": {
+                "value": "single_choice",
+                "createInstructions": "",
+                "solveInstructions": "Instruccion Dummy para single choice",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
+                "displayName": "Opción Simple"
+              },
+              "points": 1
+            },
+            {
+              "image": "",
+              "options": [
+                {
+                  "placeholder": "",
+                  "isCorrect": true,
+                  "text": "Verdadero"
+                },
+                {
+                  "placeholder": "",
+                  "text": "Falso",
+                  "isCorrect": false
+                }
+              ],
+              "type": {
+                "value": "single_choice",
+                "displayName": "Opción Simple",
+                "createInstructions": "",
+                "solveInstructions": "Instruccion Dummy para single choice",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta"
+              },
+              "points": 1,
+              "text": "El ciclo de la eficiencia energética se puede decir que consta de: Realización de la medición, Adquisición de los valores de medición, Análisis de datos y Planificación de medidas para la eficiencia energética."
+            }
+          ],
+          "title": "Monitoreo de Plantas Industriales para La Industria 4.0 V2",
+          "createdAt": 1671134011820,
+          "isTest": false
+        },
+        {
+          "createdAt": 1670951806803,
+          "isTest": false,
+          "title": "Hacia la revolución industrial 4.0 V2",
+          "id": "Hacia-la-revolución-industrial-4.0",
+          "questions": [
+            {
+              "text": "El Concepto de Industria 4.0 nacio en 2011 en Alemania para describir la digitalizacion y procesos industriales mediante la interconexion de internet de las cosas.",
+              "type": {
+                "createInstructions": "",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
+                "displayName": "Opción Simple",
+                "solveInstructions": "Instruccion Dummy para single choice",
+                "value": "single_choice"
+              },
+              "points": 1,
+              "image": "",
+              "options": [
+                {
+                  "isCorrect": true,
+                  "text": "Verdadero"
+                },
+                {
+                  "isCorrect": false,
+                  "text": "Falso"
+                }
+              ]
+            },
+            {
+              "points": 1,
+              "type": {
+                "createInstructions": "",
+                "displayName": "Opción Múltiple",
+                "solveInstructions": "Instruccion Dummy para multiple choice",
+                "value": "multiple_choice",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas"
+              },
+              "image": "",
+              "text": "El Internet de las Cosas es:",
+              "options": [
+                {
+                  "text": "El motor de la Industria 4.0 ",
+                  "isCorrect": true
+                },
+                {
+                  "text": "Es uno mas de los pilares  de la Industria 4.0",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "options": [
+                {
+                  "text": "Uno de los mayores exponentes de la cuarta revolución industrial e industria 4.0. ",
+                  "isCorrect": true
+                },
+                {
+                  "isCorrect": false,
+                  "text": " Es uno de los pilares de la Industria 3.0."
+                }
+              ],
+              "type": {
+                "solveInstructions": "Instruccion Dummy para multiple choice",
+                "displayName": "Opción Múltiple",
+                "createInstructions": "",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas",
+                "value": "multiple_choice"
+              },
+              "image": "",
+              "points": 1,
+              "text": "Las ciudades inteligentes son:"
+            },
+            {
+              "options": [
+                {
+                  "isCorrect": true,
+                  "text": "Verdadero"
+                },
+                {
+                  "isCorrect": false,
+                  "text": "Falso"
+                }
+              ],
+              "image": "",
+              "text": "La fabricación aditiva y la impresión 3D son espinas dorsales de la fabricación inteligente.",
+              "type": {
+                "displayName": "Opción Múltiple",
+                "value": "multiple_choice",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas",
+                "createInstructions": "",
+                "solveInstructions": "Instruccion Dummy para multiple choice"
+              },
+              "points": 1
+            },
+            {
+              "points": 1,
+              "image": "",
+              "options": [
+                {
+                  "text": "Internet del todo",
+                  "isCorrect": false
+                },
+                {
+                  "isCorrect": false,
+                  "text": "Internet de los dispositivos"
+                },
+                {
+                  "isCorrect": true,
+                  "text": "Internet de las cosas"
+                }
+              ],
+              "text": "¿Cómo se llama el concepto en el que  todos los dispositivos están conectados a la Nube?",
+              "type": {
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas",
+                "displayName": "Opción Múltiple",
+                "value": "multiple_choice",
+                "solveInstructions": "Instruccion Dummy para multiple choice",
+                "createInstructions": ""
+              }
+            }
+          ]
+        },
+        {
+          "id": "Internet-industrial-de-las-cosas-V2",
+          "questions": [
+            {
+              "image": "",
+              "text": "Señale cual de los siguientes enunciados acerca del internet de las cosas son ciertos:",
+              "points": 4,
+              "options": [
+                {
+                  "text": "Internet de las cosas es la definición de Internet de los objetos con el mismo protocolo IP que conecta a la red.",
+                  "isCorrect": false
+                },
+                {
+                  "isCorrect": true,
+                  "text": "NFC y RFID son tecnologías asociadas al concepto de internet de las cosas."
+                },
+                {
+                  "text": "El protocolo de conexión a Internet IPV4, es una de las tecnologías disruptivas para la expansión de la Industria 4.0.",
+                  "isCorrect": false
+                },
+                {
+                  "isCorrect": true,
+                  "text": "¿Sensores, controladores y actuadores son los tres pilares fundamentales de la conectividad de la red?"
+                }
+              ],
+              "type": {
+                "tooltipInfo": "Configure una pregunta cuya respuesta sea verdadero o falso",
+                "solveInstructions": "Instruccion Dummy para verdadero o falso",
+                "createInstructions": "Marque las opciones que sean verdaderas y deje en blanco las que sean falsas",
+                "value": "true-false",
+                "displayName": "Verdadero o Falso"
+              }
+            },
+            {
+              "points": 1,
+              "type": {
+                "solveInstructions": "Instruccion Dummy para single choice",
+                "displayName": "Opción Simple",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
+                "value": "single_choice",
+                "createInstructions": ""
+              },
+              "image": "",
+              "text": "¿Cuál es la denominación industrial de Internet de las Cosas?",
+              "options": [
+                {
+                  "text": "IoE",
+                  "placeholder": "",
+                  "isCorrect": false
+                },
+                {
+                  "isCorrect": false,
+                  "placeholder": "",
+                  "text": "IoT"
+                },
+                {
+                  "isCorrect": true,
+                  "text": "IIoT",
+                  "placeholder": ""
+                }
+              ]
+            }
+          ],
+          "createdAt": 1671125656986,
+          "title": "Internet industrial de las cosas V2",
+          "isTest": false
+        },
+        {
+          "title": "Tecnologías facilitadoras de la industria 4.0 V2",
+          "isTest": false,
+          "createdAt": 1671126692201,
+          "questions": [
+            {
+              "type": {
+                "createInstructions": "Marque las opciones que sean verdaderas y deje en blanco las que sean falsas",
+                "displayName": "Verdadero o Falso",
+                "value": "true-false",
+                "tooltipInfo": "Configure una pregunta cuya respuesta sea verdadero o falso",
+                "solveInstructions": "Instruccion Dummy para verdadero o falso"
+              },
+              "options": [
+                {
+                  "isCorrect": true,
+                  "text": "Un Dron se define como aeronave no tripulada."
+                },
+                {
+                  "isCorrect": true,
+                  "text": "La realidad aumentada incrusta información digital en el mundo real, mientras que la realidad virtual crea contexto digitales que imitan el mundo real."
+                },
+                {
+                  "text": "La geolocalización aprovecha el valor de la ubicación geográfica (coordenadas) como herramienta clave para obtener información que puede ser de vital importancia para las compañías. Además se basa en los sistemas de información geográfica (GIS) para analizar, gestionar y visualizar conocimiento geográfico.",
+                  "isCorrect": true
+                }
+              ],
+              "text": "Señale cual de los siguientes enunciados son verdaderos:",
+              "image": "",
+              "points": 3
+            },
+            {
+              "options": [
+                {
+                  "text": "Se llevan puestas en forma de prenda o complemento en la ropa de vestir.",
+                  "isCorrect": true
+                },
+                {
+                  "isCorrect": false,
+                  "text": "No se llevan puestas, se usan de forma externa."
+                }
+              ],
+              "type": {
+                "createInstructions": "",
+                "displayName": "Opción Simple",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
+                "solveInstructions": "Seleccione la opción correcta del listado de opciones",
+                "value": "single_choice"
+              },
+              "image": "",
+              "text": "Las Tecnologías Weareables (Ponibles) son tecnologías inteligentes que: ",
+              "points": 1
+            },
+            {
+              "text": "La Tarjeta eSIM:",
+              "image": "",
+              "type": {
+                "solveInstructions": "Instruccion Dummy para single choice",
+                "createInstructions": "",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
+                "displayName": "Opción Simple",
+                "value": "single_choice"
+              },
+              "points": 1,
+              "options": [
+                {
+                  "isCorrect": false,
+                  "text": "No es una tarjeta que viene a sustituir, sino a complementar la actual."
+                },
+                {
+                  "text": "Es una tarjeta que viene a sustituir a la tarjeta SIM física. ",
+                  "isCorrect": true
+                }
+              ]
+            }
+          ],
+          "id": "Tecnologías-facilitadoras-de-la-industria-4.0-V2"
+        },
+        {
+          "questions": [
+            {
+              "image": "",
+              "text": "Señale cual de los siguientes conceptos de inteligencia artificial son ciertos",
+              "type": {
+                "displayName": "Verdadero o Falso",
+                "solveInstructions": "Instruccion Dummy para verdadero o falso",
+                "value": "true-false",
+                "tooltipInfo": "Configure una pregunta cuya respuesta sea verdadero o falso",
+                "createInstructions": "Marque las opciones que sean verdaderas y deje en blanco las que sean falsas"
+              },
+              "points": 2,
+              "options": [
+                {
+                  "placeholder": "",
+                  "isCorrect": true,
+                  "text": "Se conoce el concepto de Machine Learning como el Aprendizaje Automático."
+                },
+                {
+                  "placeholder": "",
+                  "text": "Se conoce el concepto de Deep Learning como el Aprendizaje Profundo.",
+                  "isCorrect": true
+                }
+              ]
+            },
+            {
+              "image": "",
+              "text": "En el aprendizaje de Machine Learning, ¿qué concepto se aplica?",
+              "options": [
+                {
+                  "text": "Redes neuronales",
+                  "isCorrect": true,
+                  "placeholder": ""
+                },
+                {
+                  "placeholder": "",
+                  "isCorrect": false,
+                  "text": "Árbol de decisión"
+                }
+              ],
+              "points": 1,
+              "type": {
+                "displayName": "Opción Simple",
+                "createInstructions": "",
+                "solveInstructions": "Instruccion Dummy para single choice",
+                "value": "single_choice",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta"
+              }
+            },
+            {
+              "image": "",
+              "type": {
+                "value": "single_choice",
+                "solveInstructions": "Instruccion Dummy para single choice",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
+                "createInstructions": "",
+                "displayName": "Opción Simple"
+              },
+              "points": 1,
+              "options": [
+                {
+                  "isCorrect": false,
+                  "placeholder": "",
+                  "text": "Robots autónomos"
+                },
+                {
+                  "placeholder": "",
+                  "text": "Robots colaborativos",
+                  "isCorrect": false
+                },
+                {
+                  "text": "Bots conversacionales",
+                  "isCorrect": true,
+                  "placeholder": ""
+                }
+              ],
+              "text": "¿Cómo se definen los Bots y Chatbots?"
+            },
+            {
+              "type": {
+                "value": "single_choice",
+                "createInstructions": "",
+                "displayName": "Opción Simple",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
+                "solveInstructions": "Instruccion Dummy para single choice"
+              },
+              "points": 1,
+              "text": "¿Qué es un Cobot?",
+              "options": [
+                {
+                  "placeholder": "",
+                  "isCorrect": false,
+                  "text": "Robot autónomo"
+                },
+                {
+                  "text": "Robot colaborativo",
+                  "placeholder": "",
+                  "isCorrect": true
+                },
+                {
+                  "placeholder": "",
+                  "text": "Robot industrial",
+                  "isCorrect": false
+                }
+              ],
+              "image": ""
+            }
+          ],
+          "id": "Inteligencia-artificial-relacionada-a-la-industria-4.0-V2",
+          "isTest": false,
+          "createdAt": 1671125926735,
+          "title": "Inteligencia artificial relacionada a la industria 4.0 V2"
+        },
+        {
+          "title": "La nube aplicada a la industria 4.0 V2",
+          "id": "La-nube-aplicada-a-la-industria-4.0-V2",
+          "createdAt": 1671132963982,
+          "questions": [
+            {
+              "type": {
+                "createInstructions": "",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
+                "displayName": "Opción Simple",
+                "solveInstructions": "Instruccion Dummy para single choice",
+                "value": "single_choice"
+              },
+              "points": 1,
+              "options": [
+                {
+                  "isCorrect": false,
+                  "text": "Servicio y contratación."
+                },
+                {
+                  "text": "Servicio y despliegue.",
+                  "isCorrect": true
+                },
+                {
+                  "isCorrect": false,
+                  "text": "Servicio y Software."
+                }
+              ],
+              "text": "¿Cuáles son los dos grandes modelos de la Nube?",
+              "image": ""
+            },
+            {
+              "text": "Los modelos de servicios son : IaaS , PaaS , SaaS.\n",
+              "points": 1,
+              "image": "",
+              "options": [
+                {
+                  "placeholder": "",
+                  "text": "Verdadero",
+                  "isCorrect": true
+                },
+                {
+                  "isCorrect": false,
+                  "text": "Falso",
+                  "placeholder": ""
+                }
+              ],
+              "type": {
+                "value": "single_choice",
+                "createInstructions": "",
+                "displayName": "Opción Simple",
+                "solveInstructions": "Instruccion Dummy para single choice",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta"
+              }
+            },
+            {
+              "options": [
+                {
+                  "placeholder": "",
+                  "text": "Verdadero",
+                  "isCorrect": false
+                },
+                {
+                  "placeholder": "",
+                  "isCorrect": true,
+                  "text": "Falso"
+                }
+              ],
+              "points": 1,
+              "text": "Los modelo de despliegue de la Nube son: Pública ,Privada e Híbrida.",
+              "type": {
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
+                "value": "single_choice",
+                "displayName": "Opción Simple",
+                "solveInstructions": "Instruccion Dummy para single choice",
+                "createInstructions": ""
+              },
+              "image": ""
+            },
+            {
+              "options": [
+                {
+                  "placeholder": "",
+                  "text": "Visibilidad",
+                  "isCorrect": false
+                },
+                {
+                  "placeholder": "",
+                  "text": "Vulnerabilidad",
+                  "isCorrect": true
+                }
+              ],
+              "points": 1,
+              "text": "¿Cuál de los siguientes items es el  correcto respecto a los riesgos y amenazas en el cloud computing?",
+              "image": "",
+              "type": {
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
+                "displayName": "Opción Simple",
+                "solveInstructions": "Instruccion Dummy para single choice",
+                "value": "single_choice",
+                "createInstructions": ""
+              }
+            },
+            {
+              "points": 1,
+              "type": {
+                "value": "single_choice",
+                "displayName": "Opción Simple",
+                "solveInstructions": "Instruccion Dummy para single choice",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
+                "createInstructions": ""
+              },
+              "options": [
+                {
+                  "isCorrect": true,
+                  "placeholder": "",
+                  "text": "Software Plataform Infraestrcture  as a Service."
+                },
+                {
+                  "text": "Sofware Public Incidence as a Service.",
+                  "isCorrect": false,
+                  "placeholder": ""
+                },
+                {
+                  "isCorrect": false,
+                  "placeholder": "",
+                  "text": "Software Private Infraestrcture as a Service."
+                }
+              ],
+              "text": "¿Qué significado tienen las siglas IaaS , PaaS y SaaS?\n",
+              "image": ""
+            }
+          ],
+          "isTest": false
+        },
+        {
+          "questions": [
+            {
+              "image": "",
+              "text": "La Seguridad de la Información tiene un alcance [alcanceInformacion] que la Ciberseguridad.",
+              "points": 1,
+              "options": [
+                {
+                  "placeholder": "alcanceInformacion",
+                  "text": "Igual",
+                  "isCorrect": false
+                },
+                {
+                  "placeholder": "alcanceInformacion",
+                  "isCorrect": false,
+                  "text": "Menor"
+                },
+                {
+                  "text": "Mayor",
+                  "placeholder": "alcanceInformacion",
+                  "isCorrect": true
+                }
+              ],
+              "type": {
+                "solveInstructions": "Instruccion Dummy para completar",
+                "tooltipInfo": "Configure una pregunta cuyo texto pueda ser completado a partir de las opciones provistas para cada marcador de referencia - cada marcador debe tener una única respuesta correcta",
+                "value": "complete",
+                "createInstructions": "Ingrese cada marcador como una palabra de referencia encerrada entre corchetes ([]).<br/>Ejemplo: El presidente [nombreDelPresidente] nacio en [paisDeNacimiento]",
+                "displayName": "Completar"
+              }
+            },
+            {
+              "options": [
+                {
+                  "text": "Volumen, Velocidad y Veracidad",
+                  "isCorrect": false,
+                  "placeholder": ""
+                },
+                {
+                  "placeholder": "",
+                  "text": "Disponibilidad, Integridad y Confidencialidad",
+                  "isCorrect": true
+                },
+                {
+                  "isCorrect": false,
+                  "text": "Ninguna de las anteriores",
+                  "placeholder": ""
+                }
+              ],
+              "type": {
+                "solveInstructions": "Instruccion Dummy para single choice",
+                "displayName": "Opción Simple",
+                "createInstructions": "",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
+                "value": "single_choice"
+              },
+              "text": "Las propiedades principales de la Seguridad de la Información y la Ciberseguridad son:",
+              "image": "",
+              "points": 1
+            },
+            {
+              "type": {
+                "solveInstructions": "Instruccion Dummy para single choice",
+                "createInstructions": "",
+                "value": "single_choice",
+                "displayName": "Opción Simple",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta"
+              },
+              "text": "Una de las propiedades más importante de la Ciberseguridad es:",
+              "points": 1,
+              "image": "",
+              "options": [
+                {
+                  "placeholder": "",
+                  "text": "No devolución",
+                  "isCorrect": false
+                },
+                {
+                  "placeholder": "",
+                  "isCorrect": false,
+                  "text": "No respuesta"
+                },
+                {
+                  "placeholder": "",
+                  "isCorrect": true,
+                  "text": "No repudio"
+                }
+              ]
+            },
+            {
+              "text": "Una infraestructura critica en un país es:",
+              "points": 1,
+              "image": "",
+              "options": [
+                {
+                  "isCorrect": false,
+                  "placeholder": "",
+                  "text": "Solo los equipos físicos."
+                },
+                {
+                  "isCorrect": false,
+                  "text": "Solo la Nube.",
+                  "placeholder": ""
+                },
+                {
+                  "placeholder": "",
+                  "text": "Una instalación física, equipos físicos, la red y servicios.",
+                  "isCorrect": true
+                }
+              ],
+              "type": {
+                "solveInstructions": "Instruccion Dummy para single choice",
+                "value": "single_choice",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
+                "createInstructions": "",
+                "displayName": "Opción Simple"
+              }
+            },
+            {
+              "text": "¿Cuál es el termino más utilizado en Ciberseguridad que se refiere a los equipos que se mantiene en operatividad tras ser sometidos a un Ciberataque?",
+              "type": {
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
+                "solveInstructions": "Instruccion Dummy para single choice",
+                "createInstructions": "",
+                "value": "single_choice",
+                "displayName": "Opción Simple"
+              },
+              "options": [
+                {
+                  "isCorrect": false,
+                  "placeholder": "",
+                  "text": "Backup"
+                },
+                {
+                  "text": "Resiliencia",
+                  "isCorrect": true,
+                  "placeholder": ""
+                },
+                {
+                  "text": "Redundancia",
+                  "isCorrect": false,
+                  "placeholder": ""
+                }
+              ],
+              "image": "",
+              "points": 1
+            }
+          ],
+          "id": "Ciberseguridad-V2",
+          "createdAt": 1671125130432,
+          "title": "Ciberseguridad V2",
+          "isTest": false
+        },
+        {
+          "questions": [
+            {
+              "text": "El algoritmo como modelo de negocio en la economía digital es una realidad en el mundo.",
+              "type": {
+                "value": "single_choice",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
+                "displayName": "Opción Simple",
+                "solveInstructions": "Instruccion Dummy para single choice",
+                "createInstructions": ""
+              },
+              "image": "",
+              "options": [
+                {
+                  "isCorrect": true,
+                  "text": "Verdadero"
+                },
+                {
+                  "isCorrect": false,
+                  "text": "Falso"
+                }
+              ],
+              "points": 1
+            },
+            {
+              "points": 1,
+              "type": {
+                "createInstructions": "Ingrese cada marcador como una palabra de referencia encerrada entre corchetes ([]).<br/>Ejemplo: El presidente [nombreDelPresidente] nacio en [paisDeNacimiento]",
+                "value": "complete",
+                "displayName": "Completar",
+                "solveInstructions": "Instruccion Dummy para completar",
+                "tooltipInfo": "Configure una pregunta cuyo texto pueda ser completado a partir de las opciones provistas para cada marcador de referencia - cada marcador debe tener una única respuesta correcta"
+              },
+              "image": "",
+              "options": [
+                {
+                  "isCorrect": false,
+                  "text": "Datos",
+                  "placeholder": " "
+                },
+                {
+                  "isCorrect": true,
+                  "text": "Algoritmo",
+                  "placeholder": " "
+                },
+                {
+                  "placeholder": " ",
+                  "isCorrect": false,
+                  "text": "Servicios"
+                }
+              ],
+              "text": "Se instala un nuevo concepto y desarrollo de tiendas de [ ], por ejemplo el caso de Algorithmia."
+            },
+            {
+              "text": "En el modelo de la economía colaborativa, las finanzas y el crowdfunding es uno de los bloques temáticos de esta definición.",
+              "image": "",
+              "type": {
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
+                "displayName": "Opción Simple",
+                "createInstructions": "",
+                "solveInstructions": "Instruccion Dummy para single choice",
+                "value": "single_choice"
+              },
+              "points": 1,
+              "options": [
+                {
+                  "placeholder": "",
+                  "isCorrect": true,
+                  "text": "Verdadero"
+                },
+                {
+                  "isCorrect": false,
+                  "placeholder": "",
+                  "text": "Falso"
+                }
+              ]
+            },
+            {
+              "points": 1,
+              "type": {
+                "solveInstructions": "Instruccion Dummy para single choice",
+                "displayName": "Opción Simple",
+                "createInstructions": "",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
+                "value": "single_choice"
+              },
+              "text": "El Blockchain añade seguridad y eficiencia a un gran número de transferencias de información pero es sólo abocado al sector industrial",
+              "options": [
+                {
+                  "text": "Verdadero",
+                  "isCorrect": false,
+                  "placeholder": ""
+                },
+                {
+                  "placeholder": "",
+                  "text": "Falso",
+                  "isCorrect": true
+                }
+              ],
+              "image": ""
+            },
+            {
+              "points": 1,
+              "text": "Contratos inteligentes (smart contracts), son contratos entre partes sin necesidad de un tercero o intermediario, es un caso de éxito del Blockchain.",
+              "type": {
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
+                "value": "single_choice",
+                "solveInstructions": "Instruccion Dummy para single choice",
+                "displayName": "Opción Simple",
+                "createInstructions": ""
+              },
+              "options": [
+                {
+                  "placeholder": "",
+                  "text": "Verdadero",
+                  "isCorrect": true
+                },
+                {
+                  "text": "Falso",
+                  "isCorrect": false,
+                  "placeholder": ""
+                }
+              ],
+              "image": ""
+            }
+          ],
+          "id": "Nuevos-Profesionales-En-La-Industria-4.0-V2",
+          "createdAt": 1671134323289,
+          "isTest": false,
+          "title": "Nuevos Profesionales En La Industria 4.0 V2"
+        },
+        {
+          "createdAt": 1671133734743,
+          "questions": [
+            {
+              "text": "Big data e IOT, son agentes diferenciales para hacer más competitiva una empresa.",
+              "options": [
+                {
+                  "text": "Verdadero",
+                  "isCorrect": true
+                },
+                {
+                  "isCorrect": false,
+                  "text": "Falso"
+                }
+              ],
+              "image": "",
+              "type": {
+                "solveInstructions": "Instruccion Dummy para single choice",
+                "value": "single_choice",
+                "displayName": "Opción Simple",
+                "createInstructions": "",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta"
+              },
+              "points": 1
+            },
+            {
+              "image": "",
+              "type": {
+                "createInstructions": "",
+                "value": "single_choice",
+                "solveInstructions": "Instruccion Dummy para single choice",
+                "displayName": "Opción Simple",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta"
+              },
+              "options": [
+                {
+                  "isCorrect": true,
+                  "text": "Verdadero",
+                  "placeholder": ""
+                },
+                {
+                  "placeholder": "",
+                  "text": "Falso",
+                  "isCorrect": false
+                }
+              ],
+              "points": 1,
+              "text": "La conectividad es uno de los pilares fundamentales en la transformación digital de una empresa."
+            },
+            {
+              "type": {
+                "solveInstructions": "Instruccion Dummy para single choice",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
+                "createInstructions": "",
+                "displayName": "Opción Simple",
+                "value": "single_choice"
+              },
+              "points": 1,
+              "image": "",
+              "options": [
+                {
+                  "text": "Verdadero",
+                  "isCorrect": true,
+                  "placeholder": ""
+                },
+                {
+                  "placeholder": "",
+                  "isCorrect": false,
+                  "text": "Falso"
+                }
+              ],
+              "text": "VISION es una de las acciones dentro del modelo de DELGADO en la transformación."
+            },
+            {
+              "text": "La transformación digital también invita a implementar metodologías ágiles de desarrollo para motivación de equipos.",
+              "type": {
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
+                "displayName": "Opción Simple",
+                "solveInstructions": "Instruccion Dummy para single choice",
+                "createInstructions": "",
+                "value": "single_choice"
+              },
+              "options": [
+                {
+                  "placeholder": "",
+                  "isCorrect": true,
+                  "text": "Verdadero"
+                },
+                {
+                  "placeholder": "",
+                  "isCorrect": false,
+                  "text": "Falso"
+                }
+              ],
+              "points": 1,
+              "image": ""
+            },
+            {
+              "text": "La transformación digital requiere de un proceso que puede ser más o menos complejo en función de:",
+              "options": [
+                {
+                  "text": "Sólo el sector de influencia.",
+                  "placeholder": "",
+                  "isCorrect": false
+                },
+                {
+                  "text": "Sólo líneas de negocio.",
+                  "isCorrect": false,
+                  "placeholder": ""
+                },
+                {
+                  "placeholder": "",
+                  "isCorrect": true,
+                  "text": "La empresa, su tamaño, su sector de influencia, sus líneas de negocios, etc. "
+                }
+              ],
+              "image": "",
+              "points": 1,
+              "type": {
+                "solveInstructions": "Instruccion Dummy para single choice",
+                "displayName": "Opción Simple",
+                "createInstructions": "",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
+                "value": "single_choice"
+              }
+            }
+          ],
+          "title": "Transformación digital en la industria V2",
+          "id": "Transformación-digital-en-la-industria-V2",
+          "isTest": false
+        },
+        {
+          "isTest": false,
+          "createdAt": 1671127111881,
+          "title": "Big Data V2",
+          "id": "Big-Data-V2",
+          "questions": [
+            {
+              "options": [
+                {
+                  "text": "Veracidad, Velocidad, Volumen.",
+                  "isCorrect": false
+                },
+                {
+                  "text": "Volumen, Velocidad, Valoración.",
+                  "isCorrect": false
+                },
+                {
+                  "text": "Volumen, Velocidad, Variedad. ",
+                  "isCorrect": true
+                }
+              ],
+              "points": 1,
+              "text": "¿A qué hace referencia el modelo 3V en el mundo de Big Data?",
+              "type": {
+                "value": "single_choice",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
+                "solveInstructions": "Instruccion Dummy para single choice",
+                "createInstructions": "",
+                "displayName": "Opción Simple"
+              },
+              "image": ""
+            },
+            {
+              "options": [
+                {
+                  "text": "Los tipos de datos se clasifican en tres grandes grupos: Estructurados, No Estructurados y Semiestructurados.",
+                  "isCorrect": true,
+                  "placeholder": ""
+                },
+                {
+                  "text": "Los datos del Big Data proviene solamente de las redes sociales.",
+                  "placeholder": "",
+                  "isCorrect": false
+                },
+                {
+                  "placeholder": "",
+                  "isCorrect": true,
+                  "text": "Las cuatro capas del tratamiento del Big data, son: Recolección, Almacenamiento, Análisis y Visualización de los datos."
+                }
+              ],
+              "type": {
+                "displayName": "Verdadero o Falso",
+                "createInstructions": "Marque las opciones que sean verdaderas y deje en blanco las que sean falsas",
+                "tooltipInfo": "Configure una pregunta cuya respuesta sea verdadero o falso",
+                "value": "true-false",
+                "solveInstructions": "Instruccion Dummy para verdadero o falso"
+              },
+              "points": 1,
+              "image": "",
+              "text": "Señale los enunciados verdaderos:"
+            },
+            {
+              "type": {
+                "displayName": "Opción Simple",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
+                "createInstructions": "",
+                "value": "single_choice",
+                "solveInstructions": "Instruccion Dummy para single choice"
+              },
+              "options": [
+                {
+                  "isCorrect": false,
+                  "text": "Variedad de los datos",
+                  "placeholder": ""
+                },
+                {
+                  "text": "Volumen de los datos",
+                  "placeholder": "",
+                  "isCorrect": false
+                },
+                {
+                  "isCorrect": true,
+                  "placeholder": "",
+                  "text": "Privacidad de los datos"
+                }
+              ],
+              "points": 1,
+              "image": "",
+              "text": "Uno de los grandes riesgos del Big Data es:"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "programaId": "Programa-de-Confiabilidad",
       "miniPicture": "",
       "instructorId": "Tibaldo-Díaz",
@@ -74078,2724 +76796,6 @@ export const coursesData = [
           "title": "Cuestionario final: Técnicas de Monitoreo Basado en Condición (CBM)",
           "id": "Examen-1",
           "createdAt": 1675378201464
-        }
-      ]
-    },
-    {
-      "instructorFoto": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Instructores%2FPablo-Malianni%2FFotos-Instructores.png?alt=media&token=e96ddcb3-c7b7-474c-971d-b266eb927f38",
-      "precioOriginal": 95,
-      "nuevo": true,
-      "miniPicture": "",
-      "id": "Transición-a-la-industria-4-0",
-      "duracion": 514,
-      "cantInscritos": 129,
-      "empresaFoto": "",
-      "precioFinal": 95,
-      "resumen": "Internet de las Cosas, Big Data, Analítica de datos, Inteligencia Artificial, Nube y  Ciberseguridad",
-      "porcentajeDescuento": 0,
-      "titulo": "Transición a la industria 4.0",
-      "foto": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Cursos%2FTransici%C3%B3n-a-la-industria-4-0%2F4.0.webp?alt=media&token=c23d3307-b3b4-4573-b6f4-d08f92b4a054",
-      "cantVentas": 0,
-      "empresaId": "",
-      "descripcion": "El conocimiento de todas las tecnologías habilitadoras de la Industria 4.0, y, por consiguiente de la Cuarta Revolución Industrial, desde la Internet de las Cosas, Big Data, Analítica de datos, la Inteligencia Artificial y la Nube, a la Ciberseguridad pasando por la Nueva Transformación Digital de las ciudades en Smart Cities (Ciudades\nInteligentes) y la Robotización de la industria.",
-      "empresaNombre": "",
-      "instructorPorcentaje": 50,
-      "rectPicture": "",
-      "instructorId": "Pablo-Malianni",
-      "nivel": "Básico",
-      "instructorNombre": "Pablo Malianni",
-      "valoracion": 4,
-      "publicado": true,
-      "prioridad": 2,
-      "categoria": "Industria 4.0",
-      "proximamente": false,
-      "programaId": "",
-      "sqrPicture": "",
-      "fechaCreacion": {
-        "seconds": 1661629097,
-        "nanoseconds": 605000000
-      },
-      "clases": {
-        "duracion": 514,
-        "clases": [
-          {
-            "numero": 1,
-            "idVideo": "743992900",
-            "vigente": true,
-            "duracion": 14,
-            "titulo": "Repaso histórico desde la primera a la cuarta revolución industrial",
-            "HTMLcontent": "",
-            "modulo": 1,
-            "id": 0,
-            "descripcion": "",
-            "tipo": "video",
-            "archivos": []
-          },
-          {
-            "idVideo": "745216106",
-            "HTMLcontent": "",
-            "vigente": true,
-            "archivos": [],
-            "duracion": 11,
-            "modulo": 1,
-            "descripcion": "",
-            "titulo": "Tecnologías Disruptivas pilares de la Industria 4.0",
-            "numero": 2,
-            "tipo": "video",
-            "id": 1
-          },
-          {
-            "vigente": true,
-            "titulo": "La era de la Internet de las cosas IOT",
-            "tipo": "video",
-            "idVideo": "745217347",
-            "modulo": 1,
-            "descripcion": "",
-            "duracion": 11,
-            "archivos": [
-              {
-                "type": "application/pdf",
-                "nombre": "Industria-40-Fabricando-el-Futuro-UIA.pdf",
-                "size": 1515661,
-                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2FIndustria-40-Fabricando-el-Futuro-UIA.pdf?alt=media&token=35111915-69c9-4e31-b4dc-0b6a652853de"
-              },
-              {
-                "type": "application/pdf",
-                "nombre": "Paper-de secretaría de planeamiento y políticas.pdf",
-                "size": 444860,
-                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2FPaper-de%20secretar%C3%ADa%20de%20planeamiento%20y%20pol%C3%ADticas.pdf?alt=media&token=9e9cac0d-cf7d-4a7a-b787-12db01ae295e"
-              }
-            ],
-            "HTMLcontent": "",
-            "id": 2,
-            "numero": 3
-          },
-          {
-            "tipo": "actividad",
-            "vigente": true,
-            "modulo": 1,
-            "archivos": [],
-            "descripcion": "",
-            "HTMLcontent": "",
-            "idVideo": "Hacia-la-revolución-industrial-4.0",
-            "id": 3,
-            "duracion": 5,
-            "titulo": "Hacia la revolución industrial 4.0",
-            "numero": 4
-          },
-          {
-            "HTMLcontent": "",
-            "descripcion": "",
-            "titulo": "Tecnologías wearables: Aparatos y dispositivos electrónicos que se incorporan en la industria",
-            "modulo": 2,
-            "archivos": [],
-            "duracion": 14,
-            "id": 4,
-            "numero": 5,
-            "tipo": "video",
-            "idVideo": "745221110",
-            "vigente": true
-          },
-          {
-            "vigente": true,
-            "idVideo": "744005171",
-            "titulo": "Realidad virtual, realidad aumentada y mixta",
-            "numero": 6,
-            "HTMLcontent": "",
-            "archivos": [],
-            "modulo": 2,
-            "descripcion": "",
-            "duracion": 4,
-            "id": 5,
-            "tipo": "video"
-          },
-          {
-            "tipo": "video",
-            "vigente": true,
-            "idVideo": "744590729",
-            "numero": 7,
-            "HTMLcontent": "",
-            "id": 6,
-            "titulo": "Tecnología celular. Sistemas Ciber - Físicos",
-            "duracion": 4,
-            "modulo": 2,
-            "descripcion": "",
-            "archivos": []
-          },
-          {
-            "HTMLcontent": "",
-            "duracion": 10,
-            "numero": 8,
-            "vigente": true,
-            "modulo": 2,
-            "tipo": "video",
-            "archivos": [
-              {
-                "type": "application/pdf",
-                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2FLogo!-como%20%20tecnologia%20facilitadora.pdf?alt=media&token=ab37e211-a90b-4ea9-a8dd-ba4a468797ee",
-                "nombre": "Logo!-como  tecnologia facilitadora.pdf",
-                "size": 642185
-              },
-              {
-                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2FTecnologia-facilitadora.pdf?alt=media&token=01fe7a3b-94d8-42eb-b083-290b48f206d6",
-                "size": 1684241,
-                "nombre": "Tecnologia-facilitadora.pdf",
-                "type": "application/pdf"
-              }
-            ],
-            "id": 7,
-            "idVideo": "744598836",
-            "titulo": "Configuración del Logo! Como IIoT",
-            "descripcion": ""
-          },
-          {
-            "archivos": [
-              {
-                "nombre": "revista-mercado.pdf",
-                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2Frevista-mercado.pdf?alt=media&token=8e1cc6a9-59a3-4511-9718-75a7a0158c67",
-                "type": "application/pdf",
-                "size": 5596889
-              }
-            ],
-            "HTMLcontent": "",
-            "idVideo": "745219263",
-            "duracion": 11,
-            "titulo": "Configuración Logo! V8.3",
-            "descripcion": "",
-            "id": 8,
-            "modulo": 2,
-            "vigente": true,
-            "tipo": "video",
-            "numero": 9
-          },
-          {
-            "archivos": [],
-            "descripcion": "",
-            "titulo": "Configuración AWS",
-            "id": 9,
-            "HTMLcontent": "",
-            "tipo": "video",
-            "vigente": true,
-            "idVideo": "744009210",
-            "numero": 10,
-            "modulo": 2,
-            "duracion": 6
-          },
-          {
-            "archivos": [],
-            "id": 10,
-            "idVideo": "743787910",
-            "HTMLcontent": "",
-            "titulo": "Datos del Logo en AWS",
-            "descripcion": "",
-            "tipo": "video",
-            "duracion": 7,
-            "numero": 11,
-            "modulo": 2,
-            "vigente": true
-          },
-          {
-            "HTMLcontent": "",
-            "id": 11,
-            "idVideo": "Tecnologías-facilitadoras-de-la-industria-4.0-V2",
-            "archivos": [],
-            "descripcion": "",
-            "titulo": "Tecnologías facilitadoras de la industria 4.0",
-            "modulo": 2,
-            "numero": 12,
-            "tipo": "actividad",
-            "duracion": 5,
-            "vigente": true
-          },
-          {
-            "descripcion": "",
-            "archivos": [],
-            "vigente": true,
-            "HTMLcontent": "",
-            "tipo": "video",
-            "idVideo": "744618054",
-            "modulo": 3,
-            "numero": 13,
-            "titulo": "Modelos de nube",
-            "duracion": 7,
-            "id": 12
-          },
-          {
-            "HTMLcontent": "",
-            "titulo": "Proveedores de la nube",
-            "vigente": true,
-            "idVideo": "744012958",
-            "descripcion": "",
-            "modulo": 3,
-            "archivos": [],
-            "duracion": 14,
-            "numero": 14,
-            "id": 13,
-            "tipo": "video"
-          },
-          {
-            "tipo": "video",
-            "idVideo": "745223821",
-            "modulo": 3,
-            "titulo": "Seguridad de la nube",
-            "vigente": true,
-            "duracion": 6,
-            "numero": 15,
-            "descripcion": "",
-            "id": 14,
-            "archivos": [],
-            "HTMLcontent": ""
-          },
-          {
-            "idVideo": "744639304",
-            "duracion": 8,
-            "descripcion": "",
-            "tipo": "video",
-            "numero": 16,
-            "titulo": "Configuración de una nube",
-            "archivos": [
-              {
-                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2FNUBE-INFORMATICA.pdf?alt=media&token=ceb26b59-ba02-4b79-9ad4-585783edeb68",
-                "type": "application/pdf",
-                "size": 201767,
-                "nombre": "NUBE-INFORMATICA.pdf"
-              },
-              {
-                "nombre": "Aplicaciones-Mindsphere Control y Monitoreo.pptx.pdf",
-                "type": "application/pdf",
-                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2FAplicaciones-Mindsphere%20Control%20y%20Monitoreo.pptx.pdf?alt=media&token=dc136dbf-4b96-4687-b559-cc2fc98fc40b",
-                "size": 2473073
-              },
-              {
-                "size": 112328,
-                "nombre": "Infraestructura-de la red de Instrumento a la Nube.pdf",
-                "type": "application/pdf",
-                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2FInfraestructura-de%20la%20red%20de%20Instrumento%20a%20la%20Nube.pdf?alt=media&token=33a5d0aa-b02b-4412-925d-10abe210d407"
-              }
-            ],
-            "id": 15,
-            "modulo": 3,
-            "HTMLcontent": "",
-            "vigente": true
-          },
-          {
-            "modulo": 3,
-            "idVideo": "La-nube-aplicada-a-la-industria-4.0-V2",
-            "HTMLcontent": "",
-            "vigente": true,
-            "tipo": "actividad",
-            "numero": 17,
-            "duracion": 5,
-            "archivos": [],
-            "descripcion": "",
-            "titulo": "La nube aplicada a la industria 4.0",
-            "id": 16
-          },
-          {
-            "tipo": "video",
-            "duracion": 4,
-            "descripcion": "",
-            "idVideo": "743771361",
-            "archivos": [],
-            "numero": 18,
-            "titulo": "Tipos de datos",
-            "HTMLcontent": "",
-            "vigente": true,
-            "modulo": 4,
-            "id": 17
-          },
-          {
-            "idVideo": "743771547",
-            "tipo": "video",
-            "descripcion": "",
-            "vigente": true,
-            "id": 18,
-            "HTMLcontent": "",
-            "duracion": 5,
-            "titulo": "Características",
-            "numero": 19,
-            "archivos": [],
-            "modulo": 4
-          },
-          {
-            "titulo": "Data Analytics",
-            "modulo": 4,
-            "numero": 20,
-            "vigente": true,
-            "descripcion": "",
-            "id": 19,
-            "HTMLcontent": "",
-            "archivos": [
-              {
-                "type": "application/pdf",
-                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2FMQTT-Client%20and%20Gateway.pdf?alt=media&token=4bcdc0fe-be42-4491-9a69-27208a36d0ec",
-                "nombre": "MQTT-Client and Gateway.pdf",
-                "size": 322350
-              },
-              {
-                "size": 2682393,
-                "nombre": "IOT.pdf",
-                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2FIOT.pdf?alt=media&token=62958816-5f83-4233-9814-0236c4e55adc",
-                "type": "application/pdf"
-              },
-              {
-                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2FIoT2040-Primeros-pasos-programacion.pdf?alt=media&token=7d474cb9-6721-4b78-8434-63b0705d5784",
-                "size": 5397688,
-                "nombre": "IoT2040-Primeros-pasos-programacion.pdf",
-                "type": "application/pdf"
-              }
-            ],
-            "idVideo": "743771746",
-            "tipo": "video",
-            "duracion": 12
-          },
-          {
-            "HTMLcontent": "",
-            "duracion": 6,
-            "vigente": true,
-            "id": 20,
-            "archivos": [],
-            "titulo": "Programa Node Red",
-            "descripcion": "",
-            "modulo": 4,
-            "numero": 21,
-            "idVideo": "743770940",
-            "tipo": "video"
-          },
-          {
-            "descripcion": "",
-            "archivos": [],
-            "numero": 22,
-            "HTMLcontent": "",
-            "tipo": "video",
-            "id": 21,
-            "modulo": 4,
-            "titulo": "Instalación del programa Node Red",
-            "vigente": true,
-            "duracion": 6,
-            "idVideo": "745224458"
-          },
-          {
-            "id": 22,
-            "descripcion": "",
-            "numero": 23,
-            "archivos": [],
-            "titulo": "Big Data",
-            "vigente": true,
-            "modulo": 4,
-            "duracion": 5,
-            "HTMLcontent": "",
-            "tipo": "actividad",
-            "idVideo": "Big-Data-V2"
-          },
-          {
-            "archivos": [],
-            "idVideo": "743773632",
-            "id": 23,
-            "titulo": "Definición de IIoT",
-            "duracion": 4,
-            "numero": 24,
-            "tipo": "video",
-            "vigente": true,
-            "descripcion": "",
-            "modulo": 5,
-            "HTMLcontent": ""
-          },
-          {
-            "tipo": "video",
-            "id": 24,
-            "descripcion": "",
-            "vigente": true,
-            "idVideo": "743773741",
-            "HTMLcontent": "",
-            "titulo": "Concepto IPv6. Desarrollo del internet de las cosas",
-            "modulo": 5,
-            "numero": 25,
-            "duracion": 6,
-            "archivos": []
-          },
-          {
-            "titulo": "Cosas (objetos) Tecnología de los dispositivos conectados",
-            "archivos": [],
-            "duracion": 7,
-            "modulo": 5,
-            "idVideo": "743774126",
-            "vigente": true,
-            "numero": 26,
-            "id": 25,
-            "HTMLcontent": "",
-            "tipo": "video",
-            "descripcion": ""
-          },
-          {
-            "archivos": [],
-            "id": 26,
-            "tipo": "video",
-            "titulo": "Tipos de dispositivos conectados",
-            "duracion": 4,
-            "idVideo": "743774430",
-            "modulo": 5,
-            "HTMLcontent": "",
-            "numero": 27,
-            "vigente": true,
-            "descripcion": ""
-          },
-          {
-            "idVideo": "743772262",
-            "id": 27,
-            "HTMLcontent": "",
-            "duracion": 4,
-            "modulo": 5,
-            "numero": 28,
-            "archivos": [],
-            "vigente": true,
-            "tipo": "video",
-            "titulo": "Cómo agregar nuevas bibliotecas de nodos",
-            "descripcion": ""
-          },
-          {
-            "tipo": "video",
-            "archivos": [],
-            "idVideo": "743773084",
-            "HTMLcontent": "",
-            "titulo": "Primer flujo en Node Red",
-            "duracion": 8,
-            "numero": 29,
-            "modulo": 5,
-            "descripcion": "",
-            "vigente": true,
-            "id": 28
-          },
-          {
-            "id": 29,
-            "vigente": true,
-            "archivos": [],
-            "HTMLcontent": "",
-            "idVideo": "743773437",
-            "descripcion": "",
-            "duracion": 6,
-            "tipo": "video",
-            "modulo": 5,
-            "numero": 30,
-            "titulo": "Segundo flujo en Node Red"
-          },
-          {
-            "vigente": true,
-            "numero": 31,
-            "idVideo": "743772429",
-            "id": 30,
-            "archivos": [],
-            "HTMLcontent": "",
-            "tipo": "video",
-            "titulo": "Lectura y escritura entre S71200 y Node Red",
-            "duracion": 11,
-            "modulo": 5,
-            "descripcion": ""
-          },
-          {
-            "modulo": 5,
-            "HTMLcontent": "",
-            "tipo": "actividad",
-            "vigente": true,
-            "archivos": [],
-            "descripcion": "",
-            "numero": 32,
-            "idVideo": "Internet-industrial-de-las-cosas-V2",
-            "duracion": 5,
-            "id": 31,
-            "titulo": "Internet industrial de las cosas"
-          },
-          {
-            "numero": 33,
-            "duracion": 9,
-            "titulo": "Inteligencia artificial relacionada a la industria 4.0",
-            "modulo": 6,
-            "archivos": [
-              {
-                "size": 447120,
-                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2F%C2%BFQu%C3%A9-es%20la%20inteligencia%20artificial%20(IA)_%20_%20Oracle%20Argentina.pdf?alt=media&token=90faf1ba-42a7-4494-a9a4-200d1a4c0f73",
-                "type": "application/pdf",
-                "nombre": "¿Qué-es la inteligencia artificial (IA)_ _ Oracle Argentina.pdf"
-              }
-            ],
-            "tipo": "video",
-            "vigente": true,
-            "idVideo": "743774606",
-            "id": 32,
-            "descripcion": "",
-            "HTMLcontent": ""
-          },
-          {
-            "tipo": "video",
-            "modulo": 6,
-            "idVideo": "743775253",
-            "vigente": true,
-            "titulo": "Asistentes virtuales. Bots y Chatbots",
-            "duracion": 2,
-            "HTMLcontent": "",
-            "descripcion": "",
-            "id": 33,
-            "archivos": [],
-            "numero": 34
-          },
-          {
-            "descripcion": "",
-            "tipo": "video",
-            "titulo": "Robots Colaborativos (Cobots)",
-            "vigente": true,
-            "duracion": 3,
-            "modulo": 6,
-            "numero": 35,
-            "idVideo": "743775358",
-            "HTMLcontent": "",
-            "id": 34,
-            "archivos": []
-          },
-          {
-            "tipo": "video",
-            "idVideo": "744744322",
-            "titulo": "Conexión de Node Red con un Logo",
-            "duracion": 13,
-            "archivos": [],
-            "modulo": 6,
-            "numero": 36,
-            "descripcion": "",
-            "vigente": true,
-            "id": 35,
-            "HTMLcontent": ""
-          },
-          {
-            "modulo": 6,
-            "numero": 37,
-            "idVideo": "744655319",
-            "titulo": "Instalación y ajuste con Raspbian",
-            "archivos": [],
-            "vigente": true,
-            "duracion": 13,
-            "HTMLcontent": "",
-            "descripcion": "",
-            "id": 36,
-            "tipo": "video"
-          },
-          {
-            "id": 37,
-            "archivos": [],
-            "HTMLcontent": "",
-            "modulo": 6,
-            "vigente": true,
-            "duracion": 13,
-            "tipo": "video",
-            "descripcion": "",
-            "idVideo": "744692864",
-            "numero": 38,
-            "titulo": "Instalación y ajustes de Raspbian 2"
-          },
-          {
-            "duracion": 10,
-            "id": 38,
-            "idVideo": "744725493",
-            "descripcion": "",
-            "tipo": "video",
-            "archivos": [],
-            "vigente": true,
-            "titulo": "Publicar y suscribir con Ubidots",
-            "HTMLcontent": "",
-            "numero": 39,
-            "modulo": 6
-          },
-          {
-            "archivos": [],
-            "modulo": 6,
-            "id": 39,
-            "duracion": 5,
-            "descripcion": "",
-            "titulo": "Inteligencia artificial relacionada a la industria 4.0",
-            "tipo": "actividad",
-            "idVideo": "Inteligencia-artificial-relacionada-a-la-industria-4.0-V2",
-            "HTMLcontent": "",
-            "numero": 40,
-            "vigente": true
-          },
-          {
-            "modulo": 7,
-            "HTMLcontent": "",
-            "duracion": 7,
-            "id": 40,
-            "tipo": "video",
-            "titulo": "Ciberseguridad",
-            "idVideo": "745229589",
-            "descripcion": "",
-            "numero": 41,
-            "archivos": [],
-            "vigente": true
-          },
-          {
-            "vigente": true,
-            "numero": 42,
-            "duracion": 5,
-            "HTMLcontent": "",
-            "idVideo": "745230461",
-            "descripcion": "",
-            "titulo": "Ciberamenazas",
-            "archivos": [],
-            "tipo": "video",
-            "id": 41,
-            "modulo": 7
-          },
-          {
-            "numero": 43,
-            "id": 42,
-            "descripcion": "",
-            "modulo": 7,
-            "tipo": "video",
-            "HTMLcontent": "",
-            "vigente": true,
-            "duracion": 5,
-            "idVideo": "745231183",
-            "titulo": "Ciberataques",
-            "archivos": [
-              {
-                "type": "application/pdf",
-                "size": 1540505,
-                "nombre": "sophos-2022-threat-report_ciberataques.pdf",
-                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2Fsophos-2022-threat-report_ciberataques.pdf?alt=media&token=7b2a8751-213c-4524-833f-5ee70cda33f5"
-              }
-            ]
-          },
-          {
-            "modulo": 7,
-            "numero": 44,
-            "id": 43,
-            "tipo": "video",
-            "archivos": [
-              {
-                "size": 1849571,
-                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2Fconsideraciones-ciberseguridad-2022-kpmg.pdf?alt=media&token=10762026-c566-4b02-aa6f-7994f8261ffc",
-                "nombre": "consideraciones-ciberseguridad-2022-kpmg.pdf",
-                "type": "application/pdf"
-              }
-            ],
-            "duracion": 6,
-            "vigente": true,
-            "descripcion": "",
-            "titulo": "Tendencias en ciberseguridad",
-            "HTMLcontent": "",
-            "idVideo": "745232031"
-          },
-          {
-            "tipo": "video",
-            "vigente": true,
-            "modulo": 7,
-            "descripcion": "",
-            "archivos": [],
-            "titulo": "Envio de datos de forma segura ",
-            "HTMLcontent": "",
-            "duracion": 8,
-            "id": 44,
-            "idVideo": "745225906",
-            "numero": 45
-          },
-          {
-            "vigente": true,
-            "HTMLcontent": "",
-            "modulo": 7,
-            "archivos": [],
-            "tipo": "video",
-            "duracion": 4,
-            "idVideo": "744779618",
-            "titulo": "Qué es MQTT",
-            "numero": 46,
-            "descripcion": "",
-            "id": 45
-          },
-          {
-            "duracion": 9,
-            "tipo": "video",
-            "idVideo": "745227910",
-            "vigente": true,
-            "modulo": 7,
-            "HTMLcontent": "",
-            "titulo": "Registrar valores locales con Node Red",
-            "id": 46,
-            "numero": 47,
-            "archivos": [],
-            "descripcion": ""
-          },
-          {
-            "descripcion": "",
-            "numero": 48,
-            "duracion": 5,
-            "modulo": 7,
-            "idVideo": "Ciberseguridad-V2",
-            "archivos": [],
-            "titulo": "Ciberseguridad",
-            "tipo": "actividad",
-            "vigente": true,
-            "HTMLcontent": "",
-            "id": 47
-          },
-          {
-            "idVideo": "745242029",
-            "duracion": 5,
-            "tipo": "video",
-            "vigente": true,
-            "modulo": 8,
-            "HTMLcontent": "",
-            "archivos": [],
-            "titulo": "Definición de la transformación digital",
-            "numero": 49,
-            "descripcion": "",
-            "id": 48
-          },
-          {
-            "idVideo": "745242626",
-            "titulo": "Pilares de la transformación digital",
-            "numero": 50,
-            "tipo": "video",
-            "archivos": [],
-            "id": 49,
-            "modulo": 8,
-            "HTMLcontent": "",
-            "duracion": 7,
-            "vigente": true,
-            "descripcion": ""
-          },
-          {
-            "id": 50,
-            "titulo": "Modelo de una empresa digital",
-            "numero": 51,
-            "idVideo": "745243117",
-            "vigente": true,
-            "duracion": 8,
-            "descripcion": "",
-            "archivos": [],
-            "HTMLcontent": "",
-            "tipo": "video",
-            "modulo": 8
-          },
-          {
-            "vigente": true,
-            "duracion": 3,
-            "titulo": "10 tendencias para la transformación digital",
-            "HTMLcontent": "",
-            "id": 51,
-            "tipo": "video",
-            "modulo": 8,
-            "idVideo": "745244191",
-            "numero": 52,
-            "descripcion": "",
-            "archivos": [
-              {
-                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2FDigitalizacion-Instrumentos%20de%20Procesos.pdf?alt=media&token=eb9ba55d-b6df-48b9-bac5-b0ec3f2052b5",
-                "type": "application/pdf",
-                "size": 356578,
-                "nombre": "Digitalizacion-Instrumentos de Procesos.pdf"
-              },
-              {
-                "size": 795711,
-                "type": "application/pdf",
-                "nombre": "Digitalización_SCW.pdf",
-                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2FDigitalizaci%C3%B3n_SCW.pdf?alt=media&token=d7529154-0b2a-4666-a3a3-5e5eb827880b"
-              },
-              {
-                "nombre": "estudio-de-digitalizacion-arg-pagina.pdf",
-                "type": "application/pdf",
-                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2Festudio-de-digitalizacion-arg-pagina.pdf?alt=media&token=67537ee5-90c6-42dc-b3c0-aa41b5c34651",
-                "size": 2054757
-              },
-              {
-                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2FDigitalizacion-con%20variadores%20y%20motores.pdf?alt=media&token=07808359-ec51-4e1c-a3ca-fd4bb018bbae",
-                "nombre": "Digitalizacion-con variadores y motores.pdf",
-                "size": 5531863,
-                "type": "application/pdf"
-              }
-            ]
-          },
-          {
-            "descripcion": "",
-            "HTMLcontent": "",
-            "id": 52,
-            "idVideo": "745233457",
-            "numero": 53,
-            "duracion": 9,
-            "archivos": [],
-            "vigente": true,
-            "modulo": 8,
-            "titulo": "Crear un Bot en Telegram",
-            "tipo": "video"
-          },
-          {
-            "modulo": 8,
-            "vigente": true,
-            "descripcion": "",
-            "tipo": "video",
-            "HTMLcontent": "",
-            "archivos": [],
-            "duracion": 17,
-            "id": 53,
-            "idVideo": "745235227",
-            "numero": 54,
-            "titulo": "Dashboard en Node Red"
-          },
-          {
-            "tipo": "video",
-            "HTMLcontent": "",
-            "descripcion": "",
-            "modulo": 8,
-            "numero": 55,
-            "duracion": 14,
-            "titulo": "Lectura de una variable del PLC con Telegram",
-            "id": 54,
-            "archivos": [],
-            "vigente": true,
-            "idVideo": "745237639"
-          },
-          {
-            "vigente": true,
-            "archivos": [],
-            "HTMLcontent": "",
-            "modulo": 8,
-            "tipo": "video",
-            "descripcion": "",
-            "id": 55,
-            "duracion": 7,
-            "titulo": "Mensajeria con twilio en Node Red",
-            "numero": 56,
-            "idVideo": "745240015"
-          },
-          {
-            "tipo": "actividad",
-            "titulo": "Transformación digital en la industria",
-            "duracion": 5,
-            "id": 56,
-            "modulo": 8,
-            "vigente": true,
-            "HTMLcontent": "",
-            "archivos": [],
-            "numero": 57,
-            "idVideo": "Transformación-digital-en-la-industria-V2",
-            "descripcion": ""
-          },
-          {
-            "descripcion": "",
-            "numero": 58,
-            "vigente": true,
-            "titulo": "Digitalización para la gestión de energía",
-            "modulo": 9,
-            "idVideo": "745245790",
-            "duracion": 13,
-            "tipo": "video",
-            "HTMLcontent": "",
-            "id": 57,
-            "archivos": []
-          },
-          {
-            "descripcion": "",
-            "titulo": "Tips para aumentar la transparencia energética",
-            "idVideo": "745247878",
-            "numero": 59,
-            "duracion": 5,
-            "vigente": true,
-            "HTMLcontent": "",
-            "modulo": 9,
-            "tipo": "video",
-            "archivos": [],
-            "id": 58
-          },
-          {
-            "idVideo": "745248534",
-            "numero": 60,
-            "modulo": 9,
-            "id": 59,
-            "tipo": "video",
-            "titulo": "Solución mínima. Gestión de energía con S7 - 1200",
-            "vigente": true,
-            "duracion": 15,
-            "descripcion": "",
-            "archivos": [],
-            "HTMLcontent": ""
-          },
-          {
-            "titulo": "Energy Manager PRO",
-            "archivos": [
-              {
-                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2FEficiencia-Energetica.pdf?alt=media&token=f1751528-281f-422f-b4ec-4ecff51a11ec",
-                "type": "application/pdf",
-                "size": 3550658,
-                "nombre": "Eficiencia-Energetica.pdf"
-              }
-            ],
-            "numero": 61,
-            "duracion": 10,
-            "descripcion": "",
-            "idVideo": "745250607",
-            "tipo": "video",
-            "id": 60,
-            "HTMLcontent": "",
-            "modulo": 9,
-            "vigente": true
-          },
-          {
-            "duracion": 8,
-            "descripcion": "",
-            "idVideo": "745244587",
-            "id": 61,
-            "vigente": true,
-            "HTMLcontent": "",
-            "numero": 62,
-            "tipo": "video",
-            "modulo": 9,
-            "titulo": "Energy Manager PRO",
-            "archivos": []
-          },
-          {
-            "idVideo": "Monitoreo-de-Plantas-Industriales-para-La-Industria-4.0-V2",
-            "numero": 63,
-            "id": 62,
-            "duracion": 5,
-            "modulo": 9,
-            "HTMLcontent": "",
-            "vigente": true,
-            "descripcion": "",
-            "titulo": "Monitoreo de Plantas Industriales para La Industria 4.0",
-            "archivos": [],
-            "tipo": "actividad"
-          },
-          {
-            "modulo": 10,
-            "duracion": 7,
-            "id": 63,
-            "HTMLcontent": "",
-            "numero": 64,
-            "titulo": "El futuro tecnológico y nuevas tendencias ",
-            "descripcion": "",
-            "idVideo": "745251806",
-            "vigente": true,
-            "archivos": [],
-            "tipo": "video"
-          },
-          {
-            "titulo": "Los nuevos roles profesionales",
-            "idVideo": "745252502",
-            "modulo": 10,
-            "numero": 65,
-            "descripcion": "",
-            "id": 64,
-            "duracion": 4,
-            "tipo": "video",
-            "HTMLcontent": "",
-            "vigente": true,
-            "archivos": []
-          },
-          {
-            "archivos": [
-              {
-                "size": 1451298,
-                "type": "application/pdf",
-                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2FIntroduccin-a%20la%20tecnologia%20Blockchain.pdf?alt=media&token=4fd7d754-d711-491f-85df-b6956342dc95",
-                "nombre": "Introduccin-a la tecnologia Blockchain.pdf"
-              }
-            ],
-            "tipo": "video",
-            "numero": 66,
-            "vigente": true,
-            "modulo": 10,
-            "idVideo": "745252789",
-            "descripcion": "",
-            "titulo": "Blockchain (Cadena de bloques)",
-            "duracion": 6,
-            "id": 65,
-            "HTMLcontent": ""
-          },
-          {
-            "archivos": [
-              {
-                "size": 1058450,
-                "type": "application/pdf",
-                "nombre": "Conceptos-para-el-diseño-de-modelos-de-negocio.docx.pdf",
-                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2FConceptos-para-el-dise%C3%B1o-de-modelos-de-negocio.docx.pdf?alt=media&token=0ba38f12-5fee-41a9-903a-eb6210dc0613"
-              }
-            ],
-            "idVideo": "745253249",
-            "vigente": true,
-            "id": 66,
-            "duracion": 4,
-            "modulo": 10,
-            "numero": 67,
-            "tipo": "video",
-            "titulo": "Algoritmo como modelo de negocios",
-            "descripcion": "",
-            "HTMLcontent": ""
-          },
-          {
-            "HTMLcontent": "",
-            "idVideo": "745225114",
-            "modulo": 10,
-            "duracion": 5,
-            "id": 67,
-            "archivos": [
-              {
-                "size": 640270,
-                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FTransici%C3%B3n-a-la-industria-4-0%2FEconom%C3%ADa-Colaborativa.pdf?alt=media&token=6ed1da06-832d-402b-a034-77c63cca5e34",
-                "nombre": "Economía-Colaborativa.pdf",
-                "type": "application/pdf"
-              }
-            ],
-            "descripcion": "",
-            "titulo": "Economía colaborativa",
-            "tipo": "video",
-            "numero": 68,
-            "vigente": true
-          },
-          {
-            "duracion": 5,
-            "titulo": "Nuevos Profesionales En La Industria 4.0",
-            "idVideo": "Nuevos-Profesionales-En-La-Industria-4.0-V2",
-            "tipo": "actividad",
-            "numero": 69,
-            "id": 68,
-            "descripcion": "",
-            "archivos": [],
-            "modulo": 10,
-            "HTMLcontent": "",
-            "vigente": true
-          }
-        ],
-        "modulosFlag": true,
-        "modulos": [
-          {
-            "numero": 1,
-            "titulo": "Hacia la revolución industrial 4.0"
-          },
-          {
-            "titulo": "Tecnologías facilitadoras de la industria 4.0",
-            "numero": 2
-          },
-          {
-            "numero": 3,
-            "titulo": "La nube aplicada a la industria 4.0"
-          },
-          {
-            "titulo": "Big data",
-            "numero": 4
-          },
-          {
-            "titulo": "IIot internet industrial de las cosas",
-            "numero": 5
-          },
-          {
-            "titulo": "Inteligencia artificial relacionada a la industria 4.0",
-            "numero": 6
-          },
-          {
-            "titulo": "Ciberseguridad",
-            "numero": 7
-          },
-          {
-            "titulo": "Transformación digital en la industria",
-            "numero": 8
-          },
-          {
-            "numero": 9,
-            "titulo": "Monitoreo de Plantas Industriales para La Industria 4.0"
-          },
-          {
-            "titulo": "Nuevos Profesionales En La Industria 4.0",
-            "numero": 10
-          }
-        ]
-      },
-      "examen": [
-        {
-          "pregunta": "El concepto de Industria 4.0 nació en 2011 en Alemania para describir la digitalización y procesos industriales mediante la interconexión de Internet de las Cosas.",
-          "opciones": [
-            {
-              "numero": 0,
-              "texto": "Verdadero"
-            },
-            {
-              "numero": 1,
-              "texto": "Falso"
-            }
-          ],
-          "correctas": [
-            0
-          ],
-          "imagen": ""
-        },
-        {
-          "pregunta": "La realidad aumentada incrusta informacion digital en el mundo real, mientras que la realidad virtual crea contexto digitales que imitan el mundo real.",
-          "imagen": "",
-          "opciones": [
-            {
-              "texto": "Verdadero",
-              "numero": 0
-            },
-            {
-              "texto": "Falso",
-              "numero": 1
-            }
-          ],
-          "correctas": [
-            0
-          ]
-        },
-        {
-          "pregunta": "¿Cuáles son los dos grandes modelos de la Nube?",
-          "correctas": [
-            1
-          ],
-          "imagen": "",
-          "opciones": [
-            {
-              "numero": 0,
-              "texto": "Servicio y contratación"
-            },
-            {
-              "numero": 1,
-              "texto": "Servicio y despliegue"
-            },
-            {
-              "numero": 2,
-              "texto": "Servicio y software"
-            }
-          ]
-        },
-        {
-          "opciones": [
-            {
-              "texto": "Veracidad, Velocidad, Volumen.",
-              "numero": 0
-            },
-            {
-              "numero": 1,
-              "texto": "Volumen, Velocidad, Variedad."
-            },
-            {
-              "texto": "Volumen, Velocidad, Valoración.",
-              "numero": 2
-            }
-          ],
-          "correctas": [
-            1
-          ],
-          "imagen": "",
-          "pregunta": "¿A qué hace referencia el modelo 3V en el mundo de Big Data?"
-        },
-        {
-          "pregunta": "Internet de las cosas es la definición de Internet de los objetos con el mismo protocolo IP que conecta a la red.",
-          "imagen": "",
-          "correctas": [
-            1
-          ],
-          "opciones": [
-            {
-              "numero": 0,
-              "texto": "Verdadero"
-            },
-            {
-              "numero": 1,
-              "texto": "Falso"
-            }
-          ]
-        },
-        {
-          "opciones": [
-            {
-              "texto": "Robots autónomos",
-              "numero": 0
-            },
-            {
-              "texto": "Robots colaborativos",
-              "numero": 1
-            },
-            {
-              "numero": 2,
-              "texto": "Bots conversacionales"
-            }
-          ],
-          "correctas": [
-            2
-          ],
-          "pregunta": "¿Cómo se definen los Bots y Chatbots?",
-          "imagen": ""
-        },
-        {
-          "correctas": [
-            1
-          ],
-          "pregunta": "Las propiedades principales de la Seguridad de la Información y la Ciberseguridad son:",
-          "imagen": "",
-          "opciones": [
-            {
-              "texto": "Volumen, Velocidad y Veracidad.",
-              "numero": 0
-            },
-            {
-              "numero": 1,
-              "texto": "Disponibilidad, Integridad y Confidencialidad. "
-            },
-            {
-              "texto": "Ninguna de las anteriores.",
-              "numero": 2
-            }
-          ]
-        },
-        {
-          "imagen": "",
-          "pregunta": "La conectividad es uno de los pilares fundamentales en la transformación digital de una empresa.",
-          "opciones": [
-            {
-              "texto": "Verdadero",
-              "numero": 0
-            },
-            {
-              "texto": "Falso",
-              "numero": 1
-            }
-          ],
-          "correctas": [
-            0
-          ]
-        },
-        {
-          "pregunta": "Una de las medidas a tomar para la eficiencia energética es:",
-          "correctas": [
-            2
-          ],
-          "imagen": "",
-          "opciones": [
-            {
-              "numero": 0,
-              "texto": "La potencia contratada."
-            },
-            {
-              "texto": "Utilización de equipos inteligentes.",
-              "numero": 1
-            },
-            {
-              "texto": "Transparencia sobre el consumo de energía. ",
-              "numero": 2
-            }
-          ]
-        },
-        {
-          "opciones": [
-            {
-              "numero": 0,
-              "texto": "Verdadero"
-            },
-            {
-              "texto": "Falso",
-              "numero": 1
-            }
-          ],
-          "imagen": "",
-          "correctas": [],
-          "pregunta": "El algoritmo como modelo de negocio en la economía digital es una realidad en el mundo."
-        }
-      ],
-      "actividades": [
-        {
-          "isTest": true,
-          "questions": [
-            {
-              "image": "",
-              "text": "El concepto de Industria 4.0 nació en 2011 en Alemania para describir la digitalización y procesos industriales mediante la interconexión de Internet de las Cosas.",
-              "points": 1,
-              "type": {
-                "createInstructions": "",
-                "value": "single_choice",
-                "solveInstructions": "Seleccione la opción correcta del listado de opciones",
-                "displayName": "Opción Simple",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta"
-              },
-              "options": [
-                {
-                  "isCorrect": true,
-                  "text": "Verdadero"
-                },
-                {
-                  "text": "Falso",
-                  "isCorrect": false
-                }
-              ]
-            },
-            {
-              "image": "",
-              "points": 1,
-              "options": [
-                {
-                  "isCorrect": true,
-                  "text": "Verdadero"
-                },
-                {
-                  "isCorrect": false,
-                  "text": "Falso"
-                }
-              ],
-              "text": "La realidad aumentada incrusta informacion digital en el mundo real, mientras que la realidad virtual crea contexto digitales que imitan el mundo real.",
-              "type": {
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
-                "displayName": "Opción Simple",
-                "solveInstructions": "Seleccione la opción correcta del listado de opciones",
-                "createInstructions": "",
-                "value": "single_choice"
-              }
-            },
-            {
-              "type": {
-                "value": "single_choice",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
-                "solveInstructions": "Seleccione la opción correcta del listado de opciones",
-                "displayName": "Opción Simple",
-                "createInstructions": ""
-              },
-              "text": "¿Cuáles son los dos grandes modelos de la Nube?",
-              "options": [
-                {
-                  "isCorrect": false,
-                  "text": "Servicio y contratación"
-                },
-                {
-                  "isCorrect": true,
-                  "text": "Servicio y despliegue"
-                },
-                {
-                  "text": "Servicio y software",
-                  "isCorrect": false
-                }
-              ],
-              "points": 1,
-              "image": ""
-            },
-            {
-              "points": 1,
-              "options": [
-                {
-                  "text": "Veracidad, Velocidad, Volumen.",
-                  "isCorrect": false
-                },
-                {
-                  "text": "Volumen, Velocidad, Variedad.",
-                  "isCorrect": true
-                },
-                {
-                  "isCorrect": false,
-                  "text": "Volumen, Velocidad, Valoración."
-                }
-              ],
-              "text": "¿A qué hace referencia el modelo 3V en el mundo de Big Data?",
-              "image": "",
-              "type": {
-                "displayName": "Opción Simple",
-                "value": "single_choice",
-                "solveInstructions": "Seleccione la opción correcta del listado de opciones",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
-                "createInstructions": ""
-              }
-            },
-            {
-              "text": "Internet de las cosas es la definición de Internet de los objetos con el mismo protocolo IP que conecta a la red.",
-              "type": {
-                "solveInstructions": "Seleccione la opción correcta del listado de opciones",
-                "createInstructions": "",
-                "value": "single_choice",
-                "displayName": "Opción Simple",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta"
-              },
-              "options": [
-                {
-                  "isCorrect": false,
-                  "text": "Verdadero"
-                },
-                {
-                  "isCorrect": true,
-                  "text": "Falso"
-                }
-              ],
-              "points": 1,
-              "image": ""
-            },
-            {
-              "points": 1,
-              "options": [
-                {
-                  "text": "Robots autónomos",
-                  "isCorrect": false
-                },
-                {
-                  "text": "Robots colaborativos",
-                  "isCorrect": false
-                },
-                {
-                  "text": "Bots conversacionales",
-                  "isCorrect": true
-                }
-              ],
-              "type": {
-                "solveInstructions": "Seleccione la opción correcta del listado de opciones",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
-                "createInstructions": "",
-                "value": "single_choice",
-                "displayName": "Opción Simple"
-              },
-              "image": "",
-              "text": "¿Cómo se definen los Bots y Chatbots?"
-            },
-            {
-              "points": 1,
-              "type": {
-                "value": "single_choice",
-                "displayName": "Opción Simple",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
-                "createInstructions": "",
-                "solveInstructions": "Seleccione la opción correcta del listado de opciones"
-              },
-              "options": [
-                {
-                  "isCorrect": false,
-                  "text": "Volumen, Velocidad y Veracidad."
-                },
-                {
-                  "isCorrect": true,
-                  "text": "Disponibilidad, Integridad y Confidencialidad. "
-                },
-                {
-                  "isCorrect": false,
-                  "text": "Ninguna de las anteriores."
-                }
-              ],
-              "text": "Las propiedades principales de la Seguridad de la Información y la Ciberseguridad son:",
-              "image": ""
-            },
-            {
-              "options": [
-                {
-                  "text": "Verdadero",
-                  "isCorrect": true
-                },
-                {
-                  "isCorrect": false,
-                  "text": "Falso"
-                }
-              ],
-              "type": {
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
-                "createInstructions": "",
-                "displayName": "Opción Simple",
-                "solveInstructions": "Seleccione la opción correcta del listado de opciones",
-                "value": "single_choice"
-              },
-              "text": "La conectividad es uno de los pilares fundamentales en la transformación digital de una empresa.",
-              "image": "",
-              "points": 1
-            },
-            {
-              "text": "Una de las medidas a tomar para la eficiencia energética es:",
-              "image": "",
-              "type": {
-                "displayName": "Opción Simple",
-                "createInstructions": "",
-                "value": "single_choice",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
-                "solveInstructions": "Seleccione la opción correcta del listado de opciones"
-              },
-              "options": [
-                {
-                  "text": "La potencia contratada.",
-                  "isCorrect": false
-                },
-                {
-                  "isCorrect": false,
-                  "text": "Utilización de equipos inteligentes."
-                },
-                {
-                  "isCorrect": true,
-                  "text": "Transparencia sobre el consumo de energía. "
-                }
-              ],
-              "points": 1
-            },
-            {
-              "points": 1,
-              "image": "",
-              "text": "El algoritmo como modelo de negocio en la economía digital es una realidad en el mundo.",
-              "type": {
-                "value": "single_choice",
-                "displayName": "Opción Simple",
-                "createInstructions": "",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
-                "solveInstructions": "Seleccione la opción correcta del listado de opciones"
-              },
-              "options": [
-                {
-                  "isCorrect": true,
-                  "text": "Verdadero"
-                },
-                {
-                  "isCorrect": false,
-                  "text": "Falso"
-                }
-              ]
-            }
-          ],
-          "title": "Cuestionario final: Transición a la industria 4.0",
-          "id": "Examen-1",
-          "createdAt": 1675378201488
-        },
-        {
-          "id": "Monitoreo-de-Plantas-Industriales-para-La-Industria-4.0-V2",
-          "questions": [
-            {
-              "points": 1,
-              "image": "",
-              "text": "Una de las medidas a tomar para la eficiencia energética es:",
-              "options": [
-                {
-                  "text": "Transparencia sobre el consumo de energía.",
-                  "isCorrect": true
-                },
-                {
-                  "isCorrect": false,
-                  "text": "La potencia contratada."
-                },
-                {
-                  "text": "Utilización de equipos inteligentes.",
-                  "isCorrect": false
-                }
-              ],
-              "type": {
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
-                "createInstructions": "",
-                "solveInstructions": "Instruccion Dummy para single choice",
-                "displayName": "Opción Simple",
-                "value": "single_choice"
-              }
-            },
-            {
-              "image": "",
-              "text": "El mundo está experimentando cambios significativos que son: Demográfico, Climático, Transformación Digital, Urbanización y Globalización.",
-              "options": [
-                {
-                  "placeholder": "",
-                  "text": "Verdadero",
-                  "isCorrect": true
-                },
-                {
-                  "text": "Falso",
-                  "placeholder": "",
-                  "isCorrect": false
-                }
-              ],
-              "points": 1,
-              "type": {
-                "displayName": "Opción Simple",
-                "value": "single_choice",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
-                "createInstructions": "",
-                "solveInstructions": "Instruccion Dummy para single choice"
-              }
-            },
-            {
-              "points": 1,
-              "image": "",
-              "text": "La emisión de Dióxido de Carbono, en la energía eléctrica consumida, se calcula como un factor que depende del origen del combustible que se utiliza para su generación.",
-              "options": [
-                {
-                  "isCorrect": true,
-                  "text": "Verdadero",
-                  "placeholder": ""
-                },
-                {
-                  "placeholder": "",
-                  "text": "Falso",
-                  "isCorrect": false
-                }
-              ],
-              "type": {
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
-                "value": "single_choice",
-                "solveInstructions": "Instruccion Dummy para single choice",
-                "createInstructions": "",
-                "displayName": "Opción Simple"
-              }
-            },
-            {
-              "image": "",
-              "text": "La pirámide de eficiencia energética la podemos considerar que incluye los niveles de adquisición, monitoreo y análisis energético de una planta.",
-              "options": [
-                {
-                  "isCorrect": true,
-                  "text": "Verdadero",
-                  "placeholder": ""
-                },
-                {
-                  "text": "Falso",
-                  "placeholder": "",
-                  "isCorrect": false
-                }
-              ],
-              "type": {
-                "value": "single_choice",
-                "createInstructions": "",
-                "solveInstructions": "Instruccion Dummy para single choice",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
-                "displayName": "Opción Simple"
-              },
-              "points": 1
-            },
-            {
-              "image": "",
-              "options": [
-                {
-                  "placeholder": "",
-                  "isCorrect": true,
-                  "text": "Verdadero"
-                },
-                {
-                  "placeholder": "",
-                  "text": "Falso",
-                  "isCorrect": false
-                }
-              ],
-              "type": {
-                "value": "single_choice",
-                "displayName": "Opción Simple",
-                "createInstructions": "",
-                "solveInstructions": "Instruccion Dummy para single choice",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta"
-              },
-              "points": 1,
-              "text": "El ciclo de la eficiencia energética se puede decir que consta de: Realización de la medición, Adquisición de los valores de medición, Análisis de datos y Planificación de medidas para la eficiencia energética."
-            }
-          ],
-          "title": "Monitoreo de Plantas Industriales para La Industria 4.0 V2",
-          "createdAt": 1671134011820,
-          "isTest": false
-        },
-        {
-          "createdAt": 1670951806803,
-          "isTest": false,
-          "title": "Hacia la revolución industrial 4.0 V2",
-          "id": "Hacia-la-revolución-industrial-4.0",
-          "questions": [
-            {
-              "text": "El Concepto de Industria 4.0 nacio en 2011 en Alemania para describir la digitalizacion y procesos industriales mediante la interconexion de internet de las cosas.",
-              "type": {
-                "createInstructions": "",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
-                "displayName": "Opción Simple",
-                "solveInstructions": "Instruccion Dummy para single choice",
-                "value": "single_choice"
-              },
-              "points": 1,
-              "image": "",
-              "options": [
-                {
-                  "isCorrect": true,
-                  "text": "Verdadero"
-                },
-                {
-                  "isCorrect": false,
-                  "text": "Falso"
-                }
-              ]
-            },
-            {
-              "points": 1,
-              "type": {
-                "createInstructions": "",
-                "displayName": "Opción Múltiple",
-                "solveInstructions": "Instruccion Dummy para multiple choice",
-                "value": "multiple_choice",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas"
-              },
-              "image": "",
-              "text": "El Internet de las Cosas es:",
-              "options": [
-                {
-                  "text": "El motor de la Industria 4.0 ",
-                  "isCorrect": true
-                },
-                {
-                  "text": "Es uno mas de los pilares  de la Industria 4.0",
-                  "isCorrect": false
-                }
-              ]
-            },
-            {
-              "options": [
-                {
-                  "text": "Uno de los mayores exponentes de la cuarta revolución industrial e industria 4.0. ",
-                  "isCorrect": true
-                },
-                {
-                  "isCorrect": false,
-                  "text": " Es uno de los pilares de la Industria 3.0."
-                }
-              ],
-              "type": {
-                "solveInstructions": "Instruccion Dummy para multiple choice",
-                "displayName": "Opción Múltiple",
-                "createInstructions": "",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas",
-                "value": "multiple_choice"
-              },
-              "image": "",
-              "points": 1,
-              "text": "Las ciudades inteligentes son:"
-            },
-            {
-              "options": [
-                {
-                  "isCorrect": true,
-                  "text": "Verdadero"
-                },
-                {
-                  "isCorrect": false,
-                  "text": "Falso"
-                }
-              ],
-              "image": "",
-              "text": "La fabricación aditiva y la impresión 3D son espinas dorsales de la fabricación inteligente.",
-              "type": {
-                "displayName": "Opción Múltiple",
-                "value": "multiple_choice",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas",
-                "createInstructions": "",
-                "solveInstructions": "Instruccion Dummy para multiple choice"
-              },
-              "points": 1
-            },
-            {
-              "points": 1,
-              "image": "",
-              "options": [
-                {
-                  "text": "Internet del todo",
-                  "isCorrect": false
-                },
-                {
-                  "isCorrect": false,
-                  "text": "Internet de los dispositivos"
-                },
-                {
-                  "isCorrect": true,
-                  "text": "Internet de las cosas"
-                }
-              ],
-              "text": "¿Cómo se llama el concepto en el que  todos los dispositivos están conectados a la Nube?",
-              "type": {
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas",
-                "displayName": "Opción Múltiple",
-                "value": "multiple_choice",
-                "solveInstructions": "Instruccion Dummy para multiple choice",
-                "createInstructions": ""
-              }
-            }
-          ]
-        },
-        {
-          "id": "Internet-industrial-de-las-cosas-V2",
-          "questions": [
-            {
-              "image": "",
-              "text": "Señale cual de los siguientes enunciados acerca del internet de las cosas son ciertos:",
-              "points": 4,
-              "options": [
-                {
-                  "text": "Internet de las cosas es la definición de Internet de los objetos con el mismo protocolo IP que conecta a la red.",
-                  "isCorrect": false
-                },
-                {
-                  "isCorrect": true,
-                  "text": "NFC y RFID son tecnologías asociadas al concepto de internet de las cosas."
-                },
-                {
-                  "text": "El protocolo de conexión a Internet IPV4, es una de las tecnologías disruptivas para la expansión de la Industria 4.0.",
-                  "isCorrect": false
-                },
-                {
-                  "isCorrect": true,
-                  "text": "¿Sensores, controladores y actuadores son los tres pilares fundamentales de la conectividad de la red?"
-                }
-              ],
-              "type": {
-                "tooltipInfo": "Configure una pregunta cuya respuesta sea verdadero o falso",
-                "solveInstructions": "Instruccion Dummy para verdadero o falso",
-                "createInstructions": "Marque las opciones que sean verdaderas y deje en blanco las que sean falsas",
-                "value": "true-false",
-                "displayName": "Verdadero o Falso"
-              }
-            },
-            {
-              "points": 1,
-              "type": {
-                "solveInstructions": "Instruccion Dummy para single choice",
-                "displayName": "Opción Simple",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
-                "value": "single_choice",
-                "createInstructions": ""
-              },
-              "image": "",
-              "text": "¿Cuál es la denominación industrial de Internet de las Cosas?",
-              "options": [
-                {
-                  "text": "IoE",
-                  "placeholder": "",
-                  "isCorrect": false
-                },
-                {
-                  "isCorrect": false,
-                  "placeholder": "",
-                  "text": "IoT"
-                },
-                {
-                  "isCorrect": true,
-                  "text": "IIoT",
-                  "placeholder": ""
-                }
-              ]
-            }
-          ],
-          "createdAt": 1671125656986,
-          "title": "Internet industrial de las cosas V2",
-          "isTest": false
-        },
-        {
-          "title": "Tecnologías facilitadoras de la industria 4.0 V2",
-          "isTest": false,
-          "createdAt": 1671126692201,
-          "questions": [
-            {
-              "type": {
-                "createInstructions": "Marque las opciones que sean verdaderas y deje en blanco las que sean falsas",
-                "displayName": "Verdadero o Falso",
-                "value": "true-false",
-                "tooltipInfo": "Configure una pregunta cuya respuesta sea verdadero o falso",
-                "solveInstructions": "Instruccion Dummy para verdadero o falso"
-              },
-              "options": [
-                {
-                  "isCorrect": true,
-                  "text": "Un Dron se define como aeronave no tripulada."
-                },
-                {
-                  "isCorrect": true,
-                  "text": "La realidad aumentada incrusta información digital en el mundo real, mientras que la realidad virtual crea contexto digitales que imitan el mundo real."
-                },
-                {
-                  "text": "La geolocalización aprovecha el valor de la ubicación geográfica (coordenadas) como herramienta clave para obtener información que puede ser de vital importancia para las compañías. Además se basa en los sistemas de información geográfica (GIS) para analizar, gestionar y visualizar conocimiento geográfico.",
-                  "isCorrect": true
-                }
-              ],
-              "text": "Señale cual de los siguientes enunciados son verdaderos:",
-              "image": "",
-              "points": 3
-            },
-            {
-              "options": [
-                {
-                  "text": "Se llevan puestas en forma de prenda o complemento en la ropa de vestir.",
-                  "isCorrect": true
-                },
-                {
-                  "isCorrect": false,
-                  "text": "No se llevan puestas, se usan de forma externa."
-                }
-              ],
-              "type": {
-                "createInstructions": "",
-                "displayName": "Opción Simple",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
-                "solveInstructions": "Seleccione la opción correcta del listado de opciones",
-                "value": "single_choice"
-              },
-              "image": "",
-              "text": "Las Tecnologías Weareables (Ponibles) son tecnologías inteligentes que: ",
-              "points": 1
-            },
-            {
-              "text": "La Tarjeta eSIM:",
-              "image": "",
-              "type": {
-                "solveInstructions": "Instruccion Dummy para single choice",
-                "createInstructions": "",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
-                "displayName": "Opción Simple",
-                "value": "single_choice"
-              },
-              "points": 1,
-              "options": [
-                {
-                  "isCorrect": false,
-                  "text": "No es una tarjeta que viene a sustituir, sino a complementar la actual."
-                },
-                {
-                  "text": "Es una tarjeta que viene a sustituir a la tarjeta SIM física. ",
-                  "isCorrect": true
-                }
-              ]
-            }
-          ],
-          "id": "Tecnologías-facilitadoras-de-la-industria-4.0-V2"
-        },
-        {
-          "questions": [
-            {
-              "image": "",
-              "text": "Señale cual de los siguientes conceptos de inteligencia artificial son ciertos",
-              "type": {
-                "displayName": "Verdadero o Falso",
-                "solveInstructions": "Instruccion Dummy para verdadero o falso",
-                "value": "true-false",
-                "tooltipInfo": "Configure una pregunta cuya respuesta sea verdadero o falso",
-                "createInstructions": "Marque las opciones que sean verdaderas y deje en blanco las que sean falsas"
-              },
-              "points": 2,
-              "options": [
-                {
-                  "placeholder": "",
-                  "isCorrect": true,
-                  "text": "Se conoce el concepto de Machine Learning como el Aprendizaje Automático."
-                },
-                {
-                  "placeholder": "",
-                  "text": "Se conoce el concepto de Deep Learning como el Aprendizaje Profundo.",
-                  "isCorrect": true
-                }
-              ]
-            },
-            {
-              "image": "",
-              "text": "En el aprendizaje de Machine Learning, ¿qué concepto se aplica?",
-              "options": [
-                {
-                  "text": "Redes neuronales",
-                  "isCorrect": true,
-                  "placeholder": ""
-                },
-                {
-                  "placeholder": "",
-                  "isCorrect": false,
-                  "text": "Árbol de decisión"
-                }
-              ],
-              "points": 1,
-              "type": {
-                "displayName": "Opción Simple",
-                "createInstructions": "",
-                "solveInstructions": "Instruccion Dummy para single choice",
-                "value": "single_choice",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta"
-              }
-            },
-            {
-              "image": "",
-              "type": {
-                "value": "single_choice",
-                "solveInstructions": "Instruccion Dummy para single choice",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
-                "createInstructions": "",
-                "displayName": "Opción Simple"
-              },
-              "points": 1,
-              "options": [
-                {
-                  "isCorrect": false,
-                  "placeholder": "",
-                  "text": "Robots autónomos"
-                },
-                {
-                  "placeholder": "",
-                  "text": "Robots colaborativos",
-                  "isCorrect": false
-                },
-                {
-                  "text": "Bots conversacionales",
-                  "isCorrect": true,
-                  "placeholder": ""
-                }
-              ],
-              "text": "¿Cómo se definen los Bots y Chatbots?"
-            },
-            {
-              "type": {
-                "value": "single_choice",
-                "createInstructions": "",
-                "displayName": "Opción Simple",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
-                "solveInstructions": "Instruccion Dummy para single choice"
-              },
-              "points": 1,
-              "text": "¿Qué es un Cobot?",
-              "options": [
-                {
-                  "placeholder": "",
-                  "isCorrect": false,
-                  "text": "Robot autónomo"
-                },
-                {
-                  "text": "Robot colaborativo",
-                  "placeholder": "",
-                  "isCorrect": true
-                },
-                {
-                  "placeholder": "",
-                  "text": "Robot industrial",
-                  "isCorrect": false
-                }
-              ],
-              "image": ""
-            }
-          ],
-          "id": "Inteligencia-artificial-relacionada-a-la-industria-4.0-V2",
-          "isTest": false,
-          "createdAt": 1671125926735,
-          "title": "Inteligencia artificial relacionada a la industria 4.0 V2"
-        },
-        {
-          "title": "La nube aplicada a la industria 4.0 V2",
-          "id": "La-nube-aplicada-a-la-industria-4.0-V2",
-          "createdAt": 1671132963982,
-          "questions": [
-            {
-              "type": {
-                "createInstructions": "",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
-                "displayName": "Opción Simple",
-                "solveInstructions": "Instruccion Dummy para single choice",
-                "value": "single_choice"
-              },
-              "points": 1,
-              "options": [
-                {
-                  "isCorrect": false,
-                  "text": "Servicio y contratación."
-                },
-                {
-                  "text": "Servicio y despliegue.",
-                  "isCorrect": true
-                },
-                {
-                  "isCorrect": false,
-                  "text": "Servicio y Software."
-                }
-              ],
-              "text": "¿Cuáles son los dos grandes modelos de la Nube?",
-              "image": ""
-            },
-            {
-              "text": "Los modelos de servicios son : IaaS , PaaS , SaaS.\n",
-              "points": 1,
-              "image": "",
-              "options": [
-                {
-                  "placeholder": "",
-                  "text": "Verdadero",
-                  "isCorrect": true
-                },
-                {
-                  "isCorrect": false,
-                  "text": "Falso",
-                  "placeholder": ""
-                }
-              ],
-              "type": {
-                "value": "single_choice",
-                "createInstructions": "",
-                "displayName": "Opción Simple",
-                "solveInstructions": "Instruccion Dummy para single choice",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta"
-              }
-            },
-            {
-              "options": [
-                {
-                  "placeholder": "",
-                  "text": "Verdadero",
-                  "isCorrect": false
-                },
-                {
-                  "placeholder": "",
-                  "isCorrect": true,
-                  "text": "Falso"
-                }
-              ],
-              "points": 1,
-              "text": "Los modelo de despliegue de la Nube son: Pública ,Privada e Híbrida.",
-              "type": {
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
-                "value": "single_choice",
-                "displayName": "Opción Simple",
-                "solveInstructions": "Instruccion Dummy para single choice",
-                "createInstructions": ""
-              },
-              "image": ""
-            },
-            {
-              "options": [
-                {
-                  "placeholder": "",
-                  "text": "Visibilidad",
-                  "isCorrect": false
-                },
-                {
-                  "placeholder": "",
-                  "text": "Vulnerabilidad",
-                  "isCorrect": true
-                }
-              ],
-              "points": 1,
-              "text": "¿Cuál de los siguientes items es el  correcto respecto a los riesgos y amenazas en el cloud computing?",
-              "image": "",
-              "type": {
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
-                "displayName": "Opción Simple",
-                "solveInstructions": "Instruccion Dummy para single choice",
-                "value": "single_choice",
-                "createInstructions": ""
-              }
-            },
-            {
-              "points": 1,
-              "type": {
-                "value": "single_choice",
-                "displayName": "Opción Simple",
-                "solveInstructions": "Instruccion Dummy para single choice",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
-                "createInstructions": ""
-              },
-              "options": [
-                {
-                  "isCorrect": true,
-                  "placeholder": "",
-                  "text": "Software Plataform Infraestrcture  as a Service."
-                },
-                {
-                  "text": "Sofware Public Incidence as a Service.",
-                  "isCorrect": false,
-                  "placeholder": ""
-                },
-                {
-                  "isCorrect": false,
-                  "placeholder": "",
-                  "text": "Software Private Infraestrcture as a Service."
-                }
-              ],
-              "text": "¿Qué significado tienen las siglas IaaS , PaaS y SaaS?\n",
-              "image": ""
-            }
-          ],
-          "isTest": false
-        },
-        {
-          "questions": [
-            {
-              "image": "",
-              "text": "La Seguridad de la Información tiene un alcance [alcanceInformacion] que la Ciberseguridad.",
-              "points": 1,
-              "options": [
-                {
-                  "placeholder": "alcanceInformacion",
-                  "text": "Igual",
-                  "isCorrect": false
-                },
-                {
-                  "placeholder": "alcanceInformacion",
-                  "isCorrect": false,
-                  "text": "Menor"
-                },
-                {
-                  "text": "Mayor",
-                  "placeholder": "alcanceInformacion",
-                  "isCorrect": true
-                }
-              ],
-              "type": {
-                "solveInstructions": "Instruccion Dummy para completar",
-                "tooltipInfo": "Configure una pregunta cuyo texto pueda ser completado a partir de las opciones provistas para cada marcador de referencia - cada marcador debe tener una única respuesta correcta",
-                "value": "complete",
-                "createInstructions": "Ingrese cada marcador como una palabra de referencia encerrada entre corchetes ([]).<br/>Ejemplo: El presidente [nombreDelPresidente] nacio en [paisDeNacimiento]",
-                "displayName": "Completar"
-              }
-            },
-            {
-              "options": [
-                {
-                  "text": "Volumen, Velocidad y Veracidad",
-                  "isCorrect": false,
-                  "placeholder": ""
-                },
-                {
-                  "placeholder": "",
-                  "text": "Disponibilidad, Integridad y Confidencialidad",
-                  "isCorrect": true
-                },
-                {
-                  "isCorrect": false,
-                  "text": "Ninguna de las anteriores",
-                  "placeholder": ""
-                }
-              ],
-              "type": {
-                "solveInstructions": "Instruccion Dummy para single choice",
-                "displayName": "Opción Simple",
-                "createInstructions": "",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
-                "value": "single_choice"
-              },
-              "text": "Las propiedades principales de la Seguridad de la Información y la Ciberseguridad son:",
-              "image": "",
-              "points": 1
-            },
-            {
-              "type": {
-                "solveInstructions": "Instruccion Dummy para single choice",
-                "createInstructions": "",
-                "value": "single_choice",
-                "displayName": "Opción Simple",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta"
-              },
-              "text": "Una de las propiedades más importante de la Ciberseguridad es:",
-              "points": 1,
-              "image": "",
-              "options": [
-                {
-                  "placeholder": "",
-                  "text": "No devolución",
-                  "isCorrect": false
-                },
-                {
-                  "placeholder": "",
-                  "isCorrect": false,
-                  "text": "No respuesta"
-                },
-                {
-                  "placeholder": "",
-                  "isCorrect": true,
-                  "text": "No repudio"
-                }
-              ]
-            },
-            {
-              "text": "Una infraestructura critica en un país es:",
-              "points": 1,
-              "image": "",
-              "options": [
-                {
-                  "isCorrect": false,
-                  "placeholder": "",
-                  "text": "Solo los equipos físicos."
-                },
-                {
-                  "isCorrect": false,
-                  "text": "Solo la Nube.",
-                  "placeholder": ""
-                },
-                {
-                  "placeholder": "",
-                  "text": "Una instalación física, equipos físicos, la red y servicios.",
-                  "isCorrect": true
-                }
-              ],
-              "type": {
-                "solveInstructions": "Instruccion Dummy para single choice",
-                "value": "single_choice",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
-                "createInstructions": "",
-                "displayName": "Opción Simple"
-              }
-            },
-            {
-              "text": "¿Cuál es el termino más utilizado en Ciberseguridad que se refiere a los equipos que se mantiene en operatividad tras ser sometidos a un Ciberataque?",
-              "type": {
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
-                "solveInstructions": "Instruccion Dummy para single choice",
-                "createInstructions": "",
-                "value": "single_choice",
-                "displayName": "Opción Simple"
-              },
-              "options": [
-                {
-                  "isCorrect": false,
-                  "placeholder": "",
-                  "text": "Backup"
-                },
-                {
-                  "text": "Resiliencia",
-                  "isCorrect": true,
-                  "placeholder": ""
-                },
-                {
-                  "text": "Redundancia",
-                  "isCorrect": false,
-                  "placeholder": ""
-                }
-              ],
-              "image": "",
-              "points": 1
-            }
-          ],
-          "id": "Ciberseguridad-V2",
-          "createdAt": 1671125130432,
-          "title": "Ciberseguridad V2",
-          "isTest": false
-        },
-        {
-          "questions": [
-            {
-              "text": "El algoritmo como modelo de negocio en la economía digital es una realidad en el mundo.",
-              "type": {
-                "value": "single_choice",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
-                "displayName": "Opción Simple",
-                "solveInstructions": "Instruccion Dummy para single choice",
-                "createInstructions": ""
-              },
-              "image": "",
-              "options": [
-                {
-                  "isCorrect": true,
-                  "text": "Verdadero"
-                },
-                {
-                  "isCorrect": false,
-                  "text": "Falso"
-                }
-              ],
-              "points": 1
-            },
-            {
-              "points": 1,
-              "type": {
-                "createInstructions": "Ingrese cada marcador como una palabra de referencia encerrada entre corchetes ([]).<br/>Ejemplo: El presidente [nombreDelPresidente] nacio en [paisDeNacimiento]",
-                "value": "complete",
-                "displayName": "Completar",
-                "solveInstructions": "Instruccion Dummy para completar",
-                "tooltipInfo": "Configure una pregunta cuyo texto pueda ser completado a partir de las opciones provistas para cada marcador de referencia - cada marcador debe tener una única respuesta correcta"
-              },
-              "image": "",
-              "options": [
-                {
-                  "isCorrect": false,
-                  "text": "Datos",
-                  "placeholder": " "
-                },
-                {
-                  "isCorrect": true,
-                  "text": "Algoritmo",
-                  "placeholder": " "
-                },
-                {
-                  "placeholder": " ",
-                  "isCorrect": false,
-                  "text": "Servicios"
-                }
-              ],
-              "text": "Se instala un nuevo concepto y desarrollo de tiendas de [ ], por ejemplo el caso de Algorithmia."
-            },
-            {
-              "text": "En el modelo de la economía colaborativa, las finanzas y el crowdfunding es uno de los bloques temáticos de esta definición.",
-              "image": "",
-              "type": {
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
-                "displayName": "Opción Simple",
-                "createInstructions": "",
-                "solveInstructions": "Instruccion Dummy para single choice",
-                "value": "single_choice"
-              },
-              "points": 1,
-              "options": [
-                {
-                  "placeholder": "",
-                  "isCorrect": true,
-                  "text": "Verdadero"
-                },
-                {
-                  "isCorrect": false,
-                  "placeholder": "",
-                  "text": "Falso"
-                }
-              ]
-            },
-            {
-              "points": 1,
-              "type": {
-                "solveInstructions": "Instruccion Dummy para single choice",
-                "displayName": "Opción Simple",
-                "createInstructions": "",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
-                "value": "single_choice"
-              },
-              "text": "El Blockchain añade seguridad y eficiencia a un gran número de transferencias de información pero es sólo abocado al sector industrial",
-              "options": [
-                {
-                  "text": "Verdadero",
-                  "isCorrect": false,
-                  "placeholder": ""
-                },
-                {
-                  "placeholder": "",
-                  "text": "Falso",
-                  "isCorrect": true
-                }
-              ],
-              "image": ""
-            },
-            {
-              "points": 1,
-              "text": "Contratos inteligentes (smart contracts), son contratos entre partes sin necesidad de un tercero o intermediario, es un caso de éxito del Blockchain.",
-              "type": {
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
-                "value": "single_choice",
-                "solveInstructions": "Instruccion Dummy para single choice",
-                "displayName": "Opción Simple",
-                "createInstructions": ""
-              },
-              "options": [
-                {
-                  "placeholder": "",
-                  "text": "Verdadero",
-                  "isCorrect": true
-                },
-                {
-                  "text": "Falso",
-                  "isCorrect": false,
-                  "placeholder": ""
-                }
-              ],
-              "image": ""
-            }
-          ],
-          "id": "Nuevos-Profesionales-En-La-Industria-4.0-V2",
-          "createdAt": 1671134323289,
-          "isTest": false,
-          "title": "Nuevos Profesionales En La Industria 4.0 V2"
-        },
-        {
-          "createdAt": 1671133734743,
-          "questions": [
-            {
-              "text": "Big data e IOT, son agentes diferenciales para hacer más competitiva una empresa.",
-              "options": [
-                {
-                  "text": "Verdadero",
-                  "isCorrect": true
-                },
-                {
-                  "isCorrect": false,
-                  "text": "Falso"
-                }
-              ],
-              "image": "",
-              "type": {
-                "solveInstructions": "Instruccion Dummy para single choice",
-                "value": "single_choice",
-                "displayName": "Opción Simple",
-                "createInstructions": "",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta"
-              },
-              "points": 1
-            },
-            {
-              "image": "",
-              "type": {
-                "createInstructions": "",
-                "value": "single_choice",
-                "solveInstructions": "Instruccion Dummy para single choice",
-                "displayName": "Opción Simple",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta"
-              },
-              "options": [
-                {
-                  "isCorrect": true,
-                  "text": "Verdadero",
-                  "placeholder": ""
-                },
-                {
-                  "placeholder": "",
-                  "text": "Falso",
-                  "isCorrect": false
-                }
-              ],
-              "points": 1,
-              "text": "La conectividad es uno de los pilares fundamentales en la transformación digital de una empresa."
-            },
-            {
-              "type": {
-                "solveInstructions": "Instruccion Dummy para single choice",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
-                "createInstructions": "",
-                "displayName": "Opción Simple",
-                "value": "single_choice"
-              },
-              "points": 1,
-              "image": "",
-              "options": [
-                {
-                  "text": "Verdadero",
-                  "isCorrect": true,
-                  "placeholder": ""
-                },
-                {
-                  "placeholder": "",
-                  "isCorrect": false,
-                  "text": "Falso"
-                }
-              ],
-              "text": "VISION es una de las acciones dentro del modelo de DELGADO en la transformación."
-            },
-            {
-              "text": "La transformación digital también invita a implementar metodologías ágiles de desarrollo para motivación de equipos.",
-              "type": {
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
-                "displayName": "Opción Simple",
-                "solveInstructions": "Instruccion Dummy para single choice",
-                "createInstructions": "",
-                "value": "single_choice"
-              },
-              "options": [
-                {
-                  "placeholder": "",
-                  "isCorrect": true,
-                  "text": "Verdadero"
-                },
-                {
-                  "placeholder": "",
-                  "isCorrect": false,
-                  "text": "Falso"
-                }
-              ],
-              "points": 1,
-              "image": ""
-            },
-            {
-              "text": "La transformación digital requiere de un proceso que puede ser más o menos complejo en función de:",
-              "options": [
-                {
-                  "text": "Sólo el sector de influencia.",
-                  "placeholder": "",
-                  "isCorrect": false
-                },
-                {
-                  "text": "Sólo líneas de negocio.",
-                  "isCorrect": false,
-                  "placeholder": ""
-                },
-                {
-                  "placeholder": "",
-                  "isCorrect": true,
-                  "text": "La empresa, su tamaño, su sector de influencia, sus líneas de negocios, etc. "
-                }
-              ],
-              "image": "",
-              "points": 1,
-              "type": {
-                "solveInstructions": "Instruccion Dummy para single choice",
-                "displayName": "Opción Simple",
-                "createInstructions": "",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
-                "value": "single_choice"
-              }
-            }
-          ],
-          "title": "Transformación digital en la industria V2",
-          "id": "Transformación-digital-en-la-industria-V2",
-          "isTest": false
-        },
-        {
-          "isTest": false,
-          "createdAt": 1671127111881,
-          "title": "Big Data V2",
-          "id": "Big-Data-V2",
-          "questions": [
-            {
-              "options": [
-                {
-                  "text": "Veracidad, Velocidad, Volumen.",
-                  "isCorrect": false
-                },
-                {
-                  "text": "Volumen, Velocidad, Valoración.",
-                  "isCorrect": false
-                },
-                {
-                  "text": "Volumen, Velocidad, Variedad. ",
-                  "isCorrect": true
-                }
-              ],
-              "points": 1,
-              "text": "¿A qué hace referencia el modelo 3V en el mundo de Big Data?",
-              "type": {
-                "value": "single_choice",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
-                "solveInstructions": "Instruccion Dummy para single choice",
-                "createInstructions": "",
-                "displayName": "Opción Simple"
-              },
-              "image": ""
-            },
-            {
-              "options": [
-                {
-                  "text": "Los tipos de datos se clasifican en tres grandes grupos: Estructurados, No Estructurados y Semiestructurados.",
-                  "isCorrect": true,
-                  "placeholder": ""
-                },
-                {
-                  "text": "Los datos del Big Data proviene solamente de las redes sociales.",
-                  "placeholder": "",
-                  "isCorrect": false
-                },
-                {
-                  "placeholder": "",
-                  "isCorrect": true,
-                  "text": "Las cuatro capas del tratamiento del Big data, son: Recolección, Almacenamiento, Análisis y Visualización de los datos."
-                }
-              ],
-              "type": {
-                "displayName": "Verdadero o Falso",
-                "createInstructions": "Marque las opciones que sean verdaderas y deje en blanco las que sean falsas",
-                "tooltipInfo": "Configure una pregunta cuya respuesta sea verdadero o falso",
-                "value": "true-false",
-                "solveInstructions": "Instruccion Dummy para verdadero o falso"
-              },
-              "points": 1,
-              "image": "",
-              "text": "Señale los enunciados verdaderos:"
-            },
-            {
-              "type": {
-                "displayName": "Opción Simple",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta",
-                "createInstructions": "",
-                "value": "single_choice",
-                "solveInstructions": "Instruccion Dummy para single choice"
-              },
-              "options": [
-                {
-                  "isCorrect": false,
-                  "text": "Variedad de los datos",
-                  "placeholder": ""
-                },
-                {
-                  "text": "Volumen de los datos",
-                  "placeholder": "",
-                  "isCorrect": false
-                },
-                {
-                  "isCorrect": true,
-                  "placeholder": "",
-                  "text": "Privacidad de los datos"
-                }
-              ],
-              "points": 1,
-              "image": "",
-              "text": "Uno de los grandes riesgos del Big Data es:"
-            }
-          ]
         }
       ]
     },
