@@ -1,6 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
+import { NgbDropdown, NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { Chart } from 'chart.js';
-import { Subscription, combineLatest } from 'rxjs';
+import { Observable, OperatorFunction, Subject, Subscription, combineLatest, debounceTime, distinctUntilChanged, filter, map, merge } from 'rxjs';
 import { Category } from 'src/app/shared/models/category.model';
 import { Curso } from 'src/app/shared/models/course.model';
 import { Skill } from 'src/app/shared/models/skill.model';
@@ -101,6 +102,7 @@ export class ProfilesComponent {
   courses: Curso[]
   skills: Skill[]
 
+  @ViewChild('dropdown') dropdown: NgbDropdown;
   coursesForExplorer: CoursesForExplorer[]
   searchForExplorer: String = ''
   filteredCourses: CoursesForExplorer[] = []
@@ -133,9 +135,22 @@ export class ProfilesComponent {
     })
   }
 
-  search() {
-    this.filteredCourses = this.coursesForExplorer.filter(course => course.titulo.toLocaleLowerCase().includes(this.searchForExplorer.toLocaleLowerCase()))
-  }
+  @ViewChild('instance', { static: true }) instance: NgbTypeahead;
+
+	focus$ = new Subject<string>();
+	click$ = new Subject<string>();
+
+	search = (text$: Observable<string>) => {
+		const debouncedText$ = text$.pipe(debounceTime(200), distinctUntilChanged());
+		const clicksWithClosedPopup$ = this.click$.pipe(filter(() => !this.instance.isPopupOpen()));
+		const inputFocus$ = this.focus$;
+
+		return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
+			map((term) =>
+				(term === '' ? this.coursesForExplorer : this.coursesForExplorer.filter((v) => v.titulo.toLowerCase().indexOf(term.toLowerCase()) > -1)).slice(0, 10),
+			),
+		);
+	};
 
   onCategoryHover(category) {
     this.filteredCourses = this.coursesForExplorer.filter(course => {
