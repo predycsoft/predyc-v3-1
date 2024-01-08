@@ -4,6 +4,7 @@ import { DocumentReference } from "@angular/fire/compat/firestore"
 export interface SkillJson {
     id: string | null,
     name: string,
+    category: DocumentReference | null,
     enterprise: DocumentReference | null,
 }
 
@@ -14,6 +15,7 @@ export class Skill {
     constructor(
         public id: string | null,
         public name: string,
+        public category: DocumentReference | null,
         public enterprise: DocumentReference | null
     ){}
 
@@ -21,6 +23,7 @@ export class Skill {
         return new Skill(
             skillJson.id,
             skillJson.name,
+            skillJson.category,
             skillJson.enterprise,
         )
     }
@@ -29,6 +32,7 @@ export class Skill {
         return {
             id: this.id,
             name: this.name,
+            category: this.category,
             enterprise: this.enterprise
         }
     }

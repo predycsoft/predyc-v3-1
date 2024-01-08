@@ -1,4 +1,3 @@
-import { Category } from "./category.model";
 import { Enterprise } from "./enterprise.model";
 import { Modulo } from "./module.model";
 import { Skill } from './skill.model';
@@ -10,7 +9,6 @@ export class Curso {
 
   public static collection = 'course'
 
-  categoryRef: DocumentReference<Category>
   descripcion: string = ""
   resumen: string = ""
   nuevo: boolean = false
