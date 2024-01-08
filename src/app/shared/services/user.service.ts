@@ -29,7 +29,6 @@ export class UserService {
 
 
   constructor(
-    private afAuth: AngularFireAuth,
     private afs: AngularFirestore,
     private fireFunctions: AngularFireFunctions,
     private enterpriseService: EnterpriseService,
@@ -65,18 +64,12 @@ export class UserService {
   }
 
   private async activateUser(user: User) {
-    try {
-      await this.afs.collection(User.collection).doc(user.uid as string).set(
-        {
-          ...user,
-          isActive: true
-        }, { merge: true }
-      );
-      this.alertService.succesAlert('Has reactivado al usuario exitosamente.')
-    } catch (error) {
-      console.log(error)
-      this.alertService.errorAlert(JSON.stringify(error))
-    }
+    await this.afs.collection(User.collection).doc(user.uid as string).set(
+      {
+        ...user,
+        isActive: true
+      }, { merge: true }
+    );
   }
 
   async delete(user: User): Promise<void> {
@@ -125,25 +118,19 @@ export class UserService {
   }
 
   async editUser(user: UserJson): Promise<void> {
-    try {
-      const userRef = this.getUserRefById(user.uid)
-      // Obtener el documento actual
-      const currentDocument = await firstValueFrom(this.afs.collection(User.collection).doc(user.uid as string).get())
-      const currentData = currentDocument.data() as UserJson;
-  
-      await this.afs.collection(User.collection).doc(user.uid as string).set(
-        user, { merge: true }
-      );
-      // Comparar el valor original con el nuevo
-      if (user.profile && !currentData.profile || (currentData.profile && currentData.profile.id !== user.profile.id)) {
-        console.log("Se cambió el perfil del usuario");
-        const profileRef = this.profileService.getProfileRefById(user.profile.id);
-        await this.profileService.saveUserProfileLog(userRef, profileRef);
-      }
-      this.alertService.infoAlert('Has editado la informacion del usuario exitosamente.');
-    } catch (error) {
-      console.log(error);
-      this.alertService.errorAlert(JSON.stringify(error));
+    const userRef = this.getUserRefById(user.uid)
+    // Obtener el documento actual
+    const currentDocument = await firstValueFrom(this.afs.collection(User.collection).doc(user.uid as string).get())
+    const currentData = currentDocument.data() as UserJson;
+
+    await this.afs.collection(User.collection).doc(user.uid as string).set(
+      user, { merge: true }
+    );
+    // Comparar el valor original con el nuevo
+    if (user.profile && !currentData.profile || (currentData.profile && currentData.profile.id !== user.profile.id)) {
+      console.log("Se cambió el perfil del usuario");
+      const profileRef = this.profileService.getProfileRefById(user.profile.id);
+      await this.profileService.saveUserProfileLog(userRef, profileRef);
     }
   }
 

@@ -145,9 +145,6 @@ export class CoursesComponent {
     });
   }
 
-
-
-
   getRounded(num: number): number {
     return Math.round(num);
   }

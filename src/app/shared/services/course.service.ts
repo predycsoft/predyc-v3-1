@@ -58,9 +58,7 @@ export class CourseService {
 
       
         this.enterpriseRef = this.enterpriseService.getEnterpriseRef();
-      
-        console.log('enterprise', this.enterpriseRef);
-      
+            
         // Query to get courses matching enterpriseRef
         const enterpriseMatch$ = this.afs.collection<Curso>(Curso.collection, ref =>
           ref.where('enterpriseRef', '==', this.enterpriseRef)
@@ -238,6 +236,27 @@ export class CourseService {
 
   public getCourseRefById(id: string): DocumentReference<Curso> {
     return this.afs.collection<Curso>(Curso.collection).doc(id).ref
+  }
+
+  // Funciones de diego
+
+  getCourses$(): Observable<Curso[]> {
+    this.enterpriseRef = this.enterpriseService.getEnterpriseRef();
+        
+    // Query to get courses matching enterpriseRef
+    const enterpriseMatch$ = this.afs.collection<Curso>(Curso.collection, ref =>
+      ref.where('enterpriseRef', '==', this.enterpriseRef)
+    ).valueChanges({ idField: 'id' });
+  
+    // Query to get courses where enterpriseRef is empty
+    const enterpriseEmpty$ = this.afs.collection<Curso>(Curso.collection, ref =>
+      ref.where('enterpriseRef', '==', null)
+    ).valueChanges({ idField: 'id' });
+  
+    // Combine both queries
+    return combineLatest([enterpriseMatch$, enterpriseEmpty$]).pipe(
+      map(([matched, empty]) => [...matched, ...empty]),
+    )
   }
 
 }

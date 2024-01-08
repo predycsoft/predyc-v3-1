@@ -41,15 +41,9 @@ export class CategoryService {
 
 
   async addCategory(newCategory: Category): Promise<void> {
-    try {
-      const ref = this.afs.collection<Category>(Category.collection).doc().ref;
-      await ref.set({...newCategory.toJson(), id: ref.id}, { merge: true });
-      newCategory.id = ref.id;
-      this.alertService.succesAlert('Has agregado una nueva categoria exitosamente.')
-    } catch (error) {
-      console.log(error)
-      this.alertService.errorAlert(JSON.stringify(error))
-    }
+    const ref = this.afs.collection<Category>(Category.collection).doc().ref;
+    await ref.set({...newCategory.toJson(), id: ref.id}, { merge: true });
+    newCategory.id = ref.id;
   }
 
   // Arguments could be pageSize, sort, currentPage

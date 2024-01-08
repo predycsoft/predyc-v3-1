@@ -42,27 +42,15 @@ export class EnterpriseService {
   }
 
   async addEnterprise(enterprise: Enterprise): Promise<void> {
-    try {
-      const ref = this.afs.collection<Enterprise>(Enterprise.collection).doc().ref;
-      await ref.set({...enterprise.toJson(), id: ref.id}, { merge: true });
-      enterprise.id = ref.id;
-      this.alertService.succesAlert('Has agregado una nueva empresa exitosamente.')
-    } catch (error) {
-      console.log(error)
-      this.alertService.errorAlert(JSON.stringify(error))
-    }
+    const ref = this.afs.collection<Enterprise>(Enterprise.collection).doc().ref;
+    await ref.set({...enterprise.toJson(), id: ref.id}, { merge: true });
+    enterprise.id = ref.id;
   }
 
   async editEnterprise(enteprise: EnterpriseJson): Promise<void> {
-    try {
-      await this.afs.collection(Enterprise.collection).doc(enteprise.id as string).set(
-        enteprise, { merge: true }
-      );
-      this.alertService.infoAlert('Has editado la informacion de la empresa exitosamente.')
-    } catch (error) {
-      console.log(error)
-      this.alertService.errorAlert(JSON.stringify(error))
-    }
+    await this.afs.collection(Enterprise.collection).doc(enteprise.id as string).set(
+      enteprise, { merge: true }
+    );
   }
 
   public getEnterpriseRefById(id: string): DocumentReference<Enterprise> {

@@ -36,16 +36,9 @@ export class SkillService {
 
 
   async addSkill(newSkill: Skill): Promise<void> {
-    try {
-      console.log('skill add',newSkill)
-      const ref = this.afs.collection<Skill>(Skill.collection).doc().ref;
-      await ref.set({...newSkill.toJson(), id: ref.id}, { merge: true });
-      newSkill.id = ref.id;
-      this.alertService.succesAlert('Has agregado un nuevo skill exitosamente.')
-    } catch (error) {
-      console.log(error)
-      this.alertService.errorAlert(JSON.stringify(error))
-    }
+    const ref = this.afs.collection<Skill>(Skill.collection).doc().ref;
+    await ref.set({...newSkill.toJson(), id: ref.id}, { merge: true });
+    newSkill.id = ref.id;
   }
 
   // Arguments could be pageSize, sort, currentPage
@@ -95,6 +88,26 @@ export class SkillService {
       }
     })
     
+  }
+
+  getSkills$() {
+    this.enterpriseRef =this.enterpriseService.getEnterpriseRef();
+    // console.log('enterprise',this.enterpriseRef)
+    // Query para traer por enterprise match
+    const enterpriseMatch$ = this.afs.collection<Skill>(Skill.collection, ref => 
+      ref.where('enterprise', '==', this.enterpriseRef)
+    ).valueChanges();
+
+    // Query para traer donde enterprise está vacío
+    const enterpriseEmpty$ = this.afs.collection<Skill>(Skill.collection, ref => 
+      ref.where('enterprise', '==', null) // Suponiendo que el valor vacío es null. Ajusta según tu caso.
+    ).valueChanges();
+
+    // Combinar ambos queries
+    return combineLatest([enterpriseMatch$, enterpriseEmpty$])
+      .pipe(
+        map(([matched, empty]) => [...matched, ...empty])
+      )
   }
 
   getSkillsObservable(): Observable<Skill[]> {

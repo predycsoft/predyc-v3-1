@@ -255,7 +255,7 @@ export class InitScriptComponent {
     }
     console.log(`Finished Creating Instructors`, this.instructors);
 
-    this.uploadCurosLegacy();
+    this.uploadCursosLegacy();
 
 
     try {
@@ -263,8 +263,8 @@ export class InitScriptComponent {
       const users: User[] = await firstValueFrom(this.afs.collection<User>(User.collection).valueChanges());
       if (users && users.length > 0) {
         console.log("users", users);
-        const kevinUser = users.find((user) => user.name === "Kevin Grajales Predyc"); 
-        const lilianaUser = users.find((user) => user.name === "Liliana Giraldo Predyc"); 
+        const kevinUser = users.find((user) => user.name === "kevin grajales predyc"); 
+        const lilianaUser = users.find((user) => user.name === "liliana giraldo predyc"); 
         console.log("Kevin:", kevinUser);
         console.log("Liliana:", lilianaUser);
         await this.afs.collection("general").doc("config").set({
@@ -279,7 +279,7 @@ export class InitScriptComponent {
   }
 
 
-  async uploadCurosLegacy() {
+  async uploadCursosLegacy() {
 
     let jsonData = coursesData.slice(0,3)
     console.log('cursos a cargar',jsonData)
@@ -377,12 +377,15 @@ export class InitScriptComponent {
               actividad.coursesRef = [courseRef]
               // actividad.description = actividadIn.titulo
               actividad.claseRef = claseRef
-              console.log('actividadIn',actividad)
+              console.log('actividadIn', actividad)
               await this.activityClassesService.saveActivity(actividad);
               let preguntas = actividadIn.questions
               for (let index = 0; index < preguntas.length; index++) {
-                const pregunta = preguntas[index];
-                this.activityClassesService.saveQuestion(pregunta,actividad.id)
+                const pregunta = {
+                  ...preguntas[index],
+                  type: preguntas[index].type.value
+                }
+                this.activityClassesService.saveQuestion(pregunta, actividad.id)
               }
             }
           }
@@ -409,7 +412,10 @@ export class InitScriptComponent {
         await this.activityClassesService.saveActivity(examen);
         let preguntas = test.questions
         for (let index = 0; index < preguntas.length; index++) {
-          const pregunta = preguntas[index];
+          const pregunta = {
+            ...preguntas[index],
+            type: preguntas[index].type.value
+          }
           await this.activityClassesService.saveQuestion(pregunta,examen.id)
         }
 
