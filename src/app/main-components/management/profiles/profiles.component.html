@@ -90,17 +90,76 @@
                 </ng-template>
                 <span class="mgl05">meses</span>
             </div>
-            <div *ngIf="isEditing" class="mgt05 mgb05 radius40 border" style="margin: 8px auto; width: 100%; height: 7%; overflow: hidden" fxLayout="row">
-                <div fxLayout="row" fxLayoutAlign="space-between center" style="width: 25%; height: 100%; padding: 0 10px; background-color: #cbd4db;">
-                    <span>Categorias</span>
-                    <img [src]="icon.chevronDown" alt="Open categories">
+            <div *ngIf="isEditing" ngbDropdown #dropdown="ngbDropdown" [autoClose]="'outside'" style="margin: 8px auto; width: 100%; height: 7%;">
+                <div class="mgt05 radius40 border" style="width: 100%; height: 100%; overflow: hidden" fxLayout="row">
+                    <button type="button" fxLayout="row" fxLayoutAlign="space-between center" class="gray-10" style="width: 25%; height: 100%; padding: 0 10px; background-color: #cbd4db;" id="dropdownBasic1" ngbDropdownToggle>
+                        Categorias
+                    </button>
+                    <div style="width: 75%; height: 100%; overflow: hidden; padding: 0 10px; position: relative">
+                        <input 
+                            type="text"
+                            placeholder="Search"
+                            style="width: 100%; height: 100%; outline: none; border: 0;"
+                            (keyup)="search()" 
+                            [(ngModel)]="searchForExplorer"
+                            >
+                        <img [src]="icon.search" alt="Search" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%)">
+                    </div>
                 </div>
-                <div style="width: 75%; height: 100%; overflow: hidden; padding: 0 10px; position: relative">
-                    <input type="text" placeholder="Search" style="width: 100%; height: 100%; outline: none; border: 0;">
-                    <img [src]="icon.search" alt="Search" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%)">
+                <div ngbDropdownMenu aria-labelledby="dropdownBasic1" (mouseleave)="filteredCourses = []">
+                    <div fxLayout="row" style="height: 300px;">
+                        <div style="overflow-y: scroll;">
+                            <div 
+                                ngbDropdownItem
+                                class="ft12 ft500 dropdownMenu dropdownMenuCategory"
+                                *ngFor="let category of categories"
+                                (mouseenter)="onCategoryHover(category)"
+                                fxLayout="row"
+                                fxLayoutAlign="space-between center"
+                                >
+                                <span>{{category.name}}</span>
+                                <mat-icon>keyboard_arrow_right</mat-icon>
+                            </div>
+                        </div>
+                        <div style="overflow-y: scroll;">
+                            <div
+                                class="ft12 ft500 dropdownMenu dropdownMenuCourse"
+                                ngbDropdownItem
+                                *ngFor="let course of filteredCourses"
+                                fxLayout="row"
+                                fxLayoutAlign="space-between center"
+                                (click)="toggleCourseInPlan(course)"
+                                >
+                                <!-- (click)="course.inStudyPlan = !course.inStudyPlan" -->
+                                <div
+                                    fxLayout="row"
+                                    fxLayoutAlign=" center"
+                                    fxLayoutGap="10px"
+                                    >
+                                    <img [src]="course.imagen" [alt]="course.titulo" class="w40px h40px radius4">
+                                    <span>
+                                        {{course.titulo}}
+                                    </span>
+                                </div>
+                                <div [ngStyle]="{'background-color': course.inStudyPlan ? '#008CE3': 'white'}" style="border-radius: 50%; border: 1px solid black; width: 15px; height: 15px;"></div>
+                            </div>
+                        </div>
+                        <!-- <div
+                            class="ft12 ft500 gray-10"
+                            fxLayout="column"
+                            fxLayoutAlign=" center"
+                            >
+                            <div
+                                ngbDropdownItem
+                                *ngFor="let course of filteredCourses"
+                                >
+                                {{course.titulo}}
+                            </div>
+                        </div> -->
+                    </div>
                 </div>
             </div>
-            <div [ngStyle]="{'height': isEditing ? '75%' : '90%'}" style="height: 80%; overflow-y: scroll; overflow-x: hidden">
+            <div [ngStyle]="{'height': isEditing ? '75%' : '90%'}" [ngClass]="{mgbt05: isEditing}" style="height: 80%; overflow-y: scroll; overflow-x: hidden">
                 <!-- [ngClass]="selectedCourse == course ? 'backBlue1' : ''"
                 (click)="selectedCourse = course"
                 cdkDrag

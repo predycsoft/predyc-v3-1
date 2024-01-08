@@ -1,7 +1,20 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Chart } from 'chart.js';
+import { Subscription, combineLatest } from 'rxjs';
+import { Category } from 'src/app/shared/models/category.model';
+import { Curso } from 'src/app/shared/models/course.model';
+import { Skill } from 'src/app/shared/models/skill.model';
+import { CategoryService } from 'src/app/shared/services/category.service';
+import { CourseService } from 'src/app/shared/services/course.service';
 import { IconService } from 'src/app/shared/services/icon.service';
+import { SkillService } from 'src/app/shared/services/skill.service';
 import { roundNumber } from 'src/app/shared/utils';
+
+interface CoursesForExplorer extends Curso {
+  skills: Skill[],
+  categories: Category[],
+  inStudyPlan: boolean
+}
 
 @Component({
   selector: 'app-profiles',
@@ -11,13 +24,20 @@ import { roundNumber } from 'src/app/shared/utils';
 export class ProfilesComponent {
 
   constructor(
-    public icon: IconService
+    private categoryService: CategoryService,
+    private courseService: CourseService,
+    public icon: IconService,
+    private skillService: SkillService,
   ) {}
 
   isEditing: boolean = true
 
+  @ViewChild('containerElement') containerElement: ElementRef;
+  isModalOpen: boolean = false
+
   chart: Chart
 
+  serviceSubscription: Subscription
   studyPlan = [
     {
       title: 'Curso',
@@ -77,13 +97,59 @@ export class ProfilesComponent {
     },
   ]
 
+  categories: Category[]
+  courses: Curso[]
+  skills: Skill[]
+
+  coursesForExplorer: CoursesForExplorer[]
+  searchForExplorer: String = ''
+  filteredCourses: CoursesForExplorer[] = []
+
   ngOnInit() {
     this.getChart()
+    this.serviceSubscription = combineLatest([this.categoryService.getCategories$(), this.skillService.getSkills$(), this.courseService.getCourses$()]).subscribe(([categories, skills, courses]) => {
+      this.categories = categories
+      this.skills = skills
+      this.courses = courses
+      this.coursesForExplorer = courses.map(course => {
+        // Find skill object for each skill ref in course
+        const skills = course.skillsRef.map(skillRef => {
+          return this.skills.find(skill => skill.id === skillRef.id)
+        })
+        const categories = skills.map(skill => {
+          return this.categories.find(category => category.id === skill.category.id)
+        })
+        return {
+          ...course,
+          skills: skills,
+          categories: categories,
+          inStudyPlan: false
+        }
+      })
+      console.log("categories", categories)
+      console.log("skills", skills)
+      console.log("courses", courses)
+      console.log("coursesForExplorer", this.coursesForExplorer)
+    })
+  }
+
+  search() {
+    this.filteredCourses = this.coursesForExplorer.filter(course => course.titulo.toLocaleLowerCase().includes(this.searchForExplorer.toLocaleLowerCase()))
+  }
+
+  onCategoryHover(category) {
+    this.filteredCourses = this.coursesForExplorer.filter(course => {
+      const categories = course.categories.map(category => category.name)
+      return categories.includes(category.name)
+    })
+  }
+
+  toggleCourseInPlan(course) {
+    course.inStudyPlan = !course.inStudyPlan
   }
 
   onCancel() {
     this.isEditing = false
-    console.log("Cancel")
   }
 
   roundNumber(number: number) {
@@ -186,9 +252,15 @@ export class ProfilesComponent {
     })
   }
 
+  openCourseExplorerDialog() {}
+
   onSave() {
     this.isEditing = false;
     console.log("Save")
+  }
+
+  ngOnDestroy() {
+    this.serviceSubscription.unsubscribe()
   }
 
 }

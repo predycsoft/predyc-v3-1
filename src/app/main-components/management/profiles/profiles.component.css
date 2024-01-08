@@ -57,3 +57,24 @@
     width: 100%;
     height: 80%;
 }
+
+.dropdownMenu {
+    padding: 5px 10px;
+    color: var(--gray-8);
+}
+
+.dropdownMenu:active {
+    background-color: white;
+}
+
+.dropdownMenuCategory {
+    width: 200px;
+}
+
+.dropdownMenuCategory:hover {
+    color: var(--gray-10)
+}
+
+.dropdownMenuCourse {
+    width: 750px;
+}
