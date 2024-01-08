@@ -241,21 +241,26 @@ export class CourseService {
   // Funciones de diego
 
   getCourses$(): Observable<Curso[]> {
-    this.enterpriseRef = this.enterpriseService.getEnterpriseRef();
-        
-    // Query to get courses matching enterpriseRef
-    const enterpriseMatch$ = this.afs.collection<Curso>(Curso.collection, ref =>
-      ref.where('enterpriseRef', '==', this.enterpriseRef)
-    ).valueChanges({ idField: 'id' });
-  
-    // Query to get courses where enterpriseRef is empty
-    const enterpriseEmpty$ = this.afs.collection<Curso>(Curso.collection, ref =>
-      ref.where('enterpriseRef', '==', null)
-    ).valueChanges({ idField: 'id' });
-  
-    // Combine both queries
-    return combineLatest([enterpriseMatch$, enterpriseEmpty$]).pipe(
-      map(([matched, empty]) => [...matched, ...empty]),
+    return this.enterpriseService.enterpriseLoaded$.pipe(
+      switchMap(isLoaded => {
+        if (!isLoaded) return []
+        this.enterpriseRef = this.enterpriseService.getEnterpriseRef();
+            
+        // Query to get courses matching enterpriseRef
+        const enterpriseMatch$ = this.afs.collection<Curso>(Curso.collection, ref =>
+          ref.where('enterpriseRef', '==', this.enterpriseRef)
+        ).valueChanges({ idField: 'id' });
+      
+        // Query to get courses where enterpriseRef is empty
+        const enterpriseEmpty$ = this.afs.collection<Curso>(Curso.collection, ref =>
+          ref.where('enterpriseRef', '==', null)
+        ).valueChanges({ idField: 'id' });
+      
+        // Combine both queries
+        return combineLatest([enterpriseMatch$, enterpriseEmpty$]).pipe(
+          map(([matched, empty]) => [...matched, ...empty]),
+        )
+      })
     )
   }
 

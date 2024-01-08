@@ -10,7 +10,7 @@ import { Enterprise } from '../models/enterprise.model';
 import { Category } from '../models/category.model';
 
 import { combineLatest } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 
 
 @Injectable({
@@ -81,6 +81,33 @@ export class CategoryService {
         }
       });
     })
+  }
+
+  getCategories$(): Observable<Category[]> {
+    return this.enterpriseService.enterpriseLoaded$.pipe(
+      switchMap(isLoaded => {
+        if (!isLoaded) return []
+        this.enterpriseRef =this.enterpriseService.getEnterpriseRef()
+    
+        // Query para traer por enterprise match
+        const enterpriseMatch$ = this.afs.collection<Category>(Category.collection, ref => 
+          ref.where('enterprise', '==', this.enterpriseRef)
+              .orderBy('name')
+        ).valueChanges();
+    
+        // Query para traer donde enterprise está vacío
+        const enterpriseEmpty$ = this.afs.collection<Category>(Category.collection, ref => 
+          ref.where('enterprise', '==', null) // Suponiendo que el valor vacío es null. Ajusta según tu caso.
+              .orderBy('name')
+        ).valueChanges();
+    
+        // Combinar ambos queries
+        return combineLatest([enterpriseMatch$, enterpriseEmpty$])
+          .pipe(
+            map(([matched, empty]) => [...matched, ...empty])
+          )
+      })
+    )
   }
 
   getCategoriesObservable(): Observable<Category[]> {

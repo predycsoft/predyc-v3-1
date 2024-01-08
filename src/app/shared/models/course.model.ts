@@ -1,3 +1,5 @@
+import { Category } from "./category.model";
+import { Enterprise } from "./enterprise.model";
 import { Modulo } from "./module.model";
 import { Skill } from './skill.model';
 import { DocumentReference } from "@angular/fire/compat/firestore"
@@ -8,7 +10,7 @@ export class Curso {
 
   public static collection = 'course'
 
-  //categoria: string = ""
+  categoryRef: DocumentReference<Category>
   descripcion: string = ""
   resumen: string = ""
   nuevo: boolean = false
@@ -27,12 +29,12 @@ export class Curso {
   instructorNombre: string = ""
   //instructorResumen: string = ""
   //modulos: Modulo[] = []
-  skillsRef: DocumentReference[] = []
+  skillsRef: DocumentReference<Skill>[] = []
   nivel: string = ""
   titulo: string = ""
   instructorDescripcion: string = ""
   vimeoFolderId: string = ""
-  enterpriseRef: DocumentReference = null
+  enterpriseRef: DocumentReference<Enterprise> = null
   idOld: string = ""
 
 

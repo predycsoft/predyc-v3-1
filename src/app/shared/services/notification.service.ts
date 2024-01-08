@@ -34,16 +34,9 @@ export class NotificationService {
   }
 
   async addNotification(notification: Notification): Promise<void> {
-    try {
-      const ref = this.afs.collection<Notification>(Notification.collection).doc().ref;
-      await ref.set({...notification.toJson(), id: ref.id}, { merge: true });
-      notification.id = ref.id;
-      console.log("Notification added succesfully")
-      this.alertService.succesAlert('Has agregado una nueva notificacion exitosamente.')
-    } catch (error) {
-      console.log(error)
-      this.alertService.errorAlert(JSON.stringify(error))
-    }
+    const ref = this.afs.collection<Notification>(Notification.collection).doc().ref;
+    await ref.set({...notification.toJson(), id: ref.id}, { merge: true });
+    notification.id = ref.id;
   }
 
   getNotifications$(queryObj: {

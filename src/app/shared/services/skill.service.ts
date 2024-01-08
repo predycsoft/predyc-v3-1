@@ -10,7 +10,7 @@ import { Enterprise } from '../models/enterprise.model';
 import { Category } from '../models/category.model';
 
 import { combineLatest } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { Skill } from '../models/skill.model';
 
 
@@ -90,24 +90,29 @@ export class SkillService {
     
   }
 
-  getSkills$() {
-    this.enterpriseRef =this.enterpriseService.getEnterpriseRef();
-    // console.log('enterprise',this.enterpriseRef)
-    // Query para traer por enterprise match
-    const enterpriseMatch$ = this.afs.collection<Skill>(Skill.collection, ref => 
-      ref.where('enterprise', '==', this.enterpriseRef)
-    ).valueChanges();
-
-    // Query para traer donde enterprise está vacío
-    const enterpriseEmpty$ = this.afs.collection<Skill>(Skill.collection, ref => 
-      ref.where('enterprise', '==', null) // Suponiendo que el valor vacío es null. Ajusta según tu caso.
-    ).valueChanges();
-
-    // Combinar ambos queries
-    return combineLatest([enterpriseMatch$, enterpriseEmpty$])
-      .pipe(
-        map(([matched, empty]) => [...matched, ...empty])
-      )
+  getSkills$(): Observable<Skill[]> {
+    return this.enterpriseService.enterpriseLoaded$.pipe(
+      switchMap(isLoaded => {
+        if (!isLoaded) return []
+        this.enterpriseRef =this.enterpriseService.getEnterpriseRef();
+        // console.log('enterprise',this.enterpriseRef)
+        // Query para traer por enterprise match
+        const enterpriseMatch$ = this.afs.collection<Skill>(Skill.collection, ref => 
+          ref.where('enterprise', '==', this.enterpriseRef)
+        ).valueChanges();
+    
+        // Query para traer donde enterprise está vacío
+        const enterpriseEmpty$ = this.afs.collection<Skill>(Skill.collection, ref => 
+          ref.where('enterprise', '==', null) // Suponiendo que el valor vacío es null. Ajusta según tu caso.
+        ).valueChanges();
+    
+        // Combinar ambos queries
+        return combineLatest([enterpriseMatch$, enterpriseEmpty$])
+          .pipe(
+            map(([matched, empty]) => [...matched, ...empty])
+          )
+      })
+    )
   }
 
   getSkillsObservable(): Observable<Skill[]> {
