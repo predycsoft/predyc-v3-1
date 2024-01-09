@@ -1,4 +1,12 @@
-<select [(ngModel)]="selectedProfile" (change)="onProfileSelectedChange()">
+<!-- <select [(ngModel)]="selectedProfile" (change)="onProfileSelectedChange()">
     <option value="">Todos los perfiles</option>
     <option *ngFor="let profile of profiles" [ngValue]="profile.id">{{profile.name}}</option>
-</select>
+</select> -->
+
+<div class="select-container w-100"  fxLayout="row" fxLayoutAlign="start center">
+    <img [src]="icon.check" alt="Forward Arrow">
+    <select class="select cursorPointer" [(ngModel)]="selectedProfile" (change)="onProfileSelectedChange()">
+        <option value="">Todos los perfiles</option>
+        <option *ngFor="let profile of profiles" [ngValue]="profile.id">{{profile.name}}</option>
+    </select>
+</div>

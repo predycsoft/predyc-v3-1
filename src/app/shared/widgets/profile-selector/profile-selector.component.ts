@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Profile } from '../../models/profile.model';
 import { ProfileService } from '../../services/profile.service';
+import { IconService } from '../../services/icon.service';
 
 @Component({
   selector: 'app-profile-selector',
@@ -14,7 +15,8 @@ export class ProfileSelectorComponent {
   constructor(
     private activatedRoute: ActivatedRoute,
     private profileService: ProfileService,
-    private router: Router
+    private router: Router,
+    public icon: IconService,
   ) {}
 
   profiles: Profile[] = []
