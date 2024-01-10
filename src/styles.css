@@ -424,6 +424,7 @@ body {
 
 
 
+.black{ color: var(--backBlack)!important;  }
 .gray-1{ color: var(--gray-1)!important;  }
 .gray-1a{ color: var(--gray-1a)!important;  }
 .gray-2{ color: var(--gray-2)!important;  }

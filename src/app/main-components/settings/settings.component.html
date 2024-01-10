@@ -1,4 +1,4 @@
-<h3 class="page-title">Configuración</h3>
+<!-- <h3 class="page-title">Configuración</h3>
 <mat-tab-group *ngIf="enterpriseLoaded" mat-stretch-tabs="false" mat-align-tabs="start" class="swal-overlay">
     <mat-tab label="Permisos">
         <app-permissions></app-permissions>
@@ -9,5 +9,66 @@
     <mat-tab label="Licencias"> 
         <app-license></app-license>
     </mat-tab>
-</mat-tab-group>
+</mat-tab-group> -->
+
+<!-- ************************************ -->
+<div class="mgt10 mgl30 mgr30">
+    <p class="ft600 ft20" style="color: black">Licencias</p>
+    <div fxLayout="row" fxLayoutAlign=" center">
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="w-70 pdr20 border-rl">
+            <div fxLayout="row" fxLayoutAlign=" center">
+                <!-- Estudiar si se puede combinar con el selector de perfiles -->
+                <div class="select-container w-100"  fxLayout="row" fxLayoutAlign="start center">
+                    <img [src]="icon.check" alt="Forward Arrow">
+                    <select class="select cursorPointer">
+                        <option value="">Usuarios activos</option>
+                        <option value="">Usuarios inactivos</option>
+                        <option value="">Usuarios pendientes</option>
+                    </select>
+                </div>
+                <!--  -->
+                <app-search-input-box class=""></app-search-input-box>
+            </div>
+            <button fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="grayButton" 
+                style="border-radius: 24px !important; background-color: rgb(214 211 211) !important;">
+                Asignar licencia
+            </button>
+        </div>
+        <div class="w-25 pdl20">
+            <div fxLayout="row" fxLayoutAlign="space-between center">
+                <span class="ft16 ft700" style="color: black;">Licencias adquiridas</span>
+            </div>
+        </div>
+    </div>
+    <div fxLayout="row">
+        <div class="w-70 pdr20 border-rl">
+            <!-- <app-student-list></app-student-list> -->
+            <app-license-student-list></app-license-student-list>
+        </div>
+        <div class="w-30 pdl20" fxLayout="column" fxLayoutGap="10px">
+            <div class="" fxLayout="column">
+                <div class="item " fxLayout="row" fxLayoutAlign="space-between center">
+                    <span class="ft13 title">Licencias disponibles</span>
+                    <span class="ft13 value">50</span>
+                </div>
+                <div class="item" fxLayout="row" fxLayoutAlign="space-between center">
+                    <span class="ft13 title">Licencias usadas</span>
+                    <span class="ft13 value">26</span>
+                </div>
+                <div class="item" fxLayout="row" fxLayoutAlign="space-between center">
+                    <span class="ft13 title">Rotaciones disponibles</span>
+                    <span class="ft13 value">24</span>
+                </div>
+                <div class="item" fxLayout="row" fxLayoutAlign="space-between center">
+                    <span class="ft13 title">Válidas hasta</span>
+                    <span class="ft13 value">14</span>
+                </div>
+                <div class="item" fxLayout="row" fxLayoutAlign="end center">
+                    <span class="ft13 value">14/01/2024</span>
+                </div>
+            </div> 
+            <button class="grayButton ft500 ft13" style="border-radius: 24px !important; color: #39a3f9;">Adquirir más licencias</button>           
+        </div>
+    </div>
+</div>    
   

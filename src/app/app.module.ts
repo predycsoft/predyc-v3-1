@@ -111,6 +111,7 @@ import { ProfileSelectorComponent } from './shared/widgets/profile-selector/prof
 import { CreateUserComponent } from './main-components/management/my-team/student/create-user/create-user.component';
 import { ProfilesComponent } from './main-components/management/profiles/profiles.component';
 import { NotificationList2Component } from './shared/components/notifications/notification-list2/notification-list2.component';
+import { LicenseStudentListComponent } from './shared/components/users/license-student-list/license-student-list.component';
 // import { FrequentQuestionsComponent } from './main-components/my-account/frequent-questions/frequent-questions.component';
 
 @NgModule({
@@ -175,6 +176,7 @@ import { NotificationList2Component } from './shared/components/notifications/no
     CreateUserComponent,
     ProfilesComponent,
     NotificationList2Component,
+    LicenseStudentListComponent,
   ],
   imports: [
     BrowserModule,

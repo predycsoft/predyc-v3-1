@@ -1,0 +1,27 @@
+.select-container {
+    background-color: rgb(234 234 234);
+    border-radius: 24px 0 0 24px;
+    padding: 0px 10px;
+    height: 36px; /*Igual al search*/
+}
+
+select {
+    background-color: transparent !important;
+    border: none !important; 
+    outline: none !important; 
+}
+  
+
+.item {
+    border-bottom: 2px solid #e3e3e3;
+    height: 3rem;
+    padding: 0 .8rem 0 .8rem;
+    font-weight: bold;
+}
+
+.title {
+    color: black
+}
+ .value {
+    color: gray;
+ }
