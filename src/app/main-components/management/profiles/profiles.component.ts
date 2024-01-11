@@ -1,7 +1,7 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
-import { NgbDropdown, NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
+import { Component } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { Chart } from 'chart.js';
-import { Observable, OperatorFunction, Subject, Subscription, combineLatest, debounceTime, distinctUntilChanged, filter, map, merge } from 'rxjs';
+import { Observable, Subscription, combineLatest, map, startWith, BehaviorSubject } from 'rxjs';
 import { Category } from 'src/app/shared/models/category.model';
 import { Curso } from 'src/app/shared/models/course.model';
 import { Skill } from 'src/app/shared/models/skill.model';
@@ -32,9 +32,6 @@ export class ProfilesComponent {
   ) {}
 
   isEditing: boolean = true
-
-  @ViewChild('containerElement') containerElement: ElementRef;
-  isModalOpen: boolean = false
 
   chart: Chart
 
@@ -102,13 +99,15 @@ export class ProfilesComponent {
   courses: Curso[]
   skills: Skill[]
 
-  @ViewChild('dropdown') dropdown: NgbDropdown;
   coursesForExplorer: CoursesForExplorer[]
-  searchForExplorer: String = ''
-  filteredCourses: CoursesForExplorer[] = []
+  filteredCourses: Observable<CoursesForExplorer[]>
+  searchControl = new FormControl('');
+  hoverItem$: Observable<any>; // This will hold the currently hovered item
+  private hoverSubject = new BehaviorSubject<any>(null);
 
   ngOnInit() {
     this.getChart()
+    this.hoverItem$ = this.hoverSubject.asObservable();
     this.serviceSubscription = combineLatest([this.categoryService.getCategories$(), this.skillService.getSkills$(), this.courseService.getCourses$()]).subscribe(([categories, skills, courses]) => {
       this.categories = categories
       this.skills = skills
@@ -132,31 +131,37 @@ export class ProfilesComponent {
       console.log("skills", skills)
       console.log("courses", courses)
       console.log("coursesForExplorer", this.coursesForExplorer)
+      this.filteredCourses = combineLatest([
+        this.searchControl.valueChanges.pipe(startWith('')),
+        this.hoverItem$
+      ]).pipe(
+        map(([searchText, hoverCategory]) => {
+          console.log('searchText', searchText)
+          console.log('hoverCategory', hoverCategory)
+          if (!searchText && !hoverCategory) return []
+          let filteredCourses = this.coursesForExplorer
+          if (hoverCategory) {
+            filteredCourses = filteredCourses.filter(course => {
+              const categories = course.categories.map(category => category.name)
+              return categories.includes(hoverCategory.name)
+            })
+          }
+          if (searchText) {
+            const filterValue = searchText.toLowerCase();
+            filteredCourses = filteredCourses.filter(course => course.titulo.toLowerCase().includes(filterValue));
+          }
+          return filteredCourses
+        }
+      ))
     })
   }
 
-  @ViewChild('instance', { static: true }) instance: NgbTypeahead;
-
-	focus$ = new Subject<string>();
-	click$ = new Subject<string>();
-
-	search = (text$: Observable<string>) => {
-		const debouncedText$ = text$.pipe(debounceTime(200), distinctUntilChanged());
-		const clicksWithClosedPopup$ = this.click$.pipe(filter(() => !this.instance.isPopupOpen()));
-		const inputFocus$ = this.focus$;
-
-		return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
-			map((term) =>
-				(term === '' ? this.coursesForExplorer : this.coursesForExplorer.filter((v) => v.titulo.toLowerCase().indexOf(term.toLowerCase()) > -1)).slice(0, 10),
-			),
-		);
-	};
-
-  onCategoryHover(category) {
-    this.filteredCourses = this.coursesForExplorer.filter(course => {
-      const categories = course.categories.map(category => category.name)
-      return categories.includes(category.name)
-    })
+  onCategoryHover(item: any) {
+    this.hoverSubject.next(item);
+  }
+  
+  onCategoryLeave() {
+    this.hoverSubject.next(null);
   }
 
   toggleCourseInPlan(course) {
@@ -266,8 +271,6 @@ export class ProfilesComponent {
       }
     })
   }
-
-  openCourseExplorerDialog() {}
 
   onSave() {
     this.isEditing = false;
