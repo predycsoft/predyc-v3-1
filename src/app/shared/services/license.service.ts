@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { License } from '../models/license.model';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, switchMap } from 'rxjs';
 import { AlertsService } from './alerts.service';
 import { EnterpriseService } from './enterprise.service';
 import { DialogService } from './dialog.service';
@@ -13,12 +13,10 @@ import { SubscriptionService } from './subscription.service';
 })
 export class LicenseService {
 
-  private enterpriseRef: DocumentReference = this.enterpriseService.getEnterpriseRef()
   private licensesSubject = new BehaviorSubject<License[] | null>(null)
   public licenses$ = this.licensesSubject.asObservable()
   private licensesLoadedSubject = new BehaviorSubject<boolean>(false)
   public licensesLoaded$ = this.licensesLoadedSubject.asObservable()
-  private licensesSubscription: Subscription
 
   constructor(
     private afs: AngularFirestore,
@@ -27,30 +25,20 @@ export class LicenseService {
     private subscriptionService: SubscriptionService,
     private dialogService: DialogService
   ) {
-    this.enterpriseService.enterpriseLoaded$.subscribe(isLoaded => {
-      if (isLoaded) {
-        this.licensesSubscription = this.getLicensesObservableByEnterpriseRef().subscribe((licenses: License[]) => {
-          if (licenses.length > 0) {
-            this.licensesSubject.next(licenses)
-            if (!this.licensesLoadedSubject.value) {
-              this.licensesLoadedSubject.next(true)
-              console.log("Las licencias fueron cargadas", licenses)
-            }
-          }
-        })
-      }
-    })
   }
 
-  ngOnDestroy(){
-    this.licensesSubscription.unsubscribe()
+  geteEnterpriseLicenses$(): Observable<License[]> {
+    return this.enterpriseService.enterpriseLoaded$.pipe(
+      switchMap(isLoaded => {
+        if (!isLoaded) return []
+        const enterpriseRef = this.enterpriseService.getEnterpriseRef();
+        return this.afs.collection<License>(License.collection, ref => 
+          ref.where('enterpriseRef', '==', enterpriseRef).orderBy('createdAt', 'desc')).valueChanges()
+      })
+    )
   }
 
-  getLicensesObservableByEnterpriseRef(): Observable<License[]> {
-    return this.afs.collection<License>(License.collection, ref => 
-      ref.where('enterpriseRef', '==', this.enterpriseRef).orderBy('createdAt', 'desc')
-    ).valueChanges()
-  }
+  
 
   getLicensesValue() {
     return this.licensesSubject.value

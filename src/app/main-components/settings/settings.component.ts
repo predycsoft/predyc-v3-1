@@ -15,28 +15,13 @@ import { ProfileService } from 'src/app/shared/services/profile.service';
   styleUrls: ['./settings.component.css']
 })
 export class SettingsComponent {
-
-  // ***************************************   
-  
-  // constructor(
-  //   private enterpriseService: EnterpriseService,
-  // ) {}
-  // enterpriseLoaded = false
-  // ngOnInit() {
-  //   this.enterpriseService.enterpriseLoaded$.subscribe(enterpriseLoaded => {
-  //     if (enterpriseLoaded) this.enterpriseLoaded = true
-  //   })
-  // }
-
-  // ***************************************   
-
   
   constructor(
     public icon: IconService,
     public licenseService: LicenseService,
   ){}
 
-  licenses$: Observable<License[]> = this.licenseService.licenses$
+  licenses$: Observable<License[]> = this.licenseService.geteEnterpriseLicenses$()
   @ViewChild('licenseMenu') licenseMenu: MatMenu;
 
 
