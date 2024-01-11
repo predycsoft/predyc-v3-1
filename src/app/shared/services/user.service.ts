@@ -151,7 +151,16 @@ export class UserService {
     }).valueChanges()
   }
 
+  // getActiveUsers$(searchTerm, profileFilter): Observable<User[]> {
+  //   return this.getUsers$(searchTerm, profileFilter, true)
+  // }
+
+  // getInactiveUsers$(searchTerm, profileFilter): Observable<User[]> {
+  //   return this.getUsers$(searchTerm, profileFilter, false)
+  // }
+
   // Arguments could be pageSize, sort, currentPage
+  
   private getUsers() {
     if (this.userCollectionSubscription) {
       this.userCollectionSubscription.unsubscribe();

@@ -39,7 +39,7 @@ export class PlanCardComponent {
     this.enterpriseService.enterpriseLoaded$.subscribe(isLoaded => {
       if (isLoaded) {
         const enterpriseRef = this.enterpriseService.getEnterpriseRef();
-        this.licenseService.getLicensesObservableByEnterpriseRef(enterpriseRef).subscribe(async licenses => {
+        this.licenseService.getLicensesObservableByEnterpriseRef().subscribe(async licenses => {
           this.license = licenses[0]
           if (this.license) {
             this.price = await this.priceService.getPriceByRef(this.license.price as DocumentReference)

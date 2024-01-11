@@ -23,16 +23,28 @@
                     <select class="select cursorPointer">
                         <option value="">Usuarios activos</option>
                         <option value="">Usuarios inactivos</option>
-                        <option value="">Usuarios pendientes</option>
                     </select>
                 </div>
                 <!--  -->
                 <app-search-input-box class=""></app-search-input-box>
             </div>
-            <button fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="grayButton" 
+            <button fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="grayButton" [matMenuTriggerFor]="licenseMenu" 
                 style="border-radius: 24px !important; background-color: rgb(214 211 211) !important;">
                 Asignar licencia
             </button>
+            <mat-menu *ngIf="licenses$ | async as licenses" #licenseMenu="matMenu" class="radius6 shadow16 pd0 mgt05">
+                <div fxLayout="column" class="fw pd0">
+                    <div class="pd05 fw ">
+                        <span class="ft12 gray-10 ft500">Seleccione su licencia</span>
+                    </div>
+                    <div (click)="selectLicence(license)" *ngFor="let license of licenses"
+                        mat-menu-item class="opcionMenu" fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="2rem">
+                        <span class="pdl05 ft12 gray-10">Valido hasta {{ license.currentPeriodEnd | date:'short' }}
+                            - Disponible: {{ license.quantity}}</span>
+                            <!-- - Disponible: {{ license.quantity - license.retrieveBy.length }}</span> -->
+                    </div>
+                </div>
+            </mat-menu>
         </div>
         <div class="w-25 pdl20">
             <div fxLayout="row" fxLayoutAlign="space-between center">
@@ -61,9 +73,6 @@
                 </div>
                 <div class="item" fxLayout="row" fxLayoutAlign="space-between center">
                     <span class="ft13 title">Válidas hasta</span>
-                    <span class="ft13 value">14</span>
-                </div>
-                <div class="item" fxLayout="row" fxLayoutAlign="end center">
                     <span class="ft13 value">14/01/2024</span>
                 </div>
             </div> 

@@ -113,14 +113,6 @@ export class StudentListComponent {
     this.onStudentSelected.emit(user)
   }
 
-  // onDeleteUser(user: User) {
-  //   this.userService.delete(user)
-  // }
-
-  // transformUserToAdmin(user: User) {
-  //   this.userService.transformUserToAdmin(user)
-  // }
-
   ngOnDestroy() {
     this.queryParamsSubscription.unsubscribe()
     this.userServiceSubscription.unsubscribe()
