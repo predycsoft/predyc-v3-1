@@ -93,7 +93,7 @@ export class LicenseStudentListComponent {
           let profileName = ''
           if (profile) { profileName = profile.name }
           // Seting satus. Calculation pending
-          const options = ['Activo', 'Inactivo', 'Pendiente'];
+          const options = ['Activo', 'Inactivo'];
           const randomIndex = Math.floor(Math.random() * options.length);
 
           const user = {
