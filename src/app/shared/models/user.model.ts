@@ -174,7 +174,7 @@ export class User {
       performance: null,
       ratingPoints: 0,
       studyHours: 0,
-      status: 'inactive'
+      status: 'incomplete'
     })
   }
 

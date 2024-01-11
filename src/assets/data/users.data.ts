@@ -35,7 +35,7 @@ export const usersData = [
         "performance": "high",
         "ratingPoints": 100,
         "studyHours": 0,
-        "status": "inactive"
+        "status": "incomplete"
     },
     {
         "birthdate": "1995-04-12T14:00:00Z",
@@ -73,7 +73,7 @@ export const usersData = [
         "performance": "high",
         "ratingPoints": 90,
         "studyHours": 0,
-        "status": "inactive"
+        "status": "incomplete"
     },
     {
         "birthdate": "1996-03-20T14:00:00Z",
@@ -111,7 +111,7 @@ export const usersData = [
         "performance": "high",
         "ratingPoints": 80,
         "studyHours": 0,
-        "status": "inactive"
+        "status": "incomplete"
     },
     {
         "birthdate": "1996-09-13T14:00:00Z",
@@ -149,7 +149,7 @@ export const usersData = [
         "performance": "medium",
         "ratingPoints": 75,
         "studyHours": 0,
-        "status": "inactive"
+        "status": "incomplete"
     },
     {
         "birthdate": "1995-07-27T14:00:00Z",
@@ -187,7 +187,7 @@ export const usersData = [
         "performance": "medium",
         "ratingPoints": 70,
         "studyHours": 0,
-        "status": "inactive"
+        "status": "incomplete"
     },
     {
         "birthdate": "1990-04-12T14:00:00Z",
@@ -225,7 +225,7 @@ export const usersData = [
         "performance": "medium",
         "ratingPoints": 50,
         "studyHours": 0,
-        "status": "inactive"
+        "status": "incomplete"
     },
     {
         "birthdate": "1995-04-12T14:00:00Z",
@@ -263,7 +263,7 @@ export const usersData = [
         "performance": "low",
         "ratingPoints": 45,
         "studyHours": 0,
-        "status": "inactive"
+        "status": "incomplete"
     },
     {
         "birthdate": "1992-01-27T14:00:00Z",
@@ -301,7 +301,7 @@ export const usersData = [
         "performance": "no plan",
         "ratingPoints": 35,
         "studyHours": 0,
-        "status": "inactive"
+        "status": "incomplete"
     },
     {
         "birthdate": "1985-04-13T14:00:00Z",
@@ -339,7 +339,7 @@ export const usersData = [
         "performance": "no plan",
         "ratingPoints": null,
         "studyHours": 0,
-        "status": "inactive"
+        "status": "incomplete"
     },
     {
         "birthdate": "1997-01-17T14:00:00Z",
@@ -377,7 +377,7 @@ export const usersData = [
         "performance": "no plan",
         "ratingPoints": null,
         "studyHours": 0,
-        "status": "inactive"
+        "status": "incomplete"
     },
     {
         "birthdate": "1997-11-06T14:00:00Z",
@@ -415,7 +415,7 @@ export const usersData = [
         "performance": null,
         "ratingPoints": null,
         "studyHours": 0,
-        "status": "inactive"
+        "status": "incomplete"
     },
     {
         "birthdate": "1990-10-06T14:00:00Z",
@@ -453,7 +453,7 @@ export const usersData = [
         "performance": null,
         "ratingPoints": null,
         "studyHours": 0,
-        "status": "inactive"
+        "status": "incomplete"
     },
     {
         "birthdate": "1994-11-06T14:00:00Z",
@@ -491,6 +491,6 @@ export const usersData = [
         "performance": null,
         "ratingPoints": null,
         "studyHours": 0,
-        "status": "inactive"
+        "status": "incomplete"
     }
 ]
