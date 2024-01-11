@@ -59,7 +59,6 @@ export class CreateUserComponent {
     );
   }
 
-
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
     return this.departments.map(department => department.name).filter(option => option.toLowerCase().includes(filterValue));
