@@ -1,13 +1,10 @@
 import { Component, ViewChild } from '@angular/core';
 import { MatMenu } from '@angular/material/menu';
 import { Observable, Subscription } from 'rxjs';
+import { LicenseStudentListComponent } from 'src/app/shared/components/users/license-student-list/license-student-list.component';
 import { License } from 'src/app/shared/models/license.model';
-import { Profile } from 'src/app/shared/models/profile.model';
-import { User } from 'src/app/shared/models/user.model';
-import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
 import { IconService } from 'src/app/shared/services/icon.service';
 import { LicenseService } from 'src/app/shared/services/license.service';
-import { ProfileService } from 'src/app/shared/services/profile.service';
 
 @Component({
   selector: 'app-settings',
@@ -23,14 +20,23 @@ export class SettingsComponent {
 
   licenses$: Observable<License[]> = this.licenseService.geteEnterpriseLicenses$()
   @ViewChild('licenseMenu') licenseMenu: MatMenu;
+  @ViewChild(LicenseStudentListComponent) licenseStudentList: LicenseStudentListComponent;
 
+  selectedUsersIds: string[] = [];
 
   ngOnInit() {
-    this.licenses$.subscribe(licenses => console.log('licenses', licenses))
   }
 
-  async selectLicence(license: License) {
-    let user: any = '' // Remove any from user
-    await this.licenseService.assignLicense(license, user)
+  handleSelectedUsers(users: any[]) {
+    const usersIds = users.map(user => {
+      return user.uid
+    })
+    this.selectedUsersIds = usersIds;
+  }
+
+  async selectLicense(license: License) {
+    this.licenseStudentList.emitSelectedUsers(); // method in child component to store users in this.selectedUsers
+    console.log("this.selectedUsers", this.selectedUsersIds)
+    await this.licenseService.assignLicense(license, this.selectedUsersIds);
   }
 }

@@ -37,7 +37,7 @@
                     <div class="pd05 fw ">
                         <span class="ft12 gray-10 ft500">Seleccione su licencia</span>
                     </div>
-                    <div (click)="selectLicence(license)" *ngFor="let license of licenses"
+                    <div (click)="selectLicense(license)" *ngFor="let license of licenses"
                         mat-menu-item class="opcionMenu" fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="2rem">
                         <span class="pdl05 ft12 gray-10">Valido hasta {{ license.currentPeriodEnd | date:'short' }}
                             - Disponible: {{ license.quantity}}</span>
@@ -55,7 +55,8 @@
     <div fxLayout="row">
         <div class="w-70 pdr20 border-rl">
             <!-- <app-student-list></app-student-list> -->
-            <app-license-student-list></app-license-student-list>
+            <app-license-student-list (selectedUsers)="handleSelectedUsers($event)"></app-license-student-list>
+
         </div>
         <div class="w-30 pdl20" fxLayout="column" fxLayoutGap="10px">
             <div class="" fxLayout="column">
