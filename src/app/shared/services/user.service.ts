@@ -134,7 +134,7 @@ export class UserService {
     }
   }
 
-  getUsers$(searchTerm, profileFilter): Observable<User[]> {
+  getUsers$(searchTerm, profileFilter, statusFilter): Observable<User[]> {
     return this.afs.collection<User>(User.collection, ref => {
       let query: CollectionReference | Query = ref;
       // query = query.where('enterprise', '==', this.enterpriseService.getEnterpriseRef())
@@ -146,6 +146,10 @@ export class UserService {
       if (profileFilter) {
         const profileRef = this.profileService.getProfileRefById(profileFilter)
         query = query.where('profile', '==', profileRef)
+      }
+      if (statusFilter) {
+        if (statusFilter === 'active') query = query.where('status', '==', 'active')
+        else query = query.where('status', '!=', 'active').orderBy('status') // orderBy status is due to firestore rules
       }
       return query.orderBy('displayName')
     }).valueChanges()

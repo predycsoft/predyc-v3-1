@@ -65,8 +65,8 @@ export class LicenseStudentListComponent {
         this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
           const page = Number(params['page']) || 1;
           const searchTerm = params['search'] || '';
-          const profileFilter = '';
-          this.performSearch(searchTerm, page, profileFilter);
+          const statusFilter = params['status'] || 'active';
+          this.performSearch(searchTerm, page, statusFilter);
         })
       }
     })
@@ -81,7 +81,7 @@ export class LicenseStudentListComponent {
     if (this.userServiceSubscription) {
       this.userServiceSubscription.unsubscribe()
     }
-    this.userServiceSubscription = this.userService.getUsers$(searchTerm, statusFilter).subscribe(
+    this.userServiceSubscription = this.userService.getUsers$(searchTerm, null, statusFilter).subscribe(
       response => {
         const users: LicenseListUser[] = response.map(item => {
           // Seting profile

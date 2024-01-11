@@ -18,19 +18,13 @@
         <div fxLayout="row" fxLayoutAlign="space-between center" class="w-70 pdr20 border-rl">
             <div fxLayout="row" fxLayoutAlign=" center">
                 <!-- Estudiar si se puede combinar con el selector de perfiles -->
-                <div class="select-container w-100"  fxLayout="row" fxLayoutAlign="start center">
-                    <img [src]="icon.check" alt="Forward Arrow">
-                    <select class="select cursorPointer">
-                        <option value="">Usuarios activos</option>
-                        <option value="">Usuarios inactivos</option>
-                    </select>
-                </div>
+                <app-status-selector></app-status-selector>
                 <!--  -->
                 <app-search-input-box class=""></app-search-input-box>
             </div>
-            <button fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="grayButton" [matMenuTriggerFor]="licenseMenu" 
-                style="border-radius: 24px !important; background-color: rgb(214 211 211) !important;">
-                Asignar licencia
+            <button fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" [matMenuTriggerFor]="licenseMenu" 
+                style="border-radius: 24px !important;" [ngClass]="currentStatus === 'active' ? 'blueButton':'redButton'">
+                {{ currentStatus === 'active' ? 'Asignar licencia' : 'Remover licencia' }}
             </button>
             <mat-menu *ngIf="licenses$ | async as licenses" #licenseMenu="matMenu" class="radius6 shadow16 pd0 mgt05">
                 <div fxLayout="column" class="fw pd0">
@@ -54,9 +48,7 @@
     </div>
     <div fxLayout="row">
         <div class="w-70 pdr20 border-rl">
-            <!-- <app-student-list></app-student-list> -->
             <app-license-student-list (selectedUsers)="handleSelectedUsers($event)"></app-license-student-list>
-
         </div>
         <div class="w-30 pdl20" fxLayout="column" fxLayoutGap="10px">
             <div class="" fxLayout="column">
