@@ -73,7 +73,7 @@ export class StudentListComponent {
     if (this.userServiceSubscription) {
       this.userServiceSubscription.unsubscribe()
     }
-    this.userServiceSubscription = this.userService.getUsers$(searchTerm, profileFilter).subscribe(
+    this.userServiceSubscription = this.userService.getUsers$(searchTerm, profileFilter, null).subscribe(
       response => {
         const users: User[] = response.map(item => {
           const profile = this.profiles.find(profile => {

@@ -15,8 +15,6 @@ export interface LicenseJson {
     startedAt: number | null,
     status: string | null,
     trialDays: number | null,
-    retrieveBy: string[]
-
 }
 
 export class License {
@@ -35,7 +33,6 @@ export class License {
         public startedAt: number | null,
         public status: string | null,
         public trialDays: number | null,
-        public retrieveBy: string[],
     ) {}
 
     public static fromJson(licenseJson: LicenseJson): License {
@@ -51,7 +48,6 @@ export class License {
             licenseJson.startedAt,
             licenseJson.status,
             licenseJson.trialDays,
-            licenseJson.retrieveBy,
         )
     }
 
@@ -68,7 +64,6 @@ export class License {
             startedAt: this.startedAt, 
             status: this.status, 
             trialDays: this.trialDays, 
-            retrieveBy: this.retrieveBy, 
         }
     }
 }

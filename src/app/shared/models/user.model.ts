@@ -39,6 +39,7 @@ export interface UserJson {
   performance: 'no plan'| 'low'| 'medium'| 'high'| null
   ratingPoints: number
   studyHours: number
+  status: string // improve the type options
 }
 
 export class User {
@@ -89,7 +90,10 @@ export class User {
     public certificatesQty: number,
     public performance: 'no plan'| 'low'| 'medium'| 'high'| null,
     public ratingPoints: number,
-    public studyHours: number
+    public studyHours: number,
+
+    public status: string,
+
   ) {}
 
   public static getEnterpriseAdminUser(enterprise: DocumentReference) {
@@ -169,7 +173,8 @@ export class User {
       certificatesQty: 0,
       performance: null,
       ratingPoints: 0,
-      studyHours: 0
+      studyHours: 0,
+      status: 'incomplete'
     })
   }
 
@@ -209,7 +214,8 @@ export class User {
       userJson.certificatesQty,
       userJson.performance,
       userJson.ratingPoints,
-      userJson.studyHours
+      userJson.studyHours,
+      userJson.status
     )
   }
 
@@ -249,7 +255,8 @@ export class User {
       certificatesQty: this.certificatesQty,
       performance: this.performance,
       ratingPoints: this.ratingPoints,
-      studyHours: this.studyHours
+      studyHours: this.studyHours,
+      status: this.status
     }
   }
 

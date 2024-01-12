@@ -9,10 +9,11 @@ import { IconService } from 'src/app/shared/services/icon.service';
 import { ProfileService } from 'src/app/shared/services/profile.service';
 import { UserService } from 'src/app/shared/services/user.service';
 
-interface LicenseListUser {
+export interface LicenseListUser {
   displayName: string,
   profile: string,
-  status: string
+  status: string,
+  uid: string
 }
 
 @Component({
@@ -32,7 +33,8 @@ export class LicenseStudentListComponent {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @Input() enableNavigateToUser: boolean = true
-  @Output() onStudentSelected = new EventEmitter<LicenseListUser>()
+  @Output() selectedUsers = new EventEmitter<LicenseListUser[]>();
+
 
   queryParamsSubscription: Subscription
   profilesSubscription: Subscription
@@ -63,8 +65,8 @@ export class LicenseStudentListComponent {
         this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
           const page = Number(params['page']) || 1;
           const searchTerm = params['search'] || '';
-          const profileFilter = '';
-          this.performSearch(searchTerm, page, profileFilter);
+          const statusFilter = params['status'] || 'active';
+          this.performSearch(searchTerm, page, statusFilter);
         })
       }
     })
@@ -79,9 +81,8 @@ export class LicenseStudentListComponent {
     if (this.userServiceSubscription) {
       this.userServiceSubscription.unsubscribe()
     }
-    this.userServiceSubscription = this.userService.getUsers$(searchTerm, statusFilter).subscribe(
+    this.userServiceSubscription = this.userService.getUsers$(searchTerm, null, statusFilter).subscribe(
       response => {
-        console.log("response", response)
         const users: LicenseListUser[] = response.map(item => {
           // Seting profile
           const profile = this.profiles.find(profile => {
@@ -92,14 +93,11 @@ export class LicenseStudentListComponent {
           })
           let profileName = ''
           if (profile) { profileName = profile.name }
-          // Seting satus. Calculation pending
-          const options = ['Activo', 'Inactivo'];
-          const randomIndex = Math.floor(Math.random() * options.length);
 
-          const user = {
+          const user: LicenseListUser = {
             displayName: item.displayName,
             profile: profileName,
-            status: options[randomIndex], //Calculation pending
+            status: item.status,
             uid: item.uid
           }
           return user
@@ -119,10 +117,6 @@ export class LicenseStudentListComponent {
     });
   }
 
-  onSelectUser(user: LicenseListUser) {
-    this.onStudentSelected.emit(user)
-  }
-
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {
     const numSelected = this.selection.selected.length;
@@ -135,6 +129,10 @@ export class LicenseStudentListComponent {
     this.isAllSelected() ?
         this.selection.clear() :
         this.dataSource.data.forEach(row => this.selection.select(row));
+  }
+
+  emitSelectedUsers() {
+    this.selectedUsers.emit(this.selection.selected);
   }
 
   ngOnDestroy() {

@@ -1,13 +1,11 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
-import { AlertsService } from './alerts.service';
 import { EnterpriseService } from './enterprise.service';
 import { Subscription } from '../models/subscription.model';
 import { License } from '../models/license.model';
 import { User } from '../models/user.model';
-import { Enterprise } from '../models/enterprise.model';
-import { DialogService } from './dialog.service';
 import { UserService } from './user.service';
+import { firstValueFrom, map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -15,16 +13,13 @@ import { UserService } from './user.service';
 export class SubscriptionService {
 
   constructor(
-    private alertService: AlertsService,
     private afs: AngularFirestore,
     private enterpriseService: EnterpriseService,
     private userService: UserService,
-    private dialogService: DialogService
+
   ) { }
 
-  private enterpriseRef: DocumentReference = this.enterpriseService.getEnterpriseRef()
-
-  async createUserSubscription(license: License, user: User) {
+  async createUserSubscription(license: License, licenseRef: DocumentReference, userId: string) {
     let subscription = new Subscription
       
     subscription.canceledAt = null
@@ -35,37 +30,50 @@ export class SubscriptionService {
     subscription.currency = "usd"
     subscription.currentError = null
     subscription.currentPeriodEnd = license.currentPeriodEnd
+    subscription.currentPeriodStart = Date.now()
+    subscription.customer = userId
     subscription.endedAt = null
+    subscription.enterpriseRef = this.enterpriseService.getEnterpriseRef()
     subscription.id = 'PRE_' + +new Date()
     subscription.idAtOrigin = 'PRE_' + +new Date()  
     subscription.interval = 1
+    subscription.licenseRef = licenseRef
     subscription.nextPaymentAmount = null
     subscription.nextPaymentDate = null 
     subscription.trialEndedAt = null 
     subscription.trialStartedAt = null 
-    subscription.userRef = this.userService.getUserRefById(user.uid)
+    subscription.userRef = this.userService.getUserRefById(userId)
     subscription.origin = "Predyc"
     subscription.priceRef = license.price
     subscription.startedAt = Date.now()
     subscription.status = "active"
-    subscription.currentPeriodStart = Date.now()
-    subscription.customer = user.uid
-    subscription.enterpriseRef = this.enterpriseRef
 
     console.log('subscription', subscription)
 
     let subscritionJson = subscription.toJson()
     await this.afs.collection(Subscription.collection).doc(subscription.id).set(subscritionJson);
+    console.log("Suscripcion creada para:", userId)
 
-    // ----------- No guardar status como variable en coleccion de user?
-    // user.status = subscription.status
-    // this.afs.collection(User.collection).doc(user.uid).set(
-    //   {
-    //     status: "active" 
-    //   },{ merge: true }
-    // );
-    // ------------------
-
+    await this.afs.collection(User.collection).doc(userId).set(
+      {
+        status: "active" 
+      },{ merge: true }
+    );
+    console.log("status del usuario establecido en active")
  
   }
+
+  async getLicenseSubscriptionsQty(licenseRef: DocumentReference): Promise<number> {
+    const query = this.afs.collection<Subscription>(Subscription.collection, ref => 
+      ref.where('licenseRef', '==', licenseRef))
+      .snapshotChanges()
+      .pipe(
+        map(actions => actions.map(a => a.payload.doc.data()))
+      );
+    const documents = await firstValueFrom(query);
+    return documents.length; // Devuelve el número de documentos.
+  }
+  
+
+
 }

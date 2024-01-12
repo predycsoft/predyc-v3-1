@@ -32,6 +32,8 @@ export interface SubscriptionJson {
     nextPaymentDate: number;
     nextPaymentAmount: number;
     enterpriseRef: DocumentReference
+    licenseRef: DocumentReference
+
 }
   
 export class Subscription {
@@ -94,6 +96,7 @@ export class Subscription {
     nextPaymentDate: number;
     nextPaymentAmount: number;
     enterpriseRef: DocumentReference
+    licenseRef: DocumentReference
   
     public static statusToDisplayValueDict = {
       active: 'Activo',
@@ -135,6 +138,7 @@ export class Subscription {
       subscription.nextPaymentDate = subscriptionData.nextPaymentDate;
       subscription.nextPaymentAmount = subscriptionData.nextPaymentAmount;
       subscription.enterpriseRef = subscriptionData.enterpriseRef
+      subscription.licenseRef = subscriptionData.licenseRef
       return subscription;
     }
   
@@ -163,7 +167,8 @@ export class Subscription {
         couponRef: this.couponRef,
         nextPaymentDate: this.nextPaymentDate,
         nextPaymentAmount: this.nextPaymentAmount,
-        enterpriseRef: this.enterpriseRef
+        enterpriseRef: this.enterpriseRef,
+        licenseRef: this.licenseRef
       };
     }
   

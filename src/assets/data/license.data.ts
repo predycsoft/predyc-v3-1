@@ -12,5 +12,4 @@ export const licensesData: LicenseJson = {
     startedAt: 1690920188024,
     status: "active",
     trialDays: 5,
-    retrieveBy: []
 }

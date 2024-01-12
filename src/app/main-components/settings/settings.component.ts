@@ -1,13 +1,11 @@
 import { Component, ViewChild } from '@angular/core';
 import { MatMenu } from '@angular/material/menu';
+import { ActivatedRoute } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
+import { LicenseStudentListComponent } from 'src/app/shared/components/users/license-student-list/license-student-list.component';
 import { License } from 'src/app/shared/models/license.model';
-import { Profile } from 'src/app/shared/models/profile.model';
-import { User } from 'src/app/shared/models/user.model';
-import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
 import { IconService } from 'src/app/shared/services/icon.service';
 import { LicenseService } from 'src/app/shared/services/license.service';
-import { ProfileService } from 'src/app/shared/services/profile.service';
 
 @Component({
   selector: 'app-settings',
@@ -15,37 +13,48 @@ import { ProfileService } from 'src/app/shared/services/profile.service';
   styleUrls: ['./settings.component.css']
 })
 export class SettingsComponent {
-
-  // ***************************************   
-  
-  // constructor(
-  //   private enterpriseService: EnterpriseService,
-  // ) {}
-  // enterpriseLoaded = false
-  // ngOnInit() {
-  //   this.enterpriseService.enterpriseLoaded$.subscribe(enterpriseLoaded => {
-  //     if (enterpriseLoaded) this.enterpriseLoaded = true
-  //   })
-  // }
-
-  // ***************************************   
-
   
   constructor(
     public icon: IconService,
     public licenseService: LicenseService,
+    private activatedRoute: ActivatedRoute
   ){}
 
-  licenses$: Observable<License[]> = this.licenseService.licenses$
+  licenses$: Observable<License[]> = this.licenseService.geteEnterpriseLicenses$()
   @ViewChild('licenseMenu') licenseMenu: MatMenu;
+  @ViewChild(LicenseStudentListComponent) licenseStudentList: LicenseStudentListComponent;
 
+  selectedUsersIds: string[] = [];
+
+  currentStatus: string = 'active'; // Valor predeterminado
+  queryParamsSubscription: Subscription;
 
   ngOnInit() {
-    this.licenses$.subscribe(licenses => console.log('licenses', licenses))
+    this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
+      if (params['status']) {
+        this.currentStatus = params['status'];
+      }
+    });
   }
 
-  async selectLicence(license: License) {
-    let user: any = '' // Remove any from user
-    await this.licenseService.assignLicense(license, user)
+  handleSelectedUsers(users: any[]) {
+    const usersIds = users.map(user => {
+      return user.uid
+    })
+    this.selectedUsersIds = usersIds;
+  }
+
+  async selectLicense(license: License) {
+    this.licenseStudentList.emitSelectedUsers(); // method in child component to store users in this.selectedUsers
+    console.log("this.selectedUsers", this.selectedUsersIds)
+    if (this.currentStatus === 'active') await this.licenseService.assignLicense(license, this.selectedUsersIds);
+    else console.log("Remover licencia")
+    
+  }
+
+  ngOnDestroy() {
+    if (this.queryParamsSubscription) {
+      this.queryParamsSubscription.unsubscribe();
+    }
   }
 }
