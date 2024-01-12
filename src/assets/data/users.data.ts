@@ -400,7 +400,7 @@ export const usersData = [
         "job": null,
         "lastConnection": null,
         "mailchimpTag": null,
-        "name": "Laura Ojeda",
+        "name": "Maria Da Silva",
         "phoneNumber": null,
         "photoUrl": null,
         "zipCode": null,
