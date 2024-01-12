@@ -31,6 +31,7 @@ import { CourseClassService } from '../../../shared/services/course-class.servic
 import { ActivityClassesService } from 'src/app/shared/services/activity-classes.service';
 import { Enterprise } from 'src/app/shared/models/enterprise.model';
 import { compareByString } from 'src/app/shared/utils';
+import { QuestionsComponent } from 'src/app/shared/components/questions/questions.component';
 
 
 interface Categoria {
@@ -824,7 +825,10 @@ export class CreateCourseComponent {
 
     console.log(respuesta)
     this.competenciasSelectedClase = respuesta;
+    this.competenciasSelectedClaseFormated = this.formatSkills(respuesta);
+
   }
+  competenciasSelectedClaseFormated
 
   isOverflowRequired(): boolean {
     const container = document.querySelector('.contenedor-chips-selected');
@@ -1315,6 +1319,8 @@ export class CreateCourseComponent {
       let respueta  = this.anidarCompetencias(categorias,competenciasTotalProcesdo);
       console.log(respueta);
       this.competenciasSelectedClase = respueta;
+      this.competenciasSelectedClaseFormated = this.formatSkills(respueta);
+
     }
     else{
       console.log('competenciasSelected',this.competenciasSelected)
@@ -1324,6 +1330,9 @@ export class CreateCourseComponent {
           competencia.selected = false
         });
       });
+
+      this.competenciasSelectedClaseFormated = this.formatSkills(this.competenciasSelectedClase);
+
 
       console.log(this.competenciasSelectedClase)
 
@@ -1825,8 +1834,13 @@ export class CreateCourseComponent {
 //   }
 
   advanceTabActividad(){
+
+    this.updateTriggeQuestions=0;
+
     this.showErrorActividad = false;
     let valid = true
+
+    this.validActividad ==null 
 
     console.log('tab actividad',this.activeStepActividad);
 
@@ -1857,13 +1871,25 @@ export class CreateCourseComponent {
     }
     //formNuevaActividadGeneral
     if(this.activeStepActividad == 3){
-      if(!this.validatePreguntasActividad()){
-        valid = false
-      }
-    }
+      this.updateTriggeQuestions++;
+      //setTimeout(() => {
+        console.log('Form Data questionValid activeStepActividad: ',this.validActividad)
+        if(this.validActividad ==null || !this.validActividad?.valid || this.validActividad.value?.questions?.length == 0){
+          valid = false
+          this.updateTriggeQuestions++;
 
+          // if(this.activeStepActividad == 4){
+          //   this.activeStepActividad--;
+          // }
+        }
+        else{
+          this.selectedClase.activity.questions = this.validActividad.value.questions
+        }
+      //}, 1);
+    }
+    
     // pruebas desarrollo
-    valid = true
+    //valid = true
 
     if (valid){
       if(this.validateActivity()){
@@ -1886,8 +1912,17 @@ export class CreateCourseComponent {
     return false;
   }
 
+  updateTriggeQuestions = 0; // new property to trigger updates
 
   validatePreguntasActividad(){
+    return true
+  }
+
+  validActividad
+  validExam
+
+
+  _validatePreguntasActividad(){
 
     console.log(this.selectedClase.activity.questions);
 
@@ -2235,6 +2270,25 @@ export class CreateCourseComponent {
 //     return valid;
 
 //   }
+
+formatSkills(skills){
+
+  skills = structuredClone(skills)
+
+  let respuesta = []
+
+  skills.forEach(category => {
+    category.competencias.forEach(skill => {
+      skill.categoryId = skill['categoriaId']
+      delete skill['categoriaId']
+      delete skill['enterprise']
+      delete skill['selected']
+      respuesta.push(skill)
+    });
+  });
+
+  return respuesta
+}
 
 }
 

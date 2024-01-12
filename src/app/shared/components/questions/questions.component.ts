@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { Component, EventEmitter, Input, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, NgForm, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Question } from 'src/app/shared/models/activity-classes.model';
 import { cloneArrayOfObjects, getPlaceholders } from '../../utils';
 
@@ -85,10 +85,38 @@ export class QuestionsComponent {
 
 
 
+
+
+
   // @Input() selectedPaymentMethod: string = '';
   @Input() selectedTestSkills = []
+  @Input() checkQuestions
+  @Input() questionsArray =[]
+  @Output() emmitForm = new EventEmitter();
 
-  // @Output() onGoBack = new EventEmitter();
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.checkQuestions) {
+      if(this.checkQuestions !=0){
+        this.submitForm();
+
+        //mainForm submit
+      }
+      // React to the update trigger
+      // For example, refresh some data or reinitialize part of the component
+    }
+  }
+
+  submitForm(): void {
+    this.displayErrors= false
+    console.log('Form Data:', this.mainForm);
+
+    this.emmitForm.emit(this.mainForm);
+
+    if (!this.mainForm?.valid) {
+      this.displayErrors= true
+    }
+  }
 
   constructor(
     private fb: FormBuilder,
@@ -100,7 +128,7 @@ export class QuestionsComponent {
   ) {}
 
 
-  
+
   questionStatus: { expanded: boolean, visibleImage: boolean, placeholders: string[], textToRender: SafeHtml }[] = []
 
   mainForm: FormGroup
@@ -118,6 +146,8 @@ export class QuestionsComponent {
   selectedQuestionSkills: [] | null = null
 
   ngOnInit() {
+    this.emmitForm.emit(null);
+    console.log('selectedTestSkills',this.selectedTestSkills)
     this.setupForm()
   }
   
@@ -316,6 +346,13 @@ export class QuestionsComponent {
 
   showCurrentForm() {
     console.log(this.mainForm.value)
+  }
+
+
+  onSubmit(){
+
+    console.log(this.mainForm.value)
+
   }
 
 
