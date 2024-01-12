@@ -57,6 +57,17 @@ export class LicenseService {
     }
   }
 
+  async removeLicense(usersIds: string[]) {
+    this.dialogService.dialogConfirmar().afterClosed().subscribe(async result => {
+      if(result){
+        for (let userId of usersIds) {
+          await this.subscriptionService.removeUserSubscription(userId)
+        }
+        this.dialogService.dialogExito()
+      }
+    })
+  }
+
   async getLicenseQtyUsed(licenseRef: DocumentReference) {
     return await this.subscriptionService.getLicenseSubscriptionsQty(licenseRef)
   }
