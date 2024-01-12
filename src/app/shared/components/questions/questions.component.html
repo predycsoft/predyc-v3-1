@@ -1,8 +1,8 @@
 
 <form [formGroup]="mainForm">
     <ng-container>
-        <div formGroupName="questions" fxFlex fxLayout="column" class="container pdl10 pdt10">
-            <ng-container formArrayName="questions">
+        <div formArrayName="questions" fxFlex fxLayout="column" class="container pdl10 pdt10">
+            <ng-container>
                 <!-- aqui van los preguntas que se van creando -->
                 <div
                     *ngFor="let question of questions.controls; let i = index"

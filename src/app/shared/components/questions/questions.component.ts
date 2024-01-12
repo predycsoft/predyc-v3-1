@@ -124,15 +124,13 @@ export class QuestionsComponent {
 
   setupForm() {
     this.mainForm = this.fb.group({
-      questions: this.fb.group({
-        questions: this.fb.array([])
-      })
+      questions: this.fb.array([])
     });
 
   }
 
   get questions(): FormArray {
-    return <FormArray>this.mainForm.get('questions.questions');
+    return <FormArray>this.mainForm.get('questions');
   }
 
   addQuestion(): void {
