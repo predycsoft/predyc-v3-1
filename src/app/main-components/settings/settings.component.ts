@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { MatMenu } from '@angular/material/menu';
+import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { LicenseStudentListComponent } from 'src/app/shared/components/users/license-student-list/license-student-list.component';
@@ -22,6 +22,8 @@ export class SettingsComponent {
 
   licenses$: Observable<License[]> = this.licenseService.geteEnterpriseLicenses$()
   @ViewChild('licenseMenu') licenseMenu: MatMenu;
+  @ViewChild('trigger') menuTrigger: MatMenuTrigger;
+
   @ViewChild(LicenseStudentListComponent) licenseStudentList: LicenseStudentListComponent;
 
   selectedUsersIds: string[] = [];
@@ -47,9 +49,12 @@ export class SettingsComponent {
   async selectLicense(license: License) {
     this.licenseStudentList.emitSelectedUsers(); // method in child component to store users in this.selectedUsers
     console.log("this.selectedUsers", this.selectedUsersIds)
-    if (this.currentStatus === 'active') await this.licenseService.assignLicense(license, this.selectedUsersIds);
-    else console.log("Remover licencia")
-    
+    await this.licenseService.assignLicense(license, this.selectedUsersIds);
+  }
+
+  removeLicense() {
+    this.licenseStudentList.emitSelectedUsers(); // method in child component to store users in this.selectedUsers
+    console.log("Remover")
   }
 
   ngOnDestroy() {
