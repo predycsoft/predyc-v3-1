@@ -52,9 +52,9 @@ export class SettingsComponent {
     await this.licenseService.assignLicense(license, this.selectedUsersIds);
   }
 
-  removeLicense() {
+  async removeLicense() {
     this.licenseStudentList.emitSelectedUsers(); // method in child component to store users in this.selectedUsers
-    console.log("Remover")
+    await this.licenseService.removeLicense(this.selectedUsersIds)
   }
 
   ngOnDestroy() {

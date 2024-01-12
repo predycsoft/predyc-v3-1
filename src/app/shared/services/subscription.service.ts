@@ -73,6 +73,46 @@ export class SubscriptionService {
     const documents = await firstValueFrom(query);
     return documents.length; // Devuelve el número de documentos.
   }
+
+
+  async removeUserSubscription(userId: string) {
+    try {
+
+      const snapshots = await firstValueFrom(this.afs.collection<Subscription>(Subscription.collection, ref => 
+        ref
+        .where('userRef', '==', this.afs.doc<User>(`${User.collection}/${userId}`).ref)
+        .where('status', '==', 'active')
+      ).get());
+
+      // console.log('snapshots.docs', snapshots.docs)
+      const subscriptionsData = snapshots.docs.map(docSnapshot => docSnapshot.data() as Subscription);
+      if (subscriptionsData.length > 0) {
+        //It should be just 1 active subscription. just in case, i use a for loop
+        for (let subscription of subscriptionsData) {
+
+          await this.afs.collection(Subscription.collection).doc(subscription.id).set({
+            canceledAt: Date.now(), 
+            endedAt: Date.now(),
+            status: "canceled" 
+          }, { merge: true });
+    
+          await this.afs.collection(User.collection).doc(userId).set({
+            status: "canceled" 
+          }, { merge: true });
+    
+          console.log("Suscripción cancelada:", userId, subscription.id);
+        }
+      } 
+      else {
+        console.log("No se encontraron suscripciones activas.");
+      }
+  
+    } catch (error) {
+      console.error("Error al eliminar suscripciones: ", error);
+    }
+  }
+  
+
   
 
 
