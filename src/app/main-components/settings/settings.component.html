@@ -12,6 +12,7 @@
 </mat-tab-group> -->
 
 <!-- ************************************ -->
+<!-- <button (click)="test()" class="blueButton">test</button> -->
 <div class="mgt10 mgl30 mgr30">
     <p class="ft600 ft20" style="color: black">Licencias</p>
     <div fxLayout="row" fxLayoutAlign=" center">
@@ -49,7 +50,7 @@
     </div>
     <div fxLayout="row">
         <div class="w-70 pdr20 border-rl">
-            <app-license-student-list (selectedUsers)="handleSelectedUsers($event)"></app-license-student-list>
+            <app-license-student-list [hasLicenseChanged]="hasLicenseChanged" (selectedUsers)="handleSelectedUsers($event)"></app-license-student-list>
         </div>
         <div class="w-30 pdl20" fxLayout="column" fxLayoutGap="10px">
             <div class="" fxLayout="column">

@@ -31,6 +31,8 @@ export class SettingsComponent {
   currentStatus: string = 'active'; // Valor predeterminado
   queryParamsSubscription: Subscription;
 
+  hasLicenseChanged = 1 //flag to deselect checkboxes after license assign or removed
+
   ngOnInit() {
     this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
       if (params['status']) {
@@ -47,14 +49,16 @@ export class SettingsComponent {
   }
 
   async selectLicense(license: License) {
-    this.licenseStudentList.emitSelectedUsers(); // method in child component to store users in this.selectedUsers
+    this.licenseStudentList.emitSelectedUsers(); // method in child component that pass selected users to handleSelectedUsers() method
     console.log("this.selectedUsers", this.selectedUsersIds)
     await this.licenseService.assignLicense(license, this.selectedUsersIds);
+    this.hasLicenseChanged = -this.hasLicenseChanged
   }
 
   async removeLicense() {
-    this.licenseStudentList.emitSelectedUsers(); // method in child component to store users in this.selectedUsers
+    this.licenseStudentList.emitSelectedUsers(); // method in child component that pass selected users to handleSelectedUsers() method
     await this.licenseService.removeLicense(this.selectedUsersIds)
+    this.hasLicenseChanged = -this.hasLicenseChanged
   }
 
   ngOnDestroy() {
@@ -62,4 +66,9 @@ export class SettingsComponent {
       this.queryParamsSubscription.unsubscribe();
     }
   }
+
+  // test() {
+  //   this.licenseStudentList.emitSelectedUsers(); // method in child component that pass selected users to handleSelectedUsers() method
+  //   console.log("this.selectedUsers", this.selectedUsersIds)
+  // }
 }

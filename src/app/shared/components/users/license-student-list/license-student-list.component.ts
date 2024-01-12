@@ -1,5 +1,5 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -34,6 +34,7 @@ export class LicenseStudentListComponent {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @Input() enableNavigateToUser: boolean = true
   @Output() selectedUsers = new EventEmitter<LicenseListUser[]>();
+  @Input() hasLicenseChanged: any;
 
 
   queryParamsSubscription: Subscription
@@ -48,6 +49,8 @@ export class LicenseStudentListComponent {
   selection: SelectionModel<LicenseListUser> = new SelectionModel<LicenseListUser>(
     this.allowMultiSelect, this.initialSelection
   );
+
+  private lastStatusFilter: string = 'active'
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -66,10 +69,22 @@ export class LicenseStudentListComponent {
           const page = Number(params['page']) || 1;
           const searchTerm = params['search'] || '';
           const statusFilter = params['status'] || 'active';
+          // clear checkboxes selection if status filter changed
+          if (this.lastStatusFilter !== statusFilter) {
+            this.selection.clear(); 
+            this.lastStatusFilter = statusFilter;
+          }
           this.performSearch(searchTerm, page, statusFilter);
         })
       }
     })
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    // clear checkboxes after license assign or removed
+    if (changes['hasLicenseChanged']) {
+      this.selection.clear();
+    }
   }
 
   ngAfterViewInit() {
