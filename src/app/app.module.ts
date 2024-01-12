@@ -112,6 +112,7 @@ import { CreateUserComponent } from './main-components/management/my-team/studen
 import { ProfilesComponent } from './main-components/management/profiles/profiles.component';
 import { NotificationList2Component } from './shared/components/notifications/notification-list2/notification-list2.component';
 import { LicenseStudentListComponent } from './shared/components/users/license-student-list/license-student-list.component';
+import { QuestionsComponent } from './shared/components/questions/questions.component';
 import { StatusSelectorComponent } from './shared/widgets/status-selector/status-selector.component';
 // import { FrequentQuestionsComponent } from './main-components/my-account/frequent-questions/frequent-questions.component';
 
@@ -178,6 +179,7 @@ import { StatusSelectorComponent } from './shared/widgets/status-selector/status
     ProfilesComponent,
     NotificationList2Component,
     LicenseStudentListComponent,
+    QuestionsComponent,
     StatusSelectorComponent,
   ],
   imports: [

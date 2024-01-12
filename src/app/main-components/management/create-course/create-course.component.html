@@ -734,7 +734,7 @@
                     <!-- Preguntas -->
                     <ng-container *ngIf="activeStepActividad == 3">
                         <div fxFlex fxLayout="column" class="container pdl10 pdt10">
-                            <ng-container>
+                            <ng-container *ngIf="false">
                                 <!-- aqui van los preguntas que se van creando -->
                                 <div *ngFor="let pregunta of selectedClase.activity.questions; let i = index" class="{{ pregunta.isInvalid ? 'ContainerModuloInvalid' : 'ContainerModulo' }}">
                                     <div fxLayout="row" fxLayoutAlign="space-between start" class="fw pd10 pdt05 pdb5">
@@ -932,6 +932,7 @@
                                     </div>
                                 </div>
                             </ng-container>
+                            <app-questions></app-questions>
                             <!-- <div fxLayout="row" class="fw">
                                 <div class="mgl40 mgr10 fw">
                                     <div class="fw mgb10">
