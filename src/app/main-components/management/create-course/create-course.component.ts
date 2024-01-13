@@ -1358,6 +1358,62 @@ export class CreateCourseComponent {
 
   }
 
+  getTypeQuestion(type){
+
+    const TYPE_CALCULATED: string = 'calculated';
+    const TYPE_MATCHING: string = 'matching';
+    const TYPE_NUMERIC: string = 'numeric';
+    const TYPE_MULTIPLE_CHOICE: string = 'multiple_choice';
+    const TYPE_SINGLE_CHOICE: string = 'single_choice';
+    const TYPE_SHORT_ANSWER: string = 'short-answer';
+    const TYPE_COMPLETE: string = 'complete';
+    const TYPE_TRUE_OR_FALSE: string = 'true-false';
+
+    let typeToInfoDict = {
+      [TYPE_MULTIPLE_CHOICE]: {
+        value: TYPE_MULTIPLE_CHOICE,
+        displayName: 'Opción Múltiple',
+        tooltipInfo:
+          'Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas',
+        createInstructions: '',
+        solveInstructions:
+          'Seleccione una o mas opciones como correctas del listado de opciones',
+      },
+      [TYPE_SINGLE_CHOICE]: {
+        value: TYPE_SINGLE_CHOICE,
+        displayName: 'Opción Simple',
+        tooltipInfo:
+          'Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta',
+        createInstructions: '',
+        solveInstructions:
+          'Seleccione la opción correcta del listado de opciones',
+      },
+      [TYPE_COMPLETE]: {
+        value: TYPE_COMPLETE,
+        displayName: 'Completar',
+        tooltipInfo:
+          'Configure una pregunta cuyo texto pueda ser completado a partir de las opciones provistas para cada marcador de referencia - cada marcador debe tener una única respuesta correcta',
+        createInstructions:
+          'Ingrese cada marcador como una palabra de referencia encerrada entre corchetes ([]).<br/>Ejemplo: El presidente [nombreDelPresidente] nacio en [paisDeNacimiento]',
+        solveInstructions:
+          'Complete el texto utilizando los selectores proporcionados para dar sentido a la frase',
+      },
+      [TYPE_TRUE_OR_FALSE]: {
+        value: TYPE_TRUE_OR_FALSE,
+        displayName: 'Verdadero o Falso',
+        tooltipInfo:
+          'Configure una pregunta cuya respuesta sea verdadero o falso',
+        createInstructions:
+          'Marque las opciones que sean verdaderas y deje en blanco las que sean falsas',
+        solveInstructions:
+          'Clasifique las siguientes afirmaciones como verdadera o falsa',
+      }
+    }
+
+    let typeComplete = typeToInfoDict[type]
+    return typeComplete
+  }
+
   structureActivity(content,clase,modulo,tipo = 'crear') {
 
     this.selectedClase = clase
@@ -1388,7 +1444,8 @@ export class CreateCourseComponent {
 
       this.formNuevaActividadGeneral = new FormGroup({
         instrucciones: new FormControl(activity.description, Validators.required),
-        video: new FormControl(clase.vimeoId1, [Validators.required, this.NotZeroValidator()]),
+        // video: new FormControl(clase.vimeoId1, [Validators.required, this.NotZeroValidator()]),
+        video: new FormControl(clase.vimeoId1),
         recursos: new FormControl(clase.archivos[0]?.nombre ? clase.archivos[0].nombre : null, Validators.required),
       });
     }
@@ -1813,9 +1870,35 @@ export class CreateCourseComponent {
 
   showDisplayText(question:Question) {
     question['render'] = this.sanitizer.bypassSecurityTrustHtml(
-      // question.getDisplayText()
-      'Test'
+      this.getDisplayText(question)
     );
+  }
+
+  getDisplayText(question): string {
+    let displayText = question.text;
+    const placeholders = this.getPlaceholders(question);
+    for (const placeholder of placeholders) {
+      const options = question.options.filter(
+        (question) => question.placeholder == placeholder
+      );
+      let optionsHtml =
+        '<option disabled selected value> -- Selecciona una opcion -- </option>';
+      for (const option of options) {
+        optionsHtml += `<option value="${option.text}">${option.text}</option>`;
+      }
+      const placeholderHtml = `<select class="">${optionsHtml}</select>`;
+      displayText = displayText.replace(`[${placeholder}]`, placeholderHtml);
+    }
+    return displayText;
+  }
+
+  getPlaceholders(question): string[] {
+    let placeholders = [];
+    let matches = question.text.matchAll(/\[([^\[\]]*)\]/g);
+    for (let match of matches) {
+      placeholders.push(match[1]);
+    }
+    return placeholders;
   }
 
 //   // QuestionType Single Choice
@@ -1872,25 +1955,26 @@ export class CreateCourseComponent {
     //formNuevaActividadGeneral
     if(this.activeStepActividad == 3){
       this.updateTriggeQuestions++;
-      //setTimeout(() => {
         console.log('Form Data questionValid activeStepActividad: ',this.validActividad)
         if(this.validActividad ==null || !this.validActividad?.valid || this.validActividad.value?.questions?.length == 0){
           valid = false
           this.updateTriggeQuestions++;
-
-          // if(this.activeStepActividad == 4){
-          //   this.activeStepActividad--;
-          // }
         }
         else{
-          this.selectedClase.activity.questions = this.validActividad.value.questions
+          let questions = structuredClone(this.validActividad.value.questions)
+          questions.forEach(question => {
+            if(!question.typeFormated){
+              question.typeFormated = this.getTypeQuestion(question.type)
+              if(question.type == 'complete'){
+                this.showDisplayText(question)
+              }
+            }
+          });
+          //getTypeQuestion
+          this.selectedClase.activity.questions = questions
         }
-      //}, 1);
     }
     
-    // pruebas desarrollo
-    //valid = true
-
     if (valid){
       if(this.validateActivity()){
         this.selectedClase.activity['isInvalid'] = false;

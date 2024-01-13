@@ -150,7 +150,7 @@
                                                             placeholder=""
                                                         >
                                                         <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
-                                                            <input [name]="'radioGroup' + i + placeholderIndex" type="radio" (change)="onSingleOptionSelected(i, optIndex)" [value]="optIndex"/>
+                                                            <input [checked]="option.get('isCorrect').value" [name]="'radioGroup' + i + placeholderIndex" type="radio" (change)="onSingleOptionSelected(i, optIndex)" [value]="optIndex"/>
                                                             <img (click)="removeOption(i, optIndex)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash pdl05" alt="">
                                                         </div>
                                                     </div>
@@ -254,7 +254,7 @@
                                                 </div>
                                         
                                                 <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
-                                                    <input [name]="'radioGroup' + i" type="radio" (change)="onSingleOptionSelected(i, optIndex)" [value]="optIndex"/>
+                                                    <input [checked]="option.get('isCorrect').value" [checked]="option.get('isCorrect').value" [name]="'radioGroup' + i" type="radio" (change)="onSingleOptionSelected(i, optIndex)" [value]="optIndex"/>
                                                     <img (click)="removeOption(i, optIndex)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash pdl05" alt="">
                                                 </div>
                                             </div>

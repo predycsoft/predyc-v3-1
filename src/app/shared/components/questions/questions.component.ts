@@ -62,10 +62,15 @@ function testSkillsMinLength(min: number) {
   }
 }
 
-const singleOptionQuestionTypeValidators: ValidatorFn[] = [optionsLengthValidator, skillsLengthValidator, singleCorrectOptionValidator]
-const completeQuestionTypeValidators: ValidatorFn[] = [optionsLengthValidator, skillsLengthValidator, atLeastOnePlaceholderValidator, singleCorrectOptionPerPlaceholderValidator]
-const multipleChoiceQuestionTypeValidators: ValidatorFn[] = [optionsLengthValidator, skillsLengthValidator, atLeastOneCorrectOptionValidator]
-const trueOrFalseQuestionTypeValidators: ValidatorFn[] = [optionsLengthValidator, skillsLengthValidator]
+// const singleOptionQuestionTypeValidators: ValidatorFn[] = [optionsLengthValidator, skillsLengthValidator, singleCorrectOptionValidator]
+// const completeQuestionTypeValidators: ValidatorFn[] = [optionsLengthValidator, skillsLengthValidator, atLeastOnePlaceholderValidator, singleCorrectOptionPerPlaceholderValidator]
+// const multipleChoiceQuestionTypeValidators: ValidatorFn[] = [optionsLengthValidator, skillsLengthValidator, atLeastOneCorrectOptionValidator]
+// const trueOrFalseQuestionTypeValidators: ValidatorFn[] = [optionsLengthValidator, skillsLengthValidator]
+
+const singleOptionQuestionTypeValidators: ValidatorFn[] = [optionsLengthValidator, singleCorrectOptionValidator]
+const completeQuestionTypeValidators: ValidatorFn[] = [optionsLengthValidator, atLeastOnePlaceholderValidator, singleCorrectOptionPerPlaceholderValidator]
+const multipleChoiceQuestionTypeValidators: ValidatorFn[] = [optionsLengthValidator, atLeastOneCorrectOptionValidator]
+const trueOrFalseQuestionTypeValidators: ValidatorFn[] = [optionsLengthValidator]
 
 const questionTypeToValidators = {
   [Question.TYPE_SINGLE_CHOICE]: singleOptionQuestionTypeValidators,
@@ -157,11 +162,80 @@ export class QuestionsComponent {
       questions: this.fb.array([])
     });
 
+    if (this.questionsArray) {
+      this.questionsArray.forEach(questionData => {
+        this.addQuestionInit(questionData);
+      });
+    }
+
   }
 
   get questions(): FormArray {
     return <FormArray>this.mainForm.get('questions');
   }
+
+
+  addQuestionInit(question: any): void {
+    const questionType = question.type;
+  
+    const newQuestionGroup = this.fb.group({
+      text: [question.text, [Validators.required]],
+      type: [questionType],
+      image: this.fb.group({
+        url: [question?.image?.url || ''],
+        file: [question?.image?.file || null]
+      }),
+      options: this.fb.array([]),
+      points: [question.points, [Validators.required, Validators.min(1), Validators.pattern(/^\d*$/)]],
+      skills: this.fb.array([]),
+    }, { validators: questionTypeToValidators[questionType] });
+  
+    this.questions.push(newQuestionGroup);
+  
+    const questionIndex = this.questions.length - 1;
+    if (question.options && question.options.length > 0) {
+      this.initializeOptions(questionIndex, question.options);
+    }
+    this.selectedQuestionsSkills.push([]);
+
+    // Initialize skills
+    if (question.skills && question.skills.length > 0) {
+      this.initializeQuestionSkills(questionIndex, question.skills);
+    }
+  
+    this.questionStatus.push({
+      expanded: true,
+      visibleImage: false,
+      placeholders: [],
+      textToRender: null
+    });
+  
+  }
+
+  initializeOptions(questionIndex: number, options: any[]): void {
+    const optionsArray = this.questions.at(questionIndex).get('options') as FormArray;
+    options.forEach(option => {
+      optionsArray.push(this.fb.group({
+        text: [option.text, [Validators.required]],
+        isCorrect: [option.isCorrect],
+        placeholder: [option.placeholder],
+      }));
+    });
+  }
+
+  initializeQuestionSkills(questionIndex: number, skills: any[]): void {
+    const skillsArray = this.questions.at(questionIndex).get('skills') as FormArray;
+    skills.forEach(skill => {
+      skillsArray.push(this.fb.group({
+        id: [skill.id],
+        name: [skill.name],
+        categoryId: [skill.categoryId]
+      }));
+      this.selectedQuestionsSkills[questionIndex].push(skill);
+    });
+  }
+
+  
 
   addQuestion(): void {
     const defaultQuestionType = Question.TYPE_COMPLETE

@@ -298,10 +298,10 @@
                                                                 <img [src]="icon.folderUp" class="h16px pdr05" alt="">
                                                                 Añadir recursos
                                                             </button>
-                                                            <button (click)="openModalAsignarCompetencia(modalAsignarCompetenciasClases,clase)" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                            <!-- <button (click)="openModalAsignarCompetencia(modalAsignarCompetenciasClases,clase)" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                                                                 <img [src]="icon.flash" class="h16px pdr05" alt="">
                                                                 Seleccionar competencias
-                                                            </button>
+                                                            </button> -->
                                                             <ng-container *ngIf="clase.tipo == 'lectura'">
                                                                 <!-- <button (click)="openModalAsignarCompetencia(modalAsignarCompetenciasClases,clase)" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                                                                     <img [src]="icon.flash" class="h16px pdr05" alt="">
@@ -321,16 +321,15 @@
                                                                 <img [src]="icon.taskAdd" class="h16px pdr05" alt="">
                                                                 Estructurar actividad
                                                             </button>
-                                                            <button (click)="openModalAsignarCompetencia(modalAsignarCompetenciasClases,clase)"class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                            <!-- <button (click)="openModalAsignarCompetencia(modalAsignarCompetenciasClases,clase)"class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                                                                 <img [src]="icon.flash" class="h16px pdr05" alt="">
-                                                                <!-- Seleccionar competencias -->
                                                                 <ng-container *ngIf="clase.competencias && clase.competencias?.length == 0">
                                                                     Agregar competencias
                                                                 </ng-container>
                                                                 <ng-container *ngIf="clase.competencias?.length> 0">
                                                                     Cantidad competencias : {{clase.competencias.length}}
                                                                 </ng-container>
-                                                            </button>
+                                                            </button> -->
                                                         </div>
                                                     </ng-container>
                                                     <ng-container *ngIf="clase['isInvalid']">
@@ -964,7 +963,7 @@
                                         <div fxLayout="row" fxLayoutAlign="space-between center">
                                             <div fxLayout="row" fxLayoutGap="0.625">
                                                 <div class="pdr05">
-                                                    {{ question.type.displayName }}
+                                                    {{ question.typeFormated.displayName }}
                                                 </div>
                                             </div>
                                             <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px">
@@ -981,10 +980,10 @@
                                             
                                             <!-- area dependiente de la pregunta -->
                                             <div fxFlex="70" fxLayout="column" class="pdt05 fw">
-                                                <div [innerHTML]="question.render" *ngIf="question.type.value == 'complete'">
+                                                <div [innerHTML]="question.render" *ngIf="question.typeFormated.value == 'complete'">
                                                 </div>
                                     
-                                                <div *ngIf="question.type.value == 'single_choice'">
+                                                <div *ngIf="question.typeFormated.value == 'single_choice'">
                                                     <span class="ft14 ft500"> {{ question.text }} </span>
                                                     <div class="mgt10" fxLayout="column">
                                                         <div fxLayout="row" fxLayoutAlign="space-between center" *ngFor="let option of question.options; let optionIndex = index" class="mgt05">
@@ -994,7 +993,7 @@
                                                     </div>
                                                 </div>
                                     
-                                                <div *ngIf="question.type.value == 'multiple_choice'">
+                                                <div *ngIf="question.typeFormated.value == 'multiple_choice'">
                                                     <span class="ft14 ft500"> {{ question.text }} </span>
                                                     <div class="mgt10" fxLayout="column">
                                                         <div fxLayout="row" fxLayoutAlign="space-between center" *ngFor="let option of question.options; let optionIndex = index" class="mgt05">
@@ -1004,7 +1003,7 @@
                                                     </div>
                                                 </div>
                                     
-                                                <div *ngIf="question.type.value == 'true_or_false'">
+                                                <div *ngIf="question.typeFormated.value == 'true-false'">
                                                     <span class="ft14 ft500"> {{ question.text }} </span>
                                                     <div class="mgt10" fxLayout="column">
                                                         <div fxLayout="row" fxLayoutAlign="space-between center">
@@ -1211,7 +1210,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div *ngIf="question.type.value == 'true_or_false'">
+                            <div *ngIf="question.type.value == 'true-false'">
                                 <span class="ft14 ft500"> {{ question.text }} </span>
                                 <div class="mgt10" fxLayout="column">
                                     <div fxLayout="row" fxLayoutAlign="space-between center">
