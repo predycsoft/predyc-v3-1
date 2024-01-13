@@ -460,6 +460,68 @@ export class CreateCourseComponent {
     }
   }
 
+
+  // advanceTab(){
+
+  //   this.showErrorCusro = false;
+  //   this.mensageCompetencias = "Selecciona una competencia para asignarla al curso";
+  //   this.comepetenciaValid= true
+
+
+  //   let valid = true;
+  //   console.log('tab general',this.activeStep);
+  //   if(this.activeStep == 1){
+  //     console.log(this.formNuevoCurso)
+  //     if(!this.formNuevoCurso.valid){
+  //       valid = false;
+  //     }
+  //     else{
+  //       console.log('datos curso',this.formNuevoCurso.value)
+  //       if(this.curso){
+  //         this.curso = this.formNuevoCurso.value;
+  //       }
+  //       else{
+  //         let newCurso = new Curso;
+  //         newCurso = this.formNuevoCurso.value;
+  //         this.curso = newCurso
+  //       }
+  //       console.log('this.curso',this.curso)
+  //     }
+  //   }
+  //   if(this.activeStep == 2){
+  //     this.getSelectedCategoriasCompetencias()
+  //     console.log(this.competenciasSelected);
+  //     if(!this.competenciasSelected || this.competenciasSelected?.length==0){
+  //       valid = false;
+  //       this.mensageCompetencias = "Por favor seleccione una competencia";
+  //       this.comepetenciaValid = false;
+  //     }
+  //   }
+  //   if(this.activeStep == 3){
+  //     if(!this.validarModulosClases()){
+  //       valid = false;
+  //     }
+  //   }
+  //   if(this.activeStep == 4){
+  //     if(!this.validatePreguntasExamen()){
+  //       valid = false;
+  //     }
+  //     else{
+  //       this.closeAllModulos();
+  //     }
+  //   }
+
+
+  //   valid = true; // comentar luego de probar
+  //   if(valid){
+  //     this.activeStep = this.activeStep+1
+  //   }
+  //   else{
+  //     this.showErrorCusro = true;
+  //   }
+
+  // }
+
   avanceTab(){
     if (this.activeStep < 6) {
       this.showErrorCurso = false;
