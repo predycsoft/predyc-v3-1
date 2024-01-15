@@ -4,7 +4,9 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class IconService {
-  
+
+
+  favorite: string = "assets/images/icons/favorite.svg"
   arbol: string = "assets/images/icons/arbol.svg"
   evidencia: string = "assets/images/icons/evidencia.svg"
   minuta: string = "assets/images/icons/minuta.svg"
