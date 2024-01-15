@@ -9,6 +9,8 @@ export const licensesData: LicenseJson = {
     id: "1690920188024",
     price: null,
     quantity: 26,
+    quantityUsed: 0,
+    rotations: 5,
     startedAt: 1690920188024,
     status: "active",
     trialDays: 5,
