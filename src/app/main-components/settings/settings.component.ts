@@ -46,10 +46,7 @@ export class SettingsComponent {
   }
 
   handleSelectedUsers(users: any[]) {
-    const usersIds = users.map(user => {
-      return user.uid
-    })
-    this.selectedUsersIds = usersIds;
+    this.selectedUsersIds = users;
   }
 
   async selectLicense(license: License) {
