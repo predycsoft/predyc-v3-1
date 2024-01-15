@@ -40,7 +40,10 @@ export class CourseService {
   async saveCourse(newCourse: Curso): Promise<void> {
     try {
       try {
-        await this.afs.collection(Curso.collection).doc(newCourse?.id).set(newCourse, { merge: true });
+        console.log('test saveCourse',newCourse)
+        const dataToSave = typeof newCourse.toJson === 'function' ? newCourse.toJson() : newCourse;
+
+        await this.afs.collection(Curso.collection).doc(newCourse?.id).set(dataToSave, { merge: true });
       } catch (error) {
         console.log(error)
         throw error
@@ -108,7 +111,7 @@ export class CourseService {
           const allClasses$ = this.afs.collection<Clase>(Clase.collection).valueChanges();
   
           // Query to get by enterprise match
-          const enterpriseMatch$ = this.afs.collection<Curso>(Curso.collection, ref => 
+          const enterpriseMatch$ = this.afs.collection<any>(Curso.collection, ref => 
             ref.where('enterpriseRef', '==', this.enterpriseRef)
           ).valueChanges();
   
@@ -173,12 +176,12 @@ export class CourseService {
           this.enterpriseRef = this.enterpriseService.getEnterpriseRef();
       
           // Query to get by enterprise match
-          const enterpriseMatch$ = this.afs.collection<Curso>(Curso.collection, ref => 
+          const enterpriseMatch$ = this.afs.collection<any>(Curso.collection, ref => 
             ref.where('enterpriseRef', '==', this.enterpriseRef)
           ).valueChanges();
       
           // Query to get where enterprise is empty
-          const enterpriseEmpty$ = this.afs.collection<Curso>(Curso.collection, ref => 
+          const enterpriseEmpty$ = this.afs.collection<any>(Curso.collection, ref => 
             ref.where('enterpriseRef', '==', null)
           ).valueChanges();
       
@@ -240,7 +243,7 @@ export class CourseService {
 
   // Funciones de diego
 
-  getCourses$(): Observable<Curso[]> {
+  getCourses$(): Observable<any[]> {
     return this.enterpriseService.enterpriseLoaded$.pipe(
       switchMap(isLoaded => {
         if (!isLoaded) return []

@@ -119,14 +119,14 @@ export class CreateCourseComponent {
       .pipe()
       .subscribe(data => {
         if (data) {
-          console.log('Activity:', data);
-          console.log('Questions:', data.questions);
+          //console.log('Activity:', data);
+          //console.log('Questions:', data.questions);
           data.questions.forEach(question => {
-            console.log('preguntas posibles test',question)
+           // console.log('preguntas posibles test',question)
             question.competencias = question.skills
           });
           this.examen = data;
-          console.log('examen data edit',this.examen)
+         // console.log('examen data edit',this.examen)
         }
       });
   }
@@ -293,7 +293,8 @@ export class CreateCourseComponent {
   if(this.curso){
     console.log('datos curso',this.curso)
     let enterpriseRef =this.enterpriseService.getEnterpriseRef()
-    this.curso.enterpriseRef = enterpriseRef;
+    //this.curso.enterpriseRef = enterpriseRef;
+    this.curso.enterpriseRef = null;
     this.courseService.saveCourse(this.curso)
   }
   if(this.competenciasSelected?.length>0){
@@ -360,7 +361,8 @@ export class CreateCourseComponent {
             let questions: Question[]= []
             questions = structuredClone(clase.activity.questions);
             activityClass = structuredClone(clase.activity) as Activity;
-            activityClass.enterpriseRef = this.curso.enterpriseRef as DocumentReference<Enterprise>
+            //activityClass.enterpriseRef = this.curso.enterpriseRef as DocumentReference<Enterprise>
+            activityClass.enterpriseRef = null
             activityClass.claseRef = refClass;
             activityClass.coursesRef = [courseRef];
             //activityClass.type = Activity.TYPE_REGULAR;
@@ -370,7 +372,7 @@ export class CreateCourseComponent {
             delete activityClass['recursosBase64'] 
             console.log('activityClass',activityClass)
 
-            //await this.activityClassesService.saveActivity(activityClass);
+            await this.activityClassesService.saveActivity(activityClass);
             clase.activity.id = activityClass.id;
 
             questions.forEach(pregunta => {
@@ -949,11 +951,21 @@ export class CreateCourseComponent {
     }, -0);
   }
 
+  obtenerNumeroMasGrandeModulo(moduloIn): number {
+
+
+    let respuesta = moduloIn?.clases?.length>0 ? moduloIn?.clases?.length:0;
+    console.log('obtenerNumeroMasGrandeModulo',moduloIn.clases.length, respuesta)
+
+    return respuesta
+ 
+  }
+
 
   async addClase(tipo,moduloIn){
 
     let modulo = this.modulos.find(modulo => modulo.numero == moduloIn.numero)
-    console.log('modulo',modulo);
+    //console.log('modulo',modulo);
     let clases = modulo['clases'];
     let clase = new Clase;
     clase.tipo = tipo;
@@ -962,14 +974,15 @@ export class CreateCourseComponent {
     clase.id = await this.afs.collection<Clase>(Clase.collection).doc().ref.id;
     clase['modulo'] = moduloIn.numero;
 
-    let numero = this.obtenerNumeroMasGrande()+1;
+    let numero = this.obtenerNumeroMasGrandeModulo(moduloIn);
     clase['numero'] = numero;
+    clase.date = numero;
 
     if(clase.tipo == 'lectura'){
       clase.HTMLcontent ='<h4><font face="Arial">Sesi&#243;n de lectura.</font></h4><h6><font face="Arial">&#161;Asegurate de descargar los archivos adjuntos!</font></h6><p><font face="Arial">Encu&#233;ntralos en la secci&#243;n de material descargable</font></p>'
     }
 
-    if(clase.tipo == 'actividad' || 'corazones'){
+    if(clase.tipo == 'actividad' || clase.tipo ==  'corazones'){
       let actividad = new Activity();
       //actividad.id = Date.now().toString();
       actividad.title = clase.titulo;
@@ -1506,6 +1519,24 @@ export class CreateCourseComponent {
     return typeComplete
   }
 
+  srsView
+
+
+  seletFilePDF(archivo){
+
+    if(archivo.base64){
+      this.base64view = archivo.base64;
+      this.srsView = null
+    }
+    else if (archivo.url){
+      this.srsView = archivo.url
+      this.base64view = null;
+    }
+
+    console.log('this.base64view',this.base64view,'this.srsView',this.srsView)
+
+  }
+
   structureActivity(content,clase,modulo,tipo = 'crear') {
 
     this.selectedClase = clase
@@ -1517,7 +1548,8 @@ export class CreateCourseComponent {
     //this.inicializarFormNuevaActividad();
 
     if(clase.tipo == 'lectura'){
-      this.base64view = clase.archivos[0].base64;
+      //this.base64view = clase.archivos[0].base64;
+      this.seletFilePDF(clase.archivos[0])
       this.fileViewTipe = 'pdf'
 
     }

@@ -1,4 +1,1220 @@
 export const coursesData = [
+        {
+      "empresaId": "LOINPROC-",
+      "nuevo": false,
+      "resumen": "Construcción de Estrategias para Optimizar una Gerencia de Mantenimiento",
+      "instructorNombre": "Brau Clemenza",
+      "cantVentas": 0,
+      "sqrPicture": "",
+      "titulo": "Construcción de Estrategias para Optimizar una Gerencia de Mantenimiento",
+      "instructorFoto": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Instructores%2FBrau-Clemenza%2FFotografia-Predyc%20Brau%20Clemenza.png?alt=media&token=c77df449-21a5-440a-ae23-9998bc84f40e",
+      "empresaNombre": "LOINPROC ",
+      "categoria": "Mantenimiento",
+      "instructorId": "Brau-Clemenza",
+      "prioridad": 5,
+      "empresaFoto": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Empresas%2FLOINPROC-%2FLogo-predyc%20empresa%20LOINPROC.png?alt=media&token=f9d2c783-6eb7-4c7d-96de-f05ad784777f",
+      "instructorPorcentaje": 80,
+      "foto": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Cursos%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2FCurso-Predyc-Construcci%C3%B3n%20de%20Estrategias%20para%20Optimizar%20una%20Gerencia%20de%20Mantenimiento.webp?alt=media&token=fdc54e7b-61ed-4b57-aa62-7c37d3ffc7cd",
+      "publicado": true,
+      "valoracion": 4.875,
+      "rectPicture": "",
+      "proximamente": false,
+      "cantInscritos": 46,
+      "descripcion": "Este curso contempla una metodología paso a paso para contribuir a construir una filosofía de mantenimento que le permita optimizar una Gerencia de Mantenimiento, independientemente del proceso productivo y de su antigüedad. Las estrategias que aplicamos para construir una filosofía de mantenimiento para una planta nueva, no  son iguales para otra que aun no ha iniciado operaciones. No tomar las acciones adecuadas al principio, con seguridad conllevará a  situaciones indeseables que indudablemente requerirá de mucho esfuerzo  para minimizarlas durante su operación normal. En el mantenimiento hay muchas verdades relativas y pocas absolutas, y muchas de las relativas se ha tratado de convertirlas en absolutas; en consecuencia, las estrategia que funcionan por ejemplo  para Oil&Gas posiblemente no funcionen para una planta de alimentos o para material rodante. Estos son procesos diferentes como lo veremos a lo largo de todo este contenido.",
+      "miniPicture": "",
+      "porcentajeDescuento": 0,
+      "precioFinal": 120,
+      "fechaCreacion": {
+        "seconds": 1654564689,
+        "nanoseconds": 773000000
+      },
+      "duracion": 417,
+      "nivel": "Intermedio",
+      "programaId": "",
+      "precioOriginal": 120,
+      "id": "Construcción-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento",
+      "clases": {
+        "clases": [
+          {
+            "idVideo": "589029912",
+            "duracion": 4,
+            "modulo": 1,
+            "id": 0,
+            "titulo": "Introducción al Curso",
+            "tipo": "video",
+            "archivos": [],
+            "vigente": true,
+            "HTMLcontent": "",
+            "numero": 1,
+            "descripcion": ""
+          },
+          {
+            "HTMLcontent": "",
+            "tipo": "video",
+            "modulo": 2,
+            "archivos": [],
+            "titulo": "Capítulo I: Líneas generales que permitan ir construyendo estrategias para optimizar una Gerencia de Mantenimiento ",
+            "descripcion": "",
+            "numero": 2,
+            "idVideo": "726723315",
+            "vigente": true,
+            "duracion": 36,
+            "id": 9
+          },
+          {
+            "modulo": 2,
+            "idVideo": 0,
+            "vigente": true,
+            "descripcion": "",
+            "numero": 3,
+            "archivos": [
+              {
+                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2Fguia-jur%C3%ADdica%20CNUDMI.pdf?alt=media&token=435dad09-31d8-46ec-8364-2616944a82c2",
+                "type": "application/pdf",
+                "size": 9622257,
+                "nombre": "guia-jurídica CNUDMI.pdf"
+              },
+              {
+                "size": 595905,
+                "nombre": "Capitulo-1.pdf",
+                "type": "application/pdf",
+                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2FCapitulo-1.pdf?alt=media&token=6b9aeceb-d408-4ffe-b644-2545d802905a"
+              }
+            ],
+            "HTMLcontent": "<h4><font face=\"Arial\">Sesi&#243;n de lectura.</font></h4><h6><font face=\"Arial\">&#161;Asegurate de descargar los archivos adjuntos!</font></h6><p><font face=\"Arial\">Encu&#233;ntralos en la secci&#243;n de material descargable</font></p>",
+            "titulo": "Capítulo I: Líneas generales que permitan ir construyendo estrategias para optimizar una Gerencia de Mantenimiento ",
+            "duracion": 10,
+            "tipo": "lectura",
+            "id": 1
+          },
+          {
+            "duracion": 48,
+            "id": 10,
+            "titulo": "Capítulo II: Construcción de una Filosofía de Mantenimiento como estrategia para optimizar una de Gerencia de Mantenimiento",
+            "HTMLcontent": "",
+            "archivos": [],
+            "tipo": "video",
+            "idVideo": "726719925",
+            "modulo": 3,
+            "vigente": true,
+            "descripcion": "",
+            "numero": 4
+          },
+          {
+            "titulo": "Capítulo II: Construcción de una Filosofía de Mantenimiento como estrategia para optimizar una de Gerencia de Mantenimiento",
+            "archivos": [
+              {
+                "type": "application/pdf",
+                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2Fcapitulo-II.pdf?alt=media&token=d67eacfb-677b-4e75-b9ea-62af812e8a06",
+                "nombre": "capitulo-II.pdf",
+                "size": 913429
+              }
+            ],
+            "descripcion": "El factor humano es el principal recurso para un desarrollo e implantación de cualquier estrategia. La manera de cómo se vienen realizando las actividades  y cómo se realizarán al momento de girar el timón para un cambio de dirección, es una de las mayores incertidumbres en una organización. Por natura pareciera ser que las personas son reacias a la asignación de nuevas tareas, de allí la importancia de determinar qué factores  afectan la confiabilidad humana ",
+            "idVideo": 0,
+            "modulo": 3,
+            "duracion": 10,
+            "tipo": "lectura",
+            "vigente": true,
+            "HTMLcontent": "<h4><font face=\"Arial\">Sesi&#243;n de lectura.</font></h4><h6><font face=\"Arial\">&#161;Asegurate de descargar los archivos adjuntos!</font></h6><p><font face=\"Arial\">Encu&#233;ntralos en la secci&#243;n de material descargable</font></p>",
+            "id": 2,
+            "numero": 5
+          },
+          {
+            "HTMLcontent": "<h4><font face=\"Arial\">Sesi&#243;n de lectura.</font></h4><h6><font face=\"Arial\">&#161;Asegurate de descargar los archivos adjuntos!</font></h6><p><font face=\"Arial\">Encu&#233;ntralos en la secci&#243;n de material descargable</font></p>",
+            "modulo": 4,
+            "id": 11,
+            "titulo": "Capítulo III: Construcción y Adecuación de un Registro de Activos",
+            "archivos": [],
+            "idVideo": "726720561",
+            "duracion": 82,
+            "numero": 6,
+            "descripcion": "",
+            "vigente": true,
+            "tipo": "video"
+          },
+          {
+            "descripcion": "”No se puede mantener lo que no se conoce y si se conoce hay que saber cómo hacerlo”. Ésta es una de las dos principales máxima que serán nuestra guía en este curso; por lo tanto, si no tenemos identificados los activos, cómo están diseminados por toda una planta o un proceso productivo, sería una tarea muy difícil su control y seguimiento, debido a que es necesario entender cómo fallan y cómo impactan al momento de presentarse un acontecimiento indeseable en su desempeño en el sitio donde estén",
+            "modulo": 4,
+            "idVideo": 0,
+            "numero": 7,
+            "id": 3,
+            "duracion": 10,
+            "archivos": [
+              {
+                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2Fcapitulo-III.pdf?alt=media&token=1fde9979-54ae-4860-9e82-317fdff6e4b9",
+                "size": 1019456,
+                "type": "application/pdf",
+                "nombre": "capitulo-III.pdf"
+              }
+            ],
+            "HTMLcontent": "<h4><font face=\"Arial\">Sesi&#243;n de lectura.</font></h4><h6><font face=\"Arial\">&#161;Asegurate de descargar los archivos adjuntos!</font></h6><p><font face=\"Arial\">Encu&#233;ntralos en la secci&#243;n de material descargable</font></p>",
+            "titulo": "Capítulo III: Construcción y Adecuación de un Registro de Activos",
+            "vigente": true,
+            "tipo": "lectura"
+          },
+          {
+            "id": 12,
+            "descripcion": "",
+            "numero": 8,
+            "vigente": true,
+            "titulo": "Capítulo IV: Planificación y   Programación de Mantenimiento",
+            "tipo": "video",
+            "modulo": 5,
+            "duracion": 69,
+            "archivos": [],
+            "idVideo": "726721217",
+            "HTMLcontent": ""
+          },
+          {
+            "duracion": 10,
+            "tipo": "lectura",
+            "vigente": true,
+            "HTMLcontent": "<h4><font face=\"Arial\">Sesi&#243;n de lectura.</font></h4><h6><font face=\"Arial\">&#161;Asegurate de descargar los archivos adjuntos!</font></h6><p><font face=\"Arial\">Encu&#233;ntralos en la secci&#243;n de material descargable</font></p>",
+            "idVideo": 0,
+            "titulo": "Capítulo IV: Planificación y   Programación de Mantenimiento",
+            "modulo": 5,
+            "descripcion": "La manera cómo operan y cómo se mantiene los activos es fundamental para tener activos  altamente rentables. La Planificación y Programación de Mantenimiento junto con  una buena ejecución son los pilares fundamentales para optimizar una gestión. Entender la diferencia entre cada uno de ellos y su importancia es clave para alcanzar los objetivos planteados por la alta dirección de una planta o corporación como estrategia para contribuir a alcanzar la máxima rentabilidad",
+            "numero": 9,
+            "id": 4,
+            "archivos": [
+              {
+                "size": 750082,
+                "type": "application/pdf",
+                "nombre": "capitulo-IV.pdf",
+                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2Fcapitulo-IV.pdf?alt=media&token=040d5d77-35f3-4fe2-901d-cfbf0bf0e752"
+              }
+            ]
+          },
+          {
+            "numero": 10,
+            "modulo": 6,
+            "archivos": [],
+            "HTMLcontent": "",
+            "tipo": "video",
+            "titulo": "Capítulo V:  Documentos importante que debemos manejar para optimizar una Gerencia de Mantenimiento                     ",
+            "idVideo": "726721692",
+            "vigente": true,
+            "descripcion": "",
+            "id": 13,
+            "duracion": 79
+          },
+          {
+            "tipo": "lectura",
+            "archivos": [
+              {
+                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2Fcapitulo-V.pdf?alt=media&token=875caa23-5da0-499e-9535-2223b87d03b4",
+                "size": 1350032,
+                "nombre": "capitulo-V.pdf",
+                "type": "application/pdf"
+              }
+            ],
+            "idVideo": 0,
+            "numero": 11,
+            "descripcion": "Los documentos que se utilizan en mantenimiento son una de las herramientas imprescindibles para optimizar una gestión. Sin embargo, los que utilicemos deben aprovecharse al máximo para optimizar una gestión.",
+            "id": 5,
+            "titulo": "Capítulo V:  Documentos importante que debemos manejar para optimizar una Gerencia de Mantenimiento                     ",
+            "HTMLcontent": "<h4><font face=\"Arial\">Sesi&#243;n de lectura.</font></h4><h6><font face=\"Arial\">&#161;Asegurate de descargar los archivos adjuntos!</font></h6><p><font face=\"Arial\">Encu&#233;ntralos en la secci&#243;n de material descargable</font></p>",
+            "vigente": true,
+            "modulo": 6,
+            "duracion": 10
+          },
+          {
+            "duracion": 19,
+            "modulo": 7,
+            "id": 14,
+            "vigente": true,
+            "HTMLcontent": "",
+            "idVideo": "726726817",
+            "descripcion": "",
+            "archivos": [],
+            "titulo": "Capítulo VI: Tratamiento de Datos y Medición de la Gestión",
+            "numero": 12,
+            "tipo": "video"
+          },
+          {
+            "HTMLcontent": "<h4><font face=\"Arial\">Sesi&#243;n de lectura.</font></h4><h6><font face=\"Arial\">&#161;Asegurate de descargar los archivos adjuntos!</font></h6><p><font face=\"Arial\">Encu&#233;ntralos en la secci&#243;n de material descargable</font></p>",
+            "id": 6,
+            "titulo": "Capítulo VI: Tratamiento de Datos y Medición de la Gestión",
+            "archivos": [
+              {
+                "type": "application/pdf",
+                "size": 712028,
+                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2Fcapitulo-VI.pdf?alt=media&token=ea6f4d3a-8337-45e3-bf7d-e8338ea49dfd",
+                "nombre": "capitulo-VI.pdf"
+              }
+            ],
+            "vigente": true,
+            "modulo": 7,
+            "idVideo": 0,
+            "descripcion": ". En este capítulo vamos a revisar  y profundizar en todo este tema, siempre con una visión crítica. Veremos que cuando tenemos un conjunto de datos, hay verdades relativas y no siempre absolutas porque dependen de su óptica. En este capítulo estableceremos esquemas de análisis de todo este cúmulo de información que se genera en la operación y mantenimiento de los activos. No hay manera de saber cómo estamos y hacia dónde vamos si no medimos una gestión. ",
+            "numero": 13,
+            "tipo": "lectura",
+            "duracion": 10
+          },
+          {
+            "modulo": 8,
+            "tipo": "lectura",
+            "descripcion": "En nuestra gestión este es uno de los indicadores mas importantes, sin embargo al utilizarlo hay que considerar algunos aspectos de suma importancia, debido a que posiblemente al analizarlo no estemos sacando una conclusión correcta sobre su resultado",
+            "idVideo": 0,
+            "HTMLcontent": "<h4><font face=\"Arial\">Sesi&#243;n de lectura.</font></h4><h6><font face=\"Arial\">&#161;Asegurate de descargar los archivos adjuntos!</font></h6><p><font face=\"Arial\">Encu&#233;ntralos en la secci&#243;n de material descargable</font></p>",
+            "titulo": "Capítulo VII: Indicador Total de Efectividad (Overall Effectiveness Equipment, (OEE))",
+            "duracion": 10,
+            "vigente": true,
+            "id": 7,
+            "archivos": [
+              {
+                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2Fcapitulo-VII.pdf?alt=media&token=561479d3-a1e3-49b6-b07c-452d70c25c0c",
+                "nombre": "capitulo-VII.pdf",
+                "size": 427336,
+                "type": "application/pdf"
+              }
+            ],
+            "numero": 14
+          },
+          {
+            "titulo": "Capítulo VIII: Indicador Global de Prestigio \"The Global Indicator of Prestige\"",
+            "vigente": true,
+            "numero": 15,
+            "tipo": "lectura",
+            "duracion": 10,
+            "archivos": [
+              {
+                "nombre": "capitulo-VIII.pdf",
+                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2Fcapitulo-VIII.pdf?alt=media&token=5f0b804a-6e95-42ca-9f58-27ebf0bee241",
+                "type": "application/pdf",
+                "size": 552943
+              }
+            ],
+            "modulo": 9,
+            "HTMLcontent": "<h4><font face=\"Arial\">Sesi&#243;n de lectura.</font></h4><h6><font face=\"Arial\">&#161;Asegurate de descargar los archivos adjuntos!</font></h6><p><font face=\"Arial\">Encu&#233;ntralos en la secci&#243;n de material descargable</font></p>",
+            "idVideo": 0,
+            "descripcion": "Con el Indicador de Efectividad Total de Equipos es imposible medir la efectividad de un servicio. Para ello tenemos este nuevo indicador que viene a llenar el vacío en cuanto a medir la calidad de servicio de un proceso",
+            "id": 8
+          }
+        ],
+        "newClases": [
+          {
+            "titulo": "Introducción al Curso",
+            "vigente": true,
+            "descripcion": "",
+            "numero": 1,
+            "duracion": 4,
+            "HTMLcontent": "",
+            "id": 0,
+            "modulo": null,
+            "archivos": [],
+            "idVideo": "589029912",
+            "tipo": "video"
+          },
+          {
+            "duracion": 30,
+            "idVideo": 0,
+            "modulo": null,
+            "tipo": "pdf",
+            "descripcion": "Tomar decisiones acertadas y oportunas al momento de pensar en invertir para la construcción de una planta o reemplazo de algún activo importante, es fundamental para evitar durante la operación interrupciones indeseables o impactos negativos en el proceso productivo. ",
+            "HTMLcontent": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2Fpdf%3A1638285848137?alt=media&token=b2e43252-b10f-4507-9f97-7655d55576ab",
+            "id": 1,
+            "titulo": "Capítulo I: Líneas generales que permitan ir construyendo estrategias para optimizar una Gerencia de Mantenimiento ",
+            "vigente": true,
+            "numero": 2,
+            "archivos": [
+              {
+                "size": 9622257,
+                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2Fguia-jur%C3%ADdica%20CNUDMI.pdf?alt=media&token=435dad09-31d8-46ec-8364-2616944a82c2",
+                "nombre": "guia-jurídica CNUDMI.pdf",
+                "type": "application/pdf"
+              }
+            ]
+          },
+          {
+            "tipo": "pdf",
+            "HTMLcontent": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2Fpdf%3A1629926436039?alt=media&token=eff967b0-a9b1-4b2c-b955-737e68416b36",
+            "archivos": [],
+            "modulo": null,
+            "vigente": true,
+            "numero": 3,
+            "idVideo": 0,
+            "duracion": 30,
+            "titulo": "Capítulo II: Construcción de una Filosofía de Mantenimiento como estrategia para optimizar una de Gerencia de Mantenimiento",
+            "id": 2,
+            "descripcion": "El factor humano es el principal recurso para un desarrollo e implantación de cualquier estrategia. La manera de cómo se vienen realizando las actividades  y cómo se realizarán al momento de girar el timón para un cambio de dirección, es una de las mayores incertidumbres en una organización. Por natura pareciera ser que las personas son reacias a la asignación de nuevas tareas, de allí la importancia de determinar qué factores  afectan la confiabilidad humana "
+          },
+          {
+            "descripcion": "”No se puede mantener lo que no se conoce y si se conoce hay que saber cómo hacerlo”. Ésta es una de las dos principales máxima que serán nuestra guía en este curso; por lo tanto, si no tenemos identificados los activos, cómo están diseminados por toda una planta o un proceso productivo, sería una tarea muy difícil su control y seguimiento, debido a que es necesario entender cómo fallan y cómo impactan al momento de presentarse un acontecimiento indeseable en su desempeño en el sitio donde estén",
+            "HTMLcontent": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2Fpdf%3A1629762013382?alt=media&token=149f5e9e-cf56-4b6b-8d72-0ea1187e8990",
+            "numero": 4,
+            "modulo": null,
+            "duracion": 60,
+            "id": 3,
+            "titulo": "Capítulo III: Construcción y Adecuación de un Registro de Activos",
+            "tipo": "pdf",
+            "vigente": true,
+            "archivos": [],
+            "idVideo": 0
+          },
+          {
+            "titulo": "Capítulo IV: Planificación y   Programación de Mantenimiento",
+            "id": 4,
+            "HTMLcontent": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2Fpdf%3A1629762027654?alt=media&token=ced95e4d-7845-4972-a782-2635dcda0b4d",
+            "descripcion": "La manera cómo operan y cómo se mantiene los activos es fundamental para tener activos  altamente rentables. La Planificación y Programación de Mantenimiento junto con  una buena ejecución son los pilares fundamentales para optimizar una gestión. Entender la diferencia entre cada uno de ellos y su importancia es clave para alcanzar los objetivos planteados por la alta dirección de una planta o corporación como estrategia para contribuir a alcanzar la máxima rentabilidad",
+            "archivos": [],
+            "vigente": true,
+            "idVideo": 0,
+            "tipo": "pdf",
+            "numero": 5,
+            "modulo": null,
+            "duracion": 35
+          },
+          {
+            "numero": 6,
+            "descripcion": "Los documentos que se utilizan en mantenimiento son una de las herramientas imprescindibles para optimizar una gestión. Sin embargo, los que utilicemos deben aprovecharse al máximo para optimizar una gestión.",
+            "modulo": null,
+            "duracion": 60,
+            "vigente": true,
+            "tipo": "pdf",
+            "idVideo": 0,
+            "titulo": "Capítulo V:  Documentos importante que debemos manejar para optimizar una Gerencia de Mantenimiento                     ",
+            "archivos": [],
+            "HTMLcontent": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2Fpdf%3A1629762039515?alt=media&token=f24f3463-0b08-405b-b83f-6bbef647af4a",
+            "id": 5
+          },
+          {
+            "numero": 7,
+            "descripcion": ". En este capítulo vamos a revisar  y profundizar en todo este tema, siempre con una visión crítica. Veremos que cuando tenemos un conjunto de datos, hay verdades relativas y no siempre absolutas porque dependen de su óptica. En este capítulo estableceremos esquemas de análisis de todo este cúmulo de información que se genera en la operación y mantenimiento de los activos. No hay manera de saber cómo estamos y hacia dónde vamos si no medimos una gestión. ",
+            "tipo": "pdf",
+            "idVideo": 0,
+            "id": 6,
+            "titulo": "Capítulo VI: Tratamiento de Datos y Medición de la Gestión",
+            "vigente": true,
+            "HTMLcontent": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2Fpdf%3A1629762078053?alt=media&token=19c304ed-e22a-4398-b8ba-fd65976395fc",
+            "modulo": null,
+            "duracion": 25,
+            "archivos": []
+          },
+          {
+            "numero": 8,
+            "id": 7,
+            "descripcion": "En nuestra gestión este es uno de los indicadores mas importantes, sin embargo al utilizarlo hay que considerar algunos aspectos de suma importancia, debido a que posiblemente al analizarlo no estemos sacando una conclusión correcta sobre su resultado",
+            "tipo": "pdf",
+            "modulo": null,
+            "archivos": [],
+            "idVideo": 0,
+            "titulo": "Capítulo VII: Indicador Total de Efectividad (Overall Effectiveness Equipment, (OEE))",
+            "duracion": 25,
+            "HTMLcontent": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2Fpdf%3A1629762090701?alt=media&token=3ca418c5-bd66-411d-9f8a-6196b5b2ad0d",
+            "vigente": true
+          },
+          {
+            "duracion": 30,
+            "modulo": null,
+            "archivos": [
+              {
+                "size": 6585131,
+                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2FLibro-Introduccion%20al%20Manual%20del%20Confiabilista%20con%20portada%2005-03-21.pdf?alt=media&token=da28b310-b88b-4cf6-84a5-470b622d6fff",
+                "type": "application/pdf",
+                "nombre": "Libro-Introduccion al Manual del Confiabilista con portada 05-03-21.pdf"
+              }
+            ],
+            "numero": 9,
+            "vigente": true,
+            "HTMLcontent": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2Fpdf%3A1629762139714?alt=media&token=fa51fda3-55c5-4ed4-b5e4-1163d5d4499e",
+            "titulo": "Capítulo VIII: Indicador Global de Prestigio \"The Global Indicator of Prestige\"",
+            "descripcion": "Con el Indicador de Efectividad Total de Equipos es imposible medir la efectividad de un servicio. Para ello tenemos este nuevo indicador que viene a llenar el vacío en cuanto a medir la calidad de servicio de un proceso",
+            "idVideo": 0,
+            "tipo": "pdf",
+            "id": 8
+          }
+        ],
+        "modulos": [
+          {
+            "numero": 1,
+            "titulo": "Introducción"
+          },
+          {
+            "titulo": "Capítulo 1",
+            "numero": 2
+          },
+          {
+            "titulo": "Capítulo 2",
+            "numero": 3
+          },
+          {
+            "titulo": "Capítulo 3",
+            "numero": 4
+          },
+          {
+            "numero": 5,
+            "titulo": "Capítulo 4"
+          },
+          {
+            "titulo": "Capítulo 5",
+            "numero": 6
+          },
+          {
+            "numero": 7,
+            "titulo": "Capítulo 6"
+          },
+          {
+            "titulo": "Capítulo 7",
+            "numero": 8
+          },
+          {
+            "numero": 9,
+            "titulo": "Capítulo 8"
+          }
+        ],
+        "modulosFlag": true,
+        "duracion": 417
+      },
+      "examen": [
+        {
+          "imagen": "",
+          "pregunta": "Si Ud. Tiene un valor de un indicador de Disponibilidad y no ha determinado las razones del porqué de esos tiempos  fuera de servicio. ¿Ese valor para usted es confiable y le servirá para una toma de decisiones acertadas?",
+          "correctas": [
+            1
+          ],
+          "opciones": [
+            {
+              "texto": "Verdadero",
+              "numero": 0
+            },
+            {
+              "texto": "Falso",
+              "numero": 1
+            }
+          ]
+        },
+        {
+          "opciones": [
+            {
+              "numero": 0,
+              "texto": "Verdadero"
+            },
+            {
+              "numero": 1,
+              "texto": "Falso"
+            }
+          ],
+          "pregunta": "¿Es el Costo Psicológico es medible en una planta?",
+          "imagen": "",
+          "correctas": [
+            1
+          ]
+        },
+        {
+          "correctas": [
+            1
+          ],
+          "imagen": "",
+          "opciones": [
+            {
+              "numero": 0,
+              "texto": "Verdadero"
+            },
+            {
+              "texto": "Falso",
+              "numero": 1
+            }
+          ],
+          "pregunta": "Con tan solo el Código Funcional, ¿Ud.  en una planta Oil&Gas puede hacer seguimiento a los activos?"
+        },
+        {
+          "imagen": "",
+          "pregunta": "En una planta, el perfil mas importante para contribuir a alcanzar la máxima rentabilidad en un proceso es:",
+          "correctas": [
+            3
+          ],
+          "opciones": [
+            {
+              "texto": "Planificador",
+              "numero": 0
+            },
+            {
+              "numero": 1,
+              "texto": "Programador"
+            },
+            {
+              "texto": "Ejecutor",
+              "numero": 2
+            },
+            {
+              "texto": "Todas los anteriores",
+              "numero": 3
+            }
+          ]
+        },
+        {
+          "correctas": [
+            0
+          ],
+          "pregunta": "¿Una verdad absoluta es que si usted no opera y mantiene los equipos correctamente, disminuiría su vida útil?",
+          "imagen": "",
+          "opciones": [
+            {
+              "numero": 0,
+              "texto": "Verdadero"
+            },
+            {
+              "texto": "Falso",
+              "numero": 1
+            }
+          ]
+        },
+        {
+          "imagen": "",
+          "pregunta": "Si Ud. Requiere implantar una estrategia de monitoreo de condiciones. Por dónde comenzaría.",
+          "correctas": [
+            3
+          ],
+          "opciones": [
+            {
+              "numero": 0,
+              "texto": "Todos los equipos"
+            },
+            {
+              "numero": 1,
+              "texto": "Equipos estáticos"
+            },
+            {
+              "numero": 2,
+              "texto": "Equipos rotativos"
+            },
+            {
+              "numero": 3,
+              "texto": "Equipos críticos"
+            }
+          ]
+        },
+        {
+          "correctas": [
+            1
+          ],
+          "imagen": "",
+          "pregunta": "Si Ud. Tiene disponibilidad financiera para la construcción de una planta. Realizaría un proyecto:",
+          "opciones": [
+            {
+              "texto": "Llave en mano",
+              "numero": 0
+            },
+            {
+              "texto": "Producto en mano",
+              "numero": 1
+            }
+          ]
+        },
+        {
+          "pregunta": "Si en una planta se tiene bien definidadas las actividades de planificación y programación, dar respuesta a las interrogantes de \"Cuándo y Con quién\" hacer un trabajo es responsabilidad de:",
+          "opciones": [
+            {
+              "texto": "Planificación",
+              "numero": 0
+            },
+            {
+              "texto": "Programación",
+              "numero": 1
+            }
+          ],
+          "imagen": "",
+          "correctas": [
+            1
+          ]
+        },
+        {
+          "imagen": "",
+          "correctas": [
+            1
+          ],
+          "opciones": [
+            {
+              "numero": 0,
+              "texto": "Verdadero"
+            },
+            {
+              "texto": "Falso",
+              "numero": 1
+            }
+          ],
+          "pregunta": "¿La Gestion de Activos es única para todas las plantas, Lo que aplica para una planta siempre aplicará para otra?"
+        },
+        {
+          "opciones": [
+            {
+              "texto": "Con indicador  OEE",
+              "numero": 0
+            },
+            {
+              "numero": 1,
+              "texto": "Con el indicador GIP     "
+            }
+          ],
+          "pregunta": "Cómo puede Ud. medir la Calidad de Servicio ",
+          "correctas": [
+            1
+          ],
+          "imagen": ""
+        },
+        {
+          "correctas": [
+            1
+          ],
+          "imagen": "",
+          "opciones": [
+            {
+              "numero": 0,
+              "texto": "Verdadero"
+            },
+            {
+              "texto": "Falso",
+              "numero": 1
+            }
+          ],
+          "pregunta": "En una planta sino están definidos los perfiles, ¿Es la tarea de planificar siempre responsabilidad de un planificador?"
+        },
+        {
+          "imagen": "",
+          "opciones": [
+            {
+              "texto": "Verdadero",
+              "numero": 0
+            },
+            {
+              "texto": "Falso",
+              "numero": 1
+            }
+          ],
+          "correctas": [
+            0
+          ],
+          "pregunta": "Para definir una criticidad de un activo, ¿es importante saber sus funciones?"
+        },
+        {
+          "opciones": [
+            {
+              "texto": "Procedimiento y Dispositivos tagout/lockout",
+              "numero": 0
+            },
+            {
+              "texto": "Equipo de protección personal",
+              "numero": 1
+            },
+            {
+              "texto": "Procedimientos de desinstalación e instalación, desarme y arme",
+              "numero": 2
+            },
+            {
+              "numero": 3,
+              "texto": "Herramientas idóneas para realizar el trabajo"
+            },
+            {
+              "texto": "Todas las anteriores",
+              "numero": 4
+            }
+          ],
+          "imagen": "",
+          "correctas": [
+            4
+          ],
+          "pregunta": "Para minimizar los riesgos de accidentes en una gestión de mantenimiento. Debe cerciorarse de prestar atención a:"
+        },
+        {
+          "opciones": [
+            {
+              "numero": 0,
+              "texto": "Modularidad"
+            },
+            {
+              "texto": "Testabilidad",
+              "numero": 1
+            },
+            {
+              "numero": 2,
+              "texto": "Accesibilidad"
+            },
+            {
+              "texto": "Todas las anteriores",
+              "numero": 3
+            }
+          ],
+          "pregunta": "La Permeabilidad de Mantenimiento, tiene que ver con los siguientes aspectos",
+          "correctas": [
+            3
+          ],
+          "imagen": ""
+        },
+        {
+          "opciones": [
+            {
+              "numero": 0,
+              "texto": "Disponibilidad Global 77.31%"
+            },
+            {
+              "numero": 1,
+              "texto": "Disponibilidad Global 79,80%"
+            }
+          ],
+          "imagen": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Examen%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2FPregunta-15%20Predyc.jpg?alt=media&token=03b5d4b0-09a0-46a9-8fa5-1ff8744da576",
+          "pregunta": "De lo siguientes datos que a continuación se indican ( 79,80%,  85,67%, 93,20%, 94,85%,  95,27%,  93,90%  86,61%,  77,31%,  94,12%   ). Haga coincidir los cálculos de la siguientes disponibilidades: global, disponibilidad por correctivo, disponibilidad operativa de la corrida que a continuación se muestra",
+          "correctas": [
+            0
+          ]
+        },
+        {
+          "pregunta": "De lo siguientes datos que a continuación se indican ( 79,80%,  85,67%, 93,20%, 94,85%,  95,27%,  93,90%  86,61%,  77,31%,  94,12%   ). Haga coincidir los cálculos de la siguientes disponibilidades: global, disponibilidad por correctivo, disponibilidad operativa de la corrida que a continuación se muestra",
+          "correctas": [
+            0
+          ],
+          "imagen": "",
+          "opciones": [
+            {
+              "texto": "Disponibilidad por correctivo 94.85%",
+              "numero": 0
+            },
+            {
+              "numero": 1,
+              "texto": "Disponibilidad por correctivo 95,27%"
+            }
+          ]
+        },
+        {
+          "correctas": [
+            1
+          ],
+          "pregunta": "De lo siguientes datos que a continuación se indican ( 79,80%,  85,67%, 93,20%, 94,85%,  95,27%,  93,90%  86,61%,  77,31%,  94,12%   ). Haga coincidir los cálculos de la siguientes disponibilidades: global, disponibilidad por correctivo, disponibilidad operativa de la corrida que a continuación se muestra",
+          "opciones": [
+            {
+              "texto": "Disponibilidad operativa 93,90%",
+              "numero": 0
+            },
+            {
+              "texto": "Disponibilidad operativa 94.12%",
+              "numero": 1
+            }
+          ],
+          "imagen": ""
+        }
+      ],
+      "actividades": [
+        {
+          "title": "Cuestionario final: Construcción de Estrategias para Optimizar una Gerencia de Mantenimiento",
+          "createdAt": 1675378201335,
+          "questions": [
+            {
+              "image": "",
+              "type": {
+                "value": "multiple_choice",
+                "displayName": "Opción Múltiple",
+                "createInstructions": "",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas",
+                "solveInstructions": "Seleccione una o mas opciones como correctas del listado de opciones"
+              },
+              "points": 1,
+              "text": "Si Ud. Tiene un valor de un indicador de Disponibilidad y no ha determinado las razones del porqué de esos tiempos  fuera de servicio. ¿Ese valor para usted es confiable y le servirá para una toma de decisiones acertadas?",
+              "options": [
+                {
+                  "isCorrect": false,
+                  "text": "Verdadero"
+                },
+                {
+                  "text": "Falso",
+                  "isCorrect": true
+                }
+              ]
+            },
+            {
+              "type": {
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas",
+                "createInstructions": "",
+                "displayName": "Opción Múltiple",
+                "solveInstructions": "Seleccione una o mas opciones como correctas del listado de opciones",
+                "value": "multiple_choice"
+              },
+              "options": [
+                {
+                  "text": "Verdadero",
+                  "isCorrect": false
+                },
+                {
+                  "text": "Falso",
+                  "isCorrect": true
+                }
+              ],
+              "image": "",
+              "text": "¿Es el Costo Psicológico es medible en una planta?",
+              "points": 1
+            },
+            {
+              "type": {
+                "value": "multiple_choice",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas",
+                "displayName": "Opción Múltiple",
+                "createInstructions": "",
+                "solveInstructions": "Seleccione una o mas opciones como correctas del listado de opciones"
+              },
+              "image": "",
+              "options": [
+                {
+                  "isCorrect": false,
+                  "text": "Verdadero"
+                },
+                {
+                  "text": "Falso",
+                  "isCorrect": true
+                }
+              ],
+              "points": 1,
+              "text": "Con tan solo el Código Funcional, ¿Ud.  en una planta Oil&Gas puede hacer seguimiento a los activos?"
+            },
+            {
+              "points": 1,
+              "type": {
+                "value": "multiple_choice",
+                "createInstructions": "",
+                "solveInstructions": "Seleccione una o mas opciones como correctas del listado de opciones",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas",
+                "displayName": "Opción Múltiple"
+              },
+              "image": "",
+              "text": "En una planta, el perfil mas importante para contribuir a alcanzar la máxima rentabilidad en un proceso es:",
+              "options": [
+                {
+                  "text": "Planificador",
+                  "isCorrect": false
+                },
+                {
+                  "isCorrect": false,
+                  "text": "Programador"
+                },
+                {
+                  "isCorrect": false,
+                  "text": "Ejecutor"
+                },
+                {
+                  "isCorrect": true,
+                  "text": "Todas los anteriores"
+                }
+              ]
+            },
+            {
+              "text": "¿Una verdad absoluta es que si usted no opera y mantiene los equipos correctamente, disminuiría su vida útil?",
+              "points": 1,
+              "type": {
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas",
+                "displayName": "Opción Múltiple",
+                "solveInstructions": "Seleccione una o mas opciones como correctas del listado de opciones",
+                "createInstructions": "",
+                "value": "multiple_choice"
+              },
+              "image": "",
+              "options": [
+                {
+                  "text": "Verdadero",
+                  "isCorrect": true
+                },
+                {
+                  "isCorrect": false,
+                  "text": "Falso"
+                }
+              ]
+            },
+            {
+              "type": {
+                "value": "multiple_choice",
+                "displayName": "Opción Múltiple",
+                "createInstructions": "",
+                "solveInstructions": "Seleccione una o mas opciones como correctas del listado de opciones",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas"
+              },
+              "text": "Si Ud. Requiere implantar una estrategia de monitoreo de condiciones. Por dónde comenzaría.",
+              "points": 1,
+              "options": [
+                {
+                  "text": "Todos los equipos",
+                  "isCorrect": false
+                },
+                {
+                  "isCorrect": false,
+                  "text": "Equipos estáticos"
+                },
+                {
+                  "text": "Equipos rotativos",
+                  "isCorrect": false
+                },
+                {
+                  "isCorrect": true,
+                  "text": "Equipos críticos"
+                }
+              ],
+              "image": ""
+            },
+            {
+              "options": [
+                {
+                  "isCorrect": false,
+                  "text": "Llave en mano"
+                },
+                {
+                  "text": "Producto en mano",
+                  "isCorrect": true
+                }
+              ],
+              "type": {
+                "createInstructions": "",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas",
+                "value": "multiple_choice",
+                "solveInstructions": "Seleccione una o mas opciones como correctas del listado de opciones",
+                "displayName": "Opción Múltiple"
+              },
+              "text": "Si Ud. Tiene disponibilidad financiera para la construcción de una planta. Realizaría un proyecto:",
+              "points": 1,
+              "image": ""
+            },
+            {
+              "image": "",
+              "points": 1,
+              "text": "Si en una planta se tiene bien definidadas las actividades de planificación y programación, dar respuesta a las interrogantes de \"Cuándo y Con quién\" hacer un trabajo es responsabilidad de:",
+              "type": {
+                "createInstructions": "",
+                "value": "multiple_choice",
+                "solveInstructions": "Seleccione una o mas opciones como correctas del listado de opciones",
+                "displayName": "Opción Múltiple",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas"
+              },
+              "options": [
+                {
+                  "isCorrect": false,
+                  "text": "Planificación"
+                },
+                {
+                  "isCorrect": true,
+                  "text": "Programación"
+                }
+              ]
+            },
+            {
+              "type": {
+                "value": "multiple_choice",
+                "createInstructions": "",
+                "solveInstructions": "Seleccione una o mas opciones como correctas del listado de opciones",
+                "displayName": "Opción Múltiple",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas"
+              },
+              "text": "¿La Gestion de Activos es única para todas las plantas, Lo que aplica para una planta siempre aplicará para otra?",
+              "options": [
+                {
+                  "text": "Verdadero",
+                  "isCorrect": false
+                },
+                {
+                  "isCorrect": true,
+                  "text": "Falso"
+                }
+              ],
+              "points": 1,
+              "image": ""
+            },
+            {
+              "text": "Cómo puede Ud. medir la Calidad de Servicio ",
+              "type": {
+                "value": "multiple_choice",
+                "createInstructions": "",
+                "solveInstructions": "Seleccione una o mas opciones como correctas del listado de opciones",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas",
+                "displayName": "Opción Múltiple"
+              },
+              "image": "",
+              "options": [
+                {
+                  "text": "Con indicador  OEE",
+                  "isCorrect": false
+                },
+                {
+                  "isCorrect": true,
+                  "text": "Con el indicador GIP     "
+                }
+              ],
+              "points": 1
+            },
+            {
+              "image": "",
+              "options": [
+                {
+                  "text": "Verdadero",
+                  "isCorrect": false
+                },
+                {
+                  "text": "Falso",
+                  "isCorrect": true
+                }
+              ],
+              "points": 1,
+              "type": {
+                "solveInstructions": "Seleccione una o mas opciones como correctas del listado de opciones",
+                "value": "multiple_choice",
+                "displayName": "Opción Múltiple",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas",
+                "createInstructions": ""
+              },
+              "text": "En una planta sino están definidos los perfiles, ¿Es la tarea de planificar siempre responsabilidad de un planificador?"
+            },
+            {
+              "options": [
+                {
+                  "text": "Verdadero",
+                  "isCorrect": true
+                },
+                {
+                  "isCorrect": false,
+                  "text": "Falso"
+                }
+              ],
+              "points": 1,
+              "text": "Para definir una criticidad de un activo, ¿es importante saber sus funciones?",
+              "image": "",
+              "type": {
+                "solveInstructions": "Seleccione una o mas opciones como correctas del listado de opciones",
+                "value": "multiple_choice",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas",
+                "displayName": "Opción Múltiple",
+                "createInstructions": ""
+              }
+            },
+            {
+              "points": 1,
+              "options": [
+                {
+                  "isCorrect": false,
+                  "text": "Procedimiento y Dispositivos tagout/lockout"
+                },
+                {
+                  "isCorrect": false,
+                  "text": "Equipo de protección personal"
+                },
+                {
+                  "isCorrect": false,
+                  "text": "Procedimientos de desinstalación e instalación, desarme y arme"
+                },
+                {
+                  "text": "Herramientas idóneas para realizar el trabajo",
+                  "isCorrect": false
+                },
+                {
+                  "isCorrect": true,
+                  "text": "Todas las anteriores"
+                }
+              ],
+              "text": "Para minimizar los riesgos de accidentes en una gestión de mantenimiento. Debe cerciorarse de prestar atención a:",
+              "image": "",
+              "type": {
+                "value": "multiple_choice",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas",
+                "solveInstructions": "Seleccione una o mas opciones como correctas del listado de opciones",
+                "createInstructions": "",
+                "displayName": "Opción Múltiple"
+              }
+            },
+            {
+              "image": "",
+              "options": [
+                {
+                  "text": "Modularidad",
+                  "isCorrect": false
+                },
+                {
+                  "isCorrect": false,
+                  "text": "Testabilidad"
+                },
+                {
+                  "text": "Accesibilidad",
+                  "isCorrect": false
+                },
+                {
+                  "text": "Todas las anteriores",
+                  "isCorrect": true
+                }
+              ],
+              "type": {
+                "createInstructions": "",
+                "solveInstructions": "Seleccione una o mas opciones como correctas del listado de opciones",
+                "displayName": "Opción Múltiple",
+                "value": "multiple_choice",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas"
+              },
+              "text": "La Permeabilidad de Mantenimiento, tiene que ver con los siguientes aspectos",
+              "points": 1
+            },
+            {
+              "options": [
+                {
+                  "text": "Disponibilidad Global 77.31%",
+                  "isCorrect": true
+                },
+                {
+                  "text": "Disponibilidad Global 79,80%",
+                  "isCorrect": false
+                }
+              ],
+              "type": {
+                "value": "multiple_choice",
+                "solveInstructions": "Seleccione una o mas opciones como correctas del listado de opciones",
+                "displayName": "Opción Múltiple",
+                "createInstructions": "",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas"
+              },
+              "text": "De lo siguientes datos que a continuación se indican ( 79,80%,  85,67%, 93,20%, 94,85%,  95,27%,  93,90%  86,61%,  77,31%,  94,12%   ). Haga coincidir los cálculos de la siguientes disponibilidades: global, disponibilidad por correctivo, disponibilidad operativa de la corrida que a continuación se muestra",
+              "points": 1,
+              "image": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Examen%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2FPregunta-15%20Predyc.jpg?alt=media&token=03b5d4b0-09a0-46a9-8fa5-1ff8744da576"
+            },
+            {
+              "text": "De lo siguientes datos que a continuación se indican ( 79,80%,  85,67%, 93,20%, 94,85%,  95,27%,  93,90%  86,61%,  77,31%,  94,12%   ). Haga coincidir los cálculos de la siguientes disponibilidades: global, disponibilidad por correctivo, disponibilidad operativa de la corrida que a continuación se muestra",
+              "type": {
+                "solveInstructions": "Seleccione una o mas opciones como correctas del listado de opciones",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas",
+                "createInstructions": "",
+                "value": "multiple_choice",
+                "displayName": "Opción Múltiple"
+              },
+              "options": [
+                {
+                  "text": "Disponibilidad por correctivo 94.85%",
+                  "isCorrect": true
+                },
+                {
+                  "text": "Disponibilidad por correctivo 95,27%",
+                  "isCorrect": false
+                }
+              ],
+              "image": "",
+              "points": 1
+            },
+            {
+              "points": 1,
+              "text": "De lo siguientes datos que a continuación se indican ( 79,80%,  85,67%, 93,20%, 94,85%,  95,27%,  93,90%  86,61%,  77,31%,  94,12%   ). Haga coincidir los cálculos de la siguientes disponibilidades: global, disponibilidad por correctivo, disponibilidad operativa de la corrida que a continuación se muestra",
+              "options": [
+                {
+                  "text": "Disponibilidad operativa 93,90%",
+                  "isCorrect": false
+                },
+                {
+                  "isCorrect": true,
+                  "text": "Disponibilidad operativa 94.12%"
+                }
+              ],
+              "image": "",
+              "type": {
+                "createInstructions": "",
+                "solveInstructions": "Seleccione una o mas opciones como correctas del listado de opciones",
+                "value": "multiple_choice",
+                "displayName": "Opción Múltiple",
+                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas"
+              }
+            }
+          ],
+          "isTest": true,
+          "id": "Examen-1"
+        }
+      ]
+    },
     {
       "nuevo": false,
       "fechaCreacion": {
@@ -18897,1222 +20113,6 @@ export const coursesData = [
             }
           ],
           "isTest": true
-        }
-      ]
-    },
-    {
-      "empresaId": "LOINPROC-",
-      "nuevo": false,
-      "resumen": "Construcción de Estrategias para Optimizar una Gerencia de Mantenimiento",
-      "instructorNombre": "Brau Clemenza",
-      "cantVentas": 0,
-      "sqrPicture": "",
-      "titulo": "Construcción de Estrategias para Optimizar una Gerencia de Mantenimiento",
-      "instructorFoto": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Instructores%2FBrau-Clemenza%2FFotografia-Predyc%20Brau%20Clemenza.png?alt=media&token=c77df449-21a5-440a-ae23-9998bc84f40e",
-      "empresaNombre": "LOINPROC ",
-      "categoria": "Mantenimiento",
-      "instructorId": "Brau-Clemenza",
-      "prioridad": 5,
-      "empresaFoto": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Empresas%2FLOINPROC-%2FLogo-predyc%20empresa%20LOINPROC.png?alt=media&token=f9d2c783-6eb7-4c7d-96de-f05ad784777f",
-      "instructorPorcentaje": 80,
-      "foto": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Cursos%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2FCurso-Predyc-Construcci%C3%B3n%20de%20Estrategias%20para%20Optimizar%20una%20Gerencia%20de%20Mantenimiento.webp?alt=media&token=fdc54e7b-61ed-4b57-aa62-7c37d3ffc7cd",
-      "publicado": true,
-      "valoracion": 4.875,
-      "rectPicture": "",
-      "proximamente": false,
-      "cantInscritos": 46,
-      "descripcion": "Este curso contempla una metodología paso a paso para contribuir a construir una filosofía de mantenimento que le permita optimizar una Gerencia de Mantenimiento, independientemente del proceso productivo y de su antigüedad. Las estrategias que aplicamos para construir una filosofía de mantenimiento para una planta nueva, no  son iguales para otra que aun no ha iniciado operaciones. No tomar las acciones adecuadas al principio, con seguridad conllevará a  situaciones indeseables que indudablemente requerirá de mucho esfuerzo  para minimizarlas durante su operación normal. En el mantenimiento hay muchas verdades relativas y pocas absolutas, y muchas de las relativas se ha tratado de convertirlas en absolutas; en consecuencia, las estrategia que funcionan por ejemplo  para Oil&Gas posiblemente no funcionen para una planta de alimentos o para material rodante. Estos son procesos diferentes como lo veremos a lo largo de todo este contenido.",
-      "miniPicture": "",
-      "porcentajeDescuento": 0,
-      "precioFinal": 120,
-      "fechaCreacion": {
-        "seconds": 1654564689,
-        "nanoseconds": 773000000
-      },
-      "duracion": 417,
-      "nivel": "Intermedio",
-      "programaId": "",
-      "precioOriginal": 120,
-      "id": "Construcción-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento",
-      "clases": {
-        "clases": [
-          {
-            "idVideo": "589029912",
-            "duracion": 4,
-            "modulo": 1,
-            "id": 0,
-            "titulo": "Introducción al Curso",
-            "tipo": "video",
-            "archivos": [],
-            "vigente": true,
-            "HTMLcontent": "",
-            "numero": 1,
-            "descripcion": ""
-          },
-          {
-            "HTMLcontent": "",
-            "tipo": "video",
-            "modulo": 2,
-            "archivos": [],
-            "titulo": "Capítulo I: Líneas generales que permitan ir construyendo estrategias para optimizar una Gerencia de Mantenimiento ",
-            "descripcion": "",
-            "numero": 2,
-            "idVideo": "726723315",
-            "vigente": true,
-            "duracion": 36,
-            "id": 9
-          },
-          {
-            "modulo": 2,
-            "idVideo": 0,
-            "vigente": true,
-            "descripcion": "",
-            "numero": 3,
-            "archivos": [
-              {
-                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2Fguia-jur%C3%ADdica%20CNUDMI.pdf?alt=media&token=435dad09-31d8-46ec-8364-2616944a82c2",
-                "type": "application/pdf",
-                "size": 9622257,
-                "nombre": "guia-jurídica CNUDMI.pdf"
-              },
-              {
-                "size": 595905,
-                "nombre": "Capitulo-1.pdf",
-                "type": "application/pdf",
-                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2FCapitulo-1.pdf?alt=media&token=6b9aeceb-d408-4ffe-b644-2545d802905a"
-              }
-            ],
-            "HTMLcontent": "<h4><font face=\"Arial\">Sesi&#243;n de lectura.</font></h4><h6><font face=\"Arial\">&#161;Asegurate de descargar los archivos adjuntos!</font></h6><p><font face=\"Arial\">Encu&#233;ntralos en la secci&#243;n de material descargable</font></p>",
-            "titulo": "Capítulo I: Líneas generales que permitan ir construyendo estrategias para optimizar una Gerencia de Mantenimiento ",
-            "duracion": 10,
-            "tipo": "lectura",
-            "id": 1
-          },
-          {
-            "duracion": 48,
-            "id": 10,
-            "titulo": "Capítulo II: Construcción de una Filosofía de Mantenimiento como estrategia para optimizar una de Gerencia de Mantenimiento",
-            "HTMLcontent": "",
-            "archivos": [],
-            "tipo": "video",
-            "idVideo": "726719925",
-            "modulo": 3,
-            "vigente": true,
-            "descripcion": "",
-            "numero": 4
-          },
-          {
-            "titulo": "Capítulo II: Construcción de una Filosofía de Mantenimiento como estrategia para optimizar una de Gerencia de Mantenimiento",
-            "archivos": [
-              {
-                "type": "application/pdf",
-                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2Fcapitulo-II.pdf?alt=media&token=d67eacfb-677b-4e75-b9ea-62af812e8a06",
-                "nombre": "capitulo-II.pdf",
-                "size": 913429
-              }
-            ],
-            "descripcion": "El factor humano es el principal recurso para un desarrollo e implantación de cualquier estrategia. La manera de cómo se vienen realizando las actividades  y cómo se realizarán al momento de girar el timón para un cambio de dirección, es una de las mayores incertidumbres en una organización. Por natura pareciera ser que las personas son reacias a la asignación de nuevas tareas, de allí la importancia de determinar qué factores  afectan la confiabilidad humana ",
-            "idVideo": 0,
-            "modulo": 3,
-            "duracion": 10,
-            "tipo": "lectura",
-            "vigente": true,
-            "HTMLcontent": "<h4><font face=\"Arial\">Sesi&#243;n de lectura.</font></h4><h6><font face=\"Arial\">&#161;Asegurate de descargar los archivos adjuntos!</font></h6><p><font face=\"Arial\">Encu&#233;ntralos en la secci&#243;n de material descargable</font></p>",
-            "id": 2,
-            "numero": 5
-          },
-          {
-            "HTMLcontent": "<h4><font face=\"Arial\">Sesi&#243;n de lectura.</font></h4><h6><font face=\"Arial\">&#161;Asegurate de descargar los archivos adjuntos!</font></h6><p><font face=\"Arial\">Encu&#233;ntralos en la secci&#243;n de material descargable</font></p>",
-            "modulo": 4,
-            "id": 11,
-            "titulo": "Capítulo III: Construcción y Adecuación de un Registro de Activos",
-            "archivos": [],
-            "idVideo": "726720561",
-            "duracion": 82,
-            "numero": 6,
-            "descripcion": "",
-            "vigente": true,
-            "tipo": "video"
-          },
-          {
-            "descripcion": "”No se puede mantener lo que no se conoce y si se conoce hay que saber cómo hacerlo”. Ésta es una de las dos principales máxima que serán nuestra guía en este curso; por lo tanto, si no tenemos identificados los activos, cómo están diseminados por toda una planta o un proceso productivo, sería una tarea muy difícil su control y seguimiento, debido a que es necesario entender cómo fallan y cómo impactan al momento de presentarse un acontecimiento indeseable en su desempeño en el sitio donde estén",
-            "modulo": 4,
-            "idVideo": 0,
-            "numero": 7,
-            "id": 3,
-            "duracion": 10,
-            "archivos": [
-              {
-                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2Fcapitulo-III.pdf?alt=media&token=1fde9979-54ae-4860-9e82-317fdff6e4b9",
-                "size": 1019456,
-                "type": "application/pdf",
-                "nombre": "capitulo-III.pdf"
-              }
-            ],
-            "HTMLcontent": "<h4><font face=\"Arial\">Sesi&#243;n de lectura.</font></h4><h6><font face=\"Arial\">&#161;Asegurate de descargar los archivos adjuntos!</font></h6><p><font face=\"Arial\">Encu&#233;ntralos en la secci&#243;n de material descargable</font></p>",
-            "titulo": "Capítulo III: Construcción y Adecuación de un Registro de Activos",
-            "vigente": true,
-            "tipo": "lectura"
-          },
-          {
-            "id": 12,
-            "descripcion": "",
-            "numero": 8,
-            "vigente": true,
-            "titulo": "Capítulo IV: Planificación y   Programación de Mantenimiento",
-            "tipo": "video",
-            "modulo": 5,
-            "duracion": 69,
-            "archivos": [],
-            "idVideo": "726721217",
-            "HTMLcontent": ""
-          },
-          {
-            "duracion": 10,
-            "tipo": "lectura",
-            "vigente": true,
-            "HTMLcontent": "<h4><font face=\"Arial\">Sesi&#243;n de lectura.</font></h4><h6><font face=\"Arial\">&#161;Asegurate de descargar los archivos adjuntos!</font></h6><p><font face=\"Arial\">Encu&#233;ntralos en la secci&#243;n de material descargable</font></p>",
-            "idVideo": 0,
-            "titulo": "Capítulo IV: Planificación y   Programación de Mantenimiento",
-            "modulo": 5,
-            "descripcion": "La manera cómo operan y cómo se mantiene los activos es fundamental para tener activos  altamente rentables. La Planificación y Programación de Mantenimiento junto con  una buena ejecución son los pilares fundamentales para optimizar una gestión. Entender la diferencia entre cada uno de ellos y su importancia es clave para alcanzar los objetivos planteados por la alta dirección de una planta o corporación como estrategia para contribuir a alcanzar la máxima rentabilidad",
-            "numero": 9,
-            "id": 4,
-            "archivos": [
-              {
-                "size": 750082,
-                "type": "application/pdf",
-                "nombre": "capitulo-IV.pdf",
-                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2Fcapitulo-IV.pdf?alt=media&token=040d5d77-35f3-4fe2-901d-cfbf0bf0e752"
-              }
-            ]
-          },
-          {
-            "numero": 10,
-            "modulo": 6,
-            "archivos": [],
-            "HTMLcontent": "",
-            "tipo": "video",
-            "titulo": "Capítulo V:  Documentos importante que debemos manejar para optimizar una Gerencia de Mantenimiento                     ",
-            "idVideo": "726721692",
-            "vigente": true,
-            "descripcion": "",
-            "id": 13,
-            "duracion": 79
-          },
-          {
-            "tipo": "lectura",
-            "archivos": [
-              {
-                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2Fcapitulo-V.pdf?alt=media&token=875caa23-5da0-499e-9535-2223b87d03b4",
-                "size": 1350032,
-                "nombre": "capitulo-V.pdf",
-                "type": "application/pdf"
-              }
-            ],
-            "idVideo": 0,
-            "numero": 11,
-            "descripcion": "Los documentos que se utilizan en mantenimiento son una de las herramientas imprescindibles para optimizar una gestión. Sin embargo, los que utilicemos deben aprovecharse al máximo para optimizar una gestión.",
-            "id": 5,
-            "titulo": "Capítulo V:  Documentos importante que debemos manejar para optimizar una Gerencia de Mantenimiento                     ",
-            "HTMLcontent": "<h4><font face=\"Arial\">Sesi&#243;n de lectura.</font></h4><h6><font face=\"Arial\">&#161;Asegurate de descargar los archivos adjuntos!</font></h6><p><font face=\"Arial\">Encu&#233;ntralos en la secci&#243;n de material descargable</font></p>",
-            "vigente": true,
-            "modulo": 6,
-            "duracion": 10
-          },
-          {
-            "duracion": 19,
-            "modulo": 7,
-            "id": 14,
-            "vigente": true,
-            "HTMLcontent": "",
-            "idVideo": "726726817",
-            "descripcion": "",
-            "archivos": [],
-            "titulo": "Capítulo VI: Tratamiento de Datos y Medición de la Gestión",
-            "numero": 12,
-            "tipo": "video"
-          },
-          {
-            "HTMLcontent": "<h4><font face=\"Arial\">Sesi&#243;n de lectura.</font></h4><h6><font face=\"Arial\">&#161;Asegurate de descargar los archivos adjuntos!</font></h6><p><font face=\"Arial\">Encu&#233;ntralos en la secci&#243;n de material descargable</font></p>",
-            "id": 6,
-            "titulo": "Capítulo VI: Tratamiento de Datos y Medición de la Gestión",
-            "archivos": [
-              {
-                "type": "application/pdf",
-                "size": 712028,
-                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2Fcapitulo-VI.pdf?alt=media&token=ea6f4d3a-8337-45e3-bf7d-e8338ea49dfd",
-                "nombre": "capitulo-VI.pdf"
-              }
-            ],
-            "vigente": true,
-            "modulo": 7,
-            "idVideo": 0,
-            "descripcion": ". En este capítulo vamos a revisar  y profundizar en todo este tema, siempre con una visión crítica. Veremos que cuando tenemos un conjunto de datos, hay verdades relativas y no siempre absolutas porque dependen de su óptica. En este capítulo estableceremos esquemas de análisis de todo este cúmulo de información que se genera en la operación y mantenimiento de los activos. No hay manera de saber cómo estamos y hacia dónde vamos si no medimos una gestión. ",
-            "numero": 13,
-            "tipo": "lectura",
-            "duracion": 10
-          },
-          {
-            "modulo": 8,
-            "tipo": "lectura",
-            "descripcion": "En nuestra gestión este es uno de los indicadores mas importantes, sin embargo al utilizarlo hay que considerar algunos aspectos de suma importancia, debido a que posiblemente al analizarlo no estemos sacando una conclusión correcta sobre su resultado",
-            "idVideo": 0,
-            "HTMLcontent": "<h4><font face=\"Arial\">Sesi&#243;n de lectura.</font></h4><h6><font face=\"Arial\">&#161;Asegurate de descargar los archivos adjuntos!</font></h6><p><font face=\"Arial\">Encu&#233;ntralos en la secci&#243;n de material descargable</font></p>",
-            "titulo": "Capítulo VII: Indicador Total de Efectividad (Overall Effectiveness Equipment, (OEE))",
-            "duracion": 10,
-            "vigente": true,
-            "id": 7,
-            "archivos": [
-              {
-                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2Fcapitulo-VII.pdf?alt=media&token=561479d3-a1e3-49b6-b07c-452d70c25c0c",
-                "nombre": "capitulo-VII.pdf",
-                "size": 427336,
-                "type": "application/pdf"
-              }
-            ],
-            "numero": 14
-          },
-          {
-            "titulo": "Capítulo VIII: Indicador Global de Prestigio \"The Global Indicator of Prestige\"",
-            "vigente": true,
-            "numero": 15,
-            "tipo": "lectura",
-            "duracion": 10,
-            "archivos": [
-              {
-                "nombre": "capitulo-VIII.pdf",
-                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2Fcapitulo-VIII.pdf?alt=media&token=5f0b804a-6e95-42ca-9f58-27ebf0bee241",
-                "type": "application/pdf",
-                "size": 552943
-              }
-            ],
-            "modulo": 9,
-            "HTMLcontent": "<h4><font face=\"Arial\">Sesi&#243;n de lectura.</font></h4><h6><font face=\"Arial\">&#161;Asegurate de descargar los archivos adjuntos!</font></h6><p><font face=\"Arial\">Encu&#233;ntralos en la secci&#243;n de material descargable</font></p>",
-            "idVideo": 0,
-            "descripcion": "Con el Indicador de Efectividad Total de Equipos es imposible medir la efectividad de un servicio. Para ello tenemos este nuevo indicador que viene a llenar el vacío en cuanto a medir la calidad de servicio de un proceso",
-            "id": 8
-          }
-        ],
-        "newClases": [
-          {
-            "titulo": "Introducción al Curso",
-            "vigente": true,
-            "descripcion": "",
-            "numero": 1,
-            "duracion": 4,
-            "HTMLcontent": "",
-            "id": 0,
-            "modulo": null,
-            "archivos": [],
-            "idVideo": "589029912",
-            "tipo": "video"
-          },
-          {
-            "duracion": 30,
-            "idVideo": 0,
-            "modulo": null,
-            "tipo": "pdf",
-            "descripcion": "Tomar decisiones acertadas y oportunas al momento de pensar en invertir para la construcción de una planta o reemplazo de algún activo importante, es fundamental para evitar durante la operación interrupciones indeseables o impactos negativos en el proceso productivo. ",
-            "HTMLcontent": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2Fpdf%3A1638285848137?alt=media&token=b2e43252-b10f-4507-9f97-7655d55576ab",
-            "id": 1,
-            "titulo": "Capítulo I: Líneas generales que permitan ir construyendo estrategias para optimizar una Gerencia de Mantenimiento ",
-            "vigente": true,
-            "numero": 2,
-            "archivos": [
-              {
-                "size": 9622257,
-                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2Fguia-jur%C3%ADdica%20CNUDMI.pdf?alt=media&token=435dad09-31d8-46ec-8364-2616944a82c2",
-                "nombre": "guia-jurídica CNUDMI.pdf",
-                "type": "application/pdf"
-              }
-            ]
-          },
-          {
-            "tipo": "pdf",
-            "HTMLcontent": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2Fpdf%3A1629926436039?alt=media&token=eff967b0-a9b1-4b2c-b955-737e68416b36",
-            "archivos": [],
-            "modulo": null,
-            "vigente": true,
-            "numero": 3,
-            "idVideo": 0,
-            "duracion": 30,
-            "titulo": "Capítulo II: Construcción de una Filosofía de Mantenimiento como estrategia para optimizar una de Gerencia de Mantenimiento",
-            "id": 2,
-            "descripcion": "El factor humano es el principal recurso para un desarrollo e implantación de cualquier estrategia. La manera de cómo se vienen realizando las actividades  y cómo se realizarán al momento de girar el timón para un cambio de dirección, es una de las mayores incertidumbres en una organización. Por natura pareciera ser que las personas son reacias a la asignación de nuevas tareas, de allí la importancia de determinar qué factores  afectan la confiabilidad humana "
-          },
-          {
-            "descripcion": "”No se puede mantener lo que no se conoce y si se conoce hay que saber cómo hacerlo”. Ésta es una de las dos principales máxima que serán nuestra guía en este curso; por lo tanto, si no tenemos identificados los activos, cómo están diseminados por toda una planta o un proceso productivo, sería una tarea muy difícil su control y seguimiento, debido a que es necesario entender cómo fallan y cómo impactan al momento de presentarse un acontecimiento indeseable en su desempeño en el sitio donde estén",
-            "HTMLcontent": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2Fpdf%3A1629762013382?alt=media&token=149f5e9e-cf56-4b6b-8d72-0ea1187e8990",
-            "numero": 4,
-            "modulo": null,
-            "duracion": 60,
-            "id": 3,
-            "titulo": "Capítulo III: Construcción y Adecuación de un Registro de Activos",
-            "tipo": "pdf",
-            "vigente": true,
-            "archivos": [],
-            "idVideo": 0
-          },
-          {
-            "titulo": "Capítulo IV: Planificación y   Programación de Mantenimiento",
-            "id": 4,
-            "HTMLcontent": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2Fpdf%3A1629762027654?alt=media&token=ced95e4d-7845-4972-a782-2635dcda0b4d",
-            "descripcion": "La manera cómo operan y cómo se mantiene los activos es fundamental para tener activos  altamente rentables. La Planificación y Programación de Mantenimiento junto con  una buena ejecución son los pilares fundamentales para optimizar una gestión. Entender la diferencia entre cada uno de ellos y su importancia es clave para alcanzar los objetivos planteados por la alta dirección de una planta o corporación como estrategia para contribuir a alcanzar la máxima rentabilidad",
-            "archivos": [],
-            "vigente": true,
-            "idVideo": 0,
-            "tipo": "pdf",
-            "numero": 5,
-            "modulo": null,
-            "duracion": 35
-          },
-          {
-            "numero": 6,
-            "descripcion": "Los documentos que se utilizan en mantenimiento son una de las herramientas imprescindibles para optimizar una gestión. Sin embargo, los que utilicemos deben aprovecharse al máximo para optimizar una gestión.",
-            "modulo": null,
-            "duracion": 60,
-            "vigente": true,
-            "tipo": "pdf",
-            "idVideo": 0,
-            "titulo": "Capítulo V:  Documentos importante que debemos manejar para optimizar una Gerencia de Mantenimiento                     ",
-            "archivos": [],
-            "HTMLcontent": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2Fpdf%3A1629762039515?alt=media&token=f24f3463-0b08-405b-b83f-6bbef647af4a",
-            "id": 5
-          },
-          {
-            "numero": 7,
-            "descripcion": ". En este capítulo vamos a revisar  y profundizar en todo este tema, siempre con una visión crítica. Veremos que cuando tenemos un conjunto de datos, hay verdades relativas y no siempre absolutas porque dependen de su óptica. En este capítulo estableceremos esquemas de análisis de todo este cúmulo de información que se genera en la operación y mantenimiento de los activos. No hay manera de saber cómo estamos y hacia dónde vamos si no medimos una gestión. ",
-            "tipo": "pdf",
-            "idVideo": 0,
-            "id": 6,
-            "titulo": "Capítulo VI: Tratamiento de Datos y Medición de la Gestión",
-            "vigente": true,
-            "HTMLcontent": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2Fpdf%3A1629762078053?alt=media&token=19c304ed-e22a-4398-b8ba-fd65976395fc",
-            "modulo": null,
-            "duracion": 25,
-            "archivos": []
-          },
-          {
-            "numero": 8,
-            "id": 7,
-            "descripcion": "En nuestra gestión este es uno de los indicadores mas importantes, sin embargo al utilizarlo hay que considerar algunos aspectos de suma importancia, debido a que posiblemente al analizarlo no estemos sacando una conclusión correcta sobre su resultado",
-            "tipo": "pdf",
-            "modulo": null,
-            "archivos": [],
-            "idVideo": 0,
-            "titulo": "Capítulo VII: Indicador Total de Efectividad (Overall Effectiveness Equipment, (OEE))",
-            "duracion": 25,
-            "HTMLcontent": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2Fpdf%3A1629762090701?alt=media&token=3ca418c5-bd66-411d-9f8a-6196b5b2ad0d",
-            "vigente": true
-          },
-          {
-            "duracion": 30,
-            "modulo": null,
-            "archivos": [
-              {
-                "size": 6585131,
-                "url": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2FLibro-Introduccion%20al%20Manual%20del%20Confiabilista%20con%20portada%2005-03-21.pdf?alt=media&token=da28b310-b88b-4cf6-84a5-470b622d6fff",
-                "type": "application/pdf",
-                "nombre": "Libro-Introduccion al Manual del Confiabilista con portada 05-03-21.pdf"
-              }
-            ],
-            "numero": 9,
-            "vigente": true,
-            "HTMLcontent": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Sesiones%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2Fpdf%3A1629762139714?alt=media&token=fa51fda3-55c5-4ed4-b5e4-1163d5d4499e",
-            "titulo": "Capítulo VIII: Indicador Global de Prestigio \"The Global Indicator of Prestige\"",
-            "descripcion": "Con el Indicador de Efectividad Total de Equipos es imposible medir la efectividad de un servicio. Para ello tenemos este nuevo indicador que viene a llenar el vacío en cuanto a medir la calidad de servicio de un proceso",
-            "idVideo": 0,
-            "tipo": "pdf",
-            "id": 8
-          }
-        ],
-        "modulos": [
-          {
-            "numero": 1,
-            "titulo": "Introducción"
-          },
-          {
-            "titulo": "Capítulo 1",
-            "numero": 2
-          },
-          {
-            "titulo": "Capítulo 2",
-            "numero": 3
-          },
-          {
-            "titulo": "Capítulo 3",
-            "numero": 4
-          },
-          {
-            "numero": 5,
-            "titulo": "Capítulo 4"
-          },
-          {
-            "titulo": "Capítulo 5",
-            "numero": 6
-          },
-          {
-            "numero": 7,
-            "titulo": "Capítulo 6"
-          },
-          {
-            "titulo": "Capítulo 7",
-            "numero": 8
-          },
-          {
-            "numero": 9,
-            "titulo": "Capítulo 8"
-          }
-        ],
-        "modulosFlag": true,
-        "duracion": 417
-      },
-      "examen": [
-        {
-          "imagen": "",
-          "pregunta": "Si Ud. Tiene un valor de un indicador de Disponibilidad y no ha determinado las razones del porqué de esos tiempos  fuera de servicio. ¿Ese valor para usted es confiable y le servirá para una toma de decisiones acertadas?",
-          "correctas": [
-            1
-          ],
-          "opciones": [
-            {
-              "texto": "Verdadero",
-              "numero": 0
-            },
-            {
-              "texto": "Falso",
-              "numero": 1
-            }
-          ]
-        },
-        {
-          "opciones": [
-            {
-              "numero": 0,
-              "texto": "Verdadero"
-            },
-            {
-              "numero": 1,
-              "texto": "Falso"
-            }
-          ],
-          "pregunta": "¿Es el Costo Psicológico es medible en una planta?",
-          "imagen": "",
-          "correctas": [
-            1
-          ]
-        },
-        {
-          "correctas": [
-            1
-          ],
-          "imagen": "",
-          "opciones": [
-            {
-              "numero": 0,
-              "texto": "Verdadero"
-            },
-            {
-              "texto": "Falso",
-              "numero": 1
-            }
-          ],
-          "pregunta": "Con tan solo el Código Funcional, ¿Ud.  en una planta Oil&Gas puede hacer seguimiento a los activos?"
-        },
-        {
-          "imagen": "",
-          "pregunta": "En una planta, el perfil mas importante para contribuir a alcanzar la máxima rentabilidad en un proceso es:",
-          "correctas": [
-            3
-          ],
-          "opciones": [
-            {
-              "texto": "Planificador",
-              "numero": 0
-            },
-            {
-              "numero": 1,
-              "texto": "Programador"
-            },
-            {
-              "texto": "Ejecutor",
-              "numero": 2
-            },
-            {
-              "texto": "Todas los anteriores",
-              "numero": 3
-            }
-          ]
-        },
-        {
-          "correctas": [
-            0
-          ],
-          "pregunta": "¿Una verdad absoluta es que si usted no opera y mantiene los equipos correctamente, disminuiría su vida útil?",
-          "imagen": "",
-          "opciones": [
-            {
-              "numero": 0,
-              "texto": "Verdadero"
-            },
-            {
-              "texto": "Falso",
-              "numero": 1
-            }
-          ]
-        },
-        {
-          "imagen": "",
-          "pregunta": "Si Ud. Requiere implantar una estrategia de monitoreo de condiciones. Por dónde comenzaría.",
-          "correctas": [
-            3
-          ],
-          "opciones": [
-            {
-              "numero": 0,
-              "texto": "Todos los equipos"
-            },
-            {
-              "numero": 1,
-              "texto": "Equipos estáticos"
-            },
-            {
-              "numero": 2,
-              "texto": "Equipos rotativos"
-            },
-            {
-              "numero": 3,
-              "texto": "Equipos críticos"
-            }
-          ]
-        },
-        {
-          "correctas": [
-            1
-          ],
-          "imagen": "",
-          "pregunta": "Si Ud. Tiene disponibilidad financiera para la construcción de una planta. Realizaría un proyecto:",
-          "opciones": [
-            {
-              "texto": "Llave en mano",
-              "numero": 0
-            },
-            {
-              "texto": "Producto en mano",
-              "numero": 1
-            }
-          ]
-        },
-        {
-          "pregunta": "Si en una planta se tiene bien definidadas las actividades de planificación y programación, dar respuesta a las interrogantes de \"Cuándo y Con quién\" hacer un trabajo es responsabilidad de:",
-          "opciones": [
-            {
-              "texto": "Planificación",
-              "numero": 0
-            },
-            {
-              "texto": "Programación",
-              "numero": 1
-            }
-          ],
-          "imagen": "",
-          "correctas": [
-            1
-          ]
-        },
-        {
-          "imagen": "",
-          "correctas": [
-            1
-          ],
-          "opciones": [
-            {
-              "numero": 0,
-              "texto": "Verdadero"
-            },
-            {
-              "texto": "Falso",
-              "numero": 1
-            }
-          ],
-          "pregunta": "¿La Gestion de Activos es única para todas las plantas, Lo que aplica para una planta siempre aplicará para otra?"
-        },
-        {
-          "opciones": [
-            {
-              "texto": "Con indicador  OEE",
-              "numero": 0
-            },
-            {
-              "numero": 1,
-              "texto": "Con el indicador GIP     "
-            }
-          ],
-          "pregunta": "Cómo puede Ud. medir la Calidad de Servicio ",
-          "correctas": [
-            1
-          ],
-          "imagen": ""
-        },
-        {
-          "correctas": [
-            1
-          ],
-          "imagen": "",
-          "opciones": [
-            {
-              "numero": 0,
-              "texto": "Verdadero"
-            },
-            {
-              "texto": "Falso",
-              "numero": 1
-            }
-          ],
-          "pregunta": "En una planta sino están definidos los perfiles, ¿Es la tarea de planificar siempre responsabilidad de un planificador?"
-        },
-        {
-          "imagen": "",
-          "opciones": [
-            {
-              "texto": "Verdadero",
-              "numero": 0
-            },
-            {
-              "texto": "Falso",
-              "numero": 1
-            }
-          ],
-          "correctas": [
-            0
-          ],
-          "pregunta": "Para definir una criticidad de un activo, ¿es importante saber sus funciones?"
-        },
-        {
-          "opciones": [
-            {
-              "texto": "Procedimiento y Dispositivos tagout/lockout",
-              "numero": 0
-            },
-            {
-              "texto": "Equipo de protección personal",
-              "numero": 1
-            },
-            {
-              "texto": "Procedimientos de desinstalación e instalación, desarme y arme",
-              "numero": 2
-            },
-            {
-              "numero": 3,
-              "texto": "Herramientas idóneas para realizar el trabajo"
-            },
-            {
-              "texto": "Todas las anteriores",
-              "numero": 4
-            }
-          ],
-          "imagen": "",
-          "correctas": [
-            4
-          ],
-          "pregunta": "Para minimizar los riesgos de accidentes en una gestión de mantenimiento. Debe cerciorarse de prestar atención a:"
-        },
-        {
-          "opciones": [
-            {
-              "numero": 0,
-              "texto": "Modularidad"
-            },
-            {
-              "texto": "Testabilidad",
-              "numero": 1
-            },
-            {
-              "numero": 2,
-              "texto": "Accesibilidad"
-            },
-            {
-              "texto": "Todas las anteriores",
-              "numero": 3
-            }
-          ],
-          "pregunta": "La Permeabilidad de Mantenimiento, tiene que ver con los siguientes aspectos",
-          "correctas": [
-            3
-          ],
-          "imagen": ""
-        },
-        {
-          "opciones": [
-            {
-              "numero": 0,
-              "texto": "Disponibilidad Global 77.31%"
-            },
-            {
-              "numero": 1,
-              "texto": "Disponibilidad Global 79,80%"
-            }
-          ],
-          "imagen": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Examen%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2FPregunta-15%20Predyc.jpg?alt=media&token=03b5d4b0-09a0-46a9-8fa5-1ff8744da576",
-          "pregunta": "De lo siguientes datos que a continuación se indican ( 79,80%,  85,67%, 93,20%, 94,85%,  95,27%,  93,90%  86,61%,  77,31%,  94,12%   ). Haga coincidir los cálculos de la siguientes disponibilidades: global, disponibilidad por correctivo, disponibilidad operativa de la corrida que a continuación se muestra",
-          "correctas": [
-            0
-          ]
-        },
-        {
-          "pregunta": "De lo siguientes datos que a continuación se indican ( 79,80%,  85,67%, 93,20%, 94,85%,  95,27%,  93,90%  86,61%,  77,31%,  94,12%   ). Haga coincidir los cálculos de la siguientes disponibilidades: global, disponibilidad por correctivo, disponibilidad operativa de la corrida que a continuación se muestra",
-          "correctas": [
-            0
-          ],
-          "imagen": "",
-          "opciones": [
-            {
-              "texto": "Disponibilidad por correctivo 94.85%",
-              "numero": 0
-            },
-            {
-              "numero": 1,
-              "texto": "Disponibilidad por correctivo 95,27%"
-            }
-          ]
-        },
-        {
-          "correctas": [
-            1
-          ],
-          "pregunta": "De lo siguientes datos que a continuación se indican ( 79,80%,  85,67%, 93,20%, 94,85%,  95,27%,  93,90%  86,61%,  77,31%,  94,12%   ). Haga coincidir los cálculos de la siguientes disponibilidades: global, disponibilidad por correctivo, disponibilidad operativa de la corrida que a continuación se muestra",
-          "opciones": [
-            {
-              "texto": "Disponibilidad operativa 93,90%",
-              "numero": 0
-            },
-            {
-              "texto": "Disponibilidad operativa 94.12%",
-              "numero": 1
-            }
-          ],
-          "imagen": ""
-        }
-      ],
-      "actividades": [
-        {
-          "title": "Cuestionario final: Construcción de Estrategias para Optimizar una Gerencia de Mantenimiento",
-          "createdAt": 1675378201335,
-          "questions": [
-            {
-              "image": "",
-              "type": {
-                "value": "multiple_choice",
-                "displayName": "Opción Múltiple",
-                "createInstructions": "",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas",
-                "solveInstructions": "Seleccione una o mas opciones como correctas del listado de opciones"
-              },
-              "points": 1,
-              "text": "Si Ud. Tiene un valor de un indicador de Disponibilidad y no ha determinado las razones del porqué de esos tiempos  fuera de servicio. ¿Ese valor para usted es confiable y le servirá para una toma de decisiones acertadas?",
-              "options": [
-                {
-                  "isCorrect": false,
-                  "text": "Verdadero"
-                },
-                {
-                  "text": "Falso",
-                  "isCorrect": true
-                }
-              ]
-            },
-            {
-              "type": {
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas",
-                "createInstructions": "",
-                "displayName": "Opción Múltiple",
-                "solveInstructions": "Seleccione una o mas opciones como correctas del listado de opciones",
-                "value": "multiple_choice"
-              },
-              "options": [
-                {
-                  "text": "Verdadero",
-                  "isCorrect": false
-                },
-                {
-                  "text": "Falso",
-                  "isCorrect": true
-                }
-              ],
-              "image": "",
-              "text": "¿Es el Costo Psicológico es medible en una planta?",
-              "points": 1
-            },
-            {
-              "type": {
-                "value": "multiple_choice",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas",
-                "displayName": "Opción Múltiple",
-                "createInstructions": "",
-                "solveInstructions": "Seleccione una o mas opciones como correctas del listado de opciones"
-              },
-              "image": "",
-              "options": [
-                {
-                  "isCorrect": false,
-                  "text": "Verdadero"
-                },
-                {
-                  "text": "Falso",
-                  "isCorrect": true
-                }
-              ],
-              "points": 1,
-              "text": "Con tan solo el Código Funcional, ¿Ud.  en una planta Oil&Gas puede hacer seguimiento a los activos?"
-            },
-            {
-              "points": 1,
-              "type": {
-                "value": "multiple_choice",
-                "createInstructions": "",
-                "solveInstructions": "Seleccione una o mas opciones como correctas del listado de opciones",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas",
-                "displayName": "Opción Múltiple"
-              },
-              "image": "",
-              "text": "En una planta, el perfil mas importante para contribuir a alcanzar la máxima rentabilidad en un proceso es:",
-              "options": [
-                {
-                  "text": "Planificador",
-                  "isCorrect": false
-                },
-                {
-                  "isCorrect": false,
-                  "text": "Programador"
-                },
-                {
-                  "isCorrect": false,
-                  "text": "Ejecutor"
-                },
-                {
-                  "isCorrect": true,
-                  "text": "Todas los anteriores"
-                }
-              ]
-            },
-            {
-              "text": "¿Una verdad absoluta es que si usted no opera y mantiene los equipos correctamente, disminuiría su vida útil?",
-              "points": 1,
-              "type": {
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas",
-                "displayName": "Opción Múltiple",
-                "solveInstructions": "Seleccione una o mas opciones como correctas del listado de opciones",
-                "createInstructions": "",
-                "value": "multiple_choice"
-              },
-              "image": "",
-              "options": [
-                {
-                  "text": "Verdadero",
-                  "isCorrect": true
-                },
-                {
-                  "isCorrect": false,
-                  "text": "Falso"
-                }
-              ]
-            },
-            {
-              "type": {
-                "value": "multiple_choice",
-                "displayName": "Opción Múltiple",
-                "createInstructions": "",
-                "solveInstructions": "Seleccione una o mas opciones como correctas del listado de opciones",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas"
-              },
-              "text": "Si Ud. Requiere implantar una estrategia de monitoreo de condiciones. Por dónde comenzaría.",
-              "points": 1,
-              "options": [
-                {
-                  "text": "Todos los equipos",
-                  "isCorrect": false
-                },
-                {
-                  "isCorrect": false,
-                  "text": "Equipos estáticos"
-                },
-                {
-                  "text": "Equipos rotativos",
-                  "isCorrect": false
-                },
-                {
-                  "isCorrect": true,
-                  "text": "Equipos críticos"
-                }
-              ],
-              "image": ""
-            },
-            {
-              "options": [
-                {
-                  "isCorrect": false,
-                  "text": "Llave en mano"
-                },
-                {
-                  "text": "Producto en mano",
-                  "isCorrect": true
-                }
-              ],
-              "type": {
-                "createInstructions": "",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas",
-                "value": "multiple_choice",
-                "solveInstructions": "Seleccione una o mas opciones como correctas del listado de opciones",
-                "displayName": "Opción Múltiple"
-              },
-              "text": "Si Ud. Tiene disponibilidad financiera para la construcción de una planta. Realizaría un proyecto:",
-              "points": 1,
-              "image": ""
-            },
-            {
-              "image": "",
-              "points": 1,
-              "text": "Si en una planta se tiene bien definidadas las actividades de planificación y programación, dar respuesta a las interrogantes de \"Cuándo y Con quién\" hacer un trabajo es responsabilidad de:",
-              "type": {
-                "createInstructions": "",
-                "value": "multiple_choice",
-                "solveInstructions": "Seleccione una o mas opciones como correctas del listado de opciones",
-                "displayName": "Opción Múltiple",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas"
-              },
-              "options": [
-                {
-                  "isCorrect": false,
-                  "text": "Planificación"
-                },
-                {
-                  "isCorrect": true,
-                  "text": "Programación"
-                }
-              ]
-            },
-            {
-              "type": {
-                "value": "multiple_choice",
-                "createInstructions": "",
-                "solveInstructions": "Seleccione una o mas opciones como correctas del listado de opciones",
-                "displayName": "Opción Múltiple",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas"
-              },
-              "text": "¿La Gestion de Activos es única para todas las plantas, Lo que aplica para una planta siempre aplicará para otra?",
-              "options": [
-                {
-                  "text": "Verdadero",
-                  "isCorrect": false
-                },
-                {
-                  "isCorrect": true,
-                  "text": "Falso"
-                }
-              ],
-              "points": 1,
-              "image": ""
-            },
-            {
-              "text": "Cómo puede Ud. medir la Calidad de Servicio ",
-              "type": {
-                "value": "multiple_choice",
-                "createInstructions": "",
-                "solveInstructions": "Seleccione una o mas opciones como correctas del listado de opciones",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas",
-                "displayName": "Opción Múltiple"
-              },
-              "image": "",
-              "options": [
-                {
-                  "text": "Con indicador  OEE",
-                  "isCorrect": false
-                },
-                {
-                  "isCorrect": true,
-                  "text": "Con el indicador GIP     "
-                }
-              ],
-              "points": 1
-            },
-            {
-              "image": "",
-              "options": [
-                {
-                  "text": "Verdadero",
-                  "isCorrect": false
-                },
-                {
-                  "text": "Falso",
-                  "isCorrect": true
-                }
-              ],
-              "points": 1,
-              "type": {
-                "solveInstructions": "Seleccione una o mas opciones como correctas del listado de opciones",
-                "value": "multiple_choice",
-                "displayName": "Opción Múltiple",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas",
-                "createInstructions": ""
-              },
-              "text": "En una planta sino están definidos los perfiles, ¿Es la tarea de planificar siempre responsabilidad de un planificador?"
-            },
-            {
-              "options": [
-                {
-                  "text": "Verdadero",
-                  "isCorrect": true
-                },
-                {
-                  "isCorrect": false,
-                  "text": "Falso"
-                }
-              ],
-              "points": 1,
-              "text": "Para definir una criticidad de un activo, ¿es importante saber sus funciones?",
-              "image": "",
-              "type": {
-                "solveInstructions": "Seleccione una o mas opciones como correctas del listado de opciones",
-                "value": "multiple_choice",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas",
-                "displayName": "Opción Múltiple",
-                "createInstructions": ""
-              }
-            },
-            {
-              "points": 1,
-              "options": [
-                {
-                  "isCorrect": false,
-                  "text": "Procedimiento y Dispositivos tagout/lockout"
-                },
-                {
-                  "isCorrect": false,
-                  "text": "Equipo de protección personal"
-                },
-                {
-                  "isCorrect": false,
-                  "text": "Procedimientos de desinstalación e instalación, desarme y arme"
-                },
-                {
-                  "text": "Herramientas idóneas para realizar el trabajo",
-                  "isCorrect": false
-                },
-                {
-                  "isCorrect": true,
-                  "text": "Todas las anteriores"
-                }
-              ],
-              "text": "Para minimizar los riesgos de accidentes en una gestión de mantenimiento. Debe cerciorarse de prestar atención a:",
-              "image": "",
-              "type": {
-                "value": "multiple_choice",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas",
-                "solveInstructions": "Seleccione una o mas opciones como correctas del listado de opciones",
-                "createInstructions": "",
-                "displayName": "Opción Múltiple"
-              }
-            },
-            {
-              "image": "",
-              "options": [
-                {
-                  "text": "Modularidad",
-                  "isCorrect": false
-                },
-                {
-                  "isCorrect": false,
-                  "text": "Testabilidad"
-                },
-                {
-                  "text": "Accesibilidad",
-                  "isCorrect": false
-                },
-                {
-                  "text": "Todas las anteriores",
-                  "isCorrect": true
-                }
-              ],
-              "type": {
-                "createInstructions": "",
-                "solveInstructions": "Seleccione una o mas opciones como correctas del listado de opciones",
-                "displayName": "Opción Múltiple",
-                "value": "multiple_choice",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas"
-              },
-              "text": "La Permeabilidad de Mantenimiento, tiene que ver con los siguientes aspectos",
-              "points": 1
-            },
-            {
-              "options": [
-                {
-                  "text": "Disponibilidad Global 77.31%",
-                  "isCorrect": true
-                },
-                {
-                  "text": "Disponibilidad Global 79,80%",
-                  "isCorrect": false
-                }
-              ],
-              "type": {
-                "value": "multiple_choice",
-                "solveInstructions": "Seleccione una o mas opciones como correctas del listado de opciones",
-                "displayName": "Opción Múltiple",
-                "createInstructions": "",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas"
-              },
-              "text": "De lo siguientes datos que a continuación se indican ( 79,80%,  85,67%, 93,20%, 94,85%,  95,27%,  93,90%  86,61%,  77,31%,  94,12%   ). Haga coincidir los cálculos de la siguientes disponibilidades: global, disponibilidad por correctivo, disponibilidad operativa de la corrida que a continuación se muestra",
-              "points": 1,
-              "image": "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Examen%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2FPregunta-15%20Predyc.jpg?alt=media&token=03b5d4b0-09a0-46a9-8fa5-1ff8744da576"
-            },
-            {
-              "text": "De lo siguientes datos que a continuación se indican ( 79,80%,  85,67%, 93,20%, 94,85%,  95,27%,  93,90%  86,61%,  77,31%,  94,12%   ). Haga coincidir los cálculos de la siguientes disponibilidades: global, disponibilidad por correctivo, disponibilidad operativa de la corrida que a continuación se muestra",
-              "type": {
-                "solveInstructions": "Seleccione una o mas opciones como correctas del listado de opciones",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas",
-                "createInstructions": "",
-                "value": "multiple_choice",
-                "displayName": "Opción Múltiple"
-              },
-              "options": [
-                {
-                  "text": "Disponibilidad por correctivo 94.85%",
-                  "isCorrect": true
-                },
-                {
-                  "text": "Disponibilidad por correctivo 95,27%",
-                  "isCorrect": false
-                }
-              ],
-              "image": "",
-              "points": 1
-            },
-            {
-              "points": 1,
-              "text": "De lo siguientes datos que a continuación se indican ( 79,80%,  85,67%, 93,20%, 94,85%,  95,27%,  93,90%  86,61%,  77,31%,  94,12%   ). Haga coincidir los cálculos de la siguientes disponibilidades: global, disponibilidad por correctivo, disponibilidad operativa de la corrida que a continuación se muestra",
-              "options": [
-                {
-                  "text": "Disponibilidad operativa 93,90%",
-                  "isCorrect": false
-                },
-                {
-                  "isCorrect": true,
-                  "text": "Disponibilidad operativa 94.12%"
-                }
-              ],
-              "image": "",
-              "type": {
-                "createInstructions": "",
-                "solveInstructions": "Seleccione una o mas opciones como correctas del listado de opciones",
-                "value": "multiple_choice",
-                "displayName": "Opción Múltiple",
-                "tooltipInfo": "Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas"
-              }
-            }
-          ],
-          "isTest": true,
-          "id": "Examen-1"
         }
       ]
     },

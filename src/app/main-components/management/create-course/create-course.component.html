@@ -620,7 +620,8 @@
                     <div fxLayout="row" class="pdb10">
                         <label>Titulo</label>
                     </div>
-                    <div *ngIf="selectedClase.tipo == 'lectura'" (click)="base64view = selectedClase.archivos[0]['base64'];fileViewTipe = 'pdf'"  fxLayout="row" fxLayoutAlign="start center" class="pdb10 cursorPointer no-select">
+                    <!-- <div *ngIf="selectedClase.tipo == 'lectura'" (click)="base64view = selectedClase.archivos[0]['base64'];fileViewTipe = 'pdf'"  fxLayout="row" fxLayoutAlign="start center" class="pdb10 cursorPointer no-select"> -->
+                    <div *ngIf="selectedClase.tipo == 'lectura'" (click)="seletFilePDF(selectedClase.archivos[0]);fileViewTipe = 'pdf'"  fxLayout="row" fxLayoutAlign="start center" class="pdb10 cursorPointer no-select">
                         <div fxLayout="column">
                             <img [src]="icon[getIconFileFormat(selectedClase.archivos[0].type)]" class="h32px pdr05" alt="">
                         </div>
@@ -644,7 +645,7 @@
                     <div fxLayout="column" class="pd10 backGray2 radius6" style=" height: 40vh !important; overflow-y: auto;">
                         <ng-container *ngFor="let archivo of selectedClase.archivos; let i = index">
                             <div *ngIf="i > (selectedClase.tipo == 'lectura'? 0:-1)" 
-                                 (click)="base64view = archivo['base64'];fileViewTipe='pdf'" 
+                                 (click)="seletFilePDF(archivo);fileViewTipe='pdf'" 
                                  fxLayout="row" 
                                  fxLayoutAlign="start center" 
                                  class="pdb10 cursorPointer">
@@ -670,7 +671,8 @@
             </div>
             <div fxFlex="60%">
                 <div class="fh fw">
-                    <ngx-extended-pdf-viewer *ngIf="fileViewTipe == 'pdf'" [showToolbar]="false" [base64Src]="base64view" [useBrowserLocale]="true" height="60vh"></ngx-extended-pdf-viewer>
+                    <ngx-extended-pdf-viewer *ngIf="fileViewTipe == 'pdf' && base64view " [showToolbar]="false" [base64Src]="base64view" [useBrowserLocale]="true" height="60vh"></ngx-extended-pdf-viewer>
+                    <ngx-extended-pdf-viewer *ngIf="fileViewTipe == 'pdf' && srsView " [showToolbar]="false" [src]="srsView" [useBrowserLocale]="true" height="60vh"></ngx-extended-pdf-viewer>
                     <div class="video-container" *ngIf="fileViewTipe == 'video'">
                         <video #videoPlayer controls *ngIf="fileViewTipe == 'video'">
                             <source type="video/mp4" src="data:video/mp4;base64,{{base64view}}">

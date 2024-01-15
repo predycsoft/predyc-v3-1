@@ -88,7 +88,7 @@ export class CoursesComponent {
             let modulos = curso['modules']
             let duracionCourse = 0;
             modulos.forEach(modulo => {
-              console.log('modulo',modulo)
+              //console.log('modulo',modulo)
               modulo.expanded = false;
               let duracion = 0;
               modulo.clases.forEach(clase => {
