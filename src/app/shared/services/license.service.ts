@@ -40,10 +40,9 @@ export class LicenseService {
 
   async assignLicense(license: License, usersIds: string[]) {
     const licenseRef: DocumentReference<License> =  this.afs.collection<License>(License.collection).doc(license.id).ref
-    const licenseQtyUsed = await this.getLicenseQtyUsed(licenseRef)
-    console.log("licenseQtyUsed", licenseQtyUsed)
-    if(licenseQtyUsed + usersIds.length > license.quantity){
+    if(license.quantityUsed + usersIds.length > license.quantity){
       this.alertService.errorAlert("No tienes suficientes cupos en esta licencia para la cantidad de usuarios seleccionados")
+      return
     } 
     else{
       this.dialogService.dialogConfirmar().afterClosed().subscribe(async result => {
@@ -51,6 +50,13 @@ export class LicenseService {
           for (let userId of usersIds) {
             await this.subscriptionService.createUserSubscription(license, licenseRef, userId)
           }
+          // Update license quantityUsed field OR rotations. 
+          await this.afs.collection(License.collection).doc(license.id).set(
+            {
+              quantityUsed: license.quantityUsed + usersIds.length
+            },{ merge: true }
+          );
+          console.log("Cupo de licencia usada")
           this.dialogService.dialogExito()
         }
       })
@@ -66,10 +72,6 @@ export class LicenseService {
         this.dialogService.dialogExito()
       }
     })
-  }
-
-  async getLicenseQtyUsed(licenseRef: DocumentReference) {
-    return await this.subscriptionService.getLicenseSubscriptionsQty(licenseRef)
   }
 
 
