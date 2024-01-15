@@ -24,8 +24,9 @@ export class StudentListComponent {
 
   displayedColumns: string[] = [
     'displayName',
-    'rhythm',
+    'hours',
     'ratingPoints',
+    'rhythm',
   ];
 
   dataSource = new MatTableDataSource<User>(); // Replace 'any' with your data type;
@@ -86,11 +87,16 @@ export class StudentListComponent {
           if (profile) {
             profileName = profile.name
           }
+          // --------------------- Seting satus. Calculation pending. DELETE IT
+          const options = ['high', 'medium', 'low', 'no plan'];
+          const randomIndex = Math.floor(Math.random() * options.length);
+          // --------------------- 
           const user = {
             displayName: item.displayName,
+            hours: 0, // Calculation pending
             profile: profileName,
             ratingPoints: item.ratingPoints,
-            rhythm: 'Medio (hardcodeado)' // Calculation pending
+            rhythm: options[randomIndex] // Calculation pending
           }
           return user
         })
