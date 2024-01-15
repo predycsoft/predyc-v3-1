@@ -12,8 +12,7 @@
 </mat-tab-group> -->
 
 <!-- ************************************ -->
-<!-- <button (click)="test()" class="blueButton">test</button> -->
-<div *ngIf="licenses$ | async as licenses" class="mgt10 mgl30 mgr30">
+<div *ngIf="licenses; else loading" class="mgt10 mgl30 mgr30">
     <p class="ft600 ft20" style="color: black">Licencias</p>
     <div fxLayout="row" fxLayoutAlign=" center">
         <div fxLayout="row" fxLayoutAlign="space-between center" class="w-70 pdr20 border-rl">
@@ -42,10 +41,11 @@
                 </div>
             </mat-menu>
         </div>
-        <div class="w-30 pdl20">
-            <div class="item " fxLayout="row" fxLayoutAlign="space-between center">
-                <span class="ft13 title">Licencias adquiridas</span>
-                <span class="ft13 value">50</span>
+        <div *ngIf="selectedLicense" class="w-30 pdl20">
+            <div class="select-container" fxLayout="row" fxLayoutAlign="start center">
+                <select [(ngModel)]="selectedLicense" class="pdl20 select cursorPointer fw" name="" id="">
+                    <option [ngValue]="license" *ngFor="let license of licenses" >{{ license.currentPeriodEnd | date:'short' }} - Disponible: {{ license.quantity}}</option>
+                </select>
             </div>
         </div>
     </div>
@@ -55,21 +55,32 @@
         </div>
         <div class="w-30 pdl20" fxLayout="column" fxLayoutGap="10px">
             <div class="" fxLayout="column">
+                <div class="item " fxLayout="row" fxLayoutAlign="space-between center">
+                    <span class="ft13 title">Licencias adquiridas</span>
+                    <span class="ft13 value">{{selectedLicense.quantity}}</span>
+                </div>
                 <div class="item" fxLayout="row" fxLayoutAlign="space-between center">
                     <span class="ft13 title">Licencias disponibles</span>
-                    <span class="ft13 value">26</span>
+                    <span class="ft13 value">{{selectedLicense.quantity - selectedLicense.quantityUsed}}</span>
+                </div>
+                <div class="item" fxLayout="row" fxLayoutAlign="space-between center">
+                    <span class="ft13 title">Licencias usadas</span>
+                    <span class="ft13 value">{{selectedLicense.quantityUsed}}</span>
                 </div>
                 <div class="item" fxLayout="row" fxLayoutAlign="space-between center">
                     <span class="ft13 title">Rotaciones disponibles</span>
-                    <span class="ft13 value">24</span>
+                    <span class="ft13 value">{{selectedLicense.rotations}}</span>
                 </div>
                 <div class="item" fxLayout="row" fxLayoutAlign="space-between center">
                     <span class="ft13 title">Válidas hasta</span>
-                    <span class="ft13 value">14/01/2024</span>
+                    <span class="ft13 value">{{ selectedLicense?.currentPeriodEnd | date:'dd/MM/yyyy' }}</span>
                 </div>
             </div> 
             <button class="grayButton ft500 ft13 blue-4" style="border-radius: 24px !important;" (click)="showDialog(licenses)">Adquirir más licencias</button>           
         </div>
     </div>
 </div>    
+<ng-template #loading>
+    <!-- We can display loader here -->
+</ng-template>
   
