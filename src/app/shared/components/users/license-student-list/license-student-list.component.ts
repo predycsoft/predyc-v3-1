@@ -74,6 +74,7 @@ export class LicenseStudentListComponent {
             this.selection.clear(); 
             this.lastStatusFilter = statusFilter;
           }
+          console.log("SEARCH TERM", searchTerm)
           this.performSearch(searchTerm, page, statusFilter);
         })
       }
