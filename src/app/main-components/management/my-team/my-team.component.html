@@ -1,5 +1,5 @@
 <div class="mgt10 mgl30 mgr30">
-    <p class="ft600 ft20" style="color: black">
+    <p class="ft600 ft20 black">
         Usuarios y Perfiles
     </p>
     <div fxLayout="row" fxLayoutAlign=" center">
@@ -21,11 +21,11 @@
             </button>
         </div>
         <div class="w-25 pdl20">
-            <div fxLayout="row" fxLayoutAlign="space-between center">
-                <span>
+            <div fxLayout="row" fxLayoutAlign="space-between center" style="border-bottom: 2px solid #e3e3e3; padding-bottom: .5rem;">
+                <span class="ft13" style="font-weight: bold; color: black;">
                     Tus perfiles
                 </span>
-                <a [routerLink]="['/management/profiles']">
+                <a [routerLink]="['/management/profiles']" class="ft13 blue-4" style="font-weight: bold;">
                     Nuevo perfil
                 </a>
             </div>
@@ -38,7 +38,7 @@
                 >
             </app-student-list>
         </div>
-        <div class="w-25 pdl20" fxLayout="column" fxLayoutGap="10px">
+        <div class="w-25 pdl20 mgt10" fxLayout="column" fxLayoutGap="10px">
             <div
                 class="border radius10 pd05 ft500 ft11 profile-container"
                 *ngFor="let profile of profiles"
