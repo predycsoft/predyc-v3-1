@@ -370,7 +370,7 @@ export class CreateCourseComponent {
             delete activityClass['recursosBase64'] 
             console.log('activityClass',activityClass)
 
-            await this.activityClassesService.saveActivity(activityClass);
+            //await this.activityClassesService.saveActivity(activityClass);
             clase.activity.id = activityClass.id;
 
             questions.forEach(pregunta => {
