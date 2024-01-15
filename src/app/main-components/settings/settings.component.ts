@@ -1,7 +1,9 @@
 import { Component, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
+import { DialogRequestLicensesComponent } from 'src/app/shared/components/users/license-student-list/dialog-request-licenses/dialog-request-licenses.component';
 import { LicenseStudentListComponent } from 'src/app/shared/components/users/license-student-list/license-student-list.component';
 import { License } from 'src/app/shared/models/license.model';
 import { IconService } from 'src/app/shared/services/icon.service';
@@ -17,7 +19,9 @@ export class SettingsComponent {
   constructor(
     public icon: IconService,
     public licenseService: LicenseService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private dialog: MatDialog,
+
   ){}
 
   licenses$: Observable<License[]> = this.licenseService.geteEnterpriseLicenses$()
@@ -65,6 +69,14 @@ export class SettingsComponent {
     if (this.queryParamsSubscription) {
       this.queryParamsSubscription.unsubscribe();
     }
+  }
+
+  showDialog(licenses: License[]) {
+    this.dialog.open(DialogRequestLicensesComponent, {
+      data: {
+        licenses
+      }
+    })
   }
 
   // test() {
