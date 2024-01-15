@@ -63,18 +63,6 @@ export class SubscriptionService {
  
   }
 
-  async getLicenseSubscriptionsQty(licenseRef: DocumentReference): Promise<number> {
-    const query = this.afs.collection<Subscription>(Subscription.collection, ref => 
-      ref.where('licenseRef', '==', licenseRef))
-      .snapshotChanges()
-      .pipe(
-        map(actions => actions.map(a => a.payload.doc.data()))
-      );
-    const documents = await firstValueFrom(query);
-    return documents.length; // Devuelve el número de documentos.
-  }
-
-
   async removeUserSubscription(userId: string) {
     try {
 

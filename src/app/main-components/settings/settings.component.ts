@@ -25,14 +25,18 @@ export class SettingsComponent {
   ){}
 
   licenses$: Observable<License[]> = this.licenseService.geteEnterpriseLicenses$()
+  licenses: License[];
+  licensesSubscription: Subscription;
+
   @ViewChild('licenseMenu') licenseMenu: MatMenu;
   @ViewChild('trigger') menuTrigger: MatMenuTrigger;
 
   @ViewChild(LicenseStudentListComponent) licenseStudentList: LicenseStudentListComponent;
 
   selectedUsersIds: string[] = [];
+  selectedLicense: License;
 
-  currentStatus: string = 'active'; // Valor predeterminado
+  currentStatus: string = 'active';
   queryParamsSubscription: Subscription;
 
   hasLicenseChanged = 1 //flag to deselect checkboxes after license assign or removed
@@ -41,6 +45,17 @@ export class SettingsComponent {
     this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
       if (params['status']) {
         this.currentStatus = params['status'];
+      }
+    });
+
+    this.licensesSubscription = this.licenses$.subscribe(licenses => {
+      if (licenses && licenses.length > 0) {
+        this.licenses = licenses;
+        if (!this.selectedLicense) this.selectedLicense = licenses[0]
+        else {
+          // update selectedLicense values
+          this.selectedLicense = licenses.find(license => license.id === this.selectedLicense.id)
+        }
       }
     });
   }
@@ -62,12 +77,6 @@ export class SettingsComponent {
     this.hasLicenseChanged = -this.hasLicenseChanged
   }
 
-  ngOnDestroy() {
-    if (this.queryParamsSubscription) {
-      this.queryParamsSubscription.unsubscribe();
-    }
-  }
-
   showDialog(licenses: License[]) {
     this.dialog.open(DialogRequestLicensesComponent, {
       data: {
@@ -76,8 +85,10 @@ export class SettingsComponent {
     })
   }
 
-  // test() {
-  //   this.licenseStudentList.emitSelectedUsers(); // method in child component that pass selected users to handleSelectedUsers() method
-  //   console.log("this.selectedUsers", this.selectedUsersIds)
-  // }
+  ngOnDestroy() {
+    if (this.queryParamsSubscription) {
+      this.queryParamsSubscription.unsubscribe();
+      this.licensesSubscription.unsubscribe()
+    }
+  }
 }

@@ -19,6 +19,7 @@ export interface SubscriptionJson {
     priceRef: DocumentReference | null;
     status:
       | 'active'
+      | 'inactive'  // --
       | 'incomplete'
       | 'incomplete_expired'
       | 'trialing'
@@ -41,6 +42,9 @@ export class Subscription {
     public static collection: string = 'subscription'
 
     public static STATUS_ACTIVE: string = 'active';
+    public static STATUS_INACTIVE: string = 'inactive'; //--
+
+    
     public static STATUS_INCOMPLETE: string = 'incomplete';
     public static STATUS_INCOMPLETE_EXPIRED: string = 'incomplete_expired';
     public static STATUS_TRIALING: string = 'trialing';
@@ -82,6 +86,7 @@ export class Subscription {
     priceRef: DocumentReference | null;
     status:
       | 'active'
+      | 'inactive'  //--
       | 'incomplete'
       | 'incomplete_expired'
       | 'trialing'
