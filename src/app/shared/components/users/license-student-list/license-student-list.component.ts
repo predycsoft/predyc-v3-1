@@ -33,7 +33,7 @@ export class LicenseStudentListComponent {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @Input() enableNavigateToUser: boolean = true
-  @Output() selectedUsers = new EventEmitter<LicenseListUser[]>();
+  @Output() selectedUsers = new EventEmitter<string[]>();
   @Input() hasLicenseChanged: any;
 
 
@@ -44,9 +44,9 @@ export class LicenseStudentListComponent {
   totalLength: number
   profiles: Profile[] = []
 
-  initialSelection: LicenseListUser[] = [];
+  initialSelection: string[] = [];
   allowMultiSelect = true;
-  selection: SelectionModel<LicenseListUser> = new SelectionModel<LicenseListUser>(
+  selection: SelectionModel<string> = new SelectionModel<string>(
     this.allowMultiSelect, this.initialSelection
   );
 
@@ -74,6 +74,7 @@ export class LicenseStudentListComponent {
             this.selection.clear(); 
             this.lastStatusFilter = statusFilter;
           }
+          console.log("SEARCH TERM", searchTerm)
           this.performSearch(searchTerm, page, statusFilter);
         })
       }
@@ -143,7 +144,7 @@ export class LicenseStudentListComponent {
   toggleAllRows() {
     this.isAllSelected() ?
         this.selection.clear() :
-        this.dataSource.data.forEach(row => this.selection.select(row));
+        this.dataSource.data.forEach(row => this.selection.select(row.uid));
   }
 
   emitSelectedUsers() {
