@@ -80,7 +80,7 @@ export class CreateCourseComponent {
     'Clases',
     'Examen',
     'Vista previa examen',
-    'Resumen'
+    //'Resumen'
   ];
 
   mode = this.route.snapshot.paramMap.get("mode")
@@ -184,6 +184,7 @@ export class CreateCourseComponent {
 
     //this.updateCompetenciasClases(competencia)
     this.competenciasSelected = respuesta;
+    console.log('this.competenciasSelected',this.competenciasSelected)
   }
 
   initSkills(){
@@ -289,133 +290,134 @@ export class CreateCourseComponent {
   async saveDraft(){
     console.log('----- save borrador ------');
 
-  // if(this.curso){
-  //   console.log('datos curso',this.curso)
-  //   let enterpriseRef =this.enterpriseService.getEnterpriseRef()
-  //   this.curso.enterpriseRef = enterpriseRef;
-  //   this.courseService.saveCourse(this.curso)
-  // }
-  // if(this.competenciasSelected?.length>0){
-  //   console.log('datos competencias curso',this.competenciasSelected);
-  //   let skills = [];
-  //   for (const category of this.competenciasSelected) {
-  //     for (const skill of category.competencias) {
-  //       console.log(skill.id);
-  //       let skillRef = await this.afs.collection<Skill>(Skill.collection).doc(skill.id).ref;
-  //       skills.push(skillRef);
-  //     }
-  //   }
-  //   this.curso.skillsRef=skills;
-  //   await this.courseService.saveCourse(this.curso)
-  //   this.courseRef = await this.afs.collection<Curso>(Curso.collection).doc(this.curso.id).ref;
+  if(this.curso){
+    console.log('datos curso',this.curso)
+    let enterpriseRef =this.enterpriseService.getEnterpriseRef()
+    this.curso.enterpriseRef = enterpriseRef;
+    this.courseService.saveCourse(this.curso)
+  }
+  if(this.competenciasSelected?.length>0){
+    console.log('datos competencias curso',this.competenciasSelected);
+    let skills = [];
+    for (const category of this.competenciasSelected) {
+      for (const skill of category.competencias) {
+        console.log(skill.id);
+        let skillRef = await this.afs.collection<Skill>(Skill.collection).doc(skill.id).ref;
+        skills.push(skillRef);
+      }
+    }
+    this.curso.skillsRef=skills;
+    await this.courseService.saveCourse(this.curso)
+    this.courseRef = await this.afs.collection<Curso>(Curso.collection).doc(this.curso.id).ref;
 
-  // }
-  // if(this.modulos.length>0){
-  //   console.log('datos modulos',this.modulos);
-  //   let validModules = this.modulos.filter(moduleCheck => !moduleCheck['isInvalid'])
-  //   console.log('validModules save',validModules);
-  //   validModules.forEach(async modulo => {
-  //     //console.log('modulo clase borrador add/edit',modulo)
+  }
+  if(this.modulos.length>0){
+    console.log('datos modulos',this.modulos);
+    let validModules = this.modulos.filter(moduleCheck => !moduleCheck['isInvalid'])
+    console.log('validModules save',validModules);
+    validModules.forEach(async modulo => {
+      //console.log('modulo clase borrador add/edit',modulo)
 
-  //     let arrayClasesRef = [];
-  //     const clases = modulo['clases'];
-  //     for (let i = 0; i < clases.length; i++) {
-  //       try {
-  //         let clase = clases[i];
-  //         console.log('clase borrador add/edit',clase)
-  //         let claseLocal = new Clase;
-  //         claseLocal.HTMLcontent = clase.HTMLcontent;
-  //         claseLocal.archivos = clase.archivos.map(archivo => ({ // Usando map aquí para transformar la estructura del archivo.
-  //           id: archivo.id,
-  //           nombre: archivo.nombre,
-  //           size: archivo.size,
-  //           type: archivo.type,
-  //           url: archivo.url
-  //         }));
-  //         claseLocal.descripcion = clase.descripcion;
-  //         claseLocal.duracion = clase.duracion;
-  //         claseLocal.id = clase.id;
-  //         claseLocal.vimeoId1 = clase.vimeoId1;
-  //         claseLocal.vimeoId2 = clase.vimeoId2;
-  //         claseLocal.skillsRef = clase.skillsRef;
-  //         claseLocal.tipo = clase.tipo;
-  //         claseLocal.titulo = clase.titulo;
-  //         claseLocal.vigente = clase.vigente;
+      let arrayClasesRef = [];
+      const clases = modulo['clases'];
+      for (let i = 0; i < clases.length; i++) {
+        try {
+          let clase = clases[i];
+          console.log('clase borrador add/edit',clase)
+          let claseLocal = new Clase;
+          claseLocal.HTMLcontent = clase.HTMLcontent;
+          claseLocal.archivos = clase.archivos.map(archivo => ({ // Usando map aquí para transformar la estructura del archivo.
+            id: archivo.id,
+            nombre: archivo.nombre,
+            size: archivo.size,
+            type: archivo.type,
+            url: archivo.url
+          }));
+          claseLocal.descripcion = clase.descripcion;
+          claseLocal.duracion = clase.duracion;
+          claseLocal.id = clase.id;
+          claseLocal.vimeoId1 = clase.vimeoId1;
+          claseLocal.vimeoId2 = clase.vimeoId2;
+          claseLocal.skillsRef = clase.skillsRef;
+          claseLocal.tipo = clase.tipo;
+          claseLocal.titulo = clase.titulo;
+          claseLocal.vigente = clase.vigente;
           
-  //         const arrayRefSkills = (clase.competencias?.map(skillClase => this.curso.skillsRef.find(skill => skill.id == skillClase.id)).filter(Boolean) ) || [];
-  //         claseLocal.skillsRef = arrayRefSkills;
-  //         console.log('claseLocal', claseLocal);
-  //         await this.courseClassService.saveClass(claseLocal);
-  //         let refClass = await this.afs.collection<Clase>(Clase.collection).doc(claseLocal.id).ref;
-  //         let courseRef = await this.afs.collection<Curso>(Curso.collection).doc(this.curso.id).ref;
-  //         console.log('refClass', refClass);
-  //         arrayClasesRef.push(refClass);
+          const arrayRefSkills = (clase.competencias?.map(skillClase => this.curso.skillsRef.find(skill => skill.id == skillClase.id)).filter(Boolean) ) || [];
+          claseLocal.skillsRef = arrayRefSkills;
+          console.log('claseLocal', claseLocal);
+          await this.courseClassService.saveClass(claseLocal);
+          let refClass = await this.afs.collection<Clase>(Clase.collection).doc(claseLocal.id).ref;
+          let courseRef = await this.afs.collection<Curso>(Curso.collection).doc(this.curso.id).ref;
+          console.log('refClass', refClass);
+          arrayClasesRef.push(refClass);
 
-  //         console.log('clase.activity',clase.activity)
+          console.log('clase.activity',clase.activity)
 
-  //         if(clase.activity){
+          if(clase.activity){
 
-  //           let activityClass = new Activity
-  //           let questions: Question[]= []
-  //           questions = structuredClone(clase.activity.questions);
-  //           activityClass = structuredClone(clase.activity) as Activity;
-  //           activityClass.enterpriseRef = this.curso.enterpriseRef as DocumentReference<Enterprise>
-  //           activityClass.claseRef = refClass;
-  //           activityClass.coursesRef = [courseRef];
-  //           activityClass.type = Activity.TYPE_REGULAR;
+            let activityClass = new Activity
+            let questions: Question[]= []
+            questions = structuredClone(clase.activity.questions);
+            activityClass = structuredClone(clase.activity) as Activity;
+            activityClass.enterpriseRef = this.curso.enterpriseRef as DocumentReference<Enterprise>
+            activityClass.claseRef = refClass;
+            activityClass.coursesRef = [courseRef];
+            //activityClass.type = Activity.TYPE_REGULAR;
+            activityClass.type = Activity.TYPE_HEARTS;
 
-  //           delete activityClass.questions;
-  //           delete activityClass['recursosBase64'] 
-  //           console.log('activityClass',activityClass)
+            delete activityClass['questions'];
+            delete activityClass['recursosBase64'] 
+            console.log('activityClass',activityClass)
 
-  //           await this.activityClassesService.saveActivity(activityClass);
-  //           clase.activity.id = activityClass.id;
+            await this.activityClassesService.saveActivity(activityClass);
+            clase.activity.id = activityClass.id;
 
-  //           questions.forEach(pregunta => {
-  //             const arrayRefSkills = (pregunta['competencias']?.map(skillClase => this.curso.skillsRef.find(skill => skill.id == skillClase.id)).filter(Boolean) ) || [];
-  //             claseLocal.skillsRef = arrayRefSkills;
-  //             console.log('refSkills', arrayRefSkills)
-  //             pregunta.skills= arrayRefSkills;
-  //             delete pregunta['competencias_tmp'];
-  //             delete pregunta['competencias'];
-  //             delete pregunta['isInvalid'];
-  //             delete pregunta['InvalidMessages'];
-  //             delete pregunta['expanded_categorias'];
-  //             delete pregunta['expanded'];
-  //             delete pregunta['uploading_file_progress'];
-  //             delete pregunta['uploading'];
-  //             this.activityClassesService.saveQuestion(pregunta,activityClass.id)
-  //           });
-  //         }
-  //       } catch (error) {
-  //         console.error('Error processing clase', error);
-  //       }
-  //     }
+            questions.forEach(pregunta => {
+              //const arrayRefSkills = (pregunta['competencias']?.map(skillClase => this.curso.skillsRef.find(skill => skill.id == skillClase.id)).filter(Boolean) ) || [];
+              claseLocal.skillsRef = arrayRefSkills;
+              console.log('refSkills', arrayRefSkills)
+              //pregunta.skills= arrayRefSkills;
+              delete pregunta['competencias_tmp'];
+              delete pregunta['competencias'];
+              delete pregunta['isInvalid'];
+              delete pregunta['InvalidMessages'];
+              delete pregunta['expanded_categorias'];
+              delete pregunta['expanded'];
+              delete pregunta['uploading_file_progress'];
+              delete pregunta['uploading'];
+              this.activityClassesService.saveQuestion(pregunta,activityClass.id)
+            });
+          }
+        } catch (error) {
+          console.error('Error processing clase', error);
+        }
+      }
       
-  //     console.log('arrayClasesRef',arrayClasesRef)
+      console.log('arrayClasesRef',arrayClasesRef)
 
-  //     //let id = Date.now().toString();
+      //let id = Date.now().toString();
 
-  //     let idRef = await this.afs.collection<Modulo>(Modulo.collection).doc().ref.id;
+      let idRef = await this.afs.collection<Modulo>(Modulo.collection).doc().ref.id;
 
-  //     //moduleService
-  //     let module = new Modulo;
-  //     module.clasesRef = null
-  //     module.duracion = modulo.duracion;
-  //     module.id = modulo.id;
-  //     module.numero = modulo.numero;
-  //     module.titulo = modulo.titulo;
-  //     module.clasesRef = arrayClasesRef;
+      //moduleService
+      let module = new Modulo;
+      module.clasesRef = null
+      module.duracion = modulo.duracion;
+      module.id = modulo.id;
+      module.numero = modulo.numero;
+      module.titulo = modulo.titulo;
+      module.clasesRef = arrayClasesRef;
       
-  //     if(!modulo.id){
-  //       module.id = idRef;
-  //       modulo.id = idRef
-  //     }
-  //     console.log('module save', module)
-  //     this.moduleService.saveModulo(module, this.curso.id)
-  //   });
+      if(!modulo.id){
+        module.id = idRef;
+        modulo.id = idRef
+      }
+      console.log('module save', module)
+      this.moduleService.saveModulo(module, this.curso.id)
+    });
 
-  // }
+  }
 
   // if(this.examen){
   //   let courseRef = await this.afs.collection<Curso>(Curso.collection).doc(this.curso.id).ref;
@@ -523,6 +525,9 @@ export class CreateCourseComponent {
   // }
 
   avanceTab(){
+
+    this.updateTriggeQuestionsExam=0;
+
     if (this.activeStep < 6) {
       this.showErrorCurso = false;
       // this.mensageCompetencias = "Selecciona una competencia para asignarla al curso";
@@ -557,21 +562,40 @@ export class CreateCourseComponent {
       //     this.comepetenciaValid = false;
       //   }
       // }
-      // if(this.activeStep == 3){
-      //   if(!this.validarModulosClases()){
-      //     valid = false;
-      //   }
-      // }
-      // if(this.activeStep == 4){
-      //   if(!this.validatePreguntasExamen()){
-      //     valid = false;
-      //   }
-      //   else{
-      //     this.closeAllModulos();
-      //   }
-      // }
 
-      valid = true; // comentar luego de probar
+      if(this.activeStep == 3){
+
+        // if(!this.validarModulosClases()){
+        //   valid = false;
+        // }
+      }
+
+      if(this.activeStep == 4){
+        this.updateTriggeQuestionsExam++;
+          setTimeout(() => {
+            console.log('Form Data questionValid activeStepActividad: ',this.validExam)
+          }, 5000);
+          console.log('Form Data questionValid activeStepActividad: ',this.validExam)
+          if(this.validExam ==null || !this.validExam?.valid || this.validExam.value?.questions?.length == 0){
+            valid = false
+            this.updateTriggeQuestionsExam++;
+          }
+          else{
+            let questions = structuredClone(this.validExam.value.questions)
+            questions.forEach(question => {
+              if(!question.typeFormated){
+                question.typeFormated = this.getTypeQuestion(question.type)
+                if(question.type == 'complete'){
+                  this.showDisplayText(question)
+                }
+              }
+            });
+            this.examen['questions'] = questions
+
+          }
+      }
+
+      //valid = true; // comentar luego de probar
     
       if(valid) {
         this.activeStep++
@@ -801,6 +825,9 @@ export class CreateCourseComponent {
     else if (clase == 'actividad'){
       return 'chess'
     }
+    else if (clase == 'corazones'){
+      return 'favorite'
+    }
     else if(clase == 'video'){
       return 'videoChat'
     }
@@ -820,7 +847,7 @@ export class CreateCourseComponent {
 //   formNuevaComptencia: FormGroup;
 //   questionTypesIn = QuestionType;
 
-//   courseRef;
+  courseRef;
 
 //   questionTypes: Array<QuestionType> = QuestionType.TYPES.sort((a, b) =>
 //     compareByString(a.displayName, b.displayName)
@@ -942,7 +969,7 @@ export class CreateCourseComponent {
       clase.HTMLcontent ='<h4><font face="Arial">Sesi&#243;n de lectura.</font></h4><h6><font face="Arial">&#161;Asegurate de descargar los archivos adjuntos!</font></h6><p><font face="Arial">Encu&#233;ntralos en la secci&#243;n de material descargable</font></p>'
     }
 
-    if(clase.tipo == 'actividad'){
+    if(clase.tipo == 'actividad' || 'corazones'){
       let actividad = new Activity();
       //actividad.id = Date.now().toString();
       actividad.title = clase.titulo;
@@ -1093,6 +1120,9 @@ export class CreateCourseComponent {
     }
     else if (formato == 'actividad'){
       return 'chess'
+    }
+    else if (formato == 'corazones' ){
+      return 'favorite'
     }
     else if(formato == 'video'){
       return 'videoChat'
@@ -1495,7 +1525,7 @@ export class CreateCourseComponent {
       this.base64view = clase['base64Video'];
       this.fileViewTipe = 'video'
     }
-    else if(clase.tipo == 'actividad'){
+    else if(clase.tipo == 'actividad' ||clase.tipo == 'corazones' ){
       let activity : Activity = this.selectedClase.activity
 
       this.formNuevaActividadBasica = new FormGroup({
@@ -2059,6 +2089,8 @@ export class CreateCourseComponent {
   }
 
   updateTriggeQuestions = 0; // new property to trigger updates
+  updateTriggeQuestionsExam = 0; // new property to trigger updates
+
 
   validatePreguntasActividad(){
     return true

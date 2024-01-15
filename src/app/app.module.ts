@@ -114,6 +114,7 @@ import { NotificationList2Component } from './shared/components/notifications/no
 import { LicenseStudentListComponent } from './shared/components/users/license-student-list/license-student-list.component';
 import { QuestionsComponent } from './shared/components/questions/questions.component';
 import { StatusSelectorComponent } from './shared/widgets/status-selector/status-selector.component';
+import { DialogRequestLicensesComponent } from './shared/components/users/license-student-list/dialog-request-licenses/dialog-request-licenses.component';
 // import { FrequentQuestionsComponent } from './main-components/my-account/frequent-questions/frequent-questions.component';
 
 @NgModule({
@@ -181,6 +182,7 @@ import { StatusSelectorComponent } from './shared/widgets/status-selector/status
     LicenseStudentListComponent,
     QuestionsComponent,
     StatusSelectorComponent,
+    DialogRequestLicensesComponent,
   ],
   imports: [
     BrowserModule,

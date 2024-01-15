@@ -1,7 +1,7 @@
 
 <form [formGroup]="mainForm">
     <ng-container>
-        <div formArrayName="questions" fxFlex fxLayout="column" class="container pdl10 pdt10">
+        <div formArrayName="questions" fxFlex fxLayout="column" class="containerAllQustions hideScroll pdl10 pdt10">
             <ng-container>
                 <!-- aqui van los preguntas que se van creando -->
                 <div
@@ -320,7 +320,7 @@
                                 <span class="redText">{{mensaje}}</span>
                             </div>
                         </ng-container> -->
-                        <div>
+                        <!-- <div>
                             <button
                                 type="button"
                                 (click)="modifyQuestionSkills(modalTemplate, i)"
@@ -330,12 +330,11 @@
                                 fxLayoutAlign="center center"
                                 >
                                 <img [src]="icon.flash" class="h16px pdr05" alt="">
-                                <!-- Seleccionar competencias -->
                                 <div>
                                     Modificar competencias
                                 </div>
                             </button>
-                        </div>
+                        </div> -->
                     </div>
                     <!-- Contenedor de los errores -->
                     <!-- <div class="pd10" *ngIf="question.errors && question.touched"> -->

@@ -97,6 +97,8 @@ export class QuestionsComponent {
   @Input() selectedTestSkills = []
   @Input() checkQuestions
   @Input() questionsArray =[]
+  @Input() heartsActivity = false
+
   @Output() emmitForm = new EventEmitter();
 
 
@@ -154,6 +156,12 @@ export class QuestionsComponent {
     this.emmitForm.emit(null);
     console.log('selectedTestSkills',this.selectedTestSkills)
     this.setupForm()
+
+    if(this.heartsActivity){
+      this.questionTypes = this.questionTypes.filter( q=> q.value == "single_choice")
+    }
+
+    console.log('questionTypes',this.questionTypes)
   }
   
 
@@ -238,7 +246,7 @@ export class QuestionsComponent {
   
 
   addQuestion(): void {
-    const defaultQuestionType = Question.TYPE_COMPLETE
+    const defaultQuestionType = Question.TYPE_SINGLE_CHOICE
     this.questions.push(this.fb.group({
       text: ['', [Validators.required]],
       type: [defaultQuestionType],

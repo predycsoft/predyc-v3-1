@@ -1,0 +1,62 @@
+<div fxLayout="column" class="pd10">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+        <span class="ft14 ft600 gray-10">Licencias</span>
+        <!-- <button class="blueButton radius4 ft500 ft11">Adquirir más licencias</button> -->
+    </div>
+    <div *ngIf="opcion==0" fxLayout="column" fxLayout.lt-md="column" fxLayoutGap="1rem" fxLayoutGap.lt-md="0rem"  class="fw mgt15 containerTabla">
+        <table style="width:100%" class="fw">
+            <tr>
+                <th class="ft500">Producto</th>
+                <th class="ft500">Adquiridas</th>
+                <th class="ft500">Usadas</th>
+                <th class="ft500">Disponibles</th>
+                <th class="ft500">Validas hasta</th>
+                <th class="ft500">Estatus</th>
+            </tr>
+            <tr *ngFor="let license of licenses;  let i=index">
+                <td> <span class="ft11 gray-10">Plan Predyc Empresa</span> </td>
+                <td class="centertext ft11 gray-8"> {{license.quantity}}</td>                
+                <!-- <td class="centertext ft11 gray-8"> {{license.retrieveBy.length}}</td> -->
+                <td class="centertext ft11 gray-8"> {{20}}</td>
+                <!-- <td class="centertext ft11 gray-8"> {{license.quantity - license.retrieveBy.length}}</td> -->
+                <td class="centertext ft11 gray-8"> {{10}}</td>
+                <td class="centertext ft11 gray-8"> {{license.currentPeriodEnd | date:"dd-MM-yyyy"}}</td>
+                <td class="centertext ft11 gray-8">{{license.status == 'active'?'Activa':license.status == 'trialing'?'Período de prueba':'vencida'}}</td>
+            </tr>
+    
+        </table>
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt05">
+            <label class="gray-8 ft500 ft12">Indique la cantidad de licencias que quiere solicitar</label>
+            <input type="number" class="ft12 gray-8" [(ngModel)]="licensesQty">
+        </div>
+        <span *ngIf="licensesQty !== 0" class="ft13 ft500 black">Seleccione una de las siguientes opciones:</span>
+        <div *ngIf="licensesQty !== 0" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="1rem" fxLayoutGap.lt-md="0rem">
+            <div fxLayout="column" fxLayout.lt-md="row"  fxLayoutAlign.lt-md="center center" ngClass="blueBorderContainer centertext fw" ngClass.lt-md="blueBorderContainerMobile fw" fxLayoutAlign="center center" fxLayoutGap=".5rem"
+                (click)="openWhatsappContacto()" fxLayout="column">
+                <!-- <i ngClass="fa fa-whatsapp blue-5 ftxxl cursorPointer" ngClass.lt-md="fa fa-whatsapp blue-5 ftxl cursorPointer" ></i> -->
+                <img [src]="icon.whatsapp_gray" alt="" ngClass="h40px makeBlue cursorPointer" ngClass.lt-md="h26px">
+                <span class="ft500 ft14 nowrap"> Whatsapp </span>
+            </div>
+            <div fxLayout="column" fxLayout.lt-md="row"  fxLayoutAlign.lt-md="center center" ngClass="blueBorderContainer centertext fw" ngClass.lt-md="blueBorderContainerMobile fw" fxLayoutAlign="center center" fxLayoutGap=".5rem"
+                (click)="emailContacto()" fxLayout="column">
+                <img [src]="icon.email" alt="" ngClass="h40px cursorPointer" ngClass.lt-md="h26px cursorPointer">
+                <span class="ft500 ft14 nowrap">Correo</span>
+            </div>
+            <div fxLayout="column" fxLayout.lt-md="row"  fxLayoutAlign.lt-md="center center" ngClass="blueBorderContainer centertext fw" ngClass.lt-md="blueBorderContainerMobile fw" fxLayoutAlign="center center" fxLayoutGap=".5rem"
+                fxLayout="column" (click)="dialog.close()">
+                <a href="tel:++524424257590">
+                    <img [src]="icon.phoneBlue" alt="" ngClass="h40px" ngClass.lt-md="h26px">
+                </a>
+                <a class="ft500 ft14 gray-8 nowrap" href="tel:++524424257590" fxLayout="column">
+                    <span>+52 (442) 4257590</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="opcion==1" class="fw" fxLayout="column">
+        <div>
+            <p>Solicitud enviada. Un asesor se estará contactando contigo a la brevedad posible.</p>
+        </div>
+    </div>
+</div>
+
