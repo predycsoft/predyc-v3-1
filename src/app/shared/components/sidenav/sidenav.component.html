@@ -23,9 +23,9 @@
         </div>
     </div>
 
-    <!-- <div *ngIf="user$ | async as user" fxLayout="column" fxLayoutAlign="center"> -->
-    <a class="cursorPointer" routerLink="my-account">
-        <img onerror="this.src='assets/images/default/default-user-image.jpg'" 
-        [src]="" style="height: 2rem; width: 2rem; border-radius: 50%;"  alt="">
-    </a>
+    <div *ngIf="user$ | async as user" fxLayout="column" fxLayoutAlign="center">
+        <a class="cursorPointer" routerLink="my-account">
+            <img  [src]="user.photoUrl ? user.photoUrl : 'assets/images/default/default-user-image.jpg'" style="height: 2rem; width: 2rem; border-radius: 50%;"  alt="">
+        </a>
+    </div>
 </div>

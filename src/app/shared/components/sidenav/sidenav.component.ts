@@ -21,7 +21,7 @@ interface Page {
 export class SideNavComponent {
 
   user: User
-  user$: Observable<User>
+  user$: Observable<User> = this.authService.user$
 
   public linkText: boolean = false;
 
@@ -40,7 +40,6 @@ export class SideNavComponent {
   ) {}
   
   ngOnInit() {
-    this.user$ = this.authService.user$
   }
 
   signOut() {
