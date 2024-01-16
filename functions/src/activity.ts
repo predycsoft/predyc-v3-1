@@ -8,7 +8,6 @@ export const onActivityUpdated = functions.firestore.document('activity/{doc}').
     const beforeData = change.before.data();
 
     let changed = false;
-
     for (const field in beforeData) {
       if(field === 'updatedAt') continue;
 
@@ -17,25 +16,29 @@ export const onActivityUpdated = functions.firestore.document('activity/{doc}').
 
       // Si el campo es un DocumentReference
       if (beforeValue instanceof admin.firestore.DocumentReference) {
-        changed = beforeValue.id !== (afterValue ? afterValue.id : null);
+          changed = beforeValue.id !== (afterValue ? afterValue.id : null);
       } else {
-        changed = beforeValue !== afterValue;
+          changed = JSON.stringify(beforeValue) !== JSON.stringify(afterValue);
       }
 
-      if(changed) break;
-    }
+      if (changed) {
+          break;  // Si se detectó un cambio, sale del bucle  
+      } 
+  }
 
-    if(changed) {
-        return db.collection('activity').doc(afterData.id).update({
-            updatedAt: +new Date()
-        })
-        .then(() => {
-            return console.log(`Updated activity: ${afterData.title}`);
-        })
-        .catch((error) => {
-            return console.error('Error updating updatedAt in Activity document:', error);
-        });
-    }
-    return null
+  // Si hubo un cambio y no es sólo el campo updatedAt
+  if (changed && !(Object.keys(beforeData).length === 1 && 'updatedAt' in beforeData)) {
+      return db.collection('activity').doc(afterData.id).update({
+          updatedAt: +new Date()
+      })
+      .then(() => {
+          return console.log(`Updated activity: ${afterData.title}`);
+      })
+      .catch((error) => {
+          return console.error('Error updating updatedAt in activity document:', error);
+      });
+  }
+
+  return null;
 
 });
