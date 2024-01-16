@@ -61,7 +61,8 @@
                 mat-row
                 *matRowDef="let user; columns: displayedColumns;"
                 class="cursorPointer"
-                [routerLink]="enableNavigateToUser ? [user.uid] : []">
+                (click)="$event.stopPropagation(); selection.toggle(user.uid)"
+                >
             </tr>
         </ng-container>
 

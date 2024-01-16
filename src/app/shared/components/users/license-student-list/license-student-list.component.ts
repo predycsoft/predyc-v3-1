@@ -34,7 +34,6 @@ export class LicenseStudentListComponent {
   dataSource = new MatTableDataSource<LicenseListUser>();
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  @Input() enableNavigateToUser: boolean = true
   @Output() selectedUsers = new EventEmitter<string[]>();
   @Input() hasLicenseChanged: any;
 
