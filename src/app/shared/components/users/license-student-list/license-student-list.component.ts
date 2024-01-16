@@ -87,6 +87,7 @@ export class LicenseStudentListComponent {
     if (changes['hasLicenseChanged']) {
       console.log("Esto esta siendo llamado")
       this.selection.clear();
+      this.emitSelectedUsers();
     }
   }
 
