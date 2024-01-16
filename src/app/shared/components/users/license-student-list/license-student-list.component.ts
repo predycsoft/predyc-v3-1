@@ -72,7 +72,8 @@ export class LicenseStudentListComponent {
           const statusFilter = params['status'] || SubscriptionClass.STATUS_ACTIVE;
           // clear checkboxes selection if status filter changed
           if (this.lastStatusFilter !== statusFilter) {
-            this.selection.clear(); 
+            this.selection.clear();
+            this.emitSelectedUsers();
             this.lastStatusFilter = statusFilter;
           }
           this.performSearch(searchTerm, page, statusFilter);
@@ -87,6 +88,7 @@ export class LicenseStudentListComponent {
     if (changes['hasLicenseChanged']) {
       console.log("Esto esta siendo llamado")
       this.selection.clear();
+      this.emitSelectedUsers();
     }
   }
 

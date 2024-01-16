@@ -134,20 +134,28 @@ export class InitScriptComponent {
 
     // Create License
     console.log('********* Creating Licenses *********')
-    const license: License = License.fromJson(licensesData)
-    const licenseRef = this.afs.collection<License>(License.collection).doc(license.id).ref;
-    const licensePriceRef = pricesRef[0] 
-    const licensePriceValue = (await ((licensePriceRef as DocumentReference).get())).data() as Price
-    const couponPriceRef = licensePriceValue.coupon
-    await licenseRef.set(
-      {
-        ...license.toJson(),
-        price: licensePriceRef,
-        coupon: couponPriceRef,
-        enterpriseRef: enterpriseRef
-      }, {merge: true}
-    )
-    console.log(`Finished Creating License`)
+    const licenses: License[] = licensesData.map(license => {
+      return License.fromJson(license)
+    })
+    let licensesRef = []
+    for (let index = 0; index < licenses.length; index++) {
+      const license = licenses[index];
+      let licenseRef = this.afs.collection<License>(License.collection).doc(license.id).ref;
+      licensesRef.push(licenseRef)
+      const licensePriceRef = pricesRef[index] 
+      const licensePriceValue = (await ((licensePriceRef as DocumentReference).get())).data() as Price
+      const couponPriceRef = licensePriceValue.coupon
+
+      await licenseRef.set(
+        {
+          ...license.toJson(),
+          priceRef: licensePriceRef,
+          couponRef: couponPriceRef,
+          enterpriseRef: enterpriseRef
+        }, {merge: true}
+      )
+    }
+    console.log(`Finished Creating Licenses`)
   
     // Create admin and student users
     console.log('********* Creating Users *********')
@@ -246,16 +254,16 @@ export class InitScriptComponent {
     console.log('********* Creating Global collection *********')
 
 
-    // Create Instructors (OLD) 
-    console.log('********* Creating Instructors *********');
-    for (let i = 0; i < instructorsData.length; i++) {
-      const instructor = instructorsData[i];
-      await this.instructorsService.addInstructor(instructor);
-      this.instructors.push(instructor);
-    }
-    console.log(`Finished Creating Instructors`, this.instructors);
+    // // Create Instructors (OLD) 
+    // console.log('********* Creating Instructors *********');
+    // for (let i = 0; i < instructorsData.length; i++) {
+    //   const instructor = instructorsData[i];
+    //   await this.instructorsService.addInstructor(instructor);
+    //   this.instructors.push(instructor);
+    // }
+    // console.log(`Finished Creating Instructors`, this.instructors);
 
-    this.uploadCursosLegacy();
+    // this.uploadCursosLegacy();
 
 
     try {

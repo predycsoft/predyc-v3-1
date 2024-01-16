@@ -4,13 +4,13 @@ import { Price } from "./price.model";
 import { Enterprise } from "./enterprise.model";
 
 export interface LicenseJson {
-    coupon: DocumentReference<Coupon> | null,
+    couponRef: DocumentReference<Coupon> | null,
     createdAt: number | null,
     currentPeriodEnd: number | null,
     currentPeriodStart: number | null,
     enterpriseRef: DocumentReference<Enterprise> | null,
     id: string | null,
-    price: DocumentReference<Price>,
+    priceRef: DocumentReference<Price>,
     quantity: number | null,
     quantityUsed: number | null,
     rotations: number | null,
@@ -24,13 +24,13 @@ export class License {
     public static collection = 'license'
 
     constructor(
-        public coupon: DocumentReference<Coupon> | null,
+        public couponRef: DocumentReference<Coupon> | null,
         public createdAt: number | null,
         public currentPeriodEnd: number | null,
         public currentPeriodStart: number | null,
         public enterpriseRef: DocumentReference<Enterprise> | null,
         public id: string | null,
-        public price: DocumentReference<Price>,
+        public priceRef: DocumentReference<Price>,
         public quantity: number | null,
         public quantityUsed: number | null,
         public rotations: number | null,
@@ -41,13 +41,13 @@ export class License {
 
     public static fromJson(licenseJson: LicenseJson): License {
         return new License(
-            licenseJson.coupon,
+            licenseJson.couponRef,
             licenseJson.createdAt,
             licenseJson.currentPeriodEnd,
             licenseJson.currentPeriodStart,
             licenseJson.enterpriseRef,
             licenseJson.id,
-            licenseJson.price,
+            licenseJson.priceRef,
             licenseJson.quantity,
             licenseJson.quantityUsed,
             licenseJson.rotations,
@@ -59,13 +59,13 @@ export class License {
 
     public toJson(): LicenseJson {
         return {
-            coupon: this.coupon, 
+            couponRef: this.couponRef, 
             createdAt: this.createdAt, 
             currentPeriodEnd: this.currentPeriodEnd, 
             currentPeriodStart: this.currentPeriodStart, 
             enterpriseRef: this.enterpriseRef, 
             id: this.id, 
-            price: this.price, 
+            priceRef: this.priceRef, 
             quantity: this.quantity, 
             quantityUsed: this.quantityUsed, 
             rotations: this.rotations, 
