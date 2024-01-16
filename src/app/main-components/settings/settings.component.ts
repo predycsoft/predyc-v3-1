@@ -63,13 +63,23 @@ export class SettingsComponent {
   }
 
   async selectLicense(license: License) {
-    await this.licenseService.assignLicense(license, this.selectedUsersIds);
-    this.hasLicenseChanged = -this.hasLicenseChanged
+    try {      
+      await this.licenseService.assignLicense(license, this.selectedUsersIds);
+      this.hasLicenseChanged = -this.hasLicenseChanged
+    } 
+    catch (error) {
+      console.error("Operación cancelada o falló", error);
+    }
   }
 
   async removeLicense() {
-    await this.licenseService.removeLicense(this.selectedUsersIds)
-    this.hasLicenseChanged = -this.hasLicenseChanged
+    try {
+      await this.licenseService.removeLicense(this.selectedUsersIds)
+      this.hasLicenseChanged = -this.hasLicenseChanged
+    } 
+    catch (error) {
+      console.error("Operación cancelada o falló", error);
+    }
   }
 
   showDialog(licenses: License[]) {

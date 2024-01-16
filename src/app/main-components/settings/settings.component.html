@@ -42,7 +42,7 @@
                     <div (click)="selectLicense(license)" *ngFor="let license of licenses"
                         mat-menu-item class="opcionMenu" fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="2rem">
                         <span class="pdl05 ft12 gray-10">Valido hasta {{ license.currentPeriodEnd | date:'short' }}
-                            - Disponible: {{ license.quantity}}</span>
+                            - Disponible: {{ license.quantity - license.quantityUsed}}</span>
                             <!-- - Disponible: {{ license.quantity - license.retrieveBy.length }}</span> -->
                     </div>
                 </div>
@@ -51,7 +51,7 @@
         <div *ngIf="selectedLicense" class="w-30 pdl20">
             <div class="select-container" fxLayout="row" fxLayoutAlign="start center">
                 <select [(ngModel)]="selectedLicense" class="pdl20 select cursorPointer fw" name="" id="">
-                    <option [ngValue]="license" *ngFor="let license of licenses" >{{ license.currentPeriodEnd | date:'short' }} - Disponible: {{ license.quantity}}</option>
+                    <option [ngValue]="license" *ngFor="let license of licenses" >{{ license.currentPeriodEnd | date:'short' }} - Disponible: {{ license.quantity - license.quantityUsed}}</option>
                 </select>
             </div>
         </div>

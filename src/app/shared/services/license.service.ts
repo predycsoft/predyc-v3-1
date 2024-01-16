@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { License } from '../models/license.model';
-import { BehaviorSubject, Observable, Subscription, switchMap } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, firstValueFrom, switchMap } from 'rxjs';
 import { EnterpriseService } from './enterprise.service';
 import { DialogService } from './dialog.service';
 import { User } from '../models/user.model';
@@ -45,34 +45,36 @@ export class LicenseService {
       return
     } 
     else{
-      this.dialogService.dialogConfirmar().afterClosed().subscribe(async result => {
-        if(result){
-          for (let userId of usersIds) {
-            await this.subscriptionService.createUserSubscription(license, licenseRef, userId)
-          }
-          // Update license quantityUsed field OR rotations. 
-          await this.afs.collection(License.collection).doc(license.id).set(
-            {
-              quantityUsed: license.quantityUsed + usersIds.length
-            },{ merge: true }
-          );
-          console.log("Cupo de licencia usada")
-          this.dialogService.dialogExito()
-        }
-      })
+      const dialogResult = await firstValueFrom(this.dialogService.dialogConfirmar().afterClosed());
+      if (dialogResult) {
+        const createSubscriptionsPromises = usersIds.map(userId => this.subscriptionService.createUserSubscription(license, licenseRef, userId));
+        await Promise.all(createSubscriptionsPromises)
+        // Update license quantityUsed field OR rotations. 
+        await this.afs.collection(License.collection).doc(license.id).set(
+          {
+            quantityUsed: license.quantityUsed + usersIds.length
+          },{ merge: true }
+        );
+        console.log("Cupo de licencia usada")
+        this.dialogService.dialogExito()
+      }
+      else throw new Error('Operación cancelada');
     }
   }
 
-  async removeLicense(usersIds: string[]) {
-    this.dialogService.dialogConfirmar().afterClosed().subscribe(async result => {
-      if(result){
-        for (let userId of usersIds) {
-          await this.subscriptionService.removeUserSubscription(userId)
-        }
-        this.dialogService.dialogExito()
-      }
-    })
-  }
+  async removeLicense(usersIds: string[]): Promise<void> {
+    const dialogResult = await firstValueFrom(this.dialogService.dialogConfirmar().afterClosed());
+    if (dialogResult) {
+      // let promises = []
+      // for (let userId of usersIds) {
+      //   promises.push(this.subscriptionService.removeUserSubscription(userId));
+      // }
+      const promises = usersIds.map(userId => this.subscriptionService.removeUserSubscription(userId));
+      await Promise.all(promises)
+      this.dialogService.dialogExito();
+    } 
+    else throw new Error('Operación cancelada');
+  }  
 
 
 }
