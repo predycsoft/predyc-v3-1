@@ -41,6 +41,7 @@ export class CourseService {
     try {
       try {
         console.log('test saveCourse',newCourse)
+        delete newCourse['modules'];
         const dataToSave = typeof newCourse.toJson === 'function' ? newCourse.toJson() : newCourse;
 
         await this.afs.collection(Curso.collection).doc(newCourse?.id).set(dataToSave, { merge: true });

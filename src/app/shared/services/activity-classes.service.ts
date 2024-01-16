@@ -58,7 +58,7 @@ export class ActivityClassesService {
 
   async saveActivity(newActivity: Activity): Promise<void> {
     try {
-
+      console.log('saveActivity',newActivity)
       let ref: DocumentReference;
       if (newActivity.id) {
         ref = this.afs.collection<Activity>(Activity.collection).doc(newActivity.id).ref;

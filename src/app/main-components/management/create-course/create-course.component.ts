@@ -1562,12 +1562,12 @@ export class CreateCourseComponent {
 
       this.formNuevaActividadBasica = new FormGroup({
         titulo: new FormControl(clase.titulo , Validators.required),
-        descripcion: new FormControl(activity.description, Validators.required),
-        duracion: new FormControl(activity.duration, Validators.required),
+        descripcion: new FormControl(activity?.description?activity.description : '', Validators.required),
+        duracion: new FormControl(clase.duration, Validators.required),
       });
 
       this.formNuevaActividadGeneral = new FormGroup({
-        instrucciones: new FormControl(activity.description, Validators.required),
+        instrucciones: new FormControl(activity?.description?activity.description : '', Validators.required),
         // video: new FormControl(clase.vimeoId1, [Validators.required, this.NotZeroValidator()]),
         video: new FormControl(clase.vimeoId1),
         recursos: new FormControl(clase.archivos[0]?.nombre ? clase.archivos[0].nombre : null, Validators.required),
