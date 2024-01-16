@@ -142,8 +142,8 @@ export class InitScriptComponent {
     await licenseRef.set(
       {
         ...license.toJson(),
-        price: licensePriceRef,
-        coupon: couponPriceRef,
+        priceRef: licensePriceRef,
+        couponRef: couponPriceRef,
         enterpriseRef: enterpriseRef
       }, {merge: true}
     )
@@ -246,16 +246,16 @@ export class InitScriptComponent {
     console.log('********* Creating Global collection *********')
 
 
-    // Create Instructors (OLD) 
-    console.log('********* Creating Instructors *********');
-    for (let i = 0; i < instructorsData.length; i++) {
-      const instructor = instructorsData[i];
-      await this.instructorsService.addInstructor(instructor);
-      this.instructors.push(instructor);
-    }
-    console.log(`Finished Creating Instructors`, this.instructors);
+    // // Create Instructors (OLD) 
+    // console.log('********* Creating Instructors *********');
+    // for (let i = 0; i < instructorsData.length; i++) {
+    //   const instructor = instructorsData[i];
+    //   await this.instructorsService.addInstructor(instructor);
+    //   this.instructors.push(instructor);
+    // }
+    // console.log(`Finished Creating Instructors`, this.instructors);
 
-    this.uploadCursosLegacy();
+    // this.uploadCursosLegacy();
 
 
     try {

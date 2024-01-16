@@ -42,7 +42,7 @@ export class PlanCardComponent {
         this.licenseService.geteEnterpriseLicenses$().subscribe(async licenses => {
           this.license = licenses[0]
           if (this.license) {
-            this.price = await this.priceService.getPriceByRef(this.license.price as DocumentReference)
+            this.price = await this.priceService.getPriceByRef(this.license.priceRef as DocumentReference)
             this.product = await this.productService.getProductByRef(this.price.product as DocumentReference)
             this.coupon = this.price.coupon 
                           ? await this.couponService.getCouponByRef(this.price.coupon as DocumentReference)
