@@ -7,3 +7,11 @@
 .containerRight {
     width: 100%;
 }
+
+.card-container {
+    border-radius: 20px;
+    overflow: hidden;
+    border: 2px solid #D5DCE0;
+    min-width: 240px;
+    padding: 12px;
+}

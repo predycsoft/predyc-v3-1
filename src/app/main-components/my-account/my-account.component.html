@@ -15,14 +15,17 @@
             </div>
         </mat-tab>
         <mat-tab label="Soporte"> 
-            <div fxLayout="row" fxLayoutAlign="center">
-                <div class="containerLeft mgt03" style="border-right: none;">
+            <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="1rem" class="containerLeft cardContainer mgt03" style="border-right: none;">
+                <div class="w-95">
                     <app-support-contact [type]="'account'"></app-support-contact>
                 </div>
-                <div class="containerRight mgt03" >
+                <div class="w-95">
                     <app-frequent-questions [questions] = "questions"></app-frequent-questions>
                 </div>
             </div>
+            <!-- <div class="containerRight mgt03" >
+                <app-frequent-questions [questions] = "questions"></app-frequent-questions>
+            </div> -->
         </mat-tab>    
     </mat-tab-group>
 </div>    
