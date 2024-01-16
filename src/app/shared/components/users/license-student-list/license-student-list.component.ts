@@ -83,7 +83,9 @@ export class LicenseStudentListComponent {
 
   ngOnChanges(changes: SimpleChanges) {
     // clear checkboxes after license assign or removed
+    console.log(changes)
     if (changes['hasLicenseChanged']) {
+      console.log("Esto esta siendo llamado")
       this.selection.clear();
     }
   }

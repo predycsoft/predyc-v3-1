@@ -9,7 +9,7 @@
         <p class="mgt05 gray-10">Escriba la palabra <strong>CONFIRMAR</strong> para continuar</p>
     </div>
     <div class="mgt10">
-        <input type="text" [(ngModel)]=textoConfirmacion class="mgr10 fw centertext">
+        <input type="text" [(ngModel)]=textoConfirmacion class="mgr10 fw centertext" (keyup.enter)="onEnterPress()">
         <button *ngIf="textoConfirmacion==='CONFIRMAR'" class="mgt05 darkButton fw" [mat-dialog-close]="true">Continuar</button>
         <button *ngIf="textoConfirmacion!=='CONFIRMAR'" class="mgt05 cursorDefault fw">Continuar</button>
     </div>
