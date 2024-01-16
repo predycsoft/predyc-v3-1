@@ -3,7 +3,8 @@ import { Component, EventEmitter, Input, Output, SimpleChanges, ViewChild } from
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+// import { Subscription } from 'rxjs';
+import { Subscription } from 'src/app/shared/models/subscription.model'
 import { Profile } from 'src/app/shared/models/profile.model';
 import { IconService } from 'src/app/shared/services/icon.service';
 import { ProfileService } from 'src/app/shared/services/profile.service';
@@ -13,6 +14,7 @@ export interface LicenseListUser {
   displayName: string,
   profile: string,
   status: string,
+  statusDisplayText: string,
   uid: string
 }
 
@@ -37,9 +39,9 @@ export class LicenseStudentListComponent {
   @Input() hasLicenseChanged: any;
 
 
-  queryParamsSubscription: Subscription
-  profilesSubscription: Subscription
-  userServiceSubscription: Subscription
+  queryParamsSubscription
+  profilesSubscription
+  userServiceSubscription
   pageSize: number = 7
   totalLength: number
   profiles: Profile[] = []
@@ -98,6 +100,9 @@ export class LicenseStudentListComponent {
     }
     this.userServiceSubscription = this.userService.getUsers$(searchTerm, null, statusFilter).subscribe(
       response => {
+        if (statusFilter != 'active') {
+          response = response.filter(item => item.status !== 'active')
+        }
         const users: LicenseListUser[] = response.map(item => {
           // Seting profile
           const profile = this.profiles.find(profile => {
@@ -113,6 +118,7 @@ export class LicenseStudentListComponent {
             displayName: item.displayName,
             profile: profileName,
             status: item.status,
+            statusDisplayText: Subscription.statusToDisplayValueDict[item.status],
             uid: item.uid
           }
           return user

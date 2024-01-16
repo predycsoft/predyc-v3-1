@@ -148,9 +148,9 @@ export class UserService {
         query = query.where('profile', '==', profileRef)
       }
       if (statusFilter) {
-        // if (statusFilter === 'active') query = query.where('status', '==', 'active')
+        if (statusFilter === 'active') query = query.where('status', '==', 'active')
         // else query = query.where('status', '!=', 'active').orderBy('status') // orderBy status is due to firestore rules
-        query = query.where('status', '==', statusFilter)
+        // query = query.where('status', '==', statusFilter)
       }
       return query.orderBy('displayName')
     }).valueChanges()

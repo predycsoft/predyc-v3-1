@@ -54,6 +54,7 @@ export class Subscription {
   
     public static STATUS_CHOICES = [
       this.STATUS_ACTIVE,
+      this.STATUS_INACTIVE,
       this.STATUS_INCOMPLETE,
       this.STATUS_INCOMPLETE_EXPIRED,
       this.STATUS_TRIALING,
@@ -105,6 +106,7 @@ export class Subscription {
   
     public static statusToDisplayValueDict = {
       active: 'Activo',
+      inactive: 'Inactivo',
       incomplete: 'Pago pendiente',
       incomplete_expired: 'Activación expirada',
       trialing: 'Período de prueba',
