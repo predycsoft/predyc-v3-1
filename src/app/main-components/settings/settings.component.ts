@@ -31,8 +31,6 @@ export class SettingsComponent {
   @ViewChild('licenseMenu') licenseMenu: MatMenu;
   @ViewChild('trigger') menuTrigger: MatMenuTrigger;
 
-  @ViewChild(LicenseStudentListComponent) licenseStudentList: LicenseStudentListComponent;
-
   selectedUsersIds: string[] = [];
   selectedLicense: License;
 
@@ -65,14 +63,11 @@ export class SettingsComponent {
   }
 
   async selectLicense(license: License) {
-    this.licenseStudentList.emitSelectedUsers(); // method in child component that pass selected users to handleSelectedUsers() method
-    console.log("this.selectedUsers", this.selectedUsersIds)
     await this.licenseService.assignLicense(license, this.selectedUsersIds);
     this.hasLicenseChanged = -this.hasLicenseChanged
   }
 
   async removeLicense() {
-    this.licenseStudentList.emitSelectedUsers(); // method in child component that pass selected users to handleSelectedUsers() method
     await this.licenseService.removeLicense(this.selectedUsersIds)
     this.hasLicenseChanged = -this.hasLicenseChanged
   }
