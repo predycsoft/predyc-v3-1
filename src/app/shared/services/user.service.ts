@@ -3,6 +3,7 @@ import { User, UserJson } from '../../shared/models/user.model';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, CollectionReference, DocumentReference, Query } from '@angular/fire/compat/firestore';
 import { BehaviorSubject, filter, firstValueFrom, map, Observable, Subscription, switchMap } from 'rxjs'
+import { Subscription as SubscriptionClass } from 'src/app/shared/models/subscription.model'
 import { EnterpriseService } from './enterprise.service';
 import { AlertsService } from './alerts.service';
 import { generateSixDigitRandomNumber } from '../utils';
@@ -147,10 +148,8 @@ export class UserService {
         const profileRef = this.profileService.getProfileRefById(profileFilter)
         query = query.where('profile', '==', profileRef)
       }
-      if (statusFilter) {
-        // if (statusFilter === 'active') query = query.where('status', '==', 'active')
-        // else query = query.where('status', '!=', 'active').orderBy('status') // orderBy status is due to firestore rules
-        query = query.where('status', '==', statusFilter)
+      if (statusFilter && statusFilter === SubscriptionClass.STATUS_ACTIVE) {
+        query = query.where('status', '==', SubscriptionClass.STATUS_ACTIVE)
       }
       return query.orderBy('displayName')
     }).valueChanges()

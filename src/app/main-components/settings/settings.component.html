@@ -22,9 +22,16 @@
                 <!--  -->
                 <app-search-input-box class=""></app-search-input-box>
             </div>
-            <button fxLayout="row" fxLayoutAlign="center center" (click)="currentStatus !== 'active' ? null : removeLicense()"
-                [matMenuTriggerFor]="currentStatus !== 'active' ? licenseMenu : null" #trigger="matMenuTrigger"
-                style="border-radius: 24px !important;" [ngClass]="currentStatus !== 'active' ? 'blueButton':'redButton'">
+            <button
+                fxLayout="row"
+                fxLayoutAlign="center center"
+                (click)="currentStatus !== 'active' ? null : removeLicense()"
+                [matMenuTriggerFor]="currentStatus !== 'active' ? licenseMenu : null"
+                [disabled]="selectedUsersIds.length === 0"
+                #trigger="matMenuTrigger"
+                style="border-radius: 24px !important;"
+                [ngClass]="selectedUsersIds.length === 0 
+                    ? 'select-container2': (currentStatus !== 'active' ? 'blueButton':'redButton')">
                 {{ currentStatus !== 'active' ? 'Asignar licencia' : 'Cancelar licencia' }}
             </button>
             <mat-menu #licenseMenu class="radius6 shadow16 pd0 mgt05">

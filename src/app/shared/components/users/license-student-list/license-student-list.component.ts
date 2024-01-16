@@ -4,6 +4,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { Subscription as SubscriptionClass } from 'src/app/shared/models/subscription.model'
 import { Profile } from 'src/app/shared/models/profile.model';
 import { IconService } from 'src/app/shared/services/icon.service';
 import { ProfileService } from 'src/app/shared/services/profile.service';
@@ -13,6 +14,7 @@ export interface LicenseListUser {
   displayName: string,
   profile: string,
   status: string,
+  statusDisplayText: string,
   uid: string
 }
 
@@ -32,7 +34,6 @@ export class LicenseStudentListComponent {
   dataSource = new MatTableDataSource<LicenseListUser>();
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  @Input() enableNavigateToUser: boolean = true
   @Output() selectedUsers = new EventEmitter<string[]>();
   @Input() hasLicenseChanged: any;
 
@@ -50,7 +51,7 @@ export class LicenseStudentListComponent {
     this.allowMultiSelect, this.initialSelection
   );
 
-  private lastStatusFilter: string = 'active'
+  private lastStatusFilter: string = SubscriptionClass.STATUS_ACTIVE
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -68,10 +69,11 @@ export class LicenseStudentListComponent {
         this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
           const page = Number(params['page']) || 1;
           const searchTerm = params['search'] || '';
-          const statusFilter = params['status'] || 'active';
+          const statusFilter = params['status'] || SubscriptionClass.STATUS_ACTIVE;
           // clear checkboxes selection if status filter changed
           if (this.lastStatusFilter !== statusFilter) {
-            this.selection.clear(); 
+            this.selection.clear();
+            this.emitSelectedUsers();
             this.lastStatusFilter = statusFilter;
           }
           this.performSearch(searchTerm, page, statusFilter);
@@ -82,8 +84,11 @@ export class LicenseStudentListComponent {
 
   ngOnChanges(changes: SimpleChanges) {
     // clear checkboxes after license assign or removed
+    console.log(changes)
     if (changes['hasLicenseChanged']) {
+      console.log("Esto esta siendo llamado")
       this.selection.clear();
+      this.emitSelectedUsers();
     }
   }
 
@@ -98,6 +103,9 @@ export class LicenseStudentListComponent {
     }
     this.userServiceSubscription = this.userService.getUsers$(searchTerm, null, statusFilter).subscribe(
       response => {
+        if (statusFilter != SubscriptionClass.STATUS_ACTIVE) {
+          response = response.filter(item => item.status !== SubscriptionClass.STATUS_ACTIVE)
+        }
         const users: LicenseListUser[] = response.map(item => {
           // Seting profile
           const profile = this.profiles.find(profile => {
@@ -113,6 +121,7 @@ export class LicenseStudentListComponent {
             displayName: item.displayName,
             profile: profileName,
             status: item.status,
+            statusDisplayText: SubscriptionClass.statusToDisplayValueDict[item.status],
             uid: item.uid
           }
           return user

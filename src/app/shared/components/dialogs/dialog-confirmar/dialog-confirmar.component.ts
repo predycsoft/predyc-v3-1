@@ -18,6 +18,12 @@ export class DialogConfirmarComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  onEnterPress() {
+    if (this.textoConfirmacion === 'CONFIRMAR') {
+      this.dialogRef.close(true);
+    }
+  }
+
   closeDialog() {
     this.dialogRef.close(false);
   }

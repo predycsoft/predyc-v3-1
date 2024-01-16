@@ -255,7 +255,7 @@ export class QuestionsComponent {
         file: [null]
       }),
       options: this.fb.array([], []),
-      points: ['', [Validators.required, Validators.min(1), Validators.pattern(/^\d*$/)]],
+      points: [this.heartsActivity?1:'', [Validators.required, Validators.min(1), Validators.pattern(/^\d*$/)]],
       skills: this.fb.array([]),
     }, { validators: questionTypeToValidators[defaultQuestionType] }));
     this.questionStatus.push({
