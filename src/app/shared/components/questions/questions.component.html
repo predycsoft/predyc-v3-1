@@ -42,7 +42,7 @@
                             </div>
                             
                             <!-- Label y input alineados a la derecha -->
-                            <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px">
+                            <div *ngIf="!heartsActivity" fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px">
                                 <label>Puntos</label>
                                 <input
                                     formControlName="points"
