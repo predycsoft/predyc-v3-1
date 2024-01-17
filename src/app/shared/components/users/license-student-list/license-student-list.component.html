@@ -1,5 +1,5 @@
 <div>
-    <div *ngIf="isAllSelected()" fxLayout="row" fxLayoutGap="10px" fxLayoutAlign=" center" class="mgt05">
+    <div *ngIf="selection.hasValue() && isAllSelected()" fxLayout="row" fxLayoutGap="10px" fxLayoutAlign=" center" class="mgt05">
         <img [src]="icon.redWarning2" alt="Warning">
         <div class="red-5">Se han seleccionado los usuarios de todas las páginas</div>
     </div>

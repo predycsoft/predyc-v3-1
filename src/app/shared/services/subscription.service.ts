@@ -34,8 +34,8 @@ export class SubscriptionService {
     subscription.customer = userId
     subscription.endedAt = null
     subscription.enterpriseRef = this.enterpriseService.getEnterpriseRef()
-    subscription.id = 'PRE_' + +new Date()
-    subscription.idAtOrigin = 'PRE_' + +new Date()  
+    subscription.id = 'PRE_' + + new Date() + userId
+    subscription.idAtOrigin = 'PRE_' + +new Date() + userId
     subscription.interval = 1
     subscription.licenseRef = licenseRef
     subscription.nextPaymentAmount = null
@@ -99,9 +99,5 @@ export class SubscriptionService {
       console.error("Error al eliminar suscripciones: ", error);
     }
   }
-  
-
-  
-
 
 }
