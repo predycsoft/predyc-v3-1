@@ -197,20 +197,20 @@ export class InitScriptComponent {
     console.log(`Finished Creating Categories`)
 
     // Create skills
-    // console.log('********* Creating Skills *********')
-    // const skills: Skill[] = skillsData.map(skill => {
-    //   const randomCategory = categories[Math.floor(Math.random()*categories.length)];
-    //   const categoryRef = this.categoryService.getCategoryRefById(randomCategory.id)
-    //   return Skill.fromJson({
-    //     ...skill,
-    //     category: categoryRef,
-    //     enterprise: enterpriseRef,
-    //   })
-    // })
-    // for (let skill of skills) {
-    //   await this.skillService.addSkill(skill)
-    // }
-    // console.log(`Finished Creating Skills`)
+    console.log('********* Creating Skills *********')
+    const skills: Skill[] = skillsData.map(skill => {
+      const randomCategory = categories[Math.floor(Math.random()*categories.length)];
+      const categoryRef = this.categoryService.getCategoryRefById(randomCategory.id)
+      return Skill.fromJson({
+        ...skill,
+        category: categoryRef,
+        enterprise: enterpriseRef,
+      })
+    })
+    for (let skill of skills) {
+      await this.skillService.addSkill(skill)
+    }
+    console.log(`Finished Creating Skills`)
   
     // Create coursesClasses and courses
 
@@ -255,15 +255,15 @@ export class InitScriptComponent {
 
 
     // // Create Instructors (OLD) 
-    // console.log('********* Creating Instructors *********');
-    // for (let i = 0; i < instructorsData.length; i++) {
-    //   const instructor = instructorsData[i];
-    //   await this.instructorsService.addInstructor(instructor);
-    //   this.instructors.push(instructor);
-    // }
-    // console.log(`Finished Creating Instructors`, this.instructors);
+    console.log('********* Creating Instructors *********');
+    for (let i = 0; i < instructorsData.length; i++) {
+      const instructor = instructorsData[i];
+      await this.instructorsService.addInstructor(instructor);
+      this.instructors.push(instructor);
+    }
+    console.log(`Finished Creating Instructors`, this.instructors);
 
-    // this.uploadCursosLegacy();
+    this.uploadCursosLegacy();
 
 
     try {
@@ -290,7 +290,7 @@ export class InitScriptComponent {
   async uploadCursosLegacy() {
 
     let jsonData = coursesData.slice(0,10)
-    //jsonData = coursesData
+    // jsonData = coursesData
     console.log('cursos a cargar',jsonData)
     // Now you can use the jsonData object locally
 

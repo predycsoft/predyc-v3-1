@@ -69,6 +69,7 @@ export class LicenseService {
       // for (let userId of usersIds) {
       //   promises.push(this.subscriptionService.removeUserSubscription(userId));
       // }
+      console.log("usersIds", usersIds)
       const promises = usersIds.map(userId => this.subscriptionService.removeUserSubscription(userId));
       await Promise.all(promises)
       this.dialogService.dialogExito();

@@ -67,7 +67,7 @@ export class SettingsComponent {
       await this.licenseService.assignLicense(license, this.selectedUsersIds);
       this.hasLicenseChanged = -this.hasLicenseChanged
     } 
-    catch (error) {
+    catch(error) {
       console.error("Operación cancelada o falló", error);
     }
   }

@@ -129,6 +129,7 @@ export class IconService {
   check = "assets/iconsUI/check.svg"
   greenCheck = "assets/iconsUI/checkmark--outline.svg"
   redWarning = "assets/iconsUI/warning.svg"
+  redWarning2 = "assets/iconsUI/warning2.svg"
   trophy = "assets/iconsUI/trophy.svg"
 
   catalogo = "assets/iconsUI/bookmark.svg"
