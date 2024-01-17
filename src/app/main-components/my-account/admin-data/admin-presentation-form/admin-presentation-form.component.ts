@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Observable, finalize, firstValueFrom } from 'rxjs';
@@ -22,10 +22,11 @@ export class AdminPresentationFormComponent {
 
   ) {}
 
+  @Input() isOtherFormEditing: boolean;
   @Output() onAdminPresentationChange: EventEmitter<{ formValue: FormGroup; isEditing: boolean }> = new EventEmitter<{ formValue: FormGroup; isEditing: boolean }>()
 
   adminUser: User
-  adminUser$: Observable<User>
+  adminUser$: Observable<User> = this.authService.user$
 
   imageUrl: string | ArrayBuffer | null = null
   uploadedImage: File | null = null
@@ -42,7 +43,6 @@ export class AdminPresentationFormComponent {
 
   async ngOnInit(){
 
-    this.adminUser$ = this.authService.user$
     this.adminUser$.subscribe(adminUser => {
       if(adminUser){
         this.adminUser = adminUser
@@ -71,6 +71,11 @@ export class AdminPresentationFormComponent {
   }
 
   onClick() {
+    if (this.isOtherFormEditing) {
+      this.alertService.infoAlert("Primero debes guardar los cambios del otro formulario del administrador.")
+      console.error("Primero debes guardar los cambios del otro formulario del administrador.");
+      return;
+    }
     this.isEditing = !this.isEditing;
     if (this.isEditing) {
       this.onAdminPresentationChange.emit({

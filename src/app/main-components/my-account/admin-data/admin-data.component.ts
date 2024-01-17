@@ -18,9 +18,12 @@ export class AdminDataComponent {
   // From presentation form (above form)
   presentationData = {}
   originalPresentationData: any; 
+  isPresentationFormEditing = false;
   // From info form (below form)
   infoData = {}
   originalInfoData: any; 
+  isInfoFormEditing = false;
+
 
   adminUser: User
 
@@ -32,10 +35,12 @@ export class AdminDataComponent {
   }
 
   onAdminPresentationChangeHandler(data: { formValue: Object; isEditing: boolean }) {
+    this.isPresentationFormEditing = data.isEditing;
     this.handleDataChange(data, 'presentation');
   }
 
   onAdminInfoChangeHandler(data: { formValue: Object; isEditing: boolean }) {
+    this.isInfoFormEditing = data.isEditing;
     this.handleDataChange(data, 'info');
   }
 

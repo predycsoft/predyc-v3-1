@@ -1,10 +1,10 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { User } from 'src/app/shared/models/user.model';
+import { AlertsService } from 'src/app/shared/services/alerts.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { IconService } from 'src/app/shared/services/icon.service';
-import { UserService } from 'src/app/shared/services/user.service';
 
 @Component({
   selector: 'app-admin-info-form',
@@ -16,10 +16,10 @@ export class AdminInfoFormComponent {
   constructor(
     public icon:IconService,
     private authService: AuthService,
-    private userService: UserService,
-
+    private alertService: AlertsService,
   ) {}
 
+  @Input() isOtherFormEditing: boolean;
   @Output() onAdminInfoChange: EventEmitter<{ formValue: Object; isEditing: boolean }> = new EventEmitter<{ formValue: Object; isEditing: boolean }>()
 
 
@@ -76,6 +76,11 @@ export class AdminInfoFormComponent {
   }
   
   onClick() {
+    if (this.isOtherFormEditing) {
+      this.alertService.infoAlert("Primero debes guardar los cambios del otro formulario del administrador.")
+      console.error("El otro formulario está en modo de edición.");
+      return;
+    }
     this.isEditing = !this.isEditing;
     if (this.isEditing) {
       this.onAdminInfoChange.emit({
