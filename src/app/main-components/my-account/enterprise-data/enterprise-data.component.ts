@@ -18,9 +18,11 @@ export class EnterpriseDataComponent {
   // From presentation form (above form)
   presentationData = {}
   originalPresentationData: any; 
+  isPresentationFormEditing = false;
   // From info form (below form)
   infoData = {}
   originalInfoData: any; 
+  isInfoFormEditing = false;
 
   ngOnInit(){
     this.enterpriseService.enterprise$.subscribe(enterprise => {
@@ -31,10 +33,12 @@ export class EnterpriseDataComponent {
   }
 
   onEnterprisePresentationChangeHandler(data: { formValue: Object; isEditing: boolean }) {
+    this.isPresentationFormEditing = data.isEditing;
     this.handleDataChange(data, 'presentation');
   }
   
   onEnterpriseInfoChangeHandler(data: { formValue: Object; isEditing: boolean }) {
+    this.isInfoFormEditing = data.isEditing;
     this.handleDataChange(data, 'info');
   }
 

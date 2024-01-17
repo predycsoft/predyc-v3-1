@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { FormControl, FormGroup } from '@angular/forms';
 import { finalize, firstValueFrom } from 'rxjs';
@@ -21,7 +21,8 @@ export class EnterprisePresentationFormComponent {
     private enterpriseService: EnterpriseService,
 
   ) {}
-
+  
+  @Input() isOtherFormEditing: boolean;
   @Output() onEnterprisePresentationChange: EventEmitter<{ formValue: FormGroup; isEditing: boolean }> = new EventEmitter<{ formValue: FormGroup; isEditing: boolean }>()
 
 
@@ -88,6 +89,11 @@ export class EnterprisePresentationFormComponent {
   }
 
   onClick() {
+    if (this.isOtherFormEditing) {
+      this.alertService.infoAlert("Primero debes guardar los cambios del otro formulario de la empresa.")
+      console.error("El otro formulario está en modo de edición.");
+      return;
+    }
     this.isEditing = !this.isEditing;
     if (this.isEditing) {
       this.onEnterprisePresentationChange.emit({

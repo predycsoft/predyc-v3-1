@@ -1,3 +1,3 @@
 
-<app-enterprise-presentation-form (onEnterprisePresentationChange)="onEnterprisePresentationChangeHandler($event)"></app-enterprise-presentation-form>
-<app-enterprise-info-form (onEnterpriseInfoChange)="onEnterpriseInfoChangeHandler($event)"></app-enterprise-info-form>
+<app-enterprise-presentation-form [isOtherFormEditing]="isInfoFormEditing" (onEnterprisePresentationChange)="onEnterprisePresentationChangeHandler($event)"></app-enterprise-presentation-form>
+<app-enterprise-info-form [isOtherFormEditing]="isPresentationFormEditing" (onEnterpriseInfoChange)="onEnterpriseInfoChangeHandler($event)"></app-enterprise-info-form>

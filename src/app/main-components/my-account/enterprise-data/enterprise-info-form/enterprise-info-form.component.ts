@@ -1,7 +1,7 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
-import { BehaviorSubject } from 'rxjs';
 import { Enterprise } from 'src/app/shared/models/enterprise.model';
+import { AlertsService } from 'src/app/shared/services/alerts.service';
 import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
 import { IconService } from 'src/app/shared/services/icon.service';
 
@@ -15,9 +15,11 @@ export class EnterpriseInfoFormComponent {
   constructor(
     public icon:IconService,
     private enterpriseService: EnterpriseService,
+    private alertService: AlertsService,
 
   ) {}
 
+  @Input() isOtherFormEditing: boolean;
   @Output() onEnterpriseInfoChange: EventEmitter<{ formValue: Object; isEditing: boolean }> = new EventEmitter<{ formValue: Object; isEditing: boolean }>()
 
 
@@ -82,6 +84,11 @@ export class EnterpriseInfoFormComponent {
 
 
   onClick() {
+    if (this.isOtherFormEditing) {
+      this.alertService.infoAlert("Primero debes guardar los cambios del otro formulario de la empresa.")
+      console.error("El otro formulario está en modo de edición.");
+      return;
+    }
     this.isEditing = !this.isEditing;
     if (this.isEditing) {
       this.onEnterpriseInfoChange.emit({
