@@ -1,5 +1,5 @@
 <span class="gray-10">Empresa</span> 
-<form *ngIf="isEnterpriseLoaded" [formGroup]="form" (ngSubmit)="onSubmit()" >
+<form *ngIf="enterprise" [formGroup]="form" (ngSubmit)="onSubmit()" >
     <div fxLayout="row" fxLayoutAlign="space-between center" class="card-container-sm mgr10 pd05">
         <div fxLayout="row" fxLayoutAlign=" center">
             <div (click)="isEditing ? fileInput.click() : null" [ngClass]="isEditing ? 'cursorPointer' : ''">

@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { Enterprise } from 'src/app/shared/models/enterprise.model';
 import { AlertsService } from 'src/app/shared/services/alerts.service';
-import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
 import { IconService } from 'src/app/shared/services/icon.service';
 
 @Component({
@@ -14,17 +14,13 @@ export class EnterpriseInfoFormComponent {
   
   constructor(
     public icon:IconService,
-    private enterpriseService: EnterpriseService,
     private alertService: AlertsService,
 
   ) {}
 
+  @Input() enterprise: Enterprise;
   @Input() isOtherFormEditing: boolean;
   @Output() onEnterpriseInfoChange: EventEmitter<{ formValue: Object; isEditing: boolean }> = new EventEmitter<{ formValue: Object; isEditing: boolean }>()
-
-
-  enterprise: Enterprise
-  isEnterpriseLoaded = false;
 
   isEditing = false
 
@@ -41,17 +37,11 @@ export class EnterpriseInfoFormComponent {
 
   enterpriseSize: string
 
+  enterpriseSubscription: Subscription
+
   ngOnInit(){
-    this.enterprise = this.enterpriseService.getEnterprise()
-    this.enterpriseService.enterprise$.subscribe(enterprise => {
-      if (enterprise) {
-        this.enterprise = enterprise
-        if (this.enterprise.employesNo) this.getEnterpriseSize() 
-        this.initForm()
-        this.isEnterpriseLoaded = true;
-      }
-    })
-  
+      if (this.enterprise.employesNo) this.getEnterpriseSize() 
+      this.initForm()
   }
 
   initForm() {

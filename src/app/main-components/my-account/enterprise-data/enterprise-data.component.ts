@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { Enterprise } from 'src/app/shared/models/enterprise.model';
 import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
 
@@ -24,8 +25,10 @@ export class EnterpriseDataComponent {
   originalInfoData: any; 
   isInfoFormEditing = false;
 
+  enterpriseSubscription: Subscription
+
   ngOnInit(){
-    this.enterpriseService.enterprise$.subscribe(enterprise => {
+    this.enterpriseSubscription = this.enterpriseService.enterprise$.subscribe(enterprise => {
       if (enterprise) {
         this.enterprise = enterprise
       }
@@ -106,5 +109,9 @@ export class EnterpriseDataComponent {
     this.enterprise = Enterprise.fromJson({ ...updatedEnterprise})
     this.originalInfoData = { ...this.infoData }
     this.originalPresentationData = { ...this.presentationData }
+  }
+
+  ngOnDestroy() {
+    this.enterpriseSubscription.unsubscribe()
   }
 }

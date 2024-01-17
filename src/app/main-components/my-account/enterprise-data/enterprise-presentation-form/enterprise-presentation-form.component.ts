@@ -1,10 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { FormControl, FormGroup } from '@angular/forms';
-import { finalize, firstValueFrom } from 'rxjs';
+import { Subscription, finalize, firstValueFrom } from 'rxjs';
 import { Enterprise } from 'src/app/shared/models/enterprise.model';
 import { AlertsService } from 'src/app/shared/services/alerts.service';
-import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
 import { IconService } from 'src/app/shared/services/icon.service';
 
 @Component({
@@ -18,16 +17,12 @@ export class EnterprisePresentationFormComponent {
     public icon:IconService,
     private alertService: AlertsService,
     private storage: AngularFireStorage,
-    private enterpriseService: EnterpriseService,
 
   ) {}
   
+  @Input() enterprise: Enterprise;
   @Input() isOtherFormEditing: boolean;
   @Output() onEnterprisePresentationChange: EventEmitter<{ formValue: FormGroup; isEditing: boolean }> = new EventEmitter<{ formValue: FormGroup; isEditing: boolean }>()
-
-
-  enterprise: Enterprise
-  isEnterpriseLoaded = false;
 
   imageUrl: string | ArrayBuffer | null = null
   uploadedImage: File | null = null
@@ -35,6 +30,9 @@ export class EnterprisePresentationFormComponent {
   isEditing = false
 
   form: FormGroup
+
+  enterpriseSubscription: Subscription
+
 
   onNullFormValues = {
     photoUrl: null,
@@ -46,14 +44,8 @@ export class EnterprisePresentationFormComponent {
   }
 
   async ngOnInit() {
-    this.enterpriseService.enterprise$.subscribe(enterprise => {
-      if (enterprise) {
-        this.enterprise = enterprise
-        this.initForm()
-        this.isEnterpriseLoaded = true;
-        if (this.enterprise.photoUrl) this.imageUrl = this.enterprise.photoUrl;
-      }
-    })
+      this.initForm()
+      if (this.enterprise.photoUrl) this.imageUrl = this.enterprise.photoUrl;
   }
 
   initForm() {

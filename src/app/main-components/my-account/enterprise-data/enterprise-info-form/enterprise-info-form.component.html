@@ -5,7 +5,7 @@
             <img [src]="isEditing ? icon.check : icon.licencias" class=" makeGray h20px cursorPointer" alt="">
         </div>
     </div>
-    <form *ngIf="isEnterpriseLoaded" [formGroup]="form" (ngSubmit)="onSubmit()" > 
+    <form *ngIf="enterprise" [formGroup]="form" (ngSubmit)="onSubmit()" > 
         <div class="mgl05">
             <div fxLayout="column" class="mgt05">
                 <span class="makeGray">Descripción de la empresa</span>
@@ -52,7 +52,7 @@
                     <span class="makeGray">CP</span>
                     <span *ngIf="!isEditing">{{form.get('zipCode').value ? form.get('zipCode').value : onNullFormValues.zipCode}}</span>
                     <input *ngIf="isEditing" type="number" placeholder="Introduzca el código postal" [ngClass]="isEditing ? '' : 'disabledInput'" 
-                    class="input" formControlName="zipCode">
+                    class="input" formControlName="zipCode" min="0">
                 </div>
     
             </div>
