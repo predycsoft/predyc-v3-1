@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { User } from 'src/app/shared/models/user.model';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { UserService } from 'src/app/shared/services/user.service';
@@ -26,9 +27,10 @@ export class AdminDataComponent {
 
 
   adminUser: User
+  adminSuscription: Subscription
 
   async ngOnInit(){
-    this.authService.user$.subscribe(user => {
+    this.adminSuscription = this.authService.user$.subscribe(user => {
       this.adminUser = user
     })
 
@@ -101,6 +103,10 @@ export class AdminDataComponent {
     this.adminUser = User.fromJson({ ...updatedAdmin})
     this.originalInfoData = { ...this.infoData }
     this.originalPresentationData = { ...this.presentationData }
+  }
+  
+  ngOnDestroy() {
+    this.adminSuscription.unsubscribe()
   }
 
 

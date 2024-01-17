@@ -1,3 +1,4 @@
-
-<app-admin-presentation-form [isOtherFormEditing]="isInfoFormEditing" (onAdminPresentationChange)="onAdminPresentationChangeHandler($event)"></app-admin-presentation-form>
-<app-admin-info-form [isOtherFormEditing]="isPresentationFormEditing" (onAdminInfoChange)="onAdminInfoChangeHandler($event)"></app-admin-info-form>
+<ng-container *ngIf="adminUser">
+    <app-admin-presentation-form [adminUser]="adminUser" [isOtherFormEditing]="isInfoFormEditing" (onAdminPresentationChange)="onAdminPresentationChangeHandler($event)"></app-admin-presentation-form>
+    <app-admin-info-form [adminUser]="adminUser" [isOtherFormEditing]="isPresentationFormEditing" (onAdminInfoChange)="onAdminInfoChangeHandler($event)"></app-admin-info-form>
+</ng-container>

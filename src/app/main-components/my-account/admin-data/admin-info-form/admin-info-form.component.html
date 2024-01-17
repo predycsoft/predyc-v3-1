@@ -5,7 +5,7 @@
             <img [src]="isEditing ? icon.check : icon.licencias" class=" makeGray h20px cursorPointer" alt="">
         </div>
     </div>
-    <form *ngIf="adminUser$ | async as adminUser" [formGroup]="form" (ngSubmit)="onSubmit()" > 
+    <form *ngIf="adminUser" [formGroup]="form" (ngSubmit)="onSubmit()" > 
         <div fxLayout="column" class="mgl05">
             <div fxLayout="row" fxLayoutAlign="space-between start">
     
@@ -64,7 +64,7 @@
                         {{form.get('zipCode').value ? form.get('zipCode').value : onNullFormValues.zipCode}}
                     </span>
                     <input *ngIf="isEditing" type="number" placeholder="Introduzca el Código Postal" [ngClass]="isEditing ? '' : 'disabledInput'" 
-                    class="input" formControlName="zipCode">
+                    class="input" formControlName="zipCode" min="0">
                 </div>
             </div>
         </div>

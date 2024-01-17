@@ -19,12 +19,9 @@ export class AdminInfoFormComponent {
     private alertService: AlertsService,
   ) {}
 
+  @Input() adminUser: User;
   @Input() isOtherFormEditing: boolean;
   @Output() onAdminInfoChange: EventEmitter<{ formValue: Object; isEditing: boolean }> = new EventEmitter<{ formValue: Object; isEditing: boolean }>()
-
-
-  // adminUser: User
-  adminUser$: Observable<User>
 
   isEditing = false
 
@@ -38,17 +35,11 @@ export class AdminInfoFormComponent {
     zipCode: "Código postal desconocido",
   }
 
-  async ngOnInit(){
-    this.adminUser$ = this.authService.user$
-    this.adminUser$.subscribe(adminUser => {
-      if(adminUser){
-        this.initForm(adminUser)
-      }
-    })
-
+  ngOnInit(){
+    this.initForm(this.adminUser)
   }
 
-  initForm(adminUser) {
+  initForm(adminUser: User) {
 
 
     // Aqui podemos definir firstName y secondName a partir del name del adminUser

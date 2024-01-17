@@ -22,11 +22,9 @@ export class AdminPresentationFormComponent {
 
   ) {}
 
+  @Input() adminUser: User;
   @Input() isOtherFormEditing: boolean;
   @Output() onAdminPresentationChange: EventEmitter<{ formValue: FormGroup; isEditing: boolean }> = new EventEmitter<{ formValue: FormGroup; isEditing: boolean }>()
-
-  adminUser: User
-  adminUser$: Observable<User> = this.authService.user$
 
   imageUrl: string | ArrayBuffer | null = null
   uploadedImage: File | null = null
@@ -41,16 +39,9 @@ export class AdminPresentationFormComponent {
     job: null,
   }
 
-  async ngOnInit(){
-
-    this.adminUser$.subscribe(adminUser => {
-      if(adminUser){
-        this.adminUser = adminUser
-        this.initForm()
-        if (this.adminUser.photoUrl) this.imageUrl = this.adminUser.photoUrl;
-      }
-    })
-
+  ngOnInit(){
+    this.initForm()
+    if (this.adminUser.photoUrl) this.imageUrl = this.adminUser.photoUrl;
   }
 
   initForm() {
