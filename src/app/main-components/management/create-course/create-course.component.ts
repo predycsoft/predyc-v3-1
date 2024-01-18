@@ -266,7 +266,7 @@ export class CreateCourseComponent {
           this.modulos.forEach(module => {
             let clases = module['clases']
             clases.forEach(clase => {
-              if(clase.tipo == 'actividad'){
+              if(clase.tipo == 'actividad' || clase.tipo == 'corazones'){
                 console.log('activities clases clase',clase)
                 let activity = activities.find(activity => activity.claseRef.id == clase.id)
                 console.log('activities clases activity',activity)
@@ -357,29 +357,45 @@ export class CreateCourseComponent {
 
           if(clase.activity){
 
-            let activityClass = new Activity
+            let activityClass = clase.activity
             let questions: Question[]= []
             questions = structuredClone(clase.activity.questions);
-            activityClass = structuredClone(clase.activity) as Activity;
             //activityClass.enterpriseRef = this.curso.enterpriseRef as DocumentReference<Enterprise>
             activityClass.enterpriseRef = null
             activityClass.claseRef = refClass;
             activityClass.coursesRef = [courseRef];
-            //activityClass.type = Activity.TYPE_REGULAR;
-            activityClass.type = Activity.TYPE_HEARTS;
+            activityClass.type = Activity.TYPE_REGULAR;
+            activityClass.activityCorazon = false
+            if(clase.tipo == 'corazones'){
+              activityClass.activityCorazon = true
+            }
+
+            let questionsDelete = activityClass['questions']
+            let recursosBase64Delete =activityClass['recursosBase64'] 
 
             delete activityClass['questions'];
             delete activityClass['recursosBase64'] 
             console.log('activityClass',activityClass)
+            
 
             await this.activityClassesService.saveActivity(activityClass);
+
+            activityClass['questions'] = questionsDelete
+            activityClass['recursosBase64'] = recursosBase64Delete
+
+
+
             clase.activity.id = activityClass.id;
 
+            if(activityClass.id == 'QEtYTbScyLaTtqxT2ryk'){
+              console.log('questions activity',questions,activityClass)
+            }
             questions.forEach(pregunta => {
               //const arrayRefSkills = (pregunta['competencias']?.map(skillClase => this.curso.skillsRef.find(skill => skill.id == skillClase.id)).filter(Boolean) ) || [];
               claseLocal.skillsRef = arrayRefSkills;
               console.log('refSkills', arrayRefSkills)
               //pregunta.skills= arrayRefSkills;
+              delete pregunta['typeFormated'];
               delete pregunta['competencias_tmp'];
               delete pregunta['competencias'];
               delete pregunta['isInvalid'];
@@ -1560,17 +1576,23 @@ export class CreateCourseComponent {
     else if(clase.tipo == 'actividad' ||clase.tipo == 'corazones' ){
       let activity : Activity = this.selectedClase.activity
 
+      console.log('clase',clase)
+
       this.formNuevaActividadBasica = new FormGroup({
         titulo: new FormControl(clase.titulo , Validators.required),
         descripcion: new FormControl(activity?.description?activity.description : '', Validators.required),
-        duracion: new FormControl(clase.duration, Validators.required),
+        duracion: new FormControl(clase.duracion, Validators.required),
       });
 
+      if(clase?.archivos[0]?.nombre){
+        clase.archivos[0].uploading_file_progress = 100;
+
+      }
       this.formNuevaActividadGeneral = new FormGroup({
         instrucciones: new FormControl(activity?.description?activity.description : '', Validators.required),
         // video: new FormControl(clase.vimeoId1, [Validators.required, this.NotZeroValidator()]),
         video: new FormControl(clase.vimeoId1),
-        recursos: new FormControl(clase.archivos[0]?.nombre ? clase.archivos[0].nombre : null, Validators.required),
+        recursos: new FormControl(clase.archivos[0]?.nombre ? clase.archivos[0].nombre : null),
       });
     }
 

@@ -413,7 +413,7 @@
         <ng-container *ngIf="activeStep == 4">
             <div fxFlex fxLayout="row" class="container">
                 <div fxFlex="60%" class="pdl10 pdr10 pdt10">
-                    <app-questions (emmitForm)="validExam = $event" [questionsArray]="examen['questions'] ? examen['questions']:[] " [checkQuestions]="updateTriggeQuestionsExam" [selectedTestSkills]="[]"></app-questions>
+                    <app-questions [nameCurso]="formNewCourse.get('titulo').value?  this.formNewCourse.get('titulo').value : 'Temporal'" [nameEmpresa]="empresa.name" (emmitForm)="validExam = $event" [questionsArray]="examen['questions'] ? examen['questions']:[] " [checkQuestions]="updateTriggeQuestionsExam" [selectedTestSkills]="[]"></app-questions>
                 </div>
                 <div fxFlex="40%" class="pdl10 pdr10 pdt10">
                     <div fxLayout="column" fxLayoutAlign="center center" class="fw fh">
@@ -1056,7 +1056,7 @@
                                     </div>
                                 </div>
                             </ng-container>
-                            <app-questions (emmitForm)="validActividad = $event"  [heartsActivity]="selectedClase.tipo == 'corazones'? true: false" [questionsArray]="selectedClase?.activity?.questions ? selectedClase.activity.questions:[] " [checkQuestions]="updateTriggeQuestions" [selectedTestSkills]="competenciasSelectedClaseFormated"></app-questions>
+                            <app-questions  [nameCurso]="formNewCourse.get('titulo').value?  this.formNewCourse.get('titulo').value : 'Temporal'" [nameEmpresa]="empresa.name" (emmitForm)="validActividad = $event"  [heartsActivity]="selectedClase.tipo == 'corazones'? true: false" [questionsArray]="selectedClase?.activity?.questions ? selectedClase.activity.questions:[] " [checkQuestions]="updateTriggeQuestions" [selectedTestSkills]="competenciasSelectedClaseFormated"></app-questions>
                             <!-- <div fxLayout="row" class="fw">
                                 <div class="mgl40 mgr10 fw">
                                     <div class="fw mgb10">
@@ -1099,8 +1099,13 @@
                                     
                                         <div fxLayout="row" class="pdt10">
                                             <!-- imagen -->
-                                            <div *ngIf="question.image" fxFlex="30">
+                                            <div *ngIf="question.image && !(question.image?.url)" fxFlex="30">
                                                 <img [src]="question.image" alt="" class="w-90" style="max-height: 200px;">
+                                            </div>
+
+                                            <!-- imagen -->
+                                            <div *ngIf="question.image?.url" fxFlex="30">
+                                                <img [src]="question.image?.url" alt="" class="w-90" style="max-height: 200px;">
                                             </div>
                                             
                                             <!-- area dependiente de la pregunta -->
