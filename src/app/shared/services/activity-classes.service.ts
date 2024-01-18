@@ -56,6 +56,8 @@ export class ActivityClassesService {
     newQuestion.id = ref.id;
   }
 
+  
+
   async saveActivity(newActivity: Activity): Promise<void> {
     try {
       console.log('saveActivity',newActivity)
@@ -80,23 +82,41 @@ export class ActivityClassesService {
   }
 
   async saveQuestion(newQuestion: Question, idActivity): Promise<void> {
+    console.log('saveQuestion', newQuestion)
     try {
-      try {
-        await this.afs.collection(Activity.collection) // Referenciamos la colección principal
-        .doc(idActivity) // Referenciamos el documento principal
-        .collection(Question.collection) // Referenciamos la subcolección
-        .doc(newQuestion.id) // Referenciamos el documento en la subcolección, o .add() para crear uno con ID automático
-        .set(newQuestion, { merge: true }); // Guardamos/actualizamos el documento en la subcolección
-      } catch (error) {
-        console.log(error)
-        throw error
+      let ref: DocumentReference;
+      if (!newQuestion.id) {
+        console.log('crear pregunta')
+        // If there's no ID, create a new document and assign the ID
+        ref = this.afs.collection(Activity.collection)
+                      .doc(idActivity)
+                      .collection(Question.collection)
+                      .doc().ref;
+        newQuestion.id = ref.id;
+      } else {
+        // If an ID exists, just reference the existing document
+        console.log('actualizar pregunta')
+        ref = this.afs.collection(Activity.collection)
+                      .doc(idActivity)
+                      .collection(Question.collection)
+                      .doc(newQuestion.id).ref;
       }
+      
+      const dataToSave = newQuestion;
+  
+      console.log('ref question', ref, dataToSave)
+      // Save or update the question document in Firestore
+      await ref.set({ ...dataToSave, id: ref.id }, { merge: true });
+      
       console.log('Has agregado una pregunta exitosamente.')
     } catch (error) {
       console.log(error)
+      newQuestion.id = null; // Reset the ID in case of error
       this.alertService.errorAlert(JSON.stringify(error))
     }
   }
+  
+  
 
   getQuestionsCourses(courseIds: string[]): Observable<any> {
     // Convert string IDs to DocumentReferences
