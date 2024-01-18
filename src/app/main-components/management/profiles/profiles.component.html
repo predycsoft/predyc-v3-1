@@ -42,7 +42,7 @@
         </ng-template>
     </div>
     <div fxLayout="row" fxLayoutAlign="space-between center" class="main-content mgt05 pdr30 pdl30">
-        <div class="containers" fxLayout="column" fxLayoutGap="20px">
+        <div class="containers" fxLayout="column" fxLayoutGap="20px" style="overflow-y: scroll; border: 2px solid red;">
             <div class="container" style="height: 28%; padding: 5px">
                 <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign=" center">
                     <img [src]="icon.credentials" alt="Información del perfil">
@@ -65,6 +65,20 @@
                 <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign=" center">
                     <img [src]="icon.list" alt="Competencias">
                     <span class="ft500 ft12 undrl gray-10">Resumen de competencias</span>
+                </div>
+                <div style="overflow-y: scroll" class="chart-container ft12 ft500">
+                    <div *ngFor="let category of categoriesAndSkillsWidgetData; let i = index">
+                        <div>Pilar {{i+1}}: {{category.label}}</div>
+                        <div
+                            *ngFor="let skill of category.skills"
+                            fxLayout="row"
+                            fxLayoutGap="5px"
+                            fxLayoutAlign=" center"
+                            style="background-color: var(--gray-4); width: fit-content; padding: 2px 10px; border-radius: 20px;"
+                            >
+                            {{skill}}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -228,14 +242,15 @@
                         <span
                             class="ft11"
                             >
-                            {{ item.title }}
+                            {{ item.titulo }}
                         </span>
                     </div>
                     <div fxLayoutAlign="center center" fxLayout="row" fxLayoutGap="1rem">
                         <span class="gray-6 ft11 nowrap">
-                            {{ roundNumber(item.duration / 60) }} hrs
+                            {{ roundNumber(60 / 60) }} hrs (H)
+                            <!-- {{ roundNumber(item.duration / 60) }} hrs -->
                         </span>
-                        <img *ngIf="isEditing" [src]="icon.trash" class="h14px makeGray cursorPointer" (click)="removeItemFromPlan()" alt="">
+                        <img *ngIf="isEditing" [src]="icon.trash" class="h14px makeGray cursorPointer" (click)="toggleCourseInPlan(item)" alt="">
                     </div>
                 </div>
             </div>

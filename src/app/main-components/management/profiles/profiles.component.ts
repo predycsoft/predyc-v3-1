@@ -36,67 +36,10 @@ export class ProfilesComponent {
   chart: Chart
 
   serviceSubscription: Subscription
-  studyPlan = [
-    {
-      title: 'Curso',
-      duration: 120
-    },
-    {
-      title: 'Curso',
-      duration: 120
-    },
-    {
-      title: 'Curso',
-      duration: 120
-    },
-    {
-      title: 'Curso',
-      duration: 120
-    },
-    {
-      title: 'Curso',
-      duration: 120
-    },
-    {
-      title: 'Curso',
-      duration: 120
-    },
-    {
-      title: 'Curso',
-      duration: 120
-    },
-    {
-      title: 'Curso',
-      duration: 120
-    },
-    {
-      title: 'Curso',
-      duration: 120
-    },
-    {
-      title: 'Curso',
-      duration: 120
-    },
-    {
-      title: 'Curso',
-      duration: 120
-    },
-    {
-      title: 'Curso',
-      duration: 120
-    },
-    {
-      title: 'Curso',
-      duration: 120
-    },
-    {
-      title: 'Curso',
-      duration: 120
-    },
-  ]
+  studyPlan = []
 
   categories: Category[]
-  courses: Curso[]
+  // courses: Curso[]
   skills: Skill[]
 
   coursesForExplorer: CoursesForExplorer[]
@@ -106,12 +49,12 @@ export class ProfilesComponent {
   private hoverSubject = new BehaviorSubject<any>(null);
 
   ngOnInit() {
-    this.getChart()
     this.hoverItem$ = this.hoverSubject.asObservable();
     this.serviceSubscription = combineLatest([this.categoryService.getCategories$(), this.skillService.getSkills$(), this.courseService.getCourses$()]).subscribe(([categories, skills, courses]) => {
       this.categories = categories
       this.skills = skills
-      this.courses = courses
+      this.updateWidgets()
+      // this.courses = courses
       this.coursesForExplorer = courses.map(course => {
         // Find skill object for each skill ref in course
         const skills = course.skillsRef.map(skillRef => {
@@ -136,8 +79,8 @@ export class ProfilesComponent {
         this.hoverItem$
       ]).pipe(
         map(([searchText, hoverCategory]) => {
-          console.log('searchText', searchText)
-          console.log('hoverCategory', hoverCategory)
+          // console.log('searchText', searchText)
+          // console.log('hoverCategory', hoverCategory)
           if (!searchText && !hoverCategory) return []
           let filteredCourses = this.coursesForExplorer
           if (hoverCategory) {
@@ -166,6 +109,13 @@ export class ProfilesComponent {
 
   toggleCourseInPlan(course) {
     course.inStudyPlan = !course.inStudyPlan
+    if(course.inStudyPlan) {
+      this.studyPlan.push(course)
+    } else {
+      const targetIndex = this.studyPlan.findIndex(item => item.id === course.id)
+      this.studyPlan.splice(targetIndex, 1)
+    }
+    this.updateWidgets()
   }
 
   onCancel() {
@@ -176,53 +126,40 @@ export class ProfilesComponent {
     return roundNumber(number)
   }
 
-  removeItemFromPlan() {
-    console.log("Remove item from plan")
+  updateWidgets() {
+    const chartData = this.getChartData()
+    this.getChart(chartData)
+    this.updateCategoriesAndSkillsWidget(chartData)
   }
 
   getChartData() {
-    const data = [
-      {
-        label: 'Mantenimientos',
-        value: 28
-      },
-      {
-        label: 'Proyectos',
-        value: 48
-      },
-      {
-        label: 'Petróleo',
-        value: 40
-      },
-      {
-        label: 'Confiabilidad',
-        value: 19
-      },
-      {
-        label: 'Manufactura',
-        value: 96
-      },
-      {
-        label: 'Equipos dinámicos',
-        value: 27
-      },
-      {
-        label: 'Procesos',
-        value: 100
-      },
-      {
-        label: 'Industria 4.0',
-        value: 50
+    const data = this.categories.map(category => {
+      let value = 0
+      let skills = []
+      if (this.studyPlan.length > 0) {
+        const coursesWithThisCategory = this.studyPlan.filter(course => {
+          return course.categories.filter(item => item.id === category.id).length
+        })
+        coursesWithThisCategory.forEach(course => {
+          course.skills.forEach(skill => {
+            if (!skills.includes(skill.name)) skills.push(skill.name)
+          })
+        })
+        value = roundNumber(coursesWithThisCategory.length * 100 / this.studyPlan.length)
       }
-    ]
+      return {
+        label: category.name,
+        skills: skills,
+        value: value
+      }
+    })
     return data
   }
 
-  getChart() {
-    const chartData = this.getChartData()
+  getChart(chartData) {
     let labels = []
     let values = []
-    chartData.forEach(data => {
+    chartData.filter(item => item.value !== 0).forEach(data => {
       labels.push(data.label)
       values.push(data.value)
     });
@@ -262,14 +199,22 @@ export class ProfilesComponent {
         },
         scales: {
           r: {
+            // max: 100,
+            beginAtZero: true,
             ticks: {
               display: false,
-              stepSize: 20
+              stepSize: 20,
             }
           }
         }
       }
     })
+  }
+
+  categoriesAndSkillsWidgetData = []
+
+  updateCategoriesAndSkillsWidget(chartData) {
+    this.categoriesAndSkillsWidgetData = chartData.filter(category => category.skills.length > 0)
   }
 
   onSave() {
@@ -279,6 +224,9 @@ export class ProfilesComponent {
 
   ngOnDestroy() {
     this.serviceSubscription.unsubscribe()
+    if (this.chart) {
+      this.chart.destroy();
+    }
   }
 
 }
