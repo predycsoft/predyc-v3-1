@@ -70,7 +70,7 @@
                         <div *ngIf="question.get('image.url').value" class="form-group pdt10">
                             <div fxLayout="column">
                                 <div fxLayout="row">
-                                    <span>{{ question.get('image.file').value.name }}&nbsp;</span>
+                                    <span>{{ question.get('image.file').value.file }}&nbsp;</span>
                                     <span
                                         (click)="questionStatus[i].visibleImage = !questionStatus[i].visibleImage"
                                         class="blueLink cursorPointer"
