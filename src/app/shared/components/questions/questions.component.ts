@@ -5,11 +5,12 @@ import { cloneArrayOfObjects, getPlaceholders } from '../../utils';
 
 import { CategoryService } from 'src/app/shared/services/category.service';
 import { SkillService } from 'src/app/shared/services/skill.service';
-import { Subscription } from 'rxjs';
+import { Subscription, finalize } from 'rxjs';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { AlertsService } from '../../services/alerts.service';
 import { IconService } from '../../services/icon.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { AngularFireStorage } from '@angular/fire/compat/storage';
 
 function optionsLengthValidator(question: FormGroup): ValidationErrors | null {
   const options = question.get('options') as FormArray
@@ -98,6 +99,8 @@ export class QuestionsComponent {
   @Input() checkQuestions
   @Input() questionsArray =[]
   @Input() heartsActivity = false
+  @Input() nameCurso
+  @Input() nameEmpresa
 
   @Output() emmitForm = new EventEmitter();
 
@@ -130,7 +133,8 @@ export class QuestionsComponent {
     public icon: IconService,
     private alertService: AlertsService,
     public sanitizer: DomSanitizer,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private storage: AngularFireStorage,
 
   ) {}
 
@@ -153,8 +157,10 @@ export class QuestionsComponent {
   selectedQuestionSkills: [] | null = null
 
   ngOnInit() {
+
+    
     this.emmitForm.emit(null);
-    console.log('selectedTestSkills',this.selectedTestSkills)
+    console.log('selectedTestSkills',this.selectedTestSkills,this.nameCurso,this.nameEmpresa)
     this.setupForm()
 
     if(this.heartsActivity){
@@ -193,6 +199,7 @@ export class QuestionsComponent {
         url: [question?.image?.url || ''],
         file: [question?.image?.file || null]
       }),
+      id:[question?.id || null],
       options: this.fb.array([]),
       points: [question.points, [Validators.required, Validators.min(1), Validators.pattern(/^\d*$/)]],
       skills: this.fb.array([]),
@@ -227,6 +234,7 @@ export class QuestionsComponent {
         text: [option.text, [Validators.required]],
         isCorrect: [option.isCorrect],
         placeholder: [option.placeholder],
+        image: [option?.image]
       }));
     });
   }
@@ -313,8 +321,9 @@ export class QuestionsComponent {
     return <FormArray>this.questions.at(index).get('options');
   }
 
-  addOption(questionIndex: number, placeholder=null): void {
+  addOption(questionIndex: number, placeholder=null,image=null): void {
     this.options(questionIndex).push(this.fb.group({
+      image: [image],
       text: ['', [Validators.required]],
       isCorrect: [false],
       placeholder: [placeholder],
@@ -345,7 +354,7 @@ export class QuestionsComponent {
     this.questionStatus[questionIndex] = {
       ...this.questionStatus[questionIndex],
       placeholders: [],
-      textToRender: null
+      textToRender: null,
     }
     question.clearValidators()
     const validators: ValidatorFn[] = questionTypeToValidators[typeValue]
@@ -372,8 +381,88 @@ export class QuestionsComponent {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = (_event) => {
-      this.questions.at(questionIndex)['controls']['image']['controls']['url'].setValue(reader.result)
+
+      let fileBaseName = file.name.split('.').slice(0, -1).join('.');
+      let fileExtension = file.name.split('.').pop();
+
+      let newName = `${fileBaseName}-${Date.now().toString()}.${fileExtension}`;    
+
+      let filePath = `Clientes/${this.nameEmpresa}/Cursos/${this.nameCurso}/Imagen/Preguntas/${newName}`;
+      const task = this.storage.upload(filePath, file);
+      const fileRef = this.storage.ref(filePath);
+
+      // Observa el progreso de la carga del archivo y haz algo cuando se complete.
+      task.snapshotChanges().pipe(
+        finalize(() => {
+          // Obtén la URL de descarga del archivo.
+          fileRef.getDownloadURL().subscribe(url => {
+            //clase['uploading'] = false;
+            console.log(`File URL: ${url}`);
+            this.questions.at(questionIndex)['controls']['image']['controls']['url'].setValue(url)
+            this.questions.at(questionIndex)['controls']['image']['controls']['file'].setValue(newName)
+          });
+        })
+      ).subscribe();
+
+
       this.questions.at(questionIndex)['controls']['image']['controls']['file'].setValue(file)
+    };
+  }
+
+  uploadQuestionOptionImage(option, event) {
+    if (!event.target.files[0] || event.target.files[0].length === 0) {
+      this.alertService.errorAlert('Debe seleccionar una imagen')
+      return;
+    }
+    const file = event.target.files[0];
+    if (file.type !== 'image/webp') {
+      this.alertService.errorAlert('La imagen seleccionada debe tener formato:  WEBP')
+      return;
+    }
+    /* checking size here - 1MB */
+    const imageMaxSize = 1000000;
+    if (file.size > imageMaxSize) {
+      this.alertService.errorAlert('El archivo es mayor a 1MB por favor incluya una imagen de menor tamaño')
+    }
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    
+    reader.onload = (_event) => {
+      let fileBaseName = file.name.split('.').slice(0, -1).join('.');
+      let fileExtension = file.name.split('.').pop();
+
+      let newName = `${fileBaseName}-${Date.now().toString()}.${fileExtension}`;    
+
+      let filePath = `Clientes/${this.nameEmpresa}/Cursos/${this.nameCurso}/Imagen/Preguntas/${newName}`;
+      const task = this.storage.upload(filePath, file);
+      const fileRef = this.storage.ref(filePath);
+
+      //this.uploadProgress$ = task.percentageChanges();
+
+      // Suscríbete al Observable para actualizar tu componente de barra de progreso
+      // this.uploadProgress$.subscribe(progress => {
+      //   console.log(progress);
+      //   fileInfo.uploading_file_progress = Math.floor(progress) ;
+      // });
+
+        
+        // Observa el progreso de la carga del archivo y haz algo cuando se complete.
+        task.snapshotChanges().pipe(
+          finalize(() => {
+            // Obtén la URL de descarga del archivo.
+            fileRef.getDownloadURL().subscribe(url => {
+              //clase['uploading'] = false;
+              console.log(`File URL: ${url}`);
+              option.get('image').setValue(url);
+            });
+          })
+        ).subscribe();
+        
+
+
+
+      //option.get('image').setValue(reader.result);
     };
   }
 

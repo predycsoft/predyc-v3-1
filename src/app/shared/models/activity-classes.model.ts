@@ -564,6 +564,7 @@ export interface ActivityJson {
   vimeoId1: number | null;
   vimeoId2: string | null;
   activityTakersQty: number;
+  activityCorazon: boolean;
 }
 
 export class Activity {
@@ -596,6 +597,7 @@ export class Activity {
   vimeoId1: number | null = null
   vimeoId2: string | null = null
   activityTakersQty: number = 0
+  activityCorazon: boolean = false
 
   public toJson(): ActivityJson {
     return {
@@ -617,6 +619,7 @@ export class Activity {
       vimeoId1: this.vimeoId1,
       vimeoId2: this.vimeoId2,
       activityTakersQty: this.activityTakersQty,
+      activityCorazon : this.activityCorazon
     }
   }
 
@@ -639,6 +642,7 @@ export class Activity {
     activity.vimeoId1 = obj.vimeoId1
     activity.vimeoId2 = obj.vimeoId2
     activity.activityTakersQty = obj.activityTakersQty
+    activity.activityCorazon = obj.activityCorazon
     // for (const question of obj.questions) {
     //   const newQuestion = Question.fromJson(question);
     //   activity.questions = [...activity.questions, newQuestion];
@@ -673,6 +677,7 @@ export class Activity {
       vimeoId1: null,
       vimeoId2: null,
       activityTakersQty: 0,
+      activityCorazon:false
     })
   }
 }

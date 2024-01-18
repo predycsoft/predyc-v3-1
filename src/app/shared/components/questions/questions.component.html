@@ -70,7 +70,7 @@
                         <div *ngIf="question.get('image.url').value" class="form-group pdt10">
                             <div fxLayout="column">
                                 <div fxLayout="row">
-                                    <span>{{ question.get('image.file').value.name }}&nbsp;</span>
+                                    <span>{{ question.get('image.file').value.file }}&nbsp;</span>
                                     <span
                                         (click)="questionStatus[i].visibleImage = !questionStatus[i].visibleImage"
                                         class="blueLink cursorPointer"
@@ -251,6 +251,21 @@
                                                         class="form-control"
                                                         placeholder=""
                                                         >
+                                                </div>
+
+                                                <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
+                                                    <button
+                                                    (click)="questionOptionImage.click()"
+                                                    class="grayButton radius4 ft12 h28px mgr10 gray-8"
+                                                    fxLayout="row"
+                                                    fxLayoutGap="0.625"
+                                                    fxLayoutAlign="center center"
+                                                    type="button"
+                                                    >
+                                                    <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
+                                                    Adjuntar imagen
+                                                </button>
+                                                <input #questionOptionImage type="file" (change)="uploadQuestionOptionImage(option, $event)" hidden accept="image/webp" />
                                                 </div>
                                         
                                                 <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
