@@ -6,11 +6,17 @@ export interface NotificationJson {
     enterpriseRef: DocumentReference | null
     id: string | null
     message: string
-    readByUser: boolean
-    readByAdmin: boolean
-    type: typeof Notification.TYPE_ALERT |
-          typeof Notification.TYPE_EVENT |
-          typeof Notification.ARCHIVED
+    // readByUser: boolean
+    // readByAdmin: boolean
+    type: 
+        typeof Notification.TYPE_ALERT |
+        typeof Notification.TYPE_EVENT
+    subType: 
+        typeof Notification.SUBTYPE_ALERT_DELAYED |
+        typeof Notification.SUBTYPE_ALERT_EXPIRED | 
+        typeof Notification.SUBTYPE_ALERT_PENDING | 
+        typeof Notification.SUBTYPE_EVENT_SUCCEDED|
+        typeof Notification.SUBTYPE_EVENT_REQUEST 
     userRef: DocumentReference | null
 }
 
@@ -20,7 +26,13 @@ export class Notification {
 
     public static TYPE_ALERT: string = 'alert'
     public static TYPE_EVENT: string = 'event'
-    public static ARCHIVED: string = 'archived'
+
+
+    public static SUBTYPE_ALERT_DELAYED: string = 'delayed'
+    public static SUBTYPE_ALERT_EXPIRED: string = 'expired'
+    public static SUBTYPE_ALERT_PENDING: string = 'pending' //Por vencer
+    public static SUBTYPE_EVENT_SUCCEDED: string = 'succeded'
+    public static SUBTYPE_EVENT_REQUEST: string = 'request'
 
     public user: User
 
@@ -30,10 +42,17 @@ export class Notification {
         public enterpriseRef: DocumentReference | null,
         public id: string | null,
         public message: string,
-        public readByUser: boolean,
-        public readByAdmin: boolean,
-        public type: typeof Notification.TYPE_ALERT |
-                    typeof Notification.TYPE_EVENT,
+        // public readByUser: boolean,
+        // public readByAdmin: boolean,
+        public type: 
+            typeof Notification.TYPE_ALERT |
+            typeof Notification.TYPE_EVENT,
+        public subType: 
+            typeof Notification.SUBTYPE_ALERT_DELAYED |
+            typeof Notification.SUBTYPE_ALERT_EXPIRED | 
+            typeof Notification.SUBTYPE_ALERT_PENDING | 
+            typeof Notification.SUBTYPE_EVENT_SUCCEDED|
+            typeof Notification.SUBTYPE_EVENT_REQUEST,  
         public userRef: DocumentReference | null
     ) {}
 
@@ -43,9 +62,10 @@ export class Notification {
             notificationJson.enterpriseRef,
             notificationJson.id,
             notificationJson.message,
-            notificationJson.readByUser,
-            notificationJson.readByAdmin,
+            // notificationJson.readByUser,
+            // notificationJson.readByAdmin,
             notificationJson.type,
+            notificationJson.subType,
             notificationJson.userRef
         )
     }
@@ -56,9 +76,10 @@ export class Notification {
             enterpriseRef: this.enterpriseRef,
             id: this.id,
             message: this.message,
-            readByUser: this.readByUser,
-            readByAdmin: this.readByAdmin,
+            // readByUser: this.readByUser,
+            // readByAdmin: this.readByAdmin,
             type: this.type,
+            subType: this.subType,
             userRef: this.userRef,
         }
     }

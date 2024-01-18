@@ -221,7 +221,7 @@ export class InitScriptComponent {
       const userRef = this.userService.getUserRefById(randomUser.uid)
       return Notification.fromJson({
         ...notification,
-        readByUser: notification.readByUser,
+        // readByUser: notification.readByUser,
         userRef: userRef,
         enterpriseRef: enterpriseRef
       })
@@ -263,7 +263,7 @@ export class InitScriptComponent {
     }
     console.log(`Finished Creating Instructors`, this.instructors);
 
-    this.uploadCursosLegacy();
+    // this.uploadCursosLegacy();
 
 
     try {

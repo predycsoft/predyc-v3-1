@@ -1,12 +1,20 @@
 import { NotificationJson } from "src/app/shared/models/notification.model";
 
 const notificationTypes = ['alert', 'event'];
+const alertSubTypes = ['delayed', 'expired', 'pending'];
+const eventSubTypes = ['succeded', 'request'];
 const randomCourse = ['Planificacion de mantenimiento', 'Analisis causa raiz', 'Gestion de riesgo', 'Herramientas de planeamiento', 'Gestion de costo de mantenimiento'];
 const randomCertification = ['Programa 1', 'Programa 2', 'Programa 3'];
 
 function getRandomType() {
   const randomIndex = Math.floor(Math.random() * notificationTypes.length);
   return notificationTypes[randomIndex];
+}
+
+function getRandomSubType(type) {
+  let subTypes = type === 'alert' ? alertSubTypes : eventSubTypes;
+  const randomIndex = Math.floor(Math.random() * subTypes.length);
+  return subTypes[randomIndex];
 }
 
 function getRandomCourse() {
@@ -21,6 +29,8 @@ function getRandomCertification() {
 
 function generateNotification(): NotificationJson {
   const type = getRandomType();
+  const subType = getRandomSubType(type);
+
   let message;
   if (type === 'event') {
     const randomBool = Math.random() < 0.5;
@@ -35,15 +45,17 @@ function generateNotification(): NotificationJson {
 
   const now = new Date();
   const timestamp = new Date(now.getFullYear(), now.getMonth(), now.getDate() - Math.floor(Math.random() * 30)).getTime();
+  
   return {
     id: null,
-    readByUser: false,
-    readByAdmin: false,
+    // readByUser: false,
+    // readByAdmin: false,
     message,
     date: timestamp,
     userRef: null,
     enterpriseRef: null,
-    type
+    type,
+    subType
   };
 }
 
