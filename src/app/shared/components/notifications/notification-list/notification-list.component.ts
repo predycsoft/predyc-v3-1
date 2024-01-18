@@ -32,7 +32,7 @@ export class NotificationListComponent {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  selectedFilter: string = 'all'
+  selectedFilter: string = 'alert'
 
   combinedObservableSubscription: Subscription
 
@@ -82,9 +82,9 @@ export class NotificationListComponent {
     this.combinedObservableSubscription.unsubscribe();
   }
 
-  
-  async setRead(notification: Notification) {
-    this.notificationService.setNotificationReadByAdmin(notification)
+  async onDelete(notification: Notification) {
+    await this.notificationService.deleteNotification(notification.id)
+    this.alertService.succesAlert("Has eliminado la notificacion satisfactoriamente")
   }
 
   async sendMail(notification: Notification) {
@@ -124,11 +124,8 @@ export class NotificationListComponent {
 class NotificationDataSource extends DataSource<Notification> {
 
   private pageIndex: number = 0;
-  private previousPageIndex: number = 0;
-  private selectedFilter: string = 'all'
-
-  private currentNotifications: Notification[]
-  private previousPageNotification: Notification
+  private selectedFilter: string = 'alert'
+  
 
   constructor(
     private userService: UserService,
@@ -144,7 +141,6 @@ class NotificationDataSource extends DataSource<Notification> {
       this.paginator.pageSize = this.pageSize
       this.paginator.page.subscribe(eventObj => {
         this.pageIndex = eventObj.pageIndex
-        this.previousPageIndex = eventObj.previousPageIndex
         this.getNotifications()
       });
     }
@@ -153,45 +149,25 @@ class NotificationDataSource extends DataSource<Notification> {
   }
 
   getNotifications() {
-    let queryObj: {
-      pageSize: number
-      startAt?: Notification
-      startAfter?: Notification
-      typeFilter?: typeof Notification.TYPE_EVENT |
-                  typeof Notification.TYPE_ALERT |
-                  typeof Notification.ARCHIVED 
-    } = {
-      pageSize: this.pageSize,
-    }
-    if (this.selectedFilter !== 'all') {
-      queryObj.typeFilter = this.selectedFilter
-    }
-    if (this.pageIndex == 0) {
-      // first page
-    } else if (this.pageIndex > this.previousPageIndex) {
-      // next page
-      queryObj.startAfter = this.currentNotifications[this.currentNotifications.length - 1]
-      this.previousPageNotification = this.currentNotifications[0]
-    } else {
-      // previous page
-      queryObj.startAt = this.previousPageNotification
-    }
-    this.notificationService.getNotifications(queryObj)
+    this.notificationService.getNotifications()
   }
   
   connect(): Observable<Notification[]> {
 
     return combineLatest([this.notificationService.notifications$, this.enterpriseService.enterprise$]).pipe(
       map(([notifications, _]) => {
+        console.log("all notifications", notifications)
+        let currentNotifications = notifications.filter(notification => notification.type === this.selectedFilter)
         // update paginator length
         if (this.enablePagination) {
-          this.paginator.length = this.notificationService.getNotificationsLengthByFilter(this.selectedFilter)
+          this.paginator.length = currentNotifications.length
+          const start = this.pageIndex * this.pageSize;
+          const end = start + this.pageSize;
+          currentNotifications = currentNotifications.slice(start, end) 
         }
 
-        this.currentNotifications = [...notifications]
-  
         // Pagination
-        return notifications.map(notification => {
+        return currentNotifications.map(notification => {
           const notificationUser = this.userService.getUser(notification.userRef.id)
           notification.user = notificationUser
           return notification
@@ -209,7 +185,6 @@ class NotificationDataSource extends DataSource<Notification> {
     this.selectedFilter = filter
     if (this.enablePagination) {
       this.pageIndex = 0
-      this.previousPageIndex = 0
       this.paginator.firstPage();
     }
     this.getNotifications()

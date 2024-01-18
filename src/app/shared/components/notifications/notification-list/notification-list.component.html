@@ -1,10 +1,6 @@
 <!-- <button (click)="onAddButton()">Añadir notificaciones</button> -->
 
 <div class="rounded-container" fxLayout="row" fxLayoutAlign="start center">
-    <div [ngClass]="{'active': selectedFilter === 'all'}" class="filter-item active" (click)="applyFilter('all')">
-        <img *ngIf="selectedFilter === 'all'" [src]="icon.check" class="h20px pdr08" alt="">        
-        <span>Todas</span>
-    </div>
     <div [ngClass]="{'active': selectedFilter === 'alert'}" class="filter-item" (click)="applyFilter('alert')">
         <img *ngIf="selectedFilter === 'alert'" [src]="icon.check" class="h20px pdr08" alt="">        
         <span>Alertas</span>
@@ -12,10 +8,6 @@
     <div [ngClass]="{'active': selectedFilter === 'event'}" class="filter-item" (click)="applyFilter('event')">
         <img *ngIf="selectedFilter === 'event'" [src]="icon.check" class="h20px pdr08" alt="">        
         <span>Eventos</span>
-    </div>
-    <div [ngClass]="{'active': selectedFilter === 'archived'}" class="filter-item right-rounded-container" (click)="applyFilter('archived')">
-        <img *ngIf="selectedFilter === 'archived'" [src]="icon.check" class="h20px pdr08" alt="">        
-        <span>Archivados</span>
     </div>
 </div>
 
@@ -53,10 +45,9 @@
         </ng-container>
         <!-- Check Column -->
         <ng-container matColumnDef="check">
-            <td mat-cell *matCellDef="let notification" [ngClass]="!notification.readByAdmin? 'cursorPointer' : '' " class="item-container "> 
-                <div (click)="!notification.readByAdmin ? setRead(notification) : null" class="actions-container">
-                    <img [src]="icon.check" class="h24px mgr05 makeGray9" alt="">
-                    <span style="color: var(--gray-9);">{{notification.readByAdmin ? "Leído" : "Marcar como leido"}}  </span>
+            <td mat-cell *matCellDef="let notification" class="item-container "> 
+                <div (click)="onDelete(notification)" class="actions-container">
+                    <img [src]="icon.trash" class="h24px mgr05 makeGray9" alt="">
                 </div>
             </td>
         </ng-container>

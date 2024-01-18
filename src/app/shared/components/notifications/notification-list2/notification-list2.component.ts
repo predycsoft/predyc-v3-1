@@ -69,44 +69,44 @@ export class NotificationList2Component {
     })
   }
 
-  performSearch(page: number, type: string) {
-    if (this.notificationServiceSubscription) {
-      this.notificationServiceSubscription.unsubscribe()
-    }
-    let queryObj: {
-      pageSize: number
-      typeFilter?: typeof Notification.TYPE_EVENT |
-                  typeof Notification.TYPE_ALERT
-    } = {
-      pageSize: this.pageSize,
-    }
-    if (this.selectedType !== '') {
-      queryObj.typeFilter = this.selectedType
-    }
-    this.notificationServiceSubscription = this.notificationService.getNotifications$(queryObj).subscribe(
-      response => {
-        const notifications: NotificationItem[] = response.map(item => {
-          const notification = {
-            id: item.id,
-            user: {
-              id: '',
-              displayName: 'Usuario prueba',
-              photoUrl: '',
-            },
-            date: item.date,
-            message: item.message,
-            type: item.type,
-            readByAdmin: item.readByAdmin
-          }
-          return notification
-        })
-        this.paginator.pageIndex = page - 1; // Update the paginator's page index
-        this.dataSource.data = notifications; // Assuming the data is in 'items'
-        // // this.paginator.length = response.count; // Assuming total length is returned
-        this.totalLength = response.length; // Assuming total length is returned
-      }
-    );
-  }
+  // performSearch(page: number, type: string) {
+  //   if (this.notificationServiceSubscription) {
+  //     this.notificationServiceSubscription.unsubscribe()
+  //   }
+  //   let queryObj: {
+  //     pageSize: number
+  //     typeFilter?: typeof Notification.TYPE_EVENT |
+  //                 typeof Notification.TYPE_ALERT
+  //   } = {
+  //     pageSize: this.pageSize,
+  //   }
+  //   if (this.selectedType !== '') {
+  //     queryObj.typeFilter = this.selectedType
+  //   }
+  //   this.notificationServiceSubscription = this.notificationService.getNotifications$(queryObj).subscribe(
+  //     response => {
+  //       const notifications: NotificationItem[] = response.map(item => {
+  //         const notification = {
+  //           id: item.id,
+  //           user: {
+  //             id: '',
+  //             displayName: 'Usuario prueba',
+  //             photoUrl: '',
+  //           },
+  //           date: item.date,
+  //           message: item.message,
+  //           type: item.type,
+  //           readByAdmin: item.readByAdmin
+  //         }
+  //         return notification
+  //       })
+  //       this.paginator.pageIndex = page - 1; // Update the paginator's page index
+  //       this.dataSource.data = notifications; // Assuming the data is in 'items'
+  //       // // this.paginator.length = response.count; // Assuming total length is returned
+  //       this.totalLength = response.length; // Assuming total length is returned
+  //     }
+  //   );
+  // }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;

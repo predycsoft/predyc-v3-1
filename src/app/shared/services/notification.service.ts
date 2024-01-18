@@ -39,116 +39,96 @@ export class NotificationService {
     notification.id = ref.id;
   }
 
-  getNotifications$(queryObj: {
-    pageSize: number
-    startAt?: Notification
-    startAfter?: Notification
-    typeFilter?: typeof Notification.TYPE_EVENT |
-                typeof Notification.TYPE_ALERT |
-                typeof Notification.ARCHIVED
-  }): Observable<Notification[]> {
-    return this.afs.collection<Notification>(Notification.collection, ref => {
-      let query: CollectionReference | Query = ref;
-        query = query.where('enterpriseRef', '==', this.enterpriseService.getEnterpriseRef())
-        if (queryObj.typeFilter) {
-          console.log(`Filter has been set as ${queryObj.typeFilter}`)
-          if (queryObj.typeFilter === 'archived') {
-            query = query.where('readByAdmin', '==', true)
-          } else {
-            query = query.where('type', '==', queryObj.typeFilter).where('readByAdmin', '==', false)
-          }
-        } else {
-          query = query.where('readByAdmin', '==', false)
-        }
-        query = query.orderBy('date', 'desc')
-        if (queryObj.startAt) {
-          query = query.startAt(queryObj.startAt.date)
-        } else if (queryObj.startAfter) {
-          query = query.startAfter(queryObj.startAfter.date)
-        }
-        return query.limit(queryObj.pageSize)
-    }).valueChanges()
+  getNotifications$(): Observable<Notification[]> {
+    return this.afs.collection<Notification>(Notification.collection).valueChanges()
   }
 
-  public getNotifications(queryObj: {
-    pageSize: number
-    startAt?: Notification
-    startAfter?: Notification
-    typeFilter?: typeof Notification.TYPE_EVENT |
-                typeof Notification.TYPE_ALERT |
-                typeof Notification.ARCHIVED
-  }) {
-    // console.log("queryObj", queryObj)
-    if (this.notificationCollectionSubscription) {
-      console.log("Has to unsubscribe before")
-      this.notificationCollectionSubscription.unsubscribe();
-    }
-    this.notificationCollectionSubscription = this.afs.collection<Notification>(Notification.collection, ref => {
-        let query: CollectionReference | Query = ref;
-        query = query.where('enterpriseRef', '==', this.enterpriseService.getEnterpriseRef())
-        if (queryObj.typeFilter) {
-          console.log(`Filter has been set as ${queryObj.typeFilter}`)
-          if (queryObj.typeFilter === 'archived') {
-            query = query.where('readByAdmin', '==', true)
-          } else {
-            query = query.where('type', '==', queryObj.typeFilter).where('readByAdmin', '==', false)
-          }
-        } else {
-          query = query.where('readByAdmin', '==', false)
-        }
-        query = query.orderBy('date', 'desc')
-        if (queryObj.startAt) {
-          query = query.startAt(queryObj.startAt.date)
-        } else if (queryObj.startAfter) {
-          query = query.startAfter(queryObj.startAfter.date)
-        }
-        return query.limit(queryObj.pageSize)
-      }
-    ).valueChanges().subscribe(notifications => {
+  getNotifications() {
+    return this.afs.collection<Notification>(Notification.collection).valueChanges().subscribe(notifications => {
       console.log("New notifications", notifications)
       this.notificationsSubject.next(notifications)
     })
   }
 
-  public getNotificationsLengthByFilter(
-    filter: typeof Notification.TYPE_EVENT |
-            typeof Notification.TYPE_ALERT |
-            typeof Notification.ARCHIVED |
-            'all'
-    ): number {
-      let length = 0
-      const enterprise = this.enterpriseService.getEnterprise()
-      switch (filter) {
-        case Notification.TYPE_EVENT:
-          // do something
-          length = enterprise.totalEventNotifications
-          break;
-        case Notification.TYPE_ALERT:
-          // do something
-          length = enterprise.totalAlertNotifications
-          break;
-        case Notification.ARCHIVED:
-          // do something
-          length = enterprise.totalReadByAdminNotifications
-          break;
-        default:
-          length = enterprise.totalEventNotifications
-                   + enterprise.totalAlertNotifications
-          break;
-      }
-      return length
+  async deleteNotification(notificationId: string) {
+    await this.afs.collection<Notification>(Notification.collection).doc(notificationId).delete()
   }
   
-  public async setNotificationReadByAdmin(notification: Notification) {
-    try {
-      await this.afs.collection(Notification.collection).doc(notification.id).set(
-        {
-          readByAdmin: true
-        }, { merge: true }
-      );
-    } catch (error) {
-      console.log(error)
-      this.alertService.errorAlert(JSON.stringify(error))
-    }
-  }
+
+  // Old versions
+
+  // getNotifications$(queryObj: {
+  //   pageSize: number
+  //   startAt?: Notification
+  //   startAfter?: Notification
+  //   typeFilter?: typeof Notification.TYPE_EVENT |
+  //               typeof Notification.TYPE_ALERT |
+  //               typeof Notification.ARCHIVED
+  // }): Observable<Notification[]> {
+  //   return this.afs.collection<Notification>(Notification.collection, ref => {
+  //     let query: CollectionReference | Query = ref;
+  //       query = query.where('enterpriseRef', '==', this.enterpriseService.getEnterpriseRef())
+  //       if (queryObj.typeFilter) {
+  //         console.log(`Filter has been set as ${queryObj.typeFilter}`)
+  //         if (queryObj.typeFilter === 'archived') {
+  //           query = query.where('readByAdmin', '==', true)
+  //         } else {
+  //           query = query.where('type', '==', queryObj.typeFilter).where('readByAdmin', '==', false)
+  //         }
+  //       } else {
+  //         query = query.where('readByAdmin', '==', false)
+  //       }
+  //       query = query.orderBy('date', 'desc')
+  //       if (queryObj.startAt) {
+  //         query = query.startAt(queryObj.startAt.date)
+  //       } else if (queryObj.startAfter) {
+  //         query = query.startAfter(queryObj.startAfter.date)
+  //       }
+  //       return query.limit(queryObj.pageSize)
+  //   }).valueChanges()
+  // }
+
+
+  // public getNotifications(queryObj: {
+  //   pageSize: number
+  //   startAt?: Notification
+  //   startAfter?: Notification
+  //   typeFilter?: typeof Notification.TYPE_EVENT |
+  //               typeof Notification.TYPE_ALERT |
+  //               typeof Notification.ARCHIVED
+  // }) {
+  //   // console.log("queryObj", queryObj)
+  //   if (this.notificationCollectionSubscription) {
+  //     console.log("Has to unsubscribe before")
+  //     this.notificationCollectionSubscription.unsubscribe();
+  //   }
+  //   this.notificationCollectionSubscription = this.afs.collection<Notification>(Notification.collection, ref => {
+  //       let query: CollectionReference | Query = ref;
+  //       query = query.where('enterpriseRef', '==', this.enterpriseService.getEnterpriseRef())
+  //       if (queryObj.typeFilter) {
+  //         console.log(`Filter has been set as ${queryObj.typeFilter}`)
+  //         if (queryObj.typeFilter === 'archived') {
+  //           query = query.where('readByAdmin', '==', true)
+  //         } else {
+  //           query = query.where('type', '==', queryObj.typeFilter).where('readByAdmin', '==', false)
+  //         }
+  //       } else {
+  //         query = query.where('readByAdmin', '==', false)
+  //       }
+  //       query = query.orderBy('date', 'desc')
+  //       if (queryObj.startAt) {
+  //         query = query.startAt(queryObj.startAt.date)
+  //       } else if (queryObj.startAfter) {
+  //         query = query.startAfter(queryObj.startAfter.date)
+  //       }
+  //       return query.limit(queryObj.pageSize)
+  //     }
+  //   ).valueChanges().subscribe(notifications => {
+  //     console.log("New notifications", notifications)
+  //     this.notificationsSubject.next(notifications)
+  //   })
+  // }
+
+
+
 }
