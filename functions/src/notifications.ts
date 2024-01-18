@@ -5,92 +5,92 @@ import * as admin from 'firebase-admin';
 
 const db = admin.firestore();
 
-export const onNotificationAdded = functions.firestore
-  .document('notification/{doc}')
-  .onCreate(async (snap, _) => {
-    const notification = snap.data()
-    if (!notification.enterpriseRef) {
-        return
-    }
-    const enterprise = (await notification.enterpriseRef.get()).data()
-    let fieldToIncrement: string = ''
-    switch (notification.type) {
-        case 'event':
-            fieldToIncrement = 'totalEventNotifications'
-            break;
-        case 'alert':
-            fieldToIncrement = 'totalAlertNotifications'
-            break;
-    }
-    return db
-          .collection('enterprise')
-          .doc(enterprise.id)
-          .update({
-            [fieldToIncrement]: admin.firestore.FieldValue.increment(1)
-          })
-          .then(() => {
-            return console.log(
-                `Updated enterprise: ${enterprise.name} notifications quantity to:
-                    ${'event'}: ${notification.type == 'event' ? enterprise.totalEventNotifications + 1 : enterprise.totalEventNotifications}
-                    ${'alert'}: ${notification.type == 'alert' ? enterprise.totalAlertNotifications + 1 : enterprise.totalAlertNotifications}
-                `
-            );
-          })
-          .catch((error) => {
-            return console.log(error);
-          });
-  });
+// export const onNotificationAdded = functions.firestore
+//   .document('notification/{doc}')
+//   .onCreate(async (snap, _) => {
+//     const notification = snap.data()
+//     if (!notification.enterpriseRef) {
+//         return
+//     }
+//     const enterprise = (await notification.enterpriseRef.get()).data()
+//     let fieldToIncrement: string = ''
+//     switch (notification.type) {
+//         case 'event':
+//             fieldToIncrement = 'totalEventNotifications'
+//             break;
+//         case 'alert':
+//             fieldToIncrement = 'totalAlertNotifications'
+//             break;
+//     }
+//     return db
+//           .collection('enterprise')
+//           .doc(enterprise.id)
+//           .update({
+//             [fieldToIncrement]: admin.firestore.FieldValue.increment(1)
+//           })
+//           .then(() => {
+//             return console.log(
+//                 `Updated enterprise: ${enterprise.name} notifications quantity to:
+//                     ${'event'}: ${notification.type == 'event' ? enterprise.totalEventNotifications + 1 : enterprise.totalEventNotifications}
+//                     ${'alert'}: ${notification.type == 'alert' ? enterprise.totalAlertNotifications + 1 : enterprise.totalAlertNotifications}
+//                 `
+//             );
+//           })
+//           .catch((error) => {
+//             return console.log(error);
+//           });
+//   });
 
-  export const onNotificationReadByAdmin = functions.firestore
-  .document('notification/{doc}')
-  .onUpdate(async (change, context) => {
-    const beforeData = change.before.data();
-    const afterData = change.after.data();
+//   export const onNotificationReadByAdmin = functions.firestore
+//   .document('notification/{doc}')
+//   .onUpdate(async (change, context) => {
+//     const beforeData = change.before.data();
+//     const afterData = change.after.data();
 
-    if (afterData?.readByAdmin && !beforeData?.readByAdmin) {
-      const notification = afterData;
-      if (!notification.type || !notification.enterpriseRef) {
-        console.error('Notification type or enterpriseRef missing');
-        return;
-      }
-      const enterprise = (await notification.enterpriseRef.get()).data();
-      if (!enterprise) {
-        console.error('Enterprise document not found');
-        return;
-      }
+//     if (afterData?.readByAdmin && !beforeData?.readByAdmin) {
+//       const notification = afterData;
+//       if (!notification.type || !notification.enterpriseRef) {
+//         console.error('Notification type or enterpriseRef missing');
+//         return;
+//       }
+//       const enterprise = (await notification.enterpriseRef.get()).data();
+//       if (!enterprise) {
+//         console.error('Enterprise document not found');
+//         return;
+//       }
 
-      // Determinar el campo a decrementar basado en el type de notificación
-      let fieldToDecrement: string = '';
-      switch (notification.type) {
-        case 'event':
-          fieldToDecrement = 'totalEventNotifications';
-          break;
-        case 'alert':
-          fieldToDecrement = 'totalAlertNotifications';
-          break;
-        default:
-          console.error('Invalid notification type');
-          return;
-      }
+//       // Determinar el campo a decrementar basado en el type de notificación
+//       let fieldToDecrement: string = '';
+//       switch (notification.type) {
+//         case 'event':
+//           fieldToDecrement = 'totalEventNotifications';
+//           break;
+//         case 'alert':
+//           fieldToDecrement = 'totalAlertNotifications';
+//           break;
+//         default:
+//           console.error('Invalid notification type');
+//           return;
+//       }
 
-      // Actualizar el documento de Enterprise
-      return db.collection('enterprise').doc(enterprise.id).update({
-          [fieldToDecrement]: admin.firestore.FieldValue.increment(-1),
-          totalReadByAdminNotifications: admin.firestore.FieldValue.increment(1),
-        })
-        .then(() => {
-          console.log(`Updated enterprise: ${enterprise.name} notifications quantity to:
-          ${'event'}: ${notification.type == 'event' ? enterprise.totalEventNotifications - 1 : enterprise.totalEventNotifications}
-          ${'alert'}: ${notification.type == 'alert' ? enterprise.totalAlertNotifications - 1 : enterprise.totalAlertNotifications}
-          ${'readByAdmin'}: ${enterprise.totalReadByAdminNotifications + 1 }`)
-          return console.log(`Updated enterprise: ${enterprise.name} notifications count`);
-        })
-        .catch((error) => {
-          return console.error('Error updating Enterprise document:', error);
-        });
-    }
-    return null;
-  });
+//       // Actualizar el documento de Enterprise
+//       return db.collection('enterprise').doc(enterprise.id).update({
+//           [fieldToDecrement]: admin.firestore.FieldValue.increment(-1),
+//           totalReadByAdminNotifications: admin.firestore.FieldValue.increment(1),
+//         })
+//         .then(() => {
+//           console.log(`Updated enterprise: ${enterprise.name} notifications quantity to:
+//           ${'event'}: ${notification.type == 'event' ? enterprise.totalEventNotifications - 1 : enterprise.totalEventNotifications}
+//           ${'alert'}: ${notification.type == 'alert' ? enterprise.totalAlertNotifications - 1 : enterprise.totalAlertNotifications}
+//           ${'readByAdmin'}: ${enterprise.totalReadByAdminNotifications + 1 }`)
+//           return console.log(`Updated enterprise: ${enterprise.name} notifications count`);
+//         })
+//         .catch((error) => {
+//           return console.error('Error updating Enterprise document:', error);
+//         });
+//     }
+//     return null;
+//   });
 
 
 // export const onNotificationAdded = functions.firestore
