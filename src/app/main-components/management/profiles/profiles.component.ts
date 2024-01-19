@@ -48,6 +48,8 @@ export class ProfilesComponent {
   hoverItem$: Observable<any>; // This will hold the currently hovered item
   private hoverSubject = new BehaviorSubject<any>(null);
 
+  profileDescription: string = ''
+
   ngOnInit() {
     this.hoverItem$ = this.hoverSubject.asObservable();
     this.serviceSubscription = combineLatest([this.categoryService.getCategories$(), this.skillService.getSkills$(), this.courseService.getCourses$()]).subscribe(([categories, skills, courses]) => {

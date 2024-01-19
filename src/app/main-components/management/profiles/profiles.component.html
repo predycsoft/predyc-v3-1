@@ -42,17 +42,29 @@
         </ng-template>
     </div>
     <div fxLayout="row" fxLayoutAlign="space-between center" class="main-content mgt05 pdr30 pdl30">
-        <div class="containers" fxLayout="column" fxLayoutGap="20px" style="overflow-y: scroll; border: 2px solid red;">
-            <div class="container" style="height: 28%; padding: 5px">
-                <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign=" center">
+        <div class="containers" style="padding: 5px;">
+            <!-- <div class="container" style="height: 100px; padding: 5px; border: 2px solid black; border-radius: 20px">
+            </div> -->
+            <div class="container" style="padding: 5px">
+                <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign=" center" class="mgb10">
                     <img [src]="icon.credentials" alt="Información del perfil">
                     <span class="ft500 ft12 undrl gray-10">Detalles del perfil</span>
                 </div>
-                <p>
-                    Lorem ipsum dolor sit amet consectetur. Egestas sit ullamcorper diam augue parturient dolor. Eros scelerisque diam turpis cras ac mattis cras sed sequat egestas nam vivamus ac ut purus lacus. Non elit facilisis risus etiam turpis diam sit. 
+                <p *ngIf="!isEditing">
+                    {{profileDescription}}
                 </p>
+                <textarea
+                    name=""
+                    id=""
+                    rows="5"
+                    *ngIf="isEditing"
+                    [(ngModel)]="profileDescription"
+                    placeholder="Introduzca la descripción"
+                    style="width: 100%; resize: none"
+                    >
+                </textarea>
             </div>
-            <div class="container" style="height: 35%; border: 2px solid black; border-radius: 20px; padding: 5px">
+            <div class="container" style="height: 300px; border: 2px solid black; border-radius: 20px; padding: 5px">
                 <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign=" center">
                     <img [src]="icon.resultsPresentation" alt="Desempeño por pilares">
                     <span class="ft500 ft12 undrl gray-10">Desempeño por pilares</span>
@@ -61,14 +73,14 @@
                     <canvas id="chart"></canvas>
                 </div>
             </div>
-            <div class="container" style="height: 35%; border: 2px solid black; border-radius: 20px; padding: 5px">
+            <div class="container" style="height: 150px; border: 2px solid black; border-radius: 20px; padding: 5px">
                 <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign=" center">
                     <img [src]="icon.list" alt="Competencias">
                     <span class="ft500 ft12 undrl gray-10">Resumen de competencias</span>
                 </div>
-                <div style="overflow-y: scroll" class="chart-container ft12 ft500">
+                <div style="overflow-y: scroll" class="chart-container ft12">
                     <div *ngFor="let category of categoriesAndSkillsWidgetData; let i = index">
-                        <div>Pilar {{i+1}}: {{category.label}}</div>
+                        <div class="ft500">Pilar {{i+1}}: {{category.label}}</div>
                         <div
                             *ngFor="let skill of category.skills"
                             fxLayout="row"
@@ -87,9 +99,6 @@
                 <img [src]="icon.ticTacToe" alt="Plan de estudios">
                 <span class="ft500 ft12 undrl gray-10">Plan de estudios</span>
             </div>
-            <!-- <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign=" center">
-
-            </div> -->
             <div class="mgt10">
                 <span class="ft500 ft12 gray-8">Estudio mensual</span>
                 <input *ngIf="isEditing; else timeTemplate" type="number" min="0" class="mgl05 input-number">
@@ -230,7 +239,7 @@
                 [cdkDragData]="course"
                 *ngFor="let course of profile.studyPlan; let i = index" -->
                 <div
-                    class="fw pd05 h40px border-bl backWhite hoverBlue"
+                    class="fw pd05 h60px border-bl backWhite hoverBlue"
                     fxLayout="row"
                     fxLayoutAlign="space-between center"
                     fxLayoutGap="1rem"
@@ -239,11 +248,24 @@
                     <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
                         <img *ngIf="isEditing" [src]="icon.drag" class="h14px" alt="Drag item">            
                             <!-- [ngClass]="selectedCourse == course ? 'blue-5 ft500' : 'gray-10'" -->
-                        <span
+                        <div
+                            fxLayout="column"
+                            fxLayoutGap="5px"
                             class="ft11"
                             >
-                            {{ item.titulo }}
-                        </span>
+                            <span>
+                                {{ item.titulo }}
+                            </span>
+                            <div
+                                *ngFor="let skill of item.skills"
+                                fxLayout="row"
+                                fxLayoutGap="5px"
+                                fxLayoutAlign=" center"
+                                style="background-color: var(--gray-4); width: fit-content; padding: 2px 10px; border-radius: 20px;"
+                                >
+                                {{skill.name}}
+                            </div>
+                        </div>
                     </div>
                     <div fxLayoutAlign="center center" fxLayout="row" fxLayoutGap="1rem">
                         <span class="gray-6 ft11 nowrap">
