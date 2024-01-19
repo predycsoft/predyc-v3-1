@@ -35,11 +35,11 @@ export class Notification {
     public static SUBTYPE_EVENT_REQUEST: string = 'request'
 
     public static subTypeToDisplayValueDict = {
-        delayed: 'Restrasados',
-        expired: 'Vencidos',
-        pending: 'Por vencer',
-        succeded: 'Completados',
-        request: 'Solicitudes',
+        delayed: 'cursos atrasados',
+        expired: 'licencias vencidas',
+        pending: 'licencias por vencer',
+        succeded: 'cursos completados',
+        request: 'solicitudes',
     };
 
     public user: User

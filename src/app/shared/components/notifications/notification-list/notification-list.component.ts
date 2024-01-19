@@ -22,7 +22,7 @@ export class NotificationListComponent {
   displayedColumns: string[] = [
     'content',
     'date',
-    'action',
+    // 'action',
     'delete',
   ]
 
@@ -80,6 +80,7 @@ export class NotificationListComponent {
     if (filter === this.selectedFilter) {
       return
     }
+    this.updateDisplayedColumns(filter)
     this.selectedFilter = filter
     this.filteredNotifications = this.allNotifications.filter(notification => notification.type === this.selectedFilter)
 
@@ -89,6 +90,15 @@ export class NotificationListComponent {
     }, {})).map(([key, value]) => ({ subType: key, notifications: value as Notification[] }));
 
   }
+
+  updateDisplayedColumns(filter: string) {
+    this.displayedColumns = [
+      'content',
+      'date',
+      'delete',
+    ];
+    if (filter === "alert") this.displayedColumns.splice(this.displayedColumns.length - 1, 0 ,'action')
+}
 
   ngOnDestroy() {
     this.combinedObservableSubscription.unsubscribe();
@@ -131,7 +141,7 @@ export class NotificationListComponent {
 
   }
 
-  getSubTypeTextToDisplay(subType) {
+  getSubTypeTextToDisplay(subType: string) {
     return Notification.subTypeToDisplayValueDict[subType]
   }
 
