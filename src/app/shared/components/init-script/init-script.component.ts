@@ -263,7 +263,7 @@ export class InitScriptComponent {
     }
     console.log(`Finished Creating Instructors`, this.instructors);
 
-    // this.uploadCursosLegacy();
+    this.uploadCursosLegacy();
 
 
     try {
