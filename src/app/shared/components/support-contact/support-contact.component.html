@@ -1,6 +1,6 @@
-<span class="gray-10 mgl10" >
+<!-- <span class="gray-10 mgl10" >
     {{type === "sales" ? "Ventas" : "Account manager"}}
-</span>
+</span> -->
 <div fxLayout="column" class="">
     <div class="card-container mgt05 pd05 backWhite">
         <div fxLayout="row" fxLayoutAlign="space-between center">
@@ -8,7 +8,7 @@
                 <img onerror="this.src='assets/images/default/default-user-image.jpg'" 
                 [src]="manager?.photoUrl" class="avatar5" alt="">
                 <div fxLayout="column" fxLAyout="center center">
-                    <span class="mgl10 ft16 ft600 gray-10">{{manager?.displayName}}</span>
+                    <span class="mgl10 ft16 ft600 gray-10">{{manager?.displayName | titlecase}}</span>
                     <span class="mgl10">
                         {{type === "sales" ? "Dpto. Ventas" : "Account manager"}}
                     </span>
