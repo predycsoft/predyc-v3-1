@@ -7,6 +7,7 @@ import { UserService } from 'src/app/shared/services/user.service';
 import { AngularFireFunctions } from '@angular/fire/compat/functions';
 import { User } from 'src/app/shared/models/user.model';
 import { AlertsService } from 'src/app/shared/services/alerts.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 interface NotificationGroup {
   subType: string;
@@ -36,72 +37,82 @@ export class NotificationListComponent {
   filteredNotifications: Notification[]
   groupedNotifications: NotificationGroup[] = []
 
+  queryParamsSubscription: Subscription
+
   constructor(
     public icon: IconService,
     private userService: UserService,
     private fireFunctions: AngularFireFunctions,
     private alertService: AlertsService,
     private notificationService: NotificationService,
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
   ) {}
 
   ngOnInit() {
-    this.combinedObservableSubscription = combineLatest(
-      [
-        this.notificationService.getNotifications$(),
-        this.userService.usersLoaded$, 
-        this.notificationService.notificationsLoaded$
-      ]
-    ).pipe(
-      map(([notifications, usersLoaded, notificationsLoaded]) => {
-        if (usersLoaded && notificationsLoaded) {
-          console.log("Cargaron los users")
-          return notifications
-        }
-        return [];
-      }),
-      catchError(error => {
-        console.error('Error occurred:', error);
-        return of([]);  // Return an empty array as a fallback.
-      })
-    ).subscribe(notifications => {
-      if (notifications.length > 0) {
-        this.allNotifications = notifications.map((notification: Notification) => {
+
+    this.combinedObservableSubscription = combineLatest([this.notificationService.getNotifications$(), this.userService.users$]).subscribe(([notifications, users]) => {
+      if (notifications.length > 0 && users.length > 0) {
+        this.allNotifications = notifications.filter(notification => {
+          return users.find(x => x.uid === notification.userRef.id) ? true : false // to prevent undefined users
+        }).map((notification: Notification) => {
+
           const notificationUser = this.userService.getUser(notification.userRef.id)
+          // const notificationUser = users.find(x => x.uid === notification.userRef.id)
           notification.user = notificationUser
           return notification
         });
-        console.log("notifications", notifications)
-        this.applyFilter(this.selectedFilter ? this.selectedFilter : "alert")
+        this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
+          const statusFilter = params['type'] || Notification.TYPE_ALERT;        
+          this.applyFilter(statusFilter)
+        })
+        // console.log("notifications", notifications)
       }
     })
+
   }
 
   applyFilter(filter: string) {
-    if (filter === this.selectedFilter) {
-      return
-    }
+    this.router.navigate([], {
+      queryParams: { type: filter },
+      queryParamsHandling: 'merge'
+    });
     this.updateDisplayedColumns(filter)
     this.selectedFilter = filter
     this.filteredNotifications = this.allNotifications.filter(notification => notification.type === this.selectedFilter)
 
-    this.groupedNotifications = Object.entries(this.filteredNotifications.reduce((groups, notification) => {
-      (groups[notification.subType] = groups[notification.subType] || []).push(notification);
-      return groups;
-    }, {})).map(([key, value]) => ({ subType: key, notifications: value as Notification[] }));
+    this.groupFilteredNotifications(this.filteredNotifications)
 
   }
 
+  groupFilteredNotifications(filteredNotifications: Notification[]) {
+    // Object of subtypes and corresponding notifications
+    const groupedBySubType: {} = filteredNotifications.reduce((groups, notification) => {
+      if (!groups[notification.subType]) { groups[notification.subType] = []; }
+      groups[notification.subType].push(notification);
+      return groups;
+    }, {});
+
+    // Object.entries converts the object into an array of keys and values [key, value]
+    const entries = Object.entries(groupedBySubType);
+    // console.log("entries", entries)
+
+    // convert the array into the wanted structure 
+    this.groupedNotifications = entries.map(([subType, notifications]) => ({
+      subType: subType, 
+      notifications: notifications as Notification[]
+    }));
+    console.log("this.groupedNotifications", this.groupedNotifications)
+  }
+
   updateDisplayedColumns(filter: string) {
-    this.displayedColumns = [
-      'content',
-      'date',
-      'delete',
-    ];
-    if (filter === "alert") this.displayedColumns.splice(this.displayedColumns.length - 1, 0 ,'action')
-}
+    this.displayedColumns = [ 'content', 'date', 'delete'];
+    if (filter === Notification.TYPE_ALERT) this.displayedColumns.splice(this.displayedColumns.length - 1, 0 ,'action')
+  }
 
   ngOnDestroy() {
     this.combinedObservableSubscription.unsubscribe();
+    this.queryParamsSubscription.unsubscribe()
   }
 
   async onDelete(notification: Notification) {
