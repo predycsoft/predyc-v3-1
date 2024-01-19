@@ -1,7 +1,5 @@
-import { DataSource } from '@angular/cdk/collections';
-import { Component, Input, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
-import { BehaviorSubject, catchError, combineLatest, firstValueFrom, map, merge, Observable, of, Subject, Subscription } from 'rxjs';
+import { Component } from '@angular/core';
+import { catchError, combineLatest, firstValueFrom, map, of, Subscription } from 'rxjs';
 import { IconService } from 'src/app/shared/services/icon.service';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { Notification } from 'src/app/shared/models/notification.model';
@@ -9,8 +7,11 @@ import { UserService } from 'src/app/shared/services/user.service';
 import { AngularFireFunctions } from '@angular/fire/compat/functions';
 import { User } from 'src/app/shared/models/user.model';
 import { AlertsService } from 'src/app/shared/services/alerts.service';
-import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
 
+interface NotificationGroup {
+  subType: string;
+  notifications: Notification[];
+}
 @Component({
   selector: 'app-notification-list',
   templateUrl: './notification-list.component.html',
@@ -18,25 +19,22 @@ import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
 })
 export class NotificationListComponent {
 
-  // This is not being used
-  @Input() enablePagination: boolean = true
-  @Input() pageSize: number = 5
-
   displayedColumns: string[] = [
     'content',
     'date',
     'action',
-    'check',
+    'delete',
   ]
-  dataSource!: NotificationDataSource;
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-
-  selectedFilter: string = 'alert'
+  selectedFilter: string = ''
 
   combinedObservableSubscription: Subscription
 
   clickedNotifications: { [id: string]: boolean } = {};
+
+  allNotifications: Notification[]
+  filteredNotifications: Notification[]
+  groupedNotifications: NotificationGroup[] = []
 
   constructor(
     public icon: IconService,
@@ -44,28 +42,36 @@ export class NotificationListComponent {
     private fireFunctions: AngularFireFunctions,
     private alertService: AlertsService,
     private notificationService: NotificationService,
-    private enterpriseService: EnterpriseService
   ) {}
 
-  ngAfterViewInit() {
-    this.combinedObservableSubscription = combineLatest([this.userService.usersLoaded$, this.notificationService.notificationsLoaded$]).pipe(
-      map(([usersLoaded, notificationsLoaded]) => {
-        return usersLoaded && notificationsLoaded
+  ngOnInit() {
+    this.combinedObservableSubscription = combineLatest(
+      [
+        this.notificationService.getNotifications$(),
+        this.userService.usersLoaded$, 
+        this.notificationService.notificationsLoaded$
+      ]
+    ).pipe(
+      map(([notifications, usersLoaded, notificationsLoaded]) => {
+        if (usersLoaded && notificationsLoaded) {
+          console.log("Cargaron los users")
+          return notifications
+        }
+        return [];
       }),
       catchError(error => {
         console.error('Error occurred:', error);
         return of([]);  // Return an empty array as a fallback.
       })
-    ).subscribe(isLoaded => {
-      if (isLoaded) {
-        this.dataSource = new NotificationDataSource(
-          this.userService,
-          this.notificationService,
-          this.enterpriseService,
-          this.paginator,
-          this.pageSize,
-          this.enablePagination
-        );
+    ).subscribe(notifications => {
+      if (notifications.length > 0) {
+        this.allNotifications = notifications.map((notification: Notification) => {
+          const notificationUser = this.userService.getUser(notification.userRef.id)
+          notification.user = notificationUser
+          return notification
+        });
+        console.log("notifications", notifications)
+        this.applyFilter(this.selectedFilter ? this.selectedFilter : "alert")
       }
     })
   }
@@ -75,7 +81,13 @@ export class NotificationListComponent {
       return
     }
     this.selectedFilter = filter
-    this.dataSource.setFilter(filter)
+    this.filteredNotifications = this.allNotifications.filter(notification => notification.type === this.selectedFilter)
+
+    this.groupedNotifications = Object.entries(this.filteredNotifications.reduce((groups, notification) => {
+      (groups[notification.subType] = groups[notification.subType] || []).push(notification);
+      return groups;
+    }, {})).map(([key, value]) => ({ subType: key, notifications: value as Notification[] }));
+
   }
 
   ngOnDestroy() {
@@ -119,76 +131,8 @@ export class NotificationListComponent {
 
   }
 
-}
-
-class NotificationDataSource extends DataSource<Notification> {
-
-  private pageIndex: number = 0;
-  private selectedFilter: string = 'alert'
-  
-
-  constructor(
-    private userService: UserService,
-    private notificationService: NotificationService,
-    private enterpriseService: EnterpriseService,
-    private paginator: MatPaginator,
-    private pageSize: number,
-    private enablePagination: boolean
-  ) {
-    super();
-
-    if (this.enablePagination) {
-      this.paginator.pageSize = this.pageSize
-      this.paginator.page.subscribe(eventObj => {
-        this.pageIndex = eventObj.pageIndex
-        this.getNotifications()
-      });
-    }
-
-    this.getNotifications()
+  getSubTypeTextToDisplay(subType) {
+    return Notification.subTypeToDisplayValueDict[subType]
   }
 
-  getNotifications() {
-    this.notificationService.getNotifications()
-  }
-  
-  connect(): Observable<Notification[]> {
-
-    return combineLatest([this.notificationService.notifications$, this.enterpriseService.enterprise$]).pipe(
-      map(([notifications, _]) => {
-        console.log("all notifications", notifications)
-        let currentNotifications = notifications.filter(notification => notification.type === this.selectedFilter)
-        // update paginator length
-        if (this.enablePagination) {
-          this.paginator.length = currentNotifications.length
-          const start = this.pageIndex * this.pageSize;
-          const end = start + this.pageSize;
-          currentNotifications = currentNotifications.slice(start, end) 
-        }
-
-        // Pagination
-        return currentNotifications.map(notification => {
-          const notificationUser = this.userService.getUser(notification.userRef.id)
-          notification.user = notificationUser
-          return notification
-        });
-      }),
-      catchError(error => {
-        console.error('Error occurred:', error);
-        return of([]);  // Return an empty array as a fallback.
-      })
-    );
-    
-  }
-
-  setFilter(filter: string) {
-    this.selectedFilter = filter
-    if (this.enablePagination) {
-      this.pageIndex = 0
-      this.paginator.firstPage();
-    }
-    this.getNotifications()
-  }
-
-  disconnect() {}
 }
