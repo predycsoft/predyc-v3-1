@@ -6,3 +6,14 @@
     padding: 5px 15px;
     background-color: transparent;
 }
+
+.input-box::placeholder{
+    color: var(--gray-8);
+    font-weight: 500;
+}
+
+.search{
+    position: absolute;
+    right: 1rem;
+    bottom: 0.5rem;
+}

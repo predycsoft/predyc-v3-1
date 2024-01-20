@@ -4,21 +4,21 @@
     </div>
     <div class="table-container mgt05">
         <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
-            <div class="iconContainer mgb03" fxLayoutAlign="center center">
-                <img [src]="icon.trophy" class="makeBlue h16px" alt="">
+            <div class="" fxLayoutAlign="center center">
+                <img [src]="icon.trophyBlue" class="makeBlue h20px" alt="">
             </div>
-            <span class="ft12 gray-10 ft600 ">Ranking del mes</span>
+            <span class="ft12 gray-10 ">Ranking del mes</span>
             <div fxLayout="center center" class="positionRelative" (mouseover)="showPointsTooltip = true" (mouseleave)="showPointsTooltip = false">
                 <img [src]="icon.information" class="h16px makeBlue" alt="">
             </div>
         </div>
-        <table class="fw">
+        <table class="fw mgt10">
             <tr>
-                <td class="gray-10 ft500 ft12 centertext">Nombre</td>
+                <td class="gray-10 ft500 ft12 ">Nombre</td>
                 <td class="gray-10 ft500 ft12 centertext">Horas</td>
                 <td class="gray-10 ft500 ft12 centertext">Puntos</td>
                 <td class="gray-10 ft500 ft12 centertext">Ritmo</td>
-                <td class="gray-10 ft500 ft12 centertext">Perfil</td>
+                <td class="gray-10 ft500 ft12 ">Perfil</td>
             </tr>
             <tr *ngFor="let item of ranking | slice:0:listLength; let i = index" class="selected">
                 <td class="w-20">
@@ -38,19 +38,24 @@
                 <td class="centertext gray-10 ft12">{{"Horas"}}</td>
                 <td class="centertext gray-10 ft12">{{item.ratingPoints | number: "1.0-0"}}</td>
                 <td class="centertext">
-                    <div class=" centertext">
-                        <span *ngIf="item.performance == 'no plan' || item.performance == null "class="gray-6 ft11 ft600 nowrap">
-                            Sin asignación
-                        </span>
-                        <span *ngIf="item.performance == 'low'" class="red-5 ft11 ft600 nowrap">
-                            bajo
-                        </span>
-                        <span *ngIf="item.performance == 'medium'" class="green-5 ft11 ft600 nowrap">
-                            medio
-                        </span>
-                        <span *ngIf="item.performance == 'high'" class="purple-5 ft11 ft600 nowrap">
-                            óptimo
-                        </span>
+                    <div class="centertext" fxLayoutAlign="center center">
+                        <div class="chip w100px"
+                        [ngClass]="{'backGreen1':item.performance == 'high',
+                                    'backBlue1':item.performance == 'medium'}"
+                        >
+                            <span *ngIf="item.performance == 'no plan' || item.performance == null "class="gray-6 ft11 nowrap">
+                                Sin asignación
+                            </span>
+                            <span *ngIf="item.performance == 'low'" class="red-5 ft11 nowrap">
+                                Bajo
+                            </span>
+                            <span *ngIf="item.performance == 'medium'" class="blue-5 ft11 nowrap">
+                                Medio
+                            </span>
+                            <span *ngIf="item.performance == 'high'" class="green-5 ft11 nowrap">
+                                Alto
+                            </span>
+                        </div>
                     </div>
                 </td>
                 <td class="gray-10 ft12 w-20">{{getStudentProfileName(item)}}</td>

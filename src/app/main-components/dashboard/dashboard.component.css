@@ -1,4 +1,18 @@
 .photo-shadow{
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-    outline: 3px solid #555;
+    outline: 3px solid white;
+    position:relative;
+    z-index: 1;
+}
+
+.photo-change{
+    position: absolute;
+    bottom: -.25rem;
+    right: -.25rem;
+    background-color: white;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    min-height: 1.5rem;
+    min-width: 1.5rem;
+    z-index: 2;
 }

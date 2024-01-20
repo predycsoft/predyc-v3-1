@@ -1,9 +1,9 @@
 <div class="fw" fxLayoutAlign="space-between center" fxLayout="row">
     <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
         <div class="iconContainer" fxLayoutAlign="center center">
-            <img [src]="icon.clockBlue" class="makeBlue" alt="">
+            <img [src]="icon.clockBlue" class="makeBlue h20px" alt="">
         </div>
-        <span class="ft12 gray-10 ft600">Tiempo de estudio mensual</span>
+        <span class="ft12 gray-10">Tiempo de estudio mensual</span>
     </div>
 </div>
 <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="2rem" class="mgt08 h-75 pdl10 pdr10">
@@ -18,7 +18,7 @@
                 </div>
             </div>
         </div>
-        <div><span class="ft500 ft10 gray-10 fw">Mes actual: {{currentMonth}}</span></div>
+        <div><span class=" ft10 gray-10 fw">Mes actual: {{currentMonth}}</span></div>
     </div>
     <div class="fw fh" fxLayout="column" fxLayoutAlign="start center">
         <app-study-time-monthly-chart [logs]="logs" class="fw fh"></app-study-time-monthly-chart>

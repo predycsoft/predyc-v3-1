@@ -221,5 +221,8 @@ export class IconService {
   resultsPresentation: string ='assets/iconsUI/results-presentation.svg'
   ticTacToe: string ='assets/iconsUI/tic-tac-toe.svg'
 
+  presentationFile: string ='assets/iconsUI/presentation-file.svg'
+  trophyBlue: string ='assets/iconsUI/trophy-blue.svg'
+
   constructor() { }
 }

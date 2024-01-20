@@ -1,37 +1,40 @@
 <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
     <div class="iconContainer" fxLayoutAlign="center center">
-        <img [src]="icon.cronograma" class="makeBlue" alt="">
+        <img [src]="icon.presentationFile" class="makeBlue h20x" alt="">
     </div>
-    <span class="ft12 gray-10 ft600 ">Ritmo de usuarios</span>
+    <span class="ft12 gray-10 ">Ritmo de usuarios</span>
 </div>
-<div fxLayout="column" class="mgt10">
-    <span class="ft11 gray-10">
-        <span class=" ft500 ft11 gray-10"> {{goodRhythmPercentage | number:"1.0-0"}}%</span> de tu equipo lleva un buen ritmo
+<div fxLayout="column" class="mgt10" fxLayoutAlign=" center">
+    <span class="ft11 gray-6">
+        <span class="  ft11 gray-6"> {{goodRhythmPercentage | number:"1.0-0"}}%</span> de tu equipo lleva un buen ritmo
     </span>
 </div>
-<div fxLayout="row" fxLayoutGap="1.2rem" fxLayoutAlign="center center" class="fw mgt05">
+<div fxLayout="row" fxLayoutGap="2rem" fxLayoutAlign="center center" class="fw mgt10">
     <div class="" fxLayout="row" fxLayoutAlign="start center">
         <!-- COLOCAR GRAFICA AQUI ABAJO -->
+        <div class="graphContainer">
+            <div class="avatar6 backGray4"></div>
+        </div>
     </div>
     <div fxLayout="column" fxLayoutGap=".5rem">
         <div fxLayout="row" fxLayoutAlign=" center">
             <div class="cuadrito backPurple5"></div>
-            <span class="gray-10 ft11 nowrap w150px">Ritmo optimo</span>
+            <span class="gray-10 ft11 nowrap w120px">Ritmo optimo</span>
             <span class="gray-10 ft11 nowrap ft500">{{highPercentage | number:"1.0-0"}}%</span>
         </div>
         <div fxLayout="row" fxLayoutAlign=" center">
             <div class="cuadrito backGreen5"></div>
-            <span class="gray-10 ft11 nowrap w150px">Ritmo medio</span>
+            <span class="gray-10 ft11 nowrap w120px">Ritmo medio</span>
             <span class="gray-10 ft11 nowrap ft500">{{mediumPercentage | number:"1.0-0"}}%</span>
         </div>
         <div fxLayout="row" fxLayoutAlign=" center">
             <div class="cuadrito backRed5"></div>
-            <span class="gray-10 ft11 nowrap w150px">Ritmo bajo</span>
+            <span class="gray-10 ft11 nowrap w120px">Ritmo bajo</span>
             <span class="gray-10 ft11 nowrap ft500">{{lowPercentage | number:"1.0-0"}}%</span>
         </div>
         <div fxLayout="row" fxLayoutAlign=" center">
             <div class="cuadrito backGray4"></div>
-            <span class="gray-10 ft11 nowrap w150px">Sin asignaciones</span>
+            <span class="gray-10 ft11 nowrap w120px">Sin asignaciones</span>
             <span class="gray-10 ft11 nowrap ft500">{{noPlanPercentage | number:"1.0-0"}}%</span>
         </div>
     </div>

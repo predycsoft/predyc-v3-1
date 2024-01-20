@@ -1,6 +1,12 @@
 .profile-container {
     position: relative;
     display: inline-block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    padding-right: 2rem;
+    max-height: 36px;
+    background-color: #f8f8f8;
     /* color: var(--gray-6) */
 }
 
@@ -18,6 +24,8 @@
 .profile-container:hover {
     background-color: var(--blue-1);
     cursor: pointer;
+
+
 }
 
 .profile-container:hover .profile-arrow {

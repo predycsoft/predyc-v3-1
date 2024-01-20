@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { debounceTime, Subject, Subscription } from 'rxjs';
+import { IconService } from '../../services/icon.service';
 
 @Component({
   selector: 'app-search-input-box',
@@ -18,6 +19,7 @@ export class SearchInputBoxComponent {
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
+    public icon: IconService
   ) {}
 
   ngOnInit() {

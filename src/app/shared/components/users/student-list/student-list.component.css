@@ -17,7 +17,58 @@ th, td {
     border-bottom: 2px solid gray;
 }
 
+ tr:nth-child(odd) td{
+    background-color: #f8f8f8 !important; /* Light gray for odd rows */
+}
+
+ tr:nth-child(even) td{
+    background-color: #fcfcfc !important; /* Lighter gray for even rows */
+}
+
 th {
     border-top: none !important;
     border-bottom: none !important;
 }
+
+tbody {
+  
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+table.mat-mdc-row:first-child .mat-mdc-cell:first-child {
+    border-radius: 2rem !important;
+}
+
+tr:first-child td:first-child {
+    border-top-left-radius: 10px !important;
+}
+
+tr:first-child td:last-child {
+    border-top-right-radius: 10px !important;
+}
+
+table.mat-table tbody tr {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+table.mat-table tfoot tr {
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+  
+  .mat-mdc-row .mat-mdc-cell {
+    border-bottom: 1px solid transparent;
+    border-top: 1px solid transparent;
+    cursor: pointer;
+  }
+/*   
+  .mat-mdc-row:hover .mat-mdc-cell {
+    border-color: currentColor;
+  } */
+  
+  .demo-row-is-clicked {
+    font-weight: bold;
+  }
