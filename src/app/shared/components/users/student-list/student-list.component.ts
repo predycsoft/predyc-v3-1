@@ -96,7 +96,8 @@ export class StudentListComponent {
             hours: 0, // Calculation pending
             profile: profileName,
             ratingPoints: item.ratingPoints,
-            rhythm: options[randomIndex] // Calculation pending
+            rhythm: options[randomIndex], // Calculation pending
+            uid: item.uid
           }
           return user
         })

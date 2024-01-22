@@ -1,0 +1,10 @@
+.container {
+    overflow-y: auto;
+    max-height: 35rem;
+  }
+
+
+  .cards {
+    padding: 12px 18px;
+  }
+  

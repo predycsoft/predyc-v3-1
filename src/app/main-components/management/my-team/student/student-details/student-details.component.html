@@ -1,4 +1,4 @@
-<div fxLayout="column" class="mgt10">
+<!-- <div fxLayout="column" class="mgt10">
     <div fxLayout="row" fxLayoutAlign="start center">
         <img [src]="icon.checkCircle" alt="Ícono">
         <span class="ft600 gray-10">Presente | </span>
@@ -31,4 +31,129 @@
         </div>
     </div>    
     <div class="radius10 border mgt10" style="height: 400px;"></div>
+</div> -->
+
+<div fxLayout="column" class="mgt10 container">
+    <!-- 3 cards top -->
+    <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt10">
+        <!-- Informacion del usuario-->
+        <div class="w-30 radius10 border cards" fxLayout="column" fxLayoutGap="0.3rem" style="height: 15rem">
+            <div fxLayout="row" fxLayoutAlign="space-between center" class="">
+                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem">
+                    <img [src]="icon.notification" class="makeBlue h16px" alt="">
+                    <span class="ft500 black undrl ft14 ft600 black">Información del usuario</span>
+                </div>
+                <span class="makeBlue cursorPointer ft14">Editar</span>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="space-between center" class="fh">
+                <div fxLayout="column" fxLayoutAlign="space-between center" fxLayoutGap=".75rem" class="w-40">
+                    <img [src]="student.photoUrl ? student.photoUrl : 'assets/images/default/default-user-image.jpg'" class="avatar6" alt="" >
+                    <div class="radius10 backBlue1 pdr10 pdl10">
+                        <span class="blue-5 ft13 ft500">Activo</span>
+                    </div>
+                </div>
+                <div fxLayout="column" fxLayoutAlign="start start" class="w-60" fxLayoutGap=".75rem">           
+                    <span class="ft16 ft600 black"> {{student.displayName}} </span>
+                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem">
+                        <img [src]="icon.userProfile" class="makeGray h16px" alt="">
+                        <span class="ft12"> {{studentProfile.name ? studentProfile.name : "Sin perfil" }} </span>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem">
+                        <img [src]="icon.email" class="makeGray h16px" alt="">
+                        <span class="ft12"> {{student.email}} </span>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem">
+                        <img [src]="icon.phone" class="makeGray h16px" alt="">
+                        <span class="ft12"> {{student.phoneNumber ? student.phoneNumber : "Teléfono desconocido" }} </span>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem">
+                        <img [src]="icon.location" class="makeGray h16px" alt="">
+                        <span class="ft12"> {{student.country ? student.country : "País desconocido" }} </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Tiempode estudio -->
+        <div class="w-30 radius10 border pd10 cards" fxLayout="column" fxLayoutGap="0.3rem" style="height: 15rem;">
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="">
+                <img [src]="icon.clock" class="makeBlue h16px" alt="">
+                <span class="ft500 black undrl ft14 ft600 black">Tiempo de estudio</span>
+            </div>
+            <!-- Chart -->
+            <div class="border radius10 pd05" fxLayout="row" fxLayoutAlign="space-between center">
+                <div style="height: 150px;">
+                    <span> Aqui va la grafica</span>
+                </div>
+            </div>
+        </div>
+        <!-- Progreso -->
+        <div class="w-30 radius10 border pd10 cards" fxLayout="column" fxLayoutGap="0.3rem" style="height: 15rem;">
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="">
+                <img [src]="icon.dashboard" class="makeBlue h16px" alt="">
+                <span class="ft500 black undrl ft14 ft600 black">Progreso</span>
+            </div>
+            <!-- Chart -->
+            <div class="border radius10 pd05" fxLayout="row" fxLayoutAlign="space-between center">
+                <div style="height: 150px;">
+                    <span> Aqui va la grafica</span>
+                </div>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="center center">
+                <span class="ft14 ft500 black">El ritmo es ...</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 2 cards bottom -->
+    <div fxLayout="row" fxLayoutAlign="space-between" class="mgt20">
+        <!-- Resumen de competencias -->
+        <div class="w-30 radius10 border cards fh" fxLayout="column" fxLayoutGap="1rem" >
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem">
+                <img [src]="icon.ticTacToe" class="makeBlue h16px" alt="">
+                <span class="ft500 black undrl ft14 ft600 black">Resumen de competencias</span>
+            </div>
+            <div class="border radius10 pd05" fxLayout="row" fxLayoutAlign="space-between center">
+                <div style="height: 200px;">
+                    <span> Aqui va la grafica</span>
+                </div>
+            </div>
+            <div fxLayout="column" fxLayoutGap="1rem" *ngFor="let competence of competences; let i = index">
+                <span>{{competence.title}}</span>
+                <div fxLayout="row wrap" fxLayoutAlign="start center" fxLayoutGap=".5rem">
+                    <div *ngFor="let categorie of competence.categories; let i = index" class="mgb05">
+                        <span  class="radius10 pd03 backGray2"> {{categorie}} </span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- Plan de estudios -->
+        <div class="w-65 radius10 border cards" fxLayout="column" fxLayoutGap="1rem">
+            <div fxLayout="row" fxLayoutAlign="space-between center" class="">
+                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem">
+                    <img [src]="icon.ticTacToe" class="makeBlue h16px" alt="">
+                    <span class="ft500 black undrl ft14 ft600 black">Plan de estudios</span>
+                </div>
+                <span class="makeBlue cursorPointer ft14">Editar</span>
+            </div>
+            <div class="border radius10 pd05 backRed1" fxLayout="row" fxLayoutAlign="space-between center" style="border-color: red !important;">
+                <img [src]="icon.alert" class="makeRed h24px" alt="">
+                <span class="red-5 ft14 ft600"> Advertencia: este usuario tiene 2 meses atrasados</span>
+                <button class="redButton btn">Alertar via e-mail</button>
+            </div>
+            <div *ngFor="let subArray of months; let index = index" fxLayout="column"  class="mgt05">
+                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="mgb10">
+                    <span class="ft16 ft600 black">{{subArray.name}}</span>
+                    <img [src]="icon.alert" class="makeRed h14px" alt="">
+                </div>
+                <div *ngFor="let course of subArray.courses; let i = index" fxLayout="column" fxLayoutAlign="center" 
+                    class="h50px pd10" [ngClass]=" i % 2 ? '' : 'backGray1'">
+                    <div fxLayout="row" fxLayoutAlign="space-between center">
+                        <span class="ft14"> {{course.courseTitle}} </span>
+                        <span class="ft14"> {{course.duration}} hr </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
