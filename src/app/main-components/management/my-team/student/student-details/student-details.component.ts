@@ -1,17 +1,19 @@
 import { Component, Input } from '@angular/core';
+import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
+import { Observable, Subscription, combineLatest } from 'rxjs';
 import { Profile } from 'src/app/shared/models/profile.model';
+import { CourseByStudent } from 'src/app/shared/models/course-by-student';
 import { User } from 'src/app/shared/models/user.model';
+import { CourseService } from 'src/app/shared/services/course.service';
 import { IconService } from 'src/app/shared/services/icon.service';
 import { ProfileService } from 'src/app/shared/services/profile.service';
+import { UserService } from 'src/app/shared/services/user.service';
 
-interface Course {
-  courseTitle: string,
-  duration: number
-}
 
 interface Month {
-  name: string;
-  courses: Course[];
+  monthName: string;
+  monthNumber: number
+  courses: any[];
 }
 
 @Component({
@@ -25,83 +27,16 @@ export class StudentDetailsComponent {
   constructor(
     public icon: IconService,
     private profileService: ProfileService,
+    private userService: UserService,
+    private courseService: CourseService,
   ){}
 
   studentProfile: Profile
+  combinedObservableSubscription: Subscription
+  months: Month[]
   
 
   // -------------------------------- hardcode data
-  months: Month[] = [
-    {
-      name: "Noviembre",
-      courses: [
-        {
-          courseTitle: "Estrategias de Mantenimiento",
-          duration: 1,
-        },
-        {
-          courseTitle: "Gestión de Paradas de Mantenimiento",
-          duration: 5,
-        },
-        {
-          courseTitle: "Fundamentos Técnicos de Tribología y Lubricación",
-          duration: 3,
-        },
-      ],
-    },
-    {
-      name: "Octubre",
-      courses: [
-        {
-          courseTitle: "Administración del Mantenimiento",
-          duration: 2,
-        },
-        {
-          courseTitle: "Gestión de Costos de Mantenimiento",
-          duration: 4,
-        },
-        {
-          courseTitle: "Gestión de Mantenimiento en SAP",
-          duration: 6,
-        },
-      ],
-    },
-    {
-      name: "Septiembre",
-      courses: [
-        {
-          courseTitle: "Motocompresor Reciprocante: Funcionamiento, Operación y Mantenimiento",
-          duration: 8,
-        },
-        {
-          courseTitle: "Bombas Rotativas",
-          duration: 7,
-        },
-        {
-          courseTitle: "Bombas Reciprocantes",
-          duration: 9,
-        },
-      ],
-    },
-    {
-      name: "Agosto",
-      courses: [
-        {
-          courseTitle: "Motores electricos",
-          duration: 8,
-        },
-        {
-          courseTitle: "Gestión de los interesado",
-          duration: 7,
-        },
-        {
-          courseTitle: "Fundamentos de Dirección de Proyectos",
-          duration: 9,
-        },
-      ],
-    },
-  ];
-
   competences = [
     {
       title: "Pilar 1: Mantenimiento",
@@ -137,13 +72,66 @@ export class StudentDetailsComponent {
       ]
     }
   ];
-  
   // --------------------------------
 
 
   ngOnInit() {
     this.studentProfile = this.student.profile ? this.profileService.getProfile(this.student.profile.id) : null
-    console.log(this.student)
+
+    const userRef = this.userService.getUserRefById(this.student.uid)
+
+    this.combinedObservableSubscription = combineLatest([ this.courseService.getCourses$(), this.courseService.getCoursesByStudent(userRef)]).
+    subscribe(([coursesData, coursesByStudent]) => {
+      if (coursesByStudent.length > 0) {
+        if (coursesData.length > 0) {
+          this.buildMonths(coursesByStudent, coursesData)
+        }
+      } else {
+        console.log("El usuario no posee studyPlan");
+      }
+    });
+    
+  }
+
+  buildMonths(coursesByStudent: CourseByStudent[], coursesData) {
+    const months = {}; 
+    coursesByStudent.forEach(courseByStudent => {
+      const courseData = coursesData.find(courseData => courseData.id === courseByStudent.courseRef.id);
+      if (courseData) {
+        const studyPlanData = {
+          duration: courseData.duracion / 60,
+          courseTitle: courseData.titulo,
+          dateStartPlan: courseByStudent.dateStartPlan.toDate(),
+          dateEndPlan: courseByStudent.dateEndPlan.toDate(),
+          dateStart: courseByStudent.dateStart ? courseByStudent.dateStart.toDate() : null,
+          dateEnd: courseByStudent.dateEnd ? courseByStudent.dateEnd.toUTCDate() : null,
+        };
+        
+        const monthName = studyPlanData.dateEndPlan.toLocaleString('es', { month: 'long' });
+
+        if (!months[monthName]) {
+          months[monthName] = [];
+        }
+
+        // Add course to the related month
+        months[monthName].push(studyPlanData);
+      }
+      else { 
+        console.log("No exite el curso")
+        return
+      }
+    });
+    // Transform data to the desired structure 
+    this.months = Object.keys(months).map(monthName => {
+      const monthNumber = months[monthName][0].dateEndPlan.getUTCMonth()
+      return {
+        monthName,
+        monthNumber,
+        courses: months[monthName]
+      };
+    });
+    this.months.sort((a, b) => b.monthNumber - a.monthNumber);
+    console.log("this.months", this.months);
   }
   
 }

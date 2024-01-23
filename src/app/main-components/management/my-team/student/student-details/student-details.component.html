@@ -128,7 +128,7 @@
 
         </div>
         <!-- Plan de estudios -->
-        <div class="w-65 radius10 border cards" fxLayout="column" fxLayoutGap="1rem">
+        <div class="w-65 radius10 border cards fh" fxLayout="column" fxLayoutGap="1rem">
             <div fxLayout="row" fxLayoutAlign="space-between center" class="">
                 <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem">
                     <img [src]="icon.ticTacToe" class="makeBlue h16px" alt="">
@@ -141,19 +141,24 @@
                 <span class="red-5 ft14 ft600"> Advertencia: este usuario tiene 2 meses atrasados</span>
                 <button class="redButton btn">Alertar via e-mail</button>
             </div>
-            <div *ngFor="let subArray of months; let index = index" fxLayout="column"  class="mgt05">
-                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="mgb10">
-                    <span class="ft16 ft600 black">{{subArray.name}}</span>
-                    <img [src]="icon.alert" class="makeRed h14px" alt="">
-                </div>
-                <div *ngFor="let course of subArray.courses; let i = index" fxLayout="column" fxLayoutAlign="center" 
-                    class="h50px pd10" [ngClass]=" i % 2 ? '' : 'backGray1'">
-                    <div fxLayout="row" fxLayoutAlign="space-between center">
-                        <span class="ft14"> {{course.courseTitle}} </span>
-                        <span class="ft14"> {{course.duration}} hr </span>
+            <div *ngIf="(months && months.length > 0) else noPlan" >
+                <div *ngFor="let subArray of months; let index = index" fxLayout="column"  class="mgt05">
+                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="mgb10">
+                        <span class="ft16 ft600 black">{{subArray.monthName}}</span>
+                        <img [src]="icon.alert" class="makeRed h14px" alt="">
+                    </div>
+                    <div *ngFor="let course of subArray.courses; let i = index" fxLayout="column" fxLayoutAlign="center" 
+                        class="h50px pd10" [ngClass]=" i % 2 ? '' : 'backGray1'">
+                        <div fxLayout="row" fxLayoutAlign="space-between center">
+                            <span class="ft14"> {{course.courseTitle}} </span>
+                            <span class="ft14"> {{course.duration | number:'1.0-1'}} hr </span>
+                        </div>
                     </div>
                 </div>
             </div>
+            <ng-template #noPlan>
+                <span>El usuario aun no posee un plan de estudios</span>
+            </ng-template>
         </div>
     </div>
 </div>

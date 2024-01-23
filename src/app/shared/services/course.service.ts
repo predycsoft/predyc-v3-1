@@ -15,6 +15,7 @@ import { Skill } from '../models/skill.model';
 import { Curso } from '../models/course.model';
 import { Modulo } from '../models/module.model';
 import { Clase } from '../models/course-class.model';
+import { CourseByStudent } from '../models/course-by-student';
 
 @Injectable({
   providedIn: 'root'
@@ -266,6 +267,10 @@ export class CourseService {
         )
       })
     )
+  }
+
+  getCoursesByStudent(userRef: DocumentReference<User>): Observable<CourseByStudent[]> {
+    return this.afs.collection<CourseByStudent>(CourseByStudent.collection, ref => ref.where('userRef', '==', userRef)).valueChanges()
   }
 
 }
