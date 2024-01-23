@@ -56,7 +56,7 @@
                     <span class="ft16 ft600 black"> {{student.displayName}} </span>
                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem">
                         <img [src]="icon.userProfile" class="makeGray h16px" alt="">
-                        <span class="ft12"> {{studentProfile.name ? studentProfile.name : "Sin perfil" }} </span>
+                        <span class="ft12"> {{studentProfile ? studentProfile.name : "Sin perfil" }} </span>
                     </div>
                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem">
                         <img [src]="icon.email" class="makeGray h16px" alt="">

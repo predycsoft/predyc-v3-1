@@ -13,7 +13,6 @@
  <div *ngIf="!loaderService.loading" class="pd10">
     <div fxLayout="row" fxLayoutAlign="space-between center">
         <app-navigate-back targetUrl="../">{{student.displayName}}</app-navigate-back>
-        <button class="blueButton">Editar</button>
     </div>
     <app-student-details [student]="student"></app-student-details>
 

@@ -142,7 +142,7 @@ export class StudentDetailsComponent {
 
 
   ngOnInit() {
-    this.studentProfile = this.profileService.getProfile(this.student.profile.id)
+    this.studentProfile = this.student.profile ? this.profileService.getProfile(this.student.profile.id) : null
     console.log(this.student)
   }
   
