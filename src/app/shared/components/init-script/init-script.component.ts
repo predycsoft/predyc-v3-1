@@ -46,6 +46,7 @@ import { CourseClassService } from '../../services/course-class.service';
 import { Modulo } from '../../../shared/models/module.model';
 import { ModuleService } from '../../services/module.service';
 import { coursesData } from 'src/assets/data/courses.data';
+import { CourseByStudent } from '../../models/course-by-student';
 
 
 
@@ -263,7 +264,11 @@ export class InitScriptComponent {
     }
     console.log(`Finished Creating Instructors`, this.instructors);
 
-    this.uploadCursosLegacy();
+    await this.uploadCursosLegacy();
+
+    console.log('********* Creating courseByStudent *********')
+    await this.addCourseByStudent()
+    console.log(`Finished Creating coursesByStudent`);
 
 
     try {
@@ -315,6 +320,7 @@ export class InitScriptComponent {
       //cursoIn.instructorResumen = curso.instructorResumen
       cursoIn.nivel = curso.nivel
       cursoIn.titulo = curso.titulo
+      cursoIn.duracion = curso.duracion
       let instructor = this.instructors.find(x=> x.idOld == curso.instructorId)
       console.log('Instructor',instructor,this.instructors)
       let instructorRef = await this.afs.collection<any>('instructors').doc(instructor.id).ref;
@@ -505,5 +511,42 @@ export class InitScriptComponent {
     }
 
   }
+
+  async addCourseByStudent() {
+    const userSnapshot = await firstValueFrom(this.afs.collection(User.collection).get());
+    const userRefs = userSnapshot.docs.map(doc => doc.ref);
+
+    const courseSnapshot = await firstValueFrom(this.afs.collection(Curso.collection).get());
+    const courseRefs = courseSnapshot.docs.map(doc => doc.ref);
+
+    for (let j = 0; j < userRefs.length - 4; j++) { // some students dont have study plans
+      for (let i = 0; i < courseRefs.length; i++) {
+        const dateStartPlan = this.randomDate(new Date('2023-12-01'), new Date('2024-03-2'));
+        const dateEndPlan = this.randomDate(dateStartPlan, new Date('2024-03-15'));
+
+        const ref = this.afs.collection<CourseByStudent>(CourseByStudent.collection).doc().ref;
+
+        const courseByStudent = {
+          id: ref.id,
+          userRef: userRefs[j],
+          courseRef: courseRefs[i],
+          dateStartPlan: dateStartPlan,
+          dateEndPlan: dateEndPlan,
+          progress: 0,
+          dateStart: null,
+          dateEnd: null,
+          active: true,
+          finalScore: 0
+        } as CourseByStudent;
+
+        await this.afs.collection(CourseByStudent.collection).doc(courseByStudent.id).set(courseByStudent);
+      }
+    } 
+    console.log("Courses by students created")
+  }
+
+  randomDate = (start, end): Date => {
+    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+  };
 
 }
