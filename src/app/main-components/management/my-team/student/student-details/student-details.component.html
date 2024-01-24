@@ -136,22 +136,27 @@
                 </div>
                 <span class="makeBlue cursorPointer ft14">Editar</span>
             </div>
-            <div class="border radius10 pd05 backRed1" fxLayout="row" fxLayoutAlign="space-between center" style="border-color: red !important;">
-                <img [src]="icon.alert" class="makeRed h24px" alt="">
-                <span class="red-5 ft14 ft600"> Advertencia: este usuario tiene 2 meses atrasados</span>
+            <div *ngIf="getDelayedMonthsCount() > 0" class="border radius10 pd05 backRed1" fxLayout="row" fxLayoutAlign="space-between center" style="border-color: red !important;">
+                <img [src]="icon.redWarning2" class="h24px" alt="">
+                <span class="red-5 ft14 ft600"> 
+                    Advertencia: este usuario tiene {{ getDelayedMonthsCount() }} {{getDelayedMonthsCount() > 1 ? "meses atrasados" : "mes atrasado"}}
+                </span>
                 <button class="redButton btn">Alertar via e-mail</button>
             </div>
             <div *ngIf="(months && months.length > 0) else noPlan" >
                 <div *ngFor="let month of months; let index = index" fxLayout="column"  class="mgt05">
                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="mgb10">
                         <span class="ft16 ft600 black">{{month.monthName | titlecase}} {{month.yearNumber}} </span>
-                        <img [src]="icon.alert" class="makeRed h14px" alt="">
+                        <img *ngIf="isMonthPast(month) && !isMonthCompleted(month)" [src]="icon.redWarning2" class="makeRed h14px" alt="">
                     </div>
                     <div *ngFor="let course of month.courses; let i = index" fxLayout="column" fxLayoutAlign="center" 
                         class="h50px pd10" [ngClass]=" i % 2 ? '' : 'backGray1'">
                         <div fxLayout="row" fxLayoutAlign="space-between center">
                             <span class="ft14"> {{course.courseTitle}} </span>
-                            <span class="ft14"> {{course.duration | number:'1.0-1'}} hr </span>
+                            <div fxLayout="row" fxLayoutAlign="space-between center" class="" fxLayoutGap="0.5rem">
+                                <img *ngIf="course.dateEnd" [src]="icon.greenCheck" class="h14px" alt="">
+                                <span class="ft14"> {{course.duration | number:'1.0-1'}} hr </span>
+                            </div>
                         </div>
                     </div>
                 </div>

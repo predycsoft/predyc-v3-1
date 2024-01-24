@@ -97,6 +97,7 @@ export class StudentDetailsComponent {
   buildMonths(coursesByStudent: CourseByStudent[], coursesData) {
     const months = {}; 
     coursesByStudent.forEach(courseByStudent => {
+      console.log("courseByStudent.id", courseByStudent.id)
       const courseData = coursesData.find(courseData => courseData.id === courseByStudent.courseRef.id);
       if (courseData) {
         const studyPlanData = {
@@ -142,6 +143,22 @@ export class StudentDetailsComponent {
     });
     console.log("this.months", this.months);
   }
+
+  isMonthCompleted(month: Month): boolean {
+    return month.courses.every(course => course.dateEnd !== null);
+  }
+  
+  isMonthPast(month: any): boolean {
+    const currentMonth = new Date().getUTCMonth();
+    // const currentMonth = 2; // testing with march
+    const currentYear = new Date().getUTCFullYear();
+    return (month.yearNumber < currentYear || (month.yearNumber === currentYear && month.monthNumber < currentMonth));
+  }
+
+  getDelayedMonthsCount(): number {
+    return this.months ? this.months.filter(month => this.isMonthPast(month) && !this.isMonthCompleted(month)).length : null;
+  }
+  
 
   ngOnDestroy() {
     this.combinedObservableSubscription.unsubscribe()
