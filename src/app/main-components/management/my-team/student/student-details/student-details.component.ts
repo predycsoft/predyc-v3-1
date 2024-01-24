@@ -126,7 +126,7 @@ export class StudentDetailsComponent {
     this.months = Object.keys(months).map(monthName => {
       const date = new Date(months[monthName][0].dateEndPlan);
       const monthNumber = date.getUTCMonth()
-      const yearNumber = date.getUTCFullYear(); // Obtener el año
+      const yearNumber = date.getUTCFullYear();
 
       return {
         monthName,
@@ -135,13 +135,16 @@ export class StudentDetailsComponent {
         courses: months[monthName]
       };
     });
-    // Ordenar por año y luego por mes si es necesario
     this.months.sort((a, b) => {
       const yearDiff = b.yearNumber - a.yearNumber;
       if (yearDiff !== 0) return yearDiff;
       return b.monthNumber - a.monthNumber;
     });
     console.log("this.months", this.months);
+  }
+
+  ngOnDestroy() {
+    this.combinedObservableSubscription.unsubscribe()
   }
   
 }

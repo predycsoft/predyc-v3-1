@@ -1,11 +1,11 @@
 import { DocumentReference } from "@angular/fire/compat/firestore"
 
-export interface CourseByStudentJson { // it should be "CourseByStudent"
+export interface CourseByStudentJson { 
     id: string,
     userRef: DocumentReference | null,
     courseRef: DocumentReference | null
     progress: number
-    dateStartPlan: number // The type was Date. The problem is that firestore save it as a Timestamp
+    dateStartPlan: number
     dateEndPlan: number
     dateStart: number | null
     dateEnd: number | null
@@ -14,7 +14,7 @@ export interface CourseByStudentJson { // it should be "CourseByStudent"
 
 }
 
-export class CourseByStudent { // it should be "CourseByStudent"
+export class CourseByStudent {
     public static collection: string = 'coursesByStudent'
 
 
