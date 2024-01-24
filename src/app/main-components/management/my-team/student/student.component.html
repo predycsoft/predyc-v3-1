@@ -12,7 +12,7 @@
 
  <div *ngIf="!loaderService.loading" class="pd10">
     <div fxLayout="row" fxLayoutAlign="space-between center">
-        <app-navigate-back targetUrl="../">{{student.displayName}}</app-navigate-back>
+        <app-navigate-back targetUrl="../">{{student.displayName | titlecase}}</app-navigate-back>
     </div>
     <app-student-details [student]="student"></app-student-details>
 

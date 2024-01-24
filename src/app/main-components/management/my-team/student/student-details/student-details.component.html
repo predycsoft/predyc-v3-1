@@ -144,7 +144,7 @@
             <div *ngIf="(months && months.length > 0) else noPlan" >
                 <div *ngFor="let subArray of months; let index = index" fxLayout="column"  class="mgt05">
                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="mgb10">
-                        <span class="ft16 ft600 black">{{subArray.monthName}}</span>
+                        <span class="ft16 ft600 black">{{subArray.monthName | titlecase}}</span>
                         <img [src]="icon.alert" class="makeRed h14px" alt="">
                     </div>
                     <div *ngFor="let course of subArray.courses; let i = index" fxLayout="column" fxLayoutAlign="center" 
