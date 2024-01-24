@@ -5,10 +5,10 @@ export interface CourseByStudentJson { // it should be "CourseByStudent"
     userRef: DocumentReference | null,
     courseRef: DocumentReference | null
     progress: number
-    dateStartPlan: any // The type was Date. The problem is that firestore save it as a Timestamp
-    dateEndPlan: any
-    dateStart: any | null
-    dateEnd: any | null
+    dateStartPlan: number // The type was Date. The problem is that firestore save it as a Timestamp
+    dateEndPlan: number
+    dateStart: number | null
+    dateEnd: number | null
     active:boolean
     finalScore: number
 
@@ -22,10 +22,10 @@ export class CourseByStudent { // it should be "CourseByStudent"
     public userRef: DocumentReference 
     public courseRef: DocumentReference
     public progress:number = 0;
-    public dateStartPlan: any
-    public dateEndPlan: any
-    public dateStart: any = null
-    public dateEnd: any = null
+    public dateStartPlan: number
+    public dateEndPlan: number
+    public dateStart: number = null
+    public dateEnd: number = null
     public active: boolean = true
     public finalScore: number = 0;
 

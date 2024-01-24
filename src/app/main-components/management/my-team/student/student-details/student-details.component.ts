@@ -101,13 +101,13 @@ export class StudentDetailsComponent {
         const studyPlanData = {
           duration: courseData.duracion / 60,
           courseTitle: courseData.titulo,
-          dateStartPlan: courseByStudent.dateStartPlan.toDate(),
-          dateEndPlan: courseByStudent.dateEndPlan.toDate(),
-          dateStart: courseByStudent.dateStart ? courseByStudent.dateStart.toDate() : null,
-          dateEnd: courseByStudent.dateEnd ? courseByStudent.dateEnd.toUTCDate() : null,
+          dateStartPlan: courseByStudent.dateStartPlan,
+          dateEndPlan: courseByStudent.dateEndPlan,
+          dateStart: courseByStudent.dateStart,
+          dateEnd: courseByStudent.dateEnd,
         };
         
-        const monthName = studyPlanData.dateEndPlan.toLocaleString('es', { month: 'long' });
+        const monthName = new Date(studyPlanData.dateEndPlan).toLocaleString('es', { month: 'long' });
 
         if (!months[monthName]) {
           months[monthName] = [];
@@ -123,7 +123,7 @@ export class StudentDetailsComponent {
     });
     // Transform data to the desired structure 
     this.months = Object.keys(months).map(monthName => {
-      const monthNumber = months[monthName][0].dateEndPlan.getUTCMonth()
+      const monthNumber = new Date(months[monthName][0].dateEndPlan).getUTCMonth()
       return {
         monthName,
         monthNumber,

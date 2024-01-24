@@ -540,7 +540,7 @@ export class InitScriptComponent {
     for (let j = 0; j < userRefs.length - 4; j++) { // some students dont have study plans
       for (let i = 0; i < courseRefs.length; i++) {
         const dateStartPlan = this.randomDate(new Date('2023-12-01'), new Date('2024-03-2'));
-        const dateEndPlan = this.randomDate(dateStartPlan, new Date('2024-03-15'));
+        const dateEndPlan = this.randomDate(new Date(dateStartPlan), new Date('2024-03-15'));
 
         const ref = this.afs.collection<CourseByStudent>(CourseByStudent.collection).doc().ref;
 
@@ -563,8 +563,8 @@ export class InitScriptComponent {
     console.log("Courses by students created")
   }
 
-  randomDate = (start, end): Date => {
-    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+  randomDate = (start: Date, end: Date): number => {
+    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).getTime();
   };
 
 }
