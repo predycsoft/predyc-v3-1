@@ -1,0 +1,36 @@
+<div fxLayout="column" fxLayoutGap="0.3rem" class="fh">
+    <div fxLayout="row" fxLayoutAlign="space-between center" class="">
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem">
+            <img [src]="icon.notification" class="makeBlue h16px" alt="">
+            <span class="ft500 black undrl ft14 ft600 black">Información del usuario</span>
+        </div>
+        <span class="makeBlue cursorPointer ft14">Editar</span>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="space-between center" class="fh">
+        <div fxLayout="column" fxLayoutAlign="space-between center" fxLayoutGap=".75rem" class="w-40">
+            <img [src]="student.photoUrl ? student.photoUrl : 'assets/images/default/default-user-image.jpg'" class="avatar6" alt="" >
+            <div class="radius10 backBlue1 pdr10 pdl10">
+                <span class="blue-5 ft13 ft500">Activo</span>
+            </div>
+        </div>
+        <div fxLayout="column" fxLayoutAlign="start start" class="w-60" fxLayoutGap=".75rem">           
+            <span class="ft16 ft600 black"> {{student.displayName}} </span>
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem">
+                <img [src]="icon.userProfile" class="makeGray h16px" alt="">
+                <span class="ft12"> {{studentProfile ? studentProfile.name : "Sin perfil" }} </span>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem">
+                <img [src]="icon.email" class="makeGray h16px" alt="">
+                <span class="ft12"> {{student.email}} </span>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem">
+                <img [src]="icon.phone" class="makeGray h16px" alt="">
+                <span class="ft12"> {{student.phoneNumber ? student.phoneNumber : "Teléfono desconocido" }} </span>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem">
+                <img [src]="icon.location" class="makeGray h16px" alt="">
+                <span class="ft12"> {{student.country ? student.country : "País desconocido" }} </span>
+            </div>
+        </div>
+    </div>
+</div>
