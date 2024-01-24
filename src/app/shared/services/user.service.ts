@@ -195,6 +195,10 @@ export class UserService {
     return this.usersSubject.value.find(x => x.uid === uid)
   }
 
+  getUser$(uid: string): Observable<User> {
+    return this.afs.collection<User>(User.collection).doc(uid).valueChanges()
+  }
+
   public getUserRefById(id: string): DocumentReference<User> {
     return this.afs.collection<User>(User.collection).doc(id).ref
   }

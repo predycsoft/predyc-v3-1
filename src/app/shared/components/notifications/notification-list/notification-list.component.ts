@@ -111,8 +111,8 @@ export class NotificationListComponent {
   }
 
   ngOnDestroy() {
-    this.combinedObservableSubscription.unsubscribe();
-    this.queryParamsSubscription.unsubscribe()
+    if (this.combinedObservableSubscription) this.combinedObservableSubscription.unsubscribe();
+    if (this.queryParamsSubscription) this.queryParamsSubscription.unsubscribe()
   }
 
   async onDelete(notification: Notification) {

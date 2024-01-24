@@ -159,5 +159,9 @@ export class ProfileService {
   public getProfileRefById(id: string): DocumentReference<Profile> {
     return this.afs.collection<Profile>(Profile.collection).doc(id).ref
   }
+
+  public getProfile$(uid: string): Observable<Profile> {
+    return this.afs.collection<Profile>(Profile.collection).doc(uid).valueChanges()
+  }
   
 }
