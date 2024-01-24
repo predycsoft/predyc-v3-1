@@ -66,3 +66,8 @@ export const cloneArrayOfObjects = (inputArray: Object[]): Object[] => {
 export const roundNumber = (num: number): number => {
   return Math.round(num);
 }
+
+export const firestoreTimestampToNumberTimestamp = (timestamp: {seconds: number, miliseconds: number} | null): number | null => {
+  if (timestamp) return timestamp.seconds * 1000
+  return null
+}
