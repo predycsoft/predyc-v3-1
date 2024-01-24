@@ -8,6 +8,7 @@ import { CourseService } from 'src/app/shared/services/course.service';
 import { IconService } from 'src/app/shared/services/icon.service';
 import { ProfileService } from 'src/app/shared/services/profile.service';
 import { UserService } from 'src/app/shared/services/user.service';
+import { firestoreTimestampToNumberTimestamp } from 'src/app/shared/utils';
 
 
 interface Month {
@@ -103,10 +104,10 @@ export class StudentDetailsComponent {
         const studyPlanData = {
           duration: courseData.duracion / 60,
           courseTitle: courseData.titulo,
-          dateStartPlan: courseByStudent.dateStartPlan,
-          dateEndPlan: courseByStudent.dateEndPlan,
-          dateStart: courseByStudent.dateStart,
-          dateEnd: courseByStudent.dateEnd,
+          dateStartPlan: firestoreTimestampToNumberTimestamp(courseByStudent.dateStartPlan),
+          dateEndPlan: firestoreTimestampToNumberTimestamp(courseByStudent.dateEndPlan),
+          dateStart: firestoreTimestampToNumberTimestamp(courseByStudent.dateStart),
+          dateEnd: firestoreTimestampToNumberTimestamp(courseByStudent.dateEnd),
         };
         
         const monthName = new Date(studyPlanData.dateEndPlan).toLocaleString('es', { month: 'long' });

@@ -258,7 +258,9 @@ export class InitScriptComponent {
     }
     console.log(`Finished Creating Instructors`, this.instructors);
 
+    console.log('********* Creating Courses *********');
     await this.uploadCursosLegacy();
+    console.log(`Finished Creating Courses`);
 
     console.log('********* Creating courseByStudent *********')
     await this.addCourseByStudent()
@@ -563,8 +565,8 @@ export class InitScriptComponent {
     console.log("Courses by students created")
   }
 
-  randomDate = (start: Date, end: Date): number => {
-    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).getTime();
+  randomDate = (start: Date, end: Date): Date => {
+    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
   };
 
 }

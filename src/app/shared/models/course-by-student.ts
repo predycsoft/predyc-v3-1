@@ -5,10 +5,10 @@ export interface CourseByStudentJson {
     userRef: DocumentReference | null,
     courseRef: DocumentReference | null
     progress: number
-    dateStartPlan: number
-    dateEndPlan: number
-    dateStart: number | null
-    dateEnd: number | null
+    dateStartPlan: any // It should be Date
+    dateEndPlan: any
+    dateStart: any | null
+    dateEnd: any | null
     active:boolean
     finalScore: number
 
@@ -22,10 +22,10 @@ export class CourseByStudent {
     public userRef: DocumentReference 
     public courseRef: DocumentReference
     public progress:number = 0;
-    public dateStartPlan: number
-    public dateEndPlan: number
-    public dateStart: number = null
-    public dateEnd: number = null
+    public dateStartPlan: any
+    public dateEndPlan: any
+    public dateStart: any = null
+    public dateEnd: any = null
     public active: boolean = true
     public finalScore: number = 0;
 
