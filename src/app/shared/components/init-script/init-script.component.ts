@@ -295,7 +295,7 @@ export class InitScriptComponent {
   async uploadCursosLegacy() {
 
     let jsonData = coursesData.slice(0, 10)
-    // jsonData = coursesData
+    jsonData = coursesData
     console.log('cursos a cargar',jsonData)
     // Now you can use the jsonData object locally
 

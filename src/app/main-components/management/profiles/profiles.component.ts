@@ -11,7 +11,9 @@ import { IconService } from 'src/app/shared/services/icon.service';
 import { SkillService } from 'src/app/shared/services/skill.service';
 import { roundNumber } from 'src/app/shared/utils';
 import { Title } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { UserService } from 'src/app/shared/services/user.service';
+import { ProfileService } from 'src/app/shared/services/profile.service';
 
 const MAIN_TITLE = 'Predyc - '
 
@@ -29,11 +31,14 @@ interface CoursesForExplorer extends Curso {
 export class ProfilesComponent {
 
   constructor(
+    private route: ActivatedRoute,
     private categoryService: CategoryService,
     private courseService: CourseService,
     public icon: IconService,
+    private profileService: ProfileService,
     private skillService: SkillService,
-    private route: ActivatedRoute,
+    private router: Router,
+    private userService: UserService,
     private titleService: Title
   ) {}
 
@@ -42,6 +47,7 @@ export class ProfilesComponent {
   chart: Chart
 
   serviceSubscription: Subscription
+  profileSubscription: Subscription
   studyPlan = []
 
   categories: Category[]
@@ -59,56 +65,64 @@ export class ProfilesComponent {
   id = this.route.snapshot.paramMap.get('id');
 
   ngOnInit() {
-    // const title = MAIN_TITLE + this.
-    // this.titleService.setTitle(title)
-    this.hoverItem$ = this.hoverSubject.asObservable();
-    this.serviceSubscription = combineLatest([this.categoryService.getCategories$(), this.skillService.getSkills$(), this.courseService.getCourses$()]).subscribe(([categories, skills, courses]) => {
-      this.categories = categories
-      this.skills = skills
-      this.updateWidgets()
-      // this.courses = courses
-      this.coursesForExplorer = courses.map(course => {
-        // Find skill object for each skill ref in course
-        const skills = course.skillsRef.map(skillRef => {
-          return this.skills.find(skill => skill.id === skillRef.id)
-        })
-        const categories = skills.map(skill => {
-          return this.categories.find(category => category.id === skill.category.id)
-        })
-        return {
-          ...course,
-          skills: skills,
-          categories: categories,
-          inStudyPlan: false
-        }
+    if (this.id === 'new') {
+      console.log(this.id)
+      const title = MAIN_TITLE + 'Nuevo perfil'
+      this.titleService.setTitle(title)
+    } else {
+      this.profileSubscription = this.profileService.getProfile$(this.id).subscribe(profile => {
+        const title = MAIN_TITLE + profile.name
+        this.titleService.setTitle(title)
       })
-      console.log("categories", categories)
-      console.log("skills", skills)
-      console.log("courses", courses)
-      console.log("coursesForExplorer", this.coursesForExplorer)
-      this.filteredCourses = combineLatest([
-        this.searchControl.valueChanges.pipe(startWith('')),
-        this.hoverItem$
-      ]).pipe(
-        map(([searchText, hoverCategory]) => {
-          // console.log('searchText', searchText)
-          // console.log('hoverCategory', hoverCategory)
-          if (!searchText && !hoverCategory) return []
-          let filteredCourses = this.coursesForExplorer
-          if (hoverCategory) {
-            filteredCourses = filteredCourses.filter(course => {
-              const categories = course.categories.map(category => category.name)
-              return categories.includes(hoverCategory.name)
-            })
-          }
-          if (searchText) {
-            const filterValue = searchText.toLowerCase();
-            filteredCourses = filteredCourses.filter(course => course.titulo.toLowerCase().includes(filterValue));
-          }
-          return filteredCourses
-        }
-      ))
-    })
+    }
+    // this.hoverItem$ = this.hoverSubject.asObservable();
+    // this.serviceSubscription = combineLatest([this.categoryService.getCategories$(), this.skillService.getSkills$(), this.courseService.getCourses$()]).subscribe(([categories, skills, courses]) => {
+    //   this.categories = categories
+    //   this.skills = skills
+    //   this.updateWidgets()
+    //   // this.courses = courses
+    //   this.coursesForExplorer = courses.map(course => {
+    //     // Find skill object for each skill ref in course
+    //     const skills = course.skillsRef.map(skillRef => {
+    //       return this.skills.find(skill => skill.id === skillRef.id)
+    //     })
+    //     const categories = skills.map(skill => {
+    //       return this.categories.find(category => category.id === skill.category.id)
+    //     })
+    //     return {
+    //       ...course,
+    //       skills: skills,
+    //       categories: categories,
+    //       inStudyPlan: false
+    //     }
+    //   })
+    //   console.log("categories", categories)
+    //   console.log("skills", skills)
+    //   console.log("courses", courses)
+    //   console.log("coursesForExplorer", this.coursesForExplorer)
+    //   this.filteredCourses = combineLatest([
+    //     this.searchControl.valueChanges.pipe(startWith('')),
+    //     this.hoverItem$
+    //   ]).pipe(
+    //     map(([searchText, hoverCategory]) => {
+    //       // console.log('searchText', searchText)
+    //       // console.log('hoverCategory', hoverCategory)
+    //       if (!searchText && !hoverCategory) return []
+    //       let filteredCourses = this.coursesForExplorer
+    //       if (hoverCategory) {
+    //         filteredCourses = filteredCourses.filter(course => {
+    //           const categories = course.categories.map(category => category.name)
+    //           return categories.includes(hoverCategory.name)
+    //         })
+    //       }
+    //       if (searchText) {
+    //         const filterValue = searchText.toLowerCase();
+    //         filteredCourses = filteredCourses.filter(course => course.titulo.toLowerCase().includes(filterValue));
+    //       }
+    //       return filteredCourses
+    //     }
+    //   ))
+    // })
   }
 
   onCategoryHover(item: any) {
@@ -235,10 +249,9 @@ export class ProfilesComponent {
   }
 
   ngOnDestroy() {
-    this.serviceSubscription.unsubscribe()
-    if (this.chart) {
-      this.chart.destroy();
-    }
+    if (this.serviceSubscription) this.serviceSubscription.unsubscribe()
+    if (this.profileSubscription) this.profileSubscription.unsubscribe()
+    if (this.chart) this.chart.destroy()
   }
 
 }
