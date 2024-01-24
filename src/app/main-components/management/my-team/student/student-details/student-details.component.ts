@@ -13,6 +13,7 @@ import { UserService } from 'src/app/shared/services/user.service';
 interface Month {
   monthName: string;
   monthNumber: number
+  yearNumber: number
   courses: any[];
 }
 
@@ -123,14 +124,23 @@ export class StudentDetailsComponent {
     });
     // Transform data to the desired structure 
     this.months = Object.keys(months).map(monthName => {
-      const monthNumber = new Date(months[monthName][0].dateEndPlan).getUTCMonth()
+      const date = new Date(months[monthName][0].dateEndPlan);
+      const monthNumber = date.getUTCMonth()
+      const yearNumber = date.getUTCFullYear(); // Obtener el año
+
       return {
         monthName,
         monthNumber,
+        yearNumber,
         courses: months[monthName]
       };
     });
-    this.months.sort((a, b) => b.monthNumber - a.monthNumber);
+    // Ordenar por año y luego por mes si es necesario
+    this.months.sort((a, b) => {
+      const yearDiff = b.yearNumber - a.yearNumber;
+      if (yearDiff !== 0) return yearDiff;
+      return b.monthNumber - a.monthNumber;
+    });
     console.log("this.months", this.months);
   }
   

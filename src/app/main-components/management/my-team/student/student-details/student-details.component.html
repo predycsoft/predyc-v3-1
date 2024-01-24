@@ -142,12 +142,12 @@
                 <button class="redButton btn">Alertar via e-mail</button>
             </div>
             <div *ngIf="(months && months.length > 0) else noPlan" >
-                <div *ngFor="let subArray of months; let index = index" fxLayout="column"  class="mgt05">
+                <div *ngFor="let month of months; let index = index" fxLayout="column"  class="mgt05">
                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="mgb10">
-                        <span class="ft16 ft600 black">{{subArray.monthName | titlecase}}</span>
+                        <span class="ft16 ft600 black">{{month.monthName | titlecase}} {{month.yearNumber}} </span>
                         <img [src]="icon.alert" class="makeRed h14px" alt="">
                     </div>
-                    <div *ngFor="let course of subArray.courses; let i = index" fxLayout="column" fxLayoutAlign="center" 
+                    <div *ngFor="let course of month.courses; let i = index" fxLayout="column" fxLayoutAlign="center" 
                         class="h50px pd10" [ngClass]=" i % 2 ? '' : 'backGray1'">
                         <div fxLayout="row" fxLayoutAlign="space-between center">
                             <span class="ft14"> {{course.courseTitle}} </span>
