@@ -10,6 +10,10 @@ import { CourseService } from 'src/app/shared/services/course.service';
 import { IconService } from 'src/app/shared/services/icon.service';
 import { SkillService } from 'src/app/shared/services/skill.service';
 import { roundNumber } from 'src/app/shared/utils';
+import { Title } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
+
+const MAIN_TITLE = 'Predyc - '
 
 interface CoursesForExplorer extends Curso {
   skills: Skill[],
@@ -29,6 +33,8 @@ export class ProfilesComponent {
     private courseService: CourseService,
     public icon: IconService,
     private skillService: SkillService,
+    private route: ActivatedRoute,
+    private titleService: Title
   ) {}
 
   isEditing: boolean = true
@@ -50,7 +56,11 @@ export class ProfilesComponent {
 
   profileDescription: string = ''
 
+  id = this.route.snapshot.paramMap.get('id');
+
   ngOnInit() {
+    // const title = MAIN_TITLE + this.
+    // this.titleService.setTitle(title)
     this.hoverItem$ = this.hoverSubject.asObservable();
     this.serviceSubscription = combineLatest([this.categoryService.getCategories$(), this.skillService.getSkills$(), this.courseService.getCourses$()]).subscribe(([categories, skills, courses]) => {
       this.categories = categories

@@ -35,8 +35,6 @@ import { Profile } from '../../models/profile.model';
 import { Curso } from 'src/app/shared/models/course.model';
 import { Clase } from "../../../shared/models/course-class.model"
 
-
-
 import {instructorsData} from 'src/assets/data/instructors.data'
 import { InstructorsService } from '../../services/instructors.service';
 import { CourseService } from '../../services/course.service';
@@ -48,7 +46,7 @@ import { ModuleService } from '../../services/module.service';
 import { coursesData } from 'src/assets/data/courses.data';
 import { CourseByStudent } from '../../models/course-by-student';
 
-
+import sampleSize from 'lodash/sampleSize';
 
 @Component({
   selector: 'app-init-script',
@@ -243,10 +241,6 @@ export class InitScriptComponent {
     });
     console.log(`Finished Creating Departments`)
 
-    // Create profiles
-    console.log('********* Creating Profiles *********')
-    await this.addProfiles()
-    console.log(`Finished Creating Profiles`)
     // Create validation tests
     // console.log('********* Creating Validation Tests *********')
     // console.log(`Finished Creating Validation Tests`)
@@ -289,12 +283,18 @@ export class InitScriptComponent {
       console.error("Hubo un error al obtener los usuarios:", error);
     }
     console.log(`Finished Creating Global collection`)
+
+    // Create profiles
+    console.log('********* Creating Profiles *********')
+    await this.addProfiles()
+    console.log(`Finished Creating Profiles`)
+
   }
 
 
   async uploadCursosLegacy() {
 
-    let jsonData = coursesData.slice(0,10)
+    let jsonData = coursesData.slice(0, 10)
     // jsonData = coursesData
     console.log('cursos a cargar',jsonData)
     // Now you can use the jsonData object locally
@@ -485,11 +485,29 @@ export class InitScriptComponent {
 
       profile.permissions = enterprise.permissions
       profile.permissions.hasDefaultPermissions = true
+      
+      const enterpriseMatch = await firstValueFrom(this.afs.collection<Curso>(Curso.collection, ref =>
+        ref.where('enterpriseRef', '==', currentEnterpriseRef)
+      ).valueChanges({ idField: 'id' }))
+    
+      // Query to get courses where enterpriseRef is empty
+      const enterpriseEmpty = await firstValueFrom(this.afs.collection<Curso>(Curso.collection, ref =>
+        ref.where('enterpriseRef', '==', null)
+      ).valueChanges({ idField: 'id' }))
+
+      const courses = [...enterpriseMatch, ...enterpriseEmpty]
+      
+
+      const selectedCourses = sampleSize(courses, 4)
+      const coursesRef = selectedCourses.map(course => {
+        return this.courseService.getCourseRefById(course.id)
+      })
       await profileRef.set({
           ...profile,
           id: id,
           skillsRef: [currentSkillRef],
           enterpriseRef: currentEnterpriseRef,
+          coursesRef
       });
       // console.log("id", id);
 

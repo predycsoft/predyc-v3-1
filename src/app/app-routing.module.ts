@@ -36,7 +36,8 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         children: [
           {path:"students", title: MAIN_TITLE + 'Mi equipo', component: MyTeamComponent, canActivate: [AuthGuard]},
-          {path:"profiles", title: MAIN_TITLE + 'Nuevo perfil', component: ProfilesComponent, canActivate: [AuthGuard]},
+          // {path:"profiles", title: MAIN_TITLE + 'Nuevo perfil', component: ProfilesComponent, canActivate: [AuthGuard]},
+          {path:"profiles/:id", title: MAIN_TITLE, component: ProfilesComponent, canActivate: [AuthGuard]},
           {path:"courses", title: MAIN_TITLE + 'Cursos', component: CoursesComponent, canActivate: [AuthGuard]},
           {path:"create-course/:mode/:idCurso", title: MAIN_TITLE + 'Crear / Editar curso', component: CreateCourseComponent, canActivate: [AuthGuard]},
           {path:"notifications", title: MAIN_TITLE + 'Notificaciones', component: NotificationsComponent, canActivate: [AuthGuard]},

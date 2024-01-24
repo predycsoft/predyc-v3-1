@@ -106,7 +106,6 @@ import { StudyTimeMonthlyChartComponent } from './main-components/dashboard/user
 // import { SupportContactComponent } from './main-components/my-account/support-contact/support-contact.component';
 import { FrequentQuestionsComponent } from './shared/components/frequent-questions/frequent-questions.component';
 import { SupportContactComponent } from './shared/components/support-contact/support-contact.component';
-import { StudentProfileHistoryComponent } from './main-components/management/my-team/student/student-profile-history/student-profile-history.component';
 import { ProfileSelectorComponent } from './shared/widgets/profile-selector/profile-selector.component';
 import { CreateUserComponent } from './main-components/management/my-team/student/create-user/create-user.component';
 import { ProfilesComponent } from './main-components/management/profiles/profiles.component';
@@ -174,7 +173,6 @@ import { DialogRequestLicensesComponent } from './shared/components/users/licens
     StudyTimeMonthlyChartComponent,
     SupportContactComponent,
     FrequentQuestionsComponent,
-    StudentProfileHistoryComponent,
     ProfileSelectorComponent,
     CreateUserComponent,
     ProfilesComponent,
