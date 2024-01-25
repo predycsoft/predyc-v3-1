@@ -48,7 +48,7 @@ export class ProfileService {
         return
       }
       this.enterpriseRef = this.enterpriseService.getEnterpriseRef()
-      this.afs.collection<Profile>(Profile.collection, ref=> ref.where('enterpriseRef', '==', this.enterpriseRef)).valueChanges().subscribe({
+      this.afs.collection<Profile>(Profile.collection, ref=> ref.where('enterpriseRef', '==', this.enterpriseRef).orderBy('name')).valueChanges().subscribe({
         next: profile => {
           this.profilesSubject.next(profile)
           if (!this.profilesLoadedSubject.value) {

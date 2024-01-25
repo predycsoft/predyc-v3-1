@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { Chart } from 'chart.js';
 import { Observable, Subscription, combineLatest, map, startWith, BehaviorSubject } from 'rxjs';
 import { Category } from 'src/app/shared/models/category.model';
-import { Curso } from 'src/app/shared/models/course.model';
+import { Curso, CursoJson } from 'src/app/shared/models/course.model';
 import { Skill } from 'src/app/shared/models/skill.model';
 import { CategoryService } from 'src/app/shared/services/category.service';
 import { CourseService } from 'src/app/shared/services/course.service';
@@ -14,10 +14,12 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from 'src/app/shared/services/user.service';
 import { ProfileService } from 'src/app/shared/services/profile.service';
+import { Profile } from 'src/app/shared/models/profile.model';
+import { DocumentReference } from '@angular/fire/compat/firestore';
 
 const MAIN_TITLE = 'Predyc - '
 
-interface CoursesForExplorer extends Curso {
+interface CoursesForExplorer extends CursoJson {
   skills: Skill[],
   categories: Category[],
   inStudyPlan: boolean
@@ -42,17 +44,17 @@ export class ProfilesComponent {
     private titleService: Title
   ) {}
 
-  isEditing: boolean = true
+  isEditing: boolean
 
   chart: Chart
 
   serviceSubscription: Subscription
-  profileSubscription: Subscription
   studyPlan = []
 
   categories: Category[]
   // courses: Curso[]
   skills: Skill[]
+  profile: Profile
 
   coursesForExplorer: CoursesForExplorer[]
   filteredCourses: Observable<CoursesForExplorer[]>
@@ -60,69 +62,89 @@ export class ProfilesComponent {
   hoverItem$: Observable<any>; // This will hold the currently hovered item
   private hoverSubject = new BehaviorSubject<any>(null);
 
+  profileName: string = ''
   profileDescription: string = ''
+
+  profileBackup
 
   id = this.route.snapshot.paramMap.get('id');
 
   ngOnInit() {
+    this.hoverItem$ = this.hoverSubject.asObservable();
+    const observablesArray: Observable<Category[] | Profile | Skill[] | Curso[]>[] = [this.categoryService.getCategories$(), this.skillService.getSkills$(), this.courseService.getCourses$()]
     if (this.id === 'new') {
       console.log(this.id)
+      this.isEditing = true
       const title = MAIN_TITLE + 'Nuevo perfil'
       this.titleService.setTitle(title)
     } else {
-      this.profileSubscription = this.profileService.getProfile$(this.id).subscribe(profile => {
-        const title = MAIN_TITLE + profile.name
-        this.titleService.setTitle(title)
-      })
+      this.isEditing = false
+      observablesArray.push(this.profileService.getProfile$(this.id))
     }
-    // this.hoverItem$ = this.hoverSubject.asObservable();
-    // this.serviceSubscription = combineLatest([this.categoryService.getCategories$(), this.skillService.getSkills$(), this.courseService.getCourses$()]).subscribe(([categories, skills, courses]) => {
-    //   this.categories = categories
-    //   this.skills = skills
-    //   this.updateWidgets()
-    //   // this.courses = courses
-    //   this.coursesForExplorer = courses.map(course => {
-    //     // Find skill object for each skill ref in course
-    //     const skills = course.skillsRef.map(skillRef => {
-    //       return this.skills.find(skill => skill.id === skillRef.id)
-    //     })
-    //     const categories = skills.map(skill => {
-    //       return this.categories.find(category => category.id === skill.category.id)
-    //     })
-    //     return {
-    //       ...course,
-    //       skills: skills,
-    //       categories: categories,
-    //       inStudyPlan: false
-    //     }
-    //   })
-    //   console.log("categories", categories)
-    //   console.log("skills", skills)
-    //   console.log("courses", courses)
-    //   console.log("coursesForExplorer", this.coursesForExplorer)
-    //   this.filteredCourses = combineLatest([
-    //     this.searchControl.valueChanges.pipe(startWith('')),
-    //     this.hoverItem$
-    //   ]).pipe(
-    //     map(([searchText, hoverCategory]) => {
-    //       // console.log('searchText', searchText)
-    //       // console.log('hoverCategory', hoverCategory)
-    //       if (!searchText && !hoverCategory) return []
-    //       let filteredCourses = this.coursesForExplorer
-    //       if (hoverCategory) {
-    //         filteredCourses = filteredCourses.filter(course => {
-    //           const categories = course.categories.map(category => category.name)
-    //           return categories.includes(hoverCategory.name)
-    //         })
-    //       }
-    //       if (searchText) {
-    //         const filterValue = searchText.toLowerCase();
-    //         filteredCourses = filteredCourses.filter(course => course.titulo.toLowerCase().includes(filterValue));
-    //       }
-    //       return filteredCourses
-    //     }
-    //   ))
-    // })
+    this.serviceSubscription = combineLatest(observablesArray).subscribe((result) => {
+      console.log("result", result)
+      const categories = result[0] as Category[]
+      const skills = result[1] as Skill[]
+      const courses = result[2] as Curso[]
+      if (result.length === 4) {
+        this.profile = result[3] as Profile
+      }
+      this.categories = categories
+      this.skills = skills
+      if (this.profile) {
+        const title = MAIN_TITLE + this.profile.name
+        this.titleService.setTitle(title)
+        this.profileName = this.profile.name
+        this.profileDescription = this.profile.description
+      }
+      // this.courses = courses
+      this.coursesForExplorer = courses.map(course => {
+        // Find skill object for each skill ref in course
+        const skills = course.skillsRef.map(skillRef => {
+          return this.skills.find(skill => skill.id === skillRef.id)
+        })
+        const categories = skills.map(skill => {
+          return this.categories.find(category => category.id === skill.category.id)
+        })
+        const inStudyPlan = this.profile && this.profile.coursesRef.map(courseRef => courseRef.id).includes(course.id)
+        const courseForExplorer = {
+          ...course,
+          skills: skills,
+          categories: categories,
+          inStudyPlan: inStudyPlan
+        }
+        if (inStudyPlan) this.studyPlan.push(courseForExplorer)
+        return courseForExplorer
+      })
+      this.updateWidgets()
+
+      console.log("categories", categories)
+      console.log("skills", skills)
+      console.log("courses", courses)
+      console.log("coursesForExplorer", this.coursesForExplorer)
+      this.filteredCourses = combineLatest([
+        this.searchControl.valueChanges.pipe(startWith('')),
+        this.hoverItem$
+      ]).pipe(
+        map(([searchText, hoverCategory]) => {
+          // console.log('searchText', searchText)
+          // console.log('hoverCategory', hoverCategory)
+          if (!searchText && !hoverCategory) return []
+          let filteredCourses = this.coursesForExplorer
+          if (hoverCategory) {
+            filteredCourses = filteredCourses.filter(course => {
+              const categories = course.categories.map(category => category.name)
+              return categories.includes(hoverCategory.name)
+            })
+          }
+          if (searchText) {
+            const filterValue = searchText.toLowerCase();
+            filteredCourses = filteredCourses.filter(course => course.titulo.toLowerCase().includes(filterValue));
+          }
+          return filteredCourses
+        }
+      ))
+    })
   }
 
   onCategoryHover(item: any) {
@@ -144,8 +166,39 @@ export class ProfilesComponent {
     this.updateWidgets()
   }
 
+  onEdit() {
+    this.profileBackup = {
+      name: this.profileName,
+      description: this.profileDescription,
+      selectedCourses: this.studyPlan.map(course => course.id)
+    }
+    this.isEditing = true
+  }
+
   onCancel() {
-    this.isEditing = false
+    if (this.id === 'new') {
+      this.router.navigate(['/management/students'])
+    } else {
+      this.profileName = this.profileBackup.name
+      this.profileDescription = this.profileBackup.description
+      let studyPlanChanged = false
+      this.coursesForExplorer.forEach(course => {
+        const initialValue = course.inStudyPlan
+        course.inStudyPlan = this.profileBackup.selectedCourses.includes(course.id)
+        const finalValue = course.inStudyPlan
+        if (initialValue !== finalValue) {
+          studyPlanChanged = true
+          if (finalValue) {
+            this.studyPlan.push(course)
+          } else {
+            const targetIndex = this.studyPlan.findIndex(item => item.id === course.id)
+            this.studyPlan.splice(targetIndex, 1)
+          }
+        }
+      })
+      if (studyPlanChanged) this.updateWidgets()
+      this.isEditing = false
+    }
   }
 
   roundNumber(number: number) {
@@ -250,7 +303,6 @@ export class ProfilesComponent {
 
   ngOnDestroy() {
     if (this.serviceSubscription) this.serviceSubscription.unsubscribe()
-    if (this.profileSubscription) this.profileSubscription.unsubscribe()
     if (this.chart) this.chart.destroy()
   }
 

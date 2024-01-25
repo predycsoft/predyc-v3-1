@@ -42,7 +42,7 @@
             <div
                 class=" radius20 pd05 pdl10 pdr20  ft11 profile-container"
                 *ngFor="let profile of profiles"
-                [routerLink]="'profile/' + profile.id"
+                [routerLink]="['/management/profiles/' + profile.id]"
                 >
                 {{ profile.name }}
                 <img class="profile-arrow" [src]="icon.chevronRight" alt="Go to profile">

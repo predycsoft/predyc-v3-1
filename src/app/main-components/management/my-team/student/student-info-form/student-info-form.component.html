@@ -15,7 +15,7 @@
         </div>
         <div fxLayout="column" fxLayoutAlign="start start" class="w-60" fxLayoutGap=".75rem">    
             <ng-container *ngIf="!isEditing">
-                <span class="ft16 ft600 black"> {{student.displayName}} </span>
+                <span class="ft16 ft600 black"> {{student.displayName | titlecase}} </span>
                 <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem">
                     <img [src]="icon.userProfile" class="makeGray h16px" alt="">
                     <span class="ft12"> {{studentProfile ? studentProfile.name : "Sin perfil" }} </span>
