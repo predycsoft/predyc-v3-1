@@ -1,12 +1,8 @@
-.select-container {
-    background-color: rgb(234 234 234);
-    border-radius: 24px 0 0 24px;
-    padding: 0px 10px;
-    height: 36px; /*Igual al search*/
+.catSelect{
+    border: none !important;
 }
 
-select {
-    background-color: transparent !important;
-    border: none !important; 
-    outline: none !important; 
+.catSelect:focus{
+    outline: none;
+    border: none;
 }

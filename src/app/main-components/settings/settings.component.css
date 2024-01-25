@@ -41,31 +41,7 @@ color: gray;
     padding-left: 14px;
 }
 
-.catSelect{
-    border: none !important;
-}
-
-.catInput {
-    border: none !important;
-    font-size: 12px;
-
-}
-
 .line {
     height: 1px;
     background-color: var(--gray-2);
-}
-
-.catInput:focus{
-    outline: none;
-}
-
-.catInput::placeholder{
-    color: var(--gray-9);
-    font-size: 12px;
-}
-
-.catSelect:focus{
-    outline: none;
-    border: none;
 }

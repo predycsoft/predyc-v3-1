@@ -73,7 +73,6 @@ export class ProfilesComponent {
     this.hoverItem$ = this.hoverSubject.asObservable();
     const observablesArray: Observable<Category[] | Profile | Skill[] | Curso[]>[] = [this.categoryService.getCategories$(), this.skillService.getSkills$(), this.courseService.getCourses$()]
     if (this.id === 'new') {
-      console.log(this.id)
       this.isEditing = true
       const title = MAIN_TITLE + 'Nuevo perfil'
       this.titleService.setTitle(title)

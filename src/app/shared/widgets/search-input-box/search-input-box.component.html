@@ -1,4 +1,6 @@
-<div class="positionRelative">
-    <input class="input-box ft14    " (keyup)="search()" [(ngModel)]="inputText" placeholder="Buscar">
-    <img [src]="icon.search" class="h16px  search" alt="">
+<div class="fw pdr10 pdl10" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem">
+    <input type="text" class="catInput" placeholder="Buscar" (keyup)="search()" [(ngModel)]="inputText">
+    <div fxLayoutAlign="center center">
+        <img [src]="icon.search" alt="">
+    </div>
 </div>

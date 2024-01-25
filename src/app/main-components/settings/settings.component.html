@@ -18,19 +18,20 @@
         <div fxLayout="column" class="w-70 border-rl">
             <div fxLayout="row" fxLayoutAlign="space-between center" class="w-100 pdr20">
                 <div fxLayout="row" fxLayoutAlign=" center" class="h36px radius20 w500px shadow12" style="overflow: hidden;" >
-                    <div class="backGray2 pdl10 pdr10 fh" fxLayout="row" fxLayoutAlign=" center">
+                    <!-- <div class="backGray2 pdl10 pdr10 fh" fxLayout="row" fxLayoutAlign=" center">
                         <select name="" id="" class="catSelect">
-                            <option value="">Todos</option>
                             <option value="">Usuarios activos</option>
                             <option value="">Usuarios inactivos</option>
                         </select>
-                    </div>
-                    <div class="fw pdr10 pdl10" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem">
+                    </div> -->
+                    <app-status-selector class="fh"></app-status-selector>
+                    <!-- <div class="fw pdr10 pdl10" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem">
                         <input type="text" class="catInput" placeholder="Buscar">
                         <div fxLayoutAlign="center center">
                             <img [src]="icon.search" alt="">
                         </div>
-                    </div>
+                    </div> -->
+                    <app-search-input-box class="fw"></app-search-input-box>
                 </div>
                 <button
                     fxLayout="row"
