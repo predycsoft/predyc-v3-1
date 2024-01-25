@@ -38,7 +38,7 @@
     <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt10">
         <!-- Informacion del usuario-->
         <div class="w-30 radius10 border cards" fxLayout="column" style="height: 15rem">
-            <app-student-info-form class="fh" [student]="student" [studentProfile]="studentProfile"></app-student-info-form>
+            <app-student-info-form class="fh" [student]="student" [studentProfile]="studentProfile"  (onStudentSave)="onStudentSaveHandler($event)"></app-student-info-form>
         </div>
         <!-- Tiempode estudio -->
         <div class="w-30 radius10 border pd10 cards" fxLayout="column" fxLayoutGap="0.3rem" style="height: 15rem;">

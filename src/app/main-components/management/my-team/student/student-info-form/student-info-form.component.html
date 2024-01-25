@@ -9,11 +9,10 @@
         </div>
         <div fxLayout="row" fxLayoutAlign="space-between center" class="fh mgt10">
             <div fxLayout="column" fxLayoutAlign="space-between center" fxLayoutGap=".75rem" class="w-40">
-                <!-- <img [src]="student.photoUrl ? student.photoUrl : 'assets/images/default/default-user-image.jpg'" class="avatar6" alt="" > -->
                 <div (click)="isEditing ? fileInput.click() : null" class="" [ngClass]="isEditing ? 'cursorPointer' : ''">
                     <img [src]="imageUrl ? imageUrl : 'assets/images/default/default-user-image.jpg'" class="avatar6" alt="">
                 </div>
-                <input #fileInput type="file" style="display: none;" (change)="onFileSelected($event)" formControlName="photoUrl">
+                <input #fileInput type="file" style="display: none;" (change)="onFileSelected($event)">
                 <div class="radius10 backBlue1 pdr10 pdl10">
                     <span class="blue-5 ft13 ft500">Activo</span>
                 </div>

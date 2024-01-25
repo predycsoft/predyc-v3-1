@@ -1,12 +1,13 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Subscription, finalize, firstValueFrom } from 'rxjs';
 import { Profile } from 'src/app/shared/models/profile.model';
-import { User } from 'src/app/shared/models/user.model';
+import { User, UserJson } from 'src/app/shared/models/user.model';
 import { AlertsService } from 'src/app/shared/services/alerts.service';
 import { IconService } from 'src/app/shared/services/icon.service';
 import { ProfileService } from 'src/app/shared/services/profile.service';
+import { capitalizeFirstLetter } from 'src/app/shared/utils';
 import { countriesData } from 'src/assets/data/countries.data';
 
 @Component({
@@ -17,6 +18,8 @@ import { countriesData } from 'src/assets/data/countries.data';
 export class StudentInfoFormComponent {
   @Input() student: User;
   @Input() studentProfile: Profile;
+  @Output() onStudentSave: EventEmitter<User> = new EventEmitter<User>()
+  originalStudentData: UserJson
   studentForm: FormGroup;
   isEditing = false;
   profiles: Profile[] = []
@@ -58,14 +61,22 @@ export class StudentInfoFormComponent {
       });
     }
 
+    if (this.student.photoUrl) {
+      this.imageUrl = this.student.photoUrl;
+    }
+
   }
 
   async save() {
     if (this.isEditing) {
-      console.log("Guardando...", this.studentForm.value);
-      // await this.saveStudentPhoto()
-
-      // Save data here
+      const formData = this.studentForm.value 
+      console.log("Guardando...", formData);
+      await this.saveStudentPhoto() //this.student.photoUrl
+      this.student.displayName = formData.displayName
+      this.student.phoneNumber = formData.phoneNumber
+      this.student.country = formData.country
+      this.student.profile = formData.profile ? this.profileService.getProfileRefById(formData.profile) : null
+      this.onStudentSave.emit(this.student)
     }
     this.isEditing = false
   }
@@ -123,7 +134,7 @@ export class StudentInfoFormComponent {
           finalize(async () => {
             this.student.photoUrl = await firstValueFrom(fileRef.getDownloadURL());
             console.log(this.student.photoUrl)
-            console.log("Se ha guardado la imagen");
+            console.log("image has been uploaded!");
             resolve();
           })
         ).subscribe({
