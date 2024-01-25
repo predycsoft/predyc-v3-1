@@ -1,6 +1,6 @@
 <!-- <button (click)="onAddButton()">Añadir notificaciones</button> -->
 
-<div class="rounded-container" fxLayout="row" fxLayoutAlign="start center">
+<div class="rounded-container shadow12" fxLayout="row" fxLayoutAlign="start center">
     <div [ngClass]="{'active': selectedFilter === 'alert'}" class="filter-item" (click)="applyFilter('alert')">
         <img *ngIf="selectedFilter === 'alert'" [src]="icon.check" class="h20px pdr08" alt="">        
         <span>Alertas</span>
@@ -49,8 +49,8 @@
                                   <td mat-cell *matCellDef="let notification" class="cursorPointer item-container ">
                                       <div *ngIf="notification.type === 'alert'" (click)="sendMail(notification)">
                                           <div *ngIf="!clickedNotifications[notification.id]" class="actions-container">
-                                              <img [src]="icon.email" class="h24px makeGray9 mgr08" alt="">
-                                              <span style="color: var(--gray-9);">Enviar aviso</span>
+                                              <img [src]="icon.email" class="h20px makeBlue mgr08" alt="">
+                                              <span  class="blue-5 ft11">Enviar aviso</span>
                                           </div>
                                       </div> 
                                   </td>
@@ -59,7 +59,7 @@
                               <ng-container matColumnDef="delete">
                                   <td mat-cell *matCellDef="let notification" class="item-container"> 
                                       <div  (click)="onDelete(notification)" class="actions-container">
-                                          <img [src]="icon.trash" class="h24px mgr05 makeGray9" alt="">
+                                          <img [src]="icon.trash" class="h20px makeRed" alt="">
                                       </div>
                                   </td>
                               </ng-container>
