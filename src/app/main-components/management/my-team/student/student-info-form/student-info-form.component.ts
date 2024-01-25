@@ -19,7 +19,6 @@ export class StudentInfoFormComponent {
   @Input() student: User;
   @Input() studentProfile: Profile;
   @Output() onStudentSave: EventEmitter<User> = new EventEmitter<User>()
-  originalStudentData: UserJson
   studentForm: FormGroup;
   isEditing = false;
   profiles: Profile[] = []
@@ -47,7 +46,7 @@ export class StudentInfoFormComponent {
       phoneNumber: new FormControl(''),
       country: new FormControl(''),
       profile: new FormControl(null),
-      photoUrl: new FormControl(null),
+      photoUrl: new FormControl(''),
     });
 
     if (this.student) {
@@ -135,6 +134,7 @@ export class StudentInfoFormComponent {
             this.student.photoUrl = await firstValueFrom(fileRef.getDownloadURL());
             console.log(this.student.photoUrl)
             console.log("image has been uploaded!");
+            this.uploadedImage = null
             resolve();
           })
         ).subscribe({
@@ -143,7 +143,7 @@ export class StudentInfoFormComponent {
         });
       });
     } else {
-      this.student.photoUrl = null
+      // this.student.photoUrl = null
     }
 
   }

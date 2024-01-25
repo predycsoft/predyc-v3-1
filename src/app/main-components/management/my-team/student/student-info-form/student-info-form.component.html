@@ -12,7 +12,7 @@
                 <div (click)="isEditing ? fileInput.click() : null" class="" [ngClass]="isEditing ? 'cursorPointer' : ''">
                     <img [src]="imageUrl ? imageUrl : 'assets/images/default/default-user-image.jpg'" class="avatar6" alt="">
                 </div>
-                <input #fileInput type="file" style="display: none;" (change)="onFileSelected($event)">
+                <input #fileInput type="file" style="display: none;" (change)="onFileSelected($event)" >
                 <div class="radius10 backBlue1 pdr10 pdl10">
                     <span class="blue-5 ft13 ft500">Activo</span>
                 </div>
@@ -59,7 +59,7 @@
                     </div>
                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="h24px">
                         <img [src]="icon.phone" class="makeGray h16px" alt="">
-                        <input formControlName="phoneNumber" class="ft12 fw" placeholder="Número de teléfono">
+                        <input minLength="10" maxLength=10 formControlName="phoneNumber" class="ft12 fw" placeholder="Número de teléfono">
                     </div>
                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="h24px">
                         <img [src]="icon.location" class="makeGray h16px" alt="">
