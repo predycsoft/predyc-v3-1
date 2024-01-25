@@ -149,6 +149,7 @@ export class AdminPresentationFormComponent {
           finalize(async () => {
             this.adminUser.photoUrl = await firstValueFrom(fileRef.getDownloadURL());
             console.log("Se ha guardado la imagen");
+            this.uploadedImage = null
             resolve();
           })
         ).subscribe({

@@ -168,6 +168,7 @@ export class EnterprisePresentationFormComponent {
           finalize(async () => {
             this.enterprise.photoUrl = await firstValueFrom(fileRef.getDownloadURL());
             console.log("Se ha guardado la imagen");
+            this.uploadedImage = null
             resolve();
           })
         ).subscribe({

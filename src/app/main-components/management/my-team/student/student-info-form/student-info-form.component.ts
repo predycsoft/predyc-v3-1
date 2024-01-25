@@ -132,7 +132,6 @@ export class StudentInfoFormComponent {
         task.snapshotChanges().pipe(
           finalize(async () => {
             this.student.photoUrl = await firstValueFrom(fileRef.getDownloadURL());
-            console.log(this.student.photoUrl)
             console.log("image has been uploaded!");
             this.uploadedImage = null
             resolve();
