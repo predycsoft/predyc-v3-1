@@ -16,6 +16,8 @@ import { UserService } from 'src/app/shared/services/user.service';
 import { ProfileService } from 'src/app/shared/services/profile.service';
 import { Profile } from 'src/app/shared/models/profile.model';
 import { DocumentReference } from '@angular/fire/compat/firestore';
+import { AlertsService } from 'src/app/shared/services/alerts.service';
+import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
 
 const MAIN_TITLE = 'Predyc - '
 
@@ -34,8 +36,10 @@ export class ProfilesComponent {
 
   constructor(
     private route: ActivatedRoute,
+    private alertService: AlertsService,
     private categoryService: CategoryService,
     private courseService: CourseService,
+    private enterpriseService: EnterpriseService,
     public icon: IconService,
     private profileService: ProfileService,
     private skillService: SkillService,
@@ -303,8 +307,25 @@ export class ProfilesComponent {
   }
 
   onSave() {
-    this.isEditing = false;
-    console.log("Save")
+    try {
+      if (!this.profileName) throw new Error("Debe indicar un nombre para el perfil")
+      const coursesRef: DocumentReference<Curso>[] = this.studyPlan.map(course => {
+        return this.courseService.getCourseRefById(course.id)
+      })
+      const profile: Profile = Profile.fromJson({
+        id: this.profile ? this.profile.id : null,
+        name: this.profileName,
+        description: this.profileDescription,
+        coursesRef: coursesRef,
+        enterpriseRef: this.enterpriseService.getEnterpriseRef(),
+        permissions: this.profile ? this.profile.permissions : null,
+      })
+      this.profileService.saveProfile(profile)
+      this.alertService.succesAlert("Success")
+      this.isEditing = false;
+    } catch (error) {
+      this.alertService.errorAlert(error.message)
+    }
   }
 
   ngOnDestroy() {

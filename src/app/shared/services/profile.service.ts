@@ -84,40 +84,31 @@ export class ProfileService {
 
 
   async saveProfile(profile: Profile): Promise<void> {
-    try {
-      let ref: DocumentReference;
-      // console.log('profile save',profile)
-      // If profile has an ID, then it's an update
-      if (profile.id) {
-        ref = this.afs.collection<Profile>(Profile.collection).doc(profile.id).ref;
-        const oldProfile = (await ref.get()).data()
-        // Si los permisos del perfil cambiaron
-        if (JSON.stringify(oldProfile.permissions) !== JSON.stringify(profile.permissions)) {
-          const haveSamePermissions = this.checkPermissionsChange(profile.permissions)
-          profile.permissions.hasDefaultPermissions = haveSamePermissions
-        }
-      } else {
-        // Else, it's a new profile
-        ref = this.afs.collection<Profile>(Profile.collection).doc().ref;
-        profile.id = ref.id; // Assign the generated ID to the profile
-        const enterprise = this.enterpriseService.getEnterprise()
-        profile.permissions = enterprise.permissions
-        profile.permissions.hasDefaultPermissions = true
+    let ref: DocumentReference;
+    // console.log('profile save',profile)
+    // If profile has an ID, then it's an update
+    if (profile.id) {
+      ref = this.afs.collection<Profile>(Profile.collection).doc(profile.id).ref;
+      const oldProfile = (await ref.get()).data()
+      // Si los permisos del perfil cambiaron
+      if (JSON.stringify(oldProfile.permissions) !== JSON.stringify(profile.permissions)) {
+        const haveSamePermissions = this.checkPermissionsChange(profile.permissions)
+        profile.permissions.hasDefaultPermissions = haveSamePermissions
       }
-      // profile.permissions.hasDefaultPermissions = hasDefaultPermissions
-      const dataToSave = typeof profile.toJson === 'function' ? profile.toJson() : profile;
-
-      console.log('dataToSave',dataToSave)
-      await ref.set(dataToSave, { merge: true });
+    } else {
+      // Else, it's a new profile
+      ref = this.afs.collection<Profile>(Profile.collection).doc().ref;
       profile.id = ref.id; // Assign the generated ID to the profile
-      console.log('Operation successful.')
-      this.alertService.infoAlert('Has editado la informacion del perfil exitosamente.');
-
-    } catch (error) {
-      profile.id = null; // Assign the generated ID to the profile
-      console.log(error);
-      this.alertService.errorAlert(JSON.stringify(error));
+      const enterprise = this.enterpriseService.getEnterprise()
+      profile.permissions = enterprise.permissions
+      profile.permissions.hasDefaultPermissions = true
     }
+    // profile.permissions.hasDefaultPermissions = hasDefaultPermissions
+    const dataToSave = typeof profile.toJson === 'function' ? profile.toJson() : profile;
+
+    console.log('dataToSave',dataToSave)
+    await ref.set(dataToSave, { merge: true });
+    profile.id = ref.id; // Assign the generated ID to the profile
   }
 
   checkPermissionsChange(newPermissions: Permissions): boolean {
