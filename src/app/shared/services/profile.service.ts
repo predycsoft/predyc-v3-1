@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, firstValueFrom } from 'rxjs';
+import { BehaviorSubject, Observable, firstValueFrom, switchMap } from 'rxjs';
 import { Profile } from '../models/profile.model';
 import { AlertsService } from './alerts.service';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { EnterpriseService } from './enterprise.service';
-import { User } from '../models/user.model';
-import { Enterprise } from '../models/enterprise.model';
 import { Permissions } from 'src/app/shared/models/permissions.model';
 
 
@@ -162,6 +160,20 @@ export class ProfileService {
 
   public getProfile$(uid: string): Observable<Profile> {
     return this.afs.collection<Profile>(Profile.collection).doc(uid).valueChanges()
+  }
+
+  public getProfiles$(): Observable<Profile[]> {
+    return this.enterpriseService.enterpriseLoaded$.pipe(
+      switchMap(isLoaded => {
+        if (!isLoaded) return []
+        const enterpriseRef = this.enterpriseService.getEnterpriseRef();
+
+        // Query to get courses matching enterpriseRef
+        return this.afs.collection<Profile>(Profile.collection, ref =>
+          ref.where('enterpriseRef', '==', enterpriseRef)
+        ).valueChanges({ idField: 'id' });
+      })
+    )
   }
   
 }
