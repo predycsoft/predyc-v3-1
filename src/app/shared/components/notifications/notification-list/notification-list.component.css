@@ -12,6 +12,7 @@
 .rounded-container {
     border-radius: 24px ; 
     overflow: hidden; 
+    width: fit-content;
 }
 
 .filter-item:first-child {
@@ -44,16 +45,40 @@
     font-weight: 500;
 }
 
-.item-container{
-    border: 1px solid #ddd;
-    border-radius: 16px!important;
-    border-top-right-radius: 24px; 
-    border-bottom-right-radius: 24px; 
-    overflow: hidden; 
-    text-align: center; /* Asegura el centrado horizontal */
 
 
-}
+.mat-expansion-panel {
+    border: 1px none var(--gray-4) !important;  /* Reemplaza 'tuColorPersonalizado' con el color que desees, como #ff0000 para rojo */
+    border-radius: 0px !important;
+    box-shadow: none !important;  /* Elimina cualquier sombra que pudiera tener */
+  }
+  
+  .mat-expansion-panel-header {
+    border-radius: 0px 0px 0 0 !important;  /* Radio solo para la parte superior */
+    border: 1px solid var(--gray-4);
+  }
+
+  .mat-expansion-panel-header.mat-expanded {
+    border-radius: 6px 6px 0 0 !important;  /* Radio solo para la parte superior */
+    border-bottom: none;
+    box-shadow: var(--shadow12);
+  }
+  
+  .mat-expansion-panel-content {
+    border-radius: 0 0 6px 6px !important;  /* Radio solo para la parte inferior */
+  }
+
+  :host ::ng-deep .mat-expansion-panel-body {
+    border: 1px solid var(--gray-4) !important;
+    border-radius: 0 0 6px 6px !important;  /* Radio solo para la parte inferior */
+    max-height: 20rem;
+    overflow-y: scroll;
+    padding: 0px;
+  }
+  
+  .hiding-content .mat-expansion-panel-content {
+    display: none;
+  }
 
 .actions-container{
     cursor: pointer;
@@ -66,8 +91,41 @@
     margin: auto;
 }
 
-.custom-expansion-panel-content {
+.mat-accordion .mat-expansion-panel:first-child .mat-expansion-panel-header {
+    border-radius: 6px 6px 0 0 !important;
+}
+
+.mat-mdc-cell{
+    border: none;
+}
+
+.mat-accordion .mat-expansion-panel:last-child .mat-expansion-panel-header {
+    border-radius:0 0  6px 6px !important;
+}
+
+.mat-accordion .mat-expansion-panel:last-child .mat-expansion-panel-header.mat-expanded {
+    border-radius:6px 6px  0px 0px !important;
+}
+
+th, td {
+    padding: 1em;
+    border-left: none !important;
+    border-right: none !important;
+    border-radius: 0px;
+}
+
+ tr:nth-child(odd) td{
+    background-color: #f8f8f8 !important; /* Light gray for odd rows */
+}
+
+ tr:nth-child(even) td{
+    background-color: #fcfcfc !important; /* Lighter gray for even rows */
+}
+
+
+
+/* .custom-expansion-panel-content {
     max-height: 20rem;
     overflow-y: scroll;
-}
+} */
   
