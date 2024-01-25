@@ -73,8 +73,6 @@ export class StudentStudyPlanAndCompetencesComponent {
     // --------------------------------
 
   ngOnInit() {
-
-    console.log("this.student en hijo", this.student)
     const userRef = this.userService.getUserRefById(this.student.uid)
 
     this.combinedObservableSubscription = combineLatest([ this.courseService.getCourses$(), this.courseService.getCoursesByStudent(userRef)]).
@@ -93,7 +91,7 @@ export class StudentStudyPlanAndCompetencesComponent {
   buildMonths(coursesByStudent: CourseByStudent[], coursesData) {
     const months = {}; 
     coursesByStudent.forEach(courseByStudent => {
-      console.log("courseByStudent.id", courseByStudent.id)
+      // console.log("courseByStudent.id", courseByStudent.id)
       const courseData = coursesData.find(courseData => courseData.id === courseByStudent.courseRef.id);
       if (courseData) {
         const studyPlanData = {
