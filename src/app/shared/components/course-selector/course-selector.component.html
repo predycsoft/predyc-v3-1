@@ -1,42 +1,48 @@
-<div class="fw mgb05 borderLight radius6 " *ngFor="let category of processedCategories">
-    <div [ngClass]="(type == 'propios' ? category.expandedPropios : category.expandedPredyc) ? 'headCategoryExpanded hoverBlue' : 'headCategory hoverBlue'" 
-         fxLayout="row" 
-         fxLayoutAlign="space-between center" 
-         (click)="type == 'propios' ? category.expandedPropios=!category.expandedPropios : category.expandedPredyc=!category.expandedPredyc">
-        <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
-            <ng-container *ngIf="type == 'propios'; else predycTemplate">
-                <img *ngIf="!category.expandedPropios" [src]="icon.chevronRight" class="makeBlue cursorPointer" alt="">
-                <img *ngIf="category.expandedPropios" [src]="icon.chevronDown" class="makeBlue cursorPointer" alt="">
-            </ng-container>
-            <ng-template #predycTemplate>
-                <img *ngIf="!category.expandedPredyc" [src]="icon.chevronRight" class="makeBlue cursorPointer" alt="">
-                <img *ngIf="category.expandedPredyc" [src]="icon.chevronDown" class="makeBlue cursorPointer" alt="">
-            </ng-template>
-            <span [ngClass]="(type == 'propios' ? category.expandedPropios : category.expandedPredyc) ? 'ft12 blue-5 ft500' : 'ft12 gray-10 ft500'">
-                {{category.name}}
-            </span>
-        </div>
-    </div>
-    <div fxLayout="column" 
-         fxLayoutAlign="start start" 
-         [ngClass]="(type == 'propios' ? category.expandedPropios : category.expandedPredyc) ? 'bodyCategoryExpanded' : 'bodyCategory'">
-        <div class="fw pd05 h40px border-tl cursorPointer hoverBlue" 
-             [ngClass]="selectedCourse == course ? 'backBlue1' : ''" 
-             (click)="selectCourse(course)" 
-             *ngFor="let course of filteredCourses(type == 'propios' ? category.coursesPropios : category.coursesPredyc)" 
+<div class="list">
+    <div class="fw categories" *ngFor="let category of processedCategories">
+        <div [ngClass]="(type == 'propios' ? category.expandedPropios : category.expandedPredyc) ? 'headCategoryExpanded hoverBlue mgt05' : 'headCategory hoverBlue'" 
              fxLayout="row" 
-             fxLayoutAlign="space-between center">
+             fxLayoutAlign="space-between center" 
+             (click)="type == 'propios' ? category.expandedPropios=!category.expandedPropios : category.expandedPredyc=!category.expandedPredyc">
             <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
-                <img [src]="course['imagen']" class="h24px w24px radius4" alt="">
-                <span class="ft12" [ngClass]="selectedCourse == course ? 'blue-5 ft500' : 'gray-10'">
-                    {{course.titulo}}
+                <ng-container *ngIf="type == 'propios'; else predycTemplate">
+                    <img *ngIf="!category.expandedPropios" [src]="icon.chevronRight" class="makeBlue cursorPointer" alt="">
+                    <img *ngIf="category.expandedPropios" [src]="icon.chevronDown" class="makeBlue cursorPointer" alt="">
+                </ng-container>
+                <ng-template #predycTemplate>
+                    <img *ngIf="!category.expandedPredyc" [src]="icon.chevronRight" class=" cursorPointer" alt="">
+                    <img *ngIf="category.expandedPredyc" [src]="icon.chevronDown" class=" cursorPointer" alt="">
+                </ng-template>
+                <span [ngClass]="(type == 'propios' ? category.expandedPropios : category.expandedPredyc) ? 'ft12 gray-10 ft500' : 'ft12 gray-10 ft500'">
+                    {{category.name}}
                 </span>
             </div>
-            <div fxLayoutAlign="center center">
-                <span class="gray-6 ft12 nowrap">
-                    {{ getRounded(course.duracion / 60) }} {{getRounded(course.duracion / 60) == 1 ? 'hora' : 'horas'}}
-                </span>
+        </div>
+        <div fxLayout="column" 
+             fxLayoutAlign="start start" 
+             [ngClass]="(type == 'propios' ? category.expandedPropios : category.expandedPredyc) ? 'bodyCategoryExpanded' : 'bodyCategory'">
+            <div class="fw pd05 h40px  cursorPointer hoverBlue courseContainer"  
+                 [ngClass]="selectedCourse == course ? 'backBlue1' : ''" 
+                 (click)="selectCourse(course)" 
+                 *ngFor="let course of filteredCourses(type == 'propios' ? category.coursesPropios : category.coursesPredyc)" 
+                 fxLayout="row" 
+                 fxLayoutAlign="space-between center">
+                <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
+                    <img [src]="course['imagen']" class="h24px w24px radius4" alt="">
+                    <span class="ft12" [ngClass]="selectedCourse == course ? 'blue-5 ft500' : 'gray-10'">
+                        {{course.titulo}}
+                    </span>
+                </div>
+                <div fxLayoutAlign="center center" fxLayout="row" fxLayoutGap=".5rem">
+                    <span class="gray-6 ft12 nowrap">
+                        {{ getRounded(course.duracion / 60) }}{{getRounded(course.duracion / 60) == 1 ? 'hr' : 'hrs'}}
+                    </span>
+                    <div fxLayout="row" fxLayoutGap=".3rem">
+                        <img [src]="icon.information" alt="" class="makeYellow" >
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+

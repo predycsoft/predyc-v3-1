@@ -247,6 +247,7 @@ body {
 
   /* Shadows */
   --shadow8: 0px 2px 4px rgba(0, 0, 0, 0.04);
+  --shadow12: 0px 1px 4px rgba(0, 0, 0, 0.25);
   --shadow16: 0px 4px 8px rgba(0, 0, 0, 0.14);
   --shadow32:  0px 8px 16px rgba(0, 0, 0, 0.14);
   --shadow128: 0px 32px 64px rgba(0, 0, 0, 0.1876), 0px 2px 21px rgba(0, 0, 0, 0.1474);
@@ -343,6 +344,7 @@ body {
 .redText{ color: var(--red5) !important;}
 
 .shadow8{ box-shadow: var(--shadow8);}
+.shadow12{ box-shadow: var(--shadow12);}
 .shadow16{ box-shadow: var(--shadow16);}
 .shadow32{ box-shadow: var(--shadow32);}
 .shadow128{ box-shadow: var(--shadow128);}
