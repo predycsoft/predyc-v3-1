@@ -249,11 +249,11 @@ export class CourseService {
     return this.enterpriseService.enterpriseLoaded$.pipe(
       switchMap(isLoaded => {
         if (!isLoaded) return []
-        this.enterpriseRef = this.enterpriseService.getEnterpriseRef();
+        const enterpriseRef = this.enterpriseService.getEnterpriseRef();
             
         // Query to get courses matching enterpriseRef
         const enterpriseMatch$ = this.afs.collection<Curso>(Curso.collection, ref =>
-          ref.where('enterpriseRef', '==', this.enterpriseRef)
+          ref.where('enterpriseRef', '==', enterpriseRef)
         ).valueChanges({ idField: 'id' });
       
         // Query to get courses where enterpriseRef is empty

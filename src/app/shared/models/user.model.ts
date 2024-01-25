@@ -28,7 +28,7 @@ export interface UserJson {
   phoneNumber: string | null
   photoUrl: string | null
   zipCode: number | null
-  profile: DocumentReference | null
+  profile: DocumentReference<Profile> | null
   role: typeof User.ROLE_ADMIN | typeof User.ROLE_STUDENT
   isActive: boolean
   stripeId: string | null
@@ -77,7 +77,7 @@ export class User {
     public phoneNumber: string | null,
     public photoUrl: string | null,
     public zipCode: number | null,
-    public profile: DocumentReference | null,
+    public profile: DocumentReference<Profile> | null,
     public role: typeof User.ROLE_ADMIN | typeof User.ROLE_STUDENT,
     public isActive: boolean,
     public stripeId: string | null,

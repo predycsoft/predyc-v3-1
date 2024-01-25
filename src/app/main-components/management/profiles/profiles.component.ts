@@ -97,6 +97,7 @@ export class ProfilesComponent {
         this.profileName = this.profile.name
         this.profileDescription = this.profile.description
       }
+      this.studyPlan = []
       // this.courses = courses
       this.coursesForExplorer = courses.map(course => {
         // Find skill object for each skill ref in course
@@ -147,6 +148,12 @@ export class ProfilesComponent {
     })
   }
 
+  // debug() {
+  //   console.log("studyPlan", this.studyPlan)
+  //   console.log("coursesForExplorer", this.coursesForExplorer.map(course => {return {name: course.titulo, inStudyPlan: course.inStudyPlan }}))
+  //   console.log("profileBackup", this.profileBackup)
+  // } 
+
   onCategoryHover(item: any) {
     this.hoverSubject.next(item);
   }
@@ -184,8 +191,8 @@ export class ProfilesComponent {
       let studyPlanChanged = false
       this.coursesForExplorer.forEach(course => {
         const initialValue = course.inStudyPlan
-        course.inStudyPlan = this.profileBackup.selectedCourses.includes(course.id)
-        const finalValue = course.inStudyPlan
+        const finalValue = this.profileBackup.selectedCourses.includes(course.id)
+        course.inStudyPlan = finalValue
         if (initialValue !== finalValue) {
           studyPlanChanged = true
           if (finalValue) {
