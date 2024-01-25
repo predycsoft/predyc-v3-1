@@ -55,7 +55,7 @@ export class StudentInfoFormComponent {
         email: this.student.email,
         phoneNumber: this.student.phoneNumber,
         country: this.student.country,
-        profile: this.studentProfile.id,
+        profile: this.studentProfile ? this.studentProfile.id : null,
         photoUrl: this.student.photoUrl
       });
     }
