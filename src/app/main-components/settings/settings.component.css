@@ -21,8 +21,8 @@
 
 .item {
     border-bottom: 2px solid #e3e3e3;
-    height: 3rem;
-    padding: 0 .8rem 0 .8rem;
+    height: 2rem;
+    padding: 0 .5rem 0 .5rem;
     font-weight: bold;
 }
 
@@ -39,4 +39,33 @@ color: gray;
     border-top: 1px solid var(--gray-3);
     padding-right: 14px;
     padding-left: 14px;
+}
+
+.catSelect{
+    border: none !important;
+}
+
+.catInput {
+    border: none !important;
+    font-size: 12px;
+
+}
+
+.line {
+    height: 1px;
+    background-color: var(--gray-2);
+}
+
+.catInput:focus{
+    outline: none;
+}
+
+.catInput::placeholder{
+    color: var(--gray-9);
+    font-size: 12px;
+}
+
+.catSelect:focus{
+    outline: none;
+    border: none;
 }

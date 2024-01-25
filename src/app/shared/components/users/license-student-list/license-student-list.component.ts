@@ -15,7 +15,8 @@ export interface LicenseListUser {
   profile: string,
   status: string,
   statusDisplayText: string,
-  uid: string
+  uid: string,
+  email: string
 }
 
 @Component({
@@ -122,7 +123,8 @@ export class LicenseStudentListComponent {
             profile: profileName,
             status: item.status,
             statusDisplayText: SubscriptionClass.statusToDisplayValueDict[item.status],
-            uid: item.uid
+            uid: item.uid,
+            email: item.email
           }
           return user
         })

@@ -23,22 +23,43 @@
             </tr>
     
         </table>
-        <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt05">
-            <label class="gray-8 ft500 ft12">Indique la cantidad de licencias que quiere solicitar</label>
-            <input type="number" min="0" class="ft12 gray-8" [(ngModel)]="licensesQty">
+        <div fxLayout="column"  class="mgt05">
+            <label class="gray-10 ft500 ft12">Indique la cantidad de licencias que quiere solicitar</label>
+            <input type="number" min="0" class="ft12 gray-8 w40px centertext inputNumber" [(ngModel)]="licensesQty">
         </div>
-        <span *ngIf="licensesQty !== 0" class="ft13 ft500 black">Seleccione una de las siguientes opciones:</span>
-        <div *ngIf="licensesQty !== 0" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="1rem" fxLayoutGap.lt-md="0rem">
+        <span  class="ft12 ft500 black">Seleccione una de las siguientes opciones:</span>
+        <div fxLayout="column">
+            <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign=" center" class="mgt05">
+                <div class="ft11 ft500 gray-10">Telefono:</div>
+                <div class="ft11 gray-8">+52 (442) 4257590</div>
+                <a href="tel:++524424257590" >
+                    <div href="tel:++524424257590"  class="blueBorder radius20 blue-5 ft10 cursorPointer pdl05 pdr05 ft500">Llamar</div>
+                </a>
+                
+            </div>
+            <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign=" center" class="mgt05">
+                <div class="ft11 ft500 gray-10">Whatsapp</div>
+                <div class="ft11 gray-8">+52 (442) 4257590</div>
+                <div  (click)="openWhatsappContacto()" class="blueBorder radius20 blue-5 ft10 cursorPointer pdl05 pdr05 ft500">Enviar mensaje</div>
+
+            </div>
+            <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign=" center" class="mgt05">
+                <div class="ft11 ft500 gray-10">Correo</div>
+                <div class="ft11 gray-8">+contacto@predyc.com</div>
+                <div   (click)="emailContacto()" class="blueBorder radius20 blue-5 ft10 cursorPointer pdl05 pdr05 ft500">Enviar correo</div>
+
+            </div>
+        </div>
+        <!-- <div  fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="1rem" fxLayoutGap.lt-md="0rem">
             <div fxLayout="column" fxLayout.lt-md="row"  fxLayoutAlign.lt-md="center center" ngClass="blueBorderContainer centertext fw" ngClass.lt-md="blueBorderContainerMobile fw" fxLayoutAlign="center center" fxLayoutGap=".5rem"
                 (click)="openWhatsappContacto()" fxLayout="column">
-                <!-- <i ngClass="fa fa-whatsapp blue-5 ftxxl cursorPointer" ngClass.lt-md="fa fa-whatsapp blue-5 ftxl cursorPointer" ></i> -->
-                <img [src]="icon.whatsapp_gray" alt="" ngClass="h40px makeBlue cursorPointer" ngClass.lt-md="h26px">
-                <span class="ft500 ft14 nowrap"> Whatsapp </span>
+                <img [src]="icon.whatsapp_gray" alt="" ngClass="h40px makeGreen cursorPointer" ngClass.lt-md="h26px">
+                <span class="ft500 ft12 nowrap"> Whatsapp </span>
             </div>
             <div fxLayout="column" fxLayout.lt-md="row"  fxLayoutAlign.lt-md="center center" ngClass="blueBorderContainer centertext fw" ngClass.lt-md="blueBorderContainerMobile fw" fxLayoutAlign="center center" fxLayoutGap=".5rem"
                 (click)="emailContacto()" fxLayout="column">
-                <img [src]="icon.email" alt="" ngClass="h40px cursorPointer" ngClass.lt-md="h26px cursorPointer">
-                <span class="ft500 ft14 nowrap">Correo</span>
+                <img [src]="icon.email" alt="" ngClass="h40px cursorPointer makeBlue" ngClass.lt-md="h26px cursorPointer">
+                <span class="ft500 ft12 nowrap">Correo</span>
             </div>
             <div fxLayout="column" fxLayout.lt-md="row"  fxLayoutAlign.lt-md="center center" ngClass="blueBorderContainer centertext fw" ngClass.lt-md="blueBorderContainerMobile fw" fxLayoutAlign="center center" fxLayoutGap=".5rem"
                 fxLayout="column" (click)="dialog.close()">
@@ -49,7 +70,7 @@
                     <span>+52 (442) 4257590</span>
                 </a>
             </div>
-        </div>
+        </div> -->
     </div>
     <div *ngIf="opcion==1" class="fw" fxLayout="column">
         <div>
