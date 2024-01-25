@@ -1,6 +1,6 @@
 <div class="fh">
     <div [ngClass]="isEditing ? 'header--edit' : ''" fxLayout="row" fxLayoutAlign="space-between center" class="header pdr30 pdl30">
-        <app-navigate-back targetUrl="/management/students">
+        <app-navigate-back *ngIf="!isEditing" targetUrl="/management/students">
             {{isEditing ? '' : profileName}}
         </app-navigate-back>
         <div *ngIf="isEditing; else profileTitle" fxLayout="row" fxLayoutAlign="space-between center" class="fw" >
