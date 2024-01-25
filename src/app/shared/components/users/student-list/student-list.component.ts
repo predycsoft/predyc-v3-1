@@ -97,7 +97,8 @@ export class StudentListComponent {
             profile: profileName,
             ratingPoints: item.ratingPoints,
             rhythm: options[randomIndex], // Calculation pending
-            uid: item.uid
+            uid: item.uid,
+            photoUrl: item.photoUrl,
           }
           return user
         })
