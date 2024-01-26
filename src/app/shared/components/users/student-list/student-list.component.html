@@ -21,21 +21,11 @@
                             Perfil sin asignar
                         </div>
                         <div
-                            *ngIf="user.profile" 
-                            fxLayout="row"
-                            fxLayoutGap="5px"
-                            >
-                            <div
-                            *ngIf="user.profile"
-                                (click)="$event.stopPropagation();"
-                                class="ft400 ft12 blue-4"
-                                >
+                            *ngIf="user.profile" fxLayout="row" fxLayoutGap="5px" class="move-right " >
+                            <div *ngIf="user.profile"(click)="$event.stopPropagation();"  class="ft400 ft12 blue-4" >
                                 {{ user.profile  | titlecase }}
                             </div>
-                            <img
-                                [src]="icon.arrowForward"
-                                alt="Forward Arrow"
-                            >
+                            <img [src]="icon.arrowForward" alt="Forward Arrow" class="makeBlue" >
                         </div>
                     </div>
                 </div>

@@ -72,3 +72,13 @@ table.mat-table tfoot tr {
   .demo-row-is-clicked {
     font-weight: bold;
   }
+
+  .move-right {
+    transition: transform 0.3s ease-out;
+    transform: translateX(0);
+  }
+
+  .move-right:hover {
+    transform: translateX(5px);
+    transform: translateX(5px);
+  }
