@@ -4,16 +4,11 @@
     </p>
     <div fxLayout="row" fxLayoutAlign=" center">
         <div fxLayout="row" fxLayoutAlign="space-between center" class="w-70 pdr20 border-rl">
-            <div fxLayout="row" fxLayoutAlign=" center" class="shadow12 radius20">
+            <div fxLayout="row" fxLayoutAlign=" center" class="shadow-animation radius20">
                 <app-profile-selector></app-profile-selector>
                 <app-search-input-box class=""></app-search-input-box>
             </div>
-            <button
-                fxLayout="row"
-                fxLayoutGap="0.625"
-                fxLayoutAlign="center center"
-                class="blueButton"
-                style="border-radius: 24px !important;"
+            <button fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButtonAnim button-animation " style="border-radius: 24px !important;"
                 (click)="createNewStudent()"
                 >
                 <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="">
@@ -32,7 +27,7 @@
         </div>
     </div>
     <div fxLayout="row">
-        <div class="w-70 pdr20 border-rl">
+        <div class="w-70 pdr20 mgt10 border-rl" >
             <app-student-list
                 (onStudentSelected)="onStudentSelected($event)"
                 >
