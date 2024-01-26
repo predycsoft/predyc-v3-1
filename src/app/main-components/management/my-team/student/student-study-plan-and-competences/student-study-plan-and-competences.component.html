@@ -34,7 +34,7 @@
                 </span>
                 <button class="redButton btn">Alertar via e-mail</button>
             </div>
-            <div *ngIf="(months && months.length > 0) else noPlan" >
+            <div *ngIf="(selectedProfile && months && months.length > 0) else noPlan" >
                 <div *ngFor="let month of months; let index = index" fxLayout="column"  class="mgt05">
                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="mgb10">
                         <span class="ft16 ft600 black">{{month.monthName | titlecase}} {{month.yearNumber}} </span>
@@ -58,6 +58,7 @@
         </ng-container>
         <ng-container *ngIf="showInitForm">
             <div fxLayout="column"> 
+                <span>Indique los siguientes datos para inicializar su plan de estudio:</span>
                 <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap=".5rem" class="mgb10">
                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="">
                         <span class="ft500 ft12 gray-8">Estudio mensual</span>
@@ -71,9 +72,7 @@
                 <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="mgb03">
                     <button *ngIf="hoursPermonthInitForm && startDateInitForm" (click)="saveInitForm()" class="blueButton">Guardar</button>
                 </div>
-                
             </div>
-            
         </ng-container>
     </div>
 </div>

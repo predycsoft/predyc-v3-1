@@ -280,4 +280,22 @@ export class CourseService {
     ).valueChanges()
   }
 
+  async setCoursesByStudentInactive(userRef: DocumentReference<User>) {
+    this.afs.collection<CourseByStudent>(CourseByStudent.collection, ref => 
+      ref.where('userRef', '==', userRef).where('active', '==', true)
+    ).get().subscribe(querySnapshot => {
+
+      const updatePromises = querySnapshot.docs.map(doc => {
+        return doc.ref.set({ active: false }, { merge: true });
+      });
+      
+      Promise.all(updatePromises).then(() => {
+        console.log('Todos los documentos han sido actualizados.');
+      }).catch(error => {
+        console.error('Error al actualizar los documentos:', error);
+      });
+    });
+  }
+  
+
 }
