@@ -1,6 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, SimpleChanges } from '@angular/core';
+import { DocumentReference } from '@angular/fire/compat/firestore';
 import { Subscription, combineLatest } from 'rxjs';
 import { CourseByStudent } from 'src/app/shared/models/course-by-student';
+import { Profile } from 'src/app/shared/models/profile.model';
 import { User } from 'src/app/shared/models/user.model';
 import { CourseService } from 'src/app/shared/services/course.service';
 import { IconService } from 'src/app/shared/services/icon.service';
@@ -29,6 +31,7 @@ export class StudentStudyPlanAndCompetencesComponent {
   ){}
 
   @Input() student: User
+  @Input() selectedProfile: Profile;
 
 
   combinedObservableSubscription: Subscription
@@ -75,7 +78,7 @@ export class StudentStudyPlanAndCompetencesComponent {
   ngOnInit() {
     const userRef = this.userService.getUserRefById(this.student.uid)
 
-    this.combinedObservableSubscription = combineLatest([ this.courseService.getCourses$(), this.courseService.getCoursesByStudent(userRef)]).
+    this.combinedObservableSubscription = combineLatest([ this.courseService.getCourses$(), this.courseService.getActiveCoursesByStudent(userRef)]).
     subscribe(([coursesData, coursesByStudent]) => {
       if (coursesByStudent.length > 0) {
         if (coursesData.length > 0) {
@@ -85,6 +88,13 @@ export class StudentStudyPlanAndCompetencesComponent {
         console.log("El usuario no posee studyPlan");
       }
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.selectedProfile) {
+      // Código para manejar el cambio de perfil
+      console.log('selected profile:', changes.selectedProfile.currentValue);
+    }
   }
 
 

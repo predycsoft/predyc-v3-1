@@ -1,16 +1,16 @@
 import { DocumentReference } from "@angular/fire/compat/firestore"
 
 export interface CourseByStudentJson { 
-    id: string,
-    userRef: DocumentReference | null,
+    active:boolean
     courseRef: DocumentReference | null
-    progress: number
-    dateStartPlan: any // It should be Date
+    dateEnd: any | null
     dateEndPlan: any
     dateStart: any | null
-    dateEnd: any | null
-    active:boolean
+    dateStartPlan: any // It should be Date
     finalScore: number
+    id: string,
+    progress: number
+    userRef: DocumentReference | null,
 
 }
 
@@ -18,44 +18,45 @@ export class CourseByStudent {
     public static collection: string = 'coursesByStudent'
 
 
-    public id: string;
-    public userRef: DocumentReference 
+    public active: boolean = true
     public courseRef: DocumentReference
-    public progress:number = 0;
-    public dateStartPlan: any
+    public dateEnd: any = null
     public dateEndPlan: any
     public dateStart: any = null
-    public dateEnd: any = null
-    public active: boolean = true
+    public dateStartPlan: any
     public finalScore: number = 0;
+    public id: string;
+    public progress:number = 0;
+    public userRef: DocumentReference 
 
     public static fromJson(CourseByStudentJson: CourseByStudent): CourseByStudent {
         let courseByStudent = new CourseByStudent();
-        courseByStudent.id = CourseByStudentJson.id
-        courseByStudent.userRef = CourseByStudentJson.userRef
+        courseByStudent.active = CourseByStudentJson.active
         courseByStudent.courseRef = CourseByStudentJson.courseRef
-        courseByStudent.progress = CourseByStudentJson.progress
-        courseByStudent.dateStartPlan= CourseByStudentJson.dateStartPlan
+        courseByStudent.dateEnd = CourseByStudentJson.dateEnd
         courseByStudent.dateEndPlan = CourseByStudentJson.dateEndPlan
         courseByStudent.dateStart= CourseByStudentJson.dateStart
-        courseByStudent.dateEnd = CourseByStudentJson.dateEnd
+        courseByStudent.dateStartPlan= CourseByStudentJson.dateStartPlan
         courseByStudent.finalScore = CourseByStudentJson.finalScore
+        courseByStudent.id = CourseByStudentJson.id
+        courseByStudent.progress = CourseByStudentJson.progress
+        courseByStudent.userRef = CourseByStudentJson.userRef
 
         return courseByStudent
     }
       
     toJson(): CourseByStudentJson {
         return {
-            id: this.id,
-            userRef: this.userRef,
+            active:this.active,
             courseRef: this.courseRef,
-            progress: this.progress,
-            dateStartPlan: this.dateStartPlan,
+            dateEnd: this.dateEnd,
             dateEndPlan: this.dateEndPlan,
             dateStart: this.dateStart,
-            dateEnd: this.dateEnd,
-            active:this.active,
-            finalScore:this.finalScore
+            dateStartPlan: this.dateStartPlan,
+            finalScore:this.finalScore,
+            id: this.id,
+            progress: this.progress,
+            userRef: this.userRef,
         }
     }
 }

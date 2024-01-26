@@ -1,10 +1,11 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Profile } from 'src/app/shared/models/profile.model';
 import { User, UserJson } from 'src/app/shared/models/user.model';
 import { IconService } from 'src/app/shared/services/icon.service';
 import { ProfileService } from 'src/app/shared/services/profile.service';
 import { UserService } from 'src/app/shared/services/user.service';
 import { AlertsService } from 'src/app/shared/services/alerts.service';
+import { DocumentReference } from '@angular/fire/compat/firestore';
 
 
 @Component({
@@ -33,9 +34,13 @@ export class StudentDetailsComponent {
 
   async onStudentSaveHandler(student: User) {
     try {
-      if (this.hasDataChanges(student)){
+      const [hasUserDataChanged, hasProfileChanged] = this.hasDataChanges(student);
+      if (hasUserDataChanged){
         await this.userService.editUser(student)
         this.originalStudentData = {...student}
+        if(hasProfileChanged) {
+          this.studentProfile = this.profileService.getProfile(student.profile.id)
+        }
         this.alertService.succesAlert(`Información editada satisfactoriamente`);
       }
     } catch (error) {
@@ -51,8 +56,12 @@ export class StudentDetailsComponent {
     if (this.originalStudentData.enterprise) { originalData.enterprise = this.originalStudentData.enterprise.id; }
     if (newStudent.profile) { newData.profile = newStudent.profile.id; }
     if (newStudent.enterprise) { newData.enterprise = newStudent.enterprise.id; }
-  
-    return JSON.stringify(originalData) !== JSON.stringify(newData);
+    
+    let hasProfileChanged = false
+    if (originalData.profile != newData.profile) hasProfileChanged = true
+    console.log("hasProfileChanged", hasProfileChanged)
+    
+    return [JSON.stringify(originalData) !== JSON.stringify(newData), hasProfileChanged];
   }
   
 
