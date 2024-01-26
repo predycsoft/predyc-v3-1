@@ -24,9 +24,13 @@
 .profile-container:hover {
     background-color: var(--blue-1);
     cursor: pointer;
+    color: #2298e2 !important;
+
 
 
 }
+
+
 
 .profile-container:hover .profile-arrow {
     display: block;
@@ -94,4 +98,8 @@
         opacity: 1;
         box-shadow: 0px 2px 2px rgba(25, 25, 25, 0.15);
 
+}
+
+.ft13.blue-4:hover {
+    color: #008CE3 !important;
 }

@@ -63,11 +63,15 @@ table.mat-table tfoot tr {
     border-bottom: 1px solid transparent;
     border-top: 1px solid transparent;
     cursor: pointer;
+    
+
+
+
   }
-/*   
+   
   .mat-mdc-row:hover .mat-mdc-cell {
-    border-color: currentColor;
-  } */
+    background-color:  rgba(200, 202, 203, 0.224) !important; 
+  } 
   
   .demo-row-is-clicked {
     font-weight: bold;
@@ -81,4 +85,5 @@ table.mat-table tfoot tr {
   .move-right:hover {
     transform: translateX(5px);
     transform: translateX(5px);
+    color: #0f3b56 !important;
   }
