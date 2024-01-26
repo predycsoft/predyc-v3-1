@@ -225,7 +225,7 @@
                                     <div class="" fxLayout="row" fxLayoutGap="2rem" fxLayoutAlign=" center">
                                       <div>
                                         <!-- <img [src]="selectedCourse['imagen_instructor'] ? selectedCourse['imagen_instructor'] : selectedCourse['avatarInstructor']" class="avatar4 shadow8" alt="" /> -->
-                                        <img [src]="selectedCourse['imagen_instructor'] ?? selectedCourse['avatarInstructor'] ?? 'assets/images/default/default-user-image.jpg'" class="avatar4 shadow8" alt="" />
+                                        <img [src]="selectedCourse['imagen_instructor'] ?? selectedCourse['avatarInstructor'] ?? 'assets/images/default/default-user-image.jpg'" class="avatar4 shadow8" alt="" (error)="handleImageError()"/>
 
                                     </div>
                                       <div fxLayout="column">
