@@ -169,10 +169,10 @@
                                 class="pdl10 pdr10 pdb05 pdt05 ft11" (click)="tab = 2" [ngClass]="tab == 2 ? 'selectedTab gray-10' : 'gray-8 tab'">
                                 Instructor
                             </div>
-                            <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign="center center"
+                            <!-- <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign="center center"
                                 class="pdl10 pdr10 pdb05 pdt05 ft11" (click)="tab = 3" [ngClass]="tab == 3 ? 'selectedTab gray-10' : 'gray-8 tab'">
                                 Reseña
-                            </div>
+                            </div> -->
                         </div>
 
                         <div fxLayout="column" class="contentContainer pd10 hideScroll" *ngIf="tab == 0">
@@ -215,10 +215,29 @@
                             </div>
                         </div>
                         <div fxLayout="column" class="contentContainer pd10 hideScroll" *ngIf="tab == 1">
-                            <div class="fw">
-                                <p class="ft12 gray-8">{{selectedCourse.descripcion}}</p>
+                            <div class=" backWhite radius6 pd10 center"  >
+                                <p class="ft12 gray-10  mgt05 " fxLayoutAlign="center center" >{{selectedCourse.descripcion}}</p>
                             </div>
                         </div>
+                        <div fxLayout="column" class="contentContainer pd10 hideScroll" *ngIf="tab == 2">
+                            <div class=" backWhite radius6 pd10 left "  >
+                                <div fxShow.lt-md="false" fxShow="true" class="fw " fxLayout="column">
+                                    <div class="" fxLayout="row" fxLayoutGap="2rem" fxLayoutAlign=" center">
+                                      <div>
+                                        <!-- <img [src]="selectedCourse['imagen_instructor'] ? selectedCourse['imagen_instructor'] : selectedCourse['avatarInstructor']" class="avatar4 shadow8" alt="" /> -->
+                                        <img [src]="selectedCourse['imagen_instructor'] ?? selectedCourse['avatarInstructor'] ?? 'assets/images/default/default-user-image.jpg'" class="avatar4 shadow8" alt="" />
+
+                                    </div>
+                                      <div fxLayout="column">
+                                        <span class="ft14 ft500 gray-10">{{selectedCourse.instructorNombre}}</span>
+                                        <p class="ft12 gray-8 mgb0">{{selectedCourse.resumen_instructor }}</p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                
+                            </div>
+                        </div>
+                        
                     </div>
                 </div>
             </div>
