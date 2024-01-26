@@ -273,4 +273,11 @@ export class CourseService {
     return this.afs.collection<CourseByStudent>(CourseByStudent.collection, ref => ref.where('userRef', '==', userRef)).valueChanges()
   }
 
+  getActiveCoursesByStudent(userRef: DocumentReference<User>): Observable<CourseByStudent[]> {
+    return this.afs.collection<CourseByStudent>(CourseByStudent.collection, ref => ref.
+      where('userRef', '==', userRef).
+      where('active', '==', true)
+    ).valueChanges()
+  }
+
 }
