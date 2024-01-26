@@ -526,6 +526,22 @@ body {
 .redButton{  background-color: #ED4758!important; transition: .3s; }
 .redButton:hover{  background-color: #d63e4d!important; transition: .3s; }
 
+
+.blueButtonAnim{    
+  background-color:  #008CE3!important;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 24px !important;
+  padding: 10px 20px !important; 
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.5s ease-in-out;
+  text-align: center; 
+  line-height: 1.2!important; 
+  margin: 5px;}
+
+.blueButtonAnim:hover{   background-color: #0594ed!important;  transition:  0.5s ease-in-out;
+}
 .botonSecundario{
   border: 2px solid var(--blue-5);
   background-color: transparent;

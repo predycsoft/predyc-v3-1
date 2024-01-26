@@ -36,3 +36,62 @@
 .profile-arrow:hover {
     filter: invert(48%) sepia(25%) saturate(4622%) hue-rotate(175deg) brightness(86%) contrast(108%);
 }
+
+/* .shadow-animation {
+    transition: box-shadow 0.5s ease, border 0.5s ease;  
+    border: 1px solid rgba(107, 107, 107, 0.1);  
+}
+
+
+.shadow-animation:hover {
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);  
+    border: none; 
+}
+
+.shadow-animation:not(:hover) {
+    box-shadow: none;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+} */
+
+.shadow-animation {
+    transition: box-shadow 0.5s ease;
+    border: 1px solid #e6e6e6;  
+}
+
+.shadow-animation::before {
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.shadow-animation:hover {
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.15);   
+
+}
+
+.shadow-animation:hover::before {
+    opacity: 1;
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+/**/
+
+.button-animation{
+    transition: box-shadow 0.5s ease;
+    border: none;  
+
+}
+
+.button-animation:before {
+    transition: opacity 0.5s ease, transform 0.5s ease;
+
+}
+
+.button-animation:hover {
+    transition:  0.5s ease;
+    /* box-shadow: 0px 2px 2px rgba(30, 30, 30, 0.539); */
+    box-shadow: 0px 1px 4px rgba(26, 26, 26, 0.514);
+}
+.shadow-animation:hover::before {
+        opacity: 1;
+        box-shadow: 0px 2px 2px rgba(25, 25, 25, 0.15);
+
+}

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 import { AfterOnInitResetLoading } from 'src/app/shared/decorators/loading.decorator';
 import { LoaderService } from 'src/app/shared/services/loader.service';
 import { IconService } from '../../../shared/services/icon.service';
@@ -25,7 +25,7 @@ export class category {
   templateUrl: './courses.component.html',
   styleUrls: ['./courses.component.css']
 })
-export class CoursesComponent {
+export class CoursesComponent implements AfterViewInit {
 
   constructor(
     private loaderService: LoaderService,
@@ -50,7 +50,11 @@ export class CoursesComponent {
   categoriesPredyc;
   categoriesPropios;
   courses;
-  
+
+  ngAfterViewInit() {
+  this.handleImageError();
+
+  }
 
   async ngOnInit() {
     this.cursos = []
@@ -204,6 +208,12 @@ export class CoursesComponent {
     this.categories.push(this.newCategory)
     this.creatingCategory=false
     this.newCategory = new category
+  }
+
+  handleImageError() {
+    if (this.selectedCourse) {
+      this.selectedCourse['imagen_instructor'] = 'assets/images/default/default-user-image.jpg';
+    }
   }
 
 }
