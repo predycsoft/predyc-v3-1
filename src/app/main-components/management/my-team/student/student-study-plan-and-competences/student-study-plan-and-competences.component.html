@@ -22,12 +22,9 @@
     </div>
     <!-- Plan de estudios -->
     <div class="w-65 radius10 border cards fh" fxLayout="column" fxLayoutGap="1rem">
-        <div fxLayout="row" fxLayoutAlign="space-between center" class="">
-            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem">
-                <img [src]="icon.ticTacToe" class="makeBlue h16px" alt="">
-                <span class="ft500 black undrl ft14 ft600 black">Plan de estudios</span>
-            </div>
-            <span class="makeBlue cursorPointer ft14">Editar</span>
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem">
+            <img [src]="icon.ticTacToe" class="makeBlue h16px" alt="">
+            <span class="ft500 black undrl ft14 ft600 black">Plan de estudios</span>
         </div>
         <div *ngIf="getDelayedMonthsCount() > 0" class="border radius10 pd05 backRed1" fxLayout="row" fxLayoutAlign="space-between center" style="border-color: red !important;">
             <img [src]="icon.redWarning2" class="h24px" alt="">

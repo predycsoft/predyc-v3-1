@@ -41,6 +41,7 @@ export class StudentInfoFormComponent {
     this.profileSubscription = this.profileService.getProfilesObservable().subscribe(profiles => {if (profiles) this.profiles = profiles})
 
     this.studentForm = new FormGroup({
+      canEnrollParticularCourses: new FormControl(false),
       displayName: new FormControl(''),
       email: new FormControl(''),
       phoneNumber: new FormControl(''),
@@ -51,6 +52,7 @@ export class StudentInfoFormComponent {
 
     if (this.student) {
       this.studentForm.patchValue({
+        canEnrollParticularCourses: this.student.canEnrollParticularCourses,
         displayName: this.student.displayName,
         email: this.student.email,
         phoneNumber: this.student.phoneNumber,
@@ -71,6 +73,7 @@ export class StudentInfoFormComponent {
       const formData = this.studentForm.value 
       console.log("Guardando...", formData);
       await this.saveStudentPhoto() //this.student.photoUrl
+      this.student.canEnrollParticularCourses = formData.canEnrollParticularCourses
       this.student.displayName = formData.displayName
       this.student.phoneNumber = formData.phoneNumber
       this.student.country = formData.country

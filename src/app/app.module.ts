@@ -116,7 +116,8 @@ import { StatusSelectorComponent } from './shared/widgets/status-selector/status
 import { DialogRequestLicensesComponent } from './shared/components/users/license-student-list/dialog-request-licenses/dialog-request-licenses.component';
 import { StudentInfoFormComponent } from './main-components/management/my-team/student/student-info-form/student-info-form.component';
 import { StudentStudyPlanAndCompetencesComponent } from './main-components/management/my-team/student/student-study-plan-and-competences/student-study-plan-and-competences.component';
-// import { FrequentQuestionsComponent } from './main-components/my-account/frequent-questions/frequent-questions.component';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+
 
 @NgModule({
   declarations: [
@@ -225,7 +226,8 @@ import { StudentStudyPlanAndCompetencesComponent } from './main-components/manag
     MatAutocompleteModule,
     HttpClientModule,
     NgxExtendedPdfViewerModule,
-    DragDropModule
+    DragDropModule,
+    MatSlideToggleModule
 
   ],
   providers: [

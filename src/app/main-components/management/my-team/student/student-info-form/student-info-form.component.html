@@ -16,6 +16,10 @@
                 <div class="radius10 backBlue1 pdr10 pdl10">
                     <span class="blue-5 ft13 ft500">Activo</span>
                 </div>
+                <div *ngIf="isEditing" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".1rem">
+                    <span class="ft10 makeBlue">Inscribir cursos particulares</span>
+                    <mat-slide-toggle color="primary" formControlName="canEnrollParticularCourses"></mat-slide-toggle>
+                </div>
             </div>
             <div fxLayout="column" fxLayoutAlign="start start" class="w-60">
                 <!-- Not editing -->
