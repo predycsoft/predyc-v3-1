@@ -59,7 +59,6 @@ export class StudentDetailsComponent {
     
     let hasProfileChanged = false
     if (originalData.profile != newData.profile) hasProfileChanged = true
-    console.log("hasProfileChanged", hasProfileChanged)
     
     return [JSON.stringify(originalData) !== JSON.stringify(newData), hasProfileChanged];
   }

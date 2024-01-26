@@ -1,9 +1,9 @@
 import { Component, Input, SimpleChanges } from '@angular/core';
-import { DocumentReference } from '@angular/fire/compat/firestore';
-import { Subscription, combineLatest } from 'rxjs';
+import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
+import { Subscription, combineLatest, firstValueFrom } from 'rxjs';
 import { CourseByStudent } from 'src/app/shared/models/course-by-student';
 import { Profile } from 'src/app/shared/models/profile.model';
-import { User } from 'src/app/shared/models/user.model';
+import { User, UserJson } from 'src/app/shared/models/user.model';
 import { CourseService } from 'src/app/shared/services/course.service';
 import { IconService } from 'src/app/shared/services/icon.service';
 import { UserService } from 'src/app/shared/services/user.service';
@@ -30,50 +30,54 @@ export class StudentStudyPlanAndCompetencesComponent {
     private courseService: CourseService,
   ){}
 
-  @Input() student: User
+  @Input() student: UserJson
   @Input() selectedProfile: Profile;
 
 
   combinedObservableSubscription: Subscription
   months: Month[]
 
-    // -------------------------------- hardcode data
-    competences = [
-      {
-        title: "Pilar 1: Mantenimiento",
-        categories: [
-          "Equipos Estáticos",
-          "VDF",
-          "VDF",
-          "Mecánica de precisión",
-          "Equipos Estáticos",
-          "Mecánica de precisión"
-        ]
-      },
-      {
-        title: "Pilar 2: Industria 4.0",
-        categories: [
-          "Motores eléctricos",
-          "Puesta a tierra",
-          "Calibración",
-          "Motores eléctricos",
-          "Calibración",
-          "Puesta a tierra"
-        ]
-      },
-      {
-        title: "Pilar 3: Procesos",
-        categories: [
-          "Compresores",
-          "Control de Fluidos",
-          "Neumática",
-          "Neumática",
-          "Control de Fluidos",
-          "Compresores",
-        ]
-      }
-    ];
-    // --------------------------------
+  showInitForm = false
+  hoursPermonthInitForm: number = 0
+  startDateInitForm: number = 0
+
+  // -------------------------------- hardcode data
+  competences = [
+    {
+      title: "Pilar 1: Mantenimiento",
+      categories: [
+        "Equipos Estáticos",
+        "VDF",
+        "VDF",
+        "Mecánica de precisión",
+        "Equipos Estáticos",
+        "Mecánica de precisión"
+      ]
+    },
+    {
+      title: "Pilar 2: Industria 4.0",
+      categories: [
+        "Motores eléctricos",
+        "Puesta a tierra",
+        "Calibración",
+        "Motores eléctricos",
+        "Calibración",
+        "Puesta a tierra"
+      ]
+    },
+    {
+      title: "Pilar 3: Procesos",
+      categories: [
+        "Compresores",
+        "Control de Fluidos",
+        "Neumática",
+        "Neumática",
+        "Control de Fluidos",
+        "Compresores",
+      ]
+    }
+  ];
+  // --------------------------------
 
   ngOnInit() {
     const userRef = this.userService.getUserRefById(this.student.uid)
@@ -91,9 +95,11 @@ export class StudentStudyPlanAndCompetencesComponent {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.selectedProfile) {
-      // Código para manejar el cambio de perfil
+    // console.log("changes", changes)
+    if (changes.selectedProfile && changes.selectedProfile.previousValue === null && changes.selectedProfile.currentValue) {
       console.log('selected profile:', changes.selectedProfile.currentValue);
+      this.showInitForm = true
+
     }
   }
 
@@ -161,6 +167,11 @@ export class StudentStudyPlanAndCompetencesComponent {
 
   getDelayedMonthsCount(): number {
     return this.months ? this.months.filter(month => this.isMonthPast(month) && !this.isMonthCompleted(month)).length : null;
+  }
+  
+  saveInitForm() {
+    this.userService.saveStudyPlanHoursPerMonth(this.student.uid, this.hoursPermonthInitForm)
+    this.showInitForm = false
   }
   
 

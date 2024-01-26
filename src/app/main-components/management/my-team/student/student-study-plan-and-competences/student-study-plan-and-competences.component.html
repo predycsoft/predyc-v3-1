@@ -26,34 +26,55 @@
             <img [src]="icon.ticTacToe" class="makeBlue h16px" alt="">
             <span class="ft500 black undrl ft14 ft600 black">Plan de estudios</span>
         </div>
-        <div *ngIf="getDelayedMonthsCount() > 0" class="border radius10 pd05 backRed1" fxLayout="row" fxLayoutAlign="space-between center" style="border-color: red !important;">
-            <img [src]="icon.redWarning2" class="h24px" alt="">
-            <span class="red-5 ft14 ft600"> 
-                Advertencia: este usuario tiene {{ getDelayedMonthsCount() }} {{getDelayedMonthsCount() > 1 ? "meses atrasados" : "mes atrasado"}}
-            </span>
-            <button class="redButton btn">Alertar via e-mail</button>
-        </div>
-        <div *ngIf="(months && months.length > 0) else noPlan" >
-            <div *ngFor="let month of months; let index = index" fxLayout="column"  class="mgt05">
-                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="mgb10">
-                    <span class="ft16 ft600 black">{{month.monthName | titlecase}} {{month.yearNumber}} </span>
-                    <img *ngIf="isMonthPast(month) && !isMonthCompleted(month)" [src]="icon.redWarning2" class="makeRed h14px" alt="">
-                </div>
-                <div *ngFor="let course of month.courses; let i = index" fxLayout="column" fxLayoutAlign="center" 
-                    class="h50px pd10" [ngClass]=" i % 2 ? '' : 'backGray1'">
-                    <div fxLayout="row" fxLayoutAlign="space-between center">
-                        <span class="ft14"> {{course.courseTitle}} </span>
-                        <div fxLayout="row" fxLayoutAlign="space-between center" class="" fxLayoutGap="0.5rem">
-                            <img *ngIf="course.dateEnd" [src]="icon.greenCheck" class="h14px" alt="">
-                            <span class="ft14"> {{course.duration | number:'1.0-1'}} hr </span>
+        <ng-container *ngIf="!showInitForm">
+            <div *ngIf="getDelayedMonthsCount() > 0" class="border radius10 pd05 backRed1" fxLayout="row" fxLayoutAlign="space-between center" style="border-color: red !important;">
+                <img [src]="icon.redWarning2" class="h24px" alt="">
+                <span class="red-5 ft14 ft600"> 
+                    Advertencia: este usuario tiene {{ getDelayedMonthsCount() }} {{getDelayedMonthsCount() > 1 ? "meses atrasados" : "mes atrasado"}}
+                </span>
+                <button class="redButton btn">Alertar via e-mail</button>
+            </div>
+            <div *ngIf="(months && months.length > 0) else noPlan" >
+                <div *ngFor="let month of months; let index = index" fxLayout="column"  class="mgt05">
+                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="mgb10">
+                        <span class="ft16 ft600 black">{{month.monthName | titlecase}} {{month.yearNumber}} </span>
+                        <img *ngIf="isMonthPast(month) && !isMonthCompleted(month)" [src]="icon.redWarning2" class="makeRed h14px" alt="">
+                    </div>
+                    <div *ngFor="let course of month.courses; let i = index" fxLayout="column" fxLayoutAlign="center" 
+                        class="h50px pd10" [ngClass]=" i % 2 ? '' : 'backGray1'">
+                        <div fxLayout="row" fxLayoutAlign="space-between center">
+                            <span class="ft14"> {{course.courseTitle}} </span>
+                            <div fxLayout="row" fxLayoutAlign="space-between center" class="" fxLayoutGap="0.5rem">
+                                <img *ngIf="course.dateEnd" [src]="icon.greenCheck" class="h14px" alt="">
+                                <span class="ft14"> {{course.duration | number:'1.0-1'}} hr </span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <ng-template #noPlan>
-            <span>El usuario aun no posee un plan de estudios</span>
-        </ng-template>
+            <ng-template #noPlan>
+                <span>El usuario aun no posee un plan de estudios</span>
+            </ng-template>
+        </ng-container>
+        <ng-container *ngIf="showInitForm">
+            <div fxLayout="column"> 
+                <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap=".5rem" class="mgb10">
+                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="">
+                        <span class="ft500 ft12 gray-8">Estudio mensual</span>
+                        <input type="number" min="0" class="mgl05 input-number" [(ngModel)]="hoursPermonthInitForm">
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="">
+                        <span class="ft500 ft12 gray-8">Fecha de inicio</span>
+                        <input (click)="startDate.toggle()" ngbDatepicker #startDate="ngbDatepicker"  [(ngModel)]="startDateInitForm" >
+                    </div>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="mgb03">
+                    <button *ngIf="hoursPermonthInitForm && startDateInitForm" (click)="saveInitForm()" class="blueButton">Guardar</button>
+                </div>
+                
+            </div>
+            
+        </ng-container>
     </div>
 </div>
 
