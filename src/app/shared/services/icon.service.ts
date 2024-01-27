@@ -131,9 +131,10 @@ export class IconService {
   redWarning = "assets/iconsUI/warning.svg"
   redWarning2 = "assets/iconsUI/warning2.svg"
   trophy = "assets/iconsUI/trophy.svg"
+  blueArrowLeft = "assets/iconsUI/blueArrowLeft.svg"
 
   catalogo = "assets/iconsUI/bookmark.svg"
-  licencias = "assets/iconsUI/edit.svg"
+  licencias = "assets/iconsUI/Vector.svg"
   dashboard = "assets/iconsUI/chart--sunburst.svg"
   people3 = "assets/iconsUI/events.svg"
   signOut = "assets/iconsUI/logout.svg"
