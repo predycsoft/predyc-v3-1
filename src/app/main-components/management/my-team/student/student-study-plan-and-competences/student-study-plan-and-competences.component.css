@@ -8,3 +8,15 @@
     padding: 12px 18px;
   }
   
+
+  .input-number {
+    width: 30px;
+    border: none;
+    border-bottom: 2px solid black;
+}
+
+.input-number:focus {
+    border: none;
+    border-bottom: 2px solid black;
+    outline: 0;
+}

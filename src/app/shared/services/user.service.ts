@@ -247,5 +247,11 @@ export class UserService {
     return this.getUser(userRef.id)
   }
 
+  async saveStudyPlanHoursPerMonth(uid: string, hoursPerMonth: number) {
+    await this.afs.collection(User.collection).doc(uid).set({
+      studyHours: hoursPerMonth
+    },{merge: true})
+  }
+
 
 }
