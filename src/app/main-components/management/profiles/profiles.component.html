@@ -5,20 +5,20 @@
         </app-navigate-back>
         <div *ngIf="isEditing; else profileTitle" fxLayout="row" fxLayoutAlign="space-between center" class="fw fh" >
             <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign=" center">
-                <input class="input-box" placeholder="Nombre del perfil" [(ngModel)]="profileName">
-                <div class="edit-button">
+                <input class="input-box ft12" placeholder="Nombre del perfil" [(ngModel)]="profileName">
+                <!-- <div class="edit-button">
                     Modo de edición
-                </div>
+                </div> -->
             </div>
             <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign=" center">
-                <span (click)="onCancel()">
+                <div class="radius20 pdl10 pdr10 pdt05 pdb05 backWhite ft14 cursorPointer" (click)="onCancel()"> 
                     Cancelar
-                </span>
+                </div>
                 <div
                     fxLayout="row"
                     fxLayoutGap="0.625"
                     fxLayoutAlign="center center"
-                    class="blueButton"
+                    class="blueButton ft14 cursorPointer"
                     style="border-radius: 24px !important;"
                     (click)="onSave()"
                     >
@@ -32,7 +32,7 @@
                 fxLayout="row"
                 fxLayoutGap="0.625"
                 fxLayoutAlign="center center"
-                class="blueButton mgt20"
+                class="blueButton mgt20 ft14"
                 style="border-radius: 24px !important;"
                 (click)="onEdit()"
                 >
@@ -50,21 +50,22 @@
                     <img [src]="icon.credentials" alt="Información del perfil">
                     <span class="ft500 ft12 undrl gray-10">Detalles del perfil</span>
                 </div>
-                <div class="pd05 backGray2 radius10 pd10">
+                <div class="pd05 backGray2 radius10">
                     <p class="ft12 gray-8" *ngIf="!isEditing">
                         {{profileDescription}}
                     </p>
-                </div>
-                <textarea
+                    <textarea
                     name=""
                     id=""
                     rows="5"
                     *ngIf="isEditing"
                     [(ngModel)]="profileDescription"
                     placeholder="Introduzca la descripción"
-                    style="width: 100%; resize: none"
+                    style="width: 100%; resize: none; border: none; background-color: transparent !important;"
                     >
                 </textarea>
+                </div>
+               
             </div>
             <div class="container" class="pd10 mgt10 borderLight radius10">
                 <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign=" center">
@@ -102,40 +103,35 @@
                 <img [src]="icon.ticTacToe" alt="Plan de estudios">
                 <span class="ft500 ft12 undrl gray-10">Plan de estudios</span>
             </div>
-            <div class="mgt10" fxLayout="row" fxLayoutGap="2rem">
-                <div fxLayoutGap=".5rem">
+            <div class="mgt20" fxLayout="row" fxLayoutGap="2rem">
+                <div fxLayoutGap=".5rem" fxLayout="row" fxLayoutAlign=" center">
                     <span class="ft500 ft12 gray-9">Estudio mensual</span>
-                    <input *ngIf="isEditing; else timeTemplate" type="number" min="0" class="mgl05 input-number">
-                    <ng-template #timeTemplate>
-                        <span class=" gray-10 ft11">5</span>
-                    </ng-template>
+                    <input [ngClass]="isEditing?'editNumber':'number'" [disabled]="!isEditing" class="ft12 centertext"  type="number" min="0" >
                     <span class="gray-10 ft11">horas</span>
                 </div>
-                <div fxLayoutGap=".5rem">
+                <div fxLayoutGap=".5rem" fxLayout="row" fxLayoutAlign=" center">
                     <span class="ft500 ft12 gray-9">Meses estimados</span>
-                    <input *ngIf="isEditing; else timeTemplate" type="number" min="0" class="mgl05 input-number">
-                    <ng-template #timeTemplate>
-                        <span class="">5</span>
-                    </ng-template>
-                    <span class="gray-10 ft11">horas</span>
+                    <input [ngClass]="isEditing?'editNumber':'number'" [disabled]="!isEditing" class="ft12 centertext" type="number" min="0" >
+                    <span class="gray-10 ft11">meses</span>
                 </div>
                
             </div>
-            <div *ngIf="isEditing" ngbDropdown [autoClose]="'outside'" style="margin: 8px auto; width: 100%; height: 7%;">
-                <div class="mgt05 radius40 border" style="width: 100%; height: 100%; overflow: hidden" fxLayout="row">
-                    <button type="button" fxLayout="row" fxLayoutAlign="space-between center" class="gray-10" style="width: 25%; height: 100%; padding: 0 10px; background-color: #cbd4db;" id="dropdownBasic1" ngbDropdownToggle>
+            <div *ngIf="isEditing" ngbDropdown [autoClose]="'outside'" fxLayout="row" fxLayoutAlign=" center">
+                <div class="mgt10 h40px radius20 shadow12" style="width: 100%; overflow: hidden" fxLayout="row">
+                    <button type="button" fxLayout="row" fxLayoutAlign="space-between center" class="gray-10 backGray2 ft12" style="border-radius: 0 0 0 0; width: 25%; height: 100%; padding: 0 10px;" id="dropdownBasic1" ngbDropdownToggle>
                         Categorias
                     </button>
-                    <div style="width: 75%; height: 100%; overflow: hidden; padding: 0 10px; position: relative">
+                    <div style="width: 75%; overflow: hidden; padding: 0 0px; position: relative" class=" pdl10 pdr05" fxLayout="row" fxLayoutAlign=" center">
                         <input 
                             type="text"
-                            placeholder="Search"
-                            style="width: 100%; height: 100%; outline: none; border: 0;"
+                            placeholder="Buscar"
+                            class="pdl05 ft12"
+                            style="width: 100%; outline: none; border: 0; background-color: transparent;"
                             [formControl]="searchControl"
                             matInput
                             [matAutocomplete]="auto"
                             >
-                        <img [src]="icon.search" alt="Search" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%)">
+                        <img [src]="icon.search" alt="Search" style="position: absolute; right: 10px;">
                         <mat-autocomplete
                             #auto="matAutocomplete"
                         >
@@ -240,7 +236,7 @@
                     </div>
                 </div>
             </div>
-            <div style="overflow: hidden; background-color: #FCFCFC;" class=" radius10 borderLight mgt10" >
+            <div style="overflow: hidden; background-color: #FCFCFC;" class=" radius10 borderLight mgt20" >
                 <!-- [ngClass]="selectedCourse == course ? 'backBlue1' : ''"
                 (click)="selectedCourse = course"
                 cdkDrag
@@ -277,7 +273,7 @@
                     </div>
                     <div fxLayoutAlign="center center" fxLayout="row" fxLayoutGap="1rem">
                         <span class="gray-10 ft11 nowrap">
-                            {{ roundNumber(60 / 60) }} hrs (H)
+                            {{ roundNumber(60 / 60) }} hrs
                             <!-- {{ roundNumber(item.duration / 60) }} hrs -->
                         </span>
                         <img *ngIf="isEditing" [src]="icon.trash" class="h14px makeGray cursorPointer" (click)="toggleCourseInPlan(item)" alt="">

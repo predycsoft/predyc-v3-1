@@ -4,15 +4,18 @@
 }
 
 .header--edit {
-    background-color: var(--yellow-5)
+    background-color: var(--yellow-5);
+    position: sticky;
+    top: 0px;
 }
 
 .input-box {
     height: 36px;
-    border-radius: 50px;
+    border-radius: 12px;
     border: none;
     padding: 5px 15px;
-    background-color: #EDF8FF
+    background-color: #EDF8FF;
+    width: 300px
 }
 
 .edit-button {
@@ -25,6 +28,20 @@
 .main-content {
     width: 100%;
     height: 85%;
+}
+
+.number{
+    background-color: var(--gray-2);
+    border-radius: 4px;
+    width: 32px;
+    border: none;
+}
+
+.editNumber{
+    background-color: var(--gray-2);
+    border-radius: 4px;
+    width: 32px;
+    border: none;
 }
 
 
