@@ -1,6 +1,32 @@
+<div fxLayout="column">
+    <div class="main_top" fxLayout="row" fxLayoutAlign="space-between center">
+        <div fxLayout="row">
+            <div fxLayout="row">
+                <img [src]="icon.predyc" class="h24px" alt="">
+                <div class="ft600 gray-10 mgl05">Predyc</div>
+            </div>
+            <div class="radius20 searchBar pdl05 pdr05" fxLayout="row" fxLayoutAlign=" center">
+                <img [src]="icon.search" class="h20px" alt="">
+                <input type="text" class="inputSearchBar ft12 fw pdl05" placeholder="Buscar en usuarios y perfiles">
+            </div>
+        </div>
+        <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
+            <div class="positionRelative">
+                <img [src]="icon.notification" class="h20px cursorPointer" alt="">
+                <div class="redDot"></div>
+            </div>
+            <div *ngIf="user$ | async as user" fxLayout="column" fxLayoutAlign="center">
+                <a class="cursorPointer" routerLink="my-account">
+                    <img  [src]="user.photoUrl ? user.photoUrl : 'assets/images/default/default-user-image.jpg'" style="height: 2rem; width: 2rem; border-radius: 50%;"  alt="">
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>
 <div class="main_layout">
-  <div class="sidenav">
-      <app-sidenav></app-sidenav>
+  <div [ngClass]="menuExpanded?'sidenavExpanded':'sidenav'" (mouseover)="menuExpanded = true" (mouseleave)="menuExpanded=false">
+      <app-sidenav [menuExpanded]="menuExpanded"></app-sidenav>
   </div>
   <div class="main_content_container">
       <div class="main_content fh fw">

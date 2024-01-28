@@ -1,17 +1,57 @@
 .main_layout {
     display: flex;
     width: 100vw;
-    height: 100vh;
+    height: calc(100vh - 48px);
+}
+
+.main_top{
+    height: 48px;
+    background-color: var(--gray-2);
+    padding-left: 1rem;
+    padding-right: 1rem;
 }
 
 .main_content_container {
-    width: 95%; 
-    height: 100vh; 
-    background: #efefef;
+    width: 100%; 
+    height: calc(100vh - 48px); 
+    background: var(--gray-2);
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px;
+    padding-right: 1rem;
+}
+
+.redDot{
+    height: 6px;
+    width: 6px;
+    border-radius: 50%;
+    position: absolute;
+    right: 3px;
+    top: 3px;
+    background-color: var(--red-5);
+}
+
+.searchBar{
+    background-color: #DEDEDE;
+    position: relative;
+    left: 100px;
+    height: 32px;
+    width: 300px;
+}
+
+.inputSearchBar{
+    background-color: transparent;
+    border: none;
+    color: var(--gray-8);
+}
+
+.inputSearchBar::placeholder{
+  
+    color: var(--gray-8);
+}
+
+.inputSearchBar:focus{
+    outline: none;
 }
 
 .main_content {
@@ -25,6 +65,17 @@
 }
 
 .sidenav {
-    width: 5%;
-    height: 100vh; 
+    width: 54px;
+    height: calc(100vh - 48px);
+    background-color: var(--gray-2);
+    transition: .3s;
 }
+
+.sidenavExpanded {
+    width: 150px;
+    height: calc(100vh - 48px);
+    background-color: var(--gray-2);
+    transition: .3s;
+}
+
+

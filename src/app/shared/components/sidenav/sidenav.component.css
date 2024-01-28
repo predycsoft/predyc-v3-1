@@ -1,6 +1,6 @@
 .sidenav_container {
     height: 100%;
-    padding: 20%
+    overflow: hidden;
 }
 
 a {
@@ -12,7 +12,18 @@ a {
 
 .menu-item {
     /* border: 2px solid red; */
-    width: 40px;
-    height: 40px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
+}
+
+.item{
+    width: 100%;
+    border-radius: 2rem;
+    padding-left: .5rem;
+    padding-right: .5rem;
+    padding-top: .25rem;
+    margin-top: .25rem;
+    margin-bottom: .25rem;
+    padding-bottom: .25rem;
 }

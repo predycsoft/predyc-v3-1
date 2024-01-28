@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { onSideNavChange, animateText } from '../../animations/animations'
 import { AuthService } from '../../services/auth.service';
 import { IconService } from '../../services/icon.service';
@@ -29,15 +29,17 @@ export class SideNavComponent {
     {name: 'Dashboard', link:'', icon: '../../assets/iconsUI/sidenav_app.svg'},
     {name: 'Estudiantes', link:'management/students', icon: '../../assets/iconsUI/sidenav_manage_accounts.svg'},
     {name: 'Cursos', link:'management/courses', icon: '../../assets/iconsUI/sidenav_collections_bookmark.svg'},
-    {name: 'Validación', link:'validation', icon: '../../assets/iconsUI/sidenav_fact_check.svg'},
-    {name: 'Notificaciones', link:'management/notifications', icon: '../../assets/iconsUI/notification.svg'},
-    {name: 'Config', link:'settings', icon: '../../assets/iconsUI/sidenav_config.svg'},
+    // {name: 'Validación', link:'validation', icon: '../../assets/iconsUI/sidenav_fact_check.svg'},
+    // {name: 'Notificaciones', link:'management/notifications', icon: '../../assets/iconsUI/notification.svg'},
+    {name: 'Configuración', link:'settings', icon: '../../assets/iconsUI/sidenav_config.svg'},
   ]
 
   constructor(
     public icon: IconService,
     private authService: AuthService
   ) {}
+
+  @Input() menuExpanded = false
   
   ngOnInit() {
   }

@@ -1,31 +1,22 @@
-<div class="sidenav_container" 
-    fxLayout="column" 
-    fxLayoutAlign="space-between">
-    <div>
-        <a routerLink="" class="mgb30">
-            <img
-                [src]="icon.predyc"
-                class="h24px">
-        </a>
-        <div fxLayout="column" fxLayoutGap="20px" fxLayoutAlign=" center">         
-            <a
-                *ngFor="let page of pages"
-                [routerLink]="page.link"
-                class="menu-item"
-                routerLinkActive="backYellow4"
-                [routerLinkActiveOptions]="{ exact: true }">
-                <img
-                    [src]="page?.icon"
-                    class="h24px"
-                    routerLinkActive="opacity1"
-                    [routerLinkActiveOptions]="{ exact: true }">
-            </a>
-        </div>
-    </div>
+<div class="sidenav_container pdl05 pdr05" fxLayout="column" fxLayoutAlign="space-between">
+  
+        <div fxLayout="column" fxLayoutAlign=" start">
+            <div *ngFor="let page of pages" [routerLink]="page.link"  routerLinkActive="backYellow4"
+                [routerLinkActiveOptions]="{ exact: true }" class="item cursorPointer" fxLayout="row" fxLayout="start">
+                <div fxLayout="row">
+                    <img [src]="page?.icon" class="h20px makeGray8" routerLinkActive="opacity1"
+                        [routerLinkActiveOptions]="{ exact: true }">
+                    <div *ngIf="menuExpanded" class="ft12 gray-8 ft500 mgl05">{{page.name}}</div>
+                </div>
+            </div>
 
-    <div *ngIf="user$ | async as user" fxLayout="column" fxLayoutAlign="center">
+
+        </div>
+
+    <!-- <div *ngIf="user$ | async as user" fxLayout="column" fxLayoutAlign="center">
         <a class="cursorPointer" routerLink="my-account">
-            <img  [src]="user.photoUrl ? user.photoUrl : 'assets/images/default/default-user-image.jpg'" style="height: 2rem; width: 2rem; border-radius: 50%;"  alt="">
+            <img [src]="user.photoUrl ? user.photoUrl : 'assets/images/default/default-user-image.jpg'"
+                style="height: 2rem; width: 2rem; border-radius: 50%;" alt="">
         </a>
-    </div>
+    </div> -->
 </div>
