@@ -47,6 +47,8 @@ import { coursesData } from 'src/assets/data/courses.data';
 import { CourseByStudent } from '../../models/course-by-student';
 
 import sampleSize from 'lodash/sampleSize';
+import { courseCategoryAndSkillsRelation } from 'src/assets/data/courseCategoryAndSkillsRelation.data'
+import { capitalizeFirstLetter } from 'src/app/shared/utils'
 
 @Component({
   selector: 'app-init-script',
@@ -188,18 +190,14 @@ export class InitScriptComponent {
     for (let category of categories) {
       await this.categoryService.addCategory(category)
       console.log('new category',category)
-      const categoryRef = this.categoryService.getCategoryRefById(category.id)
-      let skill = new Skill (null,category.name,categoryRef,null)
-      console.log('********* Creating Skills *********')
-      await this.skillService.addSkill(skill)
     }
     console.log(`Finished Creating Categories`)
 
     // Create skills
     console.log('********* Creating Skills *********')
     const skills: Skill[] = skillsData.map(skill => {
-      const randomCategory = categories[Math.floor(Math.random()*categories.length)];
-      const categoryRef = this.categoryService.getCategoryRefById(randomCategory.id)
+      const targetCategory = categories.find(category => category.name.toLowerCase() === skill.category.toLowerCase())
+      const categoryRef = this.categoryService.getCategoryRefById(targetCategory.id)
       return Skill.fromJson({
         ...skill,
         category: categoryRef,
@@ -327,8 +325,15 @@ export class InitScriptComponent {
       //cursoIn.descripcion = instructor.descripcion
       //console.log('cursoIn',curso,cursoIn)
       //let competenciaTest = await this.afs.collection<any>('skill').doc('AjnLM3sTWFnprVzRxyZ7').ref;
-      let competenciaTest = await this.getSkillRefByName(curso.categoria)
-      cursoIn.skillsRef=[competenciaTest]
+      const skillsRef = []
+      const courseObj = courseCategoryAndSkillsRelation.find(item => item['Cursos'].toLowerCase() === curso.titulo.toLowerCase())
+      for (let skill of [courseObj["Competencia 1"], courseObj["Competencia 2"], courseObj["Competencia 3"]]) {
+        if (skill) {
+          const competenciaTest = await this.getSkillRefByName(capitalizeFirstLetter(skill.toLowerCase()))
+          skillsRef.push(competenciaTest)
+        }
+      }
+      cursoIn.skillsRef = skillsRef
       await this.courseService.saveCourse(cursoIn)
       console.log('curso save',cursoIn)
       let clasesData = curso.clases;
@@ -441,7 +446,7 @@ export class InitScriptComponent {
     return new Promise(async (resolve, reject) => {
       await this.afs.collection<any>('skill', ref =>
         ref.where('name', '==', skillName)
-           .where('enterprise', '==', null)
+          //  .where('enterprise', '==', null)
       ).get().subscribe(querySnapshot => {
         if (!querySnapshot.empty) {
           // Resolving with the first document reference
