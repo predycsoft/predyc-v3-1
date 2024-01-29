@@ -269,6 +269,9 @@ export class CourseService {
     )
   }
 
+
+
+  // ---- courseByStudent Collection methods
   getCoursesByStudent(userRef: DocumentReference<User>): Observable<CourseByStudent[]> {
     return this.afs.collection<CourseByStudent>(CourseByStudent.collection, ref => ref.where('userRef', '==', userRef)).valueChanges()
   }
@@ -278,6 +281,25 @@ export class CourseService {
       where('userRef', '==', userRef).
       where('active', '==', true)
     ).valueChanges()
+  }
+
+  async saveCourseByStudent(courseRef: DocumentReference, userRef: DocumentReference, dateStartPlan: Date, dateEndPlan: Date) {
+    const ref = this.afs.collection<CourseByStudent>(CourseByStudent.collection).doc().ref;
+    const courseByStudent = {
+      id: ref.id,
+      userRef: userRef,
+      courseRef: courseRef,
+      dateStartPlan: dateStartPlan,
+      dateEndPlan: dateEndPlan,
+      progress: 0,
+      dateStart: null,
+      dateEnd: null,
+      active: true,
+      finalScore: 0
+    } as CourseByStudent;
+
+    await this.afs.collection(CourseByStudent.collection).doc(courseByStudent.id).set(courseByStudent);
+    console.log("Course by student doc saved")
   }
 
   async setCoursesByStudentInactive(userRef: DocumentReference<User>) {
@@ -296,6 +318,8 @@ export class CourseService {
       });
     });
   }
+
+  // -----
   
 
 }
