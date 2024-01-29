@@ -44,6 +44,7 @@
                         class="h50px pd10" [ngClass]=" i % 2 ? '' : 'backGray1'">
                         <div fxLayout="row" fxLayoutAlign="space-between center">
                             <span class="ft14"> {{course.courseTitle}} </span>
+                            <!-- <span>{{course.dateEndPlan | date:'short'}}</span> -->
                             <div fxLayout="row" fxLayoutAlign="space-between center" class="" fxLayoutGap="0.5rem">
                                 <img *ngIf="course.dateEnd" [src]="icon.greenCheck" class="h14px" alt="">
                                 <span class="ft14"> {{course.duration | number:'1.0-1'}} hr </span>

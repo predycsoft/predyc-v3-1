@@ -26,24 +26,21 @@ export class StudentStudyPlanAndCompetencesComponent {
 
   constructor(
     public icon: IconService,
-    // private profileService: ProfileService,
     private userService: UserService,
     private courseService: CourseService,
-    //
-    private afs: AngularFirestore,
-    //
   ){}
 
   @Input() student: UserJson
   @Input() selectedProfile: Profile;
 
+  coursesData: any
 
   combinedObservableSubscription: Subscription
   months: Month[]
 
   showInitForm = false
   hoursPermonthInitForm: number = 0
-  startDateInitForm: number = 0
+  startDateInitForm: {year: number, month: number, day: number} | null = null
 
   // -------------------------------- hardcode data
   competences = [
@@ -86,18 +83,21 @@ export class StudentStudyPlanAndCompetencesComponent {
   ngOnInit() {
     const userRef = this.userService.getUserRefById(this.student.uid)
     // if the student has a profile, get the data and show the study plan
-    if (this.selectedProfile) {
-      this.combinedObservableSubscription = combineLatest([ this.courseService.getCourses$(), this.courseService.getActiveCoursesByStudent(userRef)]).
-      subscribe(([coursesData, coursesByStudent]) => {
-        if (coursesByStudent.length > 0) {
-          if (coursesData.length > 0) {
+    this.combinedObservableSubscription = combineLatest([ this.courseService.getCourses$(), this.courseService.getActiveCoursesByStudent$(userRef)]).
+    subscribe(([coursesData, coursesByStudent]) => {
+      if (coursesData.length > 0) {
+        this.coursesData = coursesData
+        if (this.selectedProfile) {
+          if (coursesByStudent.length > 0) {
             this.buildMonths(coursesByStudent, coursesData)
+          } 
+          else {
+            this.showInitForm = true
+            console.log("El usuario no posee studyPlan");
           }
-        } else {
-          console.log("El usuario no posee studyPlan");
         }
-      });
-    }
+      }
+    });
   }
 
   async ngOnChanges(changes: SimpleChanges) {
@@ -189,8 +189,7 @@ export class StudentStudyPlanAndCompetencesComponent {
   async saveInitForm() {
     await this.userService.saveStudyPlanHoursPerMonth(this.student.uid, this.hoursPermonthInitForm)
     this.showInitForm = false
-
-    // calculate dates and create studyplan using this.hoursPermonthInitForm and this.startDateInitForm
+    // calculate dates and create studyplan using this.startDateInitForm
     await this.createStudyPlan()
   }
 
@@ -198,34 +197,41 @@ export class StudentStudyPlanAndCompetencesComponent {
 
   async createStudyPlan() {
     const coursesRefs: DocumentReference[] = this.selectedProfile.coursesRef
+    let dateStartPlan: number
+    let dateEndPlan: number
+    let now = new Date()
+    let hoy = +new Date(now.getFullYear(), now.getMonth(), now.getDate())
     for (let i = 0; i < coursesRefs.length; i++) {
       const userRef: DocumentReference = this.userService.getUserRefById(this.student.uid)
+      const courseData = this.coursesData.find(courseData => courseData.id === coursesRefs[i].id);
+      const courseDuration = courseData.duracion
+      let hoursPermonth = this.hoursPermonthInitForm ? this.hoursPermonthInitForm : this.student.studyHours
 
-      // -------- this is just for test data. Substitute for the correct dates calculation
-      const dateStartPlan = this.randomDate(new Date('2023-12-01'), new Date('2024-03-2'));
-      const dateEndPlan = this.randomDate(new Date(dateStartPlan), new Date('2024-03-15'));
-      // -------
-      await this.courseService.saveCourseByStudent(coursesRefs[i], userRef, dateStartPlan, dateEndPlan)
+      if (this.startDateInitForm){
+        dateStartPlan = +new Date(this.startDateInitForm.year, this.startDateInitForm.month - 1, this.startDateInitForm.day);
+        this.startDateInitForm = null
+      }
+      else dateStartPlan = dateEndPlan ? dateEndPlan : hoy;
+
+      dateEndPlan = this.calculateDates(dateStartPlan, courseDuration, hoursPermonth)
+      await this.courseService.saveCourseByStudent(coursesRefs[i], userRef, new Date(dateStartPlan), new Date(dateEndPlan))
     }
 
     // Create months 
     const userRef = this.userService.getUserRefById(this.student.uid)
-    combineLatest([ this.courseService.getCourses$(), this.courseService.getActiveCoursesByStudent(userRef)]).
-    subscribe(([coursesData, coursesByStudent]) => {
+    this.courseService.getActiveCoursesByStudent$(userRef).subscribe(coursesByStudent => {
       if (coursesByStudent.length > 0) {
-        if (coursesData.length > 0) {
-          this.buildMonths(coursesByStudent, coursesData)
-        }
+        this.buildMonths(coursesByStudent, this.coursesData)
       } else {
         console.log("El usuario no posee studyPlan");
       }
-    });
+    })
   }
 
-  // just for test Data. Replace it with the correcto calculation method of dates
-  randomDate = (start: Date, end: Date): Date => {
-    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
-  };
+
+  calculateDates(startDate, courseDuration, hoursPermonth): number {
+    return startDate + 24 * 60 * 60 * 1000 * Math.ceil((courseDuration/ 60) / (hoursPermonth / 30)); // the last number is the month amount of dates
+  }
   
 
   ngOnDestroy() {
