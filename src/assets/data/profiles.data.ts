@@ -12,7 +12,8 @@ export const profilesData: ProfileJson[] = [
         studyLiberty: 'Libre',
         studyplanGeneration: 'Optimizada',
         attemptsPerTest: 1
-      }
+      },
+      hoursPerMonth: 8
     },
     {
       id: null,
@@ -25,7 +26,8 @@ export const profilesData: ProfileJson[] = [
         studyLiberty: 'Estricto',
         studyplanGeneration: 'Optimizada',
         attemptsPerTest: 4
-      }
+      },
+      hoursPerMonth: 8
     },
     {
       id: null,
@@ -38,7 +40,8 @@ export const profilesData: ProfileJson[] = [
         studyLiberty: 'Solicitudes',
         studyplanGeneration: 'Confirmar',
         attemptsPerTest: 2
-      }
+      },
+      hoursPerMonth: 8
     },
     {
       id: null,
@@ -51,7 +54,8 @@ export const profilesData: ProfileJson[] = [
         studyLiberty: 'Estricto',
         studyplanGeneration: 'Optimizada',
         attemptsPerTest: 3
-      }
+      },
+      hoursPerMonth: 8
     },
     {
       id: null,
@@ -64,6 +68,7 @@ export const profilesData: ProfileJson[] = [
         studyLiberty: 'Estricto',
         studyplanGeneration: 'Confirmar',
         attemptsPerTest: 5
-      }
+      },
+      hoursPerMonth: 8
     },
   ]
