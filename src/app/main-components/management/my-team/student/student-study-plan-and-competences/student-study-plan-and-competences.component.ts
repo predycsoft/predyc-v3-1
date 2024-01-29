@@ -199,29 +199,13 @@ export class StudentStudyPlanAndCompetencesComponent {
   async createStudyPlan() {
     const coursesRefs: DocumentReference[] = this.selectedProfile.coursesRef
     for (let i = 0; i < coursesRefs.length; i++) {
+      const userRef: DocumentReference = this.userService.getUserRefById(this.student.uid)
+
       // -------- this is just for test data. Substitute for the correct dates calculation
       const dateStartPlan = this.randomDate(new Date('2023-12-01'), new Date('2024-03-2'));
       const dateEndPlan = this.randomDate(new Date(dateStartPlan), new Date('2024-03-15'));
       // -------
-
-      // --- move this to a service
-      const ref = this.afs.collection<CourseByStudent>(CourseByStudent.collection).doc().ref;
-      const userRefer: DocumentReference = this.userService.getUserRefById(this.student.uid)
-      const courseByStudent = {
-        id: ref.id,
-        userRef: userRefer,
-        courseRef: coursesRefs[i],
-        dateStartPlan: dateStartPlan,
-        dateEndPlan: dateEndPlan,
-        progress: 0,
-        dateStart: null,
-        dateEnd: null,
-        active: true,
-        finalScore: 0
-      } as CourseByStudent;
-
-      await this.afs.collection(CourseByStudent.collection).doc(courseByStudent.id).set(courseByStudent);
-      // ---
+      await this.courseService.saveCourseByStudent(coursesRefs[i], userRef, dateStartPlan, dateEndPlan)
     }
 
     // Create months 
@@ -238,7 +222,7 @@ export class StudentStudyPlanAndCompetencesComponent {
     });
   }
 
-  // just for test DataTransfer. Delete it
+  // just for test Data. Replace it with the correcto calculation method of dates
   randomDate = (start: Date, end: Date): Date => {
     return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
   };

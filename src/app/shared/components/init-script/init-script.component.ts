@@ -262,11 +262,6 @@ export class InitScriptComponent {
     await this.uploadCursosLegacy();
     console.log(`Finished Creating Courses`);
 
-    console.log('********* Creating courseByStudent *********')
-    await this.addCourseByStudent()
-    console.log(`Finished Creating coursesByStudent`);
-
-
     try {
       await new Promise(resolve => setTimeout(resolve, 5000)); // Wait for 5 seconds
       const users: User[] = await firstValueFrom(this.afs.collection<User>(User.collection).valueChanges());
@@ -291,13 +286,14 @@ export class InitScriptComponent {
     await this.addProfiles()
     console.log(`Finished Creating Profiles`)
 
+    console.log('----------------------- End of init-script -----------------------')
   }
 
 
   async uploadCursosLegacy() {
 
     let jsonData = coursesData.slice(0, 10)
-    jsonData = coursesData
+    // jsonData = coursesData
     console.log('cursos a cargar',jsonData)
     // Now you can use the jsonData object locally
 
@@ -437,8 +433,8 @@ export class InitScriptComponent {
         }
 
       }
+      console.log(` ----- Course ${index} Added ----- `)
     }
-
   }
 
   getSkillRefByName(skillName): Promise<any | null> {
@@ -524,6 +520,9 @@ export class InitScriptComponent {
         // });
       }
 
+      // Creamos doc que relaciona los cursos del perfil con el estudiante
+      await this.addCourseByStudent(coursesRef, currentUserRef)
+
       // Incrementar los índices para el siguiente profile
       skillIndex++;
       userIndex++;
@@ -532,40 +531,35 @@ export class InitScriptComponent {
 
   }
 
-  async addCourseByStudent() {
-    const userSnapshot = await firstValueFrom(this.afs.collection(User.collection).get());
-    const userRefs = userSnapshot.docs.map(doc => doc.ref);
+  async addCourseByStudent(coursesRefs: DocumentReference[], userRef: DocumentReference) {
+    for (let i = 0; i < coursesRefs.length; i++) {
+      // -------- this is just for test data. Substitute for the correct dates calculation
+      const dateStartPlan = this.randomDate(new Date('2023-12-01'), new Date('2024-03-2'));
+      const dateEndPlan = this.randomDate(new Date(dateStartPlan), new Date('2024-03-15'));
+      // -------
+      // await this.courseService.saveCourseByStudent(coursesRefs[i], userRef, dateStartPlan, dateEndPlan)
+      // --- move this to a service
+      const ref = this.afs.collection<CourseByStudent>(CourseByStudent.collection).doc().ref;
+      const courseByStudent = {
+        id: ref.id,
+        userRef: userRef,
+        courseRef: coursesRefs[i],
+        dateStartPlan: dateStartPlan,
+        dateEndPlan: dateEndPlan,
+        progress: 0,
+        dateStart: null,
+        dateEnd: null,
+        active: true,
+        finalScore: 0
+      } as CourseByStudent;
 
-    const courseSnapshot = await firstValueFrom(this.afs.collection(Curso.collection).get());
-    const courseRefs = courseSnapshot.docs.map(doc => doc.ref);
-
-    for (let j = 0; j < userRefs.length - 4; j++) { // some students dont have study plans
-      for (let i = 0; i < courseRefs.length; i++) {
-        const dateStartPlan = this.randomDate(new Date('2023-12-01'), new Date('2024-03-2'));
-        const dateEndPlan = this.randomDate(new Date(dateStartPlan), new Date('2024-03-15'));
-
-        const ref = this.afs.collection<CourseByStudent>(CourseByStudent.collection).doc().ref;
-
-        const courseByStudent = {
-          id: ref.id,
-          userRef: userRefs[j],
-          courseRef: courseRefs[i],
-          dateStartPlan: dateStartPlan,
-          dateEndPlan: dateEndPlan,
-          progress: 0,
-          dateStart: null,
-          dateEnd: null,
-          active: true,
-          finalScore: 0
-        } as CourseByStudent;
-
-        await this.afs.collection(CourseByStudent.collection).doc(courseByStudent.id).set(courseByStudent);
-      }
-    } 
+      await this.afs.collection(CourseByStudent.collection).doc(courseByStudent.id).set(courseByStudent);
+      // ---
+    }
     console.log("Courses by students created")
   }
 
-  randomDate = (start: Date, end: Date): Date => {
+  randomDate(start: Date, end: Date): Date {
     return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
   };
 
