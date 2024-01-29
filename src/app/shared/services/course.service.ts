@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { User } from '../../shared/models/user.model';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
+import { AngularFirestore, DocumentReference, QuerySnapshot } from '@angular/fire/compat/firestore';
 import { BehaviorSubject, firstValueFrom, Observable, of } from 'rxjs'
 import { EnterpriseService } from './enterprise.service';
 import { AlertsService } from './alerts.service';
@@ -16,6 +16,7 @@ import { Curso } from '../models/course.model';
 import { Modulo } from '../models/module.model';
 import { Clase } from '../models/course-class.model';
 import { CourseByStudent } from '../models/course-by-student';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +27,8 @@ export class CourseService {
     private afAuth: AngularFireAuth,
     private afs: AngularFirestore,
     private enterpriseService: EnterpriseService,
-    private alertService: AlertsService
+    private alertService: AlertsService,
+    private userService: UserService
   ) 
   {
     this.getCourses();
@@ -319,7 +321,22 @@ export class CourseService {
     });
   }
 
-  // -----
-  
-
+  async updateStudyPlans(changesInStudyPlan: {added: string[], removed: string[]}) {
+    const enterpriseRef = this.enterpriseService.getEnterpriseRef()
+    const querySnapshot: QuerySnapshot<User> = await this.afs.collection(User.collection, ref => ref.where('enterpriseRef', '==', enterpriseRef)).ref.get() as QuerySnapshot<User>;
+    const users = querySnapshot.docs.map(doc => doc.data())
+    const batch = this.afs.firestore.batch();
+    for (let user of users) {
+      const userRef = this.userService.getUserRefById(user.uid)
+      const userCoursesSnapshot: QuerySnapshot<CourseByStudent> = await this.afs.collection(CourseByStudent.collection, ref => ref.where('userRef', '==', userRef)).ref.get() as QuerySnapshot<CourseByStudent>
+      const userCourses = userCoursesSnapshot.docs.map(doc => doc.data())
+      const userRemovedCourses = userCourses.filter(course => changesInStudyPlan.removed.includes(course.id))
+      const userOtherCourses = userCourses.filter(course => !changesInStudyPlan.removed.includes(course.id))
+      console.log("userOtherCourses", userOtherCourses)
+      console.log("userRemovedCourses", userRemovedCourses)
+      // for (let course of userRemovedCourses) {
+      //   course.
+      // }
+    }
+  }
 }

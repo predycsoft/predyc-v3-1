@@ -68,6 +68,7 @@ export class ProfilesComponent {
 
   profileName: string = ''
   profileDescription: string = ''
+  profileHoursPerMonth: number = 8
 
   profileBackup
 
@@ -99,6 +100,7 @@ export class ProfilesComponent {
         this.titleService.setTitle(title)
         this.profileName = this.profile.name
         this.profileDescription = this.profile.description
+        this.profileHoursPerMonth = this.profile.hoursPerMonth
       }
       this.studyPlan = []
       // this.courses = courses
@@ -151,11 +153,12 @@ export class ProfilesComponent {
     })
   }
 
-  // debug() {
-  //   console.log("studyPlan", this.studyPlan)
-  //   console.log("coursesForExplorer", this.coursesForExplorer.map(course => {return {name: course.titulo, inStudyPlan: course.inStudyPlan }}))
-  //   console.log("profileBackup", this.profileBackup)
-  // } 
+  debug() {
+    // console.log("studyPlan", this.studyPlan)
+    // console.log("coursesForExplorer", this.coursesForExplorer.map(course => {return {name: course.titulo, inStudyPlan: course.inStudyPlan }}))
+    // console.log("profileBackup", this.profileBackup)
+    this.courseService.updateStudyPlans({added: [], removed: []})
+  } 
 
   onCategoryHover(item: any) {
     this.hoverSubject.next(item);
@@ -319,8 +322,28 @@ export class ProfilesComponent {
         coursesRef: coursesRef,
         enterpriseRef: this.enterpriseService.getEnterpriseRef(),
         permissions: this.profile ? this.profile.permissions : null,
+        hoursPerMonth: this.profileHoursPerMonth
       })
       this.profileService.saveProfile(profile)
+      let studyPlanChanged = false
+      const changesInStudyPlan = {
+        added: [],
+        removed: []
+      }
+      this.coursesForExplorer.forEach(course => {
+        const initialValue = course.inStudyPlan
+        const finalValue = this.profileBackup.selectedCourses.includes(course.id)
+        course.inStudyPlan = finalValue
+        if (initialValue !== finalValue) {
+          studyPlanChanged = true
+          if (finalValue) {
+            changesInStudyPlan.added.push(course.id)
+          } else {
+            changesInStudyPlan.removed.push(course.id)
+          }
+        }
+      })
+      this.courseService.updateStudyPlans(changesInStudyPlan)
       this.alertService.succesAlert("Success")
       this.isEditing = false;
     } catch (error) {

@@ -1,3 +1,4 @@
+<div (click)="debug()">DEBUG</div>
 <div class="fh pdb20">
     <div [ngClass]="isEditing ? 'header--edit' : ''" fxLayout="row" fxLayoutAlign="space-between " class="header pdr10 pdl10">
         <app-navigate-back *ngIf="!isEditing" targetUrl="/management/students" class="pdt10">
@@ -106,15 +107,9 @@
             <div class="mgt20" fxLayout="row" fxLayoutGap="2rem">
                 <div fxLayoutGap=".5rem" fxLayout="row" fxLayoutAlign=" center">
                     <span class="ft500 ft12 gray-9">Estudio mensual</span>
-                    <input [ngClass]="isEditing?'editNumber':'number'" [disabled]="!isEditing" class="ft12 centertext"  type="number" min="0" >
+                    <input [ngClass]="isEditing?'editNumber':'number'" [disabled]="!isEditing" class="ft12 centertext"  type="number" min="0" [(ngModel)]="profileHoursPerMonth">
                     <span class="gray-10 ft11">horas</span>
                 </div>
-                <div fxLayoutGap=".5rem" fxLayout="row" fxLayoutAlign=" center">
-                    <span class="ft500 ft12 gray-9">Meses estimados</span>
-                    <input [ngClass]="isEditing?'editNumber':'number'" [disabled]="!isEditing" class="ft12 centertext" type="number" min="0" >
-                    <span class="gray-10 ft11">meses</span>
-                </div>
-               
             </div>
             <div *ngIf="isEditing" ngbDropdown [autoClose]="'outside'" fxLayout="row" fxLayoutAlign=" center" >
                 <div class="mgt10 h40px radius20 shadow12" style="width: 100%; overflow: hidden; z-index: 2;" fxLayout="row">
