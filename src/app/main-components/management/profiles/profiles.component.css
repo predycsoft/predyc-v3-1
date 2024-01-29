@@ -1,12 +1,16 @@
 .header {
     width: 100%;
-    height: 10%;
 }
 
 .header--edit {
     background-color: var(--yellow-5);
     position: sticky;
     top: 0px;
+    z-index: 3;
+}
+
+.dropdownBasic1{
+    background-color: red;
 }
 
 .input-box {
@@ -15,7 +19,7 @@
     border: none;
     padding: 5px 15px;
     background-color: #EDF8FF;
-    width: 300px
+    width: 400px
 }
 
 .edit-button {
@@ -79,6 +83,7 @@
 
 .dropdownMenuCategory {
     width: 200px;
+    background-color: transparent;
 }
 
 .dropdownMenuCategory:hover {
@@ -87,4 +92,34 @@
 
 .dropdownMenuCourse {
     width: 600px;
+}
+
+.dropdownContainer{
+    position: absolute !important;
+    top: -42px !important;
+    border: none;
+    z-index: 1;
+    border-radius: 20px;
+    box-shadow: var(--shadow12);
+    padding-bottom: 0px;
+    overflow: hidden;
+}
+
+.dropy{
+    border: none;
+    padding-top: 42px;
+    padding-bottom: 12px;
+}
+
+.drowCourses{
+    padding-top: 42px;
+    width: 75%;
+}
+
+.dropCategory:hover{
+    background-color: var(--blue-1);
+}
+
+.dropCourse:hover{
+    background-color: var(--blue-1);
 }
