@@ -98,7 +98,7 @@
 
 .bodyCategoryExpanded{
     height: fit-content;
-    transition: .3s;
+    transition: .8s ease-in-out;
     border-bottom-left-radius: 6px;
     border-bottom-right-radius: 6px;
 }
@@ -112,7 +112,7 @@
 
 .bodyClasesExpanded{
     height: fit-content;
-    transition: .3s;
+    transition: .8s ease-in-out;
     width: 100%;
 }
 
@@ -120,7 +120,7 @@
     height: 0px !important;
     max-height: 0px !important;
     overflow: hidden;
-    transition: .3s;
+    transition: .8s ease-in-out;
     width: 100%;
 }
 

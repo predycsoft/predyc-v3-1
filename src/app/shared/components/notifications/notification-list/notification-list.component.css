@@ -122,7 +122,24 @@ th, td {
     background-color: #fcfcfc !important; /* Lighter gray for even rows */
 }
 
+.shadow-animation {
+    transition: box-shadow 0.5s ease;
+    border: 1px solid #e6e6e6;  
+}
 
+.shadow-animation::before {
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.shadow-animation:hover {
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.15);   
+
+}
+
+.shadow-animation:hover::before {
+    opacity: 1;
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.15);
+}
 
 /* .custom-expansion-panel-content {
     max-height: 20rem;

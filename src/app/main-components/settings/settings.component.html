@@ -13,11 +13,12 @@
 
 <!-- ************************************ -->
 <div *ngIf="licenses; else loading" class="mgt20 mgl20 mgr20">
-    <p class="ft600 ft20" style="color: black">Licencias</p>
+    <p class="ft600 ft16 gray-10" >Licencias</p>
+
     <div fxLayout="row" fxLayoutAlign="">
-        <div fxLayout="column" class="w-70 border-rl">
+        <div fxLayout="column" class="w-75 border-rl">
             <div fxLayout="row" fxLayoutAlign="space-between center" class="w-100 pdr20">
-                <div fxLayout="row" fxLayoutAlign=" center" class="h36px radius20 w500px shadow12" style="overflow: hidden;" >
+                <div fxLayout="row" fxLayoutAlign=" center" class="h36px radius20 w500px shadow-animation" style="overflow: hidden;" >
                     <!-- <div class="backGray2 pdl10 pdr10 fh" fxLayout="row" fxLayoutAlign=" center">
                         <select name="" id="" class="catSelect">
                             <option value="">Usuarios activos</option>
@@ -42,11 +43,11 @@
                     #trigger="matMenuTrigger"
                     style="border-radius: 24px !important;"
                     [ngClass]="selectedUsersIds.length === 0 
-                        ? 'select-container2': (currentStatus !== 'active' ? 'blueButton':'redButton')">
+                        ? 'select-container2': (currentStatus !== 'active' ? 'blueButtonAnim  button-animation':'redButtonAnim  button-animation')">
                     {{ currentStatus !== 'active' ? 'Asignar licencia' : 'Cancelar licencia' }}
                 </button>
                 <mat-menu #licenseMenu class="radius6 shadow16 pd0 mgt05">
-                    <div fxLayout="column" class="fw pd0">
+                    <div fxLayout="column" class="fw pd05">
                         <div class="pd05 fw ">
                             <span class="ft12 gray-10 ft500">Seleccione su licencia</span>
                         </div>
@@ -63,7 +64,7 @@
                 <app-license-student-list [hasLicenseChanged]="hasLicenseChanged" (selectedUsers)="handleSelectedUsers($event)"></app-license-student-list>
             </div>
         </div>   
-        <div  *ngIf="selectedLicense" class="w-30 pdl20" fxLayout="column" fxLayoutGap="10px">
+        <div  *ngIf="selectedLicense" class="w-25 pdl10" fxLayout="column" fxLayoutGap="05px">
             <button class="grayButton ft500 ft13 blue-4" style="border-radius: 24px !important;" (click)="showDialog(licenses)">Adquirir más licencias</button>           
 
             <!-- <div class="select-container" fxLayout="row" fxLayoutAlign="start center">

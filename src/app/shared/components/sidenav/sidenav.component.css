@@ -27,3 +27,7 @@ a {
     margin-bottom: .25rem;
     padding-bottom: .25rem;
 }
+
+.hoverBasic:hover{
+    background-color: rgb(255, 244, 202) !important;
+}

@@ -1,5 +1,9 @@
-<div class="fw pdl20 pdr20 pdt20 pdb20 fh">
-    <div fxLayout="row" fxLayoutAlign=" center">
+<div class="mgt20 mgl20 mgr20">
+    
+        <p class="ft600 ft16 gray-10">
+            Lista de Cursos
+     
+    <!-- <div fxLayout="row" fxLayoutAlign=" center">
         <div class="ft600 ft20">Explora</div>
     </div>
     <div fxLayout="row" class="mgt10">
@@ -19,16 +23,16 @@
         </div>
     </div>
     <div class="fw line mgt10">
-    </div>
+    </div> -->
     <div fxLayout="row" class="mgt10 fw fh" fxLayoutGap="2rem">
         <!-- Columna izquierda que ocupa todo el alto -->
         <div fxFlex="60%">
             <div class="left backWhite radius10 " fxLayout="column">
-                <div fxLayout="row" class="fw">
+                <!-- <div fxLayout="row" class="fw">
                     <div fxLayout="row" class="fw" fxLayoutAlign="space-between center">
                         <div class="ft600 ft16">Lista de cursos</div>
                     </div>
-                </div>
+                </div> -->
                 <div fxLayout="row" class="fw">
                     <div class="fw">
                         <div id="" class="mgt10">
@@ -100,20 +104,20 @@
             <div class="fh pdb40" fxLayout="column">
                 <!-- detalle curso -->
                 <div class="w-100 fh" fxLayout="column">
-                    <div fxLayout="row" class="fw">
+                    <!-- <div fxLayout="row" class="fw">
                         <div fxLayout="row" class="fw" fxLayoutAlign="start center">
                             <span class="ft16 ft600 gray-10">Vista Previa</span>
                         </div>
-                    </div>
-                    <div fxLayout="row" class="radius6 mgt15" style="height: calc(100% - 200px);" *ngIf="!selectedCourse"
+                    </div> -->
+                    <div fxLayout="row" class="radius6 mgt20" style="height: calc(100% - 200px);" *ngIf="!selectedCourse"
                         fxLayoutAlign="center center">
-                        <div class="radius6 mgt10" fxLayoutAlign="center center">
+                        <div class="radius6 mgt20" fxLayoutAlign="center center">
                             <div fxLayout="column" fxFlex="60%" class="fh fw" fxLayoutAlign="center center">
-                                <img class="pd10" src="../../../../assets/images/cursos/placeHolderCurso.svg"
-                                    style="width: 80%;" alt="Mi SVG">
+                                <img class="pdt10 pdl05" src="../../../../assets/images/cursos/placeHolderCurso.svg"
+                                    style="width: 60%;" alt="Mi SVG">
                             </div>
-                            <div fxLayout="column" fxFlex="40%" class="fh fw" fxLayoutAlign="center center">
-                                <span class="ft400 gray-8 ft16 pd10">Haz clic en un curso para ver sus detalles</span>
+                            <div fxLayout="column" fxFlex="30%" class="fh fw" fxLayoutAlign="center center">
+                                <span class="ft400 gray-8 ft13 pd05">Haz clic en un curso para ver sus detalles</span>
                             </div>
                         </div>
                     </div>

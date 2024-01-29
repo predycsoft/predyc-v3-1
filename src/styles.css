@@ -526,6 +526,10 @@ body {
 .redButton{  background-color: #ED4758!important; transition: .3s; }
 .redButton:hover{  background-color: #d63e4d!important; transition: .3s; }
 
+.redButtonAnim{  background-color: #d63e4d!important; transition: .3s; }
+
+.redButtonAnim:hover{  background-color: rgb(236, 63, 80)!important; transition: .3s; }
+
 
 .blueButtonAnim{    
   background-color:  #008CE3!important;

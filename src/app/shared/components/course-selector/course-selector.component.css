@@ -119,6 +119,12 @@
     background-color: var(--blue-1) !important;
 }
 
+
+.hoverGray:hover{
+    background-color:  rgba(200, 202, 203, 0.224) !important; 
+  } 
+
+
 .selectedTab{
     border-bottom: 1.5px solid var(--blue-5);
 }

@@ -45,4 +45,16 @@ tr:first-child td:last-child {
     border-bottom: 1px solid transparent;
     border-top: 1px solid transparent;
     cursor: pointer;
+    
+  }
+
+  .move-right {
+    transition: transform 0.3s ease-out;
+    transform: translateX(0);
+  }
+
+  .move-right:hover {
+    transform: translateX(5px);
+    transform: translateX(5px);
+    color: #0f3b56 !important;
   }
