@@ -5,12 +5,13 @@ import { Permissions } from "./permissions.model"
 import { Curso } from "./course.model"
 
 export interface ProfileJson {
-    id: string,
-    name: string,
-    description: string,
+    id: string
+    name: string
+    description: string
     coursesRef: DocumentReference<Curso>[] | []
     enterpriseRef: DocumentReference | null
     permissions: Permissions
+    hoursPerMonth: number;
 }
 
 export class Profile {
@@ -22,6 +23,7 @@ export class Profile {
     public coursesRef: DocumentReference<Curso> [] | [] = []
     public enterpriseRef: DocumentReference | null
     public permissions: Permissions
+    public hoursPerMonth: number;
 
     public users?: User[]
     public enterprise?: Enterprise
@@ -35,7 +37,7 @@ export class Profile {
         profile.coursesRef = profileJson.coursesRef
         profile.enterpriseRef = profileJson.enterpriseRef
         profile.permissions = profileJson.permissions
-
+        profile.hoursPerMonth = profileJson.hoursPerMonth
         return profile
     }
       
@@ -47,6 +49,7 @@ export class Profile {
             coursesRef: this.coursesRef,
             enterpriseRef: this.enterpriseRef,
             permissions: this.permissions,
+            hoursPerMonth: this.hoursPerMonth
         }
     }
 }

@@ -3,7 +3,6 @@ export interface PermissionsJson {
     studyLiberty: string,
     studyplanGeneration: string,
     attemptsPerTest: number,
-
 }
 
 export class Permissions {
