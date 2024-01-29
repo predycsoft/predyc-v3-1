@@ -5,7 +5,7 @@
                 <img [src]="icon.notification" class="makeBlue h16px" alt="">
                 <span class="ft500 black undrl ft14 ft600 black">Información del usuario</span>
             </div>
-            <span class="makeBlue cursorPointer ft14" (click)="isEditing ? save() : isEditing = true">{{ isEditing ? 'Guardar' : 'Editar' }}</span>
+            <span class="makeBlue cursorPointer ft14" (click)="isEditing ? save() : (isEditing = true) && studentForm.get('canEnrollParticularCourses')?.enable()">{{ isEditing ? 'Guardar' : 'Editar' }}</span>
         </div>
         <div fxLayout="row" fxLayoutAlign="space-between center" class="fh mgt10">
             <div fxLayout="column" fxLayoutAlign="space-between center" fxLayoutGap=".75rem" class="w-40">
@@ -16,7 +16,7 @@
                 <div class="radius10 backBlue1 pdr10 pdl10">
                     <span class="blue-5 ft13 ft500">Activo</span>
                 </div>
-                <div *ngIf="isEditing" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap=".1rem">
+                <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap=".1rem">
                     <span class="ft12 makeBlue">Inscribir cursos particulares</span>
                     <mat-slide-toggle color="primary" formControlName="canEnrollParticularCourses"></mat-slide-toggle>
                 </div>

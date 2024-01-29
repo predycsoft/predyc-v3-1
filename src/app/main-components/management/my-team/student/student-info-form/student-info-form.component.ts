@@ -49,6 +49,7 @@ export class StudentInfoFormComponent {
       profile: new FormControl(null),
       photoUrl: new FormControl(''),
     });
+    this.studentForm.get('canEnrollParticularCourses')?.disable();
 
     if (this.student) {
       this.studentForm.patchValue({
@@ -80,6 +81,7 @@ export class StudentInfoFormComponent {
       this.student.profile = formData.profile ? this.profileService.getProfileRefById(formData.profile) : null
       this.onStudentSave.emit(this.student)
     }
+    this.studentForm.get('canEnrollParticularCourses')?.disable();
     this.isEditing = false
   }
 
