@@ -126,6 +126,14 @@ export class ProfilesComponent {
       })
       this.updateWidgets()
 
+      this.categories = this.categories.filter(category => {
+        const coursesWithThisCategory = this.coursesForExplorer.filter(course => {
+          const categories = course.categories.map(category => category.name)
+          return categories.includes(category.name)
+        })
+        return coursesWithThisCategory.length > 0
+      })
+
       console.log("categories", categories)
       console.log("skills", skills)
       console.log("courses", courses)
