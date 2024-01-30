@@ -159,7 +159,7 @@ export class StudentStudyPlanAndCompetencesComponent {
       const yearNumber = date.getUTCFullYear();
 
       const sortedCourses = months[monthName].sort((a, b) => {
-        return b.dateEndPlan - a.dateEndPlan;
+        return a.dateEndPlan - b.dateEndPlan;
       });
 
       return {
@@ -170,9 +170,9 @@ export class StudentStudyPlanAndCompetencesComponent {
       };
     });
     this.months.sort((a, b) => {
-      const yearDiff = b.yearNumber - a.yearNumber;
+      const yearDiff = a.yearNumber - b.yearNumber;
       if (yearDiff !== 0) return yearDiff;
-      return b.monthNumber - a.monthNumber;
+      return a.monthNumber - b.monthNumber;
     });
     console.log("this.months", this.months);
   }
@@ -235,7 +235,7 @@ export class StudentStudyPlanAndCompetencesComponent {
 
   calculatEndDatePlan(startDate: number, courseDuration: number, hoursPermonth: number): number {
     const monthDays = this.getDaysInMonth(startDate)
-    return startDate + 24 * 60 * 60 * 1000 * Math.ceil((courseDuration / 60) / (hoursPermonth / monthDays));
+    return startDate + (24 * 60 * 60 * 1000) * Math.ceil((courseDuration / 60) / (hoursPermonth / monthDays));
   }
 
   getDaysInMonth(timestamp: number) {
