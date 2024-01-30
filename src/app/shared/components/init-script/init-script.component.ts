@@ -315,7 +315,7 @@ export class InitScriptComponent {
       //cursoIn.idioma = curso.idioma no se tenia anteriormete 
       //cursoIn.instructorResumen = curso.instructorResumen
       cursoIn.nivel = curso.nivel
-      cursoIn.titulo = curso.titulo
+      cursoIn.titulo = capitalizeFirstLetter(curso.titulo.trim().toLowerCase())
       cursoIn.duracion = curso.duracion
       let instructor = this.instructors.find(x=> x.idOld == curso.instructorId)
       console.log('Instructor',instructor,this.instructors)
@@ -326,12 +326,17 @@ export class InitScriptComponent {
       //console.log('cursoIn',curso,cursoIn)
       //let competenciaTest = await this.afs.collection<any>('skill').doc('AjnLM3sTWFnprVzRxyZ7').ref;
       const skillsRef = []
-      const courseObj = courseCategoryAndSkillsRelation.find(item => item['Cursos'].toLowerCase() === curso.titulo.toLowerCase())
-      for (let skill of [courseObj["Competencia 1"], courseObj["Competencia 2"], courseObj["Competencia 3"]]) {
-        if (skill) {
-          const competenciaTest = await this.getSkillRefByName(capitalizeFirstLetter(skill.toLowerCase()))
-          skillsRef.push(competenciaTest)
+      const courseObj = courseCategoryAndSkillsRelation.find(item => item['Cursos'].toLowerCase() === curso.titulo.toLowerCase().trim())
+      if (courseObj) {
+        for (let skill of [courseObj["Competencia 1"], courseObj["Competencia 2"], courseObj["Competencia 3"]]) {
+          if (skill) {
+            let skillName = skill.split(" ").length > 1 ? capitalizeFirstLetter(skill.toLowerCase()) : skill
+            const competenciaTest = await this.getSkillRefByName(skillName)
+            skillsRef.push(competenciaTest)
+          }
         }
+      } else {
+        console.log("Titulo no encontrado", curso.titulo.toLowerCase())
       }
       cursoIn.skillsRef = skillsRef
       await this.courseService.saveCourse(cursoIn)

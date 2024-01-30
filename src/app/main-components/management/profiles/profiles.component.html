@@ -271,8 +271,8 @@
                     </div>
                     <div fxLayoutAlign="center center" fxLayout="row" fxLayoutGap="1rem">
                         <span class="gray-10 ft11 nowrap">
-                            {{ roundNumber(60 / 60) }} hrs
-                            <!-- {{ roundNumber(item.duration / 60) }} hrs -->
+                            <!-- {{ roundNumber(60 / 60) }} hrs -->
+                            {{ roundNumber(item.duracion / 60) }} hrs
                         </span>
                         <img *ngIf="isEditing" [src]="icon.trash" class="h14px makeGray cursorPointer" (click)="toggleCourseInPlan(item)" alt="">
                     </div>

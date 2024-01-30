@@ -106,7 +106,9 @@ export class ProfilesComponent {
       // this.courses = courses
       this.coursesForExplorer = courses.map(course => {
         // Find skill object for each skill ref in course
+        console.log(course)
         const skills = course.skillsRef.map(skillRef => {
+          console.log(skillRef)
           return this.skills.find(skill => skill.id === skillRef.id)
         })
         const categories = skills.map(skill => {
@@ -225,6 +227,9 @@ export class ProfilesComponent {
   }
 
   getChartData() {
+    const accumulatedStudyPlanHours = this.studyPlan.reduce(function (accumulator, course) {
+      return accumulator + course.duracion;
+    }, 0)
     const data = this.categories.map(category => {
       let value = 0
       let skills = []
@@ -232,12 +237,14 @@ export class ProfilesComponent {
         const coursesWithThisCategory = this.studyPlan.filter(course => {
           return course.categories.filter(item => item.id === category.id).length
         })
+        let totalDuration = 0
         coursesWithThisCategory.forEach(course => {
           course.skills.forEach(skill => {
             if (!skills.includes(skill.name)) skills.push(skill.name)
           })
+          totalDuration += course.duracion
         })
-        value = roundNumber(coursesWithThisCategory.length * 100 / this.studyPlan.length)
+        value = roundNumber(totalDuration * 100 / accumulatedStudyPlanHours)
       }
       return {
         label: category.name,

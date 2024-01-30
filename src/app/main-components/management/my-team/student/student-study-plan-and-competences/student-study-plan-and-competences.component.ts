@@ -193,8 +193,6 @@ export class StudentStudyPlanAndCompetencesComponent {
     await this.createStudyPlan()
   }
 
-
-
   async createStudyPlan() {
     const coursesRefs: DocumentReference[] = this.selectedProfile.coursesRef
     let dateStartPlan: number

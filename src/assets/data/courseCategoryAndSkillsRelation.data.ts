@@ -140,42 +140,42 @@ export const courseCategoryAndSkillsRelation = [
       "Competencia 3": ""
     },
     {
-      "Cursos": "Proyectos: Gestión de Interfaces",
+      "Cursos": "Gestión de Interfaces",
       "Pilar": "Gestión de Proyectos",
       "Competencia 1": "Dirección de proyectos",
       "Competencia 2": "Gestión de interfaces",
       "Competencia 3": ""
     },
     {
-      "Cursos": "Proyectos: Gestión de la Calidad",
+      "Cursos": "Gestión de la Calidad",
       "Pilar": "Gestión de Proyectos",
       "Competencia 1": "Dirección de proyectos",
       "Competencia 2": "Gestión de calidad",
       "Competencia 3": ""
     },
     {
-      "Cursos": "Proyectos: Gestión de las Comunicaciones",
+      "Cursos": "Gestión de las Comunicaciones",
       "Pilar": "Gestión de Proyectos",
       "Competencia 1": "Dirección de proyectos",
       "Competencia 2": "Gestión de comunicaciones",
       "Competencia 3": ""
     },
     {
-      "Cursos": "Proyectos: Gestión de los Costos",
+      "Cursos": "Gestión de los Costos",
       "Pilar": "Gestión de Proyectos",
       "Competencia 1": "Dirección de proyectos",
       "Competencia 2": "Evaluaciones económicas",
       "Competencia 3": ""
     },
     {
-      "Cursos": "Proyectos: Gestión de los Interesados",
+      "Cursos": "Gestión de los Interesados",
       "Pilar": "Gestión de Proyectos",
       "Competencia 1": "Dirección de proyectos",
       "Competencia 2": "",
       "Competencia 3": ""
     },
     {
-      "Cursos": "Proyectos: Gestión de los Riesgos",
+      "Cursos": "Gestión de los Riesgos",
       "Pilar": "Gestión de Proyectos",
       "Competencia 1": "Dirección de proyectos",
       "Competencia 2": "Gestión de riesgo",
@@ -210,14 +210,14 @@ export const courseCategoryAndSkillsRelation = [
       "Competencia 3": ""
     },
     {
-      "Cursos": "Proyectos: Gestión del Alcance",
+      "Cursos": "Gestión del Alcance",
       "Pilar": "Gestión de Proyectos",
       "Competencia 1": "Dirección de proyectos",
       "Competencia 2": "Gestión del riesgo",
       "Competencia 3": ""
     },
     {
-      "Cursos": "Proyectos: Gestión del Cronograma",
+      "Cursos": "Gestión del Cronograma",
       "Pilar": "Gestión de Proyectos",
       "Competencia 1": "Dirección de proyectos",
       "Competencia 2": "Gestión del cronograma",
@@ -252,7 +252,7 @@ export const courseCategoryAndSkillsRelation = [
       "Competencia 3": ""
     },
     {
-      "Cursos": "Proyectos: Integración en la Dirección",
+      "Cursos": "Integración en la Dirección de proyectos",
       "Pilar": "Gestión de Proyectos",
       "Competencia 1": "Dirección de proyectos",
       "Competencia 2": "Integración en la dirección",
@@ -301,7 +301,7 @@ export const courseCategoryAndSkillsRelation = [
       "Competencia 3": "Mantenimiento de Motocompresor reciprocante"
     },
     {
-      "Cursos": "Motores Eléctricos: Fundamentos",
+      "Cursos": "Motores Eléctricos",
       "Pilar": "Mecánico",
       "Competencia 1": "Funcionamiento de motor eléctrico",
       "Competencia 2": "",
