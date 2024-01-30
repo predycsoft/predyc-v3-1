@@ -106,6 +106,7 @@ export class StudentStudyPlanAndCompetencesComponent {
     if(changes.selectedProfile) {
       if (changes.selectedProfile.previousValue === null && changes.selectedProfile.currentValue) {
         this.showInitForm = true
+        this.hoursPermonthInitForm = changes.selectedProfile.currentValue.hoursPerMonth
       }
       // setting new profile
       if (changes.selectedProfile.previousValue && changes.selectedProfile.currentValue && 
