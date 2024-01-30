@@ -524,6 +524,7 @@ export class InitScriptComponent {
       if (userSnap.exists) {
         let currentUser: any = userSnap.data()
         currentUser.profile = profileRef.ref
+        currentUser.studyHours = profile.hoursPerMonth
         await this.userService.editUser(currentUser as UserJson)
         // await currentUserRef.update({
         //   profile: profileRef.ref
