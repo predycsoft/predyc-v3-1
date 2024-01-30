@@ -93,6 +93,7 @@ export class StudentStudyPlanAndCompetencesComponent {
           } 
           else {
             this.showInitForm = true
+            this.hoursPermonthInitForm = this.selectedProfile.hoursPerMonth
             console.log("El usuario no posee studyPlan");
           }
         }
@@ -230,7 +231,7 @@ export class StudentStudyPlanAndCompetencesComponent {
   calculatEndDatePlan(startDate: number, courseDuration: number, hoursPermonth: number): number {
     const monthDays = this.getDaysInMonth(startDate)
     console.log("monthDays", monthDays)
-    return startDate + 24 * 60 * 60 * 1000 * Math.ceil((courseDuration/ 60) / (hoursPermonth / monthDays)); // the last number is the month amount of dates
+    return startDate + 24 * 60 * 60 * 1000 * Math.ceil((courseDuration / 60) / (hoursPermonth / monthDays)); // the last number is the month amount of dates
   }
 
   getDaysInMonth(timestamp: number) {
