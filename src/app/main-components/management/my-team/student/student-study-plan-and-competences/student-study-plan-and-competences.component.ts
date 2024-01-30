@@ -211,7 +211,7 @@ export class StudentStudyPlanAndCompetencesComponent {
       }
       else dateStartPlan = dateEndPlan ? dateEndPlan : hoy;
 
-      dateEndPlan = this.calculateDates(dateStartPlan, courseDuration, hoursPermonth)
+      dateEndPlan = this.calculatEndDatePlan(dateStartPlan, courseDuration, hoursPermonth)
       await this.courseService.saveCourseByStudent(coursesRefs[i], userRef, new Date(dateStartPlan), new Date(dateEndPlan))
     }
 
@@ -227,9 +227,24 @@ export class StudentStudyPlanAndCompetencesComponent {
   }
 
 
-  calculateDates(startDate, courseDuration, hoursPermonth): number {
-    return startDate + 24 * 60 * 60 * 1000 * Math.ceil((courseDuration/ 60) / (hoursPermonth / 30)); // the last number is the month amount of dates
+  calculatEndDatePlan(startDate: number, courseDuration: number, hoursPermonth: number): number {
+    const monthDays = this.getDaysInMonth(startDate)
+    console.log("monthDays", monthDays)
+    return startDate + 24 * 60 * 60 * 1000 * Math.ceil((courseDuration/ 60) / (hoursPermonth / monthDays)); // the last number is the month amount of dates
   }
+
+  getDaysInMonth(timestamp: number) {
+    const date = new Date(timestamp)
+
+    // Create a new date object for the first day of the next month
+    const nextMonth = new Date(date.getFullYear(), date.getMonth() + 1, 1);
+
+    // Subtract one day to get the last day of the required month
+    nextMonth.setDate(nextMonth.getDate() - 1);
+
+    // Return the day of the month, which is the number of days in that month
+    return nextMonth.getDate();
+}
   
 
   ngOnDestroy() {
