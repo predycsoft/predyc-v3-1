@@ -532,7 +532,7 @@ export class InitScriptComponent {
       }
 
       // Creamos doc que relaciona los cursos del perfil con el estudiante
-      await this.addCourseByStudent(coursesRef, currentUserRef)
+      await this.addCourseByStudent(coursesRef, currentUserRef, selectedCourses, profile.hoursPerMonth)
 
       // Incrementar los índices para el siguiente profile
       skillIndex++;
@@ -542,36 +542,37 @@ export class InitScriptComponent {
 
   }
 
-  async addCourseByStudent(coursesRefs: DocumentReference[], userRef: DocumentReference) {
+  async addCourseByStudent(coursesRefs: DocumentReference[], userRef: DocumentReference, selectedCourses: (Curso & {id: string;})[], hoursPerMonth: number) {
+    let now = new Date()
+    let hoy = +new Date(now.getFullYear(), now.getMonth(), now.getDate())
+    let dateStartPlan: number
+    let dateEndPlan: number
     for (let i = 0; i < coursesRefs.length; i++) {
       // -------- this is just for test data. Substitute for the correct dates calculation
-      const dateStartPlan = this.randomDate(new Date('2023-12-01'), new Date('2024-03-2'));
-      const dateEndPlan = this.randomDate(new Date(dateStartPlan), new Date('2024-03-15'));
+      const courseData = selectedCourses.find(courseData => courseData.id === coursesRefs[i].id);
+      const courseDuration = courseData.duracion
+      dateStartPlan = dateEndPlan ? dateEndPlan : hoy;
+      dateEndPlan = this.calculatEndDatePlan(dateStartPlan, courseDuration, hoursPerMonth)
       // -------
-      // await this.courseService.saveCourseByStudent(coursesRefs[i], userRef, dateStartPlan, dateEndPlan)
-      // --- move this to a service
-      const ref = this.afs.collection<CourseByStudent>(CourseByStudent.collection).doc().ref;
-      const courseByStudent = {
-        id: ref.id,
-        userRef: userRef,
-        courseRef: coursesRefs[i],
-        dateStartPlan: dateStartPlan,
-        dateEndPlan: dateEndPlan,
-        progress: 0,
-        dateStart: null,
-        dateEnd: null,
-        active: true,
-        finalScore: 0
-      } as CourseByStudent;
-
-      await this.afs.collection(CourseByStudent.collection).doc(courseByStudent.id).set(courseByStudent);
-      // ---
+      await this.courseService.saveCourseByStudent(coursesRefs[i], userRef, new Date(dateStartPlan), new Date(dateEndPlan))
     }
     console.log("Courses by students created")
   }
 
-  randomDate(start: Date, end: Date): Date {
-    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
-  };
+  
+  calculatEndDatePlan(startDate: number, courseDuration: number, hoursPermonth: number): number {
+    const monthDays = this.getDaysInMonth(startDate)
+    return startDate + 24 * 60 * 60 * 1000 * Math.ceil((courseDuration / 60) / (hoursPermonth / monthDays));
+  }
+
+  getDaysInMonth(timestamp: number) {
+    const date = new Date(timestamp)
+    // Create a new date object for the first day of the next month
+    const nextMonth = new Date(date.getFullYear(), date.getMonth() + 1, 1);
+    // Subtract one day to get the last day of the required month
+    nextMonth.setDate(nextMonth.getDate() - 1);
+    // Return the day of the month, which is the number of days in that month
+    return nextMonth.getDate();
+  }
 
 }
