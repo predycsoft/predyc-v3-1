@@ -1,6 +1,6 @@
 .container {
     overflow-y: auto;
-    max-height: 35rem;
+    max-height: auto;
   }
 
 
