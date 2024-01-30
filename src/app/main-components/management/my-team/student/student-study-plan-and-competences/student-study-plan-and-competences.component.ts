@@ -157,11 +157,15 @@ export class StudentStudyPlanAndCompetencesComponent {
       const monthNumber = date.getUTCMonth()
       const yearNumber = date.getUTCFullYear();
 
+      const sortedCourses = months[monthName].sort((a, b) => {
+        return b.dateEndPlan - a.dateEndPlan;
+      });
+
       return {
         monthName,
         monthNumber,
         yearNumber,
-        courses: months[monthName]
+        courses: sortedCourses
       };
     });
     this.months.sort((a, b) => {
@@ -230,8 +234,7 @@ export class StudentStudyPlanAndCompetencesComponent {
 
   calculatEndDatePlan(startDate: number, courseDuration: number, hoursPermonth: number): number {
     const monthDays = this.getDaysInMonth(startDate)
-    console.log("monthDays", monthDays)
-    return startDate + 24 * 60 * 60 * 1000 * Math.ceil((courseDuration / 60) / (hoursPermonth / monthDays)); // the last number is the month amount of dates
+    return startDate + 24 * 60 * 60 * 1000 * Math.ceil((courseDuration / 60) / (hoursPermonth / monthDays));
   }
 
   getDaysInMonth(timestamp: number) {
@@ -245,7 +248,7 @@ export class StudentStudyPlanAndCompetencesComponent {
 
     // Return the day of the month, which is the number of days in that month
     return nextMonth.getDate();
-}
+  }
   
 
   ngOnDestroy() {
