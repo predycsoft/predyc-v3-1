@@ -18,11 +18,11 @@
         </div> -->
         <div  class="chart-container ft14">
             <div *ngFor="let category of categoriesAndSkillsWidgetData; let i = index">
-                <div class="ft12">Pilar {{i+1}}: {{category.label}}</div>
-                <div fxLayout="row wrap" fxLayoutGap=".3rem" fxLayoutAlign="start center" class="mgt05 mgr05">
+                <div class="ft12 mgb05">Pilar {{i+1}}: {{category.label}}</div>
+                <div fxLayout="row wrap" fxLayoutGap=".3rem" fxLayoutAlign="start center" class="mgt05 mgr10 mgb10">
                     <div
                         *ngFor="let skill of category.skills"
-                        class="radius10 backGray2 pdl10 pdr10 gray-8 centered-text"
+                        class="  radius10 backGray1 pdl10 pdr10  gray-8 centered-text ListHover"
                         style="margin-right: 0.3rem; margin-bottom: 0.3rem; white-space: nowrap;"
                         >
                         {{skill}}
@@ -54,7 +54,7 @@
                         <img *ngIf="isMonthPast(month) && !isMonthCompleted(month)" [src]="icon.redWarning2" class="makeRed h14px" alt="">
                     </div>
                     <div *ngFor="let course of month.courses; let i = index" fxLayout="column" fxLayoutAlign="center" 
-                        class="h50px pd10" [ngClass]=" i % 2 ? '' : 'backGray1'">
+                        class="h50px pd10 ListHover" [ngClass]=" i % 2 ? '' : 'backGray1'">
                         <div fxLayout="row" fxLayoutAlign="space-between center">
                             <span class="ft12"> {{course.courseTitle}} </span>
                             <!-- just to see the dates -->
