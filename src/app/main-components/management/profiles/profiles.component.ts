@@ -160,13 +160,6 @@ export class ProfilesComponent {
     })
   }
 
-  debug() {
-    // console.log("studyPlan", this.studyPlan)
-    // console.log("coursesForExplorer", this.coursesForExplorer.map(course => {return {name: course.titulo, inStudyPlan: course.inStudyPlan }}))
-    // console.log("profileBackup", this.profileBackup)
-    this.courseService.updateStudyPlans({added: [], removed: [], profileId: ''})
-  } 
-
   onCategoryHover(item: any) {
     this.hoverSubject.next(item);
   }
@@ -203,12 +196,12 @@ export class ProfilesComponent {
       this.profileDescription = this.profileBackup.description
       let studyPlanChanged = false
       this.coursesForExplorer.forEach(course => {
-        const initialValue = course.inStudyPlan
-        const finalValue = this.profileBackup.selectedCourses.includes(course.id)
-        course.inStudyPlan = finalValue
-        if (initialValue !== finalValue) {
+        const isInStudyPlan = course.inStudyPlan
+        const wasInStudyPlan = this.profileBackup.selectedCourses.includes(course.id)
+        course.inStudyPlan = wasInStudyPlan
+        if (isInStudyPlan !== wasInStudyPlan) {
           studyPlanChanged = true
-          if (finalValue) {
+          if (wasInStudyPlan) {
             this.studyPlan.push(course)
           } else {
             const targetIndex = this.studyPlan.findIndex(item => item.id === course.id)
@@ -337,7 +330,6 @@ export class ProfilesComponent {
         hoursPerMonth: this.profileHoursPerMonth
       })
       const profileId = await this.profileService.saveProfile(profile)
-      let studyPlanChanged = false
       const changesInStudyPlan = {
         added: [],
         removed: [],
@@ -345,12 +337,11 @@ export class ProfilesComponent {
       }
       if (this.id !== 'new') {
         this.coursesForExplorer.forEach(course => {
-          const initialValue = course.inStudyPlan
-          const finalValue = this.profileBackup.selectedCourses.includes(course.id)
-          course.inStudyPlan = finalValue
-          if (initialValue !== finalValue) {
-            studyPlanChanged = true
-            if (finalValue) {
+          const isInStudyPlan = course.inStudyPlan
+          const wasInStudyPlan = this.profileBackup.selectedCourses.includes(course.id)
+          if (isInStudyPlan !== wasInStudyPlan) {
+            // Study Plan changed
+            if (isInStudyPlan) {
               changesInStudyPlan.added.push(course.id)
             } else {
               changesInStudyPlan.removed.push(course.id)

@@ -8,14 +8,13 @@ import { AlertsService } from './alerts.service';
 
 import { combineLatest } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { Skill } from '../models/skill.model';
 import { Curso } from '../models/course.model';
 import { Modulo } from '../models/module.model';
 import { Clase } from '../models/course-class.model';
 import { CourseByStudent, CourseByStudentJson } from '../models/course-by-student';
 import { UserService } from './user.service';
-import { ProfileJson } from '../models/profile.model';
 import { ProfileService } from './profile.service';
+import { firestoreTimestampToNumberTimestamp } from '../utils';
 
 @Injectable({
   providedIn: 'root'
@@ -338,10 +337,12 @@ export class CourseService {
       const studyPlanItems = userCourses.filter(course => course.active).sort((a, b) => {
         return a.dateEndPlan - b.dateEndPlan;
       })
-      let startDateForCourse = studyPlanItems[0].dateStart
-      const userRemovedCourses = studyPlanItems.filter(course => changesInStudyPlan.removed.includes(course.id))
-      const userOtherCourses = studyPlanItems.filter(course => !changesInStudyPlan.removed.includes(course.id))
-
+      console.log("studyPlanItems", studyPlanItems)
+      let startDateForCourse = studyPlanItems[0].dateStartPlan.seconds * 1000
+      const userRemovedCourses = studyPlanItems.filter(course => changesInStudyPlan.removed.includes(course.courseRef.id))
+      console.log('userRemovedCourses', userRemovedCourses)
+      const userOtherCourses = studyPlanItems.filter(course => !changesInStudyPlan.removed.includes(course.courseRef.id))
+      console.log('userOtherCourses', userOtherCourses)
       // Disable removed courses
       for (let course of userRemovedCourses) {
         const courseJson = {
@@ -360,8 +361,8 @@ export class CourseService {
         const dateEndPlan = this.calculatEndDatePlan(startDateForCourse, courseDuration, user.studyHours)
         const courseJson = {
           ...course,
-          dateStartPlan: startDateForCourse,
-          dateEndPlan: dateEndPlan
+          dateStartPlan: new Date(startDateForCourse),
+          dateEndPlan: new Date(dateEndPlan)
         }
         console.log(`Repaired course ${course.courseRef.id} - Saved in ${courseJson.id}`, courseJson)
         batch.update(this.afs.collection<CourseByStudent>(CourseByStudent.collection).doc(courseJson.id).ref, courseJson);
@@ -378,8 +379,9 @@ export class CourseService {
           const course = userCourses.find(course => course.courseRef.id === item)
           const courseJson = {
             ...course,
-            dateStartPlan: startDateForCourse,
-            dateEndPlan: dateEndPlan
+            dateStartPlan: new Date(startDateForCourse),
+            dateEndPlan: new Date(dateEndPlan),
+            active: true
           }
           console.log(`Activated course ${item} - Saved in ${courseJson.id}`, courseJson)
           batch.update(this.afs.collection<CourseByStudent>(CourseByStudent.collection).doc(courseJson.id).ref, courseJson);
@@ -390,8 +392,8 @@ export class CourseService {
             id: docRef.id,
             userRef: userRef,
             courseRef: this.afs.collection<Curso>(Curso.collection).doc(item).ref,
-            dateStartPlan: startDateForCourse,
-            dateEndPlan: dateEndPlan,
+            dateStartPlan: new Date(startDateForCourse),
+            dateEndPlan: new Date(dateEndPlan),
             progress: 0,
             dateStart: null,
             dateEnd: null,
