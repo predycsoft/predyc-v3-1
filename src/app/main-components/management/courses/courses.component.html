@@ -152,9 +152,10 @@
                                    <div class="mgt05">
                                     <div class="ft10 gray-10">Compentencias</div>
                                     <div fxLayout="row wrap" fxLayoutGap=".5rem" class="mgt05">
-                                        <div class="ft10 gray-8 backGray2 pd03 radius6 pdl05 pdr05 mgb05">Equipos estaticos</div>
+                                        <!-- <div class="ft10 gray-8 backGray2 pd03 radius6 pdl05 pdr05 mgb05">Equipos estaticos</div>
                                         <div class="ft10 gray-8 backGray2 pd03 radius6 pdl05 pdr05 mgb05" >VDF</div>
-                                        <div class="ft10 gray-8 backGray2 pd03 radius6 pdl05 pdr05 mgb05">Mecanica de presión</div>
+                                        <div class="ft10 gray-8 backGray2 pd03 radius6 pdl05 pdr05 mgb05">Mecanica de presión</div> -->
+                                        <div *ngFor="let skill of selectedCourse['skills']" class="ft10 gray-8 backGray2 pd03 radius6 pdl05 pdr05 mgb05">{{skill.name}}</div>
                                     </div>
                                    </div>
                                 </div>

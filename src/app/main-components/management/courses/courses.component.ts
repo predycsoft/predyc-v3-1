@@ -89,10 +89,17 @@ export class CoursesComponent implements AfterViewInit {
             let filteredCategories = category.filter(categoryIn => categoryIds.has(categoryIn.id));
             curso['skills'] = filteredSkills;
             curso['categories'] = filteredCategories;
+
+            curso['modules'].sort((a, b) => a.numero - b.numero);
+
+
             let modulos = curso['modules']
+
             let duracionCourse = 0;
             modulos.forEach(modulo => {
               //console.log('modulo',modulo)
+              //modulo.clases.sort((a, b) => b.date - a.date);
+
               modulo.expanded = false;
               let duracion = 0;
               modulo.clases.forEach(clase => {
