@@ -266,6 +266,113 @@ export class ProfilesComponent {
   }
 
   getChart(chartData) {
+    console.log('chartData',chartData)
+    chartData.sort((a, b) => b.value - a.value);
+
+    let labels = []
+    let values = []
+    let valuesComplete = []
+
+    chartData.forEach(data => {
+      labels.push(data.label)
+      values.push(data.value)
+      valuesComplete.push(data.valueComplete)
+    });
+    if (this.chart) {
+      this.chart.destroy();
+    }
+    let pilares=[]
+    let data = null
+    
+    // Definimos un objeto para mapear los pilares originales a los nuevos valores
+    const mapeoNombres : { [key: string]: string } = {
+      "Confiabilidad": "Confiabilidad",
+      "Eléctrica": "Eléctrica",
+      "Gestión de Activos": "Gestión de Activos",
+      "Gestión de Mantenimiento": "Mantenimiento",
+      "Gestión de Proyectos": "Proyectos",
+      "HSE": "HSE",
+      "Instrumentación": "Instrumentación",
+      "Integridad": "Integridad",
+      "Mantenimiento Predictivo": "Predictivo",
+      "Mecánico": "Mecánico",
+      "Sistemas y procesos": "Sist. & Proc.",
+      "Soporte a Mantenimiento": "Soporte Mant"
+    };
+
+    // Nuevo arreglo para los nombres resumidos
+    let nombresResumidos: string[] = [];
+
+    // Recorrer el arreglo actual y crear el nuevo con nombres resumidos
+    labels.forEach(pilar => {
+      const nombreResumido = mapeoNombres[pilar]; // Obtener el nombre resumido
+      if (nombreResumido) {
+        nombresResumidos.push(nombreResumido); // Añadir al nuevo arreglo
+      } else {
+        // Si el pilar actual no tiene un nombre resumido en el mapeo,
+        // se podría añadir el nombre original o manejarlo como un error.
+        nombresResumidos.push(pilar); // O manejar el caso de que no exista mapeo como se prefiera
+      }
+    });
+
+    console.log('nombresResumidos',nombresResumidos);
+
+    data =  {
+      labels: nombresResumidos,
+      datasets: [{
+        data: values,
+        fill: true,
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        borderColor: 'rgb(54, 162, 235)',
+        pointBackgroundColor: 'rgb(54, 162, 235)',
+        pointBorderColor: '#fff',
+        pointHoverBackgroundColor: '#fff',
+        pointHoverBorderColor: 'rgb(54, 162, 235)'
+      }]
+    }
+
+    const canvas = document.getElementById("chart") as HTMLCanvasElement;
+    const ctx = canvas.getContext('2d')
+    
+
+    this.chart = new Chart(ctx, {
+      type: 'radar',
+      data: data,
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false,
+            position: 'bottom',
+            labels: {
+              boxWidth: 10, // Tamaño de la caja de color
+              padding: 10 // Espacio entre los elementos de la leyenda
+            }
+          }
+        },
+        elements: {
+          line: {
+            borderWidth: 1
+          }
+        },
+        scales: {
+          r: {
+            beginAtZero: true,
+            ticks: {
+              display: false,
+              stepSize: 20,
+            }
+          }
+        }
+      }
+    });
+    
+    
+    
+  }
+
+  _getChart(chartData) {
     let labels = []
     let values = []
     chartData.filter(item => item.value !== 0).forEach(data => {

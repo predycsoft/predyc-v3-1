@@ -206,12 +206,6 @@ export const skillsData = [
     },
     {
         id: null,
-        name: "Gestión de riesgo",
-        category: "Gestión de proyectos",
-        enterprise: null
-    },
-    {
-        id: null,
         name: "Gestión del cronograma",
         category: "Gestión de proyectos",
         enterprise: null
