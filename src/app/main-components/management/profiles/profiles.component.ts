@@ -105,10 +105,7 @@ export class ProfilesComponent {
       this.studyPlan = []
       // this.courses = courses
       this.coursesForExplorer = courses.map(course => {
-        // Find skill object for each skill ref in course
-        // console.log(course)
         const skills = course.skillsRef.map(skillRef => {
-          // console.log(skillRef)
           return this.skills.find(skill => skill.id === skillRef.id)
         })
         const categories = []
@@ -145,8 +142,6 @@ export class ProfilesComponent {
         this.hoverItem$
       ]).pipe(
         map(([searchText, hoverCategory]) => {
-          // console.log('searchText', searchText)
-          // console.log('hoverCategory', hoverCategory)
           if (!searchText && !hoverCategory) return []
           let filteredCourses = this.coursesForExplorer
           if (hoverCategory) {
