@@ -278,7 +278,7 @@ export const skillsData = [
     },
     {
         id: null,
-        name: "Industria Petrolera",
+        name: "Industria petrolera",
         category: "Sistemas y procesos",
         enterprise: null
     },
