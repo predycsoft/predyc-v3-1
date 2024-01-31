@@ -75,27 +75,27 @@
             <div class="mgt10" fxLayout="column" *ngFor="let license of licenses">
                 <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
                     <div class="ft12 ft500 ">Licencia adquirida en {{license.startedAt | date:"dd/MM/yyyy"}}</div>
-                    <div class="radius20 backGray2 pdl10 pdr10 ft10">Vencida</div>
+                    <div class="radius20 backGray2 pdl10 pdr10 ft10">{{license?.currentPeriodEnd > today ? "Vigente" : "Vencida"}}</div>
                 </div>
                 <div class="item " fxLayout="row" fxLayoutAlign="space-between center">
                     <span class="ft11 title">Licencias adquiridas</span>
-                    <span class="ft11 value">{{selectedLicense.quantity}}</span>
+                    <span class="ft11 value">{{license.quantity}}</span>
                 </div>
                 <div class="item" fxLayout="row" fxLayoutAlign="space-between center">
                     <span class="ft11 title">Licencias disponibles</span>
-                    <span class="ft11 value">{{selectedLicense.quantity - selectedLicense.quantityUsed}}</span>
+                    <span class="ft11 value">{{license.quantity - license.quantityUsed}}</span>
                 </div>
                 <div class="item" fxLayout="row" fxLayoutAlign="space-between center">
                     <span class="ft11 title">Licencias usadas</span>
-                    <span class="ft11 value">{{selectedLicense.quantityUsed}}</span>
+                    <span class="ft11 value">{{license.quantityUsed}}</span>
                 </div>
                 <div class="item" fxLayout="row" fxLayoutAlign="space-between center">
                     <span class="ft11 title">Rotaciones disponibles</span>
-                    <span class="ft11 value">{{selectedLicense.rotations}}</span>
+                    <span class="ft11 value">{{license.rotations}}</span>
                 </div>
                 <div class="item" fxLayout="row" fxLayoutAlign="space-between center">
                     <span class="ft11 title">Válidas hasta</span>
-                    <span class="ft11 value">{{ selectedLicense?.currentPeriodEnd | date:'dd/MM/yyyy' }}</span>
+                    <span class="ft11 value">{{ license?.currentPeriodEnd | date:'dd/MM/yyyy' }}</span>
                 </div>
             </div> 
         </div>   
