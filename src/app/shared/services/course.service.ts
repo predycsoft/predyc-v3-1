@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { User } from '../../shared/models/user.model';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, DocumentReference, QuerySnapshot } from '@angular/fire/compat/firestore';
-import { BehaviorSubject, firstValueFrom, Observable, of } from 'rxjs'
+import { BehaviorSubject, firstValueFrom, from, Observable, of } from 'rxjs'
 import { EnterpriseService } from './enterprise.service';
 import { AlertsService } from './alerts.service';
 import { Enterprise } from '../models/enterprise.model';
@@ -426,4 +426,16 @@ export class CourseService {
     // Return the day of the month, which is the number of days in that month
     return nextMonth.getDate();
   }
+
+
+  // ---- classeByStudent Collection methods
+  getClassesByStudent$(userRef: DocumentReference<User>): Observable<any[]> {
+    return this.afs.collection<any>("classesByStudent", ref => ref.where('userRef', '==', userRef).where('completed', '==', true)).valueChanges()
+  }
+
+  getClass$(classId: string): Observable<Clase> {
+    return this.afs.collection<Clase>(Clase.collection).doc(classId).valueChanges()
+  }
+  
+
 }

@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { IconService } from 'src/app/shared/services/icon.service';
 
 export class Log {
-  timestamp: number = 0
-  time: number = 0 // Tiempo empleado en minutos
+  endDate: number = 0
+  classDuration: number = 0 
 }
 @Component({
   selector: 'app-users-study-time-container',
@@ -50,10 +50,10 @@ export class UsersStudyTimeContainerComponent {
   }
 
   getStats() {
-    let minutesTimeWeek = this.getTotalLogsTime(this.logs.filter(x => x.timestamp > this.startOfWeek))
+    let minutesTimeWeek = this.getTotalLogsTime(this.logs.filter(x => x.endDate > this.startOfWeek))
     this.hoursTimeWeek = minutesTimeWeek / 60
     // console.log("this.hoursTimeWeek", this.hoursTimeWeek)
-    let minutesTimeMonth = this.getTotalLogsTime(this.logs.filter(x => x.timestamp > this.startOfMonth))
+    let minutesTimeMonth = this.getTotalLogsTime(this.logs.filter(x => x.endDate > this.startOfMonth))
     this.hoursTimeMonth = minutesTimeMonth / 60
     // console.log("this.hoursTimeMonth", this.hoursTimeMonth)
   }
@@ -61,7 +61,7 @@ export class UsersStudyTimeContainerComponent {
 
   getTotalLogsTime(logs: Log[]):number {
     return logs.reduce((totalTime: number, log: Log) => {
-      return totalTime + log.time;
+      return totalTime + log.classDuration;
     }, 0);
   }
 

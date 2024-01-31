@@ -39,6 +39,8 @@ export class SettingsComponent {
 
   hasLicenseChanged = 1 //flag to deselect checkboxes after license assign or removed
 
+  today = +new Date()
+
   ngOnInit() {
     this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
       if (params['status']) {
