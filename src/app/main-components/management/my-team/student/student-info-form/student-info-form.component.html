@@ -8,7 +8,7 @@
             <span class="makeBlue cursorPointer ft14" (click)="isEditing ? save() : (isEditing = true) && studentForm.get('canEnrollParticularCourses')?.enable()">{{ isEditing ? 'Guardar' : 'Editar' }}</span>
         </div>
         <div fxLayout="row" fxLayoutAlign="space-between center" class="fh mgt10">
-            <div fxLayout="column" fxLayoutAlign="space-between center" fxLayoutGap=".75rem" class="w-40">
+            <div fxLayout="column" fxLayoutAlign="space-between center" fxLayoutGap=".75rem" class="w-75">
                 <div (click)="isEditing ? fileInput.click() : null" class="" [ngClass]="isEditing ? 'cursorPointer' : ''">
                     <img [src]="imageUrl ? imageUrl : 'assets/images/default/default-user-image.jpg'" class="avatar6" alt="">
                 </div>
@@ -16,9 +16,9 @@
                 <div class="radius10 backBlue1 pdr10 pdl10">
                     <span class="blue-5 ft13 ft500">Activo</span>
                 </div>
-                <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap=".1rem">
+                <div fxLayout="" fxLayoutAlign="left center" fxLayoutGap=".1rem">
                     <span class="ft12 makeBlue">Inscribir cursos particulares</span>
-                    <mat-slide-toggle color="primary" formControlName="canEnrollParticularCourses"></mat-slide-toggle>
+                    <mat-slide-toggle class="mgl20" color="primary" formControlName="canEnrollParticularCourses"></mat-slide-toggle>
                 </div>
             </div>
             <div fxLayout="column" fxLayoutAlign="start start" class="w-60">

@@ -37,30 +37,30 @@
     <!-- 3 cards top -->
     <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt05">
         <!-- Informacion del usuario-->
-        <div class="w-35 radius10 border cards" fxLayout="column" style="height: 18rem">
+        <div class="w-35 radius10 borderLight cards" fxLayout="column" style="height: 18rem">
             <app-student-info-form class="fh" [student]="student" [studentProfile]="studentProfile"  (onStudentSave)="onStudentSaveHandler($event)"></app-student-info-form>
         </div>
         <!-- Tiempode estudio -->
-        <div class="w-31 radius10 border pd10 cards" fxLayout="column" fxLayoutGap="0.3rem" style="height: 18rem;">
+        <div class="w-31 radius10 borderLight pd10 cards" fxLayout="column" fxLayoutGap="0.3rem" style="height: 18rem;">
             <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="">
                 <img [src]="icon.clock" class="makeBlue h16px" alt="">
                 <span class="ft500 black undrl ft14 ft600 black">Tiempo de estudio</span>
             </div>
             <!-- Chart -->
-            <div class="border radius10 pdt05" fxLayout="row" fxLayoutAlign="space-between center">
+            <div class="borderLight radius10 pdt05" fxLayout="row" fxLayoutAlign="space-between center">
                 <div style="height: 200px;">
                     <span> Aqui va la grafica</span>
                 </div>
             </div>
         </div>
         <!-- Progreso -->
-        <div class="w-31 radius10 border pd10 cards" fxLayout="column" fxLayoutGap="0.3rem" style="height: 18rem;">
+        <div class="w-31 radius10 borderLight pd10 cards" fxLayout="column" fxLayoutGap="0.3rem" style="height: 18rem;">
             <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="">
                 <img [src]="icon.dashboard" class="makeBlue h16px" alt="">
                 <span class="ft500 black undrl ft14 ft600 black">Progreso</span>
             </div>
             <!-- Chart -->
-            <div class="border radius10 pdt05" fxLayout="row" fxLayoutAlign="space-between center">
+            <div class="borderLight radius10 pdt05" fxLayout="row" fxLayoutAlign="space-between center">
                 <div style="height: 200px;">
                     <span> Aqui va la grafica</span>
                 </div>
@@ -72,7 +72,7 @@
     </div>
     
     <!-- 2 cards bottom -->
-    <div fxLayout="column" >
+    <div class="mgt10" fxLayout="column" >
         <app-student-study-plan-and-competences [student]="originalStudentData" [selectedProfile]="studentProfile" class="fw"></app-student-study-plan-and-competences>
     </div>
 </div>

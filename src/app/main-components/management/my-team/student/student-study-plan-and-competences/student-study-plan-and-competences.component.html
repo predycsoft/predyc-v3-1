@@ -1,6 +1,6 @@
 <div fxLayout="row" fxLayoutAlign="space-between" class="mgt10">
     <!-- Resumen de competencias -->
-    <div class="w-35 radius10 border cards fh" fxLayout="column" fxLayoutGap="0rem" >
+    <div class="w-35 radius10 borderLight cards fh" fxLayout="column" fxLayoutGap="0rem" >
         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem">
             <img [src]="icon.ticTacToe" class="makeBlue h16px" alt="">
             <span class="ft500 black undrl ft14 ft600 black">Resumen de competencias</span>
@@ -16,54 +16,54 @@
                 </div>
             </div>
         </div> -->
-        <div  class="chart-container ft12">
-            <div class="" *ngFor="let category of categoriesAndSkillsWidgetData; let i = index">
+        <div  class="chart-container ft14">
+            <div *ngFor="let category of categoriesAndSkillsWidgetData; let i = index">
                 <div class="ft12">Pilar {{i+1}}: {{category.label}}</div>
-                <div
-                    *ngFor="let skill of category.skills"
-                    fxLayout="row wrap"
-                    fxLayoutGap=".3rem"
-                    fxLayoutAlign=" center"
-                    class="radius4 backGray2 pdl10 pdr10 gray-8 mgt05"
-                    style="width: fit-content;"
-                    >
-                    {{skill}}
+                <div fxLayout="row wrap" fxLayoutGap=".3rem" fxLayoutAlign="start center" class="mgt05 mgr05">
+                    <div
+                        *ngFor="let skill of category.skills"
+                        class="radius10 backGray2 pdl10 pdr10 gray-8 centered-text"
+                        style="margin-right: 0.3rem; margin-bottom: 0.3rem; white-space: nowrap;"
+                        >
+                        {{skill}}
+                    </div>
                 </div>
             </div>
+            
         </div>
     
     </div>
     <!-- Plan de estudios -->
-    <div class="w-64 radius10 border cards " fxLayout="column" fxLayoutGap="">
+    <div class="w-64 radius10 borderLight cards " fxLayout="column" fxLayoutGap="">
         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem">
             <img [src]="icon.ticTacToe" class="makeBlue h16px" alt="">
             <span class="ft500 black undrl ft14 ft600 black">Plan de estudios</span>
         </div>
         <ng-container *ngIf="!showInitForm">
             <div *ngIf="getDelayedMonthsCount() > 0" class="border radius10 pd05 backRed1" fxLayout="row" fxLayoutAlign="space-between center" style="border-color: red !important;">
-                <img [src]="icon.redWarning2" class="h24px" alt="">
+                <img [src]="icon.redWarning2" class="h16px" alt="">
                 <span class="red-5 ft14 ft600"> 
                     Advertencia: este usuario tiene {{ getDelayedMonthsCount() }} {{getDelayedMonthsCount() > 1 ? "meses atrasados" : "mes atrasado"}}
                 </span>
                 <button class="redButton btn">Alertar via e-mail</button>
             </div>
             <div *ngIf="(selectedProfile && months && months.length > 0) else noPlan" >
-                <div *ngFor="let month of months; let index = index" fxLayout="column"  class="mgt05">
-                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="mgb10">
-                        <span class="ft16 ft600 black">{{month.monthName | titlecase}} {{month.yearNumber}} </span>
+                <div *ngFor="let month of months; let index = index" fxLayout="column"  class="mgt20 mgl05 mgr05">
+                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="mgb10 radius6">
+                        <span class="ft12 ft600 black">{{month.monthName | titlecase}} {{month.yearNumber}} </span>
                         <img *ngIf="isMonthPast(month) && !isMonthCompleted(month)" [src]="icon.redWarning2" class="makeRed h14px" alt="">
                     </div>
                     <div *ngFor="let course of month.courses; let i = index" fxLayout="column" fxLayoutAlign="center" 
                         class="h50px pd10" [ngClass]=" i % 2 ? '' : 'backGray1'">
                         <div fxLayout="row" fxLayoutAlign="space-between center">
-                            <span class="ft14"> {{course.courseTitle}} </span>
+                            <span class="ft12"> {{course.courseTitle}} </span>
                             <!-- just to see the dates -->
                             <span>{{course.dateStartPlan | date:'dd/MM/yy'}}</span>
                             <span>{{course.dateEndPlan | date:'dd/MM/yy'}}</span>
                             <!--  -->
                             <div fxLayout="row" fxLayoutAlign="space-between center" class="" fxLayoutGap="0.5rem">
-                                <img *ngIf="course.dateEnd" [src]="icon.greenCheck" class="h14px" alt="">
-                                <span class="ft14"> {{course.duration | number:'1.0-1'}} hr </span>
+                                <img *ngIf="course.dateEnd" [src]="icon.greenCheck" class="h12px" alt="">
+                                <span class="ft12"> {{course.duration | number:'1.0-1'}} hr </span>
                             </div>
                         </div>
                     </div>

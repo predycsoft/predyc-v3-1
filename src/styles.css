@@ -679,6 +679,8 @@ body {
 .mgt05{  margin-top: 8px; }
 .mgt08{  margin-top: 12px; }
 .mgt10{  margin-top: 16px; }
+.mgt12{  margin-top: 18px; }
+
 .mgt15{  margin-top: 24px; }
 .mgt20{  margin-top: 32px; }
 .mgt30{  margin-top: 48px; }
@@ -1042,7 +1044,10 @@ body {
 }
 
 .border{  border: var(--borderColor) 1px solid !important;}
-.borderLight {border: 1px solid var(--gray-3);}
+
+
+
+.borderLight {border: 1px solid #ebebeb;}
 .border2{  border: var(--borderColor) 2px solid !important;}
 .border-rt{  border-top: transparent 1px solid !important;}
 .border-rb{  border-bottom: transparent 1px solid !important;}
