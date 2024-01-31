@@ -106,13 +106,15 @@ export class ProfilesComponent {
       // this.courses = courses
       this.coursesForExplorer = courses.map(course => {
         // Find skill object for each skill ref in course
-        console.log(course)
+        // console.log(course)
         const skills = course.skillsRef.map(skillRef => {
-          console.log(skillRef)
+          // console.log(skillRef)
           return this.skills.find(skill => skill.id === skillRef.id)
         })
-        const categories = skills.map(skill => {
-          return this.categories.find(category => category.id === skill.category.id)
+        const categories = []
+        skills.forEach(skill => {
+          const category = this.categories.find(category => category.id === skill.category.id)
+          if (!categories.map(item => item.id).includes(category.id)) categories.push(category)
         })
         const inStudyPlan = this.profile && this.profile.coursesRef.map(courseRef => courseRef.id).includes(course.id)
         const courseForExplorer = {
@@ -167,7 +169,7 @@ export class ProfilesComponent {
     // console.log("studyPlan", this.studyPlan)
     // console.log("coursesForExplorer", this.coursesForExplorer.map(course => {return {name: course.titulo, inStudyPlan: course.inStudyPlan }}))
     // console.log("profileBackup", this.profileBackup)
-    this.courseService.updateStudyPlans({added: [], removed: []})
+    this.courseService.updateStudyPlans({added: [], removed: [], profileId: ''})
   } 
 
   onCategoryHover(item: any) {
@@ -324,7 +326,7 @@ export class ProfilesComponent {
     this.categoriesAndSkillsWidgetData = chartData.filter(category => category.skills.length > 0)
   }
 
-  onSave() {
+  async onSave() {
     try {
       if (!this.profileName) throw new Error("Debe indicar un nombre para el perfil")
       const coursesRef: DocumentReference<Curso>[] = this.studyPlan.map(course => {
@@ -339,26 +341,31 @@ export class ProfilesComponent {
         permissions: this.profile ? this.profile.permissions : null,
         hoursPerMonth: this.profileHoursPerMonth
       })
-      this.profileService.saveProfile(profile)
+      const profileId = await this.profileService.saveProfile(profile)
       let studyPlanChanged = false
       const changesInStudyPlan = {
         added: [],
-        removed: []
+        removed: [],
+        profileId: this.profile.id
       }
-      this.coursesForExplorer.forEach(course => {
-        const initialValue = course.inStudyPlan
-        const finalValue = this.profileBackup.selectedCourses.includes(course.id)
-        course.inStudyPlan = finalValue
-        if (initialValue !== finalValue) {
-          studyPlanChanged = true
-          if (finalValue) {
-            changesInStudyPlan.added.push(course.id)
-          } else {
-            changesInStudyPlan.removed.push(course.id)
+      if (this.id !== 'new') {
+        this.coursesForExplorer.forEach(course => {
+          const initialValue = course.inStudyPlan
+          const finalValue = this.profileBackup.selectedCourses.includes(course.id)
+          course.inStudyPlan = finalValue
+          if (initialValue !== finalValue) {
+            studyPlanChanged = true
+            if (finalValue) {
+              changesInStudyPlan.added.push(course.id)
+            } else {
+              changesInStudyPlan.removed.push(course.id)
+            }
           }
-        }
-      })
-      this.courseService.updateStudyPlans(changesInStudyPlan)
+        })
+        await this.courseService.updateStudyPlans(changesInStudyPlan)
+      } else {
+        this.router.navigate([`management/profiles/${profileId}`])
+      }
       this.alertService.succesAlert("Success")
       this.isEditing = false;
     } catch (error) {
