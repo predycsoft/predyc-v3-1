@@ -178,7 +178,7 @@ export const courseCategoryAndSkillsRelation = [
       "Cursos": "Gestión de los Riesgos",
       "Pilar": "Gestión de Proyectos",
       "Competencia 1": "Dirección de proyectos",
-      "Competencia 2": "Gestión de riesgo",
+      "Competencia 2": "Gestión del riesgo",
       "Competencia 3": ""
     },
     {
