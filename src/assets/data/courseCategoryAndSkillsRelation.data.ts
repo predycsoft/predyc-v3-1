@@ -178,7 +178,7 @@ export const courseCategoryAndSkillsRelation = [
       "Cursos": "Gestión de los Riesgos",
       "Pilar": "Gestión de Proyectos",
       "Competencia 1": "Dirección de proyectos",
-      "Competencia 2": "Gestión de riesgo",
+      "Competencia 2": "Gestión del riesgo",
       "Competencia 3": ""
     },
     {
@@ -338,7 +338,7 @@ export const courseCategoryAndSkillsRelation = [
     {
       "Cursos": "Procesos de Refinación en la Industria de Petróleo",
       "Pilar": "Sistemas y procesos",
-      "Competencia 1": "Industria Petrolera",
+      "Competencia 1": "Industria petrolera",
       "Competencia 2": "",
       "Competencia 3": ""
     },
