@@ -6,6 +6,10 @@ import { ProfileService } from 'src/app/shared/services/profile.service';
 import { UserService } from 'src/app/shared/services/user.service';
 import { AlertsService } from 'src/app/shared/services/alerts.service';
 import { DocumentReference } from '@angular/fire/compat/firestore';
+import { CourseService } from 'src/app/shared/services/course.service';
+import { Subscription, combineLatest, map, switchMap } from 'rxjs';
+import { Log } from 'src/app/main-components/dashboard/users-study-time-container/users-study-time-container.component';
+import { firestoreTimestampToNumberTimestamp } from 'src/app/shared/utils';
 
 
 @Component({
@@ -22,14 +26,61 @@ export class StudentDetailsComponent {
     private profileService: ProfileService,
     private userService: UserService,
     private alertService: AlertsService,
+    private courseService: CourseService,
   ){}
 
   studentProfile: Profile
+  courseServiceSubscription: Subscription
+
+  logs: Log[]
+  logsInCurrentMonth: Log[]
+  hoursTimeMonth: number
+
+  currentMonth = new Date().getUTCMonth();  
+  currentMonthName = new Date().toLocaleString('es-ES', { month: 'long' });
+
+  currentYear = new Date().getUTCFullYear()
 
 
   ngOnInit() {
     this.studentProfile = this.student.profile ? this.profileService.getProfile(this.student.profile.id) : null
     if (this.student) this.originalStudentData = {... this.student};  
+
+    //
+    this.courseServiceSubscription = this.courseService.getClassesByStudent$(this.userService.getUserRefById(this.student.uid))
+    .pipe(
+      switchMap(classesByStudent => {
+        if (classesByStudent.length > 0) {
+          // Obtener un array de Observables para cada clase
+          const classObservables = classesByStudent.map(studentClass =>
+            this.courseService.getClass$(studentClass.classRef.id).pipe(
+              map(clase => ({
+                classDuration: clase.duracion,
+                endDate: firestoreTimestampToNumberTimestamp(studentClass.dateEnd)
+              }))
+            )
+          );
+          return combineLatest(classObservables);
+        } else {
+          return [];
+        }
+      })
+    )
+    .subscribe(logs => {
+      if (logs.length > 0) {
+        // console.log("logs", logs); 
+        this.logs = logs
+        this.logsInCurrentMonth = logs.filter(log => {
+          const logMonth = new Date(log.endDate).getMonth(); 
+          const logYear = new Date(log.endDate).getFullYear();
+          return logMonth === this.currentMonth && logYear === this.currentYear;
+        })
+        console.log("this.logsInCurrentMonth",this.logsInCurrentMonth)
+        this.hoursTimeMonth = (this.logsInCurrentMonth.reduce((total, currentClass) => total + currentClass.classDuration, 0)) / 60;
+      }
+    });
+
+
   }
 
   async onStudentSaveHandler(student: User) {

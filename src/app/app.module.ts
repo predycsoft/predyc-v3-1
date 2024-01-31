@@ -116,6 +116,7 @@ import { DialogRequestLicensesComponent } from './shared/components/users/licens
 import { StudentInfoFormComponent } from './main-components/management/my-team/student/student-info-form/student-info-form.component';
 import { StudentStudyPlanAndCompetencesComponent } from './main-components/management/my-team/student/student-study-plan-and-competences/student-study-plan-and-competences.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { CustomMonthPipe } from './shared/pipes/custom-month.pipe';
 
 
 @NgModule({
@@ -185,6 +186,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     DialogRequestLicensesComponent,
     StudentInfoFormComponent,
     StudentStudyPlanAndCompetencesComponent,
+    CustomMonthPipe,
   ],
   imports: [
     BrowserModule,

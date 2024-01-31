@@ -14,6 +14,7 @@
                     <span class="ft10 gray-10"><span class="ft500 ft10 gray-10">{{hoursTimeMonth | number:"1.1-1"}}</span> / 20 hrs</span>
                 </div>
                 <div class="">
+                    <!--  -->
                     <mat-progress-spinner [value]="this.hoursTimeMonth*100/20" class=""></mat-progress-spinner>
                 </div>
             </div>
@@ -21,6 +22,7 @@
         <div><span class=" ft10 gray-10 fw">Mes actual: {{currentMonth}}</span></div>
     </div>
     <div class="fw fh" fxLayout="column" fxLayoutAlign="start center">
+        <!--  -->
         <app-study-time-monthly-chart [logs]="logs" class="fw fh"></app-study-time-monthly-chart>
     </div>
 </div>

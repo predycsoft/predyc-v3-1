@@ -45,11 +45,11 @@ export class StudyTimeWeeklyChartComponent {
 
       // Sum times for each day of week from Monday to current day
       for (let log of this.logs) {
-        let logDate = new Date(log.timestamp);
+        let logDate = new Date(log.endDate);
         let logDayOfWeek = (logDate.getDay() + 6) % 7;  // 0 is Monday, 6 is Sunday
 
         if (logDate >= startOfWeek && logDayOfWeek <= this.currentDayOfWeek) {
-          this.data[logDayOfWeek].value += log.time/60;
+          this.data[logDayOfWeek].value += log.classDuration/60;
         }
       }
       this.max = this.dayGoalHour
@@ -79,11 +79,11 @@ export class StudyTimeWeeklyChartComponent {
 
     // Sum times for each day of week from Monday to current day
     for (let log of this.logs) {
-      let logDate = new Date(log.timestamp);
+      let logDate = new Date(log.endDate);
       let logDayOfWeek = (logDate.getDay() + 6) % 7;  // 0 is Monday, 6 is Sunday
 
       if (logDate >= startOfWeek) {
-        this.data[logDayOfWeek].value += log.time/60;
+        this.data[logDayOfWeek].value += log.classDuration/60;
       }
     }
     this.max = this.dayGoalHour
