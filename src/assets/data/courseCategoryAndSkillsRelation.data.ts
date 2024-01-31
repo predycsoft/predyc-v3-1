@@ -338,7 +338,7 @@ export const courseCategoryAndSkillsRelation = [
     {
       "Cursos": "Procesos de Refinación en la Industria de Petróleo",
       "Pilar": "Sistemas y procesos",
-      "Competencia 1": "Industria Petrolera",
+      "Competencia 1": "Industria petrolera",
       "Competencia 2": "",
       "Competencia 3": ""
     },
