@@ -1,9 +1,10 @@
 <form [formGroup]="studentForm">
     <div fxLayout="column" fxLayoutGap="0.3rem" class="fh">
         <div fxLayout="row" fxLayoutAlign="space-between center" class="">
+            
             <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem">
-                <img [src]="icon.notification" class="makeBlue h16px" alt="">
-                <span class="ft500 black undrl ft14 ft600 black">Información del usuario</span>
+                <img [src]="icon.credentials"  alt="">
+                <span class="ft500  undrl ft12  gray-10">Información del usuario</span>
             </div>
             <span class="makeBlue cursorPointer ft14" (click)="isEditing ? save() : (isEditing = true) && studentForm.get('canEnrollParticularCourses')?.enable()">{{ isEditing ? 'Guardar' : 'Editar' }}</span>
         </div>
