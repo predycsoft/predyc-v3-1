@@ -41,42 +41,48 @@
             </div>
         </ng-template>
     </div>
-    <div fxLayout="row" fxLayoutGap="2rem" class="pdt10 pdr10 pdl10 pdb10">
-        <div class="containers" >
+    <div fxLayout="row" fxLayoutGap="2rem" class=" pdt22  pdr20 pdl30 pdb10">
+        <div class="containers " style="width: 30%; " >
             <!-- <div class="container" style="height: 100px; padding: 5px; border: 2px solid black; border-radius: 20px">
             </div> -->
-            <div class="fw" >
-                <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign=" center" class="mgb10">
+            <div  class=" fw pd10 mgt10 borderLight radius10 " >
+                <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign=" center">
                     <img [src]="icon.credentials" alt="Información del perfil">
-                    <span class="ft500 ft12 undrl gray-10">Detalles del perfil</span>
+                    <span class="ft500 ft14 undrl gray-10">Detalles del perfil</span>
                 </div>
-                <div class="pd05 backGray2 radius10">
-                    <p class="ft12 gray-8" *ngIf="!isEditing">
-                        {{profileDescription}}
-                    </p>
-                    <textarea
-                    name=""
-                    id=""
-                    rows="5"
-                    *ngIf="isEditing"
-                    [(ngModel)]="profileDescription"
-                    placeholder="Introduzca la descripción"
-                    style="width: 100%; resize: none; border: none; background-color: transparent !important;"
-                    >
-                </textarea>
+                <div class="pd05 backGray2 mgt10 radius10">
+                    <p class="ft12 gray-8 "  *ngIf="!isEditing" style="overflow: hidden; word-wrap: break-word;">{{profileDescription}} </p>
+                    <textarea name="" id="" rows="5" *ngIf="isEditing" [(ngModel)]="profileDescription"  placeholder="Introduzca la descripción"
+                    style="width: 100%; resize:vertical; border: none; background-color: transparent !important;"></textarea>
                 </div>
-               
             </div>
-            <div class="container" class="pd10 mgt10 borderLight radius10">
+          
+            <div class="container" class="pd10 mgt20 borderLight radius10 " >
                 <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign=" center">
                     <img [src]="icon.resultsPresentation" alt="Desempeño por pilares">
-                    <span class="ft500 ft12 undrl gray-10">Desempeño por pilares</span>
+                    <span class="ft500 ft14 undrl gray-10">Desempeño por pilares</span>
                 </div>
-                <div class="chart-container mgt10">
+                <div class="chart-container mgt10" >
                     <canvas id="chart"></canvas>
                 </div>
+                <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign=" center" style="margin-top:-25px" >
+                    <img [src]="icon.list" alt="Competencias">
+                    <span class="ft500 ft14 undrl gray-10">Resumen de competencias</span>
+                </div>
+                <div  class=" ft14">
+                    <div class="mgt10" *ngFor="let category of categoriesAndSkillsWidgetData; let i = index">
+                        <div class="ft14">Pilar {{i + 1}}: {{category.label}}</div>
+                        <div
+                            *ngFor="let skill of category.skills"
+                            style="display: inline-block; margin-right: 5px; margin-bottom: 5px;"
+                            class=" ListHover2 radius10 backGray2 pdl10 pdr10 gray-8 mgt05"
+                        >
+                            {{skill}}
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="container" class="radius10 mgt10 borderLight pd10">
+            <!-- <div class="container" class="radius10 mgt10 borderLight pd10">
                 <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign=" center">
                     <img [src]="icon.list" alt="Competencias">
                     <span class="ft500 ft12 undrl gray-10">Resumen de competencias</span>
@@ -96,49 +102,104 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
-        <div class="study-plan" style="padding: 5px">
-            <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign=" center">
-                <img [src]="icon.ticTacToe" alt="Plan de estudios">
-                <span class="ft500 ft12 undrl gray-10">Plan de estudios</span>
-            </div>
-            <div class="mgt20" fxLayout="row" fxLayoutGap="2rem">
-                <div fxLayoutGap=".5rem" fxLayout="row" fxLayoutAlign=" center">
-                    <span class="ft500 ft12 gray-9">Estudio mensual</span>
-                    <input [ngClass]="isEditing?'editNumber':'number'" [disabled]="!isEditing" class="ft12 centertext"  type="number" min="0" [(ngModel)]="profileHoursPerMonth">
-                    <span class="gray-10 ft11">horas</span>
+        <div class="containers pd10 mgt10 borderLight radius10 " style="width: 50%; " >
+            <div class="study-plan" style="padding: 5px">
+                <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign=" center">
+                    <img [src]="icon.ticTacToe" alt="Plan de estudios">
+                    <span class="ft500 ft12 undrl gray-10">Plan de estudios</span>
                 </div>
-            </div>
-            <div *ngIf="isEditing" ngbDropdown [autoClose]="'outside'" fxLayout="row" fxLayoutAlign=" center" >
-                <div class="mgt10 h40px radius20 shadow12" style="width: 100%; overflow: hidden; z-index: 2;" fxLayout="row">
-                    <button type="button" fxLayout="row" fxLayoutAlign="space-between center" class="gray-10 backGray2 ft12" style="border-radius: 0 0 0 0; width: 25%; height: 100%; padding: 0 10px;" id="dropdownBasic1" ngbDropdownToggle>
-                        Categorias
-                    </button>
-                    <div style="width: 75%; overflow: hidden; padding: 0 0px; position: relative" class=" pdl10 pdr05" fxLayout="row" fxLayoutAlign=" center">
-                        <input 
-                            type="text"
-                            placeholder="Buscar"
-                            class="pdl05 ft12"
-                            style="width: 100%; outline: none; border: 0; background-color: transparent;"
-                            [formControl]="searchControl"
-                            matInput
-                            [matAutocomplete]="auto"
-                            >
-                        <img [src]="icon.search" alt="Search" style="position: absolute; right: 10px;">
-                        <mat-autocomplete
-                            #auto="matAutocomplete"
-                        >
-                            <mat-option 
-                                *ngFor="let course of filteredCourses | async"
-                                [value]="course.id"
+                <div class="mgt20" fxLayout="row" fxLayoutGap="2rem">
+                    <div fxLayoutGap=".5rem" fxLayout="row" fxLayoutAlign=" center">
+                            <span class="ft500 ft12 gray-9">Estudio mensual</span>
+                        <input [ngClass]="isEditing?'editNumber':'number'" [disabled]="!isEditing" class="ft12 centertext"  type="number" min="0" [(ngModel)]="profileHoursPerMonth">
+                        <span class="gray-10 ft11">horas</span>
+                    </div>
+                </div>
+                <div *ngIf="isEditing" ngbDropdown [autoClose]="'outside'" fxLayout="row" fxLayoutAlign=" center" >
+                    <div class="mgt10 h40px radius20 shadow12" style="width: 100%; overflow: hidden; z-index: 2;" fxLayout="row">
+                        <button type="button" fxLayout="row" fxLayoutAlign="space-between center" class="gray-10 backGray2 ft12" style="border-radius: 0 0 0 0; width: 25%; height: 100%; padding: 0 10px;" id="dropdownBasic1" ngbDropdownToggle>
+                            Categorias
+                        </button>
+                        <div style="width: 75%; overflow: hidden; padding: 0 0px; position: relative" class=" pdl10 pdr05" fxLayout="row" fxLayoutAlign=" center">
+                                <input 
+                                type="text"
+                                placeholder="Buscar"
+                                class="pdl05 ft12"
+                                style="width: 100%; outline: none; border: 0; background-color: transparent;"
+                                [formControl]="searchControl"
+                                matInput
+                                [matAutocomplete]="auto"
                                 >
-                                <div
+                            <img [src]="icon.search" alt="Search" style="position: absolute; right: 10px;">
+                            <mat-autocomplete
+                                #auto="matAutocomplete"
+                            >
+                                <mat-option 
+                                    *ngFor="let course of filteredCourses | async"
+                                    [value]="course.id"
+                                        >
+                                    <div
+                                        fxLayout="row"
+                                        fxLayoutAlign="space-between center"
+                                        class="ft12 ft500 dropdownMenu dropdownMenuCourse"
+                                        (click)="$event.stopPropagation(); toggleCourseInPlan(course)"
+                                        >
+                                        <div
+                                            fxLayout="row"
+                                            fxLayoutAlign=" center"
+                                            fxLayoutGap="10px"
+                                            >
+                                            <img [src]="course.imagen" [alt]="course.titulo" class="w40px h40px radius4">
+                                            <div fxLayout="column" fxLayoutGap="5px">
+                                                <div>
+                                                        {{course.titulo}}
+                                                </div>
+                                                <div
+                                                    *ngFor="let skill of course.skills"
+                                                    fxLayout="row"
+                                                    fxLayoutGap="5px"
+                                                    fxLayoutAlign=" center"
+                                                    style="background-color: var(--gray-4); width: fit-content; padding: 2px 10px; border-radius: 20px;"
+                                                    >
+                                                    {{skill.name}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div [ngStyle]="{'background-color': course.inStudyPlan ? '#008CE3': 'white'}" style="border-radius: 50%; border: 1px solid black; width: 15px; height: 15px;"></div>
+                                    </div>
+                                </mat-option>
+                            </mat-autocomplete>
+                        </div>
+                    </div>
+                    <div ngbDropdownMenu aria-labelledby="dropdownBasic1" class="dropdownContainer fw" (mouseleave)="onCategoryLeave()">
+                        <div fxLayout="row" class=" fw">
+                            <div style="width: 25%;" class="backGray2 dropy">
+                                <div 
+                                    ngbDropdownItem
+                                    class="ft12 ft500 pdt10 pdb10 gray-10 dropCategory"
+                                    style="width: 100%;"
+                                    *ngFor="let category of categories"
+                                    (mouseenter)="onCategoryHover(category)"
                                     fxLayout="row"
                                     fxLayoutAlign="space-between center"
-                                    class="ft12 ft500 dropdownMenu dropdownMenuCourse"
-                                    (click)="$event.stopPropagation(); toggleCourseInPlan(course)"
+        
                                     >
+                                    <div class="ft12 gray-10">{{category.name}}</div>
+                                    <img [src]="icon.chevronRight" alt="">
+                                </div>
+                            </div>
+                            <div class="drowCourses">
+                                <div
+                                    class="ft12 ft500 fw dropCourse"
+                                    ngbDropdownItem
+                                    *ngFor="let course of filteredCourses | async"
+                                    fxLayout="row"
+                                    fxLayoutAlign="space-between center"
+                                    (click)="toggleCourseInPlan(course)"
+                                    >
+                                    <!-- (click)="course.inStudyPlan = !course.inStudyPlan" -->
                                     <div
                                         fxLayout="row"
                                         fxLayoutAlign=" center"
@@ -154,128 +215,77 @@
                                                 fxLayout="row"
                                                 fxLayoutGap="5px"
                                                 fxLayoutAlign=" center"
-                                                style="background-color: var(--gray-4); width: fit-content; padding: 2px 10px; border-radius: 20px;"
+                                                class="ft10"
+                                                style="background-color: var(--gray-2); width: fit-content; padding: 2px 10px; border-radius: 20px;"
                                                 >
                                                 {{skill.name}}
                                             </div>
                                         </div>
                                     </div>
-                                    <div [ngStyle]="{'background-color': course.inStudyPlan ? '#008CE3': 'white'}" style="border-radius: 50%; border: 1px solid black; width: 15px; height: 15px;"></div>
+                                    <div [ngStyle]="{'background-color': course.inStudyPlan ? '#008CE3': 'white'}" style="border-radius: 50%; border: 1px solid var(--blue-5); width: 15px; height: 15px;"></div>
                                 </div>
-                            </mat-option>
-                        </mat-autocomplete>
-                    </div>
-                </div>
-                <div ngbDropdownMenu aria-labelledby="dropdownBasic1" class="dropdownContainer fw" (mouseleave)="onCategoryLeave()">
-                    <div fxLayout="row" class=" fw">
-                        <div style="width: 25%;" class="backGray2 dropy">
-                            <div 
-                                ngbDropdownItem
-                                class="ft12 ft500 pdt10 pdb10 gray-10 dropCategory"
-                                style="width: 100%;"
-                                *ngFor="let category of categories"
-                                (mouseenter)="onCategoryHover(category)"
-                                fxLayout="row"
-                                fxLayoutAlign="space-between center"
-    
-                                >
-                                <div class="ft12 gray-10">{{category.name}}</div>
-                                <img [src]="icon.chevronRight" alt="">
                             </div>
-                        </div>
-                        <div class="drowCourses">
-                            <div
-                                class="ft12 ft500 fw dropCourse"
-                                ngbDropdownItem
-                                *ngFor="let course of filteredCourses | async"
-                                fxLayout="row"
-                                fxLayoutAlign="space-between center"
-                                (click)="toggleCourseInPlan(course)"
-                                >
-                                <!-- (click)="course.inStudyPlan = !course.inStudyPlan" -->
-                                <div
-                                    fxLayout="row"
-                                    fxLayoutAlign=" center"
-                                    fxLayoutGap="10px"
-                                    >
-                                    <img [src]="course.imagen" [alt]="course.titulo" class="w40px h40px radius4">
-                                    <div fxLayout="column" fxLayoutGap="5px">
-                                        <div>
-                                            {{course.titulo}}
-                                        </div>
-                                        <div
-                                            *ngFor="let skill of course.skills"
-                                            fxLayout="row"
-                                            fxLayoutGap="5px"
-                                            fxLayoutAlign=" center"
-                                            class="ft10"
-                                            style="background-color: var(--gray-2); width: fit-content; padding: 2px 10px; border-radius: 20px;"
-                                            >
-                                            {{skill.name}}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div [ngStyle]="{'background-color': course.inStudyPlan ? '#008CE3': 'white'}" style="border-radius: 50%; border: 1px solid var(--blue-5); width: 15px; height: 15px;"></div>
-                            </div>
-                        </div>
-                        <!-- <div
-                            class="ft12 ft500 gray-10"
-                            fxLayout="column"
-                            fxLayoutAlign=" center"
-                            >
-                            <div
-                                ngbDropdownItem
-                                *ngFor="let course of filteredCourses"
-                                >
-                                {{course.titulo}}
-                            </div>
-                        </div> -->
-                    </div>
-                </div>
-            </div>
-            <div style="overflow: hidden; background-color: #FCFCFC;" class=" radius10 borderLight mgt20" >
-                <!-- [ngClass]="selectedCourse == course ? 'backBlue1' : ''"
-                (click)="selectedCourse = course"
-                cdkDrag
-                [cdkDragData]="course"
-                *ngFor="let course of profile.studyPlan; let i = index" -->
-                <div
-                    class="fw pd05 h40px border-bl hoverBlue"
-                    fxLayout="row"
-                    fxLayoutAlign="space-between center"
-                    fxLayoutGap="1rem"
-                    *ngFor="let item of studyPlan; let i = index"
-                >
-                    <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
-                        <img *ngIf="isEditing" [src]="icon.drag" class="h14px" alt="Drag item">            
-                            <!-- [ngClass]="selectedCourse == course ? 'blue-5 ft500' : 'gray-10'" -->
-                        <div
-                            fxLayout="column"
-                            fxLayoutGap="5px"
-                            class="ft11"
-                            >
-                            <span class="ft12 gray-10">
-                                {{ item.titulo }}
-                            </span>
                             <!-- <div
-                                *ngFor="let skill of item.skills"
-                                fxLayout="row"
-                                fxLayoutGap="5px"
+                                class="ft12 ft500 gray-10"
+                                fxLayout="column"
                                 fxLayoutAlign=" center"
-                                style="background-color: var(--gray-4); width: fit-content; padding: 2px 10px; border-radius: 20px;"
                                 >
-                                {{skill.name}}
+                                <div
+                                    ngbDropdownItem
+                                    *ngFor="let course of filteredCourses"
+                                    >
+                                    {{course.titulo}}
+                                </div>
                             </div> -->
                         </div>
                     </div>
-                    <div fxLayoutAlign="center center" fxLayout="row" fxLayoutGap="1rem">
-                        <span class="gray-10 ft11 nowrap">
-                            <!-- {{ roundNumber(60 / 60) }} hrs -->
-                            {{ roundNumber(item.duracion / 60) }} hrs
-                        </span>
-                        <img *ngIf="isEditing" [src]="icon.trash" class="h14px makeGray cursorPointer" (click)="toggleCourseInPlan(item)" alt="">
+                </div>
+                <div style="overflow: hidden; background-color: #FCFCFC;" class=" radius10 borderLight mgt20" >
+                    <!-- [ngClass]="selectedCourse == course ? 'backBlue1' : ''"
+                    (click)="selectedCourse = course"
+                    cdkDrag
+                    [cdkDragData]="course"
+                    *ngFor="let course of profile.studyPlan; let i = index" -->
+                    <div
+                        class="fw pd05 h40px border-bl hoverBlue"
+                        fxLayout="row"
+                        fxLayoutAlign="space-between center"
+                        fxLayoutGap="1rem"
+                        *ngFor="let item of studyPlan; let i = index"
+                    >
+                        <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
+                            <img *ngIf="isEditing" [src]="icon.drag" class="h14px" alt="Drag item">            
+                                <!-- [ngClass]="selectedCourse == course ? 'blue-5 ft500' : 'gray-10'" -->
+                            <div
+                                fxLayout="column"
+                                fxLayoutGap="5px"
+                                class="ft11"
+                                >
+                                <span class="ft12 gray-10">
+                                    {{ item.titulo }}
+                                </span>
+                                <!-- <div
+                                    *ngFor="let skill of item.skills"
+                                    fxLayout="row"
+                                    fxLayoutGap="5px"
+                                    fxLayoutAlign=" center"
+                                    style="background-color: var(--gray-4); width: fit-content; padding: 2px 10px; border-radius: 20px;"
+                                    >
+                                    {{skill.name}}
+                                </div> -->
+                            </div>
+                        </div>
+                        <div fxLayoutAlign="center center" fxLayout="row" fxLayoutGap="1rem">
+                            <span class="gray-10 ft11 nowrap">
+                                <!-- {{ roundNumber(60 / 60) }} hrs -->
+                                {{ roundNumber(item.duracion / 60) }} hrs
+                            </span>
+                            <img *ngIf="isEditing" [src]="icon.trash" class="h14px makeGray cursorPointer" (click)="toggleCourseInPlan(item)" alt="">
+                        </div>
                     </div>
                 </div>
+            
+            
             </div>
         </div>
     </div>

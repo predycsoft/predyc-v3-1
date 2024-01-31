@@ -777,6 +777,8 @@ body {
 .pdt08{  padding-top: 12px; }
 .pdt10{  padding-top: 16px; }
 .pdt20{  padding-top: 32px; }
+.pdt22{  padding-top: 40px; }
+
 .pdt30{  padding-top: 48px; }
 .pdt40{  padding-top: 64px; }
 .pdt50{  padding-top: 80px; }
@@ -1872,4 +1874,14 @@ span{
 .ListHover:hover{
   background-color:   rgba(211, 211, 211, 0.224) !important; 
 
+}
+
+.ListHover2:hover{
+
+  background-color: #ffffff !important;
+
+}
+
+.ListHover2{
+  background-color:   rgba(211, 211, 211, 0.224) !important; 
 }
