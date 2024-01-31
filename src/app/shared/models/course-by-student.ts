@@ -1,8 +1,9 @@
 import { DocumentReference } from "@angular/fire/compat/firestore"
+import { Curso } from "./course.model"
 
 export interface CourseByStudentJson { 
     active:boolean
-    courseRef: DocumentReference | null
+    courseRef: DocumentReference<Curso> | null
     dateEnd: any | null
     dateEndPlan: any
     dateStart: any | null
@@ -19,7 +20,7 @@ export class CourseByStudent {
 
 
     public active: boolean = true
-    public courseRef: DocumentReference
+    public courseRef: DocumentReference<Curso>
     public dateEnd: any = null
     public dateEndPlan: any
     public dateStart: any = null

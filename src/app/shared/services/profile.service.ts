@@ -83,7 +83,7 @@ export class ProfileService {
   }
 
 
-  async saveProfile(profile: Profile): Promise<void> {
+  async saveProfile(profile: Profile): Promise<string> {
     let ref: DocumentReference;
     // console.log('profile save',profile)
     // If profile has an ID, then it's an update
@@ -106,9 +106,9 @@ export class ProfileService {
     // profile.permissions.hasDefaultPermissions = hasDefaultPermissions
     const dataToSave = typeof profile.toJson === 'function' ? profile.toJson() : profile;
 
-    console.log('dataToSave',dataToSave)
     await ref.set(dataToSave, { merge: true });
     profile.id = ref.id; // Assign the generated ID to the profile
+    return profile.id
   }
 
   checkPermissionsChange(newPermissions: Permissions): boolean {
