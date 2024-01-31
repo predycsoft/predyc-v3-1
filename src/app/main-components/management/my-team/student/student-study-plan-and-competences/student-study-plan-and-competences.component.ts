@@ -67,6 +67,7 @@ export class StudentStudyPlanAndCompetencesComponent {
 
   ngOnInit() {
     const userRef = this.userService.getUserRefById(this.student.uid)
+    this.loadCompetencesData()
     // if the student has a profile, get the data and show the study plan
     this.combinedObservableSubscription = combineLatest([ this.courseService.getCourses$(), this.courseService.getActiveCoursesByStudent$(userRef)]).
     subscribe(([coursesData, coursesByStudent]) => {
@@ -75,7 +76,6 @@ export class StudentStudyPlanAndCompetencesComponent {
         if (this.selectedProfile) {
           if (coursesByStudent.length > 0) {
             this.buildMonths(coursesByStudent, coursesData)
-            // this.loadCompetencesData() // Here or inside the method ?
           } 
           else {
             this.showInitForm = true
@@ -97,11 +97,11 @@ export class StudentStudyPlanAndCompetencesComponent {
       // setting new profile
       if (changes.selectedProfile.previousValue && changes.selectedProfile.currentValue && 
       (changes.selectedProfile.currentValue.id !== changes.selectedProfile.previousValue.id )) {
-
         // Set active = false in prev profile courses
-        this.courseService.setCoursesByStudentInactive(this.userService.getUserRefById(this.student.uid))
-
-        // calculate dates and create studyPlan using student.studyHours and startDate of the first course of the prev studyPlan (?)
+        await this.courseService.setCoursesByStudentInactive(this.userService.getUserRefById(this.student.uid)) // this means changes in the collection
+        //
+        this.loadCompetencesData()
+        // calculate dates and create studyPlan using student.
         await this.createStudyPlan()
       }
     }
@@ -161,7 +161,7 @@ export class StudentStudyPlanAndCompetencesComponent {
       return a.monthNumber - b.monthNumber;
     });
     // console.log("this.months", this.months);
-    this.loadCompetencesData()
+    // this.loadCompetencesData()
   }
 
   async createStudyPlan() {
@@ -183,18 +183,18 @@ export class StudentStudyPlanAndCompetencesComponent {
       else dateStartPlan = dateEndPlan ? dateEndPlan : hoy;
 
       dateEndPlan = this.courseService.calculatEndDatePlan(dateStartPlan, courseDuration, hoursPermonth)
-      await this.courseService.saveCourseByStudent(coursesRefs[i], userRef, new Date(dateStartPlan), new Date(dateEndPlan))
+      await this.courseService.saveCourseByStudent(coursesRefs[i], userRef, new Date(dateStartPlan), new Date(dateEndPlan)) //this means changes in the collection
     }
 
     // Create months 
-    const userRef = this.userService.getUserRefById(this.student.uid)
-    this.courseService.getActiveCoursesByStudent$(userRef).subscribe(coursesByStudent => {
-      if (coursesByStudent.length > 0) {
-        this.buildMonths(coursesByStudent, this.coursesData)
-      } else {
-        console.log("El usuario no posee studyPlan");
-      }
-    })
+    // const userRef = this.userService.getUserRefById(this.student.uid)
+    // this.courseService.getActiveCoursesByStudent$(userRef).subscribe(coursesByStudent => {
+    //   if (coursesByStudent.length > 0) {
+    //     this.buildMonths(coursesByStudent, this.coursesData)
+    //   } else {
+    //     console.log("El usuario no posee studyPlan");
+    //   }
+    // })
   }
   
   isMonthCompleted(month: Month): boolean {
@@ -216,6 +216,7 @@ export class StudentStudyPlanAndCompetencesComponent {
     await this.userService.saveStudyPlanHoursPerMonth(this.student.uid, this.hoursPermonthInitForm)
     this.showInitForm = false
     // calculate dates and create studyplan using this.startDateInitForm
+    this.loadCompetencesData()
     await this.createStudyPlan()
   }
 
@@ -230,6 +231,7 @@ export class StudentStudyPlanAndCompetencesComponent {
     this.coursesForExplorer = []
     this.studyPlan = []
     const observablesArray: Observable<Category[] | Profile | Skill[] | Curso[]>[] = [this.categoryService.getCategories$(), this.skillService.getSkills$(), this.courseService.getCourses$()]
+    // const observablesArray: Observable<Category[] | Profile | Skill[]>[] = [this.categoryService.getCategories$(), this.skillService.getSkills$()]
   
     if (this.serviceSubscription) this.serviceSubscription.unsubscribe()
     this.serviceSubscription = combineLatest(observablesArray).subscribe((result) => {
@@ -237,6 +239,7 @@ export class StudentStudyPlanAndCompetencesComponent {
       const categories = result[0] as Category[]
       const skills = result[1] as Skill[]
       const courses = result[2] as Curso[]
+      // const courses = this.coursesData
       
       this.categories = categories
       this.skills = skills
@@ -259,17 +262,11 @@ export class StudentStudyPlanAndCompetencesComponent {
         return courseForExplorer
       })
       this.updateWidgets()
-
-      // console.log("categories", categories)
-      // console.log("skills", skills)
-      // console.log("courses", courses)
-      // console.log("coursesForExplorer", this.coursesForExplorer)
     })
   }
 
   updateWidgets() {
     const chartData = this.getChartData()
-    // console.log("chartData", chartData)
     this.getChart(chartData)
     this.updateCategoriesAndSkillsWidget(chartData)
   }
