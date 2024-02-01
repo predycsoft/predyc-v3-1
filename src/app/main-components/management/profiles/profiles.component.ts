@@ -86,7 +86,7 @@ export class ProfilesComponent {
       observablesArray.push(this.profileService.getProfile$(this.id))
     }
     this.serviceSubscription = combineLatest(observablesArray).subscribe((result) => {
-      console.log("result", result)
+      // console.log("result", result)
       const categories = result[0] as Category[]
       const skills = result[1] as Skill[]
       const courses = result[2] as Curso[]
@@ -133,10 +133,10 @@ export class ProfilesComponent {
         return coursesWithThisCategory.length > 0
       })
 
-      console.log("categories", categories)
-      console.log("skills", skills)
-      console.log("courses", courses)
-      console.log("coursesForExplorer", this.coursesForExplorer)
+      // console.log("categories", categories)
+      // console.log("skills", skills)
+      // console.log("courses", courses)
+      // console.log("coursesForExplorer", this.coursesForExplorer)
       this.filteredCourses = combineLatest([
         this.searchControl.valueChanges.pipe(startWith('')),
         this.hoverItem$
@@ -254,7 +254,7 @@ export class ProfilesComponent {
   }
 
   getChart(chartData) {
-    console.log('chartData',chartData)
+    // console.log('chartData',chartData)
     chartData.sort((a, b) => b.value - a.value);
 
     let labels = []
@@ -303,7 +303,7 @@ export class ProfilesComponent {
       }
     });
 
-    console.log('nombresResumidos',nombresResumidos);
+    // console.log('nombresResumidos',nombresResumidos);
 
     data =  {
       labels: nombresResumidos,
