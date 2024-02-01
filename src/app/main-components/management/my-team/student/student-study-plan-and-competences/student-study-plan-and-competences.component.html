@@ -48,6 +48,19 @@
                 <button class="redButton btn">Alertar via e-mail</button>
             </div>
             <div *ngIf="(selectedProfile && months && months.length > 0) else noPlan" >
+                <div *ngIf="diagnosticTest" fxLayout="row" fxLayoutAlign="space-between center">
+                    <span class="ft12"> Examen diagnóstico del perfil </span>
+                    <!-- just to see the dates -->
+                    <span>{{diagnosticTest.date | date:'dd/MM/yy'}}</span>
+                    <!--  -->
+                    <div fxLayout="row" fxLayoutAlign="space-between center" class="" fxLayoutGap="0.5rem">
+                        <img *ngIf="diagnosticTest.score >= 50" [src]="icon.greenCheck" class="h12px" alt="">
+                        <span class="ft12"> {{diagnosticTest.score >= 50 ? 'Aprobado' : 'Reprobado'}} con {{diagnosticTest.score}} </span>
+                    </div>
+                </div>
+                <div *ngIf="!diagnosticTest">
+                    <span>No ha presentado el examen diagnóstico</span>
+                </div>
                 <div *ngFor="let month of months; let index = index" fxLayout="column"  class="mgt20 mgl05 mgr05">
                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="mgb10 radius6">
                         <span class="ft12 ft600 black">{{month.monthName | titlecase}} {{month.yearNumber}} </span>

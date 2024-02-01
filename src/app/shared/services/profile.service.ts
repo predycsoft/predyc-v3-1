@@ -5,6 +5,8 @@ import { AlertsService } from './alerts.service';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { EnterpriseService } from './enterprise.service';
 import { Permissions } from 'src/app/shared/models/permissions.model';
+import { UserService } from './user.service';
+import { User } from '../models/user.model';
 
 
 @Injectable({
@@ -24,7 +26,6 @@ export class ProfileService {
     private alertService: AlertsService,
     private afs: AngularFirestore,
     private enterpriseService: EnterpriseService,
-
   ) {}
 
   public async loadProfiles() {
@@ -165,6 +166,12 @@ export class ProfileService {
         ).valueChanges({ idField: 'id' });
       })
     )
+  }
+
+  public getDiagnosticTestForUser$(user): Observable<any> {
+    const userRef = this.afs.collection(User.collection).doc(user.uid).ref
+    console.log(user.uid, user.profile.id)
+    return this.afs.collection('profileTestsByStudent', ref => ref.where("userRef", "==", userRef).where("profileRef", "==", user.profile)).valueChanges()
   }
   
 }

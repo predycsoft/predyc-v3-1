@@ -11,6 +11,7 @@ import { User, UserJson } from 'src/app/shared/models/user.model';
 import { CategoryService } from 'src/app/shared/services/category.service';
 import { CourseService } from 'src/app/shared/services/course.service';
 import { IconService } from 'src/app/shared/services/icon.service';
+import { ProfileService } from 'src/app/shared/services/profile.service';
 import { SkillService } from 'src/app/shared/services/skill.service';
 import { UserService } from 'src/app/shared/services/user.service';
 import { firestoreTimestampToNumberTimestamp, roundNumber } from 'src/app/shared/utils';
@@ -40,6 +41,7 @@ export class StudentStudyPlanAndCompetencesComponent {
     private userService: UserService,
     private courseService: CourseService,
     private categoryService: CategoryService,
+    private profileService: ProfileService,
     private skillService: SkillService,
   ){}
 
@@ -80,6 +82,7 @@ export class StudentStudyPlanAndCompetencesComponent {
       if (coursesData.length > 0) {
         this.coursesData = coursesData
         if (this.selectedProfile) {
+          this.getDiagnosticTestForProfile()
           if (coursesByStudent.length > 0) {
             this.buildMonths(coursesByStudent, coursesData)
           } 
@@ -103,6 +106,7 @@ export class StudentStudyPlanAndCompetencesComponent {
       // setting new profile
       if (changes.selectedProfile.previousValue && changes.selectedProfile.currentValue && 
       (changes.selectedProfile.currentValue.id !== changes.selectedProfile.previousValue.id )) {
+        this.getDiagnosticTestForProfile()
         // Set active = false in prev profile courses
         await this.courseService.setCoursesByStudentInactive(this.userService.getUserRefById(this.student.uid))
         //
@@ -110,9 +114,18 @@ export class StudentStudyPlanAndCompetencesComponent {
         await this.createStudyPlan()
       }
     }
-
   }
 
+  diagnosticTestSubscription: Subscription
+  diagnosticTest
+
+  getDiagnosticTestForProfile() {
+    if (this.diagnosticTestSubscription) this.diagnosticTestSubscription.unsubscribe()
+    this.diagnosticTestSubscription = this.profileService.getDiagnosticTestForUser$(this.student).subscribe(diagnosticTests => {
+      if (diagnosticTests.length === 0) return
+      this.diagnosticTest = diagnosticTests[0]
+    })
+  }
 
   buildMonths(coursesByStudent: CourseByStudent[], coursesData) {
     const months = {}; 
@@ -232,7 +245,8 @@ export class StudentStudyPlanAndCompetencesComponent {
   }
 
   ngOnDestroy() {
-    this.combinedObservableSubscription ? this.combinedObservableSubscription.unsubscribe() : null
+    if(this.combinedObservableSubscription) this.combinedObservableSubscription.unsubscribe()
+    if(this.diagnosticTestSubscription) this.diagnosticTestSubscription.unsubscribe()
   }
 
   // ---------------------------------------------------- Skills
