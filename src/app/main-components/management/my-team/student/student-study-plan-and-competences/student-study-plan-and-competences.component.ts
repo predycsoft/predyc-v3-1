@@ -63,6 +63,7 @@ export class StudentStudyPlanAndCompetencesComponent {
   skills: Skill[]
   chart: Chart
   studyPlan = []
+  courses
 
 
   ngOnInit() {
@@ -76,6 +77,7 @@ export class StudentStudyPlanAndCompetencesComponent {
         if (this.selectedProfile) {
           if (coursesByStudent.length > 0) {
             this.buildMonths(coursesByStudent, coursesData)
+            if(this.studyPlan.length > 0) this.updateStudyPlanForWidget()
           } 
           else {
             this.showInitForm = true
@@ -160,8 +162,6 @@ export class StudentStudyPlanAndCompetencesComponent {
       if (yearDiff !== 0) return yearDiff;
       return a.monthNumber - b.monthNumber;
     });
-    // console.log("this.months", this.months);
-    // this.loadCompetencesData()
   }
 
   async createStudyPlan() {
@@ -239,30 +239,34 @@ export class StudentStudyPlanAndCompetencesComponent {
       const categories = result[0] as Category[]
       const skills = result[1] as Skill[]
       const courses = result[2] as Curso[]
-      // const courses = this.coursesData
+      this.courses = courses
       
       this.categories = categories
       this.skills = skills
-
-      this.coursesForExplorer = courses.map(course => {
-        const skills = course.skillsRef.map(skillRef => {
-          return this.skills.find(skill => skill.id === skillRef.id)
-        })
-        const categories = skills.map(skill => {
-          return this.categories.find(category => category.id === skill.category.id)
-        })
-        const inStudyPlan = this.selectedProfile && this.selectedProfile.coursesRef.map(courseRef => courseRef.id).includes(course.id)
-        const courseForExplorer = {
-          ...course,
-          skills: skills,
-          categories: categories,
-          inStudyPlan: inStudyPlan
-        }
-        if (inStudyPlan) this.studyPlan.push(courseForExplorer)
-        return courseForExplorer
-      })
-      this.updateWidgets()
+      this.updateStudyPlanForWidget()
     })
+  }
+
+  updateStudyPlanForWidget() {
+    this.studyPlan = []
+    this.coursesForExplorer = this.courses.map(course => {
+      const skills = course.skillsRef.map(skillRef => {
+        return this.skills.find(skill => skill.id === skillRef.id)
+      })
+      const categories = skills.map(skill => {
+        return this.categories.find(category => category.id === skill.category.id)
+      })
+      const inStudyPlan = this.selectedProfile && this.selectedProfile.coursesRef.map(courseRef => courseRef.id).includes(course.id)
+      const courseForExplorer = {
+        ...course,
+        skills: skills,
+        categories: categories,
+        inStudyPlan: inStudyPlan
+      }
+      if (inStudyPlan) this.studyPlan.push(courseForExplorer)
+      return courseForExplorer
+    })
+    this.updateWidgets()
   }
 
   updateWidgets() {
@@ -302,7 +306,6 @@ export class StudentStudyPlanAndCompetencesComponent {
   }
 
   getChart(chartData) {
-    console.log('chartData',chartData)
     chartData.sort((a, b) => b.value - a.value);
 
     let labels = []
@@ -403,9 +406,6 @@ export class StudentStudyPlanAndCompetencesComponent {
         }
       }
     });
-    
-    
-    
   }
 
   _getChart(chartData) {

@@ -37,7 +37,6 @@ export class StudyTimeMonthlyChartComponent {
           return total;
       }, 0);
       this.data.unshift({value, label});
-      console.log("this.data", this.data)
       if (month.getMonth() === currentMonth) {
         this.currentLabel = label;
       }
@@ -66,7 +65,6 @@ export class StudyTimeMonthlyChartComponent {
               return total;
           }, 0);
           this.data.unshift({value, label});
-          console.log("this.data", this.data)
 
           if (month.getMonth() === currentMonth) {
             this.currentLabel = label;
