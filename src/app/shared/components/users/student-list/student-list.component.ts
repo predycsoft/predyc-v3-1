@@ -11,8 +11,11 @@ import { Profile } from 'src/app/shared/models/profile.model';
 interface User {
   displayName: string,
   profile: string,
+  hours: number,
   ratingPoints: number,
   rhythm: string
+  uid: string,
+  photoUrl: string,
 }
 
 @Component({

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { map, Observable, startWith, Subscription } from 'rxjs';
@@ -11,7 +11,7 @@ import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
 import { IconService } from 'src/app/shared/services/icon.service';
 import { ProfileService } from 'src/app/shared/services/profile.service';
 import { UserService } from 'src/app/shared/services/user.service';
-import { dateFromCalendarToTimestamp } from 'src/app/shared/utils';
+import { dateFromCalendarToTimestamp, timestampToDateNumbers } from 'src/app/shared/utils';
 import { countriesData } from 'src/assets/data/countries.data'
 
 @Component({
@@ -31,6 +31,8 @@ export class CreateUserComponent {
     public icon: IconService,
     private departmentService: DepartmentService,
   ) {}
+  
+  @Input() studentToEdit: User | null = null;
 
   userForm: FormGroup
   displayErrors: boolean = false
@@ -82,6 +84,31 @@ export class CreateUserComponent {
       hiringDate: [null],
       experience: [null],
     });
+    // Edit mode
+    if (this.studentToEdit) {
+      this.userForm.patchValue({
+        name: this.studentToEdit.displayName,
+        // profile: this.studentToEdit.profile,
+        photoUrl: this.studentToEdit.photoUrl,
+        phoneNumber: this.studentToEdit.phoneNumber,
+        department: this.studentToEdit.departmentRef,
+        country: this.studentToEdit.country,
+        email: this.studentToEdit.email,
+        job: this.studentToEdit.job,
+        experience: this.studentToEdit.experience,
+      });
+      this.studentToEdit.birthdate ? this.timestampToFormFormat(this.studentToEdit.birthdate, "birthdate") : null
+      this.studentToEdit.hiringDate ? this.timestampToFormFormat(this.studentToEdit.hiringDate, "hiringDate") : null
+      this.userForm.get('email')?.disable();
+    }
+
+  }
+  
+  timestampToFormFormat(timestamp: number, property: ("birthdate" | "hiringDate")) {
+    const date = timestampToDateNumbers(timestamp)
+    this.userForm.get(property)?.setValue({
+      day: date.day, month: date.month, year: date.year
+    });
   }
 
   onFileSelected(event) {
@@ -125,6 +152,7 @@ export class CreateUserComponent {
       photoUrl: photoUrl
     }
     const user = User.getEnterpriseStudentUser(this.enterpriseService.getEnterpriseRef())
+    user.uid = this.studentToEdit? this.studentToEdit.uid : null
     user.patchValue(userObj)
     return user
   }
@@ -173,7 +201,8 @@ export class CreateUserComponent {
     const user = await this.getUserFromForm()
     console.log("user", user)
     try {
-      await this.userService.addUser(user)
+      if (this.studentToEdit) await this.userService.editUser(user.toJson())
+      else await this.userService.addUser(user)
       this.activeModal.close();
       this.alertService.succesAlert('Estudiante agregado exitosamente')
     } catch (error) {

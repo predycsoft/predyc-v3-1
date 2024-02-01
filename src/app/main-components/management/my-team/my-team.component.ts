@@ -4,10 +4,11 @@ import { UserService } from 'src/app/shared/services/user.service';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { ProfileService } from 'src/app/shared/services/profile.service';
 import { Profile } from 'src/app/shared/models/profile.model';
 import { CreateUserComponent } from './student/create-user/create-user.component';
+import { User } from 'src/app/shared/models/user.model';
 
 @Component({
   selector: 'app-my-team',
@@ -22,6 +23,7 @@ export class MyTeamComponent {
     private modalService: NgbModal,
     private profileService: ProfileService,
     private router: Router,
+    private userService: UserService,
   ){}
 
   profiles: Profile[] = []
@@ -51,20 +53,32 @@ export class MyTeamComponent {
   }
 
   onStudentSelected(student) {
-    console.log(`Selected student ${student}`)
+    const studentData: User = this.userService.getUser(student.uid)
+    this.openCreateUserModal(studentData)
   }
 
-  openCreateUserModal(): NgbModalRef {
-    const modalRef = this.modalService.open(CreateUserComponent, {
-      animation: true,
-      centered: true,
-      size: 'lg'
-    })
-    return modalRef
+  openCreateUserModal(student: User | null): NgbModalRef {
+    let openModal = false
+    let isNewUser = false
+    if (student) {
+      if (!student.profile) openModal = true  
+    }
+    else openModal = true, isNewUser = true
+
+    if (openModal) {
+      const modalRef = this.modalService.open(CreateUserComponent, {
+        animation: true,
+        centered: true,
+        size: 'lg'
+      })
+      if (!isNewUser) modalRef.componentInstance.studentToEdit = student;
+      return modalRef
+    }
+    else return null
   }
 
   createNewStudent() {
-    this.openCreateUserModal()
+    this.openCreateUserModal(null)
   }
 
   // async onStudentSaveHandler(student: User) {
