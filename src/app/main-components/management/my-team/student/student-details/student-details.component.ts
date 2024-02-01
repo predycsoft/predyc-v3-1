@@ -32,12 +32,11 @@ export class StudentDetailsComponent {
   studentProfile: Profile
   courseServiceSubscription: Subscription
 
-  logs: Log[]
-  logsInCurrentMonth: Log[]
+  logs: Log[] = []
+  logsInCurrentMonth: Log[] = []
   hoursTimeMonth: number
 
   currentMonth = new Date().getUTCMonth();  
-  currentMonthName = new Date().toLocaleString('es-ES', { month: 'long' });
 
   currentYear = new Date().getUTCFullYear()
 
@@ -71,8 +70,8 @@ export class StudentDetailsComponent {
         // console.log("logs", logs); 
         this.logs = logs
         this.logsInCurrentMonth = logs.filter(log => {
-          const logMonth = new Date(log.endDate).getMonth(); 
-          const logYear = new Date(log.endDate).getFullYear();
+          const logMonth = new Date(log.endDate).getUTCMonth(); 
+          const logYear = new Date(log.endDate).getUTCFullYear();
           return logMonth === this.currentMonth && logYear === this.currentYear;
         })
         console.log("this.logsInCurrentMonth",this.logsInCurrentMonth)

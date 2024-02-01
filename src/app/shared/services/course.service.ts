@@ -436,6 +436,29 @@ export class CourseService {
   getClass$(classId: string): Observable<Clase> {
     return this.afs.collection<Clase>(Clase.collection).doc(classId).valueChanges()
   }
+
+  getClassesByEnterprise$(): Observable<any[]> {
+    return this.enterpriseService.enterpriseLoaded$.pipe(
+      switchMap(isLoaded => {
+        if (!isLoaded) return of([])
+        const enterpriseRef = this.enterpriseService.getEnterpriseRef();
+        return this.afs.collection<User>(User.collection, ref => ref.where('enterprise', '==', enterpriseRef)).valueChanges()
+      }),
+      switchMap(users => {
+        if (users.length === 0) {
+          return of([]);
+        }
+        const observableArray = []
+        users.forEach(user => {
+          observableArray.push(
+            this.afs.collection("classesByStudent", ref => ref.where('userRef', '==', this.userService.getUserRefById(user.uid)).where('completed', '==', true)).valueChanges()
+          )
+        })
+        return combineLatest(observableArray)
+      }),
+      map(arraysOfClasses => arraysOfClasses.flat())
+    )
+  }
   
 
 }
