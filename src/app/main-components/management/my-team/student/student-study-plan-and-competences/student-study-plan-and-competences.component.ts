@@ -327,16 +327,16 @@ export class StudentStudyPlanAndCompetencesComponent {
     const mapeoNombres : { [key: string]: string } = {
       "Confiabilidad": "Confiabilidad",
       "Eléctrica": "Eléctrica",
-      "Gestión de Activos": "Gest. Activos",
-      "Gestión de Mantenimiento": "Gest. Mant.",
-      "Gestión de Proyectos": "Proyectos",
+      "Gestión de activos": "Gest. Activos",
+      "Gestión de mantenimiento": "Gest. Mant.",
+      "Gestión de proyectos": "Proyectos",
       "HSE": "HSE",
       "Instrumentación": "Instrumentación",
       "Integridad": "Integridad",
-      "Mantenimiento Predictivo": "Predictivo",
+      "Mantenimiento predictivo": "Predictivo",
       "Mecánico": "Mecánico",
       "Sistemas y procesos": "Sist. & Proc.",
-      "Soporte a Mantenimiento": "Soporte Mant"
+      "Soporte a mantenimiento": "Soporte Mant"
     };
 
     // Nuevo arreglo para los nombres resumidos
