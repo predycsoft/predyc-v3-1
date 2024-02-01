@@ -228,6 +228,9 @@ export class ProfilesComponent {
     const accumulatedStudyPlanHours = this.studyPlan.reduce(function (accumulator, course) {
       return accumulator + course.duracion;
     }, 0)
+    const roundUpToNextMultipleOfTen = (value) => {
+      return Math.ceil(value / 10) * 10;
+    };
     const data = this.categories.map(category => {
       let value = 0
       let skills = []
@@ -242,7 +245,7 @@ export class ProfilesComponent {
           })
           totalDuration += course.duracion
         })
-        value = roundNumber(totalDuration * 100 / accumulatedStudyPlanHours)
+        value = roundUpToNextMultipleOfTen(this.roundNumber(totalDuration * 100 / accumulatedStudyPlanHours));
       }
       return {
         label: category.name,
