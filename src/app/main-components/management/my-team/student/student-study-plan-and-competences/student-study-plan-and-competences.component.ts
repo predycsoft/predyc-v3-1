@@ -1,13 +1,13 @@
 import { Component, Input, SimpleChanges } from '@angular/core';
 import { DocumentReference } from '@angular/fire/compat/firestore';
 import { Chart } from 'chart.js';
-import { Observable, Subscription, combineLatest } from 'rxjs';
+import { Observable, Subject, Subscription, combineLatest } from 'rxjs';
 import { Category } from 'src/app/shared/models/category.model';
 import { CourseByStudent } from 'src/app/shared/models/course-by-student';
 import { Curso, CursoJson } from 'src/app/shared/models/course.model';
 import { Profile } from 'src/app/shared/models/profile.model';
 import { Skill } from 'src/app/shared/models/skill.model';
-import { UserJson } from 'src/app/shared/models/user.model';
+import { User, UserJson } from 'src/app/shared/models/user.model';
 import { CategoryService } from 'src/app/shared/services/category.service';
 import { CourseService } from 'src/app/shared/services/course.service';
 import { IconService } from 'src/app/shared/services/icon.service';
@@ -67,17 +67,21 @@ export class StudentStudyPlanAndCompetencesComponent {
 
 
   ngOnInit() {
+    console.log("this.student", this.student)
     const userRef = this.userService.getUserRefById(this.student.uid)
-    this.loadCompetencesData()
+    // this.createStudyPlan()
     // if the student has a profile, get the data and show the study plan
-    this.combinedObservableSubscription = combineLatest([ this.courseService.getCourses$(), this.courseService.getActiveCoursesByStudent$(userRef)]).
-    subscribe(([coursesData, coursesByStudent]) => {
+    this.combinedObservableSubscription = combineLatest([ this.courseService.getCourses$(), this.courseService.getActiveCoursesByStudent$(userRef), this.categoryService.getCategories$(), this.skillService.getSkills$()]).
+    subscribe(([coursesData, coursesByStudent, categories, skills]) => {
+      this.categories = categories
+      this.skills = skills
+      this.studyPlan = []
+
       if (coursesData.length > 0) {
         this.coursesData = coursesData
         if (this.selectedProfile) {
           if (coursesByStudent.length > 0) {
             this.buildMonths(coursesByStudent, coursesData)
-            // if(this.studyPlan.length > 0) this.updateStudyPlanForWidget()
           } 
           else {
             this.showInitForm = true
@@ -100,9 +104,8 @@ export class StudentStudyPlanAndCompetencesComponent {
       if (changes.selectedProfile.previousValue && changes.selectedProfile.currentValue && 
       (changes.selectedProfile.currentValue.id !== changes.selectedProfile.previousValue.id )) {
         // Set active = false in prev profile courses
-        await this.courseService.setCoursesByStudentInactive(this.userService.getUserRefById(this.student.uid)) // this means changes in the collection
+        await this.courseService.setCoursesByStudentInactive(this.userService.getUserRefById(this.student.uid))
         //
-        this.loadCompetencesData()
         // calculate dates and create studyPlan using student.
         await this.createStudyPlan()
       }
@@ -116,6 +119,15 @@ export class StudentStudyPlanAndCompetencesComponent {
     coursesByStudent.forEach(courseByStudent => {
       // console.log("courseByStudent.id", courseByStudent.id)
       const courseData = coursesData.find(courseData => courseData.id === courseByStudent.courseRef.id);
+      const skills = courseData.skillsRef.map(skillRef => { return this.skills.find(skill => skill.id === skillRef.id) })
+      const categories = skills.map(skill => {return this.categories.find(category => category.id === skill.category.id)})
+      const courseForExplorer = {
+        ...courseData,
+        skills: skills,
+        categories: categories,
+      }
+      this.studyPlan.push(courseForExplorer)
+
       if (courseData) {
         const studyPlanData = {
           duration: courseData.duracion / 60,
@@ -162,6 +174,9 @@ export class StudentStudyPlanAndCompetencesComponent {
       if (yearDiff !== 0) return yearDiff;
       return a.monthNumber - b.monthNumber;
     });
+
+    this.updateWidgets()
+
   }
 
   async createStudyPlan() {
@@ -171,7 +186,7 @@ export class StudentStudyPlanAndCompetencesComponent {
     let now = new Date()
     let hoy = +new Date(now.getFullYear(), now.getMonth(), now.getDate())
     for (let i = 0; i < coursesRefs.length; i++) {
-      const userRef: DocumentReference = this.userService.getUserRefById(this.student.uid)
+      const userRef: DocumentReference | DocumentReference<User> = this.userService.getUserRefById(this.student.uid)
       const courseData = this.coursesData.find(courseData => courseData.id === coursesRefs[i].id);
       const courseDuration = courseData.duracion
       let hoursPermonth = this.hoursPermonthInitForm ? this.hoursPermonthInitForm : this.student.studyHours
@@ -183,18 +198,15 @@ export class StudentStudyPlanAndCompetencesComponent {
       else dateStartPlan = dateEndPlan ? dateEndPlan : hoy;
 
       dateEndPlan = this.courseService.calculatEndDatePlan(dateStartPlan, courseDuration, hoursPermonth)
-      await this.courseService.saveCourseByStudent(coursesRefs[i], userRef, new Date(dateStartPlan), new Date(dateEndPlan)) //this means changes in the collection
+      //  ---------- if it already exists, activate it, otherwise, create it ---------- 
+      const courseByStudent: CourseByStudent | null = await this.courseService.getCourseByStudent(userRef as DocumentReference<User>, coursesRefs[i] as DocumentReference<Curso>)
+      console.log("courseByStudent", courseByStudent)
+      if (courseByStudent) {
+        await this.courseService.setCourseByStudentActive(courseByStudent.id, new Date(dateStartPlan), new Date(dateEndPlan))
+      } else {
+        await this.courseService.saveCourseByStudent(coursesRefs[i], userRef, new Date(dateStartPlan), new Date(dateEndPlan))
+      }
     }
-
-    // Create months 
-    // const userRef = this.userService.getUserRefById(this.student.uid)
-    // this.courseService.getActiveCoursesByStudent$(userRef).subscribe(coursesByStudent => {
-    //   if (coursesByStudent.length > 0) {
-    //     this.buildMonths(coursesByStudent, this.coursesData)
-    //   } else {
-    //     console.log("El usuario no posee studyPlan");
-    //   }
-    // })
   }
   
   isMonthCompleted(month: Month): boolean {
@@ -216,7 +228,6 @@ export class StudentStudyPlanAndCompetencesComponent {
     await this.userService.saveStudyPlanHoursPerMonth(this.student.uid, this.hoursPermonthInitForm)
     this.showInitForm = false
     // calculate dates and create studyplan using this.startDateInitForm
-    this.loadCompetencesData()
     await this.createStudyPlan()
   }
 
@@ -224,50 +235,7 @@ export class StudentStudyPlanAndCompetencesComponent {
     this.combinedObservableSubscription ? this.combinedObservableSubscription.unsubscribe() : null
   }
 
-  // ---------------------------------------------------- Competences
-  loadCompetencesData() {
-    this.categories = []
-    this.skills = []
-    this.coursesForExplorer = []
-    this.studyPlan = []
-    const observablesArray: Observable<Category[] | Profile | Skill[] | Curso[]>[] = [this.categoryService.getCategories$(), this.skillService.getSkills$(), this.courseService.getCourses$()]
-    // const observablesArray: Observable<Category[] | Profile | Skill[]>[] = [this.categoryService.getCategories$(), this.skillService.getSkills$()]
-  
-    if (this.serviceSubscription) this.serviceSubscription.unsubscribe()
-    this.serviceSubscription = combineLatest(observablesArray).subscribe((result) => {
-      // console.log("result", result)
-      const categories = result[0] as Category[]
-      const skills = result[1] as Skill[]
-      const courses = result[2] as Curso[]
-      this.courses = courses
-      
-      this.categories = categories
-      this.skills = skills
-      this.updateStudyPlanForWidget()
-    })
-  }
-
-  updateStudyPlanForWidget() {
-    this.studyPlan = []
-    this.coursesForExplorer = this.courses.map(course => {
-      const skills = course.skillsRef.map(skillRef => {
-        return this.skills.find(skill => skill.id === skillRef.id)
-      })
-      const categories = skills.map(skill => {
-        return this.categories.find(category => category.id === skill.category.id)
-      })
-      const inStudyPlan = this.selectedProfile && this.selectedProfile.coursesRef.map(courseRef => courseRef.id).includes(course.id)
-      const courseForExplorer = {
-        ...course,
-        skills: skills,
-        categories: categories,
-        inStudyPlan: inStudyPlan
-      }
-      if (inStudyPlan) this.studyPlan.push(courseForExplorer)
-      return courseForExplorer
-    })
-    this.updateWidgets()
-  }
+  // ---------------------------------------------------- Skills
 
   updateWidgets() {
     const chartData = this.getChartData()
@@ -362,7 +330,7 @@ export class StudentStudyPlanAndCompetencesComponent {
       }
     });
 
-    console.log('nombresResumidos',nombresResumidos);
+    // console.log('nombresResumidos',nombresResumidos);
 
     data =  {
       labels: nombresResumidos,

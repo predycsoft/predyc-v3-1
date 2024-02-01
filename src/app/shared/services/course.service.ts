@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { User } from '../../shared/models/user.model';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, DocumentReference, QuerySnapshot } from '@angular/fire/compat/firestore';
-import { BehaviorSubject, firstValueFrom, Observable, of } from 'rxjs'
+import { BehaviorSubject, firstValueFrom, Observable, of, Subject } from 'rxjs'
 import { EnterpriseService } from './enterprise.service';
 import { AlertsService } from './alerts.service';
 
@@ -277,11 +277,10 @@ export class CourseService {
     return this.afs.collection<CourseByStudent>(CourseByStudent.collection, ref => ref.where('userRef', '==', userRef)).valueChanges()
   }
 
-  getActiveCoursesByStudent$(userRef: DocumentReference<User>): Observable<CourseByStudent[]> {
-    return this.afs.collection<CourseByStudent>(CourseByStudent.collection, ref => ref.
-      where('userRef', '==', userRef).
-      where('active', '==', true)
-    ).valueChanges()
+  async getCourseByStudent(userRef: DocumentReference<User>, courseRef: DocumentReference<Curso>): Promise<CourseByStudent> {
+    const courseByStudent = await firstValueFrom(this.afs.collection<CourseByStudent>(CourseByStudent.collection, ref => ref.
+      where('userRef', '==', userRef).where('courseRef', '==', courseRef) ).valueChanges())
+    return courseByStudent ? courseByStudent[0] : null
   }
 
   async saveCourseByStudent(courseRef: DocumentReference, userRef: DocumentReference, dateStartPlan: Date, dateEndPlan: Date) {
@@ -303,6 +302,23 @@ export class CourseService {
     console.log("Course by student doc saved")
   }
 
+  getActiveCoursesByStudent$(userRef: DocumentReference<User>): Observable<CourseByStudent[]> {
+    return this.afs.collection<CourseByStudent>(CourseByStudent.collection, ref => ref.
+      where('userRef', '==', userRef).
+      where('active', '==', true)
+    ).valueChanges()
+  }
+
+  async setCourseByStudentActive(courseByStudentId: string, startDate: any, endDate: any) { 
+    await this.afs.collection(CourseByStudent.collection).doc(courseByStudentId).set({
+      active: true,
+      dateStartPlan: startDate,
+      dateEndPlan: endDate,
+    }, { merge: true });
+    console.log(`${courseByStudentId} has been activated`)
+  }
+  
+
   async setCoursesByStudentInactive(userRef: DocumentReference<User>) {
     this.afs.collection<CourseByStudent>(CourseByStudent.collection, ref => 
       ref.where('userRef', '==', userRef).where('active', '==', true)
@@ -313,7 +329,7 @@ export class CourseService {
       });
       
       Promise.all(updatePromises).then(() => {
-        console.log('Todos los documentos han sido actualizados.');
+        console.log('Todos los documentos han establecido como inactivos.');
       }).catch(error => {
         console.error('Error al actualizar los documentos:', error);
       });
@@ -323,26 +339,26 @@ export class CourseService {
   async updateStudyPlans(changesInStudyPlan: {added: string[], removed: string[], profileId: string}) {
     const enterpriseRef = this.enterpriseService.getEnterpriseRef()
     const profileRef = this.profileService.getProfileRefById(changesInStudyPlan.profileId)
-    console.log(enterpriseRef, profileRef)
+    // console.log(enterpriseRef, profileRef)
     const querySnapshot: QuerySnapshot<User> = await this.afs.collection<User>(User.collection).ref.where('profile', '==', profileRef).get() as QuerySnapshot<User>;
     const users = querySnapshot.docs.map(doc => doc.data())
-    console.log("users", users)
+    // console.log("users", users)
     const batch = this.afs.firestore.batch();
     for (let user of users) {
-      console.log(`***** User to update ${user.name} - ${user.uid} *****`)
-      console.log("changesInStudyPlan", changesInStudyPlan)
+      // console.log(`***** User to update ${user.name} - ${user.uid} *****`)
+      // console.log("changesInStudyPlan", changesInStudyPlan)
       const userRef = this.userService.getUserRefById(user.uid)
       const userCoursesSnapshot: QuerySnapshot<CourseByStudentJson> = await this.afs.collection(CourseByStudent.collection).ref.where('userRef', '==', userRef).get() as QuerySnapshot<CourseByStudentJson>
       const userCourses = userCoursesSnapshot.docs.map(doc => doc.data())
       const studyPlanItems = userCourses.filter(course => course.active).sort((a, b) => {
         return a.dateEndPlan - b.dateEndPlan;
       })
-      console.log("studyPlanItems", studyPlanItems)
+      // console.log("studyPlanItems", studyPlanItems)
       let startDateForCourse = studyPlanItems[0].dateStartPlan.seconds * 1000
       const userRemovedCourses = studyPlanItems.filter(course => changesInStudyPlan.removed.includes(course.courseRef.id))
-      console.log('userRemovedCourses', userRemovedCourses)
+      // console.log('userRemovedCourses', userRemovedCourses)
       const userOtherCourses = studyPlanItems.filter(course => !changesInStudyPlan.removed.includes(course.courseRef.id))
-      console.log('userOtherCourses', userOtherCourses)
+      // console.log('userOtherCourses', userOtherCourses)
       // Disable removed courses
       for (let course of userRemovedCourses) {
         const courseJson = {
