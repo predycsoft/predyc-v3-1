@@ -35,7 +35,7 @@
                                     Debe indicar el título del curso
                                 </div>
                             </div>
-                            <div class="form-group pdt10">
+                            <!-- <div class="form-group pdt10">
                                 <label>Resumen del curso</label>
                                 <textarea 
                                 [class.is-invalid]="formNewCourse.controls['resumen'].errors && showErrorCurso"
@@ -43,7 +43,7 @@
                                 <div class="invalid-feedback" *ngIf="formNewCourse.controls['resumen'].errors && showErrorCurso"> 
                                     Debe indicar el resumen del curso
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="form-group pdt10">
                                 <label>Descripción del curso</label>
                                 <textarea
@@ -78,9 +78,9 @@
                                         [class.is-invalid]="formNewCourse.controls['nivel'].errors && showErrorCurso"
                                         class="form-control customInput" formControlName="nivel">
                                             <option value=null>Selecciona el nivel</option>
-                                            <option value="básico">Básico</option>
-                                            <option value="intermedio">Intermedio</option>
-                                            <option value="avanzado">Avanzado</option>
+                                            <option value="Básico">Básico</option>
+                                            <option value="Intermedio">Intermedio</option>
+                                            <option value="Avanzado">Avanzado</option>
                                         </select>
                                         <div class="invalid-feedback" *ngIf="formNewCourse.controls['nivel'].errors && showErrorCurso"> 
                                             Debe seleccionar el nivel del curso
@@ -104,22 +104,22 @@
                                 </div>
                             </div>
 
-                            <div class="form-group pdt10">
+                            <!-- <div class="form-group pdt10">
                                 <label>A quién va dirigido</label>
                                 <textarea [class.is-invalid]="formNewCourse.controls['descripcion'].errors && showErrorCurso"
                                 rows="3"  formControlName="descripcion" type="text" class="form-control customInput" placeholder="Escriba a qué público va dirigido aquí" style="resize: none;"></textarea>
                                 <div class="invalid-feedback" *ngIf="formNewCourse.controls['descripcion'].errors && showErrorCurso"> 
                                     Debe indicar a qué público va dirigido aquí.
                                 </div>
-                            </div>
+                            </div> -->
     
-                            <div class="form-group pdt10">
+                            <!-- <div class="form-group pdt10">
                                 <label>Qué aprenderas</label>
                                 <textarea rows="3" [class.is-invalid]="formNewCourse.controls['contenido'].errors && showErrorCurso"  formControlName="contenido" type="text" class="form-control customInput" placeholder="Escriba qué se aprenderá durante el curso." style="resize: none;"></textarea>
                                 <div class="invalid-feedback" *ngIf="formNewCourse.controls['contenido'].errors && showErrorCurso"> 
                                     Debe indicar que se aprenderá durante el curso.
                                 </div>
-                            </div>
+                            </div> -->
     
                             <div class="form-group pdt10">
                                 <label>Nombre del instructor</label>
