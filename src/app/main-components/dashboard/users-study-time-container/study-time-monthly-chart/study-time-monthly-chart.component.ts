@@ -24,21 +24,21 @@ export class StudyTimeMonthlyChartComponent {
   ngOnInit(): void {
     this.data = []
     let now = new Date();
-    let currentMonth = now.getMonth();
+    let currentMonth = now.getUTCMonth();
 
     for(let i=0; i<12; i++) {
       let month = subMonths(now, i);
-      let label = format(month, 'MMM');
+      const utcDate = new Date(Date.UTC(month.getUTCFullYear(), month.getUTCMonth(), month.getUTCDay(), month.getUTCHours(), month.getUTCMinutes(), month.getUTCSeconds()))
+      let label = format(utcDate, 'MMM');
       let value = this.logs.reduce((total, log) => {
           let logDate = new Date(log.endDate);
-          if(logDate.getMonth() === month.getMonth() && logDate.getFullYear() === month.getFullYear()) {
+          if(logDate.getUTCMonth() === month.getUTCMonth() && logDate.getUTCFullYear() === month.getUTCFullYear()) {
               return total + (log.classDuration/60);
           }
           return total;
       }, 0);
       this.data.unshift({value, label});
-      console.log("this.data", this.data)
-      if (month.getMonth() === currentMonth) {
+      if (month.getUTCMonth() === currentMonth) {
         this.currentLabel = label;
       }
     }
@@ -54,21 +54,21 @@ export class StudyTimeMonthlyChartComponent {
     if (changes["logs"]) {
       this.data = []
       let now = new Date();
-      let currentMonth = now.getMonth();
+      let currentMonth = now.getUTCMonth();
       for(let i=0; i<12; i++) {
           let month = subMonths(now, i);
-          let label = format(month, 'MMM');
+          const utcDate = new Date(Date.UTC(month.getUTCFullYear(), month.getUTCMonth(), month.getUTCDay(), month.getUTCHours(), month.getUTCMinutes(), month.getUTCSeconds()))
+          let label = format(utcDate, 'MMM');
           let value = this.logs.reduce((total, log) => {
               let logDate = new Date(log.endDate);
-              if(logDate.getMonth() === month.getMonth() && logDate.getFullYear() === month.getFullYear()) {
+              if(logDate.getUTCMonth() === month.getUTCMonth() && logDate.getUTCFullYear() === month.getUTCFullYear()) {
                   return total + (log.classDuration/60);
               }
               return total;
           }, 0);
           this.data.unshift({value, label});
-          console.log("this.data", this.data)
 
-          if (month.getMonth() === currentMonth) {
+          if (month.getUTCMonth() === currentMonth) {
             this.currentLabel = label;
         }
       }

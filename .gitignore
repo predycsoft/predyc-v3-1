@@ -47,3 +47,5 @@ Thumbs.db
 .runtimeconfig.json
 database/*
 !database/seed.json
+*.zip
+# firebase_export

@@ -31,7 +31,7 @@ export class SideNavComponent {
     {name: 'Cursos', link:'management/courses', icon: '../../assets/iconsUI/sidenav_collections_bookmark.svg'},
     // {name: 'Validación', link:'validation', icon: '../../assets/iconsUI/sidenav_fact_check.svg'},
     // {name: 'Notificaciones', link:'management/notifications', icon: '../../assets/iconsUI/notification.svg'},
-    {name: 'Configuración', link:'settings', icon: '../../assets/iconsUI/sidenav_config.svg'},
+    {name: 'Licencias', link:'settings', icon: '../../assets/iconsUI/sidenav_config.svg'},
   ]
 
   constructor(

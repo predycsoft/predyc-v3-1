@@ -2,23 +2,19 @@ import { Injectable } from '@angular/core';
 import { User } from '../../shared/models/user.model';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, DocumentReference, QuerySnapshot } from '@angular/fire/compat/firestore';
-import { BehaviorSubject, firstValueFrom, from, Observable, of } from 'rxjs'
+import { BehaviorSubject, firstValueFrom, Observable, of } from 'rxjs'
 import { EnterpriseService } from './enterprise.service';
 import { AlertsService } from './alerts.service';
-import { Enterprise } from '../models/enterprise.model';
-
-import { Category } from '../models/category.model';
 
 import { combineLatest } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { Skill } from '../models/skill.model';
 import { Curso } from '../models/course.model';
 import { Modulo } from '../models/module.model';
 import { Clase } from '../models/course-class.model';
 import { CourseByStudent, CourseByStudentJson } from '../models/course-by-student';
 import { UserService } from './user.service';
-import { ProfileJson } from '../models/profile.model';
 import { ProfileService } from './profile.service';
+import { firestoreTimestampToNumberTimestamp } from '../utils';
 
 @Injectable({
   providedIn: 'root'
@@ -327,86 +323,90 @@ export class CourseService {
   async updateStudyPlans(changesInStudyPlan: {added: string[], removed: string[], profileId: string}) {
     const enterpriseRef = this.enterpriseService.getEnterpriseRef()
     const profileRef = this.profileService.getProfileRefById(changesInStudyPlan.profileId)
-    const querySnapshot: QuerySnapshot<User> = await this.afs.collection(User.collection, ref => ref.where('enterpriseRef', '==', enterpriseRef).where('profile', '==', profileRef)).ref.get() as QuerySnapshot<User>;
+    console.log(enterpriseRef, profileRef)
+    const querySnapshot: QuerySnapshot<User> = await this.afs.collection<User>(User.collection).ref.where('profile', '==', profileRef).get() as QuerySnapshot<User>;
     const users = querySnapshot.docs.map(doc => doc.data())
     console.log("users", users)
-    // const batch = this.afs.firestore.batch();
-    // for (let user of users) {
-    //   console.log(`***** User to update ${user.name} - ${user.uid} *****`)
-    //   console.log("changesInStudyPlan", changesInStudyPlan)
-    //   const userRef = this.userService.getUserRefById(user.uid)
-    //   const userCoursesSnapshot: QuerySnapshot<CourseByStudentJson> = await this.afs.collection(CourseByStudent.collection, ref => ref.where('userRef', '==', userRef)).ref.get() as QuerySnapshot<CourseByStudentJson>
-    //   const userCourses = userCoursesSnapshot.docs.map(doc => doc.data())
-    //   const studyPlanItems = userCourses.filter(course => course.active).sort((a, b) => {
-    //     return a.dateEndPlan - b.dateEndPlan;
-    //   })
-    //   let startDateForCourse = studyPlanItems[0].dateStart
-    //   const userRemovedCourses = studyPlanItems.filter(course => changesInStudyPlan.removed.includes(course.id))
-    //   const userOtherCourses = studyPlanItems.filter(course => !changesInStudyPlan.removed.includes(course.id))
+    const batch = this.afs.firestore.batch();
+    for (let user of users) {
+      console.log(`***** User to update ${user.name} - ${user.uid} *****`)
+      console.log("changesInStudyPlan", changesInStudyPlan)
+      const userRef = this.userService.getUserRefById(user.uid)
+      const userCoursesSnapshot: QuerySnapshot<CourseByStudentJson> = await this.afs.collection(CourseByStudent.collection).ref.where('userRef', '==', userRef).get() as QuerySnapshot<CourseByStudentJson>
+      const userCourses = userCoursesSnapshot.docs.map(doc => doc.data())
+      const studyPlanItems = userCourses.filter(course => course.active).sort((a, b) => {
+        return a.dateEndPlan - b.dateEndPlan;
+      })
+      console.log("studyPlanItems", studyPlanItems)
+      let startDateForCourse = studyPlanItems[0].dateStartPlan.seconds * 1000
+      const userRemovedCourses = studyPlanItems.filter(course => changesInStudyPlan.removed.includes(course.courseRef.id))
+      console.log('userRemovedCourses', userRemovedCourses)
+      const userOtherCourses = studyPlanItems.filter(course => !changesInStudyPlan.removed.includes(course.courseRef.id))
+      console.log('userOtherCourses', userOtherCourses)
+      // Disable removed courses
+      for (let course of userRemovedCourses) {
+        const courseJson = {
+          ...course,
+          active: false,
+          dateStartPlan: null,
+          dateEndPlan: null
+        }
+        console.log(`Removed course ${course.courseRef.id} - Saved in ${courseJson.id}`, courseJson)
+        batch.update(this.afs.collection<CourseByStudent>(CourseByStudent.collection).doc(courseJson.id).ref, courseJson);
+      }
 
-    //   // Disable removed courses
-    //   for (let course of userRemovedCourses) {
-    //     const courseJson = {
-    //       ...course,
-    //       active: false,
-    //       dateStartPlan: null,
-    //       dateEndPlan: null
-    //     }
-    //     console.log(`Removed course ${course.courseRef.id} - Saved in ${courseJson.id}`, courseJson)
-    //     batch.update(this.afs.collection<CourseByStudent>(CourseByStudent.collection).doc(courseJson.id).ref, courseJson);
-    //   }
+      // Repair startDate and endDate for remaining items in studyPlan
+      for (let course of userOtherCourses) {
+        const courseDuration = (await course.courseRef.get()).data().duracion
+        const dateEndPlan = this.calculatEndDatePlan(startDateForCourse, courseDuration, user.studyHours)
+        const courseJson = {
+          ...course,
+          dateStartPlan: new Date(startDateForCourse),
+          dateEndPlan: new Date(dateEndPlan)
+        }
+        console.log(`Repaired course ${course.courseRef.id} - Saved in ${courseJson.id}`, courseJson)
+        batch.update(this.afs.collection<CourseByStudent>(CourseByStudent.collection).doc(courseJson.id).ref, courseJson);
+        startDateForCourse = dateEndPlan
+      }
 
-    //   // Repair startDate and endDate for remaining items in studyPlan
-    //   for (let course of userOtherCourses) {
-    //     const courseDuration = (await course.courseRef.get()).data().duracion
-    //     const dateEndPlan = this.calculatEndDatePlan(startDateForCourse, courseDuration, user.studyHours)
-    //     const courseJson = {
-    //       ...course,
-    //       dateStartPlan: startDateForCourse,
-    //       dateEndPlan: dateEndPlan
-    //     }
-    //     console.log(`Repaired course ${course.courseRef.id} - Saved in ${courseJson.id}`, courseJson)
-    //     batch.update(this.afs.collection<CourseByStudent>(CourseByStudent.collection).doc(courseJson.id).ref, courseJson);
-    //     startDateForCourse = dateEndPlan
-    //   }
-
-    //   // Add new courses at the end of studyPlan
-    //   const userCoursesIds = userCourses.map(course => course.courseRef.id)
-    //   for (let item of changesInStudyPlan.added) {
-    //     const courseDuration = (await firstValueFrom(this.afs.collection<Curso>(Curso.collection).doc(item).get())).data().duracion
-    //     const dateEndPlan = this.calculatEndDatePlan(startDateForCourse, courseDuration, user.studyHours)
-    //     if (userCoursesIds.includes(item)) {
-    //       // Course already exist for user
-    //       const course = userCourses.find(course => course.courseRef.id === item)
-    //       const courseJson = {
-    //         ...course,
-    //         dateStartPlan: startDateForCourse,
-    //         dateEndPlan: dateEndPlan
-    //       }
-    //       console.log(`Activated course ${item} - Saved in ${courseJson.id}`, courseJson)
-    //       batch.update(this.afs.collection<CourseByStudent>(CourseByStudent.collection).doc(courseJson.id).ref, courseJson);
-    //     } else {
-    //       // New course for student
-    //       const docRef = this.afs.collection<CourseByStudentJson>(CourseByStudent.collection).doc().ref;
-    //       const courseJson = {
-    //         id: docRef.id,
-    //         userRef: userRef,
-    //         courseRef: this.afs.collection<Curso>(Curso.collection).doc(item).ref,
-    //         dateStartPlan: startDateForCourse,
-    //         dateEndPlan: dateEndPlan,
-    //         progress: 0,
-    //         dateStart: null,
-    //         dateEnd: null,
-    //         active: true,
-    //         finalScore: 0
-    //       }
-    //       console.log(`Added course ${item} - Saved in ${courseJson.id}`, courseJson)
-    //       batch.set(docRef, courseJson);
-    //     }
-    //     startDateForCourse = dateEndPlan
-    //   }
-    // }
-    // await batch.commit();
+      // Add new courses at the end of studyPlan
+      const userCoursesIds = userCourses.map(course => course.courseRef.id)
+      for (let item of changesInStudyPlan.added) {
+        const courseDuration = (await firstValueFrom(this.afs.collection<Curso>(Curso.collection).doc(item).get())).data().duracion
+        const dateEndPlan = this.calculatEndDatePlan(startDateForCourse, courseDuration, user.studyHours)
+        if (userCoursesIds.includes(item)) {
+          // Course already exist for user
+          const course = userCourses.find(course => course.courseRef.id === item)
+          const courseJson = {
+            ...course,
+            dateStartPlan: new Date(startDateForCourse),
+            dateEndPlan: new Date(dateEndPlan),
+            active: true
+          }
+          console.log(`Activated course ${item} - Saved in ${courseJson.id}`, courseJson)
+          batch.update(this.afs.collection<CourseByStudent>(CourseByStudent.collection).doc(courseJson.id).ref, courseJson);
+        } else {
+          // New course for student
+          const docRef = this.afs.collection<CourseByStudentJson>(CourseByStudent.collection).doc().ref;
+          const courseJson = {
+            id: docRef.id,
+            userRef: userRef,
+            courseRef: this.afs.collection<Curso>(Curso.collection).doc(item).ref,
+            dateStartPlan: new Date(startDateForCourse),
+            dateEndPlan: new Date(dateEndPlan),
+            progress: 0,
+            dateStart: null,
+            dateEnd: null,
+            active: true,
+            finalScore: 0
+          }
+          console.log(`Added course ${item} - Saved in ${courseJson.id}`, courseJson)
+          batch.set(docRef, courseJson);
+        }
+        startDateForCourse = dateEndPlan
+      }
+    }
+    await batch.commit();
   }
 
   calculatEndDatePlan(startDate: number, courseDuration: number, hoursPermonth: number): number {
@@ -435,6 +435,29 @@ export class CourseService {
 
   getClass$(classId: string): Observable<Clase> {
     return this.afs.collection<Clase>(Clase.collection).doc(classId).valueChanges()
+  }
+
+  getClassesByEnterprise$(): Observable<any[]> {
+    return this.enterpriseService.enterpriseLoaded$.pipe(
+      switchMap(isLoaded => {
+        if (!isLoaded) return of([])
+        const enterpriseRef = this.enterpriseService.getEnterpriseRef();
+        return this.afs.collection<User>(User.collection, ref => ref.where('enterprise', '==', enterpriseRef)).valueChanges()
+      }),
+      switchMap(users => {
+        if (users.length === 0) {
+          return of([]);
+        }
+        const observableArray = []
+        users.forEach(user => {
+          observableArray.push(
+            this.afs.collection("classesByStudent", ref => ref.where('userRef', '==', this.userService.getUserRefById(user.uid)).where('completed', '==', true)).valueChanges()
+          )
+        })
+        return combineLatest(observableArray)
+      }),
+      map(arraysOfClasses => arraysOfClasses.flat())
+    )
   }
   
 

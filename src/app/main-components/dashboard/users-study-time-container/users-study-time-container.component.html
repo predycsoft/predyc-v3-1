@@ -11,15 +11,15 @@
         <div class="fh fw" fxLayoutAlign="center center">
             <div class="backProgressSpinner" fxLayoutAlign="center center">
                 <div class="textoSpinner">
-                    <span class="ft10 gray-10"><span class="ft500 ft10 gray-10">{{hoursTimeMonth | number:"1.1-1"}}</span> / 20 hrs</span>
+                    <span class="ft10 gray-10"><span class="ft500 ft10 gray-10">{{hoursTimeMonth | number:"1.1-1"}}</span> / {{targetHoursPerMonth}} (H)</span>
                 </div>
                 <div class="">
                     <!--  -->
-                    <mat-progress-spinner [value]="this.hoursTimeMonth*100/20" class=""></mat-progress-spinner>
+                    <mat-progress-spinner [value]="hoursTimeMonth*100/targetHoursPerMonth" class=""></mat-progress-spinner>
                 </div>
             </div>
         </div>
-        <div><span class=" ft10 gray-10 fw">Mes actual: {{currentMonth}}</span></div>
+        <div><span class=" ft10 gray-10 fw">Mes actual: {{currentMonth | customMonth}}</span></div>
     </div>
     <div class="fw fh" fxLayout="column" fxLayoutAlign="start center">
         <!--  -->

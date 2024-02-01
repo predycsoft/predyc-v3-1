@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
+import { combineLatest, map, of, Subscription, switchMap } from 'rxjs';
+import { CourseService } from 'src/app/shared/services/course.service';
 import { IconService } from 'src/app/shared/services/icon.service';
+import { firestoreTimestampToNumberTimestamp } from 'src/app/shared/utils';
 
 export class Log {
   endDate: number = 0
@@ -14,21 +17,20 @@ export class UsersStudyTimeContainerComponent {
 
   constructor(
     public icon: IconService,
-
+    private courseService: CourseService
   ){}
   
   chartTab: number = 0
   hoursTimeWeek: number = 0 // Suma de los tiempos (en horas) empleados en la ultima semana
   hoursTimeMonth: number = 0
-  logs: Log[] = null
+  logs: Log[] = []
   now = new Date()
-  currentMonth: string = this.now.toLocaleString('es-ES', { month: 'long' });
   startOfWeek: number
   startOfMonth: number
 
+  targetHoursPerMonth = 20
+
   ngOnInit() {
-    //Set first letter to uppercase
-    this.currentMonth = this.currentMonth.charAt(0).toUpperCase() + this.currentMonth.slice(1);
     // Set of first day of the week and first day on the last 12 months
     let startOfWeek = new Date();
     startOfWeek.setUTCDate(this.now.getUTCDate() - ((this.now.getUTCDay() + 6) % 7));
@@ -42,52 +44,53 @@ export class UsersStudyTimeContainerComponent {
     this.startOfMonth = +now
 
     //Datos de ejemplo:
-    this.logs = this.generateTestData()
+    // this.logs = this.generateTestData()
     // console.log("this.logs", this.logs)
     // -----
-
-    this.getStats()
+    this.chartData()
   }
 
-  getStats() {
-    let minutesTimeWeek = this.getTotalLogsTime(this.logs.filter(x => x.endDate > this.startOfWeek))
-    this.hoursTimeWeek = minutesTimeWeek / 60
-    // console.log("this.hoursTimeWeek", this.hoursTimeWeek)
-    let minutesTimeMonth = this.getTotalLogsTime(this.logs.filter(x => x.endDate > this.startOfMonth))
-    this.hoursTimeMonth = minutesTimeMonth / 60
-    // console.log("this.hoursTimeMonth", this.hoursTimeMonth)
-  }
-  
+  courseServiceSubscription: Subscription
+  logsInCurrentMonth: Log[]
+  currentMonth = new Date().getUTCMonth();  
+  currentYear = new Date().getUTCFullYear()
 
-  getTotalLogsTime(logs: Log[]):number {
-    return logs.reduce((totalTime: number, log: Log) => {
-      return totalTime + log.classDuration;
-    }, 0);
+  chartData() {
+    this.courseServiceSubscription = this.courseService.getClassesByEnterprise$()
+    .pipe(
+      switchMap(classesByStudent => {
+        if (classesByStudent.length > 0) {
+          // Obtener un array de Observables para cada clase
+          const classObservables = classesByStudent.map(studentClass =>
+            this.courseService.getClass$(studentClass.classRef.id).pipe(
+              map(clase => ({
+                classDuration: clase.duracion,
+                endDate: firestoreTimestampToNumberTimestamp(studentClass.dateEnd)
+              }))
+            )
+          );
+          return combineLatest(classObservables);
+        } else {
+          return of([]);
+        }
+      })
+    )
+    .subscribe(logs => {
+      if (logs.length > 0) {
+        // console.log("logs", logs); 
+        this.logs = logs
+        this.logsInCurrentMonth = logs.filter(log => {
+          const logMonth = new Date(log.endDate).getUTCMonth(); 
+          const logYear = new Date(log.endDate).getUTCFullYear();
+          return logMonth === this.currentMonth && logYear === this.currentYear;
+        })
+        console.log("this.logsInCurrentMonth",this.logsInCurrentMonth)
+        this.hoursTimeMonth = (this.logsInCurrentMonth.reduce((total, currentClass) => total + currentClass.classDuration, 0)) / 60;
+      } else {
+        this.logs = []
+        this.logsInCurrentMonth = []
+      }
+    });
   }
-
-  // DATOS DE EJEMPLO
-  generateTestData(): Log[] {
-    const logs: Log[] = [];
-    // const startDate = new Date(2022, 9, 1).getTime(); // 1 de octubre de 2022
-    // for (let i = 0; i < 20; i++) {
-    //   const log = new Log();
-    //   // Si i es menor que 10, generamos timestamps entre startDate y startOfWeek
-    //   // De lo contrario, generamos timestamps entre startOfWeek y la fecha actual
-    //   if (i < 10) {
-    //       log.timestamp = this.randomDateBetween(startDate, this.startOfWeek);
-    //   } else {
-    //       log.timestamp = this.randomDateBetween(this.startOfWeek, +new Date());
-    //   }
-    //   // Generar time (tiempo en minutos) aleatorio entre 20 y 120
-    //   log.time = Math.floor(Math.random() * (120 - 20 + 1) + 20);
-    //   logs.push(log);
-    // }
-    return logs;
-  }
-  // Función para obtener una fecha aleatoria entre dos fechas dadas (en millisegundos)
-  randomDateBetween(start: number, end: number): number {
-    return new Date(start + Math.random() * (end - start)).getTime();
-  }
-
   
 }
