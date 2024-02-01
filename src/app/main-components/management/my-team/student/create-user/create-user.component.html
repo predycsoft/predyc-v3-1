@@ -1,7 +1,9 @@
 <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
     <div class="modal-header bg-web-primary text-white px-3 py-1" >
         <div class="modal-title pd10 ">
-            <span class="ft16 ft600 gray-10">Crear nuevo usuario</span>
+            <span class="ft16 ft600 gray-10">
+                {{studentToEdit ? (studentToEdit.displayName | titlecase) : "Crear nuevo usuario"}}
+            </span>
         </div>
         <img [src]="icon.close" class="h16px pdl05" alt="" (click)="dismiss()">
     </div>
@@ -182,7 +184,7 @@
                     fxLayoutAlign="center center"
                     type="submit"
                     >
-                    Guardar usuario
+                    {{studentToEdit ? "Editar" : "Guardar"}} usuario
                 </button>        
                 <!-- <button
                     class="blueButton radius4 ft12 h28px mgr10 gray-1"

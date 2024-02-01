@@ -77,7 +77,7 @@ export class StudentStudyPlanAndCompetencesComponent {
         if (this.selectedProfile) {
           if (coursesByStudent.length > 0) {
             this.buildMonths(coursesByStudent, coursesData)
-            if(this.studyPlan.length > 0) this.updateStudyPlanForWidget()
+            // if(this.studyPlan.length > 0) this.updateStudyPlanForWidget()
           } 
           else {
             this.showInitForm = true
