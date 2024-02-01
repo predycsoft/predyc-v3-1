@@ -69,7 +69,9 @@ export class MyTeamComponent {
       const modalRef = this.modalService.open(CreateUserComponent, {
         animation: true,
         centered: true,
-        size: 'lg'
+        size: 'lg',
+        backdrop: 'static',
+        keyboard: false 
       })
       if (!isNewUser) modalRef.componentInstance.studentToEdit = student;
       return modalRef
