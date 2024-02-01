@@ -208,7 +208,7 @@ export class ActivityClassesService {
   getActivityCoruse(idCourse) {
     const courseRef: DocumentReference = this.afs.doc(`course/${idCourse}`).ref;
     // Fetch activity using the courseRef
-    console.log('courseRef getActivityCoruse',courseRef)
+    // console.log('courseRef getActivityCoruse',courseRef)
     return this.afs.collection('activity', ref => 
       ref.where('coursesRef', 'array-contains', courseRef)
       .where('type', '==', 'test')

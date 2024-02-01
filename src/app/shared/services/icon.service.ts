@@ -149,6 +149,8 @@ export class IconService {
 
   filterEdit = "assets/iconsUI/filter--edit.svg"
   filterRemove = "assets/iconsUI/filter--remove.svg"
+  edit = "assets/iconsUI/edit.svg"
+
 
   search = "assets/iconsUI/search.svg"
   chat = "assets/iconsUI/chat.svg"
