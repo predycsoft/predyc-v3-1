@@ -327,8 +327,8 @@ export class StudentStudyPlanAndCompetencesComponent {
     const mapeoNombres : { [key: string]: string } = {
       "Confiabilidad": "Confiabilidad",
       "Eléctrica": "Eléctrica",
-      "Gestión de Activos": "Gestión de Activos",
-      "Gestión de Mantenimiento": "Mantenimiento",
+      "Gestión de Activos": "Gest. Activos",
+      "Gestión de Mantenimiento": "Gest. Mant.",
       "Gestión de Proyectos": "Proyectos",
       "HSE": "HSE",
       "Instrumentación": "Instrumentación",
