@@ -2,15 +2,18 @@ import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core
 import { MatPaginator } from '@angular/material/paginator';
 import { IconService } from '../../../../shared/services/icon.service';
 import { UserService } from '../../../../shared/services/user.service';
-import { Subscription } from 'rxjs';
+import { combineLatest, Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 import { ProfileService } from 'src/app/shared/services/profile.service';
 import { Profile } from 'src/app/shared/models/profile.model';
+import { DepartmentService } from 'src/app/shared/services/department.service';
+import { Department } from 'src/app/shared/models/department.model';
 
 interface User {
   displayName: string,
   profile: string,
+  department: string,
   hours: number,
   ratingPoints: number,
   rhythm: string
@@ -27,6 +30,7 @@ export class StudentListComponent {
 
   displayedColumns: string[] = [
     'displayName',
+    'department',
     'hours',
     'ratingPoints',
     'rhythm',
@@ -41,12 +45,14 @@ export class StudentListComponent {
   queryParamsSubscription: Subscription
   profilesSubscription: Subscription
   userServiceSubscription: Subscription
-  pageSize: number = 8
+  pageSize: number = 25
   totalLength: number
   profiles: Profile[] = []
+  departments: Department[] = []
 
   constructor(
     private activatedRoute: ActivatedRoute,
+    private departmentService: DepartmentService,
     public icon: IconService,
     private profileService: ProfileService,
     private router: Router,
@@ -55,16 +61,16 @@ export class StudentListComponent {
 
   ngOnInit() {
     this.profileService.loadProfiles()
-    this.profilesSubscription = this.profileService.getProfilesObservable().subscribe(profiles => {
-      if (profiles) {
+    
+    this.profilesSubscription = combineLatest([this.profileService.getProfilesObservable(), this.departmentService.getDepartments$()]).subscribe(([profiles, departments]) => {
         this.profiles = profiles
+        this.departments = departments
         this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
           const page = Number(params['page']) || 1;
           const searchTerm = params['search'] || '';
           const profileFilter = params['profile'] || '';
           this.performSearch(searchTerm, page, profileFilter);
         })
-      }
     })
   }
 
@@ -90,12 +96,14 @@ export class StudentListComponent {
           if (profile) {
             profileName = profile.name
           }
-          // --------------------- Seting satus. Calculation pending. DELETE IT
+          // --------------------- Setting status. Calculation pending. DELETE IT
           const options = ['high', 'medium', 'low', 'no plan'];
           const randomIndex = Math.floor(Math.random() * options.length);
+          const department = this.departments.find(department => department.id === item.departmentRef?.id)
           // --------------------- 
           const user = {
             displayName: item.displayName,
+            department: department?.name ? department.name : '',
             hours: 0, // Calculation pending
             profile: profileName,
             ratingPoints: item.ratingPoints,
@@ -103,6 +111,7 @@ export class StudentListComponent {
             uid: item.uid,
             photoUrl: item.photoUrl,
           }
+          console.log(user)
           return user
         })
         this.paginator.pageIndex = page - 1; // Update the paginator's page index

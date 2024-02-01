@@ -22,7 +22,7 @@
                     style="border-radius: 24px !important;"
                     (click)="onSave()"
                     >
-                    Guardar cambios
+                    {{id === 'new' ? 'Agregar perfil' : 'Editar perfil'}}
                     <img [src]="icon.save" class="h16px pdl05 makeWhite" alt="">
                 </div>
             </div>

@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { TimeScale } from 'chart.js/dist';
 import { map, Observable, startWith, Subscription } from 'rxjs';
 import { Department } from 'src/app/shared/models/department.model';
 import { Profile } from 'src/app/shared/models/profile.model';
@@ -43,10 +44,9 @@ export class CreateUserComponent {
   departments: Department[] = []
   filteredDepartments: Observable<string[]>;
 
-  ngOnInit() {
+  async ngOnInit() {
     this.profileServiceSubscription = this.profileService.getProfilesObservable().subscribe(profiles => {if (profiles) this.profiles = profiles})
-    const enterpriseRef = this.enterpriseService.getEnterpriseRef()
-    this.departmentServiceSubscription = this.departmentService.getDepartments(enterpriseRef).subscribe({
+    this.departmentServiceSubscription = this.departmentService.getDepartments$().subscribe({
       next: departments => {
         this.departments = departments
       },
@@ -54,7 +54,7 @@ export class CreateUserComponent {
         this.alertService.errorAlert(error.message)
       }
     })
-    this.setupForm()
+    await this.setupForm()
     this.filteredDepartments = this.userForm.controls.department.valueChanges.pipe(
       startWith(''),
       map(value => this._filter(value || '')),
@@ -70,7 +70,7 @@ export class CreateUserComponent {
     console.log("Crear departamento")
   }
 
-  setupForm() {
+  async setupForm() {
     this.userForm = this.fb.group({
       name: [null, [Validators.required]],
       profile: [null],
@@ -86,12 +86,13 @@ export class CreateUserComponent {
     });
     // Edit mode
     if (this.studentToEdit) {
+      const department = (await this.studentToEdit.departmentRef.get()).data()
       this.userForm.patchValue({
         name: this.studentToEdit.displayName,
         // profile: this.studentToEdit.profile,
         photoUrl: this.studentToEdit.photoUrl,
         phoneNumber: this.studentToEdit.phoneNumber,
-        department: this.studentToEdit.departmentRef,
+        department: department.name,
         country: this.studentToEdit.country,
         email: this.studentToEdit.email,
         job: this.studentToEdit.job,
