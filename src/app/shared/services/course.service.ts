@@ -277,11 +277,10 @@ export class CourseService {
     return this.afs.collection<CourseByStudent>(CourseByStudent.collection, ref => ref.where('userRef', '==', userRef)).valueChanges()
   }
 
-  getActiveCoursesByStudent$(userRef: DocumentReference<User>): Observable<CourseByStudent[]> {
-    return this.afs.collection<CourseByStudent>(CourseByStudent.collection, ref => ref.
-      where('userRef', '==', userRef).
-      where('active', '==', true)
-    ).valueChanges()
+  async getCourseByStudent(userRef: DocumentReference<User>, courseRef: DocumentReference<Curso>): Promise<CourseByStudent> {
+    const courseByStudent = await firstValueFrom(this.afs.collection<CourseByStudent>(CourseByStudent.collection, ref => ref.
+      where('userRef', '==', userRef).where('courseRef', '==', courseRef) ).valueChanges())
+    return courseByStudent ? courseByStudent[0] : null
   }
 
   async saveCourseByStudent(courseRef: DocumentReference, userRef: DocumentReference, dateStartPlan: Date, dateEndPlan: Date) {
@@ -302,6 +301,23 @@ export class CourseService {
     await this.afs.collection(CourseByStudent.collection).doc(courseByStudent.id).set(courseByStudent);
     console.log("Course by student doc saved")
   }
+
+  getActiveCoursesByStudent$(userRef: DocumentReference<User>): Observable<CourseByStudent[]> {
+    return this.afs.collection<CourseByStudent>(CourseByStudent.collection, ref => ref.
+      where('userRef', '==', userRef).
+      where('active', '==', true)
+    ).valueChanges()
+  }
+
+  async setCourseByStudentActive(courseByStudentId: string, startDate: any, endDate: any) { 
+    await this.afs.collection(CourseByStudent.collection).doc(courseByStudentId).set({
+      active: true,
+      dateStartPlan: startDate,
+      dateEndPlan: endDate,
+    }, { merge: true });
+    console.log(`${courseByStudentId} has been activated`)
+  }
+  
 
   async setCoursesByStudentInactive(userRef: DocumentReference<User>) {
     this.afs.collection<CourseByStudent>(CourseByStudent.collection, ref => 

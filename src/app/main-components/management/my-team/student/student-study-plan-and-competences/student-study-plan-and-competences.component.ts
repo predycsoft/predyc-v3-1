@@ -7,7 +7,7 @@ import { CourseByStudent } from 'src/app/shared/models/course-by-student';
 import { Curso, CursoJson } from 'src/app/shared/models/course.model';
 import { Profile } from 'src/app/shared/models/profile.model';
 import { Skill } from 'src/app/shared/models/skill.model';
-import { UserJson } from 'src/app/shared/models/user.model';
+import { User, UserJson } from 'src/app/shared/models/user.model';
 import { CategoryService } from 'src/app/shared/services/category.service';
 import { CourseService } from 'src/app/shared/services/course.service';
 import { IconService } from 'src/app/shared/services/icon.service';
@@ -186,7 +186,7 @@ export class StudentStudyPlanAndCompetencesComponent {
     let now = new Date()
     let hoy = +new Date(now.getFullYear(), now.getMonth(), now.getDate())
     for (let i = 0; i < coursesRefs.length; i++) {
-      const userRef: DocumentReference = this.userService.getUserRefById(this.student.uid)
+      const userRef: DocumentReference | DocumentReference<User> = this.userService.getUserRefById(this.student.uid)
       const courseData = this.coursesData.find(courseData => courseData.id === coursesRefs[i].id);
       const courseDuration = courseData.duracion
       let hoursPermonth = this.hoursPermonthInitForm ? this.hoursPermonthInitForm : this.student.studyHours
@@ -199,7 +199,13 @@ export class StudentStudyPlanAndCompetencesComponent {
 
       dateEndPlan = this.courseService.calculatEndDatePlan(dateStartPlan, courseDuration, hoursPermonth)
       //  ---------- if it already exists, activate it, otherwise, create it ---------- 
-      await this.courseService.saveCourseByStudent(coursesRefs[i], userRef, new Date(dateStartPlan), new Date(dateEndPlan)) //this means changes in the collection
+      const courseByStudent: CourseByStudent | null = await this.courseService.getCourseByStudent(userRef as DocumentReference<User>, coursesRefs[i] as DocumentReference<Curso>)
+      console.log("courseByStudent", courseByStudent)
+      if (courseByStudent) {
+        await this.courseService.setCourseByStudentActive(courseByStudent.id, new Date(dateStartPlan), new Date(dateEndPlan))
+      } else {
+        await this.courseService.saveCourseByStudent(coursesRefs[i], userRef, new Date(dateStartPlan), new Date(dateEndPlan))
+      }
     }
   }
   
