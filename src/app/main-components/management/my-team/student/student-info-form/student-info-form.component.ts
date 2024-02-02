@@ -7,6 +7,7 @@ import { User, UserJson } from 'src/app/shared/models/user.model';
 import { AlertsService } from 'src/app/shared/services/alerts.service';
 import { IconService } from 'src/app/shared/services/icon.service';
 import { ProfileService } from 'src/app/shared/services/profile.service';
+import { UserService } from 'src/app/shared/services/user.service';
 import { capitalizeFirstLetter } from 'src/app/shared/utils';
 import { countriesData } from 'src/assets/data/countries.data';
 
@@ -72,7 +73,7 @@ export class StudentInfoFormComponent {
   async save() {
     if (this.isEditing) {
       const formData = this.studentForm.value 
-      console.log("Guardando...", formData);
+      // console.log("Guardando...", formData);
       await this.saveStudentPhoto() //this.student.photoUrl
       this.student.canEnrollParticularCourses = formData.canEnrollParticularCourses
       this.student.displayName = formData.displayName

@@ -170,7 +170,7 @@ export class ProfileService {
 
   public getDiagnosticTestForUser$(user): Observable<any> {
     const userRef = this.afs.collection(User.collection).doc(user.uid).ref
-    console.log(user.uid, user.profile.id)
+    // console.log(user.uid, user.profile.id)
     return this.afs.collection('profileTestsByStudent', ref => ref.where("userRef", "==", userRef).where("profileRef", "==", user.profile)).valueChanges()
   }
   

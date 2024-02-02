@@ -58,7 +58,7 @@ export class StudentStudyPlanAndCompetencesComponent {
   startDateInitForm: {year: number, month: number, day: number} | null = null
 
 
-  // -------------------------------- Competences
+  // -------------------------------- Skills
   coursesForExplorer: CoursesForExplorer[]
   serviceSubscription: Subscription
   categories: Category[]
@@ -69,9 +69,7 @@ export class StudentStudyPlanAndCompetencesComponent {
 
 
   ngOnInit() {
-    // console.log("this.student", this.student)
     const userRef = this.userService.getUserRefById(this.student.uid)
-    // this.createStudyPlan()
     // if the student has a profile, get the data and show the study plan
     this.combinedObservableSubscription = combineLatest([ this.courseService.getCourses$(), this.courseService.getActiveCoursesByStudent$(userRef), this.categoryService.getCategories$(), this.skillService.getSkills$()]).
     subscribe(([coursesData, coursesByStudent, categories, skills]) => {
@@ -84,10 +82,12 @@ export class StudentStudyPlanAndCompetencesComponent {
         if (this.selectedProfile) {
           this.getDiagnosticTestForProfile()
           if (coursesByStudent.length > 0) {
-            this.buildMonths(coursesByStudent, coursesData)
             this.showInitForm = false
+            this.hoursPermonthInitForm = this.student.studyHours
+            this.buildMonths(coursesByStudent, coursesData)
           } 
           else {
+            // the student has a profile but hasnt completed initform yet
             this.showInitForm = true
             this.hoursPermonthInitForm = this.selectedProfile.hoursPerMonth
             console.log("El usuario no posee studyPlan");
@@ -98,8 +98,12 @@ export class StudentStudyPlanAndCompetencesComponent {
   }
 
   async ngOnChanges(changes: SimpleChanges) {
-    // setting profile for the first time
+    // console.log("changes", changes)
+    if (changes.student && changes.student.previousValue) {
+      this.student.studyHours = changes.student.previousValue.studyHours //student.currentValue still has the initial studyHours = 0
+    }
     if(changes.selectedProfile) {
+      // setting profile for the first time
       if (changes.selectedProfile.previousValue === null && changes.selectedProfile.currentValue) {
         this.showInitForm = true
         this.hoursPermonthInitForm = changes.selectedProfile.currentValue.hoursPerMonth
@@ -107,6 +111,7 @@ export class StudentStudyPlanAndCompetencesComponent {
       // setting new profile
       if (changes.selectedProfile.previousValue && changes.selectedProfile.currentValue && 
       (changes.selectedProfile.currentValue.id !== changes.selectedProfile.previousValue.id )) {
+        this.hoursPermonthInitForm = this.student.studyHours
         this.getDiagnosticTestForProfile()
         // Set active = false in prev profile courses
         await this.courseService.setCoursesByStudentInactive(this.userService.getUserRefById(this.student.uid))
@@ -199,11 +204,12 @@ export class StudentStudyPlanAndCompetencesComponent {
     let dateEndPlan: number
     let now = new Date()
     let hoy = +new Date(now.getFullYear(), now.getMonth(), now.getDate())
+    const hoursPermonth = this.hoursPermonthInitForm = 0 ? this.student.studyHours : this.hoursPermonthInitForm 
+    // console.log("hoursPermonth", hoursPermonth)
     for (let i = 0; i < coursesRefs.length; i++) {
       const userRef: DocumentReference | DocumentReference<User> = this.userService.getUserRefById(this.student.uid)
       const courseData = this.coursesData.find(courseData => courseData.id === coursesRefs[i].id);
       const courseDuration = courseData.duracion
-      let hoursPermonth = this.hoursPermonthInitForm ? this.hoursPermonthInitForm : this.student.studyHours
 
       if (this.startDateInitForm){
         dateStartPlan = +new Date(this.startDateInitForm.year, this.startDateInitForm.month - 1, this.startDateInitForm.day);
@@ -240,6 +246,7 @@ export class StudentStudyPlanAndCompetencesComponent {
   
   async saveInitForm() {
     await this.userService.saveStudyPlanHoursPerMonth(this.student.uid, this.hoursPermonthInitForm)
+    this.student.studyHours = this.hoursPermonthInitForm
     this.showInitForm = false
     // calculate dates and create studyplan using this.startDateInitForm
     await this.createStudyPlan()
@@ -254,7 +261,7 @@ export class StudentStudyPlanAndCompetencesComponent {
 
   updateWidgets() {
     const chartData = this.getChartData()
-// console.log("chartData", chartData)
+    // console.log("chartData", chartData)
     this.getChart(chartData)
     this.updateCategoriesAndSkillsWidget(chartData)
   }
@@ -458,6 +465,6 @@ export class StudentStudyPlanAndCompetencesComponent {
 
   updateCategoriesAndSkillsWidget(chartData) {
     this.categoriesAndSkillsWidgetData = chartData.filter(category => category.skills.length > 0)
-    console.log("this.categoriesAndSkillsWidgetData", this.categoriesAndSkillsWidgetData)
+    // console.log("this.categoriesAndSkillsWidgetData", this.categoriesAndSkillsWidgetData)
   }
 }
