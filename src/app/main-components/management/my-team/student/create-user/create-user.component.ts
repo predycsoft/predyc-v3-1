@@ -130,7 +130,8 @@ export class CreateUserComponent {
   }
 
   async getUserFromForm(){
-    const formData = this.userForm.value 
+    const formData = this.userForm.getRawValue() // use getRawValue instead of value because "value" doesnt contain disabled fields (email)
+
     // Guarda la imagen
     const photoUrl = await this.saveStudentPhoto()
     let department = null
