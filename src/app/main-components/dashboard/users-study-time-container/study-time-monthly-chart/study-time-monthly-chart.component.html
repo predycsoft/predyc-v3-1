@@ -6,6 +6,8 @@
             </div>
             <div class="barra" fxLayout="column" fxLayoutAlign="end">
                 <div [ngClass]="{'barra-fill': true, 'barra-fill2': item.label == currentLabel && hasProgress }" [style.height.%]="item.value*100/max"></div>
+                <!-- <div class="progress-line mgb70 " style="margin-left: -10px;" ></div> -->
+
             </div>
             <div class="label" fxLayout="column" fxLayoutAlign="end center">
                 <span class="label-text gray-6 ft9" [ngClass]="item.label == currentLabel?'ft600 blue-5':'gray-6'">{{item.label}}</span>

@@ -20,7 +20,7 @@ export class StudyTimeMonthlyChartComponent {
   max = 0
   currentLabel: string | null = null;
   hasProgress : boolean = false;
-
+ 
 
   ngOnInit(): void {
     this.data = []
