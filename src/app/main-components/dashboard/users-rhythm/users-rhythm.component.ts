@@ -27,10 +27,14 @@ export class UsersRhythmComponent {
 
   ngOnInit() {
     const total = this.high + this.medium + this.low + this.noPlan
-    this.highPercentage = total ? this.high * 100 / total : 0
-    this.mediumPercentage = total ? this.medium * 100 / total : 0
-    this.lowPercentage = total ? this.low * 100 / total : 0
-    this.noPlanPercentage = total ? this.noPlan * 100 / total : 0
-    this.goodRhythmPercentage = total ? (this.high + this.medium) * 100 / total : 0
+    this.highPercentage = total ? this.getPercentage(this.high, total) : 0
+    this.mediumPercentage = total ? this.getPercentage(this.medium, total) : 0
+    this.lowPercentage = total ? this.getPercentage(this.low, total) : 0
+    this.noPlanPercentage = total ? this.getPercentage(this.noPlan, total) : 0
+    this.goodRhythmPercentage = total ? this.getPercentage((this.high + this.medium), total) : 0
+  }
+
+  getPercentage(value: number, total: number) {
+    return value * 100 / total
   }
 }
