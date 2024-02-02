@@ -5,7 +5,7 @@
                 <span class="value-text gray-6 nowrap ft10" *ngIf="item.value > 0">{{item.value | number:"1.1-1"}}</span>
             </div>
             <div class="barra" fxLayout="column" fxLayoutAlign="end">
-                <div class="barra-fill" [style.height.%]="item.value*100/max"></div>
+                <div [ngClass]="{'barra-fill': true, 'barra-fill2': item.label == currentLabel && hasProgress }" [style.height.%]="item.value*100/max"></div>
             </div>
             <div class="label" fxLayout="column" fxLayoutAlign="end center">
                 <span class="label-text gray-6 ft9" [ngClass]="item.label == currentLabel?'ft600 blue-5':'gray-6'">{{item.label}}</span>
