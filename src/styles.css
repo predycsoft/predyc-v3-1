@@ -136,9 +136,9 @@ body {
   --green-1: #E2FFFA;
   --green-2:#BCE8DF;
   /* --green-2: #B0FFF1; */
-  --green-3: #58F5D9;
-  --green-4: #006908;
-  --green-5: #00BF9C;
+  --green-3: #74d96e;
+  --green-4: #2ea838;
+  --green-5: #38b73f;
   --green-6: #5cb85c;
   --blue-1: #EDF8FF;
   --blue-2: #95E0FF;
@@ -350,6 +350,50 @@ body {
 .shadow16{ box-shadow: var(--shadow16);}
 .shadow32{ box-shadow: var(--shadow32);}
 .shadow128{ box-shadow: var(--shadow128);}
+
+.shadow-animation {
+  transition: box-shadow 0.5s ease;
+  border: 1px solid #e6e6e6;  
+}
+
+.shadow-animation::before {
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.shadow-animation:hover {
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.15);   
+
+}
+
+.shadow-animation:hover::before {
+  opacity: 1;
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+.shadowLight {
+  transition: box-shadow 0.5s ease;
+
+  background-color: 1px solid #ededed;  
+}
+
+
+.shadowLight::before {
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.shadowLight:hover {
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.15);   
+
+}
+
+.shadowLight:hover::before {
+  opacity: 1;
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+
+
+
 
 
 /*  */
@@ -1106,6 +1150,8 @@ body {
 .avatar8{ height: 8rem; width: 8rem; border-radius: 50%; }
 .avatar9{ height: 9rem; width: 9rem; border-radius: 50%; }
 .avatar10{ height: 10rem; width: 10rem; border-radius: 50%; }
+
+.circleBig{ height: 10rem; width: 10rem; border-radius: 50%; }
 
 .avatarshadow {
   height: 4rem; width: 4rem; border-radius: 50%; 

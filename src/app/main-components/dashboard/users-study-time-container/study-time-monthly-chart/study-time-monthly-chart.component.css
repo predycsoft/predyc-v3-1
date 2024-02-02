@@ -12,11 +12,16 @@
 
 .barra{
     flex: 1 1 100%;
-    background-color: var(--gray-2);
+    background-color: #efefef;
     height: 69%;
 }
 
 .barra-fill{
+    width: 100%;
+    background-color: var(--green-3);
+}
+
+.barra-fill2{
     width: 100%;
     background-color: var(--blue-5);
 }
