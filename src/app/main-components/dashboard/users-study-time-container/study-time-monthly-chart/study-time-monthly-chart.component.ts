@@ -18,13 +18,16 @@ export class StudyTimeMonthlyChartComponent {
   data = []
   dayGoalHour = 1
   max = 0
-  currentLabel
-
+  currentLabel: string | null = null;
+  hasProgress : boolean = false;
+ 
 
   ngOnInit(): void {
     this.data = []
     let now = new Date();
     let currentMonth = now.getUTCMonth();
+    this.hasProgress = false; 
+
 
     for(let i=0; i<12; i++) {
       let month = subMonths(now, i);
@@ -40,6 +43,9 @@ export class StudyTimeMonthlyChartComponent {
       this.data.unshift({value, label});
       if (month.getUTCMonth() === currentMonth) {
         this.currentLabel = label;
+        if (value > 0) {
+          this.hasProgress = true;
+        }
       }
     }
     
@@ -70,18 +76,26 @@ export class StudyTimeMonthlyChartComponent {
 
           if (month.getUTCMonth() === currentMonth) {
             this.currentLabel = label;
+          }
+          if (month.getUTCMonth() === currentMonth) {
+            this.hasProgress = value > 0;
+          }
         }
-      }
+  
       
       this.max = this.dayGoalHour
       let max = this.data.reduce((max, item) => item.value > max ? item.value : max, this.data[0].value);
       if(max > this.max){
           this.max = max;
       }
+      
 
       // Asegúrate de llamar a detectChanges para que Angular actualice la vista
       this.cdRef.detectChanges();
     }
+   
+
+
   }
 
 }
