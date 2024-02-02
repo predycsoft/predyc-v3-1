@@ -71,12 +71,14 @@
                         <div fxLayout="row" fxLayoutAlign="space-between center">
                             <span class="ft12"> {{course.courseTitle}} </span>
                             <!-- just to see the dates -->
-                            <span>{{course.dateStartPlan | date:'dd/MM/yy'}}</span>
-                            <span>{{course.dateEndPlan | date:'dd/MM/yy'}}</span>
-                            <!--  -->
-                            <div fxLayout="row" fxLayoutAlign="space-between center" class="" fxLayoutGap="0.5rem">
-                                <img *ngIf="course.dateEnd" [src]="icon.greenCheck" class="h12px" alt="">
-                                <span class="ft12"> {{course.duration | number:'1.0-1'}} hr </span>
+                            <div fxLayout="row" fxLayoutGap="15px" fxLayoutAlign=" center">
+                                <span>{{course.dateStartPlan | date:'dd/MM/yy'}}</span>
+                                <span>{{course.dateEndPlan | date:'dd/MM/yy'}}</span>
+                                <!--  -->
+                                <div fxLayout="row" fxLayoutAlign="space-between center" class="" fxLayoutGap="0.5rem">
+                                    <img *ngIf="course.dateEnd" [src]="icon.greenCheck" class="h12px" alt="">
+                                    <span class="ft12"> {{course.duration | number:'1.0-1'}} hr </span>
+                                </div>
                             </div>
                         </div>
                     </div>
