@@ -111,7 +111,7 @@ export class StudentListComponent {
             uid: item.uid,
             photoUrl: item.photoUrl,
           }
-          console.log(user)
+          // console.log(user)
           return user
         })
         this.paginator.pageIndex = page - 1; // Update the paginator's page index

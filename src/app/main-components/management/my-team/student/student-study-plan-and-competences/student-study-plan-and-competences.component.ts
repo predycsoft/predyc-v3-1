@@ -69,7 +69,7 @@ export class StudentStudyPlanAndCompetencesComponent {
 
 
   ngOnInit() {
-    console.log("this.student", this.student)
+    // console.log("this.student", this.student)
     const userRef = this.userService.getUserRefById(this.student.uid)
     // this.createStudyPlan()
     // if the student has a profile, get the data and show the study plan
@@ -85,6 +85,7 @@ export class StudentStudyPlanAndCompetencesComponent {
           this.getDiagnosticTestForProfile()
           if (coursesByStudent.length > 0) {
             this.buildMonths(coursesByStudent, coursesData)
+            this.showInitForm = false
           } 
           else {
             this.showInitForm = true
