@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { Chart } from 'chart.js';
 import { IconService } from 'src/app/shared/services/icon.service';
 
 @Component({
@@ -7,6 +8,14 @@ import { IconService } from 'src/app/shared/services/icon.service';
   styleUrls: ['./users-rhythm.component.css']
 })
 export class UsersRhythmComponent {
+
+  // @ViewChild('doughnutCanvas') doughnutCanvas: ElementRef<HTMLCanvasElement>;
+  // doughnutChart: Chart;
+
+  ctx : any;
+  config : any;
+  chartData : number[] = [];
+  chartDatalabels : any[] = [];
 
   constructor(
     public icon: IconService,
@@ -32,7 +41,71 @@ export class UsersRhythmComponent {
     this.lowPercentage = total ? this.getPercentage(this.low, total) : 0
     this.noPlanPercentage = total ? this.getPercentage(this.noPlan, total) : 0
     this.goodRhythmPercentage = total ? this.getPercentage((this.high + this.medium), total) : 0
+
   }
+
+  ngAfterViewInit() {
+    // this.drawChart();
+    this.chartExample()
+  }
+
+
+  drawChart() {
+
+    // const data = {
+    //   labels: ['Ritmo alto', 'Ritmo medio', 'Ritmo bajo', 'Sin asignaciones'],
+    //   datasets: [{
+    //     data: [highPercentage, mediumPercentage, lowPercentage, noPlanPercentage],
+    //     backgroundColor: [
+    //       'rgb(255, 99, 132)',
+    //       'rgb(54, 162, 235)',
+    //       'rgb(255, 205, 86)',
+    //       'rgb(201, 203, 207)'
+    //     ],
+    //     hoverOffset: 4
+    //   }]
+    // };
+
+
+
+  }
+
+  chartExample() {
+    this.chartData.push(this.highPercentage);
+    this.chartData.push(this.mediumPercentage);
+    this.chartData.push(this.lowPercentage);
+    this.chartData.push(this.noPlanPercentage);
+  
+    this.chartDatalabels.push('Alto');
+    this.chartDatalabels.push('Medio');
+    this.chartDatalabels.push('Bajo');
+    this.chartDatalabels.push('Sin asignaciones');
+  
+    this.ctx = document.getElementById('myChart');
+    this.config = {
+      type: 'doughnut',
+      data: {
+        labels: this.chartDatalabels,
+        datasets: [{ 
+          label: 'Chart Data',
+          data: this.chartData,
+          borderWidth: 1,
+          borderColor: 'black',
+          backgroundColor: ['purple', 'green', 'red', 'gray']
+        }],
+      },
+      options: {
+        plugins: {
+          legend: {
+            display: false // disable the legend
+          }
+        }
+      }
+    };
+    const myChart = new Chart(this.ctx, this.config);
+  }
+  
+
 
   getPercentage(value: number, total: number) {
     return value * 100 / total
