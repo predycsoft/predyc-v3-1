@@ -86,13 +86,13 @@ export class CreateUserComponent {
     });
     // Edit mode
     if (this.studentToEdit) {
-      const department = (await this.studentToEdit.departmentRef.get()).data()
+      const department = this.studentToEdit.departmentRef ? (await this.studentToEdit.departmentRef.get()).data() : null
       this.userForm.patchValue({
         name: this.studentToEdit.displayName,
         // profile: this.studentToEdit.profile,
         photoUrl: this.studentToEdit.photoUrl,
         phoneNumber: this.studentToEdit.phoneNumber,
-        department: department.name,
+        department: department ? department.name : null,
         country: this.studentToEdit.country,
         email: this.studentToEdit.email,
         job: this.studentToEdit.job,
@@ -136,7 +136,7 @@ export class CreateUserComponent {
     let department = null
     if (formData.department && formData.department !== 'null') {
       const departmentId = this.departments.find(department => department.name === formData.department).id
-      department = this.departmentService.getDepartmentRefById(departmentId)
+      department = departmentId ? this.departmentService.getDepartmentRefById(departmentId) : null
     }
     const userObj = {
       name: formData.name ? formData.name.toLowerCase() : null,
