@@ -332,4 +332,9 @@ export class UserService {
   }
 
 
+  async updateUserFields(uid: string, fields: Partial<User>) {
+    await this.afs.collection(User.collection).doc(uid).set(fields, {merge: true});
+  }
+  
+
 }
