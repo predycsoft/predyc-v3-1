@@ -1,12 +1,14 @@
 <div class="sidenav_container pdl05 pdr05" fxLayout="column" fxLayoutAlign="space-between">
   
         <div fxLayout="column" fxLayoutAlign=" start">
-            <div *ngFor="let page of pages" [routerLink]="page.link"  routerLinkActive="backYellow4"
-                [routerLinkActiveOptions]="{ exact: true }" class="item cursorPointer hoverBasic" fxLayout="row" fxLayout="start">
-                <div fxLayout="row">
-                    <img [src]="page?.icon" class="h20px makeGray8 " routerLinkActive="opacity1"
+            <div *ngFor="let page of pages" [routerLink]="page.link"    fxLayout="left center "  routerLinkActive=" ActiveMenuOption"
+                [routerLinkActiveOptions]="{ exact: true }" class="item cursorPointer hoverBasic  " fxLayout="row" fxLayout="center center">
+                <div fxLayout="row" class=" MenuOptionsNav">
+                    <img [src]="page?.icon" class="h28px makeGray8  " routerLinkActive="opacity1"
                         [routerLinkActiveOptions]="{ exact: true }">
-                    <div *ngIf="menuExpanded" class="ft12 gray-8 ft500 mgl05">{{page.name}}</div>
+                    <span *ngIf="menuExpanded" class="ft13 mgt03 gray-8 ft500 mgr05 mgl05">{{page.name}}</span>
+
+                    
                 </div>
             </div>
 

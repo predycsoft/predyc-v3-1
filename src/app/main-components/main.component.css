@@ -65,10 +65,10 @@
 }
 
 .sidenav {
-    width: 54px;
-    height: calc(100vh - 48px);
+    width: 4vw !important;
+    height: 100vh;
     background-color: var(--gray-2);
-    transition: .3s;
+    transition: .3s ease-in-out;
 }
 
 .sidenavExpanded {

@@ -21,7 +21,7 @@ export class MainComponent {
 
   user: User
   user$: Observable<User> = this.authService.user$
-  menuExpanded = true
+  menuExpanded = false
 
   ngOnInit() {}
 }
