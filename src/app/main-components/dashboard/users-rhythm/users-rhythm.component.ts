@@ -89,9 +89,11 @@ export class UsersRhythmComponent {
         datasets: [{ 
           label: 'Chart Data',
           data: this.chartData,
-          borderWidth: 1,
-          borderColor: 'black',
-          backgroundColor: ['purple', 'green', 'red', 'gray']
+          borderWidth: 2,
+          borderColor: '#F2F2F2',
+          backgroundColor: ['#AFEF9F', 'rgb(255, 221, 0)', '#ED4758', '#D5DCE0']
+          
+
         }],
       },
       options: {

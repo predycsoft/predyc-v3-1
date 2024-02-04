@@ -89,11 +89,12 @@ body {
   margin: 0;
   padding: 0;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   font-family: "Inter", "Helvetica Neue", sans-serif;
   line-height: 1.7;
   font-size: 16px;
   overflow-x: hidden !important;
+  overflow-y: hidden !important;
 
 }
 
@@ -999,6 +1000,10 @@ body {
 .vh100{min-height: 100vh;}
 .vh80{min-height: 100vh;}
 .vw100{width: 100vw;}
+.vh85{height: 85vh;}
+.vh90{height: 90vh;}
+.vh95{height: 95vh;}
+
 
 .scale07{ transform: scale(.7);}
 
