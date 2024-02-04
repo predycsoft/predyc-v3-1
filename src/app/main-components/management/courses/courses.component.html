@@ -124,13 +124,14 @@
 
                     <div class="borderLight fh radius6 mgt10" *ngIf="selectedCourse" style="height: 83vh;">
                         <div class="border-bl pdl10 pdt10 pdr10 pdb10 fw" fxLayout="column">
-                            <div class="gray-10 ft14 ft500">{{selectedCourse.titulo}}</div>
+                            <div class="gray-10 ft14 ft500">{{selectedCourse.titulo | titlecase}}</div>
                             <!-- Left side content -->
                             <div fxLayout="row" fxLayoutGap="1rem" class="mgt05 fw">
-                                <img [src]="selectedCourse['imagen']" class="avatarSquare8 radius6" alt="">
+                                <img *ngIf="selectedCourse['imagen']" [src]="selectedCourse['imagen']" class="avatarSquare8 radius6" alt="">
+                                <img *ngIf="!selectedCourse['imagen']" [src]="icon.examenPredyc2" class="avatarSquare8 radius6" alt="">
                                 <div fxLayout="column" class="containerTitulo">
                                    <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="space-between">
-                                     <div fxLayout="row" fxLayoutGap=".5rem">
+                                     <div *ngIf="selectedCourse?.duracion" fxLayout="row" fxLayoutGap=".5rem">
                                         <div class="backGray2 pd05 w40px radius6" fxLayoutAlign="center center">
                                             <img [src]="icon.clock" class="makeYellow fw" alt="">
                                         </div>
@@ -146,7 +147,7 @@
                                             </div>
                                         </div>
                                      </div>
-                                     <div fxLayout="row" fxLayoutGap=".5rem">
+                                     <div *ngIf="selectedCourse?.nivel" fxLayout="row" fxLayoutGap=".5rem">
                                         <div class="backGray2 pd05 w40px radius6" fxLayoutAlign="center center">
                                             <img [src]="icon.intermedio" class="makeYellow fw" alt="">
                                         </div>
@@ -164,7 +165,7 @@
                                         </div>
                                      </div> -->
                                    </div>
-                                   <div class="mgt05">
+                                   <div *ngIf="selectedCourse['skills']" class="mgt05">
                                     <div class="ft10 gray-10">Compentencias</div>
                                     <div fxLayout="row wrap" fxLayoutGap=".5rem" class="mgt05">
                                         <!-- <div class="ft10 gray-8 backGray2 pd03 radius6 pdl05 pdr05 mgb05">Equipos estaticos</div>
@@ -181,11 +182,11 @@
                                 class="pdl10 pdr10 pdb05 pdt05 ft11" (click)="tab = 0" [ngClass]="tab == 0 ? 'selectedTab gray-10' : 'gray-8 tab'">
                                 Contenido
                             </div>
-                            <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign="center center"
+                            <div  *ngIf="selectedCourse?.descripcion" fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign="center center"
                                 class="pdl10 pdr10 pdb05 pdt05 ft11" (click)="tab = 1" [ngClass]="tab == 1 ? 'selectedTab gray-10' : 'gray-8 tab'">
                                 Descripción
                             </div>
-                            <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign="center center"
+                            <div *ngIf="selectedCourse?.instructor"  fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign="center center"
                                 class="pdl10 pdr10 pdb05 pdt05 ft11" (click)="tab = 2" [ngClass]="tab == 2 ? 'selectedTab gray-10' : 'gray-8 tab'">
                                 Instructor
                             </div>
@@ -205,11 +206,12 @@
                                             [src]="icon.chevronRight" class="makeBlue cursorPointer" alt="">
                                         <img *ngIf="modulo['expanded'] == true" (click)="modulo['expanded']=false"
                                             [src]="icon.chevronDown" class="makeBlue cursorPointer" alt="">
-                                        <span class="ft12 gray-10">{{modulo.titulo}}</span>
+                                        <span class="ft12 gray-10">{{modulo.titulo | titlecase}}</span>
                                     </div>
                                     <div fxLayoutAlign="center center">
-                                        <span class="gray-6 ft12 nowrap">{{getFloor(modulo.duracion/60) |
-                                            number:"1.0-0"}}:{{modulo.duracion%60 | number:"2.0-0"}} hrs</span>
+                                        <span *ngIf="modulo?.duracion" class="gray-6 ft12 nowrap">{{getFloor(modulo.duracion/60) |
+                                            number:"1.0-0"}}:{{modulo.duracion%60 | number:"2.0-0"}} hrs
+                                        </span>
                                     </div>
                                 </div>
                                 <div [class]="modulo['expanded'] ? 'bodyClasesExpanded' : 'bodyClases'"
@@ -217,18 +219,18 @@
                                     <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem"
                                         class="pd05 pdl10 border-tl">
                                         <div fxLayoutGap=".6rem" fxLayout="row" fxLayoutAlign="center">
-                                            <img [src]="icon.activity" *ngIf="clase.tipo == 'actividad'"
+                                            <img [src]="icon.activity" *ngIf="clase?.tipo == 'actividad'"
                                                 class="h14px makeGray8" alt="">
-                                            <img [src]="icon.playOutline" *ngIf="clase.tipo == 'video'"
+                                            <img [src]="icon.playOutline" *ngIf="clase?.tipo == 'video'"
                                                 class="h14px makeGray8" alt="">
-                                            <img [src]="icon.catalog" *ngIf="clase.tipo == 'lectura'"
+                                            <img [src]="icon.catalog" *ngIf="clase?.tipo == 'lectura'"
                                                 class="h14px makeGray8" alt="">
-                                            <img [src]="icon.favorite" *ngIf="clase.tipo == 'corazones'"
+                                            <img [src]="icon.favorite" *ngIf="clase?.tipo == 'corazones'"
                                                 class="h14px makeGray8" alt="">
-                                            <span class="ft11 gray-8">{{clase.titulo}}</span>
+                                            <span class="ft11 gray-8">{{clase.titulo | titlecase  }}</span>
                                         </div>
                                         <div fxLayoutAlign="center center">
-                                            <span class="gray-6 ft11 nowrap">{{clase.duracion}} min</span>
+                                            <span *ngIf="clase?.duracion" class="gray-6 ft11 nowrap">{{clase.duracion}} min</span>
                                         </div>
                                     </div>
                                 </div>
@@ -385,7 +387,7 @@
                                     [src]="icon.chevronRight" class="makeBlue cursorPointer" alt="">
                                 <img *ngIf="modulo.expanded == true" (click)="modulo.expanded=false"
                                     [src]="icon.chevronDown" class="makeBlue cursorPointer" alt="">
-                                <span class="ft12 gray-10">{{modulo.titulo}}</span>
+                                <span class="ft12 gray-10">{{modulo.titulo | titlecase}}</span>
                             </div>
                             <div fxLayoutAlign="center center">
                                 <span class="gray-6 ft12 nowrap">{{getFloor(modulo.duracion/60)
@@ -405,7 +407,7 @@
                                         alt="">
                                     <img [src]="icon.catalog" *ngIf="clase.tipo == 'lectura'" class="h14px makeGray8"
                                         alt="">
-                                    <span class="ft11 gray-8">{{clase.titulo}}</span>
+                                    <span class="ft11 gray-8">{{clase.titulo | titlecase}}</span>
                                 </div>
                                 <div fxLayoutAlign="center center">
                                     <span class="gray-6 ft11 nowrap">{{clase.duracion}} min</span>

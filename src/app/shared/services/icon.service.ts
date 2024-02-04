@@ -150,6 +150,7 @@ export class IconService {
   filterEdit = "assets/iconsUI/filter--edit.svg"
   filterRemove = "assets/iconsUI/filter--remove.svg"
   edit = "assets/iconsUI/edit.svg"
+  
 
 
   search = "assets/iconsUI/search.svg"
@@ -226,6 +227,9 @@ export class IconService {
 
   presentationFile: string ='assets/iconsUI/presentation-file.svg'
   trophyBlue: string ='assets/iconsUI/trophy-blue.svg'
+
+  examenPredyc2 = "assets/iconsUI/examenPredyc2.png"
+
 
   constructor() { }
 }

@@ -105,7 +105,7 @@ export class CoursesComponent implements AfterViewInit {
               modulo.expanded = false;
               let duracion = 0;
               modulo.clases.forEach(clase => {
-                duracion+=clase.duracion
+                duracion+=clase?.duracion? clase?.duracion : 0 
               });
               modulo.duracion = duracion
               duracionCourse+=duracion

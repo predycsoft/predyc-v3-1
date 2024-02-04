@@ -28,7 +28,8 @@
                  fxLayout="row" 
                  fxLayoutAlign="space-between center">
                 <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
-                    <img [src]="course['imagen']" class="h24px w24px radius4" alt="">
+                    <img *ngIf="course['imagen']" [src]="course['imagen']" class="h24px w24px radius4" alt="">
+                    <img *ngIf="!course['imagen']" [src]="icon.examenPredyc2" class="h24px w24px radius4" alt="">
                     <span class="ft12" [ngClass]="selectedCourse == course ? 'blue-5 ft500' : 'gray-10'">
                         {{course.titulo | titlecase}}
                     </span>
