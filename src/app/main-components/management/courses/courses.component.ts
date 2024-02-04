@@ -11,6 +11,8 @@ import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
 import { take } from 'rxjs';
 import { CourseService } from 'src/app/shared/services/course.service';
 
+import { cursosProximos } from 'src/assets/data/proximamente.data'
+
 
 export class category {
   name: string = ""
@@ -129,7 +131,12 @@ export class CoursesComponent implements AfterViewInit {
             category.coursesPropios = filteredCoursesPropios;
             category.coursesPredyc = filteredCoursesPredyc;
           });
-          console.log('this.categories',this.categories)
+
+          let proximos = this.categories.find(x=> x.name == 'Proximamente')
+          if(proximos){
+            proximos.coursesPredyc = cursosProximos
+            proximos.courses = cursosProximos
+          }
         })
       });
     })

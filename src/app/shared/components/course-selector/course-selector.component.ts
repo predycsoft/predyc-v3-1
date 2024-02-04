@@ -1,6 +1,9 @@
 import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
 import { IconService } from '../../../shared/services/icon.service';
 
+import { cursosProximos } from 'src/assets/data/proximamente.data'
+
+
 
 @Component({
   selector: 'app-course-selector',
@@ -23,7 +26,23 @@ export class CourseSelectorComponent {
     if (changes['categories'] && changes['categories'].currentValue) {
       console.log('changes categories',changes['categories']);
       this.processedCategories = this.structuredClone(changes['categories'].currentValue);
+      let cursosProxmosIn = cursosProximos
+      console.log('cursosProxmos',cursosProximos,cursosProxmosIn)
+      let proximamente = {
+        name:'Proximamente'
+      }
+      this.processedCategories.push(proximamente)
+
+      let proximos = this.processedCategories.find(x=> x.name == 'Proximamente')
+      proximos.coursesPredyc = cursosProxmosIn
+      proximos.courses = cursosProxmosIn
+
+      console.log('proximos',proximos)
+
+
       console.log('this.processedCategories',this.processedCategories)
+
+
     }
   }
 

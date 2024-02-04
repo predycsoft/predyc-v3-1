@@ -30,11 +30,11 @@
                 <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
                     <img [src]="course['imagen']" class="h24px w24px radius4" alt="">
                     <span class="ft12" [ngClass]="selectedCourse == course ? 'blue-5 ft500' : 'gray-10'">
-                        {{course.titulo}}
+                        {{course.titulo | titlecase}}
                     </span>
                 </div>
                 <div fxLayoutAlign="center center" fxLayout="row" fxLayoutGap=".5rem">
-                    <span class="gray-6 ft12 nowrap">
+                    <span *ngIf="course?.duracion" class="gray-6 ft12 nowrap">
                         {{ getRounded(course.duracion / 60) }}{{getRounded(course.duracion / 60) == 1 ? 'hr' : 'hrs'}}
                     </span>
                     <div fxLayout="row" fxLayoutGap=".3rem">
