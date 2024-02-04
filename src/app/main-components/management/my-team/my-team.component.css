@@ -3,7 +3,6 @@
     display: inline-block;
     text-overflow: ellipsis;
     white-space: nowrap;
-    overflow: hidden;
     padding-right: 2rem;
     max-height: 36px;
     background-color: #f8f8f8;
@@ -25,8 +24,12 @@
     background-color: var(--blue-1);
     cursor: pointer;
     color: #2298e2 !important;
+}
 
+.listadeusuarios{
 
+    overflow: auto;
+    overflow-y: visible !important;
 
 }
 

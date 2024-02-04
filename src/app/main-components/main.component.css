@@ -1,24 +1,27 @@
 .main_layout {
+    /* margin-top: 5px; */
     display: flex;
     width: 100vw;
-    height: calc(100vh - 48px);
+    height: 30vh;
 }
 
 .main_top{
-    height: 48px;
+    height: 50px;
     background-color: var(--gray-2);
     padding-left: 1rem;
     padding-right: 1rem;
+    padding-bottom: 8px ;
 }
 
 .main_content_container {
-    width: 100%; 
-    height: calc(100vh - 48px); 
+    width: 100vw; 
+    height: 85vh;
     background: var(--gray-2);
+    padding-top: 8vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-right: 1rem;
+    padding-right: -1rem;
 }
 
 .redDot{
@@ -56,12 +59,13 @@
 
 .main_content {
     background-color: white;
-    width: 100%;
-    height: 100%;
+    width: 97vw;
+    height: 95vh;
     /* padding: 30px; */
-    border-radius: 10px 10px 0 0;
+    border-radius: 10px 10px 0 0 !important;
     /* overflow: scroll; */
-    overflow: auto;
+    overflow: hidden;
+    overflow-y: scroll;
 }
 
 .sidenav {

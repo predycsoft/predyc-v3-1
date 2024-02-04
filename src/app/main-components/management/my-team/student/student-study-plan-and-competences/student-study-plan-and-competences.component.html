@@ -1,6 +1,6 @@
 <div fxLayout="row" fxLayoutAlign="space-between" class="mgt10">
     <!-- Resumen de competencias -->
-    <div class="w-35 radius10 borderLight cards fh" fxLayout="column" fxLayoutGap="0rem" >
+    <div class="w-40 radius10 borderLight cards fh" fxLayout="column" fxLayoutGap="0rem" >
         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem">
             <img [src]="icon.ticTacToe" class="makeBlue h16px" alt="">
             <span class="ft500 black undrl ft14 ft600 black">Resumen de competencias</span>
@@ -16,25 +16,24 @@
                 </div>
             </div>
         </div> -->
-        <div  class="chart-container ft14">
-            <div *ngFor="let category of categoriesAndSkillsWidgetData; let i = index">
-                <div class="ft12 mgb05">Pilar {{i+1}}: {{category.label}}</div>
-                <div fxLayout="row wrap" fxLayoutGap=".3rem" fxLayoutAlign="start center" class="mgt05 mgr10 mgb10">
+        <div  class="chart-container ft13 fw">
+            <div class="mgt10 fw" *ngFor="let category of categoriesAndSkillsWidgetData; let i = index">
+                <div class="ft14">Pilar {{i + 1}}: {{category.label}}</div>
+                <div class="skills-container" >
                     <div
-                        *ngFor="let skill of category.skills"
-                        class="  radius10 backGray1 pdl10 pdr10  gray-8 centered-text ListHover"
-                        style="margin-right: 0.3rem; margin-bottom: 0.3rem; white-space: nowrap;"
-                        >
-                        {{skill}}
-                    </div>
+                    *ngFor="let skill of category.skills"
+                    style="display: inline-block; margin-right: 5px; margin-bottom: 5px;"
+                    class=" ListHover2 radius10 backGray2 pdl05 pdr05 gray-8 mgt05"
+                >
+                    {{skill}}
                 </div>
+                </div>
+                
             </div>
-            
         </div>
-    
     </div>
     <!-- Plan de estudios -->
-    <div class="w-64 radius10 borderLight cards " fxLayout="column" fxLayoutGap="">
+    <div class="w-55 radius10 borderLight cards " fxLayout="column" fxLayoutGap="">
         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem">
             <img [src]="icon.ticTacToe" class="makeBlue h16px" alt="">
             <span class="ft500 black undrl ft14 ft600 black">Plan de estudios</span>
