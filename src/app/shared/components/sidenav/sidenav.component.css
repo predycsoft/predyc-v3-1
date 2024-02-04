@@ -7,7 +7,7 @@ a {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: left;
+    align-items: center ;
     
 }
 
@@ -42,9 +42,9 @@ a {
 }
 .MenuOptionsNav{
 
-    padding-top: .3vh;
+    padding-top: .6vh;
     padding-bottom: .3vh;
-    margin-left: .3vh;
+    margin-left: .2vh;
 
 
 }
