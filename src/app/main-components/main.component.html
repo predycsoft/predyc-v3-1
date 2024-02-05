@@ -11,8 +11,11 @@
             </div> -->
         </div>
         <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
-            <div class="positionRelative"  >
-                <img [src]="icon.notification" class="h24px cursorPointer  makeGray "    routerLinkActive='makeGray8' routerLink="management/notifications"   alt=""> 
+            <div (click)="openSupport()">
+              <img [src]="icon.headset" alt="" class="h24px cursorPointer makeGray"/>
+            </div>
+            <div class="positionRelative">
+                <img [src]="icon.notification" class="h24px cursorPointer makeGray"    routerLinkActive='makeGray8' routerLink="management/notifications" alt=""> 
                 <div class="redDot"></div>
             </div>
             <div *ngIf="user$ | async as user" fxLayout="column" fxLayoutAlign="center">

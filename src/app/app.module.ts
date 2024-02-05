@@ -119,6 +119,7 @@ import { StudentInfoFormComponent } from './main-components/management/my-team/s
 import { StudentStudyPlanAndCompetencesComponent } from './main-components/management/my-team/student/student-study-plan-and-competences/student-study-plan-and-competences.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { CustomMonthPipe } from './shared/pipes/custom-month.pipe';
+import { SupportComponent } from './shared/components/support/support.component';
 
 
 @NgModule({
@@ -191,6 +192,7 @@ import { CustomMonthPipe } from './shared/pipes/custom-month.pipe';
     StudentInfoFormComponent,
     StudentStudyPlanAndCompetencesComponent,
     CustomMonthPipe,
+    SupportComponent,
   ],
   imports: [
     BrowserModule,

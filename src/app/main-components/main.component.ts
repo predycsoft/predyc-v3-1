@@ -5,6 +5,8 @@ import { IconService } from '../shared/services/icon.service';
 import { User } from '../shared/models/user.model';
 import { Observable } from 'rxjs';
 import { AuthService } from '../shared/services/auth.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { SupportComponent } from '../shared/components/support/support.component';
 
 @Component({
   selector: 'app-main',
@@ -13,10 +15,9 @@ import { AuthService } from '../shared/services/auth.service';
 })
 export class MainComponent {
   constructor(
-    private enterpriseService: EnterpriseService,
-    private userService: UserService,
     private authService: AuthService,
-    public icon: IconService
+    public icon: IconService,
+    private modalService: NgbModal,
   ) {}
 
   user: User
@@ -24,4 +25,14 @@ export class MainComponent {
   menuExpanded = false
 
   ngOnInit() {}
+
+  openSupport() {
+    this.modalService.open(SupportComponent, {
+      animation: true,
+      centered: true,
+      size: 'lg',
+      backdrop: 'static',
+      keyboard: false 
+    })
+  }
 }
