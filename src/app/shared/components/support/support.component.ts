@@ -43,5 +43,8 @@ export class SupportComponent {
       this.alertService.errorAlert(error)
     }
   }
+  dismiss() {
+    this.activeModal.dismiss()
+  }
 
 }

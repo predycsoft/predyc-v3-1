@@ -57,6 +57,7 @@ export class IconService {
 
   phoneBlue = "assets/iconsUI/phoneBlue.svg"
   whatsapp_gray = "assets/iconsUI/whatsapp-gray.svg"
+  whatsapp_blue = "assets/iconsUI/whatsapp-blue-icon.svg"
   linkedin_gray = "assets/iconsUI/linkedin-gray.svg"
   instagram_gray = "assets/iconsUI/instagram-gray.svg"
   email = "assets/iconsUI/email-2.svg"

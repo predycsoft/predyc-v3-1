@@ -1,23 +1,31 @@
-<div fxLayout="column" fxLayoutAlign="center center" ngClass="containerPC" ngClass.lt-md="containerMobile">
-    <div class="mgb10">
-        <span class="ft500 ft18 nowrap gray-10"> Consultas </span>
+<div fxLayout="column" fxLayoutAlign="center center" class="pd10" ngClass="containerPC" ngClass.lt-md="containerMobile">
+
+    <div class="" fxLayout="row" fxLayoutAlign="space-between center">
+        <div class="center center nowrap">
+            <span class="ft600 ft16 gray-10"> Consultas </span>
+        </div>
+        <img fxLayoutAlign="end"  [src]="icon.close" class="makeGray h24px cursorPointer" (click)="dismiss()">
+
+        <!-- <div class="iconContainer cursorPointer mgl05 mgt05 " (click)="dismiss()" > <img fxLayoutAlign.lt-sm="center end"   [src]="icon.close" class="makeGray h24px"></div>  -->
+
     </div>
-       
+    
+
     <div *ngIf="!formIsOpen" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="1rem" fxLayoutGap.lt-md="0rem">
-        <div fxLayout="column" fxLayout.lt-md="row"  fxLayoutAlign.lt-md="center center" ngClass="blueBorderContainer centertext fw" ngClass.lt-md="blueBorderContainerMobile fw" fxLayoutAlign="center center" fxLayoutGap=".5rem"
+        <div fxLayout="column" fxLayout.lt-md="row"  fxLayoutAlign.lt-md="center center" ngClass="blueBorderContainer centertext fw" fxLayoutAlign="center center" fxLayoutGap=".5rem"
             (click)="openWhatsapp()" fxLayout="column">
-            <img [src]="icon.whatsapp_gray" alt="" ngClass="h40px makeGray" ngClass.lt-md="h26px">
+            <img [src]="icon.whatsapp_blue " class="" alt="" ngClass="h40px" ngClass.lt-md="h26px">
             <span class="ft500 ft14 nowrap"> Whatsapp </span>
         </div>
-        <div fxLayout="column" fxLayout.lt-md="row"  fxLayoutAlign.lt-md="center center" ngClass="blueBorderContainer centertext fw" ngClass.lt-md="blueBorderContainerMobile fw" fxLayoutAlign="center center" fxLayoutGap=".5rem"
+        <div fxLayout="column" fxLayout.lt-md="row"  fxLayoutAlign.lt-md="center center" ngClass="blueBorderContainer centertext fw" fxLayoutAlign="center center" fxLayoutGap=".5rem"
             (click)="formIsOpen = true" fxLayout="column">
-            <img [src]="icon.email" alt="" ngClass="h40px makeGray" ngClass.lt-md="h26px">
+            <img [src]="icon.email" alt="" ngClass="h40px makeBlue" ngClass.lt-md="h26px">
             <span class="ft500 ft14 nowrap">Correo</span>
         </div>
-        <div fxLayout="column" fxLayout.lt-md="row"  fxLayoutAlign.lt-md="center center" ngClass="blueBorderContainer centertext fw" ngClass.lt-md="blueBorderContainerMobile fw" fxLayoutAlign="center center" fxLayoutGap=".5rem"
+        <div fxLayout="column" fxLayout.lt-md="row"  fxLayoutAlign.lt-md="center center" ngClass="blueBorderContainer centertext fw" fxLayoutAlign="center center" fxLayoutGap=".5rem"
             fxLayout="column">
             <a href="tel:++524424257590">
-                <img [src]="icon.phoneBlue" alt="" ngClass="h40px makeGray" ngClass.lt-md="h26px">
+                <img [src]="icon.phoneBlue" alt="" ngClass="h40px" ngClass.lt-md="h26px">
             </a>
             <a class="ft500 ft14 gray-8 nowrap" href="tel:++524424257590" fxLayout="column">
                 <span>+52 (442) 4257590</span>
