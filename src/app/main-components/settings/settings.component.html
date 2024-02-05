@@ -13,12 +13,29 @@
 
 <!-- ************************************ -->
 <div *ngIf="licenses; else loading" class="mgt20 mgl20 mgr20">
+    
     <p class="ft600 ft16 gray-10" >Licencias</p>
 
+    <div fxLayout="row" fxLayoutAlign="left  " class="mgt05 mgb10"  fxLayoutGap="2rem">
+        <div class=" radius10 borderLight pdt10 mgb10 cards" fxLayout="column" style="height: 15vh; width: 20%">
+            <span class=" ft13 ft500 pdl10">Licencias disponibles</span>
+        </div>
+        <div class=" radius10 borderLight pdt10 mgb10 cards" fxLayout="column" fxLayoutGap="0.3rem" style="height: 15vh; width: 20%">
+            <span class=" ft13 ft500 pdl10">Licencias en uso </span>
+        </div>
+        <div class=" radius10 borderLight pdt10 mgb10 cards" fxLayout="column" fxLayoutGap="0.3rem" style="height: 15vh; width: 20%">
+            <span class=" ft13 ft500 pdl10">Rotaciones disponibles</span>
+        </div>
+        <div class=" radius10 borderLight pdt10 mgb10 cards" fxLayout="column" fxLayoutGap="0.3rem" style="height: 15vh; width: 20%">
+            <span class=" ft13 ft500 pdl10">Vigencia</span>
+        </div>
+    </div>
+
     <div fxLayout="row" fxLayoutAlign="">
-        <div fxLayout="column" class="w-75 border-rl">
+        <div fxLayout="column" class="w-100 ">
             <div fxLayout="row" fxLayoutAlign="space-between center" class="w-100 pdr20">
-                <div fxLayout="row" fxLayoutAlign=" center" class="h36px radius20 w500px shadow-animation" style="overflow: hidden;" >
+                <div fxLayout="row" fxLayoutAlign=" center" class="h36px radius20 w500px shadow-animation w-45" style="overflow: hidden;" >
+                    
                     <!-- <div class="backGray2 pdl10 pdr10 fh" fxLayout="row" fxLayoutAlign=" center">
                         <select name="" id="" class="catSelect">
                             <option value="">Usuarios activos</option>
@@ -33,10 +50,10 @@
                         </div>
                     </div> -->
                     <app-search-input-box class="fw"></app-search-input-box>
+                    
                 </div>
-                <button
-                    fxLayout="row"
-                    fxLayoutAlign="center center"
+                <button class="w-10 " fxLayout="row"
+                    fxLayoutAlign="center "
                     (click)="currentStatus !== 'active' ? null : removeLicense()"
                     [matMenuTriggerFor]="currentStatus !== 'active' ? licenseMenu : null"
                     [disabled]="selectedUsersIds.length === 0"
@@ -44,8 +61,16 @@
                     style="border-radius: 24px !important;"
                     [ngClass]="selectedUsersIds.length === 0 
                         ? 'select-container2': (currentStatus !== 'active' ? 'blueButtonAnim  button-animation':'redButtonAnim  button-animation')">
-                    {{ currentStatus !== 'active' ? 'Asignar licencia' : 'Cancelar licencia' }}
-                </button>
+                    {{ currentStatus !== 'active' ? 'Asignar licencia' : 'Cancelar licencia' }}</button>
+                <div class="w-30"></div>
+                <button class=" blueButtonAnim  button-animation ft500 w-10" style="border-radius: 24px !important;"  fxLayoutAlign="center " (click)="showDialog(licenses)">Adquirir licencias</button>           
+                <button class="grayButton ft500    blue-4 w-13" style="border-radius: 24px !important;"  fxLayoutAlign="center " (click)="showDialog2(licenses)">Historial de licencias</button>           
+
+                
+
+
+
+
                 <mat-menu #licenseMenu class="radius6 shadow16 pd0 mgt05">
                     <div fxLayout="column" class="fw pd05">
                         <div class="pd05 fw ">
@@ -64,15 +89,14 @@
                 <app-license-student-list [hasLicenseChanged]="hasLicenseChanged" (selectedUsers)="handleSelectedUsers($event)"></app-license-student-list>
             </div>
         </div>   
-        <div  *ngIf="selectedLicense" class="w-25 pdl10" fxLayout="column" fxLayoutGap="05px">
-            <button class="grayButton ft500 ft13 blue-4" style="border-radius: 24px !important;" (click)="showDialog(licenses)">Adquirir más licencias</button>           
+        <!-- <div  *ngIf="selectedLicense" class="w-25 pdl10" fxLayout="column" fxLayoutGap="05px"> -->
 
             <!-- <div class="select-container" fxLayout="row" fxLayoutAlign="start center">
                 <select [(ngModel)]="selectedLicense" class="pdl20 select cursorPointer fw" name="" id="">
                     <option [ngValue]="license" *ngFor="let license of licenses" >{{ license.currentPeriodEnd | date:'short' }} - Disponible: {{ license.quantity - license.quantityUsed}}</option>
                 </select>
             </div> -->
-            <div class="mgt10" fxLayout="column" *ngFor="let license of licenses">
+            <!-- <div class="mgt10" fxLayout="column" *ngFor="let license of licenses">
                 <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
                     <div class="ft12 ft500 ">Licencia adquirida en {{license.startedAt | date:"dd/MM/yyyy"}}</div>
                     <div class="radius20 backGray2 pdl10 pdr10 ft10">{{license?.currentPeriodEnd > today ? "Vigente" : "Vencida"}}</div>
@@ -98,7 +122,7 @@
                     <span class="ft11 value">{{ license?.currentPeriodEnd | date:'dd/MM/yyyy' }}</span>
                 </div>
             </div> 
-        </div>   
+        </div>    -->
     </div>
 </div>    
 <ng-template #loading>

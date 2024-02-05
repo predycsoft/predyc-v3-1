@@ -1,4 +1,4 @@
-<div class="fh pdb20">
+<div class="fh fw pdb20">
     <div [ngClass]="isEditing ? 'header--edit' : ''" fxLayout="row" fxLayoutAlign="space-between " class="header pdr10 pdl10">
         <app-navigate-back *ngIf="!isEditing" targetUrl="/management/students" class="pdt10">
             {{isEditing ? '' : profileName}}
@@ -44,8 +44,8 @@
             
         </ng-template>
     </div>
-    <div fxLayout="row" fxLayoutGap="2rem" class=" pdt22  pdr20 pdl30 pdb10">
-        <div class="containers " style="width: 30%; " >
+    <div fxLayout="row" fxLayoutGap="2.5rem" class=" pdt18  pdr20 pdl30 pdb10">
+        <div class="containers " style="width: 40%;" >
             <!-- <div class="container" style="height: 100px; padding: 5px; border: 2px solid black; border-radius: 20px">
             </div> -->
             <div  class=" fw pd10 mgt10 borderLight radius10 " >
@@ -60,7 +60,43 @@
                 </div>
             </div>
           
+            
             <div class="container" class="pd10 mgt20 borderLight radius10 " >
+                
+
+                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem">
+                    <img [src]="icon.ticTacToe" class="makeBlue h16px" alt="">
+                    <span class="ft500 black undrl ft14 ft600 black">Resumen de competencias</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="chart"></canvas>
+                </div>
+                <!-- <div fxLayout="column" fxLayoutGap="1rem" *ngFor="let competence of competences; let i = index">
+                    <span>{{competence.title}}</span>
+                    <div fxLayout="row wrap" fxLayoutAlign="start center" fxLayoutGap=".5rem">
+                        <div *ngFor="let categorie of competence.categories; let i = index" class="mgb05">
+                            <span  class="radius10 pd03 backGray2"> {{categorie}} </span>
+                        </div>
+                    </div>
+                </div> -->
+                <div  class="chart-container ft13 fw">
+                    <div class="mgt10 fw" *ngFor="let category of categoriesAndSkillsWidgetData; let i = index">
+                        <div class="ft14">Pilar {{i + 1}}: {{category.label}}</div>
+                        <div class="skills-container" >
+                            <div
+                            *ngFor="let skill of category.skills"
+                            style="display: inline-block; margin-right: 5px; margin-bottom: 5px;"
+                            class=" ListHover2 radius10 backGray2 pdl05 pdr05 gray-8 mgt05"
+                        >
+                            {{skill}}
+                        </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div class="container" class="pd10 mgt20 borderLight radius10 " >
                 <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign=" center">
                     <img [src]="icon.resultsPresentation" alt="Desempeño por pilares">
                     <span class="ft500 ft14 undrl gray-10">Desempeño por pilares</span>
@@ -84,7 +120,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
             <!-- <div class="container" class="radius10 mgt10 borderLight pd10">
                 <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign=" center">
                     <img [src]="icon.list" alt="Competencias">
@@ -107,9 +143,9 @@
                 </div>
             </div> -->
         </div>
-        <div class="containers pd10 mgt10 borderLight radius10 " style="width: 63%; " >
-            <div class="study-plan" style="padding: 5px">
-                <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign=" center">
+        <div class="containers pd10 mgt10 borderLight radius10 " style="width: 58%; margin-right: -15px!important;" >
+            <div class="study-plan" style="padding: 5px ;">
+                <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign=" right">
                     <img [src]="icon.ticTacToe" alt="Plan de estudios">
                     <span class="ft500 ft14 undrl gray-10">Plan de estudios</span>
                 </div>

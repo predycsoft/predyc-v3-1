@@ -57,7 +57,7 @@
                 <div *ngIf="user.status !== 'active'" class="chip backRed1" fxLayout="row" fxLayoutAlign="center center">
                     <span class="ft13 nowrap ft400 red-5">Inactivo</span>
                 </div> -->
-                <div class="chip" [ngClass]="user.status === 'active' ? 'backBlue1' : 'backRed1'" fxLayout="row" fxLayoutAlign="center center">
+                <div class="pdl20 chip w-40" [ngClass]="user.status === 'active' ? 'backBlue1' : 'backRed1'" fxLayout="row" fxLayoutAlign="center center">
                     <span [ngClass]="user.status === 'active' ? 'blue-5' : 'red-5'" class="ft13 nowrap ft400">{{user.statusDisplayText}}</span>
                 </div>
             </td>

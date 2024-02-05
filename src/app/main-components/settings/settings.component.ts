@@ -4,6 +4,8 @@ import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { DialogRequestLicensesComponent } from 'src/app/shared/components/users/license-student-list/dialog-request-licenses/dialog-request-licenses.component';
+import { DialogHistoryLicensesComponent } from 'src/app/shared/components/users/license-student-list/dialog-history-licenses/dialog-history-licenses.component';
+
 import { LicenseStudentListComponent } from 'src/app/shared/components/users/license-student-list/license-student-list.component';
 import { License } from 'src/app/shared/models/license.model';
 import { IconService } from 'src/app/shared/services/icon.service';
@@ -91,6 +93,14 @@ export class SettingsComponent {
       }
     })
   }
+  showDialog2(licenses: License[]) {
+    this.dialog.open(DialogHistoryLicensesComponent, {
+      data: {
+        licenses
+      }
+    })
+  }
+
 
   ngOnDestroy() {
     if (this.queryParamsSubscription) {

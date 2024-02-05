@@ -113,6 +113,8 @@ import { LicenseStudentListComponent } from './shared/components/users/license-s
 import { QuestionsComponent } from './shared/components/questions/questions.component';
 import { StatusSelectorComponent } from './shared/widgets/status-selector/status-selector.component';
 import { DialogRequestLicensesComponent } from './shared/components/users/license-student-list/dialog-request-licenses/dialog-request-licenses.component';
+import { DialogHistoryLicensesComponent } from './shared/components/users/license-student-list/dialog-history-licenses/dialog-history-licenses.component';
+
 import { StudentInfoFormComponent } from './main-components/management/my-team/student/student-info-form/student-info-form.component';
 import { StudentStudyPlanAndCompetencesComponent } from './main-components/management/my-team/student/student-study-plan-and-competences/student-study-plan-and-competences.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -184,6 +186,8 @@ import { CustomMonthPipe } from './shared/pipes/custom-month.pipe';
     QuestionsComponent,
     StatusSelectorComponent,
     DialogRequestLicensesComponent,
+    DialogHistoryLicensesComponent,
+
     StudentInfoFormComponent,
     StudentStudyPlanAndCompetencesComponent,
     CustomMonthPipe,
