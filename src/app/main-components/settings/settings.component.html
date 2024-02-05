@@ -19,15 +19,19 @@
     <div fxLayout="row" fxLayoutAlign="left  " class="mgt05 mgb10"  fxLayoutGap="2rem">
         <div class=" radius10 borderLight pdt10 mgb10 cards" fxLayout="column" style="height: 15vh; width: 20%">
             <span class=" ft13 ft500 pdl10">Licencias disponibles</span>
+            <span class="fh" fxLayout="row" fxLayoutAlign="center center">{{totalLicenses}}</span>
         </div>
         <div class=" radius10 borderLight pdt10 mgb10 cards" fxLayout="column" fxLayoutGap="0.3rem" style="height: 15vh; width: 20%">
             <span class=" ft13 ft500 pdl10">Licencias en uso </span>
+            <span class="fh" fxLayout="row" fxLayoutAlign="center center">{{availableLicenses}}</span>
         </div>
         <div class=" radius10 borderLight pdt10 mgb10 cards" fxLayout="column" fxLayoutGap="0.3rem" style="height: 15vh; width: 20%">
             <span class=" ft13 ft500 pdl10">Rotaciones disponibles</span>
+            <span class="fh" fxLayout="row" fxLayoutAlign="center center">{{availableRotations}}</span>
         </div>
         <div class=" radius10 borderLight pdt10 mgb10 cards" fxLayout="column" fxLayoutGap="0.3rem" style="height: 15vh; width: 20%">
             <span class=" ft13 ft500 pdl10">Vigencia</span>
+            <span class="fh" fxLayout="row" fxLayoutAlign="center center">{{expirationDate | date:'dd/MM/yyyy'}}</span>
         </div>
     </div>
 
@@ -35,7 +39,6 @@
         <div fxLayout="column" class="w-100 ">
             <div fxLayout="row" fxLayoutAlign="space-between center" class="w-100 pdr20">
                 <div fxLayout="row" fxLayoutAlign=" center" class="h36px radius20 w500px shadow-animation w-45" style="overflow: hidden;" >
-                    
                     <!-- <div class="backGray2 pdl10 pdr10 fh" fxLayout="row" fxLayoutAlign=" center">
                         <select name="" id="" class="catSelect">
                             <option value="">Usuarios activos</option>
@@ -65,11 +68,6 @@
                 <div class="w-30"></div>
                 <button class=" blueButtonAnim  button-animation ft500 w-10" style="border-radius: 24px !important;"  fxLayoutAlign="center " (click)="showDialog(licenses)">Adquirir licencias</button>           
                 <button class="grayButton ft500    blue-4 w-13" style="border-radius: 24px !important;"  fxLayoutAlign="center " (click)="showDialog2(licenses)">Historial de licencias</button>           
-
-                
-
-
-
 
                 <mat-menu #licenseMenu class="radius6 shadow16 pd0 mgt05">
                     <div fxLayout="column" class="fw pd05">

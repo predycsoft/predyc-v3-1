@@ -43,6 +43,11 @@ export class SettingsComponent {
 
   today = +new Date()
 
+  totalLicenses: number
+  availableLicenses: number
+  availableRotations: number
+  expirationDate: number
+
   ngOnInit() {
     this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
       if (params['status']) {
@@ -53,6 +58,20 @@ export class SettingsComponent {
     this.licensesSubscription = this.licenses$.subscribe(licenses => {
       if (licenses && licenses.length > 0) {
         this.licenses = licenses;
+        let totalLicenses = 0
+        let availableLicenses = 0
+        let availableRotations = 0
+        let expirationDate = null
+        licenses.forEach(license => {
+          totalLicenses += license.quantity
+          availableLicenses += license.quantity - license.quantityUsed
+          availableRotations += license.rotations
+          if (!expirationDate || expirationDate < license.currentPeriodEnd) expirationDate = license.currentPeriodEnd
+        })
+        this.totalLicenses = totalLicenses
+        this.availableLicenses = availableLicenses
+        this.availableRotations = availableRotations
+        this.expirationDate = expirationDate
         if (!this.selectedLicense) this.selectedLicense = licenses[0]
         else {
           // update selectedLicense values
