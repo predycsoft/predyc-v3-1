@@ -279,7 +279,7 @@
                         </div>
                     </div>
                 </div>
-                <div style="overflow: hidden; background-color: #FCFCFC;" class=" radius10 borderLight mgt20" >
+                <div *ngIf="studyPlan.length > 0" style="overflow: hidden; background-color: #FCFCFC;" class="radius10 borderLight mgt20" >
                     <!-- [ngClass]="selectedCourse == course ? 'backBlue1' : ''"
                     (click)="selectedCourse = course"
                     cdkDrag
@@ -293,7 +293,7 @@
                         *ngFor="let item of studyPlan; let i = index"
                     >
                         <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
-                            <img *ngIf="isEditing" [src]="icon.drag" class="h14px" alt="Drag item">            
+                            <!-- <img *ngIf="isEditing" [src]="icon.drag" class="h14px" alt="Drag item">             -->
                                 <!-- [ngClass]="selectedCourse == course ? 'blue-5 ft500' : 'gray-10'" -->
                             <div
                                 fxLayout="column"
@@ -323,8 +323,15 @@
                         </div>
                     </div>
                 </div>
-            
-            
+                <div *ngIf="studyPlan.length === 0" class="mgt15" style="height: 75%;">
+                    <div       
+                        fxLayout="row"
+                        fxLayoutAlign="center center"
+                        style="background: var(--gray-2); height: 100%"
+                        >
+                        Comienza a agregar cursos
+                    </div>
+                </div>
             </div>
         </div>
     </div>
