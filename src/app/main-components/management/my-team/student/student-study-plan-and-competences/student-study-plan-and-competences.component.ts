@@ -155,6 +155,7 @@ export class StudentStudyPlanAndCompetencesComponent {
           dateEndPlan: firestoreTimestampToNumberTimestamp(courseByStudent.dateEndPlan),
           dateStart: firestoreTimestampToNumberTimestamp(courseByStudent.dateStart),
           dateEnd: firestoreTimestampToNumberTimestamp(courseByStudent.dateEnd),
+          finalScore: courseByStudent.finalScore,
         };
         
         const monthName = new Date(studyPlanData.dateEndPlan).toLocaleString('es', { month: 'long' });
