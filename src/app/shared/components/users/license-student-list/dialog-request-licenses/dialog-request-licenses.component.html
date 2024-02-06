@@ -1,34 +1,45 @@
-<div fxLayout="column" class="pd10">
-    <div fxLayout="row" fxLayoutAlign="space-between center">
-        <span class="ft14 ft600 gray-10">Licencias</span>
-    </div>
-    <div *ngIf="opcion==0" fxLayout="column" fxLayout.lt-md="column" fxLayoutGap="1rem" fxLayoutGap.lt-md="0rem"  class="fw mgt15 containerTabla">
-        <table style="width:100%" class="fw">
-            <tr>
-                <th class="ft500">Producto</th>
-                <th class="ft500">Adquiridas</th>
-                <th class="ft500">Usadas</th>
-                <th class="ft500">Disponibles</th>
-                <th class="ft500">Validas hasta</th>
-                <th class="ft500">Estatus</th>
-            </tr>
-            <tr *ngFor="let license of licenses;  let i=index">
-                <td> <span class="ft11 gray-10">Plan Predyc Empresa</span> </td>
-                <td class="centertext ft11 gray-8"> {{license.quantity}}</td>                
-                <td class="centertext ft11 gray-8"> {{license.quantityUsed}}</td>
-                <td class="centertext ft11 gray-8"> {{license.quantity - license.quantityUsed}}</td>
-                <td class="centertext ft11 gray-8"> {{license.currentPeriodEnd | date:"dd-MM-yyyy"}}</td>
-                <td class="centertext ft11 gray-8">{{license.status == 'active'?'Activa':license.status == 'trialing'?'Período de prueba':'vencida'}}</td>
-            </tr>
-    
-        </table>
-        <div fxLayout="column"  class="mgt05">
-            <label class="gray-10 ft500 ft12">Indique la cantidad de licencias que quiere solicitar</label>
-            <input type="number" min="0" class="ft12 gray-8 w40px centertext inputNumber" [(ngModel)]="licensesQty">
+<div fxLayout="column" class="pd10 scrollpls">
+    <div fxLayout="row" fxLayoutAlign="end">
+        <div  class="iconContainer cursorPointer mgl05 mgt05 " (click)="salir()"
+            fxLayoutAlign="center center"> <img [src]="icon.close" class="makeGray h24px">
         </div>
-        <span  class="ft12 ft500 black">Seleccione una de las siguientes opciones:</span>
-        <div fxLayout="column">
-            <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign=" center" class="mgt05">
+    </div>
+    <div fxLayoutAlign="center center">
+        <label class="gray-10 ft600  ft16"fxLayoutAlign="center center" >Adquirir licencias</label>
+    </div>
+    <div *ngIf="opcion==0" fxLayout="column" fxLayout.lt-md="column" fxLayoutGap="1rem" fxLayoutGap.lt-md="0rem"  class="fw mgt05 containerTabla ">
+        
+        <div fxLayout="row"  class="mgt05">
+            <label class="gray-10 ft500  ft14">Indique la cantidad de licencias que quiere solicitar</label>
+            <input type="number" min="0" class="ft14 gray-8  centertext inputNumber" fxLayoutAlign="end" style="width: auto; margin-left: 70px;" [(ngModel)]="licensesQty">
+
+        </div>
+        <div fxLayout="row" fxLayoutAlign="center center" class="mgt10 border-tl">
+        </div>
+        <span  class="ft14 ft500 black mgt10" fxLayoutAlign="center center" >Seleccione una de las siguientes opciones:</span>
+        <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="2rem">
+            <div fxLayout="column" fxLayout.lt-md="row"  fxLayoutAlign.lt-md="center center" ngClass="blueBorderContainer centertext" style="width: 200px;" fxLayoutAlign="center center" fxLayoutGap=".5rem"
+            (click)="openWhatsappContacto()" fxLayout="column">
+                <img [src]="icon.whatsapp_blue " class="" alt="" ngClass="h40px" ngClass.lt-md="h26px">
+                <span class="ft500 ft14 nowrap"> Whatsapp </span>
+            </div>
+            <div fxLayout="column" fxLayout.lt-md="row"  fxLayoutAlign.lt-md="center center" ngClass="blueBorderContainer centertext fw" style="width: 200px;" fxLayoutAlign="center center" fxLayoutGap=".5rem"
+                (click)="emailContacto()" fxLayout="column">
+                <img [src]="icon.email" alt="" ngClass="h40px makeBlue" ngClass.lt-md="h26px">
+                <span class="ft500 ft14 nowrap">Correo</span>
+            </div>
+            <!-- <div fxLayout="column" fxLayout.lt-md="row"  fxLayoutAlign.lt-md="center center" ngClass="blueBorderContainer centertext fw" fxLayoutAlign="center center" fxLayoutGap=".5rem"
+                fxLayout="column">
+                <a href="tel:++524424257590">
+                    <img [src]="icon.phoneBlue" alt="" ngClass="h40px" ngClass.lt-md="h26px">
+                </a>
+                <a class="ft500 ft14 gray-8 nowrap" href="tel:++524424257590" fxLayout="column">
+                    <span>+52 (442) 4257590</span>
+                </a>
+            </div> -->
+
+
+            <!-- <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign=" center" class="mgt05">
                 <div class="ft11 ft500 gray-10">Telefono:</div>
                 <div class="ft11 gray-8">+52 (442) 4257590</div>
                 <a href="tel:++524424257590" >
@@ -47,18 +58,20 @@
                 <div class="ft11 gray-8">+contacto@predyc.com</div>
                 <div   (click)="emailContacto()" class="blueBorder radius20 blue-5 ft10 cursorPointer pdl05 pdr05 ft500">Enviar correo</div>
 
-            </div>
+            </div> -->
         </div>
+        
+        
         <!-- <div  fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="1rem" fxLayoutGap.lt-md="0rem">
             <div fxLayout="column" fxLayout.lt-md="row"  fxLayoutAlign.lt-md="center center" ngClass="blueBorderContainer centertext fw" ngClass.lt-md="blueBorderContainerMobile fw" fxLayoutAlign="center center" fxLayoutGap=".5rem"
                 (click)="openWhatsappContacto()" fxLayout="column">
                 <img [src]="icon.whatsapp_gray" alt="" ngClass="h40px makeGreen cursorPointer" ngClass.lt-md="h26px">
-                <span class="ft500 ft12 nowrap"> Whatsapp </span>
+                <span class="ft500 ft14 nowrap"> Whatsapp </span>
             </div>
             <div fxLayout="column" fxLayout.lt-md="row"  fxLayoutAlign.lt-md="center center" ngClass="blueBorderContainer centertext fw" ngClass.lt-md="blueBorderContainerMobile fw" fxLayoutAlign="center center" fxLayoutGap=".5rem"
                 (click)="emailContacto()" fxLayout="column">
                 <img [src]="icon.email" alt="" ngClass="h40px cursorPointer makeBlue" ngClass.lt-md="h26px cursorPointer">
-                <span class="ft500 ft12 nowrap">Correo</span>
+                <span class="ft500 ft14 nowrap">Correo</span>
             </div>
             <div fxLayout="column" fxLayout.lt-md="row"  fxLayoutAlign.lt-md="center center" ngClass="blueBorderContainer centertext fw" ngClass.lt-md="blueBorderContainerMobile fw" fxLayoutAlign="center center" fxLayoutGap=".5rem"
                 fxLayout="column" (click)="dialog.close()">

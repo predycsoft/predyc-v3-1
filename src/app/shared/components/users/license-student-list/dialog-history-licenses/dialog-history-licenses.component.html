@@ -1,12 +1,14 @@
-<div fxLayout="column" class="pd10">
-    <div fxLayout="row" fxLayoutAlign="space-between center">
-        <span class="ft14 ft600 gray-10">Licencias</span>
-        <div class="iconContainer cursorPointer mgl05 mgt05 " (click)="salir()"
-    fxLayoutAlign="center center"> <img [src]="icon.close" class="makeGray h24px">
+<div fxLayout="column" class="pd10 scrollpls">
+    <div fxLayout="row" fxLayoutAlign="end">
+        <div  class="iconContainer cursorPointer mgl05 mgt05 " (click)="salir()"
+            fxLayoutAlign="center center"> <img [src]="icon.close" class="makeGray h24px">
+        </div>
     </div>
+    <div style="" fxLayoutAlign="center center">
+        <label class="gray-10 ft600  ft16"fxLayoutAlign="center center" >Historial de licencias</label>
     </div>
-    <div fxLayout="column" fxLayout.lt-md="column" fxLayoutGap="1rem" fxLayoutGap.lt-md="0rem"  class="fw mgt15 containerTabla">
-        <table style="width:100%" class="fw">
+    <div fxLayout="column" fxLayout.lt-md="column" fxLayoutGap="1rem" fxLayoutGap.lt-md="0rem"  class="fw  pd20 containerTabla">
+        <table style="width:100%" class="fw shadow-animation">
             <tr>
                 <th class="ft500">Producto</th>
                 <th class="ft500">Fecha Adquiridas</th>
@@ -27,6 +29,7 @@
             </tr>
     
         </table>
+        
     </div>
 
 </div>

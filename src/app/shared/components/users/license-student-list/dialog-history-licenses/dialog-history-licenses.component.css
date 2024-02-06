@@ -22,3 +22,32 @@ input[type=number] {
     border: 1px solid var(--blue-5);
     border-radius: 6px;
 }
+
+
+table {
+  border-collapse: collapse;
+  border-radius: 1em;
+  overflow: hidden;
+  /* border: 2px solid gray; */
+}
+
+th, td {
+  padding: .5em;
+  background: #FBFBFB;
+  border-left: none !important;
+  border-right: none !important;
+  /* border-bottom: 2px solid gray; */
+}
+
+tr:nth-child(odd) td{
+  background-color: #f8f8f8 !important; /* Light gray for odd rows */
+}
+
+tr:nth-child(even) td{
+  background-color: #fcfcfc !important; /* Lighter gray for even rows */
+}
+
+.scrollpls{
+  overflow: auto;
+  height: max-content;
+}

@@ -43,5 +43,9 @@ export class DialogRequestLicensesComponent {
     this.opcion = 3
     await firstValueFrom(this.functions.httpsCallable('sendMail')({sender, text, subject, recipients}))
   }
+  salir(){
+    this.dialog.close(false)
+  }
+
 
 }
