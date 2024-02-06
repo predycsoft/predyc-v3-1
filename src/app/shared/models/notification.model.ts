@@ -6,7 +6,8 @@ export interface NotificationJson {
     enterpriseRef: DocumentReference | null
     id: string | null
     message: string
-    // readByUser: boolean
+    readByUser: Date
+    clearByUser: Date
     // readByAdmin: boolean
     type: 
         typeof Notification.TYPE_ALERT |
@@ -47,7 +48,8 @@ export class Notification {
         public enterpriseRef: DocumentReference | null,
         public id: string | null,
         public message: string,
-        // public readByUser: boolean,
+        public readByUser: Date,
+        public ClearByUser: Date,
         // public readByAdmin: boolean,
         public type: 
             typeof Notification.TYPE_ALERT |
@@ -66,7 +68,8 @@ export class Notification {
             notificationJson.enterpriseRef,
             notificationJson.id,
             notificationJson.message,
-            // notificationJson.readByUser,
+            notificationJson.readByUser,
+            notificationJson.clearByUser,
             // notificationJson.readByAdmin,
             notificationJson.type,
             notificationJson.subType,
@@ -76,6 +79,8 @@ export class Notification {
 
     public toJson(): NotificationJson {
         return {
+            readByUser: this.readByUser,
+            clearByUser: this.ClearByUser,
             date: this.date,
             enterpriseRef: this.enterpriseRef,
             id: this.id,
