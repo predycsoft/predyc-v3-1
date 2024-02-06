@@ -70,23 +70,6 @@ export class StudyTimeMonthlyChartComponent {
     return ultimoDiaDelMes;
   }
 
-
-  getDataGraphNew(){
-    this.data = []
-    for(let i=0; i<12; i++) {
-      var d = new Date();
-      d.setMonth(d.getMonth() - i);
-      const month = d.toLocaleString('default', { month: 'long' });
-
-
-
-
-    }
-
-
-  }
-
-
   getDataGraph(){
     this.data = []
     let now = new Date();
@@ -133,7 +116,6 @@ export class StudyTimeMonthlyChartComponent {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes["logs"]) {
-      this.getDataGraphNew();
       this.getDataGraph()
     }
    
