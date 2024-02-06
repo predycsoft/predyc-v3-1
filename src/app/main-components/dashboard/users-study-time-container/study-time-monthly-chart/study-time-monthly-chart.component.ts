@@ -106,7 +106,7 @@ export class StudyTimeMonthlyChartComponent {
         this.max = max;
     }
 
-    console.log('data',this.data)
+    // console.log('data',this.data)
     
 
     // Asegúrate de llamar a detectChanges para que Angular actualice la vista

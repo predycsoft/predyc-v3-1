@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, Input, SimpleChanges, ViewChild } from '@angular/core';
 import { Chart } from 'chart.js';
 import { IconService } from 'src/app/shared/services/icon.service';
 
@@ -9,44 +9,39 @@ import { IconService } from 'src/app/shared/services/icon.service';
 })
 export class UsersRhythmComponent {
 
-  // @ViewChild('doughnutCanvas') doughnutCanvas: ElementRef<HTMLCanvasElement>;
-  // doughnutChart: Chart;
-
   ctx : any;
   config : any;
   chartData : number[] = [];
-  chartDatalabels : any[] = [];
+  chartDatalabels : string[] = [];
 
   constructor(
     public icon: IconService,
+    private cdr: ChangeDetectorRef
 
   ){}
-  @Input() high: number
-  @Input() medium: number
-  @Input() low: number
-  @Input() noPlan: number
+  @Input() rythms: {high: number, medium: number, low: number, noPlan: number}
 
-  highPercentage
-  mediumPercentage
-  lowPercentage
-  noPlanPercentage
+  highPercentage: number
+  mediumPercentage: number
+  lowPercentage: number
+  noPlanPercentage: number
+  goodRhythmPercentage: number
 
-  goodRhythmPercentage
+  chart: any
   
 
   ngOnInit() {
-    const total = this.high + this.medium + this.low + this.noPlan
-    this.highPercentage = total ? this.getPercentage(this.high, total) : 0
-    this.mediumPercentage = total ? this.getPercentage(this.medium, total) : 0
-    this.lowPercentage = total ? this.getPercentage(this.low, total) : 0
-    this.noPlanPercentage = total ? this.getPercentage(this.noPlan, total) : 0
-    this.goodRhythmPercentage = total ? this.getPercentage((this.high + this.medium), total) : 0
-
+    // this.getChartData()
+    // this.chartExample()
   }
 
-  ngAfterViewInit() {
-    // this.drawChart();
-    this.chartExample()
+  ngOnChanges(changes: SimpleChanges) {
+    if (JSON.stringify(changes.rythms.currentValue) !== JSON.stringify(changes.rythms.previousValue)) {
+      this.getChartData()
+      if (this.chart) this.chart.destroy()
+      this.chartExample()
+    }
+
   }
 
 
@@ -71,11 +66,13 @@ export class UsersRhythmComponent {
   }
 
   chartExample() {
+    this.chartData = []
     this.chartData.push(this.highPercentage);
     this.chartData.push(this.mediumPercentage);
     this.chartData.push(this.lowPercentage);
     this.chartData.push(this.noPlanPercentage);
   
+    this.chartDatalabels = []
     this.chartDatalabels.push('Alto');
     this.chartDatalabels.push('Medio');
     this.chartDatalabels.push('Bajo');
@@ -104,10 +101,21 @@ export class UsersRhythmComponent {
         }
       }
     };
-    const myChart = new Chart(this.ctx, this.config);
+    // const myChart = new Chart(this.ctx, this.config);
+    this.chart = new Chart(this.ctx, this.config);
   }
   
+  getChartData() {
+    const total = this.rythms.high + this.rythms.medium + this.rythms.low + this.rythms.noPlan
+    
+    this.highPercentage = 0; this.mediumPercentage = 0; this.lowPercentage = 0; this.noPlanPercentage = 0, this.goodRhythmPercentage = 0; 
 
+    this.highPercentage = total ? this.getPercentage(this.rythms.high, total) : 0
+    this.mediumPercentage = total ? this.getPercentage(this.rythms.medium, total) : 0
+    this.lowPercentage = total ? this.getPercentage(this.rythms.low, total) : 0
+    this.noPlanPercentage = total ? this.getPercentage(this.rythms.noPlan, total) : 0
+    this.goodRhythmPercentage = total ? this.getPercentage((this.rythms.high + this.rythms.medium), total) : 0
+  }
 
   getPercentage(value: number, total: number) {
     return value * 100 / total
