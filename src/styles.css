@@ -573,7 +573,8 @@ body {
 .redButton{  background-color: #ED4758!important; transition: .3s; }
 .redButton:hover{  background-color: #d63e4d!important; transition: .3s; }
 
-.redButtonAnim{  background-color: #d63e4d!important; transition: .3s; }
+.redButtonAnim{  background-color: #d63e4d!important; transition: .3s;   border-radius: 24px !important;
+}
 
 .redButtonAnim:hover{  background-color: rgb(236, 63, 80)!important; transition: .3s; }
 
