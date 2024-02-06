@@ -157,8 +157,8 @@ export class StudentListComponent {
   }
 
   ngOnDestroy() {
-    this.queryParamsSubscription.unsubscribe()
-    this.userServiceSubscription.unsubscribe()
-    this.profilesSubscription.unsubscribe()
+    if (this.queryParamsSubscription) this.queryParamsSubscription.unsubscribe()
+    if (this.userServiceSubscription) this.userServiceSubscription.unsubscribe()
+    if (this.profilesSubscription) this.profilesSubscription.unsubscribe()
   }
 }
