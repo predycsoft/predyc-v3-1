@@ -1,8 +1,8 @@
 import { NotificationJson } from "src/app/shared/models/notification.model";
 
 const notificationTypes = ['alert', 'event'];
-const alertSubTypes = ['delayed', 'expired', 'pending'];
-const eventSubTypes = ['succeded', 'request'];
+const alertSubTypes = ['delayed', 'pending'];
+const eventSubTypes = ['succeded'];
 const randomCourse = ['Planificacion de mantenimiento', 'Analisis causa raiz', 'Gestion de riesgo', 'Herramientas de planeamiento', 'Gestion de costo de mantenimiento'];
 const randomCertification = ['Programa 1', 'Programa 2', 'Programa 3'];
 
@@ -33,12 +33,7 @@ function generateNotification(): NotificationJson {
 
   let message;
   if (type === 'event') {
-    const randomBool = Math.random() < 0.5;
-    if (randomBool) {
-      message = 'ha completado el diagnostico inicial de ' + getRandomCourse();
-    } else {
-      message = 'esta solicitando acceso al diplomado ' + getRandomCertification();
-    }
+    message = 'ha completado el diagnostico inicial de ' + getRandomCourse();
   } else if (type === 'alert') {
     message = `tiene ${Math.floor(Math.random() * 20) + 1} horas de retraso en el curso ${getRandomCourse()}`;
   }
@@ -60,146 +55,3 @@ function generateNotification(): NotificationJson {
 }
 
 export const notificationsData = Array.from({ length: 30 }, () => generateNotification());
-// console.log(notificationsData)
-// export const notificationsData: NotificationJson[] = [
-//   {
-//     id: null,
-//     readByUser:  false,
-//     readByAdmin: false,
-//     message: "tiene 14 horas de retraso en el curso Estrategias de Mantenimiento",
-//     date: 1695217180,
-//     userRef: null,
-//     enterpriseRef: null,
-//     type: "alert" 
-//   },
-//   {
-//     id: null,
-//     readByUser:  false,
-//     readByAdmin: false,
-//     message: "ha completado el diagnostico inicial de Direccion de Proyectos",
-//     date: 1695130780,
-//     userRef: null,
-//     enterpriseRef: null,
-//     type: "activity" 
-//   },
-//   {
-//     id: null,
-//     readByUser:  false,
-//     readByAdmin: false,
-//     message: "esta solicitando acceso al diplomado Diplomado de Mantenimiento 2023",
-//     date: 1695134380,
-//     userRef: null,
-//     enterpriseRef: null,
-//     type: "request"
-//   },
-//   {
-//     id: null,
-//     readByUser:  false,
-//     readByAdmin: false,
-//     message: "tiene 14 horas de retraso en el curso Estrategias de Mantenimiento",
-//     date: 1695141580,
-//     userRef: null,
-//     enterpriseRef: null,
-//     type: "alert" 
-//   },
-//   {
-//     id: null,
-//     readByUser:  false,
-//     readByAdmin: false,
-//     message: "esta solicitando acceso al diplomado Diplomado de Mantenimiento 2023",
-//     date: 1694968780,
-//     userRef: null,
-//     enterpriseRef: null,
-//     type: "request"
-//   },
-//   {
-//     id: null,
-//     readByUser:  false,
-//     readByAdmin: false,
-//     message: "tiene 14 horas de retraso en el curso Estrategias de Mantenimiento",
-//     date: 1694363980,
-//     userRef: null,
-//     enterpriseRef: null,
-//     type: "alert" 
-//   },
-//   {
-//     id: null,
-//     readByUser:  false,
-//     readByAdmin: false,
-//     message: "esta solicitando acceso al diplomado Diplomado de Mantenimiento 2023",
-//     date: 1694018380,
-//     userRef: null,
-//     enterpriseRef: null,
-//     type: "request"
-//   },
-//   {
-//     id: null,
-//     readByUser:  false,
-//     readByAdmin: false,
-//     message: "tiene 14 horas de retraso en el curso Estrategias de Mantenimiento",
-//     date: 1695141580,
-//     userRef: null,
-//     enterpriseRef: null,
-//     type: "alert" 
-//   },
-//   {
-//     id: null,
-//     readByUser:  false,
-//     readByAdmin: false,
-//     message: "esta solicitando acceso al diplomado Diplomado de Mantenimiento 2023",
-//     date: 1694968780,
-//     userRef: null,
-//     enterpriseRef: null,
-//     type: "request"
-//   },
-//   {
-//     id: null,
-//     readByUser:  false,
-//     readByAdmin: false,
-//     message: "tiene 14 horas de retraso en el curso Estrategias de Mantenimiento",
-//     date: 1694363980,
-//     userRef: null,
-//     enterpriseRef: null,
-//     type: "alert" 
-//   },
-//   {
-//     id: null,
-//     readByUser:  false,
-//     readByAdmin: false,
-//     message: "esta solicitando acceso al diplomado Diplomado de Mantenimiento 2023",
-//     date: 1694018380,
-//     userRef: null,
-//     enterpriseRef: null,
-//     type: "request"
-//   },
-//   {
-//     id: null,
-//     readByUser:  false,
-//     readByAdmin: false,
-//     message: "esta solicitando acceso al diplomado Diplomado de Mantenimiento 2023",
-//     date: 1694968780,
-//     userRef: null,
-//     enterpriseRef: null,
-//     type: "request"
-//   },
-//   {
-//     id: null,
-//     readByUser:  false,
-//     readByAdmin: false,
-//     message: "tiene 14 horas de retraso en el curso Estrategias de Mantenimiento",
-//     date: 1694363980,
-//     userRef: null,
-//     enterpriseRef: null,
-//     type: "alert" 
-//   },
-//   {
-//     id: null,
-//     readByUser:  false,
-//     readByAdmin: false,
-//     message: "esta solicitando acceso al diplomado Diplomado de Mantenimiento 2023",
-//     date: 1694018380,
-//     userRef: null,
-//     enterpriseRef: null,
-//     type: "request"
-//   }
-// ]

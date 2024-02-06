@@ -13,7 +13,6 @@ export interface NotificationJson {
         typeof Notification.TYPE_EVENT
     subType: 
         typeof Notification.SUBTYPE_ALERT_DELAYED |
-        typeof Notification.SUBTYPE_ALERT_EXPIRED | 
         typeof Notification.SUBTYPE_ALERT_PENDING | 
         typeof Notification.SUBTYPE_EVENT_SUCCEDED|
         typeof Notification.SUBTYPE_EVENT_REQUEST 
@@ -29,14 +28,12 @@ export class Notification {
 
 
     public static SUBTYPE_ALERT_DELAYED: string = 'delayed'
-    public static SUBTYPE_ALERT_EXPIRED: string = 'expired'
     public static SUBTYPE_ALERT_PENDING: string = 'pending' //Por vencer
     public static SUBTYPE_EVENT_SUCCEDED: string = 'succeded'
     public static SUBTYPE_EVENT_REQUEST: string = 'request'
 
     public static subTypeToDisplayValueDict = {
         delayed: 'cursos atrasados',
-        expired: 'licencias vencidas',
         pending: 'licencias por vencer',
         succeded: 'cursos completados',
         request: 'solicitudes',
@@ -57,7 +54,6 @@ export class Notification {
             typeof Notification.TYPE_EVENT,
         public subType: 
             typeof Notification.SUBTYPE_ALERT_DELAYED |
-            typeof Notification.SUBTYPE_ALERT_EXPIRED | 
             typeof Notification.SUBTYPE_ALERT_PENDING | 
             typeof Notification.SUBTYPE_EVENT_SUCCEDED|
             typeof Notification.SUBTYPE_EVENT_REQUEST,  
