@@ -1,61 +1,67 @@
-<div fxLayout="column" class="card-container-lg mgt05 mgr10 pd05">
+<div fxLayout="column" class="mgt20 mgr10 pd20 shadowLight radius10  " style="background-color: rgba(244, 244, 244, 0.362); ">
     <div fxLayout="row" fxLayoutAlign="space-between center">
-        <span class="gray-10">Datos generales de la empresa</span>
-        <div fxFlexAlign="start" (click)="onClick()">
-            <img [src]="isEditing ? icon.check : icon.licencias" class=" makeGray h20px cursorPointer" alt="">
+        <span class="gray-10 ft14 ft600">Datos generales de la empresa</span>
+        <div fxLayout="row"  fxFlexAlign="start" (click)="onClick()" style="margin-right: -20px;">
+            <span class="mgr05 mgt03 makeGray ft400 ft14 "  >Editar</span> 
+            <img [src]="isEditing ? icon.check : icon.edit" class=" makeGray h20px mgt03  cursorPointer" alt=""> 
         </div>
+        
     </div>
     <form *ngIf="enterprise" [formGroup]="form" (ngSubmit)="onSubmit()" > 
         <div class="mgl05">
-            <div fxLayout="column" class="mgt05">
-                <span class="makeGray">Descripción de la empresa</span>
-                <span *ngIf="!isEditing">{{form.get('description').value ? form.get('description').value : onNullFormValues.description}}</span>
+            <div fxLayout="column" class="mgt15 fw">
+                <span class="">Descripción de la empresa</span>
+                <span class="mgt05 mgb15 fw makeGray" *ngIf="!isEditing">{{form.get('description').value ? form.get('description').value : onNullFormValues.description}}</span>
                 <textarea *ngIf="isEditing" #textareaName placeholder="Introduzca la descripción"
                  formControlName="description">
                 </textarea>
             </div>
-            <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt05">
+            <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt05 mgb15">
                 <div fxLayout="column">
-                    <span class="makeGray">Sector de la empresa</span>
-                    <span *ngIf="!isEditing">{{form.get('workField').value ? form.get('workField').value : onNullFormValues.workField}}</span>
-                    <input *ngIf="isEditing" type="text" placeholder="Introduzca el sector" [ngClass]="isEditing ? '' : 'disabledInput'" 
-                        class="input fw" formControlName="workField">
+                    <span class=" mgb05">Sector de la empresa</span>
+                    <span *ngIf="!isEditing"  class="makeGray" >{{form.get('workField').value ? form.get('workField').value : onNullFormValues.workField}}</span>
+                    <input *ngIf="isEditing"  type="text" placeholder="Introduzca el sector" [ngClass]="isEditing ? '' : 'disabledInput'" 
+                        class="input fw makeGray" formControlName="workField">
                 </div>
                 <div fxLayout="column">
-                    <span class="makeGray">Tamaño de la empresa</span>
-                    <span>{{enterpriseSize ? enterpriseSize : "Tamaño desconocido"}}</span>
+                    <span class=" mgb05">Tamaño de la empresa</span>
+                    <span class="makeGray" >{{enterpriseSize ? enterpriseSize : "Tamaño desconocido"}}</span>
                 </div>
                 <div fxLayout="column">
-                    <span class="makeGray">No. Empleados</span>
-                    <span>{{form.get('employesNo').value ? form.get('employesNo').value : onNullFormValues.employesNo}}</span>
+                    <span class=" mgb05">No. Empleados</span>
+                    <span class="makeGray">{{form.get('employesNo').value ? form.get('employesNo').value : onNullFormValues.employesNo}}</span>
                 </div>
             </div>
         </div>
-        <span class="mgt20 mgb05 gray-10">Dirección</span>
-        <div fxLayout="column" class="mgl05">
+        <span class="gray-10 ft14 ft600 mgt15">Dirección</span>
+        <div fxLayout="column" class="mgl05 mgt15 ">
             <div fxLayout="row" fxLayoutAlign="space-between center">
                 <div fxLayout="column">
-                    <span class="makeGray">País</span>
-                    <span *ngIf="!isEditing">{{form.get('country').value ? form.get('country').value : onNullFormValues.country}}</span>
+                    <span class="mgb05">País</span>
+                    <span *ngIf="!isEditing" class="makeGray">{{form.get('country').value ? form.get('country').value : onNullFormValues.country}}</span>
                     <input *ngIf="isEditing" type="text" placeholder="Introduzca el país" [ngClass]="isEditing ? '' : 'disabledInput'" 
                     class="input" formControlName="country">
                 </div>
                 <div fxLayout="column">
-                    <span class="makeGray">Ciudad / Estado</span>
-                    <span *ngIf="!isEditing">{{form.get('city').value ? form.get('city').value : onNullFormValues.city}}</span>
+                    <span class="mgb05">Ciudad / Estado</span>
+                    <span *ngIf="!isEditing" class="makeGray">{{form.get('city').value ? form.get('city').value : onNullFormValues.city}}</span>
                     <input *ngIf="isEditing" type="text" placeholder="Introduzca la ciudad" [ngClass]="isEditing ? '' : 'disabledInput'" 
                     class="input" formControlName="city">
                 </div>
             </div>
             <div fxLayout="row" fxLayoutAlign="space-between center">
                 <div fxLayout="column" class="mgt03">
-                    <span class="makeGray">CP</span>
-                    <span *ngIf="!isEditing">{{form.get('zipCode').value ? form.get('zipCode').value : onNullFormValues.zipCode}}</span>
+                    <span class="mgb05">CP</span>
+                    <span *ngIf="!isEditing" class="makeGray">{{form.get('zipCode').value ? form.get('zipCode').value : onNullFormValues.zipCode}}</span>
                     <input *ngIf="isEditing" type="number" placeholder="Introduzca el código postal" [ngClass]="isEditing ? '' : 'disabledInput'" 
                     class="input" formControlName="zipCode" min="0">
                 </div>
     
             </div>
+            <!-- <div fxLayout="row"  fxFlexAlign="start" (click)="onClick()">
+                <span class="mgr05 mgt03 makeGray ft400 ft14 "  >Editar</span> 
+                <img [src]="isEditing ? icon.check : icon.edit" class=" makeGray h20px mgt03  cursorPointer" alt=""> 
+            </div> -->
         </div>
     </form>
 </div>

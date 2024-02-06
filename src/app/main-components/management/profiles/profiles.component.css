@@ -24,7 +24,15 @@
     border: none;
     padding: 5px 15px;
     background-color: #EDF8FF;
-    width: 400px
+    width: 400px !important;
+}
+.inputx{
+    height: 36px;
+    border-radius: 12px;
+    border: none;
+    padding: 5px 15px;
+    background-color: #EDF8FF;
+    width: 400px !important;
 }
 
 .edit-button {
