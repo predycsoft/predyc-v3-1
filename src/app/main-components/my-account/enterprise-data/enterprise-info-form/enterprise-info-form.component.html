@@ -1,4 +1,4 @@
-<div fxLayout="column" class="mgt20 mgr10 pd20 shadowLight radius10  " style="background-color: rgba(244, 244, 244, 0.362); ">
+<div fxLayout="column" class="mgt20 mgr10 pd20 shadowLight radius10  " style="background-color: rgba(244, 244, 244, 0.362);height: 45vh; ">
     <div fxLayout="row" fxLayoutAlign="space-between center">
         <span class="gray-10 ft14 ft600">Datos generales de la empresa</span>
         <div fxLayout="row"  fxFlexAlign="start" (click)="onClick()" style="margin-right: -20px;">
@@ -13,7 +13,7 @@
                 <span class="">Descripción de la empresa</span>
                 <span class="mgt05 mgb15 fw makeGray" *ngIf="!isEditing">{{form.get('description').value ? form.get('description').value : onNullFormValues.description}}</span>
                 <textarea *ngIf="isEditing" #textareaName placeholder="Introduzca la descripción"
-                 formControlName="description">
+                 formControlName="description" maxlength="200">
                 </textarea>
             </div>
             <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt05 mgb15">
@@ -48,16 +48,14 @@
                     <input *ngIf="isEditing" type="text" placeholder="Introduzca la ciudad" [ngClass]="isEditing ? '' : 'disabledInput'" 
                     class="input" formControlName="city">
                 </div>
-            </div>
-            <div fxLayout="row" fxLayoutAlign="space-between center">
-                <div fxLayout="column" class="mgt03">
+                <div fxLayout="column">
                     <span class="mgb05">CP</span>
                     <span *ngIf="!isEditing" class="makeGray">{{form.get('zipCode').value ? form.get('zipCode').value : onNullFormValues.zipCode}}</span>
                     <input *ngIf="isEditing" type="number" placeholder="Introduzca el código postal" [ngClass]="isEditing ? '' : 'disabledInput'" 
                     class="input" formControlName="zipCode" min="0">
                 </div>
-    
             </div>
+        
             <!-- <div fxLayout="row"  fxFlexAlign="start" (click)="onClick()">
                 <span class="mgr05 mgt03 makeGray ft400 ft14 "  >Editar</span> 
                 <img [src]="isEditing ? icon.check : icon.edit" class=" makeGray h20px mgt03  cursorPointer" alt=""> 
