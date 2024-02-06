@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { User, UserJson } from '../../shared/models/user.model';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, CollectionReference, DocumentReference, Query } from '@angular/fire/compat/firestore';
 import { BehaviorSubject, filter, firstValueFrom, map, Observable, Subscription, switchMap } from 'rxjs'
 import { Subscription as SubscriptionClass } from 'src/app/shared/models/subscription.model'
@@ -161,58 +160,56 @@ export class UserService {
     ) 
   }
 
-  getPerformanceWithDetails(student): { performance:"no plan" | "high" | "medium" | "low", score: number, grade: number } {
+  // getPerformanceWithDetails(student): { performance:"no plan" | "high" | "medium" | "low", score: number, grade: number } {
+  getPerformanceWithDetails(userStudyPlan): "no plan" | "high" | "medium" | "low"  {
+
     let delayedCourses = 0;
     let delayedMoreThanFiveDays = false;
-    let completedCourses = 0;
-    let totalScore = 0;
-    let totalGrade = 0;
+    // let completedCourses = 0;
+    // let totalScore = 0;
+    // let totalGrade = 0;
   
     const today = new Date().getTime();
-    const studyPlan = student.studyPlan
 
-    studyPlan.forEach((course) => {
+    userStudyPlan.forEach((course) => {
       let targetComparisonDate = today
       let delayTime = 0
       let delayDays = 0
-      if (course.fechaCompletacion) {
-        totalScore += (course.duracion / 60);
-        let puntaje = course.puntaje
-        totalGrade += puntaje
-        completedCourses++;
-        if(puntaje >= 80 && puntaje < 90){
-          totalScore += (course.duracion / 60)*.1
-        }
-        if(puntaje >= 90 && puntaje < 100){
-          totalScore += (course.duracion / 60)*.3
-        }
-        if(puntaje == 100){
-          totalScore += (course.duracion / 60)*.5
-        }
-        targetComparisonDate = course.fechaCompletacion
-        delayTime = targetComparisonDate - course.fechaFin
+      if (course.dateEnd) {
+        // totalScore += (course.duracion / 60);
+        // let puntaje = course.puntaje
+        // totalGrade += puntaje
+        // completedCourses++;
+        // if(puntaje >= 80 && puntaje < 90){
+        //   totalScore += (course.duracion / 60)*.1
+        // }
+        // if(puntaje >= 90 && puntaje < 100){
+        //   totalScore += (course.duracion / 60)*.3
+        // }
+        // if(puntaje == 100){
+        //   totalScore += (course.duracion / 60)*.5
+        // }
+        targetComparisonDate = course.dateEnd
+        delayTime = targetComparisonDate - course.dateEndPlan
         delayDays = delayTime/(24*60*60*1000)
         if (delayDays >= 1) {
           // Delayed course
           delayedCourses++
-          if(delayDays < 3){
-            // totalScore -= course.duracion*.1
-            totalScore -= (course.duracion / 60)*.1
-          }
-          if(delayDays >= 3 && delayDays < 5){
-            // totalScore -= course.duracion*.3
-            totalScore -= (course.duracion / 60)*.3
-          }
+          // if(delayDays < 3){
+          //   totalScore -= (course.duracion / 60)*.1
+          // }
+          // if(delayDays >= 3 && delayDays < 5){
+          //   totalScore -= (course.duracion / 60)*.3
+          // }
           if(delayDays >= 5){
             delayedMoreThanFiveDays = true
-            // totalScore -= course.duracion*.5
-            totalScore -= (course.duracion / 60)*.5
+            // totalScore -= (course.duracion / 60)*.5
           }
         }
-      } else if (targetComparisonDate > course.fechaFin) {
+      } else if (targetComparisonDate > course.dateEndPlan) {
         // Not completed and delayed course
         delayedCourses++
-        delayTime = targetComparisonDate - course.fechaFin
+        delayTime = targetComparisonDate - course.dateEndPlan
         delayDays = delayTime/(24*60*60*1000)
         if (delayDays >= 5) {
           delayedMoreThanFiveDays = true
@@ -221,7 +218,7 @@ export class UserService {
     });
   
     let performance: "no plan" | "high" | "medium" | "low";
-    if(studyPlan.length == 0){
+    if(userStudyPlan.length == 0){
       performance ="no plan"
     } else if (delayedCourses === 0) {
       performance = "high";
@@ -233,10 +230,10 @@ export class UserService {
       performance = "low";
     }
   
-    const score = totalScore >= 0 ? totalScore: 0;
-    const grade = completedCourses > 0 ? totalGrade/completedCourses : 0;
+    // const score = totalScore >= 0 ? totalScore: 0;
+    // const grade = completedCourses > 0 ? totalGrade/completedCourses : 0;
   
-    return { performance, score, grade };
+    return performance;
   }
 
   // getActiveUsers$(searchTerm, profileFilter): Observable<User[]> {
