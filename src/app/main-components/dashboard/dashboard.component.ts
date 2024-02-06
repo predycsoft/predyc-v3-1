@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { Subscription } from 'rxjs';
+import { Subscription, combineLatest } from 'rxjs';
 import { DialogDownloadReportComponent } from 'src/app/shared/components/dialogs/dialog-download-report/dialog-download-report.component';
 import { AfterOnInitResetLoading } from 'src/app/shared/decorators/loading.decorator';
+import { CourseByStudent } from 'src/app/shared/models/course-by-student.model';
 import { Enterprise } from 'src/app/shared/models/enterprise.model';
 import { User } from 'src/app/shared/models/user.model';
+import { CourseService } from 'src/app/shared/services/course.service';
 import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
 import { IconService } from 'src/app/shared/services/icon.service';
 import { LoaderService } from 'src/app/shared/services/loader.service';
@@ -19,26 +21,27 @@ import { UserService } from 'src/app/shared/services/user.service';
 export class DashboardComponent {
 
   enterprise: Enterprise
-  users: User[]
   enterpriseSubscription: Subscription
+  combinedSubscription: Subscription
   userServiceSubscription: Subscription
+  performances = []
+
+  // rythms
+  rythms = {
+    high: 0,
+    medium: 0,
+    low: 0,
+    noPlan: 0,
+  }
 
   constructor(
-    public loaderService: LoaderService,
+    public loaderService: LoaderService,  
     public icon: IconService,
     private enterpriseService: EnterpriseService,
     private userService: UserService,
+    private courseService: CourseService,
     private modalService: NgbModal,
   ) {}
-
-
-  // -----
-  totalHours: number
-  avgHours: number
-
-  certificatesQty: number
-  avgScore: number
-  // ----
 
   ngOnInit() {
     this.loaderService.setLoading(true)
@@ -48,19 +51,19 @@ export class DashboardComponent {
         this.loaderService.setLoading(false)
       }
     })
-    this.userServiceSubscription = this.userService.users$.subscribe(users => {
-      this.users = users
-      this.totalHours = 0
-      this.certificatesQty = 0
-      let accumulatedAvgGrade = 0
-      this.users.forEach(user => {
-        this.totalHours += user.studyHours
-        this.certificatesQty += user.certificatesQty
-        accumulatedAvgGrade += user.avgScore
-      })
-      this.avgHours = this.users.length > 0 ? this.totalHours / this.users.length : 0
-      this.avgScore = this.users.length > 0 ? accumulatedAvgGrade / this.users.length : 0
+    this.userServiceSubscription = this.userService.users$.subscribe(async users => {
+      if (users && users.length > 1) { // first response is an 1 element array corresponded to admin
+        const performances = []
+        for (const user of users) {
+          const userRef = this.userService.getUserRefById(user.uid);
+          const studyPlan: CourseByStudent[] = await this.courseService.getActiveCoursesByStudent(userRef);
+          const userPerformance: "no plan" | "high" | "medium" | "low" = this.userService.getPerformanceWithDetails(studyPlan);
+          performances.push(userPerformance);
+        }
+        this.getUsersRythmData(performances)
+      }
     })
+
   }
 
   ngOnDestroy() {
@@ -77,6 +80,33 @@ export class DashboardComponent {
       keyboard: false 
     })
     return modalRef
+  }
+
+  getUsersRythmData(performances: Array<"no plan" | "high" | "medium" | "low" >){
+    this.rythms = {
+      high: 0,
+      medium: 0,
+      low: 0,
+      noPlan: 0,
+    }
+    // Iterar sobre el array de performances
+    for (const performance of performances) {
+      switch (performance) {
+        case "no plan":
+          this.rythms.noPlan += 1;
+          break;
+        case "high":
+          this.rythms.high += 1;
+          break;
+        case "medium":
+          this.rythms.medium += 1;
+          break;
+        case "low":
+          this.rythms.low += 1;
+          break;
+      }
+    }
+    console.log(`No Plan: ${this.rythms.noPlan}, High: ${this.rythms.high}, Medium: ${this.rythms.medium}, Low: ${this.rythms.low}`);
   }
 
 }
