@@ -46,6 +46,8 @@ function generateNotification(): NotificationJson {
     // readByUser: false,
     // readByAdmin: false,
     message,
+    readByUser: null,
+    clearByUser: null,
     date: timestamp,
     userRef: null,
     enterpriseRef: null,

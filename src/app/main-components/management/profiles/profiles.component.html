@@ -48,10 +48,10 @@
         <div class="containers " style="width: 40%;" >
             <!-- <div class="container" style="height: 100px; padding: 5px; border: 2px solid black; border-radius: 20px">
             </div> -->
-            <div  class=" fw pd10 mgt10 borderLight radius10 " >
-                <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign=" center">
-                    <img [src]="icon.credentials" alt="Información del perfil">
-                    <span class="ft500 ft14 undrl gray-10">Detalles del perfil</span>
+            <div  class=" fw pd08 mgt10 borderLight radius10 " >
+                <div class="mgl05" fxLayout="row" fxLayoutGap="0.5rem" fxLayoutAlign="start center">
+                    <img [src]="icon.credentials" class="h20px" alt="Información del perfil">
+                    <span class="ft500  ft14  black">Detalles del perfil</span>
                 </div>
                 <div class="pd05 backGray2 mgt10 radius10">
                     <p class="ft12 gray-8 "  *ngIf="!isEditing" style="overflow: hidden; word-wrap: break-word;">{{profileDescription}} </p>
@@ -64,9 +64,9 @@
             <div class="container" class="pd10 mgt20 borderLight radius10 " >
                 
 
-                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem">
-                    <img [src]="icon.ticTacToe" class="makeBlue h16px" alt="">
-                    <span class="ft500 black undrl ft14 ft600 black">Resumen de competencias</span>
+                <div class="" fxLayout="row" fxLayoutGap="0.5rem" fxLayoutAlign="start center">
+                    <img [src]="icon.ticTacToe" class="makeBlue h20px" alt="">
+                    <span class="ft500  ft14  black">Resumen de competencias</span>
                 </div>
                 <div class="chart-container">
                     <canvas id="chart"></canvas>
@@ -146,12 +146,12 @@
         <div class="containers pd10 mgt10 borderLight radius10 " style="width: 58%; margin-right: -15px!important;" >
             <div class="study-plan" style="padding: 5px ;">
                 <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign=" right">
-                    <img [src]="icon.ticTacToe" alt="Plan de estudios">
-                    <span class="ft500 ft14 undrl gray-10">Plan de estudios</span>
+                    <img [src]="icon.course" class="makeBlue h20px" alt="Plan de estudios">
+                    <span class="ft500  ft14  black">Plan de estudios</span>
                 </div>
                 <div class="mgt20" fxLayout="row" fxLayoutGap="2rem">
-                    <div fxLayoutGap=".5rem" fxLayout="row" fxLayoutAlign=" center">
-                            <span class="ft500 ft12 gray-9">Estudio mensual</span>
+                    <div fxLayoutGap=".5rem" fxLayout="row" fxLayoutAlign=" center" class="mgl05">
+                            <span class="ft500 ft12 gray-9 mgr10">Estudio mensual</span>
                         <input [ngClass]="isEditing?'editNumber':'number'" [disabled]="!isEditing" class="ft12 centertext"  type="number" min="0" [(ngModel)]="profileHoursPerMonth">
                         <span class="gray-10 ft11">horas</span>
                     </div>

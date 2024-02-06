@@ -4,7 +4,7 @@
             
             <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem">
                 <img [src]="icon.credentials"  class=" h20px" alt="">
-                <span class="ft500  ft14  black">Información del usuario</span>
+                <span class="ft500 ft14 black">Información del usuario</span>
             </div>
             <span class="makeBlue cursorPointer ft14" (click)="isEditing ? save() : (isEditing = true) && studentForm.get('canEnrollParticularCourses')?.enable()">{{ isEditing ? 'Guardar' : 'Editar' }}</span>
         </div>
