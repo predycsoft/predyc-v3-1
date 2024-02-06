@@ -310,6 +310,12 @@ export class CourseService {
     ).valueChanges()
   }
 
+  async getActiveCoursesByStudent(userRef: DocumentReference<User>): Promise<CourseByStudent[]> {
+    const coursesByStudent = await firstValueFrom(this.afs.collection<CourseByStudent>(CourseByStudent.collection, ref => ref.
+      where('userRef', '==', userRef)).valueChanges())
+    return coursesByStudent 
+  }
+
   async setCourseByStudentActive(courseByStudentId: string, startDate: any, endDate: any) { 
     await this.afs.collection(CourseByStudent.collection).doc(courseByStudentId).set({
       active: true,
