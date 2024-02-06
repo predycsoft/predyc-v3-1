@@ -159,17 +159,30 @@ export class StudyTimeMonthlyLineChartComponent {
           label: 'Estudio mensual acumulado',
           data: realValues,
           fill: false,
-          borderColor: 'rgb(75, 192, 192)',
-          tension: 0.1
+          tension: 0.5,
+          backgroundColor: '#AFEF9F',
+          borderColor: '#3ED219',
+          pointBackgroundColor: '#3ED219',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: '#3ED219',
+          pointRadius: 3 
         },{
           label: 'Estudio mensual esperado acumulado',
           data: expectedValues,
           fill: false,
+          tension: 0,
+          backgroundColor: 'rgba(54, 162, 235, 0.2)',
           borderColor: 'rgb(54, 162, 235)',
-          tension: 0.1
+          pointBackgroundColor: 'rgb(54, 162, 235)',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: 'rgb(54, 162, 235)',
+          pointRadius: 3 
         }]
       },
     })
+    
   }
 
   ngOnDestroy() {
