@@ -1,9 +1,9 @@
 <div fxLayout="row" fxLayoutAlign="space-between" class="mgt10">
     <!-- Resumen de competencias -->
-    <div class="w-40 radius10 borderLight cards fh" fxLayout="column" fxLayoutGap="0rem" >
-        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem">     
-            <img [src]="icon.ticTacToe" class="makeBlue h20px" alt="">
-            <span class="ft500  ft14  black">Resumen de competencias</span>
+    <div class="w-40 radius10 borderLight cards fh" fxLayout="column" fxLayoutGap="1rem" >
+        <div class="mgt10" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" >    
+            <img [src]="icon.ticTacToe" class="makeBlue h20px"  alt="">
+            <span class="ft500  ft14  black"  >Resumen de competencias </span>
         </div>
         <div class="chart-container">
             <canvas id="chart"></canvas>
@@ -34,12 +34,13 @@
     </div>
     <!-- Plan de estudios -->
     <div class="w-55 radius10 borderLight cards " fxLayout="column" fxLayoutGap="">
-        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem">
+        <div class="mgt10"  fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem">
             <img [src]="icon.course" class="makeBlue h20px" alt="">
             <span class="ft500  ft14  black">Plan de estudios</span>
         </div>
+        
         <ng-container *ngIf="!showInitForm">
-            <div  *ngIf="getDelayedMonthsCount() > 0" class="border radius10 pd05 backRed1" fxLayout="row" fxLayoutAlign="space-between center" style="border-color: red !important;">
+            <div  *ngIf="getDelayedMonthsCount() > 0" class="border radius10 pd05 backRed1 mgt10" fxLayout="row" fxLayoutAlign="space-between center" style="border-color: red !important;">
                 <img [src]="icon.redWarning2" class="h16px " alt="">
                 <span class="red-5 ft14 ft600"> 
                     Advertencia: este usuario tiene {{ getDelayedMonthsCount() }} {{getDelayedMonthsCount() > 1 ? "meses atrasados" : "mes atrasado"}}
@@ -47,18 +48,23 @@
                 <button class="redButton btn">Alertar via e-mail</button>
             </div>
             <div *ngIf="(selectedProfile && months && months.length > 0) else noPlan" >
-                <div *ngIf="diagnosticTest" fxLayout="row" fxLayoutAlign="space-between center">
-                    <span class="ft12"> Examen diagnóstico del perfil </span>
+                <div *ngIf="diagnosticTest" fxLayout="row" class="mgt15 mgb10 mgl15" fxLayoutAlign="space-between center">
+                    <span class="ft13"> Examen diagnóstico del perfil </span>
                     <!-- just to see the dates -->
-                    <span>{{diagnosticTest.date | date:'dd/MM/yy'}}</span>
+                    <!-- <span>{{diagnosticTest.date | date:'dd/MM/yy'}}</span> -->
                     <!--  -->
                     <div fxLayout="row" fxLayoutAlign="space-between center" class="" fxLayoutGap="0.5rem">
-                        <img *ngIf="diagnosticTest.score >= 50" [src]="icon.greenCheck" class="h12px" alt="">
-                        <span class="ft12"> {{diagnosticTest.score >= 50 ? 'Aprobado' : 'Reprobado'}} con {{diagnosticTest.score}} </span>
+                        <img *ngIf="diagnosticTest.score >= 0" [src]="icon.greenCheck" class="h20px mgr05 makeGreen" alt="">
+                        <span class="ft13 ft500 mgr15"> {{diagnosticTest.score >= 50 ? 'Aprobado' : 'Reprobado'}} con {{diagnosticTest.score}} </span>
                     </div>
                 </div>
                 <div *ngIf="!diagnosticTest">
-                    <span>No ha presentado el examen diagnóstico</span>
+                    <div fxLayout="row" fxLayoutAlign="space-between center" class="" fxLayoutGap="0.5rem">
+                        <span class="ft13 ft500 mgl15 mgt15 " style="color: red; ">No ha presentado el examen diagnóstico</span>
+                        <img class="h20px mgr20 mgt10 " [src]="icon.redWarning2">
+
+                    </div>  
+
                 </div>
                 <div *ngFor="let month of months; let index = index" fxLayout="column"  class="mgt20 mgl05 mgr05">
                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="mgb10 radius6">
