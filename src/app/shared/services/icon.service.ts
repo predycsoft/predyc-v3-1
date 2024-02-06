@@ -137,6 +137,16 @@ export class IconService {
   catalogo = "assets/iconsUI/bookmark.svg"
   licencias = "assets/iconsUI/Vector.svg"
   dashboard = "assets/iconsUI/chart--sunburst.svg"
+  dashboard1 ="assets/IconsUI/dashboard-1.svg"
+  courses1 ="assets/IconsUI/courses-1.svg"
+  management1 ="assets/IconsUI/management-1.svg"
+  settings1 ="assets/IconsUI/settings-1.svg"
+
+
+
+
+
+
   people3 = "assets/iconsUI/events.svg"
   signOut = "assets/iconsUI/logout.svg"
   trash = "assets/iconsUI/trash-can.svg"
