@@ -42,7 +42,7 @@ export class LicenseStudentListComponent {
   queryParamsSubscription: Subscription
   profilesSubscription: Subscription
   userServiceSubscription: Subscription
-  pageSize: number = 8
+  pageSize: number = 6
   totalLength: number
   profiles: Profile[] = []
 

@@ -1,9 +1,9 @@
 <div fxLayout="row" fxLayoutAlign="space-between" class="mgt10">
     <!-- Resumen de competencias -->
     <div class="w-40 radius10 borderLight cards fh" fxLayout="column" fxLayoutGap="0rem" >
-        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem">
-            <img [src]="icon.ticTacToe" class="makeBlue h16px" alt="">
-            <span class="ft500 black undrl ft14 ft600 black">Resumen de competencias</span>
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem">     
+            <img [src]="icon.ticTacToe" class="makeBlue h20px" alt="">
+            <span class="ft500  ft14  black">Resumen de competencias</span>
         </div>
         <div class="chart-container">
             <canvas id="chart"></canvas>
@@ -35,12 +35,12 @@
     <!-- Plan de estudios -->
     <div class="w-55 radius10 borderLight cards " fxLayout="column" fxLayoutGap="">
         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem">
-            <img [src]="icon.ticTacToe" class="makeBlue h16px" alt="">
-            <span class="ft500 black undrl ft14 ft600 black">Plan de estudios</span>
+            <img [src]="icon.course" class="makeBlue h20px" alt="">
+            <span class="ft500  ft14  black">Plan de estudios</span>
         </div>
         <ng-container *ngIf="!showInitForm">
-            <div *ngIf="getDelayedMonthsCount() > 0" class="border radius10 pd05 backRed1" fxLayout="row" fxLayoutAlign="space-between center" style="border-color: red !important;">
-                <img [src]="icon.redWarning2" class="h16px" alt="">
+            <div  *ngIf="getDelayedMonthsCount() > 0" class="border radius10 pd05 backRed1" fxLayout="row" fxLayoutAlign="space-between center" style="border-color: red !important;">
+                <img [src]="icon.redWarning2" class="h16px " alt="">
                 <span class="red-5 ft14 ft600"> 
                     Advertencia: este usuario tiene {{ getDelayedMonthsCount() }} {{getDelayedMonthsCount() > 1 ? "meses atrasados" : "mes atrasado"}}
                 </span>

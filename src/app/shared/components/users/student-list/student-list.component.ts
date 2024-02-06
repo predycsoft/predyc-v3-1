@@ -45,7 +45,7 @@ export class StudentListComponent {
   queryParamsSubscription: Subscription
   profilesSubscription: Subscription
   userServiceSubscription: Subscription
-  pageSize: number = 25
+  pageSize: number = 8
   totalLength: number
   profiles: Profile[] = []
   departments: Department[] = []
