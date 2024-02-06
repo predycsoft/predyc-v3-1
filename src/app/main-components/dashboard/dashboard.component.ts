@@ -45,7 +45,7 @@ export class DashboardComponent {
 
   ngOnInit() {
     this.loaderService.setLoading(true)
-    this.enterpriseSubscription = this.enterpriseService.enterprise$.subscribe(async enterprise => {
+    this.enterpriseSubscription = this.enterpriseService.enterprise$.subscribe(enterprise => {
       if (enterprise) {
         this.enterprise = enterprise
         this.loaderService.setLoading(false)
@@ -61,9 +61,9 @@ export class DashboardComponent {
           performances.push(userPerformance);
         }
         this.getUsersRythmData(performances)
+        // if (this.loaderService.loading > 0) this.loaderService.setLoading(false)
       }
     })
-
   }
 
   ngOnDestroy() {
