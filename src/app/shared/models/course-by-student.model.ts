@@ -12,7 +12,8 @@ export interface CourseByStudentJson {
     id: string,
     progress: number
     userRef: DocumentReference | null,
-
+    courseTime?: number
+    progressTime?: number
 }
 
 export class CourseByStudent {
@@ -28,7 +29,9 @@ export class CourseByStudent {
     public finalScore: number = 0;
     public id: string;
     public progress:number = 0;
-    public userRef: DocumentReference 
+    public userRef: DocumentReference
+    public courseTime: number
+    public progressTime: number
 
     public static fromJson(CourseByStudentJson: CourseByStudent): CourseByStudent {
         let courseByStudent = new CourseByStudent();
@@ -42,6 +45,8 @@ export class CourseByStudent {
         courseByStudent.id = CourseByStudentJson.id
         courseByStudent.progress = CourseByStudentJson.progress
         courseByStudent.userRef = CourseByStudentJson.userRef
+        courseByStudent.courseTime = CourseByStudentJson?.courseTime
+        courseByStudent.progressTime = CourseByStudentJson?.progressTime
 
         return courseByStudent
     }
@@ -58,6 +63,8 @@ export class CourseByStudent {
             id: this.id,
             progress: this.progress,
             userRef: this.userRef,
+            courseTime: this.courseTime,
+            progressTime: this.progressTime,
         }
     }
 }

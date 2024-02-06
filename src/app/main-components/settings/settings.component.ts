@@ -63,6 +63,7 @@ export class SettingsComponent {
         let availableRotations = 0
         let expirationDate = null
         licenses.forEach(license => {
+          if (license.status !== 'active') return
           totalLicenses += license.quantity
           availableLicenses += license.quantity - license.quantityUsed
           availableRotations += license.rotations

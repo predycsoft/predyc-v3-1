@@ -279,6 +279,10 @@ export class UserService {
     return this.usersSubject.value.find(x => x.uid === uid)
   }
 
+  async getUserByUid(uid: string): Promise<User> {
+    return (await firstValueFrom(this.afs.collection<User>(User.collection).doc(uid).get())).data()
+  }
+
   getUser$(uid: string): Observable<User> {
     return this.afs.collection<User>(User.collection).doc(uid).valueChanges()
   }

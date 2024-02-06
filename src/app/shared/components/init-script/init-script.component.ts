@@ -44,7 +44,7 @@ import { CourseClassService } from '../../services/course-class.service';
 import { Modulo } from '../../../shared/models/module.model';
 import { ModuleService } from '../../services/module.service';
 import { coursesData } from 'src/assets/data/courses.data';
-import { CourseByStudent } from '../../models/course-by-student';
+import { CourseByStudent } from '../../models/course-by-student.model';
 
 import sampleSize from 'lodash/sampleSize';
 import { courseCategoryAndSkillsRelation } from 'src/assets/data/courseCategoryAndSkillsRelation.data'

@@ -11,10 +11,11 @@ import { map, switchMap } from 'rxjs/operators';
 import { Curso } from '../models/course.model';
 import { Modulo } from '../models/module.model';
 import { Clase } from '../models/course-class.model';
-import { CourseByStudent, CourseByStudentJson } from '../models/course-by-student';
+import { CourseByStudent, CourseByStudentJson } from '../models/course-by-student.model';
 import { UserService } from './user.service';
 import { ProfileService } from './profile.service';
 import { firestoreTimestampToNumberTimestamp } from '../utils';
+import { ClassByStudent } from '../models/class-by-student.model';
 
 @Injectable({
   providedIn: 'root'
@@ -445,12 +446,16 @@ export class CourseService {
 
 
   // ---- classeByStudent Collection methods
-  getClassesByStudent$(userRef: DocumentReference<User>): Observable<any[]> {
-    return this.afs.collection<any>("classesByStudent", ref => ref.where('userRef', '==', userRef).where('completed', '==', true)).valueChanges()
+  getClassesByStudent$(userRef: DocumentReference<User>): Observable<ClassByStudent[]> {
+    return this.afs.collection<ClassByStudent>(ClassByStudent.collection, ref => ref.where('userRef', '==', userRef).where('completed', '==', true)).valueChanges()
   }
 
   getClass$(classId: string): Observable<Clase> {
     return this.afs.collection<Clase>(Clase.collection).doc(classId).valueChanges()
+  }
+
+  async getClass(classId: string): Promise<Clase> {
+    return (await firstValueFrom(this.afs.collection<Clase>(Clase.collection).doc(classId).get())).data()
   }
 
   getClassesByEnterprise$(): Observable<any[]> {

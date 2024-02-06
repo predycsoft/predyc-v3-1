@@ -10,8 +10,14 @@
                 <input type="text" class="inputSearchBar ft12 fw pdl05" placeholder="Buscar en usuarios y perfiles">
             </div> -->
         </div>
-        <div>
-            Tu licencia esta apunto de vencer. 5 dias antes de la fecha
+        <div *ngIf="daysToExpire && daysToExpire < 5 && daysToExpire > 1">
+            Faltan {{daysToExpire}} dias para el vencimiento de tu licencia
+        </div>
+        <div *ngIf="daysToExpire && daysToExpire === 1">
+            Falta {{daysToExpire}} dia para el vencimiento de tu licencia
+        </div>
+        <div *ngIf="daysToExpire === 0">
+            Tu licencia expira el dia de hoy
         </div>
         <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
             <div (click)="openSupport()">

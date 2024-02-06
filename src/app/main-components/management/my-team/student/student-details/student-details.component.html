@@ -1,38 +1,3 @@
-<!-- <div fxLayout="column" class="mgt10">
-    <div fxLayout="row" fxLayoutAlign="start center">
-        <img [src]="icon.checkCircle" alt="Ícono">
-        <span class="ft600 gray-10">Presente | </span>
-        <img [src]="icon.notification" alt="Ícono">  
-        <span class="ft600 gray-10">{{studentProfile.name}}</span> 
-    </div>
-    <div fxLayout="row" fxLayoutAlign="space-between" class="mgt10">
-        <div class="w-30" fxLayout="column" fxLayoutGap="0.3rem" >
-            <app-student-profile [student]="student" [isStudentProfile]="true" style="height: 300px;"></app-student-profile>
-        </div>
-        <div fxLayout="column" class="w-30 radius10 border pd10" style="height: 300px;">
-            <div fxLayout="row" fxLayoutAlign="center center" class="mgb20">
-                <span class="ft500 ft20">Información básica</span>
-            </div>
-            <div fxLayout="row" fxLayoutAlign="space-between" class="mgt05">
-                <div fxLayout="column" fxLayoutAlign=" start" fxLayoutGap="0.5rem">
-                    <span>Horas asignadas</span>
-                    <span>Inicio de plan de estudios</span>
-                    <span>Descripción del perfil</span>
-                </div>
-                <div fxLayout="column" fxLayoutAlign=" end" fxLayoutGap="0.5rem">
-                    <span>{{"N/A"}}</span>
-                    <span>{{"N/A"}}</span>
-                    <span>{{"N/A"}}</span>
-                </div>
-            </div>
-        </div>
-        <div class="w-30 radius10 border">
-            <app-ranking-list style="height: 300px;"></app-ranking-list>
-        </div>
-    </div>    
-    <div class="radius10 border mgt10" style="height: 400px;"></div>
-</div> -->
-
 <div fxLayout="column" class="mgt20 mgl20 mgr20">
     <!-- 3 cards top -->
     <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt05">
@@ -50,7 +15,7 @@
             <div class="borderLight radius10 pdt05" fxLayout="row" fxLayoutAlign="space-between center">
                 <div style="height: 200px;">
                     <!-- <span> Aqui va la grafica</span> -->
-                    <app-study-time-monthly-chart *ngIf="logs" [logs]="logs" class="fw fh"></app-study-time-monthly-chart>
+                    <app-study-time-monthly-line-chart class="fw fh"></app-study-time-monthly-line-chart>
                 </div>
             </div>
         </div>

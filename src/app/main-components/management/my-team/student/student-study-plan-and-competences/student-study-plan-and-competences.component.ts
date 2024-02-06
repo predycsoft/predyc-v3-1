@@ -3,7 +3,7 @@ import { DocumentReference } from '@angular/fire/compat/firestore';
 import { Chart } from 'chart.js';
 import { Observable, Subject, Subscription, combineLatest } from 'rxjs';
 import { Category } from 'src/app/shared/models/category.model';
-import { CourseByStudent } from 'src/app/shared/models/course-by-student';
+import { CourseByStudent } from 'src/app/shared/models/course-by-student.model';
 import { Curso, CursoJson } from 'src/app/shared/models/course.model';
 import { Profile } from 'src/app/shared/models/profile.model';
 import { Skill } from 'src/app/shared/models/skill.model';
@@ -14,7 +14,7 @@ import { IconService } from 'src/app/shared/services/icon.service';
 import { ProfileService } from 'src/app/shared/services/profile.service';
 import { SkillService } from 'src/app/shared/services/skill.service';
 import { UserService } from 'src/app/shared/services/user.service';
-import { firestoreTimestampToNumberTimestamp, roundNumber } from 'src/app/shared/utils';
+import { firestoreTimestampToNumberTimestamp } from 'src/app/shared/utils';
 
 interface CoursesForExplorer extends CursoJson {
   skills: Skill[],
@@ -56,7 +56,6 @@ export class StudentStudyPlanAndCompetencesComponent {
   showInitForm = false
   hoursPermonthInitForm: number = 0
   startDateInitForm: {year: number, month: number, day: number} | null = null
-
 
   // -------------------------------- Skills
   coursesForExplorer: CoursesForExplorer[]
@@ -129,7 +128,11 @@ export class StudentStudyPlanAndCompetencesComponent {
     if (this.diagnosticTestSubscription) this.diagnosticTestSubscription.unsubscribe()
     this.diagnosticTestSubscription = this.profileService.getDiagnosticTestForUser$(this.student).subscribe(diagnosticTests => {
       if (diagnosticTests.length === 0) return
-      this.diagnosticTest = diagnosticTests[0]
+      const diagnosticTest = diagnosticTests[0]
+      this.diagnosticTest = {
+        ...diagnosticTest,
+        date: firestoreTimestampToNumberTimestamp(diagnosticTest.date)
+      } 
     })
   }
 

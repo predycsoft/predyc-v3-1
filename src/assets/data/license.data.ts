@@ -18,9 +18,9 @@ export const licensesData: LicenseJson[] = [
     },
     {
         couponRef: null,
-        createdAt: 1700920188024,
-        currentPeriodEnd: 172588400000,
-        currentPeriodStart: 1700920188024,
+        createdAt: 1675645688000,
+        currentPeriodEnd: 1700920188024,
+        currentPeriodStart: 1675645688000,
         enterpriseRef: null,
         id: "1700920188024",
         priceRef: null,

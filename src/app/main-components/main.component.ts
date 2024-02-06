@@ -3,10 +3,12 @@ import { EnterpriseService } from '../shared/services/enterprise.service';
 import { UserService } from '../shared/services/user.service';
 import { IconService } from '../shared/services/icon.service';
 import { User } from '../shared/models/user.model';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { AuthService } from '../shared/services/auth.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SupportComponent } from '../shared/components/support/support.component';
+import { License } from '../shared/models/license.model';
+import { LicenseService } from '../shared/services/license.service';
 
 @Component({
   selector: 'app-main',
@@ -18,13 +20,35 @@ export class MainComponent {
     private authService: AuthService,
     public icon: IconService,
     private modalService: NgbModal,
+    public licenseService: LicenseService,
   ) {}
 
   user: User
   user$: Observable<User> = this.authService.user$
   menuExpanded = false
 
-  ngOnInit() {}
+  licensesSubscription: Subscription
+  daysToExpire: number
+
+  ngOnInit() {
+    this.licensesSubscription = this.licenseService.geteEnterpriseLicenses$().subscribe(licenses => {
+      const now = Date.now()
+      if (licenses && licenses.length > 0) {
+        const validLicenses = licenses.filter(license => {
+          return license.status === 'active'
+        }).sort((a, b) => b.currentPeriodEnd - a.currentPeriodEnd)
+        const lastLicense = validLicenses.length > 0 ? validLicenses[0] : null
+        if (lastLicense) {
+          // Calculate the difference in milliseconds
+          const differenceInMilliseconds = Math.abs(now - lastLicense.currentPeriodEnd);
+
+          // Convert milliseconds to days
+          const millisecondsInDay = 1000 * 60 * 60 * 24;
+          this.daysToExpire = differenceInMilliseconds / millisecondsInDay;
+        }
+      }
+    });
+  }
 
   openSupport() {
     this.modalService.open(SupportComponent, {

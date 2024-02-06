@@ -120,6 +120,7 @@ import { StudentStudyPlanAndCompetencesComponent } from './main-components/manag
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { CustomMonthPipe } from './shared/pipes/custom-month.pipe';
 import { SupportComponent } from './shared/components/support/support.component';
+import { StudyTimeMonthlyLineChartComponent } from './main-components/dashboard/users-study-time-container/study-time-monthly-line-chart/study-time-monthly-line-chart.component';
 
 
 @NgModule({
@@ -193,6 +194,7 @@ import { SupportComponent } from './shared/components/support/support.component'
     StudentStudyPlanAndCompetencesComponent,
     CustomMonthPipe,
     SupportComponent,
+    StudyTimeMonthlyLineChartComponent,
   ],
   imports: [
     BrowserModule,
