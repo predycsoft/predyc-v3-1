@@ -311,9 +311,10 @@ export class CourseService {
   }
 
   async getActiveCoursesByStudent(userRef: DocumentReference<User>): Promise<CourseByStudent[]> {
-    const coursesByStudent = await firstValueFrom(this.afs.collection<CourseByStudent>(CourseByStudent.collection, ref => ref.
-      where('userRef', '==', userRef)).valueChanges())
-    return coursesByStudent 
+    const querySnapshot: QuerySnapshot<CourseByStudent> = await this.afs.collection<CourseByStudent>(CourseByStudent.collection).ref
+      .where('userRef', '==', userRef).where('active', '==', true).get()
+    const courses = querySnapshot.docs.map(doc => doc.data())
+    return courses
   }
 
   async setCourseByStudentActive(courseByStudentId: string, startDate: any, endDate: any) { 

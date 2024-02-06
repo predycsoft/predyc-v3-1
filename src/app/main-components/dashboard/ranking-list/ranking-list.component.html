@@ -7,7 +7,7 @@
             <div class="" fxLayoutAlign="center center">
                 <img [src]="icon.trophyBlue" class="makeBlue h20px" alt="">
             </div>
-            <span class="ft500 ft14 black  ">Ranking del mes</span>
+            <span class="ft500 ft14 black">Ranking del mes</span>
             <div fxLayout="center center" class="positionRelative" (mouseover)="showPointsTooltip = true" (mouseleave)="showPointsTooltip = false">
                 <img [src]="icon.information" class="h16px makeBlue" alt="">
             </div>
@@ -35,26 +35,10 @@
                         </div>
                     </div>
                 </td>
-                <td class="centertext gray-10 ft12">{{"Horas"}}</td>
+                <td class="centertext gray-10 ft12">{{item.hours}}&nbsp;/&nbsp;{{item.targetHours}}</td>
                 <td class="centertext gray-10 ft12">{{item.ratingPoints | number: "1.0-0"}}</td>
                 <td class="centertext">
                     <div class="centertext" fxLayoutAlign="center center">
-                        <!-- <div class="chip w100px"
-                        [ngClass]="{'newGreen2b':item.performance == 'high',
-                                    'newYellow2b':item.performance == 'medium'}"
-                        > -->
-                            <!-- <span *ngIf="item.performance == 'no plan' || item.performance == null "class="gray-6 ft11 nowrap">
-                                Sin asignación
-                            </span>
-                            <span *ngIf="item.performance == 'low'" class="red-5 ft11 nowrap">
-                                Bajo
-                            </span>
-                            <span *ngIf="item.performance == 'medium'" class="blue-5 ft11 nowrap">
-                                Medio
-                            </span>
-                            <span *ngIf="item.performance == 'high'" class="green-5 ft11 nowrap">
-                                Alto
-                            </span> -->
                          <div *ngIf="item.performance == 'high'" class="chip newGreen2b " style="border: 1px solid #3ED219; width:30% ;" fxLayout="row" fxLayoutAlign="center center">
                             <span class="ft13 nowrap ft500  " style="color: #27be02;">Alto</span>
                         </div>
@@ -62,9 +46,7 @@
                             <span class="ft13 nowrap ft500 " style="color: rgb(255, 196, 0);" >Medio</span>
                         </div>
                         <div *ngIf="item.performance == 'low'"  class="chip backRed2 borderLight " style="border: 1px solid #ff0000; width:30% " fxLayout="row" fxLayoutAlign="center center">                                <span class="ft13 nowrap ft500" style="color: #f50000;" >Bajo</span>
-                        </div>
-                            
-                        <!-- </div> -->
+                        </div>                            
                     </div>
                 </td>
                 <td class="gray-10 ft12 w-20">{{item.profileName}}</td>

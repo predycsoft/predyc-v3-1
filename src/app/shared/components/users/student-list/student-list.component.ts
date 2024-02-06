@@ -2,19 +2,22 @@ import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core
 import { MatPaginator } from '@angular/material/paginator';
 import { IconService } from '../../../../shared/services/icon.service';
 import { UserService } from '../../../../shared/services/user.service';
-import { combineLatest, Subscription } from 'rxjs';
+import { combineLatest, filter, forkJoin, map, merge, mergeMap, Observable, of, Subscription, switchMap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 import { ProfileService } from 'src/app/shared/services/profile.service';
 import { Profile } from 'src/app/shared/models/profile.model';
 import { DepartmentService } from 'src/app/shared/services/department.service';
 import { Department } from 'src/app/shared/models/department.model';
+import { CourseService } from 'src/app/shared/services/course.service';
+import { Curso } from 'src/app/shared/models/course.model';
 
 interface User {
   displayName: string,
   profile: string,
   department: string,
   hours: number,
+  targetHours: number,
   ratingPoints: number,
   rhythm: string
   uid: string,
@@ -49,6 +52,7 @@ export class StudentListComponent {
   totalLength: number
   profiles: Profile[] = []
   departments: Department[] = []
+  courses: Curso[] = []
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -57,14 +61,16 @@ export class StudentListComponent {
     private profileService: ProfileService,
     private router: Router,
     private userService: UserService,
+    private courseService: CourseService
   ) {}
 
   ngOnInit() {
     this.profileService.loadProfiles()
     
-    this.profilesSubscription = combineLatest([this.profileService.getProfilesObservable(), this.departmentService.getDepartments$()]).subscribe(([profiles, departments]) => {
+    this.profilesSubscription = combineLatest([this.profileService.getProfilesObservable(), this.departmentService.getDepartments$(), this.courseService.getCourses$()]).subscribe(([profiles, departments, courses]) => {
         this.profiles = profiles
         this.departments = departments
+        this.courses = courses
         this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
           const page = Number(params['page']) || 1;
           const searchTerm = params['search'] || '';
@@ -83,12 +89,24 @@ export class StudentListComponent {
     if (this.userServiceSubscription) {
       this.userServiceSubscription.unsubscribe()
     }
-    this.userServiceSubscription = this.userService.getUsers$(searchTerm, profileFilter, null).subscribe(
-      response => {
-        const users: User[] = response.map(item => {
+    this.userServiceSubscription = this.userService.getUsers$(searchTerm, profileFilter, null).pipe(
+      switchMap(users => {
+        // For each user, query their active courses
+        const observables = users.map(user => {
+          const userRef = this.userService.getUserRefById(user.uid)
+          return this.courseService.getActiveCoursesByStudent$(userRef).pipe(
+            map(courses => ({ user, courses })),
+          );
+        });
+        return observables.length > 0 ? combineLatest(observables) : of([])
+      })).subscribe(response => {
+        console.log(response)
+        const users: User[] = response.map(({user, courses}) => {
+          console.log("user", user)
+          console.log("courses", courses)
           const profile = this.profiles.find(profile => {
-            if(item.profile) {
-              return profile.id === item.profile.id
+            if(user.profile) {
+              return profile.id === user.profile.id
             }
             return false
           })
@@ -96,23 +114,28 @@ export class StudentListComponent {
           if (profile) {
             profileName = profile.name
           }
+          let hours = 0
+          let targetHours = 0
+          courses.forEach(course => {
+            hours += course?.progressTime ? course.progressTime : 0
+            const courseJson = this.courses.find(item => item.id === course.courseRef.id)
+            targetHours += courseJson.duracion
+          })
+          const userPerformance: "no plan" | "high" | "medium" | "low" = this.userService.getPerformanceWithDetails(courses);
           // --------------------- Setting status. Calculation pending. DELETE IT
-          const options = ['high', 'medium', 'low', 'no plan'];
-          const randomIndex = Math.floor(Math.random() * options.length);
-          const department = this.departments.find(department => department.id === item.departmentRef?.id)
+          const department = this.departments.find(department => department.id === user.departmentRef?.id)
           // --------------------- 
-          const user = {
-            displayName: item.displayName,
+          return {
+            displayName: user.displayName,
             department: department?.name ? department.name : '',
-            hours: 0, // Calculation pending
+            hours: hours, // Calculation pending
+            targetHours: targetHours,
             profile: profileName,
-            ratingPoints: item.ratingPoints,
-            rhythm: options[randomIndex], // Calculation pending
-            uid: item.uid,
-            photoUrl: item.photoUrl,
+            ratingPoints: user.ratingPoints,
+            rhythm: userPerformance, // Calculation pending
+            uid: user.uid,
+            photoUrl: user.photoUrl,
           }
-          // console.log(user)
-          return user
         })
         this.paginator.pageIndex = page - 1; // Update the paginator's page index
         this.dataSource.data = users; // Assuming the data is in 'items'

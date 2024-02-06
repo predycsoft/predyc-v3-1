@@ -37,7 +37,7 @@ export interface UserJson {
   updatedAt: number | null
   avgScore: number
   certificatesQty: number
-  performance: 'no plan'| 'low'| 'medium'| 'high'| null
+  performance: 'no plan' | 'low' | 'medium' | 'high' | null
   ratingPoints: number
   studyHours: number
   status: string // improve the type options
@@ -90,7 +90,7 @@ export class User {
     // metrics
     public avgScore: number,
     public certificatesQty: number,
-    public performance: 'no plan'| 'low'| 'medium'| 'high'| null,
+    public performance: 'no plan' | 'low' | 'medium' | 'high' | null,
     public ratingPoints: number,
     public studyHours: number,
 
