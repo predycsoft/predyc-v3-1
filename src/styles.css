@@ -161,7 +161,7 @@ body {
   --orange-2: #FFBA00;
   --orange-3: #FF7F00;
   --red-1: #FFEDEF;
-  --red-2: #FF9CA5;
+  --red-2: #ffb9bf;
   --red-3: #FF7381;
   --red-4: #FF5263;
   --red-5: #ED4758;
@@ -186,7 +186,7 @@ body {
   --defaultBorderRadius: 4px;
   --appSurfaceBorderRadius: 8px;
 
-  
+ 
 
   /* System colors */
   --neutral1: rgb(249, 249, 249); /* System default background */
@@ -218,6 +218,11 @@ body {
   --accent5: rgba(0, 95, 184, 1);  /* Rest */
   --accent6: #003D92;
   --accent7: #001968;
+
+
+
+
+
 
   /* Complementary colors */
   --green5: rgb(15, 123, 15);
@@ -283,6 +288,10 @@ body {
 
 
 /* ------------------------------------------------------------------------ COLORS */
+
+
+
+
 
 /* System colors */
 .minContrast{ background: var(--minContrast);}
@@ -1097,6 +1106,7 @@ body {
 }
 
 
+
 .makeBlue {
   filter:invert(43%) sepia(91%) saturate(3168%) hue-rotate(180deg) brightness(94%) contrast(101%) !important;
 }
@@ -1279,6 +1289,24 @@ body {
   font-size: 12px;
   user-select: none;
 }
+
+/* Colores Alejandra  */
+
+  /* background */
+.newGreen1b{ background-color:#eaffe5;}
+.newGreen2b{ background-color:#6df04987;}
+.newGreen3b{ background-color:#a4e893;}
+.newGreen4b{ background-color:#5ebc46;}
+.newGreen5b{ background-color:#3ED219;}
+
+.newYellow2b{ background-color:#fff9b7;}
+
+
+
+
+
+
+
 
 /* searchbar */
 
