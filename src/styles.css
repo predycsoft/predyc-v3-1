@@ -83,6 +83,10 @@
 .firebase-emulator-warning {
   display: none;
 }
+.mat-tooltip.tooltip {
+  background-color: darkblue;
+  font-size: 12px;
+}
 
 html,
 body {

@@ -4,7 +4,7 @@
             <div *ngFor="let page of pages" [routerLink]="page.link"    fxLayout="left center "  routerLinkActive=" ActiveMenuOption"
                 [routerLinkActiveOptions]="{ exact: true }" class="item cursorPointer hoverBasic  " fxLayout="row" fxLayout="center center">
                 <div fxLayout="row" class=" MenuOptionsNav">
-                    <img [src]="page?.icon" class="h20px makeGray8  " routerLinkActive="opacity1" style="margin-top: 2px;"
+                    <img [src]="page?.icon" class="h20px makeGray8  " routerLinkActive="opacity1" style="margin-top: 3px; margin-bottom: 3px;"
                         [routerLinkActiveOptions]="{ exact: true }">
                     <span *ngIf="menuExpanded" class="ft13 mgt03 gray-8 ft500 mgr05 mgl05">{{page.name}}</span>
 
