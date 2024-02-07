@@ -132,3 +132,102 @@ const db = admin.firestore();
 //             return console.log(error);
 //           });
 //   });
+
+
+
+// exports.checkExpiredLicensesAndNotify5DaysBefore = functions.pubsub.schedule('every 24 hours').onRun(async (context) => {
+//     const now = new Date();
+//     // Get range of dates to filter documents
+//     const fiveDaysLaterStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 5);
+//     const fiveDaysLaterEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 6);
+
+//     const startTimestamp = fiveDaysLaterStart.getTime();
+//     const endTimestamp = fiveDaysLaterEnd.getTime();
+
+//     const firestore = admin.firestore();
+//     const licenseRef = firestore.collection('license');
+//     // Search for licenses that expires inside the range
+//     const expiredLicensesSnapshot = await licenseRef
+//         .where('currentPeriodEnd', '>=', startTimestamp)
+//         .where('currentPeriodEnd', '<', endTimestamp)
+//         .get();
+
+//     if (expiredLicensesSnapshot.empty) {
+//         console.log('No matching licenses found.');
+//         return null;
+//     }
+
+//     const batch = firestore.batch();
+
+//     expiredLicensesSnapshot.docs.forEach(doc => {
+//         const licenseData = doc.data();
+//         const notificationRef = firestore.collection('notifications').doc();
+//         const notification = {
+//             id: notificationRef.id,
+//             message: "tiene una licencia que expira en 5 dias.",
+//             date: +new Date(),
+//             readByUser: null,
+//             clearByUser: null,
+//             userRef: null, 
+//             enterpriseRef: licenseData.enterpriseRef, 
+//             type: "alert",
+//             subType: "pending"
+//         };
+
+//         batch.set(notificationRef, notification);
+//     });
+
+//     await batch.commit();
+
+//     console.log(`Notifications created for licenses expiring in 5 days.`);
+// });
+
+export const checkExpiredSubscriptionsAndNotify5DaysBefore = functions.pubsub.schedule('every 24 hours').onRun(async (context) => {
+    const now = new Date();
+    // Get range of dates to filter documents
+    const fiveDaysLaterStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 5);
+    const fiveDaysLaterEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 6);
+
+    const startTimestamp = fiveDaysLaterStart.getTime();
+    const endTimestamp = fiveDaysLaterEnd.getTime();
+
+    const subscriptionRef = admin.firestore().collection('subscription');
+    // Search for subscriptions that expires inside the range
+    const expiringSubscriptionsSnapshot = await subscriptionRef
+    .where('currentPeriodEnd', '>=', startTimestamp)
+    .where('currentPeriodEnd', '<', endTimestamp)
+    .get();
+
+    if (expiringSubscriptionsSnapshot.empty) {
+        console.log('No matching subscriptions found.');
+        return null;
+    }
+
+    const batch = admin.firestore().batch();
+
+    expiringSubscriptionsSnapshot.docs.forEach(doc => {
+        const subscriptionData = doc.data();
+        const notificationRef = admin.firestore().collection('notification').doc();
+        const notification = {
+            id: notificationRef.id,
+            message: "tiene una suscripción que expira en 5 dias.",
+            date: +new Date(),
+            readByUser: null,
+            clearByUser: null,
+            userRef: subscriptionData.userRef,
+            enterpriseRef: subscriptionData.enterpriseRef,
+            type: "alert",
+            subType: "pending"
+        };
+
+        batch.set(notificationRef, notification);
+    });
+
+    // Execute batch
+    return batch.commit().then(() => {
+        console.log('Notifications created for subscriptions expiring in 5 days.');
+    }).catch(error => {
+        console.error('Error creating notifications ', error);
+    });
+
+});
