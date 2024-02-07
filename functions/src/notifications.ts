@@ -2,6 +2,7 @@ import * as functions from 'firebase-functions';
 // import { Notification } from '../../src/app/shared/models/notification.model'
 // import { Enterprise } from '../../src/app/shared/models/enterprise.model'
 import * as admin from 'firebase-admin';
+import { DocumentReference } from 'firebase-admin/firestore';
 
 const db = admin.firestore();
 
@@ -200,7 +201,7 @@ export const checkExpiredSubscriptionsAndNotify5DaysBefore = functions.pubsub.sc
 
     if (expiringSubscriptionsSnapshot.empty) {
         console.log('No matching subscriptions found.');
-        return null;
+        return
     }
 
     const batch = admin.firestore().batch();
@@ -231,3 +232,69 @@ export const checkExpiredSubscriptionsAndNotify5DaysBefore = functions.pubsub.sc
     });
 
 });
+
+export const checkDelayedStudyPlans = functions.pubsub.schedule('every 24 hours').onRun(async (context) => {
+    const now = new Date();
+
+    const coursesByStudentRef = admin.firestore().collection('coursesByStudent');
+    const delayedCoursesByStudentSnapshot = await coursesByStudentRef
+        .where('dateEndPlan', '<', now)
+        .where('dateEnd', '==', null)
+        .get();
+
+    if (delayedCoursesByStudentSnapshot.empty) { console.log('No matching courses found.'); return}
+
+    // Set() to store uniques userRefs. We just need to create 1 notification per study plan, not course
+    const usersWithDelayedCourses = new Set<DocumentReference>();
+    delayedCoursesByStudentSnapshot.docs.forEach(doc => {
+        const data = doc.data();
+        usersWithDelayedCourses.add(data.userRef);
+        console.log("Users delayed", data.userRef.path)
+    });
+
+    if (usersWithDelayedCourses.size === 0) { console.log('No users with delayed courses.'); return }
+
+    const notificationCollection = admin.firestore().collection('notification');
+    const batch = admin.firestore().batch();
+
+    for (const userRef of usersWithDelayedCourses) {
+        // Verify if a delayed notification for the user already exists
+        const existingNotificationSnapshot = await notificationCollection
+            .where('userRef', '==', userRef)
+            .where('subType', '==', 'delayed')
+            .limit(1)
+            .get();
+        if (!existingNotificationSnapshot.empty) continue // Already exists a delayed notification for the userr
+        
+        const userSnapshot = await userRef.get();
+        if (!userSnapshot.exists) { console.log(`User document does not exist for ref: ${userRef.path}`); continue }
+
+        const userData = userSnapshot.data();
+        const enterpriseRef = userData?.enterprise;
+        if (!enterpriseRef) { console.log(`Enterprise reference not found for user: ${userRef.path}`); continue }
+
+        const notificationRef = notificationCollection.doc();
+        const notification = {
+            message: "Esta atrasado en su plan de estudios.",
+            date: +new Date(),
+            readByUser: null,
+            clearByUser: null,
+            userRef: userRef,
+            enterpriseRef: enterpriseRef,
+            type: "alert",
+            subType: "delayed"
+        };
+
+        batch.set(notificationRef, notification);
+    };
+
+    return batch.commit().then(() => {
+        console.log(`notifications created for users with delayed study plans.`);
+    }).catch(error => {
+        console.error('Error processing notifications', error);
+    });
+});
+
+export const checkCompletedStudyPlans = functions.pubsub.schedule('every 24 hours').onRun(async (context) => {
+    
+})
