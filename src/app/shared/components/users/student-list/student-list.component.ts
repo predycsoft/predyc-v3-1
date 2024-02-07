@@ -122,16 +122,15 @@ export class StudentListComponent {
             targetHours += courseJson.duracion
           })
           const userPerformance: "no plan" | "high" | "medium" | "low" = this.userService.getPerformanceWithDetails(courses);
-          // --------------------- Setting status. Calculation pending. DELETE IT
           const department = this.departments.find(department => department.id === user.departmentRef?.id)
-          // --------------------- 
+          const ratingPoints: number = this.userService.getRatingPointsFromStudyPlan(courses, this.courses);
           return {
             displayName: user.displayName,
             department: department?.name ? department.name : '',
             hours: hours, // Calculation pending
             targetHours: targetHours,
             profile: profileName,
-            ratingPoints: user.ratingPoints,
+            ratingPoints: ratingPoints,
             rhythm: userPerformance, // Calculation pending
             uid: user.uid,
             photoUrl: user.photoUrl,

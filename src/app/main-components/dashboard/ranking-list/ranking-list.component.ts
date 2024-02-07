@@ -56,12 +56,14 @@ export class RankingListComponent {
           targetHours += courseJson.duracion
         })
         const userPerformance: "no plan" | "high" | "medium" | "low" = this.userService.getPerformanceWithDetails(courses);
+        const ratingPoints: number = this.userService.getRatingPointsFromStudyPlan(courses, allCourses);
           return {
             ...user,
             profileName: profile ? profile.name : 'Sin perfil',
             hours: hours,
             targetHours: targetHours,
-            performance: userPerformance
+            performance: userPerformance,
+            ratingPoints: ratingPoints
           }
         }).sort((a, b) => b.ratingPoints - a.ratingPoints)
       })

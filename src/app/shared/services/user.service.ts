@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { User, UserJson } from '../../shared/models/user.model';
 import { AngularFirestore, CollectionReference, DocumentReference, Query } from '@angular/fire/compat/firestore';
-import { BehaviorSubject, filter, firstValueFrom, map, Observable, Subscription, switchMap } from 'rxjs'
+import { BehaviorSubject, combineLatest, filter, firstValueFrom, map, Observable, Subscription, switchMap } from 'rxjs'
 import { Subscription as SubscriptionClass } from 'src/app/shared/models/subscription.model'
 import { EnterpriseService } from './enterprise.service';
 import { AlertsService } from './alerts.service';
@@ -9,6 +9,8 @@ import { generateSixDigitRandomNumber } from '../utils';
 import { AngularFireFunctions } from '@angular/fire/compat/functions';
 import { Profile } from '../models/profile.model';
 import { ProfileService } from './profile.service';
+import { CourseByStudent } from '../models/course-by-student.model';
+import { Curso } from '../models/course.model';
 @Injectable({
   providedIn: 'root'
 })
@@ -158,6 +160,45 @@ export class UserService {
         }).valueChanges()
       })
     ) 
+  }
+
+  getRatingPointsFromStudyPlan(userStudyPlan: CourseByStudent[], courses: Curso[]): number  {
+    let totalScore = 0;  
+    const today = new Date().getTime();
+    userStudyPlan.forEach((courseByStudent) => {
+      const course = courses.find(course => course.id === courseByStudent.courseRef.id)
+      let targetComparisonDate = today
+      let delayTime = 0
+      let delayDays = 0
+      if (courseByStudent.dateEnd) {
+        totalScore += (course.duracion / 60);
+        let puntaje = courseByStudent.finalScore
+        if(puntaje >= 80 && puntaje < 90){
+          totalScore += (course.duracion / 60)*.1
+        }
+        if(puntaje >= 90 && puntaje < 100){
+          totalScore += (course.duracion / 60)*.3
+        }
+        if(puntaje == 100){
+          totalScore += (course.duracion / 60)*.5
+        }
+        targetComparisonDate = courseByStudent.dateEnd
+        delayTime = targetComparisonDate - courseByStudent.dateEndPlan
+        delayDays = delayTime/(24*60*60*1000)
+        if (delayDays >= 1) {
+          if(delayDays < 3){
+            totalScore -= (course.duracion / 60)*.1
+          }
+          if(delayDays >= 3 && delayDays < 5){
+            totalScore -= (course.duracion / 60)*.3
+          }
+          if(delayDays >= 5){
+            totalScore -= (course.duracion / 60)*.5
+          }
+        }
+      }
+    });
+    return totalScore >= 0 ? totalScore: 0;
   }
 
   // getPerformanceWithDetails(student): { performance:"no plan" | "high" | "medium" | "low", score: number, grade: number } {
