@@ -88,7 +88,7 @@ export class ProfileService {
     let ref: DocumentReference;
     // console.log('profile save',profile)
     // If profile has an ID, then it's an update
-    if (profile.id) {
+    if (profile?.id) {
       ref = this.afs.collection<Profile>(Profile.collection).doc(profile.id).ref;
       const oldProfile = (await ref.get()).data()
       // Si los permisos del perfil cambiaron
