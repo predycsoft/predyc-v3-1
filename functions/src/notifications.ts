@@ -238,9 +238,10 @@ export const checkDelayedStudyPlans = functions.pubsub.schedule('every 24 hours'
 
     const coursesByStudentRef = admin.firestore().collection('coursesByStudent');
     const delayedCoursesByStudentSnapshot = await coursesByStudentRef
-        .where('dateEndPlan', '<', now)
-        .where('dateEnd', '==', null)
-        .get();
+    .where('active', '==', true)
+    .where('dateEndPlan', '<', now)
+    .where('dateEnd', '==', null)
+    .get();
 
     if (delayedCoursesByStudentSnapshot.empty) { console.log('No matching courses found.'); return}
 
@@ -264,7 +265,7 @@ export const checkDelayedStudyPlans = functions.pubsub.schedule('every 24 hours'
             .where('subType', '==', 'delayed')
             .limit(1)
             .get();
-        if (!existingNotificationSnapshot.empty) continue // Already exists a delayed notification for the userr
+        if (!existingNotificationSnapshot.empty) { console.log(`Notification already exists for user: ${userRef.path}`); continue }
         
         const userSnapshot = await userRef.get();
         if (!userSnapshot.exists) { console.log(`User document does not exist for ref: ${userRef.path}`); continue }
@@ -275,7 +276,7 @@ export const checkDelayedStudyPlans = functions.pubsub.schedule('every 24 hours'
 
         const notificationRef = notificationCollection.doc();
         const notification = {
-            message: "Esta atrasado en su plan de estudios.",
+            message: "esta atrasado en su plan de estudios.",
             date: +new Date(),
             readByUser: null,
             clearByUser: null,
@@ -296,5 +297,91 @@ export const checkDelayedStudyPlans = functions.pubsub.schedule('every 24 hours'
 });
 
 export const checkCompletedStudyPlans = functions.pubsub.schedule('every 24 hours').onRun(async (context) => {
-    
-})
+    const now = new Date();
+
+    const activeCoursesSnapshot = await admin.firestore().collection('coursesByStudent')
+        .where('active', '==', true)
+        .get();
+
+    if (activeCoursesSnapshot.empty) {
+        console.log('No active courses found.');
+        return;
+    }
+
+    // Object to store users and completion indicator
+    const userCompletionStatus: Record<string, boolean> = {};
+
+    for (const doc of activeCoursesSnapshot.docs) {
+        const data = doc.data();
+        const userId = data.userRef.id;
+
+        // The first time we find a user, initialized it as studyPlan completed
+        if (userCompletionStatus[userId] === undefined) {
+            userCompletionStatus[userId] = true;
+        }
+
+        // DEBUGG. DELETE IT
+        if (data.dateEnd) { console.log("Este curso esta completado", data.courseRef.path, "user", userId)}
+
+
+        // If one course is not completed, set as incompleted
+        if (!data.dateEnd) {
+            userCompletionStatus[userId] = false;
+        }
+    }
+
+    // DEBUGG. DELETE IT
+    console.log("usuarios y status de completacion", userCompletionStatus)
+
+    // Filter just users with completed study plans. Returns an array of userIds
+    const usersWithCompletedPlans = Object.entries(userCompletionStatus)
+        .filter(([userId, isCompleted]) => isCompleted)
+        .map(([userId, isCompleted]) => userId);
+
+    // DEBUGG. DELETE IT
+    console.log("usuarios con studyplan completado", usersWithCompletedPlans)
+
+    if (usersWithCompletedPlans.length === 0) {
+        console.log('No users with completed study plans.');
+        return;
+    }
+
+    const batch = admin.firestore().batch();
+
+    for (const userId of usersWithCompletedPlans) {
+        const userRef = admin.firestore().collection('user').doc(userId);
+        // Verify if a completed notification for the user already exists
+        const existingNotificationSnapshot = await admin.firestore().collection('notification')
+            .where('userRef', '==', userRef)
+            .where('subType', '==', 'succeded')
+            .limit(1)
+            .get();
+        if (!existingNotificationSnapshot.empty) { console.log(`Notification already exists for user: ${userRef.path}`); continue }
+        
+        const userSnapshot = await userRef.get();
+        if (!userSnapshot.exists) { console.log(`User document does not exist for ref: ${userRef.path}`); continue }
+        const userData = userSnapshot.data();
+        const enterpriseRef = userData?.enterprise;
+        if (!enterpriseRef) { console.log(`Enterprise reference not found for user: ${userRef.path}`); continue }
+
+        const notificationRef = admin.firestore().collection('notification').doc();
+        const notification = {
+            message: "ha completado su plan de estudios.",
+            date: +new Date(),
+            readByUser: null,
+            clearByUser: null,
+            userRef: userRef,
+            enterpriseRef: enterpriseRef,
+            type: "event",
+            subType: "succeded"
+        };
+
+        batch.set(notificationRef, notification);
+    }
+
+    return batch.commit().then(() => {
+        console.log(`${usersWithCompletedPlans.length} notifications created for users with completed study plans.`);
+    }).catch(error => {
+        console.error('Error processing notifications', error);
+    });
+});

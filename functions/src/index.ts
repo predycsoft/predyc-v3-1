@@ -29,5 +29,5 @@ export { checkExpirdeLicenses, }
 import { checkExpiredSubscriptions, } from './subscription'
 export { checkExpiredSubscriptions, }
 
-import { checkExpiredSubscriptionsAndNotify5DaysBefore, checkDelayedStudyPlans } from './notifications'
-export { checkExpiredSubscriptionsAndNotify5DaysBefore, checkDelayedStudyPlans }
+import { checkExpiredSubscriptionsAndNotify5DaysBefore, checkDelayedStudyPlans, checkCompletedStudyPlans } from './notifications'
+export { checkExpiredSubscriptionsAndNotify5DaysBefore, checkDelayedStudyPlans, checkCompletedStudyPlans }
