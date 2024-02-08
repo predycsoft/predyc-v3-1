@@ -7,6 +7,9 @@ import { Category } from '../../models/category.model'
 import { Skill } from '../../models/skill.model';
 
 import { enterpriseData } from 'src/assets/data/enterprise.data'
+import { enterpriseDataPredyc } from 'src/assets/data/enterprise.data'
+
+
 import { usersData } from 'src/assets/data/users.data'
 import { notificationsData } from 'src/assets/data/notifications.data'
 import { Notification } from '../../models/notification.model';
@@ -133,6 +136,13 @@ export class InitScriptComponent {
     const enterpriseRef = this.enterpriseService.getEnterpriseRefById(enterprise.id)
     console.log(`Finished Creating Enterprise`)
 
+    // Create base enterprise
+    console.log('********* Creating Enterprise Predyc *********')
+    const enterprisePredyc: Enterprise = Enterprise.fromJson(enterpriseDataPredyc)
+    await this.enterpriseService.addEnterprise(enterprisePredyc)
+    const enterprisePredycRef = this.enterpriseService.getEnterpriseRefById(enterprisePredyc.id)
+    console.log(`Finished Creating Enterprise`)
+
     // Create License
     console.log('********* Creating Licenses *********')
     const licenses: License[] = licensesData.map(license => {
@@ -161,17 +171,34 @@ export class InitScriptComponent {
     // Create admin and student users
     console.log('********* Creating Users *********')
     const users: User[] = usersData.map(user => { 
-      return User.fromJson({
-        ...user,
-        name: user.name.toLowerCase(),
-        displayName: user.name.toLowerCase(),
-        birthdate: Date.parse(user.birthdate),
-        createdAt: Date.parse(user.createdAt),
-        updatedAt: Date.parse(user.updatedAt),
-        enterprise: enterpriseRef,
-        departmentRef: null,
-        performance: user.performance as 'no plan' | 'low' | 'medium' | 'high' | null
-      })
+      if(user.email == 'admin@predyc.com'){ 
+        return User.fromJson({
+          ...user,
+          adminPredyc:true,
+          name: user.name.toLowerCase(),
+          displayName: user.name.toLowerCase(),
+          birthdate: Date.parse(user.birthdate),
+          createdAt: Date.parse(user.createdAt),
+          updatedAt: Date.parse(user.updatedAt),
+          enterprise: enterprisePredycRef,
+          departmentRef: null,
+          performance: user.performance as 'no plan' | 'low' | 'medium' | 'high' | null
+        })
+      }
+      else{
+        return User.fromJson({
+          ...user,
+          adminPredyc:false,
+          name: user.name.toLowerCase(),
+          displayName: user.name.toLowerCase(),
+          birthdate: Date.parse(user.birthdate),
+          createdAt: Date.parse(user.createdAt),
+          updatedAt: Date.parse(user.updatedAt),
+          enterprise: enterpriseRef,
+          departmentRef: null,
+          performance: user.performance as 'no plan' | 'low' | 'medium' | 'high' | null
+        })
+      }
     })
     for (let user of users) {
       await this.userService.addUser(user)
@@ -201,7 +228,7 @@ export class InitScriptComponent {
       return Skill.fromJson({
         ...skill,
         category: categoryRef,
-        enterprise: enterpriseRef,
+        enterprise: null,
       })
     })
     for (let skill of skills) {
@@ -290,7 +317,7 @@ export class InitScriptComponent {
 
   async uploadCursosLegacy() {
 
-    let jsonData = coursesData.slice(0, 20)
+    let jsonData = coursesData.slice(0, 5)
     // jsonData = coursesData
     console.log('cursos a cargar',jsonData)
     // Now you can use the jsonData object locally
@@ -480,65 +507,72 @@ export class InitScriptComponent {
     let userIndex = 0;
     let enterpriseIndex = 0;
 
-    const enterprise = (await enterpriseRefs[0].get()).data() as Enterprise
+    //const enterprise = (await enterpriseRefs[0].get()).data() as Enterprise
+
+    for  (const enterpriseLoop of enterpriseRefs) {
+
+     const enterprise = (await enterpriseLoop.get()).data() as Enterprise
+
+      for (const profile of profilesData) {
+        const profileRef = this.afs.collection(Profile.collection).doc();
+        const id = profileRef.ref.id;
     
-    for (const profile of profilesData) {
-      const profileRef = this.afs.collection(Profile.collection).doc();
-      const id = profileRef.ref.id;
+        // Obtener las referencias correspondientes y avanzar los índices
+        const currentSkillRef = skillRefs[skillIndex % skillRefs.length];
+        const currentUserRef = userRefs[userIndex % userRefs.length];
+        const currentEnterpriseRef = enterpriseLoop;
   
-      // Obtener las referencias correspondientes y avanzar los índices
-      const currentSkillRef = skillRefs[skillIndex % skillRefs.length];
-      const currentUserRef = userRefs[userIndex % userRefs.length];
-      const currentEnterpriseRef = enterpriseRefs[enterpriseIndex % enterpriseRefs.length];
-
-      profile.permissions = enterprise.permissions
-      profile.permissions.hasDefaultPermissions = true
+        profile.permissions = enterprise.permissions
+        profile.permissions.hasDefaultPermissions = true
+        
+        const enterpriseMatch = await firstValueFrom(this.afs.collection<Curso>(Curso.collection, ref =>
+          ref.where('enterpriseRef', '==', currentEnterpriseRef)
+        ).valueChanges({ idField: 'id' }))
       
-      const enterpriseMatch = await firstValueFrom(this.afs.collection<Curso>(Curso.collection, ref =>
-        ref.where('enterpriseRef', '==', currentEnterpriseRef)
-      ).valueChanges({ idField: 'id' }))
-    
-      // Query to get courses where enterpriseRef is empty
-      const enterpriseEmpty = await firstValueFrom(this.afs.collection<Curso>(Curso.collection, ref =>
-        ref.where('enterpriseRef', '==', null)
-      ).valueChanges({ idField: 'id' }))
-
-      const courses = [...enterpriseMatch, ...enterpriseEmpty]
-      
-
-      const selectedCourses = sampleSize(courses, 4)
-      const coursesRef = selectedCourses.map(course => {
-        return this.courseService.getCourseRefById(course.id)
-      })
-      await profileRef.set({
-          ...profile,
-          id: id,
-          skillsRef: [currentSkillRef],
-          enterpriseRef: currentEnterpriseRef,
-          coursesRef
-      });
-      // console.log("id", id);
-
-      // Actualizamos el documento actual del Usuario
-      const userSnap = await currentUserRef.get();
-      if (userSnap.exists) {
-        let currentUser: any = userSnap.data()
-        currentUser.profile = profileRef.ref
-        currentUser.studyHours = profile.hoursPerMonth
-        await this.userService.editUser(currentUser as UserJson)
-        // await currentUserRef.update({
-        //   profile: profileRef.ref
-        // });
+        // Query to get courses where enterpriseRef is empty
+        const enterpriseEmpty = await firstValueFrom(this.afs.collection<Curso>(Curso.collection, ref =>
+          ref.where('enterpriseRef', '==', null)
+        ).valueChanges({ idField: 'id' }))
+  
+        const courses = [...enterpriseMatch, ...enterpriseEmpty]
+        
+  
+        const selectedCourses = sampleSize(courses, 4)
+        const coursesRef = selectedCourses.map(course => {
+          return this.courseService.getCourseRefById(course.id)
+        })
+        await profileRef.set({
+            ...profile,
+            id: id,
+            skillsRef: [currentSkillRef],
+            enterpriseRef: currentEnterpriseRef,
+            coursesRef
+        });
+        // console.log("id", id);
+  
+        // Actualizamos el documento actual del Usuario
+        const userSnap = await currentUserRef.get();
+        if (userSnap.exists) {
+          let currentUser: any = userSnap.data()
+          currentUser.profile = profileRef.ref
+          currentUser.studyHours = profile.hoursPerMonth
+          await this.userService.editUser(currentUser as UserJson)
+          // await currentUserRef.update({
+          //   profile: profileRef.ref
+          // });
+        }
+  
+        // Creamos doc que relaciona los cursos del perfil con el estudiante
+        await this.addCourseByStudent(coursesRef, currentUserRef, selectedCourses, profile.hoursPerMonth)
+  
+        // Incrementar los índices para el siguiente profile
+        skillIndex++;
+        userIndex++;
+        enterpriseIndex++;
       }
 
-      // Creamos doc que relaciona los cursos del perfil con el estudiante
-      await this.addCourseByStudent(coursesRef, currentUserRef, selectedCourses, profile.hoursPerMonth)
-
-      // Incrementar los índices para el siguiente profile
-      skillIndex++;
-      userIndex++;
-      enterpriseIndex++;
     }
+
 
   }
 

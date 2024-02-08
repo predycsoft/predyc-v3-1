@@ -12,6 +12,7 @@ import { take } from 'rxjs';
 import { CourseService } from 'src/app/shared/services/course.service';
 
 import { cursosProximos } from 'src/assets/data/proximamente.data'
+import { AuthService } from 'src/app/shared/services/auth.service';
 
 
 export class category {
@@ -38,6 +39,8 @@ export class CoursesComponent implements AfterViewInit {
     public skillService: SkillService,
     private afs: AngularFirestore,
     private enterpriseService: EnterpriseService,
+    private authService: AuthService,
+
   ) {}
 
   cursos: Curso[] = []
@@ -52,6 +55,7 @@ export class CoursesComponent implements AfterViewInit {
   categoriesPredyc;
   categoriesPropios;
   courses;
+  user;
 
   ngAfterViewInit() {
   this.handleImageError();
@@ -59,6 +63,14 @@ export class CoursesComponent implements AfterViewInit {
   }
 
   async ngOnInit() {
+
+    this.authService.user$.subscribe(user=> {
+      if (user) {
+        console.log('user',user)
+        this.user = user
+      }
+    })
+
     this.cursos = []
     this.buildCategories()
     this.enterpriseService.enterpriseLoaded$.subscribe(isLoaded => {
