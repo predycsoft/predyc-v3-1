@@ -461,6 +461,8 @@ export class ProfilesComponent {
         await this.courseService.updateStudyPlans(changesInStudyPlan)
       } 
       else {
+        this.id = profileId;
+        this.profile = profile
         this.router.navigate([`management/profiles/${profileId}`])
       }
       this.alertService.succesAlert("Success")
