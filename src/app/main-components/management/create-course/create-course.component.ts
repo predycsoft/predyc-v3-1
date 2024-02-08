@@ -32,6 +32,7 @@ import { ActivityClassesService } from 'src/app/shared/services/activity-classes
 import { Enterprise } from 'src/app/shared/models/enterprise.model';
 import { compareByString } from 'src/app/shared/utils';
 import { QuestionsComponent } from 'src/app/shared/components/questions/questions.component';
+import { AuthService } from 'src/app/shared/services/auth.service';
 
 
 interface Categoria {
@@ -71,6 +72,8 @@ export class CreateCourseComponent {
     public courseClassService: CourseClassService,
     public activityClassesService:ActivityClassesService,
     private route: ActivatedRoute,
+    private authService: AuthService,
+
   ) { }
 
   activeStep = 1;
@@ -103,6 +106,13 @@ export class CreateCourseComponent {
 
   async ngOnInit(): Promise<void> {
     //console.log(this.competenciasArray)
+
+    this.authService.user$.subscribe(user=> {
+      console.log('user',user)
+      if (!user?.adminPredyc) {
+        this.router.navigate(["management/courses"])
+      }
+    })
 
     this.inicializarformNewCourse();
   

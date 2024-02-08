@@ -443,9 +443,9 @@ export class ProfilesComponent {
       const changesInStudyPlan = {
         added: [],
         removed: [],
-        profileId: this.profile.id
+        profileId: this.profile?.id ? this.profile?.id :profileId
       }
-      if (this.id !== 'new') {
+      if (this?.id !== 'new') {
         this.coursesForExplorer.forEach(course => {
           const isInStudyPlan = course.inStudyPlan
           const wasInStudyPlan = this.profileBackup.selectedCourses.includes(course.id)
@@ -459,12 +459,16 @@ export class ProfilesComponent {
           }
         })
         await this.courseService.updateStudyPlans(changesInStudyPlan)
-      } else {
+      } 
+      else {
+        this.id = profileId;
+        this.profile = profile
         this.router.navigate([`management/profiles/${profileId}`])
       }
       this.alertService.succesAlert("Success")
       this.isEditing = false;
     } catch (error) {
+      alert('aqui')
       this.alertService.errorAlert(error.message)
     }
   }

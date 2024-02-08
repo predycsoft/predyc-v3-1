@@ -26,6 +26,7 @@ export interface UserJson {
   lastConnection: number | null // timestamp
   mailchimpTag: string | null
   name: string | null
+  adminPredyc : boolean | false
   phoneNumber: string | null
   photoUrl: string | null
   zipCode: number | null
@@ -70,6 +71,7 @@ export class User {
     public gender: string | null,
     public hasCollegeDegree: boolean,
     public hiringDate: number | null,
+    public adminPredyc: boolean | null,
     public industry: string | null, // Required?
     public isSystemUser: boolean,
     public job: string | null,
@@ -142,6 +144,7 @@ export class User {
   }): User {
     return User.fromJson({
       birthdate: null,
+      adminPredyc: false,
       canEnrollParticularCourses: false,
       city: null,
       country: null,
@@ -199,6 +202,7 @@ export class User {
       userJson.gender,
       userJson.hasCollegeDegree,
       userJson.hiringDate,
+      userJson.adminPredyc,
       userJson.industry,
       userJson.isSystemUser,
       userJson.job,
@@ -241,6 +245,7 @@ export class User {
       gender: this.gender,
       hasCollegeDegree: this.hasCollegeDegree,
       hiringDate: this.hiringDate,
+      adminPredyc: this.adminPredyc,
       industry: this.industry,
       isSystemUser: this.isSystemUser,
       job: this.job,
