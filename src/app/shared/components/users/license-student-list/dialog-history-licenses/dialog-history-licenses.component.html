@@ -4,7 +4,7 @@
             fxLayoutAlign="center center"> <img [src]="icon.close" class="makeGray h24px">
         </div>
     </div>
-    <div style="" fxLayoutAlign="center center">
+    <div fxLayoutAlign="center center">
         <label class="gray-10 ft600  ft16"fxLayoutAlign="center center" >Historial de licencias</label>
     </div>
     <div fxLayout="column" fxLayout.lt-md="column" fxLayoutGap="1rem" fxLayoutGap.lt-md="0rem"  class="fw  pd20 containerTabla">
@@ -25,7 +25,7 @@
                 <td class="centertext ft11 gray-8"> {{license.quantityUsed}}</td>
                 <td class="centertext ft11 gray-8"> {{license.quantity - license.quantityUsed}}</td>
                 <td class="centertext ft11 gray-8"> {{license.currentPeriodEnd | date:"dd-MM-yyyy"}}</td>
-                <td class="centertext ft11 gray-8">{{license.status == 'active'?'Activa':license.status == 'trialing'?'Período de prueba':'vencida'}}</td>
+                <td class="centertext ft11 gray-8">{{license.status == 'active'?'Activa':license.status == 'trialing'?'Período de prueba':'Vencida'}}</td>
             </tr>
     
         </table>
