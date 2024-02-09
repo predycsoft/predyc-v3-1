@@ -31,8 +31,7 @@ export class AuthService {
         // })
       } else {
         // User not logged in
-        this.signOut()
-        this.userSubject.next(null)
+        this.signOutLight()
       }
     })
   }
@@ -52,8 +51,17 @@ export class AuthService {
     }
   }
 
+
+  async signOutLight() {
+    await this.afAuth.signOut();
+    //this.router.navigate(['login'])
+    this.userSubject.next(null)
+    
+  }
+
   async signOut() {
     await this.afAuth.signOut();
-    // this.router.navigate(['login'])
+    window.location.reload();
+    
   }
 }

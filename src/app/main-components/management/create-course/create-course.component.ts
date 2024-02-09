@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, TemplateRef, ViewChild } from '@angular/core';
 import { IconService } from '../../../shared/services/icon.service';
 import { FormControl, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -9,7 +9,7 @@ import { Clase } from "../../../shared/models/course-class.model"
 
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import Swal from 'sweetalert2';
-import { Observable, Subject, finalize, firstValueFrom, switchMap, tap, filter, take, first } from 'rxjs';
+import { Observable, Subject, finalize, firstValueFrom, switchMap, tap, filter, take, first, startWith, map } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AngularFirestore,DocumentReference } from '@angular/fire/compat/firestore';
 
@@ -33,6 +33,7 @@ import { Enterprise } from 'src/app/shared/models/enterprise.model';
 import { compareByString } from 'src/app/shared/utils';
 import { QuestionsComponent } from 'src/app/shared/components/questions/questions.component';
 import { AuthService } from 'src/app/shared/services/auth.service';
+import { InstructorsService } from 'src/app/shared/services/instructors.service';
 
 
 interface Categoria {
@@ -73,6 +74,7 @@ export class CreateCourseComponent {
     public activityClassesService:ActivityClassesService,
     private route: ActivatedRoute,
     private authService: AuthService,
+    private instructorsService:InstructorsService
 
   ) { }
 
@@ -98,14 +100,42 @@ export class CreateCourseComponent {
   competenciasEmpresa = []
   competenciasSelected;
   empresa;
+  instructores =  []
+  filteredinstructores: Observable<any[]>;
+
+  instructoresForm = new FormControl('');
+
+
 
   currentModal;
   @ViewChild('endCourseModal') endCourseModal: ElementRef;
 
   formNewCourse: FormGroup;
+  formNewInstructor: FormGroup;
+
+  getOptionText(option){
+    let name = option.nombre
+    return (name);
+  }
+
+  private _filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.instructores.filter(option => option.nombre.toLowerCase().includes(filterValue));
+  }
 
   async ngOnInit(): Promise<void> {
     //console.log(this.competenciasArray)
+
+    this.instructorsService.getInstructorsObservable().subscribe(instructores=> {
+      console.log('instructores',instructores)
+      this.instructores = instructores
+    })
+
+    this.filteredinstructores = this.instructoresForm.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filter(value || '')),
+    );
+
 
     this.authService.user$.subscribe(user=> {
       console.log('user',user)
@@ -242,8 +272,10 @@ export class CreateCourseComponent {
         //categoria: new FormControl(null, Validators.required),
         idioma: new FormControl(null, Validators.required),
         // contenido: new FormControl(null, Validators.required),
+        instructorRef: new FormControl(null),
         instructor: new FormControl(null, Validators.required),
         resumen_instructor: new FormControl(null, Validators.required),
+        
         imagen: new FormControl(null, Validators.required),
         imagen_instructor: new FormControl(null, Validators.required),
       })
@@ -259,9 +291,11 @@ export class CreateCourseComponent {
         this.modulos = curso['modules'];
 
         console.log('datos cursos',curso)
-
-
         
+        let instructor = this.instructores.find(x=> x.id == curso.instructorRef.id)
+
+        this.instructoresForm.patchValue(instructor)
+
         this.formNewCourse = new FormGroup({
           id: new FormControl(curso.id, Validators.required),
           titulo: new FormControl(curso.titulo, Validators.required),
@@ -270,11 +304,15 @@ export class CreateCourseComponent {
           nivel: new FormControl(curso.nivel, Validators.required),
           idioma: new FormControl(curso.idioma, Validators.required),
           // contenido: new FormControl(curso.contenido, Validators.required),
-          instructor: new FormControl(curso.instructor, Validators.required),
-          resumen_instructor: new FormControl(curso.resumen_instructor, Validators.required),
+          instructorRef: new FormControl(curso.instructorRef),
+          instructor: new FormControl(instructor.nombre, Validators.required),
+          resumen_instructor: new FormControl(instructor.resumen, Validators.required),
           imagen: new FormControl(curso.imagen, Validators.required),
-          imagen_instructor: new FormControl(curso.imagen_instructor, Validators.required),
+          imagen_instructor: new FormControl(instructor.foto, Validators.required),
         });
+
+        this.formNewCourse.get('resumen_instructor').disable();
+
       
         this.initSkills(); // Asegúrate de que initSkills también maneje las suscripciones correctamente
       
@@ -298,12 +336,81 @@ export class CreateCourseComponent {
     }
   }
 
+  async setInstructor(instructor){
+
+    let instructorRef = await this.afs.collection<any>('instructor').doc(instructor.id).ref;
+    this.formNewCourse.get("instructorRef").patchValue(instructorRef);
+    this.formNewCourse.get("instructor").patchValue(instructor.nombre);
+    this.formNewCourse.get("resumen_instructor").patchValue(instructor.resumen);
+    this.formNewCourse.get("imagen_instructor").patchValue(instructor.foto);
+
+
+
+  }
+
   openModal(content){
     this.currentModal = this.modalService.open(content, {
       ariaLabelledBy: 'modal-basic-title',
       centered: true,
       size:'lg'
     });
+  }
+
+  modalInstructor
+  @ViewChild('modalCrearInstructor') modalCrearInstructorContent: TemplateRef<any>;
+  showErrorInstructor = false
+
+
+  emailValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value;
+      if (!value) {
+        // Considera un correo vacío como válido. Usa Validators.required para requerir un valor.
+        return null;
+      }
+  
+      // Esta es una expresión regular básica para validación de correos electrónicos.
+      // Puedes ajustarla según tus necesidades específicas.
+      const regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+      const isValid = regex.test(value);
+  
+      return isValid ? null : { emailInvalid: true };
+    };
+  }
+
+  openModalinstructor() {
+
+    this.showErrorInstructor = false
+
+
+    this.formNewInstructor = new FormGroup({
+      nombre: new FormControl(null, Validators.required),
+      email: new FormControl(null, [Validators.required, Validators.email]),
+      resumen_instructor: new FormControl(null, Validators.required),
+      imagen_instructor: new FormControl(null, Validators.required),
+    })
+
+    this.modalInstructor =  this.modalService.open(this.modalCrearInstructorContent, {
+      ariaLabelledBy: 'modal-basic-title',
+      centered: true,
+      size:'lg'
+    });
+
+
+
+  }
+
+
+
+  createInstructor(){
+
+    this.formNewCourse.get("instructorRef").patchValue(null);
+    this.formNewCourse.get("instructor").patchValue(null);
+    this.formNewCourse.get("resumen_instructor").patchValue(null);
+    this.formNewCourse.get("imagen_instructor").patchValue(null);
+
+    this.openModalinstructor();
+
   }
 
   async saveDraft(){
@@ -315,6 +422,8 @@ export class CreateCourseComponent {
     //this.curso.enterpriseRef = enterpriseRef;
     this.curso.enterpriseRef = null;
     this.courseService.saveCourse(this.curso)
+
+
   }
   if(this.competenciasSelected?.length>0){
     //console.log('datos competencias curso',this.competenciasSelected);
@@ -681,7 +790,7 @@ export class CreateCourseComponent {
     });
   }
 
-  uploadCourseImage(event,tipo){
+  uploadCourseImage(event,tipo,newInstructor = false){
     if (!event.target.files[0] || event.target.files[0].length === 0) {
 
       Swal.fire({
@@ -759,8 +868,14 @@ export class CreateCourseComponent {
             fileRef.getDownloadURL().subscribe(url => {
               if(tipo == 'instructor'){
                 this.uploadingImgInstuctor = false;
-                this.formNewCourse.get('imagen_instructor').patchValue(url);
-                this.avatarInstructor.unshift(url);
+                if(!newInstructor){
+                  this.formNewCourse.get('imagen_instructor').patchValue(url);
+                  this.avatarInstructor.unshift(url);
+                }
+                else{
+                  this.formNewInstructor.get('imagen_instructor').patchValue(url);
+                }
+
               }
               else{
                 this.uploadingImgCurso = false;
@@ -775,6 +890,25 @@ export class CreateCourseComponent {
       }
 
     };
+  }
+
+  crearInstructor(){
+
+    this.showErrorInstructor = false;
+
+    console.log(this.formNewInstructor)
+
+    if (!this.formNewInstructor.valid){
+      this.showErrorInstructor = true;
+    }
+    else{
+
+      let instructor = {
+
+      }
+    
+    }
+
   }
 
   seleccionarImagenCurso(imagen){

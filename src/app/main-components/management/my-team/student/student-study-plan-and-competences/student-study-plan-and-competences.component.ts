@@ -471,4 +471,9 @@ export class StudentStudyPlanAndCompetencesComponent {
     this.categoriesAndSkillsWidgetData = chartData.filter(category => category.skills.length > 0)
     // console.log("this.categoriesAndSkillsWidgetData", this.categoriesAndSkillsWidgetData)
   }
+
+  getAdditionalSkillsTooltip(skills: string[]): string {
+    // Toma las habilidades a partir de la quinta y las une con comas.
+    return skills.slice(4).join(',\n');
+  }
 }

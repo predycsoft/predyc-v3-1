@@ -860,6 +860,7 @@ body {
 .pdb05{  padding-bottom: 8px; }
 .pdb08{  padding-bottom: 12px; }
 .pdb10{  padding-bottom: 16px; }
+.pdb22{  padding-bottom: 22px; }
 .pdb20{  padding-bottom: 32px; }
 .pdb30{  padding-bottom: 48px; }
 .pdb40{  padding-bottom: 64px; }
@@ -1987,4 +1988,21 @@ span{
 
 .ListHover2{
   background-color:   rgba(211, 211, 211, 0.224) !important; 
+}
+
+.skill-badge {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px; /* Ajusta esto según el tamaño deseado */
+}
+
+
+.title-course-badge {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 450px; /* Ajusta esto según el tamaño deseado */
 }

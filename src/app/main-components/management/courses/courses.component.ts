@@ -13,6 +13,7 @@ import { CourseService } from 'src/app/shared/services/course.service';
 
 import { cursosProximos } from 'src/assets/data/proximamente.data'
 import { AuthService } from 'src/app/shared/services/auth.service';
+import { InstructorsService } from 'src/app/shared/services/instructors.service';
 
 
 export class category {
@@ -31,6 +32,7 @@ export class category {
 export class CoursesComponent implements AfterViewInit {
 
   constructor(
+    private instructorsService:InstructorsService,
     private loaderService: LoaderService,
     public icon: IconService,
     public categoryService : CategoryService,

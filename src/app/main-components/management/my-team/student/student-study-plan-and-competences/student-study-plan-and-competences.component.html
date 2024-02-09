@@ -16,21 +16,29 @@
                 </div>
             </div>
         </div> -->
-        <div  class="chart-container ft13 fw">
+        <div class="chart-container ft13 fw">
             <div class="mgt10 fw" *ngFor="let category of categoriesAndSkillsWidgetData; let i = index">
-                <div class="ft14">Pilar {{i + 1}}: {{category.label}}</div>
-                <div class="skills-container" >
-                    <div
-                    *ngFor="let skill of category.skills"
-                    style="display: inline-block; margin-right: 5px; margin-bottom: 5px;"
-                    class=" ListHover2 radius10 backGray2 pdl05 pdr05 gray-8 mgt05"
-                >
+              <div class="ft14">Pilar {{i + 1}}: {{category.label}}</div>
+              <div class="skills-container">
+                <ng-container *ngFor="let skill of category.skills; let indexSkill = index">
+                  <!-- Muestra solo las primeras 4 habilidades -->
+                  <div *ngIf="indexSkill < 4" [matTooltip]="skill"
+                       style="display: inline-block; margin-right: 5px; margin-bottom: 5px;"
+                       class="skill-badge ListHover2 radius10 backGray2 pdl05 pdr05 gray-8 mgt05">
                     {{skill}}
+                  </div>
+                </ng-container>
+                <!-- Elemento adicional para mostrar el número de habilidades no visibles y sus nombres en un tooltip -->
+                <div *ngIf="category.skills.length > 4"
+                     [matTooltip]="getAdditionalSkillsTooltip(category.skills)"
+                     style="display: inline-block; margin-right: 5px; margin-bottom: 5px;"
+                     class="skill-badge ListHover2 radius10 backGray2 pdl05 pdr05 gray-8 mgt05">
+                  +{{category.skills.length - 4}}
                 </div>
-                </div>
-                
+              </div>
             </div>
         </div>
+          
     </div>
     <!-- Plan de estudios -->
     <div class="w-55 radius10 borderLight cards " fxLayout="column" fxLayoutGap="">

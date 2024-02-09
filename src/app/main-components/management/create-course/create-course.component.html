@@ -62,8 +62,11 @@
                                         Adjuntar imagen
                                     </button>
                                     <input #cursoImage type="file" (change)="uploadCourseImage($event,'curso')" hidden accept="image/jpeg, image/png" />
-                                    <div class="image-scroll">
+                                    <!-- <div class="image-scroll">
                                         <img *ngFor="let imagen of imagenesCurso" (click)="seleccionarImagenCurso(imagen)" [src]="imagen" alt="Imagen seleccionada" class="image cursorPointer {{this.formNewCourse.get('imagen').value == imagen? 'img-active': ''}}">
+                                    </div> -->
+                                    <div class="image-scroll">
+                                        <img *ngIf="formNewCourse.get('imagen').value" [src]="formNewCourse.get('imagen').value" alt="Imagen seleccionada" class="image cursorPointer">
                                     </div>
                                 </div>
                             </div>
@@ -120,40 +123,92 @@
                                     Debe indicar que se aprenderá durante el curso.
                                 </div>
                             </div> -->
-    
-                            <div class="form-group pdt10">
-                                <label>Nombre del instructor</label>
-                                <input formControlName="instructor" [class.is-invalid]="formNewCourse.controls['instructor'].errors && showErrorCurso" type="text" class="form-control customInput" placeholder="Escriba el nombre del instructor del curso aquí">
-                                <div class="invalid-feedback" *ngIf="formNewCourse.controls['instructor'].errors && showErrorCurso"> 
-                                    Debe indicar el nombre del instructor.
-                                </div>
-                            </div>
-    
-                            <div class="form-group pdt10">
-                                <label>Resumen del instructor</label>
-                                <textarea rows="3" [class.is-invalid]="formNewCourse.controls['resumen_instructor'].errors && showErrorCurso"  formControlName="resumen_instructor" type="text" class="form-control customInput" placeholder="Escriba el resumen del instructor aquí." style="resize: none;"></textarea>
-                                <div class="invalid-feedback" *ngIf="formNewCourse.controls['resumen_instructor'].errors && showErrorCurso"> 
-                                    Debe indicar el resumen del instructor.
-                                </div>
-                            </div>
-                            <div class="form-group pdt10">
-                                <label>Foto del instructor</label><label class="pdl30">o seleccione un avátar</label>
-                                <div class="avatar-selector">
-                                    <!-- <button class="add-button">Adjuntar nueva</button> -->
-                                    <button (click)="instructorImage.click()" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
-                                        <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
-                                        Adjuntar imagen
-                                    </button>
-                                    <input #instructorImage type="file" (change)="uploadCourseImage($event,'instructor')" hidden accept="image/jpeg, image/png" />
-                                    <div class="avatar-scroll">
-                                        <img *ngFor="let imagen of avatarInstructor" (click)="seleccionarImagenInstructor(imagen)" [src]="imagen" alt="Imagen seleccionada" class="image shadow8 cursorPointer {{this.formNewCourse.get('imagen_instructor').value == imagen? 'img-active':''}}">
+                            <!-- aqui validar en el futuro cuando sea propio -->
+                            <ng-container *ngIf="false">
+                                <div class="form-group pdt10">
+                                    <label>Nombre del instructor</label>
+                                    <input formControlName="instructor" [class.is-invalid]="formNewCourse.controls['instructor'].errors && showErrorCurso" type="text" class="form-control customInput" placeholder="Escriba el nombre del instructor del curso aquí">
+                                    <div class="invalid-feedback" *ngIf="formNewCourse.controls['instructor'].errors && showErrorCurso"> 
+                                        Debe indicar el nombre del instructor.
                                     </div>
                                 </div>
-                            </div>
-                            <div *ngIf="formNewCourse.controls['imagen_instructor'].errors && showErrorCurso" class="custom-invalid-feedback pdt05">
-                                Debe seleccinar o subir la imagen del instructor
-                            </div>
-    
+        
+                                <div class="form-group pdt10">
+                                    <label>Resumen del instructor</label>
+                                    <textarea rows="3" [class.is-invalid]="formNewCourse.controls['resumen_instructor'].errors && showErrorCurso"  formControlName="resumen_instructor" type="text" class="form-control customInput" placeholder="Escriba el resumen del instructor aquí." style="resize: none;"></textarea>
+                                    <div class="invalid-feedback" *ngIf="formNewCourse.controls['resumen_instructor'].errors && showErrorCurso"> 
+                                        Debe indicar el resumen del instructor.
+                                    </div>
+                                </div>
+                                <div class="form-group pdt10">
+                                    <label>Foto del instructor</label><label class="pdl30">o seleccione un avátar</label>
+                                    <div class="avatar-selector">
+                                        <!-- <button class="add-button">Adjuntar nueva</button> -->
+                                        <button (click)="instructorImage.click()" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                            <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
+                                            Adjuntar imagen
+                                        </button>
+                                        <input #instructorImage type="file" (change)="uploadCourseImage($event,'instructor')" hidden accept="image/jpeg, image/png" />
+                                        <div class="avatar-scroll">
+                                            <img *ngFor="let imagen of avatarInstructor" (click)="seleccionarImagenInstructor(imagen)" [src]="imagen" alt="Imagen seleccionada" class="image shadow8 cursorPointer {{this.formNewCourse.get('imagen_instructor').value == imagen? 'img-active':''}}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div *ngIf="formNewCourse.controls['imagen_instructor'].errors && showErrorCurso" class="custom-invalid-feedback pdt05">
+                                    Debe seleccinar o subir la imagen del instructor
+                                </div>
+                            </ng-container>
+                            <ng-container *ngIf="true">
+                                <div fxLayout="row" fxLayoutAlign="center center" class="mgt10 fw">
+                                  <!-- Campo de autocompletar del instructor -->
+                                  <div fxFlex="90">
+                                    <form class="example-form">
+                                      <mat-form-field class="example-full-width fw">
+                                        <mat-label>Buscar Instructor</mat-label>
+                                        <input type="text"
+                                               class="fw"
+                                               placeholder="Seleccione uno"
+                                               aria-label="Number"
+                                               matInput
+                                               #autoTrigger="matAutocompleteTrigger"
+                                               [formControl]="instructoresForm"
+                                               [matAutocomplete]="auto">
+                                        <mat-autocomplete [displayWith]="getOptionText" #auto="matAutocomplete" class="options">
+                                          <mat-option (click)="setInstructor(option)" class="multiline-mat-option" *ngFor="let option of filteredinstructores | async" [value]="option">
+                                            <div fxLayout="row" fxLayoutAlign="space-between">
+                                              <div fxLayout="col" fxLayoutAlign="center center">
+                                                {{option.nombre | titlecase}}
+                                              </div>
+                                            </div>
+                                          </mat-option>
+                                          <mat-option  (click)="createInstructor()" class="multiline-mat-option" value="null">Crear nuevo instructor</mat-option>
+                                        </mat-autocomplete>
+                                      </mat-form-field>
+                                    </form>
+                                  </div>
+                              
+                                  <!-- Foto del instructor -->
+                                  <div fxFlex="10" fxLayoutAlign=" center" class="avatar-selector pdb22 pdl10">
+                                    <div class="avatar-scroll">
+                                      <img *ngIf="formNewCourse.get('imagen_instructor').value" [src]="formNewCourse.get('imagen_instructor').value" alt="Imagen seleccionada" class="image shadow8">
+                                    </div>
+                                    <div *ngIf="formNewCourse.controls['imagen_instructor'].errors && showErrorCurso" class="custom-invalid-feedback pdt05">
+                                      Debe seleccinar o subir la imagen del instructor
+                                    </div>
+                                  </div>
+                                </div>
+                                
+                                <!-- Resto del formulario -->
+                                <div class="form-group">
+                                  <label>Resumen del instructor</label>
+                                  <textarea rows="3" [class.is-invalid]="formNewCourse.controls['resumen_instructor'].errors && showErrorCurso" formControlName="resumen_instructor" type="text" class="form-control customInput" placeholder="Escriba el resumen del instructor aquí." style="resize: none;"></textarea>
+                                  <div class="invalid-feedback" *ngIf="formNewCourse.controls['resumen_instructor'].errors && showErrorCurso"> 
+                                      Debe indicar el resumen del instructor.
+                                  </div>
+                                </div>
+                            </ng-container>
+                              
+                            
                         </form>
                     </div>
                 </div>
@@ -1391,3 +1446,68 @@
         </ng-container>
     </div>
 </ng-template>
+
+<ng-template #modalCrearInstructor let-modal>
+    <div class="modal-header bg-web-primary text-white px-3 py-1">
+      <div class="modal-title pd10" fxLayout="row" fxLayoutAlign="start center">
+        <span class="ft16 ft500 gray-10">Crear Instructor</span>
+      </div>
+      <img style="cursor: pointer;" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px" alt="">
+    </div>
+    <div class="modal-body" style="overflow-y: auto; max-height: 80vh;">
+        <form [formGroup]="formNewInstructor" class="mgr20">
+            <div class="form-group">
+                <label>Nombre del instructor</label>
+                <input formControlName="nombre" [class.is-invalid]="formNewInstructor.controls['nombre'].errors && showErrorInstructor" type="text" class="form-control customInput" placeholder="Escriba el nombre del instructor del curso aquí">
+                <div class="invalid-feedback" *ngIf="formNewInstructor.controls['nombre'].errors && showErrorInstructor"> 
+                    Debe indicar el nombre del instructor.
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Correo del instructor</label>
+                <input formControlName="email" [class.is-invalid]="formNewInstructor.controls['email'].errors && showErrorInstructor" type="text" class="form-control customInput" placeholder="Escriba el correo del instructor del curso aquí">
+                <div class="invalid-feedback" *ngIf="formNewInstructor.controls['email'].errors?.required && showErrorInstructor"> 
+                    Debe indicar el correo del instructor.
+                </div>
+                <div class="invalid-feedback" *ngIf="formNewInstructor.controls['email'].errors?.email && showErrorInstructor"> 
+                    El correo es invalido.
+                </div>
+            </div>
+
+
+            <div class="form-group pdt10">
+                <label>Resumen del instructor</label>
+                <textarea rows="3" [class.is-invalid]="formNewInstructor.controls['resumen_instructor'].errors && showErrorInstructor"  formControlName="resumen_instructor" type="text" class="form-control customInput" placeholder="Escriba el resumen del instructor aquí." style="resize: none;"></textarea>
+                <div class="invalid-feedback" *ngIf="formNewInstructor.controls['resumen_instructor'].errors && showErrorInstructor"> 
+                    Debe indicar el resumen del instructor.
+                </div>
+            </div>
+            <div class="form-group pdt10">
+                <label>Foto del instructor</label>
+                <div class="avatar-selector">
+                    <button (click)="instructorImage.click()" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                        <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
+                        Adjuntar imagen
+                    </button>
+                    <input #instructorImage type="file" (change)="uploadCourseImage($event,'instructor',true)" hidden accept="image/jpeg, image/png" />
+                    <div class="avatar-scroll">
+                        <img *ngIf="formNewInstructor.get('imagen_instructor').value" [src]="formNewInstructor.get('imagen_instructor').value" alt="Imagen seleccionada" class="image shadow8">
+                    </div>
+                </div>
+                <div *ngIf="formNewInstructor.controls['imagen_instructor'].errors && showErrorInstructor" class="custom-invalid-feedback pdt05">
+                    Debe seleccinar o subir la imagen del instructor
+                </div>
+            </div>
+        </form>
+        <!-- Botón de guardar en la esquina inferior derecha -->
+        <div fxLayout="row" fxLayoutAlign="end" class="pdt03">
+            <button (click)="crearInstructor()" class="blueButton radius4 ft12 h28px mgr10 gray-1" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                <img [src]="icon.save" class="h16px pdr05 makeWhite" alt="">
+                Guardar Instructor
+            </button>
+        </div>
+    </div>
+</ng-template>
+
+  
