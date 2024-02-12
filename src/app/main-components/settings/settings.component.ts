@@ -106,6 +106,17 @@ export class SettingsComponent {
     }
   }
 
+  assignLicense(){
+
+    let licencia = this.licenses.filter(x=>x.quantity>x.quantityUsed).sort((a, b) => a.currentPeriodStart - b.currentPeriodStart)
+    let LicenciaUsar;
+    if (licencia.length>0){
+      LicenciaUsar = licencia[0]
+      console.log('LicenciaUsar',LicenciaUsar)
+      this.selectLicense(LicenciaUsar)
+    }
+  }
+
   showDialog(licenses: License[]) {
     this.dialog.open(DialogRequestLicensesComponent, {
       data: {
