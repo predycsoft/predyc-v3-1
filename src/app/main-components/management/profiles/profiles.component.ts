@@ -468,7 +468,6 @@ export class ProfilesComponent {
       this.alertService.succesAlert("Success")
       this.isEditing = false;
     } catch (error) {
-      alert('aqui')
       this.alertService.errorAlert(error.message)
     }
   }
