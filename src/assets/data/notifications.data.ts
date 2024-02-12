@@ -33,9 +33,13 @@ function generateNotification(): NotificationJson {
 
   let message;
   if (type === 'event') {
-    message = 'ha completado el diagnostico inicial de ' + getRandomCourse();
+    message = "ha completado su plan de estudios.";
   } else if (type === 'alert') {
-    message = `tiene ${Math.floor(Math.random() * 20) + 1} horas de retraso en el curso ${getRandomCourse()}`;
+    if (subType === 'delayed') {
+      message =   "esta atrasado en su plan de estudios.";
+    } else {
+      message =   "tiene una suscripción que expira en 5 dias.";
+    }
   }
 
   const now = new Date();
