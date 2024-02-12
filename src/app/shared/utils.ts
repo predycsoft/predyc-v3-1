@@ -71,3 +71,10 @@ export const firestoreTimestampToNumberTimestamp = (timestamp: {seconds: number,
   if (timestamp) return timestamp.seconds * 1000
   return null
 }
+
+export const splitArray = (array, numArrays) => {
+  const chunkSize = Math.ceil(array.length / numArrays);
+  return Array.from({ length: numArrays }, (_, index) =>
+      array.slice(index * chunkSize, (index + 1) * chunkSize)
+  );
+}

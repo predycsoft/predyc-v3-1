@@ -61,7 +61,6 @@ export class AuthService {
 
   async signOut() {
     await this.afAuth.signOut();
-    window.location.reload();
-    
+    window.location.reload();   
   }
 }

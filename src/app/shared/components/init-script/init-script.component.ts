@@ -51,7 +51,8 @@ import { CourseByStudent } from '../../models/course-by-student.model';
 
 import sampleSize from 'lodash/sampleSize';
 import { courseCategoryAndSkillsRelation } from 'src/assets/data/courseCategoryAndSkillsRelation.data'
-import { capitalizeFirstLetter } from 'src/app/shared/utils'
+import { capitalizeFirstLetter, splitArray } from 'src/app/shared/utils'
+import { ProfileService } from '../../services/profile.service';
 
 @Component({
   selector: 'app-init-script',
@@ -73,7 +74,7 @@ export class InitScriptComponent {
     public activityClassesService:ActivityClassesService,
     public courseClassService: CourseClassService,
     public moduleService: ModuleService,
-
+    public profileService: ProfileService,
   ) {}
 
   instructors = [];
@@ -318,7 +319,7 @@ export class InitScriptComponent {
   async uploadCursosLegacy() {
 
     let jsonData = coursesData.slice(0, 5)
-    jsonData = coursesData
+    // jsonData = coursesData
     console.log('cursos a cargar',jsonData)
     // Now you can use the jsonData object locally
 
@@ -494,60 +495,55 @@ export class InitScriptComponent {
     });
   }
 
-  // Crea perfiles y agrega la referencia al departamento y usuario respectivo
+  // Create profiles and add reference to user
   async addProfiles() {
-    const skillSnapshot = await firstValueFrom(this.afs.collection(Skill.collection).get());
-    const skillRefs = skillSnapshot.docs.map(doc => doc.ref);
-    const userSnapshot = await firstValueFrom(this.afs.collection(User.collection).get());
-    const userRefs = userSnapshot.docs.map(doc => doc.ref);
     const enterpriseSnapshot = await firstValueFrom(this.afs.collection(Enterprise.collection).get());
     const enterpriseRefs = enterpriseSnapshot.docs.map(doc => doc.ref);
-    
-    let skillIndex = 0;
-    let userIndex = 0;
-    let enterpriseIndex = 0;
 
-    //const enterprise = (await enterpriseRefs[0].get()).data() as Enterprise
+    // Profiles will be splitted equally between each existing enterprise
+    const splittedArrays = splitArray(profilesData, enterpriseRefs.length)
+    console.log("splittedArrays", splittedArrays)
 
+    let enterpriseIndex = 0
     for  (const enterpriseLoop of enterpriseRefs) {
+      const enterprise = (await enterpriseLoop.get()).data() as Enterprise
+      
+      // Data for this enterprise
+      let userIndex = 0;
+      const userSnapshot = await firstValueFrom(this.afs.collection(User.collection, ref => ref.where('enterprise', '==', enterpriseLoop)).get());
+      const userRefs = userSnapshot.docs.map(doc => doc.ref);
 
-     const enterprise = (await enterpriseLoop.get()).data() as Enterprise
+      const enterpriseMatch = await firstValueFrom(this.afs.collection<Curso>(Curso.collection, ref =>
+        ref.where('enterpriseRef', '==', enterpriseLoop)
+      ).valueChanges({ idField: 'id' }))
+    
+      // Query to get courses where enterpriseRef is empty
+      const enterpriseEmpty = await firstValueFrom(this.afs.collection<Curso>(Curso.collection, ref =>
+        ref.where('enterpriseRef', '==', null)
+      ).valueChanges({ idField: 'id' }))
 
-      for (const profile of profilesData) {
+      const courses = [...enterpriseMatch, ...enterpriseEmpty]
+
+      for (const profile of splittedArrays[enterpriseIndex]) {
         const profileRef = this.afs.collection(Profile.collection).doc();
         const id = profileRef.ref.id;
-    
         // Obtener las referencias correspondientes y avanzar los índices
-        const currentSkillRef = skillRefs[skillIndex % skillRefs.length];
         const currentUserRef = userRefs[userIndex % userRefs.length];
         const currentEnterpriseRef = enterpriseLoop;
-  
-        profile.permissions = enterprise.permissions
-        profile.permissions.hasDefaultPermissions = true
-        
-        const enterpriseMatch = await firstValueFrom(this.afs.collection<Curso>(Curso.collection, ref =>
-          ref.where('enterpriseRef', '==', currentEnterpriseRef)
-        ).valueChanges({ idField: 'id' }))
-      
-        // Query to get courses where enterpriseRef is empty
-        const enterpriseEmpty = await firstValueFrom(this.afs.collection<Curso>(Curso.collection, ref =>
-          ref.where('enterpriseRef', '==', null)
-        ).valueChanges({ idField: 'id' }))
-  
-        const courses = [...enterpriseMatch, ...enterpriseEmpty]
-        
-  
+
         const selectedCourses = sampleSize(courses, 4)
         const coursesRef = selectedCourses.map(course => {
           return this.courseService.getCourseRefById(course.id)
         })
+
+        profile.permissions = enterprise.permissions
+        profile.permissions.hasDefaultPermissions = true
         await profileRef.set({
-            ...profile,
-            id: id,
-            skillsRef: [currentSkillRef],
-            enterpriseRef: currentEnterpriseRef,
-            coursesRef
-        });
+          ...profile,
+          id: id,
+          enterpriseRef: currentEnterpriseRef,
+          coursesRef
+        })
         // console.log("id", id);
   
         // Actualizamos el documento actual del Usuario
@@ -564,12 +560,11 @@ export class InitScriptComponent {
   
         // Creamos doc que relaciona los cursos del perfil con el estudiante
         await this.addCourseByStudent(coursesRef, currentUserRef, selectedCourses, profile.hoursPerMonth)
-  
         // Incrementar los índices para el siguiente profile
-        skillIndex++;
         userIndex++;
-        enterpriseIndex++;
       }
+
+      enterpriseIndex++;
 
     }
 
