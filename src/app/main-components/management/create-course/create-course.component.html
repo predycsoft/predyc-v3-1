@@ -468,7 +468,7 @@
         <ng-container *ngIf="activeStep == 4">
             <div fxFlex fxLayout="row" class="container">
                 <div fxFlex="60%" class="pdl10 pdr10 pdt10">
-                    <app-questions [nameCurso]="formNewCourse.get('titulo').value?  this.formNewCourse.get('titulo').value : 'Temporal'" [nameEmpresa]="empresa.name" (emmitForm)="validExam = $event" [questionsArray]="examen['questions'] ? examen['questions']:[] " [checkQuestions]="updateTriggeQuestionsExam" [selectedTestSkills]="[]"></app-questions>
+                    <app-questions [nameCurso]="formNewCourse.get('titulo').value?  this.formNewCourse.get('titulo').value : 'Temporal'" [nameEmpresa]="empresa.name" (emmitForm)="validExam = $event" [questionsArray]="examen?.questions ? examen?.questions:[] " [checkQuestions]="updateTriggeQuestionsExam" [selectedTestSkills]="[]"></app-questions>
                 </div>
                 <div fxFlex="40%" class="pdl10 pdr10 pdt10">
                     <div fxLayout="column" fxLayoutAlign="center center" class="fw fh">
@@ -1478,8 +1478,8 @@
 
             <div class="form-group pdt10">
                 <label>Resumen del instructor</label>
-                <textarea rows="3" [class.is-invalid]="formNewInstructor.controls['resumen_instructor'].errors && showErrorInstructor"  formControlName="resumen_instructor" type="text" class="form-control customInput" placeholder="Escriba el resumen del instructor aquí." style="resize: none;"></textarea>
-                <div class="invalid-feedback" *ngIf="formNewInstructor.controls['resumen_instructor'].errors && showErrorInstructor"> 
+                <textarea rows="3" [class.is-invalid]="formNewInstructor.controls['resumen'].errors && showErrorInstructor"  formControlName="resumen" type="text" class="form-control customInput" placeholder="Escriba el resumen del instructor aquí." style="resize: none;"></textarea>
+                <div class="invalid-feedback" *ngIf="formNewInstructor.controls['resumen'].errors && showErrorInstructor"> 
                     Debe indicar el resumen del instructor.
                 </div>
             </div>
@@ -1492,10 +1492,10 @@
                     </button>
                     <input #instructorImage type="file" (change)="uploadCourseImage($event,'instructor',true)" hidden accept="image/jpeg, image/png" />
                     <div class="avatar-scroll">
-                        <img *ngIf="formNewInstructor.get('imagen_instructor').value" [src]="formNewInstructor.get('imagen_instructor').value" alt="Imagen seleccionada" class="image shadow8">
+                        <img *ngIf="formNewInstructor.get('foto').value" [src]="formNewInstructor.get('foto').value" alt="Imagen seleccionada" class="image shadow8">
                     </div>
                 </div>
-                <div *ngIf="formNewInstructor.controls['imagen_instructor'].errors && showErrorInstructor" class="custom-invalid-feedback pdt05">
+                <div *ngIf="formNewInstructor.controls['foto'].errors && showErrorInstructor" class="custom-invalid-feedback pdt05">
                     Debe seleccinar o subir la imagen del instructor
                 </div>
             </div>

@@ -123,6 +123,9 @@ export class CreateCourseComponent {
     return this.instructores.filter(option => option.nombre.toLowerCase().includes(filterValue));
   }
 
+  user
+
+
   async ngOnInit(): Promise<void> {
     //console.log(this.competenciasArray)
 
@@ -137,8 +140,10 @@ export class CreateCourseComponent {
     );
 
 
+
     this.authService.user$.subscribe(user=> {
       console.log('user',user)
+      this.user = user
       if (!user?.adminPredyc) {
         this.router.navigate(["management/courses"])
       }
@@ -296,6 +301,9 @@ export class CreateCourseComponent {
 
         this.instructoresForm.patchValue(instructor)
 
+        // resumen_instructor
+        // imagen_instructor
+
         this.formNewCourse = new FormGroup({
           id: new FormControl(curso.id, Validators.required),
           titulo: new FormControl(curso.titulo, Validators.required),
@@ -311,7 +319,7 @@ export class CreateCourseComponent {
           imagen_instructor: new FormControl(instructor.foto, Validators.required),
         });
 
-        this.formNewCourse.get('resumen_instructor').disable();
+        //this.formNewCourse.get('resumen_instructor').disable();
 
       
         this.initSkills(); // Asegúrate de que initSkills también maneje las suscripciones correctamente
@@ -343,8 +351,6 @@ export class CreateCourseComponent {
     this.formNewCourse.get("instructor").patchValue(instructor.nombre);
     this.formNewCourse.get("resumen_instructor").patchValue(instructor.resumen);
     this.formNewCourse.get("imagen_instructor").patchValue(instructor.foto);
-
-
 
   }
 
@@ -386,8 +392,8 @@ export class CreateCourseComponent {
     this.formNewInstructor = new FormGroup({
       nombre: new FormControl(null, Validators.required),
       email: new FormControl(null, [Validators.required, Validators.email]),
-      resumen_instructor: new FormControl(null, Validators.required),
-      imagen_instructor: new FormControl(null, Validators.required),
+      resumen: new FormControl(null, Validators.required),
+      foto: new FormControl(null, Validators.required),
     })
 
     this.modalInstructor =  this.modalService.open(this.modalCrearInstructorContent, {
@@ -395,6 +401,7 @@ export class CreateCourseComponent {
       centered: true,
       size:'lg'
     });
+    
 
 
 
@@ -511,13 +518,9 @@ export class CreateCourseComponent {
             activityClass['questions'] = questionsDelete
             activityClass['recursosBase64'] = recursosBase64Delete
 
-
-
             clase.activity.id = activityClass.id;
 
-            if(activityClass.id == 'QEtYTbScyLaTtqxT2ryk'){
-              //console.log('questions activity',questions,activityClass)
-            }
+
             questions.forEach(pregunta => {
               //const arrayRefSkills = (pregunta['competencias']?.map(skillClase => this.curso.skillsRef.find(skill => skill.id == skillClase.id)).filter(Boolean) ) || [];
               claseLocal.skillsRef = arrayRefSkills;
@@ -565,39 +568,35 @@ export class CreateCourseComponent {
 
   }
 
-  // if(this.examen){
-  //   let courseRef = await this.afs.collection<Curso>(Curso.collection).doc(this.curso.id).ref;
-  //   let activityClass = new Activity
-  //   let questions: Question[]= []
-  //   questions = structuredClone(this.examen.questions);
-  //   activityClass = structuredClone(this.examen) as Activity;
-  //   activityClass.enterpriseRef = this.curso.enterpriseRef as DocumentReference<Enterprise>
-  //   activityClass.coursesRef = [courseRef];
-  //   activityClass.type = Activity.TYPE_TEST;
-  //   activityClass.questions=[];
-  //   delete activityClass.questions
+  if(this.examen){
+    let courseRef = await this.afs.collection<Curso>(Curso.collection).doc(this.curso.id).ref;
+    let activityClass = new Activity
+    let questions: Question[]= []
+    questions = structuredClone(this.examen.questions);
+    activityClass = structuredClone(this.examen) as Activity;
+    activityClass.enterpriseRef = this.curso.enterpriseRef as DocumentReference<Enterprise>
+    activityClass.coursesRef = [courseRef];
+    activityClass.type = Activity.TYPE_TEST;
+    activityClass.questions=[];
+    delete activityClass.questions
 
-  //   //console.log('activityExamen',activityClass)
-  //   await this.activityClassesService.saveActivity(activityClass);
-  //   this.examen.id = activityClass.id
+    //console.log('activityExamen',activityClass)
+    await this.activityClassesService.saveActivity(activityClass);
+    this.examen.id = activityClass.id
 
-  //   questions.forEach(pregunta => {
-  //     //const arrayRefSkills = pregunta['competencias']?.map(skillClase => this.curso.skillsRef.find(skill => skill.id == skillClase.id)) || [];
-  //     const arrayRefSkills = (pregunta['competencias']?.map(skillClase => this.curso.skillsRef.find(skill => skill.id == skillClase.id)).filter(Boolean) ) || [];
-  //     //claseLocal.skillsRef = arrayRefSkills;
-  //     //console.log('refSkills', arrayRefSkills)
-  //     pregunta.skills= arrayRefSkills;
-  //     delete pregunta['competencias_tmp'];
-  //     delete pregunta['competencias'];
-  //     delete pregunta['isInvalid'];
-  //     delete pregunta['InvalidMessages'];
-  //     delete pregunta['expanded_categorias'];
-  //     delete pregunta['expanded'];
-  //     delete pregunta['uploading_file_progress'];
-  //     delete pregunta['uploading'];
-  //     this.activityClassesService.saveQuestion(pregunta,activityClass.id)
-  //   });
-  // }
+    questions.forEach(pregunta => {
+
+      delete pregunta['competencias_tmp'];
+      delete pregunta['competencias'];
+      delete pregunta['isInvalid'];
+      delete pregunta['InvalidMessages'];
+      delete pregunta['expanded_categorias'];
+      delete pregunta['expanded'];
+      delete pregunta['uploading_file_progress'];
+      delete pregunta['uploading'];
+      this.activityClassesService.saveQuestion(pregunta,activityClass.id)
+    });
+  }
   }
 
   previousTab(){
@@ -687,14 +686,16 @@ export class CreateCourseComponent {
           valid = false;
         }
         else{
-          //console.log('datos curso',this.formNewCourse.value)
+          console.log('datos curso',this.formNewCourse.value)
           if(this.curso){
             this.curso = this.formNewCourse.value;
+            this.curso.instructorNombre = this.curso.instructor
           }
           else{
             let newCurso = new Curso;
             newCurso = this.formNewCourse.value;
             this.curso = newCurso
+            this.curso.instructorNombre = this.curso.instructor
           }
           //console.log('this.curso',this.curso)
         }
@@ -718,10 +719,6 @@ export class CreateCourseComponent {
 
       if(this.activeStep == 4){
         this.updateTriggeQuestionsExam++;
-          setTimeout(() => {
-            //console.log('Form Data questionValid activeStepActividad: ',this.validExam)
-          }, 5000);
-          //console.log('Form Data questionValid activeStepActividad: ',this.validExam)
           if(this.validExam ==null || !this.validExam?.valid || this.validExam.value?.questions?.length == 0){
             valid = false
             this.updateTriggeQuestionsExam++;
@@ -736,7 +733,19 @@ export class CreateCourseComponent {
                 }
               }
             });
-            this.examen['questions'] = questions
+            console.log('revisar',this.examen,questions)
+            if(this.examen){
+              this.examen.questions = questions
+            }
+            else{
+              let exam = new Activity();
+              exam.questions = questions
+              exam.type = 'test'
+              exam.title = `Questionario Final: ${this.curso.titulo}`
+              exam.updatedAt = new Date().getTime()
+              exam.createdAt = new Date().getTime()
+              this.examen = exam;
+            }
 
           }
       }
@@ -873,7 +882,7 @@ export class CreateCourseComponent {
                   this.avatarInstructor.unshift(url);
                 }
                 else{
-                  this.formNewInstructor.get('imagen_instructor').patchValue(url);
+                  this.formNewInstructor.get('foto').patchValue(url);
                 }
 
               }
@@ -892,7 +901,7 @@ export class CreateCourseComponent {
     };
   }
 
-  crearInstructor(){
+  async crearInstructor(){
 
     this.showErrorInstructor = false;
 
@@ -903,9 +912,12 @@ export class CreateCourseComponent {
     }
     else{
 
-      let instructor = {
+      let instructor = this.formNewInstructor.value
+      instructor.ultimaEdicion = new Date
+      instructor.ultimoEditor = this.user.uid
+      await this.instructorsService.addInstructor(instructor)
+      console.log(instructor);
 
-      }
     
     }
 

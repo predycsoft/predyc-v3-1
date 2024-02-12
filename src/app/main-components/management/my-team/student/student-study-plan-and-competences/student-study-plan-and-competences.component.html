@@ -63,7 +63,8 @@
                     <!--  -->
                     <div fxLayout="row" fxLayoutAlign="space-between center" class="" fxLayoutGap="0.5rem">
                         <img *ngIf="diagnosticTest.score >= 0" [src]="icon.greenCheck" class="h20px mgr05 makeGreen" alt="">
-                        <span class="ft13 ft500 mgr15"> {{diagnosticTest.score >= 50 ? 'Aprobado' : 'Reprobado'}} con {{diagnosticTest.score}} </span>
+                        <!-- <span class="ft13 ft500 mgr15"> {{diagnosticTest.score >= 50 ? 'Aprobado' : 'Reprobado'}} con {{diagnosticTest.score}} </span> -->
+                        <span *ngIf="diagnosticTest.score >= 0" class="makeGreen mgr10 ft14 ft400" >Completado </span>
                     </div>
                 </div>
                 <div *ngIf="!diagnosticTest">
@@ -95,7 +96,7 @@
                                     </div>
                                     
                                     <span *ngIf="course.dateEnd" class="ft500"> {{course.finalScore}}/100</span>
-                                    <span *ngIf="!course.dateEnd" class="ft12"> {{course.duration | number:'1.0-1'}} hr </span> 
+                                    <!-- <span *ngIf="!course.dateEnd" class="ft12"> {{course.duration | number:'1.0-1'}} hr </span>  -->
                                     <!-- <span class="ft12"> {{course.duration | number:'1.0-1'}} hr </span> -->
                                 </div>
                             </div>

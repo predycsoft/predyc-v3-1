@@ -544,6 +544,7 @@ export class Question {
 // }
 
 export interface ActivityJson {
+  questions: any[];
   id: string;
   title: string;
   createdAt: number;
@@ -598,6 +599,7 @@ export class Activity {
   vimeoId2: string | null = null
   activityTakersQty: number = 0
   activityCorazon: boolean = false
+  questions: any[] = [];
 
   public toJson(): ActivityJson {
     return {
@@ -619,7 +621,8 @@ export class Activity {
       vimeoId1: this.vimeoId1,
       vimeoId2: this.vimeoId2,
       activityTakersQty: this.activityTakersQty,
-      activityCorazon : this.activityCorazon
+      activityCorazon : this.activityCorazon,
+      questions:this.questions
     }
   }
 
@@ -643,6 +646,7 @@ export class Activity {
     activity.vimeoId2 = obj.vimeoId2
     activity.activityTakersQty = obj.activityTakersQty
     activity.activityCorazon = obj.activityCorazon
+    activity.questions = obj.questions
     // for (const question of obj.questions) {
     //   const newQuestion = Question.fromJson(question);
     //   activity.questions = [...activity.questions, newQuestion];
@@ -677,7 +681,8 @@ export class Activity {
       vimeoId1: null,
       vimeoId2: null,
       activityTakersQty: 0,
-      activityCorazon:false
+      activityCorazon:false,
+      questions:[]
     })
   }
 }
