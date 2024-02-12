@@ -451,7 +451,7 @@ export const cursosProximos = [
                 "expanded": false
             },
             {
-                "titulo": "PROCESAMIENTO DE LA SEÑÁL",
+                "titulo": "PROCESAMIENTO DE LA SEÑAL",
                 "clases": [
                     {
                         "titulo": "Teoría de muestreo.",
