@@ -440,15 +440,11 @@ export const cursosProximos = [
                         "tipo": "video"
                     },
                     {
-                        "titulo": "Mediciones de fase:",
+                        "titulo": "Mediciones de fase: Medición de canal cruzado o medición con tacómetro. o fase relativa",
                         "tipo": "video"
                     },
                     {
-                        "titulo": "Medición de canal cruzado o medición con tacómetro. o fase relativa",
-                        "tipo": "video"
-                    },
-                    {
-                        "titulo": "Fase absoluta.",
+                        "titulo": "Mediciones de fase: Fase absoluta.",
                         "tipo": "video"
                     }
                 ],
@@ -474,15 +470,11 @@ export const cursosProximos = [
                         "tipo": "video"
                     },
                     {
-                        "titulo": "Parámetros espectrales:",
+                        "titulo": "Parámetros espectrales: Función ventana: Hanning, rectangular, flat top. o frecuencia máxima y resolución.",
                         "tipo": "video"
                     },
                     {
-                        "titulo": "Función ventana: Hanning, rectangular, flat top. o frecuencia máxima y resolución.",
-                        "tipo": "video"
-                    },
-                    {
-                        "titulo": "Promedios: lineal, exponencial, sincronizado.",
+                        "titulo": "Parámetros espectrales: Promedios: lineal, exponencial, sincronizado.",
                         "tipo": "video"
                     },
                     {
@@ -546,10 +538,6 @@ export const cursosProximos = [
                         "tipo": "video"
                     },
                     {
-                        "titulo": "Fundamentos de balanceo dinámico:",
-                        "tipo": "video"
-                    },
-                    {
                         "titulo": "Criterios de selección 1 plano / 2 planos. o estándares permisibles.",
                         "tipo": "video"
                     },
@@ -558,11 +546,7 @@ export const cursosProximos = [
                         "tipo": "video"
                     },
                     {
-                        "titulo": "fundamentos de alineación de acoples: o geometría de la alineación",
-                        "tipo": "video"
-                    },
-                    {
-                        "titulo": "Estándar api / estándar ANSI.",
+                        "titulo": "Fundamentos de alineación de acoples: Estándar api / estándar ANSI.",
                         "tipo": "video"
                     },
                     {
@@ -570,11 +554,7 @@ export const cursosProximos = [
                         "tipo": "video"
                     },
                     {
-                        "titulo": "lubricación basada en condición: o método shock pulse.",
-                        "tipo": "video"
-                    },
-                    {
-                        "titulo": "envolventes de aceleración.",
+                        "titulo": "Lubricación basada en condición: o método shock pulse: envolventes de aceleración",
                         "tipo": "video"
                     }
                 ],
@@ -790,40 +770,6 @@ export const cursosProximos = [
                 "expanded": false
             },
             {
-                "titulo": "EL PROCESO DE BALANCEO INDUSTRIAL",
-                "clases": [
-                    {
-                        "titulo": "Logística del proceso de balanceo industrial.",
-                        "tipo": "video"
-                    },
-                    {
-                        "titulo": "Roles y Responsabilidades de la organización.",
-                        "tipo": "video"
-                    },
-                    {
-                        "titulo": "Herramientas y equipos necesarios.",
-                        "tipo": "video"
-                    },
-                    {
-                        "titulo": "Principios y aplicaciones de los transductores para medir vibraciones",
-                        "tipo": "video"
-                    },
-                    {
-                        "titulo": "Tecnología de las máquinas balanceadoras.",
-                        "tipo": "video"
-                    },
-                    {
-                        "titulo": "Proceso general de balanceo de rotores industriales.",
-                        "tipo": "video"
-                    },
-                    {
-                        "titulo": "Seguridad durante el proceso de balanceo.",
-                        "tipo": "video"
-                    }
-                ],
-                "expanded": false
-            },
-            {
                 "titulo": "ESTÁNDARES INDUSTRIALES Y LÍMITES PERMISIBLES",
                 "clases": [
                     {
@@ -901,6 +847,7 @@ export const cursosProximos = [
     },
     {
         "titulo": "Baterías Eléctricas.",
+        "dontshow":true,
         "modules": [
             {
                 "titulo": "TERMINOLOGÍA.",
@@ -1378,6 +1325,7 @@ export const cursosProximos = [
     },
     {
         "titulo": "Fundamentos de Intercambiadores de calor de Placa.",
+        "dontshow":true,
         "modules": [
             {
                 "titulo": "INTRODUCCIÓN A LOS INTERCAMBIADORES DE CALOR DE PLACAS",
@@ -1429,6 +1377,7 @@ export const cursosProximos = [
     },
     {
         "titulo": "Fundamentos de Torres de Enfriamiento.",
+        "dontshow":true,
         "modules": [
             {
                 "titulo": "CATEGORÍAS DE TORRES DE ENFRIAMIENTO",
@@ -1755,15 +1704,14 @@ export const cursosProximos = [
                     {
                         "titulo": "Cálculo de la OEE.",
                         "tipo": "video"
+                    },
+                    {
+                        "titulo": "Influencia del mantenimiento sobre la OEE.",
+                        "tipo": "video"
                     }
                 ],
                 "expanded": false
-            }
-        ]
-    },
-    {
-        "titulo": "Influencia del mantenimiento sobre la OEE.",
-        "modules": [
+            },
             {
                 "titulo": "INDICADORES DE LA SMRP Y DE LA EFNMS- EN 15341",
                 "clases": [
@@ -1808,6 +1756,7 @@ export const cursosProximos = [
     },
     {
         "titulo": "Motores de Combustión interna: Fundamentos.",
+        "dontshow":true,
         "modules": [
             {
                 "titulo": "EXTERIOR DEL MOTOR",
@@ -1883,6 +1832,7 @@ export const cursosProximos = [
     },
     {
         "titulo": "Motores Diesel: Fundamentos. Parte I",
+        "dontshow":true,
         "modules": [
             {
                 "titulo": "INTRODUCCIÓN",
@@ -2094,6 +2044,7 @@ export const cursosProximos = [
     },
     {
         "titulo": "Motores Diesel: Fundamentos. Parte II",
+        "dontshow":true,
         "modules": [
             {
                 "titulo": "CICLO DETALLADO DEL MOTOR DE CUATRO TIEMPOS",
@@ -2361,6 +2312,7 @@ export const cursosProximos = [
     },
     {
         "titulo": "Protección y Control de Circuitos de Alta Potencia.",
+        "dontshow":true,
         "modules": [
             {
                 "titulo": "FUNDAMENTOS",
@@ -2571,12 +2523,7 @@ export const cursosProximos = [
                 "expanded": false
             },
             {
-                "titulo": "TIPOS DE SELLOS MECÁNICOS - VENTAJAS Y DESVENTAJAS, APLICACIONES Y",
-                "clases": [],
-                "expanded": false
-            },
-            {
-                "titulo": "COMPONENTES PARTICULARES",
+                "titulo": "TIPOS DE SELLOS MECÁNICOS - VENTAJAS Y DESVENTAJAS, APLICACIONES Y COMPONENTES PARTICULARES",
                 "clases": [
                     {
                         "titulo": "Partes y componentes principales de los sellos mecánicos.",
@@ -2651,19 +2598,7 @@ export const cursosProximos = [
                 "titulo": "MANTENIMIENTO PREVENTIVO DE SELLOS MECÁNICOS",
                 "clases": [
                     {
-                        "titulo": "Plan de Mantenimiento Preventivo.",
-                        "tipo": "video"
-                    },
-                    {
                         "titulo": "Explicación de un plan de mantenimiento para sellos mecánicos.",
-                        "tipo": "video"
-                    },
-                    {
-                        "titulo": "Actividades de mantenimiento a realizar",
-                        "tipo": "video"
-                    },
-                    {
-                        "titulo": "Inspecciones periódicas:",
                         "tipo": "video"
                     },
                     {
@@ -2672,10 +2607,6 @@ export const cursosProximos = [
                     },
                     {
                         "titulo": "Cambio y monitoreo de lubricantes:",
-                        "tipo": "video"
-                    },
-                    {
-                        "titulo": "Lubricación y limpieza adecuada de los sellos mecánicos.",
                         "tipo": "video"
                     },
                     {
@@ -2895,10 +2826,6 @@ export const cursosProximos = [
                         "tipo": "video"
                     },
                     {
-                        "titulo": "Sensores:",
-                        "tipo": "video"
-                    },
-                    {
                         "titulo": "Sensores primarios.",
                         "tipo": "video"
                     },
@@ -3010,12 +2937,7 @@ export const cursosProximos = [
                 "expanded": false
             },
             {
-                "titulo": "ACTUADORES",
-                "clases": [],
-                "expanded": false
-            },
-            {
-                "titulo": "SEGURIDAD Y PROTECCIÓN EN CIRCUITOS INDUSTRIALES",
+                "titulo": "Actuadores, Seguridad y Protección en Circuitos Industriales",
                 "clases": [
                     {
                         "titulo": "Diseño seguro de circuitos electrónicos industriales.",
@@ -3034,6 +2956,7 @@ export const cursosProximos = [
             },
             {
                 "titulo": "ELECTRÓNICA DIGITAL (OPCIONAL)",
+                "dontshow":true,
                 "clases": [
                     {
                         "titulo": "Sistemas de numeración: los números binarios, Operaciones con números binarios, Álgebra de Boole, Tabla de la verdad (Operaciones lógicas básicas, Números decimales, binarios, octales, hexadecimales, BCD, Operaciones aritméticas con números, Códigos alfanuméricos).",
@@ -3066,6 +2989,7 @@ export const cursosProximos = [
     },
     {
         "titulo": "Sistemas Hidráulicos.",
+        "dontshow":true,
         "modules": [
             {
                 "titulo": "INTRODUCCIÓN GENERAL Y CONCEPTOS IMPORTANTES",
@@ -3187,6 +3111,7 @@ export const cursosProximos = [
     },
     {
         "titulo": "Sistemas Mecánicos.",
+        "dontshow":true,
         "modules": [
             {
                 "titulo": "INTRODUCCIÓN Y FUNDAMENTOS MECÁNICOS",
@@ -3274,6 +3199,7 @@ export const cursosProximos = [
     },
     {
         "titulo": "Sistemas Neumáticos.",
+        "dontshow":true,
         "modules": [
             {
                 "titulo": "INTRODUCCIÓN Y CONCEPTOS CLAVE",
@@ -3445,7 +3371,8 @@ export const cursosProximos = [
                     },
                     {
                         "titulo": "Propiedades radiactivas: a, ε, ρ, τ.",
-                        "tipo": "video"
+                        "tipo": "video",
+                        "dontTitle":true
                     },
                     {
                         "titulo": "¿Qué es un cuerpo negro?",
@@ -3566,6 +3493,7 @@ export const cursosProximos = [
     },
     {
         "titulo": "Transformadores Eléctricos.",
+        "dontshow":true,
         "modules": [
             {
                 "titulo": "INTRODUCCIÓN",
@@ -3689,10 +3617,6 @@ export const cursosProximos = [
             {
                 "titulo": "TIPOS DE TURBINAS DE GAS (FUNCIONES, APLICACIONES, VENTAJAS Y DESVENTAJAS)",
                 "clases": [
-                    {
-                        "titulo": "Componentes principales de una turbina de gas:",
-                        "tipo": "video"
-                    },
                     {
                         "titulo": "El sistema de aire de admisión.",
                         "tipo": "video"
@@ -3824,10 +3748,6 @@ export const cursosProximos = [
                         "tipo": "video"
                     },
                     {
-                        "titulo": "Uso de técnicas de diagnóstico avanzadas para evaluación de condición.",
-                        "tipo": "video"
-                    },
-                    {
                         "titulo": "Análisis de aceite.",
                         "tipo": "video"
                     },
@@ -3874,7 +3794,12 @@ export const cursosProximos = [
             },
             {
                 "titulo": "ESTUDIOS DE CASOS Y PRÁCTICAS.",
-                "clases": [],
+                "clases": [                    
+                    {
+                    "titulo": "Estudios De Casos Y Prácticas.",
+                    "tipo": "video"
+                    }
+                ],
                 "expanded": false
             }
         ]
