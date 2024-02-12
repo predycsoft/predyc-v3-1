@@ -2,8 +2,8 @@
   "targets": {
     "predyc2023": {
       "hosting": {
-        "predyc-v3": [
-          "predyc2023"
+        "predyc-empresa": [
+          "predyc-empresa"
         ]
       }
     }

@@ -1,7 +1,7 @@
 {
   "hosting": [
     {
-      "target": "predyc-v3",
+      "site":"predyc-empresa",
       "source": ".",
       "frameworksBackend": {}
     }
