@@ -10,6 +10,8 @@ import { LicenseStudentListComponent } from 'src/app/shared/components/users/lic
 import { License } from 'src/app/shared/models/license.model';
 import { IconService } from 'src/app/shared/services/icon.service';
 import { LicenseService } from 'src/app/shared/services/license.service';
+import Swal from 'sweetalert2';
+
 
 @Component({
   selector: 'app-settings',
@@ -107,13 +109,20 @@ export class SettingsComponent {
   }
 
   assignLicense(){
-
-    let licencia = this.licenses.filter(x=>x.quantity>x.quantityUsed).sort((a, b) => a.currentPeriodStart - b.currentPeriodStart)
+    let today = new Date().getTime()
+    let licencia = this.licenses.filter(license=>license.quantity>license.quantityUsed && license.status == 'active' && (license.currentPeriodEnd>=today) ).sort((a, b) => a.currentPeriodStart - b.currentPeriodStart)
     let LicenciaUsar;
     if (licencia.length>0){
       LicenciaUsar = licencia[0]
       console.log('LicenciaUsar',LicenciaUsar)
       this.selectLicense(LicenciaUsar)
+    }
+    else{
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "No hay licencias disponibles",
+      });
     }
   }
 
