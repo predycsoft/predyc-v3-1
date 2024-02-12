@@ -152,7 +152,11 @@ export class StudentListComponent {
   }
 
   onSelectUser(user: User) {
-    this.onStudentSelected.emit(user)
+    if (this.enableNavigateToUser && user.profile) {
+      this.router.navigate([`management/students/${user.uid}`])
+    } else {
+      this.onStudentSelected.emit(user)
+    }
   }
 
   ngOnDestroy() {
