@@ -42,6 +42,7 @@ export class CreateUserComponent {
   profileServiceSubscription: Subscription
   departmentServiceSubscription: Subscription
   departments: Department[] = []
+  
   filteredDepartments: Observable<string[]>;
 
   async ngOnInit() {

@@ -390,15 +390,9 @@ export const cursosProximos = [
                 "titulo": "MANTENIMIENTO Y CONFIABILIDAD",
                 "clases": [
                     {
-                        "titulo": "Mantenimiento basado en condición y el proceso de inspección de activos industriales según ISO",
+                        "titulo": "Mantenimiento basado en condición y el proceso de inspección de activos industriales según ISO 17359.",
                         "tipo": "video"
-                    }
-                ],
-                "expanded": false
-            },
-            {
-                "titulo": "17359.",
-                "clases": [
+                    },
                     {
                         "titulo": "La curva p-f en el contexto del análisis de vibraciones.",
                         "tipo": "video"

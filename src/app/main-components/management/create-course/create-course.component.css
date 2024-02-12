@@ -89,7 +89,7 @@
   margin-right: 10px;
   width: 137px;
   height: 90px;
-  object-fit: cover;
+  object-fit: contain;
 
 }
 
@@ -340,4 +340,8 @@ mat-icon-list {
 
 .category-container {
   border-bottom: 1px solid var(--gray-6); /* Subrayado, puedes ajustar a tu estilo preferido */
+}
+
+.mat-mdc-form-field-subscript-wrapper{
+  display: none;
 }

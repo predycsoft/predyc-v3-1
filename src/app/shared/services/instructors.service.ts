@@ -25,8 +25,9 @@ export class InstructorsService {
   async addInstructor(Instructor): Promise<void> {
     try {
       const ref = this.afs.collection('instructors').doc().ref;
-      let idOld = Instructor.id
-      await ref.set({...Instructor,idOld:Instructor.id,id:ref.id}, { merge: true });
+      let idOld = Instructor?.id ? Instructor?.id : null;
+      console.log('idOld',idOld)
+      await ref.set({...Instructor,idOld:idOld,id:ref.id}, { merge: true });
       Instructor.id = ref.id;
       Instructor.idOld = idOld
       console.log('Instructor agregado',Instructor);
@@ -37,8 +38,8 @@ export class InstructorsService {
 
   getInstructors() {
     this.afs.collection<any>('instructors').valueChanges().subscribe({
-      next: skill => {
-        this.InstructorsSubject.next(skill)
+      next: instructor => {
+        this.InstructorsSubject.next(instructor)
       },
       error: error => {
         console.log(error)
@@ -47,5 +48,14 @@ export class InstructorsService {
   }
   getInstructorsObservable(): Observable<any[]> {
     return this.instructors$
+  }
+
+  fetchInstructorDataById(instructorId: string): Observable<any> {
+    const instructorRef = this.afs.doc<any>(`instructors/${instructorId}`).ref;
+    return this.afs.doc<any>(instructorRef).valueChanges();
+  }
+  
+  fetchInstructorDataByRef(instructorRef: DocumentReference): Observable<any> {
+    return this.afs.doc<any>(instructorRef).valueChanges();
   }
 }

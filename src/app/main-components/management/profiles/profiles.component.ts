@@ -478,4 +478,8 @@ export class ProfilesComponent {
     if (this.chart) this.chart.destroy()
   }
 
+  getAdditionalSkillsTooltip(skills: string[]): string {
+    // Toma las habilidades a partir de la quinta y las une con comas.
+    return skills.slice(4).join(',\n');
+  }
 }
