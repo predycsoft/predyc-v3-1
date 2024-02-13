@@ -200,13 +200,12 @@
                                             >
                                             <img [src]="course.imagen" [alt]="course.titulo" class="w40px h40px radius4">
                                             <div fxLayout="column" fxLayoutGap="5px">
-                                                <div [matTooltip]="course.titulo" class="title-course-badge">{{course.titulo | titlecase}}</div>
+                                                <div class="title-course-badge">{{course.titulo | titlecase}}</div>
                                                 <div class="skills-container">
                                                     <div
                                                         *ngFor="let skill of course.skills"
                                                         style="display: inline-block; margin-right: 5px; margin-bottom: 5px;"
-                                                        class="skill-badge radius10 backGray2 pdl05 pdr05 gray-8 mgt05" [matTooltip]="skill.name"
-                                                        >
+                                                        class="skill-badge radius10 backGray2 pdl05 pdr05 gray-8 mgt05">
                                                         {{skill.name}}
                                                     </div>
                                                 </div>
@@ -253,13 +252,12 @@
                                         <img [src]="course.imagen" [alt]="course.titulo" class="w42px h42px radius4">
                                         <div fxLayout="column" fxLayoutGap="1px" class="">
                                             <div  class="">
-                                                <div [matTooltip]="course.titulo" class="title-course-badge">{{course.titulo | titlecase}} </div>
+                                                <div class="title-course-badge">{{course.titulo | titlecase}} </div>
                                                 <div class="skills-container" style="margin-top: -5px;">
                                                     <div
                                                         *ngFor="let skill of course.skills"
                                                         style="display: inline-block; margin-right: 5px; margin-bottom: 5px;"
-                                                        class="skill-badge radius10 backGray2 pdl05 pdr05 gray-8 mgt05" [matTooltip]="skill.name"
-                                                        >
+                                                        class="skill-badge radius10 backGray2 pdl05 pdr05 gray-8 mgt05">
                                                         {{skill.name}}
                                                     </div>
                                             </div>

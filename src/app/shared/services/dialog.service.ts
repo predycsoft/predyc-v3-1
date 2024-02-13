@@ -7,6 +7,8 @@ import { ExitoComponent } from '../../shared/components/dialogs/exito/exito.comp
 // import { DialogListaErroresComponent } from '../empresa/dialog-lista-errores/dialog-lista-errores.component';
 // import { ProcesandoComponent } from '../procesando/procesando.component';
 import { AlertComponent } from './dialogs/alert/alert.component';
+import Swal from 'sweetalert2';
+
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +32,13 @@ export class DialogService {
   }
 
   dialogExito() {
-    return this.dialog.open(ExitoComponent)
+    //return this.dialog.open(ExitoComponent)
+
+    Swal.fire({
+      text: "Operación exitosa",
+      icon: "success"
+    });
+
   }
 
   // dialogFracaso() {
