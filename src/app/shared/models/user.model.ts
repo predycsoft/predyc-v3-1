@@ -2,6 +2,7 @@ import { DocumentReference } from "@angular/fire/compat/firestore"
 import { Profile } from "./profile.model"
 import { Enterprise } from "./enterprise.model"
 import { Department } from "./department.model"
+import { Subscription } from "./subscription.model"
 
 export interface UserJson {
   birthdate: number | null
@@ -180,7 +181,7 @@ export class User {
       performance: null,
       ratingPoints: 0,
       studyHours: 0,
-      status: 'incomplete'
+      status: Subscription.STATUS_INACTIVE
     })
   }
 
