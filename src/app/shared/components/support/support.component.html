@@ -1,17 +1,13 @@
-<div fxLayout="column" fxLayoutAlign="center center" class="pd10" ngClass="containerPC" ngClass.lt-md="containerMobile">
-
-    <div class="" fxLayout="row" fxLayoutAlign="space-between center">
-        <div class="center center nowrap">
-            <span class="ft600 ft16 gray-10"> Consultas </span>
+<div fxLayout="column" class="pd10" ngClass="containerPC" ngClass.lt-md="containerMobile">
+    <div fxLayout="row" fxLayoutAlign="end">
+        <div  class="iconContainer cursorPointer mgl05 mgt05 " (click)="dismiss()"
+            fxLayoutAlign="center center"> <img [src]="icon.close" class="makeGray h24px">
         </div>
-        <img fxLayoutAlign="end"  [src]="icon.close" class="makeGray h24px cursorPointer" (click)="dismiss()">
-
-        <!-- <div class="iconContainer cursorPointer mgl05 mgt05 " (click)="dismiss()" > <img fxLayoutAlign.lt-sm="center end"   [src]="icon.close" class="makeGray h24px"></div>  -->
-
     </div>
-    
-
-    <div *ngIf="!formIsOpen" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="1rem" fxLayoutGap.lt-md="0rem">
+    <div fxLayoutAlign="center center">
+        <label class="gray-10 ft600  ft16"fxLayoutAlign="center center" >Consultas</label>
+    </div>
+    <div *ngIf="!formIsOpen" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="1rem" fxLayoutGap.lt-md="0rem" fxLayoutAlign="center center" style="padding-bottom: 45px; padding-top: 30px;" >
         <div fxLayout="column" fxLayout.lt-md="row"  fxLayoutAlign.lt-md="center center" ngClass="blueBorderContainer centertext fw" fxLayoutAlign="center center" fxLayoutGap=".5rem"
             (click)="openWhatsapp()" fxLayout="column">
             <img [src]="icon.whatsapp_blue " class="" alt="" ngClass="h40px" ngClass.lt-md="h26px">
