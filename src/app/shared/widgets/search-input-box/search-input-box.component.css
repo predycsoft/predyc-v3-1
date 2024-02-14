@@ -9,5 +9,5 @@
 
 .catInput::placeholder{
     color: var(--gray-9);
-    font-size: 12px;
+    font-size: 14px;
 }

@@ -424,9 +424,13 @@ export class ProfilesComponent {
     this.categoriesAndSkillsWidgetData = chartData.filter(category => category.skills.length > 0)
   }
 
+  disableSaveButton: boolean = false
+
   async onSave() {
     try {
       if (!this.profileName) throw new Error("Debe indicar un nombre para el perfil")
+      this.disableSaveButton = true
+      this.alertService.infoAlert("Se procederá a actualizar los datos del plan de estudio del perfil y de sus usuarios relacionados, por favor espere hasta que se complete la operación")
       const coursesRef: DocumentReference<Curso>[] = this.studyPlan.map(course => {
         return this.courseService.getCourseRefById(course.id)
       })
@@ -465,10 +469,12 @@ export class ProfilesComponent {
         this.profile = profile
         this.router.navigate([`management/profiles/${profileId}`])
       }
-      this.alertService.succesAlert("Success")
+      this.alertService.succesAlert("Completado")
+      this.disableSaveButton = false
       this.isEditing = false;
     } catch (error) {
       this.alertService.errorAlert(error.message)
+      this.disableSaveButton = false
     }
   }
 
