@@ -1,6 +1,6 @@
-/* .inputNumber{
-    outline: none;
-    background-color: aqua;
+ .inputNumber{
+  width: auto;
+  margin-left: 15px;
 }
 
 .inputNumber:focus{
