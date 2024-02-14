@@ -4,8 +4,8 @@
             {{isEditing ? '' : profileName}}
         </app-navigate-back>
         <div *ngIf="isEditing; else profileTitle" fxLayout="row" fxLayoutAlign="space-between center" class="fw fh pdt05 pdb05" >
-            <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign=" center">
-                <input class="input-box ft12" placeholder="Nombre del perfil" [(ngModel)]="profileName" maxlength="50">
+            <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign=" center">
+                <input class="input-box ft12" placeholder="Nombre del perfil" [(ngModel)]="profileName" maxlength="43">
                 <!-- <div class="edit-button">
                     Modo de edición
                 </div> -->
@@ -119,7 +119,7 @@
                                 <input 
                                 type="text"
                                 placeholder="Buscar"
-                                class="pdl05 ft12"
+                                class="pdl05 ft24"
                                 style="width: 100%; outline: none; border: 0; background-color: transparent;"
                                 [formControl]="searchControl"
                                 matInput

@@ -65,7 +65,7 @@
                     [ngClass]="selectedUsersIds.length === 0 
                         ? 'select-container2': (currentStatus !== 'active' ? 'blueButtonAnim  button-animation':'redButtonAnim  button-animation')">
                     {{ currentStatus !== 'active' ? 'Asignar licencia' : 'Cancelar licencia' }}</button> -->
-                <button class="w-10 " fxLayout="row"
+                <button class="w-12 mgl08 " fxLayout="row"
                     fxLayoutAlign="center "
                     (click)="currentStatus !== 'active' ? assignLicense() : removeLicense()"
                     [disabled]="selectedUsersIds.length === 0"
@@ -74,8 +74,8 @@
                     {{ currentStatus !== 'active' ? 'Asignar licencia' : 'Cancelar licencia' }}
                 </button>
                 <div class="w-30"></div>
-                <button class=" blueButtonAnim  button-animation ft500 w-10" style="border-radius: 24px !important;"  fxLayoutAlign="center " (click)="showDialog(licenses)">Adquirir licencias</button>           
-                <button class="grayButton ft500    blue-4 w-13" style="border-radius: 24px !important;"  fxLayoutAlign="center " (click)="showDialog2(licenses)">Historial de licencias</button>           
+                <button class=" mgr08 blueButtonAnim  button-animation ft500 w-12" style="border-radius: 24px !important;"  fxLayoutAlign="center " (click)="showDialog(licenses)">Adquirir licencias</button>           
+                <button class="grayButton ft500    blue-4 w-15" style="border-radius: 24px !important;"  fxLayoutAlign="center " (click)="showDialog2(licenses)">Historial de licencias</button>           
 
                 <mat-menu #licenseMenu class="radius6 shadow16 pd0 mgt05">
                     <div fxLayout="column" class="fw pd05">
@@ -91,7 +91,7 @@
                     </div>
                 </mat-menu>
             </div>
-            <div class="pdr20 mgt10">
+            <div class="pdr20 mgt10 ">
                 <app-license-student-list [hasLicenseChanged]="hasLicenseChanged" (selectedUsers)="handleSelectedUsers($event)"></app-license-student-list>
             </div>
         </div>   
