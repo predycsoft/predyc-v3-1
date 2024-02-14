@@ -154,9 +154,24 @@ export class CreateUserComponent {
       email: formData.email ? formData.email.toLowerCase() : null,
       photoUrl: photoUrl
     }
-    const user = User.getEnterpriseStudentUser(this.enterpriseService.getEnterpriseRef())
-    user.uid = this.studentToEdit? this.studentToEdit.uid : null
-    user.patchValue(userObj)
+    let user = null
+    if (this.studentToEdit?.role === User.ROLE_ADMIN) {
+      user = User.getEnterpriseAdminUser(this.enterpriseService.getEnterpriseRef())
+    } else {
+      user = User.getEnterpriseStudentUser(this.enterpriseService.getEnterpriseRef())
+    }
+
+    let valueToPatch = null
+    if (this.studentToEdit) {
+      valueToPatch = {
+        ...this.studentToEdit,
+        ...userObj
+      }
+    } else {
+      valueToPatch = userObj
+    }
+    console.log("valueToPatch", valueToPatch)
+    user.patchValue(valueToPatch)
     return user
   }
 
