@@ -63,9 +63,9 @@ export class SubscriptionService {
  
   }
 
-  async removeUserSubscription(userId: string) {
+  async removeUserSubscription(userId: string,licenses) {
+    console.log('rotar',userId,licenses)
     try {
-
       const snapshots = await firstValueFrom(this.afs.collection<Subscription>(Subscription.collection, ref => 
         ref
         .where('userRef', '==', this.afs.doc<User>(`${User.collection}/${userId}`).ref)
@@ -75,21 +75,44 @@ export class SubscriptionService {
       // console.log('snapshots.docs', snapshots.docs)
       const subscriptionsData = snapshots.docs.map(docSnapshot => docSnapshot.data() as Subscription);
       if (subscriptionsData.length > 0) {
-        //It should be just 1 active subscription. just in case, i use a for loop
-        for (let subscription of subscriptionsData) {
-
-          await this.afs.collection(Subscription.collection).doc(subscription.id).set({
-            canceledAt: Date.now(), 
-            endedAt: Date.now(),
-            status: "canceled" 
-          }, { merge: true });
-    
-          await this.afs.collection(User.collection).doc(userId).set({
-            status: "canceled" 
-          }, { merge: true });
-    
-          console.log("Suscripción cancelada:", userId, subscription.id);
+        let subscription = subscriptionsData[0]
+        let  licenseRef = subscription.licenseRef // para guardar que hay rotaciones esperando
+        const docSnapshot = await licenseRef.get();
+        let license = licenses.find(licenseData=>licenseData.rotationsWaitingCount+1<=(licenseData.rotations-licenseData.rotationsUsed) && (licenseData.status == 'active'))
+        if(license){
+        console.log('rotar',license)
+          licenseRef = this.afs.doc<License>(`${License.collection}/${license.id}`).ref
+          let rotationsWaitingCount = license.rotationsWaitingCount+1
+          let quantityUsed = license.quantityUsed-1
+          license.rotationsWaitingCount =rotationsWaitingCount
+          license.quantityUsed =quantityUsed
+          console.log('rotar cambios',rotationsWaitingCount,quantityUsed)
+          await licenseRef.update({
+            rotationsWaitingCount: rotationsWaitingCount,
+            quantityUsed:quantityUsed
+          });
         }
+        else{
+          if (docSnapshot.exists) {
+            const licenseData = docSnapshot.data();
+            await licenseRef.update({
+              failedRotationCount: licenseData.failedRotationCount + 1,
+            });
+          }
+        }
+
+        await this.afs.collection(Subscription.collection).doc(subscription.id).set({
+          canceledAt: Date.now(), 
+          endedAt: Date.now(),
+          status: "canceled" 
+        }, { merge: true });
+  
+        await this.afs.collection(User.collection).doc(userId).set({
+          status: "canceled" 
+        }, { merge: true });
+  
+        console.log("Suscripción cancelada:", userId, subscription.id);
+        
       } 
       else {
         console.log("No se encontraron suscripciones activas.");
@@ -101,3 +124,5 @@ export class SubscriptionService {
   }
 
 }
+
+
