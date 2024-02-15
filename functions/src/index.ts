@@ -7,11 +7,14 @@ admin.initializeApp(functions.config().firebase);
 import { onActivityUpdated } from './activity';
 export { onActivityUpdated }
 
-import { createUserWithEmailAndPassword } from './authentication';
-export { createUserWithEmailAndPassword }
+import { createUserWithEmailAndPassword, emptyDatabase } from './authentication';
+export { createUserWithEmailAndPassword, emptyDatabase }
 
 import { sendMail } from './email';
 export { sendMail }
+
+// import { createProfilesFromExcel } from './handleExcel';
+// export { createProfilesFromExcel }
 
 // import { onNotificationAdded, onNotificationReadByAdmin } from './notifications'
 // export { onNotificationAdded, onNotificationReadByAdmin }
@@ -23,8 +26,8 @@ export { onUserAdded, onUserDeleted, onUserUpdated }
 import { onProfileAdded, } from './profile'
 export { onProfileAdded, }
 
-import { checkExpirdeLicenses, } from './license'
-export { checkExpirdeLicenses, }
+import { checkExpiredLicenses, } from './license'
+export { checkExpiredLicenses, }
 
 import { checkExpiredSubscriptions, } from './subscription'
 export { checkExpiredSubscriptions, }

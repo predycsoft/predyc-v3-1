@@ -200,7 +200,7 @@
                                         <img [src]="course.imagen" [alt]="course.titulo" class="w42px h42px radius4">
                                         <div fxLayout="column" fxLayoutGap="1px" class="">
                                             <div  class="">
-                                                <div class="title-course-badge ft12" style="display: inline-block;  text-overflow: ellipsis; ">{{course.titulo | titlecase}} </div>
+                                                <div class="title-course-badge ft12" style="display: inline-block;   ">{{course.titulo | titlecase}} </div>
                                                 <div class="skills-container" style="margin-top: -5px;">
                                                     <div
                                                         *ngFor="let skill of course.skills"
@@ -226,8 +226,8 @@
                         fxLayoutGap="1rem"
                         *ngFor="let item of studyPlan; let i = index"
                     >
-                        <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
-                            <div
+                    <div fxLayout="row" fxLayoutAlign="space-between center" class=" fw" fxLayoutGap="0.5rem">
+                        <div
                                 fxLayout="column"
                                 fxLayoutGap="5px"
                                 class="ft11"
@@ -236,7 +236,7 @@
                                     {{ item.titulo }}
                                 </span>
                         </div>
-                        <div fxLayoutAlign="center center" fxLayout="row" fxLayoutGap="1rem">
+                        <div fxLayout="row" class="" fxLayoutGap="0.5rem" style="margin-left: 5px;">
                             <span class="gray-10 ft11 nowrap">
                                 {{ roundNumber(item.duracion / 60) }} hrs
                             </span>
