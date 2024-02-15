@@ -42,10 +42,13 @@ export class SideNavComponent {
   @Input() menuExpanded = false
   
   ngOnInit() {
-  }
-
-  signOut() {
-    this.authService.signOut();
+    this.authService.user$.subscribe(user => {
+      if (user?.adminPredyc) this.pages.push({
+        name: 'Crear demo',
+        link:'management/create-demo',
+        icon: '../../assets/iconsUI/credentials.svg'
+      })
+    })
   }
 
 }

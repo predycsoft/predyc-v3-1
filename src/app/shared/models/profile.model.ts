@@ -9,7 +9,7 @@ export interface ProfileJson {
     name: string
     description: string
     coursesRef: DocumentReference<Curso>[] | []
-    enterpriseRef: DocumentReference | null
+    enterpriseRef: DocumentReference<Enterprise> | null
     permissions: Permissions
     hoursPerMonth: number;
 }
@@ -21,7 +21,7 @@ export class Profile {
     public name: string;
     public description: string;
     public coursesRef: DocumentReference<Curso> [] | [] = []
-    public enterpriseRef: DocumentReference | null
+    public enterpriseRef: DocumentReference<Enterprise> | null
     public permissions: Permissions
     public hoursPerMonth: number;
 

@@ -16,6 +16,8 @@ import { InitScriptComponent } from './shared/components/init-script/init-script
 import { MyAccountComponent } from './main-components/my-account/my-account.component';
 import { ProfilesComponent } from './main-components/management/profiles/profiles.component';
 import { ProfileGuard } from './shared/guards/profile.guard';
+import { CreateDemoComponent } from './main-components/create-demo/create-demo.component';
+import { AdminPredycGuard } from './shared/guards/adminPredyc.guard';
 
 const MAIN_TITLE = 'Predyc - '
 
@@ -43,12 +45,12 @@ const routes: Routes = [
           {path:"create-course/:mode/:idCurso", title: MAIN_TITLE + 'Crear / Editar curso', component: CreateCourseComponent, canActivate: [AuthGuard]},
           {path:"notifications", title: MAIN_TITLE + 'Notificaciones', component: NotificationsComponent, canActivate: [AuthGuard]},
           {path:"students/:uid", title: MAIN_TITLE + 'Mi equipo', component: StudentComponent, canActivate: [AuthGuard]},
+          {path:"create-demo", title: MAIN_TITLE + 'Crear demo', component: CreateDemoComponent, canActivate: [AuthGuard, AdminPredycGuard]},
         ]
       },
       {path:"validation", title: MAIN_TITLE + 'Validación de competencias', component: ValidationComponent, canActivate: [AuthGuard]},
       {path:"settings", title: MAIN_TITLE + 'Configuración', component: SettingsComponent, canActivate: [AuthGuard]},
       {path:"my-account", title: MAIN_TITLE + 'Mi cuenta', component: MyAccountComponent, canActivate: [AuthGuard]},
-      // {path:"create-demo", title: MAIN_TITLE + 'Crear demo', component: CreateDemoComponent, canActivate: [AuthGuard]},
     ]
   },
   {

@@ -1,1 +1,8 @@
-<p>create-demo works!</p>
+<div class="fw fh" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="5px">
+    <div class="ft16 ft500">Crear empresa demo</div>
+    <label>Nombre de la empresa</label>
+    <div style="width: 500px;">
+        <input class="form-control" type="text" [(ngModel)]="enterpriseName">
+    </div>
+    <button class="blueButton" (click)="createDemo()">Crear demo</button>
+</div>

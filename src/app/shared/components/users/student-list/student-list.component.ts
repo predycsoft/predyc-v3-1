@@ -67,7 +67,7 @@ export class StudentListComponent {
   ngOnInit() {
     this.profileService.loadProfiles()
     
-    this.profilesSubscription = combineLatest([this.profileService.getProfilesObservable(), this.departmentService.getDepartments$(), this.courseService.getCourses$()]).subscribe(([profiles, departments, courses]) => {
+    this.profilesSubscription = combineLatest([this.profileService.getProfiles$(), this.departmentService.getDepartments$(), this.courseService.getCourses$()]).subscribe(([profiles, departments, courses]) => {
         this.profiles = profiles
         this.departments = departments
         this.courses = courses
@@ -102,8 +102,6 @@ export class StudentListComponent {
       })).subscribe(response => {
         console.log(response)
         const users: User[] = response.map(({user, courses}) => {
-          console.log("user", user)
-          console.log("courses", courses)
           const profile = this.profiles.find(profile => {
             if(user.profile) {
               return profile.id === user.profile.id
