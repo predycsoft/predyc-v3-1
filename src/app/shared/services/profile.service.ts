@@ -47,7 +47,15 @@ export class ProfileService {
         return
       }
       this.enterpriseRef = this.enterpriseService.getEnterpriseRef()
-      this.afs.collection<Profile>(Profile.collection, ref=> ref.where('enterpriseRef', '==', this.enterpriseRef).orderBy('name')).valueChanges().subscribe({
+
+      const enterpriseMatch$ = this.afs.collection<Profile>(Profile.collection, ref=> ref.where('enterpriseRef', '==', this.enterpriseRef)).valueChanges()
+    
+      const enterpriseEmpty$ = this.afs.collection<Profile>(Profile.collection, ref=> ref.where('enterpriseRef', '==', null)).valueChanges()
+    
+      // Combine both queries
+      combineLatest([enterpriseMatch$, enterpriseEmpty$]).pipe(
+        map(([matched, empty]) => [...matched, ...empty]),
+      ).subscribe({
         next: profile => {
           this.profilesSubject.next(profile)
           if (!this.profilesLoadedSubject.value) {
@@ -60,7 +68,6 @@ export class ProfileService {
         }
       })
     })
-
   }
 
   public getProfilesObservable(): Observable<Profile[]> {
