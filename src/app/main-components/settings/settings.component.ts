@@ -53,6 +53,7 @@ export class SettingsComponent {
   availableRotations: number
   expirationDate: number
   rotationsWaitingCount : number
+  rotacionWarningCount: number
 
   ngOnInit() {
     this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
@@ -69,6 +70,7 @@ export class SettingsComponent {
         let rotationsWaitingCount = 0
         let availableLicenses = 0
         let availableRotations = 0
+        let failedRotationCount = 0
         let expirationDate = null
         licenses.forEach(license => {
           if (license.status !== 'active') return
@@ -77,6 +79,7 @@ export class SettingsComponent {
           rotationsWaitingCount += license.rotationsWaitingCount
           availableLicenses += license.quantity - license.quantityUsed
           availableRotations += license.rotations - license.rotationsUsed
+          failedRotationCount += license.failedRotationCount
           if (!expirationDate || expirationDate < license.currentPeriodEnd) expirationDate = license.currentPeriodEnd
         })
         this.rotationsWaitingCount = rotationsWaitingCount
@@ -84,6 +87,7 @@ export class SettingsComponent {
         this.availableLicenses = availableLicenses
         this.availableRotations = availableRotations
         this.expirationDate = expirationDate
+        this.rotacionWarningCount = failedRotationCount
         console.log('rotationsWaitingCount',this.rotationsWaitingCount)
         if (!this.selectedLicense) this.selectedLicense = licenses[0]
         else {
@@ -160,6 +164,7 @@ export class SettingsComponent {
       } 
       catch (error) {
         console.error("Operación cancelada o falló", error);
+        this.waiting = false
       }  
     }
 
