@@ -122,6 +122,7 @@ import { CustomMonthPipe } from './shared/pipes/custom-month.pipe';
 import { SupportComponent } from './shared/components/support/support.component';
 import { StudyTimeMonthlyLineChartComponent } from './main-components/dashboard/users-study-time-container/study-time-monthly-line-chart/study-time-monthly-line-chart.component';
 import { DialogDownloadReportComponent } from './shared/components/dialogs/dialog-download-report/dialog-download-report.component';
+import { CreateDemoComponent } from './main-components/create-demo/create-demo.component';
 
 
 @NgModule({
@@ -197,6 +198,7 @@ import { DialogDownloadReportComponent } from './shared/components/dialogs/dialo
     SupportComponent,
     StudyTimeMonthlyLineChartComponent,
     DialogDownloadReportComponent,
+    CreateDemoComponent,
   ],
   imports: [
     BrowserModule,

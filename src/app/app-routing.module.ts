@@ -48,6 +48,7 @@ const routes: Routes = [
       {path:"validation", title: MAIN_TITLE + 'Validación de competencias', component: ValidationComponent, canActivate: [AuthGuard]},
       {path:"settings", title: MAIN_TITLE + 'Configuración', component: SettingsComponent, canActivate: [AuthGuard]},
       {path:"my-account", title: MAIN_TITLE + 'Mi cuenta', component: MyAccountComponent, canActivate: [AuthGuard]},
+      // {path:"create-demo", title: MAIN_TITLE + 'Crear demo', component: CreateDemoComponent, canActivate: [AuthGuard]},
     ]
   },
   {
