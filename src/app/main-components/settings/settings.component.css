@@ -81,3 +81,10 @@ color: gray;
     box-shadow: 0px 1px 4px rgba(26, 26, 26, 0.514);
     
 }
+
+.separator {
+    width: 1px !important;
+    background-color: var(--gray-3); /* Cambiar por el color deseado */
+    height: auto; /* o un valor fijo si quieres un tamaño específico */
+  }
+  
