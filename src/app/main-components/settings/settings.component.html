@@ -18,22 +18,22 @@
 
 
     <div fxLayout="row" fxLayoutAlign="left  " class="mgt05 mgb10"  fxLayoutGap="2.5rem">
-        <div class=" radius10 shadowLight pdt10 mgb10 cards" fxLayout="column" style="height: 15vh; width: 22.58%; background-color: rgba(244, 244, 244, 0.362); ">
-            <span class=" ft13 ft500 pdl10">Licencias disponibles</span>
+        <div class=" radius10 shadowLight pdt10 mgb10 cards" fxLayoutAlign="center center" fxLayout="column" style="height: 15vh; width: 22.58%; background-color: rgba(244, 244, 244, 0.362); ">
+            <span class=" ft13 ft500">Licencias disponibles</span>
             <span class="fh ft30 ft500 makeGray mgb10" fxLayout="row" fxLayoutAlign="center center">{{availableLicenses}}</span>
         </div>
 
-        <div class=" radius10 shadowLight pdt10 mgb10 cards" fxLayout="column" style="height: 15vh; width: 22.58%; background-color: rgba(244, 244, 244, 0.362); ">
-            <span class=" ft13 ft500 pdl10">Licencias en uso </span>
+        <div class=" radius10 shadowLight pdt10 mgb10 cards" fxLayoutAlign="center center" fxLayout="column" style="height: 15vh; width: 22.58%; background-color: rgba(244, 244, 244, 0.362); ">
+            <span class=" ft13 ft500">Licencias en uso </span>
             <span class="fh ft30 ft500 makeGray mgb10" fxLayout="row" fxLayoutAlign="center center">{{totalLicenses - availableLicenses}}</span>
         </div>
         <!-- <div class=" radius10 shadowLight pdt10 mgb10 cards" fxLayout="column" style="height: 15vh; width: 22.58%; background-color: rgba(244, 244, 244, 0.362); ">
             <span class=" ft13 ft500 pdl10">Rotaciones disponibles</span>
             <span class="fh ft30 ft500 makeGray mgb10" fxLayout="row" fxLayoutAlign="center center">{{availableRotations}}</span>
         </div> -->
-        <div class="radius10 shadowLight pdt10 mgb10 cards" fxLayout="column" style="height: 15vh; width: 22.58%; background-color: rgba(244, 244, 244, 0.362);">
-            <span *ngIf="!(availableLicenses == 0 && availableRotations == 0)" class="ft13 ft500 pdl10">Rotaciones disponibles</span>
-            <span *ngIf="(availableLicenses == 0 && availableRotations == 0)" class="ft13 ft500 pdl10">Rotaciones</span>
+        <div class="radius10 shadowLight pdt10 mgb10 cards" fxLayout="column" fxLayoutAlign="center center" style="height: 15vh; width: 22.58%; background-color: rgba(244, 244, 244, 0.362);">
+            <span *ngIf="!(availableLicenses == 0 && availableRotations == 0)" class="ft13 ft500">Rotaciones disponibles</span>
+            <span *ngIf="(availableLicenses == 0 && availableRotations == 0)" class="ft13 ft500">Rotaciones</span>
             <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="22px" class="fh ft30 ft500 mgb10">
               <div *ngIf="availableLicenses == 0 && availableRotations == 0" fxLayout="column" fxLayoutAlign="center center">
                 <span class="fh ft30 ft500 makeGray" fxLayout="row" fxLayoutAlign="center center">{{availableRotations}}</span>
@@ -49,8 +49,8 @@
             </div>
             </div>
         </div>
-        <div class=" radius10 shadowLight pdt10 mgb10 cards" fxLayout="column" style="height: 15vh; width: 22.58%; background-color: rgba(244, 244, 244, 0.362); ">
-            <span class=" ft13 ft500 pdl10">Vigencia</span>
+        <div class=" radius10 shadowLight pdt10 mgb10 cards" fxLayoutAlign="center center" fxLayout="column" style="height: 15vh; width: 22.58%; background-color: rgba(244, 244, 244, 0.362); ">
+            <span class=" ft13 ft500">Vigencia</span>
             <span class="fh ft30 ft500 makeGray mgb10" fxLayout="row" fxLayoutAlign="center center">{{expirationDate | date:'dd/MM/yyyy'}}</span>
         </div>
     </div>
