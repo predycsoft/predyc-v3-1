@@ -114,14 +114,14 @@
                 </div>
                 <div *ngIf="isEditing" ngbDropdown [autoClose]="'outside'" fxLayout="row" fxLayoutAlign=" center" >
                     <div class="mgt10 h40px radius20 shadow12" style="width: 100%; overflow: hidden; z-index: 2;" fxLayout="row">
-                        <button type="button" fxLayout="row" fxLayoutAlign="space-between center" class="gray-10 backGray2 ft12" style="border-radius: 0 0 0 0; width: 25%; height: 100%; padding: 0 10px;" id="dropdownBasic1" ngbDropdownToggle>
+                        <button type="button" fxLayout="row" fxLayoutAlign="space-between center" class="gray-10 backGray2 ft12" style="border-radius: 0 0 0 0; width: 30%; height: 100%; padding: 0 10px;" id="dropdownBasic1" ngbDropdownToggle>
                             Categorias
                         </button>
-                        <div style="width: 75%; overflow: hidden; padding: 0 0px; position: relative" class=" pdl10 pdr05" fxLayout="row" fxLayoutAlign=" center">
+                        <div style="width: 70%; overflow: hidden; padding: 0 0px; position: relative" class=" pdl10 pdr05" fxLayout="row" fxLayoutAlign=" center">
                                 <input 
                                 type="text"
                                 placeholder="Buscar"
-                                class="pdl05 ft24"
+                                class="pdl05 ft13"
                                 style="width: 100%; outline: none; border: 0; background-color: transparent;"
                                 [formControl]="searchControl"
                                 matInput
@@ -167,7 +167,7 @@
                     </div>
                     <div ngbDropdownMenu aria-labelledby="dropdownBasic1" class="dropdownContainer fw" (mouseleave)="onCategoryLeave()">
                         <div fxLayout="row" class=" fw">
-                            <div style="width: 25%;" class="backGray2 dropy">
+                            <div style="width: 32%;" class="backGray2 dropy">
                                 <div 
                                     ngbDropdownItem
                                     class="ft12 ft500 pdt10 pdb10 gray-10 dropCategory"
@@ -200,7 +200,7 @@
                                         <img [src]="course.imagen" [alt]="course.titulo" class="w42px h42px radius4">
                                         <div fxLayout="column" fxLayoutGap="1px" class="">
                                             <div  class="">
-                                                <div class="title-course-badge">{{course.titulo | titlecase}} </div>
+                                                <div class="title-course-badge ft12" style="display: inline-block;   ">{{course.titulo | titlecase}} </div>
                                                 <div class="skills-container" style="margin-top: -5px;">
                                                     <div
                                                         *ngFor="let skill of course.skills"
@@ -226,8 +226,8 @@
                         fxLayoutGap="1rem"
                         *ngFor="let item of studyPlan; let i = index"
                     >
-                        <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
-                            <div
+                    <div fxLayout="row" fxLayoutAlign="space-between center" class=" fw" fxLayoutGap="0.5rem">
+                        <div
                                 fxLayout="column"
                                 fxLayoutGap="5px"
                                 class="ft11"
@@ -236,7 +236,7 @@
                                     {{ item.titulo }}
                                 </span>
                         </div>
-                        <div fxLayoutAlign="center center" fxLayout="row" fxLayoutGap="1rem">
+                        <div fxLayout="row" class="" fxLayoutGap="0.5rem" style="margin-left: 5px;">
                             <span class="gray-10 ft11 nowrap">
                                 {{ roundNumber(item.duracion / 60) }} hrs
                             </span>
@@ -244,7 +244,7 @@
                         </div>
                     </div>
                 </div>
-                <div *ngIf="studyPlan.length === 0" class="mgt15" style="height: 75%;">
+                <div *ngIf="studyPlan.length === 0" class="mgt15" style="height: 70%;">
                     <div       
                         fxLayout="row"
                         fxLayoutAlign="center center"

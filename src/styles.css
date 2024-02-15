@@ -2004,5 +2004,5 @@ span{
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 450px; /* Ajusta esto según el tamaño deseado */
+  max-width: 400px; /* Ajusta esto según el tamaño deseado */
 }

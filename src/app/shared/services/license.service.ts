@@ -38,31 +38,52 @@ export class LicenseService {
     )
   }
 
-  async assignLicense(license: License, usersIds: string[]) {
+  async assignLicense(license: License, usersIds: string[],rotation = false) {
     const licenseRef: DocumentReference<License> =  this.afs.collection<License>(License.collection).doc(license.id).ref
     if(license.quantityUsed + usersIds.length > license.quantity){
       this.alertService.errorAlert("No tienes suficientes cupos en esta licencia para la cantidad de usuarios seleccionados")
       return
     } 
     else{
-      const dialogResult = await firstValueFrom(this.dialogService.dialogConfirmar().afterClosed());
-      if (dialogResult) {
+      //const dialogResult = await firstValueFrom(this.dialogService.dialogConfirmar().afterClosed());
+      //if (dialogResult) {
+      if (true) {
         const createSubscriptionsPromises = usersIds.map(userId => this.subscriptionService.createUserSubscription(license, licenseRef, userId));
         await Promise.all(createSubscriptionsPromises)
-        // Update license quantityUsed field OR rotations. 
-        await this.afs.collection(License.collection).doc(license.id).set(
-          {
-            quantityUsed: license.quantityUsed + usersIds.length
-          },{ merge: true }
-        );
+        // Update license quantityUsed field OR rotations.
+        console.log(rotation,(license.rotations>license.rotationsUsed),rotation && license.rotations>license.rotationsUsed)
+        if(rotation && license.rotations>license.rotationsUsed){
+
+          // license.quantityUsed = license.quantityUsed + usersIds.length
+          // license.rotationsUsed = license.rotationsUsed +  usersIds.length
+          // license.rotationsWaitingCount = license.rotationsWaitingCount - usersIds.length
+          
+          await this.afs.collection(License.collection).doc(license.id).set(
+            {
+              quantityUsed: license.quantityUsed + usersIds.length,
+              rotationsUsed: license.rotationsUsed +  usersIds.length,
+              rotationsWaitingCount:license.rotationsWaitingCount - usersIds.length
+            },{ merge: true }
+          );
+
+        }
+        else{
+          //license.quantityUsed = license.quantityUsed + usersIds.length
+          await this.afs.collection(License.collection).doc(license.id).set(
+            {
+              quantityUsed: license.quantityUsed + usersIds.length
+            },{ merge: true }
+          );
+        }
+
         console.log("Cupo de licencia usada")
-        this.dialogService.dialogExito()
+        // this.dialogService.dialogExito()
       }
       else throw new Error('Operación cancelada');
     }
   }
 
-  async removeLicense(usersIds: string[]): Promise<void> {
+  async removeLicense(usersIds: string[],licenses): Promise<void> {
     const dialogResult = await firstValueFrom(this.dialogService.dialogConfirmar().afterClosed());
     if (dialogResult) {
       // let promises = []
@@ -70,7 +91,7 @@ export class LicenseService {
       //   promises.push(this.subscriptionService.removeUserSubscription(userId));
       // }
       console.log("usersIds", usersIds)
-      const promises = usersIds.map(userId => this.subscriptionService.removeUserSubscription(userId));
+      const promises = usersIds.map(userId => this.subscriptionService.removeUserSubscription(userId,licenses));
       await Promise.all(promises)
       this.dialogService.dialogExito();
     } 

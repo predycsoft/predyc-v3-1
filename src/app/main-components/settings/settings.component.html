@@ -16,20 +16,21 @@
     
     <p class="ft600 ft16 gray-10" >Licencias</p>
 
+
     <div fxLayout="row" fxLayoutAlign="left  " class="mgt05 mgb10"  fxLayoutGap="2.5rem">
-        <div class=" radius10 borderLight pdt10 mgb10 cards" fxLayout="column" style="height: 15vh; width: 22.58%">
+        <div class=" radius10 shadowLight pdt10 mgb10 cards" fxLayout="column" style="height: 15vh; width: 22.58%; background-color: rgba(244, 244, 244, 0.362); ">
             <span class=" ft13 ft500 pdl10">Licencias disponibles</span>
             <span class="fh ft30 ft500 makeGray mgb10" fxLayout="row" fxLayoutAlign="center center">{{availableLicenses}}</span>
         </div>
-        <div class=" radius10 borderLight pdt10 mgb10 cards" fxLayout="column" style="height: 15vh; width: 22.58%">
+        <div class=" radius10 shadowLight pdt10 mgb10 cards" fxLayout="column" style="height: 15vh; width: 22.58%; background-color: rgba(244, 244, 244, 0.362); ">
             <span class=" ft13 ft500 pdl10">Licencias en uso </span>
             <span class="fh ft30 ft500 makeGray mgb10" fxLayout="row" fxLayoutAlign="center center">{{totalLicenses - availableLicenses}}</span>
         </div>
-        <div class=" radius10 borderLight pdt10 mgb10 cards" fxLayout="column" style="height: 15vh; width: 22.58%">
+        <div class=" radius10 shadowLight pdt10 mgb10 cards" fxLayout="column" style="height: 15vh; width: 22.58%; background-color: rgba(244, 244, 244, 0.362); ">
             <span class=" ft13 ft500 pdl10">Rotaciones disponibles</span>
             <span class="fh ft30 ft500 makeGray mgb10" fxLayout="row" fxLayoutAlign="center center">{{availableRotations}}</span>
         </div>
-        <div class=" radius10 borderLight pdt10 mgb10 cards" fxLayout="column" style="height: 15vh; width: 22.58%">
+        <div class=" radius10 shadowLight pdt10 mgb10 cards" fxLayout="column" style="height: 15vh; width: 22.58%; background-color: rgba(244, 244, 244, 0.362); ">
             <span class=" ft13 ft500 pdl10">Vigencia</span>
             <span class="fh ft30 ft500 makeGray mgb10" fxLayout="row" fxLayoutAlign="center center">{{expirationDate | date:'dd/MM/yyyy'}}</span>
         </div>
@@ -68,9 +69,9 @@
                 <button class="w-12 mgl08 " fxLayout="row"
                     fxLayoutAlign="center "
                     (click)="currentStatus !== 'active' ? assignLicense() : removeLicense()"
-                    [disabled]="selectedUsersIds.length === 0"
+                    [disabled]="selectedUsersIds.length === 0 || waiting"
                     style="border-radius: 24px !important;"
-                    [ngClass]="selectedUsersIds.length === 0 ? 'select-container2': (currentStatus !== 'active' ? 'blueButtonAnim  button-animation':'redButtonAnim  button-animation')">
+                    [ngClass]="selectedUsersIds.length === 0 || waiting? 'select-container2': (currentStatus !== 'active' ? 'blueButtonAnim  button-animation':'redButtonAnim  button-animation')">
                     {{ currentStatus !== 'active' ? 'Asignar licencia' : 'Cancelar licencia' }}
                 </button>
                 <div class="w-30"></div>
