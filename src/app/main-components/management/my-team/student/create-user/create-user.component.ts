@@ -46,7 +46,7 @@ export class CreateUserComponent {
   filteredDepartments: Observable<string[]>;
 
   async ngOnInit() {
-    this.profileServiceSubscription = this.profileService.getProfilesObservable().subscribe(profiles => {if (profiles) this.profiles = profiles})
+    this.profileServiceSubscription = this.profileService.getProfiles$().subscribe(profiles => {if (profiles) this.profiles = profiles})
     this.departmentServiceSubscription = this.departmentService.getDepartments$().subscribe({
       next: departments => {
         this.departments = departments

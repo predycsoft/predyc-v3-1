@@ -33,7 +33,7 @@ export class MyTeamComponent {
 
   ngOnInit() {
     this.profileService.loadProfiles()
-    this.profileSubscription = this.profileService.getProfilesObservable().subscribe(profiles => {if (profiles) this.profiles = profiles})
+    this.profileSubscription = this.profileService.getProfiles$().subscribe(profiles => {if (profiles) this.profiles = profiles})
     this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
       const profile = params['profile'] || '';
       this.selectedProfile = profile

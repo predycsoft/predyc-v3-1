@@ -601,8 +601,6 @@ export class InitScriptComponent {
         if (targetCourse) selectedCourses.push(targetCourse)
         else console.log(`Perfil ${profile.name} curso no encontrado ${courseName}`)
       })
-      // Aqui es donde tengo que modificar
-
       const coursesRef = selectedCourses.map(course => {
         return this.courseService.getCourseRefById(course.id)
       })
