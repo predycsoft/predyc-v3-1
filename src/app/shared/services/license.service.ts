@@ -95,7 +95,10 @@ export class LicenseService {
       await Promise.all(promises)
       this.dialogService.dialogExito();
     } 
-    else throw new Error('Operación cancelada');
+    else {
+      throw new Error('Operación cancelada');
+
+    }
   }  
 
 
