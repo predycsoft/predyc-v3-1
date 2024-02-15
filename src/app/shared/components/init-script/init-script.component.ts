@@ -9,7 +9,6 @@ import { Skill } from '../../models/skill.model';
 import { enterpriseData } from 'src/assets/data/enterprise.data'
 import { enterpriseDataPredyc } from 'src/assets/data/enterprise.data'
 
-
 import { usersData } from 'src/assets/data/users.data'
 import { notificationsData } from 'src/assets/data/notifications.data'
 import { Notification } from '../../models/notification.model';
@@ -27,7 +26,7 @@ import { categoriesData } from 'src/assets/data/categories.data';
 import { CategoryService } from '../../services/category.service';
 import { skillsData } from 'src/assets/data/skills.data';
 import { SkillService } from '../../services/skill.service';
-import { first, firstValueFrom, lastValueFrom } from 'rxjs';
+import { Subscription, first, firstValueFrom, lastValueFrom } from 'rxjs';
 import { departmentsData } from 'src/assets/data/departments.data'
 import { Department } from '../../models/department.model';
 import { DepartmentService } from '../../services/department.service';
@@ -53,6 +52,7 @@ import sampleSize from 'lodash/sampleSize';
 import { courseCategoryAndSkillsRelation } from 'src/assets/data/courseCategoryAndSkillsRelation.data'
 import { capitalizeFirstLetter, splitArray } from 'src/app/shared/utils'
 import { ProfileService } from '../../services/profile.service';
+import { AngularFireFunctions } from '@angular/fire/compat/functions';
 
 @Component({
   selector: 'app-init-script',
@@ -75,12 +75,24 @@ export class InitScriptComponent {
     public courseClassService: CourseClassService,
     public moduleService: ModuleService,
     public profileService: ProfileService,
+    private fireFunctions: AngularFireFunctions,
   ) {}
 
   instructors = [];
-
+  fireFunctionSubscription: Subscription
 
   async ngOnInit() {}
+
+  ngOnDestroy() {
+    if (this.fireFunctionSubscription) this.fireFunctionSubscription.unsubscribe()
+  }
+
+  async emptyDatabase() {
+    this.fireFunctionSubscription = this.fireFunctions.httpsCallable('emptyDatabase')({}).subscribe({
+      next: result => true,
+      error: error => false
+    })
+  }
 
   async initDatabase() {
     // Create Coupons
@@ -309,7 +321,7 @@ export class InitScriptComponent {
 
     // Create profiles
     console.log('********* Creating Profiles *********')
-    await this.addProfiles()
+    await this.addProfileV2()
     console.log(`Finished Creating Profiles`)
 
     console.log('----------------------- End of init-script -----------------------')
@@ -563,11 +575,46 @@ export class InitScriptComponent {
         // Incrementar los índices para el siguiente profile
         userIndex++;
       }
-
       enterpriseIndex++;
-
     }
+  }
 
+  test() {
+    this.addProfileV2()
+  }
+
+  async addProfileV2() {  
+    // Query to get courses where enterpriseRef is empty
+    const enterpriseEmpty = await firstValueFrom(this.afs.collection<Curso>(Curso.collection, ref =>
+      ref.where('enterpriseRef', '==', null)
+    ).valueChanges({ idField: 'id' }))
+
+    const courses = [...enterpriseEmpty]
+
+    for (const profile of profilesData) {
+      const profileRef = this.afs.collection(Profile.collection).doc();
+      const id = profileRef.ref.id;
+
+      const selectedCourses = []
+      profile.coursesRef.forEach(courseName => {
+        const targetCourse = courses.find(course => course.titulo.toLowerCase().trim() === courseName.toLowerCase().trim())
+        if (targetCourse) selectedCourses.push(targetCourse)
+        else console.log(`Perfil ${profile.name} curso no encontrado ${courseName}`)
+      })
+      // Aqui es donde tengo que modificar
+
+      const coursesRef = selectedCourses.map(course => {
+        return this.courseService.getCourseRefById(course.id)
+      })
+
+      profile.permissions
+      await profileRef.set({
+        ...profile,
+        id: id,
+        coursesRef
+      })
+      // console.log("id", id);
+    }
 
   }
 
