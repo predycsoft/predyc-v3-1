@@ -80,7 +80,7 @@ export class SubscriptionService {
         const docSnapshot = await licenseRef.get();
         let license = licenses.find(licenseData=>licenseData.rotationsWaitingCount+1<=(licenseData.rotations-licenseData.rotationsUsed) && (licenseData.status == 'active'))
         if(license){
-        console.log('rotar',license)
+          console.log('rotar',license)
           licenseRef = this.afs.doc<License>(`${License.collection}/${license.id}`).ref
           let rotationsWaitingCount = license.rotationsWaitingCount+1
           let quantityUsed = license.quantityUsed-1
@@ -94,6 +94,7 @@ export class SubscriptionService {
         }
         else{
           if (docSnapshot.exists) {
+            console.log('no rotar',license)
             const licenseData = docSnapshot.data();
             await licenseRef.update({
               failedRotationCount: licenseData.failedRotationCount + 1,

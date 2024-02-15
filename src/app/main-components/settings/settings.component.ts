@@ -141,11 +141,12 @@ export class SettingsComponent {
             this.waiting = false
           } 
           catch (error) {
+            this.waiting = false
             console.error("Operación cancelada o falló", error);
           }        
         } else if (result.isDenied) {
           this.showDialog(this.licenses)
-          this.waiting = true
+          this.waiting = false
         }
       });
       return
@@ -226,6 +227,9 @@ export class SettingsComponent {
         }
       }
       this.dialogService.dialogExito()
+      this.waiting = false
+    }
+    else{
       this.waiting = false
     }
   }
