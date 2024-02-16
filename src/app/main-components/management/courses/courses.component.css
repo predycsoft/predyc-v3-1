@@ -31,6 +31,21 @@
     border: none;
 }
 
+
+.catInput2 {
+   
+    font-size: 12px;
+    border-radius: 24px!important;
+
+}
+.catInput2:focus{
+    outline: none;
+}
+.catInput2::placeholder{
+    color: var(--gray-9);
+    font-size: 12px;
+}
+
 .left{
     /* min-height: calc(90vh - 4rem);
     max-height: calc(90vh - 4rem); */
@@ -198,7 +213,7 @@
   .search-container {
     display: flex;
     align-items: center;
-    border-radius: 6px;
+    border-radius: 10px!important;
     height: 30px;
     border: none;
     overflow: hidden;
