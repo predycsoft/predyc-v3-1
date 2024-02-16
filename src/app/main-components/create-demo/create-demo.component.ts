@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subscription, firstValueFrom } from 'rxjs';
+import { Subscription, filter, first, firstValueFrom, of, switchMap, take } from 'rxjs';
 import { Curso } from 'src/app/shared/models/course.model';
 import { Enterprise } from 'src/app/shared/models/enterprise.model';
 import { License } from 'src/app/shared/models/license.model';
@@ -16,6 +16,8 @@ import { ProfileService } from 'src/app/shared/services/profile.service';
 import { SubscriptionService } from 'src/app/shared/services/subscription.service';
 import { UserService } from 'src/app/shared/services/user.service';
 import { dateFromCalendarToTimestamp, daysBetween } from 'src/app/shared/utils';
+import { StudyPlanClass } from 'src/app/shared/models/study-plan-class';
+import { CourseByStudent } from 'src/app/shared/models/course-by-student.model';
 
 function getStartOfTwoMonthsAgo(today) {
   const twoMonthsAgo = new Date(today); // Create a new date object with today's date
@@ -66,8 +68,9 @@ export class CreateDemoComponent {
     this.today = new Date();
     this.today.setHours(0, 0, 0, 0);
     this.startDateForStudyPlan = getStartOfTwoMonthsAgo(this.today)
-    this.courseServiceSubscription = this.courseService.getCourses$().subscribe(courses => {
+    this.courseServiceSubscription = this.courseService.getCoursesObservable().pipe(filter(course =>course.length>0 ),take(1)).subscribe(courses => {
       this.courses = courses
+      console.log('this.courses',this.courses)
     })
     this.profileServiceSubscription = this.profileService.getProfiles$().subscribe(profiles => {
       this.profiles = profiles
@@ -96,7 +99,7 @@ export class CreateDemoComponent {
   async debug() {
     const priceSnapshot = await firstValueFrom(this.afs.collection<Price>(Price.collection, ref => ref.where("id", "==", "Plan-Empresarial-468USD-year")).get())
     const prices = priceSnapshot.docs.map(item => item.data())
-    console.log("price", prices[0])
+    //console.log("price", prices[0])
   }
 
   async validateCurrentModalPage() {
@@ -124,30 +127,30 @@ export class CreateDemoComponent {
       if (!existingUser.empty) throw Error("Ya existe un usuario con este correo")
 
       // Create enterprise
-      console.log('********* Creating Enterprise *********')
+      //console.log('********* Creating Enterprise *********')
       const enterprise = await this.createEnterprise()
-      console.log(`Finished Creating Enterprise`)
+      //console.log(`Finished Creating Enterprise`)
 
       // Create License with trialDays equal to endDate-today days
-      console.log('********* Creating License *********')
+      //console.log('********* Creating License *********')
       const license = await this.createLicense(enterprise.id)
-      console.log(`Finished Creating Licenses`)
+      //console.log(`Finished Creating Licenses`)
 
       // Create admin and student users.
       // activeUsersQty users without profiles and without progress
       // 10 demo users without subscription but with profiles and progress. For these users, studyplan should be created with specified dedication perMonth and startDate
-      console.log('********* Creating Users *********')
+      //console.log('********* Creating Users *********')
       const users = await this.createUsers(enterprise.id)
-      console.log(`Finished Creating Users`)
+      //console.log(`Finished Creating Users`)
 
       // Assign activeUsersQty licenses to users
-      console.log('********* Creating Subscriptions *********')
+      //console.log('********* Creating Subscriptions *********')
       // NEED CRITERIA TO FILTER USERS TO BE ACTIVATED
       // const filteredUsers = users.filter(user => user.)
       // for (let user of filteredUsers) {
       //   await this.subscriptionService.createUserSubscription(license, this.afs.collection<License>(License.collection).doc(license.id).ref, user.uid)
       // }
-      console.log(`Finished Creating Subscriptions`)
+      //console.log(`Finished Creating Subscriptions`)
 
       // For the 10 users create random scenarios consisting of:
       // completed validationTest with random scores
@@ -158,7 +161,7 @@ export class CreateDemoComponent {
 
       this.alertService.succesAlert("La empresa demo se ha creado correctamente")
     } catch (error) {
-      console.log(error)
+      //console.log(error)
       this.alertService.errorAlert(error)
     }
   }
@@ -191,7 +194,7 @@ export class CreateDemoComponent {
       vimeoFolderId: null,
       vimeoFolderUri: null,       
     })
-    console.log("Enterprise", enterprise.toJson())
+    //console.log("Enterprise", enterprise.toJson())
     await this.enterpriseService.addEnterprise(enterprise)
     return enterprise
   }
@@ -223,7 +226,7 @@ export class CreateDemoComponent {
     const priceSnapshot = await firstValueFrom(this.afs.collection<Price>(Price.collection, ref => ref.where("id", "==", "Plan-Empresarial-468USD-year")).get())
     const prices = priceSnapshot.docs.map(item => item.data())
     const price = prices[0]
-    console.log("price", price)
+    //console.log("price", price)
     // const licensePriceValue = (await ((licensePriceRef as DocumentReference).get())).data() as Price
     // const couponPriceRef = licensePriceValue.coupon
     license.priceRef = this.afs.collection<Price>(Price.collection).doc(price.id).ref
@@ -231,7 +234,7 @@ export class CreateDemoComponent {
     license.enterpriseRef = enterpriseRef
 
     await licenseRef.set(license.toJson(), {merge: true})
-    console.log("License", license.toJson())
+    //console.log("License", license.toJson())
     return license
   }
 
@@ -310,30 +313,206 @@ export class CreateDemoComponent {
         profile: this.profileService.getProfileRefById(randomProfile.id)
       })
     }
+    let today = new Date().getTime()
+    let hours = this.hoursPerMonthForStudyPlan
+    let tiempoExactoTransucrrido = today - this.startDateForStudyPlan
+    tiempoExactoTransucrrido = tiempoExactoTransucrrido/(2629746000)// tiempo en meses
+    let horasOptimasPlan = Math.round(hours*tiempoExactoTransucrrido);
+    console.log('users',users)
     for (let user of users) {
+      let fecha = this.startDateForStudyPlan;
+      let hoursUser = this.calculateVariation(this.randomIntFromInterval(Math.round(horasOptimasPlan/2),horasOptimasPlan),5)
+      console.log('horasOptimasPlan',horasOptimasPlan,'horas usuario',hoursUser)
+      let minutesUser = hoursUser*60;
+      let minutosMonth= Math.round(minutesUser/tiempoExactoTransucrrido)
+      let minutosMonthAux = minutosMonth;
       const newUser = User.fromJson(user)
       await this.userService.addUser(newUser)
-      console.log("User", User.fromJson(user))
+      //console.log("User", User.fromJson(user))
+      const userRef = this.afs.collection('user').doc(newUser.uid).ref;
       if (user.profile) {
         const coursesRefs: DocumentReference<Curso>[] = this.profiles.find(profile => profile.id === user.profile.id).coursesRef
-        await this.createStudyPlan(newUser.uid, coursesRefs)
+        let coursesRefUser = await this.createStudyPlan(newUser.uid, coursesRefs) // aqui crea todos los datos del plan de estudio del usuario
+        //console.log("User cursos", User.fromJson(user),coursesRefs,this.hoursPerMonthForStudyPlan,this.startDateForStudyPlan,this.courses)
+        if(coursesRefs.length>0){
+          //examen inicial
+          let exam = {
+            userRef: userRef,
+            type: 'inicial',
+            score:this.randomIntFromInterval(0,100),
+            date:today,
+            profileRef:user.profile,
+          }
+          await this.createExamProfile(exam)
+        }
+        for (let courseRef of coursesRefs){
+          let course = this.courses.find(x=>x.id == courseRef.id)
+          if(minutesUser<=0){
+            break;
+          }
+          if(course && minutesUser>0){
+            let coursesByStudent = coursesRefUser.find(x=>x.courseRef.id == courseRef.id)
+            let modulos = course['modules'].sort((a, b) => a.numero - b.numero)
+            console.log('modulos',modulos)
+            let courseTime = 0;
+            let classes = [];
+            modulos.forEach(module => {
+              module.clases.forEach(clase => {
+                classes.push(clase);
+                courseTime=courseTime+clase.duracion
+              });
+            });
+            let clasesCompleted = 0
+            let progressTime = 0
+            for(let clase of classes){
+              progressTime = progressTime + clase.duracion
+              minutesUser = minutesUser - clase.duracion;
+              minutosMonthAux = minutosMonthAux - clase.duracion;
+              let fechaIni = fecha;
+              let fechaFin = fechaIni + (clase.duracion * 60000);
+              fecha = fechaFin;
+              let dateIni = new Date(fechaIni);
+              let dateEnd = new Date(fechaFin);
+              clasesCompleted = clasesCompleted+1;
+              let progreso = clasesCompleted * 90 / classes.length;
+              await this.enrollClassUser(userRef, clase, coursesByStudent, dateIni, dateEnd,progreso,progressTime,courseTime,newUser,course);
+              if (minutosMonthAux <= 0) {
+                fecha = this.obtenerPrimerDiaDelSiguienteMes(fecha).getTime();
+                minutosMonthAux = minutosMonth;
+              }
+              if (minutesUser <= 0) {
+                console.log('break user')
+                break;
+              }
+            }
+          }
+        }
       }
     }
     return users
   }
 
-  async createStudyPlan(studentUid: string, coursesRefs: DocumentReference<Curso>[]) {
-    let startDate = this.startDateForStudyPlan
-    let endDate = null
-    for (let i = 0; i < coursesRefs.length; i++) {
-      const userRef: DocumentReference<User> = this.userService.getUserRefById(studentUid)
-      const courseData = this.courses.find(courseData => courseData.id === coursesRefs[i].id);
-      const courseDuration = courseData.duracion
-      endDate = this.courseService.calculatEndDatePlan(startDate, courseDuration, this.hoursPerMonthForStudyPlan)
-      await this.courseService.saveCourseByStudent(coursesRefs[i], userRef, new Date(startDate), new Date(endDate))
-      console.log(`Student ${studentUid} enrolled ${coursesRefs[i].id} from ${new Date(startDate).toString()} to ${new Date(endDate).toString()}`)
-      startDate = endDate
+
+  async createExamProfile(test){
+    try{
+      const ref = this.afs.collection<any>('profileTestsByStudent').doc().ref;
+      await ref.set({...test, id: ref.id}, { merge: true });
     }
+    catch (error) {
+      console.log('createExamProfile error',error)
+    }
+    
   }
+  async enrollClassUser(userRef,clase,coursesByStudent,date,dateEnd,progreso,progressTime,courseTime,user,course){
+
+    const claseRef = this.afs.collection('class').doc(clase.id).ref;
+    const coursesByStudentRef = this.afs.collection('coursesByStudent').doc(coursesByStudent.id).ref;
+    let classStudyPlan = new StudyPlanClass
+    classStudyPlan.completed = false
+    classStudyPlan.classRef = claseRef
+    classStudyPlan.userRef = userRef
+    classStudyPlan.coursesByStudentRef = coursesByStudentRef;
+    classStudyPlan.dateStart = date;
+    classStudyPlan.dateEnd = dateEnd;
+    classStudyPlan.completed = true
+    try {
+      const ref = this.afs.collection<StudyPlanClass>(StudyPlanClass.collection).doc().ref;
+      await ref.set({...classStudyPlan.toJson(), id: ref.id}, { merge: true });
+      classStudyPlan.id = ref.id;
+      clase.classByStudentData = classStudyPlan;
+      if(!coursesByStudent.dateStart){
+        let idCourseStudent = coursesByStudent.id
+        if(progreso >= 90){ // Curso terminado
+          progreso = 100
+          let finalScore = this.randomIntFromInterval(70,100)
+          await this.afs.collection("coursesByStudent").doc(idCourseStudent)
+          .update({
+            dateStart: date,
+            dateEnd:dateEnd,
+            progress:progreso,
+            finalScore:finalScore,
+            progressTime:progressTime,
+            courseTime:courseTime,
+            courseDuration:courseTime,
+          });
+          let certificado={
+            usuarioId: user.uid,
+            usuarioEmail: user.email,
+            usuarioNombre: user.name,
+            cursoId: course.id,
+            cursoTitulo: course.titulo,
+            instructorId: course.instructorRef.id,
+            instructorNombre: course.instructorNombre,
+            puntaje: finalScore,
+            usuarioFoto: null,
+            date: dateEnd
+          }
+          const ref = this.afs.collection<any>('userCertificate').doc().ref;
+          await ref.set({...certificado, id: ref.id}, { merge: true });
+        }
+        else{
+          await this.afs.collection("coursesByStudent").doc(idCourseStudent)
+          .update({
+            dateStart: date,
+            progress:progreso,
+            progressTime: progressTime,
+            courseTime: courseTime
+          });
+        }
+
+      }
+      console.log('enrollClassUser')
+    } catch (error) {
+    }
+
+  }
+
+  randomIntFromInterval(min, max) { // min and max included 
+    return Math.round(Math.random() * (max - min + 1) + min)
+  }
+
+  obtenerPrimerDiaDelSiguienteMes(fechaEnMilisegundos: number): Date {
+    const fecha = new Date(fechaEnMilisegundos);
+  
+    // Incrementar el mes
+    if (fecha.getMonth() === 11) { // Diciembre
+      fecha.setFullYear(fecha.getFullYear() + 1); // Incrementar el año
+      fecha.setMonth(0); // Establecer el mes a Enero
+    } else {
+      fecha.setMonth(fecha.getMonth() + 1); // Incrementar el mes
+    }
+  
+    // Establecer el día a 1
+    fecha.setDate(1);
+  
+    return fecha;
+  }
+  
+
+  calculateVariation(value: number, percentage: number): number {
+    const variation = value * (percentage / 100);
+    // para una variación positiva o negativa, generamos un número aleatorio entre -1 y 1 y lo multiplicamos por la variación
+    const randomSign = Math.random() < 0.5 ? -1 : 1;
+    return value + (variation * randomSign);
+  }
+
+  async createStudyPlan(studentUid: string, coursesRefs: DocumentReference<Curso>[]): Promise<CourseByStudent[]> {
+    let startDate = this.startDateForStudyPlan;
+    let endDate = null;
+    const enrolledCourses: CourseByStudent[] = []; // Arreglo para almacenar los cursos insertados
+  
+    for (let i = 0; i < coursesRefs.length; i++) {
+      const userRef: DocumentReference<User> = this.userService.getUserRefById(studentUid);
+      const courseData = this.courses.find(courseData => courseData.id === coursesRefs[i].id);
+      const courseDuration = courseData.duracion;
+      endDate = this.courseService.calculatEndDatePlan(startDate, courseDuration, this.hoursPerMonthForStudyPlan);
+      const enrolledCourse = await this.courseService.saveCourseByStudent(coursesRefs[i], userRef, new Date(startDate), new Date(endDate));
+      enrolledCourses.push(enrolledCourse); // Almacena el curso insertado en el arreglo
+      startDate = endDate;
+    }
+  
+    return enrolledCourses; // Devuelve el arreglo de cursos insertados
+  }
+  
 
 }
