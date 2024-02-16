@@ -75,7 +75,7 @@ export class DashboardComponent {
     const modalRef = this.modalService.open(DialogDownloadReportComponent, {
       animation: true,
       centered: true,
-      size: 'lg',
+      size: 'auto',
       backdrop: 'static',
       keyboard: false 
     })
