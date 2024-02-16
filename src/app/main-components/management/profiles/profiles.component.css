@@ -65,6 +65,7 @@
 .chart-container {
     padding-top: 5vh;
     width: 100%;
+    height: fit-content;
     /* height: 150px; */
   }
   

@@ -283,7 +283,7 @@ export class ProfilesComponent {
       "Gestión de mantenimiento": "Gest. Mant.",
       "Gestión de proyectos": "Proyectos",
       "HSE": "HSE",
-      "Instrumentación": "Instrumentación",
+      "Instrumentación": "Instrum",
       "Integridad": "Integridad",
       "Mantenimiento predictivo": "Predictivo",
       "Mecánico": "Mecánico",
