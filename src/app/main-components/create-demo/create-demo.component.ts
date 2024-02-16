@@ -13,6 +13,7 @@ import { CourseService } from 'src/app/shared/services/course.service';
 import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
 import { IconService } from 'src/app/shared/services/icon.service';
 import { ProfileService } from 'src/app/shared/services/profile.service';
+import { SubscriptionService } from 'src/app/shared/services/subscription.service';
 import { UserService } from 'src/app/shared/services/user.service';
 import { dateFromCalendarToTimestamp, daysBetween } from 'src/app/shared/utils';
 
@@ -41,6 +42,8 @@ export class CreateDemoComponent {
   startDateForStudyPlan: number
   hoursPerMonthForStudyPlan: number = 8
 
+  botsQty: number = 5
+
   constructor(
     private alertService: AlertsService,
     private afs: AngularFirestore,
@@ -50,6 +53,7 @@ export class CreateDemoComponent {
     public icon: IconService,
     private profileService: ProfileService,
     private userService: UserService,
+    private subscriptionService: SubscriptionService,
   ) {}
 
   courseServiceSubscription: Subscription
@@ -101,7 +105,7 @@ export class CreateDemoComponent {
     return true; // Indicate that the form is valid
   }
 
-  // Generar 10 falsos y una cantidad de activos basado en lo que ellos hayan dicho
+  // Generar 5 falsos y una cantidad de activos basado en lo que ellos hayan dicho
   async onSubmit() {
     try {
       if (await this.validateCurrentModalPage()) {
@@ -133,11 +137,16 @@ export class CreateDemoComponent {
       // activeUsersQty users without profiles and without progress
       // 10 demo users without subscription but with profiles and progress. For these users, studyplan should be created with specified dedication perMonth and startDate
       console.log('********* Creating Users *********')
-      await this.createUsers(enterprise.id)
+      const users = await this.createUsers(enterprise.id)
       console.log(`Finished Creating Users`)
 
       // Assign activeUsersQty licenses to users
       console.log('********* Creating Subscriptions *********')
+      // NEED CRITERIA TO FILTER USERS TO BE ACTIVATED
+      // const filteredUsers = users.filter(user => user.)
+      // for (let user of filteredUsers) {
+      //   await this.subscriptionService.createUserSubscription(license, this.afs.collection<License>(License.collection).doc(license.id).ref, user.uid)
+      // }
       console.log(`Finished Creating Subscriptions`)
 
       // For the 10 users create random scenarios consisting of:
@@ -223,6 +232,7 @@ export class CreateDemoComponent {
 
     await licenseRef.set(license.toJson(), {merge: true})
     console.log("License", license.toJson())
+    return license
   }
 
   async createUsers(enterpriseId: string) {
@@ -289,7 +299,7 @@ export class CreateDemoComponent {
       })
     }
     // Other users
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < this.botsQty; i++) {
       const randomProfile = this.profiles[Math.floor(Math.random()*this.profiles.length)];
       users.push({
         ...baseUser,
@@ -309,6 +319,7 @@ export class CreateDemoComponent {
         await this.createStudyPlan(newUser.uid, coursesRefs)
       }
     }
+    return users
   }
 
   async createStudyPlan(studentUid: string, coursesRefs: DocumentReference<Curso>[]) {
