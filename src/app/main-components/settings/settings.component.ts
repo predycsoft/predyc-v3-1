@@ -112,9 +112,9 @@ export class SettingsComponent {
     }
   }
 
-  async selectLicenseIndividual(license: License,userId,rotation = false) {
+  async selectLicenseIndividual(selectedUsersIds) {
     try {      
-      await this.licenseService.assignLicense(license,[userId],rotation);
+      await this.licenseService.assignLicenseWithRotations(selectedUsersIds);
       this.hasLicenseChanged = -this.hasLicenseChanged
     } 
     catch(error) {
@@ -197,31 +197,9 @@ export class SettingsComponent {
 
     const dialogResult = await firstValueFrom(this.dialogService.dialogConfirmar().afterClosed());
     if (dialogResult) {
-      for (let userSelected of this.selectedUsersIds) {
+        // console.log('rotar',this.rotationsWaitingCount, this.availableRotations,this.rotationsWaitingCount>0 && this.availableRotations>0)
         try{
-          if(this.rotationsWaitingCount>0 && this.availableRotations>0){
-            // licencia = this.licenses.filter(license=> ((license.quantity>license.quantityUsed ) && (license.status == 'active') && (license.rotations>license.rotationsUsed) && (license.currentPeriodEnd>=today) && (license.rotationsWaitingCount>0))).sort((a, b) => a.currentPeriodStart - b.currentPeriodStart)
-            licencia = this.licenses.filter(license=> (license.quantity>license.quantityUsed && license.status == 'active') && (license.currentPeriodEnd>=today) && license.rotationsWaitingCount >0  ).sort((a, b) => a.currentPeriodStart - b.currentPeriodStart)
-            console.log('rotar',licencia,this.licenses)
-            rotation = true
-          }
-          else{
-            licencia = this.licenses.filter(license=> (license.quantity>license.quantityUsed && license.status == 'active') && (license.currentPeriodEnd>=today) ).sort((a, b) => a.currentPeriodStart - b.currentPeriodStart)
-          }
-          let LicenciaUsar;
-          console.log('licencia',licencia,this.licenses)
-          if (licencia.length>0){
-            LicenciaUsar = licencia[0]
-            console.log('LicenciaUsar',LicenciaUsar)
-            await this.selectLicenseIndividual(LicenciaUsar,userSelected,rotation)
-          }
-          else{
-            Swal.fire({
-              icon: "error",
-              title: "Oops...",
-              text: "No hay licencias disponibles",
-            });
-          }
+          await this.selectLicenseIndividual(this.selectedUsersIds)
         }
         catch{
           Swal.fire({
@@ -230,7 +208,7 @@ export class SettingsComponent {
             text: "Error asignando licencias",
           });
         }
-      }
+      
       this.dialogService.dialogExito()
       this.waiting = false
     }

@@ -7,13 +7,13 @@
 
             <!-- <th mat-header-cell *matHeaderCellDef class="gray-8"> Nombre </th> -->
             <td mat-cell *matCellDef="let user"> 
-                <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign=" center">
+                <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign=" center" >
                     <img
                         [src]="user.photoUrl ? user.photoUrl : 'assets/images/default/default-user-image.jpg'"
                         class="avatar2"
                         alt=""
                         >
-                    <div fxLayout="column" fxLayoutAlign="center ">
+                    <div fxLayout="column" fxLayoutAlign="center " class="move-right ">
                         <div class="ft500 ft14  gray-10">{{ user.displayName | titlecase }}</div>
                         <div
                         *ngIf="!user.profile"
@@ -23,7 +23,7 @@
                             Perfil sin asignar
                         </div>
                         <div
-                            *ngIf="user.profile" fxLayout="row" fxLayoutGap="5px" class="move-right " >
+                            *ngIf="user.profile" fxLayout="row" fxLayoutGap="5px"  >
                             <div *ngIf="user.profile"(click)="$event.stopPropagation();"  class="ft400 ft13 blue-4" >
                                 {{ user.profile  | titlecase }}
                             </div>
@@ -45,7 +45,7 @@
         <!-- Hours Column -->
         <ng-container matColumnDef="hours">
             <th mat-header-cell *matHeaderCellDef class="ft14"> Horas </th>
-            <td mat-cell *matCellDef="let user" class="ft14">{{user.hours}}&nbsp;/&nbsp;{{user.targetHours | number: "1.0-1" }}</td>
+            <td mat-cell *matCellDef="let user" class="ft14">{{user.hours/60 | number : "1.0-0"  }}&nbsp;/&nbsp;{{user.targetHours | number : "1.0-0" }}</td>
         </ng-container>
         
         <!-- RatingPoints Column -->

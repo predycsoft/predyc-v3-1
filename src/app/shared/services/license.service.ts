@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { License } from '../models/license.model';
-import { BehaviorSubject, Observable, Subscription, firstValueFrom, switchMap } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, first, firstValueFrom, of, switchMap, take } from 'rxjs';
 import { EnterpriseService } from './enterprise.service';
 import { DialogService } from './dialog.service';
 import { User } from '../models/user.model';
@@ -37,6 +37,60 @@ export class LicenseService {
       })
     )
   }
+
+  getEnterpriseLicenses(): Promise<License[]> {
+    return this.enterpriseService.enterpriseLoaded$.pipe(
+      take(1),
+      switchMap(isLoaded => {
+        if (!isLoaded) return of([]); // Asegúrate de retornar un Observable aquí
+        const enterpriseRef = this.enterpriseService.getEnterpriseRef();
+        return this.afs.collection<License>(License.collection, ref => 
+          ref.where('enterpriseRef', '==', enterpriseRef).orderBy('createdAt', 'desc')).valueChanges();
+      }),
+      first()
+    ).toPromise();
+  }
+
+
+  async assignLicenseWithRotations(usersIds: string []) { // migrar a cloud funtion
+    try{
+      let today = new Date().getTime()
+      for (let uderId of usersIds ){
+        const licenses = await this.getEnterpriseLicenses();
+        console.log('licenses',licenses)
+        let rotationsWaitingCount = 0;
+        let availableRotations = 0;
+        licenses.forEach(license => {
+          rotationsWaitingCount+=license.rotationsWaitingCount
+          availableRotations+=(license.rotations - license.rotationsUsed)
+        })
+        let licencia = [];
+        let licenciaUsar = null
+        let rotation = false
+        if(rotationsWaitingCount>0 && availableRotations>0){
+          licencia = licenses.filter(license=> (license.quantity>license.quantityUsed && license.status == 'active') && (license.currentPeriodEnd>=today) && license.rotationsWaitingCount >0  ).sort((a, b) => a.currentPeriodStart - b.currentPeriodStart)
+          rotation = true
+        }
+        else{
+          licencia = licenses.filter(license=> (license.quantity>license.quantityUsed && license.status == 'active') && (license.currentPeriodEnd>=today) ).sort((a, b) => a.currentPeriodStart - b.currentPeriodStart)
+        }
+
+        if(licencia.length>0){
+          licenciaUsar = licencia[0]
+          console.log(licenciaUsar,uderId,rotation)
+          await this.assignLicense(licenciaUsar,[uderId],rotation)
+        }
+        else{
+          throw new Error('Operación cancelada');
+        }
+      }
+    }
+    catch{
+      throw new Error('Operación cancelada');
+    }
+  }
+
+  
 
   async assignLicense(license: License, usersIds: string[],rotation = false) {
     const licenseRef: DocumentReference<License> =  this.afs.collection<License>(License.collection).doc(license.id).ref
