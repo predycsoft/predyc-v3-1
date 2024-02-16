@@ -33,6 +33,15 @@
                         <div class="ft600 ft16">Lista de cursos</div>
                     </div>
                 </div> -->
+                <div class="mgt20  radius10" fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="space-between center">
+                    <div class="fw mgb05 borderLight shadow-animation   catInput2" fxLayout="row" fxLayoutAlign=" center">
+                        <img [src]="icon.search" class="h16px makeGray8 mgl08" alt="">
+                        <input [(ngModel)]="searchValue" type="text" class="searchBar ft13 input " 
+                        style="width: 100%; outline: none; border: 0; background-color: transparent;"
+                        placeholder="¿Qué curso esta buscando?">
+                    </div>
+                    
+                </div>
                 <div fxLayout="row" class="fw">
                     <div class="fw">
                         <div id="" class="mgt10">
@@ -75,6 +84,7 @@
                         </div>
                     </div>
                 </div>
+                
                 <!-- <div fxLayout="row" class="fw">
                     <div class="fw">
                         <div id="" class="mgt10" >

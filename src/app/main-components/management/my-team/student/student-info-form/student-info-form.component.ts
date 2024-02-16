@@ -10,6 +10,8 @@ import { ProfileService } from 'src/app/shared/services/profile.service';
 import { UserService } from 'src/app/shared/services/user.service';
 import { capitalizeFirstLetter } from 'src/app/shared/utils';
 import { countriesData } from 'src/assets/data/countries.data';
+import { CreateUserComponent } from '../create-user/create-user.component';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-student-info-form',
@@ -34,7 +36,7 @@ export class StudentInfoFormComponent {
     private profileService: ProfileService,
     private alertService: AlertsService,
     private storage: AngularFireStorage,
-
+    private modalService: NgbModal
     ) {}
 
   ngOnInit() {
@@ -68,6 +70,23 @@ export class StudentInfoFormComponent {
       this.imageUrl = this.student.photoUrl;
     }
 
+  }
+
+  openCreateUserModal(student: User | null): NgbModalRef {
+    let openModal = true
+
+    if (openModal) {
+      const modalRef = this.modalService.open(CreateUserComponent, {
+        animation: true,
+        centered: true,
+        size: 'lg',
+        backdrop: 'static',
+        keyboard: false 
+      })
+      modalRef.componentInstance.studentToEdit = student;
+      return modalRef
+    }
+    else return null
   }
 
   async save() {

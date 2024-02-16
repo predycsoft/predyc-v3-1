@@ -413,6 +413,7 @@ body {
   transform: translateX(5px);
   transform: translateX(5px);
   color: #0f3b56 !important;
+  cursor: default;
 }
 
 
@@ -1336,16 +1337,14 @@ body {
 
 .searchIcon{
   position: absolute;
-  top: 4px;
-  right: 4px;
-  transform: scale(.7);
+
+  
 }
 
 .searchBar{
-  padding-right: 32px;
+  padding-left: 10px;
   width: 100%;
-  border: none;
-  height: 40px;
+  height: 37px !important;
   color: var(--gray-10);
 }
 
