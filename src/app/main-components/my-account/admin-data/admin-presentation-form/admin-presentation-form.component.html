@@ -9,10 +9,10 @@
             <input #fileInput type="file" style="display: none;" (change)="onFileSelected($event)">
             <!-- <div fxLayout="column" class="mgl10 "> -->
             <span *ngIf="!isEditing" class="mgl10 ft16 ft600 gray-10">
-                    {{form.get('displayName').value ? form.get('displayName').value : onNullFormValues.displayName }}
+                    {{(form.get('displayName').value ? form.get('displayName').value : onNullFormValues.displayName) | titlecase}}
             </span>
             <input *ngIf="isEditing" type="text" placeholder="Introduzca el nombre" [ngClass]="isEditing ? '' : 'disabledInput'" 
-            class="input mgl10  "  formControlName="name" style="background-color: rgb(198, 198, 198); width: 100%; " >
+            class="input mgl10" formControlName="displayName" style="background-color: rgb(198, 198, 198); width: 100%; " >
                 <!-- <span >
                     {{form.get('job').value ? form.get('job').value : onNullFormValues.job }}      
                 </span> -->

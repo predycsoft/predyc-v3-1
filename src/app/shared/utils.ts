@@ -78,3 +78,18 @@ export const splitArray = (array, numArrays) => {
       array.slice(index * chunkSize, (index + 1) * chunkSize)
   );
 }
+
+// Assuming timestamp1 and timestamp2 are in milliseconds
+export const daysBetween = (timestamp1: number, timestamp2: number): number => {
+  // Convert timestamps to Date objects
+  const date1 = new Date(timestamp1);
+  const date2 = new Date(timestamp2);
+  
+   // Calculate the difference in milliseconds
+   const differenceMs: number = Math.abs(date1.getTime() - date2.getTime());
+    
+   // Convert milliseconds to days
+   const days: number = Math.floor(differenceMs / (1000 * 60 * 60 * 24));
+  
+  return days;
+}

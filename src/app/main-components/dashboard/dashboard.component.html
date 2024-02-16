@@ -6,7 +6,7 @@
                 <div class="photo-change" fxLayoutAlign="center center"><img [src]="icon.camera" class="makeGray8 avatarSquare1" alt=""></div>
             </div>
             <span class="mgl10 ft16 ft600 gray-10">
-                {{enterprise.name}}
+                {{enterprise.name | titlecase}}
             </span>
         </div>
         <button class="blueButtonAnim button-animation " (click)="openDownloadReportModal()">Descargar reporte</button>

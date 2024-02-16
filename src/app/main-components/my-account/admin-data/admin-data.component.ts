@@ -51,9 +51,15 @@ export class AdminDataComponent {
       if (data.formValue) {
         if (type === 'presentation') {
           if(!this.originalPresentationData){ 
-            this.originalPresentationData = data.formValue
+            this.originalPresentationData = {
+              ...data.formValue,
+              displayName: data.formValue["displayName"].toLowerCase()
+            }
           };
-          this.presentationData = data.formValue;
+          this.presentationData = {
+            ...data.formValue,
+            displayName: data.formValue["displayName"].toLowerCase()
+          };
           if (!data.isEditing && this.hasDataChanged('presentation')) {
             this.onUpdate()
           }

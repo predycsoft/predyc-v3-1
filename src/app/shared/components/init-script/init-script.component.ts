@@ -341,7 +341,7 @@ export class InitScriptComponent {
       let curso = jsonData[index]
       let cursoIn = new Curso
       cursoIn = structuredClone(cursoIn)
-      let courseRef = await this.afs.collection<Curso>(Curso.collection).doc().ref;
+      let courseRef = this.afs.collection<Curso>(Curso.collection).doc().ref;
       cursoIn.id = courseRef.id
       cursoIn.descripcion = curso.descripcion
       cursoIn.instructorNombre = curso.instructorNombre
@@ -409,7 +409,7 @@ export class InitScriptComponent {
         for (let index = 0; index < clasesModulo.length; index++) {
           const clase = clasesModulo[index];
           let claseLocal = new Clase;
-          let claseRef = await this.afs.collection<Clase>(Clase.collection).doc().ref;
+          let claseRef = this.afs.collection<Clase>(Clase.collection).doc().ref;
           arrayClassesRef.push(claseRef)
           claseLocal.id = claseRef.id
           claseLocal.HTMLcontent = clase.HTMLcontent;
@@ -454,7 +454,7 @@ export class InitScriptComponent {
           }
           await this.courseClassService.saveClass(claseLocal);
         }
-        let idRef = await this.afs.collection<Modulo>(Modulo.collection).doc().ref.id;
+        let idRef = this.afs.collection<Modulo>(Modulo.collection).doc().ref.id;
         //console.log('modulo',modulo)
         let module = new Modulo;
         module.id = idRef;

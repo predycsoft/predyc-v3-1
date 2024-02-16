@@ -52,7 +52,10 @@ export class EnterpriseDataComponent {
           if(!this.originalPresentationData){ 
             this.originalPresentationData = data.formValue
           };
-          this.presentationData = data.formValue;
+          this.presentationData = {
+            ...data.formValue,
+            name: data.formValue["name"].toLowerCase()
+          };
           if (!data.isEditing && this.hasDataChanged('presentation')) {
             this.onUpdate()
           }
