@@ -1,10 +1,13 @@
 import { Component } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription, catchError, combineLatest, map, of } from 'rxjs';
+import { User } from 'src/app/shared/models/user.model';
 import { LoaderService } from 'src/app/shared/services/loader.service';
 import { ProfileService } from 'src/app/shared/services/profile.service';
 import { UserService } from 'src/app/shared/services/user.service';
+import { CreateUserComponent } from './create-user/create-user.component';
 
 @Component({
   selector: 'app-student',
@@ -24,6 +27,7 @@ export class StudentComponent {
     public loaderService: LoaderService,
     private router: Router,
     private profileService: ProfileService,
+    private modalService: NgbModal
 
   ){}
 
@@ -50,6 +54,8 @@ export class StudentComponent {
     })
 
   } 
+
+ 
 
   ngOnDestroy() {
     this.combinedObservableSubscription.unsubscribe()
