@@ -126,16 +126,17 @@ export class SettingsComponent {
     if(this.selectedUsersIds.length > this.availableRotations){
       Swal.fire({
         icon: "info",
-        title: "Rotaciones Insuficientes",
-        text: "No hay suficientes rotaciones para reasignar licencias a todos los usuarios. ¿Desea continuar o contactar con ventas?",
+        title: "Cuidado",
+        text: "Esta acción removerá la licencia a todos los usuarios seleccionados, no hay suficientes rotaciones para reasignar licencias a todos los usuarios.",
         showDenyButton: true,
         showCancelButton: true,
+        confirmButtonText: "Continuar",        
         cancelButtonText:'Cancelar',
-        confirmButtonText: "Aceptar",        
         denyButtonText: `Contactar con ventas`,
+
         denyButtonColor:'var(--gray-5)',
         confirmButtonColor: 'var(--blue-5)',
-        cancelButtonColor:'var(--gray-4)'
+        cancelButtonColor:'var(--gray-8)'
       }).then(async (result) => {
         if (result.isConfirmed) {
           this.waiting = true

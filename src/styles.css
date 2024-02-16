@@ -413,6 +413,7 @@ body {
   transform: translateX(5px);
   transform: translateX(5px);
   color: #0f3b56 !important;
+  cursor: default;
 }
 
 
