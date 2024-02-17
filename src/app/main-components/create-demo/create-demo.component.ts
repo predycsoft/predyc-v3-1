@@ -135,11 +135,20 @@ export class CreateDemoComponent {
 
   // Generar 5 falsos y una cantidad de activos basado en lo que ellos hayan dicho
   async onSubmit() {
+    Swal.fire({
+      title: 'Generando empresa...',
+      text: 'Por favor, espera.',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading()
+      }
+    });
     try {
       if (await this.validateCurrentModalPage()) {
         this.displayErrors = false
       } else {
         this.displayErrors = true
+        Swal.close(); // Cierra el SweetAlert si hay errores en la validación
         return
       }
       // Check new enterprise and new admin user
@@ -186,11 +195,12 @@ export class CreateDemoComponent {
       // Updated coursesByStudent
       // Create notification based on each scenario
       // Complete final test and generate certification test
-
+      Swal.close();
       this.alertService.succesAlert("La empresa demo se ha creado correctamente")
       //cerrar swal loading 
     } catch (error) {
       //console.log(error)
+      Swal.close();
       this.alertService.errorAlert(error)
     }
   }
@@ -411,6 +421,7 @@ export class CreateDemoComponent {
             });
             let clasesCompleted = 0
             let progressTime = 0
+            let progreso = 0
             for(let clase of classes){
               progressTime = progressTime + clase.duracion
               minutesUser = minutesUser - clase.duracion;
@@ -421,7 +432,7 @@ export class CreateDemoComponent {
               let dateIni = new Date(fechaIni);
               let dateEnd = new Date(fechaFin);
               clasesCompleted = clasesCompleted+1;
-              let progreso = clasesCompleted * 90 / classes.length;
+              progreso = clasesCompleted * 90 / classes.length;
               await this.enrollClassUser(userRef, clase, coursesByStudent, dateIni, dateEnd,progreso,progressTime,courseTime,newUser,course);
               if (minutosMonthAux <= 0) {
                 let nextFecha = this.obtenerPrimerDiaDelSiguienteMes(fecha).getTime();
@@ -434,6 +445,10 @@ export class CreateDemoComponent {
                 console.log('break user')
                 break;
               }
+            }
+            if(progreso<90){
+              await this.updateProgressCourse(coursesByStudent,progreso,progressTime,courseTime)
+              console.log('update progress course after classes')
             }
           }
         }
@@ -507,19 +522,21 @@ export class CreateDemoComponent {
         const ref = this.afs.collection<any>('userCertificate').doc().ref;
         await ref.set({...certificado, id: ref.id}, { merge: true });
       }
-      else{
-        await this.afs.collection("coursesByStudent").doc(idCourseStudent)
-        .update({
-          progress:progreso,
-          progressTime: progressTime,
-          courseTime: courseTime
-        });
-      }
-    console.log('enrollClassUser')
+      console.log('enrollClassUser')
     } 
     catch (error) {
     }
 
+  }
+
+  async updateProgressCourse(coursesByStudent,progreso,progressTime,courseTime){
+    let idCourseStudent = coursesByStudent.id
+    await this.afs.collection("coursesByStudent").doc(idCourseStudent)
+    .update({
+      progress:progreso,
+      progressTime: progressTime,
+      courseTime: courseTime
+    });
   }
 
   randomIntFromInterval(min, max) { // min and max included 

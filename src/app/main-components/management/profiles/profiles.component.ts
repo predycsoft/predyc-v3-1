@@ -18,6 +18,7 @@ import { Profile } from 'src/app/shared/models/profile.model';
 import { DocumentReference } from '@angular/fire/compat/firestore';
 import { AlertsService } from 'src/app/shared/services/alerts.service';
 import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
+import { AuthService } from 'src/app/shared/services/auth.service';
 
 const MAIN_TITLE = 'Predyc - '
 
@@ -45,7 +46,8 @@ export class ProfilesComponent {
     private skillService: SkillService,
     private router: Router,
     private userService: UserService,
-    private titleService: Title
+    private titleService: Title,
+    private authService: AuthService,
   ) {}
 
   isEditing: boolean
@@ -73,8 +75,15 @@ export class ProfilesComponent {
   profileBackup
 
   id = this.route.snapshot.paramMap.get('id');
+  user;
 
   ngOnInit() {
+
+    this.authService.user$.subscribe(user=> {
+      console.log('user',user)
+      this.user = user
+    })
+
     this.hoverItem$ = this.hoverSubject.asObservable();
     const observablesArray: Observable<Category[] | Profile | Skill[] | Curso[]>[] = [this.categoryService.getCategories$(), this.skillService.getSkills$(), this.courseService.getCourses$()]
     if (this.id === 'new') {
