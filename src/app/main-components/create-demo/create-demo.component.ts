@@ -55,7 +55,8 @@ export class CreateDemoComponent {
     'Gómez', 'Ruiz', 'Hernández', 'Jiménez', 'Díaz', 'Moreno',
     'Muñoz', 'Álvarez', 'Romero', 'Alonso', 'Gutiérrez', 'Navarro',
     'Torres', 'Domínguez', 'Vázquez', 'Ramos', 'Gil', 'Ramírez',
-    'Serrano', 'Blanco', 'Molina', 'Morales', 'Suárez', 'Ortega'
+    'Serrano', 'Blanco', 'Molina', 'Morales', 'Suárez', 'Ortega','Negrette','Ceniceros',
+    'Carpi','Galarza'
   ];
 
   private imagePaths: string[] = [
