@@ -378,8 +378,11 @@ export class CreateDemoComponent {
               let progreso = clasesCompleted * 90 / classes.length;
               await this.enrollClassUser(userRef, clase, coursesByStudent, dateIni, dateEnd,progreso,progressTime,courseTime,newUser,course);
               if (minutosMonthAux <= 0) {
-                fecha = this.obtenerPrimerDiaDelSiguienteMes(fecha).getTime();
-                minutosMonthAux = this.calculateVariation(minutosMonth,10);
+                let nextFecha = this.obtenerPrimerDiaDelSiguienteMes(fecha).getTime();
+                if(nextFecha<=today){
+                  fecha = nextFecha
+                  minutosMonthAux = this.calculateVariation(minutosMonth,10);
+                }
               }
               if (minutesUser <= 0) {
                 console.log('break user')
