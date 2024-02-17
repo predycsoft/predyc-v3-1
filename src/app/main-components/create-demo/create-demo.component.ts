@@ -58,6 +58,13 @@ export class CreateDemoComponent {
     'Serrano', 'Blanco', 'Molina', 'Morales', 'Suárez', 'Ortega'
   ];
 
+  private imagePaths: string[] = [
+    'assets/images/fotos neutras/Rectangle-1.png',
+    'assets/images/fotos neutras/Rectangle-2.png',
+    'assets/images/fotos neutras/Rectangle-3.png',
+    'assets/images/fotos neutras/Rectangle.png'
+  ];
+
 
   // Data for user studyPlan
   startDateForStudyPlan: number
@@ -81,6 +88,11 @@ export class CreateDemoComponent {
   courses: Curso[]
   profileServiceSubscription: Subscription
   profiles: Profile[]
+
+  getRandomImagePath(): string {
+    const randomIndex = Math.floor(Math.random() * this.imagePaths.length);
+    return this.imagePaths[randomIndex];
+  }
 
   ngOnInit() {
     this.now = +new Date();
@@ -314,6 +326,7 @@ export class CreateDemoComponent {
       // email: `admin@${this.createDemoForm.controls.adminName.value.replace(/\s/g, '').toLowerCase()}.com`,
       name: `${this.createDemoForm.controls.adminName.value.toLowerCase()}`,
       role: 'admin',
+      photoUrl: this.getRandomImagePath()
     })
     // Active users
     for (let i = 0; i < this.createDemoForm.controls.activeUsersQty.value; i++) {
@@ -326,6 +339,7 @@ export class CreateDemoComponent {
         //name: `${this.createDemoForm.controls.enterpriseName.value.toLowerCase()} user${i+1}`,
         name: `${name}`,
         role: 'student',
+        photoUrl: this.getRandomImagePath()
       })
     }
     // Other users
@@ -340,7 +354,8 @@ export class CreateDemoComponent {
         //name: `${this.createDemoForm.controls.enterpriseName.value.toLowerCase()} inactive user${i+1}`,
         name: `${name}`,
         role: 'student',
-        profile: this.profileService.getProfileRefById(randomProfile.id)
+        profile: this.profileService.getProfileRefById(randomProfile.id),
+        photoUrl: this.getRandomImagePath()
       })
     }
     let today = new Date().getTime()
@@ -383,6 +398,7 @@ export class CreateDemoComponent {
           }
           if(course && minutesUser>0){
             let coursesByStudent = coursesRefUser.find(x=>x.courseRef.id == courseRef.id)
+            await this.courseStartDate(coursesByStudent,new Date(fecha));
             let modulos = course['modules'].sort((a, b) => a.numero - b.numero)
             console.log('modulos',modulos)
             let courseTime = 0;
@@ -437,6 +453,15 @@ export class CreateDemoComponent {
     }
     
   }
+
+
+  async courseStartDate(coursesByStudent,date){
+    let idCourseStudent = coursesByStudent.id
+    await this.afs.collection("coursesByStudent").doc(idCourseStudent)
+    .update({
+      dateStart: date
+    });
+  }
   async enrollClassUser(userRef,clase,coursesByStudent,date,dateEnd,progreso,progressTime,courseTime,user,course){
 
     const claseRef = this.afs.collection('class').doc(clase.id).ref;
@@ -454,49 +479,45 @@ export class CreateDemoComponent {
       await ref.set({...classStudyPlan.toJson(), id: ref.id}, { merge: true });
       classStudyPlan.id = ref.id;
       clase.classByStudentData = classStudyPlan;
-      if(!coursesByStudent.dateStart){
-        let idCourseStudent = coursesByStudent.id
-        if(progreso >= 90){ // Curso terminado
-          progreso = 100
-          let finalScore = this.randomIntFromInterval(70,100)
-          await this.afs.collection("coursesByStudent").doc(idCourseStudent)
-          .update({
-            dateStart: date,
-            dateEnd:dateEnd,
-            progress:progreso,
-            finalScore:finalScore,
-            progressTime:progressTime,
-            courseTime:courseTime,
-            courseDuration:courseTime,
-          });
-          let certificado={
-            usuarioId: user.uid,
-            usuarioEmail: user.email,
-            usuarioNombre: user.name,
-            cursoId: course.id,
-            cursoTitulo: course.titulo,
-            instructorId: course.instructorRef.id,
-            instructorNombre: course.instructorNombre,
-            puntaje: finalScore,
-            usuarioFoto: null,
-            date: dateEnd
-          }
-          const ref = this.afs.collection<any>('userCertificate').doc().ref;
-          await ref.set({...certificado, id: ref.id}, { merge: true });
+      let idCourseStudent = coursesByStudent.id
+      if(progreso >= 90){ // Curso terminado
+        progreso = 100
+        let finalScore = this.randomIntFromInterval(70,100)
+        await this.afs.collection("coursesByStudent").doc(idCourseStudent)
+        .update({
+          dateEnd:dateEnd,
+          progress:progreso,
+          finalScore:finalScore,
+          progressTime:progressTime,
+          courseTime:courseTime,
+          courseDuration:courseTime,
+        });
+        let certificado={
+          usuarioId: user.uid,
+          usuarioEmail: user.email,
+          usuarioNombre: user.name,
+          cursoId: course.id,
+          cursoTitulo: course.titulo,
+          instructorId: course.instructorRef.id,
+          instructorNombre: course.instructorNombre,
+          puntaje: finalScore,
+          usuarioFoto: null,
+          date: dateEnd
         }
-        else{
-          await this.afs.collection("coursesByStudent").doc(idCourseStudent)
-          .update({
-            dateStart: date,
-            progress:progreso,
-            progressTime: progressTime,
-            courseTime: courseTime
-          });
-        }
-
+        const ref = this.afs.collection<any>('userCertificate').doc().ref;
+        await ref.set({...certificado, id: ref.id}, { merge: true });
       }
-      console.log('enrollClassUser')
-    } catch (error) {
+      else{
+        await this.afs.collection("coursesByStudent").doc(idCourseStudent)
+        .update({
+          progress:progreso,
+          progressTime: progressTime,
+          courseTime: courseTime
+        });
+      }
+    console.log('enrollClassUser')
+    } 
+    catch (error) {
     }
 
   }
