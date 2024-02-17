@@ -325,7 +325,8 @@ export class CreateDemoComponent {
       console.log('horasOptimasPlan',horasOptimasPlan,'horas usuario',hoursUser)
       let minutesUser = hoursUser*60;
       let minutosMonth= Math.round(minutesUser/tiempoExactoTransucrrido)
-      let minutosMonthAux = minutosMonth;
+      //let minutosMonthAux = minutosMonth;
+      let minutosMonthAux = this.calculateVariation(minutosMonth,10);
       const newUser = User.fromJson(user)
       await this.userService.addUser(newUser)
       //console.log("User", User.fromJson(user))
@@ -378,7 +379,7 @@ export class CreateDemoComponent {
               await this.enrollClassUser(userRef, clase, coursesByStudent, dateIni, dateEnd,progreso,progressTime,courseTime,newUser,course);
               if (minutosMonthAux <= 0) {
                 fecha = this.obtenerPrimerDiaDelSiguienteMes(fecha).getTime();
-                minutosMonthAux = minutosMonth;
+                minutosMonthAux = this.calculateVariation(minutosMonth,10);
               }
               if (minutesUser <= 0) {
                 console.log('break user')
