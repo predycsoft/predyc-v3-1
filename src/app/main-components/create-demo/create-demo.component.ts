@@ -18,13 +18,15 @@ import { UserService } from 'src/app/shared/services/user.service';
 import { dateFromCalendarToTimestamp, daysBetween } from 'src/app/shared/utils';
 import { StudyPlanClass } from 'src/app/shared/models/study-plan-class';
 import { CourseByStudent } from 'src/app/shared/models/course-by-student.model';
+import Swal from 'sweetalert2';
 
-function getStartOfTwoMonthsAgo(today) {
-  const twoMonthsAgo = new Date(today); // Create a new date object with today's date
-  twoMonthsAgo.setMonth(twoMonthsAgo.getMonth() - 2); // Subtract two months
-  twoMonthsAgo.setDate(1); // Set day to 1 (start of the month)
-  twoMonthsAgo.setHours(0, 0, 0, 0); // Set time to midnight (beginning of the day)
-  return +twoMonthsAgo; // Convert date to timestamp and return
+
+function getStartOfSixMonthsAgo(today) {
+  const sixMonthsAgo = new Date(today); // Create a new date object with today's date
+  sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6); // Subtract six months
+  sixMonthsAgo.setDate(1); // Set day to 1 (start of the month)
+  sixMonthsAgo.setHours(0, 0, 0, 0); // Set time to midnight (beginning of the day)
+  return +sixMonthsAgo; // Convert date to timestamp and return
 }
 
 @Component({
@@ -39,6 +41,23 @@ export class CreateDemoComponent {
 
   now: number // timestampt, right now
   today: Date // Today date, starting from 00:00
+
+  private firstNames: string[] = [
+    'Ana', 'Luis', 'Marta', 'Juan', 'Sofía', 'Carlos',
+    'Elena', 'Gabriel', 'Julia', 'Héctor', 'Irene', 'Leo',
+    'Nora', 'Oscar', 'Patricia', 'Rafael', 'Sara', 'Tomás',
+    'Ursula', 'Víctor', 'Yolanda', 'Zacarías', 'Alicia', 'Berto',
+    'Camila', 'David', 'Fernanda', 'Gustavo', 'Helena', 'Iván'
+  ];
+
+  private lastNames: string[] = [
+    'García', 'Fernández', 'López', 'Martínez', 'Sánchez', 'Pérez',
+    'Gómez', 'Ruiz', 'Hernández', 'Jiménez', 'Díaz', 'Moreno',
+    'Muñoz', 'Álvarez', 'Romero', 'Alonso', 'Gutiérrez', 'Navarro',
+    'Torres', 'Domínguez', 'Vázquez', 'Ramos', 'Gil', 'Ramírez',
+    'Serrano', 'Blanco', 'Molina', 'Morales', 'Suárez', 'Ortega'
+  ];
+
 
   // Data for user studyPlan
   startDateForStudyPlan: number
@@ -67,7 +86,7 @@ export class CreateDemoComponent {
     this.now = +new Date();
     this.today = new Date();
     this.today.setHours(0, 0, 0, 0);
-    this.startDateForStudyPlan = getStartOfTwoMonthsAgo(this.today)
+    this.startDateForStudyPlan = getStartOfSixMonthsAgo(this.today)
     this.courseServiceSubscription = this.courseService.getCoursesObservable().pipe(filter(course =>course.length>0 ),take(1)).subscribe(courses => {
       this.courses = courses
       console.log('this.courses',this.courses)
@@ -77,18 +96,12 @@ export class CreateDemoComponent {
     })
     this.createDemoForm = this.fb.group({
       enterpriseName: ['Empresa prueba', [Validators.required]],
-      email: ['correoAdmin@empresa.com', [Validators.required, Validators.email]],
+      adminName: ['Nombre completo Administrador', [Validators.required]],
+      email: ['correoadmin@empresa.com', [Validators.required, Validators.email]],
       phoneNumber: ["607197591", [Validators.required, Validators.pattern(/^\d*$/)]],
       activeUsersQty: [5, [Validators.required, Validators.min(1), Validators.pattern(/^\d*$/)]],
       endDate: [null, [Validators.required]],
     });
-    // this.createDemoForm = this.fb.group({
-    //   enterpriseName: [null, [Validators.required]],
-    //   email: [null, [Validators.required, Validators.email]],
-    //   phoneNumber: [null, [Validators.required, Validators.pattern(/^\d*$/)]],
-    //   activeUsersQty: [null, [Validators.required, Validators.min(1), Validators.pattern(/^\d*$/)]],
-    //   endDate: [null, [Validators.required]],
-    // });
   }
 
   ngOnDestroy() {
@@ -118,6 +131,9 @@ export class CreateDemoComponent {
         return
       }
       // Check new enterprise and new admin user
+
+      //abrir swal loading
+
       const enterpriseName: string = this.createDemoForm.controls.enterpriseName.value.trim().toLowerCase()
       const existingEnterprise = await firstValueFrom(this.afs.collection<Enterprise>(Enterprise.collection, ref => ref.where("name", "==", enterpriseName)).get())
       if (!existingEnterprise.empty) throw Error("Ya existe una empresa con este nombre")
@@ -160,6 +176,7 @@ export class CreateDemoComponent {
       // Complete final test and generate certification test
 
       this.alertService.succesAlert("La empresa demo se ha creado correctamente")
+      //cerrar swal loading 
     } catch (error) {
       //console.log(error)
       this.alertService.errorAlert(error)
@@ -238,6 +255,12 @@ export class CreateDemoComponent {
     return license
   }
 
+  generateRandomFullName(): string {
+    const randomFirstName = this.firstNames[Math.floor(Math.random() * this.firstNames.length)];
+    const randomLastName = this.lastNames[Math.floor(Math.random() * this.lastNames.length)];
+    return `${randomFirstName} ${randomLastName}`;
+  }
+
   async createUsers(enterpriseId: string) {
     const enterpriseRef: DocumentReference<Enterprise> = this.enterpriseService.getEnterpriseRefById(enterpriseId)
     const baseUser: UserJson = {
@@ -282,33 +305,40 @@ export class CreateDemoComponent {
       status: "inactive"
     }
     const users: UserJson[] = []
+    
     // Admin user
     users.push({
       ...baseUser,
-      displayName: `${this.createDemoForm.controls.enterpriseName.value.toLowerCase()} admin`,
+      displayName: `${this.createDemoForm.controls.adminName.value.toLowerCase()}`,
       email: this.createDemoForm.controls.email.value.toLowerCase(),
-      // email: `admin@${this.createDemoForm.controls.enterpriseName.value.replace(/\s/g, '').toLowerCase()}.com`,
-      name: `${this.createDemoForm.controls.enterpriseName.value.toLowerCase()} admin`,
+      // email: `admin@${this.createDemoForm.controls.adminName.value.replace(/\s/g, '').toLowerCase()}.com`,
+      name: `${this.createDemoForm.controls.adminName.value.toLowerCase()}`,
       role: 'admin',
     })
     // Active users
     for (let i = 0; i < this.createDemoForm.controls.activeUsersQty.value; i++) {
+      let name = this.generateRandomFullName().toLowerCase()
       users.push({
         ...baseUser,
-        displayName: `${this.createDemoForm.controls.enterpriseName.value.toLowerCase()} user${i+1}`,
+        // displayName: `${this.createDemoForm.controls.enterpriseName.value.toLowerCase()} user${i+1}`,
+        displayName: `${name}`,
         email: `user${i+1}@${this.createDemoForm.controls.enterpriseName.value.replace(/\s/g, '').toLowerCase()}.com`,
-        name: `${this.createDemoForm.controls.enterpriseName.value.toLowerCase()} user${i+1}`,
+        //name: `${this.createDemoForm.controls.enterpriseName.value.toLowerCase()} user${i+1}`,
+        name: `${name}`,
         role: 'student',
       })
     }
     // Other users
     for (let i = 0; i < this.botsQty; i++) {
       const randomProfile = this.profiles[Math.floor(Math.random()*this.profiles.length)];
+      let name = this.generateRandomFullName().toLowerCase()
       users.push({
         ...baseUser,
-        displayName: `${this.createDemoForm.controls.enterpriseName.value.toLowerCase()} inactive user${i+1}`,
+        // displayName: `${this.createDemoForm.controls.enterpriseName.value.toLowerCase()} inactive user${i+1}`,
+        displayName: `${name}`,
         email: `inactiveUser${i+1}@${this.createDemoForm.controls.enterpriseName.value.replace(/\s/g, '').toLowerCase()}.com`,
-        name: `${this.createDemoForm.controls.enterpriseName.value.toLowerCase()} inactive user${i+1}`,
+        //name: `${this.createDemoForm.controls.enterpriseName.value.toLowerCase()} inactive user${i+1}`,
+        name: `${name}`,
         role: 'student',
         profile: this.profileService.getProfileRefById(randomProfile.id)
       })
