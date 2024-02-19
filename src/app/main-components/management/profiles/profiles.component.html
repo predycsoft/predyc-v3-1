@@ -28,7 +28,7 @@
                 </button>
             </div>
         </div>
-        <ng-template #profileTitle >
+        <!-- <ng-template #profileTitle >
             <div class="pdr10 pdt10" >
                 <div
                 fxLayout="row"
@@ -43,7 +43,21 @@
                     <img *ngIf="!profile?.enterpriseRef && user?.adminPredyc" [src]="icon.licencias" class="h16px pdl05" alt="">
                 </div>
             </div>
-            
+        </ng-template> -->
+        <ng-template #profileTitle >
+            <div class="pdr10 pdt10" >
+                <div
+                fxLayout="row"
+                fxLayoutGap="0.625"
+                fxLayoutAlign=" center center"
+                class="blueButton mgt10 ft14"
+                style="border-radius: 24px !important;"
+                (click)="onEdit()"
+                >
+                Editar
+                <img [src]="icon.licencias" class="h16px pdl05" alt="">
+            </div>
+            </div>
         </ng-template>
     </div>
     <div fxLayout="row" fxLayoutGap="2rem" class=" pdt10  pdr20 pdl20 pdb10">
