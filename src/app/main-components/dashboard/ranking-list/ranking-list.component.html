@@ -69,15 +69,15 @@
                 </td>
                 <!-- <td class="centertext gray-10 ft12">{{item.hours}}&nbsp;/&nbsp;{{item.targetHours / 60 | number : "1.0-0"}} </td> -->
                 <td class="centertext gray-10 ft12">{{item.ratingPoints | number: "1.0-0"}}</td>
-                <td class="centertext w-40">
+                <td class="centertext w-20">
                     <div class="centertext" fxLayoutAlign="center center">
-                         <div *ngIf="item.performance == 'high'" class="chip newGreen2b " style="border: 1px solid #3ED219; width:30% ;" fxLayout="row" fxLayoutAlign="center center">
-                            <span class="ft13 nowrap ft500  " style="color: #27be02;">Alto</span>
+                         <div *ngIf="item.performance == 'high'" class="chip backGreen2 " style="border: 1px solid #00BF9C; width:30% ;" fxLayout="row" fxLayoutAlign="center center">
+                            <span class="ft13 nowrap ft500  " style="color: #00BF9C;">Alto</span>
                         </div>
                         <div *ngIf="item.performance == 'medium'" class="chip newYellow2b " style="border: 1px solid rgb(255, 196, 0); width:30% "  fxLayout="row" fxLayoutAlign="center center">
                             <span class="ft13 nowrap ft500 " style="color: rgb(255, 196, 0);" >Medio</span>
                         </div>
-                        <div *ngIf="item.performance == 'low'"  class="chip backRed2 borderLight " style="border: 1px solid #ff0000; width:30% " fxLayout="row" fxLayoutAlign="center center">                                <span class="ft13 nowrap ft500" style="color: #f50000;" >Bajo</span>
+                        <div *ngIf="item.performance == 'low'"  class="chip backRed1 borderLight " style="border: 1px solid #ff0000; width:30% " fxLayout="row" fxLayoutAlign="center center">                                <span class="ft13 nowrap ft500" style="color: #f50000;" >Bajo</span>
                         </div>                            
                     </div>
                 </td>

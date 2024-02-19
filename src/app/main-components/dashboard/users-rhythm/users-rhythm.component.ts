@@ -88,7 +88,7 @@ export class UsersRhythmComponent {
           data: this.chartData,
           borderWidth: 2,
           borderColor: '#F2F2F2',
-          backgroundColor: ['#AFEF9F', 'rgb(255, 221, 0)', '#ED4758', '#D5DCE0']
+          backgroundColor: ['#00BF9C', 'rgb(255, 221, 0)', '#ED4758', '#D5DCE0']
           
 
         }],

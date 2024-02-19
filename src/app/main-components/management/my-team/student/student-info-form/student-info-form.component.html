@@ -7,10 +7,10 @@
             </div>
             <span class="makeBlue cursorPointer ft14" (click)="openCreateUserModal(student)">Editar</span>
         </div>
-        <div fxLayout="row" fxLayoutAlign="space-between center" class="fh mgt05   mgt20 ">
+        <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem" class="fh mgt10 ">
             <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap=".75rem" class="w-75">
                 <div>
-                    <img [src]="imageUrl ? imageUrl : 'assets/images/default/default-user-image.jpg'" class="avatar10" alt="">
+                    <img [src]="imageUrl ? imageUrl : 'assets/images/default/default-user-image.jpg'" class="avatar8" alt="">
                 </div>
                 <div class="radius10 backBlue1 pdr10 pdl10">
                     <span class="blue-5 ft13 ft500">Activo</span>
@@ -23,28 +23,29 @@
                         <span class="ft16 ft600 black"> {{studentForm.get('displayName').value | titlecase}} </span>
                     </div>
                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="h24px">
-                        <img [src]="icon.userProfile" class="makeGray h20px" alt="">
-                        <span class="ft14 mgl05">{{studentForm.get('profile').value ? displayProfileName(studentForm.get('profile').value) : "Perfil"}}</span>
+                        <img [src]="icon.userProfile" class="makeGray h18px" alt="">
+                        <span class="ft12 mgl05">{{studentForm.get('profile').value ? displayProfileName(studentForm.get('profile').value) : "Perfil"}}</span>
                     </div>
                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="h24px">
-                        <img [src]="icon.email" class="makeGray h20px" alt="">
-                        <span class="ft14 mgl05">{{studentForm.get('email').value}}</span>
+                        <img [src]="icon.email" class="makeGray h18px" alt="">
+                        <span class="ft12 mgl05">{{studentForm.get('email').value}}</span>
                     </div>
                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="h24px">
-                        <img [src]="icon.phone" class="makeGray h20px" alt="">
-                        <span class="ft14 mgl05">{{studentForm.get('phoneNumber').value ? studentForm.get('phoneNumber').value : "Teléfono desconocido"}}</span>
+                        <img [src]="icon.phone" class="makeGray h18px" alt="">
+                        <span class="ft12 mgl05">{{studentForm.get('phoneNumber').value ? studentForm.get('phoneNumber').value : "Teléfono desconocido"}}</span>
                     </div>
                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="h24px">
                         <img [src]="icon.location" class="makeGray h20px" alt="">
                         <span class="ft14 mgl05">{{studentForm.get('country').value ? studentForm.get('country').value : "País desconocido"}}</span>
                     </div>
-                    <div fxLayout="" fxLayoutAlign="center center" fxLayoutGap=".1rem">
-                        <span class="ft12 makeBlue mgt15">Permitir cursos extracurriculares</span>
-                        <mat-slide-toggle class="mgl20 mgt15 " color="primary" formControlName="canEnrollParticularCourses" (click)="toggleCanEnrollParticularCourses()"></mat-slide-toggle>
-                    </div>
+                    
+                   
                 </div>      
             </div>
         </div>
-        
+        <div fxLayout="" fxLayoutAlign="center center" fxLayoutGap=".1rem">
+            <span class="ft12 makeBlue">Permitir cursos extracurriculares</span>
+            <mat-slide-toggle class="mgl20 " color="primary" formControlName="canEnrollParticularCourses" (click)="toggleCanEnrollParticularCourses()"></mat-slide-toggle>
+        </div>
     </div>
 </form>
