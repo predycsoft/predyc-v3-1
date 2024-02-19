@@ -1,10 +1,10 @@
 <div class="sidenav_container pdl05 pdr05" fxLayout="column" fxLayoutAlign="space-between">
   
         <div fxLayout="column" fxLayoutAlign=" start">
-            <div *ngFor="let page of pages" [routerLink]="page.link"    fxLayout="left center "  [class.ActiveMenuOption]="page.link | isActive:currentUrl"  routerLinkActive=""
-                [routerLinkActiveOptions]="{ exact: true }" class="item cursorPointer hoverBasic  " fxLayout="row" fxLayout="center center">
-                <div fxLayout="row" class=" MenuOptionsNav">
-                    <img [src]="page?.icon" class="h20px makeGray8  " [class.opacity1]="page.link | isActive:currentUrl" routerLinkActive="" style="margin-top: 2px;"
+            <div *ngFor="let page of pages" [routerLink]="page.link" routerLinkActive=""
+                [routerLinkActiveOptions]="{ exact: true }" class="item" [class.ActiveMenuOption]="page.link | isActive:currentUrl" fxLayout="row" fxLayoutAlign="center center">
+                <div fxLayout="row" fxLayoutAlign=" center" class="fw">
+                    <img [src]="page?.icon" class="h20px w20px makeGray8 "  [class.opacity1]="page.link | isActive:currentUrl" routerLinkActive="" style="margin-top: 2px;"
                         [routerLinkActiveOptions]="{ exact: true }">
                     <span *ngIf="menuExpanded" class="ft13 mgt03 gray-8 ft500 mgr05 mgl05 no-select">{{page.name}}</span>
                 </div>
