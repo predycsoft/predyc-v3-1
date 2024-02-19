@@ -5,7 +5,7 @@ import { BehaviorSubject, combineLatest, filter, firstValueFrom, map, Observable
 import { Subscription as SubscriptionClass } from 'src/app/shared/models/subscription.model'
 import { EnterpriseService } from './enterprise.service';
 import { AlertsService } from './alerts.service';
-import { generateSixDigitRandomNumber } from '../utils';
+import { firestoreTimestampToNumberTimestamp, generateSixDigitRandomNumber, obtenerUltimoDiaDelMes } from '../utils';
 import { AngularFireFunctions } from '@angular/fire/compat/functions';
 import { Profile } from '../models/profile.model';
 import { ProfileService } from './profile.service';
@@ -217,6 +217,10 @@ export class UserService {
       let targetComparisonDate = today
       let delayTime = 0
       let delayDays = 0
+
+      let dateEnd = (firestoreTimestampToNumberTimestamp(course?.dateEnd))
+      let dateEndPlan = obtenerUltimoDiaDelMes(firestoreTimestampToNumberTimestamp(course?.dateEndPlan))
+
       if (course.dateEnd) {
         // totalScore += (course.duracion / 60);
         // let puntaje = course.puntaje
@@ -231,8 +235,8 @@ export class UserService {
         // if(puntaje == 100){
         //   totalScore += (course.duracion / 60)*.5
         // }
-        targetComparisonDate = course.dateEnd
-        delayTime = targetComparisonDate - course.dateEndPlan
+        targetComparisonDate = dateEnd
+        delayTime = targetComparisonDate - dateEndPlan
         delayDays = delayTime/(24*60*60*1000)
         if (delayDays >= 1) {
           // Delayed course
@@ -248,10 +252,10 @@ export class UserService {
             // totalScore -= (course.duracion / 60)*.5
           }
         }
-      } else if (targetComparisonDate > course.dateEndPlan) {
+      } else if (targetComparisonDate > dateEndPlan) {
         // Not completed and delayed course
         delayedCourses++
-        delayTime = targetComparisonDate - course.dateEndPlan
+        delayTime = targetComparisonDate - dateEndPlan
         delayDays = delayTime/(24*60*60*1000)
         if (delayDays >= 5) {
           delayedMoreThanFiveDays = true

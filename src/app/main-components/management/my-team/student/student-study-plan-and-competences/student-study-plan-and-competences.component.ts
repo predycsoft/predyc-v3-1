@@ -161,7 +161,7 @@ export class StudentStudyPlanAndCompetencesComponent {
           finalScore: courseByStudent.finalScore,
         };
         
-        const monthName = new Date(studyPlanData.dateEndPlan).toLocaleString('es', { month: 'long' });
+        const monthName = new Date(studyPlanData.dateEndPlan).toLocaleString('es', { month: 'long',year:'2-digit'});
 
         if (!months[monthName]) {
           months[monthName] = [];
@@ -180,13 +180,13 @@ export class StudentStudyPlanAndCompetencesComponent {
       const date = new Date(months[monthName][0].dateEndPlan);
       const monthNumber = date.getUTCMonth()
       const yearNumber = date.getUTCFullYear();
-
+      const realMonthname = date.toLocaleString('es',{month: 'long'})
       const sortedCourses = months[monthName].sort((a, b) => {
         return a.dateEndPlan - b.dateEndPlan;
       });
 
       return {
-        monthName,
+        monthName:realMonthname,
         monthNumber,
         yearNumber,
         courses: sortedCourses

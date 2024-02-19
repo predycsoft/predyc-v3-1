@@ -10,6 +10,7 @@ export const generateSixDigitRandomNumber = () => {
     return Math.floor(100000 + Math.random() * 900000);
 };
 
+
 export const timestampToDateNumbers = (timestamp: number): {minutes:number, hours:number, day:number, month:number, year:number } => {
     const date: Date = new Date(timestamp); 
     const minutes: number = date.getUTCMinutes()
@@ -113,3 +114,17 @@ export const getFirstDaysOfMonth = (startTimestamp: number, endTimestamp: number
 
   return firstDays;
 }
+export const obtenerUltimoDiaDelMes = (fecha: number) : number =>{
+  let fechaOriginal = new Date(fecha);
+  const anio = fechaOriginal.getFullYear();
+  const mes = fechaOriginal.getMonth();
+  const ultimoDiaDelMes = new Date(anio, mes + 1, 0);
+
+  // Establecer la hora a 23:59:59
+  ultimoDiaDelMes.setHours(23, 59, 59);
+
+  return ultimoDiaDelMes.getTime();
+}
+
+
+
