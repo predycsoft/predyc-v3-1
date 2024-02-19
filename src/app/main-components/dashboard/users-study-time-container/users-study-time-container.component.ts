@@ -74,7 +74,7 @@ export class UsersStudyTimeContainerComponent {
           return of([]);
         }
       }),
-      filter(logs => logs.length > 0), // Filtra para pasar solo los arrays no vacíos.
+      // filter(logs => logs.length > 0), // Filtra para pasar solo los arrays no vacíos.
       take(1) // Toma el primer conjunto de datos no vacío.
     )
     .subscribe(logs => {
