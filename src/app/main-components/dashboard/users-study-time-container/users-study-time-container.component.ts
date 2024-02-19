@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { combineLatest, map, of, Subscription, switchMap } from 'rxjs';
+import { combineLatest, filter, map, of, Subscription, switchMap, take } from 'rxjs';
 import { CourseService } from 'src/app/shared/services/course.service';
 import { IconService } from 'src/app/shared/services/icon.service';
 import { firestoreTimestampToNumberTimestamp } from 'src/app/shared/utils';
@@ -73,24 +73,22 @@ export class UsersStudyTimeContainerComponent {
         } else {
           return of([]);
         }
-      })
+      }),
+      filter(logs => logs.length > 0), // Filtra para pasar solo los arrays no vacíos.
+      take(1) // Toma el primer conjunto de datos no vacío.
     )
     .subscribe(logs => {
-      if (logs.length > 0) {
-        // console.log("logs", logs); 
-        this.logs = logs
-        this.logsInCurrentMonth = logs.filter(log => {
-          const logMonth = new Date(log.endDate).getUTCMonth(); 
-          const logYear = new Date(log.endDate).getUTCFullYear();
-          return logMonth === this.currentMonth && logYear === this.currentYear;
-        })
-        console.log("this.logsInCurrentMonth",this.logsInCurrentMonth)
-        this.hoursTimeMonth = (this.logsInCurrentMonth.reduce((total, currentClass) => total + currentClass.classDuration, 0)) / 60;
-      } else {
-        this.logs = []
-        this.logsInCurrentMonth = []
-      }
+      // Tu lógica de procesamiento aquí
+      this.logs = logs;
+      this.logsInCurrentMonth = logs.filter(log => {
+        const logMonth = new Date(log.endDate).getUTCMonth(); 
+        const logYear = new Date(log.endDate).getUTCFullYear();
+        return logMonth === this.currentMonth && logYear === this.currentYear;
+      });
+      console.log("this.logsInCurrentMonth", this.logsInCurrentMonth);
+      this.hoursTimeMonth = this.logsInCurrentMonth.reduce((total, currentClass) => total + currentClass.classDuration, 0) / 60;
     });
   }
+  
   
 }
