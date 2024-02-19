@@ -4,7 +4,8 @@ import { AuthService } from '../../services/auth.service';
 import { IconService } from '../../services/icon.service';
 import { SidenavService } from '../../services/sidenav.service';
 import { User } from '../../models/user.model';
-import { Observable, firstValueFrom } from 'rxjs';
+import { Observable, filter, firstValueFrom } from 'rxjs';
+import { NavigationEnd, Router } from '@angular/router';
 
 interface Page {
   link: string;
@@ -34,19 +35,32 @@ export class SideNavComponent {
     {name: 'Licencias', link:'settings', icon: '../../assets/iconsUI/settings-1.svg'},
   ]
 
+  currentUrl: string;
+
+
   constructor(
     public icon: IconService,
-    private authService: AuthService
-  ) {}
+    private authService: AuthService,
+    private router: Router
+  ) {
+
+        this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: NavigationEnd) => {
+      this.currentUrl = event.url;
+    });
+  }
 
   @Input() menuExpanded = false
   
   ngOnInit() {
+
+    
     this.authService.user$.subscribe(user => {
       if (user?.adminPredyc) this.pages.push({
         name: 'Crear demo',
         link:'management/create-demo',
-        icon: '../../assets/iconsUI/credentials.svg'
+        icon: '../../assets/iconsUI/demo.svg'
       })
     })
   }
