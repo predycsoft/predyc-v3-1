@@ -377,7 +377,7 @@ export class CreateDemoComponent {
     console.log('users',users)
     for (let user of users) {
       let fecha = this.startDateForStudyPlan;
-      let hoursUser = this.calculateVariation(this.randomIntFromInterval(Math.round(horasOptimasPlan/2),horasOptimasPlan),5)
+      let hoursUser = this.calculateVariation(this.randomIntFromInterval(Math.round(horasOptimasPlan*0.6),horasOptimasPlan),5)
       console.log('horasOptimasPlan',horasOptimasPlan,'horas usuario',hoursUser)
       let minutesUser = hoursUser*60;
       let minutosMonth= Math.round(minutesUser/tiempoExactoTransucrrido)

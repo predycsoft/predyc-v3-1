@@ -206,7 +206,7 @@ export class UserService {
   getPerformanceWithDetails(userStudyPlan): "no plan" | "high" | "medium" | "low"  {
 
     let delayedCourses = 0;
-    let delayedMoreThanFiveDays = false;
+    let delayedMoreThan30Days = false;
     // let completedCourses = 0;
     // let totalScore = 0;
     // let totalGrade = 0;
@@ -247,8 +247,8 @@ export class UserService {
           // if(delayDays >= 3 && delayDays < 5){
           //   totalScore -= (course.duracion / 60)*.3
           // }
-          if(delayDays >= 5){
-            delayedMoreThanFiveDays = true
+          if(delayDays >= 30){
+            delayedMoreThan30Days = true
             // totalScore -= (course.duracion / 60)*.5
           }
         }
@@ -257,8 +257,8 @@ export class UserService {
         delayedCourses++
         delayTime = targetComparisonDate - dateEndPlan
         delayDays = delayTime/(24*60*60*1000)
-        if (delayDays >= 5) {
-          delayedMoreThanFiveDays = true
+        if (delayDays >= 30) {
+          delayedMoreThan30Days = true
         }
       }
     });
@@ -268,7 +268,7 @@ export class UserService {
       performance ="no plan"
     } else if (delayedCourses === 0) {
       performance = "high";
-    } else if (delayedCourses === 1 && !delayedMoreThanFiveDays) {
+    } else if (delayedCourses === 1 && !delayedMoreThan30Days) {
       // This should be change since every student with at least one delayed course wont be able to get a better performance
       // Maybe this should be calculated as a percentage of every course with a past end date
       performance = "medium";
