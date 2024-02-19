@@ -62,15 +62,18 @@ export class StudyTimeMonthlyLineChartComponent {
   getChartData() {
     const months = {}
     console.log(this.studentCourses)
-    const startPlanTimestampt = firestoreTimestampToNumberTimestamp(this.studentCourses[0].dateEndPlan)
+    const startPlanTimestampt = firestoreTimestampToNumberTimestamp(this.studentCourses[0].dateStartPlan)
     const endPlanTimestampt = firestoreTimestampToNumberTimestamp(this.studentCourses[this.studentCourses.length - 1].dateEndPlan)
     const firstDaysOfEachMonth = getFirstDaysOfMonth(startPlanTimestampt, endPlanTimestampt)
+    console.log(firstDaysOfEachMonth)
     let remainingStudyPlanHours = 0
     this.studentCourses.forEach(course => {
       const courseJson = this.courses.find(item => item.id === course.courseRef.id)
       remainingStudyPlanHours += (courseJson.duracion/60)
     })
+    remainingStudyPlanHours = Math.round(remainingStudyPlanHours)
     const studyPlanHours = remainingStudyPlanHours
+    console.log("studyPlanHours", studyPlanHours)
     // Find first day of every month between start and end
     firstDaysOfEachMonth.forEach(firstDayOfMonth => {
       const expectedEndDate = firstDayOfMonth
@@ -78,7 +81,7 @@ export class StudyTimeMonthlyLineChartComponent {
       const expectedEndDateYearNumber = expectedEndDate.getUTCFullYear();
       if (!Object.keys(months).includes(`${expectedEndDateMonthNumber}-${expectedEndDateYearNumber}`)) {
         let expectedMonthHours = Math.min(this.student.studyHours, remainingStudyPlanHours)
-        if (expectedMonthHours > 0) remainingStudyPlanHours - expectedMonthHours
+        if (expectedMonthHours > 0) remainingStudyPlanHours = remainingStudyPlanHours - expectedMonthHours
         months[`${expectedEndDateMonthNumber}-${expectedEndDateYearNumber}`] = {
           monthName: expectedEndDate.toLocaleString('es', { month: 'short' }) + '-' + expectedEndDateYearNumber,
           expectedHours: expectedMonthHours,

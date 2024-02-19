@@ -74,7 +74,6 @@ export class StudentDetailsComponent {
           const logYear = new Date(log.endDate).getUTCFullYear();
           return logMonth === this.currentMonth && logYear === this.currentYear;
         })
-        console.log("this.logsInCurrentMonth",this.logsInCurrentMonth)
         this.hoursTimeMonth = (this.logsInCurrentMonth.reduce((total, currentClass) => total + currentClass.classDuration, 0)) / 60;
       }
     });

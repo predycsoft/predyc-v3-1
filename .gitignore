@@ -48,4 +48,5 @@ Thumbs.db
 database/*
 !database/seed.json
 *.zip
+*.rar
 firebase-export*
