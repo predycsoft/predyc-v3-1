@@ -33,14 +33,14 @@
                 <div
                 fxLayout="row"
                 fxLayoutGap="0.625"
-                matTooltip=" {{ (!profile.enterpriseRef || !user?.adminPredyc) ? 'No es posible editar este perfil':'' }}"
+                matTooltip=" {{ (!profile?.enterpriseRef || !user?.adminPredyc) ? 'No es posible editar este perfil':'' }}"
                 fxLayoutAlign=" center center"
-                class="{{ (profile.enterpriseRef || user?.adminPredyc )? 'blueButton' : 'grayDisabledButton' }} mgt10 ft14"
+                class="{{ (profile?.enterpriseRef || user?.adminPredyc ) ? 'blueButton' : 'grayDisabledButton' }} mgt10 ft14"
                 style="border-radius: 24px !important;"
-                (click)="(profile.enterpriseRef || user?.adminPredyc )?onEdit():''">
+                (click)="(profile?.enterpriseRef || user?.adminPredyc ) ? onEdit() : ''">
                     Editar
-                    <img *ngIf="profile.enterpriseRef && !user?.adminPredyc" [src]="icon.licencias" class="h16px pdl05" alt="">
-                    <img *ngIf="!profile.enterpriseRef && user?.adminPredyc" [src]="icon.licencias" class="h16px pdl05" alt="">
+                    <img *ngIf="profile?.enterpriseRef && !user?.adminPredyc" [src]="icon.licencias" class="h16px pdl05" alt="">
+                    <img *ngIf="!profile?.enterpriseRef && user?.adminPredyc" [src]="icon.licencias" class="h16px pdl05" alt="">
                 </div>
             </div>
             

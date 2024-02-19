@@ -1,8 +1,9 @@
 import { Component, Input } from '@angular/core';
+import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { TimeScale } from 'chart.js/dist';
-import { map, Observable, startWith, Subscription } from 'rxjs';
+import { finalize, firstValueFrom, map, Observable, startWith, Subscription } from 'rxjs';
 import { Department } from 'src/app/shared/models/department.model';
 import { Profile } from 'src/app/shared/models/profile.model';
 import { User } from 'src/app/shared/models/user.model';
@@ -31,6 +32,7 @@ export class CreateUserComponent {
     private userService: UserService,
     public icon: IconService,
     private departmentService: DepartmentService,
+    private storage: AngularFireStorage
   ) {}
   
   @Input() studentToEdit: User | null = null;
@@ -73,7 +75,7 @@ export class CreateUserComponent {
 
   async setupForm() {
     this.userForm = this.fb.group({
-      name: [null, [Validators.required]],
+      displayName: [null, [Validators.required]],
       profile: [null],
       photoUrl: [null],
       phoneNumber: [null, [Validators.pattern(/^\d*$/)]],
@@ -88,9 +90,10 @@ export class CreateUserComponent {
     // Edit mode
     if (this.studentToEdit) {
       const department = this.studentToEdit.departmentRef ? (await this.studentToEdit.departmentRef.get()).data() : null
+      const profile = this.studentToEdit.profile ? (await this.studentToEdit.profile.get()).data() : null
       this.userForm.patchValue({
-        name: this.studentToEdit.displayName,
-        // profile: this.studentToEdit.profile,
+        displayName: this.studentToEdit.displayName,
+        profile: profile ? profile.id : null,
         photoUrl: this.studentToEdit.photoUrl,
         phoneNumber: this.studentToEdit.phoneNumber,
         department: department ? department.name : null,
@@ -102,6 +105,9 @@ export class CreateUserComponent {
       this.studentToEdit.birthdate ? this.timestampToFormFormat(this.studentToEdit.birthdate, "birthdate") : null
       this.studentToEdit.hiringDate ? this.timestampToFormFormat(this.studentToEdit.hiringDate, "hiringDate") : null
       this.userForm.get('email')?.disable();
+      if (this.studentToEdit.photoUrl) {
+        this.imageUrl = this.studentToEdit.photoUrl;
+      }
     }
 
   }
@@ -113,8 +119,33 @@ export class CreateUserComponent {
     });
   }
 
+  imageUrl
+  uploadedImage
+
   onFileSelected(event) {
-    console.log("File selected")
+    const input = event.target as HTMLInputElement;
+    if (!input || !input.files || !input.files[0] || input.files[0].length === 0) {
+      this.alertService.errorAlert(`Debe seleccionar una imagen`);
+      return;
+    }
+    const file = input.files[0];
+    // if (file.type !== 'image/webp') {
+    //   this.alertService.errorAlert(`La imagen seleccionada debe tener formato:  WEBP`);
+    //   return;
+    // }
+    /* checking size here - 10MB */
+    const imageMaxSize = 10000000;
+    if (file.size > imageMaxSize) {
+      this.alertService.errorAlert(`El archivo es mayor a 1MB por favor incluya una imagen de menor tamaño`);
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (_event) => {
+      this.imageUrl = reader.result;
+      this.uploadedImage = file;
+    };
   }
 
   validateCurrentModalPage() {
@@ -131,18 +162,18 @@ export class CreateUserComponent {
   }
 
   async getUserFromForm(){
-    const formData = this.userForm.getRawValue() // use getRawValue instead of value because "value" doesnt contain disabled fields (email)
-
     // Guarda la imagen
-    const photoUrl = await this.saveStudentPhoto()
+    await this.saveStudentPhoto()
+  
+    const formData = this.userForm.getRawValue() // use getRawValue instead of value because "value" doesnt contain disabled fields (email)
     let department = null
     if (formData.department && formData.department !== 'null') {
       const departmentId = this.departments.find(department => department.name === formData.department).id
       department = departmentId ? this.departmentService.getDepartmentRefById(departmentId) : null
     }
     const userObj = {
-      name: formData.name ? formData.name.toLowerCase() : null,
-      displayName: formData.name ? formData.name.toLowerCase() : null,
+      name: formData.displayName ? formData.displayName.toLowerCase() : null,
+      displayName: formData.displayName ? formData.displayName.toLowerCase() : null,
       phoneNumber: formData.phoneNumber ? formData.phoneNumber : null,
       departmentRef: department,
       country: formData.country ? formData.country : null,
@@ -152,7 +183,7 @@ export class CreateUserComponent {
       experience: formData.experience ? formData.experience : null,
       profile: formData.profile ? this.profileService.getProfileRefById(formData.profile) : null,
       email: formData.email ? formData.email.toLowerCase() : null,
-      photoUrl: photoUrl
+      photoUrl: formData.photoUrl
     }
     let user = null
     if (this.studentToEdit?.role === User.ROLE_ADMIN) {
@@ -163,6 +194,7 @@ export class CreateUserComponent {
 
     let valueToPatch = null
     if (this.studentToEdit) {
+      delete userObj.name
       valueToPatch = {
         ...this.studentToEdit,
         ...userObj
@@ -176,36 +208,34 @@ export class CreateUserComponent {
   }
 
   async saveStudentPhoto() {
-    // if (this.uploadedImage) {
-    //   if (this.student.photoUrl) {
-    //     // Existing image must be deleted before
-    //     await firstValueFrom(
-    //       this.storage.refFromURL(this.student.photoUrl).delete()
-    //     ).catch((error) => console.log(error));
-    //     console.log('Old image has been deleted!');
-    //   }
-    //   // Upload new image
-    //   const fileName = this.uploadedImage.name.replace(' ', '-');
-    //   const filePath = `Imagenes/${fileName}`;
-    //   const fileRef = this.storage.ref(filePath);
-    //   const task = this.storage.upload(filePath, this.uploadedImage);
-    //   await new Promise<void>((resolve, reject) => {
-    //     task.snapshotChanges().pipe(
-    //       finalize(async () => {
-    //         this.student.photoUrl = await firstValueFrom(fileRef.getDownloadURL());
-    //         console.log(this.student.photoUrl)
-    //         console.log("Se ha guardado la imagen");
-    //         resolve();
-    //       })
-    //     ).subscribe({
-    //       next: () => {},
-    //       error: error => reject(error),
-    //     });
-    //   });
-    // } else {
-    //   this.student.photoUrl = null
-    // }
-    return null
+    if (this.uploadedImage) {
+      if (this.userForm.controls.photoUrl) {
+        // Existing image must be deleted before
+        await firstValueFrom(
+          this.storage.refFromURL((this.userForm.controls.photoUrl.value)).delete()
+        ).catch((error) => console.log(error))
+        console.log('Old image has been deleted!');
+      }
+      // Upload new image
+      const fileName = this.uploadedImage.name.replace(' ', '-');
+      const filePath = `Imagenes/${fileName}`;
+      const fileRef = this.storage.ref(filePath);
+      const task = this.storage.upload(filePath, this.uploadedImage);
+      await new Promise<void>((resolve, reject) => {
+        task.snapshotChanges().pipe(
+          finalize(async () => {
+            const photoUrl = await firstValueFrom(fileRef.getDownloadURL());
+            console.log("image has been uploaded!");
+            this.userForm.controls.photoUrl.setValue(photoUrl)
+            this.uploadedImage = null
+            resolve();
+          })
+        ).subscribe({
+          next: () => {},
+          error: error => reject(error),
+        });
+      });
+    }
   }
 
   async onSubmit() {
@@ -221,7 +251,7 @@ export class CreateUserComponent {
     try {
       if (this.studentToEdit) await this.userService.editUser(user.toJson())
       else await this.userService.addUser(user)
-      this.activeModal.close();
+      this.activeModal.close(this.userForm.value);
       this.alertService.succesAlert('Estudiante agregado exitosamente')
     } catch (error) {
       this.alertService.errorAlert(error)
@@ -229,7 +259,7 @@ export class CreateUserComponent {
   }
 
   dismiss() {
-    this.activeModal.dismiss()
+    this.activeModal.dismiss('User closed modal')
   }
 
   ngOnDestroy() {

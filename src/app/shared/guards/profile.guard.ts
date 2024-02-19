@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
-import { map, Observable } from 'rxjs';
+import { combineLatest, map, Observable } from 'rxjs';
 import { ProfileService } from '../services/profile.service';
 import { EnterpriseService } from '../services/enterprise.service';
 
@@ -23,10 +23,9 @@ export class ProfileGuard {
   }
 
   private checkIdInDatabase(id: string): Observable<boolean> {
-    return this.profileService.getProfile$(id).pipe(map(profile => {
+    return combineLatest([this.profileService.getProfile$(id), this.enterpriseService.enterpriseLoaded$]).pipe(map(([profile, isEnterpriseLoaded]) => {
         const enterpriseRef = this.enterpriseService.getEnterpriseRef()
-        if(profile.enterpriseRef?.id == enterpriseRef.id || !profile?.enterpriseRef)  return true
-        //if (profile && [null, enterpriseRef].includes(profile.enterpriseRef)) return true
+        if(profile?.enterpriseRef?.id == enterpriseRef.id || !profile?.enterpriseRef)  return true
         this.router.navigate(['']);
         return false
     }))

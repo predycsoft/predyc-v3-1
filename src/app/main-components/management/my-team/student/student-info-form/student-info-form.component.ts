@@ -83,20 +83,30 @@ export class StudentInfoFormComponent {
     
   }
 
-  openCreateUserModal(student: User | null): NgbModalRef {
-    let openModal = true
-    if (openModal) {
-      const modalRef = this.modalService.open(CreateUserComponent, {
-        animation: true,
-        centered: true,
-        size: 'lg',
-        backdrop: 'static',
-        keyboard: false 
-      })
-      modalRef.componentInstance.studentToEdit = student;
-      return modalRef
-    }
-    else return null
+  openCreateUserModal(student: User | null) {
+    const modalRef = this.modalService.open(CreateUserComponent, {
+      animation: true,
+      centered: true,
+      size: 'lg',
+      backdrop: 'static',
+      keyboard: false 
+    })
+    modalRef.componentInstance.studentToEdit = student;
+    modalRef.result.then(result => {
+      this.save(result)
+    }).catch(error => {
+      console.log(error)
+    })
+  }
+
+  async save(formData) {
+    console.log('formData', formData)
+    this.studentForm.patchValue(formData)
+    this.student.displayName = formData.displayName
+    this.student.phoneNumber = formData.phoneNumber
+    this.student.country = formData.country
+    this.student.profile = formData.profile ? this.profileService.getProfileRefById(formData.profile) : null
+    this.onStudentSave.emit(this.student)
   }
 
   displayProfileName(id: string): string {

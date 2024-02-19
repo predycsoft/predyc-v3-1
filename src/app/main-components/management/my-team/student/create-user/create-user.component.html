@@ -13,7 +13,7 @@
                 <div>
                     <div (click)="fileInput.click()" class="cursorPointer">
                         <img
-                            [src]="false ? '' : 'assets/images/default/default-user-image.jpg'"
+                            [src]="imageUrl ? imageUrl : 'assets/images/default/default-user-image.jpg'"
                             class="avatar5"
                             alt=""
                             >
@@ -22,17 +22,17 @@
                 </div>
                 <div class="w-80" fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="center ">
                     <input
-                        formControlName="name"
-                        [class.is-invalid]="userForm.get('name').errors && displayErrors"
+                        formControlName="displayName"
+                        [class.is-invalid]="userForm.get('displayName').errors && displayErrors"
                         type="text" 
                         class="form-control"
                         placeholder="Nombre del usuario"
                         >
                     <div
                         class="custom-invalid-feedback"
-                        *ngIf="userForm.get('name').errors && displayErrors"
+                        *ngIf="userForm.get('displayName').errors && displayErrors"
                         >
-                        <div *ngIf="userForm.get('name').errors?.required">
+                        <div *ngIf="userForm.get('displayName').errors?.required">
                             Es obligatorio especificar el nombre del usuario
                         </div>
                     </div>             

@@ -85,20 +85,10 @@ export class StudentDetailsComponent {
     try {
       const [hasUserDataChanged, hasProfileChanged] = this.hasDataChanges(student);
       if (hasUserDataChanged){
-        // await this.userService.editUser(student)
-        this.userService.updateUserFields(this.student.uid, {
-          canEnrollParticularCourses: this.student.canEnrollParticularCourses,
-          displayName: this.student.displayName,
-          phoneNumber: this.student.phoneNumber,
-          country: this.student.country,
-          profile: this.student.profile,
-          photoUrl: this.student.photoUrl
-        })
         this.originalStudentData = {...student}
         if(hasProfileChanged) {
           this.studentProfile = this.profileService.getProfile(student.profile.id)
         }
-        this.alertService.succesAlert(`Información editada satisfactoriamente`);
       }
     } catch (error) {
       console.log(error)
