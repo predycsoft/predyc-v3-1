@@ -106,10 +106,12 @@ export const getFirstDaysOfMonth = (startTimestamp: number, endTimestamp: number
   let currentDate = new Date(startDate);
   while (currentDate <= endDate) {
       // Add the first day of the current month in UTC to the list
-      firstDays.push(new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), 1)));
 
+
+      let fechaAux = new Date(currentDate.getFullYear(),currentDate.getMonth(),1)
+      firstDays.push(fechaAux);
       // Move to the next month
-      currentDate.setUTCMonth(currentDate.getUTCMonth() + 1);
+      currentDate.setMonth(fechaAux.getMonth() + 1);
   }
 
   return firstDays;

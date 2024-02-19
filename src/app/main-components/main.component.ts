@@ -44,7 +44,7 @@ export class MainComponent {
 
           // Convert milliseconds to days
           const millisecondsInDay = 1000 * 60 * 60 * 24;
-          this.daysToExpire = Math.ceil(differenceInMilliseconds / millisecondsInDay);
+          this.daysToExpire = Math.floor(differenceInMilliseconds / millisecondsInDay);
         }
       }
     });
