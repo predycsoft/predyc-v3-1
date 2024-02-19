@@ -1,4 +1,4 @@
-<div fxLayout="row" fxLayoutAlign="space-between" class="mgt10">
+<div fxLayout="row" fxLayoutAlign="space-between" class="mgt10" fxLayoutGap="2rem">
     <!-- Resumen de competencias -->
 
     <div class="w-40 radius10 shadowLight pd10 cards fh" fxLayout="column" fxLayoutGap="1rem"  style="background-color: rgba(244, 244, 244, 0.362); ">
@@ -6,8 +6,8 @@
             <img [src]="icon.ticTacToe" class="makeBlue h20px"  alt="">
             <span class="ft500  ft14  black"  >Resumen de competencias </span>
         </div>
-        <div class="chart-container">
-            <canvas id="chart"></canvas>
+        <div class="chart-container fw" >
+            <canvas id="chart" class="fw"></canvas>
         </div>
         <!-- <div fxLayout="column" fxLayoutGap="1rem" *ngFor="let competence of competences; let i = index">
             <span>{{competence.title}}</span>
@@ -43,7 +43,7 @@
     </div>
     <!-- Plan de estudios -->
 
-    <div class="w-55 radius10 shadowLight cards " fxLayout="column" fxLayoutGap=""  style="background-color: rgba(244, 244, 244, 0.362); ">
+    <div class="w-70 radius10 shadowLight cards " fxLayout="column" fxLayoutGap=""  style="background-color: rgba(244, 244, 244, 0.362); ">
         <div class="mgt10"  fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem">
             <img [src]="icon.course" class="makeBlue h20px" alt="">
             <span class="ft500  ft14  black">Plan de estudios</span>
@@ -112,15 +112,16 @@
         </ng-container>
         <ng-container *ngIf="showInitForm">
             <div fxLayout="column"> 
-                <span>Indique los siguientes datos para inicializar su plan de estudio:</span>
-                <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap=".5rem" class="mgb10">
+                <span class="ft500 gray-10 ft14 mgt10">¡Inicia el plan de estudios de {{student.displayName.split(' ')[0] | titlecase}}!</span>
+                <span class="mgt05">Indique los siguientes datos para inicializar su plan de estudio:</span>
+                <div fxLayout="column" class="mgt10">
                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="">
-                        <span class="ft500 ft12 gray-8">Estudio mensual</span>
-                        <input type="number" min="0" class="mgl05 input-number" [(ngModel)]="hoursPermonthInitForm">
+                        <span class="ft500 ft12 gray-8 w100px">Estudio mensual:</span>
+                        <input type="number" min="0" class=" input-number" [(ngModel)]="hoursPermonthInitForm">
                     </div>
-                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="">
-                        <span class="ft500 ft12 gray-8">Fecha de inicio</span>
-                        <input (click)="startDate.toggle()" ngbDatepicker #startDate="ngbDatepicker"  [(ngModel)]="startDateInitForm" >
+                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="mgt05">
+                        <span class="ft500 ft12 gray-8 w100px">Fecha de inicio:</span>
+                        <input class="inputDate" (click)="startDate.toggle()" ngbDatepicker #startDate="ngbDatepicker"  [(ngModel)]="startDateInitForm" >
                     </div>
                 </div>
                 <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="mgb03">

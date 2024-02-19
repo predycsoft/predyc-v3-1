@@ -10,21 +10,35 @@
   
 
   .input-number {
-    width: 30px;
-    border: none;
-    border-bottom: 2px solid black;
+    width: calc(30px + .5rem);
+    border: 1px solid var(--gray-3);
+    border-radius: 4px;
+    text-align: center;
+    padding-left: .5rem;
+    font-size: 12px;
+  
+
 }
 
 .input-number:focus {
-    border: none;
-    border-bottom: 2px solid black;
+    border: 1px solid var(--gray-3);
     outline: 0;
+
+}
+
+.inputDate{
+  border: 1px solid var(--gray-3);
+  border-radius: 4px;
+  padding-left: .5rem;
+  font-size: 12px;
+
 }
 
 .chart-container {
-  padding-top: 5vh;
+  /* padding-top: 2rem; */
   /* width: 100%; */
   height: max-content;
+  width: 100%;
 }
 
 .skills-container{

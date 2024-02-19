@@ -6,7 +6,7 @@
                 <div fxLayout="row" class=" MenuOptionsNav">
                     <img [src]="page?.icon" class="h20px makeGray8  " [class.opacity1]="page.link | isActive:currentUrl" routerLinkActive="" style="margin-top: 2px;"
                         [routerLinkActiveOptions]="{ exact: true }">
-                    <span *ngIf="menuExpanded" class="ft13 mgt03 gray-8 ft500 mgr05 mgl05">{{page.name}}</span>
+                    <span *ngIf="menuExpanded" class="ft13 mgt03 gray-8 ft500 mgr05 mgl05 no-select">{{page.name}}</span>
                 </div>
             </div>
         </div>

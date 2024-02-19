@@ -62,13 +62,13 @@
 
             <!-- <th mat-header-cell *matHeaderCellDef class="w-10 centertext gray-8"> Ritmo </th> -->
             <td mat-cell *matCellDef="let user" class="w-10"> 
-                <div *ngIf="user.rhythm === 'high'" class="chip newGreen2b" style="border: 1px solid #3ED219;" fxLayout="row" fxLayoutAlign="center center">
-                    <span class="ft13 nowrap ft500  " style="color: #27be02;">Alto</span>
+                <div *ngIf="user.rhythm === 'high'" class="chip backGreen2" style="border: 1px solid var(--green-5);" fxLayout="row" fxLayoutAlign="center center">
+                    <span class="ft13 nowrap ft500  " style="color: var(--green-5);">Alto</span>
                 </div>
                 <div *ngIf="user.rhythm === 'medium'" class="chip newYellow2b " style="border: 1px solid rgb(255, 196, 0);"  fxLayout="row" fxLayoutAlign="center center">
                     <span class="ft13 nowrap ft500 " style="color: rgb(255, 196, 0);" >Medio</span>
                 </div>
-                <div *ngIf="user.rhythm === 'low'" class="chip backRed2 borderLight " style="border: 1px solid #ff0000;" fxLayout="row" fxLayoutAlign="center center">
+                <div *ngIf="user.rhythm === 'low'" class="chip backRed1 borderLight " style="border: 1px solid #ff0000;" fxLayout="row" fxLayoutAlign="center center">
                     <span class="ft13 nowrap ft500" style="color: #f50000;" >Bajo</span>
                 </div>
                 <div *ngIf="user.rhythm === 'no plan'" class="chip borderLight"  fxLayout="row" fxLayoutAlign="center center">

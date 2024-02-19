@@ -1,4 +1,4 @@
-<div *ngIf="!loaderService.loading" class="fh mgt20 mgl20 mgr20">
+<div *ngIf="!loaderService.loading" class="mgt20 mgl20 mgr20 mgb30">
     <div fxLayout="row" fxLayoutAlign="space-between center" class=" ">
         <div fxLayout="row" fxLayoutAlign="start center">
             <div class="positionRelative">
@@ -9,7 +9,7 @@
                 {{enterprise.name | titlecase}}
             </span>
         </div>
-        <button class="blueButtonAnim button-animation " (click)="openDownloadReportModal()">Descargar reporte</button>
+        <button class="blueButtonAnim button-animation ft500 " (click)="openDownloadReportModal()">Descargar reporte</button>
     </div>   
     <div fxLayout="row" fxLayoutAlign="space-between " fxLayoutGap="2rem" class="h-35 mgt20">
         <div class="radius10 w-50 pd10 shadowLight " style="background-color: rgba(244, 244, 244, 0.362);  ">
@@ -19,7 +19,7 @@
             <app-users-rhythm [rythms]="rythms"></app-users-rhythm>
         </div>
     </div>
-    <div class="fw fh h-50 mgt20">
+    <div class="fw mgt20">
         <div class="radius10  fw pdr10 pdl10 shadowLight " style="background-color: rgba(244, 244, 244, 0.362);  ">
             <app-ranking-list></app-ranking-list>
         </div>
