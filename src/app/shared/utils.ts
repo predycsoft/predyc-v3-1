@@ -93,3 +93,23 @@ export const daysBetween = (timestamp1: number, timestamp2: number): number => {
   
   return days;
 }
+
+export const getFirstDaysOfMonth = (startTimestamp: number, endTimestamp: number): Date[] => {
+  // Convert timestamps to Date objects
+  const startDate = new Date(startTimestamp);
+  const endDate = new Date(endTimestamp);
+
+  const firstDays = [];
+
+  // Loop through each month between start and end dates
+  let currentDate = new Date(startDate);
+  while (currentDate <= endDate) {
+      // Add the first day of the current month to the list
+      firstDays.push(new Date(currentDate.getFullYear(), currentDate.getMonth(), 1));
+
+      // Move to the next month
+      currentDate.setMonth(currentDate.getMonth() + 1);
+  }
+
+  return firstDays;
+}

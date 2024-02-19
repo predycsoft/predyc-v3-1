@@ -378,6 +378,14 @@ export class UserService {
   async updateUserFields(uid: string, fields: Partial<User>) {
     await this.afs.collection(User.collection).doc(uid).set(fields, {merge: true});
   }
+
+  async canEnrollParticularCourses(userId: string, value: boolean): Promise<void> {
+    const userRef = this.getUserRefById(userId)
+
+    return this.afs.collection(User.collection).doc(userId).set(
+      {canEnrollParticularCourses: value}, { merge: true }
+    );
+  }
   
 
 }

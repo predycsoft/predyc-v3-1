@@ -4,10 +4,11 @@ import { Chart } from 'chart.js';
 import { Subscription, combineLatest } from 'rxjs';
 import { ClassByStudent } from 'src/app/shared/models/class-by-student.model';
 import { CourseByStudent } from 'src/app/shared/models/course-by-student.model';
+import { Curso } from 'src/app/shared/models/course.model';
 import { User } from 'src/app/shared/models/user.model';
 import { CourseService } from 'src/app/shared/services/course.service';
 import { UserService } from 'src/app/shared/services/user.service';
-import { firestoreTimestampToNumberTimestamp } from 'src/app/shared/utils';
+import { firestoreTimestampToNumberTimestamp, getFirstDaysOfMonth } from 'src/app/shared/utils';
 
 @Component({
   selector: 'app-study-time-monthly-line-chart',
@@ -28,12 +29,14 @@ export class StudyTimeMonthlyLineChartComponent {
   student: User
   studentCourses: CourseByStudent[]
   studentClasses: ClassByStudent[]
+  courses: Curso[]
   classes: {}
 
   async ngOnInit() {
     this.student = await this.userService.getUserByUid(this.uid)
     const userRef = this.userService.getUserRefById(this.uid)
-    this.courseServiceSubscription = combineLatest([this.courseService.getCoursesByStudent$(userRef), this.courseService.getClassesByStudent$(userRef)]).subscribe(async ([studentCourses, studentClasses]) => {
+    this.courseServiceSubscription = combineLatest([this.courseService.getCoursesByStudent$(userRef), this.courseService.getClassesByStudent$(userRef), this.courseService.getCourses$()]).subscribe(async ([studentCourses, studentClasses, allCourses]) => {
+      this.courses = allCourses
       this.studentCourses = studentCourses.filter(item => item.active).sort((a, b) => a.dateEndPlan - b.dateEndPlan)
       const coursesIds = studentCourses.map(item => item.id)
       this.studentClasses = studentClasses.filter(item => coursesIds.includes(item.coursesByStudentRef.id) && item.completed).sort((a, b) => a.dateEnd - b.dateEnd)
@@ -58,16 +61,29 @@ export class StudyTimeMonthlyLineChartComponent {
 
   getChartData() {
     const months = {}
-    this.studentCourses.forEach(studentCourse => {
-      const expectedEndDate = new Date(firestoreTimestampToNumberTimestamp(studentCourse.dateEndPlan))
+    console.log(this.studentCourses)
+    const startPlanTimestampt = firestoreTimestampToNumberTimestamp(this.studentCourses[0].dateEndPlan)
+    const endPlanTimestampt = firestoreTimestampToNumberTimestamp(this.studentCourses[this.studentCourses.length - 1].dateEndPlan)
+    const firstDaysOfEachMonth = getFirstDaysOfMonth(startPlanTimestampt, endPlanTimestampt)
+    let remainingStudyPlanHours = 0
+    this.studentCourses.forEach(course => {
+      const courseJson = this.courses.find(item => item.id === course.courseRef.id)
+      remainingStudyPlanHours += (courseJson.duracion/60)
+    })
+    const studyPlanHours = remainingStudyPlanHours
+    // Find first day of every month between start and end
+    firstDaysOfEachMonth.forEach(firstDayOfMonth => {
+      const expectedEndDate = firstDayOfMonth
       const expectedEndDateMonthNumber = expectedEndDate.getUTCMonth()
       const expectedEndDateYearNumber = expectedEndDate.getUTCFullYear();
       if (!Object.keys(months).includes(`${expectedEndDateMonthNumber}-${expectedEndDateYearNumber}`)) {
+        let expectedMonthHours = Math.min(this.student.studyHours, remainingStudyPlanHours)
+        if (expectedMonthHours > 0) remainingStudyPlanHours - expectedMonthHours
         months[`${expectedEndDateMonthNumber}-${expectedEndDateYearNumber}`] = {
           monthName: expectedEndDate.toLocaleString('es', { month: 'short' }) + '-' + expectedEndDateYearNumber,
-          expectedHours: this.student.studyHours,
+          expectedHours: expectedMonthHours,
           realMinutes: 0,
-          timestampForSort: firestoreTimestampToNumberTimestamp(studentCourse.dateEndPlan)
+          timestampForSort: firstDayOfMonth.getTime()
         }
       }
     })

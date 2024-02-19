@@ -23,7 +23,6 @@ export class StudentInfoFormComponent {
   @Input() studentProfile: Profile;
   @Output() onStudentSave: EventEmitter<User> = new EventEmitter<User>()
   studentForm: FormGroup;
-  isEditing = false;
   profiles: Profile[] = []
   profileSubscription: Subscription
   countries: {name: string, code: string, isoCode: string}[] = countriesData
@@ -36,7 +35,8 @@ export class StudentInfoFormComponent {
     private profileService: ProfileService,
     private alertService: AlertsService,
     private storage: AngularFireStorage,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private userService: UserService
     ) {}
 
   ngOnInit() {
@@ -52,7 +52,6 @@ export class StudentInfoFormComponent {
       profile: new FormControl(null),
       photoUrl: new FormControl(''),
     });
-    this.studentForm.get('canEnrollParticularCourses')?.disable();
 
     if (this.student) {
       this.studentForm.patchValue({
@@ -65,16 +64,27 @@ export class StudentInfoFormComponent {
         photoUrl: this.student.photoUrl
       });
     }
-
     if (this.student.photoUrl) {
       this.imageUrl = this.student.photoUrl;
     }
+  }
 
+  async toggleCanEnrollParticularCourses() {
+    try {
+      const canEnrollParticularCourses = this.studentForm.controls.canEnrollParticularCourses.value
+      await this.userService.canEnrollParticularCourses(this.student.uid, canEnrollParticularCourses)
+      this.student.canEnrollParticularCourses = canEnrollParticularCourses
+      this.onStudentSave.emit(this.student)
+      this.alertService.succesAlert("Se ha actualizado su configuración")
+    } catch(error) {
+      console.log(error)
+      this.alertService.errorAlert(error)
+    }
+    
   }
 
   openCreateUserModal(student: User | null): NgbModalRef {
     let openModal = true
-
     if (openModal) {
       const modalRef = this.modalService.open(CreateUserComponent, {
         animation: true,
@@ -89,86 +99,9 @@ export class StudentInfoFormComponent {
     else return null
   }
 
-  async save() {
-    if (this.isEditing) {
-      const formData = this.studentForm.value 
-      // console.log("Guardando...", formData);
-      await this.saveStudentPhoto() //this.student.photoUrl
-      this.student.canEnrollParticularCourses = formData.canEnrollParticularCourses
-      this.student.displayName = formData.displayName
-      this.student.phoneNumber = formData.phoneNumber
-      this.student.country = formData.country
-      this.student.profile = formData.profile ? this.profileService.getProfileRefById(formData.profile) : null
-      this.onStudentSave.emit(this.student)
-    }
-    this.studentForm.get('canEnrollParticularCourses')?.disable();
-    this.isEditing = false
-  }
-
   displayProfileName(id: string): string {
     const profile: Profile = this.profiles.find(x => x.id === id)
     if (profile) return profile.name
     return null
-  }
-
-  // photo
-  onFileSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (!input || !input.files || !input.files[0] || input.files[0].length === 0) {
-      this.alertService.errorAlert(`Debe seleccionar una imagen`);
-      return;
-    }
-    const file = input.files[0];
-    // if (file.type !== 'image/webp') {
-    //   this.alertService.errorAlert(`La imagen seleccionada debe tener formato:  WEBP`);
-    //   return;
-    // }
-    /* checking size here - 10MB */
-    const imageMaxSize = 10000000;
-    if (file.size > imageMaxSize) {
-      this.alertService.errorAlert(`El archivo es mayor a 1MB por favor incluya una imagen de menor tamaño`);
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = (_event) => {
-      this.imageUrl = reader.result;
-      this.uploadedImage = file;
-    };
-
-  }
-
-  async saveStudentPhoto() {
-    if (this.uploadedImage) {
-      if (this.student.photoUrl) {
-        // Existing image must be deleted before
-        await firstValueFrom(
-          this.storage.refFromURL(this.student.photoUrl).delete()
-        ).catch((error) => console.log(error));
-        console.log('Old image has been deleted!');
-      }
-      // Upload new image
-      const fileName = this.uploadedImage.name.replace(' ', '-');
-      const filePath = `Imagenes/${fileName}`;
-      const fileRef = this.storage.ref(filePath);
-      const task = this.storage.upload(filePath, this.uploadedImage);
-      await new Promise<void>((resolve, reject) => {
-        task.snapshotChanges().pipe(
-          finalize(async () => {
-            this.student.photoUrl = await firstValueFrom(fileRef.getDownloadURL());
-            console.log("image has been uploaded!");
-            this.uploadedImage = null
-            resolve();
-          })
-        ).subscribe({
-          next: () => {},
-          error: error => reject(error),
-        });
-      });
-    } else {
-      // this.student.photoUrl = null
-    }
-
   }
 }

@@ -1,28 +1,24 @@
 <form [formGroup]="studentForm">
     <div fxLayout="column" fxLayoutGap="0.3rem" class="fh fw">
         <div fxLayout="row" fxLayoutAlign="space-between center" class="">
-            
             <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem">
                 <img [src]="icon.credentials"  class=" h20px" alt="">
                 <span class="ft500 ft14 black">Información del usuario</span>
             </div>
-            <!-- <span class="makeBlue cursorPointer ft14" (click)="isEditing ? save() : (isEditing = true) && studentForm.get('canEnrollParticularCourses')?.enable()">{{ isEditing ? 'Guardar' : 'Editar' }}</span> -->
-            <span class="makeBlue cursorPointer ft14" (click)="openCreateUserModal(student)" >Editar</span>
-
+            <span class="makeBlue cursorPointer ft14" (click)="openCreateUserModal(student)">Editar</span>
         </div>
         <div fxLayout="row" fxLayoutAlign="space-between center" class="fh mgt05   mgt20 ">
             <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap=".75rem" class="w-75">
-                <div (click)="isEditing ? fileInput.click() : null" class="" [ngClass]="isEditing ? 'cursorPointer' : ''">
+                <div>
                     <img [src]="imageUrl ? imageUrl : 'assets/images/default/default-user-image.jpg'" class="avatar10" alt="">
                 </div>
-                <input #fileInput type="file" style="display: none;" (change)="onFileSelected($event)" >
                 <div class="radius10 backBlue1 pdr10 pdl10">
                     <span class="blue-5 ft13 ft500">Activo</span>
                 </div>
             </div>
             <div fxLayout="column" fxLayoutAlign="start center" class="w-100">
                 <!-- Not editing -->
-                <div *ngIf="!isEditing" fxLayout="column" fxLayoutGap=".75rem">
+                <div fxLayout="column" fxLayoutGap=".75rem">
                     <div fxLayout="column" fxLayoutAlign="center" class="h24px">
                         <span class="ft16 ft600 black"> {{studentForm.get('displayName').value | titlecase}} </span>
                     </div>
@@ -44,42 +40,9 @@
                     </div>
                     <div fxLayout="" fxLayoutAlign="center center" fxLayoutGap=".1rem">
                         <span class="ft12 makeBlue mgt15">Permitir cursos extracurriculares</span>
-                        <mat-slide-toggle class="mgl20 mgt15 " color="primary" formControlName="canEnrollParticularCourses"></mat-slide-toggle>
+                        <mat-slide-toggle class="mgl20 mgt15 " color="primary" formControlName="canEnrollParticularCourses" (click)="toggleCanEnrollParticularCourses()"></mat-slide-toggle>
                     </div>
                 </div>      
-                <!-- Editing -->
-                <div *ngIf="isEditing" fxLayout="column" fxLayoutGap=".75rem">
-                    <div fxLayout="column" fxLayoutAlign="center" class="h24px">
-                        <input formControlName="displayName" class="ft16  fw">
-                    </div>
-                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="h24px">
-                        <img [src]="icon.userProfile" class="makeGray h16px" alt="">
-                        <select *ngIf="profiles"  class="w-90" formControlName="profile">
-                            <option [value]="null" disabled>Perfil</option>
-                            <option *ngFor="let profile of profiles" [value]="profile.id">{{profile.name}}</option>
-                        </select>
-                    </div>
-                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="h24px">
-                        <img [src]="icon.email" class="makeGray h16px" alt="">
-                        <!-- <input formControlName="email" class="ft12 fw"> -->
-                        <span class="ft12">{{studentForm.get('email').value}}</span>
-                    </div>
-                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="h24px">
-                        <img [src]="icon.phone" class="makeGray h16px" alt="">
-                        <input minLength="10" maxLength=10 formControlName="phoneNumber" class="ft12 fw" placeholder="Número de teléfono">
-                    </div>
-                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="h24px">
-                        <img [src]="icon.location" class="makeGray h16px" alt="">
-                        <select class="w-90" formControlName="country">
-                            <option [value]="null" disabled>País de residencia</option>
-                            <option *ngFor="let country of countries" [value]="country.name">{{country.name}}</option>
-                        </select>
-                    </div>
-                    <div fxLayout="" fxLayoutAlign="center center" fxLayoutGap=".1rem">
-                        <span class="ft12 makeBlue mgt15">Permitir cursos extracurriculares</span>
-                        <mat-slide-toggle class="mgl20 mgt15 " color="primary" formControlName="canEnrollParticularCourses"></mat-slide-toggle>
-                    </div>
-                </div> 
             </div>
         </div>
         
