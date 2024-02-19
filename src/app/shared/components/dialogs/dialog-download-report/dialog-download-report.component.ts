@@ -140,7 +140,12 @@ export class DialogDownloadReportComponent {
   // ********* Report Methods *********
   async download() {
     try {
-      this.companyPhoto = await this.firebasePhotoToImage(this.enterprise.photoUrl)
+      try {
+        this.companyPhoto = await this.firebasePhotoToImage(this.enterprise.photoUrl)
+      } catch(error) {
+        this.companyPhoto = this.logo
+        console.log("Error uploading enterprise photoUrl", error)
+      }
       this.indice = 0
       this.extraPages = 0
       this.pdf = new jsPDF("p", "mm", "a4") as jsPDF

@@ -11,7 +11,7 @@
                 <span class="ft16">Selecciona el rango de fechas en que deseas descargar tu reporte</span>
             </div>
             <div fxLayout="column" class="mgt10">
-                <div style="display: flex; gap: 10px;">
+                <!-- <div style="display: flex; gap: 10px;">
                     <input  (change)="getGeneralStats(startDate, endDate, 'semanal')" type="radio" id="week" name="dates" [value]="startWeekDate" [(ngModel)]="startDate" checked/>
                     <label class="ft14" for="week">Última semana</label>
                 </div>
@@ -22,7 +22,7 @@
                 <div style="display: flex; gap: 10px;">
                     <input (change)="getGeneralStats(startDate, endDate, 'anual')" type="radio" id="year" name="dates" [value]="startYearDate" [(ngModel)]="startDate" />
                     <label class="ft14" for="year">Último año</label>
-                </div>
+                </div> -->
                 <div style="display: flex; gap: 10px;">
                     <input (change)="getGeneralStats(startDate, endDate, 'histórico')" type="radio" id="historic" name="dates" [value]="0" [(ngModel)]="startDate" />
                     <label class="ft14" for="historic">Histórico</label>
