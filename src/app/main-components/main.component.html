@@ -10,14 +10,20 @@
                 <input type="text" class="inputSearchBar ft12 fw pdl05" placeholder="Buscar en usuarios y perfiles">
             </div> -->
         </div>
-        <div *ngIf="daysToExpire && daysToExpire < 5 && daysToExpire > 1">
-            Faltan {{daysToExpire}} dias para el vencimiento de tu licencia
+        <div *ngIf="daysToExpire && daysToExpire < 5 && daysToExpire > 1" class="ft12 red-5 ft500" fxLayout="row" fxLayoutAlign=" center" fxLayoutGap=".5rem">
+            <img [src]="icon.warning" alt="" class="makeRed">
+            <div>Faltan {{daysToExpire}} días para el vencimiento de tu licencia</div>
+  
         </div>
-        <div *ngIf="daysToExpire && daysToExpire === 1">
-            Falta {{daysToExpire}} dia para el vencimiento de tu licencia
+        <div *ngIf="daysToExpire && daysToExpire === 1" class="ft12 red-5 ft500" fxLayout="row" fxLayoutAlign=" center" fxLayoutGap=".5rem">
+            <img [src]="icon.warning" alt="" class="makeRed">
+            <div>Falta {{daysToExpire}} día para el vencimiento de tu licencia</div>
+            
         </div>
-        <div *ngIf="daysToExpire === 0">
-            Tu licencia expira el dia de hoy
+        <div *ngIf="daysToExpire === 0" class="ft12 red-5 ft500" fxLayout="row" fxLayoutAlign=" center" fxLayoutGap=".5rem">
+            <img [src]="icon.warning" alt="" class="makeRed">
+            <div>Tu licencia expira el dia de hoy</div>
+            
         </div>
         <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
             <div (click)="openSupport()">

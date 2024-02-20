@@ -583,8 +583,7 @@ body {
   cursor: pointer;
   transition: background-color 0.3s;
   text-align: center; 
-  line-height: 1.2!important; 
-  margin: 5px;}
+  line-height: 1.2!important; }
 .grayDisabledButton{    background-color: #F0F3F4;
   color: var(--gray-7);
   border: none;

@@ -6,7 +6,7 @@
             <img [src]="icon.ticTacToe" class="makeBlue h20px"  alt="">
             <span class="ft500  ft14  black"  >Resumen de competencias </span>
         </div>
-        <div class="chart-container " >
+        <div class="chart-container mgt10 fw" >
             <canvas id="chart" ></canvas>
         </div>
         <!-- <div fxLayout="column" fxLayoutGap="1rem" *ngFor="let competence of competences; let i = index">
@@ -43,7 +43,7 @@
     </div>
     <!-- Plan de estudios -->
 
-    <div class="w-55 radius10 shadowLight cards " fxLayout="column" fxLayoutGap=""  style="background-color: rgba(244, 244, 244, 0.362); ">
+    <div class="w-70 radius10 shadowLight cards " fxLayout="column" fxLayoutGap=""  style="background-color: rgba(244, 244, 244, 0.362); ">
         <div class="mgt10"  fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem">
             <img [src]="icon.course" class="makeBlue h20px" alt="">
             <span class="ft500  ft14  black">Plan de estudios</span>
@@ -124,8 +124,8 @@
                         <input class="inputDate" (click)="startDate.toggle()" ngbDatepicker #startDate="ngbDatepicker"  [(ngModel)]="startDateInitForm" >
                     </div>
                 </div>
-                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="mgb03">
-                    <button *ngIf="hoursPermonthInitForm && startDateInitForm" (click)="saveInitForm()" class="blueButton">Guardar</button>
+                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="mgt10">
+                    <button *ngIf="hoursPermonthInitForm && startDateInitForm" (click)="saveInitForm()" class="blueButton">Iniciar plan de estudio</button>
                 </div>
             </div>
         </ng-container>

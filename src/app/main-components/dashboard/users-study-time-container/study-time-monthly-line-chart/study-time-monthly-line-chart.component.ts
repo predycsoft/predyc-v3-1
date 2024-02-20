@@ -179,12 +179,12 @@ export class StudyTimeMonthlyLineChartComponent {
           data: realValues,
           fill: false,
           tension: 0.5,
-          backgroundColor: '#AFEF9F',
-          borderColor: '#3ED219',
-          pointBackgroundColor: '#3ED219',
+          backgroundColor: '#BCE8DF',
+          borderColor: '#00BF9C',
+          pointBackgroundColor: '#00BF9C',
           pointBorderColor: '#fff',
           pointHoverBackgroundColor: '#fff',
-          pointHoverBorderColor: '#3ED219',
+          pointHoverBorderColor: '#00BF9C',
           pointRadius: 3 
         },{
           label: 'Estudio mensual esperado acumulado',
