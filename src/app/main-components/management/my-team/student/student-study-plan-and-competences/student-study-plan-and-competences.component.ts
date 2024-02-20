@@ -15,6 +15,8 @@ import { ProfileService } from 'src/app/shared/services/profile.service';
 import { SkillService } from 'src/app/shared/services/skill.service';
 import { UserService } from 'src/app/shared/services/user.service';
 import { firestoreTimestampToNumberTimestamp } from 'src/app/shared/utils';
+import annotationPlugin from 'chartjs-plugin-annotation';
+
 
 interface CoursesForExplorer extends CursoJson {
   skills: Skill[],
@@ -43,7 +45,9 @@ export class StudentStudyPlanAndCompetencesComponent {
     private categoryService: CategoryService,
     private profileService: ProfileService,
     private skillService: SkillService,
-  ){}
+  ){
+    Chart.register(annotationPlugin);
+  }
 
   @Input() student: UserJson
   @Input() selectedProfile: Profile;
@@ -309,8 +313,28 @@ export class StudentStudyPlanAndCompetencesComponent {
     return data
   }
 
+  progreso: number = 0;
+
   getChartData() {
-    //console.log('this.studyPlan', this.coursesData,this.coursesByStudent,this.studyPlan);
+    
+    let horasPlanDeEstudio = 0
+    let horasCompletadas = 0
+
+    let cursosdataComplete = this.coursesByStudent.map(curso => {
+      let datosCurso = this.studyPlan.find(x=> x.id == curso.courseRef.id)
+      return {...datosCurso,...curso}
+    });
+
+
+    console.log('this.studyPlan', this.coursesData,this.coursesByStudent,this.studyPlan,cursosdataComplete);
+
+    cursosdataComplete.forEach(curso => {
+      horasPlanDeEstudio+=curso.duracion;
+      horasCompletadas+=curso?.progressTime?curso?.progressTime:0
+    });
+
+    this.progreso = horasCompletadas*100/(horasPlanDeEstudio == 0 ? 1 : horasPlanDeEstudio)
+
     let cursosRadarDone = this.coursesByStudent.filter(x=>x.progress == 100)
     let cursosRadarReady = cursosRadarDone.map(curso => {
       let datosCurso = this.studyPlan.find(x=> x.id == curso.courseRef.id)
@@ -323,6 +347,8 @@ export class StudentStudyPlanAndCompetencesComponent {
       return Math.ceil(value / 10) * 10;
     };
 
+
+
     const data = this.categories.map(category => {
       let value = 0
       let valueComplete = 0;
@@ -333,6 +359,7 @@ export class StudentStudyPlanAndCompetencesComponent {
         })
         let totalDuration = 0
         coursesWithThisCategory.forEach(course => {
+          horasPlanDeEstudio+=course.duracion;
           course.skills.forEach(skill => {
             if (!skills.includes(skill.name)) skills.push(skill.name)
           })
@@ -366,7 +393,7 @@ export class StudentStudyPlanAndCompetencesComponent {
     
 }
 
-  getChart(chartData) {
+  getChart(chartData,score = this.progreso) {
     chartData.sort((a, b) => b.value - a.value);
 
     let labels = []
@@ -424,12 +451,12 @@ export class StudentStudyPlanAndCompetencesComponent {
           data: valuesComplete,
           label: 'Progreso', // Texto para la leyenda
           fill: true,
-          backgroundColor: '#AFEF9F',
-          borderColor: '#3ED219',
-          pointBackgroundColor: '#3ED219',
+          backgroundColor: '#BCE8DF',
+          borderColor: '#00BF9C',
+          pointBackgroundColor: '#00BF9C',
           pointBorderColor: '#fff',
           pointHoverBackgroundColor: '#fff',
-          pointHoverBorderColor: '#3ED219',
+          pointHoverBorderColor: '#00BF9C',
           pointRadius: 3 
         },{
         data: values,
@@ -466,6 +493,21 @@ export class StudentStudyPlanAndCompetencesComponent {
             labels: {
               boxWidth: 10, // Tamaño de la caja de color
               padding: 10 // Espacio entre los elementos de la leyenda
+            }
+          },
+          annotation: {
+            annotations: {
+              label1: {
+                type: 'label',
+                xValue: 2.5,
+                yValue: 60,
+                backgroundColor: 'rgba(255,255,255,0.8)',
+                borderRadius: 16,
+                content: `${score>0?score.toFixed(0):''}`,
+                font: {
+                  size: 14
+                }
+              }
             }
           }
         },

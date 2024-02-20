@@ -9,6 +9,19 @@
         <div class="chart-container mgt10 fw" >
             <canvas id="chart" ></canvas>
         </div>
+        <div class="badge-container" style="margin-top: -10px; display: flex; align-items: center;">
+            <!-- Leyenda para Plan de estudios -->
+            <div style="display: flex; align-items: center; margin-right: 20px;">
+              <span style="height: 15px; width: 15px; background-color: rgb(54, 162, 235); display: inline-block; margin-right: 5px; border-radius: 3px;"></span>
+              <span>Plan de estudios</span>
+            </div>
+            
+            <!-- Leyenda para Progreso -->
+            <div style="display: flex; align-items: center;">
+              <span style="height: 15px; width: 15px; background-color: #00BF9C; display: inline-block; margin-right: 5px; border-radius: 3px;"></span>
+              <span>Progreso</span>
+            </div>
+        </div>
         <!-- <div fxLayout="column" fxLayoutGap="1rem" *ngFor="let competence of competences; let i = index">
             <span>{{competence.title}}</span>
             <div fxLayout="row wrap" fxLayoutAlign="start center" fxLayoutGap=".5rem">

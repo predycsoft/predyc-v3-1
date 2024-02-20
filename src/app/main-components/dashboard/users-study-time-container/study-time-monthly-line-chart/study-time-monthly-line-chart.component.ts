@@ -200,7 +200,19 @@ export class StudyTimeMonthlyLineChartComponent {
           pointRadius: 3 
         }]
       },
-    })
+      options: {
+        plugins: {
+          legend: {
+            labels: {
+              usePointStyle: true, // Hace que los íconos de la leyenda sean redondos como los puntos del dataset
+              pointStyle: 'circle', // Asegura que el estilo de punto sea circular (generalmente es el predeterminado)
+              padding: 20 // Ajusta el espaciado entre los elementos de la leyenda
+            }
+          }
+        }
+      }
+    });
+    
     
   }
 
