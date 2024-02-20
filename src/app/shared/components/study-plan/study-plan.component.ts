@@ -35,11 +35,10 @@ export class StudyPlanComponent {
 
   async sendEmail(course) {
     this.clickedCourse[course.courseTitle] = true;
-    let sender = "capacitacion@predyc.com"
+    let sender = "ventas@predyc.com"
     let recipients = [this.student.email]
     let subject = "Retraso en curso."
     let text = `Tienes un retraso en tu curso ${course.courseTitle}.`
-
 
     try {
       await firstValueFrom(this.fireFunctions.httpsCallable('sendMail')({

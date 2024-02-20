@@ -7,8 +7,8 @@ admin.initializeApp(functions.config().firebase);
 import { onActivityUpdated } from './activity';
 export { onActivityUpdated }
 
-import { createUserWithEmailAndPassword, emptyDatabase } from './authentication';
-export { createUserWithEmailAndPassword, emptyDatabase }
+import { createUserWithEmailAndPassword, generatePasswordResetLink, emptyDatabase } from './authentication';
+export { createUserWithEmailAndPassword, generatePasswordResetLink, emptyDatabase }
 
 import { sendMail } from './email';
 export { sendMail }

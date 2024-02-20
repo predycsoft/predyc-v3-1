@@ -45,9 +45,9 @@ export class DialogRequestLicensesComponent {
   
 
   async emailContacto(){
-    const sender = 'capacitacion@predyc.com'
+    const sender = 'desarrollo@predyc.com'
     const subject = `Solicitud de más licencias`
-    const recipients = 'contacto@predyc.com'
+    const recipients = 'ventas@predyc.com'
 
     let text = `La empresa ${this.enterprise.name}, ha solicitado ${this.licensesQty} ${this.licensesQty == 1 ? 'licencia' : 'licencias'}.`
     try {

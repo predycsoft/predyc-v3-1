@@ -6,6 +6,8 @@ import { firstValueFrom } from 'rxjs';
 import { User } from '../shared/models/user.model';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogRestorePasswordComponent } from '../shared/components/dialogs/dialog-restore-password/dialog-restore-password.component';
 
 @Component({
   selector: 'app-login',
@@ -22,6 +24,7 @@ export class LoginComponent {
     private swal: AlertsService,
     private afs: AngularFirestore,
     private fb: FormBuilder,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -53,6 +56,10 @@ export class LoginComponent {
       console.log(error);
       this.swal.errorAlert(error as string)
     }
+  }
+
+  openForgotPasswordModal() {
+    this.dialog.open(DialogRestorePasswordComponent)
   }
 
 }

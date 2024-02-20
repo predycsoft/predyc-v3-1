@@ -15,17 +15,31 @@ export const createUserWithEmailAndPassword = functions.https.onCall(
             });
 
             // Enlace de restablecimiento de contraseña
-            const link = await admin.auth().generatePasswordResetLink(data.email);
-
-            const sender = "capacitacion@predyc.com"
-            const recipients = [data.email]
-            const subject = "Reestablece tu contraseña"
-            const text = `Hola, \nHaz clic en el siguiente enlace para establecer tu contraseña: ${link}`
-            
-            await _sendMail({sender, recipients, subject, text,})
-            console.log("Email enviado")
+            await _generatePasswordResetLink(data.email)
             
             return { uid: userRecord.uid };
+        } catch (error: any) {
+            console.log(error)
+            throw new functions.https.HttpsError('unknown', error.message);
+        } 
+    }
+);
+
+export const _generatePasswordResetLink = async (email: string) => {
+    const link = await admin.auth().generatePasswordResetLink(email);
+    // const sender = "capacitacion@predyc.com"
+    const sender = "desarrollo@predyc.com"
+    const recipients = [email]
+    const subject = "Reestablece tu contraseña"
+    const text = `Hola, \nHaz clic en el siguiente enlace para establecer tu contraseña: ${link}`
+    const mailObj = {sender, recipients, subject, text,}
+    await _sendMail(mailObj)
+}
+
+export const generatePasswordResetLink = functions.https.onCall(
+    async (data, _) => {
+        try {
+            await _generatePasswordResetLink(data.email)
         } catch (error: any) {
             console.log(error)
             throw new functions.https.HttpsError('unknown', error.message);
