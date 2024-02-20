@@ -140,7 +140,7 @@ export class NotificationList2Component {
   async sendMail(notification: NotificationItem) {
     // this.clickedNotifications[notification.id] = true;
     const user = this.userService.getUser(notification.user.id) as User
-    let sender = "capacitacion@predyc.com"
+    let sender = "ventas@predyc.com"
     let recipients = [user.email]
     let subject = ""
     let text = ""

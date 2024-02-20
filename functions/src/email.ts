@@ -10,8 +10,8 @@ const db = admin.firestore();
 export const _sendMail = async (data: {sender: string, recipients: string[], subject: string, text: string}) => {
     const APP_NAME = 'Predyc';
 
-    let sender = process.env.EMAIL_USER
-    let password = process.env.EMAIL_PASSWORD
+    let sender = process.env.EMAIL_USER_D
+    let password = process.env.EMAIL_PASSWORD_D
 
     if (["contacto@predyc.com", "capacitacion@predyc.com"].includes(data.sender) ){
         sender = process.env.EMAIL_USER_A
@@ -33,7 +33,7 @@ export const _sendMail = async (data: {sender: string, recipients: string[], sub
     } as SMTPTransport.Options);
     const mailOptions = {
         from: `${APP_NAME} <${data.sender}>`,
-        to: process.env.PRODUCTION === "true" ? data.recipients : ['diegonegrette42@gmail.com'],
+        to: process.env.PRODUCTION === "true" ? data.recipients : ['desarrollo@predyc.com'],
         // to: ['diegonegrette42@gmail.com'],
         subject: data.subject,
         text: data.text,
@@ -45,6 +45,7 @@ export const _sendMail = async (data: {sender: string, recipients: string[], sub
             console.log(error);
             smtpTransport.close();
         }
+        console.log("Correo enviado!", {sender, subject: data.subject, text: data.text})
         return 'mail sent';
         });
     } catch (error: any) {

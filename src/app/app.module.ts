@@ -124,6 +124,7 @@ import { StudyTimeMonthlyLineChartComponent } from './main-components/dashboard/
 import { DialogDownloadReportComponent } from './shared/components/dialogs/dialog-download-report/dialog-download-report.component';
 import { CreateDemoComponent } from './main-components/create-demo/create-demo.component';
 import { IsActivePipe } from './shared/pipes/is-active.pipe';
+import { DialogRestorePasswordComponent } from './shared/components/dialogs/dialog-restore-password/dialog-restore-password.component';
 
 
 @NgModule({
@@ -201,6 +202,7 @@ import { IsActivePipe } from './shared/pipes/is-active.pipe';
     DialogDownloadReportComponent,
     CreateDemoComponent,
     IsActivePipe,
+    DialogRestorePasswordComponent,
   ],
   imports: [
     BrowserModule,
