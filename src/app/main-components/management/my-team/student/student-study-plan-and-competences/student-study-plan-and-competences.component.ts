@@ -65,6 +65,7 @@ export class StudentStudyPlanAndCompetencesComponent {
   chart: Chart
   studyPlan = []
   courses
+  coursesByStudent
 
 
   ngOnInit() {
@@ -83,6 +84,7 @@ export class StudentStudyPlanAndCompetencesComponent {
           if (coursesByStudent.length > 0) {
             this.showInitForm = false
             this.hoursPermonthInitForm = this.student.studyHours
+            this.coursesByStudent = coursesByStudent;
             this.buildMonths(coursesByStudent, coursesData)
           } 
           else {
@@ -265,7 +267,7 @@ export class StudentStudyPlanAndCompetencesComponent {
 
   updateWidgets() {
     const chartData = this.getChartData()
-    // console.log("chartData", chartData)
+    console.log("chartData", chartData)
     this.getChart(chartData)
     this.updateCategoriesAndSkillsWidget(chartData)
   }
@@ -274,7 +276,7 @@ export class StudentStudyPlanAndCompetencesComponent {
     return Math.round(num);
   }
 
-  getChartData() {
+  _getChartData() {
     const accumulatedStudyPlanHours = this.studyPlan.reduce(function (accumulator, course) {
       return accumulator + course.duracion;
     }, 0)
@@ -306,6 +308,63 @@ export class StudentStudyPlanAndCompetencesComponent {
     })
     return data
   }
+
+  getChartData() {
+    //console.log('this.studyPlan', this.coursesData,this.coursesByStudent,this.studyPlan);
+    let cursosRadarDone = this.coursesByStudent.filter(x=>x.progress == 100)
+    let cursosRadarReady = cursosRadarDone.map(curso => {
+      let datosCurso = this.studyPlan.find(x=> x.id == curso.courseRef.id)
+      return {...datosCurso,...curso}
+    });
+    const accumulatedStudyPlanHours = this.studyPlan.reduce(function (accumulator, course) {
+      return accumulator + course.duracion;
+    }, 0)
+    const roundUpToNextMultipleOfTen = (value) => {
+      return Math.ceil(value / 10) * 10;
+    };
+
+    const data = this.categories.map(category => {
+      let value = 0
+      let valueComplete = 0;
+      let skills = []
+      if (this.studyPlan.length > 0) {
+        const coursesWithThisCategory = this.studyPlan.filter(course => {
+          return course.categories.filter(item => item.id === category.id).length
+        })
+        let totalDuration = 0
+        coursesWithThisCategory.forEach(course => {
+          course.skills.forEach(skill => {
+            if (!skills.includes(skill.name)) skills.push(skill.name)
+          })
+          totalDuration += course.duracion
+        })
+        value = roundUpToNextMultipleOfTen(this.roundNumber(totalDuration * 100 / accumulatedStudyPlanHours));
+
+        if (cursosRadarReady.length > 0) {
+          const coursesWithThisCategory = cursosRadarReady.filter(course => {
+              return course.categories.filter(item => item.id === category.id).length;
+          });
+          let totalDuration = 0;
+          coursesWithThisCategory.forEach(course => {
+              course.skills.forEach(skill => {
+                  if (!skills.includes(skill.name)) skills.push(skill.name);
+              });
+              totalDuration += course.duracion;
+          });
+          valueComplete = roundUpToNextMultipleOfTen(this.roundNumber(totalDuration * 100 / accumulatedStudyPlanHours));
+        }
+      }
+      return {
+        label: category.name,
+        skills: skills,
+        value: value,
+        valueComplete: valueComplete
+
+      }
+    })
+    return data
+    
+}
 
   getChart(chartData) {
     chartData.sort((a, b) => b.value - a.value);
@@ -360,15 +419,29 @@ export class StudentStudyPlanAndCompetencesComponent {
 
     data =  {
       labels: nombresResumidos,
-      datasets: [{
+      datasets: [
+        {
+          data: valuesComplete,
+          label: 'Progreso', // Texto para la leyenda
+          fill: true,
+          backgroundColor: '#AFEF9F',
+          borderColor: '#3ED219',
+          pointBackgroundColor: '#3ED219',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: '#3ED219',
+          pointRadius: 3 
+        },{
         data: values,
+        label: 'Plan de Estudio', // Texto para la leyenda
         fill: true,
         backgroundColor: 'rgba(54, 162, 235, 0.2)',
         borderColor: 'rgb(54, 162, 235)',
         pointBackgroundColor: 'rgb(54, 162, 235)',
         pointBorderColor: '#fff',
         pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: 'rgb(54, 162, 235)'
+        pointHoverBorderColor: 'rgb(54, 162, 235)',
+        pointRadius: 3 // Los puntos están invisibles
       }]
     }
 
@@ -379,10 +452,14 @@ export class StudentStudyPlanAndCompetencesComponent {
     this.chart = new Chart(ctx, {
       type: 'radar',
       data: data,
+      
       options: {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
+          tooltip:{
+            enabled:false
+          },
           legend: {
             display: false,
             position: 'bottom',
