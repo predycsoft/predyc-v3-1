@@ -39,7 +39,7 @@ export class LicenseService {
   }
 
   getEnterpriseLicenses(): Promise<License[]> {
-    return this.enterpriseService.enterpriseLoaded$.pipe(
+    return firstValueFrom(this.enterpriseService.enterpriseLoaded$.pipe(
       take(1),
       switchMap(isLoaded => {
         if (!isLoaded) return of([]); // Asegúrate de retornar un Observable aquí
@@ -48,7 +48,7 @@ export class LicenseService {
           ref.where('enterpriseRef', '==', enterpriseRef).orderBy('createdAt', 'desc')).valueChanges();
       }),
       first()
-    ).toPromise();
+    ));
   }
 
 
