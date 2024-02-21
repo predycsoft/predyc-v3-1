@@ -187,7 +187,7 @@ export class InitScriptComponent {
       if(user.email == 'admin@predyc.com'){ 
         return User.fromJson({
           ...user,
-          adminPredyc:true,
+          isSystemUser: true,
           name: user.name.toLowerCase(),
           displayName: user.name.toLowerCase(),
           birthdate: Date.parse(user.birthdate),
@@ -201,7 +201,7 @@ export class InitScriptComponent {
       else{
         return User.fromJson({
           ...user,
-          adminPredyc:false,
+          isSystemUser: false,
           name: user.name.toLowerCase(),
           displayName: user.name.toLowerCase(),
           birthdate: Date.parse(user.birthdate),

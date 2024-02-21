@@ -295,7 +295,6 @@ export class CreateDemoComponent {
       createdAt: this.now,
       currentlyWorking: null,
       degree: null,
-      adminPredyc: false,
       departmentRef: null,
       displayName: null,
       email: null,

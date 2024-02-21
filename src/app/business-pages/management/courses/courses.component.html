@@ -66,9 +66,8 @@
                         </div>
                     </div>
                 </div>
-                <div *ngIf="user?.adminPredyc" fxLayout="row" class="fw">
+                <!-- <div *ngIf="user?.adminPredyc" fxLayout="row" class="fw">
                     <div fxLayout="row" class="fw" fxLayoutAlign="space-between center">
-                        <!-- <div class="ft600 ft20">Cursos Propios</div> -->
                         <div class="ft600 ft20"></div>
                         <div fxLayout="row" class="searchAndFilter" fxLayoutAlign=" center">
                             <button
@@ -81,29 +80,6 @@
                                 <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="">
                                 Agregar curso
                             </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- <div fxLayout="row" class="fw">
-                    <div class="fw">
-                        <div id="" class="mgt10" >
-                            <ng-container>
-                                <app-course-selector
-                                    [categories]="categories" 
-                                    [searchValue]="searchValue" 
-                                    (selectedCourseOut)="selectedCourse = $event">
-                                </app-course-selector>
-                            </ng-container>
-                            <div *ngIf="creatingCategory" class="fw mgb05 borderLight radius6">
-                                <div class="closeButton" fxLayout="row" fxLayoutAlign="end" (click)="creatingCategory = false">
-                                    <div class="iconContainer backGray2 cursorPointer mgl05 mgt05" fxLayoutAlign="center center">
-                                        <img [src]="icon.close" class="makeGray h20px">
-                                    </div>
-                                </div>
-                                <input type="text" class="fw mgt05" placeholder="Nombre de la categoría" [(ngModel)]="newCategory.name">
-                                <button class="blueButton ft12 ft500 h40px radius6" (click)="saveNewCategory()">Guardar</button>
-                            </div>
                         </div>
                     </div>
                 </div> -->
@@ -166,14 +142,14 @@
                                             <div class="gray-8 ft10">{{selectedCourse.nivel}}</div>
                                         </div>
                                      </div>
-                                     <div *ngIf="user.adminPredyc && selectedCourse.id" routerLink="/management/create-course/edit/{{selectedCourse.id}}" fxLayout="row" fxLayoutGap=".5rem">
+                                     <!-- <div *ngIf="user.adminPredyc && selectedCourse.id" routerLink="/management/create-course/edit/{{selectedCourse.id}}" fxLayout="row" fxLayoutGap=".5rem">
                                         <div class="backGray2 pd05 w40px radius6 cursorPointer" fxLayoutAlign="center center">
                                             <img [src]="icon.edit" class="makeYellow fw" alt="">
                                         </div>
                                         <div fxLayout="column">
                                             <div class="gray-6 ft10 cursorPointer">Editar curso</div>
                                         </div>
-                                     </div>
+                                     </div> -->
                                    </div>
                                    <div *ngIf="selectedCourse['skills']" class="mgt05">
                                     <div class="ft10 gray-10">Compentencias</div>

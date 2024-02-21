@@ -9,7 +9,7 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 @Injectable({
   providedIn: 'root'
 })
-export class AdminPredycGuard {
+export class SystemUserGuard {
 
   constructor(private afAuth: AngularFireAuth, private afs: AngularFirestore, private authService: AuthService, private router: Router) {}
 
@@ -21,7 +21,7 @@ export class AdminPredycGuard {
         switchMap(user => {
             return  this.afs.collection<User>(User.collection).doc(user.uid).valueChanges().pipe(
                 map(user => {
-                    if (user?.adminPredyc) {
+                    if (user?.isSystemUser) {
                         return true
                     } else {
                         this.router.navigate(['']);

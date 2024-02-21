@@ -22,16 +22,15 @@ export interface UserJson {
   hasCollegeDegree: boolean
   hiringDate: number | null
   industry: string | null
-  isSystemUser: boolean
   job: string | null
   lastConnection: number | null // timestamp
   mailchimpTag: string | null
   name: string | null
-  adminPredyc : boolean | false
   phoneNumber: string | null
   photoUrl: string | null
   zipCode: number | null
   profile: DocumentReference<Profile> | null
+  isSystemUser: boolean
   role: typeof User.ROLE_ADMIN | typeof User.ROLE_STUDENT
   isActive: boolean
   stripeId: string | null
@@ -72,9 +71,7 @@ export class User {
     public gender: string | null,
     public hasCollegeDegree: boolean,
     public hiringDate: number | null,
-    public adminPredyc: boolean | null,
     public industry: string | null, // Required?
-    public isSystemUser: boolean,
     public job: string | null,
     public lastConnection: number | null, // timestamp
     public mailchimpTag: string | null,
@@ -83,6 +80,7 @@ export class User {
     public photoUrl: string | null,
     public zipCode: number | null,
     public profile: DocumentReference<Profile> | null,
+    public isSystemUser: boolean,
     public role: typeof User.ROLE_ADMIN | typeof User.ROLE_STUDENT,
     public isActive: boolean,
     public stripeId: string | null,
@@ -145,7 +143,6 @@ export class User {
   }): User {
     return User.fromJson({
       birthdate: null,
-      adminPredyc: false,
       canEnrollParticularCourses: false,
       city: null,
       country: null,
@@ -203,9 +200,7 @@ export class User {
       userJson.gender,
       userJson.hasCollegeDegree,
       userJson.hiringDate,
-      userJson.adminPredyc,
       userJson.industry,
-      userJson.isSystemUser,
       userJson.job,
       userJson.lastConnection,
       userJson.mailchimpTag,
@@ -214,6 +209,7 @@ export class User {
       userJson.photoUrl,
       userJson.zipCode,
       userJson.profile,
+      userJson.isSystemUser,
       userJson.role,
       userJson.isActive,
       userJson.stripeId,
@@ -246,7 +242,6 @@ export class User {
       gender: this.gender,
       hasCollegeDegree: this.hasCollegeDegree,
       hiringDate: this.hiringDate,
-      adminPredyc: this.adminPredyc,
       industry: this.industry,
       isSystemUser: this.isSystemUser,
       job: this.job,

@@ -57,7 +57,7 @@ export class SideNavComponent {
 
     
     this.authService.user$.subscribe(user => {
-      if (user?.adminPredyc) this.pages.push({
+      if (user?.isSystemUser) this.pages.push({
         name: 'Crear demo',
         link:'management/create-demo',
         icon: '../../assets/iconsUI/demo.svg'

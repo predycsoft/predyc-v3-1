@@ -144,7 +144,7 @@ export class CreateCourseComponent {
     this.authService.user$.pipe(filter(user=>user !=null),take(1)).subscribe(user=> {
       console.log('user',user)
       this.user = user
-      if (!user?.adminPredyc) {
+      if (!user?.isSystemUser) {
         this.router.navigate(["management/courses"])
       }
     })
