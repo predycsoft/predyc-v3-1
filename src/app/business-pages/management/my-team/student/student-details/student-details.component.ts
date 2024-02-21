@@ -8,7 +8,7 @@ import { AlertsService } from 'src/app/shared/services/alerts.service';
 import { DocumentReference } from '@angular/fire/compat/firestore';
 import { CourseService } from 'src/app/shared/services/course.service';
 import { Subscription, combineLatest, map, switchMap } from 'rxjs';
-import { Log } from 'src/app/main-components/dashboard/users-study-time-container/users-study-time-container.component';
+import { Log } from 'src/app/business-pages/dashboard/users-study-time-container/users-study-time-container.component';
 import { firestoreTimestampToNumberTimestamp } from 'src/app/shared/utils';
 
 

@@ -1,22 +1,22 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { DashboardComponent } from './main-components/dashboard/dashboard.component'
-import { ManagementComponent } from './main-components/management/management.component';
-import { CoursesComponent } from './main-components/management/courses/courses.component';
-import { ValidationComponent } from './main-components/validation/validation.component';
-import { SettingsComponent } from './main-components/settings/settings.component';
-import { MyTeamComponent } from './main-components/management/my-team/my-team.component';
-import { NotificationsComponent } from './main-components/management/notifications/notifications.component'
-import { StudentComponent } from './main-components/management/my-team/student/student.component';
+import { DashboardComponent } from './business-pages/dashboard/dashboard.component'
+import { ManagementComponent } from './business-pages/management/management.component';
+import { CoursesComponent } from './business-pages/management/courses/courses.component';
+import { ValidationComponent } from './business-pages/validation/validation.component';
+import { SettingsComponent } from './business-pages/settings/settings.component';
+import { MyTeamComponent } from './business-pages/management/my-team/my-team.component';
+import { NotificationsComponent } from './business-pages/management/notifications/notifications.component'
+import { StudentComponent } from './business-pages/management/my-team/student/student.component';
 import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './shared/guards/auth.guard';
-import { MainComponent } from './main-components/main.component';
-import { CreateCourseComponent } from './main-components/management/create-course/create-course.component';
+import { MainComponent } from './business-pages/main.component';
+import { CreateCourseComponent } from './business-pages/management/create-course/create-course.component';
 import { InitScriptComponent } from './shared/components/init-script/init-script.component';
-import { MyAccountComponent } from './main-components/my-account/my-account.component';
-import { ProfilesComponent } from './main-components/management/profiles/profiles.component';
+import { MyAccountComponent } from './business-pages/my-account/my-account.component';
+import { ProfilesComponent } from './business-pages/management/profiles/profiles.component';
 import { ProfileGuard } from './shared/guards/profile.guard';
-import { CreateDemoComponent } from './main-components/create-demo/create-demo.component';
+import { CreateDemoComponent } from './business-pages/create-demo/create-demo.component';
 import { AdminPredycGuard } from './shared/guards/adminPredyc.guard';
 
 const MAIN_TITLE = 'Predyc - '
