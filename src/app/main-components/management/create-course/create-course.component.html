@@ -24,7 +24,7 @@
         <ng-container *ngIf="activeStep == 1">
             <div fxFlex fxLayout="row" class="container">
                 <div fxFlex="60%" class="pdl10 pdr10 pdt10">
-                    <div fxLayout="column" class="fw fh smallScroll" style="overflow-y: auto;">
+                    <div fxLayout="column" class="fw fh hideScroll" style="overflow-y: auto;">
                         <form [formGroup]="formNewCourse" class="mgr20">
                             <div class="form-group pdt10">
                                 <label>Título</label>
@@ -155,7 +155,7 @@
                                     </div>
                                 </div>
                                 <div *ngIf="formNewCourse.controls['imagen_instructor'].errors && showErrorCurso" class="custom-invalid-feedback pdt05">
-                                    Debe seleccinar o subir la imagen del instructor
+                                    Debe seleccinar el instructor
                                 </div>
                             </ng-container>
                             <ng-container *ngIf="true">
@@ -193,7 +193,7 @@
                                       <img *ngIf="formNewCourse.get('imagen_instructor').value" [src]="formNewCourse.get('imagen_instructor').value" alt="Imagen seleccionada" class="image shadow8">
                                     </div>
                                     <div *ngIf="formNewCourse.controls['imagen_instructor'].errors && showErrorCurso" class="custom-invalid-feedback pdt05">
-                                      Debe seleccinar o subir la imagen del instructor
+                                      Debe seleccinar el instructor
                                     </div>
                                   </div>
                                 </div>
@@ -790,13 +790,44 @@
                                             Debe indicar el título de la actividad
                                         </div>
                                     </div>
-                                    <div class="form-group pdt10">
+                                    <!-- <div class="form-group pdt10">
                                         <label>Descripción</label>
                                         <textarea rows="4" 
                                         [class.is-invalid]="formNuevaActividadBasica.controls['descripcion'].errors && showErrorActividad"
                                         formControlName="descripcion" type="text" class="form-control customInput" placeholder="Escriba una pequeña descripción" style="resize: none;"></textarea>
                                         <div class="invalid-feedback" *ngIf="formNuevaActividadBasica.controls['descripcion'].errors && showErrorActividad"> 
                                             Debe indicar la Descripción de la actividad
+                                        </div>
+                                    </div> -->
+                                    <div class="form-group pdt10">
+                                        <label>Recursos descargables (opcional)</label>
+                                        <div class="position-relative custom-input-container">
+                                            <img [src]="icon.pdf" class="h20px input-icon" alt="">
+                                            <input 
+                                            [class.is-invalid]="formNuevaActividadBasica.controls['recursos'].errors && showErrorActividad"
+                                            (change)="onFileSelected($event,selectedClase,false,selectedModulo,true,'archivoActividad')" type="file" accept=".pdf" #fileActivityInput class="form-control customInput custom-input">
+                                            <!-- <button class="custom-button ">Botón</button> -->
+                                            <button (click)="fileActivityInput.click()" class="custom-button grayButton ft500 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
+                                                Adjuntar
+                                            </button>
+                                        </div>
+                                        <div class="custom-invalid-feedback" *ngIf="formNuevaActividadBasica.controls['recursos'].errors && showErrorActividad">
+                                            Debe adjuntar algun recurso adicional
+                                        </div>
+                                    </div>
+                                    <div *ngIf="selectedClase?.archivos[0]?.uploading_file_progress >0" class="form-group pdt10">
+                                        <!-- Barra de progreso File video-->
+                                        <div fxLayout="column">
+                                            <div fxLayout="row" fxLayoutAlign="center center" class="w-25">
+                                                <mat-progress-bar class="h10px radius6 {{selectedClase.archivos[0].uploading_file_progress >= 100? 'complete-progress-bar': ''}}" mode="determinate" [value]="selectedClase.archivos[0].uploading_file_progress"></mat-progress-bar>
+                                                <span *ngIf="selectedClase.archivos[0].uploading_file_progress < 100" class="pdl05">{{selectedClase.archivos[0].uploading_file_progress}}%</span>
+                                                <img *ngIf="selectedClase.archivos[0].uploading_file_progress>=100" [src]="icon.check" class="h16px pdl05" alt="">
+                                            </div>
+                                            <div fxLayout="row" *ngIf="selectedClase.archivos[0].uploading_file_progress>=100" >
+                                                <span>{{selectedClase.archivos[0].nombre}}&nbsp;</span>
+                                                <span (click)="viewFileActivity=!viewFileActivity" class="blueLink cursorPointer">{{viewFileActivity? 'Ocultar archivo':'Ver archivo'}}</span>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="form-group pdt10 w-40">
@@ -864,7 +895,7 @@
                                             </div>
                                         </div> -->
                                     </div>
-                                    <div class="form-group pdt10">
+                                    <!-- <div class="form-group pdt10">
                                         <label>Instrucciones</label>
                                         <textarea formControlName="instrucciones"
                                         [class.is-invalid]="formNuevaActividadGeneral.controls['instrucciones'].errors && showErrorActividad" 
@@ -872,16 +903,15 @@
                                         <div class="invalid-feedback" *ngIf="formNuevaActividadGeneral.controls['instrucciones'].errors && showErrorActividad">
                                             Debe indicar las instrucciones de la actividad.
                                         </div>
-                                    </div>
+                                    </div> -->
     
-                                    <div class="form-group pdt10">
+                                    <!-- <div class="form-group pdt10">
                                         <label>Recursos descargables</label>
                                         <div class="position-relative custom-input-container">
                                             <img [src]="icon.pdf" class="h20px input-icon" alt="">
                                             <input 
                                             [class.is-invalid]="formNuevaActividadGeneral.controls['recursos'].errors && showErrorActividad"
                                             (change)="onFileSelected($event,selectedClase,false,selectedModulo,true,'archivoActividad')" type="file" accept=".pdf" #fileActivityInput class="form-control customInput custom-input">
-                                            <!-- <button class="custom-button ">Botón</button> -->
                                             <button (click)="fileActivityInput.click()" class="custom-button grayButton ft500 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                                                 <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
                                                 Adjuntar
@@ -892,7 +922,6 @@
                                         </div>
                                     </div>
                                     <div *ngIf="selectedClase?.archivos[0]?.uploading_file_progress >0" class="form-group pdt10">
-                                        <!-- Barra de progreso File video-->
                                         <div fxLayout="column">
                                             <div fxLayout="row" fxLayoutAlign="center center" class="w-25">
                                                 <mat-progress-bar class="h10px radius6 {{selectedClase.archivos[0].uploading_file_progress >= 100? 'complete-progress-bar': ''}}" mode="determinate" [value]="selectedClase.archivos[0].uploading_file_progress"></mat-progress-bar>
@@ -904,7 +933,7 @@
                                                 <span (click)="viewFileActivity=!viewFileActivity" class="blueLink cursorPointer">{{viewFileActivity? 'Ocultar archivo':'Ver archivo'}}</span>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> -->
                                     <!-- <ngx-extended-pdf-viewer *ngIf="viewFileActivity" [showToolbar]="false" [base64Src]="selectedClase?.archivos[0]?.base64" [useBrowserLocale]="true" height="25vh"></ngx-extended-pdf-viewer> -->
                                 </form>
                             </div>

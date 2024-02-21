@@ -141,7 +141,7 @@ export class CreateCourseComponent {
 
 
 
-    this.authService.user$.subscribe(user=> {
+    this.authService.user$.pipe(filter(user=>user !=null),take(1)).subscribe(user=> {
       console.log('user',user)
       this.user = user
       if (!user?.adminPredyc) {
@@ -151,7 +151,7 @@ export class CreateCourseComponent {
 
     this.inicializarformNewCourse();
   
-    this.enterpriseService.enterprise$.pipe(first()).subscribe(enterprise => {
+    this.enterpriseService.enterprise$.pipe(filter(enterprise=>enterprise!=null),take(1)).subscribe(enterprise => {
       if (enterprise) {
         this.empresa = enterprise
       }
@@ -160,8 +160,7 @@ export class CreateCourseComponent {
 
   getExamCourse(idCourse){
     //console.log('idCourse search activity', idCourse);
-    this.activityClassesService.getActivityCoruse(idCourse)
-      .pipe(first())
+    this.activityClassesService.getActivityCoruse(idCourse).pipe(filter(data=>data!=null),take(1))
       .subscribe(data => {
         if (data) {
           ////console.log('Activity:', data);
@@ -233,9 +232,9 @@ export class CreateCourseComponent {
   }
 
   initSkills(){
-    this.categoryService.getCategoriesObservable().pipe(first()).subscribe(category => {
+    this.categoryService.getCategoriesObservable().pipe(filter(category=>category!=null),take(1)).subscribe(category => {
       //console.log('category from service', category);
-      this.skillService.getSkillsObservable().pipe(first()).subscribe(skill => {
+      this.skillService.getSkillsObservable().pipe(filter(skill=>skill!=null),take(1)).subscribe(skill => {
         //console.log('skill from service', skill);
         skill.map(skillIn => {
           delete skillIn['selected']
@@ -287,8 +286,8 @@ export class CreateCourseComponent {
       this.initSkills();
     }
     else {
-      this.courseService.getCoursesObservable().pipe(first()).subscribe(courses => {
-        //console.log('cursos', courses);
+      this.courseService.getCoursesObservable().pipe(filter(courses=>courses.length>0),take(1)).subscribe(courses => {
+        console.log('cursos', courses);
         let curso = courses.find(course => course.id == this.idCurso);
         //console.log('curso edit', curso);
         this.curso = curso;
@@ -324,7 +323,7 @@ export class CreateCourseComponent {
       
         this.initSkills(); // Asegúrate de que initSkills también maneje las suscripciones correctamente
       
-        this.activityClassesService.getActivityAndQuestionsForCourse(this.idCurso).pipe(first()).subscribe(activities => {
+        this.activityClassesService.getActivityAndQuestionsForCourse(this.idCurso).pipe(filter(activities=>activities!=null),take(1)).subscribe(activities => {
           //console.log('activities clases', activities);
           this.activitiesCourse = activities;
           this.modulos.forEach(module => {
@@ -1745,8 +1744,9 @@ export class CreateCourseComponent {
 
       this.formNuevaActividadBasica = new FormGroup({
         titulo: new FormControl(clase.titulo , Validators.required),
-        descripcion: new FormControl(activity?.description?activity.description : '', Validators.required),
+        //descripcion: new FormControl(activity?.description?activity.description : '', Validators.required),
         duracion: new FormControl(clase.duracion, Validators.required),
+        recursos: new FormControl(clase.archivos[0]?.nombre ? clase.archivos[0].nombre : null),
       });
 
       if(clase?.archivos[0]?.nombre){
@@ -1754,7 +1754,7 @@ export class CreateCourseComponent {
 
       }
       this.formNuevaActividadGeneral = new FormGroup({
-        instrucciones: new FormControl(activity?.description?activity.description : '', Validators.required),
+        //instrucciones: new FormControl(activity?.description?activity.description : '', Validators.required),
         // video: new FormControl(clase.vimeoId1, [Validators.required, this.NotZeroValidator()]),
         video: new FormControl(clase.vimeoId1),
         recursos: new FormControl(clase.archivos[0]?.nombre ? clase.archivos[0].nombre : null),

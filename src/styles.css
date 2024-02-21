@@ -1946,10 +1946,10 @@ angular-editor-toolbar button.ae-picker-label {
                                   supported by Chrome and Opera */
 }
 
-.modal-content{
+/* .modal-content{
   width: fit-content !important;
   height: fit-content !important;
-}
+} */
 
 .custom-modal .modal-dialog {
   width: 80%;
