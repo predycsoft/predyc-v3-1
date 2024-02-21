@@ -103,7 +103,12 @@ export class CreateCourseComponent {
   instructores =  []
   filteredinstructores: Observable<any[]>;
 
+  filteredPillars: Observable<any[]>;
+
+
   instructoresForm = new FormControl('');
+  pillarsForm = new FormControl('');
+
 
 
 
@@ -118,10 +123,21 @@ export class CreateCourseComponent {
     return (name);
   }
 
+  getOptionTextPillar(option){
+    let name = option.name
+    return (name);
+  }
+
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
     return this.instructores.filter(option => option.nombre.toLowerCase().includes(filterValue));
   }
+
+  private _filterPillars(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.categoriasArray.filter(option => option.name.toLowerCase().includes(filterValue));
+  }
+
 
   user
 
@@ -138,6 +154,13 @@ export class CreateCourseComponent {
       startWith(''),
       map(value => this._filter(value || '')),
     );
+    
+
+    this.filteredPillars = this.pillarsForm.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filterPillars(value || '')),
+    );
+    
 
 
 
@@ -251,11 +274,22 @@ export class CreateCourseComponent {
         }
         //console.log('skill from service', skill);
         this.categoriasArray = this.anidarCompetenciasInicial(category, skill)
-        console.log('categoriasArray', this.categoriasArray)
-        this.competenciasEmpresa = this.obtenerCompetenciasAlAzar(5);
+        console.log('categoriasArray', this.categoriasArray,this.curso)
+
+
+
+        //this.pillarsForm.patchValue(this.categoriasArray)
+
+        //this.competenciasEmpresa = this.obtenerCompetenciasAlAzar(5);
   
         if(this.mode == 'edit'){
-          this.getSelectedCategoriasCompetencias();
+          //this.getSelectedCategoriasCompetencias();
+          if(this.curso){
+            let skillId = this.curso.skillsRef[0]?.id
+            let pilar = this.categoriasArray.find(x=>x.competencias.find(y=>y.id == skillId))
+            this.pillarsForm.patchValue(pilar)
+          }
+          
           this.getExamCourse(this.curso.id);
         }
       });

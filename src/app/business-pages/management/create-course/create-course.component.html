@@ -157,7 +157,31 @@
                                     Debe seleccinar el instructor
                                 </div>
                             </ng-container>
-                            <ng-container *ngIf="true">
+                            <div fxLayout="row" fxLayoutAlign=" center" class="mgt10 fw">
+                                <form class="fw">
+                                    <mat-form-field class="example-full-width fw">
+                                        <mat-label>Buscar Pilar</mat-label>
+                                        <input type="text"
+                                                class="fw"
+                                                placeholder="Seleccione uno"
+                                                aria-label="Number"
+                                                matInput
+                                                #autoTrigger="matAutocompleteTrigger"
+                                                [formControl]="pillarsForm"
+                                                [matAutocomplete]="autoPillars">
+                                        <mat-autocomplete [displayWith]="getOptionTextPillar" #autoPillars="matAutocomplete" class="options">
+                                        <mat-option  class="multiline-mat-option" *ngFor="let option of filteredPillars | async" [value]="option">
+                                            <div fxLayout="row" fxLayoutAlign="space-between">
+                                            <div fxLayout="col" fxLayoutAlign="center center">
+                                                {{option.name | titlecase}}
+                                            </div>
+                                            </div>
+                                        </mat-option>
+                                        </mat-autocomplete>
+                                    </mat-form-field>
+                                </form>
+                            </div>
+                            <ng-container>
                                 <div fxLayout="row" fxLayoutAlign="center center" class="mgt10 fw">
                                   <!-- Campo de autocompletar del instructor -->
                                   <div fxFlex="90">
@@ -171,8 +195,8 @@
                                                matInput
                                                #autoTrigger="matAutocompleteTrigger"
                                                [formControl]="instructoresForm"
-                                               [matAutocomplete]="auto">
-                                        <mat-autocomplete [displayWith]="getOptionText" #auto="matAutocomplete" class="options">
+                                               [matAutocomplete]="autoInstructores">
+                                        <mat-autocomplete [displayWith]="getOptionText" #autoInstructores="matAutocomplete" class="options">
                                           <mat-option (click)="setInstructor(option)" class="multiline-mat-option" *ngFor="let option of filteredinstructores | async" [value]="option">
                                             <div fxLayout="row" fxLayoutAlign="space-between">
                                               <div fxLayout="col" fxLayoutAlign="center center">
