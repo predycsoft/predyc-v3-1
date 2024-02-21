@@ -22,7 +22,6 @@ import { ProfileSelectorComponent } from './widgets/profile-selector/profile-sel
 import { FrequentQuestionsComponent } from './components/frequent-questions/frequent-questions.component';
 import { SkillsSelectorV2Component } from './components/skills-selector-v2/skills-selector-v2.component';
 import { SupportContactComponent } from './components/support-contact/support-contact.component';
-import { NotificationList2Component } from './components/notifications/notification-list2/notification-list2.component';
 import { LicenseStudentListComponent } from './components/users/license-student-list/license-student-list.component';
 import { QuestionsComponent } from './components/questions/questions.component';
 import { StatusSelectorComponent } from './widgets/status-selector/status-selector.component';
@@ -64,8 +63,6 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgChartsModule } from 'ng2-charts';
@@ -95,7 +92,6 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
     SupportContactComponent,
     FrequentQuestionsComponent,
     ProfileSelectorComponent,
-    NotificationList2Component,
     LicenseStudentListComponent,
     QuestionsComponent,
     StatusSelectorComponent,
@@ -110,10 +106,7 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
   ],
   imports: [
     CommonModule,
-
-    BrowserModule,
     NgChartsModule,
-    BrowserAnimationsModule,
     NgbModule,
     AngularFireStorageModule,
     AngularFirestoreModule,
@@ -173,7 +166,6 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
     SupportContactComponent,
     FrequentQuestionsComponent,
     ProfileSelectorComponent,
-    NotificationList2Component,
     LicenseStudentListComponent,
     QuestionsComponent,
     StatusSelectorComponent,
@@ -184,10 +176,7 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
     DialogDownloadReportComponent,
     IsActivePipe,
     DialogRestorePasswordComponent,
-
-    BrowserModule,
     NgChartsModule,
-    BrowserAnimationsModule,
     NgbModule,
     AngularFireStorageModule,
     AngularFirestoreModule,

@@ -1,5 +1,3 @@
-<!-- <button (click)="onAddButton()">Añadir notificaciones</button> -->
-
 <div class="rounded-container shadow-animation " fxLayout="row" fxLayoutAlign="start center">
     <div [ngClass]="{'active': selectedFilter === 'alert'}" class="filter-item" (click)="applyFilter('alert')">
         <img *ngIf="selectedFilter === 'alert'" [src]="icon.check" class="h20px pdr08" alt="">        
@@ -93,8 +91,8 @@
             </ng-container>
         </mat-accordion>
     </div>
-    <div class="mgt10 fw" *ngIf="this.groupedNotifications.length === 0">
+    <!-- <div class="mgt10 fw" *ngIf="this.groupedNotifications.length === 0">
         No hay notificaciones
-    </div>
+    </div> -->
 </div>
   

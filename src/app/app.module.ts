@@ -3,6 +3,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { environment } from 'src/environments/environment';
 import { AngularFireModule } from '@angular/fire/compat';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 // Components
 import { LoginComponent } from './login/login.component';
@@ -15,8 +17,6 @@ import { MyTeamComponent } from './business-pages/management/my-team/my-team.com
 import { NotificationsComponent } from './business-pages/management/notifications/notifications.component';
 import { StudentComponent } from './business-pages/management/my-team/student/student.component';
 import { CreateCourseComponent } from './business-pages/management/create-course/create-course.component';
-
-//
 
 // Emulators
 import { USE_EMULATOR as USE_AUTH_EMULATOR } from '@angular/fire/compat/auth';
@@ -98,10 +98,11 @@ import { SharedModule } from 'src/shared/shared.module';
     StudyTimeMonthlyLineChartComponent,
   ],
   imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
     SharedModule,
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebase),
-
   ],
   providers: [
     {

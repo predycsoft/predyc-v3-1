@@ -13,25 +13,25 @@ export class SystemUserGuard {
 
   constructor(private afAuth: AngularFireAuth, private afs: AngularFirestore, private authService: AuthService, private router: Router) {}
 
-  // canActivate(
-  //   next: ActivatedRouteSnapshot,
-  //   state: RouterStateSnapshot
-  // ): Observable<boolean> {
-  //   return this.afAuth.authState.pipe(
-  //       switchMap(user => {
-  //           return  this.afs.collection<User>(User.collection).doc(user.uid).valueChanges().pipe(
-  //               map(user => {
-  //                   if (user?.isSystemUser) {
-  //                       return true
-  //                   } else {
-  //                       this.router.navigate(['']);
-  //                       return false
-  //                   }
-  //               })
-  //           )
-  //       })
-  //   )   
-  // }
+  canActivate(
+    next: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Observable<boolean> {
+    return this.afAuth.authState.pipe(
+        switchMap(user => {
+            return  this.afs.collection<User>(User.collection).doc(user.uid).valueChanges().pipe(
+                map(user => {
+                    if (user?.isSystemUser) {
+                        return true
+                    } else {
+                        this.router.navigate(['']);
+                        return false
+                    }
+                })
+            )
+        })
+    )   
+  }
 
   // canActivate(
   //   next: ActivatedRouteSnapshot,
@@ -66,7 +66,5 @@ export class SystemUserGuard {
   //     })
   //   );
   // }
-
-  
 
 }

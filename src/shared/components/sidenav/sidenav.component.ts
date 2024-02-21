@@ -26,18 +26,18 @@ export class SideNavComponent {
 
   public linkText: boolean = false;
 
-  public pages: Page[] = [
+  public pages: Page[] = []
+
+  public businessPages: Page[] = [
     {name: 'Dashboard', link:'', icon: '../../assets/iconsUI/dashboard-1.svg'},
     {name: 'Estudiantes', link:'management/students', icon: '../../assets/iconsUI/management-1.svg'},
     {name: 'Cursos', link:'management/courses', icon: '../../assets/iconsUI/courses-1.svg'},
-    // {name: 'Validación', link:'validation', icon: '../../assets/iconsUI/sidenav_fact_check.svg'},
-    // {name: 'Notificaciones', link:'management/notifications', icon: '../../assets/iconsUI/notification.svg'},
     {name: 'Licencias', link:'settings', icon: '../../assets/iconsUI/settings-1.svg'},
   ]
 
   public adminPages: Page[] = [
     {name: 'page1', link:'/admin', icon: '../../assets/iconsUI/home.svg'},
-    {name: 'Crear demo', link:'/admi/create-demo', icon: '../../assets/iconsUI/demo.svg'}
+    {name: 'Crear demo', link:'/admin/create-demo', icon: '../../assets/iconsUI/demo.svg'}
     // {name: 'page3', link:'/admin', icon: '../../assets/iconsUI/settings-1.svg'},
   ]
 
@@ -54,14 +54,11 @@ export class SideNavComponent {
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
       this.currentUrl = event.url;
+      console.log("CurrentUrl", this.currentUrl)
+      this.pages = this.currentUrl.startsWith("/admin") ? this.adminPages : this.businessPages;
     });
   }
 
   @Input() menuExpanded = false
-  
-  ngOnInit() {
-    const url = this.route.snapshot.url.join('/');
-    this.pages = url === "admin" ? this.adminPages : this.pages;
-  }
 
 }
