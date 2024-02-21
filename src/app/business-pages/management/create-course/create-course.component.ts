@@ -81,10 +81,10 @@ export class CreateCourseComponent {
   activeStep = 1;
   steps = [
     'Información del curso',
-    'Competencias',
+    //'Competencias',
     'Clases',
     'Examen',
-    'Vista previa examen',
+    //'Vista previa examen',
     //'Resumen'
   ];
 
@@ -233,9 +233,9 @@ export class CreateCourseComponent {
 
   initSkills(){
     this.categoryService.getCategoriesObservable().pipe(filter(category=>category!=null),take(1)).subscribe(category => {
-      //console.log('category from service', category);
+      console.log('category from service', category);
       this.skillService.getSkillsObservable().pipe(filter(skill=>skill!=null),take(1)).subscribe(skill => {
-        //console.log('skill from service', skill);
+        console.log('skill from service', skill);
         skill.map(skillIn => {
           delete skillIn['selected']
         });
@@ -251,7 +251,7 @@ export class CreateCourseComponent {
         }
         //console.log('skill from service', skill);
         this.categoriasArray = this.anidarCompetenciasInicial(category, skill)
-        //console.log('categoriasArray', this.categoriasArray)
+        console.log('categoriasArray', this.categoriasArray)
         this.competenciasEmpresa = this.obtenerCompetenciasAlAzar(5);
   
         if(this.mode == 'edit'){
@@ -279,9 +279,9 @@ export class CreateCourseComponent {
         instructorRef: new FormControl(null),
         instructor: new FormControl(null, Validators.required),
         resumen_instructor: new FormControl(null, Validators.required),
-        
         imagen: new FormControl(null, Validators.required),
         imagen_instructor: new FormControl(null, Validators.required),
+        skills: new FormControl(null, Validators.required),
       })
       this.initSkills();
     }
@@ -316,6 +316,7 @@ export class CreateCourseComponent {
           resumen_instructor: new FormControl(instructor.resumen, Validators.required),
           imagen: new FormControl(curso.imagen, Validators.required),
           imagen_instructor: new FormControl(instructor.foto, Validators.required),
+          skills: new FormControl(curso.skillsRef),
         });
 
         //this.formNewCourse.get('resumen_instructor').disable();
@@ -699,25 +700,26 @@ export class CreateCourseComponent {
           //console.log('this.curso',this.curso)
         }
       }
+      // if(this.activeStep == 2){
+      //   this.getSelectedCategoriasCompetencias()
+      //   //console.log(this.competenciasSelected);
+      //   if(!this.competenciasSelected || this.competenciasSelected?.length==0){
+      //     valid = false;
+      //     this.mensageCompetencias = "Por favor seleccione una competencia";
+      //     this.comepetenciaValid = false;
+      //   }
+      // }
+
       if(this.activeStep == 2){
-        this.getSelectedCategoriasCompetencias()
-        //console.log(this.competenciasSelected);
-        if(!this.competenciasSelected || this.competenciasSelected?.length==0){
+
+        if(!this.validarModulosClases()){
           valid = false;
-          this.mensageCompetencias = "Por favor seleccione una competencia";
-          this.comepetenciaValid = false;
         }
       }
 
       if(this.activeStep == 3){
-
-        // if(!this.validarModulosClases()){
-        //   valid = false;
-        // }
-      }
-
-      if(this.activeStep == 4){
         this.updateTriggeQuestionsExam++;
+        setTimeout(() => {
           if(this.validExam ==null || !this.validExam?.valid || this.validExam.value?.questions?.length == 0){
             valid = false
             this.updateTriggeQuestionsExam++;
@@ -745,18 +747,19 @@ export class CreateCourseComponent {
               exam.createdAt = new Date().getTime()
               this.examen = exam;
             }
-
+            this.openModal(this.endCourseModal)
           }
+        }, 10);
       }
-
-      //valid = true; // comentar luego de probar
+      else{
+        if(valid) {
+          this.activeStep++
+        }
+        else {
+          this.showErrorCurso = true;
+        }
+      }
     
-      if(valid) {
-        this.activeStep++
-      }
-      else {
-        this.showErrorCurso = true;
-      }
     } else {
       this.openModal(this.endCourseModal)
     }
@@ -1046,9 +1049,9 @@ export class CreateCourseComponent {
 
   stepsActividad = [
     'Información básica',
-    'Instrucciones generales de la actividad',
+    // 'Instrucciones generales de la actividad',
     'Preguntas',
-    'Previsualización de preguntas',
+    // 'Previsualización de preguntas',
   ];
 
   stepsCompetencias = [
@@ -1717,6 +1720,8 @@ export class CreateCourseComponent {
 
   }
 
+  modalActivity;
+
   structureActivity(content,clase,modulo,tipo = 'crear') {
 
     this.selectedClase = clase
@@ -1762,7 +1767,7 @@ export class CreateCourseComponent {
     }
 
     if(tipo == 'crear'){
-      this.modalService.open(content, {
+      this.modalActivity = this.modalService.open(content, {
         windowClass: 'custom-modal',
         ariaLabelledBy: 'modal-basic-title',
         size: 'lg',
@@ -1770,7 +1775,7 @@ export class CreateCourseComponent {
       });
     }
     else{
-      this.modalService.open(content, {
+      this.modalActivity = this.modalService.open(content, {
         ariaLabelledBy: 'modal-basic-title',
         centered: true,
         size:'lg'
@@ -2253,7 +2258,7 @@ export class CreateCourseComponent {
       }
 
     }
-    if(this.activeStepActividad == 2){
+    if(this.activeStepActividad == 99){
       //console.log(this.formNuevaActividadGeneral)
       if(this.formNuevaActividadGeneral.valid){
         this.selectedClase.activity.instructions =  this.formNuevaActividadGeneral.value.instrucciones;
@@ -2264,9 +2269,9 @@ export class CreateCourseComponent {
       }
     }
     //formNuevaActividadGeneral
-    if(this.activeStepActividad == 3){
+    if(this.activeStepActividad == 2){
       this.updateTriggeQuestions++;
-        //console.log('Form Data questionValid activeStepActividad: ',this.validActividad)
+      setTimeout(() => {
         if(this.validActividad ==null || !this.validActividad?.valid || this.validActividad.value?.questions?.length == 0){
           valid = false
           this.updateTriggeQuestions++;
@@ -2283,25 +2288,53 @@ export class CreateCourseComponent {
           });
           //getTypeQuestion
           this.selectedClase.activity.questions = questions
+          this.modalActivity.close();
+          Swal.fire({
+            icon: 'success',
+            title: '¡Éxito!',
+            text: 'Actividad cambiada exitosamente'
+          }); 
+          
         }
-    }
-    
-    if (valid){
-      if(this.validateActivity()){
-        this.selectedClase.activity['isInvalid'] = false;
-      }
-      this.showErrorActividad = false;
-      this.activeStepActividad = this.activeStepActividad+1
-      //console.log(this.selectedClase)
+
+        if (valid){
+          if(this.validateActivity()){
+            this.selectedClase.activity['isInvalid'] = false;
+          }
+          this.showErrorActividad = false;
+          this.activeStepActividad = this.activeStepActividad+1
+          //console.log(this.selectedClase)
+        }
+        else{
+          this.selectedClase.activity['isInvalid'] = true;
+        }
+        
+      }, 10);
     }
     else{
-      this.selectedClase.activity['isInvalid'] = true;
+      if (valid){
+        if(this.validateActivity()){
+          this.selectedClase.activity['isInvalid'] = false;
+        }
+        this.showErrorActividad = false;
+        this.activeStepActividad = this.activeStepActividad+1
+        //console.log(this.selectedClase)
+      }
+      else{
+        this.selectedClase.activity['isInvalid'] = true;
+      }
     }
+
+    
+
   }
 
   validateActivity(){
 
-    if(this.formNuevaActividadBasica.valid && this.formNuevaActividadGeneral.valid && this.validatePreguntasActividad()){
+    // if(this.formNuevaActividadBasica.valid && this.formNuevaActividadGeneral.valid && this.validatePreguntasActividad()){
+    //   return true
+    // }
+    if(this.formNuevaActividadBasica.valid){
       return true
     }
     return false;
@@ -2430,97 +2463,97 @@ export class CreateCourseComponent {
   invalidMessages = [];
 
 
-//   validarModulosClases(){
+  validarModulosClases(){
 
-//     let valid = true;
-//     this.isInvalidCases= false;
-//     this.invalidMessages = [];
-//     if(this.modulos.length==0){
-//       valid = false
-//       this.isInvalidCases= true;
-//       this.invalidMessages.push('El curso debe contener al menos un módulo');
-//     }
+    let valid = true;
+    this.isInvalidCases= false;
+    this.invalidMessages = [];
+    if(this.modulos.length==0){
+      valid = false
+      this.isInvalidCases= true;
+      this.invalidMessages.push('El curso debe contener al menos un módulo');
+    }
 
-//     this.modulos.forEach(modulo => {
-//       modulo['InvalidMessages'] = [];
-//       modulo['isInvalid'] = false;
-//       if(modulo['clases'].length==0){
-//         modulo['isInvalid'] = true;
-//         valid = false;
-//         modulo['InvalidMessages'].push('El módulo debe contener al menos una clase');
-//       }
-//       if(modulo.titulo==''){
-//         modulo['isInvalid'] = true;
-//         valid = false;
-//         modulo['InvalidMessages'].push('El módulo debe tener título');
-//       }
-//       else{
-//         let clases = modulo['clases'];
-//         clases.forEach(clase => {
-//           //console.log('clase',clase)
-//           clase['InvalidMessages'] = [];
-//           clase['isInvalid'] = false;
+    this.modulos.forEach(modulo => {
+      modulo['InvalidMessages'] = [];
+      modulo['isInvalid'] = false;
+      if(modulo['clases'].length==0){
+        modulo['isInvalid'] = true;
+        valid = false;
+        modulo['InvalidMessages'].push('El módulo debe contener al menos una clase');
+      }
+      if(modulo.titulo==''){
+        modulo['isInvalid'] = true;
+        valid = false;
+        modulo['InvalidMessages'].push('El módulo debe tener título');
+      }
+      else{
+        let clases = modulo['clases'];
+        clases.forEach(clase => {
+          //console.log('clase',clase)
+          clase['InvalidMessages'] = [];
+          clase['isInvalid'] = false;
 
-//           if(clase.titulo==''){
-//             modulo['isInvalid'] = true;
-//             clase['isInvalid'] = true;
-//             valid = false;
-//             modulo['InvalidMessages'].push('El módulo tiene clases invalidas');
-//             clase['InvalidMessages'].push('La clase debe tener título');
-//           }
+          if(clase.titulo==''){
+            modulo['isInvalid'] = true;
+            clase['isInvalid'] = true;
+            valid = false;
+            modulo['InvalidMessages'].push('El módulo tiene clases invalidas');
+            clase['InvalidMessages'].push('La clase debe tener título');
+          }
 
-//           if(clase.duracion==0){
-//             modulo['isInvalid'] = true;
-//             clase['isInvalid'] = true;
-//             valid = false;
-//             modulo['InvalidMessages'].push('El módulo tiene clases invalidas');
-//             clase['InvalidMessages'].push('La clase debe tener duración');
-//           }
+          if(clase.duracion==0){
+            modulo['isInvalid'] = true;
+            clase['isInvalid'] = true;
+            valid = false;
+            modulo['InvalidMessages'].push('El módulo tiene clases invalidas');
+            clase['InvalidMessages'].push('La clase debe tener duración');
+          }
 
-//           if (clase.tipo == 'video'){
-//             if(clase.vimeoId1==0){
-//               modulo['isInvalid'] = true;
-//               clase['isInvalid'] = true;
-//               valid = false;
-//               modulo['InvalidMessages'].push('El módulo tiene clases invalidas');
-//               clase['InvalidMessages'].push('La clase debe tener el video cargado');
-//             }
-//           }
-//           else if (clase.tipo =='lectura'){
+          if (clase.tipo == 'video'){
+            if(clase.vimeoId1==0){
+              modulo['isInvalid'] = true;
+              clase['isInvalid'] = true;
+              valid = false;
+              modulo['InvalidMessages'].push('El módulo tiene clases invalidas');
+              clase['InvalidMessages'].push('La clase debe tener el video cargado');
+            }
+          }
+          else if (clase.tipo =='lectura'){
 
-//             if(clase.archivos.length==0){
-//               modulo['isInvalid'] = true;
-//               clase['isInvalid'] = true;
-//               valid = false;
-//               modulo['InvalidMessages'].push('El módulo tiene clases invalidas');
-//               clase['InvalidMessages'].push('La clase debe tener el archivo de la lectura');
-//             }
+            if(clase.archivos.length==0){
+              modulo['isInvalid'] = true;
+              clase['isInvalid'] = true;
+              valid = false;
+              modulo['InvalidMessages'].push('El módulo tiene clases invalidas');
+              clase['InvalidMessages'].push('La clase debe tener el archivo de la lectura');
+            }
 
-//           }
-//           else if(clase.tipo == 'actividad'){
+          }
+          else if(clase.tipo == 'actividad'){
 
-//             //console.log(clase['activity'].isInvalid)
+            //console.log(clase['activity'].isInvalid)
 
-//             if(clase['activity'].isInvalid){
-//               modulo['isInvalid'] = true;
-//               clase['isInvalid'] = true;
-//               valid = false;
-//               modulo['InvalidMessages'].push('El módulo tiene clases invalidas');
-//               clase['InvalidMessages'].push('La actividad tiene la estructura incompleta');
-//             }
-//           }
-//           clase['InvalidMessages'] = [...new Set(clase['InvalidMessages'])];
-//           modulo['InvalidMessages'] = [...new Set(modulo['InvalidMessages'])];
+            if(clase['activity'].isInvalid){
+              modulo['isInvalid'] = true;
+              clase['isInvalid'] = true;
+              valid = false;
+              modulo['InvalidMessages'].push('El módulo tiene clases invalidas');
+              clase['InvalidMessages'].push('La actividad tiene la estructura incompleta');
+            }
+          }
+          clase['InvalidMessages'] = [...new Set(clase['InvalidMessages'])];
+          modulo['InvalidMessages'] = [...new Set(modulo['InvalidMessages'])];
 
-//         });
-//       }
-//     });
+        });
+      }
+    });
 
-//     //console.log('modulos',this.modulos)
+    //console.log('modulos',this.modulos)
 
-//     return valid;
+    return valid;
 
-//   }
+  }
 
   showErrorCurso = false;
 
