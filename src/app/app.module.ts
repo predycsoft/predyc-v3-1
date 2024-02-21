@@ -51,7 +51,6 @@ import { ProfilesComponent } from './business-pages/management/profiles/profiles
 
 import { StudentInfoFormComponent } from './business-pages/management/my-team/student/student-info-form/student-info-form.component';
 import { StudentStudyPlanAndCompetencesComponent } from './business-pages/management/my-team/student/student-study-plan-and-competences/student-study-plan-and-competences.component';
-import { CreateDemoComponent } from './business-pages/create-demo/create-demo.component';
 import { StudyTimeMonthlyLineChartComponent } from './business-pages/dashboard/users-study-time-container/study-time-monthly-line-chart/study-time-monthly-line-chart.component';
 import { SharedModule } from 'src/shared/shared.module';
 
@@ -97,7 +96,6 @@ import { SharedModule } from 'src/shared/shared.module';
     StudentInfoFormComponent,
     StudentStudyPlanAndCompetencesComponent,
     StudyTimeMonthlyLineChartComponent,
-    CreateDemoComponent,
   ],
   imports: [
     SharedModule,

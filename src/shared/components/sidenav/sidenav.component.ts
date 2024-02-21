@@ -5,7 +5,7 @@ import { IconService } from '../../services/icon.service';
 import { SidenavService } from '../../services/sidenav.service';
 import { User } from '../../models/user.model';
 import { Observable, filter, firstValueFrom } from 'rxjs';
-import { NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
 interface Page {
   link: string;
@@ -35,16 +35,22 @@ export class SideNavComponent {
     {name: 'Licencias', link:'settings', icon: '../../assets/iconsUI/settings-1.svg'},
   ]
 
+  public adminPages: Page[] = [
+    {name: 'page1', link:'/admin', icon: '../../assets/iconsUI/home.svg'},
+    {name: 'Crear demo', link:'/admi/create-demo', icon: '../../assets/iconsUI/demo.svg'}
+    // {name: 'page3', link:'/admin', icon: '../../assets/iconsUI/settings-1.svg'},
+  ]
+
   currentUrl: string;
 
 
   constructor(
     public icon: IconService,
     private authService: AuthService,
+    private route: ActivatedRoute,
     private router: Router
   ) {
-
-        this.router.events.pipe(
+    this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
       this.currentUrl = event.url;
@@ -54,15 +60,8 @@ export class SideNavComponent {
   @Input() menuExpanded = false
   
   ngOnInit() {
-
-    
-    this.authService.user$.subscribe(user => {
-      if (user?.isSystemUser) this.pages.push({
-        name: 'Crear demo',
-        link:'management/create-demo',
-        icon: '../../assets/iconsUI/demo.svg'
-      })
-    })
+    const url = this.route.snapshot.url.join('/');
+    this.pages = url === "admin" ? this.adminPages : this.pages;
   }
 
 }

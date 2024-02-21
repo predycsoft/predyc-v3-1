@@ -16,8 +16,6 @@ import { InitScriptComponent } from 'src/shared/components/init-script/init-scri
 import { MyAccountComponent } from './business-pages/my-account/my-account.component';
 import { ProfilesComponent } from './business-pages/management/profiles/profiles.component';
 import { ProfileGuard } from 'src/shared/guards/profile.guard';
-import { CreateDemoComponent } from './business-pages/create-demo/create-demo.component';
-import { SystemUserGuard } from 'src/shared/guards/systemUser.guard';
 
 const MAIN_TITLE = 'Predyc - '
 
@@ -45,7 +43,6 @@ const routes: Routes = [
           {path:"create-course/:mode/:idCurso", title: MAIN_TITLE + 'Crear / Editar curso', component: CreateCourseComponent, canActivate: [AuthGuard]},
           {path:"notifications", title: MAIN_TITLE + 'Notificaciones', component: NotificationsComponent, canActivate: [AuthGuard]},
           {path:"students/:uid", title: MAIN_TITLE + 'Mi equipo', component: StudentComponent, canActivate: [AuthGuard]},
-          {path:"create-demo", title: MAIN_TITLE + 'Crear demo', component: CreateDemoComponent, canActivate: [AuthGuard, SystemUserGuard]},
         ]
       },
       {path:"validation", title: MAIN_TITLE + 'Validación de competencias', component: ValidationComponent, canActivate: [AuthGuard]},
