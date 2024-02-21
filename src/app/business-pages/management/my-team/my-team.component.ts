@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
-import { IconService } from '../../../shared/services/icon.service';
-import { UserService } from 'src/app/shared/services/user.service';
+import { IconService } from 'src/shared/services/icon.service';
+import { UserService } from 'src/shared/services/user.service';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
+import { EnterpriseService } from 'src/shared/services/enterprise.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { ProfileService } from 'src/app/shared/services/profile.service';
-import { Profile } from 'src/app/shared/models/profile.model';
+import { ProfileService } from 'src/shared/services/profile.service';
+import { Profile } from 'src/shared/models/profile.model';
 import { CreateUserComponent } from './student/create-user/create-user.component';
-import { User } from 'src/app/shared/models/user.model';
+import { User } from 'src/shared/models/user.model';
 
 @Component({
   selector: 'app-my-team',

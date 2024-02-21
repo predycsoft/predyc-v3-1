@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions';
-// import { Notification } from '../../src/app/shared/models/notification.model'
-// import { Enterprise } from '../../src/app/shared/models/enterprise.model'
+// import { Notification } from '../../src/shared/models/notification.model'
+// import { Enterprise } from '../../src/shared/models/enterprise.model'
 import * as admin from 'firebase-admin';
 import { DocumentReference } from 'firebase-admin/firestore';
 

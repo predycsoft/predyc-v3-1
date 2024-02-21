@@ -1,4 +1,4 @@
-import { LicenseJson } from "src/app/shared/models/license.model";
+import { LicenseJson } from "src/shared/models/license.model";
 
 export const licensesData: LicenseJson[] = [
     {

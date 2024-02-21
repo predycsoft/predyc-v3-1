@@ -3,15 +3,15 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, Subscription, firstValueFrom } from 'rxjs';
-import { DialogRequestLicensesComponent } from 'src/app/shared/components/users/license-student-list/dialog-request-licenses/dialog-request-licenses.component';
-import { DialogHistoryLicensesComponent } from 'src/app/shared/components/users/license-student-list/dialog-history-licenses/dialog-history-licenses.component';
+import { DialogRequestLicensesComponent } from 'src/shared/components/users/license-student-list/dialog-request-licenses/dialog-request-licenses.component';
+import { DialogHistoryLicensesComponent } from 'src/shared/components/users/license-student-list/dialog-history-licenses/dialog-history-licenses.component';
 
-import { LicenseStudentListComponent } from 'src/app/shared/components/users/license-student-list/license-student-list.component';
-import { License } from 'src/app/shared/models/license.model';
-import { IconService } from 'src/app/shared/services/icon.service';
-import { LicenseService } from 'src/app/shared/services/license.service';
+import { LicenseStudentListComponent } from 'src/shared/components/users/license-student-list/license-student-list.component';
+import { License } from 'src/shared/models/license.model';
+import { IconService } from 'src/shared/services/icon.service';
+import { LicenseService } from 'src/shared/services/license.service';
 import Swal from 'sweetalert2';
-import { DialogService } from 'src/app/shared/services/dialog.service';
+import { DialogService } from 'src/shared/services/dialog.service';
 
 
 @Component({

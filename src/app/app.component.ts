@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { onMainContentChange } from './shared/animations/animations';
-import { LoaderService } from './shared/services/loader.service';
+import { onMainContentChange } from 'src/shared/animations/animations';
+import { LoaderService } from 'src/shared/services/loader.service';
 import { Router } from '@angular/router';
-import { AuthService } from './shared/services/auth.service';
+import { AuthService } from 'src/shared/services/auth.service';
 
 @Component({
   selector: 'app-root',

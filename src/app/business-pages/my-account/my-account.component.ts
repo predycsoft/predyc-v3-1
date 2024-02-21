@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { User } from 'src/app/shared/models/user.model';
-import { AuthService } from 'src/app/shared/services/auth.service';
+import { User } from 'src/shared/models/user.model';
+import { AuthService } from 'src/shared/services/auth.service';
 @Component({
   selector: 'app-my-account',
   templateUrl: './my-account.component.html',

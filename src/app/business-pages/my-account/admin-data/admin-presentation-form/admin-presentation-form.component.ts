@@ -2,10 +2,10 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Observable, finalize, firstValueFrom } from 'rxjs';
-import { User } from 'src/app/shared/models/user.model';
-import { AlertsService } from 'src/app/shared/services/alerts.service';
-import { AuthService } from 'src/app/shared/services/auth.service';
-import { IconService } from 'src/app/shared/services/icon.service';
+import { User } from 'src/shared/models/user.model';
+import { AlertsService } from 'src/shared/services/alerts.service';
+import { AuthService } from 'src/shared/services/auth.service';
+import { IconService } from 'src/shared/services/icon.service';
 
 @Component({
   selector: 'app-admin-presentation-form',

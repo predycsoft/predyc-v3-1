@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IconService } from 'src/app/shared/services/icon.service';
+import { IconService } from 'src/shared/services/icon.service';
 
 @Component({
   selector: 'app-license',

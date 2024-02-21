@@ -1,15 +1,15 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Profile } from 'src/app/shared/models/profile.model';
-import { User, UserJson } from 'src/app/shared/models/user.model';
-import { IconService } from 'src/app/shared/services/icon.service';
-import { ProfileService } from 'src/app/shared/services/profile.service';
-import { UserService } from 'src/app/shared/services/user.service';
-import { AlertsService } from 'src/app/shared/services/alerts.service';
+import { Profile } from 'src/shared/models/profile.model';
+import { User, UserJson } from 'src/shared/models/user.model';
+import { IconService } from 'src/shared/services/icon.service';
+import { ProfileService } from 'src/shared/services/profile.service';
+import { UserService } from 'src/shared/services/user.service';
+import { AlertsService } from 'src/shared/services/alerts.service';
 import { DocumentReference } from '@angular/fire/compat/firestore';
-import { CourseService } from 'src/app/shared/services/course.service';
+import { CourseService } from 'src/shared/services/course.service';
 import { Subscription, combineLatest, map, switchMap } from 'rxjs';
 import { Log } from 'src/app/business-pages/dashboard/users-study-time-container/users-study-time-container.component';
-import { firestoreTimestampToNumberTimestamp } from 'src/app/shared/utils';
+import { firestoreTimestampToNumberTimestamp } from 'src/shared/utils';
 
 
 @Component({

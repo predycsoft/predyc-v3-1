@@ -1,13 +1,13 @@
 import { Component, ViewChild } from '@angular/core';
-import { IconService } from 'src/app/shared/services/icon.service';
+import { IconService } from 'src/shared/services/icon.service';
 import { DataSource } from '@angular/cdk/collections';
 import { MatPaginator } from '@angular/material/paginator';
 import { BehaviorSubject, Observable, Subject, Subscription, catchError, combineLatest, map, merge, of } from 'rxjs';
-import { Activity } from 'src/app/shared/models/activity-classes.model';
-import { ActivityClassesService } from 'src/app/shared/services/activity-classes.service';
-import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
+import { Activity } from 'src/shared/models/activity-classes.model';
+import { ActivityClassesService } from 'src/shared/services/activity-classes.service';
+import { EnterpriseService } from 'src/shared/services/enterprise.service';
 import { MatSort } from '@angular/material/sort';
-import { orderByValueAndDirection } from 'src/app/shared/utils';
+import { orderByValueAndDirection } from 'src/shared/utils';
 
 @Component({
   selector: 'app-validation-list',

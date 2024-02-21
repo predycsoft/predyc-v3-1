@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
-import { IconService } from '../shared/services/icon.service';
-import { AuthService } from '../shared/services/auth.service';
-import { AlertsService } from '../shared/services/alerts.service';
+import { IconService } from 'src/shared/services/icon.service';
+import { AuthService } from 'src/shared/services/auth.service';
+import { AlertsService } from 'src/shared/services/alerts.service';
 import { firstValueFrom } from 'rxjs';
-import { User } from '../shared/models/user.model';
+import { User } from 'src/shared/models/user.model';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { DialogRestorePasswordComponent } from '../shared/components/dialogs/dialog-restore-password/dialog-restore-password.component';
+import { DialogRestorePasswordComponent } from 'src/shared/components/dialogs/dialog-restore-password/dialog-restore-password.component';
 
 @Component({
   selector: 'app-login',

@@ -1,16 +1,16 @@
 import { Component } from '@angular/core';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
-import { Coupon, CouponJson } from 'src/app/shared/models/coupon.model';
-import { License } from 'src/app/shared/models/license.model';
-import { Price, PriceJson } from 'src/app/shared/models/price.model';
-import { Product, ProductJson } from 'src/app/shared/models/product.model';
-import { CouponService } from 'src/app/shared/services/coupon.service';
-import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
-import { IconService } from 'src/app/shared/services/icon.service';
-import { LicenseService } from 'src/app/shared/services/license.service';
-import { LoaderService } from 'src/app/shared/services/loader.service';
-import { PriceService } from 'src/app/shared/services/price.service';
-import { ProductService } from 'src/app/shared/services/product.service';
+import { Coupon, CouponJson } from 'src/shared/models/coupon.model';
+import { License } from 'src/shared/models/license.model';
+import { Price, PriceJson } from 'src/shared/models/price.model';
+import { Product, ProductJson } from 'src/shared/models/product.model';
+import { CouponService } from 'src/shared/services/coupon.service';
+import { EnterpriseService } from 'src/shared/services/enterprise.service';
+import { IconService } from 'src/shared/services/icon.service';
+import { LicenseService } from 'src/shared/services/license.service';
+import { LoaderService } from 'src/shared/services/loader.service';
+import { PriceService } from 'src/shared/services/price.service';
+import { ProductService } from 'src/shared/services/product.service';
 
 @Component({
   selector: 'app-plan-card',

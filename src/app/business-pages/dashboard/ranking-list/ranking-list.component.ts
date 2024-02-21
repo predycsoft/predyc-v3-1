@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { Observable, Subscription, catchError, combineLatest, map, of, switchMap } from 'rxjs';
-import { CourseByStudent } from 'src/app/shared/models/course-by-student.model';
-import { Curso } from 'src/app/shared/models/course.model';
-import { User, UserJson } from 'src/app/shared/models/user.model';
-import { CourseService } from 'src/app/shared/services/course.service';
-import { IconService } from 'src/app/shared/services/icon.service';
-import { ProfileService } from 'src/app/shared/services/profile.service';
-import { UserService } from 'src/app/shared/services/user.service';
+import { CourseByStudent } from 'src/shared/models/course-by-student.model';
+import { Curso } from 'src/shared/models/course.model';
+import { User, UserJson } from 'src/shared/models/user.model';
+import { CourseService } from 'src/shared/services/course.service';
+import { IconService } from 'src/shared/services/icon.service';
+import { ProfileService } from 'src/shared/services/profile.service';
+import { UserService } from 'src/shared/services/user.service';
 
 interface UserRanking extends UserJson {
   profileName: string

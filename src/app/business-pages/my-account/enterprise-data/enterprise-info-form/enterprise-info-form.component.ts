@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { Enterprise } from 'src/app/shared/models/enterprise.model';
-import { AlertsService } from 'src/app/shared/services/alerts.service';
-import { IconService } from 'src/app/shared/services/icon.service';
+import { Enterprise } from 'src/shared/models/enterprise.model';
+import { AlertsService } from 'src/shared/services/alerts.service';
+import { IconService } from 'src/shared/services/icon.service';
 
 @Component({
   selector: 'app-enterprise-info-form',

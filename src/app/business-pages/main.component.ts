@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
-import { EnterpriseService } from '../shared/services/enterprise.service';
-import { UserService } from '../shared/services/user.service';
-import { IconService } from '../shared/services/icon.service';
-import { User } from '../shared/models/user.model';
+import { EnterpriseService } from 'src/shared/services/enterprise.service';
+import { UserService } from 'src/shared/services/user.service';
+import { IconService } from 'src/shared/services/icon.service';
+import { User } from 'src/shared/models/user.model';
 import { Observable, Subscription } from 'rxjs';
-import { AuthService } from '../shared/services/auth.service';
+import { AuthService } from 'src/shared/services/auth.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { SupportComponent } from '../shared/components/support/support.component';
-import { License } from '../shared/models/license.model';
-import { LicenseService } from '../shared/services/license.service';
+import { SupportComponent } from 'src/shared/components/support/support.component';
+import { License } from 'src/shared/models/license.model';
+import { LicenseService } from 'src/shared/services/license.service';
 
 @Component({
   selector: 'app-main',

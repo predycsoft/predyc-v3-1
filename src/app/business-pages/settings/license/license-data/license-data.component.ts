@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { LoaderService } from 'src/app/shared/services/loader.service';
+import { LoaderService } from 'src/shared/services/loader.service';
 
 @Component({
   selector: 'app-license-data',

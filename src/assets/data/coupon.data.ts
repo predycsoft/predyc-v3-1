@@ -1,4 +1,4 @@
-import { CouponJson } from "src/app/shared/models/coupon.model";
+import { CouponJson } from "src/shared/models/coupon.model";
 
 export const couponsData: CouponJson[] = [
     // {

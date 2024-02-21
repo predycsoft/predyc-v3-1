@@ -9,15 +9,15 @@ import { MyTeamComponent } from './business-pages/management/my-team/my-team.com
 import { NotificationsComponent } from './business-pages/management/notifications/notifications.component'
 import { StudentComponent } from './business-pages/management/my-team/student/student.component';
 import { LoginComponent } from './login/login.component';
-import { AuthGuard } from './shared/guards/auth.guard';
+import { AuthGuard } from 'src/shared/guards/auth.guard';
 import { MainComponent } from './business-pages/main.component';
 import { CreateCourseComponent } from './business-pages/management/create-course/create-course.component';
-import { InitScriptComponent } from './shared/components/init-script/init-script.component';
+import { InitScriptComponent } from 'src/shared/components/init-script/init-script.component';
 import { MyAccountComponent } from './business-pages/my-account/my-account.component';
 import { ProfilesComponent } from './business-pages/management/profiles/profiles.component';
-import { ProfileGuard } from './shared/guards/profile.guard';
+import { ProfileGuard } from 'src/shared/guards/profile.guard';
 import { CreateDemoComponent } from './business-pages/create-demo/create-demo.component';
-import { AdminPredycGuard } from './shared/guards/adminPredyc.guard';
+import { AdminPredycGuard } from 'src/shared/guards/adminPredyc.guard';
 
 const MAIN_TITLE = 'Predyc - '
 

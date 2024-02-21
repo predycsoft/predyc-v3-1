@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { combineLatest, filter, map, of, Subscription, switchMap, take } from 'rxjs';
-import { CourseService } from 'src/app/shared/services/course.service';
-import { IconService } from 'src/app/shared/services/icon.service';
-import { firestoreTimestampToNumberTimestamp } from 'src/app/shared/utils';
+import { CourseService } from 'src/shared/services/course.service';
+import { IconService } from 'src/shared/services/icon.service';
+import { firestoreTimestampToNumberTimestamp } from 'src/shared/utils';
 
 export class Log {
   endDate: number = 0

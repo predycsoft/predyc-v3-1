@@ -1,19 +1,19 @@
 import { AfterViewInit, Component } from '@angular/core';
-import { AfterOnInitResetLoading } from 'src/app/shared/decorators/loading.decorator';
-import { LoaderService } from 'src/app/shared/services/loader.service';
-import { IconService } from '../../../shared/services/icon.service';
-import { Curso } from 'src/app/shared/models/course.model';
-import { CategoryService } from 'src/app/shared/services/category.service';
+import { AfterOnInitResetLoading } from 'src/shared/decorators/loading.decorator';
+import { LoaderService } from 'src/shared/services/loader.service';
+import { IconService } from 'src/shared/services/icon.service';
+import { Curso } from 'src/shared/models/course.model';
+import { CategoryService } from 'src/shared/services/category.service';
 
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { SkillService } from '../../../shared/services/skill.service';
-import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
+import { SkillService } from 'src/shared/services/skill.service';
+import { EnterpriseService } from 'src/shared/services/enterprise.service';
 import { take } from 'rxjs';
-import { CourseService } from 'src/app/shared/services/course.service';
+import { CourseService } from 'src/shared/services/course.service';
 
 import { cursosProximos } from 'src/assets/data/proximamente.data'
-import { AuthService } from 'src/app/shared/services/auth.service';
-import { InstructorsService } from 'src/app/shared/services/instructors.service';
+import { AuthService } from 'src/shared/services/auth.service';
+import { InstructorsService } from 'src/shared/services/instructors.service';
 
 
 export class category {

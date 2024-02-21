@@ -1,4 +1,4 @@
-import { DepartmentJson } from "src/app/shared/models/department.model";
+import { DepartmentJson } from "src/shared/models/department.model";
 
 export const departmentsData: DepartmentJson[] = [
   { id: '1', name: 'Mantenimiento', enterpriseRef: null},
