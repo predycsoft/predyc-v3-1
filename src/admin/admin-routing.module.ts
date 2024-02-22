@@ -23,9 +23,7 @@ const routes: Routes = [
   {path:"royalties", title: MAIN_TITLE + 'Regalias', component: RoyaltyComponent},
   {path:"sales", title: MAIN_TITLE + 'Ventas', component: SaleComponent},
   {path:"courses", title: MAIN_TITLE + 'Cursos', component: CoursesComponent},
-
-
-
+  { path: '**', redirectTo: '', pathMatch: 'full' }, // Wildcard Route
 ];
 
 @NgModule({
