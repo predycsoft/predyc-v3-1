@@ -254,17 +254,39 @@ export class CreateCourseComponent {
     //console.log('this.competenciasSelected',this.competenciasSelected)
   }
 
+  allskills;
+  skillsCurso
+
+  
+  getCursoSkills(){
+
+    let skillArray = [];
+    this.curso?.skillsRef?.forEach(skill => {
+      let datail = this.allskills.find(x=>x.id == skill.id)
+      skillArray.push(datail)
+    });
+
+    return skillArray
+  }
+
+  removeSkill(skill){
+    this.curso.skillsRef = this.curso.skillsRef.filter(x=> x.id != skill.id)
+    this.skillsCurso = this.getCursoSkills();
+  }
+
   initSkills(){
     this.categoryService.getCategoriesObservable().pipe(filter(category=>category!=null),take(1)).subscribe(category => {
       console.log('category from service', category);
       this.skillService.getSkillsObservable().pipe(filter(skill=>skill!=null),take(1)).subscribe(skill => {
         console.log('skill from service', skill);
+        this.allskills = skill;
         skill.map(skillIn => {
           delete skillIn['selected']
         });
         if(this.mode == 'edit'){
           //console.log('curso edit', this.curso)
           let skillsProfile = this.curso.skillsRef;
+          this.skillsCurso = this.getCursoSkills()
           skillsProfile.forEach(skillIn => {
             let skillSelect = skill.find(skillSelectIn => skillSelectIn.id == skillIn.id)
             if (skillSelect) {

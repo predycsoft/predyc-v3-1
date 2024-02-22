@@ -2024,6 +2024,11 @@ span{
   max-width: 150px; /* Ajusta esto según el tamaño deseado */
 }
 
+.skill-badge-complete {
+  display: inline-block;
+  overflow: hidden;
+}
+
 
 .title-course-badge {
   display: inline-block;

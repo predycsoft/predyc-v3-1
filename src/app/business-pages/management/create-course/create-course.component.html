@@ -181,6 +181,23 @@
                                     </mat-form-field>
                                 </form>
                             </div>
+                            <div fxLayout="row" fxLayoutAlign=" center" class="mgt10 fw">
+                                <div class="skills-container">
+                                    <ng-container *ngFor="let skill of skillsCurso; let indexSkill = index">
+                                        <div
+                                            style="display: inline-block; margin-right: 5px; margin-bottom: 5px;"
+                                            class="skill-badge-complete ListHover2 radius10 backGray2 pdl05 pdr05 gray-8 mgt05">
+                                            {{skill.name}}
+                                            <img style="cursor: pointer;" (click)="removeSkill(skill)" [src]="icon.close"  class="h16px"  alt="">
+                                        </div>
+                                    </ng-container>
+                                    <div *ngIf="skillsCurso.length<3" matTooltip="Agregar competencia"
+                                    style="display: inline-block; margin-right: 5px; margin-bottom: 5px;"
+                                    class="skill-badge ListHover2 radius10 backGray2 pdl05 pdr05 gray-8 mgt05">
+                                        +
+                                    </div>
+                                </div>
+                            </div>
                             <ng-container>
                                 <div fxLayout="row" fxLayoutAlign="center center" class="mgt10 fw">
                                   <!-- Campo de autocompletar del instructor -->
@@ -208,15 +225,15 @@
                                         </mat-autocomplete>
                                       </mat-form-field>
                                     </form>
+                                    <div *ngIf="formNewCourse.controls['imagen_instructor'].errors && showErrorCurso" class="custom-invalid-feedback pdt05">
+                                        Debe seleccinar el instructor
+                                      </div>
                                   </div>
                               
                                   <!-- Foto del instructor -->
                                   <div fxFlex="10" fxLayoutAlign=" center" class="avatar-selector pdb22 pdl10">
                                     <div class="avatar-scroll">
                                       <img *ngIf="formNewCourse.get('imagen_instructor').value" [src]="formNewCourse.get('imagen_instructor').value" alt="Imagen seleccionada" class="image shadow8">
-                                    </div>
-                                    <div *ngIf="formNewCourse.controls['imagen_instructor'].errors && showErrorCurso" class="custom-invalid-feedback pdt05">
-                                      Debe seleccinar el instructor
                                     </div>
                                   </div>
                                 </div>
