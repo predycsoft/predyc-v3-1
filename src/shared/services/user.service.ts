@@ -163,6 +163,20 @@ export class UserService {
     ) 
   }
 
+  getAllUsers$(searchTerm=null, statusFilter=null): Observable<User[]> {
+    return this.afs.collection<User>(User.collection, ref => {
+      let query: CollectionReference | Query = ref;
+      if (searchTerm) {
+        // query = query.where('displayName', '==', searchTerm)
+        query = query.where('displayName', '>=', searchTerm).where('displayName', '<=', searchTerm+ '\uf8ff')
+      }
+      // if (statusFilter && statusFilter === SubscriptionClass.STATUS_ACTIVE) {
+      //   query = query.where('status', '==', SubscriptionClass.STATUS_ACTIVE)
+      // }
+      return query.orderBy('displayName')
+    }).valueChanges()
+  }
+
   getRatingPointsFromStudyPlan(userStudyPlan: CourseByStudent[], courses: Curso[]): number  {
     let totalScore = 0;  
     const today = new Date().getTime();
