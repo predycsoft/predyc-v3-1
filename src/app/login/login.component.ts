@@ -42,6 +42,7 @@ export class LoginComponent {
 
   async login(email: string, password: string) {
     try {
+      let isBusinessUser = true
       const adminUsers = await firstValueFrom(this.afs.collection<User>(User.collection, ref => 
       ref.where('email', '==', email)
          .where('role', '==', User.ROLE_ADMIN)
@@ -49,7 +50,8 @@ export class LoginComponent {
       if (adminUsers.length === 0) { 
         throw Error(`El correo ${email} no existe o no tiene permiso para acceder a la herramienta`)
       }
-      await this.authService.signIn(email, password)
+      if (adminUsers[0].isSystemUser) isBusinessUser = false 
+      await this.authService.signIn(email, password, isBusinessUser)
       // Handle successful login, navigate or update UI
     } catch (error) {
       // Handle login error

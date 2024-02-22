@@ -36,10 +36,10 @@ export class AuthService {
     })
   }
 
-  async signIn(email: string, password: string) {
+  async signIn(email: string, password: string, isBusinessUser: boolean) {
     try {
       await this.afAuth.signInWithEmailAndPassword(email, password)
-      this.router.navigate(['/'])
+      isBusinessUser ? this.router.navigate(['/']) : this.router.navigate(['/admin'])
     } catch (error: any) {
       const errorCode = error['code'];
       const errorMessage = error['message'];
