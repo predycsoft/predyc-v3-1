@@ -2,7 +2,7 @@
     <div class="main_top" fxLayout="row" fxLayoutAlign="space-between center">
         <ng-container *ngIf="user$ | async as user">
             <div fxLayout="row" fxLayoutAlign=" center">
-                <div fxLayout="row">
+                <div fxLayout="row" class="cursorPointer" (click)="redirect()" >
                     <img [src]="icon.predyc" class="h24px" alt="">
                     <div class="ft600 gray-10 mgl05">Predyc <span *ngIf="isAdminPage" class="gray-6">ADMIN</span></div>
                 </div>
