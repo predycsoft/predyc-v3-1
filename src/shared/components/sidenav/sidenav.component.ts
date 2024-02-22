@@ -34,7 +34,7 @@ export class SideNavComponent {
   ]
 
   public adminPages: Page[] = [
-    {name: 'page1', link:'/admin', icon: '../../assets/iconsUI/home.svg'},
+    {name: 'Principal', link:'/admin', icon: '../../assets/iconsUI/home.svg'},
     {name: 'Crear demo', link:'/admin/create-demo', icon: '../../assets/iconsUI/demo.svg'}
     // {name: 'page3', link:'/admin', icon: '../../assets/iconsUI/settings-1.svg'},
   ]
