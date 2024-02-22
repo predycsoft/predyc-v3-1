@@ -31,6 +31,24 @@ export class IsActivePipe implements PipeTransform {
     else if (link == '/admin/students' && currentUrl.includes('students')) {
       return true;
     }
+    else if (link == '/admin/enterprises' && currentUrl.includes('enterprises')) {
+      return true;
+    }
+    else if (link == '/admin/products' && currentUrl.includes('products')) {
+      return true;
+    }
+    else if (link == '/admin/licenses-and-subscriptions' && currentUrl.includes('licenses-and-subscriptions')) {
+      return true;
+    }
+    else if (link == '/admin/royalties' && currentUrl.includes('royalties')) {
+      return true;
+    }
+    else if (link == '/admin/sales' && currentUrl.includes('sales')) {
+      return true;
+    }
+    else if (link == '/admin/courses' && currentUrl.includes('courses')) {
+      return true;
+    }
     return false
 
   }

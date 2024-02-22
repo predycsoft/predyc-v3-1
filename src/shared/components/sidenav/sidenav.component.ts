@@ -37,6 +37,12 @@ export class SideNavComponent {
     {name: 'Principal', link:'/admin', icon: '../../assets/iconsUI/home.svg'},
     {name: 'Crear demo', link:'/admin/create-demo', icon: '../../assets/iconsUI/demo.svg'},
     {name: 'Estudiantes', link:'/admin/students', icon: '../../assets/iconsUI/management-1.svg'},
+    {name: 'Empresas', link:'/admin/enterprises', icon: '../../assets/iconsUI/enterprise.svg'},
+    {name: 'Productos', link:'/admin/products', icon: '../../assets/iconsUI/bookmark.svg'},
+    {name: 'L&S', link:'/admin/licenses-and-subscriptions', icon: '../../assets/iconsUI/Vector.svg'},
+    {name: 'Regalias', link:'/admin/royalties', icon: '../../assets/iconsUI/suitcase.svg'},
+    {name: 'Ventas', link:'/admin/sales', icon: '../../assets/iconsUI/catalog.svg'},
+    {name: 'Cursos', link:'/admin/courses', icon: '../../assets/iconsUI/courses-1.svg'},
     // {name: 'page3', link:'/admin', icon: '../../assets/iconsUI/settings-1.svg'},
   ]
 
