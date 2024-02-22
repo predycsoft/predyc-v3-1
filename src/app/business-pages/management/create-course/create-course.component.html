@@ -132,7 +132,6 @@
                                         Debe indicar el nombre del instructor.
                                     </div>
                                 </div>
-        
                                 <div class="form-group pdt10">
                                     <label>Resumen del instructor</label>
                                     <textarea rows="3" [class.is-invalid]="formNewCourse.controls['resumen_instructor'].errors && showErrorCurso"  formControlName="resumen_instructor" type="text" class="form-control customInput" placeholder="Escriba el resumen del instructor aquí." style="resize: none;"></textarea>
@@ -220,7 +219,7 @@
             </div>
         </ng-container>
         <!-- Tab 2  Competencias -->
-        <ng-container *ngIf="activeStep == 2">
+        <ng-container *ngIf="activeStep == 99">
             <app-skills-selector
                 [competenciasEmpresa]="competenciasEmpresa" 
                 [categoriasArray]="categoriasArray"
@@ -229,7 +228,7 @@
             </app-skills-selector>
         </ng-container>
         <!-- Tab 3 Clases -->
-        <ng-container *ngIf="activeStep == 3">
+        <ng-container *ngIf="activeStep == 2">
             <div fxFlex fxLayout="row" class="container">
                 <div fxFlex="60%" class="pdl10 pdr10 pdt10">
                     Clases
@@ -465,7 +464,7 @@
             </div>
         </ng-container>
         <!-- Tab 4 Examen -->
-        <ng-container *ngIf="activeStep == 4">
+        <ng-container *ngIf="activeStep == 3">
             <div fxFlex fxLayout="row" class="container">
                 <div fxFlex="60%" class="pdl10 pdr10 pdt10">
                     <app-questions [nameCurso]="formNewCourse.get('titulo').value?  this.formNewCourse.get('titulo').value : 'Temporal'" [nameEmpresa]="empresa.name" (emmitForm)="validExam = $event" [questionsArray]="examen?.questions ? examen?.questions:[] " [checkQuestions]="updateTriggeQuestionsExam" [selectedTestSkills]="[]"></app-questions>
@@ -845,7 +844,7 @@
                         </div>
                     </ng-container>
                     <!-- Instrucciones generales -->
-                    <ng-container *ngIf="activeStepActividad == 2"> 
+                    <ng-container *ngIf=" activeStepActividad == 99"> 
                         <div fxFlex fxLayout="column" class="container pdl10 pdt10">
                             <div fxLayout="row">
                                 <span class="titleActive ft400">Instrucciones generales de la actividad</span>
@@ -940,7 +939,7 @@
                         </div>
                     </ng-container>
                     <!-- Preguntas -->
-                    <ng-container *ngIf="activeStepActividad == 3">
+                    <ng-container *ngIf="activeStepActividad == 2">
                         <div fxFlex fxLayout="column" class="container pdl10 pdt10">
                             <ng-container *ngIf="false">
                                 <!-- aqui van los preguntas que se van creando -->
@@ -1154,7 +1153,7 @@
                         </div>
                     </ng-container>
                     <!-- tab vista actividad -->
-                    <ng-container *ngIf="activeStepActividad == 4">
+                    <ng-container *ngIf="activeStepActividad == 100">
                         <div fxFlex fxLayout="column" class="container pdl10 pdt10">
                             <ng-container>
                                 <!-- aqui van los preguntas que se van creando -->
@@ -1272,11 +1271,11 @@
             </button>        
             <!-- Contenedor para los dos botones de la derecha -->
             <div fxLayout="row" fxLayoutGap="10px">               
-                <button *ngIf="activeStepActividad<4" class="blueButton radius4 ft12 h28px mgr10 gray-1" (click)="advanceTabActividad();" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                <button *ngIf="activeStepActividad<=2" class="blueButton radius4 ft12 h28px mgr10 gray-1" (click)="advanceTabActividad();" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                     Continuar
                     <img [src]="icon.chevronRight" class="h16px pdl05 makeWhite" alt="">
                 </button>
-                <button (click)="modal.dismiss()" *ngIf="activeStepActividad==4" class="blueButton radius4 ft12 h28px mgr10 gray-1" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                <button (click)="modal.dismiss()" *ngIf="activeStepActividad==3" class="blueButton radius4 ft12 h28px mgr10 gray-1" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                     Continuar
                     <img [src]="icon.chevronRight" class="h16px pdl05 makeWhite" alt="">
                 </button>        
