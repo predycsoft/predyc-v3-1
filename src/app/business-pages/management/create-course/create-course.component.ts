@@ -135,7 +135,7 @@ export class CreateCourseComponent {
 
   private _filterPillars(value: string): string[] {
     const filterValue = value.toLowerCase();
-    return this.categoriasArray.filter(option => option.name.toLowerCase().includes(filterValue));
+    return this.categoriasArray?.filter(option => option.name.toLowerCase().includes(filterValue));
   }
 
 
@@ -145,38 +145,38 @@ export class CreateCourseComponent {
   async ngOnInit(): Promise<void> {
     //console.log(this.competenciasArray)
 
-    this.instructorsService.getInstructorsObservable().subscribe(instructores=> {
-      console.log('instructores',instructores)
-      this.instructores = instructores
-    })
+    console.log('mode on init',this.mode)
 
-    this.filteredinstructores = this.instructoresForm.valueChanges.pipe(
-      startWith(''),
-      map(value => this._filter(value || '')),
-    );
-    
-
-    this.filteredPillars = this.pillarsForm.valueChanges.pipe(
-      startWith(''),
-      map(value => this._filterPillars(value || '')),
-    );
-    
-
-
-
-    this.authService.user$.pipe(filter(user=>user !=null),take(1)).subscribe(user=> {
-      console.log('user',user)
-      this.user = user
-      if (!user?.adminPredyc) {
-        this.router.navigate(["management/courses"])
-      }
-    })
-
-    this.inicializarformNewCourse();
-  
     this.enterpriseService.enterprise$.pipe(filter(enterprise=>enterprise!=null),take(1)).subscribe(enterprise => {
+      console.log('enterprise',enterprise)
       if (enterprise) {
         this.empresa = enterprise
+        this.instructorsService.getInstructorsObservable().pipe(filter(instructores=>instructores.length>0),take(1)).subscribe(instructores=> {
+          console.log('instructores',instructores)
+          this.instructores = instructores
+        })
+    
+        this.filteredinstructores = this.instructoresForm.valueChanges.pipe(
+          startWith(''),
+          map(value => this._filter(value || '')),
+        );
+        
+    
+        this.filteredPillars = this.pillarsForm.valueChanges.pipe(
+          startWith(''),
+          map(value => this._filterPillars(value || '')),
+        );
+        
+        this.authService.user$.pipe(filter(user=>user !=null),take(1)).subscribe(user=> {
+          console.log('user',user)
+          this.user = user
+          if (!user?.adminPredyc) {
+            this.router.navigate(["management/courses"])
+          }
+        })
+
+        this.inicializarformNewCourse();
+    
       }
     })
   }
@@ -254,8 +254,8 @@ export class CreateCourseComponent {
     //console.log('this.competenciasSelected',this.competenciasSelected)
   }
 
-  allskills;
-  skillsCurso
+  allskills = [];
+  skillsCurso = []
 
   
   getCursoSkills(){
@@ -275,9 +275,9 @@ export class CreateCourseComponent {
   }
 
   initSkills(){
-    this.categoryService.getCategoriesObservable().pipe(filter(category=>category!=null),take(1)).subscribe(category => {
+    this.categoryService.getCategoriesObservable().pipe(filter(category=>category.length>0),take(1)).subscribe(category => {
       console.log('category from service', category);
-      this.skillService.getSkillsObservable().pipe(filter(skill=>skill!=null),take(1)).subscribe(skill => {
+      this.skillService.getSkillsObservable().pipe(filter(skill=>skill.length>0),take(1)).subscribe(skill => {
         console.log('skill from service', skill);
         this.allskills = skill;
         skill.map(skillIn => {
@@ -294,24 +294,15 @@ export class CreateCourseComponent {
             }
           });
         }
-        //console.log('skill from service', skill);
         this.categoriasArray = this.anidarCompetenciasInicial(category, skill)
         console.log('categoriasArray', this.categoriasArray,this.curso)
 
-
-
-        //this.pillarsForm.patchValue(this.categoriasArray)
-
-        //this.competenciasEmpresa = this.obtenerCompetenciasAlAzar(5);
-  
         if(this.mode == 'edit'){
-          //this.getSelectedCategoriasCompetencias();
           if(this.curso){
             let skillId = this.curso.skillsRef[0]?.id
             let pilar = this.categoriasArray.find(x=>x.competencias.find(y=>y.id == skillId))
             console.log('pilar',pilar)
             this.pillarsForm.patchValue(pilar)
-
             console.log('pilar',this.pillarsForm.value['name'])
           }
           
@@ -322,13 +313,42 @@ export class CreateCourseComponent {
   }
 
   courseHasSkill(skill){
-
-    let skillFind = this.curso.skillsRef.find(x=>x.id == skill.id)
+    let skillFind = this.tmpSkillRefArray.find(x=>x.id == skill.id)
     if(skillFind){
       return true
     }
-
     return false
+  }
+
+  troggleSkill(skill){
+    if(this.courseHasSkill(skill)){ // quitar
+      this.tmpSkillRefArray = this.tmpSkillRefArray.filter(x=> x.id != skill.id)
+      this.tmpSkillArray = this.tmpSkillArray.filter(x=> x.id != skill.id)
+    }
+    else{ //agregar (valar si tiene menos de 3 skills)
+      if( this.tmpSkillRefArray.length<3){
+        let skillRef = this.afs.collection<any>('skill').doc(skill.id).ref;
+        this.tmpSkillRefArray.push(skillRef)
+        this.tmpSkillArray.push(skill)
+      }
+      else{
+        Swal.fire({
+          text:`Ya posee la cantidad máxima de competencias permitidas (3).`,
+          icon:'info',
+          confirmButtonColor: 'var(--blue-5)',
+        })
+      }
+    }
+  }
+
+  changePillar(newPillar){
+    if(this.curso?.skillsRef[0]?.id){
+      let pilar = this.categoriasArray.find(x=>x.competencias.find(y=>y.id == this.curso?.skillsRef[0]?.id))
+      if(pilar.id != newPillar.id){
+        this.curso.skillsRef = [];
+        this.skillsCurso= [];
+      }
+    }
 
   }
   
@@ -336,24 +356,26 @@ export class CreateCourseComponent {
   async inicializarformNewCourse () {
     let id;
     if(this.mode == 'create') {
-      id = await this.afs.collection<Curso>(Curso.collection).doc().ref.id;
-      this.formNewCourse = new FormGroup({
-        id: new FormControl(id, Validators.required),
-        titulo: new FormControl(null, Validators.required),
-        // resumen: new FormControl(null, Validators.required),
-        descripcion: new FormControl(null, Validators.required),
-        nivel: new FormControl(null, Validators.required),
-        //categoria: new FormControl(null, Validators.required),
-        idioma: new FormControl(null, Validators.required),
-        // contenido: new FormControl(null, Validators.required),
-        instructorRef: new FormControl(null),
-        instructor: new FormControl(null, Validators.required),
-        resumen_instructor: new FormControl(null, Validators.required),
-        imagen: new FormControl(null, Validators.required),
-        imagen_instructor: new FormControl(null, Validators.required),
-        skills: new FormControl(null, Validators.required),
-      })
-      this.initSkills();
+      setTimeout(() => {
+        this.formNewCourse = new FormGroup({
+          id: new FormControl(null, Validators.required),
+          titulo: new FormControl(null, Validators.required),
+          // resumen: new FormControl(null, Validators.required),
+          descripcion: new FormControl(null, Validators.required),
+          nivel: new FormControl(null, Validators.required),
+          //categoria: new FormControl(null, Validators.required),
+          idioma: new FormControl(null, Validators.required),
+          // contenido: new FormControl(null, Validators.required),
+          instructorRef: new FormControl(null),
+          instructor: new FormControl(null, Validators.required),
+          resumen_instructor: new FormControl(null, Validators.required),
+          imagen: new FormControl(null, Validators.required),
+          imagen_instructor: new FormControl(null, Validators.required),
+          skills: new FormControl(null, Validators.required),
+        })
+        this.initSkills();
+      }, 2000);
+
     }
     else {
       this.courseService.getCoursesObservable().pipe(filter(courses=>courses.length>0),take(1)).subscribe(courses => {
@@ -390,10 +412,7 @@ export class CreateCourseComponent {
         });
 
         //this.formNewCourse.get('resumen_instructor').disable();
-
-      
         this.initSkills(); // Asegúrate de que initSkills también maneje las suscripciones correctamente
-      
         this.activityClassesService.getActivityAndQuestionsForCourse(this.idCurso).pipe(filter(activities=>activities!=null),take(1)).subscribe(activities => {
           //console.log('activities clases', activities);
           this.activitiesCourse = activities;
@@ -424,7 +443,34 @@ export class CreateCourseComponent {
 
   }
 
+  tmpSkillRefArray=[];
+  tmpSkillArray = [];
+
+  saveNewSkills(){
+
+    if(this.curso){
+      this.curso.skillsRef = this.tmpSkillRefArray
+    }
+    else{
+      this.formNewCourse.get("skills").patchValue(this.tmpSkillRefArray);
+    }
+    this.skillsCurso =  this.tmpSkillArray
+    this.modalService.dismissAll();
+  }
+
   openModal(content,size='lg'){
+
+    this.tmpSkillRefArray = []
+    this.tmpSkillArray = []
+
+    this.curso?.skillsRef?.forEach(element => {
+      this.tmpSkillRefArray.push(element)
+    });
+    
+    this.skillsCurso?.forEach(element => {
+      this.tmpSkillArray.push(element)
+    });
+
     this.currentModal = this.modalService.open(content, {
       ariaLabelledBy: 'modal-basic-title',
       centered: true,
@@ -739,7 +785,7 @@ export class CreateCourseComponent {
 
   // }
 
-  avanceTab(){
+  async avanceTab(){
 
     this.updateTriggeQuestionsExam=0;
 
@@ -762,7 +808,9 @@ export class CreateCourseComponent {
             this.curso.instructorNombre = this.curso.instructor
           }
           else{
+            let id = await this.afs.collection<Curso>(Curso.collection).doc().ref.id;
             let newCurso = new Curso;
+            this.formNewCourse.get("id").patchValue(id);
             newCurso = this.formNewCourse.value;
             this.curso = newCurso
             this.curso.instructorNombre = this.curso.instructor

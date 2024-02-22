@@ -123,40 +123,6 @@
                                     Debe indicar que se aprenderá durante el curso.
                                 </div>
                             </div> -->
-                            <!-- aqui validar en el futuro cuando sea propio -->
-                            <ng-container *ngIf="false">
-                                <div class="form-group pdt10">
-                                    <label>Nombre del instructor</label>
-                                    <input formControlName="instructor" [class.is-invalid]="formNewCourse.controls['instructor'].errors && showErrorCurso" type="text" class="form-control customInput" placeholder="Escriba el nombre del instructor del curso aquí">
-                                    <div class="invalid-feedback" *ngIf="formNewCourse.controls['instructor'].errors && showErrorCurso"> 
-                                        Debe indicar el nombre del instructor.
-                                    </div>
-                                </div>
-                                <div class="form-group pdt10">
-                                    <label>Resumen del instructor</label>
-                                    <textarea rows="3" [class.is-invalid]="formNewCourse.controls['resumen_instructor'].errors && showErrorCurso"  formControlName="resumen_instructor" type="text" class="form-control customInput" placeholder="Escriba el resumen del instructor aquí." style="resize: none;"></textarea>
-                                    <div class="invalid-feedback" *ngIf="formNewCourse.controls['resumen_instructor'].errors && showErrorCurso"> 
-                                        Debe indicar el resumen del instructor.
-                                    </div>
-                                </div>
-                                <div class="form-group pdt10">
-                                    <label>Foto del instructor</label><label class="pdl30">o seleccione un avátar</label>
-                                    <div class="avatar-selector">
-                                        <!-- <button class="add-button">Adjuntar nueva</button> -->
-                                        <button (click)="instructorImage.click()" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
-                                            <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
-                                            Adjuntar imagen
-                                        </button>
-                                        <input #instructorImage type="file" (change)="uploadCourseImage($event,'instructor')" hidden accept="image/jpeg, image/png" />
-                                        <div class="avatar-scroll">
-                                            <img *ngFor="let imagen of avatarInstructor" (click)="seleccionarImagenInstructor(imagen)" [src]="imagen" alt="Imagen seleccionada" class="image shadow8 cursorPointer {{this.formNewCourse.get('imagen_instructor').value == imagen? 'img-active':''}}">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div *ngIf="formNewCourse.controls['imagen_instructor'].errors && showErrorCurso" class="custom-invalid-feedback pdt05">
-                                    Debe seleccinar el instructor
-                                </div>
-                            </ng-container>
                             <div fxLayout="row" fxLayoutAlign=" center" class="mgt10 fw">
                                 <form class="fw">
                                     <mat-form-field class="example-full-width fw">
@@ -170,7 +136,7 @@
                                                 [formControl]="pillarsForm"
                                                 [matAutocomplete]="autoPillars">
                                         <mat-autocomplete [displayWith]="getOptionTextPillar" #autoPillars="matAutocomplete" class="options">
-                                        <mat-option  class="multiline-mat-option" *ngFor="let option of filteredPillars | async" [value]="option">
+                                        <mat-option (click)="changePillar(option)" class="multiline-mat-option" *ngFor="let option of filteredPillars | async" [value]="option">
                                             <div fxLayout="row" fxLayoutAlign="space-between">
                                             <div fxLayout="col" fxLayoutAlign="center center">
                                                 {{option.name | titlecase}}
@@ -191,7 +157,7 @@
                                             <img style="cursor: pointer;" (click)="removeSkill(skill)" [src]="icon.close"  class="h16px"  alt="">
                                         </div>
                                     </ng-container>
-                                    <div *ngIf="skillsCurso.length<3" matTooltip="Agregar competencia"
+                                    <div *ngIf="skillsCurso?.length<3 && pillarsForm.value" matTooltip="Agregar competencia"
                                     style="display: inline-block; margin-right: 5px; margin-bottom: 5px;"
                                        (click)="openModal(modalSkillsCourse,'md')" class="skill-badge ListHover2 radius10 backGray2 pdl05 pdr05 gray-8 mgt05">
                                         +
@@ -200,7 +166,6 @@
                             </div>
                             <ng-container>
                                 <div fxLayout="row" fxLayoutAlign="center center" class="mgt10 fw">
-                                  <!-- Campo de autocompletar del instructor -->
                                   <div fxFlex="90">
                                     <form class="example-form">
                                       <mat-form-field class="example-full-width fw">
@@ -1592,7 +1557,7 @@
             <div fxLayout="row">
                 <div class="skills-container">
                     <ng-container *ngFor="let skill of (pillarsForm.value['competencias'] | sortSkills:'name'); let indexSkill = index">
-                        <div
+                        <div (click)="troggleSkill(skill)"
                             style="display: inline-block; margin-right: 5px; margin-bottom: 5px;"
                             class="skill-badge-complete  radius10 {{courseHasSkill(skill)?'ListHoverBlue gray-1':'ListHover2 gray-8'}} pdl05 pdr05 mgt05 no-select cursorPointer">
                             {{skill.name}}
@@ -1605,7 +1570,7 @@
 
         <!-- Botón de guardar en la esquina inferior derecha -->
         <div fxLayout="row" fxLayoutAlign="end" class="pdt03">
-            <button class="blueButton radius4 ft12 h28px mgr10 gray-1" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+            <button (click)="saveNewSkills()" class="blueButton radius4 ft12 h28px mgr10 gray-1" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                 <img [src]="icon.save" class="h16px pdr05 makeWhite" alt="">
                 Confirmar
             </button>
