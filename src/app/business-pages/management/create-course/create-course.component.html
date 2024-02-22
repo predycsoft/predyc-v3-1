@@ -193,7 +193,7 @@
                                     </ng-container>
                                     <div *ngIf="skillsCurso.length<3" matTooltip="Agregar competencia"
                                     style="display: inline-block; margin-right: 5px; margin-bottom: 5px;"
-                                    class="skill-badge ListHover2 radius10 backGray2 pdl05 pdr05 gray-8 mgt05">
+                                       (click)="openModal(modalSkillsCourse,'md')" class="skill-badge ListHover2 radius10 backGray2 pdl05 pdr05 gray-8 mgt05">
                                         +
                                     </div>
                                 </div>
@@ -1578,5 +1578,40 @@
         </div>
     </div>
 </ng-template>
+
+<ng-template #modalSkillsCourse let-modal>
+    <div class="modal-header bg-web-primary text-white px-3 py-1">
+      <div class="modal-title pd10" fxLayout="row" fxLayoutAlign="start center">
+        <span class="ft16 ft500 gray-10">Asignar competencias</span>
+      </div>
+      <img style="cursor: pointer;" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px" alt="">
+    </div>
+    <div class="modal-body" style="overflow-y: auto; max-height: 80vh;">
+        {{pillarsForm.value['name']}}
+        <div fxLayout="column">
+            <div fxLayout="row">
+                <div class="skills-container">
+                    <ng-container *ngFor="let skill of (pillarsForm.value['competencias'] | sortSkills:'name'); let indexSkill = index">
+                        <div
+                            style="display: inline-block; margin-right: 5px; margin-bottom: 5px;"
+                            class="skill-badge-complete  radius10 {{courseHasSkill(skill)?'ListHoverBlue gray-1':'ListHover2 gray-8'}} pdl05 pdr05 mgt05 no-select cursorPointer">
+                            {{skill.name}}
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+        
+
+        <!-- Botón de guardar en la esquina inferior derecha -->
+        <div fxLayout="row" fxLayoutAlign="end" class="pdt03">
+            <button class="blueButton radius4 ft12 h28px mgr10 gray-1" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                <img [src]="icon.save" class="h16px pdr05 makeWhite" alt="">
+                Confirmar
+            </button>
+        </div>
+    </div>
+</ng-template>
+
 
   

@@ -125,6 +125,7 @@ import { DialogDownloadReportComponent } from './shared/components/dialogs/dialo
 import { CreateDemoComponent } from './business-pages/create-demo/create-demo.component';
 import { IsActivePipe } from './shared/pipes/is-active.pipe';
 import { DialogRestorePasswordComponent } from './shared/components/dialogs/dialog-restore-password/dialog-restore-password.component';
+import { SortSkillsPipe } from './shared/pipes/sort-skills.pipe';
 
 
 @NgModule({
@@ -203,6 +204,7 @@ import { DialogRestorePasswordComponent } from './shared/components/dialogs/dial
     CreateDemoComponent,
     IsActivePipe,
     DialogRestorePasswordComponent,
+    SortSkillsPipe,
   ],
   imports: [
     BrowserModule,

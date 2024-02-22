@@ -2016,6 +2016,17 @@ span{
   background-color:   rgba(211, 211, 211, 0.224) !important; 
 }
 
+
+.ListHoverBlue:hover{
+  color: var(--gray-8) !important;
+  background-color: #efefef !important;
+
+}
+
+.ListHoverBlue{
+  background-color: var(--blue-5) !important; 
+}
+
 .skill-badge {
   display: inline-block;
   white-space: nowrap;

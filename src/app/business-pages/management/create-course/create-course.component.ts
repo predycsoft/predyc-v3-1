@@ -309,13 +309,27 @@ export class CreateCourseComponent {
           if(this.curso){
             let skillId = this.curso.skillsRef[0]?.id
             let pilar = this.categoriasArray.find(x=>x.competencias.find(y=>y.id == skillId))
+            console.log('pilar',pilar)
             this.pillarsForm.patchValue(pilar)
+
+            console.log('pilar',this.pillarsForm.value['name'])
           }
           
           this.getExamCourse(this.curso.id);
         }
       });
     });
+  }
+
+  courseHasSkill(skill){
+
+    let skillFind = this.curso.skillsRef.find(x=>x.id == skill.id)
+    if(skillFind){
+      return true
+    }
+
+    return false
+
   }
   
 
@@ -410,11 +424,11 @@ export class CreateCourseComponent {
 
   }
 
-  openModal(content){
+  openModal(content,size='lg'){
     this.currentModal = this.modalService.open(content, {
       ariaLabelledBy: 'modal-basic-title',
       centered: true,
-      size:'lg'
+      size:size
     });
   }
 
