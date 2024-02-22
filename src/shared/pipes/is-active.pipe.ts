@@ -28,6 +28,9 @@ export class IsActivePipe implements PipeTransform {
     else if (link == '/admin/create-demo' && currentUrl.includes('create-demo')) {
       return true;
     }
+    else if (link == '/admin/students' && currentUrl.includes('students')) {
+      return true;
+    }
     return false
 
   }
