@@ -1,11 +1,9 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, SimpleChanges } from '@angular/core';
 import { onSideNavChange, animateText } from '../../animations/animations'
 import { AuthService } from '../../services/auth.service';
 import { IconService } from '../../services/icon.service';
-import { SidenavService } from '../../services/sidenav.service';
 import { User } from '../../models/user.model';
-import { Observable, filter, firstValueFrom } from 'rxjs';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { Observable } from 'rxjs';
 
 interface Page {
   link: string;
@@ -41,24 +39,20 @@ export class SideNavComponent {
     // {name: 'page3', link:'/admin', icon: '../../assets/iconsUI/settings-1.svg'},
   ]
 
-  currentUrl: string;
 
 
   constructor(
     public icon: IconService,
     private authService: AuthService,
-    private route: ActivatedRoute,
-    private router: Router
   ) {
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd)
-    ).subscribe((event: NavigationEnd) => {
-      this.currentUrl = event.url;
-      console.log("CurrentUrl", this.currentUrl)
-      this.pages = this.currentUrl.startsWith("/admin") ? this.adminPages : this.businessPages;
-    });
   }
 
   @Input() menuExpanded = false
+  @Input() currentUrl: string
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.currentUrl) {
+      this.pages = this.currentUrl.startsWith("/admin") ? this.adminPages : this.businessPages;
+    }
+  }
 }
