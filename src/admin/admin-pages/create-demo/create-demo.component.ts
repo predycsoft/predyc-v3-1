@@ -108,11 +108,11 @@ export class CreateDemoComponent {
       this.profiles = profiles
     })
     this.createDemoForm = this.fb.group({
-      enterpriseName: ['Empresa prueba', [Validators.required]],
-      adminName: ['Nombre completo Administrador', [Validators.required]],
-      email: ['correoadmin@empresa.com', [Validators.required, Validators.email]],
-      phoneNumber: ["607197591", [Validators.required, Validators.pattern(/^\d*$/)]],
-      activeUsersQty: [5, [Validators.required, Validators.min(1), Validators.pattern(/^\d*$/)]],
+      enterpriseName: [null, [Validators.required]],
+      adminName: [null, [Validators.required]],
+      email: [null, [Validators.required, Validators.email]],
+      phoneNumber: [null, [Validators.required, Validators.pattern(/^\d*$/)]],
+      activeUsersQty: [null, [Validators.required, Validators.min(1), Validators.pattern(/^\d*$/)]],
       endDate: [null, [Validators.required]],
     });
   }
@@ -120,12 +120,6 @@ export class CreateDemoComponent {
   ngOnDestroy() {
     if (this.courseServiceSubscription) this.courseServiceSubscription.unsubscribe()
     if (this.profileServiceSubscription) this.profileServiceSubscription.unsubscribe()
-  }
-
-  async debug() {
-    const priceSnapshot = await firstValueFrom(this.afs.collection<Price>(Price.collection, ref => ref.where("id", "==", "Plan-Empresarial-468USD-year")).get())
-    const prices = priceSnapshot.docs.map(item => item.data())
-    //console.log("price", prices[0])
   }
 
   async validateCurrentModalPage() {
