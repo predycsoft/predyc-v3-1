@@ -10,6 +10,8 @@ import { ProductListComponent } from './admin-pages/product-list/product-list.co
 import { LicenseSubscriptionListComponent } from './admin-pages/license-subscription-list/license-subscription-list.component';
 import { RoyaltyComponent } from './admin-pages/royalty/royalty.component';
 import { SaleComponent } from './admin-pages/sale/sale.component';
+import { StudentsComponent } from './admin-pages/students/students.component';
+import { AdminStudentListComponent } from './admin-pages/students/admin-student-list/admin-student-list.component';
 
 
 @NgModule({
@@ -20,7 +22,9 @@ import { SaleComponent } from './admin-pages/sale/sale.component';
     ProductListComponent,
     LicenseSubscriptionListComponent,
     RoyaltyComponent,
-    SaleComponent
+    SaleComponent,
+    StudentsComponent,
+    AdminStudentListComponent
   ],
   imports: [
     SharedModule,

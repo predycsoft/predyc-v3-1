@@ -9,13 +9,14 @@ import { LicenseSubscriptionListComponent } from './admin-pages/license-subscrip
 import { CoursesComponent } from 'src/app/business-pages/management/courses/courses.component';
 import { RoyaltyComponent } from './admin-pages/royalty/royalty.component';
 import { SaleComponent } from './admin-pages/sale/sale.component';
+import { StudentsComponent } from './admin-pages/students/students.component';
 
 const MAIN_TITLE = 'Predyc Admin - '
 
 const routes: Routes = [
   {path:"", title: MAIN_TITLE + 'home',component: HomeComponent },
   {path:"create-demo", title: MAIN_TITLE + 'Crear demo', component: CreateDemoComponent},
-  {path:"students", title: MAIN_TITLE + 'Estudiantes', component: StudentListComponent}, //we may create another component just for admin
+  {path:"students", title: MAIN_TITLE + 'Estudiantes', component: StudentsComponent},
   {path:"enterprises", title: MAIN_TITLE + 'Empresas', component: EnterpriseListComponent},
   {path:"products", title: MAIN_TITLE + 'Productos', component: ProductListComponent},
   {path:"licenses-and-subscriptions", title: MAIN_TITLE + 'L&S', component: LicenseSubscriptionListComponent},
