@@ -83,7 +83,7 @@ export class AdminStudentListComponent {
     }
     this.userServiceSubscription = this.userService.getAllUsers$(searchTerm).subscribe(users => {
       if (this.enterprises){
-        const usersInList = users.map(user => {
+        const usersInList: UserInList[] = users.map(user => {
           const enterprise = this.enterprises.find(enterprise => enterprise.id === user.enterprise?.id);
           return {
             displayName: user.displayName,

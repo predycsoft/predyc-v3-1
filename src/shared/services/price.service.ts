@@ -12,9 +12,12 @@ export class PriceService {
     private afs: AngularFirestore,
   ) { }
 
+  public getPrices$(): Observable<Price[]> {
+    return this.afs.collection<Price>(Price.collection).valueChanges()
+  }
+
   public getPriceById$(priceId: string): Observable<Price> {
     return this.afs.collection<Price>(Price.collection).doc(priceId).valueChanges()
-
   }
 
   public async getPriceByRef(priceRef: DocumentReference){

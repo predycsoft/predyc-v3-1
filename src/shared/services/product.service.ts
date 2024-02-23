@@ -12,6 +12,10 @@ export class ProductService {
     private afs: AngularFirestore,
   ) { }
 
+  public getProducts$(): Observable<Product[]> {
+    return this.afs.collection<Product>(Product.collection).valueChanges()
+  }
+
   public getProductById$(productId: string): Observable<Product> {
     return this.afs.collection<Product>(Product.collection).doc(productId).valueChanges()
   }
