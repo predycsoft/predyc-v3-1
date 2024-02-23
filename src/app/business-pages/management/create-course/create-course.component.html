@@ -143,6 +143,7 @@
                                             </div>
                                             </div>
                                         </mat-option>
+                                        <mat-option  (click)="createPillar()" class="multiline-mat-option" value="null">Crear nuevo pilar</mat-option>
                                         </mat-autocomplete>
                                     </mat-form-field>
                                 </form>
@@ -1573,6 +1574,51 @@
             <button (click)="saveNewSkills()" class="blueButton radius4 ft12 h28px mgr10 gray-1" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                 <img [src]="icon.save" class="h16px pdr05 makeWhite" alt="">
                 Confirmar
+            </button>
+        </div>
+    </div>
+</ng-template>
+
+
+
+<ng-template #modalCrearPilar let-modal>
+    <div class="modal-header bg-web-primary text-white px-3 py-1">
+      <div class="modal-title pd10" fxLayout="row" fxLayoutAlign="start center">
+        <span class="ft16 ft500 gray-10">Crear Pilar</span>
+      </div>
+      <img style="cursor: pointer;" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px" alt="">
+    </div>
+    <div class="modal-body" style="overflow-y: auto; max-height: 80vh;">
+
+
+        <form [formGroup]="formNewPillar" class="fw">
+            <div fxLayout="row" class="fw">
+                <div class="form-group fw">
+                    <label>Nombre del pilar</label>
+                    <input formControlName="nombre" [class.is-invalid]="formNewPillar.controls['nombre'].errors && showErrorInstructor" type="text" class="form-control customInput" placeholder="Escriba el nombre del pilar">
+                    <div class="invalid-feedback" *ngIf="formNewPillar.controls['nombre'].errors && showErrorInstructor"> 
+                        Debe indicar el nombre del pilar.
+                    </div>
+                </div>
+            </div>
+            <div fxLayout="row" class="fw" fxLayoutAlign="start center" fxLayoutGap="10px">
+                <div class="form-group" fxFlex>
+                    <label>Agregar Competencia</label>
+                    <input type="text" class="form-control customInput" placeholder="Escriba el nombre del instructor del curso aquí">
+                </div>
+                <button class="add-competence-btn">
+                    Agregar
+                </button>
+            </div>
+        </form>
+
+
+        
+        <!-- Botón de guardar en la esquina inferior derecha -->
+        <div fxLayout="row" fxLayoutAlign="end" class="pdt03">
+            <button class="blueButton radius4 ft12 h28px mgr10 gray-1" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                <img [src]="icon.save" class="h16px pdr05 makeWhite" alt="">
+                Guardar Pilar
             </button>
         </div>
     </div>

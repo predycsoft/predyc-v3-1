@@ -360,7 +360,7 @@ export class CreateCourseComponent {
     if(this.mode == 'create') {
       setTimeout(() => {
         this.formNewCourse = new FormGroup({
-          id: new FormControl(null, Validators.required),
+          id: new FormControl(null),
           titulo: new FormControl(null, Validators.required),
           // resumen: new FormControl(null, Validators.required),
           descripcion: new FormControl(null, Validators.required),
@@ -483,6 +483,8 @@ export class CreateCourseComponent {
 
   modalInstructor
   @ViewChild('modalCrearInstructor') modalCrearInstructorContent: TemplateRef<any>;
+  @ViewChild('modalCrearPilar') modalCrearPilarContent: TemplateRef<any>;
+  
   showErrorInstructor = false
 
 
@@ -521,9 +523,6 @@ export class CreateCourseComponent {
       size:'lg'
     });
     
-
-
-
   }
 
 
@@ -538,6 +537,29 @@ export class CreateCourseComponent {
     this.openModalinstructor();
 
   }
+
+  showErrorPillar
+  formNewPillar: FormGroup
+  modalPillar
+  
+
+  createPillar(){
+    this.showErrorPillar = false
+
+
+    this.formNewPillar = new FormGroup({
+      nombre: new FormControl(null, Validators.required),
+      skills: new FormControl(null),
+
+    })
+
+    this.modalPillar =  this.modalService.open(this.modalCrearPilarContent, {
+      ariaLabelledBy: 'modal-basic-title',
+      centered: true,
+      size:'lg'
+    });  
+  }
+
 
   async saveDraft(){
     //console.log('----- save borrador ------');
@@ -568,6 +590,11 @@ export class CreateCourseComponent {
     //   this.curso.skillsRef=skills;
     //   this.courseRef = await this.afs.collection<Curso>(Curso.collection).doc(this.curso.id).ref;
     // }
+
+    if(!this.curso.skillsRef && this.curso['skills']){
+      this.curso.skillsRef = this.curso['skills']
+      delete this.curso['skills'];
+    }
     await this.courseService.saveCourse(this.curso)
   }
 
@@ -809,7 +836,7 @@ export class CreateCourseComponent {
       let valid = true;
     
       if(this.activeStep == 1){
-        //console.log(this.formNewCourse)
+        console.log(this.formNewCourse)
         if(!this.formNewCourse.valid){
           valid = false;
         }

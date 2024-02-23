@@ -1,6 +1,6 @@
 <div class="list">
     <div class="fw categories" *ngFor="let category of processedCategories">
-        <div *ngIf="filteredCourses(type == 'propios' ? category.coursesPropios : category.coursesPredyc).length>0" [ngClass]="(type == 'propios' ? category.expandedPropios : category.expandedPredyc) ? 'headCategoryExpanded hoverGray mgt05' : 'headCategory hoverGray'" 
+        <div *ngIf="filteredCourses(type == 'propios' ? category.coursesPropios : category.coursesPredyc)?.length>0" [ngClass]="(type == 'propios' ? category.expandedPropios : category.expandedPredyc) ? 'headCategoryExpanded hoverGray mgt05' : 'headCategory hoverGray'" 
              fxLayout="row" 
              fxLayoutAlign="space-between center" 
              (click)="type == 'propios' ? category.expandedPropios=!category.expandedPropios : category.expandedPredyc=!category.expandedPredyc">
