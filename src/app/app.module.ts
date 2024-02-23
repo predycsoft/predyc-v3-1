@@ -53,7 +53,6 @@ import { StudentInfoFormComponent } from './business-pages/management/my-team/st
 import { StudentStudyPlanAndCompetencesComponent } from './business-pages/management/my-team/student/student-study-plan-and-competences/student-study-plan-and-competences.component';
 import { StudyTimeMonthlyLineChartComponent } from './business-pages/dashboard/users-study-time-container/study-time-monthly-line-chart/study-time-monthly-line-chart.component';
 import { SharedModule } from 'src/shared/shared.module';
-import { SortSkillsPipe } from './shared/pipes/sort-skills.pipe';
 
 
 @NgModule({
@@ -97,8 +96,6 @@ import { SortSkillsPipe } from './shared/pipes/sort-skills.pipe';
     StudentInfoFormComponent,
     StudentStudyPlanAndCompetencesComponent,
     StudyTimeMonthlyLineChartComponent,    
-    SortSkillsPipe,
-
   ],
   imports: [
     BrowserModule,

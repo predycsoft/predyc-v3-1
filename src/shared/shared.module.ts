@@ -31,6 +31,7 @@ import { CustomMonthPipe } from './pipes/custom-month.pipe';
 import { SupportComponent } from './components/support/support.component';
 import { DialogDownloadReportComponent } from './components/dialogs/dialog-download-report/dialog-download-report.component';
 import { IsActivePipe } from './pipes/is-active.pipe';
+import { SortSkillsPipe } from './pipes/sort-skills.pipe';
 import { DialogRestorePasswordComponent } from './components/dialogs/dialog-restore-password/dialog-restore-password.component';
 import { StudentListComponent } from './components/users/student-list/student-list.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
@@ -101,6 +102,7 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
     SupportComponent,
     DialogDownloadReportComponent,
     IsActivePipe,
+    SortSkillsPipe,
     DialogRestorePasswordComponent,
 
   ],
@@ -172,6 +174,7 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
     DialogRequestLicensesComponent,
     DialogHistoryLicensesComponent,
     CustomMonthPipe,
+    SortSkillsPipe,
     SupportComponent,
     DialogDownloadReportComponent,
     IsActivePipe,

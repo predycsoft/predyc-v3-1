@@ -66,7 +66,7 @@
                         </div>
                     </div>
                 </div>
-                <!-- <div *ngIf="user?.adminPredyc" fxLayout="row" class="fw">
+                <div *ngIf="user?.isSystemUser" fxLayout="row" class="fw">
                     <div fxLayout="row" class="fw" fxLayoutAlign="space-between center">
                         <div class="ft600 ft20"></div>
                         <div fxLayout="row" class="searchAndFilter" fxLayoutAlign=" center">
@@ -82,7 +82,7 @@
                             </button>
                         </div>
                     </div>
-                </div> -->
+                </div>
             </div>
         </div>
         <!-- Columna derecha con dos filas -->
@@ -142,14 +142,14 @@
                                             <div class="gray-8 ft10">{{selectedCourse.nivel}}</div>
                                         </div>
                                      </div>
-                                     <!-- <div *ngIf="user.adminPredyc && selectedCourse.id" routerLink="/management/create-course/edit/{{selectedCourse.id}}" fxLayout="row" fxLayoutGap=".5rem">
+                                     <div *ngIf="user.isSystemUser && selectedCourse.id" routerLink="/management/create-course/edit/{{selectedCourse.id}}" fxLayout="row" fxLayoutGap=".5rem">
                                         <div class="backGray2 pd05 w40px radius6 cursorPointer" fxLayoutAlign="center center">
                                             <img [src]="icon.edit" class="makeYellow fw" alt="">
                                         </div>
                                         <div fxLayout="column">
                                             <div class="gray-6 ft10 cursorPointer">Editar curso</div>
                                         </div>
-                                     </div> -->
+                                     </div>
                                    </div>
                                    <div *ngIf="selectedCourse['skills']" class="mgt05">
                                     <div class="ft10 gray-10">Compentencias</div>
