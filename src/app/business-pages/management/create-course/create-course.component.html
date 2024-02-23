@@ -368,7 +368,7 @@
                                                                     Seleccionar sas
                                                                 </button> -->
                                                                 <span class="pdr05">Duración:</span>
-                                                                <div class="w-40"><input [(ngModel)]="clase.duracion" type="number" min="1" class="form-control customInput"></div>
+                                                                <div class="w-40"><input [(ngModel)]="clase.duracion" (change)="clase['edited'] = true" type="number" min="1" class="form-control customInput"></div>
                                                                 <span class="pdl05">minutos</span>
                                                             </ng-container>
                                                             
