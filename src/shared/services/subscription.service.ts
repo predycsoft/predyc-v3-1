@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
+import { AngularFirestore, CollectionReference, DocumentReference, Query } from '@angular/fire/compat/firestore';
 import { EnterpriseService } from './enterprise.service';
 import { Subscription } from '../models/subscription.model';
 import { License } from '../models/license.model';
 import { User } from '../models/user.model';
 import { UserService } from './user.service';
-import { firstValueFrom, map } from 'rxjs';
+import { Observable, firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +19,10 @@ export class SubscriptionService {
 
   ) { }
 
+  getSubscriptions$(): Observable<Subscription[]> {
+    return this.afs.collection<Subscription>(Subscription.collection).valueChanges()
+  }
+  
   async createUserSubscription(license: License, licenseRef: DocumentReference, userId: string) {
     let subscription = new Subscription
       

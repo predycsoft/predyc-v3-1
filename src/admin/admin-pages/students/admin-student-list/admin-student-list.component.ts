@@ -97,7 +97,7 @@ export class AdminStudentListComponent {
             enterprise: enterprise ? enterprise.name : null 
           };
         });
-        console.log("usersInList", usersInList)
+        // console.log("usersInList", usersInList)
         this.paginator.pageIndex = page - 1;
         this.dataSource.data = usersInList;
         this.totalLength = usersInList.length;
