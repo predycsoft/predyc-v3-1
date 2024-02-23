@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { User, UserJson } from 'src/shared/models/user.model';
 import { AngularFirestore, CollectionReference, DocumentReference, Query } from '@angular/fire/compat/firestore';
-import { BehaviorSubject, combineLatest, filter, firstValueFrom, map, Observable, Subscription, switchMap } from 'rxjs'
+import { BehaviorSubject, combineLatest, filter, firstValueFrom, map, Observable, shareReplay, Subscription, switchMap } from 'rxjs'
 import { Subscription as SubscriptionClass } from 'src/shared/models/subscription.model'
 import { EnterpriseService } from './enterprise.service';
 import { AlertsService } from './alerts.service';
@@ -163,18 +163,14 @@ export class UserService {
     ) 
   }
 
-  getAllUsers$(searchTerm=null, statusFilter=null): Observable<User[]> {
+  getAllUsers$(searchTerm=null): Observable<User[]> {
     return this.afs.collection<User>(User.collection, ref => {
       let query: CollectionReference | Query = ref;
       if (searchTerm) {
-        // query = query.where('displayName', '==', searchTerm)
         query = query.where('displayName', '>=', searchTerm).where('displayName', '<=', searchTerm+ '\uf8ff')
       }
-      // if (statusFilter && statusFilter === SubscriptionClass.STATUS_ACTIVE) {
-      //   query = query.where('status', '==', SubscriptionClass.STATUS_ACTIVE)
-      // }
       return query.orderBy('displayName')
-    }).valueChanges()
+    }).valueChanges().pipe(shareReplay(1))
   }
 
   getRatingPointsFromStudyPlan(userStudyPlan: CourseByStudent[], courses: Curso[]): number  {

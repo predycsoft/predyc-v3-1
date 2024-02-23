@@ -3,6 +3,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, combineLatest, map } from 'rxjs';
+import { Enterprise } from 'src/shared/models/enterprise.model';
 import { EnterpriseService } from 'src/shared/services/enterprise.service';
 import { IconService } from 'src/shared/services/icon.service';
 import { UserService } from 'src/shared/services/user.service';
@@ -44,10 +45,11 @@ export class AdminStudentListComponent {
   @Output() onStudentSelected = new EventEmitter<UserInList>()
 
   queryParamsSubscription: Subscription
-  profilesSubscription: Subscription
   userServiceSubscription: Subscription
   pageSize: number = 8
   totalLength: number
+
+  enterprises : Enterprise[]
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -58,6 +60,10 @@ export class AdminStudentListComponent {
   ) {}
 
   ngOnInit() {
+    this.enterpriseService.getAllEnterprises$().subscribe(enterprises => {
+      this.enterprises = enterprises
+    })
+
     this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
       const page = Number(params['page']) || 1;
       const searchTerm = params['search'] || '';
@@ -75,14 +81,10 @@ export class AdminStudentListComponent {
     if (this.userServiceSubscription) {
       this.userServiceSubscription.unsubscribe();
     }
-
-    this.userServiceSubscription = combineLatest([
-      this.userService.getAllUsers$(searchTerm),
-      this.enterpriseService.getAllEnterprises$()
-    ]).pipe(
-      map(([users, enterprises]) => {
-        return users.map(user => {
-          const enterprise = enterprises.find(enterprise => enterprise.id === user.enterprise?.id);
+    this.userServiceSubscription = this.userService.getAllUsers$(searchTerm).subscribe(users => {
+      if (this.enterprises){
+        const usersInList = users.map(user => {
+          const enterprise = this.enterprises.find(enterprise => enterprise.id === user.enterprise?.id);
           return {
             displayName: user.displayName,
             uid: user.uid,
@@ -95,12 +97,12 @@ export class AdminStudentListComponent {
             enterprise: enterprise ? enterprise.name : null 
           };
         });
-      })
-    ).subscribe(usersInList => {
-      this.paginator.pageIndex = page - 1;
-      this.dataSource.data = usersInList;
-      this.totalLength = usersInList.length;
-    });
+        console.log("usersInList", usersInList)
+        this.paginator.pageIndex = page - 1;
+        this.dataSource.data = usersInList;
+        this.totalLength = usersInList.length;
+      }
+    })
   }
   
 
@@ -122,7 +124,6 @@ export class AdminStudentListComponent {
   ngOnDestroy() {
     if (this.queryParamsSubscription) this.queryParamsSubscription.unsubscribe()
     if (this.userServiceSubscription) this.userServiceSubscription.unsubscribe()
-    if (this.profilesSubscription) this.profilesSubscription.unsubscribe()
   }
 }
 
