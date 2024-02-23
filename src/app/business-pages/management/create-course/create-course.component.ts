@@ -397,6 +397,7 @@ export class CreateCourseComponent {
 
         this.formNewCourse = new FormGroup({
           id: new FormControl(curso.id, Validators.required),
+          vimeoFolderId: new FormControl(curso.vimeoFolderId),
           titulo: new FormControl(curso.titulo, Validators.required),
           // resumen: new FormControl(curso.resumen, Validators.required),
           descripcion: new FormControl(curso.descripcion, Validators.required),
@@ -1947,7 +1948,7 @@ export class CreateCourseComponent {
     //console.log('modulo video',modulo);
     //console.log('clase video',clase)
 
-    let videoName =  `${nombreCurso} - Módulo ${modulo.titulo} (${modulo.numero}) - Clase ${clase.titulo} (${clase.numero})`
+    let videoName =  `Clase: ${clase.titulo} - Instructor:  ${this.formNewCourse.get('instructor').value}`
     let videoDescription =  videoName;
 
     clase['videoUpload'] = 0;
@@ -2021,21 +2022,55 @@ export class CreateCourseComponent {
               // Busca un proyecto con el mismo nombre que el video
               // const project = projects.data.find(p => p.name === this.empresa.nombre);
               let projectOperation: Observable<any>;
-              if (this.empresa.vimeoFolderId) { // si la empresa sitiene una carpeta
-                // Si ya existe un proyecto con el nombre del video, agrega el video a él
-                projectOperation = this.uploadControl.addVideoToProject(this.empresa.vimeoFolderId, response.uri);
-              } else {
-                //console.log('aqui')
-                projectOperation = this.uploadControl.createProject(this.empresa.name).pipe(
-                    tap(newProject => { 
-                        // Aquí es donde actualizamos Firebase
-                        const projectId = newProject.uri.split('/').pop();
-                        //console.log('parent uri',newProject.uri)
-                        this.updateFolderVimeoEmpresa(projectId,newProject.uri);
-                    }),
-                    switchMap(newProject => this.uploadControl.addVideoToProject(newProject.uri.split('/').pop(), response.uri))
+              if (this.empresa.vimeoFolderId) {
+                if(!this.curso.vimeoFolderId){
+                // Crear un subproyecto con un nombre temporal dentro del proyecto de la empresa
+                //alert('crear carpeta proyecto')
+                projectOperation = this.uploadControl.createSubProject(this.formNewCourse.get('titulo').value,this.empresa.vimeoFolderUri).pipe(
+                  tap(newSubProject => {
+                    //Actualizar Firebase con el ID del subproyecto si es necesario
+                    const subProjectId = newSubProject.uri.split('/').pop();
+                    //this.updateFolderVimeoCurso(subProjectId, newSubProject.uri); // Asumiendo que esto es lo que deseas hacer
+                    this.curso.vimeoFolderId = subProjectId;
+                  }),
+                  // Luego de crear el subproyecto, agrega el video a él
+                  switchMap(newSubProject => this.uploadControl.addVideoToProject(newSubProject.uri.split('/').pop(), response.uri))
                 );
-            }
+                }
+                else{
+                  projectOperation= this.uploadControl.addVideoToProject(this.curso.vimeoFolderId, response.uri)
+                }
+
+              } 
+              else {
+                // projectOperation = this.uploadControl.createProject(this.empresa.name).pipe(
+                //     tap(newProject => { 
+                //         const projectId = newProject.uri.split('/').pop();
+                //         this.updateFolderVimeoEmpresa(projectId,newProject.uri);
+                //     }),
+                //     switchMap(newProject => this.uploadControl.addVideoToProject(newProject.uri.split('/').pop(), response.uri))
+                // );
+                projectOperation = this.uploadControl.createProject(this.empresa.name).pipe(
+                  tap(newProject => {
+                    // Aquí es donde actualizamos Firebase con la nueva carpeta de empresa
+                    const projectId = newProject.uri.split('/').pop();
+                    this.updateFolderVimeoEmpresa(projectId, newProject.uri);
+                  }),
+                  // Después de crear la carpeta de empresa, crea el subproyecto dentro de esta nueva carpeta
+                  switchMap(newProject => 
+                    this.uploadControl.createSubProject(this.formNewCourse.get('titulo').value, newProject.uri).pipe(
+                      tap(newSubProject => {
+                        // Actualizar Firebase con el ID del subproyecto si es necesario
+                        const subProjectId = newSubProject.uri.split('/').pop();
+                        // this.updateFolderVimeoCurso(subProjectId, newSubProject.uri);
+                        this.curso.vimeoFolderId = subProjectId; // Guarda el ID del subproyecto para el curso
+                      }),
+                      // Luego de crear el subproyecto, agrega el video a él
+                      switchMap(newSubProject => this.uploadControl.addVideoToProject(newSubProject.uri.split('/').pop(), response.uri))
+                    )
+                  )
+                );
+              }
               projectOperation.subscribe({
                 complete: () => {
                   //console.log('Video added to Project successfully!');
@@ -2112,6 +2147,8 @@ export class CreateCourseComponent {
     this.empresa.vimeoFolderId = idFolder;
 
   }
+
+
 
 
 //   createInstructions: SafeHtml;
