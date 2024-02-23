@@ -12,10 +12,7 @@
   "compileOnSave": true,
   "include": [
     "src",
-    // "../src/app/shared/models/*.ts" // path to shared interfaces or library
   ],
   "exclude": [
-    // "../src/app/shared/models/activity-classes.model.ts",
-    // "../src/app/shared/models/course.model.ts",
   ]
 }

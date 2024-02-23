@@ -1,4 +1,4 @@
-import { EnterpriseJson } from 'src/app/shared/models/enterprise.model'
+import { EnterpriseJson } from 'src/shared/models/enterprise.model'
 
 export const enterpriseData: EnterpriseJson = {
     city: "Santiago de Querétaro",

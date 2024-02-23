@@ -5,11 +5,11 @@ import { MatSort } from '@angular/material/sort';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BehaviorSubject, Observable, Subject, Subscription, catchError, map, merge, of } from 'rxjs';
-import { User } from 'src/app/shared/models/user.model';
-import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
-import { IconService } from 'src/app/shared/services/icon.service';
-import { UserService } from 'src/app/shared/services/user.service';
-import { orderByValueAndDirection } from 'src/app/shared/utils';
+import { User } from 'src/shared/models/user.model';
+import { EnterpriseService } from 'src/shared/services/enterprise.service';
+import { IconService } from 'src/shared/services/icon.service';
+import { UserService } from 'src/shared/services/user.service';
+import { orderByValueAndDirection } from 'src/shared/utils';
 
 @Component({
   selector: 'app-members',

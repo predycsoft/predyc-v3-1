@@ -9,15 +9,14 @@ import { MyTeamComponent } from './business-pages/management/my-team/my-team.com
 import { NotificationsComponent } from './business-pages/management/notifications/notifications.component'
 import { StudentComponent } from './business-pages/management/my-team/student/student.component';
 import { LoginComponent } from './login/login.component';
-import { AuthGuard } from './shared/guards/auth.guard';
+import { AuthGuard } from 'src/shared/guards/auth.guard';
 import { MainComponent } from './business-pages/main.component';
 import { CreateCourseComponent } from './business-pages/management/create-course/create-course.component';
-import { InitScriptComponent } from './shared/components/init-script/init-script.component';
+import { InitScriptComponent } from 'src/shared/components/init-script/init-script.component';
 import { MyAccountComponent } from './business-pages/my-account/my-account.component';
 import { ProfilesComponent } from './business-pages/management/profiles/profiles.component';
-import { ProfileGuard } from './shared/guards/profile.guard';
-import { CreateDemoComponent } from './business-pages/create-demo/create-demo.component';
-import { AdminPredycGuard } from './shared/guards/adminPredyc.guard';
+import { ProfileGuard } from 'src/shared/guards/profile.guard';
+import { SystemUserGuard } from 'src/admin/guards/systemUser.guard';
 
 const MAIN_TITLE = 'Predyc - '
 
@@ -45,12 +44,16 @@ const routes: Routes = [
           {path:"create-course/:mode/:idCurso", title: MAIN_TITLE + 'Crear / Editar curso', component: CreateCourseComponent, canActivate: [AuthGuard]},
           {path:"notifications", title: MAIN_TITLE + 'Notificaciones', component: NotificationsComponent, canActivate: [AuthGuard]},
           {path:"students/:uid", title: MAIN_TITLE + 'Mi equipo', component: StudentComponent, canActivate: [AuthGuard]},
-          {path:"create-demo", title: MAIN_TITLE + 'Crear demo', component: CreateDemoComponent, canActivate: [AuthGuard, AdminPredycGuard]},
         ]
       },
       {path:"validation", title: MAIN_TITLE + 'Validación de competencias', component: ValidationComponent, canActivate: [AuthGuard]},
       {path:"settings", title: MAIN_TITLE + 'Configuración', component: SettingsComponent, canActivate: [AuthGuard]},
       {path:"my-account", title: MAIN_TITLE + 'Mi cuenta', component: MyAccountComponent, canActivate: [AuthGuard]},
+      {
+        path: "admin",
+        loadChildren: () => import("../admin/admin.module").then(m => m.AdminModule),
+        canActivate: [SystemUserGuard]
+      },
     ]
   },
   {

@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
-import { IconService } from '../shared/services/icon.service';
-import { AuthService } from '../shared/services/auth.service';
-import { AlertsService } from '../shared/services/alerts.service';
+import { IconService } from 'src/shared/services/icon.service';
+import { AuthService } from 'src/shared/services/auth.service';
+import { AlertsService } from 'src/shared/services/alerts.service';
 import { firstValueFrom } from 'rxjs';
-import { User } from '../shared/models/user.model';
+import { User } from 'src/shared/models/user.model';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { DialogRestorePasswordComponent } from '../shared/components/dialogs/dialog-restore-password/dialog-restore-password.component';
+import { DialogRestorePasswordComponent } from 'src/shared/components/dialogs/dialog-restore-password/dialog-restore-password.component';
 
 @Component({
   selector: 'app-login',
@@ -42,6 +42,7 @@ export class LoginComponent {
 
   async login(email: string, password: string) {
     try {
+      let isBusinessUser = true
       const adminUsers = await firstValueFrom(this.afs.collection<User>(User.collection, ref => 
       ref.where('email', '==', email)
          .where('role', '==', User.ROLE_ADMIN)
@@ -49,7 +50,8 @@ export class LoginComponent {
       if (adminUsers.length === 0) { 
         throw Error(`El correo ${email} no existe o no tiene permiso para acceder a la herramienta`)
       }
-      await this.authService.signIn(email, password)
+      if (adminUsers[0].isSystemUser) isBusinessUser = false 
+      await this.authService.signIn(email, password, isBusinessUser)
       // Handle successful login, navigate or update UI
     } catch (error) {
       // Handle login error

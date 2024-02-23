@@ -1,4 +1,4 @@
-import { NotificationJson } from "src/app/shared/models/notification.model";
+import { NotificationJson } from "src/shared/models/notification.model";
 
 const notificationTypes = ['alert', 'event'];
 const alertSubTypes = ['delayed', 'pending'];

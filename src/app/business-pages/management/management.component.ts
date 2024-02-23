@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { AfterOnInitResetLoading } from 'src/app/shared/decorators/loading.decorator';
-import { LoaderService } from 'src/app/shared/services/loader.service';
-import { NotificationService } from 'src/app/shared/services/notification.service';
-import { UserService } from 'src/app/shared/services/user.service';
+import { AfterOnInitResetLoading } from 'src/shared/decorators/loading.decorator';
+import { LoaderService } from 'src/shared/services/loader.service';
+import { NotificationService } from 'src/shared/services/notification.service';
+import { UserService } from 'src/shared/services/user.service';
 
 @Component({
   selector: 'app-management',

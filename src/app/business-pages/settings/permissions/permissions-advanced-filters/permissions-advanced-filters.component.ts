@@ -3,11 +3,11 @@ import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core
 import { MatPaginator } from '@angular/material/paginator';
 import { BehaviorSubject, Observable, of, catchError, Subscription, combineLatest, merge } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Profile } from 'src/app/shared/models/profile.model';
-import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
-import { ProfileService } from 'src/app/shared/services/profile.service';
-import { Permissions } from 'src/app/shared/models/permissions.model';
-import { IconService } from 'src/app/shared/services/icon.service';
+import { Profile } from 'src/shared/models/profile.model';
+import { EnterpriseService } from 'src/shared/services/enterprise.service';
+import { ProfileService } from 'src/shared/services/profile.service';
+import { Permissions } from 'src/shared/models/permissions.model';
+import { IconService } from 'src/shared/services/icon.service';
 
 @Component({
   selector: 'app-permissions-advanced-filters',

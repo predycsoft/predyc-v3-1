@@ -2,13 +2,13 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Chart } from 'chart.js';
 import { Subscription, combineLatest } from 'rxjs';
-import { ClassByStudent } from 'src/app/shared/models/class-by-student.model';
-import { CourseByStudent } from 'src/app/shared/models/course-by-student.model';
-import { Curso } from 'src/app/shared/models/course.model';
-import { User } from 'src/app/shared/models/user.model';
-import { CourseService } from 'src/app/shared/services/course.service';
-import { UserService } from 'src/app/shared/services/user.service';
-import { firestoreTimestampToNumberTimestamp, getFirstDaysOfMonth } from 'src/app/shared/utils';
+import { ClassByStudent } from 'src/shared/models/class-by-student.model';
+import { CourseByStudent } from 'src/shared/models/course-by-student.model';
+import { Curso } from 'src/shared/models/course.model';
+import { User } from 'src/shared/models/user.model';
+import { CourseService } from 'src/shared/services/course.service';
+import { UserService } from 'src/shared/services/user.service';
+import { firestoreTimestampToNumberTimestamp, getFirstDaysOfMonth } from 'src/shared/utils';
 
 @Component({
   selector: 'app-study-time-monthly-line-chart',

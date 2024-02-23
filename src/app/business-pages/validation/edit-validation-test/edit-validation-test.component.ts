@@ -2,14 +2,14 @@ import { Component, Input } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs';
-import { IconService } from 'src/app/shared/services/icon.service';
-// import { VimeoUploadService } from 'src/app/shared/services/vimeo-upload.service';
-import { cloneArrayOfObjects, compareByString, getPlaceholders } from 'src/app/shared/utils';
-import { AlertsService } from 'src/app/shared/services/alerts.service';
+import { IconService } from 'src/shared/services/icon.service';
+// import { VimeoUploadService } from 'src/shared/services/vimeo-upload.service';
+import { cloneArrayOfObjects, compareByString, getPlaceholders } from 'src/shared/utils';
+import { AlertsService } from 'src/shared/services/alerts.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { CategoryService } from 'src/app/shared/services/category.service';
-import { SkillService } from 'src/app/shared/services/skill.service';
-import { Question } from 'src/app/shared/models/activity-classes.model';
+import { CategoryService } from 'src/shared/services/category.service';
+import { SkillService } from 'src/shared/services/skill.service';
+import { Question } from 'src/shared/models/activity-classes.model';
 
 function optionsLengthValidator(question: FormGroup): ValidationErrors | null {
   const options = question.get('options') as FormArray

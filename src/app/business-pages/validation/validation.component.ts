@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
-import { LoaderService } from 'src/app/shared/services/loader.service';
+import { LoaderService } from 'src/shared/services/loader.service';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { EditValidationTestComponent } from './edit-validation-test/edit-validation-test.component';
-import { SkillService } from 'src/app/shared/services/skill.service';
-import { ActivityClassesService } from 'src/app/shared/services/activity-classes.service';
-import { Activity } from 'src/app/shared/models/activity-classes.model';
-import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
-import { AlertsService } from 'src/app/shared/services/alerts.service';
+import { SkillService } from 'src/shared/services/skill.service';
+import { ActivityClassesService } from 'src/shared/services/activity-classes.service';
+import { Activity } from 'src/shared/models/activity-classes.model';
+import { EnterpriseService } from 'src/shared/services/enterprise.service';
+import { AlertsService } from 'src/shared/services/alerts.service';
 
 @Component({
   selector: 'app-validation',

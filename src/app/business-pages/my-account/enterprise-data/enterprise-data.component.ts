@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { Enterprise } from 'src/app/shared/models/enterprise.model';
-import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
+import { Enterprise } from 'src/shared/models/enterprise.model';
+import { EnterpriseService } from 'src/shared/services/enterprise.service';
 
 @Component({
   selector: 'app-enterprise-data',

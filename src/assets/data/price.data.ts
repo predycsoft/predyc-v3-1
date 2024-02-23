@@ -1,4 +1,4 @@
-import { PriceJson } from "src/app/shared/models/price.model";
+import { PriceJson } from "src/shared/models/price.model";
 
 export const pricesData: PriceJson[] = [ 
     {

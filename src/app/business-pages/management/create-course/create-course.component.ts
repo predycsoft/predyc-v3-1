@@ -1,11 +1,11 @@
 import { Component, ElementRef, TemplateRef, ViewChild } from '@angular/core';
-import { IconService } from '../../../shared/services/icon.service';
+import { IconService } from 'src/shared/services/icon.service';
 import { FormControl, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { Curso } from "../../../shared/models/course.model"
-import { Modulo } from "../../../shared/models/module.model"
-import { Clase } from "../../../shared/models/course-class.model"
+import { Curso } from "src/shared/models/course.model"
+import { Modulo } from "src/shared/models/module.model"
+import { Clase } from "src/shared/models/course-class.model"
 
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import Swal from 'sweetalert2';
@@ -14,26 +14,26 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AngularFirestore,DocumentReference } from '@angular/fire/compat/firestore';
 
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { Activity, Question, QuestionOption } from '../../../shared/models/activity-classes.model';
+import { Activity, Question, QuestionOption } from 'src/shared/models/activity-classes.model';
 //import * as competencias from '../../../../assets/data/competencias.json';
-import { DialogService } from 'src/app/shared/services/dialog.service';
-import { VimeoUploadService } from 'src/app/shared/services/vimeo-upload.service';
-import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
-import { CategoryService } from 'src/app/shared/services/category.service';
-import { SkillService } from '../../../shared/services/skill.service';
-import { Category } from 'src/app/shared/models/category.model';
-import { Skill } from 'src/app/shared/models/skill.model';
-import { CourseService } from '../../../shared/services/course.service';
-import { User } from 'src/app/shared/models/user.model';
+import { DialogService } from 'src/shared/services/dialog.service';
+import { VimeoUploadService } from 'src/shared/services/vimeo-upload.service';
+import { EnterpriseService } from 'src/shared/services/enterprise.service';
+import { CategoryService } from 'src/shared/services/category.service';
+import { SkillService } from 'src/shared/services/skill.service';
+import { Category } from 'src/shared/models/category.model';
+import { Skill } from 'src/shared/models/skill.model';
+import { CourseService } from 'src/shared/services/course.service';
+import { User } from 'src/shared/models/user.model';
 import { category } from '../courses/courses.component';
-import { ModuleService } from '../../../shared/services/module.service';
-import { CourseClassService } from '../../../shared/services/course-class.service';
-import { ActivityClassesService } from 'src/app/shared/services/activity-classes.service';
-import { Enterprise } from 'src/app/shared/models/enterprise.model';
-import { compareByString } from 'src/app/shared/utils';
-import { QuestionsComponent } from 'src/app/shared/components/questions/questions.component';
-import { AuthService } from 'src/app/shared/services/auth.service';
-import { InstructorsService } from 'src/app/shared/services/instructors.service';
+import { ModuleService } from 'src/shared/services/module.service';
+import { CourseClassService } from 'src/shared/services/course-class.service';
+import { ActivityClassesService } from 'src/shared/services/activity-classes.service';
+import { Enterprise } from 'src/shared/models/enterprise.model';
+import { compareByString } from 'src/shared/utils';
+import { QuestionsComponent } from 'src/shared/components/questions/questions.component';
+import { AuthService } from 'src/shared/services/auth.service';
+import { InstructorsService } from 'src/shared/services/instructors.service';
 
 
 interface Categoria {

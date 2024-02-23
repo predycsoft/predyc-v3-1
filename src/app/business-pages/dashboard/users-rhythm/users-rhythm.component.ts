@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, ElementRef, Input, SimpleChanges, ViewChild } from '@angular/core';
 import { Chart } from 'chart.js';
-import { IconService } from 'src/app/shared/services/icon.service';
+import { IconService } from 'src/shared/services/icon.service';
 
 @Component({
   selector: 'app-users-rhythm',

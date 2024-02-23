@@ -1,4 +1,4 @@
-import { ProfileJson } from "src/app/shared/models/profile.model";
+import { ProfileJson } from "src/shared/models/profile.model";
 
 // export const profilesData: ProfileJson[] = [
 //     {

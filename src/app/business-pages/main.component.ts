@@ -1,14 +1,15 @@
 import { Component } from '@angular/core';
-import { EnterpriseService } from '../shared/services/enterprise.service';
-import { UserService } from '../shared/services/user.service';
-import { IconService } from '../shared/services/icon.service';
-import { User } from '../shared/models/user.model';
-import { Observable, Subscription } from 'rxjs';
-import { AuthService } from '../shared/services/auth.service';
+import { EnterpriseService } from 'src/shared/services/enterprise.service';
+import { UserService } from 'src/shared/services/user.service';
+import { IconService } from 'src/shared/services/icon.service';
+import { User } from 'src/shared/models/user.model';
+import { Observable, Subscription, filter } from 'rxjs';
+import { AuthService } from 'src/shared/services/auth.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { SupportComponent } from '../shared/components/support/support.component';
-import { License } from '../shared/models/license.model';
-import { LicenseService } from '../shared/services/license.service';
+import { SupportComponent } from 'src/shared/components/support/support.component';
+import { License } from 'src/shared/models/license.model';
+import { LicenseService } from 'src/shared/services/license.service';
+import { NavigationEnd, Router } from '@angular/router';
 
 @Component({
   selector: 'app-main',
@@ -21,7 +22,19 @@ export class MainComponent {
     public icon: IconService,
     private modalService: NgbModal,
     public licenseService: LicenseService,
-  ) {}
+    private router: Router
+  ) {
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: NavigationEnd) => {
+      this.currentUrl = event.url;
+      // console.log("CurrentUrl" , this.currentUrl)
+      this.isAdminPage =  this.currentUrl.startsWith("/admin")
+    });
+  }
+
+  currentUrl: string;
+  isAdminPage: boolean
 
   user: User
   user$: Observable<User> = this.authService.user$
@@ -58,5 +71,14 @@ export class MainComponent {
       backdrop: 'static',
       keyboard: false 
     })
+  }
+
+  redirect() {
+    if (this.isAdminPage) {
+      this.router.navigate([""])
+    }
+    else {
+      this.router.navigate(["/admin"])
+    }
   }
 }

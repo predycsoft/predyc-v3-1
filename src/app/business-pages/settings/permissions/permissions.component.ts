@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { IconService } from 'src/app/shared/services/icon.service';
-import { Permissions } from 'src/app/shared/models/permissions.model';
-import { EnterpriseService } from 'src/app/shared/services/enterprise.service';
+import { IconService } from 'src/shared/services/icon.service';
+import { Permissions } from 'src/shared/models/permissions.model';
+import { EnterpriseService } from 'src/shared/services/enterprise.service';
 import { PermissionsAdvancedFiltersComponent } from './permissions-advanced-filters/permissions-advanced-filters.component';
 
 

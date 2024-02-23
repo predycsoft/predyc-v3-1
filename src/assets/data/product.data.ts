@@ -1,4 +1,4 @@
-import { ProductJson } from "src/app/shared/models/product.model";
+import { ProductJson } from "src/shared/models/product.model";
 
 export const productsData: ProductJson[] = [
     {
