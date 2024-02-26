@@ -1,26 +1,37 @@
-<div class="fw" class="fw backWhite radius10 pd20" fxLayout="column">
-    <div class="fw fh" fxLayout="column">
-        <div fxLayout="row" fxLayoutAlign="space-between center" class="pdl10 pdr10 pdt10 fw">
-            <span class="gray-10 ft600 ft16">{{textModulo}}: {{formNewCourse.get('titulo')?.value}}</span>
-            <button (click)="saveDraftPre()" class="blueButton radius4 ft12 h28px gray-1">
-                Guardar
+<div class="fw" class="fw backWhite radius10" fxLayout="column">    <div [ngClass]="true ? 'header--edit' : ''" fxLayout="row" fxLayoutAlign="space-between " class="header pdr10 pdl10">
+    <div *ngIf="true; else profileTitle" fxLayout="row" fxLayoutAlign="space-between center" class="fw fh pdt05 pdb05" >
+        <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign=" center">
+            <span class="input-box ft12" placeholder="Nombre del curso">{{formNewCourse.get('titulo')?.value}}</span>
+        </div>
+        <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign=" center">
+            <!-- <div class="radius20 pdl10 pdr10 pdt05 pdb05 backWhite ft14 cursorPointer" (click)="onCancel()"> 
+                Cancelar
+            </div> -->
+            <button
+                fxLayout="row"
+                fxLayoutGap="0.625"
+                fxLayoutAlign="center center"
+                class="blueButton ft14 cursorPointer"
+                style="border-radius: 24px !important;">
+                {{mode !== 'edit' ? 'Agregar curso' : 'Editar curso'}}
+                <img [src]="icon.save" class="h16px pdl05 makeWhite" alt="">
             </button>
         </div>
-        <div fxLayout="row">
-            <div class="fw pdl10 pdr10 pdt10">
-                <div class="fw border-b">
-                    <!-- <div class="stepper pdb10">
-                        <div class="step" *ngFor="let item of steps; let i = index">
-                            <div class= "no-select {{activeStep == i+1 ? 'circleStepActive': 'circleStep'}} {{  activeStep > i ? 'cursorPointer' : ''}}">{{ i + 1 }}</div>
-                            <div (click)="activeStep > i ? activeStep = i+1 : '' " class="no-select {{ activeStep == i+1 ? 'titleActive ft400': 'title' }}  {{ activeStep > i ? 'cursorPointer' : '' }}">{{ item }}</div>
-                            <div class="mgr05" *ngIf="i < steps.length - 1">
-                                <img [src]="icon.chevronRight" class="{{ activeStep == i+1 ? 'makeGray8': 'makeGray' }}" alt="">
-                            </div>
-                        </div>
-                    </div> -->
-                </div>
+    </div>
+    <ng-template #profileTitle >
+        <div class="pdr10 pdt10" >
+            <div
+            fxLayout="row"
+            fxLayoutGap="0.625"
+            fxLayoutAlign=" center center"
+            class="blueButton mgt10 ft14"
+            style="border-radius: 24px !important;">Editar
+            <img [src]="icon.licencias" class="h16px pdl05" alt="">
             </div>
         </div>
+    </ng-template>
+</div>
+    <div class="fw fh" fxLayout="column">
         <!-- Tab 1 Informacion del curso -->
         <ng-container *ngIf="activeStep == 1">
             <div fxLayout="row" class="containerCurso fw">
