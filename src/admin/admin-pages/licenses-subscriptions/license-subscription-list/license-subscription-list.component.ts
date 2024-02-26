@@ -58,12 +58,12 @@ export class LicenseSubscriptionListComponent {
 
   dataSource = new MatTableDataSource<SubscriptionInList>();
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  // @ViewChild(MatPaginator) paginator: MatPaginator;
   @Input() enableNavigateToUser: boolean = true
 
   queryParamsSubscription: Subscription
-  pageSize: number = 8
-  totalLength: number
+  // pageSize: number = 4
+  // totalLength: number
 
   combinedServicesSubscription: Subscription
   subscriptionsSubscription: Subscription
@@ -87,17 +87,17 @@ export class LicenseSubscriptionListComponent {
       this.products = products
       this.coupons = coupons
       this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
-        const page = Number(params['page']) || 1;
+        const page = Number(params['subscriptionPage']) || 1;
         const searchTerm = params['search'] || '';
         this.performSearch(searchTerm, page);
       })
     })
   }
 
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.paginator.pageSize = this.pageSize;
-  }
+  // ngAfterViewInit() {
+  //   this.dataSource.paginator = this.paginator;
+  //   this.dataSource.paginator.pageSize = this.pageSize;
+  // }
 
   performSearch(searchTerm: string, page: number) {
     this.subscriptionService.getSubscriptions$().subscribe(subscriptions => {
@@ -125,9 +125,10 @@ export class LicenseSubscriptionListComponent {
       // Filtering
       const filteredSubscriptions = searchTerm ? subscriptionsInList.filter(sub => sub.userName.toLowerCase().includes(searchTerm.toLowerCase())) : subscriptionsInList;
   
-      this.paginator.pageIndex = page - 1;
-      this.dataSource.data = filteredSubscriptions.slice(this.paginator.pageIndex * this.pageSize, (this.paginator.pageIndex + 1) * this.pageSize);
-      this.totalLength = filteredSubscriptions.length;
+      // this.paginator.pageIndex = page - 1;
+      // this.dataSource.data = filteredSubscriptions.slice(this.paginator.pageIndex * this.pageSize, (this.paginator.pageIndex + 1) * this.pageSize);
+      // this.totalLength = filteredSubscriptions.length;
+      this.dataSource.data = filteredSubscriptions;
     });
   }
 
@@ -217,12 +218,12 @@ export class LicenseSubscriptionListComponent {
   }
   // ------- 
 
-  onPageChange(page: number): void {
-    this.router.navigate([], {
-      queryParams: { page },
-      queryParamsHandling: 'merge'
-    });
-  }
+  // onPageChange(subscriptionPage: number): void {
+  //   this.router.navigate([], {
+  //     queryParams: { subscriptionPage },
+  //     queryParamsHandling: 'merge'
+  //   });
+  // }
 
   onSelect(subscription) {
 
