@@ -1,5 +1,5 @@
 <div class="fw" class="fw backWhite radius10" fxLayout="column">    <div [ngClass]="true ? 'header--edit' : ''" fxLayout="row" fxLayoutAlign="space-between " class="header pdr10 pdl10">
-    <div *ngIf="true; else profileTitle" fxLayout="row" fxLayoutAlign="space-between center" class="fw fh pdt05 pdb05" >
+    <div *ngIf="true;" fxLayout="row" fxLayoutAlign="space-between center" class="fw fh pdt05 pdb05" >
         <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign=" center">
             <span class="input-box ft12" placeholder="Nombre del curso">{{formNewCourse.get('titulo')?.value}}</span>
         </div>
@@ -12,24 +12,13 @@
                 fxLayoutGap="0.625"
                 fxLayoutAlign="center center"
                 class="blueButton ft14 cursorPointer"
+                (click)="saveDraftPre()"
                 style="border-radius: 24px !important;">
                 {{mode !== 'edit' ? 'Agregar curso' : 'Editar curso'}}
                 <img [src]="icon.save" class="h16px pdl05 makeWhite" alt="">
             </button>
         </div>
     </div>
-    <ng-template #profileTitle >
-        <div class="pdr10 pdt10" >
-            <div
-            fxLayout="row"
-            fxLayoutGap="0.625"
-            fxLayoutAlign=" center center"
-            class="blueButton mgt10 ft14"
-            style="border-radius: 24px !important;">Editar
-            <img [src]="icon.licencias" class="h16px pdl05" alt="">
-            </div>
-        </div>
-    </ng-template>
 </div>
     <div class="fw fh" fxLayout="column">
         <!-- Tab 1 Informacion del curso -->

@@ -587,7 +587,7 @@ export class CreateCourseComponent {
       });
     }
     else{
-      //this.saveDraft()
+      this.saveDraft()
 
     }
   }
