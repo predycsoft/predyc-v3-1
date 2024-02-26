@@ -73,6 +73,11 @@ export const firestoreTimestampToNumberTimestamp = (timestamp: {seconds: number,
   return null
 }
 
+export const stripeTimestampToNumberTimestamp = (timestamp: {seconds: number, nanoseconds: number} | null): number | null => {
+  if (timestamp) return timestamp.seconds * 1000
+  return null
+}
+
 export const splitArray = (array, numArrays) => {
   const chunkSize = Math.ceil(array.length / numArrays);
   return Array.from({ length: numArrays }, (_, index) =>
