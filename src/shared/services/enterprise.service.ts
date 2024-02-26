@@ -41,6 +41,10 @@ export class EnterpriseService {
     });
   }
 
+  getAllEnterprises$(): Observable<Enterprise[]> {
+    return this.afs.collection<Enterprise>(Enterprise.collection).valueChanges()
+  }
+
   async addEnterprise(enterprise: Enterprise): Promise<void> {
     const ref = this.afs.collection<Enterprise>(Enterprise.collection).doc().ref;
     await ref.set({...enterprise.toJson(), id: ref.id}, { merge: true });
