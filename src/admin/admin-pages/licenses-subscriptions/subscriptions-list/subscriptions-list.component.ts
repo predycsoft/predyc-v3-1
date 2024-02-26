@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, combineLatest } from 'rxjs';
@@ -12,6 +12,7 @@ import { Product } from 'src/shared/models/product.model';
 import { Price } from 'src/shared/models/price.model';
 import { Coupon } from 'src/shared/models/coupon.model';
 import { CouponService } from 'src/shared/services/coupon.service';
+import { MatPaginator } from '@angular/material/paginator';
 
 interface SubscriptionInList {
   userName: string,
@@ -57,12 +58,12 @@ export class SubscriptionsListComponent {
 
   dataSource = new MatTableDataSource<SubscriptionInList>();
 
-  // @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
   @Input() enableNavigateToUser: boolean = true
 
   queryParamsSubscription: Subscription
-  // pageSize: number = 4
-  // totalLength: number
+  pageSize: number = 4
+  totalLength: number
 
   combinedServicesSubscription: Subscription
   subscriptionsSubscription: Subscription
@@ -93,10 +94,10 @@ export class SubscriptionsListComponent {
     })
   }
 
-  // ngAfterViewInit() {
-  //   this.dataSource.paginator = this.paginator;
-  //   this.dataSource.paginator.pageSize = this.pageSize;
-  // }
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.paginator.pageSize = this.pageSize;
+  }
 
   performSearch(searchTerm: string, page: number) {
     this.subscriptionService.getSubscriptions$().subscribe(subscriptions => {
@@ -124,10 +125,9 @@ export class SubscriptionsListComponent {
       // Filtering
       const filteredSubscriptions = searchTerm ? subscriptionsInList.filter(sub => sub.userName.toLowerCase().includes(searchTerm.toLowerCase())) : subscriptionsInList;
   
-      // this.paginator.pageIndex = page - 1;
-      // this.dataSource.data = filteredSubscriptions.slice(this.paginator.pageIndex * this.pageSize, (this.paginator.pageIndex + 1) * this.pageSize);
-      // this.totalLength = filteredSubscriptions.length;
-      this.dataSource.data = filteredSubscriptions;
+      this.paginator.pageIndex = page - 1;
+      this.dataSource.data = filteredSubscriptions.slice(this.paginator.pageIndex * this.pageSize, (this.paginator.pageIndex + 1) * this.pageSize);
+      this.totalLength = filteredSubscriptions.length;
     });
   }
 
@@ -217,12 +217,12 @@ export class SubscriptionsListComponent {
   }
   // ------- 
 
-  // onPageChange(subscriptionPage: number): void {
-  //   this.router.navigate([], {
-  //     queryParams: { subscriptionPage },
-  //     queryParamsHandling: 'merge'
-  //   });
-  // }
+  onPageChange(subscriptionPage: number): void {
+    this.router.navigate([], {
+      queryParams: { subscriptionPage },
+      queryParamsHandling: 'merge'
+    });
+  }
 
   onSelect(subscription) {
 
