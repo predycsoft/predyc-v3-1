@@ -88,7 +88,7 @@
   font-size: 12px;
 }
 
-html,
+html:not(.swal2-shown):not(.swal2-height-auto),
 body {
   margin: 0;
   padding: 0;
@@ -1640,7 +1640,11 @@ a {
 
 .swal2-x-mark-line-right, .swal2-x-mark-line-left {
   font-size: 16px !important;
-} 
+}
+
+.swal2-height-auto{
+  height: 100% !important;
+}
 
 caption{
   font-size: 0.75rem;

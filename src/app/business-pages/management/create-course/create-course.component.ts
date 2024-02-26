@@ -2149,7 +2149,10 @@ export class CreateCourseComponent {
                     //Actualizar Firebase con el ID del subproyecto si es necesario
                     const subProjectId = newSubProject.uri.split('/').pop();
                     //this.updateFolderVimeoCurso(subProjectId, newSubProject.uri); // Asumiendo que esto es lo que deseas hacer
+                    console.log('crear carpeta curso')
                     this.curso.vimeoFolderId = subProjectId;
+                    this.formNewCourse.get("vimeoFolderId").patchValue(subProjectId);
+
                   }),
                   // Luego de crear el subproyecto, agrega el video a él
                   switchMap(newSubProject => this.uploadControl.addVideoToProject(newSubProject.uri.split('/').pop(), response.uri))
