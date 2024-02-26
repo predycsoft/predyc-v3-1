@@ -1,8 +1,7 @@
-import { Component, Input, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
+import { Component, Input } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription, combineLatest, map, of, switchMap } from 'rxjs';
+import { Subscription, combineLatest } from 'rxjs';
 import { SubscriptionService } from 'src/shared/services/subscription.service';
 import { UserService } from 'src/shared/services/user.service';
 import { Subscription as SubscriptionClass } from 'src/shared/models/subscription.model'
@@ -29,11 +28,11 @@ interface SubscriptionInList {
 }
 
 @Component({
-  selector: 'app-license-subscription-list',
-  templateUrl: './license-subscription-list.component.html',
-  styleUrls: ['./license-subscription-list.component.css']
+  selector: 'app-subscriptions-list',
+  templateUrl: './subscriptions-list.component.html',
+  styleUrls: ['./subscriptions-list.component.css']
 })
-export class LicenseSubscriptionListComponent {
+export class SubscriptionsListComponent {
 
   constructor(
     private router: Router,
