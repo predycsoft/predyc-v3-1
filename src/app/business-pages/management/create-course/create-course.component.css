@@ -1,7 +1,7 @@
 
-.container{
-    min-height: calc(100vh - 17rem);
-    max-height: calc(100vh - 17rem);
+.containerCurso{
+    min-height: calc(100vh + 10px);
+    max-height: calc(100vh + 10px);
     /* width: calc((100% - 1rem)*2/3);
      */
     /* overflow: auto; */
@@ -343,5 +343,5 @@ mat-icon-list {
 }
 
 .mat-mdc-form-field-subscript-wrapper{
-  display: none;
+  display: none !important;
 }

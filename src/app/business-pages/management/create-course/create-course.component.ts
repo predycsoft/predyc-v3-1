@@ -91,6 +91,7 @@ export class CreateCourseComponent {
   ];
 
   mode = this.route.snapshot.paramMap.get("mode")
+  textModulo = 'Crear nuevo curso'
 
   idCurso = this.route.snapshot.paramMap.get("idCurso")
   curso : Curso;
@@ -274,6 +275,12 @@ export class CreateCourseComponent {
   removeSkill(skill){
     this.curso.skillsRef = this.curso.skillsRef.filter(x=> x.id != skill.id)
     this.skillsCurso = this.getCursoSkills();
+    this.curso.skillsRef = this.tmpSkillRefArray
+    this.formNewCourse.get("skills").patchValue(this.curso.skillsRef);
+
+
+
+
   }
 
   initSkills(){
@@ -287,6 +294,7 @@ export class CreateCourseComponent {
         });
         if(this.mode == 'edit'){
           //console.log('curso edit', this.curso)
+          this.textModulo = 'Editar curso'
           let skillsProfile = this.curso.skillsRef;
           this.skillsCurso = this.getCursoSkills()
           skillsProfile.forEach(skillIn => {
@@ -411,7 +419,7 @@ export class CreateCourseComponent {
           resumen_instructor: new FormControl(instructor.resumen, Validators.required),
           imagen: new FormControl(curso.imagen, Validators.required),
           imagen_instructor: new FormControl(instructor.foto, Validators.required),
-          skills: new FormControl(curso.skillsRef),
+          skills: new FormControl(curso.skillsRef, Validators.required),
         });
 
         //this.formNewCourse.get('resumen_instructor').disable();
@@ -561,8 +569,32 @@ export class CreateCourseComponent {
   }
 
 
+  async saveDraftPre(){
+    let checkStatus = await this.chackAllInfo();
+    if(!checkStatus){
+      Swal.fire({
+        title: "Revisar datos",
+        text:"Existen problemas en el curso, ¿desea continuar?",
+        icon: "info",
+        showCancelButton: true,
+        confirmButtonText: "Guardar",
+        confirmButtonColor: 'var(--blue-5)',
+      }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+          this.saveDraft()
+        }
+      });
+    }
+    else{
+      //this.saveDraft()
+
+    }
+  }
+
   async saveDraft(){
-    //console.log('----- save borrador ------');
+    //console.log('----- save borrador ------')
+
 
     Swal.fire({
       title: 'Generando curso...',
@@ -574,23 +606,8 @@ export class CreateCourseComponent {
     });
 
   if(this.curso){
-    //console.log('datos curso',this.curso)
     let enterpriseRef =this.enterpriseService.getEnterpriseRef()
-    //this.curso.enterpriseRef = enterpriseRef;
     this.curso.enterpriseRef = null;
-    // if(this.competenciasSelected?.length>0){
-    //   let skills = [];
-    //   for (const category of this.competenciasSelected) {
-    //     for (const skill of category.competencias) {
-    //       //console.log(skill.id);
-    //       let skillRef = await this.afs.collection<Skill>(Skill.collection).doc(skill.id).ref;
-    //       skills.push(skillRef);
-    //     }
-    //   }
-    //   this.curso.skillsRef=skills;
-    //   this.courseRef = await this.afs.collection<Curso>(Curso.collection).doc(this.curso.id).ref;
-    // }
-
     if(!this.curso.skillsRef && this.curso['skills']){
       this.curso.skillsRef = this.curso['skills']
       delete this.curso['skills'];
@@ -830,11 +847,7 @@ export class CreateCourseComponent {
 
     if (this.activeStep < 6) {
       this.showErrorCurso = false;
-      // this.mensageCompetencias = "Selecciona una competencia para asignarla al curso";
-      // this.comepetenciaValid= true
-
       let valid = true;
-    
       if(this.activeStep == 1){
         console.log(this.formNewCourse)
         if(!this.formNewCourse.valid){
@@ -854,18 +867,8 @@ export class CreateCourseComponent {
             this.curso = newCurso
             this.curso.instructorNombre = this.curso.instructor
           }
-          //console.log('this.curso',this.curso)
         }
       }
-      // if(this.activeStep == 2){
-      //   this.getSelectedCategoriasCompetencias()
-      //   //console.log(this.competenciasSelected);
-      //   if(!this.competenciasSelected || this.competenciasSelected?.length==0){
-      //     valid = false;
-      //     this.mensageCompetencias = "Por favor seleccione una competencia";
-      //     this.comepetenciaValid = false;
-      //   }
-      // }
 
       if(this.activeStep == 2){
 
@@ -924,6 +927,78 @@ export class CreateCourseComponent {
     }
   }
 
+  async chackAllInfo(){
+    this.showErrorCurso = false;
+    let valid = true;
+    console.log('formNewCourse',this.formNewCourse)
+    console.log(this.formNewCourse)
+    if(!this.formNewCourse.valid){
+      valid = false;
+    }
+    else{
+      console.log('datos curso',this.formNewCourse.value)
+      if(this.curso){
+        this.curso = this.formNewCourse.value;
+        this.curso.instructorNombre = this.curso.instructor
+      }
+      else{
+        let id = await this.afs.collection<Curso>(Curso.collection).doc().ref.id;
+        let newCurso = new Curso;
+        this.formNewCourse.get("id").patchValue(id);
+        newCurso = this.formNewCourse.value;
+        this.curso = newCurso
+        this.curso.instructorNombre = this.curso.instructor
+      }
+    }
+    if(!this.validarModulosClases()){
+      valid = false;
+    }
+    this.updateTriggeQuestionsExam++;
+
+    await new Promise(resolve => setTimeout(resolve, 30));
+
+    if(this.validExam ==null || !this.validExam?.valid || this.validExam.value?.questions?.length == 0){
+      valid = false
+      this.updateTriggeQuestionsExam++;
+    }
+    else{
+      let questions = structuredClone(this.validExam.value.questions)
+      questions.forEach(question => {
+        if(!question.typeFormated){
+          question.typeFormated = this.getTypeQuestion(question.type)
+          if(question.type == 'complete'){
+            this.showDisplayText(question)
+          }
+        }
+      });
+      console.log('revisar',this.examen,questions)
+      if(this.examen){
+        this.examen.questions = questions
+      }
+      else{
+        let exam = new Activity();
+        exam.questions = questions
+        exam.type = 'test'
+        exam.title = `Questionario Final: ${this.curso.titulo}`
+        exam.updatedAt = new Date().getTime()
+        exam.createdAt = new Date().getTime()
+        this.examen = exam;
+      }
+
+      console.log('examen',this.examen)
+      //this.openModal(this.endCourseModal)
+    }
+    
+    if(valid) {
+      return true
+    }
+    else {
+      this.showErrorCurso = true;
+    }
+
+    return false
+    
+  }
   uploadingImgCurso = false;
   uploadingImgInstuctor = false;
   fileNameImgCurso = ''
