@@ -5,8 +5,10 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ProductService } from 'src/shared/services/product.service';
 import { stripeTimestampToNumberTimestamp } from 'src/shared/utils';
+import { DialogEditProductComponent } from './dialog-edit-product/dialog-edit-product.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-interface ProductsInList {
+interface ProductInList {
   name: string,
   priority: number,
   created: number,
@@ -25,6 +27,8 @@ export class ProductListComponent {
     private router: Router,
     private productService: ProductService,
     private activatedRoute: ActivatedRoute,
+    private modalService: NgbModal,
+
   ){}
 
   displayedColumns: string[] = [
@@ -34,7 +38,7 @@ export class ProductListComponent {
     "updated",
   ];
 
-  dataSource = new MatTableDataSource<ProductsInList>();
+  dataSource = new MatTableDataSource<ProductInList>();
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @Input() enableNavigateToUser: boolean = true
@@ -65,7 +69,7 @@ export class ProductListComponent {
 
   performSearch(page: number) {
     this.productSubscription = this.productService.getProducts$().subscribe(products => {
-      const productsInList: ProductsInList[] = products.map(product => {
+      const productsInList: ProductInList[] = products.map(product => {
         this.originalPriorities.set(product.id, product.priority);
         return {
           name: product.name,
@@ -82,9 +86,9 @@ export class ProductListComponent {
 
   }
 
-  onPriorityChange(product: ProductsInList) {
+  onPriorityChange(product: ProductInList) {
     this.showSaveButton = true;
-    // You might also want to track which products have changed if you need to save selectively
+    // here we can check if all the priorities are as the initial state and hide the button
   }
 
   async savePriorities() {
@@ -105,8 +109,17 @@ export class ProductListComponent {
     });
   }
 
-  onSelect(subscription) {
+  onSelect(product: ProductInList) {
+    const modalRef = this.modalService.open(DialogEditProductComponent, {
+      animation: true,
+      centered: true,
+      size: 'auto',
+      backdrop: 'static',
+      keyboard: false 
+    })
 
+    modalRef.componentInstance.product = product;
+    // return modalRef
   }
 
   ngOnDestroy() {
