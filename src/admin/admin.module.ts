@@ -13,6 +13,7 @@ import { SaleComponent } from './admin-pages/sale/sale.component';
 import { StudentsComponent } from './admin-pages/students/students.component';
 import { AdminStudentListComponent } from './admin-pages/students/admin-student-list/admin-student-list.component';
 import { LicensesSubscriptionsComponent } from './admin-pages/licenses-subscriptions/licenses-subscriptions.component';
+import { LicensesListComponent } from './admin-pages/licenses-subscriptions/licenses-list/licenses-list.component';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import { LicensesSubscriptionsComponent } from './admin-pages/licenses-subscript
     SaleComponent,
     StudentsComponent,
     AdminStudentListComponent,
-    LicensesSubscriptionsComponent
+    LicensesSubscriptionsComponent,
+    LicensesListComponent
   ],
   imports: [
     SharedModule,

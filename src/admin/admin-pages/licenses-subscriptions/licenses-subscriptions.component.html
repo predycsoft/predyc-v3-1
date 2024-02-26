@@ -1,19 +1,37 @@
 <div class="mgt20 mgl20 mgr20">
     <p class="ft600 ft16 gray-10">Licencias y suscripciones</p>
-    <div fxLayout="row" fxLayoutAlign=" center">
-        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1rem" class=" ">
-            <div fxLayout="row" fxLayoutAlign=" center" class="shadow-animation radius20">
-                <app-search-input-box class=""></app-search-input-box>
+    <!-- license list -->
+    <div fxLayout="column" class="mgt03">
+        <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem">
+            <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="1rem"> 
+                <p class="ft600 ft14 gray-10 mgb0">Licencias</p>
             </div>
-            <!-- <button fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButtonAnim button-animation " 
-            style="border-radius: 24px !important;" >
+            <button fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButtonAnim button-animation " style="border-radius: 24px !important;">
                 <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="">
-                Nueva suscripción
-            </button> -->
+                Crear licencia
+            </button>
+        </div>
+        <div fxLayout="column" fxLayoutAlign="center center" class="fw vh50 " >
+            <app-licenses-list class="fw"></app-licenses-list>
         </div>
     </div>
-    <!-- license and suscriptions list -->
-    <div fxLayout="columm" fxLayoutAlign="center center" class="fw vh50 pdr20 mgt05" >
-        <app-license-subscription-list class="fw"></app-license-subscription-list>
+    <!-- subsciptions list -->
+    <div fxLayout="column" class="mgt05">
+        <div fxLayout="row" fxLayoutAlign="space-between center">
+            <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="1rem">
+                <p class="ft600 ft14 gray-10 mgb0">Suscripciones</p>
+                <div class="shadow-animation radius20">
+                    <app-search-input-box class=""></app-search-input-box>
+                </div>
+            </div>
+            <button fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButtonAnim button-animation " style="border-radius: 24px !important;">
+                <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="">
+                Crear suscripción
+            </button>
+        </div>
+        <div fxLayout="column" fxLayoutAlign="center center" class="fw vh50 pdb22" >
+            <app-license-subscription-list class="fw"></app-license-subscription-list>
+        </div>
     </div>
+
 </div>    
