@@ -1788,7 +1788,7 @@
         </div>
     </div>
 </ng-template>
-
+<!-- estoy aqui -->
 <ng-template #modalSkillsCourse let-modal>
     <div class="modal-header bg-web-primary text-white px-3 py-1">
       <div class="modal-title pd10" fxLayout="row" fxLayoutAlign="start center">
@@ -1808,6 +1808,10 @@
                             {{skill.name}}
                         </div>
                     </ng-container>
+                    <div matTooltip="Agregar competencia"
+                        style="display: inline-block; margin-right: 5px; margin-bottom: 5px;" class="skill-badge ListHover2 radius10 backGray2 pdl05 pdr05 gray-8 mgt05">
+                        +
+                    </div>
                 </div>
             </div>
         </div>
@@ -1839,8 +1843,8 @@
             <div fxLayout="row" class="fw">
                 <div class="form-group fw">
                     <label>Nombre del pilar</label>
-                    <input formControlName="nombre" [class.is-invalid]="formNewPillar.controls['nombre'].errors && showErrorInstructor" type="text" class="form-control customInput" placeholder="Escriba el nombre del pilar">
-                    <div class="invalid-feedback" *ngIf="formNewPillar.controls['nombre'].errors && showErrorInstructor"> 
+                    <input formControlName="nombre" [class.is-invalid]="formNewPillar.controls['nombre'].errors && showErrorPillar" type="text" class="form-control customInput" placeholder="Escriba el nombre del pilar">
+                    <div class="invalid-feedback" *ngIf="formNewPillar.controls['nombre'].errors && showErrorPillar"> 
                         Debe indicar el nombre del pilar.
                     </div>
                 </div>
@@ -1848,11 +1852,26 @@
             <div fxLayout="row" class="fw" fxLayoutAlign="start center" fxLayoutGap="10px">
                 <div class="form-group" fxFlex>
                     <label>Agregar Competencia</label>
-                    <input type="text" class="form-control customInput" placeholder="Escriba el nombre del instructor del curso aquí">
+                    <input formControlName="skillTmp"  [class.is-invalid]="formNewPillar.controls['skillTmp'].errors && showErrorPillarSkill" type="text" class="form-control customInput" placeholder="Escriba de la competencia">
                 </div>
-                <button class="add-competence-btn">
+                <div class="invalid-feedback" *ngIf="formNewPillar.controls['skillTmp'].errors && showErrorPillarSkill"> 
+                    Debe indicar el nombre de la competencia.
+                </div>
+                <button (click)="addSkill()" class="blueButton radius4 ft12 h28px mgr10 gray-1 mgt15">
                     Agregar
                 </button>
+            </div>
+            <div>
+                <div class="skills-container">
+                    <ng-container *ngFor="let skill of formNewPillar.get('skills')?.value; let indexSkill = index">
+                        <div
+                            style="display: inline-block; margin-right: 5px; margin-bottom: 5px;"
+                            class="skill-badge-complete ListHover2 radius10 backGray2 pdl05 pdr05 gray-8 mgt05">
+                            {{skill}}
+                            <img (click)="removeSkillTmp(skill)" style="cursor: pointer;"  [src]="icon.close"  class="h16px"  alt="">
+                        </div>
+                    </ng-container>
+                </div>
             </div>
         </form>
 
@@ -1860,7 +1879,7 @@
         
         <!-- Botón de guardar en la esquina inferior derecha -->
         <div fxLayout="row" fxLayoutAlign="end" class="pdt03">
-            <button class="blueButton radius4 ft12 h28px mgr10 gray-1" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+            <button (click)="!savingPillar?saveNewPillar():''" class="{{!savingPillar?'blueButton gray-1':'grayButton gray-8 '}} radius4 ft12 h28px mgr10 " fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                 <img [src]="icon.save" class="h16px pdr05 makeWhite" alt="">
                 Guardar Pilar
             </button>

@@ -142,6 +142,8 @@ export class CreateCourseComponent {
   }
 
 
+
+
   user
 
 
@@ -284,9 +286,9 @@ export class CreateCourseComponent {
   }
 
   initSkills(){
-    this.categoryService.getCategoriesObservable().pipe(filter(category=>category.length>0),take(1)).subscribe(category => {
+    this.categoryService.getCategoriesObservable().pipe().subscribe(category => {
       console.log('category from service', category);
-      this.skillService.getSkillsObservable().pipe(filter(skill=>skill.length>0),take(1)).subscribe(skill => {
+      this.skillService.getSkillsObservable().pipe().subscribe(skill => {
         console.log('skill from service', skill);
         this.allskills = skill;
         skill.map(skillIn => {
@@ -360,6 +362,31 @@ export class CreateCourseComponent {
       }
     }
 
+  }
+
+
+
+  createPillar(){
+    this.savingPillar = false;
+    this.pillarsForm.patchValue('')
+
+    this.curso.skillsRef = [];
+    this.skillsCurso= [];
+
+    this.showErrorPillar = false
+    this.showErrorPillarSkill = false
+
+    this.formNewPillar = new FormGroup({
+      nombre: new FormControl(null, Validators.required),
+      skills: new FormControl([]),
+      skillTmp: new FormControl(null, Validators.required),
+    })
+
+    this.modalPillar =  this.modalService.open(this.modalCrearPilarContent, {
+      ariaLabelledBy: 'modal-basic-title',
+      centered: true,
+      size:'lg'
+    });  
   }
   
 
@@ -547,28 +574,92 @@ export class CreateCourseComponent {
   }
 
   showErrorPillar
+  showErrorPillarSkill
   formNewPillar: FormGroup
   modalPillar
-  
 
-  createPillar(){
+
+  addSkill(){
+    this.showErrorPillarSkill = false
+    
+    let skill = this.formNewPillar.get('skillTmp')?.value
+    if(!skill){
+      this.showErrorPillarSkill = true
+    }
+    else{
+      let skillsTmpAdd = this.formNewPillar.get('skills')?.value
+      if(!skillsTmpAdd.find(x=>x == skill)){ 
+        skillsTmpAdd.push(skill)
+        this.formNewPillar.get("skillTmp").patchValue('');
+      }
+      else{
+        this.formNewPillar.get("skillTmp").patchValue('');
+        this.showErrorPillarSkill = true
+      }
+    }
+    
+
+  }
+
+  savingPillar = false;
+
+  async saveNewPillar(){
+    this.savingPillar = true;
     this.showErrorPillar = false
+    this.showErrorPillarSkill = false
+
+    let pillar =this.formNewPillar.get('nombre')?.value;
+    let skills = this.formNewPillar.get('skills')?.value;
 
 
-    this.formNewPillar = new FormGroup({
-      nombre: new FormControl(null, Validators.required),
-      skills: new FormControl(null),
+    let pillarCheck = this.categoriasArray.find(x=> x.name == pillar)
 
-    })
+    if(pillarCheck){
+      this.showErrorPillar = true
+      this.savingPillar = false;
 
-    this.modalPillar =  this.modalService.open(this.modalCrearPilarContent, {
-      ariaLabelledBy: 'modal-basic-title',
-      centered: true,
-      size:'lg'
-    });  
+      Swal.fire({
+        title:'Info!',
+        text:`Ya existe un pilar con este nombre`,
+        icon:'info',
+        confirmButtonColor: 'var(--blue-5)',
+      })
+      return
+    }
+
+    if(pillar && skills?.length>0){
+      let category = new Category(null,pillar,null)
+      await this.categoryService.addCategory(category)
+      let categoryRef = this.afs.collection<any>('category').doc(category.id).ref;
+      for(let skill of skills){
+        let skillAdd = new Skill(null,skill,categoryRef,null)
+        await this.skillService.addSkill(skillAdd)
+      }
+      this.modalPillar.close()
+      this.alertService.succesAlert("El pilar se ha guarado exitosamente")
+      this.savingPillar = false;
+
+    }
+    else{
+      this.savingPillar = false;
+      this.showErrorPillar = true
+      this.showErrorPillarSkill = true
+    }
+
   }
 
 
+  removeSkillTmp(skill){
+    let skillsTmpAdd = this.formNewPillar.get('skills')?.value
+    skillsTmpAdd = skillsTmpAdd.filter(x=>x!=skill)
+    this.formNewPillar.get("skills").patchValue(skillsTmpAdd);
+
+    // this.curso.skillsRef = this.curso.skillsRef.filter(x=> x.id != skill.id)
+    // this.skillsCurso = this.getCursoSkills();
+    // this.curso.skillsRef = this.tmpSkillRefArray
+    // this.formNewCourse.get("skills").patchValue(this.curso.skillsRef);
+  }
+  
   async saveDraftPre(){
     let checkStatus = await this.chackAllInfo();
     if(!checkStatus){
