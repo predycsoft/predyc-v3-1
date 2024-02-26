@@ -7,11 +7,12 @@ import { SharedModule } from 'src/shared/shared.module';
 import { CreateDemoComponent } from './admin-pages/create-demo/create-demo.component';
 import { EnterpriseListComponent } from './admin-pages/enterprise-list/enterprise-list.component';
 import { ProductListComponent } from './admin-pages/product-list/product-list.component';
-import { LicenseSubscriptionListComponent } from './admin-pages/license-subscription-list/license-subscription-list.component';
+import { LicenseSubscriptionListComponent } from './admin-pages/licenses-subscriptions/license-subscription-list/license-subscription-list.component';
 import { RoyaltyComponent } from './admin-pages/royalty/royalty.component';
 import { SaleComponent } from './admin-pages/sale/sale.component';
 import { StudentsComponent } from './admin-pages/students/students.component';
 import { AdminStudentListComponent } from './admin-pages/students/admin-student-list/admin-student-list.component';
+import { LicensesSubscriptionsComponent } from './admin-pages/licenses-subscriptions/licenses-subscriptions.component';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import { AdminStudentListComponent } from './admin-pages/students/admin-student-
     RoyaltyComponent,
     SaleComponent,
     StudentsComponent,
-    AdminStudentListComponent
+    AdminStudentListComponent,
+    LicensesSubscriptionsComponent
   ],
   imports: [
     SharedModule,

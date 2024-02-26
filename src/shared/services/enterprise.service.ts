@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { Enterprise, EnterpriseJson } from '../models/enterprise.model';
 import { AlertsService } from './alerts.service';
 import { AuthService } from './auth.service';
@@ -39,6 +39,10 @@ export class EnterpriseService {
         })
       }
     });
+  }
+
+  getAllEnterprises$(): Observable<Enterprise[]> {
+    return this.afs.collection<Enterprise>(Enterprise.collection).valueChanges()
   }
 
   async addEnterprise(enterprise: Enterprise): Promise<void> {
