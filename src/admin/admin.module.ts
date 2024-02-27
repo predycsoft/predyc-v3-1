@@ -17,7 +17,7 @@ import { LicensesListComponent } from './admin-pages/licenses-subscriptions/lice
 import { SubscriptionsListComponent } from './admin-pages/licenses-subscriptions/subscriptions-list/subscriptions-list.component';
 import { ProductsComponent } from './admin-pages/licenses-subscriptions/products/products.component';
 import { CouponsListComponent } from './admin-pages/licenses-subscriptions/products/coupons-list/coupons-list.component';
-import { DialogEditProductComponent } from './admin-pages/licenses-subscriptions/products/product-list/dialog-edit-product/dialog-edit-product.component';
+import { DialogProductFormComponent } from './admin-pages/licenses-subscriptions/products/product-list/dialog-product-form/dialog-product-form.component';
 
 
 @NgModule({
@@ -37,7 +37,7 @@ import { DialogEditProductComponent } from './admin-pages/licenses-subscriptions
     LicensesSubscriptionsComponent,
     ProductsComponent,
     CouponsListComponent,
-    DialogEditProductComponent
+    DialogProductFormComponent
   ],
   imports: [
     SharedModule,
