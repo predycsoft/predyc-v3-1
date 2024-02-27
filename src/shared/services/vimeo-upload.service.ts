@@ -211,6 +211,18 @@ export class VimeoUploadService {
     return this.http.post('https://api.vimeo.com/me/projects', body, { headers });
   }
 
+  createSubProject(projectName: string,parentUri:string): Observable<any> {
+    const headers = {
+      'Authorization': `Bearer ${this.accessToken}`,
+      'Content-Type': 'application/json'
+    };
+    const body = {
+      name: projectName,
+      parent_folder_uri: parentUri
+    };
+    return this.http.post('https://api.vimeo.com/me/projects', body, { headers });
+  }
+
 //   createSubProject(access_token: string, parentFolderUri: string, subProjectName: string): Observable<any> {
 //     const headers = {
 //       'Authorization': `Bearer ${access_token}`,

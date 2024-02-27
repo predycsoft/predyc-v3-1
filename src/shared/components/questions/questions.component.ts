@@ -89,11 +89,6 @@ const questionTypeToValidators = {
 })
 export class QuestionsComponent {
 
-
-
-
-
-
   // @Input() selectedPaymentMethod: string = '';
   @Input() selectedTestSkills = []
   @Input() checkQuestions
@@ -101,6 +96,8 @@ export class QuestionsComponent {
   @Input() heartsActivity = false
   @Input() nameCurso
   @Input() nameEmpresa
+  @Input() questionMaxSize: number = 50
+
 
   @Output() emmitForm = new EventEmitter();
 
@@ -109,11 +106,10 @@ export class QuestionsComponent {
     if (changes.checkQuestions) {
       if(this.checkQuestions !=0){
         this.submitForm();
-
-        //mainForm submit
       }
-      // React to the update trigger
-      // For example, refresh some data or reinitialize part of the component
+    }
+    if(changes.questionsArray){
+      this.init()
     }
   }
 
@@ -123,7 +119,7 @@ export class QuestionsComponent {
 
     this.emmitForm.emit(this.mainForm);
 
-    if (!this.mainForm?.valid) {
+    if (!this.mainForm?.valid || this.questions?.controls?.length==0) {
       this.displayErrors= true
     }
   }
@@ -147,7 +143,6 @@ export class QuestionsComponent {
   questionTypes = Question.TYPES_INFO
   QuestionClass = Question
 
-  questionMaxSize: number = 50
 
   displayErrors: boolean = false
 
@@ -157,8 +152,10 @@ export class QuestionsComponent {
   selectedQuestionSkills: [] | null = null
 
   ngOnInit() {
+    this.init();
+  }
 
-    
+  init(){
     this.emmitForm.emit(null);
     console.log('selectedTestSkills',this.selectedTestSkills,this.nameCurso,this.nameEmpresa)
     this.setupForm()
@@ -167,7 +164,7 @@ export class QuestionsComponent {
       this.questionTypes = this.questionTypes.filter( q=> q.value == "single_choice")
     }
 
-    console.log('questionTypes',this.questionTypes)
+    console.log('questionTypes',this.questionTypes,this.questions)
   }
   
 
@@ -219,7 +216,7 @@ export class QuestionsComponent {
     }
   
     this.questionStatus.push({
-      expanded: true,
+      expanded: false,
       visibleImage: false,
       placeholders: [],
       textToRender: null

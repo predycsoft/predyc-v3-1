@@ -95,7 +95,7 @@ import { SharedModule } from 'src/shared/shared.module';
     ProfilesComponent,
     StudentInfoFormComponent,
     StudentStudyPlanAndCompetencesComponent,
-    StudyTimeMonthlyLineChartComponent,
+    StudyTimeMonthlyLineChartComponent,    
   ],
   imports: [
     BrowserModule,

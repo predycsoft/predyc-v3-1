@@ -395,15 +395,22 @@
                 </div>
             </ng-container>
             <div fxLayout="row" class="fw">
-                <div class="mgl40 mgr10 fw">
+                <div class="mgr10 fw">
                     <div class="fw mgb10">
-                        <span (click)="addQuestion()" class="yellowLink radius4 ft12 h28px no-select" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign=" center">
-                            <img [src]="icon.addNew" class="h12px pdr05 makeYellow" alt="">
+                        <span (click)="addQuestion()" class="blueLink radius4 ft12 h28px no-select" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign=" center">
+                            <img [src]="icon.addNew" class="h12px pdr05 makeBlue" alt="">
                             Agregar pregunta
                         </span>
                     </div>
                 </div>
             </div>
+            <div *ngIf="questions?.controls?.length==0 && displayErrors" fxLayout="row" class="fw custom-invalid-feedback">
+                <div class="mgl05 mgr10 fw" fxLayoutAlign="start center">
+                    <mat-icon class="red-5 ft16">info</mat-icon>
+                    <span class="redText">El examen o activiadad debe tener al menos una pregunta</span>
+                </div>
+            </div>
+            
         </div>
     </ng-container>
 </form>

@@ -1,32 +1,36 @@
-<div class="fw" class="fw backWhite radius10 pd20" fxLayout="column">
+<div class="fw" class="fw backWhite radius10" fxLayout="column">    <div [ngClass]="true ? 'header--edit' : ''" fxLayout="row" fxLayoutAlign="space-between " class="header pdr10 pdl10">
+    <div *ngIf="true;" fxLayout="row" fxLayoutAlign="space-between center" class="fw fh pdt05 pdb05" >
+        <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign=" center">
+            <span class="input-box ft12" placeholder="Nombre del curso">{{formNewCourse.get('titulo')?.value}}</span>
+        </div>
+        <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign=" center">
+            <div class="radius20 pdl10 pdr10 pdt05 pdb05 backWhite ft14 cursorPointer" routerLink="/management/courses"> 
+                Cancelar
+            </div>
+            <button
+                fxLayout="row"
+                fxLayoutGap="0.625"
+                fxLayoutAlign="center center"
+                class="blueButton ft14 cursorPointer"
+                (click)="saveDraftPre()"
+                style="border-radius: 24px !important;">
+                {{mode !== 'edit' ? 'Agregar curso' : 'Editar curso'}}
+                <img [src]="icon.save" class="h16px pdl05 makeWhite" alt="">
+            </button>
+        </div>
+    </div>
+</div>
     <div class="fw fh" fxLayout="column">
-        <div fxLayout="row">
-            <div class="pdl10 pdr10 pdt10">
-                <span class=" gray-10 ft600 ft16">Crear nuevo curso</span>
-            </div>
-        </div>
-        <div fxLayout="row">
-            <div class="fw pdl10 pdr10 pdt10">
-                <div class="fw border-b">
-                    <div class="stepper pdb10">
-                        <div class="step" *ngFor="let item of steps; let i = index">
-                            <div class= "no-select {{activeStep == i+1 ? 'circleStepActive': 'circleStep'}} {{  activeStep > i ? 'cursorPointer' : ''}}">{{ i + 1 }}</div>
-                            <div (click)="activeStep > i ? activeStep = i+1 : '' " class="no-select {{ activeStep == i+1 ? 'titleActive ft400': 'title' }}  {{ activeStep > i ? 'cursorPointer' : '' }}">{{ item }}</div>
-                            <div class="mgr05" *ngIf="i < steps.length - 1">
-                                <img [src]="icon.chevronRight" class="{{ activeStep == i+1 ? 'makeGray8': 'makeGray' }}" alt="">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
         <!-- Tab 1 Informacion del curso -->
         <ng-container *ngIf="activeStep == 1">
-            <div fxFlex fxLayout="row" class="container">
-                <div fxFlex="60%" class="pdl10 pdr10 pdt10">
+            <div fxLayout="row" class="containerCurso fw">
+                <div fxFlex="50%" class="pdl10 pdt10 fw">
                     <div fxLayout="column" class="fw fh hideScroll" style="overflow-y: auto;">
                         <form [formGroup]="formNewCourse" class="mgr20">
-                            <div class="form-group pdt10">
+                            <div class=" pdr10  fw">
+                                Datos
+                            </div>
+                            <div class="form-group">
                                 <label>Título</label>
                                 <input
                                 [class.is-invalid]="formNewCourse.controls['titulo'].errors && showErrorCurso"
@@ -123,44 +127,54 @@
                                     Debe indicar que se aprenderá durante el curso.
                                 </div>
                             </div> -->
-                            <!-- aqui validar en el futuro cuando sea propio -->
-                            <ng-container *ngIf="false">
-                                <div class="form-group pdt10">
-                                    <label>Nombre del instructor</label>
-                                    <input formControlName="instructor" [class.is-invalid]="formNewCourse.controls['instructor'].errors && showErrorCurso" type="text" class="form-control customInput" placeholder="Escriba el nombre del instructor del curso aquí">
-                                    <div class="invalid-feedback" *ngIf="formNewCourse.controls['instructor'].errors && showErrorCurso"> 
-                                        Debe indicar el nombre del instructor.
-                                    </div>
-                                </div>
-                                <div class="form-group pdt10">
-                                    <label>Resumen del instructor</label>
-                                    <textarea rows="3" [class.is-invalid]="formNewCourse.controls['resumen_instructor'].errors && showErrorCurso"  formControlName="resumen_instructor" type="text" class="form-control customInput" placeholder="Escriba el resumen del instructor aquí." style="resize: none;"></textarea>
-                                    <div class="invalid-feedback" *ngIf="formNewCourse.controls['resumen_instructor'].errors && showErrorCurso"> 
-                                        Debe indicar el resumen del instructor.
-                                    </div>
-                                </div>
-                                <div class="form-group pdt10">
-                                    <label>Foto del instructor</label><label class="pdl30">o seleccione un avátar</label>
-                                    <div class="avatar-selector">
-                                        <!-- <button class="add-button">Adjuntar nueva</button> -->
-                                        <button (click)="instructorImage.click()" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
-                                            <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
-                                            Adjuntar imagen
-                                        </button>
-                                        <input #instructorImage type="file" (change)="uploadCourseImage($event,'instructor')" hidden accept="image/jpeg, image/png" />
-                                        <div class="avatar-scroll">
-                                            <img *ngFor="let imagen of avatarInstructor" (click)="seleccionarImagenInstructor(imagen)" [src]="imagen" alt="Imagen seleccionada" class="image shadow8 cursorPointer {{this.formNewCourse.get('imagen_instructor').value == imagen? 'img-active':''}}">
+                            <div fxLayout="row" fxLayoutAlign=" center" class="mgt10 fw">
+                                <form class="fw">
+                                    <mat-form-field class="example-full-width fw">
+                                        <mat-label>Buscar Pilar</mat-label>
+                                        <input type="text"
+                                                class="fw"
+                                                placeholder="Seleccione uno"
+                                                aria-label="Number"
+                                                matInput
+                                                #autoTrigger="matAutocompleteTrigger"
+                                                [formControl]="pillarsForm"
+                                                [matAutocomplete]="autoPillars">
+                                        <mat-autocomplete [displayWith]="getOptionTextPillar" #autoPillars="matAutocomplete" class="options">
+                                        <mat-option (click)="changePillar(option)" class="multiline-mat-option" *ngFor="let option of filteredPillars | async" [value]="option">
+                                            <div fxLayout="row" fxLayoutAlign="space-between">
+                                            <div fxLayout="col" fxLayoutAlign="center center">
+                                                {{option.name | titlecase}}
+                                            </div>
+                                            </div>
+                                        </mat-option>
+                                        <mat-option  (click)="createPillar()" class="multiline-mat-option" value="null">Crear nuevo pilar</mat-option>
+                                        </mat-autocomplete>
+                                    </mat-form-field>
+                                </form>
+                            </div>
+                            <div fxLayout="row" fxLayoutAlign=" center" class="fw">
+                                <div class="skills-container">
+                                    <ng-container *ngFor="let skill of skillsCurso; let indexSkill = index">
+                                        <div
+                                            style="display: inline-block; margin-right: 5px; margin-bottom: 5px;"
+                                            class="skill-badge-complete ListHover2 radius10 backGray2 pdl05 pdr05 gray-8 mgt05">
+                                            {{skill.name}}
+                                            <img style="cursor: pointer;" (click)="removeSkill(skill)" [src]="icon.close"  class="h16px"  alt="">
                                         </div>
+                                    </ng-container>
+                                    <div *ngIf="skillsCurso?.length<3 && pillarsForm.value" matTooltip="Agregar competencia"
+                                    style="display: inline-block; margin-right: 5px; margin-bottom: 5px;"
+                                       (click)="openModal(modalSkillsCourse,'md')" class="skill-badge ListHover2 radius10 backGray2 pdl05 pdr05 gray-8 mgt05">
+                                        +
                                     </div>
                                 </div>
-                                <div *ngIf="formNewCourse.controls['imagen_instructor'].errors && showErrorCurso" class="custom-invalid-feedback pdt05">
-                                    Debe seleccinar el instructor
+                                <div *ngIf="formNewCourse.controls['skills'].errors && showErrorCurso" class="custom-invalid-feedback pdt05">
+                                    Debe seleccionar al menos una competencia.
                                 </div>
-                            </ng-container>
-                            <ng-container *ngIf="true">
+                            </div>
+                            <ng-container>
                                 <div fxLayout="row" fxLayoutAlign="center center" class="mgt10 fw">
-                                  <!-- Campo de autocompletar del instructor -->
-                                  <div fxFlex="90">
+                                  <div fxFlex="100">
                                     <form class="example-form">
                                       <mat-form-field class="example-full-width fw">
                                         <mat-label>Buscar Instructor</mat-label>
@@ -171,8 +185,8 @@
                                                matInput
                                                #autoTrigger="matAutocompleteTrigger"
                                                [formControl]="instructoresForm"
-                                               [matAutocomplete]="auto">
-                                        <mat-autocomplete [displayWith]="getOptionText" #auto="matAutocomplete" class="options">
+                                               [matAutocomplete]="autoInstructores">
+                                        <mat-autocomplete [displayWith]="getOptionText" #autoInstructores="matAutocomplete" class="options">
                                           <mat-option (click)="setInstructor(option)" class="multiline-mat-option" *ngFor="let option of filteredinstructores | async" [value]="option">
                                             <div fxLayout="row" fxLayoutAlign="space-between">
                                               <div fxLayout="col" fxLayoutAlign="center center">
@@ -184,17 +198,17 @@
                                         </mat-autocomplete>
                                       </mat-form-field>
                                     </form>
+                                    <div *ngIf="formNewCourse.controls['imagen_instructor'].errors && showErrorCurso" class="custom-invalid-feedback pdt05">
+                                        Debe seleccinar el instructor
+                                      </div>
                                   </div>
                               
                                   <!-- Foto del instructor -->
-                                  <div fxFlex="10" fxLayoutAlign=" center" class="avatar-selector pdb22 pdl10">
+                                  <!-- <div fxFlex="10" fxLayoutAlign=" center" class="avatar-selector pdb22 pdl10">
                                     <div class="avatar-scroll">
                                       <img *ngIf="formNewCourse.get('imagen_instructor').value" [src]="formNewCourse.get('imagen_instructor').value" alt="Imagen seleccionada" class="image shadow8">
                                     </div>
-                                    <div *ngIf="formNewCourse.controls['imagen_instructor'].errors && showErrorCurso" class="custom-invalid-feedback pdt05">
-                                      Debe seleccinar el instructor
-                                    </div>
-                                  </div>
+                                  </div> -->
                                 </div>
                                 
                                 <!-- Resto del formulario -->
@@ -211,10 +225,253 @@
                         </form>
                     </div>
                 </div>
-                <div fxFlex="40%" class="pdl10 pdr10 pdt10">
-                    <div fxLayout="column" fxLayoutAlign="center center" class="fw fh">
-                        <img class="pd10" src="../../../assets/images/cursos/computadoramacho.svg" class="fw" alt="Mi SVG">
+                <div fxFlex="50%" class="pdr10 pdt10 fw">
+                    <div fxLayout="column" class="fh wf">
+                        <div>
+                            <div class="pdl10 pdr10 pdt10 fw">
+                                Clases
+                            </div>
+                            <div class="pdl10 pdr10 pdt10 fw">
+                                <div fxLayout="column" class="fw smallScroll" style="height: 95%; overflow-y: auto;">
+                                    <!-- aqui van los modulos que se van creando -->
+                                    <div *ngFor="let modulo of modulos" class="{{modulo['isInvalid']? 'ContainerModuloInvalid' : 'ContainerModulo'}}">
+                                        <div fxLayout="row" fxLayoutAlign="space-between start" class="fw pd10 pdt05 pdb5">
+                                            <div fxLayout="row" fxLayoutGap="10px" class="fw">
+                                                <div class="ft500 ft12">
+                                                    <!-- numero del modulo -->
+                                                    Módulo {{modulo.numero}}:
+                                                </div>
+                                                <div class="ft12">
+                                                    <!-- nombre del modulo -->
+                                                    <img [src]="icon.document" class="h12px pdr05 makeGray" alt="">
+                                                    <div *ngIf="modulo.titulo && !modulo['editarTitulo']; then tituloPresente; else ModuloSinTitulo"></div>
+                                                    <ng-template #tituloPresente>
+                                                        <span>
+                                                            {{modulo.titulo}}
+                                                        </span>
+                                                        <img (click)="modulo['editarTitulo'] = true" [src]="icon.licencias" class="h18px pdl05 makeGray edit cursorPointer" alt="">
+                                                    </ng-template>
+                                                    <ng-template #ModuloSinTitulo>
+                                                        <input *ngIf="!modulo.titulo" type="text" (change)="onModuleTitleChange($event.target);" placeholder="Escriba título aquí" class="inputInvisible">
+                                                        <input *ngIf="modulo.titulo" type="text" (change)="onModuleTitleChange($event.target);" [value]="modulo.titulo" placeholder="Escriba título aquí" class="inputInvisible">
+                                                        <img (click)="modulo['editarTitulo'] = false; modulo.titulo = tituloModuloTMP; tituloModuloTMP='';" matTooltip= "Confirmar título" [src]="icon.check" class="h18px pdl05 makeGray edit cursorPointer" alt="">
+                                                    </ng-template>
+                                                </div>
+                                            </div>
+                                            <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="0.625">
+                                                <img (click)="deleteModule(modulo)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash" alt="">
+                                                <img *ngIf="modulo['expanded']" (click)="modulo['expanded'] = !modulo['expanded']; hideModuleClasses(modulo)" [src]="icon.chevronUp" class="h16px pdr05 cursorPointer" alt="">
+                                                <img *ngIf="!modulo['expanded']" (click)="modulo['expanded'] = !modulo['expanded']; hideOtherModules(modulo)" [src]="icon.chevronDown" class="h16px pdr05 cursorPointer" alt="">
+                                            </div>
+                                        </div>
+                                        <!-- Contenedor de las clases -->
+                                        <div *ngIf="modulo['expanded']">
+                                            <div *ngFor="let clase of modulo['clases']; trackBy: trackByClase" fxLayout="row" class="fw">
+                                                <div class="mgl40 mgr10 fw">
+                                                    <div class="fw mgb10">
+                                                        <mat-accordion multi="false" class="fw">
+                                                            <mat-expansion-panel [ngClass]="{'ContainerClase': clase['isInvalid']}" [expanded]="clase['expanded']" (opened)="closeOtherClasesModulo(clase,modulo)">
+                                                                <mat-expansion-panel-header>
+                                                                <mat-panel-title (click)="onPanelTitleClick($event)" fxLayout="row" fxLayoutAlign="space-between center">
+                                                                    <div fxLayout="row" fxLayoutAlign="start center">
+                                                                    <img [src]="icon[getIconClase(clase.tipo)]" class="h18px pdr05" alt="">
+                                                                    <div *ngIf="clase.titulo && !clase['editarTitulo']; then tituloPresenteClase; else ClaseSinTitulo"></div>
+                                                                    <ng-template #tituloPresenteClase>
+                                                                        <span>{{clase.tipo | titlecase }} {{getnumerClassTipo(modulo,clase)}}: {{clase.titulo}}</span>
+                                                                        <img (click)="clase['editarTitulo'] = true" [src]="icon.licencias" class="h18px pdl05 makeGray edit cursorPointer" alt="">
+                                                                    </ng-template>
+                                                                    <ng-template #ClaseSinTitulo>
+                                                                        <span>{{clase.tipo | titlecase }} {{getnumerClassTipo(modulo,clase)}}:</span>
+                                                                        <input (keydown.space)="preventDefault($event)"  *ngIf="!clase.titulo" type="text" (change)="onModuleTitleChange($event.target);" placeholder="Escriba título aquí" class="inputInvisible">
+                                                                        <input (keydown.space)="preventDefault($event)"  *ngIf="clase.titulo" type="text" (change)="onModuleTitleChange($event.target);" [value]="clase.titulo" placeholder="Escriba título aquí" class="inputInvisible">
+                                                                        <img (click)="clase['editarTitulo'] = false; clase.titulo = tituloclaseTMP; tituloclaseTMP='';" matTooltip= "Confirmar título" [src]="icon.check" class="h18px pdl05 makeGray edit cursorPointer" alt="">
+                                                                    </ng-template>
+                                                                    </div>
+                                                                    <img (click)="borrarClase(modulo,clase)" [src]="icon.trash" class="h16px pdr05 trash" alt="">
+                                                                </mat-panel-title>
+                                                                </mat-expansion-panel-header>
+                                                                <!-- si es de archivo es un drop -->
+                                                                <ng-container *ngIf="clase.tipo != 'actividad' &&  clase.tipo !='corazones'">
+                                                                    <div *ngIf="!clase['uploading']" class="fw h80px ContainerFile">
+                                                                        <div (dragover)="onDragOver($event)" (drop)="onDrop($event,clase.tipo,clase,modulo)"class="fw fh no-select" fxLayout="row" fxLayoutAlign="center center">
+                                                                            Arrastrar y soltar el archivo aquí
+                                                                        </div>
+                                                                    </div>
+                                                                    <div *ngIf="clase['uploading']" class="fw h80px ContainerUpload" fxLayout="column" fxLayoutAlign="center center" cla>
+                                                                        <!-- Contenido principal -->
+                                                                        <div class="fw fh no-select" fxLayout="row" fxLayoutAlign="center center">
+                                                                            <!-- Nombre del archivo -->
+                                                                            <div *ngIf="clase.tipo == 'lectura'" fxFlex="35" class="ft700" fxLayoutAlign="center center">
+                                                                                <div [matTooltip]="clase.archivos[0].nombre" class="w-80" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" >
+                                                                                    {{clase.archivos[0].nombre}}
+                                                                                </div>
+                                                                            </div>
+                                                                            <div *ngIf="clase.tipo == 'video'" fxFlex="35" class="ft700" fxLayoutAlign="center center">
+                                                                                <div [matTooltip]="clase['videoFileName']" class="w-80" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" >
+                                                                                    {{clase['videoFileName']}}
+                                                                                </div>
+                                                                            </div>
+                                                                            
+                                                                            <!-- Barra de progreso File pdf-->
+                                                                            <div *ngIf="clase.tipo == 'lectura'"fxFlex="25" fxLayout="row" fxLayoutAlign="center center">
+                                                                                <mat-progress-bar class="h10px radius6 {{clase.archivos[0].uploading_file_progress >= 100? 'complete-progress-bar': ''}}" mode="determinate" [value]="clase.archivos[0].uploading_file_progress"></mat-progress-bar>
+                                                                                <span *ngIf="clase.archivos[0].uploading_file_progress < 100" class="pdl05">{{clase.archivos[0].uploading_file_progress}}%</span>
+                                                                                <img *ngIf="clase.archivos[0].uploading_file_progress>=100" [src]="icon.check" class="h16px pdl05" alt="">
+                                                                            </div>
+            
+                                                                            <!-- Barra de progreso File video-->
+                                                                            <div *ngIf="clase.tipo == 'video'" fxFlex="25" fxLayout="row" fxLayoutAlign="center center">
+                                                                                <mat-progress-bar class="h10px radius6 {{clase['videoUpload'] >= 100? 'complete-progress-bar':''}}" mode="determinate" [value]="clase['videoUpload']"></mat-progress-bar>
+                                                                                <span *ngIf="clase['videoUpload']<100" class="pdl05">{{clase['videoUpload']}}%</span>
+                                                                                <img *ngIf="clase['videoUpload']>=100" [src]="icon.check" class="h16px pdl05" alt="">
+                                                                            </div>
+                                                                            
+                                                                            <!-- Fecha -->
+                                                                            <div *ngIf="clase.tipo == 'lectura'" fxFlex="20" fxLayoutAlign="center center">
+                                                                                {{clase.archivos[0].id |  date:'dd/MM/yy' }}
+                                                                            </div>
+                                                                            <div *ngIf="clase.tipo == 'video'" fxFlex="20" fxLayoutAlign="center center">
+                                                                                {{clase.id |  date:'dd/MM/yy' }}
+                                                                            </div>
+                                                                            
+                                                                            <!-- Link para vista previa -->
+                                                                            <div (click)="structureActivity(modalClaseDetail, clase, modulo)" fxFlex="20" class="blueLink" fxLayoutAlign="center center">
+                                                                                Abrir vista previa
+                                                                            </div>
+                                                                        </div>
+                                                                        <div fxLayout="row" fxLayoutAlign="center center">
+                                                                            El archivo se esta procesando, no cierres esta ventana.
+                                                                        </div>
+                                                                    </div>
+                                                                    <div fxLayout="row" fxLayoutAlign="center center" class="mgt15 mgb05">
+                                                                        <button (click)="FileInput.click()" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                                            <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
+                                                                            {{ ((clase.tipo == 'lectura' && !clase.archivos[0]) || (clase.tipo == 'video' && !clase.vimeoId1))? 'Seleccionar archivo' : 'Remplazar archivo'}}
+                                                                        </button>
+                                                                        <button (click)="verVideoVimeo(clase)" *ngIf="clase.tipo == 'video' && clase.vimeoId1" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                                            <img [src]="icon.playOutline" class="h16px pdr05" alt="">
+                                                                             Reproducir video
+                                                                        </button>
+                                                                        <button (click)="structureActivity(modalClaseDetail,clase,modulo)"  *ngIf="clase.archivos[0] || clase.tipo == 'video' && (clase['base64Video'] || clase.vimeoId1)" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                                            <img [src]="icon.folderUp" class="h16px pdr05" alt="">
+                                                                            Añadir recursos
+                                                                        </button>
+                                                                        <!-- <button (click)="openModalAsignarCompetencia(modalAsignarCompetenciasClases,clase)" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                                            <img [src]="icon.flash" class="h16px pdr05" alt="">
+                                                                            Seleccionar competencias
+                                                                        </button> -->
+                                                                        <ng-container *ngIf="clase.tipo == 'lectura'">
+                                                                            <!-- <button (click)="openModalAsignarCompetencia(modalAsignarCompetenciasClases,clase)" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                                                <img [src]="icon.flash" class="h16px pdr05" alt="">
+                                                                                Seleccionar sas
+                                                                            </button> -->
+                                                                            <span class="pdr05">Duración:</span>
+                                                                            <div class="w-40"><input [(ngModel)]="clase.duracion" (change)="clase['edited'] = true" type="number" min="1" class="form-control customInput"></div>
+                                                                            <span class="pdl05">minutos</span>
+                                                                        </ng-container>
+                                                                        
+                                                                    </div>
+                                                                        <input (change)="onFileSelected($event,clase,false,modulo)" type="file" accept="{{clase.tipo == 'lectura'?'.pdf' : 'video/mp4'}}"  #FileInput style="display: none;">
+                                                                </ng-container>
+                                                                <ng-container *ngIf="clase.tipo == 'actividad' || clase.tipo == 'corazones' ">
+                                                                    <div fxLayout="row" fxLayoutAlign="center center" class="mgt15 mgb05">
+                                                                        <button (click)="structureActivity(modalActividadDetail,clase,modulo);showErrorActividad = false" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                                            <img [src]="icon.taskAdd" class="h16px pdr05" alt="">
+                                                                            Estructurar actividad
+                                                                        </button>
+                                                                        <!-- <button (click)="openModalAsignarCompetencia(modalAsignarCompetenciasClases,clase)"class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                                            <img [src]="icon.flash" class="h16px pdr05" alt="">
+                                                                            <ng-container *ngIf="clase.competencias && clase.competencias?.length == 0">
+                                                                                Agregar competencias
+                                                                            </ng-container>
+                                                                            <ng-container *ngIf="clase.competencias?.length> 0">
+                                                                                Cantidad competencias : {{clase.competencias.length}}
+                                                                            </ng-container>
+                                                                        </button> -->
+                                                                    </div>
+                                                                </ng-container>
+                                                                <ng-container *ngIf="clase['isInvalid']">
+                                                                    <div class="mgl05 mgr10 fw" *ngFor="let mensaje of clase['InvalidMessages']" fxLayoutAlign="start center">
+                                                                        <mat-icon class="red-5 ft16">info</mat-icon>
+                                                                        <span class="redText">{{mensaje}}</span>
+                                                                    </div>
+                                                                </ng-container>
+                                                            </mat-expansion-panel>
+                                                        </mat-accordion>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div *ngIf="!modulo['addClassMode']" fxLayout="row" class="fw">
+                                                <div class="mgl40 mgr10 fw">
+                                                    <div class="fw mgb10">
+                                                        <span  (click)="modulo['addClassMode'] = !modulo['addClassMode']" class="yellowLink radius4 ft12 h28px no-select" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign=" center">
+                                                            <img [src]="icon.addNew" class="h12px pdr05 makeYellow" alt="">
+                                                            Agregar clase
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div *ngIf="modulo['addClassMode']" fxLayout="row" class="fw">
+                                                <div class="mgl40 mgr10 fw">
+                                                    <div class="fw mgb10">
+                                                        <div fxLayout="row" fxLayoutGap="0.625rem" fxLayoutAlign=" center">
+                                                            <span (click)="modulo['addClassMode'] = false">
+                                                                <img [src]="icon.close" class="h18px pdr05 makeRed" alt="">
+                                                            </span>
+                                                            <button (click)="addClase('lectura',modulo); modulo['addClassMode'] = false   " class="grayButton radius4 ft12 h28px gray-8">
+                                                                <img [src]="icon.addNew" class="h12px pdr05 makeGray8" alt="">
+                                                                Lectura
+                                                            </button>
+                                                            <button (click)="addClase('video',modulo); modulo['addClassMode'] = false   " class="grayButton radius4 ft12 h28px gray-8">
+                                                                <img [src]="icon.addNew" class="h12px pdr05 makeGray8" alt="">
+                                                                Video
+                                                            </button>
+                                                            <button (click)="addClase('actividad',modulo); modulo['addClassMode'] = false   " class="grayButton radius4 ft12 h28px gray-8">
+                                                                <img [src]="icon.addNew" class="h12px pdr05 makeGray8" alt="">
+                                                                Actividad
+                                                            </button>
+                                                            <button (click)="addClase('corazones',modulo); modulo['addClassMode'] = false   " class="grayButton radius4 ft12 h28px gray-8">
+                                                                <img [src]="icon.addNew" class="h12px pdr05 makeGray8" alt="">
+                                                                Corazones
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <ng-container *ngIf="modulo['isInvalid']">
+                                                <div class="mgl05 mgr10 fw" *ngFor="let mensaje of modulo['InvalidMessages']" fxLayoutAlign="start center">
+                                                    <mat-icon class="red-5 ft16">info</mat-icon>
+                                                    <span class="redText">{{mensaje}}</span>
+                                                </div>
+                                            </ng-container>
+                                        </div>
+                                    </div>
+                                    <div fxLayout="row">
+                                        <span (click)="addModulo()"  class="blueLink radius4 ft12 h28px no-select" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign=" center">
+                                            <img [src]="icon.addNew" class="h12px pdr05 makeBlue" alt="">
+                                            Agregar módulo
+                                        </span>
+                                    </div>
+                                    <ng-container *ngIf="isInvalidCases">
+                                        <div class="pdt05 fw" *ngFor="let mensaje of invalidMessages" fxLayoutAlign="start center">
+                                            <mat-icon class="red-5 ft16">info</mat-icon>
+                                            <span class="redText">{{mensaje}}</span>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="pdl10 pdr10 pdt10 fw">
+                                Examen
+                            </div>
+                            <div class="fw">
+                                <app-questions [questionMaxSize]="100" [nameCurso]="formNewCourse.get('titulo').value?  this.formNewCourse.get('titulo').value : 'Temporal'" [nameEmpresa]="empresa.name" (emmitForm)="validExam = $event" [questionsArray]="examen?.questions ? examen?.questions:[] " [checkQuestions]="updateTriggeQuestionsExam" [selectedTestSkills]="[]"></app-questions>
+                            </div>
+                        </div>
+                        
                     </div>
+
                 </div>
             </div>
         </ng-container>
@@ -228,7 +485,7 @@
             </app-skills-selector>
         </ng-container>
         <!-- Tab 3 Clases -->
-        <ng-container *ngIf="activeStep == 2">
+        <ng-container *ngIf="activeStep == 2 && false">
             <div fxFlex fxLayout="row" class="container">
                 <div fxFlex="60%" class="pdl10 pdr10 pdt10">
                     Clases
@@ -362,7 +619,7 @@
                                                                     Seleccionar sas
                                                                 </button> -->
                                                                 <span class="pdr05">Duración:</span>
-                                                                <div class="w-40"><input [(ngModel)]="clase.duracion" type="number" min="1" class="form-control customInput"></div>
+                                                                <div class="w-40"><input [(ngModel)]="clase.duracion" (change)="clase['edited'] = true" type="number" min="1" class="form-control customInput"></div>
                                                                 <span class="pdl05">minutos</span>
                                                             </ng-container>
                                                             
@@ -586,8 +843,7 @@
 
         <!-- Tab 6  Resumen -->
 
-        <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt10">
-            <!-- Botón a la izquierda -->
+        <!-- <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt10">
             <button
                 (click)="previousTab()"
                 class="blueButton radius4 ft12 h28px mgr10 gray-1"
@@ -599,7 +855,6 @@
                 <img [src]="icon.chevronLeft" class="h16px pdr05 makeWhite" alt="">
                 Regresar
             </button>         
-            <!-- Contenedor para los dos botones de la derecha -->
             <div fxLayout="row" fxLayoutGap="10px">
                 <button (click)="saveDraft()" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                     Guardar borrador
@@ -609,7 +864,7 @@
                     <img [src]="icon.chevronRight" class="h16px pdl05 makeWhite" alt="">
                 </button>   
             </div>
-        </div>
+        </div> -->
     </div>
 </div>
 
@@ -689,8 +944,8 @@
                             <img [src]="icon[getIconFileFormat('video')]" class="h32px pdr05" alt="">
                         </div>
                         <div fxLayout="column">
-                            <span>{{selectedClase['videoFileName']}}</span>
-                            <span>Subido {{selectedClase.id |  customDate }}</span>
+                            <span>{{selectedClase['videoFileName']?selectedClase['videoFileName'] : selectedClase.titulo}}</span>
+                            <!-- <span>Subido {{selectedClase.id |  customDate }}</span> -->
                         </div>
                     </div>
                     <div fxLayout="row" class="pdb10">
@@ -728,9 +983,13 @@
                     <ngx-extended-pdf-viewer *ngIf="fileViewTipe == 'pdf' && base64view " [showToolbar]="false" [base64Src]="base64view" [useBrowserLocale]="true" height="60vh"></ngx-extended-pdf-viewer>
                     <ngx-extended-pdf-viewer *ngIf="fileViewTipe == 'pdf' && srsView " [showToolbar]="false" [src]="srsView" [useBrowserLocale]="true" height="60vh"></ngx-extended-pdf-viewer>
                     <div class="video-container" *ngIf="fileViewTipe == 'video'">
-                        <video #videoPlayer controls *ngIf="fileViewTipe == 'video'">
+                        <video *ngIf="base64view" #videoPlayer controls>
                             <source type="video/mp4" src="data:video/mp4;base64,{{base64view}}">
                         </video>
+                        <iframe *ngIf="!base64view"
+                            id="myvideo" [src]="safeUrl" (load)="initPlayer()" frameborder="0"
+                            allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
+                        </iframe>
                     </div>
                 </div>
             </div>
@@ -1537,5 +1796,136 @@
         </div>
     </div>
 </ng-template>
+<!-- estoy aqui -->
+<ng-template #modalSkillsCourse let-modal>
+    <div class="modal-header bg-web-primary text-white px-3 py-1">
+      <div class="modal-title pd10" fxLayout="row" fxLayoutAlign="start center">
+        <span class="ft16 ft500 gray-10">Asignar competencias</span>
+      </div>
+      <img style="cursor: pointer;" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px" alt="">
+    </div>
+    <div class="modal-body" style="overflow-y: auto; max-height: 80vh;">
+        {{pillarsForm.value['name']}}
+        <div fxLayout="column">
+            <div fxLayout="row">
+                <div class="skills-container">
+                    <ng-container *ngFor="let skill of (pillarsForm.value['competencias'] | sortSkills:'name'); let indexSkill = index">
+                        <div (click)="troggleSkill(skill)"
+                            style="display: inline-block; margin-right: 5px; margin-bottom: 5px;"
+                            class="skill-badge-complete  radius10 {{courseHasSkill(skill)?'ListHoverBlue gray-1':'ListHover2 gray-8'}} pdl05 pdr05 mgt05 no-select cursorPointer">
+                            {{skill.name}}
+                        </div>
+                    </ng-container>
+                    <div (click)="crearCompetencia(modalCrearSkill)" matTooltip="Crear competencia"
+                        style="display: inline-block; margin-right: 5px; margin-bottom: 5px;" class="skill-badge ListHover2 radius10 backGray2 pdl05 pdr05 gray-8 mgt05">
+                        +
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
+        <!-- Botón de guardar en la esquina inferior derecha -->
+        <div fxLayout="row" fxLayoutAlign="end" class="pdt03">
+            <button (click)="saveNewSkills()" class="blueButton radius4 ft12 h28px mgr10 gray-1" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                <img [src]="icon.save" class="h16px pdr05 makeWhite" alt="">
+                Confirmar
+            </button>
+        </div>
+    </div>
+</ng-template>
+
+
+<ng-template #modalCrearSkill let-modal>
+    <div class="modal-header bg-web-primary text-white px-3 py-1">
+      <div class="modal-title pd10" fxLayout="row" fxLayoutAlign="start center">
+        <span class="ft16 ft500 gray-10">Crear competencia</span>
+      </div>
+      <img style="cursor: pointer;" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px" alt="">
+    </div>
+    <div class="modal-body" style="overflow-y: auto; max-height: 80vh;">
+        <form [formGroup]="formNewSkill" class="fw">
+            <div fxLayout="row" class="fw">
+                <div class="form-group fw">
+                    <label>Nombre de la competencia</label>
+                    <input formControlName="nombre" [class.is-invalid]="formNewSkill.controls['nombre'].errors && showErrorSkill" type="text" class="form-control customInput" placeholder="Escriba el nombre de la competencia">
+                    <div class="invalid-feedback" *ngIf="formNewSkill.controls['nombre'].errors && showErrorSkill">
+                        Debe indicar el nombre de la competencia.
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!-- Botón de guardar en la esquina inferior derecha -->
+        <div fxLayout="row" fxLayoutAlign="end end" class="pdt03" style="width: 100%;">
+            <button (click)="saveNewSkill()" class="blueButton gray-1 radius4 ft12 h28px mgt10" fxLayout="row" fxLayoutGap="0.625rem" fxLayoutAlign="center center">
+                <img [src]="icon.save" class="h16px pdr05 makeWhite" alt="">
+                Guardar competencia
+            </button>
+        </div>
+    </div>
+    
+</ng-template>
+
+
+
+
+<ng-template #modalCrearPilar let-modal>
+    <div class="modal-header bg-web-primary text-white px-3 py-1">
+      <div class="modal-title pd10" fxLayout="row" fxLayoutAlign="start center">
+        <span class="ft16 ft500 gray-10">Crear Pilar</span>
+      </div>
+      <img style="cursor: pointer;" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px" alt="">
+    </div>
+    <div class="modal-body" style="overflow-y: auto; max-height: 80vh;">
+
+
+        <form [formGroup]="formNewPillar" class="fw">
+            <div fxLayout="row" class="fw">
+                <div class="form-group fw">
+                    <label>Nombre del pilar</label>
+                    <input formControlName="nombre" [class.is-invalid]="formNewPillar.controls['nombre'].errors && showErrorPillar" type="text" class="form-control customInput" placeholder="Escriba el nombre del pilar">
+                    <div class="invalid-feedback" *ngIf="formNewPillar.controls['nombre'].errors && showErrorPillar"> 
+                        Debe indicar el nombre del pilar.
+                    </div>
+                </div>
+            </div>
+            <div fxLayout="row" class="fw" fxLayoutAlign="start center" fxLayoutGap="10px">
+                <div class="form-group" fxFlex>
+                    <label>Agregar Competencia</label>
+                    <input formControlName="skillTmp"  [class.is-invalid]="formNewPillar.controls['skillTmp'].errors && showErrorPillarSkill" type="text" class="form-control customInput" placeholder="Escriba de la competencia">
+                </div>
+                <div class="invalid-feedback" *ngIf="formNewPillar.controls['skillTmp'].errors && showErrorPillarSkill"> 
+                    Debe indicar el nombre de la competencia.
+                </div>
+                <button (click)="addSkill()" class="blueButton radius4 ft12 h28px mgr10 gray-1 mgt15">
+                    Agregar
+                </button>
+            </div>
+            <div>
+                <div class="skills-container">
+                    <ng-container *ngFor="let skill of formNewPillar.get('skills')?.value; let indexSkill = index">
+                        <div
+                            style="display: inline-block; margin-right: 5px; margin-bottom: 5px;"
+                            class="skill-badge-complete ListHover2 radius10 backGray2 pdl05 pdr05 gray-8 mgt05">
+                            {{skill}}
+                            <img (click)="removeSkillTmp(skill)" style="cursor: pointer;"  [src]="icon.close"  class="h16px"  alt="">
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+        </form>
+
+
+        
+        <!-- Botón de guardar en la esquina inferior derecha -->
+        <div fxLayout="row" fxLayoutAlign="end" class="pdt03">
+            <button (click)="!savingPillar?saveNewPillar():''" class="{{!savingPillar?'blueButton gray-1':'grayButton gray-8 '}} radius4 ft12 h28px mgr10 " fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                <img [src]="icon.save" class="h16px pdr05 makeWhite" alt="">
+                Guardar Pilar
+            </button>
+        </div>
+    </div>
+</ng-template>
+
 
   

@@ -17,8 +17,10 @@ import { LicensesListComponent } from './admin-pages/licenses-subscriptions/lice
 import { SubscriptionsListComponent } from './admin-pages/licenses-subscriptions/subscriptions-list/subscriptions-list.component';
 import { ProductsComponent } from './admin-pages/licenses-subscriptions/products/products.component';
 import { CouponsListComponent } from './admin-pages/licenses-subscriptions/products/coupons-list/coupons-list.component';
-import { DialogEditProductComponent } from './admin-pages/licenses-subscriptions/products/product-list/dialog-edit-product/dialog-edit-product.component';
 import { StudentDetailComponent } from './admin-pages/students/student-detail/student-detail.component';
+import { DialogProductFormComponent } from './admin-pages/licenses-subscriptions/products/product-list/dialog-product-form/dialog-product-form.component';
+import { PriceFormComponent } from './admin-pages/licenses-subscriptions/products/product-list/dialog-product-form/price-form/price-form.component';
+import { PricesListComponent } from './admin-pages/licenses-subscriptions/products/product-list/dialog-product-form/prices-list/prices-list.component';
 
 
 @NgModule({
@@ -38,8 +40,10 @@ import { StudentDetailComponent } from './admin-pages/students/student-detail/st
     LicensesSubscriptionsComponent,
     ProductsComponent,
     CouponsListComponent,
-    DialogEditProductComponent,
-    StudentDetailComponent
+    StudentDetailComponent,
+    DialogProductFormComponent,
+    PriceFormComponent,
+    PricesListComponent
   ],
   imports: [
     SharedModule,

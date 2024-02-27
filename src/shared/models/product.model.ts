@@ -38,6 +38,30 @@ export class Product {
 
     public static collection = 'product'
 
+    public static newProduct = {
+      acceptsStripe: false,
+      acceptsBankTransfer: false,
+      acceptsZelle: false,
+      acceptsPaypal: false,
+      active: true,
+      canEnrollByHimself: false,
+      canEnrollPrograms: false,
+      description: '',
+      features: [],
+      id: '',
+      isACompanyProduct: false,
+      name: '',
+      paypalInfo: {
+        paypalId: '',
+        updatedAt: null,
+      },
+      priority: 0,
+      stripeInfo: {
+        stripeId: '',
+        updatedAt: null,
+      },
+    }
+
   
     public static fromJson(obj: ProductJson): Product {
       let product = new Product();
