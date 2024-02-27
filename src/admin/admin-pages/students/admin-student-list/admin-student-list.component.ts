@@ -13,9 +13,8 @@ interface UserInList {
   uid: string,
   photoUrl: string,
   email: string,
-  owner: string,
   createdAt: number,
-  lastConnection: number,
+  updatedAt: number,
   enterprise: string,
   phoneNumber: string,
 }
@@ -30,9 +29,8 @@ export class AdminStudentListComponent {
   displayedColumns: string[] = [
     'displayName',
     'email',
-    'owner',
     'createdAt',
-    'lastConnection',
+    'updatedAt',
     'userType',
     'enterprise',
     'phoneNumber',
@@ -90,9 +88,8 @@ export class AdminStudentListComponent {
             uid: user.uid,
             photoUrl: user.photoUrl,
             email: user.email,
-            owner: null,
             createdAt: user.createdAt ,
-            lastConnection: user.lastConnection ,
+            updatedAt: user.updatedAt ,
             phoneNumber: user.phoneNumber,
             enterprise: enterprise ? enterprise.name : null 
           };
