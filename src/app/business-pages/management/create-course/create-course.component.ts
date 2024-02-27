@@ -496,6 +496,8 @@ export class CreateCourseComponent {
     this.modalService.dismissAll();
   }
 
+
+
   openModal(content,size='lg'){
 
     this.tmpSkillRefArray = []
@@ -3078,24 +3080,42 @@ export class CreateCourseComponent {
 
 //   }
 
-formatSkills(skills){
+  formatSkills(skills){
 
-  skills = structuredClone(skills)
+    skills = structuredClone(skills)
 
-  let respuesta = []
+    let respuesta = []
 
-  skills.forEach(category => {
-    category.competencias.forEach(skill => {
-      skill.categoryId = skill['categoriaId']
-      delete skill['categoriaId']
-      delete skill['enterprise']
-      delete skill['selected']
-      respuesta.push(skill)
+    skills.forEach(category => {
+      category.competencias.forEach(skill => {
+        skill.categoryId = skill['categoriaId']
+        delete skill['categoriaId']
+        delete skill['enterprise']
+        delete skill['selected']
+        respuesta.push(skill)
+      });
     });
-  });
 
-  return respuesta
-}
+    return respuesta
+  }
+
+  modalCrearSkill;
+  formNewSkill: FormGroup
+  showErrorSkill = false;
+
+  crearCompetencia(modal){
+
+    this.showErrorSkill = null;
+    this.formNewSkill = new FormGroup({
+      nombre: new FormControl(null, Validators.required),
+    })
+
+    this.modalCrearSkill = this.modalService.open(modal, {
+      ariaLabelledBy: 'modal-basic-title',
+      centered: true,
+      size:'sm'
+    });
+  }
 
 }
 
