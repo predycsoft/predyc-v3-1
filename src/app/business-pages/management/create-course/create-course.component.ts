@@ -611,7 +611,6 @@ export class CreateCourseComponent {
     let pillar =this.formNewPillar.get('nombre')?.value;
     let skills = this.formNewPillar.get('skills')?.value;
 
-
     let pillarCheck = this.categoriasArray.find(x=> x.name == pillar)
 
     if(pillarCheck){
@@ -627,12 +626,17 @@ export class CreateCourseComponent {
       return
     }
 
+    let enterpriseRef =this.enterpriseService.getEnterpriseRef()
+    if(this.user.isSystemUser){
+      enterpriseRef = null;
+    }
+
     if(pillar && skills?.length>0){
-      let category = new Category(null,pillar,null)
+      let category = new Category(null,pillar,enterpriseRef)
       await this.categoryService.addCategory(category)
       let categoryRef = this.afs.collection<any>('category').doc(category.id).ref;
       for(let skill of skills){
-        let skillAdd = new Skill(null,skill,categoryRef,null)
+        let skillAdd = new Skill(null,skill,categoryRef,enterpriseRef)
         await this.skillService.addSkill(skillAdd)
       }
       this.modalPillar.close()
@@ -698,7 +702,10 @@ export class CreateCourseComponent {
 
   if(this.curso){
     let enterpriseRef =this.enterpriseService.getEnterpriseRef()
-    this.curso.enterpriseRef = null;
+    this.curso.enterpriseRef = enterpriseRef;
+    if(this.user.isSystemUser){
+      this.curso.enterpriseRef = null;
+    }
     if(!this.curso.skillsRef && this.curso['skills']){
       this.curso.skillsRef = this.curso['skills']
       delete this.curso['skills'];
@@ -785,8 +792,11 @@ export class CreateCourseComponent {
               let activityClass = clase.activity
               let questions: Question[]= []
               questions = structuredClone(clase.activity.questions);
-              //activityClass.enterpriseRef = this.curso.enterpriseRef as DocumentReference<Enterprise>
+              activityClass.enterpriseRef = this.curso.enterpriseRef as DocumentReference<Enterprise>
               activityClass.enterpriseRef = null
+              if(this.user.isSystemUser){
+                activityClass.enterpriseRef = null
+              }
               activityClass.claseRef = refClass;
               activityClass.coursesRef = [courseRef];
               activityClass.type = Activity.TYPE_REGULAR;
