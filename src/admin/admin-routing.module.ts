@@ -9,13 +9,15 @@ import { StudentsComponent } from './admin-pages/students/students.component';
 import { EnterpriseComponent } from './admin-pages/enterprise/enterprise.component';
 import { LicensesSubscriptionsComponent } from './admin-pages/licenses-subscriptions/licenses-subscriptions.component';
 import { ProductsComponent } from './admin-pages/licenses-subscriptions/products/products.component';
+import { StudentDetailComponent } from './admin-pages/students/student-detail/student-detail.component';
 
-const MAIN_TITLE = 'Predyc Admin - '
+export const MAIN_TITLE = 'Predyc Admin - '
 
 const routes: Routes = [
   {path:"", title: MAIN_TITLE + 'home',component: HomeComponent },
   {path:"create-demo", title: MAIN_TITLE + 'Crear demo', component: CreateDemoComponent},
   {path:"students", title: MAIN_TITLE + 'Estudiantes', component: StudentsComponent},
+  {path:"students/:uid", title: MAIN_TITLE + 'Estudiantes', component: StudentDetailComponent},
   {path:"enterprises", title: MAIN_TITLE + 'Empresas', component: EnterpriseComponent},
   {path:"products", title: MAIN_TITLE + 'Productos', component: ProductsComponent},
   {path:"licenses-and-subscriptions", title: MAIN_TITLE + 'L&S', component: LicensesSubscriptionsComponent},

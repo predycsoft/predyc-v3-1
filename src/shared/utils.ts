@@ -133,5 +133,16 @@ export const obtenerUltimoDiaDelMes = (fecha: number) : number =>{
   return ultimoDiaDelMes.getTime();
 }
 
-
-
+export const calculateAgeFromTimestamp = (timestamp) => {
+  // Convert the timestamp to milliseconds
+  const milliseconds = timestamp;
+  // Create a Date object
+  const date = new Date(milliseconds);
+  // Get the current year
+  const currentYear = new Date().getFullYear();
+  // Get the birth year from the Date object
+  const birthYear = date.getFullYear();
+  // Calculate the age
+  const age = currentYear - birthYear;
+  return age;
+}

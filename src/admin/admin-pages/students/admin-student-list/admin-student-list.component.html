@@ -61,8 +61,8 @@
             <tr
                 mat-row
                 *matRowDef="let user; columns: displayedColumns;"
-                (click)="onSelectUser(user)"
                 class="cursorPointer"
+                [routerLink]="'/admin/students/' + user.uid"
                 >
             </tr>
         </ng-container>

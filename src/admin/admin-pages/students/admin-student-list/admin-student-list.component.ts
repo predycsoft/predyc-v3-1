@@ -110,14 +110,6 @@ export class AdminStudentListComponent {
     });
   }
 
-  onSelectUser(user: UserInList) {
-    if (this.enableNavigateToUser) {
-      this.router.navigate([`management/students/${user.uid}`])  // XXXXXXXXXXXXX
-    } else {
-      this.onStudentSelected.emit(user)
-    }
-  }
-
   ngOnDestroy() {
     if (this.queryParamsSubscription) this.queryParamsSubscription.unsubscribe()
     if (this.userServiceSubscription) this.userServiceSubscription.unsubscribe()
