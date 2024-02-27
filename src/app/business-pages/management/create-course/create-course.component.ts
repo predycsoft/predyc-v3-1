@@ -276,11 +276,10 @@ export class CreateCourseComponent {
 
   removeSkill(skill){
     this.curso.skillsRef = this.curso.skillsRef.filter(x=> x.id != skill.id)
+    console.log('this.curso.skillsRef',this.curso.skillsRef)
     this.skillsCurso = this.getCursoSkills();
-    this.curso.skillsRef = this.tmpSkillRefArray
+    //this.curso.skillsRef = this.tmpSkillRefArray
     this.formNewCourse.get("skills").patchValue(this.curso.skillsRef);
-
-
 
 
   }
@@ -486,8 +485,12 @@ export class CreateCourseComponent {
 
   saveNewSkills(){
 
+    console.log('this.tmpSkillRefArray',this.tmpSkillRefArray)
+    
+
     if(this.curso){
       this.curso.skillsRef = this.tmpSkillRefArray
+      this.formNewCourse.get("skills").patchValue(this.tmpSkillRefArray);
     }
     else{
       this.formNewCourse.get("skills").patchValue(this.tmpSkillRefArray);
@@ -642,7 +645,7 @@ export class CreateCourseComponent {
         await this.skillService.addSkill(skillAdd)
       }
       this.modalPillar.close()
-      this.alertService.succesAlert("El pilar se ha guarado exitosamente")
+      this.alertService.succesAlert("El pilar se ha guardado exitosamente")
       this.savingPillar = false;
 
     }
@@ -870,7 +873,7 @@ export class CreateCourseComponent {
   }
 
   Swal.close();
-  this.alertService.succesAlert("El curso se ha guarado exitosamente")
+  this.alertService.succesAlert("El curso se ha guardado exitosamente")
 
   }
 
@@ -3105,7 +3108,7 @@ export class CreateCourseComponent {
 
   crearCompetencia(modal){
 
-    this.showErrorSkill = null;
+    this.showErrorSkill = false;
     this.formNewSkill = new FormGroup({
       nombre: new FormControl(null, Validators.required),
     })
@@ -3115,6 +3118,43 @@ export class CreateCourseComponent {
       centered: true,
       size:'sm'
     });
+  }
+
+  async saveNewSkill(){
+    //console.log(this.pillarsForm.value)
+    this.showErrorSkill = false;
+    if(this.formNewSkill.valid){
+
+      
+
+      let pilar = this.pillarsForm.value
+      let competencias = pilar['competencias']
+
+      if(competencias.find(x=>x.name.toLowerCase()==this.formNewSkill.get('nombre')?.value.toLowerCase())){ // duplicado
+        Swal.fire({
+          title:'Info!',
+          text:`Ya existe una competencia en el pilar ${pilar['name']} con este nombre`,
+          icon:'info',
+          confirmButtonColor: 'var(--blue-5)',
+        })
+        return
+      }
+
+      else{
+        let categoryRef = this.afs.collection<any>('category').doc(pilar['id']).ref;
+        let enterpriseRef =this.enterpriseService.getEnterpriseRef()
+        if(this.user.isSystemUser){
+          enterpriseRef = null;
+        }
+        let skillAdd = new Skill(null,this.formNewSkill.get('nombre')?.value,categoryRef,enterpriseRef)
+        this.skillService.addSkill(skillAdd)
+        this.modalCrearSkill.close()
+      }
+    }
+    else{
+      this.showErrorSkill = true
+    }
+
   }
 
 }

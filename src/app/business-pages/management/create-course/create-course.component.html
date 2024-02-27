@@ -4,9 +4,9 @@
             <span class="input-box ft12" placeholder="Nombre del curso">{{formNewCourse.get('titulo')?.value}}</span>
         </div>
         <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign=" center">
-            <!-- <div class="radius20 pdl10 pdr10 pdt05 pdb05 backWhite ft14 cursorPointer" (click)="onCancel()"> 
+            <div class="radius20 pdl10 pdr10 pdt05 pdb05 backWhite ft14 cursorPointer" routerLink="/management/courses"> 
                 Cancelar
-            </div> -->
+            </div>
             <button
                 fxLayout="row"
                 fxLayoutGap="0.625"
@@ -1840,8 +1840,8 @@
             <div fxLayout="row" class="fw">
                 <div class="form-group fw">
                     <label>Nombre de la competencia</label>
-                    <input formControlName="nombre" [class.is-invalid]="formNewSkill.controls['nombre'].errors && showErrorPillar" type="text" class="form-control customInput" placeholder="Escriba el nombre del pilar">
-                    <div class="invalid-feedback" *ngIf="formNewSkill.controls['nombre'].errors && showErrorPillar">
+                    <input formControlName="nombre" [class.is-invalid]="formNewSkill.controls['nombre'].errors && showErrorSkill" type="text" class="form-control customInput" placeholder="Escriba el nombre de la competencia">
+                    <div class="invalid-feedback" *ngIf="formNewSkill.controls['nombre'].errors && showErrorSkill">
                         Debe indicar el nombre de la competencia.
                     </div>
                 </div>
@@ -1849,7 +1849,7 @@
         </form>
         <!-- Botón de guardar en la esquina inferior derecha -->
         <div fxLayout="row" fxLayoutAlign="end end" class="pdt03" style="width: 100%;">
-            <button (click)="saveNewPillar()" class="blueButton gray-1 radius4 ft12 h28px mgt10" fxLayout="row" fxLayoutGap="0.625rem" fxLayoutAlign="center center">
+            <button (click)="saveNewSkill()" class="blueButton gray-1 radius4 ft12 h28px mgt10" fxLayout="row" fxLayoutGap="0.625rem" fxLayoutAlign="center center">
                 <img [src]="icon.save" class="h16px pdr05 makeWhite" alt="">
                 Guardar competencia
             </button>
