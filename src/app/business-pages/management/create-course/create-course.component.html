@@ -348,6 +348,10 @@
                                                                             <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
                                                                             {{ ((clase.tipo == 'lectura' && !clase.archivos[0]) || (clase.tipo == 'video' && !clase.vimeoId1))? 'Seleccionar archivo' : 'Remplazar archivo'}}
                                                                         </button>
+                                                                        <button (click)="verVideoVimeo(clase)" *ngIf="clase.tipo == 'video' && clase.vimeoId1" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                                            <img [src]="icon.playOutline" class="h16px pdr05" alt="">
+                                                                             Reproducir video
+                                                                        </button>
                                                                         <button (click)="structureActivity(modalClaseDetail,clase,modulo)"  *ngIf="clase.archivos[0] || clase.tipo == 'video' && clase['base64Video']" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                                                                             <img [src]="icon.folderUp" class="h16px pdr05" alt="">
                                                                             Añadir recursos

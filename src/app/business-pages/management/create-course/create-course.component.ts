@@ -10,7 +10,7 @@ import { Clase } from "src/shared/models/course-class.model"
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import Swal from 'sweetalert2';
 import { Observable, Subject, finalize, firstValueFrom, switchMap, tap, filter, take, first, startWith, map } from 'rxjs';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { AngularFirestore,DocumentReference } from '@angular/fire/compat/firestore';
 
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -35,6 +35,8 @@ import { QuestionsComponent } from 'src/shared/components/questions/questions.co
 import { AuthService } from 'src/shared/services/auth.service';
 import { InstructorsService } from 'src/shared/services/instructors.service';
 import { AlertsService } from 'src/shared/services/alerts.service';
+
+import { VimeoComponent } from 'src/shared/components/vimeo/vimeo.component';
 
 
 interface Categoria {
@@ -3156,6 +3158,21 @@ export class CreateCourseComponent {
     }
 
   }
+
+  verVideoVimeo(clase): NgbModalRef {
+    let openModal = false
+    let isNewUser = false
+
+    const modalRef = this.modalService.open(VimeoComponent, {
+      animation: true,
+      centered: true,
+      size: 'lg',
+    })
+    modalRef.componentInstance.clase = clase;
+    return modalRef
+
+  }
+
 
 }
 
