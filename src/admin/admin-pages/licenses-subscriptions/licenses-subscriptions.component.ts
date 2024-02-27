@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { IconService } from 'src/shared/services/icon.service';
 
 @Component({
   selector: 'app-licenses-subscriptions',
@@ -6,5 +7,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./licenses-subscriptions.component.css']
 })
 export class LicensesSubscriptionsComponent {
-
+  constructor(
+    public icon: IconService,
+  ) {}
 }
