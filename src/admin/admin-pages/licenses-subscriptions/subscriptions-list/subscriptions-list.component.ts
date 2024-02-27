@@ -1,8 +1,7 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription, combineLatest, map, of, switchMap } from 'rxjs';
+import { Subscription, combineLatest } from 'rxjs';
 import { SubscriptionService } from 'src/shared/services/subscription.service';
 import { UserService } from 'src/shared/services/user.service';
 import { Subscription as SubscriptionClass } from 'src/shared/models/subscription.model'
@@ -13,6 +12,7 @@ import { Product } from 'src/shared/models/product.model';
 import { Price } from 'src/shared/models/price.model';
 import { Coupon } from 'src/shared/models/coupon.model';
 import { CouponService } from 'src/shared/services/coupon.service';
+import { MatPaginator } from '@angular/material/paginator';
 
 interface SubscriptionInList {
   userName: string,
@@ -29,11 +29,11 @@ interface SubscriptionInList {
 }
 
 @Component({
-  selector: 'app-license-subscription-list',
-  templateUrl: './license-subscription-list.component.html',
-  styleUrls: ['./license-subscription-list.component.css']
+  selector: 'app-subscriptions-list',
+  templateUrl: './subscriptions-list.component.html',
+  styleUrls: ['./subscriptions-list.component.css']
 })
-export class LicenseSubscriptionListComponent {
+export class SubscriptionsListComponent {
 
   constructor(
     private router: Router,
@@ -62,7 +62,7 @@ export class LicenseSubscriptionListComponent {
   @Input() enableNavigateToUser: boolean = true
 
   queryParamsSubscription: Subscription
-  pageSize: number = 8
+  pageSize: number = 4
   totalLength: number
 
   combinedServicesSubscription: Subscription
@@ -87,7 +87,7 @@ export class LicenseSubscriptionListComponent {
       this.products = products
       this.coupons = coupons
       this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
-        const page = Number(params['page']) || 1;
+        const page = Number(params['subscriptionPage']) || 1;
         const searchTerm = params['search'] || '';
         this.performSearch(searchTerm, page);
       })
@@ -217,9 +217,9 @@ export class LicenseSubscriptionListComponent {
   }
   // ------- 
 
-  onPageChange(page: number): void {
+  onPageChange(subscriptionPage: number): void {
     this.router.navigate([], {
-      queryParams: { page },
+      queryParams: { subscriptionPage },
       queryParamsHandling: 'merge'
     });
   }

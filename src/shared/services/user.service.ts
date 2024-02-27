@@ -29,7 +29,6 @@ export class UserService {
   private userCollectionSubscription: Subscription
   private userCollectionProfileSubscription: Subscription
 
-
   constructor(
     private afs: AngularFirestore,
     private fireFunctions: AngularFireFunctions,
@@ -44,7 +43,6 @@ export class UserService {
       }
     })
   }
-
 
   async addUser(newUser: User): Promise<void> {
     console.log(newUser)
@@ -359,8 +357,7 @@ export class UserService {
     )
 }
 
-
-  getUsersRefByProfileId(profileId: string | null): DocumentReference<User>[] {
+  public getUsersRefByProfileId(profileId: string | null): DocumentReference<User>[] {
     // Filtrar usuarios basados en el profileId y mapear a sus referencias
     const userRefs = this.usersSubject.value
       .filter(user => user.profile && user.profile.path === `${Profile.collection}/${profileId}`)
@@ -368,7 +365,7 @@ export class UserService {
     return userRefs;
   }
 
-  getUsersRefsWithProfile(): DocumentReference<User>[] {
+  public getUsersRefsWithProfile(): DocumentReference<User>[] {
     // Filtrar usuarios que tienen un perfil y mapear a sus referencias
     return this.usersSubject.value.filter(user => user.profile).map(user => this.afs.doc<User>(`${User.collection}/${user.uid}`).ref);
   }
@@ -388,7 +385,6 @@ export class UserService {
     },{merge: true})
   }
 
-
   async updateUserFields(uid: string, fields: Partial<User>) {
     await this.afs.collection(User.collection).doc(uid).set(fields, {merge: true});
   }
@@ -401,5 +397,4 @@ export class UserService {
     );
   }
   
-
 }

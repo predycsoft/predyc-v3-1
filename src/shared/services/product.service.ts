@@ -23,4 +23,10 @@ export class ProductService {
   public async getProductByRef(priceRef: DocumentReference){
     return Product.fromJson((await (priceRef.get())).data() as ProductJson)
   }
+
+  updateProductPriority(productId: string, newPriority: number): Promise<void> {
+    return this.afs.collection(Product.collection).doc(productId).update(
+      { priority: newPriority }
+    )
+  }
 }

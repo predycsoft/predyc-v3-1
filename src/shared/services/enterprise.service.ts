@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
+import { AngularFirestore, CollectionReference, DocumentReference, Query } from '@angular/fire/compat/firestore';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { Enterprise, EnterpriseJson } from '../models/enterprise.model';
 import { AlertsService } from './alerts.service';
@@ -71,6 +71,16 @@ export class EnterpriseService {
 
   public getEnterprise() {
     return this.enterpriseSubject.value
+  }
+
+  public getEnterprises$(searchTerm=null): Observable<Enterprise[]> {
+    return this.afs.collection<Enterprise>(Enterprise.collection, ref => {
+      let query: CollectionReference | Query = ref;
+      if (searchTerm) {
+        query = query.where('name', '>=', searchTerm).where('name', '<=', searchTerm+ '\uf8ff')
+      }
+      return query.orderBy('name')
+    }).valueChanges()
   }
 
   public async updateVimeoFolder(enterprise: Enterprise, idFolder: string, folderUri: string): Promise<void> {
