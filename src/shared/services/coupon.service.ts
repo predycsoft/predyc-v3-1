@@ -21,4 +21,8 @@ export class CouponService {
   public async getCouponByRef(priceRef: DocumentReference){
     return  Coupon.fromJson((await (priceRef.get())).data() as CouponJson)
   }
+
+  public getCouponRefById(couponId: string): DocumentReference<Coupon> {
+    return this.afs.collection<Coupon>(Coupon.collection).doc(couponId).ref
+  }
 }

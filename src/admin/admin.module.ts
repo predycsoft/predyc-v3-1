@@ -18,6 +18,8 @@ import { SubscriptionsListComponent } from './admin-pages/licenses-subscriptions
 import { ProductsComponent } from './admin-pages/licenses-subscriptions/products/products.component';
 import { CouponsListComponent } from './admin-pages/licenses-subscriptions/products/coupons-list/coupons-list.component';
 import { DialogProductFormComponent } from './admin-pages/licenses-subscriptions/products/product-list/dialog-product-form/dialog-product-form.component';
+import { PriceFormComponent } from './admin-pages/licenses-subscriptions/products/product-list/dialog-product-form/price-form/price-form.component';
+import { PricesListComponent } from './admin-pages/licenses-subscriptions/products/product-list/dialog-product-form/prices-list/prices-list.component';
 
 
 @NgModule({
@@ -37,7 +39,9 @@ import { DialogProductFormComponent } from './admin-pages/licenses-subscriptions
     LicensesSubscriptionsComponent,
     ProductsComponent,
     CouponsListComponent,
-    DialogProductFormComponent
+    DialogProductFormComponent,
+    PriceFormComponent,
+    PricesListComponent
   ],
   imports: [
     SharedModule,

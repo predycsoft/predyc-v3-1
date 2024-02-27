@@ -3,8 +3,8 @@
         <img [src]="icon.close" (click)="closeDialog()" class="makeGray h20px cursorPointer">
     </div>
     <div fxLayout="row" fxLayoutAlign="space-between start"  fxLayoutGap=".20rem">
-        <!-- Product -->
-        <ng-container class="w-40">
+        <!-- Product.  -->
+        <ng-container>
             <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
                 <div>
                     <span class="ft16 ft500 gray-10">{{ this.productForm.controls.id.value == "" ? "Nuevo" : "Editar" }} Producto</span>
@@ -108,10 +108,14 @@
             </form>
         </ng-container>
         <!-- Price -->
-        <div class="w-60" fxLayout="column" fxLayoutAlign="start center" class="fh fw border-l">
+        <div class="w-50" fxLayout="column" fxLayoutAlign="start center" class="fh fw border-l">
             <div class="fw">
-                <!-- <app-prices [selectedProductId]="productForm.controls.id.value"></app-prices> -->
-                <div class="" style="height: 100vh;"></div>
+                <ng-container *ngIf="showPriceForm; else showPriceList">
+                    <app-price-form [selectedPrice]="selectedPrice" [coupons]="coupons" (viewChange)="handleViewChange($event)"></app-price-form>
+                </ng-container>
+                <ng-template #showPriceList>
+                    <app-prices-list [selectedProductId]="product.id" [prices]="prices" [coupons]="coupons" (viewChange)="handleViewChange($event)"></app-prices-list>
+                </ng-template>
             </div>
         </div>
 

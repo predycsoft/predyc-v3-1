@@ -1,0 +1,107 @@
+<div (click)="reset()">
+    <mat-icon>keyboard_backspace</mat-icon>
+</div>
+<div class="fw fh pdl10" fxLayout="column">
+    <form [formGroup]="priceForm" (ngSubmit)="onSubmit()">
+      <div>
+        <span class="ft16 ft500 gray-10">{{
+          this.priceForm.controls.id.value == "" ? "Nuevo" : "Editar"
+          }}
+          Precio</span>
+  
+        <div class="mgt10" fxLayout="row" fxLayoutGap="1.5rem" fxLayoutAlign=" center">
+          <span class="gray-9 ft12 ft500">Estatus:</span>
+          <div [ngClass]="
+              priceForm.controls.active.value
+                ? 'ft12 green-4'
+                : 'ft12 red-4'
+            " for="active">
+            {{ priceForm.controls.active.value ? "Activo" : "Inactivo" }}
+          </div>
+          <div [ngClass]="
+              priceForm.controls.active.value
+                ? 'backRed5 ft11 pdt03 pdb03 pdl10 pdr10 radius6 cursorPointer'
+                : 'backBlue5 ft11 pdt03 pdb03 pdl10 pdr10 radius6 cursorPointer'
+            " (click)="togglePriceActiveState()">
+            <span class="ft11 gray-1">
+              {{ priceForm.controls.active.value ? "Desactivar" : "Activar" }}
+            </span>
+          </div>
+          <input hidden id="active" type="checkbox" formControlName="active" />
+          <input hidden id="id" type="text" formControlName="id" />
+        </div>
+      </div>
+      <div>
+        <span class="ft13 gray-10 ft500">Información general</span>
+      </div>
+      <div fxLayout="column" class="mgt05">
+        <div fxLayout="column">
+          <div>
+            <span class="ft11 gray-9">Monto:</span>
+          </div>
+          <div class="formGroupHorizontal">
+            <input type="number" name="amount" min="0" step="0.01" formControlName="amount" [readonly]="selectedPrice.id ? true : false" />
+            <!-- <input type="number" name="amount" min="0" step="0.01" formControlName="amount" [readonly]="this.priceForm.controls.id.value ? true : false" /> -->
+            <select name="currency" id="currency" formControlName="currency">
+              <option value="USD">USD</option>
+            </select>
+          </div>
+        </div>
+  
+      <div fxLayout="column">
+        <div class="ft11 gray-9">Tipo de cobro:</div>
+        <div class="formGroupHorizontal">
+          <select *ngIf="!selectedPrice.id" name="type" id="type" formControlName="type" (change)="onTypeChange($event.target)">
+            <option value="one_time">Una vez</option>
+            <option value="recurring">Recurrente</option>
+          </select>
+          <div *ngIf="selectedPrice.id">
+            <input type="text" name="type" min="0" step="0.01" formControlName="type" [readonly]="true"/>
+          </div>
+        </div>
+      </div>
+  
+      <div *ngIf=" priceForm.controls.type.value == 'recurring'" fxLayout="column">
+        <div class="ft11 gray-9">Frecuencia de cobro:</div>
+        <div class="formGroupHorizontal">
+          <input type="number" name="intervalCount" min="0" step="1" formControlName="intervalCount" [readonly]="selectedPrice.id ? true : false"/>
+          <select *ngIf="!selectedPrice.id" name="interval" id="interval" formControlName="interval">
+            <option value="day">Dia</option>
+            <option value="week">Semana</option>
+            <option value="month">Mes</option>
+            <option value="year">Año</option>
+          </select>
+          <div *ngIf="selectedPrice.id">
+            <input type="text" name="interval" min="0" step="0.01" formControlName="interval" [readonly]="true"/>
+          </div>
+        </div>
+      </div>
+  
+  
+        <div fxLayout="column">
+          <div class="ft11 ft500 gray-9">Periodo de prueba:</div>
+          <div class="formGroupHorizontal">
+            <input type="number" name="freeTrialDays" min="0" step="1" formControlName="freeTrialDays" [readonly]="selectedPrice.id ? true : false" />
+            dias
+          </div>
+        </div>
+        <div fxLayout="column">
+          <div class="ft11 ft500 gray-9">Aplicar cupon</div>
+          <div class="formGroupHorizontal">
+            <select name="couponId" id="interval" formControlName="couponId">
+              <option selected value="">-- Selecciona un cupon --</option>
+              <option *ngFor="let coupon of coupons; let optionIndex = index" [value]="coupon.id">
+                {{ coupon.name }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+  
+      <div fxLayoutAlign="center center" class="mgt20">
+        <button [disabled]="!priceForm.valid" class="btn" type="submit">
+          Guardar
+        </button>
+      </div>
+    </form>
+  </div>

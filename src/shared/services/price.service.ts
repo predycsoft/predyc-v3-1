@@ -23,5 +23,9 @@ export class PriceService {
   public async getPriceByRef(priceRef: DocumentReference){
     return  Price.fromJson((await (priceRef.get())).data() as PriceJson)
   }
+
+  async savePrice(price): Promise<void> {
+    return await this.afs.collection(Price.collection).doc(price.id).set(price, { merge: true });
+  }
   
 }
