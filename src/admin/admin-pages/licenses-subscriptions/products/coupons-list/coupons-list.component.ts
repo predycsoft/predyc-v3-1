@@ -5,6 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { CouponService } from 'src/shared/services/coupon.service';
 import { Coupon } from 'src/shared/models/coupon.model'
+import { IconService } from 'src/shared/services/icon.service';
 
 
 interface CouponsInList {
@@ -26,6 +27,8 @@ export class CouponsListComponent {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private couponService: CouponService,
+    public icon: IconService,
+
   ){}
 
   displayedColumns: string[] = [
@@ -85,7 +88,7 @@ export class CouponsListComponent {
   }
 
   onSelect(subscription) {
-
+    
   }
 
   ngOnDestroy() {

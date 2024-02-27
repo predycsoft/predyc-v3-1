@@ -1,0 +1,65 @@
+<div class="contentContainer">
+    <!-- Price List -->
+    <ng-container>
+        <div fxLayout="row" fxLayoutAlign="space-between center"> 
+            <span class="ft16 gray-9 ft500">Precios</span>
+            <button fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="grayButton button-animation " 
+            style="border-radius: 24px !important; color: black;" (click)="createPrice()">
+                <!-- <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt=""> -->
+                <mat-icon>add</mat-icon>
+                Agregar nuevo producto
+            </button>
+        </div>
+
+        <div class="tableContainer mgt10 pdl05">
+            <table mat-table [dataSource]="prices" class="mat-elevation-z8">
+                <!-- Price Column -->
+                <ng-container matColumnDef="price">
+                    <th mat-header-cell *matHeaderCellDef> Precio </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.amount.toFixed(2) }} {{ element.currency }} </td>
+                </ng-container>
+
+                <!-- Discounted Price Column -->
+                <ng-container matColumnDef="discountedPrice">
+                    <th mat-header-cell *matHeaderCellDef> Precio (descuento) </th>
+                    <td mat-cell *matCellDef="let element"> 
+                    {{ element.couponId ? ('$ ' + element.getTotalAmount(getCoupon(element.couponId)).toFixed(2)) : (element.amount | number:'1.2-2') }} 
+                    {{ (getCoupon(element.couponId).length > 0) ? getCoupon(element.couponId)[0].name : '' }}
+                    </td>
+                </ng-container>
+
+                <!-- API ID Column -->
+                <ng-container matColumnDef="apiId">
+                    <th mat-header-cell *matHeaderCellDef> API ID </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.id }} </td>
+                </ng-container>
+
+                <!-- Status Column -->
+                <ng-container matColumnDef="status">
+                    <th mat-header-cell *matHeaderCellDef> Estatus </th>
+                    <td mat-cell *matCellDef="let element" [ngClass]="element.active ? 'green-4' : 'red-4'">
+                    {{ element.active ? "Activo" : "Inactivo" }}
+                    </td>
+                </ng-container>
+
+                <!-- Free Trial Column -->
+                <ng-container matColumnDef="freeTrial">
+                    <th mat-header-cell *matHeaderCellDef> Free Trial </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.freeTrialDays }} </td>
+                </ng-container>
+
+                <!-- Created Column -->
+                <ng-container matColumnDef="created">
+                    <th mat-header-cell *matHeaderCellDef> Creado </th>
+                    <td mat-cell *matCellDef="let element"> {{ OnStripeTimestampToNumberTimestamp(element) | date:'dd/MM/yy' }} </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="editPrice(row)"></tr>
+
+            </table>
+            <!-- <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]" [length]="prices.length"></mat-paginator> -->
+        </div>
+    </ng-container>
+</div>
+  

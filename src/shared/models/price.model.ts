@@ -14,7 +14,7 @@ export interface PriceJson {
     interval: string;
     intervalCount: number;
     paypalInfo: PaypalInfo;
-    product: DocumentReference<Product>; //Could not be null?
+    product: DocumentReference<Product> | null;
     stripeInfo: StripeInfo;
     type: string;
 }
@@ -29,7 +29,7 @@ export class Price {
     interval: string;
     intervalCount: number;
     paypalInfo: PaypalInfo;
-    product: DocumentReference<Product>;
+    product: DocumentReference<Product> | null;
     stripeInfo: StripeInfo;
     type: string;
     // Coupon could be part of price or could be an individual object
@@ -41,6 +41,27 @@ export class Price {
     };
 
     public static collection = 'price'
+
+    public static newPrice = Price.fromJson({
+      active: true,
+      amount: 0,
+      coupon: null,
+      currency: 'USD',
+      freeTrialDays: 0,
+      id: '',
+      interval: 'month',
+      intervalCount: 1,
+      paypalInfo: {
+        paypalId: '',
+        updatedAt: null,
+      },
+      product: null,
+      stripeInfo: {
+        stripeId: '',
+        updatedAt: null,
+      },
+      type: 'recurring',
+    }) 
 
   
     public static fromJson(obj: PriceJson): Price {

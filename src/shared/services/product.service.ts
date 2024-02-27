@@ -24,6 +24,16 @@ export class ProductService {
     return Product.fromJson((await (priceRef.get())).data() as ProductJson)
   }
 
+  
+  public getProductRefById(productId: string): DocumentReference<Product> {
+    return this.afs.collection<Product>(Product.collection).doc(productId).ref
+  }
+  
+  async saveProduct(product): Promise<void> {
+    return await this.afs.collection(Product.collection).doc(product.id).set(product, { merge: true });
+
+  }
+
   updateProductPriority(productId: string, newPriority: number): Promise<void> {
     return this.afs.collection(Product.collection).doc(productId).update(
       { priority: newPriority }
