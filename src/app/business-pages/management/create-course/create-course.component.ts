@@ -385,7 +385,7 @@ export class CreateCourseComponent {
     this.savingPillar = false;
     this.pillarsForm.patchValue('')
 
-    this.curso.skillsRef = [];
+    this.curso?.skillsRef ? this.curso.skillsRef = [] : null;
     this.skillsCurso= [];
 
     this.showErrorPillar = false
