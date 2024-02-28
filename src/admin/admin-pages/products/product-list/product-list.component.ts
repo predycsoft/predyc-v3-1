@@ -2,14 +2,12 @@ import { Component, Input, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Subscription, firstValueFrom } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { ProductService } from 'src/shared/services/product.service';
 import { stripeTimestampToNumberTimestamp } from 'src/shared/utils';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DialogProductFormComponent } from './dialog-product-form/dialog-product-form.component';
 import { Product } from 'src/shared/models/product.model';
-import { AngularFireFunctions } from '@angular/fire/compat/functions';
-import { DialogService } from 'src/shared/services/dialog.service';
 import { IconService } from 'src/shared/services/icon.service';
 
 @Component({
@@ -24,8 +22,6 @@ export class ProductListComponent {
     private productService: ProductService,
     private activatedRoute: ActivatedRoute,
     private modalService: NgbModal,
-    private fireFunctions: AngularFireFunctions,
-    private dialogService: DialogService,
     public icon: IconService,
 
   ){}
@@ -117,53 +113,6 @@ export class ProductListComponent {
     
     modalRef.componentInstance.product = selectedProduct;
 
-    modalRef.componentInstance.onSave.subscribe(async (product: any) => {
-      // Create or update given product an add to products array
-      if (!product.id) {
-        const newId = product.name.split(' ').join('-');
-        product.id = newId;
-      }
-      try {
-        await this.productService.saveProduct(product)
-        // UNCOMMENT
-        // const promises = [
-        //   this.getSyncStripeFunction(product),
-        //   this.getSyncPaypalFunction(product),
-        // ];
-        // const _ = await Promise.all(promises);
-      } catch (error) {
-        this.dialogService.dialogAlerta(error);
-      }
-    });
-  }
-
-  getSyncStripeFunction(product: Product): Promise<void> {
-    let syncStripeFunction = null;
-    if (!product.stripeInfo.stripeId) {
-      syncStripeFunction = firstValueFrom(
-        this.fireFunctions.httpsCallable('createStripeProduct')(product)
-      );
-    } else {
-      syncStripeFunction = firstValueFrom(
-        this.fireFunctions.httpsCallable('updateStripeProduct')(product)
-      );
-    }
-    return syncStripeFunction;
-  }
-
-  getSyncPaypalFunction(product: Product): Promise<void> {
-    let syncPaypalFunction = null;
-    if (!product.paypalInfo.paypalId) {
-      syncPaypalFunction = firstValueFrom(
-        this.fireFunctions.httpsCallable('createPaypalProduct')(product)
-      );
-    }
-    else {
-      syncPaypalFunction = firstValueFrom(
-        this.fireFunctions.httpsCallable('updatePaypalProduct')(product)
-      );
-    }
-    return syncPaypalFunction;
   }
 
   ngOnDestroy() {

@@ -2,8 +2,10 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Coupon } from 'src/shared/models/coupon.model';
 import { Price } from 'src/shared/models/price.model';
+import { CouponService } from 'src/shared/services/coupon.service';
 import { DialogService } from 'src/shared/services/dialog.service';
 import { PriceService } from 'src/shared/services/price.service';
+import { ProductService } from 'src/shared/services/product.service';
 
 @Component({
   selector: 'app-price-form',
@@ -13,6 +15,7 @@ import { PriceService } from 'src/shared/services/price.service';
 export class PriceFormComponent {
 
   @Output() viewChange: EventEmitter<Price | null> = new EventEmitter();
+  @Input() selectedProductId: string
   @Input() selectedPrice: Price | null
   @Input() coupons: Coupon[]
 
@@ -21,6 +24,8 @@ export class PriceFormComponent {
     private fb: FormBuilder, 
     private priceService: PriceService,
     private dialogService: DialogService,
+    private productService: ProductService,
+    private couponService: CouponService,
 
   ) {}
 
@@ -31,8 +36,9 @@ export class PriceFormComponent {
   priceForm = this.fb.group({
     id: [''],
     active: [true],
-    productId: [''],
+    product: [null],
     couponId: [''],
+    coupon: [null],
     amount: [0],
     currency: ['USD'],
     interval: ['month'] /* day, week, month or year */,
@@ -47,6 +53,8 @@ export class PriceFormComponent {
   ngOnInit(): void {
     console.log("this.selectedPrice en price-form", this.selectedPrice)
     this.priceForm.patchValue(this.selectedPrice);
+    this.priceForm.patchValue({couponId: this.selectedPrice.coupon ? this.selectedPrice.coupon.id : ""})
+    // console.log("this.priceForm.value", this.priceForm.value)
   }
 
   togglePriceActiveState(): void {
@@ -59,14 +67,18 @@ export class PriceFormComponent {
     const price = this.priceForm.value
     if (!price.id) {
       const newId = [
-        `${price.productId}`,
+        `${this.selectedProductId}`,
         `${price.amount}${price.currency}`,
         `${price.interval}`,
       ].join('-');
       price.id = newId;
+      price.product = this.productService.getProductRefById(this.selectedProductId)
     }
     try {
-      this.priceService.savePrice(price)
+      price.coupon = this.couponService.getCouponRefById(price.couponId)
+      delete price.couponId // we dont want to save this field
+      
+      await this.priceService.savePrice(price)
       // const promises = [
       //   this.getSyncStripeFunction(price),
       //   this.getSyncPaypalFunction(price),
