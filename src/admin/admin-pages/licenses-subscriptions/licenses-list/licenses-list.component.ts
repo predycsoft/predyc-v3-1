@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { Enterprise } from 'src/shared/models/enterprise.model';
 import { EnterpriseService } from 'src/shared/services/enterprise.service';
 import { LicenseService } from 'src/shared/services/license.service';
+import { Subscription as SubscriptionClass } from 'src/shared/models/subscription.model'
 
 interface LicensesInList {
   enterpriseName: string,
@@ -87,7 +88,7 @@ export class LicensesListComponent {
           used: license.quantityUsed,
           avaliables: license.quantity - license.quantityUsed,
           valid: license.currentPeriodEnd,
-          status: license.status
+          status:  SubscriptionClass.statusToDisplayValueDict[license.status]
         }
       })
       this.paginator.pageIndex = page - 1;
