@@ -278,12 +278,27 @@ export class CreateCourseComponent {
     return skillArray
   }
 
-  removeSkill(skill){
-    this.curso.skillsRef = this.curso.skillsRef.filter(x=> x.id != skill.id)
-    console.log('this.curso.skillsRef',this.curso.skillsRef)
-    this.skillsCurso = this.getCursoSkills();
-    //this.curso.skillsRef = this.tmpSkillRefArray
-    this.formNewCourse.get("skills").patchValue(this.curso.skillsRef);
+  async removeSkill(skill){
+
+    if(this.curso?.skillsRef){
+      this.curso.skillsRef = this.curso.skillsRef.filter(x=> x.id != skill.id)
+      console.log('this.curso.skillsRef',this.curso.skillsRef)
+      this.skillsCurso = this.getCursoSkills();
+      //this.curso.skillsRef = this.tmpSkillRefArray
+      this.formNewCourse.get("skills").patchValue(this.curso.skillsRef);
+    }
+    else{
+      console.log('this.skillsCurso',this.skillsCurso)
+      this.skillsCurso = this.skillsCurso.filter(x=> x.id != skill.id)
+      let skillsRef = []
+      for(let skill of this.skillsCurso){
+        let skillRef = await this.afs.collection<any>('skill').doc(skill.id).ref;
+        skillsRef.push(skillRef)
+      }
+      this.formNewCourse.get("skills").patchValue(skillsRef);
+
+    }
+
 
 
   }
@@ -503,7 +518,6 @@ export class CreateCourseComponent {
 
     console.log('this.tmpSkillRefArray',this.tmpSkillRefArray)
     
-
     if(this.curso){
       this.curso.skillsRef = this.tmpSkillRefArray
       this.formNewCourse.get("skills").patchValue(this.tmpSkillRefArray);
@@ -721,175 +735,182 @@ export class CreateCourseComponent {
       }
     });
 
-  if(this.curso){
-    let enterpriseRef =this.enterpriseService.getEnterpriseRef()
-    this.curso.enterpriseRef = enterpriseRef;
-    if(this.user.isSystemUser){
-      this.curso.enterpriseRef = null;
+  if(this.formNewCourse.valid){
+    if(this.curso){
+      let enterpriseRef =this.enterpriseService.getEnterpriseRef()
+      this.curso.enterpriseRef = enterpriseRef;
+      if(this.user.isSystemUser){
+        this.curso.enterpriseRef = null;
+      }
+      if(!this.curso.skillsRef && this.curso['skills']){
+        this.curso.skillsRef = this.curso['skills']
+        delete this.curso['skills'];
+      }
+      await this.courseService.saveCourse(this.curso)
     }
-    if(!this.curso.skillsRef && this.curso['skills']){
-      this.curso.skillsRef = this.curso['skills']
-      delete this.curso['skills'];
+  
+    if(this.examen){
+      let courseRef = await this.afs.collection<Curso>(Curso.collection).doc(this.curso.id).ref;
+      let activityClass = new Activity
+      let questions: Question[]= []
+      questions = structuredClone(this.examen.questions);
+      console.log('this.examen',this.examen)
+      let auxCoursesRef = this.examen.coursesRef
+      this.examen.coursesRef = null
+      activityClass = structuredClone(this.examen) as Activity;
+      activityClass.enterpriseRef = this.curso.enterpriseRef as DocumentReference<Enterprise>
+      this.examen.coursesRef = auxCoursesRef
+      activityClass.coursesRef = [courseRef];
+      activityClass.type = Activity.TYPE_TEST;
+      activityClass.questions=[];
+      delete activityClass.questions
+  
+      //console.log('activityExamen',activityClass)
+      await this.activityClassesService.saveActivity(activityClass);
+      this.examen.id = activityClass.id
+  
+      for (let pregunta of questions){
+  
+        delete pregunta['competencias_tmp'];
+        delete pregunta['competencias'];
+        delete pregunta['isInvalid'];
+        delete pregunta['InvalidMessages'];
+        delete pregunta['expanded_categorias'];
+        delete pregunta['expanded'];
+        delete pregunta['uploading_file_progress'];
+        delete pregunta['uploading'];
+        await this.activityClassesService.saveQuestion(pregunta,activityClass.id)
+      }
+  
     }
-    await this.courseService.saveCourse(this.curso)
-  }
-
-  if(this.examen){
-    let courseRef = await this.afs.collection<Curso>(Curso.collection).doc(this.curso.id).ref;
-    let activityClass = new Activity
-    let questions: Question[]= []
-    questions = structuredClone(this.examen.questions);
-    console.log('this.examen',this.examen)
-    let auxCoursesRef = this.examen.coursesRef
-    this.examen.coursesRef = null
-    activityClass = structuredClone(this.examen) as Activity;
-    activityClass.enterpriseRef = this.curso.enterpriseRef as DocumentReference<Enterprise>
-    this.examen.coursesRef = auxCoursesRef
-    activityClass.coursesRef = [courseRef];
-    activityClass.type = Activity.TYPE_TEST;
-    activityClass.questions=[];
-    delete activityClass.questions
-
-    //console.log('activityExamen',activityClass)
-    await this.activityClassesService.saveActivity(activityClass);
-    this.examen.id = activityClass.id
-
-    for (let pregunta of questions){
-
-      delete pregunta['competencias_tmp'];
-      delete pregunta['competencias'];
-      delete pregunta['isInvalid'];
-      delete pregunta['InvalidMessages'];
-      delete pregunta['expanded_categorias'];
-      delete pregunta['expanded'];
-      delete pregunta['uploading_file_progress'];
-      delete pregunta['uploading'];
-      await this.activityClassesService.saveQuestion(pregunta,activityClass.id)
-    }
-
-  }
-
-
-  if(this.modulos.length>0){
-    //console.log('datos modulos',this.modulos);
-    let validModules = this.modulos.filter(moduleCheck => !moduleCheck['isInvalid'])
-    //console.log('validModules save',validModules);
-
-    for (let modulo of validModules){
-      ////console.log('modulo clase borrador add/edit',modulo)
-      let arrayClasesRef = [];
-      const clases = modulo['clases'];
-      for (let i = 0; i < clases.length; i++) {
-        try {
-          let clase = clases[i];
-          if(clase['edited']){
-            console.log('clase borrador add/edit',clase)
-            let claseLocal = new Clase;
-            claseLocal.HTMLcontent = clase.HTMLcontent;
-            claseLocal.archivos = clase.archivos.map(archivo => ({ // Usando map aquí para transformar la estructura del archivo.
-              id: archivo.id,
-              nombre: archivo.nombre,
-              size: archivo.size,
-              type: archivo.type,
-              url: archivo.url
-            }));
-            claseLocal.descripcion = clase.descripcion;
-            claseLocal.duracion = clase.duracion;
-            claseLocal.id = clase.id;
-            claseLocal.vimeoId1 = clase.vimeoId1;
-            claseLocal.vimeoId2 = clase.vimeoId2;
-            claseLocal.skillsRef = clase.skillsRef;
-            claseLocal.tipo = clase.tipo;
-            claseLocal.titulo = clase.titulo;
-            claseLocal.vigente = clase.vigente;
-            
-            const arrayRefSkills = (clase.competencias?.map(skillClase => this.curso.skillsRef.find(skill => skill.id == skillClase.id)).filter(Boolean) ) || [];
-            claseLocal.skillsRef = arrayRefSkills;
-            await this.courseClassService.saveClass(claseLocal);
-            let refClass = await this.afs.collection<Clase>(Clase.collection).doc(claseLocal.id).ref;
-            let courseRef = await this.afs.collection<Curso>(Curso.collection).doc(this.curso.id).ref;
-            arrayClasesRef.push(refClass);
-            if(clase.activity){
-              let activityClass = clase.activity
-              let questions: Question[]= []
-              questions = structuredClone(clase.activity.questions);
-              activityClass.enterpriseRef = this.curso.enterpriseRef as DocumentReference<Enterprise>
-              activityClass.enterpriseRef = null
-              if(this.user.isSystemUser){
+  
+  
+    if(this.modulos.length>0){
+      //console.log('datos modulos',this.modulos);
+      let validModules = this.modulos.filter(moduleCheck => !moduleCheck['isInvalid'])
+      //console.log('validModules save',validModules);
+  
+      for (let modulo of validModules){
+        ////console.log('modulo clase borrador add/edit',modulo)
+        let arrayClasesRef = [];
+        const clases = modulo['clases'];
+        for (let i = 0; i < clases.length; i++) {
+          try {
+            let clase = clases[i];
+            if(clase['edited']){
+              console.log('clase borrador add/edit',clase)
+              let claseLocal = new Clase;
+              claseLocal.HTMLcontent = clase.HTMLcontent;
+              claseLocal.archivos = clase.archivos.map(archivo => ({ // Usando map aquí para transformar la estructura del archivo.
+                id: archivo.id,
+                nombre: archivo.nombre,
+                size: archivo.size,
+                type: archivo.type,
+                url: archivo.url
+              }));
+              claseLocal.descripcion = clase.descripcion;
+              claseLocal.duracion = clase.duracion;
+              claseLocal.id = clase.id;
+              claseLocal.vimeoId1 = clase.vimeoId1;
+              claseLocal.vimeoId2 = clase.vimeoId2;
+              claseLocal.skillsRef = clase.skillsRef;
+              claseLocal.tipo = clase.tipo;
+              claseLocal.titulo = clase.titulo;
+              claseLocal.vigente = clase.vigente;
+              
+              const arrayRefSkills = (clase.competencias?.map(skillClase => this.curso.skillsRef.find(skill => skill.id == skillClase.id)).filter(Boolean) ) || [];
+              claseLocal.skillsRef = arrayRefSkills;
+              await this.courseClassService.saveClass(claseLocal);
+              let refClass = await this.afs.collection<Clase>(Clase.collection).doc(claseLocal.id).ref;
+              let courseRef = await this.afs.collection<Curso>(Curso.collection).doc(this.curso.id).ref;
+              arrayClasesRef.push(refClass);
+              if(clase.activity){
+                let activityClass = clase.activity
+                let questions: Question[]= []
+                questions = structuredClone(clase.activity.questions);
+                activityClass.enterpriseRef = this.curso.enterpriseRef as DocumentReference<Enterprise>
                 activityClass.enterpriseRef = null
-              }
-              activityClass.claseRef = refClass;
-              activityClass.coursesRef = [courseRef];
-              activityClass.type = Activity.TYPE_REGULAR;
-              activityClass.activityCorazon = false
-              if(clase.tipo == 'corazones'){
-                activityClass.activityCorazon = true
-              }
-              let questionsDelete = activityClass['questions']
-              let recursosBase64Delete =activityClass['recursosBase64'] 
-              delete activityClass['questions'];
-              delete activityClass['recursosBase64']             
-
-              await this.activityClassesService.saveActivity(activityClass);
-
-              activityClass['questions'] = questionsDelete
-              activityClass['recursosBase64'] = recursosBase64Delete
-
-              clase.activity.id = activityClass.id;
-
-              for (let pregunta of questions){
-                //const arrayRefSkills = (pregunta['competencias']?.map(skillClase => this.curso.skillsRef.find(skill => skill.id == skillClase.id)).filter(Boolean) ) || [];
-                claseLocal.skillsRef = arrayRefSkills;
-                //console.log('refSkills', arrayRefSkills)
-                //pregunta.skills= arrayRefSkills;
-                delete pregunta['typeFormated'];
-                delete pregunta['competencias_tmp'];
-                delete pregunta['competencias'];
-                delete pregunta['isInvalid'];
-                delete pregunta['InvalidMessages'];
-                delete pregunta['expanded_categorias'];
-                delete pregunta['expanded'];
-                delete pregunta['uploading_file_progress'];
-                delete pregunta['uploading'];
-                await this.activityClassesService.saveQuestion(pregunta,activityClass.id)
+                if(this.user.isSystemUser){
+                  activityClass.enterpriseRef = null
+                }
+                activityClass.claseRef = refClass;
+                activityClass.coursesRef = [courseRef];
+                activityClass.type = Activity.TYPE_REGULAR;
+                activityClass.activityCorazon = false
+                if(clase.tipo == 'corazones'){
+                  activityClass.activityCorazon = true
+                }
+                let questionsDelete = activityClass['questions']
+                let recursosBase64Delete =activityClass['recursosBase64'] 
+                delete activityClass['questions'];
+                delete activityClass['recursosBase64']             
+  
+                await this.activityClassesService.saveActivity(activityClass);
+  
+                activityClass['questions'] = questionsDelete
+                activityClass['recursosBase64'] = recursosBase64Delete
+  
+                clase.activity.id = activityClass.id;
+  
+                for (let pregunta of questions){
+                  //const arrayRefSkills = (pregunta['competencias']?.map(skillClase => this.curso.skillsRef.find(skill => skill.id == skillClase.id)).filter(Boolean) ) || [];
+                  claseLocal.skillsRef = arrayRefSkills;
+                  //console.log('refSkills', arrayRefSkills)
+                  //pregunta.skills= arrayRefSkills;
+                  delete pregunta['typeFormated'];
+                  delete pregunta['competencias_tmp'];
+                  delete pregunta['competencias'];
+                  delete pregunta['isInvalid'];
+                  delete pregunta['InvalidMessages'];
+                  delete pregunta['expanded_categorias'];
+                  delete pregunta['expanded'];
+                  delete pregunta['uploading_file_progress'];
+                  delete pregunta['uploading'];
+                  await this.activityClassesService.saveQuestion(pregunta,activityClass.id)
+                }
               }
             }
+            else{
+              let refClass = await this.afs.collection<Clase>(Clase.collection).doc(clase.id).ref;
+              arrayClasesRef.push(refClass);
+            }
+          } catch (error) {
+            console.error('Error processing clase', error);
           }
-          else{
-            let refClass = await this.afs.collection<Clase>(Clase.collection).doc(clase.id).ref;
-            arrayClasesRef.push(refClass);
-          }
-        } catch (error) {
-          console.error('Error processing clase', error);
         }
+        
+        //console.log('arrayClasesRef',arrayClasesRef)
+  
+        //let id = Date.now().toString();
+  
+        let idRef = await this.afs.collection<Modulo>(Modulo.collection).doc().ref.id;
+  
+        //moduleService
+        let module = new Modulo;
+        module.clasesRef = null
+        module.duracion = modulo.duracion;
+        module.id = modulo.id;
+        module.numero = modulo.numero;
+        module.titulo = modulo.titulo;
+        module.clasesRef = arrayClasesRef;
+        
+        if(!modulo.id){
+          module.id = idRef;
+          modulo.id = idRef
+        }
+        //console.log('module save', module)
+        await this.moduleService.saveModulo(module, this.curso.id)
       }
-      
-      //console.log('arrayClasesRef',arrayClasesRef)
-
-      //let id = Date.now().toString();
-
-      let idRef = await this.afs.collection<Modulo>(Modulo.collection).doc().ref.id;
-
-      //moduleService
-      let module = new Modulo;
-      module.clasesRef = null
-      module.duracion = modulo.duracion;
-      module.id = modulo.id;
-      module.numero = modulo.numero;
-      module.titulo = modulo.titulo;
-      module.clasesRef = arrayClasesRef;
-      
-      if(!modulo.id){
-        module.id = idRef;
-        modulo.id = idRef
-      }
-      //console.log('module save', module)
-      await this.moduleService.saveModulo(module, this.curso.id)
     }
+    Swal.close();
+    this.alertService.succesAlert("El curso se ha guardado exitosamente")
+
+  }
+  else{
+    Swal.close();
+    //this.alertService.succesAlert("El curso se ha guardado exitosamente")
   }
 
-  Swal.close();
-  this.alertService.succesAlert("El curso se ha guardado exitosamente")
 
   }
 
