@@ -8,7 +8,7 @@ import { SaleComponent } from './admin-pages/sale/sale.component';
 import { StudentsComponent } from './admin-pages/students/students.component';
 import { EnterpriseComponent } from './admin-pages/enterprise/enterprise.component';
 import { LicensesSubscriptionsComponent } from './admin-pages/licenses-subscriptions/licenses-subscriptions.component';
-import { ProductsComponent } from './admin-pages/licenses-subscriptions/products/products.component';
+import { ProductsComponent } from './admin-pages/products/products.component';
 
 const MAIN_TITLE = 'Predyc Admin - '
 
