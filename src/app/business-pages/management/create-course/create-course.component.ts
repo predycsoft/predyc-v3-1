@@ -701,7 +701,7 @@ export class CreateCourseComponent {
   
   async saveDraftPre(){
     let checkStatus = await this.chackAllInfo();
-    if(!checkStatus){
+    if(!checkStatus && this.formNewCourse.valid){
       Swal.fire({
         title: "Revisar datos",
         text:"Existen problemas en el curso, ¿desea continuar?",
@@ -711,14 +711,21 @@ export class CreateCourseComponent {
         confirmButtonColor: 'var(--blue-5)',
       }).then((result) => {
         /* Read more about isConfirmed, isDenied below */
-        if (result.isConfirmed) {
+        if (result.isConfirmed && this.formNewCourse.valid) {
           this.saveDraft()
         }
       });
     }
-    else{
+    else if (this.formNewCourse.valid){
       this.saveDraft()
-
+    }
+    else if(!this.formNewCourse.valid){
+      Swal.fire({
+        title:'Datos faltantes!',
+        text:`Por favor veriique los datos del curso para poder guardarlo`,
+        icon:'warning',
+        confirmButtonColor: 'var(--blue-5)',
+      })
     }
   }
 
