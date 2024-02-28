@@ -39,6 +39,28 @@ export class Coupon {
 
     public static collection = 'coupon'
 
+    public static newCouponTemplate =  Coupon.fromJson({
+      active: true,
+      activeBanner: false,
+      amountOff: 0,
+      currency: '',
+      duration: '',
+      durationInMonths: null,
+      id: '',
+      maxRedemptions: null,
+      maxRedemptionsPerUser: 1,
+      name: '',
+      isGlobal: false,
+      percentOff: 0,
+      promoCode: '',
+      redeemBy: null,
+      stripeInfo: {
+        stripeId: null,
+        updatedAt: null,
+      },
+      textBanner: '',
+    });
+
   
     public static fromJson(obj: CouponJson): Coupon {
       let coupon = new Coupon();
