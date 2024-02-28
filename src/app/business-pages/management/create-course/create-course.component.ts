@@ -314,14 +314,26 @@ export class CreateCourseComponent {
 
         if(this.mode == 'edit'){
           if(this.curso){
+            let pilar
             let skillId = this.curso.skillsRef[0]?.id
-            let pilar = this.categoriasArray.find(x=>x.competencias.find(y=>y.id == skillId))
+            if(skillId){
+              pilar = this.categoriasArray.find(x=>x.competencias.find(y=>y.id == skillId))
+            }
+            else if(this.pillarsForm.value['id']){
+              pilar = this.categoriasArray.find(x=>x.id == this.pillarsForm.value['id'])
+            }
             console.log('pilar',pilar)
             this.pillarsForm.patchValue(pilar)
             console.log('pilar',this.pillarsForm.value['name'])
           }
-          
           this.getExamCourse(this.curso.id);
+        }
+        else{
+          let pilar
+          if(this.pillarsForm.value['id']){
+            pilar = this.categoriasArray.find(x=>x.id == this.pillarsForm.value['id'])
+            this.pillarsForm.patchValue(pilar)
+          }
         }
       });
     });
