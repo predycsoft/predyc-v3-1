@@ -75,7 +75,9 @@ export class InstructorsService {
       }
       this.enterpriseRef =this.enterpriseService.getEnterpriseRef()
 
-      if(this.empresa.name == 'predyc'){
+      console.log('empresa',this.empresa)
+
+      if(this.empresa.name.toLowerCase() == 'predyc'){
         this.afs.collection<any>('instructors').valueChanges().subscribe({
           next: instructor => {
             this.InstructorsSubject.next(instructor)
