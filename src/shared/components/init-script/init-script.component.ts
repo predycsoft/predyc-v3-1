@@ -291,6 +291,7 @@ export class InitScriptComponent {
     console.log('********* Creating Instructors *********');
     for (let i = 0; i < instructorsData.length; i++) {
       const instructor = instructorsData[i];
+      instructor['enterpriseRef'] = null
       await this.instructorsService.addInstructor(instructor);
       this.instructors.push(instructor);
     }

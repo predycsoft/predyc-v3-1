@@ -1261,6 +1261,11 @@ export class CreateCourseComponent {
       let instructor = this.formNewInstructor.value
       instructor.ultimaEdicion = new Date
       instructor.ultimoEditor = this.user.uid
+      let enterpriseRef =this.enterpriseService.getEnterpriseRef()
+      if(this.user.isSystemUser){
+        enterpriseRef = null;
+      }
+      instructor.enterpriseRef = enterpriseRef
       await this.instructorsService.addInstructor(instructor)
       console.log(instructor);
 
@@ -1275,14 +1280,6 @@ export class CreateCourseComponent {
 
   seleccionarImagenInstructor(imagen){
     this.formNewCourse.get('imagen_instructor').patchValue(imagen);
-  }
-
-  tituloModuloTMP = '';
-  tituloclaseTMP = '';
-
-  onModuleTitleChange(event){
-    this.tituloModuloTMP = event.value;
-    this.tituloclaseTMP = event.value;
   }
 
   deleteModule(modulo){
