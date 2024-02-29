@@ -45,7 +45,7 @@ export class PricesListComponent {
 
 
   createPrice() {
-    if (this.selectedProductId !== null) {
+    if (this.selectedProductId) {
       let newPrice = Price.newPrice;
       newPrice.product = this.productService.getProductRefById(this.selectedProductId);
       this.editPrice(newPrice);

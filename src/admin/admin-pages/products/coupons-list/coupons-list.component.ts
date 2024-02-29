@@ -6,15 +6,8 @@ import { Subscription } from 'rxjs';
 import { CouponService } from 'src/shared/services/coupon.service';
 import { Coupon } from 'src/shared/models/coupon.model'
 import { IconService } from 'src/shared/services/icon.service';
-
-
-interface CouponsInList {
-  name: string,
-  id: string,
-  discount: string,
-  status: string,
-
-}
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { DialogCouponFormComponent } from './dialog-coupon-form/dialog-coupon-form.component';
 
 @Component({
   selector: 'app-coupons-list',
@@ -28,6 +21,7 @@ export class CouponsListComponent {
     private activatedRoute: ActivatedRoute,
     private couponService: CouponService,
     public icon: IconService,
+    private modalService: NgbModal,
 
   ){}
 
@@ -38,7 +32,7 @@ export class CouponsListComponent {
     "status",
   ];
 
-  dataSource = new MatTableDataSource<CouponsInList>();
+  dataSource = new MatTableDataSource<Coupon>();
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @Input() enableNavigateToUser: boolean = true
@@ -47,7 +41,9 @@ export class CouponsListComponent {
   pageSize: number = 7
   totalLength: number
 
-  productSubscription: Subscription
+  couponSubscription: Subscription
+
+  templateNewCoupon: Coupon = Coupon.newCouponTemplate
 
 
   ngOnInit() {
@@ -64,18 +60,10 @@ export class CouponsListComponent {
   }
 
   performSearch(page: number) {
-    this.productSubscription = this.couponService.getCoupons$().subscribe(coupons => {
-      const couponsInList: CouponsInList[] = coupons.map(coupon => {
-        return {
-          name: coupon.name,
-          id: coupon.id,
-          discount: Coupon.fromJson(coupon).getDiscountText(), 
-          status: coupon.active ? 'Activo' : 'Inactivo',
-        }
-      })
+    this.couponSubscription = this.couponService.getCoupons$().subscribe(coupons => {
       this.paginator.pageIndex = page - 1;
-      this.dataSource.data = couponsInList
-      this.totalLength = couponsInList.length;
+      this.dataSource.data = coupons
+      this.totalLength = coupons.length;
     })
 
   }
@@ -87,8 +75,21 @@ export class CouponsListComponent {
     });
   }
 
-  onSelect(subscription) {
+  async onSelect(selectedCoupon: Coupon) {
+    const modalRef = this.modalService.open(DialogCouponFormComponent, {
+      animation: true,
+      centered: true,
+      size: 'l',
+      backdrop: 'static',
+      keyboard: false ,
+    })
     
+    modalRef.componentInstance.coupon = selectedCoupon;
+
+  }
+
+  OnGetDiscountText(coupon: Coupon){
+    return Coupon.fromJson(coupon).getDiscountText()
   }
 
   ngOnDestroy() {
