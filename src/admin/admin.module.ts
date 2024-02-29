@@ -23,6 +23,7 @@ import { PricesListComponent } from './admin-pages/products/product-list/dialog-
 import { ProductFormComponent } from './admin-pages/products/product-list/dialog-product-form/product-form/product-form.component';
 import { StudentDetailComponent } from './admin-pages/students/student-detail/student-detail.component';
 import { DialogCouponFormComponent } from './admin-pages/products/coupons-list/dialog-coupon-form/dialog-coupon-form.component';
+import { SalesListComponent } from './admin-pages/sales/sales-list/sales-list.component';
 
 
 @NgModule({
@@ -47,7 +48,8 @@ import { DialogCouponFormComponent } from './admin-pages/products/coupons-list/d
     PriceFormComponent,
     PricesListComponent,
     ProductFormComponent,
-    DialogCouponFormComponent
+    DialogCouponFormComponent,
+    SalesListComponent
   ],
   imports: [
     SharedModule,
