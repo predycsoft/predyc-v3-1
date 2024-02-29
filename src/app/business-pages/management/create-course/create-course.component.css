@@ -167,6 +167,7 @@
 
 .customInput{
   color: var(--gray-9) !important;
+  font-size: 12px;
 }
 
 /* Estilo para el placeholder de la clase personalizada */
