@@ -9,6 +9,7 @@ export interface ProductJson {
     active: boolean;
     canEnrollByHimself: boolean;
     canEnrollPrograms: boolean;
+    createdAt: number;
     description: string;
     features: ProductFeatures[];
     id: string;
@@ -27,6 +28,7 @@ export class Product {
     active: boolean;
     canEnrollByHimself: boolean;
     canEnrollPrograms: boolean;
+    createdAt: number;
     description: string;
     features: ProductFeatures[];
     id: string;
@@ -46,6 +48,7 @@ export class Product {
       active: true,
       canEnrollByHimself: false,
       canEnrollPrograms: false,
+      createdAt: +new Date(),
       description: '',
       features: [],
       id: '',
@@ -72,6 +75,7 @@ export class Product {
       product.active = obj.active;
       product.canEnrollByHimself = obj.canEnrollByHimself;
       product.canEnrollPrograms = obj.canEnrollPrograms;
+      product.createdAt = obj.createdAt;
       product.description = obj.description;
       product.features = obj.features;
       product.isACompanyProduct = obj.isACompanyProduct;
@@ -91,6 +95,7 @@ export class Product {
         active: this.active,
         canEnrollByHimself: this.canEnrollByHimself,
         canEnrollPrograms: this.canEnrollPrograms,
+        createdAt: this.createdAt,
         description: this.description,
         features: this.features,
         isACompanyProduct: this.isACompanyProduct,

@@ -7,7 +7,7 @@ import { SharedModule } from 'src/shared/shared.module';
 import { CreateDemoComponent } from './admin-pages/create-demo/create-demo.component';
 import { EnterpriseListComponent } from './admin-pages/enterprise/enterprise-list/enterprise-list.component';
 import { RoyaltyComponent } from './admin-pages/royalty/royalty.component';
-import { SaleComponent } from './admin-pages/sale/sale.component';
+import { SalesComponent } from './admin-pages/sales/sales.component';
 import { StudentsComponent } from './admin-pages/students/students.component';
 import { AdminStudentListComponent } from './admin-pages/students/admin-student-list/admin-student-list.component';
 import { EnterpriseComponent } from './admin-pages/enterprise/enterprise.component';
@@ -23,6 +23,7 @@ import { PricesListComponent } from './admin-pages/products/product-list/dialog-
 import { ProductFormComponent } from './admin-pages/products/product-list/dialog-product-form/product-form/product-form.component';
 import { StudentDetailComponent } from './admin-pages/students/student-detail/student-detail.component';
 import { DialogCouponFormComponent } from './admin-pages/products/coupons-list/dialog-coupon-form/dialog-coupon-form.component';
+import { SalesListComponent } from './admin-pages/sales/sales-list/sales-list.component';
 
 
 @NgModule({
@@ -32,7 +33,7 @@ import { DialogCouponFormComponent } from './admin-pages/products/coupons-list/d
     EnterpriseListComponent,
     ProductListComponent,
     RoyaltyComponent,
-    SaleComponent,
+    SalesComponent,
     StudentsComponent,
     AdminStudentListComponent,
     LicensesSubscriptionsComponent,
@@ -47,7 +48,8 @@ import { DialogCouponFormComponent } from './admin-pages/products/coupons-list/d
     PriceFormComponent,
     PricesListComponent,
     ProductFormComponent,
-    DialogCouponFormComponent
+    DialogCouponFormComponent,
+    SalesListComponent
   ],
   imports: [
     SharedModule,

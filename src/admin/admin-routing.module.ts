@@ -4,7 +4,7 @@ import { HomeComponent } from './admin-pages/home/home.component';
 import { CreateDemoComponent } from './admin-pages/create-demo/create-demo.component';
 import { CoursesComponent } from 'src/app/business-pages/management/courses/courses.component';
 import { RoyaltyComponent } from './admin-pages/royalty/royalty.component';
-import { SaleComponent } from './admin-pages/sale/sale.component';
+import { SalesComponent } from './admin-pages/sales/sales.component';
 import { StudentsComponent } from './admin-pages/students/students.component';
 import { EnterpriseComponent } from './admin-pages/enterprise/enterprise.component';
 import { LicensesSubscriptionsComponent } from './admin-pages/licenses-subscriptions/licenses-subscriptions.component';
@@ -22,7 +22,7 @@ const routes: Routes = [
   {path:"products", title: MAIN_TITLE + 'Productos', component: ProductsComponent},
   {path:"licenses-and-subscriptions", title: MAIN_TITLE + 'L&S', component: LicensesSubscriptionsComponent},
   {path:"royalties", title: MAIN_TITLE + 'Regalias', component: RoyaltyComponent},
-  {path:"sales", title: MAIN_TITLE + 'Ventas', component: SaleComponent},
+  {path:"sales", title: MAIN_TITLE + 'Ventas', component: SalesComponent},
   {path:"courses", title: MAIN_TITLE + 'Cursos', component: CoursesComponent},
   { path: '**', redirectTo: '', pathMatch: 'full' }, // Wildcard Route
 ];
