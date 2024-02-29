@@ -99,8 +99,21 @@ export class SubscriptionsListComponent {
     this.dataSource.paginator.pageSize = this.pageSize;
   }
 
+  debug(searchTerm=null, page=null) {
+    console.log("DEBUG", {
+      pageIndex: this.paginator.pageIndex,
+      data: this.dataSource.data,
+      totalLength: this.totalLength,
+      searchTerm,
+      page
+    })
+  }
+
   performSearch(searchTerm: string, page: number) {
-    this.subscriptionService.getSubscriptions$().subscribe(subscriptions => {
+    if (this.subscriptionsSubscription) {
+      this.subscriptionsSubscription.unsubscribe()
+    }
+    this.subscriptionsSubscription = this.subscriptionService.getSubscriptions$().subscribe(subscriptions => {
       const subscriptionsInList: SubscriptionInList[] = subscriptions.map(subscription => {
         const user = this.users.find(u => u.uid === subscription.userRef.id);
         const price = this.prices.find(p => p.id === subscription.priceRef.id);
@@ -117,17 +130,17 @@ export class SubscriptionsListComponent {
           currentPeriodEnd: subscription.currentPeriodEnd,
           priceId: price.id,
           interval: subscription.interval,
-          couponId: price.coupon.id
-          
+          couponId: price.coupon.id    
         };
       });
       
       // Filtering
       const filteredSubscriptions = searchTerm ? subscriptionsInList.filter(sub => sub.userName.toLowerCase().includes(searchTerm.toLowerCase())) : subscriptionsInList;
-  
+      // const slicedSubscriptions = filteredSubscriptions.slice(this.paginator.pageIndex * this.pageSize, (this.paginator.pageIndex + 1) * this.pageSize)
       this.paginator.pageIndex = page - 1;
-      this.dataSource.data = filteredSubscriptions.slice(this.paginator.pageIndex * this.pageSize, (this.paginator.pageIndex + 1) * this.pageSize);
+      this.dataSource.data = filteredSubscriptions;
       this.totalLength = filteredSubscriptions.length;
+      // this.debug(searchTerm, page)
     });
   }
 
@@ -224,12 +237,9 @@ export class SubscriptionsListComponent {
     });
   }
 
-  onSelect(subscription) {
-
-  }
-
   ngOnDestroy() {
     if (this.queryParamsSubscription) this.queryParamsSubscription.unsubscribe()
+    if (this.subscriptionsSubscription) this.subscriptionsSubscription.unsubscribe()
   }
 
 }

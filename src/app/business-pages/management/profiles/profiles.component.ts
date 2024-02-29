@@ -14,7 +14,7 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from 'src/shared/services/user.service';
 import { ProfileService } from 'src/shared/services/profile.service';
-import { Profile } from 'src/shared/models/profile.model';
+import { Profile, ProfileJson } from 'src/shared/models/profile.model';
 import { DocumentReference } from '@angular/fire/compat/firestore';
 import { AlertsService } from 'src/shared/services/alerts.service';
 import { EnterpriseService } from 'src/shared/services/enterprise.service';
@@ -60,7 +60,7 @@ export class ProfilesComponent {
   categories: Category[]
   // courses: Curso[]
   skills: Skill[]
-  profile: Profile
+  profile: ProfileJson
 
   coursesForExplorer: CoursesForExplorer[]
   filteredCourses: Observable<CoursesForExplorer[]>
@@ -75,6 +75,7 @@ export class ProfilesComponent {
   profileBackup
 
   id = this.route.snapshot.paramMap.get('id');
+  baseProfile: string
   user;
 
   ngOnInit() {
@@ -85,11 +86,15 @@ export class ProfilesComponent {
     })
 
     this.hoverItem$ = this.hoverSubject.asObservable();
+    this.baseProfile = this.route.snapshot.queryParams['baseProfile'] || null
     const observablesArray: Observable<Category[] | Profile | Skill[] | Curso[]>[] = [this.categoryService.getCategories$(), this.skillService.getSkills$(), this.courseService.getCourses$()]
     if (this.id === 'new') {
       this.isEditing = true
       const title = MAIN_TITLE + 'Nuevo perfil'
       this.titleService.setTitle(title)
+      if (this.baseProfile) {
+        observablesArray.push(this.profileService.getProfile$(this.baseProfile))
+      }
     } else {
       this.isEditing = false
       observablesArray.push(this.profileService.getProfile$(this.id))
@@ -100,7 +105,12 @@ export class ProfilesComponent {
       const skills = result[1] as Skill[]
       const courses = result[2] as Curso[]
       if (result.length === 4) {
-        this.profile = result[3] as Profile
+        const profile = result[3] as ProfileJson
+        this.profile = {
+          ...profile,
+          name: this.baseProfile ? '' : profile.name,
+          id: this.baseProfile ? null : profile.id
+        } as ProfileJson
       }
       this.categories = categories
       this.skills = skills
@@ -477,6 +487,7 @@ export class ProfilesComponent {
         this.id = profileId;
         this.profile = profile
         this.router.navigate([`management/profiles/${profileId}`])
+        this.titleService.setTitle(MAIN_TITLE + this.profile.name)
       }
       this.alertService.succesAlert("Completado")
       this.disableSaveButton = false
