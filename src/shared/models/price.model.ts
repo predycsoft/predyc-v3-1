@@ -8,6 +8,7 @@ export interface PriceJson {
     active: boolean;
     amount: number;
     coupon: DocumentReference<Coupon> | null;
+    createdAt: number;
     currency: string;
     freeTrialDays: number;
     id: string;
@@ -23,6 +24,7 @@ export class Price {
     active: boolean;
     amount: number;
     coupon: DocumentReference<Coupon> | null;
+    createdAt: number;
     currency: string;
     freeTrialDays: number;
     id: string;
@@ -46,6 +48,7 @@ export class Price {
       active: true,
       amount: 0,
       coupon: null,
+      createdAt: +new Date(),
       currency: 'USD',
       freeTrialDays: 0,
       id: '',
@@ -69,6 +72,7 @@ export class Price {
       price.active = obj.active;
       price.amount = obj.amount;
       price.coupon = obj.coupon;
+      price.createdAt = obj.createdAt;
       price.currency = obj.currency;
       price.freeTrialDays = obj.freeTrialDays;
       price.id = obj.id;
@@ -86,6 +90,7 @@ export class Price {
         active: this.active,
         amount: this.amount,
         coupon: this.coupon,
+        createdAt: this.createdAt,
         currency: this.currency,
         freeTrialDays: this.freeTrialDays,
         id: this.id,

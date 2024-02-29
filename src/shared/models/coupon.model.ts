@@ -4,6 +4,7 @@ export interface CouponJson {
     active: boolean;
     activeBanner: boolean;
     amountOff: number | null;
+    createdAt: number;
     currency: string; // force to USD
     duration: string; // once, repeating, forever
     durationInMonths: number | null;
@@ -23,6 +24,7 @@ export class Coupon {
     active: boolean;
     activeBanner: boolean;
     amountOff: number | null;
+    createdAt: number;
     currency: string; // force to USD
     duration: string; // once, repeating, forever
     durationInMonths: number | null;
@@ -43,6 +45,7 @@ export class Coupon {
       active: true,
       activeBanner: false,
       amountOff: 0,
+      createdAt: +new Date(),
       currency: '',
       duration: '',
       durationInMonths: null,
@@ -67,6 +70,7 @@ export class Coupon {
       coupon.active = obj.active;
       coupon.activeBanner = obj.activeBanner;
       coupon.amountOff = obj.amountOff;
+      coupon.createdAt = obj.createdAt;
       coupon.currency = obj.currency;
       coupon.duration = obj.duration;
       coupon.durationInMonths = obj.durationInMonths;
@@ -97,6 +101,7 @@ export class Coupon {
         active: this.active,
         activeBanner: this.activeBanner,
         amountOff: this.amountOff,
+        createdAt: this.createdAt,
         currency: this.currency,
         duration: this.duration,
         durationInMonths: this.durationInMonths,
