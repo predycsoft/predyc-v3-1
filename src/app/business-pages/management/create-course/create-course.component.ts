@@ -722,10 +722,23 @@ export class CreateCourseComponent {
     else if(!this.formNewCourse.valid){
       Swal.fire({
         title:'Datos faltantes!',
-        text:`Por favor veriique los datos del curso para poder guardarlo`,
+        text:`Por favor verifique los datos del curso para poder guardarlo`,
         icon:'warning',
         confirmButtonColor: 'var(--blue-5)',
       })
+    }
+  }
+
+
+  expandModulo(modulo){
+
+    console.log(modulo)
+
+    if(!modulo['expanded'] && modulo.titulo){
+      modulo['expanded'] = true
+    }
+    else if(modulo['expanded']){
+      modulo['expanded'] = !modulo['expanded']
     }
   }
 
@@ -1638,7 +1651,7 @@ export class CreateCourseComponent {
     number++;
     let modulo = new Modulo;
     modulo.numero = number;
-    modulo['expanded'] = true;
+    modulo['expanded'] = false;
     modulo['clases'] = [];
     let titulo = "";
     if (number == 1){

@@ -267,8 +267,8 @@
                                                     </div>
                                                     <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="0.625">
                                                         <img (click)="deleteModule(modulo)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash" alt="">
-                                                        <img *ngIf="modulo['expanded']" (click)="modulo['expanded'] = !modulo['expanded']; hideModuleClasses(modulo)" [src]="icon.chevronUp" class="h16px pdr05 cursorPointer" alt="">
-                                                        <img *ngIf="!modulo['expanded']" (click)="modulo['expanded'] = !modulo['expanded']; hideOtherModules(modulo)" [src]="icon.chevronDown" class="h16px pdr05 cursorPointer" alt="">
+                                                        <img *ngIf="modulo['expanded']" (click)="expandModulo(modulo); hideModuleClasses(modulo)" [src]="icon.chevronUp" class="h16px pdr05 cursorPointer" alt="">
+                                                        <img *ngIf="!modulo['expanded']" (click)="expandModulo(modulo); hideOtherModules(modulo)" [src]="icon.chevronDown" class="h16px pdr05 cursorPointer" alt="">                                                       <img *ngIf="!modulo['expanded']" (click)="modulo['expanded'] = !modulo['expanded']; hideOtherModules(modulo)" [src]="icon.chevronDown" class="h16px pdr05 cursorPointer" alt="">
                                                     </div>
                                                 </div>
                                                 <!-- Contenedor de las clases -->
@@ -277,8 +277,7 @@
                                                         <div class="mgl40 mgr10 fw">
                                                             <div class="fw mgb10">
                                                                 <mat-accordion multi="false" class="fw">
-                                                                    <mat-expansion-panel [ngClass]="{'ContainerClase': clase['isInvalid']}" [expanded]="clase['expanded']" (opened)="closeOtherClasesModulo(clase,modulo)">
-                                                                        <mat-expansion-panel-header>
+                                                                    <mat-expansion-panel [ngClass]="{'ContainerClase': clase['isInvalid']}" [disabled]="!clase.titulo" [expanded]="clase['expanded']" (opened)="closeOtherClasesModulo(clase,modulo)">                                                                        <mat-expansion-panel-header>
                                                                         <mat-panel-title (click)="onPanelTitleClick($event)" fxLayout="row" fxLayoutAlign="space-between center">
                                                                             <div fxLayout="row" fxLayoutAlign="start center">
                                                                             <img [src]="icon[getIconClase(clase.tipo)]" class="h18px pdr05" alt="">
