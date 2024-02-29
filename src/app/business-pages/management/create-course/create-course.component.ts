@@ -3420,6 +3420,19 @@ uploadVideo(videoFile, clase, local = false, modulo, origen = null, intentosActu
 
   }
 
+  confirmarTitulo(modulo: any) {
+    modulo['editarTitulo'] = false;
+    modulo.titulo = modulo['tituloTMP'];
+  }
+
+  confirmarTituloClase(clase) {
+    clase['editarTitulo'] = false;
+    clase.titulo = clase['tituloTMP'];
+    clase['edited'] = true; // Marca la clase como editada
+    // Aquí puedes añadir cualquier otra lógica necesaria después de confirmar el título
+}
+
+
 
 }
 
