@@ -1,4 +1,4 @@
-import { Component, ElementRef, TemplateRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, QueryList, TemplateRef, ViewChild, ViewChildren } from '@angular/core';
 import { IconService } from 'src/shared/services/icon.service';
 import { FormControl, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -1698,6 +1698,59 @@ export class CreateCourseComponent {
     })
 
   }
+
+  @ViewChildren('inputRef') inputElements: QueryList<ElementRef>;
+  @ViewChildren('inputRefModulo') inputElementsModulo: QueryList<ElementRef>;
+
+
+  editarTituloClase(index: number) {
+    // Configura el estado de edición como prefieras
+    this.moverCursorAlFinal(index);
+}
+
+  moverCursorAlFinal(index: number) {
+    // Espera hasta que los cambios en la vista se apliquen
+    setTimeout(() => {
+      const inputElementsArray = this.inputElements.toArray();
+      const inputElement = inputElementsArray[index]?.nativeElement;
+      if (inputElement) {
+        const longitudTexto = inputElement.value.length;
+        inputElement.focus();
+        inputElement.setSelectionRange(longitudTexto, longitudTexto);
+      }
+    });
+  }
+
+
+
+
+  editarTituloModulo(index: number) {
+    // Configura el estado de edición como prefieras
+    this.moverCursorAlFinalModulo(index);
+}
+
+  moverCursorAlFinalModulo(index: number) {
+    // Espera hasta que los cambios en la vista se apliquen
+    setTimeout(() => {
+      const inputElementsArray = this.inputElementsModulo.toArray();
+      const inputElement = inputElementsArray[index]?.nativeElement;
+      if (inputElement) {
+        const longitudTexto = inputElement.value.length;
+        inputElement.focus();
+        inputElement.setSelectionRange(longitudTexto, longitudTexto);
+      }
+    });
+  }
+
+
+
+
+
+
+
+
+
+
 
   preventDefault(event: any) {
     const keyboardEvent = event as KeyboardEvent;

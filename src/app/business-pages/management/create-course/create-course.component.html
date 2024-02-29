@@ -241,7 +241,7 @@
                                     <div class="pdl10 pdr10 pdt10 fw">
                                         <div fxLayout="column" class="fw smallScroll" style="height: 95%; overflow-y: auto;">
                                             <!-- aqui van los modulos que se van creando -->
-                                            <div *ngFor="let modulo of modulos" class="{{modulo['isInvalid']? 'ContainerModuloInvalid' : 'ContainerModulo'}}">
+                                            <div *ngFor="let modulo of modulos; let iModulo = index" class="{{modulo['isInvalid']? 'ContainerModuloInvalid' : 'ContainerModulo'}}">
                                                 <div fxLayout="row" fxLayoutAlign="space-between start" class="fw pd10 pdt05 pdb5">
                                                     <div fxLayout="row" fxLayoutGap="10px" class="fw">
                                                         <div class="ft500 ft12">
@@ -253,19 +253,19 @@
                                                             <img [src]="icon.document" class="h12px pdr05 makeGray" alt="">
                                                             <div *ngIf="modulo.titulo && !modulo['editarTitulo']; then tituloPresente; else ModuloSinTitulo"></div>
                                                             <ng-template #tituloPresente>
-                                                                <span>
+                                                                <span (click)="modulo['editarTitulo'] = true;modulo['tituloTMP'] = modulo?.titulo">
                                                                     {{modulo.titulo}}
                                                                 </span>
-                                                                <img (click)="modulo['editarTitulo'] = true;modulo['tituloTMP'] = modulo?.titulo" [src]="icon.licencias" class="h18px pdl05 makeGray edit cursorPointer" alt="">
+                                                                <!-- <img (click)="modulo['editarTitulo'] = true;modulo['tituloTMP'] = modulo?.titulo" [src]="icon.licencias" class="h18px pdl05 makeGray edit cursorPointer" alt=""> -->
                                                             </ng-template>
                                                             <ng-template #ModuloSinTitulo>
-                                                                <input *ngIf="!modulo.titulo" 
+                                                                <input #inputRefModulo *ngIf="!modulo.titulo" 
                                                                        type="text" 
                                                                        [(ngModel)]="modulo['tituloTMP']" 
                                                                        (keyup.enter)="confirmarTitulo(modulo)" 
                                                                        placeholder="Escriba título aquí" 
                                                                        class="inputInvisible">
-                                                                <input *ngIf="modulo.titulo" 
+                                                                <input #inputRefModulo *ngIf="modulo.titulo" 
                                                                        type="text" 
                                                                        [(ngModel)]="modulo['tituloTMP']" 
                                                                        (keyup.enter)="confirmarTitulo(modulo)" 
@@ -288,7 +288,7 @@
                                                 </div>
                                                 <!-- Contenedor de las clases -->
                                                 <div *ngIf="modulo['expanded']">
-                                                    <div *ngFor="let clase of modulo['clases']; trackBy: trackByClase" fxLayout="row" class="fw">
+                                                    <div *ngFor="let clase of modulo['clases']; trackBy: trackByClase; let iClase = index" fxLayout="row" class="fw">
                                                         <div class="mgl40 mgr10 fw">
                                                             <div class="fw mgb10">
                                                                 <mat-accordion multi="false" class="fw">
@@ -299,13 +299,13 @@
                                                                                 <img [src]="icon[getIconClase(clase.tipo)]" class="h18px pdr05" alt="">
                                                                                 <div *ngIf="clase.titulo && !clase['editarTitulo']; then tituloPresenteClase; else ClaseSinTitulo"></div>
                                                                                 <ng-template #tituloPresenteClase>
-                                                                                    <span>{{clase.tipo | titlecase }} {{getnumerClassTipo(modulo,clase)}}: {{clase.titulo}}</span>
-                                                                                    <img (click)="clase['editarTitulo'] = true; clase['tituloTMP'] = clase?.titulo" [src]="icon.licencias" class="h18px pdl05 makeGray edit cursorPointer" alt="">
+                                                                                    <span (click)="clase['editarTitulo'] = true; clase['tituloTMP'] = clase?.titulo; editarTituloClase(iClase)" >{{clase.tipo | titlecase }} {{getnumerClassTipo(modulo,clase)}}: {{clase.titulo}}</span>
+                                                                                    <!-- <img (click)="clase['editarTitulo'] = true; clase['tituloTMP'] = clase?.titulo" [src]="icon.licencias" class="h18px pdl05 makeGray edit cursorPointer" alt=""> -->
                                                                                 </ng-template>
                                                                                 <ng-template #ClaseSinTitulo>
                                                                                     <span>{{clase.tipo | titlecase }} {{getnumerClassTipo(modulo,clase)}}:</span>
-                                                                                    <input *ngIf="!clase.titulo" type="text" [(ngModel)]="clase['tituloTMP']" (keydown.space)="preventDefault($event)" (keyup.enter)="preventDefault($event);confirmarTituloClase(clase)" placeholder="Escriba título aquí" class="inputInvisible">
-                                                                                    <input *ngIf="clase.titulo" type="text" [(ngModel)]="clase['tituloTMP']" (keydown.space)="preventDefault($event)" (keyup.enter)="preventDefault($event);confirmarTituloClase(clase)" placeholder="Escriba título aquí" class="inputInvisible">
+                                                                                    <input  #inputRef *ngIf="!clase.titulo" type="text" [(ngModel)]="clase['tituloTMP']" (keydown.space)="preventDefault($event)" (keyup.enter)="preventDefault($event);confirmarTituloClase(clase)" placeholder="Escriba título aquí" class="inputInvisible">
+                                                                                    <input  #inputRef *ngIf="clase.titulo" type="text" [(ngModel)]="clase['tituloTMP']" (keydown.space)="preventDefault($event)" (keyup.enter)="preventDefault($event);confirmarTituloClase(clase)" placeholder="Escriba título aquí" class="inputInvisible">
                                                                                     <img (click)="confirmarTituloClase(clase)" matTooltip="Confirmar título" [src]="icon.check" class="h18px pdl05 makeGray edit cursorPointer" alt="">
                                                                                 </ng-template>
                                                                                 </div>
