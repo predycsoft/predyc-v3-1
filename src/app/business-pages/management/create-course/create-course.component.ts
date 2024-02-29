@@ -1788,8 +1788,15 @@ export class CreateCourseComponent {
       let fileBaseName = file.name.split('.').slice(0, -1).join('.');
       let fileExtension = file.name.split('.').pop();
 
-      const base64content = await this.fileToBase64(file);
-      ////console.log('base64',base64content);  // Aquí tienes el contenido en base64
+      let base64content
+
+      if(clase.tipo != 'video'){
+        base64content = await this.fileToBase64(file);
+      }
+      else{
+        base64content = URL.createObjectURL(file);
+      }
+
 
       if(clase.tipo == 'lectura' || adicional){
         let idFile = Date.now();

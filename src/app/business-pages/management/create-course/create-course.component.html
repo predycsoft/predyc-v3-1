@@ -601,7 +601,8 @@
                     <ngx-extended-pdf-viewer *ngIf="fileViewTipe == 'pdf' && srsView " [showToolbar]="false" [src]="srsView" [useBrowserLocale]="true" height="60vh"></ngx-extended-pdf-viewer>
                     <div class="video-container" *ngIf="fileViewTipe == 'video'">
                         <video *ngIf="base64view" #videoPlayer controls>
-                            <source type="video/mp4" src="data:video/mp4;base64,{{base64view}}">
+                            <!-- <source type="video/mp4" src="data:video/mp4;base64,{{base64view}}"> -->
+                            <source [src]="base64view" type="video/mp4">
                         </video>
                         <iframe *ngIf="!base64view"
                             id="myvideo" [src]="safeUrl" (load)="initPlayer()" frameborder="0"
@@ -1127,7 +1128,8 @@
             <div fxFlex="25%" fxLayout="column" fxLayoutAlign="center center">
                 <div *ngIf="viewVideoActivity" class="video-container-small">
                     <video #videoPlayerMini controls class="fw fh">
-                        <source type="video/mp4" src="data:video/mp4;base64,{{selectedClase['base64Video']}}">
+                        <!-- <source type="video/mp4" src="data:video/mp4;base64,{{selectedClase['base64Video']}}"> -->
+                        <source [src]="selectedClase['base64Video']" type="video/mp4">
                     </video>
                 </div>
                 <div *ngIf="viewFileActivity" class="fw fh pdt10">
