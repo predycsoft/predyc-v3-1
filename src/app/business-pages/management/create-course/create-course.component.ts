@@ -2321,7 +2321,7 @@ export class CreateCourseComponent {
 //   }
 
 
-  uploadVideo(videoFile,clase,local = false,modulo,origen = null ) {
+uploadVideo(videoFile, clase, local = false, modulo, origen = null, intentosActuales = 0, maxIntentos = 2) {
 
     if (!videoFile) {
       //console.log('No video file selected');
@@ -2398,14 +2398,31 @@ export class CreateCourseComponent {
           },
           // Maneja las notificaciones de error
           error: error => {
-            clase['uploading'] = false;
-            //console.log('Upload Error:', error);
-            this.dialog.dialogAlerta("Hubo un error");
-            //console.log(error?.error?.error);
-            //this.videoFile=null;
-            //URL.revokeObjectURL(this.videoSrc);
-            clase['videoUpload'] = 0;
-            //this.videoSrc=null;
+            // Aquí manejas el error y decides si reintentar
+            if (intentosActuales < maxIntentos) {
+              console.log(`Intento ${intentosActuales + 1} fallido. Reintentando...`);
+              Swal.fire({
+                title: "Advertencia",
+                text:"Ocurrio un error al subir el video, ¿desea reintentar?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Guardar",
+                confirmButtonColor: 'var(--blue-5)',
+              }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                  // Incrementa el contador de intentos y llama de nuevo a la función
+                  this.uploadVideo(videoFile, clase, local, modulo, origen, intentosActuales + 1, maxIntentos);            
+                }
+              });
+            } else {
+              // Llegaste al máximo de intentos, maneja el error definitivamente
+              clase['uploading'] = false;
+              clase['videoUpload'] = 0;
+              console.log('Maximo de intentos alcanzado. Mostrando mensaje de error.');
+              this.dialog.dialogAlerta("Hubo un error");
+              // Lógica para manejar el error después de los reintentos
+            }
           },
           // Maneja las notificaciones de completado
           complete: () => {
@@ -2504,29 +2521,83 @@ export class CreateCourseComponent {
                     }
                   })
                 },
-                error: (error)=>{
-                  this.dialog.dialogAlerta("Hubo un error");
-                  //console.log(error?.error?.error);
-                  //URL.revokeObjectURL(this.videoSrc);
-                  //this.videoFile=null;
-                  clase['videoUpload'] =0;
-                  //this.videoSrc=null;
-                  clase['uploading'] = false;
+                // error: (error)=>{
+                //   this.dialog.dialogAlerta("Hubo un error");
+                //   //console.log(error?.error?.error);
+                //   //URL.revokeObjectURL(this.videoSrc);
+                //   //this.videoFile=null;
+                //   clase['videoUpload'] =0;
+                //   //this.videoSrc=null;
+                //   clase['uploading'] = false;
+                // }
+                error: error => {
+                  // Aquí manejas el error y decides si reintentar
+                  if (intentosActuales < maxIntentos) {
+                    console.log(`Intento ${intentosActuales + 1} fallido. Reintentando...`);
+                    Swal.fire({
+                      title: "Advertencia",
+                      text:"Ocurrio un error al subir el video, ¿desea reintentar?",
+                      icon: "warning",
+                      showCancelButton: true,
+                      confirmButtonText: "Guardar",
+                      confirmButtonColor: 'var(--blue-5)',
+                    }).then((result) => {
+                      /* Read more about isConfirmed, isDenied below */
+                      if (result.isConfirmed) {
+                        // Incrementa el contador de intentos y llama de nuevo a la función
+                        this.uploadVideo(videoFile, clase, local, modulo, origen, intentosActuales + 1, maxIntentos);            
+                      }
+                    });
+                  } else {
+                    // Llegaste al máximo de intentos, maneja el error definitivamente
+                    clase['uploading'] = false;
+                    clase['videoUpload'] = 0;
+                    console.log('Maximo de intentos alcanzado. Mostrando mensaje de error.');
+                    this.dialog.dialogAlerta("Hubo un error");
+                    // Lógica para manejar el error después de los reintentos
+                  }
                 }
               })
             });
           }
         });
       },
-      error: (error) => {
-        this.dialog.dialogAlerta("Hubo un error")
-        //console.log(error.error.error);
-        //URL.revokeObjectURL(this.videoSrc);
-        //this.videoFile=null;
-        clase['videoUpload'] =0;
-        //this.videoSrc=null;
-        clase['uploading'] = false;
-      }
+      // error: (error) => {
+      //   this.dialog.dialogAlerta("Hubo un error")
+      //   //console.log(error.error.error);
+      //   //URL.revokeObjectURL(this.videoSrc);
+      //   //this.videoFile=null;
+      //   clase['videoUpload'] =0;
+      //   //this.videoSrc=null;
+      //   clase['uploading'] = false;
+      // }
+      error: error => {
+        // Aquí manejas el error y decides si reintentar
+        if (intentosActuales < maxIntentos) {
+          console.log(`Intento ${intentosActuales + 1} fallido. Reintentando...`);
+          Swal.fire({
+            title: "Advertencia",
+            text:"Ocurrio un error al subir el video, ¿desea reintentar?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Guardar",
+            confirmButtonColor: 'var(--blue-5)',
+          }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+              // Incrementa el contador de intentos y llama de nuevo a la función
+              this.uploadVideo(videoFile, clase, local, modulo, origen, intentosActuales + 1, maxIntentos);            
+            }
+          });
+        } else {
+          // Llegaste al máximo de intentos, maneja el error definitivamente
+          clase['uploading'] = false;
+          clase['videoUpload'] = 0;
+          console.log('Maximo de intentos alcanzado. Mostrando mensaje de error.');
+          this.dialog.dialogAlerta("Hubo un error");
+          // Lógica para manejar el error después de los reintentos
+        }
+      },
     })
   }
 
