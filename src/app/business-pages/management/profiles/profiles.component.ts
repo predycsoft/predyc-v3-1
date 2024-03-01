@@ -199,12 +199,20 @@ export class ProfilesComponent {
   }
 
   onEdit() {
-    this.profileBackup = {
-      name: this.profileName,
-      description: this.profileDescription,
-      selectedCourses: this.studyPlan.map(course => course.id)
+
+    if(this.user.isSystemUser || this.profile.enterpriseRef ){
+      this.profileBackup = {
+        name: this.profileName,
+        description: this.profileDescription,
+        selectedCourses: this.studyPlan.map(course => course.id)
+      }
+      this.isEditing = true
     }
-    this.isEditing = true
+    else{
+      let url = `/management/profiles/new?baseProfile=${this.profile.id}`;
+      location.href = url;
+    }
+
   }
 
   onCancel() {

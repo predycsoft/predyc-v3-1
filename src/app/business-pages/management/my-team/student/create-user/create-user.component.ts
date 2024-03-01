@@ -249,8 +249,19 @@ export class CreateUserComponent {
     const user = await this.getUserFromForm()
     console.log("user", user)
     try {
-      if (this.studentToEdit) await this.userService.editUser(user.toJson())
-      else await this.userService.addUser(user)
+
+      console.log('profiles',this.profiles,user.profile)
+
+      //let profileUser = this.profiles.find(x=>)
+      
+
+
+      if (this.studentToEdit) {
+        await this.userService.editUser(user.toJson())
+      }
+      else{
+        await this.userService.addUser(user)
+      } 
       this.activeModal.close(this.userForm.value);
       this.alertService.succesAlert('Estudiante agregado exitosamente')
     } catch (error) {
