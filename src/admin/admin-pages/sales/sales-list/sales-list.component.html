@@ -1,5 +1,5 @@
 <div class="">
-    <button class="greenButton" (click)="createTestData()">Crear datos de prueba</button>
+    <!-- <button class="greenButton" (click)="createTestData()">Crear datos de prueba</button> -->
     <table mat-table [dataSource]="dataSource">
 
         <!-- Monto Column -->
@@ -7,7 +7,7 @@
             <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Monto </th>
             <td mat-cell *matCellDef="let charge"> 
                 <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign=" center" >
-                    <div class="ft500 ft14 gray-10">{{ charge.amount | number:"1.2-2"}}</div>
+                    <div class="ft500 ft14 gray-10 w-50">{{ charge.amount | number:"1.2-2"}}</div>
                     <div class="ft500 ft14 gray-8 ftup">{{charge.currency}}</div>
                 </div>
             </td>
@@ -32,7 +32,7 @@
         <!-- Producto Column -->
         <ng-container matColumnDef="product">
             <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Producto</th>
-            <td mat-cell *matCellDef="let charge" class="centertext ft14"> {{ getProductData(charge.price.id).name }} </td>
+            <td mat-cell *matCellDef="let charge" class="centertext ft14"> {{ charge.productName }} </td>
         </ng-container>
 
         <!-- Descripción Column -->
@@ -46,8 +46,8 @@
             <th mat-header-cell *matHeaderCellDef class="ft14 centertext centertext">Cliente</th>
             <td mat-cell *matCellDef="let charge" class="ft14"> 
                 <div fxLayout="row"  fxLayoutGap=".75rem" fxLayoutAlign=" center" >
-                    <div class="ft500 ft14 gray-10 w-50">{{ (getCustomerName(charge) | titlecase) }}</div>
-                    <div class="ft500 ft12 gray-8">{{ getCustomerEmail(charge) }}</div>
+                    <div class="ft500 ft14 gray-10 w-50">{{ charge.customerName | titlecase }}</div>
+                    <div class="ft500 ft12 gray-8">{{ charge.customerEmail }}</div>
                 </div>
             </td>
         </ng-container>
@@ -61,7 +61,7 @@
         <!-- Fecha pago Column -->
         <ng-container matColumnDef="payAt">
             <th mat-header-cell *matHeaderCellDef class="ft14 centertext">Fecha pago</th>
-            <td mat-cell *matCellDef="let charge" class="centertext ft14"> {{ getPayDate(charge) | date:"dd/MM/yyyy" }} </td>
+            <td mat-cell *matCellDef="let charge" class="centertext ft14"> {{ charge.payDate | date:"dd/MM/yyyy" }} </td>
         </ng-container>
 
         <!-- Devolución Column -->

@@ -18,6 +18,14 @@ import { PriceService } from 'src/shared/services/price.service';
 import { ProductService } from 'src/shared/services/product.service';
 import { UserService } from 'src/shared/services/user.service';
 
+interface ChargeInList extends ChargeJson {
+  productName: string
+  customerName: string
+  customerEmail: string
+  payDate: number
+}
+
+
 @Component({
   selector: 'app-sales-list',
   templateUrl: './sales-list.component.html',
@@ -50,7 +58,7 @@ export class SalesListComponent {
     "refund",
   ];
 
-  dataSource = new MatTableDataSource<Charge>();
+  dataSource = new MatTableDataSource<ChargeInList>();
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @Input() enableNavigateToUser: boolean = true
@@ -87,8 +95,8 @@ export class SalesListComponent {
       this.enterprises = enterprises
       this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
         const page = Number(params['page']) || 1;
-        // const searchTerm = params['search'] || '';
-        this.performSearch(page);
+        const searchTerm = params['search'] || '';
+        this.performSearch(searchTerm, page);
       })
     })
   }
@@ -99,13 +107,24 @@ export class SalesListComponent {
     this.dataSource.paginator.pageSize = this.pageSize;
   }
 
-  performSearch(page: number) {
+  performSearch(searchTerm:string, page: number) {
     this.chargeSubscription = this.chargeService.getCharges$().subscribe(charges => {
-      this.paginator.pageIndex = page - 1;
-      this.dataSource.data = charges
-      this.totalLength = charges.length;
-    })
+      const chargesInList: ChargeInList[] = charges.map(charge => {
+        const productData = this.getProductData(charge.price.id)
+        return {
+          ... charge,
+          productName: productData.name,
+          customerName: this.getCustomerName(charge, productData),
+          customerEmail: this.getCustomerEmail(charge, productData),
+          payDate: this.getPayDate(charge)
+        }
+      })
 
+      const filteredCharges = searchTerm ? chargesInList.filter(sub => sub.customerName.toLowerCase().includes(searchTerm.toLowerCase())) : chargesInList;
+      this.paginator.pageIndex = page - 1;
+      this.dataSource.data = filteredCharges
+      this.totalLength = filteredCharges.length;
+    })
   }
 
   onPageChange(page: number): void {
@@ -120,8 +139,7 @@ export class SalesListComponent {
     return this.products.find(product => product.id === price.product.id)
   }
 
-  getCustomerEmail(charge: Charge): string {
-    const product: Product = this.getProductData(charge.price.id)
+  getCustomerEmail(charge: Charge, product: Product): string {
     if (product.isACompanyProduct) {
       const enterpriseData: Enterprise = this.enterprises.find(enterprise => enterprise.id === charge.customer.id)
       // return enterpriseData.email // it doesnt exists
@@ -133,8 +151,7 @@ export class SalesListComponent {
     }
   }
 
-  getCustomerName(charge: Charge): string {
-    const product: Product = this.getProductData(charge.price.id)
+  getCustomerName(charge: Charge, product: Product): string {
     if (product.isACompanyProduct) {
       const enterpriseData: Enterprise = this.enterprises.find(enterprise => enterprise.id === charge.customer.id)
       return enterpriseData.name
