@@ -22,11 +22,10 @@
 </div>
     <div class="fw fh" fxLayout="column">
         <ng-container>
-            <div fxLayout="row" class="containerCurso fw " fxLayoutGap="2rem">
+            <div fxLayout="row" class="containerCurso h-100  " fxLayoutGap="1.5rem" style="">
                 <!-- <div fxFlex="50%" class="pdl10 pdt10 fw"> -->
-                <div  class="radius10 w-40 mgt15  mgl10 shadowLight  " fxLayout="column" style="background-color: rgba(244, 244, 244, 0.362);  ">
-
-                    <div fxLayout="column" class="fw fh hideScroll" style="overflow-y: auto;">
+                <div  class="radius10 w-30 mgt15  mgl10 shadowLight  " fxLayout="column" style="background-color: rgba(244, 244, 244, 0.362); ">
+                    <!-- Informacion -->
                         <form [formGroup]="formNewCourse" class="mgl10 mgt15 mgr10">
                             <div class="fw" fxLayoutAlign="space-between center" fxLayout="row">
                                 <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="">
@@ -227,12 +226,10 @@
                               
                             
                         </form>
-                    </div>
                 </div>
-
-                
-                        <div  class="radius10 w-53 mgt15  mgl10 shadowLight  " fxLayout="column" style="background-color: rgba(244, 244, 244, 0.362);  ">
-                            <div fxLayout="column" class=" fw fh hideScroll" style="overflow-y: auto;">
+                <div class="column w-70 mgr25 " fxLayoutGap="2rem" style="" >
+                        <div  class=" mgt15  mgl10 fw  " fxLayout="column" style=" ">
+                            <div fxLayout="column" class=" radius10  fh hideScroll shadowLight" style="overflow-y: auto; background-color:rgba(244, 244, 244, 0.362) ">
                                 <div>
                                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="mgl10 mgt15 mgr10">
                                         <img [src]="icon.document" class="makeBlue h20px" alt="">
@@ -483,18 +480,20 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div>
-                                    <div class="pdl10 pdr10 pdt10 fw">
-                                        Examen
-                                    </div>
-                                    <div class="fw">
-                                        <app-questions [questionMaxSize]="100" [nameCurso]="formNewCourse.get('titulo').value?  this.formNewCourse.get('titulo').value : 'Temporal'" [nameEmpresa]="empresa.name" (emmitForm)="validExam = $event" [questionsArray]="examen?.questions ? examen?.questions:[] " [checkQuestions]="updateTriggeQuestionsExam" [selectedTestSkills]="[]"></app-questions>
-                                    </div>
-                                </div>
+                                
                                 
                             </div>
-
+                            <div fxLayout="column" class=" radius10 mgt15 fh hideScroll shadowLight" style="overflow-y: auto; background-color:rgba(244, 244, 244, 0.362) ">
+                                <div>
+                                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="mgl10 mgt15 mgr10">
+                                        <img [src]="icon.document" class="makeBlue h20px" alt="">
+                                        <span class="ft500 ft14 black " style="margin-top: 5px;">Examen del curso</span>
+                                    </div>
+                                    <app-questions class="mgr10" [questionMaxSize]="100" [nameCurso]="formNewCourse.get('titulo').value?  this.formNewCourse.get('titulo').value : 'Temporal'" [nameEmpresa]="empresa.name" (emmitForm)="validExam = $event" [questionsArray]="examen?.questions ? examen?.questions:[] " [checkQuestions]="updateTriggeQuestionsExam" [selectedTestSkills]="[]"></app-questions>
+                                </div>
+                            </div>
                         </div>
+                    </div>
             </div>
         </ng-container>
     </div>
