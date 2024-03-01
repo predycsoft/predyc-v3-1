@@ -490,7 +490,7 @@ export class CreateCourseComponent {
               if (clase.tipo == 'actividad' || clase.tipo == 'corazones') {
                 //console.log('activities clases clase', clase);
                 let activity = activities.find(activity => activity.claseRef.id == clase.id);
-                //console.log('activities clases activity', activity);
+                console.log('activities clases activity', activity);
                 clase.activity = activity;
               }
             });
@@ -700,6 +700,7 @@ export class CreateCourseComponent {
   }
   
   async saveDraftPre(){
+    
     let checkStatus = await this.chackAllInfo();
     if(!checkStatus && this.formNewCourse.valid){
       Swal.fire({
@@ -756,6 +757,8 @@ export class CreateCourseComponent {
     });
 
   if(this.formNewCourse.valid){
+
+    console.log('this.curso',this.curso)
     if(this.curso){
       let enterpriseRef =this.enterpriseService.getEnterpriseRef()
       this.curso.enterpriseRef = enterpriseRef;
@@ -786,7 +789,7 @@ export class CreateCourseComponent {
       delete activityClass.questions
   
       //console.log('activityExamen',activityClass)
-      await this.activityClassesService.saveActivity(activityClass);
+      //await this.activityClassesService.saveActivity(activityClass);
       this.examen.id = activityClass.id
   
       for (let pregunta of questions){
@@ -821,7 +824,7 @@ export class CreateCourseComponent {
               console.log('clase borrador add/edit',clase)
               let claseLocal = new Clase;
               claseLocal.HTMLcontent = clase.HTMLcontent;
-              claseLocal.archivos = clase.archivos.map(archivo => ({ // Usando map aquí para transformar la estructura del archivo.
+              claseLocal.archivos = clase.archivos.map(archivo => ({
                 id: archivo.id,
                 nombre: archivo.nombre,
                 size: archivo.size,
@@ -844,12 +847,14 @@ export class CreateCourseComponent {
               let refClass = await this.afs.collection<Clase>(Clase.collection).doc(claseLocal.id).ref;
               let courseRef = await this.afs.collection<Curso>(Curso.collection).doc(this.curso.id).ref;
               arrayClasesRef.push(refClass);
+              console.log('activityClass',clase)
               if(clase.activity){
                 let activityClass = clase.activity
+                activityClass.description = null
                 let questions: Question[]= []
+                activityClass.enterpriseRef = null
                 questions = structuredClone(clase.activity.questions);
                 activityClass.enterpriseRef = this.curso.enterpriseRef as DocumentReference<Enterprise>
-                activityClass.enterpriseRef = null
                 if(this.user.isSystemUser){
                   activityClass.enterpriseRef = null
                 }
@@ -859,6 +864,10 @@ export class CreateCourseComponent {
                 activityClass.activityCorazon = false
                 if(clase.tipo == 'corazones'){
                   activityClass.activityCorazon = true
+                }
+
+                if(!activityClass['recursosBase64'] ){
+                  activityClass['recursosBase64'] = null
                 }
                 let questionsDelete = activityClass['questions']
                 let recursosBase64Delete =activityClass['recursosBase64'] 
@@ -871,12 +880,12 @@ export class CreateCourseComponent {
                 activityClass['recursosBase64'] = recursosBase64Delete
   
                 clase.activity.id = activityClass.id;
+
+
+                console.log('questions',questions)
   
                 for (let pregunta of questions){
-                  //const arrayRefSkills = (pregunta['competencias']?.map(skillClase => this.curso.skillsRef.find(skill => skill.id == skillClase.id)).filter(Boolean) ) || [];
                   claseLocal.skillsRef = arrayRefSkills;
-                  //console.log('refSkills', arrayRefSkills)
-                  //pregunta.skills= arrayRefSkills;
                   delete pregunta['typeFormated'];
                   delete pregunta['competencias_tmp'];
                   delete pregunta['competencias'];
@@ -886,6 +895,7 @@ export class CreateCourseComponent {
                   delete pregunta['expanded'];
                   delete pregunta['uploading_file_progress'];
                   delete pregunta['uploading'];
+                  console.log('save pregunta revisar',pregunta,activityClass.id)
                   await this.activityClassesService.saveQuestion(pregunta,activityClass.id)
                 }
               }
@@ -1872,7 +1882,7 @@ export class CreateCourseComponent {
         if(tipo == 'archivoActividad'){
           adicional = false;
           this.viewFileActivity= false;
-          this.selectedClase.activity['recursosBase64'] = fileInfo;
+          this.selectedClase.activity['recursosBase64'] = fileInfo?fileInfo:null;
         }
 
         if(!adicional && clase.archivos.length>0){
@@ -2983,6 +2993,8 @@ uploadVideo(videoFile, clase, local = false, modulo, origen = null, intentosActu
             title: '¡Éxito!',
             text: 'Actividad cambiada exitosamente'
           }); 
+
+          console.log('this.selectedClase.activity',this.selectedClase.activity)
           
         }
 
