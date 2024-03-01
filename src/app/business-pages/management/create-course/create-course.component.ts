@@ -160,7 +160,7 @@ export class CreateCourseComponent {
       console.log('enterprise',enterprise)
       if (enterprise) {
         this.empresa = enterprise
-        this.instructorsService.getInstructorsObservable().pipe(filter(instructores=>instructores.length>0),take(1)).subscribe(instructores=> {
+        this.instructorsService.getInstructorsObservable().pipe().subscribe(instructores=> {
           console.log('instructores',instructores)
           this.instructores = instructores
         })
@@ -1321,6 +1321,11 @@ export class CreateCourseComponent {
       instructor.enterpriseRef = enterpriseRef
       await this.instructorsService.addInstructor(instructor)
       console.log(instructor);
+
+      this.alertService.succesAlert("El instructor se ha guardado exitosamente")
+      this.instructoresForm.patchValue('')
+      this.modalInstructor.close()
+
 
     
     }
