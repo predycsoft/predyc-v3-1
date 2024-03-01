@@ -10,6 +10,7 @@ import { EnterpriseComponent } from './admin-pages/enterprise/enterprise.compone
 import { LicensesSubscriptionsComponent } from './admin-pages/licenses-subscriptions/licenses-subscriptions.component';
 import { ProductsComponent } from './admin-pages/products/products.component';
 import { StudentDetailComponent } from './admin-pages/students/student-detail/student-detail.component';
+import { EnterpriseDetailComponent } from './admin-pages/enterprise/enterprise-detail/enterprise-detail.component';
 
 export const MAIN_TITLE = 'Predyc Admin - '
 
@@ -19,6 +20,7 @@ const routes: Routes = [
   {path:"students", title: MAIN_TITLE + 'Estudiantes', component: StudentsComponent},
   {path:"students/:uid", title: MAIN_TITLE + 'Estudiantes', component: StudentDetailComponent},
   {path:"enterprises", title: MAIN_TITLE + 'Empresas', component: EnterpriseComponent},
+  {path:"enterprises/:id", title: MAIN_TITLE + 'Empresas', component: EnterpriseDetailComponent},
   {path:"products", title: MAIN_TITLE + 'Productos', component: ProductsComponent},
   {path:"licenses-and-subscriptions", title: MAIN_TITLE + 'L&S', component: LicensesSubscriptionsComponent},
   {path:"royalties", title: MAIN_TITLE + 'Regalias', component: RoyaltyComponent},
