@@ -869,17 +869,26 @@ export class CreateCourseComponent {
                 if(!activityClass['recursosBase64'] ){
                   activityClass['recursosBase64'] = null
                 }
-                let questionsDelete = activityClass['questions']
-                let recursosBase64Delete =activityClass['recursosBase64'] 
-                delete activityClass['questions'];
-                delete activityClass['recursosBase64']             
+
+                
+                let actividadTmp = new Activity
+
+                actividadTmp.activityCorazon = activityClass?.activityCorazon
+                actividadTmp.claseRef = activityClass?.claseRef
+                actividadTmp.coursesRef = activityClass?.coursesRef
+                actividadTmp.createdAt = activityClass?.createdAt
+                actividadTmp.description = activityClass?.description
+                actividadTmp.duration = activityClass?.duration
+                actividadTmp.enterpriseRef = activityClass?.enterpriseRef
+                actividadTmp.files = activityClass?.enterpriseRef
+                actividadTmp.id = activityClass?.id
+                actividadTmp.title= activityClass?.title
+                actividadTmp.type = activityClass?.type
+                actividadTmp.updatedAt = activityClass?.updatedAt
   
-                await this.activityClassesService.saveActivity(activityClass);
+                await this.activityClassesService.saveActivity(actividadTmp);
   
-                activityClass['questions'] = questionsDelete
-                activityClass['recursosBase64'] = recursosBase64Delete
-  
-                clase.activity.id = activityClass.id;
+                clase.activity.id = actividadTmp.id;
 
 
                 console.log('questions',questions)
@@ -895,8 +904,8 @@ export class CreateCourseComponent {
                   delete pregunta['expanded'];
                   delete pregunta['uploading_file_progress'];
                   delete pregunta['uploading'];
-                  console.log('save pregunta revisar',pregunta,activityClass.id)
-                  await this.activityClassesService.saveQuestion(pregunta,activityClass.id)
+                  console.log('save pregunta revisar',pregunta,clase.activity.id)
+                  await this.activityClassesService.saveQuestion(pregunta,clase.activity.id)
                 }
               }
             }
@@ -3053,109 +3062,6 @@ uploadVideo(videoFile, clase, local = false, modulo, origen = null, intentosActu
   validExam
 
 
-  _validatePreguntasActividad(){
-
-    //console.log(this.selectedClase.activity.questions);
-
-    let preguntas = this.selectedClase.activity.questions;
-
-    let valid = true;
-
-    if(preguntas.length == 0){
-      return false
-    }
-    
-    // preguntas.forEach(pregunta => {
-
-    //   //console.log('pregunta',pregunta)
-
-    //   let pregunta_local = new Question;
-    //   pregunta_local.id = pregunta.id
-    //   pregunta_local.type = pregunta.type
-    //   pregunta_local.options = pregunta.options
-    //   pregunta_local.points = pregunta.points
-    //   pregunta_local.skills = pregunta.skills
-    //   pregunta_local.text = pregunta.text
-    //   pregunta_local.image = pregunta.image
-
-    //   let response: QuestionValidationResponse = pregunta_local.isValidForm();
-    //   if (!response.result) {
-    //     //console.log(response.messages)
-    //     pregunta['isInvalid'] = true;
-    //     pregunta['InvalidMessages'] = response.messages;
-    //     valid = false;
-    //   }
-    //   else{
-    //     if(pregunta.type.value == this.questionTypesIn.TYPE_COMPLETE_VALUE){
-    //       this.showDisplayText(pregunta);
-    //     }
-    //     pregunta['isInvalid'] = false;
-    //     pregunta['InvalidMessages'] = null;
-    //   }
-      
-    // });
-
-    return valid;
-
-  }
-
-  
-//   crearPreguntaExamen(){
-
-//     if(!this.examen){
-//       this.examen = new Activity;
-//       //this.examen.id = Date.now().toString();
-//     }
-
-//     let id =  this.afs.collection<Question>(Question.collection).doc().ref.id;
-
-//     let pregunta = new Question;
-//     pregunta.id = id;
-//     this.hideOtherQuestionExamen(pregunta);
-//     pregunta['expanded'] = true;
-//     pregunta['competencias'] = [];
-//     let activity : Activity = this.examen;
-//     //console.log('activity',activity)
-//     let questions = activity.questions;
-//     //console.log('questions',questions);
-
-//     questions.push(pregunta)
-
-//   }
-
-//   hideOtherQuestionExamen(questionIn){
-
-//     this.examen.questions.map( question => {
-//       if(questionIn.id != question.id)
-//       question['expanded'] = false;
-//     })
-
-//   }
-
-//   borrarPreguntaExamen(pregunta,index){
-//     //console.log(pregunta,index);
-
-//     Swal.fire({
-//       title: `<span class=" gray-9 ft20">Borrar pregunta ${index+ 1 }</span>`,
-//       icon: 'warning',
-//       showCancelButton: true,
-//       confirmButtonColor: 'var(--red-5)',
-//       cancelButtonColor: 'var(--gray-4)',
-//       confirmButtonText: `Borrar pregunta`,
-//       cancelButtonText:'Cancelar'
-//     }).then((result) => {
-//       if (result.isConfirmed) {
-//         this.deleteQuestionImage(pregunta);
-//         this.examen.questions.splice(index, 1); // El primer argumento es el índice desde donde quieres empezar a borrar, y el segundo argumento es la cantidad de elementos que quieres borrar.
-//         Swal.fire({
-//           title:'Borrado!',
-//           text:`La pregunta fue borrada`,
-//           icon:'success',
-//           confirmButtonColor: 'var(--blue-5)',
-//         })
-//       }
-//     })
-//   }
 
   showErrorActividad= false;
 //   showErrorCompetencia = false
