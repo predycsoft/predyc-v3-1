@@ -7,6 +7,8 @@ import { EnterpriseService } from 'src/shared/services/enterprise.service';
 import { IconService } from 'src/shared/services/icon.service';
 import { LicenseService } from 'src/shared/services/license.service';
 import { Subscription as SubscriptionClass } from 'src/shared/models/subscription.model'
+import { MatDialog } from '@angular/material/dialog';
+import { DialogNewLicenseComponent } from './dialog-new-license/dialog-new-license.component';
 
 
 interface LicensesInList {
@@ -31,6 +33,8 @@ export class EnterpriseStudentsComponent {
     private licenseService: LicenseService,
     private enteprriseService: EnterpriseService,
     public icon: IconService,
+    private dialog: MatDialog,
+
 
   ){}
 
@@ -89,7 +93,11 @@ export class EnterpriseStudentsComponent {
   }
 
   addLicense() {
-
+    this.dialog.open(DialogNewLicenseComponent).afterClosed().subscribe(result => {
+      if(result){
+        console.log("result del dialog", result)
+      }
+    })
   }
 
   addUser(){
