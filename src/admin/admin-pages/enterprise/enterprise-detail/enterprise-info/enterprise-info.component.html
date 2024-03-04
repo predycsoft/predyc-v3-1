@@ -19,14 +19,19 @@
         <label>Enlace Linkedin</label>
         <input type="text" class="fw" formControlName="linkedin">
     </div>
-    <div *ngIf="enterprise">
+    <div *ngIf="enterprise" fxLayout="column" fxLayoutGap="0.5rem" fxLayoutAlign="center start" class="mgt08">
         <label> Foto de Empresa </label>
         <input type="file" class="fw" id="file" (change)="cargarFoto($event, 'foto')" name="image" autocomplete="off" /> <!-- CHECK THIS -->
+        <img [src]="enterprise.photoUrl ? enterprise.photoUrl : 'assets/images/default/default-user-image.jpg'" class="avatar10" alt="" >        
     </div>
-    <div *ngIf="enterprise" class="containerImg">
-        <img [src]="enterprise.photoUrl ? enterprise.photoUrl : 'assets/images/default/default-user-image.jpg'" class="avatar2" alt="" >        
+    <div fxLayout="row" fxLayoutGap="3rem" fxLayoutAlign="center center">
+        <button class=" blueButtonAnim button-animation h28px mgr10 " fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" type="submit">
+            {{enterprise ? "Guardar" : "Crear"}} empresa
+        </button> 
+        <button *ngIf="enterprise" class=" redButtonAnim button-animation h28px mgr10 " fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" 
+        type="button" (click)="deleteEnterprise()" >
+            Eliminar empresa
+        </button>  
     </div>
-    <button class=" blueButtonAnim button-animation h28px mgr10 " fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" type="submit">
-        {{enterprise ? "Guardar" : "Crear"}} usuario
-    </button>  
+
 </form>

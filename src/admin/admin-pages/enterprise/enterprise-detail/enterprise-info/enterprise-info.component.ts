@@ -1,7 +1,10 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 import { Enterprise } from 'src/shared/models/enterprise.model';
 import { AlertsService } from 'src/shared/services/alerts.service';
+import { DialogService } from 'src/shared/services/dialog.service';
 import { EnterpriseService } from 'src/shared/services/enterprise.service';
 
 @Component({
@@ -17,6 +20,8 @@ export class EnterpriseInfoComponent {
     private fb: FormBuilder,
     private enterpriseService: EnterpriseService,
     private alertService: AlertsService,
+    private dialogService: DialogService,
+    private router: Router
   ) {}
 
   enterpriseForm: FormGroup
@@ -72,14 +77,22 @@ export class EnterpriseInfoComponent {
     try {
       // if (this.enterprise) await this.enterpriseService.editEnterprise(enterprise)
       // else await this.enterpriseService.addEnterprise(enterprise)
-      this.alertService.succesAlert('Estudiante agregado exitosamente')
+      this.alertService.succesAlert('Empresa agregado exitosamente')
     } catch (error) {
       this.alertService.errorAlert(error)
     }
   }
 
-  getEnterpriseFromForm() {
-
+  async deleteEnterprise() {
+    // const dialogResult = await firstValueFrom(this.dialogService.dialogConfirmar().afterClosed());
+    // if (dialogResult) {
+    //   await this.enterpriseService.deleteEnterprise(this.enterprise.id)
+    //   this.dialogService.dialogExito();
+    //   this.router.navigate(["/admin/enterprises"])
+    // } 
+    // else {
+    //   throw new Error('Operación cancelada');
+    // }
   }
 
 }
