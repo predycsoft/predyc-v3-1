@@ -485,7 +485,7 @@ export class ProfilesComponent {
     try {
       if (!this.profileName) throw new Error("Debe indicar un nombre para el perfil")
 
-      if(this.profiles.find(x=> x.name.toLowerCase() == this.profileName.toLowerCase() && x.id != this.profile.id )) throw new Error("El nombre del perfil se encuentra en uso")
+      if(this.profiles.find(x=> x.name.toLowerCase() == this.profileName.toLowerCase() && x.id != this.profile?.id )) throw new Error("El nombre del perfil se encuentra en uso")
 
       this.disableSaveButton = true
       this.alertService.infoAlert("Se procederá a actualizar los datos del plan de estudio del perfil y de sus usuarios relacionados, por favor espere hasta que se complete la operación")
