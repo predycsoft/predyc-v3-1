@@ -44,7 +44,7 @@ export class MainComponent {
   daysToExpire: number
 
   ngOnInit() {
-    this.licensesSubscription = this.licenseService.geteEnterpriseLicenses$().subscribe(licenses => {
+    this.licensesSubscription = this.licenseService.getCurrentEnterpriseLicenses$().subscribe(licenses => {
       const now = Date.now()
       if (licenses && licenses.length > 0) {
         const validLicenses = licenses.filter(license => {

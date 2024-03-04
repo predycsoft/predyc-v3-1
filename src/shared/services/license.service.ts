@@ -31,7 +31,7 @@ export class LicenseService {
     return this.afs.collection<License>(License.collection).valueChanges()
   }
 
-  geteEnterpriseLicenses$(): Observable<License[]> {
+  getCurrentEnterpriseLicenses$(): Observable<License[]> {
     return this.enterpriseService.enterpriseLoaded$.pipe(
       switchMap(isLoaded => {
         if (!isLoaded) return []
