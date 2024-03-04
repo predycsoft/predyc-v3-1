@@ -1,7 +1,7 @@
 
 .containerAllQustions{
-    min-height: calc(100vh - 17rem);
-    max-height: calc(100vh - 17rem);
+    min-height: calc(74vh);
+    max-height: calc(74vh);
     /* width: calc((100% - 1rem)*2/3);
      */
     overflow: auto;
