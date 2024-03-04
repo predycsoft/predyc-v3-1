@@ -19,7 +19,7 @@
         <label>Enlace Linkedin</label>
         <input type="text" class="fw" formControlName="linkedin">
     </div>
-    <div *ngIf="enterprise" fxLayout="column" fxLayoutGap="0.5rem" fxLayoutAlign="center start" class="mgt08">
+    <div fxLayout="column" fxLayoutGap="0.5rem" fxLayoutAlign="center start" class="mgt08">
         <label> Foto de Empresa </label> 
         <div (click)="fileInput.click()" class="cursorPointer">
             <img onerror="this.src='assets/images/default/default-user-image.jpg'" [src]="imageUrl" class="avatar10" alt="">
@@ -29,9 +29,9 @@
     </div>
     <div fxLayout="row" fxLayoutGap="3rem" fxLayoutAlign="center center">
         <button class=" blueButtonAnim button-animation h28px mgr10 " fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" type="submit">
-            {{enterprise ? "Guardar" : "Crear"}} empresa
+            {{enterprise.id ? "Guardar" : "Crear"}} empresa
         </button> 
-        <button *ngIf="enterprise" class=" redButtonAnim button-animation h28px mgr10 " fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" 
+        <button *ngIf="enterprise.id" class=" redButtonAnim button-animation h28px mgr10 " fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" 
         type="button" (click)="deleteEnterprise()" >
             Eliminar empresa
         </button>  

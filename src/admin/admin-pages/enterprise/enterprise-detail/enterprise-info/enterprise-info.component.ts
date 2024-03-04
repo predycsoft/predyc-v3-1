@@ -61,6 +61,9 @@ export class EnterpriseInfoComponent {
         this.imageUrl = this.enterprise.photoUrl;
       }
     }
+    else {
+      this.enterprise = Enterprise.newEnterpriseTemplate
+    }
 
   }
 
@@ -140,9 +143,14 @@ export class EnterpriseInfoComponent {
     console.log("enterprise Actualizado: ", enterprise)
 
     try {
-      if (this.enterprise) await this.enterpriseService.editEnterprise(enterprise)
-      else await this.enterpriseService.addEnterprise(enterprise)
-      this.alertService.succesAlert('Empresa agregado exitosamente')
+      if (this.enterprise.id) {
+        await this.enterpriseService.editEnterprise(enterprise)
+        this.alertService.succesAlert('Empresa editada exitosamente')
+      } 
+      else {
+        await this.enterpriseService.addEnterprise(enterprise)
+        this.alertService.succesAlert('Empresa agregada exitosamente')
+      } 
     } catch (error) {
       this.alertService.errorAlert(error)
     }
