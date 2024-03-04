@@ -507,7 +507,7 @@ export class ProfilesComponent {
         name: this.profileName,
         description: this.profileDescription,
         coursesRef: coursesRef,
-        baseProfile:this.profile.baseProfile?this.profile.baseProfile:baseProfile,
+        baseProfile:this.profile?.baseProfile?this.profile?.baseProfile:baseProfile,
         enterpriseRef: enterpriseRef,
         permissions: this.profile ? this.profile.permissions : null,
         hoursPerMonth: this.profileHoursPerMonth
