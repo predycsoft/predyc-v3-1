@@ -20,9 +20,12 @@
         <input type="text" class="fw" formControlName="linkedin">
     </div>
     <div *ngIf="enterprise" fxLayout="column" fxLayoutGap="0.5rem" fxLayoutAlign="center start" class="mgt08">
-        <label> Foto de Empresa </label>
-        <input type="file" class="fw" id="file" (change)="cargarFoto($event, 'foto')" name="image" autocomplete="off" /> <!-- CHECK THIS -->
-        <img [src]="enterprise.photoUrl ? enterprise.photoUrl : 'assets/images/default/default-user-image.jpg'" class="avatar10" alt="" >        
+        <label> Foto de Empresa </label> 
+        <div (click)="fileInput.click()" class="cursorPointer">
+            <img onerror="this.src='assets/images/default/default-user-image.jpg'" [src]="imageUrl" class="avatar10" alt="">
+        </div>
+        <input #fileInput type="file" style="display: none;" (change)="onFileSelected($event)">
+
     </div>
     <div fxLayout="row" fxLayoutGap="3rem" fxLayoutAlign="center center">
         <button class=" blueButtonAnim button-animation h28px mgr10 " fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" type="submit">
