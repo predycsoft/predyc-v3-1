@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { IconService } from 'src/shared/services/icon.service';
 
 @Component({
@@ -9,10 +10,14 @@ import { IconService } from 'src/shared/services/icon.service';
 export class EnterpriseComponent {
   
   constructor(
-    public icon: IconService
+    public icon: IconService,
+    private router: Router,
+
   ) {}
 
-  createEnterprise() {}
+  createEnterprise() {
+      this.router.navigate(["/admin/enterprises/form"])
+  }
 
   onStudentSelected(event) {console.log("Student Selected!")}
 

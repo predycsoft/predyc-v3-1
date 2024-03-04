@@ -9,13 +9,13 @@ export interface LicenseJson {
     currentPeriodEnd: number | null,
     currentPeriodStart: number | null,
     enterpriseRef: DocumentReference<Enterprise> | null,
+    failedRotationCount: number | null,
     id: string | null,
     priceRef: DocumentReference<Price>,
     quantity: number | null,
     quantityUsed: number | null,
     rotations: number | null,
     rotationsUsed: number | null,
-    failedRotationCount: number | null,
     rotationsWaitingCount:  number | null,
     startedAt: number | null,
     status: string | null,
@@ -25,6 +25,25 @@ export interface LicenseJson {
 export class License {
 
     public static collection = 'license'
+
+    public static newLicenseTemplate =  License.fromJson({
+        couponRef: null,
+        createdAt: Date.now(),
+        currentPeriodEnd: null,
+        currentPeriodStart: Date.now(),
+        enterpriseRef: null,
+        failedRotationCount: null,
+        id: Date.now().toString(),
+        priceRef: null,
+        quantity: 1,
+        quantityUsed: 0,
+        rotations: null,
+        rotationsUsed: null,
+        rotationsWaitingCount: null,
+        startedAt: Date.now(),
+        status: "trialing",
+        trialDays: 5,
+      });
 
     constructor(
         public couponRef: DocumentReference<Coupon> | null,

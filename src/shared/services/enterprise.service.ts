@@ -87,6 +87,10 @@ export class EnterpriseService {
     return this.afs.collection<Enterprise>(Enterprise.collection).doc(enterpriseId).valueChanges()
   }
 
+  public async deleteEnterprise(enterpriseId: string): Promise<void> {
+    return this.afs.collection<Enterprise>(Enterprise.collection).doc(enterpriseId).delete();
+  }
+
   public async updateVimeoFolder(enterprise: Enterprise, idFolder: string, folderUri: string): Promise<void> {
     await this.afs.collection(Enterprise.collection).doc(enterprise.id).update({
       vimeoFolderId: idFolder,
