@@ -29,6 +29,7 @@ import { EnterpriseDetailComponent } from './admin-pages/enterprise/enterprise-d
 import { EnterpriseInfoComponent } from './admin-pages/enterprise/enterprise-detail/enterprise-info/enterprise-info.component';
 import { EnterpriseStudentsComponent } from './admin-pages/enterprise/enterprise-detail/enterprise-students/enterprise-students.component';
 import { EnterprisePaymentsComponent } from './admin-pages/enterprise/enterprise-detail/enterprise-payments/enterprise-payments.component';
+import { DialogNewLicenseComponent } from './admin-pages/enterprise/enterprise-detail/enterprise-students/dialog-new-license/dialog-new-license.component';
 
 
 @NgModule({
@@ -59,7 +60,8 @@ import { EnterprisePaymentsComponent } from './admin-pages/enterprise/enterprise
     EnterpriseDetailComponent,
     EnterpriseInfoComponent,
     EnterpriseStudentsComponent,
-    EnterprisePaymentsComponent
+    EnterprisePaymentsComponent,
+    DialogNewLicenseComponent
   ],
   imports: [
     SharedModule,

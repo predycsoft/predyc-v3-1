@@ -7,6 +7,7 @@ import { DialogService } from './dialog.service';
 import { User } from '../models/user.model';
 import { SubscriptionService } from './subscription.service';
 import { AlertsService } from './alerts.service';
+import { Enterprise } from '../models/enterprise.model';
 
 @Injectable({
   providedIn: 'root'
@@ -31,7 +32,7 @@ export class LicenseService {
     return this.afs.collection<License>(License.collection).valueChanges()
   }
 
-  geteEnterpriseLicenses$(): Observable<License[]> {
+  getCurrentEnterpriseLicenses$(): Observable<License[]> {
     return this.enterpriseService.enterpriseLoaded$.pipe(
       switchMap(isLoaded => {
         if (!isLoaded) return []
@@ -40,6 +41,11 @@ export class LicenseService {
           ref.where('enterpriseRef', '==', enterpriseRef).orderBy('createdAt', 'desc')).valueChanges()
       })
     )
+  }
+
+  getLicensesByEnterpriseRef$(enterpriseRef: DocumentReference<Enterprise>): Observable<License[]> {
+    return this.afs.collection<License>(License.collection, ref => 
+      ref.where('enterpriseRef', '==', enterpriseRef).orderBy('createdAt', 'desc')).valueChanges()
   }
 
   getEnterpriseLicenses(): Promise<License[]> {

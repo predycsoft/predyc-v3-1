@@ -31,7 +31,7 @@ export class SettingsComponent {
 
   ){}
 
-  licenses$: Observable<License[]> = this.licenseService.geteEnterpriseLicenses$()
+  licenses$: Observable<License[]> = this.licenseService.getCurrentEnterpriseLicenses$()
   licenses: License[];
   licensesSubscription: Subscription;
 

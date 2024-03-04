@@ -31,6 +31,29 @@ export class Enterprise {
     public static collection = 'enterprise'
     public static storageProfilePhotoFolder = 'Enterprise/Profile photos'
 
+    public static newEnterpriseTemplate =  Enterprise.fromJson({
+        city: null,
+        country: null,
+        createdAt: null,
+        description: null,
+        employesNo: 0,
+        id: "" ,
+        name: "",
+        permissions: null,
+        photoUrl: null,
+        profilesNo: 0,
+        zipCode: null,
+        workField: null,
+        socialNetworks: {
+            facebook: null,
+            instagram: null,
+            website: null,
+            linkedin: null,
+        },
+        vimeoFolderId: null,
+        vimeoFolderUri: null,
+      });
+
     constructor(
         public city: string | null,
         public country: string | null,

@@ -24,11 +24,15 @@ export class EnterpriseDetailComponent {
 
 
   ngOnInit() {
-    this.enterpriseService.getEnterpriseById$(this.enterpriseId).subscribe(enterprise => {
-      // console.log("enterprise", enterprise)
-      this.enterprise = enterprise
-      this.firstLoad = true //check this
-    })
+
+    if (this.enterpriseId) {
+      this.enterpriseService.getEnterpriseById$(this.enterpriseId).subscribe(enterprise => {
+        // console.log("enterprise", enterprise)
+        this.enterprise = enterprise
+        this.firstLoad = true //check this
+      })
+    }
+    else this.firstLoad = true
   }
 
 
