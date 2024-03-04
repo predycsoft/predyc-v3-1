@@ -1442,7 +1442,7 @@
         <div fxLayout="column">
             <div fxLayout="row">
                 <div class="skills-container">
-                    <ng-container *ngFor="let skill of (pillarsForm.value['competencias'] | sortSkills:'name'); let indexSkill = index">
+                    <ng-container *ngFor="let skill of pillarsForm.value['competencias'] ? (pillarsForm.value['competencias'] | sortSkills:'name') : []; let indexSkill = index">
                         <div (click)="troggleSkill(skill)"
                             style="display: inline-block; margin-right: 5px; margin-bottom: 5px;"
                             class="skill-badge-complete  radius10 {{courseHasSkill(skill)?'ListHoverBlue gray-1':'ListHover2 gray-8'}} pdl05 pdr05 mgt05 no-select cursorPointer">
@@ -1522,7 +1522,7 @@
                     </div>
                 </div>
             </div>
-            <div fxLayout="row" class="fw" fxLayoutAlign="start center" fxLayoutGap="10px">
+            <!-- <div fxLayout="row" class="fw" fxLayoutAlign="start center" fxLayoutGap="10px">
                 <div class="form-group" fxFlex>
                     <label>Agregar Competencia</label>
                     <input formControlName="skillTmp"  [class.is-invalid]="formNewPillar.controls['skillTmp'].errors && showErrorPillarSkill" type="text" class="form-control customInput" placeholder="Escriba de la competencia">
@@ -1533,8 +1533,8 @@
                 <button (click)="addSkill()" class="blueButton radius4 ft12 h28px mgr10 gray-1 mgt15">
                     Agregar
                 </button>
-            </div>
-            <div>
+            </div> -->
+            <!-- <div>
                 <div class="skills-container">
                     <ng-container *ngFor="let skill of formNewPillar.get('skills')?.value; let indexSkill = index">
                         <div
@@ -1545,15 +1545,15 @@
                         </div>
                     </ng-container>
                 </div>
-            </div>
+            </div> -->
         </form>
 
 
         
         <!-- Botón de guardar en la esquina inferior derecha -->
         <div fxLayout="row" fxLayoutAlign="end" class="pdt03">
-            <button (click)="!savingPillar?saveNewPillar():''" class="{{!savingPillar?'blueButton gray-1':'grayButton gray-8 '}} radius4 ft12 h28px mgr10 " fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
-                <img [src]="icon.save" class="h16px pdr05 makeWhite" alt="">
+            <button (click)="!savingPillar?saveNewPillar():''" class="{{!savingPillar?'blueButton gray-1':'grayButton gray-8 '}} radius4 ft12 h28px mgt08" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                <img [src]="icon.save" class="h16px = makeWhite" alt="">
                 Guardar Pilar
             </button>
         </div>

@@ -135,19 +135,25 @@ export class CreateCourseComponent {
     return (name);
   }
 
-  private _filter(value: string): string[] {
-    const filterValue = value.toLowerCase();
+  private _filter(value: any): string[] {
+    if(!value?.nombre){
+      const filterValue = value.toLowerCase();
+      return this.instructores.filter(option => option.nombre.toLowerCase().includes(filterValue));
+    }
+    const filterValue = value.nombre.toLowerCase();
     return this.instructores.filter(option => option.nombre.toLowerCase().includes(filterValue));
   }
 
-  private _filterPillars(value: string): string[] {
-    const filterValue = value.toLowerCase();
-    return this.categoriasArray?.filter(option => option.name.toLowerCase().includes(filterValue));
+  private _filterPillars(value: any): string[] {
+    if(!value?.name){ 
+      const filterValue = value.toLowerCase();
+      return this.categoriasArray?.filter(option => option.name.toLowerCase().includes(filterValue));
+    }
+    const filterValue = value.name.toLowerCase();
+    return this.categoriasArray?.filter(option => option.name.toLowerCase().includes(filterValue)); 
+    
+
   }
-
-
-
-
   user
 
 
@@ -155,6 +161,17 @@ export class CreateCourseComponent {
     //console.log(this.competenciasArray)
 
     console.log('mode on init',this.mode)
+
+    this.filteredinstructores = this.instructoresForm.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filter(value || '')),
+    );
+    
+
+    this.filteredPillars = this.pillarsForm.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filterPillars(value || '')),
+    );
 
     this.enterpriseService.enterprise$.pipe(filter(enterprise=>enterprise!=null),take(1)).subscribe(enterprise => {
       console.log('enterprise',enterprise)
@@ -164,17 +181,7 @@ export class CreateCourseComponent {
           console.log('instructores',instructores)
           this.instructores = instructores
         })
-    
-        this.filteredinstructores = this.instructoresForm.valueChanges.pipe(
-          startWith(''),
-          map(value => this._filter(value || '')),
-        );
-        
-    
-        this.filteredPillars = this.pillarsForm.valueChanges.pipe(
-          startWith(''),
-          map(value => this._filterPillars(value || '')),
-        );
+  
         
         this.authService.user$.pipe(filter(user=>user !=null),take(1)).subscribe(user=> {
           console.log('user',user)
@@ -208,6 +215,8 @@ export class CreateCourseComponent {
   }
 
   anidarCompetenciasInicial(categorias: any[], competencias: any[]): any[] {
+
+    console.log('anidarCompetenciasInicial',categorias,competencias)
     return categorias.map(categoria => {
       let skills = competencias
         .filter(comp => comp.category.id === categoria.id)
@@ -299,9 +308,9 @@ export class CreateCourseComponent {
 
     }
 
-
-
   }
+
+  skillsInit = false;
 
   initSkills(){
     this.categoryService.getCategoriesObservable().pipe().subscribe(category => {
@@ -312,43 +321,47 @@ export class CreateCourseComponent {
         skill.map(skillIn => {
           delete skillIn['selected']
         });
-        if(this.mode == 'edit'){
-          //console.log('curso edit', this.curso)
-          this.textModulo = 'Editar curso'
-          let skillsProfile = this.curso.skillsRef;
-          this.skillsCurso = this.getCursoSkills()
-          skillsProfile.forEach(skillIn => {
-            let skillSelect = skill.find(skillSelectIn => skillSelectIn.id == skillIn.id)
-            if (skillSelect) {
-              skillSelect['selected'] = true;
-            }
-          });
-        }
+
         this.categoriasArray = this.anidarCompetenciasInicial(category, skill)
         console.log('categoriasArray', this.categoriasArray,this.curso)
-
-        if(this.mode == 'edit'){
-          if(this.curso){
+        if(!this.skillsInit){
+          if(this.mode == 'edit'){
+            //console.log('curso edit', this.curso)
+            this.textModulo = 'Editar curso'
+            let skillsProfile = this.curso.skillsRef;
+            this.skillsCurso = this.getCursoSkills()
+            skillsProfile.forEach(skillIn => {
+              let skillSelect = skill.find(skillSelectIn => skillSelectIn.id == skillIn.id)
+              if (skillSelect) {
+                skillSelect['selected'] = true;
+              }
+            });
+          }
+  
+          if(this.mode == 'edit'){
+            if(this.curso){
+              let pilar
+              let skillId = this.curso.skillsRef[0]?.id
+              if(skillId){
+                pilar = this.categoriasArray.find(x=>x.competencias.find(y=>y.id == skillId))
+              }
+              else if(this.pillarsForm.value['id']){
+                pilar = this.categoriasArray.find(x=>x.id == this.pillarsForm.value['id'])
+              }
+              console.log('pilar',pilar)
+              this.pillarsForm.patchValue(pilar)
+              console.log('pilar',this.pillarsForm.value['name'])
+            }
+            this.getExamCourse(this.curso.id);
+          }
+          else{
             let pilar
-            let skillId = this.curso.skillsRef[0]?.id
-            if(skillId){
-              pilar = this.categoriasArray.find(x=>x.competencias.find(y=>y.id == skillId))
-            }
-            else if(this.pillarsForm.value['id']){
+            if(this.pillarsForm.value['id']){
               pilar = this.categoriasArray.find(x=>x.id == this.pillarsForm.value['id'])
+              this.pillarsForm.patchValue(pilar)
             }
-            console.log('pilar',pilar)
-            this.pillarsForm.patchValue(pilar)
-            console.log('pilar',this.pillarsForm.value['name'])
           }
-          this.getExamCourse(this.curso.id);
-        }
-        else{
-          let pilar
-          if(this.pillarsForm.value['id']){
-            pilar = this.categoriasArray.find(x=>x.id == this.pillarsForm.value['id'])
-            this.pillarsForm.patchValue(pilar)
-          }
+          this.skillsInit = true
         }
       });
     });
@@ -386,6 +399,7 @@ export class CreateCourseComponent {
   changePillar(newPillar){
     if(this.curso?.skillsRef[0]?.id){
       let pilar = this.categoriasArray.find(x=>x.competencias.find(y=>y.id == this.curso?.skillsRef[0]?.id))
+      //this.pillarsForm.patchValue(pilar)
       if(pilar.id != newPillar.id){
         this.curso.skillsRef = [];
         this.skillsCurso= [];
@@ -408,14 +422,14 @@ export class CreateCourseComponent {
 
     this.formNewPillar = new FormGroup({
       nombre: new FormControl(null, Validators.required),
-      skills: new FormControl([]),
-      skillTmp: new FormControl(null, Validators.required),
+      // skills: new FormControl([]),
+      // skillTmp: new FormControl(null, Validators.required),
     })
 
     this.modalPillar =  this.modalService.open(this.modalCrearPilarContent, {
       ariaLabelledBy: 'modal-basic-title',
       centered: true,
-      size:'lg'
+      size:'sm'
     });  
   }
   
@@ -644,7 +658,7 @@ export class CreateCourseComponent {
     this.showErrorPillarSkill = false
 
     let pillar =this.formNewPillar.get('nombre')?.value;
-    let skills = this.formNewPillar.get('skills')?.value;
+    //let skills = this.formNewPillar.get('skills')?.value;
 
     let pillarCheck = this.categoriasArray.find(x=> x.name == pillar)
 
@@ -666,14 +680,14 @@ export class CreateCourseComponent {
       enterpriseRef = null;
     }
 
-    if(pillar && skills?.length>0){
+    if(pillar){
       let category = new Category(null,pillar,enterpriseRef)
       await this.categoryService.addCategory(category)
-      let categoryRef = this.afs.collection<any>('category').doc(category.id).ref;
-      for(let skill of skills){
-        let skillAdd = new Skill(null,skill,categoryRef,enterpriseRef)
-        await this.skillService.addSkill(skillAdd)
-      }
+      //let categoryRef = this.afs.collection<any>('category').doc(category.id).ref;
+      // for(let skill of skills){
+      //   let skillAdd = new Skill(null,skill,categoryRef,enterpriseRef)
+      //   await this.skillService.addSkill(skillAdd)
+      // }
       this.modalPillar.close()
       this.alertService.succesAlert("El pilar se ha guardado exitosamente")
       this.savingPillar = false;
@@ -3350,10 +3364,10 @@ uploadVideo(videoFile, clase, local = false, modulo, origen = null, intentosActu
     this.showErrorSkill = false;
     if(this.formNewSkill.valid){
 
-      
-
       let pilar = this.pillarsForm.value
-      let competencias = pilar['competencias']
+      let competencias = pilar['competencias'] || []
+      console.log('saveNewSkill pillar',pilar,competencias)
+
 
       if(competencias.find(x=>x.name.toLowerCase()==this.formNewSkill.get('nombre')?.value.toLowerCase())){ // duplicado
         Swal.fire({
@@ -3373,7 +3387,9 @@ uploadVideo(videoFile, clase, local = false, modulo, origen = null, intentosActu
         }
         let skillAdd = new Skill(null,this.formNewSkill.get('nombre')?.value,categoryRef,enterpriseRef)
         this.skillService.addSkill(skillAdd)
+        competencias.push(skillAdd)
         this.modalCrearSkill.close()
+        this.pillarsForm.get("competencias").patchValue(competencias);
       }
     }
     else{
