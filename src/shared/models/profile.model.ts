@@ -12,6 +12,7 @@ export interface ProfileJson {
     enterpriseRef: DocumentReference<Enterprise> | null
     permissions: Permissions
     hoursPerMonth: number;
+    baseProfile: DocumentReference<Profile>
 }
 
 export class Profile {
@@ -24,6 +25,7 @@ export class Profile {
     public enterpriseRef: DocumentReference<Enterprise> | null
     public permissions: Permissions
     public hoursPerMonth: number;
+    public baseProfile :  DocumentReference<Profile>
 
     public users?: User[]
     public enterprise?: Enterprise
@@ -38,6 +40,7 @@ export class Profile {
         profile.enterpriseRef = profileJson.enterpriseRef
         profile.permissions = profileJson.permissions
         profile.hoursPerMonth = profileJson.hoursPerMonth
+        profile.baseProfile = profileJson.baseProfile
         return profile
     }
       
@@ -49,7 +52,8 @@ export class Profile {
             coursesRef: this.coursesRef,
             enterpriseRef: this.enterpriseRef,
             permissions: this.permissions,
-            hoursPerMonth: this.hoursPerMonth
+            hoursPerMonth: this.hoursPerMonth,
+            baseProfile:this.baseProfile
         }
     }
 }

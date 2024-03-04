@@ -39,7 +39,7 @@
                         <img [src]="icon.userProfile" class="makeGray h16px" alt="" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
                         <select formControlName="profile" class="form-control select">
                             <option [value]="null">Sin perfil</option>
-                            <option *ngFor="let profile of profiles" [value]="profile.id">{{profile.name}} {{!profile.enterpriseRef?'[Plantilla Predyc]':''}}</option>
+                            <option *ngFor="let profile of profiles" [value]="profile.id">{{profile.name}} {{!profile.enterpriseRef?'[Predyc]':''}}</option>
                         </select>
                     </div>
                 </div>
