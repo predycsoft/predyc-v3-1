@@ -53,13 +53,14 @@
                 <span [ngClass]="tab == 0 ? 'selectedTab ' : 'ft13 gray-9 cursorPointer'" (click)="tab=0">Ventas</span>
                 <span [ngClass]="tab == 1 ? 'selectedTab' : 'ft13 gray-9 cursorPointer'" (click)="tab=1">Académico</span>
             </div>
-            <!-- <div *ngIf="tab == 0" class="fw">
+            <div *ngIf="tab == 0" class="fw">
                 <div class="fw">
                     <div class="fw mgt20 pdb05 border-b" fxLayout="row" fxLayoutAlign="space-between center">
                         <span class="ft13 ft500 gray-10">Suscripciones</span>
                         <span class="blue-5 ft500 ft11 cursorPointer" (click)="createSubscription()">Crear</span>
                     </div>
-                    <div class="tableContainer mgt10">
+                    <app-student-subscription-list [user]="user"></app-student-subscription-list>
+                    <!-- <div class="tableContainer mgt10">
                         <table class="tableBody sticky">
                             <tbody>
                                 <tr *ngIf="subscriptions.length == 0">
@@ -114,14 +115,14 @@
                                 </tr>
                             </tbody>
                         </table>
-                    </div>
+                    </div> -->
                 </div>
                 <div>
                     <div class="fw mgt20 pdb05 border-b" fxLayout="row" fxLayoutAlign="space-between center">
                         <span class="ft13 ft500 gray-10">Pagos</span>
-                        <span class="blue-5 ft500 ft11 cursorPointer" (click)="createPayment()">Crear</span>
+                        <span class="blue-5 ft500 ft11 cursorPointer" (click)="createCharge()">Crear</span>
                     </div>
-                    <div class="tableContainer mgt10">
+                    <!-- <div class="tableContainer mgt10">
                         <div *ngIf="payments.length == 0" class="ft12 gray-6">
                             El usuario no tiene pagos
                         </div>
@@ -191,9 +192,9 @@
                                 </tr>
                             </tbody>
                         </table>
-                    </div>
+                    </div> -->
                 </div>
-            </div> -->
+            </div>
             <!-- <div *ngIf="tab == 1" class="pdb20 ">
                 <div class="radius10 shadow16 mgt20">
                     <div class="backWhite pd10 " fxLayout="row" fxLayoutGap="1rem">
