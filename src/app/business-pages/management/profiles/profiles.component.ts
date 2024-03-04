@@ -94,14 +94,8 @@ export class ProfilesComponent {
             profilesBase.push(element?.baseProfile?.id)
           }
         });
-
-        if(!this.user.isSystemUser){
-          this.profiles = profiles.filter(profile => profile.enterpriseRef);
-        }
-        else{
-          this.profiles = profiles
-        }
-
+        
+        this.profiles = profiles
         console.log('perfiles', this.profiles);
 
 
@@ -487,11 +481,16 @@ export class ProfilesComponent {
 
       if(this.profiles.find(x=> x.name.toLowerCase() == this.profileName.toLowerCase() && x.id != this.profile?.id )) throw new Error("El nombre del perfil se encuentra en uso")
 
+
       this.disableSaveButton = true
       this.alertService.infoAlert("Se procederá a actualizar los datos del plan de estudio del perfil y de sus usuarios relacionados, por favor espere hasta que se complete la operación")
       const coursesRef: DocumentReference<Curso>[] = this.studyPlan.map(course => {
         return this.courseService.getCourseRefById(course.id)
       })
+
+
+      if (!coursesRef || coursesRef.length==0) throw new Error("Debe indicar los cursos del plan de estudio")
+
 
       let enterpriseRef =this.enterpriseService.getEnterpriseRef()
       if(this.user.isSystemUser){
