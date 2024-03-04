@@ -10,6 +10,9 @@ export { onActivityUpdated }
 import { createUserWithEmailAndPassword, generatePasswordResetLink, emptyDatabase } from './authentication';
 export { createUserWithEmailAndPassword, generatePasswordResetLink, emptyDatabase }
 
+import { createTractianUser } from './tractian';
+export { createTractianUser }
+
 import { sendMail } from './email';
 export { sendMail }
 
