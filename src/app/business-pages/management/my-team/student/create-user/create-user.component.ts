@@ -269,9 +269,9 @@ export class CreateUserComponent {
 
       console.log('profiles',this.profiles,user.profile) 
 
-      let profileNew = this.profiles.find(x=>x.id == user.profile.id)
+      let profileNew = this.profiles.find(x=>x.id == user?.profile?.id)
       
-      if(!profileNew.enterpriseRef){
+      if(profileNew &&!profileNew.enterpriseRef){
 
         console.log('profileNew',profileNew)
         let baseProfile = this.afs.collection<Profile>(Profile.collection).doc(profileNew.id).ref;
@@ -288,7 +288,7 @@ export class CreateUserComponent {
           hoursPerMonth:profileNew.hoursPerMonth
         })
         const profileId = await this.profileService.saveProfile(profile)
-        let profileRef = this.afs.collection<Profile>(Profile.collection).doc(profileId).ref;
+        let profileRef = await  this.afs.collection<Profile>(Profile.collection).doc(profileId).ref;
         user.profile = profileRef;
 
       }
