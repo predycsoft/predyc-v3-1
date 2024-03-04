@@ -8,6 +8,7 @@ export const productsData: ProductJson[] = [
         "acceptsZelle": false,
         "active": false,
         "canEnrollPrograms": false,
+        "createdAt": 1679634238000,
         "canEnrollByHimself": true,
         "description": "Plan Básico",
         "features": [
@@ -69,6 +70,7 @@ export const productsData: ProductJson[] = [
         "acceptsZelle": true,
         "canEnrollByHimself": true,
         "canEnrollPrograms": true,
+        "createdAt": 1679080848000,
         "paypalInfo": {
             "paypalId": "PROD-0YM379731X785025S",
             "updatedAt": 1678764794597
@@ -116,6 +118,7 @@ export const productsData: ProductJson[] = [
         "description": "Plan Experto",
         "id": "Plan-Experto",
         "canEnrollPrograms": true,
+        "createdAt": 1682617069000,
         "isACompanyProduct": false,
         "features": [
             {
@@ -178,6 +181,7 @@ export const productsData: ProductJson[] = [
         "isACompanyProduct": true,
         "id": "Rotaciones",
         "canEnrollPrograms": true,
+        "createdAt": 1695739531000,
         "paypalInfo": {
             "paypalId": "",
             "updatedAt": null

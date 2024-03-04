@@ -1,0 +1,32 @@
+<form [formGroup]="enterpriseForm" (ngSubmit)="onSubmit()">
+    <div>
+        <label>Nombre de la empresa</label>
+        <input type="text" class="fw" formControlName="name">
+    </div>
+    <div>
+        <label>Resumen</label>
+        <input type="text" class="fw" formControlName="summary">
+    </div>
+    <div>
+        <label>Descripcion</label>
+        <textarea class="fw" maxlength="5000" formControlName="description" > </textarea>
+    </div>
+    <div>
+        <label>Sitio Web</label>
+        <input type="text" class="fw" formControlName="website">
+    </div>
+    <div>
+        <label>Enlace Linkedin</label>
+        <input type="text" class="fw" formControlName="linkedin">
+    </div>
+    <div *ngIf="enterprise">
+        <label> Foto de Empresa </label>
+        <input type="file" class="fw" id="file" (change)="cargarFoto($event, 'foto')" name="image" autocomplete="off" /> <!-- CHECK THIS -->
+    </div>
+    <div *ngIf="enterprise" class="containerImg">
+        <img [src]="enterprise.photoUrl ? enterprise.photoUrl : 'assets/images/default/default-user-image.jpg'" class="avatar2" alt="" >        
+    </div>
+    <button class=" blueButtonAnim button-animation h28px mgr10 " fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" type="submit">
+        {{enterprise ? "Guardar" : "Crear"}} usuario
+    </button>  
+</form>

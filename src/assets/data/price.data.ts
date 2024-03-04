@@ -5,6 +5,7 @@ export const pricesData: PriceJson[] = [
         "active": false,
         "amount": 49,
         "coupon": null,
+        "createdAt": 1679037437000,
         "currency": "USD",
         "freeTrialDays": 5,
         "id": "Plan-Basico-49USD-month",
@@ -36,6 +37,7 @@ export const pricesData: PriceJson[] = [
         },
         "amount": 98,
         "coupon": null,
+        "createdAt": 1679634321000,
         "interval": "month",
         "id": "Plan-Basico-98USD-month",
         "paypalInfo": {
@@ -49,6 +51,7 @@ export const pricesData: PriceJson[] = [
     },
     {
         "coupon": null,
+        "createdAt": 1679080897000,
         "active": true,
         "amount": 468,
         "freeTrialDays": 5,
@@ -77,6 +80,7 @@ export const pricesData: PriceJson[] = [
         "type": "recurring",
         "interval": "year",
         "coupon": null,
+        "createdAt": 1683225030000,
         "freeTrialDays": 5,
         "stripeInfo": {
             "stripeId": "",
@@ -94,6 +98,7 @@ export const pricesData: PriceJson[] = [
         "intervalCount": 1,
         "type": "recurring",
         "coupon": null,
+        "createdAt": 1683225030000,
         "amount": 468,
         "product": null,
         "id": "Plan-Experto-468USD-year",
@@ -125,6 +130,7 @@ export const pricesData: PriceJson[] = [
         "currency": "USD",
         "product": null,
         "coupon": null,
+        "createdAt": 1683225030000,
         "stripeInfo": {
             "stripeId": "",
             "updatedAt": null
@@ -147,6 +153,7 @@ export const pricesData: PriceJson[] = [
         "active": false,
         "type": "one_time",
         "coupon": null,
+        "createdAt": 1695738693000,
         "stripeInfo": {
             "updatedAt": {
                 "seconds": 1695738693,

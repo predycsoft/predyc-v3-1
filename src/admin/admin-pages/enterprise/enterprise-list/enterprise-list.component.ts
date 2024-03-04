@@ -135,6 +135,7 @@ export class EnterpriseListComponent {
             availableRotations: enterpriseInfo.availableRotations,
             rotacionWarningCount: enterpriseInfo.rotacionWarningCount,
             expirationDate: enterpriseInfo.expirationDate,
+            id: enterpriseInfo.enterprise.id
           }
         })
         this.paginator.pageIndex = page - 1; // Update the paginator's page index

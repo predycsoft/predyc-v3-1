@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { CreateUserComponent } from 'src/app/business-pages/management/my-team/student/create-user/create-user.component'; //move to shared module
 import { User } from 'src/shared/models/user.model';
-import { IconService } from 'src/shared/services/icon.service';
 import { UserService } from 'src/shared/services/user.service';
 
 @Component({
@@ -14,7 +13,6 @@ export class StudentsComponent {
 
   constructor(
     private modalService: NgbModal,
-    public icon: IconService,
     private userService: UserService,
   ) {}
 

@@ -5,6 +5,7 @@ export const couponsData: CouponJson[] = [
     //     "isGlobal": false,
     //     "percentOff": 10,
     //     "name": "10%-anual-once",
+    //     "createdAt": ,
     //     "currency": "USD",
     //     "stripeInfo": {
     //         "stripeId": "XiB3fksX",
@@ -45,6 +46,7 @@ export const couponsData: CouponJson[] = [
     //     "activeBanner": false,
     //     "textBanner": "",
     //     "amountOff": null,
+    //     "createdAt": ,
     //     "currency": "USD",
     //     "name": "100%-anual-once",
     //     "active": true
@@ -59,6 +61,7 @@ export const couponsData: CouponJson[] = [
     //     "activeBanner": false,
     //     "maxRedemptions": null,
     //     "redeemBy": null,
+    //     "createdAt": ,
     //     "currency": "USD",
     //     "stripeInfo": {
     //         "updatedAt": {
@@ -80,6 +83,7 @@ export const couponsData: CouponJson[] = [
     //     "amountOff": null,
     //     "isGlobal": false,
     //     "durationInMonths": null,
+    //     "createdAt": ,
     //     "currency": "USD",
     //     "stripeInfo": {
     //         "stripeId": "yHcgdaPl",
@@ -119,6 +123,7 @@ export const couponsData: CouponJson[] = [
     //     "maxRedemptions": null,
     //     "amountOff": null,
     //     "maxRedemptionsPerUser": 1,
+    //     "createdAt": ,
     //     "currency": "USD"
     // },
     // {
@@ -137,6 +142,7 @@ export const couponsData: CouponJson[] = [
     //     },
     //     "duration": "once",
     //     "id": "100%-mensual-once-directiva",
+    //     "createdAt": ,
     //     "currency": "USD",
     //     "maxRedemptions": null,
     //     "name": "100% mensual once directiva",
@@ -163,6 +169,7 @@ export const couponsData: CouponJson[] = [
     //     "id": "100%-mensual-once-intensivomx2",
     //     "durationInMonths": null,
     //     "isGlobal": false,
+    //     "createdAt": ,
     //     "currency": "USD",
     //     "active": true,
     //     "activeBanner": false,
@@ -187,6 +194,7 @@ export const couponsData: CouponJson[] = [
     //     "redeemBy": null,
     //     "textBanner": "",
     //     "id": "100%-mensual-once-rutamantenimiento",
+    //     "createdAt": ,
     //     "currency": "USD",
     //     "duration": "once",
     //     "active": true,
@@ -207,6 +215,7 @@ export const couponsData: CouponJson[] = [
             },
             "stripeId": "e4KB9inF"
         },
+        "createdAt": 1678921447000,
         "currency": "USD",
         "redeemBy": null,
         "duration": "once",
@@ -229,6 +238,7 @@ export const couponsData: CouponJson[] = [
     //     },
     //     "durationInMonths": null,
     //     "duration": "once",
+    //     "createdAt": ,
     //     "currency": "USD",
     //     "active": true,
     //     "activeBanner": false,
@@ -261,6 +271,7 @@ export const couponsData: CouponJson[] = [
     //     "promoCode": "",
     //     "durationInMonths": null,
     //     "maxRedemptionsPerUser": 1,
+    //     "createdAt": ,
     //     "currency": "USD",
     //     "id": "45%-mensual-forever",
     //     "redeemBy": null
@@ -276,6 +287,7 @@ export const couponsData: CouponJson[] = [
     //     "duration": "forever",
     //     "textBanner": "",
     //     "maxRedemptionsPerUser": 1,
+    //     "createdAt": ,
     //     "currency": "USD",
     //     "amountOff": null,
     //     "isGlobal": false,
@@ -292,6 +304,7 @@ export const couponsData: CouponJson[] = [
     // {
     //     "duration": "once",
     //     "durationInMonths": null,
+    //     "createdAt": ,
     //     "currency": "USD",
     //     "redeemBy": null,
     //     "activeBanner": false,
@@ -314,6 +327,7 @@ export const couponsData: CouponJson[] = [
     //     "name": "50% anual once"
     // },
     // {
+    //     "createdAt": ,
     //     "currency": "USD",
     //     "activeBanner": false,
     //     "maxRedemptionsPerUser": 1,
@@ -338,6 +352,7 @@ export const couponsData: CouponJson[] = [
     //     "active": true
     // },
     // {
+    //     "createdAt": ,
     //     "currency": "USD",
     //     "durationInMonths": null,
     //     "name": "50% mensual once",
@@ -371,6 +386,7 @@ export const couponsData: CouponJson[] = [
     //     "promoCode": "",
     //     "textBanner": "",
     //     "name": "55%-anual-once",
+    //     "createdAt": ,
     //     "currency": "USD",
     //     "active": true,
     //     "stripeInfo": {
@@ -405,6 +421,7 @@ export const couponsData: CouponJson[] = [
     //     "durationInMonths": null,
     //     "maxRedemptionsPerUser": 1,
     //     "redeemBy": null,
+    //     "createdAt": ,
     //     "currency": "USD",
     //     "id": "60%-representante-GonzaloSuarez",
     //     "isGlobal": true
@@ -419,6 +436,7 @@ export const couponsData: CouponJson[] = [
         },
         "promoCode": "",
         "percentOff": null,
+        "createdAt": 1679078012000,
         "currency": "USD",
         "duration": "once",
         "active": true,
@@ -437,6 +455,7 @@ export const couponsData: CouponJson[] = [
     //     "durationInMonths": null,
     //     "id": "75%-once",
     //     "maxRedemptions": null,
+    //     "createdAt": ,
     //     "currency": "USD",
     //     "name": "75%-once",
     //     "redeemBy": null,
@@ -475,12 +494,14 @@ export const couponsData: CouponJson[] = [
         "textBanner": "",
         "maxRedemptions": 1,
         "redeemBy": null,
+        "createdAt": 1678765473000,
         "currency": "USD",
         "maxRedemptionsPerUser": 1
     },
     {
         "duration": "once",
         "active": true,
+        "createdAt": 1678765473000,
         "currency": "USD",
         "id": "BUEN-FIN-PREDYC-2022",
         "maxRedemptionsPerUser": 1,
@@ -514,6 +535,7 @@ export const couponsData: CouponJson[] = [
             "stripeId": "7UOVi5Fo"
         },
         "active": true,
+        "createdAt": 1678766004000,
         "currency": "USD",
         "textBanner": "",
         "name": "CONFIABILIDAD EN FOCO",
@@ -542,6 +564,7 @@ export const couponsData: CouponJson[] = [
         "maxRedemptionsPerUser": 1,
         "percentOff": null,
         "promoCode": " CYBERPREDYC",
+        "createdAt": 1678765353000,
         "currency": "USD",
         "isGlobal": false,
         "durationInMonths": null,
@@ -564,6 +587,7 @@ export const couponsData: CouponJson[] = [
         "active": true,
         "maxRedemptions": 1,
         "textBanner": "",
+        "createdAt": 1678766073000,
         "currency": "USD",
         "redeemBy": null,
         "maxRedemptionsPerUser": 1,
@@ -585,6 +609,7 @@ export const couponsData: CouponJson[] = [
     //         },
     //         "stripeId": "k52Ksry9"
     //     },
+    //     "createdAt": ,
     //     "currency": "USD",
     //     "promoCode": "FOCO60CONF",
     //     "active": true,
@@ -614,6 +639,7 @@ export const couponsData: CouponJson[] = [
         },
         "percentOff": null,
         "maxRedemptions": 1,
+        "createdAt": 1678764960000,
         "currency": "USD",
         "name": "Descuento Intensivo 2.0",
         "id": "Descuento-Intensivo-2.0",
@@ -631,6 +657,7 @@ export const couponsData: CouponJson[] = [
         "activeBanner": false,
         "percentOff": null,
         "textBanner": "",
+        "createdAt": 1678766346000,
         "currency": "USD",
         "name": "Descuento completar perfil Predyc",
         "active": true,
@@ -664,6 +691,7 @@ export const couponsData: CouponJson[] = [
         "percentOff": null,
         "promoCode": "GIFTCARD",
         "redeemBy": null,
+        "createdAt": 1678764893000,
         "currency": "USD",
         "maxRedemptionsPerUser": 1,
         "maxRedemptions": 1,
@@ -681,6 +709,7 @@ export const couponsData: CouponJson[] = [
         "durationInMonths": null,
         "isGlobal": false,
         "maxRedemptions": null,
+        "createdAt": 1678766304000,
         "currency": "USD",
         "id": "Descuento-pago-anual-Predyc",
         "duration": "once",
@@ -701,6 +730,7 @@ export const couponsData: CouponJson[] = [
     //     "isGlobal": true,
     //     "name": "Descuento patrio",
     //     "maxRedemptionsPerUser": 1,
+    //     "createdAt": ,
     //     "currency": "USD",
     //     "amountOff": null,
     //     "percentOff": 50,
@@ -721,6 +751,7 @@ export const couponsData: CouponJson[] = [
     {
         "maxRedemptionsPerUser": 1,
         "amountOff": null,
+        "createdAt": 1678765262000,
         "currency": "USD",
         "active": true,
         "percentOff": 50,
@@ -743,6 +774,7 @@ export const couponsData: CouponJson[] = [
         "duration": "once"
     },
     {
+        "createdAt": 1681249272000,
         "currency": "USD",
         "redeemBy": null,
         "textBanner": "",
@@ -779,6 +811,7 @@ export const couponsData: CouponJson[] = [
             }
         },
         "promoCode": "",
+        "createdAt": 1678764851000,
         "currency": "USD",
         "redeemBy": null,
         "duration": "once",
@@ -797,6 +830,7 @@ export const couponsData: CouponJson[] = [
     //     "percentOff": 50,
     //     "id": "Predyc-Business-50%-descuento",
     //     "amountOff": null,
+    //     "createdAt": ,
     //     "currency": "USD",
     //     "name": "Predyc Business 50% descuento",
     //     "maxRedemptions": 3,
@@ -833,6 +867,7 @@ export const couponsData: CouponJson[] = [
         "id": "Primera-compra-Predyc",
         "active": true,
         "activeBanner": false,
+        "createdAt": 1678765092000,
         "currency": "USD",
         "name": "Primera compra Predyc",
         "maxRedemptions": 99,
@@ -842,6 +877,7 @@ export const couponsData: CouponJson[] = [
     //     "activeBanner": false,
     //     "amountOff": null,
     //     "durationInMonths": null,
+    //     "createdAt": ,
     //     "currency": "USD",
     //     "promoCode": " PREDYCDCV",
     //     "percentOff": 50,
@@ -867,6 +903,7 @@ export const couponsData: CouponJson[] = [
     //     "textBanner": "",
     //     "id": "SEMANAPREDYC---40%",
     //     "percentOff": 40,
+    //     "createdAt": ,
     //     "currency": "USD",
     //     "duration": "once",
     //     "activeBanner": false,
@@ -895,6 +932,7 @@ export const couponsData: CouponJson[] = [
         "duration": "once",
         "isGlobal": false,
         "redeemBy": null,
+        "createdAt": 1678765418000,
         "currency": "USD",
         "stripeInfo": {
             "stripeId": "UwVSxinj",
@@ -919,6 +957,7 @@ export const couponsData: CouponJson[] = [
         "maxRedemptionsPerUser": 1,
         "percentOff": 100,
         "redeemBy": null,
+        "createdAt": 1678766156000,
         "currency": "USD",
         "durationInMonths": null,
         "name": "compra gratis",
@@ -956,6 +995,7 @@ export const couponsData: CouponJson[] = [
     //     "isGlobal": true,
     //     "durationInMonths": null,
     //     "textBanner": "Día del Mantenimiento en LATAM; inscripción 50% de descuento",
+    //     "createdAt": ,
     //     "currency": "USD"
     // }
 ]
