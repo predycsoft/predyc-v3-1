@@ -2,6 +2,9 @@ import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import { _sendMail } from './email'
 
+// import { generateSixDigitRandomNumber } from '../../src/shared/utils'
+import { DocumentReference } from 'firebase-admin/firestore';
+
 const db = admin.firestore();
 
 interface SocialNetworks {
@@ -11,7 +14,7 @@ interface SocialNetworks {
     linkedin: string | null
 }
 
-interface Enterprise {
+interface EnterpriseData {
     city: string | null
     country: string | null
     name: string
@@ -21,7 +24,7 @@ interface Enterprise {
     socialNetworks: SocialNetworks
 }
 
-interface User {
+interface UserData {
     birthdate: number | null
     city: string | null
     country: string | null
@@ -37,15 +40,42 @@ interface User {
 }
 
 interface TractianInfo { 
-    user: User
-    enterprise: Enterprise
+    user: UserData
+    enterprise: EnterpriseData
 }
 
-export const createTractianUser = functions.https.onCall(
-    async (data: TractianInfo, _) => {
+const createUser = async (user: UserData): Promise<DocumentReference | string | boolean> => {
+    // const password = generateSixDigitRandomNumber()
+    console.log("Import works!", "asdasda")
+    // const userRecord = await admin.auth().createUser({
+    //     email: user.email,
+    //     password: password.toString(),
+    // });
+    return true
+}
+
+const createEnterprise = async (enterprise: EnterpriseData) => {
+    // db.collection(Enterprise.collection)
+}
+
+export const createTractianUser = functions.https.onRequest(
+    async (req, res) => {
         try {
+            console.log("test nuevo")
+            if (req.method !== 'POST') throw new Error("Method not allowed")
             // data should contain tractian Info
-            console.log("Tractian API working!", data)
+            const tractianInfo = req.body as TractianInfo
+            const enterprise = tractianInfo.enterprise
+            const user = tractianInfo.user
+            console.log("Tractian API working!", tractianInfo)
+            console.log("User", tractianInfo.user)
+            console.log("Enterprise", tractianInfo.enterprise)
+            // Create Enterprise
+            // const enterpriseRef = await createEnterprise(enterprise)
+            // Create User
+            const userRef = await createUser(user)
+            // Create Subscription
+            // Send Mail
             // const userRecord = await admin.auth().createUser({
             //   email: data.email,
             //   password: data.password,
@@ -54,11 +84,14 @@ export const createTractianUser = functions.https.onCall(
             // Enlace de restablecimiento de contraseña
             // await _generatePasswordResetLink(data.email)
             
-            return true
+            res.status(200).send({password: userRef})
+            // res.status(200).send(tractianInfo)
             // return { uid: userRecord.uid };
         } catch (error: any) {
-            console.log(error)
-            throw new functions.https.HttpsError('unknown', error.message);
+            // if (error?.message === 'Method not allowed') res.status(500).send(error.message)
+            res.status(500).send({
+                message: error?.message
+            })
         } 
     }
 );
