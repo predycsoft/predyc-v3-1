@@ -22,7 +22,7 @@
         <app-enterprise-info [enterprise]="enterprise" ></app-enterprise-info>
     </div>
     <div *ngIf="tab === 1" fxLayout="column" class="mgt10">
-        <app-enterprise-students></app-enterprise-students>
+        <app-enterprise-students [enterprise]="enterprise"></app-enterprise-students>
     </div>
     <div *ngIf="tab === 2" fxLayout="column" class="mgt10">
         <app-enterprise-payments></app-enterprise-payments>
