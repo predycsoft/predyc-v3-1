@@ -93,8 +93,9 @@ export class EnterpriseStudentsComponent {
   }
 
   addLicense() {
-    this.dialog.open(DialogNewLicenseComponent).afterClosed().subscribe(result => {
+    this.dialog.open(DialogNewLicenseComponent).afterClosed().subscribe((result: License) => {
       if(result){
+        result.enterpriseRef = this.enteprriseService.getEnterpriseRefById(this.enterprise.id)
         console.log("result del dialog", result)
       }
     })

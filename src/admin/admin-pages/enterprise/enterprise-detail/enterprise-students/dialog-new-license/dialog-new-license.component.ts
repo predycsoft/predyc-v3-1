@@ -1,4 +1,5 @@
 import { Component, Inject } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subscription, combineLatest } from 'rxjs';
 import { Coupon } from 'src/shared/models/coupon.model';
@@ -22,9 +23,10 @@ export class DialogNewLicenseComponent {
     private productService: ProductService,
     private priceService: PriceService,
     private couponService: CouponService,
+    private fb: FormBuilder,
   ) { }
 
-  licence: License = License.newLicenseTemplate
+  license: License = License.newLicenseTemplate
 
   _date = '';
   products: Product[] = [];
@@ -34,14 +36,14 @@ export class DialogNewLicenseComponent {
   priceId: string = '';
   couponId: string = '';
 
-
-  //
+  form: FormGroup;
 
 
   combinedServicesSubscription: Subscription
 
+  showAlertText = false
+
   ngOnInit(): void {
-    this._date = this.toDateString(new Date(this.licence.startedAt));
 
     this.combinedServicesSubscription = combineLatest(
       [
@@ -53,11 +55,54 @@ export class DialogNewLicenseComponent {
       this.prices = prices
       this.products = products
       this.coupons = coupons
+
+      this.initializeForm()
     })
   }
 
+  initializeForm() {
+    this.form = this.fb.group({
+      productId: ['', Validators.required],
+      priceId: ['', Validators.required],
+      couponId: [''],
+      startDate: ['', ],
+      quantity: [1, Validators.min(1)],
+      status: ['', ],
+      trialDays: ['']
+    });
+
+    this.form.patchValue({
+      startDate: this.toDateString(new Date(this.license.startedAt)),
+      quantity: this.license.quantity,
+      status: this.license.status,
+      trialDays: this.license.trialDays,
+    })
+
+    this.form.get('productId')!.valueChanges.subscribe(value => {
+      this.productId = value;
+      this.form.get('priceId')!.setValue('');
+    });
+    this.form.get('startDate').valueChanges.subscribe(value => {
+      this.onDateChange(value);
+    });
+  }
+
   save(){
-    this.matDialogRef.close(this.licence)
+    if (this.form.valid) {
+      // Process and save data
+      const formValue = this.form.value;
+      this.license.quantity = formValue.quantity
+      this.license.status = formValue.status
+      this.license.trialDays = formValue === "trialing" ? formValue.trialDays : null      
+      this.license.priceRef = this.priceService.getPriceRefById(formValue.priceId)
+      this.license.couponRef = formValue.couponId ? this.couponService.getCouponRefById(formValue.couponId) : null
+      // this.license.enterpriseRef Set in parent component
+
+      this.matDialogRef.close(this.license);
+    }
+    else {
+      this.showAlertText = true
+    }
   }
 
   cancel(){
@@ -81,18 +126,18 @@ export class DialogNewLicenseComponent {
     return this.coupons;
   }
 
-  getFilteredPrice() {
+  getFilteredPrice(): Price[] {
     return this.prices.filter((x) => x.product.id == this.productId);
   }
 
-  onDateChange(): void {
-    let parsedDate = this.parseDateString(this._date);
+  onDateChange(startedAt: string): void {
+    let parsedDate: Date = this.parseDateString(startedAt);
 
     // check if date is valid first
     // if (parsedDate.getTime() != NaN) {
-    //   this.licence.startedAt = +parsedDate;
-    //   this.licence.currentPeriodStart = +parsedDate;
-    //   this.licence.currentPeriodEnd = this.getPeriodEnd();
+      this.license.startedAt = +parsedDate;
+      this.license.currentPeriodStart = +parsedDate;
+      this.license.currentPeriodEnd = this.getPeriodEnd();
     // }
   }
 
@@ -113,30 +158,30 @@ export class DialogNewLicenseComponent {
 
   getCurrentTimes() {
     // SE supone que es un mes
-    this.licence.currentPeriodStart = this.licence.startedAt;
-    this.licence.currentPeriodEnd = this.getPeriodEnd();
+    this.license.currentPeriodStart = this.license.startedAt;
+    this.license.currentPeriodEnd = this.getPeriodEnd();
   }
 
   getPeriodEnd() {
-    if(this.licence.status == 'trialing'){
-      const date = new Date(this.licence.currentPeriodStart + this.licence.trialDays*24*60*60*1000);
+    if(this.license.status == 'trialing'){
+      const date = new Date(this.license.currentPeriodStart + this.license.trialDays*24*60*60*1000);
       let day = date.getDate();
       let month = date.getMonth();
       let year = date.getFullYear();
       return +new Date(year, month, day);
     } else {
-      const date = new Date(this.licence.currentPeriodStart);
-      if (!this.licence.priceRef.id) {
+      const date = new Date(this.license.currentPeriodStart);
+      if (!this.license.priceRef.id) {
         return null;
       }
       let day = date.getDate();
       let month = date.getMonth();
       let year = date.getFullYear();
-      let price = this.prices.find((x) => x.id == this.licence.priceRef.id);
+      let price = this.prices.find((x) => x.id == this.license.priceRef.id);
       let newDay = 0;
       let newMonth = 0;
       let newYear = 0;
-      console.log(price.interval);
+      // console.log(price.interval);
       switch (price.interval) {
         case 'month':
           newDay = day;
@@ -149,7 +194,7 @@ export class DialogNewLicenseComponent {
           if (day > this.daysInMonth(newMonth + 1, newYear)) {
             newDay = this.daysInMonth(newMonth + 1, newYear);
           }
-          this.licence.currentPeriodEnd = +new Date(
+          this.license.currentPeriodEnd = +new Date(
             newYear,
             newMonth,
             newDay
@@ -159,14 +204,14 @@ export class DialogNewLicenseComponent {
           newDay = day;
           newMonth = month;
           newYear = year + 1;
-          this.licence.currentPeriodEnd = +new Date(
+          this.license.currentPeriodEnd = +new Date(
             newYear,
             newMonth,
             newDay
           );
           return +new Date(newYear, newMonth, newDay);
         default:
-          this.licence.currentPeriodEnd = +new Date(
+          this.license.currentPeriodEnd = +new Date(
             newYear,
             newMonth,
             newDay
