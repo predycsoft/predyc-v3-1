@@ -759,9 +759,12 @@ export class CreateCourseComponent {
     }
   }
 
+  savingCourse = false;
+
   async saveDraft(){
     //console.log('----- save borrador ------')
 
+    this.savingCourse = true;
 
     Swal.fire({
       title: 'Generando curso...',
@@ -960,7 +963,6 @@ export class CreateCourseComponent {
         module.numero = modulo.numero;
         module.titulo = modulo.titulo;
         module.clasesRef = arrayClasesRef;
-        
         if(!modulo.id){
           module.id = idRef;
           modulo.id = idRef
@@ -970,11 +972,13 @@ export class CreateCourseComponent {
       }
     }
     Swal.close();
+    this.savingCourse = false;
     this.alertService.succesAlert("El curso se ha guardado exitosamente")
 
   }
   else{
     Swal.close();
+    this.savingCourse = false;
     //this.alertService.succesAlert("El curso se ha guardado exitosamente")
   }
 

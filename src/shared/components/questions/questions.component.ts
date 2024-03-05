@@ -97,10 +97,12 @@ export class QuestionsComponent {
   @Input() nameCurso
   @Input() nameEmpresa
   @Input() questionMaxSize: number = 50
+  @Input() type: string = ''
+
 
 
   @Output() emmitForm = new EventEmitter();
-
+  @Output() changeQuestion = new EventEmitter();
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.checkQuestions) {
@@ -276,7 +278,41 @@ export class QuestionsComponent {
     this.questions.removeAt(index);
     this.questionStatus.splice(index, 1)
     this.selectedQuestionsSkills.splice(index, 1)
+    console.log('Form Data:', this.mainForm);
+    this.changeQuestion.emit(this.mainForm);
+  }
 
+  changePoints(points){
+
+    if(points>0){
+      this.changeQuestion.emit(this.mainForm);
+    }
+
+  }
+
+  changeOption(option){
+    if(option.length>0){
+      this.changeQuestion.emit(this.mainForm);
+    }
+  }
+
+  addOption(questionIndex: number, placeholder=null,image=null): void {
+    this.options(questionIndex).push(this.fb.group({
+      image: [image],
+      text: ['', [Validators.required]],
+      isCorrect: [false],
+      placeholder: [placeholder],
+    }));
+    this.changeQuestion.emit(this.mainForm);
+  }
+
+  removeOption(questionIndex: number, optionIndex: number): void {
+    this.options(questionIndex).removeAt(optionIndex)
+    this.changeQuestion.emit(this.mainForm);
+  }
+
+  changeOptionTrue(): void {
+    this.changeQuestion.emit(this.mainForm);
   }
 
   modifyQuestionSkills(modalTemplate, questionIndex) {
@@ -318,18 +354,6 @@ export class QuestionsComponent {
     return <FormArray>this.questions.at(index).get('options');
   }
 
-  addOption(questionIndex: number, placeholder=null,image=null): void {
-    this.options(questionIndex).push(this.fb.group({
-      image: [image],
-      text: ['', [Validators.required]],
-      isCorrect: [false],
-      placeholder: [placeholder],
-    }));
-  }
-
-  removeOption(questionIndex: number, optionIndex: number): void {
-    this.options(questionIndex).removeAt(optionIndex)
-  }
 
   toggleExpandedQuestion(questionIndex: number): void {
     this.questionStatus[questionIndex] = {
@@ -365,8 +389,8 @@ export class QuestionsComponent {
       return;
     }
     const file = event.target.files[0];
-    if (file.type !== 'image/webp') {
-      this.alertService.errorAlert('La imagen seleccionada debe tener formato:  WEBP')
+    if (file.type !== 'image/jpeg' && file.type !== 'image/png' ) {
+      this.alertService.errorAlert('La imagen seleccionada debe tener formato de imagen')
       return;
     }
     /* checking size here - 1MB */
@@ -397,14 +421,22 @@ export class QuestionsComponent {
             console.log(`File URL: ${url}`);
             this.questions.at(questionIndex)['controls']['image']['controls']['url'].setValue(url)
             this.questions.at(questionIndex)['controls']['image']['controls']['file'].setValue(newName)
+            this.changeQuestion.emit(this.mainForm);
           });
         })
       ).subscribe();
-
-
       this.questions.at(questionIndex)['controls']['image']['controls']['file'].setValue(file)
+
     };
   }
+
+
+  deleteOptionImage(option): void {
+    option.get('image').setValue('');
+    this.changeQuestion.emit(this.mainForm);
+
+  }
+
 
   uploadQuestionOptionImage(option, event) {
     if (!event.target.files[0] || event.target.files[0].length === 0) {
@@ -412,8 +444,8 @@ export class QuestionsComponent {
       return;
     }
     const file = event.target.files[0];
-    if (file.type !== 'image/webp') {
-      this.alertService.errorAlert('La imagen seleccionada debe tener formato:  WEBP')
+    if (file.type !== 'image/jpeg' && file.type !== 'image/png' ) {
+      this.alertService.errorAlert('La imagen seleccionada debe tener formato de imagen')
       return;
     }
     /* checking size here - 1MB */
@@ -452,6 +484,7 @@ export class QuestionsComponent {
               //clase['uploading'] = false;
               console.log(`File URL: ${url}`);
               option.get('image').setValue(url);
+              this.changeQuestion.emit(this.mainForm);
             });
           })
         ).subscribe();
@@ -476,6 +509,8 @@ export class QuestionsComponent {
         this.options(questionIndex).at(index).get('isCorrect').setValue(index === optionIndex ? true : false)
       }
     }
+    this.changeQuestion.emit(this.mainForm);
+
   }
 
   getQuestionTypeDisplayNameByValue(value: string): string {

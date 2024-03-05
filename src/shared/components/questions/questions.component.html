@@ -46,6 +46,7 @@
                                 <label>Puntos</label>
                                 <input
                                     formControlName="points"
+                                    (change)="changePoints(question.get('points').value)"
                                     [class.is-invalid]="question.get('points').errors && displayErrors"
                                     type="number"
                                     min="0"
@@ -144,6 +145,7 @@
                                                     <div fxLayout="row" fxLayoutAlign="space-between center" class="fw">
                                                         <input
                                                             formControlName="text"
+                                                            (change)="changeOption(option.get('text').value)"
                                                             [class.is-invalid]="option.get('text').errors && displayErrors"
                                                             type="text"
                                                             class="form-control w-40"
@@ -203,6 +205,7 @@
                                                     <span class="gray-6">{{ optIndex + 1 }}.</span>
                                                     <input
                                                         formControlName="text"
+                                                        (change)="changeOption(option.get('text').value)"
                                                         [class.is-invalid]="option.get('text').errors && displayErrors"
                                                         type="text"
                                                         class="form-control"
@@ -211,7 +214,7 @@
                                                 </div>
                                         
                                                 <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
-                                                    <input formControlName="isCorrect" type="checkbox" value="{{ optIndex }}"/>
+                                                    <input (change)="changeOptionTrue()" formControlName="isCorrect" type="checkbox" value="{{ optIndex }}"/>
                                                     <img (click)="removeOption(i, optIndex)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash pdl05" alt="">
                                                 </div>
                                             </div>
@@ -246,6 +249,7 @@
                                                     <span class="gray-6">{{ optIndex + 1 }}.</span>
                                                     <input
                                                         formControlName="text"
+                                                        (change)="changeOption(option.get('text').value)"
                                                         [class.is-invalid]="option.get('text').errors && displayErrors"
                                                         type="text"
                                                         class="form-control"
@@ -255,6 +259,7 @@
 
                                                 <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
                                                     <button
+                                                    *ngIf="type!='test'"
                                                     (click)="questionOptionImage.click()"
                                                     class="grayButton pd03 radius4 ft12 h28px mgr10 gray-8"
                                                     fxLayout="row"
@@ -303,6 +308,7 @@
                                                     <span class="gray-6">{{ optIndex + 1 }}.</span>
                                                     <input
                                                         formControlName="text"
+                                                        (change)="changeOption(option.get('text').value)"
                                                         [class.is-invalid]="option.get('text').errors && displayErrors"
                                                         type="text"
                                                         class="form-control"
@@ -311,7 +317,7 @@
                                                 </div>
                                         
                                                 <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
-                                                    <input formControlName="isCorrect" type="checkbox" value="{{ optIndex }}"/>
+                                                    <input (change)="changeOptionTrue()" formControlName="isCorrect" type="checkbox" value="{{ optIndex }}"/>
                                                     <img (click)="removeOption(i, optIndex)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash pdl05" alt="">
                                                 </div>
                                             </div>

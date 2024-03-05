@@ -496,7 +496,7 @@
                             <img [src]="icon.document" class="makeBlue h20px" alt="">
                             <span class="ft500 ft14 black " style="margin-top: 5px;">Examen del curso</span>
                         </div>
-                        <app-questions class="mgr10" [questionMaxSize]="100" [nameCurso]="formNewCourse.get('titulo').value?  this.formNewCourse.get('titulo').value : 'Temporal'" [nameEmpresa]="empresa.name" (emmitForm)="validExam = $event" [questionsArray]="examen?.questions ? examen?.questions:[] " [checkQuestions]="updateTriggeQuestionsExam" [selectedTestSkills]="[]"></app-questions>
+                        <app-questions type="test" class="mgr10" [questionMaxSize]="100" [nameCurso]="formNewCourse.get('titulo').value?  this.formNewCourse.get('titulo').value : 'Temporal'" [nameEmpresa]="empresa.name" (changeQuestion)="validExam = $event;formatExamQuestions()" (emmitForm)="validExam = $event;" [questionsArray]="examen?.questions ? examen?.questions:[] " [checkQuestions]="updateTriggeQuestionsExam" [selectedTestSkills]="[]"></app-questions>
                     </div>
 
                     <div class="column w-50 mgr25" fxLayoutGap="2rem" >
@@ -521,26 +521,13 @@
                                                 {{ question.points }}</span>
                                             </div>
                                             <div class="fw" *ngIf="question.image">
-                                              <img [src]="question.image" alt="" style="max-height: 500px;">
+                                              <img [src]="question.image.url" alt="" style="max-height: 500px;">
                                             </div>
                                             <div *ngIf="question.typeFormated.value == questionTypes.TYPE_SINGLE_CHOICE_VALUE">
                                               <span class="ft14 ft500"> {{ question.text }} </span>
                                               <div class="mgt10" fxLayout="column">
                                                 <div fxLayout="row" fxLayoutAlign="space-between center"
-                                                  *ngFor="let option of question.options; let optionIndex = index" class="mgt05" [ngClass]="{
-                                                    correctAnswer:
-                                                      isSuccess === true &&
-                                                      activityAnswers[questionIndex].answerItems[optionIndex]
-                                                        .answer &&
-                                                      activityAnswers[questionIndex].answerItems[optionIndex]
-                                                        .isCorrect,
-                                                    incorrectAnswer:
-                                                      isSuccess === true &&
-                                                      activityAnswers[questionIndex].answerItems[optionIndex]
-                                                        .answer &&
-                                                      !activityAnswers[questionIndex].answerItems[optionIndex]
-                                                        .isCorrect
-                                                  }">
+                                                  *ngFor="let option of question.options; let optionIndex = index" class="mgt05">
                                                   <span [ngClass]="{
                                                       'white-text':
                                                         isSuccess === true &&
@@ -556,20 +543,7 @@
                                               <span class="ft14 ft500"> {{ question.text }} </span>
                                               <div class="mgt10" fxLayout="column">
                                                 <div fxLayout="row" fxLayoutAlign="space-between center"
-                                                  *ngFor="let option of question.options; let optionIndex = index" class="mgt05" [ngClass]="{
-                                                    correctAnswer:
-                                                      isSuccess === true &&
-                                                      activityAnswers[questionIndex].answerItems[optionIndex]
-                                                        .answer ===
-                                                        activityAnswers[questionIndex].answerItems[optionIndex]
-                                                          .isCorrect &&  activityAnswers[questionIndex].answerItems[optionIndex].answer,
-                                                    incorrectAnswer:
-                                                      isSuccess === true &&
-                                                      activityAnswers[questionIndex].answerItems[optionIndex]
-                                                        .answer !==
-                                                        activityAnswers[questionIndex].answerItems[optionIndex]
-                                                          .isCorrect && activityAnswers[questionIndex].answerItems[optionIndex].answer
-                                                  }">
+                                                  *ngFor="let option of question.options; let optionIndex = index" class="mgt05">
                                                   <span [ngClass]="{ 'white-text': isSuccess === true }">{{ optionIndex + 1 }}. {{ option.text }}</span>
                                                   <input type="checkbox" (change)="checkAnswer(questionIndex, optionIndex)"
                                                     [disabled]="isSuccess !== null" />
@@ -577,37 +551,8 @@
                                               </div>
                                             </div>
                                             <div *ngIf="question.typeFormated.value == questionTypes.TYPE_COMPLETE_VALUE">
-                                              <span class="ft14 ft500" *ngFor="let item of getDisplayText(question)">
-                                                <span *ngIf="question.getPlaceholders().includes(item)">
-                                                  <select #selectedOption [disabled]="isSuccess === true" [ngClass]="{
-                                                      correctAnswerPlaceholder:
-                                                        isSuccess === true &&
-                                                        selectedIsCorrect(questionIndex, item),
-                                                      incorrectAnswerPlaceholder:
-                                                        isSuccess === true &&
-                                                        !selectedIsCorrect(questionIndex, item)
-                                                    }" (change)="
-                                                      updateSelectedOption(
-                                                        questionIndex,
-                                                        item,
-                                                        selectedOption.value
-                                                      )
-                                                    ">
-                                                    <option disabled selected value>
-                                                      -- Selecciona una opcion --
-                                                    </option>
-                                                    <option *ngFor="
-                                                        let option of question.getOptionsForPlaceholder(item);
-                                                        let optionIndex = index
-                                                      " [value]="option.text">
-                                                      {{ option.text }}
-                                                    </option>
-                                                  </select>
-                                                </span>
-                                                <span *ngIf="!question.getPlaceholders().includes(item)">
-                                                  {{ item }}
-                                                </span>
-                                              </span>
+                                                <div [innerHTML]="question.render">
+                                                </div>
                                             </div>
                                             <div *ngIf="question.typeFormated.value == questionTypes.TYPE_TRUE_OR_FALSE_VALUE">
                                               <span class="ft14 ft500"> {{ question.text }} </span>
@@ -620,24 +565,7 @@
                                                   </div>
                                                 </div>
                                                 <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt05"
-                                                  *ngFor="let option of question.options; let optionIndex = index" [ngClass]="{
-                                                    correctAnswer:
-                                                      isSuccess === true &&
-                                                      activityAnswers[questionIndex].answerItems[optionIndex]
-                                                        .answer !== null &&
-                                                      activityAnswers[questionIndex].answerItems[optionIndex]
-                                                        .answer ===
-                                                        activityAnswers[questionIndex].answerItems[optionIndex]
-                                                          .isCorrect,
-                                                    incorrectAnswer:
-                                                      isSuccess === true &&
-                                                      activityAnswers[questionIndex].answerItems[optionIndex]
-                                                        .answer !== null &&
-                                                      activityAnswers[questionIndex].answerItems[optionIndex]
-                                                        .answer !==
-                                                        activityAnswers[questionIndex].answerItems[optionIndex]
-                                                          .isCorrect
-                                                  }">
+                                                  *ngFor="let option of question.options; let optionIndex = index">
                                                   <div fxFlex="60" fxLayout="row" fxLayoutGap="1rem">
                                                     <span [ngClass]="{
                                                         'white-text':
@@ -647,16 +575,10 @@
                                                       }">{{ optionIndex + 1 }}. {{ option.text }}</span>
                                                   </div>
                                                   <div class="centertext w200px">
-                                                    <input fxFlex="50" [name]="questionIndex.toString() + optionIndex.toString()" type="radio"
-                                                      [value]="true" [(ngModel)]="
-                                                        activityAnswers[questionIndex].answerItems[optionIndex]
-                                                          .answer
-                                                      " [disabled]="isSuccess !== null" />
-                                                    <input fxFlex="50" [name]="questionIndex.toString() + optionIndex.toString()" type="radio"
-                                                      [value]="false" [(ngModel)]="
-                                                        activityAnswers[questionIndex].answerItems[optionIndex]
-                                                          .answer
-                                                      " [disabled]="isSuccess !== null" />
+                                                    <input fxFlex="50" [name]="questionIndex?.toString() + optionIndex?.toString()" type="radio"
+                                                      [value]="true" [disabled]="isSuccess !== null" />
+                                                    <input fxFlex="50" [name]="questionIndex?.toString() + optionIndex?.toString()" type="radio"
+                                                      [value]="false"[disabled]="isSuccess !== null" />
                                                   </div>
                                                 </div>
                                               </div>
