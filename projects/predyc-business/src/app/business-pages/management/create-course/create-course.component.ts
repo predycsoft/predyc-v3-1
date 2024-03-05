@@ -1,11 +1,11 @@
 import { Component, ElementRef, QueryList, TemplateRef, ViewChild, ViewChildren } from '@angular/core';
-import { IconService } from 'src/shared/services/icon.service';
+import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import { FormControl, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { Curso } from "src/shared/models/course.model"
-import { Modulo } from "src/shared/models/module.model"
-import { Clase } from "src/shared/models/course-class.model"
+import { Curso } from "projects/predyc-business/src/shared/models/course.model"
+import { Modulo } from "projects/predyc-business/src/shared/models/module.model"
+import { Clase } from "projects/predyc-business/src/shared/models/course-class.model"
 
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import Swal from 'sweetalert2';
@@ -14,29 +14,29 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { AngularFirestore,DocumentReference } from '@angular/fire/compat/firestore';
 
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { Activity, Question, QuestionOption } from 'src/shared/models/activity-classes.model';
+import { Activity, Question, QuestionOption } from 'projects/predyc-business/src/shared/models/activity-classes.model';
 //import * as competencias from '../../../../assets/data/competencias.json';
-import { DialogService } from 'src/shared/services/dialog.service';
-import { VimeoUploadService } from 'src/shared/services/vimeo-upload.service';
-import { EnterpriseService } from 'src/shared/services/enterprise.service';
-import { CategoryService } from 'src/shared/services/category.service';
-import { SkillService } from 'src/shared/services/skill.service';
-import { Category } from 'src/shared/models/category.model';
-import { Skill } from 'src/shared/models/skill.model';
-import { CourseService } from 'src/shared/services/course.service';
-import { User } from 'src/shared/models/user.model';
+import { DialogService } from 'projects/predyc-business/src/shared/services/dialog.service';
+import { VimeoUploadService } from 'projects/predyc-business/src/shared/services/vimeo-upload.service';
+import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
+import { CategoryService } from 'projects/predyc-business/src/shared/services/category.service';
+import { SkillService } from 'projects/predyc-business/src/shared/services/skill.service';
+import { Category } from 'projects/predyc-business/src/shared/models/category.model';
+import { Skill } from 'projects/predyc-business/src/shared/models/skill.model';
+import { CourseService } from 'projects/predyc-business/src/shared/services/course.service';
+import { User } from 'projects/predyc-business/src/shared/models/user.model';
 import { category } from '../courses/courses.component';
-import { ModuleService } from 'src/shared/services/module.service';
-import { CourseClassService } from 'src/shared/services/course-class.service';
-import { ActivityClassesService } from 'src/shared/services/activity-classes.service';
-import { Enterprise } from 'src/shared/models/enterprise.model';
-import { compareByString } from 'src/shared/utils';
-import { QuestionsComponent } from 'src/shared/components/questions/questions.component';
-import { AuthService } from 'src/shared/services/auth.service';
-import { InstructorsService } from 'src/shared/services/instructors.service';
-import { AlertsService } from 'src/shared/services/alerts.service';
+import { ModuleService } from 'projects/predyc-business/src/shared/services/module.service';
+import { CourseClassService } from 'projects/predyc-business/src/shared/services/course-class.service';
+import { ActivityClassesService } from 'projects/predyc-business/src/shared/services/activity-classes.service';
+import { Enterprise } from 'projects/predyc-business/src/shared/models/enterprise.model';
+import { compareByString } from 'projects/predyc-business/src/shared/utils';
+import { QuestionsComponent } from 'projects/predyc-business/src/shared/components/questions/questions.component';
+import { AuthService } from 'projects/predyc-business/src/shared/services/auth.service';
+import { InstructorsService } from 'projects/predyc-business/src/shared/services/instructors.service';
+import { AlertsService } from 'projects/predyc-business/src/shared/services/alerts.service';
 
-import { VimeoComponent } from 'src/shared/components/vimeo/vimeo.component';
+import { VimeoComponent } from 'projects/predyc-business/src/shared/components/vimeo/vimeo.component';
 import VimeoPlayer from '@vimeo/player';
 
 

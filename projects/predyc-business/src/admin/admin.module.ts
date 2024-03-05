@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { AdminRoutingModule } from './admin-routing.module';
 import { HomeComponent } from './admin-pages/home/home.component';
-import { SharedModule } from 'src/shared/shared.module';
+import { SharedModule } from 'projects/predyc-business/src/shared/shared.module';
 import { CreateDemoComponent } from './admin-pages/create-demo/create-demo.component';
 import { EnterpriseListComponent } from './admin-pages/enterprise/enterprise-list/enterprise-list.component';
 import { RoyaltyComponent } from './admin-pages/royalty/royalty.component';

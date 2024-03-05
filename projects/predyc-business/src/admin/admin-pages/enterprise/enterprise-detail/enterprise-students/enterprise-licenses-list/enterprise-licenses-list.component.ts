@@ -2,19 +2,19 @@ import { Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subscription, combineLatest } from 'rxjs';
-import { Coupon } from 'src/shared/models/coupon.model';
-import { License } from 'src/shared/models/license.model';
-import { Price } from 'src/shared/models/price.model';
-import { Product } from 'src/shared/models/product.model';
-import { CouponService } from 'src/shared/services/coupon.service';
-import { LicenseService } from 'src/shared/services/license.service';
-import { PriceService } from 'src/shared/services/price.service';
-import { ProductService } from 'src/shared/services/product.service';
+import { Coupon } from 'projects/predyc-business/src/shared/models/coupon.model';
+import { License } from 'projects/predyc-business/src/shared/models/license.model';
+import { Price } from 'projects/predyc-business/src/shared/models/price.model';
+import { Product } from 'projects/predyc-business/src/shared/models/product.model';
+import { CouponService } from 'projects/predyc-business/src/shared/services/coupon.service';
+import { LicenseService } from 'projects/predyc-business/src/shared/services/license.service';
+import { PriceService } from 'projects/predyc-business/src/shared/services/price.service';
+import { ProductService } from 'projects/predyc-business/src/shared/services/product.service';
 import { DialogNewLicenseComponent } from '../dialog-new-license/dialog-new-license.component';
-import { Subscription as SubscriptionClass } from 'src/shared/models/subscription.model'
+import { Subscription as SubscriptionClass } from 'projects/predyc-business/src/shared/models/subscription.model'
 import { DocumentReference } from '@angular/fire/compat/firestore';
-import { Enterprise } from 'src/shared/models/enterprise.model';
-import { DialogService } from 'src/shared/services/dialog.service';
+import { Enterprise } from 'projects/predyc-business/src/shared/models/enterprise.model';
+import { DialogService } from 'projects/predyc-business/src/shared/services/dialog.service';
 
 
 interface LicensesInList {

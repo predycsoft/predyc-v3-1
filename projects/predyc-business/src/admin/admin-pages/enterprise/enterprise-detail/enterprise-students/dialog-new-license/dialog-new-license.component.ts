@@ -2,13 +2,13 @@ import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subscription, combineLatest } from 'rxjs';
-import { Coupon } from 'src/shared/models/coupon.model';
-import { License } from 'src/shared/models/license.model';
-import { Price } from 'src/shared/models/price.model';
-import { Product } from 'src/shared/models/product.model';
-import { CouponService } from 'src/shared/services/coupon.service';
-import { PriceService } from 'src/shared/services/price.service';
-import { ProductService } from 'src/shared/services/product.service';
+import { Coupon } from 'projects/predyc-business/src/shared/models/coupon.model';
+import { License } from 'projects/predyc-business/src/shared/models/license.model';
+import { Price } from 'projects/predyc-business/src/shared/models/price.model';
+import { Product } from 'projects/predyc-business/src/shared/models/product.model';
+import { CouponService } from 'projects/predyc-business/src/shared/services/coupon.service';
+import { PriceService } from 'projects/predyc-business/src/shared/services/price.service';
+import { ProductService } from 'projects/predyc-business/src/shared/services/product.service';
 
 @Component({
   selector: 'app-dialog-new-license',

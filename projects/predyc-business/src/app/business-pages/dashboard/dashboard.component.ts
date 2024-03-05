@@ -1,16 +1,16 @@
 import { Component } from '@angular/core';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription, combineLatest } from 'rxjs';
-import { DialogDownloadReportComponent } from 'src/shared/components/dialogs/dialog-download-report/dialog-download-report.component';
-import { AfterOnInitResetLoading } from 'src/shared/decorators/loading.decorator';
-import { CourseByStudent } from 'src/shared/models/course-by-student.model';
-import { Enterprise } from 'src/shared/models/enterprise.model';
-import { User } from 'src/shared/models/user.model';
-import { CourseService } from 'src/shared/services/course.service';
-import { EnterpriseService } from 'src/shared/services/enterprise.service';
-import { IconService } from 'src/shared/services/icon.service';
-import { LoaderService } from 'src/shared/services/loader.service';
-import { UserService } from 'src/shared/services/user.service';
+import { DialogDownloadReportComponent } from 'projects/predyc-business/src/shared/components/dialogs/dialog-download-report/dialog-download-report.component';
+import { AfterOnInitResetLoading } from 'projects/predyc-business/src/shared/decorators/loading.decorator';
+import { CourseByStudent } from 'projects/predyc-business/src/shared/models/course-by-student.model';
+import { Enterprise } from 'projects/predyc-business/src/shared/models/enterprise.model';
+import { User } from 'projects/predyc-business/src/shared/models/user.model';
+import { CourseService } from 'projects/predyc-business/src/shared/services/course.service';
+import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
+import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
+import { LoaderService } from 'projects/predyc-business/src/shared/services/loader.service';
+import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
 
 @AfterOnInitResetLoading
 @Component({

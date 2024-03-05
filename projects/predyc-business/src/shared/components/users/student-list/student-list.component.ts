@@ -1,16 +1,16 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
-import { IconService } from 'src/shared/services/icon.service';
-import { UserService } from 'src/shared/services/user.service';
+import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
+import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
 import { combineLatest, filter, forkJoin, map, merge, mergeMap, Observable, of, Subscription, switchMap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
-import { Curso } from 'src/shared/models/course.model';
-import { Department } from 'src/shared/models/department.model';
-import { Profile } from 'src/shared/models/profile.model';
-import { CourseService } from 'src/shared/services/course.service';
-import { DepartmentService } from 'src/shared/services/department.service';
-import { ProfileService } from 'src/shared/services/profile.service';
+import { Curso } from 'projects/predyc-business/src/shared/models/course.model';
+import { Department } from 'projects/predyc-business/src/shared/models/department.model';
+import { Profile } from 'projects/predyc-business/src/shared/models/profile.model';
+import { CourseService } from 'projects/predyc-business/src/shared/services/course.service';
+import { DepartmentService } from 'projects/predyc-business/src/shared/services/department.service';
+import { ProfileService } from 'projects/predyc-business/src/shared/services/profile.service';
 
 interface User {
   displayName: string,

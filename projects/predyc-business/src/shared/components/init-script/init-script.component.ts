@@ -6,51 +6,51 @@ import { User, UserJson } from '../../models/user.model';
 import { Category } from '../../models/category.model'
 import { Skill } from '../../models/skill.model';
 
-import { enterpriseData } from 'src/assets/data/enterprise.data'
-import { enterpriseDataPredyc } from 'src/assets/data/enterprise.data'
+import { enterpriseData } from 'projects/predyc-business/src/assets/data/enterprise.data'
+import { enterpriseDataPredyc } from 'projects/predyc-business/src/assets/data/enterprise.data'
 
-import { usersData } from 'src/assets/data/users.data'
-import { notificationsData } from 'src/assets/data/notifications.data'
+import { usersData } from 'projects/predyc-business/src/assets/data/users.data'
+import { notificationsData } from 'projects/predyc-business/src/assets/data/notifications.data'
 import { Notification } from '../../models/notification.model';
 import { NotificationService } from '../../services/notification.service';
 import { Coupon } from '../../models/coupon.model';
-import { couponsData } from 'src/assets/data/coupon.data';
+import { couponsData } from 'projects/predyc-business/src/assets/data/coupon.data';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
-import { productsData } from 'src/assets/data/product.data';
+import { productsData } from 'projects/predyc-business/src/assets/data/product.data';
 import { Product } from '../../models/product.model';
 import { Price } from '../../models/price.model';
-import { pricesData } from 'src/assets/data/price.data';
+import { pricesData } from 'projects/predyc-business/src/assets/data/price.data';
 import { License } from '../../models/license.model';
-import { licensesData } from 'src/assets/data/license.data';
-import { categoriesData } from 'src/assets/data/categories.data';
+import { licensesData } from 'projects/predyc-business/src/assets/data/license.data';
+import { categoriesData } from 'projects/predyc-business/src/assets/data/categories.data';
 import { CategoryService } from '../../services/category.service';
-import { skillsData } from 'src/assets/data/skills.data';
+import { skillsData } from 'projects/predyc-business/src/assets/data/skills.data';
 import { SkillService } from '../../services/skill.service';
 import { Subscription, first, firstValueFrom, lastValueFrom } from 'rxjs';
-import { departmentsData } from 'src/assets/data/departments.data'
+import { departmentsData } from 'projects/predyc-business/src/assets/data/departments.data'
 import { Department } from '../../models/department.model';
 import { DepartmentService } from '../../services/department.service';
-import { profilesData } from 'src/assets/data/profiles.data';
+import { profilesData } from 'projects/predyc-business/src/assets/data/profiles.data';
 import { Profile } from '../../models/profile.model';
-// import { coursesData } from 'src/assets/data/courses.data'
+// import { coursesData } from 'projects/predyc-business/src/assets/data/courses.data'
 
-import { Curso } from 'src/shared/models/course.model';
-import { Clase } from "src/shared/models/course-class.model"
+import { Curso } from 'projects/predyc-business/src/shared/models/course.model';
+import { Clase } from "projects/predyc-business/src/shared/models/course-class.model"
 
-import {instructorsData} from 'src/assets/data/instructors.data'
+import {instructorsData} from 'projects/predyc-business/src/assets/data/instructors.data'
 import { InstructorsService } from '../../services/instructors.service';
 import { CourseService } from '../../services/course.service';
-import { Activity} from 'src/shared/models/activity-classes.model';
+import { Activity} from 'projects/predyc-business/src/shared/models/activity-classes.model';
 import { ActivityClassesService } from '../../services/activity-classes.service';
 import { CourseClassService } from '../../services/course-class.service';
-import { Modulo } from 'src/shared/models/module.model';
+import { Modulo } from 'projects/predyc-business/src/shared/models/module.model';
 import { ModuleService } from '../../services/module.service';
-import { coursesData } from 'src/assets/data/courses.data';
+import { coursesData } from 'projects/predyc-business/src/assets/data/courses.data';
 import { CourseByStudent } from '../../models/course-by-student.model';
 
 import sampleSize from 'lodash/sampleSize';
-import { courseCategoryAndSkillsRelation } from 'src/assets/data/courseCategoryAndSkillsRelation.data'
-import { capitalizeFirstLetter, splitArray } from 'src/shared/utils'
+import { courseCategoryAndSkillsRelation } from 'projects/predyc-business/src/assets/data/courseCategoryAndSkillsRelation.data'
+import { capitalizeFirstLetter, splitArray } from 'projects/predyc-business/src/shared/utils'
 import { ProfileService } from '../../services/profile.service';
 import { AngularFireFunctions } from '@angular/fire/compat/functions';
 

@@ -2,10 +2,10 @@ import { Component, Input } from '@angular/core';
 import { DocumentReference } from '@angular/fire/compat/firestore';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subscription } from 'rxjs';
-import { Enterprise } from 'src/shared/models/enterprise.model';
-import { User } from 'src/shared/models/user.model';
-import { DialogService } from 'src/shared/services/dialog.service';
-import { UserService } from 'src/shared/services/user.service';
+import { Enterprise } from 'projects/predyc-business/src/shared/models/enterprise.model';
+import { User } from 'projects/predyc-business/src/shared/models/user.model';
+import { DialogService } from 'projects/predyc-business/src/shared/services/dialog.service';
+import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
 
 @Component({
   selector: 'app-enterprise-admins-list',

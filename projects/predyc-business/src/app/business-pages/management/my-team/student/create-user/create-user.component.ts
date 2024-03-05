@@ -4,17 +4,17 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { TimeScale } from 'chart.js/dist';
 import { finalize, firstValueFrom, map, Observable, startWith, Subscription } from 'rxjs';
-import { Department } from 'src/shared/models/department.model';
-import { Profile } from 'src/shared/models/profile.model';
-import { User } from 'src/shared/models/user.model';
-import { AlertsService } from 'src/shared/services/alerts.service';
-import { DepartmentService } from 'src/shared/services/department.service';
-import { EnterpriseService } from 'src/shared/services/enterprise.service';
-import { IconService } from 'src/shared/services/icon.service';
-import { ProfileService } from 'src/shared/services/profile.service';
-import { UserService } from 'src/shared/services/user.service';
-import { dateFromCalendarToTimestamp, timestampToDateNumbers } from 'src/shared/utils';
-import { countriesData } from 'src/assets/data/countries.data'
+import { Department } from 'projects/predyc-business/src/shared/models/department.model';
+import { Profile } from 'projects/predyc-business/src/shared/models/profile.model';
+import { User } from 'projects/predyc-business/src/shared/models/user.model';
+import { AlertsService } from 'projects/predyc-business/src/shared/services/alerts.service';
+import { DepartmentService } from 'projects/predyc-business/src/shared/services/department.service';
+import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
+import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
+import { ProfileService } from 'projects/predyc-business/src/shared/services/profile.service';
+import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
+import { dateFromCalendarToTimestamp, timestampToDateNumbers } from 'projects/predyc-business/src/shared/utils';
+import { countriesData } from 'projects/predyc-business/src/assets/data/countries.data'
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 @Component({
@@ -141,7 +141,7 @@ export class CreateUserComponent {
 
   onFileSelected(event) {
     const input = event.target as HTMLInputElement;
-    if (!input || !input.files || !input.files[0] || input.files[0].length === 0) {
+    if (!input || !input.files || !input.files[0]) {
       this.alertService.errorAlert(`Debe seleccionar una imagen`);
       return;
     }

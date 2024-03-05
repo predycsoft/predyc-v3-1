@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { User, UserJson } from 'src/shared/models/user.model';
+import { User, UserJson } from 'projects/predyc-business/src/shared/models/user.model';
 import { AngularFirestore, CollectionReference, DocumentReference, Query } from '@angular/fire/compat/firestore';
 import { BehaviorSubject, combineLatest, filter, firstValueFrom, map, Observable, shareReplay, Subscription, switchMap } from 'rxjs'
-import { Subscription as SubscriptionClass } from 'src/shared/models/subscription.model'
+import { Subscription as SubscriptionClass } from 'projects/predyc-business/src/shared/models/subscription.model'
 import { EnterpriseService } from './enterprise.service';
 import { AlertsService } from './alerts.service';
 import { firestoreTimestampToNumberTimestamp, generateSixDigitRandomNumber, obtenerUltimoDiaDelMes } from '../utils';

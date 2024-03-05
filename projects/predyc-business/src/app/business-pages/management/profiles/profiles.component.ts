@@ -2,23 +2,23 @@ import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Chart } from 'chart.js';
 import { Observable, Subscription, combineLatest, map, startWith, BehaviorSubject } from 'rxjs';
-import { Category } from 'src/shared/models/category.model';
-import { Curso, CursoJson } from 'src/shared/models/course.model';
-import { Skill } from 'src/shared/models/skill.model';
-import { CategoryService } from 'src/shared/services/category.service';
-import { CourseService } from 'src/shared/services/course.service';
-import { IconService } from 'src/shared/services/icon.service';
-import { SkillService } from 'src/shared/services/skill.service';
-import { roundNumber } from 'src/shared/utils';
+import { Category } from 'projects/predyc-business/src/shared/models/category.model';
+import { Curso, CursoJson } from 'projects/predyc-business/src/shared/models/course.model';
+import { Skill } from 'projects/predyc-business/src/shared/models/skill.model';
+import { CategoryService } from 'projects/predyc-business/src/shared/services/category.service';
+import { CourseService } from 'projects/predyc-business/src/shared/services/course.service';
+import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
+import { SkillService } from 'projects/predyc-business/src/shared/services/skill.service';
+import { roundNumber } from 'projects/predyc-business/src/shared/utils';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UserService } from 'src/shared/services/user.service';
-import { ProfileService } from 'src/shared/services/profile.service';
-import { Profile, ProfileJson } from 'src/shared/models/profile.model';
+import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
+import { ProfileService } from 'projects/predyc-business/src/shared/services/profile.service';
+import { Profile, ProfileJson } from 'projects/predyc-business/src/shared/models/profile.model';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
-import { AlertsService } from 'src/shared/services/alerts.service';
-import { EnterpriseService } from 'src/shared/services/enterprise.service';
-import { AuthService } from 'src/shared/services/auth.service';
+import { AlertsService } from 'projects/predyc-business/src/shared/services/alerts.service';
+import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
+import { AuthService } from 'projects/predyc-business/src/shared/services/auth.service';
 
 const MAIN_TITLE = 'Predyc - '
 

@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
-import { Enterprise } from 'src/shared/models/enterprise.model';
-import { EnterpriseService } from 'src/shared/services/enterprise.service';
-import { IconService } from 'src/shared/services/icon.service';
-import { DialogService } from 'src/shared/services/dialog.service';
+import { Enterprise } from 'projects/predyc-business/src/shared/models/enterprise.model';
+import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
+import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
+import { DialogService } from 'projects/predyc-business/src/shared/services/dialog.service';
 import { DocumentReference } from '@angular/fire/compat/firestore';
 
 @Component({
