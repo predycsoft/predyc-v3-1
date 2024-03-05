@@ -9,6 +9,7 @@ import { LicenseService } from 'src/shared/services/license.service';
 import { Subscription as SubscriptionClass } from 'src/shared/models/subscription.model'
 import { MatDialog } from '@angular/material/dialog';
 import { DialogNewLicenseComponent } from './dialog-new-license/dialog-new-license.component';
+import { DialogService } from 'src/shared/services/dialog.service';
 
 
 interface LicensesInList {
@@ -34,6 +35,7 @@ export class EnterpriseStudentsComponent {
     private enteprriseService: EnterpriseService,
     public icon: IconService,
     private dialog: MatDialog,
+    public dialogService: DialogService,
 
 
   ){}
@@ -92,11 +94,17 @@ export class EnterpriseStudentsComponent {
 
   }
 
-  addLicense() {
-    this.dialog.open(DialogNewLicenseComponent).afterClosed().subscribe((result: License) => {
+  async addLicense() {
+    this.dialog.open(DialogNewLicenseComponent).afterClosed().subscribe(async (result: License) => {
       if(result){
         result.enterpriseRef = this.enteprriseService.getEnterpriseRefById(this.enterprise.id)
         console.log("result del dialog", result)
+        try {
+          await this.licenseService.saveLicense(result.toJson())
+          this.dialogService.dialogExito()
+        } catch (error) {
+          this.dialogService.dialogAlerta("Hubo un error al guardar la licencia. Intentalo de nuevo.");
+        }
       }
     })
   }

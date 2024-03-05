@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
-import { License } from '../models/license.model';
+import { License, LicenseJson } from '../models/license.model';
 import { BehaviorSubject, Observable, Subscription, first, firstValueFrom, of, switchMap, take } from 'rxjs';
 import { EnterpriseService } from './enterprise.service';
 import { DialogService } from './dialog.service';
@@ -145,6 +145,10 @@ export class LicenseService {
       }
       else throw new Error('Operación cancelada');
     }
+  }
+
+  async saveLicense(license: LicenseJson): Promise<void> {
+    return await this.afs.collection(License.collection).doc(license.id).set(license, { merge: true });
   }
 
   async removeLicense(usersIds: string[],licenses): Promise<void> {
