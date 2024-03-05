@@ -1,0 +1,171 @@
+<div fxLayout="column" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="mgt15">
+    <!-- Permisos generales -->
+    <div fxLayout="row" fxLayoutGap="10px">
+        <img [src]="icon.checkCircle" alt="Ícono">
+        <span class="ft600 gray-10">Permisos generales</span>
+    </div>
+    <form [formGroup]="form">
+        <div fxLayout="column" fxLayoutAlign="space-between start" fxLayoutGap="10px">
+            <!-- Horas por semana -->
+            <div fxLayout="row" fxLayoutGap="30px" fxLayoutAlign="space-between center" class="border radius10 w1000px h80px pdl05">
+                <div fxLayout="column" fxLayoutAlign="start start" class="w600px">
+                    <div fxLayout="row" fxLayoutGap="5px" class="mgb10">
+                        <img [src]="icon.checkCircle" alt="Ícono">
+                        <span class="ft600 gray-8">Horas por semana</span>
+                    </div>
+                    <span class="ft11 gray-10">Establece el propósito global para la cantidad de horas que los usuarios deben cumplir cada semana.</span>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="center stretch">
+                    <input type="number" placeholder="Horas" class="w70px" formControlName="hoursPerWeek" min="1" max="8" (ngModelChange)="hasGeneralFormChanged = true"/>
+                </div>
+                <div fxLayout="column" fxLayoutAlign="space-evenly center" class="backGray2 fh w180px">
+                    <span class="ft12 gray-10">Nivel de estudio</span>
+                    <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="space-between center">
+                        <span class="ft600 ft11 gray-10 w65px">{{mapNumberOptions(form.get('hoursPerWeek').value, "hoursPerWeek")}}</span>
+                        <div class="level-bar" fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="space-between center">
+                            <div class="block" [ngClass]="getBlockClass(form.get('hoursPerWeek').value, 1, 'hoursPerWeek')"></div>
+                            <div class="block" [ngClass]="getBlockClass(form.get('hoursPerWeek').value, 2, 'hoursPerWeek')"></div>
+                            <div class="block" [ngClass]="getBlockClass(form.get('hoursPerWeek').value, 3, 'hoursPerWeek')"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Libertad de estudio -->
+            <div class="positionRelative">
+                <div fxLayout="row" fxLayoutGap="30px" fxLayoutAlign="space-between center" class="border radius10 w1000px h80px pdl05">
+                    <div fxLayout="column" fxLayoutAlign="start start" class="w600px">
+                        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px" class="mgb10">
+                            <img [src]="icon.checkCircle" alt="Ícono">
+                            <span class="ft600 gray-8">Libertad de estudio</span>
+                            <div (mouseover)="showLibertyTooltip = true" (mouseleave)="showLibertyTooltip = false">
+                                <img [src]="icon.information" alt="Ícono" class="mgl05">
+                            </div>
+                        </div>
+                        <span class="ft11 gray-10">Establece las restricciones sobre lo que los usuarios tienen permitido observar dentro de la aplicación.</span>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="center stretch">
+                        <select formControlName="studyLiberty" (ngModelChange)="hasGeneralFormChanged = true">
+                            <option *ngFor="let option of libertyOptions" [value]="option">{{option}}</option>
+                        </select>
+                    </div>
+                    <div fxLayout="column" fxLayoutAlign="space-evenly center" class="backGray2 fh w180px">
+                        <span class="ft12 gray-10">Libertad de estudio</span>
+                        <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="space-between center">
+                            <span class="ft11 ft600 gray-10 w65px">{{form.get('studyLiberty').value}}</span>
+                            <div class="level-bar" fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="space-between center">
+                                <div class="block" [ngClass]="getBlockClass(form.get('studyLiberty').value, 1, 'studyLiberty')"></div>
+                                <div class="block" [ngClass]="getBlockClass(form.get('studyLiberty').value, 2, 'studyLiberty')"></div>
+                                <div class="block" [ngClass]="getBlockClass(form.get('studyLiberty').value, 3, 'studyLiberty')"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="libertyTooltip mgt05" [fxShow]="showLibertyTooltip" (mouseover)="showLibertyTooltip = true" (mouseleave)="showLibertyTooltip = false">
+                    <div fxLayout="column">
+                        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
+                            <span class="ft10 ft600 gray-10 w60px">Libre</span>
+                            <span class="ft10 gray-10">El usuario puede acceder solo a las asignacioes</span>
+                        </div>
+                        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px" class="mgt05">
+                            <span class="ft10 ft600 gray-10 w60px">Estricto</span>
+                            <span class="ft10 gray-10">El usuario tiene acceso a todos los cursos</span>
+                        </div>
+                        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px" class="mgt05">
+                            <span class="ft10 ft600 gray-10 w60px">Solicitud</span>
+                            <span class="ft10 gray-10">El usuario tiene acceso solo bajo solicitud a nuevos cursos</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Generación del cronograma -->
+            <div class="positionRelative">
+                <div fxLayout="row" fxLayoutGap="30px" fxLayoutAlign="space-between center" class="border radius10 w1000px h80px pdl05">
+                    <div fxLayout="column" fxLayoutAlign="start start" class="w600px">
+                        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px" class="mgb10">
+                            <img [src]="icon.checkCircle" alt="Ícono">
+                            <span class="ft600 gray-8">Generación del cronograna</span>
+                            <div (mouseover)="showGenerationTooltip = true" (mouseleave)="showGenerationTooltip = false" class="positionRelative">
+                                <img [src]="icon.information" alt="Ícono" class="mgl05">
+                            </div>
+                        </div>
+                        <span class="ft11 gray-10">Establece el tipo de generación del cronograma. El algoritmo de la IA.</span>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="center stretch">
+                        <select formControlName="studyplanGeneration" (ngModelChange)="hasGeneralFormChanged = true">
+                            <option *ngFor="let option of generationOptions" [value]="option">{{option}}</option>
+                        </select>
+                    </div>
+                    <div fxLayout="column" fxLayoutAlign="space-evenly center" class="backGray2 fh w180px">
+                        <span class="ft12 gray-10">Libertad de estudio</span>
+                        <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="space-between center">
+                            <span class="ft11 ft600 gray-10 w65px">{{form.get('studyplanGeneration').value}}</span>
+                            <div class="level-bar" fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="space-between center">
+                                <div class="block" [ngClass]="getBlockClass(form.get('studyplanGeneration').value, 1, 'studyplanGeneration')"></div>
+                                <div class="block" [ngClass]="getBlockClass(form.get('studyplanGeneration').value, 2, 'studyplanGeneration')"></div>
+                                <div class="block" [ngClass]="getBlockClass(form.get('studyplanGeneration').value, 3, 'studyplanGeneration')"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="generationTooltip mgt05" [fxShow]="showGenerationTooltip" (mouseover)="showGenerationTooltip = true" (mouseleave)="showGenerationTooltip = false">
+                    <div fxLayout="column">
+                        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
+                            <span class="ft10 ft600 gray-10 w60px">Óptimo</span>
+                            <span class="ft10 gray-10">Generado 100% por algoritmo IA</span>
+                        </div>
+                        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px" class="mgt05">
+                            <span class="ft10 ft600 gray-10 w60px">Confirmar</span>
+                            <span class="ft10 gray-10">Generado por IA y realizar confirmaciones de su contenido</span>
+                        </div>
+                        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px" class="mgt05">
+                            <span class="ft10 ft600 gray-10 w60px">Por defecto</span>
+                            <span class="ft10 gray-10">Generado por IA sin necesidad de evaluarlo, confía en el algoritmo</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Intentos por examen -->
+            <div fxLayout="row" fxLayoutGap="30px" fxLayoutAlign="space-between center" class="border radius10 w1000px h80px pdl05">
+                <div fxLayout="column" fxLayoutAlign="start start" class="w600px">
+                    <div fxLayout="row" fxLayoutGap="5px" class="mgb10">
+                        <img [src]="icon.checkCircle" alt="Ícono">
+                        <span class="ft600 gray-8">Intentos por examen</span>
+                    </div>
+                    <span class="ft11 gray-10">Establece el propósito global para la cantidad de horas que los usuarios deben cumplir cada semana.</span>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="center stretch">
+                    <input type="number" placeholder="Intentos" class="w70px" formControlName="attemptsPerTest" min="1" max="5" (ngModelChange)="hasGeneralFormChanged = true"/>
+                </div>
+                <div fxLayout="column" fxLayoutAlign="space-evenly center" class="backGray2 fh w180px">
+                    <span class="ft12 gray-10">Política de intentos</span>
+                    <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="space-between center">
+                        <span class="ft11 ft600 gray-10 w65px">{{mapNumberOptions(form.get('attemptsPerTest').value, "attemptsPerTest")}}</span>
+                        <div class="level-bar" fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="space-between center">
+                            <div class="block" [ngClass]="getBlockClass(form.get('attemptsPerTest').value, 1, 'attemptsPerTest')"></div>
+                            <div class="block" [ngClass]="getBlockClass(form.get('attemptsPerTest').value, 2, 'attemptsPerTest')"></div>
+                            <div class="block" [ngClass]="getBlockClass(form.get('attemptsPerTest').value, 3, 'attemptsPerTest')"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>      
+    <button *ngIf="hasGeneralFormChanged" class="blueButton btn" (click)="onSave()">Guardar cambios</button>
+</div>
+<!-- Filtros avanzados -->
+<div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px" class="mgt15">
+    <img [src]="icon.checkCircle" alt="Ícono" class="h20px">
+    <span class="ft600 gray-10">Filtros avanzados</span>
+    <img [src]="icon.arrowDown" alt="Ícono" class="cursorPointer h20px">
+</div>
+    
+<div fxLayout="column fw" fxLayoutGap="10px" class="mgt10 mgb10">
+    <app-permissions-advanced-filters 
+    [changedField]="changedFieldName" 
+    [changedValue]="changedFieldValue" 
+    [hasGeneralFormChanged]="hasGeneralFormChanged"
+    (hasAdvancedFormChangedEmitter)="onAdvancedFormChange($event)"></app-permissions-advanced-filters>
+</div>

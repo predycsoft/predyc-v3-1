@@ -1,0 +1,136 @@
+
+:host ::ng-deep .mat-dialog-container {
+    padding: 0px !important;
+}
+
+.containerPopUp{
+    min-height: 30vh;
+    min-width: 30vw !important;
+    overflow-y: auto;
+    padding: 3rem;
+}
+
+.tableContainer{
+    max-height: 50vh;
+    overflow-y: auto;
+}
+
+
+.contentContainer{
+    position: relative;
+    top: 0px;
+    height: calc(100vh);
+    width: 100%;
+    left: 0px;
+    background: var(--gray-1) !important;
+    overflow-y: auto;
+    padding: 3rem;
+}
+
+
+.rightContainer{
+    height: calc(100vh - 192px) !important;
+    background: var(--control1);
+    overflow-y: auto;
+} 
+
+.avatarSquare{
+    height: 55px;
+    width: 55px;
+ }
+
+
+.containerFirstRow{
+    /* height: 40px; */
+    background: #FCFCFC;
+    padding-left: 16px;
+    padding-right: 8px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom: 1px solid var(--stroke1);
+}
+
+.searchBar{
+    height: 32px;
+    /* border: solid 1px var(--stroke1); */
+    background: var(--control1) !important;
+}
+
+th{
+    border: 0px !important;
+    /* background: var(--backLight); */
+    background: #FCFCFC;
+    color: var(--gray-10);
+    height: 40px;
+}
+
+td{
+    border: 0px !important;
+    border-top: .5px solid var(--borderColor) !important;
+    height: 32px !important;
+    font-size: 12px !important;
+    background: transparent;
+
+}
+
+
+  /* ------------------------------------------------- SESIONES */
+
+  ::ng-deep .mat-progress-bar-fill::after {
+    background-color: var(--blue-5);
+}
+
+::ng-deep .mat-progress-bar-buffer {
+    background: var(--gray-3);
+}
+
+mat-progress-bar {
+    height: 16px !important;
+    border-radius: 8px;
+}
+
+::ng-deep .mat-expansion-panel-body, .mat-expansion-panel-header {
+    padding: 0px !important;
+  }
+    
+  mat-expansion-panel{
+    padding-top: 4px;
+    padding-bottom: 4px;
+    margin: 0px !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  /* mat-accordion{ 
+      padding: 0px !important;
+      border: 1px  solid var(--borderColor) !important;
+      box-shadow: var(--shadow10);
+} */
+
+  
+
+
+::-webkit-scrollbar {
+    /* border-radius: 50%; */
+    transition: .1 ease;
+    width: 8px;
+}
+
+::-webkit-scrollbar-track  {
+    background: var(--gray-2);
+}
+
+  
+::-webkit-scrollbar-thumb  {
+    background: var(--gray-4);
+}
+
+:ng-deep .mat-icon{
+    padding: 0px !important;
+    margin: 0px !important;
+    height: fit-content !important; 
+    width: fit-content !important;
+    color: var(--text2);
+}

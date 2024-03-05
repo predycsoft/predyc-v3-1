@@ -1,0 +1,29 @@
+<!-- <span class="mgl10 gray-10">Usuario administrador</span> -->
+<form *ngIf="adminUser" [formGroup]="form" (ngSubmit)="onSubmit()" >
+    <div fxLayout="row" fxLayoutAlign="space-between center" class="shadow-animation radius10    mgt20 pd05" style="border-color: white;margin-left: 15px; margin-right: 15px;">
+        <div fxLayout="row" fxLayoutAlign=" center center" style=" width: 100%; ">
+            <div (click)="isEditing ? fileInput.click() : null" [ngClass]="isEditing ? 'cursorPointer' : ''"  >
+                <img onerror="this.src='assets/images/default/default-user-image.jpg'" 
+                    [src]="imageUrl" class="avatar5" alt="">
+            </div>
+            <input #fileInput type="file" style="display: none;" (change)="onFileSelected($event)">
+            <!-- <div fxLayout="column" class="mgl10 "> -->
+            <span *ngIf="!isEditing" class="mgl10 ft16 ft600 gray-10">
+                    {{(form.get('displayName').value ? form.get('displayName').value : onNullFormValues.displayName) | titlecase}}
+            </span>
+            <input *ngIf="isEditing" type="text" placeholder="Introduzca el nombre" [ngClass]="isEditing ? '' : 'disabledInput'" 
+            class="input mgl10" formControlName="displayName" style="background-color: rgb(198, 198, 198); width: 100%; " >
+                <!-- <span >
+                    {{form.get('job').value ? form.get('job').value : onNullFormValues.job }}      
+                </span> -->
+            <!-- </div> -->
+        </div>
+        <!-- <div fxFlexAlign="start" (click)="onClick()">
+            <img [src]="isEditing ? icon.check : icon.licencias" class=" makeGray h20px cursorPointer" alt="">
+        </div> -->
+        <div fxLayout="row"  fxFlexAlign="start" (click)="onClick()" style="margin-right: 5px;">
+            <span class="mgr05 mgt03 makeGray ft400 ft14 "  >Editar</span> 
+            <img [src]="isEditing ? icon.check : icon.edit" class=" makeGray h20px mgt03  cursorPointer" alt=""> 
+        </div>
+    </div>
+</form>

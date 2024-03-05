@@ -1,0 +1,23 @@
+<div class="modal-header bg-web-primary text-white px-3 py-1" >
+    <div class="modal-title pd10 ">
+        <img [src]="icon.videoChat" class="h20px input-icon" alt="">
+        <span class="mgl05 ft16 ft600 gray-10">
+            {{clase.titulo}}
+        </span>
+    </div>
+    <img [src]="icon.close" class="h24px pdl5  pdr10 cursorPointer" alt="" (click)="dismiss()">
+</div>
+<div class="modal-body">
+    <div class="video-responsive">
+        <!-- Vimeo Iframe -->
+        <iframe *ngIf="!base64Video"
+                id="myvideo" [src]="safeUrl" (load)="initPlayer()" frameborder="0"
+                allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
+        </iframe>
+        <!-- Video Element for Base64 Content -->
+        <video *ngIf="base64Video" #videoPlayer controls style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+            <!-- <source [src]="'data:video/mp4;base64,' + base64Video" type="video/mp4"> -->
+            <source [src]="base64Video" type="video/mp4">
+        </video>
+    </div>
+</div>

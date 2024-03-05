@@ -1,0 +1,37 @@
+{
+    "categorias": [
+      { "id": 1, "name": "Rodamientos" },
+      { "id": 2, "name": "Planificación de mantenimiento" },
+      { "id": 3, "name": "Mecánica" }
+    ],
+    "competencias": [
+      { "id": 1, "name": "Tipos de rodamientos", "selected": false, "categoriaId": 1 },
+      { "id": 2, "name": "Instalación de rodamientos", "selected": false, "categoriaId": 1 },
+      { "id": 3, "name": "Lubricación", "selected": false, "categoriaId": 1 },
+      { "id": 4, "name": "Desgaste y fallos", "selected": false, "categoriaId": 1 },
+      { "id": 5, "name": "Diagnóstico de problemas", "selected": false, "categoriaId": 1 },
+      { "id": 6, "name": "Programación de intervenciones", "selected": false, "categoriaId": 2 },
+      { "id": 7, "name": "Estimación de recursos", "selected": false, "categoriaId": 2 },
+      { "id": 8, "name": "Gestión de repuestos", "selected": false, "categoriaId": 2 },
+      { "id": 9, "name": "Análisis de costos", "selected": false, "categoriaId": 2 },
+      { "id": 10, "name": "Estrategias de mantenimiento", "selected": false, "categoriaId": 2 },
+      { "id": 11, "name": "Acoples", "selected": false, "categoriaId": 3 },
+      { "id": 12, "name": "Rodamientos", "selected": false, "categoriaId": 3 },
+      { "id": 13, "name": "Sellos", "selected": false, "categoriaId": 3 },
+      { "id": 14, "name": "Bombas", "selected": false, "categoriaId": 3 },
+      { "id": 15, "name": "Sistemas Hidraulicos", "selected": false, "categoriaId": 3 },
+      { "id": 16, "name": "Sistemas Mecánicos", "selected": false, "categoriaId": 3 },
+      { "id": 17, "name": "Mantenimiento", "selected": false, "categoriaId": 3 },
+      { "id": 18, "name": "Planificación", "selected": false, "categoriaId": 3 },
+      { "id": 19, "name": "Programación", "selected": false, "categoriaId": 3 },
+      { "id": 20, "name": "Gestion", "selected": false, "categoriaId": 3 },
+      { "id": 21, "name": "Taxonomía", "selected": false, "categoriaId": 3 },
+      { "id": 22, "name": "Confiabilidad", "selected": false, "categoriaId": 3 },
+      { "id": 23, "name": "Análisis Causa Raíz", "selected": false, "categoriaId": 3 },
+      { "id": 24, "name": "RAM", "selected": false, "categoriaId": 3 },
+      { "id": 25, "name": "Dinámica de fluidos", "selected": false, "categoriaId": 3 },
+      { "id": 26, "name": "Mecánica de materiales", "selected": false, "categoriaId": 3 },
+      { "id": 27, "name": "Termodinámica", "selected": false, "categoriaId": 3 },
+      { "id": 28, "name": "Instrumentación y control", "selected": false, "categoriaId": 3 }
+    ]
+  }

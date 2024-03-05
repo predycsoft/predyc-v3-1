@@ -1,0 +1,21 @@
+.card-container-sm {
+    border-radius: 10px;
+    overflow: hidden;
+    border: 2px solid #D5DCE0;
+    height: 140px;
+}
+
+.input{
+    border: none !important;
+    background-color: transparent !important;
+    padding: 0px !important;
+    font-size: 14px !important;
+}
+
+.disabledInput{
+    border: none !important;
+    background-color: transparent !important;
+    padding: 0px !important;
+    font-size: 11px !important;
+    opacity: .75 !important;
+}

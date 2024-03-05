@@ -1,0 +1,60 @@
+.mat-column-select {
+    overflow: initial;
+}
+
+table {
+    border-collapse: collapse;
+    border-radius: 1em;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 1em;
+    background: transparent;
+    border-left: none !important;
+    border-right: none !important;
+}
+
+th {
+    border-top: none !important;
+    border-bottom: none !important;
+}
+
+tr:nth-child(odd) td{
+    background-color: #f8f8f8 !important; /* Light gray for odd rows */
+}
+
+ tr:nth-child(even) td{
+    background-color: #fcfcfc !important; /* Lighter gray for even rows */
+}
+
+tr:first-child td:first-child {
+    border-top-left-radius: 10px !important;
+}
+
+tr:first-child td:last-child {
+    border-top-right-radius: 10px !important;
+}
+
+.mat-checkbox-checked .mat-checkbox-background,
+.mat-checkbox-indeterminate .mat-checkbox-background {
+    background-color: blue !important;
+}
+
+.mat-mdc-row .mat-mdc-cell {
+    border-bottom: 1px solid transparent;
+    border-top: 1px solid transparent;
+    cursor: pointer;
+    
+  }
+
+  .move-right {
+    transition: transform 0.3s ease-out;
+    transform: translateX(0);
+  }
+
+  .move-right:hover {
+    transform: translateX(5px);
+    transform: translateX(5px);
+    color: #0f3b56 !important;
+  }

@@ -1,0 +1,7 @@
+.containerLeft {
+    padding-bottom: 1rem !important;
+    width: 100%;
+    border-right: 1px solid var(--gray-3);
+    background-color: rgba(244, 244, 244, 0.362);
+    
+}

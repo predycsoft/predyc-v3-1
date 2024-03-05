@@ -1,0 +1,35 @@
+<div *ngIf="!loaderService.loading" class="backGray2 pdt05 pdb05 radius40 fh border">
+  <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="space-between center" class="mgt15 mgl15">
+    <span class="ft500 ft30 gray-10">{{ product.name }}</span>
+    <div class="adq fh">
+      <span style="color: white !important;">Adquirido</span>
+    </div>
+  </div> 
+  <div *ngIf="!product.isACompanyProduct" fxLayout="row" fxLayoutGap="0.2rem" fxLayoutAlign="start" class="mgl15 mgb20">
+    <span class="ft600 ft18 gray-10 lnh ">
+      {{coupon ? price.getTotalAmount([coupon]) : price.getTotalAmount([]) }}
+    </span>
+    <span class="line-th ft14 lnh1 gray-10" *ngIf="coupon">
+      {{ price.getTotalAmount([]) }} 
+    </span>
+    <span class="ft600 ft18 gray-10 lnh1">
+      {{price.currency}} {{ price.getIntervalDisplayValue() }}
+    </span>
+  </div>
+  <div *ngIf="product.isACompanyProduct" fxLayout="row" fxLayoutAlign="start" class="mgl15 mgb20">
+    <span class="ft600 ft18 gray-10 lnh1">Precio Personalizado</span>
+  </div>
+  <div class="fw mgl15 pdr20 mgb10" fxLayoutAlign="center">
+    <div class="fw listaPlan" fxLayoutAlign="center " fxLayout="column">
+      <div class="ft12 gray-6 mgt03" fxLayout="row" fxLayoutGap=".3rem" fxLayoutAlign=" center" *ngFor="let feature of product.features">
+          <div>
+              <img *ngIf="feature.isActive" [src]="icon.checkCircleBlue" class="h20px" alt=""/>
+              <img *ngIf="!feature.isActive" [src]="icon.closeCircle" class="h20px makeRed" alt=""/> 
+          </div>
+          <p class="ft16 align-start mgb0">
+              {{ feature.text }}
+          </p>
+      </div>
+    </div>
+  </div>
+</div>

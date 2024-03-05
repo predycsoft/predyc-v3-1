@@ -1,0 +1,38 @@
+<div fxLayout="column" class="pd10 scrollpls">
+    <div fxLayout="row" fxLayoutAlign="end">
+        <div  class="iconContainer cursorPointer mgl05 mgt05 " (click)="salir()"
+            fxLayoutAlign="center center"> <img [src]="icon.close" class="makeGray h24px">
+        </div>
+    </div>
+    <div fxLayoutAlign="center center">
+        <label class="gray-10 ft600  ft16"fxLayoutAlign="center center" >Historial de licencias</label>
+    </div>
+    <div fxLayout="column" fxLayout.lt-md="column" fxLayoutGap="1rem" fxLayoutGap.lt-md="0rem"  class="fw  pd20 containerTabla">
+        <table style="width:100%" class="fw shadow-animation">
+            <tr>
+                <th class="ft500">Producto</th>
+                <th class="ft500">Fecha Adquiridas</th>
+                <th class="ft500">Adquiridas</th>
+                <th class="ft500">Usadas</th>
+                <th class="ft500">Disponibles</th>
+                <th class="ft500">Validas hasta</th>
+                <th class="ft500">Estatus</th>
+            </tr>
+            <tr *ngFor="let license of licenses;  let i=index">
+                <td> <span class="ft11 gray-10">Plan Predyc Empresa</span> </td>
+                <td class="centertext ft11 gray-8"> {{license.currentPeriodStart | date:"dd/MM/yyyy"}}</td>   
+                <td class="centertext ft11 gray-8"> {{license.quantity}}</td>             
+                <td class="centertext ft11 gray-8"> {{license.quantityUsed}}</td>
+                <td class="centertext ft11 gray-8"> {{license.quantity - license.quantityUsed}}</td>
+                <td class="centertext ft11 gray-8"> {{license.currentPeriodEnd | date:"dd-MM-yyyy"}}</td>
+                <td class="centertext ft11 gray-8">{{license.status == 'active'?'Activa':license.status == 'trialing'?'Período de prueba':'Vencida'}}</td>
+            </tr>
+    
+        </table>
+        
+    </div>
+
+</div>
+       
+        
+        

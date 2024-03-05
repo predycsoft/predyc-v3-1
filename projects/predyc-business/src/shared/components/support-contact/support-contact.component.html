@@ -1,0 +1,30 @@
+<!-- <span class="gray-10 mgl10" >
+    {{type === "sales" ? "Ventas" : "Account manager"}}
+</span> -->
+<div fxLayout="column" class="">
+    <div class="card-container mgt05 pd05 backWhite">
+        <div fxLayout="row" fxLayoutAlign="space-between center">
+            <div fxLayout="row"  fxLayoutAlign="center center">
+                <img onerror="this.src='assets/images/default/default-user-image.jpg'" 
+                [src]="manager?.photoUrl" class="avatar5" alt="">
+                <div fxLayout="column" fxLAyout="center center">
+                    <span class="mgl10 ft16 ft600 gray-10">{{manager?.displayName | titlecase}}</span>
+                    <span class="mgl10">
+                        {{type === "sales" ? "Dpto. Ventas" : "Account manager"}}
+                    </span>
+                </div>
+            </div>
+            <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="center center">
+                <img [src]="icon.whatsapp_blue" class="makeGray h24px" alt="">
+                <button class="blueButton btn">Contactar vía email</button>
+            </div>
+        </div>
+        <div class="mgt20">
+            <span style="line-height: 2;" [innerHTML]="text[type]"></span>
+        </div>
+    </div>
+    <!-- <div class="h250px card-container backGray2 positionRelative" 
+        style="border-radius: 0px 0px 20px 20px !important; top: -16px; z-index: -1;">
+
+    </div> -->
+</div>

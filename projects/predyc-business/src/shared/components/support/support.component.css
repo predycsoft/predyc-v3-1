@@ -1,0 +1,17 @@
+.blueBorderContainer {
+    margin-top: 1rem;
+    padding: 1.6rem;
+    background-color: var(--gray-2);
+    transition: .2s;
+    border-radius: 6px;
+    width: 200px;
+    height: 200px;
+  
+  }
+.blueBorderContainer:hover {
+    border: 1px solid var(--borderColor);
+    outline: 2px solid var(--blue-5);
+    box-shadow: var(--shadow16);
+    transition: .2s;
+    cursor: pointer;
+  }

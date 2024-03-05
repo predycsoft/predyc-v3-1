@@ -1,0 +1,64 @@
+.container{
+    min-height: 100vh;
+    min-width: 100vw !important;
+    background-image: url('/assets/images/design/pattern.svg');
+    background-size:cover;
+    background-repeat: no-repeat;
+}
+
+.content{
+    min-height: 100vh;
+    min-width: 100vw;
+}
+
+.blur{
+    backdrop-filter: blur(10px);
+}
+.bienvenidaContainer{
+    min-height: 100vh;
+    width: 100%;
+    height: auto;
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+}
+
+.fadeInOut{
+    animation-name: fadeInOut;
+    animation-duration: .6s;
+}
+
+.logoP21{
+    animation-name: rotate;
+    animation-duration: 1s;  
+}
+
+
+
+input{
+    background-color: var(--gray-2) !important;
+    border: none;
+}
+
+@keyframes fadeInOut {
+    0% {
+        opacity: 0;
+        position: relative;
+        top: 10px;
+        transform: scale(.9);
+    }
+    100% {
+        opacity: 1;
+        position: relative;
+        top: 0px;
+        transform: scale(1);
+    }
+  }
+
+  @keyframes rotate {
+    0%   {transform: rotate(0deg);
+    transform: scale(.4);}
+    35%   {transform: rotate(6deg);}
+    75% {transform: rotate(-6deg);}
+    100% {transform: rotate(0deg);
+        transform: scale(1);}
+  }

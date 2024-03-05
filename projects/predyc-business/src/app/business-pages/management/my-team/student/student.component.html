@@ -1,0 +1,19 @@
+<!-- 
+<div *ngIf="!loaderService.loading" class="pd10">
+    <app-navigate-back targetUrl="../">{{student.displayName}}</app-navigate-back>
+
+    <mat-tab-group class="swal-overlay">
+        <mat-tab label="Detalles"><app-student-details [student]="student"></app-student-details></mat-tab>
+        <mat-tab label="Historial de perfil"><app-student-profile-history [student]="student"></app-student-profile-history></mat-tab>
+        <mat-tab label="Pruebas de validación"> Content 2 </mat-tab>
+    </mat-tab-group>
+</div> 
+ -->
+
+ <div *ngIf="!loaderService.loading" class="pd10">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+        <app-navigate-back targetUrl="../">{{student.displayName | titlecase}}</app-navigate-back>
+    </div>
+    <app-student-details [student]="student"></app-student-details>
+
+</div>

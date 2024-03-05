@@ -1,0 +1,21 @@
+<!-- <span class="gray-10">Empresa</span>  -->
+<form *ngIf="enterprise" [formGroup]="form" (ngSubmit)="onSubmit()" >
+    <div fxLayout="row" fxLayoutAlign="space-between center" class="shadow-animation radius10 mgr10 mgt20 pd05" style="border-color: white; ">
+        <div fxLayout="row" fxLayoutAlign=" center center" style=" width: 100%; ">
+            <div (click)="isEditing ? fileInput.click() : null" [ngClass]="isEditing ? 'cursorPointer' : ''"  >
+                <img onerror="this.src='assets/images/default/default-user-image.jpg'" 
+                    [src]="imageUrl" class="avatar5" alt="">
+            </div>
+            <input #fileInput type="file" style="display: none;" (change)="onFileSelected($event)">
+            <span *ngIf="!isEditing" class="mgl10 ft16 ft600 gray-10" >
+                {{(form.get('name').value ? form.get('name').value : onNullFormValues.name) | titlecase}}
+            </span>
+            <input *ngIf="isEditing" type="text" placeholder="Introduzca el nombre de la empresa" [ngClass]="isEditing ? '' : 'disabledInput'" 
+            class="input mgl10  "  formControlName="name" style="background-color: rgb(198, 198, 198); width: 100%; " >
+        </div>
+        <div fxLayout="row"  fxFlexAlign="start" (click)="onClick()" style="margin-right: 5px;">
+            <span class="mgr05 mgt03 makeGray ft400 ft14 "  >Editar</span> 
+            <img [src]="isEditing ? icon.check : icon.edit" class=" makeGray h20px mgt03  cursorPointer" alt=""> 
+        </div>
+    </div>
+</form>

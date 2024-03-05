@@ -1,0 +1,149 @@
+<div fxFlex fxLayout="row" class="contanier">
+    <div fxFlex="55%" class="pdl10 pdr10 pdt10">
+        <div fxLayout="column" class="fw fh smallScroll" style="overflow-y: auto;">
+            <div class="mgr20">
+                <div class="input-group input-group-sm pdb10 fw">
+                    <!-- Prepend: Contenedor gris con texto centrado -->
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Competencias</span>
+                    </div>
+                    <!-- Input con ícono -->
+                    <div class="position-relative custom-input-container d-flex align-items-center" style="flex-grow: 1;">
+                        <input type="text" class="form-control curstomInput custom-input" placeholder="Buscar competencias" style="flex-grow: 1;">
+                        <img [src]="icon.search" class="h20px input-icon" alt="">
+                    </div>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="start start" class="fw pdb05">
+                    <span class="ft400 pdb05">Recomendaciones según la actividad de su empresa</span>
+                </div>
+
+                <div fxLayout="column" class="fw pdb10">
+                    <mat-chip-listbox selectable multiple aria-label="Fish selection" class="fw contenedor-chips ">
+                        <mat-chip-option class="custom-chip" *ngFor="let competencia of competenciasEmpresa" (click)="competencia.selected = !competencia.selected; getSelectedCategoriasCompetencias()" [selected]="competencia.selected">
+                            {{competencia.name | titlecase}}
+                            <img *ngIf="competencia.selected" [src]="icon.close" class="makeWhite h16px pdl05" alt="">
+                            <img *ngIf="!competencia.selected" [src]="icon.addNew" class="makeGray h14px pdl05" alt="">
+                        </mat-chip-option>
+                    </mat-chip-listbox>
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="start start" class="fw pdb05">
+                    <span class="ft500 pdb10">Competencias por categoría</span>
+                </div>
+                <div fxLayout="column" class="fw">
+                    <div *ngFor="let categoria of categoriasArray" fxLayout="column" class="fw pdb10">
+                        <div class="input-group input-group-sm pdb10 fw">
+                            <!-- Prepend: Contenedor gris con texto centrado -->
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">{{categoria.name | titlecase}}</span>
+                            </div>
+                            <!-- Input con ícono -->
+                            <div class="position-relative custom-input-container d-flex align-items-center" style="flex-grow: 1;">
+                                <input type="text" class="form-control curstomInput custom-input" placeholder="Buscar competencias" style="flex-grow: 1;">
+                                <img [src]="icon.search" class="h20px input-icon" alt="">
+                            </div>
+                        </div>
+                        <!-- Displaying Chips -->
+                        <mat-chip-listbox selectable multiple aria-label="Fish selection" class="fw contenedor-chips ">
+
+                            <mat-chip-option (click)="openModalCompetencia(modalCrearCompetencias,categoria)" class="custom-chip">
+                                Crear nueva
+                                <img  [src]="icon.addNew" class="makeGray h14px pdl05" alt="">
+                            </mat-chip-option>
+
+                            <mat-chip-option class="custom-chip" *ngFor="let competencia of categoria.competencias" (click)="competencia.selected = !competencia.selected;getSelectedCategoriasCompetencias()" [selected]="competencia.selected">
+                                {{competencia.name | titlecase}}
+                                <img *ngIf="competencia.selected" [src]="icon.close" class="makeWhite h16px pdl05" alt="">
+                                <img *ngIf="!competencia.selected" [src]="icon.addNew" class="makeGray h14px pdl05" alt="">
+                                <img (click)="$event.stopPropagation();deleteCompetencia(categoria,competencia)" *ngIf="competencia.new" [src]="icon.trash" class="makeGray h14px pdl05" alt="">
+                            </mat-chip-option>
+                        </mat-chip-listbox>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    <div fxFlex="45%" class="pdl10 pdr10 pdt10">
+
+        <div class="fh radius6" *ngIf="!competenciasSelected || competenciasSelected?.length == 0">
+            <div fxLayout="column" fxLayoutAlign="center center" class="fw fh">
+                <img class="w-80" src="../../../assets/images/cursos/Questions-pana.svg" alt="Mi SVG">
+                <div class="fw" fxLayout="row" fxLayoutAlign="center center" style="text-align: center;"> 
+                    <span class="{{!comepetenciaValid?'red-5':''}}" class="ft400 gray-8">{{mensageCompetencias}}</span>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="competenciasSelected?.length>0" fxLayout="column" class="fw fh smallScroll" style="overflow-y: auto;">
+            <div fxLayout="row" fxLayoutAlign="start start" class="fw pdb05">
+                <span class="ft500 pdb10">Seleccionadas</span>
+            </div>
+            <div fxLayout="column" class="fw">
+                <div *ngFor="let categoria of competenciasSelected" fxLayout="column" class="fw pdb10">
+                    <!-- Contenedor para la categoría y el ícono -->
+                    <div fxLayout="row" class="category-container">
+                        <span class="ft400 pdb03 flex-fill">
+                            {{categoria.categoria.name | titlecase}}
+                            ({{categoria.competencias.length}})
+                        </span>
+                        <!-- Asumiendo que deseas agregar un ícono aquí -->
+                        <img *ngIf="categoria['expanded']" (click)="categoria['expanded'] = !categoria['expanded'];" [src]="icon.chevronUp" class="h16px pdr05 cursorPointer" alt="">
+                        <img *ngIf="!categoria['expanded']" (click)="categoria['expanded'] = !categoria['expanded'];" [src]="icon.chevronDown" class="h16px pdr05 cursorPointer" alt="">
+                    </div>
+                    <!-- Displaying Chips -->
+                    <mat-chip-listbox *ngIf="categoria['expanded']" selectable multiple aria-label="Fish selection" class="fw contenedor-chips pdt05" style="max-height: 100vh !important;">
+                        <mat-chip-option class="custom-chip" *ngFor="let competencia of categoria.competencias" (click)="competencia.selected = !competencia.selected;getSelectedCategoriasCompetencias()" [selected]="competencia.selected">
+                            {{competencia.name | titlecase}}
+                            <img *ngIf="competencia.selected" [src]="icon.close" class="makeWhite h16px pdl05" alt="">
+                            <img *ngIf="!competencia.selected" [src]="icon.addNew" class="makeGray h14px pdl05" alt="">
+                        </mat-chip-option>
+                    </mat-chip-listbox>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CLASE DETAIL MODAL -->
+<ng-template #modalCrearCompetencias let-modal>
+    <div class="modal-header bg-web-primary text-white px-3 py-1">
+        <div class="modal-title pd10" fxLayout="row" fxLayoutAlign="start center">
+            <img [src]="icon.addNew" class="h14px pdr05" alt="">
+            <span class="ft16 ft600 gray-10">Crear nueva competencia de {{categoriaNuevaCompetencia.categoria | lowercase}}</span>
+        </div>
+        <img style="cursor: pointer;" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px"  alt="">
+    </div>
+    <div class="modal-body">
+
+        <form [formGroup]="formNuevaComptencia" class="mgr20 fw">
+            <div class="form-group fw">
+                <label>Nombre</label>
+                <input
+                [class.is-invalid]="formNuevaComptencia.controls['nombre'].errors && showErrorCompetencia"
+                formControlName="nombre" type="text" class="form-control curstomInput" placeholder="Escriba el nombre de la competencia aquí">
+                <!-- <div class="invalid-feedback" *ngIf="formNuevaComptencia.controls['nombre'].errors && showErrorCompetencia"> 
+                    Debe indicar el nombre de la competencia
+                </div> -->
+                  <!-- Mensaje de error para el validador 'required' -->
+                <div class="invalid-feedback" *ngIf="formNuevaComptencia.get('nombre').hasError('required') && showErrorCompetencia">
+                    El campo nombre es requerido.
+                </div>
+
+                <!-- Mensaje de error para el validador 'tooManyWords' -->
+                <div class="invalid-feedback"*ngIf="formNuevaComptencia.get('nombre').hasError('tooManyWords') && showErrorCompetencia">
+                    Introduce tres palabras o menos.
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button (click)="modal.dismiss()" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+            Cancelar
+        </button>  
+        <button (click)="GuardarNuevaCompetencia()" class="blueButton radius4 ft12 h28px mgr10 gray-1" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+            <img [src]="icon.save" class="h16px pdr05 makeWhite" alt="">
+            Guadar
+        </button>   
+    </div>
+</ng-template>

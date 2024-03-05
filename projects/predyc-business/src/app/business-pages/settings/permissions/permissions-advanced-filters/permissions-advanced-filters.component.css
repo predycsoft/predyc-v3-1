@@ -1,0 +1,31 @@
+/* ------------------------ */
+table {
+    width: 100%;
+    overflow-x: auto;
+    display: block;
+}
+
+tr {
+    height: 10px !important;
+}
+
+td {
+    padding: 0px 10px !important;    
+}
+
+thead {
+    border: none !important;
+    text-align: center !important;
+    padding: 0px !important;
+}
+
+.mat-mdc-slider {
+    margin: 0px;
+    width: 90%;
+    min-width: 80%;
+}
+
+.mat-slider-visual-thumb {
+    width: 4px !important; 
+    height: 4px !important;
+}

@@ -1,0 +1,28 @@
+.question {
+    margin-top: 4px;
+    border-bottom: 1px solid var(--gray-3);
+    padding-bottom: 9px;
+} 
+
+.external-container {
+    border-radius: 20px;
+    border: 2px solid #D5DCE0;
+    max-height: 35vh;
+
+}
+
+.card-container {
+    overflow: auto;
+    max-height: 32vh;
+    /* min-width: 240px; */
+    margin: 10px 7px 10px 10px;
+    /* padding: 5px; */
+    /* box-sizing: content-box;  */
+}
+
+.mat-expansion-panel {
+    border: none !important; 
+    border-radius: none !important;
+    box-shadow: none !important; 
+  }
+  

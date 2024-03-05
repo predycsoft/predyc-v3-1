@@ -1,0 +1,80 @@
+<div class="mgt20 mgl20 mgr20">
+    <p class="ft600 ft16 gray-10">
+        Usuarios y Perfiles
+    </p>
+
+    <div fxLayout="row" fxLayoutAlign=" center">
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="w-75 pdr20 ">
+            <div fxLayout="row" fxLayoutAlign=" center" class="shadow-animation radius20">
+                <app-profile-selector></app-profile-selector>
+                <app-search-input-box class=""></app-search-input-box>
+            </div>
+            <button fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButtonAnim button-animation " style="border-radius: 24px !important;"
+                (click)="createNewStudent()"
+                >
+                <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="">
+                Nuevo Usuario
+            </button>
+        </div>
+        <div class="w-25 pdl20">
+            <!-- <div fxLayout="row" fxLayoutAlign="space-between center" style="border-bottom: 2px solid #e3e3e3; padding-bottom: .5rem;">
+                <span class="ft14" style="font-weight: bold; color: black;">
+                    Perfiles predefinidos
+                </span>
+            </div> -->
+        </div>
+    </div>
+    <div fxLayout="row">
+        <div class="w-75  vh50 pdr20 border-rl" >
+            <app-student-list
+                (onStudentSelected)="onStudentSelected($event)"
+                >
+            </app-student-list>
+        </div>
+        <div class="w-25 pdl20 mgt10" fxLayout="column" fxLayoutGap="10px">
+
+
+
+            <div fxLayout="row" fxLayoutAlign="space-between center" style="border-bottom: 2px solid #e3e3e3; padding-bottom: .5rem;">
+                <span class="ft14" style="font-weight: bold; color: black;">
+                   Tus Perfiles
+                </span>
+                <a [routerLink]="['/management/profiles/new']" class="ft14 blue-4" style="font-weight: bold;">
+                    Nuevo perfil
+                </a>
+            </div>
+
+            <div
+                class=" radius20 pd03 pdl10 pdr20  ft12 profile-container"
+                *ngFor="let profile of profiles"
+                [routerLink]="['/management/profiles/' + profile.id]"
+                >
+                {{ profile.name }}
+                <img class="profile-arrow" [src]="icon.chevronRight" alt="Go to profile">
+            </div>
+
+
+            <div fxLayout="row" fxLayoutAlign="space-between center" style="border-bottom: 2px solid #e3e3e3; padding-bottom: .5rem;">
+                <span class="ft14" style="font-weight: bold; color: black;">
+                    Perfiles predefinidos
+                </span>
+                <!-- <a [routerLink]="['/management/profiles/new']" class="ft14 blue-4" style="font-weight: bold;">
+                    Nuevo perfil
+                </a> -->
+            </div>
+
+
+            <div
+                class=" radius20 pd03 pdl10 pdr20  ft12 profile-container"
+                *ngFor="let profile of profilesPredyc"
+                [routerLink]="['/management/profiles/' + profile.id]"
+                >
+                {{ profile.name }}
+                <img class="profile-arrow" [src]="icon.chevronRight" alt="Go to profile">
+            </div>
+
+
+
+        </div>
+    </div>
+</div>    

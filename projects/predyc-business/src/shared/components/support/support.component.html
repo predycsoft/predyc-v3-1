@@ -1,0 +1,57 @@
+<div fxLayout="column" class="pd10" ngClass="containerPC" ngClass.lt-md="containerMobile">
+    <div class="modal-header bg-web-primary text-white px-3 py-1" >
+        <div class="modal-title pd10 ">
+            <span class="ft16 ft600 gray-10">
+                Consultas
+            </span>
+        </div>
+        <img [src]="icon.close" class="h24px pdl5  pdr10 cursorPointer" alt="" (click)="dismiss()">
+    </div>
+    
+    <div *ngIf="!formIsOpen" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="1rem" fxLayoutGap.lt-md="0rem" fxLayoutAlign="center center" style="padding-bottom: 45px; padding-top: 30px;" >
+        <div fxLayout="column" fxLayout.lt-md="row"  fxLayoutAlign.lt-md="center center" ngClass="blueBorderContainer centertext fw" fxLayoutAlign="center center" fxLayoutGap=".5rem"
+            (click)="openWhatsapp()" fxLayout="column">
+            <img [src]="icon.whatsapp_blue " class="" alt="" ngClass="h40px" ngClass.lt-md="h26px">
+            <span class="ft500 ft14 nowrap"> Whatsapp </span>
+        </div>
+        <div fxLayout="column" fxLayout.lt-md="row"  fxLayoutAlign.lt-md="center center" ngClass="blueBorderContainer centertext fw" fxLayoutAlign="center center" fxLayoutGap=".5rem"
+            (click)="formIsOpen = true" fxLayout="column">
+            <img [src]="icon.email" alt="" ngClass="h40px makeBlue" ngClass.lt-md="h26px">
+            <span class="ft500 ft14 nowrap">Correo</span>
+        </div>
+        <div fxLayout="column" fxLayout.lt-md="row"  fxLayoutAlign.lt-md="center center" ngClass="blueBorderContainer centertext fw" fxLayoutAlign="center center" fxLayoutGap=".5rem"
+            fxLayout="column">
+            <a href="tel:++524424257590">
+                <img [src]="icon.phoneBlue" alt="" ngClass="h40px" ngClass.lt-md="h26px">
+            </a>
+            <a class="ft500 ft14 gray-8 nowrap" href="tel:++524424257590" fxLayout="column">
+                <span>+52 (442) 4257590</span>
+            </a>
+        </div>
+    </div>
+    <div *ngIf="formIsOpen" class="fw" fxLayout="column">
+        <div fxLayout="row" fxLayout="center center" class="mgb10 fw centertext" (click)="formIsOpen = false">
+            <div class="blueLink centertext fw ft14 ft500" fxLayoutAlign="center center">
+                <mat-icon class="linkIcon">arrow_back</mat-icon> Regresar
+            </div>
+        </div>
+        <div fxLayout="column" class="mgt05">
+            <label class="gray-8 ft500 ft12">Nombre</label>
+            <input type="email" class="ft12 gray-8" [(ngModel)]="name">
+        </div>
+        <div fxLayout="column" class="mgt05">
+            <label class="gray-8 ft500 ft12">Email</label>
+            <input type="email" class="ft12 gray-8" [(ngModel)]="email">
+        </div>
+        <div fxLayout="column" class="mgt05">
+            <label class="gray-8 ft500 ft12">Mensaje</label>
+            <textarea class="ft12 gray-8 textarea1" [(ngModel)]="message"></textarea>
+        </div>
+        <div class="mgt10" fxLayout="row" fxLayoutAlign="end">
+            <button class="lightButton border grayLink shadow8 fw"
+                *ngIf="!(email != '' && message != '')" disabled>Enviar</button>
+            <button class="blueButton shadow8 fw" *ngIf="email != '' && message != ''"
+                (click)="sendEmail()">Enviar</button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,2051 @@
+<div class="fw" class="fw backWhite radius10 pd20" fxLayout="column">
+    <div class="fw fh" fxLayout="column">
+        <div fxLayout="row">
+            <div class="pdl10 pdr10 pdt10">
+                <span class=" gray-10 ft600 ft16">Crear nuevo curso</span>
+            </div>
+        </div>
+        <div fxLayout="row">
+            <div class="fw pdl10 pdr10 pdt10">
+                <div class="fw border-b">
+                    <div class="stepper pdb10">
+                        <div class="step" *ngFor="let item of steps; let i = index">
+                            <div class= "no-select {{activeStep == i+1? 'circleStepActive': 'circleStep'}} {{  activeStep > i ? 'cursorPointer' : ''}}">{{ i + 1 }}</div>
+                            <div (click)="activeStep > i ? activeStep=i+1 : '' " class="no-select {{activeStep == i+1? 'titleActive ft400': 'title'}}  {{  activeStep > i ? 'cursorPointer' : ''}}">{{ item }}</div>
+                            <div class="mgr05" *ngIf="i < steps.length - 1">
+                                <img [src]="icon.chevronRight" class=" {{activeStep == i+1? 'makeGray8': 'makeGray'}}" alt="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Tab 1 Informacion del curso -->
+        <ng-container *ngIf="activeStep == 1">
+            <div fxFlex fxLayout="row" class="contanier">
+                <div fxFlex="60%" class="pdl10 pdr10 pdt10">
+                    <div fxLayout="column" class="fw fh smallScroll" style="overflow-y: auto;">
+                        <form [formGroup]="formNuevoCurso" class="mgr20">
+                            <div class="form-group pdt10">
+                                <label>Título</label>
+                                <input
+                                [class.is-invalid]="formNuevoCurso.controls['titulo'].errors && showErrorCusro"
+                                formControlName="titulo" type="text" class="form-control curstomInput" placeholder="Escriba el título del curso aquí">
+                                <div class="invalid-feedback" *ngIf="formNuevoCurso.controls['titulo'].errors && showErrorCusro"> 
+                                    Debe indicar el título del curso
+                                </div>
+                            </div>
+                            <div class="form-group pdt10">
+                                <label>Resumen del curso</label>
+                                <textarea 
+                                [class.is-invalid]="formNuevoCurso.controls['resumen'].errors && showErrorCusro"
+                                rows="3" formControlName="resumen" type="text" class="form-control curstomInput" placeholder="Escriba el resumen del curso aquí" style="resize: none;"></textarea>
+                                <div class="invalid-feedback" *ngIf="formNuevoCurso.controls['resumen'].errors && showErrorCusro"> 
+                                    Debe indicar el resumen del curso
+                                </div>
+                            </div>
+                            <div class="form-group pdt10">
+                                <label>Descripción del curso</label>
+                                <textarea
+                                [class.is-invalid]="formNuevoCurso.controls['descripcion'].errors && showErrorCusro"
+                                 rows="3"  formControlName="descripcion" type="text" class="form-control curstomInput" placeholder="Escriba la descripción del curso aquí" style="resize: none;"></textarea>
+                                 <div class="invalid-feedback" *ngIf="formNuevoCurso.controls['descripcion'].errors && showErrorCusro"> 
+                                    Debe indicar la descripción del curso
+                                </div>
+                            </div>
+                            <div class="form-group pdt10">
+                                <label>Foto del curso</label>
+                                <div class="image-selector">
+                                    <!-- <button class="add-button">Adjuntar nueva</button> -->
+                                    <button (click)="cursoImage.click()" class="grayButton radius4 ft12 ft500 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                        <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
+                                        Adjuntar imagen
+                                    </button>
+                                    <input #cursoImage type="file" (change)="uploadCursoImage($event,'curso')" hidden accept="image/jpeg, image/png" />
+                                    <div class="image-scroll">
+                                        <img *ngFor="let imagen of imagenesCurso" (click)="seleccionarImagenCurso(imagen)" [src]="imagen" alt="Imagen seleccionada" class="image cursorPointer {{this.formNuevoCurso.get('imagen').value == imagen? 'img-active': ''}}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div *ngIf="formNuevoCurso.controls['imagen'].errors && showErrorCusro" class="custom-invalid-feedback pdt05">
+                                Debe seleccinar o subir la imagen del curso
+                            </div>
+                            <div fxLayout="row" class="fw" fxLayoutGap="1rem">
+                                <!-- <div fxFlex="50%">
+                                    <div class="form-group pdt10">
+                                        <label>Categoría</label>
+                                        <select 
+                                        [class.is-invalid]="formNuevoCurso.controls['categoria'].errors && showErrorCusro"
+                                        class="form-control curstomInput" formControlName="categoria">
+                                            <option value=null>Selecciona una categoría</option>
+                                            <option *ngFor="let categoria of categoriasArray" value="categoria.categoria">{{categoria.categoria | titlecase}}</option>
+                                        </select>
+                                        <div class="invalid-feedback" *ngIf="formNuevoCurso.controls['categoria'].errors && showErrorCusro"> 
+                                            Debe seleccionar la categoría del curso
+                                        </div>
+                                    </div>
+                                </div> -->
+                                <div  fxFlex="50%" >
+                                    <div class="form-group pdt10">
+                                        <label>Nivel del curso</label>
+                                        <select
+                                        [class.is-invalid]="formNuevoCurso.controls['nivel'].errors && showErrorCusro"
+                                        class="form-control curstomInput" formControlName="nivel">
+                                            <option value=null>Selecciona el nivel</option>
+                                            <option value="Básico">Básico</option>
+                                            <option value="Intermedio">Intermedio</option>
+                                            <option value="Avanzado">Avanzado</option>
+                                        </select>
+                                        <div class="invalid-feedback" *ngIf="formNuevoCurso.controls['nivel'].errors && showErrorCusro"> 
+                                            Debe seleccionar el nivel del curso
+                                        </div>
+                                    </div>
+                                </div>
+                                <div  fxFlex="50%" >
+                                    <div class="form-group pdt10">
+                                        <label>Idioma</label>
+                                        <select
+                                        [class.is-invalid]="formNuevoCurso.controls['idioma'].errors && showErrorCusro"
+                                        class="form-control curstomInput" formControlName="idioma">
+                                            <option value=null>Selecciona el idioma</option>
+                                            <option value="Español">Español</option>
+                                            <option value="Inglés">Inglés</option>
+                                        </select>
+                                        <div class="invalid-feedback" *ngIf="formNuevoCurso.controls['idioma'].errors && showErrorCusro"> 
+                                            Debe seleccionar el idioma del curso
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+    
+                            <!-- <div fxLayout="row" class="fw" fxLayoutGap="1rem">
+                                <div  fxFlex="50%" >
+                                    <div class="form-group pdt10">
+                                        <label>Nivel del curso</label>
+                                        <select
+                                        [class.is-invalid]="formNuevoCurso.controls['nivel'].errors && showErrorCusro"
+                                        class="form-control curstomInput" formControlName="nivel">
+                                            <option value=null>Selecciona el nivel</option>
+                                            <option value="Básico">Básico</option>
+                                            <option value="Intermedio">Intermedio</option>
+                                            <option value="Avanzado">Avanzado</option>
+                                        </select>
+                                        <div class="invalid-feedback" *ngIf="formNuevoCurso.controls['nivel'].errors && showErrorCusro"> 
+                                            Debe seleccionar el nivel del curso
+                                        </div>
+                                    </div>
+                                </div>
+                                <div  fxFlex="50%" >
+                
+                                </div>
+                            </div> -->
+                            <div class="form-group pdt10">
+                                <label>A quién va dirigido</label>
+                                <textarea [class.is-invalid]="formNuevoCurso.controls['descripcion'].errors && showErrorCusro"
+                                rows="3"  formControlName="descripcion" type="text" class="form-control curstomInput" placeholder="Escriba a qué público va dirigido aquí" style="resize: none;"></textarea>
+                                <div class="invalid-feedback" *ngIf="formNuevoCurso.controls['descripcion'].errors && showErrorCusro"> 
+                                    Debe indicar a qué público va dirigido aquí.
+                                </div>
+                            </div>
+    
+                            <div class="form-group pdt10">
+                                <label>Qué aprenderas</label>
+                                <textarea rows="3" [class.is-invalid]="formNuevoCurso.controls['contenido'].errors && showErrorCusro"  formControlName="contenido" type="text" class="form-control curstomInput" placeholder="Escriba qué se aprenderá durante el curso." style="resize: none;"></textarea>
+                                <div class="invalid-feedback" *ngIf="formNuevoCurso.controls['contenido'].errors && showErrorCusro"> 
+                                    Debe indicar que se aprenderá durante el curso.
+                                </div>
+                            </div>
+    
+                            <div class="form-group pdt10">
+                                <label>Nombre del instructor</label>
+                                <input formControlName="instructor" [class.is-invalid]="formNuevoCurso.controls['instructor'].errors && showErrorCusro" type="text" class="form-control curstomInput" placeholder="Escriba el nombre del instructor del curso aquí">
+                                <div class="invalid-feedback" *ngIf="formNuevoCurso.controls['instructor'].errors && showErrorCusro"> 
+                                    Debe indicar el nombre del instructor.
+                                </div>
+                            </div>
+    
+                            <div class="form-group pdt10">
+                                <label>Resumen del instructor</label>
+                                <textarea rows="3" [class.is-invalid]="formNuevoCurso.controls['resumen_instructor'].errors && showErrorCusro"  formControlName="resumen_instructor" type="text" class="form-control curstomInput" placeholder="Escriba el resumen del instructor aquí." style="resize: none;"></textarea>
+                                <div class="invalid-feedback" *ngIf="formNuevoCurso.controls['resumen_instructor'].errors && showErrorCusro"> 
+                                    Debe indicar el resumen del instructor.
+                                </div>
+                            </div>
+                            <div class="form-group pdt10">
+                                <label>Foto del instructor</label><label class="pdl30">o seleccione un avátar</label>
+                                <div class="avatar-selector">
+                                    <!-- <button class="add-button">Adjuntar nueva</button> -->
+                                    <button (click)="instructorImage.click()" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                        <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
+                                        Adjuntar imagen
+                                    </button>
+                                    <input #instructorImage type="file" (change)="uploadCursoImage($event,'instructor')" hidden accept="image/jpeg, image/png" />
+                                    <div class="avatar-scroll">
+                                        <img *ngFor="let imagen of avatarInstructor" (click)="seleccionarImagenInstructor(imagen)" [src]="imagen" alt="Imagen seleccionada" class="image shadow8 cursorPointer {{this.formNuevoCurso.get('imagen_instructor').value == imagen? 'img-active':''}}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div *ngIf="formNuevoCurso.controls['imagen_instructor'].errors && showErrorCusro" class="custom-invalid-feedback pdt05">
+                                Debe seleccinar o subir la imagen del instructor
+                            </div>
+    
+                        </form>
+                    </div>
+                </div>
+                <div fxFlex="40%" class="pdl10 pdr10 pdt10">
+                    <div fxLayout="column" fxLayoutAlign="center center" class="fw fh">
+                        <img class="pd10" src="../../../assets/images/cursos/computadoramacho.svg" class="fw" alt="Mi SVG">
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+        <!-- Tab 2  Competencias -->
+        <ng-container *ngIf="activeStep == 2">
+            <app-skills-selector
+                [competenciasEmpresa]="competenciasEmpresa" 
+                [categoriasArray]="categoriasArray"
+                [competenciasSelected]="competenciasSelected"
+                (competenciasSelectedOut)="competenciasSelected = $event">
+            </app-skills-selector>
+        </ng-container>
+        <!-- Tab 3 clases -->
+        <ng-container *ngIf="activeStep == 3">
+            <div fxFlex fxLayout="row" class="contanier">
+                <div fxFlex="60%" class="pdl10 pdr10 pdt10">
+                    Clases
+                    <div fxLayout="column" class="fw smallScroll pdr05" style="height: 95%; overflow-y: auto;">
+                        <!-- aqui van los modulos que se van creando -->
+                        <div *ngFor="let modulo of modulos" class="{{modulo['isInvalid']? 'ContainerModuloInvalid' : 'ContainerModulo'}}">
+                            <div fxLayout="row" fxLayoutAlign="space-between start" class="fw pd10 pdt05 pdb5">
+                                <div fxLayout="row" fxLayoutGap="10px" class="fw">
+                                    <div class="ft500 ft12">
+                                        <!-- numero del modulo -->
+                                        Módulo {{modulo.numero}}:
+                                    </div>
+                                    <div class="ft12">
+                                        <!-- nombre del modulo -->
+                                        <img [src]="icon.document" class="h12px pdr05 makeGray" alt="">
+                                        <div *ngIf="modulo.titulo && !modulo['editarTitulo']; then tituloPresente; else ModuloSinTitulo"></div>
+                                        <ng-template #tituloPresente>
+                                            <span>
+                                                {{modulo.titulo}}
+                                            </span>
+                                            <img (click)="modulo['editarTitulo'] = true" [src]="icon.licencias" class="h18px pdl05 makeGray edit cursorPointer" alt="">
+                                        </ng-template>
+                                        <ng-template #ModuloSinTitulo>
+                                            <input *ngIf="!modulo.titulo" type="text" (change)="tituloModuloChange($event.target);" placeholder="Escriba título aquí" class="inputInvisible">
+                                            <input *ngIf="modulo.titulo" type="text" (change)="tituloModuloChange($event.target);" [value]="modulo.titulo" placeholder="Escriba título aquí" class="inputInvisible">
+                                            <img (click)="modulo['editarTitulo'] = false; modulo.titulo = tituloModuloTMP; tituloModuloTMP='';" matTooltip= "Confirmar título" [src]="icon.check" class="h18px pdl05 makeGray edit cursorPointer" alt="">
+                                        </ng-template>
+                                    </div>
+                                </div>
+                                <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="0.625">
+                                    <img (click)="borrarModulo(modulo)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash" alt="">
+                                    <img *ngIf="modulo['expanded']" (click)="modulo['expanded'] = !modulo['expanded'];closeAllClasesModulo(modulo)" [src]="icon.chevronUp" class="h16px pdr05 cursorPointer" alt="">
+                                    <img *ngIf="!modulo['expanded']" (click)="modulo['expanded'] = !modulo['expanded']; hideOtherModulos(modulo)" [src]="icon.chevronDown" class="h16px pdr05 cursorPointer" alt="">
+                                </div>
+                            </div>
+                            <!-- Contenedor de las clases -->
+                            <div *ngIf="modulo['expanded']">
+                                <div *ngFor="let clase of modulo['clases']; trackBy: trackByClase" fxLayout="row" class="fw">
+                                    <div class="mgl40 mgr10 fw">
+                                        <div class="fw mgb10">
+                                            <mat-accordion multi="false" class="fw">
+                                                <mat-expansion-panel [ngClass]="{'ContainerClase': clase['isInvalid']}" [expanded]="clase['expanded']" (opened)="closeOtherClasesModulo(clase,modulo)">
+                                                  <mat-expansion-panel-header>
+                                                    <mat-panel-title (click)="onPanelTitleClick($event)" fxLayout="row" fxLayoutAlign="space-between center">
+                                                      <div fxLayout="row" fxLayoutAlign="start center">
+                                                        <img [src]="icon[getIconClase(clase.tipo)]" class="h18px pdr05" alt="">
+                                                        <div *ngIf="clase.titulo && !clase['editarTitulo']; then tituloPresenteClase; else ClaseSinTitulo"></div>
+                                                        <ng-template #tituloPresenteClase>
+                                                            <span>{{clase.tipo | titlecase }} {{getnumerClassTipo(modulo,clase)}}: {{clase.titulo}}</span>
+                                                            <img (click)="clase['editarTitulo'] = true" [src]="icon.licencias" class="h18px pdl05 makeGray edit cursorPointer" alt="">
+                                                        </ng-template>
+                                                        <ng-template #ClaseSinTitulo>
+                                                            <span>{{clase.tipo | titlecase }} {{getnumerClassTipo(modulo,clase)}}:</span>
+                                                            <input (keydown.space)="preventDefault($event)"  *ngIf="!clase.titulo" type="text" (change)="tituloModuloChange($event.target);" placeholder="Escriba título aquí" class="inputInvisible">
+                                                            <input (keydown.space)="preventDefault($event)"  *ngIf="clase.titulo" type="text" (change)="tituloModuloChange($event.target);" [value]="clase.titulo" placeholder="Escriba título aquí" class="inputInvisible">
+                                                            <img (click)="clase['editarTitulo'] = false; clase.titulo = tituloclaseTMP; tituloclaseTMP='';" matTooltip= "Confirmar título" [src]="icon.check" class="h18px pdl05 makeGray edit cursorPointer" alt="">
+                                                        </ng-template>
+                                                      </div>
+                                                      <img (click)="borrarClase(modulo,clase)" [src]="icon.trash" class="h16px pdr05 trash" alt="">
+                                                    </mat-panel-title>
+                                                  </mat-expansion-panel-header>
+                                                    <!-- si es de archivo es un drop -->
+                                                    <ng-container *ngIf="clase.tipo != 'actividad' ">
+                                                        <div *ngIf="!clase['uploading']" class="fw h80px ContainerFile">
+                                                            <div (dragover)="onDragOver($event)" (drop)="onDrop($event,clase.tipo,clase,modulo)"class="fw fh no-select" fxLayout="row" fxLayoutAlign="center center">
+                                                                Arrastrar y soltar el archivo aquí
+                                                            </div>
+                                                        </div>
+                                                        <div *ngIf="clase['uploading']" class="fw h80px ContainerUpload" fxLayout="column" fxLayoutAlign="center center" cla>
+                                                            <!-- Contenido principal -->
+                                                            <div class="fw fh no-select" fxLayout="row" fxLayoutAlign="center center">
+                                                                <!-- Nombre del archivo -->
+                                                                <div *ngIf="clase.tipo == 'lectura'" fxFlex="35" class="ft700" fxLayoutAlign="center center">
+                                                                    <div [matTooltip]="clase.archivos[0].nombre" class="w-80" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" >
+                                                                        {{clase.archivos[0].nombre}}
+                                                                    </div>
+                                                                </div>
+                                                                <div *ngIf="clase.tipo == 'video'" fxFlex="35" class="ft700" fxLayoutAlign="center center">
+                                                                    <div [matTooltip]="clase['videoFileName']" class="w-80" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" >
+                                                                        {{clase['videoFileName']}}
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                                <!-- Barra de progreso File pdf-->
+                                                                <div *ngIf="clase.tipo == 'lectura'"fxFlex="25" fxLayout="row" fxLayoutAlign="center center">
+                                                                    <mat-progress-bar class="h10px radius6 {{clase.archivos[0].uploading_file_progress >= 100? 'complete-progress-bar': ''}}" mode="determinate" [value]="clase.archivos[0].uploading_file_progress"></mat-progress-bar>
+                                                                    <span *ngIf="clase.archivos[0].uploading_file_progress < 100" class="pdl05">{{clase.archivos[0].uploading_file_progress}}%</span>
+                                                                    <img *ngIf="clase.archivos[0].uploading_file_progress>=100" [src]="icon.check" class="h16px pdl05" alt="">
+                                                                </div>
+
+                                                                <!-- Barra de progreso File video-->
+                                                                <div *ngIf="clase.tipo == 'video'" fxFlex="25" fxLayout="row" fxLayoutAlign="center center">
+                                                                    <mat-progress-bar class="h10px radius6 {{clase['videoUpload'] >= 100? 'complete-progress-bar':''}}" mode="determinate" [value]="clase['videoUpload']"></mat-progress-bar>
+                                                                    <span *ngIf="clase['videoUpload']<100" class="pdl05">{{clase['videoUpload']}}%</span>
+                                                                    <img *ngIf="clase['videoUpload']>=100" [src]="icon.check" class="h16px pdl05" alt="">
+                                                                </div>
+                                                                
+                                                                <!-- Fecha -->
+                                                                <div *ngIf="clase.tipo == 'lectura'" fxFlex="20" fxLayoutAlign="center center">
+                                                                    {{clase.archivos[0].id |  date:'dd/MM/yy' }}
+                                                                </div>
+                                                                <div *ngIf="clase.tipo == 'video'" fxFlex="20" fxLayoutAlign="center center">
+                                                                    {{clase.id |  date:'dd/MM/yy' }}
+                                                                </div>
+                                                                
+                                                                <!-- Link para vista previa -->
+                                                                <div (click)="openModal(modalClaseDetail,clase,modulo)" fxFlex="20" class="blueLink" fxLayoutAlign="center center">
+                                                                    Abrir vista previa
+                                                                </div>
+                                                            </div>
+                                                            <div fxLayout="row" fxLayoutAlign="center center">
+                                                                El archivo se esta procesando, no cierres esta ventana.
+                                                            </div>
+                                                        </div>
+                                                        <div fxLayout="row" fxLayoutAlign="center center" class="mgt15 mgb05">
+                                                            <button (click)="FileInput.click()" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                                <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
+                                                                {{ ((clase.tipo == 'lectura' && !clase.archivos[0]) || (clase.tipo == 'video' && !clase.vimeoId1))? 'Seleccionar archivo' : 'Remplazar archivo'}}
+                                                            </button>
+                                                            <button (click)="openModal(modalClaseDetail,clase,modulo)"  *ngIf="clase.archivos[0] || clase.tipo == 'video' && clase['base64Video']" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                                <img [src]="icon.folderUp" class="h16px pdr05" alt="">
+                                                                Añadir recursos
+                                                            </button>
+                                                            <button (click)="openModalAsignarCompetencia(modalAsignarCompetenciasClases,clase)" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                                <img [src]="icon.flash" class="h16px pdr05" alt="">
+                                                                Seleccionar competencias
+                                                            </button>
+                                                            <ng-container *ngIf="clase.tipo == 'lectura'">
+                                                                <!-- <button (click)="openModalAsignarCompetencia(modalAsignarCompetenciasClases,clase)" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                                    <img [src]="icon.flash" class="h16px pdr05" alt="">
+                                                                    Seleccionar sas
+                                                                </button> -->
+                                                                <span class="pdr05">Duración:</span>
+                                                                <div class="w-40"><input [(ngModel)]="clase.duracion" type="number" min="1" class="form-control curstomInput"></div>
+                                                                <span class="pdl05">minutos</span>
+                                                            </ng-container>
+                                                            
+                                                        </div>
+                                                            <input (change)="onFileSelected($event,clase,false,modulo)" type="file" accept="{{clase.tipo == 'lectura'?'.pdf' : 'video/mp4'}}"  #FileInput style="display: none;">
+                                                    </ng-container>
+                                                    <ng-container *ngIf="clase.tipo == 'actividad'">
+                                                        <div fxLayout="row" fxLayoutAlign="center center" class="mgt15 mgb05">
+                                                            <button (click)="openModal(modalActividadDetail,clase,modulo);showErrorActividad = false" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                                <img [src]="icon.taskAdd" class="h16px pdr05" alt="">
+                                                                Estructurar actividad
+                                                            </button>
+                                                            <button (click)="openModalAsignarCompetencia(modalAsignarCompetenciasClases,clase)"class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                                <img [src]="icon.flash" class="h16px pdr05" alt="">
+                                                                <!-- Seleccionar competencias -->
+                                                                <ng-container *ngIf="clase.competencias && clase.competencias?.length == 0">
+                                                                    Agregar competencias
+                                                                </ng-container>
+                                                                <ng-container *ngIf="clase.competencias?.length> 0">
+                                                                    Cantidad competencias : {{clase.competencias.length}}
+                                                                </ng-container>
+                                                            </button>
+                                                        </div>
+                                                    </ng-container>
+                                                    <ng-container *ngIf="clase['isInvalid']">
+                                                        <div class="mgl05 mgr10 fw" *ngFor="let mensaje of clase['InvalidMessages']" fxLayoutAlign="start center">
+                                                            <mat-icon class="red-5 ft16">info</mat-icon>
+                                                            <span class="redText">{{mensaje}}</span>
+                                                        </div>
+                                                    </ng-container>
+                                                </mat-expansion-panel>
+                                            </mat-accordion>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div *ngIf="!modulo['addClassMode']" fxLayout="row" class="fw">
+                                    <div class="mgl40 mgr10 fw">
+                                        <div class="fw mgb10">
+                                            <span  (click)="modulo['addClassMode'] = !modulo['addClassMode']" class="yellowLink radius4 ft12 h28px no-select" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign=" center">
+                                                <img [src]="icon.addNew" class="h12px pdr05 makeYellow" alt="">
+                                                Agregar clase
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div *ngIf="modulo['addClassMode']" fxLayout="row" class="fw">
+                                    <div class="mgl40 mgr10 fw">
+                                        <div class="fw mgb10">
+                                            <div fxLayout="row" fxLayoutGap="0.625rem" fxLayoutAlign=" center">
+                                                <span (click)="modulo['addClassMode'] = false">
+                                                    <img [src]="icon.close" class="h18px pdr05 makeRed" alt="">
+                                                </span>
+                                                <button (click)="addClase('lectura',modulo); modulo['addClassMode'] = false   " class="grayButton radius4 ft12 h28px gray-8">
+                                                    <img [src]="icon.addNew" class="h12px pdr05 makeGray8" alt="">
+                                                    Lectura
+                                                </button>
+                                                <button (click)="addClase('video',modulo); modulo['addClassMode'] = false   " class="grayButton radius4 ft12 h28px gray-8">
+                                                    <img [src]="icon.addNew" class="h12px pdr05 makeGray8" alt="">
+                                                    Video
+                                                </button>
+                                                <button (click)="addClase('actividad',modulo); modulo['addClassMode'] = false   " class="grayButton radius4 ft12 h28px gray-8">
+                                                    <img [src]="icon.addNew" class="h12px pdr05 makeGray8" alt="">
+                                                    Actividad
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <ng-container *ngIf="modulo['isInvalid']">
+                                    <div class="mgl05 mgr10 fw" *ngFor="let mensaje of modulo['InvalidMessages']" fxLayoutAlign="start center">
+                                        <mat-icon class="red-5 ft16">info</mat-icon>
+                                        <span class="redText">{{mensaje}}</span>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </div>
+                        <div fxLayout="row">
+                            <span (click)="addModulo()"  class="blueLink radius4 ft12 h28px no-select" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign=" center">
+                                <img [src]="icon.addNew" class="h12px pdr05 makeBlue" alt="">
+                                Agregar módulo
+                            </span>
+                        </div>
+                        <ng-container *ngIf="isInvalidCases">
+                            <div class="pdt05 fw" *ngFor="let mensaje of invalidMessages" fxLayoutAlign="start center">
+                                <mat-icon class="red-5 ft16">info</mat-icon>
+                                <span class="redText">{{mensaje}}</span>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+                <div fxFlex="40%" class="pdl10 pdr10 pdt10">
+                    <div fxLayout="column" fxLayoutAlign="center center" class="fw fh">
+                        <img class="pd10" src="../../../assets/images/cursos/clasesImage.svg" class="fw h-65" alt="Mi SVG">
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+        <!-- Tab 4 Examen -->
+        <ng-container *ngIf="activeStep == 4">
+            <div fxFlex fxLayout="row" class="contanier">
+                <div fxFlex="60%" class="pdl10 pdr10 pdt10">
+                    Examen final
+                    <div fxLayout="column" class="fw fh smallScroll" style="overflow-y: auto;">
+                        <ng-container>
+                            <!-- aqui van los preguntas que se van creando -->
+                            <div *ngFor="let pregunta of examen?.questions; let i = index" class="{{pregunta['isInvalid']?'ContainerModuloInvalid':'ContainerModulo'}}">
+                                <div fxLayout="row" fxLayoutAlign="space-between start" class="fw pd10 pdt05 pdb5">
+                                    <div fxLayout="row" fxLayoutGap="10px" class="fw">
+                                        <div class="ft500 ft12">
+                                            <!-- numero pregunta -->
+                                            Pregunta {{i+1}}
+                                        </div>
+                                        <div class="ft12">
+                                            <!-- nombre pregunta -->
+                                            <!-- <img [src]="icon.document" class="h12px pdr05 makeGray" alt="">
+                                            <span>
+                                                {{pregunta.title? pregunta.title :'Pregunta sin titulo'}}
+                                            </span> -->
+                                        </div>
+                                    </div>
+                                    <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="0.625">
+                                        <img (click)="borrarPreguntaExamen(pregunta,i)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash" alt="">
+                                        <img *ngIf="pregunta['expanded']" (click)="pregunta['expanded'] = !pregunta['expanded'];" [src]="icon.chevronUp" class="h16px pdr05 cursorPointer" alt="">
+                                        <img *ngIf="!pregunta['expanded']" (click)="pregunta['expanded'] = !pregunta['expanded']; hideOtherQuestion(pregunta);" [src]="icon.chevronDown" class="h16px pdr05 cursorPointer" alt="">
+                                    </div>
+                                </div>
+                                <!-- Contenedor de las preguntas -->
+                                <div *ngIf="pregunta['expanded']" class="pd10">
+                                    <div fxLayout="row" fxLayoutAlign="space-between center">
+                                        <!-- Botones alineados a la izquierda -->
+                                        <div fxLayout="row" fxLayoutGap="0.625">
+                                            <div *ngFor="let questionType of questionTypes" class="pdr05">
+                                                <button (click)="onQuestionTypeChange(pregunta,questionType.value)" class="{{pregunta.type.value == questionType.value? 'backGray4': 'grayButton' }} radius4 ft12 h28px gray-8">{{ questionType.displayName }}</button>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Label y input alineados a la derecha -->
+                                        <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px">
+                                            <label>Puntos</label>
+                                            <input [(ngModel)]="pregunta.points" type="number" min="0" class="form-control curstomInput w-25">
+                                        </div>
+                                    </div>
+                                    <div fxLayout="row" fxLayoutAlign="start center" class="pdt10">
+                                        <button (click)="questionImage.click()" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                            <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
+                                            Adjuntar imagen
+                                        </button>
+                                        <input #questionImage type="file" (change)="uploadQuestionImage($event,pregunta)" hidden accept="image/webp" />
+                                    </div>
+                                    <div *ngIf="pregunta['uploading_file_progress'] >0" class="form-group pdt10">
+                                        <!-- Barra de progreso File video-->
+                                        <div fxLayout="column">
+                                            <div fxLayout="row" fxLayoutAlign="center center" class="w-25">
+                                                <mat-progress-bar class="h10px radius6 {{pregunta['uploading_file_progress'] >= 100? 'complete-progress-bar': ''}}" mode="determinate" [value]="pregunta['uploading_file_progress']"></mat-progress-bar>
+                                                <span *ngIf="pregunta['uploading_file_progress'] < 100" class="pdl05">{{pregunta['uploading_file_progress']}}%</span>
+                                                <img *ngIf="pregunta['uploading_file_progress']>=100" [src]="icon.check" class="h16px pdl05" alt="">
+                                            </div>
+                                            <div fxLayout="row" *ngIf="pregunta['uploading_file_progress']>=100" >
+                                                <span>{{pregunta['fileName']}}&nbsp;</span>
+                                                <span (click)="pregunta['imageHidden'] =!pregunta['imageHidden'] " class="blueLink cursorPointer">{{ pregunta['imageHidden']? 'Ocultar archivo':'Ver archivo'}}</span>
+                                                <img (click)="deleteQuestionImage(pregunta,true)" [src]="icon.close" class="h18px pdr05 makeRed cursorPointer" alt="">
+                                             </div>
+                                            <div fxLayout="row" *ngIf="pregunta['imageHidden']" >
+                                                <img [src]="pregunta.image" style="max-height: 200px;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div fxLayout="row">
+                                        <div class="form-group pdt10 fw">
+                                            <textarea [(ngModel)]="pregunta.text" rows="3"  type="text" class="form-control curstomInput" placeholder="Escriba aqui la pregunta" style="resize: none;"></textarea>
+                                            <div class="invalid-feedback">
+                                                Debe indicar la pregunta.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div fxLayout="row" class="pdt05">
+                                        <span [innerHTML]="questionInstruction(pregunta)"></span>
+                                    </div>
+                                    <!-- area dependiete de la pregunta -->
+                                    <div fxLayout="row" class="pdt05 fw">
+                                        <!-- Completación -->
+                                        <div class="fw" fxLayout="column" *ngIf="pregunta.type.value == questionTypesIn.TYPE_COMPLETE_VALUE">
+                                            <div fxLayout="row" class="mgt10">
+                                                <span>Haga click en confirmar cuando haya terminado de escribir la pregunta</span>
+                                            </div>
+                                            <div fxLayout="row" class="pdt05 pdb05">
+                                                <button (click)="parseQuestionText(pregunta)" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                    <img [src]="icon.check" class="h16px pdr05" alt="">
+                                                    Confirmar
+                                                </button>
+                                            </div>
+                                            <div *ngFor="let placeHolder of pregunta['placeHolders']; let i = index" class="ContainerModulo fw pd05">
+    
+                                                <!-- Contenedor para el índice y el placeholder -->
+                                                <div fxLayout="row" fxLayoutAlign="start center">
+                                                    {{i+1}}. {{placeHolder}}
+                                                </div>
+                                            
+                                                <div fxLayout="column">
+                                                    <div fxLayout="row" class="pdb05">
+                                                        <span class="gray-8 ft700">Opciones</span>
+                                                    </div>
+                                                    <div *ngFor="let option of pregunta.options; let optIndex = index" fxLayout="row">
+
+                                                        <div *ngIf="option.placeholder == placeHolder" fxLayout="row" fxLayoutAlign="space-between center" class="fw pdb05">
+
+                                                            <!-- Input field -->
+                                                            <input [(ngModel)]="option.text" type="text" class="form-control curstomInput w-40" placeholder="">
+                                                            <!-- Contenedor para el checkbox y el icono de trash -->
+                                                            <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
+                                                                <input (change)="toggleOptionValue(pregunta,optIndex)" [checked]="option.isCorrect" type="checkbox" value="{{ optIndex }}"/>
+                                                                <img (click)="deleteOption(pregunta,optIndex)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash pdl05" alt="">
+                                                            </div>
+            
+                                                        </div>
+                                                    
+                                                    </div>
+                                                    <div fxLayout="row">
+                                                        <span (click)="addChoice(pregunta,placeHolder)" class="blueLink radius4 ft12 h28px no-select">
+                                                            <img [src]="icon.addNew" class="h12px pdr05 makeBlue" alt="">
+                                                            Agregar opción
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div *ngIf="pregunta['placeHolders']?.length>0">
+                                                <button (click)="showDisplayText(pregunta)" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                    <img [src]="icon.check" class="h16px pdr05" alt="">
+                                                    Renderizar pregunta
+                                                </button>
+                                            </div>
+                                            <div class="gray-8 ft12 pdt10" [innerHTML]="pregunta['render']" *ngIf="pregunta['render']"></div>
+                                        </div>
+                                        <!-- opcion miltiple -->
+                                        <div class="fw" fxLayout="column" *ngIf="pregunta.type.value == questionTypesIn.TYPE_MULTIPLE_CHOICE_VALUE">
+                                            <div *ngFor="let option of pregunta.options; let optIndex = index" fxLayout="row" class="fw">
+                                                <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem" class="mgb10 fw">
+                                            
+                                                    <!-- Contenedor para el número y el input -->
+                                                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+                                                        <span class="gray-6">{{ optIndex + 1 }}.</span>
+                                                        <input [(ngModel)]="option.text" type="text" class="form-control curstomInput" placeholder="">
+                                                    </div>
+                                            
+                                                    <!-- Contenedor para el checkbox y el icono de trash -->
+                                                    <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
+                                                        <input (change)="toggleOptionValue(pregunta,optIndex)" [checked]="option.isCorrect" type="checkbox" value="{{ optIndex }}"/>
+                                                        <img (click)="deleteOption(pregunta,optIndex)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash pdl05" alt="">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div fxLayout="row">
+                                                <span (click)="addChoice(pregunta)" class="blueLink radius4 ft12 h28px no-select">
+                                                    <img [src]="icon.addNew" class="h12px pdr05 makeBlue" alt="">
+                                                    Agregar opción
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <!-- opcion simple -->
+                                        <div class="fw" fxLayout="column" *ngIf="pregunta.type.value == questionTypesIn.TYPE_SINGLE_CHOICE_VALUE">
+                                            <div *ngFor="let option of pregunta.options; let optIndex = index" fxLayout="row" class="fw">
+                                                <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem" class="mgb10 fw">
+                                                    <!-- Contenedor para el número y el input -->
+                                                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+                                                        <span class="gray-6">{{ optIndex + 1 }}.</span>
+                                                        <input [(ngModel)]="option.text" type="text" class="form-control curstomInput" placeholder="">
+                                                    </div>
+                                            
+                                                    <!-- Contenedor para el checkbox y el icono de trash -->
+                                                    <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
+                                                        <input [(ngModel)]="pregunta['correctOption']" name="radio" type="radio" (change)="changeCorrectOption(pregunta,optIndex)" [value]="optIndex"/>
+                                                        <img (click)="deleteOption(pregunta,optIndex)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash pdl05" alt="">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div fxLayout="row">
+                                                <span (click)="addChoice(pregunta)" class="blueLink radius4 ft12 h28px no-select">
+                                                    <img [src]="icon.addNew" class="h12px pdr05 makeBlue" alt="">
+                                                    Agregar opción
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <!-- opcion simple -->
+                                        <div class="fw" fxLayout="column" *ngIf="pregunta.type.value == questionTypesIn.TYPE_TRUE_OR_FALSE_VALUE">
+                                            <div *ngFor="let option of pregunta.options; let optIndex = index" fxLayout="row" class="fw">
+                                                <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem" class="mgb10 fw">
+                                                    <!-- Contenedor para el número y el input -->
+                                                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+                                                        <span class="gray-6">{{ optIndex + 1 }}.</span>
+                                                        <input [(ngModel)]="option.text" type="text" class="form-control curstomInput" placeholder="">
+                                                    </div>
+                                                    <!-- Contenedor para el checkbox y el icono de trash -->
+                                                    <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
+                                                        <input (change)="toggleOptionValue(pregunta,optIndex)" [checked]="option.isCorrect" type="checkbox" value="{{ optIndex }}"/>
+                                                        <img (click)="deleteOption(pregunta,optIndex)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash pdl05" alt="">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div fxLayout="row">
+                                                <span (click)="addChoice(pregunta)" class="blueLink radius4 ft12 h28px no-select">
+                                                    <img [src]="icon.addNew" class="h12px pdr05 makeBlue" alt="">
+                                                    Agregar opción
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <button (click)="openModalAsignarCompetenciaExamen(modalAsignarCompetenciasExamen,pregunta)" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                            <img [src]="icon.flash" class="h16px pdr05" alt="">
+                                            <ng-container *ngIf="pregunta['competencias'].length == 0">
+                                                Agregar competencias
+                                            </ng-container>
+                                            <ng-container *ngIf="pregunta['competencias'].length> 0">
+                                                Cantidad competencias : {{pregunta['competencias'].length}}
+                                            </ng-container>
+                                        </button>
+                                    </div>
+                                    <ng-container *ngIf="pregunta['isInvalid']">
+                                        <div fxLayout="row" *ngFor="let mensaje of pregunta['InvalidMessages']" fxLayoutAlign="start center">
+                                            <mat-icon class="red-5 ft16">info</mat-icon>
+                                            <span class="redText">{{mensaje}}</span>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </div>
+                        </ng-container>
+
+                        <div fxLayout="row">
+                            <span (click)="crearPreguntaExamen()"  class="yellowLink ft12 h28px no-select" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign=" center">
+                                <img src="../../../assets/images/icons/addNew.svg " class="h12px pdr05 makeYellow" alt="">
+                                Agregar pregunta
+                            </span>
+                        </div>
+                        <ng-container *ngIf="isInvaliExamen">
+                            <div class="pdt05 fw" *ngFor="let mensaje of invalidMessages" fxLayoutAlign="start center">
+                                <mat-icon class="red-5 ft16">info</mat-icon>
+                                <span class="redText">{{mensaje}}</span>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+                <div fxFlex="40%" class="pdl10 pdr10 pdt10">
+                    <div fxLayout="column" fxLayoutAlign="center center" class="fw fh">
+                        <img class="pd10" src="../../../assets/images/cursos/examen.svg" class="fw h-75" alt="Mi SVG">
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+        <!-- Tab 5  Vista previa examen -->
+        <ng-container *ngIf="activeStep == 5">
+            <div fxFlex fxLayout="row" class="contanier">
+                <div fxFlex="60%" class="pdl10 pdr10 pdt10">
+                    <div fxLayout="column" class="fw fh smallScroll" style="overflow-y: auto;">
+                        <ng-container>
+                            <!-- aqui van los preguntas que se van creando -->
+                            <div *ngFor="let question of examen.questions; let questionIndex = index" class="{{question['isInvalid']?'ContainerModuloInvalid':'ContainerModulo'}}">
+                                <div fxLayout="row" fxLayoutAlign="space-between start" class="fw pd05 pdb0">
+                                    <div fxLayout="row" fxLayoutGap="10px" class="fw">
+                                        <div class="ft500 ft12">
+                                            <!-- numero pregunta -->
+                                            Pregunta {{questionIndex+1}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Contenedor de las preguntas -->
+                                <div class="pd05">
+                                    <div fxLayout="row" fxLayoutAlign="space-between center">
+                                        <div fxLayout="row" fxLayoutGap="0.625">
+                                            <div class="pdr05">
+                                                {{ question.type.displayName }}
+                                            </div>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px">
+                                            <label>Puntos:</label>
+                                            <span>{{question.points}}</span>
+                                        </div>
+                                    </div>
+                                
+                                    <!-- Imagen y área dependiente de la pregunta -->
+                                    <div fxLayout="row" class="pdt10">
+                                        <!-- Imagen -->
+                                        <div *ngIf="question.image" fxFlex="30" class="pdr10">
+                                            <img [src]="question.image" alt="" class="w-90" style="max-height: 200px;">
+                                        </div>
+                                        
+                                        <!-- Área dependiente de la pregunta -->
+                                        <div fxFlex="70" fxLayout="column" class="pdt05 fw">
+                                            <div [innerHTML]="question['render']" *ngIf="question.type.value == questionTypesIn.TYPE_COMPLETE_VALUE"></div>
+                                            <div *ngIf="question.type.value == questionTypesIn.TYPE_SINGLE_CHOICE_VALUE">
+                                                <span class="ft14 ft500"> {{ question.text }} </span>
+                                                <div class="mgt10" fxLayout="column">
+                                                    <div fxLayout="row" fxLayoutAlign="space-between center" *ngFor="let option of question.options; let optionIndex = index" class="mgt05">
+                                                        <span class="pdr05">{{ optionIndex + 1 }}. {{ option.text }}</span>
+                                                        <input type="radio" [name]="questionIndex" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div *ngIf="question.type.value == questionTypesIn.TYPE_MULTIPLE_CHOICE_VALUE">
+                                                <span class="ft14 ft500"> {{ question.text }} </span>
+                                                <div class="mgt10" fxLayout="column">
+                                                    <div fxLayout="row" fxLayoutAlign="space-between center" *ngFor="let option of question.options; let optionIndex = index" class="mgt05">
+                                                        <span class="pdr05">{{ optionIndex + 1 }}. {{ option.text }}</span>
+                                                        <input type="checkbox" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div *ngIf="question.type.value == questionTypesIn.TYPE_TRUE_OR_FALSE_VALUE">
+                                                <span class="ft14 ft500"> {{ question.text }} </span>
+                                                <div class="mgt10" fxLayout="column">
+                                                    <div fxLayout="row" fxLayoutAlign="space-between center">
+                                                        <span fxFlex="60" class="ft14 ft500">Enunciado</span>
+                                                        <div class="centertext w200px">
+                                                            <span fxFlex="50" class="ft14 ft500">V</span>
+                                                            <span fxFlex="50" class="ft14 ft500">F</span>
+                                                        </div>
+                                                    </div>
+                                                    <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt05" *ngFor="let option of question.options; let optionIndex = index">
+                                                        <div fxFlex="60" fxLayout="row" fxLayoutGap="1rem">
+                                                            <span>{{ optionIndex + 1 }}. {{ option.text }}</span>
+                                                        </div>
+                                                        <div class="centertext w200px">
+                                                            <input fxFlex="50" [name]="questionIndex.toString() + optionIndex.toString()" type="radio" [value]="true">
+                                                            <input fxFlex="50" [name]="questionIndex.toString() + optionIndex.toString()" type="radio" [value]="false" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+                <div fxFlex="40%" class="pdl10 pdr10 pdt10">
+                    <div fxLayout="column" fxLayoutAlign="center center" class="fw fh">
+                        <img class="pd10 w-80" src="../../../assets/images/cursos/Online test-pana.svg" class="fw" alt="Mi SVG">
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+        <!-- Tab 6  Resumen -->
+        <ng-container *ngIf="activeStep == 6">
+            <div fxFlex fxLayout="row" class="contanier">
+                <div fxFlex="60%" class="pdl10 pdr10 pdt10">
+                    <div fxLayout="column" class="fw fh smallScroll" style="overflow-y: auto;">
+
+                        <div fxLayout="row" fxLayoutAlign="start start" class="fw pd05 pdb0">
+                            <!-- Esta columna se ajustará al ancho de la imagen -->
+                            <div fxFlex fxLayout="column" fxLayoutAlign="center">
+                                <img [src]="formNuevoCurso.get('imagen').value" alt="Imagen seleccionada" class="image-resumen">
+                            </div>
+                            
+                            <!-- Esta columna puede continuar usando fxFlex para distribuir el espacio restante -->
+                            <div fxLayout="column">
+                                <div class="gray-10 ft600 pdb10" fxFlex>
+                                    {{formNuevoCurso.get('titulo').value}}
+                                </div>
+                                <div class="gray-10 pdb10" fxFlex>
+                                    {{formNuevoCurso.get('resumen').value}}
+                                </div>
+                                <div fxFlex class="pdb10">
+                                    Por {{empresa.nombre | titlecase}}
+                                </div>
+                                <div fxFlex class="pdb10">
+                                    {{totalClases}} clases
+                                </div>
+                            </div>
+                            
+                            <div fxLayoutAlign="start">
+                        
+                                <div fxLayout="column" fxLayoutAlign="center">
+                                    <button mat-raised-button>
+                                        <img [src]="icon.education" class="makeGray h16px" alt="">
+                                        <span>{{formNuevoCurso.get('nivel').value | titlecase}}</span>
+                                    </button>
+                                </div>
+                                
+                                <div fxLayout="column" fxLayoutAlign="center" class="mgl05">
+                                    <button mat-raised-button>
+                                        <img [src]="icon.globe" class="makeGray h16px" alt="">
+                                        <span>{{formNuevoCurso.get('idioma').value | titlecase}}</span>
+                                    </button>
+                                </div>
+                        
+                            </div>
+                        </div>
+
+                        <div fxLayout="column" class="fw pd05 pdb0">
+                            <span class="ft500 pdb10">Descripción</span>
+                            <span>
+                                {{formNuevoCurso.get('descripcion').value}}
+                            </span>
+                        </div>
+                        <div fxLayout="column" class="fw pd05 pdb0">
+                            <span class="ft500 pdb10">¿Para quién es este curso?</span>
+                            <span>
+                                {{formNuevoCurso.get('descripcion').value}} <!-- Nota: Parece que estás utilizando el mismo campo 'descripcion' para ambos lugares. Asegúrate de que esto es correcto. -->
+                            </span>
+                        </div>
+                        <div fxLayout="column" class="fw pd05 pdb0">
+                            <span class="ft500 pdb10">Contenido del curso</span>
+                        </div>
+                        <div fxLayout="column" class="fw pd05 pdb0">
+                            <!-- aqui van los modulos que se van creando -->
+                            <div *ngFor="let modulo of modulos" class="{{modulo['isInvalid']? 'ContainerModuloInvalid' : 'ContainerModulo'}}">
+                                <div fxLayout="row" fxLayoutAlign="space-between start" class="fw pd10 pdt05 pdb5">
+                                    <div fxLayout="row" fxLayoutGap="10px" class="fw">
+                                        <div class="ft500 ft12">
+                                            <!-- numero del modulo -->
+                                            Módulo {{modulo.numero}}:
+                                        </div>
+                                        <div class="ft12">
+                                            <!-- nombre del modulo -->
+                                            <img [src]="icon.document" class="h12px pdr05 makeGray" alt="">
+                                            <div *ngIf="modulo.titulo && !modulo['editarTitulo']; then tituloPresente;"></div>
+                                            <ng-template #tituloPresente>
+                                                <span>
+                                                    {{modulo.titulo}}
+                                                </span>
+                                            </ng-template>
+                                        </div>
+                                    </div>
+                                    <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="0.625">
+                                        <img *ngIf="modulo['expanded']" (click)="modulo['expanded'] = !modulo['expanded'];closeAllClasesModulo(modulo)" [src]="icon.chevronUp" class="h16px pdr05 cursorPointer" alt="">
+                                        <img *ngIf="!modulo['expanded']" (click)="modulo['expanded'] = !modulo['expanded']; hideOtherModulos(modulo)" [src]="icon.chevronDown" class="h16px pdr05 cursorPointer" alt="">
+                                    </div>
+                                </div>
+                                <!-- Contenedor de las clases -->
+                                <div *ngIf="modulo['expanded']">
+                                    <div *ngFor="let clase of modulo['clases']; trackBy: trackByClase" fxLayout="row" class="fw">
+                                        <div class="mgl40 mgr10 fw">
+                                            <div class="fw mgb10">
+                                                <mat-accordion multi="false" class="fw">
+                                                    <mat-expansion-panel [ngClass]="{'ContainerClase': clase['isInvalid']}" [expanded]="clase['expanded']" (opened)="closeOtherClasesModulo(clase,modulo)">
+                                                    <mat-expansion-panel-header>
+                                                        <mat-panel-title (click)="onPanelTitleClick($event)" fxLayout="row" fxLayoutAlign="space-between center">
+                                                        <div fxLayout="row" fxLayoutAlign="start center">
+                                                            <img [src]="icon[getIconClase(clase.tipo)]" class="h18px pdr05" alt="">
+                                                            <div *ngIf="clase.titulo && !clase['editarTitulo']; then tituloPresenteClase"></div>
+                                                            <ng-template #tituloPresenteClase>
+                                                                <span>{{clase.tipo | titlecase }} {{getnumerClassTipo(modulo,clase)}}: {{clase.titulo}}</span>
+                                                            </ng-template>
+                                                        </div>
+                                                        </mat-panel-title>
+                                                    </mat-expansion-panel-header>
+                                                        <!-- si es de archivo es un drop -->
+                                                        <ng-container *ngIf="clase.tipo != 'actividad' ">
+                                                            <div *ngIf="!clase['uploading']" class="fw h80px ContainerFile">
+                                                                <div (dragover)="onDragOver($event)" (drop)="onDrop($event,clase.tipo,clase,modulo)"class="fw fh no-select" fxLayout="row" fxLayoutAlign="center center">
+                                                                    Arrastrar y soltar el archivo aquí
+                                                                </div>
+                                                            </div>
+                                                            <div *ngIf="clase['uploading']" class="fw h80px ContainerUpload" fxLayout="column" fxLayoutAlign="center center" cla>
+    
+                                                                <!-- Contenido principal -->
+                                                                <div class="fw fh no-select" fxLayout="row" fxLayoutAlign="center center">
+                                                                    
+                                                                    <!-- Nombre del archivo -->
+                                                                    <div *ngIf="clase.tipo == 'lectura'" fxFlex="35" class="ft700" fxLayoutAlign="center center">
+                                                                        <div [matTooltip]="clase.archivos[0].nombre" class="w-80" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" >
+                                                                            {{clase.archivos[0].nombre}}
+                                                                        </div>
+                                                                    </div>
+                                                                    <div *ngIf="clase.tipo == 'video'" fxFlex="35" class="ft700" fxLayoutAlign="center center">
+                                                                        <div [matTooltip]="clase['videoFileName']" class="w-80" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" >
+                                                                            {{clase['videoFileName']}}
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <!-- Barra de progreso File pdf-->
+                                                                    <div *ngIf="clase.tipo == 'lectura'"fxFlex="25" fxLayout="row" fxLayoutAlign="center center">
+                                                                        <mat-progress-bar class="h10px radius6 {{clase.archivos[0].uploading_file_progress >= 100? 'complete-progress-bar': ''}}" mode="determinate" [value]="clase.archivos[0].uploading_file_progress"></mat-progress-bar>
+                                                                        <span *ngIf="clase.archivos[0].uploading_file_progress < 100" class="pdl05">{{clase.archivos[0].uploading_file_progress}}%</span>
+                                                                        <img *ngIf="clase.archivos[0].uploading_file_progress>=100" [src]="icon.check" class="h16px pdl05" alt="">
+                                                                    </div>
+
+                                                                    <!-- Barra de progreso File video-->
+                                                                    <div *ngIf="clase.tipo == 'video'" fxFlex="25" fxLayout="row" fxLayoutAlign="center center">
+                                                                        <mat-progress-bar class="h10px radius6 {{clase['videoUpload'] >= 100? 'complete-progress-bar':''}}" mode="determinate" [value]="clase['videoUpload']"></mat-progress-bar>
+                                                                        <span *ngIf="clase['videoUpload']<100" class="pdl05">{{clase['videoUpload']}}%</span>
+                                                                        <img *ngIf="clase['videoUpload']>=100" [src]="icon.check" class="h16px pdl05" alt="">
+                                                                    </div>
+                                                                    
+                                                                    <!-- Fecha -->
+                                                                    <div *ngIf="clase.tipo == 'lectura'" fxFlex="20" fxLayoutAlign="center center">
+                                                                        {{clase.archivos[0].id |  date:'dd/MM/yy' }}
+                                                                    </div>
+                                                                    <div *ngIf="clase.tipo == 'video'" fxFlex="20" fxLayoutAlign="center center">
+                                                                        {{clase.id |  date:'dd/MM/yy' }}
+                                                                    </div>
+                                                                    
+                                                                    <!-- Link para vista previa -->
+                                                                    <div (click)="openModal(modalClaseDetail,clase,modulo)" fxFlex="20" class="blueLink" fxLayoutAlign="center center">
+                                                                        Abrir vista previa
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="clase.tipo == 'actividad'">
+                                                            <div fxLayout="row" fxLayoutAlign="center center" class="mgt15 mgb05">
+                                                                <button (click)="openModal(modalActividadDetailRevisar,clase,modulo,'revisar');showErrorActividad = false" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                                    <img [src]="icon.taskAdd" class="h16px pdr05" alt="">
+                                                                    Revisar estructura actividad
+                                                                </button>
+                                                                <button *ngIf="clase.competencias?.length> 0" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                                    <img [src]="icon.flash" class="h16px pdr05" alt="">
+                                                                    <!-- Seleccionar competencias -->
+                                                                    <ng-container *ngIf="clase.competencias?.length> 0">
+                                                                        Cantidad competencias : {{clase.competencias.length}}
+                                                                    </ng-container>
+                                                                </button>
+                                                            </div>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="clase['isInvalid']">
+                                                            <div class="mgl05 mgr10 fw" *ngFor="let mensaje of clase['InvalidMessages']" fxLayoutAlign="start center">
+                                                                <mat-icon class="red-5 ft16">info</mat-icon>
+                                                                <span class="redText">{{mensaje}}</span>
+                                                            </div>
+                                                        </ng-container>
+                                                    </mat-expansion-panel>
+                                                </mat-accordion>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <ng-container *ngIf="modulo['isInvalid']">
+                                        <div class="mgl05 mgr10 fw" *ngFor="let mensaje of modulo['InvalidMessages']" fxLayoutAlign="start center">
+                                            <mat-icon class="red-5 ft16">info</mat-icon>
+                                            <span class="redText">{{mensaje}}</span>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div fxLayout="column" class="fw pd05 pdb0">
+                            <span class="ft500 pdb10">Competencias</span>
+                        </div>
+                        <div fxLayout="column" class="fw pd05 pdb0">
+                            <!-- aqui van los modulos que se van creando -->
+                            <div *ngFor="let categoria of competenciasSelected" fxLayout="column" class="fw pdb10">
+                                <!-- Contenedor para la categoría y el ícono -->
+                                <div fxLayout="row" class="category-container">
+                                    <span class="ft400 pdb03 flex-fill">
+                                        {{categoria.categoria.name | titlecase}}
+                                        ({{categoria.competencias.length}})
+                                    </span>
+                                    <!-- Asumiendo que deseas agregar un ícono aquí -->
+                                    <img *ngIf="categoria['expanded']" (click)="categoria['expanded'] = !categoria['expanded'];" [src]="icon.chevronUp" class="h16px pdr05 cursorPointer" alt="">
+                                    <img *ngIf="!categoria['expanded']" (click)="categoria['expanded'] = !categoria['expanded'];" [src]="icon.chevronDown" class="h16px pdr05 cursorPointer" alt="">
+                                </div>
+                                <!-- Displaying Chips -->
+                                <mat-chip-listbox *ngIf="categoria['expanded']" selectable multiple aria-label="Fish selection" class="fw contenedor-chips pdt05" style="max-height: 100vh !important;">
+                                    <mat-chip-option class="custom-chip" *ngFor="let competencia of categoria.competencias" [selected]="competencia.selected">
+                                        {{competencia.name | titlecase}}
+                                        <img *ngIf="competencia.selected" [src]="icon.close" class="makeWhite h16px pdl05" alt="">
+                                        <img *ngIf="!competencia.selected" [src]="icon.addNew" class="makeGray h14px pdl05" alt="">
+                                    </mat-chip-option>
+                                </mat-chip-listbox>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div fxFlex="40%" class="pdl10 pdr10 pdt10">
+                    <div fxLayout="column" fxLayoutAlign="center center" class="fw fh">
+                        <img class="pd10" src="../../../assets/images/cursos/tumbs_up.svg" class="fw" alt="Mi SVG">
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt10">
+            <!-- Botón a la izquierda -->
+            <button  (click)="activeStep >1 ? activeStep = activeStep-1 : returnCursos() " class="blueButton radius4 ft12 h28px mgr10 gray-1" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                <img [src]="icon.chevronLeft" class="h16px pdr05 makeWhite" alt="">
+                Regresar
+            </button>        
+            <!-- Contenedor para los dos botones de la derecha -->
+            <div fxLayout="row" fxLayoutGap="10px">
+                <button (click)="saveBorrador()" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                    Guardar borrador
+                </button>
+                <button *ngIf="activeStep<6" class="blueButton radius4 ft12 h28px mgr10 gray-1" (click)="advanceTab()" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                    Continuar
+                    <img [src]="icon.chevronRight" class="h16px pdl05 makeWhite" alt="">
+                </button>
+                <button (click)="finalizarCurso(modalFinalizarCurso)" *ngIf="activeStep==6" class="blueButton radius4 ft12 h28px mgr10 gray-1" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                    Continuar
+                    <img [src]="icon.chevronRight" class="h16px pdl05 makeWhite" alt="">
+                </button>        
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CLASE DETAIL MODAL -->
+<ng-template #modalClaseDetail let-modal>
+    <div class="modal-header bg-web-primary text-white px-3 py-1">
+        <div class="modal-title pd10 ">
+            <img [src]="icon[getIconClase(selectedClase.tipo)]" class="h18px pdr05" alt="">
+            <span class="ft16 ft600 gray-10">Vista previa {{selectedClase.tipo}} - {{selectedClase.titulo? selectedClase.titulo: 'sin título'}}</span>
+        </div>
+        <img style="cursor: pointer;" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px"  alt="">
+    </div>
+    <div class="modal-body">
+        <div  fxLayout="row" fxLayoutGap="60px">
+            <div fxFlex="40%" >
+                <div fxLayout = "column" class="fw fh pdl20 pdt10">
+                    <div fxLayout="row" class="pdb10">
+                        <button  (click)="modal.dismiss()" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                            <img [src]="icon.chevronLeft" class="h16px pdr05" alt="">
+                            Regresar
+                        </button>     
+                    </div>
+                    <div fxLayout="row" class="pdb10">
+                        <label>Titulo</label>
+                    </div>
+                    <div *ngIf="selectedClase.tipo == 'lectura'" (click)="base64view = selectedClase.archivos[0]['base64'];fileViewTipe = 'pdf'"  fxLayout="row" fxLayoutAlign="start center" class="pdb10 cursorPointer no-select">
+                        <div fxLayout="column">
+                            <img [src]="icon[getIconFileFormat(selectedClase.archivos[0].type)]" class="h32px pdr05" alt="">
+                        </div>
+                        <div fxLayout="column">
+                            <span>{{selectedClase.archivos[0].nombre}}</span>
+                            <span>Subido {{selectedClase.archivos[0].id |  customDate }}</span>
+                        </div>
+                    </div>
+                    <div *ngIf="selectedClase.tipo == 'video'" (click)="base64view = selectedClase['base64Video'];fileViewTipe = 'video'"  fxLayout="row" fxLayoutAlign="start center" class="pdb10 cursorPointer no-select">
+                        <div fxLayout="column">
+                            <img [src]="icon[getIconFileFormat('video')]" class="h32px pdr05" alt="">
+                        </div>
+                        <div fxLayout="column">
+                            <span>{{selectedClase['videoFileName']}}</span>
+                            <span>Subido {{selectedClase.id |  customDate }}</span>
+                        </div>
+                    </div>
+                    <div fxLayout="row" class="pdb10">
+                        <label>Recursos adicionales</label>
+                    </div>
+                    <div fxLayout="column" class="pd10 backGray2 radius6" style=" height: 40vh !important; overflow-y: auto;">
+                        <ng-container *ngFor="let archivo of selectedClase.archivos; let i = index">
+                            <div *ngIf="i > (selectedClase.tipo == 'lectura'? 0:-1)" 
+                                 (click)="base64view = archivo['base64'];fileViewTipe='pdf'" 
+                                 fxLayout="row" 
+                                 fxLayoutAlign="start center" 
+                                 class="pdb10 cursorPointer">
+                        
+                                <div fxLayout="column">
+                                    <img *ngIf="archivo.type == 'application/pdf'" [src]="icon.pdf" class="h32px pdr05" alt="">
+                                </div>
+                                <div fxLayout="column">
+                                    <span>{{archivo.nombre}}</span>
+                                    <span>Subido {{archivo.id | customDate }}</span>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </div>
+                    <div fxLayout="row" class="pdb10 pdt10">
+                        <input (change)="onFileSelected($event,selectedClase,false,selectedModulo,true)"  type="file" accept=".pdf"  #FileInputAdicional style="display: none;">
+                        <button (click)="FileInputAdicional.click()" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                            <img [src]="icon.folderUp" class="h16px pdr05" alt="">
+                            Añadir recursos
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div fxFlex="60%">
+                <div class="fh fw">
+                    <ngx-extended-pdf-viewer *ngIf="fileViewTipe == 'pdf'" [showToolbar]="false" [base64Src]="base64view" [useBrowserLocale]="true" height="60vh"></ngx-extended-pdf-viewer>
+                    <div class="video-container" *ngIf="fileViewTipe == 'video'">
+                        <video #videoPlayer controls *ngIf="fileViewTipe == 'video'">
+                            <source type="video/mp4" src="data:video/mp4;base64,{{base64view}}">
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="modal-footer">
+    </div> -->
+</ng-template>
+
+
+<!-- CLASE DETAIL MODAL -->
+<ng-template #modalActividadDetail let-modal>
+    <div class="modal-header bg-web-primary text-white px-3 py-1">
+        <div class="modal-title pd10 ">
+            <img [src]="icon[getIconClase(selectedClase.tipo)]" class="h18px pdr05" alt="">
+            <span class="ft16 ft600 gray-10">Vista previa {{selectedClase.tipo}} - {{selectedClase.titulo? selectedClase.titulo: 'sin título'}}</span>
+        </div>
+        <img style="cursor: pointer;" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px"  alt="">
+    </div>
+    <div class="modal-body">
+        <div fxLayout="row">
+            <div class="fw pdl10 pdr10 pdt10">
+                <div class="fw">
+                    <div class="stepper pdb10">
+                        <div class="step" *ngFor="let item of stepsActividad; let i = index">
+                            <div (click)="activeStepActividad > i ? activeStepActividad=i+1 : '' " class="no-select {{activeStepActividad == i+1? 'titleActive ft400': 'title'}}  {{  activeStepActividad > i ? 'cursorPointer' : ''}}">{{ item }}</div>
+                            <div class="mgr05" *ngIf="i < stepsActividad.length - 1">
+                                <img [src]="icon.chevronRight" class=" {{activeStepActividad == i+1? 'makeGray8': 'makeGray'}}" alt="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div  fxLayout="row" fxLayoutGap="60px">
+            <div fxFlex="60%" class="smallScroll" style="overflow-y: auto;">
+                <div class="pdr05">
+                    <!-- Informacion basica -->
+                    <ng-container *ngIf="activeStepActividad == 1">
+                        <div fxFlex fxLayout="column" class="contanier pdl10 pdt10">
+                            <div fxLayout="row">
+                                <span class="titleActive ft400">Información básica</span>
+                            </div>
+                            <div fxLayout="row">
+                                <!-- formulario de avtividad -->
+                                <form [formGroup]="formNuevaActividadBasica" class="mgr20 fw">
+                                    <div class="form-group pdt10">
+                                        <label>Título</label>
+                                        <div class="position-relative custom-input-container">
+                                            <img [src]="icon.chess" class="h20px input-icon" alt="">
+                                            <input formControlName="titulo"
+                                                [class.is-invalid]="formNuevaActividadBasica.controls['titulo'].errors && showErrorActividad"
+                                                type="text" 
+                                                class="form-control curstomInput custom-input" placeholder="Escriba el título de la actividad aquí">
+                                        </div>
+                                        <div class="custom-invalid-feedback" *ngIf="formNuevaActividadBasica.controls['titulo'].errors && showErrorActividad"> 
+                                            Debe indicar el título de la actividad
+                                        </div>
+                                    </div>
+                                    <div class="form-group pdt10">
+                                        <label>Descripción</label>
+                                        <textarea rows="4" 
+                                        [class.is-invalid]="formNuevaActividadBasica.controls['descripcion'].errors && showErrorActividad"
+                                        formControlName="descripcion" type="text" class="form-control curstomInput" placeholder="Escriba una pequeña descripción" style="resize: none;"></textarea>
+                                        <div class="invalid-feedback" *ngIf="formNuevaActividadBasica.controls['descripcion'].errors && showErrorActividad"> 
+                                            Debe indicar la Descripción de la actividad
+                                        </div>
+                                    </div>
+                                    <div class="form-group pdt10 w-40">
+                                        <label>Duración estimada (minutos)</label>
+                                        <input formControlName="duracion"
+                                        [class.is-invalid]="formNuevaActividadBasica.controls['duracion'].errors && showErrorActividad"
+                                        type="number" min="1" class="form-control curstomInput">
+                                        <div class="invalid-feedback" *ngIf="formNuevaActividadBasica.controls['duracion'].errors && showErrorActividad"> 
+                                            Es obligatorio la duracion minima de al menos 1 minuto
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+    
+                        </div>
+                    </ng-container>
+                    <!-- Instrucciones generales -->
+                    <ng-container *ngIf="activeStepActividad == 2"> 
+                        <div fxFlex fxLayout="column" class="contanier pdl10 pdt10">
+                            <div fxLayout="row">
+                                <span class="titleActive ft400">Instrucciones generales de la actividad</span>
+                            </div>
+    
+                            <div fxLayout="row" style="overflow-y: auto;">
+    
+                                <form [formGroup]="formNuevaActividadGeneral" class="mgr20 fw">
+                                    <div class="form-group pdt10">
+                                        <label>Video explicativo</label>
+                                        <div class="position-relative custom-input-container">
+                                            <img [src]="icon.videoChat" class="h20px input-icon" alt="">
+                                            <input 
+                                            [class.is-invalid]="formNuevaActividadGeneral.controls['video'].errors && showErrorActividad"
+                                            (change)="onFileSelected($event,selectedClase,false,selectedModulo,false,'videoActividad')" type="file" accept="video/mp4"  #videoActivityImput class="form-control custom-input" placeholder="Escriba el título de la actividad aquí">
+                                            <button (click)="videoActivityImput.click()" class="custom-button grayButton ft500 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
+                                                Adjuntar
+                                            </button>
+                                        </div>
+                                        <div class="custom-invalid-feedback" *ngIf="formNuevaActividadGeneral.controls['video'].errors && showErrorActividad">
+                                            Debe adjuntar el video explcativo
+                                        </div>
+                                        <div>
+                                            <span class="ft800 ft10">Nota:</span><span class="ft10">&nbsp;se recomienda que los videos tenga al menos una resolucion de 720P y pesen menso de 4 Gb</span>
+                                        </div>
+    
+                                    </div>
+                                    <div *ngIf="selectedClase['uploading'] && selectedClase['videoFileName']" class="form-group pdt10">
+                                        <div fxLayout="column">
+                                            <!-- Barra de progreso File video-->
+                                            <div fxFlex="25" fxLayout="row" fxLayoutAlign="center center" class="w-25">
+                                                <mat-progress-bar class="h10px radius6 {{selectedClase['videoUpload'] >= 100? 'complete-progress-bar':''}}" mode="determinate" [value]="selectedClase['videoUpload']"></mat-progress-bar>
+                                                <span *ngIf="selectedClase['videoUpload']<100" class="pdl05">{{selectedClase['videoUpload']}}%</span>
+                                                <img *ngIf="selectedClase['videoUpload']>=100" [src]="icon.check" class="h16px pdl05" alt="">
+                                            </div>
+                                            <div fxLayout="row" *ngIf="selectedClase.vimeoId1" >
+                                                <span>{{selectedClase.videoFileName}}&nbsp;</span>
+                                                <span (click)="viewVideoActivity=!viewVideoActivity;" class="blueLink cursorPointer">{{viewVideoActivity? 'Ocultar video':'Ver video'}}</span>
+                                            </div>
+                                        </div>
+                                        <!-- <div *ngIf="viewVideoActivity">
+                                            <div class="video-container-small">
+                                                <video #videoPlayerMini controls>
+                                                    <source type="video/mp4" src="data:video/mp4;base64,{{selectedClase['base64Video']}}">
+                                                </video>
+                                            </div>
+                                        </div> -->
+                                    </div>
+                                    <div class="form-group pdt10">
+                                        <label>Instrucciones</label>
+                                        <textarea formControlName="instrucciones"
+                                        [class.is-invalid]="formNuevaActividadGeneral.controls['instrucciones'].errors && showErrorActividad" 
+                                        rows="3"  type="text" class="form-control curstomInput" placeholder="Escriba el resumen del curso aquí" style="resize: none;"></textarea>
+                                        <div class="invalid-feedback" *ngIf="formNuevaActividadGeneral.controls['instrucciones'].errors && showErrorActividad">
+                                            Debe indicar las instrucciones de la actividad.
+                                        </div>
+                                    </div>
+    
+                                    <div class="form-group pdt10">
+                                        <label>Recursos descargables</label>
+                                        <div class="position-relative custom-input-container">
+                                            <img [src]="icon.pdf" class="h20px input-icon" alt="">
+                                            <input 
+                                            [class.is-invalid]="formNuevaActividadGeneral.controls['recursos'].errors && showErrorActividad"
+                                            (change)="onFileSelected($event,selectedClase,false,selectedModulo,true,'archivoActividad')" type="file" accept=".pdf"   #fileActivityImput class="form-control curstomInput custom-input">
+                                            <!-- <button class="custom-button ">Botón</button> -->
+                                            <button (click)="fileActivityImput.click()" class="custom-button grayButton ft500 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
+                                                Adjuntar
+                                            </button>
+                                        </div>
+                                        <div class="custom-invalid-feedback" *ngIf="formNuevaActividadGeneral.controls['recursos'].errors && showErrorActividad">
+                                            Debe adjuntar algun recurso adicional
+                                        </div>
+                                    </div>
+                                    <div *ngIf="selectedClase?.archivos[0]?.uploading_file_progress >0" class="form-group pdt10">
+                                        <!-- Barra de progreso File video-->
+                                        <div fxLayout="column">
+                                            <div fxLayout="row" fxLayoutAlign="center center" class="w-25">
+                                                <mat-progress-bar class="h10px radius6 {{selectedClase.archivos[0].uploading_file_progress >= 100? 'complete-progress-bar': ''}}" mode="determinate" [value]="selectedClase.archivos[0].uploading_file_progress"></mat-progress-bar>
+                                                <span *ngIf="selectedClase.archivos[0].uploading_file_progress < 100" class="pdl05">{{selectedClase.archivos[0].uploading_file_progress}}%</span>
+                                                <img *ngIf="selectedClase.archivos[0].uploading_file_progress>=100" [src]="icon.check" class="h16px pdl05" alt="">
+                                            </div>
+                                            <div fxLayout="row" *ngIf="selectedClase.archivos[0].uploading_file_progress>=100" >
+                                                <span>{{selectedClase.archivos[0].nombre}}&nbsp;</span>
+                                                <span (click)="viewFileActivity=!viewFileActivity" class="blueLink cursorPointer">{{viewFileActivity? 'Ocultar archivo':'Ver archivo'}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- <ngx-extended-pdf-viewer *ngIf="viewFileActivity" [showToolbar]="false" [base64Src]="selectedClase?.archivos[0]?.base64" [useBrowserLocale]="true" height="25vh"></ngx-extended-pdf-viewer> -->
+                                </form>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <!-- Preguntas -->
+                    <ng-container *ngIf="activeStepActividad == 3">
+                        <div fxFlex fxLayout="column" class="contanier pdl10 pdt10">
+                            <ng-container>
+                                <!-- aqui van los preguntas que se van creando -->
+                                <div *ngFor="let pregunta of selectedClase.activity.questions; let i = index" class="{{pregunta.isInvalid?'ContainerModuloInvalid':'ContainerModulo'}}">
+                                    <div fxLayout="row" fxLayoutAlign="space-between start" class="fw pd10 pdt05 pdb5">
+                                        <div fxLayout="row" fxLayoutGap="10px" class="fw">
+                                            <div class="ft500 ft12">
+                                                <!-- numero pregunta -->
+                                                Pregunta {{i+1}}
+                                            </div>
+                                            <div class="ft12">
+                                                <!-- nombre pregunta -->
+                                                <!-- <img [src]="icon.document" class="h12px pdr05 makeGray" alt="">
+                                                <span>
+                                                    {{pregunta.title? pregunta.title :'Pregunta sin titulo'}}
+                                                </span> -->
+                                            </div>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="0.625">
+                                            <img (click)="borrarPregunta(pregunta,i)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash" alt="">
+                                            <img *ngIf="pregunta['expanded']" (click)="pregunta['expanded'] = !pregunta['expanded'];" [src]="icon.chevronUp" class="h16px pdr05 cursorPointer" alt="">
+                                            <img *ngIf="!pregunta['expanded']" (click)="pregunta['expanded'] = !pregunta['expanded']; hideOtherQuestion(pregunta);" [src]="icon.chevronDown" class="h16px pdr05 cursorPointer" alt="">
+                                        </div>
+                                    </div>
+                                    <!-- Contenedor de las preguntas -->
+                                    <div *ngIf="pregunta['expanded']" class="pd10">
+                                        <div fxLayout="row" fxLayoutAlign="space-between center">
+                                            <!-- Botones alineados a la izquierda -->
+                                            <div fxLayout="row" fxLayoutGap="0.625">
+                                                <div *ngFor="let questionType of questionTypes" class="pdr05">
+                                                    <button (click)="onQuestionTypeChange(pregunta,questionType.value)" class="{{pregunta.type.value == questionType.value? 'backGray4': 'grayButton' }} radius4 ft12 h28px gray-8">{{ questionType.displayName }}</button>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Label y input alineados a la derecha -->
+                                            <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px">
+                                                <label>Puntos</label>
+                                                <input [(ngModel)]="pregunta.points" type="number" min="0" class="form-control curstomInput w-25">
+                                            </div>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="start center" class="pdt10">
+                                            <button (click)="questionImage.click()" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
+                                                Adjuntar imagen
+                                            </button>
+                                            <input #questionImage type="file" (change)="uploadQuestionImage($event,pregunta)" hidden accept="image/webp" />
+                                        </div>
+                                        <div *ngIf="pregunta.uploading_file_progress >0" class="form-group pdt10">
+                                            <!-- Barra de progreso File video-->
+                                            <div fxLayout="column">
+                                                <div fxLayout="row" fxLayoutAlign="center center" class="w-25">
+                                                    <mat-progress-bar class="h10px radius6 {{pregunta.uploading_file_progress >= 100? 'complete-progress-bar': ''}}" mode="determinate" [value]="pregunta.uploading_file_progress"></mat-progress-bar>
+                                                    <span *ngIf="pregunta.uploading_file_progress < 100" class="pdl05">{{pregunta.uploading_file_progress}}%</span>
+                                                    <img *ngIf="pregunta.uploading_file_progress>=100" [src]="icon.check" class="h16px pdl05" alt="">
+                                                </div>
+                                                <div fxLayout="row" *ngIf="pregunta.uploading_file_progress>=100" >
+                                                    <span>{{pregunta.fileName}}&nbsp;</span>
+                                                    <span (click)="pregunta['imageHidden'] =!pregunta['imageHidden'] " class="blueLink cursorPointer">{{ pregunta['imageHidden']? 'Ocultar archivo':'Ver archivo'}}</span>
+                                                    <img (click)="deleteQuestionImage(pregunta,true)" [src]="icon.close" class="h18px pdr05 makeRed cursorPointer" alt="">
+                                                 </div>
+                                                <div fxLayout="row" *ngIf="pregunta['imageHidden']" >
+                                                    <img [src]="pregunta.image" style="max-height: 200px;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div fxLayout="row">
+                                            <div class="form-group pdt10 fw">
+                                                <textarea [(ngModel)]="pregunta.text" rows="3"  type="text" class="form-control curstomInput" placeholder="Escriba aqui la pregunta" style="resize: none;"></textarea>
+                                                <div class="invalid-feedback">
+                                                    Debe indicar la pregunta.
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div fxLayout="row" class="pdt05">
+                                            <span [innerHTML]="questionInstruction(pregunta)"></span>
+                                        </div>
+                                        <!-- area dependiete de la pregunta -->
+                                        <div fxLayout="row" class="pdt05 fw">
+                                            <!-- Completación -->
+                                            <div class="fw" fxLayout="column" *ngIf="pregunta.type.value == questionTypesIn.TYPE_COMPLETE_VALUE">
+                                                <div fxLayout="row" class="mgt10">
+                                                    <span>Haga click en confirmar cuando haya terminado de escribir la pregunta</span>
+                                                </div>
+                                                <div fxLayout="row" class="pdt05 pdb05">
+                                                    <button (click)="parseQuestionText(pregunta)" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                        <img [src]="icon.check" class="h16px pdr05" alt="">
+                                                        Confirmar
+                                                    </button>
+                                                </div>
+                                                <div *ngFor="let placeHolder of pregunta.placeHolders; let i = index" class="ContainerModulo fw pd05">
+        
+                                                    <!-- Contenedor para el índice y el placeholder -->
+                                                    <div fxLayout="row" fxLayoutAlign="start center">
+                                                        {{i+1}}. {{placeHolder}}
+                                                    </div>
+                                                
+                                                    <div fxLayout="column">
+                                                        <div fxLayout="row" class="pdb05">
+                                                            <span class="gray-8 ft700">Opciones</span>
+                                                        </div>
+                                                        <div *ngFor="let option of pregunta.options; let optIndex = index" fxLayout="row">
+    
+                                                            <div *ngIf="option.placeholder == placeHolder" fxLayout="row" fxLayoutAlign="space-between center" class="fw pdb05">
+    
+                                                                <!-- Input field -->
+                                                                <input [(ngModel)]="option.text" type="text" class="form-control curstomInput w-40" placeholder="">
+                                                                <!-- Contenedor para el checkbox y el icono de trash -->
+                                                                <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
+                                                                    <input (change)="toggleOptionValue(pregunta,optIndex)" [checked]="option.isCorrect" type="checkbox" value="{{ optIndex }}"/>
+                                                                    <img (click)="deleteOption(pregunta,optIndex)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash pdl05" alt="">
+                                                                </div>
+                
+                                                            </div>
+                                                        
+                                                        </div>
+                                                        <div fxLayout="row">
+                                                            <span (click)="addChoice(pregunta,placeHolder)" class="blueLink radius4 ft12 h28px no-select">
+                                                                <img [src]="icon.addNew" class="h12px pdr05 makeBlue" alt="">
+                                                                Agregar opción
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div *ngIf="pregunta.placeHolders?.length>0">
+                                                    <button (click)="showDisplayText(pregunta)" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                        <img [src]="icon.check" class="h16px pdr05" alt="">
+                                                        Renderizar pregunta
+                                                    </button>
+                                                </div>
+                                                <div class="gray-8 ft12 pdt10" [innerHTML]="pregunta.render" *ngIf="pregunta.render"></div>
+                                            </div>
+                                            <!-- opcion miltiple -->
+                                            <div class="fw" fxLayout="column" *ngIf="pregunta.type.value == questionTypesIn.TYPE_MULTIPLE_CHOICE_VALUE">
+                                                <div *ngFor="let option of pregunta.options; let optIndex = index" fxLayout="row" class="fw">
+                                                    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem" class="mgb10 fw">
+                                                
+                                                        <!-- Contenedor para el número y el input -->
+                                                        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+                                                            <span class="gray-6">{{ optIndex + 1 }}.</span>
+                                                            <input [(ngModel)]="option.text" type="text" class="form-control curstomInput" placeholder="">
+                                                        </div>
+                                                
+                                                        <!-- Contenedor para el checkbox y el icono de trash -->
+                                                        <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
+                                                            <input (change)="toggleOptionValue(pregunta,optIndex)" [checked]="option.isCorrect" type="checkbox" value="{{ optIndex }}"/>
+                                                            <img (click)="deleteOption(pregunta,optIndex)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash pdl05" alt="">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div fxLayout="row">
+                                                    <span (click)="addChoice(pregunta)" class="blueLink radius4 ft12 h28px no-select">
+                                                        <img [src]="icon.addNew" class="h12px pdr05 makeBlue" alt="">
+                                                        Agregar opción
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <!-- opcion simple -->
+                                            <div class="fw" fxLayout="column" *ngIf="pregunta.type.value == questionTypesIn.TYPE_SINGLE_CHOICE_VALUE">
+                                                <div *ngFor="let option of pregunta.options; let optIndex = index" fxLayout="row" class="fw">
+                                                    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem" class="mgb10 fw">
+                                                        <!-- Contenedor para el número y el input -->
+                                                        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+                                                            <span class="gray-6">{{ optIndex + 1 }}.</span>
+                                                            <input [(ngModel)]="option.text" type="text" class="form-control curstomInput" placeholder="">
+                                                        </div>
+                                                
+                                                        <!-- Contenedor para el checkbox y el icono de trash -->
+                                                        <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
+                                                            <input [(ngModel)]="pregunta['correctOption']" name="radio" type="radio" (change)="changeCorrectOption(pregunta,optIndex)" [value]="optIndex"/>
+                                                            <img (click)="deleteOption(pregunta,optIndex)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash pdl05" alt="">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div fxLayout="row">
+                                                    <span (click)="addChoice(pregunta)" class="blueLink radius4 ft12 h28px no-select">
+                                                        <img [src]="icon.addNew" class="h12px pdr05 makeBlue" alt="">
+                                                        Agregar opción
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <!-- opcion simple -->
+                                            <div class="fw" fxLayout="column" *ngIf="pregunta.type.value == questionTypesIn.TYPE_TRUE_OR_FALSE_VALUE">
+                                                <div *ngFor="let option of pregunta.options; let optIndex = index" fxLayout="row" class="fw">
+                                                    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem" class="mgb10 fw">
+                                                        <!-- Contenedor para el número y el input -->
+                                                        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+                                                            <span class="gray-6">{{ optIndex + 1 }}.</span>
+                                                            <input [(ngModel)]="option.text" type="text" class="form-control curstomInput" placeholder="">
+                                                        </div>
+                                                        <!-- Contenedor para el checkbox y el icono de trash -->
+                                                        <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
+                                                            <input (change)="toggleOptionValue(pregunta,optIndex)" [checked]="option.isCorrect" type="checkbox" value="{{ optIndex }}"/>
+                                                            <img (click)="deleteOption(pregunta,optIndex)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash pdl05" alt="">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div fxLayout="row">
+                                                    <span (click)="addChoice(pregunta)" class="blueLink radius4 ft12 h28px no-select">
+                                                        <img [src]="icon.addNew" class="h12px pdr05 makeBlue" alt="">
+                                                        Agregar opción
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <ng-container *ngIf="pregunta.isInvalid">
+                                            <div fxLayout="row" *ngFor="let mensaje of pregunta.InvalidMessages" fxLayoutAlign="start center">
+                                                <mat-icon class="red-5 ft16">info</mat-icon>
+                                                <span class="redText">{{mensaje}}</span>
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                                </div>
+                            </ng-container>
+                            <div fxLayout="row" class="fw">
+                                <div class="mgl40 mgr10 fw">
+                                    <div class="fw mgb10">
+                                        <span (click)="crearPreguntaActividad()" class="yellowLink radius4 ft12 h28px no-select" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign=" center">
+                                            <img [src]="icon.addNew" class="h12px pdr05 makeYellow" alt="">
+                                            Agregar pregunta
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <!-- tab vista actividad -->
+                    <ng-container *ngIf="activeStepActividad == 4">
+                        <div fxFlex fxLayout="column" class="contanier pdl10 pdt10">
+                            <ng-container>
+                                <!-- aqui van los preguntas que se van creando -->
+                                <div *ngFor="let question of selectedClase.activity.questions; let questionIndex = index" class="{{question.isInvalid?'ContainerModuloInvalid':'ContainerModulo'}}">
+                                    <div fxLayout="row" fxLayoutAlign="space-between start" class="fw pd05 pdb0">
+                                        <div fxLayout="row" fxLayoutGap="10px" class="fw">
+                                            <div class="ft500 ft12">
+                                                <!-- numero pregunta -->
+                                                Pregunta {{questionIndex+1}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Contenedor de las preguntas -->
+                                    <div class="pd05">
+                                        <div fxLayout="row" fxLayoutAlign="space-between center">
+                                            <div fxLayout="row" fxLayoutGap="0.625">
+                                                <div class="pdr05">
+                                                    {{ question.type.displayName }}
+                                                </div>
+                                            </div>
+                                            <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px">
+                                                <label>Puntos:</label>
+                                                <span>{{question.points}}</span>
+                                            </div>
+                                        </div>
+                                    
+                                        <div fxLayout="row" class="pdt10">
+                                            <!-- imagen -->
+                                            <div *ngIf="question.image" fxFlex="30">
+                                                <img [src]="question.image" alt="" class="w-90" style="max-height: 200px;">
+                                            </div>
+                                            
+                                            <!-- area dependiente de la pregunta -->
+                                            <div fxFlex="70" fxLayout="column" class="pdt05 fw">
+                                                <div [innerHTML]="question.render" *ngIf="question.type.value == questionTypesIn.TYPE_COMPLETE_VALUE">
+                                                </div>
+                                    
+                                                <div *ngIf="question.type.value == questionTypesIn.TYPE_SINGLE_CHOICE_VALUE">
+                                                    <span class="ft14 ft500"> {{ question.text }} </span>
+                                                    <div class="mgt10" fxLayout="column">
+                                                        <div fxLayout="row" fxLayoutAlign="space-between center" *ngFor="let option of question.options; let optionIndex = index" class="mgt05">
+                                                            <span class="pdr05">{{ optionIndex + 1 }}. {{ option.text }}</span>
+                                                            <input type="radio" [name]="questionIndex" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                    
+                                                <div *ngIf="question.type.value == questionTypesIn.TYPE_MULTIPLE_CHOICE_VALUE">
+                                                    <span class="ft14 ft500"> {{ question.text }} </span>
+                                                    <div class="mgt10" fxLayout="column">
+                                                        <div fxLayout="row" fxLayoutAlign="space-between center" *ngFor="let option of question.options; let optionIndex = index" class="mgt05">
+                                                            <span class="pdr05">{{ optionIndex + 1 }}. {{ option.text }}</span>
+                                                            <input type="checkbox" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                    
+                                                <div *ngIf="question.type.value == questionTypesIn.TYPE_TRUE_OR_FALSE_VALUE">
+                                                    <span class="ft14 ft500"> {{ question.text }} </span>
+                                                    <div class="mgt10" fxLayout="column">
+                                                        <div fxLayout="row" fxLayoutAlign="space-between center">
+                                                            <span fxFlex="60" class="ft14 ft500">Enunciado</span>
+                                                            <div class="centertext w200px">
+                                                                <span fxFlex="50" class="ft14 ft500">V</span>
+                                                                <span fxFlex="50" class="ft14 ft500">F</span>
+                                                            </div>
+                                                        </div>
+                                                        <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt05" *ngFor="let option of question.options; let optionIndex = index">
+                                                            <div fxFlex="60" fxLayout="row" fxLayoutGap="1rem">
+                                                                <span>{{ optionIndex + 1 }}. {{ option.text }}</span>
+                                                            </div>
+                                                            <div class="centertext w200px">
+                                                                <input fxFlex="50" [name]="questionIndex.toString() + optionIndex.toString()" type="radio" [value]="true">
+                                                                <input fxFlex="50" [name]="questionIndex.toString() + optionIndex.toString()" type="radio" [value]="false" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                </div>
+                            </ng-container>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+            <div fxFlex="40%" fxLayout="column" fxLayoutAlign="center center">
+                <div *ngIf="viewVideoActivity" class="video-container-small">
+                    <video #videoPlayerMini controls class="fw fh">
+                        <source type="video/mp4" src="data:video/mp4;base64,{{selectedClase['base64Video']}}">
+                    </video>
+                </div>
+                <div *ngIf="viewFileActivity" class="fw fh pdt10">
+                    <ngx-extended-pdf-viewer *ngIf="viewFileActivity" [showToolbar]="false" [base64Src]="selectedClase?.archivos[0]?.base64" [useBrowserLocale]="true" height="90%"></ngx-extended-pdf-viewer>
+                </div>
+            
+                <div *ngIf="!viewFileActivity && !viewVideoActivity" fxLayout="column" fxLayoutAlign="center center" class="fw fh">
+                    <img  class="pd10" src="../../../assets/images/cursos/Next steps-pana.svg" class="fw" alt="Mi SVG">
+                </div>
+            </div>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt10">
+            <!-- Botón a la izquierda -->
+            <button  (click)="activeStepActividad >1 ? activeStepActividad = activeStepActividad-1 : modal.dismiss() " class="blueButton radius4 ft12 h28px mgr10 gray-1" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                <img [src]="icon.chevronLeft" class="h16px pdr05 makeWhite" alt="">
+                Regresar
+            </button>        
+            <!-- Contenedor para los dos botones de la derecha -->
+            <div fxLayout="row" fxLayoutGap="10px">               
+                <button *ngIf="activeStepActividad<4" class="blueButton radius4 ft12 h28px mgr10 gray-1" (click)="advanceTabActividad();" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                    Continuar
+                    <img [src]="icon.chevronRight" class="h16px pdl05 makeWhite" alt="">
+                </button>
+                <button (click)="modal.dismiss()" *ngIf="activeStepActividad==4" class="blueButton radius4 ft12 h28px mgr10 gray-1" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                    Continuar
+                    <img [src]="icon.chevronRight" class="h16px pdl05 makeWhite" alt="">
+                </button>        
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<!-- CLASE COMPETENCIAS MODAL -->
+<ng-template #modalAsignarCompetenciasClases let-modal>
+    <div class="modal-header bg-web-primary text-white px-3 py-1">
+        <div class="modal-title pd10" fxLayout="row" fxLayoutAlign="start center">
+            <img [src]="icon.flash" class="h18px pdr05" alt="">
+            <span class="ft16 ft600 gray-10">Asignar nuevas competencias</span>
+        </div>
+        <img style="cursor: pointer;" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px"  alt="">
+    </div>
+    <div class="modal-body">
+        <div *ngIf="selectedClase.tipo == 'actividad'" fxLayout="row">
+            <div class="fw pdl10 pdr10 pdt10">
+                <div class="fw">
+                    <div class="stepper pdb10">
+                        <div class="step" *ngFor="let item of stepsCompetencias; let i = index">
+                            <div class= "no-select {{activeStepCompetencias == i+1? 'circleStepActive': 'circleStep'}} {{  activeStepCompetencias > i ? 'cursorPointer' : ''}}">{{ i + 1 }}</div>
+                            <div (click)="activeStepCompetencias > i ? activeStepCompetencias=i+1 : '' " class="no-select {{activeStepCompetencias == i+1? 'titleActive ft400': 'title'}}  {{  activeStepCompetencias > i ? 'cursorPointer' : ''}}">{{ item }}</div>
+                            <div class="mgr05" *ngIf="i < stepsCompetencias.length - 1">
+                                <img [src]="icon.chevronRight" class=" {{activeStepCompetencias == i+1? 'makeGray8': 'makeGray'}}" alt="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div fxLayout="column" class="fw pdt10">
+            <ng-container *ngIf="activeStepCompetencias ==1">
+                <div *ngFor="let categoria of competenciasSelectedClase" fxLayout="column" class="fw pdb10">
+                    <!-- Contenedor para la categoría y el ícono -->
+                    <div fxLayout="row" class="category-container">
+                        <span class="ft400 pdb03 flex-fill">
+                            <!-- {{categoria|json}} -->
+                            {{categoria.categoria?.name ? categoria.categoria.name: categoria.name | titlecase}}
+                            ({{categoria.competencias.length}})
+                        </span>
+                        <!-- Asumiendo que deseas agregar un ícono aquí -->
+                        <img *ngIf="categoria['expanded']" (click)="categoria['expanded'] = !categoria['expanded'];" [src]="icon.chevronUp" class="h16px pdr05 cursorPointer" alt="">
+                        <img *ngIf="!categoria['expanded']" (click)="categoria['expanded'] = !categoria['expanded'];" [src]="icon.chevronDown" class="h16px pdr05 cursorPointer" alt="">
+                    </div>
+                    <!-- Displaying Chips -->
+                    <mat-chip-listbox *ngIf="categoria['expanded']" selectable multiple aria-label="Fish selection" class="fw contenedor-chips pdt05" style="max-height: 100vh !important;">
+                        <mat-chip-option class="custom-chip" *ngFor="let competencia of categoria.competencias" (click)="competencia.selected = !competencia.selected;getSelectedCategoriasCompetencias()" [selected]="competencia.selected">
+                            {{competencia.name | titlecase}}
+                            <img *ngIf="competencia.selected" [src]="icon.close" class="makeWhite h16px pdl05" alt="">
+                            <img *ngIf="!competencia.selected" [src]="icon.addNew" class="makeGray h14px pdl05" alt="">
+                        </mat-chip-option>
+                    </mat-chip-listbox>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="activeStepCompetencias == 2">
+                <!-- aqui van los preguntas que se van creando -->
+                <div *ngFor="let question of  selectedClase.activity.questions; let questionIndex = index" class="{{question['isInvalid']?'ContainerModuloInvalid':'ContainerModulo'}}">
+                    <div fxLayout="row" fxLayoutAlign="space-between start" class="fw pd05 pdb0">
+                        <div fxLayout="row" fxLayoutGap="10px" class="fw">
+                            <div class="ft500 ft12">
+                                <!-- numero pregunta -->
+                                Pregunta {{questionIndex+1}}
+                            </div>
+                        </div>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="space-between start" class="fw pd05 pdb10">
+
+                        <div fxLayout="column" class="fw">
+                            <!-- Contenedor para la categoría y el ícono -->
+                            <div fxLayout="row" class="category-container">
+                                <span class="ft400 pdb03 flex-fill">
+                                    Competencias
+                                </span>
+                                <!-- Asumiendo que deseas agregar un ícono aquí -->
+                                <img *ngIf="question['expanded_categorias']" (click)="question['expanded_categorias'] = !question['expanded_categorias'];" [src]="icon.chevronUp" class="h16px pdr05 cursorPointer" alt="">
+                                <img *ngIf="!question['expanded_categorias']" (click)="question['expanded_categorias'] = !question['expanded_categorias'];" [src]="icon.chevronDown" class="h16px pdr05 cursorPointer" alt="">
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- contenedor de competencias -->
+                    <div *ngIf="question['expanded_categorias']" fxLayout="row" fxLayoutAlign="space-between start" class="fw pd05 pdb0">
+                        <div fxLayout="column" class="fw pdl10">
+                            <div *ngFor="let categoria of question['competencias_tmp']" fxLayout="column" class="fw pdb10">
+                                <!-- Contenedor para la categoría y el ícono -->
+                                <div fxLayout="row" class="category-container">
+                                    <span class="ft400 pdb03 flex-fill">
+                                        {{categoria.categoria?.name ? categoria.categoria.name: categoria.name | titlecase}}
+                                        ({{categoria.competencias.length}})
+                                    </span>
+                                    <!-- Asumiendo que deseas agregar un ícono aquí -->
+                                    <img *ngIf="categoria['expanded']" (click)="categoria['expanded'] = !categoria['expanded'];" [src]="icon.chevronUp" class="h16px pdr05 cursorPointer" alt="">
+                                    <img *ngIf="!categoria['expanded']" (click)="categoria['expanded'] = !categoria['expanded'];" [src]="icon.chevronDown" class="h16px pdr05 cursorPointer" alt="">
+                                </div>
+                                <!-- Displaying Chips -->
+                                <mat-chip-listbox *ngIf="categoria['expanded']" selectable multiple aria-label="Fish selection" class="fw contenedor-chips pdt05" style="max-height: 100vh !important;">
+                                    <mat-chip-option class="custom-chip" *ngFor="let competencia of categoria.competencias" (click)="competencia.selected = !competencia.selected;" [selected]="competencia.selected">
+                                        {{competencia.name | titlecase}}
+                                        <img *ngIf="competencia.selected" [src]="icon.close" class="makeWhite h16px pdl05" alt="">
+                                        <img *ngIf="!competencia.selected" [src]="icon.addNew" class="makeGray h14px pdl05" alt="">
+                                    </mat-chip-option>
+                                </mat-chip-listbox>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Contenedor de las preguntas -->
+                    <div class="pd05">
+                        <div fxLayout="row" fxLayoutAlign="space-between center">
+                            <div fxLayout="row" fxLayoutGap="0.625">
+                                <div class="pdr05">
+                                    {{ question.type.displayName }}
+                                </div>
+                            </div>
+                            <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px">
+                                <label>Puntos:</label>
+                                <span>{{question.points}}</span>
+                            </div>
+                        </div>
+                        <!-- imagen -->
+                        <div fxLayout="row" fxLayoutAlign="start center" class="pdt10">
+                            <img [src]="question.image" alt="" style="max-height: 200px;">
+                        </div>
+                        <!-- area dependiete de la pregunta -->
+                        <div fxLayout="row" class="pdt05 fw">
+                            <div [innerHTML] ="question['render']" *ngIf="question.type.value == questionTypesIn.TYPE_COMPLETE_VALUE"></div>
+                            <div *ngIf="question.type.value == questionTypesIn.TYPE_SINGLE_CHOICE_VALUE">
+                                <span class="ft14 ft500"> {{ question.text }} </span>
+                                <div class="mgt10" fxLayout="column">
+                                    <div fxLayout="row" fxLayoutAlign="space-between center"
+                                        *ngFor="let option of question.options; let optionIndex = index" class="mgt05">
+                                        <span class="pdr05">{{ optionIndex + 1 }}. {{ option.text }}</span>
+                                        <input type="radio" [name]="questionIndex" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div *ngIf="question.type.value == questionTypesIn.TYPE_MULTIPLE_CHOICE_VALUE">
+                                <span class="ft14 ft500"> {{ question.text }} </span>
+                                <div class="mgt10" fxLayout="column">
+                                    <div fxLayout="row" fxLayoutAlign="space-between center" *ngFor="let option of question.options; let optionIndex = index" class="mgt05">
+                                        <span class="pdr05" >{{ optionIndex + 1 }}. {{ option.text }}</span>
+                                        <input type="checkbox"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div *ngIf="question.type.value == questionTypesIn.TYPE_TRUE_OR_FALSE_VALUE">
+                                <span class="ft14 ft500"> {{ question.text }} </span>
+                                <div class="mgt10" fxLayout="column">
+                                    <div fxLayout="row" fxLayoutAlign="space-between center">
+                                        <span fxFlex="60" class="ft14 ft500">Enunciado</span>
+                                        <div class="centertext w200px">
+                                            <span fxFlex="50" class="ft14 ft500">V</span>
+                                            <span fxFlex="50" class="ft14 ft500">F</span>
+                                        </div>
+                                    </div>
+                                    <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt05" *ngFor="let option of question.options; let optionIndex = index">
+                                        <div fxFlex="60" fxLayout="row" fxLayoutGap="1rem">
+                                            <span>{{ optionIndex + 1 }}. {{ option.text }}</span>
+                                        </div>
+                                        <div class="centertext w200px">
+                                            <input fxFlex="50" [name]="questionIndex.toString() + optionIndex.toString()" type="radio" [value]="true">
+                                            <input fxFlex="50" [name]="questionIndex.toString() + optionIndex.toString()" type="radio" [value]="false" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button (click)="modal.dismiss()" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+            Cancelar
+        </button>  
+        <button *ngIf="selectedClase.tipo!='actividad'" (click)="saveCompetenciasClase()" class="blueButton radius4 ft12 h28px mgr10 gray-1" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+            <img [src]="icon.save" class="h16px pdr05 makeWhite" alt="">
+            Guadar
+        </button>
+        <ng-container *ngIf="selectedClase.tipo=='actividad'">
+
+            <!-- <button *ngIf="activeStepCompetencias<2" class="blueButton radius4 ft12 h28px mgr10 gray-1" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                <img [src]="icon.chevronRight" class="h16px pdr05 makeWhite" alt="">
+            </button>    -->
+            <button *ngIf="activeStepCompetencias<2" (click)="advanceTabCompetencia()"  class="blueButton radius4 ft12 h28px mgr10 gray-1" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                Continuar
+                <img [src]="icon.chevronRight" class="h16px pdl05 makeWhite" alt="">
+            </button>
+            <button *ngIf="activeStepCompetencias==2" (click)="saveCompetenciasActividad()" class="blueButton radius4 ft12 h28px mgr10 gray-1" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                <img [src]="icon.save" class="h16px pdr05 makeWhite" alt="">
+                Guadar
+            </button>
+        </ng-container>
+    </div>
+</ng-template>
+
+
+<!-- CLASE COMPETENCIAS MODAL -->
+<ng-template #modalAsignarCompetenciasExamen let-modal>
+    <div class="modal-header bg-web-primary text-white px-3 py-1">
+        <div class="modal-title pd10" fxLayout="row" fxLayoutAlign="start center">
+            <img [src]="icon.flash" class="h18px pdr05" alt="">
+            <span class="ft16 ft600 gray-10">Asignar nuevas competencias</span>
+        </div>
+        <img style="cursor: pointer;" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px"  alt="">
+    </div>
+    <div class="modal-body">
+        <div fxLayout="column" class="fw pdt10">
+            <ng-container>
+                <div *ngFor="let categoria of competenciasSelectedClase" fxLayout="column" class="fw pdb10">
+                    <!-- Contenedor para la categoría y el ícono -->
+                    <div fxLayout="row" class="category-container">
+                        <span class="ft400 pdb03 flex-fill">
+                            <!-- {{categoria|json}} -->
+                            {{categoria.categoria?.name ? categoria.categoria.name: categoria.name | titlecase}}
+                            ({{categoria.competencias.length}})
+                        </span>
+                        <!-- Asumiendo que deseas agregar un ícono aquí -->
+                        <img *ngIf="categoria['expanded']" (click)="categoria['expanded'] = !categoria['expanded'];" [src]="icon.chevronUp" class="h16px pdr05 cursorPointer" alt="">
+                        <img *ngIf="!categoria['expanded']" (click)="categoria['expanded'] = !categoria['expanded'];" [src]="icon.chevronDown" class="h16px pdr05 cursorPointer" alt="">
+                    </div>
+                    <!-- Displaying Chips -->
+                    <mat-chip-listbox *ngIf="categoria['expanded']" selectable multiple aria-label="Fish selection" class="fw contenedor-chips pdt05" style="max-height: 100vh !important;">
+                        <mat-chip-option class="custom-chip" *ngFor="let competencia of categoria.competencias" (click)="competencia.selected = !competencia.selected;getSelectedCategoriasCompetencias()" [selected]="competencia.selected">
+                            {{competencia.name | titlecase}}
+                            <img *ngIf="competencia.selected" [src]="icon.close" class="makeWhite h16px pdl05" alt="">
+                            <img *ngIf="!competencia.selected" [src]="icon.addNew" class="makeGray h14px pdl05" alt="">
+                        </mat-chip-option>
+                    </mat-chip-listbox>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button (click)="modal.dismiss()" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+            Cancelar
+        </button>  
+        <button (click)="saveCompetenciasPregunta()" class="blueButton radius4 ft12 h28px mgr10 gray-1" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+            <img [src]="icon.save" class="h16px pdr05 makeWhite" alt="">
+            Guadar
+        </button>
+    </div>
+</ng-template>
+
+
+<!-- CLASE COMPETENCIAS MODAL -->
+<ng-template #modalFinalizarCurso let-modal>
+    <div class="modal-header bg-web-primary text-white px-3 py-1">
+        <div class="modal-title pd10" fxLayout="row" fxLayoutAlign="start center">
+            <img [src]="icon.catalog" class="h18px pdr05" alt="">
+            <span class="ft16 ft600 gray-10">¡Creaste un nuevo cruso!</span>
+        </div>
+        <img style="cursor: pointer;" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px"  alt="">
+    </div>
+    <div class="modal-body">
+        <div fxLayout="row" class="fw">
+            <!-- Espacio para la imagen -->
+            <div fxFlex="50" fxLayout="row" fxLayoutAlign="center center">
+                <img src="../../../assets/images/cursos/teamwork high five-pana.svg" alt="Descripción" class="w-80">
+            </div>
+    
+            <!-- Espacio para el texto y los botones -->
+            <div fxFlex="50" fxLayout="column" fxLayoutAlign="center center">
+                <!-- Texto encima de los botones -->
+                <div class="text-center mb-3">
+                    ¿Deseas publicar el curso?
+                </div>
+    
+                <!-- Botones -->
+                <div fxLayout="row" fxLayoutAlign="space-around center">
+                    <button class="yellowButton radius4 ft12 h28px" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                        <img [src]="icon.save" class="h16px makeWhite pdr05" alt="">
+                        Más tarde
+                    </button>
+                    <button class="blueButton radius4 ft12 h28px mgl10 gray-1" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                        Publicar
+                        <img [src]="icon.send" class="h16px makeWhite pdl05" alt="">
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- <div class="modal-footer">
+        <button (click)="modal.dismiss()" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+            Cancelar
+        </button>  
+        <button class="blueButton radius4 ft12 h28px mgr10 gray-1" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+            <img [src]="icon.save" class="h16px pdr05 makeWhite" alt="">
+            Guadar
+        </button>
+    </div> -->
+</ng-template>
+
+
+<!-- CLASE DETAIL MODAL -->
+<ng-template #modalActividadDetailRevisar let-modal>
+    <div class="modal-header bg-web-primary text-white px-3 py-1">
+        <div class="modal-title pd10 ">
+            <img [src]="icon[getIconClase(selectedClase.tipo)]" class="h18px pdr05" alt="">
+            <span class="ft16 ft600 gray-10">Vista previa {{selectedClase.tipo}} - {{selectedClase.titulo? selectedClase.titulo: 'sin título'}}</span>
+        </div>
+        <img style="cursor: pointer;" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px"  alt="">
+    </div>
+    <div class="modal-body">
+        <div  fxLayout="row" fxLayoutGap="60px">
+            <div fxFlex="100%" class="smallScroll" style="overflow-y: auto;">
+                <!-- Informacion basica -->
+                <div class="pdr05">
+                    <!-- tab vista actividad -->
+                    <ng-container>
+                        <div fxFlex fxLayout="column" class="contanier pdl10 pdt10">
+                            <ng-container>
+                                <!-- aqui van los preguntas que se van creando -->
+                                <div *ngFor="let question of selectedClase.activity.questions; let questionIndex = index" class="{{question.isInvalid?'ContainerModuloInvalid':'ContainerModulo'}}">
+                                    <div fxLayout="row" fxLayoutAlign="space-between start" class="fw pd05 pdb0">
+                                        <div fxLayout="row" fxLayoutGap="10px" class="fw">
+                                            <div class="ft500 ft12">
+                                                <!-- numero pregunta -->
+                                                Pregunta {{questionIndex+1}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Contenedor de las preguntas -->
+                                    <div class="pd05">
+                                        <div fxLayout="row" fxLayoutAlign="space-between center">
+                                            <div fxLayout="row" fxLayoutGap="0.625">
+                                                <div class="pdr05">
+                                                    {{ question.type.displayName }}
+                                                </div>
+                                            </div>
+                                            <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px">
+                                                <label>Puntos:</label>
+                                                <span>{{question.points}}</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div fxLayout="row" fxLayoutAlign="start center" class="pdt10">
+                                            <!-- imagen -->
+                                            <div fxFlex="30" *ngIf="question.image">
+                                                <img [src]="question.image" alt="" class="w-90" style="max-height: 200px;">
+                                            </div>
+                                            
+                                            <!-- area dependiete de la pregunta -->
+                                            <div [fxFlex]="question.image ? '70' : '100'">
+                                                <div [innerHTML]="question.render" *ngIf="question.type.value == questionTypesIn.TYPE_COMPLETE_VALUE"></div>
+                                                
+                                                <div *ngIf="question.type.value == questionTypesIn.TYPE_SINGLE_CHOICE_VALUE">
+                                                    <span class="ft14 ft500"> {{ question.text }} </span>
+                                                    <div class="mgt10" fxLayout="column">
+                                                        <div fxLayout="row" fxLayoutAlign="space-between center" *ngFor="let option of question.options; let optionIndex = index" class="mgt05">
+                                                            <span class="pdr05">{{ optionIndex + 1 }}. {{ option.text }}</span>
+                                                            <input type="radio" [name]="questionIndex" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div *ngIf="question.type.value == questionTypesIn.TYPE_MULTIPLE_CHOICE_VALUE">
+                                                    <span class="ft14 ft500"> {{ question.text }} </span>
+                                                    <div class="mgt10" fxLayout="column">
+                                                        <div fxLayout="row" fxLayoutAlign="space-between center" *ngFor="let option of question.options; let optionIndex = index" class="mgt05">
+                                                            <span class="pdr05">{{ optionIndex + 1 }}. {{ option.text }}</span>
+                                                            <input type="checkbox" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div *ngIf="question.type.value == questionTypesIn.TYPE_TRUE_OR_FALSE_VALUE">
+                                                    <span class="ft14 ft500"> {{ question.text }} </span>
+                                                    <div class="mgt10" fxLayout="column">
+                                                        <div fxLayout="row" fxLayoutAlign="space-between center">
+                                                            <span fxFlex="60" class="ft14 ft500">Enunciado</span>
+                                                            <div class="centertext w200px">
+                                                                <span fxFlex="50" class="ft14 ft500">V</span>
+                                                                <span fxFlex="50" class="ft14 ft500">F</span>
+                                                            </div>
+                                                        </div>
+                                                        <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt05" *ngFor="let option of question.options; let optionIndex = index">
+                                                            <div fxFlex="60" fxLayout="row" fxLayoutGap="1rem">
+                                                                <span>{{ optionIndex + 1 }}. {{ option.text }}</span>
+                                                            </div>
+                                                            <div class="centertext w200px">
+                                                                <input fxFlex="50" [name]="questionIndex.toString() + optionIndex.toString()" type="radio" [value]="true">
+                                                                <input fxFlex="50" [name]="questionIndex.toString() + optionIndex.toString()" type="radio" [value]="false" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>                                    
+                                </div>
+                            </ng-container>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button (click)="modal.dismiss()" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+            Cancelar
+        </button>  
+    </div>
+</ng-template>

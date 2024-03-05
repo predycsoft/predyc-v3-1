@@ -1,0 +1,698 @@
+<!-- <div class="modal-header bg-web-primary px-3 py-1">
+    HOLAAAA
+    {{ existingActivity | json }}
+    <button class="blueButton" (click)="onSubmit()">Submit</button>
+</div> -->
+
+<form [formGroup]="mainForm" (ngSubmit)="onSubmit()">
+    <div class="modal-header bg-web-primary text-white px-3 py-1" >
+        <div class="modal-title pd10 ">
+            <img [src]="icon.chess" class="h18px pdr05" alt="">
+            <span class="ft16 ft600 gray-10">{{ mainForm.get('modalPage1.title').value ? 'Vista previa - ' + mainForm.get('modalPage1.title').value : 'Crear actividad'}}</span>
+        </div>
+    </div>
+    <div class="modal-body">
+        <div fxLayout="row">
+            <div class="fw pdl10 pdr10 pdt10">
+                <div class="fw">
+                    <div class="stepper pdb10">
+                        <div class="step" *ngFor="let item of stepsActividad; let i = index">
+                            <div (click)="activeStep > i ? activeStep = i+1 : '' " class="no-select {{activeStep == i+1 ? 'titleActive ft400' : 'title'}}  {{ activeStep > i ? 'cursorPointer' : ''}}">{{ item }}</div>
+                            <div class="mgr05" *ngIf="i < stepsActividad.length - 1">
+                                <img [src]="icon.chevronRight" class=" {{activeStep == i+1 ? 'makeGray8' :  'makeGray'}}" alt="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div  fxLayout="row" fxLayoutGap="20px">
+            <div fxFlex="65%" class="smallScroll" style="overflow-y: auto;">
+                <div class="pdr05">
+                    <!-- Informacion basica -->
+                    <ng-container *ngIf="activeStep === 1">
+                        <div formGroupName="modalPage1" fxLayout="column" class="container pdl10 pdt10">
+                            <div fxLayout="row">
+                                <span class="titleActive ft400">Información básica</span>
+                            </div>
+                            <div fxLayout="column mgr20 fw">
+                                <!-- formulario de avtividad -->
+                                <div class="form-group pdt10">
+                                    <label>Título</label>
+                                    <div class="position-relative custom-input-container">
+                                        <img [src]="icon.chess" class="h20px input-icon" alt="">
+                                        <input
+                                            formControlName="title"
+                                            [class.is-invalid]="mainForm.get('modalPage1.title').errors && displayErrors"
+                                            type="text" 
+                                            class="form-control custom-input"
+                                            placeholder="Escriba el título de la actividad aquí"
+                                            >
+                                    </div>
+                                    <div 
+                                        class="custom-invalid-feedback"
+                                        *ngIf="mainForm.get('modalPage1.title').errors && displayErrors"
+                                        > 
+                                        Debe indicar el título de la actividad
+                                    </div>
+                                </div>
+                                <div class="form-group pdt10">
+                                    <label>Descripción</label>
+                                    <textarea rows="4" 
+                                    [class.is-invalid]="mainForm.get('modalPage1.description').errors && displayErrors"
+                                    formControlName="description" type="text" class="form-control" placeholder="Escriba una pequeña descripción" style="resize: none;"></textarea>
+                                    <div 
+                                        class="custom-invalid-feedback"
+                                        *ngIf="mainForm.get('modalPage1.description').errors && displayErrors"
+                                        > 
+                                        Debe indicar la Descripción de la actividad
+                                    </div>
+                                </div>
+                                <div class="form-group pdt10 w-40">
+                                    <label>Duración estimada (minutos)</label>
+                                    <input formControlName="duration"
+                                        [class.is-invalid]="mainForm.get('modalPage1.duration').errors && displayErrors"
+                                        type="number"
+                                        min="1"
+                                        class="form-control"
+                                        >
+                                    <div
+                                        class="custom-invalid-feedback"
+                                        *ngIf="mainForm.get('modalPage1.duration').errors && displayErrors"
+                                        >
+                                        <div *ngIf="mainForm.get('modalPage1.duration').errors?.required">
+                                            Es obligatorio especificar la duración de la actividad
+                                        </div>
+                                        <div *ngIf="mainForm.get('modalPage1.duration').errors?.min">
+                                            La duracion minima de la actividad debe ser al menos 1 minuto
+                                        </div>
+                                        <div *ngIf="mainForm.get('modalPage1.duration').errors?.pattern">
+                                            La duración de la actividad debe ser un número
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>   
+                        </div>
+                    </ng-container>
+                    <!-- Skills -->
+                    <ng-container *ngIf="activeStep === 2">
+                        <div
+                            *ngIf="mainForm.get('modalPage2.testSkills').hasError('minLengthArray') && displayErrors"
+                            class="custom-invalid-feedback"
+                            >
+                            Debe seleccionar al menos una competencia
+                        </div>
+                        <app-skills-selector-v2
+                            [selectedSkills]="selectedTestSkills"
+                            [inputSkills]="skills"
+                            [inputCategories]="categories"
+                            [arrangeByCategory]="true"
+                            (onSelectedSkill)="addSkillToTest($event)"
+                            (onRemovedSkill)="removeSkillFromTest($event)"
+                            >
+                        </app-skills-selector-v2>
+                    </ng-container>
+                    <!-- Preguntas -->
+                    <ng-container *ngIf="activeStep === 3">
+                        <div formGroupName="modalPage3" fxFlex fxLayout="column" class="container pdl10 pdt10">
+                            <ng-container formArrayName="questions">
+                                <!-- aqui van los preguntas que se van creando -->
+                                <div
+                                    *ngFor="let question of questions.controls; let i = index"
+                                    [formGroupName]="i"
+                                    class="{{ question.invalid && displayErrors ? 'containerQuestions--invalid' : ''}} containerQuestions pd10"
+                                    >
+                                    <div fxLayout="row" fxLayoutAlign="space-between start" class="fw">
+                                        <div fxLayout="row" fxLayoutGap="10px" class="fw">
+                                            <div class="ft500 ft12">
+                                                <!-- numero pregunta -->
+                                                Pregunta {{i+1}} {{ question.get('text').value ? '- ' + (question.get('text').value.length > questionMaxSize ? (question.get('text').value | slice:0:questionMaxSize) + '...' : question.get('text').value) : '' }}
+                                            </div>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="0.625">
+                                            <img (click)="removeQuestion(i)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash" alt="remove question button">
+                                            <img 
+                                                (click)="toggleExpandedQuestion(i)"
+                                                [src]="questionStatus[i].expanded ? icon.chevronUp : icon.chevronDown"
+                                                class="h16px pdr05 cursorPointer" alt="expand questions button"
+                                                >
+                                        </div>
+                                    </div>
+                                    <!-- Contenedor de las preguntas -->
+                                    <div *ngIf="questionStatus[i].expanded" class="mgt05">
+                                        <div fxLayout="row" fxLayoutAlign="space-between center">
+                                            <!-- Botones alineados a la izquierda -->
+                                            <div fxLayout="row" fxLayoutGap="0.625">
+                                                <div *ngFor="let questionType of questionTypes" class="pdr05">
+                                                    <button
+                                                        (click)="onQuestionTypeChange(i, questionType.value)"
+                                                        class="{{ question.get('type').value === questionType.value ? 'backGray4': 'grayButton' }} radius4 ft12 h28px gray-8"
+                                                        type="button"
+                                                        >
+                                                        {{ questionType.displayName }}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Label y input alineados a la derecha -->
+                                            <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px">
+                                                <label>Puntos</label>
+                                                <input
+                                                    formControlName="points"
+                                                    [class.is-invalid]="question.get('points').errors && displayErrors"
+                                                    type="number"
+                                                    min="0"
+                                                    class="form-control w-50"
+                                                    >
+                                            </div>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="start center" class="pdt10">
+                                            <button
+                                                (click)="questionImage.click()"
+                                                class="grayButton radius4 ft12 h28px mgr10 gray-8"
+                                                fxLayout="row"
+                                                fxLayoutGap="0.625"
+                                                fxLayoutAlign="center center"
+                                                type="button"
+                                                >
+                                                <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
+                                                Adjuntar imagen
+                                            </button>
+                                            <input #questionImage type="file" (change)="uploadQuestionImage(i, $event)" hidden accept="image/webp" />
+                                        </div>
+                                        <div *ngIf="question.get('image.url').value" class="form-group pdt10">
+                                            <div fxLayout="column">
+                                                <div fxLayout="row">
+                                                    <span>{{ question.get('image.file').value.name }}&nbsp;</span>
+                                                    <span
+                                                        (click)="questionStatus[i].visibleImage = !questionStatus[i].visibleImage"
+                                                        class="blueLink cursorPointer"
+                                                        > {{ questionStatus[i].visibleImage ? 'Ocultar archivo' : 'Ver archivo'}} 
+                                                    </span>
+                                                    <img (click)="deleteQuestionImage(i)" [src]="icon.close" class="h18px pdr05 makeRed cursorPointer" alt="">
+                                                 </div>
+                                                <div fxLayout="row" *ngIf="questionStatus[i].visibleImage" >
+                                                    <img [src]="question.get('image.url').value" style="max-height: 200px;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div fxLayout="row">
+                                            <div class="form-group pdt10 fw">
+                                                <textarea
+                                                    formControlName="text"
+                                                    [class.is-invalid]="question.get('text').errors && displayErrors"
+                                                    rows="3" 
+                                                    type="text"
+                                                    class="form-control"
+                                                    placeholder="Escriba aqui la pregunta"
+                                                    style="resize: none;">
+                                                </textarea>
+                                                <div
+                                                    class="custom-invalid-feedback"
+                                                    *ngIf="question.get('text').errors && displayErrors"
+                                                    >
+                                                    Debe indicar la pregunta.
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div fxLayout="row" class="pdt05">
+                                            <span [innerHTML]="getQuestionInstruction(i)"></span>
+                                        </div>
+                                        <!-- area dependiente de la pregunta -->
+                                        <div fxLayout="row" class="pdt05 fw">
+                                            <!-- Completación -->
+                                            <div class="fw" fxLayout="column" *ngIf="question.get('type').value == QuestionClass.TYPE_COMPLETE">
+                                                <!-- <div>POR DEFINIR</div> -->
+                                                <div fxLayout="row" class="mgt10">
+                                                    <span>Haga click en confirmar cuando haya terminado de escribir la pregunta</span>
+                                                </div>
+                                                <div fxLayout="row" class="pdt05 pdb05">
+                                                    <button
+                                                        (click)="parseQuestionText(i)"
+                                                        class="grayButton radius4 ft12 h28px mgr10 gray-8"
+                                                        fxLayout="row"
+                                                        fxLayoutGap="0.625"
+                                                        fxLayoutAlign="center center"
+                                                        type="button"
+                                                        >
+                                                        <img [src]="icon.check" class="h16px pdr05" alt="">
+                                                        Confirmar
+                                                    </button>
+                                                </div>
+                                                <div *ngFor="let placeHolder of questionStatus[i].placeholders; let placeholderIndex = index" class="ContainerModulo fw pd05">        
+                                                    <div fxLayout="row" fxLayoutAlign="start center">
+                                                        {{ placeholderIndex + 1 }}. {{placeHolder}}
+                                                    </div>
+                                                    <div fxLayout="column" formArrayName="options">
+                                                        <div fxLayout="row" class="pdb05">
+                                                            <span class="gray-8 ft700">Opciones</span>
+                                                        </div>
+                                                        <div 
+                                                            *ngFor="let option of options(i).controls; let optIndex = index"
+                                                            fxLayout="row"
+                                                            [formGroupName]="optIndex"
+                                                            >
+                                                            <div *ngIf="option.get('placeholder').value === placeHolder">
+                                                                <div fxLayout="column" class="mgb10">
+                                                                    <div fxLayout="row" fxLayoutAlign="space-between center" class="fw">
+                                                                        <input
+                                                                            formControlName="text"
+                                                                            [class.is-invalid]="option.get('text').errors && displayErrors"
+                                                                            type="text"
+                                                                            class="form-control w-40"
+                                                                            placeholder=""
+                                                                        >
+                                                                        <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
+                                                                            <input [name]="'radioGroup' + i + placeholderIndex" type="radio" (change)="onSingleOptionSelected(i, optIndex)" [value]="optIndex"/>
+                                                                            <img (click)="removeOption(i, optIndex)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash pdl05" alt="">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="custom-invalid-feedback" *ngIf="option.get('text').errors && displayErrors">
+                                                                        Debe indicar la opción
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div fxLayout="row">
+                                                            <span (click)="addOption(i, placeHolder)" class="blueLink radius4 ft12 h28px no-select">
+                                                                <img [src]="icon.addNew" class="h12px pdr05 makeBlue" alt="">
+                                                                Agregar opción
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div *ngIf="questionStatus[i].placeholders.length > 0">
+                                                    <button
+                                                        (click)="showDisplayText(i)"
+                                                        class="grayButton radius4 ft12 h28px mgr10 gray-8"
+                                                        fxLayout="row"
+                                                        fxLayoutGap="0.625"
+                                                        fxLayoutAlign="center center"
+                                                        type="button"
+                                                        >
+                                                        <img [src]="icon.check" class="h16px pdr05" alt="">
+                                                        Renderizar pregunta
+                                                    </button>
+                                                </div>
+                                                <div
+                                                    *ngIf="questionStatus[i].textToRender"
+                                                    [innerHTML]="questionStatus[i].textToRender"
+                                                    class="gray-8 ft12 pdt10"
+                                                    >
+                                                </div>
+                                            </div>
+                                            <!-- opcion multiple -->
+                                            <div class="fw" *ngIf="question.get('type').value === QuestionClass.TYPE_MULTIPLE_CHOICE">
+                                                <div fxLayout="column" formArrayName="options">                                                    
+                                                    <div
+                                                        *ngFor="let option of options(i).controls; let optIndex = index"
+                                                        fxLayout="row"
+                                                        class="fw"
+                                                        [formGroupName]="optIndex"
+                                                        >
+                                                        <div fxLayout="column" class="mgb10">
+                                                            <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem" class="fw">             
+                                                                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+                                                                    <span class="gray-6">{{ optIndex + 1 }}.</span>
+                                                                    <input
+                                                                        formControlName="text"
+                                                                        [class.is-invalid]="option.get('text').errors && displayErrors"
+                                                                        type="text"
+                                                                        class="form-control"
+                                                                        placeholder=""
+                                                                        >
+                                                                </div>
+                                                        
+                                                                <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
+                                                                    <input formControlName="isCorrect" type="checkbox" value="{{ optIndex }}"/>
+                                                                    <img (click)="removeOption(i, optIndex)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash pdl05" alt="">
+                                                                </div>
+                                                            </div>
+                                                            <div class="custom-invalid-feedback" *ngIf="option.get('text').errors && displayErrors">
+                                                                Debe indicar la opción
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div fxLayout="row">
+                                                        <span (click)="addOption(i)" class="blueLink radius4 ft12 h28px no-select">
+                                                            <img [src]="icon.addNew" class="h12px pdr05 makeBlue" alt="">
+                                                            Agregar opción
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- opcion simple -->
+                                            <div class="fw" fxLayout="column" *ngIf="question.get('type').value == QuestionClass.TYPE_SINGLE_CHOICE">
+                                                <div
+                                                    fxLayout="column"
+                                                    formArrayName="options"
+                                                    >
+                                                    <div
+                                                        *ngFor="let option of options(i).controls; let optIndex = index"
+                                                        fxLayout="row"
+                                                        class="fw"
+                                                        [formGroupName]="optIndex"
+                                                        >
+                                                        <div fxLayout="column" class="mgb10">
+                                                            <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem" class="fw">             
+                                                                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+                                                                    <span class="gray-6">{{ optIndex + 1 }}.</span>
+                                                                    <input
+                                                                        formControlName="text"
+                                                                        [class.is-invalid]="option.get('text').errors && displayErrors"
+                                                                        type="text"
+                                                                        class="form-control"
+                                                                        placeholder=""
+                                                                        >
+                                                                </div>
+                                                        
+                                                                <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
+                                                                    <input [name]="'radioGroup' + i" type="radio" (change)="onSingleOptionSelected(i, optIndex)" [value]="optIndex"/>
+                                                                    <img (click)="removeOption(i, optIndex)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash pdl05" alt="">
+                                                                </div>
+                                                            </div>
+                                                            <div class="custom-invalid-feedback" *ngIf="option.get('text').errors && displayErrors">
+                                                                Debe indicar la opción
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div fxLayout="row">
+                                                        <span (click)="addOption(i)" class="blueLink radius4 ft12 h28px no-select">
+                                                            <img [src]="icon.addNew" class="h12px pdr05 makeBlue" alt="">
+                                                            Agregar opción
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- opcion true or false -->
+                                            <div class="fw" fxLayout="column" *ngIf="question.get('type').value == QuestionClass.TYPE_TRUE_OR_FALSE">
+                                                <div
+                                                    fxLayout="column"
+                                                    formArrayName="options">
+                                                    <div
+                                                        *ngFor="let option of options(i).controls; let optIndex = index"
+                                                        fxLayout="row"
+                                                        class="fw"
+                                                        [formGroupName]="optIndex"
+                                                        >
+                                                        <div fxLayout="column" class="mgb10">
+                                                            <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem" class="fw">             
+                                                                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+                                                                    <span class="gray-6">{{ optIndex + 1 }}.</span>
+                                                                    <input
+                                                                        formControlName="text"
+                                                                        [class.is-invalid]="option.get('text').errors && displayErrors"
+                                                                        type="text"
+                                                                        class="form-control"
+                                                                        placeholder=""
+                                                                        >
+                                                                </div>
+                                                        
+                                                                <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
+                                                                    <input formControlName="isCorrect" type="checkbox" value="{{ optIndex }}"/>
+                                                                    <img (click)="removeOption(i, optIndex)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash pdl05" alt="">
+                                                                </div>
+                                                            </div>
+                                                            <div class="custom-invalid-feedback" *ngIf="option.get('text').errors && displayErrors">
+                                                                Debe indicar la opción
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div fxLayout="row">
+                                                        <span (click)="addOption(i)" class="blueLink radius4 ft12 h28px no-select">
+                                                            <img [src]="icon.addNew" class="h12px pdr05 makeBlue" alt="">
+                                                            Agregar opción
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- <ng-container *ngIf="pregunta.isInvalid">
+                                            <div fxLayout="row" *ngFor="let mensaje of pregunta.InvalidMessages" fxLayoutAlign="start center">
+                                                <mat-icon class="red-5 ft16">info</mat-icon>
+                                                <span class="redText">{{mensaje}}</span>
+                                            </div>
+                                        </ng-container> -->
+                                        <div>
+                                            <button
+                                                type="button"
+                                                (click)="modifyQuestionSkills(modalTemplate, i)"
+                                                class="grayButton radius4 ft12 h28px mgr10 gray-8"
+                                                fxLayout="row"
+                                                fxLayoutGap="0.625"
+                                                fxLayoutAlign="center center"
+                                                >
+                                                <img [src]="icon.flash" class="h16px pdr05" alt="">
+                                                <!-- Seleccionar competencias -->
+                                                <div>
+                                                    Modificar competencias
+                                                </div>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <!-- Contenedor de los errores -->
+                                    <!-- <div class="pd10" *ngIf="question.errors && question.touched"> -->
+                                    
+                                    <div 
+                                        class="custom-invalid-feedback"
+                                        *ngIf="question.invalid && displayErrors"
+                                        >
+                                        <!-- <div *ngIf="question.get('text').errors?.required">
+                                            El texto de la pregunta es requerido
+                                        </div> -->
+                                        <div *ngIf="question.get('points').errors && displayErrors"
+                                        >
+                                            <div *ngIf="question.get('points').errors?.required">
+                                                Es obligatorio especificar el puntaje de la actividad
+                                            </div>
+                                            <div *ngIf="question.get('points').errors?.min">
+                                                La actividad debe tener un puntaje distinto de cero
+                                            </div>
+                                            <div *ngIf="question.get('points').errors?.pattern">
+                                                El puntaje de la actividad debe ser un número
+                                            </div>
+                                        </div>
+                                        <div *ngIf="question.errors?.wrongOptionsLength">
+                                            La pregunta debe tener más de una opción
+                                        </div>
+                                        <div *ngIf="question.errors?.wrongSkillsLength">
+                                            La pregunta debe tener al menos una competencia
+                                        </div>
+                                        <div *ngIf="question.errors?.wrongCorrectOptionsLength">
+                                            La pregunta debe tener una sola opción correcta
+                                        </div>
+                                        <div *ngIf="question.errors?.lessThanMinCorrectOptionsLength">
+                                            La pregunta debe tener una o mas opciones correctas
+                                        </div>
+                                        <div *ngIf="question.errors?.wrongPlaceholdersLength">
+                                            La pregunta debe tener al menos un marcador de referencia
+                                        </div>
+                                        <div *ngIf="question.errors?.wrongCorrectOptionsLengthPerPlaceholder">
+                                            Cada marcador de referencia de la pregunta debe tener al menos una opción correcta
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-container>
+                            <div fxLayout="row" class="fw">
+                                <div class="mgl40 mgr10 fw">
+                                    <div class="fw mgb10">
+                                        <span (click)="addQuestion()" class="yellowLink radius4 ft12 h28px no-select" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign=" center">
+                                            <img [src]="icon.addNew" class="h12px pdr05 makeYellow" alt="">
+                                            Agregar pregunta
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <!-- tab vista actividad -->
+                    <ng-container *ngIf="activeStep === 4">
+                        <div fxFlex fxLayout="column" class="container pdl10 pdt10">
+                            <ng-container>
+                                <!-- aqui van los preguntas que se van creando -->
+                                <div
+                                    *ngFor="let question of questions.controls; let questionIndex = index"
+                                    class="containerQuestions pdt05"
+                                    >
+                                    <div fxLayout="row" fxLayoutAlign="space-between start" class="fw pd05 pdb0">
+                                        <div fxLayout="row" fxLayoutGap="10px" class="fw">
+                                            <div class="ft500 ft12">
+                                                <!-- numero pregunta -->
+                                                Pregunta {{ questionIndex + 1 }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Contenedor de las preguntas -->
+                                    <div class="pd05">
+                                        <div fxLayout="row" fxLayoutAlign="space-between center">
+                                            <div fxLayout="row" fxLayoutGap="0.625">
+                                                <div class="pdr05">
+                                                    {{ getQuestionTypeDisplayNameByValue(question.get('type').value) }}
+                                                </div>
+                                            </div>
+                                            <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px">
+                                                <label>Puntos:</label>
+                                                <span>{{ question.get('points').value }}</span>
+                                            </div>
+                                        </div>
+                                    
+                                        <div fxLayout="row" class="pdt10">
+                                            <!-- imagen -->
+                                            <div *ngIf="question.get('image.url').value" fxFlex="30">
+                                                <img [src]="question.get('image.url').value" alt="" class="w-90" style="max-height: 200px;">
+                                            </div>
+                                            
+                                            <!-- area dependiente de la pregunta -->
+                                            <div [fxFlex]="question.get('image.url').value ? '30' : '100'" fxLayout="column" class="pdt05 fw">
+                                                <div *ngIf="question.get('type').value == QuestionClass.TYPE_COMPLETE">
+                                                    <span class="ft14 ft500"> {{ question.get('text').value }} </span>
+                                                    <div class="mgt10" fxLayout="row" fxLayoutGap="40px">
+                                                        <div 
+                                                            *ngFor="let placeholder of questionStatus[questionIndex].placeholders;"
+                                                            fxLayout="column"
+                                                            fxLayoutAlign=" center"
+                                                            >
+                                                            <span class="ft12 ft500"> {{ placeholder }} </span>
+                                                            <div *ngFor="let option of options(questionIndex).controls; let optionIndex = index">
+                                                                <span *ngIf="option.get('placeholder').value === placeholder" class="{{ option.get('isCorrect').value ? 'blue-5': '' }} pdr05 mgt05">
+                                                                    {{ option.get('text').value }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div *ngIf="question.get('type').value == QuestionClass.TYPE_SINGLE_CHOICE">
+                                                    <span class="ft14 ft500"> {{ question.get('text').value }} </span>
+                                                    <div class="mgt10" fxLayout="column">
+                                                        <div fxLayout="row" fxLayoutAlign="space-between center" *ngFor="let option of options(questionIndex).controls; let optionIndex = index" class="mgt05">
+                                                            <span class="{{ option.get('isCorrect').value ? 'blue-5': '' }} pdr05">
+                                                                {{ optionIndex + 1 }}. {{ option.get('text').value }}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                    
+                                                <div *ngIf="question.get('type').value == QuestionClass.TYPE_MULTIPLE_CHOICE">
+                                                    <span class="ft14 ft500"> {{ question.get('text').value }} </span>
+                                                    <div class="mgt10" fxLayout="column">
+                                                        <div fxLayout="row" fxLayoutAlign="space-between center" *ngFor="let option of options(questionIndex).controls; let optionIndex = index" class="mgt05">
+                                                            <span class="{{ option.get('isCorrect').value ? 'blue-5': '' }} pdr05">
+                                                                {{ optionIndex + 1 }}. {{ option.get('text').value }}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                    
+                                                <div *ngIf="question.get('type').value == QuestionClass.TYPE_TRUE_OR_FALSE">
+                                                    <span class="ft14 ft500"> {{ question.get('text').value }} </span>
+                                                    <div class="mgt10" fxLayout="column">
+                                                        <div fxLayout="row" fxLayoutAlign="space-between center">
+                                                            <span fxFlex="60" class="ft14 ft500">Enunciado</span>
+                                                            <div class="centertext w200px">
+                                                                <span fxFlex="50" class="ft14 ft500">V</span>
+                                                                <span fxFlex="50" class="ft14 ft500">F</span>
+                                                            </div>
+                                                        </div>
+                                                        <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt05" *ngFor="let option of options(questionIndex).controls; let optionIndex = index">
+                                                            <div fxFlex="60" fxLayout="row" fxLayoutGap="1rem">
+                                                                <span>{{ optionIndex + 1 }}. {{ option.get('text').value }}</span>
+                                                            </div>
+                                                            <div class="centertext w200px">
+                                                                <input fxFlex="50" [name]="questionIndex.toString() + optionIndex.toString()" type="radio" [checked]="option.get('isCorrect').value" [value]="true">
+                                                                <input fxFlex="50" [name]="questionIndex.toString() + optionIndex.toString()" type="radio" [checked]="!option.get('isCorrect').value" [value]="false" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+            <div fxFlex="35%" fxLayout="column" fxLayoutAlign="center center">            
+                <div fxLayout="column" fxLayoutAlign="center center" class="fw fh">
+                    <img  class="pd10" src="../../../assets/images/cursos/Next steps-pana.svg" class="fw" alt="Mi SVG">
+                </div>
+            </div>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt10">
+            <!-- Botón a la izquierda -->
+            <button
+                *ngIf="activeStep > 1"
+                (click)="previousPage()"
+                class="blueButton radius4 ft12 h28px mgr10 gray-1"
+                fxLayout="row"
+                fxLayoutGap="0.625"
+                fxLayoutAlign="center center"
+                type="button"
+                >
+                <img [src]="icon.chevronLeft" class="h16px pdr05 makeWhite" alt="">
+                Regresar
+            </button>        
+            <!-- Contenedor para los dos botones de la derecha -->
+            <div fxLayout="row" fxLayoutGap="10px">               
+                <button
+                    *ngIf="activeStep <= 3"
+                    class="blueButton radius4 ft12 h28px mgr10 gray-1"
+                    (click)="nextPage();"
+                    fxLayout="row"
+                    fxLayoutGap="0.625"
+                    fxLayoutAlign="center center"
+                    type="button"
+                    >
+                    Continuar
+                    <img [src]="icon.chevronRight" class="h16px pdl05 makeWhite" alt="">
+                </button>
+                <!-- [disabled]="!form.valid" -->
+                <button
+                    *ngIf="activeStep == 4" 
+                    class="blueButton radius4 ft12 h28px mgr10 gray-1"
+                    fxLayout="row"
+                    fxLayoutGap="0.625"
+                    fxLayoutAlign="center center"
+                    type="submit"
+                    >
+                    Finalizar
+                    <img [src]="icon.chevronRight" class="h16px pdl05 makeWhite" alt="">
+                </button>        
+                <button
+                    class="blueButton radius4 ft12 h28px mgr10 gray-1"
+                    fxLayout="row"
+                    fxLayoutGap="0.625"
+                    fxLayoutAlign="center center"
+                    type="button"
+                    (click)="showCurrentForm()"
+                    >
+                    DEBUG
+                </button>        
+            </div>
+        </div>
+    </div>
+</form>
+
+<!-- CLASE COMPETENCIAS MODAL -->
+<ng-template #modalTemplate let-modal>
+    <div class="modal-header bg-web-primary text-white px-3 py-1">
+        <div class="modal-title pd10" fxLayout="row" fxLayoutAlign="start center">
+            <img [src]="icon.flash" class="h18px pdr05" alt="">
+            <span class="ft16 ft600 gray-10">Asignar competencias</span>
+        </div>
+        <img style="cursor: pointer;" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px"  alt="">
+    </div>
+    <div class="modal-body">
+        <!-- <div>Modal body</div> -->
+        <app-skills-selector-v2
+            [selectedSkills]="selectedQuestionSkills"
+            [inputSkills]="selectedTestSkills"
+            [inputCategories]="[]"
+            [arrangeByCategory]="false"
+            (onSelectedSkill)="addQuestionSkill(selectedQuestionIndex, $event)"
+            (onRemovedSkill)="removeQuestionSkill(selectedQuestionIndex, $event)"
+            >
+        </app-skills-selector-v2>
+    </div>
+</ng-template>

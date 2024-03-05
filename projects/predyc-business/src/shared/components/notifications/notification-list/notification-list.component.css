@@ -1,0 +1,148 @@
+.table {
+    padding-top: 20%;
+    width: 100%;
+    align-items: center;
+}
+
+.mat-mdc-form-field {
+    font-size: 14px;
+    width: 100%;
+}
+
+.rounded-container {
+    border-radius: 24px ; 
+    overflow: hidden; 
+    width: fit-content;
+}
+
+.filter-item:first-child {
+    border-top-left-radius: 24px;
+    border-bottom-left-radius: 24px;
+}
+
+.filter-item:last-child {
+    border-top-right-radius: 24px;
+    border-bottom-right-radius: 24px;
+}
+
+.filter-item {
+    cursor: pointer;
+    padding: 4px 20px;
+    background-color: #ffffff;
+    border: .5px solid #ddd;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.filter-item:hover {
+    background-color: #f5f5f5;
+}
+
+.filter-item.active {
+    background-color: #FFE084; 
+}
+
+.filter-item span {
+    font-weight: 500;
+}
+
+
+
+.mat-expansion-panel {
+    border: 1px none var(--gray-4) !important;  /* Reemplaza 'tuColorPersonalizado' con el color que desees, como #ff0000 para rojo */
+    border-radius: 0px !important;
+    box-shadow: none !important;  /* Elimina cualquier sombra que pudiera tener */
+  }
+  
+  .mat-expansion-panel-header {
+    border-radius: 0px 0px 0 0 !important;  /* Radio solo para la parte superior */
+    border: 1px solid var(--gray-4);
+  }
+
+  .mat-expansion-panel-header.mat-expanded {
+    border-radius: 6px 6px 0 0 !important;  /* Radio solo para la parte superior */
+    border-bottom: none;
+    box-shadow: var(--shadow12);
+  }
+  
+  .mat-expansion-panel-content {
+    border-radius: 0 0 6px 6px !important;  /* Radio solo para la parte inferior */
+  }
+
+  :host ::ng-deep .mat-expansion-panel-body {
+    border: 1px solid var(--gray-4) !important;
+    border-radius: 0 0 6px 6px !important;  /* Radio solo para la parte inferior */
+    max-height: 20rem;
+    overflow-y: scroll;
+    padding: 0px;
+  }
+  
+  .hiding-content .mat-expansion-panel-content {
+    display: none;
+  }
+
+.actions-container{
+    cursor: pointer;
+    padding: 4px 20px;
+    border: .5px solid #c5c5c5;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    border-radius: 6px!important;
+    width: fit-content;
+    display: inline-block;
+    margin: auto;
+}
+
+.mat-accordion .mat-expansion-panel:first-child .mat-expansion-panel-header {
+    border-radius: 6px 6px 0 0 !important;
+}
+
+.mat-mdc-cell{
+    border: none;
+}
+
+.mat-accordion .mat-expansion-panel:last-child .mat-expansion-panel-header {
+    border-radius:0 0  6px 6px !important;
+}
+
+.mat-accordion .mat-expansion-panel:last-child .mat-expansion-panel-header.mat-expanded {
+    border-radius:6px 6px  0px 0px !important;
+}
+
+th, td {
+    padding: 1em;
+    border-left: none !important;
+    border-right: none !important;
+    border-radius: 0px;
+}
+
+ tr:nth-child(odd) td{
+    background-color: #f8f8f8 !important; /* Light gray for odd rows */
+}
+
+ tr:nth-child(even) td{
+    background-color: #fcfcfc !important; /* Lighter gray for even rows */
+}
+
+.shadow-animation {
+    transition: box-shadow 0.5s ease;
+    border: 1px solid #e6e6e6;  
+}
+
+.shadow-animation::before {
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.shadow-animation:hover {
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.15);   
+
+}
+
+.shadow-animation:hover::before {
+    opacity: 1;
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+/* .custom-expansion-panel-content {
+    max-height: 20rem;
+    overflow-y: scroll;
+} */
+  
