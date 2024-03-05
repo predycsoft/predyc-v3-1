@@ -43,5 +43,23 @@
                 <td class="mat-cell" colspan="4">Aún no existe ningún administrador.</td>
             </tr>
         </table>
+        <div *ngIf="addingAdmin" class="">
+            <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="1rem">
+                <span>Nuevo administrador:</span>
+                <!-- <label>Nombre</label> -->
+                <div fxLayout="row" fxLayoutAlign=" center" class="shadow-animation radius20">
+                    <div class="fw fh pdr10 pdl10" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem">
+                        <input type="text" class="catInput ft13" [(ngModel)]="newAdmin.name" placeholder="Nombre" required>
+                    </div>
+                </div>
+                <!-- <label>Email</label> -->
+                <div fxLayout="row" fxLayoutAlign=" center" class="shadow-animation radius20">
+                    <div class="fw fh pdr10 pdl10" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem">
+                        <input type="email" class="catInput ft13" [(ngModel)]="newAdmin.email" placeholder="Email" required>
+                    </div>
+                </div>
+                <button class="blueButton" (click)="saveAdmin()">Guardar</button>
+            </div>
+        </div>        
     </div>
 </div>
