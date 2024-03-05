@@ -1,0 +1,31 @@
+<div *ngIf="firstLoad" fxLayout="column" class="mgt20 mgl20 mgr20">
+    <app-navigate-back targetUrl="/admin/enterprises" class="ft600 ft16 gray-10">Empresas</app-navigate-back>
+    <div fxLayoutAlign="start start" fxLayout="column" class="mgt10">
+        <h6 class="ft500"> {{enterpriseId ? "Editar" : "Agregar"}} empresa cliente</h6>
+        <div *ngIf="enterpriseId" fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
+            <span class="mgr10">Status suscripción: </span> 
+            <!-- <span class="chip">{{enterprise.status}}</span> -->
+            <span *ngIf="enterprise" class="chip">{{"STATUS"}}</span>
+        </div>
+        <div *ngIf="enterpriseId" fxLayout="row" fxLayoutGap="1.6rem" fxLayoutAlign=" center" class="mgt03">
+            <span class="">Id de la empresa: </span>
+            <span class="chip">{{enterpriseId}}</span>
+        </div>
+    </div>
+    <div fxLayout="row" fxLayoutGap="1.5rem" fxLayoutAlign=" center" class="mgt20">
+        <span class="chip ft500 ft12 cursorPointer" (click)="tab = 0" [ngClass]="{'chipDark ft500':tab == 0}">Infomación</span>
+        <span *ngIf="enterpriseId" class="chip ft500 ft12 cursorPointer" (click)="tab = 1"[ngClass]="{'chipDark ft500':tab == 1}">Usuarios</span>
+        <span *ngIf="enterpriseId" class="chip ft500 ft12 cursorPointer" (click)="tab = 2"[ngClass]="{'chipDark ft500':tab == 2}">Pagos</span>
+    </div>
+
+    <div *ngIf="tab === 0" fxLayout="column" class="mgt10">
+        <app-enterprise-info [enterprise]="enterprise" ></app-enterprise-info>
+    </div>
+    <div *ngIf="tab === 1" fxLayout="column" class="mgt10">
+        <app-enterprise-students [enterprise]="enterprise"></app-enterprise-students>
+    </div>
+    <div *ngIf="tab === 2" fxLayout="column" class="mgt10">
+        <app-enterprise-payments></app-enterprise-payments>
+    </div>
+    
+</div>

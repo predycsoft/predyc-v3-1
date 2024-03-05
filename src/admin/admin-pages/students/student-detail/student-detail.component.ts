@@ -48,4 +48,12 @@ export class StudentDetailComponent {
     })
   }
 
+  createSubscription() {
+    console.log("Crear suscripcion")
+  }
+
+  createCharge() {
+    console.log("Crear pago")
+  }
+
 }

@@ -1,0 +1,40 @@
+<form [formGroup]="enterpriseForm" (ngSubmit)="onSubmit()">
+    <div>
+        <label>Nombre de la empresa</label>
+        <input type="text" class="fw" formControlName="name">
+    </div>
+    <div>
+        <label>Resumen</label>
+        <input type="text" class="fw" formControlName="summary">
+    </div>
+    <div>
+        <label>Descripcion</label>
+        <textarea class="fw" maxlength="5000" formControlName="description" > </textarea>
+    </div>
+    <div>
+        <label>Sitio Web</label>
+        <input type="text" class="fw" formControlName="website">
+    </div>
+    <div>
+        <label>Enlace Linkedin</label>
+        <input type="text" class="fw" formControlName="linkedin">
+    </div>
+    <div fxLayout="column" fxLayoutGap="0.5rem" fxLayoutAlign="center start" class="mgt08">
+        <label> Foto de Empresa </label> 
+        <div (click)="fileInput.click()" class="cursorPointer">
+            <img onerror="this.src='assets/images/default/default-user-image.jpg'" [src]="imageUrl" class="avatar10" alt="">
+        </div>
+        <input #fileInput type="file" style="display: none;" (change)="onFileSelected($event)">
+
+    </div>
+    <div fxLayout="row" fxLayoutGap="3rem" fxLayoutAlign="center center">
+        <button class=" blueButtonAnim button-animation h28px mgr10 " fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" type="submit">
+            {{enterprise.id ? "Guardar" : "Crear"}} empresa
+        </button> 
+        <button *ngIf="enterprise.id" class=" redButtonAnim button-animation h28px mgr10 " fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" 
+        type="button" (click)="deleteEnterprise()" >
+            Eliminar empresa
+        </button>  
+    </div>
+
+</form>

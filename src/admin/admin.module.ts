@@ -23,7 +23,13 @@ import { PricesListComponent } from './admin-pages/products/product-list/dialog-
 import { ProductFormComponent } from './admin-pages/products/product-list/dialog-product-form/product-form/product-form.component';
 import { StudentDetailComponent } from './admin-pages/students/student-detail/student-detail.component';
 import { DialogCouponFormComponent } from './admin-pages/products/coupons-list/dialog-coupon-form/dialog-coupon-form.component';
+import { StudentSubscriptionListComponent } from './admin-pages/students/student-detail/student-subscription-list/student-subscription-list.component';
 import { SalesListComponent } from './admin-pages/sales/sales-list/sales-list.component';
+import { EnterpriseDetailComponent } from './admin-pages/enterprise/enterprise-detail/enterprise-detail.component';
+import { EnterpriseInfoComponent } from './admin-pages/enterprise/enterprise-detail/enterprise-info/enterprise-info.component';
+import { EnterpriseStudentsComponent } from './admin-pages/enterprise/enterprise-detail/enterprise-students/enterprise-students.component';
+import { EnterprisePaymentsComponent } from './admin-pages/enterprise/enterprise-detail/enterprise-payments/enterprise-payments.component';
+import { DialogNewLicenseComponent } from './admin-pages/enterprise/enterprise-detail/enterprise-students/dialog-new-license/dialog-new-license.component';
 
 
 @NgModule({
@@ -49,7 +55,13 @@ import { SalesListComponent } from './admin-pages/sales/sales-list/sales-list.co
     PricesListComponent,
     ProductFormComponent,
     DialogCouponFormComponent,
-    SalesListComponent
+    StudentSubscriptionListComponent,
+    SalesListComponent,
+    EnterpriseDetailComponent,
+    EnterpriseInfoComponent,
+    EnterpriseStudentsComponent,
+    EnterprisePaymentsComponent,
+    DialogNewLicenseComponent
   ],
   imports: [
     SharedModule,

@@ -19,6 +19,12 @@ export class SubscriptionService {
 
   ) { }
 
+  getUserSubscriptions$(userRef: DocumentReference<User>): Observable<Subscription[]> {
+    return this.afs.collection<Subscription>(Subscription.collection, ref =>
+      ref.where('userRef', '==', userRef)
+    ).valueChanges()
+  }
+
   getSubscriptions$(): Observable<Subscription[]> {
     return this.afs.collection<Subscription>(Subscription.collection).valueChanges()
   }
