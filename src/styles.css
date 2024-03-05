@@ -1963,6 +1963,12 @@ angular-editor-toolbar button.ae-picker-label {
   max-width: 80%;
 }
 
+
+button .mat-mdc-tab-header-pagination{
+  display: none !important;
+}
+
+
 .mat-expansion-panel {
   border: 1px solid var(--gray-4) !important;  /* Reemplaza 'tuColorPersonalizado' con el color que desees, como #ff0000 para rojo */
   border-radius: 6px !important;

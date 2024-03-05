@@ -14,7 +14,7 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { AngularFirestore,DocumentReference } from '@angular/fire/compat/firestore';
 
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { Activity, Question, QuestionOption } from 'src/shared/models/activity-classes.model';
+import { Activity, Question, QuestionOption, QuestionType } from 'src/shared/models/activity-classes.model';
 //import * as competencias from '../../../../assets/data/competencias.json';
 import { DialogService } from 'src/shared/services/dialog.service';
 import { VimeoUploadService } from 'src/shared/services/vimeo-upload.service';
@@ -38,6 +38,7 @@ import { AlertsService } from 'src/shared/services/alerts.service';
 
 import { VimeoComponent } from 'src/shared/components/vimeo/vimeo.component';
 import VimeoPlayer from '@vimeo/player';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 
 
 
@@ -209,7 +210,8 @@ export class CreateCourseComponent {
             question.competencias = question.skills
           });
           this.examen = data;
-         // //console.log('examen data edit',this.examen)
+          console.log('examen data edit',this.examen)
+          //this.formatExamQuestions();
         }
       });
   }
@@ -1122,6 +1124,115 @@ export class CreateCourseComponent {
       this.openModal(this.endCourseModal)
     }
   }
+
+  questionsFormated = false
+
+  onTabChange(event: MatTabChangeEvent) {
+    if (event.tab.textLabel === 'Examen') {
+      console.log('El tab Examen fue seleccionado');
+      this.formatExamQuestions();
+    }
+  }
+
+  activityAnswers: Array<any>;
+  isSuccess: boolean = null;
+
+  
+  selectedIsCorrect(questionIndex: number, placeholder: string): boolean {
+    return (
+      this.activityAnswers[questionIndex].answerItems.filter(
+        (x) => x.placeholder == placeholder && x.isCorrect && x.answer
+      ).length == 1
+    );
+  }
+
+  updateSelectedOption(
+    questionIndex: number,
+    placeholder: string,
+    selectedValue: string
+  ): void {
+    this.activityAnswers[questionIndex].answerItems
+      .filter((item) => item.placeholder == placeholder)
+      .forEach((item) => {
+        item.answer = item.text === selectedValue;
+      });
+  }
+
+  selectOption(questionIndex: number, optionIndex: number): void {
+    this.checkAnswer(questionIndex,optionIndex)
+  
+    // Additional logic if required when an option is selected
+  }
+
+  questionTypes = QuestionType;
+
+  checkAnswer(questionIndex: number, optionIndex: number): void {
+    switch (this.examen.questions[questionIndex].type.value) {
+      case QuestionType.TYPE_SINGLE_CHOICE_VALUE:
+        {
+          this.activityAnswers[questionIndex].answerItems.forEach(
+            (answerItem, index) => {
+              answerItem.answer = index === optionIndex;
+            }
+          );
+        }
+        break;
+      case QuestionType.TYPE_MULTIPLE_CHOICE_VALUE:
+        {
+          this.activityAnswers[questionIndex].answerItems[optionIndex].answer =
+            !this.activityAnswers[questionIndex].answerItems[optionIndex]
+              .answer;
+        }
+        break;
+      case QuestionType.TYPE_COMPLETE_VALUE:
+        {
+          this.activityAnswers[questionIndex].answerItems.forEach(
+            (answerItem, index) => {
+              answerItem.answer = index === optionIndex;
+            }
+          );
+        }
+
+        break;
+      default:
+        {
+        }
+        break;
+    }
+    //console.log(this.activityAnswers);
+  }
+
+
+
+  formatExamQuestions(){
+
+    console.log('formatExamQuestions')
+    this.updateTriggeQuestionsExam++;
+    setTimeout(() => {
+      if(this.validExam ==null || !this.validExam?.valid || this.validExam.value?.questions?.length == 0){
+        this.updateTriggeQuestionsExam++;
+        console.log('formatExamQuestions invalid')
+      }
+      else{
+        let questions = structuredClone(this.validExam.value.questions)
+        questions.forEach(question => {
+          if(!question.typeFormated){
+            question.typeFormated = this.getTypeQuestion(question.type)
+            if(question.type == 'complete'){
+              this.showDisplayText(question)
+            }
+          }
+        });
+        console.log('revisar',this.examen,questions)
+        if(this.examen){
+          this.examen.questions = questions
+          this.questionsFormated = true
+        }
+      }
+    }, 30);
+  }
+
+
 
   async chackAllInfo(){
     this.showErrorCurso = false;
