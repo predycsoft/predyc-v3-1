@@ -1,34 +1,7 @@
 <div>
     <!-- Admins -->
     <div class="mgt20">
-        <div fxLayout="row" fxLayoutAlign=" center">
-            <h6 class="ft16 ft500 mgt0 mgb0"> Admins</h6>
-            <mat-icon (click)="addAdmins()" class="mgl10 gray-5 cursorPointer ft20 linkIcon">
-                add_circle</mat-icon>
-        </div>
-        <hr>
-        <!-- <table style="width:100%">
-            <tr class="fw">
-                <th class="ft500">Nombre</th>
-                <th class="ft500">Email</th>
-                <th class="ft500">Activación</th>
-                <th class="ft500">Eliminar</th>
-            </tr>
-            <tr *ngFor="let admin of empresa.admins; let i=index; trackBy:customTrackBy">
-                <td class="centertext">{{admins[i].nombre}}</td>
-                <td class="centertext"><input type="text" [(ngModel)]="empresa.admins[i]"
-                        [ngModelOptions]="{standalone: true}" class="fw" fxFlex="95%"></td>
-                <td class="centertext" *ngIf="admins[i].activado == false"><a class="cursorPointer blueLink pdr10"
-                        target="_blank" href="https://empresa.predyc.com/registro"
-                        (click)="guardarEmpresa(true, null, null)">Activar</a></td>
-                <td class="centertext" *ngIf="admins[i].activado == true"><span class="chip"> activado </span></td>
-                <td class="centertext">
-                    <mat-icon class="gray-5 cursorPointer ft20" (click)="eliminarAdmins(i)">
-                        delete_outline
-                    </mat-icon>
-                </td>
-            </tr>
-        </table> -->
+        <app-enterprise-admins-list [enterpriseRef]="enterpriseRef"></app-enterprise-admins-list>
     </div>
    <!-- Licenses -->
     <div class="mgt20">

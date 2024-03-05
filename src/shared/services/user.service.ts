@@ -171,6 +171,18 @@ export class UserService {
     }).valueChanges().pipe(shareReplay(1))
   }
 
+  getUsersByEnterpriseRef$(enterpriseRef: DocumentReference): Observable<User[]> {
+    return this.afs.collection<User>(User.collection, ref => 
+      ref.where("enterprise", "==", enterpriseRef)
+    ).valueChanges()
+  }
+
+  getAdminUsersByEnterpriseRef$(enterpriseRef: DocumentReference): Observable<User[]> {
+    return this.afs.collection<User>(User.collection, ref => 
+      ref.where("enterprise", "==", enterpriseRef).where("role", "==", "admin")
+    ).valueChanges()
+  }
+
   getRatingPointsFromStudyPlan(userStudyPlan: CourseByStudent[], courses: Curso[]): number  {
     let totalScore = 0;  
     const today = new Date().getTime();
