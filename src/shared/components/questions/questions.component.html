@@ -65,7 +65,7 @@
                                 <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
                                 Adjuntar imagen
                             </button>
-                            <input #questionImage type="file" (change)="uploadQuestionImage(i, $event)" hidden accept="image" />
+                            <input #questionImage type="file" (change)="uploadQuestionImage(i, $event)" hidden  accept="image/jpeg, image/png" />
                         </div>
                         <div *ngIf="question.get('image.url').value" class="form-group pdt10">
                             <div fxLayout="column">
@@ -265,7 +265,7 @@
                                                     <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
                                                     Adjuntar imagen
                                                 </button>
-                                                <input #questionOptionImage type="file" (change)="uploadQuestionOptionImage(option, $event)" hidden accept="image" />
+                                                <input #questionOptionImage type="file" (change)="uploadQuestionOptionImage(option, $event)" hidden  accept="image/jpeg, image/png" />
                                                 </div>
                                         
                                                 <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">

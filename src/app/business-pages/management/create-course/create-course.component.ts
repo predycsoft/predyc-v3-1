@@ -806,10 +806,10 @@ export class CreateCourseComponent {
   
       //console.log('activityExamen',activityClass)
       //await this.activityClassesService.saveActivity(activityClass);
+
+      let questionsIds = [];
       this.examen.id = activityClass.id
-  
       for (let pregunta of questions){
-  
         delete pregunta['competencias_tmp'];
         delete pregunta['competencias'];
         delete pregunta['isInvalid'];
@@ -819,6 +819,12 @@ export class CreateCourseComponent {
         delete pregunta['uploading_file_progress'];
         delete pregunta['uploading'];
         await this.activityClassesService.saveQuestion(pregunta,activityClass.id)
+        questionsIds.push(pregunta.id)
+      }
+
+      if(questionsIds.length>0){
+        //remove not present questions
+        await this.activityClassesService.removeQuestions(questionsIds,activityClass.id)
       }
   
     }
@@ -908,7 +914,8 @@ export class CreateCourseComponent {
 
 
                 console.log('questions',questions)
-  
+                let questionsIds = [];
+
                 for (let pregunta of questions){
                   claseLocal.skillsRef = arrayRefSkills;
                   delete pregunta['typeFormated'];
@@ -922,6 +929,11 @@ export class CreateCourseComponent {
                   delete pregunta['uploading'];
                   console.log('save pregunta revisar',pregunta,clase.activity.id)
                   await this.activityClassesService.saveQuestion(pregunta,clase.activity.id)
+                  questionsIds.push(pregunta.id)
+                }
+                if(questionsIds.length>0){
+                  //remove not present questions
+                  await this.activityClassesService.removeQuestions(questionsIds,activityClass.id)
                 }
               }
             }
