@@ -119,7 +119,7 @@ export class StudentListComponent {
             const courseJson = this.courses.find(item => item.id === course.courseRef.id)
             targetHours += (courseJson.duracion/60)
           })
-          const userPerformance: "no plan" | "high" | "medium" | "low" = this.userService.getPerformanceWithDetails(courses);
+          const userPerformance: "no plan" | "high" | "medium" | "low" | "no iniciado"= this.userService.getPerformanceWithDetails(courses);
           const department = this.departments.find(department => department.id === user.departmentRef?.id)
           const ratingPoints: number = this.userService.getRatingPointsFromStudyPlan(courses, this.courses);
           return {

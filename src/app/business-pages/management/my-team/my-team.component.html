@@ -17,14 +17,11 @@
             </button>
         </div>
         <div class="w-25 pdl20">
-            <div fxLayout="row" fxLayoutAlign="space-between center" style="border-bottom: 2px solid #e3e3e3; padding-bottom: .5rem;">
+            <!-- <div fxLayout="row" fxLayoutAlign="space-between center" style="border-bottom: 2px solid #e3e3e3; padding-bottom: .5rem;">
                 <span class="ft14" style="font-weight: bold; color: black;">
-                    Tus perfiles
+                    Perfiles predefinidos
                 </span>
-                <a [routerLink]="['/management/profiles/new']" class="ft14 blue-4" style="font-weight: bold;">
-                    Nuevo perfil
-                </a>
-            </div>
+            </div> -->
         </div>
     </div>
     <div fxLayout="row">
@@ -35,6 +32,18 @@
             </app-student-list>
         </div>
         <div class="w-25 pdl20 mgt10" fxLayout="column" fxLayoutGap="10px">
+
+
+
+            <div fxLayout="row" fxLayoutAlign="space-between center" style="border-bottom: 2px solid #e3e3e3; padding-bottom: .5rem;">
+                <span class="ft14" style="font-weight: bold; color: black;">
+                   Tus Perfiles
+                </span>
+                <a [routerLink]="['/management/profiles/new']" class="ft14 blue-4" style="font-weight: bold;">
+                    Nuevo perfil
+                </a>
+            </div>
+
             <div
                 class=" radius20 pd03 pdl10 pdr20  ft12 profile-container"
                 *ngFor="let profile of profiles"
@@ -43,6 +52,29 @@
                 {{ profile.name }}
                 <img class="profile-arrow" [src]="icon.chevronRight" alt="Go to profile">
             </div>
+
+
+            <div fxLayout="row" fxLayoutAlign="space-between center" style="border-bottom: 2px solid #e3e3e3; padding-bottom: .5rem;">
+                <span class="ft14" style="font-weight: bold; color: black;">
+                    Perfiles predefinidos
+                </span>
+                <!-- <a [routerLink]="['/management/profiles/new']" class="ft14 blue-4" style="font-weight: bold;">
+                    Nuevo perfil
+                </a> -->
+            </div>
+
+
+            <div
+                class=" radius20 pd03 pdl10 pdr20  ft12 profile-container"
+                *ngFor="let profile of profilesPredyc"
+                [routerLink]="['/management/profiles/' + profile.id]"
+                >
+                {{ profile.name }}
+                <img class="profile-arrow" [src]="icon.chevronRight" alt="Go to profile">
+            </div>
+
+
+
         </div>
     </div>
 </div>    

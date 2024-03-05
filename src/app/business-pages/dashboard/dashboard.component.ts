@@ -57,7 +57,7 @@ export class DashboardComponent {
         for (const user of users) {
           const userRef = this.userService.getUserRefById(user.uid);
           const studyPlan: CourseByStudent[] = await this.courseService.getActiveCoursesByStudent(userRef);
-          const userPerformance: "no plan" | "high" | "medium" | "low" = this.userService.getPerformanceWithDetails(studyPlan);
+          const userPerformance: "no plan" | "high" | "medium" | "low" | "no iniciado" = this.userService.getPerformanceWithDetails(studyPlan);
           performances.push(userPerformance);
         }
         this.getUsersRythmData(performances)
@@ -82,7 +82,7 @@ export class DashboardComponent {
     return modalRef
   }
 
-  getUsersRythmData(performances: Array<"no plan" | "high" | "medium" | "low" >){
+  getUsersRythmData(performances: Array<"no plan" | "high" | "medium" | "low"| "no iniciado"  >){
     this.rythms = {
       high: 0,
       medium: 0,
@@ -103,6 +103,9 @@ export class DashboardComponent {
           break;
         case "low":
           this.rythms.low += 1;
+          break;
+          case "no iniciado":
+          this.rythms.noPlan += 1;
           break;
       }
     }

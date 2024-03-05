@@ -68,12 +68,9 @@ export class ActivityClassesService {
         ref = this.afs.collection<Activity>(Activity.collection).doc().ref;
         newActivity.id = ref.id;
       }
-      //const ref = this.afs.collection<Activity>(Activity.collection).doc().ref;
       const dataToSave = typeof newActivity.toJson === 'function' ? newActivity.toJson() : newActivity;
-      await ref.set({ ...dataToSave, id: ref.id }, { merge: true });
+      await ref.set(dataToSave, { merge: true });
       newActivity.id = ref.id;
-      console.log("Activity added succesfully")
-      //this.alertService.succesAlert('Has agregado una actividad exitosamente.')
   } catch (error) {
       newActivity.id = null;
       console.log('error',error,newActivity)

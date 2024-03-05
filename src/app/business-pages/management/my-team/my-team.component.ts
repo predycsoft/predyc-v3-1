@@ -27,13 +27,19 @@ export class MyTeamComponent {
   ){}
 
   profiles: Profile[] = []
+  profilesPredyc: Profile[] = []
   selectedProfile: string
   private profileSubscription: Subscription
   private queryParamsSubscription: Subscription
 
   ngOnInit() {
     this.profileService.loadProfiles()
-    this.profileSubscription = this.profileService.getProfiles$().subscribe(profiles => {if (profiles) this.profiles = profiles})
+    this.profileSubscription = this.profileService.getProfiles$().subscribe(profiles => {
+      if (profiles){
+        this.profiles = profiles.filter(x=>x.enterpriseRef)
+        this.profilesPredyc = profiles.filter(x=>!x.enterpriseRef)
+      }
+    })
     this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
       const profile = params['profile'] || '';
       this.selectedProfile = profile

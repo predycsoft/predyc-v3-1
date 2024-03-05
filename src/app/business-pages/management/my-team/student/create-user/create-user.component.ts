@@ -15,6 +15,7 @@ import { ProfileService } from 'src/shared/services/profile.service';
 import { UserService } from 'src/shared/services/user.service';
 import { dateFromCalendarToTimestamp, timestampToDateNumbers } from 'src/shared/utils';
 import { countriesData } from 'src/assets/data/countries.data'
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 @Component({
   selector: 'app-create-user',
@@ -32,7 +33,9 @@ export class CreateUserComponent {
     private userService: UserService,
     public icon: IconService,
     private departmentService: DepartmentService,
-    private storage: AngularFireStorage
+    private storage: AngularFireStorage,
+    private afs: AngularFirestore,
+
   ) {}
   
   @Input() studentToEdit: User | null = null;
@@ -48,7 +51,21 @@ export class CreateUserComponent {
   filteredDepartments: Observable<string[]>;
 
   async ngOnInit() {
-    this.profileServiceSubscription = this.profileService.getProfiles$().subscribe(profiles => {if (profiles) this.profiles = profiles})
+    this.profileServiceSubscription = this.profileService.getProfiles$().subscribe(profiles => {
+      if (profiles) {
+        console.log('profiles',profiles)
+        let profilesBase=[]
+        profiles.forEach(element => {
+          if(element?.baseProfile?.id){
+            profilesBase.push(element?.baseProfile?.id)
+          }
+        });
+
+        this.profiles = profiles.filter(profile => !profilesBase.includes(profile.id));
+        console.log('Filtrados', this.profiles);
+
+      }
+    })
     this.departmentServiceSubscription = this.departmentService.getDepartments$().subscribe({
       next: departments => {
         this.departments = departments
@@ -249,8 +266,39 @@ export class CreateUserComponent {
     const user = await this.getUserFromForm()
     console.log("user", user)
     try {
-      if (this.studentToEdit) await this.userService.editUser(user.toJson())
-      else await this.userService.addUser(user)
+
+      console.log('profiles',this.profiles,user.profile) 
+
+      let profileNew = this.profiles.find(x=>x.id == user?.profile?.id)
+      
+      if(profileNew &&!profileNew.enterpriseRef){
+
+        console.log('profileNew',profileNew)
+        let baseProfile = this.afs.collection<Profile>(Profile.collection).doc(profileNew.id).ref;
+        profileNew.baseProfile = baseProfile
+
+        const profile: Profile = Profile.fromJson({
+          id: null,
+          name: profileNew.name,
+          description: profileNew.description,
+          coursesRef: profileNew.coursesRef,
+          baseProfile:baseProfile,
+          enterpriseRef: this.enterpriseService.getEnterpriseRef(),
+          permissions: profileNew ? profileNew.permissions : null,
+          hoursPerMonth:profileNew.hoursPerMonth
+        })
+        const profileId = await this.profileService.saveProfile(profile)
+        let profileRef = await  this.afs.collection<Profile>(Profile.collection).doc(profileId).ref;
+        user.profile = profileRef;
+
+      }
+
+      if (this.studentToEdit) {
+       await this.userService.editUser(user.toJson())
+      }
+      else{
+       await this.userService.addUser(user)
+      } 
       this.activeModal.close(this.userForm.value);
       this.alertService.succesAlert('Estudiante agregado exitosamente')
     } catch (error) {

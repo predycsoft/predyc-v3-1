@@ -1,4 +1,4 @@
-import { Component, ElementRef, TemplateRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, QueryList, TemplateRef, ViewChild, ViewChildren } from '@angular/core';
 import { IconService } from 'src/shared/services/icon.service';
 import { FormControl, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -135,19 +135,25 @@ export class CreateCourseComponent {
     return (name);
   }
 
-  private _filter(value: string): string[] {
-    const filterValue = value.toLowerCase();
+  private _filter(value: any): string[] {
+    if(!value?.nombre){
+      const filterValue = value.toLowerCase();
+      return this.instructores.filter(option => option.nombre.toLowerCase().includes(filterValue));
+    }
+    const filterValue = value.nombre.toLowerCase();
     return this.instructores.filter(option => option.nombre.toLowerCase().includes(filterValue));
   }
 
-  private _filterPillars(value: string): string[] {
-    const filterValue = value.toLowerCase();
-    return this.categoriasArray?.filter(option => option.name.toLowerCase().includes(filterValue));
+  private _filterPillars(value: any): string[] {
+    if(!value?.name){ 
+      const filterValue = value.toLowerCase();
+      return this.categoriasArray?.filter(option => option.name.toLowerCase().includes(filterValue));
+    }
+    const filterValue = value.name.toLowerCase();
+    return this.categoriasArray?.filter(option => option.name.toLowerCase().includes(filterValue)); 
+    
+
   }
-
-
-
-
   user
 
 
@@ -156,25 +162,26 @@ export class CreateCourseComponent {
 
     console.log('mode on init',this.mode)
 
+    this.filteredinstructores = this.instructoresForm.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filter(value || '')),
+    );
+    
+
+    this.filteredPillars = this.pillarsForm.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filterPillars(value || '')),
+    );
+
     this.enterpriseService.enterprise$.pipe(filter(enterprise=>enterprise!=null),take(1)).subscribe(enterprise => {
       console.log('enterprise',enterprise)
       if (enterprise) {
         this.empresa = enterprise
-        this.instructorsService.getInstructorsObservable().pipe(filter(instructores=>instructores.length>0),take(1)).subscribe(instructores=> {
+        this.instructorsService.getInstructorsObservable().pipe().subscribe(instructores=> {
           console.log('instructores',instructores)
           this.instructores = instructores
         })
-    
-        this.filteredinstructores = this.instructoresForm.valueChanges.pipe(
-          startWith(''),
-          map(value => this._filter(value || '')),
-        );
-        
-    
-        this.filteredPillars = this.pillarsForm.valueChanges.pipe(
-          startWith(''),
-          map(value => this._filterPillars(value || '')),
-        );
+  
         
         this.authService.user$.pipe(filter(user=>user !=null),take(1)).subscribe(user=> {
           console.log('user',user)
@@ -208,6 +215,8 @@ export class CreateCourseComponent {
   }
 
   anidarCompetenciasInicial(categorias: any[], competencias: any[]): any[] {
+
+    console.log('anidarCompetenciasInicial',categorias,competencias)
     return categorias.map(categoria => {
       let skills = competencias
         .filter(comp => comp.category.id === categoria.id)
@@ -278,15 +287,30 @@ export class CreateCourseComponent {
     return skillArray
   }
 
-  removeSkill(skill){
-    this.curso.skillsRef = this.curso.skillsRef.filter(x=> x.id != skill.id)
-    console.log('this.curso.skillsRef',this.curso.skillsRef)
-    this.skillsCurso = this.getCursoSkills();
-    //this.curso.skillsRef = this.tmpSkillRefArray
-    this.formNewCourse.get("skills").patchValue(this.curso.skillsRef);
+  async removeSkill(skill){
 
+    if(this.curso?.skillsRef){
+      this.curso.skillsRef = this.curso.skillsRef.filter(x=> x.id != skill.id)
+      console.log('this.curso.skillsRef',this.curso.skillsRef)
+      this.skillsCurso = this.getCursoSkills();
+      //this.curso.skillsRef = this.tmpSkillRefArray
+      this.formNewCourse.get("skills").patchValue(this.curso.skillsRef);
+    }
+    else{
+      console.log('this.skillsCurso',this.skillsCurso)
+      this.skillsCurso = this.skillsCurso.filter(x=> x.id != skill.id)
+      let skillsRef = []
+      for(let skill of this.skillsCurso){
+        let skillRef = await this.afs.collection<any>('skill').doc(skill.id).ref;
+        skillsRef.push(skillRef)
+      }
+      this.formNewCourse.get("skills").patchValue(skillsRef);
+
+    }
 
   }
+
+  skillsInit = false;
 
   initSkills(){
     this.categoryService.getCategoriesObservable().pipe().subscribe(category => {
@@ -297,31 +321,47 @@ export class CreateCourseComponent {
         skill.map(skillIn => {
           delete skillIn['selected']
         });
-        if(this.mode == 'edit'){
-          //console.log('curso edit', this.curso)
-          this.textModulo = 'Editar curso'
-          let skillsProfile = this.curso.skillsRef;
-          this.skillsCurso = this.getCursoSkills()
-          skillsProfile.forEach(skillIn => {
-            let skillSelect = skill.find(skillSelectIn => skillSelectIn.id == skillIn.id)
-            if (skillSelect) {
-              skillSelect['selected'] = true;
-            }
-          });
-        }
+
         this.categoriasArray = this.anidarCompetenciasInicial(category, skill)
         console.log('categoriasArray', this.categoriasArray,this.curso)
-
-        if(this.mode == 'edit'){
-          if(this.curso){
-            let skillId = this.curso.skillsRef[0]?.id
-            let pilar = this.categoriasArray.find(x=>x.competencias.find(y=>y.id == skillId))
-            console.log('pilar',pilar)
-            this.pillarsForm.patchValue(pilar)
-            console.log('pilar',this.pillarsForm.value['name'])
+        if(!this.skillsInit){
+          if(this.mode == 'edit'){
+            //console.log('curso edit', this.curso)
+            this.textModulo = 'Editar curso'
+            let skillsProfile = this.curso.skillsRef;
+            this.skillsCurso = this.getCursoSkills()
+            skillsProfile.forEach(skillIn => {
+              let skillSelect = skill.find(skillSelectIn => skillSelectIn.id == skillIn.id)
+              if (skillSelect) {
+                skillSelect['selected'] = true;
+              }
+            });
           }
-          
-          this.getExamCourse(this.curso.id);
+  
+          if(this.mode == 'edit'){
+            if(this.curso){
+              let pilar
+              let skillId = this.curso.skillsRef[0]?.id
+              if(skillId){
+                pilar = this.categoriasArray.find(x=>x.competencias.find(y=>y.id == skillId))
+              }
+              else if(this.pillarsForm.value['id']){
+                pilar = this.categoriasArray.find(x=>x.id == this.pillarsForm.value['id'])
+              }
+              console.log('pilar',pilar)
+              this.pillarsForm.patchValue(pilar)
+              console.log('pilar',this.pillarsForm.value['name'])
+            }
+            this.getExamCourse(this.curso.id);
+          }
+          else{
+            let pilar
+            if(this.pillarsForm.value['id']){
+              pilar = this.categoriasArray.find(x=>x.id == this.pillarsForm.value['id'])
+              this.pillarsForm.patchValue(pilar)
+            }
+          }
+          this.skillsInit = true
         }
       });
     });
@@ -359,6 +399,7 @@ export class CreateCourseComponent {
   changePillar(newPillar){
     if(this.curso?.skillsRef[0]?.id){
       let pilar = this.categoriasArray.find(x=>x.competencias.find(y=>y.id == this.curso?.skillsRef[0]?.id))
+      //this.pillarsForm.patchValue(pilar)
       if(pilar.id != newPillar.id){
         this.curso.skillsRef = [];
         this.skillsCurso= [];
@@ -373,7 +414,7 @@ export class CreateCourseComponent {
     this.savingPillar = false;
     this.pillarsForm.patchValue('')
 
-    this.curso.skillsRef = [];
+    this.curso?.skillsRef ? this.curso.skillsRef = [] : null;
     this.skillsCurso= [];
 
     this.showErrorPillar = false
@@ -381,14 +422,14 @@ export class CreateCourseComponent {
 
     this.formNewPillar = new FormGroup({
       nombre: new FormControl(null, Validators.required),
-      skills: new FormControl([]),
-      skillTmp: new FormControl(null, Validators.required),
+      // skills: new FormControl([]),
+      // skillTmp: new FormControl(null, Validators.required),
     })
 
     this.modalPillar =  this.modalService.open(this.modalCrearPilarContent, {
       ariaLabelledBy: 'modal-basic-title',
       centered: true,
-      size:'lg'
+      size:'sm'
     });  
   }
   
@@ -463,7 +504,7 @@ export class CreateCourseComponent {
               if (clase.tipo == 'actividad' || clase.tipo == 'corazones') {
                 //console.log('activities clases clase', clase);
                 let activity = activities.find(activity => activity.claseRef.id == clase.id);
-                //console.log('activities clases activity', activity);
+                console.log('activities clases activity', activity);
                 clase.activity = activity;
               }
             });
@@ -491,7 +532,6 @@ export class CreateCourseComponent {
 
     console.log('this.tmpSkillRefArray',this.tmpSkillRefArray)
     
-
     if(this.curso){
       this.curso.skillsRef = this.tmpSkillRefArray
       this.formNewCourse.get("skills").patchValue(this.tmpSkillRefArray);
@@ -618,7 +658,7 @@ export class CreateCourseComponent {
     this.showErrorPillarSkill = false
 
     let pillar =this.formNewPillar.get('nombre')?.value;
-    let skills = this.formNewPillar.get('skills')?.value;
+    //let skills = this.formNewPillar.get('skills')?.value;
 
     let pillarCheck = this.categoriasArray.find(x=> x.name == pillar)
 
@@ -640,14 +680,14 @@ export class CreateCourseComponent {
       enterpriseRef = null;
     }
 
-    if(pillar && skills?.length>0){
+    if(pillar){
       let category = new Category(null,pillar,enterpriseRef)
       await this.categoryService.addCategory(category)
-      let categoryRef = this.afs.collection<any>('category').doc(category.id).ref;
-      for(let skill of skills){
-        let skillAdd = new Skill(null,skill,categoryRef,enterpriseRef)
-        await this.skillService.addSkill(skillAdd)
-      }
+      //let categoryRef = this.afs.collection<any>('category').doc(category.id).ref;
+      // for(let skill of skills){
+      //   let skillAdd = new Skill(null,skill,categoryRef,enterpriseRef)
+      //   await this.skillService.addSkill(skillAdd)
+      // }
       this.modalPillar.close()
       this.alertService.succesAlert("El pilar se ha guardado exitosamente")
       this.savingPillar = false;
@@ -674,8 +714,9 @@ export class CreateCourseComponent {
   }
   
   async saveDraftPre(){
+    
     let checkStatus = await this.chackAllInfo();
-    if(!checkStatus){
+    if(!checkStatus && this.formNewCourse.valid){
       Swal.fire({
         title: "Revisar datos",
         text:"Existen problemas en el curso, ¿desea continuar?",
@@ -685,14 +726,34 @@ export class CreateCourseComponent {
         confirmButtonColor: 'var(--blue-5)',
       }).then((result) => {
         /* Read more about isConfirmed, isDenied below */
-        if (result.isConfirmed) {
+        if (result.isConfirmed && this.formNewCourse.valid) {
           this.saveDraft()
         }
       });
     }
-    else{
+    else if (this.formNewCourse.valid){
       this.saveDraft()
+    }
+    else if(!this.formNewCourse.valid){
+      Swal.fire({
+        title:'Datos faltantes!',
+        text:`Por favor verifique los datos del curso para poder guardarlo`,
+        icon:'warning',
+        confirmButtonColor: 'var(--blue-5)',
+      })
+    }
+  }
 
+
+  expandModulo(modulo){
+
+    console.log(modulo)
+
+    if(!modulo['expanded'] && modulo.titulo){
+      modulo['expanded'] = true
+    }
+    else if(modulo['expanded']){
+      modulo['expanded'] = !modulo['expanded']
     }
   }
 
@@ -709,175 +770,200 @@ export class CreateCourseComponent {
       }
     });
 
-  if(this.curso){
-    let enterpriseRef =this.enterpriseService.getEnterpriseRef()
-    this.curso.enterpriseRef = enterpriseRef;
-    if(this.user.isSystemUser){
-      this.curso.enterpriseRef = null;
+  if(this.formNewCourse.valid){
+
+    console.log('this.curso',this.curso)
+    if(this.curso){
+      let enterpriseRef =this.enterpriseService.getEnterpriseRef()
+      this.curso.enterpriseRef = enterpriseRef;
+      if(this.user.isSystemUser){
+        this.curso.enterpriseRef = null;
+      }
+      if(!this.curso.skillsRef && this.curso['skills']){
+        this.curso.skillsRef = this.curso['skills']
+        delete this.curso['skills'];
+      }
+      await this.courseService.saveCourse(this.curso)
     }
-    if(!this.curso.skillsRef && this.curso['skills']){
-      this.curso.skillsRef = this.curso['skills']
-      delete this.curso['skills'];
+  
+    if(this.examen){
+      let courseRef = await this.afs.collection<Curso>(Curso.collection).doc(this.curso.id).ref;
+      let activityClass = new Activity
+      let questions: Question[]= []
+      questions = structuredClone(this.examen.questions);
+      console.log('this.examen',this.examen)
+      let auxCoursesRef = this.examen.coursesRef
+      this.examen.coursesRef = null
+      activityClass = structuredClone(this.examen) as Activity;
+      activityClass.enterpriseRef = this.curso.enterpriseRef as DocumentReference<Enterprise>
+      this.examen.coursesRef = auxCoursesRef
+      activityClass.coursesRef = [courseRef];
+      activityClass.type = Activity.TYPE_TEST;
+      activityClass.questions=[];
+      delete activityClass.questions
+  
+      //console.log('activityExamen',activityClass)
+      //await this.activityClassesService.saveActivity(activityClass);
+      this.examen.id = activityClass.id
+  
+      for (let pregunta of questions){
+  
+        delete pregunta['competencias_tmp'];
+        delete pregunta['competencias'];
+        delete pregunta['isInvalid'];
+        delete pregunta['InvalidMessages'];
+        delete pregunta['expanded_categorias'];
+        delete pregunta['expanded'];
+        delete pregunta['uploading_file_progress'];
+        delete pregunta['uploading'];
+        await this.activityClassesService.saveQuestion(pregunta,activityClass.id)
+      }
+  
     }
-    await this.courseService.saveCourse(this.curso)
-  }
-
-  if(this.examen){
-    let courseRef = await this.afs.collection<Curso>(Curso.collection).doc(this.curso.id).ref;
-    let activityClass = new Activity
-    let questions: Question[]= []
-    questions = structuredClone(this.examen.questions);
-    console.log('this.examen',this.examen)
-    let auxCoursesRef = this.examen.coursesRef
-    this.examen.coursesRef = null
-    activityClass = structuredClone(this.examen) as Activity;
-    activityClass.enterpriseRef = this.curso.enterpriseRef as DocumentReference<Enterprise>
-    this.examen.coursesRef = auxCoursesRef
-    activityClass.coursesRef = [courseRef];
-    activityClass.type = Activity.TYPE_TEST;
-    activityClass.questions=[];
-    delete activityClass.questions
-
-    //console.log('activityExamen',activityClass)
-    await this.activityClassesService.saveActivity(activityClass);
-    this.examen.id = activityClass.id
-
-    for (let pregunta of questions){
-
-      delete pregunta['competencias_tmp'];
-      delete pregunta['competencias'];
-      delete pregunta['isInvalid'];
-      delete pregunta['InvalidMessages'];
-      delete pregunta['expanded_categorias'];
-      delete pregunta['expanded'];
-      delete pregunta['uploading_file_progress'];
-      delete pregunta['uploading'];
-      await this.activityClassesService.saveQuestion(pregunta,activityClass.id)
-    }
-
-  }
-
-
-  if(this.modulos.length>0){
-    //console.log('datos modulos',this.modulos);
-    let validModules = this.modulos.filter(moduleCheck => !moduleCheck['isInvalid'])
-    //console.log('validModules save',validModules);
-
-    for (let modulo of validModules){
-      ////console.log('modulo clase borrador add/edit',modulo)
-      let arrayClasesRef = [];
-      const clases = modulo['clases'];
-      for (let i = 0; i < clases.length; i++) {
-        try {
-          let clase = clases[i];
-          if(clase['edited']){
-            console.log('clase borrador add/edit',clase)
-            let claseLocal = new Clase;
-            claseLocal.HTMLcontent = clase.HTMLcontent;
-            claseLocal.archivos = clase.archivos.map(archivo => ({ // Usando map aquí para transformar la estructura del archivo.
-              id: archivo.id,
-              nombre: archivo.nombre,
-              size: archivo.size,
-              type: archivo.type,
-              url: archivo.url
-            }));
-            claseLocal.descripcion = clase.descripcion;
-            claseLocal.duracion = clase.duracion;
-            claseLocal.id = clase.id;
-            claseLocal.vimeoId1 = clase.vimeoId1;
-            claseLocal.vimeoId2 = clase.vimeoId2;
-            claseLocal.skillsRef = clase.skillsRef;
-            claseLocal.tipo = clase.tipo;
-            claseLocal.titulo = clase.titulo;
-            claseLocal.vigente = clase.vigente;
-            
-            const arrayRefSkills = (clase.competencias?.map(skillClase => this.curso.skillsRef.find(skill => skill.id == skillClase.id)).filter(Boolean) ) || [];
-            claseLocal.skillsRef = arrayRefSkills;
-            await this.courseClassService.saveClass(claseLocal);
-            let refClass = await this.afs.collection<Clase>(Clase.collection).doc(claseLocal.id).ref;
-            let courseRef = await this.afs.collection<Curso>(Curso.collection).doc(this.curso.id).ref;
-            arrayClasesRef.push(refClass);
-            if(clase.activity){
-              let activityClass = clase.activity
-              let questions: Question[]= []
-              questions = structuredClone(clase.activity.questions);
-              activityClass.enterpriseRef = this.curso.enterpriseRef as DocumentReference<Enterprise>
-              activityClass.enterpriseRef = null
-              if(this.user.isSystemUser){
+  
+  
+    if(this.modulos.length>0){
+      //console.log('datos modulos',this.modulos);
+      let validModules = this.modulos.filter(moduleCheck => !moduleCheck['isInvalid'])
+      //console.log('validModules save',validModules);
+  
+      for (let modulo of validModules){
+        ////console.log('modulo clase borrador add/edit',modulo)
+        let arrayClasesRef = [];
+        const clases = modulo['clases'];
+        for (let i = 0; i < clases.length; i++) {
+          try {
+            let clase = clases[i];
+            if(clase['edited']){
+              console.log('clase borrador add/edit',clase)
+              let claseLocal = new Clase;
+              claseLocal.HTMLcontent = clase.HTMLcontent;
+              claseLocal.archivos = clase.archivos.map(archivo => ({
+                id: archivo.id,
+                nombre: archivo.nombre,
+                size: archivo.size,
+                type: archivo.type,
+                url: archivo.url
+              }));
+              claseLocal.descripcion = clase.descripcion;
+              claseLocal.duracion = clase.duracion;
+              claseLocal.id = clase.id;
+              claseLocal.vimeoId1 = clase.vimeoId1;
+              claseLocal.vimeoId2 = clase.vimeoId2;
+              claseLocal.skillsRef = clase.skillsRef;
+              claseLocal.tipo = clase.tipo;
+              claseLocal.titulo = clase.titulo;
+              claseLocal.vigente = clase.vigente;
+              
+              const arrayRefSkills = (clase.competencias?.map(skillClase => this.curso.skillsRef.find(skill => skill.id == skillClase.id)).filter(Boolean) ) || [];
+              claseLocal.skillsRef = arrayRefSkills;
+              await this.courseClassService.saveClass(claseLocal);
+              let refClass = await this.afs.collection<Clase>(Clase.collection).doc(claseLocal.id).ref;
+              let courseRef = await this.afs.collection<Curso>(Curso.collection).doc(this.curso.id).ref;
+              arrayClasesRef.push(refClass);
+              console.log('activityClass',clase)
+              if(clase.activity){
+                let activityClass = clase.activity
+                activityClass.description = null
+                let questions: Question[]= []
                 activityClass.enterpriseRef = null
-              }
-              activityClass.claseRef = refClass;
-              activityClass.coursesRef = [courseRef];
-              activityClass.type = Activity.TYPE_REGULAR;
-              activityClass.activityCorazon = false
-              if(clase.tipo == 'corazones'){
-                activityClass.activityCorazon = true
-              }
-              let questionsDelete = activityClass['questions']
-              let recursosBase64Delete =activityClass['recursosBase64'] 
-              delete activityClass['questions'];
-              delete activityClass['recursosBase64']             
+                questions = structuredClone(clase.activity.questions);
+                activityClass.enterpriseRef = this.curso.enterpriseRef as DocumentReference<Enterprise>
+                if(this.user.isSystemUser){
+                  activityClass.enterpriseRef = null
+                }
+                activityClass.claseRef = refClass;
+                activityClass.coursesRef = [courseRef];
+                activityClass.type = Activity.TYPE_REGULAR;
+                activityClass.activityCorazon = false
+                if(clase.tipo == 'corazones'){
+                  activityClass.activityCorazon = true
+                }
 
-              await this.activityClassesService.saveActivity(activityClass);
+                if(!activityClass['recursosBase64'] ){
+                  activityClass['recursosBase64'] = null
+                }
 
-              activityClass['questions'] = questionsDelete
-              activityClass['recursosBase64'] = recursosBase64Delete
+                
+                let actividadTmp = new Activity
 
-              clase.activity.id = activityClass.id;
+                actividadTmp.activityCorazon = activityClass?.activityCorazon
+                actividadTmp.claseRef = activityClass?.claseRef
+                actividadTmp.coursesRef = activityClass?.coursesRef
+                actividadTmp.createdAt = activityClass?.createdAt
+                actividadTmp.description = activityClass?.description
+                actividadTmp.duration = activityClass?.duration
+                actividadTmp.enterpriseRef = activityClass?.enterpriseRef
+                actividadTmp.files = activityClass?.enterpriseRef
+                actividadTmp.id = activityClass?.id
+                actividadTmp.title= activityClass?.title
+                actividadTmp.type = activityClass?.type
+                actividadTmp.updatedAt = activityClass?.updatedAt
+  
+                await this.activityClassesService.saveActivity(actividadTmp);
+  
+                clase.activity.id = actividadTmp.id;
 
-              for (let pregunta of questions){
-                //const arrayRefSkills = (pregunta['competencias']?.map(skillClase => this.curso.skillsRef.find(skill => skill.id == skillClase.id)).filter(Boolean) ) || [];
-                claseLocal.skillsRef = arrayRefSkills;
-                //console.log('refSkills', arrayRefSkills)
-                //pregunta.skills= arrayRefSkills;
-                delete pregunta['typeFormated'];
-                delete pregunta['competencias_tmp'];
-                delete pregunta['competencias'];
-                delete pregunta['isInvalid'];
-                delete pregunta['InvalidMessages'];
-                delete pregunta['expanded_categorias'];
-                delete pregunta['expanded'];
-                delete pregunta['uploading_file_progress'];
-                delete pregunta['uploading'];
-                await this.activityClassesService.saveQuestion(pregunta,activityClass.id)
+
+                console.log('questions',questions)
+  
+                for (let pregunta of questions){
+                  claseLocal.skillsRef = arrayRefSkills;
+                  delete pregunta['typeFormated'];
+                  delete pregunta['competencias_tmp'];
+                  delete pregunta['competencias'];
+                  delete pregunta['isInvalid'];
+                  delete pregunta['InvalidMessages'];
+                  delete pregunta['expanded_categorias'];
+                  delete pregunta['expanded'];
+                  delete pregunta['uploading_file_progress'];
+                  delete pregunta['uploading'];
+                  console.log('save pregunta revisar',pregunta,clase.activity.id)
+                  await this.activityClassesService.saveQuestion(pregunta,clase.activity.id)
+                }
               }
             }
+            else{
+              let refClass = await this.afs.collection<Clase>(Clase.collection).doc(clase.id).ref;
+              arrayClasesRef.push(refClass);
+            }
+          } catch (error) {
+            console.error('Error processing clase', error);
           }
-          else{
-            let refClass = await this.afs.collection<Clase>(Clase.collection).doc(clase.id).ref;
-            arrayClasesRef.push(refClass);
-          }
-        } catch (error) {
-          console.error('Error processing clase', error);
         }
+        
+        //console.log('arrayClasesRef',arrayClasesRef)
+  
+        //let id = Date.now().toString();
+  
+        let idRef = await this.afs.collection<Modulo>(Modulo.collection).doc().ref.id;
+  
+        //moduleService
+        let module = new Modulo;
+        module.clasesRef = null
+        module.duracion = modulo.duracion;
+        module.id = modulo.id;
+        module.numero = modulo.numero;
+        module.titulo = modulo.titulo;
+        module.clasesRef = arrayClasesRef;
+        
+        if(!modulo.id){
+          module.id = idRef;
+          modulo.id = idRef
+        }
+        //console.log('module save', module)
+        await this.moduleService.saveModulo(module, this.curso.id)
       }
-      
-      //console.log('arrayClasesRef',arrayClasesRef)
-
-      //let id = Date.now().toString();
-
-      let idRef = await this.afs.collection<Modulo>(Modulo.collection).doc().ref.id;
-
-      //moduleService
-      let module = new Modulo;
-      module.clasesRef = null
-      module.duracion = modulo.duracion;
-      module.id = modulo.id;
-      module.numero = modulo.numero;
-      module.titulo = modulo.titulo;
-      module.clasesRef = arrayClasesRef;
-      
-      if(!modulo.id){
-        module.id = idRef;
-        modulo.id = idRef
-      }
-      //console.log('module save', module)
-      await this.moduleService.saveModulo(module, this.curso.id)
     }
+    Swal.close();
+    this.alertService.succesAlert("El curso se ha guardado exitosamente")
+
+  }
+  else{
+    Swal.close();
+    //this.alertService.succesAlert("El curso se ha guardado exitosamente")
   }
 
-  Swal.close();
-  this.alertService.succesAlert("El curso se ha guardado exitosamente")
 
   }
 
@@ -1261,8 +1347,18 @@ export class CreateCourseComponent {
       let instructor = this.formNewInstructor.value
       instructor.ultimaEdicion = new Date
       instructor.ultimoEditor = this.user.uid
+      let enterpriseRef =this.enterpriseService.getEnterpriseRef()
+      if(this.user.isSystemUser){
+        enterpriseRef = null;
+      }
+      instructor.enterpriseRef = enterpriseRef
       await this.instructorsService.addInstructor(instructor)
       console.log(instructor);
+
+      this.alertService.succesAlert("El instructor se ha guardado exitosamente")
+      this.instructoresForm.patchValue('')
+      this.modalInstructor.close()
+
 
     
     }
@@ -1275,14 +1371,6 @@ export class CreateCourseComponent {
 
   seleccionarImagenInstructor(imagen){
     this.formNewCourse.get('imagen_instructor').patchValue(imagen);
-  }
-
-  tituloModuloTMP = '';
-  tituloclaseTMP = '';
-
-  onModuleTitleChange(event){
-    this.tituloModuloTMP = event.value;
-    this.tituloclaseTMP = event.value;
   }
 
   deleteModule(modulo){
@@ -1601,7 +1689,7 @@ export class CreateCourseComponent {
     number++;
     let modulo = new Modulo;
     modulo.numero = number;
-    modulo['expanded'] = true;
+    modulo['expanded'] = false;
     modulo['clases'] = [];
     let titulo = "";
     if (number == 1){
@@ -1648,6 +1736,59 @@ export class CreateCourseComponent {
     })
 
   }
+
+  @ViewChildren('inputRef') inputElements: QueryList<ElementRef>;
+  @ViewChildren('inputRefModulo') inputElementsModulo: QueryList<ElementRef>;
+
+
+  editarTituloClase(index: number) {
+    // Configura el estado de edición como prefieras
+    this.moverCursorAlFinal(index);
+}
+
+  moverCursorAlFinal(index: number) {
+    // Espera hasta que los cambios en la vista se apliquen
+    setTimeout(() => {
+      const inputElementsArray = this.inputElements.toArray();
+      const inputElement = inputElementsArray[index]?.nativeElement;
+      if (inputElement) {
+        const longitudTexto = inputElement.value.length;
+        inputElement.focus();
+        inputElement.setSelectionRange(longitudTexto, longitudTexto);
+      }
+    });
+  }
+
+
+
+
+  editarTituloModulo(index: number) {
+    // Configura el estado de edición como prefieras
+    this.moverCursorAlFinalModulo(index);
+}
+
+  moverCursorAlFinalModulo(index: number) {
+    // Espera hasta que los cambios en la vista se apliquen
+    setTimeout(() => {
+      const inputElementsArray = this.inputElementsModulo.toArray();
+      const inputElement = inputElementsArray[index]?.nativeElement;
+      if (inputElement) {
+        const longitudTexto = inputElement.value.length;
+        inputElement.focus();
+        inputElement.setSelectionRange(longitudTexto, longitudTexto);
+      }
+    });
+  }
+
+
+
+
+
+
+
+
+
+
 
   preventDefault(event: any) {
     const keyboardEvent = event as KeyboardEvent;
@@ -1738,8 +1879,15 @@ export class CreateCourseComponent {
       let fileBaseName = file.name.split('.').slice(0, -1).join('.');
       let fileExtension = file.name.split('.').pop();
 
-      const base64content = await this.fileToBase64(file);
-      ////console.log('base64',base64content);  // Aquí tienes el contenido en base64
+      let base64content
+
+      if(clase.tipo != 'video'){
+        base64content = await this.fileToBase64(file);
+      }
+      else{
+        base64content = URL.createObjectURL(file);
+      }
+
 
       if(clase.tipo == 'lectura' || adicional){
         let idFile = Date.now();
@@ -1757,7 +1905,7 @@ export class CreateCourseComponent {
         if(tipo == 'archivoActividad'){
           adicional = false;
           this.viewFileActivity= false;
-          this.selectedClase.activity['recursosBase64'] = fileInfo;
+          this.selectedClase.activity['recursosBase64'] = fileInfo?fileInfo:null;
         }
 
         if(!adicional && clase.archivos.length>0){
@@ -2271,7 +2419,7 @@ export class CreateCourseComponent {
 //   }
 
 
-  uploadVideo(videoFile,clase,local = false,modulo,origen = null ) {
+uploadVideo(videoFile, clase, local = false, modulo, origen = null, intentosActuales = 0, maxIntentos = 2) {
 
     if (!videoFile) {
       //console.log('No video file selected');
@@ -2348,14 +2496,31 @@ export class CreateCourseComponent {
           },
           // Maneja las notificaciones de error
           error: error => {
-            clase['uploading'] = false;
-            //console.log('Upload Error:', error);
-            this.dialog.dialogAlerta("Hubo un error");
-            //console.log(error?.error?.error);
-            //this.videoFile=null;
-            //URL.revokeObjectURL(this.videoSrc);
-            clase['videoUpload'] = 0;
-            //this.videoSrc=null;
+            // Aquí manejas el error y decides si reintentar
+            if (intentosActuales < maxIntentos) {
+              console.log(`Intento ${intentosActuales + 1} fallido. Reintentando...`);
+              Swal.fire({
+                title: "Advertencia",
+                text:"Ocurrio un error al subir el video, ¿desea reintentar?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Guardar",
+                confirmButtonColor: 'var(--blue-5)',
+              }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                  // Incrementa el contador de intentos y llama de nuevo a la función
+                  this.uploadVideo(videoFile, clase, local, modulo, origen, intentosActuales + 1, maxIntentos);            
+                }
+              });
+            } else {
+              // Llegaste al máximo de intentos, maneja el error definitivamente
+              clase['uploading'] = false;
+              clase['videoUpload'] = 0;
+              console.log('Maximo de intentos alcanzado. Mostrando mensaje de error.');
+              this.dialog.dialogAlerta("Hubo un error");
+              // Lógica para manejar el error después de los reintentos
+            }
           },
           // Maneja las notificaciones de completado
           complete: () => {
@@ -2454,29 +2619,83 @@ export class CreateCourseComponent {
                     }
                   })
                 },
-                error: (error)=>{
-                  this.dialog.dialogAlerta("Hubo un error");
-                  //console.log(error?.error?.error);
-                  //URL.revokeObjectURL(this.videoSrc);
-                  //this.videoFile=null;
-                  clase['videoUpload'] =0;
-                  //this.videoSrc=null;
-                  clase['uploading'] = false;
+                // error: (error)=>{
+                //   this.dialog.dialogAlerta("Hubo un error");
+                //   //console.log(error?.error?.error);
+                //   //URL.revokeObjectURL(this.videoSrc);
+                //   //this.videoFile=null;
+                //   clase['videoUpload'] =0;
+                //   //this.videoSrc=null;
+                //   clase['uploading'] = false;
+                // }
+                error: error => {
+                  // Aquí manejas el error y decides si reintentar
+                  if (intentosActuales < maxIntentos) {
+                    console.log(`Intento ${intentosActuales + 1} fallido. Reintentando...`);
+                    Swal.fire({
+                      title: "Advertencia",
+                      text:"Ocurrio un error al subir el video, ¿desea reintentar?",
+                      icon: "warning",
+                      showCancelButton: true,
+                      confirmButtonText: "Guardar",
+                      confirmButtonColor: 'var(--blue-5)',
+                    }).then((result) => {
+                      /* Read more about isConfirmed, isDenied below */
+                      if (result.isConfirmed) {
+                        // Incrementa el contador de intentos y llama de nuevo a la función
+                        this.uploadVideo(videoFile, clase, local, modulo, origen, intentosActuales + 1, maxIntentos);            
+                      }
+                    });
+                  } else {
+                    // Llegaste al máximo de intentos, maneja el error definitivamente
+                    clase['uploading'] = false;
+                    clase['videoUpload'] = 0;
+                    console.log('Maximo de intentos alcanzado. Mostrando mensaje de error.');
+                    this.dialog.dialogAlerta("Hubo un error");
+                    // Lógica para manejar el error después de los reintentos
+                  }
                 }
               })
             });
           }
         });
       },
-      error: (error) => {
-        this.dialog.dialogAlerta("Hubo un error")
-        //console.log(error.error.error);
-        //URL.revokeObjectURL(this.videoSrc);
-        //this.videoFile=null;
-        clase['videoUpload'] =0;
-        //this.videoSrc=null;
-        clase['uploading'] = false;
-      }
+      // error: (error) => {
+      //   this.dialog.dialogAlerta("Hubo un error")
+      //   //console.log(error.error.error);
+      //   //URL.revokeObjectURL(this.videoSrc);
+      //   //this.videoFile=null;
+      //   clase['videoUpload'] =0;
+      //   //this.videoSrc=null;
+      //   clase['uploading'] = false;
+      // }
+      error: error => {
+        // Aquí manejas el error y decides si reintentar
+        if (intentosActuales < maxIntentos) {
+          console.log(`Intento ${intentosActuales + 1} fallido. Reintentando...`);
+          Swal.fire({
+            title: "Advertencia",
+            text:"Ocurrio un error al subir el video, ¿desea reintentar?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Guardar",
+            confirmButtonColor: 'var(--blue-5)',
+          }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+              // Incrementa el contador de intentos y llama de nuevo a la función
+              this.uploadVideo(videoFile, clase, local, modulo, origen, intentosActuales + 1, maxIntentos);            
+            }
+          });
+        } else {
+          // Llegaste al máximo de intentos, maneja el error definitivamente
+          clase['uploading'] = false;
+          clase['videoUpload'] = 0;
+          console.log('Maximo de intentos alcanzado. Mostrando mensaje de error.');
+          this.dialog.dialogAlerta("Hubo un error");
+          // Lógica para manejar el error después de los reintentos
+        }
+      },
     })
   }
 
@@ -2797,6 +3016,8 @@ export class CreateCourseComponent {
             title: '¡Éxito!',
             text: 'Actividad cambiada exitosamente'
           }); 
+
+          console.log('this.selectedClase.activity',this.selectedClase.activity)
           
         }
 
@@ -2855,109 +3076,6 @@ export class CreateCourseComponent {
   validExam
 
 
-  _validatePreguntasActividad(){
-
-    //console.log(this.selectedClase.activity.questions);
-
-    let preguntas = this.selectedClase.activity.questions;
-
-    let valid = true;
-
-    if(preguntas.length == 0){
-      return false
-    }
-    
-    // preguntas.forEach(pregunta => {
-
-    //   //console.log('pregunta',pregunta)
-
-    //   let pregunta_local = new Question;
-    //   pregunta_local.id = pregunta.id
-    //   pregunta_local.type = pregunta.type
-    //   pregunta_local.options = pregunta.options
-    //   pregunta_local.points = pregunta.points
-    //   pregunta_local.skills = pregunta.skills
-    //   pregunta_local.text = pregunta.text
-    //   pregunta_local.image = pregunta.image
-
-    //   let response: QuestionValidationResponse = pregunta_local.isValidForm();
-    //   if (!response.result) {
-    //     //console.log(response.messages)
-    //     pregunta['isInvalid'] = true;
-    //     pregunta['InvalidMessages'] = response.messages;
-    //     valid = false;
-    //   }
-    //   else{
-    //     if(pregunta.type.value == this.questionTypesIn.TYPE_COMPLETE_VALUE){
-    //       this.showDisplayText(pregunta);
-    //     }
-    //     pregunta['isInvalid'] = false;
-    //     pregunta['InvalidMessages'] = null;
-    //   }
-      
-    // });
-
-    return valid;
-
-  }
-
-  
-//   crearPreguntaExamen(){
-
-//     if(!this.examen){
-//       this.examen = new Activity;
-//       //this.examen.id = Date.now().toString();
-//     }
-
-//     let id =  this.afs.collection<Question>(Question.collection).doc().ref.id;
-
-//     let pregunta = new Question;
-//     pregunta.id = id;
-//     this.hideOtherQuestionExamen(pregunta);
-//     pregunta['expanded'] = true;
-//     pregunta['competencias'] = [];
-//     let activity : Activity = this.examen;
-//     //console.log('activity',activity)
-//     let questions = activity.questions;
-//     //console.log('questions',questions);
-
-//     questions.push(pregunta)
-
-//   }
-
-//   hideOtherQuestionExamen(questionIn){
-
-//     this.examen.questions.map( question => {
-//       if(questionIn.id != question.id)
-//       question['expanded'] = false;
-//     })
-
-//   }
-
-//   borrarPreguntaExamen(pregunta,index){
-//     //console.log(pregunta,index);
-
-//     Swal.fire({
-//       title: `<span class=" gray-9 ft20">Borrar pregunta ${index+ 1 }</span>`,
-//       icon: 'warning',
-//       showCancelButton: true,
-//       confirmButtonColor: 'var(--red-5)',
-//       cancelButtonColor: 'var(--gray-4)',
-//       confirmButtonText: `Borrar pregunta`,
-//       cancelButtonText:'Cancelar'
-//     }).then((result) => {
-//       if (result.isConfirmed) {
-//         this.deleteQuestionImage(pregunta);
-//         this.examen.questions.splice(index, 1); // El primer argumento es el índice desde donde quieres empezar a borrar, y el segundo argumento es la cantidad de elementos que quieres borrar.
-//         Swal.fire({
-//           title:'Borrado!',
-//           text:`La pregunta fue borrada`,
-//           icon:'success',
-//           confirmButtonColor: 'var(--blue-5)',
-//         })
-//       }
-//     })
-//   }
 
   showErrorActividad= false;
 //   showErrorCompetencia = false
@@ -3246,10 +3364,10 @@ export class CreateCourseComponent {
     this.showErrorSkill = false;
     if(this.formNewSkill.valid){
 
-      
-
       let pilar = this.pillarsForm.value
-      let competencias = pilar['competencias']
+      let competencias = pilar['competencias'] || []
+      console.log('saveNewSkill pillar',pilar,competencias)
+
 
       if(competencias.find(x=>x.name.toLowerCase()==this.formNewSkill.get('nombre')?.value.toLowerCase())){ // duplicado
         Swal.fire({
@@ -3269,7 +3387,9 @@ export class CreateCourseComponent {
         }
         let skillAdd = new Skill(null,this.formNewSkill.get('nombre')?.value,categoryRef,enterpriseRef)
         this.skillService.addSkill(skillAdd)
+        competencias.push(skillAdd)
         this.modalCrearSkill.close()
+        this.pillarsForm.get("competencias").patchValue(competencias);
       }
     }
     else{
@@ -3291,6 +3411,19 @@ export class CreateCourseComponent {
     return modalRef
 
   }
+
+  confirmarTitulo(modulo: any) {
+    modulo['editarTitulo'] = false;
+    modulo.titulo = modulo['tituloTMP'];
+  }
+
+  confirmarTituloClase(clase) {
+    clase['editarTitulo'] = false;
+    clase.titulo = clase['tituloTMP'];
+    clase['edited'] = true; // Marca la clase como editada
+    // Aquí puedes añadir cualquier otra lógica necesaria después de confirmar el título
+}
+
 
 
 }

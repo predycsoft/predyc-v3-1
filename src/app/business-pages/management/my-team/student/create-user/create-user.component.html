@@ -30,8 +30,7 @@
                         >
                     <div
                         class="custom-invalid-feedback"
-                        *ngIf="userForm.get('displayName').errors && displayErrors"
-                        >
+                        *ngIf="userForm.get('displayName').errors && displayErrors">
                         <div *ngIf="userForm.get('displayName').errors?.required">
                             Es obligatorio especificar el nombre del usuario
                         </div>
@@ -40,7 +39,7 @@
                         <img [src]="icon.userProfile" class="makeGray h16px" alt="" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
                         <select formControlName="profile" class="form-control select">
                             <option [value]="null">Sin perfil</option>
-                            <option *ngFor="let profile of profiles" [value]="profile.id">{{profile.name}}</option>
+                            <option *ngFor="let profile of profiles" [value]="profile.id">{{profile.name}} {{!profile.enterpriseRef?'[Predyc]':''}}</option>
                         </select>
                     </div>
                 </div>
@@ -54,8 +53,7 @@
                             [class.is-invalid]="userForm.get('phoneNumber').errors && displayErrors"
                             type="text" 
                             class="form-control pdl20"
-                            placeholder="Teléfono"
-                            >
+                            placeholder="Teléfono">
                     </div>
                     <div style="position: relative">
                         <img [src]="icon.location" class="makeGray h16px" alt="" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">

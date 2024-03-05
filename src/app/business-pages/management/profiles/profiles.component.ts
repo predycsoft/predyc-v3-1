@@ -15,7 +15,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from 'src/shared/services/user.service';
 import { ProfileService } from 'src/shared/services/profile.service';
 import { Profile, ProfileJson } from 'src/shared/models/profile.model';
-import { DocumentReference } from '@angular/fire/compat/firestore';
+import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { AlertsService } from 'src/shared/services/alerts.service';
 import { EnterpriseService } from 'src/shared/services/enterprise.service';
 import { AuthService } from 'src/shared/services/auth.service';
@@ -48,6 +48,7 @@ export class ProfilesComponent {
     private userService: UserService,
     private titleService: Title,
     private authService: AuthService,
+    private afs: AngularFirestore,
   ) {}
 
   isEditing: boolean
@@ -77,8 +78,29 @@ export class ProfilesComponent {
   id = this.route.snapshot.paramMap.get('id');
   baseProfile: string
   user;
+  profileServiceSubscription: Subscription
+  profiles: Profile[] = []
+
 
   ngOnInit() {
+
+
+    this.profileServiceSubscription = this.profileService.getProfiles$().subscribe(profiles => {
+      if (profiles) {
+        console.log('profiles',profiles)
+        let profilesBase=[]
+        profiles.forEach(element => {
+          if(element?.baseProfile?.id){
+            profilesBase.push(element?.baseProfile?.id)
+          }
+        });
+        
+        this.profiles = profiles
+        console.log('perfiles', this.profiles);
+
+
+      }
+    })
 
     this.authService.user$.subscribe(user=> {
       console.log('user',user)
@@ -199,12 +221,20 @@ export class ProfilesComponent {
   }
 
   onEdit() {
-    this.profileBackup = {
-      name: this.profileName,
-      description: this.profileDescription,
-      selectedCourses: this.studyPlan.map(course => course.id)
+
+    if(this.user.isSystemUser || this.profile.enterpriseRef ){
+      this.profileBackup = {
+        name: this.profileName,
+        description: this.profileDescription,
+        selectedCourses: this.studyPlan.map(course => course.id)
+      }
+      this.isEditing = true
     }
-    this.isEditing = true
+    else{
+      let url = `/management/profiles/new?baseProfile=${this.profile.id}`;
+      location.href = url;
+    }
+
   }
 
   onCancel() {
@@ -448,17 +478,36 @@ export class ProfilesComponent {
   async onSave() {
     try {
       if (!this.profileName) throw new Error("Debe indicar un nombre para el perfil")
+
+      if(this.profiles.find(x=> x.name.toLowerCase() == this.profileName.toLowerCase() && x.id != this.profile?.id )) throw new Error("El nombre del perfil se encuentra en uso")
+
+
       this.disableSaveButton = true
       this.alertService.infoAlert("Se procederá a actualizar los datos del plan de estudio del perfil y de sus usuarios relacionados, por favor espere hasta que se complete la operación")
       const coursesRef: DocumentReference<Curso>[] = this.studyPlan.map(course => {
         return this.courseService.getCourseRefById(course.id)
       })
+
+
+      if (!coursesRef || coursesRef.length==0) throw new Error("Debe indicar los cursos del plan de estudio")
+
+
+      let enterpriseRef =this.enterpriseService.getEnterpriseRef()
+      if(this.user.isSystemUser){
+        enterpriseRef = null;
+      }
+      let baseProfile = null
+      if(this.baseProfile){
+        baseProfile = this.afs.collection<Profile>(Profile.collection).doc(this.baseProfile).ref;
+      }
+
       const profile: Profile = Profile.fromJson({
         id: this.profile ? this.profile.id : null,
         name: this.profileName,
         description: this.profileDescription,
         coursesRef: coursesRef,
-        enterpriseRef: this.enterpriseService.getEnterpriseRef(),
+        baseProfile:this.profile?.baseProfile?this.profile?.baseProfile:baseProfile,
+        enterpriseRef: enterpriseRef,
         permissions: this.profile ? this.profile.permissions : null,
         hoursPerMonth: this.profileHoursPerMonth
       })

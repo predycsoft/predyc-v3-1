@@ -78,7 +78,10 @@
                             <span class="ft13 nowrap ft500 " style="color: rgb(255, 196, 0);" >Medio</span>
                         </div>
                         <div *ngIf="item.performance == 'low'"  class="chip backRed1 borderLight " style="border: 1px solid #ff0000; width:30% " fxLayout="row" fxLayoutAlign="center center">                                <span class="ft13 nowrap ft500" style="color: #f50000;" >Bajo</span>
-                        </div>                            
+                        </div>
+                        <div *ngIf="item.performance == 'no iniciado'" class="chip borderLight"  fxLayout="row" fxLayoutAlign="center center">
+                            <span class="ft13 nowrap ft400 gray-6">No iniciado</span>
+                        </div>                           
                     </div>
                 </td>
                 <!-- <td class="centertext gray-10 ft12">

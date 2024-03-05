@@ -29,18 +29,17 @@
             </div>
         </div>
         <ng-template #profileTitle >
-            <div class="pdr10 pdt10" >
+            <div  class="pdr10 pdt10" >
                 <div
                 fxLayout="row"
                 fxLayoutGap="0.625"
                 fxLayoutAlign=" center center"
                 class="blueButton mgt10 ft14"
                 style="border-radius: 24px !important;"
-                (click)="onEdit()"
-                >
-                Editar
+                (click)="onEdit()">
+                {{user.isSystemUser || profile.enterpriseRef ?'Editar':'Editar'}}
                 <img [src]="icon.licencias" class="h16px pdl05" alt="">
-            </div>
+                </div>
             </div>
         </ng-template>
     </div>

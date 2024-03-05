@@ -211,7 +211,7 @@ export class UserService {
   }
 
   // getPerformanceWithDetails(student): { performance:"no plan" | "high" | "medium" | "low", score: number, grade: number } {
-  getPerformanceWithDetails(userStudyPlan): "no plan" | "high" | "medium" | "low"  {
+    getPerformanceWithDetails(userStudyPlan): "no plan" | "high" | "medium" | "low" | "no iniciado" {
 
     let delayedCourses = 0;
     let delayedMoreThan30Days = false;
@@ -271,8 +271,12 @@ export class UserService {
       }
     });
   
-    let performance: "no plan" | "high" | "medium" | "low";
-    if(userStudyPlan.length == 0){
+    let performance: "no plan" | "high" | "medium" | "low" | "no iniciado";
+    console.log('userStudyPlan',userStudyPlan)
+    let validator = userStudyPlan.find(x=>x.progressTime>0)
+    if(!validator && userStudyPlan.length > 0 ){ 
+      performance ="no iniciado"
+    } else if(userStudyPlan.length == 0){
       performance ="no plan"
     } else if (delayedCourses === 0) {
       performance = "high";

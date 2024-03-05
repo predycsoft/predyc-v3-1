@@ -1,10 +1,16 @@
 
 .containerCurso{
-    min-height: calc(100vh + 10px);
-    max-height: calc(100vh + 10px);
+    min-height: calc(83vh);
+    max-height: calc(83vh);
     /* width: calc((100% - 1rem)*2/3);
      */
     /* overflow: auto; */
+}
+
+
+.modulesContainer{
+  min-height: calc(75vh);
+  max-height: calc(75vh);
 }
 
 .containerCrearCurso{
@@ -163,10 +169,12 @@
   border: none !important;
   outline: none !important;
   padding: 0px !important;
+  width: 30vw !important;
 }
 
 .customInput{
   color: var(--gray-9) !important;
+  font-size: 12px;
 }
 
 /* Estilo para el placeholder de la clase personalizada */
@@ -359,3 +367,4 @@ mat-icon-list {
   background-color: var(--yellow-5);
  
 }
+

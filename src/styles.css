@@ -150,6 +150,7 @@ body {
   --blue-3: #32C1FF;
   --blue-4: #14AAF5;
   --blue-5: #008CE3;
+  --blue-6: #026bac;
   --purple-1: #EFF0FB;
   --purple-2: #ABA3FF;
   --purple-3: #9287FF;
@@ -832,6 +833,8 @@ body {
 .mgr15{  margin-right: 24px; }
 
 .mgr20{  margin-right: 32px; }
+.mgr25{  margin-right: 36px; }
+
 .mgr30{  margin-right: 48px; }
 .mgr40{  margin-right: 64px; }
 .mgr50{  margin-right: 80px; }
@@ -2022,8 +2025,8 @@ span{
 
 
 .ListHoverBlue:hover{
-  color: var(--gray-8) !important;
-  background-color: #efefef !important;
+  color: var(--gray-1) !important;
+  background-color: var(--blue-6) !important; 
 
 }
 
