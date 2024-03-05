@@ -19,45 +19,38 @@ export class DialogNewLicenseComponent {
 
   constructor(
     public matDialogRef: MatDialogRef<DialogNewLicenseComponent>, 
-    @Inject(MAT_DIALOG_DATA) public data: any,
     private productService: ProductService,
     private priceService: PriceService,
     private couponService: CouponService,
     private fb: FormBuilder,
+    @Inject(MAT_DIALOG_DATA) public data: {
+      coupons: Coupon[],
+      prices: Price[],
+      products: Product[],
+    },
   ) { }
 
   license: License = License.newLicenseTemplate
 
-  _date = '';
   products: Product[] = [];
   prices: Price[] = [];
   coupons: Coupon[] = [];
   productId: string = '';
-  priceId: string = '';
-  couponId: string = '';
 
   form: FormGroup;
-
 
   combinedServicesSubscription: Subscription
 
   showAlertText = false
 
+  formProductIdSubscription: Subscription
+  formStartDateSubscription: Subscription
+
   ngOnInit(): void {
-
-    this.combinedServicesSubscription = combineLatest(
-      [
-        this.priceService.getPrices$(), 
-        this.productService.getProducts$(),
-        this.couponService.getCoupons$(),
-      ]
-    ).subscribe(([prices, products, coupons]) => {
-      this.prices = prices
-      this.products = products
-      this.coupons = coupons
-
-      this.initializeForm()
-    })
+    this.products = this.data.products
+    this.prices = this.data.prices
+    this.coupons = this.data.coupons
+    this.initializeForm()
   }
 
   initializeForm() {
@@ -78,11 +71,11 @@ export class DialogNewLicenseComponent {
       trialDays: this.license.trialDays,
     })
 
-    this.form.get('productId')!.valueChanges.subscribe(value => {
+    this.formProductIdSubscription = this.form.get('productId')!.valueChanges.subscribe(value => {
       this.productId = value;
       this.form.get('priceId')!.setValue('');
     });
-    this.form.get('startDate').valueChanges.subscribe(value => {
+    this.formStartDateSubscription = this.form.get('startDate').valueChanges.subscribe(value => {
       this.onDateChange(value);
     });
   }
@@ -224,6 +217,11 @@ export class DialogNewLicenseComponent {
 
   daysInMonth(month, year) {
     return new Date(year, month, 0).getDate();
+  }
+
+  ngOnDestroy() {
+    this.formProductIdSubscription.unsubscribe()
+    this.formStartDateSubscription.unsubscribe()
   }
 
 
