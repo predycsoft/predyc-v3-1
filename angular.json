@@ -3,35 +3,29 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "predyc-v3": {
+    "predyc-business": {
       "projectType": "application",
       "schematics": {},
-      "root": "",
-      "sourceRoot": "src",
+      "root": "projects/predyc-business",
+      "sourceRoot": "projects/predyc-business/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/predyc-v3",
-            "index": "src/index.html",
-            "main": "src/main.ts",
+            "outputPath": "dist/predyc-business",
+            "index": "projects/predyc-business/src/index.html",
+            "main": "projects/predyc-business/src/main.ts",
             "polyfills": [
               "zone.js"
             ],
-            "tsConfig": "tsconfig.app.json",
+            "tsConfig": "projects/predyc-business/tsconfig.app.json",
             "assets": [
-              "src/favicon.ico",
-              "src/assets",
-              {
-                "glob": "**/*",
-                "input": "node_modules/ngx-extended-pdf-viewer/assets/",
-                "output": "/assets/"
-              }
+              "projects/predyc-business/src/favicon.ico",
+              "projects/predyc-business/src/assets"
             ],
             "styles": [
-              "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "src/styles.css"
+              "projects/predyc-business/src/styles.css"
             ],
             "scripts": []
           },
@@ -72,10 +66,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "predyc-v3:build:production"
+              "browserTarget": "predyc-business:build:production"
             },
             "development": {
-              "browserTarget": "predyc-v3:build:development"
+              "browserTarget": "predyc-business:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -83,7 +77,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "predyc-v3:build"
+            "browserTarget": "predyc-business:build"
           }
         },
         "test": {
@@ -93,28 +87,18 @@
               "zone.js",
               "zone.js/testing"
             ],
-            "tsConfig": "tsconfig.spec.json",
+            "tsConfig": "projects/predyc-business/tsconfig.spec.json",
             "assets": [
-              "src/favicon.ico",
-              "src/assets"
+              "projects/predyc-business/src/favicon.ico",
+              "projects/predyc-business/src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "projects/predyc-business/src/styles.css"
             ],
             "scripts": []
-          }
-        },
-        "deploy": {
-          "builder": "@angular/fire:deploy",
-          "options": {
-            "version": 2,
-            "browserTarget": "predyc-v3:build:production"
           }
         }
       }
     }
-  },
-  "cli": {
-    "analytics": "2d2c3140-7615-4eb0-9096-b9fe40db8b89"
   }
 }

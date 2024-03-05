@@ -1,10 +1,11 @@
 {
-  "name": "predyc-v3",
+  "name": "predyc-business-workspace",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:shared": "cd projects/shared && tsc",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
