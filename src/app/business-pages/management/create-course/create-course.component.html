@@ -66,7 +66,7 @@
                                         <label class="ft12 "  >Foto del curso</label>
                                         <div class="image-selector">
                                             <!-- <button class="add-button">Adjuntar nueva</button> -->
-                                            <button (click)="cursoImage.click()" class="grayButton radius6 ft12 ft500 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                            <button (click)="cursoImage.click()" class="grayButton pd03 radius6 ft12 ft500 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                                                 <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
                                                 Adjuntar imagen
                                             </button>
@@ -365,24 +365,24 @@
                                                                                         </div>
                                                                                     </div>
                                                                                     <div fxLayout="row" fxLayoutAlign="center center" class="mgt15 mgb05">
-                                                                                        <button (click)="FileInput.click()" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                                                        <button (click)="FileInput.click()" class="grayButton pd03 radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                                                                                             <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
                                                                                             {{ ((clase.tipo == 'lectura' && !clase.archivos[0]) || (clase.tipo == 'video' && !clase.vimeoId1))? 'Seleccionar archivo' : 'Remplazar archivo'}}
                                                                                         </button>
-                                                                                        <button (click)="verVideoVimeo(clase)" *ngIf="clase.tipo == 'video' && clase.vimeoId1" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                                                        <button (click)="verVideoVimeo(clase)" *ngIf="clase.tipo == 'video' && clase.vimeoId1" class="grayButton pd03 radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                                                                                             <img [src]="icon.playOutline" class="h16px pdr05" alt="">
                                                                                             Reproducir video
                                                                                         </button>
-                                                                                        <button (click)="structureActivity(modalClaseDetail,clase,modulo)"  *ngIf="clase.archivos[0] || clase.tipo == 'video' && (clase['base64Video'] || clase.vimeoId1)" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                                                        <button (click)="structureActivity(modalClaseDetail,clase,modulo)"  *ngIf="clase.archivos[0] || clase.tipo == 'video' && (clase['base64Video'] || clase.vimeoId1)" class="grayButton pd03 radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                                                                                             <img [src]="icon.folderUp" class="h16px pdr05" alt="">
                                                                                             Añadir recursos
                                                                                         </button>
-                                                                                        <!-- <button (click)="openModalAsignarCompetencia(modalAsignarCompetenciasClases,clase)" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                                                        <!-- <button (click)="openModalAsignarCompetencia(modalAsignarCompetenciasClases,clase)" class="grayButton pd03 radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                                                                                             <img [src]="icon.flash" class="h16px pdr05" alt="">
                                                                                             Seleccionar competencias
                                                                                         </button> -->
                                                                                         <ng-container *ngIf="clase.tipo == 'lectura'">
-                                                                                            <!-- <button (click)="openModalAsignarCompetencia(modalAsignarCompetenciasClases,clase)" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                                                            <!-- <button (click)="openModalAsignarCompetencia(modalAsignarCompetenciasClases,clase)" class="grayButton pd03 radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                                                                                                 <img [src]="icon.flash" class="h16px pdr05" alt="">
                                                                                                 Seleccionar sas
                                                                                             </button> -->
@@ -396,11 +396,11 @@
                                                                                 </ng-container>
                                                                                 <ng-container *ngIf="clase.tipo == 'actividad' || clase.tipo == 'corazones' ">
                                                                                     <div fxLayout="row" fxLayoutAlign="center center" class="mgt15 mgb05">
-                                                                                        <button (click)="structureActivity(modalActividadDetail,clase,modulo);showErrorActividad = false" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                                                        <button (click)="structureActivity(modalActividadDetail,clase,modulo);showErrorActividad = false" class="grayButton pd03 radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                                                                                             <img [src]="icon.taskAdd" class="h16px pdr05" alt="">
                                                                                             Estructurar actividad
                                                                                         </button>
-                                                                                        <!-- <button (click)="openModalAsignarCompetencia(modalAsignarCompetenciasClases,clase)"class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                                                        <!-- <button (click)="openModalAsignarCompetencia(modalAsignarCompetenciasClases,clase)"class="grayButton pd03 radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                                                                                             <img [src]="icon.flash" class="h16px pdr05" alt="">
                                                                                             <ng-container *ngIf="clase.competencias && clase.competencias?.length == 0">
                                                                                                 Agregar competencias
@@ -439,19 +439,19 @@
                                                                             <span (click)="modulo['addClassMode'] = false">
                                                                                 <img [src]="icon.close" class="h18px pdr05 makeRed" alt="">
                                                                             </span>
-                                                                            <button (click)="addClase('lectura',modulo); modulo['addClassMode'] = false   " class="grayButton radius4 ft12 h28px gray-8">
+                                                                            <button (click)="addClase('lectura',modulo); modulo['addClassMode'] = false   " class="grayButton pd03 radius4 ft12 h28px gray-8">
                                                                                 <img [src]="icon.addNew" class="h12px pdr05 makeGray8" alt="">
                                                                                 Lectura
                                                                             </button>
-                                                                            <button (click)="addClase('video',modulo); modulo['addClassMode'] = false   " class="grayButton radius4 ft12 h28px gray-8">
+                                                                            <button (click)="addClase('video',modulo); modulo['addClassMode'] = false   " class="grayButton pd03 radius4 ft12 h28px gray-8">
                                                                                 <img [src]="icon.addNew" class="h12px pdr05 makeGray8" alt="">
                                                                                 Video
                                                                             </button>
-                                                                            <button (click)="addClase('actividad',modulo); modulo['addClassMode'] = false   " class="grayButton radius4 ft12 h28px gray-8">
+                                                                            <button (click)="addClase('actividad',modulo); modulo['addClassMode'] = false   " class="grayButton pd03 radius4 ft12 h28px gray-8">
                                                                                 <img [src]="icon.addNew" class="h12px pdr05 makeGray8" alt="">
                                                                                 Actividad
                                                                             </button>
-                                                                            <button (click)="addClase('corazones',modulo); modulo['addClassMode'] = false   " class="grayButton radius4 ft12 h28px gray-8">
+                                                                            <button (click)="addClase('corazones',modulo); modulo['addClassMode'] = false   " class="grayButton pd03 radius4 ft12 h28px gray-8">
                                                                                 <img [src]="icon.addNew" class="h12px pdr05 makeGray8" alt="">
                                                                                 Corazones
                                                                             </button>
@@ -727,7 +727,7 @@
             <div fxFlex="40%" >
                 <div fxLayout = "column" class="fw fh pdl20 pdt10">
                     <div fxLayout="row" class="pdb10">
-                        <button  (click)="modal.dismiss()" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                        <button  (click)="modal.dismiss()" class="grayButton pd03 radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                             <img [src]="icon.chevronLeft" class="h16px pdr05" alt="">
                             Regresar
                         </button>     
@@ -777,7 +777,7 @@
                     </div>
                     <div fxLayout="row" class="pdb10 pdt10">
                         <input (change)="onFileSelected($event,selectedClase, false, selectedModulo, true)"  type="file" accept=".pdf"  #FileInputAdicional style="display: none;">
-                        <button (click)="FileInputAdicional.click()" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                        <button (click)="FileInputAdicional.click()" class="grayButton pd03 radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                             <img [src]="icon.folderUp" class="h16px pdr05" alt="">
                             Añadir recursos
                         </button>
@@ -872,7 +872,7 @@
                                             [class.is-invalid]="formNuevaActividadBasica.controls['recursos'].errors && showErrorActividad"
                                             (change)="onFileSelected($event,selectedClase,false,selectedModulo,true,'archivoActividad')" type="file" accept=".pdf" #fileActivityInput class="form-control customInput custom-input">
                                             <!-- <button class="custom-button ">Botón</button> -->
-                                            <button (click)="fileActivityInput.click()" class="custom-button grayButton ft500 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                            <button (click)="fileActivityInput.click()" class="custom-button grayButton pd03 ft500 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                                                 <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
                                                 Adjuntar
                                             </button>
@@ -926,7 +926,7 @@
                                             <input 
                                             [class.is-invalid]="formNuevaActividadGeneral.controls['video'].errors && showErrorActividad"
                                             (change)="onFileSelected($event,selectedClase,false,selectedModulo,false,'videoActividad')" type="file" accept="video/mp4"  #videoActivityInput class="form-control custom-input" placeholder="Escriba el título de la actividad aquí">
-                                            <button (click)="videoActivityInput.click()" class="custom-button grayButton ft500 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                            <button (click)="videoActivityInput.click()" class="custom-button grayButton pd03 ft500 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                                                 <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
                                                 Adjuntar
                                             </button>
@@ -977,7 +977,7 @@
                                             <input 
                                             [class.is-invalid]="formNuevaActividadGeneral.controls['recursos'].errors && showErrorActividad"
                                             (change)="onFileSelected($event,selectedClase,false,selectedModulo,true,'archivoActividad')" type="file" accept=".pdf" #fileActivityInput class="form-control customInput custom-input">
-                                            <button (click)="fileActivityInput.click()" class="custom-button grayButton ft500 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                            <button (click)="fileActivityInput.click()" class="custom-button grayButton pd03 ft500 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                                                 <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
                                                 Adjuntar
                                             </button>
@@ -1034,7 +1034,7 @@
                                         <!-- <div fxLayout="row" fxLayoutAlign="space-between center">
                                             <div fxLayout="row" fxLayoutGap="0.625">
                                                 <div *ngFor="let questionType of questionTypes" class="pdr05">
-                                                    <button (click)="onQuestionTypeChange(pregunta, questionType.value)" class="{{pregunta.type.value == questionType.value ? 'backGray4': 'grayButton' }} radius4 ft12 h28px gray-8">{{ questionType.displayName }}</button>
+                                                    <button (click)="onQuestionTypeChange(pregunta, questionType.value)" class="{{pregunta.type.value == questionType.value ? 'backGray4': 'grayButton pd03' }} radius4 ft12 h28px gray-8">{{ questionType.displayName }}</button>
                                                 </div>
                                             </div>
                                             
@@ -1044,7 +1044,7 @@
                                             </div>
                                         </div> -->
                                         <!-- <div fxLayout="row" fxLayoutAlign="start center" class="pdt10">
-                                            <button (click)="questionImage.click()" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                            <button (click)="questionImage.click()" class="grayButton pd03 radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                                                 <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
                                                 Adjuntar imagen
                                             </button>
@@ -1085,7 +1085,7 @@
                                                     <span>Haga click en confirmar cuando haya terminado de escribir la pregunta</span>
                                                 </div>
                                                 <div fxLayout="row" class="pdt05 pdb05">
-                                                    <button (click)="parseQuestionText(pregunta)" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                    <button (click)="parseQuestionText(pregunta)" class="grayButton pd03 radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                                                         <img [src]="icon.check" class="h16px pdr05" alt="">
                                                         Confirmar
                                                     </button>
@@ -1122,7 +1122,7 @@
                                                     </div>
                                                 </div>
                                                 <div *ngIf="pregunta.placeHolders?.length>0">
-                                                    <button (click)="showDisplayText(pregunta)" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                    <button (click)="showDisplayText(pregunta)" class="grayButton pd03 radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                                                         <img [src]="icon.check" class="h16px pdr05" alt="">
                                                         Renderizar pregunta
                                                     </button>
@@ -1518,7 +1518,7 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button (click)="modal.dismiss()" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+        <button (click)="modal.dismiss()" class="grayButton pd03 radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
             Cancelar
         </button>  
         <button *ngIf="selectedClase.tipo!='actividad'" (click)="saveCompetenciasClase()" class="blueButton radius4 ft12 h28px mgr10 gray-1" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
@@ -1581,7 +1581,7 @@
             <div class="form-group pdt10">
                 <label>Foto del instructor</label>
                 <div class="avatar-selector">
-                    <button (click)="instructorImage.click()" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                    <button (click)="instructorImage.click()" class="grayButton pd03 radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                         <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
                         Adjuntar imagen
                     </button>
@@ -1726,7 +1726,7 @@
         
         <!-- Botón de guardar en la esquina inferior derecha -->
         <div fxLayout="row" fxLayoutAlign="end" class="pdt03">
-            <button (click)="!savingPillar?saveNewPillar():''" class="{{!savingPillar?'blueButton gray-1':'grayButton gray-8 '}} radius4 ft12 h28px mgt08" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+            <button (click)="!savingPillar?saveNewPillar():''" class="{{!savingPillar?'blueButton gray-1':'grayButton pd03 gray-8 '}} radius4 ft12 h28px mgt08" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                 <img [src]="icon.save" class="h16px = makeWhite" alt="">
                 Guardar Pilar
             </button>

@@ -33,8 +33,8 @@
                                 <div *ngFor="let questionType of questionTypes" class="pdr05">
                                     <button
                                         (click)="onQuestionTypeChange(i, questionType.value)"
-                                        class="{{ question.get('type').value === questionType.value ? 'backGray4': 'grayButton' }} radius4 ft12 h28px gray-8"
-                                        type="button"
+                                        class="{{ question.get('type').value === questionType.value ? 'backGray4': 'grayButton' }} radius4 pd03 ft12 h28px gray-8"
+                                        style="border:0px !important" type="button"
                                         >
                                         {{ questionType.displayName }}
                                     </button>
@@ -56,7 +56,7 @@
                         <div fxLayout="row" fxLayoutAlign="start center" class="pdt10">
                             <button
                                 (click)="questionImage.click()"
-                                class="grayButton radius4 ft12 h28px mgr10 gray-8"
+                                class="grayButton pd03 radius4 ft12 h28px mgr10 gray-8"
                                 fxLayout="row"
                                 fxLayoutGap="0.625"
                                 fxLayoutAlign="center center"
@@ -116,7 +116,7 @@
                                 <div fxLayout="row" class="pdt05 pdb05">
                                     <button
                                         (click)="parseQuestionText(i)"
-                                        class="grayButton radius4 ft12 h28px mgr10 gray-8"
+                                        class="grayButton radius4 ft12 pd03 h28px mgr10 gray-8"
                                         fxLayout="row"
                                         fxLayoutGap="0.625"
                                         fxLayoutAlign="center center"
@@ -171,7 +171,7 @@
                                 <div *ngIf="questionStatus[i].placeholders.length > 0">
                                     <button
                                         (click)="showDisplayText(i)"
-                                        class="grayButton radius4 ft12 h28px mgr10 gray-8"
+                                        class="grayButton pd03 radius4 ft12 h28px mgr10 gray-8"
                                         fxLayout="row"
                                         fxLayoutGap="0.625"
                                         fxLayoutAlign="center center"
@@ -256,7 +256,7 @@
                                                 <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
                                                     <button
                                                     (click)="questionOptionImage.click()"
-                                                    class="grayButton radius4 ft12 h28px mgr10 gray-8"
+                                                    class="grayButton pd03 radius4 ft12 h28px mgr10 gray-8"
                                                     fxLayout="row"
                                                     fxLayoutGap="0.625"
                                                     fxLayoutAlign="center center"

@@ -571,7 +571,7 @@ body {
 .darkButtonHover{  background-color: #151b26!important; transition: .3s; }
 .whiteButton{ border:1px solid var(--gray-6); box-shadow: var(--shadow8); color:var(--gray-8); background-color: #FFFFFF!important; transition: .3s; }
 .whiteButton:hover{ border:1px solid var(--gray-6);box-shadow: var(--shadow8);color:var(--gray-8);  background-color: #e8ecee!important; transition: .3s; }
-.grayButton{  background-color: #F0F3F4!important; transition: .3s; }
+.grayButton{  background-color: #F0F3F4!important; transition: .3s; border: 0px !important; }
 .grayButton:hover{  background-color: #e3e4e5!important; transition: .3s; }
 .greenButton{  background-color: #00BF9C!important; transition: .3s; }
 .greenButton:hover{  background-color: #00aa8b!important; transition: .3s; }
