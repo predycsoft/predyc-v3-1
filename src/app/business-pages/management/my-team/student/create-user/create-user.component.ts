@@ -255,6 +255,9 @@ export class CreateUserComponent {
     }
   }
 
+
+  savingChanges = false;
+
   async onSubmit() {
     console.log("form", this.userForm.value)
     if (this.validateCurrentModalPage()) {
@@ -266,7 +269,7 @@ export class CreateUserComponent {
     const user = await this.getUserFromForm()
     console.log("user", user)
     try {
-
+      this.savingChanges = true;
       console.log('profiles',this.profiles,user.profile) 
 
       let profileNew = this.profiles.find(x=>x.id == user?.profile?.id)
@@ -301,6 +304,7 @@ export class CreateUserComponent {
       } 
       this.activeModal.close(this.userForm.value);
       this.alertService.succesAlert('Estudiante agregado exitosamente')
+      this.savingChanges = false;
     } catch (error) {
       this.alertService.errorAlert(error)
     }

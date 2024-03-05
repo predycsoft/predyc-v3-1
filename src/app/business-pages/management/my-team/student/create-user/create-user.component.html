@@ -175,25 +175,16 @@
             </div>
             <div class="mgt10" style="display: flex; align-items: center; justify-content: center">
                 <!-- Contenedor para los dos botones de la derecha -->
-                <button
-                    class=" blueButtonAnim button-animation   h28px mgr10 "
-                    fxLayout="row"
-                    fxLayoutGap="0.625"
-                    fxLayoutAlign="center center"
-                    type="submit"
-                    >
-                    {{studentToEdit ? "Guardar" : "Crear"}} usuario
-                </button>        
-                <!-- <button
-                    class="blueButton radius4 ft12 h28px mgr10 gray-1"
-                    fxLayout="row"
-                    fxLayoutGap="0.625"
-                    fxLayoutAlign="center center"
-                    type="button"
-                    (click)="showCurrentForm()"
-                    >
-                    DEBUG
-                </button>         -->
+                <button [disabled]="savingChanges"
+                class="blueButtonAnim button-animation h28px mgr10"
+                fxLayout="row"
+                fxLayoutAlign="center center"
+                type="submit">
+                    <!-- Spinner que solo se muestra cuando savingChanges es true -->
+                    <mat-spinner *ngIf="savingChanges" diameter="20" class="spinner-blanc"></mat-spinner>
+                    <!-- Texto del botón que siempre se muestra -->
+                    {{ studentToEdit ? "Guardar" : "Crear" }} usuario
+                </button>
             </div>
         </div>
     </div>
