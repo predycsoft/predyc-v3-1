@@ -1,0 +1,13 @@
+.catInput {
+    border: none !important;
+    font-size: 12px;
+}
+
+.catInput:focus{
+    outline: none;
+}
+
+.catInput::placeholder{
+    color: var(--gray-9);
+    font-size: 14px;
+}

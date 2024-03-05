@@ -4,7 +4,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Subscription } from 'rxjs';
 import { Enterprise } from 'src/shared/models/enterprise.model';
 import { User } from 'src/shared/models/user.model';
-import { EnterpriseService } from 'src/shared/services/enterprise.service';
+import { DialogService } from 'src/shared/services/dialog.service';
 import { UserService } from 'src/shared/services/user.service';
 
 @Component({
@@ -17,8 +17,8 @@ export class EnterpriseAdminsListComponent {
   @Input() enterpriseRef: DocumentReference<Enterprise>
 
   constructor(
-    private enterpriseService: EnterpriseService,
     private userService: UserService,
+    public dialogService: DialogService,
   ){}
 
 
@@ -32,15 +32,31 @@ export class EnterpriseAdminsListComponent {
 
   userSubscription: Subscription
 
+  addingAdmin: boolean = false;
+  newAdmin: User
+
   ngOnInit() {
     this.userSubscription = this.userService.getAdminUsersByEnterpriseRef$(this.enterpriseRef).subscribe(adminUsers => {
-      console.log("adminUsers", adminUsers)
       this.dataSource.data = adminUsers
     })
   }
 
 
   async addAdmin() {
+    this.addingAdmin = true
+    this.newAdmin = User.getEnterpriseAdminUser(this.enterpriseRef)
+  }
+  
+  async saveAdmin() {
+    // console.log("newAdmin", this.newAdmin)
+    this.newAdmin.displayName = this.newAdmin.name
+    this.addingAdmin = false
+    try {
+      await this.userService.addUser(this.newAdmin)
+      this.dialogService.dialogExito();
+    } catch (error) {
+      this.dialogService.dialogAlerta("Hubo un error al guardar el nuevo administrador. Inténtalo de nuevo.");
+    }
 
   }
 
@@ -48,9 +64,6 @@ export class EnterpriseAdminsListComponent {
 
   }
 
-  onActive(user: User) {
-
-  }
 
 
   ngOnDestroy() {
