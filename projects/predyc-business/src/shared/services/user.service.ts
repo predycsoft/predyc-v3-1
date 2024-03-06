@@ -177,6 +177,12 @@ export class UserService {
     ).valueChanges()
   }
 
+  getStudentUsersByEnterpriseRef$(enterpriseRef: DocumentReference): Observable<User[]> {
+    return this.afs.collection<User>(User.collection, ref => 
+      ref.where("enterprise", "==", enterpriseRef).where("role", "==", "student")
+    ).valueChanges()
+  }
+
   getAdminUsersByEnterpriseRef$(enterpriseRef: DocumentReference): Observable<User[]> {
     return this.afs.collection<User>(User.collection, ref => 
       ref.where("enterprise", "==", enterpriseRef).where("role", "==", "admin")
