@@ -367,4 +367,97 @@ display: none !important;
 background-color: var(--yellow-5);
 
 }
+.rellenar {
+  display: inline;
+}
+
+.correctAnswer {
+  background-color: var(--green-5);
+  border-radius: 6px;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.incorrectAnswer {
+  background-color: var(--red-5);
+  border-radius: 6px;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.correctAnswerPlaceholder {
+  color: var(--green-5);
+  font-weight: 500;
+}
+
+.incorrectAnswerPlaceholder {
+  color: var(--red-5);
+  font-weight: 500;
+}
+
+.options-container {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 20px; /* This will create space between the rows */
+}
+
+.option-card-wrapper {
+  flex: 1 0 calc(50% - 10px); /* Adjust the basis considering the gap */
+  /* No need for height: 100% here, flexbox will take care of it */
+  display: flex; /* This will allow you to use align-items and justify-content */
+  padding: 5px; /* This padding will ensure space around the cards */
+}
+
+.option-card {
+  padding: 10px;
+  margin: 5px; /* Apply margin to the cards */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+  background: white;
+  display: flex;
+  align-items: center; /* Centers the content vertically */
+  justify-content: center; /* Centers the content horizontally */
+  flex-grow: 1; /* Allows the card to grow to fill the wrapper */
+  /* Removed width: 100%; it's not necessary with flex-grow */
+  flex-direction: column; /* Stack image and text vertically */
+  overflow: hidden; /* Ensures content does not overflow */
+}
+
+/* Placeholder for the odd element */
+.option-card-placeholder {
+  flex: 1 0 calc(50% - 10px);
+  visibility: hidden;
+}
+
+.selectedOptions {
+  border-color: var(--blue-5);
+}
+
+.correctAnswerCorazon {
+  background-color: var(--green-5) !important;
+}
+
+.incorrectAnswerCorazon {
+  background-color: var(--red-5) !important;
+  color: white !important;
+}
+
+.option-image {
+  max-height: 150px; /* Ensures the image is not wider than the card */
+  width: auto; /* Maintain aspect ratio */
+  margin-bottom: 10px; /* Space between the image and the text */
+}
+
+.question-container {
+  max-height: 62vh; /* Adjust this value based on your application's layout */
+  overflow-y: auto; /* Adds a scrollbar when content overflows */
+  /* If you have padding inside the container, box-sizing should be border-box */
+  box-sizing: border-box;
+}
 
