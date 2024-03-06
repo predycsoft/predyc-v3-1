@@ -11,7 +11,7 @@ export interface ChargeJson {
     cardBrand: string;
     cardLast4: string;
     comment: string;
-    coupon: DocumentReference<Coupon>;
+    coupon: DocumentReference<Coupon>; // its already in price 
     createdAt: number;
     currency: string;
     description: string;

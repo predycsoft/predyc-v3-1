@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { Charge } from '../models/charges.model';
 import { Observable } from 'rxjs';
+import { Enterprise } from '../models/enterprise.model';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,10 @@ export class ChargeService {
 
   public getCharges$(): Observable<Charge[]> {
     return this.afs.collection<Charge>(Charge.collection).valueChanges()
+  }
+
+  public getChargesByEnterpriseRef$(enterpriseRef: DocumentReference<Enterprise>): Observable<Charge[]> {
+    return this.afs.collection<Charge>(Charge.collection, ref => ref.where("customer", "==", enterpriseRef)).valueChanges()
   }
 
   async saveCharge(charge: Charge): Promise<void> {
