@@ -1,7 +1,7 @@
 <div *ngIf="firstLoad" fxLayout="column" class="mgt20 mgl20 mgr20">
     <app-navigate-back targetUrl="/admin/enterprises" class="ft600 ft16 gray-10">Empresas</app-navigate-back>
     <div fxLayoutAlign="start start" fxLayout="column" class="mgt10">
-        <h6 class="ft500"> {{enterpriseId ? "Editar" : "Agregar"}} empresa cliente</h6>
+        <h6 class="ft500"> {{enterpriseId ? "Editar" : "Agregar"}} empresa cliente: {{enterpriseId ? enterprise.name : ""}}</h6>
         <div *ngIf="enterpriseId" fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
             <span class="mgr10">Status suscripción: </span> 
             <!-- <span class="chip">{{enterprise.status}}</span> -->
@@ -25,7 +25,7 @@
         <app-enterprise-students [enterprise]="enterprise"></app-enterprise-students>
     </div>
     <div *ngIf="tab === 2" fxLayout="column" class="mgt10">
-        <app-enterprise-payments></app-enterprise-payments>
+        <app-enterprise-payments [enterprise]="enterprise"></app-enterprise-payments>
     </div>
     
 </div>

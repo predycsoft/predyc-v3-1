@@ -11,7 +11,7 @@ export interface ChargeJson {
     cardBrand: string;
     cardLast4: string;
     comment: string;
-    coupon: DocumentReference<Coupon>;
+    coupon: DocumentReference<Coupon>; // its already in price 
     createdAt: number;
     currency: string;
     description: string;
@@ -52,6 +52,29 @@ export interface ChargeJson {
     quantity: number | null;
 
     public static collection = 'charge'
+
+    public static newChargeTemplate =  Charge.fromJson({
+      amount: 0,
+      amountCaptured: 0,
+      amountRefunded: 0,
+      cardBrand: "",
+      cardLast4: "",
+      comment: "",
+      coupon: null,
+      createdAt: +new Date,
+      currency: "usd",
+      description: "",
+      failureMessage: "",
+      id: "ch_pre_" + +new Date,
+      interval: 1,
+      origin: "",
+      payAt: null,
+      price: null,
+      status: 'pending',
+      customer: null,
+      via: "Predyc",
+      quantity: 1,
+    })
   
     STATUS_FAILED = 'failed';
     STATUS_PENDING = 'pending';

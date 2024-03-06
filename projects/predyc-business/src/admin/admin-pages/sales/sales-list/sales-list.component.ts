@@ -5,13 +5,11 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription, combineLatest, firstValueFrom } from 'rxjs';
 import { chargeData } from 'projects/predyc-business/src/assets/data/charge.data';
 import { Charge, ChargeJson } from 'projects/predyc-business/src/shared/models/charges.model';
-import { Coupon } from 'projects/predyc-business/src/shared/models/coupon.model';
 import { Enterprise } from 'projects/predyc-business/src/shared/models/enterprise.model';
 import { Price } from 'projects/predyc-business/src/shared/models/price.model';
 import { Product } from 'projects/predyc-business/src/shared/models/product.model';
 import { User } from 'projects/predyc-business/src/shared/models/user.model';
 import { ChargeService } from 'projects/predyc-business/src/shared/services/charge.service';
-import { CouponService } from 'projects/predyc-business/src/shared/services/coupon.service';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import { PriceService } from 'projects/predyc-business/src/shared/services/price.service';
@@ -37,7 +35,6 @@ export class SalesListComponent {
     private router: Router,
     private chargeService: ChargeService,
     private productService: ProductService,
-    private couponService: CouponService,
     private enterpriseService: EnterpriseService,
     private userService: UserService,
     private activatedRoute: ActivatedRoute,
@@ -72,7 +69,6 @@ export class SalesListComponent {
 
   prices: Price[]
   products: Product[]
-  coupons: Coupon[]
   users: User[]
   enterprises: Enterprise[]
 
@@ -82,15 +78,13 @@ export class SalesListComponent {
       [ 
         this.priceService.getPrices$(), 
         this.productService.getProducts$(), 
-        this.couponService.getCoupons$(),
         this.userService.getAllUsers$(),
         this.enterpriseService.getAllEnterprises$(),
       ]
     ).
-    subscribe(([prices, products, coupons, users, enterprises]) => {
+    subscribe(([prices, products, users, enterprises]) => {
       this.prices = prices
       this.products = products
-      this.coupons = coupons
       this.users = users
       this.enterprises = enterprises
       this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
