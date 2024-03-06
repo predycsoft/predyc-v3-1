@@ -75,6 +75,7 @@
                             name="birhtdate"
                             (click)="birthdate.toggle()"
                             ngbDatepicker
+                            [minDate]="minDate" [maxDate]="maxDate"
                             #birthdate="ngbDatepicker"
                             placeholder="Fecha de nacimiento"
                             >
@@ -122,6 +123,7 @@
                             name="hiringDate"
                             (click)="hiringDate.toggle()"
                             ngbDatepicker
+                            [minDate]="minDate" [maxDate]="maxDate"
                             #hiringDate="ngbDatepicker"
                             placeholder="Fecha de ingreso"
                             >

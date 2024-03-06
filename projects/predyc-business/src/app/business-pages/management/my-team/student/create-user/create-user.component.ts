@@ -37,11 +37,25 @@ export class CreateUserComponent {
     private storage: AngularFireStorage,
     private afs: AngularFirestore,
 
-  ) {}
+  ) {
+
+      // Obtener la fecha actual
+  const today = new Date();
+
+  // Asignar la fecha máxima
+  this.maxDate = {
+    year: today.getFullYear(),
+    month: today.getMonth() + 1, // Los meses en JavaScript son de 0 a 11
+    day: today.getDate()
+  };
+  }
   
   @Input() studentToEdit: User | null = null;
   @Input() enterpriseRef: DocumentReference<Enterprise> | null = null;
 
+
+  minDate = {year: 1900, month: 1, day: 1};
+  maxDate
   userForm: FormGroup
   displayErrors: boolean = false
   profiles: Profile[] = []
@@ -186,12 +200,23 @@ export class CreateUserComponent {
         const departmentId = this.departments.find(department => department.name === formData?.department)?.id
         if(!departmentId){
           this.isDepartmentInvalid = true
+          return false; // Indicate that the form is invalid
         }
       }
 
       return false; // Indicate that the form is invalid
     }
-    return true; // Indicate that the form is valid
+    else{
+      const formData = this.userForm.getRawValue() // use getRawValue instead of value because "value" doesnt contain disabled fields (email)
+      if (formData.department && formData.department !== 'null') {
+        const departmentId = this.departments.find(department => department.name === formData?.department)?.id
+        if(!departmentId){
+          this.isDepartmentInvalid = true
+          return false; // Indicate that the form is invalid
+        }
+      }
+      return true; // Indicate that the form is valid
+    }
   }
 
   async getUserFromForm(){
