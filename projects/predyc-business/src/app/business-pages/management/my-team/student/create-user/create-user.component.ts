@@ -15,7 +15,8 @@ import { ProfileService } from 'projects/predyc-business/src/shared/services/pro
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
 import { dateFromCalendarToTimestamp, timestampToDateNumbers } from 'projects/predyc-business/src/shared/utils';
 import { countriesData } from 'projects/predyc-business/src/assets/data/countries.data'
-import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
+import { Enterprise } from 'projects/predyc-business/src/shared/models/enterprise.model';
 
 @Component({
   selector: 'app-create-user',
@@ -39,6 +40,7 @@ export class CreateUserComponent {
   ) {}
   
   @Input() studentToEdit: User | null = null;
+  @Input() enterpriseRef: DocumentReference<Enterprise> | null = null;
 
   userForm: FormGroup
   displayErrors: boolean = false
@@ -51,6 +53,8 @@ export class CreateUserComponent {
   filteredDepartments: Observable<string[]>;
 
   async ngOnInit() {
+    this.isDepartmentInvalid = false
+
     this.profileServiceSubscription = this.profileService.getProfiles$().subscribe(profiles => {
       if (profiles) {
         console.log('profiles',profiles)
@@ -165,7 +169,10 @@ export class CreateUserComponent {
     };
   }
 
+  isDepartmentInvalid = false
+
   validateCurrentModalPage() {
+    this.isDepartmentInvalid = false
     const currentPageGroup = this.userForm;
     
     if (currentPageGroup && currentPageGroup.invalid) {
@@ -173,20 +180,35 @@ export class CreateUserComponent {
       //   const control = currentPageGroup.get(field);
       //   control.markAsTouched({ onlySelf: true });
       // });
+      const formData = this.userForm.getRawValue() // use getRawValue instead of value because "value" doesnt contain disabled fields (email)
+
+      if (formData.department && formData.department !== 'null') {
+        const departmentId = this.departments.find(department => department.name === formData?.department)?.id
+        if(!departmentId){
+          this.isDepartmentInvalid = true
+        }
+      }
+
       return false; // Indicate that the form is invalid
     }
     return true; // Indicate that the form is valid
   }
 
   async getUserFromForm(){
+    this.isDepartmentInvalid = false
     // Guarda la imagen
     await this.saveStudentPhoto()
   
     const formData = this.userForm.getRawValue() // use getRawValue instead of value because "value" doesnt contain disabled fields (email)
     let department = null
     if (formData.department && formData.department !== 'null') {
-      const departmentId = this.departments.find(department => department.name === formData.department).id
-      department = departmentId ? this.departmentService.getDepartmentRefById(departmentId) : null
+      const departmentId = this.departments.find(department => department.name === formData?.department)?.id
+      if(departmentId){
+        department = departmentId ? this.departmentService.getDepartmentRefById(departmentId) : null
+      }
+      else{
+        this.isDepartmentInvalid = true
+      }
     }
     const userObj = {
       name: formData.displayName ? formData.displayName.toLowerCase() : null,
@@ -207,6 +229,11 @@ export class CreateUserComponent {
       user = User.getEnterpriseAdminUser(this.enterpriseService.getEnterpriseRef())
     } else {
       user = User.getEnterpriseStudentUser(this.enterpriseService.getEnterpriseRef())
+    }
+
+    if (this.enterpriseRef) {
+      // console.log("this.enterpriseRef", this.enterpriseRef)
+      user = User.getEnterpriseStudentUser(this.enterpriseRef)
     }
 
     let valueToPatch = null

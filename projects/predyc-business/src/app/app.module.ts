@@ -53,6 +53,7 @@ import { StudentInfoFormComponent } from './business-pages/management/my-team/st
 import { StudentStudyPlanAndCompetencesComponent } from './business-pages/management/my-team/student/student-study-plan-and-competences/student-study-plan-and-competences.component';
 import { StudyTimeMonthlyLineChartComponent } from './business-pages/dashboard/users-study-time-container/study-time-monthly-line-chart/study-time-monthly-line-chart.component';
 import { SharedModule } from 'projects/predyc-business/src/shared/shared.module';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 @NgModule({
@@ -103,6 +104,7 @@ import { SharedModule } from 'projects/predyc-business/src/shared/shared.module'
     SharedModule,
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebase),
+    NgbModule,
   ],
   providers: [
     {

@@ -25,6 +25,7 @@
               "projects/predyc-business/src/assets"
             ],
             "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "projects/predyc-business/src/styles.css"
             ],
             "scripts": []
@@ -34,8 +35,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "3mb",
-                  "maximumError": "10mb"
+                  "maximumWarning": "10mb",
+                  "maximumError": "20mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -100,5 +101,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "9dd9bb56-87f1-4136-ae4b-2cab9b6b56aa"
   }
 }
