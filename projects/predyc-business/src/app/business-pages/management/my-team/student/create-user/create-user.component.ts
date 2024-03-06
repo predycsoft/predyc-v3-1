@@ -15,7 +15,8 @@ import { ProfileService } from 'projects/predyc-business/src/shared/services/pro
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
 import { dateFromCalendarToTimestamp, timestampToDateNumbers } from 'projects/predyc-business/src/shared/utils';
 import { countriesData } from 'projects/predyc-business/src/assets/data/countries.data'
-import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
+import { Enterprise } from 'projects/predyc-business/src/shared/models/enterprise.model';
 
 @Component({
   selector: 'app-create-user',
@@ -39,6 +40,7 @@ export class CreateUserComponent {
   ) {}
   
   @Input() studentToEdit: User | null = null;
+  @Input() enterpriseRef: DocumentReference<Enterprise> | null = null;
 
   userForm: FormGroup
   displayErrors: boolean = false
@@ -207,6 +209,11 @@ export class CreateUserComponent {
       user = User.getEnterpriseAdminUser(this.enterpriseService.getEnterpriseRef())
     } else {
       user = User.getEnterpriseStudentUser(this.enterpriseService.getEnterpriseRef())
+    }
+
+    if (this.enterpriseRef) {
+      // console.log("this.enterpriseRef", this.enterpriseRef)
+      user = User.getEnterpriseStudentUser(this.enterpriseRef)
     }
 
     let valueToPatch = null
