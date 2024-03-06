@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { DocumentReference } from '@angular/fire/compat/firestore';
 import { MatTableDataSource } from '@angular/material/table';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ChargeJson, Charge } from 'projects/predyc-business/src/shared/models/charges.model';
 import { Coupon } from 'projects/predyc-business/src/shared/models/coupon.model';
 import { Enterprise } from 'projects/predyc-business/src/shared/models/enterprise.model';
@@ -13,6 +14,7 @@ import { IconService } from 'projects/predyc-business/src/shared/services/icon.s
 import { PriceService } from 'projects/predyc-business/src/shared/services/price.service';
 import { ProductService } from 'projects/predyc-business/src/shared/services/product.service';
 import { Subscription, combineLatest } from 'rxjs';
+import { DialogCreateChargeComponent } from './dialog-create-charge/dialog-create-charge.component';
 
 interface ChargeInList extends ChargeJson {
   productName: string
@@ -35,8 +37,9 @@ export class EnterprisePaymentsComponent {
     private couponService: CouponService,
     private enterpriseService: EnterpriseService,
     public icon: IconService,
-
     private priceService: PriceService,
+    private modalService: NgbModal,
+
   ){}
 
   displayedColumns: string[] = [
@@ -105,7 +108,14 @@ export class EnterprisePaymentsComponent {
   }
 
   openCreateChargeModal() {
+    const modalRef = this.modalService.open(DialogCreateChargeComponent, {
+      animation: true,
+      centered: true,
+      size: 'xl',
+      keyboard: false ,
+    })
     
+    modalRef.componentInstance.enterpriseRef = this.enterpriseRef;
   }
 
   ngOnDestroy() {
