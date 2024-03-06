@@ -359,6 +359,7 @@ export class CreateUserComponent {
       this.savingChanges = false;
     } catch (error) {
       this.alertService.errorAlert(error)
+      this.savingChanges = false;
     }
   }
 
