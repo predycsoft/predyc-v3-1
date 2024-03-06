@@ -3,7 +3,6 @@ import { onMainContentChange } from 'projects/predyc-business/src/shared/animati
 import { LoaderService } from 'projects/predyc-business/src/shared/services/loader.service';
 import { Router } from '@angular/router';
 import { AuthService } from 'projects/predyc-business/src/shared/services/auth.service';
-import { test } from 'projects/shared/models';
 
 @Component({
   selector: 'app-root',

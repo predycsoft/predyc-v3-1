@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
-import { Observable, Subscription, catchError, combineLatest, map, of, switchMap } from 'rxjs';
+import { Observable, Subscription, combineLatest, map, of, switchMap } from 'rxjs';
 import { CourseByStudent } from 'projects/predyc-business/src/shared/models/course-by-student.model';
-import { Curso } from 'projects/predyc-business/src/shared/models/course.model';
 import { User, UserJson } from 'projects/predyc-business/src/shared/models/user.model';
 import { CourseService } from 'projects/predyc-business/src/shared/services/course.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';

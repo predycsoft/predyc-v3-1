@@ -7,6 +7,7 @@ import { Enterprise } from 'projects/predyc-business/src/shared/models/enterpris
 import { License } from 'projects/predyc-business/src/shared/models/license.model';
 import { Price } from 'projects/predyc-business/src/shared/models/price.model';
 import { Profile } from 'projects/predyc-business/src/shared/models/profile.model';
+// import { User, UserJson } from 'projects/shared/models/user.model';
 import { User, UserJson } from 'projects/predyc-business/src/shared/models/user.model';
 import { AlertsService } from 'projects/predyc-business/src/shared/services/alerts.service';
 import { CourseService } from 'projects/predyc-business/src/shared/services/course.service';

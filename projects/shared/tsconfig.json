@@ -7,10 +7,12 @@
       "sourceMap": true,
       "outDir": "../functions/dist/shared",
       "resolveJsonModule": true,
-      "strict": true,
+      "strict": false,
       "esModuleInterop": true,
       "skipLibCheck": true,
-      "forceConsistentCasingInFileNames": true
+      "noPropertyAccessFromIndexSignature": false,
+      "forceConsistentCasingInFileNames": true,
+      "downlevelIteration": true
     },
     "include": [
       "**/*.ts",

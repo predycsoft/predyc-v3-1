@@ -5,7 +5,6 @@ import { DialogDownloadReportComponent } from 'projects/predyc-business/src/shar
 import { AfterOnInitResetLoading } from 'projects/predyc-business/src/shared/decorators/loading.decorator';
 import { CourseByStudent } from 'projects/predyc-business/src/shared/models/course-by-student.model';
 import { Enterprise } from 'projects/predyc-business/src/shared/models/enterprise.model';
-import { User } from 'projects/predyc-business/src/shared/models/user.model';
 import { CourseService } from 'projects/predyc-business/src/shared/services/course.service';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';

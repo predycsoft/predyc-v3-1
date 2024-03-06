@@ -7,28 +7,36 @@ import * as admin from 'firebase-admin';
 const db = admin.firestore();
 
 
-export const _sendMail = async (data: {sender: string, recipients: string[], subject: string, text: string}) => {
+export const _sendMail = async (data: {sender: string, recipients: string[], subject: string, text: string, cc: string[]}) => {
     const APP_NAME = 'Predyc';
 
-    let sender = process.env.EMAIL_USER_D
-    let password = process.env.EMAIL_PASSWORD_D
+    let sender = process.env.EMAIL_USER_A
+    let password = process.env.EMAIL_PASSWORD_A
 
-    if (["contacto@predyc.com", "capacitacion@predyc.com"].includes(data.sender) ){
-        sender = process.env.EMAIL_USER_A
-        password = process.env.EMAIL_PASSWORD_A
-    }
-    else if (data.sender === "ventas@predyc.com") {
-        sender = process.env.EMAIL_USER_L
-        password = process.env.EMAIL_PASSWORD_L
-    }
+    // desarrollo@predyc.com not working for smtp, need to check config
+    // let sender = process.env.EMAIL_USER_D
+    // let password = process.env.EMAIL_PASSWORD_D
+
+    // if (["contacto@predyc.com", "capacitacion@predyc.com"].includes(data.sender) ){
+    //     sender = process.env.EMAIL_USER_A
+    //     password = process.env.EMAIL_PASSWORD_A
+    // }
+    // else if (data.sender === "ventas@predyc.com") {
+    //     sender = process.env.EMAIL_USER_L
+    //     password = process.env.EMAIL_PASSWORD_L
+    // }
 
     const smtpTransport = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 465,
         secure: true,
         auth: {
-        user: sender,
-        pass: password,
+            user: sender,
+            pass: password,
+        },
+        tls: {
+            // do not fail on invalid certs
+            rejectUnauthorized: false,
         },
     } as SMTPTransport.Options);
     const mailOptions = {
@@ -37,11 +45,11 @@ export const _sendMail = async (data: {sender: string, recipients: string[], sub
         // to: ['diegonegrette42@gmail.com'],
         subject: data.subject,
         text: data.text,
+        cc: data.cc
     };
     try {
         smtpTransport.sendMail(mailOptions, (error: any, info: any) => {
         if (error) {
-            console.log('hubo error');
             console.log(error);
             smtpTransport.close();
         }
