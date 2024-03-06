@@ -1,0 +1,65 @@
+<div class="">
+    <div fxLayout="row" fxLayoutAlign=" center">
+        <h6 class="ft16 ft500 mgt0 mgb0"> Administradores </h6>
+        <mat-icon (click)="addAdmin()" class="mgl10 gray-5 cursorPointer ft20 linkIcon">
+            add_circle</mat-icon>
+    </div>
+    <div class="fw mgt15">
+        <table mat-table [dataSource]="dataSource">
+            <!-- Nombre Column -->
+            <ng-container matColumnDef="displayName">
+                <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Nombre</th>
+                <td mat-cell *matCellDef="let data" class="centertext ft14"> {{ data.displayName }} </td>
+            </ng-container>
+
+            <!-- Email Column -->
+            <ng-container matColumnDef="email">
+                <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Email</th>
+                <td mat-cell *matCellDef="let data" class="centertext ft14"> {{ data.email }} </td>
+            </ng-container>
+    
+            <!-- Eliminar Column -->
+            <ng-container matColumnDef="delete">
+                <th mat-header-cell *matHeaderCellDef class="centertext ft14"> Eliminar </th>
+                <td mat-cell *matCellDef="let data" class="centertext ft14  ">
+                    <mat-icon class="gray-5 cursorPointer ft20" (click)="deleteAdmin(data)">
+                        delete_outline
+                    </mat-icon>
+                </td>
+            </ng-container>
+    
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <ng-container>
+                <tr
+                    mat-row
+                    *matRowDef="let data; columns: displayedColumns;"
+                    class="cursorPointer"
+                    >
+                </tr>
+            </ng-container>
+    
+            <!-- Row shown when there is no matching data. -->
+            <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell" colspan="4">Aún no existe ningún administrador.</td>
+            </tr>
+        </table>
+        <div *ngIf="addingAdmin" class="">
+            <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="1rem">
+                <span>Nuevo administrador:</span>
+                <!-- <label>Nombre</label> -->
+                <div fxLayout="row" fxLayoutAlign=" center" class="shadow-animation radius20">
+                    <div class="fw fh pdr10 pdl10" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem">
+                        <input type="text" class="catInput ft13" [(ngModel)]="newAdmin.name" placeholder="Nombre" required>
+                    </div>
+                </div>
+                <!-- <label>Email</label> -->
+                <div fxLayout="row" fxLayoutAlign=" center" class="shadow-animation radius20">
+                    <div class="fw fh pdr10 pdl10" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem">
+                        <input type="email" class="catInput ft13" [(ngModel)]="newAdmin.email" placeholder="Email" required>
+                    </div>
+                </div>
+                <button class="blueButton" (click)="saveAdmin()">Guardar</button>
+            </div>
+        </div>        
+    </div>
+</div>

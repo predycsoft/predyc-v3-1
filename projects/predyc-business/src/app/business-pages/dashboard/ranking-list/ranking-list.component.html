@@ -1,0 +1,93 @@
+<div class="positionRelative pd05">
+    <div class="tooltipPoints mgt05" [fxShow]="showPointsTooltip" (mouseover)="showPointsTooltip = true" (mouseleave)="showPointsTooltip = false">
+        <app-tooltip-points></app-tooltip-points>
+    </div>
+    <div class="table-container mgt05">
+        <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
+            <div class="" fxLayoutAlign="center center">
+                <img [src]="icon.trophyBlue" class="makeBlue h20px" alt="">
+            </div>
+            <span class="ft500 ft14 black">Ranking del mes</span>
+            <div fxLayout="center center" class="positionRelative" (mouseover)="showPointsTooltip = true" (mouseleave)="showPointsTooltip = false">
+                <img [src]="icon.information" class="h16px makeBlue" alt="">
+            </div>
+        </div>
+        <table class="fw mgt10">
+            <tr>
+                <td class="gray-7 ft500 ft13 ">Nombre</td>
+                <!-- <td class="gray-7 ft500 ft13 centertext">Horas</td> -->
+                <td class="gray-7 ft500 ft13 centertext">Puntaje</td>
+                <td class="gray-7 ft500 ft13 centertext">Ritmo</td>
+                <!-- <td class="gray-7 ft500 ft13 centertext">Status</td> -->
+
+                <!-- <td class="gray-7 ft500 ft13 ">Perfil</td> -->
+            </tr>
+            <tr *ngFor="let item of ranking | slice:0:listLength; let i = index" class="selected">
+                <td class="w-60">
+                    <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign=" center"  style="height: 40px;" class="move-right " >
+                        <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
+                            <div class="avatar2 positionRelative">
+                                <img [src]="item.photoUrl" class="avatar2" alt=""
+                                    onerror="this.src='assets/images/default/default-user-image.jpg'">
+                                <div *ngIf="i < 3" class="trofeo " fxLayoutAlign="center center">
+                                    <img [src]="icon.trophy" class="fw" alt="">
+                                </div>
+                            </div>
+                            <div>
+                                <span class="gray-10 ft13 ">{{item.name | titlecase}}</span>
+                                <div
+                                *ngIf="!item.profile"
+                                (click)="$event.stopPropagation();"
+                                class="ft400 ft12 gray-6"
+                                >
+                                Perfil sin asignar
+                                </div>
+                                <div
+                                    *ngIf="item.profile" fxLayout="row" fxLayoutGap="5px" class="" >
+                                    <div *ngIf="item.profile"(click)="$event.stopPropagation();"  class="ft400 ft12 blue-4" >
+                                        {{ item.profileName  | titlecase }}
+                                    </div>
+                                    <img [src]="icon.arrowForward" alt="Forward Arrow" class="makeBlue" >
+                                </div>
+
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div  style="height: 50px;" fxLayout="row" fxLayoutAlign=" center">
+                        <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
+                            <div class="avatar2 positionRelative">
+                                <img [src]="item.photoUrl" class="avatar2" alt=""
+                                    onerror="this.src='assets/images/default/default-user-image.jpg'">
+                                <div *ngIf="i < 3" class="trofeo cursorPointer" fxLayoutAlign="center center">
+                                    <img [src]="icon.trophy" class="fw" alt="">
+                                </div>
+                            </div>
+                            <span class="gray-10 ft12 mgl05">{{item.name | titlecase}}</span>
+                        </div>
+                    </div> -->
+                </td>
+                <!-- <td class="centertext gray-10 ft12">{{item.hours}}&nbsp;/&nbsp;{{item.targetHours / 60 | number : "1.0-0"}} </td> -->
+                <td class="centertext gray-10 ft12">{{item.ratingPoints | number: "1.0-0"}}</td>
+                <td class="centertext w-20">
+                    <div class="centertext" fxLayoutAlign="center center">
+                         <div *ngIf="item.performance == 'high'" class="chip backGreen2 " style="border: 1px solid #00BF9C; width:30% ;" fxLayout="row" fxLayoutAlign="center center">
+                            <span class="ft13 nowrap ft500  " style="color: #00BF9C;">Alto</span>
+                        </div>
+                        <div *ngIf="item.performance == 'medium'" class="chip newYellow2b " style="border: 1px solid rgb(255, 196, 0); width:30% "  fxLayout="row" fxLayoutAlign="center center">
+                            <span class="ft13 nowrap ft500 " style="color: rgb(255, 196, 0);" >Medio</span>
+                        </div>
+                        <div *ngIf="item.performance == 'low'"  class="chip backRed1 borderLight " style="border: 1px solid #ff0000; width:30% " fxLayout="row" fxLayoutAlign="center center">                                <span class="ft13 nowrap ft500" style="color: #f50000;" >Bajo</span>
+                        </div>                            
+                    </div>
+                </td>
+                <!-- <td class="centertext gray-10 ft12">
+                    <span [ngClass]="item.status === 'active' ? 'blue-5' : 'red-5'" class="ft13    nowrap ft400">{{item.statusDisplayText}}</span>
+                </td>    -->
+
+
+                <!-- <td class="gray-10 ft12 w-20">{{item.profileName}}</td> -->
+            </tr>
+        </table>
+    </div>
+</div>

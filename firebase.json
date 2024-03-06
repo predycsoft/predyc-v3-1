@@ -42,7 +42,7 @@
   },
   "functions": [
     {
-      "source": "functions",
+      "source": "projects/functions",
       "codebase": "default",
       "ignore": [
         "node_modules",

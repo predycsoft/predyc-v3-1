@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "noImplicitReturns": true,
+    "noUnusedLocals": false,
+    "outDir": "lib",
+    "sourceMap": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "target": "es2017",
+    "baseUrl": "./",
+    "paths": {
+      "shared": [
+          "dist/shared"// the relative path to our generated library
+      ]
+    }
+  },
+  "compileOnSave": true,
+  "include": [
+    "src",
+  ],
+  "exclude": [
+  ]
+}
