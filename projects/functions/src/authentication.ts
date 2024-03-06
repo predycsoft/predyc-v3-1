@@ -1,23 +1,30 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import { _sendMail } from './email'
-import { test } from 'shared'
+import { capitalizeFirstLetter, generateSixDigitRandomNumber } from 'shared'
 
 const db = admin.firestore();
 
 export const createUserWithEmailAndPassword = functions.https.onCall(
     async (data, _) => {
         try {
-            test()
-            // data should contain the email and password
-            console.log(data)
+            const password = `${generateSixDigitRandomNumber()}`
             const userRecord = await admin.auth().createUser({
               email: data.email,
-              password: data.password,
+              password: password,
             });
 
             // Enlace de restablecimiento de contraseña
-            await _generatePasswordResetLink(data.email)
+            const link = await _generatePasswordResetLink(data.email)
+
+            const sender = "desarrollo@predyc.com"
+
+            const recipients = [data.email]
+            const subject = "Bienvenido a Predyc, conoce tu usuario y contraseña temporal"
+            const text = `Hola ${capitalizeFirstLetter(data.name)},\n\n¡Te damos la bienvenida a Predyc, tu plataforma de capacitación industrial! Ha sido creado tu usuario en nuestra plataforma , aquí está tu acceso inicial:\n\nUsuario: ${data.email}\nContraseña: ${password}\n\nCambia tu contraseña aquí: ${link}\n\nIngresa a Predyc aquí: www.predyc-user.web.app\n\nPara cualquier consulta, estamos a tu disposición.\n\nSaludos,\nEl Equipo de Predyc`
+            const cc = ["desarrollo@predyc.com", "liliana.giraldo@predyc.com"]
+            const mailObj = {sender, recipients, subject, text, cc}
+            await _sendMail(mailObj)
             
             return { uid: userRecord.uid };
         } catch (error: any) {
@@ -27,21 +34,21 @@ export const createUserWithEmailAndPassword = functions.https.onCall(
     }
 );
 
-export const _generatePasswordResetLink = async (email: string) => {
-    const link = await admin.auth().generatePasswordResetLink(email);
-    // const sender = "capacitacion@predyc.com"
-    const sender = "desarrollo@predyc.com"
-    const recipients = [email]
-    const subject = "Reestablece tu contraseña"
-    const text = `Hola, \nHaz clic en el siguiente enlace para establecer tu contraseña: ${link}`
-    const mailObj = {sender, recipients, subject, text,}
-    await _sendMail(mailObj)
+export const _generatePasswordResetLink = async (email: string): Promise<string> => {
+    return admin.auth().generatePasswordResetLink(email);    
 }
 
 export const generatePasswordResetLink = functions.https.onCall(
     async (data, _) => {
         try {
-            await _generatePasswordResetLink(data.email)
+            const link = await _generatePasswordResetLink(data.email)
+            const sender = "desarrollo@predyc.com"
+            const recipients = [data.email]
+            const subject = "Reestablece tu contraseña en Predyc"
+            const text = `Hola,\nHaz clic en el siguiente enlace para establecer tu contraseña: ${link}`
+            const cc = ["desarrollo@predyc.com", "liliana.giraldo@predyc.com"]
+            const mailObj = {sender, recipients, subject, text, cc}
+            await _sendMail(mailObj)
         } catch (error: any) {
             console.log(error)
             throw new functions.https.HttpsError('unknown', error.message);

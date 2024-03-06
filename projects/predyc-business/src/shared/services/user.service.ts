@@ -46,13 +46,10 @@ export class UserService {
 
   async addUser(newUser: User): Promise<void> {
     console.log(newUser)
-    const email = newUser.email as string
-    // const password = `${generateSixDigitRandomNumber()}`
-    const password = newUser.email as string
     const { uid } = await firstValueFrom(
       this.fireFunctions.httpsCallable('createUserWithEmailAndPassword')({
-        email: email,
-        password: password,
+        email: newUser.email as string,
+        name: newUser.name
       })
     );
     await this.afs.collection(User.collection).doc(uid).set({...newUser.toJson(), uid: uid});

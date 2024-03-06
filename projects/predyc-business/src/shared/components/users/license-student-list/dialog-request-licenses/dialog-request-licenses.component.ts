@@ -39,7 +39,7 @@ export class DialogRequestLicensesComponent {
   }
 
   openWhatsappContacto(){
-    window.open(`https://wa.me/524424257590?text=${this.enterprise.name} ha solicitado ${this.licensesQty} ${this.licensesQty == 1 ? 'licencia' : 'licencias'}.`,"_blank")
+    window.open(`https://wa.me/524424257590?text=¡Hola Liliana! Te informamos que ${this.enterprise.name} ha solicitado ${this.licensesQty} ${this.licensesQty == 1 ? 'licencia' : 'licencias'}.`,"_blank")
     this.dialog.close()
   }
   
