@@ -149,11 +149,11 @@ export class CoursesComponent implements AfterViewInit {
             category.coursesPredyc = filteredCoursesPredyc;
           });
 
-          let proximos = this.categories.find(x=> x.name == 'Proximamente')
-          if(proximos){
-            proximos.coursesPredyc = cursosProximos
-            proximos.courses = cursosProximos
-          }
+          // let proximos = this.categories.find(x=> x.name == 'Proximamente')
+          // if(proximos){
+          //   proximos.coursesPredyc = cursosProximos
+          //   proximos.courses = cursosProximos
+          // }
         })
       });
     })

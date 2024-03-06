@@ -66,7 +66,7 @@
                         </div>
                     </div>
                 </div>
-                <div fxLayout="row" class="fw">
+                <div *ngIf="this.user.isSystemUser" fxLayout="row" class="fw">
                     <div fxLayout="row" class="fw" fxLayoutAlign="space-between center">
                         <div class="ft600 ft20"></div>
                         <div fxLayout="row" class="searchAndFilter" fxLayoutAlign=" center">
