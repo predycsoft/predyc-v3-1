@@ -66,7 +66,7 @@
                         </div>
                     </div>
                 </div>
-                <div *ngIf="user?.isSystemUser" fxLayout="row" class="fw">
+                <div fxLayout="row" class="fw">
                     <div fxLayout="row" class="fw" fxLayoutAlign="space-between center">
                         <div class="ft600 ft20"></div>
                         <div fxLayout="row" class="searchAndFilter" fxLayoutAlign=" center">
@@ -142,7 +142,7 @@
                                             <div class="gray-8 ft10">{{selectedCourse.nivel}}</div>
                                         </div>
                                      </div>
-                                     <div *ngIf="user.isSystemUser && selectedCourse.id" routerLink="/management/create-course/edit/{{selectedCourse.id}}" fxLayout="row" fxLayoutGap=".5rem">
+                                     <div *ngIf="(user.isSystemUser || selectedCourse.enterpriseRef?.id == enterpriseRef?.id) && selectedCourse.id" routerLink="/management/create-course/edit/{{selectedCourse.id}}" fxLayout="row" fxLayoutGap=".5rem">
                                         <div class="backGray2 pd05 w40px radius6 cursorPointer" fxLayoutAlign="center center">
                                             <img [src]="icon.edit" class="makeYellow fw" alt="">
                                         </div>

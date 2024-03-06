@@ -58,6 +58,8 @@ export class CoursesComponent implements AfterViewInit {
   categoriesPropios;
   courses;
   user;
+  enterpriseRef
+
 
   ngAfterViewInit() {
   this.handleImageError();
@@ -79,6 +81,7 @@ export class CoursesComponent implements AfterViewInit {
       if (isLoaded) {
         let enterpriseRef = this.enterpriseService.getEnterpriseRef();
         console.log(enterpriseRef)
+        this.enterpriseRef = enterpriseRef
       }
     })
 

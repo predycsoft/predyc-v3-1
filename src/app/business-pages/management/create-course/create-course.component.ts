@@ -187,12 +187,13 @@ export class CreateCourseComponent {
         this.authService.user$.pipe(filter(user=>user !=null),take(1)).subscribe(user=> {
           console.log('user',user)
           this.user = user
-          if (!user?.isSystemUser) {
-            this.router.navigate(["management/courses"])
-          }
+          this.inicializarformNewCourse();
+          // if (!user?.isSystemUser) {
+          //   this.router.navigate(["management/courses"])
+          // }
         })
 
-        this.inicializarformNewCourse();
+        //this.inicializarformNewCourse();
     
       }
     })
@@ -464,7 +465,11 @@ export class CreateCourseComponent {
       this.courseService.getCoursesObservable().pipe(filter(courses=>courses.length>0),take(1)).subscribe(courses => {
         console.log('cursos', courses);
         let curso = courses.find(course => course.id == this.idCurso);
-        //console.log('curso edit', curso);
+        // console.log('curso edit', curso,this.user.isSystemUser);
+        let enterpriseREf = this.enterpriseService.getEnterpriseRef()
+        if(!this.user.isSystemUser && !(curso.enterpriseRef.id == enterpriseREf.id)){
+          this.router.navigate(["management/courses"])
+        }
         this.curso = curso;
         curso['modules'].sort((a, b) => a.numero - b.numero);
         this.modulos = curso['modules'];
@@ -808,7 +813,7 @@ export class CreateCourseComponent {
       delete activityClass.questions
   
       //console.log('activityExamen',activityClass)
-      //await this.activityClassesService.saveActivity(activityClass);
+      await this.activityClassesService.saveActivity(activityClass);
 
       let questionsIds = [];
       this.examen.id = activityClass.id
@@ -1146,6 +1151,18 @@ export class CreateCourseComponent {
   onTabChange(event: MatTabChangeEvent) {
     if (event.tab.textLabel === 'Examen') {
       console.log('El tab Examen fue seleccionado');
+
+      if(!this.examen){
+        let exam = new Activity();
+        exam.type = 'test'
+        exam.title = `Questionario Final: ${this.formNewCourse.get('titulo')?.value}`
+        exam.updatedAt = new Date().getTime()
+        exam.createdAt = new Date().getTime()
+        this.questionsFormated = true
+        this.examen = exam;
+      }
+
+      
       this.formatExamQuestions();
     }
   }
