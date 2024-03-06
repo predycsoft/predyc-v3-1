@@ -39,7 +39,12 @@ export class Enterprise {
         employesNo: 0,
         id: "" ,
         name: "",
-        permissions: null,
+        permissions: {
+            hoursPerWeek: 1,
+            studyLiberty: Permissions.STUDY_LIBERTY_STRICT_OPTION,
+            studyplanGeneration: Permissions.STUDYPLAN_GENERATION_CONFIRMED_OPTION,
+            attemptsPerTest: 5,
+        },
         photoUrl: null,
         profilesNo: 0,
         zipCode: null,
