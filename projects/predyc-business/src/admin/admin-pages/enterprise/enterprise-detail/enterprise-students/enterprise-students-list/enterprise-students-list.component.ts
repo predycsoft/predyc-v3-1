@@ -3,11 +3,23 @@ import { DocumentReference } from '@angular/fire/compat/firestore';
 import { MatTableDataSource } from '@angular/material/table';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { CreateUserComponent } from 'projects/predyc-business/src/app/business-pages/management/my-team/student/create-user/create-user.component';
+import { Department } from 'projects/predyc-business/src/shared/models/department.model';
 import { Enterprise } from 'projects/predyc-business/src/shared/models/enterprise.model';
+import { Profile } from 'projects/predyc-business/src/shared/models/profile.model';
 import { User } from 'projects/predyc-business/src/shared/models/user.model';
+import { DepartmentService } from 'projects/predyc-business/src/shared/services/department.service';
 import { DialogService } from 'projects/predyc-business/src/shared/services/dialog.service';
+import { ProfileService } from 'projects/predyc-business/src/shared/services/profile.service';
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
-import { Subscription } from 'rxjs';
+import { Subscription, combineLatest } from 'rxjs';
+
+interface studentInList {
+  displayName: string,
+  departmentName: string,
+  profileName: string,
+  email: string,
+  status: string,
+}
 
 @Component({
   selector: 'app-enterprise-students-list',
@@ -20,6 +32,8 @@ export class EnterpriseStudentsListComponent {
 
   constructor(
     private userService: UserService,
+    private profileService: ProfileService,
+    private departmentService: DepartmentService,
     public dialogService: DialogService,
     private modalService: NgbModal,
   ){}
@@ -27,21 +41,48 @@ export class EnterpriseStudentsListComponent {
 
   displayedColumns: string[] = [
     "displayName",
+    "department",
+    "profile",
     "email",
     "delete",
   ];
 
-  dataSource = new MatTableDataSource<User>();
+  dataSource = new MatTableDataSource<studentInList>();
 
   userSubscription: Subscription
+  combinedSubscription: Subscription
+
+  profiles: Profile[]
+  departments: Department[]
 
   addingStudent: boolean = false;
   newStudent: User
 
   ngOnInit() {
-    this.userSubscription = this.userService.getStudentUsersByEnterpriseRef$(this.enterpriseRef).subscribe(students => {
-      this.dataSource.data = students
+    this.combinedSubscription = combineLatest(
+      [
+        this.profileService.getProfiles$(),
+        this.departmentService.getDepartments$(),
+        this.userService.getStudentUsersByEnterpriseRef$(this.enterpriseRef),
+      ]
+    ).subscribe(([profiles, departments, users]) => {
+
+      const studentsInList: studentInList[] = users.map(user => {
+        const userProfileName = user.profile ? profiles.find(profile => profile.id === user.profile.id).name : "Sin asignar"
+        const userDepartmentName = user.departmentRef ? departments.find(department => department.id === user.departmentRef.id).name : "Sin asignar"
+
+        return {
+          displayName: user.displayName,
+          departmentName: userDepartmentName,
+          profileName: userProfileName,
+          email: user.email,
+          status: user.status,
+        }
+      })
+      this.dataSource.data = studentsInList
+
     })
+
   }
 
   openCreateUserModal(): NgbModalRef {
@@ -82,7 +123,7 @@ export class EnterpriseStudentsListComponent {
 
   }
 
-  deleteAdmin(user: User){
+  deleteStudent(user: User){
 
   }
 
