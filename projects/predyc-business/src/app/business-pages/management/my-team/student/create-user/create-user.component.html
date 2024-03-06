@@ -137,6 +137,30 @@
                             >
                     </div>
                     <div style="position: relative">
+                        <img *ngIf="!isDepartmentInvalid" [src]="icon.enterprise" class="makeGray h16px" alt="" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
+                        <input
+                            type="text" 
+                            class="form-control pdl20"
+                            placeholder="Departamento"
+                            aria-label="Number"
+                            matInput
+                            formControlName="department"
+                            [matAutocomplete]="auto"
+                            [class.is-invalid]="isDepartmentInvalid"
+                        >
+                        <mat-autocomplete #auto="matAutocomplete">
+                            <mat-option 
+                                *ngFor="let option of filteredDepartments | async"
+                                [value]="option">
+                                {{option}}
+                            </mat-option>
+                        </mat-autocomplete>
+                        <!-- Mensaje de Feedback Inválido -->
+                        <div *ngIf="isDepartmentInvalid" class="invalid-feedback" style="display: block;">
+                            El departamento seleccionado es inválido.
+                        </div>
+                    </div>
+                    <!-- <div style="position: relative">
                         <img [src]="icon.enterprise" class="makeGray h16px" alt="" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
                         <input
                             type="text" 
@@ -156,7 +180,7 @@
                                 >
                                 {{option}}
                             </mat-option>
-                            <!-- <mat-option
+                            <mat-option
                                 class="multiline-mat-option"
                                 value="null"
                                 (click)="createDepartment()"
@@ -165,9 +189,9 @@
                                     <div>Crear departamento</div>
                                     <img [src]="icon.addNew" alt="Crear nuevo departamento" class="mgl20">
                                 </div>
-                            </mat-option> -->
+                            </mat-option>
                         </mat-autocomplete>
-                    </div>
+                    </div> -->
                     <!-- <div *ngFor="let option of departments | async">
                         {{option.name}}
                     </div> -->

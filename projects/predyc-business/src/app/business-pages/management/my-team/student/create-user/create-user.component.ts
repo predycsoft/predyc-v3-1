@@ -51,6 +51,8 @@ export class CreateUserComponent {
   filteredDepartments: Observable<string[]>;
 
   async ngOnInit() {
+    this.isDepartmentInvalid = false
+
     this.profileServiceSubscription = this.profileService.getProfiles$().subscribe(profiles => {
       if (profiles) {
         console.log('profiles',profiles)
@@ -165,7 +167,10 @@ export class CreateUserComponent {
     };
   }
 
+  isDepartmentInvalid = false
+
   validateCurrentModalPage() {
+    this.isDepartmentInvalid = false
     const currentPageGroup = this.userForm;
     
     if (currentPageGroup && currentPageGroup.invalid) {
@@ -173,20 +178,35 @@ export class CreateUserComponent {
       //   const control = currentPageGroup.get(field);
       //   control.markAsTouched({ onlySelf: true });
       // });
+      const formData = this.userForm.getRawValue() // use getRawValue instead of value because "value" doesnt contain disabled fields (email)
+
+      if (formData.department && formData.department !== 'null') {
+        const departmentId = this.departments.find(department => department.name === formData?.department)?.id
+        if(!departmentId){
+          this.isDepartmentInvalid = true
+        }
+      }
+
       return false; // Indicate that the form is invalid
     }
     return true; // Indicate that the form is valid
   }
 
   async getUserFromForm(){
+    this.isDepartmentInvalid = false
     // Guarda la imagen
     await this.saveStudentPhoto()
   
     const formData = this.userForm.getRawValue() // use getRawValue instead of value because "value" doesnt contain disabled fields (email)
     let department = null
     if (formData.department && formData.department !== 'null') {
-      const departmentId = this.departments.find(department => department.name === formData.department).id
-      department = departmentId ? this.departmentService.getDepartmentRefById(departmentId) : null
+      const departmentId = this.departments.find(department => department.name === formData?.department)?.id
+      if(departmentId){
+        department = departmentId ? this.departmentService.getDepartmentRefById(departmentId) : null
+      }
+      else{
+        this.isDepartmentInvalid = true
+      }
     }
     const userObj = {
       name: formData.displayName ? formData.displayName.toLowerCase() : null,
