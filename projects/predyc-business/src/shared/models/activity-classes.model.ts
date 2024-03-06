@@ -211,144 +211,144 @@ export class QuestionOption {
 //   solveInstructions: string;
 // }
 
-// export class QuestionType {
-//   value: string;
-//   displayName: string;
-//   tooltipInfo: string;
-//   createInstructions: string;
-//   solveInstructions: string;
+export class QuestionType {
+  value: string;
+  displayName: string;
+  tooltipInfo: string;
+  createInstructions: string;
+  solveInstructions: string;
 
-//   public static TYPE_CALCULATED_VALUE: string = 'calculated';
-//   public static TYPE_MATCHING_VALUE: string = 'matching';
-//   public static TYPE_NUMERIC_VALUE: string = 'numeric';
-//   public static TYPE_MULTIPLE_CHOICE_VALUE: string = 'multiple_choice';
-//   public static TYPE_SINGLE_CHOICE_VALUE: string = 'single_choice';
-//   public static TYPE_SHORT_ANSWER_VALUE: string = 'short-answer';
-//   public static TYPE_COMPLETE_VALUE: string = 'complete';
-//   public static TYPE_TRUE_OR_FALSE_VALUE: string = 'true-false';
-//   public static TYPE_CALCULATED_DISPLAY_NAME: string = 'Calculado';
-//   public static TYPE_MATCHING_DISPLAY_NAME: string = 'Emparejamiento';
-//   public static TYPE_NUMERIC_DISPLAY_NAME: string = 'Numerico';
-//   public static TYPE_MULTIPLE_CHOICE_DISPLAY_NAME: string = 'Opción Múltiple';
-//   public static TYPE_SINGLE_CHOICE_DISPLAY_NAME: string = 'Opción Simple';
-//   public static TYPE_SHORT_ANSWER_DISPLAY_NAME: string = 'Respuesta Corta';
-//   public static TYPE_COMPLETE_DISPLAY_NAME: string = 'Completar';
-//   public static TYPE_TRUE_OR_FALSE_DISPLAY_NAME: string = 'Verdadero o Falso';
+  public static TYPE_CALCULATED_VALUE: string = 'calculated';
+  public static TYPE_MATCHING_VALUE: string = 'matching';
+  public static TYPE_NUMERIC_VALUE: string = 'numeric';
+  public static TYPE_MULTIPLE_CHOICE_VALUE: string = 'multiple_choice';
+  public static TYPE_SINGLE_CHOICE_VALUE: string = 'single_choice';
+  public static TYPE_SHORT_ANSWER_VALUE: string = 'short-answer';
+  public static TYPE_COMPLETE_VALUE: string = 'complete';
+  public static TYPE_TRUE_OR_FALSE_VALUE: string = 'true-false';
+  public static TYPE_CALCULATED_DISPLAY_NAME: string = 'Calculado';
+  public static TYPE_MATCHING_DISPLAY_NAME: string = 'Emparejamiento';
+  public static TYPE_NUMERIC_DISPLAY_NAME: string = 'Numerico';
+  public static TYPE_MULTIPLE_CHOICE_DISPLAY_NAME: string = 'Opción Múltiple';
+  public static TYPE_SINGLE_CHOICE_DISPLAY_NAME: string = 'Opción Simple';
+  public static TYPE_SHORT_ANSWER_DISPLAY_NAME: string = 'Respuesta Corta';
+  public static TYPE_COMPLETE_DISPLAY_NAME: string = 'Completar';
+  public static TYPE_TRUE_OR_FALSE_DISPLAY_NAME: string = 'Verdadero o Falso';
 
-//   public static fromJson(obj: QuestionTypeJson): QuestionType {
-//     let questionType = new QuestionType();
-//     questionType.value = obj.value;
-//     questionType.displayName = obj.displayName;
-//     questionType.tooltipInfo = obj.tooltipInfo;
-//     questionType.createInstructions = obj.createInstructions;
-//     questionType.solveInstructions = obj.solveInstructions;
-//     return questionType;
-//   }
+  // public static fromJson(obj: QuestionTypeJson): QuestionType {
+  //   let questionType = new QuestionType();
+  //   questionType.value = obj.value;
+  //   questionType.displayName = obj.displayName;
+  //   questionType.tooltipInfo = obj.tooltipInfo;
+  //   questionType.createInstructions = obj.createInstructions;
+  //   questionType.solveInstructions = obj.solveInstructions;
+  //   return questionType;
+  // }
 
-//   public static FORM_VALIDATION_METHODS = [
-//     // {
-//     //   value: QuestionType.TYPE_CALCULATED_VALUE,
-//     //   method: isValidFormDummy,
-//     // },
-//     // {
-//     //   value: QuestionType.TYPE_NUMERIC_VALUE,
-//     //   method: isValidFormDummy,
-//     // },
-//     // {
-//     //   value: QuestionType.TYPE_MATCHING_VALUE,
-//     //   method: isValidFormDummy,
-//     // },
-//     // {
-//     //   value: QuestionType.TYPE_SHORT_ANSWER_VALUE,
-//     //   method: isValidFormDummy,
-//     // },
-//     {
-//       value: QuestionType.TYPE_MULTIPLE_CHOICE_VALUE,
-//       method: isValidFormTypeMultipleChoice,
-//     },
-//     {
-//       value: QuestionType.TYPE_SINGLE_CHOICE_VALUE,
-//       method: isValidFormTypeSingleChoice,
-//     },
-//     {
-//       value: QuestionType.TYPE_COMPLETE_VALUE,
-//       method: isValidFormTypeComplete,
-//     },
-//     {
-//       value: QuestionType.TYPE_TRUE_OR_FALSE_VALUE,
-//       method: isValidFormTypeTrueOrFalse,
-//     },
-//   ];
+  public static FORM_VALIDATION_METHODS = [
+    // {
+    //   value: QuestionType.TYPE_CALCULATED_VALUE,
+    //   method: isValidFormDummy,
+    // },
+    // {
+    //   value: QuestionType.TYPE_NUMERIC_VALUE,
+    //   method: isValidFormDummy,
+    // },
+    // {
+    //   value: QuestionType.TYPE_MATCHING_VALUE,
+    //   method: isValidFormDummy,
+    // },
+    // {
+    //   value: QuestionType.TYPE_SHORT_ANSWER_VALUE,
+    //   method: isValidFormDummy,
+    // },
+    // {
+    //   value: QuestionType.TYPE_MULTIPLE_CHOICE_VALUE,
+    //   method: isValidFormTypeMultipleChoice,
+    // },
+    // {
+    //   value: QuestionType.TYPE_SINGLE_CHOICE_VALUE,
+    //   method: isValidFormTypeSingleChoice,
+    // },
+    // {
+    //   value: QuestionType.TYPE_COMPLETE_VALUE,
+    //   method: isValidFormTypeComplete,
+    // },
+    // {
+    //   value: QuestionType.TYPE_TRUE_OR_FALSE_VALUE,
+    //   method: isValidFormTypeTrueOrFalse,
+    // },
+  ];
 
-//   public static TYPES: Array<QuestionType> = [
-//     // {
-//     //   value: QuestionType.TYPE_CALCULATED_VALUE,
-//     //   displayName: QuestionType.TYPE_CALCULATED_DISPLAY_NAME,
-//     //   tooltipInfo: 'Configure una pregunta cuyo resultado sea un valor decimal',
-//     // },
-//     // {
-//     //   value: QuestionType.TYPE_MATCHING_VALUE,
-//     //   displayName: QuestionType.TYPE_MATCHING_DISPLAY_NAME,
-//     //   tooltipInfo: 'Configure una serie de pares opciones-respuesta correcta para una pregunta - cada opción debe ser emparejada con una única respuesta',
-//     // },
-//     // {
-//     //   value: QuestionType.TYPE_NUMERIC_VALUE,
-//     //   displayName: QuestionType.TYPE_NUMERIC_DISPLAY_NAME,
-//     //   tooltipInfo: 'Configure una pregunta cuya respuesta sea un valor numérico entero',
-//     // },
-//     // {
-//     //   value: QuestionType.TYPE_SHORT_ANSWER_VALUE,
-//     //   displayName: QuestionType.TYPE_SHORT_ANSWER_DISPLAY_NAME,
-//     //   tooltipInfo: 'Configure una pregunta cuya respuesta sea una frase corta',
-//     // },
-//     {
-//       value: QuestionType.TYPE_MULTIPLE_CHOICE_VALUE,
-//       displayName: QuestionType.TYPE_MULTIPLE_CHOICE_DISPLAY_NAME,
-//       tooltipInfo:
-//         'Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas',
-//       createInstructions: '',
-//       solveInstructions:
-//         'Seleccione una o mas opciones como correctas del listado de opciones',
-//     },
-//     {
-//       value: QuestionType.TYPE_SINGLE_CHOICE_VALUE,
-//       displayName: QuestionType.TYPE_SINGLE_CHOICE_DISPLAY_NAME,
-//       tooltipInfo:
-//         'Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta',
-//       createInstructions: '',
-//       solveInstructions:
-//         'Seleccione la opción correcta del listado de opciones',
-//     },
-//     {
-//       value: QuestionType.TYPE_COMPLETE_VALUE,
-//       displayName: QuestionType.TYPE_COMPLETE_DISPLAY_NAME,
-//       tooltipInfo:
-//         'Configure una pregunta cuyo texto pueda ser completado a partir de las opciones provistas para cada marcador de referencia - cada marcador debe tener una única respuesta correcta',
-//       createInstructions:
-//         'Ingrese cada marcador como una palabra de referencia encerrada entre corchetes ([]).<br/>Ejemplo: El presidente [nombreDelPresidente] nacio en [paisDeNacimiento]',
-//       solveInstructions:
-//         'Complete el texto utilizando los selectores proporcionados para dar sentido a la frase',
-//     },
-//     {
-//       value: QuestionType.TYPE_TRUE_OR_FALSE_VALUE,
-//       displayName: QuestionType.TYPE_TRUE_OR_FALSE_DISPLAY_NAME,
-//       tooltipInfo:
-//         'Configure una pregunta cuya respuesta sea verdadero o falso',
-//       createInstructions:
-//         'Marque las opciones que sean verdaderas y deje en blanco las que sean falsas',
-//       solveInstructions:
-//         'Clasifique las siguientes afirmaciones como verdadera o falsa',
-//     },
-//   ];
+  public static TYPES: Array<QuestionType> = [
+    // {
+    //   value: QuestionType.TYPE_CALCULATED_VALUE,
+    //   displayName: QuestionType.TYPE_CALCULATED_DISPLAY_NAME,
+    //   tooltipInfo: 'Configure una pregunta cuyo resultado sea un valor decimal',
+    // },
+    // {
+    //   value: QuestionType.TYPE_MATCHING_VALUE,
+    //   displayName: QuestionType.TYPE_MATCHING_DISPLAY_NAME,
+    //   tooltipInfo: 'Configure una serie de pares opciones-respuesta correcta para una pregunta - cada opción debe ser emparejada con una única respuesta',
+    // },
+    // {
+    //   value: QuestionType.TYPE_NUMERIC_VALUE,
+    //   displayName: QuestionType.TYPE_NUMERIC_DISPLAY_NAME,
+    //   tooltipInfo: 'Configure una pregunta cuya respuesta sea un valor numérico entero',
+    // },
+    // {
+    //   value: QuestionType.TYPE_SHORT_ANSWER_VALUE,
+    //   displayName: QuestionType.TYPE_SHORT_ANSWER_DISPLAY_NAME,
+    //   tooltipInfo: 'Configure una pregunta cuya respuesta sea una frase corta',
+    // },
+    {
+      value: QuestionType.TYPE_MULTIPLE_CHOICE_VALUE,
+      displayName: QuestionType.TYPE_MULTIPLE_CHOICE_DISPLAY_NAME,
+      tooltipInfo:
+        'Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas',
+      createInstructions: '',
+      solveInstructions:
+        'Seleccione una o mas opciones como correctas del listado de opciones',
+    },
+    {
+      value: QuestionType.TYPE_SINGLE_CHOICE_VALUE,
+      displayName: QuestionType.TYPE_SINGLE_CHOICE_DISPLAY_NAME,
+      tooltipInfo:
+        'Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta',
+      createInstructions: '',
+      solveInstructions:
+        'Seleccione la opción correcta del listado de opciones',
+    },
+    {
+      value: QuestionType.TYPE_COMPLETE_VALUE,
+      displayName: QuestionType.TYPE_COMPLETE_DISPLAY_NAME,
+      tooltipInfo:
+        'Configure una pregunta cuyo texto pueda ser completado a partir de las opciones provistas para cada marcador de referencia - cada marcador debe tener una única respuesta correcta',
+      createInstructions:
+        'Ingrese cada marcador como una palabra de referencia encerrada entre corchetes ([]).<br/>Ejemplo: El presidente [nombreDelPresidente] nacio en [paisDeNacimiento]',
+      solveInstructions:
+        'Complete el texto utilizando los selectores proporcionados para dar sentido a la frase',
+    },
+    {
+      value: QuestionType.TYPE_TRUE_OR_FALSE_VALUE,
+      displayName: QuestionType.TYPE_TRUE_OR_FALSE_DISPLAY_NAME,
+      tooltipInfo:
+        'Configure una pregunta cuya respuesta sea verdadero o falso',
+      createInstructions:
+        'Marque las opciones que sean verdaderas y deje en blanco las que sean falsas',
+      solveInstructions:
+        'Clasifique las siguientes afirmaciones como verdadera o falsa',
+    },
+  ];
 
-//   public static TYPES_TOOLTIP_INFO = (): string => {
-//     let typesTooltipInfo: string = '';
-//     for (const type of QuestionType.TYPES) {
-//       typesTooltipInfo += `<strong>${type.displayName}</strong>:<br/>${type.tooltipInfo}<br/><br/>`;
-//     }
-//     return typesTooltipInfo;
-//   };
-// }
+  public static TYPES_TOOLTIP_INFO = (): string => {
+    let typesTooltipInfo: string = '';
+    for (const type of QuestionType.TYPES) {
+      typesTooltipInfo += `<strong>${type.displayName}</strong>:<br/>${type.tooltipInfo}<br/><br/>`;
+    }
+    return typesTooltipInfo;
+  };
+}
 
 export interface QuestionJson {
   id: string | null;

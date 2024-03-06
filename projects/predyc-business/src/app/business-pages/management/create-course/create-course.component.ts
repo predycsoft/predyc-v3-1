@@ -14,7 +14,7 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { AngularFirestore,DocumentReference } from '@angular/fire/compat/firestore';
 
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { Activity, Question, QuestionOption } from 'projects/predyc-business/src/shared/models/activity-classes.model';
+import { Activity, Question, QuestionOption,QuestionType } from 'projects/predyc-business/src/shared/models/activity-classes.model';
 //import * as competencias from '../../../../assets/data/competencias.json';
 import { DialogService } from 'projects/predyc-business/src/shared/services/dialog.service';
 import { VimeoUploadService } from 'projects/predyc-business/src/shared/services/vimeo-upload.service';
@@ -38,6 +38,7 @@ import { AlertsService } from 'projects/predyc-business/src/shared/services/aler
 
 import { VimeoComponent } from 'projects/predyc-business/src/shared/components/vimeo/vimeo.component';
 import VimeoPlayer from '@vimeo/player';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 
 
 
@@ -189,9 +190,13 @@ export class CreateCourseComponent {
           if (!user?.isSystemUser) {
             this.router.navigate(["management/courses"])
           }
+          this.inicializarformNewCourse();
+          // if (!user?.isSystemUser) {
+          //   this.router.navigate(["management/courses"])
+          // }
         })
 
-        this.inicializarformNewCourse();
+        //this.inicializarformNewCourse();
     
       }
     })
@@ -209,7 +214,8 @@ export class CreateCourseComponent {
             question.competencias = question.skills
           });
           this.examen = data;
-         // //console.log('examen data edit',this.examen)
+          console.log('examen data edit',this.examen)
+          //this.formatExamQuestions();
         }
       });
   }
@@ -462,7 +468,11 @@ export class CreateCourseComponent {
       this.courseService.getCoursesObservable().pipe(filter(courses=>courses.length>0),take(1)).subscribe(courses => {
         console.log('cursos', courses);
         let curso = courses.find(course => course.id == this.idCurso);
-        //console.log('curso edit', curso);
+        // console.log('curso edit', curso,this.user.isSystemUser);
+        let enterpriseREf = this.enterpriseService.getEnterpriseRef()
+        if(!this.user.isSystemUser && !(curso.enterpriseRef.id == enterpriseREf.id)){
+          this.router.navigate(["management/courses"])
+        }
         this.curso = curso;
         curso['modules'].sort((a, b) => a.numero - b.numero);
         this.modulos = curso['modules'];
@@ -757,9 +767,12 @@ export class CreateCourseComponent {
     }
   }
 
+  savingCourse = false;
+
   async saveDraft(){
     //console.log('----- save borrador ------')
 
+    this.savingCourse = true;
 
     Swal.fire({
       title: 'Generando curso...',
@@ -803,11 +816,11 @@ export class CreateCourseComponent {
       delete activityClass.questions
   
       //console.log('activityExamen',activityClass)
-      //await this.activityClassesService.saveActivity(activityClass);
+      await this.activityClassesService.saveActivity(activityClass);
+
+      let questionsIds = [];
       this.examen.id = activityClass.id
-  
       for (let pregunta of questions){
-  
         delete pregunta['competencias_tmp'];
         delete pregunta['competencias'];
         delete pregunta['isInvalid'];
@@ -817,6 +830,12 @@ export class CreateCourseComponent {
         delete pregunta['uploading_file_progress'];
         delete pregunta['uploading'];
         await this.activityClassesService.saveQuestion(pregunta,activityClass.id)
+        questionsIds.push(pregunta.id)
+      }
+
+      if(questionsIds.length>0){
+        //remove not present questions
+        await this.activityClassesService.removeQuestions(questionsIds,activityClass.id)
       }
   
     }
@@ -906,7 +925,8 @@ export class CreateCourseComponent {
 
 
                 console.log('questions',questions)
-  
+                let questionsIds = [];
+
                 for (let pregunta of questions){
                   claseLocal.skillsRef = arrayRefSkills;
                   delete pregunta['typeFormated'];
@@ -920,6 +940,11 @@ export class CreateCourseComponent {
                   delete pregunta['uploading'];
                   console.log('save pregunta revisar',pregunta,clase.activity.id)
                   await this.activityClassesService.saveQuestion(pregunta,clase.activity.id)
+                  questionsIds.push(pregunta.id)
+                }
+                if(questionsIds.length>0){
+                  //remove not present questions
+                  await this.activityClassesService.removeQuestions(questionsIds,activityClass.id)
                 }
               }
             }
@@ -946,7 +971,6 @@ export class CreateCourseComponent {
         module.numero = modulo.numero;
         module.titulo = modulo.titulo;
         module.clasesRef = arrayClasesRef;
-        
         if(!modulo.id){
           module.id = idRef;
           modulo.id = idRef
@@ -956,11 +980,13 @@ export class CreateCourseComponent {
       }
     }
     Swal.close();
+    this.savingCourse = false;
     this.alertService.succesAlert("El curso se ha guardado exitosamente")
 
   }
   else{
     Swal.close();
+    this.savingCourse = false;
     //this.alertService.succesAlert("El curso se ha guardado exitosamente")
   }
 
@@ -1122,6 +1148,127 @@ export class CreateCourseComponent {
       this.openModal(this.endCourseModal)
     }
   }
+
+  questionsFormated = false
+
+  onTabChange(event: MatTabChangeEvent) {
+    if (event.tab.textLabel === 'Examen') {
+      console.log('El tab Examen fue seleccionado');
+
+      if(!this.examen){
+        let exam = new Activity();
+        exam.type = 'test'
+        exam.title = `Questionario Final: ${this.formNewCourse.get('titulo')?.value}`
+        exam.updatedAt = new Date().getTime()
+        exam.createdAt = new Date().getTime()
+        this.questionsFormated = true
+        this.examen = exam;
+      }
+
+      
+      this.formatExamQuestions();
+    }
+  }
+
+  activityAnswers: Array<any>;
+  isSuccess: boolean = null;
+
+  
+  selectedIsCorrect(questionIndex: number, placeholder: string): boolean {
+    return (
+      this.activityAnswers[questionIndex].answerItems.filter(
+        (x) => x.placeholder == placeholder && x.isCorrect && x.answer
+      ).length == 1
+    );
+  }
+
+  updateSelectedOption(
+    questionIndex: number,
+    placeholder: string,
+    selectedValue: string
+  ): void {
+    this.activityAnswers[questionIndex].answerItems
+      .filter((item) => item.placeholder == placeholder)
+      .forEach((item) => {
+        item.answer = item.text === selectedValue;
+      });
+  }
+
+  selectOption(questionIndex: number, optionIndex: number): void {
+    this.checkAnswer(questionIndex,optionIndex)
+  
+    // Additional logic if required when an option is selected
+  }
+
+  questionTypes = QuestionType;
+
+  checkAnswer(questionIndex: number, optionIndex: number): void {
+    switch (this.examen.questions[questionIndex].type.value) {
+      case QuestionType.TYPE_SINGLE_CHOICE_VALUE:
+        {
+          this.activityAnswers[questionIndex].answerItems.forEach(
+            (answerItem, index) => {
+              answerItem.answer = index === optionIndex;
+            }
+          );
+        }
+        break;
+      case QuestionType.TYPE_MULTIPLE_CHOICE_VALUE:
+        {
+          this.activityAnswers[questionIndex].answerItems[optionIndex].answer =
+            !this.activityAnswers[questionIndex].answerItems[optionIndex]
+              .answer;
+        }
+        break;
+      case QuestionType.TYPE_COMPLETE_VALUE:
+        {
+          this.activityAnswers[questionIndex].answerItems.forEach(
+            (answerItem, index) => {
+              answerItem.answer = index === optionIndex;
+            }
+          );
+        }
+
+        break;
+      default:
+        {
+        }
+        break;
+    }
+    //console.log(this.activityAnswers);
+  }
+
+
+
+  formatExamQuestions(){
+
+    console.log('formatExamQuestions')
+    this.updateTriggeQuestionsExam++;
+    setTimeout(() => {
+      if(this.validExam ==null || !this.validExam?.valid || this.validExam.value?.questions?.length == 0){
+        this.updateTriggeQuestionsExam++;
+        console.log('formatExamQuestions invalid')
+      }
+      else{
+        let questions = structuredClone(this.validExam.value.questions)
+        questions.forEach(question => {
+          if(!question.typeFormated){
+            question.typeFormated = this.getTypeQuestion(question.type)
+            if(question.type == 'complete'){
+              this.showDisplayText(question)
+            }
+          }
+        });
+        console.log('revisar',this.examen,questions)
+        if(this.examen){
+          this.examen.questions = questions
+          this.questionsFormated = true
+        }
+      }
+    }, 30);
+  }
+
+
 
   async chackAllInfo(){
     this.showErrorCurso = false;

@@ -1,7 +1,8 @@
 <div class="list">
     <div class="fw categories" *ngFor="let category of processedCategories">
-        <div *ngIf="filteredCourses(type == 'propios' ? category.coursesPropios : category.coursesPredyc)?.length>0" [ngClass]="(type == 'propios' ? category.expandedPropios : category.expandedPredyc) ? 'headCategoryExpanded hoverGray mgt05' : 'headCategory hoverGray'" 
-             fxLayout="row" 
+        <!-- <div *ngIf="filteredCourses(type == 'propios' ? category.coursesPropios : category.coursesPredyc)?.length>0" [ngClass]="(type == 'propios' ? category.expandedPropios : category.expandedPredyc) ? 'headCategoryExpanded hoverGray mgt05' : 'headCategory hoverGray'"  -->
+        <div *ngIf="filteredCourses(type == 'propios' ? category.coursesPropios : category.courses)?.length>0" [ngClass]="(type == 'propios' ? category.expandedPropios : category.expandedPredyc) ? 'headCategoryExpanded hoverGray mgt05' : 'headCategory hoverGray'" 
+            fxLayout="row" 
              fxLayoutAlign="space-between center" 
              (click)="type == 'propios' ? category.expandedPropios=!category.expandedPropios : category.expandedPredyc=!category.expandedPredyc">
             <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
@@ -21,7 +22,8 @@
         <div fxLayout="column" 
              fxLayoutAlign="start start" 
              [ngClass]="(type == 'propios' ? category.expandedPropios : category.expandedPredyc) ? 'bodyCategoryExpanded' : 'bodyCategory'">
-             <ng-container *ngFor="let course of filteredCourses(type == 'propios' ? category.coursesPropios : category.coursesPredyc)">
+             <!-- <ng-container *ngFor="let course of filteredCourses(type == 'propios' ? category.coursesPropios : category.coursesPredyc)"> -->
+            <ng-container *ngFor="let course of filteredCourses(type == 'propios' ? category.coursesPropios : category.courses)">
                 <div *ngIf="!course.dontshow" class="fw pd05 h40px  cursorPointer hoverGray courseContainer"  
                         [ngClass]="selectedCourse == course ? 'backBlue1' : ''" 
                         (click)="selectCourse(course)" 

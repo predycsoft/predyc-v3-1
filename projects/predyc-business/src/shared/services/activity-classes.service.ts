@@ -112,6 +112,34 @@ export class ActivityClassesService {
       this.alertService.errorAlert(JSON.stringify(error))
     }
   }
+
+  async removeQuestions(QuestionsIds: string[], idActivity: string): Promise<void> {
+    try {
+      // Obtener la referencia a la subcolección de preguntas para la actividad dada
+      const questionsCollectionRef = this.afs.collection(Activity.collection)
+                                              .doc(idActivity)
+                                              .collection(Question.collection);
+  
+      // Obtener todas las preguntas para la actividad dada
+      const snapshot = await questionsCollectionRef.ref.get();
+  
+      // Filtrar y eliminar preguntas que no están en QuestionsIds
+      snapshot.docs.forEach(doc => {
+        if (!QuestionsIds.includes(doc.id)) {
+          console.log(`Eliminando pregunta con ID ${doc.id}...`);
+          questionsCollectionRef.doc(doc.id).delete()
+            .then(() => console.log(`Pregunta con ID ${doc.id} eliminada.`))
+            .catch(error => console.error(`Error eliminando pregunta con ID ${doc.id}: `, error));
+        }
+      });
+  
+      console.log('Proceso de eliminación completado.');
+    } catch (error) {
+      console.error('Error al eliminar preguntas:', error);
+      this.alertService.errorAlert(JSON.stringify(error)); // Asegúrate de tener un servicio de alertas o maneja el error como prefieras
+    }
+  }
+  
   
   
 
