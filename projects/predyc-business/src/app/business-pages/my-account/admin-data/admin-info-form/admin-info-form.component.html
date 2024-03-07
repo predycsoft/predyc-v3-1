@@ -44,8 +44,13 @@
                     <span class="makeGray mgb15 mgt05" *ngIf="!isEditing">
                         {{form.get('country').value ? form.get('country').value : onNullFormValues.country}}
                     </span>
-                    <input *ngIf="isEditing" type="text" placeholder="Introduzca el País" [ngClass]="isEditing ? '' : 'disabledInput'" 
-                    class="input" formControlName="country">
+                    <select
+                        *ngIf="isEditing"
+                        formControlName="country"
+                        >
+                        <option [value]="null">País de residencia</option>
+                        <option *ngFor="let country of countries" [value]="country.name">{{country.name}}</option>
+                    </select>
                 </div>
                 <div fxLayout="column">
                     <span >Ciudad / Estado</span>

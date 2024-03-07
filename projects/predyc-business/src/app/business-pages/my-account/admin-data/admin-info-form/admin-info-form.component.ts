@@ -5,6 +5,7 @@ import { User } from 'projects/predyc-business/src/shared/models/user.model';
 import { AlertsService } from 'projects/predyc-business/src/shared/services/alerts.service';
 import { AuthService } from 'projects/predyc-business/src/shared/services/auth.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
+import { countriesData } from 'projects/predyc-business/src/assets/data/countries.data';
 
 @Component({
   selector: 'app-admin-info-form',
@@ -24,6 +25,7 @@ export class AdminInfoFormComponent {
   @Output() onAdminInfoChange: EventEmitter<{ formValue: Object; isEditing: boolean }> = new EventEmitter<{ formValue: Object; isEditing: boolean }>()
 
   isEditing = false
+  countries: {name: string, code: string, isoCode: string}[] = countriesData
 
   form: FormGroup
 
