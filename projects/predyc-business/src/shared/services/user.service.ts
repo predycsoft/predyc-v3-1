@@ -46,6 +46,9 @@ export class UserService {
 
   async addUser(newUser: User): Promise<void> {
     console.log(newUser)
+    newUser.name = newUser.name.toLocaleLowerCase()
+    newUser.displayName = newUser.displayName.toLocaleLowerCase()
+    newUser.email = newUser.email.toLocaleLowerCase()
     const { uid } = await firstValueFrom(
       this.fireFunctions.httpsCallable('createUserWithEmailAndPassword')({
         email: newUser.email as string,
@@ -116,6 +119,9 @@ export class UserService {
   }
 
   async editUser(user: UserJson): Promise<void> {
+    user.name = user.name.toLocaleLowerCase()
+    user.displayName = user.displayName.toLocaleLowerCase()
+    user.email = user.email.toLocaleLowerCase()
     const userRef = this.getUserRefById(user.uid)
     // Obtener el documento actual
     const currentDocument = await firstValueFrom(this.afs.collection(User.collection).doc(user.uid as string).get())

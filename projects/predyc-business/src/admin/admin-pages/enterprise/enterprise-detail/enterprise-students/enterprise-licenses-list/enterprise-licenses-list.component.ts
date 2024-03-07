@@ -57,9 +57,6 @@ export class EnterpriseLicensesListComponent {
     "avaliableRotations",
     "inUse",
     "rotationsUsed",
-    "expiration",
-    "status",
-    
   ];
 
   dataSource = new MatTableDataSource<LicensesInList>();

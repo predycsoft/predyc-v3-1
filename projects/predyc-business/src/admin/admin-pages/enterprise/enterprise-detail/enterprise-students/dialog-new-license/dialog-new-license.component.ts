@@ -71,7 +71,7 @@ export class DialogNewLicenseComponent {
       quantity: [1, Validators.min(1)],
       rotations: [0, Validators.min(0)],
       status: ['', ],
-      trialDays: ['']
+      trialDays: [''],
     });
 
     if(this.dateStart){
