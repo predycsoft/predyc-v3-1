@@ -66,6 +66,8 @@ export class CoursesComponent implements AfterViewInit {
 
   }
 
+  enterprise
+
   async ngOnInit() {
 
     this.authService.user$.subscribe(user=> {
@@ -75,6 +77,8 @@ export class CoursesComponent implements AfterViewInit {
       }
     })
 
+    
+
     this.cursos = []
     this.buildCategories()
     this.enterpriseService.enterpriseLoaded$.subscribe(isLoaded => {
@@ -82,6 +86,7 @@ export class CoursesComponent implements AfterViewInit {
         let enterpriseRef = this.enterpriseService.getEnterpriseRef();
         console.log(enterpriseRef)
         this.enterpriseRef = enterpriseRef
+        this.enterprise = this.enterpriseService.getEnterprise();
       }
     })
 

@@ -15,7 +15,8 @@ export const enterpriseData: EnterpriseJson = {
         hoursPerWeek: 8,
         studyLiberty: 'Estricto',
         studyplanGeneration: 'Confirmar',
-        attemptsPerTest: 5
+        attemptsPerTest: 5,
+        createCourses: true
     },
     photoUrl: null,
     profilesNo: 0,
@@ -47,7 +48,9 @@ export const enterpriseDataPredyc: EnterpriseJson = {
         hoursPerWeek: 8,
         studyLiberty: 'Estricto',
         studyplanGeneration: 'Confirmar',
-        attemptsPerTest: 5
+        attemptsPerTest: 5,
+        createCourses: true
+
     },
     photoUrl: null,
     profilesNo: 0,
