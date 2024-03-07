@@ -54,6 +54,7 @@ export class DialogNewLicenseComponent {
   showWarningDate = false
 
   ngOnInit(): void {
+    this.license = License.newLicenseTemplate
     this.products = this.data.products
     this.prices = this.data.prices
     this.coupons = this.data.coupons
@@ -73,8 +74,6 @@ export class DialogNewLicenseComponent {
       trialDays: ['']
     });
 
-
-
     if(this.dateStart){
       console.log(this.dateStart)
       this.license.startedAt = this.dateStart;
@@ -85,6 +84,8 @@ export class DialogNewLicenseComponent {
       this.showWarningDate = false
 
     }
+
+    this.license.id = Date.now().toString()
 
 
     this.form.patchValue({
