@@ -41,6 +41,7 @@ export class DialogNewLicenseComponent {
   productId: string = '';
   dateStart: number
 
+  filteredPrices: Price[] = []
 
   form: FormGroup;
 
@@ -96,12 +97,15 @@ export class DialogNewLicenseComponent {
       trialDays: this.license.trialDays,
     })
 
+    this.onDateChange(this.form.get('startDate').value);
+    this.formStartDateSubscription = this.form.get('startDate').valueChanges.subscribe(value => {
+      this.onDateChange(value);
+    });
+
     this.formProductIdSubscription = this.form.get('productId')!.valueChanges.subscribe(value => {
       this.productId = value;
       this.form.get('priceId')!.setValue('');
-    });
-    this.formStartDateSubscription = this.form.get('startDate').valueChanges.subscribe(value => {
-      this.onDateChange(value);
+      this.filteredPrices = this.prices.filter((x) => x.product.id == this.productId);
     });
   }
 
@@ -140,15 +144,6 @@ export class DialogNewLicenseComponent {
     );
   }
 
-
-  getFilteredCoupons() {
-    return this.coupons;
-  }
-
-  getFilteredPrice(): Price[] {
-    return this.prices.filter((x) => x.product.id == this.productId);
-  }
-
   onDateChange(startedAt: string): void {
     let parsedDate: Date = this.parseDateString(startedAt);
 
@@ -182,21 +177,21 @@ export class DialogNewLicenseComponent {
   }
 
   getPeriodEnd() {
-    if(this.license.status == 'trialing'){
-      const date = new Date(this.license.currentPeriodStart + this.license.trialDays*24*60*60*1000);
+    if(this.form.get('status')!.value == 'trialing'){
+      const date = new Date(this.license.currentPeriodStart + this.form.get('trialDays')!.value *24*60*60*1000);
       let day = date.getDate();
       let month = date.getMonth();
       let year = date.getFullYear();
       return +new Date(year, month, day);
     } else {
       const date = new Date(this.license.currentPeriodStart);
-      if (!this.license.priceRef.id) {
+      if (!this.form.get('priceId')!.value ) {
         return null;
       }
       let day = date.getDate();
       let month = date.getMonth();
       let year = date.getFullYear();
-      let price = this.prices.find((x) => x.id == this.license.priceRef.id);
+      let price = this.prices.find((x) => x.id == this.form.get('priceId')!.value );
       let newDay = 0;
       let newMonth = 0;
       let newYear = 0;
