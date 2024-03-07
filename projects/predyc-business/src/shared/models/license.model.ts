@@ -37,7 +37,7 @@ export class License {
         priceRef: null,
         quantity: 1,
         quantityUsed: 0,
-        rotations: null,
+        rotations: 1,
         rotationsUsed: null,
         rotationsWaitingCount: null,
         startedAt: Date.now(),

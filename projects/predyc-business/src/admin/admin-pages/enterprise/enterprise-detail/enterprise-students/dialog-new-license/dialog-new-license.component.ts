@@ -61,7 +61,8 @@ export class DialogNewLicenseComponent {
       startDate: ['', ],
       quantity: [1, Validators.min(1)],
       status: ['', ],
-      trialDays: ['']
+      trialDays: [''],
+      rotations: [1, Validators.min(1)],
     });
 
     this.form.patchValue({
@@ -69,6 +70,7 @@ export class DialogNewLicenseComponent {
       quantity: this.license.quantity,
       status: this.license.status,
       trialDays: this.license.trialDays,
+      rotations: this.license.rotations,
     })
 
     this.formProductIdSubscription = this.form.get('productId')!.valueChanges.subscribe(value => {
@@ -85,6 +87,7 @@ export class DialogNewLicenseComponent {
       // Process and save data
       const formValue = this.form.value;
       this.license.quantity = formValue.quantity
+      this.license.rotations = formValue.rotations
       this.license.status = formValue.status
       this.license.trialDays = formValue === "trialing" ? formValue.trialDays : null      
       this.license.priceRef = this.priceService.getPriceRefById(formValue.priceId)

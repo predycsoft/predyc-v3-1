@@ -46,9 +46,10 @@ export class EnterpriseLicensesListComponent {
 
   displayedColumns: string[] = [
     "product",
-    "rotations",
+    "acquired",
     "avaliable",
     "inUse",
+    "rotations",
     "expiration",
     "status",
     
@@ -86,6 +87,7 @@ export class EnterpriseLicensesListComponent {
           used: license.quantityUsed,
           avaliable: license.quantity - license.quantityUsed,
           valid: license.currentPeriodEnd,
+          rotations: license.rotations,
           status: SubscriptionClass.statusToDisplayValueDict[license.status]
         }
       })
