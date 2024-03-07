@@ -54,7 +54,7 @@
                     <span class="ft500  ft14  black">Detalles del perfil</span>
                 </div>
                 <div class="pd05 backGray2 mgt10 radius10">
-                    <p class="ft12 gray-8 "  *ngIf="!isEditing" style="overflow: hidden; word-wrap: break-word;">{{profileDescription}} </p>
+                    <p class="ft12 gray-8" *ngIf="!isEditing" style="overflow-y: auto; word-wrap: break-word; max-height: 122px;">{{profileDescription}}</p>
                     <textarea name="" id="" rows="5" *ngIf="isEditing" [(ngModel)]="profileDescription"  placeholder="Introduzca la descripción"
                     style="width: 100%; resize:vertical; border: none; background-color: transparent !important;"></textarea>
                 </div>
