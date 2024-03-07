@@ -85,8 +85,8 @@
                 </mat-select>
             </div>
             <div fxLayout="column" class="mgt05 h50px">
-                <span class="ft11 gray-9">Via de transferencia</span>
-                <mat-select placeholder="Seleccione via de transferencia" [(ngModel)]="newCharge.origin" [disabled]="newCharge.via != 'Predyc'">
+                <span class="ft11 gray-9">Método de pago</span>
+                <mat-select placeholder="Seleccione método de pago" [(ngModel)]="newCharge.paymentMethod" [disabled]="newCharge.via != 'Predyc'">
                     <mat-option value="Transferencia USD">Transferencia USD</mat-option>
                     <mat-option value="Transferencia MXN">Transferencia MXN</mat-option>
                     <mat-option value="Paypal">Paypal</mat-option>

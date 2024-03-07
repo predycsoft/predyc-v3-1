@@ -21,6 +21,10 @@
                     <input type="datetime-local" formControlName="startDate">
 
                 </div>
+
+                <div *ngIf="showWarningDate">
+                    <span class="blueLink"> <img [src]="icon.information" class="h16px pdl05 makeBlue" alt=""> Esta empresa tiene licencias activas. Se recomienda que las nuevas tengan el mismo periodo actual. </span>
+                </div>
                 <div fxLayout="column" class="mgt05 h50px">
                     <span class="ft11 gray-9">Producto</span>
                     <mat-select placeholder="Seleccione el producto" formControlName="productId" >
@@ -71,6 +75,10 @@
                 <div fxLayout="column" class="mgt05 h50px">
                     <span class="ft11 gray-9">Cantidad de licencias:</span>
                     <input type="number" min="1" formControlName="quantity">
+                </div>
+                <div fxLayout="column" class="mgt05 h50px">
+                    <span class="ft11 gray-9">Cantidad de rotaciones:</span>
+                    <input type="number" min="0" formControlName="rotations">
                 </div>
             </div>
         </div>

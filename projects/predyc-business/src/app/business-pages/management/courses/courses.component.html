@@ -1,8 +1,22 @@
 <div class="mgt20 mgl20 mgr20">
-    
-        <p class="ft600 ft16 gray-10">
-            Lista de Cursos
-     
+
+
+        <div fxLayout="row" fxLayoutAlign="space-between center" style="width: 58%;">    
+            <p class="ft600 ft16 gray-10">
+                Lista de Cursos
+            </p>
+            <button *ngIf="user.isSystemUser || enterprise?.permissions?.createCourses"
+                fxLayout="row"
+                fxLayoutGap="0.625"
+                fxLayoutAlign="center center"
+                class="blueButton mgt05"
+                style="border-radius: 24px !important;"
+                routerLink="/management/create-course/create/new">
+                <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="">
+                Agregar curso
+            </button>
+        </div>
+
     <!-- <div fxLayout="row" fxLayoutAlign=" center">
         <div class="ft600 ft20">Explora</div>
     </div>
@@ -24,6 +38,7 @@
     </div>
     <div class="fw line mgt10">
     </div> -->
+
     <div fxLayout="row" class="mgt10 fw fh" fxLayoutGap="2rem">
         <!-- Columna izquierda que ocupa todo el alto -->
         <div fxFlex="60%">
@@ -55,25 +70,6 @@
                                     (selectedCourseOut)="selectedCourse = $event">
                                 </app-course-selector>
                             </ng-container>
-                        </div>
-                    </div>
-                </div>
-
-                
-                <div fxLayout="row" class="fw">
-                    <div fxLayout="row" class="fw" fxLayoutAlign="space-between center">
-                        <div class="ft600 ft20"></div>
-                        <div fxLayout="row" class="searchAndFilter" fxLayoutAlign=" center">
-                            <button
-                                fxLayout="row"
-                                fxLayoutGap="0.625"
-                                fxLayoutAlign="center center"
-                                class="blueButton mgt05"
-                                style="border-radius: 24px !important;"
-                                routerLink="/management/create-course/create/new">
-                                <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="">
-                                Agregar curso
-                            </button>
                         </div>
                     </div>
                 </div>

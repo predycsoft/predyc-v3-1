@@ -14,7 +14,7 @@ import { IconService } from 'projects/predyc-business/src/shared/services/icon.s
 import { PriceService } from 'projects/predyc-business/src/shared/services/price.service';
 import { ProductService } from 'projects/predyc-business/src/shared/services/product.service';
 import { Subscription, combineLatest } from 'rxjs';
-import { DialogCreateChargeComponent } from './dialog-create-charge/dialog-create-charge.component';
+import { DialogCreateChargeComponent } from '../../../../../shared/components/charges/dialog-create-charge/dialog-create-charge.component';
 
 interface ChargeInList extends ChargeJson {
   productName: string
@@ -44,13 +44,14 @@ export class EnterprisePaymentsComponent {
 
   displayedColumns: string[] = [
     "amount",
-    "origin",
+    "via",
     "status",
     "product",
     "quantity",
     "description",
     "createdAt",
     "payAt",
+    "paymentMethod",
     "refund",
     "comment",
   ];
