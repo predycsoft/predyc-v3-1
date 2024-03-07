@@ -22,6 +22,7 @@ interface LicensesInList {
   acquired: number,
   used: number,
   avaliable: number,
+  start: number
   valid: number,
   status: string,
 }
@@ -86,6 +87,7 @@ export class EnterpriseLicensesListComponent {
           used: license.quantityUsed,
           avaliable: license.quantity - license.quantityUsed,
           valid: license.currentPeriodEnd,
+          start: license.currentPeriodStart,
           status: SubscriptionClass.statusToDisplayValueDict[license.status]
         }
       })
@@ -97,11 +99,21 @@ export class EnterpriseLicensesListComponent {
 
 
   async addLicense() {
+    let licences =this.dataSource.data
+    let licenceActive = licences.find(x=> x.status == "Activo")
+
+    let dateStart = null
+
+    if(licenceActive){
+      dateStart = licenceActive.start
+    }
+
     const dialogRef = this.dialog.open(DialogNewLicenseComponent, {
       data: {
         coupons: this.coupons,
         prices: this.prices,
-        products: this.products
+        products: this.products,
+        dateStart: dateStart
       }
     });
   

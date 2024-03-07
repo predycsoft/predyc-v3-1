@@ -9,6 +9,7 @@ import { Product } from 'projects/predyc-business/src/shared/models/product.mode
 import { CouponService } from 'projects/predyc-business/src/shared/services/coupon.service';
 import { PriceService } from 'projects/predyc-business/src/shared/services/price.service';
 import { ProductService } from 'projects/predyc-business/src/shared/services/product.service';
+import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 
 @Component({
   selector: 'app-dialog-new-license',
@@ -22,11 +23,13 @@ export class DialogNewLicenseComponent {
     private productService: ProductService,
     private priceService: PriceService,
     private couponService: CouponService,
+    public icon: IconService,
     private fb: FormBuilder,
     @Inject(MAT_DIALOG_DATA) public data: {
       coupons: Coupon[],
       prices: Price[],
       products: Product[],
+      dateStart: number
     },
   ) { }
 
@@ -36,6 +39,8 @@ export class DialogNewLicenseComponent {
   prices: Price[] = [];
   coupons: Coupon[] = [];
   productId: string = '';
+  dateStart: number
+
 
   form: FormGroup;
 
@@ -46,10 +51,13 @@ export class DialogNewLicenseComponent {
   formProductIdSubscription: Subscription
   formStartDateSubscription: Subscription
 
+  showWarningDate = false
+
   ngOnInit(): void {
     this.products = this.data.products
     this.prices = this.data.prices
     this.coupons = this.data.coupons
+    this.dateStart = this.data?.dateStart
     this.initializeForm()
   }
 
@@ -63,6 +71,14 @@ export class DialogNewLicenseComponent {
       status: ['', ],
       trialDays: ['']
     });
+
+
+
+    if(this.dateStart){
+      this.license.startedAt = this.dateStart;
+      this.showWarningDate = true
+
+    }
 
     this.form.patchValue({
       startDate: this.toDateString(new Date(this.license.startedAt)),
