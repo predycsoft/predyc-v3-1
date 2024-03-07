@@ -43,30 +43,24 @@
                     
                 </div>
                 <div fxLayout="row" class="fw">
-                    <div class="fw">
-                        <div id="" class="mgt10">
+                    <div class="fw" style="height: 70vh; overflow-y: auto;">
+                        <div class="mgt10">
                             <ng-container>
                                 <app-course-selector type="predyc" [categories]="categories" [searchValue]="searchValue"
                                     (selectedCourseOut)="selectedCourse = $event">
                                 </app-course-selector>
                             </ng-container>
-                            <div *ngIf="creatingCategory" class="fw mgb05 borderLight radius6">
-                                <div class="closeButton" fxLayout="row" fxLayoutAlign="end"
-                                    (click)="creatingCategory = false">
-                                    <div class="iconContainer backGray2 cursorPointer mgl05 mgt05"
-                                        fxLayoutAlign="center center">
-                                        <img [src]="icon.close" class="makeGray h20px">
-                                    </div>
-                                </div>
-                                <input type="text" class="fw mgt05" placeholder="Nombre de la categoría"
-                                    [(ngModel)]="newCategory.name">
-                                <button class="blueButton ft12 ft500 h40px radius6"
-                                    (click)="saveNewCategory()">Guardar</button>
-                            </div>
+                            <ng-container>
+                                <app-course-selector type="propios" [categories]="categories" [searchValue]="searchValue"
+                                    (selectedCourseOut)="selectedCourse = $event">
+                                </app-course-selector>
+                            </ng-container>
                         </div>
                     </div>
                 </div>
-                <div *ngIf="this.user.isSystemUser" fxLayout="row" class="fw">
+
+                
+                <div fxLayout="row" class="fw">
                     <div fxLayout="row" class="fw" fxLayoutAlign="space-between center">
                         <div class="ft600 ft20"></div>
                         <div fxLayout="row" class="searchAndFilter" fxLayoutAlign=" center">
