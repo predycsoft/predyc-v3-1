@@ -43,14 +43,15 @@ export class LoginComponent {
   }
 
   async login(email: string, password: string) {
+    const realEmail = email.toLowerCase()
     try {
       const adminUsers = await firstValueFrom(this.afs.collection<User>(User.collection, ref => 
-      ref.where('email', '==', email)
+      ref.where('email', '==', realEmail)
       ).valueChanges())
       if (adminUsers.length === 0) { 
-        throw Error(`El correo ${email} no existe o no tiene permiso para acceder a la herramienta`)
+        throw Error(`El correo ${realEmail} no existe o no tiene permiso para acceder a la herramienta`)
       }
-      await this.authService.signIn(email, password)
+      await this.authService.signIn(realEmail, password)
       // Handle successful login, navigate or update UI
       const targetRoute = adminUsers[0].isSystemUser ? '/admin' : '/'
       this.router.navigate([targetRoute])
