@@ -22,6 +22,22 @@ export class CourseSelectorComponent {
   processedCategories
   selectedCourse
 
+
+  hasOwnCourses(){
+
+
+    for(let category of this.processedCategories){
+
+      if(category.coursesPropios?.length>0){
+        return true
+      }
+    }
+
+    return false
+
+    
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['categories'] && changes['categories'].currentValue) {
       console.log('changes categories',changes['categories']);
@@ -88,7 +104,7 @@ export class CourseSelectorComponent {
   filteredCourses(categoryCourses) {
     //console.log('categoryCourses',categoryCourses)
     let displayedCourses = categoryCourses
-    if (this.searchValue) {
+    if (this.searchValue && this.searchValue.length>0) {
       displayedCourses= categoryCourses.filter(x => x.titulo.toLocaleLowerCase().includes(this.searchValue.toLocaleLowerCase()))
       if(displayedCourses.length > 0){
         console.log('search',displayedCourses);

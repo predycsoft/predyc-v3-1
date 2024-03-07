@@ -187,9 +187,6 @@ export class CreateCourseComponent {
         this.authService.user$.pipe(filter(user=>user !=null),take(1)).subscribe(user=> {
           console.log('user',user)
           this.user = user
-          if (!user?.isSystemUser) {
-            this.router.navigate(["management/courses"])
-          }
           this.inicializarformNewCourse();
           // if (!user?.isSystemUser) {
           //   this.router.navigate(["management/courses"])
@@ -459,6 +456,7 @@ export class CreateCourseComponent {
           imagen: new FormControl(null, Validators.required),
           imagen_instructor: new FormControl(null, Validators.required),
           skills: new FormControl(null, Validators.required),
+          vimeoFolderId: new FormControl(null),
         })
         this.initSkills();
       }, 2000);
@@ -501,6 +499,7 @@ export class CreateCourseComponent {
           imagen: new FormControl(curso.imagen, Validators.required),
           imagen_instructor: new FormControl(instructor.foto, Validators.required),
           skills: new FormControl(curso.skillsRef, Validators.required),
+          
         });
 
         //this.formNewCourse.get('resumen_instructor').disable();
@@ -802,18 +801,32 @@ export class CreateCourseComponent {
     if(this.examen){
       let courseRef = await this.afs.collection<Curso>(Curso.collection).doc(this.curso.id).ref;
       let activityClass = new Activity
+      console.log('this.activityClass',activityClass)
       let questions: Question[]= []
       questions = structuredClone(this.examen.questions);
       console.log('this.examen',this.examen)
       let auxCoursesRef = this.examen.coursesRef
       this.examen.coursesRef = null
-      activityClass = structuredClone(this.examen) as Activity;
+      console.log('this.examen',this.examen)
+
+
+      activityClass.activityCorazon = this.examen.activityCorazon
+      activityClass.claseRef = this.examen.claseRef
+      activityClass.coursesRef = this.examen.coursesRef
+      activityClass.createdAt = this.examen.createdAt
+      activityClass.description = this.examen.description
+      activityClass.duration = this.examen.duration
+      activityClass.enterpriseRef = this.examen.enterpriseRef
+      activityClass.files = this.examen.files
+      activityClass.id = this.examen.id
+      activityClass.title= this.examen.title
+      activityClass.type = this.examen.type
+      activityClass.updatedAt = this.examen.updatedAt
       activityClass.enterpriseRef = this.curso.enterpriseRef as DocumentReference<Enterprise>
+
       this.examen.coursesRef = auxCoursesRef
       activityClass.coursesRef = [courseRef];
       activityClass.type = Activity.TYPE_TEST;
-      activityClass.questions=[];
-      delete activityClass.questions
   
       //console.log('activityExamen',activityClass)
       await this.activityClassesService.saveActivity(activityClass);
@@ -913,7 +926,7 @@ export class CreateCourseComponent {
                 actividadTmp.description = activityClass?.description
                 actividadTmp.duration = activityClass?.duration
                 actividadTmp.enterpriseRef = activityClass?.enterpriseRef
-                actividadTmp.files = activityClass?.enterpriseRef
+                actividadTmp.files = activityClass?.files
                 actividadTmp.id = activityClass?.id
                 actividadTmp.title= activityClass?.title
                 actividadTmp.type = activityClass?.type
@@ -2644,6 +2657,7 @@ uploadVideo(videoFile, clase, local = false, modulo, origen = null, intentosActu
           // Maneja las notificaciones de error
           error: error => {
             // Aquí manejas el error y decides si reintentar
+            console.log(error)
             if (intentosActuales < maxIntentos) {
               console.log(`Intento ${intentosActuales + 1} fallido. Reintentando...`);
               Swal.fire({
@@ -2680,7 +2694,8 @@ uploadVideo(videoFile, clase, local = false, modulo, origen = null, intentosActu
               // const project = projects.data.find(p => p.name === this.empresa.nombre);
               let projectOperation: Observable<any>;
               if (this.empresa.vimeoFolderId) {
-                if(!this.curso.vimeoFolderId){
+
+                if(!this.formNewCourse.get('vimeoFolderId')?.value){
                 // Crear un subproyecto con un nombre temporal dentro del proyecto de la empresa
                 //alert('crear carpeta proyecto')
                 projectOperation = this.uploadControl.createSubProject(this.formNewCourse.get('titulo').value,this.empresa.vimeoFolderUri).pipe(
@@ -2688,19 +2703,20 @@ uploadVideo(videoFile, clase, local = false, modulo, origen = null, intentosActu
                     //Actualizar Firebase con el ID del subproyecto si es necesario
                     const subProjectId = newSubProject.uri.split('/').pop();
                     //this.updateFolderVimeoCurso(subProjectId, newSubProject.uri); // Asumiendo que esto es lo que deseas hacer
-                    console.log('crear carpeta curso')
-                    this.curso.vimeoFolderId = subProjectId;
+                    console.log('crear carpeta curso',subProjectId)
+                    // if(this.curso?.vimeoFolderId){
+                    //   this.curso.vimeoFolderId = subProjectId;
+                    // }
                     this.formNewCourse.get("vimeoFolderId").patchValue(subProjectId);
-
                   }),
                   // Luego de crear el subproyecto, agrega el video a él
-                  switchMap(newSubProject => this.uploadControl.addVideoToProject(newSubProject.uri.split('/').pop(), response.uri))
-                );
+                    switchMap(newSubProject => this.uploadControl.addVideoToProject(newSubProject.uri.split('/').pop(), response.uri))
+                  );
                 }
                 else{
-                  projectOperation= this.uploadControl.addVideoToProject(this.curso.vimeoFolderId, response.uri)
+                  console.log('this.formNewCourse.get',this.formNewCourse.get('vimeoFolderId').value)
+                  projectOperation= this.uploadControl.addVideoToProject(this.formNewCourse.get('vimeoFolderId').value, response.uri)
                 }
-
               } 
               else {
                 // projectOperation = this.uploadControl.createProject(this.empresa.name).pipe(
@@ -2777,6 +2793,7 @@ uploadVideo(videoFile, clase, local = false, modulo, origen = null, intentosActu
                 // }
                 error: error => {
                   // Aquí manejas el error y decides si reintentar
+                  console.log(error)
                   if (intentosActuales < maxIntentos) {
                     console.log(`Intento ${intentosActuales + 1} fallido. Reintentando...`);
                     Swal.fire({
@@ -2818,6 +2835,7 @@ uploadVideo(videoFile, clase, local = false, modulo, origen = null, intentosActu
       // }
       error: error => {
         // Aquí manejas el error y decides si reintentar
+        console.log(error)
         if (intentosActuales < maxIntentos) {
           console.log(`Intento ${intentosActuales + 1} fallido. Reintentando...`);
           Swal.fire({
