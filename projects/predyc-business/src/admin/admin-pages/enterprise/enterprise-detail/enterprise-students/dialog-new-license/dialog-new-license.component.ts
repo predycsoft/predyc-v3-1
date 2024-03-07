@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subscription, combineLatest } from 'rxjs';
@@ -9,6 +9,7 @@ import { Product } from 'projects/predyc-business/src/shared/models/product.mode
 import { CouponService } from 'projects/predyc-business/src/shared/services/coupon.service';
 import { PriceService } from 'projects/predyc-business/src/shared/services/price.service';
 import { ProductService } from 'projects/predyc-business/src/shared/services/product.service';
+import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 
 @Component({
   selector: 'app-dialog-new-license',
@@ -22,11 +23,13 @@ export class DialogNewLicenseComponent {
     private productService: ProductService,
     private priceService: PriceService,
     private couponService: CouponService,
+    public icon: IconService,
     private fb: FormBuilder,
     @Inject(MAT_DIALOG_DATA) public data: {
       coupons: Coupon[],
       prices: Price[],
       products: Product[],
+      dateStart: number
     },
   ) { }
 
@@ -36,6 +39,8 @@ export class DialogNewLicenseComponent {
   prices: Price[] = [];
   coupons: Coupon[] = [];
   productId: string = '';
+  dateStart: number
+
 
   form: FormGroup;
 
@@ -46,10 +51,13 @@ export class DialogNewLicenseComponent {
   formProductIdSubscription: Subscription
   formStartDateSubscription: Subscription
 
+  showWarningDate = false
+
   ngOnInit(): void {
     this.products = this.data.products
     this.prices = this.data.prices
     this.coupons = this.data.coupons
+    this.dateStart = this.data?.dateStart
     this.initializeForm()
   }
 
@@ -60,13 +68,29 @@ export class DialogNewLicenseComponent {
       couponId: [''],
       startDate: ['', ],
       quantity: [1, Validators.min(1)],
+      rotations: [0, Validators.min(0)],
       status: ['', ],
       trialDays: ['']
     });
 
+
+
+    if(this.dateStart){
+      console.log(this.dateStart)
+      this.license.startedAt = this.dateStart;
+      this.showWarningDate = true
+    }
+    else{
+      this.license.startedAt = Date.now();
+      this.showWarningDate = false
+
+    }
+
+
     this.form.patchValue({
       startDate: this.toDateString(new Date(this.license.startedAt)),
       quantity: this.license.quantity,
+      rotations: this.license.rotations,
       status: this.license.status,
       trialDays: this.license.trialDays,
     })
@@ -84,7 +108,8 @@ export class DialogNewLicenseComponent {
     if (this.form.valid) {
       // Process and save data
       const formValue = this.form.value;
-      this.license.quantity = formValue.quantity
+      this.license.quantity = formValue.quantity;
+      this.license.rotations = formValue.rotations;
       this.license.status = formValue.status
       this.license.trialDays = formValue === "trialing" ? formValue.trialDays : null      
       this.license.priceRef = this.priceService.getPriceRefById(formValue.priceId)
