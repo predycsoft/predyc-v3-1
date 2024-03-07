@@ -18,12 +18,12 @@ export interface ChargeJson {
     failureMessage: string | null;
     id: string;
     interval: number | null; // Where to get this info in stripe
-    origin: string;
+    paymentMethod: string;
     payAt: number;
     price: DocumentReference<Price>;
     // status: Stripe.Charge.Status;
     status: 'failed' | 'pending' | 'succeeded';
-    customer: DocumentReference<User> | DocumentReference<Enterprise>;
+    customer: DocumentReference<User | Enterprise> ;
     via: 'Stripe' | 'Paypal' | 'Predyc';
     quantity: number | null;
   }
@@ -42,12 +42,12 @@ export interface ChargeJson {
     failureMessage: string | null;
     id: string;
     interval: number | null; // Where to get this info in stripe
-    origin: string;
+    paymentMethod: string; // 
     payAt: number;
     price: DocumentReference<Price>;
     // status: Stripe.Charge.Status;
     status: 'succeeded' | 'failed' | 'pending';
-    customer: DocumentReference<User> | DocumentReference<Enterprise>;
+    customer: DocumentReference<User | Enterprise>;
     via: 'Stripe' | 'Paypal' | 'Predyc';
     quantity: number | null;
 
@@ -67,7 +67,7 @@ export interface ChargeJson {
       failureMessage: "",
       id: "ch_pre_" + +new Date,
       interval: 1,
-      origin: "",
+      paymentMethod: "",
       payAt: null,
       price: null,
       status: 'pending',
@@ -101,7 +101,7 @@ export interface ChargeJson {
       newCharge.failureMessage = charge.failure_message;
       newCharge.id = charge.id;
       newCharge.interval = null;
-      newCharge.origin = 'Stripe';
+      newCharge.paymentMethod = 'Stripe';
       newCharge.status = charge.status; // Probably should map this to an internal value to avoid difference with paypal
     //   newCharge.customer = charge.customer; // charge.customer is an id. we have to put the docRef here.
       newCharge.customer = null;
@@ -125,7 +125,7 @@ export interface ChargeJson {
         failureMessage: this.failureMessage,
         id: this.id,
         interval: this.interval,
-        origin: this.origin,
+        paymentMethod: this.paymentMethod,
         payAt: this.payAt,
         price: this.price,
         status: this.status,
@@ -150,7 +150,7 @@ export interface ChargeJson {
       newCharge.failureMessage = charge.failureMessage;
       newCharge.id = charge.id;
       newCharge.interval = charge.interval;
-      newCharge.origin = charge.origin;
+      newCharge.paymentMethod = charge.paymentMethod;
       newCharge.payAt = charge.payAt;
       newCharge.price = charge.price;
       newCharge.status = charge.status;

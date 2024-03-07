@@ -44,13 +44,14 @@ export class EnterprisePaymentsComponent {
 
   displayedColumns: string[] = [
     "amount",
-    "origin",
+    "via",
     "status",
     "product",
     "quantity",
     "description",
     "createdAt",
     "payAt",
+    "paymentMethod",
     "refund",
     "comment",
   ];
