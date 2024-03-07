@@ -76,6 +76,10 @@
                     <span class="ft11 gray-9">Cantidad de licencias:</span>
                     <input type="number" min="1" formControlName="quantity">
                 </div>
+                <div fxLayout="column" class="mgt05 h50px">
+                    <span class="ft11 gray-9">Cantidad de rotaciones:</span>
+                    <input type="number" min="0" formControlName="rotations">
+                </div>
             </div>
         </div>
         <div *ngIf="showAlertText" class="mgt03" fxLayout="row" fxLayoutAlign="center center">

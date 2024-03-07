@@ -22,9 +22,13 @@ interface LicensesInList {
   acquired: number,
   used: number,
   avaliable: number,
+  avaliableRotations: number
   start: number
   valid: number,
   status: string,
+  rotations: number
+  rotationsUsed: number
+
 }
 
 @Component({
@@ -47,9 +51,12 @@ export class EnterpriseLicensesListComponent {
 
   displayedColumns: string[] = [
     "product",
+    "acquired",
     "rotations",
     "avaliable",
+    "avaliableRotations",
     "inUse",
+    "rotationsUsed",
     "expiration",
     "status",
     
@@ -87,6 +94,9 @@ export class EnterpriseLicensesListComponent {
           used: license.quantityUsed,
           avaliable: license.quantity - license.quantityUsed,
           valid: license.currentPeriodEnd,
+          rotations: license.rotations,
+          rotationsUsed: license.rotationsUsed,
+          avaliableRotations: license.rotations - license.rotationsUsed,
           start: license.currentPeriodStart,
           status: SubscriptionClass.statusToDisplayValueDict[license.status]
         }

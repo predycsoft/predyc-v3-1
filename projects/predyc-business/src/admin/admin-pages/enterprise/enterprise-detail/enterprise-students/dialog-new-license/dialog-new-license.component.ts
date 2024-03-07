@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subscription, combineLatest } from 'rxjs';
@@ -68,6 +68,7 @@ export class DialogNewLicenseComponent {
       couponId: [''],
       startDate: ['', ],
       quantity: [1, Validators.min(1)],
+      rotations: [0, Validators.min(0)],
       status: ['', ],
       trialDays: ['']
     });
@@ -75,14 +76,21 @@ export class DialogNewLicenseComponent {
 
 
     if(this.dateStart){
+      console.log(this.dateStart)
       this.license.startedAt = this.dateStart;
       this.showWarningDate = true
+    }
+    else{
+      this.license.startedAt = Date.now();
+      this.showWarningDate = false
 
     }
+
 
     this.form.patchValue({
       startDate: this.toDateString(new Date(this.license.startedAt)),
       quantity: this.license.quantity,
+      rotations: this.license.rotations,
       status: this.license.status,
       trialDays: this.license.trialDays,
     })
@@ -100,7 +108,8 @@ export class DialogNewLicenseComponent {
     if (this.form.valid) {
       // Process and save data
       const formValue = this.form.value;
-      this.license.quantity = formValue.quantity
+      this.license.quantity = formValue.quantity;
+      this.license.rotations = formValue.rotations;
       this.license.status = formValue.status
       this.license.trialDays = formValue === "trialing" ? formValue.trialDays : null      
       this.license.priceRef = this.priceService.getPriceRefById(formValue.priceId)
