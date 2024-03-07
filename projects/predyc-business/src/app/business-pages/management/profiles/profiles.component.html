@@ -55,7 +55,7 @@
                 </div>
                 <div class="pd05 backGray2 mgt10 radius10">
                     <p class="ft12 gray-8 "  *ngIf="!isEditing" style="overflow: hidden; word-wrap: break-word;">{{profileDescription}} </p>
-                    <textarea name="" id="" rows="5" *ngIf="isEditing" [(ngModel)]="profileDescription"  placeholder="Introduzca la descripción"
+                    <textarea name="" id="" rows="5" maxlength="250" *ngIf="isEditing" [(ngModel)]="profileDescription"  placeholder="Introduzca la descripción"
                     style="width: 100%; resize:vertical; border: none; background-color: transparent !important;"></textarea>
                 </div>
                 <!-- <div class="pdt10" fxLayout="row" fxLayoutGap="0.5rem" fxLayoutAlign="start center">
