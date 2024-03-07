@@ -44,41 +44,6 @@ export class StudentDetailsComponent {
   ngOnInit() {
     this.studentProfile = this.student.profile ? this.profileService.getProfile(this.student.profile.id) : null
     if (this.student) this.originalStudentData = {... this.student};  
-
-    //
-    this.courseServiceSubscription = this.courseService.getClassesByStudent$(this.userService.getUserRefById(this.student.uid))
-    .pipe(
-      switchMap(classesByStudent => {
-        if (classesByStudent.length > 0) {
-          // Obtener un array de Observables para cada clase
-          const classObservables = classesByStudent.map(studentClass =>
-            this.courseService.getClass$(studentClass.classRef.id).pipe(
-              map(clase => ({
-                classDuration: clase.duracion,
-                endDate: firestoreTimestampToNumberTimestamp(studentClass.dateEnd)
-              }))
-            )
-          );
-          return combineLatest(classObservables);
-        } else {
-          return [];
-        }
-      })
-    )
-    .subscribe(logs => {
-      if (logs.length > 0) {
-        // console.log("logs", logs); 
-        this.logs = logs
-        this.logsInCurrentMonth = logs.filter(log => {
-          const logMonth = new Date(log.endDate).getUTCMonth(); 
-          const logYear = new Date(log.endDate).getUTCFullYear();
-          return logMonth === this.currentMonth && logYear === this.currentYear;
-        })
-        this.hoursTimeMonth = (this.logsInCurrentMonth.reduce((total, currentClass) => total + currentClass.classDuration, 0)) / 60;
-      }
-    });
-
-
   }
 
   async onStudentSaveHandler(student: User) {
@@ -109,8 +74,5 @@ export class StudentDetailsComponent {
     
     return [JSON.stringify(originalData) !== JSON.stringify(newData), hasProfileChanged];
   }
-  
 
- 
-  
 }

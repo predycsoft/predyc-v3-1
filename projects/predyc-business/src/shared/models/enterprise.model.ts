@@ -11,9 +11,6 @@ export interface EnterpriseJson {
     permissions: Permissions
     photoUrl: string | null
     profilesNo: number
-    // totalAlertNotifications: number
-    // totalEventNotifications: number
-    // totalReadByAdminNotifications: number
     zipCode: number | null
     workField: string | null
     socialNetworks: {
@@ -70,9 +67,6 @@ export class Enterprise {
         public permissions: Permissions,
         public photoUrl: string | null,
         public profilesNo: number,
-        // public totalAlertNotifications: number,
-        // public totalEventNotifications: number,
-        // public totalReadByAdminNotifications: number,
         public zipCode: number | null,
         public workField: string | null,
         public socialNetworks: {
@@ -97,9 +91,6 @@ export class Enterprise {
             enterpriseJson.permissions,
             enterpriseJson.photoUrl,
             enterpriseJson.profilesNo,
-            // enterpriseJson.totalAlertNotifications,
-            // enterpriseJson.totalEventNotifications,
-            // enterpriseJson.totalReadByAdminNotifications,
             enterpriseJson.zipCode,
             enterpriseJson.workField,
             enterpriseJson.socialNetworks,
@@ -120,9 +111,6 @@ export class Enterprise {
             permissions: this.permissions,
             photoUrl: this.photoUrl,
             profilesNo: this.profilesNo,
-            // totalAlertNotifications: this.totalAlertNotifications,
-            // totalEventNotifications: this.totalEventNotifications,
-            // totalReadByAdminNotifications: this.totalReadByAdminNotifications,
             zipCode: this.zipCode,
             workField: this.workField,
             socialNetworks: this.socialNetworks,

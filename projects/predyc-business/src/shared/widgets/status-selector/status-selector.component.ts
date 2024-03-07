@@ -21,7 +21,7 @@ export class StatusSelectorComponent {
 
   ngOnInit() {
     this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
-      const status = params['status'] || 'active';
+      const status = params['status'] || 'inactive';
       this.selectedStatus = status
     })
   }
