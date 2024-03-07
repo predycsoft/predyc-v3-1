@@ -139,7 +139,6 @@ export class EnterpriseInfoComponent {
     enterprise.socialNetworks.linkedin = formValue.linkedin
     enterprise.photoUrl = formValue.photoUrl
 
-
     console.log("enterprise Actualizado: ", enterprise)
 
     try {
@@ -148,8 +147,9 @@ export class EnterpriseInfoComponent {
         this.alertService.succesAlert('Empresa editada exitosamente')
       } 
       else {
-        await this.enterpriseService.addEnterprise(enterprise)
+        const newEnterpriseId = await this.enterpriseService.addEnterprise(enterprise)
         this.alertService.succesAlert('Empresa agregada exitosamente')
+        this.router.navigate(["/admin/enterprises/form/" + newEnterpriseId])
       } 
     } catch (error) {
       this.alertService.errorAlert(error)

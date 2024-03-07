@@ -16,7 +16,7 @@ export class EnterpriseComponent {
   ) {}
 
   createEnterprise() {
-      this.router.navigate(["/admin/enterprises/form"])
+    this.router.navigate(["/admin/enterprises/form"])
   }
 
   onStudentSelected(event) {console.log("Student Selected!")}

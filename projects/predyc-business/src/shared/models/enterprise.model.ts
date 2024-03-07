@@ -41,6 +41,7 @@ export class Enterprise {
             studyLiberty: Permissions.STUDY_LIBERTY_STRICT_OPTION,
             studyplanGeneration: Permissions.STUDYPLAN_GENERATION_CONFIRMED_OPTION,
             attemptsPerTest: 5,
+            createCourses: false
         },
         photoUrl: null,
         profilesNo: 0,

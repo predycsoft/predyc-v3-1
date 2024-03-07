@@ -47,6 +47,8 @@
             <th mat-header-cell *matHeaderCellDef class="ft14"> Horas </th>
             <td mat-cell *matCellDef="let user" class="ft14">{{user.hours/60 | number : "1.0-0"  }}&nbsp;/&nbsp;{{user.targetHours | number : "1.0-0" }}</td>
         </ng-container>
+
+       
         
         <!-- RatingPoints Column -->
         <ng-container matColumnDef="ratingPoints">
@@ -58,6 +60,8 @@
 
         <!-- Rhythm Column -->
         <ng-container matColumnDef="rhythm" class="centertext">
+
+            
             <th mat-header-cell *matHeaderCellDef class="ft14"> Ritmo </th>
 
             <!-- <th mat-header-cell *matHeaderCellDef class="w-10 centertext gray-8"> Ritmo </th> -->
@@ -71,12 +75,16 @@
                 <div *ngIf="user.rhythm === 'low'" class="chip backRed1 borderLight " style="border: 1px solid #ff0000;" fxLayout="row" fxLayoutAlign="center center">
                     <span class="ft13 nowrap ft500" style="color: #f50000;" >Bajo</span>
                 </div>
-                <div *ngIf="user.rhythm === 'no plan'" class="chip borderLight"  fxLayout="row" fxLayoutAlign="center center">
-                    <span class="ft13 nowrap ft400 gray-6">Sin plan</span>
+                <div *ngIf="user.rhythm === 'no plan'" class="chip "  fxLayout="row" fxLayoutAlign="center center" style="background-color: #ff999961;">
+                    <img [src]="icon.redWarning2" alt="" class=" pdr08 h16px" >
+                    <span class="ft13 nowrap ft400 red-5">Sin plan</span>
+
                 </div>
-                <div *ngIf="user.rhythm === 'no iniciado'" class="chip borderLight"  fxLayout="row" fxLayoutAlign="center center">
-                    <span class="ft13 nowrap ft400 gray-6">No iniciado</span>
+                <div *ngIf="user.rhythm === 'no iniciado'" class="chip  "  fxLayout="row" fxLayoutAlign="center center" style="background-color: #ff999961;">
+                    <img [src]="icon.warning" alt="" class="makeRed pdr05" >
+                    <span class="ft13 nowrap ft400 red-5">No iniciado</span>
                 </div>
+                
             </td>
         </ng-container>
 

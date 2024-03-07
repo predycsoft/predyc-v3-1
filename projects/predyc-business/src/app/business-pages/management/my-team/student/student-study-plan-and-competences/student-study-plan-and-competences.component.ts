@@ -1,7 +1,7 @@
 import { Component, Input, SimpleChanges } from '@angular/core';
-import { DocumentReference } from '@angular/fire/compat/firestore';
+import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { Chart } from 'chart.js';
-import { Observable, Subject, Subscription, combineLatest } from 'rxjs';
+import { Subscription, combineLatest } from 'rxjs';
 import { Category } from 'projects/predyc-business/src/shared/models/category.model';
 import { CourseByStudent } from 'projects/predyc-business/src/shared/models/course-by-student.model';
 import { Curso, CursoJson } from 'projects/predyc-business/src/shared/models/course.model';
@@ -37,6 +37,9 @@ interface Month {
   templateUrl: './student-study-plan-and-competences.component.html',
   styleUrls: ['./student-study-plan-and-competences.component.css']
 })
+
+
+
 export class StudentStudyPlanAndCompetencesComponent {
 
   constructor(
@@ -46,7 +49,9 @@ export class StudentStudyPlanAndCompetencesComponent {
     private categoryService: CategoryService,
     private profileService: ProfileService,
     private skillService: SkillService,
-    private alertService: AlertsService
+    private alertService: AlertsService,
+    private afs: AngularFirestore,
+
   ){
     Chart.register(annotationPlugin);
   }
@@ -75,6 +80,7 @@ export class StudentStudyPlanAndCompetencesComponent {
 
 
   ngOnInit() {
+
     const userRef = this.userService.getUserRefById(this.student.uid)
     // if the student has a profile, get the data and show the study plan
     this.combinedObservableSubscription = combineLatest([ this.courseService.getCourses$(), this.courseService.getActiveCoursesByStudent$(userRef), this.categoryService.getCategories$(), this.skillService.getSkills$()]).
@@ -103,6 +109,25 @@ export class StudentStudyPlanAndCompetencesComponent {
         }
       }
     });
+  }
+
+  verCertificadoCourse(course) {
+    this.afs
+      .collection('userCertificate')
+      .ref.where('cursoId', '==', course.id)
+      .where('usuarioId', '==', this.student.uid)
+      .get()
+      .then((response) => {
+        response.docs.forEach((doc) => {
+          console.log('doc.id', doc.id);
+          
+          // Construir la URL con el doc.id
+          const url = `https://predyc-user.web.app/certificado/${doc.id}`;
+  
+          // Abrir la URL en una nueva pestaña del navegador
+          window.open(url, '_blank');
+        });
+      });
   }
 
   async ngOnChanges(changes: SimpleChanges) {
@@ -169,6 +194,7 @@ export class StudentStudyPlanAndCompetencesComponent {
           dateStart: firestoreTimestampToNumberTimestamp(courseByStudent.dateStart),
           dateEnd: firestoreTimestampToNumberTimestamp(courseByStudent.dateEnd),
           finalScore: courseByStudent.finalScore,
+          id:courseByStudent.courseRef.id
         };
         
         const monthName = new Date(studyPlanData.dateEndPlan).toLocaleString('es', { month: 'long',year:'2-digit'});

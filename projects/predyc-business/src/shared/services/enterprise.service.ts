@@ -45,10 +45,12 @@ export class EnterpriseService {
     return this.afs.collection<Enterprise>(Enterprise.collection).valueChanges()
   }
 
-  async addEnterprise(enterprise: Enterprise): Promise<void> {
+  async addEnterprise(enterprise: Enterprise): Promise<string> {
     const ref = this.afs.collection<Enterprise>(Enterprise.collection).doc().ref;
     await ref.set({...enterprise.toJson(), id: ref.id}, { merge: true });
     enterprise.id = ref.id;
+
+    return ref.id
   }
 
   async editEnterprise(enteprise: EnterpriseJson): Promise<void> {
