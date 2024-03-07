@@ -117,6 +117,9 @@ export class EnterprisePaymentsComponent {
     })
     
     modalRef.componentInstance.enterpriseRef = this.enterpriseRef;
+    modalRef.componentInstance.prices = this.prices;
+    modalRef.componentInstance.products = this.products;
+    modalRef.componentInstance.coupons = this.coupons;
   }
 
   ngOnDestroy() {
