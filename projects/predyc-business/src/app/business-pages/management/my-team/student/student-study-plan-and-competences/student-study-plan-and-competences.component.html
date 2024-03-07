@@ -68,7 +68,8 @@
                 <span class="red-5 ft14 ft600"> 
                     Advertencia: este usuario tiene {{ getDelayedMonthsCount() }} {{getDelayedMonthsCount() > 1 ? "meses atrasados" : "mes atrasado"}}
                 </span>
-                <button class="redButton btn">Alertar via e-mail</button>
+                <div></div>
+                <!-- <button class="redButton btn">Alertar via e-mail</button> -->
             </div>
             <div *ngIf="(selectedProfile && months && months.length > 0) else noPlan" >
                 <div *ngIf="diagnosticTest" fxLayout="row" class="mgt15 mgb10 mgl15" fxLayoutAlign="space-between center">
@@ -110,9 +111,10 @@
                                         <span *ngIf="course.dateEnd" class="makeGreen mgr10 ft14 ft400" >Completado </span>
                                     </div>
                                     
-                                    <span *ngIf="course.dateEnd" class="ft500"> {{course.finalScore}}/100</span>
+                                    <span style="width: 50px;" *ngIf="course.dateEnd" class="ft500"> {{course.finalScore>=100? 100 : course.finalScore}}/100</span>
                                     <!-- <span *ngIf="!course.dateEnd" class="ft12"> {{course.duration | number:'1.0-1'}} hr </span>  -->
                                     <!-- <span class="ft12"> {{course.duration | number:'1.0-1'}} hr </span> -->
+                                    <img matTooltip="Ver certificado" *ngIf="course.dateEnd" [src]="icon.certificado" (click)="verCertificadoCourse(course)" class="h20px mgr05 cursorPointer" alt="">
                                 </div>
                             </div>
                         </div>

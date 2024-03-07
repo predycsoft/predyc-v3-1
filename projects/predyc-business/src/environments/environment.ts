@@ -10,6 +10,6 @@ export const environment = {
     appId: "1:303790869910:web:0bf38e4746d8cbdc05e1b7",
     measurementId: "G-K58Y5S7FC9"
   },
-  useEmulators: true,
+  useEmulators: false,
   vimeoAccessToken: "73f2eb055ec905e9a48175cd3c87b6af"
 };
