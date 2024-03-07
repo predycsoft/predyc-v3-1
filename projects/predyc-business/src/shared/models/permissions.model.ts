@@ -3,6 +3,7 @@ export interface PermissionsJson {
     studyLiberty: string,
     studyplanGeneration: string,
     attemptsPerTest: number,
+    createCourses: boolean
 }
 
 export class Permissions {
@@ -43,6 +44,7 @@ export class Permissions {
     public studyLiberty: typeof Permissions.STUDY_LIBERTY_OPTIONS[number] = Permissions.STUDY_LIBERTY_FREE_OPTION;
     public studyplanGeneration: typeof Permissions.STUDYPLAN_GENERATION_OPTIONS[number] = Permissions.STUDYPLAN_GENERATION_OPTIMIZED_OPTION;
     public attemptsPerTest: number = 5;
+    public createCourses: boolean = false;
 
     // Opciones de Horas por semana e Intentos por examen en Permisos generales
     public static OPTION_BASIC = 'Básico'

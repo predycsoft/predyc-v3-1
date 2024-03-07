@@ -440,6 +440,14 @@ export class CreateCourseComponent {
   async inicializarformNewCourse () {
     let id;
     if(this.mode == 'create') {
+
+      console.log('this.empresa',this.empresa)
+
+      if(!this.user.isSystemUser && !this.empresa.permissions?.createCourses){
+        this.router.navigate(["management/courses"])
+      }
+
+      this.empresa
       setTimeout(() => {
         this.formNewCourse = new FormGroup({
           id: new FormControl(null),

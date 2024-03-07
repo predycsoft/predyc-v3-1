@@ -214,7 +214,8 @@ export class CreateDemoComponent {
           hoursPerWeek: 8,
           studyLiberty: 'Estricto',
           studyplanGeneration: 'Confirmar',
-          attemptsPerTest: 5
+          attemptsPerTest: 5,
+          createCourses: true
       },
       photoUrl: null,
       profilesNo: 0,
