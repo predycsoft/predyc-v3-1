@@ -53,7 +53,7 @@ export const _sendMail = async (data: {sender: string, recipients: string[], sub
             console.log(error);
             smtpTransport.close();
         }
-        console.log("Correo enviado!", {sender, subject: data.subject, text: data.text})
+        console.log("Correo enviado!", mailOptions)
         return 'mail sent';
         });
     } catch (error: any) {

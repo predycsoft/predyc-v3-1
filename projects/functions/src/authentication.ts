@@ -46,7 +46,7 @@ export const generatePasswordResetLink = functions.https.onCall(
             const recipients = [data.email]
             const subject = "Reestablece tu contraseña en Predyc"
             const text = `Hola,\nHaz clic en el siguiente enlace para establecer tu contraseña: ${link}`
-            const cc = ["desarrollo@predyc.com", "liliana.giraldo@predyc.com"]
+            const cc = ["desarrollo@predyc.com"]
             const mailObj = {sender, recipients, subject, text, cc}
             await _sendMail(mailObj)
         } catch (error: any) {

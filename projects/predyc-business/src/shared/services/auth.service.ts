@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { BehaviorSubject, firstValueFrom } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { User } from '../models/user.model';
-import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +15,6 @@ export class AuthService {
   constructor(
     private afAuth: AngularFireAuth,
     private afs: AngularFirestore,
-    private router: Router
   ) {}
 
   subscribeToAuthState() {
@@ -36,19 +34,8 @@ export class AuthService {
     })
   }
 
-  async signIn(email: string, password: string, isBusinessUser: boolean) {
-    try {
-      await this.afAuth.signInWithEmailAndPassword(email, password)
-      isBusinessUser ? this.router.navigate(['/']) : this.router.navigate(['/admin'])
-    } catch (error: any) {
-      const errorCode = error['code'];
-      const errorMessage = error['message'];
-      if (errorCode === 'auth/wrong-password') {
-        throw Error('Wrong password.');
-      } else {
-        console.log(errorMessage);
-      }
-    }
+  async signIn(email: string, password: string) {
+    return this.afAuth.signInWithEmailAndPassword(email, password)
   }
 
 

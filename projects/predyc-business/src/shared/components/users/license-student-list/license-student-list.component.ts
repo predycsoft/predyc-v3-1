@@ -71,7 +71,7 @@ export class LicenseStudentListComponent {
         this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
           const page = Number(params['page']) || 1;
           const searchTerm = params['search'] || '';
-          const statusFilter = params['status'] || SubscriptionClass.STATUS_ACTIVE;
+          const statusFilter = params['status'] || SubscriptionClass.STATUS_INACTIVE;
           // clear checkboxes selection if status filter changed
           if (this.lastStatusFilter !== statusFilter) {
             this.selection.clear();
@@ -99,6 +99,8 @@ export class LicenseStudentListComponent {
     this.dataSource.paginator.pageSize = this.pageSize;
   }
 
+  firstRedirectToActive: boolean = false
+
   performSearch(searchTerm: string, page: number, statusFilter: string) {
     if (this.userServiceSubscription) {
       this.userServiceSubscription.unsubscribe()
@@ -107,6 +109,11 @@ export class LicenseStudentListComponent {
       response => {
         if (statusFilter != SubscriptionClass.STATUS_ACTIVE) {
           response = response.filter(item => item.status !== SubscriptionClass.STATUS_ACTIVE)
+        }
+        console.log("Url", this.router.url, this.router.url.startsWith('/settings'))
+        if (response.length === 0 && statusFilter === SubscriptionClass.STATUS_INACTIVE && !this.firstRedirectToActive) {
+          this.firstRedirectToActive = true
+          this.router.navigate(['/settings'], {queryParams: {status: 'active'}})
         }
         const users: LicenseListUser[] = response.map(item => {
           // Seting profile
@@ -164,8 +171,8 @@ export class LicenseStudentListComponent {
   }
 
   ngOnDestroy() {
-    this.queryParamsSubscription.unsubscribe()
-    this.userServiceSubscription.unsubscribe()
-    this.profilesSubscription.unsubscribe()
+    if (this.queryParamsSubscription) this.queryParamsSubscription.unsubscribe()
+    if (this.userServiceSubscription) this.userServiceSubscription.unsubscribe()
+    if (this.profilesSubscription) this.profilesSubscription.unsubscribe()
   }
 }

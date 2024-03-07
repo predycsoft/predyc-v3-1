@@ -41,7 +41,7 @@ export class SettingsComponent {
   selectedUsersIds: string[] = [];
   selectedLicense: License;
 
-  currentStatus: string = 'active';
+  currentStatus: string = 'inactive';
   queryParamsSubscription: Subscription;
 
   hasLicenseChanged = 1 //flag to deselect checkboxes after license assign or removed
