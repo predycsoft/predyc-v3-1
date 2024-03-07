@@ -33,7 +33,6 @@ import { DialogNewLicenseComponent } from './admin-pages/enterprise/enterprise-d
 import { EnterpriseLicensesListComponent } from './admin-pages/enterprise/enterprise-detail/enterprise-students/enterprise-licenses-list/enterprise-licenses-list.component';
 import { EnterpriseAdminsListComponent } from './admin-pages/enterprise/enterprise-detail/enterprise-students/enterprise-admins-list/enterprise-admins-list.component';
 import { EnterpriseStudentsListComponent } from './admin-pages/enterprise/enterprise-detail/enterprise-students/enterprise-students-list/enterprise-students-list.component';
-import { DialogCreateChargeComponent } from './admin-pages/enterprise/enterprise-detail/enterprise-payments/dialog-create-charge/dialog-create-charge.component';
 
 
 @NgModule({
@@ -69,7 +68,6 @@ import { DialogCreateChargeComponent } from './admin-pages/enterprise/enterprise
     EnterpriseLicensesListComponent,
     EnterpriseAdminsListComponent,
     EnterpriseStudentsListComponent,
-    DialogCreateChargeComponent
   ],
   imports: [
     SharedModule,
