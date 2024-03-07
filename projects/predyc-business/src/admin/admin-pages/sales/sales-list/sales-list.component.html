@@ -1,5 +1,5 @@
 <div class="">
-    <!-- <button class="greenButton" (click)="createTestData()">Crear datos de prueba</button> -->
+    <button class="greenButton" (click)="createTestData()">Crear datos de prueba</button>
     <table mat-table [dataSource]="dataSource">
 
         <!-- Monto Column -->
@@ -15,8 +15,8 @@
         
         <!-- Origen de Column -->
         <ng-container matColumnDef="origin">
-            <th mat-header-cell *matHeaderCellDef class="ft14 centertext">Origen</th>
-            <td mat-cell *matCellDef="let charge" class="centertext ft14"> {{ charge.origin}} </td>
+            <th mat-header-cell *matHeaderCellDef class="ft14 centertext">Método de pago</th>
+            <td mat-cell *matCellDef="let charge" class="centertext ft14"> {{ charge.paymentMethod}} </td>
         </ng-container>
 
         <!-- Estatus Column -->

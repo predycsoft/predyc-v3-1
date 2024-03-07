@@ -68,6 +68,7 @@ import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgChartsModule } from 'ng2-charts';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
+import { DialogCreateChargeComponent } from './components/charges/dialog-create-charge/dialog-create-charge.component';
 
 @NgModule({
   declarations: [
@@ -104,7 +105,7 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
     IsActivePipe,
     SortSkillsPipe,
     DialogRestorePasswordComponent,
-
+    DialogCreateChargeComponent,
   ],
   imports: [
     CommonModule,
@@ -214,7 +215,8 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
     HttpClientModule,
     NgxExtendedPdfViewerModule,
     DragDropModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    DialogCreateChargeComponent
   ],
 
   providers: [
