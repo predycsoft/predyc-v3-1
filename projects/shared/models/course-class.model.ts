@@ -1,5 +1,4 @@
 import { DocumentReference } from "@angular/fire/compat/firestore"
-
   
   export class Clase {
 
@@ -20,7 +19,6 @@ import { DocumentReference } from "@angular/fire/compat/firestore"
     date:number=0
     instructorRef :DocumentReference = null
 
-
     public toJson() {
       return {
         HTMLcontent: this.HTMLcontent,
@@ -39,7 +37,5 @@ import { DocumentReference } from "@angular/fire/compat/firestore"
         instructorRef: this.instructorRef
       }
   }
-
-
 
   }

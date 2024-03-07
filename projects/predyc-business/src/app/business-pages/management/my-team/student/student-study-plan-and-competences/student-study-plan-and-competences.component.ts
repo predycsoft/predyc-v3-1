@@ -1,7 +1,7 @@
 import { Component, Input, SimpleChanges } from '@angular/core';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { Chart } from 'chart.js';
-import { Observable, Subject, Subscription, combineLatest } from 'rxjs';
+import { Subscription, combineLatest } from 'rxjs';
 import { Category } from 'projects/predyc-business/src/shared/models/category.model';
 import { CourseByStudent } from 'projects/predyc-business/src/shared/models/course-by-student.model';
 import { Curso, CursoJson } from 'projects/predyc-business/src/shared/models/course.model';
@@ -16,6 +16,7 @@ import { SkillService } from 'projects/predyc-business/src/shared/services/skill
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
 import { firestoreTimestampToNumberTimestamp } from 'projects/predyc-business/src/shared/utils';
 import annotationPlugin from 'chartjs-plugin-annotation';
+import { AlertsService } from 'projects/predyc-business/src/shared/services/alerts.service';
 
 
 interface CoursesForExplorer extends CursoJson {
@@ -48,6 +49,7 @@ export class StudentStudyPlanAndCompetencesComponent {
     private categoryService: CategoryService,
     private profileService: ProfileService,
     private skillService: SkillService,
+    private alertService: AlertsService,
     private afs: AngularFirestore,
 
   ){
@@ -100,6 +102,7 @@ export class StudentStudyPlanAndCompetencesComponent {
           else {
             // the student has a profile but hasnt completed initform yet
             this.showInitForm = true
+            this.alertService.infoAlert("Debe indicar la fecha de inicio y la hora de dedicación para iniciar su plan de estudio")
             this.hoursPermonthInitForm = this.selectedProfile.hoursPerMonth
             console.log("El usuario no posee studyPlan");
           }
@@ -108,9 +111,7 @@ export class StudentStudyPlanAndCompetencesComponent {
     });
   }
 
-
   verCertificadoCourse(course) {
-  
     this.afs
       .collection('userCertificate')
       .ref.where('cursoId', '==', course.id)
@@ -138,6 +139,7 @@ export class StudentStudyPlanAndCompetencesComponent {
       // setting profile for the first time
       if (changes.selectedProfile.previousValue === null && changes.selectedProfile.currentValue) {
         this.showInitForm = true
+        this.alertService.infoAlert("Debe indicar la fecha de inicio y la hora de dedicación para iniciar su plan de estudio")
         this.hoursPermonthInitForm = changes.selectedProfile.currentValue.hoursPerMonth
       }
       // setting new profile
