@@ -44,7 +44,7 @@ export class EnterpriseStudentsListComponent {
     "department",
     "profile",
     "email",
-    "delete",
+    // "delete",
   ];
 
   dataSource = new MatTableDataSource<studentInList>();

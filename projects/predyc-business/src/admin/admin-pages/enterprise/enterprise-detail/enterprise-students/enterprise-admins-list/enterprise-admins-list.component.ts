@@ -25,7 +25,7 @@ export class EnterpriseAdminsListComponent {
   displayedColumns: string[] = [
     "displayName",
     "email",
-    "delete",
+    // "delete",
   ];
 
   dataSource = new MatTableDataSource<User>();
