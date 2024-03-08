@@ -2,9 +2,9 @@ import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import { _sendMail } from './email'
 
-// import { generateSixDigitRandomNumber } from '../../projects/predyc-business/src/shared/utils'
-import { DocumentReference } from 'firebase-admin/firestore';
-import { User } from 'shared';
+import { CollectionReference, DocumentReference } from 'firebase-admin/firestore';
+import { CouponJson, Enterprise, EnterpriseJson, PriceJson, ProductJson, User, UserJson, capitalizeFirstLetter, generateSixDigitRandomNumber } from 'shared';
+import { _generatePasswordResetLink } from './authentication';
 
 const db = admin.firestore();
 
@@ -45,44 +45,114 @@ interface TractianInfo {
     enterprise: EnterpriseData
 }
 
-const createUser = async (user: UserData): Promise<DocumentReference | string | boolean> => {
-    // const password = generateSixDigitRandomNumber()
-    console.log("Import works!", "asdasda")
-    // const userRecord = await admin.auth().createUser({
-    //     email: user.email,
-    //     password: password.toString(),
-    // });
-    return true
+const createUser = async (userData: UserData, enterpriseRef: DocumentReference<EnterpriseJson>): Promise<{userRef: DocumentReference<UserJson>, password: string}> => {
+    const password = generateSixDigitRandomNumber().toString()
+    const userRecord = await admin.auth().createUser({
+        email: userData.email,
+        password: password,
+    });
+    const user = User.getEnterpriseStudentUser(enterpriseRef)
+    user.patchValue(userData)
+    console.log("User", user)
+    const collectionReference: CollectionReference<UserJson> = db.collection(User.collection) as CollectionReference<UserJson>
+    const userRef = collectionReference.doc(userRecord.uid)
+    await userRef.set({
+        ...user.toJson(),
+        uid: userRecord.uid
+    })
+    return {userRef, password}
 }
 
-const createEnterprise = async (enterprise: EnterpriseData) => {
-    // db.collection(Enterprise.collection)
+const createSubscription = async (
+    userRef: DocumentReference<UserJson>,
+    priceRef: DocumentReference<PriceJson>,
+    couponRef: DocumentReference<CouponJson> | null,
+    endDate: Date
+) => {
+    // const password = generateSixDigitRandomNumber().toString()
+    // const userRecord = await admin.auth().createUser({
+    //     email: userData.email,
+    //     password: password,
+    // });
+    // const user = User.getEnterpriseStudentUser(enterpriseRef)
+    // user.patchValue(userData)
+    // console.log("User", user)
+    // const collectionReference: CollectionReference<UserJson> = db.collection(User.collection) as CollectionReference<UserJson>
+    // const userRef = collectionReference.doc(userRecord.uid)
+    // await userRef.set({
+    //     ...user.toJson(),
+    //     uid: userRecord.uid
+    // })
+    // return {userRef, password}
+}
+
+const createEnterprise = async (enterpriseData: EnterpriseData): Promise<DocumentReference<EnterpriseJson>> => {
+    const enterprise = Enterprise.getEnterpriseTemplate()
+    enterprise.patchValue(enterpriseData)
+    const collectionReference: CollectionReference<EnterpriseJson> = db.collection(Enterprise.collection) as CollectionReference<EnterpriseJson>
+    const snapshot = await collectionReference.where('name', '==', enterprise.name).get()
+    let enterpriseRef: DocumentReference<EnterpriseJson>
+    if (snapshot.empty) {
+        // Document doesn't exist, create it
+        const newEnterprise = collectionReference.doc()
+        await newEnterprise.set({
+            ...enterprise.toJson(),
+            id: newEnterprise.id
+        })
+        enterpriseRef = newEnterprise
+        const successMessage = `Created enterprise with name "${enterprise.name}"`
+        console.log(successMessage)
+    } else {
+        const errorMessage = `Enterprise with name "${enterprise.name}" already exists`
+        console.log(errorMessage)
+        enterpriseRef = snapshot.docs[0].ref
+        // throw new Error(errorMessage)
+    }
+    return enterpriseRef
 }
 
 export const createTractianUser = functions.https.onRequest(
     async (req, res) => {
         try {
             if (req.method !== 'POST') throw new Error("Method not allowed")
-            // data should contain tractian Info
-            const tractianInfo = req.body as TractianInfo
-            const enterprise = tractianInfo.enterprise
-            const user = tractianInfo.user
-            console.log("Tractian API working!", tractianInfo)
-            console.log("User", tractianInfo.user)
-            console.log("Enterprise", tractianInfo.enterprise)
-            // Create Enterprise
-            // const enterpriseRef = await createEnterprise(enterprise)
-            // Create User
-            // const userRef = await createUser(user)
-            // Create Subscription
-            // Send Mail
-            // const userRecord = await admin.auth().createUser({
-            //   email: data.email,
-            //   password: data.password,
-            // });
 
-            // Enlace de restablecimiento de contraseña
-            // await _generatePasswordResetLink(data.email)
+            // Data should contain tractian Info
+            const tractianInfo = req.body as TractianInfo
+            const enterprise = {
+                ...tractianInfo.enterprise,
+                name: tractianInfo.enterprise.name.toLowerCase(),
+            }
+            const user = {
+                ...tractianInfo.user,
+                name: tractianInfo.user.name.toLowerCase().trim(),
+                displayName: tractianInfo.user.name.toLowerCase().trim(),
+                email: tractianInfo.user.email.toLowerCase().trim()
+            }
+            console.log("Tractian API working!", tractianInfo)
+            // console.log("User", tractianInfo.user)
+            // console.log("Enterprise", tractianInfo.enterprise)
+
+            // Create Enterprise
+            const enterpriseRef = await createEnterprise(enterprise)
+
+            // Create User
+            const {userRef, password} = await createUser(user, enterpriseRef)
+            // console.log("UserRef", userRef)
+
+            // Create Subscription
+            // const subscriptionRef = await createSubscription()
+
+            // Send Mail
+            const link = await _generatePasswordResetLink(user.email)
+
+            const sender = "desarrollo@predyc.com"
+
+            const recipients = [user.email]
+            const subject = "Bienvenido a Predyc, conoce tu usuario y contraseña temporal"
+            const text = `Hola ${capitalizeFirstLetter(user.name)},\n\n¡Te damos la bienvenida a Predyc, tu plataforma de capacitación industrial! Ha sido creado tu usuario en nuestra plataforma , aquí está tu acceso inicial:\n\nUsuario: ${user.email}\nContraseña: ${password}\n\nCambia tu contraseña aquí: ${link}\n\nIngresa a Predyc aquí: https://predyc-user.web.app/auth/login\n\nPara cualquier consulta, estamos a tu disposición.\n\nSaludos,\nEl Equipo de Predyc`
+            const cc = ["desarrollo@predyc.com", "liliana.giraldo@predyc.com"]
+            const mailObj = {sender, recipients, subject, text, cc}
+            await _sendMail(mailObj)
             
             res.status(200).send({password: 'Works!'})
             // res.status(200).send(tractianInfo)
@@ -95,14 +165,3 @@ export const createTractianUser = functions.https.onRequest(
         } 
     }
 );
-
-// export const _generatePasswordResetLink = async (email: string) => {
-//     const link = await admin.auth().generatePasswordResetLink(email);
-//     // const sender = "capacitacion@predyc.com"
-//     const sender = "desarrollo@predyc.com"
-//     const recipients = [email]
-//     const subject = "Bienvenido a Predyc"
-//     const text = `Hola,\nHaz clic en el siguiente enlace para establecer tu contraseña: ${link}`
-//     const mailObj = {sender, recipients, subject, text,}
-//     await _sendMail(mailObj)
-// }

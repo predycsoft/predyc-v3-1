@@ -82,6 +82,12 @@ export class Enterprise {
           });
     }
 
+    patchValue(obj: Object) {
+        Object.keys(obj).forEach(key => {
+            if (this.hasOwnProperty(key)) this[key] = obj[key]
+        })
+    }
+
     public static fromJson(enterpriseJson: EnterpriseJson): Enterprise {
         return new Enterprise(
             enterpriseJson.city,
