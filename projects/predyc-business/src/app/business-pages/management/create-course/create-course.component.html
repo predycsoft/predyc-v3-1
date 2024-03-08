@@ -1,7 +1,7 @@
 <div class="fw" class="fw backWhite radius10" fxLayout="column">    <div [ngClass]="true ? 'header--edit' : ''" fxLayout="row" fxLayoutAlign="space-between " class="header pdr10 pdl10">
-    <div fxLayout="row" fxLayoutAlign="space-between center" class="fw fh pdt05 pdb05" >
+    <div *ngIf="formNewCourse" fxLayout="row" fxLayoutAlign="space-between center" class="fw fh pdt05 pdb05" >
         <div class="radius20 pdl10 pdr10 mgr10 pdt05 pdb05 backWhite ft14 fh pdl05  " fxLayout="row" fxLayoutGap="8px" fxLayoutAlign=" center">
-            <span class="input-box   ft14" placeholder="Nombre del curso"  >{{formNewCourse?.get('titulo')?.value}}</span>
+            <span class="input-box   ft14" placeholder="Nombre del curso"  >{{formNewCourse.get('titulo')?.value}}</span>
         </div>
         <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign=" center">
             <div class="radius20 pdl10 pdr10 pdt05 pdb05 backWhite ft14 cursorPointer" routerLink="/management/courses"> 
@@ -26,7 +26,7 @@
                 <ng-container>
                     <div fxLayout="row" class="containerCurso h-100" fxLayoutGap="1.5rem">
                         <!-- <div fxFlex="50%" class="pdl10 pdt10 fw"> -->
-                        <div  class="radius10 w-30 mgt15  mgl10 shadowLight  hideScroll" fxLayout="column" style="background-color: rgba(244, 244, 244, 0.362); overflow-y: auto;">
+                        <div *ngIf="formNewCourse" class="radius10 w-30 mgt15  mgl10 shadowLight  hideScroll" fxLayout="column" style="background-color: rgba(244, 244, 244, 0.362); overflow-y: auto;">
                             <!-- Informacion -->
                                 <form [formGroup]="formNewCourse" class="mgl10 mgt15 mgr10">
                                     <div class="fw" fxLayoutAlign="space-between center" fxLayout="row">
@@ -38,27 +38,27 @@
                                     <div class="form-group mgt08">
                                         <label class="ft12 " >Título</label>
                                         <input
-                                        [class.is-invalid]="formNewCourse?.controls['titulo']?.errors && showErrorCurso"
+                                        [class.is-invalid]="formNewCourse.controls['titulo'].errors && showErrorCurso"
                                         formControlName="titulo" type="text" class="form-control customInput radius6" placeholder="Escriba el título del curso aquí">
-                                        <div class="invalid-feedback" *ngIf="formNewCourse?.controls['titulo']?.errors && showErrorCurso"> 
+                                        <div class="invalid-feedback" *ngIf="formNewCourse.controls['titulo'].errors && showErrorCurso"> 
                                             Debe indicar el título del curso
                                         </div>
                                     </div>
                                     <!-- <div class="form-group pdt10">
                                         <label>Resumen del curso</label>
                                         <textarea 
-                                        [class.is-invalid]="formNewCourse?.controls['resumen']?.errors && showErrorCurso"
+                                        [class.is-invalid]="formNewCourse.controls['resumen'].errors && showErrorCurso"
                                         rows="3" formControlName="resumen" type="text" class="form-control customInput" placeholder="Escriba el resumen del curso aquí" style="resize: none;"></textarea>
-                                        <div class="invalid-feedback" *ngIf="formNewCourse?.controls['resumen']?.errors && showErrorCurso"> 
+                                        <div class="invalid-feedback" *ngIf="formNewCourse.controls['resumen'].errors && showErrorCurso"> 
                                             Debe indicar el resumen del curso
                                         </div>
                                     </div> -->
                                     <div class="ft12 form-group pdt10">
                                         <label>Descripción del curso</label>
                                         <textarea
-                                        [class.is-invalid]="formNewCourse?.controls['descripcion']?.errors && showErrorCurso"
+                                        [class.is-invalid]="formNewCourse.controls['descripcion'].errors && showErrorCurso"
                                          rows="3"  formControlName="descripcion" type="text" class="form-control ft12  customInput" placeholder="Escriba la descripción del curso aquí" style="resize: none;"></textarea>
-                                         <div class="invalid-feedback" *ngIf="formNewCourse?.controls['descripcion']?.errors && showErrorCurso"> 
+                                         <div class="invalid-feedback" *ngIf="formNewCourse.controls['descripcion'].errors && showErrorCurso"> 
                                             Debe indicar la descripción del curso
                                         </div>
                                     </div>
@@ -72,14 +72,14 @@
                                             </button>
                                             <input #cursoImage type="file" (change)="uploadCourseImage($event,'curso')" hidden accept="image/jpeg, image/png" />
                                             <!-- <div class="image-scroll">
-                                                <img *ngFor="let imagen of imagenesCurso" (click)="seleccionarImagenCurso(imagen)" [src]="imagen" alt="Imagen seleccionada" class="image cursorPointer {{this.formNewCourse?.get('imagen')?.value == imagen? 'img-active': ''}}">
+                                                <img *ngFor="let imagen of imagenesCurso" (click)="seleccionarImagenCurso(imagen)" [src]="imagen" alt="Imagen seleccionada" class="image cursorPointer {{this.formNewCourse.get('imagen').value == imagen? 'img-active': ''}}">
                                             </div> -->
                                             <div class="image-scroll">
-                                                <img *ngIf="formNewCourse?.get('imagen')?.value" [src]="formNewCourse?.get('imagen')?.value" alt="Imagen seleccionada" class="image ">
+                                                <img *ngIf="formNewCourse.get('imagen').value" [src]="formNewCourse.get('imagen').value" alt="Imagen seleccionada" class="image ">
                                             </div>
                                         </div>
                                     </div>
-                                    <div *ngIf="formNewCourse?.controls['imagen']?.errors && showErrorCurso" class="custom-invalid-feedback pdt05">
+                                    <div *ngIf="formNewCourse.controls['imagen'].errors && showErrorCurso" class="custom-invalid-feedback pdt05">
                                         Debe seleccionar o subir la imagen del curso
                                     </div>
                                     <div fxLayout="row" class="fw" fxLayoutGap="1rem">
@@ -87,14 +87,14 @@
                                             <div class="form-group pdt10 ">
                                                 <label class="ft12 ">Nivel del curso</label>
                                                 <select
-                                                [class.is-invalid]="formNewCourse?.controls['nivel']?.errors && showErrorCurso"
+                                                [class.is-invalid]="formNewCourse.controls['nivel'].errors && showErrorCurso"
                                                 class="form-control customInput radius10" formControlName="nivel">
                                                     <option value=null>Selecciona el nivel</option>
                                                     <option value="Básico">Básico</option>
                                                     <option value="Intermedio">Intermedio</option>
                                                     <option value="Avanzado">Avanzado</option>
                                                 </select>
-                                                <div class="invalid-feedback" *ngIf="formNewCourse?.controls['nivel']?.errors && showErrorCurso"> 
+                                                <div class="invalid-feedback" *ngIf="formNewCourse.controls['nivel'].errors && showErrorCurso"> 
                                                     Debe seleccionar el nivel del curso
                                                 </div>
                                             </div>
@@ -103,13 +103,13 @@
                                             <div class="form-group pdt10">
                                                 <label class="ft12 ">Idioma</label>
                                                 <select
-                                                [class.is-invalid]="formNewCourse?.controls['idioma']?.errors && showErrorCurso"
+                                                [class.is-invalid]="formNewCourse.controls['idioma'].errors && showErrorCurso"
                                                 class="form-control customInput" formControlName="idioma">
                                                     <option value=null>Selecciona el idioma</option>
                                                     <option value="Español">Español</option>
                                                     <option value="Inglés">Inglés</option>
                                                 </select>
-                                                <div class="invalid-feedback" *ngIf="formNewCourse?.controls['idioma']?.errors && showErrorCurso"> 
+                                                <div class="invalid-feedback" *ngIf="formNewCourse.controls['idioma'].errors && showErrorCurso"> 
                                                     Debe seleccionar el idioma del curso
                                                 </div>
                                             </div>
@@ -118,17 +118,17 @@
         
                                     <!-- <div class="form-group pdt10">
                                         <label>A quién va dirigido</label>
-                                        <textarea [class.is-invalid]="formNewCourse?.controls['descripcion']?.errors && showErrorCurso"
+                                        <textarea [class.is-invalid]="formNewCourse.controls['descripcion'].errors && showErrorCurso"
                                         rows="3"  formControlName="descripcion" type="text" class="form-control customInput" placeholder="Escriba a qué público va dirigido aquí" style="resize: none;"></textarea>
-                                        <div class="invalid-feedback" *ngIf="formNewCourse?.controls['descripcion']?.errors && showErrorCurso"> 
+                                        <div class="invalid-feedback" *ngIf="formNewCourse.controls['descripcion'].errors && showErrorCurso"> 
                                             Debe indicar a qué público va dirigido aquí.
                                         </div>
                                     </div> -->
             
                                     <!-- <div class="form-group pdt10">
                                         <label>Qué aprenderas</label>
-                                        <textarea rows="3" [class.is-invalid]="formNewCourse?.controls['contenido']?.errors && showErrorCurso"  formControlName="contenido" type="text" class="form-control customInput" placeholder="Escriba qué se aprenderá durante el curso." style="resize: none;"></textarea>
-                                        <div class="invalid-feedback" *ngIf="formNewCourse?.controls['contenido']?.errors && showErrorCurso"> 
+                                        <textarea rows="3" [class.is-invalid]="formNewCourse.controls['contenido'].errors && showErrorCurso"  formControlName="contenido" type="text" class="form-control customInput" placeholder="Escriba qué se aprenderá durante el curso." style="resize: none;"></textarea>
+                                        <div class="invalid-feedback" *ngIf="formNewCourse.controls['contenido'].errors && showErrorCurso"> 
                                             Debe indicar que se aprenderá durante el curso.
                                         </div>
                                     </div> -->
@@ -167,13 +167,13 @@
                                                     <img style="cursor: pointer;" (click)="removeSkill(skill)" [src]="icon.close"  class="h16px makeGray"  alt="">
                                                 </div>
                                             </ng-container>
-                                            <div *ngIf="skillsCurso?.length<3 && pillarsForm?.value" matTooltip="Agregar competencia"
+                                            <div *ngIf="skillsCurso?.length<3 && pillarsForm.value" matTooltip="Agregar competencia"
                                             style="display: inline-block; margin-right: 5px; margin-bottom: 5px;"
                                                (click)="openModal(modalSkillsCourse,'md')" class="skill-badge ListHover2 radius10 backGray2 pdl05 pdr05 gray-8 mgt05">
                                                 +
                                             </div>
                                         </div>
-                                        <div *ngIf="formNewCourse?.controls['skills']?.errors && showErrorCurso" class="custom-invalid-feedback pdt05">
+                                        <div *ngIf="formNewCourse.controls['skills'].errors && showErrorCurso" class="custom-invalid-feedback pdt05">
                                             Debe seleccionar al menos una competencia.
                                         </div>
                                     </div>
@@ -203,7 +203,7 @@
                                                 </mat-autocomplete>
                                               </mat-form-field>
                                             </form>
-                                            <div *ngIf="formNewCourse?.controls['imagen_instructor']?.errors && showErrorCurso" class="custom-invalid-feedback pdt05">
+                                            <div *ngIf="formNewCourse.controls['imagen_instructor'].errors && showErrorCurso" class="custom-invalid-feedback pdt05">
                                                 Debe seleccinar el instructor
                                               </div>
                                           </div>
@@ -211,7 +211,7 @@
                                           <!-- Foto del instructor -->
                                           <!-- <div fxFlex="10" fxLayoutAlign=" center" class="avatar-selector pdb22 pdl10">
                                             <div class="avatar-scroll">
-                                              <img *ngIf="formNewCourse?.get('imagen_instructor')?.value" [src]="formNewCourse?.get('imagen_instructor')?.value" alt="Imagen seleccionada" class="image shadow8">
+                                              <img *ngIf="formNewCourse.get('imagen_instructor').value" [src]="formNewCourse.get('imagen_instructor').value" alt="Imagen seleccionada" class="image shadow8">
                                             </div>
                                           </div> -->
                                         </div>
@@ -219,8 +219,8 @@
                                         <!-- Resto del formulario -->
                                         <div class="form-group">
                                           <label class=" ft14" >Resumen del instructor</label>
-                                          <textarea rows="3" [class.is-invalid]="formNewCourse?.controls['resumen_instructor']?.errors && showErrorCurso" formControlName="resumen_instructor" type="text" class="form-control customInput" placeholder="Escriba el resumen del instructor aquí." style="resize: none;"></textarea>
-                                          <div class="invalid-feedback" *ngIf="formNewCourse?.controls['resumen_instructor']?.errors && showErrorCurso"> 
+                                          <textarea rows="3" [class.is-invalid]="formNewCourse.controls['resumen_instructor'].errors && showErrorCurso" formControlName="resumen_instructor" type="text" class="form-control customInput" placeholder="Escriba el resumen del instructor aquí." style="resize: none;"></textarea>
+                                          <div class="invalid-feedback" *ngIf="formNewCourse.controls['resumen_instructor'].errors && showErrorCurso"> 
                                               Debe indicar el resumen del instructor.
                                           </div>
                                         </div>
@@ -496,7 +496,7 @@
                             <img [src]="icon.document" class="makeBlue h20px" alt="">
                             <span class="ft500 ft14 black " style="margin-top: 5px;">Examen del curso</span>
                         </div>
-                        <app-questions type="test" class="mgr10" [questionMaxSize]="100" [nameCurso]="formNewCourse?.get('titulo')?.value?  this.formNewCourse?.get('titulo')?.value : 'Temporal'" [nameEmpresa]="empresa.name" (changeQuestion)="validExam = $event;formatExamQuestions()" (emmitForm)="validExam = $event;" [questionsArray]="examen?.questions ? examen?.questions:[] " [checkQuestions]="updateTriggeQuestionsExam" [selectedTestSkills]="[]"></app-questions>
+                        <app-questions type="test" class="mgr10" [questionMaxSize]="100" [nameCurso]="formNewCourse?.get('titulo').value?  this.formNewCourse?.get('titulo').value : 'Temporal'" [nameEmpresa]="empresa?.name" (changeQuestion)="validExam = $event;formatExamQuestions()" (emmitForm)="validExam = $event;" [questionsArray]="examen?.questions ? examen?.questions:[] " [checkQuestions]="updateTriggeQuestionsExam" [selectedTestSkills]="[]"></app-questions>
                     </div>
 
                     <div class="column w-50 mgr25" fxLayoutGap="2rem" >
@@ -523,7 +523,7 @@
                                             <div class="fw" *ngIf="question.image">
                                               <img [src]="question.image.url" alt="" style="max-height: 500px;">
                                             </div>
-                                            <div *ngIf="question.typeFormated?.value == questionTypes.TYPE_SINGLE_CHOICE_VALUE">
+                                            <div *ngIf="question.typeFormated.value == questionTypes.TYPE_SINGLE_CHOICE_VALUE">
                                               <span class="ft14 ft500"> {{ question.text }} </span>
                                               <div class="mgt10" fxLayout="column">
                                                 <div fxLayout="row" fxLayoutAlign="space-between center"
@@ -539,7 +539,7 @@
                                                 </div>
                                               </div>
                                             </div>
-                                            <div *ngIf="question.typeFormated?.value == questionTypes.TYPE_MULTIPLE_CHOICE_VALUE">
+                                            <div *ngIf="question.typeFormated.value == questionTypes.TYPE_MULTIPLE_CHOICE_VALUE">
                                               <span class="ft14 ft500"> {{ question.text }} </span>
                                               <div class="mgt10" fxLayout="column">
                                                 <div fxLayout="row" fxLayoutAlign="space-between center"
@@ -550,11 +550,11 @@
                                                 </div>
                                               </div>
                                             </div>
-                                            <div *ngIf="question.typeFormated?.value == questionTypes.TYPE_COMPLETE_VALUE">
+                                            <div *ngIf="question.typeFormated.value == questionTypes.TYPE_COMPLETE_VALUE">
                                                 <div [innerHTML]="question.render">
                                                 </div>
                                             </div>
-                                            <div *ngIf="question.typeFormated?.value == questionTypes.TYPE_TRUE_OR_FALSE_VALUE">
+                                            <div *ngIf="question.typeFormated.value == questionTypes.TYPE_TRUE_OR_FALSE_VALUE">
                                               <span class="ft14 ft500"> {{ question.text }} </span>
                                               <div class="mgt10" fxLayout="column">
                                                 <div fxLayout="row" fxLayoutAlign="space-between center">
@@ -769,20 +769,20 @@
                                         <div class="position-relative custom-input-container">
                                             <img [src]="icon[getIconClase(selectedClase.tipo)]" class="h20px input-icon" alt="">
                                             <input formControlName="titulo"
-                                                [class.is-invalid]="formNuevaActividadBasica.controls['titulo']?.errors && showErrorActividad"
+                                                [class.is-invalid]="formNuevaActividadBasica.controls['titulo'].errors && showErrorActividad"
                                                 type="text" 
                                                 class="form-control customInput custom-input" placeholder="Escriba el título de la actividad aquí">
                                         </div>
-                                        <div class="custom-invalid-feedback" *ngIf="formNuevaActividadBasica.controls['titulo']?.errors && showErrorActividad"> 
+                                        <div class="custom-invalid-feedback" *ngIf="formNuevaActividadBasica.controls['titulo'].errors && showErrorActividad"> 
                                             Debe indicar el título de la actividad
                                         </div>
                                     </div>
                                     <!-- <div class="form-group pdt10">
                                         <label>Descripción</label>
                                         <textarea rows="4" 
-                                        [class.is-invalid]="formNuevaActividadBasica.controls['descripcion']?.errors && showErrorActividad"
+                                        [class.is-invalid]="formNuevaActividadBasica.controls['descripcion'].errors && showErrorActividad"
                                         formControlName="descripcion" type="text" class="form-control customInput" placeholder="Escriba una pequeña descripción" style="resize: none;"></textarea>
-                                        <div class="invalid-feedback" *ngIf="formNuevaActividadBasica.controls['descripcion']?.errors && showErrorActividad"> 
+                                        <div class="invalid-feedback" *ngIf="formNuevaActividadBasica.controls['descripcion'].errors && showErrorActividad"> 
                                             Debe indicar la Descripción de la actividad
                                         </div>
                                     </div> -->
@@ -791,7 +791,7 @@
                                         <div class="position-relative custom-input-container">
                                             <img [src]="icon.pdf" class="h20px input-icon" alt="">
                                             <input 
-                                            [class.is-invalid]="formNuevaActividadBasica.controls['recursos']?.errors && showErrorActividad"
+                                            [class.is-invalid]="formNuevaActividadBasica.controls['recursos'].errors && showErrorActividad"
                                             (change)="onFileSelected($event,selectedClase,false,selectedModulo,true,'archivoActividad')" type="file" accept=".pdf" #fileActivityInput class="form-control customInput custom-input">
                                             <!-- <button class="custom-button ">Botón</button> -->
                                             <button (click)="fileActivityInput.click()" class="custom-button grayButton pd03 ft500 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
@@ -799,7 +799,7 @@
                                                 Adjuntar
                                             </button>
                                         </div>
-                                        <div class="custom-invalid-feedback" *ngIf="formNuevaActividadBasica.controls['recursos']?.errors && showErrorActividad">
+                                        <div class="custom-invalid-feedback" *ngIf="formNuevaActividadBasica.controls['recursos'].errors && showErrorActividad">
                                             Debe adjuntar algun recurso adicional
                                         </div>
                                     </div>
@@ -820,9 +820,9 @@
                                     <div class="form-group pdt10 w-40">
                                         <label>Duración estimada (minutos)</label>
                                         <input formControlName="duracion"
-                                        [class.is-invalid]="formNuevaActividadBasica.controls['duracion']?.errors && showErrorActividad"
+                                        [class.is-invalid]="formNuevaActividadBasica.controls['duracion'].errors && showErrorActividad"
                                         type="number" min="1" class="form-control customInput">
-                                        <div class="invalid-feedback" *ngIf="formNuevaActividadBasica.controls['duracion']?.errors && showErrorActividad"> 
+                                        <div class="invalid-feedback" *ngIf="formNuevaActividadBasica.controls['duracion'].errors && showErrorActividad"> 
                                             Es obligatorio la duracion minima de al menos 1 minuto
                                         </div>
                                     </div>
@@ -846,14 +846,14 @@
                                         <div class="position-relative custom-input-container">
                                             <img [src]="icon.videoChat" class="h20px input-icon" alt="">
                                             <input 
-                                            [class.is-invalid]="formNuevaActividadGeneral.controls['video']?.errors && showErrorActividad"
+                                            [class.is-invalid]="formNuevaActividadGeneral.controls['video'].errors && showErrorActividad"
                                             (change)="onFileSelected($event,selectedClase,false,selectedModulo,false,'videoActividad')" type="file" accept="video/mp4"  #videoActivityInput class="form-control custom-input" placeholder="Escriba el título de la actividad aquí">
                                             <button (click)="videoActivityInput.click()" class="custom-button grayButton pd03 ft500 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                                                 <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
                                                 Adjuntar
                                             </button>
                                         </div>
-                                        <div class="custom-invalid-feedback" *ngIf="formNuevaActividadGeneral.controls['video']?.errors && showErrorActividad">
+                                        <div class="custom-invalid-feedback" *ngIf="formNuevaActividadGeneral.controls['video'].errors && showErrorActividad">
                                             Debe adjuntar el video explcativo
                                         </div>
                                         <div>
@@ -885,9 +885,9 @@
                                     <!-- <div class="form-group pdt10">
                                         <label>Instrucciones</label>
                                         <textarea formControlName="instrucciones"
-                                        [class.is-invalid]="formNuevaActividadGeneral.controls['instrucciones']?.errors && showErrorActividad" 
+                                        [class.is-invalid]="formNuevaActividadGeneral.controls['instrucciones'].errors && showErrorActividad" 
                                         rows="3"  type="text" class="form-control customInput" placeholder="Escriba el resumen del curso aquí" style="resize: none;"></textarea>
-                                        <div class="invalid-feedback" *ngIf="formNuevaActividadGeneral.controls['instrucciones']?.errors && showErrorActividad">
+                                        <div class="invalid-feedback" *ngIf="formNuevaActividadGeneral.controls['instrucciones'].errors && showErrorActividad">
                                             Debe indicar las instrucciones de la actividad.
                                         </div>
                                     </div> -->
@@ -897,14 +897,14 @@
                                         <div class="position-relative custom-input-container">
                                             <img [src]="icon.pdf" class="h20px input-icon" alt="">
                                             <input 
-                                            [class.is-invalid]="formNuevaActividadGeneral.controls['recursos']?.errors && showErrorActividad"
+                                            [class.is-invalid]="formNuevaActividadGeneral.controls['recursos'].errors && showErrorActividad"
                                             (change)="onFileSelected($event,selectedClase,false,selectedModulo,true,'archivoActividad')" type="file" accept=".pdf" #fileActivityInput class="form-control customInput custom-input">
                                             <button (click)="fileActivityInput.click()" class="custom-button grayButton pd03 ft500 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                                                 <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
                                                 Adjuntar
                                             </button>
                                         </div>
-                                        <div class="custom-invalid-feedback" *ngIf="formNuevaActividadGeneral.controls['recursos']?.errors && showErrorActividad">
+                                        <div class="custom-invalid-feedback" *ngIf="formNuevaActividadGeneral.controls['recursos'].errors && showErrorActividad">
                                             Debe adjuntar algun recurso adicional
                                         </div>
                                     </div>
@@ -956,7 +956,7 @@
                                         <!-- <div fxLayout="row" fxLayoutAlign="space-between center">
                                             <div fxLayout="row" fxLayoutGap="0.625">
                                                 <div *ngFor="let questionType of questionTypes" class="pdr05">
-                                                    <button (click)="onQuestionTypeChange(pregunta, questionType?.value)" class="{{pregunta.type?.value == questionType?.value ? 'backGray4': 'grayButton pd03' }} radius4 ft12 h28px gray-8">{{ questionType.displayName }}</button>
+                                                    <button (click)="onQuestionTypeChange(pregunta, questionType.value)" class="{{pregunta.type.value == questionType.value ? 'backGray4': 'grayButton pd03' }} radius4 ft12 h28px gray-8">{{ questionType.displayName }}</button>
                                                 </div>
                                             </div>
                                             
@@ -1002,7 +1002,7 @@
                                         </div> -->
                                         <div fxLayout="row" class="pdt05 fw">
                                             <!-- complete -->
-                                            <!-- <div class="fw" fxLayout="column" *ngIf="pregunta.type?.value == questionTypesIn.TYPE_COMPLETE_VALUE">
+                                            <!-- <div class="fw" fxLayout="column" *ngIf="pregunta.type.value == questionTypesIn.TYPE_COMPLETE_VALUE">
                                                 <div fxLayout="row" class="mgt10">
                                                     <span>Haga click en confirmar cuando haya terminado de escribir la pregunta</span>
                                                 </div>
@@ -1052,7 +1052,7 @@
                                                 <div class="gray-8 ft12 pdt10" [innerHTML]="pregunta.render" *ngIf="pregunta.render"></div>
                                             </div> -->
                                             <!-- multiple choice -->
-                                            <!-- <div class="fw" fxLayout="column" *ngIf="pregunta.type?.value == questionTypesIn.TYPE_MULTIPLE_CHOICE_VALUE">
+                                            <!-- <div class="fw" fxLayout="column" *ngIf="pregunta.type.value == questionTypesIn.TYPE_MULTIPLE_CHOICE_VALUE">
                                                 <div *ngFor="let option of pregunta.options; let optIndex = index" fxLayout="row" class="fw">
                                                     <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem" class="mgb10 fw">
                                                 
@@ -1075,7 +1075,7 @@
                                                 </div>
                                             </div> -->
                                             <!-- single choice -->
-                                            <!-- <div class="fw" fxLayout="column" *ngIf="pregunta.type?.value == questionTypesIn.TYPE_SINGLE_CHOICE_VALUE">
+                                            <!-- <div class="fw" fxLayout="column" *ngIf="pregunta.type.value == questionTypesIn.TYPE_SINGLE_CHOICE_VALUE">
                                                 <div *ngFor="let option of pregunta.options; let optIndex = index" fxLayout="row" class="fw">
                                                     <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem" class="mgb10 fw">
                                                         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
@@ -1097,7 +1097,7 @@
                                                 </div>
                                             </div> -->
                                             <!-- true or false -->
-                                            <!-- <div class="fw" fxLayout="column" *ngIf="pregunta.type?.value == questionTypesIn.TYPE_TRUE_OR_FALSE_VALUE">
+                                            <!-- <div class="fw" fxLayout="column" *ngIf="pregunta.type.value == questionTypesIn.TYPE_TRUE_OR_FALSE_VALUE">
                                                 <div *ngFor="let option of pregunta.options; let optIndex = index" fxLayout="row" class="fw">
                                                     <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem" class="mgb10 fw">
                                                         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
@@ -1127,7 +1127,7 @@
                                     </div>
                                 </div>
                             </ng-container>
-                            <app-questions  [nameCurso]="formNewCourse?.get('titulo')?.value?  this.formNewCourse?.get('titulo')?.value : 'Temporal'" [nameEmpresa]="empresa.name" (emmitForm)="validActividad = $event"  [heartsActivity]="selectedClase.tipo == 'corazones'? true: false" [questionsArray]="selectedClase?.activity?.questions ? selectedClase.activity.questions:[] " [checkQuestions]="updateTriggeQuestions" [selectedTestSkills]="competenciasSelectedClaseFormated"></app-questions>
+                            <app-questions  [nameCurso]="formNewCourse.get('titulo').value?  this.formNewCourse.get('titulo').value : 'Temporal'" [nameEmpresa]="empresa.name" (emmitForm)="validActividad = $event"  [heartsActivity]="selectedClase.tipo == 'corazones'? true: false" [questionsArray]="selectedClase?.activity?.questions ? selectedClase.activity.questions:[] " [checkQuestions]="updateTriggeQuestions" [selectedTestSkills]="competenciasSelectedClaseFormated"></app-questions>
                             <!-- <div fxLayout="row" class="fw">
                                 <div class="mgl40 mgr10 fw">
                                     <div class="fw mgb10">
@@ -1181,10 +1181,10 @@
                                             
                                             <!-- area dependiente de la pregunta -->
                                             <div fxFlex="70" fxLayout="column" class="pdt05 fw">
-                                                <div [innerHTML]="question.render" *ngIf="question.typeFormated?.value == 'complete'">
+                                                <div [innerHTML]="question.render" *ngIf="question.typeFormated.value == 'complete'">
                                                 </div>
                                     
-                                                <div *ngIf="question.typeFormated?.value == 'single_choice'">
+                                                <div *ngIf="question.typeFormated.value == 'single_choice'">
                                                     <span class="ft14 ft500"> {{ question.text }} </span>
                                                     <div class="mgt10" fxLayout="column">
                                                         <div fxLayout="row" fxLayoutAlign="space-between center" *ngFor="let option of question.options; let optionIndex = index" class="mgt05">
@@ -1194,7 +1194,7 @@
                                                     </div>
                                                 </div>
                                     
-                                                <div *ngIf="question.typeFormated?.value == 'multiple_choice'">
+                                                <div *ngIf="question.typeFormated.value == 'multiple_choice'">
                                                     <span class="ft14 ft500"> {{ question.text }} </span>
                                                     <div class="mgt10" fxLayout="column">
                                                         <div fxLayout="row" fxLayoutAlign="space-between center" *ngFor="let option of question.options; let optionIndex = index" class="mgt05">
@@ -1204,7 +1204,7 @@
                                                     </div>
                                                 </div>
                                     
-                                                <div *ngIf="question.typeFormated?.value == 'true-false'">
+                                                <div *ngIf="question.typeFormated.value == 'true-false'">
                                                     <span class="ft14 ft500"> {{ question.text }} </span>
                                                     <div class="mgt10" fxLayout="column">
                                                         <div fxLayout="row" fxLayoutAlign="space-between center">
@@ -1392,8 +1392,8 @@
                         </div>
                         <!-- area dependiete de la pregunta -->
                         <div fxLayout="row" class="pdt05 fw">
-                            <div [innerHTML] ="question['render']" *ngIf="question.type?.value == 'complete'"></div>
-                            <div *ngIf="question.type?.value == 'single_choice'">
+                            <div [innerHTML] ="question['render']" *ngIf="question.type.value == 'complete'"></div>
+                            <div *ngIf="question.type.value == 'single_choice'">
                                 <span class="ft14 ft500"> {{ question.text }} </span>
                                 <div class="mgt10" fxLayout="column">
                                     <div fxLayout="row" fxLayoutAlign="space-between center"
@@ -1403,7 +1403,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div *ngIf="question.type?.value == 'multiple_choice'">
+                            <div *ngIf="question.type.value == 'multiple_choice'">
                                 <span class="ft14 ft500"> {{ question.text }} </span>
                                 <div class="mgt10" fxLayout="column">
                                     <div fxLayout="row" fxLayoutAlign="space-between center" *ngFor="let option of question.options; let optionIndex = index" class="mgt05">
@@ -1412,7 +1412,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div *ngIf="question.type?.value == 'true-false'">
+                            <div *ngIf="question.type.value == 'true-false'">
                                 <span class="ft14 ft500"> {{ question.text }} </span>
                                 <div class="mgt10" fxLayout="column">
                                     <div fxLayout="row" fxLayoutAlign="space-between center">
@@ -1475,19 +1475,19 @@
         <form [formGroup]="formNewInstructor" class="mgr20">
             <div class="form-group">
                 <label>Nombre del instructor</label>
-                <input formControlName="nombre" [class.is-invalid]="formNewInstructor.controls['nombre']?.errors && showErrorInstructor" type="text" class="form-control customInput" placeholder="Escriba el nombre del instructor del curso aquí">
-                <div class="invalid-feedback" *ngIf="formNewInstructor.controls['nombre']?.errors && showErrorInstructor"> 
+                <input formControlName="nombre" [class.is-invalid]="formNewInstructor.controls['nombre'].errors && showErrorInstructor" type="text" class="form-control customInput" placeholder="Escriba el nombre del instructor del curso aquí">
+                <div class="invalid-feedback" *ngIf="formNewInstructor.controls['nombre'].errors && showErrorInstructor"> 
                     Debe indicar el nombre del instructor.
                 </div>
             </div>
 
             <div class="form-group">
                 <label>Correo del instructor</label>
-                <input formControlName="email" [class.is-invalid]="formNewInstructor.controls['email']?.errors && showErrorInstructor" type="text" class="form-control customInput" placeholder="Escriba el correo del instructor del curso aquí">
-                <div class="invalid-feedback" *ngIf="formNewInstructor.controls['email']?.errors?.required && showErrorInstructor"> 
+                <input formControlName="email" [class.is-invalid]="formNewInstructor.controls['email'].errors && showErrorInstructor" type="text" class="form-control customInput" placeholder="Escriba el correo del instructor del curso aquí">
+                <div class="invalid-feedback" *ngIf="formNewInstructor.controls['email'].errors?.required && showErrorInstructor"> 
                     Debe indicar el correo del instructor.
                 </div>
-                <div class="invalid-feedback" *ngIf="formNewInstructor.controls['email']?.errors?.email && showErrorInstructor"> 
+                <div class="invalid-feedback" *ngIf="formNewInstructor.controls['email'].errors?.email && showErrorInstructor"> 
                     El correo es invalido.
                 </div>
             </div>
@@ -1495,8 +1495,8 @@
 
             <div class="form-group pdt10">
                 <label>Resumen del instructor</label>
-                <textarea rows="3" [class.is-invalid]="formNewInstructor.controls['resumen']?.errors && showErrorInstructor"  formControlName="resumen" type="text" class="form-control customInput" placeholder="Escriba el resumen del instructor aquí." style="resize: none;"></textarea>
-                <div class="invalid-feedback" *ngIf="formNewInstructor.controls['resumen']?.errors && showErrorInstructor"> 
+                <textarea rows="3" [class.is-invalid]="formNewInstructor.controls['resumen'].errors && showErrorInstructor"  formControlName="resumen" type="text" class="form-control customInput" placeholder="Escriba el resumen del instructor aquí." style="resize: none;"></textarea>
+                <div class="invalid-feedback" *ngIf="formNewInstructor.controls['resumen'].errors && showErrorInstructor"> 
                     Debe indicar el resumen del instructor.
                 </div>
             </div>
@@ -1509,10 +1509,10 @@
                     </button>
                     <input #instructorImage type="file" (change)="uploadCourseImage($event,'instructor',true)" hidden accept="image/jpeg, image/png" />
                     <div class="avatar-scroll">
-                        <img *ngIf="formNewInstructor.get('foto')?.value" [src]="formNewInstructor.get('foto')?.value" alt="Imagen seleccionada" class="image shadow8">
+                        <img *ngIf="formNewInstructor.get('foto').value" [src]="formNewInstructor.get('foto').value" alt="Imagen seleccionada" class="image shadow8">
                     </div>
                 </div>
-                <div *ngIf="formNewInstructor.controls['foto']?.errors && showErrorInstructor" class="custom-invalid-feedback pdt05">
+                <div *ngIf="formNewInstructor.controls['foto'].errors && showErrorInstructor" class="custom-invalid-feedback pdt05">
                     Debe seleccinar o subir la imagen del instructor
                 </div>
             </div>
@@ -1534,11 +1534,11 @@
       <img style="cursor: pointer;" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px" alt="">
     </div>
     <div class="modal-body" style="overflow-y: auto; max-height: 80vh;">
-        {{pillarsForm?.value['name']}}
+        {{pillarsForm.value['name']}}
         <div fxLayout="column">
             <div fxLayout="row">
                 <div class="skills-container">
-                    <ng-container *ngFor="let skill of pillarsForm?.value['competencias'] ? (pillarsForm?.value['competencias'] | sortSkills:'name') : []; let indexSkill = index">
+                    <ng-container *ngFor="let skill of pillarsForm.value['competencias'] ? (pillarsForm.value['competencias'] | sortSkills:'name') : []; let indexSkill = index">
                         <div (click)="troggleSkill(skill)"
                             style="display: inline-block; margin-right: 5px; margin-bottom: 5px;"
                             class="skill-badge-complete  radius10 {{courseHasSkill(skill)?'ListHoverBlue gray-1':'ListHover2 gray-8'}} pdl05 pdr05 mgt05 no-select cursorPointer">
@@ -1577,8 +1577,8 @@
             <div fxLayout="row" class="fw">
                 <div class="form-group fw">
                     <label>Nombre de la competencia</label>
-                    <input formControlName="nombre" [class.is-invalid]="formNewSkill.controls['nombre']?.errors && showErrorSkill" type="text" class="form-control customInput" placeholder="Escriba el nombre de la competencia">
-                    <div class="invalid-feedback" *ngIf="formNewSkill.controls['nombre']?.errors && showErrorSkill">
+                    <input formControlName="nombre" [class.is-invalid]="formNewSkill.controls['nombre'].errors && showErrorSkill" type="text" class="form-control customInput" placeholder="Escriba el nombre de la competencia">
+                    <div class="invalid-feedback" *ngIf="formNewSkill.controls['nombre'].errors && showErrorSkill">
                         Debe indicar el nombre de la competencia.
                     </div>
                 </div>
@@ -1612,8 +1612,8 @@
             <div fxLayout="row" class="fw">
                 <div class="form-group fw">
                     <label>Nombre del pilar</label>
-                    <input formControlName="nombre" [class.is-invalid]="formNewPillar.controls['nombre']?.errors && showErrorPillar" type="text" class="form-control customInput" placeholder="Escriba el nombre del pilar">
-                    <div class="invalid-feedback" *ngIf="formNewPillar.controls['nombre']?.errors && showErrorPillar"> 
+                    <input formControlName="nombre" [class.is-invalid]="formNewPillar.controls['nombre'].errors && showErrorPillar" type="text" class="form-control customInput" placeholder="Escriba el nombre del pilar">
+                    <div class="invalid-feedback" *ngIf="formNewPillar.controls['nombre'].errors && showErrorPillar"> 
                         Debe indicar el nombre del pilar.
                     </div>
                 </div>
@@ -1621,9 +1621,9 @@
             <!-- <div fxLayout="row" class="fw" fxLayoutAlign="start center" fxLayoutGap="10px">
                 <div class="form-group" fxFlex>
                     <label>Agregar Competencia</label>
-                    <input formControlName="skillTmp"  [class.is-invalid]="formNewPillar.controls['skillTmp']?.errors && showErrorPillarSkill" type="text" class="form-control customInput" placeholder="Escriba de la competencia">
+                    <input formControlName="skillTmp"  [class.is-invalid]="formNewPillar.controls['skillTmp'].errors && showErrorPillarSkill" type="text" class="form-control customInput" placeholder="Escriba de la competencia">
                 </div>
-                <div class="invalid-feedback" *ngIf="formNewPillar.controls['skillTmp']?.errors && showErrorPillarSkill"> 
+                <div class="invalid-feedback" *ngIf="formNewPillar.controls['skillTmp'].errors && showErrorPillarSkill"> 
                     Debe indicar el nombre de la competencia.
                 </div>
                 <button (click)="addSkill()" class="blueButton radius4 ft12 h28px mgr10 gray-1 mgt15">
