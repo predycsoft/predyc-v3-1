@@ -39,7 +39,7 @@ export class DialogCreateChargeComponent {
   filteredPrices: Price[] = []
   selectedProduct: Product
 
-  newCharge: Charge
+  newCharge: Charge = null
 
   fechaString:any
   productId: any;
@@ -49,14 +49,13 @@ export class DialogCreateChargeComponent {
   showAlertText = false
 
   ngOnInit() {
-    this.newCharge = Charge.newChargeTemplate
-    console.log("this.newCharge.id", this.newCharge.id)
+    this.newCharge = Charge.fromJson({...Charge.newChargeTemplate})
+    this.newCharge.id = "ch_pre_" + Date.now().toString(),
     this.newCharge.customer = this.data.enterpriseRef
     this.products = this.data.products
     this.prices = this.data.prices
     this.coupons = this.data.coupons
     this.initializeForm()
-
   }
 
   initializeForm() {
@@ -64,23 +63,18 @@ export class DialogCreateChargeComponent {
       productId: ['', Validators.required],
       priceId: ['', Validators.required],
       couponId: [''],
-      startDate: [null],
-      payAt: [null],
-      interval: [1, Validators.min(1)],
-      quantity: [1, Validators.min(1)],
-      comment: ['', ],
-      amount: [0, Validators.min(0)],
-      amountCaptured: [{value: '', disabled: this.newCharge.via !== 'Predyc'}, Validators.min(0)],
-      amountRefunded: [{value: '', disabled: this.newCharge.via !== 'Predyc'}, Validators.min(0)],
-      description: [{value: '', disabled: this.newCharge.via !== 'Predyc'}],
-      paymentMethod: [{value: '', disabled: this.newCharge.via !== 'Predyc'}, Validators.required],
-      status: [{value: '', disabled: this.newCharge.via !== 'Predyc'}],
+      startDate: [this.dateToString(this.newCharge.createdAt)],
+      payAt: [this.newCharge.payAt],
+      interval: [this.newCharge.interval, Validators.min(1)],
+      quantity: [this.newCharge.quantity, Validators.min(1)],
+      comment: [this.newCharge.comment],
+      amount: [this.newCharge.amount, Validators.min(0)],
+      amountCaptured: [{value: this.newCharge.amountCaptured, disabled: this.newCharge.via !== 'Predyc'}, Validators.min(0)],
+      amountRefunded: [{value: this.newCharge.amountRefunded, disabled: this.newCharge.via !== 'Predyc'}, Validators.min(0)],
+      description: [{value: this.newCharge.description, disabled: this.newCharge.via !== 'Predyc'}],
+      paymentMethod: [{value: this.newCharge.paymentMethod, disabled: this.newCharge.via !== 'Predyc'}, Validators.required],
+      status: [{value: this.newCharge.status, disabled: this.newCharge.via !== 'Predyc'}],
     });
-
-    this.form.patchValue({
-      status: this.newCharge.status,
-      startDate: this.dateToString(this.newCharge.createdAt),
-    })
 
     this.formProductIdSubscription = this.form.get('productId')!.valueChanges.subscribe(value => {
       this.form.get('priceId')!.setValue('');
@@ -155,7 +149,7 @@ export class DialogCreateChargeComponent {
       // Process and save data
       const formValue = this.form.value;
       this.newCharge.createdAt = this.stringToNumberDate(formValue.startDate);
-      this.newCharge.payAt = this.stringToNumberDate(formValue.payAt) ;
+      this.newCharge.payAt = formValue.status === Charge.STATUS_SUCCEEDED ? this.stringToNumberDate(formValue.payAt) : null
       this.newCharge.quantity = formValue.quantity;
       this.newCharge.status = formValue.status
       this.newCharge.price = this.priceService.getPriceRefById(formValue.priceId)
@@ -172,5 +166,9 @@ export class DialogCreateChargeComponent {
     else {
       this.showAlertText = true
     }
+  }
+
+  ngOnDestroy() {
+    this.formProductIdSubscription.unsubscribe()
   }
 }

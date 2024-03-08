@@ -43,7 +43,7 @@ export class License {
         startedAt: Date.now(),
         status: "trialing",
         trialDays: 5,
-      });
+    });
 
     constructor(
         public couponRef: DocumentReference<Coupon> | null,

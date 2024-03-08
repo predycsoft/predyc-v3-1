@@ -65,7 +65,7 @@ export interface ChargeJson {
       currency: "usd",
       description: "",
       failureMessage: "",
-      id: "ch_pre_" + Date.now().toString(),
+      id: "",
       interval: 1,
       paymentMethod: "",
       payAt: null,

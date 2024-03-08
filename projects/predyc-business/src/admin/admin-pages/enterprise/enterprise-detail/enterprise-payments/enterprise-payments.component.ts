@@ -61,7 +61,6 @@ export class EnterprisePaymentsComponent {
   dataSource = new MatTableDataSource<ChargeInList>();
   
   combinedServicesSubscription: Subscription
-  chargeSubscription: Subscription
 
   prices: Price[]
   products: Product[]
@@ -110,7 +109,7 @@ export class EnterprisePaymentsComponent {
     return this.prices.find(price => price.id === charge.price.id)
   }
 
-  openCreateChargeModal() {
+  async openCreateChargeModal() {
     const dialogRef = this.dialog.open(DialogCreateChargeComponent, {
       data: {
         enterpriseRef: this.enterpriseRef,
@@ -136,6 +135,7 @@ export class EnterprisePaymentsComponent {
   }
 
   ngOnDestroy() {
+    if (this.combinedServicesSubscription) this.combinedServicesSubscription.unsubscribe()
   }
 
 }
