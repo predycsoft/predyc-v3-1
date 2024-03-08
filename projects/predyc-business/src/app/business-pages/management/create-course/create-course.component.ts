@@ -1172,8 +1172,12 @@ export class CreateCourseComponent {
 
   questionsFormated = false
 
+  currentTab = 'Contenido del Curso'
+
   onTabChange(event: MatTabChangeEvent) {
+    this.currentTab = 'Contenido del Curso'
     if (event.tab.textLabel === 'Examen') {
+      this.currentTab = 'Examen'
       console.log('El tab Examen fue seleccionado');
 
       if(!this.examen){
@@ -1185,8 +1189,6 @@ export class CreateCourseComponent {
         this.questionsFormated = true
         this.examen = exam;
       }
-
-      
       this.formatExamQuestions();
     }
   }
