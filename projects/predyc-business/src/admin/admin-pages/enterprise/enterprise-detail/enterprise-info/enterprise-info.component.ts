@@ -62,7 +62,7 @@ export class EnterpriseInfoComponent {
       }
     }
     else {
-      this.enterprise = Enterprise.getEnterpriseTemplate()
+      this.enterprise = Enterprise.fromJson({...Enterprise.getEnterpriseTemplate()})
     }
 
   }
