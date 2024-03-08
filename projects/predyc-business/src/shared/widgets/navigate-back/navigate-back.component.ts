@@ -1,5 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { IconService } from '../../services/icon.service';
+import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-navigate-back',
@@ -9,5 +11,12 @@ import { IconService } from '../../services/icon.service';
 export class NavigateBackComponent {
   @Input() targetUrl: string
 
-  constructor(public icon: IconService) {}
+  constructor(
+    public icon: IconService,
+    private location: Location
+    ) {}
+
+  navigateBackOrToTarget() {
+    this.location.back();
+  }
 }

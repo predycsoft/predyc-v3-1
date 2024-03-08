@@ -8,9 +8,12 @@
 </div> -->
 
 <div class="mgt12  mgr20  pdl10" fxLayout="row">
-    <div class=" w24px h24px  radius50 cursorPointer" fxLayoutAlign=" " [routerLink]="targetUrl">
+    <div *ngIf="targetUrl" class=" w24px h24px  radius50 cursorPointer" fxLayoutAlign=" " [routerLink]="targetUrl">
         <img [src]="icon.blueArrowLeft" class=" h24px">
-    </div> 
+    </div>
+    <div *ngIf="!targetUrl" class=" w24px h24px  radius50 cursorPointer" fxLayoutAlign=" "(click)="navigateBackOrToTarget()">
+        <img [src]="icon.blueArrowLeft" class=" h24px">
+    </div>  
     <div class="ft600 ft16 gray-10 pdl10"  >
         <ng-content></ng-content>
     </div>
