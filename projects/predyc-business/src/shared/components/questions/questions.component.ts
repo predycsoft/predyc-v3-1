@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, NgForm, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Question } from 'projects/shared/models/activity-classes.model';
-import { cloneArrayOfObjects, getPlaceholders } from '../../utils';
+import { cloneArrayOfObjects, getPlaceholders } from 'projects/shared/utils';
 
 import { CategoryService } from 'projects/predyc-business/src/shared/services/category.service';
 import { SkillService } from 'projects/predyc-business/src/shared/services/skill.service';

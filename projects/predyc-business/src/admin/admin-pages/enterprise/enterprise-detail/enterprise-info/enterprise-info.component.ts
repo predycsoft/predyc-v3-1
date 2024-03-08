@@ -62,7 +62,7 @@ export class EnterpriseInfoComponent {
       }
     }
     else {
-      this.enterprise = Enterprise.newEnterpriseTemplate
+      this.enterprise = Enterprise.getEnterpriseTemplate()
     }
 
   }

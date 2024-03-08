@@ -6,7 +6,7 @@ import { map, switchMap } from 'rxjs';
 import { MAIN_TITLE } from 'projects/predyc-business/src/admin/admin-routing.module';
 import { Enterprise } from 'projects/shared/models/enterprise.model';
 import { User } from 'projects/shared/models/user.model';
-import { calculateAgeFromTimestamp, timestampToDateNumbers } from 'projects/predyc-business/src/shared/utils';
+import { calculateAgeFromTimestamp, timestampToDateNumbers } from 'projects/shared/utils';
 
 @Component({
   selector: 'app-student-detail',

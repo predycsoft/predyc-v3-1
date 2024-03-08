@@ -9,7 +9,7 @@ import { DocumentReference } from '@angular/fire/compat/firestore';
 import { CourseService } from 'projects/predyc-business/src/shared/services/course.service';
 import { Subscription, combineLatest, map, switchMap } from 'rxjs';
 import { Log } from 'projects/predyc-business/src/app/business-pages/dashboard/users-study-time-container/users-study-time-container.component';
-import { firestoreTimestampToNumberTimestamp } from 'projects/predyc-business/src/shared/utils';
+import { firestoreTimestampToNumberTimestamp } from 'projects/shared/utils';
 
 
 @Component({

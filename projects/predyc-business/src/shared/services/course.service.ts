@@ -14,7 +14,7 @@ import { Clase } from 'projects/shared/models/course-class.model';
 import { CourseByStudent, CourseByStudentJson } from 'projects/shared/models/course-by-student.model';
 import { UserService } from './user.service';
 import { ProfileService } from './profile.service';
-import { firestoreTimestampToNumberTimestamp } from '../utils';
+import { firestoreTimestampToNumberTimestamp } from 'projects/shared/utils';
 import { ClassByStudent } from 'projects/shared/models/class-by-student.model';
 
 @Injectable({

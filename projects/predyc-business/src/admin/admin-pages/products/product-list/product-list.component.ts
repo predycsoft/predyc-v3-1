@@ -4,7 +4,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ProductService } from 'projects/predyc-business/src/shared/services/product.service';
-import { stripeTimestampToNumberTimestamp } from 'projects/predyc-business/src/shared/utils';
+import { stripeTimestampToNumberTimestamp } from 'projects/shared/utils';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DialogProductFormComponent } from './dialog-product-form/dialog-product-form.component';
 import { Product } from 'projects/shared/models/product.model';

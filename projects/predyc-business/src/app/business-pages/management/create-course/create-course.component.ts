@@ -30,7 +30,7 @@ import { ModuleService } from 'projects/predyc-business/src/shared/services/modu
 import { CourseClassService } from 'projects/predyc-business/src/shared/services/course-class.service';
 import { ActivityClassesService } from 'projects/predyc-business/src/shared/services/activity-classes.service';
 import { Enterprise } from 'projects/shared/models/enterprise.model';
-import { compareByString } from 'projects/predyc-business/src/shared/utils';
+import { compareByString } from 'projects/shared/utils';
 import { QuestionsComponent } from 'projects/predyc-business/src/shared/components/questions/questions.component';
 import { AuthService } from 'projects/predyc-business/src/shared/services/auth.service';
 import { InstructorsService } from 'projects/predyc-business/src/shared/services/instructors.service';

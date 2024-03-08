@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { capitalizeFirstLetter } from '../utils';
+import { capitalizeFirstLetter } from 'projects/shared/utils';
 
 @Pipe({
   name: 'customMonth'

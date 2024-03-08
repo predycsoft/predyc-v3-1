@@ -1,42 +1,42 @@
 export const capitalizeFirstLetter = (str: string) => {
-    return str.charAt(0).toUpperCase() + str.slice(1);
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 export const dateFromCalendarToTimestamp = (date: {day: number, month: number, year: number}): number => {
-    return Date.UTC(date.year, date.month - 1, date.day); 
+  return Date.UTC(date.year, date.month - 1, date.day); 
 }
 
 export const generateSixDigitRandomNumber = () => {
-    return Math.floor(100000 + Math.random() * 900000);
+  return Math.floor(100000 + Math.random() * 900000);
 };
 
 
 export const timestampToDateNumbers = (timestamp: number): {minutes:number, hours:number, day:number, month:number, year:number } => {
-    const date: Date = new Date(timestamp); 
-    const minutes: number = date.getUTCMinutes()
-    const hours: number = date.getUTCHours();
-    const day: number = date.getUTCDate();
-    const month: number = date.getUTCMonth() + 1;
-    const year: number = date.getUTCFullYear();
-    return {minutes, hours, day, month, year}
+  const date: Date = new Date(timestamp); 
+  const minutes: number = date.getUTCMinutes()
+  const hours: number = date.getUTCHours();
+  const day: number = date.getUTCDate();
+  const month: number = date.getUTCMonth() + 1;
+  const year: number = date.getUTCFullYear();
+  return {minutes, hours, day, month, year}
 }
 
 export const orderByValueAndDirection = (a: number|string, b: number|string, isAsc: boolean) => {
-    return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+  return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
 }
 
 export const fileToBase64 = async (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = (event: any) => {
-        const base64content = event.target.result.split(',')[1];
-        resolve(base64content);
-      };
-      reader.onerror = (error) => {
-        reject(error);
-      };
-      reader.readAsDataURL(file);
-    });
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (event: any) => {
+      const base64content = event.target.result.split(',')[1];
+      resolve(base64content);
+    };
+    reader.onerror = (error) => {
+      reject(error);
+    };
+    reader.readAsDataURL(file);
+  });
 }
 
 export const compareByString = (a: string, b: string): number => {
@@ -87,39 +87,36 @@ export const splitArray = (array, numArrays) => {
 
 // Assuming timestamp1 and timestamp2 are in milliseconds
 export const daysBetween = (timestamp1: number, timestamp2: number): number => {
-  // Convert timestamps to Date objects
   const date1 = new Date(timestamp1);
   const date2 = new Date(timestamp2);
+
+ // Calculate the difference in milliseconds
+ const differenceMs: number = Math.abs(date1.getTime() - date2.getTime());
   
-   // Calculate the difference in milliseconds
-   const differenceMs: number = Math.abs(date1.getTime() - date2.getTime());
-    
-   // Convert milliseconds to days
-   const days: number = Math.floor(differenceMs / (1000 * 60 * 60 * 24));
-  
-  return days;
+ // Convert milliseconds to days
+ const days: number = Math.floor(differenceMs / (1000 * 60 * 60 * 24));
+
+return days;
 }
 
 export const getFirstDaysOfMonth = (startTimestamp: number, endTimestamp: number): Date[] => {
-  // Convert timestamps to Date objects in UTC
-  const startDate = new Date(startTimestamp);
-  const endDate = new Date(endTimestamp);
+// Convert timestamps to Date objects in UTC
+const startDate = new Date(startTimestamp);
+const endDate = new Date(endTimestamp);
 
-  const firstDays = [];
+const firstDays = [];
 
-  // Loop through each month between start and end dates
-  let currentDate = new Date(startDate);
-  while (currentDate <= endDate) {
-      // Add the first day of the current month in UTC to the list
+// Loop through each month between start and end dates
+let currentDate = new Date(startDate);
+while (currentDate <= endDate) {
+    // Add the first day of the current month in UTC to the list
+    let fechaAux = new Date(currentDate.getFullYear(),currentDate.getMonth(),1)
+    firstDays.push(fechaAux);
+    // Move to the next month
+    currentDate.setMonth(fechaAux.getMonth() + 1);
+}
 
-
-      let fechaAux = new Date(currentDate.getFullYear(),currentDate.getMonth(),1)
-      firstDays.push(fechaAux);
-      // Move to the next month
-      currentDate.setMonth(fechaAux.getMonth() + 1);
-  }
-
-  return firstDays;
+return firstDays;
 }
 export const obtenerUltimoDiaDelMes = (fecha: number) : number =>{
   let fechaOriginal = new Date(fecha);

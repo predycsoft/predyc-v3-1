@@ -26,25 +26,6 @@ export class License {
 
     public static collection = 'license'
 
-    public static newLicenseTemplate =  License.fromJson({
-        couponRef: null,
-        createdAt: Date.now(),
-        currentPeriodEnd: null,
-        currentPeriodStart: Date.now(),
-        enterpriseRef: null,
-        failedRotationCount: null,
-        id: Date.now().toString(),
-        priceRef: null,
-        quantity: 1,
-        quantityUsed: 0,
-        rotations: 0,
-        rotationsUsed: 0,
-        rotationsWaitingCount: 0,
-        startedAt: Date.now(),
-        status: "trialing",
-        trialDays: 5,
-      });
-
     constructor(
         public couponRef: DocumentReference<Coupon> | null,
         public createdAt: number | null,
@@ -63,6 +44,27 @@ export class License {
         public status: string | null,
         public trialDays: number | null,
     ) {}
+
+    public static getLicenseTemplate(): License {
+        return License.fromJson({
+            couponRef: null,
+            createdAt: Date.now(),
+            currentPeriodEnd: null,
+            currentPeriodStart: Date.now(),
+            enterpriseRef: null,
+            failedRotationCount: null,
+            id: Date.now().toString(),
+            priceRef: null,
+            quantity: 1,
+            quantityUsed: 0,
+            rotations: 0,
+            rotationsUsed: 0,
+            rotationsWaitingCount: 0,
+            startedAt: Date.now(),
+            status: "trialing",
+            trialDays: 5,
+          });
+    } 
 
     public static fromJson(licenseJson: LicenseJson): License {
         return new License(

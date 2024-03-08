@@ -43,7 +43,7 @@ export class CouponsListComponent {
 
   couponSubscription: Subscription
 
-  templateNewCoupon: Coupon = Coupon.newCouponTemplate
+  templateNewCoupon: Coupon = Coupon.getCouponTemplate()
 
 
   ngOnInit() {

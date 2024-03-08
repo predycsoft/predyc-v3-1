@@ -8,7 +8,7 @@ import { Curso } from 'projects/shared/models/course.model';
 import { User } from 'projects/shared/models/user.model';
 import { CourseService } from 'projects/predyc-business/src/shared/services/course.service';
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
-import { firestoreTimestampToNumberTimestamp, getFirstDaysOfMonth } from 'projects/predyc-business/src/shared/utils';
+import { firestoreTimestampToNumberTimestamp, getFirstDaysOfMonth } from 'projects/shared/utils';
 
 @Component({
   selector: 'app-study-time-monthly-line-chart',

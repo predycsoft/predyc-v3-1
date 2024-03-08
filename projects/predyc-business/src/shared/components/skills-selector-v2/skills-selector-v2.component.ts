@@ -5,7 +5,7 @@ import { IconService } from '../../services/icon.service';
 import { LoaderService } from '../../services/loader.service';
 import { SkillService } from '../../services/skill.service';
 import { Category } from 'projects/shared/models/category.model';
-import { cloneArrayOfObjects, compareByString } from '../../utils';
+import { cloneArrayOfObjects, compareByString } from 'projects/shared/utils';
 
 
 interface Skill {

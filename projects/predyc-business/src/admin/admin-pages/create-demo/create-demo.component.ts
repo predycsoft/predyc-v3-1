@@ -16,7 +16,7 @@ import { IconService } from 'projects/predyc-business/src/shared/services/icon.s
 import { ProfileService } from 'projects/predyc-business/src/shared/services/profile.service';
 import { SubscriptionService } from 'projects/predyc-business/src/shared/services/subscription.service';
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
-import { dateFromCalendarToTimestamp, daysBetween } from 'projects/predyc-business/src/shared/utils';
+import { dateFromCalendarToTimestamp, daysBetween } from 'projects/shared/utils';
 import { StudyPlanClass } from 'projects/shared/models/study-plan-class.model';
 import { CourseByStudent } from 'projects/shared/models/course-by-student.model';
 import Swal from 'sweetalert2';

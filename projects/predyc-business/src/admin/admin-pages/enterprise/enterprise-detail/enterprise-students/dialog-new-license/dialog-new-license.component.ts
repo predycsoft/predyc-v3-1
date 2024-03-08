@@ -33,7 +33,7 @@ export class DialogNewLicenseComponent {
     },
   ) { }
 
-  license: License = License.newLicenseTemplate
+  license: License
 
   products: Product[] = [];
   prices: Price[] = [];
@@ -55,7 +55,7 @@ export class DialogNewLicenseComponent {
   showWarningDate = false
 
   ngOnInit(): void {
-    this.license = License.newLicenseTemplate
+    this.license = License.getLicenseTemplate()
     this.products = this.data.products
     this.prices = this.data.prices
     this.coupons = this.data.coupons

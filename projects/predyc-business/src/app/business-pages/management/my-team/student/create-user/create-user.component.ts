@@ -13,7 +13,7 @@ import { EnterpriseService } from 'projects/predyc-business/src/shared/services/
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import { ProfileService } from 'projects/predyc-business/src/shared/services/profile.service';
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
-import { dateFromCalendarToTimestamp, timestampToDateNumbers } from 'projects/predyc-business/src/shared/utils';
+import { dateFromCalendarToTimestamp, timestampToDateNumbers } from 'projects/shared/utils';
 import { countriesData } from 'projects/predyc-business/src/assets/data/countries.data'
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { Enterprise } from 'projects/shared/models/enterprise.model';

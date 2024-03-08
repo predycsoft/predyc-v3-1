@@ -7,7 +7,7 @@ import { Activity } from 'projects/shared/models/activity-classes.model';
 import { ActivityClassesService } from 'projects/predyc-business/src/shared/services/activity-classes.service';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
 import { MatSort } from '@angular/material/sort';
-import { orderByValueAndDirection } from 'projects/predyc-business/src/shared/utils';
+import { orderByValueAndDirection } from 'projects/shared/utils';
 
 @Component({
   selector: 'app-validation-list',

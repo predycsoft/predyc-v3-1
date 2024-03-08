@@ -9,7 +9,7 @@ import { CategoryService } from 'projects/predyc-business/src/shared/services/ca
 import { CourseService } from 'projects/predyc-business/src/shared/services/course.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import { SkillService } from 'projects/predyc-business/src/shared/services/skill.service';
-import { roundNumber } from 'projects/predyc-business/src/shared/utils';
+import { roundNumber } from 'projects/shared/utils';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';

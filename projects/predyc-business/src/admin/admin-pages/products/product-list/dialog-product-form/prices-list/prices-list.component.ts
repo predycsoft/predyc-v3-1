@@ -8,7 +8,7 @@ import { CouponService } from 'projects/predyc-business/src/shared/services/coup
 import { DialogService } from 'projects/predyc-business/src/shared/services/dialog.service';
 import { PriceService } from 'projects/predyc-business/src/shared/services/price.service';
 import { ProductService } from 'projects/predyc-business/src/shared/services/product.service';
-import { stripeTimestampToNumberTimestamp } from 'projects/predyc-business/src/shared/utils';
+import { stripeTimestampToNumberTimestamp } from 'projects/shared/utils';
 
 @Component({
   selector: 'app-prices-list',

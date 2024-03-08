@@ -8,7 +8,7 @@ import { AlertsService } from 'projects/predyc-business/src/shared/services/aler
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import { ProfileService } from 'projects/predyc-business/src/shared/services/profile.service';
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
-import { capitalizeFirstLetter } from 'projects/predyc-business/src/shared/utils';
+import { capitalizeFirstLetter } from 'projects/shared/utils';
 import { countriesData } from 'projects/predyc-business/src/assets/data/countries.data';
 import { CreateUserComponent } from '../create-user/create-user.component';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';

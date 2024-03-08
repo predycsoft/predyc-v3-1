@@ -28,35 +28,6 @@ export class Enterprise {
     public static collection = 'enterprise'
     public static storageProfilePhotoFolder = 'Enterprise/Profile photos'
 
-    public static newEnterpriseTemplate =  Enterprise.fromJson({
-        city: null,
-        country: null,
-        createdAt: null,
-        description: null,
-        employesNo: 0,
-        id: "" ,
-        name: "",
-        permissions: {
-            hoursPerWeek: 1,
-            studyLiberty: Permissions.STUDY_LIBERTY_STRICT_OPTION,
-            studyplanGeneration: Permissions.STUDYPLAN_GENERATION_CONFIRMED_OPTION,
-            attemptsPerTest: 5,
-            createCourses: false
-        },
-        photoUrl: null,
-        profilesNo: 0,
-        zipCode: null,
-        workField: null,
-        socialNetworks: {
-            facebook: null,
-            instagram: null,
-            website: null,
-            linkedin: null,
-        },
-        vimeoFolderId: null,
-        vimeoFolderUri: null,
-      });
-
     constructor(
         public city: string | null,
         public country: string | null,
@@ -79,6 +50,37 @@ export class Enterprise {
         public vimeoFolderId: string | null,
         public vimeoFolderUri: string | null,
     ) {}
+
+    public static getEnterpriseTemplate(): Enterprise {
+        return Enterprise.fromJson({
+            city: null,
+            country: null,
+            createdAt: null,
+            description: null,
+            employesNo: 0,
+            id: "" ,
+            name: "",
+            permissions: {
+                hoursPerWeek: 1,
+                studyLiberty: Permissions.STUDY_LIBERTY_STRICT_OPTION,
+                studyplanGeneration: Permissions.STUDYPLAN_GENERATION_CONFIRMED_OPTION,
+                attemptsPerTest: 5,
+                createCourses: false
+            },
+            photoUrl: null,
+            profilesNo: 0,
+            zipCode: null,
+            workField: null,
+            socialNetworks: {
+                facebook: null,
+                instagram: null,
+                website: null,
+                linkedin: null,
+            },
+            vimeoFolderId: null,
+            vimeoFolderUri: null,
+          });
+    }
 
     public static fromJson(enterpriseJson: EnterpriseJson): Enterprise {
         return new Enterprise(

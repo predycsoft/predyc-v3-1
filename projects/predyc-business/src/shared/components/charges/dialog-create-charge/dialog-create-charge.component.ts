@@ -37,7 +37,7 @@ export class DialogCreateChargeComponent {
   formProductIdSubscription: Subscription
 
   ngOnInit() {
-    this.newCharge = Charge.newChargeTemplate
+    this.newCharge = Charge.getChargeTemplate()
     this.newCharge.customer = this.enterpriseRef
     this.initializeForm()
 

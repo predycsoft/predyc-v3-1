@@ -14,7 +14,7 @@ import { IconService } from 'projects/predyc-business/src/shared/services/icon.s
 import { ProfileService } from 'projects/predyc-business/src/shared/services/profile.service';
 import { SkillService } from 'projects/predyc-business/src/shared/services/skill.service';
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
-import { firestoreTimestampToNumberTimestamp } from 'projects/predyc-business/src/shared/utils';
+import { firestoreTimestampToNumberTimestamp } from 'projects/shared/utils';
 import annotationPlugin from 'chartjs-plugin-annotation';
 import { AlertsService } from 'projects/predyc-business/src/shared/services/alerts.service';
 

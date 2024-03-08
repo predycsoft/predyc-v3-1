@@ -5,7 +5,7 @@ import { BehaviorSubject, combineLatest, filter, firstValueFrom, map, Observable
 import { Subscription as SubscriptionClass } from 'projects/shared/models/subscription.model'
 import { EnterpriseService } from './enterprise.service';
 import { AlertsService } from './alerts.service';
-import { firestoreTimestampToNumberTimestamp, generateSixDigitRandomNumber, obtenerUltimoDiaDelMes } from '../utils';
+import { firestoreTimestampToNumberTimestamp, generateSixDigitRandomNumber, obtenerUltimoDiaDelMes } from 'projects/shared/utils';
 import { AngularFireFunctions } from '@angular/fire/compat/functions';
 import { Profile } from 'projects/shared/models/profile.model';
 import { ProfileService } from './profile.service';

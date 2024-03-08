@@ -9,7 +9,7 @@ import { User } from 'projects/shared/models/user.model';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
-import { orderByValueAndDirection } from 'projects/predyc-business/src/shared/utils';
+import { orderByValueAndDirection } from 'projects/shared/utils';
 
 @Component({
   selector: 'app-members',

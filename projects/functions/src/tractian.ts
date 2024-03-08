@@ -48,7 +48,6 @@ interface TractianInfo {
 const createUser = async (user: UserData): Promise<DocumentReference | string | boolean> => {
     // const password = generateSixDigitRandomNumber()
     console.log("Import works!", "asdasda")
-    User.debug()
     // const userRecord = await admin.auth().createUser({
     //     email: user.email,
     //     password: password.toString(),
@@ -74,7 +73,7 @@ export const createTractianUser = functions.https.onRequest(
             // Create Enterprise
             // const enterpriseRef = await createEnterprise(enterprise)
             // Create User
-            const userRef = await createUser(user)
+            // const userRef = await createUser(user)
             // Create Subscription
             // Send Mail
             // const userRecord = await admin.auth().createUser({
@@ -85,7 +84,7 @@ export const createTractianUser = functions.https.onRequest(
             // Enlace de restablecimiento de contraseña
             // await _generatePasswordResetLink(data.email)
             
-            res.status(200).send({password: userRef})
+            res.status(200).send({password: 'Works!'})
             // res.status(200).send(tractianInfo)
             // return { uid: userRecord.uid };
         } catch (error: any) {

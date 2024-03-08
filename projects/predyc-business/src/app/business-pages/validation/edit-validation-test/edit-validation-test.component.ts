@@ -4,7 +4,7 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 // import { VimeoUploadService } from 'projects/predyc-business/src/shared/services/vimeo-upload.service';
-import { cloneArrayOfObjects, compareByString, getPlaceholders } from 'projects/predyc-business/src/shared/utils';
+import { cloneArrayOfObjects, compareByString, getPlaceholders } from 'projects/shared/utils';
 import { AlertsService } from 'projects/predyc-business/src/shared/services/alerts.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { CategoryService } from 'projects/predyc-business/src/shared/services/category.service';

@@ -8,7 +8,7 @@ import { User } from 'projects/shared/models/user.model';
 import { AlertsService } from 'projects/predyc-business/src/shared/services/alerts.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import { ProfileService } from 'projects/predyc-business/src/shared/services/profile.service';
-import { timestampToDateNumbers, capitalizeFirstLetter, dateFromCalendarToTimestamp } from 'projects/predyc-business/src/shared/utils';
+import { timestampToDateNumbers, capitalizeFirstLetter, dateFromCalendarToTimestamp } from 'projects/shared/utils';
 
 
 @Component({

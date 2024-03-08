@@ -50,7 +50,7 @@ import { CourseByStudent } from 'projects/shared/models/course-by-student.model'
 
 import sampleSize from 'lodash/sampleSize';
 import { courseCategoryAndSkillsRelation } from 'projects/predyc-business/src/assets/data/courseCategoryAndSkillsRelation.data'
-import { capitalizeFirstLetter, splitArray } from 'projects/predyc-business/src/shared/utils'
+import { capitalizeFirstLetter, splitArray } from 'projects/shared/utils'
 import { ProfileService } from '../../services/profile.service';
 import { AngularFireFunctions } from '@angular/fire/compat/functions';
 

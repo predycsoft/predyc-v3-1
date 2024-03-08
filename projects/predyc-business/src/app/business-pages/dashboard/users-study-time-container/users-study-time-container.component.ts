@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { combineLatest, filter, map, of, Subscription, switchMap, take } from 'rxjs';
 import { CourseService } from 'projects/predyc-business/src/shared/services/course.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
-import { firestoreTimestampToNumberTimestamp } from 'projects/predyc-business/src/shared/utils';
+import { firestoreTimestampToNumberTimestamp } from 'projects/shared/utils';
 
 export class Log {
   endDate: number = 0
