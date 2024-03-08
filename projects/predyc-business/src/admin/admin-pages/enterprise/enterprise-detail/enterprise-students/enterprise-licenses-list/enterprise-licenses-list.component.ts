@@ -98,7 +98,7 @@ export class EnterpriseLicensesListComponent {
           status: SubscriptionClass.statusToDisplayValueDict[license.status]
         }
       })
-      console.log("licensesInList", licensesInList)
+      // console.log("licensesInList", licensesInList)
       this.dataSource.data = licensesInList
 
     })

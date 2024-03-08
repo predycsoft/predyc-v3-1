@@ -53,7 +53,7 @@ export class DialogNewLicenseComponent {
   showWarningDate = false
 
   ngOnInit(): void {
-    this.license = License.newLicenseTemplate
+    this.license = License.fromJson({...License.newLicenseTemplate})
     this.products = this.data.products
     this.prices = this.data.prices
     this.coupons = this.data.coupons
