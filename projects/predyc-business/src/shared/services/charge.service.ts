@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
-import { Charge } from '../models/charges.model';
+import { Charge, ChargeJson } from '../models/charges.model';
 import { Observable } from 'rxjs';
 import { Enterprise } from '../models/enterprise.model';
 
@@ -22,7 +22,7 @@ export class ChargeService {
     return this.afs.collection<Charge>(Charge.collection, ref => ref.where("customer", "==", enterpriseRef)).valueChanges()
   }
 
-  async saveCharge(charge: Charge): Promise<void> {
+  async saveCharge(charge: ChargeJson): Promise<void> {
     return await this.afs.collection(Charge.collection).doc(charge.id).set(charge, { merge: true });
   }
 }

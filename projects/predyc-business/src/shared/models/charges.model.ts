@@ -61,11 +61,11 @@ export interface ChargeJson {
       cardLast4: "",
       comment: "",
       coupon: null,
-      createdAt: +new Date,
+      createdAt: Date.now(),
       currency: "usd",
       description: "",
       failureMessage: "",
-      id: "ch_pre_" + +new Date,
+      id: "ch_pre_" + Date.now().toString(),
       interval: 1,
       paymentMethod: "",
       payAt: null,
@@ -76,11 +76,11 @@ export interface ChargeJson {
       quantity: 1,
     })
   
-    STATUS_FAILED = 'failed';
-    STATUS_PENDING = 'pending';
-    STATUS_SUCCEEDED = 'succeeded';
+    public static STATUS_FAILED = 'failed';
+    public static STATUS_PENDING = 'pending';
+    public static STATUS_SUCCEEDED = 'succeeded';
   
-    STATUS_CHOICES = [
+    public static STATUS_CHOICES = [
       this.STATUS_FAILED,
       this.STATUS_PENDING,
       this.STATUS_SUCCEEDED,

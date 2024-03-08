@@ -1,7 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { DocumentReference } from '@angular/fire/compat/firestore';
 import { MatTableDataSource } from '@angular/material/table';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ChargeJson, Charge } from 'projects/predyc-business/src/shared/models/charges.model';
 import { Coupon } from 'projects/predyc-business/src/shared/models/coupon.model';
 import { Enterprise } from 'projects/predyc-business/src/shared/models/enterprise.model';
@@ -15,6 +14,8 @@ import { PriceService } from 'projects/predyc-business/src/shared/services/price
 import { ProductService } from 'projects/predyc-business/src/shared/services/product.service';
 import { Subscription, combineLatest } from 'rxjs';
 import { DialogCreateChargeComponent } from '../../../../../shared/components/charges/dialog-create-charge/dialog-create-charge.component';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogService } from 'projects/predyc-business/src/shared/services/dialog.service';
 
 interface ChargeInList extends ChargeJson {
   productName: string
@@ -38,7 +39,8 @@ export class EnterprisePaymentsComponent {
     private enterpriseService: EnterpriseService,
     public icon: IconService,
     private priceService: PriceService,
-    private modalService: NgbModal,
+    private dialog: MatDialog,
+    public dialogService: DialogService,
 
   ){}
 
@@ -109,17 +111,28 @@ export class EnterprisePaymentsComponent {
   }
 
   openCreateChargeModal() {
-    const modalRef = this.modalService.open(DialogCreateChargeComponent, {
-      animation: true,
-      centered: true,
-      size: 'xl',
-      keyboard: false ,
-    })
-    
-    modalRef.componentInstance.enterpriseRef = this.enterpriseRef;
-    modalRef.componentInstance.prices = this.prices;
-    modalRef.componentInstance.products = this.products;
-    modalRef.componentInstance.coupons = this.coupons;
+    const dialogRef = this.dialog.open(DialogCreateChargeComponent, {
+      data: {
+        enterpriseRef: this.enterpriseRef,
+        coupons: this.coupons,
+        prices: this.prices,
+        products: this.products,
+      }
+    });
+  
+    dialogRef.afterClosed().subscribe(async (result: Charge) => {
+      if (result) {
+        try {
+          console.log("result", result)
+          await this.chargeService.saveCharge(result.toJson());
+          this.dialogService.dialogExito();
+        } catch (error) {
+          this.dialogService.dialogAlerta("Hubo un error al guardar la licencia. Inténtalo de nuevo.");
+          console.log(error)
+        }
+      }
+    });
+
   }
 
   ngOnDestroy() {
