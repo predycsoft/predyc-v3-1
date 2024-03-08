@@ -5,7 +5,7 @@ import { MatSort } from '@angular/material/sort';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BehaviorSubject, Observable, Subject, Subscription, catchError, map, merge, of } from 'rxjs';
-import { User } from 'projects/predyc-business/src/shared/models/user.model';
+import { User } from 'projects/shared/models/user.model';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';

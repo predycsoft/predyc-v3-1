@@ -1,4 +1,4 @@
-import { NotificationJson } from "projects/predyc-business/src/shared/models/notification.model";
+import { NotificationJson } from "projects/shared/models/notification.model";
 
 const notificationTypes = ['alert', 'event'];
 const alertSubTypes = ['delayed', 'pending'];

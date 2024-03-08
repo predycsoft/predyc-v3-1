@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { Profile } from '../../models/profile.model';
+import { Profile } from 'projects/shared/models/profile.model';
 import { ProfileService } from '../../services/profile.service';
 import { IconService } from '../../services/icon.service';
 

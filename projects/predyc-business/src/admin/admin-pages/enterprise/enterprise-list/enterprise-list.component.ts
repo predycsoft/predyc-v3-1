@@ -4,8 +4,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, combineLatest, map, of, switchMap } from 'rxjs';
-import { License } from 'projects/predyc-business/src/shared/models/license.model';
-import { User } from 'projects/predyc-business/src/shared/models/user.model';
+import { License } from 'projects/shared/models/license.model';
+import { User } from 'projects/shared/models/user.model';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
 

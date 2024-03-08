@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { User } from 'projects/predyc-business/src/shared/models/user.model';
+import { User } from 'projects/shared/models/user.model';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, DocumentReference, QuerySnapshot } from '@angular/fire/compat/firestore';
 import { BehaviorSubject, firstValueFrom, Observable, of, Subject } from 'rxjs'
@@ -8,14 +8,14 @@ import { AlertsService } from './alerts.service';
 
 import { combineLatest } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { Curso } from '../models/course.model';
-import { Modulo } from '../models/module.model';
-import { Clase } from '../models/course-class.model';
-import { CourseByStudent, CourseByStudentJson } from '../models/course-by-student.model';
+import { Curso } from 'projects/shared/models/course.model';
+import { Modulo } from 'projects/shared/models/module.model';
+import { Clase } from 'projects/shared/models/course-class.model';
+import { CourseByStudent, CourseByStudentJson } from 'projects/shared/models/course-by-student.model';
 import { UserService } from './user.service';
 import { ProfileService } from './profile.service';
 import { firestoreTimestampToNumberTimestamp } from '../utils';
-import { ClassByStudent } from '../models/class-by-student.model';
+import { ClassByStudent } from 'projects/shared/models/class-by-student.model';
 
 @Injectable({
   providedIn: 'root'

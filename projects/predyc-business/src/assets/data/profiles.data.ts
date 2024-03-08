@@ -1,4 +1,4 @@
-import { ProfileJson } from "projects/predyc-business/src/shared/models/profile.model";
+import { ProfileJson } from "projects/shared/models/profile.model";
 
 // export const profilesData: ProfileJson[] = [
 //     {

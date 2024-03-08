@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpEvent, HttpEventType, HttpHeaders, HttpParams, HttpRequest } from '@angular/common/http';
 import { BehaviorSubject, Observable, catchError, filter, map, throwError, tap, switchMap } from 'rxjs';
-import { Enterprise } from '../models/enterprise.model';
+import { Enterprise } from 'projects/shared/models/enterprise.model';
 import { EnterpriseService } from './enterprise.service';
 import { environment } from 'projects/predyc-business/src/environments/environment';
 

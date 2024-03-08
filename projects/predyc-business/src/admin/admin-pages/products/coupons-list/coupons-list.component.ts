@@ -4,7 +4,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { CouponService } from 'projects/predyc-business/src/shared/services/coupon.service';
-import { Coupon } from 'projects/predyc-business/src/shared/models/coupon.model'
+import { Coupon } from 'projects/shared/models/coupon.model'
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DialogCouponFormComponent } from './dialog-coupon-form/dialog-coupon-form.component';

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Observable, Subscription, combineLatest, map, of, switchMap } from 'rxjs';
-import { CourseByStudent } from 'projects/predyc-business/src/shared/models/course-by-student.model';
-import { User, UserJson } from 'projects/predyc-business/src/shared/models/user.model';
+import { CourseByStudent } from 'projects/shared/models/course-by-student.model';
+import { User, UserJson } from 'projects/shared/models/user.model';
 import { CourseService } from 'projects/predyc-business/src/shared/services/course.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import { ProfileService } from 'projects/predyc-business/src/shared/services/profile.service';

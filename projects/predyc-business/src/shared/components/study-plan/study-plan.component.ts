@@ -3,7 +3,7 @@ import { IconService } from '../../services/icon.service';
 import { studyPlanData } from 'projects/predyc-business/src/assets/data/studyPlan.data';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from '../../services/user.service';
-import { User } from '../../models/user.model';
+import { User } from 'projects/shared/models/user.model';
 import { firstValueFrom } from 'rxjs';
 import { AngularFireFunctions } from '@angular/fire/compat/functions';
 import { AlertsService } from '../../services/alerts.service';

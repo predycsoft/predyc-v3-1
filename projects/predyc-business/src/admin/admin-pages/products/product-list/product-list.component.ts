@@ -7,7 +7,7 @@ import { ProductService } from 'projects/predyc-business/src/shared/services/pro
 import { stripeTimestampToNumberTimestamp } from 'projects/predyc-business/src/shared/utils';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DialogProductFormComponent } from './dialog-product-form/dialog-product-form.component';
-import { Product } from 'projects/predyc-business/src/shared/models/product.model';
+import { Product } from 'projects/shared/models/product.model';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 
 @Component({

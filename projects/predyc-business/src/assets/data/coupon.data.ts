@@ -1,4 +1,4 @@
-import { CouponJson } from "projects/predyc-business/src/shared/models/coupon.model";
+import { CouponJson } from "projects/shared/models/coupon.model";
 
 export const couponsData: CouponJson[] = [
     // {

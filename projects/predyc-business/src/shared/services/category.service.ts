@@ -4,9 +4,9 @@ import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firest
 import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs'
 import { EnterpriseService } from './enterprise.service';
 import { AlertsService } from './alerts.service';
-import { Enterprise } from '../models/enterprise.model';
+import { Enterprise } from 'projects/shared/models/enterprise.model';
 
-import { Category } from '../models/category.model';
+import { Category } from 'projects/shared/models/category.model';
 
 import { combineLatest } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';

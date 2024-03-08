@@ -5,12 +5,12 @@ import { BehaviorSubject, firstValueFrom, map, Observable, of, Subscription, swi
 import { EnterpriseService } from './enterprise.service';
 import { AlertsService } from './alerts.service';
 
-import { Skill } from '../models/skill.model';
-import { Clase } from '../models/course-class.model';
+import { Skill } from 'projects/shared/models/skill.model';
+import { Clase } from 'projects/shared/models/course-class.model';
 
-import { Activity } from '../models/activity-classes.model';
-import { Question } from '../models/activity-classes.model';
-import { Profile } from '../models/profile.model';
+import { Activity } from 'projects/shared/models/activity-classes.model';
+import { Question } from 'projects/shared/models/activity-classes.model';
+import { Profile } from 'projects/shared/models/profile.model';
 import { CourseService } from './course.service';
 
 

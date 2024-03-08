@@ -3,10 +3,10 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { Enterprise } from 'projects/predyc-business/src/shared/models/enterprise.model';
+import { Enterprise } from 'projects/shared/models/enterprise.model';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
 import { LicenseService } from 'projects/predyc-business/src/shared/services/license.service';
-import { Subscription as SubscriptionClass } from 'projects/predyc-business/src/shared/models/subscription.model'
+import { Subscription as SubscriptionClass } from 'projects/shared/models/subscription.model'
 
 interface LicensesInList {
   enterpriseName: string,

@@ -2,7 +2,7 @@ import { Component, Input, SimpleChanges } from '@angular/core';
 import { onSideNavChange, animateText } from '../../animations/animations'
 import { AuthService } from '../../services/auth.service';
 import { IconService } from '../../services/icon.service';
-import { User } from '../../models/user.model';
+import { User } from 'projects/shared/models/user.model';
 import { Observable } from 'rxjs';
 
 interface Page {

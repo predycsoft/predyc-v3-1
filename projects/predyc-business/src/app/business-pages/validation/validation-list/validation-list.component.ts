@@ -3,7 +3,7 @@ import { IconService } from 'projects/predyc-business/src/shared/services/icon.s
 import { DataSource } from '@angular/cdk/collections';
 import { MatPaginator } from '@angular/material/paginator';
 import { BehaviorSubject, Observable, Subject, Subscription, catchError, combineLatest, map, merge, of } from 'rxjs';
-import { Activity } from 'projects/predyc-business/src/shared/models/activity-classes.model';
+import { Activity } from 'projects/shared/models/activity-classes.model';
 import { ActivityClassesService } from 'projects/predyc-business/src/shared/services/activity-classes.service';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
 import { MatSort } from '@angular/material/sort';

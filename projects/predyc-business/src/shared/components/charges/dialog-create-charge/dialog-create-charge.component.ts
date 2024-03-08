@@ -1,10 +1,11 @@
 import { Component, Input } from '@angular/core';
 import { DocumentReference } from '@angular/fire/compat/firestore';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Charge } from 'projects/predyc-business/src/shared/models/charges.model';
-import { Enterprise } from 'projects/predyc-business/src/shared/models/enterprise.model';
+import { Charge } from 'projects/shared/models/charges.model';
+import { Enterprise } from 'projects/shared/models/enterprise.model';
 import { Subscription } from 'rxjs';
 import { Coupon, Price, Product } from 'shared';
+
 
 @Component({
   selector: 'app-dialog-create-charge',

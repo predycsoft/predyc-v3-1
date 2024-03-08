@@ -1,4 +1,4 @@
-import { ChargeJson } from "projects/predyc-business/src/shared/models/charges.model";
+import { ChargeJson } from "projects/shared/models/charges.model";
 export const chargeData: ChargeJson[] = [
     {
         "amount": 49,

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
-import { Price, PriceJson } from '../models/price.model';
+import { Price, PriceJson } from 'projects/shared/models/price.model';
 import { Observable } from 'rxjs';
 
 @Injectable({

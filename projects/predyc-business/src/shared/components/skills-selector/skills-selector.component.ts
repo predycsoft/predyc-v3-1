@@ -5,10 +5,10 @@ import { CategoryService } from '../../services/category.service';
 import { SkillService } from '../../services/skill.service';
 import { AbstractControl, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Skill } from '../../models/skill.model';
+import { Skill } from 'projects/shared/models/skill.model';
 import { EnterpriseService } from '../../services/enterprise.service';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { Category } from '../../models/category.model';
+import { Category } from 'projects/shared/models/category.model';
 
 function twoWordsOrLess(control: AbstractControl): ValidationErrors | null {
   const words = (control.value || '').trim().split(/\s+/);

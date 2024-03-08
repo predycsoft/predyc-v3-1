@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Profile } from 'projects/predyc-business/src/shared/models/profile.model';
-import { User, UserJson } from 'projects/predyc-business/src/shared/models/user.model';
+import { Profile } from 'projects/shared/models/profile.model';
+import { User, UserJson } from 'projects/shared/models/user.model';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import { ProfileService } from 'projects/predyc-business/src/shared/services/profile.service';
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';

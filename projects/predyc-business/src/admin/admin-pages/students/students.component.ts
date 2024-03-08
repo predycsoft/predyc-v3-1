@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { CreateUserComponent } from 'projects/predyc-business/src/app/business-pages/management/my-team/student/create-user/create-user.component'; //move to shared module
-import { User } from 'projects/predyc-business/src/shared/models/user.model';
+import { User } from 'projects/shared/models/user.model';
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
 
 @Component({

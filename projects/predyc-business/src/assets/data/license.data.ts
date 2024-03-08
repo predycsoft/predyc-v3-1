@@ -1,4 +1,4 @@
-import { LicenseJson } from "projects/predyc-business/src/shared/models/license.model";
+import { LicenseJson } from "projects/shared/models/license.model";
 
 export const licensesData: LicenseJson[] = [
     {

@@ -4,6 +4,7 @@ import { _sendMail } from './email'
 
 // import { generateSixDigitRandomNumber } from '../../projects/predyc-business/src/shared/utils'
 import { DocumentReference } from 'firebase-admin/firestore';
+import { User } from 'shared';
 
 const db = admin.firestore();
 
@@ -47,6 +48,7 @@ interface TractianInfo {
 const createUser = async (user: UserData): Promise<DocumentReference | string | boolean> => {
     // const password = generateSixDigitRandomNumber()
     console.log("Import works!", "asdasda")
+    User.debug()
     // const userRecord = await admin.auth().createUser({
     //     email: user.email,
     //     password: password.toString(),
@@ -61,7 +63,6 @@ const createEnterprise = async (enterprise: EnterpriseData) => {
 export const createTractianUser = functions.https.onRequest(
     async (req, res) => {
         try {
-            console.log("test nuevo")
             if (req.method !== 'POST') throw new Error("Method not allowed")
             // data should contain tractian Info
             const tractianInfo = req.body as TractianInfo

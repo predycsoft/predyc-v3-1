@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
-import { Coupon, CouponJson } from 'projects/predyc-business/src/shared/models/coupon.model';
-import { License } from 'projects/predyc-business/src/shared/models/license.model';
-import { Price, PriceJson } from 'projects/predyc-business/src/shared/models/price.model';
-import { Product, ProductJson } from 'projects/predyc-business/src/shared/models/product.model';
+import { Coupon, CouponJson } from 'projects/shared/models/coupon.model';
+import { License } from 'projects/shared/models/license.model';
+import { Price, PriceJson } from 'projects/shared/models/price.model';
+import { Product, ProductJson } from 'projects/shared/models/product.model';
 import { CouponService } from 'projects/predyc-business/src/shared/services/coupon.service';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';

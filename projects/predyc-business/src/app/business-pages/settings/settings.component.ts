@@ -7,7 +7,7 @@ import { DialogRequestLicensesComponent } from 'projects/predyc-business/src/sha
 import { DialogHistoryLicensesComponent } from 'projects/predyc-business/src/shared/components/users/license-student-list/dialog-history-licenses/dialog-history-licenses.component';
 
 import { LicenseStudentListComponent } from 'projects/predyc-business/src/shared/components/users/license-student-list/license-student-list.component';
-import { License } from 'projects/predyc-business/src/shared/models/license.model';
+import { License } from 'projects/shared/models/license.model';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import { LicenseService } from 'projects/predyc-business/src/shared/services/license.service';
 import Swal from 'sweetalert2';

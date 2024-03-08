@@ -5,9 +5,9 @@ import { UserService } from 'projects/predyc-business/src/shared/services/user.s
 import { combineLatest, filter, forkJoin, map, merge, mergeMap, Observable, of, Subscription, switchMap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
-import { Curso } from 'projects/predyc-business/src/shared/models/course.model';
-import { Department } from 'projects/predyc-business/src/shared/models/department.model';
-import { Profile } from 'projects/predyc-business/src/shared/models/profile.model';
+import { Curso } from 'projects/shared/models/course.model';
+import { Department } from 'projects/shared/models/department.model';
+import { Profile } from 'projects/shared/models/profile.model';
 import { CourseService } from 'projects/predyc-business/src/shared/services/course.service';
 import { DepartmentService } from 'projects/predyc-business/src/shared/services/department.service';
 import { ProfileService } from 'projects/predyc-business/src/shared/services/profile.service';

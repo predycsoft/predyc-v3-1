@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { User } from 'projects/predyc-business/src/shared/models/user.model';
+import { User } from 'projects/shared/models/user.model';
 import { AlertsService } from 'projects/predyc-business/src/shared/services/alerts.service';
 import { AuthService } from 'projects/predyc-business/src/shared/services/auth.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';

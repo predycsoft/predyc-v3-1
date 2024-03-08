@@ -3,7 +3,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, combineLatest, map } from 'rxjs';
-import { Enterprise } from 'projects/predyc-business/src/shared/models/enterprise.model';
+import { Enterprise } from 'projects/shared/models/enterprise.model';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';

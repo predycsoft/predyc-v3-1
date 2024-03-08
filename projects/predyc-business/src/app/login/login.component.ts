@@ -3,7 +3,7 @@ import { IconService } from 'projects/predyc-business/src/shared/services/icon.s
 import { AuthService } from 'projects/predyc-business/src/shared/services/auth.service';
 import { AlertsService } from 'projects/predyc-business/src/shared/services/alerts.service';
 import { firstValueFrom } from 'rxjs';
-import { User } from 'projects/predyc-business/src/shared/models/user.model';
+import { User } from 'projects/shared/models/user.model';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';

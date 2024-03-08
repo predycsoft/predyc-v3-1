@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { Enterprise } from 'projects/predyc-business/src/shared/models/enterprise.model';
+import { Enterprise } from 'projects/shared/models/enterprise.model';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
 
 @Component({

@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, combineLatest, firstValueFrom, map, switchMap } from 'rxjs';
-import { Profile } from '../models/profile.model';
+import { Profile } from 'projects/shared/models/profile.model';
 import { AlertsService } from './alerts.service';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { EnterpriseService } from './enterprise.service';
-import { Permissions } from 'projects/predyc-business/src/shared/models/permissions.model';
+import { Permissions } from 'projects/shared/models/permissions.model';
 import { UserService } from './user.service';
-import { User } from '../models/user.model';
+import { User } from 'projects/shared/models/user.model';
 
 
 @Injectable({

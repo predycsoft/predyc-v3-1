@@ -2,13 +2,13 @@ import { Component } from '@angular/core';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription, filter, first, firstValueFrom, of, switchMap, take } from 'rxjs';
-import { Curso } from 'projects/predyc-business/src/shared/models/course.model';
-import { Enterprise } from 'projects/predyc-business/src/shared/models/enterprise.model';
-import { License } from 'projects/predyc-business/src/shared/models/license.model';
-import { Price } from 'projects/predyc-business/src/shared/models/price.model';
-import { Profile } from 'projects/predyc-business/src/shared/models/profile.model';
+import { Curso } from 'projects/shared/models/course.model';
+import { Enterprise } from 'projects/shared/models/enterprise.model';
+import { License } from 'projects/shared/models/license.model';
+import { Price } from 'projects/shared/models/price.model';
+import { Profile } from 'projects/shared/models/profile.model';
 // import { User, UserJson } from 'projects/shared/models/user.model';
-import { User, UserJson } from 'projects/predyc-business/src/shared/models/user.model';
+import { User, UserJson } from 'projects/shared/models/user.model';
 import { AlertsService } from 'projects/predyc-business/src/shared/services/alerts.service';
 import { CourseService } from 'projects/predyc-business/src/shared/services/course.service';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
@@ -17,8 +17,8 @@ import { ProfileService } from 'projects/predyc-business/src/shared/services/pro
 import { SubscriptionService } from 'projects/predyc-business/src/shared/services/subscription.service';
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
 import { dateFromCalendarToTimestamp, daysBetween } from 'projects/predyc-business/src/shared/utils';
-import { StudyPlanClass } from 'projects/predyc-business/src/shared/models/study-plan-class';
-import { CourseByStudent } from 'projects/predyc-business/src/shared/models/course-by-student.model';
+import { StudyPlanClass } from 'projects/shared/models/study-plan-class.model';
+import { CourseByStudent } from 'projects/shared/models/course-by-student.model';
 import Swal from 'sweetalert2';
 
 

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, CollectionReference, DocumentReference, Query } from '@angular/fire/compat/firestore';
 import { EnterpriseService } from './enterprise.service';
-import { Subscription } from '../models/subscription.model';
-import { License } from '../models/license.model';
-import { User } from '../models/user.model';
+import { Subscription } from 'projects/shared/models/subscription.model';
+import { License } from 'projects/shared/models/license.model';
+import { User } from 'projects/shared/models/user.model';
 import { UserService } from './user.service';
 import { Observable, firstValueFrom } from 'rxjs';
 

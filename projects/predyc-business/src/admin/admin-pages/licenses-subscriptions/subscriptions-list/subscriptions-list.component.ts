@@ -4,13 +4,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, combineLatest } from 'rxjs';
 import { SubscriptionService } from 'projects/predyc-business/src/shared/services/subscription.service';
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
-import { Subscription as SubscriptionClass } from 'projects/predyc-business/src/shared/models/subscription.model'
+import { Subscription as SubscriptionClass } from 'projects/shared/models/subscription.model'
 import { PriceService } from 'projects/predyc-business/src/shared/services/price.service';
 import { ProductService } from 'projects/predyc-business/src/shared/services/product.service';
-import { User } from 'projects/predyc-business/src/shared/models/user.model';
-import { Product } from 'projects/predyc-business/src/shared/models/product.model';
-import { Price } from 'projects/predyc-business/src/shared/models/price.model';
-import { Coupon } from 'projects/predyc-business/src/shared/models/coupon.model';
+import { User } from 'projects/shared/models/user.model';
+import { Product } from 'projects/shared/models/product.model';
+import { Price } from 'projects/shared/models/price.model';
+import { Coupon } from 'projects/shared/models/coupon.model';
 import { CouponService } from 'projects/predyc-business/src/shared/services/coupon.service';
 import { MatPaginator } from '@angular/material/paginator';
 

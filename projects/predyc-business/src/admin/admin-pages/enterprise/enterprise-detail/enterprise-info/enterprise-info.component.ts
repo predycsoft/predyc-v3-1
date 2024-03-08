@@ -3,7 +3,7 @@ import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { finalize, firstValueFrom } from 'rxjs';
-import { Enterprise } from 'projects/predyc-business/src/shared/models/enterprise.model';
+import { Enterprise } from 'projects/shared/models/enterprise.model';
 import { AlertsService } from 'projects/predyc-business/src/shared/services/alerts.service';
 import { DialogService } from 'projects/predyc-business/src/shared/services/dialog.service';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';

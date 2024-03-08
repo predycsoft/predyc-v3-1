@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { Coupon } from 'projects/predyc-business/src/shared/models/coupon.model';
-import { Price } from 'projects/predyc-business/src/shared/models/price.model';
+import { Coupon } from 'projects/shared/models/coupon.model';
+import { Price } from 'projects/shared/models/price.model';
 import { CouponService } from 'projects/predyc-business/src/shared/services/coupon.service';
 import { DialogService } from 'projects/predyc-business/src/shared/services/dialog.service';
 import { PriceService } from 'projects/predyc-business/src/shared/services/price.service';

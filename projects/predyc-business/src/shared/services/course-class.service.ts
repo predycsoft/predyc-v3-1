@@ -5,12 +5,12 @@ import { BehaviorSubject, Observable } from 'rxjs'
 import { EnterpriseService } from './enterprise.service';
 import { AlertsService } from './alerts.service';
 
-import { Skill } from '../models/skill.model';
-import { Curso } from '../models/course.model';
-import { Clase } from '../models/course-class.model';
-import { Modulo } from '../models/module.model';
-import { Activity } from '../models/activity-classes.model';
-import { Question } from '../models/activity-classes.model';
+import { Skill } from 'projects/shared/models/skill.model';
+import { Curso } from 'projects/shared/models/course.model';
+import { Clase } from 'projects/shared/models/course-class.model';
+import { Modulo } from 'projects/shared/models/module.model';
+import { Activity } from 'projects/shared/models/activity-classes.model';
+import { Question } from 'projects/shared/models/activity-classes.model';
 
 
 @Injectable({

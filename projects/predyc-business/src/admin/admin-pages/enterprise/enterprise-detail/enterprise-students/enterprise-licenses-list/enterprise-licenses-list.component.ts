@@ -2,18 +2,18 @@ import { Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subscription, combineLatest } from 'rxjs';
-import { Coupon } from 'projects/predyc-business/src/shared/models/coupon.model';
-import { License } from 'projects/predyc-business/src/shared/models/license.model';
-import { Price } from 'projects/predyc-business/src/shared/models/price.model';
-import { Product } from 'projects/predyc-business/src/shared/models/product.model';
+import { Coupon } from 'projects/shared/models/coupon.model';
+import { License } from 'projects/shared/models/license.model';
+import { Price } from 'projects/shared/models/price.model';
+import { Product } from 'projects/shared/models/product.model';
 import { CouponService } from 'projects/predyc-business/src/shared/services/coupon.service';
 import { LicenseService } from 'projects/predyc-business/src/shared/services/license.service';
 import { PriceService } from 'projects/predyc-business/src/shared/services/price.service';
 import { ProductService } from 'projects/predyc-business/src/shared/services/product.service';
 import { DialogNewLicenseComponent } from '../dialog-new-license/dialog-new-license.component';
-import { Subscription as SubscriptionClass } from 'projects/predyc-business/src/shared/models/subscription.model'
+import { Subscription as SubscriptionClass } from 'projects/shared/models/subscription.model'
 import { DocumentReference } from '@angular/fire/compat/firestore';
-import { Enterprise } from 'projects/predyc-business/src/shared/models/enterprise.model';
+import { Enterprise } from 'projects/shared/models/enterprise.model';
 import { DialogService } from 'projects/predyc-business/src/shared/services/dialog.service';
 
 

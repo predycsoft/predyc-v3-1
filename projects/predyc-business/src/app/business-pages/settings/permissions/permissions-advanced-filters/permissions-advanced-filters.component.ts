@@ -3,10 +3,10 @@ import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core
 import { MatPaginator } from '@angular/material/paginator';
 import { BehaviorSubject, Observable, of, catchError, Subscription, combineLatest, merge } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Profile } from 'projects/predyc-business/src/shared/models/profile.model';
+import { Profile } from 'projects/shared/models/profile.model';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
 import { ProfileService } from 'projects/predyc-business/src/shared/services/profile.service';
-import { Permissions } from 'projects/predyc-business/src/shared/models/permissions.model';
+import { Permissions } from 'projects/shared/models/permissions.model';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 
 @Component({

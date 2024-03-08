@@ -1,4 +1,4 @@
-import { PriceJson } from "projects/predyc-business/src/shared/models/price.model";
+import { PriceJson } from "projects/shared/models/price.model";
 
 export const pricesData: PriceJson[] = [ 
     {

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { Observable, switchMap } from 'rxjs';
-import { Department } from '../models/department.model';
-import { Enterprise } from '../models/enterprise.model';
+import { Department } from 'projects/shared/models/department.model';
+import { Enterprise } from 'projects/shared/models/enterprise.model';
 import { EnterpriseService } from './enterprise.service';
 
 @Injectable({

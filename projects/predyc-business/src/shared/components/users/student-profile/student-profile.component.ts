@@ -3,8 +3,8 @@ import { Form, FormControl, FormGroup, Validators } from '@angular/forms';
 import { finalize, firstValueFrom } from 'rxjs';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { countriesData } from 'projects/predyc-business/src/assets/data/countries.data'
-import { Profile } from 'projects/predyc-business/src/shared/models/profile.model';
-import { User } from 'projects/predyc-business/src/shared/models/user.model';
+import { Profile } from 'projects/shared/models/profile.model';
+import { User } from 'projects/shared/models/user.model';
 import { AlertsService } from 'projects/predyc-business/src/shared/services/alerts.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import { ProfileService } from 'projects/predyc-business/src/shared/services/profile.service';

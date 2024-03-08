@@ -9,7 +9,7 @@ import { AlertsService } from 'projects/predyc-business/src/shared/services/aler
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { CategoryService } from 'projects/predyc-business/src/shared/services/category.service';
 import { SkillService } from 'projects/predyc-business/src/shared/services/skill.service';
-import { Question } from 'projects/predyc-business/src/shared/models/activity-classes.model';
+import { Question } from 'projects/shared/models/activity-classes.model';
 
 function optionsLengthValidator(question: FormGroup): ValidationErrors | null {
   const options = question.get('options') as FormArray

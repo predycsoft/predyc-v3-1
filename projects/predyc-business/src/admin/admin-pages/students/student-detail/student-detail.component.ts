@@ -4,8 +4,8 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { map, switchMap } from 'rxjs';
 import { MAIN_TITLE } from 'projects/predyc-business/src/admin/admin-routing.module';
-import { Enterprise } from 'projects/predyc-business/src/shared/models/enterprise.model';
-import { User } from 'projects/predyc-business/src/shared/models/user.model';
+import { Enterprise } from 'projects/shared/models/enterprise.model';
+import { User } from 'projects/shared/models/user.model';
 import { calculateAgeFromTimestamp, timestampToDateNumbers } from 'projects/predyc-business/src/shared/utils';
 
 @Component({

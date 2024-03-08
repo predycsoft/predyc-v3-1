@@ -2,7 +2,7 @@ import { AfterViewInit, Component } from '@angular/core';
 import { AfterOnInitResetLoading } from 'projects/predyc-business/src/shared/decorators/loading.decorator';
 import { LoaderService } from 'projects/predyc-business/src/shared/services/loader.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
-import { Curso } from 'projects/predyc-business/src/shared/models/course.model';
+import { Curso } from 'projects/shared/models/course.model';
 import { CategoryService } from 'projects/predyc-business/src/shared/services/category.service';
 
 import { AngularFirestore } from '@angular/fire/compat/firestore';

@@ -2,12 +2,12 @@ import { Component } from '@angular/core';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
-import { User } from 'projects/predyc-business/src/shared/models/user.model';
+import { User } from 'projects/shared/models/user.model';
 import { Observable, Subscription, filter } from 'rxjs';
 import { AuthService } from 'projects/predyc-business/src/shared/services/auth.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SupportComponent } from 'projects/predyc-business/src/shared/components/support/support.component';
-import { License } from 'projects/predyc-business/src/shared/models/license.model';
+import { License } from 'projects/shared/models/license.model';
 import { LicenseService } from 'projects/predyc-business/src/shared/services/license.service';
 import { NavigationEnd, Router } from '@angular/router';
 

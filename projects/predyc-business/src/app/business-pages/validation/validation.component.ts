@@ -4,7 +4,7 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { EditValidationTestComponent } from './edit-validation-test/edit-validation-test.component';
 import { SkillService } from 'projects/predyc-business/src/shared/services/skill.service';
 import { ActivityClassesService } from 'projects/predyc-business/src/shared/services/activity-classes.service';
-import { Activity } from 'projects/predyc-business/src/shared/models/activity-classes.model';
+import { Activity } from 'projects/shared/models/activity-classes.model';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
 import { AlertsService } from 'projects/predyc-business/src/shared/services/alerts.service';
 

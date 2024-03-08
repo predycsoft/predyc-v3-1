@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, CollectionReference, DocumentReference, Query } from '@angular/fire/compat/firestore';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { Enterprise, EnterpriseJson } from '../models/enterprise.model';
+import { Enterprise, EnterpriseJson } from 'projects/shared/models/enterprise.model';
 import { AlertsService } from './alerts.service';
 import { AuthService } from './auth.service';
 

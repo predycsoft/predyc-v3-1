@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { AlertsService } from './alerts.service';
-import { Curso } from '../models/course.model';
-import { Modulo } from '../models/module.model';
+import { Curso } from 'projects/shared/models/course.model';
+import { Modulo } from 'projects/shared/models/module.model';
 
 @Injectable({
   providedIn: 'root'

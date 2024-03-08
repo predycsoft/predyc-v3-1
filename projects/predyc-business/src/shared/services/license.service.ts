@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
-import { License, LicenseJson } from '../models/license.model';
+import { License, LicenseJson } from 'projects/shared/models/license.model';
 import { BehaviorSubject, Observable, Subscription, first, firstValueFrom, of, switchMap, take } from 'rxjs';
 import { EnterpriseService } from './enterprise.service';
 import { DialogService } from './dialog.service';
-import { User } from '../models/user.model';
+import { User } from 'projects/shared/models/user.model';
 import { SubscriptionService } from './subscription.service';
 import { AlertsService } from './alerts.service';
-import { Enterprise } from '../models/enterprise.model';
+import { Enterprise } from 'projects/shared/models/enterprise.model';
 
 @Injectable({
   providedIn: 'root'

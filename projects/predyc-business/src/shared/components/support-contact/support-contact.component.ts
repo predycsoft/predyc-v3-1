@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { User } from '../../models/user.model';
+import { User } from 'projects/shared/models/user.model';
 import { UserService } from '../../services/user.service';
 import { IconService } from '../../services/icon.service';
 

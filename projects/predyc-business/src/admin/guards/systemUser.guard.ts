@@ -3,7 +3,7 @@ import { ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/ro
 import { Observable, map, switchMap } from 'rxjs';
 import { AuthService } from '../../shared/services/auth.service';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { User } from '../../shared/models/user.model';
+import { User } from 'projects/shared/models/user.model';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 @Injectable({

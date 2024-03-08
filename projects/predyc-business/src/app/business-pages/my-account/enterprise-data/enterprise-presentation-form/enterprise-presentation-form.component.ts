@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Subscription, finalize, firstValueFrom } from 'rxjs';
-import { Enterprise } from 'projects/predyc-business/src/shared/models/enterprise.model';
+import { Enterprise } from 'projects/shared/models/enterprise.model';
 import { AlertsService } from 'projects/predyc-business/src/shared/services/alerts.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 

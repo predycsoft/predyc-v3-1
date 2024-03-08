@@ -2,7 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { AngularFireFunctions } from '@angular/fire/compat/functions';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { firstValueFrom } from 'rxjs';
-import { License } from 'projects/predyc-business/src/shared/models/license.model';
+import { License } from 'projects/shared/models/license.model';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 
 @Component({

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { User } from 'projects/predyc-business/src/shared/models/user.model';
+import { User } from 'projects/shared/models/user.model';
 import { AuthService } from 'projects/predyc-business/src/shared/services/auth.service';
 @Component({
   selector: 'app-my-account',

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { User } from 'projects/predyc-business/src/shared/models/user.model';
+import { User } from 'projects/shared/models/user.model';
 import { AuthService } from 'projects/predyc-business/src/shared/services/auth.service';
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
 

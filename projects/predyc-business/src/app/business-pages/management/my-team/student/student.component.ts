@@ -3,7 +3,7 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription, catchError, combineLatest, map, of } from 'rxjs';
-import { User } from 'projects/predyc-business/src/shared/models/user.model';
+import { User } from 'projects/shared/models/user.model';
 import { LoaderService } from 'projects/predyc-business/src/shared/services/loader.service';
 import { ProfileService } from 'projects/predyc-business/src/shared/services/profile.service';
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';

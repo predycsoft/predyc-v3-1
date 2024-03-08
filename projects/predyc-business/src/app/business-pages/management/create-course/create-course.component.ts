@@ -3,9 +3,9 @@ import { IconService } from 'projects/predyc-business/src/shared/services/icon.s
 import { FormControl, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { Curso } from "projects/predyc-business/src/shared/models/course.model"
-import { Modulo } from "projects/predyc-business/src/shared/models/module.model"
-import { Clase } from "projects/predyc-business/src/shared/models/course-class.model"
+import { Curso } from "projects/shared/models/course.model"
+import { Modulo } from "projects/shared/models/module.model"
+import { Clase } from "projects/shared/models/course-class.model"
 
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import Swal from 'sweetalert2';
@@ -14,22 +14,22 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { AngularFirestore,DocumentReference } from '@angular/fire/compat/firestore';
 
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { Activity, Question, QuestionOption,QuestionType } from 'projects/predyc-business/src/shared/models/activity-classes.model';
+import { Activity, Question, QuestionOption,QuestionType } from 'projects/shared/models/activity-classes.model';
 //import * as competencias from '../../../../assets/data/competencias.json';
 import { DialogService } from 'projects/predyc-business/src/shared/services/dialog.service';
 import { VimeoUploadService } from 'projects/predyc-business/src/shared/services/vimeo-upload.service';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
 import { CategoryService } from 'projects/predyc-business/src/shared/services/category.service';
 import { SkillService } from 'projects/predyc-business/src/shared/services/skill.service';
-import { Category } from 'projects/predyc-business/src/shared/models/category.model';
-import { Skill } from 'projects/predyc-business/src/shared/models/skill.model';
+import { Category } from 'projects/shared/models/category.model';
+import { Skill } from 'projects/shared/models/skill.model';
 import { CourseService } from 'projects/predyc-business/src/shared/services/course.service';
-import { User } from 'projects/predyc-business/src/shared/models/user.model';
+import { User } from 'projects/shared/models/user.model';
 import { category } from '../courses/courses.component';
 import { ModuleService } from 'projects/predyc-business/src/shared/services/module.service';
 import { CourseClassService } from 'projects/predyc-business/src/shared/services/course-class.service';
 import { ActivityClassesService } from 'projects/predyc-business/src/shared/services/activity-classes.service';
-import { Enterprise } from 'projects/predyc-business/src/shared/models/enterprise.model';
+import { Enterprise } from 'projects/shared/models/enterprise.model';
 import { compareByString } from 'projects/predyc-business/src/shared/utils';
 import { QuestionsComponent } from 'projects/predyc-business/src/shared/components/questions/questions.component';
 import { AuthService } from 'projects/predyc-business/src/shared/services/auth.service';

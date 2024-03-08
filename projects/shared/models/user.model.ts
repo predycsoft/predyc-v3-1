@@ -182,6 +182,10 @@ export class User {
     })
   }
 
+  public static debug() {
+    console.log("Called from user model")
+  }
+
   public static fromJson(userJson: UserJson): User {
     return new User(
       userJson.birthdate,

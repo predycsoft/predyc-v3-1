@@ -3,7 +3,7 @@ import { AngularFireFunctions } from '@angular/fire/compat/functions';
 import { FormBuilder } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { firstValueFrom } from 'rxjs';
-import { Coupon } from 'projects/predyc-business/src/shared/models/coupon.model';
+import { Coupon } from 'projects/shared/models/coupon.model';
 import { CouponService } from 'projects/predyc-business/src/shared/services/coupon.service';
 import { DialogService } from 'projects/predyc-business/src/shared/services/dialog.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';

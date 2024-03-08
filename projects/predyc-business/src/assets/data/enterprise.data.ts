@@ -1,4 +1,4 @@
-import { EnterpriseJson } from 'projects/predyc-business/src/shared/models/enterprise.model'
+import { EnterpriseJson } from 'projects/shared/models/enterprise.model'
 
 export const enterpriseData: EnterpriseJson = {
     city: "Santiago de Querétaro",

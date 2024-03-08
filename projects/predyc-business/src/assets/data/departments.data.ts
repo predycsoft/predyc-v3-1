@@ -1,4 +1,4 @@
-import { DepartmentJson } from "projects/predyc-business/src/shared/models/department.model";
+import { DepartmentJson } from "projects/shared/models/department.model";
 
 export const departmentsData: DepartmentJson[] = [
   { id: '1', name: 'Mantenimiento', enterpriseRef: null},

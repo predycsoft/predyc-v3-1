@@ -4,7 +4,7 @@ import { CategoryService } from '../../services/category.service';
 import { IconService } from '../../services/icon.service';
 import { LoaderService } from '../../services/loader.service';
 import { SkillService } from '../../services/skill.service';
-import { Category } from '../../models/category.model';
+import { Category } from 'projects/shared/models/category.model';
 import { cloneArrayOfObjects, compareByString } from '../../utils';
 
 

@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
-import { Permissions } from 'projects/predyc-business/src/shared/models/permissions.model';
+import { Permissions } from 'projects/shared/models/permissions.model';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
 import { PermissionsAdvancedFiltersComponent } from './permissions-advanced-filters/permissions-advanced-filters.component';
 

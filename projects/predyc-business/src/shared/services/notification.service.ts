@@ -3,7 +3,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, CollectionReference, Query } from '@angular/fire/compat/firestore';
 import { AlertsService } from './alerts.service';
 import { BehaviorSubject, firstValueFrom, Observable, Subscription } from 'rxjs';
-import { Notification } from 'projects/predyc-business/src/shared/models/notification.model';
+import { Notification } from 'projects/shared/models/notification.model';
 import { EnterpriseService } from './enterprise.service';
 import { AngularFireFunctions } from '@angular/fire/compat/functions';
 

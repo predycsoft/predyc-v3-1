@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Enterprise } from 'projects/predyc-business/src/shared/models/enterprise.model';
+import { Enterprise } from 'projects/shared/models/enterprise.model';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import { DialogService } from 'projects/predyc-business/src/shared/services/dialog.service';

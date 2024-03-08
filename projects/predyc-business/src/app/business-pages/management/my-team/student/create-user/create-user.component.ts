@@ -4,9 +4,9 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { TimeScale } from 'chart.js/dist';
 import { finalize, firstValueFrom, map, Observable, startWith, Subscription } from 'rxjs';
-import { Department } from 'projects/predyc-business/src/shared/models/department.model';
-import { Profile } from 'projects/predyc-business/src/shared/models/profile.model';
-import { User } from 'projects/predyc-business/src/shared/models/user.model';
+import { Department } from 'projects/shared/models/department.model';
+import { Profile } from 'projects/shared/models/profile.model';
+import { User } from 'projects/shared/models/user.model';
 import { AlertsService } from 'projects/predyc-business/src/shared/services/alerts.service';
 import { DepartmentService } from 'projects/predyc-business/src/shared/services/department.service';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
@@ -16,7 +16,7 @@ import { UserService } from 'projects/predyc-business/src/shared/services/user.s
 import { dateFromCalendarToTimestamp, timestampToDateNumbers } from 'projects/predyc-business/src/shared/utils';
 import { countriesData } from 'projects/predyc-business/src/assets/data/countries.data'
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
-import { Enterprise } from 'projects/predyc-business/src/shared/models/enterprise.model';
+import { Enterprise } from 'projects/shared/models/enterprise.model';
 
 @Component({
   selector: 'app-create-user',

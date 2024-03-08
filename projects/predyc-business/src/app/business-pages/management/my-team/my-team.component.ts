@@ -6,9 +6,9 @@ import { EnterpriseService } from 'projects/predyc-business/src/shared/services/
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ProfileService } from 'projects/predyc-business/src/shared/services/profile.service';
-import { Profile } from 'projects/predyc-business/src/shared/models/profile.model';
+import { Profile } from 'projects/shared/models/profile.model';
 import { CreateUserComponent } from './student/create-user/create-user.component';
-import { User } from 'projects/predyc-business/src/shared/models/user.model';
+import { User } from 'projects/shared/models/user.model';
 
 @Component({
   selector: 'app-my-team',
