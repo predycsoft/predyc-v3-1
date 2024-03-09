@@ -78,11 +78,11 @@ export interface ChargeJson {
       })
     }
   
-    STATUS_FAILED = 'failed';
-    STATUS_PENDING = 'pending';
-    STATUS_SUCCEEDED = 'succeeded';
+    public static STATUS_FAILED = 'failed';
+    public static STATUS_PENDING = 'pending';
+    public static STATUS_SUCCEEDED = 'succeeded';
   
-    STATUS_CHOICES = [
+    public static STATUS_CHOICES = [
       this.STATUS_FAILED,
       this.STATUS_PENDING,
       this.STATUS_SUCCEEDED,
