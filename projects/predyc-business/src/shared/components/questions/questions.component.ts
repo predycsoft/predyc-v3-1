@@ -290,6 +290,12 @@ export class QuestionsComponent {
 
   }
 
+  changeTextQuestions(event){
+    let text = event.value
+    if(text?.length>0)
+    this.changeQuestion.emit(this.mainForm);
+  }
+
   changeOption(option){
     if(option.length>0){
       this.changeQuestion.emit(this.mainForm);

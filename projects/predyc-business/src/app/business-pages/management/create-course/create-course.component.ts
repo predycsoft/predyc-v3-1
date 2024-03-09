@@ -1266,29 +1266,33 @@ export class CreateCourseComponent {
   formatExamQuestions(){
 
     console.log('formatExamQuestions')
-    this.updateTriggeQuestionsExam++;
+
     setTimeout(() => {
-      if(this.validExam ==null || !this.validExam?.valid || this.validExam.value?.questions?.length == 0){
-        this.updateTriggeQuestionsExam++;
-        console.log('formatExamQuestions invalid')
-      }
-      else{
-        let questions = structuredClone(this.validExam.value.questions)
-        questions.forEach(question => {
-          if(!question.typeFormated){
-            question.typeFormated = this.getTypeQuestion(question.type)
-            if(question.type == 'complete'){
-              this.showDisplayText(question)
-            }
-          }
-        });
-        console.log('revisar',this.examen,questions)
-        if(this.examen){
-          this.examen.questions = questions
-          this.questionsFormated = true
+      this.updateTriggeQuestionsExam++;
+      setTimeout(() => {
+        if(this.validExam ==null || !this.validExam?.valid || this.validExam.value?.questions?.length == 0){
+          this.updateTriggeQuestionsExam++;
+          console.log('formatExamQuestions invalid')
         }
-      }
-    }, 30);
+        else{
+          let questions = structuredClone(this.validExam.value.questions)
+          questions.forEach(question => {
+            if(!question.typeFormated){
+              question.typeFormated = this.getTypeQuestion(question.type)
+              if(question.type == 'complete'){
+                this.showDisplayText(question)
+              }
+            }
+          });
+          console.log('revisar',this.examen,questions)
+          if(this.examen){
+            this.examen.questions = questions
+            this.questionsFormated = true
+          }
+        }
+      }, 30);
+    }, 20);
+
   }
 
 

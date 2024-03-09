@@ -87,6 +87,7 @@
                         <div fxLayout="row">
                             <div class="form-group pdt10 fw">
                                 <textarea
+                                    (change)="changeTextQuestions($event.target)"
                                     formControlName="text"
                                     [class.is-invalid]="question.get('text').errors && displayErrors"
                                     rows="3" 
