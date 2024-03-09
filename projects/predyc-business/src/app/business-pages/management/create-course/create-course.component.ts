@@ -1515,6 +1515,7 @@ export class CreateCourseComponent {
     else{
 
       let instructor = this.formNewInstructor.value
+      instructor.fechaCreacion = new Date
       instructor.ultimaEdicion = new Date
       instructor.ultimoEditor = this.user.uid
       let enterpriseRef =this.enterpriseService.getEnterpriseRef()

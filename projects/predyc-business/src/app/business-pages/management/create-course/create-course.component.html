@@ -1,7 +1,7 @@
 <div class="fw" class="fw backWhite radius10" fxLayout="column">    <div [ngClass]="true ? 'header--edit' : ''" fxLayout="row" fxLayoutAlign="space-between " class="header pdr10 pdl10">
-    <div *ngIf="formNewCourse" fxLayout="row" fxLayoutAlign="space-between center" class="fw fh pdt05 pdb05" >
+    <div fxLayout="row" fxLayoutAlign="space-between center" class="fw fh pdt05 pdb05" >
         <div class="radius20 pdl10 pdr10 mgr10 pdt05 pdb05 backWhite ft14 fh pdl05  " fxLayout="row" fxLayoutGap="8px" fxLayoutAlign=" center">
-            <span class="input-box   ft14" placeholder="Nombre del curso"  >{{formNewCourse.get('titulo')?.value}}</span>
+            <span class="input-box   ft14" placeholder="Nombre del curso"  >{{formNewCourse?.get('titulo')?.value}}</span>
         </div>
         <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign=" center">
             <div class="radius20 pdl10 pdr10 pdt05 pdb05 backWhite ft14 cursorPointer" routerLink="/management/courses"> 
