@@ -13,17 +13,18 @@ import { PriceService } from 'projects/predyc-business/src/shared/services/price
 import { ProductService } from 'projects/predyc-business/src/shared/services/product.service';
 import { SubscriptionService } from 'projects/predyc-business/src/shared/services/subscription.service';
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
-import { Subscription as SubscriptionClass } from 'projects/shared/models/subscription.model'
+import { Subscription as SubscriptionClass, SubscriptionJson } from 'projects/shared/models/subscription.model'
+import { MatDialog } from '@angular/material/dialog';
+import { DialogEditSubscriptionComponent } from 'projects/predyc-business/src/shared/components/subscription/dialog-edit-subscription/dialog-edit-subscription.component';
+import { DialogService } from 'projects/predyc-business/src/shared/services/dialog.service';
 
 
-interface SubscriptionInfo {
+export interface SubscriptionInfo extends SubscriptionJson {
   productName: string
-  coupon: Object
-  status: string
-  paymentMethod: string
-  createdAt: number
-  currentPeriodStart: number
+  couponName: Object
+  statusToDisplay: string
   statusBasedComment: string
+  priceInterval: string,
   // <span *ngIf="subscription.status != 'canceled'" class="ft11 gray-9">Próximo
 //   cobro el {{subscription.currentPeriodEnd |
 //   date:"dd/MM/yyyy"}} por ${{getNextInvoice(subscription).ammount}}</span>
@@ -46,6 +47,9 @@ export class StudentSubscriptionListComponent {
     private priceService: PriceService,
     private productService: ProductService,
     private couponService: CouponService,
+    private dialog: MatDialog,
+    public dialogService: DialogService,
+
   ){}
 
   displayedColumns: string[] = [
@@ -102,20 +106,19 @@ export class StudentSubscriptionListComponent {
       this.subscriptionsSubscription.unsubscribe()
     }
     this.subscriptionsSubscription = this.subscriptionService.getUserSubscriptions$(this.userRef).subscribe(subscriptions => {
-      console.log("Subscriptions", subscriptions)
+      // console.log("Subscriptions", subscriptions)
       const subscriptionsInfo: SubscriptionInfo[] = subscriptions.map(subscription => {
         const price = this.prices.find(p => p.id === subscription.priceRef.id);
         const product = this.products.find(prod => prod.id === price.product.id);
         const coupon = this.coupons.find(coup => coup.id === subscription.couponRef.id);
   
         return {
+          ...subscription,
           productName: product.name,
-          coupon: coupon.name,
-          status: SubscriptionClass.statusToDisplayValueDict[subscription.status],
-          paymentMethod: subscription.origin,
-          createdAt: subscription.createdAt,
-          currentPeriodStart: subscription.currentPeriodStart,
+          couponName: coupon.name,
+          statusToDisplay: SubscriptionClass.statusToDisplayValueDict[subscription.status],
           statusBasedComment: "prueba",
+          priceInterval: price.interval
         };
       });
       
@@ -124,7 +127,24 @@ export class StudentSubscriptionListComponent {
     });
   }
 
-  editSubscription(subscription) {
+  editSubscription(subscription: SubscriptionInfo) {
+    const dialogRef = this.dialog.open(DialogEditSubscriptionComponent, {
+      data: {
+        subscription,
+        prices: this.prices
+      }
+    });
+  
+    dialogRef.afterClosed().subscribe(async (result: SubscriptionInfo) => {
+      if (result) {
+        try {
+          // await this.licenseService.saveLicense(result.toJson());
+          this.dialogService.dialogExito();
+        } catch (error) {
+          this.dialogService.dialogAlerta("Hubo un error al guardar la licencia. Inténtalo de nuevo.");
+        }
+      }
+    });
     
   }
   deleteSubscription(subscription) {

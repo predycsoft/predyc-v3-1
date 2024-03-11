@@ -69,6 +69,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgChartsModule } from 'ng2-charts';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import { DialogCreateChargeComponent } from './components/charges/dialog-create-charge/dialog-create-charge.component';
+import { DialogCreateSubscriptionComponent } from './components/subscription/dialog-create-subscription/dialog-create-subscription.component';
+import { DialogEditSubscriptionComponent } from './components/subscription/dialog-edit-subscription/dialog-edit-subscription.component';
 
 @NgModule({
   declarations: [
@@ -106,6 +108,8 @@ import { DialogCreateChargeComponent } from './components/charges/dialog-create-
     SortSkillsPipe,
     DialogRestorePasswordComponent,
     DialogCreateChargeComponent,
+    DialogCreateSubscriptionComponent,
+    DialogEditSubscriptionComponent,
   ],
   imports: [
     CommonModule,
@@ -216,7 +220,9 @@ import { DialogCreateChargeComponent } from './components/charges/dialog-create-
     NgxExtendedPdfViewerModule,
     DragDropModule,
     MatSlideToggleModule,
-    DialogCreateChargeComponent
+    DialogCreateChargeComponent,
+    DialogCreateSubscriptionComponent,
+    DialogEditSubscriptionComponent, 
   ],
 
   providers: [
