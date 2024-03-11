@@ -7,6 +7,13 @@ export const productsData: ProductJson[] = [
         "acceptsStripe": true,
         "acceptsZelle": false,
         "active": false,
+        "accesses": {
+            "userRadar": false,
+            "studyPlan": false,
+            "extraCourses": false,
+            "particularCourses": false,
+            "test": false,
+        },
         "canEnrollPrograms": false,
         "createdAt": 1679634238000,
         "canEnrollByHimself": true,
@@ -63,6 +70,13 @@ export const productsData: ProductJson[] = [
     },
     {
         "active": true,
+        "accesses": {
+            "userRadar": false,
+            "studyPlan": false,
+            "extraCourses": false,
+            "particularCourses": false,
+            "test": false,
+        },
         "id": "Plan-Empresarial",
         "isACompanyProduct": true,
         "name": "Plan Empresarial",
@@ -156,6 +170,13 @@ export const productsData: ProductJson[] = [
         ],
         "acceptsBankTransfer": true,
         "active": true,
+        "accesses": {
+            "userRadar": false,
+            "studyPlan": false,
+            "extraCourses": false,
+            "particularCourses": false,
+            "test": false,
+        },
         "name": "Plan Experto",
         "priority": 2,
         "stripeInfo": {
@@ -196,6 +217,13 @@ export const productsData: ProductJson[] = [
         "canEnrollByHimself": true,
         "priority": 5,
         "active": true,
+        "accesses": {
+            "userRadar": false,
+            "studyPlan": false,
+            "extraCourses": false,
+            "particularCourses": false,
+            "test": false,
+        },
         "acceptsZelle": true,
         "acceptsStripe": true,
         "acceptsBankTransfer": true

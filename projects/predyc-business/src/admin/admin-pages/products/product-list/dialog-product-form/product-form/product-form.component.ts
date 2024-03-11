@@ -35,8 +35,12 @@ export class ProductFormComponent {
     acceptsPaypal: [false],
     canEnrollByHimself: [true],
     canEnrollPrograms: [true],
-    //
     isACompanyProduct: [true],
+    userRadar: [false],
+    studyPlan: [false],
+    extraCourses: [false],
+    particularCourses: [false],
+    test: [false],
   });
 
   ngOnInit(): void {
