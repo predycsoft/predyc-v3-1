@@ -13,14 +13,16 @@ import { PriceService } from 'projects/predyc-business/src/shared/services/price
 import { ProductService } from 'projects/predyc-business/src/shared/services/product.service';
 import { SubscriptionService } from 'projects/predyc-business/src/shared/services/subscription.service';
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
+import { Subscription as SubscriptionClass } from 'projects/shared/models/subscription.model'
+
 
 interface SubscriptionInfo {
   productName: string
   coupon: Object
   status: string
   paymentMethod: string
-  createdAt: string
-  currentPeriodStart: string
+  createdAt: number
+  currentPeriodStart: number
   statusBasedComment: string
   // <span *ngIf="subscription.status != 'canceled'" class="ft11 gray-9">Próximo
 //   cobro el {{subscription.currentPeriodEnd |
@@ -104,32 +106,29 @@ export class StudentSubscriptionListComponent {
       const subscriptionsInfo: SubscriptionInfo[] = subscriptions.map(subscription => {
         const price = this.prices.find(p => p.id === subscription.priceRef.id);
         const product = this.products.find(prod => prod.id === price.product.id);
+        const coupon = this.coupons.find(coup => coup.id === subscription.couponRef.id);
   
         return {
-          productName: "prueba",
-          coupon: "prueba",
-          status: "prueba",
-          paymentMethod: "prueba",
-          createdAt: "prueba",
-          currentPeriodStart: "prueba",
+          productName: product.name,
+          coupon: coupon.name,
+          status: SubscriptionClass.statusToDisplayValueDict[subscription.status],
+          paymentMethod: subscription.origin,
+          createdAt: subscription.createdAt,
+          currentPeriodStart: subscription.currentPeriodStart,
           statusBasedComment: "prueba",
-          // userName: user ? user.displayName : "N/A",
-          // userEmail: user ? user.email : "N/A",
-          // productName: product ? product.name : "N/A",
-          // origin: subscription.origin,
-          // status: SubscriptionClass.statusToDisplayValueDict[subscription.status],
-          // createdAt: subscription.createdAt,
-          // currentPeriodStart: subscription.currentPeriodStart,
-          // currentPeriodEnd: subscription.currentPeriodEnd,
-          // priceId: price.id,
-          // interval: subscription.interval,
-          // couponId: price.coupon.id    
         };
       });
       
       this.dataSource.data = subscriptionsInfo;
       this.totalLength = subscriptionsInfo.length;
     });
+  }
+
+  editSubscription(subscription) {
+    
+  }
+  deleteSubscription(subscription) {
+    
   }
 
   // // ------- from predyc admin 
