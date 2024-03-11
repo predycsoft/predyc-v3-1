@@ -12,6 +12,13 @@ import { DialogService } from 'projects/predyc-business/src/shared/services/dial
 import { ProfileService } from 'projects/predyc-business/src/shared/services/profile.service';
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
 import { Subscription, combineLatest } from 'rxjs';
+import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
+import * as XLSX from 'xlsx-js-style';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { timestampToDateNumbers } from 'projects/shared/utils';
+import Swal from 'sweetalert2';
+import { AlertsService } from 'projects/predyc-business/src/shared/services/alerts.service';
+
 
 interface studentInList {
   displayName: string,
@@ -36,6 +43,10 @@ export class EnterpriseStudentsListComponent {
     private departmentService: DepartmentService,
     public dialogService: DialogService,
     private modalService: NgbModal,
+    public icon: IconService,
+    private fb: FormBuilder,
+    private alertService: AlertsService,
+
   ){}
 
 
@@ -67,9 +78,11 @@ export class EnterpriseStudentsListComponent {
       ]
     ).subscribe(([profiles, departments, users]) => {
 
+      console.log('users',users)
+
       const studentsInList: studentInList[] = users.map(user => {
-        const userProfileName = user.profile ? profiles.find(profile => profile.id === user.profile.id).name : "Sin asignar"
-        const userDepartmentName = user.departmentRef ? departments.find(department => department.id === user.departmentRef.id).name : "Sin asignar"
+        const userProfileName = user?.profile ? profiles?.find(profile => profile?.id === user?.profile?.id)?.name : "Sin asignar"
+        const userDepartmentName = user?.departmentRef ? departments?.find(department => department?.id === user?.departmentRef?.id)?.name : "Sin asignar"
 
         return {
           displayName: user.displayName,
@@ -127,6 +140,107 @@ export class EnterpriseStudentsListComponent {
 
   }
 
+  downloadTemplate() {
+    // Construye la URL hacia el documento en la carpeta assets
+    const url = 'assets/files/plantilla carga estudiantes.xlsx';
+  
+    // Crea un elemento <a> temporalmente
+    const a = document.createElement('a');
+    a.href = url;
+    //a.download = 'NombreDelArchivoDescargado.docx'; // Puedes especificar el nombre del archivo para la descarga
+    document.body.appendChild(a); // Agrega el enlace al documento
+    a.click(); // Simula un clic en el enlace para iniciar la descarga
+    document.body.removeChild(a); // Elimina el enlace del documento
+  }
+
+  uploadUsers(evt) {
+
+
+    const target: DataTransfer = <DataTransfer>(evt.target);
+    if (target.files.length !== 1) {
+      throw new Error('Cannot use multiple files');
+    }
+    const reader: FileReader = new FileReader();
+    reader.onload = async (e: any) => {
+      const bstr: string = e.target.result;
+      const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
+      const wsname: string = wb.SheetNames[0];
+      const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+      let data = XLSX.utils.sheet_to_json(ws);
+
+      let enterpriseRef = this.enterpriseRef
+
+      Swal.fire({
+        title: 'Generando usuarios...',
+        text: 'Por favor, espera.',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading()
+        }
+      });
+
+      try {
+        for (let student of data){
+          let userForm: FormGroup
+          userForm = this.fb.group({
+            displayName: [null, [Validators.required]],
+            name: [null],
+            profile: [null],
+            photoUrl: [null],
+            phoneNumber: [null, [Validators.pattern(/^\d*$/)]],
+            department: [null],
+            country: [null],
+            birthdate: [null],
+            email: [null, [Validators.required, Validators.email]],
+            job: [null],
+            enterprise: [null],
+            hiringDate: [null],
+            experience: [null],
+            role:['student']
+          });
+          userForm.patchValue({
+            displayName: student['Nombre'],
+            name: student['Nombre'],
+            phoneNumber: student['Teléfono'],
+            country: student['País'],
+            email: student['Correo'],
+            experience: student['Años Experiencia'],
+            enterprise: enterpriseRef
+          });
+  
+          this.timestampToFormFormat(userForm,student['Fecha Nacimiento (YYYY/MM/DD)'], "birthdate")
+          this.timestampToFormFormat(userForm,student['Fecha Ingreso (YYYY/MM/DD)'], "hiringDate")
+          if(userForm.valid){
+            const formData = userForm.getRawValue()
+            console.log(formData)
+            await this.userService.addUser(formData)
+          }
+        }
+        Swal.close();
+        this.alertService.succesAlert("Usuarios generados existosamente")
+      }
+      catch (error){
+        Swal.close();
+        this.alertService.errorAlert(error)
+
+      }
+    };
+    reader.readAsBinaryString(target.files[0]); 
+
+
+
+  }
+
+
+  timestampToFormFormat(userForm,timestampIn: string, property: ("birthdate" | "hiringDate")) {
+
+    let timestamp = new Date(timestampIn).getTime()
+    console.log(timestamp,timestampIn)
+    const date = timestampToDateNumbers(timestamp)
+    userForm.get(property)?.setValue({
+      day: date.day, month: date.month, year: date.year
+    });
+  }
 
 
   ngOnDestroy() {
