@@ -50,8 +50,8 @@ export class Product {
         userRadar: false,
         studyPlan: false,
         extraCourses: false,
-        particularCourses: false,
         test: false,
+        // createParticularCourses: false,
       },
       acceptsPaypal: false,
       active: true,
@@ -169,6 +169,6 @@ export interface ProductAccesses {
   userRadar: boolean;
   studyPlan: boolean;
   extraCourses: boolean;
-  particularCourses: boolean;
   test: boolean;
+  // createParticularCourses: boolean;
 }

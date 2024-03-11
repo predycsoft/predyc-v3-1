@@ -39,7 +39,7 @@ export class ProductFormComponent {
     userRadar: [false],
     studyPlan: [false],
     extraCourses: [false],
-    particularCourses: [false],
+    // createParticularCourses: [false],
     test: [false],
   });
 
