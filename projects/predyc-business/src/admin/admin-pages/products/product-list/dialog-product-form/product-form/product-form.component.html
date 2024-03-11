@@ -75,28 +75,28 @@
                     <div class="fw" fxLayout="column">
                         <span class="ft15 gray-9 ft500">Accesos</span>
                     </div>
-                    <div class="fw" fxLayout="row" fxLayoutGap=".5rem">
+                    <div formGroupName="accesses" class="fw" fxLayout="row" fxLayoutGap=".5rem">
                         <div class="fw" fxLayout="column">
-                            <label for="acceptsStripe" class="gray-9 ft11">Radar de usuario:</label>
-                            <input id="acceptsStripe" type="checkbox" formControlName="userRadar" />
+                            <label for="userRadar" class="gray-9 ft11">Radar de usuario:</label>
+                            <input id="userRadar" type="checkbox" formControlName="userRadar" />
                         </div>
                         <div class="fw" fxLayout="column">
-                            <label for="acceptsBankTransfer" class="gray-9 ft11">Ver plan de estudio:</label>
-                            <input id="acceptsBankTransfer" type="checkbox" formControlName="studyPlan" />
+                            <label for="studyPlan" class="gray-9 ft11">Ver plan de estudio:</label>
+                            <input id="studyPlan" type="checkbox" formControlName="studyPlan" />
                         </div>
                         <div class="fw" fxLayout="column">
-                            <label for="acceptsZelle" class="gray-9 ft11">Ver listado de extracurriculares:</label>
-                            <input id="acceptsZelle" type="checkbox" formControlName="extraCourses" />
+                            <label for="extraCourses" class="gray-9 ft11">Ver listado de extracurriculares:</label>
+                            <input id="extraCourses" type="checkbox" formControlName="extraCourses" />
                         </div>
-                        <!-- <div class="fw" fxLayout="column">
+                        <div class="fw" fxLayout="column">
+                            <label for="test" class="gray-9 ft11">Presentar examen:</label>
+                            <input id="test" type="checkbox" formControlName="test" />
+                        </div>
+                    </div>
+                    <!-- <div class="fw" fxLayout="column">
                             <label for="acceptsPaypal" class="gray-9 ft11">Crear cursos propios:</label>
                             <input id="acceptsPaypal" type="checkbox" formControlName="createParticularCourses" />
                         </div> -->
-                        <div class="fw" fxLayout="column">
-                            <label for="acceptsPaypal" class="gray-9 ft11">Presentar examen:</label>
-                            <input id="acceptsPaypal" type="checkbox" formControlName="test" />
-                        </div>
-                    </div>
                 </div>
 
                 <div class="mgt20">

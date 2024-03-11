@@ -36,11 +36,9 @@ export class ProductFormComponent {
     canEnrollByHimself: [true],
     canEnrollPrograms: [true],
     isACompanyProduct: [true],
-    userRadar: [false],
-    studyPlan: [false],
-    extraCourses: [false],
-    // createParticularCourses: [false],
-    test: [false],
+    accesses: this.fb.group({userRadar: [false],studyPlan: [false],extraCourses: [false],test: [false],
+      // createParticularCourses: [false], 
+    }),
   });
 
   ngOnInit(): void {
@@ -75,6 +73,9 @@ export class ProductFormComponent {
   }
 
   async onSubmit(): Promise<void> {
+    const formvalue = this.productForm.value
+    // console.log("this.product", this.product)
+    // console.log("formvalue", formvalue)
     this.onSave.emit(this.productForm.value);
   }
 
