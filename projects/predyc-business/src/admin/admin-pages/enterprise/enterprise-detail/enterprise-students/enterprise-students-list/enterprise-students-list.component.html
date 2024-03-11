@@ -1,9 +1,29 @@
 <div class="">
     <div fxLayout="row" fxLayoutAlign=" center">
         <h6 class="ft16 ft500 mgt0 mgb0"> Estudiantes </h6>
-        <mat-icon (click)="openCreateUserModal()" class="mgl10 gray-5 cursorPointer ft20 linkIcon">
-            add_circle</mat-icon>
+        <mat-icon (click)="openCreateUserModal()" class="mgl10 gray-5 cursorPointer ft20 linkIcon">add_circle</mat-icon>
+        <img [matMenuTriggerFor]="tagMenu" [src]="icon.tableShortcut" class="h16px pdl05 cursorPointer" alt="">
     </div>
+
+
+    <mat-menu #tagMenu="matMenu" class="radius6 shadow16 pd0">
+        <div fxLayout="column" class="pd0">
+            <div (click)="downloadTemplate();" mat-menu-item class="opcionMenu"
+                fxLayout="row" fxLayoutAlign=" center">
+                <span class="pdl05 ft12 gray-10">Descargar Plantilla</span>
+            </div>
+            <div (click)="uploadfileUsers.click()" mat-menu-item class="opcionMenu"
+                fxLayout="row" fxLayoutAlign=" center">
+                <span class="pdl05 ft12 gray-10">Cargar Archivo</span>
+            </div>
+        </div>
+    </mat-menu>
+
+
+    <input type="file" (change)="uploadUsers($event)" #uploadfileUsers style="display: none" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
+
+
+
     <div class="fw mgt15">
         <table mat-table [dataSource]="dataSource">
             <!-- Nombre Column -->

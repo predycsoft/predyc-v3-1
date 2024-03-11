@@ -55,7 +55,9 @@ export class UserService {
         name: newUser.name
       })
     );
-    await this.afs.collection(User.collection).doc(uid).set({...newUser.toJson(), uid: uid});
+    const dataToSave = typeof newUser.toJson === 'function' ? newUser.toJson() : newUser;
+
+    await this.afs.collection(User.collection).doc(uid).set({...dataToSave, uid: uid});
     newUser.uid = uid
     if (newUser.profile) {
       const userRef = this.getUserRefById(uid)

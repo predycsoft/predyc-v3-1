@@ -243,5 +243,7 @@ export class IconService {
   examenPredyc2 = "assets/iconsUI/examenPredyc2.png"
 
 
+  tableShortcut: string ="assets/iconsUI/table--shortcut.svg"
+
   constructor() { }
 }
