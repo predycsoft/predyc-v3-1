@@ -138,7 +138,9 @@ export class StudentSubscriptionListComponent {
     dialogRef.afterClosed().subscribe(async (result: SubscriptionInfo) => {
       if (result) {
         try {
-          // await this.licenseService.saveLicense(result.toJson());
+          const editedSubscription: SubscriptionJson = this.subscriptionInfotoJson(result)
+          console.log("editedsubscription", editedSubscription);
+          await this.subscriptionService.saveSubscription(editedSubscription);
           this.dialogService.dialogExito();
         } catch (error) {
           this.dialogService.dialogAlerta("Hubo un error al guardar la licencia. Inténtalo de nuevo.");
@@ -149,6 +151,36 @@ export class StudentSubscriptionListComponent {
   }
   deleteSubscription(subscription) {
     
+  }
+
+  subscriptionInfotoJson(subscriptionInfo: SubscriptionInfo): SubscriptionJson {
+    return {
+      id: subscriptionInfo.id,
+      idAtOrigin: subscriptionInfo.idAtOrigin,
+      origin: subscriptionInfo.origin,
+      createdAt: subscriptionInfo.createdAt,
+      createdAtOrigin: subscriptionInfo.createdAtOrigin,
+      changedAt: subscriptionInfo.changedAt,
+      startedAt: subscriptionInfo.startedAt,
+      currency: subscriptionInfo.currency,
+      currentPeriodStart: subscriptionInfo.currentPeriodStart,
+      currentPeriodEnd: subscriptionInfo.currentPeriodEnd,
+      customer: subscriptionInfo.customer,
+      userRef: subscriptionInfo.userRef,
+      endedAt: subscriptionInfo.endedAt,
+      canceledAt: subscriptionInfo.canceledAt,
+      priceRef: subscriptionInfo.priceRef,
+      status: subscriptionInfo.status,
+      trialStartedAt: subscriptionInfo.trialStartedAt,
+      trialEndedAt: subscriptionInfo.trialEndedAt,
+      currentError: subscriptionInfo.currentError,
+      interval: subscriptionInfo.interval,
+      couponRef: subscriptionInfo.couponRef,
+      nextPaymentDate: subscriptionInfo.nextPaymentDate,
+      nextPaymentAmount: subscriptionInfo.nextPaymentAmount,
+      enterpriseRef: subscriptionInfo.enterpriseRef,
+      licenseRef: subscriptionInfo.licenseRef
+    };
   }
 
   // // ------- from predyc admin 
