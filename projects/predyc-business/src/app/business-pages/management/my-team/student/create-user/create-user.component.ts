@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TimeScale } from 'chart.js/dist';
 import { finalize, firstValueFrom, map, Observable, startWith, Subscription } from 'rxjs';
 import { Department } from 'projects/shared/models/department.model';
@@ -36,6 +36,8 @@ export class CreateUserComponent {
     private departmentService: DepartmentService,
     private storage: AngularFireStorage,
     private afs: AngularFirestore,
+    private modalService: NgbModal,
+
 
   ) {
 
@@ -87,25 +89,43 @@ export class CreateUserComponent {
     this.departmentServiceSubscription = this.departmentService.getDepartments$().subscribe({
       next: departments => {
         this.departments = departments
+        this.filteredDepartments = this.userForm.controls.department.valueChanges.pipe(
+          startWith(''),
+          map(value => this._filter(value || '')),
+        );
       },
       error: error => {
         this.alertService.errorAlert(error.message)
       }
     })
     await this.setupForm()
-    this.filteredDepartments = this.userForm.controls.department.valueChanges.pipe(
-      startWith(''),
-      map(value => this._filter(value || '')),
-    );
+
   }
 
   private _filter(value: string): string[] {
+    console.log('filter',value,this.departments)
     const filterValue = value.toLowerCase();
     return this.departments.map(department => department.name).filter(option => option.toLowerCase().includes(filterValue));
   }
 
-  createDepartment() {
+  formNewDepartment: FormGroup
+  showErrorDepartment = false
+  modalCrearSkill
+
+  createDepartment(modal) {
     console.log("Crear departamento")
+
+
+    this.showErrorDepartment = false;
+    this.formNewDepartment = new FormGroup({
+      nombre: new FormControl(null, Validators.required),
+    })
+
+    this.modalCrearSkill = this.modalService.open(modal, {
+      ariaLabelledBy: 'modal-basic-title',
+      centered: true,
+      size:'sm'
+    });
   }
 
   async setupForm() {
