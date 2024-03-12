@@ -198,13 +198,14 @@ export class EnterpriseStudentsListComponent {
             experience: [null],
             role:['student']
           });
+
           userForm.patchValue({
-            displayName: student['Nombre'],
-            name: student['Nombre'],
-            phoneNumber: student['Teléfono'],
-            country: student['País'],
-            email: student['Correo'],
-            experience: student['Años Experiencia'],
+            displayName: student['Nombre']?student['Nombre']:null,
+            name: student['Nombre']?student['Nombre']:null,
+            phoneNumber: student['Teléfono']?student['Teléfono']:null,
+            country: student['País']?student['País']:null,
+            email: student['Correo']?student['Correo']:null,
+            experience: student['Años Experiencia']?student['Años Experiencia']:null,
             enterprise: enterpriseRef
           });
   
@@ -233,6 +234,10 @@ export class EnterpriseStudentsListComponent {
 
 
   timestampToFormFormat(userForm,timestampIn: string, property: ("birthdate" | "hiringDate")) {
+
+    if(!timestampIn){
+      return null
+    }
 
     let timestamp = new Date(timestampIn).getTime()
     console.log(timestamp,timestampIn)

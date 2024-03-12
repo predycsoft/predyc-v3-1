@@ -465,6 +465,7 @@ export class CreateCourseComponent {
           imagen_instructor: new FormControl(null, Validators.required),
           skills: new FormControl(null, Validators.required),
           vimeoFolderId: new FormControl(null),
+          proximamente: new FormControl(null),
         })
         this.initSkills();
       }, 2000);
@@ -507,7 +508,8 @@ export class CreateCourseComponent {
           imagen: new FormControl(curso.imagen, Validators.required),
           imagen_instructor: new FormControl(instructor.foto, Validators.required),
           skills: new FormControl(curso.skillsRef, Validators.required),
-          
+          proximamente: new FormControl(curso.proximamente),
+
         });
 
         //this.formNewCourse.get('resumen_instructor').disable();
