@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, SimpleChanges, ViewChild } from '@angular/core';
 import { DocumentReference } from '@angular/fire/compat/firestore';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
@@ -44,9 +44,6 @@ export class StudentSubscriptionListComponent {
     private activatedRoute: ActivatedRoute,
     private userService: UserService,
     private subscriptionService: SubscriptionService,
-    private priceService: PriceService,
-    private productService: ProductService,
-    private couponService: CouponService,
     private dialog: MatDialog,
     public dialogService: DialogService,
 
@@ -71,29 +68,26 @@ export class StudentSubscriptionListComponent {
   totalLength: number
 
   @Input() user: User
+  @Input() prices: Price[]
+  @Input() products: Product[]
+  @Input() coupons: Coupon[]
   userRef: DocumentReference<User>
-
-  prices: Price[]
-  products: Product[]
-  coupons: Coupon[]
 
   combinedServicesSubscription: Subscription
   subscriptionsSubscription: Subscription
 
   ngOnInit() {
     this.userRef = this.userService.getUserRefById(this.user.uid)
-    this.combinedServicesSubscription = combineLatest(
-      [
-        this.productService.getProducts$(),
-        this.priceService.getPrices$(), 
-        this.couponService.getCoupons$(),
-      ]
-    ).subscribe(([products, prices, coupons]) => {
-      this.prices = prices
-      this.products = products
-      this.coupons = coupons
-      this.performSearch();
-    })
+    this.performSearch();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (this.userRef) {
+      // Check if prices, products, or coupons have changed
+      if (changes.prices || changes.products || changes.coupons) {
+        this.performSearch();
+      }
+    }
   }
 
   ngAfterViewInit() {
