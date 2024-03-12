@@ -1,0 +1,42 @@
+<div class="pd30 backWhite" fxLayout="column">
+    <div class="mgt10" fxLayout="column">
+        <span class="ft11 gray-9">Comienzo del período:</span>
+        <input type="datetime-local" formControlName="paymentMethod">
+        <!-- <input type="datetime-local" [(ngModel)]="_date" (ngModelChange)="onDateChange()"> -->
+
+    </div>
+    <div fxLayout="column">
+        <span class="gray-8 ft500 ft12">Status</span>
+        <select  formControlName="paymentMethod">
+        <!-- <select [(ngModel)]="subscription.status"> -->
+            <option value="active">Activa</option>
+            <option value="trialing">Trial</option>
+            <option value="past_due">Sin pagar</option>
+            <option value="canceled">Cancelada</option>
+        </select>
+    </div>
+    <div *ngIf="subscriptionInfo.status == 'canceled'">
+        <span class="ft11 gray-9">Fecha de canceleación: {{subscriptionInfo.endedAt | date:"dd/MM/yyyy"}}</span>
+        <input type="datetime-local"  formControlName="paymentMethod" (ngModelChange)="onDateChange()">
+        <!-- <input type="datetime-local" [(ngModel)]="_dateCanceled" (ngModelChange)="onDateChange()"> -->
+    </div>
+
+    <div class="mgt10" fxLayout="column">
+        <span class="ft11 gray-9">Intervalos pagados:</span>
+        <input type="number"  formControlName="paymentMethod">
+        <!-- <input type="number" [(ngModel)]="subscriptionInfo.interval"> -->
+    </div>
+ 
+    <div class="fw mgt20" fxLayout="row" fxLayoutAlign="start" fxLayoutGap="1rem">
+        <div class="backBlue5 pd03 radius6 w150px centertext cursorPointer" fxLayoutAlign="center center" fxLayout="row"
+            fxLayoutGap=".5rem" (click)="saveSubscription()">
+            <mat-icon class="ft16 gray-1 pd0">save</mat-icon>
+            <span class="gray-1 ft12 ft500">Guardar</span>
+        </div>
+        <div class="backRed5 pd03 radius6 w150px centertext cursorPointer" fxLayoutAlign="center center" fxLayout="row"
+            fxLayoutGap=".5rem" (click)="cancel()">
+            <mat-icon class="ft16 gray-1 pd0">cancel</mat-icon>
+            <span class="gray-1 ft12 ft500 ">Cancelar</span>
+        </div>
+    </div>
+</div>

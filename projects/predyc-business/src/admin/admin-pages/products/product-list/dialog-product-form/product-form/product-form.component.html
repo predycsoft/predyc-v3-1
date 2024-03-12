@@ -41,7 +41,7 @@
                         <textarea id="description" type="text" autocomplete="off" class="backWhite fw" formControlName="description"></textarea>
                     </div>
 
-                    <div class="fw" fxLayout="row">
+                    <div class="fw" fxLayout="row" fxLayoutGap=".5rem">
                         <div class="fw" fxLayout="column">
                             <label for="acceptsStripe" class="gray-9 ft11">Acepta Stripe:</label>
                             <input id="acceptsStripe" type="checkbox" formControlName="acceptsStripe" />
@@ -59,11 +59,11 @@
                             <input id="acceptsPaypal" type="checkbox" formControlName="acceptsPaypal" />
                         </div>
                         <div class="fw" fxLayout="column">
-                            <label for="canEnrollByHimself" class="gray-9 ft11">Puede inscribirse en cualquier curso:</label>
+                            <label for="canEnrollByHimself" class="gray-9 ft11">Inscribirse en cualquier curso:</label>
                             <input id="canEnrollByHimself" type="checkbox" formControlName="canEnrollByHimself" />
                         </div>
                         <div class="fw" fxLayout="column">
-                            <label for="canEnrollPrograms" class="gray-9 ft11">Puede inscribirse en cualquier programa:</label>
+                            <label for="canEnrollPrograms" class="gray-9 ft11">Inscribirse en cualquier programa:</label>
                             <input id="canEnrollPrograms" type="checkbox" formControlName="canEnrollPrograms" />
                         </div>
                         <!-- EMPRESAS -->
@@ -72,6 +72,31 @@
                             <input id="isACompanyProduct" type="checkbox" formControlName="isACompanyProduct" />
                         </div>
                     </div>
+                    <div class="fw" fxLayout="column">
+                        <span class="ft15 gray-9 ft500">Accesos</span>
+                    </div>
+                    <div formGroupName="accesses" class="fw" fxLayout="row" fxLayoutGap=".5rem">
+                        <div class="fw" fxLayout="column">
+                            <label for="userRadar" class="gray-9 ft11">Radar de usuario:</label>
+                            <input id="userRadar" type="checkbox" formControlName="userRadar" />
+                        </div>
+                        <div class="fw" fxLayout="column">
+                            <label for="studyPlan" class="gray-9 ft11">Ver plan de estudio:</label>
+                            <input id="studyPlan" type="checkbox" formControlName="studyPlan" />
+                        </div>
+                        <div class="fw" fxLayout="column">
+                            <label for="extraCourses" class="gray-9 ft11">Ver listado de extracurriculares:</label>
+                            <input id="extraCourses" type="checkbox" formControlName="extraCourses" />
+                        </div>
+                        <div class="fw" fxLayout="column">
+                            <label for="test" class="gray-9 ft11">Presentar examen:</label>
+                            <input id="test" type="checkbox" formControlName="test" />
+                        </div>
+                    </div>
+                    <!-- <div class="fw" fxLayout="column">
+                            <label for="acceptsPaypal" class="gray-9 ft11">Crear cursos propios:</label>
+                            <input id="acceptsPaypal" type="checkbox" formControlName="createParticularCourses" />
+                        </div> -->
                 </div>
 
                 <div class="mgt20">

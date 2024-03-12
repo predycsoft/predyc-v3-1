@@ -156,6 +156,15 @@
                                 [value]="option">
                                 {{option}}
                             </mat-option>
+                            <!-- <mat-option
+                                class="multiline-mat-option"
+                                value="null"
+                                (click)="createDepartment(modalCrearDepartment)">
+                                <div fxLayout="row" fxLayoutAlign=" center">
+                                    <div>Crear departamento</div>
+                                    <img [src]="icon.addNew" alt="Crear nuevo departamento" class="mgl20">
+                                </div>
+                            </mat-option> -->
                         </mat-autocomplete>
                         <!-- Mensaje de Feedback Inválido -->
                         <div *ngIf="isDepartmentInvalid" class="invalid-feedback" style="display: block;">
@@ -182,16 +191,7 @@
                                 >
                                 {{option}}
                             </mat-option>
-                            <mat-option
-                                class="multiline-mat-option"
-                                value="null"
-                                (click)="createDepartment()"
-                                >
-                                <div fxLayout="row" fxLayoutAlign=" center">
-                                    <div>Crear departamento</div>
-                                    <img [src]="icon.addNew" alt="Crear nuevo departamento" class="mgl20">
-                                </div>
-                            </mat-option>
+ 
                         </mat-autocomplete>
                     </div> -->
                     <!-- <div *ngFor="let option of departments | async">
@@ -215,3 +215,34 @@
         </div>
     </div>
 </form>
+
+
+<ng-template #modalCrearDepartment let-modal>
+    <div class="modal-header bg-web-primary text-white px-3 py-1">
+      <div class="modal-title pd10" fxLayout="row" fxLayoutAlign="start center">
+        <span class="ft16 ft500 gray-10">Crear competencia</span>
+      </div>
+      <img style="cursor: pointer;" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px" alt="">
+    </div>
+    <div class="modal-body" style="overflow-y: auto; max-height: 80vh;">
+        <form [formGroup]="formNewDepartment" class="fw">
+            <div fxLayout="row" class="fw">
+                <div class="form-group fw">
+                    <label>Nombre de la competencia</label>
+                    <input formControlName="nombre" [class.is-invalid]="formNewDepartment.controls['nombre'].errors && showErrorDepartment" type="text" class="form-control customInput" placeholder="Escriba el nombre de la competencia">
+                    <div class="invalid-feedback" *ngIf="formNewDepartment.controls['nombre'].errors && showErrorDepartment">
+                        Debe indicar el nombre de la competencia.
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!-- Botón de guardar en la esquina inferior derecha -->
+        <div fxLayout="row" fxLayoutAlign="end end" class="pdt03" style="width: 100%;">
+            <button class="blueButton gray-1 radius4 ft12 h28px mgt10" fxLayout="row" fxLayoutGap="0.625rem" fxLayoutAlign="center center">
+                <img [src]="icon.save" class="h16px pdr05 makeWhite" alt="">
+                Guardar competencia
+            </button>
+        </div>
+    </div>
+    
+</ng-template>
