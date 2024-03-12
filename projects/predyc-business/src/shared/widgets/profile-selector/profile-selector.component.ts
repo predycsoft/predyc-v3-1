@@ -25,7 +25,13 @@ export class ProfileSelectorComponent {
 
   ngOnInit() {
     this.profileService.loadProfiles()
-    this.profileService.getProfiles$().subscribe(profiles => {if (profiles) this.profiles = profiles})
+    this.profileService.getProfiles$().subscribe(profiles => {
+      if (profiles){
+
+        console.log('perfil reviar',this.profiles)
+        this.profiles = profiles
+      }
+    })
     this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
       const profile = params['profile'] || '';
       this.selectedProfile = profile

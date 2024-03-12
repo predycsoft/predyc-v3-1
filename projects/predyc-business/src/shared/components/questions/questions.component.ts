@@ -262,7 +262,7 @@ export class QuestionsComponent {
         file: [null]
       }),
       options: this.fb.array([], []),
-      points: [this.heartsActivity?1:'', [Validators.required, Validators.min(1), Validators.pattern(/^\d*$/)]],
+      points: [1, [Validators.required, Validators.min(1), Validators.pattern(/^\d*$/)]],
       skills: this.fb.array([]),
     }, { validators: questionTypeToValidators[defaultQuestionType] }));
     this.questionStatus.push({
@@ -288,6 +288,12 @@ export class QuestionsComponent {
       this.changeQuestion.emit(this.mainForm);
     }
 
+  }
+
+  changeTextQuestions(event){
+    let text = event.value
+    if(text?.length>0)
+    this.changeQuestion.emit(this.mainForm);
   }
 
   changeOption(option){

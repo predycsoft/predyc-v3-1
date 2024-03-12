@@ -29,7 +29,7 @@ export class ProductService {
     return this.afs.collection<Product>(Product.collection).doc(productId).ref
   }
   
-  async saveProduct(product): Promise<void> {
+  async saveProduct(product: Product): Promise<void> {
     return await this.afs.collection(Product.collection).doc(product.id).set(product, { merge: true });
 
   }

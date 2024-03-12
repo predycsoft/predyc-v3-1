@@ -53,6 +53,7 @@
                 <span [ngClass]="tab == 0 ? 'selectedTab ' : 'ft13 gray-9 cursorPointer'" (click)="tab=0">Ventas</span>
                 <span [ngClass]="tab == 1 ? 'selectedTab' : 'ft13 gray-9 cursorPointer'" (click)="tab=1">Académico</span>
             </div>
+            <!-- Ventas -->
             <div *ngIf="tab == 0" class="fw">
                 <div class="fw">
                     <div class="fw mgt20 pdb05 border-b" fxLayout="row" fxLayoutAlign="space-between center">

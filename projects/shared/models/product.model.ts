@@ -6,6 +6,7 @@ export interface ProductJson {
     acceptsPaypal: boolean;
     acceptsStripe: boolean;
     acceptsZelle: boolean;
+    accesses: ProductAccesses;
     active: boolean;
     canEnrollByHimself: boolean;
     canEnrollPrograms: boolean;
@@ -25,6 +26,7 @@ export class Product {
     acceptsPaypal: boolean;
     acceptsStripe: boolean;
     acceptsZelle: boolean;
+    accesses: ProductAccesses;
     active: boolean;
     canEnrollByHimself: boolean;
     canEnrollPrograms: boolean;
@@ -44,6 +46,13 @@ export class Product {
       acceptsStripe: false,
       acceptsBankTransfer: false,
       acceptsZelle: false,
+      accesses: {
+        userRadar: false,
+        studyPlan: false,
+        extraCourses: false,
+        test: false,
+        // createParticularCourses: false,
+      },
       acceptsPaypal: false,
       active: true,
       canEnrollByHimself: false,
@@ -72,6 +81,7 @@ export class Product {
       product.acceptsPaypal = obj.acceptsPaypal;
       product.acceptsStripe = obj.acceptsStripe;
       product.acceptsZelle = obj.acceptsZelle;
+      product.accesses = obj.accesses;
       product.active = obj.active;
       product.canEnrollByHimself = obj.canEnrollByHimself;
       product.canEnrollPrograms = obj.canEnrollPrograms;
@@ -92,6 +102,7 @@ export class Product {
         acceptsPaypal: this.acceptsPaypal,
         acceptsStripe: this.acceptsStripe,
         acceptsZelle: this.acceptsZelle,
+        accesses: this.accesses,
         active: this.active,
         canEnrollByHimself: this.canEnrollByHimself,
         canEnrollPrograms: this.canEnrollPrograms,
@@ -152,4 +163,12 @@ export class Product {
 export interface ProductFeatures {
     text: string;
     isActive: boolean;
-  }
+}
+
+export interface ProductAccesses {
+  userRadar: boolean;
+  studyPlan: boolean;
+  extraCourses: boolean;
+  test: boolean;
+  // createParticularCourses: boolean;
+}

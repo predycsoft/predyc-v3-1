@@ -1,4 +1,4 @@
-import { Component, Inject, SimpleChanges } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subscription, combineLatest } from 'rxjs';
@@ -8,7 +8,6 @@ import { Price } from 'projects/shared/models/price.model';
 import { Product } from 'projects/shared/models/product.model';
 import { CouponService } from 'projects/predyc-business/src/shared/services/coupon.service';
 import { PriceService } from 'projects/predyc-business/src/shared/services/price.service';
-import { ProductService } from 'projects/predyc-business/src/shared/services/product.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 
 @Component({
@@ -20,7 +19,6 @@ export class DialogNewLicenseComponent {
 
   constructor(
     public matDialogRef: MatDialogRef<DialogNewLicenseComponent>, 
-    private productService: ProductService,
     private priceService: PriceService,
     private couponService: CouponService,
     public icon: IconService,
@@ -55,7 +53,7 @@ export class DialogNewLicenseComponent {
   showWarningDate = false
 
   ngOnInit(): void {
-    this.license = License.getLicenseTemplate()
+    this.license = License.fromJson({...License.getLicenseTemplate()})
     this.products = this.data.products
     this.prices = this.data.prices
     this.coupons = this.data.coupons

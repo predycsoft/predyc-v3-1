@@ -1172,8 +1172,12 @@ export class CreateCourseComponent {
 
   questionsFormated = false
 
+  currentTab = 'Contenido del Curso'
+
   onTabChange(event: MatTabChangeEvent) {
+    this.currentTab = 'Contenido del Curso'
     if (event.tab.textLabel === 'Examen') {
+      this.currentTab = 'Examen'
       console.log('El tab Examen fue seleccionado');
 
       if(!this.examen){
@@ -1185,8 +1189,6 @@ export class CreateCourseComponent {
         this.questionsFormated = true
         this.examen = exam;
       }
-
-      
       this.formatExamQuestions();
     }
   }
@@ -1264,29 +1266,33 @@ export class CreateCourseComponent {
   formatExamQuestions(){
 
     console.log('formatExamQuestions')
-    this.updateTriggeQuestionsExam++;
+
     setTimeout(() => {
-      if(this.validExam ==null || !this.validExam?.valid || this.validExam.value?.questions?.length == 0){
-        this.updateTriggeQuestionsExam++;
-        console.log('formatExamQuestions invalid')
-      }
-      else{
-        let questions = structuredClone(this.validExam.value.questions)
-        questions.forEach(question => {
-          if(!question.typeFormated){
-            question.typeFormated = this.getTypeQuestion(question.type)
-            if(question.type == 'complete'){
-              this.showDisplayText(question)
-            }
-          }
-        });
-        console.log('revisar',this.examen,questions)
-        if(this.examen){
-          this.examen.questions = questions
-          this.questionsFormated = true
+      this.updateTriggeQuestionsExam++;
+      setTimeout(() => {
+        if(this.validExam ==null || !this.validExam?.valid || this.validExam.value?.questions?.length == 0){
+          this.updateTriggeQuestionsExam++;
+          console.log('formatExamQuestions invalid')
         }
-      }
-    }, 30);
+        else{
+          let questions = structuredClone(this.validExam.value.questions)
+          questions.forEach(question => {
+            if(!question.typeFormated){
+              question.typeFormated = this.getTypeQuestion(question.type)
+              if(question.type == 'complete'){
+                this.showDisplayText(question)
+              }
+            }
+          });
+          console.log('revisar',this.examen,questions)
+          if(this.examen){
+            this.examen.questions = questions
+            this.questionsFormated = true
+          }
+        }
+      }, 30);
+    }, 20);
+
   }
 
 
@@ -1513,6 +1519,7 @@ export class CreateCourseComponent {
     else{
 
       let instructor = this.formNewInstructor.value
+      instructor.fechaCreacion = new Date
       instructor.ultimaEdicion = new Date
       instructor.ultimoEditor = this.user.uid
       let enterpriseRef =this.enterpriseService.getEnterpriseRef()
