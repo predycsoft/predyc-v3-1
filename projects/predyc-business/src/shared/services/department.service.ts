@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
-import { Observable, switchMap } from 'rxjs';
+import { Observable, combineLatest, map, switchMap } from 'rxjs';
 import { Department } from 'projects/shared/models/department.model';
 import { Enterprise } from 'projects/shared/models/enterprise.model';
 import { EnterpriseService } from './enterprise.service';
@@ -21,7 +21,7 @@ export class DepartmentService {
     department.id = ref.id;
   }
 
-  public getDepartments$(): Observable<Department[]> {
+  public _getDepartments$(): Observable<Department[]> {
     return this.enterpriseService.enterpriseLoaded$.pipe(
       switchMap(isLoaded => {
         if (!isLoaded) return []
@@ -31,6 +31,31 @@ export class DepartmentService {
       })
     )
     
+  }
+
+
+  public getDepartments$(): Observable<Department[]> {
+    return this.enterpriseService.enterpriseLoaded$.pipe(
+      switchMap(isLoaded => {
+        if (!isLoaded) return []
+        const enterpriseRef = this.enterpriseService.getEnterpriseRef();
+            
+        // Query to get courses matching enterpriseRef
+        const enterpriseMatch$ = this.afs.collection<Department>(Department.collection, ref =>
+          ref.where('enterpriseRef', '==', enterpriseRef)
+        ).valueChanges({ idField: 'id' });
+      
+        // Query to get courses where enterpriseRef is empty
+        const enterpriseEmpty$ = this.afs.collection<Department>(Department.collection, ref =>
+          ref.where('enterpriseRef', '==', null)
+        ).valueChanges({ idField: 'id' });
+      
+        // Combine both queries
+        return combineLatest([enterpriseMatch$, enterpriseEmpty$]).pipe(
+          map(([matched, empty]) => [...matched, ...empty]),
+        )
+      })
+    )
   }
 
   public getDepartmentRefById(id: string): DocumentReference<Department> {

@@ -87,20 +87,26 @@ export class CreateUserComponent {
     this.departmentServiceSubscription = this.departmentService.getDepartments$().subscribe({
       next: departments => {
         this.departments = departments
+        console.log('this.departments',this.departments)
+        this.filteredDepartments = this.userForm.controls.department.valueChanges.pipe(
+          startWith(''),
+          map(value => this._filter(value || '')),
+        );
       },
       error: error => {
         this.alertService.errorAlert(error.message)
       }
     })
     await this.setupForm()
-    this.filteredDepartments = this.userForm.controls.department.valueChanges.pipe(
-      startWith(''),
-      map(value => this._filter(value || '')),
-    );
+    // this.filteredDepartments = this.userForm.controls.department.valueChanges.pipe(
+    //   startWith(''),
+    //   map(value => this._filter(value || '')),
+    // );
   }
 
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
+    console.log('this.departments',this.departments,filterValue)
     return this.departments.map(department => department.name).filter(option => option.toLowerCase().includes(filterValue));
   }
 
