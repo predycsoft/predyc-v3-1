@@ -68,6 +68,7 @@ export class DialogEditSubscriptionComponent {
 
     this.subscriptionInfo.currentPeriodStart = +parsedDate
     this.subscriptionInfo.currentPeriodEnd = this.getPeriodEnd()
+    this.subscriptionInfo.changedAt = +new Date()
 
     if(this.form.get("status").value == 'canceled'){
       const parsedDateEnd = this.toDate(this.form.get("endedAt").value)
