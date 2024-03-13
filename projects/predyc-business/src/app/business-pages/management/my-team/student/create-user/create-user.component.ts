@@ -396,9 +396,9 @@ export class CreateUserComponent {
 
       }
 
-      let departmentNew = this.departments.find(x=>x.id == user?.departmentRef.id)
+      let departmentNew = this.departments.find(x=>x?.id == user?.departmentRef?.id)
 
-      if(departmentNew &&!departmentNew.enterpriseRef){
+      if(departmentNew &&!departmentNew?.enterpriseRef){
 
         let baseDepartment = this.afs.collection<Department>(Department.collection).doc(departmentNew.id).ref;
         let enterpriseRef = this.enterpriseService.getEnterpriseRef()
