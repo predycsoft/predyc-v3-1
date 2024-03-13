@@ -24,11 +24,14 @@ export class ProfileSelectorComponent {
   private queryParamsSubscription: Subscription
 
   ngOnInit() {
+
+    console.log('perfil reviar',this.profiles)
     this.profileService.loadProfiles()
     this.profileService.getProfiles$().subscribe(profiles => {
       if (profiles){
 
-        console.log('perfil reviar',this.profiles)
+        profiles = profiles.filter(x=>x.enterpriseRef)
+
         this.profiles = profiles
       }
     })
