@@ -64,7 +64,7 @@ export class StudentSubscriptionListComponent {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  pageSize: number = 4
+  pageSize: number = 3
   totalLength: number
 
   @Input() user: User
