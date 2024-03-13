@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, CollectionReference, DocumentReference, Query } from '@angular/fire/compat/firestore';
 import { EnterpriseService } from './enterprise.service';
-import { Subscription } from 'projects/shared/models/subscription.model';
+import { Subscription, SubscriptionJson } from 'projects/shared/models/subscription.model';
 import { License } from 'projects/shared/models/license.model';
 import { User } from 'projects/shared/models/user.model';
 import { UserService } from './user.service';
@@ -29,7 +29,7 @@ export class SubscriptionService {
     return this.afs.collection<Subscription>(Subscription.collection).valueChanges()
   }
   
-  async createUserSubscription(license: License, licenseRef: DocumentReference, userId: string) {
+  async createUserSubscriptionByLicense(license: License, licenseRef: DocumentReference, userId: string) {
     let subscription = new Subscription
       
     subscription.canceledAt = null
@@ -132,6 +132,10 @@ export class SubscriptionService {
     } catch (error) {
       console.error("Error al eliminar suscripciones: ", error);
     }
+  }
+
+  async saveSubscription(subscription: SubscriptionJson): Promise<void> {
+    return await this.afs.collection(Subscription.collection).doc(subscription.id).set(subscription, { merge: true });
   }
 
 }
