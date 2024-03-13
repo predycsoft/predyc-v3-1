@@ -13,7 +13,10 @@ export class DepartmentService {
   constructor(
     private afs: AngularFirestore,
     private enterpriseService: EnterpriseService
-  ) { }
+  ) { 
+    //this.fixDepartments()
+
+  }
 
   public async add(department: Department) {
     const ref = this.afs.collection<Department>(Department.collection).doc().ref;
@@ -58,7 +61,32 @@ export class DepartmentService {
     )
   }
 
+  async fixDepartments(){
+
+    console.log('fixDepartments')
+
+    const batch = this.afs.firestore.batch();
+  
+    // Referencia a la colección de 'skill'
+    const collectionRef = this.afs.collection(Department.collection).ref;
+    
+    // Obtiene todos los documentos de la colección 'skill'
+    const snapshot = await collectionRef.get();
+    
+    // Itera sobre cada documento y actualiza el campo 'enterprise' a null
+    snapshot.docs.forEach(doc => {
+      batch.update(doc.ref, { enterpriseRef: null,baseDepartment: null});
+    });
+  
+    // Ejecuta el batch write
+    await batch.commit();
+    
+  }
+
   public getDepartmentRefById(id: string): DocumentReference<Department> {
     return this.afs.collection<Department>(Department.collection).doc(id).ref
   }
+
+
+
 }

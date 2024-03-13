@@ -5,13 +5,16 @@ export interface DepartmentJson {
     id: string | null,
     name: string,
     enterpriseRef: DocumentReference<Enterprise>
+    baseDepartment: DocumentReference<Department>
+
 }
 
 export class Department {
     constructor(
         public id: string | null,
         public name: string,
-        public enterpriseRef: DocumentReference<Enterprise>
+        public enterpriseRef: DocumentReference<Enterprise>,
+        public baseDepartment: DocumentReference<Department>
     ) {}
 
     public static collection: string = 'department'
@@ -20,7 +23,8 @@ export class Department {
         return new Department(
             departmentJson.id,
             departmentJson.name,
-            departmentJson.enterpriseRef
+            departmentJson.enterpriseRef,
+            departmentJson.baseDepartment
         )
     }
 
@@ -28,7 +32,8 @@ export class Department {
         return {
             id: this.id,
             name: this.name,
-            enterpriseRef: this.enterpriseRef
+            enterpriseRef: this.enterpriseRef,
+            baseDepartment: this.baseDepartment
         }
     }
 }

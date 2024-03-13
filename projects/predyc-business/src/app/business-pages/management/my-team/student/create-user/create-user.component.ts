@@ -88,7 +88,18 @@ export class CreateUserComponent {
     })
     this.departmentServiceSubscription = this.departmentService.getDepartments$().subscribe({
       next: departments => {
-        this.departments = departments
+
+        let departmentsBase=[]
+        departments.forEach(element => {
+          if(element?.baseDepartment?.id){
+            departmentsBase.push(element?.baseDepartment?.id)
+          }
+        });
+
+        this.departments = departments.filter(department => !departmentsBase.includes(department.id));
+        console.log('Filtrados', this.departments);
+
+
         this.filteredDepartments = this.userForm.controls.department.valueChanges.pipe(
           startWith(''),
           map(value => this._filter(value || '')),
@@ -110,22 +121,39 @@ export class CreateUserComponent {
 
   formNewDepartment: FormGroup
   showErrorDepartment = false
-  modalCrearSkill
+  modalCrearDepartment
 
   createDepartment(modal) {
-    console.log("Crear departamento")
-
-
+    this.userForm.get("department").patchValue('');
     this.showErrorDepartment = false;
     this.formNewDepartment = new FormGroup({
       nombre: new FormControl(null, Validators.required),
     })
 
-    this.modalCrearSkill = this.modalService.open(modal, {
+    this.modalCrearDepartment = this.modalService.open(modal, {
       ariaLabelledBy: 'modal-basic-title',
       centered: true,
       size:'sm'
     });
+  }
+
+
+  async saveNewDepartment(){
+    this.showErrorDepartment = false;
+
+    if(this.formNewDepartment.valid){
+      let enterpriseRef = this.enterpriseService.getEnterpriseRef()
+      let deparment = new Department(null,this.formNewDepartment.value.nombre,enterpriseRef,null)
+      await this.departmentService.add(deparment)
+      this.modalCrearDepartment.close()
+      this.userForm.get("department").patchValue(deparment.name);
+
+    }
+    else{
+      this.showErrorDepartment = true;
+    }
+    
+
   }
 
   async setupForm() {
@@ -367,6 +395,21 @@ export class CreateUserComponent {
         user.profile = profileRef;
 
       }
+
+      let departmentNew = this.departments.find(x=>x.id == user?.departmentRef.id)
+
+      if(departmentNew &&!departmentNew.enterpriseRef){
+
+        let baseDepartment = this.afs.collection<Department>(Department.collection).doc(departmentNew.id).ref;
+        let enterpriseRef = this.enterpriseService.getEnterpriseRef()
+
+        let deparment = new Department(null,departmentNew.name,enterpriseRef,baseDepartment)
+        console.log('deparmentadd',deparment)
+        await this.departmentService.add(deparment)
+        let departmentRef = await  this.afs.collection<Department>(Department.collection).doc(deparment.id).ref;
+        user.departmentRef = departmentRef;
+      }
+
 
       if (this.studentToEdit) {
        await this.userService.editUser(user.toJson())
