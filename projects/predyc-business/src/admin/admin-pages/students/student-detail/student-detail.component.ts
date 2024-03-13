@@ -9,7 +9,7 @@ import { User } from 'projects/shared/models/user.model';
 import { calculateAgeFromTimestamp, timestampToDateNumbers } from 'projects/shared/utils';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogCreateSubscriptionComponent } from 'projects/predyc-business/src/shared/components/subscription/dialog-create-subscription/dialog-create-subscription.component';
-import { SubscriptionJson } from 'projects/shared/models/subscription.model';
+import { Subscription as SubscriptionClass, SubscriptionJson } from 'projects/shared/models/subscription.model';
 import { DialogService } from 'projects/predyc-business/src/shared/services/dialog.service';
 import { SubscriptionService } from 'projects/predyc-business/src/shared/services/subscription.service';
 import { CouponService } from 'projects/predyc-business/src/shared/services/coupon.service';
@@ -18,6 +18,8 @@ import { ProductService } from 'projects/predyc-business/src/shared/services/pro
 import { Price } from 'projects/shared/models/price.model';
 import { Coupon } from 'projects/shared/models/coupon.model';
 import { Product } from 'projects/shared/models/product.model';
+import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
+import { DocumentReference } from '@angular/fire/compat/firestore';
 
 @Component({
   selector: 'app-student-detail',
@@ -29,6 +31,7 @@ export class StudentDetailComponent {
   userId = this.route.snapshot.paramMap.get('uid');
   user
   tab: number = 0
+  enterpriseRef: DocumentReference<Enterprise> = null
 
   constructor(
     private titleService: Title,
@@ -40,8 +43,7 @@ export class StudentDetailComponent {
     private priceService: PriceService,
     private productService: ProductService,
     private couponService: CouponService,
-
-
+    private enterpriseService: EnterpriseService,
   ) {}
 
   userSubscription: Subscription
@@ -63,6 +65,7 @@ export class StudentDetailComponent {
         }
         return this.afs.collection<Enterprise>(Enterprise.collection).doc(user.enterprise.id).valueChanges().pipe(
           map(enterprise => {
+            if (enterprise) this.enterpriseRef = this.enterpriseService.getEnterpriseRefById(enterprise.id)
             return {...newUser, enterprise}
           }),
         )
@@ -89,18 +92,23 @@ export class StudentDetailComponent {
   createSubscription() {
     const dialogRef = this.dialog.open(DialogCreateSubscriptionComponent, {
       data: {
-
+        userId: this.user.uid, 
+        products: this.products,
+        prices: this.prices,
+        coupons: this.coupons,
+        enterpriseRef: this.enterpriseRef
       }
     });
   
-    dialogRef.afterClosed().subscribe(async (result: SubscriptionJson) => {
+    dialogRef.afterClosed().subscribe(async (result: SubscriptionClass) => {
       if (result) {
         try {
-          
-          // await this.subscriptionService.saveSubscription(editedSubscription);
+          console.log("result", result)
+          await this.subscriptionService.saveSubscription(result.toJson());
           this.dialogService.dialogExito();
         } catch (error) {
-          this.dialogService.dialogAlerta("Hubo un error al guardar la licencia. Inténtalo de nuevo.");
+          this.dialogService.dialogAlerta("Hubo un error al crear la suscripción. Inténtalo de nuevo.");
+          console.error(error)
         }
       }
     });

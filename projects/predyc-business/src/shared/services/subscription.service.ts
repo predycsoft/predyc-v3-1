@@ -29,7 +29,7 @@ export class SubscriptionService {
     return this.afs.collection<Subscription>(Subscription.collection).valueChanges()
   }
   
-  async createUserSubscription(license: License, licenseRef: DocumentReference, userId: string) {
+  async createUserSubscriptionByLicense(license: License, licenseRef: DocumentReference, userId: string) {
     let subscription = new Subscription
       
     subscription.canceledAt = null

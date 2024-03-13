@@ -112,7 +112,7 @@ export class LicenseService {
       //const dialogResult = await firstValueFrom(this.dialogService.dialogConfirmar().afterClosed());
       //if (dialogResult) {
       if (true) {
-        const createSubscriptionsPromises = usersIds.map(userId => this.subscriptionService.createUserSubscription(license, licenseRef, userId));
+        const createSubscriptionsPromises = usersIds.map(userId => this.subscriptionService.createUserSubscriptionByLicense(license, licenseRef, userId));
         await Promise.all(createSubscriptionsPromises)
         // Update license quantityUsed field OR rotations.
         console.log(rotation,(license.rotations>license.rotationsUsed),rotation && license.rotations>license.rotationsUsed)
