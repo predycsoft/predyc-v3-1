@@ -1,7 +1,7 @@
 <div class="fw" class="fw backWhite radius10" fxLayout="column">    <div [ngClass]="true ? 'header--edit' : ''" fxLayout="row" fxLayoutAlign="space-between " class="header pdr10 pdl10">
     <div fxLayout="row" fxLayoutAlign="space-between center" class="fw fh pdt05 pdb05" >
         <div fxLayout="row">
-            <div class="radius20 pdl10 pdr10 mgr10 pdt05 pdb05 backWhite ft14 fh pdl05  " fxLayout="row" fxLayoutGap="8px" fxLayoutAlign=" center">
+            <div *ngIf="formNewCourse?.get('titulo')?.value"  class="radius20 pdl10 pdr10 mgr10 pdt05 pdb05 backWhite ft14 fh pdl05  " fxLayout="row" fxLayoutGap="8px" fxLayoutAlign=" center">
                 <span class="input-box ft14" placeholder="Nombre del curso"  >{{formNewCourse?.get('titulo')?.value}}</span>
             </div>
             <ng-container *ngIf="formNewCourse">
@@ -9,7 +9,7 @@
                 (change)="changeBorrador($event)"
                 type="checkbox" 
                 [checked]="formNewCourse?.get('proximamente')?.value">
-                <label style="padding-top: 3px; padding-left: 5px; color:white">Borrador</label>
+                <label style="padding-top: 5px; padding-left: 5px; color:white">Borrador</label>
             </ng-container>
         </div>
         <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign=" center">
@@ -23,7 +23,7 @@
                 class="blueButton ft14 cursorPointer"
                 (click)="saveDraftPre()"
                 style="border-radius: 24px !important;">
-                {{mode !== 'edit' ? 'Agregar curso' : 'Editar curso'}}
+                {{mode !== 'edit' ? 'Guardar curso' : 'Guardar curso'}}
                 <img [src]="icon.save" class="h16px pdl05 makeWhite" alt="">
             </button>
         </div>

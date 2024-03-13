@@ -2701,7 +2701,7 @@ uploadVideo(videoFile, clase, local = false, modulo, origen = null, intentosActu
                 text:"Ocurrio un error al subir el video, ¿desea reintentar?",
                 icon: "warning",
                 showCancelButton: true,
-                confirmButtonText: "Guardar",
+                confirmButtonText: "Reintentar",
                 confirmButtonColor: 'var(--blue-5)',
               }).then((result) => {
                 /* Read more about isConfirmed, isDenied below */
