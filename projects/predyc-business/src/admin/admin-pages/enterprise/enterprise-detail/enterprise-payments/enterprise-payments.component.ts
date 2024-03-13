@@ -113,7 +113,7 @@ export class EnterprisePaymentsComponent {
   async openCreateChargeModal() {
     const dialogRef = this.dialog.open(DialogCreateChargeComponent, {
       data: {
-        enterpriseRef: this.enterpriseRef,
+        customerRef: this.enterpriseRef,
         coupons: this.coupons,
         prices: this.prices,
         products: this.products,

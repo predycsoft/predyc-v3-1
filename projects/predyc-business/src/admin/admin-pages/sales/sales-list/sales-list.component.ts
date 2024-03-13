@@ -134,25 +134,18 @@ export class SalesListComponent {
   }
 
   getCustomerEmail(charge: Charge, product: Product): string {
-    if (product.isACompanyProduct) {
-      const enterpriseData: Enterprise = this.enterprises.find(enterprise => enterprise.id === charge.customer.id)
-      // return enterpriseData.email // it doesnt exists
-      return "Empresa" // it doesnt exists
-    }
-    else {
-      const userData: User = this.users.find(user => user.uid === charge.customer.id)
-      return userData.email
-    }
+    const userData: User = this.users.find(user => user.uid === charge.customer.id)
+    if (userData) return userData.email
+    else return "Empresa"
+  
   }
 
   getCustomerName(charge: Charge, product: Product): string {
-    if (product.isACompanyProduct) {
+    const userData: User = this.users.find(user => user.uid === charge.customer.id)
+    if (userData) return userData.displayName
+    else {
       const enterpriseData: Enterprise = this.enterprises.find(enterprise => enterprise.id === charge.customer.id)
       return enterpriseData.name
-    }
-    else {
-      const userData: User = this.users.find(user => user.uid === charge.customer.id)
-      return userData.displayName
     }
   }
 
