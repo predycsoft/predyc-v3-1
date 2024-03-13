@@ -274,7 +274,7 @@ export class InitScriptComponent {
 
     departmentsData.forEach(async department => {
       // console.log(department)
-      const departmentReady = new Department(department.id, department.name, enterpriseRef)
+      const departmentReady = new Department(department.id, department.name, enterpriseRef,null)
       await this.departmentService.add(departmentReady)
     });
     console.log(`Finished Creating Departments`)
