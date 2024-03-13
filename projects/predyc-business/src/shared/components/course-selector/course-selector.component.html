@@ -39,12 +39,16 @@
                         </span>
                     </div>
                     <div fxLayoutAlign="center center" fxLayout="row" fxLayoutGap=".5rem">
+                        <div fxLayout="row" fxLayoutGap=".3rem">
+                            <div *ngIf="course['proximamente']"
+                                style="display: inline-block; margin-right: 5px; margin-bottom: 5px;"
+                                class="skill-badge-complete ListHover radius10 backGray2  ft12 pdl05 pdr05 yellow-5">
+                                Borrador
+                            </div>
+                        </div>
                         <span *ngIf="course?.duracion" class="gray-6 ft12 nowrap">
                             {{ getRounded(course.duracion / 60) }}{{getRounded(course.duracion / 60) == 1 ? 'hr' : 'hrs'}}
                         </span>
-                        <div fxLayout="row" fxLayoutGap=".3rem">
-                            <img [src]="icon.information" alt="" class="makeYellow" >
-                        </div>
                     </div>
                 </div>
              </ng-container>
