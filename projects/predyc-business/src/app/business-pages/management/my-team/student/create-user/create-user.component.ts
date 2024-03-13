@@ -17,7 +17,7 @@ import { dateFromCalendarToTimestamp, timestampToDateNumbers } from 'projects/sh
 import { countriesData } from 'projects/predyc-business/src/assets/data/countries.data'
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { Enterprise } from 'projects/shared/models/enterprise.model';
-import { departmentsData } from '../../../../../../../../../.firebase/predyc-empresa/hosting/assets/data/departments.data';
+// import { departmentsData } from '../../../../../../../../../.firebase/predyc-empresa/hosting/assets/data/departments.data';
 import Swal from 'sweetalert2';
 
 @Component({
