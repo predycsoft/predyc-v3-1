@@ -70,8 +70,8 @@ export class DialogCreateSubscriptionComponent {
   initForm() {
     this.form = this.fb.group({
       startedAt: [null],
-      productId: [['', Validators.required]],
-      priceId: [['', Validators.required]],
+      productId: ['', Validators.required],
+      priceId: ['', Validators.required],
       couponId: [null],
       interval: [null]
     });
@@ -134,6 +134,7 @@ export class DialogCreateSubscriptionComponent {
     // SE supone que es un mes
     this.subscription.currentPeriodEnd = this.getPeriodEnd();
     this.subscription.nextPaymentDate = this.subscription.currentPeriodEnd
+    this.showAlertText = false
   }
 
   getPeriodEnd() {
@@ -177,7 +178,7 @@ export class DialogCreateSubscriptionComponent {
     return new Date(year, month, 0).getDate();
   }
 
-  async saveSubscription(): Promise<void> {
+  saveSubscription() {
     if (this.form.valid) {
       // Process and save data
       const formValue = this.form.value;
@@ -186,14 +187,14 @@ export class DialogCreateSubscriptionComponent {
       this.subscription.priceRef = this.priceService.getPriceRefById(formValue.priceId)
       this.subscription.couponRef = formValue.couponId ? this.couponService.getCouponRefById(formValue.couponId) : null
       this.subscription.enterpriseRef = this.enterpriseRef
+      this.subscription.nextPaymentAmount = this.getNextInvoice(this.subscription).ammount
+
       this.dialogRef.close(this.subscription);
     }
     else {
       this.showAlertText = true
     }
-    this.subscription.nextPaymentAmount = this.getNextInvoice(this.subscription).ammount
 
-    this.dialogRef.close(this.subscription);
   }
 
   cancel(): void {

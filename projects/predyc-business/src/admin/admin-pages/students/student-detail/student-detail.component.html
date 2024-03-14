@@ -16,7 +16,7 @@
         </div>
     </div>
 </div>
-<div class="fw pdt20 pdl20 pdr20 backWhite fh">
+<div class="fw pdt10 pdl20 pdr20 backWhite">
     <div class="infoContainer" fxLayout="row" *ngIf="user">
         <div fxFlex="15" class="sticky">
             <div class="sticky">
@@ -48,7 +48,7 @@
                 </div>
             </div>
         </div>
-        <div fxFlex="85" class="pdl40 pdr20">
+        <div fxFlex="85" class="pdl10 pdr10">
             <div fxLayout="row" fxLayoutGap="1rem">
                 <span [ngClass]="tab == 0 ? 'selectedTab ' : 'ft13 gray-9 cursorPointer'" (click)="tab=0">Ventas</span>
                 <span [ngClass]="tab == 1 ? 'selectedTab' : 'ft13 gray-9 cursorPointer'" (click)="tab=1">Académico</span>
@@ -119,10 +119,11 @@
                     </div> -->
                 </div>
                 <div>
-                    <div class="fw mgt20 pdb05 border-b" fxLayout="row" fxLayoutAlign="space-between center">
+                    <div class="fw mgt10 pdb05 border-b" fxLayout="row" fxLayoutAlign="space-between center">
                         <span class="ft13 ft500 gray-10">Pagos</span>
                         <span class="blue-5 ft500 ft11 cursorPointer" (click)="createCharge()">Crear</span>
                     </div>
+                    <app-student-charge-list [user]="user" [prices]="prices" [products]="products" [coupons]="coupons"></app-student-charge-list>
                     <!-- <div class="tableContainer mgt10">
                         <div *ngIf="payments.length == 0" class="ft12 gray-6">
                             El usuario no tiene pagos
