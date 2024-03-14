@@ -271,7 +271,9 @@ export class CourseService {
     )
   }
 
-
+  public async getCourseById(id: string): Promise<Curso> {
+    return await firstValueFrom(this.afs.collection<Curso>(Curso.collection).doc(id).valueChanges())
+  }
 
   // ---- courseByStudent Collection methods
   getCoursesByStudent$(userRef: DocumentReference<User>): Observable<CourseByStudent[]> {
