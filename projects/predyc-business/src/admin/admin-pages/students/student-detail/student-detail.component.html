@@ -56,9 +56,11 @@
             <!-- Ventas -->
             <div *ngIf="tab == 0" class="fw">
                 <div class="fw">
-                    <div class="fw mgt20 pdb05 border-b" fxLayout="row" fxLayoutAlign="space-between center">
+                    <div class="fw mgt20 pdb05 border-b" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5">
                         <span class="ft13 ft500 gray-10">Suscripciones</span>
-                        <span class="blue-5 ft500 ft11 cursorPointer" (click)="createSubscription()">Crear</span>
+                        <!-- <span class="blue-5 ft500 ft11 cursorPointer" (click)="createSubscription()">Crear</span> -->
+                        <mat-icon (click)="createSubscription()" class="mgl10 gray-5 cursorPointer ft20 linkIcon">add_circle</mat-icon>
+                        
                     </div>
                     <app-student-subscription-list [user]="user" [prices]="prices" [products]="products" [coupons]="coupons"></app-student-subscription-list>
                     <!-- <div class="tableContainer mgt10">
@@ -119,9 +121,11 @@
                     </div> -->
                 </div>
                 <div>
-                    <div class="fw mgt10 pdb05 border-b" fxLayout="row" fxLayoutAlign="space-between center">
+                    <div class="fw mgt10 pdb05 border-b" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5">
                         <span class="ft13 ft500 gray-10">Pagos</span>
-                        <span class="blue-5 ft500 ft11 cursorPointer" (click)="createCharge()">Crear</span>
+                        <!-- <span class="blue-5 ft500 ft11 cursorPointer" (click)="createCharge()">Crear</span> -->
+                        <mat-icon (click)="createCharge()" class="mgl10 gray-5 cursorPointer ft20 linkIcon">add_circle</mat-icon>
+
                     </div>
                     <app-student-charge-list [user]="user" [prices]="prices" [products]="products" [coupons]="coupons"></app-student-charge-list>
                     <!-- <div class="tableContainer mgt10">

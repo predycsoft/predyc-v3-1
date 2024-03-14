@@ -2,17 +2,17 @@
     <table mat-table [dataSource]="dataSource">
 
         <ng-container matColumnDef="productName">
-            <th mat-header-cell *matHeaderCellDef class="ft11"> Producto </th>
+            <th mat-header-cell *matHeaderCellDef class="ft13"> Producto </th>
             <td mat-cell *matCellDef="let data" class="ft500 ft11  gray-10"> {{ data.productName | titlecase}} </td>
         </ng-container>
 
         <ng-container matColumnDef="coupon">
-            <th mat-header-cell *matHeaderCellDef class="ft11 centertext"> Cupon </th>
+            <th mat-header-cell *matHeaderCellDef class="ft13 centertext"> Cupon </th>
             <td mat-cell *matCellDef="let data" class="centertext ft11"> {{ data.couponName }} </td>
         </ng-container>
 
         <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef class="ft11 centertext"> Estatus </th>
+            <th mat-header-cell *matHeaderCellDef class="ft13 centertext"> Estatus </th>
             <td mat-cell *matCellDef="let data" class="centertext ft11 "> 
                 <div class=" pdt03 pdb03 radius6" [ngClass]=" data.statusToDisplay == 'Activo' ? 'backGreen2 green-5' : 'backGray3 gray-5' ">
                     {{ data.statusToDisplay}} 
@@ -21,22 +21,22 @@
         </ng-container>
 
         <ng-container matColumnDef="paymentMethod">
-            <th mat-header-cell *matHeaderCellDef class="ft11 centertext"> Método de pago </th>
+            <th mat-header-cell *matHeaderCellDef class="ft13 centertext"> Método de pago </th>
             <td mat-cell *matCellDef="let data" class="centertext ft11"> {{data.origin}} </td>
         </ng-container>
 
         <ng-container matColumnDef="createdAt">
-            <th mat-header-cell *matHeaderCellDef class="ft11 centertext"> Fecha de creación </th>
+            <th mat-header-cell *matHeaderCellDef class="ft13 centertext"> Fecha de creación </th>
             <td mat-cell *matCellDef="let data" class="centertext ft11"> {{data.createdAt | date:'dd/MM/yy'}} </td>
         </ng-container>
 
         <ng-container matColumnDef="currentPeriodStart">
-            <th mat-header-cell *matHeaderCellDef class="ft11 centertext"> Inicio del período </th>
+            <th mat-header-cell *matHeaderCellDef class="ft13 centertext"> Inicio del período </th>
             <td mat-cell *matCellDef="let data" class="centertext ft11"> {{ data.currentPeriodStart | date:'dd/MM/yy'}} </td>
         </ng-container>
 
         <ng-container matColumnDef="statusBasedComment">
-            <th mat-header-cell *matHeaderCellDef class="ft11 centertext"> Comentario </th>
+            <th mat-header-cell *matHeaderCellDef class="ft13 centertext"> Comentario </th>
             <td mat-cell *matCellDef="let data" class="centertext ft11">
                 <span class="ft11 gray-8 centertext" >
                     {{data.statusBasedComment}}
