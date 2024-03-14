@@ -67,18 +67,15 @@ export class StudentSubscriptionListComponent {
   pageSize: number = 3
   totalLength: number
 
-  @Input() user: User
+  @Input() userRef: DocumentReference<User>
   @Input() prices: Price[]
   @Input() products: Product[]
   @Input() coupons: Coupon[]
-  userRef: DocumentReference<User>
 
   combinedServicesSubscription: Subscription
   subscriptionsSubscription: Subscription
 
   ngOnInit() {
-    this.userRef = this.userService.getUserRefById(this.user.uid)
-    this.performSearch();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -176,92 +173,6 @@ export class StudentSubscriptionListComponent {
       licenseRef: subscriptionInfo.licenseRef
     };
   }
-
-  // // ------- from predyc admin 
-  // getNextInvoice(subscription: SubscriptionInList) {
-  //   switch (subscription.origin.toLocaleLowerCase()) {
-  //     case 'predyc':
-  //       return {
-  //         date: this.getPeriodEnd(subscription),
-  //         ammount: this.getAmount(subscription),
-  //       };
-  //     case 'stripe':
-  //       return {
-  //         date: subscription.currentPeriodEnd,
-  //         ammount: this.getAmount(subscription),
-  //       };
-  //     case 'paypal':
-  //       return {
-  //         date: subscription.currentPeriodEnd,
-  //         ammount: this.getAmount(subscription),
-  //       };
-  //     default:
-  //       return {
-  //         date: subscription.currentPeriodEnd,
-  //         ammount: this.getAmount(subscription),
-  //       };
-  //   }
-  // }
-
-  // getPeriodEnd(subscription: SubscriptionInList): number {
-  //   const date = new Date(subscription.currentPeriodStart);
-  //   let day = date.getDate();
-  //   let month = date.getMonth();
-  //   let year = date.getFullYear();
-  //   const price = this.prices.find(p => p.id === subscription.priceId);
-  //   let newDay = 0;
-  //   let newMonth = 0;
-  //   let newYear = 0;
-  //   switch (price.interval) {
-  //     case 'month':
-  //       newDay = day;
-  //       newMonth = month + subscription.interval;
-  //       newYear = year;
-  //       if (month + subscription.interval > 11) {
-  //         newMonth = month + subscription.interval - 11;
-  //         newYear = newYear + 1;
-  //       }
-  //       if (day > this.daysInMonth(newMonth + 1, newYear)) {
-  //         newDay = this.daysInMonth(newMonth + 1, newYear);
-  //       }
-  //       return +new Date(newYear, newMonth, newDay);
-  //     case 'year':
-  //       newDay = day;
-  //       newMonth = month;
-  //       newYear = year + subscription.interval;
-  //       return +new Date(newYear, newMonth, newDay);
-  //     default:
-  //       return +new Date(year, month, day);
-  //   }
-  // }
-
-  // daysInMonth(month, year) {
-  //   return new Date(year, month, 0).getDate();
-  // }
-
-  // getAmount(subscription: SubscriptionInList): number {
-  //   const today = +new Date
-  //   let price = this.prices.find(p => p.id === subscription.priceId);
-  //   price = Price.fromJson(price);
-    
-  //   let coupons = [];
-  //   if (subscription.couponId) {
-  //     let coupon = this.coupons.find((x) => x.id == subscription.couponId);
-  //     coupons = [coupon];
-  //     switch (coupon.duration) {
-  //       case 'once':
-  //         return price.getTotalAmount([]);
-  //       case 'repeating':
-  //         return price.getTotalAmount([]);
-  //       case 'forever':
-  //         return price.getTotalAmount([coupon]);
-  //       default:
-  //         return price.getTotalAmount([]);
-  //     }
-  //   }
-  //   return price.getTotalAmount([]);
-  // }
-  // // ------- 
 
   ngOnDestroy() {
     if (this.combinedServicesSubscription) this.combinedServicesSubscription.unsubscribe()

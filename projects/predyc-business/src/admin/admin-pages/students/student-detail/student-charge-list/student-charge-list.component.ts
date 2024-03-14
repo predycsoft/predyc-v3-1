@@ -46,10 +46,10 @@ export class StudentChargeListComponent {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @Input() enableNavigateToUser: boolean = true
+  @Input() userRef: DocumentReference<User>
   @Input() user: User
   @Input() prices: Price[]
   @Input() products: Product[]
-  @Input() coupons: Coupon[]
 
   pageSize: number = 3
   totalLength: number
@@ -58,20 +58,17 @@ export class StudentChargeListComponent {
   queryParamsSubscription: Subscription
   chargeSubscription: Subscription
 
-  userRef: DocumentReference<User>
 
   ngOnChanges(changes: SimpleChanges) {
-    if (this.userRef) {
-      // Check if prices, products, or coupons have changed
-      if (changes.prices || changes.products || changes.coupons) {
+    if (this.userRef && this.prices && this.products) {
+      // Check if prices or products have changed
+      if (changes.prices || changes.products) {
         this.performSearch();
       }
     }
   }
 
   ngOnInit() {
-    this.userRef = this.userService.getUserRefById(this.user.uid)
-    this.performSearch();
   }
 
 

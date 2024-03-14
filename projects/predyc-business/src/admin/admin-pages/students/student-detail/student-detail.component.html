@@ -58,11 +58,9 @@
                 <div class="fw">
                     <div class="fw mgt20 pdb05 border-b" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5">
                         <span class="ft13 ft500 gray-10">Suscripciones</span>
-                        <!-- <span class="blue-5 ft500 ft11 cursorPointer" (click)="createSubscription()">Crear</span> -->
                         <mat-icon (click)="createSubscription()" class="mgl10 gray-5 cursorPointer ft20 linkIcon">add_circle</mat-icon>
-                        
                     </div>
-                    <app-student-subscription-list [user]="user" [prices]="prices" [products]="products" [coupons]="coupons"></app-student-subscription-list>
+                    <app-student-subscription-list [userRef]="userRef" [prices]="prices" [products]="products" [coupons]="coupons"></app-student-subscription-list>
                     <!-- <div class="tableContainer mgt10">
                         <table class="tableBody sticky">
                             <tbody>
@@ -123,11 +121,9 @@
                 <div>
                     <div class="fw mgt10 pdb05 border-b" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5">
                         <span class="ft13 ft500 gray-10">Pagos</span>
-                        <!-- <span class="blue-5 ft500 ft11 cursorPointer" (click)="createCharge()">Crear</span> -->
                         <mat-icon (click)="createCharge()" class="mgl10 gray-5 cursorPointer ft20 linkIcon">add_circle</mat-icon>
-
                     </div>
-                    <app-student-charge-list [user]="user" [prices]="prices" [products]="products" [coupons]="coupons"></app-student-charge-list>
+                    <app-student-charge-list [userRef]="userRef" [user]="user" [prices]="prices" [products]="products"></app-student-charge-list>
                     <!-- <div class="tableContainer mgt10">
                         <div *ngIf="payments.length == 0" class="ft12 gray-6">
                             El usuario no tiene pagos
@@ -201,8 +197,15 @@
                     </div> -->
                 </div>
             </div>
-            <!-- <div *ngIf="tab == 1" class="pdb20 ">
-                <div class="radius10 shadow16 mgt20">
+            <div *ngIf="tab == 1" class="">
+                <div class="fw">
+                    <div class="fw mgt20 pdb05 border-b" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5">
+                        <span class="ft13 ft500 gray-10">Cursos</span>
+                    </div>
+                    <app-student-courses-list [userRef]="userRef"></app-student-courses-list>
+                </div>
+
+                <!-- <div class="radius10 shadow16 mgt20">
                     <div class="backWhite pd10 " fxLayout="row" fxLayoutGap="1rem">
                         <span [ngClass]="tabAcademico ==0?'blue-5 ft12 ft500':'gray-9 ft12'"
                             (click)="tabAcademico = 0">Cursos ({{cursos.length}})</span>
@@ -380,8 +383,8 @@
 
                         </table>
                     </div>
-                </div>
-            </div> -->
+                </div> -->
+            </div>
         </div>
     </div>
 </div>
