@@ -33,11 +33,12 @@ export class StudentChargeListComponent {
 
   displayedColumns: string[] = [
     "amount",
-    "origin",
+    "via",
     "status",
     "product",
     "description",
     "createdAt",
+    "origin",
     "refund",
   ];
 

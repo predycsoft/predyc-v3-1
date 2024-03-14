@@ -53,7 +53,7 @@ export class StudentSubscriptionListComponent {
     "productName",
     "coupon",
     "status",
-    "paymentMethod",
+    "origin",
     "createdAt",
     "currentPeriodStart",
     "statusBasedComment",
