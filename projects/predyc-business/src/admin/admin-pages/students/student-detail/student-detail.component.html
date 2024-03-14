@@ -123,6 +123,7 @@
                         <span class="ft13 ft500 gray-10">Pagos</span>
                         <span class="blue-5 ft500 ft11 cursorPointer" (click)="createCharge()">Crear</span>
                     </div>
+                    <app-student-charge-list [user]="user" [prices]="prices" [products]="products" [coupons]="coupons"></app-student-charge-list>
                     <!-- <div class="tableContainer mgt10">
                         <div *ngIf="payments.length == 0" class="ft12 gray-6">
                             El usuario no tiene pagos

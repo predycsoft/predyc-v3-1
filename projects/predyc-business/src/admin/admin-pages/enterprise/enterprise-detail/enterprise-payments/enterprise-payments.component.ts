@@ -75,7 +75,7 @@ export class EnterprisePaymentsComponent {
         this.priceService.getPrices$(), 
         this.productService.getProducts$(), 
         this.couponService.getCoupons$(),
-        this.chargeService.getChargesByEnterpriseRef$(this.enterpriseRef)
+        this.chargeService.getChargesByCustomerRef$(this.enterpriseRef)
       ]
     ).
     subscribe(([prices, products, coupons, charges]) => {
