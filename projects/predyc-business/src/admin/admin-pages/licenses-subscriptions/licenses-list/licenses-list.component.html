@@ -3,50 +3,50 @@
 
         <!-- Nombre Column -->
         <ng-container matColumnDef="enterprise">
-            <th mat-header-cell *matHeaderCellDef class="ft14"> Empresa </th>
-            <td mat-cell *matCellDef="let data" class="ft500 ft14  gray-10"> {{ data.enterpriseName | titlecase}} </td>
+            <th mat-header-cell *matHeaderCellDef class="ft13"> Empresa </th>
+            <td mat-cell *matCellDef="let data" class="ft500 ft12  gray-10"> {{ data.enterpriseName | titlecase}} </td>
         </ng-container>
 
         <!-- Nombre Column -->
         <ng-container matColumnDef="product">
-            <th mat-header-cell *matHeaderCellDef class="ft14"> Producto </th>
-            <td mat-cell *matCellDef="let data" class="ft500 ft14  gray-10"> {{ data.product | titlecase}} </td>
+            <th mat-header-cell *matHeaderCellDef class="ft13"> Producto </th>
+            <td mat-cell *matCellDef="let data" class="ft500 ft12  gray-10"> {{ data.product | titlecase}} </td>
         </ng-container>
 
         <!-- Nombre Column -->
         <ng-container matColumnDef="date">
-            <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Fecha Adquiridas </th>
-            <td mat-cell *matCellDef="let data" class="centertext ft14"> {{ data.date | date:'dd/MM/yy'}} </td>
+            <th mat-header-cell *matHeaderCellDef class="ft13 centertext"> Fecha Adquiridas </th>
+            <td mat-cell *matCellDef="let data" class="centertext ft12"> {{ data.date | date:'dd/MM/yy'}} </td>
         </ng-container>
 
         <!-- Email Column -->
         <ng-container matColumnDef="acquired">
-            <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Adquiridas </th>
-            <td mat-cell *matCellDef="let data" class="centertext ft14"> {{ data.acquired}} </td>
+            <th mat-header-cell *matHeaderCellDef class="ft13 centertext"> Adquiridas </th>
+            <td mat-cell *matCellDef="let data" class="centertext ft12"> {{ data.acquired}} </td>
         </ng-container>
 
         <!-- Origen Column -->
         <ng-container matColumnDef="used">
-            <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Usadas </th>
-            <td mat-cell *matCellDef="let data" class="centertext ft14"> {{data.used}} </td>
+            <th mat-header-cell *matHeaderCellDef class="ft13 centertext"> Usadas </th>
+            <td mat-cell *matCellDef="let data" class="centertext ft12"> {{data.used}} </td>
         </ng-container>
 
         <!-- Producto Column -->
         <ng-container matColumnDef="avaliables">
-            <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Disponibles </th>
-            <td mat-cell *matCellDef="let data" class="centertext ft14"> {{data.avaliables}} </td>
+            <th mat-header-cell *matHeaderCellDef class="ft13 centertext"> Disponibles </th>
+            <td mat-cell *matCellDef="let data" class="centertext ft12"> {{data.avaliables}} </td>
         </ng-container>
 
         <!-- Status Column -->
         <ng-container matColumnDef="valid">
-            <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Validas hasta </th>
-            <td mat-cell *matCellDef="let data" class="centertext ft14"> {{ data.valid | date:'dd/MM/yy'}} </td>
+            <th mat-header-cell *matHeaderCellDef class="ft13 centertext"> Validas hasta </th>
+            <td mat-cell *matCellDef="let data" class="centertext ft12"> {{ data.valid | date:'dd/MM/yy'}} </td>
         </ng-container>
 
         <!-- Inicio Column -->
         <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Estatus </th>
-            <td mat-cell *matCellDef="let data" class="centertext ft14">
+            <th mat-header-cell *matHeaderCellDef class="ft13 centertext"> Estatus </th>
+            <td mat-cell *matCellDef="let data" class="centertext ft12">
                 <div class="pdt03 pdb03 radius6" [ngClass]=" data.status == 'Activo' ? 'backGreen2 green-5' : 'backGray2 gray-5' ">
                     {{ data.status}} 
                 </div>
