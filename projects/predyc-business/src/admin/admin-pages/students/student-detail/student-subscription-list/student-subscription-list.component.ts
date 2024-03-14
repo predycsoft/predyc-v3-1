@@ -104,12 +104,12 @@ export class StudentSubscriptionListComponent {
       const subscriptionsInfo: SubscriptionInfo[] = subscriptions.map(subscription => {
         const price = this.prices.find(p => p.id === subscription.priceRef.id);
         const product = this.products.find(prod => prod.id === price.product.id);
-        const coupon = this.coupons.find(coup => coup.id === subscription.couponRef.id);
+        const coupon = subscription.couponRef ? this.coupons.find(coup => coup.id === subscription.couponRef.id) : null;
   
         return {
           ...subscription,
           productName: product.name,
-          couponName: coupon.name,
+          couponName: coupon ? coupon.name : null,
           statusToDisplay: SubscriptionClass.statusToDisplayValueDict[subscription.status],
           statusBasedComment: "prueba",
           priceInterval: price.interval
