@@ -27,7 +27,6 @@ export class StudentCoursesListComponent {
   ){}
 
   @Input() userRef: DocumentReference<User>
-  @Output() totalLengthChange: EventEmitter<number> = new EventEmitter<number>();
 
   combinedServicesSubscription: Subscription
   subscriptionsSubscription: Subscription
@@ -67,8 +66,6 @@ export class StudentCoursesListComponent {
       // console.log("coursesData", coursesData)
       this.dataSource.data = coursesData;
       this.totalLength = coursesData.length;
-      this.totalLengthChange.emit(this.totalLength);
-
   
     });
   }

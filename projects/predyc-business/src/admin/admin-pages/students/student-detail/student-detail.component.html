@@ -201,17 +201,17 @@
             <div *ngIf="tab == 1" class="">
                 <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" class="fw mgt20 pdb05 border-b">
                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5" (click)="academicTab = 0">
-                        <span class="" [ngClass]="academicTab == 0 ? 'selectedTab ' : 'ft13 gray-9 cursorPointer'">Cursos ({{totalCourses}})</span>
+                        <span class="" [ngClass]="academicTab == 0 ? 'selectedTab ' : 'ft13 gray-9 cursorPointer'">Cursos</span>
                     </div>
                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5" (click)="academicTab = 1">
-                        <span class="" [ngClass]="academicTab == 1 ? 'selectedTab' : 'ft13 gray-9 cursorPointer'">Actividad ({{totalClasses}})</span>
+                        <span class="" [ngClass]="academicTab == 1 ? 'selectedTab' : 'ft13 gray-9 cursorPointer'">Actividad</span>
                     </div>
                 </div>
                 <div *ngIf="academicTab === 0" class="fw">
-                    <app-student-courses-list [userRef]="userRef" (totalLengthChange)="handleCourseTotalLengthChange($event)"></app-student-courses-list>
+                    <app-student-courses-list [userRef]="userRef"></app-student-courses-list>
                 </div>
                 <div *ngIf="academicTab === 1" class="fw">
-                    <app-student-classes-activity-list [userRef]="userRef" (totalLengthChange)="handleClassTotalLengthChange($event)"></app-student-classes-activity-list>
+                    <app-student-classes-activity-list [userRef]="userRef"></app-student-classes-activity-list>
                 </div>
 
                 <!-- <div class="radius10 shadow16 mgt20">

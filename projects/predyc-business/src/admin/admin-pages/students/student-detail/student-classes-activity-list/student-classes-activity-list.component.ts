@@ -27,7 +27,6 @@ export class StudentClassesActivityListComponent {
   ){}
 
   @Input() userRef: DocumentReference<User>
-  @Output() totalLengthChange: EventEmitter<number> = new EventEmitter<number>();
 
   combinedServicesSubscription: Subscription
   subscriptionsSubscription: Subscription
@@ -96,7 +95,6 @@ export class StudentClassesActivityListComponent {
 
     this.dataSource.data = dataToShow;
     this.totalLength = dataToShow.length;
-    this.totalLengthChange.emit(this.totalLength);
   }
 
 
