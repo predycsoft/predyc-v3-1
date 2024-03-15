@@ -1,13 +1,13 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { DocumentReference } from '@angular/fire/compat/firestore';
 import { CourseService } from 'projects/predyc-business/src/shared/services/course.service';
-import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
 import { User } from 'projects/shared/models/user.model';
 import { Curso } from 'projects/shared/models/course.model';
 import { Subscription } from 'rxjs';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { CourseByStudent, CourseByStudentJson } from 'projects/shared/models/course-by-student.model';
+import { firestoreTimestampToNumberTimestamp } from 'shared';
 
 interface CourseInfo extends CourseByStudentJson {
   coursePhoto: string
@@ -22,12 +22,12 @@ interface CourseInfo extends CourseByStudentJson {
 export class StudentCoursesListComponent {
 
   constructor(
-    private userService: UserService,
     private courseService: CourseService,
 
   ){}
 
   @Input() userRef: DocumentReference<User>
+  @Output() totalLengthChange: EventEmitter<number> = new EventEmitter<number>();
 
   combinedServicesSubscription: Subscription
   subscriptionsSubscription: Subscription
@@ -56,6 +56,8 @@ export class StudentCoursesListComponent {
   
         return {
           ...courseByStundet,
+          dateStart: firestoreTimestampToNumberTimestamp(courseByStundet.dateStart),
+          dateEnd: firestoreTimestampToNumberTimestamp(courseByStundet.dateEnd),
           coursePhoto: courseData.foto,
           courseTitle: courseData.titulo,
         };
@@ -65,6 +67,8 @@ export class StudentCoursesListComponent {
       // console.log("coursesData", coursesData)
       this.dataSource.data = coursesData;
       this.totalLength = coursesData.length;
+      this.totalLengthChange.emit(this.totalLength);
+
   
     });
   }

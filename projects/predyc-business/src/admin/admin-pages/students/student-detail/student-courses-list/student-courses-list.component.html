@@ -1,6 +1,3 @@
-<div class="fw mgt20 pdb05 border-b" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5">
-    <span class="ft13 ft500 gray-10">Cursos ({{totalLength}})</span>
-</div>
 <div class="">
     <table mat-table [dataSource]="dataSource">
 
@@ -26,7 +23,7 @@
 
         <ng-container matColumnDef="progress">
             <th mat-header-cell *matHeaderCellDef class="ft13 centertext"> Progreso </th>
-            <td mat-cell *matCellDef="let data" class="centertext ft11"> {{data.progress}}% </td>
+            <td mat-cell *matCellDef="let data" class="centertext ft11"> {{data.progress | number:"1.2-2"}}% </td>
         </ng-container>
 
         <ng-container matColumnDef="finalScore">

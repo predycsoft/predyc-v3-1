@@ -1,0 +1,62 @@
+<div class="">
+    <table mat-table [dataSource]="dataSource">
+
+        <ng-container matColumnDef="courseTitle">
+            <th mat-header-cell *matHeaderCellDef class="ft12 centertext"> Curso </th>
+            <td mat-cell *matCellDef="let data" class="ft11">
+                <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign=" center" >
+                    <img [src]="data.coursePhoto ? data.coursePhoto : 'assets/images/default/default-user-image.jpg'" class="avatar2" alt="" >
+                    <span>{{ data.courseTitle | titlecase}}</span>
+                </div>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="classTitle">
+            <th mat-header-cell *matHeaderCellDef class="ft12 centertext"> Clase </th>
+            <td mat-cell *matCellDef="let data" class="ft11 "> {{ data.classTitle }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="classType">
+            <th mat-header-cell *matHeaderCellDef class="ft12 centertext"> Tipo </th>
+            <td mat-cell *matCellDef="let data" class="centertext ft11"> {{ data.classType }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="classDateStart">
+            <th mat-header-cell *matHeaderCellDef class="ft12 centertext" style="width: 122px;"> Fecha de inicio de clase </th>
+            <td mat-cell *matCellDef="let data" class="centertext ft11"> {{data.classDateStart ? (data.classDateStart | date:'dd/MM/yy, h:mm a') : "No ha iniciado"}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="isCompleted">
+            <th mat-header-cell *matHeaderCellDef class="ft12 centertext"> Completado </th>
+            <td mat-cell *matCellDef="let data" class="centertext ft11"> {{ data.isCompleted ? "Si" : "No" }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="duration">
+            <th mat-header-cell *matHeaderCellDef class="ft12 centertext" style="width: 120px;"> Tiempo empleado </th>
+            <td mat-cell *matCellDef="let data" class="centertext ft11"> 
+                {{ (data.durationMinutes || data.durationMinutes === 0) ? ((data.durationMinutes | number:"1.2-2") + ' min') : "No completado"}}
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <ng-container>
+            <tr
+                mat-row
+                *matRowDef="let data; columns: displayedColumns;"
+                >
+            </tr>
+        </ng-container>
+
+        <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" colspan="8">No se han encontrado suscripciones para el criterio de busqueda</td>
+        </tr>
+    </table>
+
+    <mat-paginator
+        aria-label="Select page of subscriptions"
+        [pageSize]="pageSize"
+        [length]="totalLength"
+    ></mat-paginator>
+</div>
+  
+  

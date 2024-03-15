@@ -35,6 +35,7 @@ export class StudentDetailComponent {
   userId = this.route.snapshot.paramMap.get('uid');
   user
   tab: number = 0
+  academicTab: number = 0
   enterpriseRef: DocumentReference<Enterprise> = null
   userRef: DocumentReference<User> = null
 
@@ -59,6 +60,9 @@ export class StudentDetailComponent {
   prices: Price[]
   products: Product[]
   coupons: Coupon[]
+
+  totalCourses: number;
+  totalClasses: number;
 
   ngOnInit() {
     this.userRef = this.userService.getUserRefById(this.userId)
@@ -144,6 +148,14 @@ export class StudentDetailComponent {
         }
       }
     });
+  }
+
+  handleCourseTotalLengthChange(totalLength: number) {
+    this.totalCourses = totalLength;
+  }
+
+  handleClassTotalLengthChange(totalLength: number) {
+    this.totalClasses = totalLength;
   }
 
   ngOnDestroy() {

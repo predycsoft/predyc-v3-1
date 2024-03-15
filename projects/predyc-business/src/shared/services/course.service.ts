@@ -457,6 +457,10 @@ export class CourseService {
 
 
   // ---- classeByStudent Collection methods
+  getAllClassesByStudent$(userRef: DocumentReference<User>): Observable<ClassByStudent[]> {
+    return this.afs.collection<ClassByStudent>(ClassByStudent.collection, ref => ref.where('userRef', '==', userRef)).valueChanges()
+  }
+
   getClassesByStudent$(userRef: DocumentReference<User>): Observable<ClassByStudent[]> {
     return this.afs.collection<ClassByStudent>(ClassByStudent.collection, ref => ref.where('userRef', '==', userRef).where('completed', '==', true)).valueChanges()
   }
