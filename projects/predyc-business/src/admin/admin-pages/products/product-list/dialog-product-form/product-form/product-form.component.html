@@ -16,8 +16,6 @@
                     </div>
                 </div>
                 <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap=".75rem">
-                    <label for="priority" class="gray-9 ft11">Prioridad:</label>
-                    <input min="0" max="5" (disabled)="(true)" id="priority" type="number" formControlName="priority" style="width: 40px;"/>
                     <input hidden id="active" type="checkbox" formControlName="active" />
                     <input hidden id="id" type="text" formControlName="id" />
                 </div>
@@ -40,57 +38,29 @@
                         <label for="description" class="gray-9 ft11">Descripción:</label>
                         <textarea id="description" type="text" autocomplete="off" class="backWhite fw" formControlName="description"></textarea>
                     </div>
-
-                    <div class="fw" fxLayout="row" fxLayoutGap=".5rem">
-                        <div class="fw" fxLayout="column">
-                            <label for="acceptsStripe" class="gray-9 ft11">Acepta Stripe:</label>
-                            <input id="acceptsStripe" type="checkbox" formControlName="acceptsStripe" />
-                        </div>
-                        <div class="fw" fxLayout="column">
-                            <label for="acceptsBankTransfer" class="gray-9 ft11">Acepta Transferencia:</label>
-                            <input id="acceptsBankTransfer" type="checkbox" formControlName="acceptsBankTransfer" />
-                        </div>
-                        <div class="fw" fxLayout="column">
-                            <label for="acceptsZelle" class="gray-9 ft11">Acepta Zelle:</label>
-                            <input id="acceptsZelle" type="checkbox" formControlName="acceptsZelle" />
-                        </div>
-                        <div class="fw" fxLayout="column">
-                            <label for="acceptsPaypal" class="gray-9 ft11">Acepta Paypal:</label>
-                            <input id="acceptsPaypal" type="checkbox" formControlName="acceptsPaypal" />
-                        </div>
-                        <div class="fw" fxLayout="column">
-                            <label for="canEnrollByHimself" class="gray-9 ft11">Inscribirse en cualquier curso:</label>
-                            <input id="canEnrollByHimself" type="checkbox" formControlName="canEnrollByHimself" />
-                        </div>
-                        <div class="fw" fxLayout="column">
-                            <label for="canEnrollPrograms" class="gray-9 ft11">Inscribirse en cualquier programa:</label>
-                            <input id="canEnrollPrograms" type="checkbox" formControlName="canEnrollPrograms" />
-                        </div>
-                        <!-- EMPRESAS -->
-                        <div class="fw" fxLayout="column">
-                            <label for="isACompanyProduct" class="gray-9 ft11">Pertenece a empresa:</label>
-                            <input id="isACompanyProduct" type="checkbox" formControlName="isACompanyProduct" />
-                        </div>
-                    </div>
                     <div class="fw" fxLayout="column">
                         <span class="ft15 gray-9 ft500">Accesos</span>
                     </div>
                     <div formGroupName="accesses" class="fw" fxLayout="row" fxLayoutGap=".5rem">
                         <div class="fw" fxLayout="column">
-                            <label for="userRadar" class="gray-9 ft11">Radar de usuario:</label>
-                            <input id="userRadar" type="checkbox" formControlName="userRadar" />
+                            <label for="enableUserRadar" class="gray-9 ft11">Pueden ver radar de usuario:</label>
+                            <input id="enableUserRadar" type="checkbox" formControlName="enableUserRadar" />
                         </div>
                         <div class="fw" fxLayout="column">
-                            <label for="studyPlan" class="gray-9 ft11">Ver plan de estudio:</label>
-                            <input id="studyPlan" type="checkbox" formControlName="studyPlan" />
+                            <label for="enableStudyPlanView" class="gray-9 ft11">Pueden ver listado de plan de estudio:</label>
+                            <input id="enableStudyPlanView" type="checkbox" formControlName="enableStudyPlanView" />
                         </div>
                         <div class="fw" fxLayout="column">
-                            <label for="extraCourses" class="gray-9 ft11">Ver listado de extracurriculares:</label>
-                            <input id="extraCourses" type="checkbox" formControlName="extraCourses" />
+                            <label for="enableExtraCoursesView" class="gray-9 ft11">Pueden ver listado de extracurriculares:</label>
+                            <input id="enableExtraCoursesView" type="checkbox" formControlName="enableExtraCoursesView" />
                         </div>
                         <div class="fw" fxLayout="column">
-                            <label for="test" class="gray-9 ft11">Presentar examen:</label>
-                            <input id="test" type="checkbox" formControlName="test" />
+                            <label for="enableToTakeTest" class="gray-9 ft11">Pueden presentar examen:</label>
+                            <input id="enableToTakeTest" type="checkbox" formControlName="enableToTakeTest" />
+                        </div>
+                        <div class="fw" fxLayout="column">
+                            <label for="enableCreateParticularCourses" class="gray-9 ft11">Pueden crear cursos propios:</label>
+                            <input id="enableCreateParticularCourses" type="checkbox" formControlName="enableCreateParticularCourses" />
                         </div>
                     </div>
                     <!-- <div class="fw" fxLayout="column">

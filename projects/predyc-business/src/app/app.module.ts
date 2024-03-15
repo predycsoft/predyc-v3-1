@@ -31,17 +31,11 @@ import { EnterpriseDataComponent } from './business-pages/my-account/enterprise-
 import { AdminDataComponent } from './business-pages/my-account/admin-data/admin-data.component';
 import { EnterprisePresentationFormComponent } from './business-pages/my-account/enterprise-data/enterprise-presentation-form/enterprise-presentation-form.component';
 import { AdminPresentationFormComponent } from './business-pages/my-account/admin-data/admin-presentation-form/admin-presentation-form.component';
-import { MembersComponent } from './business-pages/settings/members/members.component';
-import { LicenseComponent } from './business-pages/settings/license/license.component';
-import { PlanCardComponent } from './business-pages/settings/license/plan-card/plan-card.component';
-import { LicenseDataComponent } from './business-pages/settings/license/license-data/license-data.component';
 import { ValidationListComponent } from './business-pages/validation/validation-list/validation-list.component';
 import { EditValidationTestComponent } from './business-pages/validation/edit-validation-test/edit-validation-test.component';
 import { RankingListComponent } from './business-pages/dashboard/ranking-list/ranking-list.component';
 import { StudentStatsComponent } from './business-pages/management/my-team/student/student-stats/student-stats.component';
 import { StudentDetailsComponent } from './business-pages/management/my-team/student/student-details/student-details.component';
-import { PermissionsComponent } from './business-pages/settings/permissions/permissions.component';
-import { PermissionsAdvancedFiltersComponent } from './business-pages/settings/permissions/permissions-advanced-filters/permissions-advanced-filters.component';
 import { UsersRhythmComponent } from './business-pages/dashboard/users-rhythm/users-rhythm.component';
 import { UsersStudyTimeContainerComponent } from './business-pages/dashboard/users-study-time-container/users-study-time-container.component';
 import { StudyTimeWeeklyChartComponent } from './business-pages/dashboard/users-study-time-container/study-time-weekly-chart/study-time-weekly-chart.component';
@@ -77,17 +71,11 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     AdminInfoFormComponent,
     EnterpriseDataComponent,
     AdminDataComponent,
-    MembersComponent,
-    LicenseComponent,
-    PlanCardComponent,
-    LicenseDataComponent,
     ValidationListComponent,
     EditValidationTestComponent,
     RankingListComponent,
     StudentStatsComponent,
     StudentDetailsComponent,
-    PermissionsComponent,
-    PermissionsAdvancedFiltersComponent,
     UsersRhythmComponent,
     UsersStudyTimeContainerComponent,
     StudyTimeWeeklyChartComponent,

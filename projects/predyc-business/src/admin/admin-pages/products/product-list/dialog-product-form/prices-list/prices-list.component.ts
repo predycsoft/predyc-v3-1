@@ -1,14 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { AngularFireFunctions } from '@angular/fire/compat/functions';
-import { MatTableDataSource } from '@angular/material/table';
-import { Subscription, combineLatest, firstValueFrom } from 'rxjs';
 import { Coupon } from 'projects/shared/models/coupon.model';
 import { Price } from 'projects/shared/models/price.model';
-import { CouponService } from 'projects/predyc-business/src/shared/services/coupon.service';
 import { DialogService } from 'projects/predyc-business/src/shared/services/dialog.service';
 import { PriceService } from 'projects/predyc-business/src/shared/services/price.service';
 import { ProductService } from 'projects/predyc-business/src/shared/services/product.service';
-import { stripeTimestampToNumberTimestamp } from 'projects/shared/utils';
 
 @Component({
   selector: 'app-prices-list',
@@ -28,13 +23,11 @@ export class PricesListComponent {
     private priceService: PriceService,
     private productService: ProductService,
     private dialogService: DialogService,
-    private fireFunctions: AngularFireFunctions
   ) {}
 
   displayedColumns: string[] = [
     "price",
     "discountedPrice",
-    "apiId",
     "status",
     "freeTrial",
     "created",
@@ -74,35 +67,6 @@ export class PricesListComponent {
     this.selectedPrice = null;
   }
 
-  getSyncStripeFunction(price: Price): Promise<void> {
-    let syncStripeFunction = null;
-    if (!price.stripeInfo.stripeId) {
-      syncStripeFunction = firstValueFrom(
-        this.fireFunctions.httpsCallable('createStripePrice')(price)
-      );
-    } else {
-      syncStripeFunction = firstValueFrom(
-        this.fireFunctions.httpsCallable('updateStripePrice')(price)
-      );
-    }
-    return syncStripeFunction;
-  }
-
-  getSyncPaypalFunction(price: Price): Promise<void> {
-    let syncPaypalFunction = null;
-    if (!price.paypalInfo.paypalId) {
-      syncPaypalFunction = firstValueFrom(
-        this.fireFunctions.httpsCallable('createPaypalPrice')(price)
-      );
-    }
-    else {
-      syncPaypalFunction = firstValueFrom(
-        this.fireFunctions.httpsCallable('updatePaypalPrice')(price)
-      );
-    }
-    return syncPaypalFunction;
-  }
-
   async onSave(price: Price): Promise<void> {
     if (!price.id) {
       const newId = [
@@ -114,18 +78,10 @@ export class PricesListComponent {
     }
     try {
       await this.priceService.savePrice(price)
-      // const promises = [
-      //   this.getSyncStripeFunction(price),
-      //   this.getSyncPaypalFunction(price),
-      // ];
-      // const _ = await Promise.all(promises);
       this.reset();
     } catch (error) {
       this.dialogService.dialogAlerta(error);
     }
   }
 
-  OnStripeTimestampToNumberTimestamp(price: Price): number {
-    return stripeTimestampToNumberTimestamp(price.stripeInfo.updatedAt)
-  }
 }

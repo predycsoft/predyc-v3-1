@@ -108,8 +108,8 @@ export class SalesListComponent {
         return {
           ... charge,
           productName: productData.name,
-          customerName: this.getCustomerName(charge, productData),
-          customerEmail: this.getCustomerEmail(charge, productData),
+          customerName: this.getCustomerName(charge),
+          customerEmail: this.getCustomerEmail(charge),
           payDate: this.getPayDate(charge)
         }
       })
@@ -133,24 +133,21 @@ export class SalesListComponent {
     return this.products.find(product => product.id === price.product.id)
   }
 
-  getCustomerEmail(charge: Charge, product: Product): string {
-    if (product.isACompanyProduct) {
-      const enterpriseData: Enterprise = this.enterprises.find(enterprise => enterprise.id === charge.customer.id)
-      // return enterpriseData.email // it doesnt exists
-      return "Empresa" // it doesnt exists
-    }
-    else {
+  getCustomerEmail(charge: Charge): string {
+    const enterpriseData: Enterprise = this.enterprises.find(enterprise => enterprise.id === charge.customer.id)
+    if (enterpriseData) {
+      return "Empresa"
+    } else {
       const userData: User = this.users.find(user => user.uid === charge.customer.id)
       return userData.email
     }
   }
 
-  getCustomerName(charge: Charge, product: Product): string {
-    if (product.isACompanyProduct) {
-      const enterpriseData: Enterprise = this.enterprises.find(enterprise => enterprise.id === charge.customer.id)
+  getCustomerName(charge: Charge): string {
+    const enterpriseData: Enterprise = this.enterprises.find(enterprise => enterprise.id === charge.customer.id)
+    if (enterpriseData) {
       return enterpriseData.name
-    }
-    else {
+    } else {
       const userData: User = this.users.find(user => user.uid === charge.customer.id)
       return userData.displayName
     }
@@ -183,9 +180,7 @@ export class SalesListComponent {
     for (let charge of chargeData ) {
       charge.price = getRandomElement(pricesRef);
 
-      const priceData = this.prices.find(price => price.id === charge.price.id)
-      const productData = this.products.find(product => product.id === priceData.product.id)
-      if (productData.isACompanyProduct) charge.customer = getRandomElement(enterprisesRef)
+      if (Math.random() > 0.5) charge.customer = getRandomElement(enterprisesRef)
       else charge.customer = getRandomElement(usersRef)
 
       await this.chargeService.saveCharge(charge as Charge)

@@ -2,21 +2,15 @@ import { ProductJson } from "projects/shared/models/product.model";
 
 export const productsData: ProductJson[] = [
     {
-        "acceptsBankTransfer": false,
-        "acceptsPaypal": true,
-        "acceptsStripe": true,
-        "acceptsZelle": false,
         "active": false,
         "accesses": {
-            "userRadar": false,
-            "studyPlan": false,
-            "extraCourses": false,
-            "test": false,
-            // "createParticularCourses": false,
+            "enableUserRadar": false,
+            "enableStudyPlanView": false,
+            "enableExtraCoursesView": false,
+            "enableToTakeTest": false,
+            "enableCreateParticularCourses": false,
         },
-        "canEnrollPrograms": false,
         "createdAt": 1679634238000,
-        "canEnrollByHimself": true,
         "description": "Plan Básico",
         "features": [
             {
@@ -53,51 +47,20 @@ export const productsData: ProductJson[] = [
             }
         ],
         "id": "Plan-Basico",
-        "isACompanyProduct": false,
         "name": "Plan Básico",
-        "paypalInfo": {
-            "paypalId": "PROD-1VR48551XV9303234",
-            "updatedAt": 1678764394210
-        },
-        "priority": 3,
-        "stripeInfo": {
-            "stripeId": "prod_MJpATWTYgyS5gq",
-            "updatedAt": {
-                "seconds": 1679634238,
-                "nanoseconds": 205000000
-            }
-        },
     },
     {
         "active": true,
         "accesses": {
-            "userRadar": false,
-            "studyPlan": false,
-            "extraCourses": false,
-            // "createParticularCourses": false,
-            "test": false,
+            "enableUserRadar": false,
+            "enableStudyPlanView": false,
+            "enableExtraCoursesView": false,
+            "enableToTakeTest": false,
+            "enableCreateParticularCourses": false,
         },
         "id": "Plan-Empresarial",
-        "isACompanyProduct": true,
         "name": "Plan Empresarial",
-        "acceptsPaypal": true,
-        "acceptsZelle": true,
-        "canEnrollByHimself": true,
-        "canEnrollPrograms": true,
         "createdAt": 1679080848000,
-        "paypalInfo": {
-            "paypalId": "PROD-0YM379731X785025S",
-            "updatedAt": 1678764794597
-        },
-        "stripeInfo": {
-            "updatedAt": {
-                "seconds": 1679080848,
-                "nanoseconds": 136000000
-            },
-            "stripeId": "prod_NFA82F1kOe4YC8"
-        },
-        "acceptsBankTransfer": true,
-        "priority": 1,
         "features": [
             {
                 "text": "Todos los beneficios del plan experto",
@@ -124,16 +87,12 @@ export const productsData: ProductJson[] = [
                 "text": "Soporte y capacitación de uso"
             }
         ],
-        "acceptsStripe": true,
         "description": "Plan Empresarial"
     },
     {
-        "acceptsZelle": true,
         "description": "Plan Experto",
         "id": "Plan-Experto",
-        "canEnrollPrograms": true,
         "createdAt": 1682617069000,
-        "isACompanyProduct": false,
         "features": [
             {
                 "isActive": true,
@@ -168,64 +127,29 @@ export const productsData: ProductJson[] = [
                 "text": "Certificado de completación de programas"
             }
         ],
-        "acceptsBankTransfer": true,
         "active": true,
         "accesses": {
-            "userRadar": false,
-            "studyPlan": false,
-            "extraCourses": false,
-            // "createParticularCourses": false,
-            "test": false,
+            "enableUserRadar": false,
+            "enableStudyPlanView": false,
+            "enableExtraCoursesView": false,
+            "enableToTakeTest": false,
+            "enableCreateParticularCourses": false,
         },
         "name": "Plan Experto",
-        "priority": 2,
-        "stripeInfo": {
-            "updatedAt": {
-                "seconds": 1682617069,
-                "nanoseconds": 660000000
-            },
-            "stripeId": "prod_MJpCrlyPoUWZIk"
-        },
-        "paypalInfo": {
-            "paypalId": "PROD-4HP838857N2366147",
-            "updatedAt": 1678764656510
-        },
-        "acceptsStripe": true,
-        "acceptsPaypal": true,
-        "canEnrollByHimself": true
     },
     {
         "name": "Rotaciones",
-        "acceptsPaypal": false,
         "description": "Producto utilizado para reflejar las rotaciones de licencias",
         "features": [],
-        "isACompanyProduct": true,
         "id": "Rotaciones",
-        "canEnrollPrograms": true,
         "createdAt": 1695739531000,
-        "paypalInfo": {
-            "paypalId": "",
-            "updatedAt": null
-        },
-        "stripeInfo": {
-            "updatedAt": {
-                "seconds": 1695739531,
-                "nanoseconds": 513000000
-            },
-            "stripeId": "Rotaciones"
-        },
-        "canEnrollByHimself": true,
-        "priority": 5,
         "active": true,
         "accesses": {
-            "userRadar": false,
-            "studyPlan": false,
-            "extraCourses": false,
-            "test": false,
-            // "createParticularCourses": false,
+            "enableUserRadar": false,
+            "enableStudyPlanView": false,
+            "enableExtraCoursesView": false,
+            "enableToTakeTest": false,
+            "enableCreateParticularCourses": false,
         },
-        "acceptsZelle": true,
-        "acceptsStripe": true,
-        "acceptsBankTransfer": true
     }
 ]

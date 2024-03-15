@@ -26,23 +26,16 @@ export class ProductFormComponent {
     active: [true],
     description: [''],
     features: this.fb.array([]),
-    stripeInfo: this.fb.group({ stripeId: [''], updatedAt: [null] }),
-    paypalInfo: this.fb.group({ paypalId: [''], updatedAt: [null] }),
-    priority: [null],
-    acceptsStripe: [false],
-    acceptsBankTransfer: [false],
-    acceptsZelle: [false],
-    acceptsPaypal: [false],
-    canEnrollByHimself: [true],
-    canEnrollPrograms: [true],
-    isACompanyProduct: [true],
-    accesses: this.fb.group({userRadar: [false],studyPlan: [false],extraCourses: [false],test: [false],
-      // createParticularCourses: [false], 
+    accesses: this.fb.group({
+      enableUserRadar: [false],
+      enableStudyPlanView: [false],
+      enableExtraCoursesView: [false],
+      enableToTakeTest: [false],
+      enableCreateParticularCourses: [false]
     }),
   });
 
   ngOnInit(): void {
-    // console.log("this.product", this.product)
     if (this.product.id) {
       this.product.features.forEach((_) => this.addFeature());
       this.productForm.patchValue(this.product);
@@ -73,12 +66,7 @@ export class ProductFormComponent {
   }
 
   async onSubmit(): Promise<void> {
-    const formvalue = this.productForm.value
-    // console.log("this.product", this.product)
-    // console.log("formvalue", formvalue)
     this.onSave.emit(this.productForm.value);
   }
-
-
 
 }

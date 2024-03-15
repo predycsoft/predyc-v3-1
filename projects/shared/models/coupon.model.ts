@@ -1,5 +1,3 @@
-import { StripeInfo } from "./stripe.model";
-
 export interface CouponJson {
     active: boolean;
     activeBanner: boolean;
@@ -16,7 +14,6 @@ export interface CouponJson {
     percentOff: number | null; // gt 0 lt 100
     promoCode: string | null;
     redeemBy: number | null; // Timestamp
-    stripeInfo: StripeInfo;
     textBanner: string | null;
 }
 
@@ -36,7 +33,6 @@ export class Coupon {
     percentOff: number | null; // gt 0 lt 100
     promoCode: string | null;
     redeemBy: number | null; // Timestamp
-    stripeInfo: StripeInfo;
     textBanner: string | null;
 
     public static collection = 'coupon'
@@ -58,10 +54,6 @@ export class Coupon {
         percentOff: 0,
         promoCode: '',
         redeemBy: null,
-        stripeInfo: {
-          stripeId: null,
-          updatedAt: null,
-        },
         textBanner: '',
       });
     }  
@@ -83,7 +75,6 @@ export class Coupon {
       coupon.percentOff = obj.percentOff;
       coupon.promoCode = obj.promoCode;
       coupon.redeemBy = obj.redeemBy;
-      coupon.stripeInfo = obj.stripeInfo;
       coupon.textBanner = obj.textBanner;
       return coupon;
     }
@@ -114,7 +105,6 @@ export class Coupon {
         percentOff: this.percentOff,
         promoCode: this.promoCode,
         redeemBy: this.redeemBy,
-        stripeInfo: this.stripeInfo,
         textBanner: this.textBanner,
       };
     }
@@ -131,25 +121,6 @@ export class Coupon {
           return 'No definido <Llamar a soporte>';
       }
     }
-  
-    public toStripeCreateParams() {
-      let couponCreateParams = {
-        currency: this.currency,
-        duration: this.duration,
-        name: this.name,
-      };
-      if (this.amountOff) {
-        couponCreateParams['amount_off'] = this.amountOff;
-      } else if (this.percentOff) {
-        couponCreateParams['percent_off'] = this.percentOff;
-      }
-      if (this.duration === 'repeating' && this.durationInMonths) {
-        couponCreateParams['duration_in_months'] = this.durationInMonths;
-      }
-      return couponCreateParams;
-    }
-  
-    // Delete a coupon
   
     public getDiscountText(): string {
       let discountText = '';
