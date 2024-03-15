@@ -118,6 +118,18 @@ export const createTractianUser = functions.https.onRequest(
 
             // Data should contain tractian Info
             const tractianInfo = req.body as TractianInfo
+
+            // Assert body req matches interface
+
+            if (!tractianInfo?.user?.name || !tractianInfo?.user?.email || !tractianInfo?.enterprise?.name) {
+                const missingFields = []
+                if (!tractianInfo?.user?.name) missingFields.push("user.name")
+                if (!tractianInfo?.user?.email) missingFields.push("user.email")
+                if (!tractianInfo?.enterprise?.name) missingFields.push("enterprise.name")
+                let message = `Request body is malformed. Missing following fields: ${missingFields.join(", ")}`
+                throw new Error(message)
+            }
+
             const enterprise = {
                 ...tractianInfo.enterprise,
                 name: tractianInfo.enterprise.name.toLowerCase(),
@@ -133,14 +145,29 @@ export const createTractianUser = functions.https.onRequest(
             // console.log("Enterprise", tractianInfo.enterprise)
 
             // Create Enterprise
-            const enterpriseRef = await createEnterprise(enterprise)
+            let enterpriseRef = null
+            try {
+                enterpriseRef = await createEnterprise(enterprise)
+            } catch {
+                throw new Error("Problem creating enterprise")
+            }
 
             // Create User
-            const {userRef, password} = await createUser(user, enterpriseRef)
+            let userRef = null
+            let password = null
+            try {
+                ({userRef, password} = await createUser(user, enterpriseRef))
+            } catch {
+                throw new Error("Problem creating user")
+            }
             // console.log("UserRef", userRef)
 
             // Create Subscription
+            try {
             // const subscriptionRef = await createSubscription()
+            } catch (error) {
+                
+            }
 
             // Send Mail
             const link = await _generatePasswordResetLink(user.email)
@@ -154,12 +181,30 @@ export const createTractianUser = functions.https.onRequest(
             const mailObj = {sender, recipients, subject, text, cc}
             await _sendMail(mailObj)
             
-            res.status(200).send({password: 'Works!'})
+            res.status(200).send({loginUrl: 'https://predyc-user.web.app/auth/login'})
             // res.status(200).send(tractianInfo)
             // return { uid: userRecord.uid };
         } catch (error: any) {
             // if (error?.message === 'Method not allowed') res.status(500).send(error.message)
-            res.status(500).send({
+
+            let statusCode = 500
+            switch (error?.message) {
+                case "Problem creating enterprise":
+                    statusCode = 506
+                    break;
+                case "Problem creating user":
+                    statusCode = 507
+                    break;
+                case "Problem creating subscription":
+                    statusCode = 508
+                    break;
+                default:
+                    break;
+            }
+
+            if ((error?.message as string).startsWith("Request body is malformed")) statusCode = 400
+
+            res.status(statusCode).send({
                 message: error?.message
             })
         } 
