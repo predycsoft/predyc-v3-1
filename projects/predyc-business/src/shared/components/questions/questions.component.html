@@ -258,7 +258,7 @@
                                                         >
                                                 </div>
 
-                                                <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
+                                                <!-- <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
                                                     <button
                                                     *ngIf="type!='test'"
                                                     (click)="questionOptionImage.click()"
@@ -272,7 +272,7 @@
                                                     Adjuntar imagen
                                                 </button>
                                                 <input #questionOptionImage type="file" (change)="uploadQuestionOptionImage(option, $event)" hidden  accept="image/jpeg, image/png" />
-                                                </div>
+                                                </div> -->
                                         
                                                 <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
                                                     <input [checked]="option.get('isCorrect').value" [checked]="option.get('isCorrect').value" [name]="'radioGroup' + i" type="radio" (change)="onSingleOptionSelected(i, optIndex)" [value]="optIndex"/>

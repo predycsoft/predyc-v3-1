@@ -181,7 +181,7 @@ export class CreateDemoComponent {
       // NEED CRITERIA TO FILTER USERS TO BE ACTIVATED
       // const filteredUsers = users.filter(user => user.)
       // for (let user of filteredUsers) {
-      //   await this.subscriptionService.createUserSubscription(license, this.afs.collection<License>(License.collection).doc(license.id).ref, user.uid)
+      //   await this.subscriptionService.createUserSubscriptionByLicense(license, this.afs.collection<License>(License.collection).doc(license.id).ref, user.uid)
       // }
       //console.log(`Finished Creating Subscriptions`)
 

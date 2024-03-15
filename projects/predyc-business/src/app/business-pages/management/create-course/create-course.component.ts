@@ -465,6 +465,7 @@ export class CreateCourseComponent {
           imagen_instructor: new FormControl(null, Validators.required),
           skills: new FormControl(null, Validators.required),
           vimeoFolderId: new FormControl(null),
+          proximamente: new FormControl(false),
         })
         this.initSkills();
       }, 2000);
@@ -507,7 +508,8 @@ export class CreateCourseComponent {
           imagen: new FormControl(curso.imagen, Validators.required),
           imagen_instructor: new FormControl(instructor.foto, Validators.required),
           skills: new FormControl(curso.skillsRef, Validators.required),
-          
+          proximamente: new FormControl(curso.proximamente),
+
         });
 
         //this.formNewCourse.get('resumen_instructor').disable();
@@ -558,6 +560,21 @@ export class CreateCourseComponent {
     }
     this.skillsCurso =  this.tmpSkillArray
     this.modalService.dismissAll();
+  }
+
+  changeBorrador(event: Event) {
+    // Accede a la propiedad 'checked' del checkbox
+    const isChecked = (event.target as HTMLInputElement).checked;
+  
+    // Actualiza el valor del campo 'proximamente' en el formulario con el nuevo estado
+    this.formNewCourse.get('proximamente').setValue(isChecked);
+
+    if(this.curso){
+      this.curso.proximamente = isChecked
+    }
+  
+    // Opcionalmente, imprime si el checkbox quedó marcado o no
+    console.log('El checkbox Borrador está:', isChecked ? 'marcado (true)' : 'desmarcado (false)');
   }
 
 
@@ -744,6 +761,10 @@ export class CreateCourseComponent {
       }).then((result) => {
         /* Read more about isConfirmed, isDenied below */
         if (result.isConfirmed && this.formNewCourse.valid) {
+          this.formNewCourse.get("proximamente").patchValue(true);
+          if(this.curso){
+            this.curso.proximamente = true
+          }
           this.saveDraft()
         }
       });
@@ -2680,7 +2701,7 @@ uploadVideo(videoFile, clase, local = false, modulo, origen = null, intentosActu
                 text:"Ocurrio un error al subir el video, ¿desea reintentar?",
                 icon: "warning",
                 showCancelButton: true,
-                confirmButtonText: "Guardar",
+                confirmButtonText: "Reintentar",
                 confirmButtonColor: 'var(--blue-5)',
               }).then((result) => {
                 /* Read more about isConfirmed, isDenied below */

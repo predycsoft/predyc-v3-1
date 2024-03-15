@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, SimpleChanges, ViewChild } from '@angular/core';
 import { DocumentReference } from '@angular/fire/compat/firestore';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
@@ -44,9 +44,6 @@ export class StudentSubscriptionListComponent {
     private activatedRoute: ActivatedRoute,
     private userService: UserService,
     private subscriptionService: SubscriptionService,
-    private priceService: PriceService,
-    private productService: ProductService,
-    private couponService: CouponService,
     private dialog: MatDialog,
     public dialogService: DialogService,
 
@@ -56,7 +53,7 @@ export class StudentSubscriptionListComponent {
     "productName",
     "coupon",
     "status",
-    "paymentMethod",
+    "origin",
     "createdAt",
     "currentPeriodStart",
     "statusBasedComment",
@@ -67,33 +64,27 @@ export class StudentSubscriptionListComponent {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  pageSize: number = 4
+  pageSize: number = 3
   totalLength: number
 
-  @Input() user: User
-  userRef: DocumentReference<User>
-
-  prices: Price[]
-  products: Product[]
-  coupons: Coupon[]
+  @Input() userRef: DocumentReference<User>
+  @Input() prices: Price[]
+  @Input() products: Product[]
+  @Input() coupons: Coupon[]
 
   combinedServicesSubscription: Subscription
   subscriptionsSubscription: Subscription
 
   ngOnInit() {
-    this.userRef = this.userService.getUserRefById(this.user.uid)
-    this.combinedServicesSubscription = combineLatest(
-      [
-        this.productService.getProducts$(),
-        this.priceService.getPrices$(), 
-        this.couponService.getCoupons$(),
-      ]
-    ).subscribe(([products, prices, coupons]) => {
-      this.prices = prices
-      this.products = products
-      this.coupons = coupons
-      this.performSearch();
-    })
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (this.userRef) {
+      // Check if prices, products, or coupons have changed
+      if (changes.prices || changes.products || changes.coupons) {
+        this.performSearch();
+      }
+    }
   }
 
   ngAfterViewInit() {
@@ -110,12 +101,12 @@ export class StudentSubscriptionListComponent {
       const subscriptionsInfo: SubscriptionInfo[] = subscriptions.map(subscription => {
         const price = this.prices.find(p => p.id === subscription.priceRef.id);
         const product = this.products.find(prod => prod.id === price.product.id);
-        const coupon = this.coupons.find(coup => coup.id === subscription.couponRef.id);
+        const coupon = subscription.couponRef ? this.coupons.find(coup => coup.id === subscription.couponRef.id) : null;
   
         return {
           ...subscription,
           productName: product.name,
-          couponName: coupon.name,
+          couponName: coupon ? coupon.name : null,
           statusToDisplay: SubscriptionClass.statusToDisplayValueDict[subscription.status],
           statusBasedComment: "prueba",
           priceInterval: price.interval
@@ -138,7 +129,9 @@ export class StudentSubscriptionListComponent {
     dialogRef.afterClosed().subscribe(async (result: SubscriptionInfo) => {
       if (result) {
         try {
-          // await this.licenseService.saveLicense(result.toJson());
+          const editedSubscription: SubscriptionJson = this.subscriptionInfotoJson(result)
+          console.log("editedsubscription", editedSubscription);
+          await this.subscriptionService.saveSubscription(editedSubscription);
           this.dialogService.dialogExito();
         } catch (error) {
           this.dialogService.dialogAlerta("Hubo un error al guardar la licencia. Inténtalo de nuevo.");
@@ -151,91 +144,35 @@ export class StudentSubscriptionListComponent {
     
   }
 
-  // // ------- from predyc admin 
-  // getNextInvoice(subscription: SubscriptionInList) {
-  //   switch (subscription.origin.toLocaleLowerCase()) {
-  //     case 'predyc':
-  //       return {
-  //         date: this.getPeriodEnd(subscription),
-  //         ammount: this.getAmount(subscription),
-  //       };
-  //     case 'stripe':
-  //       return {
-  //         date: subscription.currentPeriodEnd,
-  //         ammount: this.getAmount(subscription),
-  //       };
-  //     case 'paypal':
-  //       return {
-  //         date: subscription.currentPeriodEnd,
-  //         ammount: this.getAmount(subscription),
-  //       };
-  //     default:
-  //       return {
-  //         date: subscription.currentPeriodEnd,
-  //         ammount: this.getAmount(subscription),
-  //       };
-  //   }
-  // }
-
-  // getPeriodEnd(subscription: SubscriptionInList): number {
-  //   const date = new Date(subscription.currentPeriodStart);
-  //   let day = date.getDate();
-  //   let month = date.getMonth();
-  //   let year = date.getFullYear();
-  //   const price = this.prices.find(p => p.id === subscription.priceId);
-  //   let newDay = 0;
-  //   let newMonth = 0;
-  //   let newYear = 0;
-  //   switch (price.interval) {
-  //     case 'month':
-  //       newDay = day;
-  //       newMonth = month + subscription.interval;
-  //       newYear = year;
-  //       if (month + subscription.interval > 11) {
-  //         newMonth = month + subscription.interval - 11;
-  //         newYear = newYear + 1;
-  //       }
-  //       if (day > this.daysInMonth(newMonth + 1, newYear)) {
-  //         newDay = this.daysInMonth(newMonth + 1, newYear);
-  //       }
-  //       return +new Date(newYear, newMonth, newDay);
-  //     case 'year':
-  //       newDay = day;
-  //       newMonth = month;
-  //       newYear = year + subscription.interval;
-  //       return +new Date(newYear, newMonth, newDay);
-  //     default:
-  //       return +new Date(year, month, day);
-  //   }
-  // }
-
-  // daysInMonth(month, year) {
-  //   return new Date(year, month, 0).getDate();
-  // }
-
-  // getAmount(subscription: SubscriptionInList): number {
-  //   const today = +new Date
-  //   let price = this.prices.find(p => p.id === subscription.priceId);
-  //   price = Price.fromJson(price);
-    
-  //   let coupons = [];
-  //   if (subscription.couponId) {
-  //     let coupon = this.coupons.find((x) => x.id == subscription.couponId);
-  //     coupons = [coupon];
-  //     switch (coupon.duration) {
-  //       case 'once':
-  //         return price.getTotalAmount([]);
-  //       case 'repeating':
-  //         return price.getTotalAmount([]);
-  //       case 'forever':
-  //         return price.getTotalAmount([coupon]);
-  //       default:
-  //         return price.getTotalAmount([]);
-  //     }
-  //   }
-  //   return price.getTotalAmount([]);
-  // }
-  // // ------- 
+  subscriptionInfotoJson(subscriptionInfo: SubscriptionInfo): SubscriptionJson {
+    return {
+      id: subscriptionInfo.id,
+      idAtOrigin: subscriptionInfo.idAtOrigin,
+      origin: subscriptionInfo.origin,
+      createdAt: subscriptionInfo.createdAt,
+      createdAtOrigin: subscriptionInfo.createdAtOrigin,
+      changedAt: subscriptionInfo.changedAt,
+      startedAt: subscriptionInfo.startedAt,
+      currency: subscriptionInfo.currency,
+      currentPeriodStart: subscriptionInfo.currentPeriodStart,
+      currentPeriodEnd: subscriptionInfo.currentPeriodEnd,
+      customer: subscriptionInfo.customer,
+      userRef: subscriptionInfo.userRef,
+      endedAt: subscriptionInfo.endedAt,
+      canceledAt: subscriptionInfo.canceledAt,
+      priceRef: subscriptionInfo.priceRef,
+      status: subscriptionInfo.status,
+      trialStartedAt: subscriptionInfo.trialStartedAt,
+      trialEndedAt: subscriptionInfo.trialEndedAt,
+      currentError: subscriptionInfo.currentError,
+      interval: subscriptionInfo.interval,
+      couponRef: subscriptionInfo.couponRef,
+      nextPaymentDate: subscriptionInfo.nextPaymentDate,
+      nextPaymentAmount: subscriptionInfo.nextPaymentAmount,
+      enterpriseRef: subscriptionInfo.enterpriseRef,
+      licenseRef: subscriptionInfo.licenseRef
+    };
+  }
 
   ngOnDestroy() {
     if (this.combinedServicesSubscription) this.combinedServicesSubscription.unsubscribe()

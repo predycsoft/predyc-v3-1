@@ -134,22 +134,18 @@ export class SalesListComponent {
   }
 
   getCustomerEmail(charge: Charge): string {
-    const enterpriseData: Enterprise = this.enterprises.find(enterprise => enterprise.id === charge.customer.id)
-    if (enterpriseData) {
-      return "Empresa"
-    } else {
-      const userData: User = this.users.find(user => user.uid === charge.customer.id)
-      return userData.email
-    }
+    const userData: User = this.users.find(user => user.uid === charge.customer.id)
+    if (userData) return userData.email
+    else return "Empresa"
+  
   }
 
   getCustomerName(charge: Charge): string {
-    const enterpriseData: Enterprise = this.enterprises.find(enterprise => enterprise.id === charge.customer.id)
-    if (enterpriseData) {
+    const userData: User = this.users.find(user => user.uid === charge.customer.id)
+    if (userData) return userData.displayName
+    else {
+      const enterpriseData: Enterprise = this.enterprises.find(enterprise => enterprise.id === charge.customer.id)
       return enterpriseData.name
-    } else {
-      const userData: User = this.users.find(user => user.uid === charge.customer.id)
-      return userData.displayName
     }
   }
 

@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TimeScale } from 'chart.js/dist';
 import { finalize, firstValueFrom, map, Observable, startWith, Subscription } from 'rxjs';
 import { Department } from 'projects/shared/models/department.model';
@@ -17,6 +17,8 @@ import { dateFromCalendarToTimestamp, timestampToDateNumbers } from 'projects/sh
 import { countriesData } from 'projects/predyc-business/src/assets/data/countries.data'
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { Enterprise } from 'projects/shared/models/enterprise.model';
+// import { departmentsData } from '../../../../../../../../../.firebase/predyc-empresa/hosting/assets/data/departments.data';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-create-user',
@@ -36,6 +38,8 @@ export class CreateUserComponent {
     private departmentService: DepartmentService,
     private storage: AngularFireStorage,
     private afs: AngularFirestore,
+    private modalService: NgbModal,
+
 
   ) {
 
@@ -86,26 +90,88 @@ export class CreateUserComponent {
     })
     this.departmentServiceSubscription = this.departmentService.getDepartments$().subscribe({
       next: departments => {
-        this.departments = departments
+
+        let departmentsBase=[]
+        departments.forEach(element => {
+          if(element?.baseDepartment?.id){
+            departmentsBase.push(element?.baseDepartment?.id)
+          }
+        });
+
+        this.departments = departments.filter(department => !departmentsBase.includes(department.id));
+        console.log('Filtrados', this.departments);
+
+
+        this.filteredDepartments = this.userForm.controls.department.valueChanges.pipe(
+          startWith(''),
+          map(value => this._filter(value || '')),
+        );
       },
       error: error => {
         this.alertService.errorAlert(error.message)
       }
     })
     await this.setupForm()
-    this.filteredDepartments = this.userForm.controls.department.valueChanges.pipe(
-      startWith(''),
-      map(value => this._filter(value || '')),
-    );
   }
 
   private _filter(value: string): string[] {
+    console.log('filter',value,this.departments)
     const filterValue = value.toLowerCase();
+    console.log('this.departments',this.departments,filterValue)
     return this.departments.map(department => department.name).filter(option => option.toLowerCase().includes(filterValue));
   }
 
-  createDepartment() {
-    console.log("Crear departamento")
+  formNewDepartment: FormGroup
+  showErrorDepartment = false
+  modalCrearDepartment
+
+  createDepartment(modal) {
+    this.userForm.get("department").patchValue('');
+    this.showErrorDepartment = false;
+    this.formNewDepartment = new FormGroup({
+      nombre: new FormControl(null, Validators.required),
+    })
+
+    this.modalCrearDepartment = this.modalService.open(modal, {
+      ariaLabelledBy: 'modal-basic-title',
+      centered: true,
+      size:'sm'
+    });
+  }
+
+
+  async saveNewDepartment(){
+    this.showErrorDepartment = false;
+
+    if(this.formNewDepartment.valid){
+
+      let ValidateName = this.departments.filter(x=>x.name == this.formNewDepartment.value.nombre)
+
+      console.log('ValidateName',ValidateName,this.departments)
+
+      if(ValidateName.length>=1){
+
+        Swal.fire({
+          title:'Nombre ya en uso!',
+          text:`Por favor verifique el nombre del departamento para poder crearlo`,
+          icon:'warning',
+          confirmButtonColor: 'var(--blue-5)',
+        })
+      }
+      else{
+        let enterpriseRef = this.enterpriseService.getEnterpriseRef()
+        let deparment = new Department(null,this.formNewDepartment.value.nombre,enterpriseRef,null)
+        await this.departmentService.add(deparment)
+        this.modalCrearDepartment.close()
+        this.userForm.get("department").patchValue(deparment.name)
+      }
+
+    }
+    else{
+      this.showErrorDepartment = true;
+    }
+    
+
   }
 
   async setupForm() {
@@ -347,6 +413,21 @@ export class CreateUserComponent {
         user.profile = profileRef;
 
       }
+
+      let departmentNew = this.departments.find(x=>x?.id == user?.departmentRef?.id)
+
+      if(departmentNew &&!departmentNew?.enterpriseRef){
+
+        let baseDepartment = this.afs.collection<Department>(Department.collection).doc(departmentNew.id).ref;
+        let enterpriseRef = this.enterpriseService.getEnterpriseRef()
+
+        let deparment = new Department(null,departmentNew.name,enterpriseRef,baseDepartment)
+        console.log('deparmentadd',deparment)
+        await this.departmentService.add(deparment)
+        let departmentRef = await  this.afs.collection<Department>(Department.collection).doc(deparment.id).ref;
+        user.departmentRef = departmentRef;
+      }
+
 
       if (this.studentToEdit) {
        await this.userService.editUser(user.toJson())

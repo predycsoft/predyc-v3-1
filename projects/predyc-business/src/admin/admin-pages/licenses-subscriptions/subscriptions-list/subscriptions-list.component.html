@@ -3,26 +3,26 @@
 
         <!-- Nombre Column -->
         <ng-container matColumnDef="displayName">
-            <th mat-header-cell *matHeaderCellDef class="ft14"> Nombre </th>
-            <td mat-cell *matCellDef="let data" class="ft500 ft14  gray-10"> {{ data.userName | titlecase}} </td>
+            <th mat-header-cell *matHeaderCellDef class="ft13"> Nombre </th>
+            <td mat-cell *matCellDef="let data" class="ft500 ft12  gray-10"> {{ data.userName | titlecase}} </td>
         </ng-container>
 
         <!-- Email Column -->
         <ng-container matColumnDef="email">
-            <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Email </th>
-            <td mat-cell *matCellDef="let data" class="centertext ft14"> {{ data.userEmail}} </td>
+            <th mat-header-cell *matHeaderCellDef class="ft13 centertext"> Email </th>
+            <td mat-cell *matCellDef="let data" class="centertext ft12"> {{ data.userEmail}} </td>
         </ng-container>
 
         <!-- Producto Column -->
         <ng-container matColumnDef="product">
-            <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Producto </th>
-            <td mat-cell *matCellDef="let data" class="centertext ft14"> {{data.productName}} </td>
+            <th mat-header-cell *matHeaderCellDef class="ft13 centertext"> Producto </th>
+            <td mat-cell *matCellDef="let data" class="centertext ft12"> {{data.productName}} </td>
         </ng-container>
 
         <!-- Status Column -->
         <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Estatus </th>
-            <td mat-cell *matCellDef="let data" class="centertext ft14 "> 
+            <th mat-header-cell *matHeaderCellDef class="ft13 centertext"> Estatus </th>
+            <td mat-cell *matCellDef="let data" class="centertext ft12 "> 
                 <div class=" pdt03 pdb03 radius6" [ngClass]=" data.status == 'Activo' ? 'backGreen2 green-5' : 'backGray3 gray-5' ">
                     {{ data.status}} 
                 </div>
@@ -31,14 +31,14 @@
 
         <!-- Inicio Column -->
         <ng-container matColumnDef="start">
-            <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Inicio </th>
-            <td mat-cell *matCellDef="let data" class="centertext ft14"> {{ data.createdAt | date:'dd/MM/yy'}} </td>
+            <th mat-header-cell *matHeaderCellDef class="ft13 centertext"> Inicio </th>
+            <td mat-cell *matCellDef="let data" class="centertext ft12"> {{ data.createdAt | date:'dd/MM/yy'}} </td>
         </ng-container>
 
         <!-- Próximo cobro Column -->
         <ng-container matColumnDef="nextPayment">
-            <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Próximo cobro </th>
-            <td mat-cell *matCellDef="let data" class="centertext ft14">
+            <th mat-header-cell *matHeaderCellDef class="ft13 centertext"> Próximo cobro </th>
+            <td mat-cell *matCellDef="let data" class="centertext ft12">
             <span *ngIf="data.status != 'canceled'" class="ft11 gray-8 centertext" >
                 Próximo cobro el {{ getNextInvoice(data).date | date : "dd/MM/yyyy" }} por $ {{ getNextInvoice(data).ammount }}
             </span>
