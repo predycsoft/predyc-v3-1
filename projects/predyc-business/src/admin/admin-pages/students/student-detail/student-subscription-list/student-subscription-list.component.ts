@@ -12,6 +12,7 @@ import { Subscription as SubscriptionClass, SubscriptionJson } from 'projects/sh
 import { MatDialog } from '@angular/material/dialog';
 import { DialogEditSubscriptionComponent } from 'projects/predyc-business/src/shared/components/subscription/dialog-edit-subscription/dialog-edit-subscription.component';
 import { DialogService } from 'projects/predyc-business/src/shared/services/dialog.service';
+import { DatePipe } from '@angular/common';
 
 
 export interface SubscriptionInfo extends SubscriptionJson {
@@ -30,7 +31,8 @@ export interface SubscriptionInfo extends SubscriptionJson {
 @Component({
   selector: 'app-student-subscription-list',
   templateUrl: './student-subscription-list.component.html',
-  styleUrls: ['./student-subscription-list.component.css']
+  styleUrls: ['./student-subscription-list.component.css'],
+  providers: [DatePipe]
 })
 export class StudentSubscriptionListComponent {
 
@@ -38,6 +40,8 @@ export class StudentSubscriptionListComponent {
     private subscriptionService: SubscriptionService,
     private dialog: MatDialog,
     public dialogService: DialogService,
+    private datePipe: DatePipe,
+
 
   ){}
 
@@ -99,7 +103,7 @@ export class StudentSubscriptionListComponent {
           productName: product.name,
           couponName: coupon ? coupon.name : null,
           statusToDisplay: SubscriptionClass.statusToDisplayValueDict[subscription.status],
-          statusBasedComment: "prueba",
+          statusBasedComment: this.getStatusBasedComment(subscription, price, coupon),
           priceInterval: price.interval
         };
       });
@@ -107,6 +111,37 @@ export class StudentSubscriptionListComponent {
       this.dataSource.data = subscriptionsInfo;
       this.totalLength = subscriptionsInfo.length;
     });
+  }
+
+  getStatusBasedComment(subscription: SubscriptionClass, price: Price, coupon: Coupon): string {
+    let formattedDate: string;
+    if (subscription.status == "canceled") {
+      formattedDate = this.datePipe.transform(subscription.endedAt, 'dd/MM/yyyy');
+      return `Cancelada el ${formattedDate}`;
+    } else {
+      formattedDate = this.datePipe.transform(subscription.currentPeriodEnd, 'dd/MM/yyyy');
+      return `Próximo cobro el ${formattedDate} por $${this.getAmount(price, coupon)}`;
+    }
+  }
+  
+
+  getAmount(price: Price, coupon: Coupon): number {
+    let coupons = []
+    price = Price.fromJson(price)
+    if (coupon) {
+      coupons = [coupon]
+      switch (coupon.duration) {
+        case "once":
+          return price.getTotalAmount([])
+        case "repeating":
+          return price.getTotalAmount([])
+        case "forever":
+          return price.getTotalAmount([coupon])
+        default:
+          return price.getTotalAmount([])
+      }
+    }
+    return price.getTotalAmount([])
   }
 
   editSubscription(subscription: SubscriptionInfo) {
