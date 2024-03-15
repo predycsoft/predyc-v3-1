@@ -2,21 +2,17 @@ import { Component, Input, SimpleChanges, ViewChild } from '@angular/core';
 import { DocumentReference } from '@angular/fire/compat/firestore';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { Router, ActivatedRoute } from '@angular/router';
-import { Subscription, combineLatest } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { Coupon } from 'projects/shared/models/coupon.model';
 import { Price } from 'projects/shared/models/price.model';
 import { Product } from 'projects/shared/models/product.model';
 import { User } from 'projects/shared/models/user.model';
-import { CouponService } from 'projects/predyc-business/src/shared/services/coupon.service';
-import { PriceService } from 'projects/predyc-business/src/shared/services/price.service';
-import { ProductService } from 'projects/predyc-business/src/shared/services/product.service';
 import { SubscriptionService } from 'projects/predyc-business/src/shared/services/subscription.service';
-import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
 import { Subscription as SubscriptionClass, SubscriptionJson } from 'projects/shared/models/subscription.model'
 import { MatDialog } from '@angular/material/dialog';
 import { DialogEditSubscriptionComponent } from 'projects/predyc-business/src/shared/components/subscription/dialog-edit-subscription/dialog-edit-subscription.component';
 import { DialogService } from 'projects/predyc-business/src/shared/services/dialog.service';
+import { DatePipe } from '@angular/common';
 
 
 export interface SubscriptionInfo extends SubscriptionJson {
@@ -35,17 +31,17 @@ export interface SubscriptionInfo extends SubscriptionJson {
 @Component({
   selector: 'app-student-subscription-list',
   templateUrl: './student-subscription-list.component.html',
-  styleUrls: ['./student-subscription-list.component.css']
+  styleUrls: ['./student-subscription-list.component.css'],
+  providers: [DatePipe]
 })
 export class StudentSubscriptionListComponent {
 
   constructor(
-    private router: Router,
-    private activatedRoute: ActivatedRoute,
-    private userService: UserService,
     private subscriptionService: SubscriptionService,
     private dialog: MatDialog,
     public dialogService: DialogService,
+    private datePipe: DatePipe,
+
 
   ){}
 
@@ -53,7 +49,6 @@ export class StudentSubscriptionListComponent {
     "productName",
     "coupon",
     "status",
-    "origin",
     "createdAt",
     "currentPeriodStart",
     "statusBasedComment",
@@ -108,7 +103,7 @@ export class StudentSubscriptionListComponent {
           productName: product.name,
           couponName: coupon ? coupon.name : null,
           statusToDisplay: SubscriptionClass.statusToDisplayValueDict[subscription.status],
-          statusBasedComment: "prueba",
+          statusBasedComment: this.getStatusBasedComment(subscription, price, coupon),
           priceInterval: price.interval
         };
       });
@@ -116,6 +111,37 @@ export class StudentSubscriptionListComponent {
       this.dataSource.data = subscriptionsInfo;
       this.totalLength = subscriptionsInfo.length;
     });
+  }
+
+  getStatusBasedComment(subscription: SubscriptionClass, price: Price, coupon: Coupon): string {
+    let formattedDate: string;
+    if (subscription.status == "canceled") {
+      formattedDate = this.datePipe.transform(subscription.endedAt, 'dd/MM/yyyy');
+      return `Cancelada el ${formattedDate}`;
+    } else {
+      formattedDate = this.datePipe.transform(subscription.currentPeriodEnd, 'dd/MM/yyyy');
+      return `Próximo cobro el ${formattedDate} por $${this.getAmount(price, coupon)}`;
+    }
+  }
+  
+
+  getAmount(price: Price, coupon: Coupon): number {
+    let coupons = []
+    price = Price.fromJson(price)
+    if (coupon) {
+      coupons = [coupon]
+      switch (coupon.duration) {
+        case "once":
+          return price.getTotalAmount([])
+        case "repeating":
+          return price.getTotalAmount([])
+        case "forever":
+          return price.getTotalAmount([coupon])
+        default:
+          return price.getTotalAmount([])
+      }
+    }
+    return price.getTotalAmount([])
   }
 
   editSubscription(subscription: SubscriptionInfo) {
@@ -147,16 +173,12 @@ export class StudentSubscriptionListComponent {
   subscriptionInfotoJson(subscriptionInfo: SubscriptionInfo): SubscriptionJson {
     return {
       id: subscriptionInfo.id,
-      idAtOrigin: subscriptionInfo.idAtOrigin,
-      origin: subscriptionInfo.origin,
       createdAt: subscriptionInfo.createdAt,
-      createdAtOrigin: subscriptionInfo.createdAtOrigin,
       changedAt: subscriptionInfo.changedAt,
       startedAt: subscriptionInfo.startedAt,
       currency: subscriptionInfo.currency,
       currentPeriodStart: subscriptionInfo.currentPeriodStart,
       currentPeriodEnd: subscriptionInfo.currentPeriodEnd,
-      customer: subscriptionInfo.customer,
       userRef: subscriptionInfo.userRef,
       endedAt: subscriptionInfo.endedAt,
       canceledAt: subscriptionInfo.canceledAt,
