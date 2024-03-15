@@ -48,7 +48,6 @@ export class SubscriptionsListComponent {
   displayedColumns: string[] = [
     'displayName',
     'email',
-    'origin',
     'product',
     'status',
     'start',

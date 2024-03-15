@@ -2,17 +2,12 @@ import { Component, Input, SimpleChanges, ViewChild } from '@angular/core';
 import { DocumentReference } from '@angular/fire/compat/firestore';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { Router, ActivatedRoute } from '@angular/router';
-import { Subscription, combineLatest } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { Coupon } from 'projects/shared/models/coupon.model';
 import { Price } from 'projects/shared/models/price.model';
 import { Product } from 'projects/shared/models/product.model';
 import { User } from 'projects/shared/models/user.model';
-import { CouponService } from 'projects/predyc-business/src/shared/services/coupon.service';
-import { PriceService } from 'projects/predyc-business/src/shared/services/price.service';
-import { ProductService } from 'projects/predyc-business/src/shared/services/product.service';
 import { SubscriptionService } from 'projects/predyc-business/src/shared/services/subscription.service';
-import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
 import { Subscription as SubscriptionClass, SubscriptionJson } from 'projects/shared/models/subscription.model'
 import { MatDialog } from '@angular/material/dialog';
 import { DialogEditSubscriptionComponent } from 'projects/predyc-business/src/shared/components/subscription/dialog-edit-subscription/dialog-edit-subscription.component';
@@ -40,9 +35,6 @@ export interface SubscriptionInfo extends SubscriptionJson {
 export class StudentSubscriptionListComponent {
 
   constructor(
-    private router: Router,
-    private activatedRoute: ActivatedRoute,
-    private userService: UserService,
     private subscriptionService: SubscriptionService,
     private dialog: MatDialog,
     public dialogService: DialogService,
@@ -53,7 +45,6 @@ export class StudentSubscriptionListComponent {
     "productName",
     "coupon",
     "status",
-    "origin",
     "createdAt",
     "currentPeriodStart",
     "statusBasedComment",
@@ -147,16 +138,12 @@ export class StudentSubscriptionListComponent {
   subscriptionInfotoJson(subscriptionInfo: SubscriptionInfo): SubscriptionJson {
     return {
       id: subscriptionInfo.id,
-      idAtOrigin: subscriptionInfo.idAtOrigin,
-      origin: subscriptionInfo.origin,
       createdAt: subscriptionInfo.createdAt,
-      createdAtOrigin: subscriptionInfo.createdAtOrigin,
       changedAt: subscriptionInfo.changedAt,
       startedAt: subscriptionInfo.startedAt,
       currency: subscriptionInfo.currency,
       currentPeriodStart: subscriptionInfo.currentPeriodStart,
       currentPeriodEnd: subscriptionInfo.currentPeriodEnd,
-      customer: subscriptionInfo.customer,
       userRef: subscriptionInfo.userRef,
       endedAt: subscriptionInfo.endedAt,
       canceledAt: subscriptionInfo.canceledAt,
