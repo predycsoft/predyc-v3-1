@@ -1,7 +1,11 @@
 <div fxLayout="column" fxLayoutGap="1.5rem" class="pd20" style="width: 80vw;">
 
-    <div fxLayout="column" fxLayoutGap=".5rem">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
         <span class="gray-10 ft24 ft500">Detalle del curso inscrito</span>
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem">
+            <span class="ft14 backGray4 radius20 gray-8 pdr05 pdl05">Id del curso: {{courseRef.id}}</span>
+            <span class="ft14 backGray4 radius20 gray-8 pdr05 pdl05">Id del courseByStudent: {{courseByStudentRef.id}}</span>
+        </div>
     </div>
 
     <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="1rem">
