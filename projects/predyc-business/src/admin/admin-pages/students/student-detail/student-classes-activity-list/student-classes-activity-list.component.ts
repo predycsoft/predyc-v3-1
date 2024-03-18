@@ -2,9 +2,8 @@ import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core
 import { DocumentReference } from '@angular/fire/compat/firestore';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { ClassByStudent } from 'projects/functions/dist/shared/models/class-by-student.model';
 import { CourseService } from 'projects/predyc-business/src/shared/services/course.service';
-import { ClassByStudentJson } from 'projects/shared/models/class-by-student.model';
+import { ClassByStudent, ClassByStudentJson } from 'projects/shared/models/class-by-student.model';
 import { CourseByStudent } from 'projects/shared/models/course-by-student.model';
 import { User } from 'projects/shared/models/user.model';
 import { firestoreTimestampToNumberTimestamp } from 'projects/shared/utils';

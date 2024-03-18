@@ -208,7 +208,7 @@
                     </div>
                 </div>
                 <div *ngIf="academicTab === 0" class="fw">
-                    <app-student-courses-list [userRef]="userRef"></app-student-courses-list>
+                    <app-student-courses-list [userRef]="userRef" [userName]="user.name"></app-student-courses-list>
                 </div>
                 <div *ngIf="academicTab === 1" class="fw">
                     <app-student-classes-activity-list [userRef]="userRef"></app-student-classes-activity-list>

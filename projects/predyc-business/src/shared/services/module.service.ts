@@ -3,6 +3,7 @@ import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firest
 import { AlertsService } from './alerts.service';
 import { Curso } from 'projects/shared/models/course.model';
 import { Modulo } from 'projects/shared/models/module.model';
+import { Observable } from 'rxjs/internal/Observable';
 
 @Injectable({
   providedIn: 'root'
@@ -50,6 +51,10 @@ export class ModuleService {
       console.log(error);
       this.alertService.errorAlert(JSON.stringify(error));
     }
+  }
+
+  getModules$(courseId: string): Observable<Modulo[]> {
+    return this.afs.collection<Curso>(Curso.collection).doc(courseId).collection<Modulo>(Modulo.collection).valueChanges()
   }
 
 }

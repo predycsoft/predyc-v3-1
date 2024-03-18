@@ -7,7 +7,9 @@ import { Subscription } from 'rxjs';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { CourseByStudent, CourseByStudentJson } from 'projects/shared/models/course-by-student.model';
-import { firestoreTimestampToNumberTimestamp } from 'shared';
+import { firestoreTimestampToNumberTimestamp } from 'projects/shared/utils';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogStudentEnrolledCourseDetailComponent } from 'projects/predyc-business/src/shared/components/courses/dialog-student-enrolled-course-detail/dialog-student-enrolled-course-detail.component';
 
 interface CourseInfo extends CourseByStudentJson {
   coursePhoto: string
@@ -23,10 +25,12 @@ export class StudentCoursesListComponent {
 
   constructor(
     private courseService: CourseService,
+    private dialog: MatDialog,
 
   ){}
 
   @Input() userRef: DocumentReference<User>
+  @Input() userName: string
 
   combinedServicesSubscription: Subscription
   subscriptionsSubscription: Subscription
@@ -44,7 +48,7 @@ export class StudentCoursesListComponent {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  pageSize: number = 6
+  pageSize: number = 4
   totalLength: number
 
 
@@ -60,6 +64,8 @@ export class StudentCoursesListComponent {
           dateEnd: firestoreTimestampToNumberTimestamp(courseByStundet.dateEnd),
           coursePhoto: courseData.foto,
           courseTitle: courseData.titulo,
+          courseId: courseData.id,
+          courseByStudentId: courseByStundet.id
         };
       });
   
@@ -76,6 +82,19 @@ export class StudentCoursesListComponent {
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.paginator.pageSize = this.pageSize;
+  }
+
+  openEnrolledCourseDetailDialog(courseData){
+    const dialogRef = this.dialog.open(DialogStudentEnrolledCourseDetailComponent, {
+      data: {
+        userName: this.userName,
+        courseRef: courseData.courseRef,
+        courseTitle: courseData.courseTitle,
+        coursePhoto: courseData.coursePhoto,
+        courseByStudentRef: this.courseService.getCourseByStudentRef(courseData.courseByStudentId),
+        isActive: courseData.active
+      }
+    });
   }
   
   ngOnDestroy() {

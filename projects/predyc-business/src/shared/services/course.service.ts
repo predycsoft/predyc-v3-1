@@ -286,6 +286,10 @@ export class CourseService {
     return courseByStudent ? courseByStudent[0] : null
   }
 
+  getCourseByStudentRef(id: string): DocumentReference<CourseByStudent> {
+    return this.afs.collection<CourseByStudent>(CourseByStudent.collection).doc(id).ref
+  }
+
   async saveCourseByStudent(courseRef: DocumentReference, userRef: DocumentReference, dateStartPlan: Date, dateEndPlan: Date): Promise<CourseByStudent> {
     const ref = this.afs.collection<CourseByStudent>(CourseByStudent.collection).doc().ref;
     const courseByStudent = {
@@ -494,6 +498,12 @@ export class CourseService {
       }),
       map(arraysOfClasses => arraysOfClasses.flat())
     )
+  }
+
+  getClassesByStudentThrougCoursesByStudent$(courseByStudentRef: DocumentReference<CourseByStudent>): Observable<ClassByStudent[]> {
+    return this.afs.collection<ClassByStudent>(ClassByStudent.collection, ref => 
+      ref.where('coursesByStudentRef', '==', courseByStudentRef).where('completed', '==', true)
+    ).valueChanges()
   }
   
 
