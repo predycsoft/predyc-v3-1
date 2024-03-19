@@ -17,6 +17,8 @@ import { dateFromCalendarToTimestamp, timestampToDateNumbers } from 'projects/sh
 import { countriesData } from 'projects/predyc-business/src/assets/data/countries.data'
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { Enterprise } from 'projects/shared/models/enterprise.model';
+// import { departmentsData } from '../../../../../../../../../.firebase/predyc-empresa/hosting/assets/data/departments.data';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-create-user',
@@ -142,11 +144,27 @@ export class CreateUserComponent {
     this.showErrorDepartment = false;
 
     if(this.formNewDepartment.valid){
-      let enterpriseRef = this.enterpriseService.getEnterpriseRef()
-      let deparment = new Department(null,this.formNewDepartment.value.nombre,enterpriseRef,null)
-      await this.departmentService.add(deparment)
-      this.modalCrearDepartment.close()
-      this.userForm.get("department").patchValue(deparment.name);
+
+      let ValidateName = this.departments.filter(x=>x.name == this.formNewDepartment.value.nombre)
+
+      console.log('ValidateName',ValidateName,this.departments)
+
+      if(ValidateName.length>=1){
+
+        Swal.fire({
+          title:'Nombre ya en uso!',
+          text:`Por favor verifique el nombre del departamento para poder crearlo`,
+          icon:'warning',
+          confirmButtonColor: 'var(--blue-5)',
+        })
+      }
+      else{
+        let enterpriseRef = this.enterpriseService.getEnterpriseRef()
+        let deparment = new Department(null,this.formNewDepartment.value.nombre,enterpriseRef,null)
+        await this.departmentService.add(deparment)
+        this.modalCrearDepartment.close()
+        this.userForm.get("department").patchValue(deparment.name)
+      }
 
     }
     else{
