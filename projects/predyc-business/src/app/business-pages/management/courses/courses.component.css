@@ -192,6 +192,13 @@
     display: flex;
     flex-direction: column;
   }
+  .containerTitulo2{
+    /* min-height: 8rem;
+    max-height: 8rem; */
+    /* overflow: hidden;
+    display: flex; */
+    /* flex-direction: column; */
+  }
 
   /* .searchBar {
     border-radius: 6px;
