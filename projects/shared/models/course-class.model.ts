@@ -18,6 +18,7 @@ import { DocumentReference } from "@angular/fire/compat/firestore"
     videoFileName: string = ""
     date:number=0
     instructorRef :DocumentReference = null
+    enterpriseRef: DocumentReference= null;
 
     public toJson() {
       return {
@@ -34,7 +35,8 @@ import { DocumentReference } from "@angular/fire/compat/firestore"
         vigente: this.vigente,
         videoFileName: this.videoFileName,
         date: this.date,
-        instructorRef: this.instructorRef
+        instructorRef: this.instructorRef,
+        enterpriseRef:this.enterpriseRef
       }
   }
 

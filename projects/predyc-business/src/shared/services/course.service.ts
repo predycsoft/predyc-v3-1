@@ -32,12 +32,49 @@ export class CourseService {
   ) 
   {
     this.getCourses();
+    //this.fixClasses();
   }
 
   private coursesSubject = new BehaviorSubject<Curso[]>([]);
   private course$ = this.coursesSubject.asObservable();
 
   private enterpriseRef: DocumentReference
+
+
+  
+  async fixClasses() {
+    console.log('fix classes')
+    // Referencia a la colección de 'class'
+    const classCollectionRef = this.afs.collection('class').ref;
+  
+    // Obtiene todos los documentos de la colección 'class'
+    const classSnapshot = await classCollectionRef.get();
+  
+    const batch = this.afs.firestore.batch();
+  
+    for (const doc of classSnapshot.docs) {
+      const classData = doc.data();
+      // Verifica si el documento tiene un instructorRef
+      if (classData['instructorRef']) {
+        try {
+          // Obtiene el documento del instructor
+          const instructorDoc = await classData['instructorRef'].get();
+          if (instructorDoc.exists) {
+            const instructorData = instructorDoc.data();
+            // Verifica si el instructor tiene un enterpriseRef
+            console.log('instructorData',instructorData)
+            batch.update(doc.ref, { enterpriseRef: instructorData.enterpriseRef });
+          }
+        } catch (error) {
+          console.error("Error al obtener el documento del instructor:", error);
+        }
+      }
+    }
+  
+    // Ejecuta el batch write
+    await batch.commit();
+  }
+  
 
 
   async saveCourse(newCourse: Curso): Promise<void> {
@@ -313,13 +350,6 @@ export class CourseService {
   }
 
 
-  getActiveCoursesByStudentDateFiltered$(userRef: DocumentReference<User>,dateIni = null,DateEnd = null): Observable<CourseByStudent[]> {
-    return this.afs.collection<CourseByStudent>(CourseByStudent.collection, ref => ref.
-      where('userRef', '==', userRef).
-      where('active', '==', true)
-    ).valueChanges()
-  }
-
 
   async getActiveCoursesByStudent(userRef: DocumentReference<User>): Promise<CourseByStudent[]> {
     const querySnapshot: QuerySnapshot<CourseByStudent> = await this.afs.collection<CourseByStudent>(CourseByStudent.collection).ref
@@ -469,15 +499,45 @@ export class CourseService {
   }
 
 
-    // ---- classeByStudent Collection methods
-    getClassesByStudentDatefilterd$(userRef: DocumentReference<User>,dateIni = null ,DateEnd = null): Observable<ClassByStudent[]> {
-      return this.afs.collection<ClassByStudent>(ClassByStudent.collection, ref =>
-         ref.where('userRef', '==', userRef)
-         .where('completed', '==', true)).valueChanges()
-    }
+  // ---- classeByStudent Collection methods
+  getClassesByStudentDatefilterd$(userRef: DocumentReference<User>,dateIni = null ,dateEnd = null): Observable<ClassByStudent[]> {
+    console.log('dateIni',dateIni)
+    return this.afs.collection<ClassByStudent>(ClassByStudent.collection, ref => {
+      let query = ref.where('userRef', '==', userRef)
+                      .where('completed', '==', true);
+      
+      if (dateIni) {
+        query = query.where('dateEnd', '>=', dateIni);
+      }
+      if (dateEnd) {
+        query = query.where('dateEnd', '<=', dateEnd);
+      }
+      return query;
+    }).valueChanges();
+  }
+
+  getActiveCoursesByStudentDateFiltered$(userRef: DocumentReference<User>,dateIni = null,dateEnd = null): Observable<CourseByStudent[]> {
+    return this.afs.collection<CourseByStudent>(CourseByStudent.collection, ref => {
+      let query = ref.where('userRef', '==', userRef)
+                      .where('active', '==', true);
+      
+      if (dateIni) {
+        query = query.where('dateStartPlan', '>=', dateIni);
+      }
+      if (dateEnd) {
+        query = query.where('dateStartPlan', '<=', dateEnd);
+      }
+      return query;
+    }).valueChanges();
+  }
+
 
   getClass$(classId: string): Observable<Clase> {
     return this.afs.collection<Clase>(Clase.collection).doc(classId).valueChanges()
+  }
+
+  getClasses$(): Observable<Clase[]> {
+    return this.afs.collection<Clase>(Clase.collection).valueChanges()
   }
 
   async getClass(classId: string): Promise<Clase> {

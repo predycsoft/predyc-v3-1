@@ -3,7 +3,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { Chart } from 'chart.js';
 import jsPDF from 'jspdf';
-import { Subscription, combineLatest, filter, map, of, switchMap, take } from 'rxjs';
+import { Subscription, combineLatest, concatAll, filter, map, of, switchMap, take } from 'rxjs';
 import { Enterprise } from 'projects/shared/models/enterprise.model';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
@@ -73,6 +73,7 @@ export class DialogDownloadReportComponent {
   users
   reportform: FormGroup
   displayErrors = false
+  classes
 
   ngOnInit() { // estoy aqui
     this.displayErrors = false
@@ -101,22 +102,31 @@ export class DialogDownloadReportComponent {
     if (this.userServiceSubscription) {
       this.userServiceSubscription.unsubscribe()
     }
+    
 
-    let fechaInicio = new Date(this.startDate.year,this.startDate.month-1,this.startDate.day)
-    let fechaFin = new Date(this.endDate.year,this.endDate.month-1,this.endDate.day)
+    let fechaInicio = null
+    let fechaFin = null
+
+    if(this.startDate){
+      fechaInicio = new Date(this.startDate.year,this.startDate.month-1,this.startDate.day)
+    }
+    if(this.endDate){
+      fechaFin = new Date(this.endDate.year,this.endDate.month-1,this.endDate.day)
+    }
+
 
     console.log('fechas reporte',fechaInicio,fechaFin)
 
 
-    this.userServiceSubscription = this.userService.getUsersReport$(null,null,null,null,this.startDate,this.endDate).pipe(
+    this.userServiceSubscription = this.userService.getUsersReport$(null,null,null,null,fechaInicio,fechaFin).pipe(
       filter(user=>user !=null),take(1),
       switchMap(users => {
         const userCourseObservables = users.map(user => {
           const userRef = this.userService.getUserRefById(user.uid);
           // Obtener cursos activos por usuario
-          const coursesObservable = this.courseService.getActiveCoursesByStudentDateFiltered$(userRef,this.startDate,this.endDate);
+          const coursesObservable = this.courseService.getActiveCoursesByStudentDateFiltered$(userRef,fechaInicio,fechaFin);
           // Obtener clases asociadas al usuario, independientemente de los cursos
-          const classesObservable = this.courseService.getClassesByStudentDatefilterd$(userRef);
+          const classesObservable = this.courseService.getClassesByStudentDatefilterd$(userRef,fechaInicio,fechaFin);
       
           return combineLatest([coursesObservable, classesObservable]).pipe(
             map(([courses, classes]) => {
@@ -130,7 +140,7 @@ export class DialogDownloadReportComponent {
         return combineLatest(userCourseObservables);
         })).subscribe(response => {
         console.log('datos reporte',response)
-        const users: User[] = response.map(({user, courses}) => {
+        const users: User[] = response.map(({user, courses,classes}) => {
           const profile = this.profiles.find(profile => {
             if(user.profile) {
               return profile.id === user.profile.id
@@ -164,7 +174,8 @@ export class DialogDownloadReportComponent {
             rhythm: userPerformance, // Calculation pending
             uid: user.uid,
             photoUrl: user.photoUrl,
-            courses:coursesUser
+            courses:coursesUser,
+            clases:classes,
           }
         })
         this.users = users; // Assuming the data is in 'items'
@@ -396,10 +407,32 @@ export class DialogDownloadReportComponent {
     currentLine = this.generalCoursesData(strings, values, currentLine) 
     // CHARTS
     const graphicHeight = 90
-    currentLine = await this.getChart(currentLine, [], graphicHeight)
+
+    const constCharData = this.getCharData(this.users)
+    currentLine = await this.getChart(currentLine, constCharData, graphicHeight)
 
     // PROGRESS BAR
     currentLine = await this.generalProgressbar(currentLine)
+  }
+
+
+  getCharData(usersData){
+
+    console.log('usersData',usersData)
+
+    let allClasses = []
+    usersData.forEach(user => {
+      if(user.clases.length>0){
+        allClasses = allClasses.concat(allClasses, user.clases);
+      }
+    });
+
+    console.log('allClasses',allClasses)
+
+
+
+
+    return []
   }
 
   addFonts() {
@@ -473,7 +506,7 @@ export class DialogDownloadReportComponent {
     })
     currentLine += this.pdf.getLineHeight()
     // const chartData = this.getChartData(logsInsidePeriod)
-    const chartData = []
+    const chartData = logsInsidePeriod
     let labels = []
     let values = []
     chartData.forEach(data => {
