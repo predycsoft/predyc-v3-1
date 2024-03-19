@@ -10,8 +10,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Coupon } from 'projects/shared/models/coupon.model';
 import { Price } from 'projects/shared/models/price.model';
 import { Product } from 'projects/shared/models/product.model';
-
-
+import { User } from 'projects/shared/models/user.model';
 
 @Component({
   selector: 'app-dialog-create-charge',
@@ -26,7 +25,7 @@ export class DialogCreateChargeComponent {
     private couponService: CouponService,
     public matDialogRef: MatDialogRef<DialogCreateChargeComponent>, 
     @Inject(MAT_DIALOG_DATA) public data: {
-      enterpriseRef: DocumentReference<Enterprise>,
+      customerRef: DocumentReference<Enterprise | User>,
       coupons: Coupon[],
       prices: Price[],
       products: Product[],
@@ -53,7 +52,7 @@ export class DialogCreateChargeComponent {
   ngOnInit() {
     this.newCharge = Charge.fromJson({...Charge.getChargeTemplate()})
     this.newCharge.id = "ch_pre_" + Date.now().toString(),
-    this.newCharge.customer = this.data.enterpriseRef
+    this.newCharge.customer = this.data.customerRef
     this.products = this.data.products
     this.prices = this.data.prices
     this.coupons = this.data.coupons

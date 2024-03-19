@@ -2,16 +2,12 @@ import { DocumentReference } from "@angular/fire/compat/firestore";
 
 export interface SubscriptionJson {
     id: string;
-    idAtOrigin: string;
-    origin: string;
     createdAt: number;
-    createdAtOrigin: number;
     changedAt: number | null;
     startedAt: number | null;
     currency: string;
     currentPeriodStart: number;
     currentPeriodEnd: number;
-    customer: string;
     couponRef: DocumentReference | null;
     userRef: DocumentReference | null;
     endedAt: number | null;
@@ -34,7 +30,6 @@ export interface SubscriptionJson {
     nextPaymentAmount: number;
     enterpriseRef: DocumentReference
     licenseRef: DocumentReference
-
 }
   
 export class Subscription {
@@ -80,7 +75,6 @@ export class Subscription {
   currency: string;
   currentPeriodStart: number;
   currentPeriodEnd: number;
-  customer: string | null;
   userRef: DocumentReference | null;
   endedAt: number | null;
   canceledAt: number | null;
@@ -118,16 +112,12 @@ export class Subscription {
   public static getSubscriptionTemplate(): Subscription {
     return Subscription.fromJson({
       id: 'PRE_' + +new Date(),
-      idAtOrigin: 'PRE_' + +new Date(),
-      origin: 'Predyc',
       createdAt: +new Date(),
-      createdAtOrigin: +new Date(),
       changedAt: null,
       startedAt: +new Date(),
       currency: 'usd',
       currentPeriodStart: +new Date(),
       currentPeriodEnd: null,
-      customer: '',
       couponRef: null,
       userRef: null,
       endedAt: null,
@@ -152,17 +142,13 @@ export class Subscription {
   public static fromJson(subscriptionData: SubscriptionJson): Subscription {
     let subscription = new Subscription();
     subscription.id = subscriptionData.id;
-    subscription.idAtOrigin = subscriptionData.idAtOrigin;
-    subscription.origin = subscriptionData.origin;
     subscription.createdAt = subscriptionData.createdAt;
-    subscription.createdAtOrigin = subscriptionData.createdAtOrigin;
     subscription.changedAt = subscriptionData.changedAt;
     subscription.startedAt = subscriptionData.startedAt;
     subscription.couponRef = subscriptionData.couponRef;
     subscription.currency = subscriptionData.currency;
     subscription.currentPeriodStart = subscriptionData.currentPeriodStart;
     subscription.currentPeriodEnd = subscriptionData.currentPeriodEnd;
-    subscription.customer = subscriptionData.customer;
     subscription.userRef = subscriptionData.userRef;
     subscription.endedAt = subscriptionData.endedAt;
     subscription.canceledAt = subscriptionData.canceledAt;
@@ -182,16 +168,12 @@ export class Subscription {
   public toJson(): SubscriptionJson {
     return {
       id: this.id,
-      idAtOrigin: this.idAtOrigin,
-      origin: this.origin,
       createdAt: this.createdAt,
-      createdAtOrigin: this.createdAtOrigin,
       changedAt: this.changedAt,
       startedAt: this.startedAt,
       currency: this.currency,
       currentPeriodStart: this.currentPeriodStart,
       currentPeriodEnd: this.currentPeriodEnd,
-      customer: this.customer,
       userRef: this.userRef,
       endedAt: this.endedAt,
       canceledAt: this.canceledAt,

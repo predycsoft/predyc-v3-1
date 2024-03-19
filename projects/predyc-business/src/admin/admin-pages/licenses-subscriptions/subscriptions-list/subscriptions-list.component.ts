@@ -18,7 +18,6 @@ interface SubscriptionInList {
   userName: string,
   userEmail: string,
   productName: string,
-  origin: string,
   status: string,
   createdAt: number,
   currentPeriodStart: number,
@@ -49,7 +48,6 @@ export class SubscriptionsListComponent {
   displayedColumns: string[] = [
     'displayName',
     'email',
-    'origin',
     'product',
     'status',
     'start',
@@ -123,7 +121,6 @@ export class SubscriptionsListComponent {
           userName: user ? user.displayName : "N/A",
           userEmail: user ? user.email : "N/A",
           productName: product ? product.name : "N/A",
-          origin: subscription.origin,
           status: SubscriptionClass.statusToDisplayValueDict[subscription.status],
           createdAt: subscription.createdAt,
           currentPeriodStart: subscription.currentPeriodStart,
@@ -146,28 +143,10 @@ export class SubscriptionsListComponent {
 
   // ------- from predyc admin 
   getNextInvoice(subscription: SubscriptionInList) {
-    switch (subscription.origin.toLocaleLowerCase()) {
-      case 'predyc':
-        return {
-          date: this.getPeriodEnd(subscription),
-          ammount: this.getAmount(subscription),
-        };
-      case 'stripe':
-        return {
-          date: subscription.currentPeriodEnd,
-          ammount: this.getAmount(subscription),
-        };
-      case 'paypal':
-        return {
-          date: subscription.currentPeriodEnd,
-          ammount: this.getAmount(subscription),
-        };
-      default:
-        return {
-          date: subscription.currentPeriodEnd,
-          ammount: this.getAmount(subscription),
-        };
-    }
+    return {
+      date: this.getPeriodEnd(subscription),
+      ammount: this.getAmount(subscription),
+    };
   }
 
   getPeriodEnd(subscription: SubscriptionInList): number {
@@ -207,7 +186,6 @@ export class SubscriptionsListComponent {
   }
 
   getAmount(subscription: SubscriptionInList): number {
-    const today = +new Date
     let price = this.prices.find(p => p.id === subscription.priceId);
     price = Price.fromJson(price);
     

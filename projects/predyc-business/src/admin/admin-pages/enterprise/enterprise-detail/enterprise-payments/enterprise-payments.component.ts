@@ -75,7 +75,7 @@ export class EnterprisePaymentsComponent {
         this.priceService.getPrices$(), 
         this.productService.getProducts$(), 
         this.couponService.getCoupons$(),
-        this.chargeService.getChargesByEnterpriseRef$(this.enterpriseRef)
+        this.chargeService.getChargesByCustomerRef$(this.enterpriseRef)
       ]
     ).
     subscribe(([prices, products, coupons, charges]) => {
@@ -113,7 +113,7 @@ export class EnterprisePaymentsComponent {
   async openCreateChargeModal() {
     const dialogRef = this.dialog.open(DialogCreateChargeComponent, {
       data: {
-        enterpriseRef: this.enterpriseRef,
+        customerRef: this.enterpriseRef,
         coupons: this.coupons,
         prices: this.prices,
         products: this.products,

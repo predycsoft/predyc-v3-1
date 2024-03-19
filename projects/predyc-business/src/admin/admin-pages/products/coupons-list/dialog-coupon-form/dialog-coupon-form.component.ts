@@ -1,8 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { AngularFireFunctions } from '@angular/fire/compat/functions';
 import { FormBuilder } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { firstValueFrom } from 'rxjs';
 import { Coupon } from 'projects/shared/models/coupon.model';
 import { CouponService } from 'projects/predyc-business/src/shared/services/coupon.service';
 import { DialogService } from 'projects/predyc-business/src/shared/services/dialog.service';
@@ -22,13 +20,11 @@ export class DialogCouponFormComponent {
     private fb: FormBuilder,
     private couponService: CouponService,
     public dialogService: DialogService,
-    private fireFunctions: AngularFireFunctions,
     public icon: IconService,
 
   ) {}
 
   ngOnInit() {
-    // console.log("this.coupon", this.coupon)
     if (this.coupon.id) {
       this.couponForm.patchValue(this.coupon);
     }
@@ -50,11 +46,7 @@ export class DialogCouponFormComponent {
     activeBanner: [false],
     textBanner: [''],
     promoCode: [''],
-    stripeInfo: this.fb.group({ stripeId: [null], updatedAt: [null] }),
   });
-
-
-
 
   toggleCouponActiveState(): void {
     this.couponForm.controls.active.setValue(
@@ -73,22 +65,10 @@ export class DialogCouponFormComponent {
       if (coupon.activeBanner) {
         await this.couponService.desactivateOtherBanners(coupon.id)
       }
-      // const promises = [this.getSyncStripeFunction(coupon)];
-      // const _ = await Promise.all(promises);
       this.closeDialog()
     } catch (error) {
       this.dialogService.dialogAlerta(error);
     }
-  }
-
-  getSyncStripeFunction(coupon: Coupon): Promise<void> {
-    let syncStripeFunction = null;
-    if (!coupon.stripeInfo.stripeId) {
-      syncStripeFunction = firstValueFrom(
-        this.fireFunctions.httpsCallable('createStripeCoupon')(coupon)
-      );
-    }
-    return syncStripeFunction;
   }
 
   closeDialog() {

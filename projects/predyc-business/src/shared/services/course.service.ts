@@ -333,6 +333,9 @@ export class CourseService {
   }
 
 
+  public async getCourseById(id: string): Promise<Curso> {
+    return await firstValueFrom(this.afs.collection<Curso>(Curso.collection).doc(id).valueChanges())
+  }
 
   // ---- courseByStudent Collection methods
   getCoursesByStudent$(userRef: DocumentReference<User>): Observable<CourseByStudent[]> {
@@ -343,6 +346,10 @@ export class CourseService {
     const courseByStudent = await firstValueFrom(this.afs.collection<CourseByStudent>(CourseByStudent.collection, ref => ref.
       where('userRef', '==', userRef).where('courseRef', '==', courseRef) ).valueChanges())
     return courseByStudent ? courseByStudent[0] : null
+  }
+
+  getCourseByStudentRef(id: string): DocumentReference<CourseByStudent> {
+    return this.afs.collection<CourseByStudent>(CourseByStudent.collection).doc(id).ref
   }
 
   async saveCourseByStudent(courseRef: DocumentReference, userRef: DocumentReference, dateStartPlan: Date, dateEndPlan: Date): Promise<CourseByStudent> {
@@ -518,6 +525,10 @@ export class CourseService {
 
 
   // ---- classeByStudent Collection methods
+  getAllClassesByStudent$(userRef: DocumentReference<User>): Observable<ClassByStudent[]> {
+    return this.afs.collection<ClassByStudent>(ClassByStudent.collection, ref => ref.where('userRef', '==', userRef)).valueChanges()
+  }
+
   getClassesByStudent$(userRef: DocumentReference<User>): Observable<ClassByStudent[]> {
     return this.afs.collection<ClassByStudent>(ClassByStudent.collection, ref => ref.where('userRef', '==', userRef).where('completed', '==', true)).valueChanges()
   }
@@ -589,6 +600,12 @@ export class CourseService {
       }),
       map(arraysOfClasses => arraysOfClasses.flat())
     )
+  }
+
+  getClassesByStudentThrougCoursesByStudent$(courseByStudentRef: DocumentReference<CourseByStudent>): Observable<ClassByStudent[]> {
+    return this.afs.collection<ClassByStudent>(ClassByStudent.collection, ref => 
+      ref.where('coursesByStudentRef', '==', courseByStudentRef).where('completed', '==', true)
+    ).valueChanges()
   }
   
 

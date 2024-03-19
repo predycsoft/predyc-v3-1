@@ -49,7 +49,7 @@
                     <span class="ft11 ft600 gray-9">Períodos pagados:</span>
                     <input type="number" min="0" formControlName="interval" (ngModelChange)="getAmount()">
                 </div>
-                <div class="mgt05 h50px" fxLayout="column" *ngIf="selectedProduct && selectedProduct.isACompanyProduct" >
+                <div class="mgt05 h50px" fxLayout="column" *ngIf="selectedProduct" >
                     <span class="ft11 ft600 gray-9">Cantidad de cupos:</span>
                     <input type="number" min="0" formControlName="quantity" (ngModelChange)="getAmount()">
                 </div>

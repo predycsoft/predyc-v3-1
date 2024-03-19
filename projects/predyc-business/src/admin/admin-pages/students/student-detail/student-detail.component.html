@@ -1,3 +1,4 @@
+<app-navigate-back targetUrl="/admin/students" class="ft600 ft16 gray-10">Estudiantes</app-navigate-back>
 <div class="fw pdt20 pdl30 pdr30 backWhite" fxLayout="row" fxLayoutGap="2rem" fxLayoutAlign=" center">
     <div *ngIf="user">
         <img [src]="user.photoUrl" onerror="this.src='../../assets/images/default/default-user-image.jpg'"
@@ -16,51 +17,51 @@
         </div>
     </div>
 </div>
-<div class="fw pdt20 pdl20 pdr20 backWhite fh">
+<div class="fw pdt10 pdl20 pdr20 backWhite">
     <div class="infoContainer" fxLayout="row" *ngIf="user">
         <div fxFlex="15" class="sticky">
             <div class="sticky">
                 <div>
-                    <span class="gray-10 ft500 ft13 pdb05">Detalles</span>
+                    <span class="gray-10 ft500 ft14 pdb05">Detalles</span>
                 </div>
-                <div class="fw mgt05" fxLayout="column">
-                    <div *ngIf="user.gender" fxLayout="column" class="mgt05">
-                        <span class="ft11 gray-8">Género</span>
-                        <span class="ft11 gray-9">{{user.gender}}</span>
+                <div class="fw mgt10" fxLayout="column" fxLayoutGap="1rem">
+                    <div *ngIf="user.gender" fxLayout="column" class="">
+                        <span class="ft13 gray-8">Género</span>
+                        <span class="ft13 gray-9">{{user.gender}}</span>
                     </div>
-                    <div *ngIf="user.birthdate" fxLayout="column" class="mgt05">
-                        <span class="ft11 gray-8">Edad</span>
-                        <span class="ft11 gray-9">{{user.age}}</span>
-                        <!-- <span class="ft11 gray-9">{{2023 - user.birthdate}}</span> -->
+                    <div *ngIf="user.birthdate" fxLayout="column" class="">
+                        <span class="ft13 gray-8">Edad</span>
+                        <span class="ft13 gray-9">{{user.age}}</span>
+                        <!-- <span class="ft13 gray-9">{{2023 - user.birthdate}}</span> -->
                     </div>
-                    <div *ngIf="user.country" fxLayout="column" class="mgt05">
-                        <span class="ft11 gray-8">País</span>
-                        <span class="ft11 gray-9">{{user.country}}</span>
+                    <div *ngIf="user.country" fxLayout="column" class="">
+                        <span class="ft13 gray-8">País</span>
+                        <span class="ft13 gray-9">{{user.country}}</span>
                     </div>
-                    <div *ngIf="user.job" fxLayout="column" class="mgt05">
-                        <span class="ft11 gray-8">Profesión</span>
-                        <span class="ft11 gray-9">{{user.job}}</span>
+                    <div *ngIf="user.job" fxLayout="column" class="">
+                        <span class="ft13 gray-8">Profesión</span>
+                        <span class="ft13 gray-9">{{user.job}}</span>
                     </div>
-                    <div *ngIf="user.enterprise" fxLayout="column" class="mgt05">
-                        <span class="ft11 gray-8">Empresa</span>
-                        <span class="ft11 gray-9">{{user.enterprise.name | titlecase}}</span>
+                    <div *ngIf="user.enterprise" fxLayout="column" class="">
+                        <span class="ft13 gray-8">Empresa</span>
+                        <span class="ft13 gray-9">{{user.enterprise.name | titlecase}}</span>
                     </div>
                 </div>
             </div>
         </div>
-        <div fxFlex="85" class="pdl40 pdr20">
-            <div fxLayout="row" fxLayoutGap="1rem">
+        <div fxFlex="85" class="pdl10 pdr10">
+            <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
                 <span [ngClass]="tab == 0 ? 'selectedTab ' : 'ft13 gray-9 cursorPointer'" (click)="tab=0">Ventas</span>
                 <span [ngClass]="tab == 1 ? 'selectedTab' : 'ft13 gray-9 cursorPointer'" (click)="tab=1">Académico</span>
             </div>
             <!-- Ventas -->
             <div *ngIf="tab == 0" class="fw">
                 <div class="fw">
-                    <div class="fw mgt20 pdb05 border-b" fxLayout="row" fxLayoutAlign="space-between center">
+                    <div class="fw mgt20 pdb05 border-b" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5">
                         <span class="ft13 ft500 gray-10">Suscripciones</span>
-                        <span class="blue-5 ft500 ft11 cursorPointer" (click)="createSubscription()">Crear</span>
+                        <mat-icon (click)="createSubscription()" class="mgl10 gray-5 cursorPointer ft20 linkIcon">add_circle</mat-icon>
                     </div>
-                    <app-student-subscription-list [user]="user" [prices]="prices" [products]="products" [coupons]="coupons"></app-student-subscription-list>
+                    <app-student-subscription-list [userRef]="userRef" [prices]="prices" [products]="products" [coupons]="coupons"></app-student-subscription-list>
                     <!-- <div class="tableContainer mgt10">
                         <table class="tableBody sticky">
                             <tbody>
@@ -119,10 +120,11 @@
                     </div> -->
                 </div>
                 <div>
-                    <div class="fw mgt20 pdb05 border-b" fxLayout="row" fxLayoutAlign="space-between center">
+                    <div class="fw mgt10 pdb05 border-b" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5">
                         <span class="ft13 ft500 gray-10">Pagos</span>
-                        <span class="blue-5 ft500 ft11 cursorPointer" (click)="createCharge()">Crear</span>
+                        <mat-icon (click)="createCharge()" class="mgl10 gray-5 cursorPointer ft20 linkIcon">add_circle</mat-icon>
                     </div>
+                    <app-student-charge-list [userRef]="userRef" [user]="user" [prices]="prices" [products]="products"></app-student-charge-list>
                     <!-- <div class="tableContainer mgt10">
                         <div *ngIf="payments.length == 0" class="ft12 gray-6">
                             El usuario no tiene pagos
@@ -196,8 +198,24 @@
                     </div> -->
                 </div>
             </div>
-            <!-- <div *ngIf="tab == 1" class="pdb20 ">
-                <div class="radius10 shadow16 mgt20">
+            <!-- Academico -->
+            <div *ngIf="tab == 1" class="">
+                <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" class="fw mgt20 pdb05 border-b">
+                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5" (click)="academicTab = 0">
+                        <span class="" [ngClass]="academicTab == 0 ? 'selectedTab ' : 'ft13 gray-9 cursorPointer'">Cursos</span>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5" (click)="academicTab = 1">
+                        <span class="" [ngClass]="academicTab == 1 ? 'selectedTab' : 'ft13 gray-9 cursorPointer'">Actividad</span>
+                    </div>
+                </div>
+                <div *ngIf="academicTab === 0" class="fw">
+                    <app-student-courses-list [userRef]="userRef" [userName]="user.name"></app-student-courses-list>
+                </div>
+                <div *ngIf="academicTab === 1" class="fw">
+                    <app-student-classes-activity-list [userRef]="userRef"></app-student-classes-activity-list>
+                </div>
+
+                <!-- <div class="radius10 shadow16 mgt20">
                     <div class="backWhite pd10 " fxLayout="row" fxLayoutGap="1rem">
                         <span [ngClass]="tabAcademico ==0?'blue-5 ft12 ft500':'gray-9 ft12'"
                             (click)="tabAcademico = 0">Cursos ({{cursos.length}})</span>
@@ -375,8 +393,8 @@
 
                         </table>
                     </div>
-                </div>
-            </div> -->
+                </div> -->
+            </div>
         </div>
     </div>
 </div>

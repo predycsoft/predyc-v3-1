@@ -33,6 +33,9 @@ import { DialogNewLicenseComponent } from './admin-pages/enterprise/enterprise-d
 import { EnterpriseLicensesListComponent } from './admin-pages/enterprise/enterprise-detail/enterprise-students/enterprise-licenses-list/enterprise-licenses-list.component';
 import { EnterpriseAdminsListComponent } from './admin-pages/enterprise/enterprise-detail/enterprise-students/enterprise-admins-list/enterprise-admins-list.component';
 import { EnterpriseStudentsListComponent } from './admin-pages/enterprise/enterprise-detail/enterprise-students/enterprise-students-list/enterprise-students-list.component';
+import { StudentChargeListComponent } from './admin-pages/students/student-detail/student-charge-list/student-charge-list.component';
+import { StudentCoursesListComponent } from './admin-pages/students/student-detail/student-courses-list/student-courses-list.component';
+import { StudentClassesActivityListComponent } from './admin-pages/students/student-detail/student-classes-activity-list/student-classes-activity-list.component';
 
 
 @NgModule({
@@ -68,6 +71,9 @@ import { EnterpriseStudentsListComponent } from './admin-pages/enterprise/enterp
     EnterpriseLicensesListComponent,
     EnterpriseAdminsListComponent,
     EnterpriseStudentsListComponent,
+    StudentChargeListComponent,
+    StudentCoursesListComponent,
+    StudentClassesActivityListComponent,
   ],
   imports: [
     SharedModule,

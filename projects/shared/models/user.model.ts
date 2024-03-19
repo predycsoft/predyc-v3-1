@@ -99,7 +99,7 @@ export class User {
 
   ) {}
 
-  public static getEnterpriseAdminUser(enterprise: DocumentReference) {
+  public static getEnterpriseAdminUser(enterprise) {
     return User.getNewUser({
       isSystemUser: false,
       role: User.ROLE_ADMIN,
@@ -107,7 +107,7 @@ export class User {
     })
   }
 
-  public static getEnterpriseStudentUser(enterprise: DocumentReference) {
+  public static getEnterpriseStudentUser(enterprise) {
     return User.getNewUser({
       isSystemUser: false,
       role: User.ROLE_STUDENT,

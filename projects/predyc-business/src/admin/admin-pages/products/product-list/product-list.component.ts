@@ -28,9 +28,7 @@ export class ProductListComponent {
 
   displayedColumns: string[] = [
     "name",
-    "priority",
     "created",
-    "updated",
   ];
 
   dataSource = new MatTableDataSource<Product>();
@@ -46,9 +44,7 @@ export class ProductListComponent {
 
   showSaveButton: boolean = false;
 
-  originalPriorities = new Map<string, number>();
-
-  templateNewProduct = Product.newProduct as Product
+  templateNewProduct = Product.fromJson(Product.newProduct) as Product
 
   ngOnInit() {
     this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
@@ -65,34 +61,11 @@ export class ProductListComponent {
 
   performSearch(page: number) {
     this.productSubscription = this.productService.getProducts$().subscribe(products => {
-      products.forEach(product => {
-        this.originalPriorities.set(product.id, product.priority);
-      })
       this.paginator.pageIndex = page - 1;
       this.dataSource.data = products
       this.totalLength = products.length;
     })
 
-  }
-
-  OnStripeTimestampToNumberTimestamp(product: Product): number {
-    return stripeTimestampToNumberTimestamp(product.stripeInfo.updatedAt)
-  }
-
-  onPriorityChange(product: Product) {
-    this.showSaveButton = true;
-    // here we can check if all the priorities are as the initial state and hide the button
-  }
-
-  async savePriorities() {
-    this.dataSource.data.forEach(async product => {
-      const originalPriority = this.originalPriorities.get(product.id);
-      if (product.priority !== originalPriority) {
-        await this.productService.updateProductPriority(product.id, product.priority)
-        // console.log(product.name, "priority updated")
-      }
-    });
-    this.showSaveButton = false;
   }
 
   onPageChange(page: number): void {
@@ -112,7 +85,6 @@ export class ProductListComponent {
     })
     
     modalRef.componentInstance.product = selectedProduct;
-
   }
 
   ngOnDestroy() {

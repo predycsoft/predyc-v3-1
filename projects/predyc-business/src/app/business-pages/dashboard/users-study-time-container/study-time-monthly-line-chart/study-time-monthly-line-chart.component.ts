@@ -62,6 +62,7 @@ export class StudyTimeMonthlyLineChartComponent {
   getChartData() {
     const months = {}
     console.log(this.studentCourses)
+    if (this.studentCourses[0].dateStartPlan) return []
     const startPlanTimestampt = firestoreTimestampToNumberTimestamp(this.studentCourses[0].dateStartPlan)
     const endPlanTimestampt = firestoreTimestampToNumberTimestamp(this.studentCourses[this.studentCourses.length - 1].dateEndPlan)
     const firstDaysOfEachMonth = getFirstDaysOfMonth(startPlanTimestampt, endPlanTimestampt)

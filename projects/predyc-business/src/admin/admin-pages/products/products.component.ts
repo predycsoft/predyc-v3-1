@@ -12,11 +12,4 @@ export class ProductsComponent {
     public icon: IconService,
   ) {}
 
-  createNewProduct() {
-
-  }
-
-  createNewCoupon() {
-    
-  }
 }

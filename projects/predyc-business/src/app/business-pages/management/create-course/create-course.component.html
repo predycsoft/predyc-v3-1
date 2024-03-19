@@ -48,7 +48,7 @@
                                         <label class="ft12 " >Título</label>
                                         <input
                                         [class.is-invalid]="formNewCourse.controls['titulo'].errors && showErrorCurso"
-                                        formControlName="titulo" type="text" class="form-control customInput radius6" placeholder="Escriba el título del curso aquí">
+                                        formControlName="titulo" type="text" class="form-control customInput2 radius6 " placeholder="Escriba el título del curso aquí">
                                         <div class="invalid-feedback" *ngIf="formNewCourse.controls['titulo'].errors && showErrorCurso"> 
                                             Debe indicar el título del curso
                                         </div>
@@ -66,7 +66,7 @@
                                         <label>Descripción del curso</label>
                                         <textarea
                                         [class.is-invalid]="formNewCourse.controls['descripcion'].errors && showErrorCurso"
-                                         rows="3"  formControlName="descripcion" type="text" class="form-control ft12  customInput" placeholder="Escriba la descripción del curso aquí" style="resize: none;"></textarea>
+                                         rows="3"  formControlName="descripcion" type="text" class="form-control ft12  customInput2" placeholder="Escriba la descripción del curso aquí" style="resize: none;"></textarea>
                                          <div class="invalid-feedback" *ngIf="formNewCourse.controls['descripcion'].errors && showErrorCurso"> 
                                             Debe indicar la descripción del curso
                                         </div>
@@ -250,15 +250,15 @@
                                                 <div fxLayout="column" class="fw">
                                                     <!-- aqui van los modulos que se van creando -->
                                                     <div *ngFor="let modulo of modulos; let iModulo = index" class="{{modulo['isInvalid']? 'ContainerModuloInvalid' : 'ContainerModulo'}}">
-                                                        <div fxLayout="row" fxLayoutAlign="space-between start" class="fw pd10 pdt05 pdb5">
+                                                        <div fxLayout="row" fxLayoutAlign="space-between start" class="fw  pd08 ">
                                                             <div fxLayout="row" fxLayoutGap="10px" class="fw">
-                                                                <div class="ft500 ft12">
+                                                                <div class="ft500 ft12 p ">
                                                                     <!-- numero del modulo -->
                                                                     Módulo {{modulo.numero}}:
                                                                 </div>
                                                                 <div class="ft12">
                                                                     <!-- nombre del modulo -->
-                                                                    <img [src]="icon.document" class="h12px pdr05 makeGray" alt="">
+                                                                    <!-- <img [src]="icon.document" class="h12px pdr05 makeGray" alt=""> -->
                                                                     <div *ngIf="modulo.titulo && !modulo['editarTitulo']; then tituloPresente; else ModuloSinTitulo"></div>
                                                                     <ng-template #tituloPresente>
                                                                         <span (click)="modulo['editarTitulo'] = true;modulo['tituloTMP'] = modulo?.titulo">
@@ -297,7 +297,7 @@
                                                         <!-- Contenedor de las clases -->
                                                         <div *ngIf="modulo['expanded']">
                                                             <div *ngFor="let clase of modulo['clases']; trackBy: trackByClase; let iClase = index" fxLayout="row" class="fw">
-                                                                <div class="mgl40 mgr10 fw">
+                                                                <div class="mgl10 mgt03 mgr10 fw">
                                                                     <div class="fw mgb10">
                                                                         <mat-accordion multi="false" class="fw">
                                                                             <mat-expansion-panel [ngClass]="{'ContainerClase': clase['isInvalid']}" [disabled]="!clase.titulo" [expanded]="clase['expanded']" (opened)="closeOtherClasesModulo(clase,modulo)">                                                                        

@@ -1,7 +1,5 @@
 import { DocumentReference } from "@angular/fire/compat/firestore";
 import { Coupon } from "./coupon.model";
-import { PaypalInfo } from "./paypal.model";
-import { StripeInfo } from "./stripe.model";
 import { Product } from "./product.model";
 
 export interface PriceJson {
@@ -14,9 +12,7 @@ export interface PriceJson {
     id: string;
     interval: string;
     intervalCount: number;
-    paypalInfo: PaypalInfo;
     product: DocumentReference<Product> | null;
-    stripeInfo: StripeInfo;
     type: string;
 }
 
@@ -30,9 +26,7 @@ export class Price {
     id: string;
     interval: string;
     intervalCount: number;
-    paypalInfo: PaypalInfo;
     product: DocumentReference<Product> | null;
-    stripeInfo: StripeInfo;
     type: string;
     // Coupon could be part of price or could be an individual object
   
@@ -54,15 +48,7 @@ export class Price {
       id: '',
       interval: 'month',
       intervalCount: 1,
-      paypalInfo: {
-        paypalId: '',
-        updatedAt: null,
-      },
       product: null,
-      stripeInfo: {
-        stripeId: '',
-        updatedAt: null,
-      },
       type: 'recurring',
     }) 
 
@@ -78,9 +64,7 @@ export class Price {
       price.id = obj.id;
       price.interval = obj.interval;
       price.intervalCount = obj.intervalCount;
-      price.paypalInfo = obj.paypalInfo;
       price.product = obj.product;
-      price.stripeInfo = obj.stripeInfo;
       price.type = obj.type;
       return price;
     }
@@ -96,87 +80,9 @@ export class Price {
         id: this.id,
         interval: this.interval,
         intervalCount: this.intervalCount,
-        paypalInfo: this.paypalInfo,
         product: this.product,
-        stripeInfo: this.stripeInfo,
         type: this.type,
       };
-    }
-  
-    public toStripeCreateParams() {
-      let priceCreateParams = {
-        active: this.active,
-        currency: this.currency,
-        product: this.product.id,
-        recurring: {
-          interval: this.interval,
-          interval_count: this.intervalCount,
-        },
-        unit_amount: this.amount * 100,
-      };
-      return priceCreateParams;
-    }
-  
-    public toStripeUpdateParams() {
-      let PriceUpdateParams = {
-        active: this.active,
-      };
-      return PriceUpdateParams;
-    }
-  
-    public toPaypalCreateParams() {
-      const priceCreateParams = {
-        // product_id: this.paypalInfo.paypalId,
-        // name: "",
-        // description: "",
-        status: this.active ? 'ACTIVE' : 'INACTIVE',
-        billing_cycles: [
-          {
-            frequency: {
-              interval_unit: 'DAY',
-              interval_count: 1,
-            },
-            tenure_type: 'TRIAL',
-            sequence: 1,
-            total_cycles: 1,
-            pricing_scheme: {
-              fixed_price: {
-                currency_code: 'USD',
-                value: this.freeTrialDays,
-              },
-            },
-          },
-          {
-            frequency: {
-              interval_unit: this.interval,
-              interval_count: this.intervalCount,
-            },
-            tenure_type: 'REGULAR',
-            sequence: 2,
-            total_cycles: 0,
-            pricing_scheme: {
-              fixed_price: {
-                currency_code: this.currency,
-                value: this.amount,
-              },
-            },
-          },
-        ],
-        payment_preferences: {
-          auto_bill_outstanding: true,
-          payment_failure_threshold: 3,
-        },
-      };
-      return priceCreateParams;
-    }
-  
-    public toPaypalUpdateParams() {
-      // let ProductUpdateParams = [{
-      //   op: "replace", 
-      //   path: "/",     
-      //   value: ""
-      // }]
-      // return ProductUpdateParams
     }
   
     public getIntervalDisplayValue(): string {

@@ -172,10 +172,18 @@ padding: 0px !important;
 width: 30vw !important;
 }
 
+.customInput2{
+  color: var(--gray-9) !important;
+  font-size: 12px;
+  background-color: var(--gray-2) !important;
+  }
+
 .customInput{
 color: var(--gray-9) !important;
 font-size: 12px;
 }
+
+
 
 /* Estilo para el placeholder de la clase personalizada */
 .customInput::placeholder {

@@ -36,16 +36,13 @@ export class SubscriptionService {
     subscription.changedAt = null
     subscription.couponRef = license.couponRef
     subscription.createdAt = Date.now() 
-    subscription.createdAtOrigin = Date.now() 
     subscription.currency = "usd"
     subscription.currentError = null
     subscription.currentPeriodEnd = license.currentPeriodEnd
     subscription.currentPeriodStart = Date.now()
-    subscription.customer = userId
     subscription.endedAt = null
     subscription.enterpriseRef = this.enterpriseService.getEnterpriseRef()
     subscription.id = 'PRE_' + + new Date() + userId
-    subscription.idAtOrigin = 'PRE_' + +new Date() + userId
     subscription.interval = 1
     subscription.licenseRef = licenseRef
     subscription.nextPaymentAmount = null
@@ -53,7 +50,6 @@ export class SubscriptionService {
     subscription.trialEndedAt = null 
     subscription.trialStartedAt = null 
     subscription.userRef = this.userService.getUserRefById(userId)
-    subscription.origin = "Predyc"
     subscription.priceRef = license.priceRef
     subscription.startedAt = Date.now()
     subscription.status = "active"

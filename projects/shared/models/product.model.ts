@@ -1,161 +1,62 @@
-import { PaypalInfo } from "./paypal.model";
-import { StripeInfo } from "./stripe.model";
-
 export interface ProductJson {
-    acceptsBankTransfer: boolean;
-    acceptsPaypal: boolean;
-    acceptsStripe: boolean;
-    acceptsZelle: boolean;
     accesses: ProductAccesses;
     active: boolean;
-    canEnrollByHimself: boolean;
-    canEnrollPrograms: boolean;
     createdAt: number;
     description: string;
     features: ProductFeatures[];
     id: string;
-    isACompanyProduct: boolean;
     name: string;
-    paypalInfo: PaypalInfo;
-    priority: number;
-    stripeInfo: StripeInfo;
 }
 
 export class Product {
-    acceptsBankTransfer: boolean;
-    acceptsPaypal: boolean;
-    acceptsStripe: boolean;
-    acceptsZelle: boolean;
     accesses: ProductAccesses;
     active: boolean;
-    canEnrollByHimself: boolean;
-    canEnrollPrograms: boolean;
     createdAt: number;
     description: string;
     features: ProductFeatures[];
     id: string;
-    isACompanyProduct: boolean;
     name: string;
-    paypalInfo: PaypalInfo;
-    priority: number;
-    stripeInfo: StripeInfo;
 
     public static collection = 'product'
 
     public static newProduct = {
-      acceptsStripe: false,
-      acceptsBankTransfer: false,
-      acceptsZelle: false,
       accesses: {
-        userRadar: false,
-        studyPlan: false,
-        extraCourses: false,
-        test: false,
-        // createParticularCourses: false,
+        enableUserRadar: false,
+        enableStudyPlanView: false,
+        enableExtraCoursesView: false,
+        enableToTakeTest: false,
+        enableCreateParticularCourses: false,
       },
-      acceptsPaypal: false,
       active: true,
-      canEnrollByHimself: false,
-      canEnrollPrograms: false,
       createdAt: +new Date(),
       description: '',
       features: [],
       id: '',
-      isACompanyProduct: false,
       name: '',
-      paypalInfo: {
-        paypalId: '',
-        updatedAt: null,
-      },
-      priority: 0,
-      stripeInfo: {
-        stripeId: '',
-        updatedAt: null,
-      },
     }
 
   
     public static fromJson(obj: ProductJson): Product {
       let product = new Product();
-      product.acceptsBankTransfer = obj.acceptsBankTransfer;
-      product.acceptsPaypal = obj.acceptsPaypal;
-      product.acceptsStripe = obj.acceptsStripe;
-      product.acceptsZelle = obj.acceptsZelle;
       product.accesses = obj.accesses;
       product.active = obj.active;
-      product.canEnrollByHimself = obj.canEnrollByHimself;
-      product.canEnrollPrograms = obj.canEnrollPrograms;
       product.createdAt = obj.createdAt;
       product.description = obj.description;
       product.features = obj.features;
-      product.isACompanyProduct = obj.isACompanyProduct;
       product.id = obj.id;
       product.name = obj.name;
-      product.paypalInfo = obj.paypalInfo;
-      product.priority = obj.priority;
-      product.stripeInfo = obj.stripeInfo;
       return product;
     }
     public toJson(): ProductJson {
       return {
-        acceptsBankTransfer: this.acceptsBankTransfer,
-        acceptsPaypal: this.acceptsPaypal,
-        acceptsStripe: this.acceptsStripe,
-        acceptsZelle: this.acceptsZelle,
         accesses: this.accesses,
         active: this.active,
-        canEnrollByHimself: this.canEnrollByHimself,
-        canEnrollPrograms: this.canEnrollPrograms,
         createdAt: this.createdAt,
         description: this.description,
         features: this.features,
-        isACompanyProduct: this.isACompanyProduct,
         id: this.id,
         name: this.name,
-        paypalInfo: this.paypalInfo,
-        priority: this.priority,
-        stripeInfo: this.stripeInfo,
       };
-    }
-  
-    public toStripeCreateParams() {
-      let productCreateParams = {
-        id: this.id,
-        active: this.active,
-        name: this.name,
-        description: this.description,
-      };
-      return productCreateParams;
-    }
-  
-    public toStripeUpdateParams() {
-      let ProductUpdateParams = {
-        // active: this.active,
-        // name: this.name,
-        description: this.description, //description is the only common attribute between stripe and paypal
-      };
-      return ProductUpdateParams;
-    }
-  
-    public toPaypalCreateParams() {
-      let productCreateParams = {
-        // id: this.id,
-        name: this.name,
-        description: this.description,
-        type: 'SERVICE',
-        category: 'SOFTWARE',
-      };
-      return productCreateParams;
-    }
-  
-    public toPaypalUpdateParams() {
-      let ProductUpdateParams = [{
-        op: "replace", 
-        path: "/description",
-        value: this.description //options: description, category, image_url, home_url 
-      }]
-      return ProductUpdateParams
-  
     }
     
 }
@@ -166,9 +67,9 @@ export interface ProductFeatures {
 }
 
 export interface ProductAccesses {
-  userRadar: boolean;
-  studyPlan: boolean;
-  extraCourses: boolean;
-  test: boolean;
-  // createParticularCourses: boolean;
+  enableUserRadar: boolean;
+  enableStudyPlanView: boolean;
+  enableExtraCoursesView: boolean;
+  enableToTakeTest: boolean;
+  enableCreateParticularCourses: boolean;
 }

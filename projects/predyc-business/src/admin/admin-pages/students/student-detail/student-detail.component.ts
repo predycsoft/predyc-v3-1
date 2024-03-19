@@ -20,6 +20,10 @@ import { Coupon } from 'projects/shared/models/coupon.model';
 import { Product } from 'projects/shared/models/product.model';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
 import { DocumentReference } from '@angular/fire/compat/firestore';
+import { DialogCreateChargeComponent } from 'projects/predyc-business/src/shared/components/charges/dialog-create-charge/dialog-create-charge.component';
+import { Charge } from 'projects/shared/models/charges.model';
+import { ChargeService } from 'projects/predyc-business/src/shared/services/charge.service';
+import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
 
 @Component({
   selector: 'app-student-detail',
@@ -31,7 +35,9 @@ export class StudentDetailComponent {
   userId = this.route.snapshot.paramMap.get('uid');
   user
   tab: number = 0
+  academicTab: number = 0
   enterpriseRef: DocumentReference<Enterprise> = null
+  userRef: DocumentReference<User> = null
 
   constructor(
     private titleService: Title,
@@ -39,11 +45,13 @@ export class StudentDetailComponent {
     private afs: AngularFirestore,
     private dialog: MatDialog,
     public dialogService: DialogService,
+    private userService: UserService,
     private subscriptionService: SubscriptionService,
     private priceService: PriceService,
     private productService: ProductService,
     private couponService: CouponService,
     private enterpriseService: EnterpriseService,
+    private chargeService: ChargeService,
   ) {}
 
   userSubscription: Subscription
@@ -53,7 +61,11 @@ export class StudentDetailComponent {
   products: Product[]
   coupons: Coupon[]
 
+  totalCourses: number;
+  totalClasses: number;
+
   ngOnInit() {
+    this.userRef = this.userService.getUserRefById(this.userId)
     this.userSubscription = this.afs.collection<User>(User.collection).doc(this.userId).valueChanges()
     .pipe(
       switchMap(user => {
@@ -115,7 +127,35 @@ export class StudentDetailComponent {
   }
 
   createCharge() {
-    console.log("Crear pago")
+    const dialogRef = this.dialog.open(DialogCreateChargeComponent, {
+      data: {
+        customerRef: this.userRef,
+        coupons: this.coupons,
+        prices: this.prices,
+        products: this.products,
+      }
+    });
+  
+    dialogRef.afterClosed().subscribe(async (result: Charge) => {
+      if (result) {
+        try {
+          console.log("result", result)
+          await this.chargeService.saveCharge(result.toJson());
+          this.dialogService.dialogExito();
+        } catch (error) {
+          this.dialogService.dialogAlerta("Hubo un error al guardar la licencia. Inténtalo de nuevo.");
+          console.log(error)
+        }
+      }
+    });
+  }
+
+  handleCourseTotalLengthChange(totalLength: number) {
+    this.totalCourses = totalLength;
+  }
+
+  handleClassTotalLengthChange(totalLength: number) {
+    this.totalClasses = totalLength;
   }
 
   ngOnDestroy() {

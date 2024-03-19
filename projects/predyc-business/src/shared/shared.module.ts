@@ -71,6 +71,7 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import { DialogCreateChargeComponent } from './components/charges/dialog-create-charge/dialog-create-charge.component';
 import { DialogCreateSubscriptionComponent } from './components/subscription/dialog-create-subscription/dialog-create-subscription.component';
 import { DialogEditSubscriptionComponent } from './components/subscription/dialog-edit-subscription/dialog-edit-subscription.component';
+import { DialogStudentEnrolledCourseDetailComponent } from './components/courses/dialog-student-enrolled-course-detail/dialog-student-enrolled-course-detail.component';
 
 @NgModule({
   declarations: [
@@ -110,6 +111,7 @@ import { DialogEditSubscriptionComponent } from './components/subscription/dialo
     DialogCreateChargeComponent,
     DialogCreateSubscriptionComponent,
     DialogEditSubscriptionComponent,
+    DialogStudentEnrolledCourseDetailComponent,
   ],
   imports: [
     CommonModule,
@@ -222,7 +224,8 @@ import { DialogEditSubscriptionComponent } from './components/subscription/dialo
     MatSlideToggleModule,
     DialogCreateChargeComponent,
     DialogCreateSubscriptionComponent,
-    DialogEditSubscriptionComponent, 
+    DialogEditSubscriptionComponent,
+    DialogStudentEnrolledCourseDetailComponent,
   ],
 
   providers: [
