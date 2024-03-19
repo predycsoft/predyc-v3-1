@@ -3,11 +3,16 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { Chart } from 'chart.js';
 import jsPDF from 'jspdf';
-import { Subscription } from 'rxjs';
+import { Subscription, combineLatest, filter, map, of, switchMap, take } from 'rxjs';
 import { Enterprise } from 'projects/shared/models/enterprise.model';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import { font, font2 } from 'projects/predyc-business/src/assets/fonts/font-constants';
+import { UserService } from '../../../services/user.service';
+import { CourseService } from '../../../services/course.service';
+import { ProfileService } from '../../../services/profile.service';
+import { DepartmentService } from '../../../services/department.service';
+import { FormControl, FormGroup } from '@angular/forms';
 
 interface textOpts {
   text: string,
@@ -18,6 +23,18 @@ interface textOpts {
   color?: 'white' | 'black',
   textAlign: 'left' | 'center' | 'right',
   maxLineWidth?: number
+}
+
+interface User {
+  displayName: string,
+  profile: string,
+  department: string,
+  hours: number,
+  targetHours: number,
+  ratingPoints: number,
+  rhythm: string
+  uid: string,
+  photoUrl: string,
 }
 
 @Component({
@@ -31,11 +48,16 @@ export class DialogDownloadReportComponent {
     public icon: IconService,
     private enterpriseService: EnterpriseService,
     private activeModal: NgbActiveModal,
+    private userService: UserService,
+    private courseService: CourseService,
+    private profileService: ProfileService,
+    private departmentService: DepartmentService
+
   ) {}
 
-  startDate: number
+  startDate
   hoy: number = Date.now()
-  endDate = this.hoy
+  endDate
   startWeekDate: number
   startMonthDate: number
   startYearDate: number
@@ -43,13 +65,113 @@ export class DialogDownloadReportComponent {
 
   enterprise: Enterprise
   enterpriseSubscription: Subscription
+  userServiceSubscription: Subscription
+  profilesSubscription: Subscription
+  profiles
+  departments
+  courses
+  users
+  reportform: FormGroup
+  displayErrors = false
 
-  ngOnInit() {
+  ngOnInit() { // estoy aqui
+    this.displayErrors = false
     this.enterpriseSubscription = this.enterpriseService.enterprise$.subscribe(async enterprise => {
       if (enterprise) {
-        this.enterprise = enterprise
+        this.enterprise = enterprise;
       }
     })
+    this.profileService.loadProfiles()
+    this.profilesSubscription = combineLatest([this.profileService.getProfiles$(), this.departmentService.getDepartments$(), this.courseService.getCourses$()]).subscribe(([profiles, departments, courses]) => {
+      this.profiles = profiles
+      this.departments = departments
+      this.courses = courses
+      //this.getData();
+    })
+
+    this.reportform = new FormGroup({
+      fechaInicio: new FormControl(null),
+      fechafin: new FormControl(null),
+    })
+  }
+
+
+  
+  downloadReport() {
+    if (this.userServiceSubscription) {
+      this.userServiceSubscription.unsubscribe()
+    }
+
+    let fechaInicio = new Date(this.startDate.year,this.startDate.month-1,this.startDate.day)
+    let fechaFin = new Date(this.endDate.year,this.endDate.month-1,this.endDate.day)
+
+    console.log('fechas reporte',fechaInicio,fechaFin)
+
+
+    this.userServiceSubscription = this.userService.getUsersReport$(null,null,null,null,this.startDate,this.endDate).pipe(
+      filter(user=>user !=null),take(1),
+      switchMap(users => {
+        const userCourseObservables = users.map(user => {
+          const userRef = this.userService.getUserRefById(user.uid);
+          // Obtener cursos activos por usuario
+          const coursesObservable = this.courseService.getActiveCoursesByStudentDateFiltered$(userRef,this.startDate,this.endDate);
+          // Obtener clases asociadas al usuario, independientemente de los cursos
+          const classesObservable = this.courseService.getClassesByStudentDatefilterd$(userRef);
+      
+          return combineLatest([coursesObservable, classesObservable]).pipe(
+            map(([courses, classes]) => {
+              // Aquí tienes un objeto que incluye tanto los cursos como las clases asociadas a ese usuario
+              // Cursos y clases están en sus propios objetos y no anidadas
+              return { user, courses, classes };
+            })
+          );
+        });
+        // Combina los observables de todos los usuarios con sus cursos y clases
+        return combineLatest(userCourseObservables);
+        })).subscribe(response => {
+        console.log('datos reporte',response)
+        const users: User[] = response.map(({user, courses}) => {
+          const profile = this.profiles.find(profile => {
+            if(user.profile) {
+              return profile.id === user.profile.id
+            }
+            return false
+          })
+          let profileName = ''
+          if (profile) {
+            profileName = profile.name
+          }
+          let hours = 0
+          let targetHours = 0
+          let coursesUser = [];
+          courses.forEach(course => {
+            hours += course?.progressTime ? course.progressTime : 0
+            const courseJson = this.courses.find(item => item.id === course.courseRef.id)
+            courseJson.progress=courseJson
+            coursesUser.push(courseJson.progress)
+            targetHours += (courseJson.duracion/60)
+          })
+          const userPerformance: "no plan" | "high" | "medium" | "low" | "no iniciado"= this.userService.getPerformanceWithDetails(courses);
+          const department = this.departments.find(department => department.id === user.departmentRef?.id)
+          const ratingPoints: number = this.userService.getRatingPointsFromStudyPlan(courses, this.courses);
+          return {
+            displayName: user.displayName,
+            department: department?.name ? department.name : '',
+            hours: hours, // Calculation pending
+            targetHours: targetHours,
+            profile: profileName,
+            ratingPoints: ratingPoints,
+            rhythm: userPerformance, // Calculation pending
+            uid: user.uid,
+            photoUrl: user.photoUrl,
+            courses:coursesUser
+          }
+        })
+        this.users = users; // Assuming the data is in 'items'
+        console.log('data reporte',this.users)
+        this.download()
+      }
+    );
   }
 
   ngOnDestroy() {
@@ -138,6 +260,9 @@ export class DialogDownloadReportComponent {
 
 
   // ********* Report Methods *********
+
+
+
   async download() {
     try {
       try {

@@ -312,6 +312,15 @@ export class CourseService {
     ).valueChanges()
   }
 
+
+  getActiveCoursesByStudentDateFiltered$(userRef: DocumentReference<User>,dateIni = null,DateEnd = null): Observable<CourseByStudent[]> {
+    return this.afs.collection<CourseByStudent>(CourseByStudent.collection, ref => ref.
+      where('userRef', '==', userRef).
+      where('active', '==', true)
+    ).valueChanges()
+  }
+
+
   async getActiveCoursesByStudent(userRef: DocumentReference<User>): Promise<CourseByStudent[]> {
     const querySnapshot: QuerySnapshot<CourseByStudent> = await this.afs.collection<CourseByStudent>(CourseByStudent.collection).ref
       .where('userRef', '==', userRef).where('active', '==', true).get()
@@ -458,6 +467,14 @@ export class CourseService {
   getClassesByStudent$(userRef: DocumentReference<User>): Observable<ClassByStudent[]> {
     return this.afs.collection<ClassByStudent>(ClassByStudent.collection, ref => ref.where('userRef', '==', userRef).where('completed', '==', true)).valueChanges()
   }
+
+
+    // ---- classeByStudent Collection methods
+    getClassesByStudentDatefilterd$(userRef: DocumentReference<User>,dateIni = null ,DateEnd = null): Observable<ClassByStudent[]> {
+      return this.afs.collection<ClassByStudent>(ClassByStudent.collection, ref =>
+         ref.where('userRef', '==', userRef)
+         .where('completed', '==', true)).valueChanges()
+    }
 
   getClass$(classId: string): Observable<Clase> {
     return this.afs.collection<Clase>(Clase.collection).doc(classId).valueChanges()

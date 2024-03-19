@@ -5,44 +5,46 @@
     </div>
     <div class="linea mgt10"></div>
     <div fxLayout="column" class="fw">
-        <!-- <div style="height: 277px;"> -->
         <div class="fw" fxLayout="column">
             <div>
                 <span class="ft16">Selecciona el rango de fechas en que deseas descargar tu reporte</span>
             </div>
-            <div fxLayout="column" class="mgt10">
-                <!-- <div style="display: flex; gap: 10px;">
-                    <input  (change)="getGeneralStats(startDate, endDate, 'semanal')" type="radio" id="week" name="dates" [value]="startWeekDate" [(ngModel)]="startDate" checked/>
-                    <label class="ft14" for="week">Última semana</label>
-                </div>
-                <div style="display: flex; gap: 10px;">
-                    <input (change)="getGeneralStats(startDate, endDate, 'mensual')" type="radio" id="month" name="dates" [value]="startMonthDate" [(ngModel)]="startDate" />
-                    <label class="ft14" for="month">Último mes</label>
-                </div>
-                <div style="display: flex; gap: 10px;">
-                    <input (change)="getGeneralStats(startDate, endDate, 'anual')" type="radio" id="year" name="dates" [value]="startYearDate" [(ngModel)]="startDate" />
-                    <label class="ft14" for="year">Último año</label>
-                </div> -->
-                <div style="display: flex; gap: 10px;">
-                    <input (change)="getGeneralStats(startDate, endDate, 'histórico')" type="radio" id="historic" name="dates" [value]="0" [(ngModel)]="startDate" />
-                    <label class="ft14" for="historic">Histórico</label>
-                </div>
+            <!-- Contenedor de los inputs de fecha -->
+            <div fxLayout="row" fxLayoutGap="20px" class="mgt10" fxLayoutAlign="space-between center">
+                <!-- Input de fecha de inicio -->
+                <input [(ngModel)]="startDate"
+                       [class.is-invalid]="reportform.get('fechaInicio').errors && displayErrors"
+                       type="text" 
+                       class="form-control pdl20"
+                       (click)="fechaInicio.toggle()"
+                       ngbDatepicker
+                       #fechaInicio="ngbDatepicker"
+                       placeholder="Fecha inicio"
+                       fxFlex>
+                <!-- Input de fecha de fin -->
+                <input [(ngModel)]="endDate"
+                       [class.is-invalid]="reportform.get('fechafin').errors && displayErrors"
+                       type="text" 
+                       class="form-control pdl20"
+                       (click)="fechafin.toggle()"
+                       ngbDatepicker
+                       #fechafin="ngbDatepicker"
+                       placeholder="Fecha fin"
+                       fxFlex>
             </div>
+            <!-- Botón de descarga de reporte -->
             <div class="mgt10" fxLayoutAlign="end end">
-                <button *ngIf="loaded && startDate >= 0" class="lightButton backBlue5 radius6 h40px ft14" id="btn" (click)="download()">
-                    <img [src]="icon.download" class="makeWhite" alt="">
-                    Descargar reporte
+                <button *ngIf="loaded && startDate" class="lightButton backBlue5 radius6 h40px ft14" id="btn" (click)="downloadReport()">
+                    <img [src]="icon.download" class="makeWhite" alt=""> Descargar reporte
                 </button>
-                <button *ngIf="loaded && startDate === undefined" class="lightButton radius6 h40px ft14 border grayLink" disabled>
-                    <img [src]="icon.download" class="makeGray" alt="">
-                    Descargar reporte
+                <button *ngIf="loaded && !startDate" class="lightButton radius6 h40px ft14 border grayLink" disabled>
+                    <img [src]="icon.download" class="makeGray" alt=""> Descargar reporte
                 </button>
             </div>
         </div>
-        <!-- <div fxLayout="column">
-            <img src="assets/images/design/personajereportes.svg" alt="">
-        </div> -->
     </div>
+    
+    
     <div >
         <canvas id="pdfChart"></canvas>
     </div>
