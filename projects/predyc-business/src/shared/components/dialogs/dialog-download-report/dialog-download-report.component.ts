@@ -83,10 +83,11 @@ export class DialogDownloadReportComponent {
       }
     })
     this.profileService.loadProfiles()
-    this.profilesSubscription = combineLatest([this.profileService.getProfiles$(), this.departmentService.getDepartments$(), this.courseService.getCourses$()]).subscribe(([profiles, departments, courses]) => {
+    this.profilesSubscription = combineLatest([this.profileService.getProfiles$(), this.departmentService.getDepartments$(), this.courseService.getCourses$(),this.courseService.getClassesEnterprise$()]).subscribe(([profiles, departments, courses,classes]) => {
       this.profiles = profiles
       this.departments = departments
       this.courses = courses
+      this.classes = classes
       //this.getData();
     })
 
@@ -154,12 +155,22 @@ export class DialogDownloadReportComponent {
           let hours = 0
           let targetHours = 0
           let coursesUser = [];
+          let classesUser= []
           courses.forEach(course => {
             hours += course?.progressTime ? course.progressTime : 0
             const courseJson = this.courses.find(item => item.id === course.courseRef.id)
             courseJson.progress=courseJson
             coursesUser.push(courseJson.progress)
             targetHours += (courseJson.duracion/60)
+          })
+
+          classes.forEach(clase => {
+            const classJson = this.classes.find(item => item.id === clase.classRef.id)
+            let claseData = {
+              classesByStudent: clase,
+              classeData:classJson
+            }
+            classesUser.push(claseData)
           })
           const userPerformance: "no plan" | "high" | "medium" | "low" | "no iniciado"= this.userService.getPerformanceWithDetails(courses);
           const department = this.departments.find(department => department.id === user.departmentRef?.id)
@@ -175,7 +186,7 @@ export class DialogDownloadReportComponent {
             uid: user.uid,
             photoUrl: user.photoUrl,
             courses:coursesUser,
-            clases:classes,
+            clases:classesUser,
           }
         })
         this.users = users; // Assuming the data is in 'items'
@@ -426,8 +437,7 @@ export class DialogDownloadReportComponent {
         allClasses = allClasses.concat(allClasses, user.clases);
       }
     });
-
-    console.log('allClasses',allClasses)
+    
 
 
 

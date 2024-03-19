@@ -308,6 +308,30 @@ export class CourseService {
     )
   }
 
+  getClassesEnterprise$(): Observable<any[]> {
+    return this.enterpriseService.enterpriseLoaded$.pipe(
+      switchMap(isLoaded => {
+        if (!isLoaded) return []
+        const enterpriseRef = this.enterpriseService.getEnterpriseRef();
+            
+        // Query to get courses matching enterpriseRef
+        const enterpriseMatch$ = this.afs.collection<Clase>(Clase.collection, ref =>
+          ref.where('enterpriseRef', '==', enterpriseRef)
+        ).valueChanges({ idField: 'id' });
+      
+        // Query to get courses where enterpriseRef is empty
+        const enterpriseEmpty$ = this.afs.collection<Clase>(Clase.collection, ref =>
+          ref.where('enterpriseRef', '==', null)
+        ).valueChanges({ idField: 'id' });
+      
+        // Combine both queries
+        return combineLatest([enterpriseMatch$, enterpriseEmpty$]).pipe(
+          map(([matched, empty]) => [...matched, ...empty]),
+        )
+      })
+    )
+  }
+
 
 
   // ---- courseByStudent Collection methods
