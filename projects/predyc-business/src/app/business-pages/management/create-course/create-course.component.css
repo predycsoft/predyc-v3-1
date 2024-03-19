@@ -78,8 +78,8 @@ background-color: white !important;
 }
 
 .image-selector {
-display: flex;
-align-items: center;
+/* display: flex; */
+/* align-items: center; */
 overflow: hidden; /* Esto previene que el scroll se salga de su contenedor */
 }
 
@@ -95,7 +95,7 @@ border-radius: 4px; /* Esto hará que las imágenes tengan bordes redondos */
 margin-right: 10px;
 width: 137px;
 height: 90px;
-object-fit: contain;
+object-fit: fill;
 
 }
 

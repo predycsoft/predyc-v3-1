@@ -72,20 +72,22 @@
                                         </div>
                                     </div>
                                     <div class="form-group pdt10">
-                                        <label class="ft12 "  >Foto del curso</label>
-                                        <div class="image-selector">
-                                            <!-- <button class="add-button">Adjuntar nueva</button> -->
-                                            <button (click)="cursoImage.click()" class="grayButton pd03 radius6 ft12 ft500 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
-                                                <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
-                                                Adjuntar imagen
-                                            </button>
-                                            <input #cursoImage type="file" (change)="uploadCourseImage($event,'curso')" hidden accept="image/jpeg, image/png" />
-                                            <!-- <div class="image-scroll">
-                                                <img *ngFor="let imagen of imagenesCurso" (click)="seleccionarImagenCurso(imagen)" [src]="imagen" alt="Imagen seleccionada" class="image cursorPointer {{this.formNewCourse.get('imagen').value == imagen? 'img-active': ''}}">
-                                            </div> -->
-                                            <div class="image-scroll">
-                                                <img *ngIf="formNewCourse.get('imagen').value" [src]="formNewCourse.get('imagen').value" alt="Imagen seleccionada" class="image ">
-                                            </div>
+                                        <label class="ft12 pdb05 "  >Foto del curso</label>
+                                        <div fxLayout="row" fxLayoutAlign="start end" >
+                                                <!-- <button class="add-button">Adjuntar nueva</button> -->
+                                                <input #cursoImage type="file" (change)="uploadCourseImage($event,'curso')" hidden accept="image/jpeg, image/png" />
+                                                <!-- <div class="image-scroll">
+                                                    <img *ngFor="let imagen of imagenesCurso" (click)="seleccionarImagenCurso(imagen)" [src]="imagen" alt="Imagen seleccionada" class="image cursorPointer {{this.formNewCourse.get('imagen').value == imagen? 'img-active': ''}}">
+                                                </div> -->
+                                                <div class="image-scroll">
+                                                    <img *ngIf="formNewCourse.get('imagen').value" [src]="formNewCourse.get('imagen').value" alt="Imagen seleccionada" class="avatarSquare8 radius6">
+                                                </div>
+                                                <div class="fw" >
+                                                    <button (click)="cursoImage.click()" class="grayButton pd03 radius6 ft12 ft500 h28px mgr10 gray-8" fxLayoutGap="0.625" >
+                                                        <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
+                                                        Adjuntar imagen
+                                                    </button>
+                                                </div>
                                         </div>
                                     </div>
                                     <div *ngIf="formNewCourse.controls['imagen'].errors && showErrorCurso" class="custom-invalid-feedback pdt05">
@@ -170,16 +172,18 @@
                                         <div class="skills-container">
                                             <ng-container *ngFor="let skill of skillsCurso; let indexSkill = index">
                                                 <div
-                                                    style="display: inline-block; margin-right: 5px; margin-bottom: 5px;"
-                                                    class="skill-badge-complete ListHover radius10 backGray2  ft12 pdl05 pdr05 gray-8 mgt05">
+                                                    style="display: inline-block; margin-right: 5px; margin-bottom: 5px; margin-top: 5px;"
+                                                    class="skill-badge-complete ListHover radius10 backGray2  ft12 pdl08 pdr08 gray-8 mgt08">
                                                     {{skill.name}}
                                                     <img style="cursor: pointer;" (click)="removeSkill(skill)" [src]="icon.close"  class="h16px makeGray"  alt="">
                                                 </div>
                                             </ng-container>
-                                            <div *ngIf="skillsCurso?.length<3 && pillarsForm.value" matTooltip="Agregar competencia"
-                                            style="display: inline-block; margin-right: 5px; margin-bottom: 5px;"
-                                               (click)="openModal(modalSkillsCourse,'md')" class="skill-badge ListHover2 radius10 backGray2 pdl05 pdr05 gray-8 mgt05">
-                                                +
+                                            <div class="pdb10"> 
+                                                <div *ngIf="skillsCurso?.length<3 && pillarsForm.value" matTooltip="Agregar competencia"
+                                                style="display: inline-block; margin-right: 5px; "
+                                                (click)="openModal(modalSkillsCourse,'md')" class="backGray2 radius20  pdl03 pdr03  gray-8 " >
+                                                    <img style="cursor: pointer;"  [src]="icon.addBlue"  class="h16px ft600 "  alt="">
+                                                </div>
                                             </div>
                                         </div>
                                         <div *ngIf="formNewCourse.controls['skills'].errors && showErrorCurso" class="custom-invalid-feedback pdt05">
@@ -187,7 +191,7 @@
                                         </div>
                                     </div>
                                     <ng-container>
-                                        <div fxLayout="row" fxLayoutAlign="center center" class="mgt10 fw">
+                                        <div fxLayout="row" fxLayoutAlign="center center" class="mgt05 fw">
                                           <div fxFlex="100">
                                             <form class="example-form">
                                               <mat-form-field class="example-full-width fw">
@@ -226,9 +230,9 @@
                                         </div>
                                         
                                         <!-- Resto del formulario -->
-                                        <div class="form-group">
-                                          <label class=" ft14" >Resumen del instructor</label>
-                                          <textarea rows="3" [class.is-invalid]="formNewCourse.controls['resumen_instructor'].errors && showErrorCurso" formControlName="resumen_instructor" type="text" class="form-control customInput" placeholder="Escriba el resumen del instructor aquí." style="resize: none;"></textarea>
+                                        <div class="form-group pdb10">
+                                          <label class=" ft12" >Resumen del instructor</label>
+                                          <textarea rows="3" [class.is-invalid]="formNewCourse.controls['resumen_instructor'].errors && showErrorCurso" formControlName="resumen_instructor" type="text" class="form-control customInput2" placeholder="Escriba el resumen del instructor aquí." style="resize: none;"></textarea>
                                           <div class="invalid-feedback" *ngIf="formNewCourse.controls['resumen_instructor'].errors && showErrorCurso"> 
                                               Debe indicar el resumen del instructor.
                                           </div>
