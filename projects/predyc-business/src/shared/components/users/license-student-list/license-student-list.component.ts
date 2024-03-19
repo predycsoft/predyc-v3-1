@@ -71,7 +71,7 @@ export class LicenseStudentListComponent {
         this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
           const page = Number(params['page']) || 1;
           const searchTerm = params['search'] || '';
-          const statusFilter = params['status'] || SubscriptionClass.STATUS_INACTIVE;
+          const statusFilter = params['status'] || SubscriptionClass.STATUS_CANCELED;
           // clear checkboxes selection if status filter changed
           if (this.lastStatusFilter !== statusFilter) {
             this.selection.clear();
@@ -111,7 +111,7 @@ export class LicenseStudentListComponent {
           response = response.filter(item => item.status !== SubscriptionClass.STATUS_ACTIVE)
         }
         console.log("Url", this.router.url, this.router.url.startsWith('/settings'))
-        if (response.length === 0 && statusFilter === SubscriptionClass.STATUS_INACTIVE && !this.firstRedirectToActive) {
+        if (response.length === 0 && statusFilter === SubscriptionClass.STATUS_CANCELED && !this.firstRedirectToActive) {
           this.firstRedirectToActive = true
           this.router.navigate(['/settings'], {queryParams: {status: 'active'}})
         }

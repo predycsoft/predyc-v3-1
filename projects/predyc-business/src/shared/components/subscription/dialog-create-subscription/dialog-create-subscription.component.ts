@@ -183,7 +183,6 @@ export class DialogCreateSubscriptionComponent {
       // Process and save data
       const formValue = this.form.value;
       this.subscription.interval = formValue.interval
-      this.subscription.customer = this.subscription.userRef.id
       this.subscription.priceRef = this.priceService.getPriceRefById(formValue.priceId)
       this.subscription.couponRef = formValue.couponId ? this.couponService.getCouponRefById(formValue.couponId) : null
       this.subscription.enterpriseRef = this.enterpriseRef

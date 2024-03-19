@@ -1,6 +1,5 @@
 import { DocumentReference } from "@angular/fire/compat/firestore";
-import { Coupon } from "./coupon.model";
-import { Price } from "./price.model";
+import { Product } from "./product.model";
 import { User } from "./user.model";
 import { Enterprise } from "./enterprise.model";
 
@@ -11,7 +10,6 @@ export interface ChargeJson {
     cardBrand: string;
     cardLast4: string;
     comment: string;
-    coupon: DocumentReference<Coupon>; // its already in price 
     createdAt: number;
     currency: string;
     description: string;
@@ -20,7 +18,7 @@ export interface ChargeJson {
     interval: number | null; // Where to get this info in stripe
     paymentMethod: string;
     payAt: number;
-    price: DocumentReference<Price>;
+    productRef: DocumentReference<Product>;
     // status: Stripe.Charge.Status;
     status: 'failed' | 'pending' | 'succeeded';
     customer: DocumentReference<User | Enterprise> ;
@@ -35,7 +33,6 @@ export interface ChargeJson {
     cardBrand: string;
     cardLast4: string;
     comment: string;
-    coupon: DocumentReference<Coupon>;
     createdAt: number;
     currency: string;
     description: string;
@@ -44,7 +41,7 @@ export interface ChargeJson {
     interval: number | null; // Where to get this info in stripe
     paymentMethod: string; // 
     payAt: number;
-    price: DocumentReference<Price>;
+    productRef: DocumentReference<Product>;
     // status: Stripe.Charge.Status;
     status: 'succeeded' | 'failed' | 'pending';
     customer: DocumentReference<User | Enterprise>;
@@ -61,7 +58,6 @@ export interface ChargeJson {
         cardBrand: "",
         cardLast4: "",
         comment: "",
-        coupon: null,
         createdAt: +new Date,
         currency: "usd",
         description: "",
@@ -70,7 +66,7 @@ export interface ChargeJson {
         interval: 1,
         paymentMethod: "",
         payAt: null,
-        price: null,
+        productRef: null,
         status: 'pending',
         customer: null,
         via: "Predyc",
@@ -108,7 +104,6 @@ export interface ChargeJson {
     //   newCharge.customer = charge.customer; // charge.customer is an id. we have to put the docRef here.
       newCharge.customer = null;
       newCharge.via = 'Stripe';
-      // newCharge.price = paymentIntent.price
       return newCharge;
     }
   
@@ -120,7 +115,6 @@ export interface ChargeJson {
         cardBrand: this.cardBrand,
         cardLast4: this.cardLast4,
         comment: this.comment,
-        coupon: this.coupon,
         createdAt: this.createdAt,
         currency: this.currency,
         description: this.description,
@@ -129,7 +123,7 @@ export interface ChargeJson {
         interval: this.interval,
         paymentMethod: this.paymentMethod,
         payAt: this.payAt,
-        price: this.price,
+        productRef: this.productRef,
         status: this.status,
         customer: this.customer,
         via: this.via,
@@ -145,7 +139,6 @@ export interface ChargeJson {
       newCharge.cardBrand = charge.cardBrand;
       newCharge.cardLast4 = charge.cardLast4;
       newCharge.comment = charge.comment;
-      newCharge.coupon = charge.coupon;
       newCharge.createdAt = charge.createdAt;
       newCharge.currency = charge.currency;
       newCharge.description = charge.description;
@@ -154,7 +147,7 @@ export interface ChargeJson {
       newCharge.interval = charge.interval;
       newCharge.paymentMethod = charge.paymentMethod;
       newCharge.payAt = charge.payAt;
-      newCharge.price = charge.price;
+      newCharge.productRef = charge.productRef;
       newCharge.status = charge.status;
       newCharge.customer = charge.customer;
       newCharge.via = charge.via;

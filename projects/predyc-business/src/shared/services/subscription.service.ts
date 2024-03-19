@@ -34,7 +34,6 @@ export class SubscriptionService {
       
     subscription.canceledAt = null
     subscription.changedAt = null
-    subscription.couponRef = license.couponRef
     subscription.createdAt = Date.now() 
     subscription.currency = "usd"
     subscription.currentError = null
@@ -50,7 +49,7 @@ export class SubscriptionService {
     subscription.trialEndedAt = null 
     subscription.trialStartedAt = null 
     subscription.userRef = this.userService.getUserRefById(userId)
-    subscription.priceRef = license.priceRef
+    subscription.productRef = license.productRef
     subscription.startedAt = Date.now()
     subscription.status = "active"
 
