@@ -1,6 +1,7 @@
 export interface ProductJson {
     accesses: ProductAccesses;
     active: boolean;
+    autodeactivate: boolean;
     createdAt: number;
     description: string;
     features: ProductFeatures[];
@@ -11,6 +12,7 @@ export interface ProductJson {
 export class Product {
     accesses: ProductAccesses;
     active: boolean;
+    autodeactivate: boolean;
     createdAt: number;
     description: string;
     features: ProductFeatures[];
@@ -19,7 +21,7 @@ export class Product {
 
     public static collection = 'product'
 
-    public static newProduct = {
+    public static newProduct: ProductJson = {
       accesses: {
         enableUserRadar: false,
         enableStudyPlanView: false,
@@ -28,6 +30,7 @@ export class Product {
         enableCreateParticularCourses: false,
       },
       active: true,
+      autodeactivate: false,
       createdAt: +new Date(),
       description: '',
       features: [],
@@ -51,6 +54,7 @@ export class Product {
       return {
         accesses: this.accesses,
         active: this.active,
+        autodeactivate: this.autodeactivate,
         createdAt: this.createdAt,
         description: this.description,
         features: this.features,

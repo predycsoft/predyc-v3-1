@@ -3,6 +3,7 @@ import { ProductJson } from "projects/shared/models/product.model";
 export const productsData: ProductJson[] = [
     {
         "active": false,
+        "autodeactivate": false,
         "accesses": {
             "enableUserRadar": false,
             "enableStudyPlanView": false,
@@ -51,6 +52,7 @@ export const productsData: ProductJson[] = [
     },
     {
         "active": true,
+        "autodeactivate": false,
         "accesses": {
             "enableUserRadar": false,
             "enableStudyPlanView": false,
@@ -128,6 +130,7 @@ export const productsData: ProductJson[] = [
             }
         ],
         "active": true,
+        "autodeactivate": false,
         "accesses": {
             "enableUserRadar": false,
             "enableStudyPlanView": false,
@@ -144,6 +147,7 @@ export const productsData: ProductJson[] = [
         "id": "Rotaciones",
         "createdAt": 1695739531000,
         "active": true,
+        "autodeactivate": false,
         "accesses": {
             "enableUserRadar": false,
             "enableStudyPlanView": false,

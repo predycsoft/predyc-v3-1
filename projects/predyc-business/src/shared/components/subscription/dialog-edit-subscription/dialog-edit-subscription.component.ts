@@ -2,7 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SubscriptionInfo } from 'projects/predyc-business/src/admin/admin-pages/students/student-detail/student-subscription-list/student-subscription-list.component';
-import { Price } from 'projects/shared/models/price.model';
+import { Product } from 'projects/shared/models/product.model';
 
 @Component({
   selector: 'app-dialog-edit-subscription',
@@ -16,18 +16,18 @@ export class DialogEditSubscriptionComponent {
     public matDialogRef: MatDialogRef<DialogEditSubscriptionComponent>, 
     @Inject(MAT_DIALOG_DATA) public data: {
       subscription: SubscriptionInfo,
-      prices: Price[]
+      products: Product[]
     },
   ){}
 
   form: FormGroup;
   subscriptionInfo: SubscriptionInfo
-  prices: Price[]
+  products: Product[]
 
 
   ngOnInit() {
     this.subscriptionInfo = this.data.subscription
-    this.prices = this.data.prices
+    this.products = this.data.products
     this.setupForm()
   }
 
