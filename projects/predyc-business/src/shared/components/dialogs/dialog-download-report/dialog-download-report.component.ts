@@ -87,7 +87,7 @@ export class DialogDownloadReportComponent {
       }
     })
     this.profileService.loadProfiles()
-    this.profilesSubscription = combineLatest([this.profileService.getProfiles$(), this.departmentService.getDepartmentsEnterprise$(), this.courseService.getCourses$(),this.courseService.getClassesEnterprise$()]).subscribe(([profiles, departments, courses,classes]) => {
+    this.profilesSubscription = combineLatest([this.profileService.getProfiles$(), this.departmentService.getDepartments$(), this.courseService.getCourses$(),this.courseService.getClassesEnterprise$()]).subscribe(([profiles, departments, courses,classes]) => {
       this.profiles = profiles
       this.departments = departments
       this.courses = courses
@@ -162,14 +162,23 @@ export class DialogDownloadReportComponent {
           }
           let hours = 0
           let targetHours = 0
+          let targetHoursAllCourses = 0
+          let hoursAllCourses = 0
           let coursesUser = [];
           let classesUser= []
           courses.forEach(course => {
-            hours += course?.progressTime ? course.progressTime : 0
+            hours += (course?.progressTime ? course.progressTime : 0)/60
             const courseJson = this.courses.find(item => item.id === course.courseRef.id)
             courseJson.progress=courseJson
             coursesUser.push(courseJson.progress)
             targetHours += (courseJson.duracion/60)
+          })
+
+          allCourses.forEach(course => {
+            hoursAllCourses += (course?.progressTime ? course.progressTime : 0)/60
+            const courseJson = this.courses.find(item => item.id === course.courseRef.id)
+            courseJson.progress=courseJson
+            targetHoursAllCourses += (courseJson.duracion/60)
           })
 
           classes.forEach(clase => {
@@ -186,6 +195,7 @@ export class DialogDownloadReportComponent {
             departmentId: department?.id ? department.id : '',
             hours: hours, // Calculation pending
             targetHours: targetHours,
+            targetHoursAllCourses:targetHoursAllCourses,
             profile: profileName,
             profileId: profile?.id ? profile.id : '',
             ratingPoints: ratingPoints,
@@ -320,14 +330,58 @@ export class DialogDownloadReportComponent {
         const department = this.departments[index];
         let users = this.users.filter(x=>x.departmentId == department.id)
         if(users.length>0){
-          await this.addGeneralPage(users,'department',department.name)
-          this.extraPages ++
-          console.log('users department',users)
+          let usersWithProfiles = users.filter(x=>x.profileId)
+          if(usersWithProfiles.length>0){
+            await this.addGeneralPage(usersWithProfiles,'department',department.name)
+            this.extraPages ++
+            // Agregar pagina por perfil
+            let profiles = usersWithProfiles.map(user => {
+              return user.profileId
+            });
+            profiles = [...new Set(profiles)];
+            for (let index = 0; index < profiles.length; index++) {
+              const profileId = profiles[index];
+              const profile = this.profiles.find(x=> x.id == profileId)
+              const usersProfile = usersWithProfiles.filter(x=>x.profileId == profileId)
+              if(usersProfile.length>0){
+                await this.addGeneralPage(usersProfile,'profile',profile.name,department.name)
+                this.extraPages ++
+                //Agregar paginas de los estudiantes del perfil
+              }
+            }
+          }
         }
       }
 
+      let usersSinDepartamneto = this.users.filter(x=>x.departmentId =='')
 
-      
+      if(usersSinDepartamneto.length>0){
+
+        let usersWithProfiles = usersSinDepartamneto.filter(x=>x.profileId)
+        if(usersWithProfiles.length>0){
+          await this.addGeneralPage(usersWithProfiles,'department','Sin Departamento')
+          this.extraPages ++
+          // Agregar pagina por perfil
+          let profiles = usersWithProfiles.map(user => {
+            return user.profileId
+          });
+          profiles = [...new Set(profiles)];
+          for (let index = 0; index < profiles.length; index++) {
+            const profileId = profiles[index];
+            const profile = this.profiles.find(x=> x.id == profileId)
+            const usersProfile = usersWithProfiles.filter(x=>x.profileId == profileId)
+            if(usersProfile.length>0){
+              await this.addGeneralPage(usersProfile,'profile',profile.name,'Sin Departamento')
+              this.extraPages ++
+              //Agregar paginas de los estudiantes del perfil
+
+            }
+          }
+
+        }
+
+      }
+
       
       // for (let index = 0; index < this.pages.length; index++) {
       //   const student = this.pages[index];
@@ -392,10 +446,12 @@ export class DialogDownloadReportComponent {
     })
   }
 
-  async addGeneralPage(users = this.users,type='general',department = null) {
+  async addGeneralPage(users = this.users,type='general',name = null,parentName = null) {
     this.pdf.addPage("a4", "p")
     let currentLine = 0
     currentLine = this.addLogoAndDate()
+
+    let addLinesTitle = 7
 
     let generalPageTitle = "Reporte de capacitación "
 
@@ -403,16 +459,32 @@ export class DialogDownloadReportComponent {
       generalPageTitle = "Reporte de capacitación "
     }
     else if (type == 'department'){
-      generalPageTitle = "Dpto: "
-      generalPageTitle += department
-
+      generalPageTitle= ''
+      if(name != 'Sin Departamento'){
+        generalPageTitle = "Dpto: "
+      }
+      generalPageTitle += name
+    }
+    else if(type == 'profile'){
+      generalPageTitle = "Perfil: "
+      generalPageTitle += name
+      addLinesTitle = 0
+      currentLine = this.addFormatedText({
+        text: `Dpto: ${parentName}`,
+        x: 0,
+        y: currentLine+7,
+        color: 'black',
+        bold: true,
+        textAlign: "left",
+        size: 16
+      })
     }
     // Si es historico
     //generalPageTitle += "histórico"
     currentLine = this.addFormatedText({
       text: generalPageTitle,
       x: 0,
-      y: currentLine + 7,
+      y: currentLine + addLinesTitle,
       color: 'black',
       bold: true,
       textAlign: "left",
@@ -460,12 +532,16 @@ export class DialogDownloadReportComponent {
       users.length,    // No depende el periodo
       this.getTotalHours(users), 
       this.gethorasPromedioPorEstudiante(users), 
-      promedioTiempo.valor, 
+      promedioTiempo?.valor? promedioTiempo?.valor : 0, 
       certificados.length, 
       courses.length, 
       this.getCalificacionPromedio(users), 
       `${this.getPlanProgress(users)} %` // No depende el periodo
     ]
+
+    console.log('values',values)
+
+    
     currentLine = this.generalCoursesData(strings, values, currentLine) 
     // CHARTS
     const graphicHeight = 90
@@ -486,7 +562,7 @@ export class DialogDownloadReportComponent {
     if(type == 'general'){
       currentLine = await this.generalProgressbar(currentLine)
     }
-    else if(type == 'department'){
+    else {
       currentLine = await this.generalProgressbarDepartment(users,currentLine)
     }
   }
@@ -494,18 +570,25 @@ export class DialogDownloadReportComponent {
 
   getPlanProgress(usersData){
 
+
+    console.log('getPlanProgress',usersData)
+
     let totalTimeExpected = 0;
     let totalTimeFinished = 0;
 
     usersData.forEach(usuario => {
-      usuario.allCourses.forEach(curso => {
-        totalTimeExpected+=curso?.courseTime ? curso.courseTime: 0
-        totalTimeFinished+=curso?.progressTime ? curso.progressTime: 0
-      });
+      totalTimeExpected+=usuario?.targetHoursAllCourses ? usuario.targetHoursAllCourses: 0
+      totalTimeFinished+=usuario?.hours ? usuario.hours: 0
     });
+
+    if(totalTimeExpected == 0){
+      return 0
+    }
 
     let progresoPlan = (totalTimeFinished*100)/totalTimeExpected
     progresoPlan =  Math.round(progresoPlan * 10) / 10
+
+
 
     return progresoPlan
 
@@ -637,6 +720,10 @@ export class DialogDownloadReportComponent {
     });
 
     let calificacion = 0
+
+    if(allCertificates.length == 0 ){
+      return 0
+    }
 
     allCertificates.forEach(certificado => {
       calificacion+=certificado.puntaje
