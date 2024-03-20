@@ -3,6 +3,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { Chart } from 'chart.js';
 import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import { Subscription, combineLatest, concatAll, filter, map, of, switchMap, take } from 'rxjs';
 import { Enterprise } from 'projects/shared/models/enterprise.model';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
@@ -165,19 +166,23 @@ export class DialogDownloadReportComponent {
           let targetHoursAllCourses = 0
           let hoursAllCourses = 0
           let coursesUser = [];
+          let allcoursesUser = [];
           let classesUser= []
           courses.forEach(course => {
             hours += (course?.progressTime ? course.progressTime : 0)/60
             const courseJson = this.courses.find(item => item.id === course.courseRef.id)
-            courseJson.progress=courseJson
-            coursesUser.push(courseJson.progress)
+            let courseIn = {...courseJson,progress:course}
+            courseIn.completed = course.progress >= 100? true : false
+            coursesUser.push(courseIn)
             targetHours += (courseJson.duracion/60)
           })
 
           allCourses.forEach(course => {
             hoursAllCourses += (course?.progressTime ? course.progressTime : 0)/60
             const courseJson = this.courses.find(item => item.id === course.courseRef.id)
-            courseJson.progress=courseJson
+            let courseIn = {...courseJson,progress:course}
+            courseIn.completed = course.progress >= 100? true : false
+            allcoursesUser.push(courseIn)            
             targetHoursAllCourses += (courseJson.duracion/60)
           })
 
@@ -205,7 +210,7 @@ export class DialogDownloadReportComponent {
             courses:coursesUser,
             clases:classesUser,
             certificados:certificados,
-            allCourses:allCourses
+            allCourses:allcoursesUser
           }
         })
         this.users = users; // Assuming the data is in 'items'
@@ -347,6 +352,14 @@ export class DialogDownloadReportComponent {
                 await this.addGeneralPage(usersProfile,'profile',profile.name,department.name)
                 this.extraPages ++
                 //Agregar paginas de los estudiantes del perfil
+
+                for (let index = 0; index < usersProfile.length; index++) {
+                  const student = usersProfile[index];
+                  console.log('student',student)
+                  await this.studentPage(student)
+  
+                }
+                
               }
             }
           }
@@ -374,6 +387,14 @@ export class DialogDownloadReportComponent {
               await this.addGeneralPage(usersProfile,'profile',profile.name,'Sin Departamento')
               this.extraPages ++
               //Agregar paginas de los estudiantes del perfil
+              for (let index = 0; index < usersProfile.length; index++) {
+                const student = usersProfile[index];
+                console.log('student',student)
+                await this.studentPage(student)
+
+              }
+
+
 
             }
           }
@@ -392,6 +413,316 @@ export class DialogDownloadReportComponent {
       console.log(err)
     }
 
+  }
+
+
+  obtenerUltimoDiaDelMes(fecha: number) {
+    fecha = fecha * 1000;
+    let fechaOriginal = new Date(fecha);
+    const anio = fechaOriginal.getFullYear();
+    const mes = fechaOriginal.getMonth();
+    const ultimoDiaDelMes = new Date(anio, mes + 1, 0);
+  
+    // Establecer la hora a 23:59:59
+    ultimoDiaDelMes.setHours(23, 59, 59);
+  
+    return ultimoDiaDelMes;
+  }
+
+
+
+  getRetardedCourses(courses){
+
+    let respuesta = []
+    let today = new Date()
+    courses.forEach(curso => {
+
+      // if(curso.completed){
+      //   console.log('curso.progress.dateEnd.seconds',curso)
+      //   if(new Date(curso.progress.dateEnd.seconds*1000)>this.obtenerUltimoDiaDelMes(curso.progress.dateEndPlan.seconds)){
+      //     respuesta.push(curso)
+      //   }
+      // }
+      //else{
+        if(!curso.completed && today>this.obtenerUltimoDiaDelMes(curso.progress.dateEndPlan.seconds)){
+          console.log()
+          respuesta.push(curso)
+        }
+      //}
+      
+    });
+
+    return respuesta
+
+
+  }
+
+  titleCase(str: string): string {
+    if (!str) return str;
+    return str.toLowerCase().split(' ').map(word => {
+      return (word.charAt(0).toUpperCase() + word.slice(1));
+    }).join(' ');
+  }
+
+
+  async studentProgressbar(studentStats, currentLine) {
+    currentLine = this.addFormatedText({
+      text: "Progreso general",
+      x: 0,
+      y: currentLine,
+      color: 'black',
+      bold: true,
+      textAlign: "left",
+      size: 16
+    })
+
+    currentLine += this.pdf.getLineHeight()/2
+    let pdf = `
+    <div style="display: flex; max-width: ${this.formattedPageWidth}mm; margin: 0 auto; gap: 1rem; align-items: left; justify-content: left; margin-top: 8px;">
+      <div style="display: flex; overflow: hidden; height: 12px; max-height: 12px; width: ${this.formattedPageWidth- 20}mm; background-color: #D5DCE0; border-radius: 6px">
+          <div style="width: ${studentStats.completedCourses * 100 / studentStats.enrolledCourses}%; height: 20px; min-height: 20px; background-color: #00BF9C">
+          </div>
+          <div style="width: ${studentStats.delayedCourses * 100 / studentStats.enrolledCourses}%; height: 20px; min-height: 20px; background-color: #ED4758">
+          </div>
+          <div style="width: ${studentStats.inProgressCourses * 100 /studentStats.enrolledCourses}%; height: 20px; min-height: 20px; background-color: #008CE3">
+          </div>
+      </div>
+    </div>`
+
+    console.log('pdf',studentStats,pdf)
+
+    await this.pdf.html(pdf, {
+      callback: (doc) => {
+        return doc
+      },
+      y: this.pageHeigth*(this.extraPages) + currentLine, //"2" because of cover and general pages. extraPages because of extra tables
+      windowWidth: 795, //px  (210mm = 795px)
+      width: 210,       //unit of the instance
+    });
+    currentLine = this.addFormatedText({
+      text: `${studentStats.progress.toFixed(0)} %`, // REVISAR
+      x: this.formattedPageWidth - 18,
+      y: currentLine - this.pdf.getLineHeight()/4,
+      color: 'black',
+      bold: true,
+      textAlign: "left",
+      size: 14
+    })
+    return currentLine
+  }
+
+
+  defaultUserImage = "assets/images/default/default-user-image.jpg"
+
+
+  async studentPage(student) {
+    this.pdf.addPage("a4", "p")
+    let currentLine = 0
+    currentLine = this.addLogoAndDate()
+    currentLine += 10
+    const studentPhoto = student.photoUrl?student.photoUrl: this.defaultUserImage
+    console.log(studentPhoto)
+    const image = await this.firebasePhotoToImage(studentPhoto)
+    console.log(image);
+    const photoWidth = 21
+    const photoHeight = 21
+    const photoXStartingPosition = this.horizontalMargin
+    const photoYStartingPosition = currentLine
+    this.pdf.addImage(image, 'PNG', photoXStartingPosition , photoYStartingPosition, photoWidth, photoHeight)
+    currentLine = this.addFormatedText({
+      text: `${this.titleCase(student.displayName)}`,
+      x: photoWidth + 8,
+      y: currentLine - 5,
+      color: 'black',
+      bold: true,
+      textAlign: "left",
+      size: 18
+    })
+    // currentLine = this.addFormatedText({
+    //   text: `${this.getUser(student).job}`,
+    //   x: photoWidth + 8,
+    //   y: currentLine,
+    //   color: 'black',
+    //   textAlign: "left",
+    //   size: 16
+    // })
+    currentLine = this.addFormatedText({
+      text: this.titleCase(this.enterprise.name),
+      x: photoWidth + 8,
+      y: currentLine,
+      color: 'black',
+      textAlign: "left",
+      size: 16
+    })
+    currentLine += this.pdf.getLineHeight()/2 + 5
+    this.pdf.line(this.horizontalMargin, currentLine, this.formattedPageWidth, currentLine)
+    // Student info
+    const studyPlanInsidePeriod = student.courses
+
+
+    let clases = this.getAllClasses([student])
+
+    let promedioTiempo = this.calcularPromedioTiempoEstudioConClases(clases,[student])
+
+    let coursesRetarded = this.getRetardedCourses(student.allCourses)
+
+
+    console.log('revisar',student,coursesRetarded)
+
+
+    //PROGRESS BAR
+
+    let studentData = {
+      completedCourses:student.allCourses.filter(x=>x.completed).length,
+      delayedCourses:coursesRetarded.length,
+      inProgressCourses:student.allCourses.filter(x=>!x.completed && x.progress.progress>0 ).length,
+      enrolledCourses:student.allCourses.length,
+      progress:this.getPlanProgress([student])
+    }
+
+    currentLine = await this.studentProgressbar(studentData, currentLine)
+
+    this.extraPages++
+
+
+    currentLine += 5
+    //DATA DISTRIBUTED IN RECTANGLES 
+    const strings = [
+      "Cursos completados", 
+      "Cursos con retraso", 
+      "Cursos en progreso", 
+      "Cursos inscritos", 
+      "Horas de formación totales", 
+      `Horas promedio por ${promedioTiempo.tiempo}`,
+      "Certificados emitidos", 
+      "Calificación promedio"
+    ]   
+    const values = [
+      student.allCourses.filter(x=>x.completed).length,
+      coursesRetarded.length,
+      student.allCourses.filter(x=>!x.completed && x.progress.progress>0).length,
+      student.allCourses.length,
+      this.getTotalHours([student]),
+      promedioTiempo?.valor? promedioTiempo?.valor : 0,
+      student.certificados.length,
+      this.getCalificacionPromedio([student])
+
+    ]
+
+    currentLine = this.studentCoursesData(strings, values, currentLine) 
+    currentLine += 5
+    // CHARTS
+    const graphicHeight = 80
+    //currentLine = await this.getChart(currentLine, logsInsidePeriod, graphicHeight)
+    currentLine += 5
+    // STUDYPLAN TABLE
+    if (studyPlanInsidePeriod.length > 0) {
+      //this.studentStudyPlanTable(studyPlanInsidePeriod, currentLine)
+    }
+    else {
+      this.pdf.line(this.horizontalMargin, currentLine, this.formattedPageWidth, currentLine)
+      currentLine = this.addFormatedText({
+        text: "El plan de estudio del estudiante no posee cursos que hayan iniciado en el período seleccionado",
+        x: this.formattedPageWidth / 2,
+        y: currentLine,
+        color: 'black',
+        bold: true,
+        textAlign: "center",
+        size: 24
+      })
+    }
+  }
+
+  studentStudyPlanTable(studyPlan, currentLine) {
+    let hTable = currentLine
+    const head = [["Nombre", "Duración (horas)", "Progreso", "Fecha fin asignada", "Fecha de completación", "Estatus", "Calificación"]]
+    let tableData = []
+    // for (let index = 0; index < studyPlan.length; index++) {
+    //   const course = studyPlan[index];
+    //   const courseInfo = [
+    //     course.cursoTitulo, 
+    //     (course.duracion/60).toFixed(2), 
+    //     `${course.progreso} %`, 
+    //     this.timestampToDateFormat(course.fechaFin), 
+    //     this.timestampToDateFormat(course.fechaCompletacion), 
+    //     this.getStatus(course), course.puntaje
+    //   ]
+    //   tableData.push(courseInfo)
+    // }
+    autoTable(this.pdf, {
+      theme: "striped",
+      margin: {
+        top: 20, // Al dividir la tabla en mas de una pagina, esta sera la posicion de la 2da en adelante
+        left: this.horizontalMargin,
+      },
+      head: head,
+      headStyles :{halign: 'center', valign: 'middle'},
+      // showHead: "firstPage",
+      body: tableData,
+      rowPageBreak: "avoid",
+      pageBreak: "auto",
+      tableWidth: this.formattedPageWidth,
+      styles: {
+        // font: "calibri",
+        fontSize: 8 
+      },
+      startY: currentLine,
+      columnStyles: {
+        0: { halign: 'left', valign: 'middle', cellWidth: 65 },
+        1: { halign: 'center', valign: 'middle', cellWidth: 20 },
+        2: { halign: 'center', valign: 'middle', cellWidth: 20 },
+        3: { halign: 'center', valign: 'middle', cellWidth: 25 },
+        4: { halign: 'center', valign: 'middle', cellWidth: 25 },
+        5: { halign: 'center', valign: 'middle', cellWidth: 25 },
+        6: { halign: 'center', valign: 'middle', cellWidth: 20 }
+      },
+      didDrawPage: (data) => {
+        const limitTableHeight = 274
+        if (data.cursor.y > limitTableHeight) {
+          // console.log(`Se añadio una pagina debido a la altura de la tabla`)
+          this.extraPages += 1
+        }
+        if (data.pageNumber > 1) {
+          // Añadimos logo y fecha a la pagina
+          this.addLogoAndDate()
+        }
+      }
+    })
+  }
+
+
+  studentCoursesData(strings, values, currentLine) {
+    for (let i = 0; i < 2; i++) {
+      for (let index = 0; index < 4; index++) {
+        let rectXCoord = this.horizontalMargin + index*this.formattedPageWidth/4
+        let rectYCoord = currentLine
+        let rectWidth = this.formattedPageWidth/4
+        let rectHeight = this.formattedPageHeigth/10
+        // this.pdf.rect(rectXCoord, rectYCoord, rectWidth, rectHeight, null)
+        let text = strings[(index)+(4*i)]
+        let value = values[(index)+(4*i)]
+        this.addFormatedText({
+          text: value.toString(),
+          x: rectXCoord,
+          y: rectYCoord,
+          color: 'black',
+          bold: true,
+          textAlign: "left",
+          size: 20
+        })
+        this.addFormatedText({
+          text: text,
+          x: rectXCoord,
+          y: rectYCoord + rectHeight - this.pdf.getLineHeight(),
+          color: 'black',
+          textAlign: "left",
+          size: 12,
+          maxLineWidth: rectWidth - this.horizontalMargin
+        })
+      }
+      currentLine += this.formattedPageHeigth/10 //rectHeight
+    }
+    return currentLine
   }
 
   logo = "assets/images/logos/logo.png"
@@ -428,7 +759,7 @@ export class DialogDownloadReportComponent {
       textAlign: "center"
     })
     currentLine = this.addFormatedText({
-      text: this.enterprise.name,
+      text: this.titleCase(this.enterprise.name),
       x: this.formattedPageWidth / 2,
       y: currentLine,
       color: 'white',
@@ -513,8 +844,7 @@ export class DialogDownloadReportComponent {
     }
     
 
-
-    let promedioTiempo = this.calcularPromedioTiempoEstudioConClases(this.getAllClasses(users))
+    let promedioTiempo = this.calcularPromedioTiempoEstudioConClases(this.getAllClasses(users),users)
     let certificados  = this.getAllCertificates(users)
     let courses = this.getAllCoursesUsers(users)
 
@@ -631,7 +961,9 @@ export class DialogDownloadReportComponent {
     return respueta;
   }
 
-  calcularPromedioTiempoEstudioConClases(classes): any {
+  calcularPromedioTiempoEstudioConClases(classes,users): any {
+
+    
   if (classes.length === 0) {
     return "No hay clases para calcular el promedio.";
   }
@@ -643,7 +975,7 @@ export class DialogDownloadReportComponent {
   const fechaFin = new Date(Math.max(...fechas));
   
   // Calcula el total de horas de estudio
-  const totalHorasEstudio = this.getTotalHours(this.users)
+  const totalHorasEstudio = this.getTotalHours(users)
   // Sigue el mismo procedimiento para calcular el promedio basado en el periodo
   const unDia = 24 * 60 * 60 * 1000; // Milisegundos en un día
   const diferenciaEnDias = Math.round(Math.abs((fechaFin.getTime() - fechaInicio.getTime()) / unDia));
