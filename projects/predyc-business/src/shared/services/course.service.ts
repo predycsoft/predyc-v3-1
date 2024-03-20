@@ -536,7 +536,6 @@ export class CourseService {
 
   // ---- classeByStudent Collection methods
   getClassesByStudentDatefilterd$(userRef: DocumentReference<User>,dateIni = null ,dateEnd = null): Observable<ClassByStudent[]> {
-    console.log('dateIni',dateIni)
     return this.afs.collection<ClassByStudent>(ClassByStudent.collection, ref => {
       let query = ref.where('userRef', '==', userRef)
                       .where('completed', '==', true);
@@ -546,6 +545,20 @@ export class CourseService {
       }
       if (dateEnd) {
         query = query.where('dateEnd', '<=', dateEnd);
+      }
+      return query;
+    }).valueChanges();
+  }
+
+  getCertificatestDatefilterd$(userRef: DocumentReference<User>,dateIni = null ,dateEnd = null): Observable<any[]> {
+    return this.afs.collection<any>('userCertificate', ref => {
+      let query = ref.where('usuarioId', '==', userRef.id);
+      
+      if (dateIni) {
+        query = query.where('date', '>=', dateIni);
+      }
+      if (dateEnd) {
+        query = query.where('date', '<=', dateEnd);
       }
       return query;
     }).valueChanges();

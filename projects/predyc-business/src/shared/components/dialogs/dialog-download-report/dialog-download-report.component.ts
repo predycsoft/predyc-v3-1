@@ -24,6 +24,10 @@ interface textOpts {
   textAlign: 'left' | 'center' | 'right',
   maxLineWidth?: number
 }
+interface MonthlyDuration {
+  label: string;
+  value: number;
+}
 
 interface User {
   displayName: string,
@@ -83,7 +87,7 @@ export class DialogDownloadReportComponent {
       }
     })
     this.profileService.loadProfiles()
-    this.profilesSubscription = combineLatest([this.profileService.getProfiles$(), this.departmentService.getDepartments$(), this.courseService.getCourses$(),this.courseService.getClassesEnterprise$()]).subscribe(([profiles, departments, courses,classes]) => {
+    this.profilesSubscription = combineLatest([this.profileService.getProfiles$(), this.departmentService.getDepartmentsEnterprise$(), this.courseService.getCourses$(),this.courseService.getClassesEnterprise$()]).subscribe(([profiles, departments, courses,classes]) => {
       this.profiles = profiles
       this.departments = departments
       this.courses = courses
@@ -128,12 +132,16 @@ export class DialogDownloadReportComponent {
           const coursesObservable = this.courseService.getActiveCoursesByStudentDateFiltered$(userRef,fechaInicio,fechaFin);
           // Obtener clases asociadas al usuario, independientemente de los cursos
           const classesObservable = this.courseService.getClassesByStudentDatefilterd$(userRef,fechaInicio,fechaFin);
+
+          const allCoursesObservable = this.courseService.getActiveCoursesByStudent(userRef)
+
+          const certificatesObservable = this.courseService.getCertificatestDatefilterd$(userRef,fechaInicio,fechaFin)
       
-          return combineLatest([coursesObservable, classesObservable]).pipe(
-            map(([courses, classes]) => {
+          return combineLatest([coursesObservable, classesObservable,certificatesObservable,allCoursesObservable]).pipe(
+            map(([courses, classes,certificados,allCourses]) => {
               // Aquí tienes un objeto que incluye tanto los cursos como las clases asociadas a ese usuario
               // Cursos y clases están en sus propios objetos y no anidadas
-              return { user, courses, classes };
+              return { user, courses, classes,certificados,allCourses };
             })
           );
         });
@@ -141,7 +149,7 @@ export class DialogDownloadReportComponent {
         return combineLatest(userCourseObservables);
         })).subscribe(response => {
         console.log('datos reporte',response)
-        const users: User[] = response.map(({user, courses,classes}) => {
+        const users: User[] = response.map(({user, courses,classes,certificados,allCourses}) => {
           const profile = this.profiles.find(profile => {
             if(user.profile) {
               return profile.id === user.profile.id
@@ -166,10 +174,7 @@ export class DialogDownloadReportComponent {
 
           classes.forEach(clase => {
             const classJson = this.classes.find(item => item.id === clase.classRef.id)
-            let claseData = {
-              classesByStudent: clase,
-              classeData:classJson
-            }
+            let claseData = {...classJson,...clase}
             classesUser.push(claseData)
           })
           const userPerformance: "no plan" | "high" | "medium" | "low" | "no iniciado"= this.userService.getPerformanceWithDetails(courses);
@@ -178,15 +183,19 @@ export class DialogDownloadReportComponent {
           return {
             displayName: user.displayName,
             department: department?.name ? department.name : '',
+            departmentId: department?.id ? department.id : '',
             hours: hours, // Calculation pending
             targetHours: targetHours,
             profile: profileName,
+            profileId: profile?.id ? profile.id : '',
             ratingPoints: ratingPoints,
             rhythm: userPerformance, // Calculation pending
             uid: user.uid,
             photoUrl: user.photoUrl,
             courses:coursesUser,
             clases:classesUser,
+            certificados:certificados,
+            allCourses:allCourses
           }
         })
         this.users = users; // Assuming the data is in 'items'
@@ -305,6 +314,21 @@ export class DialogDownloadReportComponent {
       this.addFonts()
       this.addCover()
       await this.addGeneralPage()
+      this.extraPages = 2
+
+      for (let index = 0; index < this.departments.length; index++) {
+        const department = this.departments[index];
+        let users = this.users.filter(x=>x.departmentId == department.id)
+        if(users.length>0){
+          await this.addGeneralPage(users,'department',department.name)
+          this.extraPages ++
+          console.log('users department',users)
+        }
+      }
+
+
+      
+      
       // for (let index = 0; index < this.pages.length; index++) {
       //   const student = this.pages[index];
       //   await this.studentPage(student, index)
@@ -368,13 +392,23 @@ export class DialogDownloadReportComponent {
     })
   }
 
-  async addGeneralPage() {
+  async addGeneralPage(users = this.users,type='general',department = null) {
     this.pdf.addPage("a4", "p")
     let currentLine = 0
     currentLine = this.addLogoAndDate()
+
     let generalPageTitle = "Reporte de capacitación "
+
+    if(type=='general'){
+      generalPageTitle = "Reporte de capacitación "
+    }
+    else if (type == 'department'){
+      generalPageTitle = "Dpto: "
+      generalPageTitle += department
+
+    }
     // Si es historico
-    generalPageTitle += "histórico"
+    //generalPageTitle += "histórico"
     currentLine = this.addFormatedText({
       text: generalPageTitle,
       x: 0,
@@ -395,54 +429,265 @@ export class DialogDownloadReportComponent {
     currentLine += this.pdf.getLineHeight()/2 + 5
     this.pdf.line(this.horizontalMargin, currentLine, this.formattedPageWidth, currentLine)
     //DATA DISTRIBUTED IN RECTANGLES
+
+    let fechaInicio
+    let fechaFin
+
+    if(this.startDate){
+      fechaInicio = new Date(this.startDate.year,this.startDate.month-1,this.startDate.day)
+    }
+    if(this.endDate){
+      fechaFin = new Date(this.endDate.year,this.endDate.month-1,this.endDate.day)
+    }
+    
+
+
+    let promedioTiempo = this.calcularPromedioTiempoEstudioConClases(this.getAllClasses(users))
+    let certificados  = this.getAllCertificates(users)
+    let courses = this.getAllCoursesUsers(users)
+
     const strings = [
       "Estudiantes activos actualmente", 
       "Horas acumuladas del grupo en el período", 
       "Horas promedio por estudiante en el período", 
-      `Horas promedio por mes"`,
+      `Horas promedio por ${promedioTiempo.tiempo}`,
       "Certificados emitidos en el período", 
       "Cursos inscritos en el período", 
       "Calificación promedio en el período", 
       "Progreso del plan general actualmente"
     ]
     const values = [
-      0,    // No depende el periodo
-      0, 
-      0, 
-      0, 
-      0, 
-      0, 
-      0, 
-      `0 %` // No depende el periodo
+      users.length,    // No depende el periodo
+      this.getTotalHours(users), 
+      this.gethorasPromedioPorEstudiante(users), 
+      promedioTiempo.valor, 
+      certificados.length, 
+      courses.length, 
+      this.getCalificacionPromedio(users), 
+      `${this.getPlanProgress(users)} %` // No depende el periodo
     ]
     currentLine = this.generalCoursesData(strings, values, currentLine) 
     // CHARTS
     const graphicHeight = 90
-
-    const constCharData = this.getCharData(this.users)
+    const constCharData = this.getCharData(users)
     currentLine = await this.getChart(currentLine, constCharData, graphicHeight)
 
+
+    //"no plan" | "high" | "medium" | "low" | "no iniciado"
+
+    this.ritmoMedio =users.filter(x=>x.rhythm == 'medium')
+    this.ritmoBajo =users.filter(x=>x.rhythm == 'low')
+    this.ritmoOptimo =users.filter(x=>x.rhythm == 'high')
+    this.sinPlan =users.filter(x=>x.rhythm == 'no plan')
+    this.noIniciado =users.filter(x=>x.rhythm == 'no iniciado')
+
     // PROGRESS BAR
-    currentLine = await this.generalProgressbar(currentLine)
+
+    if(type == 'general'){
+      currentLine = await this.generalProgressbar(currentLine)
+    }
+    else if(type == 'department'){
+      currentLine = await this.generalProgressbarDepartment(users,currentLine)
+    }
   }
 
 
-  getCharData(usersData){
+  getPlanProgress(usersData){
 
-    console.log('usersData',usersData)
+    let totalTimeExpected = 0;
+    let totalTimeFinished = 0;
 
+    usersData.forEach(usuario => {
+      usuario.allCourses.forEach(curso => {
+        totalTimeExpected+=curso?.courseTime ? curso.courseTime: 0
+        totalTimeFinished+=curso?.progressTime ? curso.progressTime: 0
+      });
+    });
+
+    let progresoPlan = (totalTimeFinished*100)/totalTimeExpected
+    progresoPlan =  Math.round(progresoPlan * 10) / 10
+
+    return progresoPlan
+
+
+  }
+
+  
+  calcularPromedioTiempoEstudio(startDate: Date, endDate: Date, totalHorasEstudio: number): any {
+    const unDia = 24 * 60 * 60 * 1000; // Milisegundos en un día
+    const diferenciaEnDias = Math.round(Math.abs((endDate.getTime() - startDate.getTime()) / unDia));
+
+    console.log('totalHorasEstudio',totalHorasEstudio)
+    
+    // Calcula el promedio según el periodo
+    let promedio = 0;
+    let unidadTiempo = '';
+    
+    if (diferenciaEnDias < 7) { // Menos de una semana
+      promedio = totalHorasEstudio / diferenciaEnDias;
+      unidadTiempo = 'día';
+    } else if (diferenciaEnDias <= 30) { // Menos de un mes
+      const semanas = diferenciaEnDias / 7;
+      promedio = totalHorasEstudio / semanas;
+      unidadTiempo = 'semana';
+    } else { // Más de un mes
+      const meses = diferenciaEnDias / 30;
+      promedio = totalHorasEstudio / meses;
+      unidadTiempo = 'mes';
+    }
+    
+    // Redondea el promedio a 1 decimal
+    promedio = Math.round(promedio * 10) / 10;
+
+    let respueta = {
+      tiempo:unidadTiempo,
+      valor:promedio.toFixed(1)
+
+    }
+    
+    return respueta;
+  }
+
+  calcularPromedioTiempoEstudioConClases(classes): any {
+  if (classes.length === 0) {
+    return "No hay clases para calcular el promedio.";
+  }
+
+  // Encuentra la fecha más antigua y la más reciente entre todas las clases
+  const fechas = classes.map(clase => new Date(clase.dateEnd.seconds * 1000));
+
+  const fechaInicio = new Date(Math.min(...fechas));
+  const fechaFin = new Date(Math.max(...fechas));
+  
+  // Calcula el total de horas de estudio
+  const totalHorasEstudio = this.getTotalHours(this.users)
+  // Sigue el mismo procedimiento para calcular el promedio basado en el periodo
+  const unDia = 24 * 60 * 60 * 1000; // Milisegundos en un día
+  const diferenciaEnDias = Math.round(Math.abs((fechaFin.getTime() - fechaInicio.getTime()) / unDia));
+  
+  let promedio = 0;
+  let unidadTiempo = '';
+  
+  if (diferenciaEnDias < 7) {
+    promedio = totalHorasEstudio / diferenciaEnDias;
+    unidadTiempo = 'día';
+  } else if (diferenciaEnDias <= 30) {
+    const semanas = diferenciaEnDias / 7;
+    promedio = totalHorasEstudio / semanas;
+    unidadTiempo = 'semana';
+  } else {
+    const meses = diferenciaEnDias / 30;
+    promedio = totalHorasEstudio / meses;
+    unidadTiempo = 'mes';
+  }
+
+  // Redondea el promedio a 1 decimal
+  promedio = Math.round(promedio * 10) / 10;
+
+  let respuesta = {
+    tiempo:unidadTiempo,
+    valor:promedio.toFixed(1)
+  }
+
+  return respuesta;
+}
+
+
+
+  getTotalHours(usersData){
+
+    let amountHours = 0
+    usersData.forEach(user => {
+      user.clases.forEach(clase => {
+        amountHours+=clase.duracion
+      });
+    });
+    return Math.round((amountHours / 60) * 10) / 10 // Convierte minutos a horas y redondea a 1 decimal
+  }
+
+  gethorasPromedioPorEstudiante(usersData) {
+    const promedio = usersData.length > 0 ? this.getTotalHours(usersData) / usersData.length : 0;
+    // Redondea el promedio a 1 decimal
+    return Math.round(promedio * 10) / 10;
+  }
+
+
+
+  
+  getAllClasses(usersData){
     let allClasses = []
     usersData.forEach(user => {
-      if(user.clases.length>0){
-        allClasses = allClasses.concat(allClasses, user.clases);
-      }
+      allClasses = allClasses.concat(user.clases);
     });
-    
+    return allClasses
+  }
+
+  getAllCertificates(usersData){
+    let allCertificates = []
+    usersData.forEach(user => {
+      allCertificates = allCertificates.concat(user.certificados);
+    });
+    return allCertificates
+  }
+
+  getCalificacionPromedio(usersData){
+    let allCertificates = []
+    usersData.forEach(user => {
+      allCertificates = allCertificates.concat(user.certificados);
+    });
+
+    let calificacion = 0
+
+    allCertificates.forEach(certificado => {
+      calificacion+=certificado.puntaje
+    });
+
+    let promedio = calificacion/allCertificates.length
+
+    promedio = Math.round(promedio * 10) / 10;
+
+    return promedio
+  }
+  
+  getAllCoursesUsers(usersData){
+    let allCourses = []
+    usersData.forEach(user => {
+      allCourses = allCourses.concat(user.courses);
+    });
+    return allCourses
+  }
+
+  getCharData(usersData){
+
+    let allClasses = this.getAllClasses(usersData)
+
+    let arrayMeses = this.aggregateMonthlyDurations(allClasses)
+
+    return arrayMeses
+  }
 
 
-
-
-    return []
+  aggregateMonthlyDurations(classes: any[]): MonthlyDuration[] {
+    const durationPerMonth: { [key: string]: number } = {};
+  
+    classes.forEach(cl => {
+      const date = new Date(cl.dateEnd.seconds * 1000); // Suponiendo cl.dateEnd contiene segundos
+      const month = date.toLocaleString('es', { month: 'short' }).slice(0, 3); // Obtiene las primeras 3 letras del mes
+      const year = date.getFullYear().toString().slice(-2); // Obtiene los últimos 2 dígitos del año
+  
+      const label = `${month.charAt(0).toUpperCase() + month.slice(1)}-${year}`; // Formato Sep-23
+  
+      if (!durationPerMonth[label]) {
+        durationPerMonth[label] = 0;
+      }
+      durationPerMonth[label] += cl.duracion; // Suma la duración en minutos
+    });
+  
+    // Convierte el objeto a un arreglo de MonthlyDuration y ajusta los valores a horas, redondeando a 1 decimal usando Math.round
+    return Object.entries(durationPerMonth).map(([label, value]): MonthlyDuration => ({
+      label,
+      value: Math.round((value / 60) * 10) / 10 // Convierte minutos a horas y redondea a 1 decimal
+    }));
   }
 
   addFonts() {
@@ -578,8 +823,17 @@ export class DialogDownloadReportComponent {
   ritmoBajo = []
   ritmoOptimo = []
   sinPlan = []
+  noIniciado = []
 
-  async generalProgressbar(currentLine) {
+  async generalProgressbarDepartment(users,currentLine) {
+
+
+    let ritmoMedio =users.filter(x=>x.rhythm == 'medium')
+    let ritmoBajo =users.filter(x=>x.rhythm == 'low')
+    let ritmoOptimo =users.filter(x=>x.rhythm == 'high')
+    let sinPlan =users.filter(x=>x.rhythm == 'no plan')
+    let noIniciado =users.filter(x=>x.rhythm == 'no iniciado')
+
     currentLine = this.addFormatedText({
       text: "Ritmo de usuarios",
       x: 0,
@@ -593,11 +847,85 @@ export class DialogDownloadReportComponent {
     let pdf = `
     <div style="display: flex; max-width: ${this.formattedPageWidth}mm; margin: 0 auto; gap: 1rem; align-items: center; justify-content: center; margin-top: 8px;">
         <div style="display: flex; overflow: hidden; height: 12px; max-height: 12px; width: 100%; background-color: #D5DCE0; border-radius: 6px">
-            <div style="width: ${this.ritmoOptimo.length*100 / this.students.length}%; height: 20px; min-height: 20px; background-color: #6d05b0">
+            <div style="width: ${ritmoOptimo.length*100 / users.length}%; height: 20px; min-height: 20px; background-color: #6d05b0">
             </div>
-            <div style="width: ${this.ritmoMedio.length*100 / this.students.length}%; height: 20px; min-height: 20px; background-color: #00BF9C">
+            <div style="width: ${ritmoMedio.length*100 / users.length}%; height: 20px; min-height: 20px; background-color: #00BF9C">
             </div>
-            <div style="width: ${this.ritmoBajo.length*100 / this.students.length}%; height: 20px; min-height: 20px; background-color: #ED4758">
+            <div style="width: ${ritmoBajo.length*100 / users.length}%; height: 20px; min-height: 20px; background-color: #ED4758">
+            </div>
+        </div>
+    </div>
+  `
+    await this.pdf.html(pdf, {
+      callback: (doc) => {
+        return doc
+      },
+      //y: this.pageHeigth + currentLine,
+      y: this.pageHeigth*(this.extraPages) + currentLine, // extraPages because of extra tables
+      windowWidth: 795, //px  (210mm = 795px)
+      width: 210,       //unit of the instance
+    });
+    currentLine += this.pdf.getLineHeight()/4
+    this.addFormatedText({
+      text: `${this.ritmoOptimo.length} Ritmo óptimo`,
+      x: 0,
+      y: currentLine,
+      color: 'black',
+      bold: true,
+      textAlign: "left",
+      size: 10
+    })
+    this.addFormatedText({
+      text: `${this.ritmoMedio.length} Ritmo medio`,
+      x: 50,
+      y: currentLine,
+      color: 'black',
+      bold: true,
+      textAlign: "left",
+      size: 10
+    })
+    this.addFormatedText({
+      text: `${this.ritmoBajo.length} Ritmo bajo`,
+      x: 100,
+      y: currentLine,
+      color: 'black',
+      bold: true,
+      textAlign: "left",
+      size: 10
+    })
+    currentLine = this.addFormatedText({
+      text: `${this.sinPlan.length} Sin asignaciones`,
+      x: 150,
+      y: currentLine,
+      color: 'black',
+      bold: true,
+      textAlign: "left",
+      size: 10
+    })
+    return currentLine
+  }
+
+
+  async generalProgressbar(currentLine) {
+
+    currentLine = this.addFormatedText({
+      text: "Ritmo de usuarios",
+      x: 0,
+      y: currentLine,
+      color: 'black',
+      bold: true,
+      textAlign: "left",
+      size: 16
+    })
+    currentLine += this.pdf.getLineHeight()
+    let pdf = `
+    <div style="display: flex; max-width: ${this.formattedPageWidth}mm; margin: 0 auto; gap: 1rem; align-items: center; justify-content: center; margin-top: 8px;">
+        <div style="display: flex; overflow: hidden; height: 12px; max-height: 12px; width: 100%; background-color: #D5DCE0; border-radius: 6px">
+            <div style="width: ${this.ritmoOptimo.length*100 / this.users.length}%; height: 20px; min-height: 20px; background-color: #6d05b0">
+            </div>
+            <div style="width: ${this.ritmoMedio.length*100 / this.users.length}%; height: 20px; min-height: 20px; background-color: #00BF9C">
+            </div>
+            <div style="width: ${this.ritmoBajo.length*100 / this.users.length}%; height: 20px; min-height: 20px; background-color: #ED4758">
             </div>
         </div>
     </div>
