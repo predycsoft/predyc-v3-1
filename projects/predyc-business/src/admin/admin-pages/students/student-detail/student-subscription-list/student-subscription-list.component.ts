@@ -36,8 +36,6 @@ export class StudentSubscriptionListComponent {
     private subscriptionService: SubscriptionService,
     private dialog: MatDialog,
     public dialogService: DialogService,
-
-
   ){}
 
   displayedColumns: string[] = [
@@ -68,7 +66,7 @@ export class StudentSubscriptionListComponent {
   ngOnChanges(changes: SimpleChanges) {
     if (this.userRef) {
       // Check if prices, products, or coupons have changed
-      if (changes.prices || changes.products || changes.coupons) {
+      if (changes.products) {
         this.performSearch();
       }
     }

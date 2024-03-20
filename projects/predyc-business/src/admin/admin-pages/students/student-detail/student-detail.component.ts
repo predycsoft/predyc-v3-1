@@ -2,14 +2,14 @@ import { Component } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription, combineLatest, map, switchMap } from 'rxjs';
+import { Subscription, map, switchMap } from 'rxjs';
 import { MAIN_TITLE } from 'projects/predyc-business/src/admin/admin-routing.module';
 import { Enterprise } from 'projects/shared/models/enterprise.model';
 import { User } from 'projects/shared/models/user.model';
-import { calculateAgeFromTimestamp, timestampToDateNumbers } from 'projects/shared/utils';
+import { calculateAgeFromTimestamp } from 'projects/shared/utils';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogCreateSubscriptionComponent } from 'projects/predyc-business/src/shared/components/subscription/dialog-create-subscription/dialog-create-subscription.component';
-import { Subscription as SubscriptionClass, SubscriptionJson } from 'projects/shared/models/subscription.model';
+import { Subscription as SubscriptionClass } from 'projects/shared/models/subscription.model';
 import { DialogService } from 'projects/predyc-business/src/shared/services/dialog.service';
 import { SubscriptionService } from 'projects/predyc-business/src/shared/services/subscription.service';
 import { ProductService } from 'projects/predyc-business/src/shared/services/product.service';
@@ -49,7 +49,7 @@ export class StudentDetailComponent {
   ) {}
 
   userSubscription: Subscription
-  combinedServicesSubscription: Subscription
+  productSubscription: Subscription
 
   products: Product[]
 
@@ -80,13 +80,7 @@ export class StudentDetailComponent {
       this.titleService.setTitle(title)
     })
 
-    this.combinedServicesSubscription = combineLatest(
-      [
-        this.productService.getProducts$(),
-      ]
-    ).subscribe(([products]) => {
-      this.products = products
-    })
+    this.productSubscription = this.productService.getProducts$().subscribe(products => this.products = products)
   }
 
   createSubscription() {
@@ -144,7 +138,7 @@ export class StudentDetailComponent {
 
   ngOnDestroy() {
     this.userSubscription.unsubscribe()
-    this.combinedServicesSubscription.unsubscribe()
+    this.productSubscription.unsubscribe()
   }
 
 }

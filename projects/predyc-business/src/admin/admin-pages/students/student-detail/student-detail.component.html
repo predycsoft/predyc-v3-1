@@ -61,6 +61,7 @@
                         <span class="ft13 ft500 gray-10">Suscripciones</span>
                         <mat-icon (click)="createSubscription()" class="mgl10 gray-5 cursorPointer ft20 linkIcon">add_circle</mat-icon>
                     </div>
+
                     <app-student-subscription-list [userRef]="userRef" [products]="products"></app-student-subscription-list>
                 </div>
                 <div>
@@ -68,6 +69,7 @@
                         <span class="ft13 ft500 gray-10">Pagos</span>
                         <mat-icon (click)="createCharge()" class="mgl10 gray-5 cursorPointer ft20 linkIcon">add_circle</mat-icon>
                     </div>
+                    
                     <app-student-charge-list [userRef]="userRef" [user]="user" [products]="products"></app-student-charge-list>
                 </div>
             </div>
