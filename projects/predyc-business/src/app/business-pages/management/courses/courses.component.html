@@ -58,7 +58,7 @@
                     
                 </div>
                 <div fxLayout="row" class="fw">
-                    <div class="fw" style="height: 70vh; overflow-y: auto;">
+                    <div class="fw" style=" overflow-y: hidden;">
                         <div class="mgt10">
                             <ng-container>
                                 <app-course-selector type="predyc" [categories]="categories" [searchValue]="searchValue"
@@ -101,14 +101,14 @@
                     <div class="borderLight radius6 mgt10" *ngIf="selectedCourse" >
                         <div class="border-bl pdl10 pdt10 pdr10 pdb10 fw" fxLayout="column">
                             <div  fxLayout="row" fxLayoutAlign="space-between center" >
-                                <div class="gray-10 ft14 ft500">{{selectedCourse.titulo | titlecase}}</div>
+                                <div class="gray-10 ft14 ft500 mgr08">{{selectedCourse.titulo | titlecase}}</div>
                                 <div *ngIf="(user.isSystemUser || selectedCourse.enterpriseRef?.id == enterpriseRef?.id) && selectedCourse.id" 
                                         routerLink="/management/create-course/edit/{{selectedCourse.id}}" 
                                         fxLayout="row" 
                                         fxLayoutGap=".5rem"  >
-                                        <div class="blueButton mgt05 white cursorPointer ft12 fw" fxLayoutAlign="space-between center">
-                                            <img [src]="icon.edit" class="makeWhite h16px mgr08" alt="">
-                                            Editar curso
+                                        <div class="blueLink mgt05 white cursorPointer ft14 fw mgb10" fxLayoutAlign="space-between center">
+                                            <!-- <img [src]="icon.edit" class="makeWhite h16px mgr08" alt=""> -->
+                                            Editar 
                                         </div>
                                 </div>
 

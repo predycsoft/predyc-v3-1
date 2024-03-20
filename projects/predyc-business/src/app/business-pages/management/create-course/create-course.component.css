@@ -373,8 +373,16 @@ display: none !important;
 
 .header--edit {
 background-color: var(--yellow-5);
+position :fixed;
+width: 96.3%;
+border-radius: 6px;
+z-index: 2;
 
 }
+.fixed-ps {
+  position :fixed;
+}
+
 .rellenar {
   display: inline;
 }

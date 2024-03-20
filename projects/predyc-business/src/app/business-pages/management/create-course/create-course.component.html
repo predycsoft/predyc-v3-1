@@ -1,5 +1,5 @@
-<div class="fw" class="fw backWhite radius10" fxLayout="column">    <div [ngClass]="true ? 'header--edit' : ''" fxLayout="row" fxLayoutAlign="space-between " class="header pdr10 pdl10">
-    <div fxLayout="row" fxLayoutAlign="space-between center" class="fw fh pdt05 pdb05" >
+<div class="fw" class="fw backWhite radius10" fxLayout="column">    <div [ngClass]="true ? 'header--edit' : ''" fxLayout="row" fxLayoutAlign="space-between " class="header pdr20 pdl10">
+    <div fxLayout="row" fxLayoutAlign="space-between center" class="fw fh pdt05 pdb05"  >
         <div fxLayout="row">
             <div *ngIf="formNewCourse?.get('titulo')?.value"  class="radius20 pdl10 pdr10 mgr10 pdt05 pdb05 backWhite ft14 fh pdl05  " fxLayout="row" fxLayoutGap="8px" fxLayoutAlign=" center">
                 <span class="input-box ft14" placeholder="Nombre del curso"  >{{formNewCourse?.get('titulo')?.value}}</span>
@@ -29,13 +29,13 @@
         </div>
     </div>
 </div>
-    <div class="fh">
-        <mat-tab-group mat-stretch-tabs="false" class="swal-overlay" (selectedTabChange)="onTabChange($event)">
-            <mat-tab label="Contenido del Curso">
-                <ng-container>
-                    <div fxLayout="row" class="containerCurso h-100" fxLayoutGap="1.5rem">
+    <div class="fh " >
+        <mat-tab-group mat-stretch-tabs="false" class="swal-overlay pdt35 " (selectedTabChange)="onTabChange($event)" >
+            <mat-tab label="Contenido del Curso"  style="z-index: 2; position :fixed;" >
+                <ng-container >
+                    <div fxLayout="row" class=" " fxLayoutGap="1.5rem"  style="overflow-y: auto; height: 79vh !important;">
                         <!-- <div fxFlex="50%" class="pdl10 pdt10 fw"> -->
-                        <div *ngIf="formNewCourse" class="radius10 w-30 mgt15  mgl10 shadowLight  hideScroll" fxLayout="column" style="background-color: rgba(244, 244, 244, 0.362); overflow-y: auto;">
+                        <div *ngIf="formNewCourse" class="radius10 w-30 mgt15  mgl10 shadowLight fh  " fxLayout="column" style="background-color: rgba(244, 244, 244, 0.362); ">
                             <!-- Informacion -->
                                 <form [formGroup]="formNewCourse" class="mgl10 mgt15 mgr10">
                                     <div class="fw" fxLayoutAlign="space-between center" fxLayout="row">
@@ -244,13 +244,13 @@
                         </div>
                         <div class="column w-70 mgr25" fxLayoutGap="2rem" >
                                 <div  class=" mgt15  mgl10 fw" fxLayout="column">
-                                    <div fxLayout="column" class=" radius10  fh hideScroll shadowLight" style="overflow-y: auto; background-color:rgba(244, 244, 244, 0.362) ">
+                                    <div fxLayout="column" class=" radius10  fh  shadowLight" style=" background-color:rgba(244, 244, 244, 0.362) ">
                                         <div>
                                             <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="mgl10 mgt15 mgr10">
                                                 <img [src]="icon.document" class="makeBlue h20px" alt="">
                                                 <span class="ft500 ft14 black " style="margin-top: 5px;">Contenido del curso</span>
                                             </div>
-                                            <div class="pdl10 pdr10 pdt10 fw fh smallScroll modulesContainer" style="overflow-y: auto;">
+                                            <div class="pdl10 pdr10 pdt10 fw fh smallScroll modulesContainer">
                                                 <div fxLayout="column" class="fw">
                                                     <!-- aqui van los modulos que se van creando -->
                                                     <div *ngFor="let modulo of modulos; let iModulo = index" class="{{modulo['isInvalid']? 'ContainerModuloInvalid' : 'ContainerModulo'}}">
