@@ -25,7 +25,7 @@
                 </div>
                 <div fxLayout="column" class="mgt05 h50px">
                     <span class="ft11 gray-9">Producto</span>
-                    <mat-select placeholder="Seleccione el producto" formControlName="productId">
+                    <mat-select placeholder="Seleccione el producto" formControlName="productId" (ngModelChange)="getCurrentTimes()">
                         <mat-option *ngFor="let product of products" [value]="product.id">{{product.name}}</mat-option>
                     </mat-select>
                 </div>
@@ -53,7 +53,9 @@
                 </div>
                 <div fxLayout="column" class="mgt05 h50px">
                     <span class="ft11 gray-9">Final de período actual:</span>
-                    <span class="ft12 mgt05 gray-10" *ngIf="form.get('priceId').value">{{subscription.currentPeriodEnd| date:"dd/MM/yyyy"}}</span>
+                    <span class="ft12 mgt05 gray-10" *ngIf="form.get('productId').value">
+                        {{subscription.currentPeriodEnd| date:"dd/MM/yyyy"}} ARREGLAR
+                    </span>
                 </div>
                 <div fxLayout="column" class="mgt05 h50px">
                     <span class="ft11 gray-9">Comienzo de período de prueba:</span>

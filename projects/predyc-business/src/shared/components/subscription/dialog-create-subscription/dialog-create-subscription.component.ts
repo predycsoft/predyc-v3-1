@@ -7,6 +7,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { DocumentReference } from '@angular/fire/compat/firestore';
 import { Enterprise } from 'projects/shared/models/enterprise.model';
+import { ProductService } from '../../../services/product.service';
 
 @Component({
   selector: 'app-dialog-create-subscription',
@@ -18,6 +19,7 @@ export class DialogCreateSubscriptionComponent {
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<DialogCreateSubscriptionComponent>,
     private userService: UserService,
+    private productService: ProductService,
 
     @Inject(MAT_DIALOG_DATA) public data: {
       userId: string,
@@ -33,8 +35,6 @@ export class DialogCreateSubscriptionComponent {
   selectedProduct: Product
 
   productId: string = '';
-  priceId: string = '';
-  couponId: string = '';
 
   form: FormGroup;
   formProductIdSubscription: Subscription
@@ -107,17 +107,16 @@ export class DialogCreateSubscriptionComponent {
     // check if date is valid first
       this.subscription.startedAt = +parsedDate;
       this.subscription.currentPeriodStart = +parsedDate;
-      // this.subscription.currentPeriodEnd = this.getPeriodEnd();
   }
 
   getCurrentTimes() {
-    // this.subscription.currentPeriodEnd = this.getPeriodEnd();
+    this.subscription.currentPeriodEnd = this.getPeriodEnd();
     this.subscription.nextPaymentDate = this.subscription.currentPeriodEnd
     this.showAlertText = false
   }
 
   getPeriodEnd() {
-    const date = new Date(this.subscription.currentPeriodStart);
+    // const date = new Date(this.subscription.currentPeriodStart);
     // const currentPriceId = this.form.get("priceId").value
     // if (!currentPriceId) {
     //   return null;
@@ -149,6 +148,9 @@ export class DialogCreateSubscriptionComponent {
     //   default:
     //     return +new Date(newYear, newMonth, newDay);
     // }
+
+    
+    return 0
   }
 
   daysInMonth(month, year) {
@@ -161,7 +163,8 @@ export class DialogCreateSubscriptionComponent {
       const formValue = this.form.value;
       this.subscription.interval = formValue.interval
       this.subscription.enterpriseRef = this.enterpriseRef
-      // this.subscription.nextPaymentAmount = this.getAmount()
+      this.subscription.productRef = this.productService.getProductRefById(formValue.productId)
+      this.subscription.nextPaymentAmount = this.getAmount() // ARREGLAR
 
       this.dialogRef.close(this.subscription);
     }
@@ -173,6 +176,28 @@ export class DialogCreateSubscriptionComponent {
 
   cancel(): void {
     this.dialogRef.close();
+  }
+
+  // ARREGLAR
+  getAmount(): number {
+    // let price = this.prices.find(x => x.id == this.form.get('priceId').value)
+    // price = Price.fromJson(price)
+    // const couponId = this.form.get('couponId').value
+    // if (couponId) {
+    //   const coupon = this.coupons.find(x => x.id == couponId)
+    //   switch (coupon.duration) {
+    //     case "once":
+    //       return price.getTotalAmount([])
+    //     case "repeating":
+    //       return price.getTotalAmount([])
+    //     case "forever":
+    //       return price.getTotalAmount([coupon])
+    //     default:
+    //       return price.getTotalAmount([])
+    //   }
+    // }
+    // return price.getTotalAmount([])
+    return 0
   }
 }
 
