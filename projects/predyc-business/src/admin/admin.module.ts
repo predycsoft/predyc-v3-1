@@ -16,13 +16,9 @@ import { LicensesListComponent } from './admin-pages/licenses-subscriptions/lice
 import { SubscriptionsListComponent } from './admin-pages/licenses-subscriptions/subscriptions-list/subscriptions-list.component';
 import { ProductsComponent } from './admin-pages/products/products.component';
 import { ProductListComponent } from './admin-pages/products/product-list/product-list.component';
-import { CouponsListComponent } from './admin-pages/products/coupons-list/coupons-list.component';
 import { DialogProductFormComponent } from './admin-pages/products/product-list/dialog-product-form/dialog-product-form.component';
-import { PriceFormComponent } from './admin-pages/products/product-list/dialog-product-form/price-form/price-form.component';
-import { PricesListComponent } from './admin-pages/products/product-list/dialog-product-form/prices-list/prices-list.component';
 import { ProductFormComponent } from './admin-pages/products/product-list/dialog-product-form/product-form/product-form.component';
 import { StudentDetailComponent } from './admin-pages/students/student-detail/student-detail.component';
-import { DialogCouponFormComponent } from './admin-pages/products/coupons-list/dialog-coupon-form/dialog-coupon-form.component';
 import { StudentSubscriptionListComponent } from './admin-pages/students/student-detail/student-subscription-list/student-subscription-list.component';
 import { SalesListComponent } from './admin-pages/sales/sales-list/sales-list.component';
 import { EnterpriseDetailComponent } from './admin-pages/enterprise/enterprise-detail/enterprise-detail.component';
@@ -54,13 +50,9 @@ import { StudentClassesActivityListComponent } from './admin-pages/students/stud
     EnterpriseComponent,
     LicensesSubscriptionsComponent,
     ProductsComponent,
-    CouponsListComponent,
     StudentDetailComponent,
     DialogProductFormComponent,
-    PriceFormComponent,
-    PricesListComponent,
     ProductFormComponent,
-    DialogCouponFormComponent,
     StudentSubscriptionListComponent,
     SalesListComponent,
     EnterpriseDetailComponent,
