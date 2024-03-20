@@ -71,7 +71,7 @@ export class EnterprisePaymentsComponent {
       this.products = products
 
       const chargesInList: ChargeInList[] = charges.map(charge => {
-        const productData = this.getProductData(charge.productRef.id)
+        const productData = this.products.find(product => product.id === charge.productRef.id)
         return {
           ... charge,
           productName: productData.name,
@@ -82,19 +82,11 @@ export class EnterprisePaymentsComponent {
     })
   }
 
-  getProductData(productId: string): Product {
-    return this.products.find(product => product.id === productId)
-  }
-
   getPayDate(item: Charge): number | null {
     if (item.payAt) return item.payAt;
     if (item.status === 'succeeded' && item.createdAt) return item.createdAt;
     return null;
   }
-
-  // getChargePrice(charge: ChargeInList): Price {
-  //   return this.prices.find(price => price.id === charge.price.id)
-  // }
 
   async openCreateChargeModal() {
     const dialogRef = this.dialog.open(DialogCreateChargeComponent, {
