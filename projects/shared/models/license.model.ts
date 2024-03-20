@@ -1,6 +1,8 @@
 import { DocumentReference } from "@angular/fire/compat/firestore"
 import { Product } from "./product.model";
 import { Enterprise } from "./enterprise.model";
+import { Subscription as SubscriptionClass } from './subscription.model';
+
 
 export interface LicenseJson {
     createdAt: number | null,
@@ -17,7 +19,6 @@ export interface LicenseJson {
     rotationsWaitingCount:  number | null,
     startedAt: number | null,
     status: string | null,
-    trialDays: number | null,
 }
 
 export class License {
@@ -39,8 +40,9 @@ export class License {
         public rotationsWaitingCount:  number | null,
         public startedAt: number | null,
         public status: string | null,
-        public trialDays: number | null,
     ) {}
+
+    public static STATUS_CHOICES = SubscriptionClass.STATUS_CHOICES
 
     public static getLicenseTemplate(): License {
         return License.fromJson({
@@ -57,8 +59,7 @@ export class License {
             rotationsUsed: 0,
             rotationsWaitingCount: 0,
             startedAt: Date.now(),
-            status: "trialing",
-            trialDays: 5,
+            status: SubscriptionClass.STATUS_ACTIVE,
           });
     } 
 
@@ -78,7 +79,6 @@ export class License {
             licenseJson.failedRotationCount,
             licenseJson.startedAt,
             licenseJson.status,
-            licenseJson.trialDays,
         )
     }
 
@@ -98,7 +98,6 @@ export class License {
             rotationsWaitingCount:this.rotationsWaitingCount,
             startedAt: this.startedAt, 
             status: this.status, 
-            trialDays: this.trialDays, 
         }
     }
 }

@@ -5,6 +5,7 @@ import { Subscription, combineLatest } from 'rxjs';
 import { License } from 'projects/shared/models/license.model';
 import { Product } from 'projects/shared/models/product.model';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
+import { ProductService } from 'projects/predyc-business/src/shared/services/product.service';
 
 @Component({
   selector: 'app-dialog-new-license',
@@ -17,6 +18,7 @@ export class DialogNewLicenseComponent {
     public matDialogRef: MatDialogRef<DialogNewLicenseComponent>, 
     public icon: IconService,
     private fb: FormBuilder,
+    private productService: ProductService,
     @Inject(MAT_DIALOG_DATA) public data: {
       products: Product[],
       dateStart: number
@@ -39,6 +41,9 @@ export class DialogNewLicenseComponent {
 
   showWarningDate = false
 
+  statusChoices = License.STATUS_CHOICES
+ 
+
   ngOnInit(): void {
     this.license = License.fromJson({...License.getLicenseTemplate()})
     this.products = this.data.products
@@ -53,7 +58,6 @@ export class DialogNewLicenseComponent {
       quantity: [1, Validators.min(1)],
       rotations: [0, Validators.min(0)],
       status: ['', ],
-      trialDays: [''],
     });
 
     if(this.dateStart){
@@ -75,7 +79,6 @@ export class DialogNewLicenseComponent {
       quantity: this.license.quantity,
       rotations: this.license.rotations,
       status: this.license.status,
-      trialDays: this.license.trialDays,
     })
 
     this.onDateChange(this.form.get('startDate').value);
@@ -95,7 +98,8 @@ export class DialogNewLicenseComponent {
       this.license.quantity = formValue.quantity;
       this.license.rotations = formValue.rotations;
       this.license.status = formValue.status
-      this.license.trialDays = formValue === "trialing" ? formValue.trialDays : null      
+      this.license.productRef = this.productService.getProductRefById(formValue.productId)
+
       // this.license.enterpriseRef Set in parent component
 
       this.matDialogRef.close(this.license);

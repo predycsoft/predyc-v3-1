@@ -26,7 +26,7 @@
                 </div>
                 <div fxLayout="column" class="mgt05 h50px">
                     <span class="ft11 gray-9">Producto</span>
-                    <mat-select placeholder="Seleccione el producto" formControlName="productId" >
+                    <mat-select placeholder="Seleccione el producto" formControlName="productId" (ngModelChange)="getCurrentTimes()">
                         <mat-option *ngFor="let product of products" [value]="product.id">{{product.name}}</mat-option>
                     </mat-select>
                 </div>
@@ -56,24 +56,19 @@
                     </div>
                     <div fxLayout="column" class="">
                         <span class="ft11 gray-9">Final de período actual:</span>
-
-                        <!-- <span class="ft12 mgt05 gray-10" *ngIf="form.get('priceId')?.value">{{license.currentPeriodEnd| date:"dd/MM/yyyy"}}</span> -->
+                        <span class="ft12 mgt05 gray-10" *ngIf="form.get('productId')?.value">{{license.currentPeriodEnd| date:"dd/MM/yyyy"}} ARREGLAR</span>
                     </div>
                 </div>
                 <div fxLayout="column" class="mgt05 h50px">
                     <span class="ft11 gray-9">Estatus:</span>
-                    <mat-select placeholder="Seleccione el descuento si aplica" (ngModelChange)="getCurrentTimes()" formControlName="status">
-                        <mat-option value="active">Active</mat-option>
-                        <mat-option value="trialing">Trialing</mat-option>
-                        <mat-option value="unpaid">Unpaid</mat-option>
-                        <mat-option value="canceled">Canceled</mat-option>
-                        <mat-option value="incomplete">Incomplete</mat-option>
+                    <mat-select placeholder="Seleccione el estatus" (ngModelChange)="getCurrentTimes()" formControlName="status">
+                        <mat-option *ngFor="let status of statusChoices" [value]="status">{{status}}</mat-option>
                     </mat-select>
                 </div>
-                <div fxLayout="column" class="" *ngIf="form.get('status')?.value == 'trialing'" class="h50px mgt05">
+                <!-- <div fxLayout="column" class="" *ngIf="form.get('status')?.value == 'trialing'" class="h50px mgt05">
                     <span class="ft11 gray-9">Días de prueba:</span>
                     <input type="number" formControlName="trialDays" style="width: 100%;" (ngModelChange)="getCurrentTimes()">
-                </div>
+                </div> -->
                 <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem" class="h50px mgt05">
                     <div fxLayout="column" class="">
                         <span class="ft11 gray-9">Cantidad de licencias:</span>

@@ -255,7 +255,6 @@ export class CreateDemoComponent {
       failedRotationCount: 0,
       startedAt: this.now,
       status: "active",
-      trialDays: trialDays,
     });
     // const priceSnapshot = await firstValueFrom(this.afs.collection<Price>(Price.collection, ref => ref.where("id", "==", "Plan-Empresarial-468USD-year")).get())
     // const prices = priceSnapshot.docs.map(item => item.data())

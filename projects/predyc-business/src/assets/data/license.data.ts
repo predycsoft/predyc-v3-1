@@ -16,7 +16,6 @@ export const licensesData: LicenseJson[] = [
         failedRotationCount: 0,
         startedAt: 1690920188024,
         status: "active",
-        trialDays: 5,
     },
     {
         createdAt: 1675645688000,
@@ -33,6 +32,5 @@ export const licensesData: LicenseJson[] = [
         failedRotationCount: 0,
         startedAt: 1700920188024,
         status: "active",
-        trialDays: 0,
     }
 ]
