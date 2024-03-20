@@ -13,13 +13,9 @@ import { usersData } from 'projects/predyc-business/src/assets/data/users.data'
 import { notificationsData } from 'projects/predyc-business/src/assets/data/notifications.data'
 import { Notification } from 'projects/shared/models/notification.model';
 import { NotificationService } from '../../services/notification.service';
-import { Coupon } from 'projects/shared/models/coupon.model';
-import { couponsData } from 'projects/predyc-business/src/assets/data/coupon.data';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { productsData } from 'projects/predyc-business/src/assets/data/product.data';
 import { Product } from 'projects/shared/models/product.model';
-import { Price } from 'projects/shared/models/price.model';
-import { pricesData } from 'projects/predyc-business/src/assets/data/price.data';
 import { License } from 'projects/shared/models/license.model';
 import { licensesData } from 'projects/predyc-business/src/assets/data/license.data';
 import { categoriesData } from 'projects/predyc-business/src/assets/data/categories.data';
@@ -95,19 +91,6 @@ export class InitScriptComponent {
   }
 
   async initDatabase() {
-    // Create Coupons
-    console.log('********* Creating Coupons *********')
-    const coupons: Coupon[] = couponsData.map(coupon => {
-      return Coupon.fromJson(coupon)
-    })
-    let couponsRef = []
-    for (let coupon of coupons ) {
-      let couponRef = this.afs.collection<Coupon>(Coupon.collection).doc(coupon.id).ref;
-      couponsRef.push(couponRef)
-      await couponRef.set({...coupon.toJson()}, { merge: true });
-    }
-    console.log(`Finished Creating Coupons`)
-
     // Create Products
     console.log('********* Creating Products *********')
     const products: Product[] = productsData.map(product => {
@@ -120,27 +103,6 @@ export class InitScriptComponent {
       await productRef.set({...product.toJson()}, { merge: true });
     }
     console.log(`Finished Creating Products`)
-
-    // Create Prices
-    console.log('********* Creating Prices *********')
-    const prices: Price[] = pricesData.map(price => {
-      return Price.fromJson(price)
-    })
-    let pricesRef = []
-
-    for (let index = 0; index < prices.length; index++) {
-    const price = prices[index];
-    let priceRef = this.afs.collection<Price>(Price.collection).doc(price.id).ref;
-    pricesRef.push(priceRef)
-    let productRef = index <= productsRef.length - 1 ? productsRef[index] : productsRef[index - (productsRef.length)]
-    await priceRef.set(
-      {
-        ...price.toJson(), 
-        coupon: couponsRef[index],
-        product: productRef
-      }, { merge: true });
-    }
-    console.log(`Finished Creating Prices`)
 
     // Create base enterprise
     console.log('********* Creating Enterprise *********')
@@ -166,15 +128,12 @@ export class InitScriptComponent {
       const license = licenses[index];
       let licenseRef = this.afs.collection<License>(License.collection).doc(license.id).ref;
       licensesRef.push(licenseRef)
-      const licensePriceRef = pricesRef[index] 
-      const licensePriceValue = (await ((licensePriceRef as DocumentReference).get())).data() as Price
-      const couponPriceRef = licensePriceValue.coupon
+      // const licensePriceRef = pricesRef[index] 
+      // const licensePriceValue = (await ((licensePriceRef as DocumentReference).get())).data() as Price
 
       await licenseRef.set(
         {
           ...license.toJson(),
-          priceRef: licensePriceRef,
-          couponRef: couponPriceRef,
           enterpriseRef: enterpriseRef
         }, {merge: true}
       )

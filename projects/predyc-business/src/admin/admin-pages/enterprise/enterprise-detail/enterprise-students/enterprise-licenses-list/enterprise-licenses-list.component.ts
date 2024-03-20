@@ -2,13 +2,9 @@ import { Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subscription, combineLatest } from 'rxjs';
-import { Coupon } from 'projects/shared/models/coupon.model';
 import { License } from 'projects/shared/models/license.model';
-import { Price } from 'projects/shared/models/price.model';
 import { Product } from 'projects/shared/models/product.model';
-import { CouponService } from 'projects/predyc-business/src/shared/services/coupon.service';
 import { LicenseService } from 'projects/predyc-business/src/shared/services/license.service';
-import { PriceService } from 'projects/predyc-business/src/shared/services/price.service';
 import { ProductService } from 'projects/predyc-business/src/shared/services/product.service';
 import { DialogNewLicenseComponent } from '../dialog-new-license/dialog-new-license.component';
 import { Subscription as SubscriptionClass } from 'projects/shared/models/subscription.model'
@@ -44,8 +40,6 @@ export class EnterpriseLicensesListComponent {
     private dialog: MatDialog,
     private licenseService: LicenseService,
     private productService: ProductService,
-    private priceService: PriceService,
-    private couponService: CouponService,
     public dialogService: DialogService,
   ) {}
 
@@ -62,8 +56,6 @@ export class EnterpriseLicensesListComponent {
   dataSource = new MatTableDataSource<LicensesInList>();
 
   products: Product[] = [];
-  prices: Price[] = [];
-  coupons: Coupon[] = [];
 
   licenseSubscription: Subscription
   combinedServicesSubscription: Subscription
@@ -72,19 +64,14 @@ export class EnterpriseLicensesListComponent {
   ngOnInit() {
     this.combinedServicesSubscription = combineLatest(
       [
-        this.priceService.getPrices$(), 
         this.productService.getProducts$(),
-        this.couponService.getCoupons$(),
         this.licenseService.getLicensesByEnterpriseRef$(this.enterpriseRef),
       ]
-    ).subscribe(([prices, products, coupons, licenses]) => {
-      this.prices = prices
+    ).subscribe(([ products, licenses]) => {
       this.products = products
-      this.coupons = coupons
 
       const licensesInList: LicensesInList[] = licenses.map(license => {
-        const licensePrice = prices.find(price => price.id === license.priceRef.id)
-        const licenseProduct = products.find(product => product.id === licensePrice.product.id)
+        const licenseProduct = products.find(product => product.id === license.productRef.id)
         return {
           productName: licenseProduct.name,
           acquired: license.quantity,
@@ -117,8 +104,6 @@ export class EnterpriseLicensesListComponent {
 
     const dialogRef = this.dialog.open(DialogNewLicenseComponent, {
       data: {
-        coupons: this.coupons,
-        prices: this.prices,
         products: this.products,
         dateStart: dateStart
       }

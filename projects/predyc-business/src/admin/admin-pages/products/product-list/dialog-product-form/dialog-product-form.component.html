@@ -11,10 +11,10 @@
         <div class="w-50" fxLayout="column" fxLayoutAlign="start center" class="fh fw border-l">
             <div class="fw">
                 <ng-container *ngIf="showPriceForm; else showPriceList">
-                    <app-price-form [selectedProductId]="product.id" [selectedPrice]="selectedPrice" [coupons]="coupons" (viewChange)="handleViewChange($event)"></app-price-form>
+                    <!-- <app-price-form [selectedProductId]="product.id" [selectedPrice]="selectedPrice" [coupons]="coupons" (viewChange)="handleViewChange($event)"></app-price-form> -->
                 </ng-container>
                 <ng-template #showPriceList>
-                    <app-prices-list [selectedProductId]="product.id" [prices]="prices" [coupons]="coupons" (viewChange)="handleViewChange($event)"></app-prices-list>
+                    <!-- <app-prices-list [selectedProductId]="product.id" [prices]="prices" [coupons]="coupons" (viewChange)="handleViewChange($event)"></app-prices-list> -->
                 </ng-template>
             </div>
         </div>

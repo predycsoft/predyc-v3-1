@@ -2,12 +2,8 @@ import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subscription, combineLatest } from 'rxjs';
-import { Coupon } from 'projects/shared/models/coupon.model';
 import { License } from 'projects/shared/models/license.model';
-import { Price } from 'projects/shared/models/price.model';
 import { Product } from 'projects/shared/models/product.model';
-import { CouponService } from 'projects/predyc-business/src/shared/services/coupon.service';
-import { PriceService } from 'projects/predyc-business/src/shared/services/price.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 
 @Component({
@@ -19,13 +15,9 @@ export class DialogNewLicenseComponent {
 
   constructor(
     public matDialogRef: MatDialogRef<DialogNewLicenseComponent>, 
-    private priceService: PriceService,
-    private couponService: CouponService,
     public icon: IconService,
     private fb: FormBuilder,
     @Inject(MAT_DIALOG_DATA) public data: {
-      coupons: Coupon[],
-      prices: Price[],
       products: Product[],
       dateStart: number
     },
@@ -34,13 +26,8 @@ export class DialogNewLicenseComponent {
   license: License
 
   products: Product[] = [];
-  prices: Price[] = [];
-  coupons: Coupon[] = [];
   productId: string = '';
   dateStart: number
-
-  filteredPrices: Price[] = []
-
   form: FormGroup;
 
   combinedServicesSubscription: Subscription
@@ -55,8 +42,6 @@ export class DialogNewLicenseComponent {
   ngOnInit(): void {
     this.license = License.fromJson({...License.getLicenseTemplate()})
     this.products = this.data.products
-    this.prices = this.data.prices
-    this.coupons = this.data.coupons
     this.dateStart = this.data?.dateStart
     this.initializeForm()
   }
@@ -64,8 +49,6 @@ export class DialogNewLicenseComponent {
   initializeForm() {
     this.form = this.fb.group({
       productId: ['', Validators.required],
-      priceId: ['', Validators.required],
-      couponId: [''],
       startDate: ['', ],
       quantity: [1, Validators.min(1)],
       rotations: [0, Validators.min(0)],
@@ -102,8 +85,6 @@ export class DialogNewLicenseComponent {
 
     this.formProductIdSubscription = this.form.get('productId')!.valueChanges.subscribe(value => {
       this.productId = value;
-      this.form.get('priceId')!.setValue('');
-      this.filteredPrices = this.prices.filter((x) => x.product.id == this.productId);
     });
   }
 
@@ -115,8 +96,6 @@ export class DialogNewLicenseComponent {
       this.license.rotations = formValue.rotations;
       this.license.status = formValue.status
       this.license.trialDays = formValue === "trialing" ? formValue.trialDays : null      
-      this.license.priceRef = this.priceService.getPriceRefById(formValue.priceId)
-      this.license.couponRef = formValue.couponId ? this.couponService.getCouponRefById(formValue.couponId) : null
       // this.license.enterpriseRef Set in parent component
 
       this.matDialogRef.close(this.license);
@@ -175,62 +154,63 @@ export class DialogNewLicenseComponent {
   }
 
   getPeriodEnd() {
-    if(this.form.get('status')!.value == 'trialing'){
-      const date = new Date(this.license.currentPeriodStart + this.form.get('trialDays')!.value *24*60*60*1000);
-      let day = date.getDate();
-      let month = date.getMonth();
-      let year = date.getFullYear();
-      return +new Date(year, month, day);
-    } else {
-      const date = new Date(this.license.currentPeriodStart);
-      if (!this.form.get('priceId')!.value ) {
-        return null;
-      }
-      let day = date.getDate();
-      let month = date.getMonth();
-      let year = date.getFullYear();
-      let price = this.prices.find((x) => x.id == this.form.get('priceId')!.value );
-      let newDay = 0;
-      let newMonth = 0;
-      let newYear = 0;
-      // console.log(price.interval);
-      switch (price.interval) {
-        case 'month':
-          newDay = day;
-          newMonth = month + 1;
-          newYear = year;
-          if (month == 11) {
-            newMonth = 0;
-            newYear = newYear + 1;
-          }
-          if (day > this.daysInMonth(newMonth + 1, newYear)) {
-            newDay = this.daysInMonth(newMonth + 1, newYear);
-          }
-          this.license.currentPeriodEnd = +new Date(
-            newYear,
-            newMonth,
-            newDay
-          );
-          return +new Date(newYear, newMonth, newDay);
-        case 'year':
-          newDay = day;
-          newMonth = month;
-          newYear = year + 1;
-          this.license.currentPeriodEnd = +new Date(
-            newYear,
-            newMonth,
-            newDay
-          );
-          return +new Date(newYear, newMonth, newDay);
-        default:
-          this.license.currentPeriodEnd = +new Date(
-            newYear,
-            newMonth,
-            newDay
-          );
-          return +new Date(2012, newMonth, newDay);
-      }
-    }
+    // if(this.form.get('status')!.value == 'trialing'){
+    //   const date = new Date(this.license.currentPeriodStart + this.form.get('trialDays')!.value *24*60*60*1000);
+    //   let day = date.getDate();
+    //   let month = date.getMonth();
+    //   let year = date.getFullYear();
+    //   return +new Date(year, month, day);
+    // } else {
+    //   const date = new Date(this.license.currentPeriodStart);
+    //   if (!this.form.get('priceId')!.value ) {
+    //     return null;
+    //   }
+    //   let day = date.getDate();
+    //   let month = date.getMonth();
+    //   let year = date.getFullYear();
+    //   let price = this.prices.find((x) => x.id == this.form.get('priceId')!.value );
+    //   let newDay = 0;
+    //   let newMonth = 0;
+    //   let newYear = 0;
+    //   // console.log(price.interval);
+    //   switch (price.interval) {
+    //     case 'month':
+    //       newDay = day;
+    //       newMonth = month + 1;
+    //       newYear = year;
+    //       if (month == 11) {
+    //         newMonth = 0;
+    //         newYear = newYear + 1;
+    //       }
+    //       if (day > this.daysInMonth(newMonth + 1, newYear)) {
+    //         newDay = this.daysInMonth(newMonth + 1, newYear);
+    //       }
+    //       this.license.currentPeriodEnd = +new Date(
+    //         newYear,
+    //         newMonth,
+    //         newDay
+    //       );
+    //       return +new Date(newYear, newMonth, newDay);
+    //     case 'year':
+    //       newDay = day;
+    //       newMonth = month;
+    //       newYear = year + 1;
+    //       this.license.currentPeriodEnd = +new Date(
+    //         newYear,
+    //         newMonth,
+    //         newDay
+    //       );
+    //       return +new Date(newYear, newMonth, newDay);
+    //     default:
+    //       this.license.currentPeriodEnd = +new Date(
+    //         newYear,
+    //         newMonth,
+    //         newDay
+    //       );
+    //       return +new Date(2012, newMonth, newDay);
+    //   }
+    // }
+    return 0
    
   }
 

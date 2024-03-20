@@ -29,18 +29,18 @@
                         <mat-option *ngFor="let product of products" [value]="product.id">{{product.name}}</mat-option>
                     </mat-select>
                 </div>
-                <div fxLayout="column" class="mgt05 h50px">
+                <!-- <div fxLayout="column" class="mgt05 h50px">
                     <span class="ft11 gray-9">Precio</span>
                     <mat-select placeholder="Seleccione el precio" formControlName="priceId" (ngModelChange)="getCurrentTimes()">
                         <mat-option *ngFor="let price of filteredPrices" [value]="price.id">$ {{price.amount}}</mat-option>
                     </mat-select>
-                </div>
-                <div fxLayout="column" class="mgt05 h50px">
+                </div> -->
+                <!-- <div fxLayout="column" class="mgt05 h50px">
                     <span class="ft11 gray-9">Descuento</span>
                     <mat-select placeholder="Seleccione el descuento si aplica" formControlName="couponId">
                         <mat-option *ngFor="let coupon of coupons" [value]="coupon.id">{{coupon.name}}</mat-option>
                     </mat-select>
-                </div>
+                </div> -->
                 <div class="mgt05 h50px" fxLayout="column">
                     <span class="ft11 gray-9">Períodos pagados:</span>
                     <input type="number" min="1" formControlName="interval">

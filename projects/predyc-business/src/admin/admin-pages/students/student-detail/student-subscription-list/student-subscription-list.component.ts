@@ -3,8 +3,6 @@ import { DocumentReference } from '@angular/fire/compat/firestore';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subscription } from 'rxjs';
-import { Coupon } from 'projects/shared/models/coupon.model';
-import { Price } from 'projects/shared/models/price.model';
 import { Product } from 'projects/shared/models/product.model';
 import { User } from 'projects/shared/models/user.model';
 import { SubscriptionService } from 'projects/predyc-business/src/shared/services/subscription.service';
@@ -17,10 +15,8 @@ import { DatePipe } from '@angular/common';
 
 export interface SubscriptionInfo extends SubscriptionJson {
   productName: string
-  couponName: Object
-  statusToDisplay: string
-  statusBasedComment: string
-  priceInterval: string,
+  // statusToDisplay: string
+  // statusBasedComment: string
   // <span *ngIf="subscription.status != 'canceled'" class="ft11 gray-9">Próximo
 //   cobro el {{subscription.currentPeriodEnd |
 //   date:"dd/MM/yyyy"}} por ${{getNextInvoice(subscription).ammount}}</span>
@@ -40,18 +36,16 @@ export class StudentSubscriptionListComponent {
     private subscriptionService: SubscriptionService,
     private dialog: MatDialog,
     public dialogService: DialogService,
-    private datePipe: DatePipe,
 
 
   ){}
 
   displayedColumns: string[] = [
     "productName",
-    "coupon",
     "status",
     "createdAt",
     "currentPeriodStart",
-    "statusBasedComment",
+    // "statusBasedComment",
     "actions"
   ];
 
@@ -63,9 +57,7 @@ export class StudentSubscriptionListComponent {
   totalLength: number
 
   @Input() userRef: DocumentReference<User>
-  @Input() prices: Price[]
   @Input() products: Product[]
-  @Input() coupons: Coupon[]
 
   combinedServicesSubscription: Subscription
   subscriptionsSubscription: Subscription
@@ -94,17 +86,14 @@ export class StudentSubscriptionListComponent {
     this.subscriptionsSubscription = this.subscriptionService.getUserSubscriptions$(this.userRef).subscribe(subscriptions => {
       // console.log("Subscriptions", subscriptions)
       const subscriptionsInfo: SubscriptionInfo[] = subscriptions.map(subscription => {
-        const price = this.prices.find(p => p.id === subscription.priceRef.id);
-        const product = this.products.find(prod => prod.id === price.product.id);
-        const coupon = subscription.couponRef ? this.coupons.find(coup => coup.id === subscription.couponRef.id) : null;
+        const product = this.products.find(prod => prod.id === subscription.productRef.id);
   
         return {
           ...subscription,
           productName: product.name,
-          couponName: coupon ? coupon.name : null,
           statusToDisplay: SubscriptionClass.statusToDisplayValueDict[subscription.status],
-          statusBasedComment: this.getStatusBasedComment(subscription, price, coupon),
-          priceInterval: price.interval
+          // statusBasedComment: this.getStatusBasedComment(subscription, price, coupon),
+          // priceInterval: price.interval
         };
       });
       
@@ -113,42 +102,41 @@ export class StudentSubscriptionListComponent {
     });
   }
 
-  getStatusBasedComment(subscription: SubscriptionClass, price: Price, coupon: Coupon): string {
-    let formattedDate: string;
-    if (subscription.status == "canceled") {
-      formattedDate = this.datePipe.transform(subscription.endedAt, 'dd/MM/yyyy');
-      return `Cancelada el ${formattedDate}`;
-    } else {
-      formattedDate = this.datePipe.transform(subscription.currentPeriodEnd, 'dd/MM/yyyy');
-      return `Próximo cobro el ${formattedDate} por $${this.getAmount(price, coupon)}`;
-    }
-  }
+  // getStatusBasedComment(subscription: SubscriptionClass, price: Price, coupon: Coupon): string {
+  //   let formattedDate: string;
+  //   if (subscription.status == "canceled") {
+  //     formattedDate = this.datePipe.transform(subscription.endedAt, 'dd/MM/yyyy');
+  //     return `Cancelada el ${formattedDate}`;
+  //   } else {
+  //     formattedDate = this.datePipe.transform(subscription.currentPeriodEnd, 'dd/MM/yyyy');
+  //     return `Próximo cobro el ${formattedDate} por $${this.getAmount(price, coupon)}`;
+  //   }
+  // }
   
 
-  getAmount(price: Price, coupon: Coupon): number {
-    let coupons = []
-    price = Price.fromJson(price)
-    if (coupon) {
-      coupons = [coupon]
-      switch (coupon.duration) {
-        case "once":
-          return price.getTotalAmount([])
-        case "repeating":
-          return price.getTotalAmount([])
-        case "forever":
-          return price.getTotalAmount([coupon])
-        default:
-          return price.getTotalAmount([])
-      }
-    }
-    return price.getTotalAmount([])
-  }
+  // getAmount(price: Price, coupon: Coupon): number {
+  //   let coupons = []
+  //   price = Price.fromJson(price)
+  //   if (coupon) {
+  //     coupons = [coupon]
+  //     switch (coupon.duration) {
+  //       case "once":
+  //         return price.getTotalAmount([])
+  //       case "repeating":
+  //         return price.getTotalAmount([])
+  //       case "forever":
+  //         return price.getTotalAmount([coupon])
+  //       default:
+  //         return price.getTotalAmount([])
+  //     }
+  //   }
+  //   return price.getTotalAmount([])
+  // }
 
   editSubscription(subscription: SubscriptionInfo) {
     const dialogRef = this.dialog.open(DialogEditSubscriptionComponent, {
       data: {
         subscription,
-        prices: this.prices
       }
     });
   
@@ -182,13 +170,12 @@ export class StudentSubscriptionListComponent {
       userRef: subscriptionInfo.userRef,
       endedAt: subscriptionInfo.endedAt,
       canceledAt: subscriptionInfo.canceledAt,
-      priceRef: subscriptionInfo.priceRef,
+      productRef: subscriptionInfo.productRef,
       status: subscriptionInfo.status,
       trialStartedAt: subscriptionInfo.trialStartedAt,
       trialEndedAt: subscriptionInfo.trialEndedAt,
       currentError: subscriptionInfo.currentError,
       interval: subscriptionInfo.interval,
-      couponRef: subscriptionInfo.couponRef,
       nextPaymentDate: subscriptionInfo.nextPaymentDate,
       nextPaymentAmount: subscriptionInfo.nextPaymentAmount,
       enterpriseRef: subscriptionInfo.enterpriseRef,

@@ -4,10 +4,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ChargeService } from 'projects/predyc-business/src/shared/services/charge.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
-import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
 import { ChargeJson } from 'projects/shared/models/charges.model';
-import { Coupon } from 'projects/shared/models/coupon.model';
-import { Price } from 'projects/shared/models/price.model';
 import { Product } from 'projects/shared/models/product.model';
 import { User } from 'projects/shared/models/user.model';
 import { Subscription } from 'rxjs/internal/Subscription';
@@ -27,7 +24,6 @@ export class StudentChargeListComponent {
 
   constructor(
     private chargeService: ChargeService,
-    private userService: UserService,
     public icon: IconService,
   ){}
 
@@ -48,7 +44,6 @@ export class StudentChargeListComponent {
   @Input() enableNavigateToUser: boolean = true
   @Input() userRef: DocumentReference<User>
   @Input() user: User
-  @Input() prices: Price[]
   @Input() products: Product[]
 
   pageSize: number = 3
@@ -60,9 +55,9 @@ export class StudentChargeListComponent {
 
 
   ngOnChanges(changes: SimpleChanges) {
-    if (this.userRef && this.prices && this.products) {
+    if (this.userRef && this.products) {
       // Check if prices or products have changed
-      if (changes.prices || changes.products) {
+      if (changes.products) {
         this.performSearch();
       }
     }
@@ -80,7 +75,7 @@ export class StudentChargeListComponent {
   performSearch() {
     this.chargeSubscription = this.chargeService.getChargesByCustomerRef$(this.userRef).subscribe(charges => {
       const chargesInList: ChargeInList[] = charges.map(charge => {
-        const productData = this.getProductData(charge.price.id)
+        const productData = this.getProductData(charge.productRef.id)
         return {
           ... charge,
           productName: productData.name,
@@ -102,9 +97,9 @@ export class StudentChargeListComponent {
   //   });
   // }
 
-  getProductData(priceId: string): Product {
-    const price = this.prices.find(price => price.id === priceId)
-    return this.products.find(product => product.id === price.product.id)
+  getProductData(productId: string): Product {
+    const product = this.products.find(product => product.id === productId)
+    return product
   }
 
 

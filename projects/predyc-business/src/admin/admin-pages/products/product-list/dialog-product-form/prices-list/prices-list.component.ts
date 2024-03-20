@@ -1,8 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Coupon } from 'projects/shared/models/coupon.model';
-import { Price } from 'projects/shared/models/price.model';
 import { DialogService } from 'projects/predyc-business/src/shared/services/dialog.service';
-import { PriceService } from 'projects/predyc-business/src/shared/services/price.service';
 import { ProductService } from 'projects/predyc-business/src/shared/services/product.service';
 
 @Component({
@@ -11,77 +8,77 @@ import { ProductService } from 'projects/predyc-business/src/shared/services/pro
   styleUrls: ['./prices-list.component.css']
 })
 export class PricesListComponent {
-  @Input() selectedProductId: string;
-  @Output() viewChange: EventEmitter<Price | null> = new EventEmitter();
+  // @Input() selectedProductId: string;
+  // @Output() viewChange: EventEmitter<Price | null> = new EventEmitter();
 
-  @Input() prices: Price[]
-  @Input() coupons: Coupon[]
+  // @Input() prices: Price[]
+  // @Input() coupons: Coupon[]
 
-  selectedPrice: Price | null = null;
+  // selectedPrice: Price | null = null;
 
-  constructor(
-    private priceService: PriceService,
-    private productService: ProductService,
-    private dialogService: DialogService,
-  ) {}
+  // constructor(
+  //   private priceService: PriceService,
+  //   private productService: ProductService,
+  //   private dialogService: DialogService,
+  // ) {}
 
-  displayedColumns: string[] = [
-    "price",
-    "discountedPrice",
-    "status",
-    "freeTrial",
-    "created",
-  ];
+  // displayedColumns: string[] = [
+  //   "price",
+  //   "discountedPrice",
+  //   "status",
+  //   "freeTrial",
+  //   "created",
+  // ];
 
-  ngOnInit() {
-  }
+  // ngOnInit() {
+  // }
 
 
-  createPrice() {
-    if (this.selectedProductId) {
-      let newPrice = Price.newPrice;
-      newPrice.product = this.productService.getProductRefById(this.selectedProductId);
-      this.editPrice(newPrice);
-    } else {
-      this.dialogService.dialogAlerta(
-        'Debe seleccionar un producto para poder agregar un precio'
-      );
-    }
-  }
+  // createPrice() {
+  //   if (this.selectedProductId) {
+  //     let newPrice = Price.newPrice;
+  //     newPrice.product = this.productService.getProductRefById(this.selectedProductId);
+  //     this.editPrice(newPrice);
+  //   } else {
+  //     this.dialogService.dialogAlerta(
+  //       'Debe seleccionar un producto para poder agregar un precio'
+  //     );
+  //   }
+  // }
 
-  editPrice(price: Price) {
-    this.selectedPrice = price;
-    this.viewChange.emit(price);
-  }
+  // editPrice(price: Price) {
+  //   this.selectedPrice = price;
+  //   this.viewChange.emit(price);
+  // }
 
-  getCoupon(couponId): Coupon[] {
-    const coupon = this.coupons.find((x) => x.id == couponId);
-    if (coupon) {
-      return [coupon];
-    } else {
-      return [];
-    }
-  }
+  // getCoupon(couponId): Coupon[] {
+  //   const coupon = this.coupons.find((x) => x.id == couponId);
+  //   if (coupon) {
+  //     return [coupon];
+  //   } else {
+  //     return [];
+  //   }
+  // }
 
-  reset(): void {
-    this.selectedPrice = null;
-  }
+  // reset(): void {
+  //   this.selectedPrice = null;
+  // }
 
-  async onSave(price: Price): Promise<void> {
-    if (!price.id) {
-      const newId = [
-        `${price.product.id}`,
-        `${price.amount}${price.currency}`,
-        `${price.interval}`,
-      ].join('-');
-      price.id = newId;
-    }
-    try {
-      await this.priceService.savePrice(price)
-      this.reset();
-    } catch (error) {
-      this.dialogService.dialogAlerta(error);
-    }
-  }
+  // async onSave(price: Price): Promise<void> {
+  //   if (!price.id) {
+  //     const newId = [
+  //       `${price.product.id}`,
+  //       `${price.amount}${price.currency}`,
+  //       `${price.interval}`,
+  //     ].join('-');
+  //     price.id = newId;
+  //   }
+  //   try {
+  //     await this.priceService.savePrice(price)
+  //     this.reset();
+  //   } catch (error) {
+  //     this.dialogService.dialogAlerta(error);
+  //   }
+  // }
 
 }

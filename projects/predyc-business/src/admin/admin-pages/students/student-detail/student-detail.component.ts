@@ -12,11 +12,7 @@ import { DialogCreateSubscriptionComponent } from 'projects/predyc-business/src/
 import { Subscription as SubscriptionClass, SubscriptionJson } from 'projects/shared/models/subscription.model';
 import { DialogService } from 'projects/predyc-business/src/shared/services/dialog.service';
 import { SubscriptionService } from 'projects/predyc-business/src/shared/services/subscription.service';
-import { CouponService } from 'projects/predyc-business/src/shared/services/coupon.service';
-import { PriceService } from 'projects/predyc-business/src/shared/services/price.service';
 import { ProductService } from 'projects/predyc-business/src/shared/services/product.service';
-import { Price } from 'projects/shared/models/price.model';
-import { Coupon } from 'projects/shared/models/coupon.model';
 import { Product } from 'projects/shared/models/product.model';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
 import { DocumentReference } from '@angular/fire/compat/firestore';
@@ -47,9 +43,7 @@ export class StudentDetailComponent {
     public dialogService: DialogService,
     private userService: UserService,
     private subscriptionService: SubscriptionService,
-    private priceService: PriceService,
     private productService: ProductService,
-    private couponService: CouponService,
     private enterpriseService: EnterpriseService,
     private chargeService: ChargeService,
   ) {}
@@ -57,9 +51,7 @@ export class StudentDetailComponent {
   userSubscription: Subscription
   combinedServicesSubscription: Subscription
 
-  prices: Price[]
   products: Product[]
-  coupons: Coupon[]
 
   totalCourses: number;
   totalClasses: number;
@@ -91,13 +83,9 @@ export class StudentDetailComponent {
     this.combinedServicesSubscription = combineLatest(
       [
         this.productService.getProducts$(),
-        this.priceService.getPrices$(), 
-        this.couponService.getCoupons$(),
       ]
-    ).subscribe(([products, prices, coupons]) => {
-      this.prices = prices
+    ).subscribe(([products]) => {
       this.products = products
-      this.coupons = coupons
     })
   }
 
@@ -106,8 +94,6 @@ export class StudentDetailComponent {
       data: {
         userId: this.user.uid, 
         products: this.products,
-        prices: this.prices,
-        coupons: this.coupons,
         enterpriseRef: this.enterpriseRef
       }
     });
@@ -130,8 +116,6 @@ export class StudentDetailComponent {
     const dialogRef = this.dialog.open(DialogCreateChargeComponent, {
       data: {
         customerRef: this.userRef,
-        coupons: this.coupons,
-        prices: this.prices,
         products: this.products,
       }
     });

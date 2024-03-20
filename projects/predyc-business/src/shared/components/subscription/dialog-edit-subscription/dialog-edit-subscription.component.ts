@@ -67,7 +67,7 @@ export class DialogEditSubscriptionComponent {
     const parsedDate = this.toDate(this.form.get("currentPeriodStart").value);
 
     this.subscriptionInfo.currentPeriodStart = +parsedDate
-    this.subscriptionInfo.currentPeriodEnd = this.getPeriodEnd()
+    // this.subscriptionInfo.currentPeriodEnd = this.getPeriodEnd()
     this.subscriptionInfo.changedAt = +new Date()
 
     if(this.form.get("status").value == 'canceled'){
@@ -92,41 +92,41 @@ export class DialogEditSubscriptionComponent {
 
   }
 
-  getPeriodEnd() {
-    const date = new Date(this.subscriptionInfo.currentPeriodStart)
-    if(!this.form.get("interval").value){
-      return null
-    }
-    let day = date.getDate()
-    let month = date.getMonth()
-    let year = date.getFullYear()
-    let newDay = 0
-    let newMonth = 0
-    let newYear = 0
-    // console.log("this.form.get('interval').value", this.form.get("interval").value)
-    switch (this.subscriptionInfo.priceInterval) {
-      case "month":
-        newDay = day
-        newMonth = month + 1
-        newYear = year
-        if (month == 11) {
-          newMonth = 0
-          newYear = newYear + 1
-        }
-        if (day > this.daysInMonth(newMonth + 1, newYear)) {
-          newDay = this.daysInMonth(newMonth + 1, newYear)
-        }
-        return +new Date(newYear, newMonth, newDay)
-      case "year":
-        newDay = day
-        newMonth = month
-        newYear = year+1
-        return +new Date(newYear, newMonth, newDay)
-      default:
-        return +new Date(2012, newMonth, newDay)
-    }
+  // getPeriodEnd() {
+  //   const date = new Date(this.subscriptionInfo.currentPeriodStart)
+  //   if(!this.form.get("interval").value){
+  //     return null
+  //   }
+  //   let day = date.getDate()
+  //   let month = date.getMonth()
+  //   let year = date.getFullYear()
+  //   let newDay = 0
+  //   let newMonth = 0
+  //   let newYear = 0
+  //   // console.log("this.form.get('interval').value", this.form.get("interval").value)
+  //   switch (this.subscriptionInfo.priceInterval) {
+  //     case "month":
+  //       newDay = day
+  //       newMonth = month + 1
+  //       newYear = year
+  //       if (month == 11) {
+  //         newMonth = 0
+  //         newYear = newYear + 1
+  //       }
+  //       if (day > this.daysInMonth(newMonth + 1, newYear)) {
+  //         newDay = this.daysInMonth(newMonth + 1, newYear)
+  //       }
+  //       return +new Date(newYear, newMonth, newDay)
+  //     case "year":
+  //       newDay = day
+  //       newMonth = month
+  //       newYear = year+1
+  //       return +new Date(newYear, newMonth, newDay)
+  //     default:
+  //       return +new Date(2012, newMonth, newDay)
+  //   }
 
-  }
+  // }
 
   daysInMonth(month, year) {
     return new Date(year, month, 0).getDate();

@@ -5,7 +5,6 @@ import { Subscription, filter, first, firstValueFrom, of, switchMap, take } from
 import { Curso } from 'projects/shared/models/course.model';
 import { Enterprise } from 'projects/shared/models/enterprise.model';
 import { License } from 'projects/shared/models/license.model';
-import { Price } from 'projects/shared/models/price.model';
 import { Profile } from 'projects/shared/models/profile.model';
 // import { User, UserJson } from 'projects/shared/models/user.model';
 import { User, UserJson } from 'projects/shared/models/user.model';
@@ -241,14 +240,13 @@ export class CreateDemoComponent {
     const trialDays = daysBetween(endDateTimestamp, +this.today)
     let licenseRef = this.afs.collection<License>(License.collection).doc().ref;
     const license = License.fromJson({
-      couponRef: null,
       createdAt: this.now,
       currentPeriodEnd: endDateTimestamp,
       currentPeriodStart: this.now,
       // enterpriseRef: null,
       enterpriseRef: enterpriseRef,
       id: licenseRef.id,
-      priceRef: null,
+      productRef: null,
       quantity: this.createDemoForm.controls.activeUsersQty.value as number,
       quantityUsed: 0,
       rotations: 0,
@@ -259,14 +257,12 @@ export class CreateDemoComponent {
       status: "active",
       trialDays: trialDays,
     });
-    const priceSnapshot = await firstValueFrom(this.afs.collection<Price>(Price.collection, ref => ref.where("id", "==", "Plan-Empresarial-468USD-year")).get())
-    const prices = priceSnapshot.docs.map(item => item.data())
-    const price = prices[0]
+    // const priceSnapshot = await firstValueFrom(this.afs.collection<Price>(Price.collection, ref => ref.where("id", "==", "Plan-Empresarial-468USD-year")).get())
+    // const prices = priceSnapshot.docs.map(item => item.data())
+    // const price = prices[0]
     //console.log("price", price)
     // const licensePriceValue = (await ((licensePriceRef as DocumentReference).get())).data() as Price
     // const couponPriceRef = licensePriceValue.coupon
-    license.priceRef = this.afs.collection<Price>(Price.collection).doc(price.id).ref
-    license.couponRef = price.coupon
     license.enterpriseRef = enterpriseRef
 
     await licenseRef.set(license.toJson(), {merge: true})

@@ -6,13 +6,11 @@ import { Subscription, combineLatest, firstValueFrom } from 'rxjs';
 import { chargeData } from 'projects/predyc-business/src/assets/data/charge.data';
 import { Charge, ChargeJson } from 'projects/shared/models/charges.model';
 import { Enterprise } from 'projects/shared/models/enterprise.model';
-import { Price } from 'projects/shared/models/price.model';
 import { Product } from 'projects/shared/models/product.model';
 import { User } from 'projects/shared/models/user.model';
 import { ChargeService } from 'projects/predyc-business/src/shared/services/charge.service';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
-import { PriceService } from 'projects/predyc-business/src/shared/services/price.service';
 import { ProductService } from 'projects/predyc-business/src/shared/services/product.service';
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
 
@@ -39,8 +37,6 @@ export class SalesListComponent {
     private userService: UserService,
     private activatedRoute: ActivatedRoute,
     public icon: IconService,
-
-    private priceService: PriceService,
   ){}
 
   displayedColumns: string[] = [
@@ -67,7 +63,6 @@ export class SalesListComponent {
   queryParamsSubscription: Subscription
   chargeSubscription: Subscription
 
-  prices: Price[]
   products: Product[]
   users: User[]
   enterprises: Enterprise[]
@@ -76,14 +71,12 @@ export class SalesListComponent {
 
     this.combinedServicesSubscription = combineLatest(
       [ 
-        this.priceService.getPrices$(), 
         this.productService.getProducts$(), 
         this.userService.getAllUsers$(),
         this.enterpriseService.getAllEnterprises$(),
       ]
     ).
-    subscribe(([prices, products, users, enterprises]) => {
-      this.prices = prices
+    subscribe(([ products, users, enterprises]) => {
       this.products = products
       this.users = users
       this.enterprises = enterprises
@@ -104,7 +97,7 @@ export class SalesListComponent {
   performSearch(searchTerm:string, page: number) {
     this.chargeSubscription = this.chargeService.getCharges$().subscribe(charges => {
       const chargesInList: ChargeInList[] = charges.map(charge => {
-        const productData = this.getProductData(charge.price.id)
+        const productData = this.getProductData(charge.productRef.id)
         return {
           ... charge,
           productName: productData.name,
@@ -128,9 +121,8 @@ export class SalesListComponent {
     });
   }
 
-  getProductData(priceId: string): Product {
-    const price = this.prices.find(price => price.id === priceId)
-    return this.products.find(product => product.id === price.product.id)
+  getProductData(productId: string): Product {
+    return this.products.find(product => product.id === productId)
   }
 
   getCustomerEmail(charge: Charge): string {
@@ -160,28 +152,28 @@ export class SalesListComponent {
   }
 
   // -------------------------------------
-  async createTestData() {
-    // const prices = await firstValueFrom(this.priceService.getPrices$())
-    const pricesRef = this.prices.map(price => { return this.priceService.getPriceRefById(price.id) } )
+  // async createTestData() {
+  //   // const prices = await firstValueFrom(this.priceService.getPrices$())
+  //   const pricesRef = this.prices.map(price => { return this.priceService.getPriceRefById(price.id) } )
 
-    const users = await firstValueFrom(this.userService.getAllUsers$())
-    const usersRef = users.map(user=> { return this.userService.getUserRefById(user.uid) } )
+  //   const users = await firstValueFrom(this.userService.getAllUsers$())
+  //   const usersRef = users.map(user=> { return this.userService.getUserRefById(user.uid) } )
 
-    const enterprises = await firstValueFrom(this.enterpriseService.getAllEnterprises$())
-    const enterprisesRef = enterprises.map(enterprise => { return this.enterpriseService.getEnterpriseRefById(enterprise.id) } )
+  //   const enterprises = await firstValueFrom(this.enterpriseService.getAllEnterprises$())
+  //   const enterprisesRef = enterprises.map(enterprise => { return this.enterpriseService.getEnterpriseRefById(enterprise.id) } )
     
-    // const customerRefs = [...usersRef, ...enterprisesRef];
-    const getRandomElement = (arr: any) => arr[Math.floor(Math.random() * arr.length)];
+  //   // const customerRefs = [...usersRef, ...enterprisesRef];
+  //   const getRandomElement = (arr: any) => arr[Math.floor(Math.random() * arr.length)];
 
-    for (let charge of chargeData ) {
-      charge.price = getRandomElement(pricesRef);
+  //   for (let charge of chargeData ) {
+  //     charge.price = getRandomElement(pricesRef);
 
-      if (Math.random() > 0.5) charge.customer = getRandomElement(enterprisesRef)
-      else charge.customer = getRandomElement(usersRef)
+  //     if (Math.random() > 0.5) charge.customer = getRandomElement(enterprisesRef)
+  //     else charge.customer = getRandomElement(usersRef)
 
-      await this.chargeService.saveCharge(charge as Charge)
-    }
-    console.log(`Finished Creating charges`)
-  }
+  //     await this.chargeService.saveCharge(charge as Charge)
+  //   }
+  //   console.log(`Finished Creating charges`)
+  // }
   // -------------------------------------
 }
