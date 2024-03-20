@@ -376,7 +376,7 @@ background-color: var(--yellow-5);
 position :fixed;
 width: 96.3%;
 border-radius: 6px;
-z-index: 2;
+z-index: 1000;
 
 }
 .fixed-ps {
