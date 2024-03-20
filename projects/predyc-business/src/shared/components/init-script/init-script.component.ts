@@ -128,12 +128,13 @@ export class InitScriptComponent {
       const license = licenses[index];
       let licenseRef = this.afs.collection<License>(License.collection).doc(license.id).ref;
       licensesRef.push(licenseRef)
-      // const licensePriceRef = pricesRef[index] 
+      const licenseProductRef = productsRef[index] 
       // const licensePriceValue = (await ((licensePriceRef as DocumentReference).get())).data() as Price
 
       await licenseRef.set(
         {
           ...license.toJson(),
+          productRef: licenseProductRef,
           enterpriseRef: enterpriseRef
         }, {merge: true}
       )
@@ -291,7 +292,7 @@ export class InitScriptComponent {
   async uploadCursosLegacy() {
 
     let jsonData = coursesData.slice(0, 5)
-    jsonData = coursesData
+    // jsonData = coursesData
     console.log('cursos a cargar',jsonData)
     // Now you can use the jsonData object locally
 

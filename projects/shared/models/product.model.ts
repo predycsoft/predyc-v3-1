@@ -43,6 +43,7 @@ export class Product {
       let product = new Product();
       product.accesses = obj.accesses;
       product.active = obj.active;
+      product.autodeactivate = obj.autodeactivate;
       product.createdAt = obj.createdAt;
       product.description = obj.description;
       product.features = obj.features;
