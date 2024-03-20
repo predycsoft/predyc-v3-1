@@ -98,16 +98,14 @@
                         <mat-option value="Transferencia MXN">Transferencia MXN</mat-option>
                         <mat-option value="Paypal">Paypal</mat-option>
                         <mat-option value="Stripe">Stripe</mat-option>
-                        <mat-option value="Stripe">Zelle</mat-option>
+                        <mat-option value="Zelle">Zelle</mat-option>
     
                     </mat-select>
                 </div>
                 <div fxLayout="column" class="mgt05 h50px">
                     <span class="ft11 ft600 gray-9">Status</span>
                     <mat-select formControlName="status" (ngModelChange)="updateCaptureAmountAnPayAt()" placeholder="Seleccione el precio" >
-                        <mat-option value="succeeded">Pagado</mat-option>
-                        <mat-option value="failed">Fallido</mat-option>
-                        <mat-option value="pending">Pendiente</mat-option>
+                        <mat-option *ngFor="let status of statusChoices" [value]="status">{{status}}</mat-option>
                     </mat-select>
                 </div>
             </div>

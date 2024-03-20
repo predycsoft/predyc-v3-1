@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Product } from 'projects/shared/models/product.model';
 import { User } from 'projects/shared/models/user.model';
+import { ProductService } from '../../../services/product.service';
 
 @Component({
   selector: 'app-dialog-create-charge',
@@ -17,6 +18,7 @@ export class DialogCreateChargeComponent {
 
   constructor(
     private fb: FormBuilder,
+    private productService: ProductService,
     public matDialogRef: MatDialogRef<DialogCreateChargeComponent>, 
     @Inject(MAT_DIALOG_DATA) public data: {
       customerRef: DocumentReference<Enterprise | User>,
@@ -37,6 +39,9 @@ export class DialogCreateChargeComponent {
   formProductIdSubscription: Subscription
 
   showAlertText = false
+
+  statusChoices = Charge.STATUS_CHOICES
+
 
   ngOnInit() {
     this.newCharge = Charge.fromJson({...Charge.getChargeTemplate()})
@@ -65,6 +70,7 @@ export class DialogCreateChargeComponent {
     this.formProductIdSubscription = this.form.get('productId')!.valueChanges.subscribe(value => {
       this.productId = value;
       this.selectedProduct = this.products.find(product => product.id === this.productId)
+      this.getAmount()
     });
   }
 
@@ -84,6 +90,7 @@ export class DialogCreateChargeComponent {
     this.updateCaptureAmountAnPayAt()
   }
 
+  // ARREGLAR
   calculateAmount(): number {
     // if(this.form.get('priceId').value){
     //   let price = this.prices.find(x => x.id == this.form.get('priceId').value)
@@ -144,6 +151,7 @@ export class DialogCreateChargeComponent {
       this.newCharge.amountRefunded = formValue.amountRefunded
       this.newCharge.description = formValue.description
       this.newCharge.paymentMethod = formValue.paymentMethod
+      this.newCharge.productRef = this.productService.getProductRefById(formValue.productId)
 
       this.matDialogRef.close(this.newCharge);
     }
