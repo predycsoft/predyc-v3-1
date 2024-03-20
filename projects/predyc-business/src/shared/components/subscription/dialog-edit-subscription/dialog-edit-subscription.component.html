@@ -7,12 +7,9 @@
             </div>
             <div fxLayout="column">
                 <span class="gray-8 ft500 ft12">Status</span>
-                <select  formControlName="status">
-                    <option value="active">Activa</option>
-                    <option value="trialing">Trial</option>
-                    <option value="past_due">Sin pagar</option>
-                    <option value="canceled">Cancelada</option>
-                </select>
+                <mat-select  formControlName="status">
+                    <mat-option *ngFor="let status of statusChoices" [value]="status">{{status}}</mat-option>
+                </mat-select>
             </div>
             <div *ngIf="form.get('status').value == 'canceled'" fxLayout="column">
                 <span class="ray-8 ft500 ft12">Fecha de canceleación: {{subscriptionInfo.endedAt | date:"dd/MM/yyyy"}}</span>
