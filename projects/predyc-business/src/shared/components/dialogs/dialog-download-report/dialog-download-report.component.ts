@@ -1138,29 +1138,51 @@ export class DialogDownloadReportComponent {
     return arrayMeses
   }
 
-
   aggregateMonthlyDurations(classes: any[]): MonthlyDuration[] {
+    // Si no hay clases, retorna un arreglo vacío
+    if (classes.length === 0) {
+      return [];
+    }
+  
+    // Encuentra la fecha más antigua y la más reciente
+    const sortedClasses = classes.sort((a, b) => a.dateEnd.seconds - b.dateEnd.seconds);
+    const startDate = new Date(sortedClasses[0].dateEnd.seconds * 1000);
+    const endDate = new Date(sortedClasses[sortedClasses.length - 1].dateEnd.seconds * 1000);
+  
     const durationPerMonth: { [key: string]: number } = {};
   
+    // Inicializa todos los meses entre las fechas de inicio y fin con 0
+    for (let date = new Date(startDate); date <= endDate; date.setMonth(date.getMonth() + 1)) {
+      const year = date.getFullYear();
+      const month = date.getMonth();
+      const key = `${year}-${month < 9 ? '0' : ''}${month + 1}`;
+      durationPerMonth[key] = 0; // Inicializa con 0
+    }
+  
+    // Suma las duraciones por mes
     classes.forEach(cl => {
-      const date = new Date(cl.dateEnd.seconds * 1000); // Suponiendo cl.dateEnd contiene segundos
-      const month = date.toLocaleString('es', { month: 'short' }).slice(0, 3); // Obtiene las primeras 3 letras del mes
-      const year = date.getFullYear().toString().slice(-2); // Obtiene los últimos 2 dígitos del año
-  
-      const label = `${month.charAt(0).toUpperCase() + month.slice(1)}-${year}`; // Formato Sep-23
-  
-      if (!durationPerMonth[label]) {
-        durationPerMonth[label] = 0;
-      }
-      durationPerMonth[label] += cl.duracion; // Suma la duración en minutos
+      const date = new Date(cl.dateEnd.seconds * 1000);
+      const year = date.getFullYear();
+      const month = date.getMonth();
+      const key = `${year}-${month < 9 ? '0' : ''}${month + 1}`;
+      durationPerMonth[key] += cl.duracion; // Suma la duración en minutos
     });
   
-    // Convierte el objeto a un arreglo de MonthlyDuration y ajusta los valores a horas, redondeando a 1 decimal usando Math.round
-    return Object.entries(durationPerMonth).map(([label, value]): MonthlyDuration => ({
-      label,
-      value: Math.round((value / 60) * 10) / 10 // Convierte minutos a horas y redondea a 1 decimal
-    }));
+    // Convierte y redondea los valores, y genera la etiqueta adecuada
+    const respuesta = Object.entries(durationPerMonth).map(([key, value]) => {
+      const [year, month] = key.split('-');
+      const monthName = new Date(parseInt(year), parseInt(month) - 1).toLocaleString('es', { month: 'short' }).slice(0, 3);
+      const label = `${monthName.charAt(0).toUpperCase() + monthName.slice(1)}-${year.slice(2)}`;
+  
+      return {
+        label,
+        value: Math.round((value / 60) * 10) / 10, // Convierte minutos a horas y redondea a 1 decimal
+      };
+    });
+  
+    return respuesta;
   }
+  
 
   addFonts() {
     this.pdf.addFileToVFS("calibri-normal.ttf", this.font)
