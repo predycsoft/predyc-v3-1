@@ -19,6 +19,8 @@ import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firest
 import { AlertsService } from 'projects/predyc-business/src/shared/services/alerts.service';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
 import { AuthService } from 'projects/predyc-business/src/shared/services/auth.service';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+
 
 const MAIN_TITLE = 'Predyc - '
 
@@ -161,9 +163,22 @@ export class ProfilesComponent {
           categories: categories,
           inStudyPlan: inStudyPlan
         }
+        console.log('courseForExplorer',courseForExplorer)
         if (inStudyPlan) this.studyPlan.push(courseForExplorer)
         return courseForExplorer
       })
+
+      let trueOrder = []
+
+      console.log('this.studyPlan',this.studyPlan,this.profile.coursesRef)
+      this.profile.coursesRef.forEach(cursoplan => {
+        let curso = this.studyPlan.find(x=> x.id == cursoplan['id'])
+        if(curso){
+          trueOrder.push(curso)
+        }
+      });
+
+      this.studyPlan = trueOrder
       this.updateWidgets()
 
       this.categories = this.categories.filter(category => {
@@ -488,6 +503,8 @@ export class ProfilesComponent {
         return this.courseService.getCourseRefById(course.id)
       })
 
+      console.log('coursesRef',coursesRef)
+
 
       if (!coursesRef || coursesRef.length==0) throw new Error("Debe indicar los cursos del plan de estudio")
 
@@ -511,6 +528,8 @@ export class ProfilesComponent {
         permissions: this.profile ? this.profile.permissions : null,
         hoursPerMonth: this.profileHoursPerMonth
       })
+
+      console.log('profile save',profile)
       const profileId = await this.profileService.saveProfile(profile)
       const changesInStudyPlan = {
         added: [],
@@ -555,5 +574,12 @@ export class ProfilesComponent {
   getAdditionalSkillsTooltip(skills: string[]): string {
     // Toma las habilidades a partir de la quinta y las une con comas.
     return skills.slice(4).join(',\n');
+  }
+
+  
+  onDrop(event: CdkDragDrop<string[]>) {
+    moveItemInArray(this.studyPlan, event.previousIndex, event.currentIndex);
+
+    console.log('this.studyPlan',this.studyPlan)
   }
 }

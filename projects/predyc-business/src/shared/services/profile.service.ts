@@ -138,6 +138,8 @@ export class ProfileService {
     // profile.permissions.hasDefaultPermissions = hasDefaultPermissions
     const dataToSave = typeof profile.toJson === 'function' ? profile.toJson() : profile;
 
+    console.log('dataToSave profile',dataToSave)
+
     await ref.set(dataToSave, { merge: true });
     profile.id = ref.id; // Assign the generated ID to the profile
     return profile.id
