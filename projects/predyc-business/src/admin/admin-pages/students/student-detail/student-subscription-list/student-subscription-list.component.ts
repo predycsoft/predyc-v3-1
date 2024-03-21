@@ -43,6 +43,7 @@ export class StudentSubscriptionListComponent {
     "status",
     "createdAt",
     "currentPeriodStart",
+    "currentPeriodEnd",
     // "statusBasedComment",
     "actions"
   ];
