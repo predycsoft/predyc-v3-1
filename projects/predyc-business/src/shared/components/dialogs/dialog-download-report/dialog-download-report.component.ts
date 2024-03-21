@@ -626,7 +626,8 @@ export class DialogDownloadReportComponent {
     currentLine += 5
     // CHARTS
     const graphicHeight = 80
-    //currentLine = await this.getChart(currentLine, logsInsidePeriod, graphicHeight)
+    const constCharData = this.getCharData([student])
+    currentLine = await this.getChart(currentLine, constCharData, graphicHeight)
     currentLine += 5
     // STUDYPLAN TABLE
     if (studyPlanInsidePeriod.length > 0) {
