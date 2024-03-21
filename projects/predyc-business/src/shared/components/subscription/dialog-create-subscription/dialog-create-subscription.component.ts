@@ -57,6 +57,7 @@ export class DialogCreateSubscriptionComponent {
   initForm() {
     this.form = this.fb.group({
       startedAt: [null],
+      currentPeriodEnd: [null,  Validators.required],
       productId: ['', Validators.required],
       interval: [null]
     });
@@ -109,62 +110,17 @@ export class DialogCreateSubscriptionComponent {
       this.subscription.currentPeriodStart = +parsedDate;
   }
 
-  getCurrentTimes() {
-    this.subscription.currentPeriodEnd = this.getPeriodEnd();
-    this.subscription.nextPaymentDate = this.subscription.currentPeriodEnd
-    this.showAlertText = false
-  }
-
-  getPeriodEnd() {
-    // const date = new Date(this.subscription.currentPeriodStart);
-    // const currentPriceId = this.form.get("priceId").value
-    // if (!currentPriceId) {
-    //   return null;
-    // }
-    // let day = date.getDate();
-    // let month = date.getMonth();
-    // let year = date.getFullYear();
-    // let newDay = 0;
-    // let newMonth = 0;
-    // let newYear = 0;
-    // switch (price.interval) {
-    //   case 'month':
-    //     newDay = day;
-    //     newMonth = month + 1;
-    //     newYear = year;
-    //     if (month == 11) {
-    //       newMonth = 0;
-    //       newYear = newYear + 1;
-    //     }
-    //     if (day > this.daysInMonth(newMonth + 1, newYear)) {
-    //       newDay = this.daysInMonth(newMonth + 1, newYear);
-    //     }
-    //     return +new Date(newYear, newMonth, newDay);
-    //   case 'year':
-    //     newDay = day;
-    //     newMonth = month;
-    //     newYear = year + 1;
-    //     return +new Date(newYear, newMonth, newDay);
-    //   default:
-    //     return +new Date(newYear, newMonth, newDay);
-    // }
-
-    
-    return 0
-  }
-
-  daysInMonth(month, year) {
-    return new Date(year, month, 0).getDate();
-  }
-
   saveSubscription() {
     if (this.form.valid) {
       // Process and save data
       const formValue = this.form.value;
       this.subscription.interval = formValue.interval
+      this.subscription.currentPeriodEnd = +this.toDate(formValue.currentPeriodEnd)
+      this.subscription.nextPaymentDate = this.subscription.currentPeriodEnd
       this.subscription.enterpriseRef = this.enterpriseRef
       this.subscription.productRef = this.productService.getProductRefById(formValue.productId)
-      this.subscription.nextPaymentAmount = this.getAmount() // ARREGLAR
+      this.subscription.nextPaymentAmount = this.selectedProduct.amount
+      console.log("this.subscription", this.subscription)
 
       this.dialogRef.close(this.subscription);
     }
@@ -178,26 +134,5 @@ export class DialogCreateSubscriptionComponent {
     this.dialogRef.close();
   }
 
-  // ARREGLAR
-  getAmount(): number {
-    // let price = this.prices.find(x => x.id == this.form.get('priceId').value)
-    // price = Price.fromJson(price)
-    // const couponId = this.form.get('couponId').value
-    // if (couponId) {
-    //   const coupon = this.coupons.find(x => x.id == couponId)
-    //   switch (coupon.duration) {
-    //     case "once":
-    //       return price.getTotalAmount([])
-    //     case "repeating":
-    //       return price.getTotalAmount([])
-    //     case "forever":
-    //       return price.getTotalAmount([coupon])
-    //     default:
-    //       return price.getTotalAmount([])
-    //   }
-    // }
-    // return price.getTotalAmount([])
-    return 0
-  }
 }
 
