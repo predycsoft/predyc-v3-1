@@ -41,27 +41,29 @@
                     <div class="fw" fxLayout="column">
                         <span class="ft15 gray-9 ft500">Accesos</span>
                     </div>
-                    <div formGroupName="accesses" class="fw" fxLayout="row" fxLayoutGap=".5rem">
-                        <div class="fw" fxLayout="column">
-                            <label for="enableUserRadar" class="gray-9 ft11">Pueden ver radar de usuario:</label>
-                            <input id="enableUserRadar" type="checkbox" formControlName="enableUserRadar" />
-                        </div>
-                        <div class="fw" fxLayout="column">
-                            <label for="enableStudyPlanView" class="gray-9 ft11">Pueden ver listado de plan de estudio:</label>
-                            <input id="enableStudyPlanView" type="checkbox" formControlName="enableStudyPlanView" />
-                        </div>
-                        <div class="fw" fxLayout="column">
-                            <label for="enableExtraCoursesView" class="gray-9 ft11">Pueden ver listado de extracurriculares:</label>
-                            <input id="enableExtraCoursesView" type="checkbox" formControlName="enableExtraCoursesView" />
-                        </div>
-                        <div class="fw" fxLayout="column">
-                            <label for="enableToTakeTest" class="gray-9 ft11">Pueden presentar examen:</label>
-                            <input id="enableToTakeTest" type="checkbox" formControlName="enableToTakeTest" />
-                        </div>
-                        <div class="fw" fxLayout="column">
-                            <label for="enableCreateParticularCourses" class="gray-9 ft11">Pueden crear cursos propios:</label>
-                            <input id="enableCreateParticularCourses" type="checkbox" formControlName="enableCreateParticularCourses" />
-                        </div>
+                    <div class="fw" fxLayout="row" fxLayoutGap=".5rem">
+                        <ng-container formGroupName="accesses">
+                            <div class="fw" fxLayout="column">
+                                <label for="enableUserRadar" class="gray-9 ft11">Pueden ver radar de usuario:</label>
+                                <input id="enableUserRadar" type="checkbox" formControlName="enableUserRadar" />
+                            </div>
+                            <div class="fw" fxLayout="column">
+                                <label for="enableStudyPlanView" class="gray-9 ft11">Pueden ver listado de plan de estudio:</label>
+                                <input id="enableStudyPlanView" type="checkbox" formControlName="enableStudyPlanView" />
+                            </div>
+                            <div class="fw" fxLayout="column">
+                                <label for="enableExtraCoursesView" class="gray-9 ft11">Pueden ver listado de extracurriculares:</label>
+                                <input id="enableExtraCoursesView" type="checkbox" formControlName="enableExtraCoursesView" />
+                            </div>
+                            <div class="fw" fxLayout="column">
+                                <label for="enableToTakeTest" class="gray-9 ft11">Pueden presentar examen:</label>
+                                <input id="enableToTakeTest" type="checkbox" formControlName="enableToTakeTest" />
+                            </div>
+                            <div class="fw" fxLayout="column">
+                                <label for="enableCreateParticularCourses" class="gray-9 ft11">Pueden crear cursos propios:</label>
+                                <input id="enableCreateParticularCourses" type="checkbox" formControlName="enableCreateParticularCourses" />
+                            </div>
+                        </ng-container>
                         <div class="fw" fxLayout="column">
                             <label for="autodeactivate" class="gray-9 ft11">Las subscripciones caducan automaticamente:</label>
                             <input id="autodeactivate" type="checkbox" formControlName="autodeactivate" />

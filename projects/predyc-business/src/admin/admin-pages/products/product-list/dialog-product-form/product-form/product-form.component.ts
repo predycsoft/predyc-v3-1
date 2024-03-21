@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
+import { Product } from 'projects/shared/models/product.model';
 
 @Component({
   selector: 'app-product-form',
@@ -16,7 +17,7 @@ export class ProductFormComponent {
     public icon: IconService,
   ) {}
 
-  @Input() product: any;
+  @Input() product: Product;
   @Output() onSave = new EventEmitter<any>();
 
   // Product features should be added dynamically
