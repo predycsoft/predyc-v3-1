@@ -19,6 +19,7 @@ import { dateFromCalendarToTimestamp, daysBetween } from 'projects/shared/utils'
 import { StudyPlanClass } from 'projects/shared/models/study-plan-class.model';
 import { CourseByStudent } from 'projects/shared/models/course-by-student.model';
 import Swal from 'sweetalert2';
+import { Product } from 'projects/shared/models/product.model';
 
 
 function getStartOfSixMonthsAgo(today) {
@@ -256,12 +257,11 @@ export class CreateDemoComponent {
       startedAt: this.now,
       status: "active",
     });
-    // const priceSnapshot = await firstValueFrom(this.afs.collection<Price>(Price.collection, ref => ref.where("id", "==", "Plan-Empresarial-468USD-year")).get())
-    // const prices = priceSnapshot.docs.map(item => item.data())
-    // const price = prices[0]
-    //console.log("price", price)
-    // const licensePriceValue = (await ((licensePriceRef as DocumentReference).get())).data() as Price
-    // const couponPriceRef = licensePriceValue.coupon
+    const productSnapshot = await firstValueFrom(this.afs.collection<Product>(Product.collection, ref => ref.where("id", "==", "Plan-Empresarial")).get())
+    const products = productSnapshot.docs.map(item => item.data())
+    const product = products[0]
+
+    license.productRef = this.afs.collection<Product>(Product.collection).doc(product.id).ref
     license.enterpriseRef = enterpriseRef
 
     await licenseRef.set(license.toJson(), {merge: true})
