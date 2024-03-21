@@ -37,54 +37,35 @@ export class DialogEditSubscriptionComponent {
   async setupForm() {
     this.form = this.fb.group({
       currentPeriodStart: [null],
+      currentPeriodEnd: [null],
       status: [null],
-      endedAt: [null],
       interval: [null],
     });
 
     this.form.patchValue({
       currentPeriodStart: this.toStringDate(new Date(this.subscriptionInfo.currentPeriodStart)),
+      currentPeriodEnd: this.toStringDate(new Date(this.subscriptionInfo.currentPeriodEnd)),
       status: this.subscriptionInfo.status,
       interval: this.subscriptionInfo.interval,
       endedAt: this.subscriptionInfo.endedAt ? this.toStringDate(new Date(this.subscriptionInfo.endedAt)): null,
     });
 
-    this.checkEndedAtAsRequired();
-
-    this.form.get('status').statusChanges.subscribe(() => {
-      this.checkEndedAtAsRequired();
-    });
-
-  }
-
-  checkEndedAtAsRequired() {
-    const statusControl = this.form.get('status');
-    const endedAtControl = this.form.get('endedAt');
-    if (statusControl.value === 'canceled') endedAtControl.setValidators(Validators.required);
-    else endedAtControl.clearValidators();
-    
-    endedAtControl.updateValueAndValidity(); // Important to re-evaluate the control status
   }
 
   saveDates(): void {
-    const parsedDate = this.toDate(this.form.get("currentPeriodStart").value);
+    const parsedStartDate = this.toDate(this.form.get("currentPeriodStart").value);
+    const parsedEndDate = this.toDate(this.form.get("currentPeriodEnd").value);
 
+    this.subscriptionInfo.currentPeriodStart = +parsedStartDate
+    this.subscriptionInfo.currentPeriodEnd = +parsedEndDate
+    this.subscriptionInfo.nextPaymentDate = +parsedEndDate
     this.subscriptionInfo.changedAt = +new Date()
 
     if(this.form.get("status").value == 'canceled'){
-      const parsedDateEnd = this.toDate(this.form.get("endedAt").value)
-      this.subscriptionInfo.endedAt = +parsedDateEnd
-      this.subscriptionInfo.canceledAt = +parsedDateEnd
-      this.subscriptionInfo.currentPeriodStart = null
-      this.subscriptionInfo.currentPeriodEnd = null
-      this.subscriptionInfo.startedAt = null
-      this.subscriptionInfo.nextPaymentDate = null
-
+      this.subscriptionInfo.endedAt = +new Date()
+      this.subscriptionInfo.canceledAt = +new Date()
     }
-
     else {
-      this.subscriptionInfo.currentPeriodStart = +parsedDate
-      this.subscriptionInfo.nextPaymentDate = +parsedDate
       this.subscriptionInfo.endedAt = null;
       this.subscriptionInfo.canceledAt = null;
     }
