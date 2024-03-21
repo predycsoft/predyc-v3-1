@@ -67,7 +67,7 @@ export interface ChargeJson {
         paymentMethod: "",
         payAt: null,
         productRef: null,
-        status: 'pending',
+        status: 'succeeded',
         customer: null,
         via: "Predyc",
         quantity: 1,
@@ -75,12 +75,10 @@ export interface ChargeJson {
     }
   
     public static STATUS_FAILED = 'failed';
-    public static STATUS_PENDING = 'pending';
     public static STATUS_SUCCEEDED = 'succeeded';
   
     public static STATUS_CHOICES = [
       this.STATUS_FAILED,
-      this.STATUS_PENDING,
       this.STATUS_SUCCEEDED,
     ];
   
