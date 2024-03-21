@@ -1,6 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { parse } from 'date-fns';
 import { SubscriptionInfo } from 'projects/predyc-business/src/admin/admin-pages/students/student-detail/student-subscription-list/student-subscription-list.component';
 import { Product } from 'projects/shared/models/product.model';
 import { Subscription as SubscriptionClass } from 'projects/shared/models/subscription.model';
@@ -68,17 +69,22 @@ export class DialogEditSubscriptionComponent {
   saveDates(): void {
     const parsedDate = this.toDate(this.form.get("currentPeriodStart").value);
 
-    this.subscriptionInfo.currentPeriodStart = +parsedDate
-    this.subscriptionInfo.currentPeriodEnd = this.getPeriodEnd()
     this.subscriptionInfo.changedAt = +new Date()
 
     if(this.form.get("status").value == 'canceled'){
       const parsedDateEnd = this.toDate(this.form.get("endedAt").value)
-        this.subscriptionInfo.endedAt = +parsedDateEnd
-        this.subscriptionInfo.canceledAt = +parsedDateEnd
+      this.subscriptionInfo.endedAt = +parsedDateEnd
+      this.subscriptionInfo.canceledAt = +parsedDateEnd
+      this.subscriptionInfo.currentPeriodStart = null
+      this.subscriptionInfo.currentPeriodEnd = null
+      this.subscriptionInfo.startedAt = null
+      this.subscriptionInfo.nextPaymentDate = null
+
     }
 
     else {
+      this.subscriptionInfo.currentPeriodStart = +parsedDate
+      this.subscriptionInfo.nextPaymentDate = +parsedDate
       this.subscriptionInfo.endedAt = null;
       this.subscriptionInfo.canceledAt = null;
     }
@@ -99,48 +105,6 @@ export class DialogEditSubscriptionComponent {
 
   }
 
-  getPeriodEnd() {
-    const date = new Date(this.subscriptionInfo.currentPeriodStart)
-    if(!this.form.get("interval").value){
-      return null
-    }
-    let day = date.getDate()
-    let month = date.getMonth()
-    let year = date.getFullYear()
-    let newDay = 0
-    let newMonth = 0
-    let newYear = 0
-    // console.log("this.form.get('interval').value", this.form.get("interval").value)
-    // switch (this.subscriptionInfo.priceInterval) {
-    //   case "month":
-    //     newDay = day
-    //     newMonth = month + 1
-    //     newYear = year
-    //     if (month == 11) {
-    //       newMonth = 0
-    //       newYear = newYear + 1
-    //     }
-    //     if (day > this.daysInMonth(newMonth + 1, newYear)) {
-    //       newDay = this.daysInMonth(newMonth + 1, newYear)
-    //     }
-    //     return +new Date(newYear, newMonth, newDay)
-    //   case "year":
-    //     newDay = day
-    //     newMonth = month
-    //     newYear = year+1
-    //     return +new Date(newYear, newMonth, newDay)
-    //   default:
-    //     return +new Date(2012, newMonth, newDay)
-    // }
-    
-
-    return 0
-
-  }
-
-  daysInMonth(month, year) {
-    return new Date(year, month, 0).getDate();
-  }
 
   saveSubscription() {
     if (this.form.valid) {
