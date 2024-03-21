@@ -93,6 +93,7 @@ export class DialogDownloadReportComponent {
   classes
 
   ngOnInit() { // estoy aqui
+    this.generatinReport = false;
     this.displayErrors = false
     this.enterpriseSubscription = this.enterpriseService.enterprise$.subscribe(async enterprise => {
       if (enterprise) {
@@ -115,8 +116,16 @@ export class DialogDownloadReportComponent {
   }
 
 
+
+  generatinReport = false;
+
+
   
   downloadReport() {
+
+
+    //alert('inicio reporte')
+    this.generatinReport = true
     if (this.userServiceSubscription) {
       this.userServiceSubscription.unsubscribe()
     }
@@ -422,6 +431,8 @@ export class DialogDownloadReportComponent {
       //   await this.studentPage(student, index)
       // }
       this.pdf.save(`Reporte Histórico de ${this.enterprise.name}.pdf`)
+      //alert('termino reporte')
+      this.generatinReport = false
     }catch(err) {
       console.log(err)
     }
@@ -626,7 +637,7 @@ export class DialogDownloadReportComponent {
     currentLine += 5
     // CHARTS
     const graphicHeight = 80
-    const constCharData = this.getCharData([student])
+    const constCharData = this.getChartData([student])
     currentLine = await this.getChart(currentLine, constCharData, graphicHeight)
     currentLine += 5
     // STUDYPLAN TABLE
@@ -921,7 +932,7 @@ export class DialogDownloadReportComponent {
     currentLine = this.generalCoursesData(strings, values, currentLine) 
     // CHARTS
     const graphicHeight = 90
-    const constCharData = this.getCharData(users)
+    const constCharData = this.getChartData(users)
     currentLine = await this.getChart(currentLine, constCharData, graphicHeight)
 
 
@@ -1129,15 +1140,118 @@ export class DialogDownloadReportComponent {
     return allCourses
   }
 
-  getCharData(usersData){
-
-    let allClasses = this.getAllClasses(usersData)
-
-    let arrayMeses = this.aggregateMonthlyDurations(allClasses)
-
-    return arrayMeses
+  getChartData(usersData) {
+    let allClasses = this.getAllClasses(usersData);
+  
+    if (allClasses.length === 0) {
+      return [];
+    }
+  
+    // Ordena las clases por fecha de finalización para determinar las fechas de inicio y fin del rango
+    const sortedClasses = allClasses.sort((a, b) => a.dateEnd.seconds - b.dateEnd.seconds);
+    const startDate = new Date(sortedClasses[0].dateEnd.seconds * 1000);
+    const endDate = new Date(sortedClasses[sortedClasses.length - 1].dateEnd.seconds * 1000);
+    
+    const scale = this.getScale(startDate, endDate);
+    
+    switch(scale) {
+      case 'daily':
+        return this.calculateDailyDurations(allClasses, startDate, endDate);
+      case 'weekly':
+        return this.calculateWeeklyDurations(allClasses, startDate, endDate);
+      case 'monthly':
+        return this.aggregateMonthlyDurations(allClasses);
+      default:
+        return [];
+    }
   }
 
+  getScale(startDate: Date, endDate: Date): 'daily' | 'weekly' | 'monthly' {
+    const oneDay = 24 * 60 * 60 * 1000; // milisegundos en un día
+    const differenceInDays = Math.round(Math.abs((endDate.getTime() - startDate.getTime()) / oneDay));
+  
+    if (differenceInDays < 30) {
+      return 'daily';
+    } else if (differenceInDays < 90) {
+      return 'weekly';
+    } else {
+      return 'monthly';
+    }
+  }
+
+
+  calculateWeeklyDurations(classes: any[], startDate: Date, endDate: Date): MonthlyDuration[] {
+    const durationPerWeek: { [key: string]: number } = {};
+  
+    // Rellenar todas las semanas entre la fecha de inicio y fin con 0
+    let currentStartDate = this.getStartOfWeek(startDate);
+    let currentEndDate = new Date(currentStartDate);
+    currentEndDate.setDate(currentEndDate.getDate() + 6); // Sumar 6 días para llegar al domingo
+    
+    while (currentStartDate <= endDate) {
+      const formattedWeek = `${currentStartDate.getDate()} ${currentStartDate.toLocaleString('es', { month: 'short' })} al ${currentEndDate.getDate()} ${currentEndDate.toLocaleString('es', { month: 'short' })}`;
+      durationPerWeek[formattedWeek] = 0;
+  
+      // Preparar la próxima semana
+      currentStartDate.setDate(currentStartDate.getDate() + 7);
+      currentEndDate = new Date(currentStartDate);
+      currentEndDate.setDate(currentEndDate.getDate() + 6);
+    }
+  
+    // Sumar las duraciones por semana
+    classes.forEach(cl => {
+      const date = new Date(cl.dateEnd.seconds * 1000);
+      const startOfWeek = this.getStartOfWeek(date);
+      let endOfWeek = new Date(startOfWeek);
+      endOfWeek.setDate(endOfWeek.getDate() + 6); // Sumar 6 días para llegar al domingo
+      
+      const formattedWeek = `${startOfWeek.getDate()} ${startOfWeek.toLocaleString('es', { month: 'short' })} al ${endOfWeek.getDate()} ${endOfWeek.toLocaleString('es', { month: 'short' })}`;
+      durationPerWeek[formattedWeek] = (durationPerWeek[formattedWeek] || 0) + cl.duracion;
+    });
+  
+    // Ordenar y mapear las entradas
+    return Object.entries(durationPerWeek)
+      .sort((a, b) => new Date(a[0].split(' al ')[0]).getTime() - new Date(b[0].split(' al ')[0]).getTime())
+      .map(([week, duration]) => ({
+        label: week,
+        value: Math.round((duration / 60) * 10) / 10 // Convierte minutos a horas y redondea a 1 decimal
+      }));
+  }
+  
+  getStartOfWeek(date: Date): Date {
+    const day = date.getDay() || 7; // Convertir domingo de 0 a 7
+    if(day !== 1) date.setHours(-24 * (day - 1)); // Ajustar si no es lunes
+    return date;
+  }
+
+
+  calculateDailyDurations(classes: any[], startDate: Date, endDate: Date): MonthlyDuration[] {
+    const durationPerDay: { [key: string]: number } = {};
+    
+    // Rellena todos los días entre la fecha de inicio y fin con 0
+    for (let date = new Date(startDate); date <= endDate; date.setDate(date.getDate() + 1)) {
+      const formattedDate = `${date.getDate()}-${date.toLocaleString('es', { month: 'short' })}`;
+      durationPerDay[formattedDate] = 0;
+    }
+  
+    // Suma las duraciones por día
+    classes.forEach(cl => {
+      const date = new Date(cl.dateEnd.seconds * 1000); // Asumiendo que 'dateEnd' es un timestamp en segundos
+      const formattedDate = `${date.getDate()}-${date.toLocaleString('es', { month: 'short' })}`;
+      durationPerDay[formattedDate] = (durationPerDay[formattedDate] || 0) + cl.duracion;
+    });
+  
+    // Ordena el objeto por fecha y convierte a arreglo de DailyDuration
+    const sortedDailyDurations = Object.entries(durationPerDay)
+      .sort((a, b) => new Date(a[0]).getTime() - new Date(b[0]).getTime()) // Esto necesita ser ajustado para comparar correctamente
+      .map(([date, duration]) => ({
+        label: date,
+        value: Math.round((duration / 60) * 10) / 10 // Convierte minutos a horas y redondea a 1 decimal
+      }));
+  
+    return sortedDailyDurations;
+  }
+  
   aggregateMonthlyDurations(classes: any[]): MonthlyDuration[] {
     // Si no hay clases, retorna un arreglo vacío
     if (classes.length === 0) {
@@ -1243,7 +1357,7 @@ export class DialogDownloadReportComponent {
   chart
   async getChart(currentLine, logsInsidePeriod, graphicHeight) { 
     // Si en anual o historico
-    let chartTitle = "Horas por mes"
+    let chartTitle = "Horas de estudio"
     currentLine = this.addFormatedText({
       text: chartTitle,
       x: 0,

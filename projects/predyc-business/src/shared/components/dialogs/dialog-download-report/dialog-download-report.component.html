@@ -36,9 +36,17 @@
             </div>
             <!-- Botón de descarga de reporte -->
             <div class="mgt10" fxLayoutAlign="end end">
-                <button *ngIf="loaded && (startDate && endDate)" class="lightButton backBlue5 radius6 h40px ft14" id="btn" (click)="downloadReport()">
+                <button *ngIf="loaded && (startDate && endDate) && !generatinReport" class="lightButton backBlue5 radius6 h40px ft14" id="btn" (click)="downloadReport()">
                     <img [src]="icon.download" class="makeWhite" alt=""> Descargar reporte
                 </button>
+
+                <button *ngIf="generatinReport" class="lightButton radius6 h40px ft14 border grayLink" disabled>
+                    <div class="spinner-container" style="display: flex; align-items: center;">
+                        <mat-spinner diameter="20" class="spinner-dark"></mat-spinner>
+                        <span style="margin-left: 10px;">Generando reporte</span>
+                    </div>
+                </button>
+
                 <button *ngIf="loaded && (!startDate || !endDate)!" class="lightButton radius6 h40px ft14 border grayLink" disabled>
                     <img [src]="icon.download" class="makeGray" alt=""> Descargar reporte
                 </button>
