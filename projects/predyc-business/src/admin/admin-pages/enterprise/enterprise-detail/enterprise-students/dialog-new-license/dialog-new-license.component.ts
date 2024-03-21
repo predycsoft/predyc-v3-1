@@ -55,6 +55,7 @@ export class DialogNewLicenseComponent {
     this.form = this.fb.group({
       productId: ['', Validators.required],
       startDate: ['', ],
+      endDate: ['',  Validators.required],
       quantity: [1, Validators.min(1)],
       rotations: [0, Validators.min(0)],
       status: ['', ],
@@ -99,7 +100,7 @@ export class DialogNewLicenseComponent {
       this.license.rotations = formValue.rotations;
       this.license.status = formValue.status
       this.license.productRef = this.productService.getProductRefById(formValue.productId)
-
+      this.license.currentPeriodEnd = +this.parseDateString(formValue.endDate)
       // this.license.enterpriseRef Set in parent component
 
       this.matDialogRef.close(this.license);
@@ -132,7 +133,6 @@ export class DialogNewLicenseComponent {
     // if (parsedDate.getTime() != NaN) {
       this.license.startedAt = +parsedDate;
       this.license.currentPeriodStart = +parsedDate;
-      this.license.currentPeriodEnd = this.getPeriodEnd();
     // }
   }
 
@@ -149,77 +149,6 @@ export class DialogNewLicenseComponent {
       +timeParts[0],
       +timeParts[1]
     ); // Note: months are 0-based
-  }
-
-  getCurrentTimes() {
-    // SE supone que es un mes
-    this.license.currentPeriodStart = this.license.startedAt;
-    this.license.currentPeriodEnd = this.getPeriodEnd();
-  }
-
-  getPeriodEnd() {
-    // if(this.form.get('status')!.value == 'trialing'){
-    //   const date = new Date(this.license.currentPeriodStart + this.form.get('trialDays')!.value *24*60*60*1000);
-    //   let day = date.getDate();
-    //   let month = date.getMonth();
-    //   let year = date.getFullYear();
-    //   return +new Date(year, month, day);
-    // } else {
-    //   const date = new Date(this.license.currentPeriodStart);
-    //   if (!this.form.get('priceId')!.value ) {
-    //     return null;
-    //   }
-    //   let day = date.getDate();
-    //   let month = date.getMonth();
-    //   let year = date.getFullYear();
-    //   let price = this.prices.find((x) => x.id == this.form.get('priceId')!.value );
-    //   let newDay = 0;
-    //   let newMonth = 0;
-    //   let newYear = 0;
-    //   // console.log(price.interval);
-    //   switch (price.interval) {
-    //     case 'month':
-    //       newDay = day;
-    //       newMonth = month + 1;
-    //       newYear = year;
-    //       if (month == 11) {
-    //         newMonth = 0;
-    //         newYear = newYear + 1;
-    //       }
-    //       if (day > this.daysInMonth(newMonth + 1, newYear)) {
-    //         newDay = this.daysInMonth(newMonth + 1, newYear);
-    //       }
-    //       this.license.currentPeriodEnd = +new Date(
-    //         newYear,
-    //         newMonth,
-    //         newDay
-    //       );
-    //       return +new Date(newYear, newMonth, newDay);
-    //     case 'year':
-    //       newDay = day;
-    //       newMonth = month;
-    //       newYear = year + 1;
-    //       this.license.currentPeriodEnd = +new Date(
-    //         newYear,
-    //         newMonth,
-    //         newDay
-    //       );
-    //       return +new Date(newYear, newMonth, newDay);
-    //     default:
-    //       this.license.currentPeriodEnd = +new Date(
-    //         newYear,
-    //         newMonth,
-    //         newDay
-    //       );
-    //       return +new Date(2012, newMonth, newDay);
-    //   }
-    // }
-    return 0
-   
-  }
-
-  daysInMonth(month, year) {
-    return new Date(year, month, 0).getDate();
   }
 
   ngOnDestroy() {
