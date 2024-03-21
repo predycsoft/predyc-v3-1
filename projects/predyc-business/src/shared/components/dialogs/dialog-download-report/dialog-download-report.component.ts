@@ -630,7 +630,7 @@ export class DialogDownloadReportComponent {
     currentLine += 5
     // STUDYPLAN TABLE
     if (studyPlanInsidePeriod.length > 0) {
-      //this.studentStudyPlanTable(studyPlanInsidePeriod, currentLine)
+      this.studentStudyPlanTable(studyPlanInsidePeriod, currentLine)
     }
     else {
       this.pdf.line(this.horizontalMargin, currentLine, this.formattedPageWidth, currentLine)
@@ -646,22 +646,54 @@ export class DialogDownloadReportComponent {
     }
   }
 
+  timestampToDateFormat(date) {
+    let result = "N/A"
+    if (date) {
+      result = new Date(date).toLocaleString("es-ES", { day: "numeric", month: "numeric", year: "numeric"})
+    }
+    return result
+  }
+
+  getStatus(curso) {
+    if (curso.completed) {
+      return "Completado"
+    } else {
+      if (!curso.progress.dateEndPlan) {
+        return "Pendiente"
+      } else {
+        let fechaFin = new Date(this.endDate.year,this.endDate.month-1,this.endDate.day)
+        if (this.obtenerUltimoDiaDelMes(curso.progress.dateEndPlan.seconds)< fechaFin) {
+          return "Atrasado"
+        } else {
+          return "Pendiente"
+        }
+      }
+    }
+  }
+
+
+
+
   studentStudyPlanTable(studyPlan, currentLine) {
     let hTable = currentLine
     const head = [["Nombre", "Duración (horas)", "Progreso", "Fecha fin asignada", "Fecha de completación", "Estatus", "Calificación"]]
     let tableData = []
-    // for (let index = 0; index < studyPlan.length; index++) {
-    //   const course = studyPlan[index];
-    //   const courseInfo = [
-    //     course.cursoTitulo, 
-    //     (course.duracion/60).toFixed(2), 
-    //     `${course.progreso} %`, 
-    //     this.timestampToDateFormat(course.fechaFin), 
-    //     this.timestampToDateFormat(course.fechaCompletacion), 
-    //     this.getStatus(course), course.puntaje
-    //   ]
-    //   tableData.push(courseInfo)
-    // }
+    for (let index = 0; index < studyPlan.length; index++) {
+      const course = studyPlan[index];
+      const courseInfo = [
+        course.titulo, 
+        (course.duracion/60).toFixed(2), 
+        `${course.progress.progress.toFixed(0)} %`, 
+        this.timestampToDateFormat(this.obtenerUltimoDiaDelMes(course.progress.dateEndPlan.seconds)),
+        course.progress?.dateEnd?this.timestampToDateFormat(course.progress.dateEnd.seconds*1000):'NA', 
+        this.getStatus(course), 
+        course.progress.finalScore>=100 ? 100 : course.progress.finalScore
+      ]
+      tableData.push(courseInfo)
+    }
+
+    console.log('tableData',tableData)
+
     autoTable(this.pdf, {
       theme: "striped",
       margin: {
@@ -976,9 +1008,6 @@ export class DialogDownloadReportComponent {
 
   calcularPromedioTiempoEstudioConClases(classes,users): any {
 
-
-  console.log('calcularPromedioTiempoEstudioConClases',classes)
-
     
   if (classes.length === 0) {
     return "No hay clases para calcular el promedio.";
@@ -994,7 +1023,14 @@ export class DialogDownloadReportComponent {
   const totalHorasEstudio = this.getTotalHours(users)
   // Sigue el mismo procedimiento para calcular el promedio basado en el periodo
   const unDia = 24 * 60 * 60 * 1000; // Milisegundos en un día
-  const diferenciaEnDias = Math.round(Math.abs((fechaFin.getTime() - fechaInicio.getTime()) / unDia));
+
+  console.log('revisarCalcularPromedioTiempoEstudioConClases',fechaFin.getTime(),fechaInicio.getTime())
+
+
+
+  let diferenciaEnDias = Math.round(Math.abs((fechaFin.getTime() - fechaInicio.getTime()) / unDia));
+
+  if(diferenciaEnDias <=0) diferenciaEnDias =1 
   
   let promedio = 0;
   let unidadTiempo = '';
