@@ -70,7 +70,6 @@ export class DialogCreateChargeComponent {
     this.formProductIdSubscription = this.form.get('productId')!.valueChanges.subscribe(value => {
       this.productId = value;
       this.selectedProduct = this.products.find(product => product.id === this.productId)
-      this.getAmount()
     });
   }
 
@@ -92,34 +91,7 @@ export class DialogCreateChargeComponent {
 
   // ARREGLAR
   calculateAmount(): number {
-    // if(this.form.get('priceId').value){
-    //   let price = this.prices.find(x => x.id == this.form.get('priceId').value)
-    //   price = Price.fromJson(price)
-    //   let coupons = []
-    //   if(this.form.get('couponId').value){
-    //     let coupon = this.coupons.find(x => x.id == this.form.get('couponId').value)
-    //     coupons = [coupon]
-    //     switch(coupon.duration){
-    //       case "once":
-    //         return this.form.get('quantity').value*(price.getTotalAmount(coupons) + price.getTotalAmount([])*(this.form.get('interval').value - 1))
-    //       case "repeating":
-    //         if(coupon.durationInMonths > this.form.get('interval').value){
-    //           // this.newCharge.interval = coupon.durationInMonths
-    //           this.form.get('interval')!.setValue(coupon.durationInMonths)
-    //         }
-    //         return price.getTotalAmount([coupon])*coupon.durationInMonths + price.getTotalAmount([])*(this.form.get('interval').value - coupon.durationInMonths)
-    //       case "forever":
-    //         return price.getTotalAmount([coupon])*this.form.get('interval').value
-    //       default:
-    //         return  this.form.get('quantity').value*price.getTotalAmount([coupon])*this.form.get('interval').value
-    //     }
-    //   }
-    //   return price.amount*this.form.get('interval').value*this.form.get('quantity').value
-    // } else {
-    //   return 0
-    // }
-
-    return 0
+    return this.selectedProduct.amount*this.form.get('interval').value*this.form.get('quantity').value
   }
 
   updateCaptureAmountAnPayAt() {
