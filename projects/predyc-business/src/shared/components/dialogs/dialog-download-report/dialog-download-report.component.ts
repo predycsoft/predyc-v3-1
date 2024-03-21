@@ -211,6 +211,7 @@ export class DialogDownloadReportComponent {
             department: department?.name ? department.name : '',
             departmentId: department?.id ? department.id : '',
             hours: hours, // Calculation pending
+            hoursAllCourses:hoursAllCourses,
             targetHours: targetHours,
             targetHoursAllCourses:targetHoursAllCourses,
             profile: profileName,
@@ -920,7 +921,7 @@ export class DialogDownloadReportComponent {
 
     usersData.forEach(usuario => {
       totalTimeExpected+=usuario?.targetHoursAllCourses ? usuario.targetHoursAllCourses: 0
-      totalTimeFinished+=usuario?.hours ? usuario.hours: 0
+      totalTimeFinished+=usuario?.hoursAllCourses ? usuario.hoursAllCourses: 0
     });
 
     if(totalTimeExpected == 0){
@@ -974,6 +975,9 @@ export class DialogDownloadReportComponent {
   }
 
   calcularPromedioTiempoEstudioConClases(classes,users): any {
+
+
+  console.log('calcularPromedioTiempoEstudioConClases',classes)
 
     
   if (classes.length === 0) {
