@@ -12,6 +12,12 @@ style="border-radius: 24px !important;" (click)="onSelect(templateNewProduct)">
             <td mat-cell *matCellDef="let data" class="ft500 ft14  gray-10"> {{ data.name | titlecase}} </td>
         </ng-container>
 
+        <!-- amount Column -->
+        <ng-container matColumnDef="amount">
+            <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Monto </th>
+            <td mat-cell *matCellDef="let data" class="centertext ft14"> {{data.amount}} $ </td>
+        </ng-container>
+
         <!-- createdAt Column -->
         <ng-container matColumnDef="created">
             <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Creado </th>

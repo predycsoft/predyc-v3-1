@@ -1,6 +1,7 @@
 export interface ProductJson {
     accesses: ProductAccesses;
     active: boolean;
+    amount: number;
     autodeactivate: boolean;
     createdAt: number;
     description: string;
@@ -13,6 +14,7 @@ export class Product {
     accesses: ProductAccesses;
     active: boolean;
     autodeactivate: boolean;
+    amount: number;
     createdAt: number;
     description: string;
     features: ProductFeatures[];
@@ -30,6 +32,7 @@ export class Product {
         enableCreateParticularCourses: false,
       },
       active: true,
+      amount: 0,
       autodeactivate: false,
       createdAt: +new Date(),
       description: '',
@@ -43,6 +46,7 @@ export class Product {
       let product = new Product();
       product.accesses = obj.accesses;
       product.active = obj.active;
+      product.amount = obj.amount;
       product.autodeactivate = obj.autodeactivate;
       product.createdAt = obj.createdAt;
       product.description = obj.description;
@@ -55,6 +59,7 @@ export class Product {
       return {
         accesses: this.accesses,
         active: this.active,
+        amount: this.amount,
         autodeactivate: this.autodeactivate,
         createdAt: this.createdAt,
         description: this.description,

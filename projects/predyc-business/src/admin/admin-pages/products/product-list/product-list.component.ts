@@ -28,6 +28,7 @@ export class ProductListComponent {
 
   displayedColumns: string[] = [
     "name",
+    "amount",
     "created",
   ];
 
@@ -79,7 +80,7 @@ export class ProductListComponent {
     const modalRef = this.modalService.open(DialogProductFormComponent, {
       animation: true,
       centered: true,
-      size: 'xl',
+      size: 'lg',
       backdrop: 'static',
       keyboard: false ,
     })

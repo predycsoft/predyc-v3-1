@@ -26,6 +26,7 @@ export class ProductFormComponent {
     name: [''],
     active: [true],
     autodeactivate: [false],
+    amount: [0],
     description: [''],
     features: this.fb.array([]),
     accesses: this.fb.group({

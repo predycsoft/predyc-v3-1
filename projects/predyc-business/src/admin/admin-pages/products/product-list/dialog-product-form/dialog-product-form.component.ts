@@ -28,10 +28,11 @@ export class DialogProductFormComponent {
   ngOnInit(): void {
   }
 
-  async onSubmit(product): Promise<void> {
+  async onSubmit(product: Product): Promise<void> {
     if (!product.id) {
       const newId = product.name.split(' ').join('-');
       product.id = newId;
+      product.createdAt = +new Date()
     }
     try {
       await this.productService.saveProduct(product)
