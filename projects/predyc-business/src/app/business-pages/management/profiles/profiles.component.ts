@@ -494,7 +494,7 @@ export class ProfilesComponent {
     try {
       if (!this.profileName) throw new Error("Debe indicar un nombre para el perfil")
 
-      if(this.profiles.find(x=> x.name.toLowerCase() == this.profileName.toLowerCase() && x.id != this.profile?.id )) throw new Error("El nombre del perfil se encuentra en uso")
+      if(this.profiles.find(x=> x.name.toLowerCase() == this.profileName.toLowerCase() && x.id != this.profile?.id && this.profile?.baseProfile.id !=x.id )) throw new Error("El nombre del perfil se encuentra en uso")
 
 
       this.disableSaveButton = true
