@@ -18,6 +18,7 @@
                        class="form-control pdl20"
                        (click)="fechaInicio.toggle()"
                        ngbDatepicker
+                       [maxDate]="maxDate"
                        #fechaInicio="ngbDatepicker"
                        placeholder="Fecha inicio"
                        fxFlex>
@@ -28,16 +29,17 @@
                        class="form-control pdl20"
                        (click)="fechafin.toggle()"
                        ngbDatepicker
+                       [maxDate]="maxDate"
                        #fechafin="ngbDatepicker"
                        placeholder="Fecha fin"
                        fxFlex>
             </div>
             <!-- Botón de descarga de reporte -->
             <div class="mgt10" fxLayoutAlign="end end">
-                <button *ngIf="loaded && startDate" class="lightButton backBlue5 radius6 h40px ft14" id="btn" (click)="downloadReport()">
+                <button *ngIf="loaded && (startDate && endDate)" class="lightButton backBlue5 radius6 h40px ft14" id="btn" (click)="downloadReport()">
                     <img [src]="icon.download" class="makeWhite" alt=""> Descargar reporte
                 </button>
-                <button *ngIf="loaded && !startDate" class="lightButton radius6 h40px ft14 border grayLink" disabled>
+                <button *ngIf="loaded && (!startDate || !endDate)!" class="lightButton radius6 h40px ft14 border grayLink" disabled>
                     <img [src]="icon.download" class="makeGray" alt=""> Descargar reporte
                 </button>
             </div>

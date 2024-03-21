@@ -58,7 +58,19 @@ export class DialogDownloadReportComponent {
     private profileService: ProfileService,
     private departmentService: DepartmentService
 
-  ) {}
+  ) {
+
+    const today = new Date();
+
+
+    this.maxDate = {
+      year: today.getFullYear(),
+      month: today.getMonth() + 1, // Los meses en JavaScript son de 0 a 11
+      day: today.getDate()
+    };
+
+
+  }
 
   startDate
   hoy: number = Date.now()
@@ -1243,6 +1255,9 @@ export class DialogDownloadReportComponent {
   ritmoOptimo = []
   sinPlan = []
   noIniciado = []
+
+
+  maxDate
 
   async generalProgressbarDepartment(users,currentLine) {
 
