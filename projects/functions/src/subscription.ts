@@ -7,22 +7,44 @@ const db = admin.firestore();
 
 export const checkExpiredSubscriptions = functions.pubsub.schedule('every 24 hours').onRun(async (context) => {
     const now = +new Date();
-    const licenseRef = db.collection('subscription');
-    const snapshot = await licenseRef.where('currentPeriodEnd', '<', now).get();
+    const subscriptionRef = db.collection('subscription');
+    const snapshot = await subscriptionRef.where('currentPeriodEnd', '<', now).get();
 
     if (snapshot.empty) {
-        console.log('No matching documents.');
+        console.log('No matching documents!!!.');
         return null;
     }
 
     let batch = db.batch();
 
-    snapshot.forEach(doc => {
+    for (const doc of snapshot.docs) {
         const docData = doc.data();
-        const docRef = licenseRef.doc(doc.id);
+
+        // Skip if there's no productRef
+        if (!docData.productRef) {
+            console.log(docData.id + "subscription doesnt have productRef set")
+        } 
+
+        const productSnapshot = await docData.productRef.get();
+
+        if (!productSnapshot.exists) {
+            console.log(`Product not found for subscription: ${doc.id}`);
+            continue;
+        }
+
+        const productData = productSnapshot.data();
+
+        // Skip if autodeactivate is not true
+        if (!productData.autodeactivate) {
+            console.log(productData.name + " skipped (autodeactivated = false)")
+            continue;
+        }
+
         const currentPeriodEnd = docData.currentPeriodEnd;
+        const docRef = subscriptionRef.doc(doc.id);
 
         // Update subscription
+        console.log("upadting ", docData.id, " subscription")
         batch.update(docRef, {
             status: 'canceled',
             canceledAt: currentPeriodEnd,
@@ -31,20 +53,20 @@ export const checkExpiredSubscriptions = functions.pubsub.schedule('every 24 hou
 
         // Update user
         if (docData.userRef) {
-            // Asume que userRef es una referencia de DocumentReference válida
+            console.log("upadting ", docData.userRef.id, " user")
             const userDocRef = docData.userRef;
             batch.update(userDocRef, { status: 'canceled' });
         }
-    });
+    }
 
-    // Ejecutar el batch
+    // Execute the batch
     try {
         await batch.commit();
-        console.log('Status updated to canceled for expired licenses and users.');
-        return null
+        console.log('Status updated to canceled for expired subscriptions and users with auto-deactivate enabled.');
+        return null;
     } catch (error) {
         console.error('Error updating documents: ', error);
-        return null
+        return null;
     }
 });
 
