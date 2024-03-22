@@ -1,79 +1,29 @@
-<div class="container slider" fxLayout="column">
+<div class="container" fxLayout="column">
     <form [formGroup]="form" (ngSubmit)="saveSubscription()">
         <div>
             <span class="ft20 gray-10 ft500">Crear Suscripción</span>
         </div>
-        <div fxLayout="row" fxLayoutGap="2rem" class="mgt10">
-            <div fxLayout="column">
-                <span class="ft11 gray-9">Identificador:</span>
-                <span class="ft11 gray-10">{{subscription.id}}</span>
+        <div class="fw mgt10" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="2rem">
+            <div class="h50px w-30" fxLayout="column" fxLayoutGap=".75rem">
+                <span class="ft31 gray-9">Comienzo del periodo actual:</span>
+                <input type="datetime-local" formControlName="startedAt" (ngModelChange)="onDateChange()" class="pdl03 pdr03">
             </div>
-            <div fxLayout="column">
-                <span class="ft11 gray-9">Id Usuario:</span>
-                <span class="ft11 gray-10">{{subscription.userRef.id}}</span>
-            </div>
-            <div fxLayout="column">
-                <span class="ft11 gray-9">Fecha de creación:</span>
-                <span class="ft11 gray-10">{{subscription.createdAt | date:"dd/MM/yyyy hh:mm a"}}</span>
-            </div>
-        </div>
-        <div class="fw mgt10" fxLayout="row" fxLayoutAlign="space-between" fxLayoutGap="2rem">
-            <div fxLayout="column" class="fw">
-                <div class="h50px" fxLayout="column">
-                    <span class="ft11 gray-9">Comienzo de la suscripción:</span>
-                    <input type="datetime-local" formControlName="startedAt" (ngModelChange)="onDateChange()">
-                </div>
-                <div class="h50px" fxLayout="column">
-                    <span class="ft11 gray-9">Final de período actual:</span>
-                    <input type="datetime-local" formControlName="currentPeriodEnd" (ngModelChange)="showAlertText = false">
-                </div>                  
-                <div fxLayout="column" class="mgt05 h50px">
-                    <span class="ft11 gray-9">Producto</span>
-                    <mat-select placeholder="Seleccione el producto" formControlName="productId" (ngModelChange)="showAlertText = false">
-                        <mat-option *ngFor="let product of products" [value]="product.id">{{product.name}}</mat-option>
-                    </mat-select>
-                </div>
-                <!-- <div fxLayout="column" class="mgt05 h50px">
-                    <span class="ft11 gray-9">Precio</span>
-                    <mat-select placeholder="Seleccione el precio" formControlName="priceId" (ngModelChange)="getCurrentTimes()">
-                        <mat-option *ngFor="let price of filteredPrices" [value]="price.id">$ {{price.amount}}</mat-option>
-                    </mat-select>
-                </div> -->
-                <!-- <div fxLayout="column" class="mgt05 h50px">
-                    <span class="ft11 gray-9">Descuento</span>
-                    <mat-select placeholder="Seleccione el descuento si aplica" formControlName="couponId">
-                        <mat-option *ngFor="let coupon of coupons" [value]="coupon.id">{{coupon.name}}</mat-option>
-                    </mat-select>
-                </div> -->
-                <div class="mgt05 h50px" fxLayout="column">
-                    <span class="ft11 gray-9">Períodos pagados:</span>
-                    <input type="number" min="1" formControlName="interval">
-                </div>
-            </div>
-            <div fxLayout="column" class="fw">
-                <div fxLayout="column" class="h50px">
-                    <span class="ft11 gray-9">Comienzo de período actual:</span>
-                    <span class="ft12 mgt05 gray-10">{{subscription.currentPeriodStart| date:"dd/MM/yyyy"}}</span>
-                </div>
-                <div fxLayout="column" class="mgt05 h50px">
-                    <span class="ft11 gray-9">Final de período actual:</span>
-                    <span class="ft12 mgt05 gray-10" *ngIf="form.get('currentPeriodEnd').value">
-                        {{form.get('currentPeriodEnd').value| date:"dd/MM/yyyy"}} 
-                    </span>
-                    <span class="ft12 mgt05 red-5" *ngIf="!form.get('currentPeriodEnd').value">
-                        Selecciona la fecha
-                    </span>
-                </div>
-                <div fxLayout="column" class="mgt05 h50px">
-                    <span class="ft11 gray-9">Estatus:</span>
-                    <span class="ft12 gray-10 mgt05">{{subscription.status}}</span>
-                </div>
+            <div class="h50px w-30" fxLayout="column" fxLayoutGap=".75rem">
+                <span class="ft13 gray-9">Final de período actual:</span>
+                <input type="datetime-local" formControlName="currentPeriodEnd" (ngModelChange)="showAlertText = false" class="pdl03 pdr03">
+            </div>                  
+            <div class="h50px w-30" fxLayout="column" fxLayoutGap=".75rem">
+                <span class="ft13 gray-9">Producto</span>
+                <mat-select placeholder="Seleccione el producto" formControlName="productId" (ngModelChange)="showAlertText = false" 
+                style="border: 1px solid black;" class="pdl03 pdr03">
+                    <mat-option *ngFor="let product of products" [value]="product.id">{{product.name}}</mat-option>
+                </mat-select>
             </div>
         </div>
-        <div *ngIf="showAlertText" class="mgt03" fxLayout="row" fxLayoutAlign="center center">
+        <div *ngIf="showAlertText" class="mgt15" fxLayout="row" fxLayoutAlign="center center">
             <span style="color: red !important">Debes elegir un producto y fecha final</span>
         </div>
-        <div class="fw mgt20" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="1.5rem">
+        <div class="fw mgt15" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="1.5rem">
             <button class="backBlue5 pd03 radius6 w150px centertext cursorPointer" fxLayoutAlign="center center" fxLayout="row" fxLayoutGap=".5rem" type="submit">
                 <mat-icon class="ft16 gray-1 pd0">save</mat-icon>
                 <span class="gray-1 ft12 ft500">Guardar</span>
@@ -84,5 +34,4 @@
             </button>
         </div>
     </form>
-
 </div>
