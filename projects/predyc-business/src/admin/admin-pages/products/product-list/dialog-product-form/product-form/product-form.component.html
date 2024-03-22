@@ -32,11 +32,11 @@
                     <div fxLayout="row" fxLayoutAlign="space-between center"  fxLayoutGap="1.5rem" class="fw">
                         <div class="fw" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".3rem" >
                             <label for="name" class="gray-9 ft15">Nombre:</label>
-                            <input class="backWhite fw" id="name" type="text" formControlName="name" [readonly]="product.id ? true : false" />
+                            <input class="backWhite fw pdl03" id="name" type="text" formControlName="name" [readonly]="product.id ? true : false" />
                         </div>
                         <div class="" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".3rem" >
                             <label for="name" class="gray-9 ft15">Monto:</label>
-                            <input class="backWhite w80px" id="amount" type="number" min="0" formControlName="amount"/>
+                            <input class="backWhite w80px pdl03" id="amount" type="number" min="0" formControlName="amount" [readonly]="product.id ? true : false"/>
                         </div>
                     </div>
 
