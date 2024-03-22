@@ -503,17 +503,20 @@
                 </ng-container>
             </mat-tab>
             <mat-tab label="Examen">
-                <!-- estoy aqui -->
                 <div fxLayout="row" class="containerCurso h-100" fxLayoutGap="1.5rem">
-                    <div fxLayout="column" class="radius10 w-50 mgt15  mgl10 shadowLight  hideScroll shadowLight" style="overflow-y: auto; background-color:rgba(244, 244, 244, 0.362) ">
+                    <div fxLayout="column" class="radius10 w-100 mgt15 mgl10 shadowLight hideScroll shadowLight" style="overflow-y: auto; background-color:rgba(244, 244, 244, 0.362)">
                         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="mgl10 mgt15 mgr10">
                             <img [src]="icon.document" class="makeBlue h20px" alt="">
-                            <span class="ft500 ft14 black " style="margin-top: 5px;">Examen del curso</span>
+                            <span class="ft500 ft14 black " style="margin-top: 5px;">Examen del curso ({{ examen?.questions?.length}} Preguntas)</span>
                         </div>
-                        <app-questions type="test" class="mgr10" [questionMaxSize]="100" [nameCurso]="formNewCourse?.get('titulo').value?  this.formNewCourse?.get('titulo').value : 'Temporal'" [nameEmpresa]="empresa?.name" (changeQuestion)="validExam = $event;formatExamQuestions()" (emmitForm)="validExam = $event;" [questionsArray]="examen?.questions ? examen?.questions:[] " [checkQuestions]="updateTriggeQuestionsExam" [selectedTestSkills]="[]"></app-questions>
+                        <div fxLayout="row" fxLayoutAlign="center" class="w-100"> <!-- Centrar contenido -->
+                            <div style="width: 800px;"> <!-- Ancho fijo -->
+                                <app-questions type="test" class="mgr10" [questionMaxSize]="100" [nameCurso]="formNewCourse?.get('titulo').value?  formNewCourse?.get('titulo').value : 'Temporal'" [nameEmpresa]="empresa?.name" (changeQuestion)="validExam = $event;formatExamQuestions()" (emmitForm)="validExam = $event;" [questionsArray]="examen?.questions ? examen?.questions:[]" [checkQuestions]="updateTriggeQuestionsExam" [selectedTestSkills]="[]"></app-questions>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="column w-50 mgr25" fxLayoutGap="2rem" >
+                    <div *ngIf="false" class="column w-50 mgr25" fxLayoutGap="2rem" >
                         <div *ngIf="examen && questionsFormated" class=" mgt15  mgl10 fw" fxLayout="column">
                             <div fxLayout="column" class=" radius10  fh hideScroll shadowLight" style="overflow-y: auto; background-color:rgba(244, 244, 244, 0.362) ">
                                 <div>

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, NgForm, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { Question } from 'projects/shared/models/activity-classes.model';
+import { Question, QuestionType } from 'projects/shared/models/activity-classes.model';
 import { cloneArrayOfObjects, getPlaceholders } from 'projects/shared/utils';
 
 import { CategoryService } from 'projects/predyc-business/src/shared/services/category.service';
@@ -104,6 +104,9 @@ export class QuestionsComponent {
   @Output() emmitForm = new EventEmitter();
   @Output() changeQuestion = new EventEmitter();
 
+  questionTypesModel = QuestionType;
+
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.checkQuestions) {
       if(this.checkQuestions !=0){
@@ -138,7 +141,7 @@ export class QuestionsComponent {
 
 
 
-  questionStatus: { expanded: boolean, visibleImage: boolean, placeholders: string[], textToRender: SafeHtml }[] = []
+  questionStatus: { expanded: boolean, editing:boolean, visibleImage: boolean, placeholders: string[], textToRender: SafeHtml,formated }[] = []
 
   mainForm: FormGroup
 
@@ -181,6 +184,8 @@ export class QuestionsComponent {
       });
     }
 
+    this.formatExamQuestions()
+
   }
 
   get questions(): FormArray {
@@ -218,10 +223,12 @@ export class QuestionsComponent {
     }
   
     this.questionStatus.push({
-      expanded: false,
+      editing:false,
+      expanded: true,
       visibleImage: false,
       placeholders: [],
-      textToRender: null
+      textToRender: null,
+      formated:null
     });
   
   }
@@ -266,10 +273,12 @@ export class QuestionsComponent {
       skills: this.fb.array([]),
     }, { validators: questionTypeToValidators[defaultQuestionType] }));
     this.questionStatus.push({
+      editing:true,
       expanded: true,
       visibleImage: false,
       placeholders: [],
-      textToRender: null
+      textToRender: null,
+      formated:null
     })
     this.selectedQuestionsSkills.push([])
   }
@@ -563,6 +572,91 @@ export class QuestionsComponent {
     console.log(this.mainForm.value)
 
   }
+
+  examenQuestionsFormated = [];
+  questionsFormated
+  
+  formatExamQuestions(){
+
+    let questions = structuredClone(this.questions.value)
+
+    if(questions.length>0){
+      questions.forEach(question => {
+        console.log('question',question)
+        if(!question.typeFormated){
+          question.typeFormated = this.getTypeQuestion(question.type)
+          if(question.type == 'complete'){
+            this.showDisplayText(question)
+          }
+        }
+      });
+      if(this.examenQuestionsFormated){
+        this.examenQuestionsFormated = questions
+        this.questionsFormated = true
+      }
+    }
+
+    console.log('revisarformatExamQuestions',this.examenQuestionsFormated)
+
+  }
+
+
+  getTypeQuestion(type){
+
+    const TYPE_CALCULATED: string = 'calculated';
+    const TYPE_MATCHING: string = 'matching';
+    const TYPE_NUMERIC: string = 'numeric';
+    const TYPE_MULTIPLE_CHOICE: string = 'multiple_choice';
+    const TYPE_SINGLE_CHOICE: string = 'single_choice';
+    const TYPE_SHORT_ANSWER: string = 'short-answer';
+    const TYPE_COMPLETE: string = 'complete';
+    const TYPE_TRUE_OR_FALSE: string = 'true-false';
+
+    let typeToInfoDict = {
+      [TYPE_MULTIPLE_CHOICE]: {
+        value: TYPE_MULTIPLE_CHOICE,
+        displayName: 'Opción Múltiple',
+        tooltipInfo:
+          'Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas',
+        createInstructions: '',
+        solveInstructions:
+          'Seleccione una o mas opciones como correctas del listado de opciones',
+      },
+      [TYPE_SINGLE_CHOICE]: {
+        value: TYPE_SINGLE_CHOICE,
+        displayName: 'Opción Simple',
+        tooltipInfo:
+          'Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta',
+        createInstructions: '',
+        solveInstructions:
+          'Seleccione la opción correcta del listado de opciones',
+      },
+      [TYPE_COMPLETE]: {
+        value: TYPE_COMPLETE,
+        displayName: 'Completar',
+        tooltipInfo:
+          'Configure una pregunta cuyo texto pueda ser completado a partir de las opciones provistas para cada marcador de referencia - cada marcador debe tener una única respuesta correcta',
+        createInstructions:
+          'Ingrese cada marcador como una palabra de referencia encerrada entre corchetes ([]).<br/>Ejemplo: El presidente [nombreDelPresidente] nacio en [paisDeNacimiento]',
+        solveInstructions:
+          'Complete el texto utilizando los selectores proporcionados para dar sentido a la frase',
+      },
+      [TYPE_TRUE_OR_FALSE]: {
+        value: TYPE_TRUE_OR_FALSE,
+        displayName: 'Verdadero o Falso',
+        tooltipInfo:
+          'Configure una pregunta cuya respuesta sea verdadero o falso',
+        createInstructions:
+          'Marque las opciones que sean verdaderas y deje en blanco las que sean falsas',
+        solveInstructions:
+          'Clasifique las siguientes afirmaciones como verdadera o falsa',
+      }
+    }
+
+    let typeComplete = typeToInfoDict[type]
+    return typeComplete
+  }
+
 
 
 
