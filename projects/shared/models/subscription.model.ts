@@ -15,9 +15,6 @@ export interface SubscriptionJson {
     status:
       | 'active'
       | 'canceled'
-    trialStartedAt: number | null;
-    trialEndedAt: number | null;
-    interval: number | null;
     currentError: string | null;
     nextPaymentDate: number;
     nextPaymentAmount: number;
@@ -30,8 +27,6 @@ export class Subscription {
   public static collection: string = 'subscription'
 
   public static STATUS_ACTIVE: string = 'active';
-
-  
   public static STATUS_CANCELED: string = 'canceled';
 
   public static STATUS_CHOICES = [
@@ -56,9 +51,6 @@ export class Subscription {
   status:
     | 'active'
     | 'canceled'
-  trialStartedAt: number | null;
-  trialEndedAt: number | null;
-  interval: number | null;
   couponRef: DocumentReference | null;
   currentError: string | null;
   nextPaymentDate: number;
@@ -84,9 +76,6 @@ export class Subscription {
       endedAt: null,
       productRef: null,
       status: 'active',
-      trialStartedAt: null,
-      trialEndedAt: null,
-      interval: 1,
       nextPaymentAmount: 0,
       nextPaymentDate: null,
       canceledAt: null,
@@ -114,9 +103,6 @@ export class Subscription {
     subscription.canceledAt = subscriptionData.canceledAt;
     subscription.productRef = subscriptionData.productRef;
     subscription.status = subscriptionData.status;
-    subscription.trialStartedAt = subscriptionData.trialStartedAt;
-    subscription.trialEndedAt = subscriptionData.trialEndedAt;
-    subscription.interval = subscriptionData.interval;
     subscription.currentError = subscriptionData.currentError;
     subscription.nextPaymentDate = subscriptionData.nextPaymentDate;
     subscription.nextPaymentAmount = subscriptionData.nextPaymentAmount;
@@ -139,10 +125,7 @@ export class Subscription {
       canceledAt: this.canceledAt,
       productRef: this.productRef,
       status: this.status,
-      trialStartedAt: this.trialStartedAt,
-      trialEndedAt: this.trialEndedAt,
       currentError: this.currentError,
-      interval: this.interval,
       nextPaymentDate: this.nextPaymentDate,
       nextPaymentAmount: this.nextPaymentAmount,
       enterpriseRef: this.enterpriseRef,

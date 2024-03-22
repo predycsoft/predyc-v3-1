@@ -42,12 +42,9 @@ export class SubscriptionService {
     subscription.endedAt = null
     subscription.enterpriseRef = this.enterpriseService.getEnterpriseRef()
     subscription.id = 'PRE_' + + new Date() + userId
-    subscription.interval = 1
     subscription.licenseRef = licenseRef
     subscription.nextPaymentAmount = null
     subscription.nextPaymentDate = null 
-    subscription.trialEndedAt = null 
-    subscription.trialStartedAt = null 
     subscription.userRef = this.userService.getUserRefById(userId)
     subscription.productRef = license.productRef
     subscription.startedAt = Date.now()

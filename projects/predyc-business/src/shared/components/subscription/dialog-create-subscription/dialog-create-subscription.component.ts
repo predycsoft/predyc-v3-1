@@ -59,12 +59,10 @@ export class DialogCreateSubscriptionComponent {
       startedAt: [null],
       currentPeriodEnd: [null,  Validators.required],
       productId: ['', Validators.required],
-      interval: [null]
     });
 
     this.form.patchValue({
       startedAt: this.toStringDate(new Date(this.subscription.startedAt)),
-      interval: this.subscription.interval,
     });
 
     this.formProductIdSubscription = this.form.get('productId')!.valueChanges.subscribe(value => {
@@ -105,7 +103,6 @@ export class DialogCreateSubscriptionComponent {
   onDateChange(): void {
     let parsedDate = this.toDate(this.form.get("startedAt").value);
 
-    // check if date is valid first
       this.subscription.startedAt = +parsedDate;
       this.subscription.currentPeriodStart = +parsedDate;
   }
@@ -114,7 +111,6 @@ export class DialogCreateSubscriptionComponent {
     if (this.form.valid) {
       // Process and save data
       const formValue = this.form.value;
-      this.subscription.interval = formValue.interval
       this.subscription.currentPeriodEnd = +this.toDate(formValue.currentPeriodEnd)
       this.subscription.nextPaymentDate = this.subscription.currentPeriodEnd
       this.subscription.enterpriseRef = this.enterpriseRef

@@ -92,7 +92,6 @@ export class StudentSubscriptionListComponent {
           productName: product.name,
           statusToDisplay: SubscriptionClass.statusToDisplayValueDict[subscription.status],
           // statusBasedComment: this.getStatusBasedComment(subscription, price, coupon),
-          // priceInterval: price.interval
         };
       });
       
@@ -171,10 +170,7 @@ export class StudentSubscriptionListComponent {
       canceledAt: subscriptionInfo.canceledAt,
       productRef: subscriptionInfo.productRef,
       status: subscriptionInfo.status,
-      trialStartedAt: subscriptionInfo.trialStartedAt,
-      trialEndedAt: subscriptionInfo.trialEndedAt,
       currentError: subscriptionInfo.currentError,
-      interval: subscriptionInfo.interval,
       nextPaymentDate: subscriptionInfo.nextPaymentDate,
       nextPaymentAmount: subscriptionInfo.nextPaymentAmount,
       enterpriseRef: subscriptionInfo.enterpriseRef,

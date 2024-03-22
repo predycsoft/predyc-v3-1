@@ -17,7 +17,6 @@ interface SubscriptionInList {
   status: string,
   createdAt: number,
   currentPeriodStart: number,
-  interval: number,
   nextPaymentDate: number,
   nextPaymentAmount: number
 }
@@ -111,7 +110,6 @@ export class SubscriptionsListComponent {
           createdAt: subscription.createdAt,
           currentPeriodStart: subscription.currentPeriodStart,
           currentPeriodEnd: subscription.currentPeriodEnd,
-          interval: subscription.interval,
           nextPaymentDate: subscription.nextPaymentDate,
           nextPaymentAmount: subscription.nextPaymentAmount,
         };

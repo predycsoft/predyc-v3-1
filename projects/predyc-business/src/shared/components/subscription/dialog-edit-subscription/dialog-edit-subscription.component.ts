@@ -39,14 +39,12 @@ export class DialogEditSubscriptionComponent {
       currentPeriodStart: [null],
       currentPeriodEnd: [null],
       status: [null],
-      interval: [null],
     });
 
     this.form.patchValue({
       currentPeriodStart: this.toStringDate(new Date(this.subscriptionInfo.currentPeriodStart)),
       currentPeriodEnd: this.toStringDate(new Date(this.subscriptionInfo.currentPeriodEnd)),
       status: this.subscriptionInfo.status,
-      interval: this.subscriptionInfo.interval,
       endedAt: this.subscriptionInfo.endedAt ? this.toStringDate(new Date(this.subscriptionInfo.endedAt)): null,
     });
 
@@ -92,7 +90,6 @@ export class DialogEditSubscriptionComponent {
       // Process and save data
       const formValue = this.form.value;
       this.saveDates()
-      this.subscriptionInfo.interval = formValue.interval
       this.subscriptionInfo.status = formValue.status
       this.matDialogRef.close(this.subscriptionInfo);
     }
