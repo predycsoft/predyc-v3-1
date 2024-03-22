@@ -779,7 +779,7 @@ body {
 .op40{  opacity: 0.4px; }
 .op50{  opacity: 0.5px; }
 .op60{  opacity: 0.6px; }
-.op70{  opacity: 0.7px; }
+.op70{  opacity: 70%; }
 .op80{  opacity: 0.8px; }
 .op90{  opacity: 0.9px; }
 .op100{  opacity: 1px; }
@@ -954,7 +954,7 @@ body {
 .zIndex8{  z-index: 800; }
 .zIndex9{  z-index: 900; }
 .zIndex10{  z-index: 1000; }
-.fw{  width: 100%; }
+.fw{  width: 100% !important; }
 .fh{  height: 100%; }
 .fmh{min-height: 100%;}
 .center{  display: flex; justify-content: space-around }

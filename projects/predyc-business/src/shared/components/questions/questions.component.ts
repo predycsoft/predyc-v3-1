@@ -105,6 +105,8 @@ export class QuestionsComponent {
   @Output() changeQuestion = new EventEmitter();
 
   questionTypesModel = QuestionType;
+  isSuccess: boolean = null;
+  activityAnswers: Array<any>;
 
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -151,10 +153,27 @@ export class QuestionsComponent {
 
   displayErrors: boolean = false
 
+  
+
 
   selectedQuestionsSkills = []
   selectedQuestionIndex: number | null = null
   selectedQuestionSkills: [] | null = null
+
+
+
+  getQuestionTypeName (type){
+    let seach = this.questionTypes.find(x=>x.value == type)
+
+    if(seach) return seach.displayName
+
+
+    return null
+
+
+
+
+  }
 
   ngOnInit() {
     this.init();
@@ -174,6 +193,7 @@ export class QuestionsComponent {
   
 
   setupForm() {
+    this.questionStatus = [];
     this.mainForm = this.fb.group({
       questions: this.fb.array([])
     });
@@ -207,6 +227,7 @@ export class QuestionsComponent {
       options: this.fb.array([]),
       points: [question.points, [Validators.required, Validators.min(1), Validators.pattern(/^\d*$/)]],
       skills: this.fb.array([]),
+      explanation: [question.explanation, []]
     }, { validators: questionTypeToValidators[questionType] });
   
     this.questions.push(newQuestionGroup);
@@ -225,11 +246,13 @@ export class QuestionsComponent {
     this.questionStatus.push({
       editing:false,
       expanded: true,
-      visibleImage: false,
+      visibleImage: true,
       placeholders: [],
       textToRender: null,
       formated:null
     });
+
+
   
   }
 
@@ -257,9 +280,8 @@ export class QuestionsComponent {
     });
   }
 
-  
-
   addQuestion(): void {
+    
     const defaultQuestionType = Question.TYPE_SINGLE_CHOICE
     this.questions.push(this.fb.group({
       text: ['', [Validators.required]],
@@ -271,16 +293,25 @@ export class QuestionsComponent {
       options: this.fb.array([], []),
       points: [1, [Validators.required, Validators.min(1), Validators.pattern(/^\d*$/)]],
       skills: this.fb.array([]),
+      explanation: ['', []]
     }, { validators: questionTypeToValidators[defaultQuestionType] }));
+   // Calcula el índice de la nueva pregunta
+    const questionIndex = this.questions.length - 1;
+    // Agrega 4 opciones vacías a la nueva pregunta
+    for (let i = 0; i < 4; i++) {
+      this.addOption(questionIndex);
+    }
+
     this.questionStatus.push({
       editing:true,
       expanded: true,
-      visibleImage: false,
+      visibleImage: true,
       placeholders: [],
       textToRender: null,
       formated:null
     })
     this.selectedQuestionsSkills.push([])
+
   }
 
   removeQuestion(index: number): void {
@@ -288,26 +319,36 @@ export class QuestionsComponent {
     this.questionStatus.splice(index, 1)
     this.selectedQuestionsSkills.splice(index, 1)
     console.log('Form Data:', this.mainForm);
-    this.changeQuestion.emit(this.mainForm);
+    // this.changeQuestion.emit(this.mainForm);
+    // this.formatExamQuestions()
   }
 
   changePoints(points){
 
     if(points>0){
-      this.changeQuestion.emit(this.mainForm);
+      // this.changeQuestion.emit(this.mainForm);
+      // this.formatExamQuestions()
     }
 
   }
 
+  saveQuestionsForm(){
+    this.changeQuestion.emit(this.mainForm);
+    this.formatExamQuestions()
+  }
+
+
   changeTextQuestions(event){
     let text = event.value
-    if(text?.length>0)
-    this.changeQuestion.emit(this.mainForm);
+    //if(text?.length>0)
+    // this.changeQuestion.emit(this.mainForm);
+    // this.formatExamQuestions()
   }
 
   changeOption(option){
     if(option.length>0){
-      this.changeQuestion.emit(this.mainForm);
+      // this.changeQuestion.emit(this.mainForm);
+      // this.formatExamQuestions()
     }
   }
 
@@ -318,16 +359,19 @@ export class QuestionsComponent {
       isCorrect: [false],
       placeholder: [placeholder],
     }));
-    this.changeQuestion.emit(this.mainForm);
+    //this.changeQuestion.emit(this.mainForm);
+    // this.formatExamQuestions()
   }
 
   removeOption(questionIndex: number, optionIndex: number): void {
     this.options(questionIndex).removeAt(optionIndex)
-    this.changeQuestion.emit(this.mainForm);
+    // this.changeQuestion.emit(this.mainForm);
+    // this.formatExamQuestions()
   }
 
   changeOptionTrue(): void {
-    this.changeQuestion.emit(this.mainForm);
+    // this.changeQuestion.emit(this.mainForm);
+    // this.formatExamQuestions()
   }
 
   modifyQuestionSkills(modalTemplate, questionIndex) {
@@ -384,6 +428,8 @@ export class QuestionsComponent {
   }
 
   onQuestionTypeChange(questionIndex: number, typeValue: string) {
+
+
     const question = this.questions.at(questionIndex)
     question['controls']['type'].setValue(typeValue)
     this.options(questionIndex).clear()
@@ -396,6 +442,15 @@ export class QuestionsComponent {
     const validators: ValidatorFn[] = questionTypeToValidators[typeValue]
     question.setValidators(validators)
     question.updateValueAndValidity()
+
+
+
+    if(typeValue=='single_choice' || typeValue=='multiple_choice'){
+
+      for (let i = 0; i < 4; i++) {
+        this.addOption(questionIndex);
+      }
+     }
   }
 
   uploadQuestionImage(questionIndex: number, event) {
@@ -436,7 +491,7 @@ export class QuestionsComponent {
             console.log(`File URL: ${url}`);
             this.questions.at(questionIndex)['controls']['image']['controls']['url'].setValue(url)
             this.questions.at(questionIndex)['controls']['image']['controls']['file'].setValue(newName)
-            this.changeQuestion.emit(this.mainForm);
+            //this.changeQuestion.emit(this.mainForm);
           });
         })
       ).subscribe();
@@ -448,8 +503,8 @@ export class QuestionsComponent {
 
   deleteOptionImage(option): void {
     option.get('image').setValue('');
-    this.changeQuestion.emit(this.mainForm);
-
+    // this.changeQuestion.emit(this.mainForm);
+    // this.formatExamQuestions()
   }
 
 
@@ -499,7 +554,8 @@ export class QuestionsComponent {
               //clase['uploading'] = false;
               console.log(`File URL: ${url}`);
               option.get('image').setValue(url);
-              this.changeQuestion.emit(this.mainForm);
+              // this.changeQuestion.emit(this.mainForm);
+              // this.formatExamQuestions()
             });
           })
         ).subscribe();
@@ -518,13 +574,16 @@ export class QuestionsComponent {
   }
 
   onSingleOptionSelected(questionIndex: number, optionIndex: number): void {
+
+    
     const targetPlaceholder = this.options(questionIndex).at(optionIndex).get('placeholder').value
     for (let index = 0; index < this.options(questionIndex).controls.length; index++) {
       if (this.options(questionIndex).at(index).get('placeholder').value === targetPlaceholder) {
         this.options(questionIndex).at(index).get('isCorrect').setValue(index === optionIndex ? true : false)
       }
     }
-    this.changeQuestion.emit(this.mainForm);
+    //this.changeQuestion.emit(this.mainForm);
+    //this.formatExamQuestions()
 
   }
 
@@ -537,6 +596,13 @@ export class QuestionsComponent {
     this.questionStatus[questionIndex].placeholders = existingPlaceholders;
     this.options(questionIndex).setValue([])
   }
+
+  parseQuestionExplanation(questionIndex: number): void {
+    const existingPlaceholders = getPlaceholders(this.questions.at(questionIndex)['controls']['explanation'].value)
+    this.questionStatus[questionIndex].placeholders = existingPlaceholders;
+    this.options(questionIndex).setValue([])
+  }
+
 
   showDisplayText(questionIndex) {
     this.questionStatus[questionIndex].textToRender = this.sanitizer.bypassSecurityTrustHtml(
@@ -582,7 +648,6 @@ export class QuestionsComponent {
 
     if(questions.length>0){
       questions.forEach(question => {
-        console.log('question',question)
         if(!question.typeFormated){
           question.typeFormated = this.getTypeQuestion(question.type)
           if(question.type == 'complete'){
@@ -655,6 +720,42 @@ export class QuestionsComponent {
 
     let typeComplete = typeToInfoDict[type]
     return typeComplete
+  }
+
+  checkAnswer(questionIndex: number, optionIndex: number): void {
+    switch (this.questions.value[questionIndex].type.value) {
+      case QuestionType.TYPE_SINGLE_CHOICE_VALUE:
+        {
+          this.activityAnswers[questionIndex].answerItems.forEach(
+            (answerItem, index) => {
+              answerItem.answer = index === optionIndex;
+            }
+          );
+        }
+        break;
+      case QuestionType.TYPE_MULTIPLE_CHOICE_VALUE:
+        {
+          this.activityAnswers[questionIndex].answerItems[optionIndex].answer =
+            !this.activityAnswers[questionIndex].answerItems[optionIndex]
+              .answer;
+        }
+        break;
+      case QuestionType.TYPE_COMPLETE_VALUE:
+        {
+          this.activityAnswers[questionIndex].answerItems.forEach(
+            (answerItem, index) => {
+              answerItem.answer = index === optionIndex;
+            }
+          );
+        }
+
+        break;
+      default:
+        {
+        }
+        break;
+    }
+    //console.log(this.activityAnswers);
   }
 
 
