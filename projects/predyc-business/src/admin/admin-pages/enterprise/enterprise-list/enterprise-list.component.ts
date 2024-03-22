@@ -37,7 +37,7 @@ export class EnterpriseListComponent {
   ];
 
   dataSource = new MatTableDataSource<EnterpriseInfo>();
-  pageSize: number = 8
+  pageSize: number = 16
   totalLength: number
 
   @ViewChild(MatPaginator) paginator: MatPaginator;

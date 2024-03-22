@@ -4,17 +4,12 @@
         <!-- Nombre Column -->
         <ng-container matColumnDef="displayName">
             <th mat-header-cell *matHeaderCellDef class="ft14"> Nombre </th>
-
-            <!-- <th mat-header-cell *matHeaderCellDef class="gray-8"> Nombre </th> -->
             <td mat-cell *matCellDef="let user"> 
-                <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign=" center" >
-                    <img
-                        [src]="user.photoUrl ? user.photoUrl : 'assets/images/default/default-user-image.jpg'"
-                        class="avatar2"
-                        alt=""
-                        >
-                    <div fxLayout="column" fxLayoutAlign="center " class="move-right ">
-                        <div class="ft500 ft14  gray-10">{{ user.displayName | titlecase }}</div>
+                <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign=" center">
+                    <img [src]="user.photoUrl ? user.photoUrl : 'assets/images/default/default-user-image.jpg'" class="avatar2" alt="" >
+                    <div fxLayout="column" fxLayoutAlign="center ">
+                        <div class="ft500 ft13 black" style=" width: 150px; text-overflow: ellipsis">{{ user.displayName | titlecase }}</div>
+                        <div class="ft11 gray-6">{{user.email}}</div>
                     </div>
                 </div>
             </td>
@@ -26,34 +21,36 @@
             <td mat-cell *matCellDef="let user" class="centertext ft14"> {{ user.email}} </td>
         </ng-container>
 
+        
+
         <!-- Registro Column -->
         <ng-container matColumnDef="createdAt">
             <th mat-header-cell *matHeaderCellDef class="ft14"> Registro </th>
-            <td mat-cell *matCellDef="let user" class="centertext ft14"> {{ user.createdAt | date:'dd/MM/yy'}} </td>
+            <td mat-cell *matCellDef="let user" class=" ft14"> {{ user.createdAt | date:'dd/MM/yy'}} </td>
         </ng-container>
 
         <!-- Ult. Act. Column -->
         <ng-container matColumnDef="updatedAt">
             <th mat-header-cell *matHeaderCellDef class="ft14"> Ult. Act. </th>
-            <td mat-cell *matCellDef="let user" class="centertext ft14"> {{user.updatedAt | date:'dd/MM/yy' }} </td>
+            <td mat-cell *matCellDef="let user" class=" ft14"> {{user.updatedAt | date:'dd/MM/yy' }} </td>
         </ng-container>
 
         <!-- Tipo Usuario Column -->
         <ng-container matColumnDef="userType">
             <th mat-header-cell *matHeaderCellDef class="ft14"> Tipo Usuario </th>
-            <td mat-cell *matCellDef="let user" class="centertext ft14"> {{ user.enterprise ? "Empresa" : "Independiente"}} </td>
+            <td mat-cell *matCellDef="let user" class=" ft14"> {{ user.enterprise ? "Empresa" : "Independiente"}} </td>
         </ng-container>
 
         <!-- Empresa Column -->
         <ng-container matColumnDef="enterprise">
             <th mat-header-cell *matHeaderCellDef class="ft14"> Empresa </th>
-            <td mat-cell *matCellDef="let user" class="centertext ft14"> {{ user.enterprise | titlecase}} </td>
+            <td mat-cell *matCellDef="let user" class=" ft14"> {{ user.enterprise | titlecase}} </td>
         </ng-container>
 
         <!-- Teléfono Column -->
         <ng-container matColumnDef="phoneNumber">
             <th mat-header-cell *matHeaderCellDef class="ft14"> Teléfono </th>
-            <td mat-cell *matCellDef="let user" class="centertext ft14"> {{ user.phoneNumber}} </td>
+            <td mat-cell *matCellDef="let user" class=" ft14"> {{ user.phoneNumber}} </td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

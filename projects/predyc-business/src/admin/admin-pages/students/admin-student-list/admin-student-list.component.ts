@@ -28,7 +28,7 @@ export class AdminStudentListComponent {
 
   displayedColumns: string[] = [
     'displayName',
-    'email',
+    // 'email',
     'createdAt',
     'updatedAt',
     'userType',
@@ -44,7 +44,7 @@ export class AdminStudentListComponent {
 
   queryParamsSubscription: Subscription
   userServiceSubscription: Subscription
-  pageSize: number = 8
+  pageSize: number = 16
   totalLength: number
 
   enterprises : Enterprise[]
