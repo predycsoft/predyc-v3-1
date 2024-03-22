@@ -1,8 +1,7 @@
 .container{
-    height: 78vh;
+    /* height: 78vh;
     width: 70vw;
     max-width: 70vw;
-    min-width: 70vw;
+    min-width: 70vw; */
     padding: 40px;
-    overflow: scroll;
 }

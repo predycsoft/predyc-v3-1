@@ -5,101 +5,47 @@
         </div>
         <div fxLayout="row" fxLayoutGap="1.5rem" class="mgt10" fxLayoutAlign=" center">
             <div fxLayout="column">
-                <span class="ft11 ft600 gray-9">Via:</span>
-                <span class="ft11 gray-10 ftup">{{newCharge.via}}</span>
-            </div>
-            <div fxLayout="column">
-                <span class="ft11 ft600 gray-9">Identificador:</span>
-                <span class="ft11 gray-10">{{newCharge.id}}</span>
-            </div>
-            <div fxLayout="column">
                 <span class="ft11 ft600 gray-9">Id Cliente:</span>
                 <span class="ft11 gray-10">{{newCharge.customer.id}}</span>
             </div>
             <div fxLayout="column">
-                <span class="ft11 ft600 gray-9">Fecha de creación:</span>
-                <input type="date" formControlName="startDate" >
+                <span class="ft11 ft600 gray-9">Fecha de inicio:</span>
+                <input type="date" formControlName="startDate">
             </div>
-            <div fxLayout="column" *ngIf="form.get('status').value == 'succeeded'">
-                <span class="ft11 ft600 gray-9">Fecha Pagada:</span>
-                <input type="date" formControlName="payAt">
+            <div fxLayout="column">
+                <span class="ft11 ft600 gray-9">Fecha fin:</span>
+                <input type="date" formControlName="endDate">
             </div>
         </div>
-        <div class="fw mgt10" fxLayout="row" fxLayoutAlign="space-between" fxLayoutGap="2rem">
-            <div fxLayout="column" class="fw">
-                <div fxLayout="column" class="mgt05 h50px">
+        <div class="fw mgt10" fxLayout="column">
+            <div fxLayout="row" class="fw" fxLayoutAlign="space-between center" fxLayoutGap="1.5rem">
+                <div fxLayout="column" class="mgt05 h50px fw">
                     <span class="ft11 ft600 gray-9">Producto</span>
-                    <mat-select placeholder="Seleccione el producto" formControlName="productId" (ngModelChange)="getAmount()">
+                    <mat-select placeholder="Seleccione el producto" formControlName="productId" style="border: 1px solid black;" class="pdl03 pdr03 pt03 h28px fw">
                         <mat-option *ngFor="let product of products" [value]="product.id" [ngClass]="product.active?'':'backGray2'">{{product.name}}</mat-option>
                     </mat-select>
                 </div>
-                <div class="mgt05 h50px" fxLayout="column">
-                    <span class="ft11 ft600 gray-9">Períodos pagados:</span>
-                    <input type="number" min="0" formControlName="interval" (ngModelChange)="getAmount()">
+                <div fxLayout="column" fxLayoutAlign="start start" class="mgt05 h50px">
+                    <span class="ft11 ft600 gray-9">Monto:</span>
+                    <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap=".2rem">
+                        <input type="number" min="0" style="width: 100px;" class="h28px" formControlName="amount">
+                        <span class="ft11 gray-9 ftup">{{newCharge.currency}}</span>
+                    </div>
                 </div>
-                <div class="mgt05 h50px" fxLayout="column" *ngIf="selectedProduct" >
-                    <span class="ft11 ft600 gray-9">Cantidad de cupos:</span>
-                    <input type="number" min="0" formControlName="quantity" (ngModelChange)="getAmount()">
+                <div fxLayout="column" fxLayoutAlign="start center" class="mgt05 h50px">
+                    <span class="ft11 ft600 gray-9">Pagado:</span>
+                    <input id="payed" type="checkbox" formControlName="isPayed" class="h28px"/>
                 </div>
-                <div class="mgt05 h50px" fxLayout="column">
-                    <span class="ft11 ft600 gray-9">Comentarios adicionales:</span>
-                    <input type="text" formControlName="comment">
-                </div>
-               
             </div>
             <div fxLayout="column" class="fw">
-                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1.5rem" class="mgt05 h50px">
-                    <div class="" fxLayout="column">
-                        <span class="ft11 ft600 gray-9">Monto:</span>
-                        <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap=".2rem">
-                            <input type="number" min="0" [value]="newCharge.amount" readonly style="width: 100px;">
-                            <span class="ft11 gray-9 ftup">{{newCharge.currency}}</span>
-                          
-                        </div>
-                    </div>
-                    <div class="" fxLayout="column">
-                        <span class="ft11 ft600 gray-9">Monto cobrado:</span>
-                        <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap=".2rem">
-                            <input type="number" min="0" formControlName="amountCaptured"  style="width: 100px;">
-                            <span class="ft11 gray-9 ftup">{{newCharge.currency}}</span>
-                        </div>
-                    </div>
-                    <div class="" fxLayout="column">
-                        <span class="ft11 ft600 gray-9">Refunded:</span>
-                        <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap=".2rem">
-                            <input type="number" min="0" formControlName="amountRefunded"  style="width: 100px;">
-                            <span class="ft11 gray-9 ftup">{{newCharge.currency}}</span>
-                        </div>
-                    </div>
-                </div>
                 <div fxLayout="column" class="mgt05 h50px">
                     <span class="ft11 ft600 gray-9">Descripción</span>
-                    <mat-select placeholder="Descripción" formControlName="description" >
-                        <mat-option value="Suscription creation">Creación de suscripción</mat-option>
-                        <mat-option value="Suscription update">Renovación de suscripción</mat-option>
-                    </mat-select>
-                </div>
-                <div fxLayout="column" class="mgt05 h50px">
-                    <span class="ft11 ft600 gray-9">Método de pago</span>
-                    <mat-select placeholder="Seleccione método de pago" formControlName="paymentMethod" >
-                        <mat-option value="Transferencia USD">Transferencia USD</mat-option>
-                        <mat-option value="Transferencia MXN">Transferencia MXN</mat-option>
-                        <mat-option value="Paypal">Paypal</mat-option>
-                        <mat-option value="Stripe">Stripe</mat-option>
-                        <mat-option value="Zelle">Zelle</mat-option>
-    
-                    </mat-select>
-                </div>
-                <div fxLayout="column" class="mgt05 h50px">
-                    <span class="ft11 ft600 gray-9">Status</span>
-                    <mat-select formControlName="status" (ngModelChange)="updateCaptureAmountAnPayAt()" placeholder="Seleccione el precio" >
-                        <mat-option *ngFor="let status of statusChoices" [value]="status">{{status}}</mat-option>
-                    </mat-select>
+                    <textarea id="description" type="text" autocomplete="off" class="backWhite fw" formControlName="description"></textarea>
                 </div>
             </div>
         </div>
         <div *ngIf="showAlertText" class="mgt03" fxLayout="row" fxLayoutAlign="center center">
-            <span style="color: red !important">Debes elegir un producto y método de pago.</span>
+            <span style="color: red !important">Debes elegir un producto, fecha de fin y monto.</span>
         </div>
         <div class="fw mgt20" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="1rem">
             <button class=" blueButtonAnim button-animation h28px mgr10 " fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" type="submit">

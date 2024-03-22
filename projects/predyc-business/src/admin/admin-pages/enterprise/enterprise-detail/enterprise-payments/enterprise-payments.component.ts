@@ -15,7 +15,6 @@ import { DialogService } from 'projects/predyc-business/src/shared/services/dial
 
 interface ChargeInList extends ChargeJson {
   productName: string
-  payDate: number
 }
 
 @Component({
@@ -40,16 +39,12 @@ export class EnterprisePaymentsComponent {
 
   displayedColumns: string[] = [
     "amount",
-    "via",
     "status",
     "product",
-    "quantity",
     "description",
-    "createdAt",
-    "payAt",
-    "paymentMethod",
-    "refund",
-    "comment",
+    "startDate",
+    "endDate",
+    "payed",
   ];
 
   dataSource = new MatTableDataSource<ChargeInList>();
@@ -75,18 +70,12 @@ export class EnterprisePaymentsComponent {
         return {
           ... charge,
           productName: productData.name,
-          payDate: this.getPayDate(charge)
         }
       })
       this.dataSource.data = chargesInList
     })
   }
 
-  getPayDate(item: Charge): number | null {
-    if (item.payAt) return item.payAt;
-    if (item.status === 'succeeded' && item.createdAt) return item.createdAt;
-    return null;
-  }
 
   async openCreateChargeModal() {
     const dialogRef = this.dialog.open(DialogCreateChargeComponent, {

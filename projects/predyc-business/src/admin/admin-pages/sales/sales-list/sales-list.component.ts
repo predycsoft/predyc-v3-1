@@ -18,7 +18,6 @@ interface ChargeInList extends ChargeJson {
   productName: string
   customerName: string
   customerEmail: string
-  payDate: number
 }
 
 
@@ -41,14 +40,14 @@ export class SalesListComponent {
 
   displayedColumns: string[] = [
     "amount",
-    "origin",
     "status",
     "product",
     "description",
     "client",
-    "createdAt",
-    "payAt",
-    "refund",
+    "startDate",
+    "endDate",
+    "payed",
+
   ];
 
   dataSource = new MatTableDataSource<ChargeInList>();
@@ -103,7 +102,6 @@ export class SalesListComponent {
           productName: productData.name,
           customerName: this.getCustomerName(charge),
           customerEmail: this.getCustomerEmail(charge),
-          payDate: this.getPayDate(charge)
         }
       })
 
@@ -139,12 +137,6 @@ export class SalesListComponent {
       const enterpriseData: Enterprise = this.enterprises.find(enterprise => enterprise.id === charge.customer.id)
       return enterpriseData.name
     }
-  }
-
-  getPayDate(item: Charge): number | null {
-    if (item.payAt) return item.payAt;
-    if (item.status === 'succeeded' && item.createdAt) return item.createdAt;
-    return null;
   }
 
   ngOnDestroy() {

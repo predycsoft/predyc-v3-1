@@ -54,17 +54,11 @@ export class DialogCreateChargeComponent {
   initializeForm() {
     this.form = this.fb.group({
       productId: ['', Validators.required],
-      startDate: [this.dateToString(this.newCharge.createdAt)],
-      payAt: [this.newCharge.payAt],
-      interval: [this.newCharge.interval, Validators.min(1)],
-      quantity: [this.newCharge.quantity, Validators.min(1)],
-      comment: [this.newCharge.comment],
+      startDate: [this.dateToString(this.newCharge.startDate)],
+      endDate: [this.newCharge.endDate, Validators.required],
       amount: [this.newCharge.amount, Validators.min(0)],
-      amountCaptured: [{value: this.newCharge.amountCaptured, disabled: this.newCharge.via !== 'Predyc'}, Validators.min(0)],
-      amountRefunded: [{value: this.newCharge.amountRefunded, disabled: this.newCharge.via !== 'Predyc'}, Validators.min(0)],
-      description: [{value: this.newCharge.description, disabled: this.newCharge.via !== 'Predyc'}],
-      paymentMethod: [{value: this.newCharge.paymentMethod, disabled: this.newCharge.via !== 'Predyc'}, Validators.required],
-      status: [{value: this.newCharge.status, disabled: this.newCharge.via !== 'Predyc'}],
+      description: [ this.newCharge.description],
+      isPayed: [ this.newCharge.isPayed],
     });
 
     this.formProductIdSubscription = this.form.get('productId')!.valueChanges.subscribe(value => {
@@ -84,26 +78,6 @@ export class DialogCreateChargeComponent {
     return +new Date(numberDate)
   }
 
-  getAmount() {
-    this.newCharge.amount = this.calculateAmount()
-    this.updateCaptureAmountAnPayAt()
-  }
-
-  // ARREGLAR
-  calculateAmount(): number {
-    return this.selectedProduct.amount*this.form.get('interval').value*this.form.get('quantity').value
-  }
-
-  updateCaptureAmountAnPayAt() {
-    if(this.form.get('status').value == Charge.STATUS_SUCCEEDED){
-      this.form.get('amountCaptured')!.setValue(this.newCharge.amount)
-      this.form.get('payAt')!.setValue(this.dateToString(this.newCharge.createdAt))
-    }
-    else {
-      this.form.get('amountCaptured')!.setValue(0)
-      this.form.get('payAt')!.setValue(null)   
-    } 
-  }
 
   cancel() {
     this.matDialogRef.close()
@@ -113,16 +87,11 @@ export class DialogCreateChargeComponent {
     if (this.form.valid) {
       // Process and save data
       const formValue = this.form.value;
-      this.newCharge.createdAt = this.stringToNumberDate(formValue.startDate);
-      this.newCharge.payAt = formValue.status === Charge.STATUS_SUCCEEDED ? this.stringToNumberDate(formValue.payAt) : null
-      this.newCharge.quantity = formValue.quantity;
-      this.newCharge.status = formValue.status
-      this.newCharge.interval = formValue.interval
-      this.newCharge.comment = formValue.comment
-      this.newCharge.amountCaptured = formValue.amountCaptured
-      this.newCharge.amountRefunded = formValue.amountRefunded
+      this.newCharge.amount = formValue.amount
+      this.newCharge.startDate = this.stringToNumberDate(formValue.startDate);
+      this.newCharge.endDate = this.stringToNumberDate(formValue.endDate);
       this.newCharge.description = formValue.description
-      this.newCharge.paymentMethod = formValue.paymentMethod
+      this.newCharge.isPayed = formValue.isPayed
       this.newCharge.productRef = this.productService.getProductRefById(formValue.productId)
 
       this.matDialogRef.close(this.newCharge);

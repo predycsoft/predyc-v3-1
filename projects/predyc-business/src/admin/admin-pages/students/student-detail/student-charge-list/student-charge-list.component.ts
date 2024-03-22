@@ -29,13 +29,12 @@ export class StudentChargeListComponent {
 
   displayedColumns: string[] = [
     "amount",
-    "via",
     "status",
     "product",
     "description",
-    "createdAt",
-    "origin",
-    "refund",
+    "startDate",
+    "endDate",
+    "payed",
   ];
 
   dataSource = new MatTableDataSource<ChargeInList>();
