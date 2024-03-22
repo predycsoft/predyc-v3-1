@@ -15,13 +15,7 @@ import { DatePipe } from '@angular/common';
 
 export interface SubscriptionInfo extends SubscriptionJson {
   productName: string
-  // statusToDisplay: string
-  // statusBasedComment: string
-  // <span *ngIf="subscription.status != 'canceled'" class="ft11 gray-9">Próximo
-//   cobro el {{subscription.currentPeriodEnd |
-//   date:"dd/MM/yyyy"}} por ${{getNextInvoice(subscription).ammount}}</span>
-// <span *ngIf="subscription.status == 'canceled'" class="ft11 gray-9">Cancelada el
-//   {{subscription.endedAt | date:'dd/MM/yyyy'}}</span>
+  statusToDisplay: string
 }
 
 @Component({
@@ -44,7 +38,6 @@ export class StudentSubscriptionListComponent {
     "createdAt",
     "currentPeriodStart",
     "currentPeriodEnd",
-    // "statusBasedComment",
     "actions"
   ];
 
@@ -91,7 +84,6 @@ export class StudentSubscriptionListComponent {
           ...subscription,
           productName: product.name,
           statusToDisplay: SubscriptionClass.statusToDisplayValueDict[subscription.status],
-          // statusBasedComment: this.getStatusBasedComment(subscription, price, coupon),
         };
       });
       
@@ -99,37 +91,6 @@ export class StudentSubscriptionListComponent {
       this.totalLength = subscriptionsInfo.length;
     });
   }
-
-  // getStatusBasedComment(subscription: SubscriptionClass, price: Price, coupon: Coupon): string {
-  //   let formattedDate: string;
-  //   if (subscription.status == "canceled") {
-  //     formattedDate = this.datePipe.transform(subscription.endedAt, 'dd/MM/yyyy');
-  //     return `Cancelada el ${formattedDate}`;
-  //   } else {
-  //     formattedDate = this.datePipe.transform(subscription.currentPeriodEnd, 'dd/MM/yyyy');
-  //     return `Próximo cobro el ${formattedDate} por $${this.getAmount(price, coupon)}`;
-  //   }
-  // }
-  
-
-  // getAmount(price: Price, coupon: Coupon): number {
-  //   let coupons = []
-  //   price = Price.fromJson(price)
-  //   if (coupon) {
-  //     coupons = [coupon]
-  //     switch (coupon.duration) {
-  //       case "once":
-  //         return price.getTotalAmount([])
-  //       case "repeating":
-  //         return price.getTotalAmount([])
-  //       case "forever":
-  //         return price.getTotalAmount([coupon])
-  //       default:
-  //         return price.getTotalAmount([])
-  //     }
-  //   }
-  //   return price.getTotalAmount([])
-  // }
 
   editSubscription(subscription: SubscriptionInfo) {
     const dialogRef = this.dialog.open(DialogEditSubscriptionComponent, {
@@ -141,7 +102,7 @@ export class StudentSubscriptionListComponent {
     dialogRef.afterClosed().subscribe(async (result: SubscriptionInfo) => {
       if (result) {
         try {
-          const editedSubscription: SubscriptionJson = this.subscriptionInfotoJson(result)
+          const editedSubscription: SubscriptionJson = this.subscriptionInfoToJson(result)
           console.log("editedsubscription", editedSubscription);
           await this.subscriptionService.saveSubscription(editedSubscription);
           this.dialogService.dialogExito();
@@ -152,11 +113,32 @@ export class StudentSubscriptionListComponent {
     });
     
   }
-  deleteSubscription(subscription) {
-    
+
+  async changeStatus(subscription: SubscriptionInfo) {
+    if (subscription.status === SubscriptionClass.STATUS_ACTIVE) {
+      subscription.status = SubscriptionClass.STATUS_CANCELED
+      subscription.endedAt = +new Date()
+      subscription.canceledAt = +new Date()
+    }
+    else {
+      subscription.status = SubscriptionClass.STATUS_ACTIVE
+      subscription.endedAt = null;
+      subscription.canceledAt = null;
+    }
+    subscription.changedAt = +new Date()
+    try {
+      const editedSubscription: SubscriptionJson = this.subscriptionInfoToJson(subscription)
+      console.log("editedsubscription", editedSubscription);
+      await this.subscriptionService.saveSubscription(editedSubscription);
+      this.dialogService.dialogExito();
+    } catch (error) {
+      this.dialogService.dialogAlerta("Hubo un error al guardar la licencia. Inténtalo de nuevo.");
+    }
+
   }
 
-  subscriptionInfotoJson(subscriptionInfo: SubscriptionInfo): SubscriptionJson {
+
+  subscriptionInfoToJson(subscriptionInfo: SubscriptionInfo): SubscriptionJson {
     return {
       id: subscriptionInfo.id,
       createdAt: subscriptionInfo.createdAt,

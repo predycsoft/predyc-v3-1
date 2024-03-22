@@ -26,8 +26,8 @@ export class Subscription {
 
   public static collection: string = 'subscription'
 
-  public static STATUS_ACTIVE: string = 'active';
-  public static STATUS_CANCELED: string = 'canceled';
+  public static STATUS_ACTIVE : 'active' = 'active';
+  public static STATUS_CANCELED : 'canceled' = 'canceled';
 
   public static STATUS_CHOICES = [
     this.STATUS_ACTIVE,
