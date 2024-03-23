@@ -77,7 +77,8 @@ const questionTypeToValidators = {
   [Question.TYPE_SINGLE_CHOICE]: singleOptionQuestionTypeValidators,
   [Question.TYPE_COMPLETE]: completeQuestionTypeValidators,
   [Question.TYPE_MULTIPLE_CHOICE]: multipleChoiceQuestionTypeValidators,
-  [Question.TYPE_TRUE_OR_FALSE]: trueOrFalseQuestionTypeValidators,
+  // [Question.TYPE_TRUE_OR_FALSE]: trueOrFalseQuestionTypeValidators,
+  [Question.TYPE_TRUE_OR_FALSE]: singleOptionQuestionTypeValidators,
 }
 
 
@@ -332,9 +333,19 @@ export class QuestionsComponent {
 
   }
 
-  saveQuestionsForm(){
+  saveQuestionsForm(index){
+
+
+    console.log('saveQuestionsForm',this.questions)
+
     this.changeQuestion.emit(this.mainForm);
     this.formatExamQuestions()
+
+    if(this.mainForm.valid){ 
+      this.questionStatus[index].editing = false
+    }
+
+
   }
 
 
@@ -352,10 +363,10 @@ export class QuestionsComponent {
     }
   }
 
-  addOption(questionIndex: number, placeholder=null,image=null): void {
+  addOption(questionIndex: number, placeholder=null,image=null,text=''): void {
     this.options(questionIndex).push(this.fb.group({
       image: [image],
-      text: ['', [Validators.required]],
+      text: [text, [Validators.required]],
       isCorrect: [false],
       placeholder: [placeholder],
     }));
@@ -446,11 +457,15 @@ export class QuestionsComponent {
 
 
     if(typeValue=='single_choice' || typeValue=='multiple_choice'){
-
       for (let i = 0; i < 4; i++) {
         this.addOption(questionIndex);
       }
-     }
+    }
+    if(typeValue=='true-false'){
+      this.addOption(questionIndex,null,null,'Verdadero');
+      this.addOption(questionIndex,null,null,'Falso');
+
+    }
   }
 
   uploadQuestionImage(questionIndex: number, event) {

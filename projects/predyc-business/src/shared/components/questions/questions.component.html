@@ -18,7 +18,7 @@
                                     class="gray-8 radius4 ft12 pd03 h28px"
                                     [ngClass]="{
                                         'backBlue1 ft500 blue-5': question.get('type').value === 'true-false',
-                                        'backGreen1 ft500 green-5': question.get('type').value === 'single_choice',
+                                        'backPurple1 ft500 purple-5': question.get('type').value === 'single_choice',
                                         'backRed1 ft500 red-5': question.get('type').value === 'multiple_choice',
                                         'backGray1': question.get('type').value !== 'true-false' && question.get('type').value !== 'single_choice' && question.get('type').value !== 'multiple_choice'
                                     }"
@@ -29,27 +29,30 @@
                             <span (click)="questionStatus[i].editing = !questionStatus[i].editing" class="blueLink cursor-pointer">Editar</span>
                         </div>
 
-                        <div class="fw" *ngIf="examenQuestionsFormated[i].image?.url">
+                        <div class="fw mgb10" *ngIf="examenQuestionsFormated[i].image?.url">
                             <img [src]="examenQuestionsFormated[i].image.url" alt="" style="width: 100%;" class="radius6">
                         </div>
                         <div *ngIf="examenQuestionsFormated[i].typeFormated.value == questionTypesModel.TYPE_SINGLE_CHOICE_VALUE">
-                        <span class="ft14 ft500"> {{ examenQuestionsFormated[i].text }} </span>
+                        <span class="ft14 ft500">{{i+1}}. {{ examenQuestionsFormated[i].text }} </span>
                         <div class="mgt10" fxLayout="column">
                             <div fxLayout="row" fxLayoutAlign="space-between center"
                             *ngFor="let option of examenQuestionsFormated[i].options; let optionIndex = index" class="mgt05">
-                            <span [ngClass]="{
-                                'white-text':
-                                    isSuccess === true &&
-                                    activityAnswers[i].answerItems[optionIndex]
-                                    .answer
-                                }">{{ optionIndex + 1 }}. {{ option.text }}</span>
+                            <div class=" pdl05 pdr05 radius4" [ngClass]="{'backGreen1': option.isCorrect}" >
+                                <span [ngClass]="{
+                                    'white-text':
+                                        isSuccess === true &&
+                                        activityAnswers[i].answerItems[optionIndex]
+                                        .answer
+                                    }">{{ optionIndex + 1 }}. {{ option.text }}</span>
+                            </div>
+    
                             <input type="radio" [name]="i" (change)="checkAnswer(i, optionIndex)"
                                 [disabled]="isSuccess !== null" />
                             </div>
                         </div>
                         </div>
                         <div *ngIf="examenQuestionsFormated[i].typeFormated.value == questionTypesModel.TYPE_MULTIPLE_CHOICE_VALUE">
-                        <p class="ft500 ft14"> {{ examenQuestionsFormated[i].text }} </p>
+                        <p class="ft500 ft14">{{i+1}}. {{ examenQuestionsFormated[i].text }} </p>
                         <div fxLayout="column">
                             <div fxLayout="row" fxLayoutAlign="space-between center"
                             *ngFor="let option of examenQuestionsFormated[i].options; let optionIndex = index" class="mgt05">
@@ -70,7 +73,27 @@
                             <div [innerHTML]="examenQuestionsFormated[i].render">
                             </div>
                         </div>
+
                         <div *ngIf="examenQuestionsFormated[i].typeFormated.value == questionTypesModel.TYPE_TRUE_OR_FALSE_VALUE">
+                            <span class="ft14 ft500">{{i+1}}. {{ examenQuestionsFormated[i].text }} </span>
+                            <div class="mgt10" fxLayout="column">
+                                <div fxLayout="row" fxLayoutAlign="space-between center"
+                                *ngFor="let option of examenQuestionsFormated[i].options; let optionIndex = index" class="mgt05">
+                                <div class=" pdl05 pdr05 radius4" [ngClass]="{'backGreen1': option.isCorrect}" >
+                                    <span [ngClass]="{
+                                        'white-text':
+                                            isSuccess === true &&
+                                            activityAnswers[i].answerItems[optionIndex]
+                                            .answer
+                                        }">{{ optionIndex + 1 }}. {{ option.text }}</span>
+                                </div>
+        
+                                <input type="radio" [name]="i" (change)="checkAnswer(i, optionIndex)"
+                                    [disabled]="isSuccess !== null" />
+                                </div>
+                            </div>
+                            </div>
+                        <!-- <div *ngIf="examenQuestionsFormated[i].typeFormated.value == questionTypesModel.TYPE_TRUE_OR_FALSE_VALUE">
                         <span class="ft14 ft500"> {{ examenQuestionsFormated[i].text }} </span>
                         <div class="mgt10" fxLayout="column">
                             <div fxLayout="row" fxLayoutAlign="space-between center">
@@ -98,10 +121,10 @@
                             </div>
                             </div>
                         </div>
-                        </div>
+                        </div> -->
 
                         <div class="fw mgt10" *ngIf="examenQuestionsFormated[i]?.explanation">
-                            <div class="ft500 ft12 gray-8"><span class="ft600">Explicación: </span> {{ examenQuestionsFormated[i]?.explanation }} </div>
+                            <div class="ft500 ft12 gray-8" style="white-space: pre-wrap;"><span class="ft600">Explicación: </span> {{ examenQuestionsFormated[i]?.explanation }}</div>
                         </div>
 
                     </ng-container>
@@ -123,7 +146,13 @@
                             </div>
                             <!-- El span "Guardar" se coloca aquí para que esté alineado a la derecha -->
                             <div>
-                                <span (click)="questionStatus[i].editing = !questionStatus[i].editing;saveQuestionsForm()" class="cursor-pointer blueLink">Guardar</span>
+                                <span (click)="saveQuestionsForm(i)" 
+                                class="cursorPointer"
+                                [ngClass]="{
+                                    'gray-6': question.invalid,
+                                    'blueLink': !question.invalid,
+                                }"
+                                >Guardar</span>
                                 <img (click)="removeQuestion(i)" [src]="icon.trash" class="h16px pdl10 cursorPointer trash" alt="remove question button">
                             </div>
                         </div>
@@ -295,7 +324,7 @@
                                                     </div>
                                                     <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
                                                         <input (change)="changeOptionTrue()" formControlName="isCorrect" type="checkbox" value="{{ optIndex }}"/>
-                                                        <img (click)="removeOption(i, optIndex)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash pdl05" alt="">
+                                                        <!-- <img (click)="removeOption(i, optIndex)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash pdl05" alt=""> -->
                                                     </div>
                                                 </div>
                                                 <!-- <div class="custom-invalid-feedback" *ngIf="option.get('text').errors && displayErrors">
@@ -344,34 +373,18 @@
     
                                         </div>
                                     </div>
-                                    <!-- <div>
-                                        <div>
-                                            <span>Expicación</span>
-                                        </div>
-                                        <div>
-                                            <textarea formControlName="explanation"
-                                            rows="3" 
-                                            type="text"
-                                            class="form-control"
-                                            placeholder="">
-                                        </textarea>
-                                        </div>
-                                    </div> -->
                                 </div>
                                 <!-- opcion true or false -->
                                 <div class="fw" fxLayout="column" *ngIf="question.get('type').value == QuestionClass.TYPE_TRUE_OR_FALSE">
-                                    <div
-                                        fxLayout="column"
-                                        formArrayName="options">
+                                    <div fxLayout="column" formArrayName="options">
                                         <div
                                             *ngFor="let option of options(i).controls; let optIndex = index"
-                                            fxLayout="row"
-                                            class="fw"
+                                            fxLayout="row" class="fw"
                                             [formGroupName]="optIndex"
                                             >
-                                            <div fxLayout="column" class="mgb10">
+                                            <div fxLayout="column" class="mgb10 fw">
                                                 <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem" class="fw">             
-                                                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+                                                    <!-- <div fxFlex fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
                                                         <span class="gray-6">{{ optIndex + 1 }}.</span>
                                                         <input
                                                             formControlName="text"
@@ -379,25 +392,26 @@
                                                             [class.is-invalid]="option.get('text').errors && displayErrors"
                                                             type="text"
                                                             class="form-control"
-                                                            placeholder=""
-                                                            >
+                                                            placeholder="">
+                                                    </div> -->
+                                                    <div fxFlex fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+                                                        <span class="gray-6">{{ optIndex + 1 }}.</span>
+                                                        <span
+                                                            class="form-control-lookalike"
+                                                            [ngClass]="{'is-invalid': option.get('text').errors && displayErrors}">
+                                                            {{ option.get('text').value }}
+                                                        </span>
                                                     </div>
-                                            
                                                     <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
-                                                        <input (change)="changeOptionTrue()" formControlName="isCorrect" type="checkbox" value="{{ optIndex }}"/>
-                                                        <img (click)="removeOption(i, optIndex)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash pdl05" alt="">
+                                                        <input [checked]="option.get('isCorrect').value" [checked]="option.get('isCorrect').value" [name]="'radioGroup' + i" type="radio" (change)="onSingleOptionSelected(i, optIndex)" [value]="optIndex"/>
+                                                        <!-- <img (click)="removeOption(i, optIndex)" [src]="icon.trash" class="h16px pdr05 cursorPointer trash pdl05" alt=""> -->
                                                     </div>
                                                 </div>
                                                 <!-- <div class="custom-invalid-feedback" *ngIf="option.get('text').errors && displayErrors">
                                                     Debe indicar la opción
                                                 </div> -->
                                             </div>
-                                        </div>
-                                        <div fxLayout="row">
-                                            <span (click)="addOption(i)" class="blueLink radius4 ft12 h28px no-select">
-                                                <img [src]="icon.addNew" class="h12px pdr05 makeBlue" alt="">
-                                                Agregar opción
-                                            </span>
+    
                                         </div>
                                     </div>
                                 </div>
@@ -452,6 +466,9 @@
                             </div>
                             <div *ngIf="question.errors?.wrongCorrectOptionsLengthPerPlaceholder">
                                 Cada marcador de referencia de la pregunta debe tener al menos una opción correcta
+                            </div>
+                            <div >
+                                La pregunta debe estar completa para poder guardarla
                             </div>
                         </div>
                     </ng-container>

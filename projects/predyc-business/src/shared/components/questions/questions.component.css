@@ -407,3 +407,28 @@ border-bottom: 1px solid var(--gray-6); /* Subrayado, puedes ajustar a tu estilo
   .form-control {
     width: 100%; /* Asegura que el input ocupe todo el ancho disponible */
 }
+
+.form-control-lookalike {
+  display: block;
+  width: 100%;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #e9ecef;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  appearance: none;
+  border-radius: 0.25rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.is-invalid {
+  border-color: #dc3545;
+}
+
+input{
+  font-size: 0.8125rem !important;
+  font-weight: 400 !important;
+}

@@ -339,6 +339,7 @@ export class QuestionType {
       solveInstructions:
         'Clasifique las siguientes afirmaciones como verdadera o falsa',
     },
+    
   ];
 
   public static TYPES_TOOLTIP_INFO = (): string => {
