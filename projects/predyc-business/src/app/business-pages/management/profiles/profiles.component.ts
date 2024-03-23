@@ -169,17 +169,21 @@ export class ProfilesComponent {
         return courseForExplorer
       })
 
-      let trueOrder = []
+      console.log("***************this.profile", this.profile)
+      if (this.profile) {
+        let trueOrder = []
+  
+        console.log('this.studyPlan',this.studyPlan,this.profile.coursesRef)
+        this.profile.coursesRef.forEach(cursoplan => {
+          let curso = this.studyPlan.find(x=> x.id == cursoplan['id'])
+          if(curso){
+            trueOrder.push(curso)
+          }
+        });
+  
+        this.studyPlan = trueOrder
+      }
 
-      console.log('this.studyPlan',this.studyPlan,this.profile.coursesRef)
-      this.profile.coursesRef.forEach(cursoplan => {
-        let curso = this.studyPlan.find(x=> x.id == cursoplan['id'])
-        if(curso){
-          trueOrder.push(curso)
-        }
-      });
-
-      this.studyPlan = trueOrder
       this.updateWidgets()
 
       this.categories = this.categories.filter(category => {
