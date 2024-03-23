@@ -99,6 +99,11 @@ export class CoursesComponent implements AfterViewInit {
         //this.competenciasEmpresa = this.obtenerCompetenciasAlAzar(5);
         this.courseService.getCoursesObservable().subscribe(courses => {
           console.log('courses',courses)
+
+          if(!this.user.isSystemUser){
+            courses = courses.filter(x=> (!x.enterpriseRef && !x.proximamente || x.enterpriseRef))
+          }
+
           courses.forEach(curso => {
             //curso.foto = '../../../../assets/images/cursos/placeholder1.jpg'
             let skillIds = new Set();
