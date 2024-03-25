@@ -5,10 +5,10 @@
         </app-navigate-back>
         <div *ngIf="isEditing; else profileTitle" fxLayout="row" fxLayoutAlign="space-between center" class="fw fh pdt05 pdb05" >
             <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign=" center">
-                <input class="input-box ft12" placeholder="Nombre del perfil" [(ngModel)]="profileName" maxlength="43">
-                <!-- <div class="edit-button">
+                <!-- <input class="input-box ft12" placeholder="Nombre del perfil" [(ngModel)]="profileName" maxlength="43"> -->
+                <div class="edit-button">
                     Modo de edición
-                </div> -->
+                </div>
             </div>
             <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign=" center">
                 <div class="radius20 pdl10 pdr10 pdt05 pdb05 backWhite ft14 cursorPointer" (click)="onCancel()"> 
@@ -53,6 +53,23 @@
                     <img [src]="icon.credentials" class="h20px" alt="Información del perfil">
                     <span class="ft500  ft14  black">Detalles del perfil</span>
                 </div>
+
+                <div class="  mgt15 radius20" *ngIf="isEditing" >
+                    <!-- <p class="ft13 gray-8 mgl03" *ngIf="isEditing">Nombre del perfil</p> -->
+
+                    <div  class="  fw " fxLayout="row" fxLayoutGap="" fxLayoutAlign="space-between center" style="margin-top: 25px;">
+                        <div class="searchBarContainer selectppp cursorPointer radius20 fw" fxLayout="row" fxLayoutAlign=" center">
+                            <textarea name="" id="" rows="1" [(ngModel)]="profileName" maxlength="43" placeholder="Nombre del perfil"
+                             style="width: 100%; resize:none; border: none; padding-left: 15px!important; background-color:#ffffff!important;" class="shadow-animation radius20  pd05"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- <input class="input-box ft12" placeholder="Nombre del perfil" [(ngModel)]="profileName" maxlength="43"> -->
+
+
+
                 <div class="pd05 backGray2 mgt10 radius10">
                     <p class="ft12 gray-8" *ngIf="!isEditing" style="overflow-y: auto; word-wrap: break-word; max-height: 122px;">{{profileDescription}}</p>
                     <textarea name="" id="" rows="5" *ngIf="isEditing" [(ngModel)]="profileDescription"  placeholder="Introduzca la descripción"
@@ -68,11 +85,11 @@
                 <div class="chart-container ft13 fw">
                     <div class="mgt10 fw" *ngFor="let category of categoriesAndSkillsWidgetData; let i = index">
                       <div class="ft14">Pilar {{i + 1}}: {{category.label}}</div>
-                      <div class="skills-container">
+                      <div class="skills-container  " style="padding-bottom: 36px;">
                         <ng-container *ngFor="let skill of category.skills; let indexSkill = index">
                           <!-- Muestra solo las primeras 4 habilidades -->
                           <div *ngIf="indexSkill < 4" [matTooltip]="skill"
-                               style="display: inline-block; margin-right: 5px; margin-bottom: 5px;"
+                               style="display: inline-block; margin-right: 15px; margin-bottom: 5px;"
                                class="skill-badge ListHover2 radius10 backGray2 pdl05 pdr05 gray-8 mgt05">
                             {{skill}}
                           </div>
@@ -105,10 +122,25 @@
                     <span class="ft500  ft14  black">Plan de estudios</span>
                 </div>
                 <div class="mgt20" fxLayout="row" fxLayoutGap="2rem">
-                    <div fxLayoutGap=".5rem" fxLayout="row" fxLayoutAlign=" center" class="mgl05">
-                            <span class="ft500 ft12 gray-9 mgr10">Estudio mensual</span>
-                        <input [ngClass]="isEditing?'editNumber':'number'" [disabled]="!isEditing" class="ft12 centertext"  type="number" min="0" [(ngModel)]="profileHoursPerMonth">
-                        <span class="gray-10 ft11">horas</span>
+                    <div fxLayoutGap=".5rem" fxLayout="row" fxLayoutAlign=" center" class="mgl05 ">
+                        <div class="fw">
+                            <span class="ft500 ft14 gray-9 " style="padding-bottom: 15px;">Estudio mensual</span>
+
+                        </div>
+                        <div fxLayout="row" class="centertext" >
+                            <div class="  radius20" fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="center" style="width: 70%; margin-left: -53px;">
+                                <div class="fw mgb05 borderLight shadow-animation radius20  centertext " fxLayout="row" fxLayoutAlign=" center center" style="width: 30px;">
+                                    <input [ngClass]="isEditing?'editNumber':'number'" [disabled]="!isEditing" class="ft12 centertext"  type="number" min="0" [(ngModel)]="profileHoursPerMonth" min="1"  class="searchBar ft14 centertext " 
+                                    style="width: 70%; outline: none; border: 0;  background-color: transparent;"
+                                    placeholder="">
+                                </div>
+                                
+                            </div>
+                            <span class="gray-9  ft500 ft14  mgl10" style="margin-top: 10px;">horas</span>
+
+                            
+                        </div>
+                            
                     </div>
                 </div>
                 <div *ngIf="isEditing" ngbDropdown [autoClose]="'outside'" fxLayout="row" fxLayoutAlign=" center" >
@@ -220,9 +252,9 @@
 
 
                 <ng-container *ngIf="studyPlan.length > 0 && isEditing">
-                    <div cdkDropList [cdkDropListData]="studyPlan" (cdkDropListDropped)="onDrop($event)" class="list-container" style="overflow: hidden; background-color: #FCFCFC;" class="radius10 borderLight mgt20">
-                        <div *ngFor="let item of studyPlan; let i = index" cdkDrag class="fw pd05 h40px border-bl hoverBlue item-container" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem">
-                            <div fxLayout="row" fxLayoutAlign="space-between center" class="fw" fxLayoutGap="0.5rem">
+                    <div cdkDropList [cdkDropListData]="studyPlan" (cdkDropListDropped)="onDrop($event)" class="list-container hoverBlue " style="overflow: hidden; background-color: #FCFCFC;" class="radius10 borderLight mgt20">
+                        <div *ngFor="let item of studyPlan; let i = index" cdkDrag class="fw pd05 h40px border-bl hoverBlue item-container cursorPointer" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem">
+                            <div fxLayout="row" fxLayoutAlign="space-between center  " class="fw" fxLayoutGap="0.5rem">
                                 <div fxLayout="column" fxLayoutGap="5px" class="ft11">
                                     <span class="ft12 gray-10">   
                                         <img [src]="icon.drag" class="h14px cursorPointer" alt="" class="pdr05">

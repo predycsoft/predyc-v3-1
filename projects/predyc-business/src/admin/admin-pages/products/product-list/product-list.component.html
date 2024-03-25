@@ -1,8 +1,11 @@
-<button fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButtonAnim button-animation " 
-style="border-radius: 24px !important;" (click)="onSelect(templateNewProduct)">
-    <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="">
-    Agregar nuevo producto
-</button>
+<div fxLayoutAlign="end end"> 
+    <button fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButtonAnim button-animation " 
+    style="border-radius: 24px !important; height: 37px;" (click)="onSelect(templateNewProduct)">
+        <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="">
+        Agregar nuevo producto
+    </button>
+</div>    
+    
 <div class="">
     <table mat-table [dataSource]="dataSource">
 

@@ -23,7 +23,7 @@
 
 
         <!-- Nombre Column -->
-        <ng-container matColumnDef="displayName">
+        <ng-container matColumnDef="displayName" class="w-60" fxLayoutAlign="start center" style="margin-right: 15px;">
             <th mat-header-cell *matHeaderCellDef class="ft14"> Nombre </th>
             <td mat-cell *matCellDef="let user"> 
                 <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign=" center">
@@ -37,30 +37,32 @@
         </ng-container>
 
         <!-- Profile Column -->
-        <ng-container matColumnDef="profile">
+        <ng-container matColumnDef="profile" class="w-20">
             <th mat-header-cell *matHeaderCellDef class="ft14"> Perfil </th>
             <td mat-cell *matCellDef="let user"> 
-                <div class="move-right">
-                    <span class="ft400 ft13" [ngClass]="user.profile ? 'blue-4' : 'gray-5'">{{ user.profile ? user.profile : 'Perfil sin asignar' }}</span>
-                    <img *ngIf="user.profile" class="mgl05 makeBlue " [src]="icon.arrowForward" alt="Forward Arrow"> 
+                <div class="">
+                    <span class="ft400 ft13" [ngClass]="user.profile ? 'gray-7 ft500' : 'gray-5'">{{ user.profile ? user.profile : 'Perfil sin asignar' }}</span>
                 </div>
                 
             </td>
         </ng-container>
 
         <!-- Status Column -->
-        <ng-container matColumnDef="status" fxLayoutAlign="center center">
-            <th mat-header-cell *matHeaderCellDef class="ft14" fxLayoutAlign="center center" style="margin-right: 5vw;" > Status </th>
-            <td mat-cell *matCellDef="let user" class=""> 
+        <ng-container matColumnDef="status" class="w-20 "  >
+            <th mat-header-cell *matHeaderCellDef class="ft14 mgr20 centertext"  >  Status </th>
+            <td mat-cell *matCellDef="let user" class="backRed2 centertext"> 
+                <div class="fw fw" fxLayoutAlign="center center">
+                    <div class=" chip  " [ngClass]="user.status === 'active' ? 'backBlue1' : 'backRed1'" fxLayout="row" fxLayoutAlign="center center" style="width: 70%;"  >
+                        <span [ngClass]="user.status === 'active' ? 'blue-5' : 'red-5'" class="ft13  ft400" fxLayoutAlign="center center ">{{user.statusDisplayText}}</span>
+                    </div>
+                </div>
                 <!-- <div *ngIf="user.status === 'active'" class="chip backBlue1" fxLayout="row" fxLayoutAlign="center center">
                     <span class="ft13 nowrap ft400 blue-5">Activo</span>
                 </div>
                 <div *ngIf="user.status !== 'active'" class="chip backRed1" fxLayout="row" fxLayoutAlign="center center">
                     <span class="ft13 nowrap ft400 red-5">Inactivo</span>
                 </div> -->
-                <div class="pdl20 chip  " [ngClass]="user.status === 'active' ? 'backBlue1' : 'backRed1'" fxLayout="row" fxLayoutAlign="center center"  style=" margin-right: 5vw;" >
-                    <span [ngClass]="user.status === 'active' ? 'blue-5' : 'red-5'" class="ft13 nowrap ft400" fxLayoutAlign="center center" style="width: 40px; ">{{user.statusDisplayText}}</span>
-                </div>
+
             </td>
         </ng-container>
 
