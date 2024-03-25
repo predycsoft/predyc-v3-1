@@ -474,15 +474,11 @@
                     </ng-container>
                 </div>
             </ng-container>
-            <div fxLayout="row" class="fw">
-                <div class="mgr10 fw">
-                    <div class="fw mgb10">
-                        <span (click)="addQuestion()" class="blueLink radius4 ft12 h28px no-select" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign=" center">
-                            <img [src]="icon.addNew" class="h12px pdr05 makeBlue" alt="">
-                            Agregar pregunta
-                        </span>
-                    </div>
-                </div>
+            <div fxLayout="row" fxLayoutAlign="center center" class="fw">
+                <span (click)="addQuestion()" class="blueLink radius4 ft12 h28px no-select" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                    <img [src]="icon.addNew" class="h12px pdr05 makeBlue" alt="">
+                    Agregar pregunta
+                </span>
             </div>
             <div *ngIf="questions?.controls?.length==0 && displayErrors" fxLayout="row" class="fw custom-invalid-feedback">
                 <div class="mgl05 mgr10 fw" fxLayoutAlign="start center">
