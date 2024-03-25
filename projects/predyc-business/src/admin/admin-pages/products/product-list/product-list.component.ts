@@ -29,6 +29,7 @@ export class ProductListComponent {
   displayedColumns: string[] = [
     "name",
     "amount",
+    "type",
     "created",
   ];
 

@@ -34,6 +34,12 @@
                             <label for="name" class="gray-9 ft15">Nombre:</label>
                             <input class="backWhite fw pdl03" id="name" type="text" formControlName="name" [readonly]="product.id ? true : false" />
                         </div>
+                        <div class="fh w-60" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".25rem">
+                            <span class="ft15 gray-9 ft15">Tipo</span>
+                            <mat-select placeholder="Seleccione el tipo" formControlName="type" style="border: 1px solid black;" class="pdl03 pdr03 pdt05 fh fw">
+                                <mat-option *ngFor="let type of typeOptions" [value]="type">{{type | titlecase}}</mat-option>
+                            </mat-select>
+                        </div>
                         <div class="" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".3rem" >
                             <label for="name" class="gray-9 ft15">Monto:</label>
                             <input class="backWhite w80px pdl03" id="amount" type="number" min="0" formControlName="amount" [readonly]="product.id ? true : false"/>
@@ -102,9 +108,11 @@
                 </div>
             </div>
         </div>
-
+        <div *ngIf="showAlertText" class="mgt15" fxLayout="row" fxLayoutAlign="center center">
+            <span style="color: red !important">Debes indicar el nombre del producto</span>
+        </div>
         <div class="mgt20">
-            <button [disabled]="!productForm.valid" class="blueButton w100px" type="submit">Guardar</button>
+            <button class="blueButton w100px" type="submit">Guardar</button>
         </div>
     </form>
 </ng-container>

@@ -126,7 +126,12 @@
             </ng-template>
         </ng-container>
         <ng-container *ngIf="showInitForm">
-            <div fxLayout="column"> 
+            <span class="ft500 gray-10 ft14 mgt10">Selecciona alguna de las siguientes opciones:</span>
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1.5rem" class="mgt10 mgb05">
+                <span [ngClass]="initFormTab == 0 ? 'selectedTab ' : 'ft13 gray-9 cursorPointer'" (click)="initFormTab=0">Iniciar plan de estudios</span>
+                <span [ngClass]="initFormTab == 1 ? 'selectedTab' : 'ft13 gray-9 cursorPointer'" (click)="initFormTab=1">Inscribir cursos extracurriculares</span>
+            </div>
+            <div *ngIf="initFormTab === 0" fxLayout="column"> 
                 <span class="ft500 gray-10 ft14 mgt10">¡Inicia el plan de estudios de {{student.displayName.split(' ')[0] | titlecase}}!</span>
                 <span class="mgt05">Indique los siguientes datos para inicializar su plan de estudio:</span>
                 <div fxLayout="column" class="mgt10">
@@ -142,6 +147,10 @@
                 <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="mgt10">
                     <button *ngIf="hoursPermonthInitForm && startDateInitForm" (click)="saveInitForm()" class="blueButton">Iniciar plan de estudio</button>
                 </div>
+            </div>
+            <div *ngIf="initFormTab === 1" fxLayout="column" fxLayoutGap="1rem">
+                <span class="ft500 gray-10 ft14 mgt10">¡Inscribe los cursos del perfil como extracurriculares!</span>
+                <button (click)="saveInitForm()" class="blueButton w-30">Inscribir cursos extracurriculares</button>
             </div>
         </ng-container>
     </div>

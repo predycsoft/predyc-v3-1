@@ -8,6 +8,7 @@ export interface ProductJson {
     features: ProductFeatures[];
     id: string;
     name: string;
+    type: "prueba 30 dias" | "independiente" | "simplificado" | "full"
 }
 
 export class Product {
@@ -20,6 +21,19 @@ export class Product {
     features: ProductFeatures[];
     id: string;
     name: string;
+    type: "prueba 30 dias" | "independiente" | "simplificado" | "full"
+
+    public static TYPE_TRIAL : 'prueba 30 dias' = 'prueba 30 dias';
+    public static TYPE_INDEPEND : 'independiente' = 'independiente';
+    public static TYPE_SIMPLIFIED : 'simplificado' = 'simplificado';
+    public static TYPE_FULL : 'full' = 'full';
+  
+    public static TYPE_CHOICES = [
+      this.TYPE_TRIAL,
+      this.TYPE_INDEPEND,
+      this.TYPE_SIMPLIFIED,
+      this.TYPE_FULL,
+    ];
 
     public static collection = 'product'
 
@@ -39,6 +53,7 @@ export class Product {
       features: [],
       id: '',
       name: '',
+      type: "simplificado"
     }
 
   
@@ -53,6 +68,7 @@ export class Product {
       product.features = obj.features;
       product.id = obj.id;
       product.name = obj.name;
+      product.type = obj.type;
       return product;
     }
     public toJson(): ProductJson {
@@ -66,6 +82,7 @@ export class Product {
         features: this.features,
         id: this.id,
         name: this.name,
+        type: this.type,
       };
     }
     
