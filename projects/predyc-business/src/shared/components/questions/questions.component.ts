@@ -205,6 +205,7 @@ export class QuestionsComponent {
             moduloIndex: moduloIndex,
             claseIndex: claseIndex
           };
+          if(clase.tipo != 'actividad' &&  clase.tipo !=  'corazones')
           this.classesArray.push(claseConIndices);
         });
       });
