@@ -4,6 +4,7 @@ export const productsData: ProductJson[] = [
     {
         "active": false,
         "amount": 49,
+        "type": "simplificado",
         "autodeactivate": false,
         "accesses": {
             "enableUserRadar": false,
@@ -54,6 +55,7 @@ export const productsData: ProductJson[] = [
     {
         "active": true,
         "amount": 672,
+        "type": "full",
         "autodeactivate": false,
         "accesses": {
             "enableUserRadar": false,
@@ -133,6 +135,7 @@ export const productsData: ProductJson[] = [
         ],
         "active": true,
         "amount": 500,
+        "type": "independiente",
         "autodeactivate": false,
         "accesses": {
             "enableUserRadar": false,
@@ -151,6 +154,7 @@ export const productsData: ProductJson[] = [
         "createdAt": 1695739531000,
         "active": true,
         "amount": 173,
+        "type": "prueba 30 dias",
         "autodeactivate": false,
         "accesses": {
             "enableUserRadar": false,

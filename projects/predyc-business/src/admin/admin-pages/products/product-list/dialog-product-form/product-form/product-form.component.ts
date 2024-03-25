@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import { Product } from 'projects/shared/models/product.model';
@@ -20,10 +20,14 @@ export class ProductFormComponent {
   @Input() product: Product;
   @Output() onSave = new EventEmitter<any>();
 
+  typeOptions = Product.TYPE_CHOICES
+
+  showAlertText = false
+
   // Product features should be added dynamically
   productForm = this.fb.group({
     id: [''],
-    name: [''],
+    name: ['', Validators.required],
     active: [true],
     autodeactivate: [false],
     amount: [0],
@@ -36,12 +40,17 @@ export class ProductFormComponent {
       enableToTakeTest: [false],
       enableCreateParticularCourses: [false]
     }),
+    type: ['']
   });
 
   ngOnInit(): void {
     if (this.product.id) {
       this.product.features.forEach((_) => this.addFeature());
       this.productForm.patchValue(this.product);
+    }
+    else {
+      this.productForm.patchValue({type: Product.TYPE_INDEPEND});
+      
     }
 
   }
@@ -69,7 +78,13 @@ export class ProductFormComponent {
   }
 
   async onSubmit(): Promise<void> {
-    this.onSave.emit(this.productForm.value);
+
+    if (this.productForm.valid) {
+      this.onSave.emit(this.productForm.value);
+    }
+    else {
+      this.showAlertText = true
+    }
   }
 
 }
