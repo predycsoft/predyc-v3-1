@@ -53,3 +53,12 @@
   align-items: center;
   justify-content: center;
 }
+
+
+.selectedTab{
+  color: var(--blue-5);
+  font-size: 13px;
+  font-family: "Gordita-medium";
+  font-weight: 500;
+  border-bottom: 2px solid;
+}

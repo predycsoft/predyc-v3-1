@@ -78,6 +78,8 @@ export class StudentStudyPlanAndCompetencesComponent {
   courses
   coursesByStudent
 
+  initFormTab = 0
+
 
   ngOnInit() {
 
@@ -102,7 +104,7 @@ export class StudentStudyPlanAndCompetencesComponent {
           else {
             // the student has a profile but hasnt completed initform yet
             this.showInitForm = true
-            this.alertService.infoAlert("Debe indicar la fecha de inicio y la hora de dedicación para iniciar su plan de estudio")
+            this.alertService.infoAlert("Debe indicar la fecha de inicio y la hora de dedicación para iniciar su plan de estudio o inscribir los cursos del perfil como extracurriculares")
             this.hoursPermonthInitForm = this.selectedProfile.hoursPerMonth
             console.log("El usuario no posee studyPlan");
           }
@@ -139,7 +141,7 @@ export class StudentStudyPlanAndCompetencesComponent {
       // setting profile for the first time
       if (changes.selectedProfile.previousValue === null && changes.selectedProfile.currentValue) {
         this.showInitForm = true
-        this.alertService.infoAlert("Debe indicar la fecha de inicio y la hora de dedicación para iniciar su plan de estudio")
+        this.alertService.infoAlert("Debe indicar la fecha de inicio y la hora de dedicación para iniciar su plan de estudio o inscribir los cursos del perfil como extracurriculares")
         this.hoursPermonthInitForm = changes.selectedProfile.currentValue.hoursPerMonth
       }
       // setting new profile
@@ -268,6 +270,25 @@ export class StudentStudyPlanAndCompetencesComponent {
       }
     }
   }
+
+  async saveAsExtraCourse() {
+    const coursesRefs: DocumentReference[] = this.selectedProfile.coursesRef
+    // console.log("hoursPermonth", hoursPermonth)
+    for (let i = 0; i < coursesRefs.length; i++) {
+      const userRef: DocumentReference | DocumentReference<User> = this.userService.getUserRefById(this.student.uid)
+      const courseData = this.coursesData.find(courseData => courseData.id === coursesRefs[i].id);
+
+      //  ---------- if it already exists, activate it, otherwise, create it ---------- 
+      const courseByStudent: CourseByStudent | null = await this.courseService.getCourseByStudent(userRef as DocumentReference<User>, coursesRefs[i] as DocumentReference<Curso>)
+      console.log("courseByStudent", courseByStudent)
+      if (courseByStudent) {
+        await this.courseService.setCourseByStudentActive(courseByStudent.id, null, null)
+      } else {
+        await this.courseService.saveCourseByStudent(coursesRefs[i], userRef, null, null)
+        await this.courseService.setCoursesByStudentInactive(this.userService.getUserRefById(this.student.uid))
+      }
+    }
+  }
   
   isMonthCompleted(month: Month): boolean {
     return month.courses.every(course => course.dateEnd !== null);
@@ -285,12 +306,18 @@ export class StudentStudyPlanAndCompetencesComponent {
   }
   
   async saveInitForm() {
-    await this.userService.saveStudyPlanHoursPerMonth(this.student.uid, this.hoursPermonthInitForm)
-    this.student.studyHours = this.hoursPermonthInitForm
     this.showInitForm = false
-    // calculate dates and create studyplan using this.startDateInitForm
-    await this.createStudyPlan()
+    if (this.startDateInitForm) {
+      await this.userService.saveStudyPlanHoursPerMonth(this.student.uid, this.hoursPermonthInitForm)
+      this.student.studyHours = this.hoursPermonthInitForm
+      // calculate dates and create studyplan using this.startDateInitForm
+      await this.createStudyPlan()
+    }
+    else {
+      await this.saveAsExtraCourse()
+    }
   }
+
 
   ngOnDestroy() {
     if(this.combinedObservableSubscription) this.combinedObservableSubscription.unsubscribe()
