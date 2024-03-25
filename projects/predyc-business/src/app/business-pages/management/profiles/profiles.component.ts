@@ -127,7 +127,8 @@ export class ProfilesComponent {
       // console.log("result", result)
       const categories = result[0] as Category[]
       const skills = result[1] as Skill[]
-      const courses = result[2] as Curso[]
+      let courses = result[2] as Curso[]
+      courses = courses.filter(x=> (!x.proximamente))
       if (result.length === 4) {
         const profile = result[3] as ProfileJson
         this.profile = {
@@ -168,17 +169,21 @@ export class ProfilesComponent {
         return courseForExplorer
       })
 
-      let trueOrder = []
+      console.log("***************this.profile", this.profile)
+      if (this.profile) {
+        let trueOrder = []
+  
+        console.log('this.studyPlan',this.studyPlan,this.profile.coursesRef)
+        this.profile.coursesRef.forEach(cursoplan => {
+          let curso = this.studyPlan.find(x=> x.id == cursoplan['id'])
+          if(curso){
+            trueOrder.push(curso)
+          }
+        });
+  
+        this.studyPlan = trueOrder
+      }
 
-      console.log('this.studyPlan',this.studyPlan,this.profile.coursesRef)
-      this.profile.coursesRef.forEach(cursoplan => {
-        let curso = this.studyPlan.find(x=> x.id == cursoplan['id'])
-        if(curso){
-          trueOrder.push(curso)
-        }
-      });
-
-      this.studyPlan = trueOrder
       this.updateWidgets()
 
       this.categories = this.categories.filter(category => {

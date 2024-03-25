@@ -218,7 +218,7 @@ export class CourseService {
       
           // Query to get by enterprise match
           const enterpriseMatch$ = this.afs.collection<any>(Curso.collection, ref => 
-            ref.where('enterpriseRef', '==', this.enterpriseRef)
+            ref.where('enterpriseRef', '==', this.enterpriseRef).where('proximamente','==', false)
           ).valueChanges();
       
           // Query to get where enterprise is empty
