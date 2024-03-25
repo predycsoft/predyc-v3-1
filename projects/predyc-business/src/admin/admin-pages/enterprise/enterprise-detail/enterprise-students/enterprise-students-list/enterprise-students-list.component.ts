@@ -184,6 +184,7 @@ export class EnterpriseStudentsListComponent {
           let userForm: FormGroup
           userForm = this.fb.group({
             displayName: [null, [Validators.required]],
+            isActive:true,
             name: [null],
             profile: [null],
             photoUrl: [null],

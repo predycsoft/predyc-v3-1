@@ -25,7 +25,7 @@ export class ProfileGuard {
   private checkIdInDatabase(id: string): Observable<boolean> {
     return combineLatest([this.profileService.getProfile$(id), this.enterpriseService.enterpriseLoaded$]).pipe(map(([profile, isEnterpriseLoaded]) => {
         const enterpriseRef = this.enterpriseService.getEnterpriseRef()
-        if(profile?.enterpriseRef?.id == enterpriseRef.id || !profile?.enterpriseRef)  return true
+        if(profile?.enterpriseRef?.id == enterpriseRef?.id || !profile?.enterpriseRef)  return true
         this.router.navigate(['']);
         return false
     }))

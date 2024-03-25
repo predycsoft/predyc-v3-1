@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, combineLatest, firstValueFrom, map, switchMap } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, combineLatest, firstValueFrom, map, of, switchMap } from 'rxjs';
 import { Profile } from 'projects/shared/models/profile.model';
 import { AlertsService } from './alerts.service';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
@@ -138,6 +138,8 @@ export class ProfileService {
     // profile.permissions.hasDefaultPermissions = hasDefaultPermissions
     const dataToSave = typeof profile.toJson === 'function' ? profile.toJson() : profile;
 
+    console.log('dataToSave profile',dataToSave)
+
     await ref.set(dataToSave, { merge: true });
     profile.id = ref.id; // Assign the generated ID to the profile
     return profile.id
@@ -180,6 +182,28 @@ export class ProfileService {
   public getProfileRefById(id: string): DocumentReference<Profile> {
     return this.afs.collection<Profile>(Profile.collection).doc(id).ref
   }
+  
+  public getProfilesByIds(ids: string[]): Observable<Profile[]> {
+    // Verificar si el arreglo de IDs está vacío o no definido
+    if (!ids || ids.length === 0) {
+      return of([]);
+    }
+  
+    // Asegurarse de que el arreglo de IDs no exceda el límite de Firestore
+    if (ids.length <= 10) {
+      return this.afs.collection<Profile>(Profile.collection, ref => ref.where('id', 'in', ids))
+        .valueChanges({ idField: 'id' });
+    } else {
+      // Si la lista excede 10 IDs, necesitarías segmentar la lista y combinar los resultados.
+      // Este es un esquema general, la implementación de la segmentación y combinación de resultados se deja como ejercicio.
+      console.error('La función no soporta más de 10 IDs debido a limitaciones de Firestore.');
+      return of([]);
+    }
+  }
+  
+
+
+
 
   public getProfile$(uid: string): Observable<Profile> {
     return this.afs.collection<Profile>(Profile.collection).doc(uid).valueChanges()

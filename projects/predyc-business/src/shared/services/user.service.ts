@@ -11,6 +11,7 @@ import { Profile } from 'projects/shared/models/profile.model';
 import { ProfileService } from './profile.service';
 import { CourseByStudent } from 'projects/shared/models/course-by-student.model';
 import { Curso } from 'projects/shared/models/course.model';
+import { DepartmentService } from './department.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -34,7 +35,8 @@ export class UserService {
     private fireFunctions: AngularFireFunctions,
     private enterpriseService: EnterpriseService,
     private profileService: ProfileService,
-    private alertService: AlertsService
+    private alertService: AlertsService,
+    private departmentService: DepartmentService
   ) {
     console.log("Se instancio el user service")
     this.enterpriseService.enterpriseLoaded$.subscribe(enterpriseIsLoaded => {
@@ -141,6 +143,7 @@ export class UserService {
   }
 
   getUsers$(searchTerm=null, profileFilter=null, statusFilter=null): Observable<User[]> {
+
     return this.enterpriseService.enterpriseLoaded$.pipe(
       switchMap(isLoaded => {
         if (!isLoaded) return []
@@ -157,6 +160,49 @@ export class UserService {
             const profileRef = this.profileService.getProfileRefById(profileFilter)
             query = query.where('profile', '==', profileRef)
           }
+
+          if (statusFilter && statusFilter === SubscriptionClass.STATUS_ACTIVE) {
+            query = query.where('status', '==', SubscriptionClass.STATUS_ACTIVE)
+          }
+          return query.orderBy('displayName')
+        }).valueChanges()
+      })
+    ) 
+  }
+
+  getUsersReport$(searchTerm=null, profileFilter=null, statusFilter=null,departmentsFilter=null,dateIni = null,deteEnd = null): Observable<User[]> {
+
+    console.log(searchTerm, profileFilter, statusFilter,departmentsFilter,dateIni,deteEnd)
+    
+    return this.enterpriseService.enterpriseLoaded$.pipe(
+      switchMap(isLoaded => {
+        if (!isLoaded) return []
+        const enterpriseRef = this.enterpriseService.getEnterpriseRef()
+        return this.afs.collection<User>(User.collection, ref => {
+          let query: CollectionReference | Query = ref;
+          query = query.where('enterprise', '==', enterpriseRef)
+          query = query.where('isActive', '==', true)
+          if (searchTerm) {
+            // query = query.where('displayName', '==', searchTerm)
+            query = query.where('displayName', '>=', searchTerm).where('displayName', '<=', searchTerm+ '\uf8ff')
+          }
+          if (profileFilter) {
+            const profileRef = this.profileService.getProfileRefById(profileFilter)
+            query = query.where('profile', '==', profileRef)
+          }
+
+          if (departmentsFilter && departmentsFilter.length > 0) {
+            // Convierte los IDs de departamento en referencias de documentos
+            const departmentRefs = departmentsFilter.map(id => this.afs.doc(`department/${id}`).ref);
+  
+            // Utiliza la cláusula 'in' con las referencias de documentos, teniendo en cuenta la limitación de 10 elementos
+            if (departmentRefs.length <= 10) {
+              query = query.where('departmentRef', 'in', departmentRefs);
+            } else {
+              console.error('La función no soporta filtrar por más de 10 departamentos debido a limitaciones de Firestore.');
+            }
+          }
+
           if (statusFilter && statusFilter === SubscriptionClass.STATUS_ACTIVE) {
             query = query.where('status', '==', SubscriptionClass.STATUS_ACTIVE)
           }

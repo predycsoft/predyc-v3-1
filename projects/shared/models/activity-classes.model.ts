@@ -339,6 +339,7 @@ export class QuestionType {
       solveInstructions:
         'Clasifique las siguientes afirmaciones como verdadera o falsa',
     },
+    
   ];
 
   public static TYPES_TOOLTIP_INFO = (): string => {
@@ -365,6 +366,7 @@ export interface QuestionJson {
   options: QuestionOptionJson[];
   points: number;
   skillsRef: DocumentReference<Skill>[]
+  explanation:string
 }
 
 export class Question {
@@ -446,6 +448,7 @@ export class Question {
 
   id: string = '';
   text: string = '';
+  explanation: string = '';
   type: typeof Question.TYPE_CALCULATED |
         typeof Question.TYPE_MATCHING |
         typeof Question.TYPE_NUMERIC |
@@ -463,6 +466,7 @@ export class Question {
     let question = new Question();
     question.id = obj.id;
     question.text = obj.text;
+    question.explanation = obj.explanation;
     question.type = obj.type;
     question.image = obj.image;
     question.points = obj.points;

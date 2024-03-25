@@ -3,11 +3,17 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { Chart } from 'chart.js';
 import jsPDF from 'jspdf';
-import { Subscription } from 'rxjs';
+import autoTable from 'jspdf-autotable';
+import { Subscription, combineLatest, concatAll, filter, map, of, switchMap, take } from 'rxjs';
 import { Enterprise } from 'projects/shared/models/enterprise.model';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import { font, font2 } from 'projects/predyc-business/src/assets/fonts/font-constants';
+import { UserService } from '../../../services/user.service';
+import { CourseService } from '../../../services/course.service';
+import { ProfileService } from '../../../services/profile.service';
+import { DepartmentService } from '../../../services/department.service';
+import { FormControl, FormGroup } from '@angular/forms';
 
 interface textOpts {
   text: string,
@@ -18,6 +24,22 @@ interface textOpts {
   color?: 'white' | 'black',
   textAlign: 'left' | 'center' | 'right',
   maxLineWidth?: number
+}
+interface MonthlyDuration {
+  label: string;
+  value: number;
+}
+
+interface User {
+  displayName: string,
+  profile: string,
+  department: string,
+  hours: number,
+  targetHours: number,
+  ratingPoints: number,
+  rhythm: string
+  uid: string,
+  photoUrl: string,
 }
 
 @Component({
@@ -31,11 +53,28 @@ export class DialogDownloadReportComponent {
     public icon: IconService,
     private enterpriseService: EnterpriseService,
     private activeModal: NgbActiveModal,
-  ) {}
+    private userService: UserService,
+    private courseService: CourseService,
+    private profileService: ProfileService,
+    private departmentService: DepartmentService
 
-  startDate: number
+  ) {
+
+    const today = new Date();
+
+
+    this.maxDate = {
+      year: today.getFullYear(),
+      month: today.getMonth() + 1, // Los meses en JavaScript son de 0 a 11
+      day: today.getDate()
+    };
+
+
+  }
+
+  startDate
   hoy: number = Date.now()
-  endDate = this.hoy
+  endDate
   startWeekDate: number
   startMonthDate: number
   startYearDate: number
@@ -43,13 +82,164 @@ export class DialogDownloadReportComponent {
 
   enterprise: Enterprise
   enterpriseSubscription: Subscription
+  userServiceSubscription: Subscription
+  profilesSubscription: Subscription
+  profiles
+  departments
+  courses
+  users
+  reportform: FormGroup
+  displayErrors = false
+  classes
 
-  ngOnInit() {
+  ngOnInit() { // estoy aqui
+    this.generatinReport = false;
+    this.displayErrors = false
     this.enterpriseSubscription = this.enterpriseService.enterprise$.subscribe(async enterprise => {
       if (enterprise) {
-        this.enterprise = enterprise
+        this.enterprise = enterprise;
       }
     })
+    this.profileService.loadProfiles()
+    this.profilesSubscription = combineLatest([this.profileService.getProfiles$(), this.departmentService.getDepartments$(), this.courseService.getCourses$(),this.courseService.getClassesEnterprise$()]).subscribe(([profiles, departments, courses,classes]) => {
+      this.profiles = profiles
+      this.departments = departments
+      this.courses = courses
+      this.classes = classes
+      //this.getData();
+    })
+
+    this.reportform = new FormGroup({
+      fechaInicio: new FormControl(null),
+      fechafin: new FormControl(null),
+    })
+  }
+
+
+
+  generatinReport = false;
+
+
+  
+  downloadReport() {
+
+
+    //alert('inicio reporte')
+    this.generatinReport = true
+    if (this.userServiceSubscription) {
+      this.userServiceSubscription.unsubscribe()
+    }
+    
+
+    let fechaInicio = null
+    let fechaFin = null
+
+    if(this.startDate){
+      fechaInicio = new Date(this.startDate.year,this.startDate.month-1,this.startDate.day)
+    }
+    if(this.endDate){
+      fechaFin = new Date(this.endDate.year,this.endDate.month-1,this.endDate.day)
+    }
+
+
+    console.log('fechas reporte',fechaInicio,fechaFin)
+
+
+    this.userServiceSubscription = this.userService.getUsersReport$(null,null,null,null,fechaInicio,fechaFin).pipe(
+      filter(user=>user !=null),take(1),
+      switchMap(users => {
+        const userCourseObservables = users.map(user => {
+          const userRef = this.userService.getUserRefById(user.uid);
+          // Obtener cursos activos por usuario
+          const coursesObservable = this.courseService.getActiveCoursesByStudentDateFiltered$(userRef,fechaInicio,fechaFin);
+          // Obtener clases asociadas al usuario, independientemente de los cursos
+          const classesObservable = this.courseService.getClassesByStudentDatefilterd$(userRef,fechaInicio,fechaFin);
+
+          const allCoursesObservable = this.courseService.getActiveCoursesByStudent(userRef)
+
+          const certificatesObservable = this.courseService.getCertificatestDatefilterd$(userRef,fechaInicio,fechaFin)
+      
+          return combineLatest([coursesObservable, classesObservable,certificatesObservable,allCoursesObservable]).pipe(
+            map(([courses, classes,certificados,allCourses]) => {
+              // Aquí tienes un objeto que incluye tanto los cursos como las clases asociadas a ese usuario
+              // Cursos y clases están en sus propios objetos y no anidadas
+              return { user, courses, classes,certificados,allCourses };
+            })
+          );
+        });
+        // Combina los observables de todos los usuarios con sus cursos y clases
+        return combineLatest(userCourseObservables);
+        })).subscribe(response => {
+        console.log('datos reporte',response)
+        const users: User[] = response.map(({user, courses,classes,certificados,allCourses}) => {
+          const profile = this.profiles.find(profile => {
+            if(user.profile) {
+              return profile.id === user.profile.id
+            }
+            return false
+          })
+          let profileName = ''
+          if (profile) {
+            profileName = profile.name
+          }
+          let hours = 0
+          let targetHours = 0
+          let targetHoursAllCourses = 0
+          let hoursAllCourses = 0
+          let coursesUser = [];
+          let allcoursesUser = [];
+          let classesUser= []
+          courses.forEach(course => {
+            hours += (course?.progressTime ? course.progressTime : 0)/60
+            const courseJson = this.courses.find(item => item.id === course.courseRef.id)
+            let courseIn = {...courseJson,progress:course}
+            courseIn.completed = course.progress >= 100? true : false
+            coursesUser.push(courseIn)
+            targetHours += (courseJson.duracion/60)
+          })
+
+          allCourses.forEach(course => {
+            hoursAllCourses += (course?.progressTime ? course.progressTime : 0)/60
+            const courseJson = this.courses.find(item => item.id === course.courseRef.id)
+            let courseIn = {...courseJson,progress:course}
+            courseIn.completed = course.progress >= 100? true : false
+            allcoursesUser.push(courseIn)            
+            targetHoursAllCourses += (courseJson.duracion/60)
+          })
+
+          classes.forEach(clase => {
+            const classJson = this.classes.find(item => item.id === clase.classRef.id)
+            let claseData = {...classJson,...clase}
+            classesUser.push(claseData)
+          })
+          const userPerformance: "no plan" | "high" | "medium" | "low" | "no iniciado"= this.userService.getPerformanceWithDetails(courses);
+          const department = this.departments.find(department => department.id === user.departmentRef?.id)
+          const ratingPoints: number = this.userService.getRatingPointsFromStudyPlan(courses, this.courses);
+          return {
+            displayName: user.displayName,
+            department: department?.name ? department.name : '',
+            departmentId: department?.id ? department.id : '',
+            hours: hours, // Calculation pending
+            hoursAllCourses:hoursAllCourses,
+            targetHours: targetHours,
+            targetHoursAllCourses:targetHoursAllCourses,
+            profile: profileName,
+            profileId: profile?.id ? profile.id : '',
+            ratingPoints: ratingPoints,
+            rhythm: userPerformance, // Calculation pending
+            uid: user.uid,
+            photoUrl: user.photoUrl,
+            courses:coursesUser,
+            clases:classesUser,
+            certificados:certificados,
+            allCourses:allcoursesUser
+          }
+        })
+        this.users = users; // Assuming the data is in 'items'
+        console.log('data reporte',this.users)
+        this.download()
+      }
+    );
   }
 
   ngOnDestroy() {
@@ -138,6 +328,9 @@ export class DialogDownloadReportComponent {
 
 
   // ********* Report Methods *********
+
+
+
   async download() {
     try {
       try {
@@ -158,15 +351,435 @@ export class DialogDownloadReportComponent {
       this.addFonts()
       this.addCover()
       await this.addGeneralPage()
+      this.extraPages = 2
+
+      for (let index = 0; index < this.departments.length; index++) {
+        const department = this.departments[index];
+        let users = this.users.filter(x=>x.departmentId == department.id)
+        if(users.length>0){
+          let usersWithProfiles = users.filter(x=>x.profileId)
+          if(usersWithProfiles.length>0){
+            await this.addGeneralPage(usersWithProfiles,'department',department.name)
+            this.extraPages ++
+            // Agregar pagina por perfil
+            let profiles = usersWithProfiles.map(user => {
+              return user.profileId
+            });
+            profiles = [...new Set(profiles)];
+            for (let index = 0; index < profiles.length; index++) {
+              const profileId = profiles[index];
+              const profile = this.profiles.find(x=> x.id == profileId)
+              const usersProfile = usersWithProfiles.filter(x=>x.profileId == profileId)
+              if(usersProfile.length>0){
+                await this.addGeneralPage(usersProfile,'profile',profile.name,department.name)
+                this.extraPages ++
+                //Agregar paginas de los estudiantes del perfil
+
+                for (let index = 0; index < usersProfile.length; index++) {
+                  const student = usersProfile[index];
+                  console.log('student',student)
+                  await this.studentPage(student)
+  
+                }
+                
+              }
+            }
+          }
+        }
+      }
+
+      let usersSinDepartamneto = this.users.filter(x=>x.departmentId =='')
+
+      if(usersSinDepartamneto.length>0){
+
+        let usersWithProfiles = usersSinDepartamneto.filter(x=>x.profileId)
+        if(usersWithProfiles.length>0){
+          await this.addGeneralPage(usersWithProfiles,'department','Sin Departamento')
+          this.extraPages ++
+          // Agregar pagina por perfil
+          let profiles = usersWithProfiles.map(user => {
+            return user.profileId
+          });
+          profiles = [...new Set(profiles)];
+          for (let index = 0; index < profiles.length; index++) {
+            const profileId = profiles[index];
+            const profile = this.profiles.find(x=> x.id == profileId)
+            const usersProfile = usersWithProfiles.filter(x=>x.profileId == profileId)
+            if(usersProfile.length>0){
+              await this.addGeneralPage(usersProfile,'profile',profile.name,'Sin Departamento')
+              this.extraPages ++
+              //Agregar paginas de los estudiantes del perfil
+              for (let index = 0; index < usersProfile.length; index++) {
+                const student = usersProfile[index];
+                console.log('student',student)
+                await this.studentPage(student)
+
+              }
+
+
+
+            }
+          }
+
+        }
+
+      }
+
+      
       // for (let index = 0; index < this.pages.length; index++) {
       //   const student = this.pages[index];
       //   await this.studentPage(student, index)
       // }
       this.pdf.save(`Reporte Histórico de ${this.enterprise.name}.pdf`)
+      //alert('termino reporte')
+      this.generatinReport = false
     }catch(err) {
       console.log(err)
     }
 
+  }
+
+
+  obtenerUltimoDiaDelMes(fecha: number) {
+    fecha = fecha * 1000;
+    let fechaOriginal = new Date(fecha);
+    const anio = fechaOriginal.getFullYear();
+    const mes = fechaOriginal.getMonth();
+    const ultimoDiaDelMes = new Date(anio, mes + 1, 0);
+  
+    // Establecer la hora a 23:59:59
+    ultimoDiaDelMes.setHours(23, 59, 59);
+  
+    return ultimoDiaDelMes;
+  }
+
+
+
+  getRetardedCourses(courses){
+
+    let respuesta = []
+    let today = new Date()
+    courses.forEach(curso => {
+
+      // if(curso.completed){
+      //   console.log('curso.progress.dateEnd.seconds',curso)
+      //   if(new Date(curso.progress.dateEnd.seconds*1000)>this.obtenerUltimoDiaDelMes(curso.progress.dateEndPlan.seconds)){
+      //     respuesta.push(curso)
+      //   }
+      // }
+      //else{
+        if(!curso.completed && today>this.obtenerUltimoDiaDelMes(curso.progress.dateEndPlan.seconds)){
+          console.log()
+          respuesta.push(curso)
+        }
+      //}
+      
+    });
+
+    return respuesta
+
+
+  }
+
+  titleCase(str: string): string {
+    if (!str) return str;
+    return str.toLowerCase().split(' ').map(word => {
+      return (word.charAt(0).toUpperCase() + word.slice(1));
+    }).join(' ');
+  }
+
+
+  async studentProgressbar(studentStats, currentLine) {
+    currentLine = this.addFormatedText({
+      text: "Progreso general",
+      x: 0,
+      y: currentLine,
+      color: 'black',
+      bold: true,
+      textAlign: "left",
+      size: 16
+    })
+
+    currentLine += this.pdf.getLineHeight()/2
+    let pdf = `
+    <div style="display: flex; max-width: ${this.formattedPageWidth}mm; margin: 0 auto; gap: 1rem; align-items: left; justify-content: left; margin-top: 8px;">
+      <div style="display: flex; overflow: hidden; height: 12px; max-height: 12px; width: ${this.formattedPageWidth- 20}mm; background-color: #D5DCE0; border-radius: 6px">
+          <div style="width: ${studentStats.completedCourses * 100 / studentStats.enrolledCourses}%; height: 20px; min-height: 20px; background-color: #00BF9C">
+          </div>
+          <div style="width: ${studentStats.delayedCourses * 100 / studentStats.enrolledCourses}%; height: 20px; min-height: 20px; background-color: #ED4758">
+          </div>
+          <div style="width: ${studentStats.inProgressCourses * 100 /studentStats.enrolledCourses}%; height: 20px; min-height: 20px; background-color: #008CE3">
+          </div>
+      </div>
+    </div>`
+
+    console.log('pdf',studentStats,pdf)
+
+    await this.pdf.html(pdf, {
+      callback: (doc) => {
+        return doc
+      },
+      y: this.pageHeigth*(this.extraPages) + currentLine, //"2" because of cover and general pages. extraPages because of extra tables
+      windowWidth: 795, //px  (210mm = 795px)
+      width: 210,       //unit of the instance
+    });
+    currentLine = this.addFormatedText({
+      text: `${studentStats.progress.toFixed(0)} %`, // REVISAR
+      x: this.formattedPageWidth - 18,
+      y: currentLine - this.pdf.getLineHeight()/4,
+      color: 'black',
+      bold: true,
+      textAlign: "left",
+      size: 14
+    })
+    return currentLine
+  }
+
+
+  defaultUserImage = "assets/images/default/default-user-image.jpg"
+
+
+  async studentPage(student) {
+    this.pdf.addPage("a4", "p")
+    let currentLine = 0
+    currentLine = this.addLogoAndDate()
+    currentLine += 10
+    const studentPhoto = student.photoUrl?student.photoUrl: this.defaultUserImage
+    console.log(studentPhoto)
+    const image = await this.firebasePhotoToImage(studentPhoto)
+    console.log(image);
+    const photoWidth = 21
+    const photoHeight = 21
+    const photoXStartingPosition = this.horizontalMargin
+    const photoYStartingPosition = currentLine
+    this.pdf.addImage(image, 'PNG', photoXStartingPosition , photoYStartingPosition, photoWidth, photoHeight)
+    currentLine = this.addFormatedText({
+      text: `${this.titleCase(student.displayName)}`,
+      x: photoWidth + 8,
+      y: currentLine - 5,
+      color: 'black',
+      bold: true,
+      textAlign: "left",
+      size: 18
+    })
+    // currentLine = this.addFormatedText({
+    //   text: `${this.getUser(student).job}`,
+    //   x: photoWidth + 8,
+    //   y: currentLine,
+    //   color: 'black',
+    //   textAlign: "left",
+    //   size: 16
+    // })
+    currentLine = this.addFormatedText({
+      text: this.titleCase(this.enterprise.name),
+      x: photoWidth + 8,
+      y: currentLine,
+      color: 'black',
+      textAlign: "left",
+      size: 16
+    })
+    currentLine += this.pdf.getLineHeight()/2 + 5
+    this.pdf.line(this.horizontalMargin, currentLine, this.formattedPageWidth, currentLine)
+    // Student info
+    const studyPlanInsidePeriod = student.courses
+
+
+    let clases = this.getAllClasses([student])
+
+    let promedioTiempo = this.calcularPromedioTiempoEstudioConClases(clases,[student])
+
+    let coursesRetarded = this.getRetardedCourses(student.allCourses)
+
+
+    console.log('revisar',student,coursesRetarded)
+
+
+    //PROGRESS BAR
+
+    let studentData = {
+      completedCourses:student.allCourses.filter(x=>x.completed).length,
+      delayedCourses:coursesRetarded.length,
+      inProgressCourses:student.allCourses.filter(x=>!x.completed && x.progress.progress>0 ).length,
+      enrolledCourses:student.allCourses.length,
+      progress:this.getPlanProgress([student])
+    }
+
+    currentLine = await this.studentProgressbar(studentData, currentLine)
+
+    this.extraPages++
+
+
+    currentLine += 5
+    //DATA DISTRIBUTED IN RECTANGLES 
+    const strings = [
+      "Cursos completados", 
+      "Cursos con retraso", 
+      "Cursos en progreso", 
+      "Cursos inscritos", 
+      "Horas de formación totales", 
+      `Horas promedio por ${promedioTiempo.tiempo}`,
+      "Certificados emitidos", 
+      "Calificación promedio"
+    ]   
+    const values = [
+      student.allCourses.filter(x=>x.completed).length,
+      coursesRetarded.length,
+      student.allCourses.filter(x=>!x.completed && x.progress.progress>0).length,
+      student.allCourses.length,
+      this.getTotalHours([student]),
+      promedioTiempo?.valor? promedioTiempo?.valor : 0,
+      student.certificados.length,
+      this.getCalificacionPromedio([student])
+
+    ]
+
+    currentLine = this.studentCoursesData(strings, values, currentLine) 
+    currentLine += 5
+    // CHARTS
+    const graphicHeight = 80
+    const constCharData = this.getChartData([student])
+    currentLine = await this.getChart(currentLine, constCharData, graphicHeight)
+    currentLine += 5
+    // STUDYPLAN TABLE
+    if (studyPlanInsidePeriod.length > 0) {
+      this.studentStudyPlanTable(studyPlanInsidePeriod, currentLine)
+    }
+    else {
+      this.pdf.line(this.horizontalMargin, currentLine, this.formattedPageWidth, currentLine)
+      currentLine = this.addFormatedText({
+        text: "El plan de estudio del estudiante no posee cursos que hayan iniciado en el período seleccionado",
+        x: this.formattedPageWidth / 2,
+        y: currentLine,
+        color: 'black',
+        bold: true,
+        textAlign: "center",
+        size: 24
+      })
+    }
+  }
+
+  timestampToDateFormat(date) {
+    let result = "N/A"
+    if (date) {
+      result = new Date(date).toLocaleString("es-ES", { day: "numeric", month: "numeric", year: "numeric"})
+    }
+    return result
+  }
+
+  getStatus(curso) {
+    if (curso.completed) {
+      return "Completado"
+    } else {
+      if (!curso.progress.dateEndPlan) {
+        return "Pendiente"
+      } else {
+        let fechaFin = new Date(this.endDate.year,this.endDate.month-1,this.endDate.day)
+        if (this.obtenerUltimoDiaDelMes(curso.progress.dateEndPlan.seconds)< fechaFin) {
+          return "Atrasado"
+        } else {
+          return "Pendiente"
+        }
+      }
+    }
+  }
+
+
+
+
+  studentStudyPlanTable(studyPlan, currentLine) {
+    let hTable = currentLine
+    const head = [["Nombre", "Duración (horas)", "Progreso", "Fecha fin asignada", "Fecha de completación", "Estatus", "Calificación"]]
+    let tableData = []
+    for (let index = 0; index < studyPlan.length; index++) {
+      const course = studyPlan[index];
+      const courseInfo = [
+        course.titulo, 
+        (course.duracion/60).toFixed(2), 
+        `${course.progress.progress.toFixed(0)} %`, 
+        this.timestampToDateFormat(this.obtenerUltimoDiaDelMes(course.progress.dateEndPlan.seconds)),
+        course.progress?.dateEnd?this.timestampToDateFormat(course.progress.dateEnd.seconds*1000):'NA', 
+        this.getStatus(course), 
+        course.progress.finalScore>=100 ? 100 : course.progress.finalScore
+      ]
+      tableData.push(courseInfo)
+    }
+
+    console.log('tableData',tableData)
+
+    autoTable(this.pdf, {
+      theme: "striped",
+      margin: {
+        top: 20, // Al dividir la tabla en mas de una pagina, esta sera la posicion de la 2da en adelante
+        left: this.horizontalMargin,
+      },
+      head: head,
+      headStyles :{halign: 'center', valign: 'middle'},
+      // showHead: "firstPage",
+      body: tableData,
+      rowPageBreak: "avoid",
+      pageBreak: "auto",
+      tableWidth: this.formattedPageWidth,
+      styles: {
+        // font: "calibri",
+        fontSize: 8 
+      },
+      startY: currentLine,
+      columnStyles: {
+        0: { halign: 'left', valign: 'middle', cellWidth: 65 },
+        1: { halign: 'center', valign: 'middle', cellWidth: 20 },
+        2: { halign: 'center', valign: 'middle', cellWidth: 20 },
+        3: { halign: 'center', valign: 'middle', cellWidth: 25 },
+        4: { halign: 'center', valign: 'middle', cellWidth: 25 },
+        5: { halign: 'center', valign: 'middle', cellWidth: 25 },
+        6: { halign: 'center', valign: 'middle', cellWidth: 20 }
+      },
+      didDrawPage: (data) => {
+        const limitTableHeight = 274
+        if (data.cursor.y > limitTableHeight) {
+          // console.log(`Se añadio una pagina debido a la altura de la tabla`)
+          this.extraPages += 1
+        }
+        if (data.pageNumber > 1) {
+          // Añadimos logo y fecha a la pagina
+          this.addLogoAndDate()
+        }
+      }
+    })
+  }
+
+
+  studentCoursesData(strings, values, currentLine) {
+    for (let i = 0; i < 2; i++) {
+      for (let index = 0; index < 4; index++) {
+        let rectXCoord = this.horizontalMargin + index*this.formattedPageWidth/4
+        let rectYCoord = currentLine
+        let rectWidth = this.formattedPageWidth/4
+        let rectHeight = this.formattedPageHeigth/10
+        // this.pdf.rect(rectXCoord, rectYCoord, rectWidth, rectHeight, null)
+        let text = strings[(index)+(4*i)]
+        let value = values[(index)+(4*i)]
+        this.addFormatedText({
+          text: value.toString(),
+          x: rectXCoord,
+          y: rectYCoord,
+          color: 'black',
+          bold: true,
+          textAlign: "left",
+          size: 20
+        })
+        this.addFormatedText({
+          text: text,
+          x: rectXCoord,
+          y: rectYCoord + rectHeight - this.pdf.getLineHeight(),
+          color: 'black',
+          textAlign: "left",
+          size: 12,
+          maxLineWidth: rectWidth - this.horizontalMargin
+        })
+      }
+      currentLine += this.formattedPageHeigth/10 //rectHeight
+    }
+    return currentLine
   }
 
   logo = "assets/images/logos/logo.png"
@@ -203,7 +816,7 @@ export class DialogDownloadReportComponent {
       textAlign: "center"
     })
     currentLine = this.addFormatedText({
-      text: this.enterprise.name,
+      text: this.titleCase(this.enterprise.name),
       x: this.formattedPageWidth / 2,
       y: currentLine,
       color: 'white',
@@ -221,17 +834,45 @@ export class DialogDownloadReportComponent {
     })
   }
 
-  async addGeneralPage() {
+  async addGeneralPage(users = this.users,type='general',name = null,parentName = null) {
     this.pdf.addPage("a4", "p")
     let currentLine = 0
     currentLine = this.addLogoAndDate()
+
+    let addLinesTitle = 7
+
     let generalPageTitle = "Reporte de capacitación "
+
+    if(type=='general'){
+      generalPageTitle = "Reporte de capacitación "
+    }
+    else if (type == 'department'){
+      generalPageTitle= ''
+      if(name != 'Sin Departamento'){
+        generalPageTitle = "Dpto: "
+      }
+      generalPageTitle += name
+    }
+    else if(type == 'profile'){
+      generalPageTitle = "Perfil: "
+      generalPageTitle += name
+      addLinesTitle = 0
+      currentLine = this.addFormatedText({
+        text: `Dpto: ${parentName}`,
+        x: 0,
+        y: currentLine+7,
+        color: 'black',
+        bold: true,
+        textAlign: "left",
+        size: 16
+      })
+    }
     // Si es historico
-    generalPageTitle += "histórico"
+    //generalPageTitle += "histórico"
     currentLine = this.addFormatedText({
       text: generalPageTitle,
       x: 0,
-      y: currentLine + 7,
+      y: currentLine + addLinesTitle,
       color: 'black',
       bold: true,
       textAlign: "left",
@@ -248,34 +889,414 @@ export class DialogDownloadReportComponent {
     currentLine += this.pdf.getLineHeight()/2 + 5
     this.pdf.line(this.horizontalMargin, currentLine, this.formattedPageWidth, currentLine)
     //DATA DISTRIBUTED IN RECTANGLES
+
+    let fechaInicio
+    let fechaFin
+
+    if(this.startDate){
+      fechaInicio = new Date(this.startDate.year,this.startDate.month-1,this.startDate.day)
+    }
+    if(this.endDate){
+      fechaFin = new Date(this.endDate.year,this.endDate.month-1,this.endDate.day)
+    }
+    
+
+    let promedioTiempo = this.calcularPromedioTiempoEstudioConClases(this.getAllClasses(users),users)
+    let certificados  = this.getAllCertificates(users)
+    let courses = this.getAllCoursesUsers(users)
+
     const strings = [
       "Estudiantes activos actualmente", 
       "Horas acumuladas del grupo en el período", 
       "Horas promedio por estudiante en el período", 
-      `Horas promedio por mes"`,
+      `Horas promedio por ${promedioTiempo.tiempo}`,
       "Certificados emitidos en el período", 
       "Cursos inscritos en el período", 
       "Calificación promedio en el período", 
       "Progreso del plan general actualmente"
     ]
     const values = [
-      0,    // No depende el periodo
-      0, 
-      0, 
-      0, 
-      0, 
-      0, 
-      0, 
-      `0 %` // No depende el periodo
+      users.length,    // No depende el periodo
+      this.getTotalHours(users), 
+      this.gethorasPromedioPorEstudiante(users), 
+      promedioTiempo?.valor? promedioTiempo?.valor : 0, 
+      certificados.length, 
+      courses.length, 
+      this.getCalificacionPromedio(users), 
+      `${this.getPlanProgress(users)} %` // No depende el periodo
     ]
+
+    console.log('values',values)
+
+    
     currentLine = this.generalCoursesData(strings, values, currentLine) 
     // CHARTS
     const graphicHeight = 90
-    currentLine = await this.getChart(currentLine, [], graphicHeight)
+    const constCharData = this.getChartData(users)
+    currentLine = await this.getChart(currentLine, constCharData, graphicHeight)
+
+
+    //"no plan" | "high" | "medium" | "low" | "no iniciado"
+
+    this.ritmoMedio =users.filter(x=>x.rhythm == 'medium')
+    this.ritmoBajo =users.filter(x=>x.rhythm == 'low')
+    this.ritmoOptimo =users.filter(x=>x.rhythm == 'high')
+    this.sinPlan =users.filter(x=>x.rhythm == 'no plan')
+    this.noIniciado =users.filter(x=>x.rhythm == 'no iniciado')
 
     // PROGRESS BAR
-    currentLine = await this.generalProgressbar(currentLine)
+
+    if(type == 'general'){
+      currentLine = await this.generalProgressbar(currentLine)
+    }
+    else {
+      currentLine = await this.generalProgressbarDepartment(users,currentLine)
+    }
   }
+
+
+  getPlanProgress(usersData){
+
+
+    console.log('getPlanProgress',usersData)
+
+    let totalTimeExpected = 0;
+    let totalTimeFinished = 0;
+
+    usersData.forEach(usuario => {
+      totalTimeExpected+=usuario?.targetHoursAllCourses ? usuario.targetHoursAllCourses: 0
+      totalTimeFinished+=usuario?.hoursAllCourses ? usuario.hoursAllCourses: 0
+    });
+
+    if(totalTimeExpected == 0){
+      return 0
+    }
+
+    let progresoPlan = (totalTimeFinished*100)/totalTimeExpected
+    progresoPlan =  Math.round(progresoPlan * 10) / 10
+
+
+
+    return progresoPlan
+
+
+  }
+
+  
+  calcularPromedioTiempoEstudio(startDate: Date, endDate: Date, totalHorasEstudio: number): any {
+    const unDia = 24 * 60 * 60 * 1000; // Milisegundos en un día
+    const diferenciaEnDias = Math.round(Math.abs((endDate.getTime() - startDate.getTime()) / unDia));
+
+    console.log('totalHorasEstudio',totalHorasEstudio)
+    
+    // Calcula el promedio según el periodo
+    let promedio = 0;
+    let unidadTiempo = '';
+    
+    if (diferenciaEnDias < 7) { // Menos de una semana
+      promedio = totalHorasEstudio / diferenciaEnDias;
+      unidadTiempo = 'día';
+    } else if (diferenciaEnDias <= 30) { // Menos de un mes
+      const semanas = diferenciaEnDias / 7;
+      promedio = totalHorasEstudio / semanas;
+      unidadTiempo = 'semana';
+    } else { // Más de un mes
+      const meses = diferenciaEnDias / 30;
+      promedio = totalHorasEstudio / meses;
+      unidadTiempo = 'mes';
+    }
+    
+    // Redondea el promedio a 1 decimal
+    promedio = Math.round(promedio * 10) / 10;
+
+    let respueta = {
+      tiempo:unidadTiempo,
+      valor:promedio.toFixed(1)
+
+    }
+    
+    return respueta;
+  }
+
+  calcularPromedioTiempoEstudioConClases(classes,users): any {
+
+    
+  if (classes.length === 0) {
+    return "No hay clases para calcular el promedio.";
+  }
+
+  // Encuentra la fecha más antigua y la más reciente entre todas las clases
+  const fechas = classes.map(clase => new Date(clase.dateEnd.seconds * 1000));
+
+  const fechaInicio = new Date(Math.min(...fechas));
+  const fechaFin = new Date(Math.max(...fechas));
+  
+  // Calcula el total de horas de estudio
+  const totalHorasEstudio = this.getTotalHours(users)
+  // Sigue el mismo procedimiento para calcular el promedio basado en el periodo
+  const unDia = 24 * 60 * 60 * 1000; // Milisegundos en un día
+
+  console.log('revisarCalcularPromedioTiempoEstudioConClases',fechaFin.getTime(),fechaInicio.getTime())
+
+
+
+  let diferenciaEnDias = Math.round(Math.abs((fechaFin.getTime() - fechaInicio.getTime()) / unDia));
+
+  if(diferenciaEnDias <=0) diferenciaEnDias =1 
+  
+  let promedio = 0;
+  let unidadTiempo = '';
+  
+  if (diferenciaEnDias < 7) {
+    promedio = totalHorasEstudio / diferenciaEnDias;
+    unidadTiempo = 'día';
+  } else if (diferenciaEnDias <= 30) {
+    const semanas = diferenciaEnDias / 7;
+    promedio = totalHorasEstudio / semanas;
+    unidadTiempo = 'semana';
+  } else {
+    const meses = diferenciaEnDias / 30;
+    promedio = totalHorasEstudio / meses;
+    unidadTiempo = 'mes';
+  }
+
+  // Redondea el promedio a 1 decimal
+  promedio = Math.round(promedio * 10) / 10;
+
+  let respuesta = {
+    tiempo:unidadTiempo,
+    valor:promedio.toFixed(1)
+  }
+
+  return respuesta;
+}
+
+
+
+  getTotalHours(usersData){
+
+    let amountHours = 0
+    usersData.forEach(user => {
+      user.clases.forEach(clase => {
+        amountHours+=clase.duracion
+      });
+    });
+    return Math.round((amountHours / 60) * 10) / 10 // Convierte minutos a horas y redondea a 1 decimal
+  }
+
+  gethorasPromedioPorEstudiante(usersData) {
+    const promedio = usersData.length > 0 ? this.getTotalHours(usersData) / usersData.length : 0;
+    // Redondea el promedio a 1 decimal
+    return Math.round(promedio * 10) / 10;
+  }
+
+
+
+  
+  getAllClasses(usersData){
+    let allClasses = []
+    usersData.forEach(user => {
+      allClasses = allClasses.concat(user.clases);
+    });
+    return allClasses
+  }
+
+  getAllCertificates(usersData){
+    let allCertificates = []
+    usersData.forEach(user => {
+      allCertificates = allCertificates.concat(user.certificados);
+    });
+    return allCertificates
+  }
+
+  getCalificacionPromedio(usersData){
+    let allCertificates = []
+    usersData.forEach(user => {
+      allCertificates = allCertificates.concat(user.certificados);
+    });
+
+    let calificacion = 0
+
+    if(allCertificates.length == 0 ){
+      return 0
+    }
+
+    allCertificates.forEach(certificado => {
+      calificacion+=certificado.puntaje
+    });
+
+    let promedio = calificacion/allCertificates.length
+
+    promedio = Math.round(promedio * 10) / 10;
+
+    return promedio
+  }
+  
+  getAllCoursesUsers(usersData){
+    let allCourses = []
+    usersData.forEach(user => {
+      allCourses = allCourses.concat(user.courses);
+    });
+    return allCourses
+  }
+
+  getChartData(usersData) {
+    let allClasses = this.getAllClasses(usersData);
+  
+    if (allClasses.length === 0) {
+      return [];
+    }
+  
+    // Ordena las clases por fecha de finalización para determinar las fechas de inicio y fin del rango
+    const sortedClasses = allClasses.sort((a, b) => a.dateEnd.seconds - b.dateEnd.seconds);
+    const startDate = new Date(sortedClasses[0].dateEnd.seconds * 1000);
+    const endDate = new Date(sortedClasses[sortedClasses.length - 1].dateEnd.seconds * 1000);
+    
+    const scale = this.getScale(startDate, endDate);
+    
+    switch(scale) {
+      case 'daily':
+        return this.calculateDailyDurations(allClasses, startDate, endDate);
+      case 'weekly':
+        return this.calculateWeeklyDurations(allClasses, startDate, endDate);
+      case 'monthly':
+        return this.aggregateMonthlyDurations(allClasses);
+      default:
+        return [];
+    }
+  }
+
+  getScale(startDate: Date, endDate: Date): 'daily' | 'weekly' | 'monthly' {
+    const oneDay = 24 * 60 * 60 * 1000; // milisegundos en un día
+    const differenceInDays = Math.round(Math.abs((endDate.getTime() - startDate.getTime()) / oneDay));
+  
+    if (differenceInDays < 30) {
+      return 'daily';
+    } else if (differenceInDays < 90) {
+      return 'weekly';
+    } else {
+      return 'monthly';
+    }
+  }
+
+
+  calculateWeeklyDurations(classes: any[], startDate: Date, endDate: Date): MonthlyDuration[] {
+    const durationPerWeek: { [key: string]: number } = {};
+  
+    // Rellenar todas las semanas entre la fecha de inicio y fin con 0
+    let currentStartDate = this.getStartOfWeek(startDate);
+    let currentEndDate = new Date(currentStartDate);
+    currentEndDate.setDate(currentEndDate.getDate() + 6); // Sumar 6 días para llegar al domingo
+    
+    while (currentStartDate <= endDate) {
+      const formattedWeek = `${currentStartDate.getDate()} ${currentStartDate.toLocaleString('es', { month: 'short' })} al ${currentEndDate.getDate()} ${currentEndDate.toLocaleString('es', { month: 'short' })}`;
+      durationPerWeek[formattedWeek] = 0;
+  
+      // Preparar la próxima semana
+      currentStartDate.setDate(currentStartDate.getDate() + 7);
+      currentEndDate = new Date(currentStartDate);
+      currentEndDate.setDate(currentEndDate.getDate() + 6);
+    }
+  
+    // Sumar las duraciones por semana
+    classes.forEach(cl => {
+      const date = new Date(cl.dateEnd.seconds * 1000);
+      const startOfWeek = this.getStartOfWeek(date);
+      let endOfWeek = new Date(startOfWeek);
+      endOfWeek.setDate(endOfWeek.getDate() + 6); // Sumar 6 días para llegar al domingo
+      
+      const formattedWeek = `${startOfWeek.getDate()} ${startOfWeek.toLocaleString('es', { month: 'short' })} al ${endOfWeek.getDate()} ${endOfWeek.toLocaleString('es', { month: 'short' })}`;
+      durationPerWeek[formattedWeek] = (durationPerWeek[formattedWeek] || 0) + cl.duracion;
+    });
+  
+    // Ordenar y mapear las entradas
+    return Object.entries(durationPerWeek)
+      .sort((a, b) => new Date(a[0].split(' al ')[0]).getTime() - new Date(b[0].split(' al ')[0]).getTime())
+      .map(([week, duration]) => ({
+        label: week,
+        value: Math.round((duration / 60) * 10) / 10 // Convierte minutos a horas y redondea a 1 decimal
+      }));
+  }
+  
+  getStartOfWeek(date: Date): Date {
+    const day = date.getDay() || 7; // Convertir domingo de 0 a 7
+    if(day !== 1) date.setHours(-24 * (day - 1)); // Ajustar si no es lunes
+    return date;
+  }
+
+
+  calculateDailyDurations(classes: any[], startDate: Date, endDate: Date): MonthlyDuration[] {
+    const durationPerDay: { [key: string]: number } = {};
+    
+    // Rellena todos los días entre la fecha de inicio y fin con 0
+    for (let date = new Date(startDate); date <= endDate; date.setDate(date.getDate() + 1)) {
+      const formattedDate = `${date.getDate()}-${date.toLocaleString('es', { month: 'short' })}`;
+      durationPerDay[formattedDate] = 0;
+    }
+  
+    // Suma las duraciones por día
+    classes.forEach(cl => {
+      const date = new Date(cl.dateEnd.seconds * 1000); // Asumiendo que 'dateEnd' es un timestamp en segundos
+      const formattedDate = `${date.getDate()}-${date.toLocaleString('es', { month: 'short' })}`;
+      durationPerDay[formattedDate] = (durationPerDay[formattedDate] || 0) + cl.duracion;
+    });
+  
+    // Ordena el objeto por fecha y convierte a arreglo de DailyDuration
+    const sortedDailyDurations = Object.entries(durationPerDay)
+      .sort((a, b) => new Date(a[0]).getTime() - new Date(b[0]).getTime()) // Esto necesita ser ajustado para comparar correctamente
+      .map(([date, duration]) => ({
+        label: date,
+        value: Math.round((duration / 60) * 10) / 10 // Convierte minutos a horas y redondea a 1 decimal
+      }));
+  
+    return sortedDailyDurations;
+  }
+  
+  aggregateMonthlyDurations(classes: any[]): MonthlyDuration[] {
+    // Si no hay clases, retorna un arreglo vacío
+    if (classes.length === 0) {
+      return [];
+    }
+  
+    // Encuentra la fecha más antigua y la más reciente
+    const sortedClasses = classes.sort((a, b) => a.dateEnd.seconds - b.dateEnd.seconds);
+    const startDate = new Date(sortedClasses[0].dateEnd.seconds * 1000);
+    const endDate = new Date(sortedClasses[sortedClasses.length - 1].dateEnd.seconds * 1000);
+  
+    const durationPerMonth: { [key: string]: number } = {};
+  
+    // Inicializa todos los meses entre las fechas de inicio y fin con 0
+    for (let date = new Date(startDate); date <= endDate; date.setMonth(date.getMonth() + 1)) {
+      const year = date.getFullYear();
+      const month = date.getMonth();
+      const key = `${year}-${month < 9 ? '0' : ''}${month + 1}`;
+      durationPerMonth[key] = 0; // Inicializa con 0
+    }
+  
+    // Suma las duraciones por mes
+    classes.forEach(cl => {
+      const date = new Date(cl.dateEnd.seconds * 1000);
+      const year = date.getFullYear();
+      const month = date.getMonth();
+      const key = `${year}-${month < 9 ? '0' : ''}${month + 1}`;
+      durationPerMonth[key] += cl.duracion; // Suma la duración en minutos
+    });
+  
+    // Convierte y redondea los valores, y genera la etiqueta adecuada
+    const respuesta = Object.entries(durationPerMonth).map(([key, value]) => {
+      const [year, month] = key.split('-');
+      const monthName = new Date(parseInt(year), parseInt(month) - 1).toLocaleString('es', { month: 'short' }).slice(0, 3);
+      const label = `${monthName.charAt(0).toUpperCase() + monthName.slice(1)}-${year.slice(2)}`;
+  
+      return {
+        label,
+        value: Math.round((value / 60) * 10) / 10, // Convierte minutos a horas y redondea a 1 decimal
+      };
+    });
+  
+    return respuesta;
+  }
+  
 
   addFonts() {
     this.pdf.addFileToVFS("calibri-normal.ttf", this.font)
@@ -336,7 +1357,7 @@ export class DialogDownloadReportComponent {
   chart
   async getChart(currentLine, logsInsidePeriod, graphicHeight) { 
     // Si en anual o historico
-    let chartTitle = "Horas por mes"
+    let chartTitle = "Horas de estudio"
     currentLine = this.addFormatedText({
       text: chartTitle,
       x: 0,
@@ -348,7 +1369,7 @@ export class DialogDownloadReportComponent {
     })
     currentLine += this.pdf.getLineHeight()
     // const chartData = this.getChartData(logsInsidePeriod)
-    const chartData = []
+    const chartData = logsInsidePeriod
     let labels = []
     let values = []
     chartData.forEach(data => {
@@ -410,8 +1431,20 @@ export class DialogDownloadReportComponent {
   ritmoBajo = []
   ritmoOptimo = []
   sinPlan = []
+  noIniciado = []
 
-  async generalProgressbar(currentLine) {
+
+  maxDate
+
+  async generalProgressbarDepartment(users,currentLine) {
+
+
+    let ritmoMedio =users.filter(x=>x.rhythm == 'medium')
+    let ritmoBajo =users.filter(x=>x.rhythm == 'low')
+    let ritmoOptimo =users.filter(x=>x.rhythm == 'high')
+    let sinPlan =users.filter(x=>x.rhythm == 'no plan')
+    let noIniciado =users.filter(x=>x.rhythm == 'no iniciado')
+
     currentLine = this.addFormatedText({
       text: "Ritmo de usuarios",
       x: 0,
@@ -425,11 +1458,85 @@ export class DialogDownloadReportComponent {
     let pdf = `
     <div style="display: flex; max-width: ${this.formattedPageWidth}mm; margin: 0 auto; gap: 1rem; align-items: center; justify-content: center; margin-top: 8px;">
         <div style="display: flex; overflow: hidden; height: 12px; max-height: 12px; width: 100%; background-color: #D5DCE0; border-radius: 6px">
-            <div style="width: ${this.ritmoOptimo.length*100 / this.students.length}%; height: 20px; min-height: 20px; background-color: #6d05b0">
+            <div style="width: ${ritmoOptimo.length*100 / users.length}%; height: 20px; min-height: 20px; background-color: #6d05b0">
             </div>
-            <div style="width: ${this.ritmoMedio.length*100 / this.students.length}%; height: 20px; min-height: 20px; background-color: #00BF9C">
+            <div style="width: ${ritmoMedio.length*100 / users.length}%; height: 20px; min-height: 20px; background-color: #00BF9C">
             </div>
-            <div style="width: ${this.ritmoBajo.length*100 / this.students.length}%; height: 20px; min-height: 20px; background-color: #ED4758">
+            <div style="width: ${ritmoBajo.length*100 / users.length}%; height: 20px; min-height: 20px; background-color: #ED4758">
+            </div>
+        </div>
+    </div>
+  `
+    await this.pdf.html(pdf, {
+      callback: (doc) => {
+        return doc
+      },
+      //y: this.pageHeigth + currentLine,
+      y: this.pageHeigth*(this.extraPages) + currentLine, // extraPages because of extra tables
+      windowWidth: 795, //px  (210mm = 795px)
+      width: 210,       //unit of the instance
+    });
+    currentLine += this.pdf.getLineHeight()/4
+    this.addFormatedText({
+      text: `${this.ritmoOptimo.length} Ritmo óptimo`,
+      x: 0,
+      y: currentLine,
+      color: 'black',
+      bold: true,
+      textAlign: "left",
+      size: 10
+    })
+    this.addFormatedText({
+      text: `${this.ritmoMedio.length} Ritmo medio`,
+      x: 50,
+      y: currentLine,
+      color: 'black',
+      bold: true,
+      textAlign: "left",
+      size: 10
+    })
+    this.addFormatedText({
+      text: `${this.ritmoBajo.length} Ritmo bajo`,
+      x: 100,
+      y: currentLine,
+      color: 'black',
+      bold: true,
+      textAlign: "left",
+      size: 10
+    })
+    currentLine = this.addFormatedText({
+      text: `${this.sinPlan.length} Sin asignaciones`,
+      x: 150,
+      y: currentLine,
+      color: 'black',
+      bold: true,
+      textAlign: "left",
+      size: 10
+    })
+    return currentLine
+  }
+
+
+  async generalProgressbar(currentLine) {
+
+    currentLine = this.addFormatedText({
+      text: "Ritmo de usuarios",
+      x: 0,
+      y: currentLine,
+      color: 'black',
+      bold: true,
+      textAlign: "left",
+      size: 16
+    })
+    currentLine += this.pdf.getLineHeight()
+    let pdf = `
+    <div style="display: flex; max-width: ${this.formattedPageWidth}mm; margin: 0 auto; gap: 1rem; align-items: center; justify-content: center; margin-top: 8px;">
+        <div style="display: flex; overflow: hidden; height: 12px; max-height: 12px; width: 100%; background-color: #D5DCE0; border-radius: 6px">
+            <div style="width: ${this.ritmoOptimo.length*100 / this.users.length}%; height: 20px; min-height: 20px; background-color: #6d05b0">
+            </div>
+            <div style="width: ${this.ritmoMedio.length*100 / this.users.length}%; height: 20px; min-height: 20px; background-color: #00BF9C">
+            </div>
+            <div style="width: ${this.ritmoBajo.length*100 / this.users.length}%; height: 20px; min-height: 20px; background-color: #ED4758">
             </div>
         </div>
     </div>

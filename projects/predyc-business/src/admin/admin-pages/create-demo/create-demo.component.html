@@ -1,23 +1,21 @@
-<div class="fw fh mgt20">
+<div class="mgt20 mgl20 mgr20">
     <form [formGroup]="createDemoForm" (ngSubmit)="onSubmit()">
-        <div class="pd10" fxLayout="row" fxLayoutAlign="center center">
-            <span class="ft16 ft600 gray-10">
+            <span class="ft16 ft600 gray-10 mgb10">
                 Crear empresa demo
             </span>
-        </div>
-        <div fxLayout="row" fxLayoutAlign="center center">
+        <div fxLayout="row" fxLayoutAlign="start " class="mgt20">
             <div class="w-30">
                 <div fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="center ">
                     <input
                         formControlName="enterpriseName"
                         [class.is-invalid]="createDemoForm.get('enterpriseName').errors && displayErrors"
                         type="text" 
-                        class="form-control"
+                        class="form-control ft14 ft14"
                         placeholder="Nombre de la empresa">
                     <div
                         class="custom-invalid-feedback"
                         *ngIf="createDemoForm.get('enterpriseName').errors && displayErrors">
-                        <div *ngIf="createDemoForm.get('enterpriseName').errors?.required">
+                        <div *ngIf="createDemoForm.get('enterpriseName').errors?.required" class="ft12" style="margin-top: -12px;" >
                             Es obligatorio especificar el nombre de la empresa
                         </div>
                     </div>
@@ -25,12 +23,12 @@
                         formControlName="adminName"
                         [class.is-invalid]="createDemoForm.get('adminName').errors && displayErrors"
                         type="text" 
-                        class="form-control"
+                        class="form-control ft14"
                         placeholder="Nombre del administrador">
                         <div
                             class="custom-invalid-feedback"
                             *ngIf="createDemoForm.get('adminName').errors && displayErrors">
-                            <div *ngIf="createDemoForm.get('adminName').errors?.required">
+                            <div *ngIf="createDemoForm.get('adminName').errors?.required" class="ft12" style="margin-top: -12px;" >
                                 Es obligatorio especificar el nombre del administrador
                             </div>
                         </div>
@@ -40,13 +38,13 @@
                             formControlName="email"
                             [class.is-invalid]="createDemoForm.get('email').errors && displayErrors"
                             type="text" 
-                            class="form-control pdl20"
+                            class="form-control ft14 pdl20"
                             placeholder="Correo electrónico del administrador">
                     </div>
                     <div
                         class="custom-invalid-feedback"
                         *ngIf="createDemoForm.get('email').errors && displayErrors">
-                        <div *ngIf="createDemoForm.get('email').errors?.required">
+                        <div *ngIf="createDemoForm.get('email').errors?.required" class="ft12" style="margin-top: -12px;" >
                             Es obligatorio especificar el correo del usuario administrador
                         </div>
                         <div *ngIf="createDemoForm.get('email').errors?.email">
@@ -59,13 +57,13 @@
                             formControlName="phoneNumber"
                             [class.is-invalid]="createDemoForm.get('phoneNumber').errors && displayErrors"
                             type="text" 
-                            class="form-control pdl20"
+                            class="form-control ft14 pdl20"
                             placeholder="Teléfono">
                     </div>
                     <div
                         class="custom-invalid-feedback"
                         *ngIf="createDemoForm.get('phoneNumber').errors && displayErrors">
-                        <div *ngIf="createDemoForm.get('phoneNumber').errors?.required">
+                        <div *ngIf="createDemoForm.get('phoneNumber').errors?.required" class="ft12" style="margin-top: -12px;" >
                             Es obligatorio especificar un número de contacto para la empresa
                         </div>
                     </div>
@@ -73,12 +71,12 @@
                         [class.is-invalid]="createDemoForm.get('activeUsersQty').errors && displayErrors"
                         type="number"
                         min="1"
-                        class="form-control"
+                        class="form-control ft14"
                         placeholder="Cantidad de usuarios activos">
                     <div
                         class="custom-invalid-feedback"
                         *ngIf="createDemoForm.get('activeUsersQty').errors && displayErrors">
-                        <div *ngIf="createDemoForm.get('activeUsersQty').errors?.required">
+                        <div *ngIf="createDemoForm.get('activeUsersQty').errors?.required" class="ft12" style="margin-top: -12px;" >
                             Es obligatorio especificar la cantidad de usuarios activos
                         </div>
                         <div *ngIf="createDemoForm.get('activeUsersQty').errors?.min">
@@ -94,7 +92,7 @@
                             formControlName="endDate"
                             [class.is-invalid]="createDemoForm.get('endDate').errors && displayErrors"
                             type="text" 
-                            class="form-control pdl20"
+                            class="form-control ft14 pdl20"
                             name="endDate"
                             (click)="endDate.toggle()"
                             ngbDatepicker
@@ -104,7 +102,7 @@
                     <div
                         class="custom-invalid-feedback"
                         *ngIf="createDemoForm.get('endDate').errors && displayErrors">
-                        <div *ngIf="createDemoForm.get('endDate').errors?.required">
+                        <div *ngIf="createDemoForm.get('endDate').errors?.required" class="ft12" style="margin-top: -12px;" >
                             Es obligatorio especificar la fecha de finalización del demo
                         </div>
                     </div>
