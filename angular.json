@@ -22,7 +22,12 @@
             "tsConfig": "projects/predyc-business/tsconfig.app.json",
             "assets": [
               "projects/predyc-business/src/favicon.ico",
-              "projects/predyc-business/src/assets"
+              "projects/predyc-business/src/assets",
+              {
+                "glob": "**/*",
+                "input": "node_modules/ngx-extended-pdf-viewer/assets/",
+                "output": "/assets/"
+              }
             ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",

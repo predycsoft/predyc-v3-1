@@ -1911,6 +1911,13 @@ export class CreateCourseComponent {
   }
 
 
+  quitarVideoClase(clase){
+    clase.vimeoId1 = null
+    clase.vimeoId2 = null
+    clase.videoUpload = false
+  }
+
+
   async addClase(tipo,moduloIn){
 
     let modulo = this.modulos.find(modulo => modulo.numero == moduloIn.numero)
@@ -1930,6 +1937,7 @@ export class CreateCourseComponent {
 
     if(clase.tipo == 'lectura'){
       clase.HTMLcontent ='<h4><font face="Arial">Sesi&#243;n de lectura.</font></h4><h6><font face="Arial">&#161;Asegurate de descargar los archivos adjuntos!</font></h6><p><font face="Arial">Encu&#233;ntralos en la secci&#243;n de material descargable</font></p>'
+      clase.duracion = 10
     }
 
     if(clase.tipo == 'actividad' || clase.tipo ==  'corazones'){
@@ -2157,6 +2165,41 @@ export class CreateCourseComponent {
     return "catelog";
   }
 
+
+
+  async descargarArchivo(archivo) {
+    //console.log('pdf actual', this.srsView);
+    try {
+      const response = await fetch(archivo.url);
+      const blob = await response.blob();
+      // Extract the filename from the URL
+      // Decode the URI and split by '/'
+      const decodedUrl = decodeURIComponent(archivo.url);
+      const parts = decodedUrl.split('/');
+      // Extract the filename which is before the '?' character
+      const filenamePart = parts.pop().split('?')[0];
+
+      // Create a URL for the blob
+      const blobUrl = window.URL.createObjectURL(blob);
+
+      // Create a temporary anchor element
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = filenamePart; // Use the original filename or a default
+
+      // Append to the document and trigger the download
+      document.body.appendChild(link);
+      link.click();
+
+      // Remove the anchor element and revoke the object URL
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.error('Error downloading the file:', error);
+    }
+    
+  }
+
   onDragOver(event: DragEvent) {
     event.preventDefault(); // Prevenir el comportamiento por defecto
   }
@@ -2166,40 +2209,32 @@ export class CreateCourseComponent {
     const files = event.dataTransfer?.files;
   
     if (files && files.length > 0) {
-      const imageFiles: File[] = this.filterFiles(files,tipo);
+      const imageFiles: File[] = this.filterFiles(files);
       if (imageFiles.length > 0) {
-
-        //console.log(imageFiles);
-        // logica de subida archivo como tal
-        this.onFileSelected(imageFiles,clase,true,modulo)
-
-
+        this.onFileSelected(imageFiles,clase,true,modulo,true)
       } else {
         //console.log('No se encontraron imágenes válidas.');
       }
     }
   }
 
-  filterFiles(files: FileList, tipo: string): File[] {
-    let tipoFile;
-
-    if (tipo == 'video') {
-        tipoFile = 'video/';
-    } else if (tipo == 'lectura') {
-        tipoFile = 'application/pdf';
-    } else {
-        return []; // Retorna un arreglo vacío si el tipo no es reconocido
-    }
+  filterFiles(files: FileList): File[] {
+    // Define los tipos MIME para PDF y Excel
+    const aceptedTypes = [
+        'application/pdf', // PDF
+        'application/vnd.ms-excel', // Excel (formato antiguo .xls)
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // Excel (formato nuevo .xlsx)
+    ];
 
     const filteredFiles: File[] = [];
     for (let i = 0; i < files.length; i++) {
         const file = files.item(i);
-        if (file && file.type.startsWith(tipoFile)) {
+        if (file && aceptedTypes.includes(file.type)) {
             filteredFiles.push(file);
         }
     }
     return filteredFiles;
-  }
+}
 
   base64view;
 
@@ -2212,6 +2247,9 @@ export class CreateCourseComponent {
     clase['uploading'] = true;
     clase['edited'] = true;
 
+    if(clase.tipo == 'video'){
+      clase['videoUpload'] = 0;
+    }
     let file;
     if(!local){
       file = event.target.files[0];
@@ -2284,7 +2322,7 @@ export class CreateCourseComponent {
           finalize(() => {
             // Obtén la URL de descarga del archivo.
             fileRef.getDownloadURL().subscribe(url => {
-              //clase['uploading'] = false;
+              clase['uploading'] = false;
               //console.log(`File URL: ${url}`);
               fileInfo.url = url;
               //clase.archivos = clase.archivos.concat(fileInfo);
@@ -2786,6 +2824,31 @@ getDurationModuleCourse(){
 
 }
 
+borrarArchivo(clase,archivo){
+
+
+  Swal.fire({
+    title: "Advertencia",
+    text:`¿Desea borrar el archivo ${archivo.nombre}?`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Borrar",
+    confirmButtonColor: 'var(--red-5)',
+  }).then((result) => {
+    /* Read more about isConfirmed, isDenied below */
+    if (result.isConfirmed) {
+      console.log(clase,archivo)
+      clase.archivos = clase.archivos.filter(x=>x.url != archivo.url)
+      clase['edited'] = true; // Marca la clase como editada
+    }
+  });
+
+}
+
+deleteFileClass(clase){
+
+  clase.archivos = []
+}
 
 uploadVideo(videoFile, clase, local = false, modulo, origen = null, intentosActuales = 0, maxIntentos = 2) {
 
@@ -2969,6 +3032,7 @@ uploadVideo(videoFile, clase, local = false, modulo, origen = null, intentosActu
                         //console.log(link);
                         clase.vimeoId1=link[3];
                         clase.vimeoId2=link[4];
+                        clase['uploading'] = false;
                         if(origen == 'actividad'){
                           this.formNuevaActividadGeneral.get('video').patchValue(link[3]);
                         }
@@ -3009,7 +3073,7 @@ uploadVideo(videoFile, clase, local = false, modulo, origen = null, intentosActu
                       text:"Ocurrio un error al subir el video, ¿desea reintentar?",
                       icon: "warning",
                       showCancelButton: true,
-                      confirmButtonText: "Guardar",
+                      confirmButtonText: "Reintentar",
                       confirmButtonColor: 'var(--blue-5)',
                     }).then((result) => {
                       /* Read more about isConfirmed, isDenied below */
@@ -3456,6 +3520,15 @@ uploadVideo(videoFile, clase, local = false, modulo, origen = null, intentosActu
 //   isInvaliExamen= false;
   invalidMessages = [];
 
+  
+  titleCase(str: string): string {
+    if (!str) return str;
+    return str.toLowerCase().split(' ').map(word => {
+      return (word.charAt(0).toUpperCase() + word.slice(1));
+    }).join(' ');
+  }
+
+
 
   validarModulosClases(){
 
@@ -3483,16 +3556,18 @@ uploadVideo(videoFile, clase, local = false, modulo, origen = null, intentosActu
       }
       else{
         let clases = modulo['clases'];
+        let classIndex= 0
         clases.forEach(clase => {
+          classIndex++
           console.log('clase',clase)
           clase['InvalidMessages'] = [];
           clase['isInvalid'] = false;
-
+          // {{clase.tipo | titlecase }} {{getnumerClassTipo(modulo,clase)}}
           if(clase.titulo==''){
             modulo['isInvalid'] = true;
             clase['isInvalid'] = true;
             valid = false;
-            modulo['InvalidMessages'].push('El módulo tiene clases invalidas');
+            modulo['InvalidMessages'].push(`La clase ${(clase.tipo)} ${this.getnumerClassTipo(modulo,clase)} no tiene título`);
             clase['InvalidMessages'].push('La clase debe tener título');
           }
 
@@ -3500,16 +3575,16 @@ uploadVideo(videoFile, clase, local = false, modulo, origen = null, intentosActu
             modulo['isInvalid'] = true;
             clase['isInvalid'] = true;
             valid = false;
-            modulo['InvalidMessages'].push('El módulo tiene clases invalidas');
+            modulo['InvalidMessages'].push(`La clase ${(clase.tipo)} ${this.getnumerClassTipo(modulo,clase)}: ${clase.titulo} no tiene duración`);
             clase['InvalidMessages'].push('La clase debe tener duración');
           }
 
           if (clase.tipo == 'video'){
-            if(clase.vimeoId1==0){
+            if(clase.vimeoId1==0 || !clase.vimeoId1){
               modulo['isInvalid'] = true;
               clase['isInvalid'] = true;
               valid = false;
-              modulo['InvalidMessages'].push('El módulo tiene clases invalidas');
+              modulo['InvalidMessages'].push(`La clase ${(clase.tipo)} ${this.getnumerClassTipo(modulo,clase)}: ${clase.titulo} no tiene video cargado`);
               clase['InvalidMessages'].push('La clase debe tener el video cargado');
             }
           }
@@ -3519,7 +3594,7 @@ uploadVideo(videoFile, clase, local = false, modulo, origen = null, intentosActu
               modulo['isInvalid'] = true;
               clase['isInvalid'] = true;
               valid = false;
-              modulo['InvalidMessages'].push('El módulo tiene clases invalidas');
+              modulo['InvalidMessages'].push(`La clase ${(clase.tipo)} ${this.getnumerClassTipo(modulo,clase)}: ${clase.titulo} no tiene archivo cargado`);
               clase['InvalidMessages'].push('La clase debe tener el archivo de la lectura');
             }
 
