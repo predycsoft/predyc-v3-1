@@ -3,6 +3,7 @@ export interface ProductJson {
     active: boolean;
     amount: number;
     autodeactivate: boolean;
+    coursesQty: number | null;
     createdAt: number;
     description: string;
     features: ProductFeatures[];
@@ -15,6 +16,7 @@ export class Product {
     accesses: ProductAccesses;
     active: boolean;
     autodeactivate: boolean;
+    coursesQty: number | null;
     amount: number;
     createdAt: number;
     description: string;
@@ -48,12 +50,13 @@ export class Product {
       active: true,
       amount: 0,
       autodeactivate: false,
+      coursesQty: null,
       createdAt: +new Date(),
       description: '',
       features: [],
       id: '',
       name: '',
-      type: "simplificado"
+      type: "independiente"
     }
 
   
@@ -63,6 +66,7 @@ export class Product {
       product.active = obj.active;
       product.amount = obj.amount;
       product.autodeactivate = obj.autodeactivate;
+      product.coursesQty = obj.coursesQty;
       product.createdAt = obj.createdAt;
       product.description = obj.description;
       product.features = obj.features;
@@ -77,6 +81,7 @@ export class Product {
         active: this.active,
         amount: this.amount,
         autodeactivate: this.autodeactivate,
+        coursesQty: this.coursesQty,
         createdAt: this.createdAt,
         description: this.description,
         features: this.features,

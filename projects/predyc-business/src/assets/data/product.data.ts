@@ -5,6 +5,7 @@ export const productsData: ProductJson[] = [
         "active": false,
         "amount": 49,
         "type": "simplificado",
+        "coursesQty": 10,
         "autodeactivate": false,
         "accesses": {
             "enableUserRadar": false,
@@ -56,6 +57,7 @@ export const productsData: ProductJson[] = [
         "active": true,
         "amount": 672,
         "type": "full",
+        "coursesQty": null,
         "autodeactivate": false,
         "accesses": {
             "enableUserRadar": false,
@@ -136,6 +138,7 @@ export const productsData: ProductJson[] = [
         "active": true,
         "amount": 500,
         "type": "independiente",
+        "coursesQty": null,
         "autodeactivate": false,
         "accesses": {
             "enableUserRadar": false,
@@ -155,6 +158,7 @@ export const productsData: ProductJson[] = [
         "active": true,
         "amount": 173,
         "type": "prueba 30 dias",
+        "coursesQty": null,
         "autodeactivate": false,
         "accesses": {
             "enableUserRadar": false,

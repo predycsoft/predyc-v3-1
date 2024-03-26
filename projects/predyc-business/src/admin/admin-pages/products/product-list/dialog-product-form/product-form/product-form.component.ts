@@ -40,7 +40,8 @@ export class ProductFormComponent {
       enableToTakeTest: [false],
       enableCreateParticularCourses: [false]
     }),
-    type: ['']
+    type: [''],
+    coursesQty: [null],
   });
 
   ngOnInit(): void {

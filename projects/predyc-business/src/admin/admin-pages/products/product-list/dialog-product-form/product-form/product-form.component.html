@@ -30,19 +30,25 @@
                 </div>
                 <div class="fw" fxLayout="column" fxLayoutGap="1rem">
                     <div fxLayout="row" fxLayoutAlign="space-between center"  fxLayoutGap="1.5rem" class="fw">
-                        <div class="fw" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".3rem" >
-                            <label for="name" class="gray-9 ft15">Nombre:</label>
+                        <div class="" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".3rem" >
+                            <label for="name" class="gray-9 ft14">Nombre:</label>
                             <input class="backWhite fw pdl03" id="name" type="text" formControlName="name" [readonly]="product.id ? true : false" />
                         </div>
-                        <div class="fh w-60" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".25rem">
-                            <span class="ft15 gray-9 ft15">Tipo</span>
-                            <mat-select placeholder="Seleccione el tipo" formControlName="type" style="border: 1px solid black;" class="pdl03 pdr03 pdt05 fh fw">
+                        <div class="" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".3rem" >
+                            <label for="name" class="gray-9 ft14">Monto:</label>
+                            <input class="backWhite w80px pdl03" id="amount" type="number" min="0" formControlName="amount" [readonly]="product.id ? true : false"/>
+                        </div>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="space-between center"  fxLayoutGap=".5rem" class="fw">
+                        <div class="fh fw" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".25rem">
+                            <span class="gray-9 ft14">Tipo: </span>
+                            <mat-select placeholder="Seleccione el tipo" formControlName="type" style="border: 1px solid black;" class="pdl03 pdr03 pdt05 fh">
                                 <mat-option *ngFor="let type of typeOptions" [value]="type">{{type | titlecase}}</mat-option>
                             </mat-select>
                         </div>
-                        <div class="" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".3rem" >
-                            <label for="name" class="gray-9 ft15">Monto:</label>
-                            <input class="backWhite w80px pdl03" id="amount" type="number" min="0" formControlName="amount" [readonly]="product.id ? true : false"/>
+                        <div *ngIf="productForm.get('type').value === 'simplificado'" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".3rem" style="width: 95%;" >
+                            <label for="name" class="gray-9 ft14">Cantidad de cursos:</label>
+                            <input class="backWhite w80px pdl03" id="amount" type="number" min="0" formControlName="coursesQty"/>
                         </div>
                     </div>
 
@@ -53,32 +59,39 @@
                     <div class="fw" fxLayout="column">
                         <span class="ft15 gray-9 ft500">Accesos</span>
                     </div>
-                    <div class="fw" fxLayout="row" fxLayoutGap="1rem">
-                        <ng-container formGroupName="accesses">
+                    <div class="fw" fxLayout="column" fxLayoutGap=".7rem">
+                        <div class="fw" fxLayout="row" fxLayoutGap="1rem"> 
+                            <ng-container formGroupName="accesses">
+                                <div class="fw" fxLayout="column">
+                                    <label for="enableUserRadar" class="gray-9 ft11">Pueden ver radar de usuario:</label>
+                                    <input id="enableUserRadar" type="checkbox" formControlName="enableUserRadar" />
+                                </div>
+                                <div class="fw" fxLayout="column">
+                                    <label for="enableStudyPlanView" class="gray-9 ft11">Pueden ver listado de plan de estudio:</label>
+                                    <input id="enableStudyPlanView" type="checkbox" formControlName="enableStudyPlanView" />
+                                </div>
+                                <div class="fw" fxLayout="column">
+                                    <label for="enableExtraCoursesView" class="gray-9 ft11">Pueden ver listado de extracurriculares:</label>
+                                    <input id="enableExtraCoursesView" type="checkbox" formControlName="enableExtraCoursesView" />
+                                </div>
+                            </ng-container>
+                        </div>
+                        
+                        <div class="fw" fxLayout="row" fxLayoutGap="1rem"> 
+                            <ng-container formGroupName="accesses">
+                                <div class="fw" fxLayout="column">
+                                    <label for="enableToTakeTest" class="gray-9 ft11 pdr05">Pueden presentar examen:</label>
+                                    <input id="enableToTakeTest" type="checkbox" formControlName="enableToTakeTest" />
+                                </div>
+                                <div class="fw" fxLayout="column">
+                                    <label for="enableCreateParticularCourses" class="gray-9 ft11">Pueden crear cursos propios:</label>
+                                    <input id="enableCreateParticularCourses" type="checkbox" formControlName="enableCreateParticularCourses" />
+                                </div>
+                            </ng-container>
                             <div class="fw" fxLayout="column">
-                                <label for="enableUserRadar" class="gray-9 ft11">Pueden ver radar de usuario:</label>
-                                <input id="enableUserRadar" type="checkbox" formControlName="enableUserRadar" />
+                                <label for="autodeactivate" class="gray-9 ft11">Las subscripciones caducan automaticamente:</label>
+                                <input id="autodeactivate" type="checkbox" formControlName="autodeactivate" />
                             </div>
-                            <div class="fw" fxLayout="column">
-                                <label for="enableStudyPlanView" class="gray-9 ft11">Pueden ver listado de plan de estudio:</label>
-                                <input id="enableStudyPlanView" type="checkbox" formControlName="enableStudyPlanView" />
-                            </div>
-                            <div class="fw" fxLayout="column">
-                                <label for="enableExtraCoursesView" class="gray-9 ft11">Pueden ver listado de extracurriculares:</label>
-                                <input id="enableExtraCoursesView" type="checkbox" formControlName="enableExtraCoursesView" />
-                            </div>
-                            <div class="fw" fxLayout="column">
-                                <label for="enableToTakeTest" class="gray-9 ft11">Pueden presentar examen:</label>
-                                <input id="enableToTakeTest" type="checkbox" formControlName="enableToTakeTest" />
-                            </div>
-                            <div class="fw" fxLayout="column">
-                                <label for="enableCreateParticularCourses" class="gray-9 ft11">Pueden crear cursos propios:</label>
-                                <input id="enableCreateParticularCourses" type="checkbox" formControlName="enableCreateParticularCourses" />
-                            </div>
-                        </ng-container>
-                        <div class="fw" fxLayout="column">
-                            <label for="autodeactivate" class="gray-9 ft11">Las subscripciones caducan automaticamente:</label>
-                            <input id="autodeactivate" type="checkbox" formControlName="autodeactivate" />
                         </div>
                     </div>
                     <!-- <div class="fw" fxLayout="column">
@@ -87,7 +100,7 @@
                         </div> -->
                 </div>
 
-                <div class="">
+                <div class="mgt05">
                     <div class="fw" fxLayout="column" formArrayName="features">
                         <div fxLayout="row" fxLayoutGap="1.5rem" fxLayoutAlign=" center">
                             <div>

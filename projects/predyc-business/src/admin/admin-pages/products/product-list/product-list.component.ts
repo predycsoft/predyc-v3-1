@@ -81,9 +81,10 @@ export class ProductListComponent {
     const modalRef = this.modalService.open(DialogProductFormComponent, {
       animation: true,
       centered: true,
-      size: 'lg',
+      size: 'md',
       backdrop: 'static',
       keyboard: false ,
+      // windowClass: 'modWidth'
     })
     
     modalRef.componentInstance.product = selectedProduct;
