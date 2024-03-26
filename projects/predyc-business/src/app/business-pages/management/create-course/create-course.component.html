@@ -720,7 +720,7 @@
                             </ng-container>
                         </div>
                         <div fxLayout="row" class="pdb10 pdt10">
-                            <input (change)="onFileSelected($event,selectedClase, false, selectedModulo, true)"  type="file" accept=".pdf"  #FileInputAdicional style="display: none;">
+                            <input (change)="onFileSelected($event,selectedClase, false, selectedModulo, true)" type="file" accept="application/pdf, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" #FileInputAdicional style="display: none;">
                             <button (click)="FileInputAdicional.click()" class="grayButton pd03 radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                                 <img [src]="icon.folderUp" class="h16px pdr05" alt="">
                                 Añadir recursos
