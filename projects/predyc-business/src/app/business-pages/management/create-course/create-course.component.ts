@@ -2859,8 +2859,32 @@ uploadVideo(videoFile, clase, local = false, modulo, origen = null, intentosActu
     //console.log('modulo video',modulo);
     //console.log('clase video',clase)
 
-    let videoName =  `Clase: ${clase.titulo} - Instructor:  ${this.formNewCourse.get('instructor').value}`
-    let videoDescription =  videoName;
+    let videoDescription =  `Clase: ${clase.titulo.trim()} - Instructor:  ${this.formNewCourse.get('instructor').value}`.trim();
+
+    let instructorText = `Instructor: ${this.formNewCourse.get('instructor').value}`.trim();
+    let baseText = `Clase: - ${instructorText.trim()}`;
+    let maxLength = 127;
+    
+    // Calcula el espacio disponible para el título de la clase, restando 3 para los puntos suspensivos
+    let availableLengthForTitle = maxLength - baseText.length - 3; // Reserva espacio para los puntos suspensivos
+    
+    // Asegúrate de que el título de la clase no haga que el nombre total del video exceda el límite máximo
+    let trimmedClassTitle = clase.titulo.trim();
+    if ((`Clase: ${clase.titulo.trim()} - ${instructorText.trim()}`).length > maxLength) {
+        // Recorta el título de la clase y agrega puntos suspensivos al final
+        trimmedClassTitle = trimmedClassTitle.substring(0, availableLengthForTitle) + '...';
+    }
+    
+    let videoName = `Clase: ${trimmedClassTitle} - ${instructorText}`;
+
+    console.log(videoName,videoName.length)
+    
+    // Verifica de nuevo para asegurarte de que el nombre completo esté dentro del límite
+    if (videoName.length > maxLength) {
+        console.error("El nombre del video aún excede la longitud máxima permitida después del ajuste.");
+    }
+    
+  
 
     clase['videoUpload'] = 0;
 
