@@ -997,6 +997,11 @@ export class CreateCourseComponent {
       for (let clase of this.deletedClasses){
         console.log('deletedClasses',clase)
         await this.courseClassService.deleteClassAndReference(clase.claseInId,this.curso.id,clase.moduloInId,clase?.activityId);
+        if(clase.vimeoId1){
+          // this.uploadControl.deleteVideo(clase.vimeoId1).subscribe(respuesta => {
+          //   console.log('respuesta.respuesta')
+          // })
+        }
       }
     }  
     if(this.modulos.length>0){
@@ -2751,6 +2756,30 @@ export class CreateCourseComponent {
 //     });
 
 //   }
+
+
+getDurationModule(module){
+
+  let duracion = 0
+  module.clases.forEach(clase => {
+    duracion+=clase?.duracion? clase.duracion : 0 
+  });
+  return duracion
+}
+
+
+getDurationModuleCourse(){
+
+  let duracion = 0
+
+  this.modulos.forEach(modulo => {
+    duracion+=this.getDurationModule(modulo)
+  });
+
+  return duracion
+
+
+}
 
 
 uploadVideo(videoFile, clase, local = false, modulo, origen = null, intentosActuales = 0, maxIntentos = 2) {

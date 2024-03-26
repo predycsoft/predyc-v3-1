@@ -8,6 +8,7 @@ import { SearchInputBoxComponent } from './widgets/search-input-box/search-input
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { SafePipe } from './pipes/safe.pipe';
 import { CustomDatePipe } from './pipes/custom-date.pipe';
+import {FormatDurationPipe} from './pipes/format-duration.pipe';
 import { NotificationListComponent } from './components/notifications/notification-list/notification-list.component';
 import { AlertComponent } from './services/dialogs/alert/alert.component';
 import { DialogConfirmarComponent } from './components/dialogs/dialog-confirmar/dialog-confirmar.component';
@@ -82,6 +83,7 @@ import { DialogStudentEnrolledCourseDetailComponent } from './components/courses
     StudentListComponent,
     SafePipe,
     CustomDatePipe,
+    FormatDurationPipe,
     SearchInputBoxComponent,
     SpinnerComponent,
     NotificationListComponent,
@@ -160,6 +162,7 @@ import { DialogStudentEnrolledCourseDetailComponent } from './components/courses
     StudentListComponent,
     SafePipe,
     CustomDatePipe,
+    FormatDurationPipe,
     SearchInputBoxComponent,
     SpinnerComponent,
     NotificationListComponent,

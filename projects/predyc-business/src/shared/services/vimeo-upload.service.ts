@@ -200,6 +200,16 @@ export class VimeoUploadService {
     return this.http.get(`https://api.vimeo.com/me/projects`, { headers });
   }
 
+
+  deleteVideo(videoId: string,): Observable<any> {
+    const headers = {
+      'Authorization': `Bearer ${this.accessToken}`,
+      'Content-Type': 'application/json'
+    };
+    return this.http.delete(`https://api.vimeo.com/videos/${videoId}`, { headers });
+  }
+
+
   createProject(projectName: string): Observable<any> {
     const headers = {
       'Authorization': `Bearer ${this.accessToken}`,

@@ -255,7 +255,7 @@
                                             <div>
                                                 <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="mgl10 mgt15 mgr10">
                                                     <img [src]="icon.document" class="makeBlue h20px" alt="">
-                                                    <span class="ft500 ft14 black " style="margin-top: 5px;">Contenido del curso</span>
+                                                    <span class="ft500 ft14 black " style="margin-top: 5px;">Contenido del curso - {{getDurationModuleCourse() | formatDuration}}</span>
                                                 </div>
                                                 <div class="pdl10 pdr10 pdt10 fw ">
                                                     <div fxLayout="column" class="fw fh mgb20"> 
@@ -319,8 +319,7 @@
                                                                                             <img [src]="icon[getIconClase(clase.tipo)]" class="h18px pdr05" alt="">
                                                                                             <div *ngIf="clase.titulo && !clase['editarTitulo']; then tituloPresenteClase; else ClaseSinTitulo"></div>
                                                                                             <ng-template #tituloPresenteClase>
-                                                                                                <span (click)="clase['editarTitulo'] = true; clase['tituloTMP'] = clase?.titulo; editarTituloClase(iClase)" >{{clase.tipo | titlecase }} {{getnumerClassTipo(modulo,clase)}}: {{clase.titulo}}</span>
-                                                                                                <!-- <img (click)="clase['editarTitulo'] = true; clase['tituloTMP'] = clase?.titulo" [src]="icon.licencias" class="h18px pdl05 makeGray edit cursorPointer" alt=""> -->
+                                                                                                <span (click)="clase['editarTitulo'] = true; clase['tituloTMP'] = clase?.titulo; editarTituloClase(iClase)" >{{clase.tipo | titlecase }} {{getnumerClassTipo(modulo,clase)}}: {{clase.titulo}} - {{clase.duracion | formatDuration}}</span>
                                                                                             </ng-template>
                                                                                             <ng-template #ClaseSinTitulo>
                                                                                                 <span>{{clase.tipo | titlecase }} {{getnumerClassTipo(modulo,clase)}}:</span>
@@ -721,7 +720,7 @@
                             </ng-container>
                         </div>
                         <div fxLayout="row" class="pdb10 pdt10">
-                            <input (change)="onFileSelected($event,selectedClase, false, selectedModulo, true)"  type="file" accept=".pdf"  #FileInputAdicional style="display: none;">
+                            <input (change)="onFileSelected($event,selectedClase, false, selectedModulo, true)" type="file" accept="application/pdf, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" #FileInputAdicional style="display: none;">
                             <button (click)="FileInputAdicional.click()" class="grayButton pd03 radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                                 <img [src]="icon.folderUp" class="h16px pdr05" alt="">
                                 Añadir recursos
