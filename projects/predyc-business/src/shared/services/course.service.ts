@@ -284,7 +284,7 @@ export class CourseService {
 
   // Funciones de diego
 
-  getCourses$(): Observable<any[]> {
+  getCourses$(): Observable<Curso[]> {
     return this.enterpriseService.enterpriseLoaded$.pipe(
       switchMap(isLoaded => {
         if (!isLoaded) return []

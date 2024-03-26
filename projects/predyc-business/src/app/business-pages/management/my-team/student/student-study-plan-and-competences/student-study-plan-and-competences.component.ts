@@ -79,6 +79,8 @@ export class StudentStudyPlanAndCompetencesComponent {
   coursesByStudent
 
   initFormTab = 0
+  studyPlanView = true
+  extraCoursesList = []
 
 
   ngOnInit() {
@@ -99,14 +101,24 @@ export class StudentStudyPlanAndCompetencesComponent {
             this.showInitForm = false
             this.hoursPermonthInitForm = this.student.studyHours
             this.coursesByStudent = coursesByStudent;
-            this.buildMonths(coursesByStudent, coursesData)
+            // Studyplan case
+            if (coursesByStudent[0].dateStartPlan) {
+              this.studyPlanView = this.showInitForm ? false : true
+              this.buildMonths(coursesByStudent, coursesData)
+            }
+            // Extra courses case
+            else {
+              this.studyPlanView = false
+              this.buildExtraCoursesList(coursesByStudent, coursesData) //COMENTAR O NO
+            }
           } 
           else {
             // the student has a profile but hasnt completed initform yet
+            console.log("courseByStudent.lenght es 0")
             this.showInitForm = true
             this.alertService.infoAlert("Debe indicar la fecha de inicio y la hora de dedicación para iniciar su plan de estudio o inscribir los cursos del perfil como extracurriculares")
             this.hoursPermonthInitForm = this.selectedProfile.hoursPerMonth
-            console.log("El usuario no posee studyPlan");
+            // console.log("El usuario no posee studyPlan");
           }
         }
       }
@@ -121,7 +133,7 @@ export class StudentStudyPlanAndCompetencesComponent {
       .get()
       .then((response) => {
         response.docs.forEach((doc) => {
-          console.log('doc.id', doc.id);
+          // console.log('doc.id', doc.id);
           
           // Construir la URL con el doc.id
           const url = `https://predyc-user.web.app/certificado/${doc.id}`;
@@ -153,7 +165,9 @@ export class StudentStudyPlanAndCompetencesComponent {
         await this.courseService.setCoursesByStudentInactive(this.userService.getUserRefById(this.student.uid))
         //
         // calculate dates and create studyPlan using student.
-        await this.createStudyPlan()
+        if (this.studyPlanView) {
+          await this.createStudyPlan()
+        }
       }
     }
   }
@@ -171,6 +185,19 @@ export class StudentStudyPlanAndCompetencesComponent {
         date: firestoreTimestampToNumberTimestamp(diagnosticTest.date)
       } 
     })
+  }
+
+  buildExtraCoursesList(coursesByStudent: CourseByStudent[], coursesData: Curso[]) {
+    this.extraCoursesList = coursesByStudent.map(courseByStudent => {
+      const courseData = coursesData.find(courseData => courseData.id === courseByStudent.courseRef.id);
+      console.log("courseData", courseData)
+      return {
+        courseTitle: courseData.titulo
+      }
+    })
+    this.updateWidgets() // Ya no seria referente a this.studyPlan sino a this.extraCourselist
+
+    console.log("this.extraCoursesList", this.extraCoursesList)
   }
 
   buildMonths(coursesByStudent: CourseByStudent[], coursesData) {
@@ -241,6 +268,7 @@ export class StudentStudyPlanAndCompetencesComponent {
   }
 
   async createStudyPlan() {
+    console.log("createStudyPlan mthod")
     const coursesRefs: DocumentReference[] = this.selectedProfile.coursesRef
     let dateStartPlan: number
     let dateEndPlan: number
@@ -262,7 +290,7 @@ export class StudentStudyPlanAndCompetencesComponent {
       dateEndPlan = this.courseService.calculatEndDatePlan(dateStartPlan, courseDuration, hoursPermonth)
       //  ---------- if it already exists, activate it, otherwise, create it ---------- 
       const courseByStudent: CourseByStudent | null = await this.courseService.getCourseByStudent(userRef as DocumentReference<User>, coursesRefs[i] as DocumentReference<Curso>)
-      console.log("courseByStudent", courseByStudent)
+      // console.log("courseByStudent", courseByStudent)
       if (courseByStudent) {
         await this.courseService.setCourseByStudentActive(courseByStudent.id, new Date(dateStartPlan), new Date(dateEndPlan))
       } else {
@@ -278,14 +306,14 @@ export class StudentStudyPlanAndCompetencesComponent {
       const userRef: DocumentReference | DocumentReference<User> = this.userService.getUserRefById(this.student.uid)
       const courseData = this.coursesData.find(courseData => courseData.id === coursesRefs[i].id);
 
-      //  ---------- if it already exists, activate it, otherwise, create it ---------- 
       const courseByStudent: CourseByStudent | null = await this.courseService.getCourseByStudent(userRef as DocumentReference<User>, coursesRefs[i] as DocumentReference<Curso>)
-      console.log("courseByStudent", courseByStudent)
+      //  ---------- if it already exists, activate it, otherwise, create it ---------- 
+      // console.log("courseByStudent", courseByStudent)
       if (courseByStudent) {
         await this.courseService.setCourseByStudentActive(courseByStudent.id, null, null)
       } else {
         await this.courseService.saveCourseByStudent(coursesRefs[i], userRef, null, null)
-        await this.courseService.setCoursesByStudentInactive(this.userService.getUserRefById(this.student.uid))
+        // await this.courseService.setCoursesByStudentInactive(this.userService.getUserRefById(this.student.uid))
       }
     }
   }
@@ -328,7 +356,7 @@ export class StudentStudyPlanAndCompetencesComponent {
 
   updateWidgets() {
     const chartData = this.getChartData()
-    console.log("chartData", chartData)
+    // console.log("chartData", chartData)
     this.getChart(chartData)
     this.updateCategoriesAndSkillsWidget(chartData)
   }
@@ -383,7 +411,7 @@ export class StudentStudyPlanAndCompetencesComponent {
     });
 
 
-    console.log('this.studyPlan', this.coursesData,this.coursesByStudent,this.studyPlan,cursosdataComplete);
+    // console.log('this.studyPlan', this.coursesData,this.coursesByStudent,this.studyPlan,cursosdataComplete);
 
     cursosdataComplete.forEach(curso => {
       horasPlanDeEstudio+=curso.duracion;
