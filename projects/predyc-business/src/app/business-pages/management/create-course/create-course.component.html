@@ -185,10 +185,18 @@
                                                         <img style="cursor: pointer;" (click)="removeSkill(skill)" [src]="icon.close"  class="h16px makeGray"  alt="">
                                                     </div>
                                                 </ng-container>
-                                                <div class="pdb10"> 
+                                                <!-- estoy aqui (click)="crearCompetencia(modalCrearSkill)"-->
+                                                <!-- <div class="pdb10"> 
                                                     <div *ngIf="skillsCurso?.length<3 && pillarsForm.value" matTooltip="Agregar competencia"
                                                     style="display: inline-block; margin-right: 5px; "
                                                     (click)="openModal(modalSkillsCourse,'md')" class="backGray2 radius20  pdl03 pdr03  gray-8 " >
+                                                        <img style="cursor: pointer;"  [src]="icon.addBlue"  class="h16px ft600 "  alt="">
+                                                    </div>
+                                                </div> -->
+                                                <div class="pdb10"> 
+                                                    <div *ngIf="skillsCurso?.length<3 && pillarsForm.value" matTooltip="Agregar competencia"
+                                                    style="display: inline-block; margin-right: 5px; "
+                                                    (click)="crearCompetencia(modalCrearSkill)" class="backGray2 radius20  pdl03 pdr03  gray-8 " >
                                                         <img style="cursor: pointer;"  [src]="icon.addBlue"  class="h16px ft600 "  alt="">
                                                     </div>
                                                 </div>
@@ -1550,11 +1558,11 @@
     
     
     <ng-template #modalCrearSkill let-modal>
-        <div class="modal-header bg-web-primary text-white px-3 py-1">
-          <div class="modal-title pd10" fxLayout="row" fxLayoutAlign="start center">
-            <span class="ft16 ft500 gray-10">Crear competencia</span>
-          </div>
-          <img style="cursor: pointer;" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px" alt="">
+        <div class="modal-header bg-web-primary text-white px-3 py-1" fxLayout="row" fxLayoutAlign="space-between center">
+            <div class="modal-title pd10">
+              <span class="ft16 ft500 gray-10">Asignar Competencia</span>
+            </div>
+            <img style="cursor: pointer;" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px" alt="">
         </div>
         <div class="modal-body" style="overflow-y: auto; max-height: 80vh;">
             <form [formGroup]="formNewSkill" class="fw">
@@ -1570,18 +1578,17 @@
             </form>
             <!-- Botón de guardar en la esquina inferior derecha -->
             <div fxLayout="row" fxLayoutAlign="end end" class="pdt03" style="width: 100%;">
-                <button (click)="saveNewSkill()" class="blueButton gray-1 radius4 ft12 h28px mgt10" fxLayout="row" fxLayoutGap="0.625rem" fxLayoutAlign="center center">
-                    <img [src]="icon.save" class="h16px pdr05 makeWhite" alt="">
-                    Guardar competencia
+                <button *ngIf="!savingSkill" (click)="saveNewSkill()" class="blueButton gray-1 radius4 ft12 h28px mgt10" fxLayout="row" fxLayoutGap="0.625rem" fxLayoutAlign="center center">
+                    <img [src]="icon.check" class="h16px pdr05 makeWhite" alt="">
+                    Asignar competencia
+                </button>
+                <button disabled *ngIf="savingSkill" (click)="saveNewSkill()" class="grayButton gray-8 radius4 ft12 h28px mgt10" fxLayout="row" fxLayoutGap="0.625rem" fxLayoutAlign="center center">
+                    <mat-spinner class="spinner-dark" diameter="20"></mat-spinner>
+                    Asignar competencia
                 </button>
             </div>
         </div>
-        
     </ng-template>
-    
-    
-    
-    
     <ng-template #modalCrearPilar let-modal>
         <div class="modal-header bg-web-primary text-white px-3 py-1">
           <div class="modal-title pd10" fxLayout="row" fxLayoutAlign="start center">

@@ -547,20 +547,6 @@ export class CreateCourseComponent {
   tmpSkillRefArray=[];
   tmpSkillArray = [];
 
-  saveNewSkills(){
-
-    console.log('this.tmpSkillRefArray',this.tmpSkillRefArray)
-    
-    if(this.curso){
-      this.curso.skillsRef = this.tmpSkillRefArray
-      this.formNewCourse.get("skills").patchValue(this.tmpSkillRefArray);
-    }
-    else{
-      this.formNewCourse.get("skills").patchValue(this.tmpSkillRefArray);
-    }
-    this.skillsCurso =  this.tmpSkillArray
-    this.modalService.dismissAll();
-  }
 
   changeBorrador(event: Event) {
     // Accede a la propiedad 'checked' del checkbox
@@ -3794,7 +3780,7 @@ uploadVideo(videoFile, clase, local = false, modulo, origen = null, intentosActu
   showErrorSkill = false;
 
   crearCompetencia(modal){
-
+    this.  savingSkill = false;
     this.showErrorSkill = false;
     this.formNewSkill = new FormGroup({
       nombre: new FormControl(null, Validators.required),
@@ -3807,7 +3793,98 @@ uploadVideo(videoFile, clase, local = false, modulo, origen = null, intentosActu
     });
   }
 
+
+
+  saveNewSkills(){
+
+    console.log('this.tmpSkillRefArray',this.tmpSkillRefArray)
+    
+    if(this.curso){
+      this.curso.skillsRef = this.tmpSkillRefArray
+      this.formNewCourse.get("skills").patchValue(this.tmpSkillRefArray);
+    }
+    else{
+      this.formNewCourse.get("skills").patchValue(this.tmpSkillRefArray);
+    }
+    this.skillsCurso =  this.tmpSkillArray
+    this.modalService.dismissAll();
+  }
+
+
+  savingSkill = false
+
+
+
+
+
   async saveNewSkill(){
+    this.savingSkill = true
+    //console.log(this.pillarsForm.value)
+    this.showErrorSkill = false;
+    if(this.formNewSkill.valid){
+
+      let pilar = this.pillarsForm.value
+      let competencias = pilar['competencias'] || []
+
+      let competencia = competencias.find(x=>x.name.toLowerCase()==this.formNewSkill.get('nombre')?.value.toLowerCase().trim())
+
+      let skills = this.formNewCourse.get("skills")?.value
+      this.tmpSkillRefArray = skills;
+      if(competencia){ // duplicado asignar 
+        let SkillCheck = skills.find(x=> x.id == competencia.id)
+        if(!SkillCheck){
+          let skillRef = await this.afs.collection<Skill>(Skill.collection).doc(competencia.id).ref;
+          this.tmpSkillRefArray.push(skillRef)
+          if(this.curso){
+            this.curso.skillsRef = this.tmpSkillRefArray
+            this.formNewCourse.get("skills").patchValue(this.tmpSkillRefArray);
+          }
+          else{
+            this.formNewCourse.get("skills").patchValue(this.tmpSkillRefArray);
+          }
+          this.skillsCurso = this.getCursoSkills();
+          this.savingSkill = false
+          this.modalCrearSkill.close()
+        }
+        else{
+          this.savingSkill = false
+          this.modalCrearSkill.close()
+        }
+      }
+      else{ // crear y asignar
+        let categoryRef = this.afs.collection<any>('category').doc(pilar['id']).ref;
+        let enterpriseRef =this.enterpriseService.getEnterpriseRef()
+        if(this.user.isSystemUser){
+          enterpriseRef = null;
+        }
+        let skillAdd = new Skill(null,this.formNewSkill.get('nombre')?.value,categoryRef,enterpriseRef)
+        await this.skillService.addSkill(skillAdd)
+        competencias.push(skillAdd)
+        //this.pillarsForm.get("competencias").patchValue(competencias);
+        let skillRef = await this.afs.collection<Skill>(Skill.collection).doc(skillAdd.id).ref;
+        this.tmpSkillRefArray.push(skillRef)
+        if(this.curso){
+          this.curso.skillsRef = this.tmpSkillRefArray
+          this.formNewCourse.get("skills").patchValue(this.tmpSkillRefArray);
+        }
+        else{
+          this.formNewCourse.get("skills").patchValue(this.tmpSkillRefArray);
+        }
+
+        console.log('tmpSkillRefArray',this.tmpSkillRefArray)
+        this.skillsCurso = this.getCursoSkills();
+        this.savingSkill = false
+        this.modalCrearSkill.close()
+
+      }
+    }
+    else{
+      this.showErrorSkill = true
+    }
+
+  }
+
+  async _saveNewSkill(){
     //console.log(this.pillarsForm.value)
     this.showErrorSkill = false;
     if(this.formNewSkill.valid){
