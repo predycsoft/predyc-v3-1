@@ -1,0 +1,23 @@
+<div class="fw pd10" fxLayout="column" fxLayoutGap="2.5rem">
+    <div *ngIf="!profile">
+        <span class="ft20 gray-10">El usuario no posee un perfil asignado.</span>
+    </div>
+    <div *ngIf="profile" class="fw" fxLayout="column" fxLayoutGap=".5rem">
+        <div class="fw" fxLayout="row" fxLayoutAlign=" center" fxLayoutGap=".5rem">
+            <span class="ft20 gray-10">Perfil del estudiante:</span>
+            <span class="ft20 ft500 gray-10">{{profile.name}}</span>
+        </div>
+        <div *ngIf="!hasExtraCourses" class="fw" fxLayout="row" fxLayoutAlign=" center" fxLayoutGap=".5rem">
+            <span class="ft600">El usuario tiene un plan de estudio asignado</span>
+            <button class="blueButton" (click)="saveAsExtraCourse()">Asignar cursos como extracurriculares</button>
+        </div>
+        <div *ngIf="hasExtraCourses" class="fw" fxLayout="row" fxLayoutAlign=" center" fxLayoutGap=".5rem">
+            <span class="ft600">El usuario tiene los cursos inscritos como extracurriculares</span>
+        </div>
+        <div class="fw pd10" fxLayout="column" fxLayoutGap=".2rem">
+            <div class="fw" *ngFor="let course of coursesInfo; let i = index">
+                <span class="gray-10">{{course.courseTitle}}</span>
+            </div>
+        </div>
+    </div>
+</div>

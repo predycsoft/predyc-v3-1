@@ -205,8 +205,8 @@ export class ProfileService {
 
 
 
-  public getProfile$(uid: string): Observable<Profile> {
-    return this.afs.collection<Profile>(Profile.collection).doc(uid).valueChanges()
+  public getProfile$(id: string): Observable<Profile> {
+    return this.afs.collection<Profile>(Profile.collection).doc(id).valueChanges()
   }
 
   public getDiagnosticTestForUser$(user): Observable<any> {

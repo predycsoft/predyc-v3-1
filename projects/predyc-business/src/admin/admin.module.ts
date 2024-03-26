@@ -32,6 +32,7 @@ import { EnterpriseStudentsListComponent } from './admin-pages/enterprise/enterp
 import { StudentChargeListComponent } from './admin-pages/students/student-detail/student-charge-list/student-charge-list.component';
 import { StudentCoursesListComponent } from './admin-pages/students/student-detail/student-courses-list/student-courses-list.component';
 import { StudentClassesActivityListComponent } from './admin-pages/students/student-detail/student-classes-activity-list/student-classes-activity-list.component';
+import { StudentExtraCoursesComponent } from './admin-pages/students/student-detail/student-extra-courses/student-extra-courses.component';
 
 
 @NgModule({
@@ -66,6 +67,7 @@ import { StudentClassesActivityListComponent } from './admin-pages/students/stud
     StudentChargeListComponent,
     StudentCoursesListComponent,
     StudentClassesActivityListComponent,
+    StudentExtraCoursesComponent,
   ],
   imports: [
     SharedModule,

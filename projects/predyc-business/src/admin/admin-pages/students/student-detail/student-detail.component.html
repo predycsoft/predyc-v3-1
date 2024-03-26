@@ -82,12 +82,18 @@
                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5" (click)="academicTab = 1">
                         <span class="" [ngClass]="academicTab == 1 ? 'selectedTab' : 'ft13 gray-9 cursorPointer'">Actividad</span>
                     </div>
+                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5" (click)="academicTab = 2">
+                        <span class="" [ngClass]="academicTab == 2 ? 'selectedTab' : 'ft13 gray-9 cursorPointer'">Cursos extracurriculares</span>
+                    </div>
                 </div>
                 <div *ngIf="academicTab === 0" class="fw">
                     <app-student-courses-list [userRef]="userRef" [userName]="user.name"></app-student-courses-list>
                 </div>
                 <div *ngIf="academicTab === 1" class="fw">
                     <app-student-classes-activity-list [userRef]="userRef"></app-student-classes-activity-list>
+                </div>
+                <div *ngIf="academicTab === 2" class="fw">
+                    <app-student-extra-courses [userProfileRef]="user.profile" [userRef]="userRef"></app-student-extra-courses>
                 </div>
 
             </div>
