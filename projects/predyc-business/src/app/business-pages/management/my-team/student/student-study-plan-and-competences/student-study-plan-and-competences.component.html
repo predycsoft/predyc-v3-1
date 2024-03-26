@@ -63,67 +63,80 @@
         </div>
         
         <ng-container *ngIf="!showInitForm">
-            <div  *ngIf="getDelayedMonthsCount() > 0" class="border radius10 pd05 backRed1 mgt10" fxLayout="row" fxLayoutAlign="space-between center" style="border-color: red !important;">
-                <img [src]="icon.redWarning2" class="h16px " alt="">
-                <span class="red-5 ft14 ft600"> 
-                    Advertencia: este usuario tiene {{ getDelayedMonthsCount() }} {{getDelayedMonthsCount() > 1 ? "meses atrasados" : "mes atrasado"}}
-                </span>
-                <div></div>
-                <!-- <button class="redButton btn">Alertar via e-mail</button> -->
-            </div>
-            <div *ngIf="(selectedProfile && months && months.length > 0) else noPlan" >
-                <div *ngIf="diagnosticTest" fxLayout="row" class="mgt15 mgb10 mgl15" fxLayoutAlign="space-between center">
-                    <span class="ft13"> Examen diagnóstico del perfil </span>
-                    <!-- just to see the dates -->
-                    <!-- <span>{{diagnosticTest.date | date:'dd/MM/yy'}}</span> -->
-                    <!--  -->
-                    <div fxLayout="row" fxLayoutAlign="space-between center" class="" fxLayoutGap="0.5rem">
-                        <img *ngIf="diagnosticTest.score >= 0" [src]="icon.greenCheck" class="h20px mgr05 makeGreen" alt="">
-                        <!-- <span class="ft13 ft500 mgr15"> {{diagnosticTest.score >= 50 ? 'Aprobado' : 'Reprobado'}} con {{diagnosticTest.score}} </span> -->
-                        <span *ngIf="diagnosticTest.score >= 0" class="makeGreen mgr10 ft14 ft400" >Completado </span>
-                    </div>
-                </div>
-                <div *ngIf="!diagnosticTest">
-                    <div fxLayout="row" fxLayoutAlign="space-between center" class="" fxLayoutGap="0.5rem">
-                        <span class="ft13 ft500 mgl15 mgt15 " style="color: red; ">No ha presentado el examen diagnóstico</span>
-                        <img class="h20px mgr20 mgt10 " [src]="icon.redWarning2">
 
-                    </div>  
-
+            <!-- Studyplan list -->
+            <ng-container *ngIf="studyPlanView">
+                <div *ngIf="getDelayedMonthsCount() > 0" class="border radius10 pd05 backRed1 mgt10" fxLayout="row" fxLayoutAlign="space-between center" style="border-color: red !important;">
+                    <img [src]="icon.redWarning2" class="h16px " alt="">
+                    <span class="red-5 ft14 ft600"> 
+                        Advertencia: este usuario tiene {{ getDelayedMonthsCount() }} {{getDelayedMonthsCount() > 1 ? "meses atrasados" : "mes atrasado"}}
+                    </span>
+                    <div></div>
+                    <!-- <button class="redButton btn">Alertar via e-mail</button> -->
                 </div>
-                <div *ngFor="let month of months; let index = index" fxLayout="column"  class="mgt20 mgl05 mgr05">
-                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="mgb10 radius6">
-                        <span class="ft12 ft600 black">{{month.monthName | titlecase}} {{month.yearNumber}} </span>
-                        <img *ngIf="isMonthPast(month) && !isMonthCompleted(month)" [src]="icon.redWarning2" class="makeRed h14px" alt="">
+                <div *ngIf="(selectedProfile && months && months.length > 0) else noPlan" >
+                    <div *ngIf="diagnosticTest" fxLayout="row" class="mgt15 mgb10 mgl15" fxLayoutAlign="space-between center">
+                        <span class="ft13"> Examen diagnóstico del perfil </span>
+                        <!-- just to see the dates -->
+                        <!-- <span>{{diagnosticTest.date | date:'dd/MM/yy'}}</span> -->
+                        <!--  -->
+                        <div fxLayout="row" fxLayoutAlign="space-between center" class="" fxLayoutGap="0.5rem">
+                            <img *ngIf="diagnosticTest.score >= 0" [src]="icon.greenCheck" class="h20px mgr05 makeGreen" alt="">
+                            <!-- <span class="ft13 ft500 mgr15"> {{diagnosticTest.score >= 50 ? 'Aprobado' : 'Reprobado'}} con {{diagnosticTest.score}} </span> -->
+                            <span *ngIf="diagnosticTest.score >= 0" class="makeGreen mgr10 ft14 ft400" >Completado </span>
+                        </div>
                     </div>
-                    <div *ngFor="let course of month.courses; let i = index" fxLayout="column" fxLayoutAlign="center" 
-                        class="h50px pd10 ListHover" [ngClass]=" i % 2 ? '' : 'backGray1'">
-                        <div fxLayout="row" fxLayoutAlign="space-between center">
-                            <span class="ft12"> {{course.courseTitle}} </span>
-                            <!-- just to see the dates -->
-                            <div fxLayout="row" fxLayoutGap="15px" fxLayoutAlign=" center">
-                                <!-- <span>{{course.dateStartPlan | date:'dd/MM/yy'}}</span>
-                                <span>{{course.dateEndPlan | date:'dd/MM/yy'}}</span> -->
-                                <!--  -->
-                                <div fxLayout="row" fxLayoutAlign="space-between center" class="" fxLayoutGap="0.5rem">
-                                    <div>
-                                        <img *ngIf="course.dateEnd" [src]="icon.greenCheck" class="h20px mgr05 makeGreen" alt="">
-                                        <span *ngIf="course.dateEnd" class="makeGreen mgr10 ft14 ft400" >Completado </span>
+                    <div *ngIf="!diagnosticTest">
+                        <div fxLayout="row" fxLayoutAlign="space-between center" class="" fxLayoutGap="0.5rem">
+                            <span class="ft13 ft500 mgl15 mgt15 " style="color: red; ">No ha presentado el examen diagnóstico</span>
+                            <img class="h20px mgr20 mgt10 " [src]="icon.redWarning2">
+    
+                        </div>  
+    
+                    </div>
+                    <div *ngFor="let month of months; let index = index" fxLayout="column"  class="mgt20 mgl05 mgr05">
+                        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="mgb10 radius6">
+                            <span class="ft12 ft600 black">{{month.monthName | titlecase}} {{month.yearNumber}} </span>
+                            <img *ngIf="isMonthPast(month) && !isMonthCompleted(month)" [src]="icon.redWarning2" class="makeRed h14px" alt="">
+                        </div>
+                        <div *ngFor="let course of month.courses; let i = index" fxLayout="column" fxLayoutAlign="center" 
+                            class="h50px pd10 ListHover" [ngClass]=" i % 2 ? '' : 'backGray1'">
+                            <div fxLayout="row" fxLayoutAlign="space-between center">
+                                <span class="ft12"> {{course.courseTitle}} </span>
+                                <!-- just to see the dates -->
+                                <div fxLayout="row" fxLayoutGap="15px" fxLayoutAlign=" center">
+                                    <!-- <span>{{course.dateStartPlan | date:'dd/MM/yy'}}</span>
+                                    <span>{{course.dateEndPlan | date:'dd/MM/yy'}}</span> -->
+                                    <!--  -->
+                                    <div fxLayout="row" fxLayoutAlign="space-between center" class="" fxLayoutGap="0.5rem">
+                                        <div>
+                                            <img *ngIf="course.dateEnd" [src]="icon.greenCheck" class="h20px mgr05 makeGreen" alt="">
+                                            <span *ngIf="course.dateEnd" class="makeGreen mgr10 ft14 ft400" >Completado </span>
+                                        </div>
+                                        
+                                        <span style="width: 50px;" *ngIf="course.dateEnd" class="ft500"> {{course.finalScore>=100? 100 : course.finalScore}}/100</span>
+                                        <!-- <span *ngIf="!course.dateEnd" class="ft12"> {{course.duration | number:'1.0-1'}} hr </span>  -->
+                                        <!-- <span class="ft12"> {{course.duration | number:'1.0-1'}} hr </span> -->
+                                        <img matTooltip="Ver certificado" *ngIf="course.dateEnd" [src]="icon.certificado" (click)="verCertificadoCourse(course)" class="h20px mgr05 cursorPointer" alt="">
                                     </div>
-                                    
-                                    <span style="width: 50px;" *ngIf="course.dateEnd" class="ft500"> {{course.finalScore>=100? 100 : course.finalScore}}/100</span>
-                                    <!-- <span *ngIf="!course.dateEnd" class="ft12"> {{course.duration | number:'1.0-1'}} hr </span>  -->
-                                    <!-- <span class="ft12"> {{course.duration | number:'1.0-1'}} hr </span> -->
-                                    <img matTooltip="Ver certificado" *ngIf="course.dateEnd" [src]="icon.certificado" (click)="verCertificadoCourse(course)" class="h20px mgr05 cursorPointer" alt="">
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <ng-template #noPlan>
-                <span>El usuario aun no posee un plan de estudios</span>
-            </ng-template>
+                <ng-template #noPlan>
+                    <span>El usuario aun no posee un plan de estudios</span>
+                </ng-template>
+            </ng-container>
+
+            <!-- Extra courses list (COMENTAR O NO) -->
+            <ng-container *ngIf="!studyPlanView">
+                <div class="mgt10 fw" *ngFor="let course of extraCoursesList; let i = index">
+                    <span>{{course.courseTitle}}</span>
+                </div>
+            </ng-container>
+
+
         </ng-container>
         <ng-container *ngIf="showInitForm">
             <span class="ft500 gray-10 ft14 mgt10">Selecciona alguna de las siguientes opciones:</span>

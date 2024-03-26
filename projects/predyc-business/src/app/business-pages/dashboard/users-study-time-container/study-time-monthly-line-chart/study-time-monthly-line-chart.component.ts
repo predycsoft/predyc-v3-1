@@ -61,12 +61,12 @@ export class StudyTimeMonthlyLineChartComponent {
 
   getChartData() {
     const months = {}
-    console.log(this.studentCourses)
+    // console.log(this.studentCourses)
     if (this.studentCourses[0].dateStartPlan) return []
     const startPlanTimestampt = firestoreTimestampToNumberTimestamp(this.studentCourses[0].dateStartPlan)
     const endPlanTimestampt = firestoreTimestampToNumberTimestamp(this.studentCourses[this.studentCourses.length - 1].dateEndPlan)
     const firstDaysOfEachMonth = getFirstDaysOfMonth(startPlanTimestampt, endPlanTimestampt)
-    console.log(firstDaysOfEachMonth)
+    // console.log(firstDaysOfEachMonth)
     let remainingStudyPlanHours = 0
     this.studentCourses.forEach(course => {
       const courseJson = this.courses.find(item => item.id === course.courseRef.id)
@@ -74,7 +74,7 @@ export class StudyTimeMonthlyLineChartComponent {
     })
     remainingStudyPlanHours = Math.round(remainingStudyPlanHours)
     const studyPlanHours = remainingStudyPlanHours
-    console.log("studyPlanHours", studyPlanHours)
+    // console.log("studyPlanHours", studyPlanHours)
     // Find first day of every month between start and end
     firstDaysOfEachMonth.forEach(firstDayOfMonth => {
       const expectedEndDate = firstDayOfMonth
@@ -132,9 +132,9 @@ export class StudyTimeMonthlyLineChartComponent {
         })
       }
     })
-    console.log("classes", this.classes)
-    console.log("months", months)
-    console.log("data", data)
+    // console.log("classes", this.classes)
+    // console.log("months", months)
+    // console.log("data", data)
     return data
   }
 
