@@ -37,7 +37,7 @@
                 class="blueButton mgt10 ft14"
                 style="border-radius: 24px !important;"
                 (click)="onEdit()">
-                {{user.isSystemUser || profile.enterpriseRef ?'Editar':'Editar'}}
+                {{user.isSystemUser || profile?.enterpriseRef ?'Editar':'Editar'}}
                 <img [src]="icon.licencias" class="h16px pdl05" alt="">
                 </div>
             </div>
@@ -217,7 +217,29 @@
                         </div>
                     </div>
                 </div>
-                <div *ngIf="studyPlan.length > 0" style="overflow: hidden; background-color: #FCFCFC;" class="radius10 borderLight mgt20" >
+
+
+                <ng-container *ngIf="studyPlan.length > 0 && isEditing">
+                    <div cdkDropList [cdkDropListData]="studyPlan" (cdkDropListDropped)="onDrop($event)" class="list-container" style="overflow: hidden; background-color: #FCFCFC;" class="radius10 borderLight mgt20">
+                        <div *ngFor="let item of studyPlan; let i = index" cdkDrag class="fw pd05 h40px border-bl hoverBlue item-container" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem">
+                            <div fxLayout="row" fxLayoutAlign="space-between center" class="fw" fxLayoutGap="0.5rem">
+                                <div fxLayout="column" fxLayoutGap="5px" class="ft11">
+                                    <span class="ft12 gray-10">   
+                                        <img [src]="icon.drag" class="h14px cursorPointer" alt="" class="pdr05">
+                                        {{ item.titulo }}
+                                    </span>
+                                </div>
+                                <div fxLayout="row" class="" fxLayoutGap="0.5rem" style="margin-left: 5px;">
+                                    <span class="gray-10 ft11 nowrap">{{ roundNumber(item.duracion / 60) }} hrs</span>
+                                    <img [src]="icon.trash" class="h14px makeGray cursorPointer" (click)="toggleCourseInPlan(item)" alt="">
+                                </div>
+                            </div>
+                            <div *cdkDragPlaceholder class="placeholder"></div>
+                        </div>
+                    </div>
+                </ng-container>
+
+                <div *ngIf="studyPlan.length > 0 && !isEditing" style="overflow: hidden; background-color: #FCFCFC;" class="radius10 borderLight mgt20" >
                     <div
                         class="fw pd05 h40px border-bl hoverBlue"
                         fxLayout="row"

@@ -78,8 +78,8 @@ background-color: white !important;
 }
 
 .image-selector {
-display: flex;
-align-items: center;
+/* display: flex; */
+/* align-items: center; */
 overflow: hidden; /* Esto previene que el scroll se salga de su contenedor */
 }
 
@@ -95,7 +95,7 @@ border-radius: 4px; /* Esto hará que las imágenes tengan bordes redondos */
 margin-right: 10px;
 width: 137px;
 height: 90px;
-object-fit: contain;
+object-fit: fill;
 
 }
 
@@ -373,8 +373,16 @@ display: none !important;
 
 .header--edit {
 background-color: var(--yellow-5);
+position :fixed;
+width: 96.3%;
+border-radius: 6px;
+z-index: 1000;
 
 }
+.fixed-ps {
+  position :fixed;
+}
+
 .rellenar {
   display: inline;
 }
@@ -467,5 +475,10 @@ background-color: var(--yellow-5);
   overflow-y: auto; /* Adds a scrollbar when content overflows */
   /* If you have padding inside the container, box-sizing should be border-box */
   box-sizing: border-box;
+}
+
+.spinner-dark {
+  filter: saturate(0) brightness(0.5) contrast(1.2);
+  margin-right: 5px;
 }
 

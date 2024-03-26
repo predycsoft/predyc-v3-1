@@ -31,21 +31,27 @@ export class StudyTimeMonthlyLineChartComponent {
   studentClasses: ClassByStudent[]
   courses: Curso[]
   classes: {}
+  allClasses
 
   async ngOnInit() {
     this.student = await this.userService.getUserByUid(this.uid)
     const userRef = this.userService.getUserRefById(this.uid)
-    this.courseServiceSubscription = combineLatest([this.courseService.getCoursesByStudent$(userRef), this.courseService.getClassesByStudent$(userRef), this.courseService.getCourses$()]).subscribe(async ([studentCourses, studentClasses, allCourses]) => {
+    this.courseServiceSubscription = combineLatest([this.courseService.getCoursesByStudent$(userRef), this.courseService.getClassesByStudent$(userRef), this.courseService.getCourses$(),this.courseService.getClassesEnterprise$()]).subscribe(async ([studentCourses, studentClasses, allCourses,allClases]) => {
       this.courses = allCourses
+      this.allClasses = allClases
       this.studentCourses = studentCourses.filter(item => item.active).sort((a, b) => a.dateEndPlan - b.dateEndPlan)
       const coursesIds = studentCourses.map(item => item.id)
+      console.log('coursesIds',coursesIds)
       this.studentClasses = studentClasses.filter(item => coursesIds.includes(item.coursesByStudentRef.id) && item.completed).sort((a, b) => a.dateEnd - b.dateEnd)
+      console.log('studentClasses',studentClasses)
       let classes = {}
       for (let studentClass of this.studentClasses) {
         const classId = studentClass.classRef.id
         if (!Object.keys(classes).includes(classId)) {
           // New class
-          const classObj = await this.courseService.getClass(classId)
+          //const classObj = await this.courseService.getClass(classId)
+          const classObj = allClases.find(x=>x.id == classId)
+          console.log('classObj',classObj)
           classes[classId] = classObj
         }
       }
@@ -61,14 +67,15 @@ export class StudyTimeMonthlyLineChartComponent {
 
   getChartData() {
     const months = {}
-    // console.log(this.studentCourses)
-    if (this.studentCourses[0].dateStartPlan) return []
+    //if (this.studentCourses[0].dateStartPlan) return []
     const startPlanTimestampt = firestoreTimestampToNumberTimestamp(this.studentCourses[0].dateStartPlan)
     const endPlanTimestampt = firestoreTimestampToNumberTimestamp(this.studentCourses[this.studentCourses.length - 1].dateEndPlan)
     const firstDaysOfEachMonth = getFirstDaysOfMonth(startPlanTimestampt, endPlanTimestampt)
     // console.log(firstDaysOfEachMonth)
     let remainingStudyPlanHours = 0
+
     this.studentCourses.forEach(course => {
+      console.log('coursestudentCourses',course)
       const courseJson = this.courses.find(item => item.id === course.courseRef.id)
       remainingStudyPlanHours += (courseJson.duracion/60)
     })
@@ -157,6 +164,7 @@ export class StudyTimeMonthlyLineChartComponent {
   }
 
   getChart(chartData) {
+    console.log('data chart',chartData)
     let labels = []
     let realValues = []
     let expectedValues = []
@@ -165,6 +173,8 @@ export class StudyTimeMonthlyLineChartComponent {
       expectedValues.push(data.expectedHours)
       if(data.showRealHours) realValues.push(data.realHours)
     });
+
+    console.log('data chart',realValues)
     const canvas = document.getElementById("line-chart") as HTMLCanvasElement;
     const ctx = canvas.getContext('2d')
     // const horizontalMargin = this.horizontalMargin

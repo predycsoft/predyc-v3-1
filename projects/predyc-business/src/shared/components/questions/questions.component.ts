@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, NgForm, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { Question } from 'projects/shared/models/activity-classes.model';
+import { Question, QuestionType } from 'projects/shared/models/activity-classes.model';
 import { cloneArrayOfObjects, getPlaceholders } from 'projects/shared/utils';
 
 import { CategoryService } from 'projects/predyc-business/src/shared/services/category.service';
@@ -77,7 +77,8 @@ const questionTypeToValidators = {
   [Question.TYPE_SINGLE_CHOICE]: singleOptionQuestionTypeValidators,
   [Question.TYPE_COMPLETE]: completeQuestionTypeValidators,
   [Question.TYPE_MULTIPLE_CHOICE]: multipleChoiceQuestionTypeValidators,
-  [Question.TYPE_TRUE_OR_FALSE]: trueOrFalseQuestionTypeValidators,
+  // [Question.TYPE_TRUE_OR_FALSE]: trueOrFalseQuestionTypeValidators,
+  [Question.TYPE_TRUE_OR_FALSE]: singleOptionQuestionTypeValidators,
 }
 
 
@@ -103,6 +104,11 @@ export class QuestionsComponent {
 
   @Output() emmitForm = new EventEmitter();
   @Output() changeQuestion = new EventEmitter();
+
+  questionTypesModel = QuestionType;
+  isSuccess: boolean = null;
+  activityAnswers: Array<any>;
+
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.checkQuestions) {
@@ -138,7 +144,7 @@ export class QuestionsComponent {
 
 
 
-  questionStatus: { expanded: boolean, visibleImage: boolean, placeholders: string[], textToRender: SafeHtml }[] = []
+  questionStatus: { expanded: boolean, editing:boolean, visibleImage: boolean, placeholders: string[], textToRender: SafeHtml,formated }[] = []
 
   mainForm: FormGroup
 
@@ -148,10 +154,27 @@ export class QuestionsComponent {
 
   displayErrors: boolean = false
 
+  
+
 
   selectedQuestionsSkills = []
   selectedQuestionIndex: number | null = null
   selectedQuestionSkills: [] | null = null
+
+
+
+  getQuestionTypeName (type){
+    let seach = this.questionTypes.find(x=>x.value == type)
+
+    if(seach) return seach.displayName
+
+
+    return null
+
+
+
+
+  }
 
   ngOnInit() {
     this.init();
@@ -171,6 +194,7 @@ export class QuestionsComponent {
   
 
   setupForm() {
+    this.questionStatus = [];
     this.mainForm = this.fb.group({
       questions: this.fb.array([])
     });
@@ -180,6 +204,8 @@ export class QuestionsComponent {
         this.addQuestionInit(questionData);
       });
     }
+
+    this.formatExamQuestions()
 
   }
 
@@ -202,6 +228,7 @@ export class QuestionsComponent {
       options: this.fb.array([]),
       points: [question.points, [Validators.required, Validators.min(1), Validators.pattern(/^\d*$/)]],
       skills: this.fb.array([]),
+      explanation: [question.explanation, []]
     }, { validators: questionTypeToValidators[questionType] });
   
     this.questions.push(newQuestionGroup);
@@ -218,11 +245,15 @@ export class QuestionsComponent {
     }
   
     this.questionStatus.push({
-      expanded: false,
-      visibleImage: false,
+      editing:false,
+      expanded: true,
+      visibleImage: true,
       placeholders: [],
-      textToRender: null
+      textToRender: null,
+      formated:null
     });
+
+
   
   }
 
@@ -250,9 +281,8 @@ export class QuestionsComponent {
     });
   }
 
-  
-
   addQuestion(): void {
+    
     const defaultQuestionType = Question.TYPE_SINGLE_CHOICE
     this.questions.push(this.fb.group({
       text: ['', [Validators.required]],
@@ -264,14 +294,25 @@ export class QuestionsComponent {
       options: this.fb.array([], []),
       points: [1, [Validators.required, Validators.min(1), Validators.pattern(/^\d*$/)]],
       skills: this.fb.array([]),
+      explanation: ['', []]
     }, { validators: questionTypeToValidators[defaultQuestionType] }));
+   // Calcula el índice de la nueva pregunta
+    const questionIndex = this.questions.length - 1;
+    // Agrega 4 opciones vacías a la nueva pregunta
+    for (let i = 0; i < 4; i++) {
+      this.addOption(questionIndex);
+    }
+
     this.questionStatus.push({
+      editing:true,
       expanded: true,
-      visibleImage: false,
+      visibleImage: true,
       placeholders: [],
-      textToRender: null
+      textToRender: null,
+      formated:null
     })
     this.selectedQuestionsSkills.push([])
+
   }
 
   removeQuestion(index: number): void {
@@ -279,46 +320,69 @@ export class QuestionsComponent {
     this.questionStatus.splice(index, 1)
     this.selectedQuestionsSkills.splice(index, 1)
     console.log('Form Data:', this.mainForm);
-    this.changeQuestion.emit(this.mainForm);
+    // this.changeQuestion.emit(this.mainForm);
+    // this.formatExamQuestions()
   }
 
   changePoints(points){
 
     if(points>0){
-      this.changeQuestion.emit(this.mainForm);
+      // this.changeQuestion.emit(this.mainForm);
+      // this.formatExamQuestions()
     }
 
   }
 
+  saveQuestionsForm(index){
+
+
+    console.log('saveQuestionsForm',this.questions)
+
+    this.changeQuestion.emit(this.mainForm);
+    this.formatExamQuestions()
+
+    if(this.mainForm.valid){ 
+      this.questionStatus[index].editing = false
+    }
+
+
+  }
+
+
   changeTextQuestions(event){
     let text = event.value
-    if(text?.length>0)
-    this.changeQuestion.emit(this.mainForm);
+    //if(text?.length>0)
+    // this.changeQuestion.emit(this.mainForm);
+    // this.formatExamQuestions()
   }
 
   changeOption(option){
     if(option.length>0){
-      this.changeQuestion.emit(this.mainForm);
+      // this.changeQuestion.emit(this.mainForm);
+      // this.formatExamQuestions()
     }
   }
 
-  addOption(questionIndex: number, placeholder=null,image=null): void {
+  addOption(questionIndex: number, placeholder=null,image=null,text=''): void {
     this.options(questionIndex).push(this.fb.group({
       image: [image],
-      text: ['', [Validators.required]],
+      text: [text, [Validators.required]],
       isCorrect: [false],
       placeholder: [placeholder],
     }));
-    this.changeQuestion.emit(this.mainForm);
+    //this.changeQuestion.emit(this.mainForm);
+    // this.formatExamQuestions()
   }
 
   removeOption(questionIndex: number, optionIndex: number): void {
     this.options(questionIndex).removeAt(optionIndex)
-    this.changeQuestion.emit(this.mainForm);
+    // this.changeQuestion.emit(this.mainForm);
+    // this.formatExamQuestions()
   }
 
   changeOptionTrue(): void {
-    this.changeQuestion.emit(this.mainForm);
+    // this.changeQuestion.emit(this.mainForm);
+    // this.formatExamQuestions()
   }
 
   modifyQuestionSkills(modalTemplate, questionIndex) {
@@ -375,6 +439,8 @@ export class QuestionsComponent {
   }
 
   onQuestionTypeChange(questionIndex: number, typeValue: string) {
+
+
     const question = this.questions.at(questionIndex)
     question['controls']['type'].setValue(typeValue)
     this.options(questionIndex).clear()
@@ -387,6 +453,19 @@ export class QuestionsComponent {
     const validators: ValidatorFn[] = questionTypeToValidators[typeValue]
     question.setValidators(validators)
     question.updateValueAndValidity()
+
+
+
+    if(typeValue=='single_choice' || typeValue=='multiple_choice'){
+      for (let i = 0; i < 4; i++) {
+        this.addOption(questionIndex);
+      }
+    }
+    if(typeValue=='true-false'){
+      this.addOption(questionIndex,null,null,'Verdadero');
+      this.addOption(questionIndex,null,null,'Falso');
+
+    }
   }
 
   uploadQuestionImage(questionIndex: number, event) {
@@ -427,7 +506,7 @@ export class QuestionsComponent {
             console.log(`File URL: ${url}`);
             this.questions.at(questionIndex)['controls']['image']['controls']['url'].setValue(url)
             this.questions.at(questionIndex)['controls']['image']['controls']['file'].setValue(newName)
-            this.changeQuestion.emit(this.mainForm);
+            //this.changeQuestion.emit(this.mainForm);
           });
         })
       ).subscribe();
@@ -439,8 +518,8 @@ export class QuestionsComponent {
 
   deleteOptionImage(option): void {
     option.get('image').setValue('');
-    this.changeQuestion.emit(this.mainForm);
-
+    // this.changeQuestion.emit(this.mainForm);
+    // this.formatExamQuestions()
   }
 
 
@@ -490,7 +569,8 @@ export class QuestionsComponent {
               //clase['uploading'] = false;
               console.log(`File URL: ${url}`);
               option.get('image').setValue(url);
-              this.changeQuestion.emit(this.mainForm);
+              // this.changeQuestion.emit(this.mainForm);
+              // this.formatExamQuestions()
             });
           })
         ).subscribe();
@@ -509,13 +589,16 @@ export class QuestionsComponent {
   }
 
   onSingleOptionSelected(questionIndex: number, optionIndex: number): void {
+
+    
     const targetPlaceholder = this.options(questionIndex).at(optionIndex).get('placeholder').value
     for (let index = 0; index < this.options(questionIndex).controls.length; index++) {
       if (this.options(questionIndex).at(index).get('placeholder').value === targetPlaceholder) {
         this.options(questionIndex).at(index).get('isCorrect').setValue(index === optionIndex ? true : false)
       }
     }
-    this.changeQuestion.emit(this.mainForm);
+    //this.changeQuestion.emit(this.mainForm);
+    //this.formatExamQuestions()
 
   }
 
@@ -528,6 +611,13 @@ export class QuestionsComponent {
     this.questionStatus[questionIndex].placeholders = existingPlaceholders;
     this.options(questionIndex).setValue([])
   }
+
+  parseQuestionExplanation(questionIndex: number): void {
+    const existingPlaceholders = getPlaceholders(this.questions.at(questionIndex)['controls']['explanation'].value)
+    this.questionStatus[questionIndex].placeholders = existingPlaceholders;
+    this.options(questionIndex).setValue([])
+  }
+
 
   showDisplayText(questionIndex) {
     this.questionStatus[questionIndex].textToRender = this.sanitizer.bypassSecurityTrustHtml(
@@ -563,6 +653,126 @@ export class QuestionsComponent {
     console.log(this.mainForm.value)
 
   }
+
+  examenQuestionsFormated = [];
+  questionsFormated
+  
+  formatExamQuestions(){
+
+    let questions = structuredClone(this.questions.value)
+
+    if(questions.length>0){
+      questions.forEach(question => {
+        if(!question.typeFormated){
+          question.typeFormated = this.getTypeQuestion(question.type)
+          if(question.type == 'complete'){
+            this.showDisplayText(question)
+          }
+        }
+      });
+      if(this.examenQuestionsFormated){
+        this.examenQuestionsFormated = questions
+        this.questionsFormated = true
+      }
+    }
+
+    console.log('revisarformatExamQuestions',this.examenQuestionsFormated)
+
+  }
+
+
+  getTypeQuestion(type){
+
+    const TYPE_CALCULATED: string = 'calculated';
+    const TYPE_MATCHING: string = 'matching';
+    const TYPE_NUMERIC: string = 'numeric';
+    const TYPE_MULTIPLE_CHOICE: string = 'multiple_choice';
+    const TYPE_SINGLE_CHOICE: string = 'single_choice';
+    const TYPE_SHORT_ANSWER: string = 'short-answer';
+    const TYPE_COMPLETE: string = 'complete';
+    const TYPE_TRUE_OR_FALSE: string = 'true-false';
+
+    let typeToInfoDict = {
+      [TYPE_MULTIPLE_CHOICE]: {
+        value: TYPE_MULTIPLE_CHOICE,
+        displayName: 'Opción Múltiple',
+        tooltipInfo:
+          'Configure una serie de opciones para una pregunta - una o mas respuestas pueden ser correctas',
+        createInstructions: '',
+        solveInstructions:
+          'Seleccione una o mas opciones como correctas del listado de opciones',
+      },
+      [TYPE_SINGLE_CHOICE]: {
+        value: TYPE_SINGLE_CHOICE,
+        displayName: 'Opción Simple',
+        tooltipInfo:
+          'Configure una serie de opciones para una pregunta - solo una respuesta puede ser correcta',
+        createInstructions: '',
+        solveInstructions:
+          'Seleccione la opción correcta del listado de opciones',
+      },
+      [TYPE_COMPLETE]: {
+        value: TYPE_COMPLETE,
+        displayName: 'Completar',
+        tooltipInfo:
+          'Configure una pregunta cuyo texto pueda ser completado a partir de las opciones provistas para cada marcador de referencia - cada marcador debe tener una única respuesta correcta',
+        createInstructions:
+          'Ingrese cada marcador como una palabra de referencia encerrada entre corchetes ([]).<br/>Ejemplo: El presidente [nombreDelPresidente] nacio en [paisDeNacimiento]',
+        solveInstructions:
+          'Complete el texto utilizando los selectores proporcionados para dar sentido a la frase',
+      },
+      [TYPE_TRUE_OR_FALSE]: {
+        value: TYPE_TRUE_OR_FALSE,
+        displayName: 'Verdadero o Falso',
+        tooltipInfo:
+          'Configure una pregunta cuya respuesta sea verdadero o falso',
+        createInstructions:
+          'Marque las opciones que sean verdaderas y deje en blanco las que sean falsas',
+        solveInstructions:
+          'Clasifique las siguientes afirmaciones como verdadera o falsa',
+      }
+    }
+
+    let typeComplete = typeToInfoDict[type]
+    return typeComplete
+  }
+
+  checkAnswer(questionIndex: number, optionIndex: number): void {
+    switch (this.questions.value[questionIndex].type.value) {
+      case QuestionType.TYPE_SINGLE_CHOICE_VALUE:
+        {
+          this.activityAnswers[questionIndex].answerItems.forEach(
+            (answerItem, index) => {
+              answerItem.answer = index === optionIndex;
+            }
+          );
+        }
+        break;
+      case QuestionType.TYPE_MULTIPLE_CHOICE_VALUE:
+        {
+          this.activityAnswers[questionIndex].answerItems[optionIndex].answer =
+            !this.activityAnswers[questionIndex].answerItems[optionIndex]
+              .answer;
+        }
+        break;
+      case QuestionType.TYPE_COMPLETE_VALUE:
+        {
+          this.activityAnswers[questionIndex].answerItems.forEach(
+            (answerItem, index) => {
+              answerItem.answer = index === optionIndex;
+            }
+          );
+        }
+
+        break;
+      default:
+        {
+        }
+        break;
+    }
+    //console.log(this.activityAnswers);
+  }
+
 
 
 

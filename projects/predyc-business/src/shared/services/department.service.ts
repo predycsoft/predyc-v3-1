@@ -61,6 +61,22 @@ export class DepartmentService {
     )
   }
 
+  getDepartmentsEnterprise$(): Observable<Department[]> {
+
+    return this.enterpriseService.enterpriseLoaded$.pipe(
+      switchMap(isLoaded => {
+        if (!isLoaded) return []
+        const enterpriseRef = this.enterpriseService.getEnterpriseRef();
+
+        return this.afs.collection<Department>(Department.collection, ref => ref.
+          where('enterpriseRef', '==', enterpriseRef)
+        ).valueChanges()
+      })
+    )
+
+  }
+
+
   async fixDepartments(){
 
     console.log('fixDepartments')

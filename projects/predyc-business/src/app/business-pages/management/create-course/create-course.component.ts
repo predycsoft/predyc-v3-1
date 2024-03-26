@@ -915,6 +915,12 @@ export class CreateCourseComponent {
               claseLocal.tipo = clase.tipo;
               claseLocal.titulo = clase.titulo;
               claseLocal.vigente = clase.vigente;
+              if(this.user.isSystemUser){
+                claseLocal.enterpriseRef = null;
+              }
+              else{
+                claseLocal.enterpriseRef = this.enterpriseService.getEnterpriseRef()
+              }
               
               const arrayRefSkills = (clase.competencias?.map(skillClase => this.curso.skillsRef.find(skill => skill.id == skillClase.id)).filter(Boolean) ) || [];
               claseLocal.skillsRef = arrayRefSkills;

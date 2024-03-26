@@ -55,7 +55,7 @@ export class SalesListComponent {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @Input() enableNavigateToUser: boolean = true
 
-  pageSize: number = 8
+  pageSize: number = 16
   totalLength: number
   
   combinedServicesSubscription: Subscription

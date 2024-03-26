@@ -14,3 +14,8 @@ app-dialog-download-report{
 #pdfChart{
     display: none !important;
 }
+
+.spinner-dark {
+    filter: saturate(0) brightness(0.5) contrast(1.2);
+    margin-right: 5px;
+}

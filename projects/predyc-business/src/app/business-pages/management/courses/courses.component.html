@@ -58,7 +58,7 @@
                     
                 </div>
                 <div fxLayout="row" class="fw">
-                    <div class="fw" style="height: 70vh; overflow-y: auto;">
+                    <div class="fw" style=" overflow-y: hidden;">
                         <div class="mgt10">
                             <ng-container>
                                 <app-course-selector type="predyc" [categories]="categories" [searchValue]="searchValue"
@@ -98,9 +98,23 @@
                         </div>
                     </div>
 
-                    <div class="borderLight fh radius6 mgt10" *ngIf="selectedCourse" style="height: 83vh;">
+                    <div class="borderLight radius6 mgt10" *ngIf="selectedCourse" >
                         <div class="border-bl pdl10 pdt10 pdr10 pdb10 fw" fxLayout="column">
-                            <div class="gray-10 ft14 ft500">{{selectedCourse.titulo | titlecase}}</div>
+                            <div  fxLayout="row" fxLayoutAlign="space-between center" >
+                                <div class="gray-10 ft14 ft500 mgr08">{{selectedCourse.titulo | titlecase}}</div>
+                                <div *ngIf="(user.isSystemUser || selectedCourse.enterpriseRef?.id == enterpriseRef?.id) && selectedCourse.id" 
+                                        routerLink="/management/create-course/edit/{{selectedCourse.id}}" 
+                                        fxLayout="row" 
+                                        fxLayoutGap=".5rem"  >
+                                        <div class="blueLink mgt05 white cursorPointer ft14 fw mgb10" fxLayoutAlign="space-between center">
+                                            <!-- <img [src]="icon.edit" class="makeWhite h16px mgr08" alt=""> -->
+                                            Editar 
+                                        </div>
+                                </div>
+
+
+                            </div>
+                            
                             <!-- Left side content -->
                             <div fxLayout="row" fxLayoutGap="1rem" class="mgt05 fw">
                                 <img *ngIf="selectedCourse['imagen']" [src]="selectedCourse['imagen']" class="avatarSquare8 radius6" alt="">
@@ -132,17 +146,17 @@
                                             <div class="gray-8 ft10">{{selectedCourse.nivel}}</div>
                                         </div>
                                      </div>
-                                     <div *ngIf="(user.isSystemUser || selectedCourse.enterpriseRef?.id == enterpriseRef?.id) && selectedCourse.id" routerLink="/management/create-course/edit/{{selectedCourse.id}}" fxLayout="row" fxLayoutGap=".5rem">
+                                     <!-- <div *ngIf="(user.isSystemUser || selectedCourse.enterpriseRef?.id == enterpriseRef?.id) && selectedCourse.id" routerLink="/management/create-course/edit/{{selectedCourse.id}}" fxLayout="row" fxLayoutGap=".5rem">
                                         <div class="backGray2 pd05 w40px radius6 cursorPointer" fxLayoutAlign="center center">
                                             <img [src]="icon.edit" class="makeYellow fw" alt="">
                                         </div>
                                         <div fxLayout="column">
                                             <div class="gray-6 ft10 cursorPointer">Editar curso</div>
                                         </div>
-                                     </div>
+                                     </div> -->
                                    </div>
                                    <div *ngIf="selectedCourse['skills']" class="mgt05">
-                                    <div class="ft10 gray-10">Compentencias</div>
+                                    <div class="ft10 gray-10">Competencias</div>
                                     <div fxLayout="row wrap" fxLayoutGap=".5rem" class="mgt05">
                                         <!-- <div class="ft10 gray-8 backGray2 pd03 radius6 pdl05 pdr05 mgb05">Equipos estaticos</div>
                                         <div class="ft10 gray-8 backGray2 pd03 radius6 pdl05 pdr05 mgb05" >VDF</div>
