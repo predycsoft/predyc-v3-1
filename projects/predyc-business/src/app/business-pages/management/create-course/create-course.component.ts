@@ -282,7 +282,8 @@ export class CreateCourseComponent {
   getCursoSkills(){
 
     let skillArray = [];
-    this.curso?.skillsRef?.forEach(skill => {
+    
+    this.formNewCourse.get("skills")?.value.forEach(skill => {
       let datail = this.allskills.find(x=>x.id == skill.id)
       skillArray.push(datail)
     });
@@ -3823,14 +3824,22 @@ uploadVideo(videoFile, clase, local = false, modulo, origen = null, intentosActu
     this.showErrorSkill = false;
     if(this.formNewSkill.valid){
 
+      this.tmpSkillRefArray = []
+      this.skillsCurso = []
+
       let pilar = this.pillarsForm.value
       let competencias = pilar['competencias'] || []
-
       let competencia = competencias.find(x=>x.name.toLowerCase()==this.formNewSkill.get('nombre')?.value.toLowerCase().trim())
 
       let skills = this.formNewCourse.get("skills")?.value
-      this.tmpSkillRefArray = skills;
+      if(skills){
+        this.tmpSkillRefArray = skills;
+      }
+      else{
+        skills = []
+      }
       if(competencia){ // duplicado asignar 
+        console.log('duplicado asignar',competencia,pilar,skills)
         let SkillCheck = skills.find(x=> x.id == competencia.id)
         if(!SkillCheck){
           let skillRef = await this.afs.collection<Skill>(Skill.collection).doc(competencia.id).ref;
@@ -3847,6 +3856,7 @@ uploadVideo(videoFile, clase, local = false, modulo, origen = null, intentosActu
           this.modalCrearSkill.close()
         }
         else{
+          this.skillsCurso = this.getCursoSkills();
           this.savingSkill = false
           this.modalCrearSkill.close()
         }
