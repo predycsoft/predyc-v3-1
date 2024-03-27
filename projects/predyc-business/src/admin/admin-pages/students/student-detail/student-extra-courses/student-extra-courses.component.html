@@ -10,24 +10,24 @@
             </div>
             <ng-container *ngIf="coursesByStudent.length > 0 else noCourses">
                 <div *ngIf="!hasExtraCourses" class="" fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="3rem">
-                    <span class="ft14">El estudiante tiene un <span class="ft600"> plan de estudio </span> asignado</span>
+                    <span class="ft14">Los cursos inscritos pertenecen a un <span class="ft600"> plan de estudio </span> asignado</span>
                     <button class="blueButton" (click)="saveAsExtraCourse()">Asignar cursos como extracurriculares</button>
                 </div>
                 <div *ngIf="hasExtraCourses" class="f" fxLayout="row" fxLayoutAlign=" center" fxLayoutGap=".5rem">
-                    <span class="ft14">El estudiante tiene los cursos inscritos como <span class="ft600"> extracurriculares </span></span>
+                    <span class="ft14">Los cursos estan inscritos como <span class="ft600"> extracurriculares </span></span>
                 </div>
             </ng-container>
             <ng-template #noCourses>
-                <div class="">
+                <div class=""  fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="3rem">
                     <span>El estudiante aun no posee cursos extra curriculares o plan de estudios</span>
+                    <button class="blueButton" (click)="saveAsExtraCourse()">Asignar cursos como extracurriculares</button>
                 </div>
             </ng-template>
         </div>
-        <div class="fw" fxLayout="column" fxLayoutGap=".2rem">
+        <!-- <div class="fw" fxLayout="column" fxLayoutGap=".2rem">
 
             <table mat-table [dataSource]="dataSource">
 
-                <!-- Title Column -->
                 <ng-container matColumnDef="courseTitle">
                     <th mat-header-cell *matHeaderCellDef class="ft14"> </th>
                     <td mat-cell *matCellDef="let data" class="ft500 ft14  gray-10"> {{ data.courseTitle | titlecase}} </td>
@@ -39,6 +39,6 @@
                 </ng-container>
         
             </table>
-        </div>
+        </div> -->
     </div>
 </div>
