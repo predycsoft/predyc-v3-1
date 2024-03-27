@@ -78,10 +78,7 @@ export class StudentStudyPlanAndCompetencesComponent {
   courses
   coursesByStudent
 
-  initFormTab = 0
   studyPlanView = true
-  extraCoursesList = []
-
 
   ngOnInit() {
 
@@ -109,14 +106,12 @@ export class StudentStudyPlanAndCompetencesComponent {
             // Extra courses case
             else {
               this.studyPlanView = false
-              this.buildExtraCoursesList(coursesByStudent, coursesData) //COMENTAR O NO
             }
           } 
           else {
             // the student has a profile but hasnt completed initform yet
-            console.log("courseByStudent.lenght es 0")
             this.showInitForm = true
-            this.alertService.infoAlert("Debe indicar la fecha de inicio y la hora de dedicación para iniciar su plan de estudio o inscribir los cursos del perfil como extracurriculares")
+            this.alertService.infoAlert("Debe indicar la fecha de inicio y la hora de dedicación para iniciar su plan de estudio")
             this.hoursPermonthInitForm = this.selectedProfile.hoursPerMonth
             // console.log("El usuario no posee studyPlan");
           }
@@ -153,7 +148,7 @@ export class StudentStudyPlanAndCompetencesComponent {
       // setting profile for the first time
       if (changes.selectedProfile.previousValue === null && changes.selectedProfile.currentValue) {
         this.showInitForm = true
-        this.alertService.infoAlert("Debe indicar la fecha de inicio y la hora de dedicación para iniciar su plan de estudio o inscribir los cursos del perfil como extracurriculares")
+        this.alertService.infoAlert("Debe indicar la fecha de inicio y la hora de dedicación para iniciar su plan de estudio")
         this.hoursPermonthInitForm = changes.selectedProfile.currentValue.hoursPerMonth
       }
       // setting new profile
@@ -185,19 +180,6 @@ export class StudentStudyPlanAndCompetencesComponent {
         date: firestoreTimestampToNumberTimestamp(diagnosticTest.date)
       } 
     })
-  }
-
-  buildExtraCoursesList(coursesByStudent: CourseByStudent[], coursesData: Curso[]) {
-    this.extraCoursesList = coursesByStudent.map(courseByStudent => {
-      const courseData = coursesData.find(courseData => courseData.id === courseByStudent.courseRef.id);
-      console.log("courseData", courseData)
-      return {
-        courseTitle: courseData.titulo
-      }
-    })
-    this.updateWidgets() // Ya no seria referente a this.studyPlan sino a this.extraCourselist
-
-    console.log("this.extraCoursesList", this.extraCoursesList)
   }
 
   buildMonths(coursesByStudent: CourseByStudent[], coursesData) {
@@ -298,25 +280,6 @@ export class StudentStudyPlanAndCompetencesComponent {
       }
     }
   }
-
-  async saveAsExtraCourse() {
-    const coursesRefs: DocumentReference[] = this.selectedProfile.coursesRef
-    // console.log("hoursPermonth", hoursPermonth)
-    for (let i = 0; i < coursesRefs.length; i++) {
-      const userRef: DocumentReference | DocumentReference<User> = this.userService.getUserRefById(this.student.uid)
-      const courseData = this.coursesData.find(courseData => courseData.id === coursesRefs[i].id);
-
-      const courseByStudent: CourseByStudent | null = await this.courseService.getCourseByStudent(userRef as DocumentReference<User>, coursesRefs[i] as DocumentReference<Curso>)
-      //  ---------- if it already exists, activate it, otherwise, create it ---------- 
-      // console.log("courseByStudent", courseByStudent)
-      if (courseByStudent) {
-        await this.courseService.setCourseByStudentActive(courseByStudent.id, null, null)
-      } else {
-        await this.courseService.saveCourseByStudent(coursesRefs[i], userRef, null, null)
-        // await this.courseService.setCoursesByStudentInactive(this.userService.getUserRefById(this.student.uid))
-      }
-    }
-  }
   
   isMonthCompleted(month: Month): boolean {
     return month.courses.every(course => course.dateEnd !== null);
@@ -334,16 +297,11 @@ export class StudentStudyPlanAndCompetencesComponent {
   }
   
   async saveInitForm() {
+    await this.userService.saveStudyPlanHoursPerMonth(this.student.uid, this.hoursPermonthInitForm)
+    this.student.studyHours = this.hoursPermonthInitForm
     this.showInitForm = false
-    if (this.startDateInitForm) {
-      await this.userService.saveStudyPlanHoursPerMonth(this.student.uid, this.hoursPermonthInitForm)
-      this.student.studyHours = this.hoursPermonthInitForm
-      // calculate dates and create studyplan using this.startDateInitForm
-      await this.createStudyPlan()
-    }
-    else {
-      await this.saveAsExtraCourse()
-    }
+    // calculate dates and create studyplan using this.startDateInitForm
+    await this.createStudyPlan()
   }
 
 

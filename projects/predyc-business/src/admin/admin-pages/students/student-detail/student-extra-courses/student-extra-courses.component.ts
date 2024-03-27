@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { DocumentReference } from '@angular/fire/compat/firestore';
+import { MatTableDataSource } from '@angular/material/table';
 import { AlertsService } from 'projects/predyc-business/src/shared/services/alerts.service';
 import { CourseService } from 'projects/predyc-business/src/shared/services/course.service';
 import { ProfileService } from 'projects/predyc-business/src/shared/services/profile.service';
@@ -22,20 +23,23 @@ export class StudentExtraCoursesComponent {
   constructor(
     private courseService: CourseService,
     private profileService: ProfileService,
-    private alertService: AlertsService,
   ){}
 
   combinedObservableSubscription: Subscription
   profile: Profile
   allcoursesData: Curso[]
-  coursesByStudent: CourseByStudent[]
+  coursesByStudent: CourseByStudent[] = []
   coursesInfo: any[]
   hasExtraCourses = true
 
+  displayedColumns: string[] = [
+    "courseTitle",
+  ];
+
+  dataSource = new MatTableDataSource<any>();
+
 
   ngOnInit() {
-    console.log("this.userProfileRef", this.userProfileRef)
-
     if (this.userProfileRef) {
       this.combinedObservableSubscription = combineLatest([ 
         this.courseService.getCourses$(), 
@@ -44,7 +48,6 @@ export class StudentExtraCoursesComponent {
       ]).
       subscribe(([allcoursesData, coursesByStudent, profile]) => {
         this.profile = profile
-        console.log("this.profile", this.profile)
         if (allcoursesData.length > 0) {
           this.allcoursesData = allcoursesData
           if (coursesByStudent.length > 0) {
@@ -65,9 +68,10 @@ export class StudentExtraCoursesComponent {
                 courseTitle: courseInfo.titulo
               }
             })
+            this.dataSource.data = this.coursesInfo
           } 
           else {
-            this.alertService.infoAlert("Aun no posee plan de estudio o cursos extracurriculares")
+            console.log("Aun no posee plan de estudio o cursos extracurriculares")
           }
         }
       });
@@ -80,7 +84,6 @@ export class StudentExtraCoursesComponent {
   async saveAsExtraCourse() {
     const coursesRefs: DocumentReference[] = this.profile.coursesRef
     for (let i = 0; i < coursesRefs.length; i++) {
-
       const courseByStudent: CourseByStudent | null = await this.courseService.getCourseByStudent(this.userRef as DocumentReference<User>, coursesRefs[i] as DocumentReference<Curso>)
       //  ---------- if it already exists, activate it, otherwise, create it ---------- 
       if (courseByStudent) {
