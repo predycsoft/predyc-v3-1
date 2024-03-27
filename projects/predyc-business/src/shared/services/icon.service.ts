@@ -119,6 +119,7 @@ export class IconService {
   rotate = "assets/iconsUI/rotate.svg"
   bombilloAdd = "assets/iconsUI/bombilloAdd.svg"
   calendarAdd = "assets/iconsUI/calendarAdd.svg"
+  calendar = "assets/iconsUI/calendar-1.svg"
 
   downloadCloud = "assets/iconsUI/downloadCloud.svg"
   laptop = "assets/iconsUI/laptop.svg"

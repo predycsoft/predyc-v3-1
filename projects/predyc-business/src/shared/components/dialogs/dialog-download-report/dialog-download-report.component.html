@@ -1,53 +1,72 @@
-<div style="overflow: hidden;" class="fitWidth height350 pd03 mgt05 mgb10 pd15">
-    <div fxLayout="row" fxLayoutAlign="space-between center">
-        <span class="ft20 gray-10 ft600" style="font-weight: 700 !important;">Descargar reporte</span>
-        <img [src]="icon.close" (click)="dismiss()" class="makeGray h20px cursorPointer">
+<div fxLayout="column" class="pd10" ngClass="containerPC" ngClass.lt-md="containerMobile" style="width: 500px">
+    <div fxLayout="row" class=" bg-web-primary text-white px-3 py-1 mgb10" fxLayoutAlign="space-between center" >
+        <div class="  " style="margin-bottom: -15px !important;">
+            <span class="ft16  ft600 gray-10">
+                Descargar reporte
+            </span>
+        </div>
+        <div class="  ">
+            <img [src]="icon.close" class="h24px    cursorPointer" alt="" (click)="dismiss()"  style="margin-bottom: -10px;">
+        </div>
     </div>
-    <div class="linea mgt10"></div>
-    <div fxLayout="column" class="fw">
-        <div class="fw" fxLayout="column">
-            <div>
-                <span class="ft16">Selecciona el rango de fechas en que deseas descargar tu reporte</span>
-            </div>
+    <div fxLayout="row" fxLayoutAlign="center center" class="mgb10 border-bl" fxLayoutGap=".5rem" >
+    </div>
+    <div fxLayout="column"  class="   " fxLayoutAlign="center center" fxLayoutGap=".5rem"  >
+        <label class="gray-10 ft500 centertext ft14 " style="width: 70%;">Rango de fechas:</label>
             <!-- Contenedor de los inputs de fecha -->
-            <div fxLayout="row" fxLayoutGap="20px" class="mgt10" fxLayoutAlign="space-between center">
+            <div fxLayout="row" fxLayoutGap="20px" class="mgt03" fxLayoutAlign="space-between center">
                 <!-- Input de fecha de inicio -->
-                <input [(ngModel)]="startDate"
-                       [class.is-invalid]="reportform.get('fechaInicio').errors && displayErrors"
-                       type="text" 
-                       class="form-control pdl20"
-                       (click)="fechaInicio.toggle()"
-                       ngbDatepicker
-                       [maxDate]="maxDate"
-                       #fechaInicio="ngbDatepicker"
-                       placeholder="Fecha inicio"
-                       fxFlex>
+                <div class="  radius20" fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="center">
+                    <div class="fw mgb05 borderLight shadow-animation radius20   " fxLayout="row" fxLayoutAlign=" center">
+                        <img [src]="icon.calendar" class="h16px makeGray mgl08" alt="">
+                        <input [(ngModel)]="startDate"
+                            [class.is-invalid]="reportform.get('fechaInicio').errors && displayErrors"
+                            type="text" 
+                            class=" pdl05"
+                            (click)="fechaInicio.toggle()"
+                            ngbDatepicker
+                            [maxDate]="maxDate"
+                            #fechaInicio="ngbDatepicker"
+                            placeholder="Fecha inicio"
+                            fxFlex
+                            style="width: 80%; height: 37px; outline: none; border: 0;  background-color: transparent;"
+                            >
+                    </div>
+                </div>
                 <!-- Input de fecha de fin -->
-                <input [(ngModel)]="endDate"
-                       [class.is-invalid]="reportform.get('fechafin').errors && displayErrors"
-                       type="text" 
-                       class="form-control pdl20"
-                       (click)="fechafin.toggle()"
-                       ngbDatepicker
-                       [maxDate]="maxDate"
-                       #fechafin="ngbDatepicker"
-                       placeholder="Fecha fin"
-                       fxFlex>
+                <div class="  radius20" fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="center">
+                    <div class="fw mgb05 borderLight shadow-animation radius20 " fxLayout="row" fxLayoutAlign=" center">
+                        <img [src]="icon.calendar" class="h16px makeGray mgl08" alt="">
+                        <input [(ngModel)]="endDate"
+                            [class.is-invalid]="reportform.get('fechafin').errors && displayErrors"
+                            type="text" 
+                            class="pdl05"
+                            (click)="fechafin.toggle()"
+                            ngbDatepicker
+                            [maxDate]="maxDate"
+                            #fechafin="ngbDatepicker"
+                            placeholder="Fecha fin"
+                            fxFlex
+                            style="width: 80%; height: 37px; outline: none; border: 0;  background-color: transparent;"
+                            >
+                    </div>
+                </div>
             </div>
+
             <!-- Botón de descarga de reporte -->
-            <div class="mgt10" fxLayoutAlign="end end">
-                <button *ngIf="loaded && (startDate && endDate) && !generatinReport" class="lightButton backBlue5 radius6 h40px ft14" id="btn" (click)="downloadReport()">
+            <div class="mgt03 mgb03" fxLayoutAlign="end end">
+                <button *ngIf="loaded && (startDate && endDate) && !generatinReport" class="lightButton backBlue5 radius20 h40px ft14" id="btn" (click)="downloadReport()">
                     <img [src]="icon.download" class="makeWhite" alt=""> Descargar reporte
                 </button>
 
-                <button *ngIf="generatinReport" class="lightButton radius6 h40px ft14 border grayLink" disabled>
+                <button *ngIf="generatinReport" class="lightButton radius20 h40px ft14 border grayLink" disabled>
                     <div class="spinner-container" style="display: flex; align-items: center;">
                         <mat-spinner diameter="20" class="spinner-dark"></mat-spinner>
                         <span style="margin-left: 10px;">Generando reporte</span>
                     </div>
                 </button>
 
-                <button *ngIf="loaded && (!startDate || !endDate)!" class="lightButton radius6 h40px ft14 border grayLink" disabled>
+                <button *ngIf="loaded && (!startDate || !endDate)!" class="lightButton radius20 h40px ft14 border grayLink" disabled>
                     <img [src]="icon.download" class="makeGray" alt=""> Descargar reporte
                 </button>
             </div>
@@ -59,4 +78,3 @@
         <canvas id="pdfChart"></canvas>
     </div>
 
-</div>

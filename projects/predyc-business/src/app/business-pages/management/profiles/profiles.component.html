@@ -57,8 +57,8 @@
                 <div class="  mgt15 radius20" *ngIf="isEditing" >
                     <!-- <p class="ft13 gray-8 mgl03" *ngIf="isEditing">Nombre del perfil</p> -->
 
-                    <div  class="  fw " fxLayout="row" fxLayoutGap="" fxLayoutAlign="space-between center" style="margin-top: 25px;">
-                        <div class="searchBarContainer selectppp cursorPointer radius20 fw" fxLayout="row" fxLayoutAlign=" center">
+                    <div  class="  fw " fxLayout="row" fxLayoutGap="" fxLayoutAlign="space-between center" style="margin-top: 25px; border: none; ">
+                        <div class="searchBarContainer  cursorPointer radius20 fw" fxLayout="row" fxLayoutAlign=" center">
                             <textarea name="" id="" rows="1" [(ngModel)]="profileName" maxlength="43" placeholder="Nombre del perfil"
                              style="width: 100%; resize:none; border: none; padding-left: 15px!important; background-color:#ffffff!important;" class="shadow-animation radius20  pd05"></textarea>
                         </div>
@@ -70,16 +70,21 @@
 
 
 
-                <div class="pd05 backGray2 mgt10 radius10">
-                    <p class="ft12 gray-8" *ngIf="!isEditing" style="overflow-y: auto; word-wrap: break-word; max-height: 122px;">{{profileDescription}}</p>
-                    <textarea name="" id="" rows="5" *ngIf="isEditing" [(ngModel)]="profileDescription"  placeholder="Introduzca la descripción"
-                    style="width: 100%; resize:vertical; border: none; background-color: transparent !important;"></textarea>
+                <div class="pd05  mgt10 radius10"  *ngIf="!isEditing"  >
+                    <p class="ft12 gray-8" *ngIf="!isEditing" style="overflow-y: hidden; word-wrap: break-word; max-height: 122px;">{{profileDescription}}</p>
                 </div>
+
+                <div class="pd05  mgt10   radius10 backWhite shadow-animation" *ngIf="isEditing" style="margin-bottom: 55px;  border: none; " >
+                    <textarea name="" id="" rows="3" *ngIf="isEditing" [(ngModel)]="profileDescription"  placeholder="Introduzca la descripción"
+                    style=" overflow-y: hidden;  width: 100%; resize:none; border: none; background-color: transparent !important; " maxlength="170"  ></textarea>
+                </div>
+
+
                 <!-- <div class="pdt10" fxLayout="row" fxLayoutGap="0.5rem" fxLayoutAlign="start center">
                     <img [src]="icon.ticTacToe" class="makeBlue h20px" alt="">
                     <span class="ft500   ft14  black">Resumen de competencias</span>
                 </div> -->
-                <div class="chart-container">
+                <div class="chart-container " style="margin-top: -45px;" >
                     <canvas id="chart"></canvas>
                 </div>
                 <div class="chart-container ft13 fw">
