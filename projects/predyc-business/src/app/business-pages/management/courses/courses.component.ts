@@ -8,12 +8,16 @@ import { CategoryService } from 'projects/predyc-business/src/shared/services/ca
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { SkillService } from 'projects/predyc-business/src/shared/services/skill.service';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
-import { take } from 'rxjs';
+import { take, Subscription } from 'rxjs';
 import { CourseService } from 'projects/predyc-business/src/shared/services/course.service';
 
 import { cursosProximos } from 'projects/predyc-business/src/assets/data/proximamente.data'
 import { AuthService } from 'projects/predyc-business/src/shared/services/auth.service';
 import { InstructorsService } from 'projects/predyc-business/src/shared/services/instructors.service';
+import { SubscriptionService } from 'projects/predyc-business/src/shared/services/subscription.service';
+import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
+import { Product, Subscription as SubscriptionClass } from 'projects/shared';
+import { ProductService } from 'projects/predyc-business/src/shared/services/product.service';
 
 
 export class category {
@@ -42,8 +46,12 @@ export class CoursesComponent implements AfterViewInit {
     private afs: AngularFirestore,
     private enterpriseService: EnterpriseService,
     private authService: AuthService,
-
+    private subscriptionService: SubscriptionService,
+    private userService: UserService,
+    private productService: ProductService
   ) {}
+
+  subscriptionClass = SubscriptionClass
 
   cursos: Curso[] = []
   selectedCourse: Curso = null
@@ -59,6 +67,10 @@ export class CoursesComponent implements AfterViewInit {
   courses;
   user;
   enterpriseRef
+  subscription: SubscriptionClass
+
+  subscriptionObservableSubs: Subscription
+  productServiceSubscription: Subscription
 
 
   ngAfterViewInit() {
@@ -67,6 +79,11 @@ export class CoursesComponent implements AfterViewInit {
   }
 
   enterprise
+  product: Product
+
+  ngOnDestroy() {
+    if (this.subscriptionObservableSubs) this.subscriptionObservableSubs.unsubscribe()
+  }
 
   async ngOnInit() {
 
@@ -74,6 +91,18 @@ export class CoursesComponent implements AfterViewInit {
       if (user) {
         console.log('user',user)
         this.user = user
+        if (this.subscriptionObservableSubs) this.subscriptionObservableSubs.unsubscribe()
+        this.subscriptionObservableSubs = this.subscriptionService.getUserSubscriptions$(this.userService.getUserRefById(this.user.uid)).subscribe(items => {
+          const subscriptions = items.filter(x => x.status === this.subscriptionClass.STATUS_ACTIVE)
+          if (subscriptions.length > 0) {
+            this.subscription = subscriptions[0]
+            if (this.productServiceSubscription) this.productServiceSubscription.unsubscribe()
+            this.productServiceSubscription = this.productService.getProductById$(this.subscription.productRef.id).subscribe(product => {
+              if (!product) return
+              this.product = product
+            })
+          }
+        })
       }
     })
 
