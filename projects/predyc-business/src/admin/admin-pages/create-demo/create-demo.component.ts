@@ -569,7 +569,7 @@ export class CreateDemoComponent {
       const courseData = this.courses.find(courseData => courseData.id === coursesRefs[i].id);
       const courseDuration = courseData.duracion;
       endDate = this.courseService.calculatEndDatePlan(startDate, courseDuration, this.hoursPerMonthForStudyPlan);
-      const enrolledCourse = await this.courseService.saveCourseByStudent(coursesRefs[i], userRef, new Date(startDate), new Date(endDate));
+      const enrolledCourse = await this.courseService.saveCourseByStudent(coursesRefs[i], userRef, new Date(startDate), new Date(endDate), false);
       enrolledCourses.push(enrolledCourse); // Almacena el curso insertado en el arreglo
       startDate = endDate;
     }

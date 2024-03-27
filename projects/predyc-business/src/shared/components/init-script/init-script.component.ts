@@ -589,7 +589,7 @@ export class InitScriptComponent {
       dateStartPlan = dateEndPlan ? dateEndPlan : hoy;
       dateEndPlan = this.calculatEndDatePlan(dateStartPlan, courseDuration, hoursPerMonth)
       // -------
-      await this.courseService.saveCourseByStudent(coursesRefs[i], userRef, new Date(dateStartPlan), new Date(dateEndPlan))
+      await this.courseService.saveCourseByStudent(coursesRefs[i], userRef, new Date(dateStartPlan), new Date(dateEndPlan), false)
     }
     console.log("Courses by students created")
   }

@@ -19,6 +19,14 @@
             </td>
         </ng-container>
 
+        <ng-container matColumnDef="isExtraCourse">
+            <th mat-header-cell *matHeaderCellDef class="ft13 centertext"> Curso extracurricular </th>
+            <td mat-cell *matCellDef="let data" class="centertext ft11"> 
+                <mat-icon *ngIf="data.isExtraCourse" class="green-5">check</mat-icon>
+                <mat-icon *ngIf="!data.isExtraCourse" class="red-5">close</mat-icon>
+            </td>
+        </ng-container>
+
         <ng-container matColumnDef="dateStart">
             <th mat-header-cell *matHeaderCellDef class="ft13 centertext"> Fecha de inicio </th>
             <td mat-cell *matCellDef="let data" class="centertext ft11 "> {{ data.dateStart ? (data.dateStart | date:'dd/MM/yy') : "No ha iniciado" }} </td>

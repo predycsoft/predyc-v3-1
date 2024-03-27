@@ -97,9 +97,9 @@ export class StudentStudyPlanAndCompetencesComponent {
           if (coursesByStudent.length > 0) {
             this.showInitForm = false
             this.hoursPermonthInitForm = this.student.studyHours
-            this.coursesByStudent = coursesByStudent;
+            this.coursesByStudent = coursesByStudent; // active courses
             // Studyplan case
-            if (coursesByStudent[0].dateStartPlan) {
+            if ( !coursesByStudent[0].isExtraCourse) {
               this.studyPlanView = this.showInitForm ? false : true
               this.buildMonths(coursesByStudent, coursesData)
             }
@@ -107,6 +107,9 @@ export class StudentStudyPlanAndCompetencesComponent {
             else {
               this.studyPlanView = false
             }
+
+            // think in the case when the student have both at the same time ....
+
           } 
           else {
             // the student has a profile but hasnt completed initform yet
@@ -158,10 +161,17 @@ export class StudentStudyPlanAndCompetencesComponent {
         this.getDiagnosticTestForProfile()
         // Set active = false in prev profile courses
         await this.courseService.setCoursesByStudentInactive(this.userService.getUserRefById(this.student.uid))
+
         //
-        // calculate dates and create studyPlan using student.
         if (this.studyPlanView) {
+          // calculate dates and create studyPlan using student.
+          console.log("Cabio de perfil como studyPlan")
           await this.createStudyPlan()
+        }
+        else {
+          // Save profile courses as extra courses
+          console.log("Cabio de perfil como extracurriculares")
+          await this.saveAsExtracourses()
         }
       }
     }
@@ -250,7 +260,6 @@ export class StudentStudyPlanAndCompetencesComponent {
   }
 
   async createStudyPlan() {
-    console.log("createStudyPlan mthod")
     const coursesRefs: DocumentReference[] = this.selectedProfile.coursesRef
     let dateStartPlan: number
     let dateEndPlan: number
@@ -270,13 +279,29 @@ export class StudentStudyPlanAndCompetencesComponent {
       else dateStartPlan = dateEndPlan ? dateEndPlan : hoy;
 
       dateEndPlan = this.courseService.calculatEndDatePlan(dateStartPlan, courseDuration, hoursPermonth)
-      //  ---------- if it already exists, activate it, otherwise, create it ---------- 
+      //  ---------- if it already exists, activate it as studyPlan, otherwise, create it as studyPlan ---------- 
       const courseByStudent: CourseByStudent | null = await this.courseService.getCourseByStudent(userRef as DocumentReference<User>, coursesRefs[i] as DocumentReference<Curso>)
       // console.log("courseByStudent", courseByStudent)
       if (courseByStudent) {
         await this.courseService.setCourseByStudentActive(courseByStudent.id, new Date(dateStartPlan), new Date(dateEndPlan))
       } else {
-        await this.courseService.saveCourseByStudent(coursesRefs[i], userRef, new Date(dateStartPlan), new Date(dateEndPlan))
+        await this.courseService.saveCourseByStudent(coursesRefs[i], userRef, new Date(dateStartPlan), new Date(dateEndPlan), false)
+      }
+    }
+  }
+  
+  async saveAsExtracourses() {
+    const coursesRefs: DocumentReference[] = this.selectedProfile.coursesRef
+    // console.log("hoursPermonth", hoursPermonth)
+    for (let i = 0; i < coursesRefs.length; i++) {
+      const userRef: DocumentReference | DocumentReference<User> = this.userService.getUserRefById(this.student.uid)
+
+      //  ---------- if it already exists, activate it as extra course, otherwise, create it as extra course ---------- 
+      const courseByStudent: CourseByStudent | null = await this.courseService.getCourseByStudent(userRef as DocumentReference<User>, coursesRefs[i] as DocumentReference<Curso>)
+      if (courseByStudent) {
+        await this.courseService.setCourseByStudentActive(courseByStudent.id, null, null)
+      } else {
+        await this.courseService.saveCourseByStudent(coursesRefs[i], userRef, null, null, true)
       }
     }
   }

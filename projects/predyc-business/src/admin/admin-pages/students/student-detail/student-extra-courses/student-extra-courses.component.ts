@@ -53,7 +53,7 @@ export class StudentExtraCoursesComponent {
           if (coursesByStudent.length > 0) {
             this.coursesByStudent = coursesByStudent;
             // Studyplan case
-            if (coursesByStudent[0].dateStartPlan) {
+            if ( !coursesByStudent[0].isExtraCourse) {
               this.hasExtraCourses = false
               console.log("El estudiante posee un plan de estudios")
             }
@@ -89,9 +89,10 @@ export class StudentExtraCoursesComponent {
       if (courseByStudent) {
         console.log("Activando courseByStudent", courseByStudent)
         await this.courseService.setCourseByStudentActive(courseByStudent.id, null, null)
+        if (!courseByStudent.isExtraCourse) await this.courseService.setCourseByStudentAsExtracourse(courseByStudent.id)
       } else {
-        console.log("Creando nuevo courseByStudent", coursesRefs[i])
-        await this.courseService.saveCourseByStudent(coursesRefs[i], this.userRef, null, null)
+        console.log("Creando nuevo courseByStudent", courseByStudent)
+        await this.courseService.saveCourseByStudent(coursesRefs[i], this.userRef, null, null, true)
         // await this.courseService.setCoursesByStudentInactive(this.userRef)
       }
     }
