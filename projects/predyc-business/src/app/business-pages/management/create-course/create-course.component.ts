@@ -3582,7 +3582,7 @@ uploadVideo(videoFile, clase, local = false, modulo, origen = null, intentosActu
             modulo['isInvalid'] = true;
             clase['isInvalid'] = true;
             valid = false;
-            modulo['InvalidMessages'].push(`La clase ${(clase.tipo)} ${this.getnumerClassTipo(modulo,clase)}: no tiene título`);
+            modulo['InvalidMessages'].push(`La clase ${(clase.tipo)} ${this.getnumerClassTipo(modulo,clase)} no tiene título`);
             clase['InvalidMessages'].push('La clase debe tener título');
           }
 
@@ -3590,7 +3590,7 @@ uploadVideo(videoFile, clase, local = false, modulo, origen = null, intentosActu
             modulo['isInvalid'] = true;
             clase['isInvalid'] = true;
             valid = false;
-            modulo['InvalidMessages'].push(`La clase ${(clase.tipo)} ${this.getnumerClassTipo(modulo,clase)}: ${clase.titulo} no tiene duración`);
+            modulo['InvalidMessages'].push(`La clase ${(clase.tipo)} ${this.getnumerClassTipo(modulo,clase)} ${clase.titulo} no tiene duración`);
             clase['InvalidMessages'].push('La clase debe tener duración');
           }
 
@@ -3599,7 +3599,7 @@ uploadVideo(videoFile, clase, local = false, modulo, origen = null, intentosActu
               modulo['isInvalid'] = true;
               clase['isInvalid'] = true;
               valid = false;
-              modulo['InvalidMessages'].push(`La clase ${(clase.tipo)} ${this.getnumerClassTipo(modulo,clase)}: ${clase.titulo} no tiene video cargado`);
+              modulo['InvalidMessages'].push(`La clase ${(clase.tipo)} ${this.getnumerClassTipo(modulo,clase)} ${clase.titulo} no tiene video cargado`);
               clase['InvalidMessages'].push('La clase debe tener el video cargado');
             }
           }
@@ -3609,7 +3609,7 @@ uploadVideo(videoFile, clase, local = false, modulo, origen = null, intentosActu
               modulo['isInvalid'] = true;
               clase['isInvalid'] = true;
               valid = false;
-              modulo['InvalidMessages'].push(`La clase ${(clase.tipo)} ${this.getnumerClassTipo(modulo,clase)}: ${clase.titulo} no tiene archivo cargado`);
+              modulo['InvalidMessages'].push(`La clase ${(clase.tipo)} ${this.getnumerClassTipo(modulo,clase)} ${clase.titulo} no tiene archivo cargado`);
               clase['InvalidMessages'].push('La clase debe tener el archivo de la lectura');
             }
 
