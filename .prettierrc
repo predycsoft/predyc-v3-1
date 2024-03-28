@@ -1,9 +1,9 @@
 {
-  "tabWidth": 4,
-  "trailingComma": "es5",
-  "bracketSameLine": true,
-  "printWidth": 80,
-  "semi": true,
-  "singleAttributePerLine": true,
-  "useTabs": true
+	"tabWidth": 4,
+	"trailingComma": "es5",
+	"bracketSameLine": true,
+	"printWidth": 120,
+	"semi": true,
+	"singleAttributePerLine": true,
+	"useTabs": true
 }

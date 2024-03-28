@@ -33,6 +33,9 @@ import { StudentChargeListComponent } from './admin-pages/students/student-detai
 import { StudentCoursesListComponent } from './admin-pages/students/student-detail/student-courses-list/student-courses-list.component';
 import { StudentClassesActivityListComponent } from './admin-pages/students/student-detail/student-classes-activity-list/student-classes-activity-list.component';
 import { StudentExtraCoursesComponent } from './admin-pages/students/student-detail/student-extra-courses/student-extra-courses.component';
+import { FreebiesComponent } from './admin-pages/freebies/freebies.component';
+import { FreebiesListComponent } from './admin-pages/freebies/freebies-list/freebies-list.component';
+import { DialogFreebiesFormComponent } from './admin-pages/freebies/freebies-list/dialog-freebies-form/dialog-freebies-form.component';
 
 
 @NgModule({
@@ -68,6 +71,9 @@ import { StudentExtraCoursesComponent } from './admin-pages/students/student-det
     StudentCoursesListComponent,
     StudentClassesActivityListComponent,
     StudentExtraCoursesComponent,
+    FreebiesComponent,
+    FreebiesListComponent,
+    DialogFreebiesFormComponent,
   ],
   imports: [
     SharedModule,
