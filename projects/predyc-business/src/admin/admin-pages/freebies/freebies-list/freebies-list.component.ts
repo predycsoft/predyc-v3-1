@@ -2,7 +2,7 @@ import { Component, ViewChild } from "@angular/core";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { Subscription } from "rxjs";
+import { Observable, Subscription, map } from "rxjs";
 import { DialogFreebiesFormComponent } from "./dialog-freebies-form/dialog-freebies-form.component";
 import { AngularFirestore } from "@angular/fire/compat/firestore";
 import { IconService } from "projects/predyc-business/src/shared/services/icon.service";
@@ -98,6 +98,42 @@ export class FreebiesListComponent {
 			// Close the new window after download
 			newWindow.close();
 		});
+	}
+	// downloadFile(freebie) {
+	// 	const newWindow = window.open("", "_blank");
+	// 	this.http
+	// 		.get(freebie.file, { responseType: "blob", observe: "response" })
+	// 		.pipe(
+	// 			map((response) => {
+	// 				const filename = this.getFilenameFromContentDisposition(
+	// 					response.headers.get("content-disposition")
+	// 				);
+	// 				const blob = new Blob([response.body]);
+	// 				return { blob, filename };
+	// 			})
+	// 		)
+	// 		.subscribe(({ blob, filename }) => {
+	// 			// Create a URL for the blob
+	// 			const url = window.URL.createObjectURL(blob);
+
+	// 			// Create an anchor element
+	// 			const anchor = document.createElement("a");
+	// 			anchor.href = url;
+	// 			anchor.download = filename; // Set the file name
+	// 			anchor.click();
+
+	// 			// Close the new window after download
+	// 			newWindow.close();
+	// 		});
+	// }
+
+	private getFilenameFromContentDisposition(contentDisposition: string): string {
+		const regex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+		const matches = regex.exec(contentDisposition);
+		if (matches != null && matches[1]) {
+			return matches[1].replace(/['"]/g, "");
+		}
+		return "downloaded_file";
 	}
 
 	ngOnDestroy() {

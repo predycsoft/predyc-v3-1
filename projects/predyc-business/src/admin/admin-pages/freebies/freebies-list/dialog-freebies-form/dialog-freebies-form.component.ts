@@ -5,7 +5,7 @@ import { FormBuilder, Validators } from "@angular/forms";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { AlertsService } from "projects/predyc-business/src/shared/services/alerts.service";
 import { IconService } from "projects/predyc-business/src/shared/services/icon.service";
-import { FREEBIE_TYPE_CHOICES, Freebie } from "projects/shared";
+import { FREEBIE_TYPE_CHOICES, Freebie, cleanFileName } from "projects/shared";
 import { firstValueFrom } from "rxjs/internal/firstValueFrom";
 import { finalize } from "rxjs/operators";
 
@@ -106,7 +106,7 @@ export class DialogFreebiesFormComponent {
 	async savePhotoUrl() {
 		if (this.uploadedImage) {
 			// Upload new image
-			const fileName = this.uploadedImage.name.replace(" ", "-");
+			const fileName = cleanFileName(this.uploadedImage.name);
 			const filePath = `Freebies/${this.freebieForm.controls.name.value}/${fileName}`;
 			const fileRef = this.storage.ref(filePath);
 			const task = this.storage.upload(filePath, this.uploadedImage);
@@ -131,7 +131,8 @@ export class DialogFreebiesFormComponent {
 	async saveFileUrl() {
 		if (this.uploadedFile) {
 			// Upload new image
-			const fileName = this.uploadedFile.name.replace(" ", "-");
+			const fileName = cleanFileName(this.uploadedFile.name);
+			console.log(fileName.replace(" ", "-"));
 			const [_, extension] = this.uploadedFile.name.split(".");
 			if (!extension) throw new Error("Esta subiendo un archivo sin extension");
 			const filePath = `Freebies/${this.freebieForm.controls.name.value}/${fileName}`;
