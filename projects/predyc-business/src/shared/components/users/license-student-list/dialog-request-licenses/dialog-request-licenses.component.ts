@@ -25,8 +25,8 @@ export class DialogRequestLicensesComponent {
   ) { }
 
   licenses = this.data.licenses as License[]
-  opcion = 0
-  licensesQty = 0   
+  opcion = 1
+  licensesQty = 1
   enterpriseSubscription: Subscription
   enterprise: Enterprise | null = null
 

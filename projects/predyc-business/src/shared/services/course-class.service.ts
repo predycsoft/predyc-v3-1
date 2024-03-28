@@ -54,7 +54,7 @@ export class CourseClassService {
     }
   }
 
-  async deleteClassReference(courseId: string, moduleId: string, classId: string): Promise<void> { // usar solo en borrador
+  async deleteClassReference(courseId: string, moduleId: string, classId: string,activityId: string = null): Promise<void> { // usar solo en borrador
     try {
       const moduleDocRef = this.afs.collection(Curso.collection).doc(courseId).collection(Modulo.collection).doc(moduleId).ref;
       
@@ -68,14 +68,19 @@ export class CourseClassService {
       const clases = moduleDoc.data()?.['clasesRef'] || [];
       console.log('clases',clases);
       const updatedClases = clases.filter((clasesRef => clasesRef.id !== classId));
-      console.log('updatedClases',updatedClases);
+      console.log('deletedClassesReference',updatedClases,moduleDocRef);
 
   
       // Actualizar el documento con el array modificado
       await moduleDocRef.update({clasesRef: updatedClases});
 
+      console.log('ActivityDelete',activityId)
+
+
+      if(activityId){
       // Obtener la referencia del documento en la colección 'activity'
-      const activityDocRef = this.afs.collection(Activity.collection).doc(classId).ref;
+
+      const activityDocRef = this.afs.collection(Activity.collection).doc(activityId).ref;
 
         // Obtener y eliminar todos los documentos en la subcolección
         const subcollectionRef = activityDocRef.collection(Question.collection); // Cambia esto al nombre real de tu subcolección
@@ -86,6 +91,9 @@ export class CourseClassService {
         
         // Ahora, eliminar el documento principal en la colección 'activity'
         await activityDocRef.delete();
+      }
+
+
 
       
     } catch (error) {
@@ -93,10 +101,10 @@ export class CourseClassService {
       // Maneja el error según sea necesario.
     }
   }
-  async deleteClassAndReference(classId: string, courseId: string, moduleId: string): Promise<void> {
+  async deleteClassAndReference(classId: string, courseId: string, moduleId: string,activityId:string = null): Promise<void> {
     try {
       await this.deleteClass(classId);
-      await this.deleteClassReference(courseId, moduleId, classId);
+      await this.deleteClassReference(courseId, moduleId, classId,activityId);
       console.log('Clase y referencia borradas exitosamente');
     } catch (error) {
       console.error(error);

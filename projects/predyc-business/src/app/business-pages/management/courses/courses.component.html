@@ -76,7 +76,7 @@
             </div>
         </div>
         <!-- Columna derecha con dos filas -->
-        <div fxLayout="column" class="radius10 fh" fxFlex="40%">
+        <div fxLayout="column" class="radius10 fh pdt10" fxFlex="40%">
             <div class="fh pdb40" fxLayout="column">
                 <!-- detalle curso -->
                 <div class="w-100 fh" fxLayout="column">
@@ -88,18 +88,18 @@
                     <div fxLayout="row" class="radius6 mgt20" style="height: calc(100% - 200px);" *ngIf="!selectedCourse"
                         fxLayoutAlign="center center">
                         <div class="radius6 mgt20" fxLayoutAlign="center center">
-                            <div fxLayout="column" fxFlex="60%" class="fh fw" fxLayoutAlign="center center">
+                            <!-- <div fxLayout="column" fxFlex="60%" class="fh fw" fxLayoutAlign="center center">
                                 <img class="pdt10 pdl05" src="../../../../assets/images/cursos/placeHolderCurso.svg"
                                     style="width: 60%;" alt="Mi SVG">
-                            </div>
-                            <div fxLayout="column" fxFlex="30%" class="fh fw" fxLayoutAlign="center center">
-                                <span class="ft400 gray-8 ft13 pd05">Haz clic en un curso para ver sus detalles</span>
+                            </div> -->
+                            <div fxLayout="column"  class="fh fw" fxLayoutAlign="center center">
+                                <span class="ft400 gray-6 ft16 ft400 pd05" style="margin-top:50% ;">Haz clic en un curso para ver sus detalles</span>
                             </div>
                         </div>
                     </div>
 
                     <div class="borderLight radius6 mgt10" *ngIf="selectedCourse" >
-                        <div class="border-bl pdl10 pdt10 pdr10 pdb10 fw" fxLayout="column">
+                        <div class="border-bl pdl10 pdt05 pdr10 pdb10 fw" fxLayout="column">
                             <div  fxLayout="row" fxLayoutAlign="space-between center" >
                                 <div class="gray-10 ft14 ft500 mgr08">{{selectedCourse.titulo | titlecase}}</div>
                                 <div *ngIf="(user.isSystemUser || selectedCourse.enterpriseRef?.id == enterpriseRef?.id) && selectedCourse.id" 

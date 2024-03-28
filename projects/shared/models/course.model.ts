@@ -26,7 +26,8 @@ export interface CursoJson {
   vimeoFolderId: string 
   enterpriseRef: DocumentReference<Enterprise>
   idOld: string
-  duracion: number
+  duracion: number,
+  customUrl: string
 }
 
 
@@ -59,6 +60,7 @@ export class Curso {
   enterpriseRef: DocumentReference<Enterprise> = null
   idOld: string = ""
   duracion: number = 0
+  customUrl: string = ""
 
 
   public toJson(): CursoJson {
@@ -86,6 +88,7 @@ export class Curso {
       enterpriseRef:this.enterpriseRef,
       idOld:this.idOld,
       duracion:this.duracion,
+      customUrl:this.customUrl
 
     }
   }

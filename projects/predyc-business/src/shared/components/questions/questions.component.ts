@@ -96,6 +96,7 @@ export class QuestionsComponent {
   @Input() questionsArray =[]
   @Input() heartsActivity = false
   @Input() nameCurso
+  @Input() courseData = null
   @Input() nameEmpresa
   @Input() questionMaxSize: number = 50
   @Input() type: string = ''
@@ -180,7 +181,35 @@ export class QuestionsComponent {
     this.init();
   }
 
+  getClassName(question){
+
+    let respuesta = 'Clase sin asignar'
+    if(question.value.classId){
+      let clase = this.classesArray.find(x=> x.id == question.value.classId)
+      if(clase){ 
+        return `${clase.moduloIndex+1}.${clase.claseIndex+1} ${clase.titulo}`
+      }
+    }
+    return respuesta
+  }
+
+  classesArray = []
   init(){
+    this.classesArray = []
+    if (this.courseData) {
+      this.courseData.forEach((modulo, moduloIndex) => {
+        modulo.clases.forEach((clase, claseIndex) => {
+          // Agregar propiedades de índices al objeto de clase
+          const claseConIndices = {
+            ...clase,
+            moduloIndex: moduloIndex,
+            claseIndex: claseIndex
+          };
+          if(clase.tipo != 'actividad' &&  clase.tipo !=  'corazones')
+          this.classesArray.push(claseConIndices);
+        });
+      });
+    }
     this.emmitForm.emit(null);
     console.log('selectedTestSkills',this.selectedTestSkills,this.nameCurso,this.nameEmpresa)
     this.setupForm()
@@ -228,7 +257,8 @@ export class QuestionsComponent {
       options: this.fb.array([]),
       points: [question.points, [Validators.required, Validators.min(1), Validators.pattern(/^\d*$/)]],
       skills: this.fb.array([]),
-      explanation: [question.explanation, []]
+      explanation: [question.explanation, []],
+      classId: [question.classId, []],
     }, { validators: questionTypeToValidators[questionType] });
   
     this.questions.push(newQuestionGroup);
@@ -294,7 +324,8 @@ export class QuestionsComponent {
       options: this.fb.array([], []),
       points: [1, [Validators.required, Validators.min(1), Validators.pattern(/^\d*$/)]],
       skills: this.fb.array([]),
-      explanation: ['', []]
+      explanation: ['', []],
+      classId: ['', []],
     }, { validators: questionTypeToValidators[defaultQuestionType] }));
    // Calcula el índice de la nueva pregunta
     const questionIndex = this.questions.length - 1;
