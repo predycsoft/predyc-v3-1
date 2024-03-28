@@ -10,7 +10,10 @@
             </span>
         </div>
         <!-- <button class="blueButtonAnim button-animation ft500 " (click)="openDownloadReportModal()">Descargar reporte</button> -->
-        <button class="blueButtonAnim button-animation ft500 " (click)="downloadReport()">Descargar reporte</button>
+        <button class="blueButtonAnim button-animation ft500 " (click)="downloadReport()">
+            <mat-spinner *ngIf="generatinReport" diameter="20" class="spinner-blanc"></mat-spinner>
+            Descargar reporte
+        </button>
 
     </div>   
     <div fxLayout="row" fxLayoutAlign="space-between " fxLayoutGap="2rem" class="h-35 mgt20">

@@ -1168,9 +1168,10 @@ export class DashboardComponent {
     XLSX.utils.book_append_sheet(wb, wsResumenEstudiantes, 'Resumen estudiantes');
     XLSX.utils.book_append_sheet(wb, wsDetalleEstudiantes, 'Detalle estudiantes');
 
-    
+    XLSX.writeFile(wb, `Reporte General ${this.enterprise.name} ${fechaActual}.xlsx`);
 
-    XLSX.writeFile(wb, `ReporteTEST.xlsx`);
+    this.generatinReport = false
+
   }
 
 
@@ -1268,6 +1269,8 @@ export class DashboardComponent {
   classes
   departments
   users
+
+
 
   downloadReport() {
 
