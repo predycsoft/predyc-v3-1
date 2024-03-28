@@ -41,7 +41,6 @@ export class DialogFreebiesFormComponent {
 
 	ngOnInit(): void {
 		if (this.freebie) {
-			console.log("Freebie", this.freebie);
 			this.freebieForm.patchValue(this.freebie);
 			this.photoUrl = this.freebie.photoUrl;
 		}
@@ -132,7 +131,6 @@ export class DialogFreebiesFormComponent {
 		if (this.uploadedFile) {
 			// Upload new image
 			const fileName = cleanFileName(this.uploadedFile.name);
-			console.log(fileName.replace(" ", "-"));
 			const [_, extension] = this.uploadedFile.name.split(".");
 			if (!extension) throw new Error("Esta subiendo un archivo sin extension");
 			const filePath = `Freebies/${this.freebieForm.controls.name.value}/${fileName}`;
