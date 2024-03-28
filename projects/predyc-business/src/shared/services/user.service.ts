@@ -240,6 +240,15 @@ export class UserService {
     ).valueChanges()
   }
 
+
+
+  getActiveCoursesByStudentDateFiltered$(userRef: DocumentReference<any>,dateIni = null,dateEnd = null): Observable<any[]> {
+    return this.afs.collection<any>('subscription', ref => {
+      let query = ref.where('userRef', '==', userRef)
+      return query;
+    }).valueChanges();
+  }
+
   getRatingPointsFromStudyPlan(userStudyPlan: CourseByStudent[], courses: Curso[]): number  {
     let totalScore = 0;  
     const today = new Date().getTime();
