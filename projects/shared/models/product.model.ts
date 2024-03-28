@@ -25,10 +25,10 @@ export class Product {
     name: string;
     type: "prueba 30 dias" | "independiente" | "simplificado" | "full"
 
-    public static TYPE_TRIAL : 'prueba 30 dias' = 'prueba 30 dias';
-    public static TYPE_INDEPEND : 'independiente' = 'independiente';
-    public static TYPE_SIMPLIFIED : 'simplificado' = 'simplificado';
-    public static TYPE_FULL : 'full' = 'full';
+    public static TYPE_TRIAL: 'prueba 30 dias' = 'prueba 30 dias';
+    public static TYPE_INDEPEND: 'independiente' = 'independiente';
+    public static TYPE_SIMPLIFIED: 'simplificado' = 'simplificado';
+    public static TYPE_FULL: 'full' = 'full';
   
     public static TYPE_CHOICES = [
       this.TYPE_TRIAL,
