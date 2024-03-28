@@ -14,6 +14,7 @@ export interface CourseByStudentJson {
     userRef: DocumentReference | null,
     courseTime?: number
     progressTime?: number
+    isExtraCourse: boolean
 }
 
 export class CourseByStudent {
@@ -32,6 +33,7 @@ export class CourseByStudent {
     public userRef: DocumentReference
     public courseTime: number
     public progressTime: number
+    public isExtraCourse: boolean = true
 
     public static fromJson(CourseByStudentJson: CourseByStudent): CourseByStudent {
         let courseByStudent = new CourseByStudent();
@@ -47,6 +49,7 @@ export class CourseByStudent {
         courseByStudent.userRef = CourseByStudentJson.userRef
         courseByStudent.courseTime = CourseByStudentJson?.courseTime
         courseByStudent.progressTime = CourseByStudentJson?.progressTime
+        courseByStudent.isExtraCourse = CourseByStudentJson.isExtraCourse
 
         return courseByStudent
     }
@@ -65,6 +68,7 @@ export class CourseByStudent {
             userRef: this.userRef,
             courseTime: this.courseTime,
             progressTime: this.progressTime,
+            isExtraCourse: this.isExtraCourse,
         }
     }
 }

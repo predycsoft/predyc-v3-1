@@ -38,6 +38,7 @@ export class StudentCoursesListComponent {
   displayedColumns: string[] = [
     "courseTitle",
     "isActive",
+    "isExtraCourse",
     "dateStart",
     "dateEnd",
     "progress",
@@ -72,7 +73,7 @@ export class StudentCoursesListComponent {
       const coursesData = await Promise.all(coursesDataPromises);
       coursesData.sort((a, b) => (b.active === true ? 1 : 0) - (a.active === true ? 1 : 0))
 
-      // console.log("coursesData", coursesData)
+      console.log("coursesData", coursesData)
       this.dataSource.data = coursesData;
       this.totalLength = coursesData.length;
   

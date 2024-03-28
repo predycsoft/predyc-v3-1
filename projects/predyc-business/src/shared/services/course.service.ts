@@ -352,7 +352,7 @@ export class CourseService {
     return this.afs.collection<CourseByStudent>(CourseByStudent.collection).doc(id).ref
   }
 
-  async saveCourseByStudent(courseRef: DocumentReference, userRef: DocumentReference, dateStartPlan: Date, dateEndPlan: Date): Promise<CourseByStudent> {
+  async saveCourseByStudent(courseRef: DocumentReference, userRef: DocumentReference, dateStartPlan: Date, dateEndPlan: Date, isExtraCourse: boolean): Promise<CourseByStudent> {
     const ref = this.afs.collection<CourseByStudent>(CourseByStudent.collection).doc().ref;
     const courseByStudent = {
       id: ref.id,
@@ -364,7 +364,8 @@ export class CourseService {
       dateStart: null,
       dateEnd: null,
       active: true,
-      finalScore: 0
+      finalScore: 0,
+      isExtraCourse: isExtraCourse
     } as CourseByStudent;
   
     await this.afs.collection(CourseByStudent.collection).doc(courseByStudent.id).set(courseByStudent);
@@ -414,6 +415,13 @@ export class CourseService {
         console.error('Error al actualizar los documentos:', error);
       });
     });
+  }
+
+  async setCourseByStudentAsExtracourse(courseByStudentId: string) { 
+    await this.afs.collection(CourseByStudent.collection).doc(courseByStudentId).set({
+      isExtraCourse: true,
+    }, { merge: true });
+    console.log(`${courseByStudentId} has been setted as extra course`)
   }
 
   async updateStudyPlans(changesInStudyPlan: {added: string[], removed: string[], profileId: string}) {
@@ -494,7 +502,8 @@ export class CourseService {
             dateStart: null,
             dateEnd: null,
             active: true,
-            finalScore: 0
+            finalScore: 0,
+            isExtraCourse: false,
           }
           console.log(`Added course ${item} - Saved in ${courseJson.id}`, courseJson)
           batch.set(docRef, courseJson);
