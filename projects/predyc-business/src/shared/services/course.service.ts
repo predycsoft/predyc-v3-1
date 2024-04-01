@@ -395,6 +395,7 @@ export class CourseService {
       active: true,
       dateStartPlan: startDate,
       dateEndPlan: endDate,
+      isExtraCourse: startDate ? false : true
     }, { merge: true });
     console.log(`${courseByStudentId} has been activated`)
   }
@@ -442,7 +443,10 @@ export class CourseService {
         return a.dateEndPlan - b.dateEndPlan;
       })
       // console.log("studyPlanItems", studyPlanItems)
-      let startDateForCourse = studyPlanItems[0].dateStartPlan.seconds * 1000
+
+      // If extraCourse, dates are null
+      let startDateForCourse = !studyPlanItems[0].isExtraCourse ? studyPlanItems[0].dateStartPlan.seconds * 1000 : null
+
       const userRemovedCourses = studyPlanItems.filter(course => changesInStudyPlan.removed.includes(course.courseRef.id))
       // console.log('userRemovedCourses', userRemovedCourses)
       const userOtherCourses = studyPlanItems.filter(course => !changesInStudyPlan.removed.includes(course.courseRef.id))
@@ -462,11 +466,11 @@ export class CourseService {
       // Repair startDate and endDate for remaining items in studyPlan
       for (let course of userOtherCourses) {
         const courseDuration = (await course.courseRef.get()).data().duracion
-        const dateEndPlan = this.calculatEndDatePlan(startDateForCourse, courseDuration, user.studyHours)
+        const dateEndPlan = startDateForCourse ? this.calculatEndDatePlan(startDateForCourse, courseDuration, user.studyHours) : null
         const courseJson = {
           ...course,
-          dateStartPlan: new Date(startDateForCourse),
-          dateEndPlan: new Date(dateEndPlan)
+          dateStartPlan: startDateForCourse ? new Date(startDateForCourse) : null,
+          dateEndPlan: dateEndPlan ? new Date(dateEndPlan) : null
         }
         console.log(`Repaired course ${course.courseRef.id} - Saved in ${courseJson.id}`, courseJson)
         batch.update(this.afs.collection<CourseByStudent>(CourseByStudent.collection).doc(courseJson.id).ref, courseJson);
@@ -477,15 +481,16 @@ export class CourseService {
       const userCoursesIds = userCourses.map(course => course.courseRef.id)
       for (let item of changesInStudyPlan.added) {
         const courseDuration = (await firstValueFrom(this.afs.collection<Curso>(Curso.collection).doc(item).get())).data().duracion
-        const dateEndPlan = this.calculatEndDatePlan(startDateForCourse, courseDuration, user.studyHours)
+        const dateEndPlan = startDateForCourse ? this.calculatEndDatePlan(startDateForCourse, courseDuration, user.studyHours) : null
         if (userCoursesIds.includes(item)) {
           // Course already exist for user
           const course = userCourses.find(course => course.courseRef.id === item)
           const courseJson = {
             ...course,
-            dateStartPlan: new Date(startDateForCourse),
-            dateEndPlan: new Date(dateEndPlan),
-            active: true
+            dateStartPlan: startDateForCourse ? new Date(startDateForCourse) : null,
+            dateEndPlan: dateEndPlan ? new Date(dateEndPlan) : null,
+            active: true,
+            isExtraCourse: startDateForCourse ? false : true
           }
           console.log(`Activated course ${item} - Saved in ${courseJson.id}`, courseJson)
           batch.update(this.afs.collection<CourseByStudent>(CourseByStudent.collection).doc(courseJson.id).ref, courseJson);
@@ -496,14 +501,14 @@ export class CourseService {
             id: docRef.id,
             userRef: userRef,
             courseRef: this.afs.collection<Curso>(Curso.collection).doc(item).ref,
-            dateStartPlan: new Date(startDateForCourse),
-            dateEndPlan: new Date(dateEndPlan),
+            dateStartPlan: startDateForCourse ? new Date(startDateForCourse) : null,
+            dateEndPlan: dateEndPlan ? new Date(dateEndPlan) : null,
             progress: 0,
             dateStart: null,
             dateEnd: null,
             active: true,
             finalScore: 0,
-            isExtraCourse: false,
+            isExtraCourse: startDateForCourse ? false : true,
           }
           console.log(`Added course ${item} - Saved in ${courseJson.id}`, courseJson)
           batch.set(docRef, courseJson);

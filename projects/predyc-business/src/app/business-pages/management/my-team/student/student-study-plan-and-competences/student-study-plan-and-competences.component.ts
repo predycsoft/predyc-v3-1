@@ -165,12 +165,12 @@ export class StudentStudyPlanAndCompetencesComponent {
         //
         if (this.studyPlanView) {
           // calculate dates and create studyPlan using student.
-          console.log("Cabio de perfil como studyPlan")
+          console.log("Cambio de perfil como studyPlan")
           await this.createStudyPlan()
         }
         else {
           // Save profile courses as extra courses
-          console.log("Cabio de perfil como extracurriculares")
+          console.log("Cambio de perfil como extracurriculares")
           await this.saveAsExtracourses()
         }
       }

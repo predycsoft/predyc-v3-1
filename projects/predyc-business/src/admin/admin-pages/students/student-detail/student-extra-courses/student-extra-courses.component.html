@@ -11,7 +11,7 @@
             <ng-container *ngIf="coursesByStudent.length > 0 else noCourses">
                 <div *ngIf="!hasExtraCourses" class="" fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="3rem">
                     <span class="ft14">Los cursos inscritos pertenecen a un <span class="ft600"> plan de estudio </span> asignado</span>
-                    <button class="blueButton" (click)="saveAsExtraCourse()">Asignar cursos como extracurriculares</button>
+                    <button class="blueButton" (click)="saveAsExtraCourse()">Asignar cursos activos como extracurriculares</button>
                 </div>
                 <div *ngIf="hasExtraCourses" class="f" fxLayout="row" fxLayoutAlign=" center" fxLayoutGap=".5rem">
                     <span class="ft14">Los cursos estan inscritos como <span class="ft600"> extracurriculares </span></span>
