@@ -1158,6 +1158,13 @@ export class CreateCourseComponent {
     this.savingCourse = false;
     this.alertService.succesAlert("El curso se ha guardado exitosamente")
 
+
+    if(this.mode == 'create'){
+      this.router.navigate([`management/create-course/edit/${this.curso.id}`])
+    }
+
+
+
   }
   else{
     Swal.close();
