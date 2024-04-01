@@ -11,8 +11,27 @@
     </div>
     <div fxLayout="row" fxLayoutAlign="center center" class="mgb10 border-bl" fxLayoutGap=".5rem" >
     </div>
-    <div fxLayout="column"  class="   " fxLayoutAlign="center center" fxLayoutGap=".5rem"  >
-        <label class="gray-10 ft500 centertext ft14 " style="width: 70%;">Rango de fechas:</label>
+    <div fxLayout="column"  fxLayoutGap=".5rem"  >
+        <label class="gray-10 ft500 centertext ft14 " style="width: 100%;">Rango de fechas</label>
+
+            <div class="presets-container mgl08" fxLayout="column" fxLayoutGap=".5rem">
+                <label>
+                    <input type="radio" name="preset" value="3" (change)="setPreset(1)"> Último mes
+                </label>
+                <label>
+                    <input type="radio" name="preset" value="3" (change)="setPreset(3)"> Últimos 3 meses
+                </label>
+                <label>
+                    <input type="radio" name="preset" value="6" (change)="setPreset(6)"> Últimos 6 meses
+                </label>
+                <label>
+                    <input type="radio" name="preset" value="12" (change)="setPreset(12)"> Último año
+                </label>
+                <label>
+                    <input type="radio" name="preset" value="all" (change)="setPreset('all')"> Histórico
+                </label>
+            </div>
+        
             <!-- Contenedor de los inputs de fecha -->
             <div fxLayout="row" fxLayoutGap="20px" class="mgt03" fxLayoutAlign="space-between center">
                 <!-- Input de fecha de inicio -->
@@ -55,7 +74,7 @@
 
             <!-- Botón de descarga de reporte -->
             <div class="mgt03 mgb03" fxLayoutAlign="end end">
-                <button *ngIf="loaded && (startDate && endDate) && !generatinReport" class="lightButton backBlue5 radius20 h40px ft14" id="btn" (click)="downloadReport()">
+                <button *ngIf="loaded && !generatinReport" class="lightButton backBlue5 radius20 h40px ft14" id="btn" (click)="downloadReport()">
                     <img [src]="icon.download" class="makeWhite" alt=""> Descargar reporte
                 </button>
 
@@ -66,9 +85,9 @@
                     </div>
                 </button>
 
-                <button *ngIf="loaded && (!startDate || !endDate)!" class="lightButton radius20 h40px ft14 border grayLink" disabled>
+                <!-- <button *ngIf="loaded && (!startDate || !endDate)!" class="lightButton radius20 h40px ft14 border grayLink" disabled>
                     <img [src]="icon.download" class="makeGray" alt=""> Descargar reporte
-                </button>
+                </button> -->
             </div>
         </div>
     </div>

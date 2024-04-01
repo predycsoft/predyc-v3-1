@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 
 import { Chart } from 'chart.js';
 import jsPDF from 'jspdf';
@@ -666,6 +666,33 @@ export class DialogDownloadReportComponent {
     return result
   }
 
+  setPreset(months) {
+
+    if(months == 'all'){
+      this.endDate =  null
+      this.startDate = null
+    }
+    else {
+      const today = new Date();
+      this.endDate = this.convertToNgbDateStruct(new Date(today)); // Fecha de hoy en formato NgbDateStruct
+      
+      // Resta los meses a la fecha actual para obtener la fecha de inicio
+      const startDate = new Date(today.setMonth(today.getMonth() - months));
+      this.startDate = this.convertToNgbDateStruct(startDate); // Fecha de inicio en formato NgbDateStruct
+    }
+
+  }
+
+  // Función para convertir una fecha de JavaScript a un objeto NgbDateStruct
+    convertToNgbDateStruct(date: Date): NgbDateStruct {
+      return {
+        year: date.getFullYear(),
+        month: date.getMonth() + 1, // +1 porque getMonth() devuelve un índice basado en cero
+        day: date.getDate()
+      };
+    }
+
+
   getStatus(curso) {
     if (curso.completed) {
       return "Completado"
@@ -673,7 +700,13 @@ export class DialogDownloadReportComponent {
       if (!curso.progress.dateEndPlan) {
         return "Pendiente"
       } else {
-        let fechaFin = new Date(this.endDate.year,this.endDate.month-1,this.endDate.day)
+        let fechaFin
+        if(this.endDate){
+          fechaFin = new Date(this.endDate.year,this.endDate.month-1,this.endDate.day)
+        }
+        else{
+          fechaFin = new Date()
+        }
         if (this.obtenerUltimoDiaDelMes(curso.progress.dateEndPlan.seconds)< fechaFin) {
           return "Atrasado"
         } else {
