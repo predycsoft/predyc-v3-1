@@ -10,4 +10,5 @@ export interface Freebie {
 	type: string;
 	file: string;
 	extension: string;
+	customUrl: string;
 }

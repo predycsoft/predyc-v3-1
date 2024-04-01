@@ -37,6 +37,7 @@ export class DialogFreebiesFormComponent {
 		type: ["", Validators.required],
 		file: ["", Validators.required],
 		extension: ["", Validators.required],
+		customUrl: [""],
 	});
 
 	ngOnInit(): void {
