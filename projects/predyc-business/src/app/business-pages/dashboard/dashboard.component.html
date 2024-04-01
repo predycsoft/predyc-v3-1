@@ -10,11 +10,10 @@
             </span>
         </div>
         <!-- <button class="blueButtonAnim button-animation ft500 " (click)="openDownloadReportModal()">Descargar reporte</button> -->
-        <button [disabled]="generatinReport" class="blueButtonAnim button-animation ft500 w180px" (click)="downloadReport()" fxLayout="row" fxLayoutAlign="center center">
+        <button [disabled]="generatinReport" class="blueButtonAnim button-animation ft500 w180px"[matMenuTriggerFor]="formatMenu" fxLayout="row" fxLayoutAlign="center center">
             <mat-spinner *ngIf="generatinReport" diameter="20" class="spinner-blanc"></mat-spinner>
             <ng-container *ngIf="!generatinReport">Descargar reporte</ng-container>
         </button>
-        
     </div>   
     <div fxLayout="row" fxLayoutAlign="space-between " fxLayoutGap="2rem" class="h-35 mgt20">
         <div class="radius10 w-50 pd10 shadowLight " style="background-color: rgba(244, 244, 244, 0.362);  ">
@@ -30,3 +29,16 @@
         </div>
     </div>
 </div>
+
+<mat-menu #formatMenu="matMenu" class="radius6 shadow16 pd0">
+    <div fxLayout="column" class="pd0">
+        <div (click)="openDownloadReportModal()" mat-menu-item class="opcionMenu"
+            fxLayout="row" fxLayoutAlign=" center">
+            <span class="pdl05 ft12 gray-10">PDF</span>
+        </div>
+        <div (click)="downloadReport()" mat-menu-item class="opcionMenu"
+            fxLayout="row" fxLayoutAlign=" center">
+            <span class="pdl05 ft12 gray-10">Excel</span>
+        </div>
+    </div>
+</mat-menu>
