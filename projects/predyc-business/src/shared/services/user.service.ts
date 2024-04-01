@@ -341,7 +341,7 @@ export class UserService {
     });
   
     let performance: "no plan" | "high" | "medium" | "low" | "no iniciado";
-    console.log('userStudyPlan',userStudyPlan)
+    // console.log('userStudyPlan',userStudyPlan)
     let validator = userStudyPlan.find(x=>x.progressTime>0)
     if(!validator && userStudyPlan.length > 0 ){ 
       performance ="no iniciado"

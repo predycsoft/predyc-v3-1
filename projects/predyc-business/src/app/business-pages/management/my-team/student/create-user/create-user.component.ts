@@ -70,7 +70,7 @@ export class CreateUserComponent {
 
 		this.profileServiceSubscription = this.profileService.getProfiles$().subscribe((profiles) => {
 			if (profiles) {
-				console.log("profiles", profiles);
+				// console.log("profiles", profiles);
 				let profilesBase = [];
 				profiles.forEach((element) => {
 					if (element?.baseProfile?.id) {
@@ -79,7 +79,7 @@ export class CreateUserComponent {
 				});
 
 				this.profiles = profiles.filter((profile) => !profilesBase.includes(profile.id));
-				console.log("Filtrados", this.profiles);
+				// console.log("Filtrados", this.profiles);
 			}
 		});
 		this.departmentServiceSubscription = this.departmentService.getDepartments$().subscribe({
@@ -92,7 +92,7 @@ export class CreateUserComponent {
 				});
 
 				this.departments = departments.filter((department) => !departmentsBase.includes(department.id));
-				console.log("Filtrados", this.departments);
+				// console.log("Filtrados", this.departments);
 
 				this.filteredDepartments = this.userForm.controls.department.valueChanges.pipe(
 					startWith(""),
@@ -107,9 +107,9 @@ export class CreateUserComponent {
 	}
 
 	private _filter(value: string): string[] {
-		console.log("filter", value, this.departments);
+		// console.log("filter", value, this.departments);
 		const filterValue = value.toLowerCase();
-		console.log("this.departments", this.departments, filterValue);
+		// console.log("this.departments", this.departments, filterValue);
 		return this.departments
 			.map((department) => department.name)
 			.filter((option) => option.toLowerCase().includes(filterValue));
@@ -330,7 +330,7 @@ export class CreateUserComponent {
 		} else {
 			valueToPatch = userObj;
 		}
-		console.log("valueToPatch", valueToPatch);
+		// console.log("valueToPatch", valueToPatch);
 		user.patchValue(valueToPatch);
 		return user;
 	}
@@ -371,7 +371,7 @@ export class CreateUserComponent {
 	savingChanges = false;
 
 	async onSubmit() {
-		console.log("form", this.userForm.value);
+		// console.log("form", this.userForm.value);
 		if (this.validateCurrentModalPage()) {
 			this.displayErrors = false;
 		} else {
@@ -382,12 +382,12 @@ export class CreateUserComponent {
 		console.log("user", user);
 		try {
 			this.savingChanges = true;
-			console.log("profiles", this.profiles, user.profile);
+			// console.log("profiles", this.profiles, user.profile);
 
 			let profileNew = this.profiles.find((x) => x.id == user?.profile?.id);
 
 			if (profileNew && !profileNew.enterpriseRef) {
-				console.log("profileNew", profileNew);
+				// console.log("profileNew", profileNew);
 				let baseProfile = this.afs.collection<Profile>(Profile.collection).doc(profileNew.id).ref;
 				profileNew.baseProfile = baseProfile;
 

@@ -100,7 +100,7 @@ export class StudentInfoFormComponent {
   }
 
   async save(formData) {
-    console.log('formData', formData)
+    // console.log('formData', formData)
     this.studentForm.patchValue(formData)
     this.student.displayName = formData.displayName
     this.student.phoneNumber = formData.phoneNumber

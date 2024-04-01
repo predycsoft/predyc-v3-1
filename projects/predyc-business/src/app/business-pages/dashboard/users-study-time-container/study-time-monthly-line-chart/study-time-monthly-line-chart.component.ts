@@ -41,9 +41,9 @@ export class StudyTimeMonthlyLineChartComponent {
       this.allClasses = allClases
       this.studentCourses = studentCourses.filter(item => item.active).sort((a, b) => a.dateEndPlan - b.dateEndPlan)
       const coursesIds = studentCourses.map(item => item.id)
-      console.log('coursesIds',coursesIds)
+      // console.log('coursesIds',coursesIds)
       this.studentClasses = studentClasses.filter(item => coursesIds.includes(item.coursesByStudentRef.id) && item.completed).sort((a, b) => a.dateEnd - b.dateEnd)
-      console.log('studentClasses',studentClasses)
+      // console.log('studentClasses',studentClasses)
       let classes = {}
       for (let studentClass of this.studentClasses) {
         const classId = studentClass.classRef.id
@@ -51,7 +51,7 @@ export class StudyTimeMonthlyLineChartComponent {
           // New class
           //const classObj = await this.courseService.getClass(classId)
           const classObj = allClases.find(x=>x.id == classId)
-          console.log('classObj',classObj)
+          // console.log('classObj',classObj)
           classes[classId] = classObj
         }
       }
@@ -75,7 +75,7 @@ export class StudyTimeMonthlyLineChartComponent {
     let remainingStudyPlanHours = 0
 
     this.studentCourses.forEach(course => {
-      console.log('coursestudentCourses',course)
+      // console.log('coursestudentCourses',course)
       const courseJson = this.courses.find(item => item.id === course.courseRef.id)
       remainingStudyPlanHours += (courseJson.duracion/60)
     })
@@ -164,7 +164,7 @@ export class StudyTimeMonthlyLineChartComponent {
   }
 
   getChart(chartData) {
-    console.log('data chart',chartData)
+    // console.log('data chart',chartData)
     let labels = []
     let realValues = []
     let expectedValues = []
@@ -174,7 +174,7 @@ export class StudyTimeMonthlyLineChartComponent {
       if(data.showRealHours) realValues.push(data.realHours)
     });
 
-    console.log('data chart',realValues)
+    // console.log('data chart',realValues)
     const canvas = document.getElementById("line-chart") as HTMLCanvasElement;
     const ctx = canvas.getContext('2d')
     // const horizontalMargin = this.horizontalMargin
