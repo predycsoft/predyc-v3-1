@@ -697,6 +697,8 @@ export class DashboardComponent {
     wsResumenPorPuesto['H5'] = { t: 's', v: 'Cant. de Est. con ritmo bajo', s: redCalibriBoldRedCenterBordered };
     wsResumenPorPuesto['I5'] = { t: 's', v: 'Cant. de Est. sin plan de estudio', s: gray6CalibriBoldGreyCenterBordered };
     wsResumenPorPuesto['J5'] = { t: 's', v: 'Procentaje de completación promedio de los estudiantes', s: grayCalibriBoldCenterCenterBordered };
+    wsResumenPorPuesto['K5'] = { t: 's', v: 'Nota promedio de los estudiantes', s: grayCalibriBoldCenterCenterBordered };
+
 
     perfiles.forEach((perfil,i) => {
       let j = i+6;
@@ -763,6 +765,14 @@ export class DashboardComponent {
         s: whiteCalibriCenteredBordered 
       };
 
+      let notas = this.getProfileNotaPromedio(usuariosConLicenciaProfile)
+
+      wsResumenPorPuesto[`K${j}`] = 
+      { t: 's',
+        v: notas>=0?notas:'-',
+        s: whiteCalibriCenteredBordered 
+      };
+
     });
     
     // Fin Hoja 2 (Resumen por puesto)
@@ -794,8 +804,12 @@ export class DashboardComponent {
     wsResumenEstudiantes['I5'] = { t: 's', v: 'Horas asignadas', s: grayCalibriBoldCenterCenterBordered };
     wsResumenEstudiantes['J5'] = { t: 's', v: 'Horas completadas', s: grayCalibriBoldCenterCenterBordered };
     wsResumenEstudiantes['K5'] = { t: 's', v: 'Progreso', s: grayCalibriBoldCenterCenterBordered };
-    wsResumenEstudiantes['L5'] = { t: 's', v: 'Ritmo', s: grayCalibriBoldCenterCenterBordered };
-    wsResumenEstudiantes['M5'] = { t: 's', v: 'Fecha límite de completación', s: grayCalibriBoldCenterCenterBordered };
+
+    wsResumenEstudiantes['L5'] = { t: 's', v: 'Nota promedio', s: grayCalibriBoldCenterCenterBordered };
+
+
+    wsResumenEstudiantes['M5'] = { t: 's', v: 'Ritmo', s: grayCalibriBoldCenterCenterBordered };
+    wsResumenEstudiantes['N5'] = { t: 's', v: 'Fecha límite de completación', s: grayCalibriBoldCenterCenterBordered };
 
     const rhythmOrder = {
       "high": 1,
@@ -890,9 +904,28 @@ export class DashboardComponent {
         s: whiteCalibriCenteredBordered 
       };
 
-      let ritmo = this.getRitmoAndStyleUser(usuario)
+      let notas = 0
+      let coursesCompleted = usuario.allCourses.filter(x=>x.progress.progress>=100)
+      
+
+
+      coursesCompleted?.forEach(course => {
+        notas+=course.progress.finalScore
+      });
+
+      notas=notas/coursesCompleted.length
+      notas = Math.round((notas) * 10) / 10
 
       wsResumenEstudiantes[`L${j}`] = 
+      { t: 's',
+        v: notas>=0?notas:'-',
+        s: whiteCalibriCenteredBordered
+      };
+
+
+      let ritmo = this.getRitmoAndStyleUser(usuario)
+
+      wsResumenEstudiantes[`M${j}`] = 
       { t: 's',
         v: ritmo.ritmo,
         s: eval(ritmo.estilo)
@@ -900,7 +933,7 @@ export class DashboardComponent {
 
       let fechaFin = this.getLastDateStudyPlan(usuario)
 
-      wsResumenEstudiantes[`M${j}`] = 
+      wsResumenEstudiantes[`N${j}`] = 
       { t: 's',
         v: fechaFin,
         s: fechaFin=='Sin Asignar'?whiteCalibriRedCenteredBordered:whiteCalibriCenteredBordered 
@@ -1234,17 +1267,41 @@ export class DashboardComponent {
 
 
   getProfileProgress(users){
-      //completacionAll
-      let progress = 0
-      users.forEach(user => {
-        progress+=user.completacionAll;
-      });
+    //completacionAll
+    let progress = 0
+    users.forEach(user => {
+      progress+=user.completacionAll;
+    });
+    let promedioCompletacion = progress/users.length
+    promedioCompletacion =  Math.round((promedioCompletacion) * 10) / 10 // Convierte minutos a horas y redondea a 1 decimal
+    return promedioCompletacion;
+  }
 
 
-      let promedioCompletacion = progress/users.length
 
-      promedioCompletacion =  Math.round((promedioCompletacion) * 10) / 10 // Convierte minutos a horas y redondea a 1 decimal
-      return promedioCompletacion;
+  
+  getProfileNotaPromedio(users){
+
+
+    let notas = 0
+    let cursos = []
+
+
+    users.forEach(usuario => {
+      let coursesCompleted = usuario.allCourses.filter(x=>x.progress.progress>=100)
+      cursos = [...cursos,...coursesCompleted]
+    });
+    console.log('getProfileNotaPromedio',cursos)
+
+    cursos?.forEach(course => {
+      notas+=course.progress.finalScore
+    });
+
+    notas=notas/cursos.length
+    notas = Math.round((notas) * 10) / 10
+
+    return notas
+
 
 
   }
