@@ -1433,7 +1433,9 @@ export class CreateCourseComponent {
       setTimeout(() => {
         if(this.validExam ==null || !this.validExam?.valid || this.validExam.value?.questions?.length == 0){
           this.updateTriggeQuestionsExam++;
-          console.log('formatExamQuestions invalid')
+          console.log('formatExamQuestions invalid',this.validExam)
+
+
         }
         else{
           let questions = structuredClone(this.validExam.value.questions)
