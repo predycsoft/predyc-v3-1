@@ -675,8 +675,8 @@ export class QuestionsComponent {
     this.questionStatus.splice(index, 1)
     this.selectedQuestionsSkills.splice(index, 1)
     console.log('Form Data:', this.mainForm);
-    // this.changeQuestion.emit(this.mainForm);
-    // this.formatExamQuestions()
+    this.changeQuestion.emit(this.mainForm);
+    this.formatExamQuestions()
   }
 
   changePoints(points){
