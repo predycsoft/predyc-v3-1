@@ -326,7 +326,7 @@ export class QuestionsComponent {
             .filter(opcion => opcion.texto) // Asegurarse de que la opción tenga texto
             .map(opcion => ({
               image: null,
-              isCorrect: opcion.letra === pregunta.respuestaCorrecta,
+              isCorrect: pregunta?.respuestaCorrecta?.split(',').map(letra => letra.trim()).includes(opcion.letra),
               placeholder: null,
               text: opcion.texto
             }));
@@ -399,7 +399,7 @@ export class QuestionsComponent {
         .filter(opcion => opcion.letra === 'A' || opcion.letra === 'B')
         .map(opcion => ({
           image: null,
-          isCorrect: opcion.letra === pregunta.respuestaCorrecta,
+          isCorrect: pregunta?.respuestaCorrecta?.split(',').map(letra => letra.trim()).includes(opcion.letra),
           placeholder: null,
           text: opcion.texto
         }));
@@ -409,7 +409,7 @@ export class QuestionsComponent {
         .filter(opcion => opcion.texto) // Asegurarse de que la opción tenga texto
         .map(opcion => ({
           image: null,
-          isCorrect: opcion.letra === pregunta.respuestaCorrecta,
+          isCorrect: pregunta?.respuestaCorrecta?.split(',').map(letra => letra.trim()).includes(opcion.letra),
           placeholder: null,
           text: opcion.texto
         }));

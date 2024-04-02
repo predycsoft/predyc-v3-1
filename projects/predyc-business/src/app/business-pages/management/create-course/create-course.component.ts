@@ -1,6 +1,6 @@
 import { Component, ElementRef, QueryList, TemplateRef, ViewChild, ViewChildren } from '@angular/core';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
-import { FormControl, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { FormControl, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn, FormArray } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Curso } from "projects/shared/models/course.model"
@@ -1433,9 +1433,30 @@ export class CreateCourseComponent {
       setTimeout(() => {
         if(this.validExam ==null || !this.validExam?.valid || this.validExam.value?.questions?.length == 0){
           this.updateTriggeQuestionsExam++;
-          console.log('formatExamQuestions invalid',this.validExam)
+          console.log('formatExamQuestions invalid',this.validExam.controls.questions)
+          let formArray: FormArray = this.validExam.get('questions') as FormArray;
+          // let preguntasValidas = formArray.controls.filter(control => control.status === 'VALID');
+          let preguntasValidas = formArray.controls;
+          console.log('preguntasValidas', preguntasValidas);
+          let valoresPreguntasValidas = preguntasValidas.map(pregunta => pregunta.value);
+          console.log('valoresPreguntasValidas', valoresPreguntasValidas);
 
+          if(valoresPreguntasValidas.length>0){
 
+            let questions = structuredClone(valoresPreguntasValidas)
+            questions.forEach(question => {
+              if(!question.typeFormated){
+                question.typeFormated = this.getTypeQuestion(question.type)
+                if(question.type == 'complete'){
+                  this.showDisplayText(question)
+                }
+              }
+            });
+            if(this.examen){
+              this.examen.questions = questions
+              this.questionsFormated = true
+            }
+          }
         }
         else{
           let questions = structuredClone(this.validExam.value.questions)
