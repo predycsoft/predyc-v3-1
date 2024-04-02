@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { User } from 'projects/shared/models/user.model';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, DocumentReference, QuerySnapshot } from '@angular/fire/compat/firestore';
-import { BehaviorSubject, firstValueFrom, Observable, of, Subject } from 'rxjs'
+import { BehaviorSubject, firstValueFrom, Observable, of } from 'rxjs'
 import { EnterpriseService } from './enterprise.service';
 import { AlertsService } from './alerts.service';
 
@@ -14,8 +14,11 @@ import { Clase } from 'projects/shared/models/course-class.model';
 import { CourseByStudent, CourseByStudentJson } from 'projects/shared/models/course-by-student.model';
 import { UserService } from './user.service';
 import { ProfileService } from './profile.service';
-import { firestoreTimestampToNumberTimestamp } from 'projects/shared/utils';
 import { ClassByStudent } from 'projects/shared/models/class-by-student.model';
+import { Subscription as SubscriptionClass } from 'projects/shared/models/subscription.model'
+import { SubscriptionService } from 'projects/predyc-business/src/shared/services/subscription.service';
+import { Product } from 'projects/shared/models/product.model';
+import { ProductService } from 'projects/predyc-business/src/shared/services/product.service';
 
 @Injectable({
   providedIn: 'root'
@@ -23,12 +26,13 @@ import { ClassByStudent } from 'projects/shared/models/class-by-student.model';
 export class CourseService {
 
   constructor(
-    private afAuth: AngularFireAuth,
     private afs: AngularFirestore,
     private enterpriseService: EnterpriseService,
     private profileService: ProfileService,
     private alertService: AlertsService,
-    private userService: UserService
+    private userService: UserService,
+    private subscriptionService: SubscriptionService,
+		private productService: ProductService,
   ) 
   {
     this.getCourses();
@@ -451,98 +455,121 @@ export class CourseService {
     console.log(`${courseByStudentId} has been setted as extra course`)
   }
 
-  async updateStudyPlans(changesInStudyPlan: {added: string[], removed: string[], profileId: string}) {
-    const enterpriseRef = this.enterpriseService.getEnterpriseRef()
-    const profileRef = this.profileService.getProfileRefById(changesInStudyPlan.profileId)
-    // console.log(enterpriseRef, profileRef)
-    const querySnapshot: QuerySnapshot<User> = await this.afs.collection<User>(User.collection).ref.where('profile', '==', profileRef).get() as QuerySnapshot<User>;
-    const users = querySnapshot.docs.map(doc => doc.data())
-    // console.log("users", users)
-    const batch = this.afs.firestore.batch();
-    for (let user of users) {
-      // console.log(`***** User to update ${user.name} - ${user.uid} *****`)
-      // console.log("changesInStudyPlan", changesInStudyPlan)
-      const userRef = this.userService.getUserRefById(user.uid)
-      const userCoursesSnapshot: QuerySnapshot<CourseByStudentJson> = await this.afs.collection(CourseByStudent.collection).ref.where('userRef', '==', userRef).get() as QuerySnapshot<CourseByStudentJson>
-      const userCourses = userCoursesSnapshot.docs.map(doc => doc.data())
-      const studyPlanItems = userCourses.filter(course => course.active).sort((a, b) => {
-        return a.dateEndPlan - b.dateEndPlan;
-      })
-      // console.log("studyPlanItems", studyPlanItems)
-
-      // If extraCourse, dates are null
-      let startDateForCourse = !studyPlanItems[0].isExtraCourse ? studyPlanItems[0].dateStartPlan.seconds * 1000 : null
-
-      const userRemovedCourses = studyPlanItems.filter(course => changesInStudyPlan.removed.includes(course.courseRef.id))
-      // console.log('userRemovedCourses', userRemovedCourses)
-      const userOtherCourses = studyPlanItems.filter(course => !changesInStudyPlan.removed.includes(course.courseRef.id))
-      // console.log('userOtherCourses', userOtherCourses)
-      // Disable removed courses
-      for (let course of userRemovedCourses) {
-        const courseJson = {
-          ...course,
-          active: false,
-          dateStartPlan: null,
-          dateEndPlan: null
+  async updateStudyPlans(changesInStudyPlan: {added: string[], removed: string[], profileId: string}): Promise<boolean> {
+    try {
+      const enterpriseRef = this.enterpriseService.getEnterpriseRef()
+      const profileRef = this.profileService.getProfileRefById(changesInStudyPlan.profileId)
+      // console.log(enterpriseRef, profileRef)
+      const querySnapshot: QuerySnapshot<User> = await this.afs.collection<User>(User.collection).ref.where('profile', '==', profileRef).get() as QuerySnapshot<User>;
+      const users = querySnapshot.docs.map(doc => doc.data())
+      // console.log("users", users)
+      const batch = this.afs.firestore.batch();
+      for (let user of users) {
+        // console.log(`***** User to update ${user.name} - ${user.uid} *****`)
+        // console.log("changesInStudyPlan", changesInStudyPlan)
+        const userRef = this.userService.getUserRefById(user.uid)
+        const userCoursesSnapshot: QuerySnapshot<CourseByStudentJson> = await this.afs.collection(CourseByStudent.collection).ref.where('userRef', '==', userRef).get() as QuerySnapshot<CourseByStudentJson>
+        const userCourses = userCoursesSnapshot.docs.map(doc => doc.data())
+        const studyPlanItems = userCourses.filter(course => course.active).sort((a, b) => {
+          return a.dateEndPlan - b.dateEndPlan;
+        })
+        // console.log("studyPlanItems", studyPlanItems)
+  
+        // If extraCourse, dates are null
+        let startDateForCourse = !studyPlanItems[0].isExtraCourse ? studyPlanItems[0].dateStartPlan.seconds * 1000 : null
+  
+        const userRemovedCourses = studyPlanItems.filter(course => changesInStudyPlan.removed.includes(course.courseRef.id))
+        // console.log('userRemovedCourses', userRemovedCourses)
+        const userOtherCourses = studyPlanItems.filter(course => !changesInStudyPlan.removed.includes(course.courseRef.id))
+        // console.log('userOtherCourses', userOtherCourses)
+  
+        // Check if user has a "simplificado" product and studyPlan exceeds course quantity restriction
+        const newStudyPlanLength = studyPlanItems.length - userRemovedCourses.length + changesInStudyPlan.added.length
+        console.log(`Old study plan - removed courses + added courses: ${studyPlanItems.length}-${userRemovedCourses.length}+${changesInStudyPlan.added.length} = ${newStudyPlanLength}` )
+        console.log("newStudyPlanLength", newStudyPlanLength)
+        const userSubscriptions: SubscriptionClass[] = await this.subscriptionService.getUserSubscriptions(userRef as DocumentReference<User>)
+        if (userSubscriptions.length > 0) {
+          const userSubscription = userSubscriptions.filter(x => x.status === SubscriptionClass.STATUS_ACTIVE)[0]
+          const userProduct: Product = await this.productService.getProductByRef(userSubscription.productRef)
+          console.log("userProduct", userProduct)
+          if (userProduct.type === Product.TYPE_SIMPLIFIED && userProduct.coursesQty < newStudyPlanLength) {
+            this.alertService.errorAlert(`La cantidad de cursos del perfil excede el limite establecido por el producto simplificado (${userProduct.coursesQty}) del estudiante ${user.displayName}`)
+            throw new Error ("Course limit exceeded for user " + user.uid)
+          }
         }
-        console.log(`Removed course ${course.courseRef.id} - Saved in ${courseJson.id}`, courseJson)
-        batch.update(this.afs.collection<CourseByStudent>(CourseByStudent.collection).doc(courseJson.id).ref, courseJson);
-      }
-
-      // Repair startDate and endDate for remaining items in studyPlan
-      for (let course of userOtherCourses) {
-        const courseDuration = (await course.courseRef.get()).data().duracion
-        const dateEndPlan = startDateForCourse ? this.calculatEndDatePlan(startDateForCourse, courseDuration, user.studyHours) : null
-        const courseJson = {
-          ...course,
-          dateStartPlan: startDateForCourse ? new Date(startDateForCourse) : null,
-          dateEndPlan: dateEndPlan ? new Date(dateEndPlan) : null
+  
+        // Disable removed courses
+        for (let course of userRemovedCourses) {
+          const courseJson = {
+            ...course,
+            active: false,
+            dateStartPlan: null,
+            dateEndPlan: null
+          }
+          console.log(`Removed course ${course.courseRef.id} - Saved in ${courseJson.id}`, courseJson)
+          batch.update(this.afs.collection<CourseByStudent>(CourseByStudent.collection).doc(courseJson.id).ref, courseJson);
         }
-        console.log(`Repaired course ${course.courseRef.id} - Saved in ${courseJson.id}`, courseJson)
-        batch.update(this.afs.collection<CourseByStudent>(CourseByStudent.collection).doc(courseJson.id).ref, courseJson);
-        startDateForCourse = dateEndPlan
-      }
-
-      // Add new courses at the end of studyPlan
-      const userCoursesIds = userCourses.map(course => course.courseRef.id)
-      for (let item of changesInStudyPlan.added) {
-        const courseDuration = (await firstValueFrom(this.afs.collection<Curso>(Curso.collection).doc(item).get())).data().duracion
-        const dateEndPlan = startDateForCourse ? this.calculatEndDatePlan(startDateForCourse, courseDuration, user.studyHours) : null
-        if (userCoursesIds.includes(item)) {
-          // Course already exist for user
-          const course = userCourses.find(course => course.courseRef.id === item)
+  
+        // Repair startDate and endDate for remaining items in studyPlan
+        for (let course of userOtherCourses) {
+          const courseDuration = (await course.courseRef.get()).data().duracion
+          const dateEndPlan = startDateForCourse ? this.calculatEndDatePlan(startDateForCourse, courseDuration, user.studyHours) : null
           const courseJson = {
             ...course,
             dateStartPlan: startDateForCourse ? new Date(startDateForCourse) : null,
-            dateEndPlan: dateEndPlan ? new Date(dateEndPlan) : null,
-            active: true,
-            isExtraCourse: startDateForCourse ? false : true
+            dateEndPlan: dateEndPlan ? new Date(dateEndPlan) : null
           }
-          console.log(`Activated course ${item} - Saved in ${courseJson.id}`, courseJson)
+          console.log(`Repaired course ${course.courseRef.id} - Saved in ${courseJson.id}`, courseJson)
           batch.update(this.afs.collection<CourseByStudent>(CourseByStudent.collection).doc(courseJson.id).ref, courseJson);
-        } else {
-          // New course for student
-          const docRef = this.afs.collection<CourseByStudentJson>(CourseByStudent.collection).doc().ref;
-          const courseJson = {
-            id: docRef.id,
-            userRef: userRef,
-            courseRef: this.afs.collection<Curso>(Curso.collection).doc(item).ref,
-            dateStartPlan: startDateForCourse ? new Date(startDateForCourse) : null,
-            dateEndPlan: dateEndPlan ? new Date(dateEndPlan) : null,
-            progress: 0,
-            dateStart: null,
-            dateEnd: null,
-            active: true,
-            finalScore: 0,
-            isExtraCourse: startDateForCourse ? false : true,
-          }
-          console.log(`Added course ${item} - Saved in ${courseJson.id}`, courseJson)
-          batch.set(docRef, courseJson);
+          startDateForCourse = dateEndPlan
         }
-        startDateForCourse = dateEndPlan
+  
+        // Add new courses at the end of studyPlan
+        const userCoursesIds = userCourses.map(course => course.courseRef.id)
+        for (let item of changesInStudyPlan.added) {
+          const courseDuration = (await firstValueFrom(this.afs.collection<Curso>(Curso.collection).doc(item).get())).data().duracion
+          const dateEndPlan = startDateForCourse ? this.calculatEndDatePlan(startDateForCourse, courseDuration, user.studyHours) : null
+          if (userCoursesIds.includes(item)) {
+            // Course already exist for user
+            const course = userCourses.find(course => course.courseRef.id === item)
+            const courseJson = {
+              ...course,
+              dateStartPlan: startDateForCourse ? new Date(startDateForCourse) : null,
+              dateEndPlan: dateEndPlan ? new Date(dateEndPlan) : null,
+              active: true,
+              isExtraCourse: startDateForCourse ? false : true
+            }
+            console.log(`Activated course ${item} - Saved in ${courseJson.id}`, courseJson)
+            batch.update(this.afs.collection<CourseByStudent>(CourseByStudent.collection).doc(courseJson.id).ref, courseJson);
+          } else {
+            // New course for student
+            const docRef = this.afs.collection<CourseByStudentJson>(CourseByStudent.collection).doc().ref;
+            const courseJson = {
+              id: docRef.id,
+              userRef: userRef,
+              courseRef: this.afs.collection<Curso>(Curso.collection).doc(item).ref,
+              dateStartPlan: startDateForCourse ? new Date(startDateForCourse) : null,
+              dateEndPlan: dateEndPlan ? new Date(dateEndPlan) : null,
+              progress: 0,
+              dateStart: null,
+              dateEnd: null,
+              active: true,
+              finalScore: 0,
+              isExtraCourse: startDateForCourse ? false : true,
+            }
+            console.log(`Added course ${item} - Saved in ${courseJson.id}`, courseJson)
+            batch.set(docRef, courseJson);
+          }
+          startDateForCourse = dateEndPlan
+        }
       }
+      await batch.commit();
+      return true
+    } catch (error) {
+      console.error(error)
+      return false
     }
-    await batch.commit();
+
   }
 
   calculatEndDatePlan(startDate: number, courseDuration: number, hoursPermonth: number): number {

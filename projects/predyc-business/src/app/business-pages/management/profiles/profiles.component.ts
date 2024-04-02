@@ -89,7 +89,7 @@ export class ProfilesComponent {
 
     this.profileServiceSubscription = this.profileService.getProfiles$().subscribe(profiles => {
       if (profiles) {
-        console.log('profiles',profiles)
+        // console.log('profiles',profiles)
         let profilesBase=[]
         profiles.forEach(element => {
           if(element?.baseProfile?.id){
@@ -98,8 +98,7 @@ export class ProfilesComponent {
         });
         
         this.profiles = profiles
-        console.log('perfiles', this.profiles);
-
+        // console.log('perfiles', this.profiles);
 
       }
     })
@@ -164,16 +163,15 @@ export class ProfilesComponent {
           categories: categories,
           inStudyPlan: inStudyPlan
         }
-        console.log('courseForExplorer',courseForExplorer)
+        // console.log('courseForExplorer',courseForExplorer)
         if (inStudyPlan) this.studyPlan.push(courseForExplorer)
         return courseForExplorer
       })
 
-      console.log("***************this.profile", this.profile)
       if (this.profile) {
         let trueOrder = []
   
-        console.log('this.studyPlan',this.studyPlan,this.profile.coursesRef)
+        // console.log('this.studyPlan',this.studyPlan,this.profile.coursesRef)
         this.profile.coursesRef.forEach(cursoplan => {
           let curso = this.studyPlan.find(x=> x.id == cursoplan['id'])
           if(curso){
@@ -501,7 +499,6 @@ export class ProfilesComponent {
 
       if(this.profiles.find(x=> x.name.toLowerCase() == this.profileName.toLowerCase() && x.id != this.profile?.id && this.profile?.baseProfile.id !=x.id )) throw new Error("El nombre del perfil se encuentra en uso")
 
-
       this.disableSaveButton = true
       this.alertService.infoAlert("Se procederá a actualizar los datos del plan de estudio del perfil y de sus usuarios relacionados, por favor espere hasta que se complete la operación")
       const coursesRef: DocumentReference<Curso>[] = this.studyPlan.map(course => {
@@ -510,9 +507,7 @@ export class ProfilesComponent {
 
       console.log('coursesRef',coursesRef)
 
-
       if (!coursesRef || coursesRef.length==0) throw new Error("Debe indicar los cursos del plan de estudio")
-
 
       let enterpriseRef =this.enterpriseService.getEnterpriseRef()
       if(this.user.isSystemUser){
@@ -534,14 +529,13 @@ export class ProfilesComponent {
         hoursPerMonth: this.profileHoursPerMonth
       })
 
-      console.log('profile save',profile)
-      const profileId = await this.profileService.saveProfile(profile)
+      // console.log('profile save',profile)
       const changesInStudyPlan = {
         added: [],
         removed: [],
-        profileId: this.profile?.id ? this.profile?.id :profileId
+        profileId: this.profile?.id ? this.profile?.id : null
       }
-      if (this?.id !== 'new') {
+      if (this?.id !== 'new') { 
         this.coursesForExplorer.forEach(course => {
           const isInStudyPlan = course.inStudyPlan
           const wasInStudyPlan = this.profileBackup.selectedCourses.includes(course.id)
@@ -554,9 +548,13 @@ export class ProfilesComponent {
             }
           }
         })
-        await this.courseService.updateStudyPlans(changesInStudyPlan)
+
+        const studyPlanHasBeenUpdated = await this.courseService.updateStudyPlans(changesInStudyPlan)
+        if (studyPlanHasBeenUpdated) await this.profileService.saveProfile(profile)
+        else throw new Error ("Ocurrió un error actualizando el plan de estudios de los estudiantes que poseen este perfil")
       } 
       else {
+        const profileId = await this.profileService.saveProfile(profile)
         this.id = profileId;
         this.profile = profile
         this.router.navigate([`management/profiles/${profileId}`])
@@ -566,7 +564,7 @@ export class ProfilesComponent {
       this.disableSaveButton = false
       this.isEditing = false;
     } catch (error) {
-      this.alertService.errorAlert(error.message)
+      // this.alertService.errorAlert(error.message)
       this.disableSaveButton = false
     }
   }

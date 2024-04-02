@@ -42,7 +42,6 @@ export class CreateUserComponent {
 		private storage: AngularFireStorage,
 		private afs: AngularFirestore,
 		private modalService: NgbModal,
-		
 		private subscriptionService: SubscriptionService,
 		private productService: ProductService,
 	) {
@@ -403,7 +402,7 @@ export class CreateUserComponent {
 					console.log("userProduct", userProduct)
 					console.log("coursesRefs", coursesRefs)
 					if (userProduct.type === Product.TYPE_SIMPLIFIED && userProduct.coursesQty < coursesRefs.length) {
-						this.alertService.errorAlert("La cantidad de cursos del perfil excede el limite establecido por su producto simplificado")
+						this.alertService.errorAlert(`La cantidad de cursos del perfil excede el limite establecido por su producto simplificado (${userProduct.coursesQty})`)
 						return
 					}
 				}
