@@ -103,15 +103,26 @@ body {
 }
 
 input:focus {
-  border-color: red;
-  outline: red;
+  border-color:#9ca6af;
+  outline:#9ca6af;
 }
+
+.border-red{
+  border-color:#ff0000;
+}
+
+.is-invalid {
+
+  border-color:  #f00 !important; ;
+
+}
+
+
 
 textarea:focus {
-  border-color :red!important;
-  outline: red!important;
+  border-color:#9ca6af;
+  outline:#9ca6af;
 }
-
 :root {
   --menuHeight: 56px;
   --default-title-color: #151B26;
@@ -1209,7 +1220,9 @@ textarea:focus {
 
 
 
-.borderLight {border: 1px solid #ebebeb;}
+.borderLight {border: 1px solid #ebebeb !important;}
+.borderLight::after {border: 1px solid #ebebeb !important;}
+
 .border2{  border: var(--borderColor) 2px solid !important;}
 .border-rt{  border-top: transparent 1px solid !important;}
 .border-rb{  border-bottom: transparent 1px solid !important;}
