@@ -676,6 +676,7 @@ export class DashboardComponent {
     // Hoja 2 (Resumen por puesto)
 
     let perfiles = Array.from(new Set(usuariosConLicencia.map(user => user.profileId)));
+    perfiles = perfiles.filter(x=>x!='')
 
     if (!wsResumenPorPuesto['!merges']) wsResumenPorPuesto['!merges'] = [];
 
