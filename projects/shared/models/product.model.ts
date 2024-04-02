@@ -3,7 +3,7 @@ export interface ProductJson {
     active: boolean;
     amount: number;
     autodeactivate: boolean;
-    coursesQty: number | null;
+    coursesQty: number | null;  // Just for "simplificado" products
     createdAt: number;
     description: string;
     features: ProductFeatures[];

@@ -267,8 +267,9 @@ export class StudentStudyPlanAndCompetencesComponent {
     let hoy = +new Date(now.getFullYear(), now.getMonth(), now.getDate())
     const hoursPermonth = this.hoursPermonthInitForm = 0 ? this.student.studyHours : this.hoursPermonthInitForm 
     // console.log("hoursPermonth", hoursPermonth)
+
+    const userRef: DocumentReference | DocumentReference<User> = this.userService.getUserRefById(this.student.uid)
     for (let i = 0; i < coursesRefs.length; i++) {
-      const userRef: DocumentReference | DocumentReference<User> = this.userService.getUserRefById(this.student.uid)
       const courseData = this.coursesData.find(courseData => courseData.id === coursesRefs[i].id);
       const courseDuration = courseData.duracion
 
@@ -293,9 +294,9 @@ export class StudentStudyPlanAndCompetencesComponent {
   async saveAsExtracourses() {
     const coursesRefs: DocumentReference[] = this.selectedProfile.coursesRef
     // console.log("hoursPermonth", hoursPermonth)
-    for (let i = 0; i < coursesRefs.length; i++) {
-      const userRef: DocumentReference | DocumentReference<User> = this.userService.getUserRefById(this.student.uid)
 
+    const userRef: DocumentReference | DocumentReference<User> = this.userService.getUserRefById(this.student.uid)
+    for (let i = 0; i < coursesRefs.length; i++) {
       //  ---------- if it already exists, activate it as extra course, otherwise, create it as extra course ---------- 
       const courseByStudent: CourseByStudent | null = await this.courseService.getCourseByStudent(userRef as DocumentReference<User>, coursesRefs[i] as DocumentReference<Curso>)
       if (courseByStudent) {

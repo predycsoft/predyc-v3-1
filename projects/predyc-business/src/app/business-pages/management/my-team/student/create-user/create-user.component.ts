@@ -19,6 +19,10 @@ import { AngularFirestore, DocumentReference } from "@angular/fire/compat/firest
 import { Enterprise } from "projects/shared/models/enterprise.model";
 // import { departmentsData } from '../../../../../../../../../.firebase/predyc-empresa/hosting/assets/data/departments.data';
 import Swal from "sweetalert2";
+import { Subscription as SubscriptionClass } from 'projects/shared/models/subscription.model'
+import { SubscriptionService } from 'projects/predyc-business/src/shared/services/subscription.service';
+import { ProductService } from 'projects/predyc-business/src/shared/services/product.service';
+import { Product } from 'projects/shared/models/product.model';
 
 @Component({
 	selector: "app-create-user",
@@ -37,7 +41,10 @@ export class CreateUserComponent {
 		private departmentService: DepartmentService,
 		private storage: AngularFireStorage,
 		private afs: AngularFirestore,
-		private modalService: NgbModal
+		private modalService: NgbModal,
+		
+		private subscriptionService: SubscriptionService,
+		private productService: ProductService,
 	) {
 		// Obtener la fecha actual
 		const today = new Date();
@@ -386,25 +393,42 @@ export class CreateUserComponent {
 
 			let profileNew = this.profiles.find((x) => x.id == user?.profile?.id);
 
-			if (profileNew && !profileNew.enterpriseRef) {
-				// console.log("profileNew", profileNew);
-				let baseProfile = this.afs.collection<Profile>(Profile.collection).doc(profileNew.id).ref;
-				profileNew.baseProfile = baseProfile;
+			if (profileNew) {
+				const coursesRefs: DocumentReference[] = profileNew.coursesRef
+				const userRef: DocumentReference | DocumentReference<User> = this.userService.getUserRefById(this.studentToEdit.uid)
+				const userSubscriptions: SubscriptionClass[] = await this.subscriptionService.getUserSubscriptions(userRef as DocumentReference<User>)
+				if (userSubscriptions.length > 0) {
+					const userSubscription = userSubscriptions.filter(x => x.status === SubscriptionClass.STATUS_ACTIVE)[0]
+					const userProduct: Product = await this.productService.getProductByRef(userSubscription.productRef)
+					console.log("userProduct", userProduct)
+					console.log("coursesRefs", coursesRefs)
+					if (userProduct.type === Product.TYPE_SIMPLIFIED && userProduct.coursesQty < coursesRefs.length) {
+						this.alertService.errorAlert("La cantidad de cursos del perfil excede el limite establecido por su producto simplificado")
+						return
+					}
+				}
 
-				const profile: Profile = Profile.fromJson({
-					id: null,
-					name: profileNew.name,
-					description: profileNew.description,
-					coursesRef: profileNew.coursesRef,
-					baseProfile: baseProfile,
-					enterpriseRef: this.enterpriseService.getEnterpriseRef(),
-					permissions: profileNew ? profileNew.permissions : null,
-					hoursPerMonth: profileNew.hoursPerMonth,
-				});
-				const profileId = await this.profileService.saveProfile(profile);
-				let profileRef = await this.afs.collection<Profile>(Profile.collection).doc(profileId).ref;
-				user.profile = profileRef;
+				if (!profileNew.enterpriseRef) {
+					// console.log("profileNew", profileNew);
+					let baseProfile = this.afs.collection<Profile>(Profile.collection).doc(profileNew.id).ref;
+					profileNew.baseProfile = baseProfile;
+	
+					const profile: Profile = Profile.fromJson({
+						id: null,
+						name: profileNew.name,
+						description: profileNew.description,
+						coursesRef: profileNew.coursesRef,
+						baseProfile: baseProfile,
+						enterpriseRef: this.enterpriseService.getEnterpriseRef(),
+						permissions: profileNew ? profileNew.permissions : null,
+						hoursPerMonth: profileNew.hoursPerMonth,
+					});
+					const profileId = await this.profileService.saveProfile(profile);
+					let profileRef = await this.afs.collection<Profile>(Profile.collection).doc(profileId).ref;
+					user.profile = profileRef;
+				}
 			}
+
 
 			let departmentNew = this.departments.find((x) => x?.id == user?.departmentRef?.id);
 

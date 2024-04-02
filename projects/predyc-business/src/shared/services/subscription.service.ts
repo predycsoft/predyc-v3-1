@@ -25,6 +25,12 @@ export class SubscriptionService {
     ).valueChanges()
   }
 
+  async getUserSubscriptions(userRef: DocumentReference<User>): Promise<Subscription[]> {
+    return firstValueFrom(this.afs.collection<Subscription>(Subscription.collection, ref =>
+      ref.where('userRef', '==', userRef).orderBy('createdAt', 'desc')
+    ).valueChanges())
+  }
+
   getSubscriptions$(): Observable<Subscription[]> {
     return this.afs.collection<Subscription>(Subscription.collection).valueChanges()
   }
