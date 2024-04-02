@@ -262,24 +262,25 @@ export class VimeoUploadService {
     return this.http.get(`https://api.vimeo.com${videoUri}`, { headers });
   }
 
-  createVideo(videoName: string = 'Untitled', videoDescription: string = 'No description'): Observable<any> {
+  createVideo(videoName: string = 'Untitled', videoDescription: string = 'No description',fileSizeInBytes): Observable<any> {
+
     const headers = {
       'Authorization': `Bearer ${this.accessToken}`
     };
     const body = {
       'name': videoName,
       'description': videoDescription,
+      "upload": {
+        "approach": "post",
+        "size": fileSizeInBytes
+      },
       "privacy": {
         "view": "unlisted",
         "embed": "whitelist",
         "download":false
       }
-      // "privacy": {
-      //   "view": "disable", este este depracado pero es el que sale como oculto de vimeo
-      //   "embed": "whitelist"
-      // }
     };
-    
+
     return this.http.post(this.VIMEO_URL, body, { headers: headers });
   }
 

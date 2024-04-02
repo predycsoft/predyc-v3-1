@@ -1,6 +1,6 @@
 import { Component, ElementRef, QueryList, TemplateRef, ViewChild, ViewChildren } from '@angular/core';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
-import { FormControl, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { FormControl, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn, FormArray } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Curso } from "projects/shared/models/course.model"
@@ -1158,6 +1158,13 @@ export class CreateCourseComponent {
     this.savingCourse = false;
     this.alertService.succesAlert("El curso se ha guardado exitosamente")
 
+
+    if(this.mode == 'create'){
+      this.router.navigate([`management/create-course/edit/${this.curso.id}`])
+    }
+
+
+
   }
   else{
     Swal.close();
@@ -1426,7 +1433,30 @@ export class CreateCourseComponent {
       setTimeout(() => {
         if(this.validExam ==null || !this.validExam?.valid || this.validExam.value?.questions?.length == 0){
           this.updateTriggeQuestionsExam++;
-          console.log('formatExamQuestions invalid')
+          console.log('formatExamQuestions invalid',this.validExam.controls.questions)
+          let formArray: FormArray = this.validExam.get('questions') as FormArray;
+          // let preguntasValidas = formArray.controls.filter(control => control.status === 'VALID');
+          let preguntasValidas = formArray.controls;
+          console.log('preguntasValidas', preguntasValidas);
+          let valoresPreguntasValidas = preguntasValidas.map(pregunta => pregunta.value);
+          console.log('valoresPreguntasValidas', valoresPreguntasValidas);
+
+          if(valoresPreguntasValidas.length>0){
+
+            let questions = structuredClone(valoresPreguntasValidas)
+            questions.forEach(question => {
+              if(!question.typeFormated){
+                question.typeFormated = this.getTypeQuestion(question.type)
+                if(question.type == 'complete'){
+                  this.showDisplayText(question)
+                }
+              }
+            });
+            if(this.examen){
+              this.examen.questions = questions
+              this.questionsFormated = true
+            }
+          }
         }
         else{
           let questions = structuredClone(this.validExam.value.questions)
@@ -1802,7 +1832,6 @@ export class CreateCourseComponent {
   actividades : Activity[] = [];
 //   public zoom = '100%';
 
-  private access_token = "73f2eb055ec905e9a48175cd3c87b6af" // token  de vimeo
 //   file_name = "assets/videos/test-video.mp4"
 //   //859408918?h=6e44212c1a&amp nuevo formato de id en vimeo
 
@@ -2860,7 +2889,6 @@ uploadVideo(videoFile, clase, local = false, modulo, origen = null, intentosActu
   }
 
     // Supongamos que tienes el token de acceso almacenado en la variable `access_token`
-    const access_token = this.access_token;
 
     let nombreCurso = this.formNewCourse.get('titulo').value?  this.formNewCourse.get('titulo').value : 'Temporal';
     
@@ -2932,7 +2960,9 @@ uploadVideo(videoFile, clase, local = false, modulo, origen = null, intentosActu
 
     // Crea el video en Vimeo
     //clase['uploading'] = true;
-    this.uploadControl.createVideo(videoName, videoDescription)
+    const fileSizeInBytes = file.size;
+
+    this.uploadControl.createVideo(videoName, videoDescription,fileSizeInBytes)
     .subscribe({
       next : response =>{
         // Una vez creado el video, sube el archivo

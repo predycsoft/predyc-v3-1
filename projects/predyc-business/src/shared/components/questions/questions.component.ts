@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, NgForm, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, NgForm, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Question, QuestionType } from 'projects/shared/models/activity-classes.model';
 import { cloneArrayOfObjects, getPlaceholders } from 'projects/shared/utils';
 
@@ -11,6 +11,9 @@ import { AlertsService } from '../../services/alerts.service';
 import { IconService } from '../../services/icon.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
+
+import * as XLSX from 'xlsx-js-style';
+
 
 function optionsLengthValidator(question: FormGroup): ValidationErrors | null {
   const options = question.get('options') as FormArray
@@ -133,6 +136,62 @@ export class QuestionsComponent {
     }
   }
 
+  applyOrder(campo) {
+    this.appliedOrder = campo
+    // Obtén el FormArray
+    const questionsFormArray = this.questions;
+    const formGroups = questionsFormArray.controls.slice();
+  
+    if (campo === 'id') {
+      formGroups.sort((a, b) => {
+        const idUserA = a.get('idUser').value;
+        const idUserB = b.get('idUser').value;
+        return idUserA - idUserB;
+      });
+    } else if (campo === 'tipo') {
+      formGroups.sort((a, b) => {
+        const tipoA = a.get('type').value;
+        const tipoB = b.get('type').value;
+        return tipoA.localeCompare(tipoB); // Comparación de cadenas
+      });
+    } else if (campo === 'clase') {
+      formGroups.sort((a, b) => {
+        const classIdA = a.get('classId').value;
+        const classIdB = b.get('classId').value;
+  
+        // Preguntas sin classId van primero
+        if (!classIdA && classIdB) return -1;
+        if (classIdA && !classIdB) return 1;
+        if (!classIdA && !classIdB) return 0;
+  
+        // Ambas preguntas tienen classId, buscar sus clases correspondientes
+        const claseA = this.classesArray.find(x => x.id === classIdA);
+        const claseB = this.classesArray.find(x => x.id === classIdB);
+  
+        // Si alguna pregunta no tiene una clase correspondiente en classesArray, la consideramos igual (esto no debería pasar)
+        if (!claseA || !claseB) return 0;
+  
+        // Comparación por moduloIndex y claseIndex
+        if (claseA.moduloIndex !== claseB.moduloIndex) {
+          return claseA.moduloIndex - claseB.moduloIndex;
+        } else {
+          return claseA.claseIndex - claseB.claseIndex;
+        }
+      });
+    }
+  
+    // Limpia el FormArray original y rellénalo con los FormGroup ordenados
+    while (questionsFormArray.length !== 0) {
+      questionsFormArray.removeAt(0);
+    }
+    formGroups.forEach(formGroup => {
+      questionsFormArray.push(formGroup);
+    });
+  }
+  
+  
+  
+
   constructor(
     private fb: FormBuilder,
     public icon: IconService,
@@ -181,6 +240,240 @@ export class QuestionsComponent {
     this.init();
   }
 
+
+  extraerModuloYClase(claseRelacionada) {
+    // Limpiar puntos adicionales al final de los números
+    const cleanedString = claseRelacionada.replace(/\.\s/, ' ').trim();
+    // Divide la cadena por espacios
+    const parts = cleanedString.split(' ');
+    // Extrae el primer elemento y lo divide por el punto
+    const moduloyClase = parts.shift().split('.');
+    // El número del módulo
+    const modulo = moduloyClase[0];
+    // El número de la clase (asegurarse de que no sea undefined por el punto extra)
+    const clase = moduloyClase[1] || '';
+    // El resto es el título
+    const titulo = parts.join(' ');
+  
+    return {
+      modulo,
+      clase,
+      titulo
+    };
+  }
+
+  
+  uploadQuestions(evt){
+
+    const target: DataTransfer = <DataTransfer>(evt.target);
+    if (target.files.length !== 1) {
+      throw new Error('Cannot use multiple files');
+    }
+    const reader: FileReader = new FileReader();
+    reader.onload = async (e: any) => {
+      const bstr: string = e.target.result;
+      const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
+      const wsname: string = wb.SheetNames[0];
+      const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+      let preguntasJSON = XLSX.utils.sheet_to_json(ws);
+      let preguntas = this.estructurarPreguntas(preguntasJSON)
+      preguntas.forEach(pregunta => {
+        let idUser = parseInt(String(pregunta.preg).replace("P", ""));
+        // Encuentra el índice de la pregunta en el formulario que coincide con el idUser
+        console.log('idUser',idUser,this.questions)
+        const preguntaIndex = this.questions.controls.findIndex(
+          c => c.get('idUser').value === idUser
+        );
+        console.log('preguntaIndex',preguntaIndex,pregunta,this.classesArray)
+        // Si se encuentra una pregunta con el mismo idUser, actualiza su texto
+
+        let newType = pregunta.tipo
+        let classId = null
+
+        let clase = this.extraerModuloYClase(pregunta.claseRelacionada)
+        if(clase.modulo && clase.clase){
+          let clasefind = this.classesArray.find(x=> x.claseIndex == clase.clase-1 && x.moduloIndex == clase.modulo-1)
+          console.log('clasefind',clasefind)
+          if(clasefind){
+            classId = clasefind.id
+          }
+        }
+        if(newType =='Verdadero y falso'){
+          newType = this.QuestionClass.TYPE_TRUE_OR_FALSE
+        }
+        else if(newType =='Selección múltiple'){
+          newType = this.QuestionClass.TYPE_MULTIPLE_CHOICE
+        }
+        else if(newType =='Selección simple'){
+          newType =  this.QuestionClass.TYPE_SINGLE_CHOICE
+        }
+
+        let opciones = [];
+
+        if (newType == this.QuestionClass.TYPE_TRUE_OR_FALSE) {
+          // Solo tomar las opciones 'A' y 'B' para preguntas de tipo Verdadero y Falso
+          opciones = pregunta.opciones
+            .filter(opcion => opcion.letra === 'A' || opcion.letra === 'B')
+            .map(opcion => ({
+              image: null,
+              isCorrect: opcion.letra === pregunta.respuestaCorrecta,
+              placeholder: null,
+              text: opcion.texto
+            }));
+        } else {
+          // Para todos los otros tipos de preguntas, toma todas las opciones disponibles
+          opciones = pregunta.opciones
+            .filter(opcion => opcion.texto) // Asegurarse de que la opción tenga texto
+            .map(opcion => ({
+              image: null,
+              isCorrect: pregunta?.respuestaCorrecta?.split(',').map(letra => letra.trim()).includes(opcion.letra),
+              placeholder: null,
+              text: opcion.texto
+            }));
+        }
+
+        if (preguntaIndex !== -1) {
+          // Utiliza patchValue para actualizar solo una parte del FormGroup
+          // Obtiene el FormArray de opciones
+          const optionsArray = this.questions.at(preguntaIndex).get('options') as FormArray;
+          // Limpia todas las opciones existentes
+          while (optionsArray.length) {
+            optionsArray.removeAt(0);
+          }
+              
+          this.questions.at(preguntaIndex).patchValue({
+            text: pregunta.pregunta,
+            type:newType,
+            explanation:pregunta.explicacion,
+            classId:classId,
+          });
+
+          this.initializeOptions(preguntaIndex, opciones);
+
+        }
+        else{// se debe crear la pregunta
+          this.addQuestionExcel(pregunta,newType,idUser,classId)
+
+        }
+
+        
+      });
+
+      console.log(this.mainForm,this.questions)
+
+      this.applyOrder('id')
+      this.formatExamQuestions()
+      this.changeQuestion.emit(this.mainForm);
+      this.submitForm()
+
+
+    };
+    reader.readAsBinaryString(target.files[0]); 
+
+  }
+
+  addQuestionExcel(pregunta,newType,idUser,classId): void {
+    
+    this.questions.push(this.fb.group({
+      text: [pregunta.pregunta, [Validators.required]],
+      idUser : [idUser, [Validators.required,this.uniqueIdUserValidator(this.questions)]],
+      type: [newType],
+      image: this.fb.group({
+        url: [''],
+        file: [null]
+      }),
+      options: this.fb.array([], []),
+      points: [1, [Validators.required, Validators.min(1), Validators.pattern(/^\d*$/)]],
+      skills: this.fb.array([]),
+      explanation: [pregunta.explicacion, []],
+      classId: [classId, []],
+    }, { validators: questionTypeToValidators[newType] }));
+   // Calcula el índice de la nueva pregunta
+    const questionIndex = this.questions.length - 1;
+    // Agrega 4 opciones vacías a la nueva pregunta
+
+    let opciones = [];
+    if (newType == this.QuestionClass.TYPE_TRUE_OR_FALSE) {
+      // Solo tomar las opciones 'A' y 'B' para preguntas de tipo Verdadero y Falso
+      opciones = pregunta.opciones
+        .filter(opcion => opcion.letra === 'A' || opcion.letra === 'B')
+        .map(opcion => ({
+          image: null,
+          isCorrect: pregunta?.respuestaCorrecta?.split(',').map(letra => letra.trim()).includes(opcion.letra),
+          placeholder: null,
+          text: opcion.texto
+        }));
+    } else {
+      // Para todos los otros tipos de preguntas, toma todas las opciones disponibles
+      opciones = pregunta.opciones
+        .filter(opcion => opcion.texto) // Asegurarse de que la opción tenga texto
+        .map(opcion => ({
+          image: null,
+          isCorrect: pregunta?.respuestaCorrecta?.split(',').map(letra => letra.trim()).includes(opcion.letra),
+          placeholder: null,
+          text: opcion.texto
+        }));
+    }
+    this.initializeOptions(questionIndex, opciones);
+    this.questionStatus.push({
+      editing:false,
+      expanded: false,
+      visibleImage: true,
+      placeholders: [],
+      textToRender: null,
+      formated:null
+    })
+    this.selectedQuestionsSkills.push([])
+
+  }
+
+  estructurarPreguntas(preguntasJSON) {
+    const preguntasEstructuradas = [];
+    let preguntaActual = null;
+    
+    preguntasJSON.forEach(item => {
+      // Corregir booleanos mal interpretados por valores de cadena
+      if (typeof item.Texto === 'boolean') {
+        item.Texto = item.Texto ? 'Verdadero' : 'Falso';
+      }
+  
+      // Si es el inicio de una nueva pregunta
+      if (item.Estructura === 'Pregunta') {
+        // Si ya estamos procesando una pregunta, la guardamos antes de empezar la siguiente
+        if (preguntaActual) {
+          preguntasEstructuradas.push(preguntaActual);
+        }
+        preguntaActual = {
+          preg: item.Preg,
+          pregunta: item.Texto,
+          claseRelacionada: item["Clase relacionada"],
+          tipo: item.Tipo,
+          opciones: []
+        };
+      } else if (['A', 'B', 'C', 'D'].includes(item.Estructura)) {
+        // Si es una opción de respuesta
+        preguntaActual.opciones.push({
+          letra: item.Estructura,
+          texto: item.Texto
+        });
+      } else if (item.Estructura === 'Respuesta') {
+        // Si es la respuesta correcta
+        preguntaActual.respuestaCorrecta = item.Texto;
+      } else if (item.Estructura === 'Explicación') {
+        // Si es la explicación
+        preguntaActual.explicacion = item.Texto;
+      }
+    });
+  
+    // No olvides añadir la última pregunta si existe
+    if (preguntaActual) {
+      preguntasEstructuradas.push(preguntaActual);
+    }
+    
+    return preguntasEstructuradas;
+  }
+  
+
   getClassName(question){
 
     let respuesta = 'Clase sin asignar'
@@ -189,6 +482,16 @@ export class QuestionsComponent {
       if(clase){ 
         return `${clase.moduloIndex+1}.${clase.claseIndex+1} ${clase.titulo}`
       }
+    }
+    return respuesta
+  }
+
+  
+  getClassIdUser(question){
+
+    let respuesta = 'Pregunta sin Número'
+    if(question.value.idUser){
+      respuesta = question.value.idUser
     }
     return respuesta
   }
@@ -242,12 +545,24 @@ export class QuestionsComponent {
     return <FormArray>this.mainForm.get('questions');
   }
 
+  uniqueIdUserValidator(questionsFormArray: FormArray): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const idUser = control.value;
+      const idUserExists = questionsFormArray.controls
+        .some(formGroup => formGroup.get('idUser')?.value === idUser && formGroup !== control.parent);
+      
+      return idUserExists ? { nonUniqueUserId: true } : null;
+    };
+  }
+
+  appliedOrder = '';
 
   addQuestionInit(question: any): void {
     const questionType = question.type;
   
     const newQuestionGroup = this.fb.group({
       text: [question.text, [Validators.required]],
+      idUser: [question.idUser, [Validators.required]],
       type: [questionType],
       image: this.fb.group({
         url: [question?.image?.url || ''],
@@ -262,6 +577,14 @@ export class QuestionsComponent {
     }, { validators: questionTypeToValidators[questionType] });
   
     this.questions.push(newQuestionGroup);
+
+    this.questions.controls.forEach(control => {
+      control.get('idUser')?.setValidators([
+        Validators.required,
+        this.uniqueIdUserValidator(this.questions)
+      ]);
+      control.get('idUser')?.updateValueAndValidity();
+    });
   
     const questionIndex = this.questions.length - 1;
     if (question.options && question.options.length > 0) {
@@ -316,6 +639,7 @@ export class QuestionsComponent {
     const defaultQuestionType = Question.TYPE_SINGLE_CHOICE
     this.questions.push(this.fb.group({
       text: ['', [Validators.required]],
+      idUser : ['', [Validators.required,this.uniqueIdUserValidator(this.questions)]],
       type: [defaultQuestionType],
       image: this.fb.group({
         url: [''],
@@ -351,8 +675,8 @@ export class QuestionsComponent {
     this.questionStatus.splice(index, 1)
     this.selectedQuestionsSkills.splice(index, 1)
     console.log('Form Data:', this.mainForm);
-    // this.changeQuestion.emit(this.mainForm);
-    // this.formatExamQuestions()
+    this.changeQuestion.emit(this.mainForm);
+    this.formatExamQuestions()
   }
 
   changePoints(points){
@@ -367,12 +691,10 @@ export class QuestionsComponent {
   saveQuestionsForm(index){
 
 
-    console.log('saveQuestionsForm',this.questions)
-
     this.changeQuestion.emit(this.mainForm);
     this.formatExamQuestions()
 
-    if(this.mainForm.valid){ 
+    if(this.questions.controls[index]){ 
       this.questionStatus[index].editing = false
     }
 
@@ -711,6 +1033,11 @@ export class QuestionsComponent {
 
   }
 
+  formatQuestion(question){
+
+
+
+  }
 
   getTypeQuestion(type){
 

@@ -32,7 +32,8 @@ export class CourseService {
   ) 
   {
     this.getCourses();
-    //this.fixClasses();
+    //this.fixCoursesCustomURL();
+    
   }
 
   private coursesSubject = new BehaviorSubject<Curso[]>([]);
@@ -40,6 +41,31 @@ export class CourseService {
 
   private enterpriseRef: DocumentReference
 
+
+
+
+  
+  async fixCoursesCustomURL(){
+
+    console.log('fixCoursesCustomURL')
+
+    const batch = this.afs.firestore.batch();
+  
+    // Referencia a la colección de 'skill'
+    const collectionRef = this.afs.collection(Curso.collection).ref;
+    
+    // Obtiene todos los documentos de la colección 'skill'
+    const snapshot = await collectionRef.get();
+    
+    // Itera sobre cada documento y actualiza el campo 'enterprise' a null
+    snapshot.docs.forEach(doc => {
+      batch.update(doc.ref, { customUrl: ""});
+    });
+  
+    // Ejecuta el batch write
+    await batch.commit();
+    
+  }
 
   
   async fixClasses() {
