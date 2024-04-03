@@ -187,11 +187,11 @@ export class QuestionsComponent {
     formGroups.forEach(formGroup => {
       questionsFormArray.push(formGroup);
     });
+
+    this.formatExamQuestions()
+
   }
   
-  
-  
-
   constructor(
     private fb: FormBuilder,
     public icon: IconService,
