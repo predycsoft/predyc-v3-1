@@ -105,8 +105,8 @@ export class AdminStudentListComponent {
       )
       .subscribe((response) => {
         if (this.enterprises) {
-          const usersInList: UserInList[] = response.map(
-            ({ user, subscriptions }) => {
+          const usersInList: UserInList[] = response
+            .map(({ user, subscriptions }) => {
               const enterprise = this.enterprises.find(
                 (enterprise) => enterprise.id === user.enterprise?.id
               );
@@ -117,7 +117,7 @@ export class AdminStudentListComponent {
               const status =
                 activeSubscriptions.length > 0
                   ? SubscriptionClass.STATUS_ACTIVE
-                  : SubscriptionClass.STATUS_CANCELED;
+                  : SubscriptionClass.STATUS_INACTIVE;
 
               return {
                 displayName: user.displayName,
@@ -130,8 +130,15 @@ export class AdminStudentListComponent {
                 enterprise: enterprise ? enterprise.name : null,
                 status: SubscriptionClass.statusToDisplayValueDict[status],
               };
-            }
-          );
+            })
+            .filter((x) => {
+              if (!searchTerm) {
+                return true;
+              }
+              return x.displayName
+                .toLocaleLowerCase()
+                .includes(searchTerm.toLocaleLowerCase());
+            });
           // console.log("usersInList", usersInList)
           this.paginator.pageIndex = page - 1;
           this.dataSource.data = usersInList;
