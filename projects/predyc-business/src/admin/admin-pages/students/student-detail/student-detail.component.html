@@ -2,7 +2,7 @@
   >Estudiantes</app-navigate-back
 >
 <div
-  class="fw pdt20 pdl30 pdr30 backWhite"
+  class="fw pdt20 pdl20 pdr30 backWhite"
   fxLayout="row"
   fxLayoutGap="2rem"
   fxLayoutAlign=" center"
@@ -90,16 +90,26 @@
           >
         </div>
 
+
         <app-student-subscription-list
           [userRef]="userRef"
           [products]="products"
         ></app-student-subscription-list>
       </div>
       <div
+      class="fw mgt20 pdb05 border-b"
+      fxLayout="row"
+      fxLayoutAlign="start center"
+      fxLayoutGap=".5"
+      >
+      <span class="ft13 ft500 gray-10">Academico</span>
+      
+      </div>
+      <div
         fxLayout="row"
         fxLayoutGap="1rem"
         fxLayoutAlign=" center"
-        class="fw mgt20 pdb05 border-b"
+        class="fw mgt10 pdb05 "
       >
         <div
           fxLayout="row"
