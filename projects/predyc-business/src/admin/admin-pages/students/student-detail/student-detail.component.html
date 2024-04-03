@@ -33,6 +33,9 @@
         class="ft11 blue-5"
         >{{ user.phoneNumber }}</a
       >
+      <span *ngIf="user.enterprise" class="ft11 gray-8"
+        >Empresa: {{ user.enterprise.name }}</span
+      >
     </div>
   </div>
 </div>
@@ -40,24 +43,19 @@
   <div class="infoContainer" fxLayout="row" *ngIf="user">
     <div class="fw pdl10 pdr10">
       <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
-        <span
+        <!-- <span
           [ngClass]="tab == 0 ? 'selectedTab ' : 'ft13 gray-9 cursorPointer'"
           (click)="tab = 0"
           >Detalle</span
-        >
+        > -->
         <span
           [ngClass]="tab == 1 ? 'selectedTab' : 'ft13 gray-9 cursorPointer'"
           (click)="tab = 1"
           >Ventas</span
         >
-        <span
-          [ngClass]="tab == 2 ? 'selectedTab' : 'ft13 gray-9 cursorPointer'"
-          (click)="tab = 2"
-          >Académico</span
-        >
       </div>
       <!-- Detalles -->
-      <div *ngIf="tab == 0" class="fw">
+      <!-- <div *ngIf="tab == 0" class="fw">
         <div class="sticky">
           <div>
             <span class="gray-10 ft500 ft14 pdb05">Detalles</span>
@@ -70,7 +68,6 @@
             <div *ngIf="user.birthdate" fxLayout="column" class="">
               <span class="ft13 gray-8">Edad</span>
               <span class="ft13 gray-9">{{ user.age }}</span>
-              <!-- <span class="ft13 gray-9">{{2023 - user.birthdate}}</span> -->
             </div>
             <div *ngIf="user.country" fxLayout="column" class="">
               <span class="ft13 gray-8">País</span>
@@ -88,7 +85,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
       <!-- Ventas -->
       <div *ngIf="tab == 1" class="fw">
         <div class="fw">
@@ -111,30 +108,6 @@
             [products]="products"
           ></app-student-subscription-list>
         </div>
-        <div>
-          <div
-            class="fw mgt10 pdb05 border-b"
-            fxLayout="row"
-            fxLayoutAlign="start center"
-            fxLayoutGap=".5"
-          >
-            <span class="ft13 ft500 gray-10">Pagos</span>
-            <mat-icon
-              (click)="createCharge()"
-              class="mgl10 gray-5 cursorPointer ft20 linkIcon"
-              >add_circle</mat-icon
-            >
-          </div>
-
-          <app-student-charge-list
-            [userRef]="userRef"
-            [user]="user"
-            [products]="products"
-          ></app-student-charge-list>
-        </div>
-      </div>
-      <!-- Academico -->
-      <div *ngIf="tab == 2" class="">
         <div
           fxLayout="row"
           fxLayoutGap="1rem"

@@ -1,6 +1,5 @@
 import { Component, Input, SimpleChanges, ViewChild } from "@angular/core";
 import { DocumentReference } from "@angular/fire/compat/firestore";
-import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 import { Subscription } from "rxjs";
 import { Product } from "projects/shared/models/product.model";
@@ -44,8 +43,6 @@ export class StudentSubscriptionListComponent {
 
   dataSource = new MatTableDataSource<SubscriptionInfo>();
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-
   pageSize: number = 3;
   totalLength: number;
 
@@ -64,11 +61,6 @@ export class StudentSubscriptionListComponent {
         this.performSearch();
       }
     }
-  }
-
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.paginator.pageSize = this.pageSize;
   }
 
   performSearch() {

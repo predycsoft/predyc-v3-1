@@ -1,76 +1,91 @@
 <div class="">
-    <table mat-table [dataSource]="dataSource">
+  <table mat-table [dataSource]="dataSource">
+    <ng-container matColumnDef="productName">
+      <th mat-header-cell *matHeaderCellDef class="ft13">Producto</th>
+      <td mat-cell *matCellDef="let data" class="ft500 ft11 gray-10">
+        {{ data.productName | titlecase }}
+      </td>
+    </ng-container>
 
-        <ng-container matColumnDef="productName">
-            <th mat-header-cell *matHeaderCellDef class="ft13"> Producto </th>
-            <td mat-cell *matCellDef="let data" class="ft500 ft11  gray-10"> {{ data.productName | titlecase}} </td>
-        </ng-container>
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef class="ft13 centertext">Estatus</th>
+      <td mat-cell *matCellDef="let data" class="centertext ft11">
+        <div
+          class="pdt03 pdb03 radius6"
+          [ngClass]="
+            data.status == 'active' ? 'backGreen2 green-5' : 'backRed2 red-5'
+          "
+        >
+          {{ data.statusToDisplay }}
+        </div>
+      </td>
+    </ng-container>
 
-        <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef class="ft13 centertext"> Estatus </th>
-            <td mat-cell *matCellDef="let data" class="centertext ft11 "> 
-                <div class=" pdt03 pdb03 radius6" [ngClass]=" data.status == 'active' ? 'backGreen2 green-5' : 'backRed2 red-5' ">
-                    {{ data.statusToDisplay}} 
-                </div>
-            </td>
-        </ng-container>
+    <ng-container matColumnDef="createdAt">
+      <th mat-header-cell *matHeaderCellDef class="ft13 centertext">
+        Fecha de creación
+      </th>
+      <td mat-cell *matCellDef="let data" class="centertext ft11">
+        {{ data.createdAt | date : "dd/MM/yy" }}
+      </td>
+    </ng-container>
 
-        <ng-container matColumnDef="createdAt">
-            <th mat-header-cell *matHeaderCellDef class="ft13 centertext"> Fecha de creación </th>
-            <td mat-cell *matCellDef="let data" class="centertext ft11"> {{data.createdAt | date:'dd/MM/yy'}} </td>
-        </ng-container>
+    <ng-container matColumnDef="currentPeriodStart">
+      <th mat-header-cell *matHeaderCellDef class="ft13 centertext">
+        Inicio del período
+      </th>
+      <td mat-cell *matCellDef="let data" class="centertext ft11">
+        {{ data.currentPeriodStart | date : "dd/MM/yy" }}
+      </td>
+    </ng-container>
 
-        <ng-container matColumnDef="currentPeriodStart">
-            <th mat-header-cell *matHeaderCellDef class="ft13 centertext"> Inicio del período </th>
-            <td mat-cell *matCellDef="let data" class="centertext ft11"> {{ data.currentPeriodStart | date:'dd/MM/yy'}} </td>
-        </ng-container>
+    <ng-container matColumnDef="currentPeriodEnd">
+      <th mat-header-cell *matHeaderCellDef class="ft13 centertext">
+        Final del período
+      </th>
+      <td mat-cell *matCellDef="let data" class="centertext ft11">
+        {{ data.currentPeriodEnd | date : "dd/MM/yy" }}
+      </td>
+    </ng-container>
 
-        <ng-container matColumnDef="currentPeriodEnd">
-            <th mat-header-cell *matHeaderCellDef class="ft13 centertext"> Final del período </th>
-            <td mat-cell *matCellDef="let data" class="centertext ft11"> {{ data.currentPeriodEnd | date:'dd/MM/yy'}} </td>
-        </ng-container>
+    <ng-container matColumnDef="statusBasedComment">
+      <th mat-header-cell *matHeaderCellDef class="ft13 centertext">
+        Comentario
+      </th>
+      <td mat-cell *matCellDef="let data" class="centertext ft11">
+        <span class="ft11 gray-8 centertext">
+          {{ data.statusBasedComment }}
+        </span>
+      </td>
+    </ng-container>
 
-        <ng-container matColumnDef="statusBasedComment">
-            <th mat-header-cell *matHeaderCellDef class="ft13 centertext"> Comentario </th>
-            <td mat-cell *matCellDef="let data" class="centertext ft11">
-                <span class="ft11 gray-8 centertext" >
-                    {{data.statusBasedComment}}
-                </span>
-            </td>
-        </ng-container>
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef class="ft13 centertext">
+        Acciones
+      </th>
+      <td mat-cell *matCellDef="let data" class="centertext ft11">
+        <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="center center">
+          <button
+            [ngClass]="data.status == 'active' ? 'redButton' : 'greenButton'"
+            (click)="changeStatus(data)"
+          >
+            {{ data.status == "active" ? "Desactivar" : "Activar" }}
+          </button>
+          <!-- <mat-icon  class="ft11 cursorPointer" (click)="editSubscription(data)">edit</mat-icon> -->
+          <!-- <mat-icon class="red-5 ft11" (click)="deleteSubscription(data)">delete</mat-icon> -->
+        </div>
+      </td>
+    </ng-container>
 
-        <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef class="ft13 centertext"> Acciones </th>
-            <td mat-cell *matCellDef="let data" class="centertext ft11"> 
-                <div fxLayout="row" fxLayoutGap="1rem"  fxLayoutAlign="center center">
-                    <button [ngClass]=" data.status == 'active' ? 'redButton' : 'greenButton'" (click)="changeStatus(data)">
-                        {{data.status == 'active' ? 'Desactivar': 'Activar'}}
-                    </button>
-                    <!-- <mat-icon  class="ft11 cursorPointer" (click)="editSubscription(data)">edit</mat-icon> -->
-                    <!-- <mat-icon class="red-5 ft11" (click)="deleteSubscription(data)">delete</mat-icon> -->
-                </div>
-            </td>
-        </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <ng-container>
+      <tr mat-row *matRowDef="let data; columns: displayedColumns"></tr>
+    </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <ng-container>
-            <tr
-                mat-row
-                *matRowDef="let data; columns: displayedColumns;"
-                >
-            </tr>
-        </ng-container>
-
-        <tr class="mat-row" *matNoDataRow>
-            <td class="mat-cell" colspan="8">No se han encontrado suscripciones para el criterio de busqueda</td>
-        </tr>
-    </table>
-
-    <mat-paginator
-        aria-label="Select page of subscriptions"
-        [pageSize]="pageSize"
-        [length]="totalLength"
-    ></mat-paginator>
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell" colspan="8">
+        No se han encontrado suscripciones para el criterio de busqueda
+      </td>
+    </tr>
+  </table>
 </div>
-  
-  
