@@ -71,9 +71,9 @@ export class EnterpriseLicensesListComponent {
       this.products = products
 
       const licensesInList: LicensesInList[] = licenses.map(license => {
-        const licenseProduct = products.find(product => product.id === license.productRef.id)
+        const licenseProduct = products.find(product => product?.id === license?.productRef?.id)
         return {
-          productName: licenseProduct.name,
+          productName: licenseProduct?.name ? licenseProduct?.name : 'Licencias',
           acquired: license.quantity,
           used: license.quantityUsed,
           avaliable: license.quantity - license.quantityUsed,
