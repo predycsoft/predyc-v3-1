@@ -3,21 +3,13 @@ import { AngularFirestore } from "@angular/fire/compat/firestore";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 import { ActivatedRoute, Router } from "@angular/router";
-import {
-  Subject,
-  Subscription,
-  combineLatest,
-  debounceTime,
-  map,
-  of,
-  switchMap,
-} from "rxjs";
+import { Subject, Subscription, combineLatest, map, of, switchMap } from "rxjs";
 import { License } from "projects/shared/models/license.model";
 import { User } from "projects/shared/models/user.model";
 import { EnterpriseService } from "projects/predyc-business/src/shared/services/enterprise.service";
-import { UserService } from "projects/predyc-business/src/shared/services/user.service";
 import { Subscription as SubscriptionClass } from "projects/shared/models/subscription.model";
-import { BehaviorSubject } from "rxjs/internal/BehaviorSubject";
+import { ProductService } from "projects/predyc-business/src/shared/services/product.service";
+import { Product } from "projects/shared";
 
 interface EnterpriseInfo {
   name: string;
@@ -45,6 +37,7 @@ export class EnterpriseListComponent {
     "inUseLicenses",
     "rotations",
     "expirationDate",
+    "product",
     "status",
   ];
 
@@ -61,28 +54,31 @@ export class EnterpriseListComponent {
     private activatedRoute: ActivatedRoute,
     private afs: AngularFirestore,
     private enterpriseService: EnterpriseService,
+    private productService: ProductService,
     private router: Router
   ) {}
 
   public status: string;
   private statusFilterTerm = new Subject<string>();
-  DEBOUNCE_TIME: number = 300;
 
   search(status: string) {
     this.status = status;
     this.statusFilterTerm.next(status);
   }
 
+  products: Product[];
+
   ngOnInit() {
+    this.productService.getProducts$().subscribe((products) => {
+      this.products = products;
+    });
     this.status = this.activatedRoute.snapshot.queryParams["status"] || "all";
-    this.statusFilterTerm
-      // .pipe(debounceTime(this.DEBOUNCE_TIME))
-      .subscribe((term) => {
-        this.router.navigate([], {
-          queryParams: { status: term ? term : null, page: 1 },
-          queryParamsHandling: "merge",
-        });
+    this.statusFilterTerm.subscribe((term) => {
+      this.router.navigate([], {
+        queryParams: { status: term ? term : null, page: 1 },
+        queryParamsHandling: "merge",
       });
+    });
     this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(
       (params) => {
         const page = Number(params["page"]) || 1;
@@ -182,6 +178,13 @@ export class EnterpriseListComponent {
 
         const enterprises: EnterpriseInfo[] = response
           .map((enterpriseInfo) => {
+            const licenses = enterpriseInfo.licenses.sort(
+              (a, b) => b.currentPeriodEnd - a.currentPeriodEnd
+            );
+            const product =
+              licenses.length > 0
+                ? this.products.find((x) => x.id === licenses[0].productRef.id)
+                : null;
             if (
               enterpriseInfo.licenses.filter((x) => {
                 const today = +new Date();
@@ -216,6 +219,7 @@ export class EnterpriseListComponent {
                     x.currentPeriodEnd < today
                   );
                 }).length > 0,
+              product: product ? product.name : "N/A",
             };
           })
           .filter((x) => {
