@@ -85,6 +85,13 @@ export class CoursesComponent implements AfterViewInit {
     if (this.subscriptionObservableSubs) this.subscriptionObservableSubs.unsubscribe()
   }
 
+
+  getFormattedDuration() {
+    const hours = Math.floor(this.selectedCourse.duracion / 60);
+    const minutes = this.selectedCourse.duracion % 60;
+    return `${hours}hrs ${minutes} min`;
+  }
+
   async ngOnInit() {
 
     this.authService.user$.subscribe(user=> {
@@ -105,9 +112,7 @@ export class CoursesComponent implements AfterViewInit {
         })
       }
     })
-
     
-
     this.cursos = []
     this.buildCategories()
     this.enterpriseService.enterpriseLoaded$.subscribe(isLoaded => {

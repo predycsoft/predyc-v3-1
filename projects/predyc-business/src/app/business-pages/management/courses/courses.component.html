@@ -129,10 +129,7 @@
                                             <div class="gray-6 ft10">Duración de curso</div>
                                             <div class="gray-8 ft10">
                                                 <ng-container>
-                                                    {{ selectedCourse?.duracion / 60 | number : "1.0-0" }}hrs
-                                                </ng-container>
-                                                <ng-container>
-                                                    {{ selectedCourse?.duracion % 60 | number : "1.0-0" }} min
+                                                    {{ getFormattedDuration() }}
                                                 </ng-container>
                                             </div>
                                         </div>

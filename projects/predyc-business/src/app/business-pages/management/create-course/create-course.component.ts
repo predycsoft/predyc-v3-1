@@ -815,6 +815,12 @@ export class CreateCourseComponent {
         delete this.curso['skills'];
       }
 
+      this.curso.duracion = this.getDurationModuleCourse()
+
+      let duracion = this.getDurationModuleCourse()
+      this.curso.duracion = duracion;
+      
+
       await this.courseService.saveCourse(this.curso)
     }
   
@@ -2839,7 +2845,7 @@ getDurationModuleCourse(){
 
   let duracion = 0
 
-  this.modulos.forEach(modulo => {
+  this.modulos?.forEach(modulo => {
     duracion+=this.getDurationModule(modulo)
   });
 
