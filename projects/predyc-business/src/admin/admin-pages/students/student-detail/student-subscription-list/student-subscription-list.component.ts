@@ -74,12 +74,12 @@ export class StudentSubscriptionListComponent {
         const subscriptionsInfo: SubscriptionInfo[] = subscriptions.map(
           (subscription) => {
             const product = this.products.find(
-              (prod) => prod.id === subscription.productRef.id
+              (prod) => prod.id === subscription?.productRef?.id
             );
 
             return {
               ...subscription,
-              productName: product.name,
+              productName: product?.name,
               statusToDisplay:
                 SubscriptionClass.statusToDisplayValueDict[subscription.status],
             };

@@ -31,6 +31,7 @@
         [href]="'https://wa.me/' + user.phoneNumber?.split('-').join('')"
         target="_blank"
         class="ft11 blue-5"
+        *ngIf="user.phoneNumber"
         >{{ user.phoneNumber }}</a
       >
       <span *ngIf="user.enterprise" class="ft11 gray-8"
@@ -90,26 +91,43 @@
           >
         </div>
 
-
         <app-student-subscription-list
           [userRef]="userRef"
           [products]="products"
         ></app-student-subscription-list>
       </div>
       <div
-      class="fw mgt20 pdb05 border-b"
-      fxLayout="row"
-      fxLayoutAlign="start center"
-      fxLayoutGap=".5"
+        class="fw mgt20 pdb05 border-b"
+        fxLayout="row"
+        fxLayoutAlign="start center"
+        fxLayoutGap=".5"
       >
-      <span class="ft13 ft500 gray-10">Academico</span>
-      
+        <div class="fw" fxLayout="row" fxLayoutAlign="space-between center">
+          <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign=" center">
+            <span class="ft13 ft500 gray-10">Academico</span>
+            <span
+              *ngIf="user?.profile"
+              class="ft13 backGray4 radius20 gray-8 pd05"
+              >Perfil: {{ user.profile.name }}</span
+            >
+          </div>
+          <div
+            class="blueLink"
+            *ngIf="
+              user?.product &&
+              user.product.type === productClass.TYPE_SIMPLIFIED
+            "
+            (click)="saveAsExtraCourse()"
+          >
+            Inscribir cursos del perfil como simplificado
+          </div>
+        </div>
       </div>
       <div
         fxLayout="row"
         fxLayoutGap="1rem"
         fxLayoutAlign=" center"
-        class="fw mgt10 pdb05 "
+        class="fw mgt10 pdb05"
       >
         <div
           fxLayout="row"
@@ -146,13 +164,9 @@
         fxLayout="column"
         fxLayoutGap="1rem"
       >
-        <app-student-extra-courses
-          [userProfileRef]="user.profile"
-          [userRef]="userRef"
-        ></app-student-extra-courses>
         <app-student-courses-list
           [userRef]="userRef"
-          [userName]="user.name"
+          [userName]="user?.name"
         ></app-student-courses-list>
       </div>
       <div *ngIf="academicTab === 1" class="fw">
