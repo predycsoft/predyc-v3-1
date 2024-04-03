@@ -359,7 +359,7 @@ export class UserService {
       .valueChanges();
   }
 
-  getActiveCoursesByStudentDateFiltered$(
+  getSubscriptionByStudentDateFiltered$(
     userRef: DocumentReference<any>,
     dateIni = null,
     dateEnd = null

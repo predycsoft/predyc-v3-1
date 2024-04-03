@@ -19,41 +19,42 @@
         </div>
     </mat-menu>
 
-
     <input type="file" (change)="uploadUsers($event)" #uploadfileUsers style="display: none" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
 
-
-
-    <div class="fw mgt15">
+    <div class="fw">
         <table mat-table [dataSource]="dataSource">
             <!-- Nombre Column -->
             <ng-container matColumnDef="displayName">
-                <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Nombre</th>
-                <td mat-cell *matCellDef="let data" class="centertext ft12"> {{ data.displayName | titlecase }} </td>
+                <th mat-header-cell *matHeaderCellDef class="ft14 align-start"> Nombre</th>
+                <td mat-cell *matCellDef="let data" class="align-start ft12"> {{ data.displayName | titlecase }} </td>
             </ng-container>
 
             <!-- Departamento Column -->
             <ng-container matColumnDef="department">
-                <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Departamento</th>
-                <td mat-cell *matCellDef="let data" class="centertext ft12"> {{ data.departmentName }} </td>
+                <th mat-header-cell *matHeaderCellDef class="ft14 align-start"> Departamento</th>
+                <td mat-cell *matCellDef="let data" class="align-start ft12"> {{ data.departmentName }} </td>
             </ng-container>
 
             <!-- Perfil Column -->
             <ng-container matColumnDef="profile">
-                <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Perfil</th>
-                <td mat-cell *matCellDef="let data" class="centertext ft12"> {{ data.profileName }} </td>
+                <th mat-header-cell *matHeaderCellDef class="ft14 align-start"> Perfil</th>
+                <td mat-cell *matCellDef="let data" class="align-start ft12"> {{ data.profileName }} </td>
             </ng-container>
 
             <!-- Email Column -->
             <ng-container matColumnDef="email">
-                <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Email</th>
-                <td mat-cell *matCellDef="let data" class="centertext ft12"> {{ data.email }} </td>
+                <th mat-header-cell *matHeaderCellDef class="ft14 align-start"> Email</th>
+                <td mat-cell *matCellDef="let data" class="align-start ft12"> {{ data.email }} </td>
             </ng-container>
 
             <!-- Status Column -->
             <ng-container matColumnDef="status">
-                <th mat-header-cell *matHeaderCellDef class="centertext ft14"> Estatus </th>
-                <td mat-cell *matCellDef="let data" class="centertext ft12  "> {{data.status}} </td>
+                <th mat-header-cell *matHeaderCellDef class="ft13 centertext">Estatus</th>
+                <td mat-cell *matCellDef="let user" class="centertext ft12">
+                <div class="pdt03 pdb03 radius6" [ngClass]="user.status == 'Activo' ? 'backGreen2 green-5' : 'backGray3 gray-5'">
+                    {{ user.status }}
+                </div>
+                </td>
             </ng-container>
     
             <!-- Eliminar Column -->

@@ -11,13 +11,15 @@ import { DepartmentService } from 'projects/predyc-business/src/shared/services/
 import { DialogService } from 'projects/predyc-business/src/shared/services/dialog.service';
 import { ProfileService } from 'projects/predyc-business/src/shared/services/profile.service';
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
-import { Subscription, combineLatest } from 'rxjs';
+import { Subscription, combineLatest, forkJoin, map, switchMap, take } from 'rxjs';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import * as XLSX from 'xlsx-js-style';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { timestampToDateNumbers } from 'projects/shared/utils';
 import Swal from 'sweetalert2';
 import { AlertsService } from 'projects/predyc-business/src/shared/services/alerts.service';
+import { Subscription as SubscriptionClass } from "shared";
+
 
 
 interface studentInList {
@@ -55,6 +57,7 @@ export class EnterpriseStudentsListComponent {
     "department",
     "profile",
     "email",
+    "status"
     // "delete",
   ];
 
@@ -69,33 +72,66 @@ export class EnterpriseStudentsListComponent {
   addingStudent: boolean = false;
   newStudent: User
 
+
+
+
   ngOnInit() {
-    this.combinedSubscription = combineLatest(
-      [
-        this.profileService.getProfiles$(),
-        this.departmentService.getDepartments$(),
-        this.userService.getStudentUsersByEnterpriseRef$(this.enterpriseRef),
-      ]
-    ).subscribe(([profiles, departments, users]) => {
+    this.combinedSubscription = combineLatest([
+      this.profileService.getProfiles$(),
+      this.departmentService.getDepartments$(),
+      this.userService.getStudentUsersByEnterpriseRef$(this.enterpriseRef),
+    ]).pipe(
+      switchMap(([profiles, departments, users]) => {
+        // Mapear cada usuario a un observable que obtiene sus suscripciones
+        const usersWithSubscriptionsObservables = users.map(user => {
+          const userRef = this.userService.getUserRefById(user.uid);
+          return this.userService.getSubscriptionByStudentDateFiltered$(userRef).pipe(
+            take(1),
+            map(subscriptions => ({
+              user,
+              subscriptions,
+            }))
+          );
+        });
+  
+        // Esperar a que todos los observables de usuarios con sus suscripciones se completen
+        return forkJoin(usersWithSubscriptionsObservables).pipe(
+          map(usersWithSubscriptions => {
+            return usersWithSubscriptions.map(({ user, subscriptions }) => {
+              const userProfileName = user?.profile ? profiles?.find(profile => profile?.id === user?.profile?.id)?.name : "Sin asignar";
+              const userDepartmentName = user?.departmentRef ? departments?.find(department => department?.id === user?.departmentRef?.id)?.name : "Sin asignar";
+  
+              // Aquí puedes acceder a las suscripciones del usuario y usarlas como necesites
+              // Por ejemplo, calculando el estado de sus suscripciones, etc.
 
-      console.log('users',users)
+              const activeSubscriptions = subscriptions.filter(
+                (x) => x.status === SubscriptionClass.STATUS_ACTIVE
+              );
 
-      const studentsInList: studentInList[] = users.map(user => {
-        const userProfileName = user?.profile ? profiles?.find(profile => profile?.id === user?.profile?.id)?.name : "Sin asignar"
-        const userDepartmentName = user?.departmentRef ? departments?.find(department => department?.id === user?.departmentRef?.id)?.name : "Sin asignar"
+              console.log('activeSubscriptions',activeSubscriptions,subscriptions)
 
-        return {
-          displayName: user.displayName,
-          departmentName: userDepartmentName,
-          profileName: userProfileName,
-          email: user.email,
-          status: user.status,
-        }
+              const status =
+                activeSubscriptions.length > 0
+                  ? SubscriptionClass.STATUS_ACTIVE
+                  : SubscriptionClass.STATUS_INACTIVE;
+  
+              return {
+                displayName: user.displayName,
+                departmentName: userDepartmentName,
+                profileName: userProfileName,
+                email: user.email,
+                status: SubscriptionClass.statusToDisplayValueDict[status],
+                //subcription: subscriptions
+                // Agrega aquí cualquier información adicional de suscripciones que necesites
+              };
+            });
+          })
+        );
       })
-      this.dataSource.data = studentsInList
-
-    })
-
+    ).subscribe((studentsInList) => {
+      this.dataSource.data = studentsInList;
+      console.log('studentsInList', studentsInList);
+    });
   }
 
   openCreateUserModal(): NgbModalRef {

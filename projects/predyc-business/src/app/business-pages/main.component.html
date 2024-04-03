@@ -28,7 +28,7 @@
             </div>
             <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
                 <div class="mgl10">
-                    <button *ngIf="user.isSystemUser" class="blueButton ft13" (click)="redirect()" >Ir a plataforma de {{isAdminPage? "empresas" : "administradores"}}</button>
+                    <span *ngIf="user.isSystemUser" class="blueLink ft13" (click)="redirect()" >Ir a plataforma de {{isAdminPage? "empresas" : "administradores"}}</span>
                 </div>
                 <div *ngIf="!isAdminPage" (click)="openSupport()">
                     <img [src]="icon.headset" alt="" class="h24px cursorPointer makeGray"/>

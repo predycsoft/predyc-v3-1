@@ -1361,7 +1361,7 @@ export class DashboardComponent {
           const classesObservable = this.courseService.getClassesByStudentDatefilterd$(userRef,fechaInicio,fechaFin).pipe(take(1));
           const allCoursesObservable = this.courseService.getActiveCoursesByStudent(userRef)
           const certificatesObservable = this.courseService.getCertificatestDatefilterd$(userRef,fechaInicio,fechaFin).pipe(take(1))
-          const subscriptionsObservable = this.userService.getActiveCoursesByStudentDateFiltered$(userRef,fechaInicio,fechaFin).pipe(take(1))
+          const subscriptionsObservable = this.userService.getSubscriptionByStudentDateFiltered$(userRef,fechaInicio,fechaFin).pipe(take(1))
           return combineLatest([coursesObservable, classesObservable,certificatesObservable,allCoursesObservable,subscriptionsObservable]).pipe(
             map(([courses, classes,certificados,allCourses,allsubscriptions]) => {
               // Aquí tienes un objeto que incluye tanto los cursos como las clases asociadas a ese usuario
