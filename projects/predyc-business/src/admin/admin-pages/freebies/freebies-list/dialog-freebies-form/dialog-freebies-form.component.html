@@ -1,132 +1,61 @@
 <div class="fw fh mgt10 pd10">
-	<div
-		fxLayout="row"
-		fxLayoutAlign="end center">
-		<img
-			[src]="icon.close"
-			(click)="closeDialog()"
-			class="makeGray h20px cursorPointer" />
+	<div fxLayout="row" fxLayoutAlign="space-between enter">
+			<span class="ft16 ft500 gray-10">{{ this.freebie ? "Editar" : "Nuevo" }} Freebie</span>
+		<img [src]="icon.close" (click)="closeDialog()" class="makeGray h20px cursorPointer" />
 	</div>
-	<div
-		fxLayout="row"
-		fxLayoutAlign="space-between start"
-		fxLayoutGap=".20rem">
+	<div class="fw" fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap=".20rem">
 		<ng-container>
 			<ng-container>
 				<form
+					class="fw"
 					[formGroup]="freebieForm"
 					(ngSubmit)="onSubmit()">
-					<div>
-						<span class="ft16 ft500 gray-10">{{ this.freebie ? "Editar" : "Nuevo" }} Freebie</span>
-					</div>
-
 					<div
+						
 						fxLayout="row"
 						fxLayoutAlign="space-between"
-						class="mgt10">
+						class="mgt10 fw">
 						<!-- Información general -->
-						<div
-							fxLayout="column"
-							fxLayoutGap="1rem"
-							class="">
-							<div>
+						<div fxLayout="column" fxLayoutGap="1rem" class="fw">
+							<!-- <div>
 								<span class="ft18 gray-9 ft500">Información general</span>
-							</div>
-							<div
-								class="fw"
-								fxLayout="column"
-								fxLayoutGap="1rem">
-								<div
-									fxLayout="row"
-									fxLayoutAlign="space-between center"
-									fxLayoutGap="1.5rem"
-									class="fw">
-									<div
-										class=""
-										fxLayout="row"
-										fxLayoutAlign="start center"
-										fxLayoutGap=".3rem">
-										<label
-											for="name"
-											class="gray-9 ft14"
-											>Nombre:</label
-										>
-										<input
-											class="backWhite fw pdl03"
-											id="name"
-											type="text"
-											formControlName="name" />
-									</div>
-									<div
-										class="custom-invalid-feedback"
-										*ngIf="freebieForm.get('name').errors && displayErrors">
-										<div *ngIf="freebieForm.get('name').errors?.required">
-											Es obligatorio especificar el nombre del freebie
-										</div>
+							</div> -->
+							<div class="fw" fxLayout="column" fxLayoutGap="1rem">
+								<div class="form-group">
+									<label class="ft12">Título</label>
+									<input
+									[class.is-invalid]="freebieForm.controls['name'].errors && displayErrors"
+									formControlName="name" type="text" class="form-control customInput2 radius6 ">
+									<div class="invalid-feedback" *ngIf="freebieForm.controls['name'].errors && displayErrors"> 
+										Es obligatorio especificar el nombre del freebie
 									</div>
 								</div>
-								<div
-									fxLayout="row"
-									fxLayoutAlign="space-between center"
-									fxLayoutGap=".5rem"
-									class="fw">
-									<div
-										class="fh fw"
-										fxLayout="row"
-										fxLayoutAlign="start center"
-										fxLayoutGap=".25rem">
-										<span class="gray-9 ft14">Tipo: </span>
-										<mat-select
-											placeholder="Seleccione el tipo"
-											formControlName="type"
-											style="border: 1px solid black"
-											class="pdl03 pdr03 pdt05 fh">
-											<mat-option
-												*ngFor="let type of typeOptions"
-												[value]="type"
-												>{{ type | titlecase }}</mat-option
-											>
-										</mat-select>
-									</div>
-									<div
-										class="custom-invalid-feedback"
-										*ngIf="freebieForm.get('type').errors && displayErrors">
-										<div *ngIf="freebieForm.get('type').errors?.required">
-											Es obligatorio especificar el tipo del freebie
-										</div>
+								<div class="form-group">
+									<label class="ft12">Tipo</label>
+									<input
+									[class.is-invalid]="freebieForm.controls['type'].errors && displayErrors"
+									formControlName="type" type="text" class="form-control customInput2 radius6 ">
+									<div class="invalid-feedback" *ngIf="freebieForm.controls['type'].errors && displayErrors"> 
+										Es obligatorio especificar el tipo del freebie
 									</div>
 								</div>
-
-								<div
-									class=""
-									fxLayout="column">
-									<label
-										for="description"
-										class="gray-9 ft15"
-										>Descripción:</label
-									>
+								<div class="form-group">
+									<label>Descripción</label>
 									<textarea
-										id="description"
-										type="text"
-										autocomplete="off"
-										class="backWhite fw"
-										formControlName="description"></textarea>
+									[class.is-invalid]="freebieForm.controls['description'].errors && displayErrors"
+									 rows="3"  formControlName="description" type="text" class="form-control ft12  customInput2 radius6" style="resize: none;"></textarea>
+									 <div class="invalid-feedback" *ngIf="freebieForm.controls['description'].errors && displayErrors"> 
+										Debe indicar la descripción
+									</div>
 								</div>
 								<!-- Image -->
-								<div>
+								<div style="display: flex; justify-content: center; align-items: center;">
 									<div
-										(click)="freebieForm.get('photoUrl').value ? null : fileInput.click()"
+										(click)="fileInput.click()"
 										class="cursorPointer">
-										<img
-											[src]="photoUrl ? photoUrl : 'assets/images/default/default-user-image.jpg'"
-											class="avatar5"
-											alt="" />
+										<img style="height: 200px;" [src]="photoUrl ? photoUrl : 'assets/images/default/default-user-image.jpg'" class="radius6" alt="" />
 									</div>
-									<input
-										#fileInput
-										type="file"
-										style="display: none"
-										(change)="onFileSelected($event, 'photoUrl')" />
+									<input #fileInput accept="image/*" type="file" hidden (change)="onFileSelected($event, 'photoUrl')" />
 								</div>
 								<!-- File -->
 								<span>Archivo</span>
@@ -137,8 +66,8 @@
 										fxLayoutGap="10px"
 										fxLayout=" center">
 										<span>{{
-											freebieForm.get("file").value.length > 30
-												? freebieForm.get("file").value.slice(0, 30) + "..."
+											freebieForm.get("file").value.length > 50
+												? freebieForm.get("file").value.slice(0, 50) + "..."
 												: freebieForm.get("file").value
 										}}</span>
 										<img
@@ -146,9 +75,15 @@
 											alt="" />
 									</div>
 									<ng-template #input2>
-										<input
-											type="file"
-											(change)="onFileSelected($event, 'file')" />
+										<button type="button" (click)="cursomFile.click()" class="grayButton pd03 radius6 ft12 ft500 h28px mgr10 gray-8" fxLayoutGap="0.625">
+											<img [src]="icon.arrowUp" class="h16px pdr05" alt="">
+											Adjuntar archivo
+										</button>
+										<input #cursomFile type="file" (change)="onFileSelected($event, 'file')" hidden />
+										<div *ngIf="this.uploadedFile;" fxLayout="row" fxLayoutGap="10px" fxLayout=" center">
+										<span class="pdt08">{{ uploadedFileName.length > 50 ? uploadedFileName.slice(0, 50) + "..." : uploadedFileName}}</span>
+										<img [src]="icon.greenCheck" alt="" />
+									</div>
 									</ng-template>
 								</div>
 								<div
@@ -158,26 +93,14 @@
 										Es obligatorio adjuntar un archivo
 									</div>
 								</div>
-								<div
-									fxLayout="row"
-									fxLayoutAlign="space-between center"
-									fxLayoutGap="1.5rem"
-									class="fw">
-									<div
-										class=""
-										fxLayout="row"
-										fxLayoutAlign="start center"
-										fxLayoutGap=".3rem">
-										<label
-											for="customUrl"
-											class="gray-9 ft14"
-											>Custom url:</label
-										>
-										<input
-											class="backWhite fw pdl03"
-											id="customUrl"
-											type="text"
-											formControlName="customUrl" />
+
+								<div class="form-group">
+									<label class="ft12">Custom URL</label>
+									<input
+									[class.is-invalid]="freebieForm.controls['customUrl'].errors && displayErrors"
+									formControlName="customUrl" type="customUrl" class="form-control customInput2 radius6 ">
+									<div class="invalid-feedback" *ngIf="freebieForm.controls['customUrl'].errors && displayErrors"> 
+										Es obligatorio especificar customUrl
 									</div>
 								</div>
 							</div>

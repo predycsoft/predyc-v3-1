@@ -95,6 +95,8 @@ export class DialogFreebiesFormComponent {
 				this.uploadedImage = file;
 			} else if (type === "file") {
 				this.uploadedFile = file;
+				const fileName = cleanFileName(this.uploadedFile.name);
+				this.uploadedFileName = fileName
 			}
 		};
 	}
@@ -102,6 +104,7 @@ export class DialogFreebiesFormComponent {
 	photoUrl;
 	uploadedImage;
 	uploadedFile;
+	uploadedFileName
 
 	async savePhotoUrl() {
 		if (this.uploadedImage) {

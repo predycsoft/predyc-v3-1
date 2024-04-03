@@ -9,6 +9,9 @@ import { IconService } from "projects/predyc-business/src/shared/services/icon.s
 import { ActivatedRoute, Router } from "@angular/router";
 import { Freebie } from "projects/shared";
 import { HttpClient } from "@angular/common/http";
+import Swal from 'sweetalert2';
+import { AlertsService } from "projects/predyc-business/src/shared/services/alerts.service";
+
 
 @Component({
 	selector: "app-freebies-list",
@@ -22,10 +25,11 @@ export class FreebiesListComponent {
 		private modalService: NgbModal,
 		public icon: IconService,
 		private afs: AngularFirestore,
-		private http: HttpClient
+		private http: HttpClient,
+		private alertService: AlertsService,
 	) {}
 
-	displayedColumns: string[] = ["name", "description", "type", "file"];
+	displayedColumns: string[] = ["name", "description", "customUrl","type", "file"];
 
 	dataSource = new MatTableDataSource<Freebie>();
 
@@ -97,6 +101,26 @@ export class FreebiesListComponent {
 
 			// Close the new window after download
 			newWindow.close();
+		});
+	}
+
+	deleteFreebie(freebie){
+		Swal.fire({
+			title: "Borrar freebie",
+			text:`Va a eliminar el freebie ${freebie.name}, ¿desea continuar?`,
+			icon: "warning",
+			showCancelButton: true,
+			confirmButtonText: "Borrar",
+			confirmButtonColor: 'var(--red-5)',
+			}).then((result) => {
+			/* Read more about isConfirmed, isDenied below */
+			if (result.isConfirmed) {
+				console.log('delete frebee',freebie.id)
+				// Eliminamos el documento principal
+				this.afs.collection("freebie").doc(freebie.id).delete();
+				console.log("freebie eliminado")
+				this.alertService.succesAlert(`Has eliminado el freebie ${freebie.name} exitosamente.`)
+			}
 		});
 	}
 	// downloadFile(freebie) {
