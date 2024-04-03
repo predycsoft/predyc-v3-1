@@ -12,6 +12,27 @@
     background:  var(--gray-3)!important;
     font-size: 12px !important;
 } */
+.selectedTab{
+    position: relative;
+}
+
+.tab{
+    cursor: pointer;
+}
+
+.selectedTab::after {
+    content: ''; /* Necesario para que el pseudo-elemento se muestre */
+    position: absolute; /* Posiciona el pseudo-elemento respecto a su contenedor */
+    bottom: 0; /* Coloca el pseudo-elemento en la parte inferior del contenedor */
+    left: 50%; /* Centra el pseudo-elemento */
+    transform: translateX(-50%); /* Ajuste fino para centrar exactamente el pseudo-elemento */
+    width: 70%; /* El ancho del "borde" curvado */
+    height: 3px; /* El grosor del "borde" curvado */
+    background-color: var(--blue-5); /* Color del "borde" curvado */
+    border-top-right-radius: 10px; /* Curvatura del "borde" */
+    border-top-left-radius: 10px; /* Curvatura del "borde" */
+
+}
 
 .chipDark{
     color: var(--gray-1);
