@@ -151,13 +151,13 @@ export class DialogDownloadReportComponent {
         const userCourseObservables = users.map(user => {
           const userRef = this.userService.getUserRefById(user.uid);
           // Obtener cursos activos por usuario
-          const coursesObservable = this.courseService.getActiveCoursesByStudentDateFiltered$(userRef,fechaInicio,fechaFin);
+          const coursesObservable = this.courseService.getActiveCoursesByStudentDateFiltered$(userRef,fechaInicio,fechaFin).pipe(take(1));
           // Obtener clases asociadas al usuario, independientemente de los cursos
-          const classesObservable = this.courseService.getClassesByStudentDatefilterd$(userRef,fechaInicio,fechaFin);
+          const classesObservable = this.courseService.getClassesByStudentDatefilterd$(userRef,fechaInicio,fechaFin).pipe(take(1));
 
           const allCoursesObservable = this.courseService.getActiveCoursesByStudent(userRef)
 
-          const certificatesObservable = this.courseService.getCertificatestDatefilterd$(userRef,fechaInicio,fechaFin)
+          const certificatesObservable = this.courseService.getCertificatestDatefilterd$(userRef,fechaInicio,fechaFin).pipe(take(1))
       
           return combineLatest([coursesObservable, classesObservable,certificatesObservable,allCoursesObservable]).pipe(
             map(([courses, classes,certificados,allCourses]) => {
@@ -168,7 +168,7 @@ export class DialogDownloadReportComponent {
           );
         });
         // Combina los observables de todos los usuarios con sus cursos y clases
-        return combineLatest(userCourseObservables);
+        return combineLatest(userCourseObservables).pipe(take(1));
         })).subscribe(response => {
         console.log('datos reporte',response)
         const users: User[] = response.map(({user, courses,classes,certificados,allCourses}) => {

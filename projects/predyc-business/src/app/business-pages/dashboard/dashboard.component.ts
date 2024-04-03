@@ -698,7 +698,7 @@ export class DashboardComponent {
     wsResumenPorPuesto['H5'] = { t: 's', v: 'Cant. de Est. con ritmo bajo', s: redCalibriBoldRedCenterBordered };
     wsResumenPorPuesto['I5'] = { t: 's', v: 'Cant. de Est. sin plan de estudio', s: gray6CalibriBoldGreyCenterBordered };
     wsResumenPorPuesto['J5'] = { t: 's', v: 'Procentaje de completación promedio de los estudiantes', s: grayCalibriBoldCenterCenterBordered };
-    wsResumenPorPuesto['K5'] = { t: 's', v: 'Nota promedio de los estudiantes', s: grayCalibriBoldCenterCenterBordered };
+    wsResumenPorPuesto['K5'] = { t: 's', v: 'Calificación promedio de los estudiantes', s: grayCalibriBoldCenterCenterBordered };
 
 
     perfiles.forEach((perfil,i) => {
@@ -806,7 +806,7 @@ export class DashboardComponent {
     wsResumenEstudiantes['J5'] = { t: 's', v: 'Horas completadas', s: grayCalibriBoldCenterCenterBordered };
     wsResumenEstudiantes['K5'] = { t: 's', v: 'Progreso', s: grayCalibriBoldCenterCenterBordered };
 
-    wsResumenEstudiantes['L5'] = { t: 's', v: 'Nota promedio', s: grayCalibriBoldCenterCenterBordered };
+    wsResumenEstudiantes['L5'] = { t: 's', v: 'Calificación promedio', s: grayCalibriBoldCenterCenterBordered };
 
 
     wsResumenEstudiantes['M5'] = { t: 's', v: 'Ritmo', s: grayCalibriBoldCenterCenterBordered };
@@ -971,7 +971,7 @@ export class DashboardComponent {
     wsDetalleEstudiantes['I5'] = { t: 's', v: 'Duración del curso horas', s: grayCalibriBoldCenterCenterBordered };
     wsDetalleEstudiantes['J5'] = { t: 's', v: 'Progreso', s: grayCalibriBoldCenterCenterBordered };
     wsDetalleEstudiantes['K5'] = { t: 's', v: 'Estatus', s: grayCalibriBoldCenterCenterBordered };
-    wsDetalleEstudiantes['L5'] = { t: 's', v: 'Nota', s: grayCalibriBoldCenterCenterBordered };
+    wsDetalleEstudiantes['L5'] = { t: 's', v: 'Calificación', s: grayCalibriBoldCenterCenterBordered };
     wsDetalleEstudiantes['M5'] = { t: 's', v: 'Fecha límite de completación', s: grayCalibriBoldCenterCenterBordered };
 
 
@@ -1350,21 +1350,18 @@ export class DashboardComponent {
     }
 
 
-    console.log('fechas reporte',fechaInicio,fechaFin)
-
-
     this.userServiceSubscription = this.userService.getUsersReport$(null,null,null,null,fechaInicio,fechaFin).pipe(
       filter(user=>user !=null),take(1),
       switchMap(users => {
         const userCourseObservables = users.map(user => {
           const userRef = this.userService.getUserRefById(user.uid);
           // Obtener cursos activos por usuario
-          const coursesObservable = this.courseService.getActiveCoursesByStudentDateFiltered$(userRef,fechaInicio,fechaFin);
+          const coursesObservable = this.courseService.getActiveCoursesByStudentDateFiltered$(userRef,fechaInicio,fechaFin).pipe(take(1));
           // Obtener clases asociadas al usuario, independientemente de los cursos
-          const classesObservable = this.courseService.getClassesByStudentDatefilterd$(userRef,fechaInicio,fechaFin);
+          const classesObservable = this.courseService.getClassesByStudentDatefilterd$(userRef,fechaInicio,fechaFin).pipe(take(1));
           const allCoursesObservable = this.courseService.getActiveCoursesByStudent(userRef)
-          const certificatesObservable = this.courseService.getCertificatestDatefilterd$(userRef,fechaInicio,fechaFin)
-          const subscriptionsObservable = this.userService.getActiveCoursesByStudentDateFiltered$(userRef,fechaInicio,fechaFin)
+          const certificatesObservable = this.courseService.getCertificatestDatefilterd$(userRef,fechaInicio,fechaFin).pipe(take(1))
+          const subscriptionsObservable = this.userService.getActiveCoursesByStudentDateFiltered$(userRef,fechaInicio,fechaFin).pipe(take(1))
           return combineLatest([coursesObservable, classesObservable,certificatesObservable,allCoursesObservable,subscriptionsObservable]).pipe(
             map(([courses, classes,certificados,allCourses,allsubscriptions]) => {
               // Aquí tienes un objeto que incluye tanto los cursos como las clases asociadas a ese usuario
@@ -1374,7 +1371,7 @@ export class DashboardComponent {
           );
         });
         // Combina los observables de todos los usuarios con sus cursos y clases
-        return combineLatest(userCourseObservables);
+        return combineLatest(userCourseObservables).pipe(take(1));
         })).subscribe(response => {
         console.log('datos reporte',response)
         const users: User[] = response.map(({user, courses,classes,certificados,allCourses,allsubscriptions}) => {
