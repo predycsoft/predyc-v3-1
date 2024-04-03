@@ -135,9 +135,14 @@ export class AdminStudentListComponent {
               if (!searchTerm) {
                 return true;
               }
-              return x.displayName
-                .toLocaleLowerCase()
-                .includes(searchTerm.toLocaleLowerCase());
+              return (
+                x.displayName
+                  .toLocaleLowerCase()
+                  .includes(searchTerm.toLocaleLowerCase()) ||
+                x.email
+                  .toLocaleLowerCase()
+                  .includes(searchTerm.toLocaleLowerCase())
+              );
             });
           // console.log("usersInList", usersInList)
           this.paginator.pageIndex = page - 1;
