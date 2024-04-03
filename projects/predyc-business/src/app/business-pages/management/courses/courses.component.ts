@@ -89,7 +89,7 @@ export class CoursesComponent implements AfterViewInit {
   getFormattedDuration() {
     const hours = Math.floor(this.selectedCourse.duracion / 60);
     const minutes = this.selectedCourse.duracion % 60;
-    return `${hours}hrs ${minutes} min`;
+    return `${hours} hrs ${minutes} min`;
   }
 
   async ngOnInit() {
