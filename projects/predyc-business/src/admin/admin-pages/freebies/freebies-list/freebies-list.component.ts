@@ -29,7 +29,7 @@ export class FreebiesListComponent {
 		private alertService: AlertsService,
 	) {}
 
-	displayedColumns: string[] = ["name", "description", "customUrl","type", "file"];
+	displayedColumns: string[] = ["name", "customUrl","type", "file"];
 
 	dataSource = new MatTableDataSource<Freebie>();
 
