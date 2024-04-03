@@ -32,7 +32,10 @@ export class EnterpriseDetailComponent {
         this.firstLoad = true //check this
       })
     }
-    else this.firstLoad = true
+    else{
+      this.firstLoad = true
+      this.tab = 0
+    } 
   }
 
 

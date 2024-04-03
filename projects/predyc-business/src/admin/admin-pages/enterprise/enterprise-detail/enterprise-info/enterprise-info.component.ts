@@ -27,6 +27,7 @@ export class EnterpriseInfoComponent {
 	) {}
 
 	enterpriseForm: FormGroup;
+	showError
 
 	imageUrl: string | ArrayBuffer | null = null;
 	uploadedImage: File | null = null;
@@ -125,6 +126,11 @@ export class EnterpriseInfoComponent {
 	}
 
 	async onSubmit() {
+		this.showError = false
+		if(!this.enterpriseForm.valid){
+			this.showError = true
+			return
+		}
 		await this.saveEnterprisePhoto();
 		if (this.enterprise.photoUrl) this.enterpriseForm.patchValue({ photoUrl: this.enterprise.photoUrl });
 		const formValue = this.enterpriseForm.value;
