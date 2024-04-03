@@ -5,7 +5,7 @@
             <p class="ft600 ft16 gray-10">
                 Lista de Cursos
             </p>
-            <button *ngIf="user.isSystemUser && product && product.accesses.enableCreateParticularCourses"
+            <button *ngIf="(user.isSystemUser || product && product.accesses.enableCreateParticularCourses)"
                 fxLayout="row"
                 fxLayoutGap="0.625"
                 fxLayoutAlign="center center"
