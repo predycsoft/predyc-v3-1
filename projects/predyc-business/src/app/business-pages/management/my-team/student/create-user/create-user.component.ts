@@ -402,7 +402,7 @@ export class CreateUserComponent {
 					console.log("userProduct", userProduct)
 					console.log("coursesRefs", coursesRefs)
 					if (userProduct.type === Product.TYPE_SIMPLIFIED && userProduct.coursesQty < coursesRefs.length) {
-						this.alertService.errorAlert(`La cantidad de cursos del perfil excede el limite establecido por su producto simplificado (${userProduct.coursesQty})`)
+						this.alertService.errorAlert(`La cantidad de cursos del perfil (${coursesRefs.length}) excede el limite establecido por el producto simplificado (${userProduct.coursesQty}) del estudiante`)
 						return
 					}
 				}
