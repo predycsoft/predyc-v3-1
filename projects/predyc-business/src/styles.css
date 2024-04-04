@@ -1368,6 +1368,12 @@ textarea:focus {
   user-select: none;
 }
 
+
+.centered-option {
+  display: flex !important;
+  align-items: center!important;
+}
+
 /* Colores Alejandra  */
 
   /* background */
@@ -1517,6 +1523,10 @@ textarea:focus {
   padding: 1px 8px 0 12px !important;
   color: var(--text2) !important;
   user-select: none;
+  display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .mat-select-panel {

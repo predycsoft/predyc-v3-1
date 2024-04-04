@@ -57,6 +57,7 @@ export class ProductFormComponent {
 			this.productForm.patchValue({ type: Product.TYPE_INDEPEND });
 		}
 	}
+	
 
 	toggleProductActiveState(): void {
 		this.productForm.controls.active.setValue(
@@ -87,4 +88,5 @@ export class ProductFormComponent {
 			this.showAlertText = true;
 		}
 	}
+	
 }
