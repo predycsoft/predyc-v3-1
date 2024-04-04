@@ -23,7 +23,7 @@ export class StatusSelectorComponent {
 
 
   ngOnInit() {
-    let defaul =''
+    let defaul ='inactive'
     if(this.origin == 'StudentsComponent'){
       defaul = 'all'
     }
