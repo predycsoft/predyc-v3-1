@@ -16,7 +16,7 @@ export interface SubscriptionJson {
   endedAt: number | null;
   canceledAt: number | null;
   productRef: DocumentReference | null;
-  status: "active" | "inactive";
+  status: "active" | "inactive" | "expired";
   currentError: string | null;
   nextPaymentDate: number;
   nextPaymentAmount: number;
@@ -49,7 +49,7 @@ export class Subscription {
   endedAt: number | null;
   canceledAt: number | null;
   productRef: DocumentReference | null;
-  status: "active" | "inactive";
+  status: "active" | "inactive" | "expired";
   currentError: string | null;
   nextPaymentDate: number;
   nextPaymentAmount: number;
@@ -59,7 +59,7 @@ export class Subscription {
   public static statusToDisplayValueDict = {
     active: "Activo",
     inactive: "Inactivo",
-    expired: "Expired"
+    expired: "Vencida"
   };
 
   public static getSubscriptionTemplate(): Subscription {
