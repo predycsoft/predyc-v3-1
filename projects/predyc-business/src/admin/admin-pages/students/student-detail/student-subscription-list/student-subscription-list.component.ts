@@ -116,7 +116,7 @@ export class StudentSubscriptionListComponent {
 
   async changeStatus(subscription: SubscriptionInfo) {
     if (subscription.status === SubscriptionClass.STATUS_ACTIVE) {
-      subscription.status = SubscriptionClass.STATUS_CANCELED
+      subscription.status = SubscriptionClass.STATUS_INACTIVE
       subscription.endedAt = +new Date()
       subscription.canceledAt = +new Date()
     }

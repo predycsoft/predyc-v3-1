@@ -61,6 +61,9 @@ export class SubscriptionsListComponent {
   users: User[]
   products: Product[]
 
+  activeStatus = SubscriptionClass.STATUS_ACTIVE
+  inactiveStatus = SubscriptionClass.STATUS_INACTIVE
+
   ngOnInit() {
     this.combinedServicesSubscription = combineLatest(
       [

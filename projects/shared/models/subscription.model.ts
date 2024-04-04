@@ -1,8 +1,4 @@
 import { DocumentReference } from "@angular/fire/compat/firestore";
-import { UserJson } from "./user.model";
-import { ProductJson } from "./product.model";
-import { EnterpriseJson } from "./enterprise.model";
-import { LicenseJson } from "./license.model";
 
 export interface SubscriptionJson {
 	id: string;
@@ -16,7 +12,7 @@ export interface SubscriptionJson {
 	endedAt: number | null;
 	canceledAt: number | null;
 	productRef: DocumentReference | null;
-	status: "active" | "canceled";
+	status: "active" | "inactive";
 	currentError: string | null;
 	nextPaymentDate: number;
 	nextPaymentAmount: number;
@@ -28,9 +24,9 @@ export class Subscription {
 	public static collection: string = "subscription";
 
 	public static STATUS_ACTIVE: "active" = "active";
-	public static STATUS_CANCELED: "canceled" = "canceled";
+	public static STATUS_INACTIVE: "inactive" = "inactive";
 
-	public static STATUS_CHOICES = [this.STATUS_ACTIVE, this.STATUS_CANCELED];
+	public static STATUS_CHOICES = [this.STATUS_ACTIVE, this.STATUS_INACTIVE];
 
 	id: string;
 	idAtOrigin: string;
@@ -46,7 +42,7 @@ export class Subscription {
 	endedAt: number | null;
 	canceledAt: number | null;
 	productRef: DocumentReference | null;
-	status: "active" | "canceled";
+	status: "active" | "inactive";
 	currentError: string | null;
 	nextPaymentDate: number;
 	nextPaymentAmount: number;
@@ -55,7 +51,7 @@ export class Subscription {
 
 	public static statusToDisplayValueDict = {
 		active: "Activo",
-		canceled: "Cancelado",
+		inactive: "Inactivo",
 	};
 
 	public static getSubscriptionTemplate(): Subscription {

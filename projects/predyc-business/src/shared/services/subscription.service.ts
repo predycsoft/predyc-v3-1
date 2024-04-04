@@ -54,7 +54,7 @@ export class SubscriptionService {
     subscription.userRef = this.userService.getUserRefById(userId)
     subscription.productRef = license.productRef
     subscription.startedAt = Date.now()
-    subscription.status = "active"
+    subscription.status = Subscription.STATUS_ACTIVE
 
     console.log('subscription', subscription)
 
@@ -64,7 +64,7 @@ export class SubscriptionService {
 
     await this.afs.collection(User.collection).doc(userId).set(
       {
-        status: "active" 
+        status: Subscription.STATUS_ACTIVE
       },{ merge: true }
     );
     console.log("status del usuario establecido en active")
@@ -77,7 +77,7 @@ export class SubscriptionService {
       const snapshots = await firstValueFrom(this.afs.collection<Subscription>(Subscription.collection, ref => 
         ref
         .where('userRef', '==', this.afs.doc<User>(`${User.collection}/${userId}`).ref)
-        .where('status', '==', 'active')
+        .where('status', '==', Subscription.STATUS_ACTIVE)
       ).get());
 
       // console.log('snapshots.docs', snapshots.docs)
@@ -86,7 +86,7 @@ export class SubscriptionService {
         let subscription = subscriptionsData[0]
         let  licenseRef = subscription.licenseRef // para guardar que hay rotaciones esperando
         const docSnapshot = await licenseRef.get();
-        let license = licenses.find(licenseData=>licenseData.rotationsWaitingCount+1<=(licenseData.rotations-licenseData.rotationsUsed) && (licenseData.status == 'active'))
+        let license = licenses.find(licenseData=>licenseData.rotationsWaitingCount+1<=(licenseData.rotations-licenseData.rotationsUsed) && (licenseData.status == Subscription.STATUS_ACTIVE))
         if(license){
           console.log('rotar',license)
           licenseRef = this.afs.doc<License>(`${License.collection}/${license.id}`).ref
@@ -113,11 +113,11 @@ export class SubscriptionService {
         await this.afs.collection(Subscription.collection).doc(subscription.id).set({
           canceledAt: Date.now(), 
           endedAt: Date.now(),
-          status: "canceled" 
+          status: Subscription.STATUS_INACTIVE 
         }, { merge: true });
   
         await this.afs.collection(User.collection).doc(userId).set({
-          status: "canceled" 
+          status: Subscription.STATUS_INACTIVE 
         }, { merge: true });
   
         console.log("Suscripción cancelada:", userId, subscription.id);

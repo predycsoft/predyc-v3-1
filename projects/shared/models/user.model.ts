@@ -178,7 +178,7 @@ export class User {
       performance: null,
       ratingPoints: 0,
       studyHours: 0,
-      status: Subscription.STATUS_CANCELED
+      status: Subscription.STATUS_INACTIVE
     })
   }
 
