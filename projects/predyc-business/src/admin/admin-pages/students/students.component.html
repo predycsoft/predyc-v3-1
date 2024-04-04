@@ -6,33 +6,35 @@
                 <div fxLayout="row"  fxLayoutAlign="center center" class="border-rl">
                     <div fxLayout="column" class="mgr10 mgl20 " fxLayoutAlign="center center"> 
                         <span class=" ft08 ft500 mgt08" fxLayoutAlign="center center" >Usuarios Activos </span>
-                        <span class="fh ft12 ft500 makeGray mgb10 mgt10" fxLayoutAlign="center center" > 46 (HC)</span>
+                        <span class="fh ft12 ft500 makeGray mgb10 mgt10" fxLayoutAlign="center center" > {{estadisticas.usuariosActivos}}</span>
                     </div>
                 </div>
 
                 <div fxLayout="row"  fxLayoutAlign="center center " class="border-rl">
                     <div fxLayout="column" class="mgr20 mgl20 " fxLayoutAlign="center center"> 
                         <span class=" ft08 ft500 mgt08" fxLayoutAlign="center center" >Usuarios Inactivos</span>
-                        <span class="fh ft12 ft500 makeGray mgb10 mgt10" fxLayoutAlign="center center" > 10 (HC)</span>
+                        <span class="fh ft12 ft500 makeGray mgb10 mgt10" fxLayoutAlign="center center" > {{estadisticas.usuariosInactivos}}</span>
                     </div>
                 </div>
 
                 <div fxLayout="row"  fxLayoutAlign="center center" class="">
                     <div fxLayout="column" class=" mgr20 mgl10 " fxLayoutAlign="center center"> 
                         <span class=" ft08 ft500 mgt08" fxLayoutAlign="center center" >Usuarios Totales </span>
-                        <span class="fh ft12 ft500 makeGray mgb10 mgt10" fxLayoutAlign="center center" > 56 (HC)</span>
+                        <span class="fh ft12 ft500 makeGray mgb10 mgt10" fxLayoutAlign="center center" > {{estadisticas.usuariosTotales}}</span>
                     </div>
                 </div>
             </div>
         </div>
-        <div fxLayout="row" fxLayoutAlign=" center" class="radius20 mgr20 " style="width: 30%;">
+        <!-- <div fxLayout="row" fxLayoutAlign=" center" class="radius20 mgr20 " style="width: 30%;">
             <app-search-input-box  fxLayoutAlign=" center" class="shadow-animation radius20 fw" style="height: 38px;  "></app-search-input-box>
+        </div> -->
+        <div fxLayout="row" fxLayoutAlign=" center" class="h36px radius20 w500px shadow-animation w-30 mgr20" style="overflow: hidden;" >
+            <app-status-selector origin="StudentsComponent" class="fh"></app-status-selector>
+            <app-search-input-box class="fw"></app-search-input-box>
         </div>
-
-
     </div>
     <!-- student list -->
     <div fxLayout="columm" fxLayoutAlign="center center" class="fw vh50 pdr20" >
-        <app-admin-student-list class="fw" (onStudentSelected)="onStudentSelected($event)"></app-admin-student-list>
+        <app-admin-student-list class="fw"  (totalUsers)="getUsers($event)" (onStudentSelected)="onStudentSelected($event)"></app-admin-student-list>
     </div>
 </div>    
