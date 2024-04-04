@@ -20,6 +20,7 @@ import { StudyPlanClass } from 'projects/shared/models/study-plan-class.model';
 import { CourseByStudent } from 'projects/shared/models/course-by-student.model';
 import Swal from 'sweetalert2';
 import { Product } from 'projects/shared/models/product.model';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 
 function getStartOfSixMonthsAgo(today) {
@@ -83,6 +84,7 @@ export class CreateDemoComponent {
     public icon: IconService,
     private profileService: ProfileService,
     private userService: UserService,
+    public activeModal: NgbActiveModal,
     private subscriptionService: SubscriptionService,
   ) {}
 
@@ -160,21 +162,21 @@ export class CreateDemoComponent {
       if (!existingUser.empty) throw Error("Ya existe un usuario con este correo")
 
       // Create enterprise
-      //console.log('********* Creating Enterprise *********')
+      console.log('********* Creating Enterprise *********')
       const enterprise = await this.createEnterprise()
-      //console.log(`Finished Creating Enterprise`)
+      console.log(`Finished Creating Enterprise`)
 
       // Create License with trialDays equal to endDate-today days
-      //console.log('********* Creating License *********')
+      console.log('********* Creating License *********')
       const license = await this.createLicense(enterprise.id)
-      //console.log(`Finished Creating Licenses`)
+      console.log(`Finished Creating Licenses`)
 
       // Create admin and student users.
       // activeUsersQty users without profiles and without progress
       // 10 demo users without subscription but with profiles and progress. For these users, studyplan should be created with specified dedication perMonth and startDate
-      //console.log('********* Creating Users *********')
+      console.log('********* Creating Users *********')
       const users = await this.createUsers(enterprise.id)
-      //console.log(`Finished Creating Users`)
+      console.log(`Finished Creating Users`)
 
       // Assign activeUsersQty licenses to users
       //console.log('********* Creating Subscriptions *********')
@@ -191,11 +193,12 @@ export class CreateDemoComponent {
       // Updated coursesByStudent
       // Create notification based on each scenario
       // Complete final test and generate certification test
+      this.closeDialog();
       Swal.close();
       this.alertService.succesAlert("La empresa demo se ha creado correctamente")
       //cerrar swal loading 
     } catch (error) {
-      //console.log(error)
+      console.log(error)
       Swal.close();
       this.alertService.errorAlert(error)
     }
@@ -257,7 +260,7 @@ export class CreateDemoComponent {
       startedAt: this.now,
       status: "active",
     });
-    const productSnapshot = await firstValueFrom(this.afs.collection<Product>(Product.collection, ref => ref.where("id", "==", "Plan-Empresarial")).get())
+    const productSnapshot = await firstValueFrom(this.afs.collection<Product>(Product.collection, ref => ref.where("type", "==", Product.TYPE_FULL)).get())
     const products = productSnapshot.docs.map(item => item.data())
     const product = products[0]
 
@@ -575,6 +578,10 @@ export class CreateDemoComponent {
     }
   
     return enrolledCourses; // Devuelve el arreglo de cursos insertados
+  }
+
+  closeDialog() {
+    this.activeModal.dismiss('Cross click');
   }
   
 

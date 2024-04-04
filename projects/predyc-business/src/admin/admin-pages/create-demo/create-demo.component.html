@@ -1,10 +1,11 @@
-<div class="mgt20 mgl20 mgr20">
+<div class="mg20">
     <form [formGroup]="createDemoForm" (ngSubmit)="onSubmit()">
-            <span class="ft16 ft600 gray-10 mgb10">
-                Crear empresa demo
-            </span>
+        <div fxLayout="row" fxLayoutAlign="space-between center " class="mgt20">
+            <span class="ft16 ft600 gray-10"> Crear empresa demo </span>
+            <img [src]="icon.close" (click)="closeDialog()" class="makeGray h20px cursorPointer">
+        </div>
         <div fxLayout="row" fxLayoutAlign="start " class="mgt20">
-            <div class="w-30">
+            <div class="fw">
                 <div fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="center ">
                     <input
                         formControlName="enterpriseName"
