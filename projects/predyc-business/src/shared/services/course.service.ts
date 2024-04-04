@@ -483,21 +483,6 @@ export class CourseService {
         const userOtherCourses = studyPlanItems.filter(course => !changesInStudyPlan.removed.includes(course.courseRef.id))
         // console.log('userOtherCourses', userOtherCourses)
   
-        // Check if user has a "simplificado" product and studyPlan exceeds course quantity restriction
-        const newStudyPlanLength = studyPlanItems.length - userRemovedCourses.length + changesInStudyPlan.added.length
-        console.log(`Old study plan - removed courses + added courses: ${studyPlanItems.length}-${userRemovedCourses.length}+${changesInStudyPlan.added.length} = ${newStudyPlanLength}` )
-        console.log("newStudyPlanLength", newStudyPlanLength)
-        const userSubscriptions: SubscriptionClass[] = await this.subscriptionService.getUserSubscriptions(userRef as DocumentReference<User>)
-        if (userSubscriptions.length > 0) {
-          const userSubscription = userSubscriptions.filter(x => x.status === SubscriptionClass.STATUS_ACTIVE)[0]
-          const userProduct: Product = await this.productService.getProductByRef(userSubscription.productRef)
-          console.log("userProduct", userProduct)
-          if (userProduct.type === Product.TYPE_SIMPLIFIED && userProduct.coursesQty < newStudyPlanLength) {
-            this.alertService.errorAlert(`La cantidad de cursos del perfil excede el limite establecido por el producto simplificado (${userProduct.coursesQty}) del estudiante ${user.displayName}`)
-            throw new Error ("Course limit exceeded for user " + user.uid)
-          }
-        }
-  
         // Disable removed courses
         for (let course of userRemovedCourses) {
           const courseJson = {
