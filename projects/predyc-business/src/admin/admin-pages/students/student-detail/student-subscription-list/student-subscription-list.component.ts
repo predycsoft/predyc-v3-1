@@ -1,4 +1,4 @@
-import { Component, Input, SimpleChanges, ViewChild } from "@angular/core";
+import { Component, EventEmitter, Input, Output, SimpleChanges, ViewChild } from "@angular/core";
 import { DocumentReference } from "@angular/fire/compat/firestore";
 import { MatTableDataSource } from "@angular/material/table";
 import { Subscription } from "rxjs";
@@ -13,6 +13,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { DialogEditSubscriptionComponent } from "projects/predyc-business/src/shared/components/subscription/dialog-edit-subscription/dialog-edit-subscription.component";
 import { DialogService } from "projects/predyc-business/src/shared/services/dialog.service";
 import { DatePipe } from "@angular/common";
+import Swal from "sweetalert2";
 
 export interface SubscriptionInfo extends SubscriptionJson {
   productName: string;
@@ -26,6 +27,12 @@ export interface SubscriptionInfo extends SubscriptionJson {
   providers: [DatePipe],
 })
 export class StudentSubscriptionListComponent {
+
+
+
+
+  @Output() onSubSelected = new EventEmitter<User>()
+
   constructor(
     private subscriptionService: SubscriptionService,
     private dialog: MatDialog,
@@ -54,7 +61,13 @@ export class StudentSubscriptionListComponent {
 
   ngOnInit() {}
 
+  todayTime
+
   ngOnChanges(changes: SimpleChanges) {
+    let today = new Date()
+    this.todayTime = today.getTime()
+
+
     if (this.userRef) {
       // Check if prices, products, or coupons have changed
       if (changes.products) {
@@ -76,13 +89,16 @@ export class StudentSubscriptionListComponent {
             const product = this.products.find(
               (prod) => prod.id === subscription?.productRef?.id
             );
-
-            return {
+            if(subscription.status === SubscriptionClass.STATUS_ACTIVE && subscription.currentPeriodEnd < this.todayTime){
+              subscription.status = SubscriptionClass.STATUS_EXPIRED
+            }
+            let sub = {
               ...subscription,
               productName: product?.name,
               statusToDisplay:
-                SubscriptionClass.statusToDisplayValueDict[subscription.status],
-            };
+              SubscriptionClass.statusToDisplayValueDict[subscription.status]
+            }
+            return sub;
           }
         );
 
@@ -116,7 +132,7 @@ export class StudentSubscriptionListComponent {
   }
 
   async changeStatus(subscription: SubscriptionInfo) {
-    if (subscription.status === SubscriptionClass.STATUS_ACTIVE) {
+    if (subscription.status === SubscriptionClass.STATUS_ACTIVE || subscription.status === SubscriptionClass.STATUS_EXPIRED ) {
       subscription.status = SubscriptionClass.STATUS_INACTIVE;
       subscription.endedAt = +new Date();
       subscription.canceledAt = +new Date();
@@ -166,5 +182,18 @@ export class StudentSubscriptionListComponent {
       this.combinedServicesSubscription.unsubscribe();
     if (this.subscriptionsSubscription)
       this.subscriptionsSubscription.unsubscribe();
+  }
+
+  clickSub(data){
+    if(!data.licenseRef){
+      this.onSubSelected.emit(data)
+    }
+    else{
+      Swal.fire({
+        text:`Esta suscripción no se puede editar porque tiene una licencia asociada.`,
+        icon:'info',
+        confirmButtonColor: 'var(--blue-5)',
+      })
+    }
   }
 }

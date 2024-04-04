@@ -6,19 +6,12 @@
       <td mat-cell *matCellDef="let user">
         <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign=" center">
           <img
-            [src]="
-              user.photoUrl
-                ? user.photoUrl
-                : 'assets/images/default/default-user-image.jpg'
-            "
+            [src]=" user.photoUrl ? user.photoUrl : 'assets/images/default/default-user-image.jpg'"
             class="avatar2"
-            alt=""
-          />
+            alt=""/>
           <div fxLayout="column" fxLayoutAlign="center ">
-            <div
-              class="ft500 ft13 black"
-              style="width: 150px; text-overflow: ellipsis"
-            >
+            <div class="ft500 ft13 black"
+              style="width: 150px; text-overflow: ellipsis">
               {{ user.displayName | titlecase }}
             </div>
             <div class="ft11 gray-6">{{ user.email }}</div>

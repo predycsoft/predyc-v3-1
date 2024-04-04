@@ -90,11 +90,7 @@
             >add_circle</mat-icon
           >
         </div>
-
-        <app-student-subscription-list
-          [userRef]="userRef"
-          [products]="products"
-        ></app-student-subscription-list>
+        <app-student-subscription-list (onSubSelected)="subSelected($event)" [userRef]="userRef" [products]="products"></app-student-subscription-list>
       </div>
       <div
         class="fw mgt20 pdb05 border-b"
