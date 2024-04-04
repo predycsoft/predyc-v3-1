@@ -37,8 +37,8 @@ export class Product {
     this.TYPE_FULL,
   ];
 
-  public static collection = "new-product";
-  // public static collection = "product";
+  // public static collection = "new-product";
+  public static collection = "product";
 
   public static newProduct: ProductJson = {
     accesses: {

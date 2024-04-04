@@ -191,7 +191,12 @@
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <ng-container>
-        <tr mat-row *matRowDef="let data; columns: displayedColumns"></tr>
+        <tr
+          mat-row
+          *matRowDef="let data; columns: displayedColumns"
+          class="cursorPointer"
+          (click)="editLicense(data.license)"
+        ></tr>
       </ng-container>
 
       <!-- Row shown when there is no matching data. -->
