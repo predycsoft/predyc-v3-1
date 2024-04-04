@@ -44,7 +44,6 @@ export class StudentInfoFormComponent {
     this.profileSubscription = this.profileService.getProfilesObservable().subscribe(profiles => {if (profiles) this.profiles = profiles})
 
     this.studentForm = new FormGroup({
-      canEnrollParticularCourses: new FormControl(false),
       displayName: new FormControl(''),
       email: new FormControl(''),
       phoneNumber: new FormControl(''),
@@ -55,7 +54,6 @@ export class StudentInfoFormComponent {
 
     if (this.student) {
       this.studentForm.patchValue({
-        canEnrollParticularCourses: this.student.canEnrollParticularCourses,
         displayName: this.student.displayName,
         email: this.student.email,
         phoneNumber: this.student.phoneNumber,
@@ -67,20 +65,6 @@ export class StudentInfoFormComponent {
     if (this.student.photoUrl) {
       this.imageUrl = this.student.photoUrl;
     }
-  }
-
-  async toggleCanEnrollParticularCourses() {
-    try {
-      const canEnrollParticularCourses = this.studentForm.controls.canEnrollParticularCourses.value
-      await this.userService.canEnrollParticularCourses(this.student.uid, canEnrollParticularCourses)
-      this.student.canEnrollParticularCourses = canEnrollParticularCourses
-      this.onStudentSave.emit(this.student)
-      this.alertService.succesAlert("Se ha actualizado su configuración")
-    } catch(error) {
-      console.log(error)
-      this.alertService.errorAlert(error)
-    }
-    
   }
 
   openCreateUserModal(student: User | null) {

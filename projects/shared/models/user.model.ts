@@ -6,7 +6,6 @@ import { Subscription } from "./subscription.model";
 
 export interface UserJson {
   birthdate: number | null;
-  canEnrollParticularCourses: boolean;
   city: string | null;
   country: string | null;
   courseQty: number;
@@ -55,7 +54,6 @@ export class User {
 
   constructor(
     public birthdate: number | null,
-    public canEnrollParticularCourses: boolean,
     public city: string | null,
     public country: string | null,
     public courseQty: number,
@@ -146,7 +144,6 @@ export class User {
   }): User {
     return User.fromJson({
       birthdate: null,
-      canEnrollParticularCourses: false,
       city: null,
       country: null,
       courseQty: 0,
@@ -188,7 +185,6 @@ export class User {
   public static fromJson(userJson: UserJson): User {
     return new User(
       userJson.birthdate,
-      userJson.canEnrollParticularCourses,
       userJson.city,
       userJson.country,
       userJson.courseQty,
@@ -230,7 +226,6 @@ export class User {
   toJson(): UserJson {
     return {
       birthdate: this.birthdate,
-      canEnrollParticularCourses: this.canEnrollParticularCourses,
       city: this.city,
       country: this.country,
       courseQty: this.courseQty,
