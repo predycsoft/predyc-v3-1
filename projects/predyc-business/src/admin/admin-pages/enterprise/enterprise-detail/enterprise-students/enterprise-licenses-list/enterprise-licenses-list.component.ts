@@ -1,114 +1,156 @@
-import { Component, Input } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { MatTableDataSource } from '@angular/material/table';
-import { Subscription, combineLatest } from 'rxjs';
-import { License } from 'projects/shared/models/license.model';
-import { Product } from 'projects/shared/models/product.model';
-import { LicenseService } from 'projects/predyc-business/src/shared/services/license.service';
-import { ProductService } from 'projects/predyc-business/src/shared/services/product.service';
-import { DialogNewLicenseComponent } from '../dialog-new-license/dialog-new-license.component';
-import { Subscription as SubscriptionClass } from 'projects/shared/models/subscription.model'
-import { DocumentReference } from '@angular/fire/compat/firestore';
-import { Enterprise } from 'projects/shared/models/enterprise.model';
-import { DialogService } from 'projects/predyc-business/src/shared/services/dialog.service';
-
+import { Component, Input } from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
+import { MatTableDataSource } from "@angular/material/table";
+import { Subject, Subscription, combineLatest } from "rxjs";
+import { License } from "projects/shared/models/license.model";
+import { Product } from "projects/shared/models/product.model";
+import { LicenseService } from "projects/predyc-business/src/shared/services/license.service";
+import { ProductService } from "projects/predyc-business/src/shared/services/product.service";
+import { DialogNewLicenseComponent } from "../dialog-new-license/dialog-new-license.component";
+import { Subscription as SubscriptionClass } from "projects/shared/models/subscription.model";
+import { DocumentReference } from "@angular/fire/compat/firestore";
+import { Enterprise } from "projects/shared/models/enterprise.model";
+import { DialogService } from "projects/predyc-business/src/shared/services/dialog.service";
+import { ActivatedRoute, Router } from "@angular/router";
 
 interface LicensesInList {
-  productName: string,
-  acquired: number,
-  used: number,
-  avaliable: number,
-  avaliableRotations: number
-  start: number
-  valid: number,
-  status: string,
-  rotations: number
-  rotationsUsed: number
-
+  productName: string;
+  acquired: number;
+  used: number;
+  available: number;
+  availableRotations: number;
+  start: number;
+  valid: number;
+  status: string;
+  rotations: number;
+  rotationsUsed: number;
 }
 
 @Component({
-  selector: 'app-enterprise-licenses-list',
-  templateUrl: './enterprise-licenses-list.component.html',
-  styleUrls: ['./enterprise-licenses-list.component.css']
+  selector: "app-enterprise-licenses-list",
+  templateUrl: "./enterprise-licenses-list.component.html",
+  styleUrls: ["./enterprise-licenses-list.component.css"],
 })
 export class EnterpriseLicensesListComponent {
-
-  @Input() enterpriseRef: DocumentReference<Enterprise>
+  @Input() enterpriseRef: DocumentReference<Enterprise>;
 
   constructor(
     private dialog: MatDialog,
     private licenseService: LicenseService,
     private productService: ProductService,
     public dialogService: DialogService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute
   ) {}
+
+  SubscriptionClass = SubscriptionClass;
 
   displayedColumns: string[] = [
     "product",
     "acquired",
     "rotations",
-    "avaliable",
-    "avaliableRotations",
+    "available",
+    "availableRotations",
     "inUse",
     "rotationsUsed",
+    "start",
+    "expiration",
+    "status",
   ];
 
   dataSource = new MatTableDataSource<LicensesInList>();
 
   products: Product[] = [];
 
-  licenseSubscription: Subscription
-  combinedServicesSubscription: Subscription
+  public status: string;
+  private statusFilterTerm = new Subject<string>();
 
+  atLeastOneExpired = false;
 
-  ngOnInit() {
-    this.combinedServicesSubscription = combineLatest(
-      [
-        this.productService.getProducts$(),
-        this.licenseService.getLicensesByEnterpriseRef$(this.enterpriseRef),
-      ]
-    ).subscribe(([ products, licenses]) => {
-      this.products = products
-
-      const licensesInList: LicensesInList[] = licenses.map(license => {
-        const licenseProduct = products.find(product => product?.id === license?.productRef?.id)
-        return {
-          productName: licenseProduct?.name ? licenseProduct?.name : 'Licencias',
-          acquired: license.quantity,
-          used: license.quantityUsed,
-          avaliable: license.quantity - license.quantityUsed,
-          valid: license.currentPeriodEnd,
-          rotations: license.rotations,
-          rotationsUsed: license.rotationsUsed,
-          avaliableRotations: license.rotations - license.rotationsUsed,
-          start: license.currentPeriodStart,
-          status: SubscriptionClass.statusToDisplayValueDict[license.status]
-        }
-      })
-      // console.log("licensesInList", licensesInList)
-      this.dataSource.data = licensesInList
-
-    })
+  search(status: string) {
+    this.status = status;
+    this.statusFilterTerm.next(status);
   }
 
+  licenseSubscription: Subscription;
+  combinedServicesSubscription: Subscription;
+
+  ngOnInit() {
+    this.statusFilterTerm.subscribe((term) => {
+      this.router.navigate([], {
+        queryParams: { status: term ? term : null },
+        queryParamsHandling: "merge",
+      });
+    });
+    this.combinedServicesSubscription = combineLatest([
+      this.productService.getProducts$(),
+      this.licenseService.getLicensesByEnterpriseRef$(this.enterpriseRef),
+      this.activatedRoute.queryParams,
+    ]).subscribe(([products, licenses, params]) => {
+      this.products = products;
+      const statusFilterTerm = params["status"] || "all";
+      const today = +new Date();
+
+      const licensesInList: LicensesInList[] = licenses
+        .map((license) => {
+          const licenseProduct = products.find(
+            (product) => product?.id === license?.productRef?.id
+          );
+          return {
+            productName: licenseProduct?.name
+              ? licenseProduct?.name
+              : "Licencias",
+            acquired: license.quantity,
+            used: license.quantityUsed,
+            available: license.quantity - license.quantityUsed,
+            valid: license.currentPeriodEnd,
+            rotations: license.rotations,
+            rotationsUsed: license.rotationsUsed,
+            availableRotations: license.rotations - license.rotationsUsed,
+            start: license.currentPeriodStart,
+            status: license.status,
+            showWarning:
+              license.status === SubscriptionClass.STATUS_ACTIVE &&
+              license.currentPeriodEnd < today,
+          };
+        })
+        .filter((x) => {
+          if (!statusFilterTerm || statusFilterTerm === "all") return true;
+          let result = true;
+          switch (statusFilterTerm) {
+            case "active":
+              result = x.status === SubscriptionClass.STATUS_ACTIVE;
+              break;
+            case "expired":
+              result = x.showWarning;
+              break;
+            default:
+              break;
+          }
+          return result;
+        });
+      // console.log("licensesInList", licensesInList)
+      this.dataSource.data = licensesInList;
+    });
+  }
 
   async addLicense() {
-    let licences =this.dataSource.data
-    let licenceActive = licences.find(x=> x.status == "Activo")
+    let licences = this.dataSource.data;
+    let licenceActive = licences.find((x) => x.status == "Activo");
 
-    let dateStart = null
+    let dateStart = null;
 
-    if(licenceActive){
-      dateStart = licenceActive.start
+    if (licenceActive) {
+      dateStart = licenceActive.start;
     }
 
     const dialogRef = this.dialog.open(DialogNewLicenseComponent, {
       data: {
         products: this.products,
-        dateStart: dateStart
-      }
+        dateStart: dateStart,
+      },
     });
-  
+
     dialogRef.afterClosed().subscribe(async (result: License) => {
       if (result) {
         result.enterpriseRef = this.enterpriseRef;
@@ -116,17 +158,15 @@ export class EnterpriseLicensesListComponent {
           await this.licenseService.saveLicense(result.toJson());
           this.dialogService.dialogExito();
         } catch (error) {
-          this.dialogService.dialogAlerta("Hubo un error al guardar la licencia. Inténtalo de nuevo.");
+          this.dialogService.dialogAlerta(
+            "Hubo un error al guardar la licencia. Inténtalo de nuevo."
+          );
         }
       }
     });
-
   }
-
 
   ngOnDestroy() {
-    if (this.licenseSubscription) this.licenseSubscription.unsubscribe()
+    if (this.licenseSubscription) this.licenseSubscription.unsubscribe();
   }
-
-
 }
