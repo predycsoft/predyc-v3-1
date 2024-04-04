@@ -1,8 +1,4 @@
 import { DocumentReference } from "@angular/fire/compat/firestore";
-import { UserJson } from "./user.model";
-import { ProductJson } from "./product.model";
-import { EnterpriseJson } from "./enterprise.model";
-import { LicenseJson } from "./license.model";
 
 export interface SubscriptionJson {
   id: string;

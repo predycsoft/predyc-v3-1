@@ -19,12 +19,12 @@ export const checkExpiredLicenses = functions.pubsub.schedule('every 24 hours').
   
     snapshot.forEach(doc => {
       const docRef = licenseRef.doc(doc.id);
-      batch.update(docRef, { status: 'canceled' });
+      batch.update(docRef, { status: 'inactive' });
     });
   
     // Execute batch
     return batch.commit().then(() => {
-      console.log('Status updated to canceled for expired licenses.');
+      console.log('Status updated to inactive for expired licenses.');
     }).catch(error => {
       console.error('Error updating documents: ', error);
     });
