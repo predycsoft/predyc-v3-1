@@ -59,7 +59,7 @@ export class DialogEditSubscriptionComponent {
     this.subscriptionInfo.nextPaymentDate = +parsedEndDate
     this.subscriptionInfo.changedAt = +new Date()
 
-    if(this.form.get("status").value == 'canceled'){
+    if(this.form.get("status").value == SubscriptionClass.STATUS_INACTIVE){
       this.subscriptionInfo.endedAt = +new Date()
       this.subscriptionInfo.canceledAt = +new Date()
     }

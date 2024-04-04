@@ -1,54 +1,63 @@
 <ng-container>
     <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
-        <div>
-            <span class="ft16 ft500 gray-10">{{ this.productForm.controls.id.value == "" ? "Nuevo" : "Editar" }} Producto</span>
-
-            <div class="mgt10" fxLayout="row" fxLayoutGap="2.5rem" fxLayoutAlign=" center">
-                <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap=".75rem">
-                    <span class="gray-9 ft12 ft500">Estatus:</span>
-                    <div fxLayout="column" fxLayoutAlign="center" [ngClass]="productForm.controls.active.value ? 'ft12 green-4' : 'ft12 red-4'" for="active">
-                        {{ productForm.controls.active.value ? "Activo" : "Inactivo" }}
-                    </div>
-                    <div fxLayout="column" fxLayoutAlign="center" 
-                    [ngClass]="productForm.controls.active.value ? 'backRed5 ft11 pdt03 pdb03 pdl10 pdr10 radius6 cursorPointer' : 
-                    'backBlue5 ft11 pdt03 pdb03 pdl10 pdr10 radius6 cursorPointer'" (click)="toggleProductActiveState()">
-                        <span class="ft11 gray-1">{{ productForm.controls.active.value ? "Desactivar" : "Activar" }}</span>
-                    </div>
-                </div>
-                <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap=".75rem">
-                    <input hidden id="active" type="checkbox" formControlName="active" />
-                    <input hidden id="id" type="text" formControlName="id" />
-                </div>
+        <div class="modal-header bg-web-primary text-white px-3 py-1" fxLayoutAlign="space-between center" style="margin-top: -45px;" >
+            <div class="modal-title pd10 ">
+                <span class="ft16 ft600 gray-10">
+                    {{ this.productForm.controls.id.value == "" ? "Nuevo" : "Editar" }} Producto               
+                 </span>
             </div>
+    
         </div>
-
+        
         <div fxLayout="row" fxLayoutAlign="space-between" class="mgt10">
             <!-- Información general -->
             <div fxLayout="column" fxLayoutGap="1rem" class="" >
-                <div>
-                    <span class="ft18 gray-9 ft500">Información general</span>
+                <div fxLayout="row"  fxLayoutAlign="space-between center">
+                    <div>
+                        <span class="ft15 gray-9 ft500">Información general</span>
+                    </div>
+                    <div fxLayout="row" fxLayoutGap="2.5rem" fxLayoutAlign=" center">
+                        <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap=".75rem">
+                            <span class="gray-9 ft12 ft500">Estatus:</span>
+                            <div  fxLayout="column" fxLayoutAlign="center" [ngClass]="productForm.controls.active.value ? 'ft12 green-4' : 'ft12 red-4'" for="active">
+                                {{ productForm.controls.active.value ? "Activo" : "Inactivo" }}
+                            </div>
+                            <div fxLayout="column" fxLayoutAlign="center" 
+                            [ngClass]="productForm.controls.active.value ? 'backRed5 ft11 pdt03 pdb03 pdl10 pdr10 radius6 cursorPointer' : 
+                            'backBlue5 ft11 pdt03 pdb03 pdl10 pdr10 radius6 cursorPointer'" (click)="toggleProductActiveState()">
+                                <span class="ft11 gray-1">{{ productForm.controls.active.value ? "Desactivar" : "Activar" }}</span>
+                            </div>
+                        </div>
+                        <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap=".75rem">
+                            <input hidden id="active" type="checkbox" formControlName="active" />
+                            <input hidden id="id" type="text" formControlName="id" />
+                        </div>
+                    </div>
                 </div>
-                <div class="fw" fxLayout="column" fxLayoutGap="1rem">
+                
+                <div class="fw mgt05" fxLayout="column" fxLayoutGap="1rem">
                     <div fxLayout="row" fxLayoutAlign="space-between center"  fxLayoutGap="1.5rem" class="fw">
                         <div class="" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".3rem" >
                             <label for="name" class="gray-9 ft14">Nombre:</label>
-                            <input class="backWhite fw pdl03" id="name" type="text" formControlName="name" [readonly]="product.id ? true : false" />
+                            <input class="shadow-animation ft14  pdl05 radius20 fw  borderLight" id="name" type="text" formControlName="name" [readonly]="product.id ? true : false" />
                         </div>
                         <div class="" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".3rem" >
                             <label for="name" class="gray-9 ft14">Monto:</label>
-                            <input class="backWhite w80px pdl03" id="amount" type="number" min="0" formControlName="amount" [readonly]="product.id ? true : false"/>
+                            <input class="shadow-animation ft14  pdl05 radius20 fw borderLight"  id="amount" type="number" min="0" formControlName="amount" [readonly]="product.id ? true : false"/>
                         </div>
                     </div>
                     <div fxLayout="row" fxLayoutAlign="space-between center"  fxLayoutGap=".5rem" class="fw">
                         <div class="fh fw" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".25rem">
                             <span class="gray-9 ft14">Tipo: </span>
-                            <mat-select placeholder="Seleccione el tipo" formControlName="type" style="border: 1px solid black;" class="pdl03 pdr03 pdt05 fh">
-                                <mat-option *ngFor="let type of typeOptions" [value]="type">{{type | titlecase}}</mat-option>
+                            <mat-select placeholder="Seleccione el tipo" formControlName="type" class="  shadow-animation ft14 pdl05 pdt05 pdr05 radius20 w80px borderLight" fxLayoutAlign="center center">
+                                <mat-option *ngFor="let type of typeOptions" [value]="type" class="">{{type | titlecase}}</mat-option>
                             </mat-select>
                         </div>
+                        
+                        
                         <div *ngIf="productForm.get('type').value === 'simplificado'" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".3rem" style="width: 95%;" >
                             <label for="name" class="gray-9 ft14">Cantidad de cursos:</label>
-                            <input class="backWhite w80px pdl03" id="amount" type="number" min="0" formControlName="coursesQty"/>
+                            <input class="shadow-animation ft14  pdl05 radius20 w80px borderLight " id="amount" type="number" min="0" formControlName="coursesQty"/>
                         </div>
                     </div>
 

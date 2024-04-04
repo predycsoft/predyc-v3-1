@@ -46,7 +46,7 @@ export const checkExpiredSubscriptions = functions.pubsub.schedule('every 24 hou
         // Update subscription
         console.log("upadting ", docData.id, " subscription")
         batch.update(docRef, {
-            status: 'canceled',
+            status: 'inactive',
             canceledAt: currentPeriodEnd,
             endedAt: currentPeriodEnd
         });
@@ -55,14 +55,14 @@ export const checkExpiredSubscriptions = functions.pubsub.schedule('every 24 hou
         if (docData.userRef) {
             console.log("upadting ", docData.userRef.id, " user")
             const userDocRef = docData.userRef;
-            batch.update(userDocRef, { status: 'canceled' });
+            batch.update(userDocRef, { status: 'inactive' });
         }
     }
 
     // Execute the batch
     try {
         await batch.commit();
-        console.log('Status updated to canceled for expired subscriptions and users with auto-deactivate enabled.');
+        console.log('Status updated to inactive for expired subscriptions and users with auto-deactivate enabled.');
         return null;
     } catch (error) {
         console.error('Error updating documents: ', error);
