@@ -17,6 +17,7 @@ export const productsData: ProductJson[] = [
 			enableCreateParticularCourses: false,
 		},
 		createdAt: 1679634238000,
+		canEnrollParticularCourses: false,
 		features: [],
 	},
 	{
@@ -35,6 +36,7 @@ export const productsData: ProductJson[] = [
 			enableCreateParticularCourses: false,
 		},
 		createdAt: 1679634238000,
+		canEnrollParticularCourses: false,
 		features: [],
 	},
 	{
@@ -53,6 +55,7 @@ export const productsData: ProductJson[] = [
 			enableCreateParticularCourses: false,
 		},
 		createdAt: 1679634238000,
+		canEnrollParticularCourses: false,
 		features: [],
 	},
 	{
@@ -71,6 +74,7 @@ export const productsData: ProductJson[] = [
 			enableCreateParticularCourses: false,
 		},
 		createdAt: 1679634238000,
+		canEnrollParticularCourses: false,
 		features: [
 			{
 				text: "Acceso a mas de 50 cursos",

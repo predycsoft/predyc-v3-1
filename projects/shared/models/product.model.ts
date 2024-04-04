@@ -3,6 +3,7 @@ export interface ProductJson {
   active: boolean;
   amount: number;
   autodeactivate: boolean;
+  canEnrollParticularCourses: boolean;
   createdAt: number;
   description: string;
   features: ProductFeatures[];
@@ -16,6 +17,7 @@ export class Product {
   active: boolean;
   autodeactivate: boolean;
   amount: number;
+  canEnrollParticularCourses: boolean;
   createdAt: number;
   description: string;
   features: ProductFeatures[];
@@ -49,6 +51,7 @@ export class Product {
     active: true,
     amount: 0,
     autodeactivate: false,
+    canEnrollParticularCourses: false,
     createdAt: +new Date(),
     description: "",
     features: [],
@@ -63,6 +66,7 @@ export class Product {
     product.active = obj.active;
     product.amount = obj.amount;
     product.autodeactivate = obj.autodeactivate;
+    product.canEnrollParticularCourses = obj.canEnrollParticularCourses;
     product.createdAt = obj.createdAt;
     product.description = obj.description;
     product.features = obj.features;
@@ -77,6 +81,7 @@ export class Product {
       active: this.active,
       amount: this.amount,
       autodeactivate: this.autodeactivate,
+      canEnrollParticularCourses: this.canEnrollParticularCourses,
       createdAt: this.createdAt,
       description: this.description,
       features: this.features,
