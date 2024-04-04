@@ -124,15 +124,20 @@ export class AdminStudentListComponent {
                 (x) => x.status === SubscriptionClass.STATUS_ACTIVE && x.currentPeriodEnd < today
               );
 
+              console.log(SubscriptionClass.STATUS_INACTIVE,SubscriptionClass.STATUS_ACTIVE,SubscriptionClass.STATUS_EXPIRED)
 
-              let status  = SubscriptionClass.STATUS_INACTIVE
-              
+
+              let status
 
               if((activeSubscriptions.length > 0 && expiredSubscriptions.length == 0) || (activeSubscriptions.length >0 && expiredSubscriptions.length > 0)){
                 status = SubscriptionClass.STATUS_ACTIVE
               }
               else if (activeSubscriptions.length == 0 && expiredSubscriptions.length > 0){
                 status = SubscriptionClass.STATUS_EXPIRED
+              }
+              else {
+                status = SubscriptionClass.STATUS_INACTIVE
+
               }
 
               console.log('revisar licencias',activeSubscriptions,expiredSubscriptions,status)
@@ -166,9 +171,13 @@ export class AdminStudentListComponent {
             }
             console.log('statusTerm',statusTerm)
             if(statusTerm && statusTerm!='all'){
+              let filter = 'x.statusId == statusTerm'
+              if(statusTerm == 'active'){
+                filter = filter+" || x.statusId == 'expired'"
+              }
               usersInList = usersInList.filter((x) => {
                 return (
-                  x.statusId == statusTerm
+                  eval(filter)
                 );
               })
             }

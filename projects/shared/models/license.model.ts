@@ -22,7 +22,7 @@ export interface LicenseJson {
 
 export class License {
   public static collection = "new-license";
-  // public static collection = "license";
+  //public static collection = "license";
 
   constructor(
     public createdAt: number | null,

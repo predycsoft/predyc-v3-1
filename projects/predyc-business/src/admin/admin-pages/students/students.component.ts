@@ -32,12 +32,13 @@ export class StudentsComponent {
     // Usuarios Inactivos
     // Usuarios Totales
 
-    let usuariosActivos = users.filter(x=>x.status == 'Activo').length
-    let usuariosInactivos = users.filter(x=>x.status == 'Inactivo').length
+    let usuariosActivos = users.filter(x=>x.statusId == 'active').length
+    let usuariosExpired = users.filter(x=>x.statusId == 'expired').length
+    let usuariosInactivos = users.filter(x=>x.statusId == 'inactive').length
     let usuariosTotales = users.length;
 
     let respuesta  = {
-      usuariosActivos : usuariosActivos,
+      usuariosActivos : usuariosActivos+usuariosExpired,
       usuariosInactivos : usuariosInactivos,
       usuariosTotales : usuariosTotales
     }

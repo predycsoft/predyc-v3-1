@@ -79,8 +79,11 @@
     <ng-container matColumnDef="status">
       <th mat-header-cell *matHeaderCellDef class="ft13 centertext">Estatus</th>
       <td mat-cell *matCellDef="let user" class="centertext ft12">
-        <div class="pdt03 pdb03 radius6" [ngClass]="user.status == 'Activo' ? 'backGreen2 green-5' : 'backGray3 gray-5'">
-          {{ user.status }}
+        <div fxLayout="row" fxLayoutGap="6px" fxLayoutAlign="center center" class="pdt03 pdb03 radius6" [ngClass]="{'backGreen2 green-5':(user.statusId == 'active' || user.statusId == 'expired') ,'backGray3 gray-5':user.statusId == 'inactive'}">
+          <div fxLayout="column" >{{ user.status }}</div>
+          <div fxLayout="column" fxLayoutAlign="center center" *ngIf="user.statusId == 'expired'" matTooltip="Esta empresa tiene licencias vencidas por desactivar">
+            <mat-icon style="color: var(--red-5); size: 8px;">error</mat-icon>
+          </div>
         </div>
       </td>
     </ng-container>
