@@ -25,6 +25,7 @@ interface UserInList {
   updatedAt: number;
   enterprise: string;
   phoneNumber: string;
+  statusId:string
 }
 
 @Component({
@@ -49,6 +50,8 @@ export class AdminStudentListComponent {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @Input() enableNavigateToUser: boolean = true;
   @Output() onStudentSelected = new EventEmitter<UserInList>();
+  @Output() totalUsers = new EventEmitter<any>();
+
 
   queryParamsSubscription: Subscription;
   userServiceSubscription: Subscription;
@@ -75,7 +78,8 @@ export class AdminStudentListComponent {
       (params) => {
         const page = Number(params["page"]) || 1;
         const searchTerm = params["search"] || "";
-        this.performSearch(searchTerm, page);
+        const statusTerm = params["status"] || "";
+        this.performSearch(searchTerm,statusTerm, page);
       }
     );
   }
@@ -85,7 +89,7 @@ export class AdminStudentListComponent {
     this.dataSource.paginator.pageSize = this.pageSize;
   }
 
-  performSearch(searchTerm: string, page: number) {
+  performSearch(searchTerm: string, statusTerm:string, page: number) {
     if (this.userServiceSubscription) {
       this.userServiceSubscription.unsubscribe();
     }
@@ -105,7 +109,7 @@ export class AdminStudentListComponent {
       )
       .subscribe((response) => {
         if (this.enterprises) {
-          const usersInList: UserInList[] = response
+          let usersInList: UserInList[] = response
             .map(({ user, subscriptions }) => {
               const enterprise = this.enterprises.find(
                 (enterprise) => enterprise.id === user.enterprise?.id
@@ -129,22 +133,30 @@ export class AdminStudentListComponent {
                 phoneNumber: user.phoneNumber,
                 enterprise: enterprise ? enterprise.name : null,
                 status: SubscriptionClass.statusToDisplayValueDict[status],
+                statusId: status,
               };
             })
-            .filter((x) => {
-              if (!searchTerm) {
-                return true;
-              }
-              return (
-                x.displayName
-                  .toLocaleLowerCase()
-                  .includes(searchTerm.toLocaleLowerCase()) ||
-                x.email
-                  .toLocaleLowerCase()
-                  .includes(searchTerm.toLocaleLowerCase())
-              );
-            });
-          // console.log("usersInList", usersInList)
+            this.totalUsers.emit(usersInList);
+            if(searchTerm){
+              usersInList = usersInList.filter((x) => {
+                return (
+                  x.displayName
+                    .toLocaleLowerCase()
+                    .includes(searchTerm.toLocaleLowerCase()) ||
+                  x.email
+                    .toLocaleLowerCase()
+                    .includes(searchTerm.toLocaleLowerCase())
+                );
+              })
+            }
+            console.log('statusTerm',statusTerm)
+            if(statusTerm && statusTerm!='all'){
+              usersInList = usersInList.filter((x) => {
+                return (
+                  x.statusId == statusTerm
+                );
+              })
+            }
           this.paginator.pageIndex = page - 1;
           this.dataSource.data = usersInList;
           this.totalLength = usersInList.length;

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { IconService } from '../../services/icon.service';
@@ -19,9 +19,16 @@ export class StatusSelectorComponent {
   selectedStatus: string = ''
   private queryParamsSubscription: Subscription
 
+  @Input() origin: string = '';
+
+
   ngOnInit() {
+    let defaul =''
+    if(this.origin == 'StudentsComponent'){
+      defaul = 'all'
+    }
     this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
-      const status = params['status'] || 'inactive';
+      const status = params['status'] || defaul;
       this.selectedStatus = status
     })
   }

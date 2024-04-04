@@ -20,6 +20,33 @@ export class StudentsComponent {
     this.openCreateUserModal(null)
   }
 
+  estadisticas = {
+    usuariosActivos : 0,
+    usuariosInactivos : 0,
+    usuariosTotales : 0
+  }
+
+  getUsers(users){
+    console.log('usersGet',users)
+    // Usuarios Activos
+    // Usuarios Inactivos
+    // Usuarios Totales
+
+    let usuariosActivos = users.filter(x=>x.status == 'Activo').length
+    let usuariosInactivos = users.filter(x=>x.status == 'Inactivo').length
+    let usuariosTotales = users.length;
+
+    let respuesta  = {
+      usuariosActivos : usuariosActivos,
+      usuariosInactivos : usuariosInactivos,
+      usuariosTotales : usuariosTotales
+    }
+
+    this.estadisticas = respuesta
+
+
+  }
+
   openCreateUserModal(student: User | null): NgbModalRef {
     let openModal = false
     let isNewUser = false
