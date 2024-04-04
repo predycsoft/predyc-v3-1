@@ -17,7 +17,7 @@ export interface LicenseJson {
   rotationsUsed: number | null;
   rotationsWaitingCount: number | null;
   startedAt: number | null;
-  status: string | null;
+  status: "active" | "inactive" | null;
 }
 
 export class License {
@@ -38,7 +38,7 @@ export class License {
     public failedRotationCount: number | null,
     public rotationsWaitingCount: number | null,
     public startedAt: number | null,
-    public status: string | null
+    public status: "active" | "inactive" | null
   ) {}
 
   public static STATUS_CHOICES = SubscriptionClass.STATUS_CHOICES;

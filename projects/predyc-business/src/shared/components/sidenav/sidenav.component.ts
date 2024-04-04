@@ -64,12 +64,6 @@ export class SideNavComponent {
       link: "/admin/enterprises",
       icon: "../../assets/iconsUI/enterprise.svg",
     },
-    // {
-    // 	name: "Crear demo",
-    // 	link: "/admin/create-demo",
-    // 	icon: "../../assets/iconsUI/demo.svg",
-    // },
-
     {
       name: "Productos",
       link: "/admin/products",
