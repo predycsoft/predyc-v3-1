@@ -30,8 +30,10 @@ export class Subscription {
 
   public static STATUS_ACTIVE: "active" = "active";
   public static STATUS_INACTIVE: "inactive" = "inactive";
+  public static STATUS_EXPIRED: "expired" = "expired";
 
-  public static STATUS_CHOICES = [this.STATUS_ACTIVE, this.STATUS_INACTIVE];
+
+  public static STATUS_CHOICES = [this.STATUS_ACTIVE, this.STATUS_INACTIVE, this.STATUS_EXPIRED];
 
   id: string;
   idAtOrigin: string;
@@ -57,6 +59,7 @@ export class Subscription {
   public static statusToDisplayValueDict = {
     active: "Activo",
     inactive: "Inactivo",
+    expired: "Expired"
   };
 
   public static getSubscriptionTemplate(): Subscription {
