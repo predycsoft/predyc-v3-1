@@ -1,21 +1,21 @@
 import { Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { IconService } from '../../../services/icon.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Subscription, combineLatest } from 'rxjs';
-import { License } from 'projects/shared/models/license.model';
+import { ProductService } from '../../../services/product.service';
 import { Product } from 'projects/shared/models/product.model';
-import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
-import { ProductService } from 'projects/predyc-business/src/shared/services/product.service';
+import { License } from 'projects/shared/models/license.model';
+import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-dialog-new-license',
-  templateUrl: './dialog-new-license.component.html',
-  styleUrls: ['./dialog-new-license.component.css']
+  selector: 'app-dialog-create-license',
+  templateUrl: './dialog-create-license.component.html',
+  styleUrls: ['./dialog-create-license.component.css']
 })
-export class DialogNewLicenseComponent {
+export class DialogCreateLicenseComponent {
 
   constructor(
-    public matDialogRef: MatDialogRef<DialogNewLicenseComponent>, 
+    public matDialogRef: MatDialogRef<DialogCreateLicenseComponent>, 
     public icon: IconService,
     private fb: FormBuilder,
     private productService: ProductService,
