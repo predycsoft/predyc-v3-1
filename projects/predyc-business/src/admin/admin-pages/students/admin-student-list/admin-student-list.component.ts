@@ -90,6 +90,9 @@ export class AdminStudentListComponent {
   }
 
   performSearch(searchTerm: string, statusTerm:string, page: number) {
+    let today = new Date()
+    let todayTime = today.getTime()
+
     if (this.userServiceSubscription) {
       this.userServiceSubscription.unsubscribe();
     }
@@ -115,13 +118,25 @@ export class AdminStudentListComponent {
                 (enterprise) => enterprise.id === user.enterprise?.id
               );
               const activeSubscriptions = subscriptions.filter(
-                (x) => x.status === SubscriptionClass.STATUS_ACTIVE
+                (x) => x.status === SubscriptionClass.STATUS_ACTIVE && x.currentPeriodEnd >= today
+              );
+              const expiredSubscriptions = subscriptions.filter(
+                (x) => x.status === SubscriptionClass.STATUS_ACTIVE && x.currentPeriodEnd < today
               );
 
-              const status =
-                activeSubscriptions.length > 0
-                  ? SubscriptionClass.STATUS_ACTIVE
-                  : SubscriptionClass.STATUS_INACTIVE;
+
+              let status  = SubscriptionClass.STATUS_INACTIVE
+              
+
+              if((activeSubscriptions.length > 0 && expiredSubscriptions.length == 0) || (activeSubscriptions.length >0 && expiredSubscriptions.length > 0)){
+                status = SubscriptionClass.STATUS_ACTIVE
+              }
+              else if (activeSubscriptions.length == 0 && expiredSubscriptions.length > 0){
+                status = SubscriptionClass.STATUS_EXPIRED
+              }
+
+              console.log('revisar licencias',activeSubscriptions,expiredSubscriptions,status)
+
 
               return {
                 displayName: user.displayName,
