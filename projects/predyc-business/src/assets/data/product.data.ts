@@ -15,9 +15,9 @@ export const productsData: ProductJson[] = [
 			enableExtraCoursesView: true,
 			enableToTakeTest: false,
 			enableCreateParticularCourses: false,
+			enableEnrollParticularCourses: false,
 		},
 		createdAt: 1679634238000,
-		canEnrollParticularCourses: false,
 		features: [],
 	},
 	{
@@ -34,9 +34,9 @@ export const productsData: ProductJson[] = [
 			enableExtraCoursesView: true,
 			enableToTakeTest: true,
 			enableCreateParticularCourses: false,
+			enableEnrollParticularCourses: false,
 		},
 		createdAt: 1679634238000,
-		canEnrollParticularCourses: false,
 		features: [],
 	},
 	{
@@ -53,9 +53,9 @@ export const productsData: ProductJson[] = [
 			enableExtraCoursesView: true,
 			enableToTakeTest: true,
 			enableCreateParticularCourses: false,
+			enableEnrollParticularCourses: false,
 		},
 		createdAt: 1679634238000,
-		canEnrollParticularCourses: false,
 		features: [],
 	},
 	{
@@ -72,9 +72,9 @@ export const productsData: ProductJson[] = [
 			enableExtraCoursesView: true,
 			enableToTakeTest: true,
 			enableCreateParticularCourses: false,
+			enableEnrollParticularCourses: false,
 		},
 		createdAt: 1679634238000,
-		canEnrollParticularCourses: false,
 		features: [
 			{
 				text: "Acceso a mas de 50 cursos",
