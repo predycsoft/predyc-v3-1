@@ -25,7 +25,6 @@ import { EnterpriseDetailComponent } from "./admin-pages/enterprise/enterprise-d
 import { EnterpriseInfoComponent } from "./admin-pages/enterprise/enterprise-detail/enterprise-info/enterprise-info.component";
 import { EnterpriseStudentsComponent } from "./admin-pages/enterprise/enterprise-detail/enterprise-students/enterprise-students.component";
 import { EnterprisePaymentsComponent } from "./admin-pages/enterprise/enterprise-detail/enterprise-payments/enterprise-payments.component";
-import { DialogNewLicenseComponent } from "./admin-pages/enterprise/enterprise-detail/enterprise-students/dialog-new-license/dialog-new-license.component";
 import { EnterpriseLicensesListComponent } from "./admin-pages/enterprise/enterprise-detail/enterprise-students/enterprise-licenses-list/enterprise-licenses-list.component";
 import { EnterpriseAdminsListComponent } from "./admin-pages/enterprise/enterprise-detail/enterprise-students/enterprise-admins-list/enterprise-admins-list.component";
 import { EnterpriseStudentsListComponent } from "./admin-pages/enterprise/enterprise-detail/enterprise-students/enterprise-students-list/enterprise-students-list.component";
@@ -61,7 +60,6 @@ import { DialogFreebiesFormComponent } from "./admin-pages/freebies/freebies-lis
     EnterpriseInfoComponent,
     EnterpriseStudentsComponent,
     EnterprisePaymentsComponent,
-    DialogNewLicenseComponent,
     EnterpriseLicensesListComponent,
     EnterpriseAdminsListComponent,
     EnterpriseStudentsListComponent,

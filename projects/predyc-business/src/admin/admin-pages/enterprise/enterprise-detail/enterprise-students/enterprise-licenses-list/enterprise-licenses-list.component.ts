@@ -6,12 +6,13 @@ import { License } from "projects/shared/models/license.model";
 import { Product } from "projects/shared/models/product.model";
 import { LicenseService } from "projects/predyc-business/src/shared/services/license.service";
 import { ProductService } from "projects/predyc-business/src/shared/services/product.service";
-import { DialogNewLicenseComponent } from "../dialog-new-license/dialog-new-license.component";
 import { Subscription as SubscriptionClass } from "projects/shared/models/subscription.model";
 import { DocumentReference } from "@angular/fire/compat/firestore";
 import { Enterprise } from "projects/shared/models/enterprise.model";
 import { DialogService } from "projects/predyc-business/src/shared/services/dialog.service";
 import { ActivatedRoute, Router } from "@angular/router";
+import { SubscriptionService } from "projects/predyc-business/src/shared/services/subscription.service";
+import { DialogCreateLicenseComponent } from "projects/predyc-business/src/shared/components/license/dialog-create-license/dialog-create-license.component";
 
 interface LicensesInList {
   productName: string;
@@ -40,7 +41,8 @@ export class EnterpriseLicensesListComponent {
     private productService: ProductService,
     public dialogService: DialogService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private subscriptionService: SubscriptionService
   ) {}
 
   SubscriptionClass = SubscriptionClass;
@@ -112,6 +114,7 @@ export class EnterpriseLicensesListComponent {
             showWarning:
               license.status === SubscriptionClass.STATUS_ACTIVE &&
               license.currentPeriodEnd < today,
+            license: license,
           };
         })
         .filter((x) => {
@@ -134,6 +137,58 @@ export class EnterpriseLicensesListComponent {
     });
   }
 
+  async editLicense(license: License) {
+    const dialogRef = this.dialog.open(DialogCreateLicenseComponent, {
+      data: {
+        license: license,
+        products: this.products,
+        dateStart: null,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(async (result: License) => {
+      if (result) {
+        result.enterpriseRef = this.enterpriseRef;
+        try {
+          const licenseJson = result.toJson();
+          await this.licenseService.saveLicense(licenseJson);
+          // Update all subscriptions
+          const subscriptions =
+            await this.subscriptionService.getSubscriptionsByLicense(
+              this.licenseService.getLicenseRefById(licenseJson.id)
+            );
+          for (let subscription of subscriptions) {
+            const modifiedSubscription = {
+              ...subscription,
+              canceledAt:
+                licenseJson.status === SubscriptionClass.STATUS_ACTIVE
+                  ? null
+                  : Date.now(),
+              changedAt: Date.now(),
+              currentPeriodEnd: licenseJson.currentPeriodStart,
+              currentPeriodStart: licenseJson.currentPeriodEnd,
+              endedAt:
+                licenseJson.status === SubscriptionClass.STATUS_ACTIVE
+                  ? null
+                  : Date.now(),
+              productRef: licenseJson.productRef,
+              status: licenseJson.status,
+            };
+            await this.subscriptionService.saveSubscription(
+              modifiedSubscription
+            );
+          }
+          this.dialogService.dialogExito();
+        } catch (error) {
+          this.dialogService.dialogAlerta(
+            "Hubo un error al guardar la licencia. Inténtalo de nuevo."
+          );
+          console.log(error);
+        }
+      }
+    });
+  }
+
   async addLicense() {
     let licences = this.dataSource.data;
     let licenceActive = licences.find((x) => x.status == "Activo");
@@ -144,8 +199,9 @@ export class EnterpriseLicensesListComponent {
       dateStart = licenceActive.start;
     }
 
-    const dialogRef = this.dialog.open(DialogNewLicenseComponent, {
+    const dialogRef = this.dialog.open(DialogCreateLicenseComponent, {
       data: {
+        license: null,
         products: this.products,
         dateStart: dateStart,
       },

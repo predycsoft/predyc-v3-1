@@ -13,7 +13,7 @@ import { Enterprise } from "projects/shared/models/enterprise.model";
 import { EnterpriseService } from "projects/predyc-business/src/shared/services/enterprise.service";
 import { IconService } from "projects/predyc-business/src/shared/services/icon.service";
 import { UserService } from "projects/predyc-business/src/shared/services/user.service";
-import { Subscription as SubscriptionClass } from "shared";
+import { Subscription as SubscriptionClass } from "projects/shared/models/subscription.model";
 import { SubscriptionService } from "projects/predyc-business/src/shared/services/subscription.service";
 
 interface UserInList {
