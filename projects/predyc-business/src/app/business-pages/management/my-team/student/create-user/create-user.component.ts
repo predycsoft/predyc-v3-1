@@ -24,6 +24,8 @@ import { SubscriptionService } from 'projects/predyc-business/src/shared/service
 import { ProductService } from 'projects/predyc-business/src/shared/services/product.service';
 import { Product } from 'projects/shared/models/product.model';
 import { CourseService } from '../../../../../../shared/services/course.service';
+import { roundNumber } from 'projects/shared/utils';
+
 
 @Component({
 	selector: "app-create-user",
@@ -476,4 +478,45 @@ export class CreateUserComponent {
 		this.profileServiceSubscription.unsubscribe();
 		this.departmentServiceSubscription.unsubscribe();
 	}
+
+	getFormattedDuration(perfil) {
+		const hours = Math.floor(perfil.duracion / 60);
+		const minutes = perfil.duracion % 60;
+		return `${hours}:${minutes} hrs`;
+	}
+
+	modalCourses
+
+	showCoursesProfile(modal){
+		this.modalCourses = this.modalService.open(modal, {
+			ariaLabelledBy: "modal-basic-title",
+			centered: true,
+			size: "md",
+		});
+	}
+
+	getNameProfileSelected(){
+		const id = this.userForm.get('profile').value
+		const profile = this.profiles.find(x=>x.id == id)
+		return profile?.name
+
+	}
+
+	getCoursesProfileSelected(){
+		const id = this.userForm.get('profile').value
+		const profile = this.profiles.find(x=>x.id == id)
+		let cursos = profile['cursos'];
+		if(cursos){
+			return cursos
+		}
+		return []
+		
+	}
+
+	
+	roundNumber(number: number) {
+		return roundNumber(number)
+	}
+
+	
 }
