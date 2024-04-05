@@ -77,6 +77,7 @@ export class StudentInfoFormComponent {
     })
     modalRef.componentInstance.studentToEdit = student;
     modalRef.result.then(result => {
+      console.log(result)
       this.save(result)
     }).catch(error => {
       console.log(error)

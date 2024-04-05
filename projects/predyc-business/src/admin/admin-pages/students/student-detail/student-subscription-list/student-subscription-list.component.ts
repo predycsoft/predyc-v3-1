@@ -14,6 +14,7 @@ import { DialogEditSubscriptionComponent } from "projects/predyc-business/src/sh
 import { DialogService } from "projects/predyc-business/src/shared/services/dialog.service";
 import { DatePipe } from "@angular/common";
 import Swal from "sweetalert2";
+import { IconService } from "projects/predyc-business/src/shared/services/icon.service";
 
 export interface SubscriptionInfo extends SubscriptionJson {
   productName: string;
@@ -36,7 +37,8 @@ export class StudentSubscriptionListComponent {
   constructor(
     private subscriptionService: SubscriptionService,
     private dialog: MatDialog,
-    public dialogService: DialogService
+    public dialogService: DialogService,
+    public icon: IconService,
   ) {}
 
   displayedColumns: string[] = [
@@ -129,6 +131,27 @@ export class StudentSubscriptionListComponent {
         }
       }
     });
+  }
+
+  changeStatusPrev(subscription : SubscriptionInfo){
+
+
+    Swal.fire({
+      title: "Confirmar acción",
+      text:`¿Desea editar el estatus de la subcripcion?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Editar",
+      confirmButtonColor: 'var(--blue-5)',
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        this.changeStatus(subscription)
+      }
+    });
+
+
+    
   }
 
   async changeStatus(subscription: SubscriptionInfo) {

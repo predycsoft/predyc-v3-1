@@ -27,6 +27,7 @@ import { combineLatest } from "rxjs/internal/observable/combineLatest";
 import { CourseService } from "projects/predyc-business/src/shared/services/course.service";
 import { Curso } from "projects/shared/models/course.model";
 import { CourseByStudent } from "projects/shared/models/course-by-student.model";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: "app-student-detail",
@@ -54,7 +55,8 @@ export class StudentDetailComponent {
     private enterpriseService: EnterpriseService,
     private chargeService: ChargeService,
     private profileService: ProfileService,
-    private courseService: CourseService
+    private courseService: CourseService,
+    private modalService: NgbModal
   ) {}
 
   userSubscription: Subscription;
@@ -181,16 +183,22 @@ export class StudentDetailComponent {
   hasExtraCourses = true;
 
   createSubscription(sub=null) {
-    const dialogRef = this.dialog.open(DialogCreateSubscriptionComponent, {
-      data: {
-        userId: this.user.uid,
-        products: this.products,
-        enterpriseRef: this.enterpriseRef,
-        subscription: null
-      },
+    const dialogRef = this.modalService.open(DialogCreateSubscriptionComponent, {
+      animation: true,
+      centered: true,
+      //size: 'lg',
+      backdrop: 'static',
+      keyboard: false 
     });
+    let data =  {
+      userId: this.user.uid,
+      products: this.products,
+      enterpriseRef: this.enterpriseRef,
+      subscription: null
+    }
+    dialogRef.componentInstance.data = data;
 
-    dialogRef.afterClosed().subscribe(async (result: SubscriptionClass) => {
+    dialogRef.result.then(async result => {
       if (result) {
         try {
           await this.subscriptionService.saveSubscription(result.toJson());
@@ -202,11 +210,62 @@ export class StudentDetailComponent {
           console.error(error);
         }
       }
-    });
+    }).catch(error => {
+      console.log(error)
+    })
+
+
+    // dialogRef.afterClosed().subscribe(async (result: SubscriptionClass) => {
+    //   if (result) {
+    //     try {
+    //       await this.subscriptionService.saveSubscription(result.toJson());
+    //       this.dialogService.dialogExito();
+    //     } catch (error) {
+    //       this.dialogService.dialogAlerta(
+    //         "Hubo un error al crear la suscripción. Inténtalo de nuevo."
+    //       );
+    //       console.error(error);
+    //     }
+    //   }
+    // });
+  }
+
+  editSubscription(sub = null) {
+    const modalRef = this.modalService.open(DialogCreateSubscriptionComponent, {
+      animation: true,
+      centered: true,
+      //size: 'lg',
+      backdrop: 'static',
+      keyboard: false 
+    })
+
+    let data= {
+      userId: this.user.uid,
+      products: this.products,
+      enterpriseRef: this.enterpriseRef,
+      subscription: sub
+    }
+
+    modalRef.componentInstance.data = data;
+    modalRef.result.then(async result => {
+      if (result) {
+        try {
+          await this.subscriptionService.saveSubscription(result.toJson());
+          this.dialogService.dialogExito();
+        } catch (error) {
+          this.dialogService.dialogAlerta(
+            "Hubo un error al crear la suscripción. Inténtalo de nuevo."
+          );
+          console.error(error);
+        }
+      }
+    }).catch(error => {
+      console.log(error)
+    })
   }
 
 
-  editSubscription(sub) {
+  _editSubscription(sub) {
     const dialogRef = this.dialog.open(DialogCreateSubscriptionComponent, {
       data: {
         userId: this.user.uid,
