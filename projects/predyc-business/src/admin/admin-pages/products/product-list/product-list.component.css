@@ -2,6 +2,12 @@
     overflow: initial;
 }
 
+.button-containerleft {
+    display: flex;
+    justify-content: flex-end!important;
+    margin-bottom: 10px;
+}
+
 table {
     border-collapse: collapse;
     border-radius: 1em;
