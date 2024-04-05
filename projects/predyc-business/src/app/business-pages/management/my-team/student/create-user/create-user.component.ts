@@ -23,6 +23,7 @@ import { Subscription as SubscriptionClass } from 'projects/shared/models/subscr
 import { SubscriptionService } from 'projects/predyc-business/src/shared/services/subscription.service';
 import { ProductService } from 'projects/predyc-business/src/shared/services/product.service';
 import { Product } from 'projects/shared/models/product.model';
+import { CourseService } from '../../../../../../shared/services/course.service';
 
 @Component({
 	selector: "app-create-user",
@@ -44,6 +45,7 @@ export class CreateUserComponent {
 		private modalService: NgbModal,
 		private subscriptionService: SubscriptionService,
 		private productService: ProductService,
+		private courseService:CourseService
 	) {
 		// Obtener la fecha actual
 		const today = new Date();
@@ -68,26 +70,13 @@ export class CreateUserComponent {
 	profileServiceSubscription: Subscription;
 	departmentServiceSubscription: Subscription;
 	departments: Department[] = [];
+	courses = [];
 
 	filteredDepartments: Observable<string[]>;
 
 	async ngOnInit() {
 		this.isDepartmentInvalid = false;
-
-		this.profileServiceSubscription = this.profileService.getProfiles$().subscribe((profiles) => {
-			if (profiles) {
-				// console.log("profiles", profiles);
-				let profilesBase = [];
-				profiles.forEach((element) => {
-					if (element?.baseProfile?.id) {
-						profilesBase.push(element?.baseProfile?.id);
-					}
-				});
-
-				this.profiles = profiles.filter((profile) => !profilesBase.includes(profile.id));
-				// console.log("Filtrados", this.profiles);
-			}
-		});
+		this.getCourses();
 		this.departmentServiceSubscription = this.departmentService.getDepartments$().subscribe({
 			next: (departments) => {
 				let departmentsBase = [];
@@ -110,6 +99,45 @@ export class CreateUserComponent {
 			},
 		});
 		await this.setupForm();
+	}
+
+	cursos=[]
+
+	getCourses(){
+		this.courseService.getCourses$().subscribe((cursos) =>{
+			console.log('cursos',cursos)
+			this.cursos = cursos
+			this.profileServiceSubscription = this.profileService.getProfiles$().subscribe((profiles) => {
+				if (profiles) {
+					// console.log("profiles", profiles);
+					let profilesBase = [];
+					profiles.forEach((element) => {
+						if (element?.baseProfile?.id) {
+							profilesBase.push(element?.baseProfile?.id);
+						}
+					});
+
+					let profilesFilteres = profiles.filter((profile) => !profilesBase.includes(profile.id));
+					profilesFilteres.forEach(perfil => {
+						if(perfil?.coursesRef.length>0){
+							let cursos = []
+							let duracion = 0
+							perfil.coursesRef.forEach(cursoRef=> {
+								let curso = this.cursos.find(x=>x.id == cursoRef['id'])
+								cursos.push(curso)
+								duracion+=curso.duracion
+							});
+							perfil['cursos'] = cursos
+							perfil['duracion'] = duracion
+
+						}
+					});
+
+					this.profiles = profilesFilteres
+					console.log("profiles Filtrados", this.profiles);
+				}
+			});
+		})
 	}
 
 	private _filter(value: string): string[] {
