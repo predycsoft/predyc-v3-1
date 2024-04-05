@@ -111,15 +111,20 @@
               >Perfil: {{ user.profile.name }}</span
             >
           </div>
-          <div
-            class="blueLink"
-            *ngIf="
-              user?.product &&
-              user.product.type === productClass.TYPE_SIMPLIFIED
-            "
-            (click)="saveAsExtraCourse()"
-          >
-            Inscribir cursos del perfil como simplificado
+          <div fxLayout="row" fxLayoutGap="5rem" fxLayoutAlign=" center">
+            <div class="blueLink" (click)="openCoursesDialog()">
+              Elegir cursos a inscribir
+            </div>
+            <div
+              class="blueLink"
+              *ngIf="
+                user?.product &&
+                user.product.type === productClass.TYPE_SIMPLIFIED
+              "
+              (click)="saveEnrolledCoursesAsExtraCourse()"
+            >
+              Inscribir cursos del perfil como simplificado
+            </div>
           </div>
         </div>
       </div>
