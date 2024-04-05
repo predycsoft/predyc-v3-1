@@ -1,18 +1,22 @@
-<div class="mg20">
+<div class="">
     <form [formGroup]="createDemoForm" (ngSubmit)="onSubmit()">
-        <div fxLayout="row" fxLayoutAlign="space-between center " class="mgt20">
-            <span class="ft16 ft600 gray-10"> Crear empresa demo </span>
+        <div class="modal-header bg-web-primary text-white px-3 py-1" fxLayoutAlign="space-between center" >
+            <div class="modal-title pd10 ">
+                <span class="ft16 ft600 gray-10"> Crear empresa demo </span>
+            </div>
             <img [src]="icon.close" (click)="closeDialog()" class="makeGray h20px cursorPointer">
         </div>
-        <div fxLayout="row" fxLayoutAlign="start " class="mgt20">
+
+        <div fxLayout="row" fxLayoutAlign="start " class=" mg20">
             <div class="fw">
                 <div fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="center ">
                     <input
                         formControlName="enterpriseName"
                         [class.is-invalid]="createDemoForm.get('enterpriseName').errors && displayErrors"
                         type="text" 
-                        class="form-control ft14 ft14"
-                        placeholder="Nombre de la empresa">
+                        class="form-control ft14  shadow-animation   pdl05 pdr05 radius20  borderLight"
+                        placeholder="Nombre de la empresa"
+                        >
                     <div
                         class="custom-invalid-feedback"
                         *ngIf="createDemoForm.get('enterpriseName').errors && displayErrors">
@@ -24,7 +28,7 @@
                         formControlName="adminName"
                         [class.is-invalid]="createDemoForm.get('adminName').errors && displayErrors"
                         type="text" 
-                        class="form-control ft14"
+                        class="form-control ft14  shadow-animation   pdl05 pdr05 radius20  borderLight"
                         placeholder="Nombre del administrador">
                         <div
                             class="custom-invalid-feedback"
@@ -39,7 +43,7 @@
                             formControlName="email"
                             [class.is-invalid]="createDemoForm.get('email').errors && displayErrors"
                             type="text" 
-                            class="form-control ft14 pdl20"
+                            class="form-control ft14  shadow-animation   pdl05 pdr05 radius20  borderLight pdl20"
                             placeholder="Correo electrónico del administrador">
                     </div>
                     <div
@@ -58,7 +62,7 @@
                             formControlName="phoneNumber"
                             [class.is-invalid]="createDemoForm.get('phoneNumber').errors && displayErrors"
                             type="text" 
-                            class="form-control ft14 pdl20"
+                            class="form-control ft14  shadow-animation   pdl05 pdr05 radius20  borderLight pdl20"
                             placeholder="Teléfono">
                     </div>
                     <div
@@ -72,7 +76,7 @@
                         [class.is-invalid]="createDemoForm.get('activeUsersQty').errors && displayErrors"
                         type="number"
                         min="1"
-                        class="form-control ft14"
+                        class="form-control ft14  shadow-animation   pdl05 pdr05 radius20  borderLight"
                         placeholder="Cantidad de usuarios activos">
                     <div
                         class="custom-invalid-feedback"
@@ -93,7 +97,7 @@
                             formControlName="endDate"
                             [class.is-invalid]="createDemoForm.get('endDate').errors && displayErrors"
                             type="text" 
-                            class="form-control ft14 pdl20"
+                            class="form-control ft14  shadow-animation   pdl20 pdr05 radius20  borderLightpdl20"
                             name="endDate"
                             (click)="endDate.toggle()"
                             ngbDatepicker

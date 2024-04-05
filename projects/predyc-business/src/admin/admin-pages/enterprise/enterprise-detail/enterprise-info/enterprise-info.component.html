@@ -1,45 +1,81 @@
 <form [formGroup]="enterpriseForm" (ngSubmit)="onSubmit()">
-    <div class="form-group mgt08">
-        <label class="ft12">Nombre de la empresa</label>
-        <input
-        [class.is-invalid]="enterpriseForm.controls['name'].errors && showError"
-        formControlName="name" type="text" class="form-control customInput2 radius6 ">
-        <div class="invalid-feedback" *ngIf="enterpriseForm.controls['name'].errors && showError"> 
-            Debe indicar el Nombre de la empresa
+    <div fxLayoutAlign="start center" fxLayout="row" class="fw">
+
+
+
+        <div  fxLayout="column"  class="mgt10 mgr20 "style="align-items: flex-start;">
+            <!-- <div (click)="fileInput.click()" class="cursorPointer">
+                <img onerror="this.src='assets/images/default/default-user-image.jpg'" [src]="imageUrl" class="avatar10" alt="">
+            </div> -->
+            <div fxLayoutAlign="start center" fxLayout="column">
+                <div (click)="fileInput.click()" class="cursorPointer mgb05 ">
+                    <img onerror="this.src='assets/images/default/default-user-image.jpg'" [src]="imageUrl" alt="Imagen seleccionada" class="avatarSquare8 radius6">
+                </div>
+                <input #fileInput type="file" style="display: none;" (change)="onFileSelected($event)" hidden accept="image/jpeg, image/png" >
+                <label> Foto de Empresa </label> 
+
+
+            </div>
+            
+            
         </div>
-    </div>
-    <div class="form-group mgt08">
-        <label class="ft12 " >Descripcion</label>
-        <textarea style="resize: none;" class="fw" maxlength="5000" formControlName="description"> </textarea>
-    </div>
-    <div class="form-group mgt08">
-        <label class="ft12">Sitio web</label>
-        <input
-        [class.is-invalid]="enterpriseForm.controls['website'].errors && showError"
-        formControlName="website" type="text" class="form-control customInput2 radius6 ">
-        <div class="invalid-feedback" *ngIf="enterpriseForm.controls['website'].errors && showError"> 
-            Debe indicar el sitio web
+
+
+
+        <div fxLayout="column" class="fw mgt03 mgr20 " >
+            <div class="form-group mgt02 fw">
+                <label class="ft12">Nombre de la empresa</label>
+                <input
+                [class.is-invalid]="enterpriseForm.controls['name'].errors && showError"
+                formControlName="name" type="text" class="form-control ft14  shadow-animation   pdl05 pdr05 radius20  borderLight ">
+                <div class="invalid-feedback" *ngIf="enterpriseForm.controls['name'].errors && showError"> 
+                    Debe indicar el nombre de la empresa
+                </div>
+            </div>
+            <div fxLayoutAlign="center center" fxLayout="row" fxLayoutGap="1rem">
+                <div class="form-group mgt08 fw">
+                    <label class="ft12 mgr10">Sitio web</label>
+                    <input
+                    [class.is-invalid]="enterpriseForm.controls['website'].errors && showError"
+                    formControlName="website" type="text" class="form-control ft14  shadow-animation   pdl05 pdr05 radius20  borderLight ">
+                    <div class="invalid-feedback" *ngIf="enterpriseForm.controls['website'].errors && showError"> 
+                        Debe indicar el sitio web
+                    </div>
+                </div>
+                <div class="form-group mgt08 fw">
+                    <label class="ft12">Enlace Linkedin</label>
+                    <input
+                    [class.is-invalid]="enterpriseForm.controls['linkedin'].errors && showError"
+                    formControlName="linkedin" type="text" class="form-control ft14  shadow-animation   pdl05 pdr05 radius20  borderLight ">
+                    <div class="invalid-feedback" *ngIf="enterpriseForm.controls['linkedin'].errors && showError"> 
+                        Debe indicar el Linkedin
+                    </div>
+                </div>
+
+
+            </div>
+            
         </div>
-    </div>
-    <div class="form-group mgt08">
-        <label class="ft12">Enlace Linkedin</label>
-        <input
-        [class.is-invalid]="enterpriseForm.controls['linkedin'].errors && showError"
-        formControlName="linkedin" type="text" class="form-control customInput2 radius6 ">
-        <div class="invalid-feedback" *ngIf="enterpriseForm.controls['linkedin'].errors && showError"> 
-            Debe indicar el Linkedin
-        </div>
-    </div>
-    <div fxLayout="column" fxLayoutGap="0.5rem" fxLayoutAlign="center start" class="mgt08">
-        <label> Foto de Empresa </label> 
-        <div (click)="fileInput.click()" class="cursorPointer">
-            <img onerror="this.src='assets/images/default/default-user-image.jpg'" [src]="imageUrl" class="avatar10" alt="">
-        </div>
-        <input #fileInput type="file" style="display: none;" (change)="onFileSelected($event)">
+        
 
     </div>
-    <div fxLayout="row" fxLayoutGap="3rem" fxLayoutAlign="center center">
-        <button class=" blueButtonAnim button-animation h28px mgr10 " fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" type="submit">
+    <div fxLayoutAlign="center center" fxLayout="row">
+        <!-- <div class="form-group mgt08">
+            <label class="ft12 " >Descripcion</label>
+            <textarea style="resize: none;" class="fw" maxlength="5000" formControlName="description"> </textarea>
+        </div> -->
+        <div class="mgt08 fw"  style="  " >
+            <label class="ft12 " >Descripción</label>
+            <textarea name=""  id="description"  ormControlName="description"  placeholder="Introduzca la descripción" class="pd05     radius10 backWhite shadow-animation borderLight form-group"
+            style=" overflow-y: hidden;  width: 100%; height: 100px; resize:none; background-color: transparent !important; " maxlength="200"  ></textarea>
+        </div>
+    </div>
+
+
+
+
+    <div fxLayout="row" class="mgt10" fxLayoutAlign="end ">
+        <button class=" blueButtonAnim button-animation h28px  " fxLayout="row" fxLayoutAlign="center center" type="submit" style="margin-right: -1px;">
             {{enterprise.id ? "Guardar" : "Crear"}} empresa
         </button> 
         <!-- <button *ngIf="enterprise.id" class=" redButtonAnim button-animation h28px mgr10 " fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" 
