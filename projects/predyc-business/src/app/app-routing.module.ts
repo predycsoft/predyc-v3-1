@@ -17,6 +17,7 @@ import { MyAccountComponent } from './business-pages/my-account/my-account.compo
 import { ProfilesComponent } from './business-pages/management/profiles/profiles.component';
 import { ProfileGuard } from 'projects/predyc-business/src/shared/guards/profile.guard';
 import { SystemUserGuard } from 'projects/predyc-business/src/admin/guards/systemUser.guard';
+import { MigrationsComponent } from '../shared/components/migrations/migrations.component';
 
 const MAIN_TITLE = 'Predyc - '
 
@@ -67,6 +68,10 @@ const routes: Routes = [
   {
     path: 'init-script',
     component: InitScriptComponent
+  },
+  {
+    path: 'migrations',
+    component: MigrationsComponent
   },
   { path: '**', redirectTo: '', pathMatch: 'full' }, // Wildcard Route
 ];
