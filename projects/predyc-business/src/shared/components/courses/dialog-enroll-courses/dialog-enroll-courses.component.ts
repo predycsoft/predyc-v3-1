@@ -2,7 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { DocumentReference } from '@angular/fire/compat/firestore';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DialogCreateChargeComponent } from '../../charges/dialog-create-charge/dialog-create-charge.component';
-import { Subscription, combineLatest } from 'rxjs';
+import { Observable, Subscription, combineLatest, filter, map, startWith } from 'rxjs';
 import { CourseService } from '../../../services/course.service';
 import { CategoryService } from '../../../services/category.service';
 import { Category } from 'projects/shared/models/category.model';
@@ -10,6 +10,8 @@ import { Curso, CursoJson } from 'projects/shared/models/course.model';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatTableDataSource } from '@angular/material/table';
 import { IconService } from '../../../services/icon.service';
+import { FormControl } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 
 interface CoursesForExplorer extends CursoJson {
   // categories: Category[],
@@ -28,6 +30,7 @@ export class DialogEnrollCoursesComponent {
     public courseService: CourseService, 
     public categoryService: CategoryService, 
     public icon: IconService,
+    private activatedRoute: ActivatedRoute,
     @Inject(MAT_DIALOG_DATA) public data: {
       studentEnrolledCourses: DocumentReference[]
     },
@@ -41,6 +44,9 @@ export class DialogEnrollCoursesComponent {
 
   enrolledCourses: CoursesForExplorer[]
   nonEnrolledCourses: CoursesForExplorer[]
+
+  queryParamsSubscription: Subscription
+  filteredNonEnrolledCourses: Observable<CoursesForExplorer[]>
 
   // tables
   enrolleddataSource = new MatTableDataSource<CoursesForExplorer>();
@@ -74,36 +80,26 @@ export class DialogEnrollCoursesComponent {
         }
       })
 
+      // For enrolled courses list
       this.enrolledCourses = coursesForExplorer.filter(x=> (x.inStudyPlan))
-      this.nonEnrolledCourses = coursesForExplorer.filter(x=> (!x.inStudyPlan))
-
-      // this.filteredCourses = combineLatest([
-      //   this.searchControl.valueChanges.pipe(startWith('')),
-      //   this.hoverItem$
-      // ]).pipe(
-      //   map(([searchText, hoverCategory]) => {
-      //     if (!searchText && !hoverCategory) return []
-      //     let filteredCourses = this.coursesForExplorer
-      //     if (hoverCategory) {
-      //       filteredCourses = filteredCourses.filter(course => {
-      //         const categories = course.categories.map(category => category.name)
-      //         return categories.includes(hoverCategory.name)
-      //       })
-      //     }
-      //     if (searchText) {
-      //       const filterValue = searchText.toLowerCase();
-      //       filteredCourses = filteredCourses.filter(course => course.titulo.toLowerCase().includes(filterValue));
-      //     }
-      //     return filteredCourses
-      //   }
-      // ))
-
       this.enrolleddataSource.data = this.enrolledCourses
-      this.nonEnrolleddataSource.data = this.nonEnrolledCourses
 
-
+      // For non enrolled courses list
+      this.nonEnrolledCourses = coursesForExplorer.filter(x=> (!x.inStudyPlan))
+      this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
+        // const page = Number(params['page']) || 1;
+        const searchTerm = params['search'] || '';
+        this.performSearch(searchTerm);
+      })
     })
 
+  }
+
+  performSearch(searchTerm:string) {
+      const filteredCourses = searchTerm ? this.nonEnrolledCourses.filter(course => course.titulo.toLowerCase().includes(searchTerm.toLowerCase())) : this.nonEnrolledCourses;
+      // this.paginator.pageIndex = page - 1;
+      this.nonEnrolleddataSource.data = filteredCourses
+      // this.totalLength = filteredCharges.length;
   }
 
 
