@@ -74,6 +74,7 @@ import { DialogCreateSubscriptionComponent } from './components/subscription/dia
 import { DialogEditSubscriptionComponent } from './components/subscription/dialog-edit-subscription/dialog-edit-subscription.component';
 import { DialogStudentEnrolledCourseDetailComponent } from './components/courses/dialog-student-enrolled-course-detail/dialog-student-enrolled-course-detail.component';
 import { DialogCreateLicenseComponent } from './components/license/dialog-create-license/dialog-create-license.component';
+import { DialogEnrollCoursesComponent } from './components/courses/dialog-enroll-courses/dialog-enroll-courses.component';
 
 @NgModule({
   declarations: [
@@ -116,6 +117,7 @@ import { DialogCreateLicenseComponent } from './components/license/dialog-create
     DialogEditSubscriptionComponent,
     DialogStudentEnrolledCourseDetailComponent,
     DialogCreateLicenseComponent,
+    DialogEnrollCoursesComponent,
   ],
   imports: [
     CommonModule,

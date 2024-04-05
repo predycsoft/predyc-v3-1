@@ -28,6 +28,7 @@ import { CourseService } from "projects/predyc-business/src/shared/services/cour
 import { Curso } from "projects/shared/models/course.model";
 import { CourseByStudent } from "projects/shared/models/course-by-student.model";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { DialogEnrollCoursesComponent } from "projects/predyc-business/src/shared/components/courses/dialog-enroll-courses/dialog-enroll-courses.component";
 
 @Component({
   selector: "app-student-detail",
@@ -290,7 +291,7 @@ export class StudentDetailComponent {
     });
   }
 
-  async saveAsExtraCourse() {
+  async saveEnrolledCoursesAsExtraCourse() {
     const coursesRefs: DocumentReference[] = this.user?.profile?.coursesRef;
     for (let i = 0; i < coursesRefs.length; i++) {
       const courseByStudent: CourseByStudent | null =
@@ -322,6 +323,44 @@ export class StudentDetailComponent {
         // await this.courseService.setCoursesByStudentInactive(this.userRef)
       }
     }
+  }
+
+  async saveSelectedCourses(coursesRefs: DocumentReference[]) {
+    for (let i = 0; i < coursesRefs.length; i++) {
+      await this.courseService.saveCourseByStudent(
+        coursesRefs[i],
+        this.userRef,
+        null,
+        null,
+        true
+      );
+    }
+  }
+
+  async openCoursesDialog() {
+    // const coursesRefs: DocumentReference[] = this.user?.profile?.coursesRef;
+    const coursesByStudent = await this.courseService.getActiveCoursesByStudent(this.userRef)
+    console.log("coursesByStudent", coursesByStudent)
+    const coursesRefs = coursesByStudent.map(courseByStudent => { return courseByStudent.courseRef})
+    const dialogRef = this.dialog.open(DialogEnrollCoursesComponent, {
+      data: {
+        studentEnrolledCourses: coursesRefs,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(async (coursesIdToEnroll: string[]) => {
+      if (coursesIdToEnroll && coursesIdToEnroll.length> 0) {
+        try {
+          console.log("coursesIdToEnroll", coursesIdToEnroll);
+          const coursesRefToEnroll = coursesIdToEnroll.map(courseId => { return this.courseService.getCourseRefById(courseId)})
+          await this.saveSelectedCourses(coursesRefToEnroll)
+          this.dialogService.dialogExito();
+        } catch (error) {
+          this.dialogService.dialogAlerta( "Hubo un error al guardar los cursos. Inténtalo de nuevo." );
+          console.log(error);
+        }
+      }
+    });
   }
 
   createCharge() {
