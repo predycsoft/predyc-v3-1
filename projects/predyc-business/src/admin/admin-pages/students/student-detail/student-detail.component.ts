@@ -181,12 +181,39 @@ export class StudentDetailComponent {
   coursesInfo: any[];
   hasExtraCourses = true;
 
-  createSubscription() {
+  createSubscription(sub=null) {
     const dialogRef = this.dialog.open(DialogCreateSubscriptionComponent, {
       data: {
         userId: this.user.uid,
         products: this.products,
         enterpriseRef: this.enterpriseRef,
+        subscription: null
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(async (result: SubscriptionClass) => {
+      if (result) {
+        try {
+          await this.subscriptionService.saveSubscription(result.toJson());
+          this.dialogService.dialogExito();
+        } catch (error) {
+          this.dialogService.dialogAlerta(
+            "Hubo un error al crear la suscripción. Inténtalo de nuevo."
+          );
+          console.error(error);
+        }
+      }
+    });
+  }
+
+
+  editSubscription(sub) {
+    const dialogRef = this.dialog.open(DialogCreateSubscriptionComponent, {
+      data: {
+        userId: this.user.uid,
+        products: this.products,
+        enterpriseRef: this.enterpriseRef,
+        subscription: sub
       },
     });
 
@@ -312,5 +339,10 @@ export class StudentDetailComponent {
   ngOnDestroy() {
     this.userSubscription.unsubscribe();
     this.productSubscription.unsubscribe();
+  }
+
+  subSelected(sub){
+    this.editSubscription(sub)
+
   }
 }

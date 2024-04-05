@@ -118,15 +118,11 @@ export class AdminStudentListComponent {
                 (enterprise) => enterprise.id === user.enterprise?.id
               );
               const activeSubscriptions = subscriptions.filter(
-                (x) => x.status === SubscriptionClass.STATUS_ACTIVE && x.currentPeriodEnd >= today
+                (x) => x.status === SubscriptionClass.STATUS_ACTIVE && x.currentPeriodEnd >= todayTime
               );
               const expiredSubscriptions = subscriptions.filter(
-                (x) => x.status === SubscriptionClass.STATUS_ACTIVE && x.currentPeriodEnd < today
+                (x) => x.status === SubscriptionClass.STATUS_ACTIVE && x.currentPeriodEnd < todayTime
               );
-
-              console.log(SubscriptionClass.STATUS_INACTIVE,SubscriptionClass.STATUS_ACTIVE,SubscriptionClass.STATUS_EXPIRED)
-
-
               let status
 
               if((activeSubscriptions.length > 0 && expiredSubscriptions.length == 0) || (activeSubscriptions.length >0 && expiredSubscriptions.length > 0)){

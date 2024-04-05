@@ -25,6 +25,7 @@ export class DialogCreateSubscriptionComponent {
       userId: string,
       products: Product[],
       enterpriseRef: DocumentReference<Enterprise>
+      subscription: any
     }
   ) {}
 
@@ -42,34 +43,84 @@ export class DialogCreateSubscriptionComponent {
   showAlertText = false
 
   ngOnInit(): void {
-    this.subscription = SubscriptionClass.fromJson({...SubscriptionClass.getSubscriptionTemplate()})
-    this.subscription.userRef = this.userService.getUserRefById(this.data.userId)
-    // this.subscription.id = 'PRE_' + +new Date()
-    // this.subscription.idAtOrigin = 'PRE_' + +new Date()
-    // this.subscription.enterpriseRef
+    if(!this.data.subscription){
+      this.subscription = SubscriptionClass.fromJson({...SubscriptionClass.getSubscriptionTemplate()})
+      this.subscription.userRef = this.userService.getUserRefById(this.data.userId)
+    }
+    else{
+      this.subscription = SubscriptionClass.fromJson({...this.data.subscription})
+      this.subscription.userRef = this.userService.getUserRefById(this.data.userId)
+    }
+
+
 
     this.products = this.data.products
     this.enterpriseRef = this.data.enterpriseRef
 
-    this.initForm()
+
+    this.initForm(this.data.subscription)
   }
 
-  initForm() {
-    this.form = this.fb.group({
-      startedAt: [null],
-      currentPeriodEnd: [null,  Validators.required],
-      productId: ['', Validators.required],
-    });
+  initForm(data = null) {
 
-    this.form.patchValue({
-      startedAt: this.toStringDate(new Date(this.subscription.startedAt)),
-    });
+    if(!data){
+      this.form = this.fb.group({
+        startedAt: [null],
+        currentPeriodEnd: [null,  Validators.required],
+        productId: ['', Validators.required],
+      });
+  
+      this.form.patchValue({
+        startedAt: this.toStringDate(new Date(this.subscription.startedAt)),
+      });
+  
+      this.formProductIdSubscription = this.form.get('productId')!.valueChanges.subscribe(value => {
+        this.productId = value;
+        this.selectedProduct = this.products.find(product => product.id === this.productId)
+      });
+    }
+    else{
+      console.log('data',data)
 
-    this.formProductIdSubscription = this.form.get('productId')!.valueChanges.subscribe(value => {
-      this.productId = value;
+      this.form = this.fb.group({
+        startedAt: [this.formatDateTime(data.currentPeriodStart)],
+        currentPeriodEnd: [this.formatDateTime(data.currentPeriodEnd), Validators.required],
+        productId: [data.productRef.id, Validators.required],
+      });
+
+      this.productId = data.productRef.id
+
       this.selectedProduct = this.products.find(product => product.id === this.productId)
-    });
 
+      console.log('form',this.form)
+
+      this.formProductIdSubscription = this.form.get('productId')!.valueChanges.subscribe(value => {
+        this.productId = value;
+        this.selectedProduct = this.products.find(product => product.id === this.productId)
+      });
+
+    }
+
+    
+
+
+  }
+
+  // Función para formatear la fecha a YYYY-MM-DDThh:mm
+  private formatDateTime(timestamp: number): string {
+    const date = new Date(timestamp);
+    const year = date.getFullYear();
+    const month = this.padTo2Digits(date.getMonth() + 1);
+    const day = this.padTo2Digits(date.getDate());
+    const hours = this.padTo2Digits(date.getHours());
+    const minutes = this.padTo2Digits(date.getMinutes());
+
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  }
+
+  // Función auxiliar para asegurar que el mes, el día, las horas y los minutos siempre tengan dos dígitos
+  private padTo2Digits(num: number): string {
+    return num.toString().padStart(2, '0');
   }
 
 
@@ -121,6 +172,7 @@ export class DialogCreateSubscriptionComponent {
       this.dialogRef.close(this.subscription);
     }
     else {
+      console.log('invalid')
       this.showAlertText = true
     }
 
