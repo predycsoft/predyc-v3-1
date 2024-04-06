@@ -77,7 +77,6 @@ export class FreebiesListComponent {
 		const modalRef = this.modalService.open(DialogFreebiesFormComponent, {
 			animation: true,
 			centered: true,
-			size: "md",
 			backdrop: "static",
 			keyboard: false,
 		});
