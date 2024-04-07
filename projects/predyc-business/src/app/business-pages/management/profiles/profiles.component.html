@@ -1,317 +1,592 @@
 <div class="fh fw pdb20">
-    <div [ngClass]="isEditing ? 'header--edit' : ''" fxLayout="row" fxLayoutAlign="space-between " class="header pdr10 pdl10">
-        <app-navigate-back *ngIf="!isEditing" targetUrl="/management/students" class="pdt10">
-            {{isEditing ? '' : profileName}}
-        </app-navigate-back>
-        <div *ngIf="isEditing; else profileTitle" fxLayout="row" fxLayoutAlign="space-between center" class="fw fh pdt05 pdb05" >
-            <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign=" center">
-                <!-- <input class="input-box ft12" placeholder="Nombre del perfil" [(ngModel)]="profileName" maxlength="43"> -->
-                <div class="edit-button">
-                    Modo de edición
-                </div>
-            </div>
-            <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign=" center">
-                <div class="radius20 pdl10 pdr10 pdt05 pdb05 backWhite ft14 cursorPointer" (click)="onCancel()"> 
-                    Cancelar
-                </div>
-                <button
-                    fxLayout="row"
-                    fxLayoutGap="0.625"
-                    fxLayoutAlign="center center"
-                    class="blueButton ft14 cursorPointer"
-                    style="border-radius: 24px !important;"
-                    (click)="onSave()"
-                    [disabled]="disableSaveButton"
-                    >
-                    {{id === 'new' ? 'Agregar perfil' : 'Editar perfil'}}
-                    <img [src]="icon.save" class="h16px pdl05 makeWhite" alt="">
-                </button>
-            </div>
+  <div
+    [ngClass]="isEditing ? 'header--edit' : ''"
+    fxLayout="row"
+    fxLayoutAlign="space-between "
+    class="header pdr10 pdl10"
+  >
+    <app-navigate-back
+      *ngIf="!isEditing"
+      targetUrl="/management/students"
+      class="pdt10"
+    >
+      {{ isEditing ? "" : profileName }}
+    </app-navigate-back>
+    <div
+      *ngIf="isEditing; else profileTitle"
+      fxLayout="row"
+      fxLayoutAlign="space-between center"
+      class="fw fh pdt05 pdb05"
+    >
+      <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign=" center">
+        <!-- <input class="input-box ft12" placeholder="Nombre del perfil" [(ngModel)]="profileName" maxlength="43"> -->
+        <div class="edit-button">Modo de edición</div>
+      </div>
+      <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign=" center">
+        <div
+          class="radius20 pdl10 pdr10 pdt05 pdb05 backWhite ft14 cursorPointer"
+          (click)="onCancel()"
+        >
+          Cancelar
         </div>
-        <ng-template #profileTitle >
-            <div  class="pdr10 pdt10" >
-                <div
-                fxLayout="row"
-                fxLayoutGap="0.625"
-                fxLayoutAlign=" center center"
-                class="blueButton mgt10 ft14"
-                style="border-radius: 24px !important;"
-                (click)="onEdit()">
-                {{user.isSystemUser || profile?.enterpriseRef ?'Editar':'Editar'}}
-                <img [src]="icon.licencias" class="h16px pdl05" alt="">
-                </div>
-            </div>
-        </ng-template>
+        <button
+          fxLayout="row"
+          fxLayoutGap="0.625"
+          fxLayoutAlign="center center"
+          class="blueButton ft14 cursorPointer"
+          style="border-radius: 24px !important"
+          (click)="onSave()"
+          [disabled]="disableSaveButton"
+        >
+          {{ id === "new" ? "Agregar perfil" : "Editar perfil" }}
+          <img [src]="icon.save" class="h16px pdl05 makeWhite" alt="" />
+        </button>
+      </div>
     </div>
-    <div fxLayout="row" fxLayoutGap="2rem" class=" pdt10  pdr20 pdl20 pdb10">
-        <div class="containers " style="width: 40%;" >
-            <!-- <div class="container" style="height: 100px; padding: 5px; border: 2px solid black; border-radius: 20px">
+    <ng-template #profileTitle>
+      <div class="pdr10 pdt10">
+        <div
+          fxLayout="row"
+          fxLayoutGap="0.625"
+          fxLayoutAlign=" center center"
+          class="blueButton mgt10 ft14"
+          style="border-radius: 24px !important"
+          (click)="onEdit()"
+        >
+          {{
+            user.isSystemUser || profile?.enterpriseRef ? "Editar" : "Editar"
+          }}
+          <img [src]="icon.licencias" class="h16px pdl05" alt="" />
+        </div>
+      </div>
+    </ng-template>
+  </div>
+  <div fxLayout="row" fxLayoutGap="2rem" class="pdt10 pdr20 pdl20 pdb10">
+    <div class="containers" style="width: 40%">
+      <!-- <div class="container" style="height: 100px; padding: 5px; border: 2px solid black; border-radius: 20px">
             </div> -->
 
-            <div  class=" fw pd08 shadowLight radius10 pd10" style="background-color: rgba(244, 244, 244, 0.362); ">
-                <div class="mgl05" fxLayout="row" fxLayoutGap="0.5rem" fxLayoutAlign="start center">
-                    <img [src]="icon.credentials" class="h20px" alt="Información del perfil">
-                    <span class="ft500  ft14  black">Detalles del perfil</span>
-                </div>
+      <div
+        class="fw pd08 shadowLight radius10 pd10"
+        style="background-color: rgba(244, 244, 244, 0.362)"
+      >
+        <div
+          class="mgl05"
+          fxLayout="row"
+          fxLayoutGap="0.5rem"
+          fxLayoutAlign="start center"
+        >
+          <img
+            [src]="icon.credentials"
+            class="h20px"
+            alt="Información del perfil"
+          />
+          <span class="ft500 ft14 black">Detalles del perfil</span>
+        </div>
 
-                <div class="  mgt15 radius20" *ngIf="isEditing" >
-                    <!-- <p class="ft13 gray-8 mgl03" *ngIf="isEditing">Nombre del perfil</p> -->
+        <div class="mgt15 radius20" *ngIf="isEditing">
+          <!-- <p class="ft13 gray-8 mgl03" *ngIf="isEditing">Nombre del perfil</p> -->
 
-                    <div  class="  fw " fxLayout="row" fxLayoutGap="" fxLayoutAlign="space-between center" style="margin-top: 25px; border: none; ">
-                        <div class="searchBarContainer  cursorPointer radius20 fw" fxLayout="row" fxLayoutAlign=" center">
-                            <textarea name="" id="" rows="1" [(ngModel)]="profileName" maxlength="43" placeholder="Nombre del perfil"
-                             style="width: 100%; resize:none; border: none; padding-left: 15px!important; background-color:#ffffff!important;" class="shadow-animation radius20  pd05"></textarea>
-                        </div>
-                    </div>
-                </div>
+          <div
+            class="fw"
+            fxLayout="row"
+            fxLayoutGap=""
+            fxLayoutAlign="space-between center"
+            style="margin-top: 25px; border: none"
+          >
+            <div
+              class="searchBarContainer cursorPointer radius20 fw"
+              fxLayout="row"
+              fxLayoutAlign=" center"
+            >
+              <textarea
+                name=""
+                id=""
+                rows="1"
+                [(ngModel)]="profileName"
+                maxlength="43"
+                placeholder="Nombre del perfil"
+                style="
+                  width: 100%;
+                  resize: none;
+                  border: none;
+                  padding-left: 15px !important;
+                  background-color: #ffffff !important;
+                "
+                class="shadow-animation radius20 pd05"
+              ></textarea>
+            </div>
+          </div>
+        </div>
 
+        <!-- <input class="input-box ft12" placeholder="Nombre del perfil" [(ngModel)]="profileName" maxlength="43"> -->
 
-                <!-- <input class="input-box ft12" placeholder="Nombre del perfil" [(ngModel)]="profileName" maxlength="43"> -->
+        <div class="pd05 mgt10 radius10" *ngIf="!isEditing">
+          <p
+            class="ft12 gray-8"
+            *ngIf="!isEditing"
+            style="overflow-y: hidden; word-wrap: break-word; max-height: 122px"
+          >
+            {{ profileDescription }}
+          </p>
+        </div>
 
+        <div
+          class="pd05 mgt10 radius10 backWhite shadow-animation"
+          *ngIf="isEditing"
+          style="margin-bottom: 55px; border: none"
+        >
+          <textarea
+            name=""
+            id=""
+            rows="3"
+            *ngIf="isEditing"
+            [(ngModel)]="profileDescription"
+            placeholder="Introduzca la descripción"
+            style="
+              overflow-y: hidden;
+              width: 100%;
+              resize: none;
+              border: none;
+              background-color: transparent !important;
+            "
+            maxlength="170"
+          ></textarea>
+        </div>
 
-
-                <div class="pd05  mgt10 radius10"  *ngIf="!isEditing"  >
-                    <p class="ft12 gray-8" *ngIf="!isEditing" style="overflow-y: hidden; word-wrap: break-word; max-height: 122px;">{{profileDescription}}</p>
-                </div>
-
-                <div class="pd05  mgt10   radius10 backWhite shadow-animation" *ngIf="isEditing" style="margin-bottom: 55px;  border: none; " >
-                    <textarea name="" id="" rows="3" *ngIf="isEditing" [(ngModel)]="profileDescription"  placeholder="Introduzca la descripción"
-                    style=" overflow-y: hidden;  width: 100%; resize:none; border: none; background-color: transparent !important; " maxlength="170"  ></textarea>
-                </div>
-
-
-                <!-- <div class="pdt10" fxLayout="row" fxLayoutGap="0.5rem" fxLayoutAlign="start center">
+        <!-- <div class="pdt10" fxLayout="row" fxLayoutGap="0.5rem" fxLayoutAlign="start center">
                     <img [src]="icon.ticTacToe" class="makeBlue h20px" alt="">
                     <span class="ft500   ft14  black">Resumen de competencias</span>
                 </div> -->
-                <div class="chart-container " style="margin-top: -45px;" >
-                    <canvas id="chart"></canvas>
+        <div class="chart-container" style="margin-top: -45px">
+          <canvas id="chart"></canvas>
+        </div>
+        <div class="chart-container ft13 fw">
+          <div
+            class="mgt10 fw"
+            *ngFor="
+              let category of categoriesAndSkillsWidgetData;
+              let i = index
+            "
+          >
+            <div class="ft14">Pilar {{ i + 1 }}: {{ category.label }}</div>
+            <div class="skills-container" style="padding-bottom: 36px">
+              <ng-container
+                *ngFor="let skill of category.skills; let indexSkill = index"
+              >
+                <!-- Muestra solo las primeras 4 habilidades -->
+                <div
+                  *ngIf="indexSkill < 4"
+                  [matTooltip]="skill"
+                  style="
+                    display: inline-block;
+                    margin-right: 15px;
+                    margin-bottom: 5px;
+                  "
+                  class="skill-badge ListHover2 radius10 backGray2 pdl05 pdr05 gray-8 mgt05"
+                >
+                  {{ skill }}
                 </div>
-                <div class="chart-container ft13 fw">
-                    <div class="mgt10 fw" *ngFor="let category of categoriesAndSkillsWidgetData; let i = index">
-                      <div class="ft14">Pilar {{i + 1}}: {{category.label}}</div>
-                      <div class="skills-container  " style="padding-bottom: 36px;">
-                        <ng-container *ngFor="let skill of category.skills; let indexSkill = index">
-                          <!-- Muestra solo las primeras 4 habilidades -->
-                          <div *ngIf="indexSkill < 4" [matTooltip]="skill"
-                               style="display: inline-block; margin-right: 15px; margin-bottom: 5px;"
-                               class="skill-badge ListHover2 radius10 backGray2 pdl05 pdr05 gray-8 mgt05">
-                            {{skill}}
+              </ng-container>
+              <!-- Elemento adicional para mostrar el número de habilidades no visibles y sus nombres en un tooltip -->
+              <div
+                *ngIf="category.skills.length > 4"
+                [matTooltip]="getAdditionalSkillsTooltip(category.skills)"
+                style="
+                  display: inline-block;
+                  margin-right: 5px;
+                  margin-bottom: 5px;
+                "
+                class="skill-badge ListHover2 radius10 backGray2 pdl05 pdr05 gray-8 mgt05"
+              >
+                +{{ category.skills.length - 4 }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- <div class="container" class="pd10 mgt20 shadowLight radius10 " style="background-color: rgba(244, 244, 244, 0.362); "> -->
+
+      <!-- </div> -->
+    </div>
+
+    <div
+      class="containers pd10 shadowLight radius10"
+      style="
+        width: 70%;
+        margin-right: -15px !important;
+        background-color: rgba(244, 244, 244, 0.362);
+      "
+    >
+      <div class="study-plan" style="padding: 5px">
+        <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign=" right">
+          <img
+            [src]="icon.course"
+            class="makeBlue h20px"
+            alt="Plan de estudios"
+          />
+          <span class="ft500 ft14 black">Plan de estudios</span>
+        </div>
+        <div class="mgt20" fxLayout="row" fxLayoutGap="2rem">
+          <div
+            fxLayoutGap=".5rem"
+            fxLayout="row"
+            fxLayoutAlign=" center"
+            class="mgl05"
+          >
+            <div class="fw">
+              <span class="ft500 ft14 gray-9" style="padding-bottom: 15px"
+                >Estudio mensual</span
+              >
+            </div>
+            <div fxLayout="row" class="centertext">
+              <div
+                class="radius20"
+                fxLayout="row"
+                fxLayoutGap="1rem"
+                fxLayoutAlign="center"
+                style="width: 70%; margin-left: -53px"
+              >
+                <div
+                  class="fw mgb05 borderLight shadow-animation radius20 centertext"
+                  fxLayout="row"
+                  fxLayoutAlign=" center center"
+                  style="width: 30px"
+                >
+                  <input
+                    [ngClass]="isEditing ? 'editNumber' : 'number'"
+                    [disabled]="!isEditing"
+                    class="ft12 centertext"
+                    type="number"
+                    min="0"
+                    [(ngModel)]="profileHoursPerMonth"
+                    min="1"
+                    class="searchBar ft14 centertext"
+                    style="
+                      width: 70%;
+                      outline: none;
+                      border: 0;
+                      background-color: transparent;
+                    "
+                    placeholder=""
+                  />
+                </div>
+              </div>
+              <span class="gray-9 ft500 ft14 mgl10" style="margin-top: 10px"
+                >horas</span
+              >
+            </div>
+          </div>
+        </div>
+        <div
+          *ngIf="isEditing"
+          ngbDropdown
+          [autoClose]="'outside'"
+          fxLayout="row"
+          fxLayoutAlign=" center"
+        >
+          <div
+            class="mgt10 h40px radius20 shadow12"
+            style="width: 100%; overflow: hidden; z-index: 2"
+            fxLayout="row"
+          >
+            <button
+              type="button"
+              fxLayout="row"
+              fxLayoutAlign="space-between center"
+              class="gray-10 backGray2 ft12"
+              style="
+                border-radius: 0 0 0 0;
+                width: 30%;
+                height: 100%;
+                padding: 0 10px;
+              "
+              id="dropdownBasic1"
+              ngbDropdownToggle
+            >
+              Categorias
+            </button>
+            <div
+              style="
+                width: 70%;
+                overflow: hidden;
+                padding: 0 0px;
+                position: relative;
+              "
+              class="pdl10 pdr05"
+              fxLayout="row"
+              fxLayoutAlign=" center"
+            >
+              <input
+                type="text"
+                placeholder="Buscar"
+                class="pdl05 ft13"
+                style="
+                  width: 100%;
+                  outline: none;
+                  border: 0;
+                  background-color: transparent;
+                "
+                [formControl]="searchControl"
+                matInput
+                [matAutocomplete]="auto"
+              />
+              <img
+                [src]="icon.search"
+                alt="Search"
+                style="position: absolute; right: 10px"
+              />
+              <mat-autocomplete #auto="matAutocomplete">
+                <mat-option
+                  *ngFor="let course of filteredCourses | async"
+                  [value]="course.id"
+                >
+                  <div
+                    fxLayout="row"
+                    fxLayoutAlign="space-between center"
+                    class="ft12 ft500 dropdownMenu dropdownMenuCourse"
+                    (click)="
+                      $event.stopPropagation(); toggleCourseInPlan(course)
+                    "
+                  >
+                    <div
+                      fxLayout="row"
+                      fxLayoutAlign=" center"
+                      fxLayoutGap="10px"
+                    >
+                      <img
+                        [src]="course.imagen"
+                        [alt]="course.titulo"
+                        class="w40px h40px radius4"
+                      />
+                      <div fxLayout="column" fxLayoutGap="5px">
+                        <div class="title-course-badge">
+                          {{ course.titulo | titlecase }}
+                        </div>
+                        <div class="skills-container">
+                          <div
+                            *ngFor="let skill of course.skills"
+                            style="
+                              display: inline-block;
+                              margin-right: 5px;
+                              margin-bottom: 5px;
+                            "
+                            class="skill-badge radius10 backGray2 pdl05 pdr05 gray-8 mgt05"
+                          >
+                            {{ skill.name }}
                           </div>
-                        </ng-container>
-                        <!-- Elemento adicional para mostrar el número de habilidades no visibles y sus nombres en un tooltip -->
-                        <div *ngIf="category.skills.length > 4"
-                             [matTooltip]="getAdditionalSkillsTooltip(category.skills)"
-                             style="display: inline-block; margin-right: 5px; margin-bottom: 5px;"
-                             class="skill-badge ListHover2 radius10 backGray2 pdl05 pdr05 gray-8 mgt05">
-                          +{{category.skills.length - 4}}
                         </div>
                       </div>
                     </div>
-                </div>
-            </div>
-          
-
-            <!-- <div class="container" class="pd10 mgt20 shadowLight radius10 " style="background-color: rgba(244, 244, 244, 0.362); "> -->
-                
-
-                
-                  
-            <!-- </div> -->
-        </div>
-
-        <div class="containers pd10 shadowLight radius10 " style="width: 70%; margin-right: -15px!important;background-color: rgba(244, 244, 244, 0.362); ">
-            <div class="study-plan" style="padding: 5px ;">
-                <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign=" right">
-                    <img [src]="icon.course" class="makeBlue h20px" alt="Plan de estudios">
-                    <span class="ft500  ft14  black">Plan de estudios</span>
-                </div>
-                <div class="mgt20" fxLayout="row" fxLayoutGap="2rem">
-                    <div fxLayoutGap=".5rem" fxLayout="row" fxLayoutAlign=" center" class="mgl05 ">
-                        <div class="fw">
-                            <span class="ft500 ft14 gray-9 " style="padding-bottom: 15px;">Estudio mensual</span>
-
-                        </div>
-                        <div fxLayout="row" class="centertext" >
-                            <div class="  radius20" fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="center" style="width: 70%; margin-left: -53px;">
-                                <div class="fw mgb05 borderLight shadow-animation radius20  centertext " fxLayout="row" fxLayoutAlign=" center center" style="width: 30px;">
-                                    <input [ngClass]="isEditing?'editNumber':'number'" [disabled]="!isEditing" class="ft12 centertext"  type="number" min="0" [(ngModel)]="profileHoursPerMonth" min="1"  class="searchBar ft14 centertext " 
-                                    style="width: 70%; outline: none; border: 0;  background-color: transparent;"
-                                    placeholder="">
-                                </div>
-                                
-                            </div>
-                            <span class="gray-9  ft500 ft14  mgl10" style="margin-top: 10px;">horas</span>
-
-                            
-                        </div>
-                            
-                    </div>
-                </div>
-                <div *ngIf="isEditing" ngbDropdown [autoClose]="'outside'" fxLayout="row" fxLayoutAlign=" center" >
-                    <div class="mgt10 h40px radius20 shadow12" style="width: 100%; overflow: hidden; z-index: 2;" fxLayout="row">
-                        <button type="button" fxLayout="row" fxLayoutAlign="space-between center" class="gray-10 backGray2 ft12" style="border-radius: 0 0 0 0; width: 30%; height: 100%; padding: 0 10px;" id="dropdownBasic1" ngbDropdownToggle>
-                            Categorias
-                        </button>
-                        <div style="width: 70%; overflow: hidden; padding: 0 0px; position: relative" class=" pdl10 pdr05" fxLayout="row" fxLayoutAlign=" center">
-                                <input 
-                                type="text"
-                                placeholder="Buscar"
-                                class="pdl05 ft13"
-                                style="width: 100%; outline: none; border: 0; background-color: transparent;"
-                                [formControl]="searchControl"
-                                matInput
-                                [matAutocomplete]="auto"
-                                >
-                            <img [src]="icon.search" alt="Search" style="position: absolute; right: 10px;">
-                            <mat-autocomplete
-                                #auto="matAutocomplete"
-                            >
-                                <mat-option 
-                                    *ngFor="let course of filteredCourses | async"
-                                    [value]="course.id"
-                                        >
-                                    <div
-                                        fxLayout="row"
-                                        fxLayoutAlign="space-between center"
-                                        class="ft12 ft500 dropdownMenu dropdownMenuCourse"
-                                        (click)="$event.stopPropagation(); toggleCourseInPlan(course)"
-                                        >
-                                        <div
-                                            fxLayout="row"
-                                            fxLayoutAlign=" center"
-                                            fxLayoutGap="10px"
-                                            >
-                                            <img [src]="course.imagen" [alt]="course.titulo" class="w40px h40px radius4">
-                                            <div fxLayout="column" fxLayoutGap="5px">
-                                                <div class="title-course-badge">{{course.titulo | titlecase}}</div>
-                                                <div class="skills-container">
-                                                    <div
-                                                        *ngFor="let skill of course.skills"
-                                                        style="display: inline-block; margin-right: 5px; margin-bottom: 5px;"
-                                                        class="skill-badge radius10 backGray2 pdl05 pdr05 gray-8 mgt05">
-                                                        {{skill.name}}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div [ngStyle]="{'background-color': course.inStudyPlan ? '#008CE3': 'white'}" style="border-radius: 50%; border: 1px solid black; width: 15px; height: 15px;"></div>
-                                    </div>
-                                </mat-option>
-                            </mat-autocomplete>
-                        </div>
-                    </div>
-                    <div ngbDropdownMenu aria-labelledby="dropdownBasic1" class="dropdownContainer fw" (mouseleave)="onCategoryLeave()">
-                        <div fxLayout="row" class=" fw">
-                            <div style="width: 32%;" class="backGray2 dropy">
-                                <div 
-                                    ngbDropdownItem
-                                    class="ft12 ft500 pdt10 pdb10 gray-10 dropCategory"
-                                    style="width: 100%;"
-                                    *ngFor="let category of categories"
-                                    (mouseenter)="onCategoryHover(category)"
-                                    fxLayout="row"
-                                    fxLayoutAlign="space-between center"
-        
-                                    >
-                                    <div class="ft12 gray-10">{{category.name}}</div>
-                                    <img [src]="icon.chevronRight" alt="">
-                                </div>
-                            </div>
-                            <div class="drowCourses">
-                                <div
-                                    class="ft12 ft500 fw dropCourse"
-                                    ngbDropdownItem
-                                    *ngFor="let course of filteredCourses | async"
-                                    fxLayout="row"
-                                    fxLayoutAlign="space-between center"
-                                    (click)="toggleCourseInPlan(course)"
-                                    >
-                                    <!-- (click)="course.inStudyPlan = !course.inStudyPlan" -->
-                                    <div
-                                        fxLayout="row"
-                                        fxLayoutAlign=" center"
-                                        fxLayoutGap="5px"
-                                        >
-                                        <img [src]="course.imagen" [alt]="course.titulo" class="w42px h42px radius4">
-                                        <div fxLayout="column" fxLayoutGap="1px" class="">
-                                            <div  class="">
-                                                <div class="title-course-badge ft12" style="display: inline-block;   ">{{course.titulo | titlecase}} </div>
-                                                <div class="skills-container" style="margin-top: -5px;">
-                                                    <div
-                                                        *ngFor="let skill of course.skills"
-                                                        style="display: inline-block; margin-right: 5px; margin-bottom: 5px;"
-                                                        class="skill-badge radius10 backGray2 pdl05 pdr05 gray-8 mgt05">
-                                                        {{skill.name}}
-                                                    </div>
-                                            </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div [ngStyle]="{'background-color': course.inStudyPlan ? '#008CE3': 'white'}" style="border-radius: 50%; border: 1px solid var(--blue-5); width: 15px; height: 15px;"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-                <ng-container *ngIf="studyPlan.length > 0 && isEditing">
-                    <div cdkDropList [cdkDropListData]="studyPlan" (cdkDropListDropped)="onDrop($event)" class="list-container hoverBlue " style="overflow: hidden; background-color: #FCFCFC;" class="radius10 borderLight mgt20">
-                        <div *ngFor="let item of studyPlan; let i = index" cdkDrag class="fw pd05 h40px border-bl hoverBlue item-container cursorPointer" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem">
-                            <div fxLayout="row" fxLayoutAlign="space-between center  " class="fw" fxLayoutGap="0.5rem">
-                                <div fxLayout="column" fxLayoutGap="5px" class="ft11">
-                                    <span class="ft12 gray-10">   
-                                        <img [src]="icon.drag" class="h14px cursorPointer" alt="" class="pdr05">
-                                        {{ item.titulo }}
-                                    </span>
-                                </div>
-                                <div fxLayout="row" class="" fxLayoutGap="0.5rem" style="margin-left: 5px;">
-                                    <span class="gray-10 ft11 nowrap">{{ roundNumber(item.duracion / 60) }} hrs</span>
-                                    <img [src]="icon.trash" class="h14px makeGray cursorPointer" (click)="toggleCourseInPlan(item)" alt="">
-                                </div>
-                            </div>
-                            <div *cdkDragPlaceholder class="placeholder"></div>
-                        </div>
-                    </div>
-                </ng-container>
-
-                <div *ngIf="studyPlan.length > 0 && !isEditing" style="overflow: hidden; background-color: #FCFCFC;" class="radius10 borderLight mgt20" >
                     <div
-                        class="fw pd05 h40px border-bl hoverBlue"
-                        fxLayout="row"
-                        fxLayoutAlign="space-between center"
-                        fxLayoutGap="1rem"
-                        *ngFor="let item of studyPlan; let i = index"
-                    >
-                    <div fxLayout="row" fxLayoutAlign="space-between center" class=" fw" fxLayoutGap="0.5rem">
-                        <div
-                                fxLayout="column"
-                                fxLayoutGap="5px"
-                                class="ft11"
-                                >
-                                <span class="ft12 gray-10">
-                                    {{ item.titulo }}
-                                </span>
-                        </div>
-                        <div fxLayout="row" class="" fxLayoutGap="0.5rem" style="margin-left: 5px;">
-                            <span class="gray-10 ft11 nowrap">
-                                {{ roundNumber(item.duracion / 60) }} hrs
-                            </span>
-                            <img *ngIf="isEditing" [src]="icon.trash" class="h14px makeGray cursorPointer" (click)="toggleCourseInPlan(item)" alt="">
-                        </div>
-                    </div>
-                </div>
-                <div *ngIf="studyPlan.length === 0" class="mgt15" style="height: 70%;">
-                    <div       
-                        fxLayout="row"
-                        fxLayoutAlign="center center"
-                        style="background: var(--gray-2); height: 100%"
-                        >
-                        Comienza a agregar cursos
-                    </div>
-                </div>
+                      [ngStyle]="{
+                        'background-color': course.inStudyPlan
+                          ? '#008CE3'
+                          : 'white'
+                      }"
+                      style="
+                        border-radius: 50%;
+                        border: 1px solid black;
+                        width: 15px;
+                        height: 15px;
+                      "
+                    ></div>
+                  </div>
+                </mat-option>
+              </mat-autocomplete>
             </div>
+          </div>
+          <div
+            ngbDropdownMenu
+            aria-labelledby="dropdownBasic1"
+            class="dropdownContainer fw"
+            (mouseleave)="onCategoryLeave()"
+          >
+            <div fxLayout="row" class="fw">
+              <div style="width: 32%" class="backGray2 dropy">
+                <div
+                  ngbDropdownItem
+                  class="ft12 ft500 pdt10 pdb10 gray-10 dropCategory"
+                  style="width: 100%"
+                  *ngFor="let category of categories"
+                  (mouseenter)="onCategoryHover(category)"
+                  fxLayout="row"
+                  fxLayoutAlign="space-between center"
+                >
+                  <div class="ft12 gray-10">{{ category.name }}</div>
+                  <img [src]="icon.chevronRight" alt="" />
+                </div>
+              </div>
+              <div class="drowCourses">
+                <div
+                  class="ft12 ft500 fw dropCourse"
+                  ngbDropdownItem
+                  *ngFor="let course of filteredCourses | async"
+                  fxLayout="row"
+                  fxLayoutAlign="space-between center"
+                  (click)="toggleCourseInPlan(course)"
+                >
+                  <!-- (click)="course.inStudyPlan = !course.inStudyPlan" -->
+                  <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="5px">
+                    <img
+                      [src]="course.imagen"
+                      [alt]="course.titulo"
+                      class="w42px h42px radius4"
+                    />
+                    <div fxLayout="column" fxLayoutGap="1px" class="">
+                      <div class="">
+                        <div
+                          class="title-course-badge ft12"
+                          style="display: inline-block"
+                        >
+                          {{ course.titulo | titlecase }}
+                        </div>
+                        <div class="skills-container" style="margin-top: -5px">
+                          <div
+                            *ngFor="let skill of course.skills"
+                            style="
+                              display: inline-block;
+                              margin-right: 5px;
+                              margin-bottom: 5px;
+                            "
+                            class="skill-badge radius10 backGray2 pdl05 pdr05 gray-8 mgt05"
+                          >
+                            {{ skill.name }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    [ngStyle]="{
+                      'background-color': course.inStudyPlan
+                        ? '#008CE3'
+                        : 'white'
+                    }"
+                    style="
+                      border-radius: 50%;
+                      border: 1px solid var(--blue-5);
+                      width: 15px;
+                      height: 15px;
+                    "
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+
+        <ng-container *ngIf="studyPlan.length > 0 && isEditing">
+          <div
+            cdkDropList
+            [cdkDropListData]="studyPlan"
+            (cdkDropListDropped)="onDrop($event)"
+            class="list-container hoverBlue"
+            style="overflow: hidden; background-color: #fcfcfc"
+            class="radius10 borderLight mgt20"
+          >
+            <div
+              *ngFor="let item of studyPlan; let i = index"
+              cdkDrag
+              class="fw pd05 h40px border-bl hoverBlue item-container cursorPointer"
+              fxLayout="row"
+              fxLayoutAlign="space-between center"
+              fxLayoutGap="1rem"
+            >
+              <div
+                fxLayout="row"
+                fxLayoutAlign="space-between center  "
+                class="fw"
+                fxLayoutGap="0.5rem"
+              >
+                <div fxLayout="column" fxLayoutGap="5px" class="ft11">
+                  <span class="ft12 gray-10">
+                    <img
+                      [src]="icon.drag"
+                      class="h14px cursorPointer"
+                      alt=""
+                      class="pdr05"
+                    />
+                    {{ item.titulo }}
+                  </span>
+                  <span>Orden: {{ item.studyPlanOrder }}</span>
+                </div>
+                <div
+                  fxLayout="row"
+                  class=""
+                  fxLayoutGap="0.5rem"
+                  style="margin-left: 5px"
+                >
+                  <span class="gray-10 ft11 nowrap"
+                    >{{ roundNumber(item.duracion / 60) }} hrs</span
+                  >
+                  <img
+                    [src]="icon.trash"
+                    class="h14px makeGray cursorPointer"
+                    (click)="toggleCourseInPlan(item)"
+                    alt=""
+                  />
+                </div>
+              </div>
+              <div *cdkDragPlaceholder class="placeholder"></div>
+            </div>
+          </div>
+        </ng-container>
+
+        <div
+          *ngIf="studyPlan.length > 0 && !isEditing"
+          style="overflow: hidden; background-color: #fcfcfc"
+          class="radius10 borderLight mgt20"
+        >
+          <div
+            class="fw pd05 h40px border-bl hoverBlue"
+            fxLayout="row"
+            fxLayoutAlign="space-between center"
+            fxLayoutGap="1rem"
+            *ngFor="let item of studyPlan; let i = index"
+          >
+            <div
+              fxLayout="row"
+              fxLayoutAlign="space-between center"
+              class="fw"
+              fxLayoutGap="0.5rem"
+            >
+              <div fxLayout="column" fxLayoutGap="5px" class="ft11">
+                <span class="ft12 gray-10">
+                  {{ item.titulo }}
+                </span>
+              </div>
+              <div
+                fxLayout="row"
+                class=""
+                fxLayoutGap="0.5rem"
+                style="margin-left: 5px"
+              >
+                <span class="gray-10 ft11 nowrap">
+                  {{ roundNumber(item.duracion / 60) }} hrs
+                </span>
+                <img
+                  *ngIf="isEditing"
+                  [src]="icon.trash"
+                  class="h14px makeGray cursorPointer"
+                  (click)="toggleCourseInPlan(item)"
+                  alt=""
+                />
+              </div>
+            </div>
+          </div>
+          <div *ngIf="studyPlan.length === 0" class="mgt15" style="height: 70%">
+            <div
+              fxLayout="row"
+              fxLayoutAlign="center center"
+              style="background: var(--gray-2); height: 100%"
+            >
+              Comienza a agregar cursos
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
