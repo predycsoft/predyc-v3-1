@@ -34,6 +34,15 @@ export class ProductService {
 
   }
 
+  async saveProducts(products: ProductJson[]): Promise<void> {
+    const batch = this.afs.firestore.batch();
+    products.forEach((product) => {
+      const docRef = this.afs.firestore.collection(Product.collection).doc(product.id);
+      batch.set(docRef, product, { merge: true });
+    });
+    await batch.commit();
+  }
+
   updateProductPriority(productId: string, newPriority: number): Promise<void> {
     return this.afs.collection(Product.collection).doc(productId).update(
       { priority: newPriority }

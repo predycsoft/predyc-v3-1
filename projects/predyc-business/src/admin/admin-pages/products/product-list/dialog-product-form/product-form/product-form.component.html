@@ -46,10 +46,6 @@
                                 <mat-option *ngFor="let type of typeOptions" [value]="type">{{type | titlecase}}</mat-option>
                             </mat-select>
                         </div>
-                        <div *ngIf="productForm.get('type').value === 'simplificado'" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".3rem" style="width: 95%;" >
-                            <label for="name" class="gray-9 ft14">Cantidad de cursos:</label>
-                            <input class="backWhite w80px pdl03" id="amount" type="number" min="0" formControlName="coursesQty"/>
-                        </div>
                     </div>
 
                     <div class="" fxLayout="column">

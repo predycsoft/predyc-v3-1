@@ -8,7 +8,6 @@ export const productsData: ProductJson[] = [
 		description: "Demo",
 		type: Product.TYPE_TRIAL,
 		amount: 0,
-		coursesQty: 0,
 		autodeactivate: true,
 		accesses: {
 			enableUserRadar: false,
@@ -16,6 +15,7 @@ export const productsData: ProductJson[] = [
 			enableExtraCoursesView: true,
 			enableToTakeTest: false,
 			enableCreateParticularCourses: false,
+			enableEnrollParticularCourses: false,
 		},
 		createdAt: 1679634238000,
 		features: [],
@@ -27,7 +27,6 @@ export const productsData: ProductJson[] = [
 		description: "Independiente",
 		type: Product.TYPE_INDEPEND,
 		amount: 10,
-		coursesQty: 0,
 		autodeactivate: true,
 		accesses: {
 			enableUserRadar: false,
@@ -35,6 +34,7 @@ export const productsData: ProductJson[] = [
 			enableExtraCoursesView: true,
 			enableToTakeTest: true,
 			enableCreateParticularCourses: false,
+			enableEnrollParticularCourses: false,
 		},
 		createdAt: 1679634238000,
 		features: [],
@@ -46,7 +46,6 @@ export const productsData: ProductJson[] = [
 		description: "Simplificado",
 		type: Product.TYPE_SIMPLIFIED,
 		amount: 20,
-		coursesQty: 10,
 		autodeactivate: false,
 		accesses: {
 			enableUserRadar: false,
@@ -54,6 +53,7 @@ export const productsData: ProductJson[] = [
 			enableExtraCoursesView: true,
 			enableToTakeTest: true,
 			enableCreateParticularCourses: false,
+			enableEnrollParticularCourses: false,
 		},
 		createdAt: 1679634238000,
 		features: [],
@@ -65,7 +65,6 @@ export const productsData: ProductJson[] = [
 		description: "Full",
 		type: Product.TYPE_FULL,
 		amount: 30,
-		coursesQty: 0,
 		autodeactivate: false,
 		accesses: {
 			enableUserRadar: true,
@@ -73,6 +72,7 @@ export const productsData: ProductJson[] = [
 			enableExtraCoursesView: true,
 			enableToTakeTest: true,
 			enableCreateParticularCourses: false,
+			enableEnrollParticularCourses: false,
 		},
 		createdAt: 1679634238000,
 		features: [

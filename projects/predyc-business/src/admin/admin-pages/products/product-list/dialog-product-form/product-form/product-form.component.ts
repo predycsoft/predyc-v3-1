@@ -46,7 +46,6 @@ export class ProductFormComponent {
 			enableCreateParticularCourses: [false],
 		}),
 		type: [""],
-		coursesQty: [null],
 	});
 
 	ngOnInit(): void {

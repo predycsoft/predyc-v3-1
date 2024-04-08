@@ -392,40 +392,25 @@ export class CreateUserComponent {
 
 			let profileNew = this.profiles.find((x) => x.id == user?.profile?.id);
 
-			if (profileNew) {
-				const coursesRefs: DocumentReference[] = profileNew.coursesRef
-				const userRef: DocumentReference | DocumentReference<User> = this.userService.getUserRefById(this.studentToEdit.uid)
-				const userSubscriptions: SubscriptionClass[] = await this.subscriptionService.getUserSubscriptions(userRef as DocumentReference<User>)
-				if (userSubscriptions.length > 0) {
-					const userSubscription = userSubscriptions.filter(x => x.status === SubscriptionClass.STATUS_ACTIVE)[0]
-					const userProduct: Product = await this.productService.getProductByRef(userSubscription.productRef)
-					console.log("userProduct", userProduct)
-					console.log("coursesRefs", coursesRefs)
-					if (userProduct.type === Product.TYPE_SIMPLIFIED && userProduct.coursesQty < coursesRefs.length) {
-						this.alertService.errorAlert(`La cantidad de cursos del perfil (${coursesRefs.length}) excede el limite establecido por el producto simplificado (${userProduct.coursesQty}) del estudiante`)
-						return
-					}
-				}
 
-				if (!profileNew.enterpriseRef) {
-					// console.log("profileNew", profileNew);
-					let baseProfile = this.afs.collection<Profile>(Profile.collection).doc(profileNew.id).ref;
-					profileNew.baseProfile = baseProfile;
-	
-					const profile: Profile = Profile.fromJson({
-						id: null,
-						name: profileNew.name,
-						description: profileNew.description,
-						coursesRef: profileNew.coursesRef,
-						baseProfile: baseProfile,
-						enterpriseRef: this.enterpriseService.getEnterpriseRef(),
-						permissions: profileNew ? profileNew.permissions : null,
-						hoursPerMonth: profileNew.hoursPerMonth,
-					});
-					const profileId = await this.profileService.saveProfile(profile);
-					let profileRef = await this.afs.collection<Profile>(Profile.collection).doc(profileId).ref;
-					user.profile = profileRef;
-				}
+			if (profileNew && !profileNew.enterpriseRef) {
+				// console.log("profileNew", profileNew);
+				let baseProfile = this.afs.collection<Profile>(Profile.collection).doc(profileNew.id).ref;
+				profileNew.baseProfile = baseProfile;
+
+				const profile: Profile = Profile.fromJson({
+					id: null,
+					name: profileNew.name,
+					description: profileNew.description,
+					coursesRef: profileNew.coursesRef,
+					baseProfile: baseProfile,
+					enterpriseRef: this.enterpriseService.getEnterpriseRef(),
+					permissions: profileNew ? profileNew.permissions : null,
+					hoursPerMonth: profileNew.hoursPerMonth,
+				});
+				const profileId = await this.profileService.saveProfile(profile);
+				let profileRef = await this.afs.collection<Profile>(Profile.collection).doc(profileId).ref;
+				user.profile = profileRef;
 			}
 
 
