@@ -90,7 +90,11 @@
             >add_circle</mat-icon
           >
         </div>
-        <app-student-subscription-list (onSubSelected)="subSelected($event)" [userRef]="userRef" [products]="products"></app-student-subscription-list>
+        <app-student-subscription-list
+          (onSubSelected)="subSelected($event)"
+          [userRef]="userRef"
+          [products]="products"
+        ></app-student-subscription-list>
       </div>
       <div
         class="fw mgt20 pdb05 border-b"
@@ -108,7 +112,7 @@
             >
           </div>
           <div fxLayout="row" fxLayoutGap="5rem" fxLayoutAlign=" center">
-            <div class="blueLink" (click)="openCoursesDialog()">
+            <div class="blueLink ft12" (click)="openCoursesDialog()">
               Elegir cursos a inscribir
             </div>
             <div
