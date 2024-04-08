@@ -102,6 +102,10 @@ export class DialogEnrollCoursesComponent {
       // this.totalLength = filteredCharges.length;
   }
 
+  salir(){
+    this.matDialogRef.close(false)
+  }
+
 
 
     /** Whether the number of selected elements matches the total number of rows. */
