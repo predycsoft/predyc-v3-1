@@ -151,6 +151,15 @@ export class LicenseService {
     return await this.afs.collection(License.collection).doc(license.id).set(license, { merge: true });
   }
 
+  async saveLicenses(licenses: LicenseJson[]): Promise<void> {
+    const batch = this.afs.firestore.batch();
+    licenses.forEach(license => {
+      const docRef = this.afs.firestore.collection(License.collection).doc(license.id);
+      batch.set(docRef, license, { merge: true });
+    });
+    await batch.commit();
+  }
+
   async removeLicense(usersIds: string[],licenses): Promise<void> {
     const dialogResult = await firstValueFrom(this.dialogService.dialogConfirmar().afterClosed());
     if (dialogResult) {
