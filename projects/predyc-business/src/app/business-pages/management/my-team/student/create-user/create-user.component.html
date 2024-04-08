@@ -9,14 +9,10 @@
     </div>
     <div fxLayout="row" fxLayoutAlign="center center" class="modal-body">
         <div class="w-95">
-            <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign=" center">
+            <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign=" center" class="pdb10">
                 <div>
                     <div (click)="fileInput.click()" class="cursorPointer">
-                        <img
-                            [src]="imageUrl ? imageUrl : 'assets/images/default/default-user-image.jpg'"
-                            class="avatar6"
-                            alt=""
-                            >
+                        <img [src]="imageUrl ? imageUrl : 'assets/images/default/default-user-image.jpg'" class="avatar6" alt="">
                     </div>
                     <input #fileInput type="file" style="display: none;" (change)="onFileSelected($event)">
                 </div>
@@ -38,7 +34,7 @@
                     <div class="fw" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px">
                         <div style="position: relative; flex-grow: 1; border-radius: 20px !important;" class="">
                             <img [src]="icon.userProfile" class="makeGray h16px" alt="" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
-                            <select formControlName="profile" class="form-control select radius20 shadow-animation borderLight" style="border-radius: 20px!important;">
+                            <select (change)="changeProfile()" formControlName="profile" class="form-control select radius20 shadow-animation borderLight" style="border-radius: 20px!important;">
                                 <option [value]="null" [disabled]="true"> &nbsp; Sin perfil</option>
                                 <option *ngFor="let profile of profiles" [value]="profile.id">&nbsp;{{profile.name}} {{!profile.enterpriseRef ? '[Predyc]' : ''}} - Duración: {{getFormattedDuration(profile)}}</option>
                             </select>
@@ -49,7 +45,33 @@
                              
                 </div>
             </div>
-            <div fxLayout="row"  fxLayoutAlign="left " class="mgt10">
+            <div *ngIf="userForm.get('profile').value" class="pdb10">
+                <div fxLayout="row" fxLayoutGap="20px">
+                    <!-- Primeras dos columnas -->
+                    <div fxFlex="50" fxLayout="column">
+                        <label>Fecha inicio plan de estudio</label>
+                        <div style="position: relative">
+                            <img [src]="icon.calendarAdd" class="makeGray h16px" alt="" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
+                            <input [min]="MinDateProfile" [max]="MaxDateProfile" formControlName="startDateStudy" (change)="changedDate($event,'start')" [class.is-invalid]="userForm.get('startDateStudy').errors && displayErrors" type="date" class="form-control pdl20 radius20 shadow-animation borderLight" placeholder="Fecha inicio plan de estudio">
+                        </div>
+                    </div>
+                    <div fxFlex="50" fxLayout="column">
+                        <label>Fecha fin plan de estudio</label>
+                        <div style="position: relative">
+                            <img [src]="icon.calendarAdd" class="makeGray h16px" alt="" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
+                            <input [min]="MinDateEndProfile" formControlName="endDateStudy" (change)="changedDate($event,'end')" [class.is-invalid]="userForm.get('endDateStudy').errors && displayErrors" type="date" class="form-control pdl20 radius20 shadow-animation borderLight" placeholder="Fecha fin plan de estudio">
+                        </div>
+                    </div>
+                </div>
+                <!-- Última columna debajo -->
+                <div *ngIf="hoursPlan>0" fxLayout="column" class="fw pdt10">
+                    <span [ngClass]="{'green-5':hoursPlan<=8,'orange-3':hoursPlan>8,'red-5':hoursPlan>12,}" class="ft12">
+                        El usuario deberá hacer <b>{{hoursPlan}} horas</b> de estudio mensual para cumplir con el plan de estudio.                      
+                    </span>
+                </div>
+            </div>
+                    
+            <div fxLayout="row"  fxLayoutAlign="left " class="pdt10 border-tl">
                 <div fxLayout="column" fxLayoutGap="10px" fxLayoutAlign=" left" class="w-50  mgr05">
                     <div style="position: relative">
                         <img [src]="icon.phone" class="makeGray h16px" alt="" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
@@ -116,8 +138,7 @@
                             [class.is-invalid]="userForm.get('job').errors && displayErrors"
                             type="text" 
                             class="form-control pdl20  radius20 shadow-animation borderLight"
-                            placeholder="Cargo"
-                            >
+                            placeholder="Cargo">
                     </div>
                     <div style="position: relative">
                         <img [src]="icon.calendarAdd" class="makeGray h16px" alt="" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">

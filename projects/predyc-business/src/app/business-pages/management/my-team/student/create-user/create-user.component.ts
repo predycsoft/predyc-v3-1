@@ -3,7 +3,7 @@ import { AngularFireStorage } from "@angular/fire/compat/storage";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { TimeScale } from "chart.js/dist";
-import { finalize, firstValueFrom, map, Observable, startWith, Subscription } from "rxjs";
+import { finalize, firstValueFrom, map, Observable, startWith, Subscription, take } from "rxjs";
 import { Department } from "projects/shared/models/department.model";
 import { Profile } from "projects/shared/models/profile.model";
 import { User } from "projects/shared/models/user.model";
@@ -25,6 +25,7 @@ import { ProductService } from 'projects/predyc-business/src/shared/services/pro
 import { Product } from 'projects/shared/models/product.model';
 import { CourseService } from '../../../../../../shared/services/course.service';
 import { roundNumber } from 'projects/shared/utils';
+import { formatDate } from "@angular/common";
 
 
 @Component({
@@ -52,12 +53,16 @@ export class CreateUserComponent {
 		// Obtener la fecha actual
 		const today = new Date();
 
+
 		// Asignar la fecha máxima
 		this.maxDate = {
 			year: today.getFullYear(),
 			month: today.getMonth() + 1, // Los meses en JavaScript son de 0 a 11
 			day: today.getDate(),
 		};
+		this.MinDateProfile = formatDate(new Date(), 'yyyy-MM-dd', 'en');
+		this.MinDateEndProfile = formatDate(new Date(), 'yyyy-MM-dd', 'en');
+
 	}
 
 	@Input() studentToEdit: User | null = null;
@@ -65,6 +70,9 @@ export class CreateUserComponent {
 
 	minDate = { year: 1900, month: 1, day: 1 };
 	maxDate;
+	MinDateProfile;
+	MaxDateProfile
+	MinDateEndProfile
 	userForm: FormGroup;
 	displayErrors: boolean = false;
 	profiles: Profile[] = [];
@@ -201,6 +209,8 @@ export class CreateUserComponent {
 			displayName: [null, [Validators.required]],
 			profile: [null],
 			photoUrl: [null],
+			startDateStudy: [null],
+			endDateStudy: [null],
 			phoneNumber: [null, [Validators.pattern(/^\d*$/)]],
 			department: [null],
 			country: [null],
@@ -212,9 +222,8 @@ export class CreateUserComponent {
 		});
 		// Edit mode
 		if (this.studentToEdit) {
-			const department = this.studentToEdit.departmentRef
-				? (await this.studentToEdit.departmentRef.get()).data()
-				: null;
+			console.log('this.studentToEdit',this.studentToEdit)
+			const department = this.studentToEdit.departmentRef? (await this.studentToEdit.departmentRef.get()).data(): null;
 			const profile = this.studentToEdit.profile ? (await this.studentToEdit.profile.get()).data() : null;
 			this.userForm.patchValue({
 				displayName: this.studentToEdit.displayName,
@@ -228,15 +237,166 @@ export class CreateUserComponent {
 				experience: this.studentToEdit.experience,
 			});
 			this.studentToEdit.birthdate ? this.timestampToFormFormat(this.studentToEdit.birthdate, "birthdate") : null;
-			this.studentToEdit.hiringDate
-				? this.timestampToFormFormat(this.studentToEdit.hiringDate, "hiringDate")
-				: null;
+			this.studentToEdit.hiringDate? this.timestampToFormFormat(this.studentToEdit.hiringDate, "hiringDate"): null;
 			this.userForm.get("email")?.disable();
 			if (this.studentToEdit.photoUrl) {
 				this.imageUrl = this.studentToEdit.photoUrl;
 			}
+
+			let userRef = this.afs.collection<User>(User.collection).doc(this.studentToEdit.uid).ref;
+
+
+			this.courseService.getActiveCoursesByStudent$(userRef).pipe(take(1)).subscribe(cursos => {
+				console.log('cursos', cursos);
+				if (cursos && cursos.length > 0) {
+				  // Inicializar las variables para almacenar los valores mínimos y máximos
+				  let minStartDate = Number.MAX_SAFE_INTEGER;
+				  let maxEndDate = 0;
+				  cursos.forEach(curso => {
+					// Actualizar el valor mínimo de la fecha de inicio si el curso actual tiene una fecha menor
+					if (curso.dateStartPlan.seconds < minStartDate) {
+					  minStartDate = curso.dateStartPlan.seconds;
+					}
+					// Actualizar el valor máximo de la fecha de fin si el curso actual tiene una fecha mayor
+					if (curso.dateEndPlan.seconds > maxEndDate) {
+					  maxEndDate = curso.dateEndPlan.seconds;
+					}
+				  });
+			  
+				  // Convertir los segundos a fechas para una mejor visualización (opcional)
+				  const minStartDateFormatted = new Date(minStartDate * 1000);
+				  const maxEndDateFormatted = this.obtenerUltimoDiaDelMes(maxEndDate)
+			  
+				  console.log('Menor fecha de inicio:', minStartDateFormatted);
+				  console.log('Mayor fecha de fin:', maxEndDateFormatted);
+
+				  if (maxEndDateFormatted) {
+					this.MaxDateProfile = formatDate(maxEndDateFormatted, 'yyyy-MM-dd', 'en');
+				  }
+
+				  this.userForm.patchValue({
+					startDateStudy:this.formatDateToInput(minStartDateFormatted),
+					endDateStudy: this.formatDateToInput(maxEndDateFormatted)
+				});
+				}
+			});
+			  
 		}
 	}
+
+
+	changeProfile(){
+		this.hoursPlan=0
+
+		const profile = this.profiles.find(x=>x.id == this.userForm.get('profile').value)
+		const endDate = this.userForm.get('endDateStudy').value
+		const startDate = this.userForm.get('startDateStudy').value
+
+		if(profile && endDate && startDate){
+
+			let endDateObjet = this.toDateFromInput(endDate)
+			const startDateObjet = this.toDateFromInput(startDate)
+			endDateObjet = this.obtenerUltimoDiaDelMes(endDateObjet.getTime()/1000)
+			const difMeses = this.calculateMonthsDifference(startDateObjet,endDateObjet)
+			const profile = this.profiles.find(x=>x.id == this.userForm.get('profile').value)
+			const duracionPlan = Math.ceil(profile['duracion']/60)
+			const hoursMes = Math.ceil(duracionPlan/difMeses)
+			this.hoursPlan=hoursMes
+
+		}
+
+	}
+
+	changedDate(event,type){
+
+		this.messageHoursPlan = ''
+		this.hoursPlan=0
+
+
+		if(type == 'start'){
+
+			const endDate = this.userForm.get('endDateStudy').value
+			let startDateObjet = this.toDateFromInput(event.target.value)
+
+			this.MinDateEndProfile= formatDate(startDateObjet, 'yyyy-MM-dd', 'en');
+
+			if(endDate){
+				const endDateObjet = this.toDateFromInput(endDate)
+				startDateObjet = this.obtenerUltimoDiaDelMes(startDateObjet.getTime()/1000)
+				const difMeses = this.calculateMonthsDifference(startDateObjet,endDateObjet)
+				const profile = this.profiles.find(x=>x.id == this.userForm.get('profile').value)
+				const duracionPlan = Math.ceil(profile['duracion']/60)
+				const hoursMes = Math.ceil(duracionPlan/difMeses)
+				this.hoursPlan=hoursMes
+			}
+		}
+		else{
+			const startDate = this.userForm.get('startDateStudy').value
+			let endDateObjet = this.toDateFromInput(event.target.value)
+			this.MaxDateProfile = formatDate(endDateObjet, 'yyyy-MM-dd', 'en');
+			if(startDate){
+				const startDateObjet = this.toDateFromInput(startDate)
+				endDateObjet = this.obtenerUltimoDiaDelMes(endDateObjet.getTime()/1000)
+				const difMeses = this.calculateMonthsDifference(startDateObjet,endDateObjet)
+				const profile = this.profiles.find(x=>x.id == this.userForm.get('profile').value)
+				const duracionPlan = Math.ceil(profile['duracion']/60)
+				const hoursMes = Math.ceil(duracionPlan/difMeses)
+				this.hoursPlan=hoursMes
+			}
+		}
+	}
+
+	messageHoursPlan
+	hoursPlan=0
+
+	calculateMonthsDifference(startDate: Date, endDate: Date): number {
+		const startYear = startDate.getFullYear();
+		const endYear = endDate.getFullYear();
+		const startMonth = startDate.getMonth();
+		const endMonth = endDate.getMonth();
+	  
+		const monthsDifference = (endYear - startYear) * 12 + (endMonth - startMonth);
+		return monthsDifference>=0? monthsDifference+1:0;
+	  }
+
+	toDateFromInput(inputValue) {
+		const [year, month, day] = inputValue.split('-').map(num => parseInt(num, 10));
+		// Ten en cuenta que los meses en JavaScript son 0-indexados (0 = enero, 11 = diciembre),
+		// así que resta 1 al mes al crear el objeto Date.
+		return new Date(year, month - 1, day);
+	  }
+
+	formatDateToInput(date) {
+		const d = new Date(date);
+		let month = '' + (d.getMonth() + 1),
+			day = '' + d.getDate(),
+			year = d.getFullYear();
+	  
+		if (month.length < 2) 
+			month = '0' + month;
+		if (day.length < 2) 
+			day = '0' + day;
+
+		let respuesta = [year, month, day].join('-')
+		console.log('formatDateToInput',respuesta)
+	  
+		return respuesta;
+	  }
+
+
+	obtenerUltimoDiaDelMes(fecha: number) {
+		fecha = fecha * 1000;
+		let fechaOriginal = new Date(fecha);
+		const anio = fechaOriginal.getFullYear();
+		const mes = fechaOriginal.getMonth();
+		const ultimoDiaDelMes = new Date(anio, mes + 1, 0);
+	  
+		// Establecer la hora a 23:59:59
+		ultimoDiaDelMes.setHours(23, 59, 59);
+	  
+		return ultimoDiaDelMes;
+	  }
+	
 
 	timestampToFormFormat(timestamp: number, property: "birthdate" | "hiringDate") {
 		const date = timestampToDateNumbers(timestamp);
