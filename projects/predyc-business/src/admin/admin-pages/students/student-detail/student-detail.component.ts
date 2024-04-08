@@ -183,38 +183,42 @@ export class StudentDetailComponent {
   coursesInfo: any[];
   hasExtraCourses = true;
 
-  createSubscription(sub=null) {
-    const dialogRef = this.modalService.open(DialogCreateSubscriptionComponent, {
-      animation: true,
-      centered: true,
-      //size: 'lg',
-      backdrop: 'static',
-      keyboard: false 
-    });
-    let data =  {
+  createSubscription(sub = null) {
+    const dialogRef = this.modalService.open(
+      DialogCreateSubscriptionComponent,
+      {
+        animation: true,
+        centered: true,
+        //size: 'lg',
+        backdrop: "static",
+        keyboard: false,
+      }
+    );
+    let data = {
       userId: this.user.uid,
       products: this.products,
       enterpriseRef: this.enterpriseRef,
-      subscription: null
-    }
+      subscription: null,
+    };
     dialogRef.componentInstance.data = data;
 
-    dialogRef.result.then(async result => {
-      if (result) {
-        try {
-          await this.subscriptionService.saveSubscription(result.toJson());
-          this.dialogService.dialogExito();
-        } catch (error) {
-          this.dialogService.dialogAlerta(
-            "Hubo un error al crear la suscripción. Inténtalo de nuevo."
-          );
-          console.error(error);
+    dialogRef.result
+      .then(async (result) => {
+        if (result) {
+          try {
+            await this.subscriptionService.saveSubscription(result.toJson());
+            this.dialogService.dialogExito();
+          } catch (error) {
+            this.dialogService.dialogAlerta(
+              "Hubo un error al crear la suscripción. Inténtalo de nuevo."
+            );
+            console.error(error);
+          }
         }
-      }
-    }).catch(error => {
-      console.log(error)
-    })
-
+      })
+      .catch((error) => {
+        console.log(error);
+      });
 
     // dialogRef.afterClosed().subscribe(async (result: SubscriptionClass) => {
     //   if (result) {
@@ -236,35 +240,36 @@ export class StudentDetailComponent {
       animation: true,
       centered: true,
       //size: 'lg',
-      backdrop: 'static',
-      keyboard: false 
-    })
+      backdrop: "static",
+      keyboard: false,
+    });
 
-    let data= {
+    let data = {
       userId: this.user.uid,
       products: this.products,
       enterpriseRef: this.enterpriseRef,
-      subscription: sub
-    }
+      subscription: sub,
+    };
 
     modalRef.componentInstance.data = data;
-    modalRef.result.then(async result => {
-      if (result) {
-        try {
-          await this.subscriptionService.saveSubscription(result.toJson());
-          this.dialogService.dialogExito();
-        } catch (error) {
-          this.dialogService.dialogAlerta(
-            "Hubo un error al crear la suscripción. Inténtalo de nuevo."
-          );
-          console.error(error);
+    modalRef.result
+      .then(async (result) => {
+        if (result) {
+          try {
+            await this.subscriptionService.saveSubscription(result.toJson());
+            this.dialogService.dialogExito();
+          } catch (error) {
+            this.dialogService.dialogAlerta(
+              "Hubo un error al crear la suscripción. Inténtalo de nuevo."
+            );
+            console.error(error);
+          }
         }
-      }
-    }).catch(error => {
-      console.log(error)
-    })
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
-
 
   _editSubscription(sub) {
     const dialogRef = this.dialog.open(DialogCreateSubscriptionComponent, {
@@ -272,7 +277,7 @@ export class StudentDetailComponent {
         userId: this.user.uid,
         products: this.products,
         enterpriseRef: this.enterpriseRef,
-        subscription: sub
+        subscription: sub,
       },
     });
 
@@ -318,7 +323,8 @@ export class StudentDetailComponent {
           this.userRef,
           null,
           null,
-          true
+          true,
+          i
         );
         // await this.courseService.setCoursesByStudentInactive(this.userRef)
       }
@@ -332,16 +338,21 @@ export class StudentDetailComponent {
         this.userRef,
         null,
         null,
-        true
+        true,
+        i
       );
     }
   }
 
   async openCoursesDialog() {
     // const coursesRefs: DocumentReference[] = this.user?.profile?.coursesRef;
-    const coursesByStudent = await this.courseService.getActiveCoursesByStudent(this.userRef)
-    console.log("coursesByStudent", coursesByStudent)
-    const coursesRefs = coursesByStudent.map(courseByStudent => { return courseByStudent.courseRef})
+    const coursesByStudent = await this.courseService.getActiveCoursesByStudent(
+      this.userRef
+    );
+    console.log("coursesByStudent", coursesByStudent);
+    const coursesRefs = coursesByStudent.map((courseByStudent) => {
+      return courseByStudent.courseRef;
+    });
     const dialogRef = this.dialog.open(DialogEnrollCoursesComponent, {
       data: {
         studentEnrolledCourses: coursesRefs,
@@ -349,14 +360,18 @@ export class StudentDetailComponent {
     });
 
     dialogRef.afterClosed().subscribe(async (coursesIdToEnroll: string[]) => {
-      if (coursesIdToEnroll && coursesIdToEnroll.length> 0) {
+      if (coursesIdToEnroll && coursesIdToEnroll.length > 0) {
         try {
           console.log("coursesIdToEnroll", coursesIdToEnroll);
-          const coursesRefToEnroll = coursesIdToEnroll.map(courseId => { return this.courseService.getCourseRefById(courseId)})
-          await this.saveSelectedCourses(coursesRefToEnroll)
+          const coursesRefToEnroll = coursesIdToEnroll.map((courseId) => {
+            return this.courseService.getCourseRefById(courseId);
+          });
+          await this.saveSelectedCourses(coursesRefToEnroll);
           this.dialogService.dialogExito();
         } catch (error) {
-          this.dialogService.dialogAlerta( "Hubo un error al guardar los cursos. Inténtalo de nuevo." );
+          this.dialogService.dialogAlerta(
+            "Hubo un error al guardar los cursos. Inténtalo de nuevo."
+          );
           console.log(error);
         }
       }
@@ -400,8 +415,7 @@ export class StudentDetailComponent {
     this.productSubscription.unsubscribe();
   }
 
-  subSelected(sub){
-    this.editSubscription(sub)
-
+  subSelected(sub) {
+    this.editSubscription(sub);
   }
 }

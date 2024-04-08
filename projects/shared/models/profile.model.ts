@@ -39,7 +39,7 @@ export class Profile {
     profile.id = profileJson.id;
     profile.name = profileJson.name;
     profile.description = profileJson.description;
-    profile.coursesRef = { ...profileJson.coursesRef };
+    profile.coursesRef = [...profileJson.coursesRef];
     profile.enterpriseRef = profileJson.enterpriseRef;
     profile.permissions = profileJson.permissions;
     profile.hoursPerMonth = profileJson.hoursPerMonth;
@@ -52,7 +52,7 @@ export class Profile {
       id: this.id,
       name: this.name,
       description: this.description,
-      coursesRef: { ...this.coursesRef },
+      coursesRef: [...this.coursesRef],
       enterpriseRef: this.enterpriseRef,
       permissions: this.permissions,
       hoursPerMonth: this.hoursPerMonth,

@@ -347,7 +347,8 @@ export class StudentStudyPlanAndCompetencesComponent {
           userRef,
           new Date(dateStartPlan),
           new Date(dateEndPlan),
-          false
+          false,
+          i
         );
       }
     }
@@ -378,7 +379,8 @@ export class StudentStudyPlanAndCompetencesComponent {
           userRef,
           null,
           null,
-          true
+          true,
+          i
         );
       }
     }

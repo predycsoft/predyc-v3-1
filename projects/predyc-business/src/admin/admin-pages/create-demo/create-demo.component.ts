@@ -770,7 +770,8 @@ export class CreateDemoComponent {
         userRef,
         new Date(startDate),
         new Date(endDate),
-        false
+        false,
+        i
       );
       enrolledCourses.push(enrolledCourse); // Almacena el curso insertado en el arreglo
       startDate = endDate;

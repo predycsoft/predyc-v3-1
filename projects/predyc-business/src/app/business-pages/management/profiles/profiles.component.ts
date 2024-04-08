@@ -110,7 +110,6 @@ export class ProfilesComponent {
       });
 
     this.authService.user$.subscribe((user) => {
-      console.log("user", user);
       this.user = user;
     });
 
@@ -138,7 +137,6 @@ export class ProfilesComponent {
     }
     this.serviceSubscription = combineLatest(observablesArray).subscribe(
       (result) => {
-        // console.log("result", result)
         const categories = result[0] as Category[];
         const skills = result[1] as Skill[];
         let courses = result[2] as Curso[];
@@ -174,35 +172,27 @@ export class ProfilesComponent {
             if (!categories.map((item) => item.id).includes(category.id))
               categories.push(category);
           });
-          const inStudyPlan =
-            this.profile &&
-            this.profile.coursesRef
-              .map((courseRef) => courseRef.id)
-              .includes(course.id);
+          const studyPlanItemCourseRefItem = this.profile
+            ? this.profile.coursesRef.find((x: any) => {
+                return x.courseRef.id === course.id;
+              })
+            : null;
+          const inStudyPlan = studyPlanItemCourseRefItem ? true : false;
           const courseForExplorer = {
             ...course,
             skills: skills,
             categories: categories,
             inStudyPlan: inStudyPlan,
+            studyPlanOrder: studyPlanItemCourseRefItem
+              ? studyPlanItemCourseRefItem.studyPlanOrder
+              : null,
           };
           // console.log('courseForExplorer',courseForExplorer)
           if (inStudyPlan) this.studyPlan.push(courseForExplorer);
           return courseForExplorer;
         });
 
-        if (this.profile) {
-          let trueOrder = [];
-
-          // console.log('this.studyPlan',this.studyPlan,this.profile.coursesRef)
-          this.profile.coursesRef.forEach((cursoplan) => {
-            let curso = this.studyPlan.find((x) => x.id == cursoplan["id"]);
-            if (curso) {
-              trueOrder.push(curso);
-            }
-          });
-
-          this.studyPlan = trueOrder;
-        }
+        this.studyPlan.sort((a, b) => a.studyPlanOrder - b.studyPlanOrder);
 
         this.updateWidgets();
 
@@ -259,18 +249,22 @@ export class ProfilesComponent {
   }
 
   toggleCourseInPlan(course) {
+    console.log(this.studyPlan);
     course.inStudyPlan = !course.inStudyPlan;
     if (course.inStudyPlan) {
       this.studyPlan.push({
-        course,
+        ...course,
         studyPlanOrder: this.studyPlan.length + 1,
       });
     } else {
       const targetIndex = this.studyPlan.findIndex(
-        (item) => item.course.id === course.id
+        (item) => item.id === course.id
       );
       this.studyPlan.splice(targetIndex, 1);
     }
+    this.studyPlan.forEach((course, idx) => {
+      course.studyPlanOrder = idx + 1;
+    });
     this.updateWidgets();
   }
 
@@ -281,7 +275,7 @@ export class ProfilesComponent {
         description: this.profileDescription,
         selectedCourses: this.studyPlan.map((item) => {
           return {
-            courseId: item.courseRef.id,
+            courseId: item.id,
             studyPlanOrder: item.studyPlanOrder,
           };
         }),
@@ -606,15 +600,15 @@ export class ProfilesComponent {
       const changesInStudyPlan = {
         added: [],
         removed: [],
-        reorder: false,
+        studyPlan: this.studyPlan,
         profileId: this.profile?.id ? this.profile?.id : null,
       };
       if (this?.id !== "new") {
         this.coursesForExplorer.forEach((course) => {
           const studyPlanItem = this.studyPlan.find(
-            (item) => item.course.id === course.id
+            (item) => item.id === course.id
           );
-          const isInStudyPlan = studyPlanItem?.course.id ? true : false;
+          const isInStudyPlan = studyPlanItem?.id ? true : false;
           const studyPlanItemBackup = this.profileBackup.selectedCourses.find(
             (item) => item.courseId === course.id
           );
@@ -629,29 +623,21 @@ export class ProfilesComponent {
             } else {
               changesInStudyPlan.removed.push({
                 id: course.id,
-                studyPlanOrder: studyPlanItem.studyPlanOrder,
               });
             }
-          }
-          if (
-            wasInStudyPlan &&
-            isInStudyPlan &&
-            studyPlanItem.studyPlanOrder !== studyPlanItemBackup.studyPlanOrder
-          ) {
-            // Sort is required
-            changesInStudyPlan.reorder = true;
           }
         });
 
         const studyPlanHasBeenUpdated =
           await this.courseService.updateStudyPlans(changesInStudyPlan);
-        if (studyPlanHasBeenUpdated)
-          await this.profileService.saveProfile(profile);
-        else
-          throw new Error(
-            "Ocurrió un error actualizando el plan de estudios de los estudiantes que poseen este perfil"
-          );
+        // if (studyPlanHasBeenUpdated)
+        //   await this.profileService.saveProfile(profile);
+        // else
+        //   throw new Error(
+        //     "Ocurrió un error actualizando el plan de estudios de los estudiantes que poseen este perfil"
+        //   );
       } else {
+        console.log("profile", profile);
         const profileId = await this.profileService.saveProfile(profile);
         this.id = profileId;
         this.profile = profile;
@@ -662,7 +648,8 @@ export class ProfilesComponent {
       this.disableSaveButton = false;
       this.isEditing = false;
     } catch (error) {
-      // this.alertService.errorAlert(error.message)
+      console.error(error);
+      this.alertService.errorAlert(error.message);
       this.disableSaveButton = false;
     }
   }
