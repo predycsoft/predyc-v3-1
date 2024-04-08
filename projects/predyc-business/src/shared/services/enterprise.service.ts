@@ -53,6 +53,15 @@ export class EnterpriseService {
     return ref.id
   }
 
+  async saveEnterprises(enterprises: EnterpriseJson[]): Promise<void> {
+    const batch = this.afs.firestore.batch();
+    enterprises.forEach((enterprise) => {
+      const docRef = this.afs.firestore.collection(Enterprise.collection).doc(enterprise.id);
+      batch.set(docRef, enterprise, { merge: true });
+    });
+    await batch.commit();
+  }
+
   async editEnterprise(enteprise: EnterpriseJson): Promise<void> {
     await this.afs.collection(Enterprise.collection).doc(enteprise.id as string).set(
       enteprise, { merge: true }

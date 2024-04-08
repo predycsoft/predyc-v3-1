@@ -1,8 +1,13 @@
 import { Component } from '@angular/core';
-import { oldProducts } from './old data/product.data';
-import { oldPrices } from './old data/prices.data';
+// import { oldProducts } from './old data/product.data';
+// import { oldPrices } from './old data/prices.data';
 import { Product, ProductJson } from 'projects/shared/models/product.model';
 import { ProductService } from '../../services/product.service';
+// import { oldEmpresasCLientes } from './old data/empresasCliente/empresasCliente.data';
+// import { oldEmpresasCLientes2 } from './old data/empresasCliente/empresasCliente2.data';
+import { oldEmpresasCLientes3 } from './old data/empresasCliente/empresasCliente3.data';
+import { EnterpriseJson } from 'projects/shared/models/enterprise.model';
+import { EnterpriseService } from '../../services/enterprise.service';
 
 @Component({
   selector: 'app-migrations',
@@ -13,39 +18,81 @@ export class MigrationsComponent {
 
   constructor(
     private productService: ProductService,
+    private enterpriseService: EnterpriseService,
   ) {}
 
+  // async migrateProducts() {
+  //   const oldProductsData: any[] = oldProducts
+  //   const oldPricesData: any[] = oldPrices
 
+  //   const productsInNewModel: ProductJson[] = oldPricesData.map(price => {
+  //     const oldProductData = oldProductsData.find(x => x.id === price.productId)
+  //     return {
+  //       accesses: {
+  //         enableUserRadar: false,
+  //         enableStudyPlanView: false,
+  //         enableExtraCoursesView: false,
+  //         enableToTakeTest: false,
+  //         enableCreateParticularCourses: false,
+  //         enableEnrollParticularCourses: oldProductData.canEnrollByHimself,
+  //       },
+  //       active: price.active, // or product.active?
+  //       amount: price.amount,
+  //       autodeactivate: true, // new
+  //       createdAt: +new Date(),
+  //       description: oldProductData.description,
+  //       features: oldProductData.features,
+  //       id: price.id,
+  //       name: price.id.replace(/-/g, " "),
+  //       type: oldProductData.isACompanyProduct ? Product.TYPE_FULL : Product.TYPE_INDEPEND,
+  //     }
+  //   })
 
-  async migrateProducts() {
-    const oldProductsData: any[] = oldProducts
-    const oldPricesData: any[] = oldPrices
+  //   await this.productService.saveProducts(productsInNewModel)
+  //   console.log("productsInNewModel", productsInNewModel)
+  // }
 
-    const productsInNewModel: ProductJson[] = oldPricesData.map(price => {
-      const oldProductData = oldProductsData.find(x => x.id === price.productId)
+  async migrateEnterprises() {
+    // --------------- Import and use one at a time ---------------
+    // const oldEnterprisesData: any[] = oldEmpresasCLientes
+    // const oldEnterprisesData: any[] = oldEmpresasCLientes2
+    const oldEnterprisesData: any[] = oldEmpresasCLientes3
+
+    const enterprisesInNewModel: EnterpriseJson[] = oldEnterprisesData.map(oldEnterpriseData => {
       return {
-        accesses: {
-          enableUserRadar: false,
-          enableStudyPlanView: false,
-          enableExtraCoursesView: false,
-          enableToTakeTest: false,
-          enableCreateParticularCourses: false,
-          enableEnrollParticularCourses: oldProductData.canEnrollByHimself,
+        city: null,
+        country: null,
+        createdAt: oldEnterpriseData.fechaCreacion ? oldEnterpriseData.fechaCreacion : +new Date(),
+        description: oldEnterpriseData.description ? oldEnterpriseData.description : 
+                    oldEnterpriseData.resumen ? oldEnterpriseData.resumen : null,
+        employesNo: oldEnterpriseData.students ? oldEnterpriseData.students.length : 
+                    oldEnterpriseData.usuarios ? oldEnterpriseData.usuarios.length : 0,
+        id: oldEnterpriseData.id,
+        name: oldEnterpriseData.nombre ? oldEnterpriseData.nombre : oldEnterpriseData.id,
+        permissions: {
+          hoursPerWeek: oldEnterpriseData.hoursPerWeek ? oldEnterpriseData.hoursPerWeek : null,
+          studyLiberty: null,
+          studyplanGeneration: null,
+          attemptsPerTest: null,
+          createCourses: null,
         },
-        active: price.active, // or product.active?
-        amount: price.amount,
-        autodeactivate: true, // new
-        createdAt: +new Date(),
-        description: oldProductData.description,
-        features: oldProductData.features,
-        id: price.id,
-        name: price.id.replace(/-/g, " "),
-        type: oldProductData.isACompanyProduct ? Product.TYPE_FULL : Product.TYPE_INDEPEND,
+        photoUrl: oldEnterpriseData.foto ? oldEnterpriseData.foto : null ,
+        profilesNo: oldEnterpriseData.profileStudyPlan.length,
+        zipCode: null,
+        workField: null,
+        socialNetworks: {
+            facebook: null,
+            instagram: null,
+            website: oldEnterpriseData.sitioWeb ? oldEnterpriseData.sitioWeb : null,
+            linkedin: oldEnterpriseData.enlaceLinkedin ? oldEnterpriseData.enlaceLinkedin : null,
+        },
+        vimeoFolderId: oldEnterpriseData.vimeoFolderID ? oldEnterpriseData.vimeoFolderID : null ,
+        vimeoFolderUri: oldEnterpriseData.vimeoFolderUri ? oldEnterpriseData.vimeoFolderUri : null,
       }
     })
 
-    console.log("productsInNewModel", productsInNewModel)
-    this.productService.saveProducts(productsInNewModel)
+    await this.enterpriseService.saveEnterprises(enterprisesInNewModel)
+    console.log("enterprisesInNewModel", enterprisesInNewModel)
   }
 
 }
