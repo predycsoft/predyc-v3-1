@@ -31,7 +31,12 @@
         Tipo de curso
       </th>
       <td mat-cell *matCellDef="let data" class="centertext ft11">
-        <div class="pdt03 pdb03 radius6 backGreen2 green-5">
+        <div
+          class="pdt03 pdb03 radius6 backGreen2 green-5"
+          [ngClass]="
+            data.isExtraCourse ? 'backYellow2 orange-2' : 'backGreen2 green-5'
+          "
+        >
           {{ data.isExtraCourse ? "Extracurricular" : "Plan" }}
         </div>
       </td>
