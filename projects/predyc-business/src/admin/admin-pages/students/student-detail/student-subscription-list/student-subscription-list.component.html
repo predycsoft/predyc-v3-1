@@ -2,7 +2,7 @@
   <table mat-table [dataSource]="dataSource">
     <ng-container matColumnDef="productName">
       <th mat-header-cell *matHeaderCellDef class="ft13">Producto</th>
-      <td mat-cell *matCellDef="let data" class="ft500 ft11 gray-10">
+      <td mat-cell *matCellDef="let data" class="ft500 ft12 gray-10">
         {{ data.productName | titlecase }}
       </td>
     </ng-container>
@@ -35,7 +35,7 @@
       <th mat-header-cell *matHeaderCellDef class="ft13 centertext">
         Fecha de creación
       </th>
-      <td mat-cell *matCellDef="let data" class="centertext ft11">
+      <td mat-cell *matCellDef="let data" class="centertext ft12">
         {{ data.createdAt | date : "dd/MM/yy" }}
       </td>
     </ng-container>
@@ -44,7 +44,7 @@
       <th mat-header-cell *matHeaderCellDef class="ft13 centertext">
         Inicio del período
       </th>
-      <td mat-cell *matCellDef="let data" class="centertext ft11">
+      <td mat-cell *matCellDef="let data" class="centertext ft12">
         {{ data.currentPeriodStart | date : "dd/MM/yy" }}
       </td>
     </ng-container>
@@ -53,7 +53,7 @@
       <th mat-header-cell *matHeaderCellDef class="ft13 centertext">
         Final del período
       </th>
-      <td mat-cell *matCellDef="let data" class="centertext ft11">
+      <td mat-cell *matCellDef="let data" class="centertext ft12">
         {{ data.currentPeriodEnd | date : "dd/MM/yy" }}
       </td>
     </ng-container>
@@ -62,8 +62,8 @@
       <th mat-header-cell *matHeaderCellDef class="ft13 centertext">
         Comentario
       </th>
-      <td mat-cell *matCellDef="let data" class="centertext ft11">
-        <span class="ft11 gray-8 centertext">
+      <td mat-cell *matCellDef="let data" class="centertext ft12">
+        <span class="ft12 gray-8 centertext">
           {{ data.statusBasedComment }}
         </span>
       </td>
@@ -75,14 +75,14 @@
       </th>
       <td mat-cell *matCellDef="let data" class="centertext ft11">
         <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="center center">
-          <button class="w100px cursorPointer"
-            [ngClass]="data.status == 'active' || data.status == 'expired' ? 'redButton' : 'greenButton'"
+          <div class="w100px ft12 mgl20 cursorPointer"
+            [ngClass]="data.status == 'active' || data.status == 'expired' ? 'redLink' : 'greenLink'"
             (click)="changeStatusPrev(data)"
           >
             {{ data.status == "active" ||  data.status == "expired" ? "Desactivar" : "Activar" }}
-          </button>
+        </div>
           <!-- <mat-icon  class="ft11 cursorPointer" (click)="clickSub(data)">edit</mat-icon> -->
-          <img (click)="clickSub(data)" [src]="icon.edit" class="makeGray h20px cursorPointer">
+          <img (click)="clickSub(data)" [src]="icon.edit" class=" h20px cursorPointer">
           <!-- <mat-icon class="red-5 ft11" (click)="deleteSubscription(data)">delete</mat-icon> -->
         </div>
       </td>
