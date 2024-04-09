@@ -52,6 +52,7 @@ import { courseCategoryAndSkillsRelation } from "projects/predyc-business/src/as
 import { capitalizeFirstLetter, splitArray } from "projects/shared/utils";
 import { ProfileService } from "../../services/profile.service";
 import { AngularFireFunctions } from "@angular/fire/compat/functions";
+import { environment } from "projects/predyc-business/src/environments/environment";
 
 @Component({
   selector: "app-init-script",
@@ -75,6 +76,8 @@ export class InitScriptComponent {
     public profileService: ProfileService,
     private fireFunctions: AngularFireFunctions
   ) {}
+
+  environment = environment;
 
   instructors = [];
   fireFunctionSubscription: Subscription;
@@ -170,12 +173,13 @@ export class InitScriptComponent {
           updatedAt: Date.parse(user.updatedAt),
           enterprise: enterprisePredycRef,
           departmentRef: null,
-          performance: user.performance as "no plan" |
-            "low" |
-            "medium" |
-            "high" |
-            null,
-          canEnrollParticularCourses: false
+          performance: user.performance as
+            | "no plan"
+            | "low"
+            | "medium"
+            | "high"
+            | null,
+          canEnrollParticularCourses: false,
         });
       } else {
         return User.fromJson({
@@ -188,12 +192,13 @@ export class InitScriptComponent {
           updatedAt: Date.parse(user.updatedAt),
           enterprise: enterpriseRef,
           departmentRef: null,
-          performance: user.performance as "no plan" |
-            "low" |
-            "medium" |
-            "high" |
-            null,
-          canEnrollParticularCourses: false
+          performance: user.performance as
+            | "no plan"
+            | "low"
+            | "medium"
+            | "high"
+            | null,
+          canEnrollParticularCourses: false,
         });
       }
     });

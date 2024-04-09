@@ -81,65 +81,65 @@ export class DashboardComponent {
   profilesSubscription: Subscription;
 
   async fixProfiles() {
-    // const profiles = await firstValueFrom(
-    //   this.afs.collection<ProfileJson>(Profile.collection).valueChanges()
-    // );
-    // for (let profile of profiles) {
-    //   const newCoursesRef = profile.coursesRef.map((item, idx) => {
-    //     return {
-    //       courseRef: item,
-    //       studyPlanOrder: idx + 1,
-    //     };
-    //   });
-    //   const users = await firstValueFrom(
-    //     this.afs
-    //       .collection<UserJson>(UserClass.collection, (ref) =>
-    //         ref.where(
-    //           "profile",
-    //           "==",
-    //           this.profileService.getProfileRefById(profile.id)
-    //         )
-    //       )
-    //       .valueChanges()
-    //   );
-    //   for (let user of users) {
-    //     const courses = await firstValueFrom(
-    //       this.afs
-    //         .collection<CourseByStudentJson>(
-    //           CourseByStudent.collection,
-    //           (ref) =>
-    //             ref.where(
-    //               "userRef",
-    //               "==",
-    //               this.userService.getUserRefById(user.uid)
-    //             )
-    //         )
-    //         .valueChanges()
-    //     );
-    //     if (courses.length > 0) {
-    //       for (let item of newCoursesRef) {
-    //         const targetCourseRef = courses.find(
-    //           (x) => x.courseRef.id === item.courseRef.id
-    //         );
-    //         await this.afs
-    //           .collection<CourseByStudentJson>(CourseByStudent.collection)
-    //           .doc(targetCourseRef.id)
-    //           .set(
-    //             {
-    //               ...targetCourseRef,
-    //               studyPlanOrder: item.studyPlanOrder,
-    //             },
-    //             { merge: true }
-    //           );
-    //       }
-    //     }
-    //   }
-    //   await this.afs
-    //     .collection<ProfileJson>(Profile.collection)
-    //     .doc(profile.id)
-    //     .set({ ...profile, coursesRef: newCoursesRef }, { merge: true });
-    // }
-    this.courseService.fixStudyPlanEnterprise();
+    const profiles = await firstValueFrom(
+      this.afs.collection<ProfileJson>(Profile.collection).valueChanges()
+    );
+    for (let profile of profiles) {
+      const newCoursesRef = profile.coursesRef.map((item, idx) => {
+        return {
+          courseRef: item,
+          studyPlanOrder: idx + 1,
+        };
+      });
+      const users = await firstValueFrom(
+        this.afs
+          .collection<UserJson>(UserClass.collection, (ref) =>
+            ref.where(
+              "profile",
+              "==",
+              this.profileService.getProfileRefById(profile.id)
+            )
+          )
+          .valueChanges()
+      );
+      for (let user of users) {
+        const courses = await firstValueFrom(
+          this.afs
+            .collection<CourseByStudentJson>(
+              CourseByStudent.collection,
+              (ref) =>
+                ref.where(
+                  "userRef",
+                  "==",
+                  this.userService.getUserRefById(user.uid)
+                )
+            )
+            .valueChanges()
+        );
+        if (courses.length > 0) {
+          for (let item of newCoursesRef) {
+            const targetCourseRef = courses.find(
+              (x) => x.courseRef.id === item.courseRef.id
+            );
+            await this.afs
+              .collection<CourseByStudentJson>(CourseByStudent.collection)
+              .doc(targetCourseRef.id)
+              .set(
+                {
+                  ...targetCourseRef,
+                  studyPlanOrder: item.studyPlanOrder,
+                },
+                { merge: true }
+              );
+          }
+        }
+      }
+      await this.afs
+        .collection<ProfileJson>(Profile.collection)
+        .doc(profile.id)
+        .set({ ...profile, coursesRef: newCoursesRef }, { merge: true });
+    }
+    // this.courseService.fixStudyPlanEnterprise();
   }
 
   ngOnInit() {

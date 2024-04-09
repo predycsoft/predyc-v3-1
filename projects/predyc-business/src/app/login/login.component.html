@@ -1,59 +1,116 @@
 <div class="container" fxLayout="column" fxLayoutAlign="center center">
-    <div class="content blur" fxLayoutAlign="center center" fxLayout="column">
-        <div class="w-80 fh" fxLayout="row" fxLayoutAlign="space-between center">
-            <div class="fw" fxLayout="column" fxLayoutAlign=" center">
-                <div fxLayout="column" fxLayoutAlign=" center">
-                    <div fxLayout="row" fxLayoutGap=".7rem" fxLayoutAlign=" center">
-                        <img [src]="icon.predyc" alt="" class="h40px">
-                        <span class="ft30 ft500 gray-10 logoP21">Predyc</span>
-                    </div>
-                    <span class="mgt05 ft18 gray-10">para empresas</span>
-                </div>
-                <!-- <div class="w-60">
+  <div class="content blur" fxLayoutAlign="center center" fxLayout="column">
+    <div class="w-80 fh" fxLayout="row" fxLayoutAlign="space-between center">
+      <div class="fw" fxLayout="column" fxLayoutAlign=" center">
+        <div fxLayout="column" fxLayoutAlign=" center">
+          <div fxLayout="row" fxLayoutGap=".7rem" fxLayoutAlign=" center">
+            <img [src]="icon.predyc" alt="" class="h40px" />
+            <span class="ft30 ft500 gray-10 logoP21">Predyc</span>
+          </div>
+          <span class="mgt05 ft18 gray-10">para empresas</span>
+        </div>
+        <!-- <div class="w-60">
                     <img [src]="people" class="fw" alt="">
                 </div> -->
-            </div>
-            <div class="fw">
-                <div ngClass="fw fh" ngClass.lt-md="fh fw backDarkDegraded" fxLayout="column" fxLayoutAlign=" center">
-                    <div ngClass="fh radius6 fw" ngClass.lt-md="mgt10 fh mgb60 radius6 fw" fxLayout="column"
-                        fxLayoutAlign="center center">
-                        <div ngClass="backWhite radius6 shadowUI w-80 pd20" ngClass.lt-md="backWhite radius6 w-90"
-                            fxLayout="column" fxLayoutAlign="center center">
-                            <div class="fw mgt20 centertext" fxLayout="column" fxLayoutAlign=" center">
-                                <span class="fw centertext ft600 ft24 gray-10">Bienvenido</span>
-                                <span class="fw centertext ft12 mgt05">Organiza y capacita a tu equipo con Predyc para empresas</span>
-                                <!-- Mesajes complementarios (registro, tengo cuenta, etc) -->
-                            </div>
-                            <div class="linea mgt10"></div>
-                            <!-- Inicio de sesion empresa -->
-                            <div class="w-100 mgt20">
-                                <form [formGroup]="form" (ngSubmit)="onSubmit()">
-                                    <div class="">
-                                        <label for="" class="gray-8 ft500">Correo</label>
-                                        <input type="email" formControlName="email" class="shadow8 fw h40px pd05"/>
-                                    </div>
-                                    <div class="mgt10">
-                                        <label for="" class="gray-8 ft500">Contraseña</label>
-                                        <input type="password" formControlName="password" class="shadow8 fw h40px pd05"/>
-                                        <span class="blueLink ft500 ft12" (click)="openForgotPasswordModal()">¿Olvidaste tu contraseña?</span> 
-                                    </div>
-                                    <div class="fw mgt20">
-                                        <button class="blueButton fw h40px ft14 ft500" type="submit" [disabled]="!form.valid">Iniciar sesión
-                                        </button>
-                                    </div>
-                                </form>
-                                <div class="mgt20 centertext fw">
-                                    <div class="centertext ft10 mgt10">
-                                        Al hacer iniciar sesión en Predyc, estará aceptando nuestras <a routerLink="/info/politica-privacidad" class="ft10 grayLink ft500">Politicas de
-                                          privacidad</a> y <a routerLink="/info/terminos-condiciones" class="ft10 grayLink ft500"> Condiciones de uso.</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+      </div>
+      <div class="fw">
+        <div
+          ngClass="fw fh"
+          ngClass.lt-md="fh fw backDarkDegraded"
+          fxLayout="column"
+          fxLayoutAlign=" center"
+        >
+          <div
+            ngClass="fh radius6 fw"
+            ngClass.lt-md="mgt10 fh mgb60 radius6 fw"
+            fxLayout="column"
+            fxLayoutAlign="center center"
+          >
+            <div
+              ngClass="backWhite radius6 shadowUI w-80 pd20"
+              ngClass.lt-md="backWhite radius6 w-90"
+              fxLayout="column"
+              fxLayoutAlign="center center"
+            >
+              <div
+                class="fw mgt20 centertext"
+                fxLayout="column"
+                fxLayoutAlign=" center"
+              >
+                <span class="fw centertext ft600 ft24 gray-10">Bienvenido</span>
+                <span class="fw centertext ft12 mgt05"
+                  >Organiza y capacita a tu equipo con Predyc para
+                  empresas</span
+                >
+                <!-- Mesajes complementarios (registro, tengo cuenta, etc) -->
+              </div>
+              <div class="linea mgt10"></div>
+              <!-- Inicio de sesion empresa -->
+              <div class="w-100 mgt20">
+                <form [formGroup]="form" (ngSubmit)="onSubmit()">
+                  <div class="">
+                    <label for="" class="gray-8 ft500">Correo</label>
+                    <input
+                      type="email"
+                      formControlName="email"
+                      class="shadow8 fw h40px pd05"
+                    />
+                  </div>
+                  <div class="mgt10">
+                    <label for="" class="gray-8 ft500">Contraseña</label>
+                    <input
+                      type="password"
+                      formControlName="password"
+                      class="shadow8 fw h40px pd05"
+                    />
+                    <span
+                      class="blueLink ft500 ft12"
+                      (click)="openForgotPasswordModal()"
+                      >¿Olvidaste tu contraseña?</span
+                    >
+                  </div>
+                  <div class="fw mgt20">
+                    <button
+                      class="blueButton fw h40px ft14 ft500"
+                      type="submit"
+                      [disabled]="!form.valid"
+                    >
+                      Iniciar sesión
+                    </button>
+                  </div>
+                </form>
+                <div class="mgt20 centertext fw">
+                  <div class="centertext ft10 mgt10">
+                    Al hacer iniciar sesión en Predyc, estará aceptando nuestras
+                    <a
+                      routerLink="/info/politica-privacidad"
+                      class="ft10 grayLink ft500"
+                      >Politicas de privacidad</a
+                    >
+                    y
+                    <a
+                      routerLink="/info/terminos-condiciones"
+                      class="ft10 grayLink ft500"
+                    >
+                      Condiciones de uso.</a
+                    >
+                  </div>
                 </div>
+              </div>
             </div>
+          </div>
         </div>
+      </div>
     </div>
-   
+    <div
+      *ngIf="!environment.production"
+      class="blueLink"
+      style="margin-top: 50px"
+      fxLayout="row"
+      fxLayoutAlign="center center"
+      routerLink="/init-script"
+    >
+      Ir al init script
+    </div>
+  </div>
 </div>

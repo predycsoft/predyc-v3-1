@@ -1,148 +1,348 @@
 <ng-container>
-    <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
-        <div class="modal-header bg-web-primary text-white px-3 py-1" fxLayoutAlign="space-between center" style="margin-top: -45px;" >
-            <div class="modal-title pd10 ">
-                <span class="ft16 ft600 gray-10">
-                    {{ this.productForm.controls.id.value == "" ? "Nuevo" : "Editar" }} Producto               
-                 </span>
-            </div>
-    
-        </div>
-        
-        <div fxLayout="row" fxLayoutAlign="space-between" class="mgt10">
-            <!-- Información general -->
-            <div fxLayout="column" fxLayoutGap="1rem" class="" >
-                <div fxLayout="row"  fxLayoutAlign="space-between center">
-                    <div>
-                        <span class="ft15 gray-9 ft500">Información general</span>
-                    </div>
-                    <div fxLayout="row" fxLayoutGap="" fxLayoutAlign=" center">
-                        <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap=".75rem">
-                            <span class="gray-9 ft12 ft500">Estatus:</span>
-                            <div  fxLayout="column" fxLayoutAlign="center" [ngClass]="productForm.controls.active.value ? 'ft12 green-4' : 'ft12 red-4'" for="active">
-                                {{ productForm.controls.active.value ? "Activo" : "Inactivo" }}
-                            </div>
-                            <div fxLayout="column" fxLayoutAlign="center" 
-                            [ngClass]="productForm.controls.active.value ? 'backRed5 ft11 pdt03 pdb03 pdl10 pdr10 radius6 cursorPointer' : 
-                            'backBlue5 ft11 pdt03 pdb03 pdl10 pdr10 radius6 cursorPointer'" (click)="toggleProductActiveState()">
-                                <span class="ft11 gray-1">{{ productForm.controls.active.value ? "Desactivar" : "Activar" }}</span>
-                            </div>
-                        </div>
-                        <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap=".75rem">
-                            <input hidden id="active" type="checkbox" formControlName="active" />
-                            <input hidden id="id" type="text" formControlName="id" />
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="fw mgt05" fxLayout="column" fxLayoutGap="1rem">
-                    <div fxLayout="row" fxLayoutAlign="space-between center"  fxLayoutGap="1.5rem" class="fw">
-                        <div class="" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".3rem" >
-                            <label for="name" class="gray-9 ft12 ft500">Nombre:</label>
-                            <input class="shadow-animation ft14  pdl05 radius20 fw  borderLight" id="name" type="text" formControlName="name" [readonly]="product.id ? true : false"  style="height: 30px;" />
-                        </div>
-                        <div class="" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".3rem" >
-                            <label for="name" class="gray-9 ft12 ft500">Monto:</label>
-                            <input  style="height: 30px;" class="shadow-animation ft14  pdr05 pdl05 radius20 fw borderLight"  id="amount" type="number" min="0" formControlName="amount" [readonly]="product.id ? true : false"/>
-                        </div>
-                    </div>
-                    <div fxLayout="row" fxLayoutAlign="space-between center"  fxLayoutGap=".5rem" class="fw">
-                        <div class="fh fw" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".25rem">
-                            <span class="gray-9 ft12 ft500">Tipo: </span>
-                            <mat-select placeholder="Seleccione el tipo" style="height: 30px!important;"  formControlName="type"  class="form-control radius20 shadow-animation borderLight" fxLayoutAlign="center center">
-                                <mat-option  *ngFor="let type of typeOptions" [value]="type" class="">{{type | titlecase}}</mat-option>
-                            </mat-select>
-                        </div>
-                    </div>
-                    <div *ngIf="productForm.get('type').value === 'simplificado'" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".3rem" >
-                        <label for="name" class="gray-9 ft12 ft500">Cantidad de cursos:</label>
-                        <input style="height: 30px!important;"   class="shadow-animation ft14  pdl05 pdr05 radius20 w80px borderLight " id="amount" type="number" min="0" formControlName="coursesQty"/>
-                    </div>
+  <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+    <div
+      class="modal-header bg-web-primary text-white px-3 py-1"
+      fxLayoutAlign="space-between center"
+      style="margin-top: -45px"
+    >
+      <div class="modal-title pd10">
+        <span class="ft16 ft600 gray-10">
+          {{
+            this.productForm.controls.id.value == "" ? "Nuevo" : "Editar"
+          }}
+          Producto
+        </span>
+      </div>
+    </div>
 
-                    <div class="" fxLayout="column">
-                        <span  for="descripción" class="gray-9 ft12 ft500">Descripción: </span>
-                        <!-- <textarea id="description" type="text" autocomplete="off" class="backWhite fw" formControlName="description"></textarea> -->
-                        <div class="pd05  mgt05   radius10 backWhite shadow-animation borderLight"  style="  " >
-                            <textarea name=""  id="description" type="text"   placeholder="Introduzca la descripción"
-                            style=" overflow-y: hidden;  width: 100%; height: 100px; resize:none; border: none!important; background-color: transparent !important; " maxlength="200"  ></textarea>
-                        </div>
-                    
-                    
-                    </div>
-                    <div>
-                        <span class="ft15 gray-9 ft500">Accesos</span>
-                    </div>
-                    <div class="fw" fxLayout="column" fxLayoutGap=".7rem">
-                        <div class="fw" fxLayout="row" fxLayoutGap="1.5rem"> 
-                            <ng-container formGroupName="accesses">
-                                <div class="fw" fxLayout="row" class="w-50" fxLayoutAlign="space-between center">
-                                    <label for="enableUserRadar" class="gray-9 ft11">Pueden ver radar de usuario:</label>
-                                    <input id="enableUserRadar" type="checkbox" formControlName="enableUserRadar" />
-                                </div>
-                                <div class="fw" fxLayout="row" class="w-50" fxLayoutAlign="space-between center">
-                                    <label for="enableStudyPlanView" class="gray-9 ft11">Listado de plan de estudio:</label>
-                                    <input id="enableStudyPlanView" type="checkbox" formControlName="enableStudyPlanView" />
-                                </div>
-                                
-                            </ng-container>
-                        </div>
-                        <div class="fw" fxLayout="row" fxLayoutGap="1.5rem"> 
-                            <ng-container formGroupName="accesses">
-                                <div class="fw" fxLayout="row" class="w-50" fxLayoutAlign="space-between center">
-                                    <label for="enableToTakeTest" class="gray-9 ft11 pdr05">Presentar examen:</label>
-                                    <input id="enableToTakeTest" type="checkbox" formControlName="enableToTakeTest" />
-                                </div>
-                                <div class="fw" fxLayout="row" class="w-50" fxLayoutAlign="space-between center">
-                                    <label for="enableCreateParticularCourses" class="gray-9 ft11">Crea cursos propios:</label>
-                                    <input id="enableCreateParticularCourses" type="checkbox" formControlName="enableCreateParticularCourses" />
-                                </div>
-                            </ng-container>
-                            
-                        </div>
-                        <div class="fw" fxLayout="row" fxLayoutGap="1.5rem"> 
-                            <ng-container formGroupName="accesses">
-                                <div class="fw" fxLayout="row" class="w-50" fxLayoutAlign="space-between center">
-                                    <label for="enableExtraCoursesView" class="gray-9 ft11">Listado de extracurriculares:</label>
-                                    <input id="enableExtraCoursesView" type="checkbox" formControlName="enableExtraCoursesView" />
-                                </div>
-                            </ng-container>
-                            <div class="fw" fxLayout="row" class="w-50" fxLayoutAlign="space-between center">
-                                <label for="autodeactivate" class="gray-9 ft11">Las subscripciones caducan automaticamente:</label>
-                                <input id="autodeactivate" type="checkbox" formControlName="autodeactivate" />
-                            </div>
-                        </div>
-                    </div>
-                    <!-- <div class="fw" fxLayout="column">
+    <div fxLayout="row" fxLayoutAlign="space-between" class="mgt10">
+      <!-- Información general -->
+      <div fxLayout="column" fxLayoutGap="1rem" class="">
+        <div fxLayout="row" fxLayoutAlign="space-between center">
+          <div>
+            <span class="ft15 gray-9 ft500">Información general</span>
+          </div>
+          <div fxLayout="row" fxLayoutGap="" fxLayoutAlign=" center">
+            <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap=".75rem">
+              <span class="gray-9 ft12 ft500">Estatus:</span>
+              <div
+                fxLayout="column"
+                fxLayoutAlign="center"
+                [ngClass]="
+                  productForm.controls.active.value
+                    ? 'ft12 green-4'
+                    : 'ft12 red-4'
+                "
+                for="active"
+              >
+                {{ productForm.controls.active.value ? "Activo" : "Inactivo" }}
+              </div>
+              <div
+                fxLayout="column"
+                fxLayoutAlign="center"
+                [ngClass]="
+                  productForm.controls.active.value
+                    ? 'backRed5 ft11 pdt03 pdb03 pdl10 pdr10 radius6 cursorPointer'
+                    : 'backBlue5 ft11 pdt03 pdb03 pdl10 pdr10 radius6 cursorPointer'
+                "
+                (click)="toggleProductActiveState()"
+              >
+                <span class="ft11 gray-1">{{
+                  productForm.controls.active.value ? "Desactivar" : "Activar"
+                }}</span>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap=".75rem">
+              <input
+                hidden
+                id="active"
+                type="checkbox"
+                formControlName="active"
+              />
+              <input hidden id="id" type="text" formControlName="id" />
+            </div>
+          </div>
+        </div>
+
+        <div class="fw mgt05" fxLayout="column" fxLayoutGap="1rem">
+          <div
+            fxLayout="row"
+            fxLayoutAlign="space-between center"
+            fxLayoutGap="1.5rem"
+            class="fw"
+          >
+            <div
+              class=""
+              fxLayout="row"
+              fxLayoutAlign="start center"
+              fxLayoutGap=".3rem"
+            >
+              <label for="name" class="gray-9 ft12 ft500">Nombre:</label>
+              <input
+                class="shadow-animation ft14 pdl05 radius20 fw borderLight"
+                id="name"
+                type="text"
+                formControlName="name"
+                [readonly]="product.id ? true : false"
+                style="height: 30px"
+              />
+            </div>
+            <div
+              class=""
+              fxLayout="row"
+              fxLayoutAlign="start center"
+              fxLayoutGap=".3rem"
+            >
+              <label for="name" class="gray-9 ft12 ft500">Monto:</label>
+              <input
+                style="height: 30px"
+                class="shadow-animation ft14 pdr05 pdl05 radius20 fw borderLight"
+                id="amount"
+                type="number"
+                min="0"
+                formControlName="amount"
+                [readonly]="product.id ? true : false"
+              />
+            </div>
+          </div>
+          <div
+            fxLayout="row"
+            fxLayoutAlign="space-between center"
+            fxLayoutGap=".5rem"
+            class="fw"
+          >
+            <div
+              class="fh fw"
+              fxLayout="row"
+              fxLayoutAlign="start center"
+              fxLayoutGap=".25rem"
+            >
+              <span class="gray-9 ft12 ft500">Tipo: </span>
+              <mat-select
+                placeholder="Seleccione el tipo"
+                style="height: 30px !important"
+                formControlName="type"
+                class="form-control radius20 shadow-animation borderLight"
+                fxLayoutAlign="center center"
+              >
+                <mat-option
+                  *ngFor="let type of typeOptions"
+                  [value]="type"
+                  class=""
+                  >{{ type | titlecase }}</mat-option
+                >
+              </mat-select>
+            </div>
+          </div>
+          <div
+            *ngIf="productForm.get('type').value === 'simplificado'"
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            fxLayoutGap=".3rem"
+          >
+            <label for="name" class="gray-9 ft12 ft500"
+              >Cantidad de cursos:</label
+            >
+            <input
+              style="height: 30px !important"
+              class="shadow-animation ft14 pdl05 pdr05 radius20 w80px borderLight"
+              id="amount"
+              type="number"
+              min="0"
+              formControlName="coursesQty"
+            />
+          </div>
+
+          <div class="" fxLayout="column">
+            <span for="descripción" class="gray-9 ft12 ft500"
+              >Descripción:
+            </span>
+            <!-- <textarea id="description" type="text" autocomplete="off" class="backWhite fw" formControlName="description"></textarea> -->
+            <div
+              class="pd05 mgt05 radius10 backWhite shadow-animation borderLight"
+              style=""
+            >
+              <textarea
+                name=""
+                id="description"
+                type="text"
+                placeholder="Introduzca la descripción"
+                style="
+                  overflow-y: hidden;
+                  width: 100%;
+                  height: 100px;
+                  resize: none;
+                  border: none !important;
+                  background-color: transparent !important;
+                "
+                maxlength="200"
+              ></textarea>
+            </div>
+          </div>
+          <div>
+            <span class="ft15 gray-9 ft500">Accesos</span>
+          </div>
+          <div class="fw" fxLayout="column" fxLayoutGap=".7rem">
+            <div class="fw" fxLayout="row" fxLayoutGap="1.5rem">
+              <ng-container formGroupName="accesses">
+                <div
+                  class="fw"
+                  fxLayout="row"
+                  class="w-50"
+                  fxLayoutAlign="space-between center"
+                >
+                  <label for="enableUserRadar" class="gray-9 ft11"
+                    >Pueden ver radar de usuario:</label
+                  >
+                  <input
+                    id="enableUserRadar"
+                    type="checkbox"
+                    formControlName="enableUserRadar"
+                  />
+                </div>
+                <div
+                  class="fw"
+                  fxLayout="row"
+                  class="w-50"
+                  fxLayoutAlign="space-between center"
+                >
+                  <label for="enableStudyPlanView" class="gray-9 ft11"
+                    >Listado de plan de estudio:</label
+                  >
+                  <input
+                    id="enableStudyPlanView"
+                    type="checkbox"
+                    formControlName="enableStudyPlanView"
+                  />
+                </div>
+              </ng-container>
+            </div>
+            <div class="fw" fxLayout="row" fxLayoutGap="1.5rem">
+              <ng-container formGroupName="accesses">
+                <div
+                  class="fw"
+                  fxLayout="row"
+                  class="w-50"
+                  fxLayoutAlign="space-between center"
+                >
+                  <label for="enableToTakeTest" class="gray-9 ft11 pdr05"
+                    >Presentar examen:</label
+                  >
+                  <input
+                    id="enableToTakeTest"
+                    type="checkbox"
+                    formControlName="enableToTakeTest"
+                  />
+                </div>
+                <div
+                  class="fw"
+                  fxLayout="row"
+                  class="w-50"
+                  fxLayoutAlign="space-between center"
+                >
+                  <label for="enableCreateParticularCourses" class="gray-9 ft11"
+                    >Crea cursos propios:</label
+                  >
+                  <input
+                    id="enableCreateParticularCourses"
+                    type="checkbox"
+                    formControlName="enableCreateParticularCourses"
+                  />
+                </div>
+              </ng-container>
+            </div>
+            <div class="fw" fxLayout="row" fxLayoutGap="1.5rem">
+              <ng-container formGroupName="accesses">
+                <div
+                  class="fw"
+                  fxLayout="row"
+                  class="w-50"
+                  fxLayoutAlign="space-between center"
+                >
+                  <label for="enableExtraCoursesView" class="gray-9 ft11"
+                    >Puede inscribir cursos extracurriculares:</label
+                  >
+                  <input
+                    id="enableExtraCoursesView"
+                    type="checkbox"
+                    formControlName="enableExtraCoursesView"
+                  />
+                </div>
+              </ng-container>
+              <div
+                class="fw"
+                fxLayout="row"
+                class="w-50"
+                fxLayoutAlign="space-between center"
+              >
+                <label for="autodeactivate" class="gray-9 ft11"
+                  >Las subscripciones caducan automaticamente:</label
+                >
+                <input
+                  id="autodeactivate"
+                  type="checkbox"
+                  formControlName="autodeactivate"
+                />
+              </div>
+            </div>
+          </div>
+          <!-- <div class="fw" fxLayout="column">
                             <label for="acceptsPaypal" class="gray-9 ft11">Crear cursos propios:</label>
                             <input id="acceptsPaypal" type="checkbox" formControlName="createParticularCourses" />
                         </div> -->
-                </div>
+        </div>
 
-                <div class="mgt05">
-                    <div class="fw" fxLayout="column" formArrayName="features">
-                        <div fxLayout="row" fxLayoutGap="1.5rem" fxLayoutAlign=" center">
-                            <div>
-                                <span class="ft15 gray-9 ft500">Características</span>
-                            </div>
-                            <div fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueLink ft14 " 
-                             (click)="addFeature()">
-                                + Añadir
-                            </div>
-                        </div>
-                        <div class="mgt05 fw" *ngFor="let feature of features.controls; let i = index" [formGroupName]="i" fxLayout="row" fxLayoutAlign="space-between center">
-                            <input class="w-80  pd05  mgt05   radius10 backWhite shadow-animation borderLight"  type="text" name="added_features" formControlName="text" style="height: 30px!important;" />
-                            <input type="checkbox" formControlName="isActive"  />
-                            <mat-icon (click)="removeFeature(i)" class="ft18 red-5">delete</mat-icon>
-                        </div>
-                    </div>
-                </div>
+        <div class="mgt05">
+          <div class="fw" fxLayout="column" formArrayName="features">
+            <div fxLayout="row" fxLayoutGap="1.5rem" fxLayoutAlign=" center">
+              <div>
+                <span class="ft15 gray-9 ft500">Características</span>
+              </div>
+              <div
+                fxLayout="row"
+                fxLayoutGap="0.625"
+                fxLayoutAlign="center center"
+                class="blueLink ft14"
+                (click)="addFeature()"
+              >
+                + Añadir
+              </div>
             </div>
+            <div
+              class="mgt05 fw"
+              *ngFor="let feature of features.controls; let i = index"
+              [formGroupName]="i"
+              fxLayout="row"
+              fxLayoutAlign="space-between center"
+            >
+              <input
+                class="w-80 pd05 mgt05 radius10 backWhite shadow-animation borderLight"
+                type="text"
+                name="added_features"
+                formControlName="text"
+                style="height: 30px !important"
+              />
+              <input type="checkbox" formControlName="isActive" />
+              <mat-icon (click)="removeFeature(i)" class="ft18 red-5"
+                >delete</mat-icon
+              >
+            </div>
+          </div>
         </div>
-        <div *ngIf="showAlertText" class="mgt15" fxLayout="row" fxLayoutAlign="center center">
-            <span style="color: red !important">Debes indicar el nombre del producto</span>
-        </div>
-        <div class="mgt20" fxLayoutAlign="end center" >
-            <button class="blueButton w100px" type="submit">Guardar</button>
-        </div>
-    </form>
+      </div>
+    </div>
+    <div
+      *ngIf="showAlertText"
+      class="mgt15"
+      fxLayout="row"
+      fxLayoutAlign="center center"
+    >
+      <span style="color: red !important"
+        >Debes indicar el nombre del producto</span
+      >
+    </div>
+    <div class="mgt20" fxLayoutAlign="end center">
+      <button class="blueButton w100px" type="submit">Guardar</button>
+    </div>
+  </form>
 </ng-container>
