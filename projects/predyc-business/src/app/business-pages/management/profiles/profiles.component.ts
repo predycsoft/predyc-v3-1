@@ -569,6 +569,8 @@ export class ProfilesComponent {
         };
       });
 
+      //console.log('coursesRef',coursesRef)
+
       if (!coursesRef || coursesRef.length == 0)
         throw new Error("Debe indicar los cursos del plan de estudio");
 
@@ -596,7 +598,7 @@ export class ProfilesComponent {
         hoursPerMonth: this.profileHoursPerMonth,
       });
 
-      // console.log('profile save',profile)
+      console.log('profile save',profile)
       const changesInStudyPlan = {
         added: [],
         removed: [],
@@ -628,14 +630,13 @@ export class ProfilesComponent {
           }
         });
 
-        const studyPlanHasBeenUpdated =
-          await this.courseService.updateStudyPlans(changesInStudyPlan);
-        // if (studyPlanHasBeenUpdated)
-        //   await this.profileService.saveProfile(profile);
-        // else
-        //   throw new Error(
-        //     "Ocurrió un error actualizando el plan de estudios de los estudiantes que poseen este perfil"
-        //   );
+        const studyPlanHasBeenUpdated = await this.courseService.updateStudyPlans(changesInStudyPlan);
+        if (studyPlanHasBeenUpdated)
+          await this.profileService.saveProfile(profile);
+        else
+          throw new Error(
+            "Ocurrió un error actualizando el plan de estudios de los estudiantes que poseen este perfil"
+          );
       } else {
         console.log("profile", profile);
         const profileId = await this.profileService.saveProfile(profile);

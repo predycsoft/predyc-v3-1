@@ -582,8 +582,8 @@ export class CourseService {
       // console.log("users", users)
       const batch = this.afs.firestore.batch();
       for (let user of users) {
-        // console.log(`***** User to update ${user.name} - ${user.uid} *****`)
-        // console.log("changesInStudyPlan", changesInStudyPlan)
+        console.log(`***** User to update ${user.name} - ${user.uid} *****`)
+        console.log("changesInStudyPlan", changesInStudyPlan)
         const userRef = this.userService.getUserRefById(user.uid);
         const userCoursesSnapshot: QuerySnapshot<CourseByStudentJson> =
           (await this.afs
@@ -591,118 +591,32 @@ export class CourseService {
             .ref.where("userRef", "==", userRef)
             .get()) as QuerySnapshot<CourseByStudentJson>;
         const userCourses = userCoursesSnapshot.docs.map((doc) => doc.data());
-        const studyPlanItems = userCourses
-          .filter((course) => course.active)
-          .sort((a, b) => {
-            return a.dateEndPlan - b.dateEndPlan;
-          });
-        // console.log("studyPlanItems", studyPlanItems)
+        console.log('userCourses',userCourses)
+        const studyPlanItems = userCourses.filter((course) => course.active).sort((a, b) => { return a.dateEndPlan - b.dateEndPlan;});
+        console.log("studyPlanItems", studyPlanItems)
 
-        // If extraCourse, dates are null
-        let startDateForCourse =
-          studyPlanItems.length > 0 && !studyPlanItems[0].isExtraCourse
-            ? studyPlanItems[0].dateStartPlan.seconds * 1000
-            : null;
+        if(studyPlanItems.length>0){
 
-        const userRemovedCourses = studyPlanItems.filter((course) =>
-          changesInStudyPlan.removed
-            .map((item) => item.id)
-            .includes(course.courseRef.id)
-        );
-        // console.log('userRemovedCourses', userRemovedCourses)
-        const userOtherCourses = studyPlanItems.filter(
-          (course) =>
-            !changesInStudyPlan.removed
-              .map((item) => item.id)
-              .includes(course.courseRef.id)
-        );
-        // console.log('userOtherCourses', userOtherCourses)
-
-        // Disable removed courses
-        for (let course of userRemovedCourses) {
-          const courseJson = {
-            ...course,
-            active: false,
-            dateStartPlan: null,
-            dateEndPlan: null,
-          };
-          console.log(
-            `Removed course ${course.courseRef.id} - Saved in ${courseJson.id}`,
-            courseJson
+          // If extraCourse, dates are null
+          let startDateForCourse = studyPlanItems.length > 0 && !studyPlanItems[0].isExtraCourse ? studyPlanItems[0].dateStartPlan.seconds * 1000 : null;
+          const userRemovedCourses = studyPlanItems.filter((course) =>changesInStudyPlan.removed.map((item) => item.id).includes(course.courseRef.id)
           );
-          batch.update(
-            this.afs
-              .collection<CourseByStudent>(CourseByStudent.collection)
-              .doc(courseJson.id).ref,
-            courseJson
+          console.log('userRemovedCourses', userRemovedCourses)
+          const userOtherCourses = studyPlanItems.filter(
+            (course) => !changesInStudyPlan.removed.map((item) => item.id).includes(course.courseRef.id)
           );
-        }
+          console.log('userOtherCourses', userOtherCourses)
 
-        const coursesInStudyPlan = [];
-        changesInStudyPlan.studyPlan
-          .sort((a, b) => a.studyPlanOrder - b.studyPlanOrder)
-          .forEach((item) => {
-            console.log("item", item);
-            const existingCourse = userOtherCourses.find(
-              (x) => x.courseRef.id === item.id
-            );
-            const addedCourse = changesInStudyPlan.added.find(
-              (x) => x.id === item.id
-            );
-            coursesInStudyPlan.push({
-              studyPlanOrder: item.studyPlanOrder,
-              existing: existingCourse ? true : false,
-              courseId: existingCourse
-                ? existingCourse.courseRef.id
-                : addedCourse.id,
-            });
-          });
-        //   .map((item) => {
-        //     return {
-        //       studyPlanOrder: item.studyPlanOrder,
-        //       existing: true,
-        //       courseId: item.id,
-        //     };
-        //   })
-        //   .concat(
-        //     changesInStudyPlan.added.map((item) => {
-        //       return {
-        //         studyPlanOrder: item.studyPlanOrder,
-        //         existing: false,
-        //         courseId: item.id,
-        //       };
-        //     })
-        //   )
-        //   .sort((a, b) => {
-        //     return a.studyPlanOrder - b.studyPlanOrder;
-        //   });
-        console.log("coursesInStudyPlan", coursesInStudyPlan);
-        const userCoursesIds = userCourses.map((course) => course.courseRef.id);
-        for (let item of coursesInStudyPlan) {
-          let dateEndPlan = null;
-          if (item.existing) {
-            const course = userOtherCourses.find(
-              (x) => x.courseRef.id === item.courseId
-            );
-            const courseDuration = (await course.courseRef.get()).data()
-              .duracion;
-            dateEndPlan = startDateForCourse
-              ? this.calculatEndDatePlan(
-                  startDateForCourse,
-                  courseDuration,
-                  user.studyHours
-                )
-              : null;
+          // Disable removed courses
+          for (let course of userRemovedCourses) {
             const courseJson = {
               ...course,
-              dateStartPlan: startDateForCourse
-                ? new Date(startDateForCourse)
-                : null,
-              dateEndPlan: dateEndPlan ? new Date(dateEndPlan) : null,
-              studyPlanOrder: item.studyPlanOrder,
+              active: false,
+              dateStartPlan: null,
+              dateEndPlan: null,
             };
             console.log(
-              `Repaired course ${course.courseRef.id} - Saved in ${courseJson.id}`,
+              `Removed course ${course.courseRef.id} - Saved in ${courseJson.id}`,
               courseJson
             );
             batch.update(
@@ -711,37 +625,50 @@ export class CourseService {
                 .doc(courseJson.id).ref,
               courseJson
             );
-          } else {
-            const courseId = item.courseId;
-            const courseDuration = (
-              await firstValueFrom(
-                this.afs.collection<Curso>(Curso.collection).doc(courseId).get()
-              )
-            ).data().duracion;
-            dateEndPlan = startDateForCourse
-              ? this.calculatEndDatePlan(
-                  startDateForCourse,
-                  courseDuration,
-                  user.studyHours
-                )
-              : null;
-            if (userCoursesIds.includes(courseId)) {
-              // Course already exist for user
-              const course = userCourses.find(
-                (course) => course.courseRef.id === courseId
+          }
+
+          const coursesInStudyPlan = [];
+          changesInStudyPlan.studyPlan.sort((a, b) => a.studyPlanOrder - b.studyPlanOrder).forEach((item) => {
+              console.log("item", item,userOtherCourses,changesInStudyPlan.added);
+              const existingCourse = userOtherCourses.find(
+                (x) => x.courseRef.id === item.id
               );
+              const addedCourse = changesInStudyPlan.added.find(
+                (x) => x.id === item.id
+              );
+              coursesInStudyPlan.push({
+                studyPlanOrder: item.studyPlanOrder,
+                existing: existingCourse ? true : false,
+                courseId: existingCourse? existingCourse.courseRef.id: addedCourse.id,
+              });
+            });
+          console.log("coursesInStudyPlan", coursesInStudyPlan);
+          const userCoursesIds = userCourses.map((course) => course.courseRef.id);
+          for (let item of coursesInStudyPlan) {
+            let dateEndPlan = null;
+            if (item.existing) {
+              const course = userOtherCourses.find(
+                (x) => x.courseRef.id === item.courseId
+              );
+              const courseDuration = (await course.courseRef.get()).data()
+                .duracion;
+              dateEndPlan = startDateForCourse
+                ? this.calculatEndDatePlan(
+                    startDateForCourse,
+                    courseDuration,
+                    user.studyHours
+                  )
+                : null;
               const courseJson = {
                 ...course,
                 dateStartPlan: startDateForCourse
                   ? new Date(startDateForCourse)
                   : null,
                 dateEndPlan: dateEndPlan ? new Date(dateEndPlan) : null,
-                active: true,
-                //isExtraCourse: startDateForCourse ? false : true,
                 studyPlanOrder: item.studyPlanOrder,
               };
               console.log(
-                `Activated course ${item} - Saved in ${courseJson.id}`,
+                `Repaired course ${course.courseRef.id} - Saved in ${courseJson.id}`,
                 courseJson
               );
               batch.update(
@@ -751,37 +678,78 @@ export class CourseService {
                 courseJson
               );
             } else {
-              // New course for student
-              const docRef = this.afs
-                .collection<CourseByStudentJson>(CourseByStudent.collection)
-                .doc().ref;
-              const courseJson = {
-                id: docRef.id,
-                userRef: userRef,
-                courseRef: this.afs
-                  .collection<Curso>(Curso.collection)
-                  .doc(courseId).ref,
-                dateStartPlan: startDateForCourse
-                  ? new Date(startDateForCourse)
-                  : null,
-                dateEndPlan: dateEndPlan ? new Date(dateEndPlan) : null,
-                progress: 0,
-                dateStart: null,
-                dateEnd: null,
-                active: true,
-                finalScore: 0,
-                isExtraCourse: startDateForCourse ? false : true,
-                studyPlanOrder: item.studyPlanOrder,
-              };
-              console.log(
-                `Added course ${item} - Saved in ${courseJson.id}`,
-                courseJson
-              );
-              batch.set(docRef, courseJson);
+              const courseId = item.courseId;
+              const courseDuration = (
+                await firstValueFrom(
+                  this.afs.collection<Curso>(Curso.collection).doc(courseId).get()
+                )
+              ).data().duracion;
+              dateEndPlan = startDateForCourse
+                ? this.calculatEndDatePlan(
+                    startDateForCourse,
+                    courseDuration,
+                    user.studyHours
+                  )
+                : null;
+              if (userCoursesIds.includes(courseId)) {
+                // Course already exist for user
+                const course = userCourses.find(
+                  (course) => course.courseRef.id === courseId
+                );
+                const courseJson = {
+                  ...course,
+                  dateStartPlan: startDateForCourse
+                    ? new Date(startDateForCourse)
+                    : null,
+                  dateEndPlan: dateEndPlan ? new Date(dateEndPlan) : null,
+                  active: true,
+                  isExtraCourse: startDateForCourse ? false : true,
+                  studyPlanOrder: item.studyPlanOrder,
+                };
+                console.log(
+                  `Activated course ${item} - Saved in ${courseJson.id}`,
+                  courseJson
+                );
+                batch.update(
+                  this.afs
+                    .collection<CourseByStudent>(CourseByStudent.collection)
+                    .doc(courseJson.id).ref,
+                  courseJson
+                );
+              } else {
+                // New course for student
+                const docRef = this.afs
+                  .collection<CourseByStudentJson>(CourseByStudent.collection)
+                  .doc().ref;
+                const courseJson = {
+                  id: docRef.id,
+                  userRef: userRef,
+                  courseRef: this.afs
+                    .collection<Curso>(Curso.collection)
+                    .doc(courseId).ref,
+                  dateStartPlan: startDateForCourse
+                    ? new Date(startDateForCourse)
+                    : null,
+                  dateEndPlan: dateEndPlan ? new Date(dateEndPlan) : null,
+                  progress: 0,
+                  dateStart: null,
+                  dateEnd: null,
+                  active: true,
+                  finalScore: 0,
+                  isExtraCourse: startDateForCourse ? false : true,
+                  studyPlanOrder: item.studyPlanOrder,
+                };
+                console.log(
+                  `Added course ${item} - Saved in ${courseJson.id}`,
+                  courseJson
+                );
+                batch.set(docRef, courseJson);
+              }
             }
+            startDateForCourse = dateEndPlan;
           }
-          startDateForCourse = dateEndPlan;
         }
+
       }
       await batch.commit();
       return true;
