@@ -394,6 +394,7 @@ export class CreateDemoComponent {
       this.enterpriseService.getEnterpriseRefById(enterpriseId);
     const baseUser: UserJson = {
       birthdate: Date.parse("1995-04-12T00:00:00Z"),
+      canEnrollParticularCourses: false,
       city: "Queretaro",
       country: "Mexico",
       courseQty: null,

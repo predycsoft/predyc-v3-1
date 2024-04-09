@@ -170,12 +170,12 @@ export class InitScriptComponent {
           updatedAt: Date.parse(user.updatedAt),
           enterprise: enterprisePredycRef,
           departmentRef: null,
-          performance: user.performance as
-            | "no plan"
-            | "low"
-            | "medium"
-            | "high"
-            | null,
+          performance: user.performance as "no plan" |
+            "low" |
+            "medium" |
+            "high" |
+            null,
+          canEnrollParticularCourses: false
         });
       } else {
         return User.fromJson({
@@ -188,12 +188,12 @@ export class InitScriptComponent {
           updatedAt: Date.parse(user.updatedAt),
           enterprise: enterpriseRef,
           departmentRef: null,
-          performance: user.performance as
-            | "no plan"
-            | "low"
-            | "medium"
-            | "high"
-            | null,
+          performance: user.performance as "no plan" |
+            "low" |
+            "medium" |
+            "high" |
+            null,
+          canEnrollParticularCourses: false
         });
       }
     });

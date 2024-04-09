@@ -737,7 +737,7 @@ export class CourseService {
                   : null,
                 dateEndPlan: dateEndPlan ? new Date(dateEndPlan) : null,
                 active: true,
-                isExtraCourse: startDateForCourse ? false : true,
+                //isExtraCourse: startDateForCourse ? false : true,
                 studyPlanOrder: item.studyPlanOrder,
               };
               console.log(
