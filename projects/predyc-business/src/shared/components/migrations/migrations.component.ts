@@ -11,6 +11,9 @@ import { EnterpriseService } from '../../services/enterprise.service';
 import { License, LicenseJson } from 'projects/shared/models/license.model';
 import { Subscription as SubscriptionClass } from 'projects/shared/models/subscription.model'
 import { LicenseService } from '../../services/license.service';
+import { ProfileJson } from 'projects/shared/models/profile.model';
+import { Permissions, PermissionsJson } from 'projects/shared';
+import { ProfileService } from '../../services/profile.service';
 
 
 @Component({
@@ -24,6 +27,7 @@ export class MigrationsComponent {
     private productService: ProductService,
     private enterpriseService: EnterpriseService,
     private licenseService: LicenseService,
+    private profileService: ProfileService,
   ) {}
 
   // async migrateProducts() {
@@ -64,6 +68,8 @@ export class MigrationsComponent {
     const oldEnterprisesData: any[] = oldEmpresasCLientes3
 
     const enterprisesInNewModel: EnterpriseJson[] = oldEnterprisesData.map(oldEnterpriseData => {
+      const permissions = new Permissions()
+      if (oldEnterpriseData.hoursPerWeek) permissions.hoursPerWeek = oldEnterpriseData.hoursPerWeek
       return {
         city: null,
         country: null,
@@ -74,15 +80,9 @@ export class MigrationsComponent {
                     oldEnterpriseData.usuarios ? oldEnterpriseData.usuarios.length : 0,
         id: oldEnterpriseData.id,
         name: oldEnterpriseData.nombre ? oldEnterpriseData.nombre : oldEnterpriseData.id,
-        permissions: {
-          hoursPerWeek: oldEnterpriseData.hoursPerWeek ? oldEnterpriseData.hoursPerWeek : null,
-          studyLiberty: null,
-          studyplanGeneration: null,
-          attemptsPerTest: null,
-          createCourses: null,
-        },
+        permissions: permissions,
         photoUrl: oldEnterpriseData.foto ? oldEnterpriseData.foto : null ,
-        profilesNo: oldEnterpriseData.profileStudyPlan.length,
+        profilesNo: oldEnterpriseData.profileStudyPlan.length,  // or .departments profiles
         zipCode: null,
         workField: null,
         socialNetworks: {
@@ -133,6 +133,66 @@ export class MigrationsComponent {
     await this.licenseService.saveLicenses(licensesInNewModel)
     console.log("licensesInNewModel", licensesInNewModel)
 
+  }
+
+
+
+
+
+
+
+  
+  // it is not finished. we need to create courses collection first
+  async migrateProfiles() {
+        // --------------- Import and use one at a time ---------------
+    // const oldEnterprisesData: any[] = oldEmpresasCLientes
+    // const oldEnterprisesData: any[] = oldEmpresasCLientes2
+    const oldEnterprisesData: any[] = oldEmpresasCLientes3
+
+    const profilesInNewModel: ProfileJson[] = []
+
+    oldEnterprisesData.forEach(oldEnterpriseData => {
+      // each enterprise
+      if (oldEnterpriseData.departments) {
+        oldEnterpriseData.departments.forEach(department => {
+          // each department
+          if (department.profiles) {
+            department.profiles.forEach(profile => {
+              // each profile
+              const permissions = new Permissions()
+              // permissions.createCourses = true
+              const profileInNewModel: ProfileJson = {
+                id: profile.id,
+                name: profile.name,
+                description: profile.description,
+                coursesRef: null, // set later with enterprise.profileStudyPlan
+                enterpriseRef: this.enterpriseService.getEnterpriseRefById(oldEnterpriseData.id),
+                permissions: this.toJson(permissions),
+                hoursPerMonth: null,  // null or a standart number?
+                baseProfile: null,
+              }
+              profilesInNewModel.push(profileInNewModel)
+            })
+          }
+        });
+
+      }
+    })
+
+    await this.profileService.saveProfiles(profilesInNewModel)
+
+    console.log("profilesInNewModel", profilesInNewModel)
+
+  }
+
+  public toJson(permissions: Permissions): PermissionsJson {
+    return {
+      hoursPerWeek: permissions.hoursPerWeek,
+      studyLiberty: permissions.studyLiberty,
+      studyplanGeneration: permissions.studyplanGeneration,
+      attemptsPerTest: permissions.attemptsPerTest,
+      createCourses: permissions.createCourses,      
+    };
   }
 
 }

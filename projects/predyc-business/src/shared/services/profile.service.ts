@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, catchError, combineLatest, firstValueFrom, map, of, switchMap } from 'rxjs';
-import { Profile } from 'projects/shared/models/profile.model';
+import { Profile, ProfileJson } from 'projects/shared/models/profile.model';
 import { AlertsService } from './alerts.service';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { EnterpriseService } from './enterprise.service';
@@ -143,6 +143,15 @@ export class ProfileService {
     await ref.set(dataToSave, { merge: true });
     profile.id = ref.id; // Assign the generated ID to the profile
     return profile.id
+  }
+
+  async saveProfiles(profiles: ProfileJson[]): Promise<void> {
+    const batch = this.afs.firestore.batch();
+    profiles.forEach((profile) => {
+      const docRef = this.afs.firestore.collection(Profile.collection).doc(profile.id);
+      batch.set(docRef, profile, { merge: true });
+    });
+    await batch.commit();
   }
 
   checkPermissionsChange(newPermissions: Permissions): boolean {
