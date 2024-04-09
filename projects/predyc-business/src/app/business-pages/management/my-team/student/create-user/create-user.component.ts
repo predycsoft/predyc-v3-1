@@ -726,6 +726,7 @@ export class CreateUserComponent {
       // console.log("profiles", this.profiles, user.profile);
 
       let profileNew = this.profiles.find((x) => x.id == user?.profile?.id);
+      
 
       if (profileNew && !profileNew.enterpriseRef) {
         // console.log("profileNew", profileNew);
@@ -788,7 +789,7 @@ export class CreateUserComponent {
 
         let fehcaInicio = this.toDateFromInput(valores.startDateStudy)
 
-        await this.saveInitForm(user.uid,this.hoursPlan,fehcaInicio )
+        await this.saveInitForm(user.uid,this.hoursPlan,fehcaInicio,profileNew )
       }
 
       this.activeModal.close(this.userForm.value);
@@ -801,14 +802,10 @@ export class CreateUserComponent {
   }
 
 
-  async saveInitForm(uid,hoursPerMonth,startDateStudy) {
+  async saveInitForm(uid,hoursPerMonth,startDateStudy,profile) {
     await this.userService.saveStudyPlanHoursPerMonth(
       uid, 
       hoursPerMonth
-    );
-    //this.student.studyHours = hoursPermon;
-    const profile = this.profiles.find(
-      (x) => x.id == this.userForm.get("profile").value
     );
     await this.createStudyPlan(uid,hoursPerMonth,profile,startDateStudy);
   }
