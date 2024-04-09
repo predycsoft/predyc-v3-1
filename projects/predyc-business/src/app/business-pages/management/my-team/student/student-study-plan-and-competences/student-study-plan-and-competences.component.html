@@ -57,9 +57,12 @@
     <!-- Plan de estudios -->
 
     <div class="w-70 radius10 shadowLight cards " fxLayout="column" fxLayoutGap=""  style="background-color: rgba(244, 244, 244, 0.362); ">
-        <div class="mgt10"  fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem">
-            <img [src]="icon.course" class="makeBlue h20px" alt="">
-            <span class="ft500  ft14  black">Plan de estudios</span>
+        <div class="mgt10"  fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap=".5rem">
+            <div>
+                <img [src]="icon.course" class="makeBlue h20px pdr05" alt="">
+                <span class="ft500  ft14  black">Plan de estudios</span>
+            </div>
+            <span class="makeBlue cursorPointer ft14" (click)="clickEditUser()">Editar</span>
         </div>
         
         <ng-container *ngIf="!showInitForm">

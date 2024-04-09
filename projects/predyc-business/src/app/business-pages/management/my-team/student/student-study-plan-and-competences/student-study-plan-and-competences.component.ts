@@ -20,6 +20,9 @@ import { UserService } from "projects/predyc-business/src/shared/services/user.s
 import { firestoreTimestampToNumberTimestamp } from "projects/shared/utils";
 import annotationPlugin from "chartjs-plugin-annotation";
 import { AlertsService } from "projects/predyc-business/src/shared/services/alerts.service";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { CreateUserComponent } from '../create-user/create-user.component';
+
 
 interface CoursesForExplorer extends CursoJson {
   skills: Skill[];
@@ -48,7 +51,9 @@ export class StudentStudyPlanAndCompetencesComponent {
     private profileService: ProfileService,
     private skillService: SkillService,
     private alertService: AlertsService,
-    private afs: AngularFirestore
+    private afs: AngularFirestore,
+    private modalService: NgbModal,
+
   ) {
     Chart.register(annotationPlugin);
   }
@@ -400,6 +405,15 @@ export class StudentStudyPlanAndCompetencesComponent {
     );
   }
 
+
+  clickEditUser(){
+
+    let link = document.getElementById('linkEditUser');
+    if(link){
+      link.click()
+    } 
+  }
+  
   getDelayedMonthsCount(): number {
     return this.months
       ? this.months.filter(

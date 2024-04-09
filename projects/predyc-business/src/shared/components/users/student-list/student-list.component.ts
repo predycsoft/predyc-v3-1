@@ -150,7 +150,10 @@ export class StudentListComponent {
   }
 
   onSelectUser(user: User) {
-    if (this.enableNavigateToUser && user.profile) {
+
+    console.log('user',user)
+
+    if (this.enableNavigateToUser && user.profile && user.targetHours>0) {
       this.router.navigate([`management/students/${user.uid}`])
     } else {
       this.onStudentSelected.emit(user)

@@ -786,9 +786,7 @@ export class CreateUserComponent {
 
       if(valores.startDateStudy && valores.profile && this.hoursPlan>0){
         console.log(user,valores.startDateStudy,valores.profile,this.hoursPlan)
-
         let fehcaInicio = this.toDateFromInput(valores.startDateStudy)
-
         await this.saveInitForm(user.uid,this.hoursPlan,fehcaInicio,profileNew )
       }
 

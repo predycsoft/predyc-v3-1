@@ -69,6 +69,13 @@
                         El usuario deberá hacer <b>{{hoursPlan}} horas</b> de estudio mensual para cumplir con el plan de estudio.                      
                     </span>
                 </div>
+
+                <div *ngIf="studentToEdit['targetHours']==0 && hoursPlan==0 " fxLayout="column" class="fw pdt10">
+                    <span class="blue-5">
+                        Para poder ver los detalles de este usuario, deberá asignar sus fechas del plan de estudio.
+                    </span>
+                </div>
+
             </div>
                     
             <div fxLayout="row"  fxLayoutAlign="left " class="pdt10 border-tl">
