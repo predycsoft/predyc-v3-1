@@ -65,7 +65,7 @@
                 </div>
                 <!-- Última columna debajo -->
                 <div *ngIf="hoursPlan>0" fxLayout="column" class="fw pdt10">
-                    <span [ngClass]="{'green-5':hoursPlan<=8,'orange-3':hoursPlan>8,'red-5':hoursPlan>12,}" class="ft12">
+                    <span [ngClass]="{'green-5':hoursPlan<=8,'orange-3':hoursPlan>8,'red-5':hoursPlan>12}" class="ft12">
                         El usuario deberá hacer <b>{{hoursPlan}} horas</b> de estudio mensual para cumplir con el plan de estudio.                      
                     </span>
                 </div>

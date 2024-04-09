@@ -46,6 +46,7 @@ import { Product } from "projects/shared/models/product.model";
 import { CourseService } from "../../../../../../shared/services/course.service";
 import { roundNumber } from "projects/shared/utils";
 import { formatDate } from "@angular/common";
+import { CourseByStudent, Curso } from "shared";
 
 @Component({
   selector: "app-create-user",
@@ -169,7 +170,6 @@ export class CreateUserComponent {
                 perfil["duracion"] = duracion;
               }
             });
-
             this.profiles = profilesFilteres;
             console.log("profiles Filtrados", this.profiles);
           }
@@ -360,15 +360,72 @@ export class CreateUserComponent {
       const hoursMes = Math.ceil(duracionPlan / difMeses);
       this.hoursPlan = hoursMes;
     }
+    if(profile && (!endDate || !startDate)){
+
+      console.log(profile.hoursPerMonth)
+
+      let hoursPerMonth = profile.hoursPerMonth
+      let hoursPlan = profile['duracion']/60
+
+      let maxDate = this.calculateEndDate(hoursPerMonth,hoursPlan)
+
+      this.userForm.patchValue({
+        startDateStudy: this.formatDateToInput(new Date()),
+        endDateStudy: this.formatDateToInput(maxDate),
+      });
+      
+
+      this.changedDate(this.formatDateToInput(maxDate), 'end');
+
+
+    }
   }
 
-  changedDate(event, type) {
+  calculateEndDate(hoursPerMonth: number, totalHoursPlan: number): Date {
+    // Obtiene la fecha actual
+    let currentDate = new Date();
+    let currentMonth = currentDate.getMonth();
+    let currentYear = currentDate.getFullYear();
+  
+    // Calcula el número total de meses requeridos redondeando hacia arriba
+    const totalMonthsNeeded = Math.ceil(totalHoursPlan / hoursPerMonth);
+  
+    // Calcula el año y mes finales
+    let finalMonth = currentMonth + totalMonthsNeeded - 1; // Resta 1 porque el mes actual cuenta
+    let finalYear = currentYear;
+  
+    if (finalMonth > 11) {
+      finalYear += Math.floor(finalMonth / 12);
+      finalMonth %= 12;
+    }
+  
+    // Encuentra el último día del mes final
+    const lastDay = new Date(finalYear, finalMonth + 1, 0); // Usar 0 devuelve el último día del mes anterior, que es nuestro mes final.
+  
+    // Ajusta para que sea el último momento del último día del mes
+    const finalDateWithLastMoment = new Date(lastDay.getFullYear(), lastDay.getMonth(), lastDay.getDate(), 23, 59, 59, 999);
+  
+    return finalDateWithLastMoment;
+  }
+
+  changedDate(eventOrValue, type) {
     this.messageHoursPlan = "";
     this.hoursPlan = 0;
 
+    let value;
+
+    if (typeof eventOrValue === 'string' || eventOrValue instanceof String) {
+      // Se llama directamente con un valor
+      value = eventOrValue;
+    } else {
+      // Se llama con un evento
+      value = eventOrValue.target.value;
+    }
+
+
     if (type == "start") {
       const endDate = this.userForm.get("endDateStudy").value;
-      let startDateObjet = this.toDateFromInput(event.target.value);
+      let startDateObjet = this.toDateFromInput(value);
 
       this.MinDateEndProfile = formatDate(startDateObjet, "yyyy-MM-dd", "en");
 
@@ -390,7 +447,7 @@ export class CreateUserComponent {
       }
     } else {
       const startDate = this.userForm.get("startDateStudy").value;
-      let endDateObjet = this.toDateFromInput(event.target.value);
+      let endDateObjet = this.toDateFromInput(value);
       this.MaxDateProfile = formatDate(endDateObjet, "yyyy-MM-dd", "en");
       if (startDate) {
         const startDateObjet = this.toDateFromInput(startDate);
@@ -655,7 +712,7 @@ export class CreateUserComponent {
   savingChanges = false;
 
   async onSubmit() {
-    // console.log("form", this.userForm.value);
+    console.log("form", this.userForm.value,this.hoursPlan);
     if (this.validateCurrentModalPage()) {
       this.displayErrors = false;
     } else {
@@ -723,12 +780,97 @@ export class CreateUserComponent {
       } else {
         await this.userService.addUser(user);
       }
+
+      let valores = this.userForm.value
+
+      if(valores.startDateStudy && valores.profile && this.hoursPlan>0){
+        console.log(user,valores.startDateStudy,valores.profile,this.hoursPlan)
+
+        let fehcaInicio = this.toDateFromInput(valores.startDateStudy)
+
+        await this.saveInitForm(user.uid,this.hoursPlan,fehcaInicio )
+      }
+
       this.activeModal.close(this.userForm.value);
       this.alertService.succesAlert("Estudiante agregado exitosamente");
       this.savingChanges = false;
     } catch (error) {
       this.alertService.errorAlert(error);
       this.savingChanges = false;
+    }
+  }
+
+
+  async saveInitForm(uid,hoursPerMonth,startDateStudy) {
+    await this.userService.saveStudyPlanHoursPerMonth(
+      uid, 
+      hoursPerMonth
+    );
+    //this.student.studyHours = hoursPermon;
+    const profile = this.profiles.find(
+      (x) => x.id == this.userForm.get("profile").value
+    );
+    await this.createStudyPlan(uid,hoursPerMonth,profile,startDateStudy);
+  }
+
+  async createStudyPlan(uid,hoursPerMonth,profile,startDateStudy) {
+    console.log('startDateStudy',startDateStudy)
+    const coursesRefs: DocumentReference[] = profile.coursesRef.sort(
+        (
+          b: { courseRef: DocumentReference<Curso>; studyPlanOrder: number },
+          a: { courseRef: DocumentReference<Curso>; studyPlanOrder: number }
+        ) => b.studyPlanOrder - a.studyPlanOrder
+      )
+      .map((item) => item.courseRef);
+    let dateStartPlan: number;
+    let dateEndPlan: number;
+    let now = new Date();
+    let hoy = +new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const hoursPermonth = hoursPerMonth;
+    console.log("hoursPermonth", hoursPermonth)
+
+    const userRef: DocumentReference | DocumentReference<User> =this.userService.getUserRefById(uid);
+    for (let i = 0; i < coursesRefs.length; i++) {
+      const courseData = this.cursos.find(
+        (courseData) => courseData.id === coursesRefs[i].id
+      );
+      const courseDuration = courseData.duracion;
+
+
+      if (startDateStudy) {
+        dateStartPlan = +startDateStudy
+        startDateStudy = null;
+      } else dateStartPlan = dateEndPlan ? dateEndPlan : hoy;
+
+      dateEndPlan = this.courseService.calculatEndDatePlan(
+        dateStartPlan,
+        courseDuration,
+        hoursPermonth
+      );
+      console.log('dates',dateStartPlan, dateEndPlan)
+      //  ---------- if it already exists, activate it as studyPlan, otherwise, create it as studyPlan ----------
+      const courseByStudent: CourseByStudent | null =
+        await this.courseService.getCourseByStudent(
+          userRef as DocumentReference<User>,
+          coursesRefs[i] as DocumentReference<Curso>
+        );
+      // console.log("courseByStudent", courseByStudent)
+      if (courseByStudent) {
+        await this.courseService.setCourseByStudentActive(
+          courseByStudent.id,
+          new Date(dateStartPlan),
+          new Date(dateEndPlan)
+        );
+      } else {
+        await this.courseService.saveCourseByStudent(
+          coursesRefs[i],
+          userRef,
+          new Date(dateStartPlan),
+          new Date(dateEndPlan),
+          false,
+          i
+        );
+      }
     }
   }
 
