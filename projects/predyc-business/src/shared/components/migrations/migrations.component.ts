@@ -18,6 +18,21 @@ import { oldEmpresasCLientes } from './old data/empresasCliente.data';
 import { oldUsers } from './old data/usuarios.data';
 import { User, UserJson } from 'projects/functions/dist/shared/models/user.model';
 import { UserService } from '../../services/user.service';
+import { categoriesData } from 'projects/predyc-business/src/assets/data/categories.data';
+import { Category } from 'projects/functions/dist/shared/models/category.model';
+import { Skill } from 'projects/functions/dist/shared/models/skill.model';
+import { skillsData } from 'projects/predyc-business/src/assets/data/skills.data';
+import { SkillService } from '../../services/skill.service';
+import { instructorsData } from 'projects/predyc-business/src/assets/data/instructors.data';
+import { InstructorsService } from '../../services/instructors.service';
+import { Clase } from 'projects/functions/dist/shared/models/course-class.model';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { coursesData } from 'projects/predyc-business/src/assets/data/courses.data';
+import { Curso } from 'projects/functions/dist/shared/models/course.model';
+import { capitalizeFirstLetter } from 'projects/functions/dist/shared/utils';
+import { courseCategoryAndSkillsRelation } from 'projects/predyc-business/src/assets/data/courseCategoryAndSkillsRelation.data';
+import { CourseService } from '../../services/course.service';
+import { CourseByStudent, CourseByStudentJson } from 'projects/functions/dist/shared/models/course-by-student.model';
 
 
 @Component({
@@ -27,6 +42,11 @@ import { UserService } from '../../services/user.service';
 })
 export class MigrationsComponent {
 
+  instructors = [];
+
+  coursesByStudent: CourseByStudentJson[]
+
+
   constructor(
     private enterpriseService: EnterpriseService,
     private userService: UserService,
@@ -34,6 +54,11 @@ export class MigrationsComponent {
     private licenseService: LicenseService,
     private profileService: ProfileService,
     private categoryService: CategoryService,
+    private skillService: SkillService,
+    private instructorsService: InstructorsService,
+    public courseService : CourseService,
+    private afs: AngularFirestore,
+
   ) {}
 
   async migrateEnterprises() {
@@ -118,7 +143,6 @@ export class MigrationsComponent {
   }
 
 
-
   async migrateUsers() {
     const oldUsersData: any[] = oldUsers
 
@@ -170,6 +194,165 @@ export class MigrationsComponent {
 
   }
 
+  async migrateCourses() {
+    // Create categories
+    console.log('********* Creating Categories *********')
+    const categories: Category[] = categoriesData.map(category => {
+      return Category.fromJson({
+        ...category,
+        //enterprise: enterpriseRef
+      })
+    })
+    // console.log("categories", categories)
+    for (let category of categories) {
+      await this.categoryService.addCategory(category)
+      console.log('new category',category)
+    }
+    console.log(`Finished Creating Categories`)
+
+    // Create skills
+    console.log('********* Creating Skills *********')
+    const skills: Skill[] = skillsData.map(skill => {
+      const targetCategory = categories.find(category => category.name.toLowerCase() === skill.category.toLowerCase())
+      const categoryRef = this.categoryService.getCategoryRefById(targetCategory.id)
+      return Skill.fromJson({
+        ...skill,
+        category: categoryRef,
+        enterprise: null,
+      })
+    })
+    for (let skill of skills) {
+      await this.skillService.addSkill(skill)
+    }
+    console.log(`Finished Creating Skills`)
+
+    // Create Instructors (OLD) 
+    console.log('********* Creating Instructors *********');
+    for (let i = 0; i < instructorsData.length; i++) {
+      const instructor = instructorsData[i];
+      instructor['enterpriseRef'] = null
+      await this.instructorsService.addInstructor(instructor);
+      this.instructors.push(instructor);
+    }
+    console.log(`Finished Creating Instructors`, this.instructors);
+
+    console.log('********* Creating Courses *********');
+    await this.uploadCursosLegacy();
+    console.log(`Finished Creating Courses`);
+  }
+
+  async uploadCursosLegacy() {
+    let jsonData = coursesData.slice(0, 5)
+    // jsonData = coursesData
+    console.log('cursos a cargar',jsonData)
+    // Now you can use the jsonData object locally
+
+    jsonData = jsonData.filter(x=>x?.publicado)
+    console.log('cursos Insert',jsonData)
+    for (let index = 0; index < jsonData.length; index++) {
+      let curso = jsonData[index]
+      let cursoIn = new Curso
+      cursoIn = structuredClone(cursoIn)
+      let courseRef = this.afs.collection<Curso>(Curso.collection).doc().ref;
+      cursoIn.id = courseRef.id
+      cursoIn.descripcion = curso.descripcion
+      cursoIn.instructorNombre = curso.instructorNombre
+      cursoIn.imagen_instructor = curso.instructorFoto
+      cursoIn.instructor = curso.instructorNombre
+      cursoIn.imagen = curso.foto
+      cursoIn.foto = curso.foto
+      cursoIn.idOld = curso.id
+      cursoIn.nivel = curso.nivel
+      cursoIn.titulo = capitalizeFirstLetter(curso.titulo.trim().toLowerCase())
+      cursoIn.duracion = curso.duracion
+      let instructor = this.instructors.find(x=> x.idOld == curso.instructorId)
+      console.log('Instructor',instructor,this.instructors)
+      let instructorRef = await this.afs.collection<any>('instructors').doc(instructor.id).ref;
+      cursoIn.instructorRef = instructorRef
+      cursoIn.resumen_instructor = instructor.resumen
+      const skillsRef = []
+      const courseObj = courseCategoryAndSkillsRelation.find(item => item['Cursos'].toLowerCase() === curso.titulo.toLowerCase().trim())
+      if (courseObj) {
+        for (let skill of [courseObj["Competencia 1"], courseObj["Competencia 2"], courseObj["Competencia 3"]]) {
+          if (skill) {
+            let skillName = skill.split(" ").length > 1 ? capitalizeFirstLetter(skill.toLowerCase()) : skill
+            const competenciaTest = await this.getSkillRefByName(skillName)
+            skillsRef.push(competenciaTest)
+          }
+        }
+      } else {
+        console.log("Titulo no encontrado", curso.titulo.toLowerCase())
+      }
+      cursoIn.skillsRef = skillsRef
+      await this.courseService.saveCourse(cursoIn)
+
+      console.log(` ----- Course ${index} Added ----- `)
+    }
+  }
+
+  getSkillRefByName(skillName): Promise<any | null> {
+    return new Promise(async (resolve, reject) => {
+      await this.afs.collection<any>('skill', ref =>
+        ref.where('name', '==', skillName)
+          //  .where('enterprise', '==', null)
+      ).get().subscribe(querySnapshot => {
+        if (!querySnapshot.empty) {
+          // Resolving with the first document reference
+          resolve(querySnapshot.docs[0].ref);
+        } else {
+          console.log('No skill found with the given name and enterprise null');
+          resolve(null);
+        }
+      }, error => {
+        console.error('Error fetching skill:', error);
+        reject(error);
+      });
+    });
+  }
+
+  async migrateCoursesByStudent() {
+
+    await this.migrateCourses() 
+    
+    const oldUsersData: any[] = oldUsers
+
+    const coursesIdMap = await this.courseService.getCourseIdMappings()
+
+    console.log("coursesIdMap", coursesIdMap)
+
+    const allCoursesByStudent: CourseByStudentJson[] = []
+
+    for (let oldUser of oldUsersData) {
+      const coursesByStudent: CourseByStudentJson[] = oldUser.studyPlan.map(studyPlanCourse => {
+        return {
+          active: true, // ???
+          courseRef: coursesIdMap[studyPlanCourse.cursoId] ? this.courseService.getCourseRefById(studyPlanCourse.cursoId) : null,
+          // courseRef: this.courseService.getCourseRefById(coursesIdMap[studyPlanCourse.cursoId]),
+          dateEnd: new Date(studyPlanCourse.fechaCompletacion),
+          dateEndPlan: new Date(studyPlanCourse.fechaFin),
+          dateStart: null, // ???
+          dateStartPlan: new Date(studyPlanCourse.fechaInicio),
+          finalScore: null,
+          id: null, //set it later
+          progress: null, // get it from course -> inscritos
+          userRef: this.userService.getUserRefById(oldUser.uid),
+          courseTime: studyPlanCourse.duracion,
+          progressTime: null,
+          isExtraCourse: false,
+        }
+      })
+      allCoursesByStudent.push(...coursesByStudent)
+    }
+
+    console.log("allCoursesByStudent", allCoursesByStudent)
+    for (let courseByStudent of allCoursesByStudent) {
+      const ref = this.afs.collection<CourseByStudent>(CourseByStudent.collection).doc().ref;
+      courseByStudent.id = ref.id
+      await this.afs.collection(CourseByStudent.collection).doc(courseByStudent.id).set(courseByStudent);
+    }
+    this.coursesByStudent = allCoursesByStudent
+    console.log("CoursesByStudent migrated")
+  }
 
   // --------------------------- Other migrations.
 
