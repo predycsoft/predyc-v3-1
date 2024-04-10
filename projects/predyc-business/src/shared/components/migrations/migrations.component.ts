@@ -14,6 +14,9 @@ import { LicenseService } from '../../services/license.service';
 import { ProfileJson } from 'projects/shared/models/profile.model';
 import { Permissions, PermissionsJson } from 'projects/shared';
 import { ProfileService } from '../../services/profile.service';
+import { CategoryService } from '../../services/category.service';
+import { CategoryJson } from 'projects/shared/models/category.model';
+import { oldCategoriesNames } from './old data/categories.data';
 
 
 @Component({
@@ -28,6 +31,7 @@ export class MigrationsComponent {
     private enterpriseService: EnterpriseService,
     private licenseService: LicenseService,
     private profileService: ProfileService,
+    private categoryService: CategoryService,
   ) {}
 
   // async migrateProducts() {
@@ -137,14 +141,24 @@ export class MigrationsComponent {
 
 
 
+  async migrateCategories() {
+    const categoriesInNewModel: CategoryJson[] = oldCategoriesNames.map(oldCategorieName => {
+      return {
+        name: oldCategorieName,
+        id: null,
+        enterprise: null
+      }
+    })
+    await this.categoryService.saveCategories(categoriesInNewModel)
+    console.log("categoriesInNewModel", categoriesInNewModel)
 
-
+  }
 
 
   
   // it is not finished. we need to create courses collection first
   async migrateProfiles() {
-        // --------------- Import and use one at a time ---------------
+    // --------------- Import and use one at a time ---------------
     // const oldEnterprisesData: any[] = oldEmpresasCLientes
     // const oldEnterprisesData: any[] = oldEmpresasCLientes2
     const oldEnterprisesData: any[] = oldEmpresasCLientes3

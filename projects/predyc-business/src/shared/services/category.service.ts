@@ -6,7 +6,7 @@ import { EnterpriseService } from './enterprise.service';
 import { AlertsService } from './alerts.service';
 import { Enterprise } from 'projects/shared/models/enterprise.model';
 
-import { Category } from 'projects/shared/models/category.model';
+import { Category, CategoryJson } from 'projects/shared/models/category.model';
 
 import { combineLatest } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
@@ -44,6 +44,20 @@ export class CategoryService {
     await ref.set({...newCategory.toJson(), id: ref.id}, { merge: true });
     newCategory.id = ref.id;
   }
+
+  async saveCategories(categories: CategoryJson[]): Promise<void> {
+    const batch = this.afs.firestore.batch();
+    categories.forEach((category) => {
+      const docRef = this.afs.firestore.collection(Category.collection).doc();
+      const updatedCategory = {
+        ...category,
+        id: docRef.id,
+      };
+      batch.set(docRef, updatedCategory, { merge: true });
+    });
+    // Commit the batch write to Firestore
+    await batch.commit();
+  } 
 
   // Arguments could be pageSize, sort, currentPage
   getCategories() {
