@@ -49,11 +49,11 @@ export class SideNavComponent {
   ];
 
   public adminPages: Page[] = [
-    {
-      name: "Principal",
-      link: "/admin",
-      icon: "../../assets/iconsUI/home.svg",
-    },
+    // {
+    //   name: "Principal",
+    //   link: "/admin",
+    //   icon: "../../assets/iconsUI/home.svg",
+    // },
     {
       name: "Estudiantes",
       link: "/admin/students",

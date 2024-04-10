@@ -61,6 +61,7 @@
             <div>
                 <img [src]="icon.course" class="makeBlue h20px pdr05" alt="">
                 <span class="ft500  ft14  black">Plan de estudios</span>
+                <span class="ft500 ft14 gray-5 pdl05">Duración: {{ roundNumber(studyPlanDuration / 60) }} hrs</span>
             </div>
             <span class="makeBlue cursorPointer ft14" (click)="clickEditUser()">Editar</span>
         </div>
@@ -115,6 +116,11 @@
                                         <div>
                                             <img *ngIf="course.dateEnd" [src]="icon.greenCheck" class="h20px mgr05 makeGreen" alt="">
                                             <span *ngIf="course.dateEnd" class="makeGreen mgr10 ft14 ft400" >Completado </span>
+                                        </div>
+
+                                        <div *ngIf="course.progress && course.progress>0 && course.progress<100 ">
+                                            <!-- <mat-progress-bar class="progressBarMovil fw mgb0 mgt0" mode="determinate"[value]="course.progress"></mat-progress-bar> -->
+                                            <span class="mgr10 ft12 ft400 gray-5" >Progreso: {{roundNumber(course.progress)}}%</span>
                                         </div>
                                         
                                         <span style="width: 50px;" *ngIf="course.dateEnd" class="ft500"> {{course.finalScore>=100? 100 : course.finalScore}}/100</span>

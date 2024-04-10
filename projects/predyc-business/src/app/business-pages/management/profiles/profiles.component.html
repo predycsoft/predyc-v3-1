@@ -224,21 +224,15 @@
           <img
             [src]="icon.course"
             class="makeBlue h20px"
-            alt="Plan de estudios"
+            alt="Plan de estudios"ß
           />
           <span class="ft500 ft14 black">Plan de estudios</span>
+          <!-- <span class="ft500 ft12 gray-5">{{getStudyPlanLength()}}</span> -->
         </div>
-        <div class="mgt20" fxLayout="row" fxLayoutGap="2rem">
-          <div
-            fxLayoutGap=".5rem"
-            fxLayout="row"
-            fxLayoutAlign=" center"
-            class="mgl05"
-          >
+        <div class="mgt20" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="2rem">
+          <div fxLayoutGap=".5rem" fxLayout="row" fxLayoutAlign=" center" class="mgl05">
             <div class="fw">
-              <span class="ft500 ft14 gray-9" style="padding-bottom: 15px"
-                >Estudio mensual</span
-              >
+              <span class="ft500 ft14 gray-9" style="padding-bottom: 15px">Estudio mensual</span>
             </div>
             <div fxLayout="row" class="centertext">
               <div
@@ -246,14 +240,12 @@
                 fxLayout="row"
                 fxLayoutGap="1rem"
                 fxLayoutAlign="center"
-                style="width: 70%; margin-left: -53px"
-              >
+                style="width: 70%; margin-left: -53px">
                 <div
                   class="fw mgb05 borderLight shadow-animation radius20 centertext"
                   fxLayout="row"
                   fxLayoutAlign=" center center"
-                  style="width: 30px"
-                >
+                  style="width: 30px">
                   <input
                     [ngClass]="isEditing ? 'editNumber' : 'number'"
                     [disabled]="!isEditing"
@@ -263,20 +255,16 @@
                     [(ngModel)]="profileHoursPerMonth"
                     min="1"
                     class="searchBar ft14 centertext"
-                    style="
-                      width: 70%;
-                      outline: none;
-                      border: 0;
-                      background-color: transparent;
-                    "
+                    style="width: 70%;outline: none;border: 0;background-color: transparent;"
                     placeholder=""
                   />
                 </div>
               </div>
-              <span class="gray-9 ft500 ft14 mgl10" style="margin-top: 10px"
-                >horas</span
-              >
+              <span class="gray-9 ft500 ft14 mgl10" style="margin-top: 10px">horas</span>
             </div>
+          </div>
+          <div>
+            <span class="ft500 ft14 gray-5">{{getStudyPlanLength()}}</span>
           </div>
         </div>
         <div
@@ -510,7 +498,7 @@
                     />
                     {{ item.titulo }}
                   </span>
-                  <span>Orden: {{ item.studyPlanOrder }}</span>
+                  <!-- <span>Orden: {{ item.studyPlanOrder }}</span> -->
                 </div>
                 <div
                   fxLayout="row"

@@ -766,7 +766,6 @@ export class CourseService {
       // Paso 1: Traer todos los usuarios de la empresa
       const usersSnapshot = await db
         .collection("user")
-        .where("enterprise", "==", this.enterpriseRef)
         .get();
 
       console.log("usersSnapshot", usersSnapshot);

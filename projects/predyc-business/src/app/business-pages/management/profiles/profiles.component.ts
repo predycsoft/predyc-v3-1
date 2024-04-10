@@ -248,6 +248,23 @@ export class ProfilesComponent {
     this.hoverSubject.next(null);
   }
 
+  getStudyPlanLength(){
+    console.log(this.studyPlan)
+
+    let duracion = 0
+
+    this.studyPlan?.forEach(curso => {
+      duracion+=curso.duracion
+    });
+    return this.getFormattedDuration(duracion)
+  }
+
+  getFormattedDuration(duracion) {
+    const hours = Math.floor(duracion / 60);
+    const minutes = duracion % 60;
+    return `${hours} hrs ${minutes} min`;
+  }
+
   toggleCourseInPlan(course) {
     console.log(this.studyPlan);
     course.inStudyPlan = !course.inStudyPlan;

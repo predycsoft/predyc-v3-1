@@ -16,9 +16,9 @@ import { FreebiesComponent } from "./admin-pages/freebies/freebies.component";
 export const MAIN_TITLE = "Predyc Admin - ";
 
 const routes: Routes = [
-  { path: "", title: MAIN_TITLE + "home", component: HomeComponent },
+  // { path: "", title: MAIN_TITLE + "home", component: HomeComponent },
   {
-    path: "students",
+    path: "",
     title: MAIN_TITLE + "Estudiantes",
     component: StudentsComponent,
   },

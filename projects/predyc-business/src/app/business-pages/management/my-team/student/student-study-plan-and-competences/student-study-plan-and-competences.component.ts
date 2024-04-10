@@ -22,6 +22,7 @@ import annotationPlugin from "chartjs-plugin-annotation";
 import { AlertsService } from "projects/predyc-business/src/shared/services/alerts.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { CreateUserComponent } from '../create-user/create-user.component';
+import { roundNumber } from "shared";
 
 
 interface CoursesForExplorer extends CursoJson {
@@ -106,6 +107,7 @@ export class StudentStudyPlanAndCompetencesComponent {
             // Studyplan case
             if (!coursesByStudent[0].isExtraCourse) {
               this.studyPlanView = this.showInitForm ? false : true;
+              console.log('datos revisar',coursesByStudent,coursesData)
               this.buildMonths(coursesByStudent, coursesData);
             }
             // Extra courses case
@@ -211,6 +213,8 @@ export class StudentStudyPlanAndCompetencesComponent {
       });
   }
 
+  studyPlanDuration=0;
+
   buildMonths(coursesByStudent: CourseByStudent[], coursesData) {
     const months = {};
     coursesByStudent.forEach((courseByStudent) => {
@@ -234,6 +238,7 @@ export class StudentStudyPlanAndCompetencesComponent {
       this.studyPlan.push(courseForExplorer);
 
       if (courseData) {
+        this.studyPlanDuration+=courseData.duracion ;
         const studyPlanData = {
           duration: courseData.duracion / 60,
           courseTitle: courseData.titulo,
@@ -247,6 +252,7 @@ export class StudentStudyPlanAndCompetencesComponent {
             courseByStudent.dateStart
           ),
           dateEnd: firestoreTimestampToNumberTimestamp(courseByStudent.dateEnd),
+          progress:courseByStudent.progress,
           finalScore: courseByStudent.finalScore,
           id: courseByStudent.courseRef.id,
         };
@@ -432,6 +438,7 @@ export class StudentStudyPlanAndCompetencesComponent {
     // calculate dates and create studyplan using this.startDateInitForm
     await this.createStudyPlan();
   }
+
 
   ngOnDestroy() {
     if (this.combinedObservableSubscription)

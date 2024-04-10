@@ -27,13 +27,13 @@
         >Registrado el {{ user.createdAt | date : "dd/MM/yyyy" }}</span
       >
       <span class="ft11 gray-8">{{ user.email }}</span>
-      <a
+      <!-- <a
         [href]="'https://wa.me/' + user.phoneNumber?.split('-').join('')"
         target="_blank"
         class="ft11 blue-5"
         *ngIf="user.phoneNumber"
         >{{ user.phoneNumber }}</a
-      >
+      > -->
       <span *ngIf="user.enterprise" class="ft11 gray-8"
         >Empresa: {{ user.enterprise.name }}</span
       >
