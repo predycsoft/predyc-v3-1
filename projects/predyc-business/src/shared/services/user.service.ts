@@ -47,7 +47,8 @@ export class UserService {
   }
 
   async addUser(newUser: User): Promise<void> {
-    console.log(newUser)
+    // console.log(newUser)
+    console.log(newUser.name)
     newUser.name = newUser.name.toLocaleLowerCase()
     newUser.displayName = newUser.displayName.toLocaleLowerCase()
     newUser.email = newUser.email.toLocaleLowerCase()
