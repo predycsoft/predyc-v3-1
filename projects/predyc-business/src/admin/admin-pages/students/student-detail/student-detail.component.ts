@@ -87,7 +87,7 @@ export class StudentDetailComponent {
           >[] = [
             this.afs
               .collection<Enterprise>(Enterprise.collection)
-              .doc(user.enterprise.id)
+              .doc(user.enterprise?.id)
               .valueChanges(),
             this.subscriptionService.getUserSubscriptions$(this.userRef),
           ];
