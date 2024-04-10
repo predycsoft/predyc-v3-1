@@ -111,19 +111,12 @@
               >Perfil: {{ user.profile.name }}</span
             >
           </div>
-          <div fxLayout="row" fxLayoutGap="5rem" fxLayoutAlign=" center">
+          <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
             <div class="blueLink ft12" (click)="openCoursesDialog()">
               Elegir cursos a inscribir
             </div>
-            <div
-              class="blueLink"
-              *ngIf="
-                user?.product &&
-                user.product.type === productClass.TYPE_SIMPLIFIED
-              "
-              (click)="saveEnrolledCoursesAsExtraCourse()"
-            >
-              Inscribir cursos del perfil como simplificado
+            <div class="blueLink ft12" *ngIf=" user?.product && user.product.type === productClass.TYPE_SIMPLIFIED" (click)="saveEnrolledCoursesAsExtraCourse()"> 
+              Importar cursos del perfil
             </div>
           </div>
         </div>

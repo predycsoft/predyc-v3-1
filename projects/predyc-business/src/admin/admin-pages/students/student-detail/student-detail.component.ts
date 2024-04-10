@@ -297,12 +297,12 @@ export class StudentDetailComponent {
   }
 
   async saveEnrolledCoursesAsExtraCourse() {
-    const coursesRefs: DocumentReference[] = this.user?.profile?.coursesRef;
+    const coursesRefs: any[] = this.user?.profile?.coursesRef;
     for (let i = 0; i < coursesRefs.length; i++) {
       const courseByStudent: CourseByStudent | null =
         await this.courseService.getCourseByStudent(
           this.userRef as DocumentReference<User>,
-          coursesRefs[i] as DocumentReference<Curso>
+          coursesRefs[i].courseRef as DocumentReference<Curso>
         );
       //  ---------- if it already exists, activate it, otherwise, create it ----------
       if (courseByStudent) {
