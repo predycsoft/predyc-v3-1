@@ -25,8 +25,8 @@ export interface SubscriptionJson {
 }
 
 export class Subscription {
-  // public static collection: string = "new-subscription";
-  public static collection: string = "subscription";
+  public static collection: string = "new-subscription";
+  //public static collection: string = "subscription";
 
   public static STATUS_ACTIVE: "active" = "active";
   public static STATUS_INACTIVE: "inactive" = "inactive";
