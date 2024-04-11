@@ -1,0 +1,115 @@
+<div fxLayout="column" class="pd10" ngClass="containerPC" ngClass.lt-md="containerMobile" *ngIf="form"  style="width: 500px">
+  <form [formGroup]="form" (ngSubmit)="save()">
+    <div fxLayout="row" class=" bg-web-primary pd05 mgb10" fxLayoutAlign="space-between center" >
+      <div class=" gray-9 " style="margin-bottom: -15px !important;">
+        <span class="ft16  ft600 gray-10">  {{ data.license ? "Editar" : "Crear" }} nueva licencia</span>
+      
+      </div>
+      <img [src]="icon.close" class="h24px    cursorPointer" alt="" (click)="cancel()"  style="margin-bottom: -10px;">
+    </div>
+    <div class="grayLine mgt05" style=" margin-bottom: 12px;" > </div>
+
+    <!-- <div>
+      <span class="ft20 gray-10 ft500"
+        >{{ data.license ? "Editar" : "Crear" }} nueva licencia</span
+      >
+    </div> -->
+    <div fxLayout="column" fxLayoutGap=".5rem" class="fw mgt08 mgb08">
+      <div fxLayout="column" class=" h50px " >
+        <span class="ft13 gray-9   mgb05">Producto</span>
+        <mat-select
+          class="form-control radius20 shadow-animation borderLight"
+          placeholder="Seleccione el producto"
+          formControlName="productId"
+          style="border: 1px solid; padding-left: 15px; padding-right: 15px;"
+        >
+          <mat-option *ngFor="let product of products" class="pdl08 pdr05" [value]="product.id">{{
+            product.name
+          }}</mat-option>
+        </mat-select>
+      </div>
+      <div class=" mgt08 mgb08" fxLayout="column">
+        <span class="ft13 gray-9 mgb05 ">Comienzo de la suscripción:</span>
+        <input type="datetime-local" formControlName="startDate" class="radius20   pdl10 pdr10 shadow-animation ft13 gray-6 pdl05 borderLight" style=" height: 35px; " />
+      </div>
+      <div class="" fxLayout="column">
+        <span class="ft13 gray-9 mgb05 ">Final de la suscripción:</span>
+        <input type="datetime-local" formControlName="endDate" class="radius20  pdl10 pdr10  shadow-animation ft13 gray-6 pdl05 borderLight" style=" height: 35px; " />
+      </div>
+
+      <div *ngIf="showWarningDate">
+        <span class="blueLink">
+          <img [src]="icon.information" class="h16px pdl05 makeBlue" alt="" />
+          Esta empresa tiene licencias activas. Se recomienda que las nuevas
+          tengan el mismo periodo actual.
+        </span>
+      </div>
+      <div fxLayout="column" class=" h50px mgb10">
+        <span class="ft13 gray-9 mgb05 ">Estatus:</span>
+        <mat-select class="form-control radius20 shadow-animation borderLight"
+        placeholder="Seleccione el estatus"
+        formControlName="status"
+        style="border: 1px solid; padding-left: 15px; padding-right: 15px;"
+        >
+          <mat-option *ngFor="let status of statusChoices" class="pdl08 pdr05" [value]="status">{{
+            status
+          }}</mat-option>
+          
+        </mat-select>
+      </div>
+      <div
+        fxLayout="row"
+        fxLayoutAlign="space-between center"
+        fxLayoutGap="1rem"
+        class="h50px mgt10"
+      >
+        <div fxLayout="column" class="mgt10">
+          <span class="ft13 gray-9 mgb05 ">Cantidad de licencias:</span>
+          <input
+            class="radius20 shadow-animation borderLight ft14 pdl08 pdr10"
+            type="number"
+            min="1"
+            formControlName="quantity"
+            style="width: 100%; padding-left: 5px; height:35px; "
+          />
+        </div>
+        <div fxLayout="column" class="mgt10">
+          <span class="ft13 gray-9 mgb05 ">Cantidad de rotaciones:</span>
+          <input
+            class="radius20 shadow-animation borderLight ft14 pdl08 pdr10 "
+            type="number"
+            min="0"
+            formControlName="rotations"
+            style="width: 100%; padding-left: 5px; height:35px; "
+          />
+        </div>
+      </div>
+    </div>
+    <div *ngIf="showAlertText" class="mgt03" fxLayout="row" fxLayoutAlign="center center">
+      <span style="color: red !important"
+        >Debes elegir un producto y una fecha de finalizacion.</span>
+    </div>
+    <div class="fw mgt20" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="2rem"
+    >
+      <button
+        class="blueButtonAnim button-animation h28px mgr10"
+        fxLayout="row"
+        fxLayoutAlign="center center"
+        type="submit"
+      >
+        <mat-icon class="ft16 gray-1 pd05" fxLayoutAlign="center center">save</mat-icon>
+        Guardar
+      </button>
+      <button
+        class="redButtonAnim button-animation h28px mgr10"
+        fxLayout="row"
+        fxLayoutAlign="center center"
+        type="button"
+        (click)="cancel()"
+      >
+        <mat-icon class="ft16 gray-1 pd05 " fxLayoutAlign="center center">cancel</mat-icon>
+        Cancelar
+      </button>
+    </div>
+  </form>
+</div>

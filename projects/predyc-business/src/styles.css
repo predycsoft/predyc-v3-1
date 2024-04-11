@@ -367,6 +367,13 @@ textarea:focus {
 .stroke1 {border: 1px solid var(--stroke1); }
 .stroke2 {border: 1px solid var(--stroke2); }
 .stroke3 {border: 1px solid var(--stroke3); }
+
+.grayLine {
+  background-color: #E0E6E8;
+  height: 1px;
+
+}
+
 /* Text colors */
 .text1{ color: var(--text1) !important;}
 .text2{ color: var(--text2) !important;}

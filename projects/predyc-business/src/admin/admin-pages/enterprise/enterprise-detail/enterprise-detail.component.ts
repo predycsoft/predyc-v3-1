@@ -13,7 +13,7 @@ export class EnterpriseDetailComponent {
 
   enterpriseId = this.route.snapshot.paramMap.get('id');
   enterprise: Enterprise
-  tab: number = 0
+  tab: number = 1
   firstLoad = false
 
   constructor(
@@ -32,7 +32,10 @@ export class EnterpriseDetailComponent {
         this.firstLoad = true //check this
       })
     }
-    else this.firstLoad = true
+    else{
+      this.firstLoad = true
+      this.tab = 0
+    } 
   }
 
 

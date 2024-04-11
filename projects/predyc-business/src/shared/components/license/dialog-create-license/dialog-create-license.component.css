@@ -1,0 +1,6 @@
+.container{
+    /* height: 70vh; */
+    width: 40vw;
+    padding: 40px;
+    overflow: scroll;
+}

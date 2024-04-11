@@ -117,7 +117,7 @@ export class StudentListComponent {
           courses.forEach(course => {
             hours += course?.progressTime ? course.progressTime : 0
             const courseJson = this.courses.find(item => item.id === course.courseRef.id)
-            targetHours += (courseJson.duracion/60)
+            targetHours += (courseJson?.duracion/60)
           })
           const userPerformance: "no plan" | "high" | "medium" | "low" | "no iniciado"= this.userService.getPerformanceWithDetails(courses);
           const department = this.departments.find(department => department.id === user.departmentRef?.id)
@@ -150,7 +150,10 @@ export class StudentListComponent {
   }
 
   onSelectUser(user: User) {
-    if (this.enableNavigateToUser && user.profile) {
+
+    console.log('user',user)
+
+    if (this.enableNavigateToUser && user.profile && user.targetHours>0) {
       this.router.navigate([`management/students/${user.uid}`])
     } else {
       this.onStudentSelected.emit(user)

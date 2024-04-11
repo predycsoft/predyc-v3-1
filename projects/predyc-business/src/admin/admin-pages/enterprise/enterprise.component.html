@@ -39,6 +39,11 @@
             <div fxLayout="row"  class="radius20 mgr05  fw">
                     <app-search-input-box  fxLayoutAlign=" center" class="shadow-animation radius20 fw" style="height: 38px;  "></app-search-input-box>
             </div>
+            <button fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="yellowButton button-animation " 
+            style="border-radius: 24px !important;"  (click)="createDemo()">
+                <img [src]="icon.addNew" class="h16px  makeWhite mgr08" alt="">
+                Crear Demo
+            </button>
             <button fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButtonAnim button-animation " 
             style="border-radius: 24px !important;"  (click)="createEnterprise()">
                 <img [src]="icon.addNew" class="h16px  makeWhite mgr08" alt="">

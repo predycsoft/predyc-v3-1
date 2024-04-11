@@ -5,7 +5,7 @@
             <p class="ft600 ft16 gray-10">
                 Lista de Cursos
             </p>
-            <button *ngIf="user.isSystemUser && product && product.accesses.enableCreateParticularCourses"
+            <button *ngIf="(user.isSystemUser || product && product.accesses.enableCreateParticularCourses)"
                 fxLayout="row"
                 fxLayoutGap="0.625"
                 fxLayoutAlign="center center"
@@ -129,10 +129,7 @@
                                             <div class="gray-6 ft10">Duración de curso</div>
                                             <div class="gray-8 ft10">
                                                 <ng-container>
-                                                    {{ selectedCourse?.duracion / 60 | number : "1.0-0" }}hrs
-                                                </ng-container>
-                                                <ng-container>
-                                                    {{ selectedCourse?.duracion % 60 | number : "1.0-0" }} min
+                                                    {{ getFormattedDuration()}}
                                                 </ng-container>
                                             </div>
                                         </div>

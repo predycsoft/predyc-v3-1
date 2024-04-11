@@ -10,6 +10,8 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { CourseByStudent } from 'projects/shared/models/course-by-student.model';
 import { ClassByStudent } from 'projects/shared/models/class-by-student.model';
+import { IconService } from '../../../services/icon.service';
+
 
 @Component({
   selector: 'app-dialog-student-enrolled-course-detail',
@@ -22,6 +24,7 @@ export class DialogStudentEnrolledCourseDetailComponent {
     public matDialogRef: MatDialogRef<DialogStudentEnrolledCourseDetailComponent>, 
     private courseService: CourseService, 
     private moduleService: ModuleService, 
+    public icon: IconService,
     @Inject(MAT_DIALOG_DATA) public data: {
       userName: string,
       courseRef: DocumentReference<Curso>,
@@ -94,6 +97,9 @@ export class DialogStudentEnrolledCourseDetailComponent {
       this.totalLength = modulesInList.length;
 
     })
+  }
+  salir(){
+    this.matDialogRef.close(false)
   }
 
   ngAfterViewInit() {

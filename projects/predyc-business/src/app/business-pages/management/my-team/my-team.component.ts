@@ -59,17 +59,23 @@ export class MyTeamComponent {
   }
 
   onStudentSelected(student) {
+    console.log('student',student)
     const studentData: User = this.userService.getUser(student.uid)
-    this.openCreateUserModal(studentData)
+    this.openCreateUserModal(studentData,student)
   }
 
-  openCreateUserModal(student: User | null): NgbModalRef {
+  openCreateUserModal(student: User | null,user = null): NgbModalRef {
     let openModal = false
     let isNewUser = false
     if (student) {
-      if (!student.profile) openModal = true  
+      if (!student.profile || user['targetHours'] ==0 ){
+        openModal = true
+        student['targetHours'] = user['targetHours']
+      }
     }
     else openModal = true, isNewUser = true
+
+    console.log('openModal',openModal,isNewUser,student)
 
     if (openModal) {
       const modalRef = this.modalService.open(CreateUserComponent, {

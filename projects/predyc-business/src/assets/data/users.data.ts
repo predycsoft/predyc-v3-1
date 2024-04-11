@@ -1,7 +1,6 @@
 export const usersData = [
     {
         "birthdate": "1995-04-12T14:00:00Z",
-        "canEnrollParticularCourses": false,
         "city": "Caracas",
         "country": "Venezuela",
         "courseQty": null,
@@ -41,7 +40,6 @@ export const usersData = [
     },
     {
         "birthdate": "1995-04-12T14:00:00Z",
-        "canEnrollParticularCourses": false,
         "city": "Caracas",
         "country": "Venezuela",
         "courseQty": null,
@@ -80,7 +78,6 @@ export const usersData = [
     },
     {
         "birthdate": "1995-04-12T14:00:00Z",
-        "canEnrollParticularCourses": false,
         "city": "Caracas",
         "country": "Venezuela",
         "courseQty": null,
@@ -119,7 +116,6 @@ export const usersData = [
     },
     {
         "birthdate": "1996-03-20T14:00:00Z",
-        "canEnrollParticularCourses": false,
         "city": "Caracas",
         "country": "Venezuela",
         "courseQty": null,
@@ -158,7 +154,6 @@ export const usersData = [
     },
     {
         "birthdate": "1996-09-13T14:00:00Z",
-        "canEnrollParticularCourses": false,
         "city": "Caracas",
         "country": "Venezuela",
         "courseQty": null,
@@ -197,7 +192,6 @@ export const usersData = [
     },
     {
         "birthdate": "1995-07-27T14:00:00Z",
-        "canEnrollParticularCourses": false,
         "city": "Caracas",
         "country": "Venezuela",
         "courseQty": null,
@@ -236,7 +230,6 @@ export const usersData = [
     },
     {
         "birthdate": "1990-04-12T14:00:00Z",
-        "canEnrollParticularCourses": false,
         "city": "Caracas",
         "country": "Venezuela",
         "courseQty": null,
@@ -275,7 +268,6 @@ export const usersData = [
     },
     {
         "birthdate": "1995-04-12T14:00:00Z",
-        "canEnrollParticularCourses": false,
         "city": "Caracas",
         "country": "Venezuela",
         "courseQty": null,
@@ -314,7 +306,6 @@ export const usersData = [
     },
     {
         "birthdate": "1992-01-27T14:00:00Z",
-        "canEnrollParticularCourses": false,
         "city": "Caracas",
         "country": "Venezuela",
         "courseQty": null,
@@ -353,7 +344,6 @@ export const usersData = [
     },
     {
         "birthdate": "1985-04-13T14:00:00Z",
-        "canEnrollParticularCourses": false,
         "city": "Caracas",
         "country": "Venezuela",
         "courseQty": null,
@@ -392,7 +382,6 @@ export const usersData = [
     },
     {
         "birthdate": "1997-01-17T14:00:00Z",
-        "canEnrollParticularCourses": false,
         "city": "Caracas",
         "country": "Venezuela",
         "courseQty": null,
@@ -431,7 +420,6 @@ export const usersData = [
     },
     {
         "birthdate": "1997-11-06T14:00:00Z",
-        "canEnrollParticularCourses": false,
         "city": "Caracas",
         "country": "Venezuela",
         "courseQty": null,
@@ -470,7 +458,6 @@ export const usersData = [
     },
     {
         "birthdate": "1990-10-06T14:00:00Z",
-        "canEnrollParticularCourses": false,
         "city": "Caracas",
         "country": "Venezuela",
         "courseQty": null,
@@ -509,7 +496,6 @@ export const usersData = [
     },
     {
         "birthdate": "1994-11-06T14:00:00Z",
-        "canEnrollParticularCourses": false,
         "city": "Caracas",
         "country": "Venezuela",
         "courseQty": null,

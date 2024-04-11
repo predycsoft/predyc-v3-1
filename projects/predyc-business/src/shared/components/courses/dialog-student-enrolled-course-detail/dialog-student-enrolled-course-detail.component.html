@@ -1,12 +1,19 @@
-<div fxLayout="column" fxLayoutGap="1.5rem" class="pd20" style="width: 80vw;">
+<div fxLayout="column" class="pd10" ngClass="containerPC" ngClass.lt-md="containerMobile" >
 
-    <div fxLayout="row" fxLayoutAlign="space-between center">
-        <span class="gray-10 ft24 ft500">Detalle del curso inscrito</span>
-        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem">
-            <span class="ft14 backGray4 radius20 gray-8 pdr05 pdl05">Id del curso: {{courseRef.id}}</span>
-            <span class="ft14 backGray4 radius20 gray-8 pdr05 pdl05">Id del courseByStudent: {{courseByStudentRef.id}}</span>
+    <div fxLayout="row" class=" bg-web-primary text-white px-3 py-1 mgb10" fxLayoutAlign="space-between center" >
+        <div class="  " style="margin-bottom: -15px !important;">
+            <span class="ft16  ft600 gray-10">
+                Detalle del curso inscrito
+            </span>
+            
+        </div>
+        <div class="  ">
+            <img [src]="icon.close" class="h24px    cursorPointer" alt="" (click)="salir()"  style="margin-bottom: -10px;">
         </div>
     </div>
+    <div class="grayLine mgt05" style=" margin-bottom: 12px;" > </div>
+
+    
 
     <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="1rem">
         <div>
@@ -23,6 +30,7 @@
                 {{userName | titlecase}}
             </span>
         </div>
+        
         <div fxLayoutAlign=" center" class="mgl10 pdt05" fxLayoutGap="2rem">
             <!-- <a *ngIf="inscrito.completado==true" href="https://predyc.com/certificado/{{inscrito.certificado}}"
                 target="_blank" class="pdb03 ">
@@ -31,8 +39,12 @@
                 </span>
             </a> -->
         </div>
+        
     </div>
-
+    <div fxLayout="row" fxLayoutAlign="center center" class="mgt10" fxLayoutGap=".5rem">
+        <span class="ft11 backGray2 radius20 gray-8 pdr05 pdl05">Id del curso: {{courseRef.id}}</span>
+        <span class="ft11 backGray2 radius20 gray-8 pdr05 pdl05">Id del courseByStudent: {{courseByStudentRef.id}}</span>
+    </div>
     <div *ngIf="!isActive">
         <span class="ft13 ft500 red-5">El estudiante no tiene este curso activo actualmente.</span>
     </div>

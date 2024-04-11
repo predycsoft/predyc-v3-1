@@ -1,79 +1,81 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { SideNavComponent } from './components/sidenav/sidenav.component';
-import { NavigationCardComponent } from './widgets/navigation-card/navigation-card.component';
-import { NavigateBackComponent } from './widgets/navigate-back/navigate-back.component';
-import { StudentProfileComponent } from './components/users/student-profile/student-profile.component';
-import { SearchInputBoxComponent } from './widgets/search-input-box/search-input-box.component';
-import { SpinnerComponent } from './components/spinner/spinner.component';
-import { SafePipe } from './pipes/safe.pipe';
-import { CustomDatePipe } from './pipes/custom-date.pipe';
-import {FormatDurationPipe} from './pipes/format-duration.pipe';
-import { NotificationListComponent } from './components/notifications/notification-list/notification-list.component';
-import { AlertComponent } from './services/dialogs/alert/alert.component';
-import { DialogConfirmarComponent } from './components/dialogs/dialog-confirmar/dialog-confirmar.component';
-import { ExitoComponent } from './components/dialogs/exito/exito.component';
-import { VimeoUploadService } from './services/vimeo-upload.service';
-import { InitScriptComponent } from './components/init-script/init-script.component';
-import { SkillsSelectorComponent } from './components/skills-selector/skills-selector.component';
-import { CourseSelectorComponent } from './components/course-selector/course-selector.component';
-import { TooltipPointsComponent } from './components/tooltip-points/tooltip-points.component';
-import { StudyPlanComponent } from './components/study-plan/study-plan.component';
-import { ProfileSelectorComponent } from './widgets/profile-selector/profile-selector.component';
-import { FrequentQuestionsComponent } from './components/frequent-questions/frequent-questions.component';
-import { SkillsSelectorV2Component } from './components/skills-selector-v2/skills-selector-v2.component';
-import { SupportContactComponent } from './components/support-contact/support-contact.component';
-import { LicenseStudentListComponent } from './components/users/license-student-list/license-student-list.component';
-import { QuestionsComponent } from './components/questions/questions.component';
-import { StatusSelectorComponent } from './widgets/status-selector/status-selector.component';
-import { DialogRequestLicensesComponent } from './components/users/license-student-list/dialog-request-licenses/dialog-request-licenses.component';
-import { DialogHistoryLicensesComponent } from './components/users/license-student-list/dialog-history-licenses/dialog-history-licenses.component';
-import { CustomMonthPipe } from './pipes/custom-month.pipe';
-import { SupportComponent } from './components/support/support.component';
-import { DialogDownloadReportComponent } from './components/dialogs/dialog-download-report/dialog-download-report.component';
-import { IsActivePipe } from './pipes/is-active.pipe';
-import { SortSkillsPipe } from './pipes/sort-skills.pipe';
-import { DialogRestorePasswordComponent } from './components/dialogs/dialog-restore-password/dialog-restore-password.component';
-import { StudentListComponent } from './components/users/student-list/student-list.component';
-import { DragDropModule } from '@angular/cdk/drag-drop';
-import { HttpClientModule } from '@angular/common/http';
-import { AngularFireAuthModule } from '@angular/fire/compat/auth';
-import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
-import { AngularFireFunctionsModule } from '@angular/fire/compat/functions';
-import { AngularFireStorageModule } from '@angular/fire/compat/storage';
-import { FlexLayoutModule } from '@angular/flex-layout';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatListModule } from '@angular/material/list';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatSliderModule } from '@angular/material/slider';
-import { MatSortModule } from '@angular/material/sort';
-import { MatTableModule } from '@angular/material/table';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { RouterModule } from '@angular/router';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { NgChartsModule } from 'ng2-charts';
-import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
-import { DialogCreateChargeComponent } from './components/charges/dialog-create-charge/dialog-create-charge.component';
-import { DialogCreateSubscriptionComponent } from './components/subscription/dialog-create-subscription/dialog-create-subscription.component';
-import { DialogEditSubscriptionComponent } from './components/subscription/dialog-edit-subscription/dialog-edit-subscription.component';
-import { DialogStudentEnrolledCourseDetailComponent } from './components/courses/dialog-student-enrolled-course-detail/dialog-student-enrolled-course-detail.component';
-import { MigrationsComponent } from './components/migrations/migrations.component';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { SideNavComponent } from "./components/sidenav/sidenav.component";
+import { NavigationCardComponent } from "./widgets/navigation-card/navigation-card.component";
+import { NavigateBackComponent } from "./widgets/navigate-back/navigate-back.component";
+import { StudentProfileComponent } from "./components/users/student-profile/student-profile.component";
+import { SearchInputBoxComponent } from "./widgets/search-input-box/search-input-box.component";
+import { SpinnerComponent } from "./components/spinner/spinner.component";
+import { SafePipe } from "./pipes/safe.pipe";
+import { CustomDatePipe } from "./pipes/custom-date.pipe";
+import { FormatDurationPipe } from "./pipes/format-duration.pipe";
+import { NotificationListComponent } from "./components/notifications/notification-list/notification-list.component";
+import { AlertComponent } from "./services/dialogs/alert/alert.component";
+import { DialogConfirmarComponent } from "./components/dialogs/dialog-confirmar/dialog-confirmar.component";
+import { ExitoComponent } from "./components/dialogs/exito/exito.component";
+import { VimeoUploadService } from "./services/vimeo-upload.service";
+import { InitScriptComponent } from "./components/init-script/init-script.component";
+import { SkillsSelectorComponent } from "./components/skills-selector/skills-selector.component";
+import { CourseSelectorComponent } from "./components/course-selector/course-selector.component";
+import { TooltipPointsComponent } from "./components/tooltip-points/tooltip-points.component";
+import { StudyPlanComponent } from "./components/study-plan/study-plan.component";
+import { ProfileSelectorComponent } from "./widgets/profile-selector/profile-selector.component";
+import { FrequentQuestionsComponent } from "./components/frequent-questions/frequent-questions.component";
+import { SkillsSelectorV2Component } from "./components/skills-selector-v2/skills-selector-v2.component";
+import { SupportContactComponent } from "./components/support-contact/support-contact.component";
+import { LicenseStudentListComponent } from "./components/users/license-student-list/license-student-list.component";
+import { QuestionsComponent } from "./components/questions/questions.component";
+import { StatusSelectorComponent } from "./widgets/status-selector/status-selector.component";
+import { DialogRequestLicensesComponent } from "./components/users/license-student-list/dialog-request-licenses/dialog-request-licenses.component";
+import { DialogHistoryLicensesComponent } from "./components/users/license-student-list/dialog-history-licenses/dialog-history-licenses.component";
+import { CustomMonthPipe } from "./pipes/custom-month.pipe";
+import { SupportComponent } from "./components/support/support.component";
+import { DialogDownloadReportComponent } from "./components/dialogs/dialog-download-report/dialog-download-report.component";
+import { IsActivePipe } from "./pipes/is-active.pipe";
+import { SortSkillsPipe } from "./pipes/sort-skills.pipe";
+import { DialogRestorePasswordComponent } from "./components/dialogs/dialog-restore-password/dialog-restore-password.component";
+import { StudentListComponent } from "./components/users/student-list/student-list.component";
+import { DragDropModule } from "@angular/cdk/drag-drop";
+import { HttpClientModule } from "@angular/common/http";
+import { AngularFireAuthModule } from "@angular/fire/compat/auth";
+import { AngularFirestoreModule } from "@angular/fire/compat/firestore";
+import { AngularFireFunctionsModule } from "@angular/fire/compat/functions";
+import { AngularFireStorageModule } from "@angular/fire/compat/storage";
+import { FlexLayoutModule } from "@angular/flex-layout";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatAutocompleteModule } from "@angular/material/autocomplete";
+import { MatButtonToggleModule } from "@angular/material/button-toggle";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatChipsModule } from "@angular/material/chips";
+import { MatDialogModule } from "@angular/material/dialog";
+import { MatExpansionModule } from "@angular/material/expansion";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatListModule } from "@angular/material/list";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatPaginatorModule } from "@angular/material/paginator";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { MatSelectModule } from "@angular/material/select";
+import { MatSidenavModule } from "@angular/material/sidenav";
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
+import { MatSliderModule } from "@angular/material/slider";
+import { MatSortModule } from "@angular/material/sort";
+import { MatTableModule } from "@angular/material/table";
+import { MatTabsModule } from "@angular/material/tabs";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { RouterModule } from "@angular/router";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgChartsModule } from "ng2-charts";
+import { NgxExtendedPdfViewerModule } from "ngx-extended-pdf-viewer";
+import { DialogCreateChargeComponent } from "./components/charges/dialog-create-charge/dialog-create-charge.component";
+import { DialogCreateSubscriptionComponent } from "./components/subscription/dialog-create-subscription/dialog-create-subscription.component";
+import { DialogEditSubscriptionComponent } from "./components/subscription/dialog-edit-subscription/dialog-edit-subscription.component";
+import { DialogStudentEnrolledCourseDetailComponent } from "./components/courses/dialog-student-enrolled-course-detail/dialog-student-enrolled-course-detail.component";
+import { MigrationsComponent } from "./components/migrations/migrations.component";
+import { DialogCreateLicenseComponent } from "./components/license/dialog-create-license/dialog-create-license.component";
+import { DialogEnrollCoursesComponent } from "./components/courses/dialog-enroll-courses/dialog-enroll-courses.component";
 
 @NgModule({
   declarations: [
@@ -116,6 +118,8 @@ import { MigrationsComponent } from './components/migrations/migrations.componen
     DialogEditSubscriptionComponent,
     DialogStudentEnrolledCourseDetailComponent,
     MigrationsComponent,
+    DialogCreateLicenseComponent,
+    DialogEnrollCoursesComponent,
   ],
   imports: [
     CommonModule,
@@ -141,7 +145,7 @@ import { MigrationsComponent } from './components/migrations/migrations.componen
     MatSelectModule,
     MatTabsModule,
     MatMenuModule,
-    MatButtonToggleModule, 
+    MatButtonToggleModule,
     MatIconModule,
     MatListModule,
     MatExpansionModule,
@@ -154,7 +158,7 @@ import { MigrationsComponent } from './components/migrations/migrations.componen
     HttpClientModule,
     NgxExtendedPdfViewerModule,
     DragDropModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
   ],
   exports: [
     SideNavComponent,
@@ -213,7 +217,7 @@ import { MigrationsComponent } from './components/migrations/migrations.componen
     MatSelectModule,
     MatTabsModule,
     MatMenuModule,
-    MatButtonToggleModule, 
+    MatButtonToggleModule,
     MatIconModule,
     MatListModule,
     MatExpansionModule,
@@ -231,11 +235,10 @@ import { MigrationsComponent } from './components/migrations/migrations.componen
     DialogCreateSubscriptionComponent,
     DialogEditSubscriptionComponent,
     DialogStudentEnrolledCourseDetailComponent,
-    MigrationsComponent
+    MigrationsComponent,
+    DialogCreateLicenseComponent,
   ],
 
-  providers: [
-    VimeoUploadService
-  ]
+  providers: [VimeoUploadService],
 })
-export class SharedModule { }
+export class SharedModule {}

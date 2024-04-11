@@ -1,73 +1,103 @@
 <div class="">
-    <table mat-table [dataSource]="dataSource">
+  <table mat-table [dataSource]="dataSource">
+    <ng-container matColumnDef="courseTitle">
+      <th mat-header-cell *matHeaderCellDef class="ft13 centertext">Título</th>
+      <td mat-cell *matCellDef="let data" class="centertext ft11">
+        <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
+          <img
+            [src]="
+              data.coursePhoto
+                ? data.coursePhoto
+                : 'assets/images/default/default-user-image.jpg'
+            "
+            class="avatar2"
+            alt=""
+          />
+          <span>{{ data.courseTitle | titlecase }}</span>
+        </div>
+      </td>
+    </ng-container>
 
-        <ng-container matColumnDef="courseTitle">
-            <th mat-header-cell *matHeaderCellDef class="ft13 centertext"> Título </th>
-            <td mat-cell *matCellDef="let data" class="centertext ft11">
-                <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center" >
-                    <img [src]="data.coursePhoto ? data.coursePhoto : 'assets/images/default/default-user-image.jpg'" class="avatar2" alt="" >
-                    <span>{{ data.courseTitle | titlecase}}</span>
-                </div>
-            </td>
-        </ng-container>
+    <ng-container matColumnDef="isActive">
+      <th mat-header-cell *matHeaderCellDef class="ft13 centertext">Activo</th>
+      <td mat-cell *matCellDef="let data" class="centertext ft11">
+        <mat-icon *ngIf="data.active" class="green-5">check</mat-icon>
+        <mat-icon *ngIf="!data.active" class="red-5">close</mat-icon>
+      </td>
+    </ng-container>
 
-        <ng-container matColumnDef="isActive">
-            <th mat-header-cell *matHeaderCellDef class="ft13 centertext"> Activo </th>
-            <td mat-cell *matCellDef="let data" class="centertext ft11"> 
-                <mat-icon *ngIf="data.active" class="green-5">check</mat-icon>
-                <mat-icon *ngIf="!data.active" class="red-5">close</mat-icon>
-            </td>
-        </ng-container>
+    <ng-container matColumnDef="isExtraCourse">
+      <th mat-header-cell *matHeaderCellDef class="ft13 centertext">
+        Tipo de curso
+      </th>
+      <td mat-cell *matCellDef="let data" class="centertext ft11">
+        <div
+          class="pdt03 pdb03 radius6 backGreen2 green-5"
+          [ngClass]="
+            data.isExtraCourse ? 'backYellow2 orange-2' : 'backGreen2 green-5'
+          "
+        >
+          {{ data.isExtraCourse ? "Extracurricular" : "Plan" }}
+        </div>
+      </td>
+    </ng-container>
 
-        <ng-container matColumnDef="isExtraCourse">
-            <th mat-header-cell *matHeaderCellDef class="ft13 centertext"> Curso extracurricular </th>
-            <td mat-cell *matCellDef="let data" class="centertext ft11"> 
-                <mat-icon *ngIf="data.isExtraCourse" class="green-5">check</mat-icon>
-                <mat-icon *ngIf="!data.isExtraCourse" class="red-5">close</mat-icon>
-            </td>
-        </ng-container>
+    <ng-container matColumnDef="dateStart">
+      <th mat-header-cell *matHeaderCellDef class="ft13 centertext">
+        Fecha de inicio
+      </th>
+      <td mat-cell *matCellDef="let data" class="centertext ft11">
+        {{
+          data.dateStart
+            ? (data.dateStart | date : "dd/MM/yy")
+            : "No ha iniciado"
+        }}
+      </td>
+    </ng-container>
 
-        <ng-container matColumnDef="dateStart">
-            <th mat-header-cell *matHeaderCellDef class="ft13 centertext"> Fecha de inicio </th>
-            <td mat-cell *matCellDef="let data" class="centertext ft11 "> {{ data.dateStart ? (data.dateStart | date:'dd/MM/yy') : "No ha iniciado" }} </td>
-        </ng-container>
+    <ng-container matColumnDef="dateEnd">
+      <th mat-header-cell *matHeaderCellDef class="ft13 centertext">
+        Fecha de finalización
+      </th>
+      <td mat-cell *matCellDef="let data" class="centertext ft11">
+        {{
+          data.dateEnd ? (data.dateEnd | date : "dd/MM/yy") : "No ha finalizado"
+        }}
+      </td>
+    </ng-container>
 
-        <ng-container matColumnDef="dateEnd">
-            <th mat-header-cell *matHeaderCellDef class="ft13 centertext"> Fecha de finalización </th>
-            <td mat-cell *matCellDef="let data" class="centertext ft11"> {{data.dateEnd ? (data.dateEnd | date:'dd/MM/yy') : "No ha finalizado"}} </td>
-        </ng-container>
+    <ng-container matColumnDef="progress">
+      <th mat-header-cell *matHeaderCellDef class="ft13 centertext">
+        Progreso
+      </th>
+      <td mat-cell *matCellDef="let data" class="centertext ft11">
+        {{ data.progress | number : "1.2-2" }}%
+      </td>
+    </ng-container>
 
-        <ng-container matColumnDef="progress">
-            <th mat-header-cell *matHeaderCellDef class="ft13 centertext"> Progreso </th>
-            <td mat-cell *matCellDef="let data" class="centertext ft11"> {{data.progress | number:"1.2-2"}}% </td>
-        </ng-container>
+    <ng-container matColumnDef="finalScore">
+      <th mat-header-cell *matHeaderCellDef class="ft13 centertext">
+        Puntaje final
+      </th>
+      <td mat-cell *matCellDef="let data" class="centertext ft11">
+        {{ data.finalScore }}
+      </td>
+    </ng-container>
 
-        <ng-container matColumnDef="finalScore">
-            <th mat-header-cell *matHeaderCellDef class="ft13 centertext"> Puntaje final </th>
-            <td mat-cell *matCellDef="let data" class="centertext ft11"> {{ data.finalScore }} </td>
-        </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <ng-container>
+      <tr
+        mat-row
+        *matRowDef="let data; columns: displayedColumns"
+        class="cursorPointer"
+        (click)="openEnrolledCourseDetailDialog(data)"
+      ></tr>
+    </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <ng-container>
-            <tr
-                mat-row
-                *matRowDef="let data; columns: displayedColumns;"
-                class="cursorPointer"
-                (click)="openEnrolledCourseDetailDialog(data)"
-                >
-            </tr>
-        </ng-container>
-
-        <tr class="mat-row" *matNoDataRow>
-            <td class="mat-cell" colspan="8">No se han encontrado suscripciones para el criterio de busqueda</td>
-        </tr>
-    </table>
-
-    <mat-paginator
-        aria-label="Select page of subscriptions"
-        [pageSize]="pageSize"
-        [length]="totalLength"
-    ></mat-paginator>
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell" colspan="8">
+        No se han encontrado suscripciones para el criterio de busqueda
+      </td>
+    </tr>
+  </table>
 </div>
-  
-  

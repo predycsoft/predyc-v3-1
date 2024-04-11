@@ -1,37 +1,51 @@
-<div class="container" fxLayout="column">
-    <form [formGroup]="form" (ngSubmit)="saveSubscription()">
-        <div>
-            <span class="ft20 gray-10 ft500">Crear Suscripción</span>
+<form [formGroup]="form" (ngSubmit)="saveSubscription()" >   
+    <div class="modal-header bg-web-primary text-white px-3 py-1" fxLayoutAlign="space-between center" >
+        <div class="modal-title pd10 ">
+            <span class="ft16 ft600 gray-10">
+                {{data.subscription ? "Editar suscripción" : "Crear suscripción"}}
+            </span>
         </div>
-        <div class="fw mgt10" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="2rem">
-            <div class="h50px w-30" fxLayout="column" fxLayoutGap=".75rem">
-                <span class="ft31 gray-9">Comienzo del periodo actual:</span>
-                <input type="datetime-local" formControlName="startedAt" (ngModelChange)="onDateChange()" class="pdl03 pdr03">
-            </div>
-            <div class="h50px w-30" fxLayout="column" fxLayoutGap=".75rem">
+        <img [src]="icon.close" class="h24px pdl5  pdr10 cursorPointer" alt="" (click)="dismiss()">
+    </div>
+    <div fxLayout="row" fxLayoutAlign="center center" class="modal-body">
+        <div class="w-95">
+
+            <div class="fw" fxLayout="column"  fxLayoutGap="1rem">
+                <!-- <span class="ft31 gray-9">Comienzo del periodo actual:</span> -->
+                <span class="ft13 gray-9">Comienzo del periodo actual:</span>
+                <div style="position: relative; border-radius: 20px !important;">
+                    <img [src]="icon.calendarAdd" class="makeGray h16px" alt="" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
+                    <input type="date" formControlName="startedAt" (ngModelChange)="onDateChange()" class="form-control pdl20  radius20 shadow-animation borderLight">
+                </div>
                 <span class="ft13 gray-9">Final de período actual:</span>
-                <input type="datetime-local" formControlName="currentPeriodEnd" (ngModelChange)="showAlertText = false" class="pdl03 pdr03">
-            </div>                  
-            <div class="h50px w-30" fxLayout="column" fxLayoutGap=".75rem">
+                <div style="position: relative; border-radius: 20px !important;">
+                    <img [src]="icon.calendarAdd" class="makeGray h16px" alt="" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
+                    <input type="date" formControlName="currentPeriodEnd" (ngModelChange)="showAlertText = false" class="form-control pdl20  radius20 shadow-animation borderLight">
+                </div>
                 <span class="ft13 gray-9">Producto</span>
-                <mat-select placeholder="Seleccione el producto" formControlName="productId" (ngModelChange)="showAlertText = false" 
-                style="border: 1px solid black;" class="pdl03 pdr03">
+                <mat-select placeholder="Seleccione el producto" formControlName="productId" (ngModelChange)="showAlertText = false" class="form-control radius20 shadow-animation borderLight">
                     <mat-option *ngFor="let product of products" [value]="product.id">{{product.name}}</mat-option>
                 </mat-select>
             </div>
+            <div *ngIf="showAlertText" class="mgt15" fxLayout="row" fxLayoutAlign="center center">
+                <span style="color: red !important">Debes elegir un producto y fecha final</span>
+            </div>
+            <div class="fw mgt15" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="1.5rem">
+                <div style="display: flex; align-items: center; justify-content: center">
+                    <!-- Contenedor para los dos botones de la derecha -->
+                    <button class="blueButtonAnim button-animation h28px mgr10" fxLayout="row" fxLayoutAlign="center center" type="submit">
+                        <img [src]="icon.save" class="h20px makeWhite pdr03" alt="">
+                        Guardar
+                    </button>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: center">
+                    <!-- Contenedor para los dos botones de la derecha -->
+                    <button (click)="cancel()" class="redButtonAnim button-animation h28px mgr10" fxLayout="row" fxLayoutAlign="center center" type="submit">
+                        <img [src]="icon.close" class="h20px makeWhite pdr03" alt="">
+                        Cancelar
+                    </button>
+                </div>
+            </div>
         </div>
-        <div *ngIf="showAlertText" class="mgt15" fxLayout="row" fxLayoutAlign="center center">
-            <span style="color: red !important">Debes elegir un producto y fecha final</span>
-        </div>
-        <div class="fw mgt15" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="1.5rem">
-            <button class="backBlue5 pd03 radius6 w150px centertext cursorPointer" fxLayoutAlign="center center" fxLayout="row" fxLayoutGap=".5rem" type="submit">
-                <mat-icon class="ft16 gray-1 pd0">save</mat-icon>
-                <span class="gray-1 ft12 ft500">Guardar</span>
-            </button>
-            <button (click)="cancel()" class="backRed5 pd03 radius6 w150px centertext cursorPointer" fxLayoutAlign="center center" fxLayout="row" fxLayoutGap=".5rem" type="button">
-                <mat-icon class="ft16 gray-1 pd0">cancel</mat-icon>
-                <span class="gray-1 ft12 ft500 ">Cancelar</span>
-            </button>
-        </div>
-    </form>
-</div>
+    </div>
+</form>

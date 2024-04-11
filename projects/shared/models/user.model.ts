@@ -1,58 +1,57 @@
-import { DocumentReference } from "@angular/fire/compat/firestore"
-import { Profile } from "./profile.model"
-import { Enterprise } from "./enterprise.model"
-import { Department } from "./department.model"
-import { Subscription } from "./subscription.model"
+import { DocumentReference } from "@angular/fire/compat/firestore";
+import { Profile } from "./profile.model";
+import { Enterprise } from "./enterprise.model";
+import { Department } from "./department.model";
+import { Subscription } from "./subscription.model";
 
 export interface UserJson {
-  birthdate: number | null
-  canEnrollParticularCourses: boolean
-  city: string | null
-  country: string | null
-  courseQty: number
-  createdAt: number | null // timestamp
-  currentlyWorking: boolean
-  degree: string | null
-  departmentRef: DocumentReference<Department> | null
-  displayName: string | null
-  email: string | null
-  enterprise: DocumentReference | null
-  experience: number | null
-  gender: string | null
-  hasCollegeDegree: boolean
-  hiringDate: number | null
-  industry: string | null
-  job: string | null
-  lastConnection: number | null // timestamp
-  mailchimpTag: string | null
-  name: string | null
-  phoneNumber: string | null
-  photoUrl: string | null
-  zipCode: number | null
-  profile: DocumentReference<Profile> | null
-  isSystemUser: boolean
-  role: typeof User.ROLE_ADMIN | typeof User.ROLE_STUDENT
-  isActive: boolean
-  stripeId: string | null
-  uid: string | null
-  updatedAt: number | null
-  avgScore: number
-  certificatesQty: number
-  performance: 'no plan' | 'low' | 'medium' | 'high' | "no iniciado" | null
-  ratingPoints: number
-  studyHours: number
-  status: string // improve the type options
+  birthdate: number | null;
+  canEnrollParticularCourses: boolean;
+  city: string | null;
+  country: string | null;
+  courseQty: number;
+  createdAt: number | null; // timestamp
+  currentlyWorking: boolean;
+  degree: string | null;
+  departmentRef: DocumentReference<Department> | null;
+  displayName: string | null;
+  email: string | null;
+  enterprise: DocumentReference | null;
+  experience: number | null;
+  gender: string | null;
+  hasCollegeDegree: boolean;
+  hiringDate: number | null;
+  industry: string | null;
+  job: string | null;
+  lastConnection: number | null; // timestamp
+  mailchimpTag: string | null;
+  name: string | null;
+  phoneNumber: string | null;
+  photoUrl: string | null;
+  zipCode: number | null;
+  profile: DocumentReference<Profile> | null;
+  isSystemUser: boolean;
+  role: typeof User.ROLE_ADMIN | typeof User.ROLE_STUDENT;
+  isActive: boolean;
+  stripeId: string | null;
+  uid: string | null;
+  updatedAt: number | null;
+  avgScore: number;
+  certificatesQty: number;
+  performance: "no plan" | "low" | "medium" | "high" | "no iniciado" | null;
+  ratingPoints: number;
+  studyHours: number;
+  status: string; // improve the type options
 }
 
 export class User {
+  public static collection = "user";
+  public static storageProfilePhotoFolder = "User/Profile photos";
+  public static ROLE_ADMIN = "admin";
+  public static ROLE_STUDENT = "student";
 
-  public static collection = 'user'
-  public static storageProfilePhotoFolder = 'User/Profile photos'
-  public static ROLE_ADMIN = 'admin'
-  public static ROLE_STUDENT = 'student'
-
-  public enterpriseData?: Enterprise
-  public profileData?: Profile
+  public enterpriseData?: Enterprise;
+  public profileData?: Profile;
 
   constructor(
     public birthdate: number | null,
@@ -86,17 +85,21 @@ export class User {
     public stripeId: string | null,
     public uid: string | null,
     public updatedAt: number | null,
-    
 
     // metrics
     public avgScore: number,
     public certificatesQty: number,
-    public performance: 'no plan' | 'low' | 'medium' | 'high' |  "no iniciado" |  null,
+    public performance:
+      | "no plan"
+      | "low"
+      | "medium"
+      | "high"
+      | "no iniciado"
+      | null,
     public ratingPoints: number,
     public studyHours: number,
 
-    public status: string,
-
+    public status: string
   ) {}
 
   public static getEnterpriseAdminUser(enterprise) {
@@ -104,42 +107,42 @@ export class User {
       isSystemUser: false,
       role: User.ROLE_ADMIN,
       enterprise: enterprise,
-    })
+    });
   }
 
   public static getEnterpriseStudentUser(enterprise) {
     return User.getNewUser({
       isSystemUser: false,
       role: User.ROLE_STUDENT,
-      enterprise: enterprise
-    })
+      enterprise: enterprise,
+    });
   }
 
   public static getSystemAdminUser() {
     return User.getNewUser({
       isSystemUser: true,
       role: User.ROLE_ADMIN,
-    })
+    });
   }
 
   public static getSystemStudentUser() {
     return User.getNewUser({
       isSystemUser: true,
       role: User.ROLE_STUDENT,
-    })
+    });
   }
 
   public static getStudentUser() {
     return User.getNewUser({
       isSystemUser: false,
       role: User.ROLE_STUDENT,
-    })
+    });
   }
 
   private static getNewUser(configObj: {
-    isSystemUser: boolean,
-    role: typeof User.ROLE_ADMIN | typeof User.ROLE_STUDENT,
-    enterprise?: DocumentReference,
+    isSystemUser: boolean;
+    role: typeof User.ROLE_ADMIN | typeof User.ROLE_STUDENT;
+    enterprise?: DocumentReference;
   }): User {
     return User.fromJson({
       birthdate: null,
@@ -153,7 +156,7 @@ export class User {
       departmentRef: null,
       displayName: null,
       email: null,
-      enterprise: configObj.enterprise ? configObj.enterprise : null, 
+      enterprise: configObj.enterprise ? configObj.enterprise : null,
       experience: null,
       gender: null,
       hasCollegeDegree: false,
@@ -178,8 +181,8 @@ export class User {
       performance: null,
       ratingPoints: 0,
       studyHours: 0,
-      status: Subscription.STATUS_INACTIVE
-    })
+      status: Subscription.STATUS_INACTIVE,
+    });
   }
 
   public static fromJson(userJson: UserJson): User {
@@ -195,7 +198,7 @@ export class User {
       userJson.departmentRef,
       userJson.displayName,
       userJson.email,
-      userJson.enterprise, 
+      userJson.enterprise,
       userJson.experience,
       userJson.gender,
       userJson.hasCollegeDegree,
@@ -221,7 +224,7 @@ export class User {
       userJson.ratingPoints,
       userJson.studyHours,
       userJson.status
-    )
+    );
   }
 
   toJson(): UserJson {
@@ -262,16 +265,15 @@ export class User {
       performance: this.performance,
       ratingPoints: this.ratingPoints,
       studyHours: this.studyHours,
-      status: this.status
-    }
+      status: this.status,
+    };
   }
 
   patchValue(obj: Object) {
-    Object.keys(obj).forEach(key => {
-      if (this.hasOwnProperty(key)) this[key] = obj[key]
-    })
+    Object.keys(obj).forEach((key) => {
+      if (this.hasOwnProperty(key)) this[key] = obj[key];
+    });
   }
-
 }
 
 export class oldUser {
