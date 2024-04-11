@@ -29,6 +29,7 @@ import {
   QuerySnapshot,
 } from "@angular/fire/compat/firestore";
 import {
+  Curso,
   Profile,
   ProfileJson,
   User as UserClass,
@@ -88,7 +89,6 @@ export class DashboardComponent {
       .collection(Profile.collection)
       .ref.get()) as QuerySnapshot<ProfileJson>;
     const profiles = profilesSnapshot.docs.map((doc) => doc.data());
-    console.log(profiles);
     for (let profile of profiles) {
       const newCoursesRef = profile.coursesRef.map((item, idx) => {
         return {
@@ -97,7 +97,7 @@ export class DashboardComponent {
         };
       });
       const usersSnapshot: QuerySnapshot<UserJson> = (await this.afs
-        .collection(Profile.collection)
+        .collection(UserClass.collection)
         .ref.where(
           "profile",
           "==",
@@ -108,7 +108,7 @@ export class DashboardComponent {
       for (let user of users) {
         const coursesSnapshot: QuerySnapshot<CourseByStudentJson> =
           (await this.afs
-            .collection(Profile.collection)
+            .collection(CourseByStudent.collection)
             .ref.where(
               "userRef",
               "==",
