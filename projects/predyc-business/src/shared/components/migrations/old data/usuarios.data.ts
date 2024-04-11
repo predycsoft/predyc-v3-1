@@ -1959,7 +1959,7 @@ export const oldUsers = [
                 "fechaInicio": 1692079200000,
                 "certificado": "",
                 "puntaje": 0,
-                "cursoTitulo": "Análisis Económico de Proyectos",
+                "cursoTitulo": "Análisis Económico de Proyectos", //
                 "fechaCompletacion": 0
             },
             {
