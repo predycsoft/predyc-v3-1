@@ -211,6 +211,15 @@ export class LicenseService {
       .set(license, { merge: true });
   }
 
+  async saveLicenses(licenses: LicenseJson[]): Promise<void> {
+    const batch = this.afs.firestore.batch();
+    licenses.forEach(license => {
+      const docRef = this.afs.firestore.collection(License.collection).doc(license.id);
+      batch.set(docRef, license, { merge: true });
+    });
+    await batch.commit();
+  }
+
   public getLicenseRefById(id: string): DocumentReference<License> {
     return this.afs.collection<License>(License.collection).doc(id).ref;
   }

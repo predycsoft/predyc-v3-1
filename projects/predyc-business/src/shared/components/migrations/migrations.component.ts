@@ -26,7 +26,7 @@ import { SkillService } from '../../services/skill.service';
 import { instructorsData } from 'projects/predyc-business/src/assets/data/instructors.data';
 import { InstructorsService } from '../../services/instructors.service';
 import { Clase } from 'projects/functions/dist/shared/models/course-class.model';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { coursesData } from 'projects/predyc-business/src/assets/data/courses.data';
 import { Curso } from 'projects/functions/dist/shared/models/course.model';
 import { capitalizeFirstLetter } from 'projects/functions/dist/shared/utils';
@@ -39,7 +39,7 @@ import { CourseClassService } from '../../services/course-class.service';
 import { ModuleService } from '../../services/module.service';
 import { Modulo } from 'projects/functions/dist/shared/models/module.model';
 import { ClassByStudent, ClassByStudentJson } from 'projects/functions/dist/shared/models/class-by-student.model';
-// import { oldCursos } from './old data/cursos.data';
+import { oldCursos } from './old data/cursos.data';
 
 
 @Component({
@@ -206,7 +206,7 @@ export class MigrationsComponent {
 
   }
 
-  async migrateCourses() {
+  async migrateCoursesAndClasses() {
     // Create categories
     console.log('********* Creating Categories *********')
     const categories: Category[] = categoriesData.map(category => {
@@ -246,7 +246,7 @@ export class MigrationsComponent {
       await this.instructorsService.addInstructor(instructor);
       this.instructors.push(instructor);
     }
-    console.log(`Finished Creating Instructors`, this.instructors);
+    // console.log(`Finished Creating Instructors`, this.instructors);
 
     console.log('********* Creating Courses *********');
     await this.uploadCursosLegacy();
@@ -298,84 +298,84 @@ export class MigrationsComponent {
       cursoIn.skillsRef = skillsRef
       await this.courseService.saveCourse(cursoIn)
 
-      // CLASES
-      let clasesData = curso.clases;
-      let modulos = clasesData.modulos
-      let clases = clasesData.clases
-      let actividades = curso.actividades
+      // ---------- CLASES
+      // let clasesData = curso.clases;
+      // let modulos = clasesData.modulos
+      // let clases = clasesData.clases
+      // let actividades = curso.actividades
 
-      modulos.sort(function(a, b) {
-        var keyA = new Date(a.numero),
-          keyB = new Date(b.numero);
-        // Compare the 2 dates
-        if (keyA < keyB) return -1;
-        if (keyA > keyB) return 1;
-        return 0;
-      });
+      // modulos.sort(function(a, b) {
+      //   var keyA = new Date(a.numero),
+      //     keyB = new Date(b.numero);
+      //   // Compare the 2 dates
+      //   if (keyA < keyB) return -1;
+      //   if (keyA > keyB) return 1;
+      //   return 0;
+      // });
 
-      // console.log('modulos crear ordenados',modulos)
+      // // console.log('modulos crear ordenados',modulos)
 
-      for (let index = 0; index < modulos.length; index++) {
-        const modulo = modulos[index];
-        let clasesModulo = clases.filter(x=> x.modulo == modulo.numero)
-        let arrayClassesRef = []
-        for (let index = 0; index < clasesModulo.length; index++) {
-          const clase = clasesModulo[index];
-          let claseLocal = new Clase;
-          let claseRef = this.afs.collection<Clase>(Clase.collection).doc().ref;
-          arrayClassesRef.push(claseRef)
-          claseLocal.id = claseRef.id
-          claseLocal.HTMLcontent = clase.HTMLcontent;
-          claseLocal.archivos = clase.archivos.map(archivo => ({ // Usando map aquí para transformar la estructura del archivo.
-            id: Date.now(),
-            nombre: archivo.nombre,
-            size: archivo.size,
-            type: archivo.type,
-            url: archivo.url
-          }));
-          claseLocal.tipo = clase.tipo
-          claseLocal.vimeoId1 = clase.idVideo
-          claseLocal.instructorRef = instructorRef
-          claseLocal.duracion = clase.duracion
-          claseLocal.descripcion = clase.descripcion
-          claseLocal.titulo = clase.titulo
-          claseLocal.date = clase.id
+      // for (let index = 0; index < modulos.length; index++) {
+      //   const modulo = modulos[index];
+      //   let clasesModulo = clases.filter(x=> x.modulo == modulo.numero)
+      //   let arrayClassesRef = []
+      //   for (let index = 0; index < clasesModulo.length; index++) {
+      //     const clase = clasesModulo[index];
+      //     let claseLocal = new Clase;
+      //     let claseRef = this.afs.collection<Clase>(Clase.collection).doc().ref;
+      //     arrayClassesRef.push(claseRef)
+      //     claseLocal.id = claseRef.id
+      //     claseLocal.HTMLcontent = clase.HTMLcontent;
+      //     claseLocal.archivos = clase.archivos.map(archivo => ({ // Usando map aquí para transformar la estructura del archivo.
+      //       id: Date.now(),
+      //       nombre: archivo.nombre,
+      //       size: archivo.size,
+      //       type: archivo.type,
+      //       url: archivo.url
+      //     }));
+      //     claseLocal.tipo = clase.tipo
+      //     claseLocal.vimeoId1 = clase.idVideo
+      //     claseLocal.instructorRef = instructorRef
+      //     claseLocal.duracion = clase.duracion
+      //     claseLocal.descripcion = clase.descripcion
+      //     claseLocal.titulo = clase.titulo
+      //     claseLocal.date = clase.id
 
-          console.log('clase save',clase)
-          if(clase.tipo == 'actividad'){
-            let idActividad = clase.idVideo
-            let actividadIn = actividades.find(x=> x.id == idActividad)
-            if(actividadIn){
-              let actividad = new Activity
-              actividad.type = 'regular'
-              actividad.title = actividadIn.title
-              actividad.createdAt = actividadIn.createdAt
-              actividad.coursesRef = [courseRef]
-              // actividad.description = actividadIn.titulo
-              actividad.claseRef = claseRef
-              // console.log('actividadIn', actividad)
-              await this.activityClassesService.saveActivity(actividad);
-              let preguntas = actividadIn.questions
-              for (let index = 0; index < preguntas.length; index++) {
-                const pregunta = {
-                  ...preguntas[index],
-                  type: preguntas[index].type.value
-                }
-                this.activityClassesService.saveQuestion(pregunta, actividad.id)
-              }
-            }
-          }
-          await this.courseClassService.saveClass(claseLocal);
-        }
-        let idRef = this.afs.collection<Modulo>(Modulo.collection).doc().ref.id;
-        //console.log('modulo',modulo)
-        let module = new Modulo;
-        module.id = idRef;
-        module.numero = modulo.numero;
-        module.titulo = modulo.titulo;
-        module.clasesRef = arrayClassesRef;
-        await this.moduleService.saveModulo(module, courseRef.id)
-      }
+      //     console.log('clase save',clase)
+      //     if(clase.tipo == 'actividad'){
+      //       let idActividad = clase.idVideo
+      //       let actividadIn = actividades.find(x=> x.id == idActividad)
+      //       if(actividadIn){
+      //         let actividad = new Activity
+      //         actividad.type = 'regular'
+      //         actividad.title = actividadIn.title
+      //         actividad.createdAt = actividadIn.createdAt
+      //         actividad.coursesRef = [courseRef]
+      //         // actividad.description = actividadIn.titulo
+      //         actividad.claseRef = claseRef
+      //         // console.log('actividadIn', actividad)
+      //         await this.activityClassesService.saveActivity(actividad);
+      //         let preguntas = actividadIn.questions
+      //         for (let index = 0; index < preguntas.length; index++) {
+      //           const pregunta = {
+      //             ...preguntas[index],
+      //             type: preguntas[index].type.value
+      //           }
+      //           this.activityClassesService.saveQuestion(pregunta, actividad.id)
+      //         }
+      //       }
+      //     }
+      //     await this.courseClassService.saveClass(claseLocal);
+      //   }
+      //   let idRef = this.afs.collection<Modulo>(Modulo.collection).doc().ref.id;
+      //   //console.log('modulo',modulo)
+      //   let module = new Modulo;
+      //   module.id = idRef;
+      //   module.numero = modulo.numero;
+      //   module.titulo = modulo.titulo;
+      //   module.clasesRef = arrayClassesRef;
+      //   await this.moduleService.saveModulo(module, courseRef.id)
+      // }
 
 
       // console.log(` ----- Course ${index} Added ----- `)
@@ -404,7 +404,7 @@ export class MigrationsComponent {
 
   async migrateCoursesByStudent() {
 
-    await this.migrateCourses() 
+    await this.migrateCoursesAndClasses() 
     
     const oldUsersData: any[] = oldUsers
 
@@ -446,38 +446,50 @@ export class MigrationsComponent {
     console.log("CoursesByStudent migrated")
   }
 
-  // async migrateClassesByStudent() {
-  //   const oldCoursesData = oldCursos
-  //   const allClassesByStudent: ClassByStudentJson[] = []
+  async migrateClassesByStudent() {
+    console.log("***** Creating classeByStudent")
+    const oldCoursesData = oldCursos
+    const allClassesByStudent: ClassByStudentJson[] = []
 
-  //   for (let oldCourse of oldCoursesData) {
-  //     const classesByStudent: ClassByStudentJson[] = oldCourse.clases.map(clase => {
-  //       return {
-  //         active: null,
-  //         classRef: null,
-  //         completed: null,
-  //         coursesByStudentRef: null,
-  //         dateEnd: null,
-  //         dateStart: null,
-  //         id: null,
-  //         review: null,
-  //         reviewDate: null,
-  //         userRef: null,
-  //       }
-  //     })
-  //     allClassesByStudent.push(...classesByStudent)
-  //   }
+    const coursesIdMap = await this.courseService.getCourseIdMappings()
+
+    for (let oldCourse of oldCoursesData) {
+      if (oldCourse.clases) {
+        console.log("--- ", oldCourse.cursoTitulo)
+        const classesByStudent = oldCourse.clases.map(async clase => {
+          const courseRef: DocumentReference<Curso> | null = coursesIdMap[oldCourse.cursoId] ? this.courseService.getCourseRefById(oldCourse.cursoId) : null
+          const userRef: DocumentReference<User> = this.userService.getUserRefById(oldCourse.usuarioId)
+          const courseByStudent: CourseByStudent = await this.courseService.getCourseByStudent(userRef, courseRef)
+  
+          return {
+            active: true,
+            classRef: null, // ????  this is the most important
+            completed: clase.completado,
+            coursesByStudentRef: this.courseService.getCourseByStudentRef(courseByStudent.id),
+            dateEnd: null, // ???
+            dateStart: null, // ???
+            id: null,
+            review: null, // ???
+            reviewDate: null, // ???
+            userRef: userRef,
+          }
+        })
+        const resolvedClassesByStudent = await Promise.all(classesByStudent);
+        allClassesByStudent.push(...resolvedClassesByStudent)
+      }
+    }
 
 
-  //   console.log("allClassesByStudent", allClassesByStudent)
-  //   for (let courseByStudent of allClassesByStudent) {
-  //     const ref = this.afs.collection<ClassByStudent>(ClassByStudent.collection).doc().ref;
-  //     courseByStudent.id = ref.id
-  //     await this.afs.collection(ClassByStudent.collection).doc(courseByStudent.id).set(courseByStudent);
-  //   }
-  //   this.classesByStudent = allClassesByStudent
-  //   console.log("CoursesByStudent migrated")
-  // }
+    console.log("allClassesByStudent", allClassesByStudent)
+    console.log("setting in database")
+    for (let classByStudent of allClassesByStudent) {
+      const ref = this.afs.collection<ClassByStudent>(ClassByStudent.collection).doc().ref;
+      classByStudent.id = ref.id
+      await this.afs.collection(ClassByStudent.collection).doc(classByStudent.id).set(classByStudent);
+    }
+    this.classesByStudent = allClassesByStudent
+    console.log("ClassesByStudent migrated")
+  }
 
   // --------------------------- Other migrations.
 
@@ -525,12 +537,9 @@ export class MigrationsComponent {
 
   // }
   
-  // it is not finished. we need to create courses collection first
+  // // it is not finished. we need to create courses collection first
   // async migrateProfiles() {
-  //   // --------------- Import and use one at a time ---------------
-  //   // const oldEnterprisesData: any[] = oldEmpresasCLientes
-  //   // const oldEnterprisesData: any[] = oldEmpresasCLientes2
-  //   const oldEnterprisesData: any[] = oldEmpresasCLientes3
+  //   const oldEnterprisesData: any[] = oldEmpresasCLientes
 
   //   const profilesInNewModel: ProfileJson[] = []
 

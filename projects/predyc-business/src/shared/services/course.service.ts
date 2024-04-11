@@ -1016,4 +1016,19 @@ export class CourseService {
       )
       .valueChanges();
   }
+
+  async getCourseIdMappings(): Promise<{ [key: string]: string }> {
+    // Object to store the mapping
+    let idMappings: { [key: string]: string } = {};
+  
+    const coursesSnapshot = await firstValueFrom(this.afs.collection<Curso>(Curso.collection).get());
+  
+    coursesSnapshot.forEach(doc => {
+      const data = doc.data();
+      if (data.idOld && data.id) {
+        idMappings[data.idOld] = data.id;
+      }
+    });
+    return idMappings;
+  }
 }
