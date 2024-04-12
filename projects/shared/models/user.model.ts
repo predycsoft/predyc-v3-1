@@ -12,16 +12,13 @@ export interface UserJson {
   courseQty: number;
   createdAt: number | null; // timestamp
   currentlyWorking: boolean;
-  degree: string | null;
   departmentRef: DocumentReference<Department> | null;
   displayName: string | null;
   email: string | null;
   enterprise: DocumentReference | null;
   experience: number | null;
   gender: string | null;
-  hasCollegeDegree: boolean;
   hiringDate: number | null;
-  industry: string | null;
   job: string | null;
   lastConnection: number | null; // timestamp
   mailchimpTag: string | null;
@@ -61,16 +58,13 @@ export class User {
     public courseQty: number,
     public createdAt: number | null, // timestamp
     public currentlyWorking: boolean,
-    public degree: string | null,
     public departmentRef: DocumentReference<Department> | null,
     public displayName: string | null,
     public email: string | null,
     public enterprise: DocumentReference | null,
     public experience: number | null,
     public gender: string | null,
-    public hasCollegeDegree: boolean,
     public hiringDate: number | null,
-    public industry: string | null, // Required?
     public job: string | null,
     public lastConnection: number | null, // timestamp
     public mailchimpTag: string | null,
@@ -152,16 +146,13 @@ export class User {
       courseQty: 0,
       createdAt: null,
       currentlyWorking: false,
-      degree: null,
       departmentRef: null,
       displayName: null,
       email: null,
       enterprise: configObj.enterprise ? configObj.enterprise : null,
       experience: null,
       gender: null,
-      hasCollegeDegree: false,
       hiringDate: null,
-      industry: null,
       isSystemUser: configObj.isSystemUser,
       job: null,
       lastConnection: null,
@@ -194,16 +185,13 @@ export class User {
       userJson.courseQty,
       userJson.createdAt,
       userJson.currentlyWorking,
-      userJson.degree,
       userJson.departmentRef,
       userJson.displayName,
       userJson.email,
       userJson.enterprise,
       userJson.experience,
       userJson.gender,
-      userJson.hasCollegeDegree,
       userJson.hiringDate,
-      userJson.industry,
       userJson.job,
       userJson.lastConnection,
       userJson.mailchimpTag,
@@ -236,16 +224,13 @@ export class User {
       courseQty: this.courseQty,
       createdAt: this.createdAt,
       currentlyWorking: this.currentlyWorking,
-      degree: this.degree,
       departmentRef: this.departmentRef,
       displayName: this.displayName,
       email: this.email,
       enterprise: this.enterprise,
       experience: this.experience,
       gender: this.gender,
-      hasCollegeDegree: this.hasCollegeDegree,
       hiringDate: this.hiringDate,
-      industry: this.industry,
       isSystemUser: this.isSystemUser,
       job: this.job,
       lastConnection: this.lastConnection,

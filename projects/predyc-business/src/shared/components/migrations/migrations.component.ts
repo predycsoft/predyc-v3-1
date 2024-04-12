@@ -110,51 +110,6 @@ export class MigrationsComponent {
     await this.enterpriseService.saveEnterprises(enterprisesInNewModel)
   }
 
-
-  public permissionsToJson(permissions: Permissions): PermissionsJson {
-    return {
-      hoursPerWeek: permissions.hoursPerWeek,
-      studyLiberty: permissions.studyLiberty,
-      studyplanGeneration: permissions.studyplanGeneration,
-      attemptsPerTest: permissions.attemptsPerTest,
-      createCourses: permissions.createCourses,      
-    };
-  }
-
-  async migrateLicenses() {
-    const oldEnterprisesData: any[] = oldEmpresasCLientes
-    const licensesInNewModel: LicenseJson[] = []
-
-    for (let oldEnterpriseData of oldEnterprisesData) {
-      if (oldEnterpriseData.licences) {
-        for (let oldLicenseData of oldEnterpriseData.licences) {
-          const licenseInNewModel: LicenseJson = {
-            createdAt: oldLicenseData.createdAt,
-            currentPeriodEnd: oldLicenseData.currentPeriodEnd,
-            currentPeriodStart: oldLicenseData.currentPeriodStart,
-            enterpriseRef: this.enterpriseService.getEnterpriseRefById(oldEnterpriseData.id),
-            failedRotationCount: null, // new
-            id: oldLicenseData.id,
-            productRef: this.productService.getProductRefById(oldLicenseData.priceId),
-            quantity: oldLicenseData.quantity,
-            quantityUsed: oldLicenseData.retrieveBy.length,
-            rotations: null, // new
-            rotationsUsed: null, //new
-            rotationsWaitingCount: null, // new
-            startedAt: oldLicenseData.startedAt,
-            status: oldLicenseData.status === SubscriptionClass.STATUS_ACTIVE ? SubscriptionClass.STATUS_ACTIVE : SubscriptionClass.STATUS_INACTIVE,
-          }
-          licensesInNewModel.push(licenseInNewModel)
-        }
-      }
-    }
-
-    await this.licenseService.saveLicenses(licensesInNewModel)
-    console.log("licensesInNewModel", licensesInNewModel)
-
-  }
-
-
   async migrateUsers() {
     const oldUsersData: any[] = oldUsers
 
@@ -169,16 +124,13 @@ export class MigrationsComponent {
         courseQty: oldUserData.cantCursos,
         createdAt: firestoreTimestampToNumberTimestamp(oldUserData.fechaRegistro),
         currentlyWorking: null,
-        degree: null,  // not using
         departmentRef: null, // ***
         displayName: oldUserData.displayName ? oldUserData.displayName : oldUserData.name,
         email: oldUserData.email,
         enterprise: this.enterpriseService.getEnterpriseRefById(oldUserData.empresaId),
         experience: oldUserData.experience ? oldUserData.experience : oldUserData.anosExperiencia,
         gender: oldUserData.genero,
-        hasCollegeDegree: null, //not using
         hiringDate: oldUserData.hiringDate, 
-        industry: null, //not using
         job: oldUserData.cargo ? oldUserData.cargo : oldUserData.profesion ? oldUserData.profesion : "",
         lastConnection: null, // ????? not using
         mailchimpTag: oldUserData.mailchimpTag,
@@ -251,6 +203,105 @@ export class MigrationsComponent {
     console.log('********* Creating Courses *********');
     await this.uploadCursosLegacy();
     console.log(`Finished Creating Courses`);
+  }
+
+  async migrateCoursesByStudent() {
+
+    await this.migrateCoursesAndClasses() 
+    
+    const oldUsersData: any[] = oldUsers
+
+    const coursesIdMap = await this.courseService.getCourseIdMappings()
+
+    // console.log("coursesIdMap", coursesIdMap)
+
+    const allCoursesByStudent: CourseByStudentJson[] = []
+
+    for (let oldUser of oldUsersData) {
+      const coursesByStudent: CourseByStudentJson[] = oldUser.studyPlan.map(studyPlanCourse => {
+        return {
+          active: true, // ???
+          courseRef: coursesIdMap[studyPlanCourse.cursoId] ? this.courseService.getCourseRefById(studyPlanCourse.cursoId) : null,
+          // courseRef: this.courseService.getCourseRefById(coursesIdMap[studyPlanCourse.cursoId]),
+          dateEnd: new Date(studyPlanCourse.fechaCompletacion),
+          dateEndPlan: new Date(studyPlanCourse.fechaFin),
+          dateStart: null, // course -> inscritos -> .fechaInscripcion ??? 
+          dateStartPlan: new Date(studyPlanCourse.fechaInicio),
+          finalScore: null,
+          id: null, //set it later
+          progress: null, // get it from course -> inscritos
+          userRef: this.userService.getUserRefById(oldUser.uid),
+          courseTime: studyPlanCourse.duracion,
+          progressTime: null,
+          isExtraCourse: false,
+        }
+      })
+      allCoursesByStudent.push(...coursesByStudent)
+    }
+
+    console.log("allCoursesByStudent", allCoursesByStudent)
+    for (let courseByStudent of allCoursesByStudent) {
+      const ref = this.afs.collection<CourseByStudent>(CourseByStudent.collection).doc().ref;
+      courseByStudent.id = ref.id
+      await this.afs.collection(CourseByStudent.collection).doc(courseByStudent.id).set(courseByStudent);
+    }
+    this.coursesByStudent = allCoursesByStudent
+    console.log("CoursesByStudent migrated")
+  }
+
+  async migrateClassesByStudent() {
+    console.log("***** Creating classeByStudent")
+    const oldCoursesData = oldCursos
+    const allClassesByStudent: ClassByStudentJson[] = []
+
+    const coursesIdMap = await this.courseService.getCourseIdMappings()
+
+    for (let oldCourse of oldCoursesData) {
+      if (oldCourse.clases) {
+        console.log("--- ", oldCourse.cursoTitulo)
+        const classesByStudent = oldCourse.clases.map(async clase => {
+          const courseRef: DocumentReference<Curso> | null = coursesIdMap[oldCourse.cursoId] ? this.courseService.getCourseRefById(oldCourse.cursoId) : null
+          const userRef: DocumentReference<User> = this.userService.getUserRefById(oldCourse.usuarioId)
+          const courseByStudent: CourseByStudent = await this.courseService.getCourseByStudent(userRef, courseRef)
+  
+          return {
+            active: true,
+            classRef: null, // ????  this is the most important
+            completed: clase.completado,
+            coursesByStudentRef: this.courseService.getCourseByStudentRef(courseByStudent.id),
+            dateEnd: null, // ???
+            dateStart: null, // ???
+            id: null,
+            review: null, // ???
+            reviewDate: null, // ???
+            userRef: userRef,
+          }
+        })
+        const resolvedClassesByStudent = await Promise.all(classesByStudent);
+        allClassesByStudent.push(...resolvedClassesByStudent)
+      }
+    }
+
+
+    console.log("allClassesByStudent", allClassesByStudent)
+    console.log("setting in database")
+    for (let classByStudent of allClassesByStudent) {
+      const ref = this.afs.collection<ClassByStudent>(ClassByStudent.collection).doc().ref;
+      classByStudent.id = ref.id
+      await this.afs.collection(ClassByStudent.collection).doc(classByStudent.id).set(classByStudent);
+    }
+    this.classesByStudent = allClassesByStudent
+    console.log("ClassesByStudent migrated")
+  }
+
+  public permissionsToJson(permissions: Permissions): PermissionsJson {
+    return {
+      hoursPerWeek: permissions.hoursPerWeek,
+      studyLiberty: permissions.studyLiberty,
+      studyplanGeneration: permissions.studyplanGeneration,
+      attemptsPerTest: permissions.attemptsPerTest,
+      createCourses: permissions.createCourses,      
+    };
   }
 
   async uploadCursosLegacy() {
@@ -402,95 +453,6 @@ export class MigrationsComponent {
     });
   }
 
-  async migrateCoursesByStudent() {
-
-    await this.migrateCoursesAndClasses() 
-    
-    const oldUsersData: any[] = oldUsers
-
-    const coursesIdMap = await this.courseService.getCourseIdMappings()
-
-    // console.log("coursesIdMap", coursesIdMap)
-
-    const allCoursesByStudent: CourseByStudentJson[] = []
-
-    for (let oldUser of oldUsersData) {
-      const coursesByStudent: CourseByStudentJson[] = oldUser.studyPlan.map(studyPlanCourse => {
-        return {
-          active: true, // ???
-          courseRef: coursesIdMap[studyPlanCourse.cursoId] ? this.courseService.getCourseRefById(studyPlanCourse.cursoId) : null,
-          // courseRef: this.courseService.getCourseRefById(coursesIdMap[studyPlanCourse.cursoId]),
-          dateEnd: new Date(studyPlanCourse.fechaCompletacion),
-          dateEndPlan: new Date(studyPlanCourse.fechaFin),
-          dateStart: null, // course -> inscritos -> .fechaInscripcion ??? 
-          dateStartPlan: new Date(studyPlanCourse.fechaInicio),
-          finalScore: null,
-          id: null, //set it later
-          progress: null, // get it from course -> inscritos
-          userRef: this.userService.getUserRefById(oldUser.uid),
-          courseTime: studyPlanCourse.duracion,
-          progressTime: null,
-          isExtraCourse: false,
-        }
-      })
-      allCoursesByStudent.push(...coursesByStudent)
-    }
-
-    console.log("allCoursesByStudent", allCoursesByStudent)
-    for (let courseByStudent of allCoursesByStudent) {
-      const ref = this.afs.collection<CourseByStudent>(CourseByStudent.collection).doc().ref;
-      courseByStudent.id = ref.id
-      await this.afs.collection(CourseByStudent.collection).doc(courseByStudent.id).set(courseByStudent);
-    }
-    this.coursesByStudent = allCoursesByStudent
-    console.log("CoursesByStudent migrated")
-  }
-
-  async migrateClassesByStudent() {
-    console.log("***** Creating classeByStudent")
-    const oldCoursesData = oldCursos
-    const allClassesByStudent: ClassByStudentJson[] = []
-
-    const coursesIdMap = await this.courseService.getCourseIdMappings()
-
-    for (let oldCourse of oldCoursesData) {
-      if (oldCourse.clases) {
-        console.log("--- ", oldCourse.cursoTitulo)
-        const classesByStudent = oldCourse.clases.map(async clase => {
-          const courseRef: DocumentReference<Curso> | null = coursesIdMap[oldCourse.cursoId] ? this.courseService.getCourseRefById(oldCourse.cursoId) : null
-          const userRef: DocumentReference<User> = this.userService.getUserRefById(oldCourse.usuarioId)
-          const courseByStudent: CourseByStudent = await this.courseService.getCourseByStudent(userRef, courseRef)
-  
-          return {
-            active: true,
-            classRef: null, // ????  this is the most important
-            completed: clase.completado,
-            coursesByStudentRef: this.courseService.getCourseByStudentRef(courseByStudent.id),
-            dateEnd: null, // ???
-            dateStart: null, // ???
-            id: null,
-            review: null, // ???
-            reviewDate: null, // ???
-            userRef: userRef,
-          }
-        })
-        const resolvedClassesByStudent = await Promise.all(classesByStudent);
-        allClassesByStudent.push(...resolvedClassesByStudent)
-      }
-    }
-
-
-    console.log("allClassesByStudent", allClassesByStudent)
-    console.log("setting in database")
-    for (let classByStudent of allClassesByStudent) {
-      const ref = this.afs.collection<ClassByStudent>(ClassByStudent.collection).doc().ref;
-      classByStudent.id = ref.id
-      await this.afs.collection(ClassByStudent.collection).doc(classByStudent.id).set(classByStudent);
-    }
-    this.classesByStudent = allClassesByStudent
-    console.log("ClassesByStudent migrated")
-  }
-
   // --------------------------- Other migrations.
 
   // async migrateProducts() {
@@ -522,6 +484,39 @@ export class MigrationsComponent {
 
   //   await this.productService.saveProducts(productsInNewModel)
   //   console.log("productsInNewModel", productsInNewModel)
+  // }
+
+  // async migrateLicenses() {
+  //   const oldEnterprisesData: any[] = oldEmpresasCLientes
+  //   const licensesInNewModel: LicenseJson[] = []
+
+  //   for (let oldEnterpriseData of oldEnterprisesData) {
+  //     if (oldEnterpriseData.licences) {
+  //       for (let oldLicenseData of oldEnterpriseData.licences) {
+  //         const licenseInNewModel: LicenseJson = {
+  //           createdAt: oldLicenseData.createdAt,
+  //           currentPeriodEnd: oldLicenseData.currentPeriodEnd,
+  //           currentPeriodStart: oldLicenseData.currentPeriodStart,
+  //           enterpriseRef: this.enterpriseService.getEnterpriseRefById(oldEnterpriseData.id),
+  //           failedRotationCount: null, // new
+  //           id: oldLicenseData.id,
+  //           productRef: this.productService.getProductRefById(oldLicenseData.priceId),
+  //           quantity: oldLicenseData.quantity,
+  //           quantityUsed: oldLicenseData.retrieveBy.length,
+  //           rotations: null, // new
+  //           rotationsUsed: null, //new
+  //           rotationsWaitingCount: null, // new
+  //           startedAt: oldLicenseData.startedAt,
+  //           status: oldLicenseData.status === SubscriptionClass.STATUS_ACTIVE ? SubscriptionClass.STATUS_ACTIVE : SubscriptionClass.STATUS_INACTIVE,
+  //         }
+  //         licensesInNewModel.push(licenseInNewModel)
+  //       }
+  //     }
+  //   }
+
+  //   await this.licenseService.saveLicenses(licensesInNewModel)
+  //   console.log("licensesInNewModel", licensesInNewModel)
+
   // }
 
   // async migrateCategories() {
