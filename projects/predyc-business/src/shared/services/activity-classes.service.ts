@@ -60,7 +60,7 @@ export class ActivityClassesService {
 
   async saveActivity(newActivity: Activity): Promise<void> {
     try {
-      console.log('saveActivity',newActivity)
+      // console.log('saveActivity',newActivity)
       let ref: DocumentReference;
       if (newActivity.id) {
         ref = this.afs.collection<Activity>(Activity.collection).doc(newActivity.id).ref;
@@ -79,11 +79,11 @@ export class ActivityClassesService {
   }
 
   async saveQuestion(newQuestion: Question, idActivity): Promise<void> {
-    console.log('saveQuestion', newQuestion)
+    // console.log('saveQuestion', newQuestion)
     try {
       let ref: DocumentReference;
       if (!newQuestion.id) {
-        console.log('crear pregunta')
+        // console.log('crear pregunta')
         // If there's no ID, create a new document and assign the ID
         ref = this.afs.collection(Activity.collection)
                       .doc(idActivity)
@@ -92,7 +92,7 @@ export class ActivityClassesService {
         newQuestion.id = ref.id;
       } else {
         // If an ID exists, just reference the existing document
-        console.log('actualizar pregunta')
+        // console.log('actualizar pregunta')
         ref = this.afs.collection(Activity.collection)
                       .doc(idActivity)
                       .collection(Question.collection)
@@ -101,7 +101,7 @@ export class ActivityClassesService {
       
       const dataToSave = newQuestion;
   
-      console.log('ref question', ref, dataToSave)
+      // console.log('ref question', ref, dataToSave)
       // Save or update the question document in Firestore
       await ref.set({ ...dataToSave, id: ref.id }, { merge: true });
       

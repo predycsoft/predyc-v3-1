@@ -68,7 +68,7 @@ export class UserService {
   }
 
   async addUser(newUser: User): Promise<void> {
-    console.log(newUser.name);
+    // console.log(newUser.name);
     newUser.name = newUser.name.toLocaleLowerCase();
     newUser.displayName = newUser.displayName.toLocaleLowerCase();
     newUser.email = newUser.email.toLocaleLowerCase();
@@ -93,6 +93,29 @@ export class UserService {
       );
       await this.profileService.saveUserProfileLog(userRef, profileRef);
     }
+  }
+
+  async addUserInMigrations(oldUser: User): Promise<string> {
+    const usersIdMap: { [key: string]: string } = {}
+    // console.log(newUser.name);
+    oldUser.name = oldUser.name.toLocaleLowerCase();
+    oldUser.displayName = oldUser.displayName.toLocaleLowerCase();
+    oldUser.email = oldUser.email.toLocaleLowerCase();
+    const { uid } = await firstValueFrom(
+      this.fireFunctions.httpsCallable("createUserWithEmailAndPassword")({
+        email: oldUser.email as string,
+        name: oldUser.name,
+      })
+    );
+    const dataToSave = typeof oldUser.toJson === "function" ? oldUser.toJson() : oldUser;
+
+    await this.afs
+      .collection(User.collection)
+      .doc(uid)
+      .set({ ...dataToSave, uid: uid });
+      
+    return uid
+
   }
 
   private async activateUser(user: User) {

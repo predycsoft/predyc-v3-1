@@ -107,7 +107,7 @@ export class CourseService {
   async saveCourse(newCourse: Curso): Promise<void> {
     try {
       try {
-        console.log("test saveCourse", newCourse);
+        // console.log("test saveCourse", newCourse);
         delete newCourse["modules"];
         const dataToSave =
           typeof newCourse.toJson === "function"
@@ -122,7 +122,7 @@ export class CourseService {
         console.log(error);
         throw error;
       }
-      console.log("Has agregado una nuevo curso exitosamente.");
+      // console.log("Has agregado una nuevo curso exitosamente.");
     } catch (error) {
       console.log(error);
       this.alertService.errorAlert(JSON.stringify(error));
