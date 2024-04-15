@@ -32,6 +32,7 @@ export interface UserJson {
   isActive: boolean;
   stripeId: string | null;
   uid: string | null;
+  oldUid: string | null;
   updatedAt: number | null;
   avgScore: number;
   certificatesQty: number;
@@ -78,6 +79,7 @@ export class User {
     public isActive: boolean,
     public stripeId: string | null,
     public uid: string | null,
+    public oldUid: string | null,
     public updatedAt: number | null,
 
     // metrics
@@ -166,6 +168,7 @@ export class User {
       isActive: true,
       stripeId: null,
       uid: null,
+      oldUid: null,
       updatedAt: null,
       avgScore: 0,
       certificatesQty: 0,
@@ -205,6 +208,7 @@ export class User {
       userJson.isActive,
       userJson.stripeId,
       userJson.uid,
+      userJson.oldUid,
       userJson.updatedAt,
       userJson.avgScore,
       userJson.certificatesQty,
@@ -244,6 +248,7 @@ export class User {
       isActive: this.isActive,
       stripeId: this.stripeId,
       uid: this.uid,
+      oldUid: this.oldUid,
       updatedAt: this.updatedAt,
       avgScore: this.avgScore,
       certificatesQty: this.certificatesQty,

@@ -421,6 +421,7 @@ export class CreateDemoComponent {
       isActive: true,
       stripeId: null,
       uid: null,
+      oldUid: null,
       updatedAt: this.now,
       avgScore: 0,
       certificatesQty: 0,

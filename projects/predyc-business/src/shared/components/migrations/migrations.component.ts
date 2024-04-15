@@ -62,6 +62,7 @@ export class MigrationsComponent {
   usersIdMap: { [key: string]: string } = {}; // from old userId to new one
 
   allCoursesData: any;
+  allCurrentUsersData: any;
 
   constructor(private enterpriseService: EnterpriseService, private userService: UserService, private productService: ProductService, private licenseService: LicenseService, private profileService: ProfileService, private categoryService: CategoryService, private skillService: SkillService, private instructorsService: InstructorsService, public courseService: CourseService, private afs: AngularFirestore, private activityClassesService: ActivityClassesService, public courseClassService: CourseClassService, public moduleService: ModuleService) {}
 
@@ -74,6 +75,12 @@ export class MigrationsComponent {
       this.allCoursesData = courses;
       console.log("this.allCoursesData", this.allCoursesData);
     });
+
+    this.afs.collection(User.collection).valueChanges().subscribe(users => {
+      this.allCurrentUsersData = users
+      console.log("this.allCurrentusersData", this.allCurrentUsersData)
+    });
+
   }
 
   async debug() {
@@ -196,6 +203,7 @@ export class MigrationsComponent {
         role: oldUserData.role,
         isActive: oldUserData.status === "active",
         stripeId: oldUserData.stripeId ? oldUserData.stripeId : null,
+        oldUid: oldUserData.uid,
         uid: oldUserData.uid, // THIS VALUE CHANGE BECAUSE OF THE CLOUD FUNCTION
         updatedAt: oldUserData.fechaUltimaAct ? oldUserData.fechaUltimaAct : null,
         certificatesQty: null,
@@ -232,6 +240,7 @@ export class MigrationsComponent {
         .map((studyPlanCourse, idx) => {
           const courseOldData = oldCoursesData.find((x) => x.cursoId === studyPlanCourse.cursoId && x.usuarioId === oldUser.uid);
 
+          const currentUserData = this.allCurrentUsersData.find((x) => x.oldUid === oldUser.uid);
           return {
             active: true,
             courseRef: this.coursesIdMap[studyPlanCourse.cursoId] ? this.courseService.getCourseRefById(this.coursesIdMap[studyPlanCourse.cursoId]) : null,
@@ -240,10 +249,11 @@ export class MigrationsComponent {
             dateEndPlan: new Date(studyPlanCourse.fechaFin),
             dateStart: courseOldData.fechaInscripcion ? new Date(courseOldData.fechaInscripcion) : new Date(studyPlanCourse.fechaInicio),
             dateStartPlan: new Date(studyPlanCourse.fechaInicio),
-            finalScore: courseOldData?.puntaje ? courseOldData.puntaje : 0,
+            finalScore: courseOldData?.puntaje ? courseOldData.puntaje : this.getRandomNumber(80, 100),
             id: null,
             progress: courseOldData.progreso,
             userRef: this.userService.getUserRefById(this.usersIdMap[oldUser.uid]),
+            // userRef: this.userService.getUserRefById(currentUserData.uid),
             courseTime: studyPlanCourse.duracion,
             progressTime: null,
             isExtraCourse: false,
@@ -292,6 +302,8 @@ export class MigrationsComponent {
 
           const courseRef: DocumentReference<Curso> | null = this.coursesIdMap[oldCourse.cursoId] ? this.courseService.getCourseRefById(this.coursesIdMap[oldCourse.cursoId]) : null;
           const userRef: DocumentReference<User> = this.userService.getUserRefById(this.usersIdMap[oldCourse.usuarioId]);
+          // const currentUserData = this.allCurrentUsersData.find((x) => x.oldUid === oldCourse.usuarioId);
+          // const userRef: DocumentReference<User> = this.userService.getUserRefById(currentUserData.uid);
           const courseByStudent: CourseByStudent = await this.courseService.getCourseByStudent(userRef, courseRef);
           nextStartingDate = endDate;
           classesByStudent.push({
@@ -600,6 +612,10 @@ export class MigrationsComponent {
       await this.userService.addUser(user);
     }
     console.log(`Finished Creating Users`);
+  }
+
+  getRandomNumber(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
   // --------------------------- Other migrations.
