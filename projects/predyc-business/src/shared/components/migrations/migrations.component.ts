@@ -87,14 +87,27 @@ export class MigrationsComponent {
   }
 
   async debug() {
-    const userRef = this.afs.collection(User.collection).doc("n1RlPvR2hQTKqxIeXqm732DGxXIk").ref;
-    const courseByStudentRef = this.afs.collection(CourseByStudent.collection).doc("rlFs26dtBZBjpifOwr98").ref;
-    const snapshot = await this.afs.collection(ClassByStudent.collection).ref.where("userRef", "==", userRef).where("coursesByStudentRef", "==", courseByStudentRef).get();
-    const result = snapshot.docs.map((x) => x.data());
-    console.log(
-      "result",
-      result.map((x: any) => x.classRef.id)
-    );
+
+    // this.userService.getUsersByEnterpriseRef$(this.enterpriseService.getEnterpriseRefById("aura-minerals")).pipe(
+    //   switchMap(users => {
+    //     const usersArr = users.map(user => {
+    //       const userRef = this.afs.collection(User.collection).doc(user.uid).ref;
+    //       return this.afs.collection<CourseByStudent>(CourseByStudent.collection, ref => ref.where("userRef", "==", userRef)).valueChanges();
+
+    //     })
+
+    //     return combineLatest(usersArr)
+    //   })
+    // ).subscribe(async usersCourseByStudents => {
+    //   console.log("usersCourseByStudents", usersCourseByStudents)
+    //   for (let coursesByStudent of usersCourseByStudents) {
+    //     for (let courseByStudent of coursesByStudent) {
+    //       console.log("eliminado", courseByStudent.id)
+    //       await this.afs.collection(CourseByStudent.collection).doc(courseByStudent.id).delete()
+    //     }
+    //   }
+    // })
+
   }
 
   getCourses() {
@@ -231,9 +244,11 @@ export class MigrationsComponent {
     const oldUsersData: any[] = oldUsers;
     const oldCoursesData: any[] = oldCursosInscritos;
 
-    if (!this.coursesIdMap) this.coursesIdMap = await this.courseService.getCourseIdMappings();
+    if (Object.keys(this.coursesIdMap).length === 0) {
+      this.coursesIdMap = await this.courseService.getCourseIdMappings();
+    } 
 
-    // console.log("coursesIdMap", coursesIdMap)
+    // console.log("coursesIdMap", this.coursesIdMap)
 
     const allCoursesByStudent: CourseByStudentJson[] = [];
 
@@ -252,11 +267,12 @@ export class MigrationsComponent {
             dateEndPlan: new Date(studyPlanCourse.fechaFin),
             dateStart: courseOldData.fechaInscripcion ? new Date(courseOldData.fechaInscripcion) : new Date(studyPlanCourse.fechaInicio),
             dateStartPlan: new Date(studyPlanCourse.fechaInicio),
-            finalScore: courseOldData?.puntaje ? courseOldData.puntaje : this.getRandomNumber(80, 100),
+            finalScore: courseOldData?.puntaje ? courseOldData.puntaje : 
+            studyPlanCourse.fechaCompletacion ? this.getRandomNumber(80, 100) : 0,
             id: null,
             progress: courseOldData.progreso,
-            userRef: this.userService.getUserRefById(this.usersIdMap[oldUser.uid]),
-            // userRef: this.userService.getUserRefById(currentUserData.uid),
+            // userRef: this.userService.getUserRefById(this.usersIdMap[oldUser.uid]),
+            userRef: this.userService.getUserRefById(currentUserData.uid),
             courseTime: studyPlanCourse.duracion,
             progressTime: null,
             isExtraCourse: false,
@@ -266,12 +282,13 @@ export class MigrationsComponent {
       allCoursesByStudent.push(...coursesByStudent);
     }
 
-    console.log("allCoursesByStudent", allCoursesByStudent);
+    console.log("allCoursesByStudent to migrate", allCoursesByStudent);
     this.coursesByStudent = allCoursesByStudent;
     for (let courseByStudent of allCoursesByStudent) {
       const ref = this.afs.collection<CourseByStudent>(CourseByStudent.collection).doc().ref;
       courseByStudent.id = ref.id;
       await this.afs.collection(CourseByStudent.collection).doc(courseByStudent.id).set(courseByStudent);
+      console.log("courseByStudent", courseByStudent.id)
     }
     console.log("CoursesByStudent migrated");
   }
@@ -281,7 +298,9 @@ export class MigrationsComponent {
     const oldCoursesData = oldCursosInscritos;
     const allClassesByStudent: ClassByStudentJson[] = [];
 
-    if (!this.coursesIdMap) this.coursesIdMap = await this.courseService.getCourseIdMappings();
+    if (Object.keys(this.coursesIdMap).length === 0) {
+      this.coursesIdMap = await this.courseService.getCourseIdMappings();
+    } 
 
     for (let oldCourse of oldCoursesData) {
       if (oldCourse.clases) {
@@ -304,9 +323,9 @@ export class MigrationsComponent {
           prevClaseModule = clase.modulo;
 
           const courseRef: DocumentReference<Curso> | null = this.coursesIdMap[oldCourse.cursoId] ? this.courseService.getCourseRefById(this.coursesIdMap[oldCourse.cursoId]) : null;
-          const userRef: DocumentReference<User> = this.userService.getUserRefById(this.usersIdMap[oldCourse.usuarioId]);
-          // const currentUserData = this.allCurrentUsersData.find((x) => x.oldUid === oldCourse.usuarioId);
-          // const userRef: DocumentReference<User> = this.userService.getUserRefById(currentUserData.uid);
+          // const userRef: DocumentReference<User> = this.userService.getUserRefById(this.usersIdMap[oldCourse.usuarioId]);
+          const currentUserData = this.allCurrentUsersData.find((x) => x.oldUid === oldCourse.usuarioId);
+          const userRef: DocumentReference<User> = this.userService.getUserRefById(currentUserData.uid);
           const courseByStudent: CourseByStudent = await this.courseService.getCourseByStudent(userRef, courseRef);
           nextStartingDate = endDate;
           classesByStudent.push({
