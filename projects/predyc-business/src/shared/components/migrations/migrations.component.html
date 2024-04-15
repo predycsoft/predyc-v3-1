@@ -1,32 +1,13 @@
-<div
-  fxLayout="row"
-  fxLayoutGap="3rem"
-  fxLayoutAlign="start center"
-  class="pd20"
->
+<div fxLayout="row" fxLayoutGap="3rem" fxLayoutAlign="start center" class="pd20">
   <button class="ft20 greenButton" (click)="migrateAll()">Migrar Todo</button>
 </div>
-<div
-  fxLayout="row"
-  fxLayoutGap="3rem"
-  fxLayoutAlign="start center"
-  class="pd20"
->
-  <button class="ft20 greenButton" (click)="migrateEnterprises()">
-    Migrar Empresas
-  </button>
-  <button class="ft20 blueButton" (click)="migrateUsers()">
-    Migrar Usuarios
-  </button>
-  <button class="ft20 redButton" (click)="migrateCoursesByStudent()">
-    Migrar Course by student
-  </button>
-  <button class="ft20 orangeButton" (click)="migrateClassesByStudent()">
-    Migrar Class by student
-  </button>
-  <button class="ft20 greenButton" (click)="completeData()">
-    Agregar datos restantes
-  </button>
+<div fxLayout="row" fxLayoutGap="3rem" fxLayoutAlign="start center" class="pd20">
+  <button class="ft20 greenButton" (click)="migrateEnterprises()">Migrar Empresas</button>
+  <button class="ft20 blueButton" (click)="migrateUsers()">Migrar Usuarios</button>
+  <button class="ft20 redButton" (click)="migrateCoursesByStudent()">Migrar Course by student</button>
+  <button class="ft20 orangeButton" (click)="migrateClassesByStudent()">Migrar Class by student</button>
+  <button class="ft20 greenButton" (click)="completeData()">Agregar datos restantes</button>
+  <button class="ft20 greenButton" (click)="migrateUserCertificates()">Migrar certificados</button>
   <button class="ft20 greenButton" (click)="debug()">Debug</button>
 
   <!-- <button class="ft20 yellowButton" (click)="migrateLicenses()">Migrar Licencias</button> -->
