@@ -45,6 +45,7 @@ import { combineLatest, filter, firstValueFrom, map, switchMap, take } from "rxj
 import { enterpriseData } from "projects/predyc-business/src/assets/data/enterprise.data";
 import { enterpriseDataPredyc } from "projects/predyc-business/src/assets/data/enterprise.data";
 import { usersData } from "projects/predyc-business/src/assets/data/users.data";
+import { oldUsersCertificates } from "./old data/usuariosCertificados.data";
 
 @Component({
   selector: "app-migrations",
@@ -62,7 +63,7 @@ export class MigrationsComponent {
   usersIdMap: { [key: string]: string } = {}; // from old userId to new one
 
   allCoursesData: any;
-  allCurrentUsersData: any;
+  allCurrentUsersData: User[];
 
   constructor(private enterpriseService: EnterpriseService, private userService: UserService, private productService: ProductService, private licenseService: LicenseService, private profileService: ProfileService, private categoryService: CategoryService, private skillService: SkillService, private instructorsService: InstructorsService, public courseService: CourseService, private afs: AngularFirestore, private activityClassesService: ActivityClassesService, public courseClassService: CourseClassService, public moduleService: ModuleService) {}
 
@@ -76,7 +77,7 @@ export class MigrationsComponent {
       console.log("this.allCoursesData", this.allCoursesData);
     });
 
-    this.afs.collection(User.collection).valueChanges().subscribe(users => {
+    this.afs.collection<User>(User.collection).valueChanges().subscribe(users => {
       this.allCurrentUsersData = users
       console.log("this.allCurrentusersData", this.allCurrentUsersData)
     });
@@ -333,6 +334,34 @@ export class MigrationsComponent {
       await this.afs.collection(ClassByStudent.collection).doc(classByStudent.id).set(classByStudent);
     }
     console.log("ClassesByStudent migrated");
+  }
+
+  async migrateUserCertificates() {
+    console.log("***** Creating user certificates");
+    const oldCertificatesData = oldUsersCertificates;
+    const allCertificatesInNewModel = [];
+
+    for (let oldCertificate of oldCertificatesData) {
+      const userData: User = this.allCurrentUsersData.find(x => x.oldUid === oldCertificate.usuarioId)
+      const certificateInNewModel = {
+        usuarioId: userData ? userData.uid : null,
+        usuarioEmail: oldCertificate.usuarioEmail,
+        usuarioNombre: oldCertificate.usuarioNombre,
+        cursoId: this.coursesIdMap[oldCertificate.cursoId],
+        cursoTitulo: oldCertificate.cursoTitulo,
+        instructorId: oldCertificate.instructorId,
+        instructorNombre: oldCertificate.instructorNombre,
+        puntaje: oldCertificate.puntaje,
+        usuarioFoto: oldCertificate.usuarioFoto,
+        date: new Date(oldCertificate.fecha.seconds * 1000),
+        id: oldCertificate.id
+      }
+      allCertificatesInNewModel.push(certificateInNewModel)
+    }
+    console.log("allCertificatesInNewModel", allCertificatesInNewModel)
+    await this.saveCertificates(allCertificatesInNewModel)
+    console.log("All certificates created")
+
   }
 
   public permissionsToJson(permissions: Permissions): PermissionsJson {
@@ -616,6 +645,15 @@ export class MigrationsComponent {
 
   getRandomNumber(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  async saveCertificates(certificates: any[]): Promise<void> {
+    const batch = this.afs.firestore.batch();
+    certificates.forEach((certificate) => {
+      const docRef = this.afs.firestore.collection("userCertificate").doc(certificate.id);
+      batch.set(docRef, certificate, { merge: true });
+    });
+    await batch.commit();
   }
 
   // --------------------------- Other migrations.
