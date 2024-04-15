@@ -77,11 +77,13 @@ export class MigrationsComponent {
       console.log("this.allCoursesData", this.allCoursesData);
     });
 
-    this.afs.collection<User>(User.collection).valueChanges().subscribe(users => {
-      this.allCurrentUsersData = users
-      console.log("this.allCurrentusersData", this.allCurrentUsersData)
-    });
-
+    this.afs
+      .collection<User>(User.collection)
+      .valueChanges()
+      .subscribe((users) => {
+        this.allCurrentUsersData = users;
+        console.log("this.allCurrentusersData", this.allCurrentUsersData);
+      });
   }
 
   async debug() {
@@ -342,7 +344,7 @@ export class MigrationsComponent {
     const allCertificatesInNewModel = [];
 
     for (let oldCertificate of oldCertificatesData) {
-      const userData: User = this.allCurrentUsersData.find(x => x.oldUid === oldCertificate.usuarioId)
+      const userData: User = this.allCurrentUsersData.find((x) => x.oldUid === oldCertificate.usuarioId);
       const certificateInNewModel = {
         usuarioId: userData ? userData.uid : null,
         usuarioEmail: oldCertificate.usuarioEmail,
@@ -354,14 +356,13 @@ export class MigrationsComponent {
         puntaje: oldCertificate.puntaje,
         usuarioFoto: oldCertificate.usuarioFoto,
         date: new Date(oldCertificate.fecha.seconds * 1000),
-        id: oldCertificate.id
-      }
-      allCertificatesInNewModel.push(certificateInNewModel)
+        id: oldCertificate.id,
+      };
+      allCertificatesInNewModel.push(certificateInNewModel);
     }
-    console.log("allCertificatesInNewModel", allCertificatesInNewModel)
-    await this.saveCertificates(allCertificatesInNewModel)
-    console.log("All certificates created")
-
+    console.log("allCertificatesInNewModel", allCertificatesInNewModel);
+    await this.saveCertificates(allCertificatesInNewModel);
+    console.log("All certificates created");
   }
 
   public permissionsToJson(permissions: Permissions): PermissionsJson {
