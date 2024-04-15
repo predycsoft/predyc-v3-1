@@ -229,7 +229,7 @@ export class MigrationsComponent {
     const oldUsersData: any[] = oldUsers;
     const oldCoursesData: any[] = oldCursosInscritos;
 
-    this.coursesIdMap = await this.courseService.getCourseIdMappings();
+    if (!this.coursesIdMap) this.coursesIdMap = await this.courseService.getCourseIdMappings();
 
     // console.log("coursesIdMap", coursesIdMap)
 
