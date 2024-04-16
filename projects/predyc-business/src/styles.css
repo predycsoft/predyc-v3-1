@@ -1207,6 +1207,10 @@ textarea:focus {
   filter: invert(97%) sepia(7%) saturate(447%) hue-rotate(225deg) brightness(120%) contrast(100%);
 }
 
+.makeOrange {
+  filter: invert(53%) sepia(88%) saturate(3581%) hue-rotate(348deg) brightness(101%) contrast(101%);
+}
+
 .makeGray {
   opacity: .50;
 }

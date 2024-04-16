@@ -87,60 +87,63 @@ export class StudentListComponent {
 
   performSearch(searchTerm: string, page: number, profileFilter: string) {
     if (this.userServiceSubscription) {
-      this.userServiceSubscription.unsubscribe()
+      this.userServiceSubscription.unsubscribe();
     }
+  
     this.userServiceSubscription = this.userService.getUsers$(searchTerm, profileFilter, null).pipe(
       switchMap(users => {
-        // For each user, query their active courses
-        const observables = users.map(user => {
-          const userRef = this.userService.getUserRefById(user.uid)
+        const userCourseObservables = users.map(user => {
+          const userRef = this.userService.getUserRefById(user.uid);
           return this.courseService.getActiveCoursesByStudent$(userRef).pipe(
-            map(courses => ({ user, courses })),
+            map(courses => ({ user, courses }))
           );
         });
-        return observables.length > 0 ? combineLatest(observables) : of([])
-      })).subscribe(response => {
-        console.log(response)
-        const users: User[] = response.map(({user, courses}) => {
-          const profile = this.profiles.find(profile => {
-            if(user.profile) {
-              return profile.id === user.profile.id
-            }
-            return false
-          })
-          let profileName = ''
-          if (profile) {
-            profileName = profile.name
+        return combineLatest(userCourseObservables);
+      }),
+      switchMap(userCourses => {
+        const userTestObservables = userCourses.map(userCourse => {
+          return this.profileService.getDiagnosticTestForUserPromise(userCourse.user).then(test => {
+            return { ...userCourse, test }; // Agregar el examen a cada usuario
+          });
+        });
+        return Promise.all(userTestObservables);
+      })
+    ).subscribe(response => {
+      const users = response.map(({user, courses, test}) => {
+        const profile = this.profiles.find(profile => profile?.id === user.profile?.id);
+        const profileName = profile ? profile.name : '';
+        let hours = 0;
+        let targetHours = 0;
+  
+        courses.forEach(course => {
+          hours += course?.progressTime ? course.progressTime : 0;
+          const courseJson = this.courses.find(item => item.id === course.courseRef.id);
+          if (courseJson) {
+            targetHours += courseJson.duracion / 60;
           }
-          let hours = 0
-          let targetHours = 0
-          courses.forEach(course => {
-            hours += course?.progressTime ? course.progressTime : 0
-            const courseJson = this.courses.find(item => item.id === course.courseRef.id)
-            targetHours += (courseJson?.duracion/60)
-          })
-          const userPerformance: "no plan" | "high" | "medium" | "low" | "no iniciado"= this.userService.getPerformanceWithDetails(courses);
-          const department = this.departments.find(department => department.id === user.departmentRef?.id)
-          const ratingPoints: number = this.userService.getRatingPointsFromStudyPlan(courses, this.courses);
-          return {
-            displayName: user.displayName,
-            department: department?.name ? department.name : '',
-            hours: hours, // Calculation pending
-            targetHours: targetHours,
-            profile: profileName,
-            ratingPoints: ratingPoints,
-            rhythm: userPerformance, // Calculation pending
-            uid: user.uid,
-            photoUrl: user.photoUrl,
-          }
-        })
-        this.paginator.pageIndex = page - 1; // Update the paginator's page index
-        this.dataSource.data = users; // Assuming the data is in 'items'
-        // // this.paginator.length = response.count; // Assuming total length is returned
-        this.totalLength = response.length; // Assuming total length is returned
-      }
-    );
+        });
+  
+        return {
+          displayName: user.displayName,
+          department: this.departments.find(department => department.id === user.departmentRef?.id)?.name,
+          hours,
+          targetHours,
+          profile: profileName,
+          ratingPoints: this.userService.getRatingPointsFromStudyPlan(courses, this.courses),
+          rhythm: this.userService.getPerformanceWithDetails(courses),
+          uid: user.uid,
+          photoUrl: user.photoUrl,
+          test // Agregar aquí los datos del examen del usuario
+        };
+      });
+  
+      this.paginator.pageIndex = page - 1;
+      this.dataSource.data = users;
+      this.totalLength = response.length;
+      console.log(users);
+    });
   }
+  
 
   onPageChange(page: number): void {
     this.router.navigate([], {

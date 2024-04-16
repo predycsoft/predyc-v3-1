@@ -104,9 +104,13 @@
                     <span class="ft13 nowrap ft500 red-5">Sin plan</span>
 
                 </div>
-                <div *ngIf="user.rhythm === 'no iniciado'" class="chip backRed1 "  fxLayout="row" fxLayoutAlign="center center" style="background-color: #ff999961;">
+                <div matTooltip="No ha presentado la prueba diagnóstica" *ngIf="user.rhythm === 'no iniciado' && user.test.length==0" class="chip backRed1 "  fxLayout="row" fxLayoutAlign="center center" style="background-color: #ff999961;">
                     <img [src]="icon.warning" alt="" class="makeRed  pdl03 pdr03" >
-                    <span class="ft13 nowrap ft500 red-5">No iniciado</span>
+                    <span *ngIf="user" class="ft13 nowrap ft500 red-5">No iniciado</span>
+                </div>
+                <div *ngIf="user.rhythm === 'no iniciado' && user.test.length>0"  class="chip newYellow2b "   fxLayout="row" fxLayoutAlign="center center">
+                    <img [src]="icon.warning" alt="" class="makeOrange  pdl03 pdr03" >
+                    <span class="ft13 nowrap ft500 " style="color: rgb(221, 144, 0);" >No iniciado</span>
                 </div>
                 
             </td>

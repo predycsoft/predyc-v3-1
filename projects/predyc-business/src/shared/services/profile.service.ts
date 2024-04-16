@@ -223,5 +223,22 @@ export class ProfileService {
     // console.log(user.uid, user.profile.id)
     return this.afs.collection('profileTestsByStudent', ref => ref.where("userRef", "==", userRef).where("profileRef", "==", user.profile)).valueChanges()
   }
+
+  public async getDiagnosticTestForUserPromise(user: any): Promise<any[]> {
+    const userRef = this.afs.collection(User.collection).doc(user.uid).ref;
+    try {
+      const snapshot = await this.afs.collection('profileTestsByStudent', ref => 
+        ref.where("userRef", "==", userRef)
+           .where("profileRef", "==", user.profile)
+      ).get().toPromise();
+
+      return snapshot.docs.map(doc => doc.data());
+    } catch (error) {
+      console.error("Error fetching diagnostic tests: ", error);
+      throw error;
+    }
+  }
+
+
   
 }
