@@ -26,7 +26,7 @@ import { SkillService } from "../../services/skill.service";
 import { instructorsData } from "projects/predyc-business/src/assets/data/instructors.data";
 import { InstructorsService } from "../../services/instructors.service";
 import { Clase } from "projects/functions/dist/shared/models/course-class.model";
-import { AngularFirestore, DocumentReference } from "@angular/fire/compat/firestore";
+import { AngularFirestore, DocumentReference, QuerySnapshot } from "@angular/fire/compat/firestore";
 import { coursesData } from "projects/predyc-business/src/assets/data/courses.data";
 import { Curso } from "projects/functions/dist/shared/models/course.model";
 import { capitalizeFirstLetter } from "projects/functions/dist/shared/utils";
@@ -107,6 +107,32 @@ export class MigrationsComponent {
     //     }
     //   }
     // })
+
+  }
+
+  async deleteEnterpriseClassesByStudent() {
+    const enterpriseRef = this.enterpriseService.getEnterpriseRefById("gente-oil")
+    const enterpriseUsersSnapshot: QuerySnapshot<any> = (await this.afs.collection(User.collection).ref.where("enterprise", "==", enterpriseRef).get())
+    const enterpriseUsers = enterpriseUsersSnapshot.docs.map(doc => {
+        return { ...doc.data() };
+    });
+
+    const classesByStudent = []
+    for (let user of enterpriseUsers) {
+      const userRef = this.userService.getUserRefById(user.uid)
+      const userClassByStudentSnapshot: QuerySnapshot<any> = (await this.afs.collection(ClassByStudent.collection).ref.where("userRef", "==", userRef).get())
+      const userClassByStudent = userClassByStudentSnapshot.docs.map(doc => {
+          return { ...doc.data() };
+      });
+      classesByStudent.push(...userClassByStudent)
+    }
+
+    console.log("classesByStudent", classesByStudent)
+
+    for (let classByStudent of classesByStudent) {
+      console.log("eliminado", classByStudent.id)
+      await this.afs.collection(ClassByStudent.collection).doc(classByStudent.id).delete()
+    }
 
   }
 
@@ -284,17 +310,17 @@ export class MigrationsComponent {
 
     console.log("allCoursesByStudent to migrate", allCoursesByStudent);
     this.coursesByStudent = allCoursesByStudent;
-    for (let courseByStudent of allCoursesByStudent) {
-      const ref = this.afs.collection<CourseByStudent>(CourseByStudent.collection).doc().ref;
-      courseByStudent.id = ref.id;
-      await this.afs.collection(CourseByStudent.collection).doc(courseByStudent.id).set(courseByStudent);
-      console.log("courseByStudent", courseByStudent.id)
-    }
-    console.log("CoursesByStudent migrated");
+    // for (let courseByStudent of allCoursesByStudent) {
+    //   const ref = this.afs.collection<CourseByStudent>(CourseByStudent.collection).doc().ref;
+    //   courseByStudent.id = ref.id;
+    //   await this.afs.collection(CourseByStudent.collection).doc(courseByStudent.id).set(courseByStudent);
+    //   console.log("courseByStudent", courseByStudent.id)
+    // }
+    console.log("*********CoursesByStudent migrated*********");
   }
 
   async migrateClassesByStudent() {
-    console.log("***** Creating classeByStudent");
+    console.log("--------- Creating classeByStudent");
     const oldCoursesData = oldCursosInscritos;
     const allClassesByStudent: ClassByStudentJson[] = [];
 
@@ -305,7 +331,12 @@ export class MigrationsComponent {
     for (let oldCourse of oldCoursesData) {
       if (oldCourse.clases) {
         const olCourseClasses = oldCourse.clases.sort((a, b) => a.numero - b.numero);
-        console.log("--- ", oldCourse.cursoTitulo);
+        console.log("--- ", oldCourse.cursoId);
+        if (!this.coursesIdMap[oldCourse.cursoId]) {
+          console.log(" XXXXXXXXXXXXXXXXXXXXX this course doesnt exist in new data base XXXXXXXXXXXXXXXXXXXXX")
+          continue
+        }
+
 
         let prevClaseModule = 1;
         let claseIndex = 0; // In course -> module, clasesRef array is already sorted
@@ -348,13 +379,14 @@ export class MigrationsComponent {
 
     console.log("allClassesByStudent", allClassesByStudent);
     this.classesByStudent = allClassesByStudent;
-    console.log("setting in database");
-    for (let classByStudent of allClassesByStudent) {
-      const ref = this.afs.collection<ClassByStudent>(ClassByStudent.collection).doc().ref;
-      classByStudent.id = ref.id;
-      await this.afs.collection(ClassByStudent.collection).doc(classByStudent.id).set(classByStudent);
-    }
-    console.log("ClassesByStudent migrated");
+    console.log("--------- SETTING IN DATA BASE -------------");
+    // for (let classByStudent of allClassesByStudent) {
+    //   console.log("user id", classByStudent.userRef.id)
+    //   const ref = this.afs.collection<ClassByStudent>(ClassByStudent.collection).doc().ref;
+    //   classByStudent.id = ref.id;
+    //   await this.afs.collection(ClassByStudent.collection).doc(classByStudent.id).set(classByStudent);
+    // }
+    console.log("******** ClassesByStudent migrated *******");
   }
 
   async migrateUserCertificates() {
@@ -599,15 +631,7 @@ export class MigrationsComponent {
     const oldModuleNumber: number = oldClase.modulo;
     const newCourseId: string = this.coursesIdMap[oldCourseId];
 
-    // Get new module doc
-    // const querySnapshot  = await firstValueFrom(this.afs.collection<Curso>(Curso.collection).doc(newCourseId).collection<Modulo>(Modulo.collection, (ref) =>
-    //   ref.where("numero", "==", oldModuleNumber)).get());
-    // if (!querySnapshot.empty) {
-    //   console.log(`No data found for ID: ${newCourseId}, module ${oldModuleNumber}`);
-    //   return null;
-    // }
-    // const newModuleData: Modulo = querySnapshot.docs[0].data();
-    console.log("newCourseId", newCourseId);
+    // console.log("newCourseId", newCourseId);
     const courseAllData = this.allCoursesData.find((x) => x.id === newCourseId);
     const newModuleData = courseAllData?.modules.find((x) => x.numero === oldModuleNumber);
 

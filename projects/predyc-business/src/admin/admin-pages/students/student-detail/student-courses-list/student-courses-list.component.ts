@@ -60,9 +60,11 @@ export class StudentCoursesListComponent {
     this.courseService
       .getCoursesByStudent$(this.userRef)
       .subscribe(async (coursesByStudent) => {
+        console.log("coursesByStudent", coursesByStudent)
         // Convert each courseByStudent into a promise that resolves to courseData
         const coursesDataPromises = coursesByStudent.map(
           async (courseByStundet: CourseByStudent) => {
+            console.log("courseByStundet", courseByStundet)
             const courseData: Curso = await this.courseService.getCourseById(
               courseByStundet.courseRef.id
             );
