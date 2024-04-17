@@ -1711,7 +1711,7 @@ export class DashboardComponent {
     let profile = this.profiles.find((x) => x.id == idProfile);
     let minutesCourses = 0;
     profile.coursesRef.forEach((courseRef) => {
-      let curso = this.courses.find((x) => x.id == courseRef.id);
+      let curso = this.courses.find((x) => x.id == courseRef.courseRef.id);
       minutesCourses += curso.duracion;
     });
     let hoursCourses = Math.round((minutesCourses / 60) * 10) / 10; // Convierte minutos a horas y redondea a 1 decimal
