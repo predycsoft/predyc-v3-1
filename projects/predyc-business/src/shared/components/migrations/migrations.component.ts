@@ -65,9 +65,11 @@ export class MigrationsComponent {
   allCoursesData: any;
   allCurrentUsersData: User[];
 
+  icafluorExisitngUsers: User[]
+
   constructor(private enterpriseService: EnterpriseService, private userService: UserService, private productService: ProductService, private licenseService: LicenseService, private profileService: ProfileService, private categoryService: CategoryService, private skillService: SkillService, private instructorsService: InstructorsService, public courseService: CourseService, private afs: AngularFirestore, private activityClassesService: ActivityClassesService, public courseClassService: CourseClassService, public moduleService: ModuleService) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     console.log("*********** Data to migrate ***********");
     // console.log("empresasCliente", oldEmpresasCLientes)
     // console.log("user (of empresasCliente)", oldUsers)
@@ -84,6 +86,21 @@ export class MigrationsComponent {
         this.allCurrentUsersData = users;
         console.log("this.allCurrentusersData", this.allCurrentUsersData);
       });
+  }
+
+  async getCoursesByStudent(): Promise<CourseByStudent[]> {
+    let coursesByStudent = []
+    for (let user of this.icafluorExisitngUsers) {
+
+      const userRef = this.userService.getUserRefById(user.uid)
+      const userCoursesByStudentSnapshot: QuerySnapshot<any> = (await this.afs.collection(CourseByStudent.collection).ref.where("userRef", "==", userRef).get())
+      const userCoursesByStudent = userCoursesByStudentSnapshot.docs.map(doc => {
+          return { ...doc.data() };
+      });
+      coursesByStudent.push(...userCoursesByStudent)
+    }
+
+    return coursesByStudent
   }
 
   async debug() {
@@ -107,6 +124,31 @@ export class MigrationsComponent {
     //     }
     //   }
     // })
+
+
+    // "rigoberto.ortega@icafluor.com" "fg8mOSw6okUiWaIBFOiZ4yHIvsV2"
+    // "adi.roman@icafluor.com" "GAR0iUIEGvQXMc0ViqZChCw1Mq13"
+    // const coursesByStudent: CourseByStudent[] = await this.getCoursesByStudent("fg8mOSw6okUiWaIBFOiZ4yHIvsV2")
+    // for (let courseByStudent of coursesByStudent) {
+    //   console.log("eliminado", courseByStudent.id)
+    //   // await this.afs.collection(ClassByStudent.collection).doc(courseByStudent.id).delete()
+    // }
+
+    // const classesByStudent = []
+    // const userRef = this.userService.getUserRefById("fg8mOSw6okUiWaIBFOiZ4yHIvsV2")
+    // const userClassByStudentSnapshot: QuerySnapshot<any> = (await this.afs.collection(ClassByStudent.collection).ref.where("userRef", "==", userRef).get())
+    // const userClassByStudent = userClassByStudentSnapshot.docs.map(doc => {
+    //     return { ...doc.data() };
+    // });
+    // classesByStudent.push(...userClassByStudent)
+
+    // console.log("classesByStudent", classesByStudent)
+
+    // for (let classByStudent of classesByStudent) {
+    //   console.log("eliminado", classByStudent.id)
+    //   // await this.afs.collection(ClassByStudent.collection).doc(classByStudent.id).delete()
+    // }
+
 
   }
 
@@ -217,51 +259,92 @@ export class MigrationsComponent {
     const oldUsersData: any[] = oldUsers;
 
     const usersInNewModel: UserJson[] = oldUsersData.map((oldUserData) => {
-      // console.log("oldUserData.name", oldUserData.name)
-      return {
-        avgScore: oldUserData.score ? oldUserData.score : null, // or .grade ???
-        birthdate: oldUserData.birthdate,
-        canEnrollParticularCourses: null, // ???
-        city: null,
-        country: oldUserData.country ? oldUserData.country : oldUserData.paisActual ? oldUserData.paisActual : "",
-        courseQty: oldUserData.cantCursos,
-        createdAt: firestoreTimestampToNumberTimestamp(oldUserData.fechaRegistro),
-        currentlyWorking: null,
-        departmentRef: null, // ***
-        displayName: oldUserData.displayName ? oldUserData.displayName : oldUserData.name,
-        email: oldUserData.email,
-        enterprise: this.enterpriseService.getEnterpriseRefById(oldUserData.empresaId),
-        experience: oldUserData.experience ? oldUserData.experience : oldUserData.anosExperiencia,
-        gender: oldUserData.genero,
-        hiringDate: oldUserData.hiringDate,
-        job: oldUserData.cargo ? oldUserData.cargo : oldUserData.profesion ? oldUserData.profesion : "",
-        lastConnection: null, // ?????
-        mailchimpTag: oldUserData.mailchimpTag,
-        name: oldUserData.name,
-        phoneNumber: oldUserData.phone ? oldUserData.phone : oldUserData.telefono ? oldUserData.telefono : "",
-        photoUrl: oldUserData.photoURL,
-        profile: null, // ***
-        isSystemUser: false,
-        role: oldUserData.role,
-        isActive: oldUserData.status === "active",
-        stripeId: oldUserData.stripeId ? oldUserData.stripeId : null,
-        oldUid: oldUserData.uid,
-        uid: oldUserData.uid, // THIS VALUE CHANGE BECAUSE OF THE CLOUD FUNCTION
-        updatedAt: oldUserData.fechaUltimaAct ? oldUserData.fechaUltimaAct : null,
-        certificatesQty: null,
-        performance: oldUserData.performance ? oldUserData.performance : null, // get it from studyPlan ???
-        ratingPoints: null, // get it from studyPlan ???
-        studyHours: oldUserData.hoursPerWeek, // get it from studyPlan ???
-        status: oldUserData.status === "active" ? SubscriptionClass.STATUS_ACTIVE : SubscriptionClass.STATUS_INACTIVE,
-        zipCode: null,
-      };
+        const oldUserExisting = this.icafluorExisitngUsers.find(x => x.email === oldUserData.email)
+        if(!oldUserExisting) {
+            // console.log("oldUserData.name", oldUserData.name)
+            return {
+              avgScore: oldUserData.score ? oldUserData.score : null,
+              birthdate: oldUserData.birthdate,
+              canEnrollParticularCourses: null,
+              city: null,
+              country: oldUserData.country ? oldUserData.country : oldUserData.paisActual ? oldUserData.paisActual : "",
+              courseQty: oldUserData.cantCursos, //
+              createdAt: firestoreTimestampToNumberTimestamp(oldUserData.fechaRegistro),
+              currentlyWorking: null,
+              departmentRef: null,
+              displayName: oldUserData.displayName ? oldUserData.displayName : oldUserData.name,
+              email: oldUserData.email,
+              enterprise: this.enterpriseService.getEnterpriseRefById(oldUserData.empresaId),
+              experience: oldUserData.experience ? oldUserData.experience : oldUserData.anosExperiencia,
+              gender: oldUserData.genero,
+              hiringDate: oldUserData.hiringDate,
+              job: oldUserData.cargo ? oldUserData.cargo : oldUserData.profesion ? oldUserData.profesion : "",
+              lastConnection: null,
+              mailchimpTag: oldUserData.mailchimpTag,
+              name: oldUserData.name,
+              phoneNumber: oldUserData.phone ? oldUserData.phone : oldUserData.telefono ? oldUserData.telefono : "",
+              photoUrl: oldUserData.photoURL,
+              profile: null,
+              isSystemUser: false,
+              role: oldUserData.role,
+              isActive: oldUserData.status === "active",
+              stripeId: oldUserData.stripeId ? oldUserData.stripeId : null,
+              oldUid: oldUserData.uid,
+              uid: oldUserData.uid,
+              updatedAt: oldUserData.fechaUltimaAct ? oldUserData.fechaUltimaAct : null,
+              certificatesQty: null,
+              performance: oldUserData.performance ? oldUserData.performance : null,
+              ratingPoints: null,
+              studyHours: oldUserData.hoursPerWeek,
+              status: oldUserData.status === "active" ? SubscriptionClass.STATUS_ACTIVE : SubscriptionClass.STATUS_INACTIVE,
+              zipCode: null,
+            };
+        }
+        else {
+            if (oldUserData.uid === "fg8mOSw6okUiWaIBFOiZ4yHIvsV2")
+            console.log(oldUserData.email, " already exists" , oldUserData.uid,)
+            // set oldUid = oldUserData.uid in doc oldUserExisting.uid
+            this.afs.collection(User.collection).doc(oldUserExisting.uid).set({
+                avgScore: oldUserExisting.avgScore ? oldUserExisting.avgScore : oldUserData.score ? oldUserData.score : null,
+                birthdate: oldUserExisting.birthdate ? oldUserExisting.birthdate : oldUserData.birthdate,
+                canEnrollParticularCourses: oldUserExisting.canEnrollParticularCourses ? oldUserExisting.canEnrollParticularCourses : null,
+                city: oldUserExisting.city ? oldUserExisting.city : null,
+                country: oldUserExisting.country ? oldUserExisting.country : oldUserData.country ? oldUserData.country : oldUserData.paisActual ? oldUserData.paisActual : "",
+                courseQty: oldUserExisting.courseQty ? oldUserExisting.courseQty : oldUserData.cantCursos, //
+                createdAt: oldUserExisting.createdAt ? oldUserExisting.createdAt : firestoreTimestampToNumberTimestamp(oldUserData.fechaRegistro),
+                currentlyWorking: oldUserExisting.currentlyWorking ? oldUserExisting.currentlyWorking : null,
+                displayName: oldUserExisting.displayName ? oldUserExisting.displayName : oldUserData.displayName ? oldUserData.displayName : oldUserData.name,
+                experience: oldUserExisting.experience ? oldUserExisting.experience : oldUserData.experience ? oldUserData.experience : oldUserData.anosExperiencia,
+                gender: oldUserExisting.gender ? oldUserExisting.gender : oldUserData.genero,
+                hiringDate: oldUserExisting.hiringDate ? oldUserExisting.hiringDate : oldUserData.hiringDate,
+                job: oldUserExisting.job ? oldUserExisting.job : oldUserData.cargo ? oldUserData.cargo : oldUserData.profesion ? oldUserData.profesion : "",
+                lastConnection: oldUserExisting.lastConnection ? oldUserExisting.lastConnection : null,
+                mailchimpTag: oldUserExisting.mailchimpTag ? oldUserExisting.mailchimpTag : oldUserData.mailchimpTag,
+                name: oldUserExisting.name ? oldUserExisting.name : oldUserData.name,
+                phoneNumber: oldUserExisting.phoneNumber ? oldUserExisting.phoneNumber : oldUserData.phone ? oldUserData.phone : oldUserData.telefono ? oldUserData.telefono : "",
+                photoUrl: oldUserExisting.photoUrl ? oldUserExisting.photoUrl : oldUserData.photoURL,
+                isSystemUser: oldUserExisting.isSystemUser ? oldUserExisting.isSystemUser : false,
+                isActive: oldUserExisting.isActive ? oldUserExisting.isActive : oldUserData.status === "active",
+                stripeId: oldUserExisting.stripeId ? oldUserExisting.stripeId : oldUserData.stripeId ? oldUserData.stripeId : null,
+                oldUid: oldUserExisting.oldUid ? oldUserExisting.oldUid : oldUserData.uid,
+                updatedAt: oldUserExisting.updatedAt ? oldUserExisting.updatedAt : oldUserData.fechaUltimaAct ? oldUserData.fechaUltimaAct : null,
+                certificatesQty: oldUserExisting.certificatesQty ? oldUserExisting.certificatesQty : null,
+                performance: oldUserExisting.performance ? oldUserExisting.performance : oldUserData.performance ? oldUserData.performance : null,
+                ratingPoints: oldUserExisting.ratingPoints ? oldUserExisting.ratingPoints : null,
+                studyHours: oldUserExisting.studyHours ? oldUserExisting.studyHours : oldUserData.hoursPerWeek,
+                status: oldUserExisting.status ? oldUserExisting.status : oldUserData.status === "active" ? SubscriptionClass.STATUS_ACTIVE : SubscriptionClass.STATUS_INACTIVE,
+                zipCode: oldUserExisting.zipCode ? oldUserExisting.zipCode : null,
+            }, {merge: true})
+            return null
+        }
     });
     console.log("usersInNewModel", usersInNewModel);
 
-    for (let user of usersInNewModel) this.usersIdMap[user.uid] = await this.userService.addUserInMigrations(User.fromJson(user));
-    console.log("this.usersIdMap", this.usersIdMap);
+    for (let user of usersInNewModel) {
+        // if (user) this.usersIdMap[user.uid] = await this.userService.addUserInMigrations(User.fromJson(user));
+    } 
     console.log("ALL USERS CREATED");
-  }
+}
 
   async migrateCoursesByStudent() {
     const snapshot = await firstValueFrom(this.afs.collection(Curso.collection).get());
@@ -283,7 +366,6 @@ export class MigrationsComponent {
         .sort((a, b) => a.fechaInicio - b.fechaInicio)
         .map((studyPlanCourse, idx) => {
           const courseOldData = oldCoursesData.find((x) => x.cursoId === studyPlanCourse.cursoId && x.usuarioId === oldUser.uid);
-
           const currentUserData = this.allCurrentUsersData.find((x) => x.oldUid === oldUser.uid);
           return {
             active: true,
@@ -310,12 +392,12 @@ export class MigrationsComponent {
 
     console.log("allCoursesByStudent to migrate", allCoursesByStudent);
     this.coursesByStudent = allCoursesByStudent;
-    // for (let courseByStudent of allCoursesByStudent) {
-    //   const ref = this.afs.collection<CourseByStudent>(CourseByStudent.collection).doc().ref;
-    //   courseByStudent.id = ref.id;
-    //   await this.afs.collection(CourseByStudent.collection).doc(courseByStudent.id).set(courseByStudent);
-    //   console.log("courseByStudent", courseByStudent.id)
-    // }
+    for (let courseByStudent of allCoursesByStudent) {
+      const ref = this.afs.collection<CourseByStudent>(CourseByStudent.collection).doc().ref;
+      courseByStudent.id = ref.id;
+      await this.afs.collection(CourseByStudent.collection).doc(courseByStudent.id).set(courseByStudent);
+      console.log("courseByStudent", courseByStudent.id)
+    }
     console.log("*********CoursesByStudent migrated*********");
   }
 
@@ -380,12 +462,12 @@ export class MigrationsComponent {
     console.log("allClassesByStudent", allClassesByStudent);
     this.classesByStudent = allClassesByStudent;
     console.log("--------- SETTING IN DATA BASE -------------");
-    // for (let classByStudent of allClassesByStudent) {
-    //   console.log("user id", classByStudent.userRef.id)
-    //   const ref = this.afs.collection<ClassByStudent>(ClassByStudent.collection).doc().ref;
-    //   classByStudent.id = ref.id;
-    //   await this.afs.collection(ClassByStudent.collection).doc(classByStudent.id).set(classByStudent);
-    // }
+    for (let classByStudent of allClassesByStudent) {
+      console.log("user id", classByStudent.userRef.id)
+      const ref = this.afs.collection<ClassByStudent>(ClassByStudent.collection).doc().ref;
+      classByStudent.id = ref.id;
+      await this.afs.collection(ClassByStudent.collection).doc(classByStudent.id).set(classByStudent);
+    }
     console.log("******** ClassesByStudent migrated *******");
   }
 
@@ -415,6 +497,9 @@ export class MigrationsComponent {
     await this.saveCertificates(allCertificatesInNewModel);
     console.log("All certificates created");
   }
+
+
+
 
   public permissionsToJson(permissions: Permissions): PermissionsJson {
     return {
