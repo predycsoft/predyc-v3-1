@@ -39,7 +39,7 @@ export class StudyTimeMonthlyLineChartComponent {
     this.courseServiceSubscription = combineLatest([this.courseService.getCoursesByStudent$(userRef), this.courseService.getClassesByStudent$(userRef), this.courseService.getCourses$(),this.courseService.getClassesEnterprise$()]).subscribe(async ([studentCourses, studentClasses, allCourses,allClases]) => {
       this.courses = allCourses
       this.allClasses = allClases
-      this.studentCourses = studentCourses.filter(item => item.active).sort((a, b) => a.dateEndPlan - b.dateEndPlan)
+      this.studentCourses = studentCourses.filter(item => item.active && item.dateStartPlan).sort((a, b) => a.dateEndPlan - b.dateEndPlan)
       const coursesIds = studentCourses.map(item => item.id)
       // console.log('coursesIds',coursesIds)
       this.studentClasses = studentClasses.filter(item => coursesIds.includes(item.coursesByStudentRef.id) && item.completed).sort((a, b) => a.dateEnd - b.dateEnd)
