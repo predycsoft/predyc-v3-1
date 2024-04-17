@@ -103,12 +103,13 @@ export class StudentStudyPlanAndCompetencesComponent {
           if (coursesByStudent.length > 0) {
             this.showInitForm = false;
             this.hoursPermonthInitForm = this.student.studyHours;
-            this.coursesByStudent = coursesByStudent; // active courses
+            this.coursesByStudent = coursesByStudent.filter(x=>x.active && x.dateStartPlan); // active courses
             // Studyplan case
-            if (!coursesByStudent[0].isExtraCourse) {
+            // if (!coursesByStudent[0].isExtraCourse ||) {
+            if(this.coursesByStudent.length>0){
               this.studyPlanView = this.showInitForm ? false : true;
               console.log('datos revisar',coursesByStudent,coursesData)
-              this.buildMonths(coursesByStudent, coursesData);
+              this.buildMonths(this.coursesByStudent, coursesData);
             }
             // Extra courses case
             else {

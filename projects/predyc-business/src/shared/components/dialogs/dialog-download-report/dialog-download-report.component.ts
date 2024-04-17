@@ -544,7 +544,8 @@ export class DialogDownloadReportComponent {
     let currentLine = 0
     currentLine = this.addLogoAndDate()
     currentLine += 10
-    const studentPhoto = student.photoUrl?student.photoUrl: this.defaultUserImage
+    // const studentPhoto = student.photoUrl?student.photoUrl: this.defaultUserImage
+    const studentPhoto =  this.defaultUserImage // hay problemas con las imagenes
     console.log(studentPhoto)
     const image = await this.firebasePhotoToImage(studentPhoto)
     console.log(image);
