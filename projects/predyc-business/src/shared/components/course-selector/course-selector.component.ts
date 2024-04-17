@@ -2,6 +2,8 @@ import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 
 import { cursosProximos } from 'projects/predyc-business/src/assets/data/proximamente.data'
+import { ActivityClassesService } from '../../services/activity-classes.service';
+import { filter, take } from 'rxjs';
 
 
 
@@ -78,6 +80,8 @@ export class CourseSelectorComponent {
   
   constructor(    
     public icon: IconService,
+    public activityClassesService:ActivityClassesService,
+
     ){
     
   }
@@ -97,8 +101,32 @@ export class CourseSelectorComponent {
   selectCourse(course){
 
     this.selectedCourse = course
-    this.selectedCourseOut.emit(course);
+    this.getExamCourse(course)
 
+  }
+
+  getExamCourse(course){
+    //console.log('idCourse search activity', idCourse);
+    this.activityClassesService.getActivityCoruse(course.id).pipe(filter(data=>data!=null),take(1))
+      .subscribe(data => {
+        if (data) {
+          ////console.log('Activity:', data);
+          ////console.log('Questions:', data.questions);
+          data.questions.forEach(question => {
+           // //console.log('preguntas posibles test',question)
+            question.competencias = question.skills
+          });
+          let examen = data;
+          course.test = examen;
+          course.testDuration = examen.questions.length>= 60 ? 60 : examen.questions.length
+          this.selectedCourseOut.emit(course);
+          //this.formatExamQuestions();
+        }
+        else{
+          course.test = null;
+          this.selectedCourseOut.emit(course);
+        }
+      });
   }
 
   filteredCourses(categoryCourses) {
@@ -107,7 +135,6 @@ export class CourseSelectorComponent {
     if (this.searchValue && this.searchValue.length>0) {
       displayedCourses= categoryCourses.filter(x => x.titulo.toLocaleLowerCase().includes(this.searchValue.toLocaleLowerCase()))
       if(displayedCourses.length > 0){
-        console.log('search',displayedCourses);
         let categoriesCourse = displayedCourses[0].categories
         let categoryIds =[]
         categoriesCourse.forEach(skillRef => {

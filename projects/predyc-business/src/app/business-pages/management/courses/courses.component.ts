@@ -172,7 +172,9 @@ export class CoursesComponent implements AfterViewInit {
               modulo.duracion = duracion
               duracionCourse+=duracion
             });
-            curso['duracion'] = duracionCourse;
+            if(!curso['duracion']){
+              curso['duracion'] = duracionCourse;
+            }
 
           });
           this.categories.forEach(category => {
