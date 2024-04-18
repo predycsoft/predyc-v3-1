@@ -10,6 +10,7 @@ import { NotificationsComponent } from './business-pages/management/notification
 import { StudentComponent } from './business-pages/management/my-team/student/student.component';
 import { LoginComponent } from './login/login.component';
 import { AuthGuard } from 'projects/predyc-business/src/shared/guards/auth.guard';
+import { ProductionGuard } from '../shared/guards/production.guard';
 import { MainComponent } from './business-pages/main.component';
 import { CreateCourseComponent } from './business-pages/management/create-course/create-course.component';
 import { InitScriptComponent } from 'projects/predyc-business/src/shared/components/init-script/init-script.component';
@@ -18,6 +19,8 @@ import { ProfilesComponent } from './business-pages/management/profiles/profiles
 import { ProfileGuard } from 'projects/predyc-business/src/shared/guards/profile.guard';
 import { SystemUserGuard } from 'projects/predyc-business/src/admin/guards/systemUser.guard';
 import { MigrationsComponent } from '../shared/components/migrations/migrations.component';
+import { environment } from '../environments/environment';
+
 
 const MAIN_TITLE = 'Predyc - '
 
@@ -67,10 +70,12 @@ const routes: Routes = [
   },
   {
     path: 'init-script',
+    canActivate: [ProductionGuard], // solo se puede acceder en desarrollo
     component: InitScriptComponent
   },
   {
     path: 'migrations',
+    canActivate: [ProductionGuard], // solo se puede acceder en desarrollo
     component: MigrationsComponent
   },
   { path: '**', redirectTo: '', pathMatch: 'full' }, // Wildcard Route
