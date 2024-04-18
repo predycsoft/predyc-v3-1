@@ -387,12 +387,10 @@ export class UserService {
     dateIni = null,
     dateEnd = null
   ): Observable<any[]> {
-    return this.afs
-      .collection<any>("subscription", (ref) => {
+    return this.afs.collection<any>(SubscriptionClass.collection, (ref) => {
         let query = ref.where("userRef", "==", userRef);
         return query;
-      })
-      .valueChanges();
+      }) .valueChanges();
   }
 
   getRatingPointsFromStudyPlan(
