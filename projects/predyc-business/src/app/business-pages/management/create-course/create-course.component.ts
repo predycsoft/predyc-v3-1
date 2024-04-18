@@ -2668,8 +2668,19 @@ export class CreateCourseComponent {
 
     // Si ya el reproductor esta cargado por hubo una clase de video previa esta función solo cmabia el video
     loadVideo(): void {
+
+      let idVimeo = this.selectedClase.vimeoId1; // El ID básico del video
+      let videoParam; // Este será el parámetro que pasaremos a loadVideo
+
+      if (this.selectedClase.vimeoId2) {
+        // Si vimeoId2 existe, construye la URL completa
+        videoParam = `https://player.vimeo.com/video/${this.selectedClase.vimeoId1}?h=${this.selectedClase.vimeoId2}`;
+      } else {
+        // Si no, solo usa el ID del video
+        videoParam = idVimeo;
+      }
       this.player
-      .loadVideo(this.selectedClase.vimeoId1)
+      .loadVideo(videoParam)
       .then(function (id) {   
         // the video successfully loaded
         this.initPlayer();

@@ -44,7 +44,8 @@ export class CourseSelectorComponent {
     if (changes['categories'] && changes['categories'].currentValue) {
       console.log('changes categories',changes['categories']);
       this.processedCategories = this.structuredClone(changes['categories'].currentValue);
-      let cursosProxmosIn = cursosProximos
+      //let cursosProxmosIn = cursosProximos
+      let cursosProxmosIn = []
       console.log('cursosProxmos',cursosProximos,cursosProxmosIn)
       let proximamente = {
         name:'Proximamente'
@@ -107,26 +108,25 @@ export class CourseSelectorComponent {
 
   getExamCourse(course){
     //console.log('idCourse search activity', idCourse);
-    this.activityClassesService.getActivityCoruse(course.id).pipe(filter(data=>data!=null),take(1))
-      .subscribe(data => {
-        if (data) {
-          ////console.log('Activity:', data);
-          ////console.log('Questions:', data.questions);
-          data.questions.forEach(question => {
-           // //console.log('preguntas posibles test',question)
-            question.competencias = question.skills
-          });
-          let examen = data;
-          course.test = examen;
-          course.testDuration = examen.questions.length>= 60 ? 60 : examen.questions.length
-          this.selectedCourseOut.emit(course);
-          //this.formatExamQuestions();
-        }
-        else{
-          course.test = null;
-          this.selectedCourseOut.emit(course);
-        }
-      });
+    this.activityClassesService.getActivityCoruse(course.id).pipe(take(1)).subscribe(data => {
+      if (data) {
+        ////console.log('Activity:', data);
+        ////console.log('Questions:', data.questions);
+        data.questions.forEach(question => {
+        // //console.log('preguntas posibles test',question)
+          question.competencias = question.skills
+        });
+        let examen = data;
+        course.test = examen;
+        course.testDuration = examen.questions.length>= 60 ? 60 : examen.questions.length
+        this.selectedCourseOut.emit(course);
+        //this.formatExamQuestions();
+      }
+      else{
+        course.test = null;
+        this.selectedCourseOut.emit(course);
+      }
+    });
   }
 
   filteredCourses(categoryCourses) {
