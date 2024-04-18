@@ -76,6 +76,8 @@ import { DialogStudentEnrolledCourseDetailComponent } from "./components/courses
 import { MigrationsComponent } from "./components/migrations/migrations.component";
 import { DialogCreateLicenseComponent } from "./components/license/dialog-create-license/dialog-create-license.component";
 import { DialogEnrollCoursesComponent } from "./components/courses/dialog-enroll-courses/dialog-enroll-courses.component";
+import { EnterprisesUsersMigrationComponent } from './components/migrations/enterprises-users-migration/enterprises-users-migration.component';
+import { ParticularUsersMigrationComponent } from './components/migrations/particular-users-migration/particular-users-migration.component';
 
 @NgModule({
   declarations: [
@@ -120,6 +122,8 @@ import { DialogEnrollCoursesComponent } from "./components/courses/dialog-enroll
     MigrationsComponent,
     DialogCreateLicenseComponent,
     DialogEnrollCoursesComponent,
+    EnterprisesUsersMigrationComponent,
+    ParticularUsersMigrationComponent,
   ],
   imports: [
     CommonModule,

@@ -1,38 +1,6 @@
-<div
-  fxLayout="row"
-  fxLayoutGap="3rem"
-  fxLayoutAlign="start center"
-  class="pd20"
->
-  <!-- <button class="ft20 greenButton" (click)="migrateAll()">Migrar Todo</button> -->
-</div>
-<div *ngIf="allCoursesData && allCurrentUsersData"
-  fxLayout="row"
-  fxLayoutGap="5rem"
-  fxLayoutAlign="start center"
-  class="pd20"
->
-  <button class="ft20 greenButton" (click)="migrateEnterprises()">
-    Migrar Empresas
-  </button>
-  <button class="ft20 blueButton" (click)="migrateUsers()">
-    Migrar Usuarios
-  </button>
-  <button class="ft20 redButton" (click)="migrateCoursesByStudent()">
-    Migrar Course by student
-  </button>
-  <button class="ft20 orangeButton" (click)="migrateClassesByStudent()">
-    Migrar Class by student
-  </button>
-  <!-- <button class="ft20 greenButton" (click)="completeData()">
-    Agregar datos restantes
-  </button> -->
-
-  <!-- <button class="ft20 yellowButton" (click)="migrateLicenses()">Migrar Licencias</button> -->
-  <!-- <button class="ft20 blueButton" (click)="migrateProducts()" >Migrar Productos</button> -->
-  <!-- <button class="ft20 orangeButton" (click)="migrateProfiles()">Migrar Perfiles</button> -->
-  <!-- <button class="ft20 redButton" (click)="migrateCategories()">Migrar Categorias</button> -->
-</div>
 <div>
-  <!-- <button class="ft20 greenButton" (click)="debug()">Debug</button> -->
+
+  <app-enterprises-users-migration></app-enterprises-users-migration>
+
+  <app-particular-users-migration></app-particular-users-migration>
 </div>
