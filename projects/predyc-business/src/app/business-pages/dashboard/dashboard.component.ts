@@ -690,12 +690,12 @@ export class DashboardComponent {
       (user) =>
         !user.allsubscriptions ||
         user.allsubscriptions.length === 0 || // No tiene suscripciones
-        user.allsubscriptions.some(
+        user.allsubscriptions.every(
           (subscription) => subscription.status !== "active"
-        ) // Tiene al menos una suscripción no activa
+        ) // Todas sus subcripciones estan inactivas
     );
 
-    console.log(usuariosConLicencia, usuariosSinLicencia);
+    console.log('usuariosReporte',usuariosConLicencia, usuariosSinLicencia);
 
     let cantidadUsuariosConLicencia = usuariosConLicencia?.length;
     let cantidadUsuariosTotal = this.users.length;
@@ -1626,7 +1626,7 @@ export class DashboardComponent {
 
   getLastDateStudyPlan(user) {
     let fechas = [];
-    console.log("getLastDateStudyPlan", user);
+    //console.log("getLastDateStudyPlan", user);
     if (user?.allCourses?.length > 0) {
       user.allCourses.forEach((curso) => {
         if (curso?.progress?.dateEndPlan?.seconds) {
