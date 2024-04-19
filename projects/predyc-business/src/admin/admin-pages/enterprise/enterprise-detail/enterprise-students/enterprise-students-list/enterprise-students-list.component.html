@@ -72,8 +72,7 @@
     
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <ng-container>
-                <tr
-                    mat-row
+                <tr class="cursorPointer" (click)="goToStudent(data)" mat-row
                     *matRowDef="let data; columns: displayedColumns;"
                     >
                 </tr>
