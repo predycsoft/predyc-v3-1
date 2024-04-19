@@ -19,6 +19,7 @@ import { timestampToDateNumbers } from 'projects/shared/utils';
 import Swal from 'sweetalert2';
 import { AlertsService } from 'projects/predyc-business/src/shared/services/alerts.service';
 import { Subscription as SubscriptionClass } from "shared";
+import { Router } from '@angular/router';
 
 
 
@@ -48,6 +49,7 @@ export class EnterpriseStudentsListComponent {
     public icon: IconService,
     private fb: FormBuilder,
     private alertService: AlertsService,
+    private router: Router,
 
   ){}
 
@@ -120,6 +122,7 @@ export class EnterpriseStudentsListComponent {
                 departmentName: userDepartmentName,
                 profileName: userProfileName,
                 email: user.email,
+                id:user.uid,
                 status: SubscriptionClass.statusToDisplayValueDict[status],
                 //subcription: subscriptions
                 // Agrega aquí cualquier información adicional de suscripciones que necesites
@@ -287,6 +290,14 @@ export class EnterpriseStudentsListComponent {
 
   ngOnDestroy() {
     if (this.userSubscription) this.userSubscription.unsubscribe()
+  }
+
+  goToStudent(data){
+    console.log(data)
+
+    this.router.navigate([`admin/students/${data.id}`])
+
+    
   }
 
 
