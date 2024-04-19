@@ -366,39 +366,50 @@ export class EnterprisesUsersMigrationComponent {
       const coursesByStudent: CourseByStudentJson[] = oldUser.studyPlan
         .sort((a, b) => a.fechaInicio - b.fechaInicio)
         .map((studyPlanCourse, idx) => {
-          const courseOldData = oldCoursesData.find((x) => x.cursoId === studyPlanCourse.cursoId && x.usuarioId === oldUser.uid);
-          const currentUserData = this.allCurrentUsersData.find((x) => x.oldUid === oldUser.uid);
-          return {
-            active: true,
-            courseRef: this.coursesIdMap[studyPlanCourse.cursoId] ? this.courseService.getCourseRefById(this.coursesIdMap[studyPlanCourse.cursoId]) : null,
-            // courseRef: this.courseService.getCourseRefById(this.coursesIdMap[studyPlanCourse.cursoId]), // UNCONMENT THIS WHEN ALL COURSES ARE CREATED
-            dateEnd: new Date(studyPlanCourse.fechaCompletacion),
-            dateEndPlan: new Date(studyPlanCourse.fechaFin),
-            dateStart: courseOldData.fechaInscripcion ? new Date(courseOldData.fechaInscripcion) : new Date(studyPlanCourse.fechaInicio),
-            dateStartPlan: new Date(studyPlanCourse.fechaInicio),
-            finalScore: courseOldData?.puntaje ? courseOldData.puntaje : 
-            studyPlanCourse.fechaCompletacion ? this.getRandomNumber(80, 100) : 0,
-            id: null,
-            progress: courseOldData.progreso,
-            // userRef: this.userService.getUserRefById(this.usersIdMap[oldUser.uid]),
-            userRef: this.userService.getUserRefById(currentUserData.uid),
-            courseTime: studyPlanCourse.duracion,
-            progressTime: null,
-            isExtraCourse: false,
-            studyPlanOrder: idx + 1,
-          };
+
+          if (!this.coursesIdMap[studyPlanCourse.cursoId]) {
+            console.log(" XXXXXXXXXXXXXXXXXXXXX this course doesnt exist in new data base XXXXXXXXXXXXXXXXXXXXX")
+            return null
+          }
+          else {
+            const courseOldData = oldCoursesData.find((x) => x.cursoId === studyPlanCourse.cursoId && x.usuarioId === oldUser.uid);
+            const currentUserData = this.allCurrentUsersData.find((x) => x.oldUid === oldUser.uid);
+            return {
+              active: true,
+              courseRef: this.coursesIdMap[studyPlanCourse.cursoId] ? this.courseService.getCourseRefById(this.coursesIdMap[studyPlanCourse.cursoId]) : null,
+              // courseRef: this.courseService.getCourseRefById(this.coursesIdMap[studyPlanCourse.cursoId]), // UNCONMENT THIS WHEN ALL COURSES ARE CREATED
+              dateEnd: new Date(studyPlanCourse.fechaCompletacion),
+              dateEndPlan: new Date(studyPlanCourse.fechaFin),
+              dateStart: courseOldData.fechaInscripcion ? new Date(courseOldData.fechaInscripcion) : new Date(studyPlanCourse.fechaInicio),
+              dateStartPlan: new Date(studyPlanCourse.fechaInicio),
+              finalScore: courseOldData?.puntaje ? courseOldData.puntaje : 
+              studyPlanCourse.fechaCompletacion ? this.getRandomNumber(80, 100) : 0,
+              id: null,
+              progress: courseOldData.progreso,
+              // userRef: this.userService.getUserRefById(this.usersIdMap[oldUser.uid]),
+              userRef: this.userService.getUserRefById(currentUserData.uid),
+              courseTime: studyPlanCourse.duracion,
+              progressTime: null,
+              isExtraCourse: false,
+              studyPlanOrder: idx + 1,
+            };
+          }
+
         });
       allCoursesByStudent.push(...coursesByStudent);
     }
 
-    console.log("allCoursesByStudent to migrate", allCoursesByStudent);
-    this.coursesByStudent = allCoursesByStudent;
-    for (let courseByStudent of allCoursesByStudent) {
+    this.coursesByStudent = allCoursesByStudent.filter(x => x !== null);
+    console.log("allCoursesByStudent to migrate", this.coursesByStudent);
+    const batch = this.afs.firestore.batch();
+    for (let courseByStudent of this.coursesByStudent) {
       const ref = this.afs.collection<CourseByStudent>(CourseByStudent.collection).doc().ref;
       courseByStudent.id = ref.id;
-      await this.afs.collection(CourseByStudent.collection).doc(courseByStudent.id).set(courseByStudent);
+      // await this.afs.collection(CourseByStudent.collection).doc(courseByStudent.id).set(courseByStudent);
+      batch.set(ref, courseByStudent);
       console.log("courseByStudent", courseByStudent.id)
     }
+    await batch.commit();
     console.log("*********CoursesByStudent migrated*********");
   }
 
