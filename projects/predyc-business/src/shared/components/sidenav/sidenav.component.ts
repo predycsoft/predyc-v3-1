@@ -94,6 +94,11 @@ export class SideNavComponent {
       link: "/admin/freebies",
       icon: "../../assets/iconsUI/puzzle.svg",
     },
+    {
+      name: "Preguntas",
+      link: "/admin/questions",
+      icon: "../../assets/iconsUI/help.svg",
+    },
   ];
 
   constructor(public icon: IconService, private authService: AuthService) {}

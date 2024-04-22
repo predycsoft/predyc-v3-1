@@ -12,6 +12,7 @@ import { ProductsComponent } from "./admin-pages/products/products.component";
 import { StudentDetailComponent } from "./admin-pages/students/student-detail/student-detail.component";
 import { EnterpriseDetailComponent } from "./admin-pages/enterprise/enterprise-detail/enterprise-detail.component";
 import { FreebiesComponent } from "./admin-pages/freebies/freebies.component";
+import { QuestionsComponent } from "./admin-pages/questions/questions.component";
 
 export const MAIN_TITLE = "Predyc Admin - ";
 
@@ -58,6 +59,8 @@ const routes: Routes = [
     component: RoyaltyComponent,
   },
   { path: "sales", title: MAIN_TITLE + "Ventas", component: SalesComponent },
+  { path: "questions", title: MAIN_TITLE + "Preguntas", component: QuestionsComponent },
+
   {
     path: "courses",
     title: MAIN_TITLE + "Cursos",

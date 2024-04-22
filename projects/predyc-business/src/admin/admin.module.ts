@@ -21,6 +21,7 @@ import { ProductFormComponent } from "./admin-pages/products/product-list/dialog
 import { StudentDetailComponent } from "./admin-pages/students/student-detail/student-detail.component";
 import { StudentSubscriptionListComponent } from "./admin-pages/students/student-detail/student-subscription-list/student-subscription-list.component";
 import { SalesListComponent } from "./admin-pages/sales/sales-list/sales-list.component";
+import { QuestionsListComponent } from "./admin-pages/questions/questions-list/questions-list.component";
 import { EnterpriseDetailComponent } from "./admin-pages/enterprise/enterprise-detail/enterprise-detail.component";
 import { EnterpriseInfoComponent } from "./admin-pages/enterprise/enterprise-detail/enterprise-info/enterprise-info.component";
 import { EnterpriseStudentsComponent } from "./admin-pages/enterprise/enterprise-detail/enterprise-students/enterprise-students.component";
@@ -34,6 +35,8 @@ import { StudentClassesActivityListComponent } from "./admin-pages/students/stud
 import { FreebiesComponent } from "./admin-pages/freebies/freebies.component";
 import { FreebiesListComponent } from "./admin-pages/freebies/freebies-list/freebies-list.component";
 import { DialogFreebiesFormComponent } from "./admin-pages/freebies/freebies-list/dialog-freebies-form/dialog-freebies-form.component";
+import { QuestionsComponent } from "./admin-pages/questions/questions.component";
+
 
 @NgModule({
   declarations: [
@@ -43,6 +46,7 @@ import { DialogFreebiesFormComponent } from "./admin-pages/freebies/freebies-lis
     ProductListComponent,
     RoyaltyComponent,
     SalesComponent,
+    QuestionsComponent,
     StudentsComponent,
     AdminStudentListComponent,
     LicensesSubscriptionsComponent,
@@ -56,6 +60,7 @@ import { DialogFreebiesFormComponent } from "./admin-pages/freebies/freebies-lis
     ProductFormComponent,
     StudentSubscriptionListComponent,
     SalesListComponent,
+    QuestionsListComponent,
     EnterpriseDetailComponent,
     EnterpriseInfoComponent,
     EnterpriseStudentsComponent,
