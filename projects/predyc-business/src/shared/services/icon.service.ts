@@ -246,5 +246,7 @@ export class IconService {
 
   tableShortcut: string ="assets/iconsUI/table--shortcut.svg"
 
+  help: string ="assets/iconsUI/help.svg"
+
   constructor() { }
 }

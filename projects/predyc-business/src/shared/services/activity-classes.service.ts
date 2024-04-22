@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, CollectionReference, DocumentReference, Query } from '@angular/fire/compat/firestore';
-import { BehaviorSubject, firstValueFrom, map, Observable, of, Subscription, switchMap, zip } from 'rxjs'
+import { BehaviorSubject, catchError, combineLatest, defaultIfEmpty, firstValueFrom, forkJoin, map, Observable, of, Subscription, switchMap, zip } from 'rxjs'
 import { EnterpriseService } from './enterprise.service';
 import { AlertsService } from './alerts.service';
 
@@ -256,6 +256,28 @@ export class ActivityClassesService {
       );
   }
 
+  getActivityById(idActivity: string): Observable<any> {
+    const activityDocRef = this.afs.doc<Activity>(`${Activity.collection}/${idActivity}`);
+  
+    return activityDocRef.snapshotChanges().pipe(
+      switchMap(doc => {
+        const activity = { id: doc.payload.id, ...doc.payload.data() as Activity };
+  
+        // Asumiendo que cada actividad tiene una subcolección de preguntas
+        return this.afs.collection<Question>(`${Activity.collection}/${idActivity}/${Question.collection}`).snapshotChanges().pipe(
+          map(actions => {
+            const questions = actions.map(a => {
+              return { id: a.payload.doc.id, ...a.payload.doc.data() as Question };
+            });
+            // Combinar los datos de la actividad con sus preguntas
+            return { ...activity, questions };
+          })
+        );
+      })
+    );
+  }
+  
+
   getActivities() {
     if (this.activityCollectionSubscription) {
       console.log("Has to unsubscribe before")
@@ -301,4 +323,35 @@ export class ActivityClassesService {
       await this.afs.collection(Activity.collection).doc(activityId).collection(Activity.questionSubCollection).doc(doc.id).delete();
     });
   }
+
+  getActivityCertifications(): Observable<any> {
+    return this.afs.collection(Activity.collection, ref => ref.where('type', '==', 'testCertification'))
+      .valueChanges({ idField: 'id' })
+      .pipe(
+        switchMap(activities => {
+          console.log('Actividades encontradas:', activities);
+          if (activities.length > 0) {
+            const questionsObservables = activities.map(activity =>
+              this.afs.collection(`${Activity.collection}/${activity.id}/${Question.collection}`)
+                .valueChanges({ idField: 'id' })
+                .pipe(
+                  defaultIfEmpty([]), // Asegurar que cada observable emite al menos un valor.
+                  map(questions => ({ ...activity, questions }))
+                )
+            );
+            return combineLatest(questionsObservables); // Emitir cada vez que cualquier observable emite
+          }
+          return of([]); // No hay actividades, devuelve un arreglo vacío
+        })
+      );
+  }
+  
+  
+
+  
+
+
+
+
+
 }

@@ -36,7 +36,9 @@ import { FreebiesComponent } from "./admin-pages/freebies/freebies.component";
 import { FreebiesListComponent } from "./admin-pages/freebies/freebies-list/freebies-list.component";
 import { DialogFreebiesFormComponent } from "./admin-pages/freebies/freebies-list/dialog-freebies-form/dialog-freebies-form.component";
 import { QuestionsComponent } from "./admin-pages/questions/questions.component";
-
+import { CertificationsComponent } from "./admin-pages/certifications/certifications.component";
+import { CertificationsListComponent } from "./admin-pages/certifications/certifications-list/certifications-list.component";
+import { CertificationsFormComponent } from "./admin-pages/certifications/certifications-form/certifications-form.component";
 
 @NgModule({
   declarations: [
@@ -47,6 +49,7 @@ import { QuestionsComponent } from "./admin-pages/questions/questions.component"
     RoyaltyComponent,
     SalesComponent,
     QuestionsComponent,
+    CertificationsComponent,
     StudentsComponent,
     AdminStudentListComponent,
     LicensesSubscriptionsComponent,
@@ -74,6 +77,8 @@ import { QuestionsComponent } from "./admin-pages/questions/questions.component"
     FreebiesComponent,
     FreebiesListComponent,
     DialogFreebiesFormComponent,
+    CertificationsListComponent,
+    CertificationsFormComponent
   ],
   imports: [SharedModule, CommonModule, AdminRoutingModule],
 })

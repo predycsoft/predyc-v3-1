@@ -14,6 +14,9 @@ import { EnterpriseDetailComponent } from "./admin-pages/enterprise/enterprise-d
 import { FreebiesComponent } from "./admin-pages/freebies/freebies.component";
 import { QuestionsComponent } from "./admin-pages/questions/questions.component";
 
+import { CertificationsComponent } from "./admin-pages/certifications/certifications.component";
+import { CertificationsFormComponent } from "./admin-pages/certifications/certifications-form/certifications-form.component";
+
 export const MAIN_TITLE = "Predyc Admin - ";
 
 const routes: Routes = [
@@ -60,6 +63,11 @@ const routes: Routes = [
   },
   { path: "sales", title: MAIN_TITLE + "Ventas", component: SalesComponent },
   { path: "questions", title: MAIN_TITLE + "Preguntas", component: QuestionsComponent },
+  { path: "certifications", title: MAIN_TITLE + "Certificados", component: CertificationsComponent },
+
+  { path:"certifications/form", title: MAIN_TITLE + 'Crear Certificación', component: CertificationsFormComponent },
+  { path:"certifications/form/:id", title: MAIN_TITLE + 'Editar Certificación', component: CertificationsFormComponent },
+
 
   {
     path: "courses",
