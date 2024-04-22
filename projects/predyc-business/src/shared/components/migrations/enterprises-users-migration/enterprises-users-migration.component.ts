@@ -260,89 +260,49 @@ export class EnterprisesUsersMigrationComponent {
     const oldUsersData: any[] = oldUsers;
 
     const usersInNewModel: UserJson[] = oldUsersData.map((oldUserData) => {
-        const oldUserExisting = this.icafluorExisitngUsers.find(x => x.email === oldUserData.email)
-        if(!oldUserExisting) {
-            // console.log("oldUserData.name", oldUserData.name)
-            return {
-              avgScore: oldUserData.score ? oldUserData.score : null,
-              birthdate: oldUserData.birthdate,
-              canEnrollParticularCourses: null,
-              city: null,
-              country: oldUserData.country ? oldUserData.country : oldUserData.paisActual ? oldUserData.paisActual : "",
-              courseQty: oldUserData.cantCursos, //
-              createdAt: firestoreTimestampToNumberTimestamp(oldUserData.fechaRegistro),
-              currentlyWorking: null,
-              departmentRef: null,
-              displayName: oldUserData.displayName ? oldUserData.displayName : oldUserData.name,
-              email: oldUserData.email,
-              enterprise: this.enterpriseService.getEnterpriseRefById(oldUserData.empresaId),
-              experience: oldUserData.experience ? oldUserData.experience : oldUserData.anosExperiencia,
-              gender: oldUserData.genero,
-              hiringDate: oldUserData.hiringDate,
-              job: oldUserData.cargo ? oldUserData.cargo : oldUserData.profesion ? oldUserData.profesion : "",
-              lastConnection: null,
-              mailchimpTag: oldUserData.mailchimpTag,
-              name: oldUserData.name,
-              phoneNumber: oldUserData.phone ? oldUserData.phone : oldUserData.telefono ? oldUserData.telefono : "",
-              photoUrl: oldUserData.photoURL,
-              profile: null,
-              isSystemUser: false,
-              role: oldUserData.role,
-              isActive: oldUserData.status === "active",
-              stripeId: oldUserData.stripeId ? oldUserData.stripeId : null,
-              oldUid: oldUserData.uid,
-              uid: oldUserData.uid,
-              updatedAt: oldUserData.fechaUltimaAct ? oldUserData.fechaUltimaAct : null,
-              certificatesQty: null,
-              performance: oldUserData.performance ? oldUserData.performance : null,
-              ratingPoints: null,
-              studyHours: oldUserData.hoursPerWeek,
-              status: oldUserData.status === "active" ? SubscriptionClass.STATUS_ACTIVE : SubscriptionClass.STATUS_INACTIVE,
-              zipCode: null,
-            };
-        }
-        else {
-            if (oldUserData.uid === "fg8mOSw6okUiWaIBFOiZ4yHIvsV2")
-            console.log(oldUserData.email, " already exists" , oldUserData.uid,)
-            // set oldUid = oldUserData.uid in doc oldUserExisting.uid
-            this.afs.collection(User.collection).doc(oldUserExisting.uid).set({
-                avgScore: oldUserExisting.avgScore ? oldUserExisting.avgScore : oldUserData.score ? oldUserData.score : null,
-                birthdate: oldUserExisting.birthdate ? oldUserExisting.birthdate : oldUserData.birthdate,
-                canEnrollParticularCourses: oldUserExisting.canEnrollParticularCourses ? oldUserExisting.canEnrollParticularCourses : null,
-                city: oldUserExisting.city ? oldUserExisting.city : null,
-                country: oldUserExisting.country ? oldUserExisting.country : oldUserData.country ? oldUserData.country : oldUserData.paisActual ? oldUserData.paisActual : "",
-                courseQty: oldUserExisting.courseQty ? oldUserExisting.courseQty : oldUserData.cantCursos, //
-                createdAt: oldUserExisting.createdAt ? oldUserExisting.createdAt : firestoreTimestampToNumberTimestamp(oldUserData.fechaRegistro),
-                currentlyWorking: oldUserExisting.currentlyWorking ? oldUserExisting.currentlyWorking : null,
-                displayName: oldUserExisting.displayName ? oldUserExisting.displayName : oldUserData.displayName ? oldUserData.displayName : oldUserData.name,
-                experience: oldUserExisting.experience ? oldUserExisting.experience : oldUserData.experience ? oldUserData.experience : oldUserData.anosExperiencia,
-                gender: oldUserExisting.gender ? oldUserExisting.gender : oldUserData.genero,
-                hiringDate: oldUserExisting.hiringDate ? oldUserExisting.hiringDate : oldUserData.hiringDate,
-                job: oldUserExisting.job ? oldUserExisting.job : oldUserData.cargo ? oldUserData.cargo : oldUserData.profesion ? oldUserData.profesion : "",
-                lastConnection: oldUserExisting.lastConnection ? oldUserExisting.lastConnection : null,
-                mailchimpTag: oldUserExisting.mailchimpTag ? oldUserExisting.mailchimpTag : oldUserData.mailchimpTag,
-                name: oldUserExisting.name ? oldUserExisting.name : oldUserData.name,
-                phoneNumber: oldUserExisting.phoneNumber ? oldUserExisting.phoneNumber : oldUserData.phone ? oldUserData.phone : oldUserData.telefono ? oldUserData.telefono : "",
-                photoUrl: oldUserExisting.photoUrl ? oldUserExisting.photoUrl : oldUserData.photoURL,
-                isSystemUser: oldUserExisting.isSystemUser ? oldUserExisting.isSystemUser : false,
-                isActive: oldUserExisting.isActive ? oldUserExisting.isActive : oldUserData.status === "active",
-                stripeId: oldUserExisting.stripeId ? oldUserExisting.stripeId : oldUserData.stripeId ? oldUserData.stripeId : null,
-                oldUid: oldUserExisting.oldUid ? oldUserExisting.oldUid : oldUserData.uid,
-                updatedAt: oldUserExisting.updatedAt ? oldUserExisting.updatedAt : oldUserData.fechaUltimaAct ? oldUserData.fechaUltimaAct : null,
-                certificatesQty: oldUserExisting.certificatesQty ? oldUserExisting.certificatesQty : null,
-                performance: oldUserExisting.performance ? oldUserExisting.performance : oldUserData.performance ? oldUserData.performance : null,
-                ratingPoints: oldUserExisting.ratingPoints ? oldUserExisting.ratingPoints : null,
-                studyHours: oldUserExisting.studyHours ? oldUserExisting.studyHours : oldUserData.hoursPerWeek,
-                status: oldUserExisting.status ? oldUserExisting.status : oldUserData.status === "active" ? SubscriptionClass.STATUS_ACTIVE : SubscriptionClass.STATUS_INACTIVE,
-                zipCode: oldUserExisting.zipCode ? oldUserExisting.zipCode : null,
-            }, {merge: true})
-            return null
-        }
+      // console.log("oldUserData.name", oldUserData.name)
+      return {
+        avgScore: oldUserData.score ? oldUserData.score : null,
+        birthdate: oldUserData.birthdate,
+        canEnrollParticularCourses: null,
+        city: null,
+        country: oldUserData.country ? oldUserData.country : oldUserData.paisActual ? oldUserData.paisActual : "",
+        courseQty: oldUserData.cantCursos, //
+        createdAt: firestoreTimestampToNumberTimestamp(oldUserData.fechaRegistro),
+        currentlyWorking: null,
+        departmentRef: null,
+        displayName: oldUserData.displayName ? oldUserData.displayName : oldUserData.name,
+        email: oldUserData.email,
+        enterprise: this.enterpriseService.getEnterpriseRefById(oldUserData.empresaId),
+        experience: oldUserData.experience ? oldUserData.experience : oldUserData.anosExperiencia,
+        gender: oldUserData.genero,
+        hiringDate: oldUserData.hiringDate,
+        job: oldUserData.cargo ? oldUserData.cargo : oldUserData.profesion ? oldUserData.profesion : "",
+        lastConnection: null,
+        mailchimpTag: oldUserData.mailchimpTag,
+        name: oldUserData.name ? oldUserData.name : oldUserData.nombreCompleto,
+        phoneNumber: oldUserData.phone ? oldUserData.phone : oldUserData.telefono ? oldUserData.telefono : "",
+        photoUrl: oldUserData.photoURL,
+        profile: null,
+        isSystemUser: false,
+        role: oldUserData.role,
+        isActive: oldUserData.status === "active",
+        stripeId: oldUserData.stripeId ? oldUserData.stripeId : null,
+        oldUid: oldUserData.uid,
+        uid: oldUserData.uid,
+        updatedAt: oldUserData.fechaUltimaAct ? oldUserData.fechaUltimaAct : null,
+        certificatesQty: null,
+        performance: oldUserData.performance ? oldUserData.performance : null,
+        ratingPoints: null,
+        studyHours: oldUserData.hoursPerWeek ? oldUserData.hoursPerWeek : 8,
+        status: oldUserData.status === "active" ? SubscriptionClass.STATUS_ACTIVE : SubscriptionClass.STATUS_INACTIVE,
+        zipCode: null,
+      };
     });
     console.log("usersInNewModel", usersInNewModel);
 
     for (let user of usersInNewModel) {
-        // if (user) this.usersIdMap[user.uid] = await this.userService.addUserInMigrations(User.fromJson(user));
+        if (user) this.usersIdMap[user.uid] = await this.userService.addUserInMigrations(User.fromJson(user));
     } 
     console.log("ALL USERS CREATED");
 }
@@ -378,10 +338,11 @@ export class EnterprisesUsersMigrationComponent {
               active: true,
               courseRef: this.coursesIdMap[studyPlanCourse.cursoId] ? this.courseService.getCourseRefById(this.coursesIdMap[studyPlanCourse.cursoId]) : null,
               // courseRef: this.courseService.getCourseRefById(this.coursesIdMap[studyPlanCourse.cursoId]), // UNCONMENT THIS WHEN ALL COURSES ARE CREATED
-              dateEnd: new Date(studyPlanCourse.fechaCompletacion),
-              dateEndPlan: new Date(studyPlanCourse.fechaFin),
-              dateStart: courseOldData.fechaInscripcion ? new Date(courseOldData.fechaInscripcion) : new Date(studyPlanCourse.fechaInicio),
-              dateStartPlan: new Date(studyPlanCourse.fechaInicio),
+              dateEnd: studyPlanCourse.fechaCompletacion ? new Date(studyPlanCourse.fechaCompletacion) : null,
+              dateEndPlan: studyPlanCourse.fechaFin ? new Date(studyPlanCourse.fechaFin) : null,
+              dateStart: courseOldData.fechaInscripcion ? new Date(courseOldData.fechaInscripcion) : 
+                          studyPlanCourse.fechaInicio ? new Date(studyPlanCourse.fechaInicio) : null,
+              dateStartPlan: studyPlanCourse.fechaInicio ? new Date(studyPlanCourse.fechaInicio) : null,
               finalScore: courseOldData?.puntaje ? courseOldData.puntaje : 
               studyPlanCourse.fechaCompletacion ? this.getRandomNumber(80, 100) : 0,
               id: null,
@@ -474,12 +435,15 @@ export class EnterprisesUsersMigrationComponent {
     console.log("allClassesByStudent", allClassesByStudent);
     this.classesByStudent = allClassesByStudent;
     console.log("--------- SETTING IN DATA BASE -------------");
+    const batch = this.afs.firestore.batch();
     for (let classByStudent of allClassesByStudent) {
       console.log("user id", classByStudent.userRef.id)
       const ref = this.afs.collection<ClassByStudent>(ClassByStudent.collection).doc().ref;
       classByStudent.id = ref.id;
-      await this.afs.collection(ClassByStudent.collection).doc(classByStudent.id).set(classByStudent);
+      // await this.afs.collection(ClassByStudent.collection).doc(classByStudent.id).set(classByStudent);
+      batch.set(ref, classByStudent);
     }
+    await batch.commit();
     console.log("******** ClassesByStudent migrated *******");
   }
 
