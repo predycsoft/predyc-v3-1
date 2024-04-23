@@ -12,6 +12,10 @@ import { ProductsComponent } from "./admin-pages/products/products.component";
 import { StudentDetailComponent } from "./admin-pages/students/student-detail/student-detail.component";
 import { EnterpriseDetailComponent } from "./admin-pages/enterprise/enterprise-detail/enterprise-detail.component";
 import { FreebiesComponent } from "./admin-pages/freebies/freebies.component";
+import { QuestionsComponent } from "./admin-pages/questions/questions.component";
+
+import { CertificationsComponent } from "./admin-pages/certifications/certifications.component";
+import { CertificationsFormComponent } from "./admin-pages/certifications/certifications-form/certifications-form.component";
 
 export const MAIN_TITLE = "Predyc Admin - ";
 
@@ -58,6 +62,13 @@ const routes: Routes = [
     component: RoyaltyComponent,
   },
   { path: "sales", title: MAIN_TITLE + "Ventas", component: SalesComponent },
+  { path: "questions", title: MAIN_TITLE + "Preguntas", component: QuestionsComponent },
+  { path: "certifications", title: MAIN_TITLE + "Certificados", component: CertificationsComponent },
+
+  { path:"certifications/form", title: MAIN_TITLE + 'Crear Certificación', component: CertificationsFormComponent },
+  { path:"certifications/form/:id", title: MAIN_TITLE + 'Editar Certificación', component: CertificationsFormComponent },
+
+
   {
     path: "courses",
     title: MAIN_TITLE + "Cursos",

@@ -152,10 +152,12 @@
                         <div fxLayout="row" fxLayoutAlign="space-between center" class="pdb05 border-bl">
                             <!-- Texto temporal a la izquierda -->
                             <!-- <span class="gray-8 ft12 pd03">Texto Temporal dsd</span> -->
-                            <mat-select style="width: 300px !important;" placeholder="Clase sin Asignar" formControlName="classId">
+                            <mat-select *ngIf="type!='certification'" style="width: 300px !important;" placeholder="Clase sin Asignar" formControlName="classId">
                                 <mat-option [value]="">Sin Asignar</mat-option>
                                 <mat-option *ngFor="let clase of classesArray" [value]="clase.id">{{clase.moduloIndex+1}}.{{clase.claseIndex+1}} {{clase.titulo}}</mat-option>
                             </mat-select>
+                            
+                            <input *ngIf="type=='certification'" formControlName="classId" type="text" class="form-control" style="width: 300px !important;" placeholder="Área de conocimiento">
 
                             <!-- Contenedor para el tipo de pregunta, Guardar, y el ícono de basura -->
                             <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px">
@@ -555,7 +557,7 @@
         <div (click)="applyOrder('id')" mat-menu-item fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="2rem">
             <span class="pdl05 ft12 gray-10">ID</span>
         </div>
-        <div (click)="applyOrder('clase')" mat-menu-item fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="2rem">
+        <div *ngIf="type!='certification'" (click)="applyOrder('clase')" mat-menu-item fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="2rem">
             <span class="pdl05 ft12 gray-10">N. Clase</span>
         </div>
         <div (click)="applyOrder('tipo')" mat-menu-item fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="2rem">

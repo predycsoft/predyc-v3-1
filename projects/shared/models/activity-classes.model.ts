@@ -585,6 +585,7 @@ export class Activity {
   public static TYPE_HEARTS: string = 'corazon'
   public static TYPE_REGULAR: string = 'regular'
   public static TYPE_TEST: string = 'test'
+  public static TYPE_TEST_CERTIFICATIONS: string = 'testCertification'
   public static TYPE_SKILL_TEST: string = 'skill-test'
   
   id: string = '';

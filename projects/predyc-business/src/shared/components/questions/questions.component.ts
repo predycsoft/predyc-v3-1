@@ -264,6 +264,7 @@ export class QuestionsComponent {
 
   
   uploadQuestions(evt){
+    
 
     const target: DataTransfer = <DataTransfer>(evt.target);
     if (target.files.length !== 1) {
@@ -290,13 +291,18 @@ export class QuestionsComponent {
         let newType = pregunta.tipo
         let classId = null
 
-        let clase = this.extraerModuloYClase(pregunta.claseRelacionada)
-        if(clase.modulo && clase.clase){
-          let clasefind = this.classesArray.find(x=> x.claseIndex == clase.clase-1 && x.moduloIndex == clase.modulo-1)
-          console.log('clasefind',clasefind)
-          if(clasefind){
-            classId = clasefind.id
+        if(this.type !='certification'){
+          let clase = this.extraerModuloYClase(pregunta.claseRelacionada)
+          if(clase.modulo && clase.clase){
+            let clasefind = this.classesArray.find(x=> x.claseIndex == clase.clase-1 && x.moduloIndex == clase.modulo-1)
+            console.log('clasefind',clasefind)
+            if(clasefind){
+              classId = clasefind.id
+            }
           }
+        }
+        else{
+          classId = pregunta.claseRelacionada;
         }
         if(newType =='Verdadero y falso'){
           newType = this.QuestionClass.TYPE_TRUE_OR_FALSE
@@ -475,14 +481,21 @@ export class QuestionsComponent {
   
 
   getClassName(question){
-
-    let respuesta = 'Clase sin asignar'
-    if(question.value.classId){
-      let clase = this.classesArray.find(x=> x.id == question.value.classId)
-      if(clase){ 
-        return `${clase.moduloIndex+1}.${clase.claseIndex+1} ${clase.titulo}`
+    let respuesta = ""
+    if(this.type !='certification'){
+      respuesta = 'Clase sin asignar'
+      if(question.value.classId){
+        let clase = this.classesArray.find(x=> x.id == question.value.classId)
+        if(clase){ 
+          return `${clase.moduloIndex+1}.${clase.claseIndex+1} ${clase.titulo}`
+        }
       }
     }
+    else{
+      respuesta = question?.value?.classId
+    }
+
+
     return respuesta
   }
 
