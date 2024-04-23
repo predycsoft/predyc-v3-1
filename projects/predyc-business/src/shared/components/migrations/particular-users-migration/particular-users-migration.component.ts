@@ -6,10 +6,9 @@ import { UserService } from '../../../services/user.service';
 import { CourseClassService } from '../../../services/course-class.service';
 import { ModuleService } from '../../../services/module.service';
 import { EnterpriseService } from '../../../services/enterprise.service';
-import { particularOldUsers } from '../old data/particular users/particular-usuarios.data';
-import { coursesData } from 'dist/predyc-business/assets/data/courses.data';
+import { particularOldUsers1 } from '../old data/particular users/usuarios/particular-usuarios.data1';
 import { Curso } from 'projects/shared/models/course.model';
-import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
+import { AngularFirestore, DocumentReference, QuerySnapshot } from '@angular/fire/compat/firestore';
 import { courseCategoryAndSkillsRelation } from 'projects/predyc-business/src/assets/data/courseCategoryAndSkillsRelation.data';
 import { CourseService } from '../../../services/course.service';
 import { Clase } from 'projects/shared/models/course-class.model';
@@ -25,9 +24,11 @@ import { instructorsData } from 'projects/predyc-business/src/assets/data/instru
 import { CategoryService } from '../../../services/category.service';
 import { SkillService } from '../../../services/skill.service';
 import { InstructorsService } from '../../../services/instructors.service';
-import { particularOldCursosInscritos } from '../old data/particular users/particular-cursosInscritos.data';
+import { particularOldCursosInscritos1 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data1';
 import { CourseByStudent, CourseByStudentJson } from 'projects/shared/models/course-by-student.model';
 import { ClassByStudent, ClassByStudentJson } from 'projects/shared/models/class-by-student.model';
+import { WorkerService } from '../../../services/workers.service';
+import { coursesData } from 'projects/predyc-business/src/assets/data/courses.data';
 
 
 @Component({
@@ -37,7 +38,7 @@ import { ClassByStudent, ClassByStudentJson } from 'projects/shared/models/class
 })
 export class ParticularUsersMigrationComponent {
 
-  constructor(private categoryService: CategoryService, private skillService: SkillService, private instructorsService: InstructorsService, private activityClassesService: ActivityClassesService, private courseService: CourseService, private afs: AngularFirestore, private enterpriseService: EnterpriseService, private userService: UserService, public courseClassService: CourseClassService, public moduleService: ModuleService) {}
+  constructor(private workerService: WorkerService, private categoryService: CategoryService, private skillService: SkillService, private instructorsService: InstructorsService, private activityClassesService: ActivityClassesService, private courseService: CourseService, private afs: AngularFirestore, private enterpriseService: EnterpriseService, private userService: UserService, public courseClassService: CourseClassService, public moduleService: ModuleService) {}
 
   instructors = [];
   coursesByStudent: CourseByStudentJson[];
@@ -64,7 +65,7 @@ export class ParticularUsersMigrationComponent {
   }
   
   async migrateUsers() {
-    const oldUsersData: any[] = particularOldUsers;
+    const oldUsersData: any[] = particularOldUsers1;
     const usersInNewModel: UserJson[] = oldUsersData.map((oldUserData) => {
       // console.log("oldUserData.name", oldUserData.name)
       const userphotoUrl = oldUserData.photoURL.startsWith('https://firebasestorage.googleapis.com/') ? oldUserData.photoURL : null
@@ -93,7 +94,7 @@ export class ParticularUsersMigrationComponent {
         profile: null,
         isSystemUser: false,
         role: "student",
-        isActive: oldUserData.status === "active",
+        isActive: false,
         stripeId: oldUserData.stripeId ? oldUserData.stripeId : null,
         oldUid: oldUserData.uid,
         uid: oldUserData.uid, // this is going to change with the cloud function
@@ -102,7 +103,7 @@ export class ParticularUsersMigrationComponent {
         performance: oldUserData.performance ? oldUserData.performance : null,
         ratingPoints: null,
         studyHours: oldUserData.hoursPerWeek ? oldUserData.hoursPerWeek : null,
-        status: oldUserData.status === "active" ? SubscriptionClass.STATUS_ACTIVE : SubscriptionClass.STATUS_INACTIVE,
+        status: SubscriptionClass.STATUS_INACTIVE,
         zipCode: null,
       };
     });
@@ -119,8 +120,7 @@ export class ParticularUsersMigrationComponent {
     const snapshot = await firstValueFrom(this.afs.collection(Curso.collection).get());
     if (snapshot.empty) await this.migrateCoursesAndClasses();
 
-    const oldUsersData: any[] = particularOldUsers;
-    const oldCoursesData: any[] = particularOldCursosInscritos;
+    const oldCoursesData: any[] = particularOldCursosInscritos1;
 
     if (Object.keys(this.coursesIdMap).length === 0) {
       this.coursesIdMap = await this.courseService.getCourseIdMappings();
@@ -156,8 +156,7 @@ export class ParticularUsersMigrationComponent {
             courseTime: oldCourseData.duracion,
             progressTime: null,
             isExtraCourse: true,
-            // studyPlanOrder: idx + 1,
-            studyPlanOrder: null, // ?????
+            studyPlanOrder: null, 
           };
         }
       });
@@ -181,7 +180,7 @@ export class ParticularUsersMigrationComponent {
 
   async migrateClassesByStudent() {
     console.log("--------- Creating classeByStudent");
-    const oldCoursesData = particularOldCursosInscritos;
+    const oldCoursesData = particularOldCursosInscritos1;
     const allClassesByStudent: ClassByStudentJson[] = [];
 
     if (Object.keys(this.coursesIdMap).length === 0) {
@@ -504,5 +503,12 @@ export class ParticularUsersMigrationComponent {
   getRandomNumber(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
+
+  sendNumbersToWorker() {
+    for (let i = 0; i < 10; i++) {
+      this.workerService.postMessage(i, `worker ${i}`);
+    }
+  }
+
 
 }
