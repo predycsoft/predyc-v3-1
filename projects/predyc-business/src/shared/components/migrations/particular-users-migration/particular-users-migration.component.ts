@@ -27,7 +27,6 @@ import { InstructorsService } from '../../../services/instructors.service';
 import { particularOldCursosInscritos1 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data1';
 import { CourseByStudent, CourseByStudentJson } from 'projects/shared/models/course-by-student.model';
 import { ClassByStudent, ClassByStudentJson } from 'projects/shared/models/class-by-student.model';
-import { WorkerService } from '../../../services/workers.service';
 import { coursesData } from 'projects/predyc-business/src/assets/data/courses.data';
 
 
@@ -38,7 +37,7 @@ import { coursesData } from 'projects/predyc-business/src/assets/data/courses.da
 })
 export class ParticularUsersMigrationComponent {
 
-  constructor(private workerService: WorkerService, private categoryService: CategoryService, private skillService: SkillService, private instructorsService: InstructorsService, private activityClassesService: ActivityClassesService, private courseService: CourseService, private afs: AngularFirestore, private enterpriseService: EnterpriseService, private userService: UserService, public courseClassService: CourseClassService, public moduleService: ModuleService) {}
+  constructor(private categoryService: CategoryService, private skillService: SkillService, private instructorsService: InstructorsService, private activityClassesService: ActivityClassesService, private courseService: CourseService, private afs: AngularFirestore, private enterpriseService: EnterpriseService, private userService: UserService, public courseClassService: CourseClassService, public moduleService: ModuleService) {}
 
   instructors = [];
   coursesByStudent: CourseByStudentJson[];
@@ -502,12 +501,6 @@ export class ParticularUsersMigrationComponent {
 
   getRandomNumber(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
-
-  sendNumbersToWorker() {
-    for (let i = 0; i < 10; i++) {
-      this.workerService.postMessage(i, `worker ${i}`);
-    }
   }
 
 
