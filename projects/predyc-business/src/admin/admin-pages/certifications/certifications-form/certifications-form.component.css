@@ -28,3 +28,36 @@
     overflow: hidden;
     font-size: 14px; /* Asegúrate de que la fuente coincida con el input */
   }
+
+  .chart-container {
+    /* padding-top: 2rem; */
+    /* width: 100%; */
+    /* height: max-content; */
+    width: 70%;
+  }
+  .progress-item {
+    margin-bottom: 10px; /* Espacio entre cada barra de progreso */
+    width: 100%; /* Asegura que el item ocupa todo el ancho de su contenedor */
+  }
+  
+  .progress-container {
+    background-color: #e0e0e0; /* Color de fondo de la barra de progreso */
+    height: 20px; /* Altura de la barra de progreso */
+    border-radius: 5px; /* Bordes redondeados para la barra de progreso */
+  }
+  
+  .progress-bar {
+    height: 20px; /* Altura de la barra de progreso activa */
+    border-radius: 5px; /* Bordes redondeados para la barra de progreso activa */
+    color: white; /* Color de texto dentro de la barra de progreso */
+    text-align: right; /* Alinear texto a la derecha dentro de la barra */
+    padding-right: 5px; /* Espacio a la derecha del texto dentro de la barra */
+    line-height: 20px; /* Centrar texto verticalmente dentro de la barra */
+  }
+  .containerAllQustions{
+    min-height: calc(80vh);
+    max-height: calc(80vh);
+    /* width: calc((100% - 1rem)*2/3);
+     */
+    overflow: auto;
+  }

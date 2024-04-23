@@ -276,7 +276,13 @@ export class ActivityClassesService {
       })
     );
   }
-  
+
+  getActivityResults(idActivity: string): Observable<any> {
+    const activityDocRef = this.afs.doc<Activity>(`${Activity.collection}/${idActivity}`).ref;
+    console.log('getActivityResults',activityDocRef)
+    return this.afs.collection<any>('profileTestsByStudent', (ref) =>ref.where("activityRef", "==", activityDocRef)).valueChanges({ idField: "id" })
+
+  }
 
   getActivities() {
     if (this.activityCollectionSubscription) {
