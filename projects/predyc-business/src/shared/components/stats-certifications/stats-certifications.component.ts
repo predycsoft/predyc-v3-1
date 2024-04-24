@@ -18,6 +18,9 @@ export class StatsCertificationsComponent {
     Chart.register(annotationPlugin);
   }
 
+
+  datosTMP = [0,0,7,21,47,16,9,6,4,1,0]
+
   results
   promedioGeneral
   averageScores
@@ -99,17 +102,22 @@ export class StatsCertificationsComponent {
   ngOnInit() {
     this.activityClassesService.getActivityCertificationAll().subscribe((resultados)=>{
       if(resultados.length>0){
+        this.resultadosCrudos = resultados
         this.procesarDatos(resultados)
       }
     })
     if(this.origen=='empresa'){
       this.activityClassesService.getActivityCertificationResultsEnterprise().subscribe((resultados)=>{
         if(resultados.length>0){
+          this.resultadosCrudosEmpresa = resultados
           this.procesarDatos(resultados,'empresa')
         }
       })
     }
   }
+
+  resultadosCrudos
+  resultadosCrudosEmpresa
 
   chartSetup(){
 
@@ -138,7 +146,7 @@ export class StatsCertificationsComponent {
 
     // Inicializar y mostrar el gráfico
 
-    const numericData: number[] = data.map(item => {
+    let numericData: number[] = data.map(item => {
       if (typeof item === 'number') {
         return item;
       } else {
@@ -146,19 +154,51 @@ export class StatsCertificationsComponent {
       }
     });
     
+    let promedio = 0
+    
+    if(this.origen == 'empresa'){
+      if(this.resultsEmpresa.length>0){
+        promedio = Math.round(this.promedioGeneralEmpresa/10)
+      }
+      else{
+        promedio = 20
+      }
+    }
+    else{
+      promedio = Math.round(this.promedioGeneral/10)
+    }
 
-    let promedio = Math.round(this.promedioGeneralEmpresa/10)
+
+    console.log('grafico',numericData,this.datosTMP)
+
+    if(this.origen == 'empresa'){
+
+      if(this.resultsEmpresa.length<100){
+
+        const datosTMP = this.datosTMP
+
+        console.log('datosRevisar',numericData,datosTMP)
+
+        let sum = numericData.map(function (num, idx) {
+          return num + datosTMP[idx];
+        });
+        numericData = sum
+      }
+    }
+
     let maxData = numericData[promedio]
 
 
-    
+    console.log(promedio,maxData)
+
+
     new Chart(ctx, {
       type: 'line',
       data: {
         labels: labels, // tus etiquetas de eje X
         datasets: [{
           label: 'Número de exámenes',
-          data: data,
+          data: numericData,
           borderColor: '#008CE3', // Color de la línea
           backgroundColor: '#008CE3', // Color de fondo de la línea
           cubicInterpolationMode: 'monotone',
@@ -199,6 +239,9 @@ export class StatsCertificationsComponent {
           legend: {
             display: false // Ocultar la leyenda si no se necesita
           },
+          tooltip: {
+            enabled: false,
+          },
           annotation: {
             annotations: {
               averageLine: {  // Nombre de la anotación, puede ser cualquier cosa
@@ -214,11 +257,7 @@ export class StatsCertificationsComponent {
             }
           }
         },
-
-        
       }
     });
-    
   }
-
 }

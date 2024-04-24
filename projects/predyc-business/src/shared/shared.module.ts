@@ -79,6 +79,7 @@ import { DialogEnrollCoursesComponent } from "./components/courses/dialog-enroll
 import { EnterprisesUsersMigrationComponent } from './components/migrations/enterprises-users-migration/enterprises-users-migration.component';
 import { ParticularUsersMigrationComponent } from './components/migrations/particular-users-migration/particular-users-migration.component';
 import { StatsCertificationsComponent } from "./components/stats-certifications/stats-certifications.component";
+import { CertificationStudentListComponent } from "./components/users/certification-student-list/certification-student-list.component";
 
 
 @NgModule({
@@ -108,6 +109,7 @@ import { StatsCertificationsComponent } from "./components/stats-certifications/
     FrequentQuestionsComponent,
     ProfileSelectorComponent,
     LicenseStudentListComponent,
+    CertificationStudentListComponent,
     QuestionsComponent,
     StatusSelectorComponent,
     DialogRequestLicensesComponent,
@@ -193,6 +195,7 @@ import { StatsCertificationsComponent } from "./components/stats-certifications/
     FrequentQuestionsComponent,
     ProfileSelectorComponent,
     LicenseStudentListComponent,
+    CertificationStudentListComponent,
     QuestionsComponent,
     StatusSelectorComponent,
     DialogRequestLicensesComponent,

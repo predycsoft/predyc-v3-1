@@ -23,7 +23,7 @@
     </div>
     <div fxLayout="row" fxLayoutAlign="center center">
         <div fxFlex="70%">
-            <div *ngFor="let score of averageScores" class="progress-item">
+            <div *ngFor="let score of origen=='empresa'? averageScoresEmpresa:averageScores" class="progress-item">
                 <span class="ft14 ft600">{{ score.classId }}</span>
                 <div class="progress-container">
                     <div *ngIf="score.averageScore>0" class="progress-bar backBlue5 ft11" [style.width]="score.averageScore + '%'">
@@ -32,5 +32,9 @@
                 </div>
             </div>
         </div>
-    </div>                                
+    </div>  
+    <div class="fw" *ngIf="origen=='empresa'" fxLayout="row" fxLayoutAlign="center center">
+        <app-certification-student-list [resultadosExamen]="resultadosCrudosEmpresa" />
+    </div>
+                          
 </div>
