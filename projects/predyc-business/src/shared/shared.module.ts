@@ -78,6 +78,8 @@ import { DialogCreateLicenseComponent } from "./components/license/dialog-create
 import { DialogEnrollCoursesComponent } from "./components/courses/dialog-enroll-courses/dialog-enroll-courses.component";
 import { EnterprisesUsersMigrationComponent } from './components/migrations/enterprises-users-migration/enterprises-users-migration.component';
 import { ParticularUsersMigrationComponent } from './components/migrations/particular-users-migration/particular-users-migration.component';
+import { StatsCertificationsComponent } from "./components/stats-certifications/stats-certifications.component";
+
 
 @NgModule({
   declarations: [
@@ -100,6 +102,7 @@ import { ParticularUsersMigrationComponent } from './components/migrations/parti
     CourseSelectorComponent,
     TooltipPointsComponent,
     StudyPlanComponent,
+    StatsCertificationsComponent,
     SkillsSelectorV2Component,
     SupportContactComponent,
     FrequentQuestionsComponent,
@@ -184,6 +187,7 @@ import { ParticularUsersMigrationComponent } from './components/migrations/parti
     CourseSelectorComponent,
     TooltipPointsComponent,
     StudyPlanComponent,
+    StatsCertificationsComponent,
     SkillsSelectorV2Component,
     SupportContactComponent,
     FrequentQuestionsComponent,

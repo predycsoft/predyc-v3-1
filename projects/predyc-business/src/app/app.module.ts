@@ -18,6 +18,7 @@ import { NotificationsComponent } from './business-pages/management/notification
 import { StudentComponent } from './business-pages/management/my-team/student/student.component';
 import { CreateCourseComponent } from './business-pages/management/create-course/create-course.component';
 
+
 // Emulators
 import { USE_EMULATOR as USE_AUTH_EMULATOR } from '@angular/fire/compat/auth';
 import { USE_EMULATOR as USE_FIRESTORE_EMULATOR } from '@angular/fire/compat/firestore';
@@ -48,6 +49,7 @@ import { StudentStudyPlanAndCompetencesComponent } from './business-pages/manage
 import { StudyTimeMonthlyLineChartComponent } from './business-pages/dashboard/users-study-time-container/study-time-monthly-line-chart/study-time-monthly-line-chart.component';
 import { SharedModule } from 'projects/predyc-business/src/shared/shared.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { CertificationsTestComponent } from './business-pages/management/certificationsTest/certificationsTest.component';
 
 
 @NgModule({
@@ -64,6 +66,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     StudentComponent,
     MainComponent,
     CreateCourseComponent,
+    CertificationsTestComponent,
     MyAccountComponent,
     EnterprisePresentationFormComponent,
     EnterpriseInfoFormComponent,

@@ -20,6 +20,7 @@ import { ProfileGuard } from 'projects/predyc-business/src/shared/guards/profile
 import { SystemUserGuard } from 'projects/predyc-business/src/admin/guards/systemUser.guard';
 import { MigrationsComponent } from '../shared/components/migrations/migrations.component';
 import { environment } from '../environments/environment';
+import { CertificationsTestComponent } from './business-pages/management/certificationsTest/certificationsTest.component';
 
 
 const MAIN_TITLE = 'Predyc - '
@@ -48,10 +49,12 @@ const routes: Routes = [
           {path:"create-course/:mode/:idCurso", title: MAIN_TITLE + 'Crear / Editar curso', component: CreateCourseComponent, canActivate: [AuthGuard]},
           {path:"notifications", title: MAIN_TITLE + 'Notificaciones', component: NotificationsComponent, canActivate: [AuthGuard]},
           {path:"students/:uid", title: MAIN_TITLE + 'Mi equipo', component: StudentComponent, canActivate: [AuthGuard]},
+          {path:"certifications", title: MAIN_TITLE + 'Certificaciones', component: CertificationsTestComponent, canActivate: [AuthGuard]},
         ]
       },
       {path:"validation", title: MAIN_TITLE + 'Validación de competencias', component: ValidationComponent, canActivate: [AuthGuard]},
       {path:"settings", title: MAIN_TITLE + 'Configuración', component: SettingsComponent, canActivate: [AuthGuard]},
+      {path:"my-account", title: MAIN_TITLE + 'Mi cuenta', component: MyAccountComponent, canActivate: [AuthGuard]},
       {path:"my-account", title: MAIN_TITLE + 'Mi cuenta', component: MyAccountComponent, canActivate: [AuthGuard]},
       {
         path: "admin",
