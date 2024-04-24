@@ -12,19 +12,20 @@ import { Chart } from "chart.js";
 export class StatsCertificationsComponent {
 
   constructor(
-
     private activityClassesService:ActivityClassesService,
-
-
   ) {}
 
   results
   promedioGeneral
   averageScores
 
+  resultsEmpresa
+  promedioGeneralEmpresa
+  averageScoresEmpresa
+
   @Input() certificationId;
   @Input() makeChart = 0;
-
+  @Input() origen = 'edit';
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.makeChart) {
@@ -35,56 +36,77 @@ export class StatsCertificationsComponent {
   }
 
 
-
-
-  ngOnInit() {
-
-
-    this.activityClassesService.getActivityResults(this.certificationId).pipe().subscribe((resultados)=>{
-      console.log('resultados',resultados);
+  procesarDatos(resultados,type='general'){
+    console.log('resultados',resultados);
+    if(type=='general'){
       this.results=resultados
-      let allClassResults = [];
+    }
+    else{
+      this.resultsEmpresa=resultados
+    }
+    let allClassResults = [];
+    let score =0;
+    resultados.forEach(result => {
+      allClassResults = allClassResults.concat(result.resultByClass);
+      console.log('resultado',result)
+      score+=result.score
+    });
 
-      let score =0;
-      resultados.forEach(result => {
-        allClassResults = allClassResults.concat(result.resultByClass);
-        console.log('resultado',result)
-        score+=result.score
-      });
+    if(type=='general'){
       this.promedioGeneral = score/resultados.length
+    }
+    else{
+      this.promedioGeneralEmpresa = score/resultados.length
+    }
 
-
-      // Agrupa los resultados por classId
-      const groupedByClassId = allClassResults.reduce((acc, current) => {
-        // Asegura que el classId y el score son válidos
-        const { classId, score } = current;
-        if (classId && score != null) {
-          if (!acc[classId]) {
-            acc[classId] = { totalScore: 0, count: 0 };
-          }
-          acc[classId].totalScore += score;
-          acc[classId].count += 1;
+    // Agrupa los resultados por classId
+    const groupedByClassId = allClassResults.reduce((acc, current) => {
+      // Asegura que el classId y el score son válidos
+      const { classId, score } = current;
+      if (classId && score != null) {
+        if (!acc[classId]) {
+          acc[classId] = { totalScore: 0, count: 0 };
         }
-        return acc;
-      }, {});
+        acc[classId].totalScore += score;
+        acc[classId].count += 1;
+      }
+      return acc;
+    }, {});
 
-      // Calcula el promedio de los puntajes por cada classId
-      const averageScores = Object.keys(groupedByClassId).map(classId => {
-        const { totalScore, count } = groupedByClassId[classId];
-        return {
-          classId,
-          averageScore: totalScore / count
-        };
-      });
+    // Calcula el promedio de los puntajes por cada classId
+    const averageScores = Object.keys(groupedByClassId).map(classId => {
+      const { totalScore, count } = groupedByClassId[classId];
+      return {
+        classId,
+        averageScore: totalScore / count
+      };
+    });
+    console.log('averageScores',averageScores);
+    averageScores.sort((a, b) => b['averageScore'] - a['averageScore']);
 
-      console.log('averageScores',averageScores);
-      averageScores.sort((a, b) => b['averageScore'] - a['averageScore']);
+    if(type=='general'){
       this.averageScores =averageScores
+    }
+    else{
+      this.averageScoresEmpresa =averageScores
+    }
 
-      //this.chartSetup()
-    })
   }
 
+  ngOnInit() {
+    this.activityClassesService.getActivityCertificationAll().subscribe((resultados)=>{
+      if(resultados.length>0){
+        this.procesarDatos(resultados)
+      }
+    })
+    if(this.origen=='empresa'){
+      this.activityClassesService.getActivityCertificationResultsEnterprise().subscribe((resultados)=>{
+        if(resultados.length>0){
+          this.procesarDatos(resultados,'empresa')
+        }
+      })
+    }
+  }
 
   chartSetup(){
 
@@ -113,6 +135,15 @@ export class StatsCertificationsComponent {
 
     // Inicializar y mostrar el gráfico
 
+    const numericData: number[] = data.map(item => {
+      if (typeof item === 'number') {
+        return item;
+      } else {
+        throw new Error('All elements must be numbers');
+      }
+    });
+
+    //let maxData = Math.max(...numericData) + 2; // Ajustar la escala máxima a dos unidades por encima del máximo valor
     new Chart(ctx, {
       type: 'line',
       data: {
@@ -136,14 +167,15 @@ export class StatsCertificationsComponent {
             display: true, // Muestra el eje Y
             title: {
               display: true, // Mostrar título del eje Y
-              text: 'Nº de resultados' // Texto del título
+              text: 'Resultados' // Texto del título
             },
             grid: {
               display: false, // Ocultar líneas de cuadrícula en Y
             },
             ticks: {
               display: false // Ocultar las marcas del eje Y
-            }
+            },
+            //suggestedMax:maxData
           },
           x: {
             grid: {
@@ -162,9 +194,6 @@ export class StatsCertificationsComponent {
         }
       }
     });
-    
-
-
     
   }
 

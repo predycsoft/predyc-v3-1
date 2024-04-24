@@ -46,11 +46,11 @@ export class SideNavComponent {
       link: "settings",
       icon: "../../assets/iconsUI/settings-1.svg",
     },
-    {
-      name: "Certificaciones",
-      link: "management/certifications",
-      icon: "../../assets/iconsUI/certificate.svg",
-    },
+    // {
+    //   name: "Certificaciones",
+    //   link: "management/certifications",
+    //   icon: "../../assets/iconsUI/certificate.svg",
+    // },
   ];
 
   public adminPages: Page[] = [

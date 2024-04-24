@@ -277,11 +277,34 @@ export class ActivityClassesService {
     );
   }
 
-  getActivityResults(idActivity: string): Observable<any> {
+  getActivityResultsALl(idActivity: string): Observable<any> {
     const activityDocRef = this.afs.doc<Activity>(`${Activity.collection}/${idActivity}`).ref;
     console.log('getActivityResults',activityDocRef)
     return this.afs.collection<any>('profileTestsByStudent', (ref) =>ref.where("activityRef", "==", activityDocRef)).valueChanges({ idField: "id" })
+  }
 
+
+  getActivityCertificationAll(): Observable<any> {
+    const enterpriseRef = this.enterpriseService.getEnterpriseRef()
+    return this.afs.collection<any>('profileTestsByStudent', (ref) =>ref.where("certificationTest", "==", true) ).valueChanges({ idField: "id" })
+  }
+  
+  getActivityCertificationResultsEnterprise(): Observable<any> {
+    // Asegúrate de que este método regrese un Observable en todos los casos
+    return this.enterpriseService.enterpriseLoaded$.pipe(
+      switchMap(enterpriseIsLoaded => {
+        if (enterpriseIsLoaded) {
+          const enterpriseRef = this.enterpriseService.getEnterpriseRef();
+          return this.afs.collection<any>('profileTestsByStudent', ref =>
+            ref.where("enterpriseRef", "==", enterpriseRef)
+               .where("certificationTest", "==", true))
+            .valueChanges({ idField: "id" });
+        } else {
+          // Devuelve un Observable vacío que no emite valores
+          return of([]);
+        }
+      })
+    );
   }
 
   getActivities() {
