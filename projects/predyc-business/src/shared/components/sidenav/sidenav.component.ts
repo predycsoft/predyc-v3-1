@@ -47,7 +47,7 @@ export class SideNavComponent {
       icon: "../../assets/iconsUI/settings-1.svg",
     },
     {
-      name: "Certificaciones",
+      name: "Diagnóstico",
       link: "management/certifications",
       icon: "../../assets/iconsUI/certificate.svg",
     },
