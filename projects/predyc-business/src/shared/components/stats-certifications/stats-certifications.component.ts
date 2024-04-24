@@ -2,6 +2,7 @@ import { Component, Input, SimpleChanges } from '@angular/core';
 import { LoaderService } from '../../services/loader.service';
 import { ActivityClassesService } from '../../services/activity-classes.service';
 import { Chart } from "chart.js";
+import annotationPlugin from "chartjs-plugin-annotation";
 
 
 @Component({
@@ -13,7 +14,9 @@ export class StatsCertificationsComponent {
 
   constructor(
     private activityClassesService:ActivityClassesService,
-  ) {}
+  ) {
+    Chart.register(annotationPlugin);
+  }
 
   results
   promedioGeneral
@@ -142,8 +145,13 @@ export class StatsCertificationsComponent {
         throw new Error('All elements must be numbers');
       }
     });
+    
 
-    //let maxData = Math.max(...numericData) + 2; // Ajustar la escala máxima a dos unidades por encima del máximo valor
+    let promedio = Math.round(this.promedioGeneralEmpresa/10)
+    let maxData = numericData[promedio]
+
+
+    
     new Chart(ctx, {
       type: 'line',
       data: {
@@ -190,8 +198,24 @@ export class StatsCertificationsComponent {
         plugins: {
           legend: {
             display: false // Ocultar la leyenda si no se necesita
+          },
+          annotation: {
+            annotations: {
+              averageLine: {  // Nombre de la anotación, puede ser cualquier cosa
+                // Indicates the type of annotation
+                type: 'box',
+                xMin: promedio,
+                xMax: promedio,
+                yMin: 0,
+                yMax: maxData,
+                borderWidth:10,
+                borderColor:'rgba(255, 99, 132, 0.5)',
+              }
+            }
           }
-        }
+        },
+
+        
       }
     });
     

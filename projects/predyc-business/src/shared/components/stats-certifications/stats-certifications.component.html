@@ -3,14 +3,14 @@
         <div class="radius10 shadowLight pdt10" alt="stats-empresas" fxLayoutAlign="center center" fxLayout="column" style="height: 10vh; ">
             <div fxLayout="row" class="mgb08" fxLayoutAlign="center center" >
                 <div fxLayout="row"  fxLayoutAlign="center center ">
-                    <div fxLayout="column" class="mgr20 mgl20 " fxLayoutAlign="center center"> 
+                    <div *ngIf="origen!=='empresa'" fxLayout="column" class="mgr20 mgl20 " fxLayoutAlign="center center"> 
                         <span class=" ft22 ft500 mgt08" fxLayoutAlign="center center" > Puntuación Promedio </span>
                         <span class="fh ftxxxl gray-10 mgb10 mgt10" fxLayoutAlign="center center" > {{promedioGeneral}}</span>
                     </div>
-                    <!-- <div *ngIf="origen=='empresa'" fxLayout="column" class="mgr20 mgl20 " fxLayoutAlign="center center"> 
-                        <span class=" ft22 ft500 mgt08" fxLayoutAlign="center center" >Promedio de tu empresa </span>
+                    <div *ngIf="origen=='empresa'" fxLayout="column" class="mgr20 mgl20 " fxLayoutAlign="center center"> 
+                        <span class=" ft22 ft500 mgt08" fxLayoutAlign="center center" >Puntuación Promedio </span>
                         <span class="fh ftxxxl gray-10 mgb10 mgt10" fxLayoutAlign="center center" > {{promedioGeneralEmpresa}}</span>
-                    </div> -->
+                    </div>
                 </div>
             </div>
         </div>
