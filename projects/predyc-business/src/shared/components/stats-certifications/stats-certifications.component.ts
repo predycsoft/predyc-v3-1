@@ -21,11 +21,11 @@ export class StatsCertificationsComponent {
 
   datosTMP = [0,0,7,21,47,16,9,6,4,1,0]
 
-  results
+  results = []
   promedioGeneral
   averageScores
 
-  resultsEmpresa
+  resultsEmpresa = []
   promedioGeneralEmpresa
   averageScoresEmpresa
 
@@ -128,7 +128,7 @@ export class StatsCertificationsComponent {
     }
 
     // Incrementar el conteo basado en los resultados
-    this.results.forEach(result => {
+    this.results?.forEach(result => {
       const score = Math.floor(result.score / 10) * 10; // Agrupar en rangos de 10
       scoreCounts[score]++;
     });
@@ -157,7 +157,7 @@ export class StatsCertificationsComponent {
     let promedio = 0
     
     if(this.origen == 'empresa'){
-      if(this.resultsEmpresa.length>0){
+      if(this.resultsEmpresa?.length>0){
         promedio = Math.round(this.promedioGeneralEmpresa/10)
       }
       else{
@@ -187,10 +187,7 @@ export class StatsCertificationsComponent {
     }
 
     let maxData = numericData[promedio]
-
-
     console.log(promedio,maxData)
-
 
     new Chart(ctx, {
       type: 'line',

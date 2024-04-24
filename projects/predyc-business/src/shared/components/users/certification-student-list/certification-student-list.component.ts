@@ -146,7 +146,7 @@ export class CertificationStudentListComponent {
   }
 
   getTestResult(user){
-    let result = this.resultadosExamen.find(x=>x.userRef.id == user.uid)
+    let result = this.resultadosExamen?.find(x=>x.userRef.id == user.uid)
 
     console.log('result',result)
 

@@ -9,7 +9,8 @@
                     </div>
                     <div *ngIf="origen=='empresa'" fxLayout="column" class="mgr20 mgl20 " fxLayoutAlign="center center"> 
                         <span class=" ft22 ft500 mgt08" fxLayoutAlign="center center" >Puntuación Promedio </span>
-                        <span class="fh ftxxxl gray-10 mgb10 mgt10" fxLayoutAlign="center center" > {{promedioGeneralEmpresa}}</span>
+                        <span *ngIf="promedioGeneralEmpresa" class="fh ftxxxl gray-10 mgb10 mgt10" fxLayoutAlign="center center" > {{promedioGeneralEmpresa}}</span>
+                        <span *ngIf="!promedioGeneralEmpresa" class="fh ft14 gray-10 mgb10 mgt10" fxLayoutAlign="center center" >No hay datos disponibles</span>
                     </div>
                 </div>
             </div>
