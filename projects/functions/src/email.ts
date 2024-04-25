@@ -9,6 +9,8 @@ const db = admin.firestore();
 
 export const _sendMail = async (data: {sender: string, recipients: string[], subject: string, text: string, cc: string[]}) => {
     const APP_NAME = 'Predyc';
+    
+    console.log("runing _sendMal")
 
     let sender = process.env.EMAIL_USER_A
     let password = process.env.EMAIL_PASSWORD_A
@@ -50,14 +52,14 @@ export const _sendMail = async (data: {sender: string, recipients: string[], sub
     try {
         smtpTransport.sendMail(mailOptions, (error: any, info: any) => {
         if (error) {
-            console.log(error);
+            console.log("smtp transport error: ", error);
             smtpTransport.close();
         }
         console.log("Correo enviado!", mailOptions)
         return 'mail sent';
         });
     } catch (error: any) {
-        console.log("error")
+        console.log("Hubo un error")
         console.log(error)
         throw new functions.https.HttpsError('unknown', error.message);
         ;

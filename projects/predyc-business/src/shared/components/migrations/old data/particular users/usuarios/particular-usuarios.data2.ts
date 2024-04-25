@@ -3057,7 +3057,7 @@ export const particularOldUsers2 = [
     "displayName": "Daniela Alejandra Ceniceros",
     "paisActual": "Mexico",
     "emailVerified": true,
-    "email": "dceniceros530@gmail.com",
+    "email": "dceniceros530@gmail.com", // 
     "telefono": "+52-6442194059",
     "profesion": "Estudiante",
     "index": 17,

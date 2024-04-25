@@ -4565,7 +4565,7 @@ export const particularOldUsers1 = [
     "nombreCompleto": "Arturo Romero",
     "stripeId": "cus_PHGKBJFPCZ4lq1",
     "formularioCompleto": true,
-    "email": "arturor1990try@gmail.com",
+    "email": "arturor1990try@gmail.com", //
     "ultVisitaCarrito": 1705430517101,
     "status": "inactive",
     "mailchimpTag": "PIND",
