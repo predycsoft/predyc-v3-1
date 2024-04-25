@@ -1,0 +1,41 @@
+<div fxFlex fxLayout="column" class="containerAllQustions hideScroll pdl10 pdt10">
+    <div fxLayout="row" fxLayoutAlign="center center" >
+        <div class="radius10 shadowLight pdt10" alt="stats-empresas" fxLayoutAlign="center center" fxLayout="column" style="height: 10vh; ">
+            <div fxLayout="row" class="mgb08" fxLayoutAlign="center center" >
+                <div fxLayout="row"  fxLayoutAlign="center center ">
+                    <div *ngIf="origen!=='empresa'" fxLayout="column" class="mgr20 mgl20 " fxLayoutAlign="center center"> 
+                        <span class=" ft22 ft500 mgt08" fxLayoutAlign="center center" > Puntuación Promedio </span>
+                        <span class="fh ftxxxl gray-10 mgb10 mgt10" fxLayoutAlign="center center" > {{promedioGeneral}}</span>
+                    </div>
+                    <div *ngIf="origen=='empresa'" fxLayout="column" class="mgr20 mgl20 " fxLayoutAlign="center center"> 
+                        <span class=" ft22 ft500 mgt08" fxLayoutAlign="center center" >Puntuación Promedio </span>
+                        <span *ngIf="promedioGeneralEmpresa" class="fh ftxxxl gray-10 mgb10 mgt10" fxLayoutAlign="center center" > {{promedioGeneralEmpresa}}</span>
+                        <span *ngIf="!promedioGeneralEmpresa" class="fh ft14 gray-10 mgb10 mgt10" fxLayoutAlign="center center" >No hay datos disponibles</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div fxLayout="row" fxLayoutAlign="center center" class="mgb30 mgt10">
+        <div class="chart-container mgt10 w-70 pdr20" >
+            <canvas id="chartStats"></canvas>
+        </div>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <div fxFlex="70%">
+            <div *ngFor="let score of origen=='empresa'? averageScoresEmpresa:averageScores" class="progress-item">
+                <span class="ft14 ft600">{{ score.classId }}</span>
+                <div class="progress-container">
+                    <div *ngIf="score.averageScore>0" class="progress-bar backBlue5 ft11" [style.width]="score.averageScore + '%'">
+                        {{ score.averageScore | number:'1.0-2' }}%
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>  
+    <div class="fw"  *ngIf="origen=='empresa'" fxLayout="row" fxLayoutAlign="center center">
+        <app-certification-student-list class="fw" [resultadosExamen]="resultadosCrudosEmpresa" />
+    </div>
+                          
+</div>

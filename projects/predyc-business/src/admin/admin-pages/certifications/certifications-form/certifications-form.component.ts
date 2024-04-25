@@ -9,6 +9,8 @@ import { IconService } from 'projects/predyc-business/src/shared/services/icon.s
 import { Activity, Question } from 'projects/shared';
 import { take } from 'rxjs';
 import Swal from 'sweetalert2';
+import { Chart } from "chart.js";
+
 
 
 @Component({
@@ -31,6 +33,8 @@ export class CertificationsFormComponent {
   ){}
 
   mode
+  results = []
+  averageScores = []
 
   ngOnInit(): void {
 
@@ -39,8 +43,6 @@ export class CertificationsFormComponent {
       this.activityClassesService.getActivityById(this.certificationId).pipe(take(1)).subscribe((actividad)=>{
         console.log('actividad',actividad);
         this.examen = actividad;
-
-
       })
     }
     else{
@@ -78,9 +80,16 @@ export class CertificationsFormComponent {
       }
       this.formatExamQuestions();
     }
+    else if(event.tab.textLabel === 'Estadísticas'){
+      this.chartSetup()
+    }
   }
 
-  
+  makeChart = 0
+  chartSetup(){
+    this.makeChart++;
+  }
+
   currentTab
   examen
   validExam
@@ -89,7 +98,7 @@ export class CertificationsFormComponent {
 
   formatExamQuestions(){
 
-    console.log('formatExamQuestions')
+    console.log('formatExamQuestions',this.validExam)
 
     setTimeout(() => {
       this.updateTriggeQuestionsExam++;
@@ -101,7 +110,13 @@ export class CertificationsFormComponent {
           // let preguntasValidas = formArray.controls.filter(control => control.status === 'VALID');
           let preguntasValidas = formArray.controls;
           console.log('preguntasValidas', preguntasValidas);
-          let valoresPreguntasValidas = preguntasValidas.map(pregunta => pregunta.value);
+          let valoresPreguntasValidas = preguntasValidas.map(pregunta => {
+            // Return an object that includes all values from the control and the validation status
+            return {
+              ...pregunta.value,
+              valida: pregunta.valid
+            };
+          });
           console.log('valoresPreguntasValidas', valoresPreguntasValidas);
 
           if(valoresPreguntasValidas.length>0){

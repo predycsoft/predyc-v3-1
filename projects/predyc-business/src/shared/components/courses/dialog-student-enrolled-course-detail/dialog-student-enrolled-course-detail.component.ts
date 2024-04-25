@@ -76,6 +76,7 @@ export class DialogStudentEnrolledCourseDetailComponent {
     subscribe(([modules, completedClasses]) => {
       this.modules = modules
       this.completedClasses = completedClasses
+      console.log('completedClasses',completedClasses)
       const modulesInList: any[] = modules.map(module => {
         const classesQty = module.clasesRef.length
         let completedClassesInsidemodule = 0
