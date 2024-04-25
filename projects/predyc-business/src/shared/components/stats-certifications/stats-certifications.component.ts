@@ -250,6 +250,14 @@ export class StatsCertificationsComponent {
                 yMax: maxData,
                 borderWidth:10,
                 borderColor:'rgba(255, 99, 132, 0.5)',
+              },
+              point1: {
+                type: 'point',
+                xValue: promedio,
+                yValue: maxData,
+                borderWidth:0,
+                radius:5,
+                backgroundColor: 'rgb(255, 99, 132)'
               }
             }
           }
