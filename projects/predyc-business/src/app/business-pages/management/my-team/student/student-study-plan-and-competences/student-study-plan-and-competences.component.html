@@ -180,33 +180,10 @@
         <img [src]="icon.close" class="h24px pdl5  pdr10 cursorPointer" alt="" (click)="modal.dismiss('Cross click')">
     </div>
 
-    <div fxLayout="row" fxLayoutAlign="center center" class="modal-body">
+    <div fxLayout="row" fxLayoutAlign="center center" class="modal-body pdb0 mgb0">
 
 		<div class="w-95">
-
             <app-stats-certifications origen="usuario" [resultado]="diagnosticTest" [makeChart]="makeChart"></app-stats-certifications>
-
-
-			<!-- <div fxLayout="column" class="mgr20 mgl20 " fxLayoutAlign="center center"> 
-				<span class=" ft22 ft500 mgt08" fxLayoutAlign="center center" > Puntuación </span>
-				<span class="fh ftxxxl gray-10 mgb10 mgt10" fxLayoutAlign="center center" > {{diagnosticTest.score | number:'1.0-2'}}</span>
-			</div>
-
-
-			<div fxLayout="row" fxLayoutAlign="center center" >
-				<canvas id="chartStats"></canvas>
-			</div>
-
-			<div *ngFor="let score of diagnosticTest?.resultByClass" fxLayout="row" fxLayoutAlign="center center">
-				<div  class="progress-item">
-					<span class="ft14 ft600">{{ score.classId }}</span>
-					<div class="progress-container">
-						<div *ngIf="score.score>0" class="progress-bar backBlue5 ft11" [style.width]="score.score + '%'">
-							<span class="progress-text gray-1">{{ score.score | number:'1.0-2' }}%</span>
-						</div>
-					</div>
-				</div>
-			</div> -->
 		</div>
 	
 	</div>
