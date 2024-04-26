@@ -184,16 +184,18 @@
 
 		<div class="w-95">
 
+            <app-stats-certifications origen="usuario" [resultado]="diagnosticTest" [makeChart]="makeChart"></app-stats-certifications>
 
-			<div fxLayout="column" class="mgr20 mgl20 " fxLayoutAlign="center center"> 
+
+			<!-- <div fxLayout="column" class="mgr20 mgl20 " fxLayoutAlign="center center"> 
 				<span class=" ft22 ft500 mgt08" fxLayoutAlign="center center" > Puntuación </span>
 				<span class="fh ftxxxl gray-10 mgb10 mgt10" fxLayoutAlign="center center" > {{diagnosticTest.score | number:'1.0-2'}}</span>
 			</div>
 
 
-			<!-- <div fxLayout="row" fxLayoutAlign="center center" >
+			<div fxLayout="row" fxLayoutAlign="center center" >
 				<canvas id="chartStats"></canvas>
-			</div> -->
+			</div>
 
 			<div *ngFor="let score of diagnosticTest?.resultByClass" fxLayout="row" fxLayoutAlign="center center">
 				<div  class="progress-item">
@@ -204,7 +206,7 @@
 						</div>
 					</div>
 				</div>
-			</div>
+			</div> -->
 		</div>
 	
 	</div>

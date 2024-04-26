@@ -32,6 +32,7 @@ export class StatsCertificationsComponent {
   @Input() certificationId;
   @Input() makeChart = 0;
   @Input() origen = 'edit';
+  @Input() resultado;
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.makeChart) {
@@ -52,6 +53,7 @@ export class StatsCertificationsComponent {
     }
     let allClassResults = [];
     let score =0;
+
     resultados.forEach(result => {
       allClassResults = allClassResults.concat(result.resultByClass);
       console.log('resultado',result)
@@ -61,8 +63,11 @@ export class StatsCertificationsComponent {
     if(type=='general'){
       this.promedioGeneral = score/resultados.length
     }
-    else{
+    else if(type == 'empresa'){
       this.promedioGeneralEmpresa = score/resultados.length
+    }
+    else{
+      this.promedioGeneralEmpresa = this.resultado.score
     }
 
     // Agrupa los resultados por classId
@@ -100,20 +105,34 @@ export class StatsCertificationsComponent {
   }
 
   ngOnInit() {
+
+
+    if(this.resultado){
+      console.log('resultadongOnInit',this.resultado)
+      this.resultado.resultByClass.forEach(element => {
+        element.averageScore = element.score
+      });
+    }
+
     this.activityClassesService.getActivityCertificationAll().subscribe((resultados)=>{
       if(resultados.length>0){
         this.resultadosCrudos = resultados
         this.procesarDatos(resultados)
+        if(this.origen=='empresa' || this.origen=='usuario'){
+
+
+
+          this.activityClassesService.getActivityCertificationResultsEnterprise().subscribe((resultados)=>{
+            if(resultados.length>0){
+              this.resultadosCrudosEmpresa = resultados
+              this.procesarDatos(resultados,this.origen)
+            }
+          })
+        }
+
+
       }
     })
-    if(this.origen=='empresa'){
-      this.activityClassesService.getActivityCertificationResultsEnterprise().subscribe((resultados)=>{
-        if(resultados.length>0){
-          this.resultadosCrudosEmpresa = resultados
-          this.procesarDatos(resultados,'empresa')
-        }
-      })
-    }
   }
 
   resultadosCrudos
@@ -128,6 +147,7 @@ export class StatsCertificationsComponent {
     }
 
     // Incrementar el conteo basado en los resultados
+    
     this.results?.forEach(result => {
       const score = Math.floor(result.score / 10) * 10; // Agrupar en rangos de 10
       scoreCounts[score]++;
@@ -164,6 +184,9 @@ export class StatsCertificationsComponent {
         promedio = 20
       }
     }
+    else if (this.origen=='usuario'){
+      promedio = Math.round(this.resultado.score/10)
+    }
     else{
       promedio = Math.round(this.promedioGeneral/10)
     }
@@ -171,9 +194,9 @@ export class StatsCertificationsComponent {
 
     console.log('grafico',numericData,this.datosTMP)
 
-    if(this.origen == 'empresa'){
+    if(this.origen == 'empresa' || this.origen=='usuario'){
 
-      if(this.resultsEmpresa.length<100){
+      if(this.results.length<100){
 
         const datosTMP = this.datosTMP
 
@@ -187,7 +210,7 @@ export class StatsCertificationsComponent {
     }
 
     let maxData = numericData[promedio]
-    console.log(promedio,maxData)
+    console.log('datos promedio y valor maximo',promedio,maxData)
 
     new Chart(ctx, {
       type: 'line',
@@ -241,8 +264,7 @@ export class StatsCertificationsComponent {
           },
           annotation: {
             annotations: {
-              averageLine: {  // Nombre de la anotación, puede ser cualquier cosa
-                // Indicates the type of annotation
+              averageLine: { 
                 type: 'box',
                 xMin: promedio,
                 xMax: promedio,

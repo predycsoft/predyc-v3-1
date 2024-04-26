@@ -207,18 +207,24 @@ export class StudentStudyPlanAndCompetencesComponent {
       .getDiagnosticTestForUser$(this.student)
       .subscribe((diagnosticTests) => {
         if (diagnosticTests.length === 0) return;
-        console.log('diagnosticTests',diagnosticTests)
 
         let diagnosticTest
 
         let certificationTest = diagnosticTests.find(x=>x.diagnosticTests)
 
         if(certificationTest){
+
+          certificationTest?.resultByClass?.forEach(element => {
+            element.averageScore = element.score
+          });
           diagnosticTest = certificationTest
+
         }
         else{
           diagnosticTest = diagnosticTests.find(x=>x.profileRef.id == this.student.profile.id)
         }
+
+
 
         this.diagnosticTest = {
           ...diagnosticTest,
@@ -813,28 +819,25 @@ export class StudentStudyPlanAndCompetencesComponent {
   }
 
   modalResult
+  makeChart
+
 
   showResult(modal){
-
-    return
 
     if(this.diagnosticTest.certificationTest){
       console.log('diagnosticTest',this.diagnosticTest)
 
-
       this.diagnosticTest.resultByClass.sort((a, b) => b['score'] - a['score']);
-
-
-
       this.modalResult = this.modalService.open(modal, {
         ariaLabelledBy: "modal-basic-title",
         centered: true,
         size: "lg",
       });
 
-
+      setTimeout(() => {
+        this.makeChart=this.makeChart+1
+      }, 200)
     }
-
     else{
       console.log('no valid')
     }
