@@ -228,6 +228,8 @@ export class EnterprisesUsersMigrationComponent {
       const permissions = new Permissions();
       if (oldEnterpriseData.hoursPerWeek) permissions.hoursPerWeek = oldEnterpriseData.hoursPerWeek;
       return {
+        examenInicial: true,
+        examenFinal: true,
         city: null,
         country: null,
         createdAt: oldEnterpriseData.fechaCreacion ? oldEnterpriseData.fechaCreacion : +new Date(),

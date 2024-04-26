@@ -23,6 +23,7 @@ import { AlertsService } from "projects/predyc-business/src/shared/services/aler
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { CreateUserComponent } from '../create-user/create-user.component';
 import { roundNumber } from "shared";
+import { NgIf } from "@angular/common";
 
 
 interface CoursesForExplorer extends CursoJson {
@@ -206,7 +207,19 @@ export class StudentStudyPlanAndCompetencesComponent {
       .getDiagnosticTestForUser$(this.student)
       .subscribe((diagnosticTests) => {
         if (diagnosticTests.length === 0) return;
-        const diagnosticTest = diagnosticTests[0];
+        console.log('diagnosticTests',diagnosticTests)
+
+        let diagnosticTest
+
+        let certificationTest = diagnosticTests.find(x=>x.diagnosticTests)
+
+        if(certificationTest){
+          diagnosticTest = certificationTest
+        }
+        else{
+          diagnosticTest = diagnosticTests.find(x=>x.profileRef.id == this.student.profile.id)
+        }
+
         this.diagnosticTest = {
           ...diagnosticTest,
           date: firestoreTimestampToNumberTimestamp(diagnosticTest.date),
@@ -797,5 +810,34 @@ export class StudentStudyPlanAndCompetencesComponent {
   getAdditionalSkillsTooltip(skills: string[]): string {
     // Toma las habilidades a partir de la quinta y las une con comas.
     return skills.slice(4).join(",\n");
+  }
+
+  modalResult
+
+  showResult(modal){
+
+    return
+
+    if(this.diagnosticTest.certificationTest){
+      console.log('diagnosticTest',this.diagnosticTest)
+
+
+      this.diagnosticTest.resultByClass.sort((a, b) => b['score'] - a['score']);
+
+
+
+      this.modalResult = this.modalService.open(modal, {
+        ariaLabelledBy: "modal-basic-title",
+        centered: true,
+        size: "lg",
+      });
+
+
+    }
+
+    else{
+      console.log('no valid')
+    }
+
   }
 }

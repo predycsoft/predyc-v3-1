@@ -30,6 +30,8 @@ export const enterpriseData: EnterpriseJson = {
     },
     vimeoFolderId: null,
     vimeoFolderUri: null,
+    examenInicial: true,
+    examenFinal: true
 }
 
 
@@ -50,7 +52,6 @@ export const enterpriseDataPredyc: EnterpriseJson = {
         studyplanGeneration: 'Confirmar',
         attemptsPerTest: 5,
         createCourses: true
-
     },
     photoUrl: null,
     profilesNo: 0,
@@ -64,4 +65,6 @@ export const enterpriseDataPredyc: EnterpriseJson = {
     },
     vimeoFolderId: null,
     vimeoFolderUri: null,
+    examenInicial: true,
+    examenFinal: true
 }

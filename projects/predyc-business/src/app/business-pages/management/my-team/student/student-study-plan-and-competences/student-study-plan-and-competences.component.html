@@ -84,10 +84,10 @@
                         <!-- just to see the dates -->
                         <!-- <span>{{diagnosticTest.date | date:'dd/MM/yy'}}</span> -->
                         <!--  -->
-                        <div fxLayout="row" fxLayoutAlign="space-between center" class="" fxLayoutGap="0.5rem">
+                        <div (click)="showResult(initTestDetails)" fxLayout="row" fxLayoutAlign="space-between center" class="no-select cursorPointer" fxLayoutGap="0.5rem">
                             <img *ngIf="diagnosticTest.score >= 0" [src]="icon.greenCheck" class="h20px mgr05 makeGreen" alt="">
-                            <!-- <span class="ft13 ft500 mgr15"> {{diagnosticTest.score >= 50 ? 'Aprobado' : 'Reprobado'}} con {{diagnosticTest.score}} </span> -->
                             <span *ngIf="diagnosticTest.score >= 0" class="makeGreen mgr10 ft14 ft400" >Completado </span>
+                            <span *ngIf="diagnosticTest.certificationTest" class="ft13 ft500 mgr15">  {{diagnosticTest.score | number : '1.0-1'}}/100 </span>
                         </div>
                     </div>
                     <div *ngIf="!diagnosticTest">
@@ -167,4 +167,46 @@
         </ng-container>
     </div>
 </div>
+
+
+<!-- Detalles examen inicial -->
+<ng-template #initTestDetails let-modal>
+	<div class="modal-header bg-web-primary text-white px-3 py-1" fxLayoutAlign="space-between center" >
+        <div class="modal-title pd10 ">
+            <span class="ft14 ft500">
+				Resultados del diagnóstico inicial
+            </span>
+        </div>
+        <img [src]="icon.close" class="h24px pdl5  pdr10 cursorPointer" alt="" (click)="modal.dismiss('Cross click')">
+    </div>
+
+    <div fxLayout="row" fxLayoutAlign="center center" class="modal-body">
+
+		<div class="w-95">
+
+
+			<div fxLayout="column" class="mgr20 mgl20 " fxLayoutAlign="center center"> 
+				<span class=" ft22 ft500 mgt08" fxLayoutAlign="center center" > Puntuación </span>
+				<span class="fh ftxxxl gray-10 mgb10 mgt10" fxLayoutAlign="center center" > {{diagnosticTest.score | number:'1.0-2'}}</span>
+			</div>
+
+
+			<!-- <div fxLayout="row" fxLayoutAlign="center center" >
+				<canvas id="chartStats"></canvas>
+			</div> -->
+
+			<div *ngFor="let score of diagnosticTest?.resultByClass" fxLayout="row" fxLayoutAlign="center center">
+				<div  class="progress-item">
+					<span class="ft14 ft600">{{ score.classId }}</span>
+					<div class="progress-container">
+						<div *ngIf="score.score>0" class="progress-bar backBlue5 ft11" [style.width]="score.score + '%'">
+							<span class="progress-text gray-1">{{ score.score | number:'1.0-2' }}%</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	
+	</div>
+</ng-template>
 

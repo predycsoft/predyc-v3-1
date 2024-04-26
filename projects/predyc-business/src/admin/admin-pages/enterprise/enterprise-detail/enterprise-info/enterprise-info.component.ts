@@ -45,9 +45,24 @@ export class EnterpriseInfoComponent {
 			website: [null],
 			linkedin: [null],
 			photoUrl: [null],
+			examenInicial: [true],
+			examenFinal: [true],
 		});
 		// Edit mode
 		if (this.enterprise) {
+
+			console.log('empresaDatos',this.enterprise)
+
+			if(this.enterprise.examenInicial  === undefined ){
+				this.enterprise.examenInicial = true
+
+			}
+
+			if(this.enterprise.examenFinal  === undefined ){
+				this.enterprise.examenFinal = true
+			}
+
+
 			this.enterpriseForm.patchValue({
 				name: this.enterprise.name,
 				summary: "",
@@ -55,6 +70,8 @@ export class EnterpriseInfoComponent {
 				website: this.enterprise.socialNetworks.website,
 				linkedin: this.enterprise.socialNetworks.linkedin,
 				photoUrl: this.enterprise.photoUrl,
+				examenInicial:this.enterprise.examenInicial,
+				examenFinal:this.enterprise.examenFinal,
 			});
 			// this.enterpriseForm.get('name')?.disable();
 			if (this.enterprise.photoUrl) {
@@ -143,6 +160,9 @@ export class EnterpriseInfoComponent {
 		enterprise.socialNetworks.website = formValue.website;
 		enterprise.socialNetworks.linkedin = formValue.linkedin;
 		enterprise.photoUrl = formValue.photoUrl;
+		enterprise.examenFinal = formValue.examenFinal;
+		enterprise.examenInicial = formValue.examenInicial;
+
 
 		console.log("enterprise Actualizado: ", enterprise);
 
