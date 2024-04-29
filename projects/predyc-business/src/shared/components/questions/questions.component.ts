@@ -13,6 +13,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 
 import * as XLSX from 'xlsx-js-style';
+import { AuthService } from '../../services/auth.service';
 
 
 function optionsLengthValidator(question: FormGroup): ValidationErrors | null {
@@ -205,6 +206,8 @@ export class QuestionsComponent {
     public sanitizer: DomSanitizer,
     private modalService: NgbModal,
     private storage: AngularFireStorage,
+    private authService: AuthService,
+
 
   ) {}
 
@@ -241,9 +244,24 @@ export class QuestionsComponent {
 
 
   }
-
+  user
   ngOnInit() {
-    this.init();
+
+    this.authService.user$.subscribe(user=> {
+
+      if (user) {
+        console.log('user',user)
+        this.user = user
+        this.init();
+
+      }
+
+
+
+    })
+
+
+
   }
 
 
