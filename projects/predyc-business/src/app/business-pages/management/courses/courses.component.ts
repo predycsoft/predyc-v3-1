@@ -8,7 +8,7 @@ import { CategoryService } from 'projects/predyc-business/src/shared/services/ca
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { SkillService } from 'projects/predyc-business/src/shared/services/skill.service';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
-import { take, Subscription } from 'rxjs';
+import { take, Subscription, Observable } from 'rxjs';
 import { CourseService } from 'projects/predyc-business/src/shared/services/course.service';
 
 import { cursosProximos } from 'projects/predyc-business/src/assets/data/proximamente.data'
@@ -16,8 +16,9 @@ import { AuthService } from 'projects/predyc-business/src/shared/services/auth.s
 import { InstructorsService } from 'projects/predyc-business/src/shared/services/instructors.service';
 import { SubscriptionService } from 'projects/predyc-business/src/shared/services/subscription.service';
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
-import { Product, Subscription as SubscriptionClass } from 'projects/shared';
+import { License, Product, Subscription as SubscriptionClass } from 'projects/shared';
 import { ProductService } from 'projects/predyc-business/src/shared/services/product.service';
+import { LicenseService } from 'projects/predyc-business/src/shared/services/license.service';
 
 
 export class category {
@@ -48,7 +49,9 @@ export class CoursesComponent implements AfterViewInit {
     private authService: AuthService,
     private subscriptionService: SubscriptionService,
     private userService: UserService,
-    private productService: ProductService
+    private productService: ProductService,
+    public licenseService: LicenseService,
+
   ) {}
 
   subscriptionClass = SubscriptionClass
@@ -91,24 +94,43 @@ export class CoursesComponent implements AfterViewInit {
     return `${hours} hrs ${minutes} min`;
   }
 
+  licenses$: Observable<License[]> = this.licenseService.getCurrentEnterpriseLicenses$()
+  licenses: License[];
+  licensesSubscription: Subscription;
+
   async ngOnInit() {
 
     this.authService.user$.subscribe(user=> {
       if (user) {
         console.log('user',user)
         this.user = user
-        if (this.subscriptionObservableSubs) this.subscriptionObservableSubs.unsubscribe()
-        this.subscriptionObservableSubs = this.subscriptionService.getUserSubscriptions$(this.userService.getUserRefById(this.user.uid)).subscribe(items => {
-          const subscriptions = items.filter(x => x.status === this.subscriptionClass.STATUS_ACTIVE)
-          if (subscriptions.length > 0) {
-            this.subscription = subscriptions[0]
-            if (this.productServiceSubscription) this.productServiceSubscription.unsubscribe()
-            this.productServiceSubscription = this.productService.getProductById$(this.subscription.productRef.id).subscribe(product => {
-              if (!product) return
-              this.product = product
-            })
-          }
-        })
+        // if (this.subscriptionObservableSubs) this.subscriptionObservableSubs.unsubscribe()
+        // this.subscriptionObservableSubs = this.subscriptionService.getUserSubscriptions$(this.userService.getUserRefById(this.user.uid)).subscribe(items => {
+        //   const subscriptions = items.filter(x => x.status === this.subscriptionClass.STATUS_ACTIVE)
+        //   if (subscriptions.length > 0) {
+        //     this.subscription = subscriptions[0]
+        //     if (this.productServiceSubscription) this.productServiceSubscription.unsubscribe()
+        //     console.log('this.subscription.productRef.id',this.subscription.productRef.id)
+        //     this.productServiceSubscription = this.productService.getProductById$(this.subscription.productRef.id).subscribe(product => {
+        //       if (!product) return
+        //       this.product = product
+        //     })
+        //   }
+        // })
+
+        if(!user.isSystemUser){ // alterado por Arturo para buscar licencia activa de la empresa y no el usuario admin
+          this.licensesSubscription = this.licenses$.subscribe(licenses => {
+            let licenseActive = licenses.find(x=>x.status == 'active')
+            console.log('licenseActive',licenseActive)
+            if(licenseActive){
+              this.productServiceSubscription = this.productService.getProductById$(licenseActive.productRef.id).subscribe(product => {
+                if (!product) return
+                this.product = product
+              })
+              
+            }
+          })
+        }
       }
     })
 

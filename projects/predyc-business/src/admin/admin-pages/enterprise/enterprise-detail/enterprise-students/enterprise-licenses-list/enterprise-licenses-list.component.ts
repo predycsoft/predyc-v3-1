@@ -165,8 +165,8 @@ export class EnterpriseLicensesListComponent {
                   ? null
                   : Date.now(),
               changedAt: Date.now(),
-              currentPeriodEnd: licenseJson.currentPeriodStart,
-              currentPeriodStart: licenseJson.currentPeriodEnd,
+              currentPeriodEnd: licenseJson.currentPeriodEnd,
+              currentPeriodStart: licenseJson.currentPeriodStart,
               endedAt:
                 licenseJson.status === SubscriptionClass.STATUS_ACTIVE
                   ? null
