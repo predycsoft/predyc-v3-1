@@ -138,6 +138,7 @@ export class EnterpriseLicensesListComponent {
   }
 
   async editLicense(license: License) {
+    console.log(license)
     const dialogRef = this.dialog.open(DialogCreateLicenseComponent, {
       data: {
         license: license,
