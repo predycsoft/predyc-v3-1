@@ -18,7 +18,7 @@
     <button
       [disabled]="generatinReport"
       class="blueButtonAnim button-animation ft500 w180px"
-      [matMenuTriggerFor]="formatMenu"
+      (click)="downloadReport()"
       fxLayout="row"
       fxLayoutAlign="center center"
     >
