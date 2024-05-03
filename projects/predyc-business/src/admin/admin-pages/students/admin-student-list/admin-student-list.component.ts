@@ -110,116 +110,120 @@ export class AdminStudentListComponent {
     }
 
 
-    this.productSubscription = this.productService
-    .getProducts$()
-    .subscribe((products) => 
-      {this.products = products
+    this.productSubscription = this.productService.getProducts$().subscribe((products) => {
+      this.products = products
+      this.userServiceSubscription = this.userService.getAllUsers$(searchTerm).pipe(
+        switchMap(users => {
+          if (users.length === 0) return of([]); // Early exit if no users found
+  
+          // Fetch subscriptions for all users at once
+          return this.subscriptionService.getSubscriptions$().pipe(
+            map(subscriptions => {
+              // Map each subscription to its user
+              const userSubscriptionsMap = subscriptions.reduce((acc, sub) => {
+                (acc[sub.userRef.id] = acc[sub.userRef.id] || []).push(sub);
+                return acc;
+              }, {});
+  
+              return users.map(user => ({
+                user,
+                subscriptions: userSubscriptionsMap[user.uid] || []
+              }));
+            })
+          );
+        })
+      )
+      .subscribe((response) => { // user with suscription data
+        if (this.enterprises) {
+          let usersInList: UserInList[] = response
+            .map(({ user, subscriptions }) => {
+              const enterprise = this.enterprises.find(
+                (enterprise) => enterprise.id === user.enterprise?.id
+              );
+              let activeSubscriptions = subscriptions.filter(
+                (x) => x.status === SubscriptionClass.STATUS_ACTIVE && x.currentPeriodEnd >= todayTime
+              );
+              let expiredSubscriptions = subscriptions.filter(
+                (x) => x.status === SubscriptionClass.STATUS_ACTIVE && x.currentPeriodEnd < todayTime
+              );
+              let status
 
-        this.userServiceSubscription = this.userService
-        .getAllUsers$(searchTerm)
-        .pipe(
-          switchMap((users) => {
-            // For each user, query their active courses
-            const observables = users.map((user) => {
-              const userRef = this.userService.getUserRefById(user.uid);
-              return this.subscriptionService
-                .getUserSubscriptions$(userRef)
-                .pipe(map((subscriptions) => ({ user, subscriptions })));
-            });
-            return observables.length > 0 ? combineLatest(observables) : of([]);
-          })
-        )
-        .subscribe((response) => {
-          if (this.enterprises) {
-            let usersInList: UserInList[] = response
-              .map(({ user, subscriptions }) => {
-                const enterprise = this.enterprises.find(
-                  (enterprise) => enterprise.id === user.enterprise?.id
-                );
-                let activeSubscriptions = subscriptions.filter(
-                  (x) => x.status === SubscriptionClass.STATUS_ACTIVE && x.currentPeriodEnd >= todayTime
-                );
-                let expiredSubscriptions = subscriptions.filter(
-                  (x) => x.status === SubscriptionClass.STATUS_ACTIVE && x.currentPeriodEnd < todayTime
-                );
-                let status
+              if(!activeSubscriptions || activeSubscriptions.length==0){
+                activeSubscriptions = []
+              }
+              if(!expiredSubscriptions || expiredSubscriptions.length==0){
+                expiredSubscriptions = []
+              }
 
-                if(!activeSubscriptions || activeSubscriptions.length==0){
-                  activeSubscriptions = []
-                }
-                if(!expiredSubscriptions || expiredSubscriptions.length==0){
-                  expiredSubscriptions = []
-                }
-  
-                let AllActiveSubs = [...activeSubscriptions,...expiredSubscriptions]
-  
-                if((activeSubscriptions.length > 0 && expiredSubscriptions.length == 0) || (activeSubscriptions.length >0 && expiredSubscriptions.length > 0)){
-                  status = SubscriptionClass.STATUS_ACTIVE
-                }
-                else if (activeSubscriptions.length == 0 && expiredSubscriptions.length > 0){
-                  status = SubscriptionClass.STATUS_EXPIRED
-                }
-                else {
-                  status = SubscriptionClass.STATUS_INACTIVE
-  
-                }
-  
-                console.log('revisar licencias',activeSubscriptions,expiredSubscriptions,status,AllActiveSubs)
-                let subscriptionWithLatestEndPeriod
-                if(AllActiveSubs.length>0){
-                  AllActiveSubs.forEach(sub => {
-                    sub.product = this.products.find(x=>x.id == sub.productRef.id)
-                  });
-                  subscriptionWithLatestEndPeriod = AllActiveSubs?.reduce((latest, current) => {
-                    return latest.currentPeriodEnd > current.currentPeriodEnd ? latest : current;
-                  });
-                
-                }
-                return {
-                  displayName: user.displayName,
-                  uid: user.uid,
-                  photoUrl: user.photoUrl,
-                  email: user.email,
-                  createdAt: user.createdAt,
-                  updatedAt: user.updatedAt,
-                  phoneNumber: user.phoneNumber,
-                  enterprise: enterprise ? enterprise.name : null,
-                  status: SubscriptionClass.statusToDisplayValueDict[status],
-                  statusId: status,
-                  fechaVencimiento:subscriptionWithLatestEndPeriod?.currentPeriodEnd?subscriptionWithLatestEndPeriod.currentPeriodEnd:null,
-                  productName:subscriptionWithLatestEndPeriod?.product.name?subscriptionWithLatestEndPeriod?.product.name:'N/A',
-                };
+              let AllActiveSubs = [...activeSubscriptions,...expiredSubscriptions]
+
+              if((activeSubscriptions.length > 0 && expiredSubscriptions.length == 0) || (activeSubscriptions.length >0 && expiredSubscriptions.length > 0)){
+                status = SubscriptionClass.STATUS_ACTIVE
+              }
+              else if (activeSubscriptions.length == 0 && expiredSubscriptions.length > 0){
+                status = SubscriptionClass.STATUS_EXPIRED
+              }
+              else {
+                status = SubscriptionClass.STATUS_INACTIVE
+
+              }
+
+              console.log('revisar licencias',activeSubscriptions,expiredSubscriptions,status,AllActiveSubs)
+              let subscriptionWithLatestEndPeriod
+              if(AllActiveSubs.length>0){
+                AllActiveSubs.forEach(sub => {
+                  sub.product = this.products.find(x=>x.id == sub.productRef.id)
+                });
+                subscriptionWithLatestEndPeriod = AllActiveSubs?.reduce((latest, current) => {
+                  return latest.currentPeriodEnd > current.currentPeriodEnd ? latest : current;
+                });
+              
+              }
+              return {
+                displayName: user.displayName,
+                uid: user.uid,
+                photoUrl: user.photoUrl,
+                email: user.email,
+                createdAt: user.createdAt,
+                updatedAt: user.updatedAt,
+                phoneNumber: user.phoneNumber,
+                enterprise: enterprise ? enterprise.name : null,
+                status: SubscriptionClass.statusToDisplayValueDict[status],
+                statusId: status,
+                fechaVencimiento:subscriptionWithLatestEndPeriod?.currentPeriodEnd?subscriptionWithLatestEndPeriod.currentPeriodEnd:null,
+                productName:subscriptionWithLatestEndPeriod?.product.name?subscriptionWithLatestEndPeriod?.product.name:'N/A',
+              };
+            })
+            this.totalUsers.emit(usersInList);
+            if(searchTerm){
+              usersInList = usersInList.filter((x) => {
+                return (
+                  x.displayName
+                    .toLocaleLowerCase()
+                    .includes(searchTerm.toLocaleLowerCase()) ||
+                  x.email
+                    .toLocaleLowerCase()
+                    .includes(searchTerm.toLocaleLowerCase())
+                );
               })
-              this.totalUsers.emit(usersInList);
-              if(searchTerm){
-                usersInList = usersInList.filter((x) => {
-                  return (
-                    x.displayName
-                      .toLocaleLowerCase()
-                      .includes(searchTerm.toLocaleLowerCase()) ||
-                    x.email
-                      .toLocaleLowerCase()
-                      .includes(searchTerm.toLocaleLowerCase())
-                  );
-                })
+            }
+            console.log('statusTerm',statusTerm)
+            if(statusTerm && statusTerm!='all'){
+              let filter = 'x.statusId == statusTerm'
+              if(statusTerm == 'active'){
+                filter = filter+" || x.statusId == 'expired'"
               }
-              console.log('statusTerm',statusTerm)
-              if(statusTerm && statusTerm!='all'){
-                let filter = 'x.statusId == statusTerm'
-                if(statusTerm == 'active'){
-                  filter = filter+" || x.statusId == 'expired'"
-                }
-                usersInList = usersInList.filter((x) => {
-                  return (
-                    eval(filter)
-                  );
-                })
-              }
-            this.paginator.pageIndex = page - 1;
-            this.dataSource.data = usersInList;
-            this.totalLength = usersInList.length;
-          }
-        });
+              usersInList = usersInList.filter((x) => {
+                return (
+                  eval(filter)
+                );
+              })
+            }
+          this.paginator.pageIndex = page - 1;
+          this.dataSource.data = usersInList;
+          this.totalLength = usersInList.length;
+        }
+      });
 
 
 
