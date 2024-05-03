@@ -1,17 +1,22 @@
-<div fxFlex fxLayout="column" class="containerAllQustions hideScroll pdl10 pdt10">
+<div fxFlex fxLayout="column" [ngClass]="{'containerAllQustions':origen!='usuario'}" class="hideScroll pdl10 pdt10">
     <div fxLayout="row" fxLayoutAlign="center center" >
         <div class="radius10 shadowLight pdt10" alt="stats-empresas" fxLayoutAlign="center center" fxLayout="column" style="height: 10vh; ">
             <div fxLayout="row" class="mgb08" fxLayoutAlign="center center" >
                 <div fxLayout="row"  fxLayoutAlign="center center ">
-                    <div *ngIf="origen!=='empresa'" fxLayout="column" class="mgr20 mgl20 " fxLayoutAlign="center center"> 
+                    <div *ngIf="origen=='general'" fxLayout="column" class="mgr20 mgl20 " fxLayoutAlign="center center"> 
                         <span class=" ft22 ft500 mgt08" fxLayoutAlign="center center" > Puntuación Promedio </span>
-                        <span class="fh ftxxxl gray-10 mgb10 mgt10" fxLayoutAlign="center center" > {{promedioGeneral}}</span>
+                        <span class="fh ftxxxl gray-10 mgb10 mgt10" fxLayoutAlign="center center" > {{promedioGeneral |  number:'1.0-2' }}</span>
                     </div>
                     <div *ngIf="origen=='empresa'" fxLayout="column" class="mgr20 mgl20 " fxLayoutAlign="center center"> 
                         <span class=" ft22 ft500 mgt08" fxLayoutAlign="center center" >Puntuación Promedio </span>
-                        <span *ngIf="promedioGeneralEmpresa" class="fh ftxxxl gray-10 mgb10 mgt10" fxLayoutAlign="center center" > {{promedioGeneralEmpresa}}</span>
+                        <span *ngIf="promedioGeneralEmpresa" class="fh ftxxxl gray-10 mgb10 mgt10" fxLayoutAlign="center center" > {{promedioGeneralEmpresa |  number:'1.0-2' }}</span>
                         <span *ngIf="!promedioGeneralEmpresa" class="fh ft14 gray-10 mgb10 mgt10" fxLayoutAlign="center center" >No hay datos disponibles</span>
                     </div>
+                    <div *ngIf="origen=='usuario'" fxLayout="column" class="mgr20 mgl20 " fxLayoutAlign="center center"> 
+                        <span class=" ft22 ft500 mgt08" fxLayoutAlign="center center" > Puntuación </span>
+                        <span class="fh ftxxxl gray-10 mgb10 mgt10" fxLayoutAlign="center center" > {{resultado.score |  number:'1.0-2' }}</span>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -22,9 +27,17 @@
             <canvas id="chartStats"></canvas>
         </div>
     </div>
+
     <div fxLayout="row" fxLayoutAlign="center center">
         <div fxFlex="70%">
-            <div *ngFor="let score of origen=='empresa'? averageScoresEmpresa:averageScores" class="progress-item">
+            <span class="ft16 ft500">Puntuación obtenida por área de conocimiento.</span>
+        </div>
+    </div>
+
+    
+    <div fxLayout="row" fxLayoutAlign="center center" class="pdt20">
+        <div fxFlex="70%">
+            <div *ngFor="let score of origen=='general'? averageScores : origen=='empresa'? averageScoresEmpresa : resultado.resultByClass" class="progress-item">
                 <span class="ft14 ft600">{{ score.classId }}</span>
                 <div class="progress-container">
                     <div *ngIf="score.averageScore>0" class="progress-bar backBlue5 ft11" [style.width]="score.averageScore + '%'">
@@ -34,8 +47,7 @@
             </div>
         </div>
     </div>  
-    <div class="fw"  *ngIf="origen=='empresa'" fxLayout="row" fxLayoutAlign="center center">
+    <div class="fw" class="mgt30" *ngIf="origen=='empresa'" fxLayout="row" fxLayoutAlign="center center">
         <app-certification-student-list class="fw" [resultadosExamen]="resultadosCrudosEmpresa" />
     </div>
-                          
 </div>

@@ -22,7 +22,7 @@ export const MAIN_TITLE = "Predyc Admin - ";
 const routes: Routes = [
   // { path: "", title: MAIN_TITLE + "home", component: HomeComponent },
   {
-    path: "",
+    path: "students",
     title: MAIN_TITLE + "Estudiantes",
     component: StudentsComponent,
   },
@@ -32,7 +32,7 @@ const routes: Routes = [
     component: StudentDetailComponent,
   },
   {
-    path: "enterprises",
+    path: "",
     title: MAIN_TITLE + "Empresas",
     component: EnterpriseComponent,
   },

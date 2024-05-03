@@ -51,8 +51,6 @@
                         Debe indicar el Linkedin
                     </div>
                 </div>
-
-
             </div>
             
         </div>
@@ -64,15 +62,46 @@
             <label class="ft12 " >Descripcion</label>
             <textarea style="resize: none;" class="fw" maxlength="5000" formControlName="description"> </textarea>
         </div> -->
-        <div class="mgt08 fw"  style="  " >
+        <div class="mgt08 fw">
             <label class="ft12 " >Descripción</label>
             <textarea name=""  id="description"  ormControlName="description"  placeholder="Introduzca la descripción" class="pd05     radius10 backWhite shadow-animation borderLight form-group"
             style=" overflow-y: hidden;  width: 100%; height: 100px; resize:none; background-color: transparent !important; " maxlength="200"  ></textarea>
         </div>
     </div>
 
+    <div fxLayoutAlign="center center" fxLayout="row" fxLayoutGap="1rem">
+        <div class="form-group mgt08 fw">
+            <label class="ft12 mgr10">Sitio web</label>
+            <input
+            [class.is-invalid]="enterpriseForm.controls['website'].errors && showError"
+            formControlName="website" type="text" class="form-control ft14  shadow-animation   pdl05 pdr05 radius20  borderLight ">
+            <div class="invalid-feedback" *ngIf="enterpriseForm.controls['website'].errors && showError"> 
+                Debe indicar el sitio web
+            </div>
+        </div>
+        <div class="form-group mgt08 fw">
+            <label class="ft12">Enlace Linkedin</label>
+            <input
+            [class.is-invalid]="enterpriseForm.controls['linkedin'].errors && showError"
+            formControlName="linkedin" type="text" class="form-control ft14  shadow-animation   pdl05 pdr05 radius20  borderLight ">
+            <div class="invalid-feedback" *ngIf="enterpriseForm.controls['linkedin'].errors && showError"> 
+                Debe indicar el Linkedin
+            </div>
+        </div>
+    </div>
 
 
+    <div fxLayoutAlign="start center" fxLayout="row" fxLayoutGap="1rem">
+        <div class="mgt10" fxLayout="" fxLayoutAlign="start center" fxLayoutGap=".5rem">
+            <span class="ft12 makeBlue">Se requiere diagnóstico inicial.</span>
+            <mat-slide-toggle class=" " color="primary" formControlName="examenInicial"></mat-slide-toggle>
+        </div>
+        <div class="mgt10" fxLayout="" fxLayoutAlign="start center" fxLayoutGap=".5rem">
+            <span class="ft12 makeBlue">Se requiere diagnóstico final.</span>
+            <mat-slide-toggle class=" " color="primary" formControlName="examenFinal"></mat-slide-toggle>
+        </div>
+    
+    </div>
 
     <div fxLayout="row" class="mgt10" fxLayoutAlign="end ">
         <button class=" blueButtonAnim button-animation h28px  " fxLayout="row" fxLayoutAlign="center center" type="submit" style="margin-right: -1px;">

@@ -6,7 +6,7 @@
                 <div fxLayout="row" fxLayoutAlign="space-between center" class="fw pdb05">
                     <!-- Botón de importar a la izquierda -->
                     <div>
-                        <button class="blueButton ft11" (click)="listInput.click()">Importar preguntas</button>
+                        <button *ngIf="this.user.isSystemUser" class="blueButton ft11" (click)="listInput.click()">Importar preguntas</button>
                         <input (change)="uploadQuestions($event)" type="file" #listInput style="display: none" accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
                     </div>
                 

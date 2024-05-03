@@ -35,6 +35,7 @@ export class StudentListComponent {
     'displayName',
     'department',
     'hours',
+    'dates',
     'ratingPoints',
     'rhythm',
   ];
@@ -84,6 +85,7 @@ export class StudentListComponent {
     this.dataSource.paginator = this.paginator;
     this.dataSource.paginator.pageSize = this.pageSize;
   }
+  
 
   performSearch(searchTerm: string, page: number, profileFilter: string) {
     if (this.userServiceSubscription) {
@@ -114,6 +116,31 @@ export class StudentListComponent {
         const profileName = profile ? profile.name : '';
         let hours = 0;
         let targetHours = 0;
+
+
+
+        let cursosPlan = courses.filter(x=>x?.active && !x?.isExtraCourse && x?.dateStartPlan && x?.dateEndPlan)
+
+        let start: number[] = []
+        let end: number[] = []
+
+        let startDay
+        let endDay
+
+        cursosPlan.forEach(curso => {
+          console.log('arreglos fechas',curso,curso.dateStartPlan.seconds*1000,curso.dateEndPlan.seconds*1000)
+          start.push(curso.dateStartPlan.seconds*1000)
+          end.push(curso.dateEndPlan.seconds*1000)
+        });
+
+
+        if(start.length>0 && end.length>0){
+          startDay = Math.min(...start)
+          endDay = Math.max(...end)
+        }
+
+        console.log('cursosPlan',cursosPlan,startDay,endDay)
+
   
         courses.forEach(course => {
           hours += course?.progressTime ? course.progressTime : 0;
@@ -128,6 +155,8 @@ export class StudentListComponent {
           department: this.departments.find(department => department.id === user.departmentRef?.id)?.name,
           hours,
           targetHours,
+          dataStarPlan:startDay,
+          dataEndPlan:endDay,
           profile: profileName,
           ratingPoints: this.userService.getRatingPointsFromStudyPlan(courses, this.courses),
           rhythm: this.userService.getPerformanceWithDetails(courses),

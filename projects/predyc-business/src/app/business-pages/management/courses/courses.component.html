@@ -101,7 +101,7 @@
                     <div class="borderLight radius6 mgt10" *ngIf="selectedCourse" >
                         <div class="border-bl pdl10 pdt05 pdr10 pdb10 fw" fxLayout="column">
                             <div  fxLayout="row" fxLayoutAlign="space-between center" >
-                                <div class="gray-10 ft14 ft500 mgr08">{{selectedCourse.titulo | titlecase}}</div>
+                                <div class="gray-10 ft14 ft500 mgr08">{{selectedCourse.titulo }}</div>
                                 <div *ngIf="(user.isSystemUser || selectedCourse.enterpriseRef?.id == enterpriseRef?.id) && selectedCourse.id" 
                                         routerLink="/management/create-course/edit/{{selectedCourse.id}}" 
                                         fxLayout="row" 
@@ -193,7 +193,7 @@
                                             [src]="icon.chevronRight" class="makeBlue cursorPointer" alt="">
                                         <img *ngIf="modulo['expanded'] == true" (click)="modulo['expanded']=false"
                                             [src]="icon.chevronDown" class="makeBlue cursorPointer" alt="">
-                                        <span class="ft12 gray-10">{{modulo.titulo | titlecase}}</span>
+                                        <span class="ft12 gray-10">{{modulo.titulo }}</span>
                                     </div>
                                     <div fxLayoutAlign="center center">
                                         <span *ngIf="modulo?.duracion" class="gray-6 ft12 nowrap">{{getFloor(modulo.duracion/60) |
@@ -214,7 +214,7 @@
                                                 class="h14px makeGray8" alt="">
                                             <img [src]="icon.favorite" *ngIf="clase?.tipo == 'corazones'"
                                                 class="h14px makeGray8" alt="">
-                                            <span *ngIf="!clase.dontTitle" class="ft11 gray-8">{{clase.titulo | titlecase  }}</span>
+                                            <span *ngIf="!clase.dontTitle" class="ft11 gray-8">{{clase.titulo  }}</span>
                                             <span *ngIf="clase.dontTitle" class="ft11 gray-8">{{clase.titulo }}</span>
                                         </div>
                                         <div fxLayoutAlign="center center">
@@ -388,7 +388,7 @@
                                     [src]="icon.chevronRight" class="makeBlue cursorPointer" alt="">
                                 <img *ngIf="modulo.expanded == true" (click)="modulo.expanded=false"
                                     [src]="icon.chevronDown" class="makeBlue cursorPointer" alt="">
-                                <span class="ft12 gray-10">{{modulo.titulo | titlecase}}</span>
+                                <span class="ft12 gray-10">{{modulo.titulo }}</span>
                             </div>
                             <div fxLayoutAlign="center center">
                                 <span class="gray-6 ft12 nowrap">{{getFloor(modulo.duracion/60)
@@ -408,7 +408,7 @@
                                         alt="">
                                     <img [src]="icon.catalog" *ngIf="clase.tipo == 'lectura'" class="h14px makeGray8"
                                         alt="">
-                                    <span class="ft11 gray-8">{{clase.titulo | titlecase}}</span>
+                                    <span class="ft11 gray-8">{{clase.titulo}}</span>
                                 </div>
                                 <div fxLayoutAlign="center center">
                                     <span class="gray-6 ft11 nowrap">{{clase.duracion}} min</span>

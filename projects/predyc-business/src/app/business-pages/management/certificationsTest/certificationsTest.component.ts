@@ -19,7 +19,6 @@ export class CertificationsTestComponent {
   makeChart = 0
 
   ngOnInit(): void {
-    this.certificationId = 'C7Y7qcApOxsLPhsCWVYb'
 
 
   }

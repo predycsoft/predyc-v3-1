@@ -211,6 +211,7 @@ export class StudentSubscriptionListComponent {
   }
 
   clickSub(data) {
+    console.log(data)
     if (!data.licenseRef) {
       this.onSubSelected.emit(data);
     } else {

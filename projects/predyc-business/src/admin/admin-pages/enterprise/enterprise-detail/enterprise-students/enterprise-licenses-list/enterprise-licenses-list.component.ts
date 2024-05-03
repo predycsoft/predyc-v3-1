@@ -138,6 +138,7 @@ export class EnterpriseLicensesListComponent {
   }
 
   async editLicense(license: License) {
+    console.log(license)
     const dialogRef = this.dialog.open(DialogCreateLicenseComponent, {
       data: {
         license: license,
@@ -165,8 +166,8 @@ export class EnterpriseLicensesListComponent {
                   ? null
                   : Date.now(),
               changedAt: Date.now(),
-              currentPeriodEnd: licenseJson.currentPeriodStart,
-              currentPeriodStart: licenseJson.currentPeriodEnd,
+              currentPeriodEnd: licenseJson.currentPeriodEnd,
+              currentPeriodStart: licenseJson.currentPeriodStart,
               endedAt:
                 licenseJson.status === SubscriptionClass.STATUS_ACTIVE
                   ? null
