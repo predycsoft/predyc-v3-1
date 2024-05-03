@@ -29,86 +29,85 @@ import { ClassByStudent, ClassByStudentJson } from 'projects/shared/models/class
 // import { particularOldUsers1 } from '../old data/particular users/usuarios/particular-usuarios.data1'; //  *************************** READY
 // import { particularOldUsers2 } from '../old data/particular users/usuarios/particular-usuarios.data2'; //  *************************** READY
 // import { particularOldUsers3 } from '../old data/particular users/usuarios/particular-usuarios.data3'; //  *************************** READY
-import { particularOldUsers4 } from '../old data/particular users/usuarios/particular-usuarios.data4';
-// import { particularOldUsers5 } from '../old data/particular users/usuarios/particular-usuarios.data5';
-// import { particularOldUsers6 } from '../old data/particular users/usuarios/particular-usuarios.data6';
-// import { particularOldUsers7 } from '../old data/particular users/usuarios/particular-usuarios.data7';
-// import { particularOldUsers8 } from '../old data/particular users/usuarios/particular-usuarios.data8';
-// import { particularOldUsers9 } from '../old data/particular users/usuarios/particular-usuarios.data9';
-// import { particularOldUsers10 } from '../old data/particular users/usuarios/particular-usuarios.data10';
-// import { particularOldUsers11 } from '../old data/particular users/usuarios/particular-usuarios.data11';
-// import { particularOldUsers12 } from '../old data/particular users/usuarios/particular-usuarios.data12';
-// import { particularOldUsers13 } from '../old data/particular users/usuarios/particular-usuarios.data13';
-// import { particularOldUsers14 } from '../old data/particular users/usuarios/particular-usuarios.data14';
-// import { particularOldUsers15 } from '../old data/particular users/usuarios/particular-usuarios.data15';
-// import { particularOldUsers16 } from '../old data/particular users/usuarios/particular-usuarios.data16';
-// import { particularOldUsers17 } from '../old data/particular users/usuarios/particular-usuarios.data17';
-// import { particularOldUsers18 } from '../old data/particular users/usuarios/particular-usuarios.data18';
-// import { particularOldUsers19 } from '../old data/particular users/usuarios/particular-usuarios.data19';
-// import { particularOldUsers20 } from '../old data/particular users/usuarios/particular-usuarios.data20';
-// import { particularOldUsers21 } from '../old data/particular users/usuarios/particular-usuarios.data21';
-// import { particularOldUsers22 } from '../old data/particular users/usuarios/particular-usuarios.data22';
-// import { particularOldUsers23 } from '../old data/particular users/usuarios/particular-usuarios.data23';
-// import { particularOldUsers24 } from '../old data/particular users/usuarios/particular-usuarios.data24';
-// import { particularOldUsers25 } from '../old data/particular users/usuarios/particular-usuarios.data25';
-// import { particularOldUsers26 } from '../old data/particular users/usuarios/particular-usuarios.data26';
-// import { particularOldUsers27 } from '../old data/particular users/usuarios/particular-usuarios.data27';
-// import { particularOldUsers28 } from '../old data/particular users/usuarios/particular-usuarios.data28';
-// import { particularOldUsers29 } from '../old data/particular users/usuarios/particular-usuarios.data29';
-// import { particularOldUsers30 } from '../old data/particular users/usuarios/particular-usuarios.data30';
-// import { particularOldUsers31 } from '../old data/particular users/usuarios/particular-usuarios.data31';
-// import { particularOldUsers32 } from '../old data/particular users/usuarios/particular-usuarios.data32';
-// import { particularOldUsers33 } from '../old data/particular users/usuarios/particular-usuarios.data33';
-// import { particularOldUsers34 } from '../old data/particular users/usuarios/particular-usuarios.data34';
-// import { particularOldUsers35 } from '../old data/particular users/usuarios/particular-usuarios.data35';
-// import { particularOldUsers36 } from '../old data/particular users/usuarios/particular-usuarios.data36';
-// import { particularOldUsers37 } from '../old data/particular users/usuarios/particular-usuarios.data37';
-// import { particularOldUsers38 } from '../old data/particular users/usuarios/particular-usuarios.data38';
-// import { particularOldUsers39 } from '../old data/particular users/usuarios/particular-usuarios.data39';
-// import { particularOldUsers40 } from '../old data/particular users/usuarios/particular-usuarios.data40';
-// import { particularOldUsers41 } from '../old data/particular users/usuarios/particular-usuarios.data41';
+// import { particularOldUsers4 } from '../old data/particular users/usuarios/particular-usuarios.data4'; //  *************************** READY
+// import { particularOldUsers5 } from '../old data/particular users/usuarios/particular-usuarios.data5'; //  *************************** READY
+// import { particularOldUsers6 } from '../old data/particular users/usuarios/particular-usuarios.data6'; //  *************************** READY
+// import { particularOldUsers7 } from '../old data/particular users/usuarios/particular-usuarios.data7'; //  *************************** READY
+// import { particularOldUsers8 } from '../old data/particular users/usuarios/particular-usuarios.data8';  //  *************************** READY
+// import { particularOldUsers9 } from '../old data/particular users/usuarios/particular-usuarios.data9'; //  *************************** READY
+// import { particularOldUsers10 } from '../old data/particular users/usuarios/particular-usuarios.data10'; //  *************************** READY
+// import { particularOldUsers11 } from '../old data/particular users/usuarios/particular-usuarios.data11'; //  *************************** READY
+// import { particularOldUsers12 } from '../old data/particular users/usuarios/particular-usuarios.data12'; //  *************************** READY
+// import { particularOldUsers13 } from '../old data/particular users/usuarios/particular-usuarios.data13'; //  *************************** READY
+// import { particularOldUsers14 } from '../old data/particular users/usuarios/particular-usuarios.data14'; //  *************************** READY
+// import { particularOldUsers15 } from '../old data/particular users/usuarios/particular-usuarios.data15'; //  *************************** READY
+// import { particularOldUsers16 } from '../old data/particular users/usuarios/particular-usuarios.data16'; //  *************************** READY
+// import { particularOldUsers17 } from '../old data/particular users/usuarios/particular-usuarios.data17'; //  *************************** READY
+// import { particularOldUsers18 } from '../old data/particular users/usuarios/particular-usuarios.data18'; //  *************************** READY
+// import { particularOldUsers19 } from '../old data/particular users/usuarios/particular-usuarios.data19'; //  *************************** READY
+// import { particularOldUsers20 } from '../old data/particular users/usuarios/particular-usuarios.data20'; //  *************************** READY
+// import { particularOldUsers21 } from '../old data/particular users/usuarios/particular-usuarios.data21'; //  *************************** READY
+// import { particularOldUsers22 } from '../old data/particular users/usuarios/particular-usuarios.data22'; //  *************************** READY
+// import { particularOldUsers23 } from '../old data/particular users/usuarios/particular-usuarios.data23'; //  *************************** READY
+// import { particularOldUsers24 } from '../old data/particular users/usuarios/particular-usuarios.data24'; //  *************************** READY
+// import { particularOldUsers25 } from '../old data/particular users/usuarios/particular-usuarios.data25'; //  *************************** READY
+// import { particularOldUsers26 } from '../old data/particular users/usuarios/particular-usuarios.data26'; //  *************************** READY
+// import { particularOldUsers27 } from '../old data/particular users/usuarios/particular-usuarios.data27'; //  *************************** READY
+// import { particularOldUsers28 } from '../old data/particular users/usuarios/particular-usuarios.data28'; //  *************************** READY
+// import { particularOldUsers29 } from '../old data/particular users/usuarios/particular-usuarios.data29'; //  *************************** READY
+// import { particularOldUsers30 } from '../old data/particular users/usuarios/particular-usuarios.data30'; //  *************************** READY
+// import { particularOldUsers31 } from '../old data/particular users/usuarios/particular-usuarios.data31'; //  *************************** READY
+// import { particularOldUsers32 } from '../old data/particular users/usuarios/particular-usuarios.data32'; //  *************************** READY
+// import { particularOldUsers33 } from '../old data/particular users/usuarios/particular-usuarios.data33'; //  *************************** READY
+// import { particularOldUsers34 } from '../old data/particular users/usuarios/particular-usuarios.data34'; //  *************************** READY
+// import { particularOldUsers35 } from '../old data/particular users/usuarios/particular-usuarios.data35'; //  *************************** READY
+// import { particularOldUsers36 } from '../old data/particular users/usuarios/particular-usuarios.data36'; //  *************************** READY
+// import { particularOldUsers37 } from '../old data/particular users/usuarios/particular-usuarios.data37'; //  *************************** READY
+// import { particularOldUsers38 } from '../old data/particular users/usuarios/particular-usuarios.data38'; //  *************************** READY
+// import { particularOldUsers39 } from '../old data/particular users/usuarios/particular-usuarios.data39'; //  *************************** READY
+// import { particularOldUsers40 } from '../old data/particular users/usuarios/particular-usuarios.data40'; //  *************************** READY
+import { particularOldUsers41 } from '../old data/particular users/usuarios/particular-usuarios.data41';
 // import { particularOldCursosInscritos1 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data1'; //  *************************** READY
 // import { particularOldCursosInscritos2 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data2'; //  *************************** READY
 // import { particularOldCursosInscritos3 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data3'; //  *************************** READY
-import { particularOldCursosInscritos4 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data4';
-import { usersData } from 'projects/predyc-business/src/assets/data/users.data';
-// import { particularOldCursosInscritos5 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data5';
-// import { particularOldCursosInscritos6 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data6';
-// import { particularOldCursosInscritos7 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data7';
-// import { particularOldCursosInscritos8 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data8';
-// import { particularOldCursosInscritos9 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data9';
-// import { particularOldCursosInscritos10 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data10';
-// import { particularOldCursosInscritos11 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data11';
-// import { particularOldCursosInscritos12 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data12';
-// import { particularOldCursosInscritos13 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data13';
-// import { particularOldCursosInscritos14 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data14';
-// import { particularOldCursosInscritos15 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data15';
-// import { particularOldCursosInscritos16 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data16';
-// import { particularOldCursosInscritos17 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data17';
-// import { particularOldCursosInscritos18 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data18';
-// import { particularOldCursosInscritos19 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data19';
-// import { particularOldCursosInscritos20 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data20';
-// import { particularOldCursosInscritos21 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data21';
-// import { particularOldCursosInscritos22 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data22';
-// import { particularOldCursosInscritos23 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data23';
-// import { particularOldCursosInscritos24 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data24';
-// import { particularOldCursosInscritos25 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data25';
-// import { particularOldCursosInscritos26 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data26';
-// import { particularOldCursosInscritos27 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data27';
-// import { particularOldCursosInscritos28 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data28';
-// import { particularOldCursosInscritos29 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data29';
-// import { particularOldCursosInscritos30 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data30';
-// import { particularOldCursosInscritos31 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data31';
-// import { particularOldCursosInscritos32 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data32';
-// import { particularOldCursosInscritos33 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data33';
-// import { particularOldCursosInscritos34 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data34';
-// import { particularOldCursosInscritos35 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data35';
-// import { particularOldCursosInscritos36 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data36';
-// import { particularOldCursosInscritos37 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data37';
-// import { particularOldCursosInscritos38 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data38';
-// import { particularOldCursosInscritos39 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data39';
-// import { particularOldCursosInscritos40 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data40';
-// import { particularOldCursosInscritos41 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data41';
+// import { particularOldCursosInscritos4 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data4'; //  *************************** READY
+// import { particularOldCursosInscritos5 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data5'; //  *************************** READY
+// import { particularOldCursosInscritos6 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data6'; //  *************************** READY
+// import { particularOldCursosInscritos7 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data7'; //  *************************** READY
+// import { particularOldCursosInscritos8 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data8'; //  *************************** READY
+// import { particularOldCursosInscritos9 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data9'; //  *************************** READY
+// import { particularOldCursosInscritos10 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data10'; //  *************************** READY
+// import { particularOldCursosInscritos11 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data11'; //  *************************** READY
+// import { particularOldCursosInscritos12 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data12'; //  *************************** READY
+// import { particularOldCursosInscritos13 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data13'; //  *************************** READY
+// import { particularOldCursosInscritos14 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data14'; //  *************************** READY
+// import { particularOldCursosInscritos15 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data15'; //  *************************** READY
+// import { particularOldCursosInscritos16 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data16'; //  *************************** READY
+// import { particularOldCursosInscritos17 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data17'; //  *************************** READY
+// import { particularOldCursosInscritos18 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data18'; //  *************************** READY
+// import { particularOldCursosInscritos19 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data19'; //  *************************** READY
+// import { particularOldCursosInscritos20 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data20'; //  *************************** READY
+// import { particularOldCursosInscritos21 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data21'; //  *************************** READY
+// import { particularOldCursosInscritos22 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data22'; //  *************************** READY
+// import { particularOldCursosInscritos23 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data23'; //  *************************** READY
+// import { particularOldCursosInscritos24 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data24'; //  *************************** READY
+// import { particularOldCursosInscritos25 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data25'; //  *************************** READY
+// import { particularOldCursosInscritos26 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data26'; //  *************************** READY
+// import { particularOldCursosInscritos27 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data27'; //  *************************** READY
+// import { particularOldCursosInscritos28 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data28'; //  *************************** READY
+// import { particularOldCursosInscritos29 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data29'; //  *************************** READY
+// import { particularOldCursosInscritos30 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data30'; //  *************************** READY
+// import { particularOldCursosInscritos31 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data31'; //  *************************** READY
+// import { particularOldCursosInscritos32 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data32'; //  *************************** READY
+// import { particularOldCursosInscritos33 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data33'; //  *************************** READY
+// import { particularOldCursosInscritos34 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data34'; //  *************************** READY
+// import { particularOldCursosInscritos35 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data35'; //  *************************** READY
+// import { particularOldCursosInscritos36 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data36'; //  *************************** READY
+// import { particularOldCursosInscritos37 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data37'; //  *************************** READY
+// import { particularOldCursosInscritos38 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data38'; //  *************************** READY
+// import { particularOldCursosInscritos39 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data39'; //  *************************** READY
+// import { particularOldCursosInscritos40 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data40'; //  *************************** READY
+import { particularOldCursosInscritos41 } from '../old data/particular users/cursos-inscritos/particular-cursosInscritos.data41';
 
 
 @Component({
@@ -129,7 +128,16 @@ export class ParticularUsersMigrationComponent {
   allCoursesData: any;
   allCurrentUsersData: User[];
 
-  existingUsersEmails = ["sergiovillacres16@gmail.com", "mvargas_zamudio@hotmail.com", "flaviofim2000@gmail.com", "khernandezl1@miumg.ed.gt", "14-89632@usb.ve"]
+  existingUsersEmails = [
+    "sergiovillacres16@gmail.com",
+    "mvargas_zamudio@hotmail.com",
+    "flaviofim2000@gmail.com",
+    "khernandezl1@miumg.ed.gt",
+    "14-89632@usb.ve",
+    "yagna2121@gmail.com",
+    "diegonegrette42@gmail.com",
+    "kevin.grajales@predyc.com"
+]
 
   ngOnInit() {
     this.getCourses().subscribe((courses) => {
@@ -147,7 +155,7 @@ export class ParticularUsersMigrationComponent {
   }
   
   async migrateUsers() {
-    const oldUsersData: any[] = particularOldUsers4;
+    const oldUsersData: any[] = particularOldUsers41;
     const usersInNewModel: UserJson[] = oldUsersData.map((oldUserData) => {
       // console.log("oldUserData.name", oldUserData.name)
       const userphotoUrl = oldUserData.photoURL.startsWith('https://firebasestorage.googleapis.com/') ? oldUserData.photoURL : null
@@ -169,7 +177,7 @@ export class ParticularUsersMigrationComponent {
         hiringDate: oldUserData.hiringDate ? oldUserData.hiringDate : null,
         job: oldUserData.cargo ? oldUserData.cargo : oldUserData.profesion ? oldUserData.profesion : "",
         lastConnection: null,
-        mailchimpTag: oldUserData.mailchimpTag,
+        mailchimpTag: "PIND",
         name: oldUserData.name ? oldUserData.name : oldUserData.displayName ? oldUserData.displayName : oldUserData.nombreCompleto,
         phoneNumber: oldUserData.phone ? oldUserData.phone : oldUserData.telefono ? oldUserData.telefono : "",
         photoUrl: userphotoUrl,
@@ -215,7 +223,7 @@ export class ParticularUsersMigrationComponent {
     // const snapshot = await firstValueFrom(this.afs.collection(Curso.collection).get());
     // if (snapshot.empty) await this.migrateCoursesAndClasses();
 
-    const oldCoursesData: any[] = particularOldCursosInscritos4;
+    const oldCoursesData: any[] = particularOldCursosInscritos41;
 
     if (Object.keys(this.coursesIdMap).length === 0) {
       this.coursesIdMap = await this.courseService.getCourseIdMappings();
@@ -280,7 +288,7 @@ export class ParticularUsersMigrationComponent {
 
   async migrateClassesByStudent() {
     console.log("--------- Creating classeByStudent");
-    const oldCoursesData = particularOldCursosInscritos4;
+    const oldCoursesData = particularOldCursosInscritos41;
     const allClassesByStudent: ClassByStudentJson[] = [];
 
     if (Object.keys(this.coursesIdMap).length === 0) {
@@ -346,15 +354,28 @@ export class ParticularUsersMigrationComponent {
     console.log("allClassesByStudent", allClassesByStudent);
     this.classesByStudent = allClassesByStudent;
     console.log("--------- SETTING IN DATA BASE -------------");
-    const batch = this.afs.firestore.batch();
+    let batch = this.afs.firestore.batch();
+    let batchCounter = 0;
     for (let classByStudent of allClassesByStudent) {
       console.log("user id", classByStudent.userRef.id)
       const ref = this.afs.collection<ClassByStudent>(ClassByStudent.collection).doc().ref;
       classByStudent.id = ref.id;
-      // await this.afs.collection(ClassByStudent.collection).doc(classByStudent.id).set(classByStudent);
       batch.set(ref, classByStudent);
+      batchCounter++;
+
+      // Check if the batch limit is reached, commit and start a new batch
+      if (batchCounter >= 500) {
+        await batch.commit();
+        console.log("Batch committed, continue with next batch.");
+        batch = this.afs.firestore.batch();
+        batchCounter = 0;
+      }
     }
-    await batch.commit();
+    // Commit any remaining documents in the batch
+    if (batchCounter > 0) {
+      await batch.commit();
+      console.log("Final batch committed.");
+    }
     console.log("******** CLASSESBYSTUDENT MIGRATED *******");
   }
 
@@ -615,8 +636,8 @@ export class ParticularUsersMigrationComponent {
 
   // for cases when the user is already in auth but it is not in collection (return error migrating users)
   async addUserInCollection() {
-    const oldUserEmail = "" // ***********
-    const oldUserData: any = particularOldUsers4.find( x=> x.email === oldUserEmail)
+    const oldUserEmail = "diegonegrette42@gmail.com" // ***********
+    const oldUserData: any = particularOldUsers41.find( x=> x.email === oldUserEmail)
 
     if (oldUserData) {
       const userphotoUrl = oldUserData.photoURL.startsWith('https://firebasestorage.googleapis.com/') ? oldUserData.photoURL : null
@@ -638,7 +659,7 @@ export class ParticularUsersMigrationComponent {
         hiringDate: oldUserData.hiringDate ? oldUserData.hiringDate : null,
         job: oldUserData.cargo ? oldUserData.cargo : oldUserData.profesion ? oldUserData.profesion : "",
         lastConnection: null,
-        mailchimpTag: oldUserData.mailchimpTag,
+        mailchimpTag: "PIND",
         name: oldUserData.name ? oldUserData.name : oldUserData.displayName ? oldUserData.displayName : oldUserData.nombreCompleto,
         phoneNumber: oldUserData.phone ? oldUserData.phone : oldUserData.telefono ? oldUserData.telefono : "",
         photoUrl: userphotoUrl,
@@ -663,36 +684,6 @@ export class ParticularUsersMigrationComponent {
     }
     else console.log("usuario no encontrado ene este lote")
 
-  }
-
-
-  async testEmail() {
-    console.log("enviando correo")
-    const users: User[] = usersData.map((user) => {
-        return User.fromJson({
-          ...user,
-          isSystemUser: false,
-          name: user.name.toLowerCase(),
-          displayName: user.name.toLowerCase(),
-          birthdate: Date.parse(user.birthdate),
-          createdAt: Date.parse(user.createdAt),
-          updatedAt: Date.parse(user.updatedAt),
-          enterprise: null,
-          departmentRef: null,
-          performance: user.performance as
-            | "no plan"
-            | "low"
-            | "medium"
-            | "high"
-            | null,
-          canEnrollParticularCourses: false,
-        });
-      }
-    );
-    for (let user of users) {
-      await this.userService.addUserInMigrations(user);
-      console.log("correo enviado")
-    }
   }
 
 

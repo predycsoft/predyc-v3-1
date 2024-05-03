@@ -107,12 +107,12 @@ export class UserService {
         name: oldUser.name,
       })
     );
-    // const dataToSave = typeof oldUser.toJson === "function" ? oldUser.toJson() : oldUser;
+    const dataToSave = typeof oldUser.toJson === "function" ? oldUser.toJson() : oldUser;
 
-    // await this.afs
-    //   .collection(User.collection)
-    //   .doc(uid)
-    //   .set({ ...dataToSave, uid: uid });
+    await this.afs
+      .collection(User.collection)
+      .doc(uid)
+      .set({ ...dataToSave, uid: uid });
       
     return uid
 
