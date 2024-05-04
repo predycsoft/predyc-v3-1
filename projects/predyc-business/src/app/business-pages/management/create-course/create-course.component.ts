@@ -2872,7 +2872,7 @@ getDurationModuleCourse(){
   });
 
   if(this.examen?.questions){
-    let duracionExamen = this.examen?.questions.length<=20 ? 20:this.examen?.questions.length
+    let duracionExamen = this.examen?.questions.length<=20 ? 20 : this.examen?.questions.length>=60?60 :this.examen?.questions.length
     duracion+=duracionExamen
   }
 
