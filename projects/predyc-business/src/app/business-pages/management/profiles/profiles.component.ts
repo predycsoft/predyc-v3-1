@@ -30,6 +30,7 @@ import { AlertsService } from "projects/predyc-business/src/shared/services/aler
 import { EnterpriseService } from "projects/predyc-business/src/shared/services/enterprise.service";
 import { AuthService } from "projects/predyc-business/src/shared/services/auth.service";
 import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
+import Swal from 'sweetalert2';
 
 const MAIN_TITLE = "Predyc - ";
 
@@ -576,6 +577,15 @@ export class ProfilesComponent {
       this.alertService.infoAlert(
         "Se procederá a actualizar los datos del plan de estudio del perfil y de sus usuarios relacionados, por favor espere hasta que se complete la operación"
       );
+
+      Swal.fire({
+        title: 'Generando curso...',
+        text: 'Por favor, espera.',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading()
+        }
+      });
       const coursesRef: {
         courseRef: DocumentReference<Curso>;
         studyPlanOrder: number;
@@ -588,8 +598,11 @@ export class ProfilesComponent {
 
       //console.log('coursesRef',coursesRef)
 
-      if (!coursesRef || coursesRef.length == 0)
+      if (!coursesRef || coursesRef.length == 0){
+        Swal.close();
         throw new Error("Debe indicar los cursos del plan de estudio");
+      }
+      
 
       let enterpriseRef = this.enterpriseService.getEnterpriseRef();
       if (this.user.isSystemUser) {
@@ -650,10 +663,13 @@ export class ProfilesComponent {
         const studyPlanHasBeenUpdated = await this.courseService.updateStudyPlans(changesInStudyPlan,this.profileHoursPerMonth);
         if (studyPlanHasBeenUpdated)
           await this.profileService.saveProfile(profile);
-        else
+        else{
+          Swal.close();
           throw new Error(
             "Ocurrió un error actualizando el plan de estudios de los estudiantes que poseen este perfil"
           );
+        }
+
       } else {
         console.log("profile", profile);
         const profileId = await this.profileService.saveProfile(profile);
@@ -662,10 +678,12 @@ export class ProfilesComponent {
         this.router.navigate([`management/profiles/${profileId}`]);
         this.titleService.setTitle(MAIN_TITLE + this.profile.name);
       }
+      Swal.close();
       this.alertService.succesAlert("Completado");
       this.disableSaveButton = false;
       this.isEditing = false;
     } catch (error) {
+      Swal.close();
       console.error(error);
       this.alertService.errorAlert(error.message);
       this.disableSaveButton = false;
