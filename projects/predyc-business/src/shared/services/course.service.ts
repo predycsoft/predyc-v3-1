@@ -568,7 +568,7 @@ export class CourseService {
     removed: { id: string; studyPlanOrder: number }[];
     studyPlan: any[];
     profileId: string;
-  }): Promise<boolean> {
+  },profileHoursPerMonth): Promise<boolean> {
     try {
       const profileRef = this.profileService.getProfileRefById(
         changesInStudyPlan.profileId
@@ -583,8 +583,14 @@ export class CourseService {
       const batch = this.afs.firestore.batch();
       for (let user of users) {
         console.log(`***** User to update ${user.name} - ${user.uid} *****`);
+
+
+
         console.log("changesInStudyPlan", changesInStudyPlan);
         const userRef = this.userService.getUserRefById(user.uid);
+
+        batch.update(userRef, { studyHours: profileHoursPerMonth});
+
         const userCoursesSnapshot: QuerySnapshot<CourseByStudentJson> =
           (await this.afs
             .collection(CourseByStudent.collection)
@@ -679,7 +685,8 @@ export class CourseService {
                 ? this.calculatEndDatePlan(
                     startDateForCourse,
                     courseDuration,
-                    user.studyHours
+                    //user.studyHours
+                    profileHoursPerMonth
                   )
                 : null;
               const courseJson = {
@@ -714,7 +721,8 @@ export class CourseService {
                 ? this.calculatEndDatePlan(
                     startDateForCourse,
                     courseDuration,
-                    user.studyHours
+                    //user.studyHours
+                    profileHoursPerMonth
                   )
                 : null;
               if (userCoursesIds.includes(courseId)) {

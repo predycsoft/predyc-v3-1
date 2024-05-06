@@ -647,7 +647,7 @@ export class ProfilesComponent {
           }
         });
 
-        const studyPlanHasBeenUpdated = await this.courseService.updateStudyPlans(changesInStudyPlan);
+        const studyPlanHasBeenUpdated = await this.courseService.updateStudyPlans(changesInStudyPlan,this.profileHoursPerMonth);
         if (studyPlanHasBeenUpdated)
           await this.profileService.saveProfile(profile);
         else
