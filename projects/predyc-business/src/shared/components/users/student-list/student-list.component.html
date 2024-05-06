@@ -6,24 +6,24 @@
             <th mat-header-cell *matHeaderCellDef class="ft14"> Nombre </th>
 
             <!-- <th mat-header-cell *matHeaderCellDef class="gray-8"> Nombre </th> -->
-            <td mat-cell *matCellDef="let user"> 
+            <td mat-cell *matCellDef="let user" class="cursorPointer"> 
                 <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign=" center" >
                     <img
                         [src]="user.photoUrl ? user.photoUrl : 'assets/images/default/default-user-image.jpg'"
                         class="avatar2"
                         alt=""
                         >
-                    <div fxLayout="column" fxLayoutAlign="center " class="move-right cursorPointer ">
-                        <div class="ft500 ft14  gray-10 cursorPointer">{{ user.displayName | titlecase }}</div>
+                    <div fxLayout="column" fxLayoutAlign="center " class="move-right ">
+                        <div class="ft500 ft14  gray-10">{{ user.displayName | titlecase }}</div>
                         <div
                         *ngIf="!user.profile"
                             (click)="$event.stopPropagation();"
-                            class="ft400 ft13 gray-6 cursorPointer">
+                            class="ft400 ft13 gray-6">
                             Perfil sin asignar
                         </div>
                         <div
                             *ngIf="user.profile" fxLayout="row" fxLayoutGap="5px"  >
-                            <div *ngIf="user.profile"(click)="$event.stopPropagation();"  class="ft400 ft13 blue-4 cursorPointer" >
+                            <div *ngIf="user.profile"(click)="$event.stopPropagation();"  class="ft400 ft13 blue-4" >
                                 {{ user.profile  | titlecase }}
                             </div>
                             <img [src]="icon.arrowForward" alt="Forward Arrow" class="makeBlue" >

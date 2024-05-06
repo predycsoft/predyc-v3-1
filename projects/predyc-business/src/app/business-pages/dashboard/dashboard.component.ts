@@ -152,29 +152,6 @@ export class DashboardComponent {
         }
       }
     );
-    this.userServiceSubscription = this.userService.users$.subscribe(
-      async (users) => {
-        if (users && users.length > 1) {
-          // first response is an 1 element array corresponded to admin
-          console.log("users", users);
-          const performances = [];
-          for (let user of users) {
-            const userRef = this.userService.getUserRefById(user.uid);
-            const studyPlan: CourseByStudent[] =
-              await this.courseService.getActiveCoursesByStudent(userRef);
-            const userPerformance:
-              | "no plan"
-              | "high"
-              | "medium"
-              | "low"
-              | "no iniciado" =
-              this.userService.getPerformanceWithDetails(studyPlan);
-            performances.push(userPerformance);
-          }
-          this.getUsersRythmData(performances);
-        }
-      }
-    );
 
     this.generatinReport = false;
     this.displayErrors = false;
@@ -196,6 +173,39 @@ export class DashboardComponent {
       this.departments = departments;
       this.courses = courses;
       this.classes = classes;
+
+
+      this.userServiceSubscription = this.userService.users$.subscribe(
+        async (users) => {
+          if (users && users.length > 1) {
+            // first response is an 1 element array corresponded to admin
+            console.log("users", users);
+            const performances = [];
+            for (let user of users) {
+              const userRef = this.userService.getUserRefById(user.uid);
+              const studyPlan: CourseByStudent[] =
+                await this.courseService.getActiveCoursesByStudent(userRef);
+                studyPlan.forEach(course => {
+                  const courseJson = this.courses.find(item => item.id === course.courseRef.id);
+                  console.log('cursosRevisarPlan',this.courses,courseJson)
+                  if (courseJson) {
+                    course.courseTime = courseJson.duracion
+                  }
+                });
+              const userPerformance:
+                | "no plan"
+                | "high"
+                | "medium"
+                | "low"
+                | "no iniciado" =
+                this.userService.getPerformanceWithDetails(studyPlan);
+                console.log('studyPlanReporteUser',user,userPerformance)
+              performances.push(userPerformance);
+            }
+            this.getUsersRythmData(performances);
+          }
+        }
+      );
       //this.getData();
     });
   }
@@ -1845,6 +1855,10 @@ export class DashboardComponent {
             let coursesUser = [];
             let allcoursesUser = [];
             let classesUser = [];
+
+            console.log('revisarCursosReporte',courses,this.courses)
+
+
             courses.forEach((course) => {
               hours += (course?.progressTime ? course.progressTime : 0) / 60;
               const courseJson = this.courses.find(
@@ -1854,6 +1868,7 @@ export class DashboardComponent {
               courseIn.completed = course.progress >= 100 ? true : false;
               coursesUser.push(courseIn);
               targetHours += courseJson.duracion / 60;
+              course.courseTime = courseJson.duracion
             });
 
             allCourses.forEach((course) => {

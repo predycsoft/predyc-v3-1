@@ -147,6 +147,7 @@ export class StudentListComponent {
           const courseJson = this.courses.find(item => item.id === course.courseRef.id);
           if (courseJson) {
             targetHours += courseJson.duracion / 60;
+            course.courseTime = courseJson.duracion
           }
         });
   

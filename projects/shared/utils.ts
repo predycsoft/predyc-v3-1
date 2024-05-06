@@ -133,6 +133,18 @@ export const obtenerUltimoDiaDelMes = (fecha: number): number => {
 	return ultimoDiaDelMes.getTime();
 };
 
+export const obtenerUltimoDiaDelMesAnterior = (fecha: number): number => {
+	let fechaOriginal = new Date(fecha);
+	const anio = fechaOriginal.getFullYear();
+	const mes = fechaOriginal.getMonth() -1;
+	const ultimoDiaDelMes = new Date(anio, mes + 1, 0);
+
+	// Establecer la hora a 23:59:59
+	ultimoDiaDelMes.setHours(23, 59, 59);
+
+	return ultimoDiaDelMes.getTime();
+};
+
 export const calculateAgeFromTimestamp = (timestamp) => {
 	// Convert the timestamp to milliseconds
 	const milliseconds = timestamp;

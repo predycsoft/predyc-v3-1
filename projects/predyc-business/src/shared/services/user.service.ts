@@ -23,7 +23,7 @@ import { AlertsService } from "./alerts.service";
 import {
   firestoreTimestampToNumberTimestamp,
   generateSixDigitRandomNumber,
-  obtenerUltimoDiaDelMes,
+  obtenerUltimoDiaDelMes,obtenerUltimoDiaDelMesAnterior
 } from "projects/shared/utils";
 import { AngularFireFunctions } from "@angular/fire/compat/functions";
 import { Profile } from "projects/shared/models/profile.model";
@@ -393,6 +393,17 @@ export class UserService {
       }) .valueChanges();
   }
 
+  getMonthProgress(): number {
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const nextMonth = now.getMonth() === 11 ? new Date(now.getFullYear() + 1, 0, 1) : new Date(now.getFullYear(), now.getMonth() + 1, 1);
+    
+    const totalDaysInMonth = (nextMonth.getTime() - startOfMonth.getTime()) / (1000 * 60 * 60 * 24);
+    const daysElapsed = (now.getTime() - startOfMonth.getTime()) / (1000 * 60 * 60 * 24);
+
+    return Number((daysElapsed / totalDaysInMonth).toFixed(2)); // Redondea a dos decimales y retorna como número
+  }
+
   getRatingPointsFromStudyPlan(
     userStudyPlan: CourseByStudent[],
     courses: Curso[]
@@ -437,6 +448,8 @@ export class UserService {
     return totalScore >= 0 ? totalScore : 0;
   }
 
+  
+
   // getPerformanceWithDetails(student): { performance:"no plan" | "high" | "medium" | "low", score: number, grade: number } {
   getPerformanceWithDetails(
     userStudyPlan
@@ -446,73 +459,98 @@ export class UserService {
     // let completedCourses = 0;
     // let totalScore = 0;
     // let totalGrade = 0;
-
     const today = new Date().getTime();
 
-    userStudyPlan.forEach((course) => {
-      let targetComparisonDate = today;
-      let delayTime = 0;
-      let delayDays = 0;
+    let targetComparisonDate = today;
 
-      let dateEnd = firestoreTimestampToNumberTimestamp(course?.dateEnd);
-      let dateEndPlan = obtenerUltimoDiaDelMes(
-        firestoreTimestampToNumberTimestamp(course?.dateEndPlan)
-      );
+    let lastDayPast = obtenerUltimoDiaDelMesAnterior(targetComparisonDate)
+    let lastDayCurrent = obtenerUltimoDiaDelMes(targetComparisonDate)
 
-      if (course.dateEnd) {
-        // totalScore += (course.duracion / 60);
-        // let puntaje = course.puntaje
-        // totalGrade += puntaje
-        // completedCourses++;
-        // if(puntaje >= 80 && puntaje < 90){
-        //   totalScore += (course.duracion / 60)*.1
-        // }
-        // if(puntaje >= 90 && puntaje < 100){
-        //   totalScore += (course.duracion / 60)*.3
-        // }
-        // if(puntaje == 100){
-        //   totalScore += (course.duracion / 60)*.5
-        // }
-        targetComparisonDate = dateEnd;
-        delayTime = targetComparisonDate - dateEndPlan;
-        delayDays = delayTime / (24 * 60 * 60 * 1000);
-        if (delayDays >= 1) {
-          // Delayed course
-          delayedCourses++;
-          // if(delayDays < 3){
-          //   totalScore -= (course.duracion / 60)*.1
-          // }
-          // if(delayDays >= 3 && delayDays < 5){
-          //   totalScore -= (course.duracion / 60)*.3
-          // }
-          if (delayDays >= 30) {
-            delayedMoreThan30Days = true;
-            // totalScore -= (course.duracion / 60)*.5
-          }
-        }
-      } else if (targetComparisonDate > dateEndPlan) {
-        // Not completed and delayed course
-        delayedCourses++;
-        delayTime = targetComparisonDate - dateEndPlan;
-        delayDays = delayTime / (24 * 60 * 60 * 1000);
-        if (delayDays >= 30) {
-          delayedMoreThan30Days = true;
-        }
+    let progressMonth = this.getMonthProgress()
+
+
+
+    let userStudyPlanUntilLastMonth = userStudyPlan.filter(x=>x.dateEndPlan  && (x.dateEndPlan?.seconds*1000)<=lastDayPast)
+    let userStudyPlanCurrent = userStudyPlan.filter(x=>x.dateEndPlan  && (x.dateEndPlan?.seconds*1000)>lastDayPast && (x.dateEndPlan?.seconds*1000)<=lastDayCurrent )
+
+    let studentHours = 0
+    let studentExpectedHours = 0
+
+    userStudyPlanUntilLastMonth.forEach(course => {
+      if(course.progress >=100){
+        studentExpectedHours +=course.courseTime
+        studentHours +=course.courseTime
+      }
+      else{
+        studentExpectedHours +=course.courseTime
+        studentHours +=course.progressTime
       }
     });
 
+    userStudyPlanCurrent.forEach(course => {
+      
+      studentExpectedHours +=(course.courseTime * progressMonth)
+      studentHours +=course.progressTime?course.progressTime:0
+    });
+
+    let procentaje = studentHours*100/studentExpectedHours
+
+
+    // userStudyPlan.forEach((course) => {
+    //   let delayTime = 0;
+    //   let delayDays = 0;
+
+    //   let dateEnd = firestoreTimestampToNumberTimestamp(course?.dateEnd);
+    //   let dateEndPlan = obtenerUltimoDiaDelMes(
+    //     firestoreTimestampToNumberTimestamp(course?.dateEndPlan)
+    //   );
+    //   if (course.dateEnd) {
+    //     targetComparisonDate = dateEnd;
+    //     delayTime = targetComparisonDate - dateEndPlan;
+    //     delayDays = delayTime / (24 * 60 * 60 * 1000);
+    //     if (delayDays >= 1) {
+    //       console.log('CursoEndDaleyed',course)
+    //       // Delayed course
+    //       delayedCourses++;
+    //       if (delayDays >= 30) {
+    //         delayedMoreThan30Days = true;
+    //       }
+    //     }
+    //   } else if (targetComparisonDate > dateEndPlan) {
+    //     // Not completed and delayed course
+    //     delayedCourses++;
+    //     delayTime = targetComparisonDate - dateEndPlan;
+    //     delayDays = delayTime / (24 * 60 * 60 * 1000);
+    //     if (delayDays >= 30) {
+    //       delayedMoreThan30Days = true;
+    //     }
+    //   }
+    // });
+
     let performance: "no plan" | "high" | "medium" | "low" | "no iniciado";
+    
     // console.log('userStudyPlan',userStudyPlan)
+    // let validator = userStudyPlan.find((x) => x.progressTime > 0);
+    // if (!validator && userStudyPlan.length > 0) {
+    //   performance = "no iniciado";
+    // } else if (userStudyPlan.length == 0) {
+    //   performance = "no plan";
+    // } else if (delayedCourses === 0) {
+    //   performance = "high";
+    // } else if (delayedCourses === 1 && !delayedMoreThan30Days) {
+    //   performance = "medium";
+    // } else {
+    //   performance = "low";
+    // }
+
     let validator = userStudyPlan.find((x) => x.progressTime > 0);
     if (!validator && userStudyPlan.length > 0) {
       performance = "no iniciado";
     } else if (userStudyPlan.length == 0) {
       performance = "no plan";
-    } else if (delayedCourses === 0) {
+    } else if (procentaje >=80) {
       performance = "high";
-    } else if (delayedCourses === 1 && !delayedMoreThan30Days) {
-      // This should be change since every student with at least one delayed course wont be able to get a better performance
-      // Maybe this should be calculated as a percentage of every course with a past end date
+    } else if (procentaje >=50) {
       performance = "medium";
     } else {
       performance = "low";
