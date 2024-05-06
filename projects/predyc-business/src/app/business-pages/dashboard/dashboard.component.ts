@@ -1124,6 +1124,23 @@ export class DashboardComponent {
       v: "Fecha límite de completación",
       s: grayCalibriBoldCenterCenterBordered,
     };
+    wsResumenEstudiantes["O5"] = {
+      t: "s",
+      v: "Examen diagnóstico",
+      s: grayCalibriBoldCenterCenterBordered,
+    };
+
+    wsResumenEstudiantes["P5"] = {
+      t: "s",
+      v: "Resultado diagnóstico",
+      s: grayCalibriBoldCenterCenterBordered,
+    };
+
+    wsResumenEstudiantes["Q5"] = {
+      t: "s",
+      v: "Fecha examen diagnóstico",
+      s: grayCalibriBoldCenterCenterBordered,
+    };
 
     const rhythmOrder = {
       high: 1,
@@ -1265,6 +1282,52 @@ export class DashboardComponent {
             ? whiteCalibriRedCenteredBordered
             : whiteCalibriCenteredBordered,
       };
+
+      let initTest = usuario.initTest[0]
+
+      console.log('usuarioReporte',initTest)
+
+      let resultadoTestInit = '-'
+      let score = '-'
+
+      let dateExamenInicial= '-'
+      
+
+      if(initTest){
+        resultadoTestInit = `Completado`
+
+        let latestDate = new Date(initTest.date.seconds*1000);
+        let options: Intl.DateTimeFormatOptions = {
+          day:'numeric',
+          year: "numeric",
+          month: "long",
+        };
+         dateExamenInicial = latestDate.toLocaleDateString("es-ES", options);
+      }
+
+      if(initTest && initTest?.certificationTest){
+        score = `${initTest.score}`
+      }
+
+      wsResumenEstudiantes[`O${j}`] = {
+        t: "s",
+        v: resultadoTestInit,
+        s: whiteCalibriCenteredBordered,
+      };
+
+      wsResumenEstudiantes[`P${j}`] = {
+        t: "s",
+        v: score,
+        s: whiteCalibriCenteredBordered,
+      };
+      wsResumenEstudiantes[`Q${j}`] = {
+        t: "s",
+        v: dateExamenInicial,
+        s: whiteCalibriCenteredBordered,
+      };
+
+
+
     });
     // Fin Hoja 3 (Resumen por usuario)
 
@@ -1762,6 +1825,9 @@ export class DashboardComponent {
       );
     }
 
+
+    
+
     this.userServiceSubscription = this.userService
       .getUsersReport$(null, null, null, null, fechaInicio, fechaFin)
       .pipe(
@@ -1782,6 +1848,9 @@ export class DashboardComponent {
             const classesObservable = this.courseService
               .getClassesByStudentDatefilterd$(userRef, fechaInicio, fechaFin)
               .pipe(take(1));
+              const initTestObservable = this.profileService
+              .getDiagnosticTestForUser$(user)
+              .pipe(take(1));
             const allCoursesObservable =
               this.courseService.getActiveCoursesByStudent(userRef);
             const certificatesObservable = this.courseService
@@ -1797,6 +1866,7 @@ export class DashboardComponent {
             return combineLatest([
               coursesObservable,
               classesObservable,
+              initTestObservable,
               certificatesObservable,
               allCoursesObservable,
               subscriptionsObservable,
@@ -1805,6 +1875,7 @@ export class DashboardComponent {
                 ([
                   courses,
                   classes,
+                  initTest,
                   certificados,
                   allCourses,
                   allsubscriptions,
@@ -1814,6 +1885,7 @@ export class DashboardComponent {
                   return {
                     user,
                     courses,
+                    initTest,
                     classes,
                     certificados,
                     allCourses,
@@ -1833,6 +1905,7 @@ export class DashboardComponent {
           ({
             user,
             courses,
+            initTest,
             classes,
             certificados,
             allCourses,
@@ -1919,6 +1992,7 @@ export class DashboardComponent {
               ratingPoints: ratingPoints,
               rhythm: userPerformance, // Calculation pending
               uid: user.uid,
+              initTest:initTest,
               jog: user.job,
               photoUrl: user.photoUrl,
               courses: coursesUser,
