@@ -1,4 +1,4 @@
-import { Component, ViewChild } from "@angular/core";
+import { Component, EventEmitter, Output, ViewChild } from "@angular/core";
 import { AngularFirestore } from "@angular/fire/compat/firestore";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
@@ -46,6 +46,9 @@ export class EnterpriseListComponent {
   totalLength: number;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  
+  @Output() totalEmpresas = new EventEmitter<any>();
+
 
   queryParamsSubscription: Subscription;
   enterpriseSubscription: Subscription;
@@ -82,8 +85,8 @@ export class EnterpriseListComponent {
     this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(
       (params) => {
         const page = Number(params["page"]) || 1;
-        const statusFilterTerm = params["status"] || "all";
-        this.performSearch(statusFilterTerm, page);
+        const searchTerm = params["search"] || "";
+        this.performSearch(searchTerm, page);
       }
     );
   }
@@ -100,7 +103,7 @@ export class EnterpriseListComponent {
     });
   }
 
-  performSearch(statusFilterTerm: string, page: number) {
+  performSearch(searchTerm: string, page: number) {
     if (this.enterpriseSubscription) this.enterpriseSubscription.unsubscribe();
     this.enterpriseSubscription = this.enterpriseService
       .getEnterprises$()
@@ -176,7 +179,7 @@ export class EnterpriseListComponent {
       .subscribe((response) => {
         console.log(response);
 
-        const enterprises: EnterpriseInfo[] = response
+        let enterprises: EnterpriseInfo[] = response
           .map((enterpriseInfo) => {
             const licenses = enterpriseInfo.licenses.sort(
               (a, b) => b.currentPeriodEnd - a.currentPeriodEnd
@@ -195,7 +198,8 @@ export class EnterpriseListComponent {
               }).length > 0
             )
               this.atLeastOneExpired = true;
-            return {
+
+            let datos = {
               name: enterpriseInfo.enterprise.name,
               photoUrl: enterpriseInfo.enterprise.photoUrl,
               userQty: enterpriseInfo.userQty,
@@ -221,22 +225,17 @@ export class EnterpriseListComponent {
                 }).length > 0,
               product: product ? product.name : "N/A",
             };
+            return datos
           })
-          .filter((x) => {
-            if (!statusFilterTerm || statusFilterTerm === "all") return true;
-            let result = true;
-            switch (statusFilterTerm) {
-              case "active":
-                result = x.status === SubscriptionClass.STATUS_ACTIVE;
-                break;
-              case "expired":
-                result = x.showWarning;
-                break;
-              default:
-                break;
-            }
-            return result;
-          });
+          this.totalEmpresas.emit(enterprises)
+          enterprises = enterprises.filter((x) => {
+            if (!searchTerm || searchTerm === "") return true;
+            return (
+              x.name
+                .toLocaleLowerCase()
+                .includes(searchTerm.toLocaleLowerCase())
+            );
+          })
         this.paginator.pageIndex = page - 1; // Update the paginator's page index
         this.dataSource.data = enterprises; // Assuming the data is in 'items'
         this.totalLength = response.length; // Assuming total length is returned
