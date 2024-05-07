@@ -140,40 +140,38 @@ export class CreateUserComponent {
     this.courseService.getCourses$().subscribe((cursos) => {
       // console.log("cursos", cursos);
       this.cursos = cursos;
-      this.profileServiceSubscription = this.profileService
-        .getProfiles$()
-        .subscribe((profiles) => {
-          if (profiles) {
-            // console.log("profiles", profiles);
-            let profilesBase = [];
-            profiles.forEach((element) => {
-              if (element?.baseProfile?.id) {
-                profilesBase.push(element?.baseProfile?.id);
-              }
-            });
+      this.profileServiceSubscription = this.profileService.getProfiles$().subscribe((profiles) => {
+        if (profiles) {
+          // console.log("profiles", profiles);
+          let profilesBase = [];
+          profiles.forEach((element) => {
+            if (element?.baseProfile?.id) {
+              profilesBase.push(element?.baseProfile?.id);
+            }
+          });
 
-            let profilesFilteres = profiles.filter(
-              (profile) => !profilesBase.includes(profile.id)
-            );
-            profilesFilteres.forEach((perfil) => {
-              if (perfil?.coursesRef.length > 0) {
-                let cursos = [];
-                let duracion = 0;
-                perfil.coursesRef
-                  .map((item) => item.courseRef)
-                  .forEach((cursoRef) => {
-                    let curso = this.cursos.find((x) => x.id == cursoRef["id"]);
-                    cursos.push(curso);
-                    duracion += curso.duracion;
-                  });
-                perfil["cursos"] = cursos;
-                perfil["duracion"] = duracion;
-              }
-            });
-            this.profiles = profilesFilteres;
-            console.log("profiles Filtrados", this.profiles);
-          }
-        });
+          let profilesFilteres = profiles.filter(
+            (profile) => !profilesBase.includes(profile.id)
+          );
+          profilesFilteres.forEach((perfil) => {
+            if (perfil?.coursesRef.length > 0) {
+              let cursos = [];
+              let duracion = 0;
+              perfil.coursesRef
+                // .map((item) => item.courseRef)
+                .forEach((cursoRef) => {
+                  let curso = this.cursos.find((x) => x.id == cursoRef["id"]);
+                  cursos.push(curso);
+                  duracion += curso.duracion;
+                });
+              perfil["cursos"] = cursos;
+              perfil["duracion"] = duracion;
+            }
+          });
+          this.profiles = profilesFilteres;
+          // console.log("profiles Filtrados", this.profiles);
+        }
+      });
     });
   }
 
