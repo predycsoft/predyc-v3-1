@@ -804,7 +804,8 @@ export class CreateUserComponent {
       this.alertService.succesAlert("Estudiante agregado exitosamente");
       this.savingChanges = false;
     } catch (error) {
-      this.alertService.errorAlert(error);
+      console.error("Error",error)
+      this.alertService.errorAlert("");
       this.savingChanges = false;
     }
   }
@@ -823,7 +824,7 @@ export class CreateUserComponent {
           a: { courseRef: DocumentReference<Curso>; studyPlanOrder: number }
         ) => b.studyPlanOrder - a.studyPlanOrder
       )
-      .map((item) => item.courseRef);
+      // .map((item) => item.courseRef);
     let dateStartPlan: number;
     let dateEndPlan: number;
     let now = new Date();
