@@ -80,13 +80,13 @@ export class UsersStudyTimeContainerComponent {
     .subscribe(logs => {
       // Tu lógica de procesamiento aquí
       this.logs = logs;
-      console.log('logs',logs)
+      // console.log('logs',logs)
       this.logsInCurrentMonth = logs.filter(log => {
         const logMonth = new Date(log.endDate).getUTCMonth(); 
         const logYear = new Date(log.endDate).getUTCFullYear();
         return logMonth === this.currentMonth && logYear === this.currentYear;
       });
-      console.log("this.logsInCurrentMonth", this.logsInCurrentMonth);
+      // console.log("this.logsInCurrentMonth", this.logsInCurrentMonth);
       this.hoursTimeMonth = this.logsInCurrentMonth.reduce((total, currentClass) => total + currentClass.classDuration, 0) / 60;
     });
   }

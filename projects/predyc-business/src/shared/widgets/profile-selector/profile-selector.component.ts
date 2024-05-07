@@ -25,7 +25,7 @@ export class ProfileSelectorComponent {
 
   ngOnInit() {
 
-    console.log('perfil reviar',this.profiles)
+    // console.log('perfil reviar',this.profiles)
     this.profileService.loadProfiles()
     this.profileService.getProfiles$().subscribe(profiles => {
       if (profiles){

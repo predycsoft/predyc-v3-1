@@ -138,7 +138,7 @@ export class CreateUserComponent {
 
   getCourses() {
     this.courseService.getCourses$().subscribe((cursos) => {
-      console.log("cursos", cursos);
+      // console.log("cursos", cursos);
       this.cursos = cursos;
       this.profileServiceSubscription = this.profileService
         .getProfiles$()
@@ -256,7 +256,7 @@ export class CreateUserComponent {
     });
     // Edit mode
     if (this.studentToEdit) {
-      console.log("this.studentToEdit", this.studentToEdit);
+      // console.log("this.studentToEdit", this.studentToEdit);
       const department = this.studentToEdit.departmentRef
         ? (await this.studentToEdit.departmentRef.get()).data()
         : null;
@@ -296,7 +296,7 @@ export class CreateUserComponent {
         .getActiveCoursesByStudent$(userRef)
         .pipe(take(1))
         .subscribe((cursos) => {
-          console.log("cursos", cursos);
+          // console.log("cursos", cursos);
           if (cursos && cursos.length > 0) {
             // Inicializar las variables para almacenar los valores mínimos y máximos
             let minStartDate = Number.MAX_SAFE_INTEGER;

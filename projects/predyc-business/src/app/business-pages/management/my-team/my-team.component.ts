@@ -59,7 +59,7 @@ export class MyTeamComponent {
   }
 
   onStudentSelected(student) {
-    console.log('student',student)
+    // console.log('student',student)
     const studentData: User = this.userService.getUser(student.uid)
     this.openCreateUserModal(studentData,student)
   }
@@ -75,7 +75,7 @@ export class MyTeamComponent {
     }
     else openModal = true, isNewUser = true
 
-    console.log('openModal',openModal,isNewUser,student)
+    // console.log('openModal',openModal,isNewUser,student)
 
     if (openModal) {
       const modalRef = this.modalService.open(CreateUserComponent, {

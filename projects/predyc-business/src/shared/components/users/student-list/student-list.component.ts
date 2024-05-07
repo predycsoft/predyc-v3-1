@@ -139,7 +139,7 @@ export class StudentListComponent {
           endDay = Math.max(...end)
         }
 
-        console.log('cursosPlan',cursosPlan,startDay,endDay)
+        // console.log('cursosPlan',cursosPlan,startDay,endDay)
 
   
         courses.forEach(course => {
@@ -170,7 +170,7 @@ export class StudentListComponent {
       this.paginator.pageIndex = page - 1;
       this.dataSource.data = users;
       this.totalLength = response.length;
-      console.log(users);
+      // console.log(users);
     });
   }
   
@@ -184,7 +184,7 @@ export class StudentListComponent {
 
   onSelectUser(user: User) {
 
-    console.log('user',user)
+    // console.log('user',user)
 
     if (this.enableNavigateToUser && user.profile && user.targetHours>0) {
       this.router.navigate([`management/students/${user.uid}`])

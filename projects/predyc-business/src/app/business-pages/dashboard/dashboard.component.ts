@@ -179,7 +179,7 @@ export class DashboardComponent {
         async (users) => {
           if (users && users.length > 1) {
             // first response is an 1 element array corresponded to admin
-            console.log("users", users);
+            // console.log("users", users);
             const performances = [];
             for (let user of users) {
               const userRef = this.userService.getUserRefById(user.uid);
@@ -187,7 +187,7 @@ export class DashboardComponent {
                 await this.courseService.getActiveCoursesByStudent(userRef);
                 studyPlan.forEach(course => {
                   const courseJson = this.courses.find(item => item.id === course.courseRef.id);
-                  console.log('cursosRevisarPlan',this.courses,courseJson)
+                  // console.log('cursosRevisarPlan',this.courses,courseJson)
                   if (courseJson) {
                     course.courseTime = courseJson.duracion
                   }
@@ -199,7 +199,7 @@ export class DashboardComponent {
                 | "low"
                 | "no iniciado" =
                 this.userService.getPerformanceWithDetails(studyPlan);
-                console.log('studyPlanReporteUser',user,userPerformance)
+                // console.log('studyPlanReporteUser',user,userPerformance)
               performances.push(userPerformance);
             }
             this.getUsersRythmData(performances);
