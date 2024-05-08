@@ -26,7 +26,7 @@
                 <div>Tu licencia expira el dia de hoy</div>
                 
             </div>
-            <div *ngIf="!environment.useEmulators" class="ft12 red-5 ft600" fxLayout="row" fxLayoutAlign=" center" fxLayoutGap=".5rem">
+            <div *ngIf="!environment.production && !environment.useEmulators" class="ft12 red-5 ft600" fxLayout="row" fxLayoutAlign=" center" fxLayoutGap=".5rem">
                 <div>Los emuladores no estan activos. Los cambios que realices afectaran los datos de produccion.</div>
             </div>
 
