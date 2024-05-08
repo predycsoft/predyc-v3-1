@@ -22,6 +22,12 @@ export class EnterpriseComponent {
     this.router.navigate(["/admin/enterprises/form"])
   }
 
+
+  empresasActive = 0
+  empresasInactive = 0
+  empresasTotales = 0
+
+
   createDemo() {
     this.modalService.open(CreateDemoComponent, {
 			animation: true,
@@ -30,6 +36,15 @@ export class EnterpriseComponent {
 			backdrop: "static",
 			keyboard: false,
 		});
+  }
+
+  getEmpresas(empresas){
+    let inactives = empresas.filter(x=>x.status == 'inactive')
+    let actives = empresas.filter(x=>x.status == 'active')
+    console.log('empresas',actives,inactives,empresas)
+    this.empresasActive = actives.length
+    this.empresasInactive = inactives.length
+    this.empresasTotales = empresas.length
   }
 
   onStudentSelected(event) {console.log("Student Selected!")}
