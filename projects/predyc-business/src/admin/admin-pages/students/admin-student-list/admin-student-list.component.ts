@@ -207,17 +207,25 @@ export class AdminStudentListComponent {
                 );
               })
             }
+
             console.log('statusTerm',statusTerm)
-            if(statusTerm && statusTerm!='all'){
+            if(statusTerm && statusTerm!='all') {
               let filter = 'x.statusId == statusTerm'
-              if(statusTerm == 'active'){
+
+              if(statusTerm == 'active') {
                 filter = filter+" || x.statusId == 'expired'"
               }
+
               usersInList = usersInList.filter((x) => {
-                return (
-                  eval(filter)
-                );
+                if (statusTerm === 'particular') {
+                  return !x.enterprise;
+                } else if (statusTerm === 'enterprise') {
+                  return x.enterprise;
+                } else {
+                  return eval(filter);
+                }
               })
+              
             }
           this.paginator.pageIndex = page - 1;
           this.dataSource.data = usersInList;
