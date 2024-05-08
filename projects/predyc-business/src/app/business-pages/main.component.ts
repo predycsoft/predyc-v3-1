@@ -10,6 +10,7 @@ import { SupportComponent } from 'projects/predyc-business/src/shared/components
 import { License } from 'projects/shared/models/license.model';
 import { LicenseService } from 'projects/predyc-business/src/shared/services/license.service';
 import { NavigationEnd, Router } from '@angular/router';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-main',
@@ -17,6 +18,9 @@ import { NavigationEnd, Router } from '@angular/router';
   styleUrls: ['./main.component.css']
 })
 export class MainComponent {
+
+  environment = environment;
+
   constructor(
     private authService: AuthService,
     public icon: IconService,

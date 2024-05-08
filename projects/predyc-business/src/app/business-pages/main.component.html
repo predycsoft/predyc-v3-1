@@ -26,6 +26,10 @@
                 <div>Tu licencia expira el dia de hoy</div>
                 
             </div>
+            <div *ngIf="!environment.useEmulators" class="ft12 red-5 ft600" fxLayout="row" fxLayoutAlign=" center" fxLayoutGap=".5rem">
+                <div>Los emuladores no estan activos. Los cambios que realices afectaran los datos de produccion.</div>
+            </div>
+
             <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
                 <div class="mgl10">
                     <span *ngIf="user.isSystemUser" class="blueLink ft13" (click)="redirect()" >Ir a plataforma de {{isAdminPage? "empresas" : "administradores"}}</span>
