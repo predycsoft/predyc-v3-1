@@ -1,22 +1,8 @@
 import { Component, Input } from "@angular/core";
 import { AngularFireStorage } from "@angular/fire/compat/storage";
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-} from "@angular/forms";
+import { FormBuilder, FormControl, FormGroup, Validators,} from "@angular/forms";
 import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { TimeScale } from "chart.js/dist";
-import {
-  finalize,
-  firstValueFrom,
-  map,
-  Observable,
-  startWith,
-  Subscription,
-  take,
-} from "rxjs";
+import { finalize, firstValueFrom, map, Observable, startWith, Subscription, take,} from "rxjs";
 import { Department } from "projects/shared/models/department.model";
 import { Profile } from "projects/shared/models/profile.model";
 import { User } from "projects/shared/models/user.model";
@@ -26,23 +12,12 @@ import { EnterpriseService } from "projects/predyc-business/src/shared/services/
 import { IconService } from "projects/predyc-business/src/shared/services/icon.service";
 import { ProfileService } from "projects/predyc-business/src/shared/services/profile.service";
 import { UserService } from "projects/predyc-business/src/shared/services/user.service";
-import {
-  cleanFileName,
-  dateFromCalendarToTimestamp,
-  timestampToDateNumbers,
-} from "projects/shared/utils";
+import { cleanFileName, dateFromCalendarToTimestamp, timestampToDateNumbers,} from "projects/shared/utils";
 import { countriesData } from "projects/predyc-business/src/assets/data/countries.data";
-import {
-  AngularFirestore,
-  DocumentReference,
-} from "@angular/fire/compat/firestore";
+import { AngularFirestore, DocumentReference,} from "@angular/fire/compat/firestore";
 import { Enterprise } from "projects/shared/models/enterprise.model";
 // import { departmentsData } from '../../../../../../../../../.firebase/predyc-empresa/hosting/assets/data/departments.data';
 import Swal from "sweetalert2";
-import { Subscription as SubscriptionClass } from "projects/shared/models/subscription.model";
-import { SubscriptionService } from "projects/predyc-business/src/shared/services/subscription.service";
-import { ProductService } from "projects/predyc-business/src/shared/services/product.service";
-import { Product } from "projects/shared/models/product.model";
 import { CourseService } from "../../../../../../shared/services/course.service";
 import { roundNumber } from "projects/shared/utils";
 import { formatDate } from "@angular/common";
@@ -66,8 +41,6 @@ export class CreateUserComponent {
     private storage: AngularFireStorage,
     private afs: AngularFirestore,
     private modalService: NgbModal,
-    private subscriptionService: SubscriptionService,
-    private productService: ProductService,
     private courseService: CourseService
   ) {
     // Obtener la fecha actual
@@ -85,6 +58,7 @@ export class CreateUserComponent {
 
   @Input() studentToEdit: User | null = null;
   @Input() enterpriseRef: DocumentReference<Enterprise> | null = null;
+  @Input() isParticularStudent: boolean = false;
 
   minDate = { year: 1900, month: 1, day: 1 };
   maxDate;
@@ -643,15 +617,19 @@ export class CreateUserComponent {
       email: formData.email ? formData.email.toLowerCase() : null,
       photoUrl: formData.photoUrl,
     };
+
     let user = null;
-    if (this.studentToEdit?.role === User.ROLE_ADMIN) {
-      user = User.getEnterpriseAdminUser(
-        this.enterpriseService.getEnterpriseRef()
-      );
-    } else {
-      user = User.getEnterpriseStudentUser(
-        this.enterpriseService.getEnterpriseRef()
-      );
+    if (this.isParticularStudent) user = User.getStudentUser()
+    else {
+      if (this.studentToEdit?.role === User.ROLE_ADMIN) {
+        user = User.getEnterpriseAdminUser(
+          this.enterpriseService.getEnterpriseRef()
+        );
+      } else {
+        user = User.getEnterpriseStudentUser(
+          this.enterpriseService.getEnterpriseRef()
+        );
+      }
     }
 
     if (this.enterpriseRef) {

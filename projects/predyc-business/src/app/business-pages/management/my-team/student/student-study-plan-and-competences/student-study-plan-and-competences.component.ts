@@ -1,8 +1,5 @@
 import { Component, Input, SimpleChanges } from "@angular/core";
-import {
-  AngularFirestore,
-  DocumentReference,
-} from "@angular/fire/compat/firestore";
+import { AngularFirestore, DocumentReference,} from "@angular/fire/compat/firestore";
 import { Chart } from "chart.js";
 import { Subscription, combineLatest } from "rxjs";
 import { Category } from "projects/shared/models/category.model";
@@ -21,9 +18,6 @@ import { firestoreTimestampToNumberTimestamp } from "projects/shared/utils";
 import annotationPlugin from "chartjs-plugin-annotation";
 import { AlertsService } from "projects/predyc-business/src/shared/services/alerts.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { CreateUserComponent } from '../create-user/create-user.component';
-import { roundNumber } from "shared";
-import { NgIf } from "@angular/common";
 
 
 interface CoursesForExplorer extends CursoJson {

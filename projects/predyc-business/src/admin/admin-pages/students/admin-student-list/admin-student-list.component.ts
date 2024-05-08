@@ -168,7 +168,7 @@ export class AdminStudentListComponent {
 
               }
 
-              console.log('revisar licencias',activeSubscriptions,expiredSubscriptions,status,AllActiveSubs)
+              // console.log('revisar licencias',activeSubscriptions,expiredSubscriptions,status,AllActiveSubs)
               let subscriptionWithLatestEndPeriod
               if(AllActiveSubs.length>0){
                 AllActiveSubs.forEach(sub => {
