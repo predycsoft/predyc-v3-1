@@ -23,6 +23,7 @@ export interface EnterpriseJson {
     }
     vimeoFolderId: string | null
     vimeoFolderUri: string | null
+    showEnterpriseLogoInCertificates: boolean
 }
 
 export class Enterprise {
@@ -53,6 +54,7 @@ export class Enterprise {
         },
         public vimeoFolderId: string | null,
         public vimeoFolderUri: string | null,
+        public showEnterpriseLogoInCertificates: boolean
     ) {}
 
     public static getEnterpriseTemplate(): Enterprise {
@@ -85,6 +87,7 @@ export class Enterprise {
             },
             vimeoFolderId: null,
             vimeoFolderUri: null,
+            showEnterpriseLogoInCertificates: true
           });
     }
 
@@ -113,6 +116,7 @@ export class Enterprise {
             enterpriseJson.socialNetworks,
             enterpriseJson.vimeoFolderId,
             enterpriseJson.vimeoFolderUri,
+            enterpriseJson.showEnterpriseLogoInCertificates,
         )
     }
 
@@ -135,6 +139,7 @@ export class Enterprise {
             socialNetworks: this.socialNetworks,
             vimeoFolderId: this.vimeoFolderId,
             vimeoFolderUri: this.vimeoFolderUri,
+            showEnterpriseLogoInCertificates: this.showEnterpriseLogoInCertificates,
         }
     }
 }

@@ -31,7 +31,8 @@ export const enterpriseData: EnterpriseJson = {
     vimeoFolderId: null,
     vimeoFolderUri: null,
     examenInicial: true,
-    examenFinal: true
+    examenFinal: true,
+    showEnterpriseLogoInCertificates: true
 }
 
 
@@ -66,5 +67,6 @@ export const enterpriseDataPredyc: EnterpriseJson = {
     vimeoFolderId: null,
     vimeoFolderUri: null,
     examenInicial: true,
-    examenFinal: true
+    examenFinal: true,
+    showEnterpriseLogoInCertificates: true
 }

@@ -331,7 +331,8 @@ export class CreateDemoComponent {
       vimeoFolderId: null,
       vimeoFolderUri: null,
       examenInicial: true,
-      examenFinal: true
+      examenFinal: true,
+      showEnterpriseLogoInCertificates: true
     });
     //console.log("Enterprise", enterprise.toJson())
     await this.enterpriseService.addEnterprise(enterprise);

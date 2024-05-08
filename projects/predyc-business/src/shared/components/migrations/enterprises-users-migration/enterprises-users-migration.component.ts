@@ -230,6 +230,7 @@ export class EnterprisesUsersMigrationComponent {
       return {
         examenInicial: true,
         examenFinal: true,
+        showEnterpriseLogoInCertificates: true,
         city: null,
         country: null,
         createdAt: oldEnterpriseData.fechaCreacion ? oldEnterpriseData.fechaCreacion : +new Date(),

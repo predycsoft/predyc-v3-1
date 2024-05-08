@@ -1,8 +1,6 @@
 <form [formGroup]="enterpriseForm" (ngSubmit)="onSubmit()">
     <div fxLayoutAlign="start center" fxLayout="row" class="fw">
 
-
-
         <div  fxLayout="column"  class="mgt10 mgr20 "style="align-items: flex-start;">
             <!-- <div (click)="fileInput.click()" class="cursorPointer">
                 <img onerror="this.src='assets/images/default/default-user-image.jpg'" [src]="imageUrl" class="avatar10" alt="">
@@ -13,21 +11,14 @@
                 </div>
                 <input #fileInput type="file" style="display: none;" (change)="onFileSelected($event)" hidden accept="image/jpeg, image/png" >
                 <label> Foto de Empresa </label> 
-
-
-            </div>
-            
-            
+            </div>            
         </div>
-
-
 
         <div fxLayout="column" class="fw mgt03 mgr20 " >
             <div class="form-group mgt02 fw">
                 <label class="ft12">Nombre de la empresa</label>
-                <input
-                [class.is-invalid]="enterpriseForm.controls['name'].errors && showError"
-                formControlName="name" type="text" class="form-control ft14  shadow-animation   pdl05 pdr05 radius20  borderLight ">
+                <input [class.is-invalid]="enterpriseForm.controls['name'].errors && showError"
+                formControlName="name" type="text" class="form-control ft14  shadow-animation pdl05 pdr05 radius20  borderLight ">
                 <div class="invalid-feedback" *ngIf="enterpriseForm.controls['name'].errors && showError"> 
                     Debe indicar el nombre de la empresa
                 </div>
@@ -99,6 +90,10 @@
         <div class="mgt10" fxLayout="" fxLayoutAlign="start center" fxLayoutGap=".5rem">
             <span class="ft12 makeBlue">Se requiere diagnóstico final.</span>
             <mat-slide-toggle class=" " color="primary" formControlName="examenFinal"></mat-slide-toggle>
+        </div>
+        <div class="mgt10" fxLayout="" fxLayoutAlign="start center" fxLayoutGap=".5rem">
+            <span class="ft12 makeBlue">Mostrar logo de la empresa en certificados.</span>
+            <mat-slide-toggle class="" color="primary" formControlName="showEnterpriseLogoInCertificates"></mat-slide-toggle>
         </div>
     
     </div>
