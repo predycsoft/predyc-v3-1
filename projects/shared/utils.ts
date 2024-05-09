@@ -133,6 +133,18 @@ export const obtenerUltimoDiaDelMes = (fecha: number): number => {
 	return ultimoDiaDelMes.getTime();
 };
 
+export const obtenerPrimerDiaDelMes = (fecha: number): number => {
+	let fechaOriginal = new Date(fecha);
+	const anio = fechaOriginal.getFullYear();
+	const mes = fechaOriginal.getMonth();
+	const primerDiaDelMes = new Date(anio, mes, 1);
+  
+	// Establecer la hora a 00:00:00
+	primerDiaDelMes.setHours(0, 0, 0, 0);
+  
+	return primerDiaDelMes.getTime();
+  };
+
 export const obtenerUltimoDiaDelMesAnterior = (fecha: number): number => {
 	let fechaOriginal = new Date(fecha);
 	const anio = fechaOriginal.getFullYear();

@@ -12,7 +12,7 @@ import { EnterpriseService } from "projects/predyc-business/src/shared/services/
 import { IconService } from "projects/predyc-business/src/shared/services/icon.service";
 import { ProfileService } from "projects/predyc-business/src/shared/services/profile.service";
 import { UserService } from "projects/predyc-business/src/shared/services/user.service";
-import { cleanFileName, dateFromCalendarToTimestamp, timestampToDateNumbers,} from "projects/shared/utils";
+import { cleanFileName, dateFromCalendarToTimestamp, timestampToDateNumbers,obtenerPrimerDiaDelMes} from "projects/shared/utils";
 import { countriesData } from "projects/predyc-business/src/assets/data/countries.data";
 import { AngularFirestore, DocumentReference,} from "@angular/fire/compat/firestore";
 import { Enterprise } from "projects/shared/models/enterprise.model";
@@ -771,10 +771,11 @@ export class CreateUserComponent {
           this.hoursPlan
         );
         let fehcaInicio = this.toDateFromInput(valores.startDateStudy);
+        let fechaInicioMes = new Date(obtenerPrimerDiaDelMes(fehcaInicio.getTime()))
         await this.saveInitForm(
           user.uid,
           this.hoursPlan,
-          fehcaInicio,
+          fechaInicioMes,
           profileNew
         );
       }
@@ -829,7 +830,7 @@ export class CreateUserComponent {
         courseDuration,
         hoursPermonth
       );
-      console.log("dates", dateStartPlan, dateEndPlan);
+      console.log("dates", dateStartPlan, dateEndPlan);//estoy aqui
       //  ---------- if it already exists, activate it as studyPlan, otherwise, create it as studyPlan ----------
       const courseByStudent: CourseByStudent | null =
         await this.courseService.getCourseByStudent(
