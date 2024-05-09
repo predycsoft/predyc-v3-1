@@ -71,16 +71,13 @@ export class StudentCoursesListComponent {
 
             return {
               ...courseByStundet,
-              dateStart: firestoreTimestampToNumberTimestamp(
-                courseByStundet.dateStart
-              ),
-              dateEnd: firestoreTimestampToNumberTimestamp(
-                courseByStundet.dateEnd
-              ),
+              dateStart: firestoreTimestampToNumberTimestamp(courseByStundet.dateStart),
+              dateEnd: firestoreTimestampToNumberTimestamp(courseByStundet.dateEnd),
               coursePhoto: courseData.foto,
               courseTitle: courseData.titulo,
               courseId: courseData.id,
               courseByStudentId: courseByStundet.id,
+              duracion: courseData.duracion
             };
           }
         );
@@ -102,13 +99,13 @@ export class StudentCoursesListComponent {
       {
         data: {
           userName: this.userName,
+          userUid: this.userRef.id,
           courseRef: courseData.courseRef,
           courseTitle: courseData.courseTitle,
           coursePhoto: courseData.coursePhoto,
-          courseByStudentRef: this.courseService.getCourseByStudentRef(
-            courseData.courseByStudentId
-          ),
+          courseByStudentRef: this.courseService.getCourseByStudentRef(courseData.courseByStudentId),
           isActive: courseData.active,
+          courseDuration: courseData.duracion
         },
       }
     );

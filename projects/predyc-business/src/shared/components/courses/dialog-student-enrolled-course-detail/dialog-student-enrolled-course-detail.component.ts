@@ -1,6 +1,6 @@
 import { Component, Inject, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Subscription, combineLatest } from 'rxjs';
+import { Subscription, combineLatest, map, switchMap } from 'rxjs';
 import { CourseService } from '../../../services/course.service';
 import { ModuleService } from '../../../services/module.service';
 import { Modulo } from 'projects/shared/models/module.model';
@@ -11,6 +11,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { CourseByStudent } from 'projects/shared/models/course-by-student.model';
 import { ClassByStudent } from 'projects/shared/models/class-by-student.model';
 import { IconService } from '../../../services/icon.service';
+import { Clase } from 'projects/shared/models/course-class.model';
+import { firestoreTimestampToNumberTimestamp } from 'projects/shared';
 
 
 @Component({
@@ -27,20 +29,24 @@ export class DialogStudentEnrolledCourseDetailComponent {
     public icon: IconService,
     @Inject(MAT_DIALOG_DATA) public data: {
       userName: string,
+      userUid: string,
       courseRef: DocumentReference<Curso>,
       courseTitle: string,
       coursePhoto: string,
       courseByStudentRef: DocumentReference<CourseByStudent>,
       isActive: boolean
+      courseDuration:number
     },
   ) { }
 
   userName: string
+  userUid: string
   courseRef: DocumentReference<Curso>
   courseTitle: string
   coursePhoto: string
   courseByStudentRef: DocumentReference<CourseByStudent>
   isActive: boolean
+  courseDuration:number
 
   combinedServicesSubscription: Subscription
   subscriptionsSubscription: Subscription
@@ -52,6 +58,7 @@ export class DialogStudentEnrolledCourseDetailComponent {
     "module",
     "completed",
     "completedClasses",
+    // "actions",
   ];
 
   dataSource = new MatTableDataSource<any>();
@@ -63,22 +70,27 @@ export class DialogStudentEnrolledCourseDetailComponent {
 
 
   ngOnInit() {
-    this.userName = this.data.userName; 
-    this.courseRef = this.data.courseRef ; this.courseTitle = this.data.courseTitle; this.coursePhoto = this.data.coursePhoto; this.courseByStudentRef = this.data.courseByStudentRef
-    this.isActive = this.data.isActive
+    this.userName = this.data.userName; this.userUid = this.data.userUid 
+    this.courseRef = this.data.courseRef ; this.courseTitle = this.data.courseTitle; this.coursePhoto = this.data.coursePhoto; this.courseDuration = this.data.courseDuration
+    this.courseByStudentRef = this.data.courseByStudentRef; this.isActive = this.data.isActive
 
     this.combinedServicesSubscription = combineLatest(
       [ 
         this.moduleService.getModules$(this.courseRef.id), 
         this.courseService.getClassesByStudentThrougCoursesByStudent$(this.courseByStudentRef), 
       ]
-    ).
-    subscribe(([modules, completedClasses]) => {
+    ).pipe(
+      switchMap(([modules, completedClasses]) => {
+        const allClassIds = modules.flatMap(module => module.clasesRef.map(ref => ref.id));
+        return this.courseService.getClassesByIds$(allClassIds).pipe(
+          map((classes) => [modules, completedClasses, classes] as [Modulo[], ClassByStudent[], Clase[]])
+        );
+      })
+    ).subscribe(([modules, completedClasses, courseClasses]) => {
       this.modules = modules
       this.completedClasses = completedClasses
-      console.log('completedClasses',completedClasses)
+      // console.log('completedClasses',completedClasses)
       const modulesInList: any[] = modules.map(module => {
-        const classesQty = module.clasesRef.length
         let completedClassesInsidemodule = 0
         module.clasesRef.forEach(classRef => {
           if (this.completedClasses.find(x => x.classRef.id === classRef.id)) { //check if works comparing refs
@@ -86,22 +98,84 @@ export class DialogStudentEnrolledCourseDetailComponent {
           }
         });
 
+        let classesInModule = courseClasses
+        .filter(cls => module.clasesRef.some(ref => ref.id === cls.id))
+        .map(cls => {
+          const completedClass = this.completedClasses.find(completed => completed.classRef.id === cls.id);
+          return {
+            titulo: cls.titulo,
+            isCompleted: !!completedClass,
+            dateEnd: completedClass ? firestoreTimestampToNumberTimestamp(completedClass.dateEnd) : null,
+            duracion: cls.duracion,
+            id: cls.id
+          };
+        });
+
+        classesInModule.sort((a, b) => {
+          if (a.dateEnd === null) return 1;  //null to the bottom
+          if (b.dateEnd === null) return -1; //null to the bottom
+          return a.dateEnd - b.dateEnd;
+        });
+
         return {
           ... module,
-          classesQty,
-          completedClassesInsidemodule
+          completedClassesInsidemodule,
+          classes: classesInModule
         }
       })
       console.log("modulesInList", modulesInList)
       modulesInList.sort((a,b) => a.numero - b.numero)
       this.dataSource.data = modulesInList
       this.totalLength = modulesInList.length;
-
     })
   }
+
   salir(){
     this.matDialogRef.close(false)
   }
+
+  async classReady(cls) {
+
+    // cls: {
+    //   titulo: cls.titulo,
+    //   isCompleted: !!completedClass,
+    //   dateEnd: completedClass ? firestoreTimestampToNumberTimestamp(completedClass.dateEnd) : null,
+    //   duracion: cls.duracion,
+    //   id: cls.id
+    // };
+
+    const classByStudentRef = await this.courseService.enrollClassUser(this.userUid, cls, this.courseByStudentRef);
+
+    if (classByStudentRef) {
+      const modulesInList = this.dataSource.data
+  
+      let classes = [];
+      modulesInList.forEach((module) => {
+        module.classes.forEach((clase) => {
+          classes.push(clase);
+        });
+      });
+      
+      let completedClasses = classes.filter((x) => x.isCompleted);
+      completedClasses.push(cls) // current class
+  
+      let progressTime = 0;
+      completedClasses.forEach((clase) => {
+        progressTime += clase.duracion;
+      });
+
+      let progreso = (completedClasses.length * 90) / classes.length;
+      console.log("progreso", progreso) 
+			console.log("classesCompleted", completedClasses) 
+			console.log("classes.length", classes.length) 
+  
+  
+      await this.courseService.updateCourseCompletionStatusTEST(classByStudentRef.id, this.courseByStudentRef.id, progreso, progressTime, this.courseDuration, true);
+    } else {
+      console.error("error")
+    }
+
+	}
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;

@@ -1,24 +1,16 @@
 import { Injectable } from "@angular/core";
 import { User } from "projects/shared/models/user.model";
 import { AngularFireAuth } from "@angular/fire/compat/auth";
-import {
-  AngularFirestore,
-  DocumentReference,
-  QuerySnapshot,
-} from "@angular/fire/compat/firestore";
-import { BehaviorSubject, firstValueFrom, Observable, of } from "rxjs";
+import { AngularFirestore, DocumentReference, QuerySnapshot } from "@angular/fire/compat/firestore";
+import { BehaviorSubject, firstValueFrom, forkJoin, Observable, of } from "rxjs";
 import { EnterpriseService } from "./enterprise.service";
 import { AlertsService } from "./alerts.service";
-
 import { combineLatest } from "rxjs";
 import { map, switchMap } from "rxjs/operators";
 import { Curso } from "projects/shared/models/course.model";
 import { Modulo } from "projects/shared/models/module.model";
 import { Clase } from "projects/shared/models/course-class.model";
-import {
-  CourseByStudent,
-  CourseByStudentJson,
-} from "projects/shared/models/course-by-student.model";
+import { CourseByStudent, CourseByStudentJson } from "projects/shared/models/course-by-student.model";
 import { UserService } from "./user.service";
 import { ProfileService } from "./profile.service";
 import { ClassByStudent } from "projects/shared/models/class-by-student.model";
@@ -26,6 +18,7 @@ import { Subscription as SubscriptionClass } from "projects/shared/models/subscr
 import { SubscriptionService } from "projects/predyc-business/src/shared/services/subscription.service";
 import { Product } from "projects/shared/models/product.model";
 import { ProductService } from "projects/predyc-business/src/shared/services/product.service";
+import { StudyPlanClass } from "projects/shared/models";
 
 @Injectable({
   providedIn: "root",
@@ -1038,5 +1031,81 @@ export class CourseService {
       }
     });
     return idMappings;
-  }
+  }
+
+  getClassesByIds$(ids: string[]): Observable<Clase[]> {
+    if (ids.length === 0) return of([]);
+    
+    const chunkSize = 10; 
+    const idChunks = []; // Array of 10 elements arrays
+
+    for (let i = 0; i < ids.length; i += chunkSize) {
+      idChunks.push(ids.slice(i, i + chunkSize));
+    }
+
+    const observables = idChunks.map(chunk =>
+      this.afs.collection<Clase>(Clase.collection, ref => ref.where('id', 'in', chunk)).valueChanges()
+    );
+
+    return combineLatest(observables).pipe(map(results => results.flat()));
+  }
+
+  async updateCourseCompletionStatusTEST(idClass: string, idCourse: string, progress: number ,progressTime: number = 0, courseTime: number = 0, cheater: boolean = false) {
+    //console.log('update progreso')
+    await this.afs.collection("classesByStudent").doc(idClass)
+    .update({
+      cheater: cheater,
+      completed: true,
+      dateStart: new Date,
+      dateEnd: new Date
+    });
+    await this.afs.collection("coursesByStudent").doc(idCourse)
+    .update({
+      progress: progress,
+      progressTime:progressTime,
+      courseTime:courseTime
+    });
+  }
+
+  async enrollClassUser(userUid, clase, courseByStudentRef): Promise<DocumentReference<StudyPlanClass>>{
+
+    const userRef = this.afs.collection('user').doc(userUid).ref;
+    const claseRef = this.afs.collection('class').doc(clase.id).ref;
+
+    const courseByStudent = (await firstValueFrom(this.afs.collection<CourseByStudent>(CourseByStudent.collection).doc(courseByStudentRef.id).get())).data();
+
+    let classStudyPlan = new StudyPlanClass
+    classStudyPlan.completed = false
+    classStudyPlan.classRef = claseRef
+    classStudyPlan.userRef = userRef
+    classStudyPlan.coursesByStudentRef = courseByStudentRef; 
+    //await this.saveStudyPlanClass(classStudyPlan)
+    try {
+      const ref = this.afs.collection<StudyPlanClass>(StudyPlanClass.collection).doc().ref;
+      await ref.set({...classStudyPlan.toJson(), id: ref.id}, { merge: true });
+      classStudyPlan.id = ref.id;
+      clase.classByStudentData = classStudyPlan;
+
+      if((clase.tipo =='actividad' || (clase.tipo =='lectura' ) || (clase.tipo =='corazones' ))){
+
+        let date = new Date
+        console.log('coursesByStudent.dateStart',courseByStudent.dateStart)
+        if(!courseByStudent.dateStart){
+          let idCourseStudent = courseByStudent.id
+          this.afs.collection("coursesByStudent").doc(idCourseStudent).update({
+            dateStart: date,
+          });
+       }
+        this.afs.collection("classesByStudent").doc(classStudyPlan.id).update({
+          dateStart: date
+        });
+      }
+      return ref
+    } catch (error) {
+      console.log(error)
+      return null
+    }
+
+  }
+
 }

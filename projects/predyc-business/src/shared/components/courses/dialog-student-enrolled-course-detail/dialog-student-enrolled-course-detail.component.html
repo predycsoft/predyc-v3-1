@@ -13,8 +13,6 @@
     </div>
     <div class="grayLine mgt05" style=" margin-bottom: 12px;" > </div>
 
-    
-
     <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="1rem">
         <div>
             <img [src]="coursePhoto ? coursePhoto : 'assets/images/default/default-user-image.jpg'" class="avatar4" alt="" >
@@ -65,14 +63,14 @@
             <ng-container matColumnDef="completed">
                 <th mat-header-cell *matHeaderCellDef class="ft15 centertext"> Completado </th>
                 <td mat-cell *matCellDef="let data" class="centertext ft13">  
-                    <mat-icon *ngIf="data.completedClassesInsidemodule === data.classesQty" class="green-5">check</mat-icon>
-                    <mat-icon *ngIf="data.completedClassesInsidemodule !== data.classesQty" class="red-5">close</mat-icon>
+                    <mat-icon *ngIf="data.completedClassesInsidemodule === data.classes.length" class="green-5">check</mat-icon>
+                    <mat-icon *ngIf="data.completedClassesInsidemodule !== data.classes.length" class="red-5">close</mat-icon>
                 </td>
             </ng-container>
     
             <ng-container matColumnDef="completedClasses">
                 <th mat-header-cell *matHeaderCellDef class="ft15 centertext"> Clases completadas </th>
-                <td mat-cell *matCellDef="let data" class="centertext ft13"> {{ data.completedClassesInsidemodule }} / {{data.classesQty}} </td>
+                <td mat-cell *matCellDef="let data" class="centertext ft13"> {{ data.completedClassesInsidemodule }} / {{data.classes.length}} </td>
             </ng-container>
     
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -94,6 +92,38 @@
             [pageSize]="pageSize"
             [length]="totalLength"
         ></mat-paginator>
+    </div>
+
+    <!-- In process -->
+    <div>
+        <mat-accordion>
+            <mat-expansion-panel *ngFor="let module of dataSource.data" [expanded]="false">
+                <mat-expansion-panel-header>
+                    <mat-panel-description>
+                        <div fxLayout="row" fxLayoutGap=".1rem" fxLayoutAlign="space-between center">
+                            <div fxLayout="row" fxLayoutGap=".1rem" fxLayoutAlign="start center">
+                                <span>{{ module.numero }}.</span>
+                                <span>{{ module.titulo | titlecase }}</span>
+                            </div>
+                            <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign="end center">
+                                <mat-icon *ngIf="module.completedClassesInsidemodule === module.classes.length" class="green-5">check</mat-icon>
+                                <mat-icon *ngIf="module.completedClassesInsidemodule !== module.classes.length" class="red-5">close</mat-icon>
+                                <span>{{ module.completedClassesInsidemodule }} / {{ module.classes.length }}</span>
+                            </div>
+                        </div>
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+                
+                <div fxLayout="column" fxLayoutGap="1rem">
+                    <div *ngFor="let cls of module.classes" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1rem">
+                        <span>{{ cls.titulo }}</span>
+                        <mat-icon *ngIf="cls.isCompleted" class="green-5">check_circle</mat-icon>
+                        <mat-icon *ngIf="!cls.isCompleted" class="red-5">cancel</mat-icon>
+                        <button *ngIf="!cls.isCompleted" class="blueButton" (click)="classReady(cls)">Completar clase</button>
+                    </div>
+                </div>
+            </mat-expansion-panel>
+        </mat-accordion>
     </div>
 </div>
   
