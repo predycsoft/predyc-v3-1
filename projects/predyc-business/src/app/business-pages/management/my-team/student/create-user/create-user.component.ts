@@ -12,7 +12,7 @@ import { EnterpriseService } from "projects/predyc-business/src/shared/services/
 import { IconService } from "projects/predyc-business/src/shared/services/icon.service";
 import { ProfileService } from "projects/predyc-business/src/shared/services/profile.service";
 import { UserService } from "projects/predyc-business/src/shared/services/user.service";
-import { cleanFileName, dateFromCalendarToTimestamp, timestampToDateNumbers,} from "projects/shared/utils";
+import { cleanFileName, dateFromCalendarToTimestamp, timestampToDateNumbers,obtenerPrimerDiaDelMes} from "projects/shared/utils";
 import { countriesData } from "projects/predyc-business/src/assets/data/countries.data";
 import { AngularFirestore, DocumentReference,} from "@angular/fire/compat/firestore";
 import { Enterprise } from "projects/shared/models/enterprise.model";
@@ -134,7 +134,8 @@ export class CreateUserComponent {
               perfil.coursesRef
                 // .map((item) => item.courseRef)
                 .forEach((cursoRef) => {
-                  let curso = this.cursos.find((x) => x.id == cursoRef["id"]);
+                  let id = cursoRef['courseRef']['id']
+                  let curso = this.cursos.find((x) => x.id == id);
                   cursos.push(curso);
                   duracion += curso.duracion;
                 });
@@ -770,10 +771,11 @@ export class CreateUserComponent {
           this.hoursPlan
         );
         let fehcaInicio = this.toDateFromInput(valores.startDateStudy);
+        let fechaInicioMes = new Date(obtenerPrimerDiaDelMes(fehcaInicio.getTime()))
         await this.saveInitForm(
           user.uid,
           this.hoursPlan,
-          fehcaInicio,
+          fechaInicioMes,
           profileNew
         );
       }
@@ -795,7 +797,7 @@ export class CreateUserComponent {
 
   async createStudyPlan(uid, hoursPerMonth, profile, startDateStudy) {
     console.log("startDateStudy", startDateStudy);
-    const coursesRefs: DocumentReference[] = profile.coursesRef
+    const coursesRefs: any[] = profile.coursesRef
       .sort(
         (
           b: { courseRef: DocumentReference<Curso>; studyPlanOrder: number },
@@ -808,13 +810,13 @@ export class CreateUserComponent {
     let now = new Date();
     let hoy = +new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const hoursPermonth = hoursPerMonth;
-    console.log("hoursPermonth", hoursPermonth);
+    console.log("hoursPermonth", hoursPermonth,coursesRefs);
 
     const userRef: DocumentReference | DocumentReference<User> =
       this.userService.getUserRefById(uid);
     for (let i = 0; i < coursesRefs.length; i++) {
       const courseData = this.cursos.find(
-        (courseData) => courseData.id === coursesRefs[i].id
+        (courseData) => courseData.id === coursesRefs[i].courseRef.id
       );
       const courseDuration = courseData.duracion;
 
@@ -828,12 +830,12 @@ export class CreateUserComponent {
         courseDuration,
         hoursPermonth
       );
-      console.log("dates", dateStartPlan, dateEndPlan);
+      console.log("dates", dateStartPlan, dateEndPlan);//estoy aqui
       //  ---------- if it already exists, activate it as studyPlan, otherwise, create it as studyPlan ----------
       const courseByStudent: CourseByStudent | null =
         await this.courseService.getCourseByStudent(
           userRef as DocumentReference<User>,
-          coursesRefs[i] as DocumentReference<Curso>
+          coursesRefs[i].courseRef as DocumentReference<Curso>
         );
       // console.log("courseByStudent", courseByStudent)
       if (courseByStudent) {
@@ -844,7 +846,7 @@ export class CreateUserComponent {
         );
       } else {
         await this.courseService.saveCourseByStudent(
-          coursesRefs[i],
+          coursesRefs[i].courseRef,
           userRef,
           new Date(dateStartPlan),
           new Date(dateEndPlan),

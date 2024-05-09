@@ -179,6 +179,12 @@ export class AdminStudentListComponent {
                 });
               
               }
+              if(user.createdAt?.seconds){
+                user.createdAt = user.createdAt.seconds*1000
+              }
+              if(user.updatedAt?.seconds){
+                user.updatedAt = user.updatedAt.seconds*1000
+              }
               return {
                 displayName: user.displayName,
                 uid: user.uid,
