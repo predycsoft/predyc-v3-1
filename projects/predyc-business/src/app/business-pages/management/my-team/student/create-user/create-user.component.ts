@@ -134,7 +134,8 @@ export class CreateUserComponent {
               perfil.coursesRef
                 // .map((item) => item.courseRef)
                 .forEach((cursoRef) => {
-                  let curso = this.cursos.find((x) => x.id == cursoRef["id"]);
+                  let id = cursoRef['courseRef']['id']
+                  let curso = this.cursos.find((x) => x.id == id);
                   cursos.push(curso);
                   duracion += curso.duracion;
                 });
