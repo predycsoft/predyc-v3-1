@@ -796,7 +796,7 @@ export class CreateUserComponent {
 
   async createStudyPlan(uid, hoursPerMonth, profile, startDateStudy) {
     console.log("startDateStudy", startDateStudy);
-    const coursesRefs: DocumentReference[] = profile.coursesRef
+    const coursesRefs: any[] = profile.coursesRef
       .sort(
         (
           b: { courseRef: DocumentReference<Curso>; studyPlanOrder: number },
@@ -809,13 +809,13 @@ export class CreateUserComponent {
     let now = new Date();
     let hoy = +new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const hoursPermonth = hoursPerMonth;
-    console.log("hoursPermonth", hoursPermonth);
+    console.log("hoursPermonth", hoursPermonth,coursesRefs);
 
     const userRef: DocumentReference | DocumentReference<User> =
       this.userService.getUserRefById(uid);
     for (let i = 0; i < coursesRefs.length; i++) {
       const courseData = this.cursos.find(
-        (courseData) => courseData.id === coursesRefs[i].id
+        (courseData) => courseData.id === coursesRefs[i].courseRef.id
       );
       const courseDuration = courseData.duracion;
 
@@ -834,7 +834,7 @@ export class CreateUserComponent {
       const courseByStudent: CourseByStudent | null =
         await this.courseService.getCourseByStudent(
           userRef as DocumentReference<User>,
-          coursesRefs[i] as DocumentReference<Curso>
+          coursesRefs[i].courseRef as DocumentReference<Curso>
         );
       // console.log("courseByStudent", courseByStudent)
       if (courseByStudent) {
@@ -845,7 +845,7 @@ export class CreateUserComponent {
         );
       } else {
         await this.courseService.saveCourseByStudent(
-          coursesRefs[i],
+          coursesRefs[i].courseRef,
           userRef,
           new Date(dateStartPlan),
           new Date(dateEndPlan),
