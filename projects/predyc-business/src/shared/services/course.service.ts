@@ -375,6 +375,11 @@ export class CourseService {
     );
   }
 
+  getAllCourses$(): Observable<Curso[]> {
+    return this.afs.collection<Curso>(Curso.collection).valueChanges();
+
+  }
+
   getClassesEnterprise$(): Observable<any[]> {
     return this.enterpriseService.enterpriseLoaded$.pipe(
       switchMap((isLoaded) => {

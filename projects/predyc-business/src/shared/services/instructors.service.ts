@@ -118,4 +118,8 @@ export class InstructorsService {
   fetchInstructorDataByRef(instructorRef: DocumentReference): Observable<any> {
     return this.afs.doc<any>(instructorRef).valueChanges();
   }
+
+  getInstructors$(): Observable<any> {
+    return this.afs.collection<any>("instructors").valueChanges();
+  }
 }

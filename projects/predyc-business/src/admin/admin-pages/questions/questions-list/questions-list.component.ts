@@ -3,21 +3,25 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription, combineLatest, firstValueFrom } from 'rxjs';
-import { chargeData } from 'projects/predyc-business/src/assets/data/charge.data';
-import { Charge, ChargeJson } from 'projects/shared/models/charges.model';
-import { Enterprise } from 'projects/shared/models/enterprise.model';
-import { Product } from 'projects/shared/models/product.model';
 import { User } from 'projects/shared/models/user.model';
-import { ChargeService } from 'projects/predyc-business/src/shared/services/charge.service';
-import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
-import { ProductService } from 'projects/predyc-business/src/shared/services/product.service';
-import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
+import { QuestionService } from 'projects/predyc-business/src/shared/services/question.service';
+import { InstructorsService } from 'projects/predyc-business/src/shared/services/instructors.service';
+import { Question, QuestionJson } from 'projects/shared/models/question.model';
+import { CourseService } from 'projects/predyc-business/src/shared/services/course.service';
+import { Curso } from 'projects/shared/models/course.model';
+import { firestoreTimestampToNumberTimestamp } from 'shared';
 
-interface ChargeInList extends ChargeJson {
-  productName: string
-  customerName: string
-  customerEmail: string
+interface ListModel {
+  coursePhoto: string,
+  courseTitle: string,
+  intructorName: string,
+  questionsQty: number,
+  answeredQuestions: number
+  pendingQuestions: number,
+  lastQuestion: number,
+  lastAnswere: number,
+  timeWithoutAnswer: number | null
 }
 
 
@@ -30,11 +34,10 @@ export class QuestionsListComponent {
 
   constructor(
     private router: Router,
-    private chargeService: ChargeService,
-    private productService: ProductService,
-    private enterpriseService: EnterpriseService,
-    private userService: UserService,
     private activatedRoute: ActivatedRoute,
+    private questionService: QuestionService,
+    private instructorService: InstructorsService,
+    private courseService: CourseService,
     public icon: IconService,
   ){}
 
@@ -48,7 +51,7 @@ export class QuestionsListComponent {
     "TiempoSinResponder",
   ];
 
-  dataSource = new MatTableDataSource<ChargeInList>();
+  dataSource = new MatTableDataSource<ListModel>();
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @Input() enableNavigateToUser: boolean = true
@@ -58,25 +61,25 @@ export class QuestionsListComponent {
   
   combinedServicesSubscription: Subscription
   queryParamsSubscription: Subscription
-  chargeSubscription: Subscription
+  courseSubscription: Subscription
 
-  products: Product[]
-  users: User[]
-  enterprises: Enterprise[]
+  instructors: any[]
+  questions: Question[]
+
+  hoy = +new Date
+  oneDay = 24*60*60*1000
 
   ngOnInit() {
 
     this.combinedServicesSubscription = combineLatest(
       [ 
-        this.productService.getProducts$(), 
-        this.userService.getAllUsers$(),
-        this.enterpriseService.getAllEnterprises$(),
+        this.questionService.getAllQuestions$(),
+        this.instructorService.getInstructors$(),
       ]
     ).
-    subscribe(([ products, users, enterprises]) => {
-      // this.products = products
-      // this.users = users
-      // this.enterprises = enterprises
+    subscribe(([ questions, instructors]) => {
+      this.instructors = instructors
+      this.questions = questions
       this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
         const page = Number(params['page']) || 1;
         const searchTerm = params['search'] || '';
@@ -92,21 +95,18 @@ export class QuestionsListComponent {
   }
 
   performSearch(searchTerm:string, page: number) {
-    this.chargeSubscription = this.chargeService.getCharges$().subscribe(charges => {
-      const chargesInList: ChargeInList[] = charges.map(charge => {
-        const productData = this.getProductData(charge.productRef.id)
-        return {
-          ... charge,
-          productName: productData.name,
-          customerName: this.getCustomerName(charge),
-          customerEmail: this.getCustomerEmail(charge),
-        }
+    this.courseSubscription = this.courseService.getAllCourses$().subscribe(courses => {
+      const dataInList: any[] = courses.map(course => {
+        const instructorData = this.instructors.find( x => x.id === course.instructorRef.id)
+        return this.getDataToShow(course, instructorData)
       })
 
-      const filteredCharges = searchTerm ? chargesInList.filter(sub => sub.customerName.toLowerCase().includes(searchTerm.toLowerCase())) : chargesInList;
+      const filteredData = searchTerm ? dataInList.filter(sub => sub.cursoTitulo.toLowerCase().includes(searchTerm.toLowerCase())) : dataInList;
+      filteredData.sort((a,b) => b.timeWithoutAnswer - a.timeWithoutAnswer)
+      console.log("filteredData", filteredData)
       this.paginator.pageIndex = page - 1;
-      this.dataSource.data = filteredCharges
-      this.totalLength = filteredCharges.length;
+      this.dataSource.data = filteredData
+      this.totalLength = filteredData.length;
     })
   }
 
@@ -117,23 +117,51 @@ export class QuestionsListComponent {
     });
   }
 
-  getProductData(productId: string): Product {
-    return this.products.find(product => product.id === productId)
-  }
+  getDataToShow(course: Curso, instructor): ListModel {
+    const courseQuestions = this.questions.filter(x=> x.courseRef.id === course.id)
 
-  getCustomerEmail(charge: Charge): string {
-    const userData: User = this.users.find(user => user.uid === charge.customer.id)
-    if (userData) return userData.email
-    else return "Empresa"
-  
-  }
+    let ultimaPregunta: number = null
+    let ultimaRespuesta: number = null
+    let tiempoSinResponder: number = null
+    let cantPreguntasRespondidas = 0
+    let cantPreguntasSinResponder = 0
 
-  getCustomerName(charge: Charge): string {
-    const userData: User = this.users.find(user => user.uid === charge.customer.id)
-    if (userData) return userData.displayName
-    else {
-      const enterpriseData: Enterprise = this.enterprises.find(enterprise => enterprise.id === charge.customer.id)
-      return enterpriseData.name
+    if (courseQuestions.length > 0) {
+      // Convert and sort timestamps
+      courseQuestions.sort((a, b) => {
+        return firestoreTimestampToNumberTimestamp(b.timestamp) - firestoreTimestampToNumberTimestamp(a.timestamp);
+      })
+      ultimaPregunta = firestoreTimestampToNumberTimestamp(courseQuestions[0].timestamp)
+
+      const respondedQuestions = courseQuestions.filter(x => x.respondida == true);
+      if (respondedQuestions.length > 0) {
+        respondedQuestions.sort((a, b) => {
+          return firestoreTimestampToNumberTimestamp(b.timestampRespuesta) - firestoreTimestampToNumberTimestamp(a.timestampRespuesta);
+        })
+        ultimaRespuesta = firestoreTimestampToNumberTimestamp(respondedQuestions[0].timestampRespuesta)
+        cantPreguntasRespondidas = respondedQuestions.length
+      }
+
+      const unansweredQuestions = courseQuestions.filter(x => x.respondida == false);
+      cantPreguntasSinResponder = unansweredQuestions.length
+      if (cantPreguntasSinResponder > 0) {
+        unansweredQuestions.sort((a, b) => {
+          return firestoreTimestampToNumberTimestamp(b.timestamp) - firestoreTimestampToNumberTimestamp(a.timestamp);
+        })
+        tiempoSinResponder = this.hoy - firestoreTimestampToNumberTimestamp(unansweredQuestions[0].timestamp);
+      }
+    }
+
+    return {
+      coursePhoto: course.foto,
+      courseTitle: course.titulo,
+      intructorName: instructor.nombre,
+      questionsQty: courseQuestions.length,
+      answeredQuestions: cantPreguntasRespondidas,
+      pendingQuestions: cantPreguntasSinResponder,
+      lastQuestion: ultimaPregunta ,
+      lastAnswere: ultimaRespuesta,
+      timeWithoutAnswer:tiempoSinResponder
     }
   }
 
