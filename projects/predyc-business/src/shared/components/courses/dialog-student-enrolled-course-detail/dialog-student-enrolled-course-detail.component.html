@@ -1,4 +1,4 @@
-<div fxLayout="column" class="pd10" ngClass="containerPC" ngClass.lt-md="containerMobile" >
+<div fxLayout="column" class="pd10" ngClass="containerPC" ngClass.lt-md="containerMobile" style="overflow-y: auto; max-height: 90vh;">
 
     <div fxLayout="row" class=" bg-web-primary text-white px-3 py-1 mgb10" fxLayoutAlign="space-between center" >
         <div class="  " style="margin-bottom: -15px !important;">
@@ -12,6 +12,7 @@
         </div>
     </div>
     <div class="grayLine mgt05" style=" margin-bottom: 12px;" > </div>
+
 
     <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="1rem">
         <div>
@@ -47,83 +48,71 @@
         <span class="ft13 ft500 red-5">El estudiante no tiene este curso activo actualmente.</span>
     </div>
 
-    <div class="">
+    <div>
         <table mat-table [dataSource]="dataSource">
-    
+
             <ng-container matColumnDef="module">
                 <th mat-header-cell *matHeaderCellDef class="ft15 centertext"> Módulo </th>
                 <td mat-cell *matCellDef="let data" class="centertext ft13">
-                    <div fxLayout="row" fxLayoutGap=".1rem" fxLayoutAlign="start center" >
-                        <span>{{ data.numero}}.</span>
-                        <span>{{ data.titulo | titlecase}}</span>
+                    <div fxLayout="row" fxLayoutGap=".1rem" fxLayoutAlign="start center">
+                        <span>{{ data.numero }}.</span>
+                        <span>{{ data.titulo | titlecase }}</span>
                     </div>
                 </td>
             </ng-container>
-    
+
             <ng-container matColumnDef="completed">
                 <th mat-header-cell *matHeaderCellDef class="ft15 centertext"> Completado </th>
-                <td mat-cell *matCellDef="let data" class="centertext ft13">  
+                <td mat-cell *matCellDef="let data" class="centertext ft13">
                     <mat-icon *ngIf="data.completedClassesInsidemodule === data.classes.length" class="green-5">check</mat-icon>
                     <mat-icon *ngIf="data.completedClassesInsidemodule !== data.classes.length" class="red-5">close</mat-icon>
                 </td>
             </ng-container>
-    
+
             <ng-container matColumnDef="completedClasses">
                 <th mat-header-cell *matHeaderCellDef class="ft15 centertext"> Clases completadas </th>
-                <td mat-cell *matCellDef="let data" class="centertext ft13"> {{ data.completedClassesInsidemodule }} / {{data.classes.length}} </td>
+                <td mat-cell *matCellDef="let data" class="centertext ft13"> {{ data.completedClassesInsidemodule }} / {{ data.classes.length }} </td>
             </ng-container>
-    
+
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef class="ft15 centertext"> Detalles </th>
+                <td mat-cell *matCellDef="let data" class="centertext ft13">
+                    <mat-accordion>
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    Clases del Módulo
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <div fxLayout="column" fxLayoutGap="1rem">
+                                <div *ngFor="let cls of data.classes" fxLayout="row" fxLayoutAlign="space-between center" >
+                                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1rem" class="">
+                                        <span>{{ cls.titulo }}</span>
+                                    </div>
+                                    <!-- <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1rem">
+                                        
+                                    </div> -->
+                                    <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="1rem">
+                                        <button *ngIf="!cls.isCompleted" class="blueButton" (click)="classReady(cls)">Completar clase</button>
+                                        <mat-icon *ngIf="cls.isCompleted" class="green-5">check_circle</mat-icon>
+                                        <mat-icon *ngIf="!cls.isCompleted" class="red-5">cancel</mat-icon>
+                                    </div>
+                                </div>
+                            </div>
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                </td>
+            </ng-container>
+
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <ng-container>
-                <tr
-                    mat-row
-                    *matRowDef="let data; columns: displayedColumns;"
-                    >
-                </tr>
-            </ng-container>
-    
+            <tr mat-row *matRowDef="let data; columns: displayedColumns;"></tr>
+
             <tr class="mat-row" *matNoDataRow>
-                <td class="mat-cell" colspan="8">No se han encontrado suscripciones para el criterio de busqueda</td>
+                <td class="mat-cell" colspan="8">No se han encontrado suscripciones para el criterio de búsqueda</td>
             </tr>
         </table>
-    
-        <mat-paginator
-            aria-label="Select page of subscriptions"
-            [pageSize]="pageSize"
-            [length]="totalLength"
-        ></mat-paginator>
-    </div>
 
-    <!-- In process -->
-    <div>
-        <mat-accordion>
-            <mat-expansion-panel *ngFor="let module of dataSource.data" [expanded]="false">
-                <mat-expansion-panel-header>
-                    <mat-panel-description>
-                        <div fxLayout="row" fxLayoutGap=".1rem" fxLayoutAlign="space-between center">
-                            <div fxLayout="row" fxLayoutGap=".1rem" fxLayoutAlign="start center">
-                                <span>{{ module.numero }}.</span>
-                                <span>{{ module.titulo | titlecase }}</span>
-                            </div>
-                            <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign="end center">
-                                <mat-icon *ngIf="module.completedClassesInsidemodule === module.classes.length" class="green-5">check</mat-icon>
-                                <mat-icon *ngIf="module.completedClassesInsidemodule !== module.classes.length" class="red-5">close</mat-icon>
-                                <span>{{ module.completedClassesInsidemodule }} / {{ module.classes.length }}</span>
-                            </div>
-                        </div>
-                    </mat-panel-description>
-                </mat-expansion-panel-header>
-                
-                <div fxLayout="column" fxLayoutGap="1rem">
-                    <div *ngFor="let cls of module.classes" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1rem">
-                        <span>{{ cls.titulo }}</span>
-                        <mat-icon *ngIf="cls.isCompleted" class="green-5">check_circle</mat-icon>
-                        <mat-icon *ngIf="!cls.isCompleted" class="red-5">cancel</mat-icon>
-                        <button *ngIf="!cls.isCompleted" class="blueButton" (click)="classReady(cls)">Completar clase</button>
-                    </div>
-                </div>
-            </mat-expansion-panel>
-        </mat-accordion>
+        <mat-paginator aria-label="Select page of subscriptions" [pageSize]="pageSize" [length]="totalLength"></mat-paginator>
     </div>
 </div>
   

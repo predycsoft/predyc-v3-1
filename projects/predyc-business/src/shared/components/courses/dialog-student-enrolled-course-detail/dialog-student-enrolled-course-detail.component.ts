@@ -58,7 +58,7 @@ export class DialogStudentEnrolledCourseDetailComponent {
     "module",
     "completed",
     "completedClasses",
-    // "actions",
+    "actions",
   ];
 
   dataSource = new MatTableDataSource<any>();
