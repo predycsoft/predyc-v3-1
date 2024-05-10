@@ -80,6 +80,7 @@ import { EnterprisesUsersMigrationComponent } from './components/migrations/ente
 import { ParticularUsersMigrationComponent } from './components/migrations/particular-users-migration/particular-users-migration.component';
 import { StatsCertificationsComponent } from "./components/stats-certifications/stats-certifications.component";
 import { CertificationStudentListComponent } from "./components/users/certification-student-list/certification-student-list.component";
+import { DialogQuestionsDetailComponent } from './components/questions/dialog-questions-detail/dialog-questions-detail.component';
 
 
 @NgModule({
@@ -129,6 +130,7 @@ import { CertificationStudentListComponent } from "./components/users/certificat
     DialogEnrollCoursesComponent,
     EnterprisesUsersMigrationComponent,
     ParticularUsersMigrationComponent,
+    DialogQuestionsDetailComponent,
   ],
   imports: [
     CommonModule,

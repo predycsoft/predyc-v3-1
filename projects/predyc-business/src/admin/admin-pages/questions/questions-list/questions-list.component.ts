@@ -11,18 +11,22 @@ import { Question, QuestionJson } from 'projects/shared/models/question.model';
 import { CourseService } from 'projects/predyc-business/src/shared/services/course.service';
 import { Curso } from 'projects/shared/models/course.model';
 import { firestoreTimestampToNumberTimestamp } from 'shared';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { DialogQuestionsDetailComponent } from 'projects/predyc-business/src/shared/components/questions/dialog-questions-detail/dialog-questions-detail.component';
 
-interface ListModel {
-  coursePhoto: string,
-  courseTitle: string,
-  intructorName: string,
-  questionsQty: number,
-  answeredQuestions: number
-  pendingQuestions: number,
-  lastQuestion: number,
-  lastAnswere: number,
-  timeWithoutAnswer: number | null
-}
+  interface CourseQuestionsData {
+    courseQuestions: Question[]
+    courseId: string,
+    coursePhoto: string,
+    courseTitle: string,
+    intructorName: string,
+    questionsQty: number,
+    answeredQuestions: number
+    pendingQuestions: number,
+    lastQuestion: number,
+    lastAnswere: number,
+    timeWithoutAnswer: number | null
+  }
 
 
 @Component({
@@ -39,6 +43,7 @@ export class QuestionsListComponent {
     private instructorService: InstructorsService,
     private courseService: CourseService,
     public icon: IconService,
+		private modalService: NgbModal,
   ){}
 
   displayedColumns: string[] = [
@@ -51,7 +56,7 @@ export class QuestionsListComponent {
     "TiempoSinResponder",
   ];
 
-  dataSource = new MatTableDataSource<ListModel>();
+  dataSource = new MatTableDataSource<CourseQuestionsData>();
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @Input() enableNavigateToUser: boolean = true
@@ -117,7 +122,7 @@ export class QuestionsListComponent {
     });
   }
 
-  getDataToShow(course: Curso, instructor): ListModel {
+  getDataToShow(course: Curso, instructor): CourseQuestionsData {
     const courseQuestions = this.questions.filter(x=> x.courseRef.id === course.id)
 
     let ultimaPregunta: number = null
@@ -153,6 +158,8 @@ export class QuestionsListComponent {
     }
 
     return {
+      courseQuestions: courseQuestions,
+      courseId: course.id,
       coursePhoto: course.foto,
       courseTitle: course.titulo,
       intructorName: instructor.nombre,
@@ -163,6 +170,18 @@ export class QuestionsListComponent {
       lastAnswere: ultimaRespuesta,
       timeWithoutAnswer:tiempoSinResponder
     }
+  }
+
+  async onSelect(data: CourseQuestionsData) {
+		const modalRef = this.modalService.open(DialogQuestionsDetailComponent, {
+			animation: true,
+			centered: true,
+			size: "md",
+			backdrop: "static",
+			keyboard: false,
+		});
+
+		modalRef.componentInstance.courseQuestionsData = data;
   }
 
   ngOnDestroy() {

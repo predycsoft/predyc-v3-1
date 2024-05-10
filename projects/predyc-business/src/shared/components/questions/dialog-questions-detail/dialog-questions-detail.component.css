@@ -1,0 +1,47 @@
+.contentContainer{
+    position: relative;
+    top: 0px;
+    height: calc(100vh - 80px);
+    width: 100%;
+    left: 0px;
+    background: var(--gray-1) !important;
+    overflow-y: auto;
+    padding: 3rem;
+  }
+  
+  .rightContainer{
+    height: calc(100vh - 192px) !important;
+    background: var(--control1);
+    overflow-y: auto;
+  } 
+  
+  .tableContainer{
+    height: calc(100vh - 232px) !important;
+    background: var(--control1);
+    overflow-y: auto;
+  }
+    
+    .avatarSquare{
+      height: 55px;
+      width: 55px;
+    }
+    
+    .containerFirstRow{
+      /* height: 40px; */
+      background: #FCFCFC;
+      padding-left: 16px;
+      padding-right: 8px;
+      padding-top: 8px;
+      padding-bottom: 8px;
+      border-top-left-radius: 3px;
+      border-top-right-radius: 3px;
+      border: 0px solid var(--stroke1);
+      border-bottom: 1px solid var(--stroke1) !important;
+      box-shadow: var(--shadow8);
+    
+    }
+  
+    .blueBorder{
+      outline: 2px solid var(--blue-5);
+      color: var(--blue-5);
+    }
