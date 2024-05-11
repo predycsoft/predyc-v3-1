@@ -1,4 +1,4 @@
-<div fxLayout="column" class="pd10" ngClass="containerPC" ngClass.lt-md="containerMobile" >
+<div fxLayout="column" class="pd10" style="height: 90vh; overflow-y: auto;">
     <div fxLayout="row" class=" bg-web-primary text-white px-3 py-1 mgb10" fxLayoutAlign="space-between center" >
         <div class="  " style="margin-bottom: -15px !important;">
             <span class="ft16  ft600 gray-10">
@@ -19,7 +19,7 @@
                 <th mat-header-cell *matHeaderCellDef class="ft15 gray-9 ft500">Cursos inscritos</th>
                 <td mat-cell *matCellDef="let course"> 
                     <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign=" center">
-                        <img [src]="course.foto ? course.foto : 'assets/images/default/default-user-image.jpg'" class="avatarSquare2 radius4" alt="" >
+                        <img [src]="course.imagen ? course.imagen : 'assets/images/default/default-user-image.jpg'" class="avatarSquare2 radius4" alt="" >
                         <span class="ft500 ft12 gray-6">{{ course.titulo | titlecase }}</span>
                     </div>
                 </td>
@@ -71,7 +71,7 @@
                 <th mat-header-cell *matHeaderCellDef class="ft15 gray-9 ft500">Cursos que puedes inscribir</th>
                 <td mat-cell *matCellDef="let course"> 
                     <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign=" center">
-                        <img [src]="course.foto ? course.foto : 'assets/images/default/default-user-image.jpg'" class="avatarSquare2 radius4" alt="" >
+                        <img [src]="course.imagen ? course.imagen : 'assets/images/default/default-user-image.jpg'" class="avatarSquare2 radius4" alt="" >
                         <span class="ft500 ft12 gray-6">{{ course.titulo | titlecase }}</span>
                     </div>
                 </td>

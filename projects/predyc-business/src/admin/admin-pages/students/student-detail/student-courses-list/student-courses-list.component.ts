@@ -73,7 +73,7 @@ export class StudentCoursesListComponent {
               ...courseByStundet,
               dateStart: firestoreTimestampToNumberTimestamp(courseByStundet.dateStart),
               dateEnd: firestoreTimestampToNumberTimestamp(courseByStundet.dateEnd),
-              coursePhoto: courseData.foto,
+              coursePhoto: courseData.imagen,
               courseTitle: courseData.titulo,
               courseId: courseData.id,
               courseByStudentId: courseByStundet.id,

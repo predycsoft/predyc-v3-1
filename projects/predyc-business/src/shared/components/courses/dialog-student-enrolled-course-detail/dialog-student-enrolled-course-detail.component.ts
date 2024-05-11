@@ -111,16 +111,20 @@ export class DialogStudentEnrolledCourseDetailComponent {
           };
         });
 
-        classesInModule.sort((a, b) => {
-          if (a.dateEnd === null) return 1;  //null to the bottom
-          if (b.dateEnd === null) return -1; //null to the bottom
-          return a.dateEnd - b.dateEnd;
+        let classesModule = []
+
+        module.clasesRef.forEach(classRef => {
+          let clase = classesInModule.find(x=>x.id == classRef.id)
+          if(clase){
+            classesModule.push(clase)
+          }
         });
+
 
         return {
           ... module,
           completedClassesInsidemodule,
-          classes: classesInModule
+          classes: classesModule
         }
       })
       console.log("modulesInList", modulesInList)
@@ -170,7 +174,7 @@ export class DialogStudentEnrolledCourseDetailComponent {
 			console.log("classes.length", classes.length) 
   
   
-      await this.courseService.updateCourseCompletionStatusTEST(classByStudentRef.id, this.courseByStudentRef.id, progreso, progressTime, this.courseDuration, true);
+      await this.courseService.updateCourseCompletionStatusTEST(classByStudentRef.id, this.courseByStudentRef.id, progreso, progressTime, this.courseDuration, false);
     } else {
       console.error("error")
     }

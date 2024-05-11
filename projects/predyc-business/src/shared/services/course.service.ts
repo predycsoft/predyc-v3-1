@@ -1061,6 +1061,7 @@ export class CourseService {
     .update({
       cheater: cheater,
       completed: true,
+      completedAdmin:true,
       dateStart: new Date,
       dateEnd: new Date
     });
