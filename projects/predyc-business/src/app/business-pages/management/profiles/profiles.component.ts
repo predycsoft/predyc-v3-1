@@ -579,7 +579,7 @@ export class ProfilesComponent {
       );
 
       Swal.fire({
-        title: 'Generando curso...',
+        title: 'Editando plan de estudio...',
         text: 'Por favor, espera.',
         allowOutsideClick: false,
         didOpen: () => {

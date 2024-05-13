@@ -47,7 +47,7 @@ export class EnterpriseInfoComponent {
 			photoUrl: [null],
 			examenInicial: [true],
 			examenFinal: [true],
-			showEnterpriseLogoInCertificates: [true],
+			showEnterpriseLogoInCertificates: [false],
 		});
 		// Edit mode
 		if (this.enterprise) {
@@ -73,7 +73,7 @@ export class EnterpriseInfoComponent {
 				photoUrl: this.enterprise.photoUrl,
 				examenInicial:this.enterprise.examenInicial,
 				examenFinal:this.enterprise.examenFinal,
-				showEnterpriseLogoInCertificates: this.enterprise.showEnterpriseLogoInCertificates,
+				showEnterpriseLogoInCertificates: this.enterprise?.showEnterpriseLogoInCertificates ?this.enterprise?.showEnterpriseLogoInCertificates : false,
 			});
 			// this.enterpriseForm.get('name')?.disable();
 			if (this.enterprise.photoUrl) {
