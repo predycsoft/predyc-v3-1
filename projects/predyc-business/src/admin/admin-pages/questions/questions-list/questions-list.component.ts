@@ -3,7 +3,6 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription, combineLatest, firstValueFrom } from 'rxjs';
-import { User } from 'projects/shared/models/user.model';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import { QuestionService } from 'projects/predyc-business/src/shared/services/question.service';
 import { InstructorsService } from 'projects/predyc-business/src/shared/services/instructors.service';
@@ -19,7 +18,8 @@ import { DialogQuestionsDetailComponent } from 'projects/predyc-business/src/sha
     courseId: string,
     coursePhoto: string,
     courseTitle: string,
-    intructorName: string,
+    instructorPhoto: string,
+    instructorName: string,
     questionsQty: number,
     answeredQuestions: number
     pendingQuestions: number,
@@ -162,7 +162,8 @@ export class QuestionsListComponent {
       courseId: course.id,
       coursePhoto: course.foto,
       courseTitle: course.titulo,
-      intructorName: instructor.nombre,
+      instructorPhoto: instructor.foto,
+      instructorName: instructor.nombre,
       questionsQty: courseQuestions.length,
       answeredQuestions: cantPreguntasRespondidas,
       pendingQuestions: cantPreguntasSinResponder,
@@ -176,7 +177,7 @@ export class QuestionsListComponent {
 		const modalRef = this.modalService.open(DialogQuestionsDetailComponent, {
 			animation: true,
 			centered: true,
-			size: "md",
+			size: "xl",
 			backdrop: "static",
 			keyboard: false,
 		});

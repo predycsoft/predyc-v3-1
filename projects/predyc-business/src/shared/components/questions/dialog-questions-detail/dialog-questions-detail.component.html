@@ -1,119 +1,105 @@
-<h1>AAAA</h1>
-
 <div class="contentContainer">
-    <div fxLayout="column" class="rightContainer pd0 radius3 w-100 border shadow8 mgt10" fxShow="true" fxShow.lt-md="false">
+    <div fxLayout="column" class="rightContainer pd0 radius3 w-100 border shadow8" fxShow="true" fxShow.lt-md="false">
         <div class="containerFirstRow fw border-b" fxLayoutAlign="space-between center" fxLayoutGap="1rem">
             <div>
-                <h6 class="ft500 ft16 mgb0 gray-9"> Preguntas</h6>
+                <span class="ft16 ft600 gray-10">Preguntas</span>
             </div>
             <div fxLayout="row">
                 <div fxLayout="row" fxLayoutGap="1rem">
-                    <span class="chip border ft11 shadow8 cursorPointer" (click)="tab = 0; filtrar()" [ngClass]=" {'blueBorder ft500':tab == 0}">
+                    <span class="chip border ft11 shadow8 cursorPointer pd05" (click)="tab = 0; filtrar()" [ngClass]=" {'blueBorder ft500':tab == 0}">
                         Todas {{cantPreguntas}}
                     </span>
-                    <span class="chip border ft11 shadow8 cursorPointer" (click)="tab =1; filtrar()" [ngClass]=" {'blueBorder ft500':tab == 1}">
+                    <span class="chip border ft11 shadow8 cursorPointer pd05" (click)="tab =1; filtrar()" [ngClass]=" {'blueBorder ft500':tab == 1}">
                         Pendientes {{cantPreguntasSinResponder}}
                     </span>
-                    <span class="chip border ft11 shadow8 cursorPointer" (click)="tab =2; filtrar()" [ngClass]=" {'blueBorder ft500':tab == 2}">
+                    <span class="chip border ft11 shadow8 cursorPointer pd05" (click)="tab =2; filtrar()" [ngClass]=" {'blueBorder ft500':tab == 2}">
                         Respondidas {{cantPreguntasRespondidas}}
                     </span>
                 </div>
             </div>
+            <img [src]="icon.close" (click)="closeDialog()" class="makeGray h20px cursorPointer">
         </div>
         <div class="pdb10 pdl10 pdr10 backGray2 tableContainer">
             <div fxLayout="column" fxLayoutAlign="space-between start">
-                <div class="shadow16 pd10 border mgt10 radius6 w-100 backWhite" fxLayout="column"
-                    *ngFor="let item of filteredPreguntas; let i = index">
-                    <div class="" fxLayout="row">
-                        <div fxLayoutAlign="space-between center" class="pdr10">
-                            <img [src]="item.data.usuarioFoto" alt="foto de perfil" class="avatar2"
-                                onerror="this.src='../../assets/images/default/default-user-image.jpg'">
-                        </div>
-                        <div fxLayout="column">
-                            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".3rem">
-                                <span class="ft11 ft500">{{item.data.usuarioNombre}}</span>
-                                &nbsp;
-                                <span class="gray-7 ft11"
-                                    *ngIf="item.data.timestamp && hoy - item.data.timestamp > 2*oneDay">
-                                    Hace {{(hoy - item.data.timestamp)/(oneDay) | number:"1.0-0"}} días en:
-                                </span>
-                                <span class="gray-7 ft11" *ngIf="item.data.timestamp && hoy - item.data.timestamp > oneDay && hoy - item.data.timestamp < 2*oneDay">Hace
-                                    1 día en:
-                                </span>
-                                <span class="gray-7 ft11"
-                                    *ngIf="item.data.timestamp && hoy - item.data.timestamp < oneDay">Hoy
-                                    a las
-                                    {{item.data.timestamp |
-                                    date:"hh:mm"}} en:
-                                </span>
-                                <!-- <a class="blueLink ft11 ft500" target="_blank" routerLink="/admin/preguntas/{{id}}/{{item.data.claseId}}"> -->
-                                <!-- <a class="blueLink ft11 ft500" target="_blank">
-                                    Clase {{item.data.claseNumero}}: {{item.data.claseTitulo}}
-                                </a> -->
+                <ng-container *ngIf="filteredPreguntas.length > 0">
+                    <div class="shadow16 pd10 mgt10 w-100 backWhite" fxLayout="column" *ngFor="let item of filteredPreguntas; let i = index">
+                        <div class="" fxLayout="row">
+                            <div fxLayoutAlign="space-between center" class="pdr10">
+                                <img [src]="item.usuarioFoto" alt="foto de perfil" class="avatar2" onerror="this.src='../../assets/images/default/default-user-image.jpg'">
                             </div>
-                            <div>
-                                <span class="ft11 gray-8">{{item.data.pregunta}}</span>
-                            </div>
-                            <div *ngIf="item.data.respondida == false && item.respondiendo == false">
-                                <span class="ft11 blueLink" (click)="item.respondiendo = true">Responder</span>
-                            </div>
-                        </div>
-
-                    </div>
-
-
-
-                    <div *ngIf="item.respondiendo == true" fxLayout="row" fxLayoutAlign=" end" fxLayoutGap="1rem" class="mgt10">
-                        <div class="fw backRed2" fxLayoutAlign="end">
-                            <textarea [(ngModel)]="item.data.respuesta" class="fw"></textarea>
-                        </div>
-                        <button class="redButton ft12 shadow8" (click)="item.respondiendo=false">Cancelar</button>
-                        <button class="blueButton ft12 shadow8" (click)="responder(i)">Enviar</button>
-                    </div>
-
-
-                    <div *ngIf="item.data.respondida == true" class="mgl20 mgt10">
-                        <div class="neutralFill1 radius6 shadow8 border pd05" fxLayout="row">
-                            <div>
-                                <img [src]="item.data.instructorFoto" alt="foto de perfil" class="avatar2 border"
-                                    onerror="this.src='../../assets/images/default/default-user-image.jpg'">
-                            </div>
-                            <div fxLayout="column" class="mgl10">
-                                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1rem">
-                                    <span class="ft11 ft500">{{item.data.instructorNombre}}</span>
-                                    <span class="gray-7 ft11"
-                                        *ngIf="item.data.timestampRespuesta && hoy - item.data.timestampRespuesta > 2*oneDay">Hace
-                                        {{(hoy -
-                                        item.data.timestampRespuesta)/(oneDay) | number:"1.0-0"}} días</span>
-                                    <span class="gray-7 ft11"
-                                        *ngIf="item.data.timestampRespuesta && hoy - item.data.timestampRespuesta > oneDay && hoy - item.data.timestampRespuesta < 2*oneDay">Hace
-                                        1 día</span>
-                                    <span class="gray-7 ft11"
-                                        *ngIf="item.data.timestampRespuesta && hoy - item.data.timestampRespuesta < oneDay">Hoy
-                                        a las
-                                        {{item.data.timestampRespuesta | date:"hh:mm"}}</span>
-                                </div>
-                                <div fxLayout="column">
-                                    <span class="ft11 gray/8">{{item.data.respuesta}} - 
-                                        <span class="ft11 blueLink"
-                                            (click)="item.respondiendo = true; item.data.respondida = false">Actualizar
-                                            Respuesta</span>
+                            <div fxLayout="column">
+                                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".3rem">
+                                    <span class="ft11 ft500">{{item.usuarioNombre | titlecase}}</span>
+                                    &nbsp;
+                                    <span class="gray-7 ft11" *ngIf="item.data.timestamp && hoy - item.data.timestamp > 2*oneDay"> 
+                                        Hace {{(hoy - item.data.timestamp)/(oneDay) | number:"1.0-0"}} días en:
                                     </span>
-                                
+                                    <span class="gray-7 ft11" *ngIf="item.data.timestamp && hoy - item.data.timestamp > oneDay && hoy - item.data.timestamp < 2*oneDay">Hace
+                                        1 día en:
+                                    </span>
+                                    <span class="gray-7 ft11" *ngIf="item.data.timestamp && hoy - item.data.timestamp < oneDay">
+                                        Hoy a las {{item.data.timestamp | date:"hh:mm"}} en:
+                                    </span>
+                                    <!-- <a class="blueLink ft11 ft500" target="_blank" routerLink="/admin/preguntas/{{id}}/{{item.data.claseId}}"> -->
+                                    <a class="blue-5 ft11 ft500" target="_blank">
+                                        {{item.claseTitulo}}
+                                    </a>
                                 </div>
-
+                                <div>
+                                    <span class="ft11 gray-8">{{item.data.pregunta}}</span>
+                                </div>
+                                <div *ngIf="item.data.respondida == false && item.respondiendo == false">
+                                    <span class="ft11 blueLink" (click)="item.respondiendo = true">Responder</span>
+                                </div>
                             </div>
                         </div>
-
+                        <div *ngIf="item.respondiendo == true" fxLayout="row" fxLayoutAlign=" end" fxLayoutGap="1rem" class="mgt10">
+                            <div class="fw backRed2" fxLayoutAlign="end">
+                                <textarea [(ngModel)]="item.data.respuesta" class="fw"></textarea>
+                            </div>
+                            <button class="redButton ft12 shadow8" (click)="item.respondiendo=false">Cancelar</button>
+                            <button class="blueButton ft12 shadow8" (click)="responder(i)">Enviar</button>
+                        </div>
+                        <div *ngIf="item.data.respondida == true" class="mgl20 mgt10">
+                            <div class="neutralFill1 radius6 shadow8 border pd05" fxLayout="row">
+                                <div>
+                                    <img *ngIf="item.data.respondidaInstructor" [src]="item.instructorFoto" alt="foto de perfil" class="avatar2 border" 
+                                    onerror="this.src='../../assets/images/default/default-user-image.jpg'">
+                                    <img *ngIf="!item.data.respondidaInstructor" [src]="logo" alt="foto de perfil" class="avatar2 border" 
+                                    onerror="this.src='../../assets/images/default/default-user-image.jpg'">
+                                </div>
+                                <div fxLayout="column" class="mgl10">
+                                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1rem">
+                                        <span *ngIf="item.data.respondidaInstructor" class="ft11 ft500">{{item.instructorNombre}}</span>
+                                        <span *ngIf="!item.data.respondidaInstructor" class="ft11 ft500">Administración de Predyc</span>
+                                        <span class="gray-7 ft11" *ngIf="item.data.timestampRespuesta && hoy - item.data.timestampRespuesta > 2*oneDay">
+                                            Hace {{(hoy - item.data.timestampRespuesta)/(oneDay) | number:"1.0-0"}} días
+                                        </span>
+                                        <span class="gray-7 ft11" *ngIf="item.data.timestampRespuesta && hoy - item.data.timestampRespuesta > oneDay && hoy - item.data.timestampRespuesta < 2*oneDay">
+                                            Hace 1 día
+                                        </span>
+                                        <span class="gray-7 ft11" *ngIf="item.data.timestampRespuesta && hoy - item.data.timestampRespuesta < oneDay">
+                                            Hoy a las {{item.data.timestampRespuesta | date:"hh:mm"}}
+                                        </span>
+                                    </div>
+                                    <div fxLayout="column">
+                                        <span class="ft11 gray/8">{{item.data.respuesta}} - 
+                                            <span class="ft11 blueLink" (click)="item.respondiendo = true; item.data.respondida = false">
+                                                Actualizar Respuesta
+                                            </span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-
+                </ng-container>
+                <ng-container *ngIf="filteredPreguntas.length === 0" >
+                    <span class="ft16 ft600 gray-8 mgt10">No hay preguntas</span>
+                </ng-container>
             </div>
         </div>
-
         <!------------------------------------------------------------------------------ Table -->
-
-
     </div>
 
 </div>

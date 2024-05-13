@@ -2,13 +2,20 @@ import { Component, Input } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Question } from 'projects/shared/models/question.model';
+import { IconService } from '../../../services/icon.service';
+import { firestoreTimestampToNumberTimestamp } from 'shared';
+import { CourseService } from '../../../services/course.service';
+import { ModuleService } from '../../../services/module.service';
+import { map, switchMap } from 'rxjs';
+import { UserService } from '../../../services/user.service';
 
-interface CourseQuestionsData {
+interface CourseQuestionsData { // it has to be he same as the one declared in questions-list component
   courseQuestions: Question[]
   courseId: string,
   coursePhoto: string,
   courseTitle: string,
-  intructorName: string,
+  instructorName: string,
+  instructorPhoto: string,
   questionsQty: number,
   answeredQuestions: number
   pendingQuestions: number,
@@ -26,48 +33,83 @@ export class DialogQuestionsDetailComponent {
 
   oneDay = 24*60*60*1000
   hoy = +new Date
+
+  logo = "assets/images/logos/logo.png"
   
   constructor(
     public activeModal: NgbActiveModal,
     private afs: AngularFirestore,
-    // private route: ActivatedRoute,
+    public icon: IconService,
+    private courseService: CourseService, 
+    private moduleService: ModuleService,
+    private userService: UserService
   ) { }
 
   @Input() courseQuestionsData: CourseQuestionsData;
 
-  // Si vamos a editar entonces debe tener un id en la ruta
-  // id = this.route.snapshot.paramMap.get('id'); // courseId
-  preguntas: {data: Question, respondiendo: boolean}[]
+  preguntas: { data: Question, respondiendo: boolean, claseTitulo: string, instructorNombre: string, instructorFoto: string, usuarioNombre: string }[] = [];
   cantPreguntas = 0
   cantPreguntasRespondidas = 0
   cantPreguntasSinResponder = 0
-  tiempoSinResponder = null
   ultimaPregunta = null
   respuesta = ""
   tab = 0
   filteredPreguntas = []
 
-  ngOnInit() {
+  async ngOnInit() {
     console.log("this.courseQuestionsData", this.courseQuestionsData)
-    if (this.courseQuestionsData.courseQuestions.length > 0){
-      this.preguntas = this.courseQuestionsData.courseQuestions.map(k => [{data: k, respondiendo: false}][0])
-      console.log("this.preguntas", this.preguntas)
-      this.cantPreguntas = this.preguntas.length
+    if (this.courseQuestionsData.courseQuestions.length > 0) {
+      this.courseQuestionsData.courseQuestions.forEach(courseQuestion => {
+        courseQuestion.timestamp = firestoreTimestampToNumberTimestamp(courseQuestion.timestamp)
+        courseQuestion.timestampRespuesta = courseQuestion.timestampRespuesta ? firestoreTimestampToNumberTimestamp(courseQuestion.timestampRespuesta) : 0
+      });
+
+      this.cantPreguntas = this.courseQuestionsData.questionsQty
       this.cantPreguntasRespondidas = this.courseQuestionsData.answeredQuestions
       this.cantPreguntasSinResponder = this.courseQuestionsData.pendingQuestions
-      this.tiempoSinResponder = this.courseQuestionsData.timeWithoutAnswer
+
+      this.moduleService.getModules$(this.courseQuestionsData.courseId).pipe(
+        switchMap(modules => {
+          const allClassIds = modules.flatMap(module => module.clasesRef.map(ref => ref.id));
+          return this.courseService.getClassesByIds$(allClassIds).pipe(
+            map(courseClasses => {
+              const classMap = new Map(courseClasses.map(courseClass => [courseClass.id, courseClass.titulo]));
+              return classMap;
+            })
+          );
+        })
+      ).subscribe(async classMap => {
+        const preguntasPromises = this.courseQuestionsData.courseQuestions.map(async question => ({
+          data: question,
+          respondiendo: false,
+          claseTitulo: classMap.get(question.claseRef.id) || 'N/A',
+          instructorNombre: this.courseQuestionsData.instructorName,
+          instructorFoto: this.courseQuestionsData.instructorPhoto,
+          usuarioNombre: (await this.userService.getUserByUid(question.userRef.id)).displayName,
+          usuarioFoto: (await this.userService.getUserByUid(question.userRef.id)).photoUrl
+        }));
+  
+        this.preguntas = await Promise.all(preguntasPromises);
+        console.log("this.preguntas", this.preguntas);
+        this.filteredPreguntas = this.preguntas.sort((a, b) => {
+          return firestoreTimestampToNumberTimestamp(b.data.timestamp) - firestoreTimestampToNumberTimestamp(a.data.timestamp);
+        }) 
+      });
     }
-    this.filteredPreguntas = this.preguntas.sort((a,b) => b.data.timestamp - a.data.timestamp)
   }
 
   responder(i){
     this.preguntas[i].respondiendo = false
-    this.preguntas[i].data.timestampRespuesta = + new Date
+    this.preguntas[i].data.timestampRespuesta = new Date
     this.preguntas[i].data.respondida = true
-    // this.preguntas[i].data.respondidaInstructor = false // Because it was responded by admin
-    // this.preguntas[i].data.instructorNombre = "Predyc",
-    // this.preguntas[i].data.instructorFoto =  "assets/images/logos/logo.svg"
-    this.afs.collection(Question.collection).doc(this.preguntas[i].data.id).set(this.preguntas[i].data, {merge: true})
+    console.log("data to save: ", this.preguntas[i].data)
+    this.afs.collection(Question.collection).doc(this.preguntas[i].data.id).set({
+      timestampRespuesta: this.preguntas[i].data.timestampRespuesta,
+      respondida: true,
+      respuesta: this.preguntas[i].data.respuesta
+    }, {merge: true})
+
+
     // firstValueFrom(this.functions.httpsCallable("respuestaPregunta")({
     //   pregunta: this.preguntas[i].data.pregunta,
     //   respuesta: this.preguntas[i].data.respuesta,
@@ -77,11 +119,6 @@ export class DialogQuestionsDetailComponent {
     // })).catch(error => {
     //   console.log(error)
     // })
-  }
-
-  eliminar(i){
-    // this.afs.collection("cursos").doc(this.id).collection("preguntas").doc(this.preguntas[i].data.timestamp.toString()).delete()
-    // this.preguntas.splice(i,1)
   }
 
   filtrar(){
@@ -96,5 +133,8 @@ export class DialogQuestionsDetailComponent {
     }
   }
 
+  closeDialog() {
+    this.activeModal.dismiss('Cross click');
+  }
 
 }

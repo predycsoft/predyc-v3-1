@@ -1,12 +1,6 @@
 .contentContainer{
-    position: relative;
-    top: 0px;
-    height: calc(100vh - 80px);
-    width: 100%;
-    left: 0px;
-    background: var(--gray-1) !important;
+    /* width: 80vw; */
     overflow-y: auto;
-    padding: 3rem;
   }
   
   .rightContainer{
