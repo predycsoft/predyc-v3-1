@@ -131,6 +131,7 @@ export class StudentDetailComponent {
       )
       .subscribe((user) => {
         this.user = user;
+        console.log('User',user)
         const title = MAIN_TITLE + `Usuario ${this.user.name}`;
         this.titleService.setTitle(title);
         if (this.combinedObservableSubscription)

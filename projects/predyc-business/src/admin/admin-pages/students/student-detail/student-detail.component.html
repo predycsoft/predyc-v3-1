@@ -164,6 +164,8 @@
         <app-student-courses-list
           [userRef]="userRef"
           [userName]="user?.name"
+          [userEmail]="user?.email"
+          [userPhotoUrl]="user?.photoUrl"
         ></app-student-courses-list>
       </div>
       <div *ngIf="academicTab === 1" class="fw">

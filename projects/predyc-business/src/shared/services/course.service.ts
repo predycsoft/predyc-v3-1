@@ -553,6 +553,18 @@ export class CourseService {
       .valueChanges();
   }
 
+    // ---- courseByStudent Collection methods
+    getCoursesByStudentWithRef$(
+      courseByStudentRef: DocumentReference<any>
+    ): Observable<CourseByStudent[]> {
+      return this.afs
+        .collection<CourseByStudent>(CourseByStudent.collection, (ref) =>
+          ref.where("id", "==", courseByStudentRef.id)
+        )
+        .valueChanges();
+    }
+  
+
   async getCourseByStudent(
     userRef: DocumentReference<User>,
     courseRef: DocumentReference<Curso>

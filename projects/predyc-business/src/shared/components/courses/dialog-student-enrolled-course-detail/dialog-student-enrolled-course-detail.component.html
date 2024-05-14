@@ -114,6 +114,63 @@
 
         <mat-paginator aria-label="Select page of subscriptions" [pageSize]="pageSize" [length]="totalLength"></mat-paginator>
     </div>
+
+    <div *ngIf="coursebyStudentData.progress == 90">
+        <span (click)="generarCertificado(createCertificate)" class="ft14 blue-5 cursorPointer">Generar certificado</span>
+    </div>
 </div>
+
+
+    <!-- createCertificate -->
+    <ng-template #createCertificate let-modal>
+        <div class="modal-header bg-web-primary text-white px-3 py-1">
+            <div fxLayout="row" fxLayoutAlign="space-between center" class="w-100">
+              <div class="modal-title pd10" fxLayout="row" fxLayoutAlign="start center">
+                <img [src]="icon.catalog" class="h18px pdr05" alt="">
+                <span class="ft16 ft600 gray-10">Crear certificado - {{courseTitle | titlecase}}</span>
+              </div>
+              <img style="cursor: pointer;" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px" alt="">
+            </div>
+          </div>
+        <div class="modal-body">
+            <div fxLayout="row" class="fw">
+                <form [formGroup]="formCertificado" class="fw">
+                    <div class="form-group fw">
+                        <label class="ft12 " >Calificación</label>
+                        <input
+                        [class.is-invalid]="formCertificado.controls['calificacion'].errors && showError"
+                        formControlName="calificacion" type="number" min="70" max="100" class="form-control customInput2 radius6 " placeholder="Escriba la calificación">
+                        <div class="invalid-feedback" *ngIf="formCertificado.controls['calificacion'].errors && showError"> 
+                            Debe indicar la calificación
+                        </div>
+                    </div>
+                    <div class="form-group fw">
+                        <label class="ft12 " >Fecha</label>
+                        <input
+                        [class.is-invalid]="formCertificado.controls['fecha'].errors && showError"
+                        [max]="maxDate"
+                        formControlName="fecha" type="date" class="form-control customInput2 radius6 " placeholder="Escriba el título del curso aquí">
+                        <div class="invalid-feedback" *ngIf="formCertificado.controls['fecha'].errors && showError"> 
+                            Debe indicar la fecha
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="end center" class="fw" >
+                <button
+                fxLayout="row"
+                fxLayoutGap="0.625"
+                fxLayoutAlign="center center"
+                class="blueButton ft14 cursorPointer mgt10"
+                (click)="saveCertificate()"
+                style="border-radius: 24px !important;">
+                Guardar certificado
+                <img [src]="icon.save" class="h16px pdl05 makeWhite" alt="">
+            </button>
+                
+            </div>
+
+        </div>
+    </ng-template>
   
   
