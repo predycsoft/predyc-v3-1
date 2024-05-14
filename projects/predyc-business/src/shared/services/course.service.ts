@@ -34,7 +34,7 @@ export class CourseService {
     private productService: ProductService
   ) {
     this.getCourses();
-    //this.fixCoursesCustomURL();
+    //this.deleteCompletedAdminClasses();
   }
 
   private coursesSubject = new BehaviorSubject<Curso[]>([]);
@@ -60,6 +60,33 @@ export class CourseService {
 
     // Ejecuta el batch write
     await batch.commit();
+  }
+
+
+
+
+  async deleteCompletedAdminClasses() {
+    console.log("deleteCompletedAdminClasses");
+  
+    const batch = this.afs.firestore.batch();
+  
+    // Referencia a la colección de 'classesByStudent'
+    const collectionRef = this.afs.collection('classesByStudent').ref;
+  
+    // Consulta para obtener los documentos donde 'completedAdmin' sea true
+    const snapshot = await collectionRef.where('completedAdmin', '==', true).get();
+  
+    // Itera sobre cada documento y agrégalo al batch delete
+    snapshot.docs.forEach((doc) => {
+      const classData = doc.data();
+      console.log('deleteCompletedAdminClasses',classData)
+      batch.delete(doc.ref);
+    });
+  
+    // Ejecuta el batch write
+    await batch.commit();
+  
+    console.log("CompletedAdmin classes deleted");
   }
 
   async fixClasses() {
@@ -1073,10 +1100,25 @@ export class CourseService {
     });
   }
 
-  async enrollClassUser(userUid, clase, courseByStudentRef): Promise<DocumentReference<StudyPlanClass>>{
+  async enrollClassUser(userUid, clase, courseByStudentRef): Promise<DocumentReference<any>>{
+
+    
 
     const userRef = this.afs.collection('user').doc(userUid).ref;
     const claseRef = this.afs.collection('class').doc(clase.id).ref;
+
+
+    // Consulta para verificar si ya existe un registro en classesByStudent que haga match
+    const existingClassSnapshot = await this.afs.collection('classesByStudent', ref => 
+      ref.where('coursesByStudentRef', '==', courseByStudentRef)
+        .where('classRef', '==', claseRef)
+        .where('userRef', '==', userRef)
+    ).get().toPromise();
+
+    // Si se encuentra un registro, devolver la referencia del documento encontrado
+    if (!existingClassSnapshot.empty) {
+      return existingClassSnapshot.docs[0].ref;
+    }
 
     const courseByStudent = (await firstValueFrom(this.afs.collection<CourseByStudent>(CourseByStudent.collection).doc(courseByStudentRef.id).get())).data();
 
