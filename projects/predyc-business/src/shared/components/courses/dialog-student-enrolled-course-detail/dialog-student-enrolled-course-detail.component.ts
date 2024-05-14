@@ -89,7 +89,7 @@ export class DialogStudentEnrolledCourseDetailComponent {
     ).subscribe(([modules, completedClasses, courseClasses]) => {
       this.modules = modules
       this.completedClasses = completedClasses
-      // console.log('completedClasses',completedClasses)
+      console.log('completedClasses',completedClasses)
       const modulesInList: any[] = modules.map(module => {
         let completedClassesInsidemodule = 0
         module.clasesRef.forEach(classRef => {
@@ -147,6 +147,7 @@ export class DialogStudentEnrolledCourseDetailComponent {
     //   duracion: cls.duracion,
     //   id: cls.id
     // };
+    
 
     const classByStudentRef = await this.courseService.enrollClassUser(this.userUid, cls, this.courseByStudentRef);
 
