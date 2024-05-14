@@ -95,8 +95,15 @@
             <span class="ft12 makeBlue">Mostrar logo de la empresa en certificados.</span>
             <mat-slide-toggle class="" color="primary" formControlName="showEnterpriseLogoInCertificates"></mat-slide-toggle>
         </div>
-    
     </div>
+
+    <div fxLayoutAlign="start center" fxLayout="row" fxLayoutGap="1rem">
+        <button *ngIf="enterprise.id" class=" redButtonAnim button-animation h28px mgr10 " fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" 
+        type="button" (click)="deleteEnterprise()" >
+            Eliminar empresa
+        </button>
+    </div>
+
 
     <div fxLayout="row" class="mgt10" fxLayoutAlign="end ">
         <button class=" blueButtonAnim button-animation h28px  " fxLayout="row" fxLayoutAlign="center center" type="submit" style="margin-right: -1px;">

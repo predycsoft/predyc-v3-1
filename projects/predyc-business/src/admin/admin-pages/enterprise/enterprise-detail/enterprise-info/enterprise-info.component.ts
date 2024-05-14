@@ -8,6 +8,7 @@ import { AlertsService } from "projects/predyc-business/src/shared/services/aler
 import { DialogService } from "projects/predyc-business/src/shared/services/dialog.service";
 import { EnterpriseService } from "projects/predyc-business/src/shared/services/enterprise.service";
 import { cleanFileName } from "projects/shared";
+import Swal from 'sweetalert2';
 
 @Component({
 	selector: "app-enterprise-info",
@@ -184,9 +185,42 @@ export class EnterpriseInfoComponent {
 	}
 
 	async deleteEnterprise() {
+
+
+		Swal.fire({
+			title: `Borrar empresa ${this.enterpriseForm.controls['name'].value} `,
+			text: "Esta operación es irreversible, ¿deseas continuar?",
+			icon: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#d33",
+			cancelButtonColor: "#9CA6AF",
+			confirmButtonText: "Si, borrar empresa!"
+		  }).then(async (result) => {
+			if (result.isConfirmed) {
+				Swal.fire({
+				title: 'Borrando datos...',
+				text: 'Por favor, espera.',
+				allowOutsideClick: false,
+				didOpen: () => {
+					Swal.showLoading()
+				}
+				});
+			  await this.enterpriseService.deleteEnterprise(this.enterprise.id)
+			  Swal.close();
+			  Swal.fire({
+				title: "Deleted!",
+				text: "Your file has been deleted.",
+				icon: "success"
+			  });
+			  this.router.navigate(["/admin/enterprises"])
+			}
+		  });
+
+
+
 		// const dialogResult = await firstValueFrom(this.dialogService.dialogConfirmar().afterClosed());
 		// if (dialogResult) {
-		//   await this.enterpriseService.deleteEnterprise(this.enterprise.id)
+		//   //await this.enterpriseService.deleteEnterprise(this.enterprise.id)
 		//   this.dialogService.dialogExito();
 		//   this.router.navigate(["/admin/enterprises"])
 		// }

@@ -7,8 +7,8 @@ admin.initializeApp(functions.config().firebase);
 import { onActivityUpdated } from './activity';
 export { onActivityUpdated }
 
-import { createUserWithEmailAndPassword, generatePasswordResetLink, emptyDatabase } from './authentication';
-export { createUserWithEmailAndPassword, generatePasswordResetLink, emptyDatabase }
+import { createUserWithEmailAndPassword,deleteUser, generatePasswordResetLink, emptyDatabase } from './authentication';
+export { createUserWithEmailAndPassword,deleteUser, generatePasswordResetLink, emptyDatabase }
 
 import { createTractianUser } from './tractian';
 export { createTractianUser }
