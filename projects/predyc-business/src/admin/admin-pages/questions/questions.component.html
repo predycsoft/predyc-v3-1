@@ -1,42 +1,29 @@
-<!-- <div class="mgt20 mgl20 mgr20">
-    <p class="ft600 ft16 gray-10">Preguntas</p>
-    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".7rem" class=" ">
-        <div fxLayout="row" fxLayoutAlign=" center" class="shadow-animation radius20">
-            <app-search-input-box class=""></app-search-input-box>
-        </div>
-        <span class="ft12">Introduce el nombre del curso o instructor (HC)</span>
-    </div>
-    <div fxLayout="columm" fxLayoutAlign="center center" class="fw vh50 pdr20" >
-        <app-sales-list class="fw"></app-sales-list>
-    </div>
-</div>     -->
-
 <div class="mgt20 mgl20 mgr20">
     <p class="ft600 ft16 gray-10">Preguntas</p>
     <div fxLayout="row" class="mgb05 fw" fxLayoutAlign="space-between center">
         <div fxLayout="row" fxLayoutAlign="start" >
             <div class="radius10 shadowLight pdt10   cards" alt="stats-empresas" fxLayoutAlign="center center" fxLayout="column" style="height: 10vh; background-color: rgba(244, 244, 244, 0.362); ">
                 <div fxLayout="row" class="mgb08" fxLayoutAlign="center center" >
-                    <div fxLayout="row"  fxLayoutAlign="center center" class="border-rl">
-                        <div fxLayout="column" class="mgr20 mgl20 " fxLayoutAlign="center center"> 
-                            <span class=" ft08 ft500 mgt08" fxLayoutAlign="center center" > Pendientes </span>
-                            <span class="fh ft12 ft500 makeGray mgb10 mgt10" fxLayoutAlign="center center" > 46 (HC)</span>
+                    <div fxLayout="row" fxLayoutAlign="center center" class="border-rl">
+                        <div fxLayout="column" class="mgr20 mgl20" fxLayoutAlign="center center">
+                            <span class="ft08 ft500 mgt08" fxLayoutAlign="center center">Pendientes</span>
+                            <span class="fh ft12 ft500 makeGray mgb10 mgt10" fxLayoutAlign="center center">{{ totalPending }}</span>
+                        </div>
+                    </div>
+
+                    <div fxLayout="row" fxLayoutAlign="center center" class="border-rl">
+                        <div fxLayout="column" class="mgr20 mgl20" fxLayoutAlign="center center">
+                            <span class="ft08 ft500 mgt08" fxLayoutAlign="center center">Respondidas</span>
+                            <span class="fh ft12 ft500 makeGray mgb10 mgt10" fxLayoutAlign="center center">{{ totalAnswered }}</span>
                         </div>
                     </div>
     
-                    <div fxLayout="row"  fxLayoutAlign="center center " class="border-rl">
-                        <div fxLayout="column" class="mgr20 mgl20 " fxLayoutAlign="center center"> 
-                            <span class=" ft08 ft500 mgt08" fxLayoutAlign="center center" > Respondidas </span>
-                            <span class="fh ft12 ft500 makeGray mgb10 mgt10" fxLayoutAlign="center center" > 10 (HC)</span>
-                        </div>
-                    </div>
-    
-                    <div fxLayout="row"  fxLayoutAlign="center center" class="">
+                    <!-- <div fxLayout="row"  fxLayoutAlign="center center" class="">
                         <div fxLayout="column" class=" mgr20 mgl20 " fxLayoutAlign="center center"> 
                             <span class=" ft08 ft500 mgt08" fxLayoutAlign="center center" > Tiempo sin responder </span>
                             <span class="fh ft12 ft500 makeGray mgb10 mgt10" fxLayoutAlign="center center" > 56 (HC)</span>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -49,6 +36,6 @@
     </div>
     <!-- Questions list -->
     <div fxLayout="columm" fxLayoutAlign="center center" class="fw vh50  " >
-        <app-questions-list class="fw mgr03"></app-questions-list>
+        <app-questions-list class="fw mgr03" (totalsCalculated)="updateTotals($event)"></app-questions-list>
     </div>
 </div>    

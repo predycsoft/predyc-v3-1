@@ -121,11 +121,11 @@ export class DialogQuestionsDetailComponent {
     const sender = "desarrollo@predyc.com";
     const recipients = [data.usuarioEmail];
     // const recipients = ['diegonegrette42@gmail.com'];
-    const subject = "¡Tu instructor ha respondido tu consulta en Predyc!";
-    const text = `Hola ${capitalizeFirstLetter(data.usuarioNombre)}, tu instructor ha respondido tú consulta del curso ${data.cursoTitulo} en la clase ${data.claseTitulo}.
+    const subject = "¡Han respondido tu consulta en Predyc!";
+    const text = `Hola ${capitalizeFirstLetter(data.usuarioNombre)}, han respondido tu consulta del curso ${data.cursoTitulo} en la clase ${data.claseTitulo}.
     \nPregunta: "${data.data.pregunta}"
     \nRespuesta: "${data.data.respuesta}"
-    \nTe invitamos a entrar a tu cuenta y ver información o material adicional que el instructor haya compartido con sus estudiantes. 
+    \nTe invitamos a entrar a tu cuenta y ver información o material adicional que este disponible para los estudiantes. 
     \nSi tienes alguna duda, el equipo de Predyc estará para asesorarte.
     \n¡Felicidades por acelerar tu formación profesional con Predyc!`
     const cc = ["desarrollo@predyc.com", "liliana.giraldo@predyc.com"];

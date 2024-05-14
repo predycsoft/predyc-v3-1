@@ -53,12 +53,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div *ngIf="item.respondiendo == true" fxLayout="row" fxLayoutAlign=" end" fxLayoutGap="1rem" class="mgt10">
+                        <div *ngIf="item.respondiendo == true" fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="1rem" class="mgt10">
                             <div class="fw backRed2" fxLayoutAlign="end">
                                 <textarea [(ngModel)]="item.data.respuesta" class="fw"></textarea>
                             </div>
                             <button class="redButton ft12 shadow8" (click)="item.respondiendo=false">Cancelar</button>
-                            <button class="blueButton ft12 shadow8" (click)="responder(i)">Enviar</button>
+                            <button class="blueButton ft12 shadow8 pdb03" (click)="responder(i)">Enviar</button>
                         </div>
                         <div *ngIf="item.data.respondida == true" class="mgl20 mgt10">
                             <div class="neutralFill1 radius6 shadow8 border pd05" fxLayout="row">
