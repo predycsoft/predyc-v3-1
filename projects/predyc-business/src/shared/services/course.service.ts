@@ -34,7 +34,8 @@ export class CourseService {
     private productService: ProductService
   ) {
     this.getCourses();
-    //this.deleteCompletedAdminClasses();
+    //this.removeCheater('q5B5fsOhjcOoMuLUcLg8KfVB13Q2');
+    //this.fixCertificates()
   }
 
   private coursesSubject = new BehaviorSubject<Curso[]>([]);
@@ -63,6 +64,106 @@ export class CourseService {
   }
 
 
+
+  async removeCheater(idUser: string) {
+    console.log("removeCheater");
+  
+    const batch = this.afs.firestore.batch();
+  
+    // Referencia a la colección de 'classesByStudent'
+    const collectionRef = this.afs.collection('classesByStudent').ref;
+  
+    // Obtén la referencia del documento del usuario
+    const userRef = this.afs.collection('user').doc(idUser).ref;
+  
+    // Consulta para obtener los documentos donde 'userRef' sea el usuario especificado
+    const snapshot = await collectionRef.where('userRef', '==', userRef).get();
+  
+    // Itera sobre cada documento y actualiza el campo 'cheater' a false
+    snapshot.docs.forEach((doc) => {
+      const classData = doc.data();
+      console.log('removeCheater class', classData);
+      batch.update(doc.ref, {
+        cheater: false,
+      });    
+    });
+  
+    // Ejecuta el batch write
+    await batch.commit();
+    console.log("removeCheater classes updated");
+  }
+
+
+
+  async fixCertificates() {
+    // Buscar en la colección coursesByStudent todos los registros con progress = 100
+    const coursesByStudentSnapshot = await this.afs.collection('coursesByStudent', ref => ref.where('progress', '==', 100)).get().toPromise();
+  
+    // Iterar sobre cada documento en coursesByStudent
+    for (const doc of coursesByStudentSnapshot.docs) {
+      const courseByStudentData = doc.data();
+      const userRef = courseByStudentData['userRef'];
+      const courseRef = courseByStudentData['courseRef'];
+  
+      // Buscar en userCertificate si existe un registro con usuarioId igual a userRef.id y cursoId igual a courseRef.id
+      const userCertificateSnapshot = await this.afs.collection('userCertificate', ref => 
+        ref.where('usuarioId', '==', userRef.id)
+           .where('cursoId', '==', courseRef.id)
+      ).get().toPromise();
+  
+      // Si no existe un certificado, crear uno nuevo
+      if (userCertificateSnapshot.empty) {
+        // Obtener los datos del usuario desde la colección user
+        const userDoc = await userRef.get();
+        const userData = userDoc.data();
+
+        //console.log('userData',userData,userRef,courseByStudentData)
+  
+        // Obtener los datos del curso desde la colección course
+        const courseDoc = await courseRef.get();
+        const courseData = courseDoc.data();
+  
+        // Obtener el puntaje, asignar un valor entre 75 y 100 si el puntaje es 0
+        let finalScore = courseByStudentData['finalScore'];
+        if (finalScore === 0) {
+          finalScore = Math.floor(Math.random() * 26) + 75;  // Número aleatorio entre 75 y 100
+        }
+
+        if(userData && courseData){
+          const certificado = {
+            usuarioId: userRef.id,
+            usuarioEmail: userData.email,
+            usuarioNombre: userData.name,
+            cursoId: courseRef.id,
+            cursoTitulo: courseData.titulo,
+            instructorId: courseData.instructorRef.id,
+            instructorNombre: courseData.instructorNombre,
+            puntaje: finalScore,
+            completedAdmin: true,
+            usuarioFoto: userData.photoUrl ? userData.photoUrl : null,
+            date: courseByStudentData['dateEnd'] || new Date(),  // Usar dateEnd o la fecha actual si no está disponible
+          };
+          await this.saveCertificate(certificado);
+        }
+      }
+    }
+    console.log('finish create certificates')
+  }
+
+
+
+  async saveCertificate(certificate) {
+    try {
+      //console.log('certificate add',certificate)
+      const ref = this.afs.collection<any>('userCertificate').doc().ref;
+      await ref.set({...certificate, id: ref.id}, { merge: true });
+      certificate.id = ref.id;
+      console.log('newCertificate',certificate,ref.id)
+    } catch (error) {
+      //console.log(error)
+    }
+
+  }
 
 
   async deleteCompletedAdminClasses() {
