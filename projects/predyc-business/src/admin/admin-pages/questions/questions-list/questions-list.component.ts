@@ -108,7 +108,7 @@ export class QuestionsListComponent {
 
       const filteredData = searchTerm ? dataInList.filter(sub => sub.cursoTitulo.toLowerCase().includes(searchTerm.toLowerCase())) : dataInList;
       filteredData.sort((a,b) => b.timeWithoutAnswer - a.timeWithoutAnswer)
-      console.log("filteredData", filteredData)
+      // console.log("filteredData", filteredData)
       this.paginator.pageIndex = page - 1;
       this.dataSource.data = filteredData
       this.totalLength = filteredData.length;

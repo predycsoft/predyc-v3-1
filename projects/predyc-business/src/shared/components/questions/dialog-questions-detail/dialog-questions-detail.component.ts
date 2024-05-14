@@ -1,13 +1,14 @@
 import { Component, Input } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Question } from 'projects/shared/models/question.model';
 import { IconService } from '../../../services/icon.service';
-import { firestoreTimestampToNumberTimestamp } from 'shared';
 import { CourseService } from '../../../services/course.service';
 import { ModuleService } from '../../../services/module.service';
-import { map, switchMap } from 'rxjs';
+import { firstValueFrom, map, switchMap } from 'rxjs';
 import { UserService } from '../../../services/user.service';
+import { QuestionService } from '../../../services/question.service';
+import { AngularFireFunctions } from '@angular/fire/compat/functions';
+import { capitalizeFirstLetter, firestoreTimestampToNumberTimestamp } from 'projects/shared/utils';
 
 interface CourseQuestionsData { // it has to be he same as the one declared in questions-list component
   courseQuestions: Question[]
@@ -38,11 +39,12 @@ export class DialogQuestionsDetailComponent {
   
   constructor(
     public activeModal: NgbActiveModal,
-    private afs: AngularFirestore,
+    private fireFunctions: AngularFireFunctions,
     public icon: IconService,
     private courseService: CourseService, 
     private moduleService: ModuleService,
-    private userService: UserService
+    private userService: UserService,
+    private questionService: QuestionService
   ) { }
 
   @Input() courseQuestionsData: CourseQuestionsData;
@@ -79,15 +81,20 @@ export class DialogQuestionsDetailComponent {
           );
         })
       ).subscribe(async classMap => {
-        const preguntasPromises = this.courseQuestionsData.courseQuestions.map(async question => ({
-          data: question,
-          respondiendo: false,
-          claseTitulo: classMap.get(question.claseRef.id) || 'N/A',
-          instructorNombre: this.courseQuestionsData.instructorName,
-          instructorFoto: this.courseQuestionsData.instructorPhoto,
-          usuarioNombre: (await this.userService.getUserByUid(question.userRef.id)).displayName,
-          usuarioFoto: (await this.userService.getUserByUid(question.userRef.id)).photoUrl
-        }));
+        const preguntasPromises = this.courseQuestionsData.courseQuestions.map(async question => {
+          const userData = await this.userService.getUserByUid(question.userRef.id)
+          return {
+            data: question,
+            respondiendo: false,
+            claseTitulo: classMap.get(question.claseRef.id) || 'N/A',
+            cursoTitulo: this.courseQuestionsData.courseTitle,
+            instructorNombre: this.courseQuestionsData.instructorName,
+            instructorFoto: this.courseQuestionsData.instructorPhoto,
+            usuarioNombre: userData.displayName,
+            usuarioFoto: userData.photoUrl,
+            usuarioEmail: userData.email
+          }
+        });
   
         this.preguntas = await Promise.all(preguntasPromises);
         console.log("this.preguntas", this.preguntas);
@@ -98,27 +105,36 @@ export class DialogQuestionsDetailComponent {
     }
   }
 
-  responder(i){
+  async responder(i){
+    console.log("this.preguntas[i]", this.preguntas[i])
     this.preguntas[i].respondiendo = false
     this.preguntas[i].data.timestampRespuesta = new Date
     this.preguntas[i].data.respondida = true
-    console.log("data to save: ", this.preguntas[i].data)
-    this.afs.collection(Question.collection).doc(this.preguntas[i].data.id).set({
-      timestampRespuesta: this.preguntas[i].data.timestampRespuesta,
-      respondida: true,
-      respuesta: this.preguntas[i].data.respuesta
-    }, {merge: true})
 
+    this.questionService.answereQuestion(this.preguntas[i].data.id, this.preguntas[i].data.timestampRespuesta, this.preguntas[i].data.respuesta)
 
-    // firstValueFrom(this.functions.httpsCallable("respuestaPregunta")({
-    //   pregunta: this.preguntas[i].data.pregunta,
-    //   respuesta: this.preguntas[i].data.respuesta,
-    //   usuarioId: this.preguntas[i].data.usuarioId,
-    //   curso: this.preguntas[i].data.cursoTitulo,
-    //   clase: this.preguntas[i].data.claseTitulo
-    // })).catch(error => {
-    //   console.log(error)
-    // })
+    await this.onSendMail(this.preguntas[i])
+  }
+
+  async onSendMail(data: any) {
+
+    const sender = "desarrollo@predyc.com";
+    const recipients = [data.usuarioEmail];
+    // const recipients = ['diegonegrette42@gmail.com'];
+    const subject = "¡Tu instructor ha respondido tu consulta en Predyc!";
+    const text = `Hola ${capitalizeFirstLetter(data.usuarioNombre)}, tu instructor ha respondido tú consulta del curso ${data.cursoTitulo} en la clase ${data.claseTitulo}.
+    \nPregunta: "${data.data.pregunta}"
+    \nRespuesta: "${data.data.respuesta}"
+    \nTe invitamos a entrar a tu cuenta y ver información o material adicional que el instructor haya compartido con sus estudiantes. 
+    \nSi tienes alguna duda, el equipo de Predyc estará para asesorarte.
+    \n¡Felicidades por acelerar tu formación profesional con Predyc!`
+    const cc = ["desarrollo@predyc.com", "liliana.giraldo@predyc.com"];
+
+    const mailObj = { sender, recipients, subject, text, cc };
+
+    // console.log("mailObj", mailObj)
+    await firstValueFrom(this.fireFunctions.httpsCallable('sendMail')(mailObj));
+    console.log("email sent")
   }
 
   filtrar(){
