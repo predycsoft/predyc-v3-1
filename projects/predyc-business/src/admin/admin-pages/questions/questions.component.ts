@@ -7,4 +7,12 @@ import { Component } from '@angular/core';
 })
 export class QuestionsComponent {
 
+  totalAnswered: number = 0;
+  totalPending: number = 0;
+
+  updateTotals(totals: {answered: number, pending: number}) {
+    this.totalAnswered = totals.answered;
+    this.totalPending = totals.pending;
+  }
+
 }

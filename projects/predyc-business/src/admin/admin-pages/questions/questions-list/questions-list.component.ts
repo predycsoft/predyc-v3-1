@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -60,6 +60,7 @@ export class QuestionsListComponent {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @Input() enableNavigateToUser: boolean = true
+  @Output() totalsCalculated = new EventEmitter<{answered: number, pending: number}>();
 
   pageSize: number = 16
   totalLength: number
@@ -107,11 +108,17 @@ export class QuestionsListComponent {
       })
 
       const filteredData = searchTerm ? dataInList.filter(sub => sub.cursoTitulo.toLowerCase().includes(searchTerm.toLowerCase())) : dataInList;
+      filteredData.sort((a,b) => b.lastQuestion - a.lastQuestion)
       filteredData.sort((a,b) => b.timeWithoutAnswer - a.timeWithoutAnswer)
-      console.log("filteredData", filteredData)
+      // console.log("filteredData", filteredData)
       this.paginator.pageIndex = page - 1;
       this.dataSource.data = filteredData
       this.totalLength = filteredData.length;
+
+      const totalAnswered = filteredData.reduce((acc, curr) => acc + curr.answeredQuestions, 0);
+      const totalPending = filteredData.reduce((acc, curr) => acc + curr.pendingQuestions, 0);
+      this.totalsCalculated.emit({answered: totalAnswered, pending: totalPending});
+      
     })
   }
 

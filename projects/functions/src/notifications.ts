@@ -3,6 +3,7 @@ import * as functions from 'firebase-functions';
 // import { Enterprise } from '../../projects/predyc-business/src/shared/models/enterprise.model'
 import * as admin from 'firebase-admin';
 import { DocumentReference } from 'firebase-admin/firestore';
+import { Notification, Subscription } from 'shared';
 
 const db = admin.firestore();
 
@@ -62,7 +63,7 @@ export const checkExpiredSubscriptionsAndNotify5DaysBefore = functions.pubsub.sc
     const startTimestamp = fiveDaysLaterStart.getTime();
     const endTimestamp = fiveDaysLaterEnd.getTime();
 
-    const subscriptionRef = admin.firestore().collection('subscription');
+    const subscriptionRef = admin.firestore().collection(Subscription.collection);
     // Search for subscriptions that expires inside the range
     const expiringSubscriptionsSnapshot = await subscriptionRef
     .where('currentPeriodEnd', '>=', startTimestamp)
@@ -78,7 +79,7 @@ export const checkExpiredSubscriptionsAndNotify5DaysBefore = functions.pubsub.sc
 
     expiringSubscriptionsSnapshot.docs.forEach(doc => {
         const subscriptionData = doc.data();
-        const notificationRef = admin.firestore().collection('notification').doc();
+        const notificationRef = admin.firestore().collection(Notification.collection).doc();
         const notification = {
             id: notificationRef.id,
             message: "tiene una suscripción que expira en 5 dias.",
