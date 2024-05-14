@@ -1,12 +1,13 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
+import { License } from 'shared';
 
 const db = admin.firestore();
 
 
 export const checkExpiredLicenses = functions.pubsub.schedule('every 24 hours').onRun(async (context) => {
     const now = +new Date();
-    const licenseRef = admin.firestore().collection('license');
+    const licenseRef = admin.firestore().collection(License.collection);
     const snapshot = await licenseRef.where('currentPeriodEnd', '<', now).get();
   
     if (snapshot.empty) {

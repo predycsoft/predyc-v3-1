@@ -1,5 +1,6 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
+import { Enterprise, User } from 'shared';
 
 const db = admin.firestore();
 
@@ -12,7 +13,7 @@ export const onUserAdded = functions.firestore.document('user/{doc}').onCreate(a
     if (!enterprise) {
         return console.error('Enterprise data not found');
     }
-    return db.collection('enterprise').doc(enterprise.id).update(
+    return db.collection(Enterprise.collection).doc(enterprise.id).update(
         {
             employesNo: admin.firestore.FieldValue.increment(1)
         }
@@ -36,7 +37,7 @@ export const onUserDeleted = functions.firestore.document('user/{doc}').onDelete
     if (!enterprise) {
         return console.error('Enterprise data not found');
     }
-    return db.collection('enterprise').doc(enterprise.id).update({
+    return db.collection(Enterprise.collection).doc(enterprise.id).update({
             employesNo: admin.firestore.FieldValue.increment(-1)
         })
         .then(() => {
@@ -75,7 +76,7 @@ export const onUserUpdated = functions.firestore.document('user/{doc}').onUpdate
 
     // Si hubo un cambio y no es sólo el campo updatedAt
     if (changed && !(Object.keys(beforeData).length === 1 && 'updatedAt' in beforeData)) {
-        return db.collection('user').doc(afterData.uid).update({
+        return db.collection(User.collection).doc(afterData.uid).update({
             updatedAt: +new Date()
         })
         .then(() => {

@@ -130,6 +130,7 @@ export class StudentDetailComponent {
         })
       )
       .subscribe((user) => {
+        // console.log("this.user", this.user)
         this.user = user;
         const title = MAIN_TITLE + `Usuario ${this.user.name}`;
         this.titleService.setTitle(title);
@@ -146,12 +147,12 @@ export class StudentDetailComponent {
               // Studyplan case
               if (!coursesByStudent[0].isExtraCourse) {
                 this.hasExtraCourses = false;
-                console.log("El estudiante posee un plan de estudios");
+                // console.log("El estudiante posee un plan de estudios");
               }
               // Extra courses case
               else {
                 this.hasExtraCourses = true;
-                console.log("El estudiante posee cursos extracurriculares");
+                // console.log("El estudiante posee cursos extracurriculares");
               }
               this.coursesInfo = this.coursesByStudent.map(
                 (courseByStudent) => {
@@ -164,17 +165,13 @@ export class StudentDetailComponent {
                 }
               );
             } else {
-              console.log(
-                "Aun no posee plan de estudio o cursos extracurriculares"
-              );
+              console.log("Aun no posee plan de estudio o cursos extracurriculares");
             }
           }
         });
       });
 
-    this.productSubscription = this.productService
-      .getProducts$()
-      .subscribe((products) => (this.products = products));
+    this.productSubscription = this.productService.getProducts$().subscribe((products) => (this.products = products));
   }
 
   combinedObservableSubscription: Subscription;

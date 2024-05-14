@@ -1,13 +1,14 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import { update } from 'lodash';
+import { Subscription } from 'shared';
 
 const db = admin.firestore();
 
 
 export const checkExpiredSubscriptions = functions.pubsub.schedule('every 24 hours').onRun(async (context) => {
     const now = +new Date();
-    const subscriptionRef = db.collection('subscription');
+    const subscriptionRef = db.collection(Subscription.collection);
     const snapshot = await subscriptionRef.where('currentPeriodEnd', '<', now).get();
 
     if (snapshot.empty) {
@@ -23,6 +24,7 @@ export const checkExpiredSubscriptions = functions.pubsub.schedule('every 24 hou
         // Skip if there's no productRef
         if (!docData.productRef) {
             console.log(docData.id + "subscription doesnt have productRef set")
+            continue
         } 
 
         const productSnapshot = await docData.productRef.get();

@@ -1,7 +1,7 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import { _sendMail } from "./email";
-import { capitalizeFirstLetter, generateSixDigitRandomNumber } from "shared";
+import { User, capitalizeFirstLetter, generateSixDigitRandomNumber } from "shared";
 
 const db = admin.firestore();
 
@@ -56,7 +56,7 @@ const batchSize = 10;
 
 export const emptyDatabase = functions.https.onCall(async (data, _) => {
   try {
-    const users = await db.collection("user").listDocuments();
+    const users = await db.collection(User.collection).listDocuments();
     const uids = users.map((user) => user.id);
     const collections = [
       // 'activity',

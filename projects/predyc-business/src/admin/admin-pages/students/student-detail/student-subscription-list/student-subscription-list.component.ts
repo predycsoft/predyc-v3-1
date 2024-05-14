@@ -1,21 +1,11 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-  SimpleChanges,
-  ViewChild,
-} from "@angular/core";
+import { Component, EventEmitter, Input, Output, SimpleChanges, ViewChild } from "@angular/core";
 import { DocumentReference } from "@angular/fire/compat/firestore";
 import { MatTableDataSource } from "@angular/material/table";
 import { Subscription } from "rxjs";
 import { Product } from "projects/shared/models/product.model";
 import { User } from "projects/shared/models/user.model";
 import { SubscriptionService } from "projects/predyc-business/src/shared/services/subscription.service";
-import {
-  Subscription as SubscriptionClass,
-  SubscriptionJson,
-} from "projects/shared/models/subscription.model";
+import { Subscription as SubscriptionClass, SubscriptionJson } from "projects/shared/models/subscription.model";
 import { MatDialog } from "@angular/material/dialog";
 import { DialogEditSubscriptionComponent } from "projects/predyc-business/src/shared/components/subscription/dialog-edit-subscription/dialog-edit-subscription.component";
 import { DialogService } from "projects/predyc-business/src/shared/services/dialog.service";
@@ -102,13 +92,12 @@ export class StudentSubscriptionListComponent {
             let sub = {
               ...subscription,
               productName: product?.name,
-              statusToDisplay:
-                SubscriptionClass.statusToDisplayValueDict[subscription.status],
+              statusToDisplay: SubscriptionClass.statusToDisplayValueDict[subscription.status],
             };
             return sub;
           }
         );
-
+        console.log("subscriptionsInfo", subscriptionsInfo)
         this.dataSource.data = subscriptionsInfo;
         this.totalLength = subscriptionsInfo.length;
       });

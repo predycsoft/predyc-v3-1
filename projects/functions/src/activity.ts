@@ -1,5 +1,6 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
+import { Activity } from 'shared';
 
 const db = admin.firestore();
 
@@ -28,7 +29,7 @@ export const onActivityUpdated = functions.firestore.document('activity/{doc}').
 
   // Si hubo un cambio y no es sólo el campo updatedAt
   if (changed && !(Object.keys(beforeData).length === 1 && 'updatedAt' in beforeData)) {
-      return db.collection('activity').doc(afterData.id).update({
+      return db.collection(Activity.collection).doc(afterData.id).update({
           updatedAt: +new Date()
       })
       .then(() => {
