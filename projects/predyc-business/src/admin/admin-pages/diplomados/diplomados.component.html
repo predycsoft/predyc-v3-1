@@ -1,0 +1,21 @@
+<div class="mgt20 mgl20 mgr20">
+    <p class="ft600 ft16 gray-10">Diplomados</p>
+    <div fxLayout="row" class="mgb05 fw" fxLayoutAlign="space-between center">
+        <div fxLayout="row" fxLayoutAlign="start" >
+
+        </div>
+        
+        <div fxLayout="row" fxLayoutAlign="center center" >
+            <div fxLayout="row"  class="radius20 mgr05  fw">
+                <!-- <app-search-input-box  fxLayoutAlign=" center" class="shadow-animation radius20 fw" style="height: 38px;  "></app-search-input-box> -->
+            </div>
+            <button (click)="crearDiplomado()" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButtonAnim button-animation "  style="border-radius: 24px !important;" >
+                <img [src]="icon.addNew" class="h16px  makeWhite mgr08" alt=""> Nuevo diplomado
+            </button>
+        </div>
+    </div>
+    <!-- student list -->
+    <div fxLayout="columm" fxLayoutAlign="center center" class="fw vh50  " >
+        <app-diplomados-list class="fw mgr03"></app-diplomados-list>
+    </div>
+</div>    

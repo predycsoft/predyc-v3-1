@@ -7,6 +7,7 @@ import { EnterpriseService } from './enterprise.service';
 import { Permissions } from 'projects/shared/models/permissions.model';
 import { UserService } from './user.service';
 import { User } from 'projects/shared/models/user.model';
+import { Diplomado } from 'projects/shared/models/diplomado.model';
 
 
 @Injectable({
@@ -74,6 +75,32 @@ export class ProfileService {
     return this.profiles$
   }
 
+
+  public getDiplomados$(): Observable<Diplomado[]> {
+    return this.enterpriseService.enterpriseLoaded$.pipe(
+      switchMap(isLoaded => {
+        if (!isLoaded) return []
+        const enterpriseRef = this.enterpriseService.getEnterpriseRef();
+            
+        // Query to get courses matching enterpriseRef
+        const enterpriseMatch$ = this.afs.collection<Diplomado>(Diplomado.collection, ref =>
+          ref.where('enterpriseRef', '==', enterpriseRef)
+        ).valueChanges({ idField: 'id' });
+      
+        // Query to get courses where enterpriseRef is empty
+        const enterpriseEmpty$ = this.afs.collection<Diplomado>(Diplomado.collection, ref =>
+          ref.where('enterpriseRef', '==', null)
+        ).valueChanges({ idField: 'id' });
+      
+        // Combine both queries
+        return combineLatest([enterpriseMatch$, enterpriseEmpty$]).pipe(
+          map(([matched, empty]) => [...matched, ...empty]),
+        )
+      })
+    )
+  }
+
+
   public getProfiles$(): Observable<Profile[]> {
     return this.enterpriseService.enterpriseLoaded$.pipe(
       switchMap(isLoaded => {
@@ -112,6 +139,37 @@ export class ProfileService {
 
   public getProfileObject(id: string): Profile {
     return this.profilesSubject.value.find(x => x.id === id)
+  }
+
+
+  async saveDiplomado(diplomado: Diplomado): Promise<string> {
+    let ref: DocumentReference;
+    console.log('diplomado save',diplomado)
+    // If diplomado has an ID, then it's an update
+    if (diplomado?.id) {
+      ref = this.afs.collection<Diplomado>(Diplomado.collection).doc(diplomado.id).ref;
+      const oldDiplomado = (await ref.get()).data()
+      // Si los permisos del perfil cambiaron
+      // if (JSON.stringify(oldDiplomado.permissions) !== JSON.stringify(diplomado.permissions)) {
+      //   const haveSamePermissions = this.checkPermissionsChange(diplomado.permissions)
+      //   diplomado.permissions.hasDefaultPermissions = haveSamePermissions
+      // }
+    } else {
+      // Else, it's a new profile
+      ref = this.afs.collection<Diplomado>(Diplomado.collection).doc().ref;
+      diplomado.id = ref.id; // Assign the generated ID to the diplomado
+      const enterprise = this.enterpriseService.getEnterprise()
+      // diplomado.permissions = enterprise.permissions
+      // diplomado.permissions.hasDefaultPermissions = true
+    }
+    // diplomado.permissions.hasDefaultPermissions = hasDefaultPermissions
+    const dataToSave = typeof diplomado.toJson === 'function' ? diplomado.toJson() : diplomado;
+
+    console.log('dataToSave diplomado',dataToSave)
+
+    await ref.set(dataToSave, { merge: true });
+    diplomado.id = ref.id; // Assign the generated ID to the profile
+    return diplomado.id
   }
 
 
@@ -211,7 +269,9 @@ export class ProfileService {
   }
   
 
-
+  public getDiplomado$(id: string): Observable<Diplomado> {
+    return this.afs.collection<Diplomado>(Diplomado.collection).doc(id).valueChanges()
+  }
 
 
   public getProfile$(id: string): Observable<Profile> {

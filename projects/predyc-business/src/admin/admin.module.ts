@@ -39,6 +39,9 @@ import { QuestionsComponent } from "./admin-pages/questions/questions.component"
 import { CertificationsComponent } from "./admin-pages/certifications/certifications.component";
 import { CertificationsListComponent } from "./admin-pages/certifications/certifications-list/certifications-list.component";
 import { CertificationsFormComponent } from "./admin-pages/certifications/certifications-form/certifications-form.component";
+import { DiplomadosComponent } from "./admin-pages/diplomados/diplomados.component";
+import { DiplomadosListComponent } from "./admin-pages/diplomados/diplomados-list/diplomados-list.component";
+import { DiplomadoFormComponent } from "./admin-pages/diplomados/diplomado-form/diplomado-form.component";
 
 @NgModule({
   declarations: [
@@ -50,6 +53,7 @@ import { CertificationsFormComponent } from "./admin-pages/certifications/certif
     SalesComponent,
     QuestionsComponent,
     CertificationsComponent,
+    DiplomadosComponent,
     StudentsComponent,
     AdminStudentListComponent,
     LicensesSubscriptionsComponent,
@@ -78,6 +82,8 @@ import { CertificationsFormComponent } from "./admin-pages/certifications/certif
     FreebiesListComponent,
     DialogFreebiesFormComponent,
     CertificationsListComponent,
+    DiplomadoFormComponent,
+    DiplomadosListComponent,
     CertificationsFormComponent
   ],
   imports: [SharedModule, CommonModule, AdminRoutingModule],

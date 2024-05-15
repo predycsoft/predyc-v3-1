@@ -17,6 +17,10 @@ import { QuestionsComponent } from "./admin-pages/questions/questions.component"
 import { CertificationsComponent } from "./admin-pages/certifications/certifications.component";
 import { CertificationsFormComponent } from "./admin-pages/certifications/certifications-form/certifications-form.component";
 
+import { DiplomadosComponent } from "./admin-pages/diplomados/diplomados.component";
+
+import { DiplomadoFormComponent } from "./admin-pages/diplomados/diplomado-form/diplomado-form.component";
+
 export const MAIN_TITLE = "Predyc Admin - ";
 
 const routes: Routes = [
@@ -68,6 +72,8 @@ const routes: Routes = [
   { path:"certifications/form", title: MAIN_TITLE + 'Crear Certificación', component: CertificationsFormComponent },
   { path:"certifications/form/:id", title: MAIN_TITLE + 'Editar Certificación', component: CertificationsFormComponent },
 
+  { path:"diplomados/form", title: MAIN_TITLE + 'Crear Diplomado', component: DiplomadoFormComponent },
+  { path:"diplomados/form/:id", title: MAIN_TITLE + 'Editar Diplomado', component: DiplomadoFormComponent },
 
   {
     path: "courses",
@@ -79,6 +85,13 @@ const routes: Routes = [
     title: MAIN_TITLE + "Freebies",
     component: FreebiesComponent,
   },
+
+  {
+    path: "diplomados",
+    title: MAIN_TITLE + "Diplomados",
+    component: DiplomadosComponent,
+  },
+
   { path: "**", redirectTo: "", pathMatch: "full" }, // Wildcard Route
 ];
 
