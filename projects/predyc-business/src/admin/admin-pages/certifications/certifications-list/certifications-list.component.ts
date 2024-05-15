@@ -87,7 +87,7 @@ export class CertificationsListComponent {
 
   performSearch(searchTerm:string, page: number) {
     this.chargeSubscription = this.activityClassesService.getActivityCertifications().subscribe(charges => {
-      console.log('datos',charges)
+      // console.log('datos',charges)
       const chargesInList = charges
       const filteredCharges = chargesInList
       this.paginator.pageIndex = page - 1;

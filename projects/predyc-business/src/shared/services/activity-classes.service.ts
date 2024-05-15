@@ -317,7 +317,7 @@ export class ActivityClassesService {
         .where('enterpriseRef', '==', this.enterpriseService.getEnterpriseRef())
         .orderBy('updatedAt', 'desc')
       ).valueChanges().subscribe(activities => {
-      console.log("New activities", activities)
+      // console.log("New activities", activities)
       this.activitiesSubject.next(activities)
     })
   }
@@ -358,7 +358,7 @@ export class ActivityClassesService {
       .valueChanges({ idField: 'id' })
       .pipe(
         switchMap(activities => {
-          console.log('Actividades encontradas:', activities);
+          // console.log('Actividades encontradas:', activities);
           if (activities.length > 0) {
             const questionsObservables = activities.map(activity =>
               this.afs.collection(`${Activity.collection}/${activity.id}/${Question.collection}`)

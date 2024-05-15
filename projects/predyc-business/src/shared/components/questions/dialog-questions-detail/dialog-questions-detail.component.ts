@@ -97,7 +97,7 @@ export class DialogQuestionsDetailComponent {
         });
   
         this.preguntas = await Promise.all(preguntasPromises);
-        console.log("this.preguntas", this.preguntas);
+        // console.log("this.preguntas", this.preguntas);
         this.filteredPreguntas = this.preguntas.sort((a, b) => {
           return firestoreTimestampToNumberTimestamp(b.data.timestamp) - firestoreTimestampToNumberTimestamp(a.data.timestamp);
         }) 
@@ -106,7 +106,7 @@ export class DialogQuestionsDetailComponent {
   }
 
   async responder(i){
-    console.log("this.preguntas[i]", this.preguntas[i])
+    // console.log("this.preguntas[i]", this.preguntas[i])
     this.preguntas[i].respondiendo = false
     this.preguntas[i].data.timestampRespuesta = new Date
     this.preguntas[i].data.respondida = true
