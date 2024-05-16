@@ -8,6 +8,8 @@ import {
   map,
   startWith,
   BehaviorSubject,
+  finalize,
+  firstValueFrom,
 } from "rxjs";
 import { Category } from "projects/shared/models/category.model";
 import { Curso, CursoJson } from "projects/shared/models/course.model";
@@ -31,6 +33,13 @@ import { AuthService } from "projects/predyc-business/src/shared/services/auth.s
 import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
 import Swal from 'sweetalert2';
 import { Diplomado, DiplomadoJson } from "projects/shared/models/diplomado.model";
+
+import { cleanFileName } from "projects/shared";
+import { AngularFireStorage } from "@angular/fire/compat/storage";
+import { ActivityClassesService } from "projects/predyc-business/src/shared/services/activity-classes.service";
+import { Activity } from "projects/functions/dist/shared/models";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+
 
 const MAIN_TITLE = "Predyc - ";
 
@@ -58,7 +67,12 @@ export class DiplomadoFormComponent {
     private router: Router,
     private titleService: Title,
     private authService: AuthService,
-    private afs: AngularFirestore
+    private afs: AngularFirestore,
+    private storage: AngularFireStorage,
+    private activityClassesService:ActivityClassesService,
+    private modalService: NgbModal,
+
+
   ) {}
 
   isEditing: boolean;
@@ -79,7 +93,7 @@ export class DiplomadoFormComponent {
   hoverItem$: Observable<any>; // This will hold the currently hovered item
   private hoverSubject = new BehaviorSubject<any>(null);
 
-  profileName: string = "";
+  diplomadoName: string = "";
   profileDescription: string = "";
   profileHoursPerMonth: number = 8;
 
@@ -91,7 +105,25 @@ export class DiplomadoFormComponent {
   profileServiceSubscription: Subscription;
   diplomados: Diplomado[] = [];
 
+  activitySubscription: Subscription;
+  activities = []
+
+  activityId = null;
+  activityRef;
+
+  type = 'diplomado'
+
+
   ngOnInit() {
+
+
+    this.activitySubscription = this.activityClassesService.getActivityCertifications().subscribe(activities => {
+      let activitiesFiltered = activities.filter(x=>x.subType !="initTest")
+      console.log('activitiesFiltered',activitiesFiltered)
+      this.activities = activitiesFiltered
+
+    })
+
     this.profileServiceSubscription = this.profileService.getDiplomados$()
       .subscribe((diplomados) => {
         if (diplomados) {
@@ -153,7 +185,16 @@ export class DiplomadoFormComponent {
         if (this.diplomado) {
           const title = MAIN_TITLE + this.diplomado.name;
           this.titleService.setTitle(title);
-          this.profileName = this.diplomado.name;
+          this.diplomadoName = this.diplomado.name;
+          this.photoUrl = this.diplomado.photoUrl;
+          this.type = this.diplomado.type ? this.diplomado.type : 'diplomado' ;
+          this.duration = this.diplomado.duration;
+
+          this.activityRef = this.diplomado.activityRef;
+          if(this.activityRef){
+            this.activityId = this.activityRef.id
+          }
+
           this.profileDescription = this.diplomado.description;
           this.profileHoursPerMonth = this.diplomado.hoursPerMonth;
         }
@@ -248,15 +289,18 @@ export class DiplomadoFormComponent {
   }
 
   getStudyPlanLength(){
-    console.log(this.studyPlan)
+    //console.log(this.studyPlan)
 
     let duracion = 0
 
     this.studyPlan?.forEach(curso => {
       duracion+=curso.duracion
     });
+    this.duration = duracion;
     return this.getFormattedDuration(duracion)
   }
+
+  duration = 0
 
   getFormattedDuration(duracion) {
     const hours = Math.floor(duracion / 60);
@@ -287,7 +331,11 @@ export class DiplomadoFormComponent {
   onEdit() {
     if (this.user.isSystemUser || this.diplomado.enterpriseRef) {
       this.profileBackup = {
-        name: this.profileName,
+        name: this.diplomadoName,
+        photoUrl:this.photoUrl,
+        type:this.type,
+        duration:this.duration,
+        activityRef:this.activityRef,
         description: this.profileDescription,
         selectedCourses: this.studyPlan.map((item) => {
           return {
@@ -536,13 +584,13 @@ export class DiplomadoFormComponent {
 
   async onSave() {
     try {
-      if (!this.profileName)
+      if (!this.diplomadoName)
         throw new Error("Debe indicar un nombre para el perfil");
 
       if (
         this.diplomados.find(
           (x) =>
-            x.name.toLowerCase() == this.profileName.toLowerCase() &&
+            x.name.toLowerCase() == this.diplomadoName.toLowerCase() &&
             x.id != this.diplomado?.id &&
             this.diplomado?.baseDiplomado.id != x.id
         )
@@ -593,7 +641,11 @@ export class DiplomadoFormComponent {
 
       const diplomado: Diplomado = Diplomado.fromJson({
         id: this.diplomado ? this.diplomado.id : null,
-        name: this.profileName,
+        name: this.diplomadoName,
+        photoUrl:this.photoUrl,
+        duration:this.duration,
+        type:this.type,
+        activityRef:this.activityRef,
         description: this.profileDescription,
         coursesRef: coursesRef,
         baseDiplomado: this.diplomado?.baseDiplomado
@@ -636,9 +688,11 @@ export class DiplomadoFormComponent {
           }
         });
         //const studyPlanHasBeenUpdated = await this.courseService.updateStudyPlans(changesInStudyPlan,this.profileHoursPerMonth);
+        //await this.savePhotoUrl();
         await this.profileService.saveDiplomado(diplomado);
       } else {
         console.log("diplomado", diplomado);
+        //await this.savePhotoUrl();
         const diplomadoId = await this.profileService.saveDiplomado(diplomado);
         this.id = diplomadoId;
         this.diplomado = diplomado;
@@ -672,5 +726,118 @@ export class DiplomadoFormComponent {
     this.studyPlan.forEach((course, idx) => {
       course.studyPlanOrder = idx + 1;
     });
+  }
+
+
+  onFileSelected(event, type) {
+		const input = event.target as HTMLInputElement;
+		if (!input || !input.files || !input.files[0]) {
+			this.alertService.errorAlert(`Debe seleccionar un archivo`);
+			return;
+		}
+		const file = input.files[0];
+
+		/* checking size here - 10MB */
+		if (type === "photoUrl") {
+			const imageMaxSize = 10000000;
+			if (file.size > imageMaxSize) {
+				this.alertService.errorAlert(`El archivo es mayor a 1MB por favor incluya una imagen de menor tamaño`);
+				return;
+			}
+		} else if (type === "file") {
+			// Do something
+		} else {
+			return;
+		}
+
+		const reader = new FileReader();
+		reader.readAsDataURL(file);
+		reader.onload = (_event) => {
+			if (type === "photoUrl") {
+				this.photoUrl = reader.result;
+				this.uploadedImage = file;
+        this.savePhotoUrl();
+			} else if (type === "file") {
+				this.uploadedFile = file;
+				const fileName = cleanFileName(this.uploadedFile.name);
+				this.uploadedFileName = fileName
+			}
+		};
+	}
+
+	photoUrl;
+	uploadedImage;
+	uploadedFile;
+	uploadedFileName
+
+
+  async savePhotoUrl() {
+		if (this.uploadedImage) {
+			// Upload new image
+			const fileName = cleanFileName(this.uploadedImage.name);
+			const filePath = `Diplomados/${this.diplomadoName}`;
+			const fileRef = this.storage.ref(filePath);
+			const task = this.storage.upload(filePath, this.uploadedImage);
+			await new Promise<void>((resolve, reject) => {
+				task.snapshotChanges()
+					.pipe(
+						finalize(async () => {
+							const photoUrl = await firstValueFrom(fileRef.getDownloadURL());
+							console.log("photoUrl has been uploaded!",photoUrl);
+							this.photoUrl = photoUrl;
+							this.uploadedImage = null;
+							resolve();
+						})
+					)
+					.subscribe({
+						next: () => {},
+						error: (error) => reject(error),
+					});
+			});
+		}
+	}
+
+  changedActivity(){
+
+    console.log('activityId',this.activityId)
+
+    if(this.activityId){
+      const activityRef = this.afs.collection(Activity.collection).doc(this.activityId).ref;
+      this.activityRef = activityRef
+    }
+    else{
+      this.activityRef = null
+
+    }
+
+
+  }
+
+  getActivityName(){
+    if(this.activityId){
+      let activity = this.activities.find(x=>x.id == this.activityId)
+      return 'Examen final - '+activity.title
+    }
+
+    return "Sin Examen"
+
+  }
+
+  modalExamen
+  questions;
+
+  showExamenDetails(modal){
+    
+    let activity = this.activities.find(x=>x.id == this.activityId)
+    this.questions = activity.questions
+    console.log(activity,this.questions)
+
+
+    this.modalExamen = this.modalService.open(modal, {
+      ariaLabelledBy: "modal-basic-title",
+      centered: true,
+      size: "md",
+    });
+
   }
 }

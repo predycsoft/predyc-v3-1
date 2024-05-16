@@ -39,6 +39,7 @@ export class CertificationsListComponent {
     "title",
     "questions",
     "status",
+    "type",
     "actions"
   ];
 
@@ -101,6 +102,16 @@ export class CertificationsListComponent {
       queryParams: { page },
       queryParamsHandling: 'merge'
     });
+  }
+
+  getTypeName(subType){
+
+    if(subType == 'initTest'){
+      return 'Diagnostico Inicial'
+    }
+
+    return 'Diplomado'
+
   }
 
   getProductData(productId: string): Product {

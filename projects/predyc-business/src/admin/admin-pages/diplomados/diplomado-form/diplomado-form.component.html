@@ -10,7 +10,7 @@
       targetUrl="/admin/diplomados"
       class="pdt10"
     >
-      {{ isEditing ? "" : profileName }}
+      {{ isEditing ? "" : diplomadoName }}
     </app-navigate-back>
     <div
       *ngIf="isEditing; else profileTitle"
@@ -19,8 +19,8 @@
       class="fw fh pdt05 pdb05"
     >
       <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign=" center">
-        <!-- <input class="input-box ft12" placeholder="Nombre del perfil" [(ngModel)]="profileName" maxlength="43"> -->
-        <div class="edit-button">Modo de edición</div>
+        <!-- <input class="input-box ft12" placeholder="Nombre del perfil" [(ngModel)]="diplomadoName" maxlength="43"> -->
+        <div class="edit-button">Editar Diplomado</div>
       </div>
       <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign=" center">
         <div
@@ -83,10 +83,8 @@
           />
           <span class="ft500 ft14 black">Detalles del diplomado</span>
         </div>
-
         <div class="mgt15 radius20" *ngIf="isEditing">
           <!-- <p class="ft13 gray-8 mgl03" *ngIf="isEditing">Nombre del perfil</p> -->
-
           <div
             class="fw"
             fxLayout="row"
@@ -103,7 +101,7 @@
                 name=""
                 id=""
                 rows="1"
-                [(ngModel)]="profileName"
+                [(ngModel)]="diplomadoName"
                 maxlength="43"
                 placeholder="Nombre del diplomado"
                 style="
@@ -119,8 +117,13 @@
           </div>
         </div>
 
-        <!-- <input class="input-box ft12" placeholder="Nombre del perfil" [(ngModel)]="profileName" maxlength="43"> -->
-
+        <div class="pd05 mgt10">
+          <div (click)="isEditing?fileInput.click():''" [ngClass]="{'cursorPointer':isEditing}">
+            <img style="height: 100px;" [src]="photoUrl ? photoUrl : 'assets/images/default/default-user-image.jpg'" class="radius6" alt="" />
+          </div>
+          <input #fileInput accept="image/*" type="file" hidden (change)="onFileSelected($event, 'photoUrl')" />
+        </div>
+        <!-- <input class="input-box ft12" placeholder="Nombre del perfil" [(ngModel)]="diplomadoName" maxlength="43"> -->
         <div class="pd05 mgt10 radius10" *ngIf="!isEditing">
           <p
             class="ft12 gray-8"
@@ -130,7 +133,57 @@
             {{ profileDescription }}
           </p>
         </div>
+        
+        <ng-container *ngIf="isEditing">
+          <span>Examen final</span>
+          <div class="fw" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px">
+            <div  style="position: relative; flex-grow: 1; border-radius: 20px !important;" class="">
+              <img [src]="icon.userProfile" class="makeGray h16px" alt="" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
+              <select  [(ngModel)] = "activityId" (change)="changedActivity()" class="form-control select radius20 shadow-animation borderLight" style="border-radius: 20px!important;">
+                  <option [ngValue]="null"> &nbsp; Sin Examen</option>
+                  <option *ngFor="let activity of activities" [value]="activity?.id">&nbsp;{{activity.title}}</option>
+              </select>
+              <img  [src]="icon.chevronDown" class="makeGray h18px" alt="" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">
+            </div>
+            <img (click)="showExamenDetails(modalExamen)" *ngIf="activityId" [src]="icon.info" class="h22px makeBlue cursorPointer" alt="" style="align-self: center;">
+          </div>
+        </ng-container>
 
+        <ng-container *ngIf="!isEditing">
+          <div class="fw mgb10" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px">
+            <!-- <select  [(ngModel)] = "activityId" (change)="changedActivity()" class="form-control select radius20 shadow-animation borderLight" style="border-radius: 20px!important;">
+                <option [ngValue]="null"> &nbsp; Sin Examen</option>
+                <option *ngFor="let activity of activities" [value]="activity?.id">&nbsp;{{activity.title}}</option>
+            </select> -->
+            <span>{{getActivityName()}}</span>
+            <img (click)="showExamenDetails(modalExamen)" *ngIf="activityId" [src]="icon.info" class="h22px makeBlue cursorPointer" alt="" style="align-self: center;">
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="isEditing">
+          <span>Tipo</span>
+          <div class="fw" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px">
+            <div  style="position: relative; flex-grow: 1; border-radius: 20px !important;" class="">
+              <img [src]="icon.userProfile" class="makeGray h16px" alt="" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
+              <select  [(ngModel)] = "type" (change)="changedActivity()" class="form-control select radius20 shadow-animation borderLight" style="border-radius: 20px!important;">
+                  <option value="diplomado"> &nbsp; Diplomado</option>
+                  <option value="pack"> &nbsp; Pack de cursos</option>
+              </select>
+              <img  [src]="icon.chevronDown" class="makeGray h18px" alt="" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="!isEditing">
+          <div class="fw mgb10" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px">
+            <!-- <select  [(ngModel)] = "activityId" (change)="changedActivity()" class="form-control select radius20 shadow-animation borderLight" style="border-radius: 20px!important;">
+                <option [ngValue]="null"> &nbsp; Sin Examen</option>
+                <option *ngFor="let activity of activities" [value]="activity?.id">&nbsp;{{activity.title}}</option>
+            </select> -->
+            <span>Tipo - {{type | titlecase}}</span>
+          </div>
+        </ng-container>
+        
         <div
           class="pd05 mgt10 radius10 backWhite shadow-animation"
           *ngIf="isEditing"
@@ -150,7 +203,6 @@
               border: none;
               background-color: transparent !important;
             "
-            maxlength="170"
           ></textarea>
         </div>
 
@@ -578,3 +630,20 @@
     </div>
   </div>
 </div>
+
+
+<ng-template #modalExamen let-modal>
+  <div class="modal-header bg-web-primary text-white px-3 py-1" fxLayoutAlign="space-between center" >
+      <div class="modal-title pd10 ">
+          <span class="ft16 ft600 gray-10">
+              Examen Final
+          </span>
+      </div>
+      <img [src]="icon.close" class="h24px pdl5  pdr10 cursorPointer" alt="" (click)="modal.dismiss()">
+  </div>
+  <div class="modal-body" style="overflow-y: auto; max-height: 80vh;">
+
+    <app-questions type="show" class="mgr10" [questionMaxSize]="100" [courseData]="[]" [nameCurso]="" [nameEmpresa]=""  [questionsArray]="questions" [selectedTestSkills]="[]"></app-questions>
+
+  </div>
+</ng-template>

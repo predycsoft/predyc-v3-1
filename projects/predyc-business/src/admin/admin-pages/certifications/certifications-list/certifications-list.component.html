@@ -4,7 +4,7 @@
 
         <!-- Curso Column -->
         <ng-container matColumnDef="title">
-            <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Título </th>
+            <th mat-header-cell *matHeaderCellDef class="ft14"> Título </th>
             <td mat-cell *matCellDef="let activity"> 
                 <div routerLink="/admin/certifications/form/{{activity.id}}" fxLayout="row" fxLayoutGap="20px" fxLayoutAlign=" center" >
                     <div class="ft500 ft14 gray-10 w-50">{{activity.title }}</div>
@@ -14,7 +14,7 @@
 
         <!-- Curso Column -->
         <ng-container matColumnDef="questions">
-            <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Preguntas </th>
+            <th mat-header-cell *matHeaderCellDef class="ft14"> Preguntas </th>
             <td mat-cell *matCellDef="let activity"> 
                 <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign=" center" >
                     <div class="ft500 ft12 gray-8 w-50">{{activity.questions.length }}</div>
@@ -22,9 +22,19 @@
             </td>
         </ng-container>
 
+        <!-- Curso Column -->
+        <ng-container matColumnDef="type">
+            <th mat-header-cell *matHeaderCellDef class="ft14"> Tipo </th>
+            <td mat-cell *matCellDef="let activity" class="centertext ft12"> 
+                <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign=" center" >
+                    <div class="ft500 ft12 gray-8 w-50">{{getTypeName(activity.subType) }}</div>
+                </div>
+            </td>
+        </ng-container>
+
         <!-- Inicio Column -->
         <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Estatus </th>
+            <th mat-header-cell *matHeaderCellDef class="ft14"> Estatus </th>
             <td mat-cell *matCellDef="let activity" class="centertext ft12">
                 <div class="pdt03 pdb03 radius6" [ngClass]=" activity?.status == 'active' ? 'backGreen2 green-5' : 'backGray2 gray-5' ">
                     {{  activity?.status == 'active'? 'Activo' : 'Inactivo'}} 

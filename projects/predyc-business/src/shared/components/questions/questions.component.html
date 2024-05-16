@@ -6,7 +6,7 @@
                 <div fxLayout="row" fxLayoutAlign="space-between center" class="fw pdb05">
                     <!-- Botón de importar a la izquierda -->
                     <div>
-                        <button *ngIf="this.user.isSystemUser" class="blueButton ft11" (click)="listInput.click()">Importar preguntas</button>
+                        <button *ngIf="this.user.isSystemUser && type!='show'" class="blueButton ft11" (click)="listInput.click()">Importar preguntas</button>
                         <input (change)="uploadQuestions($event)" type="file" #listInput style="display: none" accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
                     </div>
                 
@@ -43,7 +43,7 @@
                                     {{ getQuestionTypeName(question.get('type').value) }}
                                 </div>
                                 <!-- "Editar" -->
-                                <span (click)="questionStatus[i].editing = !questionStatus[i].editing" class="blueLink cursor-pointer">Editar</span>
+                                <span  *ngIf="type!='show'" (click)="questionStatus[i].editing = !questionStatus[i].editing" class="blueLink cursor-pointer">Editar</span>
                             </div>
                         </div>
                     
@@ -511,7 +511,7 @@
                     </ng-container>
                 </div>
             </ng-container>
-            <div fxLayout="row" fxLayoutAlign="center center" class="fw">
+            <div *ngIf="type !='show'" fxLayout="row" fxLayoutAlign="center center" class="fw">
                 <span (click)="addQuestion()" class="blueLink radius4 ft12 h28px no-select" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                     <img [src]="icon.addNew" class="h12px pdr05 makeBlue" alt="">
                     Agregar pregunta

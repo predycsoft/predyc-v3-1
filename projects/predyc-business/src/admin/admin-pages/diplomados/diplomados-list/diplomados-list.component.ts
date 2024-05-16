@@ -33,6 +33,8 @@ export class DiplomadosListComponent {
   displayedColumns: string[] = [
     "name",
     "courses",
+    "type",
+    "hasTest"
   ];
 
   dataSource = new MatTableDataSource<any>();
@@ -46,17 +48,26 @@ export class DiplomadosListComponent {
   combinedServicesSubscription: Subscription
   queryParamsSubscription: Subscription
   chargeSubscription: Subscription
+  activitySubscription: Subscription
+  activities
 
   products: Product[]
   users: User[]
   enterprises: Enterprise[]
 
   ngOnInit() {
-    this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
-      const page = Number(params['page']) || 1;
-      const searchTerm = params['search'] || '';
-      this.performSearch(searchTerm, page);
+
+
+    this.activitySubscription = this.activityClassesService.getActivityCertifications().subscribe(activities => {
+      console.log('activities',activities)
+      this.activities = activities;
+      this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
+        const page = Number(params['page']) || 1;
+        const searchTerm = params['search'] || '';
+        this.performSearch(searchTerm, page);
+      })
     })
+
   }
 
 
@@ -129,6 +140,8 @@ export class DiplomadosListComponent {
     console.log('data',data)
 
   }
+
+  
 
 
 }

@@ -147,3 +147,30 @@
 .dropCourse:hover{
     background-color: var(--blue-1);
 }
+
+.custom-invalid-feedback {
+    width: 100%;
+    margin-top: 0.25rem;
+    font-size: 0.875em;
+    color: #dc3545;
+}
+
+.select {
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+    padding: 5px 30px !important;
+    color: var(--gray-8);
+    font-size: 1rem !important;
+    font-weight: 400 !important;
+    line-height: 1.5 !important;
+    /* background-color: var(--backLight) !important; */
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--borderInputColor);
+    border-radius: 3px !important;
+}
+.spinner-dark {
+    filter: brightness(0.5) invert(0);
+    margin-right: 5px;
+}
