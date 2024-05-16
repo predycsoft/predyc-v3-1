@@ -85,7 +85,7 @@ export class QuestionsListComponent {
     ).
     subscribe(([ questions, instructors]) => {
       this.instructors = instructors
-      this.questions = questions
+      this.questions = questions.filter(x => !x.respondidaAI)
       this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
         const page = Number(params['page']) || 1;
         const searchTerm = params['search'] || '';

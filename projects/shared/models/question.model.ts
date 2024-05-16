@@ -11,6 +11,7 @@ export interface QuestionJson {
     timestamp: any // Date
     timestampRespuesta: any // Date
     respondidaInstructor: boolean
+    respondidaAI: boolean
     score: number
     //userName: string
     pregunta:string
@@ -32,6 +33,7 @@ export class Question {
         public timestampRespuesta: any, // Date
         public score: number,
         public respondidaInstructor:boolean,
+        public respondidaAI:boolean,
         public pregunta: string
         //public userName: string
     ) {}
@@ -51,6 +53,7 @@ export class Question {
             QuestionJson.timestampRespuesta,
             QuestionJson.score,
             QuestionJson.respondidaInstructor,
+            QuestionJson.respondidaAI,
             //QuestionJson.userName
             QuestionJson.pregunta
         )
@@ -69,6 +72,7 @@ export class Question {
             timestampRespuesta : this.timestampRespuesta,
             score : this.score,
             respondidaInstructor:this.respondidaInstructor,
+            respondidaAI:this.respondidaAI,
             //userName: this.userName
             pregunta:this.pregunta
 
