@@ -26,11 +26,12 @@ export class QuestionService {
     return this.afs.collection<Question>(Question.collection, (ref) =>ref.where("courseRef", "==", courseRef)).valueChanges();
   }
 
-  answereQuestion(questionId: string, timestampRespuesta, respuesta: string) {
+  answereQuestion(questionId: string, timestampRespuesta, respuesta: string, respondidaInstructor: boolean) {
     this.afs.collection(Question.collection).doc(questionId).set({
       timestampRespuesta: timestampRespuesta,
       respondida: true,
-      respuesta: respuesta
+      respuesta: respuesta,
+      respondidaInstructor
     }, {merge: true})
   } 
 

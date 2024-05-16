@@ -105,13 +105,13 @@ export class DialogQuestionsDetailComponent {
     }
   }
 
-  async responder(i){
+  async responder(i, isInstructor: boolean){
     // console.log("this.preguntas[i]", this.preguntas[i])
     this.preguntas[i].respondiendo = false
     this.preguntas[i].data.timestampRespuesta = new Date
     this.preguntas[i].data.respondida = true
-
-    this.questionService.answereQuestion(this.preguntas[i].data.id, this.preguntas[i].data.timestampRespuesta, this.preguntas[i].data.respuesta)
+    this.preguntas[i].data.respondidaInstructor = isInstructor
+    this.questionService.answereQuestion(this.preguntas[i].data.id, this.preguntas[i].data.timestampRespuesta, this.preguntas[i].data.respuesta, this.preguntas[i].data.respondidaInstructor)
 
     await this.onSendMail(this.preguntas[i])
   }
