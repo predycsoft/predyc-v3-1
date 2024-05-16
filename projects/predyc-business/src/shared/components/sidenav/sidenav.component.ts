@@ -105,6 +105,11 @@ export class SideNavComponent {
       icon: "../../assets/iconsUI/help.svg",
     },
     {
+      name: "Diplomados",
+      link: "/admin/diplomados",
+      icon: "../../assets/iconsUI/education.svg",
+    },
+    {
       name: "Certificaciones",
       link: "/admin/certifications",
       icon: "../../assets/iconsUI/certificate.svg",

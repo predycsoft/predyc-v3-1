@@ -1,0 +1,76 @@
+<div class="">
+    <!-- <button class="greenButton" (click)="createTestData()">Crear datos de prueba</button> -->
+    <table mat-table [dataSource]="dataSource">
+
+        <!-- Curso Column -->
+        <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef class="ft14"> Título </th>
+            <td mat-cell *matCellDef="let activity"> 
+                <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign=" center" >
+                    <div class="ft500 ft14 gray-10 w-50">{{activity.name }}</div>
+                </div>
+            </td>
+        </ng-container>
+
+        <!-- Curso Column -->
+        <ng-container matColumnDef="courses">
+            <th mat-header-cell *matHeaderCellDef class="ft14"> Cant. cursos </th>
+            <td mat-cell *matCellDef="let activity"> 
+                <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign=" center" >
+                    <div class="ft500 ft12 gray-8 w-50">{{activity.coursesRef.length }}</div>
+                </div>
+            </td>
+        </ng-container>
+
+        <!-- Inicio Column -->
+        <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Estatus </th>
+            <td mat-cell *matCellDef="let activity" class="centertext ft12">
+                <div class="pdt03 pdb03 radius6" [ngClass]=" activity?.status == 'active' ? 'backGreen2 green-5' : 'backGray2 gray-5' ">
+                    {{  activity?.status == 'active'? 'Activo' : 'Inactivo'}} 
+                </div>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef class="ft13 centertext">
+              Acciones
+            </th>
+            <td mat-cell *matCellDef="let activity" class="centertext ft11">
+              <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="center center">
+                <div class="w100px ft12 mgl20 cursorPointer"
+                  [ngClass]="activity.status == 'active' ? 'redLink' : 'greenLink'"
+                  (click)="changeStatusPrev(activity)"
+                >
+                  {{ activity.status == "active" ? "Desactivar" : "Activar" }}
+              </div>
+
+              </div>
+            </td>
+          </ng-container>
+        
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <ng-container>
+            <tr (click)="editDiplomado(charge)"
+                mat-row
+                *matRowDef="let charge; columns: displayedColumns;"
+                >
+            </tr>
+        </ng-container>
+
+        <!-- Row shown when there is no matching data. -->
+        <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" colspan="10">No se han encontrado pagos para el criterio de busqueda</td>
+        </tr>
+    </table>
+
+    <mat-paginator
+        aria-label="Select page of users"
+        [pageSize]="pageSize"
+        [length]="totalLength"
+        (page)="onPageChange($event.pageIndex + 1)"
+    ></mat-paginator>
+</div>
+  
+  

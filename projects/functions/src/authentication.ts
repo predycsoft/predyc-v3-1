@@ -32,6 +32,16 @@ export const createUserWithEmailAndPassword = functions.https.onCall(async (data
   }
 });
 
+export const deleteUser = functions.https.onCall(async (data, _) => {
+  try {
+    admin.auth().deleteUser(data.userId);
+    return true
+  } catch (error: any) {
+    console.log(error);
+    throw new functions.https.HttpsError("unknown", error.message);
+  }
+});
+
 export const _generatePasswordResetLink = async (email: string): Promise<string> => {
   return admin.auth().generatePasswordResetLink(email);
 };

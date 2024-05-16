@@ -4,7 +4,7 @@ import { Subscription, combineLatest, map, switchMap } from 'rxjs';
 import { CourseService } from '../../../services/course.service';
 import { ModuleService } from '../../../services/module.service';
 import { Modulo } from 'projects/shared/models/module.model';
-import { DocumentReference } from '@angular/fire/compat/firestore';
+import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { Curso } from 'projects/shared/models/course.model';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
@@ -13,6 +13,8 @@ import { ClassByStudent } from 'projects/shared/models/class-by-student.model';
 import { IconService } from '../../../services/icon.service';
 import { Clase } from 'projects/shared/models/course-class.model';
 import { firestoreTimestampToNumberTimestamp } from 'projects/shared';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 
 @Component({
@@ -27,7 +29,13 @@ export class DialogStudentEnrolledCourseDetailComponent {
     private courseService: CourseService, 
     private moduleService: ModuleService, 
     public icon: IconService,
+    private afs: AngularFirestore,
+    private modalService: NgbModal,
     @Inject(MAT_DIALOG_DATA) public data: {
+      userEmail:string,
+      userPhotoUrl:string,
+      instructorNombre: string,
+      instructorRef: DocumentReference<any>,
       userName: string,
       userUid: string,
       courseRef: DocumentReference<Curso>,
@@ -39,6 +47,11 @@ export class DialogStudentEnrolledCourseDetailComponent {
     },
   ) { }
 
+
+  userEmail: string;
+  userPhotoUrl: string;
+  instructorNombre: string
+  instructorRef: DocumentReference<any>
   userName: string
   userUid: string
   courseRef: DocumentReference<Curso>
@@ -67,17 +80,34 @@ export class DialogStudentEnrolledCourseDetailComponent {
 
   pageSize: number = 6
   totalLength: number
+  classesAll = []
+
+  coursebyStudentData;
 
 
   ngOnInit() {
+
+    this.userEmail = this.data.userEmail;
+    this.userPhotoUrl = this.data.userPhotoUrl;
+
+    this.instructorNombre= this.data.instructorNombre;
+    this.instructorRef = this.data.instructorRef;
     this.userName = this.data.userName; this.userUid = this.data.userUid 
     this.courseRef = this.data.courseRef ; this.courseTitle = this.data.courseTitle; this.coursePhoto = this.data.coursePhoto; this.courseDuration = this.data.courseDuration
     this.courseByStudentRef = this.data.courseByStudentRef; this.isActive = this.data.isActive
 
+
+    this.courseService.getCoursesByStudentWithRef$(this.courseByStudentRef).subscribe(course => {
+
+      console.log('course',course)
+      this.coursebyStudentData = course[0]
+
+    })
+
     this.combinedServicesSubscription = combineLatest(
       [ 
         this.moduleService.getModules$(this.courseRef.id), 
-        this.courseService.getClassesByStudentThrougCoursesByStudent$(this.courseByStudentRef), 
+        this.courseService.getClassesByStudentThrougCoursesByStudent$(this.courseByStudentRef)
       ]
     ).pipe(
       switchMap(([modules, completedClasses]) => {
@@ -89,6 +119,7 @@ export class DialogStudentEnrolledCourseDetailComponent {
     ).subscribe(([modules, completedClasses, courseClasses]) => {
       this.modules = modules
       this.completedClasses = completedClasses
+      this.classesAll = []
       console.log('completedClasses',completedClasses)
       const modulesInList: any[] = modules.map(module => {
         let completedClassesInsidemodule = 0
@@ -117,6 +148,7 @@ export class DialogStudentEnrolledCourseDetailComponent {
           let clase = classesInModule.find(x=>x.id == classRef.id)
           if(clase){
             classesModule.push(clase)
+            this.classesAll.push(clase)
           }
         });
 
@@ -128,6 +160,7 @@ export class DialogStudentEnrolledCourseDetailComponent {
         }
       })
       console.log("modulesInList", modulesInList)
+      console.log('classes',this.classesAll)
       modulesInList.sort((a,b) => a.numero - b.numero)
       this.dataSource.data = modulesInList
       this.totalLength = modulesInList.length;
@@ -181,6 +214,82 @@ export class DialogStudentEnrolledCourseDetailComponent {
     }
 
 	}
+
+  currentModal
+
+  formCertificado: FormGroup;
+  showError = false;
+
+  async saveCertificate(){
+    this.showError = false;
+
+    if(this.formCertificado.valid){
+      const formValues = this.formCertificado.value;
+      const fecha = new Date(formValues.fecha); // Convertir la fecha a un objeto Date
+      const score = formValues.calificacion
+
+      console.log(this.instructorRef)
+
+      const certificado = {
+        usuarioId: this.userUid,
+        usuarioEmail: this.userEmail,
+        usuarioNombre: this.userName,
+        cursoId: this.courseRef.id,
+        cursoTitulo: this.courseTitle,
+        instructorId: this.instructorRef.id,
+        instructorNombre: this.instructorNombre,
+        puntaje: score,
+        completedAdmin: true,
+        usuarioFoto: this.userPhotoUrl ? this.userPhotoUrl : null,
+        date: fecha
+      };
+      await this.afs.collection("coursesByStudent").doc(this.courseByStudentRef.id)
+      .update({
+        finalScore: score,
+        progress:100,
+        dateEnd: fecha
+      });
+      await this.courseService.saveCertificate(certificado)
+      this.currentModal.close()
+    }
+    else{
+      this.showError = true;
+    }
+
+
+  }
+
+  getTodayDate(): string {
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const year = today.getFullYear();
+    return `${year}-${month}-${day}`;
+  }
+  maxDate: string;
+
+
+  generarCertificado(createCertificate){
+
+
+    this.maxDate = this.getTodayDate();
+
+    this.matDialogRef.close(false)
+    this.showError = false;
+
+
+    this.formCertificado = new FormGroup({
+      fecha: new FormControl(null, Validators.required),
+      calificacion: new FormControl(null, Validators.required),
+    })
+
+
+    this.currentModal = this.modalService.open(createCertificate, {
+      ariaLabelledBy: 'modal-basic-title',
+      centered: true,
+    });
+    
+  }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;

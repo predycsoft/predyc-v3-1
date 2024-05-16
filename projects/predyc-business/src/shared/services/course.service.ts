@@ -6,7 +6,7 @@ import { BehaviorSubject, firstValueFrom, forkJoin, Observable, of } from "rxjs"
 import { EnterpriseService } from "./enterprise.service";
 import { AlertsService } from "./alerts.service";
 import { combineLatest } from "rxjs";
-import { map, switchMap } from "rxjs/operators";
+import { defaultIfEmpty, map, switchMap } from "rxjs/operators";
 import { Curso } from "projects/shared/models/course.model";
 import { Modulo } from "projects/shared/models/module.model";
 import { Clase } from "projects/shared/models/course-class.model";
@@ -18,7 +18,7 @@ import { Subscription as SubscriptionClass } from "projects/shared/models/subscr
 import { SubscriptionService } from "projects/predyc-business/src/shared/services/subscription.service";
 import { Product } from "projects/shared/models/product.model";
 import { ProductService } from "projects/predyc-business/src/shared/services/product.service";
-import { StudyPlanClass } from "projects/shared/models";
+import { Activity, Question, StudyPlanClass } from "projects/shared/models";
 
 @Injectable({
   providedIn: "root",
@@ -552,6 +552,18 @@ export class CourseService {
       )
       .valueChanges();
   }
+
+    // ---- courseByStudent Collection methods
+    getCoursesByStudentWithRef$(
+      courseByStudentRef: DocumentReference<any>
+    ): Observable<CourseByStudent[]> {
+      return this.afs
+        .collection<CourseByStudent>(CourseByStudent.collection, (ref) =>
+          ref.where("id", "==", courseByStudentRef.id)
+        )
+        .valueChanges();
+    }
+  
 
   async getCourseByStudent(
     userRef: DocumentReference<User>,

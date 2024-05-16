@@ -38,6 +38,10 @@ export class StudentCoursesListComponent {
   @Input() userRef: DocumentReference<User>;
   @Input() userName: string;
 
+  @Input() userEmail: string;
+  @Input() userPhotoUrl: string;
+
+
   combinedServicesSubscription: Subscription;
   subscriptionsSubscription: Subscription;
 
@@ -68,13 +72,15 @@ export class StudentCoursesListComponent {
             const courseData: Curso = await this.courseService.getCourseById(
               courseByStundet.courseRef.id
             );
-
+            console.log('courseData',courseData)
             return {
               ...courseByStundet,
               dateStart: firestoreTimestampToNumberTimestamp(courseByStundet.dateStart),
               dateEnd: firestoreTimestampToNumberTimestamp(courseByStundet.dateEnd),
               coursePhoto: courseData.imagen,
               courseTitle: courseData.titulo,
+              instructorNombre: courseData.instructorNombre,
+              instructorRef: courseData.instructorRef,
               courseId: courseData.id,
               courseByStudentId: courseByStundet.id,
               duracion: courseData.duracion
@@ -94,12 +100,17 @@ export class StudentCoursesListComponent {
   }
 
   openEnrolledCourseDetailDialog(courseData) {
+    console.log('courseData',courseData)
     const dialogRef = this.dialog.open(
       DialogStudentEnrolledCourseDetailComponent,
       {
         data: {
+          userEmail: this.userEmail,
+          userPhotoUrl: this.userPhotoUrl,
           userName: this.userName,
           userUid: this.userRef.id,
+          instructorRef:courseData.instructorRef,
+          instructorNombre:courseData.instructorNombre,
           courseRef: courseData.courseRef,
           courseTitle: courseData.courseTitle,
           coursePhoto: courseData.coursePhoto,
