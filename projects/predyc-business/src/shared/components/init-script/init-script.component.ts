@@ -53,6 +53,7 @@ import { capitalizeFirstLetter, splitArray } from "projects/shared/utils";
 import { ProfileService } from "../../services/profile.service";
 import { AngularFireFunctions } from "@angular/fire/compat/functions";
 import { environment } from "projects/predyc-business/src/environments/environment";
+import { GeneralConfig } from "projects/shared/models/general-config.model";
 
 @Component({
   selector: "app-init-script",
@@ -314,14 +315,15 @@ export class InitScriptComponent {
         const lilianaUser = users.find(
           (user) => user.name === "liliana giraldo predyc"
         );
-        console.log("Kevin:", kevinUser);
-        console.log("Liliana:", lilianaUser);
+        // console.log("Kevin:", kevinUser);
+        // console.log("Liliana:", lilianaUser);
         await this.afs
-          .collection("general")
-          .doc("config")
+          .collection(GeneralConfig.collection)
+          .doc(GeneralConfig.doc)
           .set({
             salesManagerRef: this.userService.getUserRefById(lilianaUser.uid),
             accountManagerRef: this.userService.getUserRefById(kevinUser.uid),
+            allowAIChatFeature: true
           });
       }
     } catch (error) {

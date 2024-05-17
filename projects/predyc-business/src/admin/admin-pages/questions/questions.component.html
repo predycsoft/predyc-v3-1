@@ -28,10 +28,13 @@
             </div>
         </div>
         
-        <div fxLayout="row" fxLayoutAlign="center center" >
+        <div fxLayout="column" fxLayoutAlign="center end" fxLayoutGap=".25rem">
+            <button *ngIf="!isAIChatActive" class="greenButton" (click)="onClick(true)" >Activar chat con IA</button>
+            <button *ngIf="isAIChatActive" class="redButton" (click)="onClick(false)" >Desactivar chat con IA</button>
             <div fxLayout="row"  class="radius20 mgr05  fw">
-                    <app-search-input-box  fxLayoutAlign=" center" class="shadow-animation radius20 fw" style="height: 38px;  "></app-search-input-box>
+                <app-search-input-box  fxLayoutAlign=" center" class="shadow-animation radius20 fw" style="height: 38px;  "></app-search-input-box>
             </div>
+            
         </div>
     </div>
     <!-- Questions list -->

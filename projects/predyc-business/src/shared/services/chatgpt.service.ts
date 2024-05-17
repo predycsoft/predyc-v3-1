@@ -1,8 +1,9 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
-import OpenAI from 'openai';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { GeneralConfig, GeneralConfigJson } from 'projects/shared/models/general-config.model';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,15 @@ import OpenAI from 'openai';
 export class ChatgptService {
   private apiUrl = 'https://api.openai.com/v1/chat/completions';
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private afs: AngularFirestore,
+  ) {}
+
+  getChatFeatureAllowence$(): Observable<boolean | undefined> {
+    return this.afs.collection(GeneralConfig.collection).doc(GeneralConfig.doc).valueChanges()
+    .pipe(map((doc: GeneralConfig) => doc?.allowAIChatFeature));
+  }
 
   getChatResponse(prompt: string): Observable<any> {
     const headers = new HttpHeaders({
@@ -25,5 +34,11 @@ export class ChatgptService {
     };
 
     return this.http.post(this.apiUrl, body, { headers });
+  }
+
+  async setAllowAIChatFeature(toActive: boolean) {
+    await this.afs.collection(GeneralConfig.collection).doc(GeneralConfig.doc).set({
+      allowAIChatFeature: toActive
+    }, {merge: true})
   }
 }
