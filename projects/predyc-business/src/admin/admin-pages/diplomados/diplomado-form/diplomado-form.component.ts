@@ -687,12 +687,10 @@ export class DiplomadoFormComponent {
             }
           }
         });
-        //const studyPlanHasBeenUpdated = await this.courseService.updateStudyPlans(changesInStudyPlan,this.profileHoursPerMonth);
-        //await this.savePhotoUrl();
+
         await this.profileService.saveDiplomado(diplomado);
       } else {
         console.log("diplomado", diplomado);
-        //await this.savePhotoUrl();
         const diplomadoId = await this.profileService.saveDiplomado(diplomado);
         this.id = diplomadoId;
         this.diplomado = diplomado;

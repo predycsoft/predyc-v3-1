@@ -149,24 +149,14 @@ export class ProfileService {
     if (diplomado?.id) {
       ref = this.afs.collection<Diplomado>(Diplomado.collection).doc(diplomado.id).ref;
       const oldDiplomado = (await ref.get()).data()
-      // Si los permisos del perfil cambiaron
-      // if (JSON.stringify(oldDiplomado.permissions) !== JSON.stringify(diplomado.permissions)) {
-      //   const haveSamePermissions = this.checkPermissionsChange(diplomado.permissions)
-      //   diplomado.permissions.hasDefaultPermissions = haveSamePermissions
-      // }
     } else {
       // Else, it's a new profile
       ref = this.afs.collection<Diplomado>(Diplomado.collection).doc().ref;
       diplomado.id = ref.id; // Assign the generated ID to the diplomado
       const enterprise = this.enterpriseService.getEnterprise()
-      // diplomado.permissions = enterprise.permissions
-      // diplomado.permissions.hasDefaultPermissions = true
     }
-    // diplomado.permissions.hasDefaultPermissions = hasDefaultPermissions
     const dataToSave = typeof diplomado.toJson === 'function' ? diplomado.toJson() : diplomado;
-
     console.log('dataToSave diplomado',dataToSave)
-
     await ref.set(dataToSave, { merge: true });
     diplomado.id = ref.id; // Assign the generated ID to the profile
     return diplomado.id
