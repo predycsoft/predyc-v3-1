@@ -642,10 +642,10 @@ export class DiplomadoFormComponent {
       const diplomado: Diplomado = Diplomado.fromJson({
         id: this.diplomado ? this.diplomado.id : null,
         name: this.diplomadoName,
-        photoUrl:this.photoUrl,
+        photoUrl:this.photoUrl?this.photoUrl:null,
         duration:this.duration,
         type:this.type,
-        activityRef:this.activityRef,
+        activityRef:this.activityRef?this.activityRef:null,
         description: this.profileDescription,
         coursesRef: coursesRef,
         baseDiplomado: this.diplomado?.baseDiplomado
