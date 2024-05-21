@@ -18,10 +18,8 @@
     <ng-container *ngIf="tab === 1">
         <div fxLayout="row" fxLayoutAlign="space-between center" style="width: 58%;">    
             <p class="ft600 ft16 gray-10">Lista de Cursos en vivo</p>
-            <!-- <button *ngIf="(user.isSystemUser || product && product.accesses.enableCreateParticularCourses)" fxLayout="row" fxLayoutGap="0.625" 
-                fxLayoutAlign="center center" class="blueButton mgt05" style="border-radius: 24px !important;" routerLink="/management/create-course/create/new"> -->
             <button *ngIf="(user.isSystemUser || product && product.accesses.enableCreateParticularCourses)" fxLayout="row" fxLayoutGap="0.625" 
-                fxLayoutAlign="center center" class="blueButton mgt05" style="border-radius: 24px !important;">
+                fxLayoutAlign="center center" class="blueButton mgt05" style="border-radius: 24px !important;" routerLink="/management/create-live/create/new">
                 <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="">Agregar curso
             </button>
         </div>
@@ -68,10 +66,8 @@
                             <div class="border-bl pdl10 pdt05 pdr10 pdb10 fw" fxLayout="column">
                                 <div  fxLayout="row" fxLayoutAlign="space-between center" >
                                     <div class="gray-10 ft14 ft500 mgr08">{{selectedCourse.title }}</div>
-                                    <!-- <div *ngIf="(user.isSystemUser || selectedCourse.enterpriseRef?.id == enterprise?.id) && selectedCourse.id" 
-                                        routerLink="/management/create-course/edit/{{selectedCourse.id}}"  fxLayout="row"  fxLayoutGap=".5rem"  > -->
                                     <div *ngIf="(user.isSystemUser || selectedCourse.enterpriseRef?.id == enterprise?.id) && selectedCourse.id" 
-                                        fxLayout="row"  fxLayoutGap=".5rem"  >
+                                        routerLink="/management/create-live/edit/{{selectedCourse.id}}"  fxLayout="row"  fxLayoutGap=".5rem"  >
                                         <div class="blueLink mgt05 white cursorPointer ft14 fw mgb10" fxLayoutAlign="space-between center">
                                             <!-- <img [src]="icon.edit" class="makeWhite h16px mgr08" alt=""> -->
                                             Editar 

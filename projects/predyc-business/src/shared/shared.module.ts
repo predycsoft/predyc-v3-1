@@ -83,6 +83,7 @@ import { CertificationStudentListComponent } from "./components/users/certificat
 import { DialogQuestionsDetailComponent } from './components/questions/dialog-questions-detail/dialog-questions-detail.component';
 import { LiveCoursesComponent } from './components/live-courses/live-courses/live-courses.component';
 import { LiveCoursesSelectorComponent } from './components/live-courses/live-courses-selector/live-courses-selector.component';
+import { CreateLiveCourseComponent } from './components/live-courses/create-live-course/create-live-course.component';
 
 
 @NgModule({
@@ -135,6 +136,7 @@ import { LiveCoursesSelectorComponent } from './components/live-courses/live-cou
     DialogQuestionsDetailComponent,
     LiveCoursesComponent,
     LiveCoursesSelectorComponent,
+    CreateLiveCourseComponent,
   ],
   imports: [
     CommonModule,

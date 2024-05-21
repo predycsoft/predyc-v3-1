@@ -21,6 +21,7 @@ import { SystemUserGuard } from 'projects/predyc-business/src/admin/guards/syste
 import { MigrationsComponent } from '../shared/components/migrations/migrations.component';
 import { CertificationsTestComponent } from './business-pages/management/certificationsTest/certificationsTest.component';
 import { LiveCoursesComponent } from '../shared/components/live-courses/live-courses/live-courses.component';
+import { CreateLiveCourseComponent } from '../shared/components/live-courses/create-live-course/create-live-course.component';
 
 
 const MAIN_TITLE = 'Predyc - '
@@ -41,8 +42,9 @@ const routes: Routes = [
           // {path:"profiles", title: MAIN_TITLE + 'Nuevo perfil', component: ProfilesComponent, canActivate: [AuthGuard]},
           {path:"profiles/:id", title: MAIN_TITLE, component: ProfilesComponent, canActivate: [AuthGuard, ProfileGuard]},
           {path:"courses", title: MAIN_TITLE + 'Cursos', component: CoursesComponent, canActivate: [AuthGuard]},
-          {path:"live", title: MAIN_TITLE + 'Cursos en vivo', component: LiveCoursesComponent, canActivate: [AuthGuard]},
           {path:"create-course/:mode/:idCurso", title: MAIN_TITLE + 'Crear / Editar curso', component: CreateCourseComponent, canActivate: [AuthGuard]},
+          {path:"live", title: MAIN_TITLE + 'Cursos en vivo', component: LiveCoursesComponent, canActivate: [AuthGuard]},
+          {path:"create-live/:mode/:idCurso", title: MAIN_TITLE + 'Crear / Editar curso en vivo', component: CreateLiveCourseComponent, canActivate: [AuthGuard]},
           {path:"notifications", title: MAIN_TITLE + 'Notificaciones', component: NotificationsComponent, canActivate: [AuthGuard]},
           {path:"students/:uid", title: MAIN_TITLE + 'Mi equipo', component: StudentComponent, canActivate: [AuthGuard]},
           {path:"certifications", title: MAIN_TITLE + 'Certificaciones', component: CertificationsTestComponent, canActivate: [AuthGuard]},

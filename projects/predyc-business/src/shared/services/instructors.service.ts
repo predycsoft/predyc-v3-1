@@ -68,14 +68,13 @@ export class InstructorsService {
   enterpriseRef
 
   getInstructors() {
-
     this.enterpriseService.enterpriseLoaded$.subscribe(isLoaded => {
       if (!isLoaded) {
         return
       }
       this.enterpriseRef =this.enterpriseService.getEnterpriseRef()
 
-      console.log('empresa',this.empresa)
+      // console.log('empresa',this.empresa)
 
       if(this.empresa.name.toLowerCase() == 'predyc'){
         this.afs.collection<any>('instructors', ref => 

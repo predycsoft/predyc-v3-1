@@ -246,22 +246,13 @@ export class QuestionsComponent {
   }
   user
   ngOnInit() {
-
     this.authService.user$.subscribe(user=> {
-
       if (user) {
-        console.log('user',user)
+        // console.log('user',user)
         this.user = user
         this.init();
-
       }
-
-
-
     })
-
-
-
   }
 
 
@@ -551,14 +542,14 @@ export class QuestionsComponent {
       });
     }
     this.emmitForm.emit(null);
-    console.log('selectedTestSkills',this.selectedTestSkills,this.nameCurso,this.nameEmpresa)
+    // console.log('selectedTestSkills',this.selectedTestSkills,this.nameCurso,this.nameEmpresa)
     this.setupForm()
 
     if(this.heartsActivity){
       this.questionTypes = this.questionTypes.filter( q=> q.value == "single_choice")
     }
 
-    console.log('questionTypes',this.questionTypes,this.questions)
+    // console.log('questionTypes',this.questionTypes,this.questions)
   }
   
 
@@ -1066,7 +1057,7 @@ export class QuestionsComponent {
       }
     }
 
-    console.log('revisarformatExamQuestions',this.examenQuestionsFormated)
+    // console.log('revisarformatExamQuestions',this.examenQuestionsFormated)
 
   }
 
