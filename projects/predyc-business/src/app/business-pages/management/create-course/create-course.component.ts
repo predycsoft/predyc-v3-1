@@ -2994,11 +2994,12 @@ uploadVideo(videoFile, clase, local = false, modulo, origen = null, intentosActu
     // Crea el video en Vimeo
     //clase['uploading'] = true;
     const fileSizeInBytes = file.size;
-
+    console.log('uploadVideo',videoName, videoDescription,fileSizeInBytes)
     this.uploadControl.createVideo(videoName, videoDescription,fileSizeInBytes)
     .subscribe({
       next : response =>{
         // Una vez creado el video, sube el archivo
+        console.log('responseCreateVideo',response)
         this.uploadControl.uploadVideo(file, response.upload.upload_link)
         .subscribe({
           // Maneja las notificaciones de progreso

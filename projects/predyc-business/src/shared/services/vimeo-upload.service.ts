@@ -284,19 +284,31 @@ export class VimeoUploadService {
     return this.http.post(this.VIMEO_URL, body, { headers: headers });
   }
 
-  uploadVideo(file: File, uploadUrl: string): Observable<number> {
-    const req = new HttpRequest('PUT', uploadUrl, file, {
-      reportProgress: true
-    });
+  uploadVideo(file: File, uploadLink: string): Observable<number> {
+    console.log('Iniciando la subida del video:', file.name);
+    console.log('URL de subida:', uploadLink);
 
-    return this.http.request(req).pipe(
-      // Filtra solo los eventos de progreso de carga
-      filter(e => e.type === HttpEventType.UploadProgress),
-      // Mapea el evento a un número que representa el porcentaje de carga
-      map((event: any) => {
-        return Math.round(100 * event.loaded / event.total);
+    const formData = new FormData();
+    formData.append('file_data', file);
+
+    return this.http.post(uploadLink, formData, {
+      reportProgress: true,
+      observe: 'events'
+    }).pipe(
+      filter(event => event.type === HttpEventType.UploadProgress || event.type === HttpEventType.Response),
+      map(event => {
+        if (event.type === HttpEventType.UploadProgress) {
+          const progress = Math.round(100 * event.loaded / event.total);
+          //console.log(`Progreso de la subida: ${progress}%`);
+          return progress;
+        } else if (event.type === HttpEventType.Response) {
+          console.log('Video subido exitosamente:', event.body);
+          return 100;
+        } else {
+          // Devolver un valor por defecto si no es un evento esperado
+          return 0;
+        }
       }),
-      // Añade un manejo de errores
       catchError(this.handleError)
     );
   }
