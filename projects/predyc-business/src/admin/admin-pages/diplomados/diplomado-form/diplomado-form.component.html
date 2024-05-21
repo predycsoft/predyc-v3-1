@@ -77,11 +77,17 @@
           fxLayoutAlign="start center"
         >
           <img
+            (click)="showImport = !showImport"
             [src]="icon.credentials"
             class="h20px"
             alt="Información del perfil"
           />
           <span class="ft500 ft14 black">Detalles del diplomado</span>
+        </div>
+
+
+        <div *ngIf="isEditing && showImport">
+          <input (change)="importUsers($event)" type="file" accept=".json" />
         </div>
         <div class="mgt15 radius20" *ngIf="isEditing">
           <!-- <p class="ft13 gray-8 mgl03" *ngIf="isEditing">Nombre del perfil</p> -->
