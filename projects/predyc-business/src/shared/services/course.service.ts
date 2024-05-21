@@ -505,7 +505,19 @@ export class CourseService {
 
   getAllCourses$(): Observable<Curso[]> {
     return this.afs.collection<Curso>(Curso.collection).valueChanges();
+  }
 
+
+  getCourseActivitiesTry$(idCourse: string, idUser: string): Observable<any[]> {
+    // Obtener referencias a los documentos de usuario y curso
+    const userRef = this.afs.doc(`user/${idUser}`).ref;
+    const courseRef = this.afs.doc(`course/${idCourse}`).ref;
+  
+    // Buscar en la colección coursesTestsByStudent
+    return this.afs.collection<any>('coursesTestsByStudent', ref => 
+      ref.where('userRef', '==', userRef)
+         .where('courseRef', '==', courseRef)
+    ).valueChanges();
   }
 
   getClassesEnterprise$(): Observable<any[]> {
