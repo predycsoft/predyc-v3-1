@@ -96,6 +96,14 @@ export class DialogStudentEnrolledCourseDetailComponent {
     this.courseRef = this.data.courseRef ; this.courseTitle = this.data.courseTitle; this.coursePhoto = this.data.coursePhoto; this.courseDuration = this.data.courseDuration
     this.courseByStudentRef = this.data.courseByStudentRef; this.isActive = this.data.isActive
 
+    console.log('DatosRevisar',this.userUid,this.data.courseRef.id)
+
+    this.courseService.getCourseActivitiesTry$(this.data.courseRef.id,this.userUid).subscribe(activityTry => {
+
+      console.log('DatosRevisar activityTry',activityTry)
+
+    })
+
 
     this.courseService.getCoursesByStudentWithRef$(this.courseByStudentRef).subscribe(course => {
 
