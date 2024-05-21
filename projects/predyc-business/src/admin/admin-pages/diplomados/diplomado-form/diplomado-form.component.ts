@@ -820,6 +820,7 @@ export class DiplomadoFormComponent {
     return "Sin Examen"
 
   }
+  showImport = false
 
   modalExamen
   questions;
@@ -838,4 +839,36 @@ export class DiplomadoFormComponent {
     });
 
   }
+
+
+  importUsers(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = async (e: any) => {
+        try {
+          const json = JSON.parse(e.target.result);
+          console.log('Imported JSON:', json);
+          // Aquí puedes manejar los datos JSON como necesites
+
+          console.log('idPrograma',this.id)
+
+          for (let i = 0; i < json.length; i++) {
+            const userEnroll = json[i];
+            await this.profileService.enrollUserDiplomadoWithMail(this.id, userEnroll.id);
+          }
+
+
+        } catch (error) {
+          console.error('Error parsing JSON:', error);
+        }
+      };
+      reader.readAsText(file);
+    }
+  }
+
+
+  
+
+ 
 }
