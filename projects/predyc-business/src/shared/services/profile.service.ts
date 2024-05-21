@@ -335,7 +335,7 @@ export class ProfileService {
     }
   }
 
-  async enrollUserDiplomadoWithMail(diplomadoId: string, mail: string) {
+  async enrollUserDiplomadoWithMail(diplomadoId: string, mail: string,enrollDate = new Date()) {
     try {
       // Obtener el usuario por correo electrónico
       const userSnapshot = await this.afs.collection('user', ref => ref.where('email', '==', mail)).get().toPromise();
@@ -368,7 +368,7 @@ export class ProfileService {
         id: null,
         userRef: userRef,
         diplomadoRef: diplomadoRef,
-        enrollDate: new Date(),
+        enrollDate: enrollDate,
         certificateRef: null,
         activityScore: 0,
         dateEnd: null

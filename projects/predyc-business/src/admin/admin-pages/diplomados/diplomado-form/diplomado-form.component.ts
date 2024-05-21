@@ -851,13 +851,15 @@ export class DiplomadoFormComponent {
           console.log('Imported JSON:', json);
           // Aquí puedes manejar los datos JSON como necesites
 
-          console.log('idPrograma',this.id)
-
           for (let i = 0; i < json.length; i++) {
             const userEnroll = json[i];
-            await this.profileService.enrollUserDiplomadoWithMail(this.id, userEnroll.id);
+            let enrollDate = new Date()
+            if(userEnroll.fechaInscripcion){
+              enrollDate = new Date(userEnroll.fechaInscripcion)
+            }
+            await this.profileService.enrollUserDiplomadoWithMail(this.id, userEnroll.id,enrollDate);
           }
-
+          console.log('all data migrated');
 
         } catch (error) {
           console.error('Error parsing JSON:', error);
