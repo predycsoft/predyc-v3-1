@@ -21,9 +21,7 @@
                 </span>
             </div>
         </div>
-        <div fxLayout="column" 
-             fxLayoutAlign="start start" 
-             [ngClass]="(type == 'propios' ? category.expandedPropios : category.expandedPredyc) ? 'bodyCategoryExpanded' : 'bodyCategory'">
+        <div fxLayout="column" fxLayoutAlign="start start" [ngClass]="(type == 'propios' ? category.expandedPropios : category.expandedPredyc) ? 'bodyCategoryExpanded' : 'bodyCategory'">
              <ng-container *ngFor="let course of filteredCourses(type == 'propios' ? category.coursesPropios : category.coursesPredyc)">
             <!-- <ng-container *ngFor="let course of filteredCourses(type == 'propios' ? category.coursesPropios : category.courses)"> -->
                 <div *ngIf="!course.dontshow" class="fw pd05 h40px  cursorPointer hoverGray courseContainer"  

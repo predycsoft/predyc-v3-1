@@ -81,6 +81,8 @@ import { ParticularUsersMigrationComponent } from './components/migrations/parti
 import { StatsCertificationsComponent } from "./components/stats-certifications/stats-certifications.component";
 import { CertificationStudentListComponent } from "./components/users/certification-student-list/certification-student-list.component";
 import { DialogQuestionsDetailComponent } from './components/questions/dialog-questions-detail/dialog-questions-detail.component';
+import { LiveCoursesComponent } from './components/live-courses/live-courses/live-courses.component';
+import { LiveCoursesSelectorComponent } from './components/live-courses/live-courses-selector/live-courses-selector.component';
 
 
 @NgModule({
@@ -131,6 +133,8 @@ import { DialogQuestionsDetailComponent } from './components/questions/dialog-qu
     EnterprisesUsersMigrationComponent,
     ParticularUsersMigrationComponent,
     DialogQuestionsDetailComponent,
+    LiveCoursesComponent,
+    LiveCoursesSelectorComponent,
   ],
   imports: [
     CommonModule,
@@ -250,6 +254,7 @@ import { DialogQuestionsDetailComponent } from './components/questions/dialog-qu
     DialogStudentEnrolledCourseDetailComponent,
     MigrationsComponent,
     DialogCreateLicenseComponent,
+    LiveCoursesComponent
   ],
 
   providers: [VimeoUploadService],

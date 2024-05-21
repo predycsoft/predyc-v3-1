@@ -25,46 +25,14 @@ export const MAIN_TITLE = "Predyc Admin - ";
 
 const routes: Routes = [
   // { path: "", title: MAIN_TITLE + "home", component: HomeComponent },
-  {
-    path: "students",
-    title: MAIN_TITLE + "Estudiantes",
-    component: StudentsComponent,
-  },
-  {
-    path: "students/:uid",
-    title: MAIN_TITLE + "Estudiantes",
-    component: StudentDetailComponent,
-  },
-  {
-    path: "",
-    title: MAIN_TITLE + "Empresas",
-    component: EnterpriseComponent,
-  },
-  {
-    path: "enterprises/form",
-    title: MAIN_TITLE + "Empresas",
-    component: EnterpriseDetailComponent,
-  },
-  {
-    path: "enterprises/form/:id",
-    title: MAIN_TITLE + "Empresas",
-    component: EnterpriseDetailComponent,
-  },
-  {
-    path: "products",
-    title: MAIN_TITLE + "Productos",
-    component: ProductsComponent,
-  },
-  {
-    path: "licenses-and-subscriptions",
-    title: MAIN_TITLE + "L&S",
-    component: LicensesSubscriptionsComponent,
-  },
-  {
-    path: "royalties",
-    title: MAIN_TITLE + "Regalias",
-    component: RoyaltyComponent,
-  },
+  { path: "students", title: MAIN_TITLE + "Estudiantes", component: StudentsComponent, },
+  { path: "students/:uid", title: MAIN_TITLE + "Estudiantes", component: StudentDetailComponent, },
+  { path: "", title: MAIN_TITLE + "Empresas", component: EnterpriseComponent, },
+  { path: "enterprises/form", title: MAIN_TITLE + "Empresas", component: EnterpriseDetailComponent, },
+  { path: "enterprises/form/:id", title: MAIN_TITLE + "Empresas", component: EnterpriseDetailComponent, },
+  { path: "products", title: MAIN_TITLE + "Productos", component: ProductsComponent, },
+  { path: "licenses-and-subscriptions", title: MAIN_TITLE + "L&S", component: LicensesSubscriptionsComponent, },
+  { path: "royalties", title: MAIN_TITLE + "Regalias", component: RoyaltyComponent, },
   { path: "sales", title: MAIN_TITLE + "Ventas", component: SalesComponent },
   { path: "questions", title: MAIN_TITLE + "Preguntas", component: QuestionsComponent },
   { path: "certifications", title: MAIN_TITLE + "Certificados", component: CertificationsComponent },
@@ -75,22 +43,10 @@ const routes: Routes = [
   { path:"diplomados/form", title: MAIN_TITLE + 'Crear Diplomado', component: DiplomadoFormComponent },
   { path:"diplomados/form/:id", title: MAIN_TITLE + 'Editar Diplomado', component: DiplomadoFormComponent },
 
-  {
-    path: "courses",
-    title: MAIN_TITLE + "Cursos",
-    component: CoursesComponent,
-  },
-  {
-    path: "freebies",
-    title: MAIN_TITLE + "Freebies",
-    component: FreebiesComponent,
-  },
+  { path: "courses", title: MAIN_TITLE + "Cursos", component: CoursesComponent, },
+  { path: "freebies", title: MAIN_TITLE + "Freebies", component: FreebiesComponent, },
 
-  {
-    path: "diplomados",
-    title: MAIN_TITLE + "Diplomados",
-    component: DiplomadosComponent,
-  },
+  { path: "diplomados", title: MAIN_TITLE + "Diplomados", component: DiplomadosComponent, },
 
   { path: "**", redirectTo: "", pathMatch: "full" }, // Wildcard Route
 ];

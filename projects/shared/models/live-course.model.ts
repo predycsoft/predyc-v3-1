@@ -1,4 +1,5 @@
 import { DocumentReference } from "@angular/fire/compat/firestore"
+import { Skill } from "./skill.model"
 
 export interface LiveCourseJson {
     id: string
@@ -8,6 +9,12 @@ export interface LiveCourseJson {
     meetingLink: string
     description: string
     instructorRef: DocumentReference
+    skillsRef: DocumentReference<Skill>[]
+
+    // duracion: number,
+    // nivel: string,
+
+    
 }
 
 export class LiveCourse {
@@ -22,6 +29,7 @@ export class LiveCourse {
         public meetingLink: string,
         public description: string,
         public instructorRef: DocumentReference,
+        public skillsRef: DocumentReference<Skill>[],
     ) {}
 
     public static fromJson(QuestionJson: LiveCourseJson): LiveCourse {
@@ -33,6 +41,7 @@ export class LiveCourse {
             QuestionJson.meetingLink,
             QuestionJson.description,
             QuestionJson.instructorRef,
+            QuestionJson.skillsRef,
         )
     }
 
@@ -45,6 +54,7 @@ export class LiveCourse {
             meetingLink:this.meetingLink,
             description:this.description,
             instructorRef : this.instructorRef,
+            skillsRef : this.skillsRef,
         }
     }
 }

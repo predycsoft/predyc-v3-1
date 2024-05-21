@@ -24,29 +24,19 @@ export class CourseSelectorComponent {
   processedCategories
   selectedCourse
 
+  
+  constructor(    
+    public icon: IconService,
+    public activityClassesService:ActivityClassesService,
 
-  hasOwnCourses(){
-
-
-    for(let category of this.processedCategories){
-
-      if(category.coursesPropios?.length>0){
-        return true
-      }
-    }
-
-    return false
-
-    
-  }
+  ){}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['categories'] && changes['categories'].currentValue) {
-      console.log('changes categories',changes['categories']);
-      this.processedCategories = this.structuredClone(changes['categories'].currentValue);
-      //let cursosProxmosIn = cursosProximos
+      // console.log('changes categories',changes['categories']);
+      this.processedCategories = changes['categories'].currentValue;
       let cursosProxmosIn = []
-      console.log('cursosProxmos',cursosProximos,cursosProxmosIn)
+      // console.log('cursosProxmos',cursosProximos,cursosProxmosIn)
       let proximamente = {
         name:'Proximamente'
       }
@@ -56,43 +46,28 @@ export class CourseSelectorComponent {
       proximos.coursesPredyc = cursosProxmosIn
       proximos.courses = cursosProxmosIn
 
-      console.log('proximos',proximos)
-
-
-      console.log('this.processedCategories',this.processedCategories)
-
+      // console.log('proximos',proximos)
+      // console.log('this.processedCategories',this.processedCategories)
 
     }
   }
 
-  structuredClone(categories) {
-
-    return categories
-
-    console.log('categories original',categories)
-
-    let categoriesOut = JSON.stringify(categories);
-    categoriesOut = JSON.parse(categoriesOut)
-    
-    return categoriesOut;
-
-  }
-
-  
-  constructor(    
-    public icon: IconService,
-    public activityClassesService:ActivityClassesService,
-
-    ){
-    
-  }
-
   ngOnInit(): void {
 
-    console.log('categories select course component',this.categories)
+    // console.log('categories select course component',this.categories)
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
     
+  }
+
+  hasOwnCourses(){
+    for(let category of this.processedCategories){
+      if(category.coursesPropios?.length>0){
+        return true
+      }
+    }
+
+    return false
   }
 
   getRounded(num: number): number {
@@ -100,10 +75,8 @@ export class CourseSelectorComponent {
   }
 
   selectCourse(course){
-
     this.selectedCourse = course
     this.getExamCourse(course)
-
   }
 
   getExamCourse(course){

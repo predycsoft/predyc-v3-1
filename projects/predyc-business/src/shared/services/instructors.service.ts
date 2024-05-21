@@ -122,4 +122,8 @@ export class InstructorsService {
   getInstructors$(): Observable<any> {
     return this.afs.collection<any>("instructors").valueChanges();
   }
+
+  public getInstructorRefById(id: string): DocumentReference {
+    return this.afs.collection<any>("instructors").doc(id).ref
+  }
 }
