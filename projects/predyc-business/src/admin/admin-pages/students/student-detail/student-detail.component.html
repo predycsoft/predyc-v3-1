@@ -109,6 +109,9 @@
             >
           </div>
           <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
+            <div class="blueLink ft12" (click)="openDiplomadosDialog()">
+              Elegir pack de cursos a inscribir
+            </div>
             <div class="blueLink ft12" (click)="openCoursesDialog()">
               Elegir cursos a inscribir
             </div>
@@ -147,7 +150,21 @@
           <span
             class=""
             [ngClass]="
-              academicTab == 1 ? 'selectedTab' : 'ft13 gray-9 cursorPointer'
+              academicTab == 1 ? 'selectedTab ' : 'ft13 gray-9 cursorPointer'
+            "
+            >Diplomados</span
+          >
+        </div>
+        <div
+          fxLayout="row"
+          fxLayoutAlign="start center"
+          fxLayoutGap=".5"
+          (click)="academicTab = 2"
+        >
+          <span
+            class=""
+            [ngClass]="
+              academicTab == 2 ? 'selectedTab' : 'ft13 gray-9 cursorPointer'
             "
             >Actividad</span
           >
@@ -166,7 +183,17 @@
           [userPhotoUrl]="user?.photoUrl"
         ></app-student-courses-list>
       </div>
+
       <div *ngIf="academicTab === 1" class="fw">
+        <app-student-diplomados-list
+        [userRef]="userRef"
+        [userName]="user?.name"
+        [userEmail]="user?.email"
+        [userPhotoUrl]="user?.photoUrl"
+      ></app-student-diplomados-list>
+      </div>
+      
+      <div *ngIf="academicTab === 2" class="fw">
         <app-student-classes-activity-list
           [userRef]="userRef"
         ></app-student-classes-activity-list>

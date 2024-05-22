@@ -1,0 +1,83 @@
+<div class="">
+  <table mat-table [dataSource]="dataSource">
+    <ng-container matColumnDef="courseTitle">
+      <th mat-header-cell *matHeaderCellDef class="ft13">Título</th>
+      <td mat-cell *matCellDef="let data" class="centertext ft11">
+        <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
+          <img
+            [src]="
+              data.photoUrl
+                ? data.photoUrl
+                : 'assets/images/default/default-user-image.jpg'
+            "
+            class="avatar2"
+            alt=""
+          />
+          <span>{{ data.name | titlecase }}</span>
+        </div>
+      </td>
+    </ng-container>
+
+
+    <ng-container matColumnDef="type">
+      <th mat-header-cell *matHeaderCellDef class="ft13 centertext">
+        Tipo
+      </th>
+      <td mat-cell *matCellDef="let data" class="centertext ft11">
+        <div>
+          <span>{{ data.typeName | titlecase }}</span>
+        </div>
+      </td>
+    </ng-container>
+
+
+    <ng-container matColumnDef="dateStart">
+      <th mat-header-cell *matHeaderCellDef class="ft13 centertext">
+        Fecha de inicio
+      </th>
+      <td mat-cell *matCellDef="let data" class="centertext ft11">
+        {{
+          data.dateStartFormated
+            ? (data.dateStartFormated | date : "dd/MM/yy")
+            : "No ha iniciado"
+        }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="dateEnd">
+      <th mat-header-cell *matHeaderCellDef class="ft13 centertext">
+        Fecha de finalización
+      </th>
+      <td mat-cell *matCellDef="let data" class="centertext ft11">
+        {{
+          data.dateEndFormated ? (data.dateEndFormated | date : "dd/MM/yy") : "No ha finalizado"
+        }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="progress">
+      <th mat-header-cell *matHeaderCellDef class="ft13 centertext">
+        Progreso
+      </th>
+      <td mat-cell *matCellDef="let data" class="centertext ft11">
+        {{ data.progress | number : "1.2-2" }}%
+      </td>
+    </ng-container>
+
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <ng-container>
+      <tr
+        mat-row
+        *matRowDef="let data; columns: displayedColumns"
+        class="cursorPointer"
+      ></tr>
+    </ng-container>
+
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell" colspan="8">
+        No se han encontrado suscripciones para el criterio de busqueda
+      </td>
+    </tr>
+  </table>
+</div>
