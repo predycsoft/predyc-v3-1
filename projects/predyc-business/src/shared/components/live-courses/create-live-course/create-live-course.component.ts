@@ -30,12 +30,34 @@ import { Enterprise } from 'projects/shared/models/enterprise.model';
 import { Skill } from 'projects/shared/models/skill.model';
 import VimeoPlayer from '@vimeo/player';
 import { VimeoComponent } from '../../vimeo/vimeo.component';
+import { LiveCourseJson } from 'projects/shared/models/live-course.model';
+import { Session, SessionJson } from 'projects/shared/models/session.model';
 
 interface Competencia {
   id: number;
   name: string;
   selected: boolean;
   categoriaId: number;
+}
+
+interface LiveCourseData extends LiveCourseJson {
+  addClassMode: boolean,
+  isInvalid: boolean,
+  InvalidMessages: string,
+
+}
+
+interface SessionData extends SessionJson {
+  addClassMode: boolean,
+  isInvalid: boolean,
+  expanded: boolean,
+  type: string,
+  editarTitulo: boolean,
+  tituloTMP: string,
+  videoUpload: any,
+  uploading: any,
+  deleted: boolean,
+  
 }
 
 @Component({
@@ -1716,36 +1738,37 @@ export class CreateLiveCourseComponent {
     })
   }
 
-  closeOtherClasesModulo(openedClase: Clase): void {
+  closeOtherSessions(openedSession: any): void {
     // Recorrer todas las clases en el módulo.
-    // for (const clase of modulo.clases) {
-    //     // Si la clase es la que se abrió, establecer expanded en true.
-    //     // De lo contrario, establecer en false.
-    //     if (clase === openedClase) {
-    //         clase.expanded = true;
-    //     } else {
-    //         clase.expanded = false;
-    //     }
-    // }
+    for (const session of this.liveCourse.sessions) {
+        // Si la clase es la que se abrió, establecer expanded en true.
+        // De lo contrario, establecer en false.
+        if (session === openedSession) {
+            session.expanded = true;
+        } else {
+            session.expanded = false;
+        }
+    }
   }
 
   // AQUI
-  getIconClase(clase){
-    if (clase == 'lectura'){
+  getIconClase(sessionType: string){
+    if (sessionType == 'lectura'){
       return 'catelog'
     }
-    else if (clase == 'actividad'){
+    else if (sessionType == 'actividad'){
       return 'chess'
     }
-    else if (clase == 'corazones'){
+    else if (sessionType == 'corazones'){
       return 'favorite'
     }
-    else if(clase == 'video'){
+    else if(sessionType == 'video'){
       return 'videoChat'
     }
 
     return "catelog";
   }
+
   // AQUI
   getnumerClassTipo(claseIn) {
     let valor = 0
@@ -1829,16 +1852,18 @@ export class CreateLiveCourseComponent {
   }
 
   // AQUI
-  async addSession(tipo){
+  addSession(tipo){
     let clases = []
     if (this.liveCourse.sessions && this.liveCourse.sessions.length > 0) clases = this.liveCourse.sessions
     
-    let clase = new Clase;
-    clase.tipo = tipo;
+    // let clase = new Clase;
+    let clase: any = {} // should be created by a class with the corresponding fields
+    clase.type = tipo;
+    clase.files = [];
     clase['edited'] = true
-    clase['modulo'];
+    clase['duration'] = 60
     //clase.id = Date.now().toString();
-    clase.id = await this.afs.collection<Clase>(Clase.collection).doc().ref.id;
+    clase.id = this.afs.collection<Session>(Session.collection).doc().ref.id;
 
     // clase['modulo'] = moduloIn.numero;
     // let numero = this.obtenerNumeroMasGrandeModulo(moduloIn);
@@ -1847,13 +1872,13 @@ export class CreateLiveCourseComponent {
 
     if(clase.tipo == 'lectura'){
       clase.HTMLcontent ='<h4><font face="Arial">Sesi&#243;n de lectura.</font></h4><h6><font face="Arial">&#161;Asegurate de descargar los archivos adjuntos!</font></h6><p><font face="Arial">Encu&#233;ntralos en la secci&#243;n de material descargable</font></p>'
-      clase.duracion = 10
+      // clase.duracion = 10
     }
 
     if(clase.tipo == 'actividad' || clase.tipo ==  'corazones'){
       let actividad = new Activity();
       //actividad.id = Date.now().toString();
-      actividad.title = clase.titulo;
+      actividad.title = clase.title;
       //this.actividades.push(actividad);
       //console.log('actividades', this.actividades)
       actividad['isInvalid'] = true;
@@ -1905,46 +1930,44 @@ export class CreateLiveCourseComponent {
         })
       }
     })
-  }
+  } 
 
   // AQUI
-  borrarClase(claseIn){
+  borrarClase(session){
+    let clases = this.liveCourse.sessions
 
-    // let modulo = this.modulos.find(modulo => modulo.numero == moduloIn.numero);
-    // let clases = modulo['clases'];
+    Swal.fire({
+      title: `<span class=" gray-9 ft20">Borrar sesion ${session.title ? session.title : 'Sin título'}</span>`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: 'var(--red-5)',
+      cancelButtonColor: 'var(--gray-4)',
+      confirmButtonText: `Borrar clase`,
+      cancelButtonText:'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
 
-    // Swal.fire({
-    //   title: `<span class=" gray-9 ft20">Borrar clase ${claseIn.numero} - ${claseIn.titulo? claseIn.titulo: 'Sin título'}</span>`,
-    //   icon: 'warning',
-    //   showCancelButton: true,
-    //   confirmButtonColor: 'var(--red-5)',
-    //   cancelButtonColor: 'var(--gray-4)',
-    //   confirmButtonText: `Borrar clase`,
-    //   cancelButtonText:'Cancelar'
-    // }).then((result) => {
-    //   if (result.isConfirmed) {
+        clases = clases.filter(clase => clase.id != session.id );
+        this.liveCourse.sessions = clases;
+        session['deleted'] = true
 
-    //     clases = clases.filter(clase => clase.id != claseIn.id );
-    //     modulo['clases'] = clases;
-    //     claseIn['deleted'] = true
+        let classDelete = {
+          claseInId: session.id,
+          cursoId: this.idCurso,
+          // moduloInId: moduloIn.id,
+          // activityId: claseIn?.activity?.id
+        }
 
-    //     let classDelete = {
-    //       claseInId:claseIn.id,
-    //       cursoId:this.curso.id,
-    //       moduloInId:moduloIn.id,
-    //       activityId:claseIn?.activity?.id
-    //     }
-
-    //     this.deletedClasses.push(classDelete)
-    //     //this.courseClassService.deleteClassAndReference(claseIn.id,this.curso.id,moduloIn.id);
-    //     Swal.fire({
-    //       title:'Borrado!',
-    //       text:`La clase ${claseIn.numero} - ${claseIn.titulo? claseIn.titulo: 'Sin título'} fue borrada`,
-    //       icon:'success',
-    //       confirmButtonColor: 'var(--blue-5)',
-    //     })
-    //   }
-    // })
+        this.deletedClasses.push(classDelete)
+        //this.courseClassService.deleteClassAndReference(claseIn.id,this.curso.id,moduloIn.id);
+        Swal.fire({
+          title:'Borrado!',
+          text:`La sesión ${session.title? session.title: 'Sin título'} fue borrada`,
+          icon:'success',
+          confirmButtonColor: 'var(--blue-5)',
+        })
+      }
+    })
 
   }
 
@@ -2543,32 +2566,16 @@ export class CreateLiveCourseComponent {
     return clase.id; // Suponiendo que cada clase tiene un id único.
   }
 
-  getDurationModule(module){
-
-    let duracion = 0
-    module.clases.forEach(clase => {
-      duracion+=clase?.duracion? clase.duracion : 0 
-    });
-    return duracion
-  }
-
-  // AQUI
   getDurationModuleCourse(){
-
     let duracion = 0
-
-    this.modulos.forEach(modulo => {
-      duracion+=this.getDurationModule(modulo)
-    });
-
-    if(this.examen?.questions){
-      let duracionExamen = this.examen?.questions.length<=20 ? 20 : this.examen?.questions.length>=60?60 :this.examen?.questions.length
-      duracion+=duracionExamen
+    
+    if (this.liveCourse.sessions && this.liveCourse.sessions.length > 0) {
+      this.liveCourse.sessions.forEach(session => {
+        duracion += session.duration ? session.duration : 0 
+      });
     }
 
     return duracion
-
-
   }
 
   borrarArchivo(clase,archivo){
@@ -3441,11 +3448,10 @@ export class CreateLiveCourseComponent {
     modulo.title = modulo['tituloTMP'];
   }
 
-  confirmarTituloClase(clase) {
-    clase['editarTitulo'] = false;
-    clase.titulo = clase['tituloTMP'];
-    clase['edited'] = true; // Marca la clase como editada
-    // Aquí puedes añadir cualquier otra lógica necesaria después de confirmar el título
+  confirmSessionTitle(session) {
+    session['editarTitulo'] = false;
+    session.title = session['tituloTMP'];
+    session['edited'] = true;
   }
 
 }

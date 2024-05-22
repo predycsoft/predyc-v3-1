@@ -6,6 +6,9 @@ export interface SessionJson {
     date: any
     description: string
     liveCourseRef: DocumentReference
+    duration: number
+    vimeoId1: number,
+    files: []
 }
 
 export class Session {
@@ -18,15 +21,21 @@ export class Session {
         public date: any,
         public description: string,
         public liveCourseRef: DocumentReference,
+        public duration: number,
+        public vimeoId1: number,
+        public files: [],
     ) {}
 
-    public static fromJson(QuestionJson: SessionJson): Session {
+    public static fromJson(SessionJson: SessionJson): Session {
         return new Session(
-            QuestionJson.id,
-            QuestionJson.title,
-            QuestionJson.date,
-            QuestionJson.description,
-            QuestionJson.liveCourseRef,
+            SessionJson.id,
+            SessionJson.title,
+            SessionJson.date,
+            SessionJson.description,
+            SessionJson.liveCourseRef,
+            SessionJson.duration,
+            SessionJson.vimeoId1,
+            SessionJson.files,
         )
     }
 
@@ -37,6 +46,9 @@ export class Session {
             date:this.date,
             description:this.description,
             liveCourseRef : this.liveCourseRef,
+            duration : this.duration,
+            vimeoId1 : this.vimeoId1,
+            files : this.files,
         }
     }
 }

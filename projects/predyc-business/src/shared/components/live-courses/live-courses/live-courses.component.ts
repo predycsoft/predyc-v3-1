@@ -277,8 +277,8 @@ export class LiveCoursesComponent {
           liveCourse.id = liveCourseRef.id;
           // Live course session
           let sessions =[ 
-            new Session("", "Primera sesion de prueba", new Date(1716879999999), "Descripcion de la 1erasesion de prueba", liveCourseRef),
-            new Session("", "Segunda sesion de prueba", new Date(1716990000000), "Descripcion de la 2da sesion de prueba", liveCourseRef),
+            new Session("", "Primera sesion de prueba", new Date(1716879999999), "Descripcion de la 1erasesion de prueba", liveCourseRef, 5, null, []),
+            new Session("", "Segunda sesion de prueba", new Date(1716990000000), "Descripcion de la 2da sesion de prueba", liveCourseRef, 8, null, []),
           ]
           
           for (let session of sessions) {
