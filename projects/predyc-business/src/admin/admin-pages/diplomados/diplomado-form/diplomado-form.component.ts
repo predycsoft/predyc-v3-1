@@ -120,7 +120,8 @@ export class DiplomadoFormComponent {
 
 
     this.activitySubscription = this.activityClassesService.getActivityCertifications().subscribe(activities => {
-      let activitiesFiltered = activities.filter(x=>x.subType !="initTest")
+      //let activitiesFiltered = activities.filter(x=>x.subType !="initTest")
+      let activitiesFiltered = activities
       console.log('activitiesFiltered',activitiesFiltered)
       this.activities = activitiesFiltered
 
