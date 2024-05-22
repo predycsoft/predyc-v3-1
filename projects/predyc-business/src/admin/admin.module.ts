@@ -42,6 +42,8 @@ import { CertificationsFormComponent } from "./admin-pages/certifications/certif
 import { DiplomadosComponent } from "./admin-pages/diplomados/diplomados.component";
 import { DiplomadosListComponent } from "./admin-pages/diplomados/diplomados-list/diplomados-list.component";
 import { DiplomadoFormComponent } from "./admin-pages/diplomados/diplomado-form/diplomado-form.component";
+import { StudentDiplomadosListComponent } from "./admin-pages/students/student-detail/student-diplomados-list/student-diplomados-list.component";
+
 
 @NgModule({
   declarations: [
@@ -77,6 +79,7 @@ import { DiplomadoFormComponent } from "./admin-pages/diplomados/diplomado-form/
     EnterpriseStudentsListComponent,
     StudentChargeListComponent,
     StudentCoursesListComponent,
+    StudentDiplomadosListComponent,
     StudentClassesActivityListComponent,
     FreebiesComponent,
     FreebiesListComponent,

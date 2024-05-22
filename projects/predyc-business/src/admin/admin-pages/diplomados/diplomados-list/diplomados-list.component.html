@@ -62,7 +62,7 @@
             <th mat-header-cell *matHeaderCellDef class="ft14"> Tipo </th>
             <td mat-cell *matCellDef="let activity"> 
                 <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign=" center" >
-                    <div class="ft500 ft12 gray-8 w-50">{{activity.type | titlecase }}</div>
+                    <div class="ft500 ft12 gray-8 w-50">{{getTypeFullName(activity.type)}}</div>
                 </div>
             </td>
         </ng-container>

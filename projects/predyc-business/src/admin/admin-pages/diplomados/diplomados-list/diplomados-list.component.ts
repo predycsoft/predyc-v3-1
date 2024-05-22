@@ -11,6 +11,7 @@ import { IconService } from 'projects/predyc-business/src/shared/services/icon.s
 import { ActivityClassesService } from 'projects/predyc-business/src/shared/services/activity-classes.service';
 import { CourseService } from 'projects/predyc-business/src/shared/services/course.service';
 import { ProfileService } from '../../../../shared/services/profile.service';
+import { DiplomadoService } from '../../../../shared/services/diplomado.service';
 
 
 
@@ -27,7 +28,8 @@ export class DiplomadosListComponent {
     private activityClassesService:ActivityClassesService,
     public icon: IconService,
     public courseService: CourseService,
-    public profileService : ProfileService
+    public profileService : ProfileService,
+    private diplomadoService: DiplomadoService
   ){}
 
   displayedColumns: string[] = [
@@ -77,7 +79,7 @@ export class DiplomadosListComponent {
   }
 
   performSearch(searchTerm:string, page: number) {
-    this.chargeSubscription = this.profileService.getDiplomados$().subscribe(diplomados => {
+    this.chargeSubscription = this.diplomadoService.getDiplomados$().subscribe(diplomados => {
       console.log('diplomados',diplomados)
       const chargesInList = diplomados
       const filteredCharges = chargesInList
@@ -85,6 +87,21 @@ export class DiplomadosListComponent {
       this.dataSource.data = filteredCharges
       this.totalLength = filteredCharges.length;
     })
+  }
+
+
+  getTypeFullName(type){
+
+    if(type == 'diplomado'){
+      return 'Diplomado'
+    }
+    else if(type == 'pack'){
+      return 'Pack de cursos'
+    }
+    else{
+      return 'Plan de capacitación'
+    }
+
   }
 
   onPageChange(page: number): void {

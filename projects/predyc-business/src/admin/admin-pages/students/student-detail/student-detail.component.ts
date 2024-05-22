@@ -29,6 +29,8 @@ import { Curso } from "projects/shared/models/course.model";
 import { CourseByStudent } from "projects/shared/models/course-by-student.model";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { DialogEnrollCoursesComponent } from "projects/predyc-business/src/shared/components/courses/dialog-enroll-courses/dialog-enroll-courses.component";
+import { DiplomadoService } from "projects/predyc-business/src/shared/services/diplomado.service";
+import { DialogEnrollDiplomadosComponent } from "projects/predyc-business/src/shared/components/diplomados/dialog-enroll-diplomados/dialog-enroll-diplomados.component";
 
 @Component({
   selector: "app-student-detail",
@@ -57,7 +59,9 @@ export class StudentDetailComponent {
     private chargeService: ChargeService,
     private profileService: ProfileService,
     private courseService: CourseService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private diplomadoService: DiplomadoService,
+
   ) {}
 
   userSubscription: Subscription;
@@ -70,6 +74,7 @@ export class StudentDetailComponent {
 
   ngOnInit() {
     this.userRef = this.userService.getUserRefById(this.userId);
+    this.diplomadoService.initializeDiplomadosByStudent(this.userRef)
     this.userSubscription = this.afs
       .collection<User>(User.collection)
       .doc(this.userId)
@@ -341,6 +346,50 @@ export class StudentDetailComponent {
       );
     }
   }
+
+  async openDiplomadosDialog() {
+    // const coursesRefs: DocumentReference[] = this.user?.profile?.coursesRef;
+    const diplomadosByStudent = await this.diplomadoService.getActiveDiplomadosByStudent(
+      this.userRef
+    );
+    console.log("diplomadoByStudent", diplomadosByStudent);
+    const diplomadosRefs = diplomadosByStudent.map((courseByStudent) => {
+      return courseByStudent.diplomadoRef;
+    });
+    const dialogRef = this.dialog.open(DialogEnrollDiplomadosComponent, {
+      data: {
+        studentEnrolledDiplomados: diplomadosRefs,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(async (diplomadosIdToEnroll: string[]) => {
+      if (diplomadosIdToEnroll && diplomadosIdToEnroll.length > 0) {
+        try {
+          console.log("diplomadosIdToEnroll", diplomadosIdToEnroll);
+          const diplomadosRefToEnroll = diplomadosIdToEnroll.map((diplomadoId) => {
+            return this.diplomadoService.getDiplomadoRefById(diplomadoId);
+          });
+          await this.saveSelectedDiplomados(diplomadosRefToEnroll);
+          this.dialogService.dialogExito();
+        } catch (error) {
+          this.dialogService.dialogAlerta(
+            "Hubo un error al guardar los cursos. Inténtalo de nuevo."
+          );
+          console.log(error);
+        }
+      }
+    });
+  }
+
+  async saveSelectedDiplomados(diplomadosRefs: DocumentReference[]) {
+    for (let i = 0; i < diplomadosRefs.length; i++) {
+      await this.diplomadoService.enrollUserDiplomadoWithRefs(
+        diplomadosRefs[i],
+        this.userRef,
+      );
+    }
+  }
+
 
   async openCoursesDialog() {
     // const coursesRefs: DocumentReference[] = this.user?.profile?.coursesRef;

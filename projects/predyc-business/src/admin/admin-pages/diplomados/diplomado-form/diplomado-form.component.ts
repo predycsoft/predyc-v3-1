@@ -39,6 +39,7 @@ import { AngularFireStorage } from "@angular/fire/compat/storage";
 import { ActivityClassesService } from "projects/predyc-business/src/shared/services/activity-classes.service";
 import { Activity } from "projects/functions/dist/shared/models";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { DiplomadoService } from '../../../../shared/services/diplomado.service';
 
 
 const MAIN_TITLE = "Predyc - ";
@@ -71,6 +72,7 @@ export class DiplomadoFormComponent {
     private storage: AngularFireStorage,
     private activityClassesService:ActivityClassesService,
     private modalService: NgbModal,
+    private diplomadoService: DiplomadoService
 
 
   ) {}
@@ -124,7 +126,7 @@ export class DiplomadoFormComponent {
 
     })
 
-    this.profileServiceSubscription = this.profileService.getDiplomados$()
+    this.profileServiceSubscription = this.diplomadoService.getDiplomados$()
       .subscribe((diplomados) => {
         if (diplomados) {
           // console.log('diplomados',diplomados)
@@ -159,12 +161,12 @@ export class DiplomadoFormComponent {
       this.titleService.setTitle(title);
       if (this.baseDiplomado) {
         observablesArray.push(
-          this.profileService.getDiplomado$(this.baseDiplomado)
+          this.diplomadoService.getDiplomado$(this.baseDiplomado)
         );
       }
     } else {
       this.isEditing = false;
-      observablesArray.push(this.profileService.getDiplomado$(this.id));
+      observablesArray.push(this.diplomadoService.getDiplomado$(this.id));
     }
     this.serviceSubscription = combineLatest(observablesArray).subscribe(
       (result) => {
@@ -857,7 +859,7 @@ export class DiplomadoFormComponent {
             if(userEnroll.fechaInscripcion){
               enrollDate = new Date(userEnroll.fechaInscripcion)
             }
-            await this.profileService.enrollUserDiplomadoWithMail(this.id, userEnroll.id,enrollDate);
+            await this.diplomadoService.enrollUserDiplomadoWithMail(this.id, userEnroll.id,enrollDate);
           }
           console.log('all data migrated');
 

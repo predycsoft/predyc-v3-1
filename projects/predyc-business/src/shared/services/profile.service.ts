@@ -75,32 +75,6 @@ export class ProfileService {
     return this.profiles$
   }
 
-
-  public getDiplomados$(): Observable<Diplomado[]> {
-    return this.enterpriseService.enterpriseLoaded$.pipe(
-      switchMap(isLoaded => {
-        if (!isLoaded) return []
-        const enterpriseRef = this.enterpriseService.getEnterpriseRef();
-            
-        // Query to get courses matching enterpriseRef
-        const enterpriseMatch$ = this.afs.collection<Diplomado>(Diplomado.collection, ref =>
-          ref.where('enterpriseRef', '==', enterpriseRef)
-        ).valueChanges({ idField: 'id' });
-      
-        // Query to get courses where enterpriseRef is empty
-        const enterpriseEmpty$ = this.afs.collection<Diplomado>(Diplomado.collection, ref =>
-          ref.where('enterpriseRef', '==', null)
-        ).valueChanges({ idField: 'id' });
-      
-        // Combine both queries
-        return combineLatest([enterpriseMatch$, enterpriseEmpty$]).pipe(
-          map(([matched, empty]) => [...matched, ...empty]),
-        )
-      })
-    )
-  }
-
-
   public getProfiles$(): Observable<Profile[]> {
     return this.enterpriseService.enterpriseLoaded$.pipe(
       switchMap(isLoaded => {
@@ -258,12 +232,6 @@ export class ProfileService {
     }
   }
   
-
-  public getDiplomado$(id: string): Observable<Diplomado> {
-    return this.afs.collection<Diplomado>(Diplomado.collection).doc(id).valueChanges()
-  }
-
-
   public getProfile$(id: string): Observable<Profile> {
     return this.afs.collection<Profile>(Profile.collection).doc(id).valueChanges()
   }
@@ -295,97 +263,6 @@ export class ProfileService {
     }
   }
 
-
-  async enrollUserDiplomado(diplomado, user) {
-    try {
-      const userRef = this.afs.collection('user').doc(user.uid).ref;
-      const diplomadoRef = this.afs.collection(Diplomado.collection).doc(diplomado.id).ref;
-  
-      console.log('enroll diplomado', user, diplomado, userRef, diplomadoRef);
-  
-      // Verificar si ya existe una inscripción
-      const existingEnrollmentSnapshot = await this.afs.collection('diplomadoByStudent', ref =>
-        ref.where('userRef', '==', userRef)
-           .where('diplomadoRef', '==', diplomadoRef)
-      ).get().toPromise();
-  
-      if (!existingEnrollmentSnapshot.empty) {
-        console.log('User is already enrolled in this diplomado');
-        return;
-      }
-  
-      let diplomadoEnroll = {
-        id: null,
-        userRef: userRef,
-        diplomadoRef: diplomadoRef,
-        enrollDate: new Date(),
-        certificateRef: null,
-        activityScore: 0,
-        dateEnd: null
-      };
-  
-      const ref = this.afs.collection<any>('diplomadoByStudent').doc().ref;
-      await ref.set({ ...diplomadoEnroll, id: ref.id }, { merge: true });
-      diplomadoEnroll.id = ref.id;
-  
-      console.log('Enrollment successful', diplomadoEnroll);
-  
-    } catch (error) {
-      console.log('Error enrolling user in diplomado:', error);
-    }
-  }
-
-  async enrollUserDiplomadoWithMail(diplomadoId: string, mail: string,enrollDate = new Date()) {
-    try {
-      // Obtener el usuario por correo electrónico
-      const userSnapshot = await this.afs.collection('user', ref => ref.where('email', '==', mail)).get().toPromise();
-      if (userSnapshot.empty) {
-        console.log('No user found with this email');
-        return;
-      }
-  
-      const userDoc = userSnapshot.docs[0];
-      const userRef = userDoc.ref;
-      const user = userDoc.data();
-  
-      const diplomadoRef = this.afs.collection(Diplomado.collection).doc(diplomadoId).ref;
-  
-      console.log('enroll diplomado', user, diplomadoId, userRef, diplomadoRef);
-  
-      // Verificar si ya existe una inscripción
-      const existingEnrollmentSnapshot = await this.afs.collection('diplomadoByStudent', ref => 
-        ref.where('userRef', '==', userRef)
-           .where('diplomadoRef', '==', diplomadoRef)
-      ).get().toPromise();
-  
-      if (!existingEnrollmentSnapshot.empty) {
-        console.log('User is already enrolled in this diplomado');
-        return;
-      }
-  
-      // Crear el objeto de inscripción
-      let diplomadoEnroll = {
-        id: null,
-        userRef: userRef,
-        diplomadoRef: diplomadoRef,
-        enrollDate: enrollDate,
-        certificateRef: null,
-        activityScore: 0,
-        dateEnd: null
-      };
-  
-      // Insertar la inscripción en diplomadoByStudent
-      const ref = this.afs.collection<any>('diplomadoByStudent').doc().ref;
-      await ref.set({ ...diplomadoEnroll, id: ref.id }, { merge: true });
-      diplomadoEnroll.id = ref.id;
-  
-      console.log('Enrollment successful', diplomadoEnroll);
-  
-    } catch (error) {
-      console.log('Error enrolling user in diplomado:', error);
-    }
-  }
-  
 
 
   
