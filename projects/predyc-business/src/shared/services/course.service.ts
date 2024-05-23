@@ -93,8 +93,6 @@ export class CourseService {
     console.log("removeCheater classes updated");
   }
 
-
-
   async fixCertificates() {
     // Buscar en la colección coursesByStudent todos los registros con progress = 100
     const coursesByStudentSnapshot = await this.afs.collection('coursesByStudent', ref => ref.where('progress', '==', 100)).get().toPromise();
@@ -501,6 +499,11 @@ export class CourseService {
         );
       })
     );
+  }
+
+
+  getClassses$(): Observable<Clase[]> {
+    return this.afs.collection<Clase>(Clase.collection).valueChanges();
   }
 
   getAllCourses$(): Observable<Curso[]> {

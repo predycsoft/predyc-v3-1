@@ -7,7 +7,7 @@
             <div class="" fxLayoutAlign="center center">
                 <img [src]="icon.trophyBlue" class="makeBlue h20px" alt="">
             </div>
-            <span class="ft500 ft14 black">Ranking del mes</span>
+            <span class="ft500 ft14 black">Ranking</span>
             <div fxLayout="center center" class="positionRelative" (mouseover)="showPointsTooltip = true" (mouseleave)="showPointsTooltip = false">
                 <img [src]="icon.information" class="h16px makeBlue" alt="">
             </div>
@@ -16,7 +16,7 @@
             <tr>
                 <td class="gray-7 ft500 ft13 ">Nombre</td>
                 <!-- <td class="gray-7 ft500 ft13 centertext">Horas</td> -->
-                <td class="gray-7 ft500 ft13 centertext">Puntaje</td>
+                <td class="gray-7 ft500 ft13 centertext">Hrs. ult. 30 días</td>
                 <td class="gray-7 ft500 ft13 centertext" style="padding-right: 35px;">Ritmo</td>
                 <!-- <td class="gray-7 ft500 ft13 centertext">Status</td> -->
 
@@ -24,7 +24,7 @@
             </tr>
             <tr *ngFor="let item of ranking | slice:0:listLength; let i = index" class="selected">
                 <td class="w-60">
-                    <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign=" center"  style="height: 40px;" class="move-right " >
+                    <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign=" center"  style="height: 40px;" class="" >
                         <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
                             <div class="avatar2 positionRelative">
                                 <img [src]="item.photoUrl" class="avatar2" alt=""
@@ -47,7 +47,7 @@
                                     <div *ngIf="item.profile"(click)="$event.stopPropagation();"  class="ft400 ft12 blue-4" >
                                         {{ item.profileName  | titlecase }}
                                     </div>
-                                    <img [src]="icon.arrowForward" alt="Forward Arrow" class="makeBlue" >
+                                    <!-- <img [src]="icon.arrowForward" alt="Forward Arrow" class="makeBlue" > -->
                                 </div>
 
                                 
@@ -68,7 +68,7 @@
                     </div> -->
                 </td>
                 <!-- <td class="centertext gray-10 ft12">{{item.hours}}&nbsp;/&nbsp;{{item.targetHours / 60 | number : "1.0-0"}} </td> -->
-                <td class="centertext gray-10 ft12">{{item.ratingPoints | number: "1.0-0"}}</td>
+                <td class="centertext gray-10 ft12">{{item.hours30Days | number: "1.0-0"}}</td>
                 
                 
                 <td class="centertext " style="width: 10%; padding-right: 35px;"   >
