@@ -114,7 +114,16 @@ export class LicenseStudentListComponent {
     this.userServiceSubscription = this.userService
       .getUsers$(searchTerm, null, statusFilter)
       .subscribe((response) => {
-        if (statusFilter != SubscriptionClass.STATUS_ACTIVE) {
+        console.log('statusFilter',statusFilter)
+        if(statusFilter == 'all'){
+          response = response
+        }
+        else if (statusFilter == SubscriptionClass.STATUS_ACTIVE) {
+          response = response.filter(
+            (item) => item.status == SubscriptionClass.STATUS_ACTIVE
+          );
+        }
+        else if (statusFilter !== SubscriptionClass.STATUS_ACTIVE) {
           response = response.filter(
             (item) => item.status !== SubscriptionClass.STATUS_ACTIVE
           );

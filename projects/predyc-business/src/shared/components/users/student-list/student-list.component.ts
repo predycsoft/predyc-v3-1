@@ -22,6 +22,8 @@ interface User {
   rhythm: string
   uid: string,
   photoUrl: string,
+  mail: string,
+  phone: string,
 }
 
 @Component({
@@ -33,6 +35,7 @@ export class StudentListComponent {
 
   displayedColumns: string[] = [
     'displayName',
+    'contacto',
     'department',
     'hours',
     'dates',
@@ -150,16 +153,26 @@ export class StudentListComponent {
             course.courseTime = courseJson.duracion
           }
         });
-  
+
+        let progreso = -1
+
+        if(targetHours){
+          progreso = ((hours/60)*100)/targetHours
+        }
+
+        console.log('userRevisar',user)
         return {
           displayName: user.displayName,
           department: this.departments.find(department => department.id === user.departmentRef?.id)?.name,
           hours,
+          mail:user.email,
+          phone:user.phoneNumber,
           targetHours,
           dataStarPlan:startDay,
           dataEndPlan:endDay,
           profile: profileName,
-          ratingPoints: this.userService.getRatingPointsFromStudyPlan(courses, this.courses),
+          //ratingPoints: this.userService.getRatingPointsFromStudyPlan(courses, this.courses),
+          ratingPoints: progreso,
           rhythm: this.userService.getPerformanceWithDetails(courses),
           uid: user.uid,
           photoUrl: user.photoUrl,

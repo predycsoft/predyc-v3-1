@@ -6,31 +6,48 @@
             <th mat-header-cell *matHeaderCellDef class="ft14"> Nombre </th>
 
             <!-- <th mat-header-cell *matHeaderCellDef class="gray-8"> Nombre </th> -->
-            <td mat-cell *matCellDef="let user" class="cursorPointer"> 
+            <td mat-cell *matCellDef="let user"> 
                 <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign=" center" >
                     <img
                         [src]="user.photoUrl ? user.photoUrl : 'assets/images/default/default-user-image.jpg'"
                         class="avatar2"
                         alt=""
                         >
-                    <div fxLayout="column" fxLayoutAlign="center " class="move-right ">
+                    <div fxLayout="column" fxLayoutAlign="center ">
                         <div class="ft500 ft14  gray-10">{{ user.displayName | titlecase }}</div>
                         <div
                         *ngIf="!user.profile"
-                            (click)="$event.stopPropagation();"
                             class="ft400 ft13 gray-6">
                             Perfil sin asignar
                         </div>
                         <div
                             *ngIf="user.profile" fxLayout="row" fxLayoutGap="5px"  >
-                            <div *ngIf="user.profile"(click)="$event.stopPropagation();"  class="ft400 ft13 blue-4" >
+                            <div *ngIf="user.profile" class="ft400 ft13 blue-4" >
                                 {{ user.profile  | titlecase }}
                             </div>
-                            <img [src]="icon.arrowForward" alt="Forward Arrow" class="makeBlue" >
+                            <!-- <img [src]="icon.arrowForward" alt="Forward Arrow" class="makeBlue" > -->
                         </div>
                     </div>
                 </div>
             </td>
+        </ng-container>
+
+
+        <!-- Department Column -->
+        <ng-container matColumnDef="contacto" class=" ">
+            <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Contacto </th>
+            <td mat-cell *matCellDef="let user" class=""> 
+                <div (click)="$event.stopPropagation();">
+                    <a [href]="'mailto:' + user.mail" class="gray-7 ft400">{{ user.mail }}</a>
+                </div>
+                <div *ngIf="user.phoneNumber">
+                    <a [href]="'https://wa.me/' + user.phoneNumber" target="_blank" class="gray-7 ft400">{{ user.phoneNumber }}</a>
+                  </div>
+        
+            </td>
+
+            <!-- <th mat-header-cell *matHeaderCellDef class="gray-8"> Departamento </th> -->
+            <!-- <td mat-cell *matCellDef="let user" class="ft14"> {{user.department}} </td> -->
         </ng-container>
 
         <!-- Department Column -->
@@ -76,10 +93,11 @@
         
         <!-- RatingPoints Column -->
         <ng-container matColumnDef="ratingPoints">
-            <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Puntaje </th>
+            <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Completación </th>
             <td mat-cell *matCellDef="let user" class="centertext"> 
                 <div>
-                    <span class="gray-7 ft400" >{{ user.ratingPoints | number: "1.0-0" }}</span>
+                    <span *ngIf="user.ratingPoints>=0" class="gray-7 ft400" >{{ user.ratingPoints | number: "1.0-0" }} %</span>
+                    <span *ngIf="user.ratingPoints<0" class="gray-7 ft400" > - </span>
                 </div>
         
             </td>
@@ -106,9 +124,9 @@
                 <div *ngIf="user.rhythm === 'low'" class="chip backRed1 " fxLayout="row" fxLayoutAlign="center center">
                     <span class="ft13 nowrap ft500 red-5 " >Bajo</span>
                 </div>
-                <div *ngIf="user.rhythm === 'no plan'" class="chip backRed1 "  fxLayout="row" fxLayoutAlign="center center" style="background-color: #ff999961;">
-                    <img [src]="icon.redWarning2" alt="" class=" pdr08   h12px" >
-                    <span class="ft13 nowrap ft500 red-5">Sin plan</span>
+                <div *ngIf="user.rhythm === 'no plan'" class="chip backGray3"  fxLayout="row" fxLayoutAlign="center center" style="background-color: #ff999961;">
+                    <img [src]="icon.warning" alt="" class=" pdr08   h12px" >
+                    <span class="ft13 nowrap ft500 gray-8">Sin plan</span>
 
                 </div>
                 <div matTooltip="No ha presentado la prueba diagnóstica" *ngIf="user.rhythm === 'no iniciado' && user.test.length==0" class="chip backRed1 "  fxLayout="row" fxLayoutAlign="center center" style="background-color: #ff999961;">
@@ -129,7 +147,7 @@
                 mat-row
                 *matRowDef="let user; columns: displayedColumns;"
                 (click)="onSelectUser(user)"
-                class="cursorPointer"
+                class="cursorPointer move-right"
                 >
             </tr>
         </ng-container>
