@@ -1,0 +1,18 @@
+<div *ngIf="groupedCourses" class="calendar-container fw">
+    <div *ngFor="let group of groupedCourses | keyvalue: keyvalueAscOrder" class="month-group">
+        <div class="month-header">
+            {{ group.key | titlecase}}
+        </div>
+        <div *ngFor="let course of group.value" class="course-item" fxLayout="row" fxLayoutAlign="space-between center">
+            <div class="course-info">
+                <img [src]="course.baseCoursePhoto" class="course-image" alt="">
+                <div>
+                    <div class="course-title">{{ course.baseCourseTitle }} - {{course.sessionTitle}} </div>
+                    <div class="course-description">{{ course.courseSonIdentifierText }}</div>
+                </div>
+            </div>
+            <div class="course-time">{{ course.sessionSonDate | date: 'EEE d' }} - {{course.sessionDuration / 60}} {{(course.sessionDuration / 60) > 1 ? "horas" : "hora" }} </div>
+        </div>
+    </div>
+</div>
+  

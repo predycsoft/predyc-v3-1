@@ -8,7 +8,7 @@ import { IconService } from '../../../services/icon.service';
 import { LicenseService } from '../../../services/license.service';
 import { ProductService } from '../../../services/product.service';
 import { SkillService } from '../../../services/skill.service';
-import { Curso, Enterprise, License, Product, Subscription as SubscriptionClass } from 'projects/shared';
+import { Curso, Enterprise, License, Product, Subscription as SubscriptionClass, firestoreTimestampToNumberTimestamp } from 'projects/shared';
 import { LiveCourseService } from '../../../services/live-course.service';
 import { InstructorsService } from '../../../services/instructors.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -18,6 +18,15 @@ export class category {
   name: string = ""
   courses: any[] = []
   expanded: boolean = false
+}
+
+export interface CalendarLiveCourseData {
+  baseCourseTitle: string
+  baseCoursePhoto: string
+  sessionTitle: string
+  sessionDuration: number
+  courseSonIdentifierText: string
+  sessionSonDate: number
 }
 
 @Component({
@@ -62,6 +71,8 @@ export class LiveCoursesComponent {
   licensesSubscription: Subscription;
   subscriptionObservableSubs: Subscription
   productServiceSubscription: Subscription
+
+  calendarLiveCourses: CalendarLiveCourseData[] = []
 
 
   ngAfterViewInit() {
@@ -112,7 +123,7 @@ export class LiveCoursesComponent {
       this.skillService.getSkills$(), 
       this.liveCourseService.getAllLiveCoursesWithSessions$(),
       this.instructorService.getInstructors$()
-    ]).subscribe(([categories, skills, coursesData, instructors]) => {
+    ]).subscribe(async ([categories, skills, coursesData, instructors]) => {
       this.categories = this.anidarCompetenciasInicial(categories, skills);
 
       let courses = coursesData.map(x => {
@@ -123,6 +134,7 @@ export class LiveCoursesComponent {
       })
       console.log('courses',courses)
 
+      // For "Lista Cursos"
       courses.forEach(course => {
         let skillIds = new Set();
         course.skillsRef.forEach(skillRef => {
@@ -156,9 +168,32 @@ export class LiveCoursesComponent {
         category.courses = filteredCourses;
       });
       // console.log("this.categories", this.categories)
+      // ---------
+
+      // For Calendario
+      for (let course of courses) {
+        const coursesSons = await this.liveCourseService.getLiveCourseSonsByLiveCourseId(course.id)
+        for (let session of course.sessions) {
+          const sessionsSons = await this.liveCourseService.getSessionSonsBySessionId(session.id, )
+          for (let sessionSon of sessionsSons) {
+            const courseSon = coursesSons.find(x => x.id === sessionSon.liveCourseSonRef.id)
+            const calendarLiveCourseData = {
+              baseCourseTitle: course.title,
+              baseCoursePhoto: course.photoUrl,
+              sessionTitle: session.title,
+              sessionDuration: session.duration,
+              courseSonIdentifierText: courseSon.identifierText,
+              sessionSonDate: firestoreTimestampToNumberTimestamp(sessionSon.date)
+            }
+            this.calendarLiveCourses.push(calendarLiveCourseData)
+          }
+        }
+      }
+      this.calendarLiveCourses.sort((a, b) => a.sessionSonDate - b.sessionSonDate);
+      console.log("calendarLiveCourses", this.calendarLiveCourses)
+      // ---
+
     })
-
-
   }
 
   anidarCompetenciasInicial(categorias: any[], skills: any[]): any[] {

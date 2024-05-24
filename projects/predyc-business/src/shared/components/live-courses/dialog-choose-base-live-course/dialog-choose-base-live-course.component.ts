@@ -69,10 +69,6 @@ export class DialogChooseBaseLiveCourseComponent {
     return option.title;
   }
 
-  async onSubmit(): Promise<void> {
-    this.closeDialog();
-  }
-
   async onSave() {
     // console.log("this.formNewCourse", this.formNewCourse)
     if (this.formNewCourse.valid) {
@@ -85,17 +81,19 @@ export class DialogChooseBaseLiveCourseComponent {
         meetingLink: formValue.meetingLink, 
         identifierText: formValue.identifyingText
       }
-      await this.liveCourseService.saveLiveCourseSon(formValue.baseCourse.id, liveCourseSon)
+      const liveCourseSonId = await this.liveCourseService.saveLiveCourseSon(formValue.baseCourse.id, liveCourseSon)
 
       // Save sessions sons
       Object.keys(formValue.sessionsDates).forEach(async key => {
         const sessionSon: SessionSonJson = {
           id: null,
-          date: this.parseDateString(formValue.sessionsDates[key])
+          date: this.parseDateString(formValue.sessionsDates[key]),
+          liveCourseSonRef: this.liveCourseService.getLiveCourseSonRefById(formValue.baseCourse.id, liveCourseSonId)
         }
         await this.liveCourseService.saveLiveCourseSessionSon(key, sessionSon)
       });
-      
+
+      this.closeDialog();
     } else {
       console.log('Form is invalid');
     }

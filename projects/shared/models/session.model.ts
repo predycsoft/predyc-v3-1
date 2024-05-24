@@ -60,6 +60,7 @@ export class Session {
 export interface SessionSonJson {
     id: string
     date: any
+    liveCourseSonRef: DocumentReference
 }
 
 export class SessionSon {
@@ -69,12 +70,14 @@ export class SessionSon {
     constructor(
         public id: string,
         public date: any,
+        public liveCourseSonRef: DocumentReference,
     ) {}
 
     public static fromJson(QuestionJson: SessionSonJson): SessionSon {
         return new SessionSon(
             QuestionJson.id,
             QuestionJson.date,
+            QuestionJson.liveCourseSonRef,
         )
     }
 
@@ -82,6 +85,7 @@ export class SessionSon {
         return {
             id:this.id,
             date:this.date,
+            liveCourseSonRef:this.liveCourseSonRef,
         }
     }
 }

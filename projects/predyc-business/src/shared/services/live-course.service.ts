@@ -4,7 +4,7 @@ import { LiveCourseByStudent } from 'projects/shared/models/live-course-by-stude
 import { LiveCourse, LiveCourseSon, LiveCourseSonJson } from 'projects/shared/models/live-course.model';
 import { Session, SessionSon, SessionSonJson } from 'projects/shared/models/session.model';
 import { User } from 'projects/shared/models/user.model';
-import { Observable, combineLatest, forkJoin, map, mergeMap, switchMap } from 'rxjs';
+import { Observable, combineLatest, firstValueFrom, forkJoin, map, mergeMap, switchMap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -94,17 +94,24 @@ export class LiveCourseService {
     return this.afs.collection<LiveCourse>(LiveCourse.collection).doc(liveCourseId).ref
   }
 
+  getLiveCourseSonRefById(liveCourseId: string, liveCourseSonId: string): DocumentReference<LiveCourseSon> {
+    return this.afs.collection<LiveCourse>(LiveCourse.collection).doc(liveCourseId).collection<LiveCourseSon>(LiveCourseSon.subCollection).doc(liveCourseSonId).ref
+  }
+
   getSessionRefById(sessionId: string): DocumentReference<Session> {
     return this.afs.collection<Session>(Session.collection).doc(sessionId).ref
   }
 
-  async saveLiveCourseSon(liveCourseId: string, newLiveCourseSon: LiveCourseSonJson): Promise<void> {
+
+
+  async saveLiveCourseSon(liveCourseId: string, newLiveCourseSon: LiveCourseSonJson): Promise<string> {
     try {
       // console.log("test saveCourse", newLiveCourseSon);
       const liveCourseSonId = (this.afs.collection(LiveCourse.collection).doc(liveCourseId).collection(LiveCourseSon.subCollection).doc().ref).id
       newLiveCourseSon.id = liveCourseSonId
 
       await this.afs.collection(LiveCourse.collection).doc(liveCourseId).collection(LiveCourseSon.subCollection).doc(liveCourseSonId).set(newLiveCourseSon, { merge: true });
+      return newLiveCourseSon.id
     } catch (error) {
       throw error;
     }
@@ -122,6 +129,14 @@ export class LiveCourseService {
       throw error;
     }
     // console.log("Has agregado una nuevo curso exitosamente.");
+  }
+
+  getLiveCourseSonsByLiveCourseId(liveCourseId: string): Promise<LiveCourseSon[]> {
+    return firstValueFrom(this.afs.collection<LiveCourse>(LiveCourse.collection).doc(liveCourseId).collection<LiveCourseSon>(LiveCourseSon.subCollection).valueChanges())
+  }
+
+  getSessionSonsBySessionId(sessionId: string): Promise<SessionSon[]> {
+    return firstValueFrom(this.afs.collection<Session>(Session.collection).doc(sessionId).collection<SessionSon>(SessionSon.subCollection).valueChanges())
   }
 
 }

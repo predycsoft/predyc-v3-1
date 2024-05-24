@@ -1,0 +1,53 @@
+.calendar-container {
+    width: 100%;
+    padding: 10px;
+    background-color: #f4f4f4;
+  }
+  
+  .month-group {
+    margin-bottom: 20px;
+  }
+  
+  .month-header {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    /* background-color: #f0f0f0; */
+    padding: 10px;
+    border-radius: 5px;
+  }
+  
+  .course-item {
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .course-info {
+    display: flex;
+    align-items: center;
+  }
+  
+  .course-image {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+  }
+  
+  .course-title {
+    font-weight: bold;
+  }
+  
+  .course-description {
+    color: #666;
+  }
+  
+  .course-time {
+    font-size: 14px;
+    color: #888;
+  }
+  
