@@ -229,6 +229,7 @@ export class EnterprisesUsersMigrationComponent {
       if (oldEnterpriseData.hoursPerWeek) permissions.hoursPerWeek = oldEnterpriseData.hoursPerWeek;
       return {
         examenInicial: true,
+        demo:false,
         examenFinal: true,
         showEnterpriseLogoInCertificates: true,
         city: null,

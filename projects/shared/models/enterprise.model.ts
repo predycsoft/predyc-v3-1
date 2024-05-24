@@ -11,6 +11,7 @@ export interface EnterpriseJson {
     permissions: Permissions
     photoUrl: string | null
     examenInicial: boolean | true
+    demo: boolean | true
     examenFinal: boolean | true
     profilesNo: number
     zipCode: number | null
@@ -43,6 +44,7 @@ export class Enterprise {
         public photoUrl: string | null,
         public examenInicial: boolean | true,
         public examenFinal: boolean | true,
+        public demo: boolean | true,
         public profilesNo: number,
         public zipCode: number | null,
         public workField: string | null,
@@ -75,6 +77,7 @@ export class Enterprise {
             },
             photoUrl: null,
             examenInicial:true,
+            demo:false,
             examenFinal:true,
             profilesNo: 0,
             zipCode: null,
@@ -109,6 +112,7 @@ export class Enterprise {
             enterpriseJson.permissions,
             enterpriseJson.photoUrl,
             enterpriseJson.examenInicial,
+            enterpriseJson.demo,
             enterpriseJson.examenFinal,
             enterpriseJson.profilesNo,
             enterpriseJson.zipCode,
@@ -132,6 +136,7 @@ export class Enterprise {
             permissions: this.permissions,
             photoUrl: this.photoUrl,
             examenInicial:this.examenInicial,
+            demo:this.demo,
             examenFinal:this.examenFinal,
             profilesNo: this.profilesNo,
             zipCode: this.zipCode,

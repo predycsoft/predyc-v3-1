@@ -1,6 +1,7 @@
 import { EnterpriseJson } from 'projects/shared/models/enterprise.model'
 
 export const enterpriseData: EnterpriseJson = {
+    demo:false,
     city: "Santiago de Querétaro",
     country: "México",
     createdAt: 1695141743802,
@@ -39,6 +40,7 @@ export const enterpriseData: EnterpriseJson = {
 export const enterpriseDataPredyc: EnterpriseJson = {
     city: "Santiago de Querétaro",
     country: "México",
+    demo:false,
     createdAt: 1695141743802,
     description: "Admin Predyc",
     employesNo: 0,

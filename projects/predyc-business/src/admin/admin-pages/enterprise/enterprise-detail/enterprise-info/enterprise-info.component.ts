@@ -48,6 +48,7 @@ export class EnterpriseInfoComponent {
 			photoUrl: [null],
 			examenInicial: [true],
 			examenFinal: [true],
+			demo: [false],
 			showEnterpriseLogoInCertificates: [false],
 		});
 		// Edit mode
@@ -64,6 +65,10 @@ export class EnterpriseInfoComponent {
 				this.enterprise.examenFinal = true
 			}
 
+			// if(this.enterprise.demo  === undefined ){
+			// 	this.enterprise.demo = true
+			// }
+
 
 			this.enterpriseForm.patchValue({
 				name: this.enterprise.name,
@@ -74,6 +79,7 @@ export class EnterpriseInfoComponent {
 				photoUrl: this.enterprise.photoUrl,
 				examenInicial:this.enterprise.examenInicial,
 				examenFinal:this.enterprise.examenFinal,
+				demo:this.enterprise.demo,
 				showEnterpriseLogoInCertificates: this.enterprise?.showEnterpriseLogoInCertificates ?this.enterprise?.showEnterpriseLogoInCertificates : false,
 			});
 			// this.enterpriseForm.get('name')?.disable();
@@ -164,6 +170,7 @@ export class EnterpriseInfoComponent {
 		enterprise.socialNetworks.linkedin = formValue.linkedin;
 		enterprise.photoUrl = formValue.photoUrl;
 		enterprise.examenFinal = formValue.examenFinal;
+		enterprise.demo = formValue.demo;
 		enterprise.examenInicial = formValue.examenInicial;
 		enterprise.showEnterpriseLogoInCertificates = formValue.showEnterpriseLogoInCertificates;
 

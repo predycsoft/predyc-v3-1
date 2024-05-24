@@ -203,6 +203,7 @@ export class EnterpriseListComponent {
               name: enterpriseInfo.enterprise.name,
               photoUrl: enterpriseInfo.enterprise.photoUrl,
               userQty: enterpriseInfo.userQty,
+              demo:enterpriseInfo.enterprise.demo ? enterpriseInfo.enterprise.demo : false,
               totalLicenses: enterpriseInfo.totalLicenses,
               availableLicenses: enterpriseInfo.availableLicenses,
               availableRotations: enterpriseInfo.availableRotations,
