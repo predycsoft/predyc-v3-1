@@ -41,11 +41,11 @@ export class SideNavComponent {
       link: "management/courses",
       icon: "../../assets/iconsUI/courses-1.svg",
     },
-    // {
-    //   name: "Cursos en vivo",
-    //   link: "management/live",
-    //   icon: "../../assets/iconsUI/courses-1.svg",
-    // },
+    {
+      name: "Cursos en vivo",
+      link: "management/live",
+      icon: "../../assets/iconsUI/courses-1.svg",
+    },
     {
       name: "Licencias",
       link: "settings",
