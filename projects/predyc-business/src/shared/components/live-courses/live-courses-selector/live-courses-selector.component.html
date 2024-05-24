@@ -1,5 +1,5 @@
 <div class="list">
-    <span class="ft400 gray-8 ft13 pd05">Cursos Predyc</span>
+    <!-- <span class="ft400 gray-8 ft13 pd05">Cursos Predyc</span> -->
     <div class="fw categories" *ngFor="let category of processedCategories">
         <div *ngIf="filteredCourses(category.courses)?.length > 0" 
             [ngClass]="category.expanded ? 'headCategoryExpanded hoverGray mgt05' : 'headCategory hoverGray'" 
@@ -39,6 +39,10 @@
                 </div>
              </ng-container>
         </div>
+    </div>
+
+    <div *ngIf="!processedCategories || processedCategories.length === 0">
+        <span class="ft14 ft500"> Aún no hay cursos en vivo</span>
     </div>
 </div>
 

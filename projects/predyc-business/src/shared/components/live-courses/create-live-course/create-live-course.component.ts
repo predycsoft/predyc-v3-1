@@ -61,7 +61,6 @@ interface SessionData extends SessionJson {
   deleted: boolean,
   activity: any,
   HTMLcontent: any,
-  
 }
 
 @Component({
@@ -118,8 +117,8 @@ export class CreateLiveCourseComponent {
 
   // curso : any;
 
-  // liveCourse: any = {}
-  liveCourse: LiveCourseData
+  // liveCourseData: any = {}
+  liveCourseData: LiveCourseData
   modulos : Modulo[] = [];
 
 
@@ -329,6 +328,79 @@ export class CreateLiveCourseComponent {
     }
     // EDIT MODE
     else {
+      this.liveCourseService.getLiveCourseWithSessionsById$(this.idCurso).subscribe(liveCourseData => {
+        this.liveCourseData = {
+          ...liveCourseData.liveCourse,
+          sessions: liveCourseData.sessions.map(session => ({
+            ...session,
+            addClassMode: false,
+            isInvalid: false,
+            expanded: false,
+            type: null,
+            editarTitulo: false,
+            tituloTMP: null,
+            videoUpload: null,
+            uploading: null,
+            deleted: false,
+            activity: null,
+            HTMLcontent: null,
+          })),
+          addClassMode: false,
+          isInvalid: false,
+          InvalidMessages: []
+        };
+
+        let enterpriseREf = this.enterpriseService.getEnterpriseRef()
+        // if(!this.user.isSystemUser && !(curso.enterpriseRef.id == enterpriseREf.id)){
+        //   this.router.navigate(["management/courses"])
+        // }
+
+        // console.log('datos cursos',curso)
+        
+        let instructor = this.instructores.find(x=> x.id == this.liveCourseData.instructorRef.id)
+        this.instructoresForm.patchValue(instructor)
+
+        this.formNewCourse = new FormGroup({
+          id: new FormControl(this.liveCourseData.id, Validators.required),
+          vimeoFolderId: new FormControl(this.liveCourseData.vimeoFolderId),
+          title: new FormControl(this.liveCourseData.title, Validators.required),
+          description: new FormControl(this.liveCourseData.description, Validators.required),
+          photoUrl: new FormControl(this.liveCourseData.photoUrl, Validators.required),
+          instructorRef: new FormControl(this.liveCourseData.instructorRef),
+          skills: new FormControl(this.liveCourseData.skillsRef, Validators.required),
+          skillsRef: new FormControl(this.liveCourseData.skillsRef),
+          meetingLink: new FormControl(this.liveCourseData.meetingLink),
+          // resumen: new FormControl(this.liveCourseData.resumen, Validators.required),
+          // nivel: new FormControl(this.liveCourseData.nivel, Validators.required),
+          // idioma: new FormControl(this.liveCourseData.idioma, Validators.required),
+          // contenido: new FormControl(this.liveCourseData.contenido, Validators.required),
+          instructor: new FormControl(instructor.nombre, Validators.required),
+          resumen_instructor: new FormControl(instructor.resumen, Validators.required),
+          imagen_instructor: new FormControl(instructor.foto, Validators.required),
+          proximamente: new FormControl(this.liveCourseData.proximamente),
+
+        });
+
+        //this.formNewCourse.get('resumen_instructor').disable();
+        this.initSkills(); // Asegúrate de que initSkills también maneje las suscripciones correctamente
+        this.activityClassesService.getActivityAndQuestionsForCourse(this.idCurso).pipe(filter(activities=>activities!=null),take(1)).subscribe(activities => {
+          //console.log('activities clases', activities);
+          this.activitiesCourse = activities;
+          this.modulos.forEach(module => {
+            let clases = module['clases'];
+            clases.forEach(clase => {
+              if (clase.tipo == 'actividad' || clase.tipo == 'corazones') {
+                //console.log('activities clases clase', clase);
+                let activity = activities.find(activity => activity.claseRef.id == clase.id);
+                console.log('activities clases activity', activity);
+                clase.activity = activity;
+              }
+            });
+          });
+        });
+
+      })
+
       // this.courseService.getCoursesObservable().pipe(filter(courses=>courses.length>0),take(1)).subscribe(courses => {
       //   // console.log('cursos', courses);
       //   let curso = courses.find(course => course.id == this.idCurso);
@@ -390,7 +462,7 @@ export class CreateLiveCourseComponent {
   }
 
   initializeLiveCourseAsLiveCourseData(): void {
-    this.liveCourse = {
+    this.liveCourseData = {
         id: '',
         companyName: '',
         title: '',
@@ -540,12 +612,12 @@ export class CreateLiveCourseComponent {
 
   async removeSkill(skill){
 
-    if(this.liveCourse?.skillsRef){
-      this.liveCourse.skillsRef = this.liveCourse.skillsRef.filter(x=> x.id != skill.id)
-      console.log('this.liveCourse.skillsRef',this.liveCourse.skillsRef)
+    if(this.liveCourseData?.skillsRef){
+      this.liveCourseData.skillsRef = this.liveCourseData.skillsRef.filter(x=> x.id != skill.id)
+      console.log('this.liveCourseData.skillsRef',this.liveCourseData.skillsRef)
       this.skillsCurso = this.getCursoSkills();
-      //this.liveCourse.skillsRef = this.tmpSkillRefArray
-      this.formNewCourse.get("skills").patchValue(this.liveCourse.skillsRef);
+      //this.liveCourseData.skillsRef = this.tmpSkillRefArray
+      this.formNewCourse.get("skills").patchValue(this.liveCourseData.skillsRef);
     }
     else{
       console.log('this.skillsCurso',this.skillsCurso)
@@ -572,12 +644,12 @@ export class CreateLiveCourseComponent {
         });
 
         this.categoriasArray = this.anidarCompetenciasInicial(category, skill)
-        // console.log('categoriasArray', this.categoriasArray,this.liveCourse)
+        // console.log('categoriasArray', this.categoriasArray,this.liveCourseData)
         if(!this.skillsInit){
           if(this.mode == 'edit'){
-            //console.log('liveCourse edit', this.liveCourse)
+            //console.log('liveCourseData edit', this.liveCourseData)
             this.textModulo = 'Editar curso'
-            let skillsProfile = this.liveCourse.skillsRef;
+            let skillsProfile = this.liveCourseData.skillsRef;
             this.skillsCurso = this.getCursoSkills()
             skillsProfile.forEach(skillIn => {
               let skillSelect = skill.find(skillSelectIn => skillSelectIn.id == skillIn.id)
@@ -588,9 +660,9 @@ export class CreateLiveCourseComponent {
           }
   
           if(this.mode == 'edit'){
-            if(this.liveCourse){
+            if(this.liveCourseData){
               let pilar
-              let skillId = this.liveCourse.skillsRef[0]?.id
+              let skillId = this.liveCourseData.skillsRef[0]?.id
               if(skillId){
                 pilar = this.categoriasArray.find(x=>x.competencias.find(y=>y.id == skillId))
               }
@@ -601,7 +673,7 @@ export class CreateLiveCourseComponent {
               this.pillarsForm.patchValue(pilar)
               console.log('pilar',this.pillarsForm.value['name'])
             }
-            this.getExamCourse(this.liveCourse.id);
+            this.getExamCourse(this.liveCourseData.id);
           }
           else{
             let pilar
@@ -646,11 +718,11 @@ export class CreateLiveCourseComponent {
   }
 
   changePillar(newPillar){
-    if(this.liveCourse?.skillsRef[0]?.id){
-      let pilar = this.categoriasArray.find(x=>x.competencias.find(y=>y.id == this.liveCourse?.skillsRef[0]?.id))
+    if(this.liveCourseData?.skillsRef[0]?.id){
+      let pilar = this.categoriasArray.find(x=>x.competencias.find(y=>y.id == this.liveCourseData?.skillsRef[0]?.id))
       //this.pillarsForm.patchValue(pilar)
       if(pilar.id != newPillar.id){
-        this.liveCourse.skillsRef = [];
+        this.liveCourseData.skillsRef = [];
         this.skillsCurso= [];
       }
     }
@@ -661,7 +733,7 @@ export class CreateLiveCourseComponent {
     this.savingPillar = false;
     this.pillarsForm.patchValue('')
 
-    this.liveCourse?.skillsRef ? this.liveCourse.skillsRef = [] : null;
+    this.liveCourseData?.skillsRef ? this.liveCourseData.skillsRef = [] : null;
     this.skillsCurso= [];
 
     this.showErrorPillar = false
@@ -697,8 +769,8 @@ export class CreateLiveCourseComponent {
     // Actualiza el valor del campo 'proximamente' en el formulario con el nuevo estado
     this.formNewCourse.get('proximamente').setValue(isChecked);
 
-    if(this.liveCourse){
-      this.liveCourse.proximamente = isChecked
+    if (this.liveCourseData) {
+      this.liveCourseData.proximamente = isChecked
     }
   
     // Opcionalmente, imprime si el checkbox quedó marcado o no
@@ -710,7 +782,7 @@ export class CreateLiveCourseComponent {
     this.tmpSkillRefArray = []
     this.tmpSkillArray = []
 
-    this.liveCourse?.skillsRef?.forEach(element => {
+    this.liveCourseData?.skillsRef?.forEach(element => {
       this.tmpSkillRefArray.push(element)
     });
     
@@ -848,14 +920,14 @@ export class CreateLiveCourseComponent {
     skillsTmpAdd = skillsTmpAdd.filter(x=>x!=skill)
     this.formNewPillar.get("skills").patchValue(skillsTmpAdd);
 
-    // this.liveCourse.skillsRef = this.liveCourse.skillsRef.filter(x=> x.id != skill.id)
+    // this.liveCourseData.skillsRef = this.liveCourseData.skillsRef.filter(x=> x.id != skill.id)
     // this.skillsCurso = this.getCursoSkills();
-    // this.liveCourse.skillsRef = this.tmpSkillRefArray
-    // this.formNewCourse.get("skills").patchValue(this.liveCourse.skillsRef);
+    // this.liveCourseData.skillsRef = this.tmpSkillRefArray
+    // this.formNewCourse.get("skills").patchValue(this.liveCourseData.skillsRef);
   }
   
   async saveDraftPre(){
-    this.liveCourse.title = this.formNewCourse.value.title
+    this.liveCourseData.title = this.formNewCourse.value.title
     let checkStatus = await this.checkAllInfo();
     if(!checkStatus && this.formNewCourse.valid){
       Swal.fire({
@@ -869,8 +941,8 @@ export class CreateLiveCourseComponent {
         /* Read more about isConfirmed, isDenied below */
         if (result.isConfirmed && this.formNewCourse.valid) {
           this.formNewCourse.get("proximamente").patchValue(true);
-          if(this.liveCourse){
-            this.liveCourse.proximamente = true
+          if (this.liveCourseData) {
+            this.liveCourseData.proximamente = true
           }
           this.saveDraft()
         }
@@ -893,14 +965,14 @@ export class CreateLiveCourseComponent {
     this.showErrorCurso = false;
     let valid = true;
     console.log('formNewCourse',this.formNewCourse)
-    console.log('liveCourse',this.liveCourse)
+    console.log('liveCourseData',this.liveCourseData)
     if (!this.formNewCourse.valid) valid = false;
     else {
       // console.log('datos formulario',this.formNewCourse.value)
-      if(this.liveCourse.id){
+      if (this.liveCourseData.id) {
         this.updateLiveCourseWithFormInfo()
-        // this.liveCourse = this.formNewCourse.value;
-        // this.liveCourse.instructorNombre = this.liveCourse.instructor
+        // this.liveCourseData = this.formNewCourse.value;
+        // this.liveCourseData.instructorNombre = this.liveCourseData.instructor
       }
       else {
         let id = await this.afs.collection<LiveCourse>(LiveCourse.collection).doc().ref.id;
@@ -908,7 +980,7 @@ export class CreateLiveCourseComponent {
         // let newCurso: any = {};
         this.formNewCourse.get("id").patchValue(id);
         // newCurso = this.formNewCourse.value;
-        // this.liveCourse = newCurso
+        // this.liveCourseData = newCurso
         this.updateLiveCourseWithFormInfo()
       }
     }
@@ -942,7 +1014,7 @@ export class CreateLiveCourseComponent {
         let exam = new Activity();
         exam.questions = questions
         exam.type = 'test'
-        exam.title = `Questionario Final: ${this.liveCourse.title}`
+        exam.title = `Questionario Final: ${this.liveCourseData.title}`
         exam.updatedAt = new Date().getTime()
         exam.createdAt = new Date().getTime()
         this.examen = exam;
@@ -962,10 +1034,10 @@ export class CreateLiveCourseComponent {
     const formValues = this.formNewCourse.value;
     Object.keys(formValues).forEach(key => {
       if (formValues[key] !== undefined && formValues[key] !== null) {
-        (this.liveCourse as any)[key] = formValues[key];
+        (this.liveCourseData as any)[key] = formValues[key];
       }
     });
-    console.log('Updated liveCourse:', this.liveCourse);
+    console.log('Updated liveCourseData:', this.liveCourseData);
   }
 
   validarModulosClases(){
@@ -973,21 +1045,21 @@ export class CreateLiveCourseComponent {
     this.isInvalidCases= false;
     this.invalidMessages = [];
 
-    // this.liveCourse === modulo
-    if(this.liveCourse.title==''){
-      this.liveCourse['isInvalid'] = true;
+    // this.liveCourseData === modulo
+    if (this.liveCourseData.title=='') {
+      this.liveCourseData['isInvalid'] = true;
       valid = false;
-      this.liveCourse['InvalidMessages'].push('El curso debe tener título');
+      this.liveCourseData['InvalidMessages'].push('El curso debe tener título');
     }
 
-    if(this.liveCourse.sessions.length == 0){
-      this.liveCourse['isInvalid'] = true;
+    if (this.liveCourseData.sessions.length == 0) {
+      this.liveCourseData['isInvalid'] = true;
       valid = false;
-      this.liveCourse['InvalidMessages'].push('El curso debe contener al menos una sesión');
+      this.liveCourseData['InvalidMessages'].push('El curso debe contener al menos una sesión');
     }
 
     else{
-      let sessions = this.liveCourse.sessions;
+      let sessions = this.liveCourseData.sessions;
       let classIndex= 0
       sessions.forEach(session => {
         classIndex++
@@ -996,28 +1068,28 @@ export class CreateLiveCourseComponent {
         session['isInvalid'] = false;
         
         if(session.title==''){
-          this.liveCourse['isInvalid'] = true;
+          this.liveCourseData['isInvalid'] = true;
           session['isInvalid'] = true;
           valid = false;
-          this.liveCourse['InvalidMessages'].push(`La sesión ${(session.type)} no tiene título`);
+          this.liveCourseData['InvalidMessages'].push(`La sesión ${(session.type)} no tiene título`);
           session['InvalidMessages'].push('La sesión debe tener título');
         }
 
         if(session.duration == 0){
-          this.liveCourse['isInvalid'] = true;
+          this.liveCourseData['isInvalid'] = true;
           session['isInvalid'] = true;
           valid = false;
-          this.liveCourse['InvalidMessages'].push(`La sesión ${(session.type)} ${session.title} no tiene duración`);
+          this.liveCourseData['InvalidMessages'].push(`La sesión ${(session.type)} ${session.title} no tiene duración`);
           session['InvalidMessages'].push('La sesión debe tener duración');
         }
 
         // CHECK
         // if (session.type == 'video'){
         //   if(session.vimeoId1 == 0 || !session.vimeoId1){
-        //     this.liveCourse['isInvalid'] = true;
+        //     this.liveCourseData['isInvalid'] = true;
         //     session['isInvalid'] = true;
         //     valid = false;
-        //     this.liveCourse['InvalidMessages'].push(`La sesión ${(session.type)} ${session.title} no tiene video cargado`);
+        //     this.liveCourseData['InvalidMessages'].push(`La sesión ${(session.type)} ${session.title} no tiene video cargado`);
         //     session['InvalidMessages'].push('La sesión debe tener el video cargado');
         //   }
         // }
@@ -1026,10 +1098,10 @@ export class CreateLiveCourseComponent {
         // CHECK
         // else if (session.type =='lectura'){
         //   if(session.files.length == 0){
-        //     this.liveCourse['isInvalid'] = true;
+        //     this.liveCourseData['isInvalid'] = true;
         //     session['isInvalid'] = true;
         //     valid = false;
-        //     this.liveCourse['InvalidMessages'].push(`La sesión ${(session.type)} ${session.title} no tiene archivo cargado`);
+        //     this.liveCourseData['InvalidMessages'].push(`La sesión ${(session.type)} ${session.title} no tiene archivo cargado`);
         //     session['InvalidMessages'].push('La sesión debe tener el archivo de la lectura');
         //   }
 
@@ -1040,17 +1112,17 @@ export class CreateLiveCourseComponent {
         //   //console.log(clase['activity'].isInvalid)
 
         //   if(session['activity'].isInvalid){
-        //     this.liveCourse['isInvalid'] = true;
+        //     this.liveCourseData['isInvalid'] = true;
         //     session['isInvalid'] = true;
         //     valid = false;
-        //     this.liveCourse['InvalidMessages'].push('El curso tiene sesiones invalidas');
+        //     this.liveCourseData['InvalidMessages'].push('El curso tiene sesiones invalidas');
         //     session['InvalidMessages'].push('La actividad tiene la estructura incompleta');
         //   }
         // }
 
 
         session['InvalidMessages'] = [...new Set(session['InvalidMessages'])];
-        this.liveCourse['InvalidMessages'] = [...new Set(this.liveCourse['InvalidMessages'])];
+        this.liveCourseData['InvalidMessages'] = [...new Set(this.liveCourseData['InvalidMessages'])];
 
       });
     }
@@ -1089,29 +1161,29 @@ export class CreateLiveCourseComponent {
 
     if(this.formNewCourse.valid){
 
-      console.log('this.liveCourse',this.liveCourse)
+      console.log('this.liveCourseData',this.liveCourseData)
       // Save Live course
-      if(this.liveCourse){
+      if(this.liveCourseData){
         // let enterpriseRef =this.enterpriseService.getEnterpriseRef()
-        // this.liveCourse.enterpriseRef = enterpriseRef;
+        // this.liveCourseData.enterpriseRef = enterpriseRef;
         // if(this.user.isSystemUser){
-        //   this.liveCourse.enterpriseRef = null;
+        //   this.liveCourseData.enterpriseRef = null;
         // }
-        if(!this.liveCourse.skillsRef && this.liveCourse['skills']){
-          this.liveCourse.skillsRef = this.liveCourse['skills']
-          delete this.liveCourse['skills'];
+        if(!this.liveCourseData.skillsRef && this.liveCourseData['skills']){
+          this.liveCourseData.skillsRef = this.liveCourseData['skills']
+          delete this.liveCourseData['skills'];
         }
 
         let duration = this.getDurationModuleCourse()
-        this.liveCourse.duration = duration
+        this.liveCourseData.duration = duration
 
 
-        await this.liveCourseService.saveLiveCourse(this.LiveCourseDataModelToLiveCourse(this.liveCourse)) // CREATE METHOD TO TRANSFORM LiveCourseData model to LiveCourse
+        await this.liveCourseService.saveLiveCourse(this.LiveCourseDataModelToLiveCourse(this.liveCourseData)) // CREATE METHOD TO TRANSFORM LiveCourseData model to LiveCourse
       }
       
       // For "exameness" ... check later
       if(this.examen){
-        let courseRef = await this.afs.collection<any>(LiveCourse.collection).doc(this.liveCourse.id).ref;
+        let courseRef = await this.afs.collection<any>(LiveCourse.collection).doc(this.liveCourseData.id).ref;
         let activityClass = new Activity
         console.log('this.activityClass',activityClass)
         let questions: Question[]= []
@@ -1249,7 +1321,7 @@ export class CreateLiveCourseComponent {
                   clase['edited'] = false
                   let classDelete = {
                     claseInId:clase.id,
-                    cursoId:this.liveCourse.id,
+                    cursoId:this.liveCourseData.id,
                     moduloInId:modulo.id,
                     activityId:clase?.activity?.id
 
@@ -1276,7 +1348,7 @@ export class CreateLiveCourseComponent {
                 clase['edited'] = false
                 let classDelete = {
                   claseInId:clase.id,
-                  cursoId:this.liveCourse.id,
+                  cursoId:this.liveCourseData.id,
                   moduloInId:modulo.id,
                   activityId:clase?.activity?.id
                 }
@@ -1295,7 +1367,7 @@ export class CreateLiveCourseComponent {
       if(this.deletedClasses.length > 0){
         for (let clase of this.deletedClasses){
           console.log('deletedClasses',clase)
-          // await this.courseClassService.deleteClassAndReference(clase.claseInId,this.liveCourse.id,clase.moduloInId,clase?.activityId);
+          // await this.courseClassService.deleteClassAndReference(clase.claseInId,this.liveCourseData.id,clase.moduloInId,clase?.activityId);
           if(clase.vimeoId1){
             // this.uploadControl.deleteVideo(clase.vimeoId1).subscribe(respuesta => {
             //   console.log('respuesta.respuesta')
@@ -1305,11 +1377,11 @@ export class CreateLiveCourseComponent {
       }  
 
       // Save sessions (and activities ... check later)
-      if(this.liveCourse.sessions.length > 0){
+      if(this.liveCourseData.sessions.length > 0){
         let arrayClasesRef = [];
-        for (let i = 0; i < this.liveCourse.sessions.length; i++) {
+        for (let i = 0; i < this.liveCourseData.sessions.length; i++) {
           try {
-            let clase = this.liveCourse.sessions[i];            
+            let clase = this.liveCourseData.sessions[i];            
             if(clase['edited']){
               // Save session
               console.log('clase borrador add/edit',clase)
@@ -1341,16 +1413,16 @@ export class CreateLiveCourseComponent {
               //   claseLocal.enterpriseRef = this.enterpriseService.getEnterpriseRef()
               // }
               
-              // const arrayRefSkills = (clase.competencias?.map(skillClase => this.liveCourse.skillsRef.find(skill => skill.id == skillClase.id)).filter(Boolean) ) || [];
+              // const arrayRefSkills = (clase.competencias?.map(skillClase => this.liveCourseData.skillsRef.find(skill => skill.id == skillClase.id)).filter(Boolean) ) || [];
               // claseLocal.skillsRef = arrayRefSkills;
-              claseLocal.liveCourseRef = this.liveCourseService.getLiveCourseRefById(this.liveCourse.id)
+              claseLocal.liveCourseRef = this.liveCourseService.getLiveCourseRefById(this.liveCourseData.id)
               const sessionToSave: Session = this.SessionDataModelToLiveCourseSession(claseLocal)
               console.log("sessionToSave", sessionToSave)
               await this.liveCourseService.saveLiveCourseSession(sessionToSave);
 
               
               let refClass = this.liveCourseService.getSessionRefById(claseLocal.id)
-              let courseRef = this.afs.collection<Curso>(Curso.collection).doc(this.liveCourse.id).ref;
+              let courseRef = this.afs.collection<Curso>(Curso.collection).doc(this.liveCourseData.id).ref;
               arrayClasesRef.push(refClass);
               console.log('activityClass',clase)
 
@@ -1361,7 +1433,7 @@ export class CreateLiveCourseComponent {
                 // let questions: Question[]= []
                 // activityClass.enterpriseRef = null
                 // questions = structuredClone(clase.activity.questions);
-                // // activityClass.enterpriseRef = this.liveCourse.enterpriseRef as DocumentReference<Enterprise>
+                // // activityClass.enterpriseRef = this.liveCourseData.enterpriseRef as DocumentReference<Enterprise>
                 // activityClass.enterpriseRef = null
                 // if(this.user.isSystemUser){
                 //   activityClass.enterpriseRef = null
@@ -1444,19 +1516,19 @@ export class CreateLiveCourseComponent {
   
       }
       let duration = this.getDurationModuleCourse()
-      this.liveCourse.duration = duration
+      this.liveCourseData.duration = duration
 
-      await this.afs.collection(LiveCourse.collection).doc(this.liveCourse.id).update({
+      await this.afs.collection(LiveCourse.collection).doc(this.liveCourseData.id).update({
         duration: duration
       })
 
       Swal.close();
       this.savingCourse = false;
-      this.alertService.succesAlert("El liveCourse se ha guardado exitosamente")
+      this.alertService.succesAlert("El curso en vivo se ha guardado exitosamente")
 
 
       if(this.mode == 'create'){
-        this.router.navigate([`management/create-live/edit/${this.liveCourse.id}`])
+        this.router.navigate([`management/create-live/edit/${this.liveCourseData.id}`])
       }
 
 
@@ -1522,17 +1594,17 @@ export class CreateLiveCourseComponent {
     //     }
     //     else{
     //       console.log('datos curso',this.formNewCourse.value)
-    //       if(this.liveCourse){
-    //         this.liveCourse = this.formNewCourse.value;
-    //         this.liveCourse.instructorNombre = this.liveCourse.instructor
+    //       if(this.liveCourseData){
+    //         this.liveCourseData = this.formNewCourse.value;
+    //         this.liveCourseData.instructorNombre = this.liveCourseData.instructor
     //       }
     //       else{
     //         let id = await this.afs.collection<Curso>(Curso.collection).doc().ref.id;
     //         let newCurso = new Curso;
     //         this.formNewCourse.get("id").patchValue(id);
     //         newCurso = this.formNewCourse.value;
-    //         this.liveCourse = newCurso
-    //         this.liveCourse.instructorNombre = this.liveCourse.instructor
+    //         this.liveCourseData = newCurso
+    //         this.liveCourseData.instructorNombre = this.liveCourseData.instructor
     //       }
     //     }
     //   }
@@ -1569,7 +1641,7 @@ export class CreateLiveCourseComponent {
     //           let exam = new Activity();
     //           exam.questions = questions
     //           exam.type = 'test'
-    //           exam.title = `Questionario Final: ${this.liveCourse.title}`
+    //           exam.title = `Questionario Final: ${this.liveCourseData.title}`
     //           exam.updatedAt = new Date().getTime()
     //           exam.createdAt = new Date().getTime()
     //           this.examen = exam;
@@ -1882,7 +1954,7 @@ export class CreateLiveCourseComponent {
           }
         })
 
-        await this.moduleService.deleteModulo(modulo.id,this.liveCourse.id)
+        await this.moduleService.deleteModulo(modulo.id,this.liveCourseData.id)
 
         Swal.fire({
           title:'Borrado!',
@@ -1912,7 +1984,7 @@ export class CreateLiveCourseComponent {
 
   closeOtherSessions(openedSession: any): void {
     // Recorrer todas las clases en el módulo.
-    for (const session of this.liveCourse.sessions) {
+    for (const session of this.liveCourseData.sessions) {
         // Si la clase es la que se abrió, establecer expanded en true.
         // De lo contrario, establecer en false.
         if (session === openedSession) {
@@ -2026,7 +2098,7 @@ export class CreateLiveCourseComponent {
   // AQUI
   addSession(tipo){
     let clases = []
-    if (this.liveCourse.sessions && this.liveCourse.sessions.length > 0) clases = this.liveCourse.sessions
+    if (this.liveCourseData.sessions && this.liveCourseData.sessions.length > 0) clases = this.liveCourseData.sessions
     
     // let clase = new Clase;
     let clase: any = {} // should be created by a class with the corresponding fields
@@ -2061,7 +2133,7 @@ export class CreateLiveCourseComponent {
     clase['expanded'] = false;
 
     clases.push(clase);
-    this.liveCourse.sessions = clases
+    this.liveCourseData.sessions = clases
 
     //console.log(clases);
 
@@ -2106,7 +2178,7 @@ export class CreateLiveCourseComponent {
 
   // AQUI
   borrarClase(session){
-    let clases = this.liveCourse.sessions
+    let clases = this.liveCourseData.sessions
 
     Swal.fire({
       title: `<span class=" gray-9 ft20">Borrar sesion ${session.title ? session.title : 'Sin título'}</span>`,
@@ -2120,7 +2192,7 @@ export class CreateLiveCourseComponent {
       if (result.isConfirmed) {
 
         clases = clases.filter(clase => clase.id != session.id );
-        this.liveCourse.sessions = clases;
+        this.liveCourseData.sessions = clases;
         session['deleted'] = true
 
         let classDelete = {
@@ -2131,7 +2203,7 @@ export class CreateLiveCourseComponent {
         }
 
         this.deletedClasses.push(classDelete)
-        //this.courseClassService.deleteClassAndReference(claseIn.id,this.liveCourse.id,moduloIn.id);
+        //this.courseClassService.deleteClassAndReference(claseIn.id,this.liveCourseData.id,moduloIn.id);
         Swal.fire({
           title:'Borrado!',
           text:`La sesión ${session.title? session.title: 'Sin título'} fue borrada`,
@@ -2745,12 +2817,12 @@ export class CreateLiveCourseComponent {
   getDurationModuleCourse(){
     let duracion = 0
     
-    if (this.liveCourse && this.liveCourse.sessions && this.liveCourse.sessions.length > 0) {
-      this.liveCourse.sessions.forEach(session => {
+    if (this.liveCourseData && this.liveCourseData.sessions && this.liveCourseData.sessions.length > 0) {
+      this.liveCourseData.sessions.forEach(session => {
         duracion += session.duration ? session.duration : 0 
       });
     }
-    this.liveCourse.duration = duracion
+    this.liveCourseData.duration = duracion
     return duracion
   }
 
@@ -2930,8 +3002,8 @@ export class CreateLiveCourseComponent {
                       const subProjectId = newSubProject.uri.split('/').pop();
                       //this.updateFolderVimeoCurso(subProjectId, newSubProject.uri); // Asumiendo que esto es lo que deseas hacer
                       console.log('crear carpeta curso',subProjectId)
-                      // if(this.liveCourse?.vimeoFolderId){
-                      //   this.liveCourse.vimeoFolderId = subProjectId;
+                      // if(this.liveCourseData?.vimeoFolderId){
+                      //   this.liveCourseData.vimeoFolderId = subProjectId;
                       // }
                       this.formNewCourse.get("vimeoFolderId").patchValue(subProjectId);
                     }),
@@ -2965,7 +3037,7 @@ export class CreateLiveCourseComponent {
                           // Actualizar Firebase con el ID del subproyecto si es necesario
                           const subProjectId = newSubProject.uri.split('/').pop();
                           // this.updateFolderVimeoCurso(subProjectId, newSubProject.uri);
-                          this.liveCourse.vimeoFolderId = subProjectId; // Guarda el ID del subproyecto para el curso
+                          this.liveCourseData.vimeoFolderId = subProjectId; // Guarda el ID del subproyecto para el curso
                         }),
                         // Luego de crear el subproyecto, agrega el video a él
                         switchMap(newSubProject => this.uploadControl.addVideoToProject(newSubProject.uri.split('/').pop(), response.uri))
@@ -3423,8 +3495,8 @@ export class CreateLiveCourseComponent {
 
     console.log('this.tmpSkillRefArray',this.tmpSkillRefArray)
     
-    if(this.liveCourse){
-      this.liveCourse.skillsRef = this.tmpSkillRefArray
+    if(this.liveCourseData){
+      this.liveCourseData.skillsRef = this.tmpSkillRefArray
       this.formNewCourse.get("skills").patchValue(this.tmpSkillRefArray);
     }
     else{
@@ -3460,8 +3532,8 @@ export class CreateLiveCourseComponent {
         if(!SkillCheck){
           let skillRef = await this.afs.collection<Skill>(Skill.collection).doc(competencia.id).ref;
           this.tmpSkillRefArray.push(skillRef)
-          if(this.liveCourse){
-            this.liveCourse.skillsRef = this.tmpSkillRefArray
+          if(this.liveCourseData){
+            this.liveCourseData.skillsRef = this.tmpSkillRefArray
             this.formNewCourse.get("skills").patchValue(this.tmpSkillRefArray);
           }
           else{
@@ -3489,8 +3561,8 @@ export class CreateLiveCourseComponent {
         //this.pillarsForm.get("competencias").patchValue(competencias);
         let skillRef = await this.afs.collection<Skill>(Skill.collection).doc(skillAdd.id).ref;
         this.tmpSkillRefArray.push(skillRef)
-        if(this.liveCourse){
-          this.liveCourse.skillsRef = this.tmpSkillRefArray
+        if(this.liveCourseData){
+          this.liveCourseData.skillsRef = this.tmpSkillRefArray
           this.formNewCourse.get("skills").patchValue(this.tmpSkillRefArray);
         }
         else{

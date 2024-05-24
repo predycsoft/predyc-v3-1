@@ -27,6 +27,24 @@ export class LiveCourseService {
     return this.afs.collection<Session>(Session.collection, (ref) =>ref.where("liveCourseRef", "==", liveCourseRef)).valueChanges();
   }
 
+  getLiveCourseWithSessionsById$(liveCourseId: string): Observable<{ liveCourse: LiveCourse, sessions: Session[] }> {
+    const liveCourseRef = this.afs.collection(LiveCourse.collection).doc(liveCourseId).ref; 
+    return this.afs.doc<LiveCourse>(liveCourseRef).valueChanges().pipe(
+      switchMap((liveCourse: LiveCourse | undefined) => {
+        if (liveCourse) {
+          return this.getSessionsByLiveCourseRef$(liveCourseRef).pipe(
+            map((sessions: Session[]) => ({
+              liveCourse,
+              sessions
+            }))
+          );
+        } else {
+          throw new Error(`LiveCourse with id ${liveCourseId} not found`);
+        }
+      })
+    );
+  }
+
   getAllLiveCourses$(): Observable<LiveCourse[]> {
     return this.afs.collection<LiveCourse>(LiveCourse.collection).valueChanges();
   }
