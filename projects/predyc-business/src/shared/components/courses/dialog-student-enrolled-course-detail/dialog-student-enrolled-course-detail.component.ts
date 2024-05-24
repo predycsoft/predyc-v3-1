@@ -255,7 +255,10 @@ export class DialogStudentEnrolledCourseDetailComponent {
       .update({
         finalScore: score,
         progress:100,
-        dateEnd: fecha
+        courseDuration:this.data.courseDuration,
+        courseTime:this.data.courseDuration,
+        dateEnd: fecha,
+        progressTime:this.data.courseDuration
       });
       await this.courseService.saveCertificate(certificado)
       this.currentModal.close()

@@ -49,6 +49,9 @@ export class StudentListComponent {
   @Input() enableNavigateToUser: boolean = true
   @Output() onStudentSelected = new EventEmitter<User>()
 
+  @Output() studentsOnList = new EventEmitter<User[]>()
+
+
   queryParamsSubscription: Subscription
   profilesSubscription: Subscription
   userServiceSubscription: Subscription
@@ -57,6 +60,9 @@ export class StudentListComponent {
   profiles: Profile[] = []
   departments: Department[] = []
   courses: Curso[] = []
+  first = true
+  profilefilter;
+  profilefilterOld;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -69,17 +75,29 @@ export class StudentListComponent {
   ) {}
 
   ngOnInit() {
+    this.first = true
     this.profileService.loadProfiles()
     
     this.profilesSubscription = combineLatest([this.profileService.getProfiles$(), this.departmentService.getDepartments$(), this.courseService.getCourses$()]).subscribe(([profiles, departments, courses]) => {
         this.profiles = profiles
-        this.departments = departments
+        this.departments = departments.sort((a, b) => a.name.localeCompare(b.name));        
+        console.log('departments',departments)
         this.courses = courses
         this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
           const page = Number(params['page']) || 1;
-          const searchTerm = params['search'] || '';
           const profileFilter = params['profile'] || '';
-          this.performSearch(searchTerm, page, profileFilter);
+          this.profilefilter = profileFilter
+          const searchTerm = params['search'] || '';
+          const departmentFilter = params['iddepartment'] || '';
+          const ritmoFilter = params['ritmo'] || '';
+          this.ritmoFilter = ritmoFilter
+          this.filtroDepartamento = departmentFilter
+          if(this.first){
+            this.performSearch(searchTerm, page, profileFilter,departmentFilter,ritmoFilter);
+          }
+          else{
+            this.performSearchLocal(searchTerm, page, profileFilter,departmentFilter,ritmoFilter);
+          }
         })
     })
   }
@@ -88,14 +106,65 @@ export class StudentListComponent {
     this.dataSource.paginator = this.paginator;
     this.dataSource.paginator.pageSize = this.pageSize;
   }
+
+  performSearchLocal(searchTerm: string, page: number, profileFilter: string,departmentFilter: string,ritmoFilter: string) {
+
+    let users = this.allusers;
+    console.log('usersFilterLocal',users,profileFilter)
+
+
+    
+    if(profileFilter){
+      users = users.filter(x=>x.idProfile == profileFilter)
+    }
+
+    if(ritmoFilter){
+      users = users.filter(x=>x.rhythm == ritmoFilter)
+    }
+    if(departmentFilter){
+      users = users.filter(x=>x['idDepartment'] == departmentFilter)
+    }
+    if (searchTerm) {
+      const normalizedSearchTerm = this.removeAccents(searchTerm.toLocaleLowerCase());
+    
+      users = users.filter(x => {
+        const normalizedMail = this.removeAccents(String(x.mail).toLocaleLowerCase());
+        const normalizedDisplayName = this.removeAccents(String(x.displayName).toLocaleLowerCase());
+        const normalizedDepartment = this.removeAccents(String(x.department).toLocaleLowerCase());
+        const normalizedProfile = this.removeAccents(String(x.profile).toLocaleLowerCase());
+    
+        return normalizedMail.includes(normalizedSearchTerm) ||
+               normalizedDisplayName.includes(normalizedSearchTerm) ||
+               normalizedDepartment.includes(normalizedSearchTerm) ||
+               normalizedProfile.includes(normalizedSearchTerm);
+      });
+    }
+
+    console.log('usersFilterLocal',users)
+
+    this.paginator.pageIndex = page - 1;
+    this.dataSource.data = users;
+    this.totalLength = users.length;
+    this.studentsOnList.emit(users)
+    this.first = false
+
+  }
   
 
-  performSearch(searchTerm: string, page: number, profileFilter: string) {
+  performSearch(searchTerm: string, page: number, profileFilter: string,departmentFilter: string,ritmoFilter: string) {
+
+
+    this.paginator.pageIndex = page - 1;
+    this.dataSource.data = [];
+    this.totalLength = 0;
+    this.studentsOnList.emit(null)
+
+
     if (this.userServiceSubscription) {
       this.userServiceSubscription.unsubscribe();
     }
   
-    this.userServiceSubscription = this.userService.getUsers$(searchTerm, profileFilter, null).pipe(
+    this.userServiceSubscription = this.userService.getUsers$(null, null, null).pipe(
       switchMap(users => {
         const userCourseObservables = users.map(user => {
           const userRef = this.userService.getUserRefById(user.uid);
@@ -114,14 +183,11 @@ export class StudentListComponent {
         return Promise.all(userTestObservables);
       })
     ).subscribe(response => {
-      const users = response.map(({user, courses, test}) => {
+      let users = response.map(({user, courses, test}) => {
         const profile = this.profiles.find(profile => profile?.id === user.profile?.id);
         const profileName = profile ? profile.name : '';
         let hours = 0;
         let targetHours = 0;
-
-
-
         let cursosPlan = courses.filter(x=>x?.active && !x?.isExtraCourse && x?.dateStartPlan && x?.dateEndPlan)
 
         let start: number[] = []
@@ -131,7 +197,6 @@ export class StudentListComponent {
         let endDay
 
         cursosPlan.forEach(curso => {
-          console.log('arreglos fechas',curso,curso.dateStartPlan.seconds*1000,curso.dateEndPlan.seconds*1000)
           start.push(curso.dateStartPlan.seconds*1000)
           end.push(curso.dateEndPlan.seconds*1000)
         });
@@ -142,9 +207,6 @@ export class StudentListComponent {
           endDay = Math.max(...end)
         }
 
-        // console.log('cursosPlan',cursosPlan,startDay,endDay)
-
-  
         courses.forEach(course => {
           hours += course?.progressTime ? course.progressTime : 0;
           const courseJson = this.courses.find(item => item.id === course.courseRef.id);
@@ -159,11 +221,11 @@ export class StudentListComponent {
         if(targetHours){
           progreso = ((hours/60)*100)/targetHours
         }
-
-        console.log('userRevisar',user)
         return {
           displayName: user.displayName,
           department: this.departments.find(department => department.id === user.departmentRef?.id)?.name,
+          idDepartment: user.departmentRef?.id,
+          idProfile:user.profile?.id,
           hours,
           mail:user.email,
           phone:user.phoneNumber,
@@ -179,14 +241,50 @@ export class StudentListComponent {
           test // Agregar aquí los datos del examen del usuario
         };
       });
+
+      console.log('users',users)
+      this.allusers = users
+
+      if(profileFilter){
+        users = users.filter(x=>x.idProfile == profileFilter)
+      }
   
+      if(ritmoFilter){
+        users = users.filter(x=>x.rhythm == ritmoFilter)
+      }
+      if(departmentFilter){
+        users = users.filter(x=>x.idDepartment == departmentFilter)
+      }
+      if (searchTerm) {
+        const normalizedSearchTerm = this.removeAccents(searchTerm.toLocaleLowerCase());
+      
+        users = users.filter(x => {
+          const normalizedMail = this.removeAccents(String(x.mail).toLocaleLowerCase());
+          const normalizedDisplayName = this.removeAccents(String(x.displayName).toLocaleLowerCase());
+          const normalizedDepartment = this.removeAccents(String(x.department).toLocaleLowerCase());
+          const normalizedProfile = this.removeAccents(String(x.profile).toLocaleLowerCase());
+      
+          return normalizedMail.includes(normalizedSearchTerm) ||
+                 normalizedDisplayName.includes(normalizedSearchTerm) ||
+                 normalizedDepartment.includes(normalizedSearchTerm) ||
+                 normalizedProfile.includes(normalizedSearchTerm);
+        });
+      }
+
       this.paginator.pageIndex = page - 1;
       this.dataSource.data = users;
-      this.totalLength = response.length;
+      this.totalLength = users.length;
+      this.studentsOnList.emit(users)
+      this.first = false
+
+
       // console.log(users);
     });
   }
-  
+  allusers;
+  removeAccents(str: string): string {
+    return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  }
 
   onPageChange(page: number): void {
     this.router.navigate([], {
@@ -211,4 +309,18 @@ export class StudentListComponent {
     if (this.userServiceSubscription) this.userServiceSubscription.unsubscribe()
     if (this.profilesSubscription) this.profilesSubscription.unsubscribe()
   }
+
+    ritmoFilter = ''
+    filtroDepartamento = ''
+
+
+    search(filed: string, search: string) {
+      this.router.navigate([], {
+        queryParams: { [filed]: search ? search : null, page: 1 },
+        queryParamsHandling: 'merge'
+      });
+    }
+
+
+
 }

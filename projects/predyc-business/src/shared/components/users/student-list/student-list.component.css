@@ -87,3 +87,7 @@ table.mat-table tfoot tr {
     transform: translateX(5px);
     color: #0f3b56 !important;
   }
+
+  .contact-link:hover {
+    color: var(--blue-6) !important
+  }
