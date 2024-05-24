@@ -50,18 +50,17 @@
                                             Debe indicar el título del curso
                                         </div>
                                     </div>
-                                    <div *ngIf="user?.isSystemUser" class="form-group mgt08">
-                                        <label class="ft12">URL personalizado</label>
+                                    <div *ngIf="user?.isSystemUser && mode === 'edit'" class="form-group mgt08">
+                                        <label class="ft12">Enlace de la reunion:</label>
                                         <div class="input-group">
                                             <input [class.is-invalid]="formNewCourse.controls['meetingLink'].errors && showErrorCurso" formControlName="meetingLink" 
-                                            type="text" class="form-control customInput2 radius6" placeholder="Escriba el URL del curso aquí"
-                                            >
+                                            type="text" class="form-control customInput2 radius6" placeholder="Escriba el URL del curso aquí">
                                             <div class="input-group-append">
-                                            <span class="input-group-text">{{ formNewCourse?.controls['meetingLink']?.value?.length || 0 }}</span>
+                                                <span class="input-group-text">{{ formNewCourse?.controls['meetingLink']?.value?.length || 0 }}</span>
                                             </div>
                                         </div>
                                         <div class="invalid-feedback" *ngIf="formNewCourse?.controls['meetingLink']?.errors && showErrorCurso">
-                                            Debe indicar el URL del curso
+                                            Debe indicar el link de la reunion
                                         </div>
                                     </div>                                          
                                     <div class="ft12 form-group pdt10">
@@ -161,9 +160,9 @@
                                                         </mat-autocomplete>
                                                     </mat-form-field>
                                                 </form>
-                                                <div *ngIf="formNewCourse.controls['imagen_instructor'].errors && showErrorCurso" class="custom-invalid-feedback pdt05">
+                                                <!-- <div *ngIf="formNewCourse.controls['imagen_instructor'].errors && showErrorCurso" class="custom-invalid-feedback pdt05">
                                                     Debe seleccinar el instructor
-                                                </div>
+                                                </div> -->
                                             </div>
                                         </div>
                                     </ng-container>
@@ -225,7 +224,7 @@
 
                                                                                             <ng-container *ngIf="session.type == 'video'">
                                                                                                 <div *ngIf="!session.vimeoId1">
-                                                                                                    <span (click)="FileInputTitle.click()" *ngIf="session.title && !session['videoUpload'] && !session['uploading']" class="blueLink mgr10">
+                                                                                                    <span (click)="FileInputTitle.click()" *ngIf=" mode === 'edit' && session.title && !session['videoUpload'] && !session['uploading']" class="blueLink mgr10">
                                                                                                         Agregar video
                                                                                                     </span>
                                                                                                     <div *ngIf="session.type == 'video' && session['videoUpload']">
@@ -233,9 +232,8 @@
                                                                                                             Subiendo video: {{session['videoUpload']}}%
                                                                                                         </span>
                                                                                                     </div>
-                                                                                                    <span *ngIf="!session.title" class="gray-6 cursorPointer mgr10">Agregar video</span>
-                                                                                                    <input (change)="onFileSelected($event, session, false) " type="file" accept="{{session.type == 'lectura'?'.pdf' : 'video/mp4'}}" 
-                                                                                                    #FileInputTitle style="display: none;">
+                                                                                                    <span *ngIf="!session.title && mode === 'edit' " class="gray-6 cursorPointer mgr10">Agregar video</span>
+                                                                                                    <input (change)="onFileSelected($event, session, false) " type="file" accept="video/mp4" #FileInputTitle style="display: none;">
                                                                                                 </div>
                                                                                                 <div *ngIf="session.vimeoId1" fxLayout="row" fxLayoutAlign="start center">
                                                                                                     <span (click)="quitarVideoClase(session)" class="blueLink mgr05">Eliminar</span>
@@ -258,8 +256,7 @@
                                                                                                         </span>
                                                                                                     </div>
                                                                                                     <span *ngIf="!session.title" class="gray-6 mgr10">Agregar archivo</span>
-                                                                                                    <input (change)="onFileSelected($event, session, false)" type="file" accept="{{session.type == 'lectura'?'.pdf' : 'video/mp4'}}" 
-                                                                                                    #FileInputTitle style="display: none;">
+                                                                                                    <input (change)="onFileSelected($event, session, false)" type="file" accept="lectura" #FileInputTitle style="display: none;">
                                                                                                 </div>
                                                                                                 <div *ngIf="session.files[0]" fxLayout="row" fxLayoutAlign="start center">
                                                                                                     <span (click)="deleteFileClass(session)" class="blueLink mgr05">Eliminar</span>
@@ -282,7 +279,7 @@
 
                                                                                     <ng-container *ngIf="session.type == 'video'">
                                                                                         <div *ngIf="!session['uploading'] && session.files.length>0" class="fw ContainerFile" style="min-height: 80px;">
-                                                                                            <div fxLayout="row" fxLayoutGap="20px" class="fw pd10" (dragover)="onDragOver($event)" (drop)="onDrop($event, session. tipo, session)">
+                                                                                            <div fxLayout="row" fxLayoutGap="20px" class="fw pd10" (dragover)="onDragOver($event)" (drop)="onDrop($event, session. type, session)">
                                                                                                 <!-- Columna izquierda con el texto "Recursos:" -->
                                                                                                 <div fxFlex="10%" fxLayoutAlign="start start">
                                                                                                     Recursos:
@@ -301,8 +298,8 @@
                                                                                                 </div>
                                                                                             </div>
                                                                                         </div>
-                                                                                        <div *ngIf="!session['uploading'] && (session.files.length === 0)" class="fw h80px ContainerFile">
-                                                                                            <div (dragover)="onDragOver($event)" (drop)="onDrop($event, session. tipo, session)"class="fw fh no-select" fxLayout="row" fxLayoutAlign="center center">
+                                                                                        <div *ngIf="mode ==='edit' && !session['uploading'] && (session.files.length === 0)" class="fw h80px ContainerFile">
+                                                                                            <div (dragover)="onDragOver($event)" (drop)="onDrop($event, session. type, session)"class="fw fh no-select" fxLayout="row" fxLayoutAlign="center center">
                                                                                                 Arrastre el archivo aquí para agregarlo.
                                                                                             </div>
                                                                                         </div>
@@ -351,7 +348,8 @@
                                                             <div fxLayout="column" class="fw" fxLayoutAlign="center center">
                                                                 <!-- Primer div para "Agregar sesión" -->
                                                                 <div *ngIf="!liveCourse['addClassMode']" fxLayout="row" class="fw mg10" fxLayoutAlign="center center">
-                                                                    <span (click)="liveCourse['addClassMode'] = !liveCourse['addClassMode']" class="blueLink radius4 ft12 h28px no-select">
+                                                                    <!-- <span (click)="liveCourse['addClassMode'] = !liveCourse['addClassMode']" class="blueLink radius4 ft12 h28px no-select"> -->
+                                                                    <span (click)="addSession('video')" class="blueLink radius4 ft12 h28px no-select">
                                                                         <img [src]="icon.addNew" class="h12px pdr05 makeBlue" alt="">
                                                                         Agregar sesión
                                                                     </span>
@@ -363,9 +361,9 @@
                                                                         <span (click)="liveCourse['addClassMode'] = false">
                                                                             <img [src]="icon.close" class="h18px pdr05 makeRed" alt="">
                                                                         </span>
-                                                                        <button (click)="addSession('lectura'); liveCourse['addClassMode'] = false" class="grayButton pd03 radius4 ft12 h28px gray-8">
+                                                                        <!-- <button (click)="addSession('lectura'); liveCourse['addClassMode'] = false" class="grayButton pd03 radius4 ft12 h28px gray-8">
                                                                             <img [src]="icon.addNew" class="h12px pdr05 makeGray8" alt="">Lectura
-                                                                        </button>
+                                                                        </button> -->
                                                                         <button (click)="addSession('video'); liveCourse['addClassMode'] = false" class="grayButton pd03 radius4 ft12 h28px gray-8">
                                                                             <img [src]="icon.addNew" class="h12px pdr05 makeGray8" alt="">Video
                                                                         </button>

@@ -3,12 +3,13 @@ import { DocumentReference } from "@angular/fire/compat/firestore"
 export interface SessionJson {
     id: string
     title: string
-    date: any
-    description: string
-    liveCourseRef: DocumentReference
+    date: any //
+    description: string //
+    liveCourseRef: DocumentReference //
     duration: number
-    vimeoId1: number,
-    files: []
+    vimeoId1: number //
+    vimeoId2 : string //
+    files: any[]
 }
 
 export class Session {
@@ -23,7 +24,8 @@ export class Session {
         public liveCourseRef: DocumentReference,
         public duration: number,
         public vimeoId1: number,
-        public files: [],
+        public vimeoId2 : string,
+        public files: any[],
     ) {}
 
     public static fromJson(SessionJson: SessionJson): Session {
@@ -35,6 +37,7 @@ export class Session {
             SessionJson.liveCourseRef,
             SessionJson.duration,
             SessionJson.vimeoId1,
+            SessionJson.vimeoId2,
             SessionJson.files,
         )
     }
@@ -48,6 +51,7 @@ export class Session {
             liveCourseRef : this.liveCourseRef,
             duration : this.duration,
             vimeoId1 : this.vimeoId1,
+            vimeoId2 : this.vimeoId2,
             files : this.files,
         }
     }

@@ -9,9 +9,11 @@ export interface LiveCourseJson {
     meetingLink: string
     description: string
     instructorRef: DocumentReference
+    proximamente: boolean
     skillsRef: DocumentReference<Skill>[]
+    duration: number,
+    vimeoFolderId: string,
 
-    // duracion: number,
     // nivel: string,
 
     
@@ -29,7 +31,11 @@ export class LiveCourse {
         public meetingLink: string,
         public description: string,
         public instructorRef: DocumentReference,
+        public proximamente: boolean,
         public skillsRef: DocumentReference<Skill>[],
+        public duration: number,
+        public vimeoFolderId: string = ""
+
     ) {}
 
     public static fromJson(QuestionJson: LiveCourseJson): LiveCourse {
@@ -41,7 +47,10 @@ export class LiveCourse {
             QuestionJson.meetingLink,
             QuestionJson.description,
             QuestionJson.instructorRef,
+            QuestionJson.proximamente,
             QuestionJson.skillsRef,
+            QuestionJson.duration,
+            QuestionJson.vimeoFolderId,
         )
     }
 
@@ -54,7 +63,10 @@ export class LiveCourse {
             meetingLink:this.meetingLink,
             description:this.description,
             instructorRef : this.instructorRef,
+            proximamente : this.proximamente,
             skillsRef : this.skillsRef,
+            duration : this.duration,
+            vimeoFolderId : this.vimeoFolderId,
         }
     }
 }

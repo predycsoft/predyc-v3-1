@@ -48,4 +48,38 @@ export class LiveCourseService {
     );
   }
 
+  async saveLiveCourse(newLiveCourse: LiveCourse): Promise<void> {
+    try {
+      // console.log("test saveCourse", newLiveCourse);
+      const dataToSave = typeof newLiveCourse.toJson === "function" ? newLiveCourse.toJson() : newLiveCourse;
+
+      await this.afs.collection(LiveCourse.collection).doc(newLiveCourse.id).set(dataToSave, { merge: true });
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+    // console.log("Has agregado una nuevo curso exitosamente.");
+  }
+
+  async saveLiveCourseSession(newSession: Session): Promise<void> {
+    try {
+      // console.log("test saveCourse", newSession);
+      const dataToSave = typeof newSession.toJson === "function" ? newSession.toJson() : newSession;
+
+      await this.afs.collection(Session.collection).doc(newSession.id).set(dataToSave, { merge: true });
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+    // console.log("Has agregado una nuevo curso exitosamente.");
+  }
+
+  getLiveCourseRefById(liveCourseId: string): DocumentReference<LiveCourse> {
+    return this.afs.collection<LiveCourse>(LiveCourse.collection).doc(liveCourseId).ref
+  }
+
+  getSessionRefById(sessionId: string): DocumentReference<Session> {
+    return this.afs.collection<Session>(Session.collection).doc(sessionId).ref
+  }
+
 }

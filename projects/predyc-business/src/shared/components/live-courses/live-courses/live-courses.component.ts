@@ -253,12 +253,12 @@ export class LiveCoursesComponent {
       {
         id: null, companyName: "Pepsi", title: "Mantenimiento en bebidas", 
         photoUrl: "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Cursos%2FAdministraci%C3%B3n-del-mantenimiento%2FadminMantenimiento.webp?alt=media&token=57ee864b-476b-4e7b-86fa-c1954b17f653", 
-        meetingLink: null, description: "Importancia del mantenimiento", instructorRef: null, skillsRef: null, 
+        meetingLink: null, description: "Importancia del mantenimiento", instructorRef: null, skillsRef: null, duration: 0, vimeoFolderId:"", proximamente: false
       },
       {
         id: null, companyName: "Nike", title: "Fabricacion de zapatos", 
         photoUrl: "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Cursos%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2FCurso-Predyc-Construcci%C3%B3n%20de%20Estrategias%20para%20Optimizar%20una%20Gerencia%20de%20Mantenimiento.webp?alt=media&token=fdc54e7b-61ed-4b57-aa62-7c37d3ffc7cd", 
-        meetingLink: null, description: "Como fabricar zapatos", instructorRef: null, skillsRef: null, 
+        meetingLink: null, description: "Como fabricar zapatos", instructorRef: null, skillsRef: null, duration: 0, vimeoFolderId:"", proximamente: false
       },
     ]
 
@@ -277,8 +277,8 @@ export class LiveCoursesComponent {
           liveCourse.id = liveCourseRef.id;
           // Live course session
           let sessions =[ 
-            new Session("", "Primera sesion de prueba", new Date(1716879999999), "Descripcion de la 1erasesion de prueba", liveCourseRef, 5, null, []),
-            new Session("", "Segunda sesion de prueba", new Date(1716990000000), "Descripcion de la 2da sesion de prueba", liveCourseRef, 8, null, []),
+            new Session("", "Primera sesion de prueba", new Date(1716879999999), "Descripcion de la 1erasesion de prueba", liveCourseRef, 5, null, null, []),
+            new Session("", "Segunda sesion de prueba", new Date(1716990000000), "Descripcion de la 2da sesion de prueba", liveCourseRef, 8, null, null, []),
           ]
           
           for (let session of sessions) {
