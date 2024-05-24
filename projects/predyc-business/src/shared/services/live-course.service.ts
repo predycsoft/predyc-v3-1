@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { LiveCourseByStudent } from 'projects/shared/models/live-course-by-student.model';
-import { LiveCourse } from 'projects/shared/models/live-course.model';
-import { Session } from 'projects/shared/models/session.model';
+import { LiveCourse, LiveCourseSon, LiveCourseSonJson } from 'projects/shared/models/live-course.model';
+import { Session, SessionSon, SessionSonJson } from 'projects/shared/models/session.model';
 import { User } from 'projects/shared/models/user.model';
 import { Observable, combineLatest, forkJoin, map, mergeMap, switchMap } from 'rxjs';
 
@@ -73,7 +73,6 @@ export class LiveCourseService {
 
       await this.afs.collection(LiveCourse.collection).doc(newLiveCourse.id).set(dataToSave, { merge: true });
     } catch (error) {
-      console.log(error);
       throw error;
     }
     // console.log("Has agregado una nuevo curso exitosamente.");
@@ -86,7 +85,6 @@ export class LiveCourseService {
 
       await this.afs.collection(Session.collection).doc(newSession.id).set(dataToSave, { merge: true });
     } catch (error) {
-      console.log(error);
       throw error;
     }
     // console.log("Has agregado una nuevo curso exitosamente.");
@@ -98,6 +96,32 @@ export class LiveCourseService {
 
   getSessionRefById(sessionId: string): DocumentReference<Session> {
     return this.afs.collection<Session>(Session.collection).doc(sessionId).ref
+  }
+
+  async saveLiveCourseSon(liveCourseId: string, newLiveCourseSon: LiveCourseSonJson): Promise<void> {
+    try {
+      // console.log("test saveCourse", newLiveCourseSon);
+      const liveCourseSonId = (this.afs.collection(LiveCourse.collection).doc(liveCourseId).collection(LiveCourseSon.subCollection).doc().ref).id
+      newLiveCourseSon.id = liveCourseSonId
+
+      await this.afs.collection(LiveCourse.collection).doc(liveCourseId).collection(LiveCourseSon.subCollection).doc(liveCourseSonId).set(newLiveCourseSon, { merge: true });
+    } catch (error) {
+      throw error;
+    }
+    // console.log("Has agregado una nuevo curso exitosamente.");
+  }
+
+  async saveLiveCourseSessionSon(sessionId: string, newSessionSon: SessionSonJson): Promise<void> {
+    try {
+      // console.log("test saveCourse", newSessionSon);
+      const sessionSonId = (this.afs.collection(Session.collection).doc(sessionId).collection(SessionSon.subCollection).doc().ref).id
+      newSessionSon.id = sessionSonId
+
+      await this.afs.collection(Session.collection).doc(sessionId).collection(SessionSon.subCollection).doc(sessionSonId).set(newSessionSon, { merge: true });
+    } catch (error) {
+      throw error;
+    }
+    // console.log("Has agregado una nuevo curso exitosamente.");
   }
 
 }

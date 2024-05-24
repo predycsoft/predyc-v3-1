@@ -11,12 +11,8 @@ import { SkillService } from '../../../services/skill.service';
 import { Curso, Enterprise, License, Product, Subscription as SubscriptionClass } from 'projects/shared';
 import { LiveCourseService } from '../../../services/live-course.service';
 import { InstructorsService } from '../../../services/instructors.service';
-// for tests data
-import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { UserService } from '../../../services/user.service';
-import { Session } from 'projects/shared/models/session.model';
-import { LiveCourse, LiveCourseJson } from 'projects/shared/models/live-course.model';
-// ----
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { DialogChooseBaseLiveCourseComponent } from '../dialog-choose-base-live-course/dialog-choose-base-live-course.component';
 
 export class category {
   name: string = ""
@@ -42,9 +38,7 @@ export class LiveCoursesComponent {
     public licenseService: LicenseService,
     public liveCourseService: LiveCourseService,
     public instructorService: InstructorsService,
-    // for test data
-    private afs: AngularFirestore,
-    private userService: UserService,
+		private modalService: NgbModal,
 
   ) {}
 
@@ -235,6 +229,17 @@ export class LiveCoursesComponent {
     }
   }
 
+  openModal() {
+    const modalRef = this.modalService.open(DialogChooseBaseLiveCourseComponent, {
+			animation: true,
+			centered: true,
+			size: "md",
+			backdrop: "static",
+			keyboard: false,
+			// windowClass: 'modWidth'
+		});
+
+  }
 
   // test data
   // async createTestSessions() {

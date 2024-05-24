@@ -13,9 +13,7 @@ export interface LiveCourseJson {
     skillsRef: DocumentReference<Skill>[]
     duration: number,
     vimeoFolderId: string,
-
     // nivel: string,
-
     
 }
 
@@ -67,6 +65,39 @@ export class LiveCourse {
             skillsRef : this.skillsRef,
             duration : this.duration,
             vimeoFolderId : this.vimeoFolderId,
+        }
+    }
+}
+
+export interface LiveCourseSonJson {
+    id: string
+    meetingLink: string
+    identifierText: string
+}
+
+export class LiveCourseSon {
+
+    public static subCollection = 'live-course-son'
+
+    constructor(
+        public id: string,
+        public meetingLink: string,
+        public identifierText: string,
+    ) {}
+
+    public static fromJson(QuestionJson: LiveCourseSonJson): LiveCourseSon {
+        return new LiveCourseSon(
+            QuestionJson.id,
+            QuestionJson.meetingLink,
+            QuestionJson.identifierText,
+        )
+    }
+
+    public toJson(): LiveCourseSonJson {
+        return {
+            id:this.id,
+            meetingLink:this.meetingLink,
+            identifierText:this.identifierText,
         }
     }
 }

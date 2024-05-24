@@ -1,0 +1,48 @@
+<div fxLayout="column" fxLayoutAlign="center center" [formGroup]="formNewCourse" class="pd20">
+    <div fxLayout="row" fxLayoutAlign="end center" class="fw">
+        <img [src]="icon.close" (click)="closeDialog()" class="makeGray h20px cursorPointer">
+    </div>
+
+    <div fxLayout="column" class="form-group">
+        <label class="ft14 ft500" for="baseCourse">Elegir curso base</label>
+        <div fxLayout="row" fxLayoutAlign="center center" class="mgt05 fw">
+            <div fxFlex="100">
+                <mat-form-field class="example-full-width fw">
+                    <mat-label>Buscar curso base</mat-label>
+                    <input type="text" class="ft14 fw" placeholder="Seleccione uno" aria-label="Number" matInput
+                    [matAutocomplete]="autoInstructores" formControlName="baseCourse" autocomplete="off" tabindex="-1">
+                    <mat-autocomplete [displayWith]="getOptionText" #autoInstructores="matAutocomplete" class="options">
+                        <mat-option (click)="setBaseCourse(option)" class="multiline-mat-option" *ngFor="let option of baseLiveCourses" [value]="option">
+                            <div fxLayout="row" fxLayoutAlign="space-between">
+                            <div fxLayout="col" fxLayoutAlign="center center" class="ft12">
+                                {{option.title | titlecase}}
+                            </div>
+                            </div>
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+            </div>
+        </div>
+    </div>
+
+    <div fxLayout="column" class="form-group">
+        <label class="ft14 ft500" for="identifyingText">Texto identificativo</label>
+        <input type="text" id="identifyingText" class="form-control" formControlName="identifyingText">
+    </div>
+
+    <div fxLayout="column" class="form-group">
+        <label class="ft14 ft500" for="reuniones-link">Ingresar link de reuniones unico</label>
+        <input type="text" id="reuniones-link" class="form-control" formControlName="meetingLink">
+    </div>
+
+    <div *ngFor="let session of sessions" fxLayout="column" class="form-group" formGroupName="sessionsDates">
+        <label class="ft14 ft500" for="fecha-inicio">Ingresar fecha de inicio para la sesión <span class="ft15 ft500 gray-10">{{session.title}}</span></label>
+        <input type="datetime-local" id="fecha-inicio" class="form-control" [formControlName]="session.id">
+    </div>
+
+    <button (click)="onSave()" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButton mgt05" style="border-radius: 24px !important;">
+        <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="">Agregar curso en vivo
+    </button>
+</div>
+  
+  

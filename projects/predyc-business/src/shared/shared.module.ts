@@ -85,6 +85,7 @@ import { LiveCoursesComponent } from './components/live-courses/live-courses/liv
 import { LiveCoursesSelectorComponent } from './components/live-courses/live-courses-selector/live-courses-selector.component';
 import { CreateLiveCourseComponent } from './components/live-courses/create-live-course/create-live-course.component';
 import { DialogEnrollDiplomadosComponent } from "./components/diplomados/dialog-enroll-diplomados/dialog-enroll-diplomados.component";
+import { DialogChooseBaseLiveCourseComponent } from './components/live-courses/dialog-choose-base-live-course/dialog-choose-base-live-course.component';
 
 
 @NgModule({
@@ -139,6 +140,7 @@ import { DialogEnrollDiplomadosComponent } from "./components/diplomados/dialog-
     LiveCoursesComponent,
     LiveCoursesSelectorComponent,
     CreateLiveCourseComponent,
+    DialogChooseBaseLiveCourseComponent,
   ],
   imports: [
     CommonModule,

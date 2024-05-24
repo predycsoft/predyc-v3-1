@@ -56,3 +56,32 @@ export class Session {
         }
     }
 }
+
+export interface SessionSonJson {
+    id: string
+    date: any
+}
+
+export class SessionSon {
+
+    public static subCollection = 'session-son'
+
+    constructor(
+        public id: string,
+        public date: any,
+    ) {}
+
+    public static fromJson(QuestionJson: SessionSonJson): SessionSon {
+        return new SessionSon(
+            QuestionJson.id,
+            QuestionJson.date,
+        )
+    }
+
+    public toJson(): SessionSonJson {
+        return {
+            id:this.id,
+            date:this.date,
+        }
+    }
+}
