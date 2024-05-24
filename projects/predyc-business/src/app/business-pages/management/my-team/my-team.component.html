@@ -4,29 +4,29 @@
     </p>
 
     <div fxLayout="row" fxLayoutAlign=" center">
-        <div fxLayout="row" fxLayoutAlign="space-between center" class="w-75 pdr20 ">
-            <div fxLayout="row" fxLayoutAlign=" center" class="shadow-animation radius20">
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="w-80">
+            <div fxLayout="row" fxLayoutAlign="start center">
+              <div fxLayout="row" fxLayoutAlign="center center" class="shadow-animation radius20">
                 <app-profile-selector></app-profile-selector>
                 <app-search-input-box class=""></app-search-input-box>
+              </div>
+              <div *ngIf="usersMails" matTooltip="Copiar correos" (click)="copiaExitosa()" class="mgl08">
+                <img [src]="icon.copy" alt="copiar" class="h16px">
+              </div>
             </div>
-            <button fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButtonAnim button-animation " style="border-radius: 24px !important;"
-                (click)="createNewStudent()"
-                >
-                <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="">
-                Nuevo Usuario
+            <button fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButtonAnim button-animation" style="border-radius: 24px !important;"
+              (click)="createNewStudent()">
+              <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="">
+              Nuevo Usuario
             </button>
-        </div>
+          </div>
         <div class="w-25 pdl20">
-            <!-- <div fxLayout="row" fxLayoutAlign="space-between center" style="border-bottom: 2px solid #e3e3e3; padding-bottom: .5rem;">
-                <span class="ft14" style="font-weight: bold; color: black;">
-                    Perfiles predefinidos
-                </span>
-            </div> -->
+
         </div>
     </div>
     <div fxLayout="row">
         <div class="w-80  vh50 pdr20 border-rl" >
-            <app-student-list (onStudentSelected)="onStudentSelected($event)"/>
+            <app-student-list (onStudentSelected)="onStudentSelected($event)" (studentsOnList)="usersOnListProcess($event)"/>
         </div>
         <div class="w-20 pdl15 " fxLayout="column" fxLayoutGap="15px" style="margin-top: -40px;">
 

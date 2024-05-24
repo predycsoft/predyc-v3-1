@@ -52,7 +52,22 @@
 
         <!-- Department Column -->
         <ng-container matColumnDef="department" class=" ">
-            <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Departamento </th>
+            <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> 
+
+                <div
+                class="cursorPointer"
+                fxLayout="row"
+                [ngClass]="{'chip pdl05':filtroDepartamento}"
+                [matMenuTriggerFor]="menuFilterDepartamento"
+                fxLayoutAlign="center center" >
+                <!-- <span  [ngClass]="{'gray-9':filtroDepartamento}" class="gray-7">Departamento</span>
+                <mat-icon [ngClass]="{'gray-9':filtroDepartamento}">expand_more</mat-icon> -->
+                <span  class="gray-7">Departamento</span>
+                <mat-icon>expand_more</mat-icon>
+              </div>
+
+            </th>
+            <!-- <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Departamento </th> -->
             <td mat-cell *matCellDef="let user" class="centertext"> 
                 <div>
                     <span class="gray-7 ft400" >{{user.department}}</span>
@@ -109,10 +124,21 @@
 
         <!-- Rhythm Column -->
         <ng-container matColumnDef="rhythm" class="centertext">
+            <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> 
 
-            
-            <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Ritmo </th>
+                <div
+                class="cursorPointer"
+                fxLayout="row"
+                [ngClass]="{'chip':ritmoFilter}"
+                [matMenuTriggerFor]="menuFilterRitmo"
+                fxLayoutAlign="center center" >
+                <!-- <span  [ngClass]="{'gray-9':ritmoFilter}" class="gray-7">Ritmo</span>
+                <mat-icon [ngClass]="{'gray-9':ritmoFilter}">expand_more</mat-icon> -->
+                <span  class="gray-7">Ritmo</span>
+                <mat-icon >expand_more</mat-icon>
+              </div>
 
+            </th>
             <!-- <th mat-header-cell *matHeaderCellDef class="w-10 centertext gray-8"> Ritmo </th> -->
             <td mat-cell *matCellDef="let user" style="width: 12%;"> 
                 <div *ngIf="user.rhythm === 'high'" class="chip backGreen2"  fxLayout="row" fxLayoutAlign="center center">
@@ -137,7 +163,6 @@
                     <img [src]="icon.warning" alt="" class="makeOrange  pdl03 pdr03" >
                     <span class="ft13 nowrap ft500 " style="color: rgb(221, 144, 0);" >No iniciado</span>
                 </div>
-                
             </td>
         </ng-container>
 
@@ -165,5 +190,88 @@
         (page)="onPageChange($event.pageIndex + 1)"
         ></mat-paginator>
 </div>
+
+
+<mat-menu #menuFilterRitmo="matMenu" class="radius6 shadow16 pd0">
+    <div fxLayout="column" class="pd0">
+      <div
+        mat-menu-item
+        class="opcionMenu"
+        fxLayout="row"
+        fxLayoutAlign=" center"
+        (click)="search('ritmo','')" [ngClass]="ritmoFilter == '' ? 'backGray2 green-5 ft500' : 'gray-10' ">
+        <span class="pdl05">Todos</span>
+      </div>
+      <div
+        mat-menu-item
+        class="opcionMenu"
+        fxLayout="row"
+        fxLayoutAlign=" center"
+        (click)="search('ritmo','high')"
+        [ngClass]=" ritmoFilter == 'high' ? 'backGray2 green-5 ft500' : 'gray-10'">
+        <span class="pdl05">Alto</span>
+      </div>
+        <div
+            mat-menu-item
+            class="opcionMenu"
+            fxLayout="row"
+            fxLayoutAlign=" center"
+            (click)="search('ritmo','medium')"
+            [ngClass]=" ritmoFilter == 'medium' ? 'backGray2 green-5 ft500' : 'gray-10'">
+            <span class="pdl05">Medio</span>
+        </div>
+        <div
+            mat-menu-item
+            class="opcionMenu"
+            fxLayout="row"
+            fxLayoutAlign=" center"
+            (click)="search('ritmo','low')"
+            [ngClass]=" ritmoFilter == 'low' ? 'backGray2 green-5 ft500' : 'gray-10'">
+            <span class="pdl05">Bajo</span>
+        </div>
+        <div
+            mat-menu-item
+            class="opcionMenu"
+            fxLayout="row"
+            fxLayoutAlign=" center"
+            (click)="search('ritmo','no iniciado')"
+            [ngClass]=" ritmoFilter == 'no iniciado' ? 'backGray2 green-5 ft500' : 'gray-10'">
+            <span class="pdl05">No iniciado</span>
+        </div>
+        <div
+        mat-menu-item
+        class="opcionMenu"
+        fxLayout="row"
+        fxLayoutAlign=" center"
+        (click)="search('ritmo','no plan')"
+        [ngClass]=" ritmoFilter == 'no plan' ? 'backGray2 green-5 ft500' : 'gray-10'">
+        <span class="pdl05">Sin plan</span>
+    </div>
+    </div>
+</mat-menu>
+
+
+<mat-menu #menuFilterDepartamento="matMenu" class="radius6 shadow16 pd0">
+    <div fxLayout="column" class="pd0">
+      <div
+        mat-menu-item
+        class="opcionMenu"
+        fxLayout="row"
+        fxLayoutAlign=" center"
+        (click)="search('iddepartment','')" [ngClass]="filtroDepartamento == '' ? 'backGray2 green-5 ft500' : 'gray-10' ">
+        <span class="pdl05">Todos</span>
+      </div>
+      <div
+        *ngFor="let departamneto of departments"
+        mat-menu-item
+        class="opcionMenu"
+        fxLayout="row"
+        fxLayoutAlign=" center"
+        (click)="search('iddepartment',departamneto.id)"
+        [ngClass]=" filtroDepartamento == departamneto.id ? 'backGray2 green-5 ft500' : 'gray-10'">
+        <span class="pdl05">{{departamneto.name}}</span>
+      </div>
+    </div>
+</mat-menu>
   
   

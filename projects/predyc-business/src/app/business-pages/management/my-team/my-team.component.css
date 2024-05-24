@@ -33,8 +33,6 @@
 
 }
 
-
-
 .profile-container:hover .profile-arrow {
     display: block;
     /* filter: invert(62%) sepia(42%) saturate(1721%) hue-rotate(169deg) brightness(102%) contrast(101%); */

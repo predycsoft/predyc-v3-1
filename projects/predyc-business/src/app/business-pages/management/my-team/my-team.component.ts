@@ -9,6 +9,8 @@ import { ProfileService } from 'projects/predyc-business/src/shared/services/pro
 import { Profile } from 'projects/shared/models/profile.model';
 import { CreateUserComponent } from './student/create-user/create-user.component';
 import { User } from 'projects/shared/models/user.model';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
 
 @Component({
   selector: 'app-my-team',
@@ -24,6 +26,8 @@ export class MyTeamComponent {
     private profileService: ProfileService,
     private router: Router,
     private userService: UserService,
+    private _snackBar: MatSnackBar,
+
   ){}
 
   profiles: Profile[] = []
@@ -90,22 +94,39 @@ export class MyTeamComponent {
     }
     else return null
   }
+  usersMails = null
+
+  usersOnListProcess(users){
+
+    if(users){
+      console.log('usersOnListProcess',users)
+      let respuesta = [];
+      users.forEach(usuario => {
+        respuesta.push(usuario.mail)
+      });
+  
+      this.usersMails = respuesta.toString();
+    }
+    else{
+      this.usersMails = null;
+    }
+
+  }
+
+  copiaExitosa(message: string = 'Correos copiados', action: string = '') {
+    navigator.clipboard.writeText(this.usersMails).then(() => {
+      this._snackBar.open(message, action, {
+        duration: 1000,
+        panelClass: ['gray-snackbar'],
+      });
+    }).catch(err => {
+      console.error('Error al copiar al portapapeles: ', err);
+    });
+  }
 
   createNewStudent() {
     this.openCreateUserModal(null)
   }
-
-  // async onStudentSaveHandler(student: User) {
-  //   try {
-  //     if (student.uid) {
-  //       await this.userService.editUser(student)
-  //     } else {
-  //       await this.userService.addUser(student)
-  //     }
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
 
   ngOnDestroy() {
     this.profileSubscription.unsubscribe()
