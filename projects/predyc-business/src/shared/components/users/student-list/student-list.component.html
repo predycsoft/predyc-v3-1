@@ -37,17 +37,13 @@
         <ng-container matColumnDef="contacto" class=" ">
             <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Contacto </th>
             <td mat-cell *matCellDef="let user" class=""> 
-                <div (click)="$event.stopPropagation();">
-                    <a [href]="'mailto:' + user.mail" class="gray-7 ft400">{{ user.mail }}</a>
-                </div>
-                <div *ngIf="user.phoneNumber">
-                    <a [href]="'https://wa.me/' + user.phoneNumber" target="_blank" class="gray-7 ft400">{{ user.phoneNumber }}</a>
-                  </div>
-        
+            <div (click)="$event.stopPropagation();">
+                <a [href]="'mailto:' + user.mail" class="contact-link gray-7 ft400">{{ user.mail }}</a>
+            </div>
+            <div *ngIf="user.phone" class="centertext" (click)="$event.stopPropagation();">
+                <a [href]="'https://wa.me/' + user.phone" target="_blank" class="contact-link gray-7 ft400 centertext">{{ user.phone }}</a>
+            </div>
             </td>
-
-            <!-- <th mat-header-cell *matHeaderCellDef class="gray-8"> Departamento </th> -->
-            <!-- <td mat-cell *matCellDef="let user" class="ft14"> {{user.department}} </td> -->
         </ng-container>
 
         <!-- Department Column -->

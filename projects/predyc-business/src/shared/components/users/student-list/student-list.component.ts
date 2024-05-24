@@ -142,7 +142,7 @@ export class StudentListComponent {
 
     console.log('usersFilterLocal',users)
 
-    this.paginator.pageIndex = 0;
+    this.paginator.pageIndex = page - 1;
     this.dataSource.data = users;
     this.totalLength = users.length;
     this.studentsOnList.emit(users)

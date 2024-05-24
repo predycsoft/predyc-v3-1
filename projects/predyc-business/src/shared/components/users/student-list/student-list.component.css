@@ -87,3 +87,13 @@ table.mat-table tfoot tr {
     transform: translateX(5px);
     color: #0f3b56 !important;
   }
+
+  :host ::ng-deep .contact-link {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  :host ::ng-deep .contact-link:hover {
+    color: blue;
+  }
