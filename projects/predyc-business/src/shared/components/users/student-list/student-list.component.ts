@@ -12,6 +12,7 @@ import { CourseService } from 'projects/predyc-business/src/shared/services/cour
 import { DepartmentService } from 'projects/predyc-business/src/shared/services/department.service';
 import { ProfileService } from 'projects/predyc-business/src/shared/services/profile.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { EnterpriseService } from '../../../services/enterprise.service';
 
 interface User {
   displayName: string,
@@ -40,6 +41,7 @@ export class StudentListComponent {
     'department',
     'hours',
     'dates',
+    'ultActivity',
     'ratingPoints',
     'rhythm',
   ];
@@ -64,6 +66,8 @@ export class StudentListComponent {
   first = true
   profilefilter;
   profilefilterOld;
+  enterprise
+  examenInicial = true
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -74,34 +78,55 @@ export class StudentListComponent {
     private userService: UserService,
     private courseService: CourseService,
     private _snackBar: MatSnackBar,
+    private enterpriseService: EnterpriseService,
   ) {}
 
   ngOnInit() {
-    this.first = true
-    this.profileService.loadProfiles()
-    
-    this.profilesSubscription = combineLatest([this.profileService.getProfiles$(), this.departmentService.getDepartments$(), this.courseService.getCourses$()]).subscribe(([profiles, departments, courses]) => {
-        this.profiles = profiles
-        this.departments = departments.sort((a, b) => a.name.localeCompare(b.name));        
-        console.log('departments',departments)
-        this.courses = courses
-        this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
-          const page = Number(params['page']) || 1;
-          const profileFilter = params['profile'] || '';
-          this.profilefilter = profileFilter
-          const searchTerm = params['search'] || '';
-          const departmentFilter = params['iddepartment'] || '';
-          const ritmoFilter = params['ritmo'] || '';
-          this.ritmoFilter = ritmoFilter
-          this.filtroDepartamento = departmentFilter
-          if(this.first){
-            this.performSearch(searchTerm, page, profileFilter,departmentFilter,ritmoFilter);
-          }
-          else{
-            this.performSearchLocal(searchTerm, page, profileFilter,departmentFilter,ritmoFilter);
-          }
+
+    this.enterpriseService.enterpriseLoaded$.subscribe(isLoaded => {
+      if (isLoaded) {
+        let enterpriseRef = this.enterpriseService.getEnterpriseRef();
+        console.log(enterpriseRef)
+        this.enterprise = this.enterpriseService.getEnterprise();
+        console.log('this.enterprise',this.enterprise)
+
+        if(this.enterprise.examenInicial  === undefined || this.enterprise?.examenInicial){
+          this.examenInicial = true
+  
+        }
+        else{
+          this.examenInicial = false
+        }
+
+        this.first = true
+        this.profileService.loadProfiles()
+        
+        this.profilesSubscription = combineLatest([this.profileService.getProfiles$(), this.departmentService.getDepartments$(), this.courseService.getCourses$()]).subscribe(([profiles, departments, courses]) => {
+            this.profiles = profiles
+            this.departments = departments.sort((a, b) => a.name.localeCompare(b.name));        
+            console.log('departments',departments)
+            this.courses = courses
+            this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
+              const page = Number(params['page']) || 1;
+              const profileFilter = params['profile'] || '';
+              this.profilefilter = profileFilter
+              const searchTerm = params['search'] || '';
+              const departmentFilter = params['iddepartment'] || '';
+              const ritmoFilter = params['ritmo'] || '';
+              this.ritmoFilter = ritmoFilter
+              this.filtroDepartamento = departmentFilter
+              if(this.first){
+                this.performSearch(searchTerm, page, profileFilter,departmentFilter,ritmoFilter);
+              }
+              else{
+                this.performSearchLocal(searchTerm, page, profileFilter,departmentFilter,ritmoFilter);
+              }
+            })
         })
+        
+      }
     })
+
   }
 
   ngAfterViewInit() {
@@ -128,16 +153,23 @@ export class StudentListComponent {
     }
     if (searchTerm) {
       const normalizedSearchTerm = this.removeAccents(searchTerm.toLocaleLowerCase());
+      console.log('normalizedSearchTerm',normalizedSearchTerm)
+
     
       users = users.filter(x => {
         const normalizedMail = this.removeAccents(String(x.mail).toLocaleLowerCase());
         const normalizedDisplayName = this.removeAccents(String(x.displayName).toLocaleLowerCase());
         const normalizedDepartment = this.removeAccents(String(x.department).toLocaleLowerCase());
         const normalizedProfile = this.removeAccents(String(x.profile).toLocaleLowerCase());
+        const normalizedLastActivity = this.removeAccents(String(x.activityStatusText).toLocaleLowerCase());
+
+        console.log('normalizedLastActivity',normalizedLastActivity)
+
     
         return normalizedMail.includes(normalizedSearchTerm) ||
                normalizedDisplayName.includes(normalizedSearchTerm) ||
                normalizedDepartment.includes(normalizedSearchTerm) ||
+               normalizedLastActivity.includes(normalizedSearchTerm) ||
                normalizedProfile.includes(normalizedSearchTerm);
       });
     }
@@ -223,6 +255,17 @@ export class StudentListComponent {
         if(targetHours){
           progreso = ((hours/60)*100)/targetHours
         }
+
+        // Determinar el estado de la actividad
+        let activityStatus = 'Sin inicio sesión';
+        if (user['lastActivityDate']?.seconds) {
+          activityStatus = (new Date(user['lastActivityDate'].seconds * 1000)).toLocaleDateString('es-ES', { month: 'short', year: '2-digit' });
+        } else if (!user['lastActivityDate']?.seconds && this.examenInicial && test.length === 0 && user['lastViewDate']) {
+          activityStatus = 'Sin diagnostico completado';
+        } else if (!user['lastActivityDate']?.seconds && this.examenInicial && test.length > 0 && user['lastViewDate']) {
+          activityStatus = 'Sin clases vistas';
+        }
+        
         return {
           displayName: user.displayName,
           department: this.departments.find(department => department.id === user.departmentRef?.id)?.name,
@@ -230,11 +273,16 @@ export class StudentListComponent {
           idProfile:user.profile?.id,
           hours,
           mail:user.email,
+          activityStatusText:activityStatus,
           phone:user.phoneNumber,
           targetHours,
           dataStarPlan:startDay,
+          lastActivity: user['lastActivity']?user['lastActivity']:null,
+          lastActivityDate: user['lastActivityDate']?user['lastActivityDate']:null,
           dataEndPlan:endDay,
           profile: profileName,
+          dateLastLogin:user['dateLastLogin']?user['dateLastLogin']:null,
+          lastViewDate:user['lastViewDate']?user['lastViewDate']:null,
           //ratingPoints: this.userService.getRatingPointsFromStudyPlan(courses, this.courses),
           ratingPoints: progreso,
           rhythm: this.userService.getPerformanceWithDetails(courses),
@@ -242,6 +290,7 @@ export class StudentListComponent {
           photoUrl: user.photoUrl,
           test // Agregar aquí los datos del examen del usuario
         };
+        
       });
 
       console.log('users',users)
@@ -265,10 +314,13 @@ export class StudentListComponent {
           const normalizedDisplayName = this.removeAccents(String(x.displayName).toLocaleLowerCase());
           const normalizedDepartment = this.removeAccents(String(x.department).toLocaleLowerCase());
           const normalizedProfile = this.removeAccents(String(x.profile).toLocaleLowerCase());
-      
+          const normalizedLastActivity = this.removeAccents(String(x.activityStatusText).toLocaleLowerCase());
+
+
           return normalizedMail.includes(normalizedSearchTerm) ||
                  normalizedDisplayName.includes(normalizedSearchTerm) ||
                  normalizedDepartment.includes(normalizedSearchTerm) ||
+                 normalizedLastActivity.includes(normalizedSearchTerm) ||
                  normalizedProfile.includes(normalizedSearchTerm);
         });
       }
