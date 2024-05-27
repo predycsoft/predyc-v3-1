@@ -11,6 +11,7 @@ import { Profile } from 'projects/shared/models/profile.model';
 import { CourseService } from 'projects/predyc-business/src/shared/services/course.service';
 import { DepartmentService } from 'projects/predyc-business/src/shared/services/department.service';
 import { ProfileService } from 'projects/predyc-business/src/shared/services/profile.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 interface User {
   displayName: string,
@@ -35,7 +36,7 @@ export class StudentListComponent {
 
   displayedColumns: string[] = [
     'displayName',
-    'contacto',
+    'contacto', 
     'department',
     'hours',
     'dates',
@@ -71,7 +72,8 @@ export class StudentListComponent {
     private profileService: ProfileService,
     private router: Router,
     private userService: UserService,
-    private courseService: CourseService
+    private courseService: CourseService,
+    private _snackBar: MatSnackBar,
   ) {}
 
   ngOnInit() {
@@ -285,6 +287,18 @@ export class StudentListComponent {
   removeAccents(str: string): string {
     return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   }
+
+  copiarContacto(message: string = 'Correos copiados', texto,action: string = '') {
+    navigator.clipboard.writeText(texto).then(() => {
+      this._snackBar.open(message, action, {
+        duration: 1000,
+        panelClass: ['gray-snackbar'],
+      });
+    }).catch(err => {
+      console.error('Error al copiar al portapapeles: ', err);
+    });
+  }
+
 
   onPageChange(page: number): void {
     this.router.navigate([], {
