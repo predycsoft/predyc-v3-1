@@ -71,6 +71,7 @@ export class LiveCourse {
 
 export interface LiveCourseSonJson {
     id: string
+    parentId: string
     meetingLink: string
     identifierText: string
 }
@@ -81,6 +82,7 @@ export class LiveCourseSon {
 
     constructor(
         public id: string,
+        public parentId: string,
         public meetingLink: string,
         public identifierText: string,
     ) {}
@@ -88,6 +90,7 @@ export class LiveCourseSon {
     public static fromJson(QuestionJson: LiveCourseSonJson): LiveCourseSon {
         return new LiveCourseSon(
             QuestionJson.id,
+            QuestionJson.parentId,
             QuestionJson.meetingLink,
             QuestionJson.identifierText,
         )
@@ -96,6 +99,7 @@ export class LiveCourseSon {
     public toJson(): LiveCourseSonJson {
         return {
             id:this.id,
+            parentId:this.parentId,
             meetingLink:this.meetingLink,
             identifierText:this.identifierText,
         }

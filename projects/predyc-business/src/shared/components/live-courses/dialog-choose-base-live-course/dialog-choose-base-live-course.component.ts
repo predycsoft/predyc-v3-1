@@ -77,18 +77,22 @@ export class DialogChooseBaseLiveCourseComponent {
 
       // Save live course son
       const liveCourseSon: LiveCourseSonJson = {
-        id: null, 
+        id: null,
+        parentId: formValue.baseCourse.id,
         meetingLink: formValue.meetingLink, 
         identifierText: formValue.identifyingText
       }
-      const liveCourseSonId = await this.liveCourseService.saveLiveCourseSon(formValue.baseCourse.id, liveCourseSon)
+      const liveCourseSonId = await this.liveCourseService.saveLiveCourseSon(liveCourseSon)
 
       // Save sessions sons
       Object.keys(formValue.sessionsDates).forEach(async key => {
+        // console.log("this.liveCourseService.getLiveCourseSonRefById(formValue.baseCourse.id, liveCourseSonId)", this.liveCourseService.getLiveCourseSonRefById(formValue.baseCourse.id, liveCourseSonId))
         const sessionSon: SessionSonJson = {
           id: null,
+          parentId: key,
           date: this.parseDateString(formValue.sessionsDates[key]),
-          liveCourseSonRef: this.liveCourseService.getLiveCourseSonRefById(formValue.baseCourse.id, liveCourseSonId)
+          liveCourseSonRef: this.liveCourseService.getLiveCourseSonRefById(formValue.baseCourse.id, liveCourseSonId),
+          weeksToKeep: 2
         }
         await this.liveCourseService.saveLiveCourseSessionSon(key, sessionSon)
       });

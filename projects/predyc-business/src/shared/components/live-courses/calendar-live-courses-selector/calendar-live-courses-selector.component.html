@@ -3,7 +3,7 @@
         <div class="month-header">
             {{ group.key | titlecase}}
         </div>
-        <div *ngFor="let course of group.value" class="course-item course-pointer" fxLayout="row" fxLayoutAlign="space-between center" (click)="onSelectCourse(course)">
+        <div *ngFor="let course of group.value" class="course-item cursorPointer" fxLayout="row" fxLayoutAlign="space-between center" (click)="onSelectCourse(course)">
             <div class="course-info">
                 <img [src]="course.baseCoursePhoto" class="course-image" alt="">
                 <div>

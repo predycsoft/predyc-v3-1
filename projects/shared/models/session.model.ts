@@ -3,7 +3,7 @@ import { DocumentReference } from "@angular/fire/compat/firestore"
 export interface SessionJson {
     id: string
     title: string
-    date: any //
+    // date: any //
     description: string //
     liveCourseRef: DocumentReference //
     duration: number
@@ -19,7 +19,7 @@ export class Session {
     constructor(
         public id: string,
         public title: string,
-        public date: any,
+        // public date: any,
         public description: string,
         public liveCourseRef: DocumentReference,
         public duration: number,
@@ -32,7 +32,7 @@ export class Session {
         return new Session(
             SessionJson.id,
             SessionJson.title,
-            SessionJson.date,
+            // SessionJson.date,
             SessionJson.description,
             SessionJson.liveCourseRef,
             SessionJson.duration,
@@ -46,7 +46,7 @@ export class Session {
         return {
             id:this.id,
             title:this.title,
-            date:this.date,
+            // date:this.date,
             description:this.description,
             liveCourseRef : this.liveCourseRef,
             duration : this.duration,
@@ -59,7 +59,9 @@ export class Session {
 
 export interface SessionSonJson {
     id: string
+    parentId: string
     date: any
+    weeksToKeep: number
     liveCourseSonRef: DocumentReference
 }
 
@@ -69,14 +71,18 @@ export class SessionSon {
 
     constructor(
         public id: string,
+        public parentId: string,
         public date: any,
+        public weeksToKeep: number,
         public liveCourseSonRef: DocumentReference,
     ) {}
 
     public static fromJson(QuestionJson: SessionSonJson): SessionSon {
         return new SessionSon(
             QuestionJson.id,
+            QuestionJson.parentId,
             QuestionJson.date,
+            QuestionJson.weeksToKeep,
             QuestionJson.liveCourseSonRef,
         )
     }
@@ -84,7 +90,9 @@ export class SessionSon {
     public toJson(): SessionSonJson {
         return {
             id:this.id,
+            parentId:this.parentId,
             date:this.date,
+            weeksToKeep:this.weeksToKeep,
             liveCourseSonRef:this.liveCourseSonRef,
         }
     }

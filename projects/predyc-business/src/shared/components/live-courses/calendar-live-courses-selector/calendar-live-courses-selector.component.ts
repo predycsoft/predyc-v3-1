@@ -44,9 +44,9 @@ export class CalendarLiveCoursesSelectorComponent implements OnInit {
     return dateA.getTime() - dateB.getTime();
   }
 
-  onSelectCourse(selectedCourse) {
+  onSelectCourse(selectedCourse: CalendarLiveCourseData) {
     console.log("selectedCourse", selectedCourse)
-    // this.router.navigate([`/management/create-live/edit/${selectedCourse.id}`])
+    this.router.navigate([`/management/live-sessions/${selectedCourse.baseCourseId}/${selectedCourse.courseSonId}`])
 
   }
 }

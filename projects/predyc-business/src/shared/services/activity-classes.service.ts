@@ -170,7 +170,7 @@ export class ActivityClassesService {
   getActivityAndQuestionsForCourse(courseId: string): Observable<any[]> {
 
     const courseRef = this.courseService.getCourseRefById(courseId);
-    console.log('courseRef getActivityAndQuestionsForCourse',courseRef);
+    // console.log('courseRef getActivityAndQuestionsForCourse',courseRef);
     return this.afs.collection('activity', ref => 
       ref.where('coursesRef', 'array-contains', courseRef)
           .where('type', '==', 'regular')

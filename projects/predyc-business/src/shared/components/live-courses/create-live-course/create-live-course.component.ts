@@ -111,8 +111,13 @@ export class CreateLiveCourseComponent {
     //'Resumen'
   ];
 
-  mode: "create" | "edit-base" | "edit" = this.route.snapshot.paramMap.get("mode") as "create" | "edit-base" | "edit";
+
+  mode: "create" | "edit-base" | "edit"
+  // mode: "create" | "edit-base" | "edit" = this.route.snapshot.paramMap.get("mode") as "create" | "edit-base" | "edit";
   idCurso = this.route.snapshot.paramMap.get("idCurso")
+  idLiveCourseSon = this.route.snapshot.paramMap.get("idLiveCourseSon")
+
+
   textModulo = 'Crear nuevo curso'
 
   // curso : any;
@@ -267,6 +272,10 @@ export class CreateLiveCourseComponent {
 
     // console.log('mode on init',this.mode)
 
+    if (this.idLiveCourseSon) this.mode = "edit"
+    else if (!this.idLiveCourseSon && this.idCurso) this.mode = "edit-base"
+    else this.mode = "create"
+
     this.filteredinstructores = this.instructoresForm.valueChanges.pipe(
       startWith(''),
       map(value => this._filter(value || '')),
@@ -295,7 +304,7 @@ export class CreateLiveCourseComponent {
 
   // AQUI
   async inicializarformNewCourse () {
-    if(this.mode == 'create') {
+    if (this.mode == 'create') {
       if(!this.user.isSystemUser && !this.empresa.permissions?.createCourses){
         this.router.navigate(["management/courses"])
       }
@@ -328,7 +337,9 @@ export class CreateLiveCourseComponent {
     }
     // EDIT MODE
     else {
-      this.liveCourseService.getLiveCourseWithSessionsById$(this.idCurso).subscribe(liveCourseData => {
+      this.liveCourseService.getLiveCourseWithSessionsById$(this.idCurso, this.idLiveCourseSon).subscribe(liveCourseData => {
+
+        console.log("liveCourseData", liveCourseData)
 
         this.liveCourseData = {
           ...liveCourseData.liveCourse,
@@ -491,7 +502,7 @@ export class CreateLiveCourseComponent {
     return {
         id: '',
         title: '',
-        date: null,
+        // date: null,
         description: '',
         liveCourseRef: {} as DocumentReference,
         duration: 0,
@@ -1565,7 +1576,7 @@ export class CreateLiveCourseComponent {
     return new Session(
       sessionData.id,
       sessionData.title,
-      sessionData.date,
+      // sessionData.date,
       sessionData.description,
       sessionData.liveCourseRef,
       sessionData.duration,

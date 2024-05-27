@@ -202,7 +202,7 @@
                                                                                             <div *ngIf="session.title && !session['editarTitulo']; then tituloPresenteClase; else ClaseSinTitulo"></div>
                                                                                             <ng-template #tituloPresenteClase>
                                                                                                 <span (click)="session['editarTitulo'] = true; session['tituloTMP'] = session?.title; editarTituloClase(iClase)">
-                                                                                                    {{session.title}} - {{session.duration | formatDuration}} {{ mode === "edit" ? '- Inicia el dd/mm a las 00:00am - Disponible durante 2 sem.' : ''}}
+                                                                                                    {{session.title}}  -  {{session.duration | formatDuration}} {{ mode === "edit" ? ' -  Inicia el XXX  -  Disponible durante ' + session['weeksToKeep'] + ' sem.' : ''}}
                                                                                                 </span>
                                                                                             </ng-template>
                                                                                             <ng-template #ClaseSinTitulo>
@@ -217,9 +217,9 @@
 
                                                                                                 <div *ngIf=" mode === 'edit' " fxLayout="row" fxLayoutAlign=" center" fxLayoutGap=".25rem" class="form-group">
                                                                                                     <label class="ft12 ft500" for="fecha-inicio">Fecha y hora</label>
-                                                                                                    <input type="datetime-local" id="fecha-inicio" class="form-control w225px">
+                                                                                                    <input type="datetime-local" id="fecha-inicio" class="form-control w225px" [(ngModel)]="session['date']">
                                                                                                 </div>
-                                                                                                <select *ngIf=" mode === 'edit' " class="duration-select">
+                                                                                                <select *ngIf=" mode === 'edit' " class="duration-select" [(ngModel)]="session['weeksToKeep']">
                                                                                                     <option [ngValue]="2">2 Sem</option>
                                                                                                     <option [ngValue]="3">3 Sem</option>
                                                                                                     <option [ngValue]="4">4 Sem</option>

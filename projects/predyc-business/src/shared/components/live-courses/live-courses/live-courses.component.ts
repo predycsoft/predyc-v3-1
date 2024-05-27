@@ -27,6 +27,9 @@ export interface CalendarLiveCourseData {
   sessionDuration: number
   courseSonIdentifierText: string
   sessionSonDate: number
+  courseSonId: string
+  baseCourseId: string
+  sessionSonId: string
 }
 
 @Component({
@@ -183,7 +186,10 @@ export class LiveCoursesComponent {
               sessionTitle: session.title,
               sessionDuration: session.duration,
               courseSonIdentifierText: courseSon.identifierText,
-              sessionSonDate: firestoreTimestampToNumberTimestamp(sessionSon.date)
+              sessionSonDate: firestoreTimestampToNumberTimestamp(sessionSon.date),
+              courseSonId: courseSon.id,
+              baseCourseId: course.id,
+              sessionSonId: sessionSon.id
             }
             this.calendarLiveCourses.push(calendarLiveCourseData)
           }
