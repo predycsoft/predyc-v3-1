@@ -145,6 +145,7 @@ export class DialogStudentEnrolledCourseDetailComponent {
             titulo: cls.titulo,
             isCompleted: !!completedClass,
             dateEnd: completedClass ? firestoreTimestampToNumberTimestamp(completedClass.dateEnd) : null,
+            review:completedClass?.review ? completedClass?.review  :null,
             duracion: cls.duracion,
             id: cls.id
           };
