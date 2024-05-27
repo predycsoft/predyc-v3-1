@@ -59,6 +59,7 @@ export class UserService {
     private alertService: AlertsService,
     private departmentService: DepartmentService
   ) {
+    //this.fixUsersEmpresasLastActivity();
     console.log("Se instancio el user service");
     this.enterpriseService.enterpriseLoaded$.subscribe((enterpriseIsLoaded) => {
       if (enterpriseIsLoaded) {
@@ -66,6 +67,71 @@ export class UserService {
       }
     });
   }
+
+
+
+
+  async fixUsersEmpresasLastActivity() {
+    console.log('inicio fixUsersLastActivity');
+  
+    const batch = this.afs.firestore.batch();
+    const collectionRef = this.afs.collection('user').ref;
+    const snapshot = await collectionRef.get();
+  
+    for (const doc of snapshot.docs) {
+      const userData = doc.data();
+      const userRef = doc.ref;
+  
+      if (!userData['lastActivity'] && userData['enterprise']) {
+  
+        // Buscar todas las clases del usuario actual
+        const classesSnapshot = await this.afs.collection('classesByStudent', ref =>
+          ref.where('userRef', '==', userRef)
+        ).get().toPromise();
+  
+        // Filtrar las clases que tienen dateEnd
+        const classesWithDateEnd = classesSnapshot.docs.filter(classDoc => classDoc.data()['dateEnd']);
+  
+        // Si hay al menos una clase con dateEnd, procesarla
+        if (classesWithDateEnd.length > 0) {
+          let mostRecentClass = null;
+          let mostRecentDate = null;
+  
+          classesWithDateEnd.forEach(classDoc => {
+            const classData = classDoc.data();
+            let dateEnd;
+  
+            if (classData['dateEnd'].seconds) {
+              dateEnd = new Date(classData['dateEnd'].seconds * 1000);
+            } else if (typeof classData['dateEnd'] === 'number') {
+              dateEnd = new Date(classData['dateEnd']);
+            } else {
+              dateEnd = new Date(classData['dateEnd']);
+            }
+  
+            if (!mostRecentDate || dateEnd > mostRecentDate) {
+              mostRecentDate = dateEnd;
+              mostRecentClass = classData;
+            }
+          });
+  
+          if (mostRecentClass && mostRecentDate) {
+            console.log('usuarioActividad fixUsersLastActivity', userData, mostRecentClass, mostRecentDate);
+            batch.update(doc.ref, { lastActivity: 'Clase finalizada', lastActivityDate: mostRecentDate });
+          }
+        }
+      }
+    }
+  
+    // Ejecuta el batch write
+    await batch.commit();
+  
+    console.log('fin fixUsersLastActivity');
+  }
+  
+  
+
+
 
   async addUser(newUser: User): Promise<void> {
     // console.log(newUser.name);
