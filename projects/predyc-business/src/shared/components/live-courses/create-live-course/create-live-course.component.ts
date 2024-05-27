@@ -111,7 +111,7 @@ export class CreateLiveCourseComponent {
     //'Resumen'
   ];
 
-  mode = this.route.snapshot.paramMap.get("mode")
+  mode: "create" | "edit-base" | "edit" = this.route.snapshot.paramMap.get("mode") as "create" | "edit-base" | "edit";
   idCurso = this.route.snapshot.paramMap.get("idCurso")
   textModulo = 'Crear nuevo curso'
 
@@ -329,6 +329,7 @@ export class CreateLiveCourseComponent {
     // EDIT MODE
     else {
       this.liveCourseService.getLiveCourseWithSessionsById$(this.idCurso).subscribe(liveCourseData => {
+
         this.liveCourseData = {
           ...liveCourseData.liveCourse,
           sessions: liveCourseData.sessions.map(session => ({
@@ -356,25 +357,24 @@ export class CreateLiveCourseComponent {
         // }
 
         // console.log('datos cursos',curso)
-        
         let instructor = this.instructores.find(x=> x.id == this.liveCourseData.instructorRef.id)
         this.instructoresForm.patchValue(instructor)
 
         this.formNewCourse = new FormGroup({
           id: new FormControl(this.liveCourseData.id, Validators.required),
           vimeoFolderId: new FormControl(this.liveCourseData.vimeoFolderId),
-          title: new FormControl(this.liveCourseData.title, Validators.required),
-          description: new FormControl(this.liveCourseData.description, Validators.required),
-          photoUrl: new FormControl(this.liveCourseData.photoUrl, Validators.required),
+          title: new FormControl({value: this.liveCourseData.title, disabled: this.mode === "edit"}, Validators.required),
+          description: new FormControl({value: this.liveCourseData.description, disabled: this.mode === "edit"}, Validators.required),
+          photoUrl: new FormControl({value: this.liveCourseData.photoUrl, disabled: this.mode === "edit"}, Validators.required),
           instructorRef: new FormControl(this.liveCourseData.instructorRef),
-          skills: new FormControl(this.liveCourseData.skillsRef, Validators.required),
+          skills: new FormControl({value: this.liveCourseData.skillsRef, disabled: this.mode === "edit"}, Validators.required),
           skillsRef: new FormControl(this.liveCourseData.skillsRef),
           meetingLink: new FormControl(this.liveCourseData.meetingLink),
           // resumen: new FormControl(this.liveCourseData.resumen, Validators.required),
           // nivel: new FormControl(this.liveCourseData.nivel, Validators.required),
           // idioma: new FormControl(this.liveCourseData.idioma, Validators.required),
           // contenido: new FormControl(this.liveCourseData.contenido, Validators.required),
-          instructor: new FormControl(instructor.nombre, Validators.required),
+          instructor: new FormControl({value: instructor.nombre, disabled: this.mode === "edit"}, Validators.required),
           resumen_instructor: new FormControl(instructor.resumen, Validators.required),
           imagen_instructor: new FormControl(instructor.foto, Validators.required),
           proximamente: new FormControl(this.liveCourseData.proximamente),
@@ -383,6 +383,11 @@ export class CreateLiveCourseComponent {
 
         //this.formNewCourse.get('resumen_instructor').disable();
         this.initSkills(); // Asegúrate de que initSkills también maneje las suscripciones correctamente
+        if (this.mode === "edit") {
+          // this.pillarsForm = new FormControl({ value: '', disabled: true }); // disabled inside initSkills()
+          this.instructoresForm = new FormControl({ value: instructor, disabled: true });
+        }
+
         this.activityClassesService.getActivityAndQuestionsForCourse(this.idCurso).pipe(filter(activities=>activities!=null),take(1)).subscribe(activities => {
           //console.log('activities clases', activities);
           this.activitiesCourse = activities;
@@ -401,6 +406,7 @@ export class CreateLiveCourseComponent {
 
       })
 
+      // OLD CODE FOR TYPICALL COURSES
       // this.courseService.getCoursesObservable().pipe(filter(courses=>courses.length>0),take(1)).subscribe(courses => {
       //   // console.log('cursos', courses);
       //   let curso = courses.find(course => course.id == this.idCurso);
@@ -645,8 +651,8 @@ export class CreateLiveCourseComponent {
 
         this.categoriasArray = this.anidarCompetenciasInicial(category, skill)
         // console.log('categoriasArray', this.categoriasArray,this.liveCourseData)
-        if(!this.skillsInit){
-          if(this.mode == 'edit'){
+        if (!this.skillsInit) {
+          if (this.mode == 'edit-base' || 'edit') {
             //console.log('liveCourseData edit', this.liveCourseData)
             this.textModulo = 'Editar curso'
             let skillsProfile = this.liveCourseData.skillsRef;
@@ -657,27 +663,26 @@ export class CreateLiveCourseComponent {
                 skillSelect['selected'] = true;
               }
             });
-          }
-  
-          if(this.mode == 'edit'){
-            if(this.liveCourseData){
+
+            if (this.liveCourseData) {
               let pilar
               let skillId = this.liveCourseData.skillsRef[0]?.id
               if(skillId){
                 pilar = this.categoriasArray.find(x=>x.competencias.find(y=>y.id == skillId))
               }
-              else if(this.pillarsForm.value['id']){
+              else if (this.pillarsForm.value['id']) {
                 pilar = this.categoriasArray.find(x=>x.id == this.pillarsForm.value['id'])
               }
-              console.log('pilar',pilar)
-              this.pillarsForm.patchValue(pilar)
-              console.log('pilar',this.pillarsForm.value['name'])
+              // console.log('pilar',pilar)
+              // this.pillarsForm.patchValue(pilar)
+              this.pillarsForm = new FormControl({ value: pilar, disabled: this.mode === 'edit' }); 
+              // console.log('pilar',this.pillarsForm.value['name'])
             }
             this.getExamCourse(this.liveCourseData.id);
           }
-          else{
+          else {
             let pilar
-            if(this.pillarsForm.value['id']){
+            if (this.pillarsForm.value['id']) {
               pilar = this.categoriasArray.find(x=>x.id == this.pillarsForm.value['id'])
               this.pillarsForm.patchValue(pilar)
             }
@@ -1530,8 +1535,6 @@ export class CreateLiveCourseComponent {
       if(this.mode == 'create'){
         this.router.navigate([`management/create-live/edit/${this.liveCourseData.id}`])
       }
-
-
 
     }
     else{

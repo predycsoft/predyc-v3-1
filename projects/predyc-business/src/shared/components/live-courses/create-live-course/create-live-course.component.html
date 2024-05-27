@@ -22,8 +22,7 @@
                 </div>
                 <button fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButton ft14 cursorPointer" 
                 (click)="saveDraftPre()" style="border-radius: 24px !important;">
-                    {{mode !== 'edit' ? 'Guardar curso' : 'Guardar curso'}}
-                    <img [src]="icon.save" class="h16px pdl05 makeWhite" alt="">
+                    Guardar Curso <img [src]="icon.save" class="h16px pdl05 makeWhite" alt="">
                 </button>
             </div>
         </div>
@@ -82,7 +81,7 @@
                                                 <div class="image-scroll">
                                                     <img *ngIf="formNewCourse.get('photoUrl').value" [src]="formNewCourse.get('photoUrl').value" alt="Imagen seleccionada" class="avatarSquare8 radius6">
                                                 </div>
-                                                <div class="fw" >
+                                                <div *ngIf="mode === 'create' " class="fw">
                                                     <button (click)="cursoImage.click()" class="grayButton pd03 radius6 ft12 ft500 h28px mgr10 gray-8" fxLayoutGap="0.625" >
                                                         <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
                                                         Adjuntar imagen
@@ -96,24 +95,24 @@
                                     <div fxLayout="row" fxLayoutAlign=" center" class="mgt10 fw">
                                         <form class="fw">
                                             <mat-form-field class="example-full-width fw">
-                                                <mat-label  >Buscar Pilar</mat-label>
+                                                <mat-label>Buscar Pilar</mat-label>
                                                 <input type="text"
-                                                        class="ft14 fw"   
-                                                        placeholder="Seleccione uno"
-                                                        aria-label="Number"
-                                                        matInput
-                                                        #autoTrigger="matAutocompleteTrigger"
-                                                        [formControl]="pillarsForm"
-                                                        [matAutocomplete]="autoPillars">
+                                                    class="ft14 fw"   
+                                                    placeholder="Seleccione uno"
+                                                    aria-label="Number"
+                                                    matInput
+                                                    #autoTrigger="matAutocompleteTrigger"
+                                                    [formControl]="pillarsForm"
+                                                    [matAutocomplete]="autoPillars">
                                                 <mat-autocomplete [displayWith]="getOptionTextPillar" #autoPillars="matAutocomplete" class="options">
-                                                <mat-option (click)="changePillar(option)" class="multiline-mat-option ft12" *ngFor="let option of filteredPillars | async" [value]="option">
-                                                    <div fxLayout="row" fxLayoutAlign="space-between">
-                                                        <div fxLayout="col" fxLayoutAlign="center center">
-                                                            {{option.name | titlecase}}
+                                                    <mat-option (click)="changePillar(option)" class="multiline-mat-option ft12" *ngFor="let option of filteredPillars | async" [value]="option">
+                                                        <div fxLayout="row" fxLayoutAlign="space-between">
+                                                            <div fxLayout="col" fxLayoutAlign="center center">
+                                                                {{option.name | titlecase}}
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </mat-option>
-                                                <mat-option  (click)="createPillar()" class="multiline-mat-option" value="null">Crear nuevo pilar</mat-option>
+                                                    </mat-option>
+                                                    <mat-option (click)="createPillar()" class="multiline-mat-option" value="null">Crear nuevo pilar</mat-option>
                                                 </mat-autocomplete>
                                             </mat-form-field>
                                         </form>
@@ -125,14 +124,13 @@
                                                     style="display: inline-block; margin-right: 5px; margin-bottom: 5px; margin-top: 5px;"
                                                     class="skill-badge-complete ListHover radius10 backGray2  ft12 pdl08 pdr08 gray-8 mgt08">
                                                     {{skill.name}}
-                                                    <img style="cursor: pointer;" (click)="removeSkill(skill)" [src]="icon.close"  class="h16px makeGray"  alt="">
+                                                    <img *ngIf=" mode !== 'edit' " style="cursor: pointer;" (click)="removeSkill(skill)" [src]="icon.close"  class="h16px makeGray"  alt="">
                                                 </div>
                                             </ng-container>
-                                            <div class="pdb10"> 
-                                                <div *ngIf="skillsCurso?.length<3 && pillarsForm.value" matTooltip="Agregar competencia"
-                                                style="display: inline-block; margin-right: 5px; "
-                                                (click)="crearCompetencia(modalCrearSkill)" class="backGray2 radius20  pdl03 pdr03  gray-8 " >
-                                                    <img style="cursor: pointer;"  [src]="icon.addBlue"  class="h16px ft600 "  alt="">
+                                            <div *ngIf=" mode !== 'edit' " class="pdb10"> 
+                                                <div *ngIf=" (skillsCurso?.length < 3 && pillarsForm.value) " matTooltip="Agregar competencia"
+                                                style="display: inline-block; margin-right: 5px; "(click)="crearCompetencia(modalCrearSkill)" class="backGray2 radius20  pdl03 pdr03  gray-8 " >
+                                                    <img style="cursor: pointer;" [src]="icon.addBlue" class="h16px ft600 "  alt="">
                                                 </div>
                                             </div>
                                         </div>
@@ -199,30 +197,45 @@
                                                                                 <mat-expansion-panel-header>
                                                                                     <mat-panel-title (click)="onPanelTitleClick($event)" fxLayout="row" fxLayoutAlign="space-between center">
                                                                                         
-                                                                                        <div fxLayout="row" fxLayoutAlign="start center">
+                                                                                        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1.5rem">
                                                                                             <!-- <img [src]="icon[getIconClase(session.type)]" class="h18px pdr05" alt=""> -->
                                                                                             <div *ngIf="session.title && !session['editarTitulo']; then tituloPresenteClase; else ClaseSinTitulo"></div>
                                                                                             <ng-template #tituloPresenteClase>
                                                                                                 <span (click)="session['editarTitulo'] = true; session['tituloTMP'] = session?.title; editarTituloClase(iClase)">
-                                                                                                    {{session.title}} - {{session.duration | formatDuration}}
+                                                                                                    {{session.title}} - {{session.duration | formatDuration}} {{ mode === "edit" ? '- Inicia el dd/mm a las 00:00am - Disponible durante 2 sem.' : ''}}
                                                                                                 </span>
                                                                                             </ng-template>
                                                                                             <ng-template #ClaseSinTitulo>
                                                                                                 <input #inputRef class="inputInvisible" type="text" [(ngModel)]="session['tituloTMP']" (keydown.space)="preventDefault($event)" 
-                                                                                                (keyup.enter)="preventDefault($event); confirmSessionTitle(session)" placeholder="Escriba el título aquí" >
-                                                                                                <select [(ngModel)]="session['duration']" class="duration-select">
+                                                                                                (keyup.enter)="preventDefault($event); confirmSessionTitle(session)" placeholder="Escriba el título aquí" [disabled]="mode === 'edit'" >
+
+                                                                                                <select *ngIf=" mode !== 'edit'" [(ngModel)]="session['duration']" class="duration-select">
                                                                                                     <option [ngValue]="60">1 hr</option>
                                                                                                     <option [ngValue]="120">2 hrs</option>
                                                                                                     <option [ngValue]="180">3 hrs</option>
                                                                                                 </select>
+
+                                                                                                <div *ngIf=" mode === 'edit' " fxLayout="row" fxLayoutAlign=" center" fxLayoutGap=".25rem" class="form-group">
+                                                                                                    <label class="ft12 ft500" for="fecha-inicio">Fecha y hora</label>
+                                                                                                    <input type="datetime-local" id="fecha-inicio" class="form-control w225px">
+                                                                                                </div>
+                                                                                                <select *ngIf=" mode === 'edit' " class="duration-select">
+                                                                                                    <option [ngValue]="2">2 Sem</option>
+                                                                                                    <option [ngValue]="3">3 Sem</option>
+                                                                                                    <option [ngValue]="4">4 Sem</option>
+                                                                                                </select>
                                                                                                 <img (click)="confirmSessionTitle(session)" matTooltip="Confirmar título" [src]="icon.check" 
                                                                                                 class="h18px pdl05 makeGray edit cursorPointer" alt="">
                                                                                             </ng-template>
+
+
+
+
                                                                                         </div>
 
                                                                                         <div fxLayout="row" fxLayoutAlign="space-between center">
 
-                                                                                            <ng-container *ngIf="session.type == 'video'">
+                                                                                            <ng-container *ngIf="mode === 'edit'">
                                                                                                 <div *ngIf="!session.vimeoId1">
                                                                                                     <span (click)="FileInputTitle.click()" *ngIf=" mode === 'edit' && session.title && !session['videoUpload'] && !session['uploading']" class="blueLink mgr10">
                                                                                                         Agregar video
@@ -245,6 +258,29 @@
                                                                                                 </div>
                                                                                             </ng-container>
 
+
+                                                                                            <!-- <ng-container *ngIf="session.type == 'video'">
+                                                                                                <div *ngIf="!session.vimeoId1">
+                                                                                                    <span (click)="FileInputTitle.click()" *ngIf=" mode === 'edit' && session.title && !session['videoUpload'] && !session['uploading']" class="blueLink mgr10">
+                                                                                                        Agregar video
+                                                                                                    </span>
+                                                                                                    <div *ngIf="session.type == 'video' && session['videoUpload']">
+                                                                                                        <span *ngIf="session['videoUpload'] < 100 && session['videoUpload'] > 0" class="pdl05 mgr10">
+                                                                                                            Subiendo video: {{session['videoUpload']}}%
+                                                                                                        </span>
+                                                                                                    </div>
+                                                                                                    <span *ngIf="!session.title && mode === 'edit' " class="gray-6 cursorPointer mgr10">Agregar video</span>
+                                                                                                    <input (change)="onFileSelected($event, session, false) " type="file" accept="video/mp4" #FileInputTitle style="display: none;">
+                                                                                                </div>
+                                                                                                <div *ngIf="session.vimeoId1" fxLayout="row" fxLayoutAlign="start center">
+                                                                                                    <span (click)="quitarVideoClase(session)" class="blueLink mgr05">Eliminar</span>
+                                                                                                    <button (click)="verVideoVimeo(session)" class="grayButton pd03 radius4 ft12 h28px mgr10 w130px" fxLayout="row" 
+                                                                                                    fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                                                                        <img [src]="icon.playOutline" class="h16px pdr05" alt="">
+                                                                                                        Reproducir video
+                                                                                                    </button>
+                                                                                                </div>
+                                                                                            </ng-container>
                                                                                             <ng-container *ngIf="session.type == 'lectura'">
                                                                                                 <div *ngIf="!session.vimeoId1">
                                                                                                     <span (click)="FileInputTitle.click()" *ngIf="session.title && !session['uploading'] && !session?.files[0]" class="blueLink mgr10">
@@ -265,9 +301,9 @@
                                                                                                         <img [src]="icon.pdf" class="h16px pdr05" alt="">Ver archivo
                                                                                                     </button>
                                                                                                 </div>
-                                                                                            </ng-container>
+                                                                                            </ng-container> -->
                                                                                             
-                                                                                            <img (click)="borrarClase(session)" [src]="icon.trash" class="h16px trash" alt="">
+                                                                                            <img *ngIf=" mode !== 'edit' " (click)="borrarClase(session)" [src]="icon.trash" class="h16px trash" alt="">
                                                                                         </div>
                                                                                     </mat-panel-title>
                                                                                 </mat-expansion-panel-header>
@@ -281,9 +317,7 @@
                                                                                         <div *ngIf="!session['uploading'] && session.files.length>0" class="fw ContainerFile" style="min-height: 80px;">
                                                                                             <div fxLayout="row" fxLayoutGap="20px" class="fw pd10" (dragover)="onDragOver($event)" (drop)="onDrop($event, session. type, session)">
                                                                                                 <!-- Columna izquierda con el texto "Recursos:" -->
-                                                                                                <div fxFlex="10%" fxLayoutAlign="start start">
-                                                                                                    Recursos:
-                                                                                                </div>
+                                                                                                <div fxFlex="10%" fxLayoutAlign="start start">Recursos:</div>
                                                                                                 <!-- Columna derecha con la lista de archivos -->
                                                                                                 <div fxFlex="90%" fxLayoutAlign="start start">
                                                                                                     <ol style="padding-left: 10px; margin: 0;">
@@ -345,7 +379,7 @@
                                                             </div>
 
                                                             <!-- Agregar sesion -->
-                                                            <div fxLayout="column" class="fw" fxLayoutAlign="center center">
+                                                            <div *ngIf=" mode !== 'edit' " fxLayout="column" class="fw" fxLayoutAlign="center center">
                                                                 <!-- Primer div para "Agregar sesión" -->
                                                                 <div *ngIf="!liveCourseData['addClassMode']" fxLayout="row" class="fw mg10" fxLayoutAlign="center center">
                                                                     <!-- <span (click)="liveCourseData['addClassMode'] = !liveCourseData['addClassMode']" class="blueLink radius4 ft12 h28px no-select"> -->

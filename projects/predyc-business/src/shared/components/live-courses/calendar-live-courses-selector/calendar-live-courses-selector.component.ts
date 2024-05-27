@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CalendarLiveCourseData } from '../live-courses/live-courses.component';
 import { KeyValue } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-calendar-live-courses-selector',
@@ -9,7 +10,9 @@ import { KeyValue } from '@angular/common';
 })
 export class CalendarLiveCoursesSelectorComponent implements OnInit {
 
-  constructor() {}
+  constructor(
+    private router: Router,
+  ) {}
 
   @Input() calendarLiveCourses: CalendarLiveCourseData[];
   groupedCourses: { [key: string]: CalendarLiveCourseData[] };
@@ -39,5 +42,11 @@ export class CalendarLiveCoursesSelectorComponent implements OnInit {
     const dateA = new Date(`${yearA}-${new Date(`${monthA} 1, 2000`).getMonth() + 1}`);
     const dateB = new Date(`${yearB}-${new Date(`${monthB} 1, 2000`).getMonth() + 1}`);
     return dateA.getTime() - dateB.getTime();
+  }
+
+  onSelectCourse(selectedCourse) {
+    console.log("selectedCourse", selectedCourse)
+    // this.router.navigate([`/management/create-live/edit/${selectedCourse.id}`])
+
   }
 }

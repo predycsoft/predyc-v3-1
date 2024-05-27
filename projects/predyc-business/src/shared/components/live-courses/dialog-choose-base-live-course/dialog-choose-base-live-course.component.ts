@@ -24,7 +24,7 @@ export class DialogChooseBaseLiveCourseComponent {
     public icon: IconService,
     public dialogService: DialogService,
     private liveCourseService: LiveCourseService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
   ) {}
 
   combinedServicesSubscription: Subscription;

@@ -1,9 +1,9 @@
-<div *ngIf="groupedCourses" class="calendar-container fw">
+<div *ngIf="calendarLiveCourses.length > 0" class="calendar-container fw">
     <div *ngFor="let group of groupedCourses | keyvalue: keyvalueAscOrder" class="month-group">
         <div class="month-header">
             {{ group.key | titlecase}}
         </div>
-        <div *ngFor="let course of group.value" class="course-item" fxLayout="row" fxLayoutAlign="space-between center">
+        <div *ngFor="let course of group.value" class="course-item course-pointer" fxLayout="row" fxLayoutAlign="space-between center" (click)="onSelectCourse(course)">
             <div class="course-info">
                 <img [src]="course.baseCoursePhoto" class="course-image" alt="">
                 <div>
@@ -15,4 +15,3 @@
         </div>
     </div>
 </div>
-  

@@ -80,7 +80,7 @@
                                 <div  fxLayout="row" fxLayoutAlign="space-between center" >
                                     <div class="gray-10 ft14 ft500 mgr08">{{selectedCourse.title }}</div>
                                     <div *ngIf="(user.isSystemUser || selectedCourse.enterpriseRef?.id == enterprise?.id) && selectedCourse.id" 
-                                        routerLink="/management/create-live/edit/{{selectedCourse.id}}"  fxLayout="row"  fxLayoutGap=".5rem"  >
+                                        routerLink="/management/create-live/edit-base/{{selectedCourse.id}}"  fxLayout="row"  fxLayoutGap=".5rem"  >
                                         <div class="blueLink mgt05 white cursorPointer ft14 fw mgb10" fxLayoutAlign="space-between center">
                                             <!-- <img [src]="icon.edit" class="makeWhite h16px mgr08" alt=""> -->
                                             Editar 
