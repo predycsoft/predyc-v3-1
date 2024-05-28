@@ -44,6 +44,8 @@ interface LiveCourseData extends LiveCourseJson {
 
 interface SessionData extends SessionJson {
   dateFormatted: string,
+  sonId: string,
+  weeksToKeep: number,
   addClassMode: boolean,
   isInvalid: boolean,
   expanded: boolean,
@@ -452,6 +454,8 @@ export class CreateLiveCourseComponent {
         deleted: false,
         activity: null,
         HTMLcontent: null,
+        weeksToKeep: 2,
+        sonId: "",
     };
   }
 
@@ -885,38 +889,64 @@ export class CreateLiveCourseComponent {
     // this.liveCourseData.skillsRef = this.tmpSkillRefArray
     // this.formNewCourse.get("skills").patchValue(this.liveCourseData.skillsRef);
   }
+
+  parseDateString(date: string): Date {
+    date = date.replace("T", "-");
+    let parts = date.split("-");
+    let timeParts = parts[3].split(":");
+
+    // new Date(year, month [, day [, hours[, minutes[, seconds[, ms]]]]])
+    return new Date(
+      +parts[0],
+      +parts[1] - 1,
+      +parts[2],
+      +timeParts[0],
+      +timeParts[1]
+    ); // Note: months are 0-based
+  }
   
   async saveDraftPre() {
-    this.liveCourseData.title = this.formNewCourse.value.title
-    let checkStatus = await this.checkAllInfo();
-
-    if(!checkStatus && this.formNewCourse.valid) {
-      Swal.fire({
-        title: "Revisar datos",
-        text:"Existen problemas en el curso, ¿desea continuar?, se guardar como borrador",
-        icon: "info",
-        showCancelButton: true,
-        confirmButtonText: "Guardar",
-        confirmButtonColor: 'var(--blue-5)',
-      }).then((result) => {
-        /* Read more about isConfirmed, isDenied below */
-        if (result.isConfirmed && this.formNewCourse.valid) {
-          this.formNewCourse.get("proximamente").patchValue(true);
-          if (this.liveCourseData) this.liveCourseData.proximamente = true // Save as "borrador"
-          this.saveDraft()
-        }
-      });
+    if (this.mode !== "edit") {
+      this.liveCourseData.title = this.formNewCourse.value.title
+      let checkStatus = await this.checkAllInfo();
+  
+      if(!checkStatus && this.formNewCourse.valid) {
+        Swal.fire({
+          title: "Revisar datos",
+          text:"Existen problemas en el curso, ¿desea continuar?, se guardar como borrador",
+          icon: "info",
+          showCancelButton: true,
+          confirmButtonText: "Guardar",
+          confirmButtonColor: 'var(--blue-5)',
+        }).then((result) => {
+          /* Read more about isConfirmed, isDenied below */
+          if (result.isConfirmed && this.formNewCourse.valid) {
+            this.formNewCourse.get("proximamente").patchValue(true);
+            if (this.liveCourseData) this.liveCourseData.proximamente = true // Save as "borrador"
+            this.saveDraft()
+          }
+        });
+      }
+      else if (this.formNewCourse.valid){
+        this.saveDraft()
+      }
+      else if(!this.formNewCourse.valid){
+        Swal.fire({
+          title:'Datos faltantes!',
+          text:`Por favor verifique los datos del curso para poder guardarlo`,
+          icon:'warning',
+          confirmButtonColor: 'var(--blue-5)',
+        })
+      }
     }
-    else if (this.formNewCourse.valid){
-      this.saveDraft()
-    }
-    else if(!this.formNewCourse.valid){
-      Swal.fire({
-        title:'Datos faltantes!',
-        text:`Por favor verifique los datos del curso para poder guardarlo`,
-        icon:'warning',
-        confirmButtonColor: 'var(--blue-5)',
-      })
+    else { // edit livecourse son and sessions sons information
+      console.log("here")
+      await this.liveCourseService.updateLiveCourseSonMeetingLink(this.idCurso, this.idLiveCourseSon, this.formNewCourse.value.meetingLink)
+      for (let session of this.liveCourseData.sessions) {
+        const date = this.parseDateString(session.dateFormatted)
+        await this.liveCourseService.updateSessionSonDateAndWeeksToKeep(session.id, session.sonId, date, session.weeksToKeep)
+      }
+      console.log("end")
     }
   }
 

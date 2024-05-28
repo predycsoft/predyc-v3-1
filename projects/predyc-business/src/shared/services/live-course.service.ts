@@ -127,6 +127,7 @@ export class LiveCourseService {
                           const sessionSonData = sessionSon[0];
                           session.date = sessionSonData?.date;
                           session.weeksToKeep = sessionSonData?.weeksToKeep;
+                          session.sonId = sessionSonData?.id;
                           return session;
                         }),
                         catchError(err => {
@@ -267,6 +268,19 @@ export class LiveCourseService {
 
   getLiveCourseSonByRef(liveCourseSonRef: DocumentReference<LiveCourseSon>): Observable<LiveCourseSon> {
     return this.afs.doc<LiveCourseSon>(liveCourseSonRef).valueChanges();
+  }
+
+  async updateLiveCourseSonMeetingLink(liveCourseId: string, liveCourseSonId: string, meetingLink: string): Promise<any> {
+    await this.afs.collection<LiveCourse>(LiveCourse.collection).doc(liveCourseId).collection<LiveCourseSon>(LiveCourseSon.subCollection).doc(liveCourseSonId).update({
+      meetingLink: meetingLink
+    })
+  }
+
+  async updateSessionSonDateAndWeeksToKeep(sessionId: string, sessionSonId: string, date: any, weeksToKeep: number) {
+    await this.afs.collection<Session>(Session.collection).doc(sessionId).collection<SessionSon>(SessionSon.subCollection).doc(sessionSonId).update({
+      date: date,
+      weeksToKeep: weeksToKeep
+    })
   }
 
 }
