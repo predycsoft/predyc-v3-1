@@ -310,7 +310,7 @@
                                                                                 <!-- si es de archivo es un drop -->
                                                                                 <ng-container *ngIf="session.type != 'actividad' &&  session.type !='corazones'">
 
-                                                                                    <ng-container *ngIf="session.type == 'video'">
+                                                                                    <ng-container>
                                                                                         <div *ngIf="!session['uploading'] && session.files.length>0" class="fw ContainerFile" style="min-height: 80px;">
                                                                                             <div fxLayout="row" fxLayoutGap="20px" class="fw pd10" (dragover)="onDragOver($event)" (drop)="onDrop($event, session. type, session)">
                                                                                                 <!-- Columna izquierda con el texto "Recursos:" -->
@@ -322,7 +322,7 @@
                                                                                                             <!-- Lista los archivos comenzando desde el segundo elemento (índice 1) -->
                                                                                                             <li>
                                                                                                                 <span class="cursorPointer blueLink" (click)="descargarArchivo(archivo)">{{ archivo.nombre }}</span>
-                                                                                                                <img [src]="icon.close" class="h18px pdl10 makeRed cursorPointer" alt="" (click)="borrarArchivo(session,archivo)">
+                                                                                                                <img *ngIf="mode !== 'edit'" [src]="icon.close" class="h18px pdl10 makeRed cursorPointer" alt="" (click)="borrarArchivo(session,archivo)">
                                                                                                             </li>
                                                                                                         </ng-container>
                                                                                                     </ol>
@@ -336,7 +336,7 @@
                                                                                         </div>
                                                                                     </ng-container>
                                                                                     
-                                                                                    <div fxLayout="row" fxLayoutAlign="center center" class="mgt15 mgb05">
+                                                                                    <div *ngIf="mode !=='edit'" fxLayout="row" fxLayoutAlign="center center" class="mgt15 mgb05">
                                                                                         <input (change)="onFileSelected($event, session, false, true)" type="file" 
                                                                                         accept="application/pdf, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" 
                                                                                         #FileInputAdicional style="display: none;">
@@ -344,11 +344,6 @@
                                                                                             <img [src]="icon.folderUp" class="h16px pdr05" alt="">
                                                                                             Añadir recursos
                                                                                         </button>
-                                                                                                                                                        
-                                                                                        <ng-container *ngIf="session.type == 'lectura'">
-
-                                                                                        </ng-container>
-                                                                                        
                                                                                     </div>
                                                                                     <input (change)="onFileSelected($event, session, false)" type="file" accept="{{session.type == 'lectura'?'.pdf' : 'video/mp4'}}" 
                                                                                     #FileInput style="display: none;">

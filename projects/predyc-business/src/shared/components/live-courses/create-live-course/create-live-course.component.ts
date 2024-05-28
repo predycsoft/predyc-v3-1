@@ -105,8 +105,7 @@ export class CreateLiveCourseComponent {
   ];
 
 
-  mode: "create" | "edit-base" | "edit"
-  // mode: "create" | "edit-base" | "edit" = this.route.snapshot.paramMap.get("mode") as "create" | "edit-base" | "edit";
+  mode: "create" | "edit-base" | "edit" // "edit" for live course sessions sons edition
   idCurso = this.route.snapshot.paramMap.get("idCurso")
   idLiveCourseSon = this.route.snapshot.paramMap.get("idLiveCourseSon")
 
@@ -1019,19 +1018,19 @@ export class CreateLiveCourseComponent {
         session['InvalidMessages'] = [];
         session['isInvalid'] = false;
         
-        if(session.title==''){
+        if (session.title=='') {
           this.liveCourseData['isInvalid'] = true;
           session['isInvalid'] = true;
           valid = false;
-          this.liveCourseData['InvalidMessages'].push(`La sesión ${(session.type)} no tiene título`);
+          this.liveCourseData['InvalidMessages'].push(`Una de tus sesiones no tiene título`);
           session['InvalidMessages'].push('La sesión debe tener título');
         }
 
-        if(session.duration == 0){
+        if (session.duration == 0) {
           this.liveCourseData['isInvalid'] = true;
           session['isInvalid'] = true;
           valid = false;
-          this.liveCourseData['InvalidMessages'].push(`La sesión ${(session.type)} ${session.title} no tiene duración`);
+          this.liveCourseData['InvalidMessages'].push(`La sesión ${session.title} no tiene duración`);
           session['InvalidMessages'].push('La sesión debe tener duración');
         }
 
@@ -1473,7 +1472,7 @@ export class CreateLiveCourseComponent {
 
 
     if(this.mode == 'create'){
-      this.router.navigate([`management/create-live/edit/${this.liveCourseData.id}`])
+      this.router.navigate([`management/${this.liveCourseData.id}`])
     }
 
 
