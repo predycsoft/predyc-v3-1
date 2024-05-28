@@ -326,7 +326,7 @@ export class CreateLiveCourseComponent {
     }
     // EDIT MODE
     else {
-      this.liveCourseService.getLiveCourseWithSessionsById$(this.idCurso, this.idLiveCourseSon).subscribe(liveCourseData => {
+      this.liveCourseService.getLiveCourseWithSessionsById$(this.idCurso, this.idLiveCourseSon).pipe(take(1)).subscribe(liveCourseData => {
 
         console.log("liveCourseData in onInit()", liveCourseData)
 
@@ -996,7 +996,7 @@ export class CreateLiveCourseComponent {
         (this.liveCourseData as any)[key] = formValues[key];
       }
     });
-    console.log('Updated liveCourseData:', this.liveCourseData);
+    // console.log('Updated liveCourseData:', this.liveCourseData);
   }
 
   validarModulosClases(){
@@ -1138,13 +1138,12 @@ export class CreateLiveCourseComponent {
     if (this.examen) {
       let courseRef = this.afs.collection<any>(LiveCourse.collection).doc(this.liveCourseData.id).ref;
       let activityClass = new Activity
-      console.log('this.activityClass',activityClass)
+      // console.log('this.activityClass',activityClass)
       let questions: Question[]= []
       questions = structuredClone(this.examen.questions);
-      console.log('this.examen',this.examen)
       let auxCoursesRef = this.examen.coursesRef
       this.examen.coursesRef = null
-      console.log('this.examen',this.examen)
+      // console.log('this.examen',this.examen)
 
 
       activityClass.activityCorazon = this.examen.activityCorazon
@@ -1188,7 +1187,7 @@ export class CreateLiveCourseComponent {
         }
       }
 
-      console.log('questionsClasses',questionsClasses)
+      // console.log('questionsClasses',questionsClasses)
 
       if(questionsIds.length>0){
         //remove not present questions
@@ -1330,14 +1329,15 @@ export class CreateLiveCourseComponent {
     }  
 
     // Save sessions (and activities ... check later)
-    if(this.liveCourseData.sessions.length > 0){
+    if(this.liveCourseData.sessions.length > 0) {
       let arrayClasesRef = [];
       for (let i = 0; i < this.liveCourseData.sessions.length; i++) {
         try {
-          let clase = this.liveCourseData.sessions[i];            
-          if(clase['edited']){
+          let clase = this.liveCourseData.sessions[i];
+          console.log("XXXXXXclase", clase)
+          if (clase['edited']) {
             // Save session
-            console.log('clase borrador add/edit',clase)
+            console.log('sesion',clase)
             // let claseLocal = new Clase;
             let claseLocal: SessionData = this.initializeSessionAsSessionData()
             claseLocal.HTMLcontent = clase.HTMLcontent ? clase.HTMLcontent : null;
@@ -1461,7 +1461,6 @@ export class CreateLiveCourseComponent {
       }
 
       this.deletedClasses = []
-
       
       //console.log('arrayClasesRef',arrayClasesRef)
 
@@ -1876,39 +1875,6 @@ export class CreateLiveCourseComponent {
     this.formNewCourse.get('imagen_instructor').patchValue(imagen);
   }
 
-  // AQUI
-  deleteModule(modulo){
-
-    Swal.fire({
-      title: `<span class=" gray-9 ft20">Borrar módulo ${modulo.numero} - ${modulo.title? modulo.title: 'Sin título'}</span>`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: 'var(--red-5)',
-      cancelButtonColor: 'var(--gray-4)',
-      confirmButtonText: `Borrar módulo`,
-      cancelButtonText:'Cancelar'
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        let numero = modulo.numero;
-        this.modulos = this.modulos.filter ( modulo => modulo.numero != numero);
-        this.modulos.forEach(modulo =>{
-          if(modulo.numero > numero){
-            modulo.numero--;
-          }
-        })
-
-        await this.moduleService.deleteModulo(modulo.id,this.liveCourseData.id)
-
-        Swal.fire({
-          title:'Borrado!',
-          text:`El módulo ${modulo.numero} - ${modulo.title? modulo.title: 'Sin título'} fue borrado`,
-          icon:'success',
-          confirmButtonColor: 'var(--blue-5)',
-        })
-      }
-    })
-  }
-
   closeOtherSessions(openedSession: any): void {
     // Recorrer todas las clases en el módulo.
     for (const session of this.liveCourseData.sessions) {
@@ -2023,7 +1989,7 @@ export class CreateLiveCourseComponent {
   }
 
   // AQUI
-  addSession(tipo){
+  addSession(tipo) {
     let clases = []
     if (this.liveCourseData.sessions && this.liveCourseData.sessions.length > 0) clases = this.liveCourseData.sessions
     
@@ -3176,7 +3142,7 @@ export class CreateLiveCourseComponent {
     return placeholders;
   }
 
-  advanceTabActividad(){
+  advanceTabActividad() {
 
     this.updateTriggeQuestions=0;
 
@@ -3418,7 +3384,7 @@ export class CreateLiveCourseComponent {
     });
   }
 
-  saveNewSkills(){
+  saveNewSkills() {
 
     console.log('this.tmpSkillRefArray',this.tmpSkillRefArray)
     
@@ -3528,10 +3494,13 @@ export class CreateLiveCourseComponent {
     modulo.title = modulo['tituloTMP'];
   }
 
-  confirmSessionTitle(session) {
+  confirmSessionTitleAndDuration(session) {
     session['editarTitulo'] = false;
     session.title = session['tituloTMP'];
     session['edited'] = true;
+
+    console.log("session after title edit", session)
+    console.log("this.liveCourseData.sessions", this.liveCourseData.sessions)
   }
 
 }

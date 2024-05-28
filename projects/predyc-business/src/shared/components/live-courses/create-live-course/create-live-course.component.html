@@ -206,7 +206,7 @@
                                                                                             </ng-template>
                                                                                             <ng-template #ClaseSinTitulo>
                                                                                                 <input #inputRef class="inputInvisible" type="text" [(ngModel)]="session['tituloTMP']" (keydown.space)="preventDefault($event)" 
-                                                                                                (keyup.enter)="preventDefault($event); confirmSessionTitle(session)" placeholder="Escriba el título aquí" [disabled]="mode === 'edit'" >
+                                                                                                (keyup.enter)="preventDefault($event); confirmSessionTitleAndDuration(session)" placeholder="Escriba el título aquí" [disabled]="mode === 'edit'" >
 
                                                                                                 <select *ngIf=" mode !== 'edit'" [(ngModel)]="session['duration']" class="duration-select">
                                                                                                     <option [ngValue]="60">1 hr</option>
@@ -223,7 +223,7 @@
                                                                                                     <option [ngValue]="3">3 Sem</option>
                                                                                                     <option [ngValue]="4">4 Sem</option>
                                                                                                 </select>
-                                                                                                <img (click)="confirmSessionTitle(session)" matTooltip="Confirmar título" [src]="icon.check" 
+                                                                                                <img (click)="confirmSessionTitleAndDuration(session)" matTooltip="Confirmar título" [src]="icon.check" 
                                                                                                 class="h18px pdl05 makeGray edit cursorPointer" alt="">
                                                                                             </ng-template>
 
