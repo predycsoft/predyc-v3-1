@@ -201,7 +201,7 @@ export class CreateCourseComponent {
 
   getExamCourse(idCourse){
     //console.log('idCourse search activity', idCourse);
-    this.activityClassesService.getActivityCoruse(idCourse).pipe(filter(data=>data!=null),take(1))
+    this.activityClassesService.getActivityCoruse(idCourse, false).pipe(filter(data=>data!=null),take(1))
       .subscribe(data => {
         if (data) {
           ////console.log('Activity:', data);
@@ -518,7 +518,7 @@ export class CreateCourseComponent {
 
         //this.formNewCourse.get('resumen_instructor').disable();
         this.initSkills(); // Asegúrate de que initSkills también maneje las suscripciones correctamente
-        this.activityClassesService.getActivityAndQuestionsForCourse(this.idCurso).pipe(filter(activities=>activities!=null),take(1)).subscribe(activities => {
+        this.activityClassesService.getActivityAndQuestionsForCourse(this.idCurso, false).pipe(filter(activities=>activities!=null),take(1)).subscribe(activities => {
           //console.log('activities clases', activities);
           this.activitiesCourse = activities;
           this.modulos.forEach(module => {

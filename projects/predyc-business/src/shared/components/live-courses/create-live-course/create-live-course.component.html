@@ -81,7 +81,7 @@
                                                 <div class="image-scroll">
                                                     <img *ngIf="formNewCourse.get('photoUrl').value" [src]="formNewCourse.get('photoUrl').value" alt="Imagen seleccionada" class="avatarSquare8 radius6">
                                                 </div>
-                                                <div *ngIf="mode === 'create' " class="fw">
+                                                <div *ngIf="mode !== 'edit' " class="fw">
                                                     <button (click)="cursoImage.click()" class="grayButton pd03 radius6 ft12 ft500 h28px mgr10 gray-8" fxLayoutGap="0.625" >
                                                         <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
                                                         Adjuntar imagen

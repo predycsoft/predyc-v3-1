@@ -12,6 +12,7 @@ import { Activity } from 'projects/shared/models/activity-classes.model';
 import { Question } from 'projects/shared/models/activity-classes.model';
 import { Profile } from 'projects/shared/models/profile.model';
 import { CourseService } from './course.service';
+import { LiveCourseService } from './live-course.service';
 
 
 
@@ -27,7 +28,8 @@ export class ActivityClassesService {
     private afs: AngularFirestore,
     private enterpriseService: EnterpriseService,
     private alertService: AlertsService,
-    private courseService : CourseService
+    private courseService : CourseService,
+    private liveCourseService : LiveCourseService
   ) {
     this.enterpriseService.enterpriseLoaded$.subscribe(enterpriseIsLoaded => {
       if (enterpriseIsLoaded) {
@@ -167,14 +169,14 @@ export class ActivityClassesService {
     );
   }
 
-  getActivityAndQuestionsForCourse(courseId: string): Observable<any[]> {
-
-    const courseRef = this.courseService.getCourseRefById(courseId);
+  getActivityAndQuestionsForCourse(courseId: string, isLiveCourse: boolean): Observable<any[]> {
+    let courseRef: DocumentReference;
+    if (!isLiveCourse) courseRef = this.courseService.getCourseRefById(courseId);
+    else courseRef = this.liveCourseService.getLiveCourseRefById(courseId);
     // console.log('courseRef getActivityAndQuestionsForCourse',courseRef);
     return this.afs.collection('activity', ref => 
-      ref.where('coursesRef', 'array-contains', courseRef)
-          .where('type', '==', 'regular')
-      )
+      ref.where('coursesRef', 'array-contains', courseRef).where('type', '==', 'regular')
+    )
     .get()
     .pipe(
       switchMap(activitiesSnap => {
@@ -230,30 +232,31 @@ export class ActivityClassesService {
       );
   }
 
-  getActivityCoruse(idCourse) {
-    const courseRef: DocumentReference = this.afs.doc(`course/${idCourse}`).ref;
-    // Fetch activity using the courseRef
+  getActivityCoruse(idCourse: string, isLiveCourse: boolean) {
+    let courseRef: DocumentReference;
+    if (!isLiveCourse) courseRef = this.courseService.getCourseRefById(idCourse);
+    else courseRef = this.liveCourseService.getLiveCourseRefById(idCourse);
+
     // console.log('courseRef getActivityCoruse',courseRef)
     return this.afs.collection('activity', ref => 
-      ref.where('coursesRef', 'array-contains', courseRef)
-      .where('type', '==', 'test')
-      )
-      .valueChanges() // or .get() based on your needs
-      .pipe(
-        switchMap(activities => {
-          if (activities && activities.length > 0) {
-            const activity = activities[0] as Activity; // Assuming only one activity matches
-            // Fetch questions of the matched activity
-            return this.afs.collection(`${Activity.collection}/${activity.id}/${Question.collection}`).valueChanges()
-              .pipe(
-                map(questions => {
-                  return { ...activity as any, questions };
-                })
-              );
-          }
-          return of(null); // or you can return an empty object or handle it another way
-        })
-      );
+      ref.where('coursesRef', 'array-contains', courseRef).where('type', '==', 'test')
+    )
+    .valueChanges() // or .get() based on your needs
+    .pipe(
+      switchMap(activities => {
+        if (activities && activities.length > 0) {
+          const activity = activities[0] as Activity; // Assuming only one activity matches
+          // Fetch questions of the matched activity
+          return this.afs.collection(`${Activity.collection}/${activity.id}/${Question.collection}`).valueChanges()
+            .pipe(
+              map(questions => {
+                return { ...activity as any, questions };
+              })
+            );
+        }
+        return of(null); // or you can return an empty object or handle it another way
+      })
+    );
   }
 
   getActivityById(idActivity: string): Observable<any> {

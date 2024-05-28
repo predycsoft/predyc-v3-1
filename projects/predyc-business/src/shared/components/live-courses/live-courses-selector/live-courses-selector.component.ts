@@ -59,7 +59,7 @@ export class LiveCoursesSelectorComponent {
 
   getExamCourse(course){
     // console.log('idCourse search activity', idCourse);
-    // this.activityClassesService.getActivityCoruse(course.id).pipe(take(1)).subscribe(data => {
+    // this.activityClassesService.getActivityCoruse(course.id, false).pipe(take(1)).subscribe(data => {
     //   if (data) {
     //     data.questions.forEach(question => {
     //       question.competencias = question.skills
