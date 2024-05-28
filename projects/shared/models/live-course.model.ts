@@ -6,7 +6,7 @@ export interface LiveCourseJson {
     companyName: string
     title: string
     photoUrl: string
-    meetingLink: string
+    // meetingLink: string
     description: string
     instructorRef: DocumentReference
     proximamente: boolean
@@ -26,7 +26,7 @@ export class LiveCourse {
         public companyName: string,
         public title: string,
         public photoUrl: string,
-        public meetingLink: string,
+        // public meetingLink: string,
         public description: string,
         public instructorRef: DocumentReference,
         public proximamente: boolean,
@@ -42,7 +42,7 @@ export class LiveCourse {
             QuestionJson.companyName,
             QuestionJson.title,
             QuestionJson.photoUrl,
-            QuestionJson.meetingLink,
+            // QuestionJson.meetingLink,
             QuestionJson.description,
             QuestionJson.instructorRef,
             QuestionJson.proximamente,
@@ -58,7 +58,7 @@ export class LiveCourse {
             companyName:this.companyName,
             title:this.title,
             photoUrl:this.photoUrl,
-            meetingLink:this.meetingLink,
+            // meetingLink:this.meetingLink,
             description:this.description,
             instructorRef : this.instructorRef,
             proximamente : this.proximamente,

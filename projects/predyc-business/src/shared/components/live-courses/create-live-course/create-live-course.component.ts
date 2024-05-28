@@ -26,7 +26,6 @@ import { Clase } from 'projects/shared/models/course-class.model';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import Swal from 'sweetalert2';
 import { Category } from 'projects/shared/models/category.model';
-import { Enterprise } from 'projects/shared/models/enterprise.model';
 import { Skill } from 'projects/shared/models/skill.model';
 import VimeoPlayer from '@vimeo/player';
 import { VimeoComponent } from '../../vimeo/vimeo.component';
@@ -34,15 +33,9 @@ import { LiveCourse, LiveCourseJson } from 'projects/shared/models/live-course.m
 import { Session, SessionJson } from 'projects/shared/models/session.model';
 import { LiveCourseService } from '../../../services/live-course.service';
 
-interface Competencia {
-  id: number;
-  name: string;
-  selected: boolean;
-  categoriaId: number;
-}
-
 interface LiveCourseData extends LiveCourseJson {
   sessions: SessionData[],
+  meetingLink: string,
   addClassMode: boolean,
   isInvalid: boolean,
   InvalidMessages: string[],
@@ -50,6 +43,7 @@ interface LiveCourseData extends LiveCourseJson {
 }
 
 interface SessionData extends SessionJson {
+  dateFormatted: string,
   addClassMode: boolean,
   isInvalid: boolean,
   expanded: boolean,
@@ -74,7 +68,6 @@ export class CreateLiveCourseComponent {
     public icon: IconService,
     public router: Router,
     private storage: AngularFireStorage,
-    // //private service: GeneralService,
     private modalService: NgbModal,
     private uploadControl: VimeoUploadService,
     private afs: AngularFirestore,
@@ -259,7 +252,6 @@ export class CreateLiveCourseComponent {
 
   showErrorCurso = false;
 
-  mensageCompetencias = "Selecciona una competencia para asignarla al curso";
   comepetenciaValid= true
 
   modalCrearSkill;
@@ -291,18 +283,17 @@ export class CreateLiveCourseComponent {
       this.enterpriseService.enterprise$.pipe(filter(enterprise => enterprise != null), take(1)),
       this.instructorsService.getInstructorsObservable(),
       this.authService.user$.pipe(filter(user => user != null), take(1))
-    ]).subscribe(([enterprise, instructores, user]) => {
+    ]).subscribe(async ([enterprise, instructores, user]) => {
       if (enterprise && instructores && user) {
         this.empresa = enterprise
         this.instructores = instructores
         this.user = user
-        this.inicializarformNewCourse();
+        await this.inicializarformNewCourse();
       }
     })
 
   }
 
-  // AQUI
   async inicializarformNewCourse () {
     if (this.mode == 'create') {
       if(!this.user.isSystemUser && !this.empresa.permissions?.createCourses){
@@ -345,6 +336,7 @@ export class CreateLiveCourseComponent {
           ...liveCourseData.liveCourse,
           sessions: liveCourseData.sessions.map(session => ({
             ...session,
+            dateFormatted: this.convertTimestampToDatetimeLocalString(session.date),
             addClassMode: false,
             isInvalid: false,
             expanded: false,
@@ -393,7 +385,7 @@ export class CreateLiveCourseComponent {
         });
 
         //this.formNewCourse.get('resumen_instructor').disable();
-        this.initSkills(); // Asegúrate de que initSkills también maneje las suscripciones correctamente
+        this.initSkills();
         if (this.mode === "edit") {
           // this.pillarsForm = new FormControl({ value: '', disabled: true }); // disabled inside initSkills()
           this.instructoresForm = new FormControl({ value: instructor, disabled: true });
@@ -416,65 +408,6 @@ export class CreateLiveCourseComponent {
         });
 
       })
-
-      // OLD CODE FOR TYPICALL COURSES
-      // this.courseService.getCoursesObservable().pipe(filter(courses=>courses.length>0),take(1)).subscribe(courses => {
-      //   // console.log('cursos', courses);
-      //   let curso = courses.find(course => course.id == this.idCurso);
-      //   // console.log('curso edit', curso,this.user.isSystemUser);
-      //   let enterpriseREf = this.enterpriseService.getEnterpriseRef()
-      //   if(!this.user.isSystemUser && !(curso.enterpriseRef.id == enterpriseREf.id)){
-      //     this.router.navigate(["management/courses"])
-      //   }
-      //   this.curso = curso;
-      //   curso['modules'].sort((a, b) => a.numero - b.numero);
-      //   this.modulos = curso['modules'];
-
-      //   // console.log('datos cursos',curso)
-        
-      //   let instructor = this.instructores.find(x=> x.id == curso.instructorRef.id)
-      //   this.instructoresForm.patchValue(instructor)
-
-      //   this.formNewCourse = new FormGroup({
-      //     id: new FormControl(curso.id, Validators.required),
-      //     vimeoFolderId: new FormControl(curso.vimeoFolderId),
-      //     title: new FormControl(curso.title, Validators.required),
-      //     description: new FormControl(curso.description, Validators.required),
-      //     photoUrl: new FormControl(curso.photoUrl, Validators.required),
-      //     instructorRef: new FormControl(curso.instructorRef),
-      //     skills: new FormControl(curso.skillsRef, Validators.required),
-      //     skillsRef: new FormControl(curso.skillsRef),
-      //     meetingLink: new FormControl(curso.meetingLink),
-      //     // resumen: new FormControl(curso.resumen, Validators.required),
-      //     nivel: new FormControl(curso.nivel, Validators.required),
-      //     idioma: new FormControl(curso.idioma, Validators.required),
-      //     // contenido: new FormControl(curso.contenido, Validators.required),
-      //     instructor: new FormControl(instructor.nombre, Validators.required),
-      //     resumen_instructor: new FormControl(instructor.resumen, Validators.required),
-      //     imagen_instructor: new FormControl(instructor.foto, Validators.required),
-      //     proximamente: new FormControl(curso.proximamente),
-
-      //   });
-
-      //   //this.formNewCourse.get('resumen_instructor').disable();
-      //   this.initSkills(); // Asegúrate de que initSkills también maneje las suscripciones correctamente
-      //   this.activityClassesService.getActivityAndQuestionsForCourse(this.idCurso).pipe(filter(activities=>activities!=null),take(1)).subscribe(activities => {
-      //     //console.log('activities clases', activities);
-      //     this.activitiesCourse = activities;
-      //     this.modulos.forEach(module => {
-      //       let clases = module['clases'];
-      //       clases.forEach(clase => {
-      //         if (clase.tipo == 'actividad' || clase.tipo == 'corazones') {
-      //           //console.log('activities clases clase', clase);
-      //           let activity = activities.find(activity => activity.claseRef.id == clase.id);
-      //           console.log('activities clases activity', activity);
-      //           clase.activity = activity;
-      //         }
-      //       });
-      //     });
-      //   });
-      // });
-      
     }
   }
 
@@ -502,7 +435,7 @@ export class CreateLiveCourseComponent {
     return {
         id: '',
         title: '',
-        // date: null,
+        dateFormatted: "",
         description: '',
         liveCourseRef: {} as DocumentReference,
         duration: 0,
@@ -521,7 +454,13 @@ export class CreateLiveCourseComponent {
         activity: null,
         HTMLcontent: null,
     };
-}
+  }
+
+  convertTimestampToDatetimeLocalString(timestamp: any): string {
+    if (!timestamp) return '';
+    const date = new Date(timestamp.seconds * 1000);
+    return date.toISOString().substring(0, 16);
+  }
 
   getOptionText(option){
     let name = option.nombre
@@ -641,7 +580,7 @@ export class CreateLiveCourseComponent {
       this.skillsCurso = this.skillsCurso.filter(x=> x.id != skill.id)
       let skillsRef = []
       for(let skill of this.skillsCurso){
-        let skillRef = await this.afs.collection<any>('skill').doc(skill.id).ref;
+        let skillRef = this.afs.collection<any>('skill').doc(skill.id).ref;
         skillsRef.push(skillRef)
       }
       this.formNewCourse.get("skills").patchValue(skillsRef);
@@ -1194,7 +1133,7 @@ export class CreateLiveCourseComponent {
         this.liveCourseData.duration = duration
 
 
-        await this.liveCourseService.saveLiveCourse(this.LiveCourseDataModelToLiveCourse(this.liveCourseData)) // CREATE METHOD TO TRANSFORM LiveCourseData model to LiveCourse
+        await this.liveCourseService.saveLiveCourse(this.LiveCourseDataModelToLiveCourse(this.liveCourseData))
       }
       
       // For "exameness" ... check later
@@ -1562,7 +1501,6 @@ export class CreateLiveCourseComponent {
       liveCourseData.companyName,
       liveCourseData.title,
       liveCourseData.photoUrl,
-      liveCourseData.meetingLink,
       liveCourseData.description,
       liveCourseData.instructorRef,
       liveCourseData.proximamente,
