@@ -256,10 +256,12 @@ export class StudentListComponent {
           progreso = ((hours/60)*100)/targetHours
         }
 
+
         // Determinar el estado de la actividad
         let activityStatus = 'Sin inicio sesión';
         if (user['lastActivityDate']?.seconds) {
-          activityStatus = (new Date(user['lastActivityDate'].seconds * 1000)).toLocaleDateString('es-ES', { month: 'short', year: '2-digit' });
+          let date = new Date(user['lastActivityDate'].seconds * 1000)
+          activityStatus = date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long' });
         } else if (!user['lastActivityDate']?.seconds && this.examenInicial && test.length === 0 && user['lastViewDate']) {
           activityStatus = 'Sin diagnostico completado';
         } else if (!user['lastActivityDate']?.seconds && this.examenInicial && test.length > 0 && user['lastViewDate']) {
@@ -278,11 +280,11 @@ export class StudentListComponent {
           targetHours,
           dataStarPlan:startDay,
           lastActivity: user['lastActivity']?user['lastActivity']:null,
-          lastActivityDate: user['lastActivityDate']?user['lastActivityDate']:null,
+          lastActivityDate: user['lastActivityDate']?user['lastActivityDate']['seconds']*1000:null,
           dataEndPlan:endDay,
           profile: profileName,
-          dateLastLogin:user['dateLastLogin']?user['dateLastLogin']:null,
-          lastViewDate:user['lastViewDate']?user['lastViewDate']:null,
+          dateLastLogin:user['dateLastLogin']?user['dateLastLogin']['seconds']*1000:null,
+          lastViewDate:user['lastViewDate']?user['lastViewDate']['seconds']*1000:null,
           //ratingPoints: this.userService.getRatingPointsFromStudyPlan(courses, this.courses),
           ratingPoints: progreso,
           rhythm: this.userService.getPerformanceWithDetails(courses),
