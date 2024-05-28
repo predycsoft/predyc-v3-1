@@ -120,9 +120,8 @@
                                     <div fxLayout="row" fxLayoutAlign=" center" class="fw">
                                         <div class="skills-container">
                                             <ng-container *ngFor="let skill of skillsCurso; let indexSkill = index">
-                                                <div
-                                                    style="display: inline-block; margin-right: 5px; margin-bottom: 5px; margin-top: 5px;"
-                                                    class="skill-badge-complete ListHover radius10 backGray2  ft12 pdl08 pdr08 gray-8 mgt08">
+                                                <div style="display: inline-block; margin-right: 5px; margin-bottom: 5px; margin-top: 5px;"
+                                                class="skill-badge-complete ListHover radius10 backGray2  ft12 pdl08 pdr08 gray-8 mgt08">
                                                     {{skill.name}}
                                                     <img *ngIf=" mode !== 'edit' " style="cursor: pointer;" (click)="removeSkill(skill)" [src]="icon.close"  class="h16px makeGray"  alt="">
                                                 </div>
