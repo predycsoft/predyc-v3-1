@@ -296,6 +296,26 @@ export class StudentListComponent {
       });
 
       console.log('users',users)
+
+      let idsDepartments = []
+
+      users.forEach(user => {
+        if(user.idDepartment && !idsDepartments.find(x=> x == user.idDepartment)){
+          idsDepartments.push(user.idDepartment)
+        }
+      });
+
+      let departments = []
+
+      this.departments.forEach(department => {
+
+        let departmentFind = idsDepartments.find(x=> x ==  department.id)
+        if(departmentFind){
+          departments.push(department)
+        }
+      });
+      this.departments = departments
+
       this.allusers = users
 
       if(profileFilter){

@@ -96,6 +96,7 @@
                                     </div> -->
                                     <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="1rem">
                                         <button *ngIf="!cls.isCompleted" class="blueButton" (click)="classReady(cls)">Completar clase</button>
+                                        <button *ngIf="cls.isCompleted" class="blueButton" (click)="removeClase(cls)">Quitar clase</button>
                                         <mat-icon *ngIf="cls.isCompleted" class="green-5">check_circle</mat-icon>
                                         <mat-icon *ngIf="!cls.isCompleted" class="red-5">cancel</mat-icon>
                                     </div>

@@ -130,6 +130,13 @@ export class StudentCoursesListComponent {
     await this.courseService.hideShowCourseStudent(data.courseByStudentId,hidden)
   }
 
+  async handlePlanCourseClick(event: Event, data: any, hidden:boolean) {
+    event.stopPropagation();
+    // Lógica para manejar el clic cuando el curso extracurricular está visible
+    console.log('Curso extracurricular visible:', data,hidden);
+    await this.courseService.ActiveCourseStudent(data.courseByStudentId,hidden)
+  }
+
   ngOnDestroy() {
     if (this.combinedServicesSubscription)
       this.combinedServicesSubscription.unsubscribe();

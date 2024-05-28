@@ -17,7 +17,7 @@
   <div class="fw" fxLayout="column" *ngIf="user">
     <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="1rem">
       <span class="ft24 gray-10">{{ user.displayName | titlecase }}</span>
-      <span class="ft11 backGray4 radius20 gray-8 pdr05 pdl05"
+      <span (click)="fixClassStudentsTime()" class="ft11 backGray4 radius20 gray-8 pdr05 pdl05"
         >ID: {{ user.uid }}</span
       >
     </div>

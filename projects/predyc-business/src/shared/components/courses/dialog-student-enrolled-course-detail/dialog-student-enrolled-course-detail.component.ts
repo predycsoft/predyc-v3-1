@@ -180,6 +180,57 @@ export class DialogStudentEnrolledCourseDetailComponent {
     this.matDialogRef.close(false)
   }
 
+
+  async removeClase(cls){
+
+    console.log('classesRevisar',cls)
+
+    const classByStudentRef = await this.courseService.enrollClassUser(this.userUid, cls, this.courseByStudentRef);
+    
+    
+    if (classByStudentRef) {
+
+      //await this.courseService.updateClassRemove(classByStudentRef.id)
+      const modulesInList = this.dataSource.data
+  
+      let classes = [];
+      modulesInList.forEach((module) => {
+        module.classes.forEach((clase) => {
+          classes.push(clase);
+        });
+      });
+
+
+      classes.find(x=>x.id == cls.id).isCompleted = false;
+
+      console.log('classesRevisar',classes)
+
+      
+      let completedClasses = classes.filter((x) => x.isCompleted);
+      //completedClasses.push(cls) // current class
+  
+      let progressTime = 0;
+      completedClasses.forEach((clase) => {
+        progressTime += clase.duracion;
+      });
+
+      let progreso = (completedClasses.length * 90) / classes.length;
+      console.log("progreso", progreso) 
+			console.log("classesCompleted", completedClasses) 
+			console.log("classes.length", classes.length) 
+
+      await this.courseService.updateCourseCompletionStatusTESTRemove(classByStudentRef.id, this.courseByStudentRef.id, progreso, progressTime, this.courseDuration, false);
+
+  
+  
+    } else {
+      console.error("error")
+    }
+
+    
+
+  }
+
   async classReady(cls) {
 
     // cls: {

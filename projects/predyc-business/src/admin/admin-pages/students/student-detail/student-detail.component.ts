@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 import { AngularFirestore } from "@angular/fire/compat/firestore";
 import { Title } from "@angular/platform-browser";
 import { ActivatedRoute } from "@angular/router";
-import { Observable, Subscription, map, switchMap } from "rxjs";
+import { Observable, Subscription, map, switchMap, take } from "rxjs";
 import { MAIN_TITLE } from "projects/predyc-business/src/admin/admin-routing.module";
 import { Enterprise } from "projects/shared/models/enterprise.model";
 import { User } from "projects/shared/models/user.model";
@@ -70,7 +70,14 @@ export class StudentDetailComponent {
   products: Product[];
 
   totalCourses: number;
-  totalClasses: number;
+  totalClasses: number;userClassesSubscription
+
+
+  fixClassStudentsTime(){
+
+
+    //this.courseService.fixClassByStudentDate()
+  }
 
   ngOnInit() {
     this.userRef = this.userService.getUserRefById(this.userId);

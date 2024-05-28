@@ -64,6 +64,159 @@ export class CourseService {
   }
 
 
+  async _fixClassByStudentDate() {
+    console.log('fixClassByStudentDate');
+    
+    const collectionRef = this.afs.collection(ClassByStudent.collection).ref;
+    
+    // Obtiene todos los documentos de la colección 'ClassByStudent'
+    const snapshot = await collectionRef.get();
+  
+    // Itera sobre cada documento y realiza las actualizaciones
+    for (const doc of snapshot.docs) {
+      let data = doc.data();
+      if (typeof data['dateEnd'] === 'number' || typeof data['dateStart'] === 'number') {
+        let updates: any = {};
+        let dateStart;
+        let dateEnd;
+  
+        if (data['dateEnd'] && typeof data['dateEnd'] === 'number') {
+          dateEnd = new Date(data['dateEnd']);
+          updates.dateEnd = dateEnd;
+        }
+        if (data['dateStart'] && typeof data['dateStart'] === 'number') {
+          dateStart = new Date(data['dateStart']);
+          updates.dateStart = dateStart;
+        }
+  
+        if (Object.keys(updates).length > 0) {
+          updates.adminFix = true;
+          await doc.ref.update(updates);
+          console.log('update', dateStart, dateEnd);
+        }
+      }
+    }
+  
+    console.log('fixClassByStudentDate completed');
+  }
+
+  async __fixClassByStudentDate() {
+    console.log('fixClassByStudentDate');
+    const batch = this.afs.firestore.batch();
+    const collectionRef = this.afs.collection(ClassByStudent.collection).ref;
+  
+    // Obtiene todos los documentos de la colección 'ClassByStudent'
+    const snapshot = await collectionRef.get();
+  
+    snapshot.docs.forEach((doc) => {
+      let data = doc.data();
+      if (typeof data['dateEnd'] === 'number' || typeof data['dateStart'] === 'number') {
+        let updates: any = {};
+  
+        if (data['dateEnd'] && typeof data['dateEnd'] === 'number') {
+          updates.dateEnd = new Date(data['dateEnd']);
+        }
+        if (data['dateStart'] && typeof data['dateStart'] === 'number') {
+          updates.dateStart = new Date(data['dateStart']);
+        }
+  
+        if (Object.keys(updates).length > 0) {
+          updates.adminFix = true;
+          batch.update(doc.ref, updates);
+          console.log('update', updates);
+        }
+      }
+    });
+  
+    await batch.commit();
+    console.log('fixClassByStudentDate completed');
+  }
+
+  async fixClassByStudentDate() {
+    console.log('fixClassByStudentDate');
+    const collectionRef = this.afs.collection(ClassByStudent.collection).ref;
+    let lastDoc = null;
+    let batchCount = 0;
+  
+    while (true) {
+      let query = collectionRef.orderBy('__name__').limit(500);
+  
+      if (lastDoc) {
+        query = query.startAfter(lastDoc);
+      }
+  
+      const snapshot = await query.get();
+  
+      if (snapshot.empty) {
+        break; // No more documents
+      }
+  
+      const batch = this.afs.firestore.batch();
+  
+      snapshot.docs.forEach((doc) => {
+        let data = doc.data();
+        if (typeof data['dateEnd'] === 'number' || typeof data['dateStart'] === 'number') {
+          let updates: any = {};
+  
+          if (data['dateEnd'] && typeof data['dateEnd'] === 'number') {
+            updates.dateEnd = new Date(data['dateEnd']);
+          }
+          if (data['dateStart'] && typeof data['dateStart'] === 'number') {
+            updates.dateStart = new Date(data['dateStart']);
+          }
+  
+          if (Object.keys(updates).length > 0) {
+            batch.update(doc.ref, updates);
+            console.log('update', updates);
+          }
+        }
+      });
+  
+      await batch.commit();
+      batchCount++;
+      console.log(`Batch ${batchCount} committed`);
+  
+      lastDoc = snapshot.docs[snapshot.docs.length - 1];
+    }
+  
+    console.log('fixClassByStudentDate completed');
+  }
+
+
+
+  async fixCourseByStudentDate(){
+
+    console.log('fixClassByStudentDate')
+    const batch = this.afs.firestore.batch();
+
+    const collectionRef = this.afs.collection(CourseByStudent.collection).ref;
+
+    // Obtiene todos los documentos de la colección 'skill'
+    const snapshot = await collectionRef.get();
+
+    // Itera sobre cada documento y actualiza el campo 'enterprise' a null
+    snapshot.docs.forEach((doc) => {
+      let data = doc.data()
+      if(data['progress']>=90 && !data['progressTime']){
+        console.log('updated',data)
+        batch.update(doc.ref, { progressTime: data['courseTime']});
+      }
+      else if(data['progress']<90 && data['progress']>0 && !data['progressTime']){
+        let time = data['courseTime']*(data['progress']/100)
+        console.log('updated',data)
+        batch.update(doc.ref, { progressTime: time});
+      }
+  
+    });
+
+    await batch.commit();
+    console.log('end fixClassByStudentDate')
+
+
+
+  }
+
+
 
   async removeCheater(idUser: string) {
     console.log("removeCheater");
@@ -92,6 +245,9 @@ export class CourseService {
     await batch.commit();
     console.log("removeCheater classes updated");
   }
+
+
+
 
   async fixCertificates() {
     // Buscar en la colección coursesByStudent todos los registros con progress = 100
@@ -1228,6 +1384,37 @@ export class CourseService {
     });
   }
 
+
+  async updateClassRemove(idClass: string) {
+    //console.log('update progreso')
+    await this.afs.collection("classesByStudent").doc(idClass)
+    .update({
+      cheater: false,
+      completed: false,
+      completedAdmin:false,
+      dateStart: new Date,
+      dateEnd: null
+    });
+  }
+
+  async updateCourseCompletionStatusTESTRemove(idClass: string, idCourse: string, progress: number ,progressTime: number = 0, courseTime: number = 0, cheater: boolean = false) {
+    //console.log('update progreso')
+    await this.afs.collection("classesByStudent").doc(idClass)
+    .update({
+      cheater: cheater,
+      completed: false,
+      completedAdmin:false,
+      dateStart: new Date,
+      dateEnd: null
+    });
+    await this.afs.collection("coursesByStudent").doc(idCourse)
+    .update({
+      progress: progress,
+      progressTime:progressTime,
+      courseTime:courseTime
+    });
+  }
+
   async enrollClassUser(userUid, clase, courseByStudentRef): Promise<DocumentReference<any>>{
 
     
@@ -1289,6 +1476,14 @@ export class CourseService {
 
     await this.afs.collection("coursesByStudent").doc(courseByStudentId).update({
       hidden: hidden,
+    });
+
+  }
+
+  async ActiveCourseStudent(courseByStudentId,hidden){
+
+    await this.afs.collection("coursesByStudent").doc(courseByStudentId).update({
+      active: hidden,
     });
 
   }
