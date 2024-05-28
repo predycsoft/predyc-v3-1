@@ -1284,4 +1284,13 @@ export class CourseService {
 
   }
 
+
+  async hideShowCourseStudent(courseByStudentId,hidden){
+
+    await this.afs.collection("coursesByStudent").doc(courseByStudentId).update({
+      hidden: hidden,
+    });
+
+  }
+
 }

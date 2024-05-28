@@ -264,7 +264,7 @@ export class StudentListComponent {
           activityStatus = date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long' });
         } else if (!user['lastActivityDate']?.seconds && this.examenInicial && test.length === 0 && user['lastViewDate']) {
           activityStatus = 'Sin diagnostico completado';
-        } else if (!user['lastActivityDate']?.seconds && this.examenInicial && test.length > 0 && user['lastViewDate']) {
+        } else if (!user['lastActivityDate']?.seconds && this.examenInicial && test.length > 0) {
           activityStatus = 'Sin clases vistas';
         }
         

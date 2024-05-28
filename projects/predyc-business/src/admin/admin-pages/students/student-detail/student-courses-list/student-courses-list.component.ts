@@ -72,12 +72,13 @@ export class StudentCoursesListComponent {
             const courseData: Curso = await this.courseService.getCourseById(
               courseByStundet.courseRef.id
             );
-            console.log('courseData',courseData)
+            console.log('courseData',courseData,courseByStundet)
             return {
               ...courseByStundet,
               dateStart: firestoreTimestampToNumberTimestamp(courseByStundet.dateStart),
               dateEnd: firestoreTimestampToNumberTimestamp(courseByStundet.dateEnd),
               coursePhoto: courseData.imagen,
+              hidden:courseByStundet['hidden']?courseByStundet['hidden']:false,
               courseTitle: courseData.titulo,
               instructorNombre: courseData.instructorNombre,
               instructorRef: courseData.instructorRef,
@@ -120,6 +121,13 @@ export class StudentCoursesListComponent {
         },
       }
     );
+  }
+
+  async handleExtraCourseClick(event: Event, data: any, hidden:boolean) {
+    event.stopPropagation();
+    // Lógica para manejar el clic cuando el curso extracurricular está visible
+    console.log('Curso extracurricular visible:', data,hidden);
+    await this.courseService.hideShowCourseStudent(data.courseByStudentId,hidden)
   }
 
   ngOnDestroy() {
