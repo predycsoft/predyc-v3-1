@@ -32,7 +32,6 @@
             </td>
         </ng-container>
 
-
         <!-- Department Column -->
         <ng-container matColumnDef="contacto" class=" ">
             <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Contacto </th>
@@ -49,11 +48,10 @@
         <!-- Department Column -->
         <ng-container matColumnDef="department" class=" ">
             <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> 
-
                 <div
                 class="cursorPointer"
                 fxLayout="row"
-                [ngClass]="{'chip pdl05':filtroDepartamento}"
+                [ngClass]="{'chip pdl05':filtroDepartamento || sortDepartamento}"
                 [matMenuTriggerFor]="menuFilterDepartamento"
                 fxLayoutAlign="center center" >
                 <!-- <span  [ngClass]="{'gray-9':filtroDepartamento}" class="gray-7">Departamento</span>
@@ -61,7 +59,6 @@
                 <span  class="gray-7">Departamento</span>
                 <mat-icon>expand_more</mat-icon>
               </div>
-
             </th>
             <!-- <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Departamento </th> -->
             <td mat-cell *matCellDef="let user" class="centertext"> 
@@ -102,7 +99,19 @@
 
         <!-- Hours Column -->
         <ng-container matColumnDef="ultActivity">
-            <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Ult. Act. </th>
+            <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> 
+
+                <div
+                class="cursorPointer"
+                fxLayout="row"
+                [ngClass]="{'chip pdl05':filtroUltimaActividad || sortUltimaActividad}"
+                [matMenuTriggerFor]="menufiltroUltimaActividad"
+                fxLayoutAlign="center center" >
+                <span  class="gray-7">Ult. Act.	</span>
+                <mat-icon>expand_more</mat-icon>
+              </div>
+
+            </th>
             <td mat-cell *matCellDef="let user" class="centertext">
               <ng-container>
                 <span class="gray-7 ft400">{{user.activityStatusText}}</span>
@@ -114,7 +123,22 @@
         
         <!-- RatingPoints Column -->
         <ng-container matColumnDef="ratingPoints">
-            <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Comp. </th>
+
+            <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> 
+
+                <div
+                class="cursorPointer"
+                fxLayout="row"
+                [ngClass]="{'chip': sortRatingPoints}"
+                [matMenuTriggerFor]="menufiltroratingPoints"
+                fxLayoutAlign="center center" >
+                <span  class="gray-7">Comp.	</span>
+                <mat-icon>expand_more</mat-icon>
+              </div>
+
+            </th>
+
+
             <td mat-cell *matCellDef="let user" class="centertext"> 
                 <div>
                     <span *ngIf="user.ratingPoints>=0" class="gray-7 ft400" >{{ user.ratingPoints | number: "1.0-0" }} %</span>
@@ -131,11 +155,10 @@
         <!-- Rhythm Column -->
         <ng-container matColumnDef="rhythm" class="centertext">
             <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> 
-
                 <div
                 class="cursorPointer"
                 fxLayout="row"
-                [ngClass]="{'chip':ritmoFilter}"
+                [ngClass]="{'chip':ritmoFilter || sortRitmo}"
                 [matMenuTriggerFor]="menuFilterRitmo"
                 fxLayoutAlign="center center" >
                 <!-- <span  [ngClass]="{'gray-9':ritmoFilter}" class="gray-7">Ritmo</span>
@@ -143,7 +166,6 @@
                 <span  class="gray-7">Ritmo</span>
                 <mat-icon >expand_more</mat-icon>
               </div>
-
             </th>
             <!-- <th mat-header-cell *matHeaderCellDef class="w-10 centertext gray-8"> Ritmo </th> -->
             <td mat-cell *matCellDef="let user" style="width: 12%;"> 
@@ -205,7 +227,25 @@
         class="opcionMenu"
         fxLayout="row"
         fxLayoutAlign=" center"
-        (click)="search('ritmo','')" [ngClass]="ritmoFilter == '' ? 'backGray2 green-5 ft500' : 'gray-10' ">
+        (click)="search('sortRitmo','up')" [ngClass]="sortRitmo == 'up' ? 'backGray2 green-5 ft500' : 'gray-10' ">
+        <img [src]="icon.sortAscending" alt="" class="h16px mg0">
+        <span class="pdl05">A - Z</span>
+        </div>
+        <div
+            mat-menu-item
+            class="opcionMenu"
+            fxLayout="row"
+            fxLayoutAlign=" center"
+            (click)="search('sortRitmo','down')" [ngClass]="sortRitmo == 'down' ? 'backGray2 green-5 ft500' : 'gray-10' ">
+            <img [src]="icon.sortDescending" alt="" class="h16px mg0">
+            <span class="pdl05">Z - A</span>
+        </div>
+        <div
+        mat-menu-item
+        class="opcionMenu"
+        fxLayout="row"
+        fxLayoutAlign=" center"
+        (click)="clearRitmo()" [ngClass]="ritmoFilter == '' ? 'backGray2 green-5 ft500' : 'gray-10' ">
         <span class="pdl05">Todos</span>
       </div>
       <div
@@ -259,6 +299,24 @@
 
 <mat-menu #menuFilterDepartamento="matMenu" class="radius6 shadow16 pd0">
     <div fxLayout="column" class="pd0">
+        <div
+        mat-menu-item
+        class="opcionMenu"
+        fxLayout="row"
+        fxLayoutAlign=" center"
+        (click)="search('sortDepartamento','up')" [ngClass]="sortDepartamento == 'up' ? 'backGray2 green-5 ft500' : 'gray-10' ">
+        <img [src]="icon.sortAscending" alt="" class="h16px mg0">
+        <span class="pdl05">A - Z</span>
+        </div>
+        <div
+            mat-menu-item
+            class="opcionMenu"
+            fxLayout="row"
+            fxLayoutAlign=" center"
+            (click)="search('sortDepartamento','down')" [ngClass]="sortDepartamento == 'down' ? 'backGray2 green-5 ft500' : 'gray-10' ">
+            <img [src]="icon.sortDescending" alt="" class="h16px mg0">
+            <span class="pdl05">Z - A</span>
+        </div>
       <div
         mat-menu-item
         class="opcionMenu"
@@ -279,5 +337,83 @@
       </div>
     </div>
 </mat-menu>
+
+<mat-menu #menufiltroUltimaActividad="matMenu" class="radius6 shadow16 pd0">
+    <div fxLayout="column" class="pd0">
+        <div
+            mat-menu-item
+            class="opcionMenu"
+            fxLayout="row"
+            fxLayoutAlign=" center"
+            (click)="search('sortUltimaActividad','up')" [ngClass]="sortUltimaActividad == 'up' ? 'backGray2 green-5 ft500' : 'gray-10' ">
+            <img [src]="icon.sortAscending" alt="" class="h16px mg0">
+            <span class="pdl05">A - Z</span>
+        </div>
+        <div
+            mat-menu-item
+            class="opcionMenu"
+            fxLayout="row"
+            fxLayoutAlign=" center"
+            (click)="search('sortUltimaActividad','down')" [ngClass]="sortUltimaActividad == 'down' ? 'backGray2 green-5 ft500' : 'gray-10' ">
+            <img [src]="icon.sortDescending" alt="" class="h16px mg0">
+            <span class="pdl05">Z - A</span>
+        </div>
+        <div
+            mat-menu-item
+            class="opcionMenu"
+            fxLayout="row"
+            fxLayoutAlign=" center"
+            (click)="clearUltActividad()" [ngClass]="filtroUltimaActividad == '' ? 'backGray2 green-5 ft500' : 'gray-10' ">
+            <span class="pdl05">Todos</span>
+        </div>
+        <div
+            *ngFor="let actStatusItem of actStatus"
+            mat-menu-item
+            class="opcionMenu"
+            fxLayout="row"
+            [ngClass]=" filtroUltimaActividad == actStatusItem ? 'backGray2 green-5 ft500' : 'gray-10'"
+            (click)="search('ultActivity',actStatusItem)"
+            fxLayoutAlign=" center">
+            <span class="pdl05">{{actStatusItem}}</span>
+        </div>
+    </div>
+</mat-menu>
+
+
+
+<mat-menu #menufiltroratingPoints="matMenu" class="radius6 shadow16 pd0">
+    <div fxLayout="column" class="pd0">
+        <div
+            mat-menu-item
+            class="opcionMenu"
+            fxLayout="row"
+            fxLayoutAlign=" center"
+            (click)="search('sortRatingPoints','up')" [ngClass]="sortRatingPoints == 'up' ? 'backGray2 green-5 ft500' : 'gray-10' ">
+            <img [src]="icon.sortAscending" alt="" class="h16px mg0">
+            <span class="pdl05">A - Z</span>
+        </div>
+        <div
+            mat-menu-item
+            class="opcionMenu"
+            fxLayout="row"
+            fxLayoutAlign=" center"
+            (click)="search('sortRatingPoints','down')" [ngClass]="sortRatingPoints == 'down' ? 'backGray2 green-5 ft500' : 'gray-10' ">
+            <img [src]="icon.sortDescending" alt="" class="h16px mg0">
+            <span class="pdl05">Z - A</span>
+        </div>
+        <div
+            mat-menu-item
+            class="opcionMenu"
+            fxLayout="row"
+            fxLayoutAlign=" center"
+            (click)="search('sortRatingPoints','')">
+            <img [src]="icon.trash" alt="" class="h16px mg0">
+            <span class="pdl05">Quitar</span>
+        </div>
+    </div>
+</mat-menu>
+
+
+
   
   

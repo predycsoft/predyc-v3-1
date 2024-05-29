@@ -107,19 +107,40 @@ export class StudentListComponent {
             console.log('departments',departments)
             this.courses = courses
             this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
+              let sortOrder = []
               const page = Number(params['page']) || 1;
               const profileFilter = params['profile'] || '';
               this.profilefilter = profileFilter
               const searchTerm = params['search'] || '';
               const departmentFilter = params['iddepartment'] || '';
               const ritmoFilter = params['ritmo'] || '';
+              const filtroUltimaActividad = params['ultActivity'] || '';
+              const sortUltimaActividad = params['sortUltimaActividad'] || '';
+              const sortRitmo = params['sortRitmo'] || '';
+              const sortRatingPoints = params['sortRatingPoints'] || '';
+              const sortDepartamento =  params['sortDepartamento'] || '';
               this.ritmoFilter = ritmoFilter
               this.filtroDepartamento = departmentFilter
+              this.filtroUltimaActividad = filtroUltimaActividad
+              this.sortUltimaActividad = sortUltimaActividad
+              this.sortRitmo = sortRitmo
+              this.sortRatingPoints = sortRatingPoints
+              this.sortDepartamento = sortDepartamento
+
+              // Obtener el orden de los sorts desde los parámetros de la URL
+              const urlParams = new URLSearchParams(window.location.search);
+              urlParams.forEach((value, key) => {
+                if (key === 'sortUltimaActividad' || key === 'sortRitmo' || key === 'sortRatingPoints' || key ==='sortDepartamento') {
+                  sortOrder.push({ key, value });
+                }
+              sortOrder = sortOrder.reverse();
+
+              });
               if(this.first){
-                this.performSearch(searchTerm, page, profileFilter,departmentFilter,ritmoFilter);
+                this.performSearch(searchTerm, page, profileFilter,departmentFilter,ritmoFilter,filtroUltimaActividad,sortOrder);
               }
               else{
-                this.performSearchLocal(searchTerm, page, profileFilter,departmentFilter,ritmoFilter);
+                this.performSearchLocal(searchTerm, page, profileFilter,departmentFilter,ritmoFilter,filtroUltimaActividad,sortOrder);
               }
             })
         })
@@ -129,14 +150,184 @@ export class StudentListComponent {
 
   }
 
+  appySort(sortOrder,users){
+
+
+    if(sortOrder.length>0){
+
+
+      sortOrder.forEach(sort => {
+
+        console.log('sort',sort)
+
+
+        if (sort.key === 'sortDepartamento') {
+
+          if (sort.value === 'up') {
+            users = users.sort((a, b) => a.department - b.department);
+          }
+          if (sort.value === 'down') {
+            users = users.sort((a, b) => b.department - a.department);
+          }
+          
+        }
+
+        if (sort.key === 'sortRatingPoints') {
+          if (sort.value === 'up') {
+            users = users.sort((a, b) => a.ratingPoints - b.ratingPoints);
+          } else if (sort.value === 'down') {
+            users = users.sort((a, b) => b.ratingPoints - a.ratingPoints);
+          }
+        }
+
+        if(sort.key == 'sortRitmo'){
+
+          if(sort.value == 'up'){
+
+            const activityOrder = ['low','medium','high','no iniciado','no plan'];
+            users = users.sort((a, b) => {
+      
+              // Si las fechas son iguales, ordenar por estado de actividad
+              const activityStatusA = a.rhythm || '';
+              const activityStatusB = b.rhythm || '';
+          
+              const activityIndexA = activityOrder.indexOf(activityStatusA);
+              const activityIndexB = activityOrder.indexOf(activityStatusB);
+          
+              // Compara el índice de los estados de actividad en el orden invertido
+              if (activityIndexA !== -1 && activityIndexB !== -1) {
+                return activityIndexA - activityIndexB;
+              }
+          
+              // Si uno de los estados no está en el array, moverlo al final
+              if (activityIndexA === -1 && activityIndexB !== -1) {
+                return 1;
+              }
+              if (activityIndexA !== -1 && activityIndexB === -1) {
+                return -1;
+              }
+          
+              return 0; // Si ambos no están en el array, se consideran iguales en esta dimensión
+            });
+
+          }
+          else if(sort.value == 'down'){
+            const activityOrder = ['high','medium','low','no iniciado','no plan'];
+            users = users.sort((a, b) => {
+      
+              // Si las fechas son iguales, ordenar por estado de actividad
+              const activityStatusA = a.rhythm || '';
+              const activityStatusB = b.rhythm || '';
+          
+              const activityIndexA = activityOrder.indexOf(activityStatusA);
+              const activityIndexB = activityOrder.indexOf(activityStatusB);
+          
+              // Compara el índice de los estados de actividad en el orden invertido
+              if (activityIndexA !== -1 && activityIndexB !== -1) {
+                return activityIndexA - activityIndexB;
+              }
+          
+              // Si uno de los estados no está en el array, moverlo al final
+              if (activityIndexA === -1 && activityIndexB !== -1) {
+                return 1;
+              }
+              if (activityIndexA !== -1 && activityIndexB === -1) {
+                return -1;
+              }
+          
+              return 0; // Si ambos no están en el array, se consideran iguales en esta dimensión
+            });
+
+          }
+
+        }
+        if(sort.key == 'sortUltimaActividad'){
+
+          if(sort.value == 'up'){
+
+            const activityOrder = ['Sin inicio sesión', 'Sin diagnostico completado', 'Sin clases vistas'];
+            users = users.sort((a, b) => {
+              const activityStatusA = a.activityStatusText || '';
+              const activityStatusB = b.activityStatusText || '';
+          
+              // Compara el índice de los estados de actividad
+              const activityIndexA = activityOrder.indexOf(activityStatusA);
+              const activityIndexB = activityOrder.indexOf(activityStatusB);
+          
+              // Si ambos estados de actividad están en el array, ordenar por índice
+              if (activityIndexA !== -1 && activityIndexB !== -1) {
+                return activityIndexA - activityIndexB;
+              }
+          
+              // Si uno de los estados no está en el array, moverlo al final
+              if (activityIndexA === -1 && activityIndexB !== -1) {
+                return 1;
+              }
+              if (activityIndexA !== -1 && activityIndexB === -1) {
+                return -1;
+              }
+          
+              // Si ambos estados de actividad no están en el array, ordenar por fecha de actividad descendente
+              const dateA = a.lastActivityDate || 0;
+              const dateB = b.lastActivityDate || 0;
+          
+              return dateA - dateB;
+            });
+
+          }
+          else if(sort.value == 'down'){
+
+            const activityOrder = ['Sin clases vistas', 'Sin diagnostico completado', 'Sin inicio sesión'];
+    
+            users = users.sort((a, b) => {
+              const dateA = a.lastActivityDate || 0;
+              const dateB = b.lastActivityDate || 0;
+          
+              // Primero ordenar por fecha de actividad descendente
+              if (dateA !== dateB) {
+                return dateB - dateA;
+              }
+          
+              // Si las fechas son iguales, ordenar por estado de actividad
+              const activityStatusA = a.activityStatusText || '';
+              const activityStatusB = b.activityStatusText || '';
+          
+              const activityIndexA = activityOrder.indexOf(activityStatusA);
+              const activityIndexB = activityOrder.indexOf(activityStatusB);
+          
+              // Compara el índice de los estados de actividad en el orden invertido
+              if (activityIndexA !== -1 && activityIndexB !== -1) {
+                return activityIndexA - activityIndexB;
+              }
+          
+              // Si uno de los estados no está en el array, moverlo al final
+              if (activityIndexA === -1 && activityIndexB !== -1) {
+                return 1;
+              }
+              if (activityIndexA !== -1 && activityIndexB === -1) {
+                return -1;
+              }
+          
+              return 0; // Si ambos no están en el array, se consideran iguales en esta dimensión
+            });
+
+          }
+        }
+
+      });
+
+    }
+
+  }
+
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.paginator.pageSize = this.pageSize;
   }
 
-  performSearchLocal(searchTerm: string, page: number, profileFilter: string,departmentFilter: string,ritmoFilter: string) {
+  performSearchLocal(searchTerm: string, page: number, profileFilter: string,departmentFilter: string,ritmoFilter: string,filtroUltimaActividad:string,sortOrder) {
 
-    let users = this.allusers;
+    let users = structuredClone(this.allusers);
     console.log('usersFilterLocal',users,profileFilter)
 
 
@@ -151,6 +342,11 @@ export class StudentListComponent {
     if(departmentFilter){
       users = users.filter(x=>x['idDepartment'] == departmentFilter)
     }
+
+    if(filtroUltimaActividad){
+      users = users.filter(x=>x.activityStatusText == filtroUltimaActividad)
+    }
+
     if (searchTerm) {
       const normalizedSearchTerm = this.removeAccents(searchTerm.toLocaleLowerCase());
       console.log('normalizedSearchTerm',normalizedSearchTerm)
@@ -174,7 +370,11 @@ export class StudentListComponent {
       });
     }
 
-    console.log('usersFilterLocal',users)
+    //sorts
+
+    this.appySort(sortOrder,users)
+
+    console.log('usersFilterLocalReady',users)
 
     this.paginator.pageIndex = page - 1;
     this.dataSource.data = users;
@@ -183,9 +383,12 @@ export class StudentListComponent {
     this.first = false
 
   }
-  
 
-  performSearch(searchTerm: string, page: number, profileFilter: string,departmentFilter: string,ritmoFilter: string) {
+  removeDuplicates(strings: string[]): string[] {
+    return strings.filter((item, index) => strings.indexOf(item) === index);
+  }
+
+  performSearch(searchTerm: string, page: number, profileFilter: string,departmentFilter: string,ritmoFilter: string,filtroUltimaActividad:string,sortOrder) {
 
 
     this.paginator.pageIndex = page - 1;
@@ -210,14 +413,18 @@ export class StudentListComponent {
       }),
       switchMap(userCourses => {
         const userTestObservables = userCourses.map(userCourse => {
-          return this.profileService.getDiagnosticTestForUserPromise(userCourse.user).then(test => {
-            return { ...userCourse, test }; // Agregar el examen a cada usuario
+          return this.profileService.getDiagnosticTestForUserPromise(userCourse.user).then(testIn => {
+            return { ...userCourse, testIn }; // Agregar el examen a cada usuario
           });
         });
         return Promise.all(userTestObservables);
       })
     ).subscribe(response => {
-      let users = response.map(({user, courses, test}) => {
+      let actStatus = ['Sin inicio sesión']
+      let users = response.map(({user, courses, testIn}) => {
+        let test = testIn.map(test => {
+          return {score:test.score,id:test.id}
+        });
         const profile = this.profiles.find(profile => profile?.id === user.profile?.id);
         const profileName = profile ? profile.name : '';
         let hours = 0;
@@ -256,7 +463,6 @@ export class StudentListComponent {
           progreso = ((hours/60)*100)/targetHours
         }
 
-
         // Determinar el estado de la actividad
         let activityStatus = 'Sin inicio sesión';
         if (user['lastActivityDate']?.seconds) {
@@ -264,8 +470,10 @@ export class StudentListComponent {
           activityStatus = date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long' });
         } else if (!user['lastActivityDate']?.seconds && this.examenInicial && test.length === 0 && user['lastViewDate']) {
           activityStatus = 'Sin diagnostico completado';
+          actStatus.push(activityStatus)
         } else if (!user['lastActivityDate']?.seconds && this.examenInicial && test.length > 0) {
           activityStatus = 'Sin clases vistas';
+          actStatus.push(activityStatus)
         }
         
         return {
@@ -286,16 +494,18 @@ export class StudentListComponent {
           dateLastLogin:user['dateLastLogin']?user['dateLastLogin']['seconds']*1000:null,
           lastViewDate:user['lastViewDate']?user['lastViewDate']['seconds']*1000:null,
           //ratingPoints: this.userService.getRatingPointsFromStudyPlan(courses, this.courses),
-          ratingPoints: progreso,
+          ratingPoints: Math.round(progreso),
           rhythm: this.userService.getPerformanceWithDetails(courses),
           uid: user.uid,
+          status:user.status =='active'? 'active':'inactive',
           photoUrl: user.photoUrl,
           test // Agregar aquí los datos del examen del usuario
         };
         
       });
 
-      console.log('users',users)
+      const arrayactStatus = this.removeDuplicates(actStatus);
+      this.actStatus = arrayactStatus
 
       let idsDepartments = []
 
@@ -315,12 +525,18 @@ export class StudentListComponent {
         }
       });
       this.departments = departments
-
-      this.allusers = users
+      
+      this.allusers = structuredClone(users)
+      
 
       if(profileFilter){
         users = users.filter(x=>x.idProfile == profileFilter)
       }
+
+      if(filtroUltimaActividad){
+        users = users.filter(x=>x.activityStatusText == filtroUltimaActividad)
+      }
+  
   
       if(ritmoFilter){
         users = users.filter(x=>x.rhythm == ritmoFilter)
@@ -347,6 +563,8 @@ export class StudentListComponent {
         });
       }
 
+      this.appySort(sortOrder,users)
+  
       this.paginator.pageIndex = page - 1;
       this.dataSource.data = users;
       this.totalLength = users.length;
@@ -357,6 +575,7 @@ export class StudentListComponent {
       // console.log(users);
     });
   }
+  actStatus
   allusers;
   removeAccents(str: string): string {
     return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -400,6 +619,33 @@ export class StudentListComponent {
 
     ritmoFilter = ''
     filtroDepartamento = ''
+    filtroUltimaActividad=''
+    sortUltimaActividad=''
+    sortRitmo=''
+    sortRatingPoints = ''
+    sortDepartamento = ''
+
+
+
+    clearUltActividad(){
+
+      this.search('sortUltimaActividad','')
+      setTimeout(() => {
+        this.search('ultActivity','')
+      }, 10);
+
+    }
+
+
+    clearRitmo(){
+
+      this.search('sortRitmo','')
+      setTimeout(() => {
+        this.search('ritmo','')
+      }, 10);
+
+    }
+
 
 
     search(filed: string, search: string) {
@@ -408,6 +654,8 @@ export class StudentListComponent {
         queryParamsHandling: 'merge'
       });
     }
+
+
 
 
 
