@@ -34,6 +34,7 @@ import { DepartmentService } from "./department.service";
 @Injectable({
   providedIn: "root",
 })
+
 export class UserService {
   private usersSubject = new BehaviorSubject<User[]>([]);
   private usersWithoutProfileSubject = new BehaviorSubject<User[]>([]);
@@ -61,12 +62,337 @@ export class UserService {
   ) {
     //this.fixUsersEmpresasLastActivity();
     console.log("Se instancio el user service");
+    //this.generateCourseCompletionReport(this.afs)
     this.enterpriseService.enterpriseLoaded$.subscribe((enterpriseIsLoaded) => {
       if (enterpriseIsLoaded) {
         this.getUsers();
       }
     });
   }
+
+
+  async generateCourseCompletionReport(afs: AngularFirestore): Promise<any[]> {
+    try {
+      // Definir el rango de fechas para el año 2024
+      const startOf2024 = new Date('2024-02-01T00:00:00Z');
+      const endOf2024 = new Date('2024-12-31T23:59:59Z');
+  
+      // Obtener todos los cursos completados en 2024
+      const coursesSnapshot = await afs.collection('coursesByStudent', ref =>
+        ref.where('progress', '==', 100)
+           .where('dateEnd', '>=', startOf2024)
+           .where('dateEnd', '<=', endOf2024)
+      ).get().toPromise();
+      const coursesByStudent = coursesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() as any }));
+  
+      // Obtener todos los usuarios
+      const usersSnapshot = await afs.collection('user').get().toPromise();
+      const users = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() as any }));
+  
+      // Obtener todos los cursos
+      const allCoursesSnapshot = await afs.collection('course').get().toPromise();
+      const allCourses = allCoursesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() as any }));
+  
+      // Obtener todas las clases
+      const classesSnapshot = await afs.collection('class').get().toPromise();
+      const allClasses = classesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() as any }));
+  
+      // Crear mapas para búsqueda rápida de usuarios, cursos y clases
+      const userMap = new Map(users.map(user => [user.id, user]));
+      const courseMap = new Map(allCourses.map(course => [course.id, course]));
+      const classMap = new Map(allClasses.map(classe => [classe.id, classe]));
+  
+      // Obtener módulos y clases para cada curso
+      for (const course of allCourses) {
+        const modulesSnapshot = await afs.collection(`course/${course.id}/module`, ref => ref.orderBy('numero')).get().toPromise();
+        const modules = modulesSnapshot.docs.map(doc => doc.data() as any);
+  
+        course.classes = modules.flatMap(module =>
+          module.clasesRef.map((classRef: any) => classMap.get(classRef.id))
+        );
+      }
+  
+      // Agrupar los resultados por usuario
+      const groupedByUser = coursesByStudent.reduce((acc, completion) => {
+        const userId = completion.userRef.id;
+        const courseId = completion.courseRef.id;
+  
+        if (!userMap.has(userId)) {
+          return acc;
+        }
+  
+        if (!acc[userId]) {
+          acc[userId] = {
+            user: userMap.get(userId),
+            courses: [],
+          };
+        }
+  
+        const courseData = courseMap.get(courseId);
+        acc[userId].courses.push({
+          ...courseData,
+          completionDetails: completion,
+        });
+  
+        return acc;
+      }, {} as { [key: string]: { user: any; courses: any[] } });
+  
+      // Procesar cada usuario para verificar las clases completadas
+      const usersWithIncompleteCourses = [];
+      for (const userId in groupedByUser) {
+        const userCourses = groupedByUser[userId].courses;
+        const userRef = afs.doc(`user/${userId}`).ref;
+  
+        // Obtener las clases completadas por el usuario
+        const completedClassesSnapshot = await afs.collection('classesByStudent', ref =>
+          ref.where('userRef', '==', userRef)
+            .where('completed', '==', true)
+        ).get().toPromise();
+  
+        const completedClasses = new Set(completedClassesSnapshot.docs.map(doc => doc.data()['classRef'].id));
+  
+        // Verificar las clases de cada curso y filtrar los cursos incompletos con última clase completada
+        const incompleteCoursesWithCompletedLastClass = userCourses.filter(course => {
+          const lastClass = course.classes[course.classes.length - 1]; // Última clase del curso
+          return completedClasses.has(lastClass.id) &&
+            !course.classes.every((classe: any) => completedClasses.has(classe.id));
+        });
+  
+        if (incompleteCoursesWithCompletedLastClass.length > 0) {
+          usersWithIncompleteCourses.push({
+            user: groupedByUser[userId].user,
+            courses: incompleteCoursesWithCompletedLastClass.map(course => ({
+              ...course,
+              incompleteClasses: course.classes.filter((classe: any) => !completedClasses.has(classe.id))
+            }))
+          });
+        }
+  
+        console.log(`Usuario procesado: ${userId}`);
+      }
+  
+      console.log('Reporte de cursos incompletos con última clase completada por usuario:', usersWithIncompleteCourses);
+      return usersWithIncompleteCourses;
+    } catch (error) {
+      console.error('Error generando el reporte:', error);
+      return []; // Asegurarse de devolver un arreglo vacío en caso de error
+    }
+  }
+  
+  
+
+  async __generateCourseCompletionReport(afs: AngularFirestore): Promise<any[]> {
+    try {
+      // Definir el rango de fechas para el año 2024
+      const startOf2024 = new Date('2024-02-01T00:00:00Z');
+      const endOf2024 = new Date('2024-12-31T23:59:59Z');
+  
+      // Obtener todos los cursos completados en 2024
+      const coursesSnapshot = await afs.collection('coursesByStudent', ref =>
+        ref.where('progress', '==', 100)
+           .where('dateEnd', '>=', startOf2024)
+           .where('dateEnd', '<=', endOf2024)
+      ).get().toPromise();
+      const coursesByStudent = coursesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() as any }));
+  
+      // Obtener todos los usuarios
+      const usersSnapshot = await afs.collection('user').get().toPromise();
+      const users = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() as any }));
+  
+      // Obtener todos los cursos
+      const allCoursesSnapshot = await afs.collection('course').get().toPromise();
+      const allCourses = allCoursesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() as any }));
+  
+      // Obtener todas las clases
+      const classesSnapshot = await afs.collection('class').get().toPromise();
+      const allClasses = classesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() as any }));
+  
+      // Crear mapas para búsqueda rápida de usuarios, cursos y clases
+      const userMap = new Map(users.map(user => [user.id, user]));
+      const courseMap = new Map(allCourses.map(course => [course.id, course]));
+      const classMap = new Map(allClasses.map(classe => [classe.id, classe]));
+  
+      // Obtener módulos y clases para cada curso
+      for (const course of allCourses) {
+        const modulesSnapshot = await afs.collection(`course/${course.id}/module`, ref => ref.orderBy('numero')).get().toPromise();
+        const modules = modulesSnapshot.docs.map(doc => doc.data() as any);
+        
+        course.classes = modules.flatMap(module => 
+          module.clasesRef.map((classRef: any) => classMap.get(classRef.id))
+        );
+      }
+  
+      // Agrupar los resultados por usuario
+      const groupedByUser = coursesByStudent.reduce((acc, completion) => {
+        const userId = completion.userRef.id;
+        const courseId = completion.courseRef.id;
+  
+        if (!userMap.has(userId)) {
+          return acc;
+        }
+  
+        if (!acc[userId]) {
+          acc[userId] = {
+            user: userMap.get(userId),
+            courses: [],
+          };
+        }
+  
+        const courseData = courseMap.get(courseId);
+        acc[userId].courses.push({
+          ...courseData,
+          completionDetails: completion,
+        });
+  
+        return acc;
+      }, {} as { [key: string]: { user: any; courses: any[] } });
+  
+      // Procesar cada usuario para verificar las clases completadas
+      const usersWithIncompleteCourses = [];
+      for (const userId in groupedByUser) {
+        const userCourses = groupedByUser[userId].courses;
+        const userRef = afs.doc(`user/${userId}`).ref;
+  
+        // Obtener las clases completadas por el usuario
+        const completedClassesSnapshot = await afs.collection('classesByStudent', ref =>
+          ref.where('userRef', '==', userRef)
+            .where('completed', '==', true)
+        ).get().toPromise();
+  
+        const completedClasses = new Set(completedClassesSnapshot.docs.map(doc => doc.data()['classRef'].id));
+  
+        // Verificar las clases de cada curso y filtrar los cursos incompletos
+        const incompleteCourses = userCourses.filter(course => 
+          !course.classes.every((classe: any) => completedClasses.has(classe.id))
+        );
+  
+        if (incompleteCourses.length > 0) {
+          usersWithIncompleteCourses.push({
+            user: groupedByUser[userId].user,
+            courses: incompleteCourses.map(course => ({
+              ...course,
+              incompleteClasses: course.classes.filter((classe: any) => !completedClasses.has(classe.id))
+            }))
+          });
+        }
+  
+        console.log(`Usuario procesado: ${userId}`);
+      }
+  
+      console.log('Reporte de cursos incompletos por usuario:', usersWithIncompleteCourses);
+      return usersWithIncompleteCourses;
+    } catch (error) {
+      console.error('Error generando el reporte:', error);
+      return []; // Asegurarse de devolver un arreglo vacío en caso de error
+    }
+  }
+  
+  
+
+
+  async _generateCourseCompletionReport(afs: AngularFirestore): Promise<any[]> {
+    try {
+      // Obtener todos los cursos completados
+      const coursesSnapshot = await afs.collection('coursesByStudent', ref => ref.where('progress', '==', 100)).get().toPromise();
+      const coursesByStudent = coursesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() as any }));
+  
+      // Obtener todos los usuarios
+      const usersSnapshot = await afs.collection('user').get().toPromise();
+      const users = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() as any }));
+  
+      // Obtener todos los cursos
+      const allCoursesSnapshot = await afs.collection('course').get().toPromise();
+      const allCourses = allCoursesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() as any }));
+  
+      // Obtener todas las clases
+      const classesSnapshot = await afs.collection('class').get().toPromise();
+      const allClasses = classesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() as any }));
+  
+      // Crear mapas para búsqueda rápida de usuarios, cursos y clases
+      const userMap = new Map(users.map(user => [user.id, user]));
+      const courseMap = new Map(allCourses.map(course => [course.id, course]));
+      const classMap = new Map(allClasses.map(classe => [classe.id, classe]));
+  
+      // Obtener módulos y clases para cada curso
+      for (const course of allCourses) {
+        const modulesSnapshot = await afs.collection(`course/${course.id}/module`).get().toPromise();
+        const modules = modulesSnapshot.docs.map(doc => doc.data() as any);
+        
+        course.classes = modules.flatMap(module => 
+          module.clasesRef.map((classRef: any) => classMap.get(classRef.id))
+        );
+      }
+  
+      // Agrupar los resultados por usuario
+      const groupedByUser = coursesByStudent.reduce((acc, completion) => {
+        const userId = completion.userRef.id;
+        const courseId = completion.courseRef.id;
+  
+        if (!userMap.has(userId)) {
+          return acc;
+        }
+  
+        if (!acc[userId]) {
+          acc[userId] = {
+            user: userMap.get(userId),
+            courses: [],
+          };
+        }
+  
+        const courseData = courseMap.get(courseId);
+        acc[userId].courses.push({
+          ...courseData,
+          completionDetails: completion,
+        });
+  
+        return acc;
+      }, {} as { [key: string]: { user: any; courses: any[] } });
+  
+      // Procesar cada usuario para verificar las clases completadas
+      const usersWithIncompleteCourses = [];
+      for (const userId in groupedByUser) {
+        const userCourses = groupedByUser[userId].courses;
+        const userRef = afs.doc(`user/${userId}`).ref;
+  
+        // Obtener las clases completadas por el usuario
+        const completedClassesSnapshot = await afs.collection('classesByStudent', ref =>
+          ref.where('userRef', '==', userRef)
+            .where('completed', '==', true)
+        ).get().toPromise();
+  
+        const completedClasses = new Set(completedClassesSnapshot.docs.map(doc => doc.data()['classRef'].id));
+  
+        // Verificar las clases de cada curso y filtrar los cursos incompletos
+        const incompleteCourses = userCourses.filter(course => 
+          !course.classes.every((classe: any) => completedClasses.has(classe.id))
+        );
+  
+        if (incompleteCourses.length > 0) {
+          usersWithIncompleteCourses.push({
+            user: groupedByUser[userId].user,
+            courses: incompleteCourses.map(course => ({
+              ...course,
+              incompleteClasses: course.classes.filter((classe: any) => !completedClasses.has(classe.id))
+            }))
+          });
+        }
+  
+        console.log(`Usuario procesado: ${userId}`);
+      }
+  
+      console.log('Reporte de cursos incompletos por usuario:', usersWithIncompleteCourses);
+      return usersWithIncompleteCourses;
+    } catch (error) {
+      console.error('Error generando el reporte:', error);
+      return []; // Asegurarse de devolver un arreglo vacío en caso de error
+    }
+  }
+  
+
+  
+  
+  
+  
 
 
 
