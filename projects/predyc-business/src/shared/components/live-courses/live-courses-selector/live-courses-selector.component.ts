@@ -22,9 +22,9 @@ export class LiveCoursesSelectorComponent {
   
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log("changes", changes)
+    // console.log("changes", changes)
     if (changes['categories'] && changes['categories'].currentValue) {
-      console.log('changes categories', changes['categories']);
+      // console.log('changes categories', changes['categories']);
       this.processedCategories = changes['categories'].currentValue;
       let cursosProxmosIn = []
       // console.log('cursosProxmos',cursosProximos,cursosProxmosIn)
@@ -38,9 +38,9 @@ export class LiveCoursesSelectorComponent {
       proximos.courses = cursosProxmosIn
     }
 
-    if (changes['categories'] && changes['searchValue'].currentValue) {
+    // if (changes['categories'] && changes['searchValue'].currentValue) {
       
-    }
+    // }
 
   }
 

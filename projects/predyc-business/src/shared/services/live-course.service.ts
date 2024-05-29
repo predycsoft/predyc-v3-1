@@ -31,74 +31,6 @@ export class LiveCourseService {
     return this.afs.collection<Session>(Session.collection, (ref) =>ref.where("liveCourseRef", "==", liveCourseRef)).valueChanges();
   }
 
-  // getLiveCourseWithSessionsById$(liveCourseId: string, liveCourseSonId: string | null): Observable<{ liveCourse: LiveCourse, sessions: Session[] }> {
-  //   const liveCourseRef = this.afs.collection(LiveCourse.collection).doc(liveCourseId).ref; 
-  //   return this.afs.doc<LiveCourse>(liveCourseRef).valueChanges().pipe(
-  //     switchMap((liveCourse: LiveCourse | undefined) => {
-  //       if (liveCourse) {
-  //         return this.getSessionsByLiveCourseRef$(liveCourseRef).pipe(
-  //           map((sessions: Session[]) => ({
-  //             liveCourse,
-  //             sessions
-  //           }))
-  //         );
-  //       } else {
-  //         throw new Error(`LiveCourse with id ${liveCourseId} not found`);
-  //       }
-  //     })
-  //   );
-  // }
-  
-  // getLiveCourseWithSessionsById$(liveCourseId: string, liveCourseSonId: string | null): Observable<{ liveCourse: LiveCourse, sessions: any[] }> {
-  //   const liveCourseRef = this.getLiveCourseRefById(liveCourseId);
-  //   let liveCourseSonRef = null;
-  //   if (liveCourseSonId) liveCourseSonRef = this.getLiveCourseSonRefById(liveCourseId, liveCourseSonId);
-
-  //   return this.afs.doc<LiveCourse>(liveCourseRef).valueChanges().pipe(
-  //     switchMap((liveCourse: LiveCourse | undefined) => {
-  //       if (liveCourse) {
-  //         return this.getSessionsByLiveCourseRef$(liveCourseRef).pipe(
-  //           mergeMap((sessions: any[]) => { // Base sessions
-  //             // When the sons information is wanted
-  //             if (liveCourseSonId) {
-  //               const sessionObservables = sessions.map(session => {
-  //                 return this.afs.collection<Session>(Session.collection).doc(session.id)
-  //                   .collection(SessionSon.subCollection, ref => ref.where("liveCourseSonRef", "==", liveCourseSonRef)).valueChanges().pipe(
-  //                     map(sessionSon => {
-  //                       const sessionSonData = sessionSon[0];
-  //                       session.date = sessionSonData?.date;
-  //                       session.weeksToKeep = sessionSonData?.weeksToKeep;
-  //                       return session;
-  //                     }),
-  //                     catchError(err => {
-  //                       console.error('Error fetching sessionSon data', err);
-  //                       return of(session);
-  //                     })
-  //                   );
-  //               });
-                
-  //               return combineLatest(sessionObservables).pipe(
-  //                 map(sessionsWithSons => sessionsWithSons.filter(session => session !== null))
-  //               );
-  //             } 
-  //             // Just return base live course with base sessions info
-  //             else return of(sessions);
-  //           }),
-  //           map((sessions: Session[]) => ({
-  //             liveCourse,
-  //             sessions
-  //           }))
-  //         );
-  //       } 
-  //       else throw new Error(`LiveCourse with id ${liveCourseId} not found`);
-  //     }),
-  //     catchError(err => {
-  //       console.error('Error in getLiveCourseWithSessionsById$', err);
-  //       throw err;
-  //     })
-  //   );
-  // }
-
   getLiveCourseWithSessionsById$(liveCourseId: string, liveCourseSonId: string | null): Observable<{ liveCourse: any, sessions: any[] }> {
     const liveCourseRef = this.getLiveCourseRefById(liveCourseId);
     let liveCourseSonRef = null;
@@ -257,9 +189,15 @@ export class LiveCourseService {
   getLiveCourseSonsByLiveCourseId(liveCourseId: string): Promise<LiveCourseSon[]> {
     return firstValueFrom(this.afs.collection<LiveCourse>(LiveCourse.collection).doc(liveCourseId).collection<LiveCourseSon>(LiveCourseSon.subCollection).valueChanges())
   }
+  getLiveCourseSonsByLiveCourseId$(liveCourseId: string): Observable<LiveCourseSon[]> {
+    return this.afs.collection<LiveCourse>(LiveCourse.collection).doc(liveCourseId).collection<LiveCourseSon>(LiveCourseSon.subCollection).valueChanges()
+  }
 
   getSessionSonsBySessionId(sessionId: string): Promise<SessionSon[]> {
     return firstValueFrom(this.afs.collection<Session>(Session.collection).doc(sessionId).collection<SessionSon>(SessionSon.subCollection).valueChanges())
+  }
+  getSessionSonsBySessionId$(sessionId: string): Observable<SessionSon[]> {
+    return this.afs.collection<Session>(Session.collection).doc(sessionId).collection<SessionSon>(SessionSon.subCollection).valueChanges()
   }
 
   getLiveCourseSonByIds(liveCourseId: string, liveCourseSonId: string): Observable<LiveCourseSon> {

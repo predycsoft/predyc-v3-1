@@ -1,9 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { CalendarLiveCourseData } from '../live-courses/live-courses.component';
 import { KeyValue } from '@angular/common';
 import { Router } from '@angular/router';
 
 @Component({
+  
   selector: 'app-calendar-live-courses-selector',
   templateUrl: './calendar-live-courses-selector.component.html',
   styleUrls: ['./calendar-live-courses-selector.component.css']
@@ -19,10 +20,17 @@ export class CalendarLiveCoursesSelectorComponent implements OnInit {
 
   ngOnInit() {
     this.groupCoursesByMonth();
-    console.log("this.calendarLiveCourses", this.calendarLiveCourses);
+    // console.log("this.calendarLiveCourses", this.calendarLiveCourses);
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.calendarLiveCourses) {
+      this.groupCoursesByMonth();
+    }
   }
 
   groupCoursesByMonth() {
+
     this.groupedCourses = this.calendarLiveCourses.reduce((groups, course) => {
       const date = new Date(course.sessionSonDate);
       const monthYear = date.toLocaleString('default', { month: 'long', year: 'numeric' });
@@ -33,7 +41,7 @@ export class CalendarLiveCoursesSelectorComponent implements OnInit {
       return groups;
     }, {});
 
-    console.log("this.groupedCourses", this.groupedCourses)
+    // console.log("this.groupedCourses", this.groupedCourses)
   }
 
   keyvalueAscOrder = (a: KeyValue<string, CalendarLiveCourseData[]>, b: KeyValue<string, CalendarLiveCourseData[]>) => {

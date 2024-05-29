@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Subscription, Observable, take, combineLatest } from 'rxjs';
+import { Subscription, Observable, take, combineLatest, mergeMap, map } from 'rxjs';
 import { AuthService } from '../../../services/auth.service';
 import { CategoryService } from '../../../services/category.service';
 import { CourseService } from '../../../services/course.service';
@@ -122,12 +122,14 @@ export class LiveCoursesComponent {
       }
     })
 
-    combineLatest([
-      this.categoryService.getCategoriesObservable(), 
-      this.skillService.getSkills$(), 
-      this.liveCourseService.getAllLiveCoursesWithSessions$(),
-      this.instructorService.getInstructors$()
-    ]).subscribe(async ([categories, skills, coursesData, instructors]) => {
+    combineLatest(
+      [
+        this.categoryService.getCategoriesObservable(), 
+        this.skillService.getSkills$(), 
+        this.liveCourseService.getAllLiveCoursesWithSessions$(),
+        this.instructorService.getInstructors$()
+      ]
+    ).subscribe(async ([categories, skills, coursesData, instructors]) => {
       this.categories = this.anidarCompetenciasInicial(categories, skills);
 
       let courses = coursesData.map(x => {
@@ -136,7 +138,7 @@ export class LiveCoursesComponent {
           sessions: x.sessions
         }
       })
-      console.log('courses',courses)
+      // console.log('courses',courses)
 
       // For "Lista Cursos"
       courses.forEach(course => {
@@ -174,33 +176,55 @@ export class LiveCoursesComponent {
       // console.log("this.categories", this.categories)
       // ---------
 
-      // For Calendario
-      for (let course of courses) {
-        const coursesSons = await this.liveCourseService.getLiveCourseSonsByLiveCourseId(course.id)
-        for (let session of course.sessions) {
-          const sessionsSons = await this.liveCourseService.getSessionSonsBySessionId(session.id, )
-          for (let sessionSon of sessionsSons) {
-            const courseSon = coursesSons.find(x => x.id === sessionSon.liveCourseSonRef.id)
+
+      // For Calendario (Observables)
+      combineLatest(
+        courses.map(course => 
+          this.liveCourseService.getLiveCourseSonsByLiveCourseId$(course.id).pipe(
+            mergeMap(coursesSons => 
+              combineLatest(
+                course.sessions.map(session => 
+                  this.liveCourseService.getSessionSonsBySessionId$(session.id).pipe(
+                    map(sessionsSons => ({
+                      course,
+                      session,
+                      sessionsSons,
+                      coursesSons
+                    }))
+                  )
+                )
+              )
+            )
+          )
+        )
+      ).pipe(
+        mergeMap(results => results)
+      ).subscribe((results: any[]) => {
+        // console.log(`results`, results)
+        let newCalendarLiveCourses = [];
+        results.forEach(({ course, session, sessionsSons, coursesSons }) => {
+          sessionsSons.forEach(sessionSon => {
+            const courseSon = coursesSons.find(x => x.id === sessionSon.liveCourseSonRef.id);
             const calendarLiveCourseData = {
               baseCourseTitle: course.title,
               baseCoursePhoto: course.photoUrl,
               sessionTitle: session.title,
               sessionDuration: session.duration,
-              courseSonIdentifierText: courseSon.identifierText,
+              courseSonIdentifierText: courseSon?.identifierText,
               courseSonMeetingLink: courseSon.meetingLink,
               sessionSonDate: firestoreTimestampToNumberTimestamp(sessionSon.date),
               courseSonId: courseSon.id,
               baseCourseId: course.id,
               sessionSonId: sessionSon.id
-            }
-            this.calendarLiveCourses.push(calendarLiveCourseData)
-          }
-        }
-      }
-      this.calendarLiveCourses.sort((a, b) => a.sessionSonDate - b.sessionSonDate);
-      console.log("calendarLiveCourses", this.calendarLiveCourses)
-      // ---
+            };
+            newCalendarLiveCourses.push(calendarLiveCourseData);
+          });
+          this.calendarLiveCourses = newCalendarLiveCourses.sort((a, b) => a.sessionSonDate - b.sessionSonDate);
+          // console.log("calendarLiveCourses in live-course component", this.calendarLiveCourses);
+        });
+      });
 
+      
     })
   }
 

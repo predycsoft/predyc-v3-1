@@ -1,4 +1,4 @@
-<div *ngIf="calendarLiveCourses.length > 0" class="calendar-container fw">
+<div class="calendar-container fw">
     <div *ngFor="let group of groupedCourses | keyvalue: keyvalueAscOrder" class="month-group">
         <div class="month-header">
             {{ group.key | titlecase}}
