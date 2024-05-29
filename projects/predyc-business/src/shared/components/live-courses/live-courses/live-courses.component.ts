@@ -30,6 +30,7 @@ export interface CalendarLiveCourseData {
   courseSonId: string
   baseCourseId: string
   sessionSonId: string
+  courseSonMeetingLink: string
 }
 
 @Component({
@@ -186,6 +187,7 @@ export class LiveCoursesComponent {
               sessionTitle: session.title,
               sessionDuration: session.duration,
               courseSonIdentifierText: courseSon.identifierText,
+              courseSonMeetingLink: courseSon.meetingLink,
               sessionSonDate: firestoreTimestampToNumberTimestamp(sessionSon.date),
               courseSonId: courseSon.id,
               baseCourseId: course.id,

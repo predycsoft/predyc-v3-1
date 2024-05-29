@@ -40,7 +40,7 @@
         <input type="datetime-local" id="fecha-inicio" class="form-control" [formControlName]="session.id">
     </div>
 
-    <button (click)="onSave()" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButton mgt05" style="border-radius: 24px !important;">
+    <button *ngIf="formNewCourse.valid" (click)="onSave()" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButton mgt05" style="border-radius: 24px !important;">
         <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="">Agregar curso en vivo
     </button>
 </div>

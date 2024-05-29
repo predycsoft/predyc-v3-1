@@ -11,7 +11,7 @@
                     </div>
                 
                     <!-- Filtro y su ícono a la derecha -->
-                    <div fxLayout="row" fxLayoutAlign="end center">
+                    <div fxLayout="row" fxLayoutAlign="end center" *ngIf="!mode">
                         <img [src]="icon.sortAscending" class="iconButton h32px" alt="" [matMenuTriggerFor]="activityOptions" (click)="$event.stopPropagation()">
                         <span class="gray-8 ft12 pd03 ft600">{{appliedOrder | titlecase}}</span>
                     </div>
@@ -43,7 +43,7 @@
                                     {{ getQuestionTypeName(question.get('type').value) }}
                                 </div>
                                 <!-- "Editar" -->
-                                <span  *ngIf="type!='show'" (click)="questionStatus[i].editing = !questionStatus[i].editing" class="blueLink cursor-pointer">Editar</span>
+                                <span  *ngIf="type != 'show' && mode !== 'edit' " (click)="questionStatus[i].editing = !questionStatus[i].editing" class="blueLink cursor-pointer">Editar</span>
                             </div>
                         </div>
                     

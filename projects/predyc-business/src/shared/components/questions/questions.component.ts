@@ -104,6 +104,7 @@ export class QuestionsComponent {
   @Input() nameEmpresa
   @Input() questionMaxSize: number = 50
   @Input() type: string = ''
+  @Input() mode: "create" | "edit-base" | "edit" = null
 
 
 

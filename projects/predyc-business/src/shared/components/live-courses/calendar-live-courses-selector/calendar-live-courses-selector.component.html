@@ -3,15 +3,20 @@
         <div class="month-header">
             {{ group.key | titlecase}}
         </div>
-        <div *ngFor="let course of group.value" class="course-item cursorPointer" fxLayout="row" fxLayoutAlign="space-between center" (click)="onSelectCourse(course)">
-            <div class="course-info">
+        <div *ngFor="let course of group.value" class="course-item cursorPointer" fxLayout="row" fxLayoutAlign="space-between center">
+            <div class="course-info" (click)="onSelectCourse(course)">
                 <img [src]="course.baseCoursePhoto" class="course-image" alt="">
                 <div>
                     <div class="course-title">{{ course.baseCourseTitle }} - {{course.sessionTitle}} </div>
                     <div class="course-description">{{ course.courseSonIdentifierText }}</div>
                 </div>
             </div>
-            <div class="course-time">{{ course.sessionSonDate | date: 'EEE d' }} - {{course.sessionDuration / 60}} {{(course.sessionDuration / 60) > 1 ? "horas" : "hora" }} </div>
+            <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="1rem">
+                <div class="course-time">
+                    {{ course.sessionSonDate | date: 'EEE d' }} - {{course.sessionDuration / 60}} {{(course.sessionDuration / 60) > 1 ? "horas" : "hora" }} 
+                </div>
+                <a [href]="course.courseSonMeetingLink" target="_blank" class="blueLink ft13">Ingresar a la reuniòn</a>
+            </div>
         </div>
     </div>
 </div>

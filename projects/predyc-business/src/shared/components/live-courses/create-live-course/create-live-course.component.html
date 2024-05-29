@@ -233,7 +233,7 @@
 
                                                                                             <ng-container *ngIf="mode === 'edit'">
                                                                                                 <div *ngIf="!session.vimeoId1">
-                                                                                                    <span (click)="FileInputTitle.click()" *ngIf=" mode === 'edit' && session.title && !session['videoUpload'] && !session['uploading']" class="blueLink mgr10">
+                                                                                                    <span (click)="FileInputTitle.click()" *ngIf=" session.title && !session['videoUpload'] && !session['uploading']" class="blueLink mgr10">
                                                                                                         Agregar video
                                                                                                     </span>
                                                                                                     <div *ngIf="session.type == 'video' && session['videoUpload']">
@@ -241,8 +241,8 @@
                                                                                                             Subiendo video: {{session['videoUpload']}}%
                                                                                                         </span>
                                                                                                     </div>
-                                                                                                    <span *ngIf="!session.title && mode === 'edit' " class="gray-6 cursorPointer mgr10">Agregar video</span>
-                                                                                                    <input (change)="onFileSelected($event, session, false) " type="file" accept="video/mp4" #FileInputTitle style="display: none;">
+                                                                                                    <span *ngIf="!session.title" class="gray-6 cursorPointer mgr10">Agregar video</span>
+                                                                                                    <input (change)="session.type = 'video'; onFileSelected($event, session, false) " type="file" accept="video/mp4" #FileInputTitle style="display: none;">
                                                                                                 </div>
                                                                                                 <div *ngIf="session.vimeoId1" fxLayout="row" fxLayoutAlign="start center">
                                                                                                     <span (click)="quitarVideoClase(session)" class="blueLink mgr05">Eliminar</span>
@@ -310,7 +310,7 @@
                                                                                 <ng-container *ngIf="session.type != 'actividad' &&  session.type !='corazones'">
 
                                                                                     <ng-container>
-                                                                                        <div *ngIf="!session['uploading'] && session.files.length>0" class="fw ContainerFile" style="min-height: 80px;">
+                                                                                        <div *ngIf="!session['uploading'] && session.files.length > 0" class="fw ContainerFile" style="min-height: 80px;">
                                                                                             <div fxLayout="row" fxLayoutGap="20px" class="fw pd10" (dragover)="onDragOver($event)" (drop)="onDrop($event, session. type, session)">
                                                                                                 <!-- Columna izquierda con el texto "Recursos:" -->
                                                                                                 <div fxFlex="10%" fxLayoutAlign="start start">Recursos:</div>
@@ -328,11 +328,11 @@
                                                                                                 </div>
                                                                                             </div>
                                                                                         </div>
-                                                                                        <div *ngIf="mode ==='edit' && !session['uploading'] && (session.files.length === 0)" class="fw h80px ContainerFile">
+                                                                                        <!-- <div *ngIf="mode ==='edit' && !session['uploading'] && (session.files.length === 0)" class="fw h80px ContainerFile">
                                                                                             <div (dragover)="onDragOver($event)" (drop)="onDrop($event, session. type, session)"class="fw fh no-select" fxLayout="row" fxLayoutAlign="center center">
                                                                                                 Arrastre el archivo aquí para agregarlo.
                                                                                             </div>
-                                                                                        </div>
+                                                                                        </div> -->
                                                                                     </ng-container>
                                                                                     
                                                                                     <div *ngIf="mode !=='edit'" fxLayout="row" fxLayoutAlign="center center" class="mgt15 mgb05">
@@ -430,7 +430,10 @@
                             </div>
                             <div fxLayout="row" fxLayoutAlign="center" class="w-100"> <!-- Centrar contenido -->
                                 <div style="width: 800px;"> <!-- Ancho fijo -->
-                                    <app-questions type="test" class="mgr10" [questionMaxSize]="100" [courseData]="modulos" [nameCurso]="formNewCourse?.get('title').value?  formNewCourse?.get('title').value : 'Temporal'" [nameEmpresa]="empresa?.name" (changeQuestion)="validExam = $event;formatExamQuestions()" (emmitForm)="validExam = $event;" [questionsArray]="examen?.questions ? examen?.questions:[]" [checkQuestions]="updateTriggeQuestionsExam" [selectedTestSkills]="[]"></app-questions>
+                                    <app-questions type="test" class="mgr10" [questionMaxSize]="100" [courseData]="modulos" [nameCurso]="formNewCourse?.get('title').value?
+                                    formNewCourse?.get('title').value : 'Temporal'" [nameEmpresa]="empresa?.name" (changeQuestion)="validExam = $event;formatExamQuestions()" 
+                                    (emmitForm)="validExam = $event;" [questionsArray]="examen?.questions ? examen?.questions:[]" [checkQuestions]="updateTriggeQuestionsExam" 
+                                    [selectedTestSkills]="[]" [mode]="mode"></app-questions>
                                 </div>
                             </div>
                         </div>

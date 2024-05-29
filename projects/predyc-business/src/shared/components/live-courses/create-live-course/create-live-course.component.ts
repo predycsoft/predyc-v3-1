@@ -940,13 +940,23 @@ export class CreateLiveCourseComponent {
       }
     }
     else { // edit livecourse son and sessions sons information
-      console.log("here")
+      this.savingCourse = true;
+      Swal.fire({
+        title: 'Guardando la nueva informaciòn editada...',
+        text: 'Por favor, espera.',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading()
+        }
+      });
+
       await this.liveCourseService.updateLiveCourseSonMeetingLink(this.idCurso, this.idLiveCourseSon, this.formNewCourse.value.meetingLink)
       for (let session of this.liveCourseData.sessions) {
         const date = this.parseDateString(session.dateFormatted)
         await this.liveCourseService.updateSessionSonDateAndWeeksToKeep(session.id, session.sonId, date, session.weeksToKeep)
       }
-      console.log("end")
+      this.savingCourse = false;
+      this.alertService.succesAlert("Se ha guardado la informaciòn exitosamente")
     }
   }
 
@@ -1509,7 +1519,7 @@ export class CreateLiveCourseComponent {
 
 
     if(this.mode == 'create'){
-      this.router.navigate([`management/${this.liveCourseData.id}`])
+      this.router.navigate([`management/live/${this.liveCourseData.id}`])
     }
 
 
@@ -2268,6 +2278,9 @@ export class CreateLiveCourseComponent {
   }
 
   async onFileSelected(event, session: SessionData, local = false, adicional = false, tipo= null) {
+    console.log("event", event)
+    console.log("session", session)
+
     session['uploading'] = true;
     session['edited'] = true;
 
@@ -2367,7 +2380,7 @@ export class CreateLiveCourseComponent {
         session['base64Video'] = base64content
         session['videoFileName'] = nombre;
         //console.log(this.selectedClase)
-        // this.uploadVideo(file,session,false,modulo); DESCOMENTAR Y ARREGLAR
+        this.uploadVideo(file,session, false); //DESCOMENTAR Y ARREGLAR
 
       }
       else if(session.type == 'actividad') {
@@ -2775,318 +2788,315 @@ export class CreateLiveCourseComponent {
     clase.archivos = []
   }
 
-  uploadVideo(videoFile, clase, local = false, modulo, origen = null, intentosActuales = 0, maxIntentos = 2) {
+  uploadVideo(videoFile, session: SessionData, local = false, origen = null, intentosActuales = 0, maxIntentos = 2) {
 
-      if (!videoFile) {
-        //console.log('No video file selected');
-        return;
-      }
-      const file: File = videoFile;
+    if (!videoFile) {
+      console.log('No video file selected');
+      return;
+    }
+    const file: File = videoFile;
 
-      // Comprobar si el archivo es un video
-      if (!file.type.startsWith('video/')) {
-        console.error('No es un video');
-        return;
+    // Comprobar si el archivo es un video
+    if (!file.type.startsWith('video/')) {
+      console.error('No es un video');
+      return;
     }
 
-      // Supongamos que tienes el token de acceso almacenado en la variable `access_token`
+    // Supongamos que tienes el token de acceso almacenado en la variable `access_token`
 
-      let nombreCurso = this.formNewCourse.get('title').value?  this.formNewCourse.get('title').value : 'Temporal';
-      
-      //console.log('modulo video',modulo);
-      //console.log('clase video',clase)
+    let nombreCurso = this.formNewCourse.get('title').value?  this.formNewCourse.get('title').value : 'Temporal';
 
-      let videoDescription =  `Clase: ${clase.titulo.trim()} - Instructor:  ${this.formNewCourse.get('instructor').value}`.trim();
+    let videoDescription =  `Sesiòn: ${session.title.trim()} - Instructor:  ${this.formNewCourse.get('instructor').value}`.trim();
 
-      let instructorText = `Instructor: ${this.formNewCourse.get('instructor').value}`.trim();
-      let baseText = `Clase: - ${instructorText.trim()}`;
-      let maxLength = 127;
-      
-      // Calcula el espacio disponible para el título de la clase, restando 3 para los puntos suspensivos
-      let availableLengthForTitle = maxLength - baseText.length - 3; // Reserva espacio para los puntos suspensivos
-      
-      // Asegúrate de que el título de la clase no haga que el nombre total del video exceda el límite máximo
-      let trimmedClassTitle = clase.titulo.trim();
-      if ((`Clase: ${clase.titulo.trim()} - ${instructorText.trim()}`).length > maxLength) {
-          // Recorta el título de la clase y agrega puntos suspensivos al final
-          trimmedClassTitle = trimmedClassTitle.substring(0, availableLengthForTitle) + '...';
-      }
-      
-      let videoName = `Clase: ${trimmedClassTitle} - ${instructorText}`;
-
-      console.log(videoName,videoName.length)
-      
-      // Verifica de nuevo para asegurarte de que el nombre completo esté dentro del límite
-      if (videoName.length > maxLength) {
-          console.error("El nombre del video aún excede la longitud máxima permitida después del ajuste.");
-      }
-      
+    let instructorText = `Instructor: ${this.formNewCourse.get('instructor').value}`.trim();
+    let baseText = `Sesiòn: - ${instructorText.trim()}`;
+    let maxLength = 127;
     
-
-      clase['videoUpload'] = 0;
-
-      // Create URL for the file
-      const url = URL.createObjectURL(file);
-
-      // Create a video element
-      const video = document.createElement('video');
-
-      // Error Handling: if there are any errors loading the video file
-      video.addEventListener('error', (e) => {
-        console.error('Error loading video file:', e);
-      });
-
-    // Set the source object of the video element to the object URL of the file
-      video.src = url;
-      
-      // When metadata is loaded get the duration
-      video.addEventListener('loadedmetadata', () => {
-        const duration = video.duration;
-        //console.log('Video Duration: ', duration);
-
-        if(clase.tipo == 'video'){
-          clase.duracion = Math.ceil(duration/60);
-        }
-
-        // You can proceed with your Vimeo upload logic here
-        // Your logic to use duration.
-        
-        // Important to revoke the URL after its use to release the reference
-        URL.revokeObjectURL(url);
-      }, { once: true }); // Use the once option to ensure that the event listener is invoked only once.
-      
-      // Load the video metadata manually
-      video.load();
+    // Calcula el espacio disponible para el título de la clase, restando 3 para los puntos suspensivos
+    let availableLengthForTitle = maxLength - baseText.length - 3; // Reserva espacio para los puntos suspensivos
     
+    // Asegúrate de que el título de la clase no haga que el nombre total del video exceda el límite máximo
+    let trimmedClassTitle = session.title.trim();
+    if ((`Sesiòn: ${session.title.trim()} - ${instructorText.trim()}`).length > maxLength) {
+        // Recorta el título de la clase y agrega puntos suspensivos al final
+        trimmedClassTitle = trimmedClassTitle.substring(0, availableLengthForTitle) + '...';
+    }
+    
+    let videoName = `Sesiòn: ${trimmedClassTitle} - ${instructorText}`;
 
-      // Crea el video en Vimeo
-      //clase['uploading'] = true;
-      const fileSizeInBytes = file.size;
+    console.log(videoName,videoName.length)
+    
+    // Verifica de nuevo para asegurarte de que el nombre completo esté dentro del límite
+    if (videoName.length > maxLength) {
+        console.error("El nombre del video aún excede la longitud máxima permitida después del ajuste.");
+    }
+    
+  
 
-      this.uploadControl.createVideo(videoName, videoDescription,fileSizeInBytes)
-      .subscribe({
-        next : response =>{
-          // Una vez creado el video, sube el archivo
-          this.uploadControl.uploadVideo(file, response.upload.upload_link)
-          .subscribe({
-            // Maneja las notificaciones de progreso
-            next: progress => {
-              //console.log('uplading video',progress)
-              clase['videoUpload'] = progress-1
-              //this.uploadPercent = progress;
-            },
-            // Maneja las notificaciones de error
-            error: error => {
-              // Aquí manejas el error y decides si reintentar
-              console.log(error)
-              if (intentosActuales < maxIntentos) {
-                console.log(`Intento ${intentosActuales + 1} fallido. Reintentando...`);
-                Swal.fire({
-                  title: "Advertencia",
-                  text:"Ocurrio un error al subir el video, ¿desea reintentar?",
-                  icon: "warning",
-                  showCancelButton: true,
-                  confirmButtonText: "Reintentar",
-                  confirmButtonColor: 'var(--blue-5)',
-                }).then((result) => {
-                  /* Read more about isConfirmed, isDenied below */
-                  if (result.isConfirmed) {
-                    // Incrementa el contador de intentos y llama de nuevo a la función
-                    this.uploadVideo(videoFile, clase, local, modulo, origen, intentosActuales + 1, maxIntentos);            
-                  }
-                });
-              } else {
-                // Llegaste al máximo de intentos, maneja el error definitivamente
-                clase['uploading'] = false;
-                clase['videoUpload'] = 0;
-                console.log('Maximo de intentos alcanzado. Mostrando mensaje de error.');
-                this.dialog.dialogAlerta("Hubo un error");
-                // Lógica para manejar el error después de los reintentos
-              }
-            },
-            // Maneja las notificaciones de completado
-            complete: () => {
-              //console.log('Upload successful');
-              //clase['uploading'] = false;
-              // Obtén todos los proyectos
-              this.uploadControl.getProjects().subscribe(projects => {
-                //console.log(this.empresa);
-                // Busca un proyecto con el mismo nombre que el video
-                // const project = projects.data.find(p => p.name === this.empresa.nombre);
-                let projectOperation: Observable<any>;
-                if (this.empresa.vimeoFolderId) {
+    session['videoUpload'] = 0;
 
-                  if(!this.formNewCourse.get('vimeoFolderId')?.value){
-                  // Crear un subproyecto con un nombre temporal dentro del proyecto de la empresa
-                  //alert('crear carpeta proyecto')
-                  projectOperation = this.uploadControl.createSubProject(this.formNewCourse.get('title').value,this.empresa.vimeoFolderUri).pipe(
-                    tap(newSubProject => {
-                      //Actualizar Firebase con el ID del subproyecto si es necesario
-                      const subProjectId = newSubProject.uri.split('/').pop();
-                      //this.updateFolderVimeoCurso(subProjectId, newSubProject.uri); // Asumiendo que esto es lo que deseas hacer
-                      console.log('crear carpeta curso',subProjectId)
-                      // if(this.liveCourseData?.vimeoFolderId){
-                      //   this.liveCourseData.vimeoFolderId = subProjectId;
-                      // }
-                      this.formNewCourse.get("vimeoFolderId").patchValue(subProjectId);
-                    }),
-                    // Luego de crear el subproyecto, agrega el video a él
-                      switchMap(newSubProject => this.uploadControl.addVideoToProject(newSubProject.uri.split('/').pop(), response.uri))
-                    );
-                  }
-                  else{
-                    console.log('this.formNewCourse.get',this.formNewCourse.get('vimeoFolderId').value)
-                    projectOperation= this.uploadControl.addVideoToProject(this.formNewCourse.get('vimeoFolderId').value, response.uri)
-                  }
-                } 
-                else {
-                  // projectOperation = this.uploadControl.createProject(this.empresa.name).pipe(
-                  //     tap(newProject => { 
-                  //         const projectId = newProject.uri.split('/').pop();
-                  //         this.updateFolderVimeoEmpresa(projectId,newProject.uri);
-                  //     }),
-                  //     switchMap(newProject => this.uploadControl.addVideoToProject(newProject.uri.split('/').pop(), response.uri))
-                  // );
-                  projectOperation = this.uploadControl.createProject(this.empresa.name).pipe(
-                    tap(newProject => {
-                      // Aquí es donde actualizamos Firebase con la nueva carpeta de empresa
-                      const projectId = newProject.uri.split('/').pop();
-                      this.updateFolderVimeoEmpresa(projectId, newProject.uri);
-                    }),
-                    // Después de crear la carpeta de empresa, crea el subproyecto dentro de esta nueva carpeta
-                    switchMap(newProject => 
-                      this.uploadControl.createSubProject(this.formNewCourse.get('title').value, newProject.uri).pipe(
-                        tap(newSubProject => {
-                          // Actualizar Firebase con el ID del subproyecto si es necesario
-                          const subProjectId = newSubProject.uri.split('/').pop();
-                          // this.updateFolderVimeoCurso(subProjectId, newSubProject.uri);
-                          this.liveCourseData.vimeoFolderId = subProjectId; // Guarda el ID del subproyecto para el curso
-                        }),
-                        // Luego de crear el subproyecto, agrega el video a él
-                        switchMap(newSubProject => this.uploadControl.addVideoToProject(newSubProject.uri.split('/').pop(), response.uri))
-                      )
-                    )
+    // Create URL for the file
+    const url = URL.createObjectURL(file);
+
+    // Create a video element
+    const video = document.createElement('video');
+
+    // Error Handling: if there are any errors loading the video file
+    video.addEventListener('error', (e) => {
+      console.error('Error loading video file:', e);
+    });
+
+  // Set the source object of the video element to the object URL of the file
+    video.src = url;
+    
+    // When metadata is loaded get the duration
+    video.addEventListener('loadedmetadata', () => {
+      const duration = video.duration;
+      //console.log('Video Duration: ', duration);
+
+      if(session.type == 'video'){
+        session.duration = Math.ceil(duration/60);
+      }
+
+      // You can proceed with your Vimeo upload logic here
+      // Your logic to use duration.
+      
+      // Important to revoke the URL after its use to release the reference
+      URL.revokeObjectURL(url);
+    }, { once: true }); // Use the once option to ensure that the event listener is invoked only once.
+    
+    // Load the video metadata manually
+    video.load();
+  
+
+    // Crea el video en Vimeo
+    //session['uploading'] = true;
+    const fileSizeInBytes = file.size;
+
+    this.uploadControl.createVideo(videoName, videoDescription,fileSizeInBytes)
+    .subscribe({
+      next : response =>{
+        // Una vez creado el video, sube el archivo
+        this.uploadControl.uploadVideo(file, response.upload.upload_link)
+        .subscribe({
+          // Maneja las notificaciones de progreso
+          next: progress => {
+            //console.log('uplading video',progress)
+            session['videoUpload'] = progress-1
+            //this.uploadPercent = progress;
+          },
+          // Maneja las notificaciones de error
+          error: error => {
+            // Aquí manejas el error y decides si reintentar
+            console.log(error)
+            if (intentosActuales < maxIntentos) {
+              console.log(`Intento ${intentosActuales + 1} fallido. Reintentando...`);
+              Swal.fire({
+                title: "Advertencia",
+                text:"Ocurrio un error al subir el video, ¿desea reintentar?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Reintentar",
+                confirmButtonColor: 'var(--blue-5)',
+              }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                  // Incrementa el contador de intentos y llama de nuevo a la función
+                  this.uploadVideo(videoFile, session, local, origen, intentosActuales + 1, maxIntentos);            
+                }
+              });
+            } else {
+              // Llegaste al máximo de intentos, maneja el error definitivamente
+              session['uploading'] = false;
+              session['videoUpload'] = 0;
+              console.log('Maximo de intentos alcanzado. Mostrando mensaje de error.');
+              this.dialog.dialogAlerta("Hubo un error");
+              // Lógica para manejar el error después de los reintentos
+            }
+          },
+          // Maneja las notificaciones de completado
+          complete: () => {
+            //console.log('Upload successful');
+            //session['uploading'] = false;
+            // Obtén todos los proyectos
+            this.uploadControl.getProjects().subscribe(projects => {
+              //console.log(this.empresa);
+              // Busca un proyecto con el mismo nombre que el video
+              // const project = projects.data.find(p => p.name === this.empresa.nombre);
+              let projectOperation: Observable<any>;
+              if (this.empresa.vimeoFolderId) {
+
+                if(!this.formNewCourse.get('vimeoFolderId')?.value){
+                // Crear un subproyecto con un nombre temporal dentro del proyecto de la empresa
+                //alert('crear carpeta proyecto')
+                projectOperation = this.uploadControl.createSubProject(this.formNewCourse.get('title').value,this.empresa.vimeoFolderUri).pipe(
+                  tap(newSubProject => {
+                    //Actualizar Firebase con el ID del subproyecto si es necesario
+                    const subProjectId = newSubProject.uri.split('/').pop();
+                    //this.updateFolderVimeoCurso(subProjectId, newSubProject.uri); // Asumiendo que esto es lo que deseas hacer
+                    console.log('crear carpeta curso',subProjectId)
+                    // if(this.liveCourseData?.vimeoFolderId){
+                    //   this.liveCourseData.vimeoFolderId = subProjectId;
+                    // }
+                    this.formNewCourse.get("vimeoFolderId").patchValue(subProjectId);
+                  }),
+                  // Luego de crear el subproyecto, agrega el video a él
+                    switchMap(newSubProject => this.uploadControl.addVideoToProject(newSubProject.uri.split('/').pop(), response.uri))
                   );
                 }
-                projectOperation.subscribe({
-                  complete: () => {
-                    //console.log('Video added to Project successfully!');
-                    //console.log(response.uri)
-                    this.uploadControl.getVideoData(response.uri).subscribe({
-                      next: videoData => {
-                          //this.dialog.dialogExito();
-                          clase['videoUpload'] = 100;
-                          //console.log(`Video`,videoData);
-                          let link = videoData.link;
-                          link = link.split('/');
-                          //console.log(link);
-                          clase.vimeoId1=link[3];
-                          clase.vimeoId2=link[4];
-                          clase['uploading'] = false;
-                          if(origen == 'actividad'){
-                            this.formNuevaActividadGeneral.get('video').patchValue(link[3]);
-                          }
-                          //URL.revokeObjectURL(this.videoSrc);
-                          //this.videoFile=null;
-                          //clase['videoUpload'] =0;
-                          //this.videoSrc=null;
-                          //clase['videoUpload'] = false;
-                        },
-                      error: (error) => {
-                        this.dialog.dialogAlerta("Hubo un error")
-                        //console.log(error?.error?.error);
+                else{
+                  console.log('this.formNewCourse.get',this.formNewCourse.get('vimeoFolderId').value)
+                  projectOperation= this.uploadControl.addVideoToProject(this.formNewCourse.get('vimeoFolderId').value, response.uri)
+                }
+              } 
+              else {
+                // projectOperation = this.uploadControl.createProject(this.empresa.name).pipe(
+                //     tap(newProject => { 
+                //         const projectId = newProject.uri.split('/').pop();
+                //         this.updateFolderVimeoEmpresa(projectId,newProject.uri);
+                //     }),
+                //     switchMap(newProject => this.uploadControl.addVideoToProject(newProject.uri.split('/').pop(), response.uri))
+                // );
+                projectOperation = this.uploadControl.createProject(this.empresa.name).pipe(
+                  tap(newProject => {
+                    // Aquí es donde actualizamos Firebase con la nueva carpeta de empresa
+                    const projectId = newProject.uri.split('/').pop();
+                    this.updateFolderVimeoEmpresa(projectId, newProject.uri);
+                  }),
+                  // Después de crear la carpeta de empresa, crea el subproyecto dentro de esta nueva carpeta
+                  switchMap(newProject => 
+                    this.uploadControl.createSubProject(this.formNewCourse.get('title').value, newProject.uri).pipe(
+                      tap(newSubProject => {
+                        // Actualizar Firebase con el ID del subproyecto si es necesario
+                        const subProjectId = newSubProject.uri.split('/').pop();
+                        // this.updateFolderVimeoCurso(subProjectId, newSubProject.uri);
+                        this.liveCourseData.vimeoFolderId = subProjectId; // Guarda el ID del subproyecto para el curso
+                      }),
+                      // Luego de crear el subproyecto, agrega el video a él
+                      switchMap(newSubProject => this.uploadControl.addVideoToProject(newSubProject.uri.split('/').pop(), response.uri))
+                    )
+                  )
+                );
+              }
+              projectOperation.subscribe({
+                complete: () => {
+                  //console.log('Video added to Project successfully!');
+                  //console.log(response.uri)
+                  this.uploadControl.getVideoData(response.uri).subscribe({
+                    next: videoData => {
+                        //this.dialog.dialogExito();
+                        session['videoUpload'] = 100;
+                        //console.log(`Video`,videoData);
+                        let link = videoData.link;
+                        link = link.split('/');
+                        //console.log(link);
+                        session.vimeoId1=link[3];
+                        session.vimeoId2=link[4];
+                        session['uploading'] = false;
+                        if(origen == 'actividad'){
+                          this.formNuevaActividadGeneral.get('video').patchValue(link[3]);
+                        }
                         //URL.revokeObjectURL(this.videoSrc);
                         //this.videoFile=null;
-                        clase['videoUpload'] =0;
+                        //session['videoUpload'] =0;
                         //this.videoSrc=null;
-                        clase['videoUpload'] = false;
+                        //session['videoUpload'] = false;
+                      },
+                    error: (error) => {
+                      this.dialog.dialogAlerta("Hubo un error")
+                      //console.log(error?.error?.error);
+                      //URL.revokeObjectURL(this.videoSrc);
+                      //this.videoFile=null;
+                      session['videoUpload'] =0;
+                      //this.videoSrc=null;
+                      session['videoUpload'] = false;
 
-                      }
-                    })
-                  },
-                  // error: (error)=>{
-                  //   this.dialog.dialogAlerta("Hubo un error");
-                  //   //console.log(error?.error?.error);
-                  //   //URL.revokeObjectURL(this.videoSrc);
-                  //   //this.videoFile=null;
-                  //   clase['videoUpload'] =0;
-                  //   //this.videoSrc=null;
-                  //   clase['uploading'] = false;
-                  // }
-                  error: error => {
-                    // Aquí manejas el error y decides si reintentar
-                    console.log(error)
-                    if (intentosActuales < maxIntentos) {
-                      console.log(`Intento ${intentosActuales + 1} fallido. Reintentando...`);
-                      Swal.fire({
-                        title: "Advertencia",
-                        text:"Ocurrio un error al subir el video, ¿desea reintentar?",
-                        icon: "warning",
-                        showCancelButton: true,
-                        confirmButtonText: "Reintentar",
-                        confirmButtonColor: 'var(--blue-5)',
-                      }).then((result) => {
-                        /* Read more about isConfirmed, isDenied below */
-                        if (result.isConfirmed) {
-                          // Incrementa el contador de intentos y llama de nuevo a la función
-                          this.uploadVideo(videoFile, clase, local, modulo, origen, intentosActuales + 1, maxIntentos);            
-                        }
-                      });
-                    } else {
-                      // Llegaste al máximo de intentos, maneja el error definitivamente
-                      clase['uploading'] = false;
-                      clase['videoUpload'] = 0;
-                      console.log('Maximo de intentos alcanzado. Mostrando mensaje de error.');
-                      this.dialog.dialogAlerta("Hubo un error");
-                      // Lógica para manejar el error después de los reintentos
                     }
+                  })
+                },
+                // error: (error)=>{
+                //   this.dialog.dialogAlerta("Hubo un error");
+                //   //console.log(error?.error?.error);
+                //   //URL.revokeObjectURL(this.videoSrc);
+                //   //this.videoFile=null;
+                //   session['videoUpload'] =0;
+                //   //this.videoSrc=null;
+                //   session['uploading'] = false;
+                // }
+                error: error => {
+                  // Aquí manejas el error y decides si reintentar
+                  console.log(error)
+                  if (intentosActuales < maxIntentos) {
+                    console.log(`Intento ${intentosActuales + 1} fallido. Reintentando...`);
+                    Swal.fire({
+                      title: "Advertencia",
+                      text:"Ocurrio un error al subir el video, ¿desea reintentar?",
+                      icon: "warning",
+                      showCancelButton: true,
+                      confirmButtonText: "Reintentar",
+                      confirmButtonColor: 'var(--blue-5)',
+                    }).then((result) => {
+                      /* Read more about isConfirmed, isDenied below */
+                      if (result.isConfirmed) {
+                        // Incrementa el contador de intentos y llama de nuevo a la función
+                        this.uploadVideo(videoFile, session, local, origen, intentosActuales + 1, maxIntentos);            
+                      }
+                    });
+                  } else {
+                    // Llegaste al máximo de intentos, maneja el error definitivamente
+                    session['uploading'] = false;
+                    session['videoUpload'] = 0;
+                    console.log('Maximo de intentos alcanzado. Mostrando mensaje de error.');
+                    this.dialog.dialogAlerta("Hubo un error");
+                    // Lógica para manejar el error después de los reintentos
                   }
-                })
-              });
+                }
+              })
+            });
+          }
+        });
+      },
+      // error: (error) => {
+      //   this.dialog.dialogAlerta("Hubo un error")
+      //   //console.log(error.error.error);
+      //   //URL.revokeObjectURL(this.videoSrc);
+      //   //this.videoFile=null;
+      //   session['videoUpload'] =0;
+      //   //this.videoSrc=null;
+      //   session['uploading'] = false;
+      // }
+      error: error => {
+        // Aquí manejas el error y decides si reintentar
+        console.log(error)
+        if (intentosActuales < maxIntentos) {
+          console.log(`Intento ${intentosActuales + 1} fallido. Reintentando...`);
+          Swal.fire({
+            title: "Advertencia",
+            text:"Ocurrio un error al subir el video, ¿desea reintentar?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Guardar",
+            confirmButtonColor: 'var(--blue-5)',
+          }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+              // Incrementa el contador de intentos y llama de nuevo a la función
+              this.uploadVideo(videoFile, session, local, origen, intentosActuales + 1, maxIntentos);            
             }
           });
-        },
-        // error: (error) => {
-        //   this.dialog.dialogAlerta("Hubo un error")
-        //   //console.log(error.error.error);
-        //   //URL.revokeObjectURL(this.videoSrc);
-        //   //this.videoFile=null;
-        //   clase['videoUpload'] =0;
-        //   //this.videoSrc=null;
-        //   clase['uploading'] = false;
-        // }
-        error: error => {
-          // Aquí manejas el error y decides si reintentar
-          console.log(error)
-          if (intentosActuales < maxIntentos) {
-            console.log(`Intento ${intentosActuales + 1} fallido. Reintentando...`);
-            Swal.fire({
-              title: "Advertencia",
-              text:"Ocurrio un error al subir el video, ¿desea reintentar?",
-              icon: "warning",
-              showCancelButton: true,
-              confirmButtonText: "Guardar",
-              confirmButtonColor: 'var(--blue-5)',
-            }).then((result) => {
-              /* Read more about isConfirmed, isDenied below */
-              if (result.isConfirmed) {
-                // Incrementa el contador de intentos y llama de nuevo a la función
-                this.uploadVideo(videoFile, clase, local, modulo, origen, intentosActuales + 1, maxIntentos);            
-              }
-            });
-          } else {
-            // Llegaste al máximo de intentos, maneja el error definitivamente
-            clase['uploading'] = false;
-            clase['videoUpload'] = 0;
-            console.log('Maximo de intentos alcanzado. Mostrando mensaje de error.');
-            this.dialog.dialogAlerta("Hubo un error");
-            // Lógica para manejar el error después de los reintentos
-          }
-        },
-      })
+        } else {
+          // Llegaste al máximo de intentos, maneja el error definitivamente
+          session['uploading'] = false;
+          session['videoUpload'] = 0;
+          console.log('Maximo de intentos alcanzado. Mostrando mensaje de error.');
+          this.dialog.dialogAlerta("Hubo un error");
+          // Lógica para manejar el error después de los reintentos
+        }
+      },
+    })
   }
 
-  async updateFolderVimeoEmpresa(idFolder,folderUri) {
+  async updateFolderVimeoEmpresa(idFolder, folderUri) {
     //console.log(idFolder);
     //console.log(this.empresa)
     await this.afs.collection("enterprise").doc(this.empresa.id).update({
