@@ -47,8 +47,8 @@ export class LiveCourseService {
           return this.afs.collection(LiveCourse.collection).doc(liveCourseId).collection(LiveCourseSon.subCollection).doc(liveCourseSonId).valueChanges()
           .pipe(
             switchMap((liveCourseSon: LiveCourseSon | undefined) => {
-              // Get "meetingLink"
-              if (liveCourseSon) liveCourse.meetingLink = liveCourseSon.meetingLink;
+              // Get "meetingLink" and "identifierText"
+              if (liveCourseSon) liveCourse.meetingLink = liveCourseSon.meetingLink; liveCourse.identifierText = liveCourseSon.identifierText;
 
               return this.getSessionsByLiveCourseRef$(liveCourseRef).pipe(
                 mergeMap((sessions: any[]) => { // Base sessions
@@ -208,9 +208,10 @@ export class LiveCourseService {
     return this.afs.doc<LiveCourseSon>(liveCourseSonRef).valueChanges();
   }
 
-  async updateLiveCourseSonMeetingLink(liveCourseId: string, liveCourseSonId: string, meetingLink: string): Promise<any> {
+  async updateLiveCourseSonMeetingLinkAndIdentifierText(liveCourseId: string, liveCourseSonId: string, meetingLink: string, identifierText: string): Promise<any> {
     await this.afs.collection<LiveCourse>(LiveCourse.collection).doc(liveCourseId).collection<LiveCourseSon>(LiveCourseSon.subCollection).doc(liveCourseSonId).update({
-      meetingLink: meetingLink
+      meetingLink: meetingLink,
+      identifierText: identifierText
     })
   }
 

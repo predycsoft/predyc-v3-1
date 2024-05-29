@@ -49,17 +49,24 @@
                                             Debe indicar el título del curso
                                         </div>
                                     </div>
-                                    <div *ngIf="user?.isSystemUser && mode === 'edit'" class="form-group mgt08">
+                                    <div *ngIf=" mode === 'edit'" class="form-group mgt08">
                                         <label class="ft12">Enlace de la reunion:</label>
                                         <div class="input-group">
                                             <input [class.is-invalid]="formNewCourse.controls['meetingLink'].errors && showErrorCurso" formControlName="meetingLink" 
                                             type="text" class="form-control customInput2 radius6" placeholder="Escriba el URL del curso aquí">
-                                            <div class="input-group-append">
-                                                <span class="input-group-text">{{ formNewCourse?.controls['meetingLink']?.value?.length || 0 }}</span>
-                                            </div>
                                         </div>
                                         <div class="invalid-feedback" *ngIf="formNewCourse?.controls['meetingLink']?.errors && showErrorCurso">
                                             Debe indicar el link de la reunion
+                                        </div>
+                                    </div> 
+                                    <div *ngIf=" mode === 'edit'" class="form-group mgt08">
+                                        <label class="ft12">Texto identificativo:</label>
+                                        <div class="input-group">
+                                            <input [class.is-invalid]="formNewCourse.controls['identifierText'].errors && showErrorCurso" formControlName="identifierText" 
+                                            type="text" class="form-control customInput2 radius6" placeholder="Escriba el URL del curso aquí">
+                                        </div>
+                                        <div class="invalid-feedback" *ngIf="formNewCourse?.controls['identifierText']?.errors && showErrorCurso">
+                                            Debe indicar el texto identificativo
                                         </div>
                                     </div>                                          
                                     <div class="ft12 form-group pdt10">

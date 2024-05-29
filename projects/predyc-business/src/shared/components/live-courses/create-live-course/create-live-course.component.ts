@@ -36,6 +36,7 @@ import { LiveCourseService } from '../../../services/live-course.service';
 interface LiveCourseData extends LiveCourseJson {
   sessions: SessionData[],
   meetingLink: string,
+  identifierText: string,
   addClassMode: boolean,
   isInvalid: boolean,
   InvalidMessages: string[],
@@ -114,9 +115,6 @@ export class CreateLiveCourseComponent {
 
   textModulo = 'Crear nuevo curso'
 
-  // curso : any;
-
-  // liveCourseData: any = {}
   liveCourseData: LiveCourseData
   modulos : Modulo[] = [];
 
@@ -192,7 +190,6 @@ export class CreateLiveCourseComponent {
     "../../../assets/images/cursos/avatar4.svg",
   ];
 
-
   formNuevaActividadBasica: FormGroup;
   formNuevaActividadGeneral: FormGroup;
 
@@ -260,9 +257,6 @@ export class CreateLiveCourseComponent {
   savingSkill = false
 
   async ngOnInit(): Promise<void> {
-    //console.log(this.competenciasArray)
-
-    // console.log('mode on init',this.mode)
 
     if (this.idLiveCourseSon) this.mode = "edit"
     else if (!this.idLiveCourseSon && this.idCurso) this.mode = "edit-base"
@@ -309,6 +303,7 @@ export class CreateLiveCourseComponent {
           skills: new FormControl(null, Validators.required),
           skillsRef: new FormControl(null),
           meetingLink: new FormControl(''),
+          identifierText: new FormControl(''),
           // resumen: new FormControl(null, Validators.required),
           //categoria: new FormControl(null, Validators.required),
           // contenido: new FormControl(null, Validators.required),
@@ -373,6 +368,7 @@ export class CreateLiveCourseComponent {
           skills: new FormControl({value: this.liveCourseData.skillsRef, disabled: this.mode === "edit"}, Validators.required),
           skillsRef: new FormControl(this.liveCourseData.skillsRef),
           meetingLink: new FormControl(this.liveCourseData.meetingLink),
+          identifierText: new FormControl(this.liveCourseData.identifierText),
           // resumen: new FormControl(this.liveCourseData.resumen, Validators.required),
           // nivel: new FormControl(this.liveCourseData.nivel, Validators.required),
           // idioma: new FormControl(this.liveCourseData.idioma, Validators.required),
@@ -390,7 +386,6 @@ export class CreateLiveCourseComponent {
           // this.pillarsForm = new FormControl({ value: '', disabled: true }); // disabled inside initSkills()
           this.instructoresForm = new FormControl({ value: instructor, disabled: true });
         }
-
 
         // this.activityClassesService.getActivityAndQuestionsForCourse(this.idCurso, true).pipe(filter(activities=>activities!=null),take(1)).subscribe(activities => {
         //   console.log('activities clases', activities);
@@ -419,6 +414,7 @@ export class CreateLiveCourseComponent {
         title: '',
         photoUrl: '',
         meetingLink: '',
+        identifierText: '',
         description: '',
         instructorRef: {} as DocumentReference,
         proximamente: false,
@@ -507,7 +503,7 @@ export class CreateLiveCourseComponent {
             question.competencias = question.skills
           });
           this.examen = data;
-          console.log('examen data edit',this.examen)
+          // console.log('examen data edit',this.examen)
           //this.formatExamQuestions();
         }
       });
@@ -559,7 +555,7 @@ export class CreateLiveCourseComponent {
   
   getCursoSkills() {
     // console.log("this.allskills", this.allskills)
-    console.log("this.formNewCourse.get('skills')?.value", this.formNewCourse.get('skills')?.value)
+    // console.log("this.formNewCourse.get('skills')?.value", this.formNewCourse.get('skills')?.value)
 
     let skillArray = [];
     
@@ -950,7 +946,7 @@ export class CreateLiveCourseComponent {
         }
       });
 
-      await this.liveCourseService.updateLiveCourseSonMeetingLink(this.idCurso, this.idLiveCourseSon, this.formNewCourse.value.meetingLink)
+      await this.liveCourseService.updateLiveCourseSonMeetingLinkAndIdentifierText(this.idCurso, this.idLiveCourseSon, this.formNewCourse.value.meetingLink, this.formNewCourse.value.identifierText)
       for (let session of this.liveCourseData.sessions) {
         const date = this.parseDateString(session.dateFormatted)
         await this.liveCourseService.updateSessionSonDateAndWeeksToKeep(session.id, session.sonId, date, session.weeksToKeep)
