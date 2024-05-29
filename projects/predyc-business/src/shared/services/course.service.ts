@@ -1404,6 +1404,7 @@ export class CourseService {
       cheater: cheater,
       completed: false,
       completedAdmin:false,
+      removedAdmin:true,
       dateStart: new Date,
       dateEnd: null
     });

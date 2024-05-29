@@ -99,7 +99,7 @@ export class MyTeamComponent {
   usersOnListProcess(users){
 
     if(users){
-      console.log('usersOnListProcess',users)
+      // console.log('usersOnListProcess',users)
       let respuesta = [];
       users.forEach(usuario => {
         respuesta.push(usuario.mail)
