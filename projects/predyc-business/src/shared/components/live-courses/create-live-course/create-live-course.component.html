@@ -27,7 +27,7 @@
             </div>
         </div>
     </div>
-        <div class="fh " >
+        <div class="fh">
             <mat-tab-group mat-stretch-tabs="false" class="swal-overlay pdt35 " (selectedTabChange)="onTabChange($event)" style="z-index: 2; position :fixed;  width: 97%;" >
                 <mat-tab label="Contenido del Curso"  style="z-index: 2; position :fixed;" >
                     <ng-container >
@@ -80,20 +80,20 @@
                                     <div class="form-group pdt10">
                                         <label class="ft12 pdb05 ">Foto del curso</label>
                                         <div fxLayout="row" fxLayoutAlign="start end" >
-                                                <!-- <button class="add-button">Adjuntar nueva</button> -->
-                                                <input #cursoImage type="file" (change)="uploadCourseImage($event,'curso')" hidden accept="image/jpeg, image/png" />
-                                                <!-- <div class="image-scroll">
-                                                    <img *ngFor="let imagen of imagenesCurso" (click)="seleccionarImagenCurso(imagen)" [src]="imagen" alt="Imagen seleccionada" class="image cursorPointer {{this.formNewCourse.get('imagen').value == imagen? 'img-active': ''}}">
-                                                </div> -->
-                                                <div class="image-scroll">
-                                                    <img *ngIf="formNewCourse.get('photoUrl').value" [src]="formNewCourse.get('photoUrl').value" alt="Imagen seleccionada" class="avatarSquare8 radius6">
-                                                </div>
-                                                <div *ngIf="mode !== 'edit' " class="fw">
-                                                    <button (click)="cursoImage.click()" class="grayButton pd03 radius6 ft12 ft500 h28px mgr10 gray-8" fxLayoutGap="0.625" >
-                                                        <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
-                                                        Adjuntar imagen
-                                                    </button>
-                                                </div>
+                                            <!-- <button class="add-button">Adjuntar nueva</button> -->
+                                            <input #cursoImage type="file" (change)="uploadCourseImage($event,'curso')" hidden accept="image/jpeg, image/png" />
+                                            <!-- <div class="image-scroll">
+                                                <img *ngFor="let imagen of imagenesCurso" (click)="seleccionarImagenCurso(imagen)" [src]="imagen" alt="Imagen seleccionada" class="image cursorPointer {{this.formNewCourse.get('imagen').value == imagen? 'img-active': ''}}">
+                                            </div> -->
+                                            <div class="image-scroll">
+                                                <img *ngIf="formNewCourse.get('photoUrl').value" [src]="formNewCourse.get('photoUrl').value" alt="Imagen seleccionada" class="avatarSquare8 radius6">
+                                            </div>
+                                            <div *ngIf="mode !== 'edit' " class="fw">
+                                                <button (click)="cursoImage.click()" class="grayButton pd03 radius6 ft12 ft500 h28px mgr10 gray-8" fxLayoutGap="0.625" >
+                                                    <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
+                                                    Adjuntar imagen
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                     <div *ngIf="formNewCourse.controls['photoUrl'].errors && showErrorCurso" class="custom-invalid-feedback pdt05">

@@ -1768,7 +1768,7 @@ export class CreateLiveCourseComponent {
     });
   }
 
-  uploadCourseImage(event,tipo,newInstructor = false){
+  uploadCourseImage(event, tipo, newInstructor = false){
     if (!event.target.files[0] || event.target.files[0].length === 0) {
 
       Swal.fire({
@@ -1786,86 +1786,106 @@ export class CreateLiveCourseComponent {
     reader.onload = async (_event) => {
       //this.deleteQuestionImage(pregunta);
 
-      if (file) {
-        if(tipo == 'instructor'){
-          this.uploadingImgInstuctor = true;
-        }
-        else{
-          this.uploadingImgCurso = true;
-        }
-        let fileBaseName = file.name.split('.').slice(0, -1).join('.');
-        let fileExtension = file.name.split('.').pop();
+      // Check image dimensions
+      const img = new Image();
+      img.src = reader.result as string;
+      img.onload = () => {
+        const width = img.width;
+        const height = img.height;
+        // console.log(`Image dimensions: ${width}x${height}`);
 
-        let nombre = fileBaseName+'.'+fileExtension;
-        if(tipo == 'instructor'){
-          this.fileNameImgInstuctor = nombre
-        }
-        else{
-          this.fileNameImgCurso = nombre
-        }
-        //console.log(nombre)
-
-        // Reorganizar el nombre para que el timestamp esté antes de la extensión
-        let newName = `${fileBaseName}-${Date.now().toString()}.${fileExtension}`;
+        // if (width !== 500 || height !== 500) {
+        if (width !== height) {
+          Swal.fire({
+            title:'Error!',
+            text:`Debe seleccionar una imagen de 500x500px`,
+            icon:'warning',
+            confirmButtonColor: 'var(--blue-5)',
+          })
+          return;
+        } 
   
-        let nombreCurso = this.formNewCourse.get('title').value?  this.formNewCourse.get('title').value : 'Temporal';
-        let nombreinstructor = this.formNewCourse.get('instructor').value?  this.formNewCourse.get('instructor').value : 'Temporal';
-
-        let filePath;
-
-        if(tipo == 'instructor'){
-          filePath = `Clientes/${this.empresa.name}/Instructor/${nombreinstructor}/${newName}`;
-        }
-        else{
-          filePath = `Clientes/${this.empresa.name}/Cursos/${nombreCurso}/Imagen/${newName}`;
-        }
-  
-        const task = this.storage.upload(filePath, file);
-  
-        // Crea una referencia a la ruta del archivo.
-        const fileRef = this.storage.ref(filePath);
-  
-        // Obtener el progreso como un Observable
-        this.uploadProgress$ = task.percentageChanges();
-  
-        // Suscríbete al Observable para actualizar tu componente de barra de progreso
-        this.uploadProgress$.subscribe(progress => {
-          //console.log(progress);
+        if (file) {
           if(tipo == 'instructor'){
-            this.uploading_file_progressImgInstuctor = Math.floor(progress) ;
+            this.uploadingImgInstuctor = true;
           }
           else{
-            this.uploading_file_progressImgCurso = Math.floor(progress) ;
+            this.uploadingImgCurso = true;
           }
-        });
+          let fileBaseName = file.name.split('.').slice(0, -1).join('.');
+          let fileExtension = file.name.split('.').pop();
   
-        // Observa el progreso de la carga del archivo y haz algo cuando se complete.
-        task.snapshotChanges().pipe(
-          finalize(() => {
-            // Obtén la URL de descarga del archivo.
-            fileRef.getDownloadURL().subscribe(url => {
-              if(tipo == 'instructor'){
-                this.uploadingImgInstuctor = false;
-                if(!newInstructor){
-                  this.formNewCourse.get('imagen_instructor').patchValue(url);
-                  this.avatarInstructor.unshift(url);
+          let nombre = fileBaseName+'.'+fileExtension;
+          if(tipo == 'instructor'){
+            this.fileNameImgInstuctor = nombre
+          }
+          else{
+            this.fileNameImgCurso = nombre
+          }
+          //console.log(nombre)
+  
+          // Reorganizar el nombre para que el timestamp esté antes de la extensión
+          let newName = `${fileBaseName}-${Date.now().toString()}.${fileExtension}`;
+    
+          let nombreCurso = this.formNewCourse.get('title').value?  this.formNewCourse.get('title').value : 'Temporal';
+          let nombreinstructor = this.formNewCourse.get('instructor').value?  this.formNewCourse.get('instructor').value : 'Temporal';
+  
+          let filePath;
+  
+          if(tipo == 'instructor'){
+            filePath = `Clientes/${this.empresa.name}/Instructor/${nombreinstructor}/${newName}`;
+          }
+          else{
+            filePath = `Clientes/${this.empresa.name}/Cursos/${nombreCurso}/Imagen/${newName}`;
+          }
+    
+          const task = this.storage.upload(filePath, file);
+    
+          // Crea una referencia a la ruta del archivo.
+          const fileRef = this.storage.ref(filePath);
+    
+          // Obtener el progreso como un Observable
+          this.uploadProgress$ = task.percentageChanges();
+    
+          // Suscríbete al Observable para actualizar tu componente de barra de progreso
+          this.uploadProgress$.subscribe(progress => {
+            //console.log(progress);
+            if(tipo == 'instructor'){
+              this.uploading_file_progressImgInstuctor = Math.floor(progress) ;
+            }
+            else{
+              this.uploading_file_progressImgCurso = Math.floor(progress) ;
+            }
+          });
+    
+          // Observa el progreso de la carga del archivo y haz algo cuando se complete.
+          task.snapshotChanges().pipe(
+            finalize(() => {
+              // Obtén la URL de descarga del archivo.
+              fileRef.getDownloadURL().subscribe(url => {
+                if(tipo == 'instructor'){
+                  this.uploadingImgInstuctor = false;
+                  if(!newInstructor){
+                    this.formNewCourse.get('imagen_instructor').patchValue(url);
+                    this.avatarInstructor.unshift(url);
+                  }
+                  else{
+                    this.formNewInstructor.get('foto').patchValue(url);
+                  }
+  
                 }
                 else{
-                  this.formNewInstructor.get('foto').patchValue(url);
+                  this.uploadingImgCurso = false;
+                  this.formNewCourse.get('photoUrl').patchValue(url);
+                  this.imagenesCurso.unshift(url)
+  
                 }
-
-              }
-              else{
-                this.uploadingImgCurso = false;
-                this.formNewCourse.get('photoUrl').patchValue(url);
-                this.imagenesCurso.unshift(url)
-
-              }
-              //console.log(`File URL: ${url}`);
-            });
-          })
-        ).subscribe();
-      }
+                //console.log(`File URL: ${url}`);
+              });
+            })
+          ).subscribe();
+        }
+      };
 
     };
   }
@@ -3512,8 +3532,6 @@ export class CreateLiveCourseComponent {
   }
 
   verVideoVimeo(clase): NgbModalRef {
-    let openModal = false
-    let isNewUser = false
 
     const modalRef = this.modalService.open(VimeoComponent, {
       animation: true,
