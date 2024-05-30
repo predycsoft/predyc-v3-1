@@ -250,7 +250,7 @@
                                                                                                         </span>
                                                                                                     </div>
                                                                                                     <span *ngIf="!session.title" class="gray-6 cursorPointer mgr10">Agregar video</span>
-                                                                                                    <input (change)="session.type = 'video'; onFileSelected($event, session, false) " type="file" accept="video/mp4" #FileInputTitle style="display: none;">
+                                                                                                    <input (change)="session.type = 'video'; onFileSelected($event, session, false, false, null, true) " type="file" accept="video/mp4" #FileInputTitle style="display: none;">
                                                                                                 </div>
                                                                                                 <div *ngIf="session.vimeoId1" fxLayout="row" fxLayoutAlign="start center">
                                                                                                     <span (click)="quitarVideoClase(session)" class="blueLink mgr05">Eliminar</span>
@@ -316,7 +316,7 @@
 
                                                                                 <!-- si es de archivo es un drop -->
                                                                                 <ng-container *ngIf="session.type != 'actividad' &&  session.type !='corazones'">
-
+                                                                                    <!-- Lista de recursos de sesiones base -->
                                                                                     <ng-container>
                                                                                         <div *ngIf="!session['uploading'] && session.files.length > 0" class="fw ContainerFile" style="min-height: 80px;">
                                                                                             <div fxLayout="row" fxLayoutGap="20px" class="fw pd10" (dragover)="onDragOver($event)" (drop)="onDrop($event, session. type, session)">
@@ -342,9 +342,29 @@
                                                                                             </div>
                                                                                         </div> -->
                                                                                     </ng-container>
-                                                                                    
+                                                                                    <!-- Lista de recursos de sesiones hijos -->
+                                                                                    <ng-container *ngIf="mode === 'edit'">
+                                                                                        <div *ngIf="!session['uploading'] && session.sonFiles.length > 0" fxLayout="row" fxLayoutAlign="center center">
+                                                                                            <div class="w-90 ContainerFileSon mgl10" style="min-height: 80px;">
+                                                                                                <div fxLayout="row" fxLayoutGap="20px" class="fw pd10" (dragover)="onDragOver($event)" (drop)="onDrop($event, session. type, session)">
+                                                                                                    <div fxFlex="20%" fxLayoutAlign="start start">Recursos particulares: </div>
+                                                                                                    <div fxFlex="80%" fxLayoutAlign="start start">
+                                                                                                        <ol style="padding-left: 10px; margin: 0;">
+                                                                                                            <ng-container *ngFor="let archivo of session.sonFiles; let i = index">
+                                                                                                                <li>
+                                                                                                                    <span class="cursorPointer blueLink" (click)="descargarArchivo(archivo)">{{ archivo.nombre }}</span>
+                                                                                                                    <img [src]="icon.close" class="h18px pdl10 makeRed cursorPointer" alt="" (click)="borrarArchivo(session, archivo)">
+                                                                                                                </li>
+                                                                                                            </ng-container>
+                                                                                                        </ol>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </ng-container>
+                                                                                    <!-- Añadir recurso para sesiones base -->
                                                                                     <div *ngIf="mode !=='edit'" fxLayout="row" fxLayoutAlign="center center" class="mgt15 mgb05">
-                                                                                        <input (change)="onFileSelected($event, session, false, true)" type="file" 
+                                                                                        <input (change)="onFileSelected($event, session, false, true, null, true)" type="file" 
                                                                                         accept="application/pdf, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" 
                                                                                         #FileInputAdicional style="display: none;">
                                                                                         <button (click)="FileInputAdicional.click()" class="grayButton pd03 radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
@@ -352,7 +372,19 @@
                                                                                             Añadir recursos
                                                                                         </button>
                                                                                     </div>
-                                                                                    <input (change)="onFileSelected($event, session, false)" type="file" accept="{{session.type == 'lectura'?'.pdf' : 'video/mp4'}}" 
+                                                                                    <input (change)="onFileSelected($event, session, false, false, null, true)" type="file" accept="{{session.type == 'lectura'?'.pdf' : 'video/mp4'}}" 
+                                                                                    #FileInput style="display: none;">
+                                                                                    <!-- Agregar recursos pra sesiones hijos -->
+                                                                                    <div *ngIf="mode ==='edit'" fxLayout="row" fxLayoutAlign="center center" class="mgt15 mgb05">
+                                                                                        <input (change)="onFileSelected($event, session, false, true, null, false)" type="file" 
+                                                                                        accept="application/pdf, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" 
+                                                                                        #FileInputAdicional style="display: none;">
+                                                                                        <button (click)="FileInputAdicional.click()" class="grayButton pd03 radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                                                            <img [src]="icon.folderUp" class="h16px pdr05" alt="">
+                                                                                            Añadir recursos particulares
+                                                                                        </button>
+                                                                                    </div>
+                                                                                    <input (change)="onFileSelected($event, session, false, false, null, false)" type="file" accept="{{session.type == 'lectura'?'.pdf' : 'video/mp4'}}" 
                                                                                     #FileInput style="display: none;">
                                                                                 </ng-container>
 
@@ -676,7 +708,7 @@
                                                 <img [src]="icon.pdf" class="h20px input-icon" alt="">
                                                 <input 
                                                 [class.is-invalid]="formNuevaActividadBasica.controls['recursos'].errors && showErrorActividad"
-                                                (change)="onFileSelected($event,selectedClase, false, true, 'archivoActividad')" type="file" accept=".pdf" #fileActivityInput class="form-control customInput custom-input">
+                                                (change)="onFileSelected($event,selectedClase, false, true, 'archivoActividad', true)" type="file" accept=".pdf" #fileActivityInput class="form-control customInput custom-input">
                                                 <!-- <button class="custom-button ">Botón</button> -->
                                                 <button (click)="fileActivityInput.click()" class="custom-button grayButton pd03 ft500 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                                                     <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
@@ -731,7 +763,7 @@
                                                 <img [src]="icon.videoChat" class="h20px input-icon" alt="">
                                                 <input 
                                                 [class.is-invalid]="formNuevaActividadGeneral.controls['video'].errors && showErrorActividad"
-                                                (change)="onFileSelected($event, selectedClase, false, false, 'videoActividad')" type="file" accept="video/mp4"  #videoActivityInput class="form-control custom-input" placeholder="Escriba el título de la actividad aquí">
+                                                (change)="onFileSelected($event, selectedClase, false, false, 'videoActividad', true)" type="file" accept="video/mp4"  #videoActivityInput class="form-control custom-input" placeholder="Escriba el título de la actividad aquí">
                                                 <button (click)="videoActivityInput.click()" class="custom-button grayButton pd03 ft500 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                                                     <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
                                                     Adjuntar

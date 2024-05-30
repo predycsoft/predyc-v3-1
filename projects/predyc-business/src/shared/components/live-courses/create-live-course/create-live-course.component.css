@@ -156,6 +156,12 @@
   border-radius: 0.375rem;
   margin-bottom: 16px;
   }
+
+  .ContainerFileSon{
+    border: 1px dashed var(--blue-5);
+    border-radius: 0.375rem;
+    margin-bottom: 16px;
+    }
   
   .ContainerUpload{
   border: 1px solid var(--gray-4);

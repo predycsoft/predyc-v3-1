@@ -93,7 +93,8 @@ export class DialogChooseBaseLiveCourseComponent {
         parentId: this.sessions[0].id,
         date: firstSessionDate,
         liveCourseSonRef: this.liveCourseService.getLiveCourseSonRefById(formValue.baseCourse.id, liveCourseSonId),
-        weeksToKeep: 2
+        weeksToKeep: 2,
+        sonFiles: []
       });
       // Save rest of sessions without date
       for (let i = 1; i < this.sessions.length; i++) {
@@ -102,7 +103,8 @@ export class DialogChooseBaseLiveCourseComponent {
           parentId: this.sessions[i].id,
           date: null,
           liveCourseSonRef: this.liveCourseService.getLiveCourseSonRefById(formValue.baseCourse.id, liveCourseSonId),
-          weeksToKeep: 2
+          weeksToKeep: 2,
+          sonFiles: []
         });
       }
 

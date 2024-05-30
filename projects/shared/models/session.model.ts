@@ -3,12 +3,12 @@ import { DocumentReference } from "@angular/fire/compat/firestore"
 export interface SessionJson {
     id: string
     title: string
-    // date: any //
-    description: string //
-    liveCourseRef: DocumentReference //
+    // date: any
+    description: string
+    liveCourseRef: DocumentReference
     duration: number
-    vimeoId1: number //
-    vimeoId2 : string //
+    vimeoId1: number
+    vimeoId2 : string
     files: any[]
     orderNumber: number
 }
@@ -67,6 +67,7 @@ export interface SessionSonJson {
     date: any
     weeksToKeep: number
     liveCourseSonRef: DocumentReference
+    sonFiles: any[]
 }
 
 export class SessionSon {
@@ -79,6 +80,7 @@ export class SessionSon {
         public date: any,
         public weeksToKeep: number,
         public liveCourseSonRef: DocumentReference,
+        public sonFiles: any[],
     ) {}
 
     public static fromJson(QuestionJson: SessionSonJson): SessionSon {
@@ -88,6 +90,7 @@ export class SessionSon {
             QuestionJson.date,
             QuestionJson.weeksToKeep,
             QuestionJson.liveCourseSonRef,
+            QuestionJson.sonFiles,
         )
     }
 
@@ -98,6 +101,7 @@ export class SessionSon {
             date:this.date,
             weeksToKeep:this.weeksToKeep,
             liveCourseSonRef:this.liveCourseSonRef,
+            sonFiles:this.sonFiles,
         }
     }
 }

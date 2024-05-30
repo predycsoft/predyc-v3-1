@@ -44,6 +44,8 @@ interface LiveCourseData extends LiveCourseJson {
 }
 
 interface SessionData extends SessionJson {
+  sonFiles: any[],
+  date: any,
   dateFormatted: string,
   sonId: string,
   weeksToKeep: number,
@@ -433,11 +435,13 @@ export class CreateLiveCourseComponent {
         id: '',
         title: '',
         dateFormatted: "",
+        date: null,
         description: '',
         liveCourseRef: {} as DocumentReference,
         duration: 0,
         vimeoId1: 0,
         vimeoId2: '',
+        sonFiles: [],
         files: [],
         addClassMode: false,
         isInvalid: false,
@@ -959,7 +963,12 @@ export class CreateLiveCourseComponent {
       await this.liveCourseService.updateLiveCourseSonMeetingLinkAndIdentifierText(this.idCurso, this.idLiveCourseSon, this.formNewCourse.value.meetingLink, this.formNewCourse.value.identifierText)
       for (let session of this.liveCourseData.sessions) {
         const date = session.dateFormatted ? this.parseDateString(session.dateFormatted) : null
-        await this.liveCourseService.updateSessionSonDateAndWeeksToKeep(session.id, session.sonId, date, session.weeksToKeep)
+        const sessionSonDataToUpdate = {
+          date: date,
+          weeksToKeep: session.weeksToKeep,
+          sonFiles: session.sonFiles,
+        }
+        await this.liveCourseService.updateSessionSonData(session.id, session.sonId, sessionSonDataToUpdate)
       }
       this.savingCourse = false;
       this.alertService.succesAlert("Se ha guardado la informaciòn exitosamente")
@@ -2292,9 +2301,9 @@ export class CreateLiveCourseComponent {
     return filteredFiles;
   }
 
-  async onFileSelected(event, session: SessionData, local = false, adicional = false, tipo= null) {
-    console.log("event", event)
-    console.log("session", session)
+  async onFileSelected(event, session: SessionData, local = false, adicional = false, tipo= null, isBaseSession: boolean) {
+    // console.log("event", event)
+    // console.log("session", session)
 
     session['uploading'] = true;
     session['edited'] = true;
@@ -2308,7 +2317,6 @@ export class CreateLiveCourseComponent {
     if (!local) {
       file = event.target.files[0];
     }
-
     else {
       file = event[0];
     }
@@ -2327,7 +2335,7 @@ export class CreateLiveCourseComponent {
       }
 
 
-      if (session.type == 'lectura' || adicional){
+      if (session.type == 'lectura' || adicional) {
         let idFile = Date.now();
         let fileInfo = {
           id: idFile,
@@ -2346,11 +2354,13 @@ export class CreateLiveCourseComponent {
           this.selectedClase.activity['recursosBase64'] = fileInfo?fileInfo:null;
         }
 
-        if (!adicional && session.files.length>0){
-          session.files[0] = fileInfo;
-
-        }else{
-          session.files = session.files.concat(fileInfo);
+        if (isBaseSession) {
+          if (!adicional && session.files.length > 0) session.files[0] = fileInfo;
+          else session.files = session.files.concat(fileInfo);
+        }
+        else {
+          if (!adicional && session.sonFiles.length > 0) session.sonFiles[0] = fileInfo;
+          else session.sonFiles = session.sonFiles.concat(fileInfo);
         }
   
         // Reorganizar el nombre para que el timestamp esté antes de la extensión
@@ -2395,7 +2405,7 @@ export class CreateLiveCourseComponent {
         session['base64Video'] = base64content
         session['videoFileName'] = nombre;
         //console.log(this.selectedClase)
-        this.uploadVideo(file,session, false); //DESCOMENTAR Y ARREGLAR
+        this.uploadVideo(file,session, false);
 
       }
       else if(session.type == 'actividad') {

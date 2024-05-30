@@ -62,6 +62,7 @@ export class LiveCourseService {
                           session.date = sessionSonData?.date;
                           session.weeksToKeep = sessionSonData?.weeksToKeep;
                           session.sonId = sessionSonData?.id;
+                          session.sonFiles = sessionSonData?.sonFiles;
                           return session;
                         }),
                         catchError(err => {
@@ -217,10 +218,11 @@ export class LiveCourseService {
     })
   }
 
-  async updateSessionSonDateAndWeeksToKeep(sessionId: string, sessionSonId: string, date: any, weeksToKeep: number) {
+  async updateSessionSonData(sessionId: string, sessionSonId: string, data: any) {
     await this.afs.collection<Session>(Session.collection).doc(sessionId).collection<SessionSon>(SessionSon.subCollection).doc(sessionSonId).update({
-      date: date,
-      weeksToKeep: weeksToKeep
+      date: data.date ? data.date : null,
+      weeksToKeep: data.weeksToKeep ? data.weeksToKeep : null,
+      sonFiles: data.sonFiles ? data.sonFiles : null,
     })
   }
 
