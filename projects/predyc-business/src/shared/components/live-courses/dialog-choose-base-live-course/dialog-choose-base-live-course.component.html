@@ -35,9 +35,9 @@
         <input type="text" id="reuniones-link" class="form-control" formControlName="meetingLink">
     </div>
 
-    <div *ngFor="let session of sessions" fxLayout="column" class="form-group" formGroupName="sessionsDates">
-        <label class="ft14 ft500" for="fecha-inicio">Ingresar fecha de inicio para la sesión <span class="ft15 ft500 gray-10">{{session.title}}</span></label>
-        <input type="datetime-local" id="fecha-inicio" class="form-control" [formControlName]="session.id">
+    <div *ngIf="sessions && sessions.length > 0" fxLayout="column" class="form-group" formGroupName="sessionsDates">
+        <label class="ft14 ft500" for="fecha-inicio">Ingresar fecha de inicio para la primera sesión <span class="ft15 ft500 gray-10">{{sessions[0].title}}</span></label>
+        <input type="datetime-local" id="fecha-inicio" class="form-control" [formControlName]="sessions[0].id">
     </div>
 
     <button *ngIf="formNewCourse.valid" (click)="onSave()" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButton mgt05" style="border-radius: 24px !important;">

@@ -32,12 +32,14 @@ export class CalendarLiveCoursesSelectorComponent implements OnInit {
   groupCoursesByMonth() {
 
     this.groupedCourses = this.calendarLiveCourses.reduce((groups, course) => {
-      const date = new Date(course.sessionSonDate);
-      const monthYear = date.toLocaleString('default', { month: 'long', year: 'numeric' });
-      if (!groups[monthYear]) {
-        groups[monthYear] = [];
+      if (course.sessionSonDate)  {
+        const date = new Date(course.sessionSonDate);
+        const monthYear = date.toLocaleString('default', { month: 'long', year: 'numeric' });
+        if (!groups[monthYear]) {
+          groups[monthYear] = [];
+        }
+        groups[monthYear].push(course);
       }
-      groups[monthYear].push(course);
       return groups;
     }, {});
 

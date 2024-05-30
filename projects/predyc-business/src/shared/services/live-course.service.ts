@@ -28,7 +28,9 @@ export class LiveCourseService {
   }
 
   getSessionsByLiveCourseRef$(liveCourseRef: DocumentReference): Observable<Session[]> {
-    return this.afs.collection<Session>(Session.collection, (ref) =>ref.where("liveCourseRef", "==", liveCourseRef)).valueChanges();
+    return this.afs.collection<Session>(Session.collection, (ref) =>
+      ref.where("liveCourseRef", "==", liveCourseRef).orderBy("orderNumber", "asc")
+    ).valueChanges();
   }
 
   getLiveCourseWithSessionsById$(liveCourseId: string, liveCourseSonId: string | null): Observable<{ liveCourse: any, sessions: any[] }> {

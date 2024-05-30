@@ -10,6 +10,7 @@ export interface SessionJson {
     vimeoId1: number //
     vimeoId2 : string //
     files: any[]
+    orderNumber: number
 }
 
 export class Session {
@@ -26,6 +27,7 @@ export class Session {
         public vimeoId1: number,
         public vimeoId2 : string,
         public files: any[],
+        public orderNumber: number,
     ) {}
 
     public static fromJson(SessionJson: SessionJson): Session {
@@ -39,6 +41,7 @@ export class Session {
             SessionJson.vimeoId1,
             SessionJson.vimeoId2,
             SessionJson.files,
+            SessionJson.orderNumber,
         )
     }
 
@@ -53,6 +56,7 @@ export class Session {
             vimeoId1 : this.vimeoId1,
             vimeoId2 : this.vimeoId2,
             files : this.files,
+            orderNumber : this.orderNumber,
         }
     }
 }

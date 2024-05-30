@@ -452,13 +452,23 @@ export class CreateLiveCourseComponent {
         HTMLcontent: null,
         weeksToKeep: 2,
         sonId: "",
+        orderNumber: null,
     };
   }
 
   convertTimestampToDatetimeLocalString(timestamp: any): string {
     if (!timestamp) return '';
     const date = new Date(timestamp.seconds * 1000);
-    return date.toISOString().substring(0, 16);
+  
+    // Get the local time components
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+  
+    // Format the local datetime string in the format required by input[type="datetime-local"]
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
   }
 
   getOptionText(option){
@@ -948,7 +958,7 @@ export class CreateLiveCourseComponent {
 
       await this.liveCourseService.updateLiveCourseSonMeetingLinkAndIdentifierText(this.idCurso, this.idLiveCourseSon, this.formNewCourse.value.meetingLink, this.formNewCourse.value.identifierText)
       for (let session of this.liveCourseData.sessions) {
-        const date = this.parseDateString(session.dateFormatted)
+        const date = session.dateFormatted ? this.parseDateString(session.dateFormatted) : null
         await this.liveCourseService.updateSessionSonDateAndWeeksToKeep(session.id, session.sonId, date, session.weeksToKeep)
       }
       this.savingCourse = false;
@@ -1369,51 +1379,39 @@ export class CreateLiveCourseComponent {
       let arrayClasesRef = [];
       for (let i = 0; i < this.liveCourseData.sessions.length; i++) {
         try {
-          let clase = this.liveCourseData.sessions[i];
-          console.log("XXXXXXclase", clase)
+          let clase = this.liveCourseData.sessions[i]; //session
           if (clase['edited']) {
             // Save session
-            console.log('sesion',clase)
-            // let claseLocal = new Clase;
-            let claseLocal: SessionData = this.initializeSessionAsSessionData()
-            claseLocal.HTMLcontent = clase.HTMLcontent ? clase.HTMLcontent : null;
-            claseLocal.files = clase.files.map(archivo => ({
+            // console.log('sesion',clase)
+            // let localeSession = new Clase;
+            let localeSession: SessionData = this.initializeSessionAsSessionData()
+            localeSession.HTMLcontent = clase.HTMLcontent ? clase.HTMLcontent : null;
+            localeSession.files = clase.files.map(archivo => ({
               id: archivo.id,
               nombre: archivo.nombre,
               size: archivo.size,
               type: archivo.type,
               url: archivo.url
             }));
-            claseLocal.description = clase.description ? clase.description : null;
-            claseLocal.duration = clase.duration;
-            claseLocal.id = clase.id;
-            claseLocal.vimeoId1 = clase.vimeoId1 ? clase.vimeoId1 : null;
-            claseLocal.vimeoId2 = clase.vimeoId2 ? clase.vimeoId2 : null;
-            // claseLocal.skillsRef = clase.skillsRef;
-            // claseLocal.skillsRef = null;
-            claseLocal.type = clase.type;
-            claseLocal.title = clase.tituloTMP;
-            // claseLocal.vigente = clase.vigente;
-            // claseLocal.vigente = null;
-            // if(this.user.isSystemUser){
-            //   claseLocal.enterpriseRef = null;
-            // }
-            // else{
-            //   claseLocal.enterpriseRef = this.enterpriseService.getEnterpriseRef()
-            // }
-            
-            // const arrayRefSkills = (clase.competencias?.map(skillClase => this.liveCourseData.skillsRef.find(skill => skill.id == skillClase.id)).filter(Boolean) ) || [];
-            // claseLocal.skillsRef = arrayRefSkills;
-            claseLocal.liveCourseRef = this.liveCourseService.getLiveCourseRefById(this.liveCourseData.id)
-            const sessionToSave: Session = this.SessionDataModelToLiveCourseSession(claseLocal)
+            localeSession.description = clase.description ? clase.description : null;
+            localeSession.duration = clase.duration;
+            localeSession.id = clase.id;
+            localeSession.vimeoId1 = clase.vimeoId1 ? clase.vimeoId1 : null;
+            localeSession.vimeoId2 = clase.vimeoId2 ? clase.vimeoId2 : null;
+            localeSession.type = clase.type;
+            localeSession.orderNumber = i+1;
+            localeSession.title = clase.tituloTMP;
+            localeSession.liveCourseRef = this.liveCourseService.getLiveCourseRefById(this.liveCourseData.id)
+
+            const sessionToSave: Session = this.SessionDataModelToLiveCourseSession(localeSession)
             console.log("sessionToSave", sessionToSave)
             await this.liveCourseService.saveLiveCourseSession(sessionToSave);
 
             
-            let refClass = this.liveCourseService.getSessionRefById(claseLocal.id)
+            let refClass = this.liveCourseService.getSessionRefById(localeSession.id)
             let courseRef = this.afs.collection<Curso>(Curso.collection).doc(this.liveCourseData.id).ref;
             arrayClasesRef.push(refClass);
-            console.log('activityClass',clase)
+            // console.log('activityClass',clase)
 
             // save activity ... check later
             if (clase.activity) {
@@ -1462,7 +1460,7 @@ export class CreateLiveCourseComponent {
               // let questionsIds = [];
 
               // for (let pregunta of questions){
-              //   // claseLocal.skillsRef = arrayRefSkills;
+              //   // localeSession.skillsRef = arrayRefSkills;
               //   delete pregunta['typeFormated'];
               //   delete pregunta['competencias_tmp'];
               //   delete pregunta['competencias'];
@@ -1547,6 +1545,7 @@ export class CreateLiveCourseComponent {
       sessionData.vimeoId1,
       sessionData.vimeoId2,
       sessionData.files,
+      sessionData.orderNumber,
     );
   }
 

@@ -208,7 +208,8 @@
                                                                                             <div *ngIf="session.title && !session['editarTitulo']; then tituloPresenteClase; else ClaseSinTitulo"></div>
                                                                                             <ng-template #tituloPresenteClase>
                                                                                                 <span (click)="session['editarTitulo'] = true; session['tituloTMP'] = session?.title; editarTituloClase(iClase)">
-                                                                                                    {{session.title}}  -  {{session.duration | formatDuration}} {{ mode === "edit" ? ' -  Inicia el ' + session['dateFormatted'] + '  -  Disponible durante ' + session['weeksToKeep'] + ' sem.' : ''}}
+                                                                                                    {{ session.title }} - {{ session.duration | formatDuration }} 
+                                                                                                    {{ mode === "edit" ? ' - ' + ( session['dateFormatted'] ? 'Inicia el ' + session['dateFormatted'] : 'Sin fecha' ) + ' - Disponible durante ' + session['weeksToKeep'] + ' sem.' : '' }}
                                                                                                 </span>
                                                                                             </ng-template>
                                                                                             <ng-template #ClaseSinTitulo>
