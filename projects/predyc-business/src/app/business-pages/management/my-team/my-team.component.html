@@ -4,12 +4,19 @@
     </p>
 
     <div fxLayout="row" fxLayoutAlign=" center">
-        <div fxLayout="row" fxLayoutAlign="space-between center" class="w-80">
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="fw">
             <div fxLayout="row" fxLayoutAlign="start center">
-              <div fxLayout="row" fxLayoutAlign="center center" class="shadow-animation radius20">
+              <!-- <div fxLayout="row" fxLayoutAlign="center center" class="shadow-animation radius20">
                 <app-profile-selector></app-profile-selector>
+                <app-status-selector origin="licenciasEmpresa"></app-status-selector>
                 <app-search-input-box class=""></app-search-input-box>
-              </div>
+              </div> -->
+              <div fxLayout="row" fxLayoutAlign=" center" class="h36px radius20 w800px shadow-animation w-45" style="overflow: hidden;" >
+                <app-profile-selector></app-profile-selector>
+                <app-status-selector origin="usersEmpresa" class="fh"></app-status-selector>
+                <app-search-input-box class="fw"></app-search-input-box>
+                
+            </div>
               <div *ngIf="usersMails" matTooltip="Copiar correos" (click)="copiaExitosa()" class="mgl08 cursorPointer" >
                 <img [src]="icon.copy" alt="copiar" class="h16px">
               </div>
@@ -23,16 +30,15 @@
               Nuevo Usuario
             </button>
           </div>
-        <div class="w-25 pdl20">
+        <!-- <div class="w-25 pdl20">
 
-        </div>
+        </div> -->
     </div>
     <div fxLayout="row">
-        <div class="w-80  vh50 pdr20 border-rl" >
+        <div class=" fw vh50" >
             <app-student-list (onStudentSelected)="onStudentSelected($event)" (studentsOnList)="usersOnListProcess($event)"/>
         </div>
-        <div class="w-20 pdl15 " fxLayout="column" fxLayoutGap="15px" style="margin-top: -40px;">
-
+        <div *ngIf="false" class="w-20 pdl15 " fxLayout="column" fxLayoutGap="15px" style="margin-top: -40px;">
 
             <div fxLayout="row" fxLayoutAlign="space-between center" style="border-bottom: 1px solid #e3e3e3; padding-bottom: .5rem;">
                 <span class="ft14" style="font-weight: bold; color: black;">

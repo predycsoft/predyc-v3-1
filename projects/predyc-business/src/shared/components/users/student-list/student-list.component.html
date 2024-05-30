@@ -52,7 +52,7 @@
             <div (click)="$event.stopPropagation();">
                 <a (click)="copiarContacto('Correo copiado',user.mail)" [href]="'mailto:' + user.mail" class="contact-link gray-7 ft400">{{ user.mail }}</a>
             </div>
-            <div *ngIf="user.phone" class="centertext" (click)="$event.stopPropagation();">
+            <div *ngIf="user.phone" class="" (click)="$event.stopPropagation();">
                 <a (click)="copiarContacto('Teléfono copiado',user.phone)" [href]="'https://wa.me/' + user.phone" target="_blank" class="contact-link gray-7 ft400 centertext">Tel: {{ user.phone }}</a>
             </div>
             </td>
@@ -149,10 +149,14 @@
 
             </th>
             <td mat-cell *matCellDef="let user" class="centertext">
-              <ng-container>
-                <span class="gray-7 ft400">{{user.activityStatusText}}</span>
-              </ng-container>
-            </td>
+                <ng-container *ngIf="!user.lastActivityText">
+                  <span class="gray-7 ft400">{{user.activityStatusText}}</span>
+                </ng-container>
+                <ng-container *ngIf="user.lastActivityText">
+                  <div class="gray-7 ft400">{{user.lastActivityText}}</div>
+                  <div class="gray-7" style="font-size: 10px !important;">({{user.activityStatusText}})</div>
+                </ng-container>
+              </td>
           </ng-container>
           
 

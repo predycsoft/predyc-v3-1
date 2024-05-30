@@ -27,6 +27,11 @@ export class StatusSelectorComponent {
     if(this.origin == 'StudentsComponent'){
       defaul = 'all'
     }
+    else if (this.origin == 'usersEmpresa'){
+      defaul = 'all'
+    }
+    
+    
     this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
       const status = params['status'] || defaul;
       this.selectedStatus = status

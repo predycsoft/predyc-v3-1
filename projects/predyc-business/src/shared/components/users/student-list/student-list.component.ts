@@ -58,7 +58,7 @@ export class StudentListComponent {
   queryParamsSubscription: Subscription
   profilesSubscription: Subscription
   userServiceSubscription: Subscription
-  pageSize: number = 16
+  pageSize: number = 100
   totalLength: number
   profiles: Profile[] = []
   departments: Department[] = []
@@ -122,6 +122,7 @@ export class StudentListComponent {
               const sortDatesPlan =  params['sortDatesPlan'] || '';
               const sortHoras =  params['sortHoras'] || '';
               const sortNombre = params['sortNombre'] || '';
+              const statusFilter = params['status'] || '';
 
               this.ritmoFilter = ritmoFilter
               this.filtroDepartamento = departmentFilter
@@ -133,6 +134,7 @@ export class StudentListComponent {
               this.sortDepartamento = sortDepartamento
               this.sortHoras = sortHoras
               this.sortNombre = sortNombre
+              this.statusFilter = statusFilter
 
               // Obtener el orden de los sorts desde los parámetros de la URL
               const urlParams = new URLSearchParams(window.location.search);
@@ -144,10 +146,10 @@ export class StudentListComponent {
 
               });
               if(this.first){
-                this.performSearch(searchTerm, page, profileFilter,departmentFilter,ritmoFilter,filtroUltimaActividad,sortOrder);
+                this.performSearch(searchTerm, page, profileFilter,departmentFilter,ritmoFilter,filtroUltimaActividad,statusFilter,sortOrder);
               }
               else{
-                this.performSearchLocal(searchTerm, page, profileFilter,departmentFilter,ritmoFilter,filtroUltimaActividad,sortOrder);
+                this.performSearchLocal(searchTerm, page, profileFilter,departmentFilter,ritmoFilter,filtroUltimaActividad,statusFilter,sortOrder);
               }
             })
         })
@@ -364,11 +366,10 @@ export class StudentListComponent {
     this.dataSource.paginator.pageSize = this.pageSize;
   }
 
-  performSearchLocal(searchTerm: string, page: number, profileFilter: string,departmentFilter: string,ritmoFilter: string,filtroUltimaActividad:string,sortOrder) {
+  performSearchLocal(searchTerm: string, page: number, profileFilter: string,departmentFilter: string,ritmoFilter: string,filtroUltimaActividad:string,statusFilter:string,sortOrder) {
 
     let users = structuredClone(this.allusers);
     console.log('usersFilterLocal',users,profileFilter)
-
 
     
     if(profileFilter){
@@ -384,6 +385,10 @@ export class StudentListComponent {
 
     if(filtroUltimaActividad){
       users = users.filter(x=>x.activityStatusText == filtroUltimaActividad)
+    }
+
+    if(statusFilter && statusFilter!='all'){
+      users = users.filter(x=>x.status == statusFilter)
     }
 
     if (searchTerm) {
@@ -424,7 +429,7 @@ export class StudentListComponent {
     return strings.filter((item, index) => strings.indexOf(item) === index);
   }
 
-  performSearch(searchTerm: string, page: number, profileFilter: string,departmentFilter: string,ritmoFilter: string,filtroUltimaActividad:string,sortOrder) {
+  performSearch(searchTerm: string, page: number, profileFilter: string,departmentFilter: string,ritmoFilter: string,filtroUltimaActividad:string,statusFilter :string,sortOrder) {
 
 
     this.paginator.pageIndex = page - 1;
@@ -501,6 +506,7 @@ export class StudentListComponent {
         }
 
         let dateLastActivity = null
+        let lastActivityText: string;
 
         // Determinar el estado de la actividad
         let activityStatus = 'Sin inicio sesión';
@@ -508,7 +514,26 @@ export class StudentListComponent {
           let date = new Date(user['lastActivityDate'].seconds * 1000);
           date.setHours(0, 0, 0, 0); // Establecer la hora a 00:00:00.000
           activityStatus = date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long' });
-          dateLastActivity = date.getTime()
+          dateLastActivity = date.getTime();
+        
+          // Crear la variable de texto para indicar hace cuánto fue la última actividad
+          let today = new Date();
+          today.setHours(0, 0, 0, 0);
+          let diffTime = Math.abs(today.getTime() - date.getTime());
+          let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Diferencia en días
+        
+          if (diffDays === 0) {
+            lastActivityText = 'Hoy';
+          } else if (diffDays <= 30) {
+            if(diffDays == 1){
+              lastActivityText = `Hace 1 día`;
+            }
+            else{
+              lastActivityText = `Hace ${diffDays} días`;
+            }
+          } else {
+            lastActivityText = 'Más de 30 días';
+          }
         } else if (!user['lastActivityDate']?.seconds && this.examenInicial && test.length === 0 && user['lastViewDate']) {
           activityStatus = 'Sin diagnostico completado';
           actStatus.push(activityStatus)
@@ -523,6 +548,7 @@ export class StudentListComponent {
           idDepartment: user.departmentRef?.id,
           idProfile:user.profile?.id,
           hours,
+          lastActivityText,
           mail:user.email,
           activityStatusText:activityStatus,
           phone:user.phoneNumber,
@@ -576,6 +602,10 @@ export class StudentListComponent {
 
       if(filtroUltimaActividad){
         users = users.filter(x=>x.activityStatusText == filtroUltimaActividad)
+      }
+
+      if(statusFilter && statusFilter!='all'){
+        users = users.filter(x=>x.status == statusFilter)
       }
   
   
@@ -658,6 +688,8 @@ export class StudentListComponent {
     if (this.profilesSubscription) this.profilesSubscription.unsubscribe()
   }
 
+
+    statusFilter = ''
     ritmoFilter = ''
     filtroDepartamento = ''
     filtroUltimaActividad=''

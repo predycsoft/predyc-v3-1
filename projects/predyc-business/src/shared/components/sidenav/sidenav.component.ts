@@ -9,6 +9,7 @@ interface Page {
   link: string;
   name: string;
   icon: string;
+  queryParams?: { [key: string]: any }; // Hacer queryParams opcional
 }
 
 @Component({
@@ -34,6 +35,7 @@ export class SideNavComponent {
     {
       name: "Estudiantes",
       link: "management/students",
+      queryParams: { status: "active" },
       icon: "../../assets/iconsUI/management-1.svg",
     },
     {
@@ -41,11 +43,11 @@ export class SideNavComponent {
       link: "management/courses",
       icon: "../../assets/iconsUI/courses-1.svg",
     },
-    {
-      name: "Cursos en vivo",
-      link: "management/live",
-      icon: "../../assets/iconsUI/courses-1.svg",
-    },
+    // {
+    //   name: "Cursos en vivo",
+    //   link: "management/live",
+    //   icon: "../../assets/iconsUI/courses-1.svg",
+    // },
     {
       name: "Licencias",
       link: "settings",
