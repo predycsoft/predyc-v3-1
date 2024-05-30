@@ -30,6 +30,10 @@ export class IsActivePipe implements PipeTransform {
       return true
     }
 
+    else if(link =='management/profiles' && currentUrl.includes('profiles')){
+      return true
+    }
+
     else if (link === '/admin' && currentUrl === '/admin') {
       return true;
     }

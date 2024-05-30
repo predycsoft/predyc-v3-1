@@ -50,6 +50,7 @@ import { StudyTimeMonthlyLineChartComponent } from './business-pages/dashboard/u
 import { SharedModule } from 'projects/predyc-business/src/shared/shared.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CertificationsTestComponent } from './business-pages/management/certificationsTest/certificationsTest.component';
+import { ProfilesListComponent } from './business-pages/management/profiles-list/profiles-list.component';
 
 
 @NgModule({
@@ -62,6 +63,7 @@ import { CertificationsTestComponent } from './business-pages/management/certifi
     ValidationComponent,
     SettingsComponent,
     MyTeamComponent,
+    ProfilesListComponent,
     NotificationsComponent,
     StudentComponent,
     MainComponent,

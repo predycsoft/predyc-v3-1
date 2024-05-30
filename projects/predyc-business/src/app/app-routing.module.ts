@@ -22,6 +22,7 @@ import { MigrationsComponent } from '../shared/components/migrations/migrations.
 import { CertificationsTestComponent } from './business-pages/management/certificationsTest/certificationsTest.component';
 import { LiveCoursesComponent } from '../shared/components/live-courses/live-courses/live-courses.component';
 import { CreateLiveCourseComponent } from '../shared/components/live-courses/create-live-course/create-live-course.component';
+import { ProfilesListComponent } from './business-pages/management/profiles-list/profiles-list.component';
 
 
 const MAIN_TITLE = 'Predyc - '
@@ -52,6 +53,9 @@ const routes: Routes = [
           {path:"notifications", title: MAIN_TITLE + 'Notificaciones', component: NotificationsComponent, canActivate: [AuthGuard]},
           {path:"students/:uid", title: MAIN_TITLE + 'Mi equipo', component: StudentComponent, canActivate: [AuthGuard]},
           {path:"certifications", title: MAIN_TITLE + 'Certificaciones', component: CertificationsTestComponent, canActivate: [AuthGuard]},
+
+          {path:"profiles", title: MAIN_TITLE + 'Perfiles', component: ProfilesListComponent, canActivate: [AuthGuard]},
+
         ]
       },
       {path:"validation", title: MAIN_TITLE + 'Validación de competencias', component: ValidationComponent, canActivate: [AuthGuard]},

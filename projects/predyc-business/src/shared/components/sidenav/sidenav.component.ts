@@ -39,6 +39,11 @@ export class SideNavComponent {
       icon: "../../assets/iconsUI/management-1.svg",
     },
     {
+      name: "Perfiles",
+      link: "management/profiles",
+      icon: "../../assets/iconsUI/task--add.svg",
+    },
+    {
       name: "Cursos",
       link: "management/courses",
       icon: "../../assets/iconsUI/courses-1.svg",
