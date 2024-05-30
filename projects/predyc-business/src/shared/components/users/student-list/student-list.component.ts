@@ -119,18 +119,25 @@ export class StudentListComponent {
               const sortRitmo = params['sortRitmo'] || '';
               const sortRatingPoints = params['sortRatingPoints'] || '';
               const sortDepartamento =  params['sortDepartamento'] || '';
+              const sortDatesPlan =  params['sortDatesPlan'] || '';
+              const sortHoras =  params['sortHoras'] || '';
+              const sortNombre = params['sortNombre'] || '';
+
               this.ritmoFilter = ritmoFilter
               this.filtroDepartamento = departmentFilter
               this.filtroUltimaActividad = filtroUltimaActividad
               this.sortUltimaActividad = sortUltimaActividad
               this.sortRitmo = sortRitmo
               this.sortRatingPoints = sortRatingPoints
+              this.sortDatesPlan = sortDatesPlan
               this.sortDepartamento = sortDepartamento
+              this.sortHoras = sortHoras
+              this.sortNombre = sortNombre
 
               // Obtener el orden de los sorts desde los parámetros de la URL
               const urlParams = new URLSearchParams(window.location.search);
               urlParams.forEach((value, key) => {
-                if (key === 'sortUltimaActividad' || key === 'sortRitmo' || key === 'sortRatingPoints' || key ==='sortDepartamento') {
+                if (key === 'sortUltimaActividad' || key === 'sortRitmo' || key === 'sortRatingPoints' || key ==='sortDepartamento' || key ==='sortDatesPlan' || key === 'sortHoras' || key === 'sortNombre') {
                   sortOrder.push({ key, value });
                 }
               sortOrder = sortOrder.reverse();
@@ -160,14 +167,46 @@ export class StudentListComponent {
 
         console.log('sort',sort)
 
+        if(sort.key === 'sortNombre'){
+
+          if (sort.value === 'up') {
+            users = users.sort((a, b) => a.displayName.localeCompare(b.displayName));
+          }
+          if (sort.value === 'down') {
+            users = users.sort((a, b) => b.displayName.localeCompare(a.displayName));
+          }
+
+        }
+
+        if(sort.key === 'sortHoras'){
+
+          if (sort.value === 'up') {
+            users = users.sort((a, b) => a.targetHours - b.targetHours);
+          }
+          if (sort.value === 'down') {
+            users = users.sort((a, b) => b.targetHours - a.targetHours);
+          }
+
+        }
+
+        if(sort.key === 'sortDatesPlan'){
+
+          if (sort.value === 'up') {
+            users = users.sort((a, b) => a.dataEndPlan - b.dataEndPlan);
+          }
+          if (sort.value === 'down') {
+            users = users.sort((a, b) => b.dataEndPlan - a.dataEndPlan);
+          }
+
+        }
 
         if (sort.key === 'sortDepartamento') {
 
           if (sort.value === 'up') {
-            users = users.sort((a, b) => a.department - b.department);
+            users = users.sort((a, b) => a.department.localeCompare(b.department));
           }
           if (sort.value === 'down') {
-            users = users.sort((a, b) => b.department - a.department);
+            users = users.sort((a, b) => b.department.localeCompare(a.department));
           }
           
         }
@@ -358,9 +397,6 @@ export class StudentListComponent {
         const normalizedDepartment = this.removeAccents(String(x.department).toLocaleLowerCase());
         const normalizedProfile = this.removeAccents(String(x.profile).toLocaleLowerCase());
         const normalizedLastActivity = this.removeAccents(String(x.activityStatusText).toLocaleLowerCase());
-
-        console.log('normalizedLastActivity',normalizedLastActivity)
-
     
         return normalizedMail.includes(normalizedSearchTerm) ||
                normalizedDisplayName.includes(normalizedSearchTerm) ||
@@ -461,24 +497,29 @@ export class StudentListComponent {
 
         if(targetHours){
           progreso = ((hours/60)*100)/targetHours
+          targetHours = Math.round(targetHours)
         }
+
+        let dateLastActivity = null
 
         // Determinar el estado de la actividad
         let activityStatus = 'Sin inicio sesión';
         if (user['lastActivityDate']?.seconds) {
-          let date = new Date(user['lastActivityDate'].seconds * 1000)
+          let date = new Date(user['lastActivityDate'].seconds * 1000);
+          date.setHours(0, 0, 0, 0); // Establecer la hora a 00:00:00.000
           activityStatus = date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long' });
+          dateLastActivity = date.getTime()
         } else if (!user['lastActivityDate']?.seconds && this.examenInicial && test.length === 0 && user['lastViewDate']) {
           activityStatus = 'Sin diagnostico completado';
           actStatus.push(activityStatus)
         } else if (!user['lastActivityDate']?.seconds && this.examenInicial && test.length > 0) {
           activityStatus = 'Sin clases vistas';
           actStatus.push(activityStatus)
-        }
-        
+        }        
+
         return {
           displayName: user.displayName,
-          department: this.departments.find(department => department.id === user.departmentRef?.id)?.name,
+          department: this.departments.find(department => department.id === user.departmentRef?.id)?.name ? this.departments.find(department => department.id === user.departmentRef?.id)?.name : '',
           idDepartment: user.departmentRef?.id,
           idProfile:user.profile?.id,
           hours,
@@ -488,7 +529,7 @@ export class StudentListComponent {
           targetHours,
           dataStarPlan:startDay,
           lastActivity: user['lastActivity']?user['lastActivity']:null,
-          lastActivityDate: user['lastActivityDate']?user['lastActivityDate']['seconds']*1000:null,
+          lastActivityDate: dateLastActivity,
           dataEndPlan:endDay,
           profile: profileName,
           dateLastLogin:user['dateLastLogin']?user['dateLastLogin']['seconds']*1000:null,
@@ -624,6 +665,20 @@ export class StudentListComponent {
     sortRitmo=''
     sortRatingPoints = ''
     sortDepartamento = ''
+    sortDatesPlan=''
+    sortHoras = ''
+    sortNombre = ''
+
+
+
+    cleanDepartments(){
+
+      this.search('sortDepartamento','')
+      setTimeout(() => {
+        this.search('iddepartment','')
+      }, 10);
+
+    }
 
 
 
