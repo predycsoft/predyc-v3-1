@@ -36,7 +36,10 @@ export class MyTeamComponent {
   private profileSubscription: Subscription
   private queryParamsSubscription: Subscription
 
+  filter = false
+
   ngOnInit() {
+    
     this.profileService.loadProfiles()
     this.profileSubscription = this.profileService.getProfiles$().subscribe(profiles => {
       if (profiles){
@@ -45,9 +48,23 @@ export class MyTeamComponent {
       }
     })
     this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
+      this.filter = false; // Inicializar filter en false
+
+      // Verificar si params tiene alguna clave y si no es solo 'page' con valor 1
+      const keys = Object.keys(params);
+      if (keys.length > 0) {
+        // Excluir el caso donde solo hay 'page' con valor 1
+        if (!(keys.length === 1 && keys[0] === 'page' && params['page'] === '1')) {
+          this.filter = true;
+        }
+      }
       const profile = params['profile'] || '';
       this.selectedProfile = profile
     })
+  }
+
+  removeAllFilter(){
+    this.router.navigate(["/management/students"])
   }
 
   onProfileSelectedChange(profile) {

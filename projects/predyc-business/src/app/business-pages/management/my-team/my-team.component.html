@@ -10,8 +10,11 @@
                 <app-profile-selector></app-profile-selector>
                 <app-search-input-box class=""></app-search-input-box>
               </div>
-              <div *ngIf="usersMails" matTooltip="Copiar correos" (click)="copiaExitosa()" class="mgl08">
+              <div *ngIf="usersMails" matTooltip="Copiar correos" (click)="copiaExitosa()" class="mgl08 cursorPointer" >
                 <img [src]="icon.copy" alt="copiar" class="h16px">
+              </div>
+              <div *ngIf="filter" matTooltip="Quitar filtros" (click)="removeAllFilter()" class="mgl08 cursorPointer  ">
+                <img [src]="icon.filterRemove" alt="copiar" class="h16px">
               </div>
             </div>
             <button fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButtonAnim button-animation" style="border-radius: 24px !important;"
