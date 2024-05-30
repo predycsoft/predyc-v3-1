@@ -88,6 +88,7 @@ import { CreateLiveCourseComponent } from './components/live-courses/create-live
 import { DialogEnrollDiplomadosComponent } from "./components/diplomados/dialog-enroll-diplomados/dialog-enroll-diplomados.component";
 import { DialogChooseBaseLiveCourseComponent } from './components/live-courses/dialog-choose-base-live-course/dialog-choose-base-live-course.component';
 import { CalendarLiveCoursesSelectorComponent } from './components/live-courses/calendar-live-courses-selector/calendar-live-courses-selector.component';
+import { ProfileListComponent } from "./components/profiles/student-list/profile-list.component";
 
 
 @NgModule({
@@ -97,6 +98,7 @@ import { CalendarLiveCoursesSelectorComponent } from './components/live-courses/
     NavigateBackComponent,
     StudentProfileComponent,
     StudentListComponent,
+    ProfileListComponent,
     SafePipe,
     CustomDatePipe,
     FormatDurationPipe,
@@ -191,6 +193,7 @@ import { CalendarLiveCoursesSelectorComponent } from './components/live-courses/
     NavigateBackComponent,
     StudentProfileComponent,
     StudentListComponent,
+    ProfileListComponent,
     SafePipe,
     CustomDatePipe,
     FormatDurationPipe,

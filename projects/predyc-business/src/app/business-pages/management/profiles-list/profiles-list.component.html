@@ -13,11 +13,14 @@
               </div> -->
               <div fxLayout="row" fxLayoutAlign=" center" class="h36px radius20 w800px shadow-animation w-45" style="overflow: hidden;" >
                 <app-search-input-box class="fw"></app-search-input-box>
+              </div>
+              <div *ngIf="filter" matTooltip="Quitar filtros" (click)="removeAllFilter()" class="mgl08 cursorPointer  ">
+                <img [src]="icon.filterRemove" alt="copiar" class="h16px">
+              </div>
             </div>
-            </div>
-            <button fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButtonAnim button-animation" style="border-radius: 24px !important;">
+            <button [routerLink]="['/management/profiles/new']" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButtonAnim button-animation" style="border-radius: 24px !important;">
               <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="">
-              Nuevo Usuario
+              Nuevo Perfil
             </button>
           </div>
         <!-- <div class="w-25 pdl20">
@@ -26,7 +29,7 @@
     </div>
     <div fxLayout="row">
         <div class=" fw vh50" >
-            <!-- <app-student-list (onStudentSelected)="onStudentSelected($event)" (studentsOnList)="usersOnListProcess($event)"/> -->
+            <app-profile-list/>
         </div>
     </div>
 </div>    

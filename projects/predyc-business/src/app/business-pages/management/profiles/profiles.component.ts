@@ -307,7 +307,7 @@ export class ProfilesComponent {
 
   onCancel() {
     if (this.id === "new") {
-      this.router.navigate(["/management/students"]);
+      this.router.navigate(["/management/profiles"]);
     } else {
       this.profileName = this.profileBackup.name;
       this.profileDescription = this.profileBackup.description;
