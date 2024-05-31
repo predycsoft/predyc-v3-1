@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -40,6 +40,7 @@ export class LiveCourseStudentListComponent {
 
 	@Input() idBaseLiveCourse: string
 	@Input() idLiveCourseSon: string
+	@Output() userEmailsChanged = new EventEmitter<string[]>();
 
 	displayedColumns: string[] = ["userEmail", "userName", "diagnosticTest", "finalTest", "certificate", "attendance"];
 
@@ -93,6 +94,9 @@ export class LiveCourseStudentListComponent {
 		  this.paginator.pageIndex = page - 1;
 		  this.dataSource.data = dataTosShow;
 		  this.totalLength = dataTosShow.length;
+		  // Emit the user emails
+		  const userEmails = dataTosShow.map(data => data.userEmail);
+		  this.userEmailsChanged.emit(userEmails);
 		});
 	  }
 

@@ -581,7 +581,21 @@
                                 <span class="ft500 ft14 black " style="margin-top: 5px;">Usuario inscritos</span>
                             </div>
                             <div fxLayout="row" fxLayoutAlign="center" class="w-100">
-                                <app-live-course-student-list class="w-90" [idBaseLiveCourse]="idBaseLiveCourse" [idLiveCourseSon]="idLiveCourseSon" ></app-live-course-student-list>
+                                <app-live-course-student-list class="w-90" [idBaseLiveCourse]="idBaseLiveCourse" [idLiveCourseSon]="idLiveCourseSon" 
+                                (userEmailsChanged)="onUserEmailsChanged($event)"></app-live-course-student-list>
+                            </div>
+                        </div>
+                    </div>
+                </mat-tab>
+                <mat-tab *ngIf="mode === 'edit'" label="Seguimiento">
+                    <div fxLayout="row" fxLayoutAlign="center " class="containerCurso h-100" fxLayoutGap="1.5rem">
+                        <div fxLayout="column" class="radius10 w-95 mgt15 hideScroll shadowLight" style="overflow-y: auto; background-color:rgba(244, 244, 244, 0.362)">
+                            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="mgl10 mgt15 mgr10">
+                                <img [src]="icon.document" class="makeBlue h20px" alt="">
+                                <span class="ft500 ft14 black " style="margin-top: 5px;">Enviar correo</span>
+                            </div>
+                            <div fxLayout="row" fxLayoutAlign="center" class="w-100">
+                                <app-live-course-following class="w-90" [studentEmails]="studentEmails"></app-live-course-following>
                             </div>
                         </div>
                     </div>

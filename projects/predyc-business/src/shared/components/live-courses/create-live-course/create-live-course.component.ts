@@ -260,6 +260,8 @@ export class CreateLiveCourseComponent {
   showErrorSkill = false;
   savingSkill = false
 
+  studentEmails: string[] = []
+
   async ngOnInit(): Promise<void> {
 
     if (this.idLiveCourseSon) this.mode = "edit"
@@ -3566,6 +3568,11 @@ export class CreateLiveCourseComponent {
 
     console.log("session after title edit", session)
     console.log("this.liveCourseData.sessions", this.liveCourseData.sessions)
+  }
+
+  onUserEmailsChanged(emails: string[]): void {
+    console.log("emails in parent", emails)
+    this.studentEmails = emails;
   }
 
 }
