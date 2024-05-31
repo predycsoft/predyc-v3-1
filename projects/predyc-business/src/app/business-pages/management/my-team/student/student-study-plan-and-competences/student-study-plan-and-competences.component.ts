@@ -18,6 +18,7 @@ import { firestoreTimestampToNumberTimestamp } from "projects/shared/utils";
 import annotationPlugin from "chartjs-plugin-annotation";
 import { AlertsService } from "projects/predyc-business/src/shared/services/alerts.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { EnterpriseService } from "projects/predyc-business/src/shared/services/enterprise.service";
 
 
 interface CoursesForExplorer extends CursoJson {
@@ -49,6 +50,8 @@ export class StudentStudyPlanAndCompetencesComponent {
     private alertService: AlertsService,
     private afs: AngularFirestore,
     private modalService: NgbModal,
+    private enterpriseService: EnterpriseService,
+
 
   ) {
     Chart.register(annotationPlugin);
@@ -77,8 +80,19 @@ export class StudentStudyPlanAndCompetencesComponent {
   coursesByStudent;
 
   studyPlanView = true;
+  enterprise
 
   ngOnInit() {
+
+    this.enterpriseService.enterpriseLoaded$.subscribe(isLoaded => {
+      if (isLoaded) {
+        let enterpriseRef = this.enterpriseService.getEnterpriseRef();
+        console.log(enterpriseRef)
+        this.enterprise = this.enterpriseService.getEnterprise();
+        console.log('this.enterprise ',this.enterprise )
+      }
+    })
+
     const userRef = this.userService.getUserRefById(this.student.uid);
     // if the student has a profile, get the data and show the study plan
     this.combinedObservableSubscription = combineLatest([

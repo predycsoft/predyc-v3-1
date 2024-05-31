@@ -90,7 +90,7 @@
                             <span *ngIf="diagnosticTest.certificationTest" class="ft13 ft500 mgr15">  {{diagnosticTest.score | number : '1.0-1'}}/100 </span>
                         </div>
                     </div>
-                    <div *ngIf="!diagnosticTest">
+                    <div *ngIf="!diagnosticTest && enterprise?.examenInicial">
                         <div fxLayout="row" fxLayoutAlign="space-between center" class="" fxLayoutGap="0.5rem">
                             <span class="ft13 ft500 mgl15 mgt15 " style="color: red; ">No ha presentado el examen diagnóstico</span>
                             <img class="h20px mgr20 mgt10 " [src]="icon.redWarning2">
