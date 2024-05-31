@@ -63,6 +63,8 @@ export class LiveCourseService {
                           session.weeksToKeep = sessionSonData?.weeksToKeep;
                           session.sonId = sessionSonData?.id;
                           session.sonFiles = sessionSonData?.sonFiles;
+                          session.vimeoId1 = sessionSonData?.vimeoId1;
+                          session.vimeoId2 = sessionSonData?.vimeoId2;
                           return session;
                         }),
                         catchError(err => {
@@ -223,6 +225,8 @@ export class LiveCourseService {
       date: data.date ? data.date : null,
       weeksToKeep: data.weeksToKeep ? data.weeksToKeep : null,
       sonFiles: data.sonFiles ? data.sonFiles : null,
+      vimeoId1: data.vimeoId1,
+      vimeoId2: data.vimeoId2,
     })
   }
 

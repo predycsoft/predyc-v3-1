@@ -94,7 +94,9 @@ export class DialogChooseBaseLiveCourseComponent {
         date: firstSessionDate,
         liveCourseSonRef: this.liveCourseService.getLiveCourseSonRefById(formValue.baseCourse.id, liveCourseSonId),
         weeksToKeep: 2,
-        sonFiles: []
+        sonFiles: [],
+        vimeoId1: null,
+        vimeoId2: null
       });
       // Save rest of sessions without date
       for (let i = 1; i < this.sessions.length; i++) {
@@ -104,7 +106,9 @@ export class DialogChooseBaseLiveCourseComponent {
           date: null,
           liveCourseSonRef: this.liveCourseService.getLiveCourseSonRefById(formValue.baseCourse.id, liveCourseSonId),
           weeksToKeep: 2,
-          sonFiles: []
+          sonFiles: [],
+          vimeoId1: null,
+          vimeoId2: null
         });
       }
 

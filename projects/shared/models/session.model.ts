@@ -7,8 +7,8 @@ export interface SessionJson {
     description: string
     liveCourseRef: DocumentReference
     duration: number
-    vimeoId1: number
-    vimeoId2 : string
+    // vimeoId1: number
+    // vimeoId2 : string
     files: any[]
     orderNumber: number
 }
@@ -24,8 +24,8 @@ export class Session {
         public description: string,
         public liveCourseRef: DocumentReference,
         public duration: number,
-        public vimeoId1: number,
-        public vimeoId2 : string,
+        // public vimeoId1: number,
+        // public vimeoId2 : string,
         public files: any[],
         public orderNumber: number,
     ) {}
@@ -38,8 +38,8 @@ export class Session {
             SessionJson.description,
             SessionJson.liveCourseRef,
             SessionJson.duration,
-            SessionJson.vimeoId1,
-            SessionJson.vimeoId2,
+            // SessionJson.vimeoId1,
+            // SessionJson.vimeoId2,
             SessionJson.files,
             SessionJson.orderNumber,
         )
@@ -53,8 +53,8 @@ export class Session {
             description:this.description,
             liveCourseRef : this.liveCourseRef,
             duration : this.duration,
-            vimeoId1 : this.vimeoId1,
-            vimeoId2 : this.vimeoId2,
+            // vimeoId1 : this.vimeoId1,
+            // vimeoId2 : this.vimeoId2,
             files : this.files,
             orderNumber : this.orderNumber,
         }
@@ -68,6 +68,8 @@ export interface SessionSonJson {
     weeksToKeep: number
     liveCourseSonRef: DocumentReference
     sonFiles: any[]
+    vimeoId1: number
+    vimeoId2: string
 }
 
 export class SessionSon {
@@ -81,6 +83,8 @@ export class SessionSon {
         public weeksToKeep: number,
         public liveCourseSonRef: DocumentReference,
         public sonFiles: any[],
+        public vimeoId1: number,
+        public vimeoId2: string,
     ) {}
 
     public static fromJson(QuestionJson: SessionSonJson): SessionSon {
@@ -91,6 +95,8 @@ export class SessionSon {
             QuestionJson.weeksToKeep,
             QuestionJson.liveCourseSonRef,
             QuestionJson.sonFiles,
+            QuestionJson.vimeoId1,
+            QuestionJson.vimeoId2,
         )
     }
 
@@ -102,6 +108,8 @@ export class SessionSon {
             weeksToKeep:this.weeksToKeep,
             liveCourseSonRef:this.liveCourseSonRef,
             sonFiles:this.sonFiles,
+            vimeoId1:this.vimeoId1,
+            vimeoId2:this.vimeoId2,
         }
     }
 }
