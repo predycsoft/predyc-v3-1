@@ -881,7 +881,6 @@ export class UserService {
       studentHours +=course.progressTime?course.progressTime:0
     });
 
-    console.log('revisar',studentHours,studentExpectedHours)
 
     let procentaje = studentHours*100/studentExpectedHours
 
@@ -898,11 +897,8 @@ export class UserService {
       performance = "high";
     } else if (procentaje >=50) {
       performance = "medium";
-    } else if(procentaje){
+    } else {
       performance = "low";
-    }
-    else{
-      performance = "no plan";
     }
 
 
