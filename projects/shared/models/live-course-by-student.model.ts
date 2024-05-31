@@ -5,7 +5,8 @@ export interface LiveCourseByStudentJson {
     id: string
     completed: boolean
     userRef: DocumentReference
-    liveCourseRef: DocumentReference
+    liveCourseSonRef: DocumentReference
+    isAttending: boolean
 }
 
 export class LiveCourseByStudent {
@@ -16,7 +17,8 @@ export class LiveCourseByStudent {
         public id: string,
         public completed: boolean,
         public userRef: DocumentReference,
-        public liveCourseRef: DocumentReference,
+        public liveCourseSonRef: DocumentReference,
+        public isAttending: boolean,
     ) {}
 
     public static fromJson(QuestionJson: LiveCourseByStudentJson): LiveCourseByStudent {
@@ -24,7 +26,8 @@ export class LiveCourseByStudent {
             QuestionJson.id,
             QuestionJson.completed,
             QuestionJson.userRef,
-            QuestionJson.liveCourseRef,
+            QuestionJson.liveCourseSonRef,
+            QuestionJson.isAttending,
         )
     }
 
@@ -33,7 +36,8 @@ export class LiveCourseByStudent {
             id:this.id,
             completed:this.completed,
             userRef : this.userRef,
-            liveCourseRef : this.liveCourseRef,
+            liveCourseSonRef : this.liveCourseSonRef,
+            isAttending : this.isAttending,
         }
     }
 }

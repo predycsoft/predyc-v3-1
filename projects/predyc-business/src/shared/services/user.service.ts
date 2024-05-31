@@ -1,30 +1,11 @@
 import { Injectable } from "@angular/core";
 import { User, UserJson } from "projects/shared/models/user.model";
-import {
-  AngularFirestore,
-  CollectionReference,
-  DocumentReference,
-  Query,
-} from "@angular/fire/compat/firestore";
-import {
-  BehaviorSubject,
-  combineLatest,
-  filter,
-  firstValueFrom,
-  map,
-  Observable,
-  shareReplay,
-  Subscription,
-  switchMap,
-} from "rxjs";
+import { AngularFirestore, CollectionReference, DocumentReference, Query } from "@angular/fire/compat/firestore";
+import { BehaviorSubject, combineLatest, filter, firstValueFrom, map, Observable, shareReplay, Subscription, switchMap,} from "rxjs";
 import { Subscription as SubscriptionClass } from "projects/shared/models/subscription.model";
 import { EnterpriseService } from "./enterprise.service";
 import { AlertsService } from "./alerts.service";
-import {
-  firestoreTimestampToNumberTimestamp,
-  generateSixDigitRandomNumber,
-  obtenerUltimoDiaDelMes,obtenerUltimoDiaDelMesAnterior
-} from "projects/shared/utils";
+import { firestoreTimestampToNumberTimestamp, generateSixDigitRandomNumber, obtenerUltimoDiaDelMes, obtenerUltimoDiaDelMesAnterior } from "projects/shared/utils";
 import { AngularFireFunctions } from "@angular/fire/compat/functions";
 import { Profile } from "projects/shared/models/profile.model";
 import { ProfileService } from "./profile.service";
@@ -387,15 +368,6 @@ export class UserService {
       return []; // Asegurarse de devolver un arreglo vacío en caso de error
     }
   }
-  
-
-  
-  
-  
-  
-
-
-
 
   async fixUsersEmpresasLastActivity() {
     console.log('inicio fixUsersLastActivity');
@@ -455,9 +427,6 @@ export class UserService {
     console.log('fin fixUsersLastActivity');
   }
   
-  
-
-
 
   async addUser(newUser: User): Promise<void> {
     // console.log(newUser.name);
@@ -839,8 +808,6 @@ export class UserService {
     });
     return totalScore >= 0 ? totalScore : 0;
   }
-
-  
 
   // getPerformanceWithDetails(student): { performance:"no plan" | "high" | "medium" | "low", score: number, grade: number } {
   getPerformanceWithDetails(

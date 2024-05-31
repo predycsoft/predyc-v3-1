@@ -113,7 +113,7 @@ export class CreateLiveCourseComponent {
 
 
   mode: "create" | "edit-base" | "edit" // "edit" for live course sessions sons edition
-  idCurso = this.route.snapshot.paramMap.get("idCurso")
+  idBaseLiveCourse = this.route.snapshot.paramMap.get("idCurso")
   idLiveCourseSon = this.route.snapshot.paramMap.get("idLiveCourseSon")
 
 
@@ -263,7 +263,7 @@ export class CreateLiveCourseComponent {
   async ngOnInit(): Promise<void> {
 
     if (this.idLiveCourseSon) this.mode = "edit"
-    else if (!this.idLiveCourseSon && this.idCurso) this.mode = "edit-base"
+    else if (!this.idLiveCourseSon && this.idBaseLiveCourse) this.mode = "edit-base"
     else this.mode = "create"
 
     this.filteredinstructores = this.instructoresForm.valueChanges.pipe(
@@ -327,7 +327,7 @@ export class CreateLiveCourseComponent {
     }
     // EDIT MODE
     else {
-      this.liveCourseService.getLiveCourseWithSessionsById$(this.idCurso, this.idLiveCourseSon).pipe(take(1)).subscribe(liveCourseData => {
+      this.liveCourseService.getLiveCourseWithSessionsById$(this.idBaseLiveCourse, this.idLiveCourseSon).pipe(take(1)).subscribe(liveCourseData => {
 
         console.log("liveCourseData in onInit()", liveCourseData)
 
@@ -391,7 +391,7 @@ export class CreateLiveCourseComponent {
           this.instructoresForm = new FormControl({ value: instructor, disabled: true });
         }
 
-        // this.activityClassesService.getActivityAndQuestionsForCourse(this.idCurso, true).pipe(filter(activities=>activities!=null),take(1)).subscribe(activities => {
+        // this.activityClassesService.getActivityAndQuestionsForCourse(this.idBaseLiveCourse, true).pipe(filter(activities=>activities!=null),take(1)).subscribe(activities => {
         //   console.log('activities clases', activities);
         //   this.activitiesCourse = activities;
         //   this.modulos.forEach(module => {
@@ -962,7 +962,7 @@ export class CreateLiveCourseComponent {
         }
       });
 
-      await this.liveCourseService.updateLiveCourseSonMeetingLinkAndIdentifierText(this.idCurso, this.idLiveCourseSon, this.formNewCourse.value.meetingLink, this.formNewCourse.value.identifierText)
+      await this.liveCourseService.updateLiveCourseSonMeetingLinkAndIdentifierText(this.idBaseLiveCourse, this.idLiveCourseSon, this.formNewCourse.value.meetingLink, this.formNewCourse.value.identifierText)
       for (let session of this.liveCourseData.sessions) {
         const date = session.dateFormatted ? this.parseDateString(session.dateFormatted) : null
         const sessionSonDataToUpdate = {
@@ -2158,7 +2158,7 @@ export class CreateLiveCourseComponent {
 
         let classDelete = {
           claseInId: session.id,
-          cursoId: this.idCurso,
+          cursoId: this.idBaseLiveCourse,
           // moduloInId: moduloIn.id,
           // activityId: claseIn?.activity?.id
         }
