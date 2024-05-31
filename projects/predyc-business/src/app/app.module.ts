@@ -5,6 +5,8 @@ import { environment } from 'projects/predyc-business/src/environments/environme
 import { AngularFireModule } from '@angular/fire/compat';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { SETTINGS} from '@angular/fire/compat/firestore';
+
 
 // Components
 import { LoginComponent } from './login/login.component';
@@ -100,6 +102,7 @@ import { ProfilesListComponent } from './business-pages/management/profiles-list
     NgbModule,
   ],
   providers: [
+    { provide: SETTINGS, useValue: { ignoreUndefinedProperties: true } },
     {
       provide: USE_FIRESTORE_EMULATOR,
       useValue: environment.useEmulators ? ['localhost', 8080] : undefined,
