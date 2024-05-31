@@ -149,7 +149,8 @@ export class LiveCourseStudentListComponent {
 
 	async createTestData() {
 		console.log("Started")
-		const querySnapshot = await this.afs.collection(User.collection).ref.where("email", "==", "arturo.r@test.com").get();
+		// const querySnapshot = await this.afs.collection(User.collection).ref.where("email", "==", "arturo.r@test.com").get();
+		const querySnapshot = await this.afs.collection(User.collection).ref.where("email", "==", "fabi.negrette@test.com").get();
 		let userRef = null
 		if (!querySnapshot.empty) userRef = querySnapshot.docs[0].ref
 

@@ -25,16 +25,14 @@ export class LiveCourseFollowingComponent {
 
   ngOnInit() {
     this.emailSent = false
-    console.log("this.studentEmails", this.studentEmails)
-  }
+    }
 
   async onSubmit() {
     let sender = "desarrollo@predyc.com"
+    // let recipients = this.studentEmails
     let recipients = ["diegonegrette42@gmail.com"]
     let subject = "Aviso de curso en vivo."
     let text = this.emailContent
-
-    console.log("this.studentEmails", this.studentEmails)
 
     try {
       this.emailSent = true

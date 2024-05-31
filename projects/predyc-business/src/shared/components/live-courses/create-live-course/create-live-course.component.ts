@@ -3571,7 +3571,7 @@ export class CreateLiveCourseComponent {
   }
 
   onUserEmailsChanged(emails: string[]): void {
-    console.log("emails in parent", emails)
+    // console.log("emails in parent", emails)
     this.studentEmails = emails;
   }
 
