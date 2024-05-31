@@ -17,12 +17,21 @@
                 <app-search-input-box class="fw"></app-search-input-box>
                 
             </div>
-              <div *ngIf="usersMails" matTooltip="Copiar correos" (click)="copiaExitosa()" class="mgl08 cursorPointer" >
+              <!-- <div *ngIf="usersMails" (click)="copiaExitosa()" class="mgl08 cursorPointer" >
                 <img [src]="icon.copy" alt="copiar" class="h16px">
-              </div>
-              <div *ngIf="filter" matTooltip="Quitar filtros" (click)="removeAllFilter()" class="mgl08 cursorPointer  ">
-                <img [src]="icon.filterRemove" alt="copiar" class="h16px">
-              </div>
+                <span class="ft12">Copiar correos</span>
+              </div> -->
+
+              <button *ngIf="usersMails" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="grayButton button-animation mgl05" style="border-radius: 24px !important;"
+              (click)="copiaExitosa()">
+              <img [src]="icon.copy" class="h16px pdr05" alt="">
+              <span>Copiar correos</span>
+              </button>
+              <button *ngIf="filter" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="grayButton button-animation mgl05" style="border-radius: 24px !important;"
+              (click)="removeAllFilter()">
+              <img [src]="icon.filterRemove" class="h16px pdr05" alt="">
+              <span>Quitar filtros</span>
+              </button>
             </div>
             <button fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButtonAnim button-animation" style="border-radius: 24px !important;"
               (click)="createNewStudent()">

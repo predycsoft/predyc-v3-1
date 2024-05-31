@@ -70,17 +70,31 @@ export class StudyTimeMonthlyChartComponent {
     return ultimoDiaDelMes;
   }
 
+  getPreviousMonthDate(date, monthsToSubtract) {
+    const newDate = new Date(date);
+    newDate.setDate(1); // Establecer el día al 1 para evitar desbordamientos de mes
+    newDate.setMonth(newDate.getMonth() - monthsToSubtract);
+
+    // Ajustar al último día del mes si es necesario
+    const lastDayOfPreviousMonth = new Date(newDate.getFullYear(), newDate.getMonth() + 1, 0).getDate();
+    if (newDate.getDate() > lastDayOfPreviousMonth) {
+        newDate.setDate(lastDayOfPreviousMonth);
+    }
+
+    return newDate;
+}
+
   getDataGraph(){
     this.data = []
     let now = new Date();
     let currentMonth = now.getUTCMonth();
     for(let i=0; i<12; i++) {
-        let month = subMonths(now, i);
-        // const utcDate = new Date(Date.UTC(month.getUTCFullYear(), month.getUTCMonth(), month.getUTCDay(), month.getUTCHours(), month.getUTCMinutes(), month.getUTCSeconds()))
+      let month = this.getPreviousMonthDate(now, i);
+      // const utcDate = new Date(Date.UTC(month.getUTCFullYear(), month.getUTCMonth(), month.getUTCDay(), month.getUTCHours(), month.getUTCMinutes(), month.getUTCSeconds()))
         // let label = format(utcDate, 'MMM');
         var d = new Date();
         d.setMonth(d.getMonth() - i);
-        const monthLabel = d.toLocaleString('default', { month: 'short' });
+        const monthLabel = month.toLocaleString('default', { month: 'short' });
         let label = monthLabel
         let value = this.logs.reduce((total, log) => {
             let logDate = new Date(log.endDate);

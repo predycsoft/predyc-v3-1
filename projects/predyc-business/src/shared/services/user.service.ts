@@ -846,11 +846,7 @@ export class UserService {
   getPerformanceWithDetails(
     userStudyPlan
   ): "no plan" | "high" | "medium" | "low" | "no iniciado" {
-    let delayedCourses = 0;
-    let delayedMoreThan30Days = false;
-    // let completedCourses = 0;
-    // let totalScore = 0;
-    // let totalGrade = 0;
+
     const today = new Date().getTime();
 
     let targetComparisonDate = today;
@@ -888,52 +884,8 @@ export class UserService {
     let procentaje = studentHours*100/studentExpectedHours
 
 
-    // userStudyPlan.forEach((course) => {
-    //   let delayTime = 0;
-    //   let delayDays = 0;
-
-    //   let dateEnd = firestoreTimestampToNumberTimestamp(course?.dateEnd);
-    //   let dateEndPlan = obtenerUltimoDiaDelMes(
-    //     firestoreTimestampToNumberTimestamp(course?.dateEndPlan)
-    //   );
-    //   if (course.dateEnd) {
-    //     targetComparisonDate = dateEnd;
-    //     delayTime = targetComparisonDate - dateEndPlan;
-    //     delayDays = delayTime / (24 * 60 * 60 * 1000);
-    //     if (delayDays >= 1) {
-    //       console.log('CursoEndDaleyed',course)
-    //       // Delayed course
-    //       delayedCourses++;
-    //       if (delayDays >= 30) {
-    //         delayedMoreThan30Days = true;
-    //       }
-    //     }
-    //   } else if (targetComparisonDate > dateEndPlan) {
-    //     // Not completed and delayed course
-    //     delayedCourses++;
-    //     delayTime = targetComparisonDate - dateEndPlan;
-    //     delayDays = delayTime / (24 * 60 * 60 * 1000);
-    //     if (delayDays >= 30) {
-    //       delayedMoreThan30Days = true;
-    //     }
-    //   }
-    // });
-
     let performance: "no plan" | "high" | "medium" | "low" | "no iniciado";
     
-    // console.log('userStudyPlan',userStudyPlan)
-    // let validator = userStudyPlan.find((x) => x.progressTime > 0);
-    // if (!validator && userStudyPlan.length > 0) {
-    //   performance = "no iniciado";
-    // } else if (userStudyPlan.length == 0) {
-    //   performance = "no plan";
-    // } else if (delayedCourses === 0) {
-    //   performance = "high";
-    // } else if (delayedCourses === 1 && !delayedMoreThan30Days) {
-    //   performance = "medium";
-    // } else {
-    //   performance = "low";
-    // }
 
     let validator = userStudyPlan.find((x) => x.progressTime > 0);
     if (!validator && userStudyPlan.length > 0) {
@@ -948,8 +900,6 @@ export class UserService {
       performance = "low";
     }
 
-    // const score = totalScore >= 0 ? totalScore: 0;
-    // const grade = completedCourses > 0 ? totalGrade/completedCourses : 0;
 
     return performance;
   }

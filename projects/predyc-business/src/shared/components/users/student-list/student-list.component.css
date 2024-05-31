@@ -91,3 +91,7 @@ table.mat-table tfoot tr {
   .contact-link:hover {
     color: var(--blue-6) !important
   }
+
+  tr.inactive-row td {
+    background-color: var(--gray-3) !important;
+  }

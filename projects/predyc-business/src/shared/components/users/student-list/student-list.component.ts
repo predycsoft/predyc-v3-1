@@ -562,7 +562,7 @@ export class StudentListComponent {
           lastViewDate:user['lastViewDate']?user['lastViewDate']['seconds']*1000:null,
           //ratingPoints: this.userService.getRatingPointsFromStudyPlan(courses, this.courses),
           ratingPoints: Math.round(progreso),
-          rhythm: this.userService.getPerformanceWithDetails(courses),
+          rhythm:user.status =='active'? this.userService.getPerformanceWithDetails(courses):'SinLicencia',
           uid: user.uid,
           status:user.status =='active'? 'active':'inactive',
           photoUrl: user.photoUrl,

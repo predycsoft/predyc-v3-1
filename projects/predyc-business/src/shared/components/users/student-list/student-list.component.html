@@ -221,29 +221,31 @@
                 <div *ngIf="user.rhythm === 'no plan'" class="chip backGray3"  fxLayout="row" fxLayoutAlign="center center" style="background-color: #ff999961;">
                     <img [src]="icon.warning" alt="" class=" pdr08   h12px" >
                     <span class="ft13 nowrap ft500 gray-8">Sin plan</span>
-
                 </div>
-                <div matTooltip="No ha presentado la prueba diagnóstica" *ngIf="user.rhythm === 'no iniciado' && user.test.length==0" class="chip backRed1 "  fxLayout="row" fxLayoutAlign="center center" style="background-color: #ff999961;">
-                    <img [src]="icon.warning" alt="" class="makeRed  pdl03 pdr03" >
-                    <span *ngIf="user" class="ft13 nowrap ft500 red-5">No iniciado</span>
+                <div matTooltip="No ha presentado la prueba diagnóstica" *ngIf="user.rhythm === 'no iniciado' && user.test.length==0 && this.examenInicial" class="chip backGray3 "  fxLayout="row" fxLayoutAlign="center center" style="background-color: #ff999961;">
+                    <!-- <img [src]="icon.warning" alt="" class="pdl03 pdr03" > -->
+                    <span *ngIf="user" class="ft13 nowrap ft500 gray-8">Sin Diagnostico</span>
                 </div>
-                <div *ngIf="user.rhythm === 'no iniciado' && user.test.length>0"  class="chip newYellow2b "   fxLayout="row" fxLayoutAlign="center center">
-                    <img [src]="icon.warning" alt="" class="makeOrange  pdl03 pdr03" >
-                    <span class="ft13 nowrap ft500 " style="color: rgb(221, 144, 0);" >No iniciado</span>
+                <div *ngIf="user.rhythm === 'no iniciado' && (user.test.length>0 || !this.examenInicial) "  class="chip backGray3 "   fxLayout="row" fxLayoutAlign="center center">
+                    <!-- <img [src]="icon.warning" alt="" class="pdl03 pdr03" > -->
+                    <span class="ft13 nowrap ft500 gray-8"  >Sin Clases</span>
+                </div>
+                <div *ngIf="user.rhythm === 'SinLicencia' "  class="chip backGray3 "   fxLayout="row" fxLayoutAlign="center center">
+                    <!-- <img [src]="icon.warning" alt="" class="pdl03 pdr03" > -->
+                    <span class="ft13 nowrap ft500 gray-8"  >Sin Licencia</span>
                 </div>
             </td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <ng-container>
-            <tr
-                mat-row
+            <tr mat-row
                 *matRowDef="let user; columns: displayedColumns;"
                 (click)="onSelectUser(user)"
                 class="cursorPointer move-right"
-                >
+                [ngClass]="{'inactive-row': user.status === 'inactive' && statusFilter!='inactive'}">
             </tr>
-        </ng-container>
+          </ng-container>
 
         <!-- Row shown when there is no matching data. -->
         <tr class="mat-row" *matNoDataRow>

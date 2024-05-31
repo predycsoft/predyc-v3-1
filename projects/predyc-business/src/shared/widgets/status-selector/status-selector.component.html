@@ -1,7 +1,7 @@
 <div class="backGray2 pdl10 pdr10 fh" fxLayout="row" fxLayoutAlign=" center">
     <select class="catSelect cursorPointer" [(ngModel)]="selectedStatus" (change)="onProfileSelectedChange()">
         <option *ngIf="origin == 'StudentsComponent' || origin == 'licenciasEmpresa' || origin == 'usersEmpresa'" value="all">Todos los usuarios</option>
-        <option value="active">Licencias activos</option>
+        <option value="active">Licencias activas</option>
         <option value="inactive">Licencias inactivas</option>
         <option *ngIf="origin!='licenciasEmpresa' && origin!='usersEmpresa'" value="particular">Usuarios particulares</option>
         <option *ngIf="origin!='licenciasEmpresa' && origin!='usersEmpresa'" value="enterprise">Usuarios de empresa</option>
