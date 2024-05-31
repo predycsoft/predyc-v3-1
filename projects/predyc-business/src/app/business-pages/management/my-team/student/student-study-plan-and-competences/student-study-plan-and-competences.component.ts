@@ -847,6 +847,7 @@ export class StudentStudyPlanAndCompetencesComponent {
       }, 200)
     }
     else{
+      console.log('diagnosticTest',this.diagnosticTest)
       console.log('no valid')
     }
 
