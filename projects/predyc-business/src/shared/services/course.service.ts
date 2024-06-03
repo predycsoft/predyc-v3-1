@@ -809,7 +809,7 @@ export class CourseService {
   ): Observable<CourseByStudent[]> {
     return this.afs
       .collection<CourseByStudent>(CourseByStudent.collection, (ref) =>
-        ref.where("userRef", "==", userRef).where("inactive", "==", true)
+        ref.where("userRef", "==", userRef).where("active", "==", false)
       )
       .valueChanges();
   }
