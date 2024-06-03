@@ -96,9 +96,9 @@ export class ProfileListComponent {
         this.profileService.loadProfiles()
         
         this.profilesSubscription = combineLatest([this.profileService.getProfiles$(),this.courseService.getCourses$()]).subscribe(([profiles,cursos]) => {
-            this.profiles = profiles.filter(x=>!x.enterprise)
+            this.profiles = profiles.filter(x=>x.enterpriseRef)
             this.courses = cursos
-            console.log('perfiles',profiles)
+            console.log('perfilesAfterFilter',profiles)
             this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
               let sortOrder = []
               const page = Number(params['page']) || 1;

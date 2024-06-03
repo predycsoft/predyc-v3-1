@@ -98,9 +98,10 @@ export class StudentStudyPlanAndCompetencesComponent {
     this.combinedObservableSubscription = combineLatest([
       this.courseService.getCourses$(),
       this.courseService.getActiveCoursesByStudent$(userRef),
+      this.courseService.getInActiveCoursesByStudent$(userRef),
       this.categoryService.getCategories$(),
       this.skillService.getSkills$(),
-    ]).subscribe(([coursesData, coursesByStudent, categories, skills]) => {
+    ]).subscribe(([coursesData, coursesByStudent,coursesInActiveByStudent, categories, skills]) => {
       this.categories = categories;
       this.skills = skills;
       this.studyPlan = [];
@@ -115,6 +116,13 @@ export class StudentStudyPlanAndCompetencesComponent {
             this.coursesByStudent = coursesByStudent.filter(x=>x.active && x.dateStartPlan); // active courses
             // Studyplan case
             // if (!coursesByStudent[0].isExtraCourse ||) {
+            if(coursesInActiveByStudent.length>0){
+              this.buildInactiveCourses(coursesInActiveByStudent,coursesData)
+              console.log('coursesInActiveByStudent',this.inactiveCourses)
+              this.inactiveCourses.sort((a, b) => {
+                return b.progress - a.progress;
+              });
+            }
             if(this.coursesByStudent.length>0){
               this.studyPlanView = this.showInitForm ? false : true;
               console.log('datos revisar',coursesByStudent,coursesData)
@@ -242,6 +250,56 @@ export class StudentStudyPlanAndCompetencesComponent {
   }
 
   studyPlanDuration=0;
+
+  inactiveCourses = []
+
+  buildInactiveCourses(coursesByStudent: CourseByStudent[], coursesData){
+
+    coursesByStudent.forEach((courseByStudent) => {
+      // console.log("courseByStudent.id", courseByStudent.id)
+      const courseData = coursesData.find(
+        (courseData) => courseData.id === courseByStudent.courseRef.id
+      );
+      const skills = courseData.skillsRef.map((skillRef) => {
+        return this.skills.find((skill) => skill.id === skillRef.id);
+      });
+      const categories = skills.map((skill) => {
+        return this.categories.find(
+          (category) => category.id === skill.category.id
+        );
+      });
+
+      if(courseData){
+        const studyPlanData = {
+          duration: courseData.duracion / 60,
+          courseTitle: courseData.titulo,
+          dateStartPlan: firestoreTimestampToNumberTimestamp(
+            courseByStudent.dateStartPlan
+          ),
+          dateEndPlan: firestoreTimestampToNumberTimestamp(
+            courseByStudent.dateEndPlan
+          ),
+          dateStart: firestoreTimestampToNumberTimestamp(
+            courseByStudent.dateStart
+          ),
+          dateEnd: firestoreTimestampToNumberTimestamp(courseByStudent.dateEnd),
+          progress:courseByStudent.progress,
+          isExtraCourse:courseByStudent.isExtraCourse,
+          finalScore: courseByStudent.finalScore,
+          id: courseByStudent.courseRef.id,
+          courseByStudentId: courseByStudent.id
+        };
+
+        if(!this.inactiveCourses.find(x=>x.id == studyPlanData.id)){
+          this.inactiveCourses.push(studyPlanData)
+        }
+  
+      }
+
+
+    });
+
+  }
 
   buildMonths(coursesByStudent: CourseByStudent[], coursesData) {
     const months = {};
