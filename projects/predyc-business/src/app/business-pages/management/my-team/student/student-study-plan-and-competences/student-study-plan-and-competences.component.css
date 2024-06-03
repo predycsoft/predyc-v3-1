@@ -128,3 +128,10 @@
    */
   overflow: auto;
 }
+.course-type {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 100%; /* Asegura que el contenido esté centrado verticalmente */
+}

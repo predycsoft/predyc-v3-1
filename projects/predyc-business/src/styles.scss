@@ -9,6 +9,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Lora&family=Open+Sans&display=swap');
 
+@import '@angular/material/theming';
+
+// Define your color palettes
+$primary: mat-palette($mat-blue);
+$accent: mat-palette($mat-amber);
+
+// Create the theme object (a light theme)
+$theme: mat-light-theme((
+  color: (
+    primary: $primary,
+    accent: $accent,
+  )
+));
+
+// Include the theme styles
+@include angular-material-theme($theme);
+
+
 @font-face {
   font-family: "Gordita";
   src: local("Gordita"), url(./assets/fonts/Gordita/Gordita-Regular.otf) format("opentype");
