@@ -37,6 +37,7 @@ interface LiveCourseData extends LiveCourseJson {
   sessions: SessionData[],
   meetingLink: string,
   identifierText: string,
+  emailLastDate: any,
   addClassMode: boolean,
   isInvalid: boolean,
   InvalidMessages: string[],
@@ -355,7 +356,7 @@ export class CreateLiveCourseComponent {
           InvalidMessages: []
         };
 
-        let enterpriseREf = this.enterpriseService.getEnterpriseRef()
+        // let enterpriseREf = this.enterpriseService.getEnterpriseRef()
         // if(!this.user.isSystemUser && !(curso.enterpriseRef.id == enterpriseREf.id)){
         //   this.router.navigate(["management/courses"])
         // }
@@ -421,6 +422,7 @@ export class CreateLiveCourseComponent {
         photoUrl: '',
         meetingLink: '',
         identifierText: '',
+        emailLastDate: null,
         description: '',
         instructorRef: {} as DocumentReference,
         proximamente: false,

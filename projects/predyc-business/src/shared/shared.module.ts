@@ -91,6 +91,7 @@ import { CalendarLiveCoursesSelectorComponent } from './components/live-courses/
 import { ProfileListComponent } from "./components/profiles/student-list/profile-list.component";
 import { LiveCourseStudentListComponent } from './components/live-courses/create-live-course/live-course-student-list/live-course-student-list.component';
 import { LiveCourseFollowingComponent } from './components/live-courses/create-live-course/live-course-following/live-course-following.component';
+import { CustomDatetimePipe } from './pipes/custom-datetime.pipe';
 
 
 @NgModule({
@@ -150,6 +151,7 @@ import { LiveCourseFollowingComponent } from './components/live-courses/create-l
     CalendarLiveCoursesSelectorComponent,
     LiveCourseStudentListComponent,
     LiveCourseFollowingComponent,
+    CustomDatetimePipe,
   ],
   imports: [
     CommonModule,
@@ -272,7 +274,8 @@ import { LiveCourseFollowingComponent } from './components/live-courses/create-l
     DialogStudentEnrolledCourseDetailComponent,
     MigrationsComponent,
     DialogCreateLicenseComponent,
-    LiveCoursesComponent
+    LiveCoursesComponent,
+    CustomDatetimePipe,
   ],
 
   providers: [VimeoUploadService],

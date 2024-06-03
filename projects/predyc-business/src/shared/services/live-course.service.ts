@@ -15,6 +15,14 @@ export class LiveCourseService {
     private afs: AngularFirestore,
   ) { }
 
+  getLiveCourseById$(liveCourseId: string): Observable<LiveCourse> {
+    return this.afs.collection<LiveCourse>(LiveCourse.collection).doc(liveCourseId).valueChanges()
+  }
+
+  getLiveCourseSonById$(liveCourseId: string, liveCourseSonId: string): Observable<LiveCourseSon> {
+    return this.afs.collection<LiveCourse>(LiveCourse.collection).doc(liveCourseId).collection<LiveCourseSon>(LiveCourseSon.subCollection).doc(liveCourseSonId).valueChanges()
+  }
+
   getLiveCoursesByStudentByUserRef$(userRef: DocumentReference<User>): Observable<LiveCourseByStudent[]> {
     return this.afs.collection<LiveCourseByStudent>(LiveCourseByStudent.collection, (ref) =>ref.where("userRef", "==", userRef)).valueChanges();
   }
@@ -52,7 +60,11 @@ export class LiveCourseService {
           .pipe(
             switchMap((liveCourseSon: LiveCourseSon | undefined) => {
               // Get "meetingLink" and "identifierText"
-              if (liveCourseSon) liveCourse.meetingLink = liveCourseSon.meetingLink; liveCourse.identifierText = liveCourseSon.identifierText;
+              if (liveCourseSon) {
+                liveCourse.meetingLink = liveCourseSon.meetingLink;
+                liveCourse.identifierText = liveCourseSon.identifierText;
+                liveCourse.emailLastDate = liveCourseSon.emailLastDate;
+              }  
 
               return this.getSessionsByLiveCourseRef$(liveCourseRef).pipe(
                 mergeMap((sessions: any[]) => { // Base sessions

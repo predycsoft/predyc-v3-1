@@ -2,7 +2,7 @@
     <div fxLayout="row" fxLayoutAlign="space-between center" class="fw mgt10">
         <span class="ft500 ft14 gray-10">Redactar correo:</span>
         <button *ngIf="!emailSent" class="blueButtonAnim button-animation" style="border-radius: 24px !important" (click)="onSubmit()">
-            <img [src]="icon.send" class="h16px pdr05 makeWhite" alt="" />Enviar
+            <img [src]="icon.send" class="h16px pdr05 makeWhite" alt="" />Enviar a todos los usuarios inscritos
         </button>
     </div>
     <ng-container *ngIf="!emailSent">
@@ -11,10 +11,18 @@
     </ng-container>
     <ng-container *ngIf="emailSent">
         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".75rem" class="fw mgt10">
-            <span class="ft500 ft14 blue-5">Tu correo ha sido enviado!</span>
-            <button *ngIf="!emailContent" class="blueButtonAnim button-animation" style="border-radius: 24px !important" (click)="emailSent = false">
-                <img [src]="icon.add" class="h16px pdr05 makeWhite" alt="" />Redactar nuevo correo
-            </button>
+            <span *ngIf="emailContent" class="ft500 ft14 blue-5">Enviando ...</span>
+            <ng-container *ngIf="!emailContent">
+                <span class="ft500 ft14 gray-8">Tu correo ha sido enviado!</span>
+                <button class="blueButtonAnim button-animation" style="border-radius: 24px !important" (click)="emailSent = false">
+                    <img [src]="icon.add" class="h16px pdr05 makeWhite" alt="" />Redactar nuevo correo
+                </button>
+            </ng-container>
         </div>
     </ng-container>
+    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1rem" class="fw">
+        <span class="ft500 ft14 gray-10">Eviado por ultima vez:</span>
+        <span class="ft500 ft14 blue-5">{{emailLastDate | customDatetime}}</span>
+    </div>
+
 </div>

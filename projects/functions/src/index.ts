@@ -37,3 +37,6 @@ export { checkExpiredSubscriptions, }
 
 import { checkExpiredSubscriptionsAndNotify5DaysBefore, checkDelayedStudyPlans, checkCompletedStudyPlans } from './notifications'
 export { checkExpiredSubscriptionsAndNotify5DaysBefore, checkDelayedStudyPlans, checkCompletedStudyPlans }
+
+import { sendLiveCourseEmail, } from './live-course'
+export { sendLiveCourseEmail, }
