@@ -11,6 +11,8 @@ import { LiveCourse, LiveCourseSon } from 'projects/shared/models/live-course.mo
 import { LiveCourseService } from 'projects/predyc-business/src/shared/services/live-course.service';
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
 import Swal from 'sweetalert2';
+import * as XLSX from "xlsx-js-style";
+
 
 interface DataToShow {
 	id: string
@@ -78,7 +80,7 @@ export class LiveCourseStudentListComponent {
 				map(userData => ({
 					id: liveCourseByStudent.id,
 					userEmail: userData.email,
-					userName: userData.name,
+					userName: userData.displayName,
 					diagnosticTest: null,
 					finalTest: null,
 					certificate: null,
@@ -98,7 +100,7 @@ export class LiveCourseStudentListComponent {
 		  const userEmails = dataTosShow.map(data => data.userEmail);
 		  this.userEmailsChanged.emit(userEmails);
 		});
-	  }
+	}
 
 	onPageChange(page: number): void {
 		this.router.navigate([], {
@@ -137,20 +139,42 @@ export class LiveCourseStudentListComponent {
 			target.checked = originalValue;
 		  }
 		});
-	  }
+	}
 
 	onSelect(data) {
 		
 	}
 
 	downloadExcel() {
-		
-	}
+		const columnTitles = [ 'Correo del estudiante', 'Nombre del estudiante', 'Diagnostico', 'Fin', 'Certificado', 'Asistencia'];
+	  
+		const dataToExport = this.dataSource.data.map(row => {
+		  const obj = {};
+		  obj[columnTitles[0]] = row.userEmail;
+		  obj[columnTitles[1]] = row.userName;
+		  obj[columnTitles[2]] = row.diagnosticTest;
+		  obj[columnTitles[3]] = row.finalTest;
+		  obj[columnTitles[4]] = row.certificate;
+		  obj[columnTitles[5]] = row.isAttending ? 'Sí' : 'No';
+		  return obj;
+		});
+	  
+		const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+	  
+		// Set the width for each column
+		const columnWidths = columnTitles.map(title => ({ wch: title.length + 2 }));
+		worksheet['!cols'] = columnWidths;
+	  
+		const workbook = XLSX.utils.book_new();
+		XLSX.utils.book_append_sheet(workbook, worksheet, 'Estudiantes');
+	  
+		XLSX.writeFile(workbook, 'Estudiantes.xlsx');
+	}	  
 
 	async createTestData() {
 		console.log("Started")
-		// const querySnapshot = await this.afs.collection(User.collection).ref.where("email", "==", "arturo.r@test.com").get();
-		const querySnapshot = await this.afs.collection(User.collection).ref.where("email", "==", "fabi.negrette@test.com").get();
+		const querySnapshot = await this.afs.collection(User.collection).ref.where("email", "==", "arturo.r@test.com").get();
+		// const querySnapshot = await this.afs.collection(User.collection).ref.where("email", "==", "fabi.negrette@test.com").get();
 		let userRef = null
 		if (!querySnapshot.empty) userRef = querySnapshot.docs[0].ref
 
