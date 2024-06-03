@@ -511,7 +511,7 @@
                     </ng-container>
                 </div>
             </ng-container>
-            <div *ngIf="type !='show'" fxLayout="row" fxLayoutAlign="center center" class="fw">
+            <div *ngIf="!mode || (mode && mode!== 'edit') && type !='show'" fxLayout="row" fxLayoutAlign="center center" class="fw">
                 <span (click)="addQuestion()" class="blueLink radius4 ft12 h28px no-select" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                     <img [src]="icon.addNew" class="h12px pdr05 makeBlue" alt="">
                     Agregar pregunta
