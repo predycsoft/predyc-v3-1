@@ -47,6 +47,7 @@ export class DialogChooseBaseLiveCourseComponent {
           sessions: x.sessions
         }
       });
+      console.log("baseLiveCourses", baseLiveCourses)
     });
   }
 
@@ -60,9 +61,9 @@ export class DialogChooseBaseLiveCourseComponent {
       sessionGroup.removeControl(key);
     });
 
-    baseCourse.sessions.forEach(session => {
-      sessionGroup.addControl(session.id, this.fb.control('', Validators.required));
-    });
+    const firstSession = baseCourse.sessions[0];
+    sessionGroup.addControl(firstSession.id, this.fb.control('', Validators.required));
+ 
   }
 
   getOptionText(option: LiveCourseWithSessions) {
@@ -84,26 +85,41 @@ export class DialogChooseBaseLiveCourseComponent {
       }
       const liveCourseSonId = await this.liveCourseService.saveLiveCourseSon(liveCourseSon)
 
-      // Save sessions sons
-      Object.keys(formValue.sessionsDates).forEach(async key => {
-        // console.log("this.liveCourseService.getLiveCourseSonRefById(formValue.baseCourse.id, liveCourseSonId)", this.liveCourseService.getLiveCourseSonRefById(formValue.baseCourse.id, liveCourseSonId))
-        const sessionSon: SessionSonJson = {
-          id: null,
-          parentId: key,
-          date: this.parseDateString(formValue.sessionsDates[key]),
-          liveCourseSonRef: this.liveCourseService.getLiveCourseSonRefById(formValue.baseCourse.id, liveCourseSonId),
-          weeksToKeep: 2
-        }
-        await this.liveCourseService.saveLiveCourseSessionSon(key, sessionSon)
+      const firstSessionDate = this.parseDateString(formValue.sessionsDates[this.sessions[0].id]);
+
+      // Save first session with date
+      await this.liveCourseService.saveLiveCourseSessionSon(this.sessions[0].id, {
+        id: null,
+        parentId: this.sessions[0].id,
+        date: firstSessionDate,
+        liveCourseSonRef: this.liveCourseService.getLiveCourseSonRefById(formValue.baseCourse.id, liveCourseSonId),
+        weeksToKeep: 2,
+        sonFiles: [],
+        vimeoId1: null,
+        vimeoId2: null
       });
+      // Save rest of sessions without date
+      for (let i = 1; i < this.sessions.length; i++) {
+        await this.liveCourseService.saveLiveCourseSessionSon(this.sessions[i].id, {
+          id: null,
+          parentId: this.sessions[i].id,
+          date: null,
+          liveCourseSonRef: this.liveCourseService.getLiveCourseSonRefById(formValue.baseCourse.id, liveCourseSonId),
+          weeksToKeep: 2,
+          sonFiles: [],
+          vimeoId1: null,
+          vimeoId2: null
+        });
+      }
 
       this.closeDialog();
-    } else {
+    } 
+    else {
       console.log('Form is invalid');
     }
   }
 
-  private parseDateString(date: string): Date {
+  parseDateString(date: string): Date {
     date = date.replace("T", "-");
     let parts = date.split("-");
     let timeParts = parts[3].split(":");

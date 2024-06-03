@@ -1,0 +1,20 @@
+<div fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="1rem">
+    <div fxLayout="row" fxLayoutAlign="space-between center" class="fw mgt10">
+        <span class="ft500 ft14 gray-10">Redactar correo:</span>
+        <button *ngIf="!emailSent" class="blueButtonAnim button-animation" style="border-radius: 24px !important" (click)="onSubmit()">
+            <img [src]="icon.send" class="h16px pdr05 makeWhite" alt="" />Enviar
+        </button>
+    </div>
+    <ng-container *ngIf="!emailSent">
+        <textarea rows="6" type="text" class="form-control ft12 customInput2" style="resize: none;"
+        placeholder="Escriba el contenido del correo." [(ngModel)]="emailContent"></textarea>
+    </ng-container>
+    <ng-container *ngIf="emailSent">
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".75rem" class="fw mgt10">
+            <span class="ft500 ft14 blue-5">Tu correo ha sido enviado!</span>
+            <button *ngIf="!emailContent" class="blueButtonAnim button-animation" style="border-radius: 24px !important" (click)="emailSent = false">
+                <img [src]="icon.add" class="h16px pdr05 makeWhite" alt="" />Redactar nuevo correo
+            </button>
+        </div>
+    </ng-container>
+</div>

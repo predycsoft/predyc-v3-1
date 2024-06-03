@@ -44,9 +44,13 @@ interface LiveCourseData extends LiveCourseJson {
 }
 
 interface SessionData extends SessionJson {
+  sonFiles: any[],
+  date: any,
   dateFormatted: string,
   sonId: string,
   weeksToKeep: number,
+  vimeoId1: number,
+  vimeoId2: string,
   addClassMode: boolean,
   isInvalid: boolean,
   expanded: boolean,
@@ -109,7 +113,7 @@ export class CreateLiveCourseComponent {
 
 
   mode: "create" | "edit-base" | "edit" // "edit" for live course sessions sons edition
-  idCurso = this.route.snapshot.paramMap.get("idCurso")
+  idBaseLiveCourse = this.route.snapshot.paramMap.get("idCurso")
   idLiveCourseSon = this.route.snapshot.paramMap.get("idLiveCourseSon")
 
 
@@ -221,7 +225,7 @@ export class CreateLiveCourseComponent {
   viewFileActivity = false;
   viewVideoActivity = false;
 
-  selectedClase;
+  selectedSession;
   selectedModulo;
   fileViewTipe= null;
   modalCompetenciaAsignar;
@@ -256,10 +260,12 @@ export class CreateLiveCourseComponent {
   showErrorSkill = false;
   savingSkill = false
 
+  studentEmails: string[] = []
+
   async ngOnInit(): Promise<void> {
 
     if (this.idLiveCourseSon) this.mode = "edit"
-    else if (!this.idLiveCourseSon && this.idCurso) this.mode = "edit-base"
+    else if (!this.idLiveCourseSon && this.idBaseLiveCourse) this.mode = "edit-base"
     else this.mode = "create"
 
     this.filteredinstructores = this.instructoresForm.valueChanges.pipe(
@@ -323,7 +329,7 @@ export class CreateLiveCourseComponent {
     }
     // EDIT MODE
     else {
-      this.liveCourseService.getLiveCourseWithSessionsById$(this.idCurso, this.idLiveCourseSon).pipe(take(1)).subscribe(liveCourseData => {
+      this.liveCourseService.getLiveCourseWithSessionsById$(this.idBaseLiveCourse, this.idLiveCourseSon).pipe(take(1)).subscribe(liveCourseData => {
 
         console.log("liveCourseData in onInit()", liveCourseData)
 
@@ -387,7 +393,7 @@ export class CreateLiveCourseComponent {
           this.instructoresForm = new FormControl({ value: instructor, disabled: true });
         }
 
-        // this.activityClassesService.getActivityAndQuestionsForCourse(this.idCurso, true).pipe(filter(activities=>activities!=null),take(1)).subscribe(activities => {
+        // this.activityClassesService.getActivityAndQuestionsForCourse(this.idBaseLiveCourse, true).pipe(filter(activities=>activities!=null),take(1)).subscribe(activities => {
         //   console.log('activities clases', activities);
         //   this.activitiesCourse = activities;
         //   this.modulos.forEach(module => {
@@ -433,11 +439,13 @@ export class CreateLiveCourseComponent {
         id: '',
         title: '',
         dateFormatted: "",
+        date: null,
         description: '',
         liveCourseRef: {} as DocumentReference,
         duration: 0,
         vimeoId1: 0,
         vimeoId2: '',
+        sonFiles: [],
         files: [],
         addClassMode: false,
         isInvalid: false,
@@ -452,13 +460,23 @@ export class CreateLiveCourseComponent {
         HTMLcontent: null,
         weeksToKeep: 2,
         sonId: "",
+        orderNumber: null,
     };
   }
 
   convertTimestampToDatetimeLocalString(timestamp: any): string {
     if (!timestamp) return '';
     const date = new Date(timestamp.seconds * 1000);
-    return date.toISOString().substring(0, 16);
+  
+    // Get the local time components
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+  
+    // Format the local datetime string in the format required by input[type="datetime-local"]
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
   }
 
   getOptionText(option){
@@ -946,10 +964,17 @@ export class CreateLiveCourseComponent {
         }
       });
 
-      await this.liveCourseService.updateLiveCourseSonMeetingLinkAndIdentifierText(this.idCurso, this.idLiveCourseSon, this.formNewCourse.value.meetingLink, this.formNewCourse.value.identifierText)
+      await this.liveCourseService.updateLiveCourseSonMeetingLinkAndIdentifierText(this.idBaseLiveCourse, this.idLiveCourseSon, this.formNewCourse.value.meetingLink, this.formNewCourse.value.identifierText)
       for (let session of this.liveCourseData.sessions) {
-        const date = this.parseDateString(session.dateFormatted)
-        await this.liveCourseService.updateSessionSonDateAndWeeksToKeep(session.id, session.sonId, date, session.weeksToKeep)
+        const date = session.dateFormatted ? this.parseDateString(session.dateFormatted) : null
+        const sessionSonDataToUpdate = {
+          date: date,
+          weeksToKeep: session.weeksToKeep,
+          sonFiles: session.sonFiles,
+          vimeoId1: session.vimeoId1,
+          vimeoId2:  session.vimeoId2
+        }
+        await this.liveCourseService.updateSessionSonData(session.id, session.sonId, sessionSonDataToUpdate)
       }
       this.savingCourse = false;
       this.alertService.succesAlert("Se ha guardado la informaciòn exitosamente")
@@ -980,7 +1005,7 @@ export class CreateLiveCourseComponent {
       }
     }
     
-    if (!this.validarModulosClases()) valid = false;
+    if (!this.validarModulosSessions()) valid = false;
     
     this.updateTriggeQuestionsExam++;
 
@@ -1035,7 +1060,7 @@ export class CreateLiveCourseComponent {
     // console.log('Updated liveCourseData:', this.liveCourseData);
   }
 
-  validarModulosClases(){
+  validarModulosSessions(){
     let valid = true;
     this.isInvalidCases= false;
     this.invalidMessages = [];
@@ -1369,51 +1394,39 @@ export class CreateLiveCourseComponent {
       let arrayClasesRef = [];
       for (let i = 0; i < this.liveCourseData.sessions.length; i++) {
         try {
-          let clase = this.liveCourseData.sessions[i];
-          console.log("XXXXXXclase", clase)
+          let clase = this.liveCourseData.sessions[i]; //session
           if (clase['edited']) {
             // Save session
-            console.log('sesion',clase)
-            // let claseLocal = new Clase;
-            let claseLocal: SessionData = this.initializeSessionAsSessionData()
-            claseLocal.HTMLcontent = clase.HTMLcontent ? clase.HTMLcontent : null;
-            claseLocal.files = clase.files.map(archivo => ({
+            // console.log('sesion',clase)
+            // let localeSession = new Clase;
+            let localeSession: SessionData = this.initializeSessionAsSessionData()
+            localeSession.HTMLcontent = clase.HTMLcontent ? clase.HTMLcontent : null;
+            localeSession.files = clase.files.map(archivo => ({
               id: archivo.id,
               nombre: archivo.nombre,
               size: archivo.size,
               type: archivo.type,
               url: archivo.url
             }));
-            claseLocal.description = clase.description ? clase.description : null;
-            claseLocal.duration = clase.duration;
-            claseLocal.id = clase.id;
-            claseLocal.vimeoId1 = clase.vimeoId1 ? clase.vimeoId1 : null;
-            claseLocal.vimeoId2 = clase.vimeoId2 ? clase.vimeoId2 : null;
-            // claseLocal.skillsRef = clase.skillsRef;
-            // claseLocal.skillsRef = null;
-            claseLocal.type = clase.type;
-            claseLocal.title = clase.tituloTMP;
-            // claseLocal.vigente = clase.vigente;
-            // claseLocal.vigente = null;
-            // if(this.user.isSystemUser){
-            //   claseLocal.enterpriseRef = null;
-            // }
-            // else{
-            //   claseLocal.enterpriseRef = this.enterpriseService.getEnterpriseRef()
-            // }
-            
-            // const arrayRefSkills = (clase.competencias?.map(skillClase => this.liveCourseData.skillsRef.find(skill => skill.id == skillClase.id)).filter(Boolean) ) || [];
-            // claseLocal.skillsRef = arrayRefSkills;
-            claseLocal.liveCourseRef = this.liveCourseService.getLiveCourseRefById(this.liveCourseData.id)
-            const sessionToSave: Session = this.SessionDataModelToLiveCourseSession(claseLocal)
+            localeSession.description = clase.description ? clase.description : null;
+            localeSession.duration = clase.duration;
+            localeSession.id = clase.id;
+            // localeSession.vimeoId1 = clase.vimeoId1 ? clase.vimeoId1 : null;
+            // localeSession.vimeoId2 = clase.vimeoId2 ? clase.vimeoId2 : null;
+            localeSession.type = clase.type;
+            localeSession.orderNumber = i+1;
+            localeSession.title = clase.tituloTMP;
+            localeSession.liveCourseRef = this.liveCourseService.getLiveCourseRefById(this.liveCourseData.id)
+
+            const sessionToSave: Session = this.SessionDataModelToLiveCourseSession(localeSession)
             console.log("sessionToSave", sessionToSave)
             await this.liveCourseService.saveLiveCourseSession(sessionToSave);
 
             
-            let refClass = this.liveCourseService.getSessionRefById(claseLocal.id)
+            let refClass = this.liveCourseService.getSessionRefById(localeSession.id)
             let courseRef = this.afs.collection<Curso>(Curso.collection).doc(this.liveCourseData.id).ref;
             arrayClasesRef.push(refClass);
-            console.log('activityClass',clase)
+            // console.log('activityClass',clase)
 
             // save activity ... check later
             if (clase.activity) {
@@ -1462,7 +1475,7 @@ export class CreateLiveCourseComponent {
               // let questionsIds = [];
 
               // for (let pregunta of questions){
-              //   // claseLocal.skillsRef = arrayRefSkills;
+              //   // localeSession.skillsRef = arrayRefSkills;
               //   delete pregunta['typeFormated'];
               //   delete pregunta['competencias_tmp'];
               //   delete pregunta['competencias'];
@@ -1544,9 +1557,10 @@ export class CreateLiveCourseComponent {
       sessionData.description,
       sessionData.liveCourseRef,
       sessionData.duration,
-      sessionData.vimeoId1,
-      sessionData.vimeoId2,
+      // sessionData.vimeoId1,
+      // sessionData.vimeoId2,
       sessionData.files,
+      sessionData.orderNumber,
     );
   }
 
@@ -1768,7 +1782,7 @@ export class CreateLiveCourseComponent {
     });
   }
 
-  uploadCourseImage(event,tipo,newInstructor = false){
+  uploadCourseImage(event, tipo, newInstructor = false){
     if (!event.target.files[0] || event.target.files[0].length === 0) {
 
       Swal.fire({
@@ -1786,86 +1800,106 @@ export class CreateLiveCourseComponent {
     reader.onload = async (_event) => {
       //this.deleteQuestionImage(pregunta);
 
-      if (file) {
-        if(tipo == 'instructor'){
-          this.uploadingImgInstuctor = true;
-        }
-        else{
-          this.uploadingImgCurso = true;
-        }
-        let fileBaseName = file.name.split('.').slice(0, -1).join('.');
-        let fileExtension = file.name.split('.').pop();
+      // Check image dimensions
+      const img = new Image();
+      img.src = reader.result as string;
+      img.onload = () => {
+        const width = img.width;
+        const height = img.height;
+        // console.log(`Image dimensions: ${width}x${height}`);
 
-        let nombre = fileBaseName+'.'+fileExtension;
-        if(tipo == 'instructor'){
-          this.fileNameImgInstuctor = nombre
-        }
-        else{
-          this.fileNameImgCurso = nombre
-        }
-        //console.log(nombre)
-
-        // Reorganizar el nombre para que el timestamp esté antes de la extensión
-        let newName = `${fileBaseName}-${Date.now().toString()}.${fileExtension}`;
+        // if (width !== 500 || height !== 500) {
+        if (width !== height) {
+          Swal.fire({
+            title:'Error!',
+            text:`Debe seleccionar una imagen de 500x500px`,
+            icon:'warning',
+            confirmButtonColor: 'var(--blue-5)',
+          })
+          return;
+        } 
   
-        let nombreCurso = this.formNewCourse.get('title').value?  this.formNewCourse.get('title').value : 'Temporal';
-        let nombreinstructor = this.formNewCourse.get('instructor').value?  this.formNewCourse.get('instructor').value : 'Temporal';
-
-        let filePath;
-
-        if(tipo == 'instructor'){
-          filePath = `Clientes/${this.empresa.name}/Instructor/${nombreinstructor}/${newName}`;
-        }
-        else{
-          filePath = `Clientes/${this.empresa.name}/Cursos/${nombreCurso}/Imagen/${newName}`;
-        }
-  
-        const task = this.storage.upload(filePath, file);
-  
-        // Crea una referencia a la ruta del archivo.
-        const fileRef = this.storage.ref(filePath);
-  
-        // Obtener el progreso como un Observable
-        this.uploadProgress$ = task.percentageChanges();
-  
-        // Suscríbete al Observable para actualizar tu componente de barra de progreso
-        this.uploadProgress$.subscribe(progress => {
-          //console.log(progress);
+        if (file) {
           if(tipo == 'instructor'){
-            this.uploading_file_progressImgInstuctor = Math.floor(progress) ;
+            this.uploadingImgInstuctor = true;
           }
           else{
-            this.uploading_file_progressImgCurso = Math.floor(progress) ;
+            this.uploadingImgCurso = true;
           }
-        });
+          let fileBaseName = file.name.split('.').slice(0, -1).join('.');
+          let fileExtension = file.name.split('.').pop();
   
-        // Observa el progreso de la carga del archivo y haz algo cuando se complete.
-        task.snapshotChanges().pipe(
-          finalize(() => {
-            // Obtén la URL de descarga del archivo.
-            fileRef.getDownloadURL().subscribe(url => {
-              if(tipo == 'instructor'){
-                this.uploadingImgInstuctor = false;
-                if(!newInstructor){
-                  this.formNewCourse.get('imagen_instructor').patchValue(url);
-                  this.avatarInstructor.unshift(url);
+          let nombre = fileBaseName+'.'+fileExtension;
+          if(tipo == 'instructor'){
+            this.fileNameImgInstuctor = nombre
+          }
+          else{
+            this.fileNameImgCurso = nombre
+          }
+          //console.log(nombre)
+  
+          // Reorganizar el nombre para que el timestamp esté antes de la extensión
+          let newName = `${fileBaseName}-${Date.now().toString()}.${fileExtension}`;
+    
+          let nombreCurso = this.formNewCourse.get('title').value?  this.formNewCourse.get('title').value : 'Temporal';
+          let nombreinstructor = this.formNewCourse.get('instructor').value?  this.formNewCourse.get('instructor').value : 'Temporal';
+  
+          let filePath;
+  
+          if(tipo == 'instructor'){
+            filePath = `Clientes/${this.empresa.name}/Instructor/${nombreinstructor}/${newName}`;
+          }
+          else{
+            filePath = `Clientes/${this.empresa.name}/Cursos/${nombreCurso}/Imagen/${newName}`;
+          }
+    
+          const task = this.storage.upload(filePath, file);
+    
+          // Crea una referencia a la ruta del archivo.
+          const fileRef = this.storage.ref(filePath);
+    
+          // Obtener el progreso como un Observable
+          this.uploadProgress$ = task.percentageChanges();
+    
+          // Suscríbete al Observable para actualizar tu componente de barra de progreso
+          this.uploadProgress$.subscribe(progress => {
+            //console.log(progress);
+            if(tipo == 'instructor'){
+              this.uploading_file_progressImgInstuctor = Math.floor(progress) ;
+            }
+            else{
+              this.uploading_file_progressImgCurso = Math.floor(progress) ;
+            }
+          });
+    
+          // Observa el progreso de la carga del archivo y haz algo cuando se complete.
+          task.snapshotChanges().pipe(
+            finalize(() => {
+              // Obtén la URL de descarga del archivo.
+              fileRef.getDownloadURL().subscribe(url => {
+                if(tipo == 'instructor'){
+                  this.uploadingImgInstuctor = false;
+                  if(!newInstructor){
+                    this.formNewCourse.get('imagen_instructor').patchValue(url);
+                    this.avatarInstructor.unshift(url);
+                  }
+                  else{
+                    this.formNewInstructor.get('foto').patchValue(url);
+                  }
+  
                 }
                 else{
-                  this.formNewInstructor.get('foto').patchValue(url);
+                  this.uploadingImgCurso = false;
+                  this.formNewCourse.get('photoUrl').patchValue(url);
+                  this.imagenesCurso.unshift(url)
+  
                 }
-
-              }
-              else{
-                this.uploadingImgCurso = false;
-                this.formNewCourse.get('photoUrl').patchValue(url);
-                this.imagenesCurso.unshift(url)
-
-              }
-              //console.log(`File URL: ${url}`);
-            });
-          })
-        ).subscribe();
-      }
+                //console.log(`File URL: ${url}`);
+              });
+            })
+          ).subscribe();
+        }
+      };
 
     };
   }
@@ -1925,7 +1959,7 @@ export class CreateLiveCourseComponent {
   }
 
   // AQUI
-  getIconClase(sessionType: string){
+  getIconSession(sessionType: string){
     if (sessionType == 'lectura'){
       return 'catelog'
     }
@@ -1956,7 +1990,7 @@ export class CreateLiveCourseComponent {
     event.stopPropagation();
   }
 
-  getSelectedCategoriasCompetenciasClase(){
+  getSelectedCategoriasCompetenciasSession(){
     let respuesta = [];
     //console.log(this.competenciasSelectedClase)
 
@@ -2018,10 +2052,10 @@ export class CreateLiveCourseComponent {
     return respuesta
   }
 
-  quitarVideoClase(clase){
-    clase.vimeoId1 = null
-    clase.vimeoId2 = null
-    clase.videoUpload = false
+  quitarVideoSession(session: SessionData){
+    session.vimeoId1 = null
+    session.vimeoId2 = null
+    session.videoUpload = false
   }
 
   // AQUI
@@ -2071,9 +2105,9 @@ export class CreateLiveCourseComponent {
   hideOtherQuestion(questionIn){
 
     //console.log(questionIn);
-    //console.log(this.selectedClase.activity.questions)
+    //console.log(this.selectedSession.activity.questions)
 
-    this.selectedClase.activity.questions.map(question => {
+    this.selectedSession.activity.questions.map(question => {
       if(questionIn.id != question.id)
       question['expanded'] = false;
     })
@@ -2094,7 +2128,7 @@ export class CreateLiveCourseComponent {
     }).then((result) => {
       if (result.isConfirmed) {
         this.deleteQuestionImage(pregunta);
-        this.selectedClase.activity.questions.splice(index, 1); // El primer argumento es el índice desde donde quieres empezar a borrar, y el segundo argumento es la cantidad de elementos que quieres borrar.
+        this.selectedSession.activity.questions.splice(index, 1); // El primer argumento es el índice desde donde quieres empezar a borrar, y el segundo argumento es la cantidad de elementos que quieres borrar.
         Swal.fire({
           title:'Borrado!',
           text:`La pregunta fue borrada`,
@@ -2106,7 +2140,7 @@ export class CreateLiveCourseComponent {
   } 
 
   // AQUI
-  borrarClase(session){
+  borrarSession(session){
     let clases = this.liveCourseData.sessions
 
     Swal.fire({
@@ -2126,7 +2160,7 @@ export class CreateLiveCourseComponent {
 
         let classDelete = {
           claseInId: session.id,
-          cursoId: this.idCurso,
+          cursoId: this.idBaseLiveCourse,
           // moduloInId: moduloIn.id,
           // activityId: claseIn?.activity?.id
         }
@@ -2144,7 +2178,7 @@ export class CreateLiveCourseComponent {
 
   }
 
-  editarTituloClase(index: number) {
+  editarTituloSession(index: number) {
     // Configura el estado de edición como prefieras
     this.moverCursorAlFinal(index);
   }
@@ -2273,9 +2307,9 @@ export class CreateLiveCourseComponent {
     return filteredFiles;
   }
 
-  async onFileSelected(event, session: SessionData, local = false, adicional = false, tipo= null) {
-    console.log("event", event)
-    console.log("session", session)
+  async onFileSelected(event, session: SessionData, local = false, adicional = false, tipo= null, isBaseSession: boolean) {
+    // console.log("event", event)
+    // console.log("session", session)
 
     session['uploading'] = true;
     session['edited'] = true;
@@ -2289,7 +2323,6 @@ export class CreateLiveCourseComponent {
     if (!local) {
       file = event.target.files[0];
     }
-
     else {
       file = event[0];
     }
@@ -2308,7 +2341,7 @@ export class CreateLiveCourseComponent {
       }
 
 
-      if (session.type == 'lectura' || adicional){
+      if (session.type == 'lectura' || adicional) {
         let idFile = Date.now();
         let fileInfo = {
           id: idFile,
@@ -2324,14 +2357,16 @@ export class CreateLiveCourseComponent {
         if (tipo == 'archivoActividad') {
           adicional = false;
           this.viewFileActivity= false;
-          this.selectedClase.activity['recursosBase64'] = fileInfo?fileInfo:null;
+          this.selectedSession.activity['recursosBase64'] = fileInfo?fileInfo:null;
         }
 
-        if (!adicional && session.files.length>0){
-          session.files[0] = fileInfo;
-
-        }else{
-          session.files = session.files.concat(fileInfo);
+        if (isBaseSession) {
+          if (!adicional && session.files.length > 0) session.files[0] = fileInfo;
+          else session.files = session.files.concat(fileInfo);
+        }
+        else {
+          if (!adicional && session.sonFiles.length > 0) session.sonFiles[0] = fileInfo;
+          else session.sonFiles = session.sonFiles.concat(fileInfo);
         }
   
         // Reorganizar el nombre para que el timestamp esté antes de la extensión
@@ -2375,8 +2410,8 @@ export class CreateLiveCourseComponent {
         let nombre =  fileBaseName+'.'+fileExtension;
         session['base64Video'] = base64content
         session['videoFileName'] = nombre;
-        //console.log(this.selectedClase)
-        this.uploadVideo(file,session, false); //DESCOMENTAR Y ARREGLAR
+        //console.log(this.selectedSession)
+        this.uploadVideo(file,session, false);
 
       }
       else if(session.type == 'actividad') {
@@ -2404,7 +2439,7 @@ export class CreateLiveCourseComponent {
 
   openModalAsignarCompetencia(content,clase){
 
-    this.selectedClase = clase
+    this.selectedSession = clase
 
     this.activeStepCompetencias = 1
 
@@ -2459,9 +2494,9 @@ export class CreateLiveCourseComponent {
     this.modalCompetenciaAsignar = this.openModal(content)
   }
 
-  saveCompetenciasClase(close = true){
+  saveCompetenciasSession(close = true){
     //console.log('this.competenciasSelectedClase',this.competenciasSelectedClase)
-    //this.selectedClase.competencias = this.competenciasSelectedClase;
+    //this.selectedSession.competencias = this.competenciasSelectedClase;
     let arrayCompetencias = [];
     this.competenciasSelectedClase.forEach(categoria => {
       let selected = categoria.competencias.filter(competencia => competencia.selected);
@@ -2469,7 +2504,7 @@ export class CreateLiveCourseComponent {
     });
     //console.log(arrayCompetencias);
 
-    this.selectedClase.competencias = arrayCompetencias;
+    this.selectedSession.competencias = arrayCompetencias;
 
     if(close){
       this.modalCompetenciaAsignar.close()
@@ -2551,16 +2586,16 @@ export class CreateLiveCourseComponent {
   initVideo(): void {
     if (!this.videoReady) {
       let videoURL;
-      if(!this.selectedClase?.vimeoId2){
+      if(!this.selectedSession?.vimeoId2){
         videoURL =
         'https://player.vimeo.com/video/' +
-        this.selectedClase.vimeoId1 +
+        this.selectedSession.vimeoId1 +
         '?title=0&amp;byline=0&amp;portrait=0&amp;autoplay=1&amp;speed=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479';
       }
       else{
         videoURL =
         'https://player.vimeo.com/video/' +
-        this.selectedClase.vimeoId1 + '?h='+this.selectedClase.vimeoId2+'&amp'
+        this.selectedSession.vimeoId1 + '?h='+this.selectedSession.vimeoId2+'&amp'
         '?title=0&amp;byline=0&amp;portrait=0&amp;autoplay=1&amp;speed=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479';
       }
       //console.log('videoURL',videoURL)
@@ -2573,12 +2608,12 @@ export class CreateLiveCourseComponent {
   // Si ya el reproductor esta cargado por hubo una clase de video previa esta función solo cmabia el video
   loadVideo(): void {
 
-    let idVimeo = this.selectedClase.vimeoId1; // El ID básico del video
+    let idVimeo = this.selectedSession.vimeoId1; // El ID básico del video
     let videoParam; // Este será el parámetro que pasaremos a loadVideo
 
-    if (this.selectedClase.vimeoId2) {
+    if (this.selectedSession.vimeoId2) {
       // Si vimeoId2 existe, construye la URL completa
-      videoParam = `https://player.vimeo.com/video/${this.selectedClase.vimeoId1}?h=${this.selectedClase.vimeoId2}`;
+      videoParam = `https://player.vimeo.com/video/${this.selectedSession.vimeoId1}?h=${this.selectedSession.vimeoId2}`;
     } else {
       // Si no, solo usa el ID del video
       videoParam = idVimeo;
@@ -2667,7 +2702,7 @@ export class CreateLiveCourseComponent {
     // this.videoReady = false;
     // this.base64view = null
 
-    // this.selectedClase = clase
+    // this.selectedSession = clase
     // this.selectedModulo = modulo
     // this.viewFileActivity = false
 
@@ -2692,7 +2727,7 @@ export class CreateLiveCourseComponent {
     //   this.fileViewTipe = 'video'
     // }
     // else if(clase.tipo == 'actividad' ||clase.tipo == 'corazones' ){
-    //   let activity : Activity = this.selectedClase.activity
+    //   let activity : Activity = this.selectedSession.activity
 
     //   //console.log('clase',clase)
 
@@ -2742,7 +2777,7 @@ export class CreateLiveCourseComponent {
     };
   }
 
-  trackByClase(index: number, clase: any): string {
+  trackBySession(index: number, clase: any): string {
     return clase.id; // Suponiendo que cada clase tiene un id único.
   }
 
@@ -2814,8 +2849,8 @@ export class CreateLiveCourseComponent {
     // Asegúrate de que el título de la clase no haga que el nombre total del video exceda el límite máximo
     let trimmedClassTitle = session.title.trim();
     if ((`Sesiòn: ${session.title.trim()} - ${instructorText.trim()}`).length > maxLength) {
-        // Recorta el título de la clase y agrega puntos suspensivos al final
-        trimmedClassTitle = trimmedClassTitle.substring(0, availableLengthForTitle) + '...';
+      // Recorta el título de la clase y agrega puntos suspensivos al final
+      trimmedClassTitle = trimmedClassTitle.substring(0, availableLengthForTitle) + '...';
     }
     
     let videoName = `Sesiòn: ${trimmedClassTitle} - ${instructorText}`;
@@ -2824,10 +2859,8 @@ export class CreateLiveCourseComponent {
     
     // Verifica de nuevo para asegurarte de que el nombre completo esté dentro del límite
     if (videoName.length > maxLength) {
-        console.error("El nombre del video aún excede la longitud máxima permitida después del ajuste.");
+      console.error("El nombre del video aún excede la longitud máxima permitida después del ajuste.");
     }
-    
-  
 
     session['videoUpload'] = 0;
 
@@ -2842,7 +2875,7 @@ export class CreateLiveCourseComponent {
       console.error('Error loading video file:', e);
     });
 
-  // Set the source object of the video element to the object URL of the file
+    // Set the source object of the video element to the object URL of the file
     video.src = url;
     
     // When metadata is loaded get the duration
@@ -2986,8 +3019,8 @@ export class CreateLiveCourseComponent {
                         let link = videoData.link;
                         link = link.split('/');
                         //console.log(link);
-                        session.vimeoId1=link[3];
-                        session.vimeoId2=link[4];
+                        session.vimeoId1 = link[3];
+                        session.vimeoId2 = link[4];
                         session['uploading'] = false;
                         if(origen == 'actividad'){
                           this.formNuevaActividadGeneral.get('video').patchValue(link[3]);
@@ -3192,11 +3225,11 @@ export class CreateLiveCourseComponent {
     if(this.activeStepActividad == 1){
       //console.log(this.formNuevaActividadBasica)
       if(this.formNuevaActividadBasica.valid){
-        this.selectedClase.titulo = this.formNuevaActividadBasica.value.titulo;
-        this.selectedClase.activity.title =  this.formNuevaActividadBasica.value.titulo;
-        this.selectedClase.activity.description =  this.formNuevaActividadBasica.value.descripcion;
-        this.selectedClase.activity.duration = this.formNuevaActividadBasica.value.duracion;
-        this.selectedClase.duracion = this.formNuevaActividadBasica.value.duracion;
+        this.selectedSession.titulo = this.formNuevaActividadBasica.value.titulo;
+        this.selectedSession.activity.title =  this.formNuevaActividadBasica.value.titulo;
+        this.selectedSession.activity.description =  this.formNuevaActividadBasica.value.descripcion;
+        this.selectedSession.activity.duration = this.formNuevaActividadBasica.value.duracion;
+        this.selectedSession.duracion = this.formNuevaActividadBasica.value.duracion;
       }
       else{
         this.showErrorActividad = true;
@@ -3207,7 +3240,7 @@ export class CreateLiveCourseComponent {
     if(this.activeStepActividad == 99){
       //console.log(this.formNuevaActividadGeneral)
       if(this.formNuevaActividadGeneral.valid){
-        this.selectedClase.activity.instructions =  this.formNuevaActividadGeneral.value.instrucciones;
+        this.selectedSession.activity.instructions =  this.formNuevaActividadGeneral.value.instrucciones;
       }
       else{
         this.showErrorActividad = true;
@@ -3233,7 +3266,7 @@ export class CreateLiveCourseComponent {
             }
           });
           //getTypeQuestion
-          this.selectedClase.activity.questions = questions
+          this.selectedSession.activity.questions = questions
           this.modalActivity.close();
           Swal.fire({
             icon: 'success',
@@ -3241,20 +3274,20 @@ export class CreateLiveCourseComponent {
             text: 'Actividad cambiada exitosamente'
           }); 
 
-          console.log('this.selectedClase.activity',this.selectedClase.activity)
+          console.log('this.selectedSession.activity',this.selectedSession.activity)
           
         }
 
         if (valid){
           if(this.validateActivity()){
-            this.selectedClase.activity['isInvalid'] = false;
+            this.selectedSession.activity['isInvalid'] = false;
           }
           this.showErrorActividad = false;
           this.activeStepActividad = this.activeStepActividad+1
-          //console.log(this.selectedClase)
+          //console.log(this.selectedSession)
         }
         else{
-          this.selectedClase.activity['isInvalid'] = true;
+          this.selectedSession.activity['isInvalid'] = true;
         }
         
       }, 10);
@@ -3262,14 +3295,14 @@ export class CreateLiveCourseComponent {
     else{
       if (valid){
         if(this.validateActivity()){
-          this.selectedClase.activity['isInvalid'] = false;
+          this.selectedSession.activity['isInvalid'] = false;
         }
         this.showErrorActividad = false;
         this.activeStepActividad = this.activeStepActividad+1
-        //console.log(this.selectedClase)
+        //console.log(this.selectedSession)
       }
       else{
-        this.selectedClase.activity['isInvalid'] = true;
+        this.selectedSession.activity['isInvalid'] = true;
       }
     }
 
@@ -3300,7 +3333,7 @@ export class CreateLiveCourseComponent {
   }
 
   saveCompetenciasActividad(){
-    let preguntas = this.selectedClase.activity.questions;
+    let preguntas = this.selectedSession.activity.questions;
     
     preguntas.forEach(pregunta => {
       let arrayCompetencias = []
@@ -3323,12 +3356,12 @@ export class CreateLiveCourseComponent {
     let valid = true;
 
     if(this.activeStepCompetencias == 1){
-      //console.log(this.selectedClase,this.competenciasSelectedClase)
-      this.getSelectedCategoriasCompetenciasClase();
+      //console.log(this.selectedSession,this.competenciasSelectedClase)
+      this.getSelectedCategoriasCompetenciasSession();
       if(this.competenciasSelectedClase.length>0){
-        this.saveCompetenciasClase(false);
-        //console.log('revisar',this.selectedClase.competencias,this.selectedClase.activity.questions);
-        this.selectedClase.activity.questions.forEach(question => {
+        this.saveCompetenciasSession(false);
+        //console.log('revisar',this.selectedSession.competencias,this.selectedSession.activity.questions);
+        this.selectedSession.activity.questions.forEach(question => {
           //console.log(question);
           if(question.competencias.length>0){
             //this.getSelectedCategoriasCompetenciasClase();
@@ -3512,8 +3545,6 @@ export class CreateLiveCourseComponent {
   }
 
   verVideoVimeo(clase): NgbModalRef {
-    let openModal = false
-    let isNewUser = false
 
     const modalRef = this.modalService.open(VimeoComponent, {
       animation: true,
@@ -3537,6 +3568,11 @@ export class CreateLiveCourseComponent {
 
     console.log("session after title edit", session)
     console.log("this.liveCourseData.sessions", this.liveCourseData.sessions)
+  }
+
+  onUserEmailsChanged(emails: string[]): void {
+    // console.log("emails in parent", emails)
+    this.studentEmails = emails;
   }
 
 }

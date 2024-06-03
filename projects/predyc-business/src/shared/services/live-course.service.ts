@@ -19,16 +19,20 @@ export class LiveCourseService {
     return this.afs.collection<LiveCourseByStudent>(LiveCourseByStudent.collection, (ref) =>ref.where("userRef", "==", userRef)).valueChanges();
   }
 
-  getLiveCourseById$(liveCourseId: string): Observable<LiveCourse> {
-    return this.afs.collection<LiveCourse>(LiveCourse.collection).doc(liveCourseId).valueChanges();
+  getLiveCoursesByStudentByLivecourseSon$(liveCourseSonRef: DocumentReference<LiveCourseSon>): Observable<LiveCourseByStudent[]> {
+    return this.afs.collection<LiveCourseByStudent>(LiveCourseByStudent.collection, (ref) =>ref.where("liveCourseSonRef", "==", liveCourseSonRef)).valueChanges();
   }
 
-  getLiveCourseById(liveCourseId: string): Promise<LiveCourse> {
-    return firstValueFrom(this.afs.collection<LiveCourse>(LiveCourse.collection).doc(liveCourseId).valueChanges());
+  updateIsAttendingLiveCourseByStudent(liveCourseByStudentId: string, isAttending: boolean): Promise<void> {
+    return this.afs.collection<LiveCourseByStudent>(LiveCourseByStudent.collection).doc(liveCourseByStudentId).update({
+      isAttending: isAttending
+    })
   }
 
   getSessionsByLiveCourseRef$(liveCourseRef: DocumentReference): Observable<Session[]> {
-    return this.afs.collection<Session>(Session.collection, (ref) =>ref.where("liveCourseRef", "==", liveCourseRef)).valueChanges();
+    return this.afs.collection<Session>(Session.collection, (ref) =>
+      ref.where("liveCourseRef", "==", liveCourseRef).orderBy("orderNumber", "asc")
+    ).valueChanges();
   }
 
   getLiveCourseWithSessionsById$(liveCourseId: string, liveCourseSonId: string | null): Observable<{ liveCourse: any, sessions: any[] }> {
@@ -60,6 +64,9 @@ export class LiveCourseService {
                           session.date = sessionSonData?.date;
                           session.weeksToKeep = sessionSonData?.weeksToKeep;
                           session.sonId = sessionSonData?.id;
+                          session.sonFiles = sessionSonData?.sonFiles;
+                          session.vimeoId1 = sessionSonData?.vimeoId1;
+                          session.vimeoId2 = sessionSonData?.vimeoId2;
                           return session;
                         }),
                         catchError(err => {
@@ -155,10 +162,6 @@ export class LiveCourseService {
     return this.afs.collection<Session>(Session.collection).doc(sessionId).ref
   }
 
-  getSessionSonRefById(sessionId: string, sessionSonId: string): DocumentReference<SessionSon> {
-    return this.afs.collection<Session>(Session.collection).doc(sessionId).collection<SessionSon>(SessionSon.subCollection).doc(sessionSonId).ref
-  }
-
   async saveLiveCourseSon(newLiveCourseSon: LiveCourseSonJson): Promise<string> {
     try {
       // console.log("test saveCourse", newLiveCourseSon);
@@ -186,26 +189,12 @@ export class LiveCourseService {
     // console.log("Has agregado una nuevo curso exitosamente.");
   }
 
-  getLiveCourseSonsByLiveCourseId(liveCourseId: string): Promise<LiveCourseSon[]> {
-    return firstValueFrom(this.afs.collection<LiveCourse>(LiveCourse.collection).doc(liveCourseId).collection<LiveCourseSon>(LiveCourseSon.subCollection).valueChanges())
-  }
   getLiveCourseSonsByLiveCourseId$(liveCourseId: string): Observable<LiveCourseSon[]> {
     return this.afs.collection<LiveCourse>(LiveCourse.collection).doc(liveCourseId).collection<LiveCourseSon>(LiveCourseSon.subCollection).valueChanges()
   }
 
-  getSessionSonsBySessionId(sessionId: string): Promise<SessionSon[]> {
-    return firstValueFrom(this.afs.collection<Session>(Session.collection).doc(sessionId).collection<SessionSon>(SessionSon.subCollection).valueChanges())
-  }
   getSessionSonsBySessionId$(sessionId: string): Observable<SessionSon[]> {
     return this.afs.collection<Session>(Session.collection).doc(sessionId).collection<SessionSon>(SessionSon.subCollection).valueChanges()
-  }
-
-  getLiveCourseSonByIds(liveCourseId: string, liveCourseSonId: string): Observable<LiveCourseSon> {
-    return this.afs.collection<LiveCourse>(LiveCourse.collection).doc(liveCourseId).collection<LiveCourseSon>(LiveCourseSon.subCollection).doc(liveCourseSonId).valueChanges()
-  }
-
-  getLiveCourseSonByRef(liveCourseSonRef: DocumentReference<LiveCourseSon>): Observable<LiveCourseSon> {
-    return this.afs.doc<LiveCourseSon>(liveCourseSonRef).valueChanges();
   }
 
   async updateLiveCourseSonMeetingLinkAndIdentifierText(liveCourseId: string, liveCourseSonId: string, meetingLink: string, identifierText: string): Promise<any> {
@@ -215,10 +204,13 @@ export class LiveCourseService {
     })
   }
 
-  async updateSessionSonDateAndWeeksToKeep(sessionId: string, sessionSonId: string, date: any, weeksToKeep: number) {
+  async updateSessionSonData(sessionId: string, sessionSonId: string, data: any) {
     await this.afs.collection<Session>(Session.collection).doc(sessionId).collection<SessionSon>(SessionSon.subCollection).doc(sessionSonId).update({
-      date: date,
-      weeksToKeep: weeksToKeep
+      date: data.date ? data.date : null,
+      weeksToKeep: data.weeksToKeep ? data.weeksToKeep : null,
+      sonFiles: data.sonFiles ? data.sonFiles : null,
+      vimeoId1: data.vimeoId1,
+      vimeoId2: data.vimeoId2,
     })
   }
 

@@ -1,0 +1,69 @@
+<div class="button-containerleft">
+    <button class="blueButtonAnim button-animation" style="border-radius: 24px !important" (click)="downloadExcel()">
+        <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="" />Descargar Datos
+    </button>
+    <!-- <button class="blueButtonAnim button-animation" style="border-radius: 24px !important" (click)="createTestData()">
+        <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="" />Crear usuarios de prueba
+    </button> -->
+</div>
+
+<div class="mgt10">
+	<table mat-table [dataSource]="dataSource">
+		<!-- userEmail Column -->
+		<ng-container matColumnDef="userEmail">
+			<th mat-header-cell *matHeaderCellDef class="ft14">Correo del estudiante</th>
+			<td mat-cell *matCellDef="let data" class="ft500 ft14 gray-10">{{ data.userEmail | titlecase }}</td>
+		</ng-container>
+
+		<!-- userName Column -->
+		<ng-container matColumnDef="userName">
+			<th mat-header-cell *matHeaderCellDef class="ft14 centertext">Nombe del estudiante</th>
+			<td mat-cell *matCellDef="let data" class="centertext ft14">{{ data.userName }}</td>
+		</ng-container>
+
+		<!-- diagnosticTest Column -->
+		<ng-container matColumnDef="diagnosticTest">
+			<th mat-header-cell *matHeaderCellDef class="ft14 centertext">Diagnostico</th>
+			<td mat-cell *matCellDef="let data" class="centertext ft14">{{ "Diagnostico" | titlecase }}</td>
+		</ng-container>
+
+		<!-- finalTest Column -->
+		<ng-container matColumnDef="finalTest">
+			<th mat-header-cell *matHeaderCellDef class="ft14 centertext">Fin</th>
+			<td mat-cell *matCellDef="let data" class="centertext ft14">{{ "Fin"}}</td>
+		</ng-container>
+
+        <!-- certificate Column -->
+		<ng-container matColumnDef="certificate">
+			<th mat-header-cell *matHeaderCellDef class="ft14 centertext">Certificado</th>
+			<td mat-cell *matCellDef="let data" class="centertext ft14">{{ "Certificado" }}</td>
+		</ng-container>
+
+		<!-- attendance Column -->
+		<ng-container matColumnDef="attendance">
+			<th mat-header-cell *matHeaderCellDef class="ft14 centertext">Assistencia</th>
+			<td mat-cell *matCellDef="let data" class="centertext ft14">
+				<input type="checkbox" [checked]="data.isAttending" (change)="onAttendanceChange($event, data)" />
+			</td>
+		</ng-container>
+
+
+
+		<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+        <tr mat-row *matRowDef="let data; columns: displayedColumns" (click)="onSelect(data)" class=""></tr>
+
+		<!-- Row shown when there is no matching data. -->
+		<tr class="mat-row" *matNoDataRow>
+			<td class="mat-cell" colspan="6">Aún no existe ningún producto.</td>
+		</tr>
+	</table>
+
+	<mat-paginator
+		aria-label="Select page of products"
+		[pageSize]="pageSize"
+		[length]="totalLength"
+		(page)="onPageChange($event.pageIndex + 1)">
+    </mat-paginator>
+</div>
+
