@@ -98,9 +98,10 @@ export class StudentStudyPlanAndCompetencesComponent {
     this.combinedObservableSubscription = combineLatest([
       this.courseService.getCourses$(),
       this.courseService.getActiveCoursesByStudent$(userRef),
+      this.courseService.getInActiveCoursesByStudent$(userRef),
       this.categoryService.getCategories$(),
       this.skillService.getSkills$(),
-    ]).subscribe(([coursesData, coursesByStudent, categories, skills]) => {
+    ]).subscribe(([coursesData, coursesByStudent,coursesInActiveByStudent, categories, skills]) => {
       this.categories = categories;
       this.skills = skills;
       this.studyPlan = [];
