@@ -446,7 +446,7 @@ export class StudentListComponent {
       switchMap(users => {
         const userCourseObservables = users.map(user => {
           const userRef = this.userService.getUserRefById(user.uid);
-          return this.courseService.getActiveCoursesByStudent$(userRef).pipe(
+          return this.courseService.getAllCoursesByStudent$(userRef).pipe(
             map(courses => ({ user, courses }))
           );
         });
@@ -470,7 +470,12 @@ export class StudentListComponent {
         const profileName = profile ? profile.name : '';
         let hours = 0;
         let targetHours = 0;
+
+        let extraHours = 0;
+        let extraTargetHours = 0;
+
         let cursosPlan = courses.filter(x=>x?.active && !x?.isExtraCourse && x?.dateStartPlan && x?.dateEndPlan)
+        let coursesExtra = courses.filter(x=>!x?.active)
 
         let start: number[] = []
         let end: number[] = []
@@ -489,11 +494,20 @@ export class StudentListComponent {
           endDay = Math.max(...end)
         }
 
-        courses.forEach(course => {
+        cursosPlan.forEach(course => {
           hours += course?.progressTime ? course.progressTime : 0;
           const courseJson = this.courses.find(item => item.id === course.courseRef.id);
           if (courseJson) {
             targetHours += courseJson.duracion / 60;
+            course.courseTime = courseJson.duracion
+          }
+        });
+
+        coursesExtra.forEach(course => {
+          extraHours += course?.progressTime ? course.progressTime : 0;
+          const courseJson = this.courses.find(item => item.id === course.courseRef.id);
+          if (courseJson) {
+            extraTargetHours += courseJson.duracion / 60;
             course.courseTime = courseJson.duracion
           }
         });
@@ -566,6 +580,10 @@ export class StudentListComponent {
           uid: user.uid,
           status:user.status =='active'? 'active':'inactive',
           photoUrl: user.photoUrl,
+          extraHours,
+          extraTargetHours,
+          extraCoursesCount:coursesExtra.length,
+          extraCoursesCompletedCount:coursesExtra.filter(x=>x.progress >= 100).length,
           test // Agregar aquí los datos del examen del usuario
         };
         

@@ -803,6 +803,17 @@ export class CourseService {
       .valueChanges();
   }
 
+  getAllCoursesByStudent$(
+    userRef: DocumentReference<User>
+  ): Observable<CourseByStudent[]> {
+    return this.afs
+      .collection<CourseByStudent>(CourseByStudent.collection, (ref) =>
+        ref.where("userRef", "==", userRef)
+      )
+      .valueChanges();
+  }
+
+
 
   getInActiveCoursesByStudent$(
     userRef: DocumentReference<User>
