@@ -1,11 +1,15 @@
-<div class="button-containerleft">
-    <button class="blueButtonAnim button-animation" style="border-radius: 24px !important" (click)="downloadExcel()">
-        <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="" />Descargar Datos
-    </button>
-    <!-- <button class="greenButton" style="border-radius: 24px !important" (click)="createTestData()">
-        <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="" />Crear usuarios de prueba
-    </button> -->
+<div fxLayout="row"  fxLayoutAlign="space-between center" class="mgt10">
+	<button class="blueButtonAnim button-animation" style="border-radius: 24px !important" (click)="openModal()">
+		<img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="" />Asignar Usuarios
+	</button>
+	<button class="blueButtonAnim button-animation" style="border-radius: 24px !important" (click)="downloadExcel()">
+		<img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="" />Descargar Datos
+	</button>
 </div>
+
+<!-- <button class="greenButton" style="border-radius: 24px !important" (click)="createTestData()">
+	<img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="" />Crear usuarios de prueba
+</button> -->
 
 <div class="mgt10">
 	<table mat-table [dataSource]="dataSource">

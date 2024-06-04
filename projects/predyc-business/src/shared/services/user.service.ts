@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { User, UserJson } from "projects/shared/models/user.model";
 import { AngularFirestore, CollectionReference, DocumentReference, Query } from "@angular/fire/compat/firestore";
-import { BehaviorSubject, combineLatest, filter, firstValueFrom, map, Observable, shareReplay, Subscription, switchMap,} from "rxjs";
+import { BehaviorSubject, combineLatest, filter, firstValueFrom, map, Observable, of, shareReplay, Subscription, switchMap,} from "rxjs";
 import { Subscription as SubscriptionClass } from "projects/shared/models/subscription.model";
 import { EnterpriseService } from "./enterprise.service";
 import { AlertsService } from "./alerts.service";
@@ -159,8 +159,6 @@ export class UserService {
       return []; // Asegurarse de devolver un arreglo vacío en caso de error
     }
   }
-  
-  
 
   async __generateCourseCompletionReport(afs: AngularFirestore): Promise<any[]> {
     try {
@@ -267,9 +265,6 @@ export class UserService {
       return []; // Asegurarse de devolver un arreglo vacío en caso de error
     }
   }
-  
-  
-
 
   async _generateCourseCompletionReport(afs: AngularFirestore): Promise<any[]> {
     try {
@@ -426,7 +421,6 @@ export class UserService {
   
     console.log('fin fixUsersLastActivity');
   }
-  
 
   async addUser(newUser: User): Promise<void> {
     // console.log(newUser.name);
@@ -707,6 +701,18 @@ export class UserService {
       })
       .valueChanges()
       .pipe(shareReplay(1));
+  }
+
+  
+  getAllUsersForLiveCourses$(searchTerm = null, queryLimit = null): Observable<User[]> {
+    if(!searchTerm) return of([])
+    return this.afs.collection<User>(User.collection, (ref) => {
+      let query: CollectionReference | Query = ref;
+      query = query.where('displayName', '>=', searchTerm).where('displayName', '<=', searchTerm+ '\uf8ff')
+      console.log("queryLimit", queryLimit)
+      if (queryLimit) query = query.limit(queryLimit)
+      return query.orderBy("displayName");
+    }).valueChanges()
   }
 
   getUsersByEnterpriseRef$(

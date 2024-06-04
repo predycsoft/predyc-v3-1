@@ -12,6 +12,8 @@ import { LiveCourseService } from 'projects/predyc-business/src/shared/services/
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
 import Swal from 'sweetalert2';
 import * as XLSX from "xlsx-js-style";
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { DialogAssignLiveCoursesComponent } from './dialog-assign-live-courses/dialog-assign-live-courses.component';
 
 
 interface DataToShow {
@@ -36,6 +38,8 @@ export class LiveCourseStudentListComponent {
 		public icon: IconService,
 		public liveCourseService: LiveCourseService,
 		public userService: UserService,
+		private modalService: NgbModal,
+
 		// test
 		private afs: AngularFirestore,
 	) {}
@@ -169,8 +173,25 @@ export class LiveCourseStudentListComponent {
 		XLSX.utils.book_append_sheet(workbook, worksheet, 'Estudiantes');
 	  
 		XLSX.writeFile(workbook, 'Estudiantes.xlsx');
-	}	  
+	}
+	
+	openModal() {
+		const modalRef = this.modalService.open(DialogAssignLiveCoursesComponent, {
+			animation: true,
+			centered: true,
+			size: "md",
+			backdrop: "static",
+			keyboard: false,
+			// windowClass: 'modWidth'
+		});
+		
+	}
 
+	ngOnDestroy() {
+		if (this.queryParamsSubscription) this.queryParamsSubscription.unsubscribe();
+	}
+	
+	
 	async createTestData() {
 		console.log("Started")
 		const querySnapshot = await this.afs.collection(User.collection).ref.where("email", "==", "arturo.r@test.com").get();
@@ -189,7 +210,5 @@ export class LiveCourseStudentListComponent {
 		console.log("Finished")
 	}
 
-	ngOnDestroy() {
-		if (this.queryParamsSubscription) this.queryParamsSubscription.unsubscribe();
-	}
+
 }

@@ -868,7 +868,7 @@ export class CreateLiveCourseComponent {
       return
     }
 
-    let enterpriseRef =this.enterpriseService.getEnterpriseRef()
+    let enterpriseRef = this.enterpriseService.getEnterpriseRef()
     if(this.user.isSystemUser){
       enterpriseRef = null;
     }
@@ -2835,10 +2835,10 @@ export class CreateLiveCourseComponent {
 
     let nombreCurso = this.formNewCourse.get('title').value?  this.formNewCourse.get('title').value : 'Temporal';
 
-    let videoDescription =  `Sesiòn: ${session.title.trim()} - Instructor:  ${this.formNewCourse.get('instructor').value}`.trim();
+    let videoDescription =  `Sesión: ${session.title.trim()} - Instructor:  ${this.formNewCourse.get('instructor').value}`.trim();
 
     let instructorText = `Instructor: ${this.formNewCourse.get('instructor').value}`.trim();
-    let baseText = `Sesiòn: - ${instructorText.trim()}`;
+    let baseText = `Sesión: - ${instructorText.trim()}`;
     let maxLength = 127;
     
     // Calcula el espacio disponible para el título de la clase, restando 3 para los puntos suspensivos
@@ -2901,12 +2901,10 @@ export class CreateLiveCourseComponent {
     //session['uploading'] = true;
     const fileSizeInBytes = file.size;
 
-    this.uploadControl.createVideo(videoName, videoDescription,fileSizeInBytes)
-    .subscribe({
+    this.uploadControl.createVideo(videoName, videoDescription, fileSizeInBytes).subscribe({
       next : response =>{
         // Una vez creado el video, sube el archivo
-        this.uploadControl.uploadVideo(file, response.upload.upload_link)
-        .subscribe({
+        this.uploadControl.uploadVideo(file, response.upload.upload_link).subscribe({
           // Maneja las notificaciones de progreso
           next: progress => {
             //console.log('uplading video',progress)

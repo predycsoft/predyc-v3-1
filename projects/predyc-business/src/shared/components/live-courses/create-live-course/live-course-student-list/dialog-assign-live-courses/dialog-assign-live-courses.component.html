@@ -1,0 +1,18 @@
+<div fxLayout="column" fxLayoutGap="2rem" fxLayoutAlign="start start" class="pd20">
+    <div fxLayout="row"  fxLayoutAlign="end center">
+        <button class="blueButton">Asignar a usuarios</button>
+    </div>
+    <div fxLayout="row"  fxLayoutAlign="center center" class="fw">
+        <form class="example-form">
+            <mat-form-field class="example-full-width">
+                <mat-label>Buscar correo del estudiante</mat-label>
+                <input type="text" placeholder="Escribe el correo del estudiante" aria-label="Number" matInput [formControl]="myControl" [matAutocomplete]="auto">
+                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                    <mat-option *ngFor="let option of filteredOptions | async" [value]="option.uid">
+                        {{option.email}}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+        </form>
+    </div>
+</div>
