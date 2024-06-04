@@ -152,7 +152,7 @@
                         <div fxLayout="row" fxLayoutAlign="space-between center" class="pdb05 border-bl">
                             <!-- Texto temporal a la izquierda -->
                             <!-- <span class="gray-8 ft12 pd03">Texto Temporal dsd</span> -->
-                            <mat-select *ngIf="type!='certification'" style="width: 300px !important;" placeholder="Clase sin Asignar" formControlName="classId">
+                            <mat-select *ngIf="!mode && type != 'certification'" style="width: 300px !important;" placeholder="Clase sin Asignar" formControlName="classId">
                                 <mat-option [value]="">Sin Asignar</mat-option>
                                 <mat-option *ngFor="let clase of classesArray" [value]="clase.id">{{clase.moduloIndex+1}}.{{clase.claseIndex+1}} {{clase.titulo}}</mat-option>
                             </mat-select>

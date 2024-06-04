@@ -103,15 +103,16 @@ export class CreateLiveCourseComponent {
   @ViewChildren('inputRefModulo') inputElementsModulo: QueryList<ElementRef>;
 
   activeStep = 1;
-  steps = [
-    'Información del curso',
-    //'Competencias',
-    'Clases',
-    'Examen',
-    //'Vista previa examen',
-    //'Resumen'
+  steps = ['Información del curso','Clases','Examen'];
+  durations = [
+    { value: (60*2), label: '2 hrs' },
+    { value: (60*3), label: '3 hrs' },
+    { value: (60*4), label: '4 hrs' },
+    { value: (60*5), label: '5 hrs' },
+    { value: (60*6), label: '6 hrs' },
+    { value: (60*7), label: '7 hrs' },
+    { value: (60*8), label: '8 hrs' }
   ];
-
 
   mode: "create" | "edit-base" | "edit" // "edit" for live course sessions sons edition
   idBaseLiveCourse = this.route.snapshot.paramMap.get("idCurso")
@@ -929,7 +930,7 @@ export class CreateLiveCourseComponent {
       if(!checkStatus && this.formNewCourse.valid) {
         Swal.fire({
           title: "Revisar datos",
-          text:"Existen problemas en el curso, ¿desea continuar?, se guardar como borrador",
+          text:"Existen problemas en el curso, ¿desea continuar?, se guardará como borrador",
           icon: "info",
           showCancelButton: true,
           confirmButtonText: "Guardar",
@@ -958,7 +959,7 @@ export class CreateLiveCourseComponent {
     else { // edit livecourse son and sessions sons information
       this.savingCourse = true;
       Swal.fire({
-        title: 'Guardando la nueva informaciòn editada...',
+        title: 'Guardando la nueva información editada...',
         text: 'Por favor, espera.',
         allowOutsideClick: false,
         didOpen: () => {
@@ -1786,13 +1787,12 @@ export class CreateLiveCourseComponent {
 
   uploadCourseImage(event, tipo, newInstructor = false){
     if (!event.target.files[0] || event.target.files[0].length === 0) {
-
-      Swal.fire({
-        title:'Borrado!',
-        text:`Debe seleccionar una imagen`,
-        icon:'warning',
-        confirmButtonColor: 'var(--blue-5)',
-      })
+      // Swal.fire({
+      //   title:'Borrado!',
+      //   text:`Debe seleccionar una imagen`,
+      //   icon:'warning',
+      //   confirmButtonColor: 'var(--blue-5)',
+      // })
       return;
     }
     const file = event.target.files[0];
@@ -1814,7 +1814,7 @@ export class CreateLiveCourseComponent {
         if (width !== height) {
           Swal.fire({
             title:'Error!',
-            text:`Debe seleccionar una imagen de 500x500px`,
+            text:`Debe seleccionar una imagen de dimensiones 1:1`,
             icon:'warning',
             confirmButtonColor: 'var(--blue-5)',
           })
@@ -2070,7 +2070,7 @@ export class CreateLiveCourseComponent {
     clase.type = tipo;
     clase.files = [];
     clase['edited'] = true
-    clase['duration'] = 60
+    clase['duration'] = 120
     //clase.id = Date.now().toString();
     clase.id = this.afs.collection<Session>(Session.collection).doc().ref.id;
 

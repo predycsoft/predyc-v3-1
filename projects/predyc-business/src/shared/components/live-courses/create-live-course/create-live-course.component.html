@@ -216,21 +216,23 @@
                                                                                                 <input #inputRef class="inputInvisible" type="text" [(ngModel)]="session['tituloTMP']" (keydown.space)="preventDefault($event)" 
                                                                                                 (keyup.enter)="preventDefault($event); confirmSessionTitleAndDuration(session)" placeholder="Escriba el título aquí" [disabled]="mode === 'edit'" >
 
-                                                                                                <select *ngIf=" mode !== 'edit'" [(ngModel)]="session['duration']" class="duration-select">
-                                                                                                    <option [ngValue]="60">1 hr</option>
-                                                                                                    <option [ngValue]="120">2 hrs</option>
-                                                                                                    <option [ngValue]="180">3 hrs</option>
+                                                                                                <select *ngIf="mode !== 'edit'" [(ngModel)]="session['duration']" class="duration-select">
+                                                                                                    <option *ngFor="let duration of durations" [ngValue]="duration.value">{{ duration.label }}</option>
                                                                                                 </select>
-
+                                                                                                  
                                                                                                 <div *ngIf=" mode === 'edit' " fxLayout="row" fxLayoutAlign=" center" fxLayoutGap=".25rem" class="form-group">
-                                                                                                    <label class="ft12 ft500" for="fecha-inicio">Fecha y hora</label>
+                                                                                                    <label class="ft12 ft500" for="fecha-inicio">Fecha y hora: </label>
                                                                                                     <input type="datetime-local" id="fecha-inicio" class="form-control w225px" [(ngModel)]="session['dateFormatted']">
                                                                                                 </div>
-                                                                                                <select *ngIf=" mode === 'edit' " class="duration-select" [(ngModel)]="session['weeksToKeep']">
-                                                                                                    <option [ngValue]="2">2 Sem</option>
-                                                                                                    <option [ngValue]="3">3 Sem</option>
-                                                                                                    <option [ngValue]="4">4 Sem</option>
-                                                                                                </select>
+
+                                                                                                <div *ngIf=" mode === 'edit' " fxLayout="row" fxLayoutAlign=" center" fxLayoutGap=".25rem" class="">
+                                                                                                    <label class="ft12 ft500" for="">Repetición: </label>
+                                                                                                    <select class="duration-select" [(ngModel)]="session['weeksToKeep']">
+                                                                                                        <option [ngValue]="2">2 Sem</option>
+                                                                                                        <option [ngValue]="3">3 Sem</option>
+                                                                                                        <option [ngValue]="4">4 Sem</option>
+                                                                                                    </select>
+                                                                                                </div>
                                                                                                 <img (click)="confirmSessionTitleAndDuration(session)" matTooltip="Confirmar título" [src]="icon.check" 
                                                                                                 class="h18px pdl05 makeGray edit cursorPointer" alt="">
                                                                                             </ng-template>
