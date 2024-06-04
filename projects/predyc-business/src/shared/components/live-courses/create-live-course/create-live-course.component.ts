@@ -10,7 +10,6 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { EnterpriseService } from '../../../services/enterprise.service';
 import { CategoryService } from '../../../services/category.service';
 import { SkillService } from '../../../services/skill.service';
-import { CourseService } from '../../../services/course.service';
 import { ModuleService } from '../../../services/module.service';
 import { CourseClassService } from '../../../services/course-class.service';
 import { ActivityClassesService } from '../../../services/activity-classes.service';
@@ -84,7 +83,6 @@ export class CreateLiveCourseComponent {
     private enterpriseService: EnterpriseService,
     public categoryService : CategoryService,
     public skillService: SkillService,
-    public courseService: CourseService,
     public moduleService: ModuleService,
     public courseClassService: CourseClassService,
     public activityClassesService:ActivityClassesService,
@@ -2142,22 +2140,22 @@ export class CreateLiveCourseComponent {
   } 
 
   // AQUI
-  borrarSession(session){
-    let clases = this.liveCourseData.sessions
+  async borrarSession(session){
+    let sessions = this.liveCourseData.sessions
 
     Swal.fire({
-      title: `<span class=" gray-9 ft20">Borrar sesion ${session.title ? session.title : 'Sin título'}</span>`,
+      title: `<span class=" gray-9 ft20">Borrar sesión ${session.title ? session.title : 'Sin título'}</span>`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: 'var(--red-5)',
       cancelButtonColor: 'var(--gray-4)',
-      confirmButtonText: `Borrar clase`,
+      confirmButtonText: `Borrar sesión`,
       cancelButtonText:'Cancelar'
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
 
-        clases = clases.filter(clase => clase.id != session.id );
-        this.liveCourseData.sessions = clases;
+        sessions = sessions.filter(clase => clase.id != session.id );
+        this.liveCourseData.sessions = sessions;
         session['deleted'] = true
 
         let classDelete = {
@@ -2168,7 +2166,7 @@ export class CreateLiveCourseComponent {
         }
 
         this.deletedClasses.push(classDelete)
-        //this.courseClassService.deleteClassAndReference(claseIn.id,this.liveCourseData.id,moduloIn.id);
+        await this.liveCourseService.deleteSession(session.id);
         Swal.fire({
           title:'Borrado!',
           text:`La sesión ${session.title? session.title: 'Sin título'} fue borrada`,
@@ -2855,9 +2853,10 @@ export class CreateLiveCourseComponent {
       trimmedClassTitle = trimmedClassTitle.substring(0, availableLengthForTitle) + '...';
     }
     
-    let videoName = `Sesiòn: ${trimmedClassTitle} - ${instructorText}`;
+    // let videoName = `Sesiòn: ${trimmedClassTitle} - ${instructorText}`;
+    let videoName = `Sesiòn: ${trimmedClassTitle}`;
 
-    console.log(videoName,videoName.length)
+    // console.log(videoName,videoName.length)
     
     // Verifica de nuevo para asegurarte de que el nombre completo esté dentro del límite
     if (videoName.length > maxLength) {

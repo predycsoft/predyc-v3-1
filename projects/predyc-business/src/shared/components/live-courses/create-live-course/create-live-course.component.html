@@ -471,8 +471,8 @@
                                 <img [src]="icon.document" class="makeBlue h20px" alt="">
                                 <span class="ft500 ft14 black " style="margin-top: 5px;">Examen del curso ({{ examen?.questions?.length}} Preguntas)</span>
                             </div>
-                            <div fxLayout="row" fxLayoutAlign="center" class="w-100"> <!-- Centrar contenido -->
-                                <div style="width: 800px;"> <!-- Ancho fijo -->
+                            <div fxLayout="row" fxLayoutAlign="center" class="w-100">
+                                <div style="width: 800px;">
                                     <app-questions type="test" class="mgr10" [questionMaxSize]="100" [courseData]="modulos" [nameCurso]="formNewCourse?.get('title').value?
                                     formNewCourse?.get('title').value : 'Temporal'" [nameEmpresa]="empresa?.name" (changeQuestion)="validExam = $event;formatExamQuestions()" 
                                     (emmitForm)="validExam = $event;" [questionsArray]="examen?.questions ? examen?.questions:[]" [checkQuestions]="updateTriggeQuestionsExam" 
@@ -589,6 +589,7 @@
                         </div>
                     </div>
                 </mat-tab>
+
                 <mat-tab *ngIf="mode === 'edit'" label="Seguimiento">
                     <div fxLayout="row" fxLayoutAlign="center " class="containerCurso h-100" fxLayoutGap="1.5rem">
                         <div fxLayout="column" class="radius10 w-95 mgt15 hideScroll shadowLight" style="overflow-y: auto; background-color:rgba(244, 244, 244, 0.362)">

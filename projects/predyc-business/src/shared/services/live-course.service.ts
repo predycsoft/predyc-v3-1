@@ -226,4 +226,26 @@ export class LiveCourseService {
     })
   }
 
+  async deleteSession(sessionId: string): Promise<void> {
+    // Delete sub collection
+    await this.deleteSessionSons(sessionId)
+    // Delete collection
+    await this.afs.collection<Session>(Session.collection).doc(sessionId).delete()
+  }
+
+  async deleteSessionSons(sessionId: string): Promise<void> {
+    const subCollectionRef = this.afs.collection<Session>(Session.collection).doc(sessionId).collection<SessionSon>(SessionSon.subCollection);
+    const batch = this.afs.firestore.batch();
+  
+    const snapshot = await firstValueFrom(subCollectionRef.get());
+
+    if (snapshot.docs) {
+      snapshot.docs.forEach(doc => {
+        batch.delete(doc.ref);
+      });
+      return await batch.commit();
+    }
+    return null
+  }
+
 }
