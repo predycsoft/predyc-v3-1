@@ -922,7 +922,7 @@ export class CreateLiveCourseComponent {
   
   async saveDraftPre() {
     if (this.mode !== "edit") {
-      this.liveCourseData.title = this.formNewCourse.value.title
+      // this.liveCourseData.title = this.formNewCourse.value.title
       let checkStatus = await this.checkAllInfo();
   
       if(!checkStatus && this.formNewCourse.valid) {
@@ -954,7 +954,8 @@ export class CreateLiveCourseComponent {
         })
       }
     }
-    else { // edit livecourse son and sessions sons information
+    // Editing livecourse son and sessions sons information
+    else { 
       this.savingCourse = true;
       Swal.fire({
         title: 'Guardando la nueva información editada...',
@@ -1067,7 +1068,7 @@ export class CreateLiveCourseComponent {
     this.invalidMessages = [];
 
     // this.liveCourseData === modulo
-    if (this.liveCourseData.title=='') {
+    if (!this.liveCourseData.title) {
       this.liveCourseData['isInvalid'] = true;
       valid = false;
       this.liveCourseData['InvalidMessages'].push('El curso debe tener título');
@@ -1399,7 +1400,6 @@ export class CreateLiveCourseComponent {
           if (clase['edited']) {
             // Save session
             // console.log('sesion',clase)
-            // let localeSession = new Clase;
             let localeSession: SessionData = this.initializeSessionAsSessionData()
             localeSession.HTMLcontent = clase.HTMLcontent ? clase.HTMLcontent : null;
             localeSession.files = clase.files.map(archivo => ({
@@ -1416,7 +1416,7 @@ export class CreateLiveCourseComponent {
             // localeSession.vimeoId2 = clase.vimeoId2 ? clase.vimeoId2 : null;
             localeSession.type = clase.type;
             localeSession.orderNumber = i+1;
-            localeSession.title = clase.tituloTMP;
+            localeSession.title = clase.tituloTMP ? clase.tituloTMP: clase.title;
             localeSession.liveCourseRef = this.liveCourseService.getLiveCourseRefById(this.liveCourseData.id)
 
             const sessionToSave: Session = this.SessionDataModelToLiveCourseSession(localeSession)
@@ -2793,9 +2793,7 @@ export class CreateLiveCourseComponent {
     return duracion
   }
 
-  borrarArchivo(clase,archivo){
-
-
+  borrarArchivo(session: SessionData, archivo){
     Swal.fire({
       title: "Advertencia",
       text:`¿Desea borrar el archivo ${archivo.nombre}?`,
@@ -2806,9 +2804,9 @@ export class CreateLiveCourseComponent {
     }).then((result) => {
       /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
-        console.log(clase,archivo)
-        clase.archivos = clase.archivos.filter(x=>x.url != archivo.url)
-        clase['edited'] = true; // Marca la clase como editada
+        console.log(session,archivo)
+        session.files = session.files.filter(x=>x.url != archivo.url)
+        session['edited'] = true; // Marca la clase como editada
       }
     });
 
