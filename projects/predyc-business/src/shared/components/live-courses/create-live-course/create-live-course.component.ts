@@ -2846,13 +2846,13 @@ export class CreateLiveCourseComponent {
     
     // Asegúrate de que el título de la clase no haga que el nombre total del video exceda el límite máximo
     let trimmedClassTitle = session.title.trim();
-    if ((`Sesiòn: ${session.title.trim()} - ${instructorText.trim()}`).length > maxLength) {
+    if ((`Sesión: ${session.title.trim()} - ${instructorText.trim()}`).length > maxLength) {
       // Recorta el título de la clase y agrega puntos suspensivos al final
       trimmedClassTitle = trimmedClassTitle.substring(0, availableLengthForTitle) + '...';
     }
     
-    // let videoName = `Sesiòn: ${trimmedClassTitle} - ${instructorText}`;
-    let videoName = `Sesiòn: ${trimmedClassTitle}`;
+    // let videoName = `Sesión: ${trimmedClassTitle} - ${instructorText}`;
+    let videoName = `Sesión: ${trimmedClassTitle}`;
 
     // console.log(videoName,videoName.length)
     
@@ -3541,14 +3541,14 @@ export class CreateLiveCourseComponent {
 
   }
 
-  verVideoVimeo(clase): NgbModalRef {
+  verVideoVimeo(session: SessionData): NgbModalRef {
 
     const modalRef = this.modalService.open(VimeoComponent, {
       animation: true,
       centered: true,
       size: 'lg',
     })
-    modalRef.componentInstance.clase = clase;
+    modalRef.componentInstance.clase = session;
     return modalRef
 
   }

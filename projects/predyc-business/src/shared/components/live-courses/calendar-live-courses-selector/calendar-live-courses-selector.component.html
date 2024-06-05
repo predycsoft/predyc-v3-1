@@ -1,8 +1,6 @@
 <div class="calendar-container fw">
     <div *ngFor="let group of groupedCourses | keyvalue: keyvalueAscOrder" class="month-group">
-        <div class="month-header">
-            {{ group.key | titlecase}}
-        </div>
+        <div class="month-header">{{ group.key | titlecase}}</div>
         <div *ngFor="let course of group.value" class="course-item cursorPointer" fxLayout="row" fxLayoutAlign="space-between center">
             <div class="course-info" (click)="onSelectCourse(course)">
                 <img [src]="course.baseCoursePhoto" class="course-image" alt="">
@@ -11,11 +9,18 @@
                     <div class="course-description">{{ course.courseSonIdentifierText }}</div>
                 </div>
             </div>
-            <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="1rem">
+            <div *ngIf="!course.sessionSonVimeoId1" fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="1rem">
                 <div class="course-time">
                     {{ course.sessionSonDate | date: 'EEE d' }} - {{course.sessionDuration / 60}} {{(course.sessionDuration / 60) > 1 ? "horas" : "hora" }} 
                 </div>
                 <a [href]="course.courseSonMeetingLink" target="_blank" class="blueLink ft13">Ingresar a la reuniòn</a>
+            </div>
+            <div *ngIf="course.sessionSonVimeoId1" fxLayout="row" fxLayoutAlign="end center">
+                <!-- <div *ngIf="course.sessionSonDate + weeksToKeep < now"></div>
+                <div *ngIf="course.sessionSonDate + weeksToKeep > now"></div> -->
+                <button (click)="verVideoVimeo(course)" class="grayButton pd03 radius4 ft12 h28px mgr10 w130px gray-10" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                    <img [src]="icon.playOutline" class="h16px pdr05" alt="">Reproducir video
+                </button>
             </div>
         </div>
     </div>
