@@ -813,6 +813,7 @@ export class UserService {
   getPerformanceWithDetails(
     userStudyPlan
   ): "no plan" | "high" | "medium" | "low" | "no iniciado" {
+    
 
     const today = new Date().getTime();
 
@@ -853,6 +854,7 @@ export class UserService {
 
 
     let performance: "no plan" | "high" | "medium" | "low" | "no iniciado";
+
     
 
     let validator = userStudyPlan.find((x) => x.progressTime > 0);
@@ -867,6 +869,10 @@ export class UserService {
     } else {
       performance = "low";
     }
+
+
+    console.log('datos ritmo',performance,userStudyPlan)
+
 
 
     return performance;

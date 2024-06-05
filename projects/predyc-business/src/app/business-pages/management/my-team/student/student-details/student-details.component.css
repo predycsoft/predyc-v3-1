@@ -7,6 +7,18 @@
   .cards {
     padding: 12px 18px;
   }
+
+  .redBorder {
+    border-color: red !important;
+  }
+  .yellowBorder {
+    border-color: orange !important;
+  }
+  .greenBorder {
+    border-color: green !important;
+  }
+  
+  
   
 
   .backProgressSpinner {

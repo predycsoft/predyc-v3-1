@@ -554,7 +554,8 @@ export class StudentListComponent {
         } else if (!user['lastActivityDate']?.seconds && this.examenInicial && test.length > 0) {
           activityStatus = 'Sin clases vistas';
           actStatus.push(activityStatus)
-        }        
+        }  
+        //console.log('cursos revisar',courses)      
 
         return {
           displayName: user.displayName,

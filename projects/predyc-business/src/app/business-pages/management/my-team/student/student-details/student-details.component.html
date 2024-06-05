@@ -1,4 +1,19 @@
 <div fxLayout="column" class="mgt10 mgl10 mgr10">
+    <div class="border radius10 pd05 mgt10 mgb10 backGray1" style="min-height: 10vh !important;"
+    [ngClass]="{'greenBorder backGreen1':colorWarning == 'green','yellowBorder backYellow1':colorWarning == 'yellow','redBorder backRed1':colorWarning == 'red'}"    
+    fxLayout="row" fxLayoutAlign="space-between center">
+        <div fxFlex="50" fxLayout="row" fxLayoutAlign="start center">
+            <img *ngIf="iconWarning" [src]="iconWarning" class="h22px mgl10" [ngClass]="{'makeYellow':colorWarning == 'yellow'}" alt="">
+            <span [ngClass]="{'green-5':colorWarning == 'green','yellow-5':colorWarning == 'yellow','red-5':colorWarning == 'red'}"  class="ft16 ft600 mgl05"> 
+                {{textWarning}}
+            </span>
+        </div>
+        <div fxFlex="50" fxLayout="row" fxLayoutAlign="start center">
+            <ul style="list-style-type: none; padding-left: 0; margin: 0;">
+                <li [ngClass]="{'green-5':colorWarning == 'green','yellow-5':colorWarning == 'yellow','red-5':colorWarning == 'red'}"  class="ft14 ft600 mgl05" *ngFor="let item of listDetailWarning">{{item}}</li>
+            </ul>
+        </div>
+    </div>
     <!-- 3 cards top -->
     <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt05" fxLayoutGap="2rem">
         <!-- Informacion del usuario-->
@@ -22,6 +37,6 @@
     
     <!-- 2 cards bottom -->
     <div class="mgt10" fxLayout="column" >
-        <app-student-study-plan-and-competences [student]="student" [selectedProfile]="studentProfile" class="fw"></app-student-study-plan-and-competences>
+        <app-student-study-plan-and-competences (copletacion)="getProgreso($event)" (userRitmo)="getRitmo($event)" [student]="student" [selectedProfile]="studentProfile" class="fw"></app-student-study-plan-and-competences>
     </div>
 </div>
