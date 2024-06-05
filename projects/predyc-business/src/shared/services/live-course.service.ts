@@ -31,6 +31,11 @@ export class LiveCourseService {
     return this.afs.collection<LiveCourseByStudent>(LiveCourseByStudent.collection, (ref) =>ref.where("liveCourseSonRef", "==", liveCourseSonRef)).valueChanges();
   }
 
+  async createLiveCourseByStudent(liveCourseByStudent: LiveCourseByStudent): Promise<void> {
+    const liveCourseByStudentRef = this.afs.collection<LiveCourseByStudent>(LiveCourseByStudent.collection).doc().ref;
+		await liveCourseByStudentRef.set({...liveCourseByStudent.toJson(), id: liveCourseByStudentRef.id}, { merge: true });
+  }
+
   updateIsAttendingLiveCourseByStudent(liveCourseByStudentId: string, isAttending: boolean): Promise<void> {
     return this.afs.collection<LiveCourseByStudent>(LiveCourseByStudent.collection).doc(liveCourseByStudentId).update({
       isAttending: isAttending
@@ -170,6 +175,10 @@ export class LiveCourseService {
     return this.afs.collection<LiveCourse>(LiveCourse.collection).doc(liveCourseId).collection<LiveCourseSon>(LiveCourseSon.subCollection).doc(liveCourseSonId).ref
   }
 
+  // getLiveCourseSonRefById(liveCourseSonId: string): DocumentReference<LiveCourseSon> {
+  //   return this.afs.collectionGroup<LiveCourseSon>(LiveCourseSon.subCollection).get()
+  // }
+
   getSessionRefById(sessionId: string): DocumentReference<Session> {
     return this.afs.collection<Session>(Session.collection).doc(sessionId).ref
   }
@@ -247,5 +256,7 @@ export class LiveCourseService {
     }
     return null
   }
+
+  
 
 }

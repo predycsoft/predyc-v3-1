@@ -12,8 +12,9 @@ import { LiveCourseService } from 'projects/predyc-business/src/shared/services/
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
 import Swal from 'sweetalert2';
 import * as XLSX from "xlsx-js-style";
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { DialogAssignLiveCoursesComponent } from './dialog-assign-live-courses/dialog-assign-live-courses.component';
+import { CreateUserComponent } from 'projects/predyc-business/src/app/business-pages/management/my-team/student/create-user/create-user.component';
 
 
 interface DataToShow {
@@ -63,6 +64,8 @@ export class LiveCourseStudentListComponent {
 	liveCourseServiceSubscription: Subscription
 	liveCourseSonRef: DocumentReference<LiveCourseSon>
 
+	userEmails: string[] = []
+
 	ngOnInit() {
 		this.liveCourseSonRef = this.liveCourseService.getLiveCourseSonRefById(this.idBaseLiveCourse, this.idLiveCourseSon)
 		this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe((params) => {
@@ -101,8 +104,8 @@ export class LiveCourseStudentListComponent {
 		  this.dataSource.data = dataTosShow;
 		  this.totalLength = dataTosShow.length;
 		  // Emit the user emails
-		  const userEmails = dataTosShow.map(data => data.userEmail);
-		  this.userEmailsChanged.emit(userEmails);
+		  this.userEmails = dataTosShow.map(data => data.userEmail);
+		  this.userEmailsChanged.emit(this.userEmails);
 		});
 	}
 
@@ -179,12 +182,52 @@ export class LiveCourseStudentListComponent {
 		const modalRef = this.modalService.open(DialogAssignLiveCoursesComponent, {
 			animation: true,
 			centered: true,
-			size: "md",
+			size: "",
 			backdrop: "static",
 			keyboard: false,
-			// windowClass: 'modWidth'
+		});
+
+		modalRef.componentInstance.emailsAssigned = this.userEmails
+
+		modalRef.componentInstance.userSelected.subscribe((user: User) => {
+			this.handleUserSelected(user);
 		});
 		
+	}
+
+	async handleUserSelected(user: User) {
+		// console.log('Selected user:', user);
+		if (user) await this.assignLiveCourse(user.uid)
+		else this.openCreateUserModal()
+	}
+
+	async assignLiveCourse(userId: string) {
+		const userRef = this.userService.getUserRefById(userId)
+		const liveCourseSonRef = this.liveCourseService.getLiveCourseSonRefById(this.idBaseLiveCourse, this.idLiveCourseSon)
+		const liveCourseByStudent = new LiveCourseByStudent("", false, userRef, liveCourseSonRef, false)
+		try {
+			await this.liveCourseService.createLiveCourseByStudent(liveCourseByStudent)
+			console.log("***liveCourseByStudent created***")
+		} catch (error) {
+			console.log("XXXerror creating liveCourseByStudentXXX", error)			
+		}
+	}
+
+	async openCreateUserModal(): Promise<NgbModalRef> {
+		const modalRef = this.modalService.open(CreateUserComponent, {
+		animation: true,
+		centered: true,
+		size: 'lg',
+		backdrop: 'static',
+		keyboard: false 
+		})
+
+		modalRef.result.then(async userData => {
+			// console.log("userData", userData)
+			await this.assignLiveCourse(userData.uid)
+		})
+
+		return modalRef
 	}
 
 	ngOnDestroy() {
@@ -192,23 +235,23 @@ export class LiveCourseStudentListComponent {
 	}
 	
 	
-	async createTestData() {
-		console.log("Started")
-		const querySnapshot = await this.afs.collection(User.collection).ref.where("email", "==", "arturo.r@test.com").get();
-		// const querySnapshot = await this.afs.collection(User.collection).ref.where("email", "==", "fabi.negrette@test.com").get();
-		let userRef = null
-		if (!querySnapshot.empty) userRef = querySnapshot.docs[0].ref
+	// async createTestData() {
+	// 	console.log("Started")
+	// 	const querySnapshot = await this.afs.collection(User.collection).ref.where("email", "==", "arturo.r@test.com").get();
+	// 	// const querySnapshot = await this.afs.collection(User.collection).ref.where("email", "==", "fabi.negrette@test.com").get();
+	// 	let userRef = null
+	// 	if (!querySnapshot.empty) userRef = querySnapshot.docs[0].ref
 
-		const liveCourseSonquerySnapshot = await this.afs.collection(LiveCourse.collection).doc(this.idBaseLiveCourse).collection(LiveCourseSon.subCollection).ref.where("id", "==", this.idLiveCourseSon).get();
-		let liveCourseSonrRef = null
-		if (!querySnapshot.empty) liveCourseSonrRef = liveCourseSonquerySnapshot.docs[0].ref
+	// 	const liveCourseSonquerySnapshot = await this.afs.collection(LiveCourse.collection).doc(this.idBaseLiveCourse).collection(LiveCourseSon.subCollection).ref.where("id", "==", this.idLiveCourseSon).get();
+	// 	let liveCourseSonrRef = null
+	// 	if (!querySnapshot.empty) liveCourseSonrRef = liveCourseSonquerySnapshot.docs[0].ref
 
-		let liveCourseByStudent = new LiveCourseByStudent("", false, userRef, liveCourseSonrRef, false)
-		const liveCourseByStudentRef = this.afs.collection<LiveCourseByStudent>(LiveCourseByStudent.collection).doc().ref;
-		await liveCourseByStudentRef.set({...liveCourseByStudent.toJson(), id: liveCourseByStudentRef.id}, { merge: true });
-		liveCourseByStudent.id = liveCourseByStudentRef.id;
-		console.log("Finished")
-	}
+	// 	let liveCourseByStudent = new LiveCourseByStudent("", false, userRef, liveCourseSonrRef, false)
+	// 	const liveCourseByStudentRef = this.afs.collection<LiveCourseByStudent>(LiveCourseByStudent.collection).doc().ref;
+	// 	await liveCourseByStudentRef.set({...liveCourseByStudent.toJson(), id: liveCourseByStudentRef.id}, { merge: true });
+	// 	liveCourseByStudent.id = liveCourseByStudentRef.id;
+	// 	console.log("Finished")
+	// }
 
 
 }

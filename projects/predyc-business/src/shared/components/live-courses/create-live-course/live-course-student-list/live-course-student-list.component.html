@@ -1,34 +1,30 @@
 <div fxLayout="row"  fxLayoutAlign="space-between center" class="mgt10">
 	<button class="blueButtonAnim button-animation" style="border-radius: 24px !important" (click)="openModal()">
-		<img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="" />Asignar Usuarios
+		<img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="" />Asignar a usuario
 	</button>
 	<button class="blueButtonAnim button-animation" style="border-radius: 24px !important" (click)="downloadExcel()">
 		<img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="" />Descargar Datos
 	</button>
 </div>
 
-<!-- <button class="greenButton" style="border-radius: 24px !important" (click)="createTestData()">
-	<img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="" />Crear usuarios de prueba
-</button> -->
-
 <div class="mgt10">
 	<table mat-table [dataSource]="dataSource">
 		<!-- userEmail Column -->
 		<ng-container matColumnDef="userEmail">
 			<th mat-header-cell *matHeaderCellDef class="ft14">Correo del estudiante</th>
-			<td mat-cell *matCellDef="let data" class="ft500 ft14 gray-10">{{ data.userEmail | titlecase }}</td>
+			<td mat-cell *matCellDef="let data" class="ft500 ft14 gray-10">{{ data.userEmail }}</td>
 		</ng-container>
 
 		<!-- userName Column -->
 		<ng-container matColumnDef="userName">
 			<th mat-header-cell *matHeaderCellDef class="ft14 centertext">Nombe del estudiante</th>
-			<td mat-cell *matCellDef="let data" class="centertext ft14">{{ data.userName }}</td>
+			<td mat-cell *matCellDef="let data" class="centertext ft14">{{ data.userName | titlecase}}</td>
 		</ng-container>
 
 		<!-- diagnosticTest Column -->
 		<ng-container matColumnDef="diagnosticTest">
 			<th mat-header-cell *matHeaderCellDef class="ft14 centertext">Diagnostico</th>
-			<td mat-cell *matCellDef="let data" class="centertext ft14">{{ "Diagnostico" | titlecase }}</td>
+			<td mat-cell *matCellDef="let data" class="centertext ft14">{{ "Diagnostico" }}</td>
 		</ng-container>
 
 		<!-- finalTest Column -->
@@ -50,7 +46,6 @@
 				<input type="checkbox" [checked]="data.isAttending" (change)="onAttendanceChange($event, data)" />
 			</td>
 		</ng-container>
-
 
 
 		<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
