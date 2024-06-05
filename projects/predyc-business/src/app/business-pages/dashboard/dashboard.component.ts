@@ -1,20 +1,9 @@
 import { Component } from "@angular/core";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import {
-  Subscription,
-  combineLatest,
-  filter,
-  firstValueFrom,
-  map,
-  switchMap,
-  take,
-} from "rxjs";
+import { Subscription, combineLatest, filter, firstValueFrom, map, switchMap, take } from "rxjs";
 import { DialogDownloadReportComponent } from "projects/predyc-business/src/shared/components/dialogs/dialog-download-report/dialog-download-report.component";
 import { AfterOnInitResetLoading } from "projects/predyc-business/src/shared/decorators/loading.decorator";
-import {
-  CourseByStudent,
-  CourseByStudentJson,
-} from "projects/shared/models/course-by-student.model";
+import { CourseByStudent, CourseByStudentJson } from "projects/shared/models/course-by-student.model";
 import { Enterprise } from "projects/shared/models/enterprise.model";
 import { CourseService } from "projects/predyc-business/src/shared/services/course.service";
 import { EnterpriseService } from "projects/predyc-business/src/shared/services/enterprise.service";
@@ -24,17 +13,8 @@ import { UserService } from "projects/predyc-business/src/shared/services/user.s
 import * as XLSX from "xlsx-js-style";
 import { ProfileService } from "projects/predyc-business/src/shared/services/profile.service";
 import { DepartmentService } from "projects/predyc-business/src/shared/services/department.service";
-import {
-  AngularFirestore,
-  QuerySnapshot,
-} from "@angular/fire/compat/firestore";
-import {
-  Curso,
-  Profile,
-  ProfileJson,
-  User as UserClass,
-  UserJson,
-} from "projects/shared";
+import { AngularFirestore, QuerySnapshot } from "@angular/fire/compat/firestore";
+import { Curso, Profile, ProfileJson, User as UserClass, UserJson } from "projects/shared";
 
 interface User {
   displayName: string;

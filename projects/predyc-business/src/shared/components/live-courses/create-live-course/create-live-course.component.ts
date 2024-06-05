@@ -10,7 +10,6 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { EnterpriseService } from '../../../services/enterprise.service';
 import { CategoryService } from '../../../services/category.service';
 import { SkillService } from '../../../services/skill.service';
-import { CourseService } from '../../../services/course.service';
 import { ModuleService } from '../../../services/module.service';
 import { CourseClassService } from '../../../services/course-class.service';
 import { ActivityClassesService } from '../../../services/activity-classes.service';
@@ -37,6 +36,7 @@ interface LiveCourseData extends LiveCourseJson {
   sessions: SessionData[],
   meetingLink: string,
   identifierText: string,
+  emailLastDate: any,
   addClassMode: boolean,
   isInvalid: boolean,
   InvalidMessages: string[],
@@ -83,7 +83,6 @@ export class CreateLiveCourseComponent {
     private enterpriseService: EnterpriseService,
     public categoryService : CategoryService,
     public skillService: SkillService,
-    public courseService: CourseService,
     public moduleService: ModuleService,
     public courseClassService: CourseClassService,
     public activityClassesService:ActivityClassesService,
@@ -102,15 +101,16 @@ export class CreateLiveCourseComponent {
   @ViewChildren('inputRefModulo') inputElementsModulo: QueryList<ElementRef>;
 
   activeStep = 1;
-  steps = [
-    'Información del curso',
-    //'Competencias',
-    'Clases',
-    'Examen',
-    //'Vista previa examen',
-    //'Resumen'
+  steps = ['Información del curso','Clases','Examen'];
+  durations = [
+    { value: (60*2), label: '2 hrs' },
+    { value: (60*3), label: '3 hrs' },
+    { value: (60*4), label: '4 hrs' },
+    { value: (60*5), label: '5 hrs' },
+    { value: (60*6), label: '6 hrs' },
+    { value: (60*7), label: '7 hrs' },
+    { value: (60*8), label: '8 hrs' }
   ];
-
 
   mode: "create" | "edit-base" | "edit" // "edit" for live course sessions sons edition
   idBaseLiveCourse = this.route.snapshot.paramMap.get("idCurso")
@@ -355,7 +355,7 @@ export class CreateLiveCourseComponent {
           InvalidMessages: []
         };
 
-        let enterpriseREf = this.enterpriseService.getEnterpriseRef()
+        // let enterpriseREf = this.enterpriseService.getEnterpriseRef()
         // if(!this.user.isSystemUser && !(curso.enterpriseRef.id == enterpriseREf.id)){
         //   this.router.navigate(["management/courses"])
         // }
@@ -421,6 +421,7 @@ export class CreateLiveCourseComponent {
         photoUrl: '',
         meetingLink: '',
         identifierText: '',
+        emailLastDate: null,
         description: '',
         instructorRef: {} as DocumentReference,
         proximamente: false,
@@ -867,7 +868,7 @@ export class CreateLiveCourseComponent {
       return
     }
 
-    let enterpriseRef =this.enterpriseService.getEnterpriseRef()
+    let enterpriseRef = this.enterpriseService.getEnterpriseRef()
     if(this.user.isSystemUser){
       enterpriseRef = null;
     }
@@ -921,13 +922,13 @@ export class CreateLiveCourseComponent {
   
   async saveDraftPre() {
     if (this.mode !== "edit") {
-      this.liveCourseData.title = this.formNewCourse.value.title
+      // this.liveCourseData.title = this.formNewCourse.value.title
       let checkStatus = await this.checkAllInfo();
   
       if(!checkStatus && this.formNewCourse.valid) {
         Swal.fire({
           title: "Revisar datos",
-          text:"Existen problemas en el curso, ¿desea continuar?, se guardar como borrador",
+          text:"Existen problemas en el curso, ¿desea continuar?, se guardará como borrador",
           icon: "info",
           showCancelButton: true,
           confirmButtonText: "Guardar",
@@ -953,10 +954,11 @@ export class CreateLiveCourseComponent {
         })
       }
     }
-    else { // edit livecourse son and sessions sons information
+    // Editing livecourse son and sessions sons information
+    else { 
       this.savingCourse = true;
       Swal.fire({
-        title: 'Guardando la nueva informaciòn editada...',
+        title: 'Guardando la nueva información editada...',
         text: 'Por favor, espera.',
         allowOutsideClick: false,
         didOpen: () => {
@@ -1066,7 +1068,7 @@ export class CreateLiveCourseComponent {
     this.invalidMessages = [];
 
     // this.liveCourseData === modulo
-    if (this.liveCourseData.title=='') {
+    if (!this.liveCourseData.title) {
       this.liveCourseData['isInvalid'] = true;
       valid = false;
       this.liveCourseData['InvalidMessages'].push('El curso debe tener título');
@@ -1398,7 +1400,6 @@ export class CreateLiveCourseComponent {
           if (clase['edited']) {
             // Save session
             // console.log('sesion',clase)
-            // let localeSession = new Clase;
             let localeSession: SessionData = this.initializeSessionAsSessionData()
             localeSession.HTMLcontent = clase.HTMLcontent ? clase.HTMLcontent : null;
             localeSession.files = clase.files.map(archivo => ({
@@ -1415,7 +1416,7 @@ export class CreateLiveCourseComponent {
             // localeSession.vimeoId2 = clase.vimeoId2 ? clase.vimeoId2 : null;
             localeSession.type = clase.type;
             localeSession.orderNumber = i+1;
-            localeSession.title = clase.tituloTMP;
+            localeSession.title = clase.tituloTMP ? clase.tituloTMP: clase.title;
             localeSession.liveCourseRef = this.liveCourseService.getLiveCourseRefById(this.liveCourseData.id)
 
             const sessionToSave: Session = this.SessionDataModelToLiveCourseSession(localeSession)
@@ -1784,13 +1785,12 @@ export class CreateLiveCourseComponent {
 
   uploadCourseImage(event, tipo, newInstructor = false){
     if (!event.target.files[0] || event.target.files[0].length === 0) {
-
-      Swal.fire({
-        title:'Borrado!',
-        text:`Debe seleccionar una imagen`,
-        icon:'warning',
-        confirmButtonColor: 'var(--blue-5)',
-      })
+      // Swal.fire({
+      //   title:'Borrado!',
+      //   text:`Debe seleccionar una imagen`,
+      //   icon:'warning',
+      //   confirmButtonColor: 'var(--blue-5)',
+      // })
       return;
     }
     const file = event.target.files[0];
@@ -1812,7 +1812,7 @@ export class CreateLiveCourseComponent {
         if (width !== height) {
           Swal.fire({
             title:'Error!',
-            text:`Debe seleccionar una imagen de 500x500px`,
+            text:`Debe seleccionar una imagen de dimensiones 1:1`,
             icon:'warning',
             confirmButtonColor: 'var(--blue-5)',
           })
@@ -2068,7 +2068,7 @@ export class CreateLiveCourseComponent {
     clase.type = tipo;
     clase.files = [];
     clase['edited'] = true
-    clase['duration'] = 60
+    clase['duration'] = 120
     //clase.id = Date.now().toString();
     clase.id = this.afs.collection<Session>(Session.collection).doc().ref.id;
 
@@ -2140,22 +2140,22 @@ export class CreateLiveCourseComponent {
   } 
 
   // AQUI
-  borrarSession(session){
-    let clases = this.liveCourseData.sessions
+  async borrarSession(session){
+    let sessions = this.liveCourseData.sessions
 
     Swal.fire({
-      title: `<span class=" gray-9 ft20">Borrar sesion ${session.title ? session.title : 'Sin título'}</span>`,
+      title: `<span class=" gray-9 ft20">Borrar sesión ${session.title ? session.title : 'Sin título'}</span>`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: 'var(--red-5)',
       cancelButtonColor: 'var(--gray-4)',
-      confirmButtonText: `Borrar clase`,
+      confirmButtonText: `Borrar sesión`,
       cancelButtonText:'Cancelar'
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
 
-        clases = clases.filter(clase => clase.id != session.id );
-        this.liveCourseData.sessions = clases;
+        sessions = sessions.filter(clase => clase.id != session.id );
+        this.liveCourseData.sessions = sessions;
         session['deleted'] = true
 
         let classDelete = {
@@ -2166,7 +2166,7 @@ export class CreateLiveCourseComponent {
         }
 
         this.deletedClasses.push(classDelete)
-        //this.courseClassService.deleteClassAndReference(claseIn.id,this.liveCourseData.id,moduloIn.id);
+        await this.liveCourseService.deleteSession(session.id);
         Swal.fire({
           title:'Borrado!',
           text:`La sesión ${session.title? session.title: 'Sin título'} fue borrada`,
@@ -2793,9 +2793,7 @@ export class CreateLiveCourseComponent {
     return duracion
   }
 
-  borrarArchivo(clase,archivo){
-
-
+  borrarArchivo(session: SessionData, archivo){
     Swal.fire({
       title: "Advertencia",
       text:`¿Desea borrar el archivo ${archivo.nombre}?`,
@@ -2806,9 +2804,9 @@ export class CreateLiveCourseComponent {
     }).then((result) => {
       /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
-        console.log(clase,archivo)
-        clase.archivos = clase.archivos.filter(x=>x.url != archivo.url)
-        clase['edited'] = true; // Marca la clase como editada
+        console.log(session,archivo)
+        session.files = session.files.filter(x=>x.url != archivo.url)
+        session['edited'] = true; // Marca la clase como editada
       }
     });
 
@@ -2837,10 +2835,10 @@ export class CreateLiveCourseComponent {
 
     let nombreCurso = this.formNewCourse.get('title').value?  this.formNewCourse.get('title').value : 'Temporal';
 
-    let videoDescription =  `Sesiòn: ${session.title.trim()} - Instructor:  ${this.formNewCourse.get('instructor').value}`.trim();
+    let videoDescription =  `Sesión: ${session.title.trim()} - Instructor:  ${this.formNewCourse.get('instructor').value}`.trim();
 
     let instructorText = `Instructor: ${this.formNewCourse.get('instructor').value}`.trim();
-    let baseText = `Sesiòn: - ${instructorText.trim()}`;
+    let baseText = `Sesión: - ${instructorText.trim()}`;
     let maxLength = 127;
     
     // Calcula el espacio disponible para el título de la clase, restando 3 para los puntos suspensivos
@@ -2848,14 +2846,15 @@ export class CreateLiveCourseComponent {
     
     // Asegúrate de que el título de la clase no haga que el nombre total del video exceda el límite máximo
     let trimmedClassTitle = session.title.trim();
-    if ((`Sesiòn: ${session.title.trim()} - ${instructorText.trim()}`).length > maxLength) {
+    if ((`Sesión: ${session.title.trim()} - ${instructorText.trim()}`).length > maxLength) {
       // Recorta el título de la clase y agrega puntos suspensivos al final
       trimmedClassTitle = trimmedClassTitle.substring(0, availableLengthForTitle) + '...';
     }
     
-    let videoName = `Sesiòn: ${trimmedClassTitle} - ${instructorText}`;
+    // let videoName = `Sesión: ${trimmedClassTitle} - ${instructorText}`;
+    let videoName = `Sesión: ${trimmedClassTitle}`;
 
-    console.log(videoName,videoName.length)
+    // console.log(videoName,videoName.length)
     
     // Verifica de nuevo para asegurarte de que el nombre completo esté dentro del límite
     if (videoName.length > maxLength) {
@@ -2902,12 +2901,10 @@ export class CreateLiveCourseComponent {
     //session['uploading'] = true;
     const fileSizeInBytes = file.size;
 
-    this.uploadControl.createVideo(videoName, videoDescription,fileSizeInBytes)
-    .subscribe({
+    this.uploadControl.createVideo(videoName, videoDescription, fileSizeInBytes).subscribe({
       next : response =>{
         // Una vez creado el video, sube el archivo
-        this.uploadControl.uploadVideo(file, response.upload.upload_link)
-        .subscribe({
+        this.uploadControl.uploadVideo(file, response.upload.upload_link).subscribe({
           // Maneja las notificaciones de progreso
           next: progress => {
             //console.log('uplading video',progress)
@@ -3544,14 +3541,14 @@ export class CreateLiveCourseComponent {
 
   }
 
-  verVideoVimeo(clase): NgbModalRef {
+  verVideoVimeo(session: SessionData): NgbModalRef {
 
     const modalRef = this.modalService.open(VimeoComponent, {
       animation: true,
       centered: true,
       size: 'lg',
     })
-    modalRef.componentInstance.clase = clase;
+    modalRef.componentInstance.clase = session;
     return modalRef
 
   }

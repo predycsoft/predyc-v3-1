@@ -23,14 +23,16 @@ export class category {
 export interface CalendarLiveCourseData {
   baseCourseTitle: string
   baseCoursePhoto: string
-  sessionTitle: string
-  sessionDuration: number
-  courseSonIdentifierText: string
-  sessionSonDate: number
-  courseSonId: string
   baseCourseId: string
-  sessionSonId: string
+  courseSonId: string
+  courseSonIdentifierText: string
   courseSonMeetingLink: string
+  sessionDuration: number
+  sessionTitle: string
+  sessionSonId: string
+  sessionSonDate: number
+  sessionSonVimeoId1: number
+  sessionSonVimeoId2: string
 }
 
 @Component({
@@ -201,26 +203,29 @@ export class LiveCoursesComponent {
         mergeMap(results => results)
       ).subscribe((results: any[]) => {
         // console.log(`results`, results)
-        let newCalendarLiveCourses = [];
+        let newCalendarLiveCourses: CalendarLiveCourseData[] = [];
         results.forEach(({ course, session, sessionsSons, coursesSons }) => {
           sessionsSons.forEach(sessionSon => {
             const courseSon = coursesSons.find(x => x.id === sessionSon.liveCourseSonRef.id);
-            const calendarLiveCourseData = {
+            const calendarLiveCourseData: CalendarLiveCourseData = {
               baseCourseTitle: course.title,
               baseCoursePhoto: course.photoUrl,
-              sessionTitle: session.title,
-              sessionDuration: session.duration,
+              baseCourseId: course.id,
+              courseSonId: courseSon.id,
               courseSonIdentifierText: courseSon?.identifierText,
               courseSonMeetingLink: courseSon.meetingLink,
+              sessionTitle: session.title,
+              sessionDuration: session.duration,
+              sessionSonId: sessionSon.id,
               sessionSonDate: firestoreTimestampToNumberTimestamp(sessionSon.date),
-              courseSonId: courseSon.id,
-              baseCourseId: course.id,
-              sessionSonId: sessionSon.id
+              sessionSonVimeoId1: sessionSon.vimeoId1,
+              sessionSonVimeoId2: sessionSon.vimeoId2,
+
             };
             newCalendarLiveCourses.push(calendarLiveCourseData);
           });
           this.calendarLiveCourses = newCalendarLiveCourses.sort((a, b) => a.sessionSonDate - b.sessionSonDate);
-          // console.log("calendarLiveCourses in live-course component", this.calendarLiveCourses);
+          console.log("calendarLiveCourses in live-course component", this.calendarLiveCourses);
         });
       });
 
@@ -307,75 +312,6 @@ export class LiveCoursesComponent {
 		});
 
   }
-
-  // test data
-  // async createTestSessions() {
-  //   function getRandomElements<T>(array: T[], numElements: number = 1): T[] {
-  //     const shuffled = array.slice(); // Create a copy of the array
-  //     for (let i = array.length - 1; i > 0; i--) {
-  //       const j = Math.floor(Math.random() * (i + 1));
-  //       [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  //     }
-  //     return shuffled.slice(0, numElements);
-  //   }
-
-  //   console.log("started")
-
-  //   const liveCoursesData: LiveCourseJson[] = [
-  //     {
-  //       id: null, companyName: "Pepsi", title: "Mantenimiento en bebidas", 
-  //       photoUrl: "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Cursos%2FAdministraci%C3%B3n-del-mantenimiento%2FadminMantenimiento.webp?alt=media&token=57ee864b-476b-4e7b-86fa-c1954b17f653", 
-  //       meetingLink: null, description: "Importancia del mantenimiento", instructorRef: null, skillsRef: null, duration: 0, vimeoFolderId:"", proximamente: false
-  //     },
-  //     {
-  //       id: null, companyName: "Nike", title: "Fabricacion de zapatos", 
-  //       photoUrl: "https://firebasestorage.googleapis.com/v0/b/predyc-learning.appspot.com/o/Cursos%2FConstrucci%C3%B3n-de-Estrategias-para-Optimizar-una-Gerencia-de-Mantenimiento%2FCurso-Predyc-Construcci%C3%B3n%20de%20Estrategias%20para%20Optimizar%20una%20Gerencia%20de%20Mantenimiento.webp?alt=media&token=fdc54e7b-61ed-4b57-aa62-7c37d3ffc7cd", 
-  //       meetingLink: null, description: "Como fabricar zapatos", instructorRef: null, skillsRef: null, duration: 0, vimeoFolderId:"", proximamente: false
-  //     },
-  //   ]
-
-  //   combineLatest([this.skillService.getSkills$(), this.instructorService.getInstructors$()]).pipe(
-  //     take(1)
-  //   ).subscribe(async ([skills, instructors]) => {
-  //     if (skills.length > 0 && instructors.length > 0) {
-  //       const skillRefs = skills.map( skill => {return this.skillService.getSkillRefById(skill.id)} ) 
-  //       const instructorsRefs = instructors.map( instructor => {return this.instructorService.getInstructorRefById(instructor.id)} ) 
-  //       // live couse 
-  //       for (let liveCourseData of liveCoursesData) {
-  //         let liveCourse = LiveCourse.fromJson(liveCourseData)
-  //         liveCourse.skillsRef = getRandomElements(skillRefs, 3); liveCourse.instructorRef = instructorsRefs[0]
-  //         const liveCourseRef = this.afs.collection<LiveCourse>(LiveCourse.collection).doc().ref;
-  //         await liveCourseRef.set({...liveCourse.toJson(), id: liveCourseRef.id}, { merge: true });
-  //         liveCourse.id = liveCourseRef.id;
-  //         // Live course session
-  //         let sessions =[ 
-  //           new Session("", "Primera sesion de prueba", new Date(1716879999999), "Descripcion de la 1erasesion de prueba", liveCourseRef, 5, null, null, []),
-  //           new Session("", "Segunda sesion de prueba", new Date(1716990000000), "Descripcion de la 2da sesion de prueba", liveCourseRef, 8, null, null, []),
-  //         ]
-          
-  //         for (let session of sessions) {
-  //           const sessionRef = this.afs.collection<Session>(Session.collection).doc().ref;
-  //           await sessionRef.set({...session.toJson(), id: sessionRef.id}, { merge: true });
-  //           session.id = sessionRef.id;
-  //         }
-  //       };
-    
-  //       // live course by student doc
-  //       // const querySnapshot = await this.afs.collection(User.collection).ref.where("email", "==", "aleja.c@test.com").get();
-  //       // let userRef = null
-  //       // if (!querySnapshot.empty) userRef = querySnapshot.docs[0].ref
-  //       // let liveCourseByStudent = new LiveCourseByStudent("", false, userRef, liveCourseRef)
-  //       // const liveCourseByStudentRef = this.afs.collection<LiveCourseByStudent>(LiveCourseByStudent.collection).doc().ref;
-  //       // await liveCourseByStudentRef.set({...liveCourseByStudent.toJson(), id: liveCourseByStudentRef.id}, { merge: true });
-  //       // liveCourseByStudent.id = liveCourseByStudentRef.id;
-    
-  //       console.log("Finished")
-  //     }
-  //   })
-
-
-
-  // }
 
 
 }

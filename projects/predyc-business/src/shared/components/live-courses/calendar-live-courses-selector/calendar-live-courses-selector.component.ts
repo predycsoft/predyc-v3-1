@@ -2,6 +2,9 @@ import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { CalendarLiveCourseData } from '../live-courses/live-courses.component';
 import { KeyValue } from '@angular/common';
 import { Router } from '@angular/router';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { VimeoComponent } from '../../vimeo/vimeo.component';
+import { IconService } from '../../../services/icon.service';
 
 @Component({
   
@@ -13,6 +16,8 @@ export class CalendarLiveCoursesSelectorComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private modalService: NgbModal,
+    public icon: IconService,
   ) {}
 
   @Input() calendarLiveCourses: CalendarLiveCourseData[];
@@ -43,7 +48,7 @@ export class CalendarLiveCoursesSelectorComponent implements OnInit {
       return groups;
     }, {});
 
-    // console.log("this.groupedCourses", this.groupedCourses)
+    console.log("this.groupedCourses", this.groupedCourses)
   }
 
   keyvalueAscOrder = (a: KeyValue<string, CalendarLiveCourseData[]>, b: KeyValue<string, CalendarLiveCourseData[]>) => {
@@ -57,6 +62,23 @@ export class CalendarLiveCoursesSelectorComponent implements OnInit {
   onSelectCourse(selectedCourse: CalendarLiveCourseData) {
     console.log("selectedCourse", selectedCourse)
     this.router.navigate([`/management/live-sessions/${selectedCourse.baseCourseId}/${selectedCourse.courseSonId}`])
+
+  }
+
+  verVideoVimeo(course: CalendarLiveCourseData): NgbModalRef {
+    const modalRef = this.modalService.open(VimeoComponent, {
+      animation: true,
+      centered: true,
+      size: 'lg',
+    })
+
+    const dataForModal = {
+      vimeoId1: course.sessionSonVimeoId1,
+      vimeoId2: course.sessionSonVimeoId2,
+    }
+
+    modalRef.componentInstance.clase = dataForModal;
+    return modalRef
 
   }
 }

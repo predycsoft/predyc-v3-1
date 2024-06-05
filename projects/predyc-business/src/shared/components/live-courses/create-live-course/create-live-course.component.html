@@ -209,28 +209,30 @@
                                                                                             <ng-template #tituloPresenteClase>
                                                                                                 <span (click)="session['editarTitulo'] = true; session['tituloTMP'] = session?.title; editarTituloSession(iClase)">
                                                                                                     {{ session.title }} - {{ session.duration | formatDuration }} 
-                                                                                                    {{ mode === "edit" ? ' - ' + ( session['dateFormatted'] ? 'Inicia el ' + session['dateFormatted'] : 'Sin fecha' ) + ' - Disponible durante ' + session['weeksToKeep'] + ' sem.' : '' }}
+                                                                                                    {{ mode === "edit" ? ' - ' + ( session['dateFormatted'] ? 'Inicia el ' + (session['dateFormatted'] | customDatetime) : 'Sin fecha' ) + ' - Disponible durante ' + session['weeksToKeep'] + ' sem.' : '' }}
                                                                                                 </span>
                                                                                             </ng-template>
                                                                                             <ng-template #ClaseSinTitulo>
                                                                                                 <input #inputRef class="inputInvisible" type="text" [(ngModel)]="session['tituloTMP']" (keydown.space)="preventDefault($event)" 
                                                                                                 (keyup.enter)="preventDefault($event); confirmSessionTitleAndDuration(session)" placeholder="Escriba el título aquí" [disabled]="mode === 'edit'" >
 
-                                                                                                <select *ngIf=" mode !== 'edit'" [(ngModel)]="session['duration']" class="duration-select">
-                                                                                                    <option [ngValue]="60">1 hr</option>
-                                                                                                    <option [ngValue]="120">2 hrs</option>
-                                                                                                    <option [ngValue]="180">3 hrs</option>
+                                                                                                <select *ngIf="mode !== 'edit'" [(ngModel)]="session['duration']" class="duration-select">
+                                                                                                    <option *ngFor="let duration of durations" [ngValue]="duration.value">{{ duration.label }}</option>
                                                                                                 </select>
-
+                                                                                                  
                                                                                                 <div *ngIf=" mode === 'edit' " fxLayout="row" fxLayoutAlign=" center" fxLayoutGap=".25rem" class="form-group">
-                                                                                                    <label class="ft12 ft500" for="fecha-inicio">Fecha y hora</label>
+                                                                                                    <label class="ft12 ft500" for="fecha-inicio">Fecha y hora: </label>
                                                                                                     <input type="datetime-local" id="fecha-inicio" class="form-control w225px" [(ngModel)]="session['dateFormatted']">
                                                                                                 </div>
-                                                                                                <select *ngIf=" mode === 'edit' " class="duration-select" [(ngModel)]="session['weeksToKeep']">
-                                                                                                    <option [ngValue]="2">2 Sem</option>
-                                                                                                    <option [ngValue]="3">3 Sem</option>
-                                                                                                    <option [ngValue]="4">4 Sem</option>
-                                                                                                </select>
+
+                                                                                                <div *ngIf=" mode === 'edit' " fxLayout="row" fxLayoutAlign=" center" fxLayoutGap=".25rem" class="">
+                                                                                                    <label class="ft12 ft500" for="">Repetición: </label>
+                                                                                                    <select class="duration-select" [(ngModel)]="session['weeksToKeep']">
+                                                                                                        <option [ngValue]="2">2 Sem</option>
+                                                                                                        <option [ngValue]="3">3 Sem</option>
+                                                                                                        <option [ngValue]="4">4 Sem</option>
+                                                                                                    </select>
+                                                                                                </div>
                                                                                                 <img (click)="confirmSessionTitleAndDuration(session)" matTooltip="Confirmar título" [src]="icon.check" 
                                                                                                 class="h18px pdl05 makeGray edit cursorPointer" alt="">
                                                                                             </ng-template>
@@ -252,6 +254,7 @@
                                                                                                     <span *ngIf="!session.title" class="gray-6 cursorPointer mgr10">Agregar video</span>
                                                                                                     <input (change)="session.type = 'video'; onFileSelected($event, session, false, false, null, true) " type="file" accept="video/mp4" #FileInputTitle style="display: none;">
                                                                                                 </div>
+
                                                                                                 <div *ngIf="session.vimeoId1" fxLayout="row" fxLayoutAlign="start center">
                                                                                                     <span (click)="quitarVideoSession(session)" class="blueLink mgr05">Eliminar</span>
                                                                                                     <button (click)="verVideoVimeo(session)" class="grayButton pd03 radius4 ft12 h28px mgr10 w130px" fxLayout="row" 
@@ -261,7 +264,6 @@
                                                                                                     </button>
                                                                                                 </div>
                                                                                             </ng-container>
-
 
                                                                                             <!-- <ng-container *ngIf="session.type == 'video'">
                                                                                                 <div *ngIf="!session.vimeoId1">
@@ -469,8 +471,8 @@
                                 <img [src]="icon.document" class="makeBlue h20px" alt="">
                                 <span class="ft500 ft14 black " style="margin-top: 5px;">Examen del curso ({{ examen?.questions?.length}} Preguntas)</span>
                             </div>
-                            <div fxLayout="row" fxLayoutAlign="center" class="w-100"> <!-- Centrar contenido -->
-                                <div style="width: 800px;"> <!-- Ancho fijo -->
+                            <div fxLayout="row" fxLayoutAlign="center" class="w-100">
+                                <div style="width: 800px;">
                                     <app-questions type="test" class="mgr10" [questionMaxSize]="100" [courseData]="modulos" [nameCurso]="formNewCourse?.get('title').value?
                                     formNewCourse?.get('title').value : 'Temporal'" [nameEmpresa]="empresa?.name" (changeQuestion)="validExam = $event;formatExamQuestions()" 
                                     (emmitForm)="validExam = $event;" [questionsArray]="examen?.questions ? examen?.questions:[]" [checkQuestions]="updateTriggeQuestionsExam" 
@@ -506,16 +508,13 @@
                                                 <div *ngIf="question.typeFormated.value == questionTypes.TYPE_SINGLE_CHOICE_VALUE">
                                                   <span class="ft14 ft500"> {{ question.text }} </span>
                                                   <div class="mgt10" fxLayout="column">
-                                                    <div fxLayout="row" fxLayoutAlign="space-between center"
-                                                      *ngFor="let option of question.options; let optionIndex = index" class="mgt05">
+                                                    <div fxLayout="row" fxLayoutAlign="space-between center" *ngFor="let option of question.options; let optionIndex = index" class="mgt05">
                                                       <span [ngClass]="{
                                                           'white-text':
                                                             isSuccess === true &&
-                                                            activityAnswers[questionIndex].answerItems[optionIndex]
-                                                              .answer
+                                                            activityAnswers[questionIndex].answerItems[optionIndex].answer
                                                         }">{{ optionIndex + 1 }}. {{ option.text }}</span>
-                                                      <input type="radio" [name]="questionIndex" (change)="checkAnswer(questionIndex, optionIndex)"
-                                                        [disabled]="isSuccess !== null" />
+                                                      <input type="radio" [name]="questionIndex" (change)="checkAnswer(questionIndex, optionIndex)" [disabled]="isSuccess !== null" />
                                                     </div>
                                                   </div>
                                                 </div>
@@ -587,6 +586,7 @@
                         </div>
                     </div>
                 </mat-tab>
+
                 <mat-tab *ngIf="mode === 'edit'" label="Seguimiento">
                     <div fxLayout="row" fxLayoutAlign="center " class="containerCurso h-100" fxLayoutGap="1.5rem">
                         <div fxLayout="column" class="radius10 w-95 mgt15 hideScroll shadowLight" style="overflow-y: auto; background-color:rgba(244, 244, 244, 0.362)">
@@ -595,7 +595,8 @@
                                 <span class="ft500 ft14 black " style="margin-top: 5px;">Enviar correo</span>
                             </div>
                             <div fxLayout="row" fxLayoutAlign="center" class="w-100">
-                                <app-live-course-following class="w-90" [studentEmails]="studentEmails"></app-live-course-following>
+                                <app-live-course-following class="w-90" [studentEmails]="studentEmails" [idBaseLiveCourse]="idBaseLiveCourse" [idLiveCourseSon]="idLiveCourseSon">
+                                </app-live-course-following>
                             </div>
                         </div>
                     </div>

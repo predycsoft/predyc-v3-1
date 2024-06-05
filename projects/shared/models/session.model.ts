@@ -3,12 +3,9 @@ import { DocumentReference } from "@angular/fire/compat/firestore"
 export interface SessionJson {
     id: string
     title: string
-    // date: any
-    description: string
+    description: string // Not in use. Delete
     liveCourseRef: DocumentReference
     duration: number
-    // vimeoId1: number
-    // vimeoId2 : string
     files: any[]
     orderNumber: number
 }
@@ -20,12 +17,9 @@ export class Session {
     constructor(
         public id: string,
         public title: string,
-        // public date: any,
         public description: string,
         public liveCourseRef: DocumentReference,
         public duration: number,
-        // public vimeoId1: number,
-        // public vimeoId2 : string,
         public files: any[],
         public orderNumber: number,
     ) {}
@@ -34,12 +28,9 @@ export class Session {
         return new Session(
             SessionJson.id,
             SessionJson.title,
-            // SessionJson.date,
             SessionJson.description,
             SessionJson.liveCourseRef,
             SessionJson.duration,
-            // SessionJson.vimeoId1,
-            // SessionJson.vimeoId2,
             SessionJson.files,
             SessionJson.orderNumber,
         )
@@ -49,12 +40,9 @@ export class Session {
         return {
             id:this.id,
             title:this.title,
-            // date:this.date,
             description:this.description,
             liveCourseRef : this.liveCourseRef,
             duration : this.duration,
-            // vimeoId1 : this.vimeoId1,
-            // vimeoId2 : this.vimeoId2,
             files : this.files,
             orderNumber : this.orderNumber,
         }

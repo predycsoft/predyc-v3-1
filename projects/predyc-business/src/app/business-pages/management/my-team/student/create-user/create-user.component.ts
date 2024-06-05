@@ -780,6 +780,8 @@ export class CreateUserComponent {
         );
       }
 
+      this.userForm.value.uid = user?.uid
+
       this.activeModal.close(this.userForm.value);
       this.alertService.succesAlert("Estudiante agregado exitosamente");
       this.savingChanges = false;

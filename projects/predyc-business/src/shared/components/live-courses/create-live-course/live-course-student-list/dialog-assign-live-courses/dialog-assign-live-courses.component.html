@@ -1,0 +1,25 @@
+<div fxLayout="column" fxLayoutGap="1.75rem" fxLayoutAlign="start start" class="pd20">
+    <div fxLayout="row" fxLayoutAlign="space-between center" class="fw">
+        <span class="ft500 ft16 gray-10">Selecciona el usuario para asignarle el curso en vivo</span>
+        <img [src]="icon.close" class="h24px pdl5 cursorPointer" alt="" (click)="closeModal()">
+    </div>
+
+    <div fxLayout="row" fxLayoutAlign="center center" class="fw">
+        <form class="example-form">
+            <mat-form-field class="example-full-width">
+                <mat-label>Buscar correo del estudiante</mat-label>
+                <input type="text" placeholder="Escribe el correo del estudiante" aria-label="Number" matInput [formControl]="myControl" [matAutocomplete]="auto">
+                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                    <mat-option *ngFor="let user of filteredOptions | async" [value]="user.uid" (click)="onUserSelected(user)">
+                        {{user.email}}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+        </form>
+    </div>
+
+    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".75rem">
+        <span class="ft500 ft15">El usuario no se encuentra registrado? </span>
+        <span class="ft500 ft15 blue-5 underline cursorPointer" (click)="onUserSelected(null)">Crealo aqui</span>
+    </div>
+</div>

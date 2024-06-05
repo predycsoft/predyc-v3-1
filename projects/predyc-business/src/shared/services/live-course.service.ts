@@ -15,12 +15,25 @@ export class LiveCourseService {
     private afs: AngularFirestore,
   ) { }
 
+  getLiveCourseById$(liveCourseId: string): Observable<LiveCourse> {
+    return this.afs.collection<LiveCourse>(LiveCourse.collection).doc(liveCourseId).valueChanges()
+  }
+
+  getLiveCourseSonById$(liveCourseId: string, liveCourseSonId: string): Observable<LiveCourseSon> {
+    return this.afs.collection<LiveCourse>(LiveCourse.collection).doc(liveCourseId).collection<LiveCourseSon>(LiveCourseSon.subCollection).doc(liveCourseSonId).valueChanges()
+  }
+
   getLiveCoursesByStudentByUserRef$(userRef: DocumentReference<User>): Observable<LiveCourseByStudent[]> {
     return this.afs.collection<LiveCourseByStudent>(LiveCourseByStudent.collection, (ref) =>ref.where("userRef", "==", userRef)).valueChanges();
   }
 
   getLiveCoursesByStudentByLivecourseSon$(liveCourseSonRef: DocumentReference<LiveCourseSon>): Observable<LiveCourseByStudent[]> {
     return this.afs.collection<LiveCourseByStudent>(LiveCourseByStudent.collection, (ref) =>ref.where("liveCourseSonRef", "==", liveCourseSonRef)).valueChanges();
+  }
+
+  async createLiveCourseByStudent(liveCourseByStudent: LiveCourseByStudent): Promise<void> {
+    const liveCourseByStudentRef = this.afs.collection<LiveCourseByStudent>(LiveCourseByStudent.collection).doc().ref;
+		await liveCourseByStudentRef.set({...liveCourseByStudent.toJson(), id: liveCourseByStudentRef.id}, { merge: true });
   }
 
   updateIsAttendingLiveCourseByStudent(liveCourseByStudentId: string, isAttending: boolean): Promise<void> {
@@ -52,7 +65,11 @@ export class LiveCourseService {
           .pipe(
             switchMap((liveCourseSon: LiveCourseSon | undefined) => {
               // Get "meetingLink" and "identifierText"
-              if (liveCourseSon) liveCourse.meetingLink = liveCourseSon.meetingLink; liveCourse.identifierText = liveCourseSon.identifierText;
+              if (liveCourseSon) {
+                liveCourse.meetingLink = liveCourseSon.meetingLink;
+                liveCourse.identifierText = liveCourseSon.identifierText;
+                liveCourse.emailLastDate = liveCourseSon.emailLastDate;
+              }  
 
               return this.getSessionsByLiveCourseRef$(liveCourseRef).pipe(
                 mergeMap((sessions: any[]) => { // Base sessions
@@ -158,6 +175,10 @@ export class LiveCourseService {
     return this.afs.collection<LiveCourse>(LiveCourse.collection).doc(liveCourseId).collection<LiveCourseSon>(LiveCourseSon.subCollection).doc(liveCourseSonId).ref
   }
 
+  // getLiveCourseSonRefById(liveCourseSonId: string): DocumentReference<LiveCourseSon> {
+  //   return this.afs.collectionGroup<LiveCourseSon>(LiveCourseSon.subCollection).get()
+  // }
+
   getSessionRefById(sessionId: string): DocumentReference<Session> {
     return this.afs.collection<Session>(Session.collection).doc(sessionId).ref
   }
@@ -213,5 +234,29 @@ export class LiveCourseService {
       vimeoId2: data.vimeoId2,
     })
   }
+
+  async deleteSession(sessionId: string): Promise<void> {
+    // Delete sub collection
+    await this.deleteSessionSons(sessionId)
+    // Delete collection
+    await this.afs.collection<Session>(Session.collection).doc(sessionId).delete()
+  }
+
+  async deleteSessionSons(sessionId: string): Promise<void> {
+    const subCollectionRef = this.afs.collection<Session>(Session.collection).doc(sessionId).collection<SessionSon>(SessionSon.subCollection);
+    const batch = this.afs.firestore.batch();
+  
+    const snapshot = await firstValueFrom(subCollectionRef.get());
+
+    if (snapshot.docs) {
+      snapshot.docs.forEach(doc => {
+        batch.delete(doc.ref);
+      });
+      return await batch.commit();
+    }
+    return null
+  }
+
+  
 
 }

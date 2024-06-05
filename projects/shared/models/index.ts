@@ -18,3 +18,4 @@ export * from "./study-plan-class.model";
 export * from "./subscription.model";
 export * from "./user.model";
 export * from "./freebie.model";
+export * from "./live-course.model";

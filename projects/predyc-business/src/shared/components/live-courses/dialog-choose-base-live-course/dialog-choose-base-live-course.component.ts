@@ -81,7 +81,8 @@ export class DialogChooseBaseLiveCourseComponent {
         id: null,
         parentId: formValue.baseCourse.id,
         meetingLink: formValue.meetingLink, 
-        identifierText: formValue.identifyingText
+        identifierText: formValue.identifyingText,
+        emailLastDate: null
       }
       const liveCourseSonId = await this.liveCourseService.saveLiveCourseSon(liveCourseSon)
 
