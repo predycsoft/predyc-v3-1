@@ -1,20 +1,83 @@
 import { DocumentReference } from "@angular/fire/compat/firestore"
 import { Skill } from "./skill.model"
 
-export interface LiveCourseJson {
+export interface LiveCourseTemplateJson {
     id: string
-    companyName: string
+    companyName: string // currently not in use
     title: string
     photoUrl: string
-    // meetingLink: string
     description: string
     instructorRef: DocumentReference
     proximamente: boolean
     skillsRef: DocumentReference<Skill>[]
     duration: number,
     vimeoFolderId: string,
-    // nivel: string,
-    
+}
+
+export class LiveCourseTemplate {
+
+    public static collection = 'live-course-template'
+
+    constructor(
+        public id: string,
+        public companyName: string,
+        public title: string,
+        public photoUrl: string,
+        public description: string,
+        public instructorRef: DocumentReference,
+        public proximamente: boolean,
+        public skillsRef: DocumentReference<Skill>[],
+        public duration: number,
+        public vimeoFolderId: string = ""
+
+    ) {}
+
+    public static fromJson(liveCourseTemplateJson: LiveCourseTemplateJson): LiveCourseTemplate {
+        return new LiveCourseTemplate(
+            liveCourseTemplateJson.id,
+            liveCourseTemplateJson.companyName,
+            liveCourseTemplateJson.title,
+            liveCourseTemplateJson.photoUrl,
+            liveCourseTemplateJson.description,
+            liveCourseTemplateJson.instructorRef,
+            liveCourseTemplateJson.proximamente,
+            liveCourseTemplateJson.skillsRef,
+            liveCourseTemplateJson.duration,
+            liveCourseTemplateJson.vimeoFolderId,
+        )
+    }
+
+    public toJson(): LiveCourseTemplateJson {
+        return {
+            id:this.id,
+            companyName:this.companyName,
+            title:this.title,
+            photoUrl:this.photoUrl,
+            description:this.description,
+            instructorRef : this.instructorRef,
+            proximamente : this.proximamente,
+            skillsRef : this.skillsRef,
+            duration : this.duration,
+            vimeoFolderId : this.vimeoFolderId,
+        }
+    }
+}
+
+export interface LiveCourseJson {
+    id: string
+    companyName: string // currently not in use
+    title: string
+    photoUrl: string
+    description: string
+    instructorRef: DocumentReference
+    proximamente: boolean
+    skillsRef: DocumentReference<Skill>[]
+    duration: number,
+    vimeoFolderId: string,
+    liveCourseTemplateRef: DocumentReference
+    meetingLink: string
+    identifierText: string
+    emailLastDate: any
 }
 
 export class LiveCourse {
@@ -26,14 +89,16 @@ export class LiveCourse {
         public companyName: string,
         public title: string,
         public photoUrl: string,
-        // public meetingLink: string,
         public description: string,
         public instructorRef: DocumentReference,
         public proximamente: boolean,
         public skillsRef: DocumentReference<Skill>[],
         public duration: number,
-        public vimeoFolderId: string = ""
-
+        public vimeoFolderId: string = "",
+        public liveCourseTemplateRef: DocumentReference,
+        public meetingLink: string,
+        public identifierText: string,
+        public emailLastDate: any,
     ) {}
 
     public static fromJson(liveCourseJson: LiveCourseJson): LiveCourse {
@@ -42,13 +107,16 @@ export class LiveCourse {
             liveCourseJson.companyName,
             liveCourseJson.title,
             liveCourseJson.photoUrl,
-            // liveCourseJson.meetingLink,
             liveCourseJson.description,
             liveCourseJson.instructorRef,
             liveCourseJson.proximamente,
             liveCourseJson.skillsRef,
             liveCourseJson.duration,
             liveCourseJson.vimeoFolderId,
+            liveCourseJson.liveCourseTemplateRef,
+            liveCourseJson.meetingLink,
+            liveCourseJson.identifierText,
+            liveCourseJson.emailLastDate,
         )
     }
 
@@ -58,91 +126,126 @@ export class LiveCourse {
             companyName:this.companyName,
             title:this.title,
             photoUrl:this.photoUrl,
-            // meetingLink:this.meetingLink,
             description:this.description,
             instructorRef : this.instructorRef,
             proximamente : this.proximamente,
             skillsRef : this.skillsRef,
             duration : this.duration,
             vimeoFolderId : this.vimeoFolderId,
+            liveCourseTemplateRef : this.liveCourseTemplateRef,
+            meetingLink : this.meetingLink,
+            identifierText : this.identifierText,
+            emailLastDate : this.emailLastDate,
         }
     }
 }
 
-export interface LiveCourseSonJson {
-    id: string
-    parentId: string
-    meetingLink: string
-    identifierText: string
-    emailLastDate: any
-}
 
-export class LiveCourseSon {
-
-    public static subCollection = 'live-course-son'
-
-    constructor(
-        public id: string,
-        public parentId: string,
-        public meetingLink: string,
-        public identifierText: string,
-        public emailLastDate: any,
-    ) {}
-
-    public static fromJson(liveCourseSon: LiveCourseSonJson): LiveCourseSon {
-        return new LiveCourseSon(
-            liveCourseSon.id,
-            liveCourseSon.parentId,
-            liveCourseSon.meetingLink,
-            liveCourseSon.identifierText,
-            liveCourseSon.emailLastDate,
-        )
-    }
-
-    public toJson(): LiveCourseSonJson {
-        return {
-            id: this.id,
-            parentId: this.parentId,
-            meetingLink: this.meetingLink,
-            identifierText: this.identifierText,
-            emailLastDate: this.emailLastDate,
-        }
-    }
-}
-
-// export interface LiveCourseEmailJson {
+// export interface LiveCourseJson {
 //     id: string
-//     content: string
-//     liveCourseSonRef: DocumentReference<LiveCourseJson>
-//     date: any
+//     companyName: string
+//     title: string
+//     photoUrl: string
+//     // meetingLink: string
+//     description: string
+//     instructorRef: DocumentReference
+//     proximamente: boolean
+//     skillsRef: DocumentReference<Skill>[]
+//     duration: number,
+//     vimeoFolderId: string,
+//     // nivel: string,
+    
 // }
 
-// export class LiveCourseEmail {
+// export class LiveCourse {
 
-//     public static subCollection = 'live-course-email'
+//     public static collection = 'live-course'
 
 //     constructor(
 //         public id: string,
-//         public content: string,
-//         public liveCourseSonRef: DocumentReference<LiveCourseJson>,
-//         public date: any,
+//         public companyName: string,
+//         public title: string,
+//         public photoUrl: string,
+//         // public meetingLink: string,
+//         public description: string,
+//         public instructorRef: DocumentReference,
+//         public proximamente: boolean,
+//         public skillsRef: DocumentReference<Skill>[],
+//         public duration: number,
+//         public vimeoFolderId: string = ""
+
 //     ) {}
 
-//     public static fromJson(liveCourseEmailJson: LiveCourseEmailJson): LiveCourseEmail {
-//         return new LiveCourseEmail(
-//             liveCourseEmailJson.id,
-//             liveCourseEmailJson.content,
-//             liveCourseEmailJson.liveCourseSonRef,
-//             liveCourseEmailJson.date,
+//     public static fromJson(liveCourseJson: LiveCourseJson): LiveCourse {
+//         return new LiveCourse(
+//             liveCourseJson.id,
+//             liveCourseJson.companyName,
+//             liveCourseJson.title,
+//             liveCourseJson.photoUrl,
+//             // liveCourseJson.meetingLink,
+//             liveCourseJson.description,
+//             liveCourseJson.instructorRef,
+//             liveCourseJson.proximamente,
+//             liveCourseJson.skillsRef,
+//             liveCourseJson.duration,
+//             liveCourseJson.vimeoFolderId,
 //         )
 //     }
 
-//     public toJson(): LiveCourseEmailJson {
+//     public toJson(): LiveCourseJson {
 //         return {
 //             id:this.id,
-//             content:this.content,
-//             liveCourseSonRef:this.liveCourseSonRef,
-//             date:this.date,
+//             companyName:this.companyName,
+//             title:this.title,
+//             photoUrl:this.photoUrl,
+//             // meetingLink:this.meetingLink,
+//             description:this.description,
+//             instructorRef : this.instructorRef,
+//             proximamente : this.proximamente,
+//             skillsRef : this.skillsRef,
+//             duration : this.duration,
+//             vimeoFolderId : this.vimeoFolderId,
+//         }
+//     }
+// }
+
+// export interface LiveCourseSonJson {
+//     id: string
+//     parentId: string
+//     meetingLink: string
+//     identifierText: string
+//     emailLastDate: any
+// }
+
+// export class LiveCourseSon {
+
+//     public static subCollection = 'live-course-son'
+
+//     constructor(
+//         public id: string,
+//         public parentId: string,
+//         public meetingLink: string,
+//         public identifierText: string,
+//         public emailLastDate: any,
+//     ) {}
+
+//     public static fromJson(liveCourseSon: LiveCourseSonJson): LiveCourseSon {
+//         return new LiveCourseSon(
+//             liveCourseSon.id,
+//             liveCourseSon.parentId,
+//             liveCourseSon.meetingLink,
+//             liveCourseSon.identifierText,
+//             liveCourseSon.emailLastDate,
+//         )
+//     }
+
+//     public toJson(): LiveCourseSonJson {
+//         return {
+//             id: this.id,
+//             parentId: this.parentId,
+//             meetingLink: this.meetingLink,
+//             identifierText: this.identifierText,
+//             emailLastDate: this.emailLastDate,
 //         }
 //     }
 // }

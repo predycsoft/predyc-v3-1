@@ -28,11 +28,11 @@ import { Category } from 'projects/shared/models/category.model';
 import { Skill } from 'projects/shared/models/skill.model';
 import VimeoPlayer from '@vimeo/player';
 import { VimeoComponent } from '../../vimeo/vimeo.component';
-import { LiveCourse, LiveCourseJson } from 'projects/shared/models/live-course.model';
-import { Session, SessionJson } from 'projects/shared/models/session.model';
+import { LiveCourse, LiveCourseJson, LiveCourseTemplate, LiveCourseTemplateJson } from 'projects/shared/models/live-course.model';
+import { Session, SessionJson, SessionTemplate, SessionTemplateJson } from 'projects/shared/models/session.model';
 import { LiveCourseService } from '../../../services/live-course.service';
 
-interface LiveCourseData extends LiveCourseJson {
+interface LiveCourseData extends LiveCourseTemplateJson {
   sessions: SessionData[],
   meetingLink: string,
   identifierText: string,
@@ -43,7 +43,7 @@ interface LiveCourseData extends LiveCourseJson {
 
 }
 
-interface SessionData extends SessionJson {
+interface SessionData extends SessionTemplateJson {
   sonFiles: any[],
   date: any,
   dateFormatted: string,
@@ -67,6 +67,7 @@ interface SessionData extends SessionJson {
 @Component({
   selector: 'app-create-live-course',
   templateUrl: './create-live-course.component.html',
+  // templateUrl: './temporary.html',
   styleUrls: ['./create-live-course.component.css']
 })
 export class CreateLiveCourseComponent {
@@ -113,8 +114,8 @@ export class CreateLiveCourseComponent {
   ];
 
   mode: "create" | "edit-base" | "edit" // "edit" for live course sessions sons edition
-  idBaseLiveCourse = this.route.snapshot.paramMap.get("idCurso")
-  idLiveCourseSon = this.route.snapshot.paramMap.get("idLiveCourseSon")
+  liveCourseTemplateId = this.route.snapshot.paramMap.get("idCurso")
+  liveCourseId = this.route.snapshot.paramMap.get("idLiveCourseSon")
 
 
   textModulo = 'Crear nuevo curso'
@@ -262,10 +263,13 @@ export class CreateLiveCourseComponent {
 
   studentEmails: string[] = []
 
+
+  // ************************************************* UNCOMMENT FROM HERE
+
   async ngOnInit(): Promise<void> {
 
-    if (this.idLiveCourseSon) this.mode = "edit"
-    else if (!this.idLiveCourseSon && this.idBaseLiveCourse) this.mode = "edit-base"
+    if (this.liveCourseId) this.mode = "edit"
+    else if (!this.liveCourseId && this.liveCourseTemplateId) this.mode = "edit-base"
     else this.mode = "create"
 
     this.filteredinstructores = this.instructoresForm.valueChanges.pipe(
@@ -327,89 +331,91 @@ export class CreateLiveCourseComponent {
       }, 2000);
 
     }
-    // EDIT MODE
+    // EDIT MODE 
     else {
-      this.liveCourseService.getLiveCourseWithSessionsById$(this.idBaseLiveCourse, this.idLiveCourseSon).pipe(take(1)).subscribe(liveCourseData => {
+      // ********* UNCOMMENT THIS
 
-        console.log("liveCourseData in onInit()", liveCourseData)
+      // this.liveCourseService.getLiveCourseWithSessionsById$(this.liveCourseTemplateId, this.liveCourseId).pipe(take(1)).subscribe(liveCourseData => {
 
-        this.liveCourseData = {
-          ...liveCourseData.liveCourse,
-          sessions: liveCourseData.sessions.map(session => ({
-            ...session,
-            dateFormatted: this.convertTimestampToDatetimeLocalString(session.date),
-            addClassMode: false,
-            isInvalid: false,
-            expanded: false,
-            type: null,
-            editarTitulo: false,
-            tituloTMP: null,
-            videoUpload: null,
-            uploading: null,
-            deleted: false,
-            activity: null,
-            HTMLcontent: null,
-          })),
-          addClassMode: false,
-          isInvalid: false,
-          InvalidMessages: []
-        };
+      //   console.log("liveCourseData in onInit()", liveCourseData)
 
-        // let enterpriseREf = this.enterpriseService.getEnterpriseRef()
-        // if(!this.user.isSystemUser && !(curso.enterpriseRef.id == enterpriseREf.id)){
-        //   this.router.navigate(["management/courses"])
-        // }
+      //   this.liveCourseData = {
+      //     ...liveCourseData.liveCourse,
+      //     sessions: liveCourseData.sessions.map(session => ({
+      //       ...session,
+      //       dateFormatted: this.convertTimestampToDatetimeLocalString(session.date),
+      //       addClassMode: false,
+      //       isInvalid: false,
+      //       expanded: false,
+      //       type: null,
+      //       editarTitulo: false,
+      //       tituloTMP: null,
+      //       videoUpload: null,
+      //       uploading: null,
+      //       deleted: false,
+      //       activity: null,
+      //       HTMLcontent: null,
+      //     })),
+      //     addClassMode: false,
+      //     isInvalid: false,
+      //     InvalidMessages: []
+      //   };
 
-        // console.log('datos cursos',curso)
-        let instructor = this.instructores.find(x=> x.id == this.liveCourseData.instructorRef.id)
-        this.instructoresForm.patchValue(instructor)
+      //   // let enterpriseREf = this.enterpriseService.getEnterpriseRef()
+      //   // if(!this.user.isSystemUser && !(curso.enterpriseRef.id == enterpriseREf.id)){
+      //   //   this.router.navigate(["management/courses"])
+      //   // }
 
-        this.formNewCourse = new FormGroup({
-          id: new FormControl(this.liveCourseData.id, Validators.required),
-          vimeoFolderId: new FormControl(this.liveCourseData.vimeoFolderId),
-          title: new FormControl({value: this.liveCourseData.title, disabled: this.mode === "edit"}, Validators.required),
-          description: new FormControl({value: this.liveCourseData.description, disabled: this.mode === "edit"}, Validators.required),
-          photoUrl: new FormControl({value: this.liveCourseData.photoUrl, disabled: this.mode === "edit"}, Validators.required),
-          instructorRef: new FormControl(this.liveCourseData.instructorRef),
-          skills: new FormControl({value: this.liveCourseData.skillsRef, disabled: this.mode === "edit"}, Validators.required),
-          skillsRef: new FormControl(this.liveCourseData.skillsRef),
-          meetingLink: new FormControl(this.liveCourseData.meetingLink),
-          identifierText: new FormControl(this.liveCourseData.identifierText),
-          // resumen: new FormControl(this.liveCourseData.resumen, Validators.required),
-          // nivel: new FormControl(this.liveCourseData.nivel, Validators.required),
-          // idioma: new FormControl(this.liveCourseData.idioma, Validators.required),
-          // contenido: new FormControl(this.liveCourseData.contenido, Validators.required),
-          instructor: new FormControl({value: instructor.nombre, disabled: this.mode === "edit"}, Validators.required),
-          resumen_instructor: new FormControl(instructor.resumen, Validators.required),
-          imagen_instructor: new FormControl(instructor.foto, Validators.required),
-          proximamente: new FormControl(this.liveCourseData.proximamente),
+      //   // console.log('datos cursos',curso)
+      //   let instructor = this.instructores.find(x=> x.id == this.liveCourseData.instructorRef.id)
+      //   this.instructoresForm.patchValue(instructor)
 
-        });
+      //   this.formNewCourse = new FormGroup({
+      //     id: new FormControl(this.liveCourseData.id, Validators.required),
+      //     vimeoFolderId: new FormControl(this.liveCourseData.vimeoFolderId),
+      //     title: new FormControl({value: this.liveCourseData.title, disabled: this.mode === "edit"}, Validators.required),
+      //     description: new FormControl({value: this.liveCourseData.description, disabled: this.mode === "edit"}, Validators.required),
+      //     photoUrl: new FormControl({value: this.liveCourseData.photoUrl, disabled: this.mode === "edit"}, Validators.required),
+      //     instructorRef: new FormControl(this.liveCourseData.instructorRef),
+      //     skills: new FormControl({value: this.liveCourseData.skillsRef, disabled: this.mode === "edit"}, Validators.required),
+      //     skillsRef: new FormControl(this.liveCourseData.skillsRef),
+      //     meetingLink: new FormControl(this.liveCourseData.meetingLink),
+      //     identifierText: new FormControl(this.liveCourseData.identifierText),
+      //     // resumen: new FormControl(this.liveCourseData.resumen, Validators.required),
+      //     // nivel: new FormControl(this.liveCourseData.nivel, Validators.required),
+      //     // idioma: new FormControl(this.liveCourseData.idioma, Validators.required),
+      //     // contenido: new FormControl(this.liveCourseData.contenido, Validators.required),
+      //     instructor: new FormControl({value: instructor.nombre, disabled: this.mode === "edit"}, Validators.required),
+      //     resumen_instructor: new FormControl(instructor.resumen, Validators.required),
+      //     imagen_instructor: new FormControl(instructor.foto, Validators.required),
+      //     proximamente: new FormControl(this.liveCourseData.proximamente),
 
-        //this.formNewCourse.get('resumen_instructor').disable();
-        this.initSkills();
-        if (this.mode === "edit") {
-          // this.pillarsForm = new FormControl({ value: '', disabled: true }); // disabled inside initSkills()
-          this.instructoresForm = new FormControl({ value: instructor, disabled: true });
-        }
+      //   });
 
-        // this.activityClassesService.getActivityAndQuestionsForCourse(this.idBaseLiveCourse, true).pipe(filter(activities=>activities!=null),take(1)).subscribe(activities => {
-        //   console.log('activities clases', activities);
-        //   this.activitiesCourse = activities;
-        //   this.modulos.forEach(module => {
-        //     let clases = module['clases'];
-        //     clases.forEach(clase => {
-        //       if (clase.tipo == 'actividad' || clase.tipo == 'corazones') {
-        //         //console.log('activities clases clase', clase);
-        //         let activity = activities.find(activity => activity.claseRef.id == clase.id);
-        //         console.log('activities clases activity', activity);
-        //         clase.activity = activity;
-        //       }
-        //     });
-        //   });
-        // });
+      //   //this.formNewCourse.get('resumen_instructor').disable();
+      //   this.initSkills();
+      //   if (this.mode === "edit") {
+      //     // this.pillarsForm = new FormControl({ value: '', disabled: true }); // disabled inside initSkills()
+      //     this.instructoresForm = new FormControl({ value: instructor, disabled: true });
+      //   }
 
-      })
+      //   // this.activityClassesService.getActivityAndQuestionsForCourse(this.liveCourseTemplateId, true).pipe(filter(activities=>activities!=null),take(1)).subscribe(activities => {
+      //   //   console.log('activities clases', activities);
+      //   //   this.activitiesCourse = activities;
+      //   //   this.modulos.forEach(module => {
+      //   //     let clases = module['clases'];
+      //   //     clases.forEach(clase => {
+      //   //       if (clase.tipo == 'actividad' || clase.tipo == 'corazones') {
+      //   //         //console.log('activities clases clase', clase);
+      //   //         let activity = activities.find(activity => activity.claseRef.id == clase.id);
+      //   //         console.log('activities clases activity', activity);
+      //   //         clase.activity = activity;
+      //   //       }
+      //   //     });
+      //   //   });
+      //   // });
+
+      // })
     }
   }
 
@@ -441,8 +447,8 @@ export class CreateLiveCourseComponent {
         title: '',
         dateFormatted: "",
         date: null,
-        description: '',
-        liveCourseRef: {} as DocumentReference,
+        liveCourseTemplateRef: {} as DocumentReference,
+        // sessionTemplateRef: {} as DocumentReference,
         duration: 0,
         vimeoId1: 0,
         vimeoId2: '',
@@ -965,8 +971,8 @@ export class CreateLiveCourseComponent {
           Swal.showLoading()
         }
       });
-
-      await this.liveCourseService.updateLiveCourseSonMeetingLinkAndIdentifierText(this.idBaseLiveCourse, this.idLiveCourseSon, this.formNewCourse.value.meetingLink, this.formNewCourse.value.identifierText)
+      // *** UNCOMMENT
+      // await this.liveCourseService.updateLiveCourseSonMeetingLinkAndIdentifierText(this.liveCourseTemplateId, this.liveCourseId, this.formNewCourse.value.meetingLink, this.formNewCourse.value.identifierText)
       for (let session of this.liveCourseData.sessions) {
         const date = session.dateFormatted ? this.parseDateString(session.dateFormatted) : null
         const sessionSonDataToUpdate = {
@@ -976,7 +982,8 @@ export class CreateLiveCourseComponent {
           vimeoId1: session.vimeoId1,
           vimeoId2:  session.vimeoId2
         }
-        await this.liveCourseService.updateSessionSonData(session.id, session.sonId, sessionSonDataToUpdate)
+        // ***** UNCOMMENT
+        // await this.liveCourseService.updateSessionSonData(session.id, session.sonId, sessionSonDataToUpdate)
       }
       this.savingCourse = false;
       this.alertService.succesAlert("Se ha guardado la informaciòn exitosamente")
@@ -1194,7 +1201,7 @@ export class CreateLiveCourseComponent {
 
       console.log('this.liveCourseData',this.liveCourseData)
 
-      await this.liveCourseService.saveLiveCourse(this.LiveCourseDataModelToLiveCourse(this.liveCourseData))
+      await this.liveCourseService.saveLiveCourseTemplate(this.LiveCourseDataModelToLiveCourse(this.liveCourseData))
     }
     
     // For "exameness" ... check later
@@ -1409,7 +1416,7 @@ export class CreateLiveCourseComponent {
               type: archivo.type,
               url: archivo.url
             }));
-            localeSession.description = clase.description ? clase.description : null;
+            // localeSession.description = clase.description ? clase.description : null;
             localeSession.duration = clase.duration;
             localeSession.id = clase.id;
             // localeSession.vimeoId1 = clase.vimeoId1 ? clase.vimeoId1 : null;
@@ -1417,14 +1424,14 @@ export class CreateLiveCourseComponent {
             localeSession.type = clase.type;
             localeSession.orderNumber = i+1;
             localeSession.title = clase.tituloTMP ? clase.tituloTMP: clase.title;
-            localeSession.liveCourseRef = this.liveCourseService.getLiveCourseRefById(this.liveCourseData.id)
+            localeSession.liveCourseTemplateRef = this.liveCourseService.getLiveCourseTemplateRefById(this.liveCourseData.id)
 
-            const sessionToSave: Session = this.SessionDataModelToLiveCourseSession(localeSession)
-            console.log("sessionToSave", sessionToSave)
-            await this.liveCourseService.saveLiveCourseSession(sessionToSave);
+            const sessionTemplateToSave: SessionTemplate = this.SessionDataModelToLiveCourseSession(localeSession)
+            console.log("sessionTemplateToSave", sessionTemplateToSave)
+            await this.liveCourseService.saveSessionTemplate(sessionTemplateToSave);
 
             
-            let refClass = this.liveCourseService.getSessionRefById(localeSession.id)
+            let refClass = this.liveCourseService.getSessionTemplateRefById(localeSession.id)
             let courseRef = this.afs.collection<Curso>(Curso.collection).doc(this.liveCourseData.id).ref;
             arrayClasesRef.push(refClass);
             // console.log('activityClass',clase)
@@ -1500,7 +1507,7 @@ export class CreateLiveCourseComponent {
             let findDeleted = this.deletedClasses.find(x=>x.claseInId == clase.id)
             // console.log('claseRevisar',clase,findDeleted)
             if(!findDeleted && !clase['deleted']){
-              let refClass = this.liveCourseService.getSessionRefById(clase.id)
+              let refClass = this.liveCourseService.getSessionTemplateRefById(clase.id)
               arrayClasesRef.push(refClass);
             }
 
@@ -1511,17 +1518,13 @@ export class CreateLiveCourseComponent {
       }
 
       this.deletedClasses = []
-      
-      //console.log('arrayClasesRef',arrayClasesRef)
-
-      //let id = Date.now().toString();
 
     }
 
 
-    await this.afs.collection(LiveCourse.collection).doc(this.liveCourseData.id).update({
-      duration: duration
-    })
+    // await this.afs.collection(LiveCourse.collection).doc(this.liveCourseData.id).update({
+    //   duration: duration
+    // })
 
     Swal.close();
     this.savingCourse = false;
@@ -1536,7 +1539,7 @@ export class CreateLiveCourseComponent {
   }
 
   LiveCourseDataModelToLiveCourse(liveCourseData: LiveCourseData) {
-    return new LiveCourse(
+    return new LiveCourseTemplate(
       liveCourseData.id,
       liveCourseData.companyName,
       liveCourseData.title,
@@ -1551,19 +1554,30 @@ export class CreateLiveCourseComponent {
   }
 
   SessionDataModelToLiveCourseSession(sessionData: SessionData) {
-    return new Session(
+    return new SessionTemplate(
       sessionData.id,
       sessionData.title,
-      // sessionData.date,
-      sessionData.description,
-      sessionData.liveCourseRef,
+      sessionData.liveCourseTemplateRef,
       sessionData.duration,
-      // sessionData.vimeoId1,
-      // sessionData.vimeoId2,
       sessionData.files,
       sessionData.orderNumber,
     );
   }
+
+  // SessionDataModelToLiveCourseSession(sessionData: SessionData) {
+  //   return new Session(
+  //     sessionData.id,
+  //     sessionData.title,
+  //     // sessionData.date,
+  //     sessionData.description,
+  //     sessionData.liveCourseRef,
+  //     sessionData.duration,
+  //     // sessionData.vimeoId1,
+  //     // sessionData.vimeoId2,
+  //     sessionData.files,
+  //     sessionData.orderNumber,
+  //   );
+  // }
 
   previousTab(){
     if (this.activeStep > 1) {
@@ -2160,7 +2174,7 @@ export class CreateLiveCourseComponent {
 
         let classDelete = {
           claseInId: session.id,
-          cursoId: this.idBaseLiveCourse,
+          cursoId: this.liveCourseTemplateId,
           // moduloInId: moduloIn.id,
           // activityId: claseIn?.activity?.id
         }

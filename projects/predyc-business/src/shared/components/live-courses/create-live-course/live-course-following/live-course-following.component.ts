@@ -29,64 +29,67 @@ export class LiveCourseFollowingComponent {
 
   liveCourseServiceSubscription: Subscription
 
-  ngOnInit() {
-    this.emailSent = false
+	// ************************************************* UNCOMMENT FROM HERE
 
-    this.liveCourseService.getLiveCourseSonById$(this.idBaseLiveCourse, this.idLiveCourseSon).subscribe(liveCourseSon => {
-      if (liveCourseSon) {
-        // console.log("liveCourseSon.emailLastDate", liveCourseSon.emailLastDate)
-        this.emailLastDate = this.convertTimestampToDatetimeLocalString(liveCourseSon.emailLastDate)
-      }
-    })
-  }
 
-  async onSubmit() {
-    let sender = "desarrollo@predyc.com"
-    // let recipients = this.studentEmails
-    let recipients = ["diegonegrette42@gmail.com"]
-    let subject = "Aviso de curso en vivo."
-    let text = this.emailContent
+  // ngOnInit() {
+  //   this.emailSent = false
 
-    try {
-      this.emailSent = true
+  //   this.liveCourseService.getLiveCourseSonById$(this.idBaseLiveCourse, this.idLiveCourseSon).subscribe(liveCourseSon => {
+  //     if (liveCourseSon) {
+  //       // console.log("liveCourseSon.emailLastDate", liveCourseSon.emailLastDate)
+  //       this.emailLastDate = this.convertTimestampToDatetimeLocalString(liveCourseSon.emailLastDate)
+  //     }
+  //   })
+  // }
 
-      await firstValueFrom(this.fireFunctions.httpsCallable('sendLiveCourseEmail')({
-        sender: sender,
-        recipients: recipients,
-        subject: subject,
-        text: text,
-        liveCourseId: this.idBaseLiveCourse,
-        liveCourseSonId: this.idLiveCourseSon,
-      }));
+  // async onSubmit() {
+  //   let sender = "desarrollo@predyc.com"
+  //   // let recipients = this.studentEmails
+  //   let recipients = ["diegonegrette42@gmail.com"]
+  //   let subject = "Aviso de curso en vivo."
+  //   let text = this.emailContent
 
-      this.emailContent = ""
-      console.log("Email enviado")
-    } catch (error) {
-      console.log("error", error)
-      this.emailSent = true
-      this.emailContent = ""
-      this.alertService.errorAlert("")
-    }
-  }
+  //   try {
+  //     this.emailSent = true
+
+  //     await firstValueFrom(this.fireFunctions.httpsCallable('sendLiveCourseEmail')({
+  //       sender: sender,
+  //       recipients: recipients,
+  //       subject: subject,
+  //       text: text,
+  //       liveCourseId: this.idBaseLiveCourse,
+  //       liveCourseSonId: this.idLiveCourseSon,
+  //     }));
+
+  //     this.emailContent = ""
+  //     console.log("Email enviado")
+  //   } catch (error) {
+  //     console.log("error", error)
+  //     this.emailSent = true
+  //     this.emailContent = ""
+  //     this.alertService.errorAlert("")
+  //   }
+  // }
 
   
-  convertTimestampToDatetimeLocalString(timestamp: any): string {
-    if (!timestamp) return '';
-    const date = new Date(timestamp.seconds * 1000);
+  // convertTimestampToDatetimeLocalString(timestamp: any): string {
+  //   if (!timestamp) return '';
+  //   const date = new Date(timestamp.seconds * 1000);
   
-    // Get the local time components
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
+  //   // Get the local time components
+  //   const year = date.getFullYear();
+  //   const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  //   const day = date.getDate().toString().padStart(2, '0');
+  //   const hours = date.getHours().toString().padStart(2, '0');
+  //   const minutes = date.getMinutes().toString().padStart(2, '0');
   
-    // Format the local datetime string in the format required by input[type="datetime-local"]
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
-  }
+  //   // Format the local datetime string in the format required by input[type="datetime-local"]
+  //   return `${year}-${month}-${day}T${hours}:${minutes}`;
+  // }
 
-  ngOnDestroy() {
-    if (this.liveCourseServiceSubscription) this.liveCourseServiceSubscription.unsubscribe()
-  }
+  // ngOnDestroy() {
+  //   if (this.liveCourseServiceSubscription) this.liveCourseServiceSubscription.unsubscribe()
+  // }
 
 }

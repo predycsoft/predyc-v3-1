@@ -85,16 +85,6 @@ export class LiveCoursesComponent {
     this.handleImageError();
   }
 
-  ngOnDestroy() {
-    if (this.subscriptionObservableSubs) this.subscriptionObservableSubs.unsubscribe()
-  }
-
-  getFormattedDuration(): string {
-    const hours = Math.floor(this.selectedCourse.duracion / 60);
-    const minutes = this.selectedCourse.duracion % 60;
-    return `${hours} hrs ${minutes} min`;
-  }
-
   async ngOnInit() {
 
     this.authService.user$.subscribe(user=> {
@@ -128,7 +118,7 @@ export class LiveCoursesComponent {
       [
         this.categoryService.getCategoriesObservable(), 
         this.skillService.getSkills$(), 
-        this.liveCourseService.getAllLiveCoursesWithSessions$(),
+        this.liveCourseService.getAllLiveCoursesTemplatesWithSessionsTemplates$(),
         this.instructorService.getInstructors$()
       ]
     ).subscribe(async ([categories, skills, coursesData, instructors]) => {
@@ -136,11 +126,11 @@ export class LiveCoursesComponent {
 
       let courses = coursesData.map(x => {
         return { 
-          ...x.liveCourse, 
-          sessions: x.sessions
+          ...x.liveCourseTemplate, 
+          sessions: x.sessionsTemplates
         }
       })
-      // console.log('courses',courses)
+      console.log('courses',courses)
 
       // For "Lista Cursos"
       courses.forEach(course => {
@@ -180,58 +170,65 @@ export class LiveCoursesComponent {
 
 
       // For Calendario (Observables)
-      combineLatest(
-        courses.map(course => 
-          this.liveCourseService.getLiveCourseSonsByLiveCourseId$(course.id).pipe(
-            mergeMap(coursesSons => 
-              combineLatest(
-                course.sessions.map(session => 
-                  this.liveCourseService.getSessionSonsBySessionId$(session.id).pipe(
-                    map(sessionsSons => ({
-                      course,
-                      session,
-                      sessionsSons,
-                      coursesSons
-                    }))
-                  )
-                )
-              )
-            )
-          )
-        )
-      ).pipe(
-        mergeMap(results => results)
-      ).subscribe((results: any[]) => {
-        // console.log(`results`, results)
-        let newCalendarLiveCourses: CalendarLiveCourseData[] = [];
-        results.forEach(({ course, session, sessionsSons, coursesSons }) => {
-          sessionsSons.forEach(sessionSon => {
-            const courseSon = coursesSons.find(x => x.id === sessionSon.liveCourseSonRef.id);
-            const calendarLiveCourseData: CalendarLiveCourseData = {
-              baseCourseTitle: course.title,
-              baseCoursePhoto: course.photoUrl,
-              baseCourseId: course.id,
-              courseSonId: courseSon.id,
-              courseSonIdentifierText: courseSon?.identifierText,
-              courseSonMeetingLink: courseSon.meetingLink,
-              sessionTitle: session.title,
-              sessionDuration: session.duration,
-              sessionSonId: sessionSon.id,
-              sessionSonDate: firestoreTimestampToNumberTimestamp(sessionSon.date),
-              sessionSonVimeoId1: sessionSon.vimeoId1,
-              sessionSonVimeoId2: sessionSon.vimeoId2,
+      // combineLatest(
+      //   courses.map(course => 
+      //     this.liveCourseService.getLiveCourseSonsByLiveCourseId$(course.id).pipe(
+      //       mergeMap(coursesSons => 
+      //         combineLatest(
+      //           course.sessions.map(session => 
+      //             this.liveCourseService.getSessionSonsBySessionId$(session.id).pipe(
+      //               map(sessionsSons => ({
+      //                 course,
+      //                 session,
+      //                 sessionsSons,
+      //                 coursesSons
+      //               }))
+      //             )
+      //           )
+      //         )
+      //       )
+      //     )
+      //   )
+      // ).pipe(
+      //   mergeMap(results => results)
+      // ).subscribe((results: any[]) => {
+      //   // console.log(`results`, results)
+      //   let newCalendarLiveCourses: CalendarLiveCourseData[] = [];
+      //   results.forEach(({ course, session, sessionsSons, coursesSons }) => {
+      //     sessionsSons.forEach(sessionSon => {
+      //       const courseSon = coursesSons.find(x => x.id === sessionSon.liveCourseSonRef.id);
+      //       const calendarLiveCourseData: CalendarLiveCourseData = {
+      //         baseCourseTitle: course.title,
+      //         baseCoursePhoto: course.photoUrl,
+      //         baseCourseId: course.id,
+      //         courseSonId: courseSon.id,
+      //         courseSonIdentifierText: courseSon?.identifierText,
+      //         courseSonMeetingLink: courseSon.meetingLink,
+      //         sessionTitle: session.title,
+      //         sessionDuration: session.duration,
+      //         sessionSonId: sessionSon.id,
+      //         sessionSonDate: firestoreTimestampToNumberTimestamp(sessionSon.date),
+      //         sessionSonVimeoId1: sessionSon.vimeoId1,
+      //         sessionSonVimeoId2: sessionSon.vimeoId2,
 
-            };
-            newCalendarLiveCourses.push(calendarLiveCourseData);
-          });
-          this.calendarLiveCourses = newCalendarLiveCourses.sort((a, b) => a.sessionSonDate - b.sessionSonDate);
-          console.log("calendarLiveCourses in live-course component", this.calendarLiveCourses);
-        });
-      });
+      //       };
+      //       newCalendarLiveCourses.push(calendarLiveCourseData);
+      //     });
+      //     this.calendarLiveCourses = newCalendarLiveCourses.sort((a, b) => a.sessionSonDate - b.sessionSonDate);
+      //     console.log("calendarLiveCourses in live-course component", this.calendarLiveCourses);
+      //   });
+      // });
 
       
     })
   }
+
+  getFormattedDuration(): string {
+    const hours = Math.floor(this.selectedCourse.duracion / 60);
+    const minutes = this.selectedCourse.duracion % 60;
+    return `${hours} hrs ${minutes} min`;
+  }
+
 
   anidarCompetenciasInicial(categorias: any[], skills: any[]): any[] {
     return categorias.map(categoria => {
@@ -311,6 +308,10 @@ export class LiveCoursesComponent {
 			// windowClass: 'modWidth'
 		});
 
+  }
+
+  ngOnDestroy() {
+    if (this.subscriptionObservableSubs) this.subscriptionObservableSubs.unsubscribe()
   }
 
 

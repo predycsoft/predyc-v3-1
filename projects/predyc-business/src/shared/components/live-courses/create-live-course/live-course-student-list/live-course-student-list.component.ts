@@ -7,7 +7,7 @@ import { LiveCourseByStudent } from 'projects/shared/models/live-course-by-stude
 import { Observable, Subscription, combineLatest, map, switchMap } from 'rxjs';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { User, UserJson } from 'projects/shared/models/user.model';
-import { LiveCourse, LiveCourseSon } from 'projects/shared/models/live-course.model';
+import { LiveCourse } from 'projects/shared/models/live-course.model';
 import { LiveCourseService } from 'projects/predyc-business/src/shared/services/live-course.service';
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
 import Swal from 'sweetalert2';
@@ -62,177 +62,180 @@ export class LiveCourseStudentListComponent {
 	showSaveButton: boolean = false;
 	
 	liveCourseServiceSubscription: Subscription
-	liveCourseSonRef: DocumentReference<LiveCourseSon>
-
-	userEmails: string[] = []
-
-	ngOnInit() {
-		this.liveCourseSonRef = this.liveCourseService.getLiveCourseSonRefById(this.idBaseLiveCourse, this.idLiveCourseSon)
-		this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe((params) => {
-			const page = Number(params["page"]) || 1;
-			this.performSearch(page);
-		});
-	}
-
-	ngAfterViewInit() {
-		this.dataSource.paginator = this.paginator;
-		this.dataSource.paginator.pageSize = this.pageSize;
-	}
-
-	performSearch(page: number) {
-		this.liveCourseServiceSubscription = this.liveCourseService.getLiveCoursesByStudentByLivecourseSon$(this.liveCourseSonRef).pipe(
-		  switchMap(liveCoursesByStudent => {
-			const userObservables: Observable<DataToShow>[] = liveCoursesByStudent.map(liveCourseByStudent => {
-			  return this.userService.getUser$(liveCourseByStudent.userRef.id).pipe(
-				map(userData => ({
-					id: liveCourseByStudent.id,
-					userEmail: userData.email,
-					userName: userData.displayName,
-					diagnosticTest: null,
-					finalTest: null,
-					certificate: null,
-					isAttending: liveCourseByStudent.isAttending
-				}))
-			  );
-			});
-	  
-			return combineLatest(userObservables);
-		  })
-		).subscribe(dataTosShow => {
-		//   console.log("dataTosShow", dataTosShow);
-		  this.paginator.pageIndex = page - 1;
-		  this.dataSource.data = dataTosShow;
-		  this.totalLength = dataTosShow.length;
-		  // Emit the user emails
-		  this.userEmails = dataTosShow.map(data => data.userEmail);
-		  this.userEmailsChanged.emit(this.userEmails);
-		});
-	}
-
-	onPageChange(page: number): void {
-		this.router.navigate([], {
-			queryParams: { page },
-			queryParamsHandling: "merge",
-		});
-	}
-
-	async onAttendanceChange(event: Event, data: DataToShow) {
-		// Get the current checkbox state
-		const target = event.target as HTMLInputElement;
-		const newValue = target.checked;
-	  
-		// Store the original value to revert if necessary
-		const originalValue = data.isAttending;
-		
-		// Temporarily update the isAttending value
-		data.isAttending = newValue;
-	  
-		// Show confirmation dialog
-		Swal.fire({
-		  title: "Actualizaremos tu asistencia",
-		  text: "¿Deseas continuar?",
-		  icon: "info",
-		  showCancelButton: true,
-		  confirmButtonText: "Guardar",
-		  confirmButtonColor: 'var(--blue-5)',
-		}).then(async (result) => {
-		  if (result.isConfirmed) {
-			// Proceed with updating the database
-			await this.liveCourseService.updateIsAttendingLiveCourseByStudent(data.id, newValue);
-			console.log("Attendance updated:", data);
-		  } else {
-			// Revert the change if not confirmed
-			data.isAttending = originalValue;
-			target.checked = originalValue;
-		  }
-		});
-	}
-
-	onSelect(data) {
-		
-	}
-
-	downloadExcel() {
-		const columnTitles = [ 'Correo del estudiante', 'Nombre del estudiante', 'Diagnostico', 'Fin', 'Certificado', 'Asistencia'];
-	  
-		const dataToExport = this.dataSource.data.map(row => {
-		  const obj = {};
-		  obj[columnTitles[0]] = row.userEmail;
-		  obj[columnTitles[1]] = row.userName;
-		  obj[columnTitles[2]] = row.diagnosticTest;
-		  obj[columnTitles[3]] = row.finalTest;
-		  obj[columnTitles[4]] = row.certificate;
-		  obj[columnTitles[5]] = row.isAttending ? 'Sí' : 'No';
-		  return obj;
-		});
-	  
-		const worksheet = XLSX.utils.json_to_sheet(dataToExport);
-	  
-		// Set the width for each column
-		const columnWidths = columnTitles.map(title => ({ wch: title.length + 2 }));
-		worksheet['!cols'] = columnWidths;
-	  
-		const workbook = XLSX.utils.book_new();
-		XLSX.utils.book_append_sheet(workbook, worksheet, 'Estudiantes');
-	  
-		XLSX.writeFile(workbook, 'Estudiantes.xlsx');
-	}
 	
-	openModal() {
-		const modalRef = this.modalService.open(DialogAssignLiveCoursesComponent, {
-			animation: true,
-			centered: true,
-			size: "",
-			backdrop: "static",
-			keyboard: false,
-		});
+	userEmails: string[] = []
+	
+	// ************************************************* UNCOMMENT FROM HERE
+	// liveCourseSonRef: DocumentReference<LiveCourseSon>
 
-		modalRef.componentInstance.emailsAssigned = this.userEmails
 
-		modalRef.componentInstance.userSelected.subscribe((user: User) => {
-			this.handleUserSelected(user);
-		});
+	// ngOnInit() {
+	// 	this.liveCourseSonRef = this.liveCourseService.getLiveCourseSonRefById(this.idBaseLiveCourse, this.idLiveCourseSon)
+	// 	this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe((params) => {
+	// 		const page = Number(params["page"]) || 1;
+	// 		this.performSearch(page);
+	// 	});
+	// }
+
+	// ngAfterViewInit() {
+	// 	this.dataSource.paginator = this.paginator;
+	// 	this.dataSource.paginator.pageSize = this.pageSize;
+	// }
+
+	// performSearch(page: number) {
+	// 	this.liveCourseServiceSubscription = this.liveCourseService.getLiveCoursesByStudentByLivecourseSon$(this.liveCourseSonRef).pipe(
+	// 	  switchMap(liveCoursesByStudent => {
+	// 		const userObservables: Observable<DataToShow>[] = liveCoursesByStudent.map(liveCourseByStudent => {
+	// 		  return this.userService.getUser$(liveCourseByStudent.userRef.id).pipe(
+	// 			map(userData => ({
+	// 				id: liveCourseByStudent.id,
+	// 				userEmail: userData.email,
+	// 				userName: userData.displayName,
+	// 				diagnosticTest: null,
+	// 				finalTest: null,
+	// 				certificate: null,
+	// 				isAttending: liveCourseByStudent.isAttending
+	// 			}))
+	// 		  );
+	// 		});
+	  
+	// 		return combineLatest(userObservables);
+	// 	  })
+	// 	).subscribe(dataTosShow => {
+	// 	//   console.log("dataTosShow", dataTosShow);
+	// 	  this.paginator.pageIndex = page - 1;
+	// 	  this.dataSource.data = dataTosShow;
+	// 	  this.totalLength = dataTosShow.length;
+	// 	  // Emit the user emails
+	// 	  this.userEmails = dataTosShow.map(data => data.userEmail);
+	// 	  this.userEmailsChanged.emit(this.userEmails);
+	// 	});
+	// }
+
+	// onPageChange(page: number): void {
+	// 	this.router.navigate([], {
+	// 		queryParams: { page },
+	// 		queryParamsHandling: "merge",
+	// 	});
+	// }
+
+	// async onAttendanceChange(event: Event, data: DataToShow) {
+	// 	// Get the current checkbox state
+	// 	const target = event.target as HTMLInputElement;
+	// 	const newValue = target.checked;
+	  
+	// 	// Store the original value to revert if necessary
+	// 	const originalValue = data.isAttending;
 		
-	}
+	// 	// Temporarily update the isAttending value
+	// 	data.isAttending = newValue;
+	  
+	// 	// Show confirmation dialog
+	// 	Swal.fire({
+	// 	  title: "Actualizaremos tu asistencia",
+	// 	  text: "¿Deseas continuar?",
+	// 	  icon: "info",
+	// 	  showCancelButton: true,
+	// 	  confirmButtonText: "Guardar",
+	// 	  confirmButtonColor: 'var(--blue-5)',
+	// 	}).then(async (result) => {
+	// 	  if (result.isConfirmed) {
+	// 		// Proceed with updating the database
+	// 		await this.liveCourseService.updateIsAttendingLiveCourseByStudent(data.id, newValue);
+	// 		console.log("Attendance updated:", data);
+	// 	  } else {
+	// 		// Revert the change if not confirmed
+	// 		data.isAttending = originalValue;
+	// 		target.checked = originalValue;
+	// 	  }
+	// 	});
+	// }
 
-	async handleUserSelected(user: User) {
-		// console.log('Selected user:', user);
-		if (user) await this.assignLiveCourse(user.uid)
-		else this.openCreateUserModal()
-	}
+	// onSelect(data) {
+		
+	// }
 
-	async assignLiveCourse(userId: string) {
-		const userRef = this.userService.getUserRefById(userId)
-		const liveCourseSonRef = this.liveCourseService.getLiveCourseSonRefById(this.idBaseLiveCourse, this.idLiveCourseSon)
-		const liveCourseByStudent = new LiveCourseByStudent("", false, userRef, liveCourseSonRef, false)
-		try {
-			await this.liveCourseService.createLiveCourseByStudent(liveCourseByStudent)
-			console.log("***liveCourseByStudent created***")
-		} catch (error) {
-			console.log("XXXerror creating liveCourseByStudentXXX", error)			
-		}
-	}
+	// downloadExcel() {
+	// 	const columnTitles = [ 'Correo del estudiante', 'Nombre del estudiante', 'Diagnostico', 'Fin', 'Certificado', 'Asistencia'];
+	  
+	// 	const dataToExport = this.dataSource.data.map(row => {
+	// 	  const obj = {};
+	// 	  obj[columnTitles[0]] = row.userEmail;
+	// 	  obj[columnTitles[1]] = row.userName;
+	// 	  obj[columnTitles[2]] = row.diagnosticTest;
+	// 	  obj[columnTitles[3]] = row.finalTest;
+	// 	  obj[columnTitles[4]] = row.certificate;
+	// 	  obj[columnTitles[5]] = row.isAttending ? 'Sí' : 'No';
+	// 	  return obj;
+	// 	});
+	  
+	// 	const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+	  
+	// 	// Set the width for each column
+	// 	const columnWidths = columnTitles.map(title => ({ wch: title.length + 2 }));
+	// 	worksheet['!cols'] = columnWidths;
+	  
+	// 	const workbook = XLSX.utils.book_new();
+	// 	XLSX.utils.book_append_sheet(workbook, worksheet, 'Estudiantes');
+	  
+	// 	XLSX.writeFile(workbook, 'Estudiantes.xlsx');
+	// }
+	
+	// openModal() {
+	// 	const modalRef = this.modalService.open(DialogAssignLiveCoursesComponent, {
+	// 		animation: true,
+	// 		centered: true,
+	// 		size: "",
+	// 		backdrop: "static",
+	// 		keyboard: false,
+	// 	});
 
-	async openCreateUserModal(): Promise<NgbModalRef> {
-		const modalRef = this.modalService.open(CreateUserComponent, {
-		animation: true,
-		centered: true,
-		size: 'lg',
-		backdrop: 'static',
-		keyboard: false 
-		})
+	// 	modalRef.componentInstance.emailsAssigned = this.userEmails
 
-		modalRef.result.then(async userData => {
-			// console.log("userData", userData)
-			await this.assignLiveCourse(userData.uid)
-		})
+	// 	modalRef.componentInstance.userSelected.subscribe((user: User) => {
+	// 		this.handleUserSelected(user);
+	// 	});
+		
+	// }
 
-		return modalRef
-	}
+	// async handleUserSelected(user: User) {
+	// 	// console.log('Selected user:', user);
+	// 	if (user) await this.assignLiveCourse(user.uid)
+	// 	else this.openCreateUserModal()
+	// }
 
-	ngOnDestroy() {
-		if (this.queryParamsSubscription) this.queryParamsSubscription.unsubscribe();
-	}
+	// async assignLiveCourse(userId: string) {
+	// 	const userRef = this.userService.getUserRefById(userId)
+	// 	const liveCourseSonRef = this.liveCourseService.getLiveCourseSonRefById(this.idBaseLiveCourse, this.idLiveCourseSon)
+	// 	const liveCourseByStudent = new LiveCourseByStudent("", false, userRef, liveCourseSonRef, false)
+	// 	try {
+	// 		await this.liveCourseService.createLiveCourseByStudent(liveCourseByStudent)
+	// 		console.log("***liveCourseByStudent created***")
+	// 	} catch (error) {
+	// 		console.log("XXXerror creating liveCourseByStudentXXX", error)			
+	// 	}
+	// }
+
+	// async openCreateUserModal(): Promise<NgbModalRef> {
+	// 	const modalRef = this.modalService.open(CreateUserComponent, {
+	// 	animation: true,
+	// 	centered: true,
+	// 	size: 'lg',
+	// 	backdrop: 'static',
+	// 	keyboard: false 
+	// 	})
+
+	// 	modalRef.result.then(async userData => {
+	// 		// console.log("userData", userData)
+	// 		await this.assignLiveCourse(userData.uid)
+	// 	})
+
+	// 	return modalRef
+	// }
+
+	// ngOnDestroy() {
+	// 	if (this.queryParamsSubscription) this.queryParamsSubscription.unsubscribe();
+	// }
 	
 	
 	// async createTestData() {

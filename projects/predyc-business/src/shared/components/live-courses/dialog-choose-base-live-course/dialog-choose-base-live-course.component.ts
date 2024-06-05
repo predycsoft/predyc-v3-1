@@ -4,8 +4,8 @@ import { Subscription } from 'rxjs';
 import { DialogService } from '../../../services/dialog.service';
 import { IconService } from '../../../services/icon.service';
 import { LiveCourseService } from '../../../services/live-course.service';
-import { LiveCourse, LiveCourseJson, LiveCourseSon, LiveCourseSonJson } from 'projects/shared/models/live-course.model';
-import { Session, SessionSonJson } from 'projects/shared/models/session.model';
+import { LiveCourse, LiveCourseJson } from 'projects/shared/models/live-course.model';
+import { Session } from 'projects/shared/models/session.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 interface LiveCourseWithSessions extends LiveCourseJson {
@@ -32,110 +32,112 @@ export class DialogChooseBaseLiveCourseComponent {
   sessions: Session[];
   formNewCourse: FormGroup;
 
-  ngOnInit(): void {
-    this.formNewCourse = this.fb.group({
-      baseCourse: ['', Validators.required],
-      meetingLink: ['', Validators.required],
-      identifyingText: ['', Validators.required],
-      sessionsDates: this.fb.group({})  // This will be dynamically added
-    });
+  // ************************************************* UNCOMMENT FROM HERE
 
-    this.liveCourseService.getAllLiveCoursesWithSessions$().subscribe(baseLiveCourses => {
-      this.baseLiveCourses = baseLiveCourses.map(x => {
-        return { 
-          ...x.liveCourse, 
-          sessions: x.sessions
-        }
-      });
-      console.log("baseLiveCourses", baseLiveCourses)
-    });
-  }
+  // ngOnInit(): void {
+  //   this.formNewCourse = this.fb.group({
+  //     baseCourse: ['', Validators.required],
+  //     meetingLink: ['', Validators.required],
+  //     identifyingText: ['', Validators.required],
+  //     sessionsDates: this.fb.group({})  // This will be dynamically added
+  //   });
 
-  setBaseCourse(baseCourse: LiveCourseWithSessions) {
-    console.log("baseCourse", baseCourse);
-    this.sessions = baseCourse.sessions;
+  //   this.liveCourseService.getAllLiveCoursesWithSessions$().subscribe(baseLiveCourses => {
+  //     this.baseLiveCourses = baseLiveCourses.map(x => {
+  //       return { 
+  //         ...x.liveCourse, 
+  //         sessions: x.sessions
+  //       }
+  //     });
+  //     console.log("baseLiveCourses", baseLiveCourses)
+  //   });
+  // }
+
+  // setBaseCourse(baseCourse: LiveCourseWithSessions) {
+  //   console.log("baseCourse", baseCourse);
+  //   this.sessions = baseCourse.sessions;
   
-    const sessionGroup = this.formNewCourse.get('sessionsDates') as FormGroup;
+  //   const sessionGroup = this.formNewCourse.get('sessionsDates') as FormGroup;
 
-    Object.keys(sessionGroup.controls).forEach(key => {
-      sessionGroup.removeControl(key);
-    });
+  //   Object.keys(sessionGroup.controls).forEach(key => {
+  //     sessionGroup.removeControl(key);
+  //   });
 
-    const firstSession = baseCourse.sessions[0];
-    sessionGroup.addControl(firstSession.id, this.fb.control('', Validators.required));
+  //   const firstSession = baseCourse.sessions[0];
+  //   sessionGroup.addControl(firstSession.id, this.fb.control('', Validators.required));
  
-  }
+  // }
 
-  getOptionText(option: LiveCourseWithSessions) {
-    return option.title;
-  }
+  // getOptionText(option: LiveCourseWithSessions) {
+  //   return option.title;
+  // }
 
-  async onSave() {
-    // console.log("this.formNewCourse", this.formNewCourse)
-    if (this.formNewCourse.valid) {
-      const formValue = this.formNewCourse.value;
-      console.log('Form Value:', formValue);
+  // async onSave() {
+  //   // console.log("this.formNewCourse", this.formNewCourse)
+  //   if (this.formNewCourse.valid) {
+  //     const formValue = this.formNewCourse.value;
+  //     console.log('Form Value:', formValue);
 
-      // Save live course son
-      const liveCourseSon: LiveCourseSonJson = {
-        id: null,
-        parentId: formValue.baseCourse.id,
-        meetingLink: formValue.meetingLink, 
-        identifierText: formValue.identifyingText,
-        emailLastDate: null
-      }
-      const liveCourseSonId = await this.liveCourseService.saveLiveCourseSon(liveCourseSon)
+  //     // Save live course son
+  //     const liveCourseSon: LiveCourseSonJson = {
+  //       id: null,
+  //       parentId: formValue.baseCourse.id,
+  //       meetingLink: formValue.meetingLink, 
+  //       identifierText: formValue.identifyingText,
+  //       emailLastDate: null
+  //     }
+  //     const liveCourseSonId = await this.liveCourseService.saveLiveCourseSon(liveCourseSon)
 
-      const firstSessionDate = this.parseDateString(formValue.sessionsDates[this.sessions[0].id]);
+  //     const firstSessionDate = this.parseDateString(formValue.sessionsDates[this.sessions[0].id]);
 
-      // Save first session with date
-      await this.liveCourseService.saveLiveCourseSessionSon(this.sessions[0].id, {
-        id: null,
-        parentId: this.sessions[0].id,
-        date: firstSessionDate,
-        liveCourseSonRef: this.liveCourseService.getLiveCourseSonRefById(formValue.baseCourse.id, liveCourseSonId),
-        weeksToKeep: 2,
-        sonFiles: [],
-        vimeoId1: null,
-        vimeoId2: null
-      });
-      // Save rest of sessions without date
-      for (let i = 1; i < this.sessions.length; i++) {
-        await this.liveCourseService.saveLiveCourseSessionSon(this.sessions[i].id, {
-          id: null,
-          parentId: this.sessions[i].id,
-          date: null,
-          liveCourseSonRef: this.liveCourseService.getLiveCourseSonRefById(formValue.baseCourse.id, liveCourseSonId),
-          weeksToKeep: 2,
-          sonFiles: [],
-          vimeoId1: null,
-          vimeoId2: null
-        });
-      }
+  //     // Save first session with date
+  //     await this.liveCourseService.saveLiveCourseSessionSon(this.sessions[0].id, {
+  //       id: null,
+  //       parentId: this.sessions[0].id,
+  //       date: firstSessionDate,
+  //       liveCourseSonRef: this.liveCourseService.getLiveCourseSonRefById(formValue.baseCourse.id, liveCourseSonId),
+  //       weeksToKeep: 2,
+  //       sonFiles: [],
+  //       vimeoId1: null,
+  //       vimeoId2: null
+  //     });
+  //     // Save rest of sessions without date
+  //     for (let i = 1; i < this.sessions.length; i++) {
+  //       await this.liveCourseService.saveLiveCourseSessionSon(this.sessions[i].id, {
+  //         id: null,
+  //         parentId: this.sessions[i].id,
+  //         date: null,
+  //         liveCourseSonRef: this.liveCourseService.getLiveCourseSonRefById(formValue.baseCourse.id, liveCourseSonId),
+  //         weeksToKeep: 2,
+  //         sonFiles: [],
+  //         vimeoId1: null,
+  //         vimeoId2: null
+  //       });
+  //     }
 
-      this.closeDialog();
-    } 
-    else {
-      console.log('Form is invalid');
-    }
-  }
+  //     this.closeDialog();
+  //   } 
+  //   else {
+  //     console.log('Form is invalid');
+  //   }
+  // }
 
-  parseDateString(date: string): Date {
-    date = date.replace("T", "-");
-    let parts = date.split("-");
-    let timeParts = parts[3].split(":");
+  // parseDateString(date: string): Date {
+  //   date = date.replace("T", "-");
+  //   let parts = date.split("-");
+  //   let timeParts = parts[3].split(":");
 
-    // new Date(year, month [, day [, hours[, minutes[, seconds[, ms]]]]])
-    return new Date(
-      +parts[0],
-      +parts[1] - 1,
-      +parts[2],
-      +timeParts[0],
-      +timeParts[1]
-    ); // Note: months are 0-based
-  }
+  //   // new Date(year, month [, day [, hours[, minutes[, seconds[, ms]]]]])
+  //   return new Date(
+  //     +parts[0],
+  //     +parts[1] - 1,
+  //     +parts[2],
+  //     +timeParts[0],
+  //     +timeParts[1]
+  //   ); // Note: months are 0-based
+  // }
 
-  closeDialog() {
-    this.activeModal.dismiss('Cross click');
-  }
+  // closeDialog() {
+  //   this.activeModal.dismiss('Cross click');
+  // }
 }

@@ -107,15 +107,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div *ngIf="selectedCourse?.nivel" fxLayout="row" fxLayoutGap=".5rem"> <!-- -->
-                                                <div class="backGray2 pd05 w40px radius6" fxLayoutAlign="center center">
-                                                    <img [src]="icon.intermedio" class="makeYellow fw" alt="">
-                                                </div>
-                                                <div fxLayout="column">
-                                                    <div class="gray-6 ft10">Nivel</div>
-                                                    <div class="gray-8 ft10">{{selectedCourse.nivel}}</div> <!-- -->
-                                                </div>
-                                            </div>
                                         </div>
                                         <div *ngIf="selectedCourse['skills']" class="mgt05">
                                             <div class="ft10 gray-10">Competencias</div>
@@ -127,12 +118,12 @@
                                 </div>
                             </div>
                             <div fxLayout="row" fxLayoutAlign=" center">
-                                <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign="center center"
-                                    class="pdl10 pdr10 pdb05 pdt05 ft11" (click)="detailCourseTab = 0" [ngClass]="detailCourseTab == 0 ? 'selectedTab gray-10' : 'gray-8 tab'">
+                                <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign="center center" class="pdl10 pdr10 pdb05 pdt05 ft11" 
+                                (click)="detailCourseTab = 0" [ngClass]="detailCourseTab == 0 ? 'selectedTab gray-10' : 'gray-8 tab'">
                                     Sesiones
                                 </div>
-                                <div  *ngIf="selectedCourse?.description" fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign="center center" 
-                                    class="pdl10 pdr10 pdb05 pdt05 ft11" (click)="detailCourseTab = 1" [ngClass]="detailCourseTab == 1 ? 'selectedTab gray-10' : 'gray-8 tab'">
+                                <div *ngIf="selectedCourse?.description" fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign="center center" class="pdl10 pdr10 pdb05 pdt05 ft11" 
+                                (click)="detailCourseTab = 1" [ngClass]="detailCourseTab == 1 ? 'selectedTab gray-10' : 'gray-8 tab'">
                                     Descripción
                                 </div>
                                 <div *ngIf="selectedCourse?.instructorRef"  fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign="center center"

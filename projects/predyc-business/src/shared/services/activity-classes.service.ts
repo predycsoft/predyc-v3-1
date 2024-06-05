@@ -172,7 +172,7 @@ export class ActivityClassesService {
   getActivityAndQuestionsForCourse(courseId: string, isLiveCourse: boolean): Observable<any[]> {
     let courseRef: DocumentReference;
     if (!isLiveCourse) courseRef = this.courseService.getCourseRefById(courseId);
-    else courseRef = this.liveCourseService.getLiveCourseRefById(courseId);
+    else courseRef = this.liveCourseService.getLiveCourseTemplateRefById(courseId);
     // console.log('courseRef getActivityAndQuestionsForCourse',courseRef);
     return this.afs.collection('activity', ref => 
       ref.where('coursesRef', 'array-contains', courseRef).where('type', '==', 'regular')
@@ -235,7 +235,7 @@ export class ActivityClassesService {
   getActivityCoruse(idCourse: string, isLiveCourse: boolean) {
     let courseRef: DocumentReference;
     if (!isLiveCourse) courseRef = this.courseService.getCourseRefById(idCourse);
-    else courseRef = this.liveCourseService.getLiveCourseRefById(idCourse);
+    else courseRef = this.liveCourseService.getLiveCourseTemplateRefById(idCourse);
 
     // console.log('courseRef getActivityCoruse',courseRef)
     return this.afs.collection('activity', ref => 
