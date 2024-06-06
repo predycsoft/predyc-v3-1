@@ -310,6 +310,23 @@ export class ActivityClassesService {
     );
   }
 
+  getTestProfileResultsEnterprise(): Observable<any> {
+    // Asegúrate de que este método regrese un Observable en todos los casos
+    return this.enterpriseService.enterpriseLoaded$.pipe(
+      switchMap(enterpriseIsLoaded => {
+        if (enterpriseIsLoaded) {
+          const enterpriseRef = this.enterpriseService.getEnterpriseRef();
+          return this.afs.collection<any>('profileTestsByStudent', ref =>
+            ref.where("enterpriseRef", "==", enterpriseRef))
+            .valueChanges({ idField: "id" });
+        } else {
+          // Devuelve un Observable vacío que no emite valores
+          return of([]);
+        }
+      })
+    );
+  }
+
   getActivities() {
     if (this.activityCollectionSubscription) {
       console.log("Has to unsubscribe before")
