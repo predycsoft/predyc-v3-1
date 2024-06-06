@@ -68,7 +68,7 @@ export class StudentDetailsComponent {
 
       let ultimaActividad = this.getFechaUltimaActividad()
       if(ritmo == 'high'){
-        this.textWarning = 'Ritmo Optimo'
+        this.textWarning = 'Ritmo Óptimo'
         this.colorWarning = 'green'
         this.iconWarning = this.icon.greenCheck
       }
