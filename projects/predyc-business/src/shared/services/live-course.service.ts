@@ -142,6 +142,26 @@ export class LiveCourseService {
     );
   }
 
+  getLiveCourseWithSessionsById$(liveCourseId: string): Observable<{ liveCourse: LiveCourse, sessions: Session[] }> {
+    const liveCourseRef = this.getLiveCourseRefById(liveCourseId);
+  
+    return this.afs.doc<LiveCourse>(liveCourseRef).valueChanges().pipe(
+      switchMap((liveCourse: LiveCourse) => {
+        if (!liveCourse) throw new Error(`LiveCourse with id ${liveCourseId} not found`);
+        return this.getSessionsByLiveCourseRef$(liveCourseRef).pipe(
+          map((sessions: Session[]) => ({
+            liveCourse,
+            sessions
+          }))
+        );
+      }),
+      catchError(err => {
+        console.error('Error in getLiveCourseWithSessionsById$', err);
+        throw err;
+      })
+    );
+  }
+
   getAllLiveCoursesTemplates$(): Observable<LiveCourseTemplate[]> {
     return this.afs.collection<LiveCourseTemplate>(LiveCourseTemplate.collection).valueChanges();
   }
@@ -264,22 +284,21 @@ export class LiveCourseService {
   //   return this.afs.collection<Session>(Session.collection).doc(sessionId).collection<SessionSon>(SessionSon.subCollection).valueChanges()
   // }
 
-  // async updateLiveCourseSonMeetingLinkAndIdentifierText(liveCourseId: string, liveCourseSonId: string, meetingLink: string, identifierText: string): Promise<any> {
-  //   await this.afs.collection<LiveCourse>(LiveCourse.collection).doc(liveCourseId).collection<LiveCourseSon>(LiveCourseSon.subCollection).doc(liveCourseSonId).update({
-  //     meetingLink: meetingLink,
-  //     identifierText: identifierText
-  //   })
-  // }
+  async updateLiveCourseMeetingLinkAndIdentifierText(liveCourseId: string,  meetingLink: string, identifierText: string): Promise<any> {
+    await this.afs.collection<LiveCourse>(LiveCourse.collection).doc(liveCourseId).update({
+      meetingLink: meetingLink,
+      identifierText: identifierText
+    })
+  }
 
-  // async updateSessionSonData(sessionId: string, sessionSonId: string, data: any) {
-  //   await this.afs.collection<Session>(Session.collection).doc(sessionId).collection<SessionSon>(SessionSon.subCollection).doc(sessionSonId).update({
-  //     date: data.date ? data.date : null,
-  //     weeksToKeep: data.weeksToKeep ? data.weeksToKeep : null,
-  //     sonFiles: data.sonFiles ? data.sonFiles : null,
-  //     vimeoId1: data.vimeoId1,
-  //     vimeoId2: data.vimeoId2,
-  //   })
-  // }
+  async updateSessionData(sessionId: string, data: any) {
+    await this.afs.collection<Session>(Session.collection).doc(sessionId).update({
+      date: data.date ? data.date : null,
+      weeksToKeep: data.weeksToKeep ? data.weeksToKeep : null,
+      vimeoId1: data.vimeoId1,
+      vimeoId2: data.vimeoId2,
+    })
+  }
 
   async deleteSession(sessionTemplateId: string): Promise<void> {
     // Delete sub collection
