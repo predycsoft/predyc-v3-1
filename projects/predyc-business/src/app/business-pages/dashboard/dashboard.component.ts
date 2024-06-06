@@ -159,9 +159,14 @@ export class DashboardComponent {
         async (users) => {
           if (users && users.length > 1) {
             // first response is an 1 element array corresponded to admin
-            // console.log("users", users);
             const performances = [];
             for (let user of users) {
+
+
+              console.log(user)
+
+
+
               const userRef = this.userService.getUserRefById(user.uid);
               const studyPlan: CourseByStudent[] =
                 await this.courseService.getActiveCoursesByStudent(userRef);

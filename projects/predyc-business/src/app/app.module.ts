@@ -53,6 +53,7 @@ import { SharedModule } from 'projects/predyc-business/src/shared/shared.module'
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CertificationsTestComponent } from './business-pages/management/certificationsTest/certificationsTest.component';
 import { ProfilesListComponent } from './business-pages/management/profiles-list/profiles-list.component';
+import { UsersOnboardingComponent } from './business-pages/dashboard/users-onboarding/users-onboarding.component';
 
 
 @NgModule({
@@ -81,6 +82,7 @@ import { ProfilesListComponent } from './business-pages/management/profiles-list
     ValidationListComponent,
     EditValidationTestComponent,
     RankingListComponent,
+    UsersOnboardingComponent,
     StudentStatsComponent,
     StudentDetailsComponent,
     UsersRhythmComponent,

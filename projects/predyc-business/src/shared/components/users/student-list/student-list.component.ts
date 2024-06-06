@@ -384,7 +384,19 @@ export class StudentListComponent {
     }
 
     if(filtroUltimaActividad){
-      users = users.filter(x=>x.activityStatusText == filtroUltimaActividad)
+
+      if(filtroUltimaActividad =='Menos de 15 días' || filtroUltimaActividad =='Más de 30 días'){
+        users = users.filter(x=>x.groupedLastActivity == filtroUltimaActividad)
+
+      }
+      else if(filtroUltimaActividad =='Menos de 30 días'){
+        users = users.filter(x=>x.groupedLastActivity == filtroUltimaActividad || x.groupedLastActivity == 'Menos de 15 días' )
+
+      }
+      else{
+        users = users.filter(x=>x.activityStatusText == filtroUltimaActividad)
+
+      }
     }
 
     if(statusFilter && statusFilter!='all'){
@@ -462,6 +474,7 @@ export class StudentListComponent {
       })
     ).subscribe(response => {
       let actStatus = ['Sin inicio sesión']
+      let groupedLastActivityArray = ['Más de 30 días']
       let users = response.map(({user, courses, testIn}) => {
         let test = testIn.map(test => {
           return {score:test.score,id:test.id}
@@ -522,6 +535,8 @@ export class StudentListComponent {
         let dateLastActivity = null
         let lastActivityText: string;
 
+        let groupedLastActivity ='Más de 30 días'
+
         // Determinar el estado de la actividad
         let activityStatus = 'Sin inicio sesión';
         if (user['lastActivityDate']?.seconds) {
@@ -535,6 +550,18 @@ export class StudentListComponent {
           today.setHours(0, 0, 0, 0);
           let diffTime = Math.abs(today.getTime() - date.getTime());
           let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Diferencia en días
+
+          if(diffDays <= 15){
+            groupedLastActivity ='Menos de 15 días'
+          }
+          else if(diffDays <= 30){
+            groupedLastActivity ='Menos de 30 días'
+          }
+          else{
+            groupedLastActivity ='Más de 30 días'
+          }
+
+  
         
           if (diffDays === 0) {
             lastActivityText = 'Hoy';
@@ -550,12 +577,17 @@ export class StudentListComponent {
           }
         } else if (!user['lastActivityDate']?.seconds && this.examenInicial && test.length === 0 && user['lastViewDate']) {
           activityStatus = 'Sin diagnostico completado';
+          groupedLastActivity ='Más de 30 días'
           actStatus.push(activityStatus)
         } else if (!user['lastActivityDate']?.seconds && this.examenInicial && test.length > 0) {
           activityStatus = 'Sin clases vistas';
+          groupedLastActivity ='Más de 30 días'
           actStatus.push(activityStatus)
         }  
         //console.log('cursos revisar',courses)      
+        groupedLastActivityArray.push(groupedLastActivity)
+
+        console.log('RevisarDatosUser',user,groupedLastActivity)
 
         return {
           displayName: user.displayName,
@@ -565,6 +597,7 @@ export class StudentListComponent {
           hours,
           lastActivityText,
           mail:user.email,
+          groupedLastActivity:groupedLastActivity,
           activityStatusText:activityStatus,
           phone:user.phoneNumber,
           targetHours,
@@ -592,6 +625,10 @@ export class StudentListComponent {
 
       const arrayactStatus = this.removeDuplicates(actStatus);
       this.actStatus = arrayactStatus
+      console.log('groupedLastActivityArray',groupedLastActivityArray)
+      const groupedLastActivityArrayUnique = this.removeDuplicates(groupedLastActivityArray);
+      this.actStatusDaus = groupedLastActivityArrayUnique
+
 
       let idsDepartments = []
 
@@ -620,7 +657,19 @@ export class StudentListComponent {
       }
 
       if(filtroUltimaActividad){
-        users = users.filter(x=>x.activityStatusText == filtroUltimaActividad)
+
+        if(filtroUltimaActividad =='Menos de 15 días' || filtroUltimaActividad =='Más de 30 días'){
+          users = users.filter(x=>x.groupedLastActivity == filtroUltimaActividad)
+  
+        }
+        else if(filtroUltimaActividad =='Menos de 30 días'){
+          users = users.filter(x=>x.groupedLastActivity == filtroUltimaActividad || x.groupedLastActivity == 'Menos de 15 días' )
+  
+        }
+        else{
+          users = users.filter(x=>x.activityStatusText == filtroUltimaActividad)
+  
+        }
       }
 
       if(statusFilter && statusFilter!='all'){
@@ -666,6 +715,7 @@ export class StudentListComponent {
     });
   }
   actStatus
+  actStatusDaus
   allusers;
   removeAccents(str: string): string {
     return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');

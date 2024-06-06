@@ -1,4 +1,5 @@
 import { ChangeDetectorRef, Component, ElementRef, Input, SimpleChanges, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { Chart } from 'chart.js';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 
@@ -16,7 +17,9 @@ export class UsersRhythmComponent {
 
   constructor(
     public icon: IconService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private router: Router,
+
 
   ){}
   @Input() rythms: {high: number, medium: number, low: number, noPlan: number}
@@ -31,8 +34,7 @@ export class UsersRhythmComponent {
   
 
   ngOnInit() {
-    // this.getChartData()
-    // this.chartExample()
+
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -45,34 +47,14 @@ export class UsersRhythmComponent {
   }
 
 
-  drawChart() {
-
-    // const data = {
-    //   labels: ['Ritmo alto', 'Ritmo medio', 'Ritmo bajo', 'Sin asignaciones'],
-    //   datasets: [{
-    //     data: [highPercentage, mediumPercentage, lowPercentage, noPlanPercentage],
-    //     backgroundColor: [
-    //       'rgb(255, 99, 132)',
-    //       'rgb(54, 162, 235)',
-    //       'rgb(255, 205, 86)',
-    //       'rgb(201, 203, 207)'
-    //     ],
-    //     hoverOffset: 4
-    //   }]
-    // };
-
-
-
-  }
-
   chartExample() {
-    this.chartData = []
+    this.chartData = [];
     this.chartData.push(this.highPercentage);
     this.chartData.push(this.mediumPercentage);
     this.chartData.push(this.lowPercentage);
     this.chartData.push(this.noPlanPercentage);
   
-    this.chartDatalabels = []
+    this.chartDatalabels = [];
     this.chartDatalabels.push('Alto');
     this.chartDatalabels.push('Medio');
     this.chartDatalabels.push('Bajo');
@@ -89,8 +71,6 @@ export class UsersRhythmComponent {
           borderWidth: 2,
           borderColor: '#F2F2F2',
           backgroundColor: ['#00BF9C', 'rgb(255, 221, 0)', '#ED4758', '#D5DCE0']
-          
-
         }],
       },
       options: {
@@ -98,12 +78,42 @@ export class UsersRhythmComponent {
           legend: {
             display: false // disable the legend
           }
-        }
+        },
+        onClick: (event, elements) => {
+          if (elements.length > 0) {
+            const chart = elements[0].element.$context.chart;
+            const dataIndex = elements[0].index;
+            const label = chart.data.labels[dataIndex];
+            let rimo = ''
+            if(label == 'Alto'){
+              rimo ='high'
+            }
+            else if(label == 'Medio'){
+              rimo ='medium'
+
+            }
+            else if(label == 'Bajo'){
+              rimo ='low'
+            }
+            else{ 
+              rimo ='no iniciado'
+            }
+            this.router.navigate(['management/students'], { queryParams: { status: "active",ritmo: rimo }});
+
+          }
+        },
       }
     };
-    // const myChart = new Chart(this.ctx, this.config);
+  
     this.chart = new Chart(this.ctx, this.config);
   }
+
+  navigateToStudens(ritmo){
+    this.router.navigate(['management/students'], { queryParams: { status: "active",ritmo: ritmo }});
+
+  }
+  
+  
   
   getChartData() {
     const total = this.rythms.high + this.rythms.medium + this.rythms.low + this.rythms.noPlan

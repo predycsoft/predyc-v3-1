@@ -409,6 +409,16 @@
             <span class="pdl05">Todos</span>
         </div>
         <div
+            *ngFor="let actStatusItem of actStatusDaus"
+            mat-menu-item
+            class="opcionMenu"
+            fxLayout="row"
+            [ngClass]=" filtroUltimaActividad == actStatusItem ? 'backGray2 green-5 ft500' : 'gray-10'"
+            (click)="search('ultActivity',actStatusItem)"
+            fxLayoutAlign=" center">
+            <span class="pdl05">{{actStatusItem}}</span>
+        </div>
+        <div
             *ngFor="let actStatusItem of actStatus"
             mat-menu-item
             class="opcionMenu"
@@ -418,6 +428,8 @@
             fxLayoutAlign=" center">
             <span class="pdl05">{{actStatusItem}}</span>
         </div>
+
+
     </div>
 </mat-menu>
 

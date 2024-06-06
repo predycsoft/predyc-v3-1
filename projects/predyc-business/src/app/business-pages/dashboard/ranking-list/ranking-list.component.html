@@ -23,7 +23,7 @@
                 <!-- <td class="gray-7 ft500 ft13 ">Perfil</td> -->
             </tr>
             <tr *ngFor="let item of ranking | slice:0:listLength; let i = index" class="selected">
-                <td class="w-60">
+                <td>
                     <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign=" center"  style="height: 40px;" class="" >
                         <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
                             <div class="avatar2 positionRelative">
@@ -35,67 +35,35 @@
                             </div>
                             <div>
                                 <span class="gray-10 ft13 ">{{item.name | titlecase}}</span>
-                                <div
-                                *ngIf="!item.profile"
-                                (click)="$event.stopPropagation();"
-                                class="ft400 ft12 gray-6"
-                                >
-                                Perfil sin asignar
+                                <div *ngIf="!item.profile" (click)="$event.stopPropagation();" class="ft400 ft12 gray-6">
+                                    Perfil sin asignar
                                 </div>
-                                <div
-                                    *ngIf="item.profile" fxLayout="row" fxLayoutGap="5px" class="" >
+                                <div *ngIf="item.profile" fxLayout="row" fxLayoutGap="5px" class="" >
                                     <div *ngIf="item.profile"(click)="$event.stopPropagation();"  class="ft400 ft12 blue-4" >
                                         {{ item.profileName  | titlecase }}
                                     </div>
                                     <!-- <img [src]="icon.arrowForward" alt="Forward Arrow" class="makeBlue" > -->
                                 </div>
-
-                                
                             </div>
                         </div>
                     </div>
-                    <!-- <div  style="height: 50px;" fxLayout="row" fxLayoutAlign=" center">
-                        <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
-                            <div class="avatar2 positionRelative">
-                                <img [src]="item.photoUrl" class="avatar2" alt=""
-                                    onerror="this.src='assets/images/default/default-user-image.jpg'">
-                                <div *ngIf="i < 3" class="trofeo cursorPointer" fxLayoutAlign="center center">
-                                    <img [src]="icon.trophy" class="fw" alt="">
-                                </div>
-                            </div>
-                            <span class="gray-10 ft12 mgl05">{{item.name | titlecase}}</span>
-                        </div>
-                    </div> -->
                 </td>
-                <!-- <td class="centertext gray-10 ft12">{{item.hours}}&nbsp;/&nbsp;{{item.targetHours / 60 | number : "1.0-0"}} </td> -->
                 <td class="centertext gray-10 ft12">{{item.hours30Days | number: "1.0-0"}}</td>
-                
-                
                 <td class="centertext " style="width: 10%; padding-right: 35px;"   >
-
                     <div class="centertext fw" >
                         <div class="centertext fw  "  >
-                            <div *ngIf="item.performance == 'high'" class="chip backGreen2"  fxLayout="row" fxLayoutAlign="center center">
+                            <div *ngIf="item.performance == 'high'" class="chip backGreen2 w80px"  fxLayout="row" fxLayoutAlign="center center">
                                 <span class="ft13 nowrap ft500  " style="color: var(--green-5);">Alto</span>
                             </div>
-                            <div *ngIf="item.performance == 'medium'" class="chip newYellow2b "   fxLayout="row" fxLayoutAlign="center center">
+                            <div *ngIf="item.performance == 'medium'" class="chip newYellow2b w80px"   fxLayout="row" fxLayoutAlign="center center">
                                 <span class="ft13 nowrap ft500 " style="color: rgb(221, 144, 0);" >Medio</span>
                             </div>
-                            <div *ngIf="item.performance == 'low'"  class="chip backRed1  " fxLayout="row" fxLayoutAlign="center center">                                
+                            <div *ngIf="item.performance == 'low'"  class="chip backRed1 w80px " fxLayout="row" fxLayoutAlign="center center">                                
                                 <span class="ft13 nowrap ft500 red-5"  >Bajo</span>
                             </div>                            
                         </div>
                     </div>
-
-
-
                 </td>
-                <!-- <td class="centertext gray-10 ft12">
-                    <span [ngClass]="item.status === 'active' ? 'blue-5' : 'red-5'" class="ft13    nowrap ft400">{{item.statusDisplayText}}</span>
-                </td>    -->
-
-
-                <!-- <td class="gray-10 ft12 w-20">{{item.profileName}}</td> -->
             </tr>
         </table>
     </div>
