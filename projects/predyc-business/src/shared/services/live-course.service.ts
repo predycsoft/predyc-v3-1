@@ -34,39 +34,40 @@ export class LiveCourseService {
   //   })
   // }
 
-  getSessionsTemplatesByLiveCourseRef$(liveCourseTemplateRef: DocumentReference): Observable<SessionTemplate[]> {
+  getSessionsTemplatesByLiveCourseTemplateRef$(liveCourseTemplateRef: DocumentReference): Observable<SessionTemplate[]> {
     return this.afs.collection<SessionTemplate>(SessionTemplate.collection, (ref) =>
       ref.where("liveCourseTemplateRef", "==", liveCourseTemplateRef).orderBy("orderNumber", "asc")
     ).valueChanges();
   }
 
-  // getLiveCourseWithSessionsById$(liveCourseId: string, liveCourseSonId: string | null): Observable<{ liveCourse: any, sessions: any[] }> {
-  //   const liveCourseRef = this.getLiveCourseRefById(liveCourseId);
+  // DELETE THIS
+  // getLiveCourseWithSessionsById$(liveCourseTemplateId: string, liveCourseId: string | null): Observable<{ liveCourse: any, sessions: any[] }> {
+  //   const liveCourseRef = this.getLiveCourseTemplateRefById(liveCourseTemplateId);
   //   let liveCourseSonRef = null;
-  //   if (liveCourseSonId) liveCourseSonRef = this.getLiveCourseSonRefById(liveCourseId, liveCourseSonId);
+  //   if (liveCourseId) liveCourseSonRef = this.getLiveCourseRefById(liveCourseId);
   
-  //   return this.afs.doc<LiveCourse>(liveCourseRef).valueChanges().pipe(
-  //     switchMap((liveCourse: any | undefined) => {
-  //       if (!liveCourse) {
-  //         throw new Error(`LiveCourse with id ${liveCourseId} not found`);
+  //   return this.afs.doc<LiveCourseTemplate>(liveCourseRef).valueChanges().pipe(
+  //     switchMap((liveCourseTemplate: any | undefined) => {
+  //       if (!liveCourseTemplate) {
+  //         throw new Error(`LiveCourseTemplate with id ${liveCourseTemplateId} not found`);
   //       }
   
   //       // When the sons information is wanted
-  //       if (liveCourseSonId) {
-  //         return this.afs.collection(LiveCourse.collection).doc(liveCourseId).collection(LiveCourseSon.subCollection).doc(liveCourseSonId).valueChanges()
+  //       if (liveCourseId) {
+  //         return this.afs.collection(LiveCourseTemplate.collection).doc(liveCourseTemplateId).collection(LiveCourse.collection).doc(liveCourseId).valueChanges()
   //         .pipe(
-  //           switchMap((liveCourseSon: LiveCourseSon | undefined) => {
+  //           switchMap((liveCourseSon: LiveCourse | undefined) => {
   //             // Get "meetingLink" and "identifierText"
   //             if (liveCourseSon) {
-  //               liveCourse.meetingLink = liveCourseSon.meetingLink;
-  //               liveCourse.identifierText = liveCourseSon.identifierText;
-  //               liveCourse.emailLastDate = liveCourseSon.emailLastDate;
+  //               liveCourseTemplate.meetingLink = liveCourseSon.meetingLink;
+  //               liveCourseTemplate.identifierText = liveCourseSon.identifierText;
+  //               liveCourseTemplate.emailLastDate = liveCourseSon.emailLastDate;
   //             }  
 
   //             return this.getSessionsByLiveCourseRef$(liveCourseRef).pipe(
   //               mergeMap((sessions: any[]) => { // Base sessions
   //                 const sessionObservables = sessions.map(session => {
-  //                   return this.afs.collection<Session>(Session.collection).doc(session.id)
+  //                   return this.afs.collection<SessionTemplate>(SessionTemplate.collection).doc(session.id)
   //                     .collection(SessionSon.subCollection, ref => ref.where("liveCourseSonRef", "==", liveCourseSonRef)).valueChanges().pipe(
   //                       map(sessionSon => {
   //                         const sessionSonData = sessionSon[0];
@@ -89,8 +90,8 @@ export class LiveCourseService {
   //                   map(sessionsWithSons => sessionsWithSons.filter(session => session !== null))
   //                 );
   //               }),
-  //               map((sessions: Session[]) => ({
-  //                 liveCourse,
+  //               map((sessions: SessionTemplate[]) => ({
+  //                 liveCourseTemplate,
   //                 sessions
   //               }))
   //             );
@@ -100,8 +101,8 @@ export class LiveCourseService {
   //       // Just return base live course with base sessions info
   //       else {
   //         return this.getSessionsByLiveCourseRef$(liveCourseRef).pipe(
-  //           map((sessions: Session[]) => ({
-  //             liveCourse,
+  //           map((sessions: SessionTemplate[]) => ({
+  //             liveCourseTemplate,
   //             sessions
   //           }))
   //         );
@@ -114,6 +115,27 @@ export class LiveCourseService {
   //   );
   // }
 
+  getLiveCourseTemplateWithSessionsTemplateById$(liveCourseTemplateId: string): Observable<{ liveCourseTemplate: LiveCourseTemplate, sessionsTemplates: SessionTemplate[] }> {
+    const liveCourseTemplateRef = this.getLiveCourseTemplateRefById(liveCourseTemplateId);
+  
+    return this.afs.doc<LiveCourseTemplate>(liveCourseTemplateRef).valueChanges().pipe(
+      switchMap((liveCourseTemplate: LiveCourseTemplate) => {
+        if (!liveCourseTemplate) throw new Error(`LiveCourseTemplate with id ${liveCourseTemplateId} not found`);
+        // Retrieve session templates related to the live course template
+        return this.getSessionsTemplatesByLiveCourseTemplateRef$(liveCourseTemplateRef).pipe(
+          map((sessionsTemplates: SessionTemplate[]) => ({
+            liveCourseTemplate,
+            sessionsTemplates
+          }))
+        );
+      }),
+      catchError(err => {
+        console.error('Error in getLiveCourseWithSessionsById$', err);
+        throw err;
+      })
+    );
+  }
+
   getAllLiveCoursesTemplates$(): Observable<LiveCourseTemplate[]> {
     return this.afs.collection<LiveCourseTemplate>(LiveCourseTemplate.collection).valueChanges();
   }
@@ -123,7 +145,7 @@ export class LiveCourseService {
       switchMap((liveCoursesTemplates: LiveCourseTemplate[]) => {
         const coursesWithSessions$ = liveCoursesTemplates.map((liveCourseTemplate: LiveCourseTemplate) => {
           const liveCourseRef = this.afs.collection(LiveCourseTemplate.collection).doc(liveCourseTemplate.id).ref;
-          return this.getSessionsTemplatesByLiveCourseRef$(liveCourseRef).pipe(
+          return this.getSessionsTemplatesByLiveCourseTemplateRef$(liveCourseRef).pipe(
             map((sessionsTemplates: SessionTemplate[]) => ({
               liveCourseTemplate,
               sessionsTemplates
@@ -163,6 +185,14 @@ export class LiveCourseService {
     return this.afs.collection<LiveCourseTemplate>(LiveCourseTemplate.collection).doc(liveCourseTemplateId).ref
   }
 
+  getLiveCourseRefById(liveCourseId: string): DocumentReference<LiveCourse> {
+    return this.afs.collection<LiveCourse>(LiveCourse.collection).doc(liveCourseId).ref
+  }
+
+  getSessionTemplateRefById(sessionTemplateId: string): DocumentReference<SessionTemplate> {
+    return this.afs.collection<SessionTemplate>(SessionTemplate.collection).doc(sessionTemplateId).ref
+  }
+
   // getLiveCourseSonRefById(liveCourseId: string, liveCourseSonId: string): DocumentReference<LiveCourseSon> {
   //   return this.afs.collection<LiveCourse>(LiveCourse.collection).doc(liveCourseId).collection<LiveCourseSon>(LiveCourseSon.subCollection).doc(liveCourseSonId).ref
   // }
@@ -171,9 +201,6 @@ export class LiveCourseService {
   // //   return this.afs.collectionGroup<LiveCourseSon>(LiveCourseSon.subCollection).get()
   // // }
 
-  getSessionTemplateRefById(sessionTemplateId: string): DocumentReference<SessionTemplate> {
-    return this.afs.collection<SessionTemplate>(SessionTemplate.collection).doc(sessionTemplateId).ref
-  }
 
   // async saveLiveCourseSon(newLiveCourseSon: LiveCourseSonJson): Promise<string> {
   //   try {

@@ -19,7 +19,7 @@ import { AlertsService } from '../../../services/alerts.service';
 import { Curso } from 'projects/shared/models/course.model';
 import { Modulo } from 'projects/shared/models/module.model';
 import { Activity, Question, QuestionType } from 'projects/shared/models/activity-classes.model';
-import { Observable, combineLatest, filter, finalize, firstValueFrom, map, startWith, switchMap, take, tap } from 'rxjs';
+import { Observable, Subscription, combineLatest, filter, finalize, firstValueFrom, map, startWith, switchMap, take, tap } from 'rxjs';
 import { AbstractControl, FormArray, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Clase } from 'projects/shared/models/course-class.model';
 import { MatTabChangeEvent } from '@angular/material/tabs';
@@ -117,6 +117,7 @@ export class CreateLiveCourseComponent {
   liveCourseTemplateId = this.route.snapshot.paramMap.get("idCurso")
   liveCourseId = this.route.snapshot.paramMap.get("idLiveCourseSon")
 
+  initDataSubscription: Subscription
 
   textModulo = 'Crear nuevo curso'
 
@@ -263,9 +264,6 @@ export class CreateLiveCourseComponent {
 
   studentEmails: string[] = []
 
-
-  // ************************************************* UNCOMMENT FROM HERE
-
   async ngOnInit(): Promise<void> {
 
     if (this.liveCourseId) this.mode = "edit"
@@ -299,6 +297,7 @@ export class CreateLiveCourseComponent {
   }
 
   async inicializarformNewCourse () {
+    // CREATE
     if (this.mode == 'create') {
       if (!this.user.isSystemUser && !this.empresa.permissions?.createCourses) {
         this.router.navigate(["management/courses"])
@@ -314,14 +313,7 @@ export class CreateLiveCourseComponent {
           skillsRef: new FormControl(null),
           meetingLink: new FormControl(''),
           identifierText: new FormControl(''),
-          // resumen: new FormControl(null, Validators.required),
-          //categoria: new FormControl(null, Validators.required),
-          // contenido: new FormControl(null, Validators.required),
-          // idioma: new FormControl(null, Validators.required),
-          // nivel: new FormControl(null, Validators.required),
           instructor: new FormControl(null, Validators.required),
-          // resumen_instructor: new FormControl(null, Validators.required),
-          // imagen_instructor: new FormControl(null, Validators.required),
           vimeoFolderId: new FormControl(null),
           proximamente: new FormControl(false),
 
@@ -331,92 +323,26 @@ export class CreateLiveCourseComponent {
       }, 2000);
 
     }
-    // EDIT MODE 
-    else {
-      // ********* UNCOMMENT THIS
+    // EDIT TEMPLATES
+    else if (this.mode === "edit-base") {
 
-      // this.liveCourseService.getLiveCourseWithSessionsById$(this.liveCourseTemplateId, this.liveCourseId).pipe(take(1)).subscribe(liveCourseData => {
+      if (this.initDataSubscription) this.initDataSubscription.unsubscribe()
+      this.initDataSubscription = this.liveCourseService.getLiveCourseTemplateWithSessionsTemplateById$(this.liveCourseTemplateId).pipe(take(1)).subscribe(liveCourseData => {
+        this.setForm(liveCourseData)
+      })
+    }
+    // EDIT LIVE COURSE AND SESSIONS
+    else if (this.mode === "edit") {
 
-      //   console.log("liveCourseData in onInit()", liveCourseData)
-
-      //   this.liveCourseData = {
-      //     ...liveCourseData.liveCourse,
-      //     sessions: liveCourseData.sessions.map(session => ({
-      //       ...session,
-      //       dateFormatted: this.convertTimestampToDatetimeLocalString(session.date),
-      //       addClassMode: false,
-      //       isInvalid: false,
-      //       expanded: false,
-      //       type: null,
-      //       editarTitulo: false,
-      //       tituloTMP: null,
-      //       videoUpload: null,
-      //       uploading: null,
-      //       deleted: false,
-      //       activity: null,
-      //       HTMLcontent: null,
-      //     })),
-      //     addClassMode: false,
-      //     isInvalid: false,
-      //     InvalidMessages: []
-      //   };
-
-      //   // let enterpriseREf = this.enterpriseService.getEnterpriseRef()
-      //   // if(!this.user.isSystemUser && !(curso.enterpriseRef.id == enterpriseREf.id)){
-      //   //   this.router.navigate(["management/courses"])
-      //   // }
-
-      //   // console.log('datos cursos',curso)
-      //   let instructor = this.instructores.find(x=> x.id == this.liveCourseData.instructorRef.id)
-      //   this.instructoresForm.patchValue(instructor)
-
-      //   this.formNewCourse = new FormGroup({
-      //     id: new FormControl(this.liveCourseData.id, Validators.required),
-      //     vimeoFolderId: new FormControl(this.liveCourseData.vimeoFolderId),
-      //     title: new FormControl({value: this.liveCourseData.title, disabled: this.mode === "edit"}, Validators.required),
-      //     description: new FormControl({value: this.liveCourseData.description, disabled: this.mode === "edit"}, Validators.required),
-      //     photoUrl: new FormControl({value: this.liveCourseData.photoUrl, disabled: this.mode === "edit"}, Validators.required),
-      //     instructorRef: new FormControl(this.liveCourseData.instructorRef),
-      //     skills: new FormControl({value: this.liveCourseData.skillsRef, disabled: this.mode === "edit"}, Validators.required),
-      //     skillsRef: new FormControl(this.liveCourseData.skillsRef),
-      //     meetingLink: new FormControl(this.liveCourseData.meetingLink),
-      //     identifierText: new FormControl(this.liveCourseData.identifierText),
-      //     // resumen: new FormControl(this.liveCourseData.resumen, Validators.required),
-      //     // nivel: new FormControl(this.liveCourseData.nivel, Validators.required),
-      //     // idioma: new FormControl(this.liveCourseData.idioma, Validators.required),
-      //     // contenido: new FormControl(this.liveCourseData.contenido, Validators.required),
-      //     instructor: new FormControl({value: instructor.nombre, disabled: this.mode === "edit"}, Validators.required),
-      //     resumen_instructor: new FormControl(instructor.resumen, Validators.required),
-      //     imagen_instructor: new FormControl(instructor.foto, Validators.required),
-      //     proximamente: new FormControl(this.liveCourseData.proximamente),
-
-      //   });
-
-      //   //this.formNewCourse.get('resumen_instructor').disable();
-      //   this.initSkills();
-      //   if (this.mode === "edit") {
-      //     // this.pillarsForm = new FormControl({ value: '', disabled: true }); // disabled inside initSkills()
-      //     this.instructoresForm = new FormControl({ value: instructor, disabled: true });
-      //   }
-
-      //   // this.activityClassesService.getActivityAndQuestionsForCourse(this.liveCourseTemplateId, true).pipe(filter(activities=>activities!=null),take(1)).subscribe(activities => {
-      //   //   console.log('activities clases', activities);
-      //   //   this.activitiesCourse = activities;
-      //   //   this.modulos.forEach(module => {
-      //   //     let clases = module['clases'];
-      //   //     clases.forEach(clase => {
-      //   //       if (clase.tipo == 'actividad' || clase.tipo == 'corazones') {
-      //   //         //console.log('activities clases clase', clase);
-      //   //         let activity = activities.find(activity => activity.claseRef.id == clase.id);
-      //   //         console.log('activities clases activity', activity);
-      //   //         clase.activity = activity;
-      //   //       }
-      //   //     });
-      //   //   });
-      //   // });
+      // if (this.initDataSubscription) this.initDataSubscription.unsubscribe()
+      // this.initDataSubscription = this.liveCourseService.getLiveCourseWithSessionsById$(this.liveCourseTemplateId, this.liveCourseId).pipe(take(1)).subscribe(liveCourseData => {
+      
+      //   this.setForm(liveCourseData)
 
       // })
+
     }
+
   }
 
   initializeLiveCourseAsLiveCourseData(): void {
@@ -469,6 +395,138 @@ export class CreateLiveCourseComponent {
         sonId: "",
         orderNumber: null,
     };
+  }
+
+  setForm(data) {
+    console.log("liveCourseData in onInit()", data)
+
+    this.liveCourseData = {
+      ...data.liveCourseTemplate,
+      sessions: data.sessionsTemplates.map(session => ({
+        ...session,
+        dateFormatted: this.convertTimestampToDatetimeLocalString(session.date),
+        addClassMode: false,
+        isInvalid: false,
+        expanded: false,
+        type: null,
+        editarTitulo: false,
+        tituloTMP: null,
+        videoUpload: null,
+        uploading: null,
+        deleted: false,
+        activity: null,
+        HTMLcontent: null,
+      })),
+      addClassMode: false,
+      isInvalid: false,
+      InvalidMessages: []
+    };
+
+    // let enterpriseREf = this.enterpriseService.getEnterpriseRef()
+    // if(!this.user.isSystemUser && !(curso.enterpriseRef.id == enterpriseREf.id)){
+    //   this.router.navigate(["management/courses"])
+    // }
+
+    // console.log('datos cursos',curso)
+    let instructor = this.instructores.find(x=> x.id == this.liveCourseData.instructorRef.id)
+    this.instructoresForm.patchValue(instructor)
+
+    this.formNewCourse = new FormGroup({
+      id: new FormControl(this.liveCourseData.id, Validators.required),
+      vimeoFolderId: new FormControl(this.liveCourseData.vimeoFolderId),
+      title: new FormControl({value: this.liveCourseData.title, disabled: this.mode === "edit"}, Validators.required),
+      description: new FormControl({value: this.liveCourseData.description, disabled: this.mode === "edit"}, Validators.required),
+      photoUrl: new FormControl({value: this.liveCourseData.photoUrl, disabled: this.mode === "edit"}, Validators.required),
+      instructorRef: new FormControl(this.liveCourseData.instructorRef),
+      skills: new FormControl({value: this.liveCourseData.skillsRef, disabled: this.mode === "edit"}, Validators.required),
+      skillsRef: new FormControl(this.liveCourseData.skillsRef),
+      meetingLink: new FormControl(this.liveCourseData.meetingLink),
+      identifierText: new FormControl(this.liveCourseData.identifierText),
+      instructor: new FormControl({value: instructor.nombre, disabled: this.mode === "edit"}, Validators.required),
+      resumen_instructor: new FormControl(instructor.resumen, Validators.required),
+      imagen_instructor: new FormControl(instructor.foto, Validators.required),
+      proximamente: new FormControl(this.liveCourseData.proximamente),
+
+    });
+
+    //this.formNewCourse.get('resumen_instructor').disable();
+    this.initSkills();
+    if (this.mode === "edit") {
+      // this.pillarsForm = new FormControl({ value: '', disabled: true }); // disabled inside initSkills()
+      this.instructoresForm = new FormControl({ value: instructor, disabled: true });
+    }
+
+    // this.activityClassesService.getActivityAndQuestionsForCourse(this.liveCourseTemplateId, true).pipe(filter(activities=>activities!=null),take(1)).subscribe(activities => {
+    //   console.log('activities clases', activities);
+    //   this.activitiesCourse = activities;
+    //   this.modulos.forEach(module => {
+    //     let clases = module['clases'];
+    //     clases.forEach(clase => {
+    //       if (clase.tipo == 'actividad' || clase.tipo == 'corazones') {
+    //         //console.log('activities clases clase', clase);
+    //         let activity = activities.find(activity => activity.claseRef.id == clase.id);
+    //         console.log('activities clases activity', activity);
+    //         clase.activity = activity;
+    //       }
+    //     });
+    //   });
+    // });
+
+  }
+
+
+  initSkills() {
+    this.categoryService.getCategoriesObservable().pipe().subscribe(category => {
+      // console.log('category from service', category);
+      this.skillService.getSkillsObservable().pipe().subscribe(skill => {
+        // console.log('skill from service', skill);
+        this.allskills = skill;
+        skill.map(skillIn => {
+          delete skillIn['selected']
+        });
+
+        this.categoriasArray = this.anidarCompetenciasInicial(category, skill)
+        // console.log('categoriasArray', this.categoriasArray,this.liveCourseData)
+        if (!this.skillsInit) {
+          if (this.mode == 'edit-base' || 'edit') {
+            //console.log('liveCourseData edit', this.liveCourseData)
+            this.textModulo = 'Editar curso'
+            let skillsProfile = this.liveCourseData.skillsRef;
+            this.skillsCurso = this.getCursoSkills()
+            skillsProfile.forEach(skillIn => {
+              let skillSelect = skill.find(skillSelectIn => skillSelectIn.id == skillIn.id)
+              if (skillSelect) {
+                skillSelect['selected'] = true;
+              }
+            });
+
+            if (this.liveCourseData) {
+              let pilar
+              let skillId = this.liveCourseData.skillsRef[0]?.id
+              if (skillId) {
+                pilar = this.categoriasArray.find(x=>x.competencias.find(y=>y.id == skillId))
+              }
+              else if (this.pillarsForm.value['id']) {
+                pilar = this.categoriasArray.find(x=>x.id == this.pillarsForm.value['id'])
+              }
+              // console.log('pilar',pilar)
+              // this.pillarsForm.patchValue(pilar)
+              this.pillarsForm = new FormControl({ value: pilar, disabled: this.mode === 'edit' }); 
+              // console.log('pilar',this.pillarsForm.value['name'])
+            }
+            this.getExamCourse(this.liveCourseData.id);
+          }
+          else {
+            let pilar
+            if (this.pillarsForm.value['id']) {
+              pilar = this.categoriasArray.find(x=>x.id == this.pillarsForm.value['id'])
+              this.pillarsForm.patchValue(pilar)
+            }
+          }
+          this.skillsInit = true
+        }
+      });
+    });
   }
 
   convertTimestampToDatetimeLocalString(timestamp: any): string {
@@ -614,60 +672,6 @@ export class CreateLiveCourseComponent {
 
     }
 
-  }
-
-  initSkills() {
-    this.categoryService.getCategoriesObservable().pipe().subscribe(category => {
-      // console.log('category from service', category);
-      this.skillService.getSkillsObservable().pipe().subscribe(skill => {
-        // console.log('skill from service', skill);
-        this.allskills = skill;
-        skill.map(skillIn => {
-          delete skillIn['selected']
-        });
-
-        this.categoriasArray = this.anidarCompetenciasInicial(category, skill)
-        // console.log('categoriasArray', this.categoriasArray,this.liveCourseData)
-        if (!this.skillsInit) {
-          if (this.mode == 'edit-base' || 'edit') {
-            //console.log('liveCourseData edit', this.liveCourseData)
-            this.textModulo = 'Editar curso'
-            let skillsProfile = this.liveCourseData.skillsRef;
-            this.skillsCurso = this.getCursoSkills()
-            skillsProfile.forEach(skillIn => {
-              let skillSelect = skill.find(skillSelectIn => skillSelectIn.id == skillIn.id)
-              if (skillSelect) {
-                skillSelect['selected'] = true;
-              }
-            });
-
-            if (this.liveCourseData) {
-              let pilar
-              let skillId = this.liveCourseData.skillsRef[0]?.id
-              if (skillId) {
-                pilar = this.categoriasArray.find(x=>x.competencias.find(y=>y.id == skillId))
-              }
-              else if (this.pillarsForm.value['id']) {
-                pilar = this.categoriasArray.find(x=>x.id == this.pillarsForm.value['id'])
-              }
-              // console.log('pilar',pilar)
-              // this.pillarsForm.patchValue(pilar)
-              this.pillarsForm = new FormControl({ value: pilar, disabled: this.mode === 'edit' }); 
-              // console.log('pilar',this.pillarsForm.value['name'])
-            }
-            this.getExamCourse(this.liveCourseData.id);
-          }
-          else {
-            let pilar
-            if (this.pillarsForm.value['id']) {
-              pilar = this.categoriasArray.find(x=>x.id == this.pillarsForm.value['id'])
-              this.pillarsForm.patchValue(pilar)
-            }
-          }
-          this.skillsInit = true
-        }
-      });
-    });
   }
 
   courseHasSkill(skill){
@@ -1206,7 +1210,7 @@ export class CreateLiveCourseComponent {
     
     // For "exameness" ... check later
     if (this.examen) {
-      let courseRef = this.afs.collection<any>(LiveCourse.collection).doc(this.liveCourseData.id).ref;
+      let courseRef = this.liveCourseService.getLiveCourseTemplateRefById(this.liveCourseData.id)
       let activityClass = new Activity
       // console.log('this.activityClass',activityClass)
       let questions: Question[]= []
@@ -1972,7 +1976,6 @@ export class CreateLiveCourseComponent {
     }
   }
 
-  // AQUI
   getIconSession(sessionType: string){
     if (sessionType == 'lectura'){
       return 'catelog'
@@ -1990,7 +1993,6 @@ export class CreateLiveCourseComponent {
     return "catelog";
   }
 
-  // AQUI
   getnumerClassTipo(claseIn) {
     let valor = 0
 
@@ -2049,7 +2051,6 @@ export class CreateLiveCourseComponent {
     });
   }
 
-  // AQUI
   obtenerNumeroMasGrande(): number {
     return this.modulos.reduce((maximoActual, modulo) => {
         const maximoModulo = modulo['clases'].reduce((maximoClase, clase) => {
@@ -2072,7 +2073,6 @@ export class CreateLiveCourseComponent {
     session.videoUpload = false
   }
 
-  // AQUI
   addSession(tipo) {
     let clases = []
     if (this.liveCourseData.sessions && this.liveCourseData.sessions.length > 0) clases = this.liveCourseData.sessions
@@ -2153,7 +2153,6 @@ export class CreateLiveCourseComponent {
     })
   } 
 
-  // AQUI
   async borrarSession(session){
     let sessions = this.liveCourseData.sessions
 
@@ -3584,6 +3583,10 @@ export class CreateLiveCourseComponent {
   onUserEmailsChanged(emails: string[]): void {
     // console.log("emails in parent", emails)
     this.studentEmails = emails;
+  }
+
+  ngOnDestroy() {
+    if (this.initDataSubscription) this.initDataSubscription.unsubscribe()
   }
 
 }
