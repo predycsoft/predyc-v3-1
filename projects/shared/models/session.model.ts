@@ -46,17 +46,17 @@ export class SessionTemplate {
 }
 
 export interface SessionJson {
-    id: string
-    title: string
+    date: any //
     duration: number
     files: any[]
+    id: string
+    liveCourseRef: DocumentReference //
     orderNumber: number
-    sessionTemplateRef: DocumentReference
-    date: any
-    weeksToKeep: number
-    liveCourseRef: DocumentReference
-    vimeoId1: number
-    vimeoId2: string
+    title: string
+    sessionTemplateRef: DocumentReference // 
+    vimeoId1: number //
+    vimeoId2: string //
+    weeksToKeep: number //
 }
 
 export class Session {

@@ -64,20 +64,20 @@ export class LiveCourseTemplate {
 }
 
 export interface LiveCourseJson {
-    id: string
     companyName: string // currently not in use
-    title: string
-    photoUrl: string
     description: string
+    duration: number,
+    id: string
     instructorRef: DocumentReference
+    liveCourseTemplateRef: DocumentReference
+    photoUrl: string
     proximamente: boolean
     skillsRef: DocumentReference<Skill>[]
-    duration: number,
-    vimeoFolderId: string,
-    liveCourseTemplateRef: DocumentReference
+    title: string
     meetingLink: string
     identifierText: string
     emailLastDate: any
+    vimeoFolderId: string,
 }
 
 export class LiveCourse {
