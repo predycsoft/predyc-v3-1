@@ -37,8 +37,8 @@ export class CalendarLiveCoursesSelectorComponent implements OnInit {
   groupCoursesByMonth() {
 
     this.groupedCourses = this.calendarLiveCourses.reduce((groups, course) => {
-      if (course.sessionSonDate)  {
-        const date = new Date(course.sessionSonDate);
+      if (course.sessionDate)  {
+        const date = new Date(course.sessionDate);
         const monthYear = date.toLocaleString('default', { month: 'long', year: 'numeric' });
         if (!groups[monthYear]) {
           groups[monthYear] = [];
@@ -61,7 +61,7 @@ export class CalendarLiveCoursesSelectorComponent implements OnInit {
 
   onSelectCourse(selectedCourse: CalendarLiveCourseData) {
     console.log("selectedCourse", selectedCourse)
-    this.router.navigate([`/management/live-sessions/${selectedCourse.baseCourseId}/${selectedCourse.courseSonId}`])
+    this.router.navigate([`/management/live-sessions/${selectedCourse.courseId}/${selectedCourse.courseId}`])
 
   }
 
@@ -73,8 +73,8 @@ export class CalendarLiveCoursesSelectorComponent implements OnInit {
     })
 
     const dataForModal = {
-      vimeoId1: course.sessionSonVimeoId1,
-      vimeoId2: course.sessionSonVimeoId2,
+      vimeoId1: course.sessionVimeoId1,
+      vimeoId2: course.sessionVimeoId2,
     }
 
     modalRef.componentInstance.clase = dataForModal;

@@ -21,18 +21,16 @@ export class category {
 }
 
 export interface CalendarLiveCourseData {
-  baseCourseTitle: string
-  baseCoursePhoto: string
-  baseCourseId: string
-  courseSonId: string
-  courseSonIdentifierText: string
-  courseSonMeetingLink: string
+  courseTitle: string
+  coursePhoto: string
+  courseId: string
+  courseIdentifierText: string
+  courseMeetingLink: string
   sessionDuration: number
   sessionTitle: string
-  sessionSonId: string
-  sessionSonDate: number
-  sessionSonVimeoId1: number
-  sessionSonVimeoId2: string
+  sessionDate: number
+  sessionVimeoId1: number
+  sessionVimeoId2: string
 }
 
 @Component({
@@ -170,54 +168,30 @@ export class LiveCoursesComponent {
 
 
       // For Calendario (Observables)
-      // combineLatest(
-      //   courses.map(course => 
-      //     this.liveCourseService.getLiveCourseSonsByLiveCourseId$(course.id).pipe(
-      //       mergeMap(coursesSons => 
-      //         combineLatest(
-      //           course.sessions.map(session => 
-      //             this.liveCourseService.getSessionSonsBySessionId$(session.id).pipe(
-      //               map(sessionsSons => ({
-      //                 course,
-      //                 session,
-      //                 sessionsSons,
-      //                 coursesSons
-      //               }))
-      //             )
-      //           )
-      //         )
-      //       )
-      //     )
-      //   )
-      // ).pipe(
-      //   mergeMap(results => results)
-      // ).subscribe((results: any[]) => {
-      //   // console.log(`results`, results)
-      //   let newCalendarLiveCourses: CalendarLiveCourseData[] = [];
-      //   results.forEach(({ course, session, sessionsSons, coursesSons }) => {
-      //     sessionsSons.forEach(sessionSon => {
-      //       const courseSon = coursesSons.find(x => x.id === sessionSon.liveCourseSonRef.id);
-      //       const calendarLiveCourseData: CalendarLiveCourseData = {
-      //         baseCourseTitle: course.title,
-      //         baseCoursePhoto: course.photoUrl,
-      //         baseCourseId: course.id,
-      //         courseSonId: courseSon.id,
-      //         courseSonIdentifierText: courseSon?.identifierText,
-      //         courseSonMeetingLink: courseSon.meetingLink,
-      //         sessionTitle: session.title,
-      //         sessionDuration: session.duration,
-      //         sessionSonId: sessionSon.id,
-      //         sessionSonDate: firestoreTimestampToNumberTimestamp(sessionSon.date),
-      //         sessionSonVimeoId1: sessionSon.vimeoId1,
-      //         sessionSonVimeoId2: sessionSon.vimeoId2,
+      this.liveCourseService.getAllLiveCoursesWithSessions$().subscribe((livecoursesWithSessions) => {
+        console.log(`livecoursesWithSessions`, livecoursesWithSessions)
+        let newCalendarLiveCourses: CalendarLiveCourseData[] = [];
+        livecoursesWithSessions.forEach(({ liveCourse, sessions}) => {
+          sessions.forEach(session => {
+            const calendarLiveCourseData: CalendarLiveCourseData = {
+              courseTitle: liveCourse.title,
+              coursePhoto: liveCourse.photoUrl,
+              courseId: liveCourse.id,
+              courseIdentifierText: liveCourse.identifierText,
+              courseMeetingLink: liveCourse.meetingLink,
+              sessionTitle: session.title,
+              sessionDuration: session.duration,
+              sessionDate: firestoreTimestampToNumberTimestamp(session.date),
+              sessionVimeoId1: session.vimeoId1,
+              sessionVimeoId2: session.vimeoId2,
 
-      //       };
-      //       newCalendarLiveCourses.push(calendarLiveCourseData);
-      //     });
-      //     this.calendarLiveCourses = newCalendarLiveCourses.sort((a, b) => a.sessionSonDate - b.sessionSonDate);
-      //     console.log("calendarLiveCourses in live-course component", this.calendarLiveCourses);
-      //   });
-      // });
+            };
+            newCalendarLiveCourses.push(calendarLiveCourseData);
+          });
+          this.calendarLiveCourses = newCalendarLiveCourses.sort((a, b) => a.sessionDate - b.sessionDate);
+          console.log("calendarLiveCourses in live-course component", this.calendarLiveCourses);
+        });
+      });
 
       
     })

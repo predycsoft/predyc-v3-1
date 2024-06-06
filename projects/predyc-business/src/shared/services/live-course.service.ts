@@ -40,6 +40,12 @@ export class LiveCourseService {
     ).valueChanges();
   }
 
+  getSessionsByLiveCourseRef$(liveCourseRef: DocumentReference): Observable<Session[]> {
+    return this.afs.collection<Session>(Session.collection, (ref) =>
+      ref.where("liveCourseRef", "==", liveCourseRef).orderBy("orderNumber", "asc")
+    ).valueChanges();
+  }
+
   // DELETE THIS
   // getLiveCourseWithSessionsById$(liveCourseTemplateId: string, liveCourseId: string | null): Observable<{ liveCourse: any, sessions: any[] }> {
   //   const liveCourseRef = this.getLiveCourseTemplateRefById(liveCourseTemplateId);
@@ -140,6 +146,10 @@ export class LiveCourseService {
     return this.afs.collection<LiveCourseTemplate>(LiveCourseTemplate.collection).valueChanges();
   }
 
+  getAllLiveCourses$(): Observable<LiveCourse[]> {
+    return this.afs.collection<LiveCourse>(LiveCourse.collection).valueChanges();
+  }
+
   getAllLiveCoursesTemplatesWithSessionsTemplates$(): Observable<{ liveCourseTemplate: LiveCourseTemplate, sessionsTemplates: SessionTemplate[] }[]> {
     return this.getAllLiveCoursesTemplates$().pipe(
       switchMap((liveCoursesTemplates: LiveCourseTemplate[]) => {
@@ -149,6 +159,23 @@ export class LiveCourseService {
             map((sessionsTemplates: SessionTemplate[]) => ({
               liveCourseTemplate,
               sessionsTemplates
+            }))
+          );
+        });
+        return combineLatest(coursesWithSessions$);
+      })
+    );
+  }
+
+  getAllLiveCoursesWithSessions$(): Observable<{ liveCourse: LiveCourse, sessions: Session[] }[]> {
+    return this.getAllLiveCourses$().pipe(
+      switchMap((liveCourses: LiveCourse[]) => {
+        const coursesWithSessions$ = liveCourses.map((liveCourse: LiveCourse) => {
+          const liveCourseRef = this.getLiveCourseRefById(liveCourse.id);
+          return this.getSessionsByLiveCourseRef$(liveCourseRef).pipe(
+            map((sessions: Session[]) => ({
+              liveCourse,
+              sessions
             }))
           );
         });
