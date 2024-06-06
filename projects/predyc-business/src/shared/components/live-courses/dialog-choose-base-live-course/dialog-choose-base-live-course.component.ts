@@ -1,12 +1,14 @@
 import { Component, Input } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { Subscription } from 'rxjs';
+import { Subscription, filter, take } from 'rxjs';
 import { DialogService } from '../../../services/dialog.service';
 import { IconService } from '../../../services/icon.service';
 import { LiveCourseService } from '../../../services/live-course.service';
 import { LiveCourse, LiveCourseJson, LiveCourseTemplateJson } from 'projects/shared/models/live-course.model';
 import { Session, SessionJson, SessionTemplate } from 'projects/shared/models/session.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivityClassesService } from '../../../services/activity-classes.service';
+import { Question } from 'projects/shared/models/activity-classes.model';
 
 interface LiveCourseTemplateWithSessionsTemplates extends LiveCourseTemplateJson {
   sessions: SessionTemplate[]
@@ -32,11 +34,14 @@ export class DialogChooseBaseLiveCourseComponent {
     public dialogService: DialogService,
     private liveCourseService: LiveCourseService,
     private fb: FormBuilder,
+    public activityClassesService:ActivityClassesService,
   ) {}
 
   combinedServicesSubscription: Subscription;
   baseLiveCourses: LiveCourseTemplateWithSessionsTemplates[];
   sessions: SessionTemplate[];
+  liveCourseTest
+  liveCourseTestSubscription: Subscription
   formNewCourse: FormGroup;
 
 
@@ -71,7 +76,21 @@ export class DialogChooseBaseLiveCourseComponent {
 
     const firstSession = baseCourse.sessions[0];
     sessionGroup.addControl(firstSession.id, this.fb.control('', Validators.required));
+
+    this.liveCourseTest = null
+    this.getExamCourse(baseCourse.id)
  
+  }
+
+  getExamCourse(idCourse: string) {
+    //console.log('idCourse search activity', idCourse);
+    if(this.liveCourseTestSubscription) this.liveCourseTestSubscription.unsubscribe()
+    this.liveCourseTestSubscription = this.activityClassesService.getActivityCoruse(idCourse, "liveCourseTemplate").pipe(filter(data=>data!=null),take(1)).subscribe(data => {
+      if (data) {
+        this.liveCourseTest = data;
+        console.log("data", data)
+      }
+    });
   }
 
   getOptionText(option: LiveCourseTemplateWithSessionsTemplates) {
@@ -97,7 +116,7 @@ export class DialogChooseBaseLiveCourseComponent {
       }
       // console.log("liveCourse", liveCourse)
       const liveCourseId = await this.liveCourseService.saveLiveCourse(liveCourse)
-
+      const liveCourseRef = this.liveCourseService.getLiveCourseRefById(liveCourseId)
       // Save first session with date
       const firstSessionDate = this.parseDateString(formValue.sessionsDates[this.sessions[0].id]);
       // copy the template data
@@ -107,7 +126,7 @@ export class DialogChooseBaseLiveCourseComponent {
         ...sessionTemplateData,
         id: null,
         date: firstSessionDate,
-        liveCourseRef: this.liveCourseService.getLiveCourseRefById(liveCourseId),
+        liveCourseRef: liveCourseRef,
         sessionTemplateRef: this.liveCourseService.getSessionTemplateRefById(sessionTemplateData.id),
         vimeoId1: null,
         vimeoId2: null,
@@ -123,7 +142,7 @@ export class DialogChooseBaseLiveCourseComponent {
           ...followingSessionTemplateData,
           id: null,
           date: null,
-          liveCourseRef: this.liveCourseService.getLiveCourseRefById(liveCourseId),
+          liveCourseRef: liveCourseRef,
           sessionTemplateRef: this.liveCourseService.getSessionTemplateRefById(followingSessionTemplateData.id),
           vimeoId1: null,
           vimeoId2: null,
@@ -131,6 +150,26 @@ export class DialogChooseBaseLiveCourseComponent {
         }
         // console.log("followingSession", followingSession)
         await this.liveCourseService.saveSession(followingSession);
+      }
+
+      // Save test
+      if (this.liveCourseTest) {
+        this.liveCourseTest.id = null; this.liveCourseTest.coursesRef = [liveCourseRef]
+        const activityId = await this.activityClassesService.saveActivity(this.liveCourseTest);
+
+        let questions: Question[]= []
+        questions = structuredClone(this.liveCourseTest.questions);
+        for (let pregunta of questions) {
+          delete pregunta['competencias_tmp'];
+          delete pregunta['competencias'];
+          delete pregunta['isInvalid'];
+          delete pregunta['InvalidMessages'];
+          delete pregunta['expanded_categorias'];
+          delete pregunta['expanded'];
+          delete pregunta['uploading_file_progress'];
+          delete pregunta['uploading'];
+          await this.activityClassesService.saveQuestion(pregunta, activityId)
+        }
       }
 
       this.closeDialog();
@@ -151,7 +190,7 @@ export class DialogChooseBaseLiveCourseComponent {
       +timeParts[0],
       +timeParts[1]
     ); // Note: months are 0-based
-  }
+  }  
 
   closeDialog() {
     this.activeModal.dismiss('Cross click');

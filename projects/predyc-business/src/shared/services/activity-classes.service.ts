@@ -60,7 +60,7 @@ export class ActivityClassesService {
 
   
 
-  async saveActivity(newActivity: Activity): Promise<void> {
+  async saveActivity(newActivity: Activity): Promise<string> {
     try {
       // console.log('saveActivity',newActivity)
       let ref: DocumentReference;
@@ -73,10 +73,12 @@ export class ActivityClassesService {
       const dataToSave = typeof newActivity.toJson === 'function' ? newActivity.toJson() : newActivity;
       await ref.set(dataToSave, { merge: true });
       newActivity.id = ref.id;
+      return newActivity.id
   } catch (error) {
       newActivity.id = null;
       console.log('error',error,newActivity)
       this.alertService.errorAlert(JSON.stringify(error))
+      return null
     }
   }
 
@@ -232,10 +234,11 @@ export class ActivityClassesService {
       );
   }
 
-  getActivityCoruse(idCourse: string, isLiveCourse: boolean) {
+  getActivityCoruse(idCourse: string, type: "course" | "liveCourse" | "liveCourseTemplate") {
     let courseRef: DocumentReference;
-    if (!isLiveCourse) courseRef = this.courseService.getCourseRefById(idCourse);
-    else courseRef = this.liveCourseService.getLiveCourseTemplateRefById(idCourse);
+    if (type === "course") courseRef = this.courseService.getCourseRefById(idCourse);
+    else if (type === "liveCourseTemplate") courseRef = this.liveCourseService.getLiveCourseTemplateRefById(idCourse);
+    else if (type === "liveCourse") courseRef = this.liveCourseService.getLiveCourseRefById(idCourse);
 
     // console.log('courseRef getActivityCoruse',courseRef)
     return this.afs.collection('activity', ref => 

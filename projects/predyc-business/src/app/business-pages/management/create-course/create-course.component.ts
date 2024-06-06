@@ -201,7 +201,7 @@ export class CreateCourseComponent {
 
   getExamCourse(idCourse){
     //console.log('idCourse search activity', idCourse);
-    this.activityClassesService.getActivityCoruse(idCourse, false).pipe(filter(data=>data!=null),take(1))
+    this.activityClassesService.getActivityCoruse(idCourse, "course").pipe(filter(data=>data!=null),take(1))
       .subscribe(data => {
         if (data) {
           ////console.log('Activity:', data);

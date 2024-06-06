@@ -595,21 +595,21 @@ export class CreateLiveCourseComponent {
   }
 
   getExamCourse(idCourse: string) {
-    //console.log('idCourse search activity', idCourse);
-    this.activityClassesService.getActivityCoruse(idCourse, true).pipe(filter(data=>data!=null),take(1))
-      .subscribe(data => {
-        if (data) {
-          ////console.log('Activity:', data);
-          ////console.log('Questions:', data.questions);
-          data.questions.forEach(question => {
-           // //console.log('preguntas posibles test',question)
-            question.competencias = question.skills
-          });
-          this.examen = data;
-          // console.log('examen data edit',this.examen)
-          //this.formatExamQuestions();
-        }
-      });
+    console.log('idCourse search activity', idCourse);
+    const liveCourseType = this.mode === "edit-base" ? "liveCourseTemplate" : "liveCourse"
+    this.activityClassesService.getActivityCoruse(idCourse, liveCourseType).pipe(filter(data=>data!=null),take(1)).subscribe(data => {
+      if (data) {
+        console.log('Activity:', data);
+        ////console.log('Questions:', data.questions);
+        data.questions.forEach(question => {
+          // //console.log('preguntas posibles test',question)
+          question.competencias = question.skills
+        });
+        this.examen = data;
+        // console.log('examen data edit',this.examen)
+        //this.formatExamQuestions();
+      }
+    });
   }
 
   anidarCompetenciasInicial(categorias: any[], competencias: any[]): any[] {
