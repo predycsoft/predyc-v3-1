@@ -255,6 +255,7 @@ export class StudentStudyPlanAndCompetencesComponent {
     this.diagnosticTestSubscription = this.profileService
       .getDiagnosticTestForUser$(this.student)
       .subscribe((diagnosticTests) => {
+        console.log('diagnosticTests',diagnosticTests)
         if (diagnosticTests.length === 0) return;
 
         let diagnosticTest
@@ -279,6 +280,7 @@ export class StudentStudyPlanAndCompetencesComponent {
           ...diagnosticTest,
           date: firestoreTimestampToNumberTimestamp(diagnosticTest.date),
         };
+
       });
   }
 

@@ -212,6 +212,8 @@ export class StudyTimeMonthlyLineChartComponent {
         }]
       },
       options: {
+        responsive: true,
+        maintainAspectRatio: false,
         plugins: {
           legend: {
             labels: {
