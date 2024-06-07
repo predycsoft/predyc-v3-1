@@ -7,65 +7,65 @@
 
 <div fxLayout="column" fxLayoutGap="8px" fxLayoutAlign="center center" class="fw mgt10">
 
-    <div class="fw backGray2 radius6 pd10" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="16px">
+    <div (click)="navigateToStudents('planDeEstudio')" class="fw backGray2 radius6 pd10 shadowLight cursorPointer" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="16px">
       <span class="ft500">
-        Con plan de estudio asignado
+        Personas con plan de estudio asignado
       </span>
       <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="8px">
         <span class="ft500">
           {{studentWihPLan}}/{{usersTotal}}
         </span>
         <div [ngClass]="{
-          'backGreen5': studentWihPLanPorcentage > 80,
-          'backYellow5': studentWihPLanPorcentage > 60 && studentWihPLanPorcentage <= 80,
+          'backGreen5': studentWihPLanPorcentage > 90,
+          'backYellow5': studentWihPLanPorcentage > 60 && studentWihPLanPorcentage <= 90,
           'backRed5': studentWihPLanPorcentage <= 60
         }" class="circle" fxFlexAlign="center"></div>   
       </div>
     </div>
 
-    <div class="fw backGray2 radius6 pd10" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="16px">
+    <div (click)="navigateToStudents('primerAcceso')" class="fw backGray2 radius6 pd10 shadowLight cursorPointer" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="16px">
         <span class="ft500">
-          Completaron su primer acceso a PREDYC
+          Personas que completaron su primer acceso a PREDYC
         </span>
         <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="8px">
           <span class="ft500">
             {{fistAccesCompleted}}/{{usersTotal}}
           </span>
           <div [ngClass]="{
-            'backGreen5': fistAccesCompletedPorcentage > 80,
-            'backYellow5': fistAccesCompletedPorcentage > 60 && fistAccesCompletedPorcentage <= 80,
+            'backGreen5': fistAccesCompletedPorcentage > 90,
+            'backYellow5': fistAccesCompletedPorcentage > 60 && fistAccesCompletedPorcentage <= 90,
             'backRed5': fistAccesCompletedPorcentage <= 60
           }" class="circle" fxFlexAlign="center"></div>                  
         </div>
       </div>
 
-      <div *ngIf="examenInicial" class="fw backGray2 radius6 pd10" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="16px">
+      <div (click)="navigateToStudents('diagnostico')" *ngIf="examenInicial" class="fw backGray2 radius6 pd10 shadowLight cursorPointer" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="16px">
         <span class="ft500">
-          Terminaron su diagnóstico inicial
+          Personas que terminaron su diagnóstico inicial
         </span>
         <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="8px">
           <span class="ft500">
             {{withDiagnostic}}/{{usersTotal}}
           </span>
           <div [ngClass]="{
-            'backGreen5': withDiagnosticPorcentage > 80,
-            'backYellow5': withDiagnosticPorcentage > 60 && withDiagnosticPorcentage <= 80,
+            'backGreen5': withDiagnosticPorcentage > 90,
+            'backYellow5': withDiagnosticPorcentage > 60 && withDiagnosticPorcentage <= 90,
             'backRed5': withDiagnosticPorcentage <= 60
           }" class="circle" fxFlexAlign="center"></div>          
         </div>
       </div>
 
-      <div class="fw backGray2 radius6 pd10" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="16px">
+      <div (click)="navigateToStudents('primeraClase')" class="fw backGray2 radius6 pd10 shadowLight cursorPointer" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="16px">
         <span class="ft500">
-          Completaron su primera clase en PREDYC
+          Personas completaron su primera clase en PREDYC
         </span>
         <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="8px">
           <span class="ft500">
             {{withFistClass}}/{{usersTotal}}
           </span>
           <div [ngClass]="{
-            'backGreen5': withFistClassPorcentage > 80,
-            'backYellow5': withFistClassPorcentage > 60 && withFistClassPorcentage <= 80,
+            'backGreen5': withFistClassPorcentage > 90,
+            'backYellow5': withFistClassPorcentage > 60 && withFistClassPorcentage <= 90,
             'backRed5': withFistClassPorcentage <= 60
           }" class="circle" fxFlexAlign="center"></div>        
         </div>

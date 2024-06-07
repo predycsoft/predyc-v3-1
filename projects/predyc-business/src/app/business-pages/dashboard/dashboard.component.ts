@@ -171,89 +171,88 @@ export class DashboardComponent {
                   const performances = [];
                   for (let user of users) {
 
-                    if(!user['ready']){
-                      let test = this.testUsers.filter(x=>x.userRef.id == user.uid && x.type == 'inicial')
-                      let dateLastActivity = null
-                      let lastActivityText: string;
-                      let groupedLastActivity ='Más de 30 días'
-                      // Determinar el estado de la actividad
-                      let activityStatus = 'Sin inicio sesión';
-                      if (user['lastActivityDate']?.seconds) {
-                        console.log('lastActivityDate',user['lastActivityDate']?.seconds,user.uid)
-                        let date = new Date(user['lastActivityDate'].seconds * 1000);
-                        date.setHours(0, 0, 0, 0); // Establecer la hora a 00:00:00.000
-                        activityStatus = date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long' });
-                        dateLastActivity = date.getTime();
-                        console.log('dateLastActivity',dateLastActivity)
-                        // Crear la variable de texto para indicar hace cuánto fue la última actividad
-                        let today = new Date();
-                        today.setHours(0, 0, 0, 0);
-                        let diffTime = Math.abs(today.getTime() - date.getTime());
-                        let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Diferencia en días
-              
-                        if(diffDays <= 15){
-                          groupedLastActivity ='Menos de 15 días'
-                        }
-                        else if(diffDays <= 30){
-                          groupedLastActivity ='Menos de 30 días'
+                    let test = this.testUsers.filter(x=>x.userRef.id == user.uid && x.type == 'inicial')
+                    let dateLastActivity = null
+                    let lastActivityText: string;
+                    let groupedLastActivity ='Más de 30 días'
+                    // Determinar el estado de la actividad
+                    let activityStatus = 'Sin inicio sesión';
+                    if (user['lastActivityDate']?.seconds) {
+                      console.log('lastActivityDate',user['lastActivityDate']?.seconds,user.uid)
+                      let date = new Date(user['lastActivityDate'].seconds * 1000);
+                      date.setHours(0, 0, 0, 0); // Establecer la hora a 00:00:00.000
+                      activityStatus = date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long' });
+                      dateLastActivity = date.getTime();
+                      console.log('dateLastActivity',dateLastActivity)
+                      // Crear la variable de texto para indicar hace cuánto fue la última actividad
+                      let today = new Date();
+                      today.setHours(0, 0, 0, 0);
+                      let diffTime = Math.abs(today.getTime() - date.getTime());
+                      let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Diferencia en días
+            
+                      if(diffDays <= 15){
+                        groupedLastActivity ='Menos de 15 días'
+                      }
+                      else if(diffDays <= 30){
+                        groupedLastActivity ='Menos de 30 días'
+                      }
+                      else{
+                        groupedLastActivity ='Más de 30 días'
+                      }
+
+                      if (diffDays === 0) {
+                        lastActivityText = 'Hoy';
+                      } else if (diffDays <= 30) {
+                        if(diffDays == 1){
+                          lastActivityText = `Hace 1 día`;
                         }
                         else{
-                          groupedLastActivity ='Más de 30 días'
+                          lastActivityText = `Hace ${diffDays} días`;
                         }
-  
-                        if (diffDays === 0) {
-                          lastActivityText = 'Hoy';
-                        } else if (diffDays <= 30) {
-                          if(diffDays == 1){
-                            lastActivityText = `Hace 1 día`;
-                          }
-                          else{
-                            lastActivityText = `Hace ${diffDays} días`;
-                          }
-                        } else {
-                          lastActivityText = 'Más de 30 días';
-                        }
-                      } else if (!user['lastActivityDate']?.seconds && this.examenInicial && test.length === 0 && user['lastViewDate']) {
-                        activityStatus = 'Sin diagnostico completado';
-                        groupedLastActivity ='Más de 30 días'
-                        // actStatus.push(activityStatus)
-                      } else if (!user['lastActivityDate']?.seconds && this.examenInicial && test.length > 0) {
-                        activityStatus = 'Sin clases vistas';
-                        groupedLastActivity ='Más de 30 días'
-                        // actStatus.push(activityStatus)
+                      } else {
+                        lastActivityText = 'Más de 30 días';
                       }
-  
-                      user['groupedLastActivity'] = groupedLastActivity
-                      user['activityStatusText'] = activityStatus
-                      user['lastActivity'] =  user['lastActivity']?user['lastActivity']:null
-  
-                      
-                      const userRef = this.userService.getUserRefById(user.uid);
-                      const studyPlan: CourseByStudent[] =
-                        await this.courseService.getActiveCoursesByStudent(userRef);
-                        studyPlan.forEach(course => {
-                          const courseJson = this.courses.find(item => item.id === course.courseRef.id);
-                          // console.log('cursosRevisarPlan',this.courses,courseJson)
-                          if (courseJson) {
-                            course.courseTime = courseJson.duracion
-                          }
-                        });
-                      const userPerformance:
-                        | "no plan"
-                        | "high"
-                        | "medium"
-                        | "low"
-                        | "no iniciado" =
-                        this.userService.getPerformanceWithDetails(studyPlan);
-                        user.performance = userPerformance,
-                        user['studyPlan'] = studyPlan
-                        // console.log('studyPlanReporteUser',user,userPerformance)
-                      performances.push(userPerformance);
-                      user['ready'] = true
+                    } else if (!user['lastActivityDate']?.seconds && this.examenInicial && test.length === 0 && user['lastViewDate']) {
+                      activityStatus = 'Sin diagnostico completado';
+                      groupedLastActivity ='Más de 30 días'
+                      // actStatus.push(activityStatus)
+                    } else if (!user['lastActivityDate']?.seconds && this.examenInicial && test.length > 0) {
+                      activityStatus = 'Sin clases vistas';
+                      groupedLastActivity ='Más de 30 días'
+                      // actStatus.push(activityStatus)
                     }
+
+                    user['groupedLastActivity'] = groupedLastActivity
+                    user['activityStatusText'] = activityStatus
+                    user['lastActivity'] =  user['lastActivity']?user['lastActivity']:null
+
+                    
+                    const userRef = this.userService.getUserRefById(user.uid);
+                    const studyPlan: CourseByStudent[] =
+                      await this.courseService.getActiveCoursesByStudent(userRef);
+                      studyPlan.forEach(course => {
+                        const courseJson = this.courses.find(item => item.id === course.courseRef.id);
+                        // console.log('cursosRevisarPlan',this.courses,courseJson)
+                        if (courseJson) {
+                          course.courseTime = courseJson.duracion
+                        }
+                      });
+                    const userPerformance:
+                      | "no plan"
+                      | "high"
+                      | "medium"
+                      | "low"
+                      | "no iniciado" =
+                      this.userService.getPerformanceWithDetails(studyPlan);
+                      user.performance = userPerformance,
+                      user['studyPlan'] = studyPlan
+                      // console.log('studyPlanReporteUser',user,userPerformance)
+                    performances.push(userPerformance);
+                    // user['ready'] = true
+                    
                   }
                   this.users = users
-                  console.log('this.users',this.users)
+                  console.log('this.users',this.users,performances)
                   this.getUsersRythmData(performances);
                 }
               }

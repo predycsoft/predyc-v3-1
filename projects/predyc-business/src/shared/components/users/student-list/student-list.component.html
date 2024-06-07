@@ -224,7 +224,7 @@
                 </div>
                 <div matTooltip="No ha presentado la prueba diagnóstica" *ngIf="user.rhythm === 'no iniciado' && user.test.length==0 && this.examenInicial" class="chip backGray3 "  fxLayout="row" fxLayoutAlign="center center" style="background-color: #ff999961;">
                     <!-- <img [src]="icon.warning" alt="" class="pdl03 pdr03" > -->
-                    <span *ngIf="user" class="ft13 nowrap ft500 gray-8">Sin Diagnostico</span>
+                    <span *ngIf="user" class="ft13 nowrap ft500 gray-8">Sin diagnóstico</span>
                 </div>
                 <div *ngIf="user.rhythm === 'no iniciado' && (user.test.length>0 || !this.examenInicial) "  class="chip backGray3 "   fxLayout="row" fxLayoutAlign="center center">
                     <!-- <img [src]="icon.warning" alt="" class="pdl03 pdr03" > -->
@@ -327,14 +327,24 @@
             <span class="pdl05">No iniciado</span>
         </div>
         <div
-        mat-menu-item
-        class="opcionMenu"
-        fxLayout="row"
-        fxLayoutAlign=" center"
-        (click)="search('ritmo','no plan')"
-        [ngClass]=" ritmoFilter == 'no plan' ? 'backGray2 green-5 ft500' : 'gray-10'">
-        <span class="pdl05">Sin plan</span>
-    </div>
+            *ngIf="examenInicial"
+            mat-menu-item
+            class="opcionMenu"
+            fxLayout="row"
+            fxLayoutAlign=" center"
+            (click)="search('ritmo','sin diagnóstico')"
+            [ngClass]=" ritmoFilter == 'sin diagnóstico' ? 'backGray2 green-5 ft500' : 'gray-10'">
+            <span class="pdl05">Sin diagnóstico</span>
+        </div>
+        <div
+            mat-menu-item
+            class="opcionMenu"
+            fxLayout="row"
+            fxLayoutAlign=" center"
+            (click)="search('ritmo','no plan')"
+            [ngClass]=" ritmoFilter == 'no plan' ? 'backGray2 green-5 ft500' : 'gray-10'">
+            <span class="pdl05">Sin plan</span>
+        </div>
     </div>
 </mat-menu>
 

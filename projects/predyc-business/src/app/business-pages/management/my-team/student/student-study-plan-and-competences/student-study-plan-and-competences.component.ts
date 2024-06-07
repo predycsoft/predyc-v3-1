@@ -248,6 +248,34 @@ export class StudentStudyPlanAndCompetencesComponent {
 
   diagnosticTestSubscription: Subscription;
   diagnosticTest;
+  diagnosticTestoriginal;
+
+
+
+  async duplicateTestInit(idUser = null){
+
+    if(this.diagnosticTestoriginal && this.diagnosticTestoriginal.length>=0){
+      console.log('diagnosticTestoriginal',this.diagnosticTestoriginal)
+      let test = this.diagnosticTestoriginal[0]
+      test.userRef = this.afs.collection<any>('user').doc(idUser).ref;
+      test.createByAdmin = true;
+      console.log('testDuplicate',test)
+
+      try {
+        //console.log('certificate add',certificate)
+        const ref = this.afs.collection<any>('profileTestsByStudent').doc().ref;
+        await ref.set({...test, id: ref.id}, { merge: true });
+        test.id = ref.id;
+        console.log('NewTest',test,ref.id)
+      } catch (error) {
+        //console.log(error)
+      }
+
+    }
+
+
+
+  }
 
   getDiagnosticTestForProfile() {
     if (this.diagnosticTestSubscription)
@@ -257,8 +285,10 @@ export class StudentStudyPlanAndCompetencesComponent {
       .subscribe((diagnosticTests) => {
         console.log('diagnosticTests',diagnosticTests)
         if (diagnosticTests.length === 0) return;
+        this.diagnosticTestoriginal = diagnosticTests
 
         let diagnosticTest
+
 
         let certificationTest = diagnosticTests.find(x=>x.diagnosticTests)
 
@@ -280,6 +310,8 @@ export class StudentStudyPlanAndCompetencesComponent {
           ...diagnosticTest,
           date: firestoreTimestampToNumberTimestamp(diagnosticTest.date),
         };
+
+        console.log('this.diagnosticTest ',this.diagnosticTest )
 
       });
   }

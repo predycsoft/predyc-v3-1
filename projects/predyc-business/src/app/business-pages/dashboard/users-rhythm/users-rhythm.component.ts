@@ -48,6 +48,10 @@ export class UsersRhythmComponent {
 
 
   chartExample() {
+    console.log('this.chartData',this.chartData)
+    if (this.chart) {
+      this.chart.destroy();
+    }
     this.chartData = [];
     this.chartData.push(this.highPercentage);
     this.chartData.push(this.mediumPercentage);
@@ -61,6 +65,7 @@ export class UsersRhythmComponent {
     this.chartDatalabels.push('Sin asignaciones');
   
     this.ctx = document.getElementById('myChart');
+    console.log('this.chartData',this.chartData)
     this.config = {
       type: 'doughnut',
       data: {

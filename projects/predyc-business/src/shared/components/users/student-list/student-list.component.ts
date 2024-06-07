@@ -286,7 +286,7 @@ export class StudentListComponent {
 
           if(sort.value == 'up'){
 
-            const activityOrder = ['Sin inicio sesión', 'Sin diagnostico completado', 'Sin clases vistas'];
+            const activityOrder = ['Sin inicio sesión', 'Sin diagnóstico completado', 'Sin clases vistas'];
             users = users.sort((a, b) => {
               const activityStatusA = a.activityStatusText || '';
               const activityStatusB = b.activityStatusText || '';
@@ -318,7 +318,7 @@ export class StudentListComponent {
           }
           else if(sort.value == 'down'){
 
-            const activityOrder = ['Sin clases vistas', 'Sin diagnostico completado', 'Sin inicio sesión'];
+            const activityOrder = ['Sin clases vistas', 'Sin diagnóstico completado', 'Sin inicio sesión'];
     
             users = users.sort((a, b) => {
               const dateA = a.lastActivityDate || 0;
@@ -377,7 +377,13 @@ export class StudentListComponent {
     }
 
     if(ritmoFilter){
-      users = users.filter(x=>x.rhythm == ritmoFilter)
+      if(ritmoFilter == 'sin diagnóstico'){
+        users = users.filter(user=> user.rhythm === 'no iniciado' && user.test.length==0)
+      }
+      else{
+        users = users.filter(x=>x.rhythm == ritmoFilter)
+
+      }
     }
     if(departmentFilter){
       users = users.filter(x=>x['idDepartment'] == departmentFilter)
@@ -385,7 +391,25 @@ export class StudentListComponent {
 
     if(filtroUltimaActividad){
 
-      if(filtroUltimaActividad =='Menos de 15 días' || filtroUltimaActividad =='Más de 30 días'){
+      if (filtroUltimaActividad == 'Sin inicio y sin diagnóstico') {
+        const activityOrder = ['Sin inicio sesión', 'Sin diagnóstico completado'];
+        users = users.filter(x => activityOrder.includes(x.activityStatusText));
+      }
+
+      else if (filtroUltimaActividad == 'Sin inicio y sin clases vistas') {
+        const activityOrder = ['Sin inicio sesión', 'Sin clases vistas'];
+        users = users.filter(x => activityOrder.includes(x.activityStatusText));
+      }
+
+      else if (filtroUltimaActividad == 'Sin inicio, sin diagnóstico y sin clases vistas') {
+        const activityOrder = ['Sin inicio sesión', 'Sin diagnóstico completado', 'Sin clases vistas'];
+        users = users.filter(x => activityOrder.includes(x.activityStatusText));
+      }
+      else if(filtroUltimaActividad =='Entre 15 y 30 días'){
+        users = users.filter(x=>x.groupedLastActivityRange == filtroUltimaActividad)
+      }
+
+      else if(filtroUltimaActividad =='Menos de 15 días' || filtroUltimaActividad =='Más de 30 días'){
         users = users.filter(x=>x.groupedLastActivity == filtroUltimaActividad)
 
       }
@@ -535,7 +559,10 @@ export class StudentListComponent {
         let dateLastActivity = null
         let lastActivityText: string;
 
-        let groupedLastActivity ='Más de 30 días'
+        let groupedLastActivity = null
+
+        let groupedLastActivityRange = null
+
 
         // Determinar el estado de la actividad
         let activityStatus = 'Sin inicio sesión';
@@ -551,6 +578,10 @@ export class StudentListComponent {
           let diffTime = Math.abs(today.getTime() - date.getTime());
           let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Diferencia en días
 
+          if(diffDays >= 15 && diffDays <= 30){
+            groupedLastActivityRange ='Entre 15 y 30 días'
+          }
+
           if(diffDays <= 15){
             groupedLastActivity ='Menos de 15 días'
           }
@@ -560,8 +591,6 @@ export class StudentListComponent {
           else{
             groupedLastActivity ='Más de 30 días'
           }
-
-  
         
           if (diffDays === 0) {
             lastActivityText = 'Hoy';
@@ -576,16 +605,20 @@ export class StudentListComponent {
             lastActivityText = 'Más de 30 días';
           }
         } else if (!user['lastActivityDate']?.seconds && this.examenInicial && test.length === 0 && user['lastViewDate']) {
-          activityStatus = 'Sin diagnostico completado';
-          groupedLastActivity ='Más de 30 días'
+          activityStatus = 'Sin diagnóstico completado';
+          //groupedLastActivity ='Más de 30 días'
           actStatus.push(activityStatus)
         } else if (!user['lastActivityDate']?.seconds && this.examenInicial && test.length > 0) {
           activityStatus = 'Sin clases vistas';
-          groupedLastActivity ='Más de 30 días'
+          //groupedLastActivity ='Más de 30 días'
           actStatus.push(activityStatus)
         }  
         //console.log('cursos revisar',courses)      
-        groupedLastActivityArray.push(groupedLastActivity)
+        if(groupedLastActivityRange){
+          groupedLastActivityArray.push(groupedLastActivityRange)
+
+        }
+        if(groupedLastActivity) groupedLastActivityArray.push(groupedLastActivity)
 
         console.log('RevisarDatosUser',user,groupedLastActivity)
 
@@ -595,6 +628,7 @@ export class StudentListComponent {
           idDepartment: user.departmentRef?.id,
           idProfile:user.profile?.id,
           hours,
+          groupedLastActivityRange:groupedLastActivityRange,
           lastActivityText,
           mail:user.email,
           groupedLastActivity:groupedLastActivity,
@@ -625,6 +659,15 @@ export class StudentListComponent {
 
       const arrayactStatus = this.removeDuplicates(actStatus);
       this.actStatus = arrayactStatus
+      if(this.examenInicial){
+        groupedLastActivityArray.push('Sin inicio y sin diagnóstico')
+        groupedLastActivityArray.push('Sin inicio, sin diagnóstico y sin clases vistas')
+      }
+      else{
+        // groupedLastActivityArray.push('Sin inicio y sin diagnóstico')
+        groupedLastActivityArray.push('Sin inicio y sin clases vistas')
+      }
+
       console.log('groupedLastActivityArray',groupedLastActivityArray)
       const groupedLastActivityArrayUnique = this.removeDuplicates(groupedLastActivityArray);
       this.actStatusDaus = groupedLastActivityArrayUnique
@@ -658,7 +701,24 @@ export class StudentListComponent {
 
       if(filtroUltimaActividad){
 
-        if(filtroUltimaActividad =='Menos de 15 días' || filtroUltimaActividad =='Más de 30 días'){
+        if (filtroUltimaActividad == 'Sin inicio y sin diagnóstico') {
+          const activityOrder = ['Sin inicio sesión', 'Sin diagnóstico completado'];
+          users = users.filter(x => activityOrder.includes(x.activityStatusText));
+        }
+
+        else if (filtroUltimaActividad == 'Sin inicio y sin clases vistas') {
+          const activityOrder = ['Sin inicio sesión', 'Sin clases vistas'];
+          users = users.filter(x => activityOrder.includes(x.activityStatusText));
+        }
+
+        else if (filtroUltimaActividad == 'Sin inicio, sin diagnóstico y sin clases vistas') {
+          const activityOrder = ['Sin inicio sesión', 'Sin diagnóstico completado', 'Sin clases vistas'];
+          users = users.filter(x => activityOrder.includes(x.activityStatusText));
+        }
+        else if(filtroUltimaActividad =='Entre 15 y 30 días'){
+          users = users.filter(x=>x.groupedLastActivityRange == filtroUltimaActividad)
+        }
+        else if(filtroUltimaActividad =='Menos de 15 días' || filtroUltimaActividad =='Más de 30 días'){
           users = users.filter(x=>x.groupedLastActivity == filtroUltimaActividad)
   
         }
@@ -678,7 +738,13 @@ export class StudentListComponent {
   
   
       if(ritmoFilter){
-        users = users.filter(x=>x.rhythm == ritmoFilter)
+        if(ritmoFilter == 'sin diagnóstico'){
+          users = users.filter(user=> user.rhythm === 'no iniciado' && user.test.length==0)
+        }
+        else{
+          users = users.filter(x=>x.rhythm == ritmoFilter)
+  
+        }
       }
       if(departmentFilter){
         users = users.filter(x=>x.idDepartment == departmentFilter)
