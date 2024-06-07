@@ -79,7 +79,7 @@ export class UsersUsageComponent {
         
         // this.textoDiasMasUso = `Los ${dia1Order} y ${dia2Order} son los días en donde tu equipo más avanza`;
         this.textoDiasMasUsoDetail = `${dia1Order} y ${dia2Order}`
-        this.textoDiasMasUso = `son los días en donde tu equipo más avanza`;
+        this.textoDiasMasUso = `son los días en donde tu equipo más avanza en los cursos`;
 
 
       }
@@ -90,7 +90,7 @@ export class UsersUsageComponent {
         }
         // this.textoDiasMasUso = `Los ${dia} es el día en donde tu equipo más avanza`
         this.textoDiasMasUsoDetail = `${dia}`
-        this.textoDiasMasUso = `es el día en donde tu equipo más avanza`
+        this.textoDiasMasUso = `es el día en donde tu equipo más en los cursos`
 
       }
     }
