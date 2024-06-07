@@ -3,6 +3,7 @@ import { AngularFireFunctions } from '@angular/fire/compat/functions';
 import { AlertsService } from 'projects/predyc-business/src/shared/services/alerts.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import { LiveCourseService } from 'projects/predyc-business/src/shared/services/live-course.service';
+import { LiveCourse } from 'projects/shared/models/live-course.model';
 import { Subscription, firstValueFrom } from 'rxjs';
 
 @Component({
@@ -21,7 +22,7 @@ export class LiveCourseFollowingComponent {
 
   @Input() studentEmails: string[] = [];
   @Input() idBaseLiveCourse: string
-	@Input() idLiveCourseSon: string
+	@Input() liveCourseId: string
 
   emailLastDate: string
   emailSent: boolean
@@ -29,67 +30,68 @@ export class LiveCourseFollowingComponent {
 
   liveCourseServiceSubscription: Subscription
 
-	// ************************************************* UNCOMMENT FROM HERE
+  liveCourse: LiveCourse
 
+  ngOnInit() {
+    this.emailSent = false
 
-  // ngOnInit() {
-  //   this.emailSent = false
+    this.liveCourseService.getLiveCourseById$(this.liveCourseId).subscribe(liveCourse => {
+      if (liveCourse) {
+        this.liveCourse = liveCourse
+        // console.log("liveCourseSon.emailLastDate", liveCourseSon.emailLastDate)
+        this.emailLastDate = this.convertTimestampToDatetimeLocalString(liveCourse.emailLastDate)
+      }
+    })
+  }
 
-  //   this.liveCourseService.getLiveCourseSonById$(this.idBaseLiveCourse, this.idLiveCourseSon).subscribe(liveCourseSon => {
-  //     if (liveCourseSon) {
-  //       // console.log("liveCourseSon.emailLastDate", liveCourseSon.emailLastDate)
-  //       this.emailLastDate = this.convertTimestampToDatetimeLocalString(liveCourseSon.emailLastDate)
-  //     }
-  //   })
-  // }
+  async onSubmit() {
+    // console.log("this.studentEmails", this.studentEmails)
 
-  // async onSubmit() {
-  //   let sender = "desarrollo@predyc.com"
-  //   // let recipients = this.studentEmails
-  //   let recipients = ["diegonegrette42@gmail.com"]
-  //   let subject = "Aviso de curso en vivo."
-  //   let text = this.emailContent
+    let sender = "desarrollo@predyc.com"
+    let recipients = this.studentEmails
+    // let recipients = ["diegonegrette42@gmail.com"]
+    let subject = `Aviso del curso en vivo ${this.liveCourse.title}`
+    let text = this.emailContent
 
-  //   try {
-  //     this.emailSent = true
+    try {
+      this.emailSent = true
 
-  //     await firstValueFrom(this.fireFunctions.httpsCallable('sendLiveCourseEmail')({
-  //       sender: sender,
-  //       recipients: recipients,
-  //       subject: subject,
-  //       text: text,
-  //       liveCourseId: this.idBaseLiveCourse,
-  //       liveCourseSonId: this.idLiveCourseSon,
-  //     }));
+      await firstValueFrom(this.fireFunctions.httpsCallable('sendLiveCourseEmail')({
+        sender: sender,
+        recipients: recipients,
+        subject: subject,
+        text: text,
+        liveCourseId: this.idBaseLiveCourse,
+      }));
 
-  //     this.emailContent = ""
-  //     console.log("Email enviado")
-  //   } catch (error) {
-  //     console.log("error", error)
-  //     this.emailSent = true
-  //     this.emailContent = ""
-  //     this.alertService.errorAlert("")
-  //   }
-  // }
+      this.emailContent = ""
+      console.log("Email enviado")
+    } catch (error) {
+      console.log("error", error)
+      this.emailSent = true
+      this.emailContent = ""
+      this.alertService.errorAlert("")
+    }
+  }
 
   
-  // convertTimestampToDatetimeLocalString(timestamp: any): string {
-  //   if (!timestamp) return '';
-  //   const date = new Date(timestamp.seconds * 1000);
+  convertTimestampToDatetimeLocalString(timestamp: any): string {
+    if (!timestamp) return '';
+    const date = new Date(timestamp.seconds * 1000);
   
-  //   // Get the local time components
-  //   const year = date.getFullYear();
-  //   const month = (date.getMonth() + 1).toString().padStart(2, '0');
-  //   const day = date.getDate().toString().padStart(2, '0');
-  //   const hours = date.getHours().toString().padStart(2, '0');
-  //   const minutes = date.getMinutes().toString().padStart(2, '0');
+    // Get the local time components
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
   
-  //   // Format the local datetime string in the format required by input[type="datetime-local"]
-  //   return `${year}-${month}-${day}T${hours}:${minutes}`;
-  // }
+    // Format the local datetime string in the format required by input[type="datetime-local"]
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  }
 
-  // ngOnDestroy() {
-  //   if (this.liveCourseServiceSubscription) this.liveCourseServiceSubscription.unsubscribe()
-  // }
+  ngOnDestroy() {
+    if (this.liveCourseServiceSubscription) this.liveCourseServiceSubscription.unsubscribe()
+  }
 
 }

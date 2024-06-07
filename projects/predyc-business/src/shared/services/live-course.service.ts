@@ -15,24 +15,24 @@ export class LiveCourseService {
     private afs: AngularFirestore,
   ) { }
 
-  // getLiveCourseSonById$(liveCourseId: string, liveCourseSonId: string): Observable<LiveCourseSon> {
-  //   return this.afs.collection<LiveCourse>(LiveCourse.collection).doc(liveCourseId).collection<LiveCourseSon>(LiveCourseSon.subCollection).doc(liveCourseSonId).valueChanges()
-  // }
+  getLiveCourseById$(liveCourseId: string): Observable<LiveCourse> {
+    return this.afs.collection<LiveCourse>(LiveCourse.collection).doc(liveCourseId).valueChanges()
+  }
 
-  // getLiveCoursesByStudentByLivecourseSon$(liveCourseSonRef: DocumentReference<LiveCourseSon>): Observable<LiveCourseByStudent[]> {
-  //   return this.afs.collection<LiveCourseByStudent>(LiveCourseByStudent.collection, (ref) =>ref.where("liveCourseSonRef", "==", liveCourseSonRef)).valueChanges();
-  // }
+  getLiveCoursesByStudentByLivecourseSon$(liveCourseRef: DocumentReference<LiveCourse>): Observable<LiveCourseByStudent[]> {
+    return this.afs.collection<LiveCourseByStudent>(LiveCourseByStudent.collection, (ref) =>ref.where("liveCourseRef", "==", liveCourseRef)).valueChanges();
+  }
 
-  // async createLiveCourseByStudent(liveCourseByStudent: LiveCourseByStudent): Promise<void> {
-  //   const liveCourseByStudentRef = this.afs.collection<LiveCourseByStudent>(LiveCourseByStudent.collection).doc().ref;
-	// 	await liveCourseByStudentRef.set({...liveCourseByStudent.toJson(), id: liveCourseByStudentRef.id}, { merge: true });
-  // }
+  async createLiveCourseByStudent(liveCourseByStudent: LiveCourseByStudent): Promise<void> {
+    const liveCourseByStudentRef = this.afs.collection<LiveCourseByStudent>(LiveCourseByStudent.collection).doc().ref;
+		await liveCourseByStudentRef.set({...liveCourseByStudent.toJson(), id: liveCourseByStudentRef.id}, { merge: true });
+  }
 
-  // updateIsAttendingLiveCourseByStudent(liveCourseByStudentId: string, isAttending: boolean): Promise<void> {
-  //   return this.afs.collection<LiveCourseByStudent>(LiveCourseByStudent.collection).doc(liveCourseByStudentId).update({
-  //     isAttending: isAttending
-  //   })
-  // }
+  updateIsAttendingLiveCourseByStudent(liveCourseByStudentId: string, isAttending: boolean): Promise<void> {
+    return this.afs.collection<LiveCourseByStudent>(LiveCourseByStudent.collection).doc(liveCourseByStudentId).update({
+      isAttending: isAttending
+    })
+  }
 
   getSessionsTemplatesByLiveCourseTemplateRef$(liveCourseTemplateRef: DocumentReference): Observable<SessionTemplate[]> {
     return this.afs.collection<SessionTemplate>(SessionTemplate.collection, (ref) =>
@@ -45,81 +45,6 @@ export class LiveCourseService {
       ref.where("liveCourseRef", "==", liveCourseRef).orderBy("orderNumber", "asc")
     ).valueChanges();
   }
-
-  // DELETE THIS
-  // getLiveCourseWithSessionsById$(liveCourseTemplateId: string, liveCourseId: string | null): Observable<{ liveCourse: any, sessions: any[] }> {
-  //   const liveCourseRef = this.getLiveCourseTemplateRefById(liveCourseTemplateId);
-  //   let liveCourseSonRef = null;
-  //   if (liveCourseId) liveCourseSonRef = this.getLiveCourseRefById(liveCourseId);
-  
-  //   return this.afs.doc<LiveCourseTemplate>(liveCourseRef).valueChanges().pipe(
-  //     switchMap((liveCourseTemplate: any | undefined) => {
-  //       if (!liveCourseTemplate) {
-  //         throw new Error(`LiveCourseTemplate with id ${liveCourseTemplateId} not found`);
-  //       }
-  
-  //       // When the sons information is wanted
-  //       if (liveCourseId) {
-  //         return this.afs.collection(LiveCourseTemplate.collection).doc(liveCourseTemplateId).collection(LiveCourse.collection).doc(liveCourseId).valueChanges()
-  //         .pipe(
-  //           switchMap((liveCourseSon: LiveCourse | undefined) => {
-  //             // Get "meetingLink" and "identifierText"
-  //             if (liveCourseSon) {
-  //               liveCourseTemplate.meetingLink = liveCourseSon.meetingLink;
-  //               liveCourseTemplate.identifierText = liveCourseSon.identifierText;
-  //               liveCourseTemplate.emailLastDate = liveCourseSon.emailLastDate;
-  //             }  
-
-  //             return this.getSessionsByLiveCourseRef$(liveCourseRef).pipe(
-  //               mergeMap((sessions: any[]) => { // Base sessions
-  //                 const sessionObservables = sessions.map(session => {
-  //                   return this.afs.collection<SessionTemplate>(SessionTemplate.collection).doc(session.id)
-  //                     .collection(SessionSon.subCollection, ref => ref.where("liveCourseSonRef", "==", liveCourseSonRef)).valueChanges().pipe(
-  //                       map(sessionSon => {
-  //                         const sessionSonData = sessionSon[0];
-  //                         session.date = sessionSonData?.date;
-  //                         session.weeksToKeep = sessionSonData?.weeksToKeep;
-  //                         session.sonId = sessionSonData?.id;
-  //                         session.sonFiles = sessionSonData?.sonFiles;
-  //                         session.vimeoId1 = sessionSonData?.vimeoId1;
-  //                         session.vimeoId2 = sessionSonData?.vimeoId2;
-  //                         return session;
-  //                       }),
-  //                       catchError(err => {
-  //                         console.error('Error fetching sessionSon data', err);
-  //                         return of(session); // Continúa incluso si hay un error
-  //                       })
-  //                     );
-  //                 });
-                  
-  //                 return combineLatest(sessionObservables).pipe(
-  //                   map(sessionsWithSons => sessionsWithSons.filter(session => session !== null))
-  //                 );
-  //               }),
-  //               map((sessions: SessionTemplate[]) => ({
-  //                 liveCourseTemplate,
-  //                 sessions
-  //               }))
-  //             );
-  //           })
-  //         );
-  //       } 
-  //       // Just return base live course with base sessions info
-  //       else {
-  //         return this.getSessionsByLiveCourseRef$(liveCourseRef).pipe(
-  //           map((sessions: SessionTemplate[]) => ({
-  //             liveCourseTemplate,
-  //             sessions
-  //           }))
-  //         );
-  //       }
-  //     }),
-  //     catchError(err => {
-  //       console.error('Error in getLiveCourseWithSessionsById$', err);
-  //       throw err;
-  //     })
-  //   );
-  // }
 
   getLiveCourseTemplateWithSessionsTemplateById$(liveCourseTemplateId: string): Observable<{ liveCourseTemplate: LiveCourseTemplate, sessionsTemplates: SessionTemplate[] }> {
     const liveCourseTemplateRef = this.getLiveCourseTemplateRefById(liveCourseTemplateId);
@@ -207,9 +132,14 @@ export class LiveCourseService {
   async saveLiveCourseTemplate(newLiveCourseTemplate: LiveCourseTemplate): Promise<void> {
     try {
       // console.log("test saveCourse", newLiveCourse);
+      let liveCourseTemplateId = newLiveCourseTemplate.id
+      if (!liveCourseTemplateId) {
+        liveCourseTemplateId = (this.afs.collection(LiveCourse.collection).doc().ref).id
+        newLiveCourseTemplate.id = liveCourseTemplateId
+      }
       const dataToSave = typeof newLiveCourseTemplate.toJson === "function" ? newLiveCourseTemplate.toJson() : newLiveCourseTemplate;
 
-      await this.afs.collection(LiveCourseTemplate.collection).doc(newLiveCourseTemplate.id).set(dataToSave, { merge: true });
+      await this.afs.collection(LiveCourseTemplate.collection).doc(liveCourseTemplateId).set(dataToSave, { merge: true });
     } catch (error) {
       throw error;
     }
@@ -219,9 +149,49 @@ export class LiveCourseService {
   async saveSessionTemplate(newSessionTemplate: SessionTemplate): Promise<void> {
     try {
       // console.log("test saveCourse", newSession);
+      let sessionTemplateId = newSessionTemplate.id
+      if (!sessionTemplateId) {
+        sessionTemplateId = (this.afs.collection(Session.collection).doc().ref).id
+        newSessionTemplate.id = sessionTemplateId
+      }
       const dataToSave = typeof newSessionTemplate.toJson === "function" ? newSessionTemplate.toJson() : newSessionTemplate;
 
-      await this.afs.collection(SessionTemplate.collection).doc(newSessionTemplate.id).set(dataToSave, { merge: true });
+      await this.afs.collection(SessionTemplate.collection).doc(sessionTemplateId).set(dataToSave, { merge: true });
+    } catch (error) {
+      throw error;
+    }
+    // console.log("Has agregado una nuevo curso exitosamente.");
+  }
+
+  async saveLiveCourse(newLiveCourse: LiveCourse): Promise<string> {
+    try {
+      // console.log("test saveCourse", newLiveCourse);
+      let liveCourseId = newLiveCourse.id
+      if (!liveCourseId) {
+        liveCourseId = (this.afs.collection(LiveCourse.collection).doc().ref).id
+        newLiveCourse.id = liveCourseId
+      }
+      const dataToSave = typeof newLiveCourse.toJson === "function" ? newLiveCourse.toJson() : newLiveCourse;
+
+      await this.afs.collection(LiveCourse.collection).doc(liveCourseId).set(dataToSave, { merge: true });
+      return liveCourseId
+    } catch (error) {
+      throw error;
+    }
+    // console.log("Has agregado una nuevo curso exitosamente.");
+  }
+
+  async saveSession(newSession: Session): Promise<void> {
+    try {
+      // console.log("test saveCourse", newSessionSon);
+      let sessionId = newSession.id
+      if (!sessionId) {
+        sessionId = (this.afs.collection(Session.collection).doc().ref).id
+        newSession.id = sessionId
+      }
+      const dataToSave = typeof newSession.toJson === "function" ? newSession.toJson() : newSession;
+
+      await this.afs.collection(Session.collection).doc(sessionId).set(dataToSave, { merge: true });
     } catch (error) {
       throw error;
     }
@@ -240,41 +210,6 @@ export class LiveCourseService {
     return this.afs.collection<SessionTemplate>(SessionTemplate.collection).doc(sessionTemplateId).ref
   }
 
-  // getLiveCourseSonRefById(liveCourseId: string, liveCourseSonId: string): DocumentReference<LiveCourseSon> {
-  //   return this.afs.collection<LiveCourse>(LiveCourse.collection).doc(liveCourseId).collection<LiveCourseSon>(LiveCourseSon.subCollection).doc(liveCourseSonId).ref
-  // }
-
-  // // getLiveCourseSonRefById(liveCourseSonId: string): DocumentReference<LiveCourseSon> {
-  // //   return this.afs.collectionGroup<LiveCourseSon>(LiveCourseSon.subCollection).get()
-  // // }
-
-
-  async saveLiveCourse(newLiveCourse: LiveCourseJson): Promise<string> {
-    try {
-      // console.log("test saveCourse", newLiveCourse);
-      const liveCourseId = (this.afs.collection(LiveCourse.collection).doc().ref).id
-      newLiveCourse.id = liveCourseId
-
-      await this.afs.collection(LiveCourse.collection).doc(liveCourseId).set(newLiveCourse, { merge: true });
-      return liveCourseId
-    } catch (error) {
-      throw error;
-    }
-    // console.log("Has agregado una nuevo curso exitosamente.");
-  }
-
-  async saveSession(newSession: SessionJson): Promise<void> {
-    try {
-      // console.log("test saveCourse", newSessionSon);
-      const sessionId = (this.afs.collection(Session.collection).doc().ref).id
-      newSession.id = sessionId
-
-      await this.afs.collection(Session.collection).doc(sessionId).set(newSession, { merge: true });
-    } catch (error) {
-      throw error;
-    }
-    // console.log("Has agregado una nuevo curso exitosamente.");
-  }
 
   // getLiveCourseSonsByLiveCourseId$(liveCourseId: string): Observable<LiveCourseSon[]> {
   //   return this.afs.collection<LiveCourse>(LiveCourse.collection).doc(liveCourseId).collection<LiveCourseSon>(LiveCourseSon.subCollection).valueChanges()

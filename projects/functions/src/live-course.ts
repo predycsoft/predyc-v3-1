@@ -1,6 +1,6 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-// import { LiveCourse } from 'shared';
+import { LiveCourse } from 'shared';
 import { _sendMail } from "./email";
 
 
@@ -17,12 +17,10 @@ export const sendLiveCourseEmail = functions.https.onCall(async (data, _) => {
     // Update emailLastDate value
     const now = new Date();
     const liveCourseId = data.liveCourseId
-    const liveCourseSonId = data.liveCourseSonId
-    // const liveCourseSonRef = db.collection(LiveCourse.collection).doc(liveCourseId).collection(LiveCourseSon.subCollection).doc(liveCourseSonId);
-    const liveCourseSonRef = db.collection("live-course").doc(liveCourseId).collection("live-course-son").doc(liveCourseSonId);
+    const liveCourseSonRef = db.collection(LiveCourse.collection).doc(liveCourseId)
 
     await liveCourseSonRef.update({
-        emailLastDate: now
+      emailLastDate: now
     })
 
     console.log("emailLasDate Updated")

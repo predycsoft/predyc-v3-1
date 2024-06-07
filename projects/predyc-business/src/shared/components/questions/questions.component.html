@@ -11,7 +11,7 @@
                     </div>
                 
                     <!-- Filtro y su ícono a la derecha -->
-                    <div fxLayout="row" fxLayoutAlign="end center" *ngIf="!mode">
+                    <div fxLayout="row" fxLayoutAlign="end center">
                         <img [src]="icon.sortAscending" class="iconButton h32px" alt="" [matMenuTriggerFor]="activityOptions" (click)="$event.stopPropagation()">
                         <span class="gray-8 ft12 pd03 ft600">{{appliedOrder | titlecase}}</span>
                     </div>
@@ -23,7 +23,7 @@
                     <ng-container  *ngIf="!questionStatus[i].editing">
                         <div fxLayout="row" fxLayoutAlign="space-between center" class="fw mgb10 pdb05 border-bl">
                             <!-- Texto "Testing" a la izquierda -->
-                            <div>
+                            <div *ngIf="!mode">
                                 <!-- <span class="gray-8 ft12 pd03 ft600">#{{i+1}}</span> -->
                                 <span class="gray-8 ft12 pd03 ft600">#{{ getClassIdUser(question) }}</span>
                                 <span class="gray-8 ft12 pd03 ft600">{{ getClassName(question) }}</span>
@@ -43,7 +43,7 @@
                                     {{ getQuestionTypeName(question.get('type').value) }}
                                 </div>
                                 <!-- "Editar" -->
-                                <span  *ngIf="type != 'show' && mode !== 'edit' " (click)="questionStatus[i].editing = !questionStatus[i].editing" class="blueLink cursor-pointer">Editar</span>
+                                <span  *ngIf="type != 'show' " (click)="questionStatus[i].editing = !questionStatus[i].editing" class="blueLink cursor-pointer">Editar</span>
                             </div>
                         </div>
                     
@@ -511,7 +511,7 @@
                     </ng-container>
                 </div>
             </ng-container>
-            <div *ngIf="!mode || (mode && mode!== 'edit') && type !='show'" fxLayout="row" fxLayoutAlign="center center" class="fw">
+            <div *ngIf="type !='show'" fxLayout="row" fxLayoutAlign="center center" class="fw">
                 <span (click)="addQuestion()" class="blueLink radius4 ft12 h28px no-select" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                     <img [src]="icon.addNew" class="h12px pdr05 makeBlue" alt="">
                     Agregar pregunta

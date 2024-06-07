@@ -29,6 +29,7 @@
     </div>
         <div class="fh">
             <mat-tab-group mat-stretch-tabs="false" class="swal-overlay pdt35 " (selectedTabChange)="onTabChange($event)" style="z-index: 2; position :fixed;  width: 97%;" >
+
                 <mat-tab label="Contenido del Curso"  style="z-index: 2; position :fixed;" >
                     <ng-container >
                         <div fxLayout="row" class=" " fxLayoutGap=""  style="overflow-y: auto; height: 150% !important; width: 100%; ">
@@ -580,7 +581,7 @@
                                 <span class="ft500 ft14 black " style="margin-top: 5px;">Usuario inscritos</span>
                             </div>
                             <div fxLayout="row" fxLayoutAlign="center" class="w-100">
-                                <app-live-course-student-list class="w-90" [idBaseLiveCourse]="liveCourseTemplateId" [idLiveCourseSon]="liveCourseId" 
+                                <app-live-course-student-list class="w-90" [liveCourseTemplateId]="liveCourseTemplateId" [liveCourseId]="liveCourseId" 
                                 (userEmailsChanged)="onUserEmailsChanged($event)"></app-live-course-student-list>
                             </div>
                         </div>
@@ -595,7 +596,7 @@
                                 <span class="ft500 ft14 black " style="margin-top: 5px;">Enviar correo</span>
                             </div>
                             <div fxLayout="row" fxLayoutAlign="center" class="w-100">
-                                <app-live-course-following class="w-90" [studentEmails]="studentEmails" [idBaseLiveCourse]="liveCourseTemplateId" [idLiveCourseSon]="liveCourseId">
+                                <app-live-course-following class="w-90" [studentEmails]="studentEmails" [idBaseLiveCourse]="liveCourseTemplateId" [liveCourseId]="liveCourseId">
                                 </app-live-course-following>
                             </div>
                         </div>

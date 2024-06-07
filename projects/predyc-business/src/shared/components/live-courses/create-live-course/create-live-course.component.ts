@@ -49,6 +49,7 @@ interface SessionData extends SessionTemplateJson {
   weeksToKeep: number,
   vimeoId1: number,
   vimeoId2: string,
+  sessionTemplateRef: DocumentReference,
   addClassMode: boolean,
   isInvalid: boolean,
   expanded: boolean,
@@ -369,7 +370,7 @@ export class CreateLiveCourseComponent {
         dateFormatted: "",
         date: null,
         liveCourseTemplateRef: {} as DocumentReference,
-        // sessionTemplateRef: {} as DocumentReference,
+        sessionTemplateRef: {} as DocumentReference,
         duration: 0,
         vimeoId1: 0,
         vimeoId2: '',
@@ -391,7 +392,7 @@ export class CreateLiveCourseComponent {
   }
 
   setForm(data) {
-    console.log("liveCourseData in onInit()", data)
+    // console.log("liveCourseData in onInit()", data)
 
     if (this.mode === "edit-base") {
       this.liveCourseData = {
@@ -595,12 +596,12 @@ export class CreateLiveCourseComponent {
   }
 
   getExamCourse(idCourse: string) {
-    console.log('idCourse search activity', idCourse);
+    // console.log('idCourse search activity', idCourse);
     const liveCourseType = this.mode === "edit-base" ? "liveCourseTemplate" : "liveCourse"
     this.activityClassesService.getActivityCoruse(idCourse, liveCourseType).pipe(filter(data=>data!=null),take(1)).subscribe(data => {
       if (data) {
-        console.log('Activity:', data);
-        ////console.log('Questions:', data.questions);
+        // console.log('Activity:', data);
+        //console.log('Questions:', data.questions);
         data.questions.forEach(question => {
           // //console.log('preguntas posibles test',question)
           question.competencias = question.skills
@@ -1208,12 +1209,26 @@ export class CreateLiveCourseComponent {
 
       console.log('this.liveCourseData',this.liveCourseData)
 
-      await this.liveCourseService.saveLiveCourseTemplate(this.LiveCourseDataModelToLiveCourse(this.liveCourseData))
+      let formatedLiveCourseData: LiveCourse | LiveCourseTemplate
+
+      if (this.mode === "edit") {
+        formatedLiveCourseData = this.LiveCourseDataModelToLiveCourse(this.liveCourseData)
+        console.log("formatedLiveCourseData", formatedLiveCourseData)
+        await this.liveCourseService.saveLiveCourse(formatedLiveCourseData as LiveCourse)
+      }
+      else {
+        formatedLiveCourseData = this.LiveCourseDataModelToLiveCourseTemplate(this.liveCourseData)
+        console.log("formatedLiveCourseData as template", formatedLiveCourseData)
+        await this.liveCourseService.saveLiveCourseTemplate(formatedLiveCourseData as LiveCourseTemplate)
+      }
     }
     
     // For "exameness" ... check later
     if (this.examen) {
-      let courseRef = this.liveCourseService.getLiveCourseTemplateRefById(this.liveCourseData.id)
+      let courseRef = null
+      if (this.mode === "edit") courseRef = this.liveCourseService.getLiveCourseRefById(this.liveCourseData.id)
+      else courseRef = this.liveCourseService.getLiveCourseTemplateRefById(this.liveCourseData.id)
+
       let activityClass = new Activity
       // console.log('this.activityClass',activityClass)
       let questions: Question[]= []
@@ -1423,19 +1438,21 @@ export class CreateLiveCourseComponent {
               type: archivo.type,
               url: archivo.url
             }));
-            // localeSession.description = clase.description ? clase.description : null;
             localeSession.duration = clase.duration;
             localeSession.id = clase.id;
-            // localeSession.vimeoId1 = clase.vimeoId1 ? clase.vimeoId1 : null;
-            // localeSession.vimeoId2 = clase.vimeoId2 ? clase.vimeoId2 : null;
             localeSession.type = clase.type;
             localeSession.orderNumber = i+1;
             localeSession.title = clase.tituloTMP ? clase.tituloTMP: clase.title;
             localeSession.liveCourseTemplateRef = this.liveCourseService.getLiveCourseTemplateRefById(this.liveCourseData.id)
+            // localeSession.sessionTemplateRef = this.liveCourseService.getSessionTemplateRefById(this.liveCourseData.id)
+            localeSession.sessionTemplateRef = null
 
-            const sessionTemplateToSave: SessionTemplate = this.SessionDataModelToLiveCourseSession(localeSession)
-            console.log("sessionTemplateToSave", sessionTemplateToSave)
-            await this.liveCourseService.saveSessionTemplate(sessionTemplateToSave);
+            if (this.mode === "edit") await this.liveCourseService.saveSession(this.SessionDataModelToLiveCourseSession(localeSession));
+            else await this.liveCourseService.saveSessionTemplate(this.SessionDataModelToLiveCourseSessionTemplate(localeSession));
+
+            // const sessionTemplateToSave: SessionTemplate = this.SessionDataModelToLiveCourseSessionTemplate(localeSession)
+            // console.log("sessionTemplateToSave", sessionTemplateToSave)
+            // await this.liveCourseService.saveSessionTemplate(sessionTemplateToSave);
 
             
             let refClass = this.liveCourseService.getSessionTemplateRefById(localeSession.id)
@@ -1560,7 +1577,7 @@ export class CreateLiveCourseComponent {
 
   }
 
-  LiveCourseDataModelToLiveCourse(liveCourseData: LiveCourseData) {
+  LiveCourseDataModelToLiveCourseTemplate(liveCourseData: LiveCourseData) {
     return new LiveCourseTemplate(
       liveCourseData.id,
       liveCourseData.companyName,
@@ -1575,7 +1592,26 @@ export class CreateLiveCourseComponent {
     );
   }
 
-  SessionDataModelToLiveCourseSession(sessionData: SessionData) {
+  LiveCourseDataModelToLiveCourse(liveCourseData: LiveCourseData) {
+    return new LiveCourse(
+      liveCourseData.companyName,
+      liveCourseData.description,
+      liveCourseData.duration,
+      liveCourseData.emailLastDate,
+      liveCourseData.id,
+      liveCourseData.identifierText,
+      liveCourseData.instructorRef,
+      this.liveCourseService.getLiveCourseTemplateRefById(this.liveCourseTemplateId),
+      liveCourseData.meetingLink,
+      liveCourseData.photoUrl,
+      liveCourseData.proximamente,
+      liveCourseData.skillsRef,
+      liveCourseData.title,
+      liveCourseData.vimeoFolderId
+    );
+  }
+
+  SessionDataModelToLiveCourseSessionTemplate(sessionData: SessionData) {
     return new SessionTemplate(
       sessionData.id,
       sessionData.title,
@@ -1586,20 +1622,21 @@ export class CreateLiveCourseComponent {
     );
   }
 
-  // SessionDataModelToLiveCourseSession(sessionData: SessionData) {
-  //   return new Session(
-  //     sessionData.id,
-  //     sessionData.title,
-  //     // sessionData.date,
-  //     sessionData.description,
-  //     sessionData.liveCourseRef,
-  //     sessionData.duration,
-  //     // sessionData.vimeoId1,
-  //     // sessionData.vimeoId2,
-  //     sessionData.files,
-  //     sessionData.orderNumber,
-  //   );
-  // }
+  SessionDataModelToLiveCourseSession(sessionData: SessionData) {
+    return new Session(
+      sessionData.date,
+      sessionData.duration,
+      sessionData.files,
+      sessionData.id,
+      this.liveCourseService.getLiveCourseRefById(this.liveCourseId),
+      sessionData.orderNumber,
+      sessionData.title,
+      null,
+      sessionData.vimeoId1,
+      sessionData.vimeoId2,
+      sessionData.weeksToKeep,
+    );
+  }
 
   previousTab(){
     if (this.activeStep > 1) {
@@ -1699,7 +1736,7 @@ export class CreateLiveCourseComponent {
     this.currentTab = 'Contenido del Curso'
     if (event.tab.textLabel === 'Examen') {
       this.currentTab = 'Examen'
-      console.log('El tab Examen fue seleccionado');
+      // console.log('El tab Examen fue seleccionado');
 
       if(!this.examen){
         let exam = new Activity();
@@ -1752,7 +1789,7 @@ export class CreateLiveCourseComponent {
 
   formatExamQuestions(){
 
-    console.log('formatExamQuestions')
+    // console.log('formatExamQuestions')
 
     setTimeout(() => {
       this.updateTriggeQuestionsExam++;
