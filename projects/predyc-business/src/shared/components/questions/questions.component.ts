@@ -129,7 +129,7 @@ export class QuestionsComponent {
 
   submitForm(): void {
     this.displayErrors= false
-    console.log('Form Data:', this.mainForm);
+    // console.log('Form Data:', this.mainForm);
 
     this.emmitForm.emit(this.mainForm);
 

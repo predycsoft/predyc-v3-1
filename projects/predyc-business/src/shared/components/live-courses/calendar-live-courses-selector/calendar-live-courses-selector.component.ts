@@ -48,7 +48,7 @@ export class CalendarLiveCoursesSelectorComponent implements OnInit {
       return groups;
     }, {});
 
-    console.log("this.groupedCourses", this.groupedCourses)
+    // console.log("this.groupedCourses", this.groupedCourses)
   }
 
   keyvalueAscOrder = (a: KeyValue<string, CalendarLiveCourseData[]>, b: KeyValue<string, CalendarLiveCourseData[]>) => {
@@ -60,7 +60,7 @@ export class CalendarLiveCoursesSelectorComponent implements OnInit {
   }
 
   onSelectCourse(selectedCourse: CalendarLiveCourseData) {
-    console.log("selectedCourse", selectedCourse)
+    // console.log("selectedCourse", selectedCourse)
     this.router.navigate([`/management/live-sessions/${selectedCourse.courseId}/${selectedCourse.courseId}`])
 
   }

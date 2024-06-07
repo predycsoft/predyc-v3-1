@@ -392,7 +392,7 @@ export class CreateLiveCourseComponent {
   }
 
   setForm(data) {
-    console.log("liveCourseData in onInit()", data)
+    // console.log("liveCourseData in onInit()", data)
 
     if (this.mode === "edit-base") {
       this.liveCourseData = {
@@ -1736,7 +1736,7 @@ export class CreateLiveCourseComponent {
     this.currentTab = 'Contenido del Curso'
     if (event.tab.textLabel === 'Examen') {
       this.currentTab = 'Examen'
-      console.log('El tab Examen fue seleccionado');
+      // console.log('El tab Examen fue seleccionado');
 
       if(!this.examen){
         let exam = new Activity();
@@ -1789,7 +1789,7 @@ export class CreateLiveCourseComponent {
 
   formatExamQuestions(){
 
-    console.log('formatExamQuestions')
+    // console.log('formatExamQuestions')
 
     setTimeout(() => {
       this.updateTriggeQuestionsExam++;

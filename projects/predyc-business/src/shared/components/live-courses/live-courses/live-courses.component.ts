@@ -128,7 +128,7 @@ export class LiveCoursesComponent {
           sessions: x.sessionsTemplates
         }
       })
-      console.log('courses',courses)
+      // console.log('courses',courses)
 
       // For "Lista Cursos"
       courses.forEach(course => {
@@ -169,7 +169,7 @@ export class LiveCoursesComponent {
 
       // For Calendario (Observables)
       this.liveCourseService.getAllLiveCoursesWithSessions$().subscribe((livecoursesWithSessions) => {
-        console.log(`livecoursesWithSessions`, livecoursesWithSessions)
+        // console.log(`livecoursesWithSessions`, livecoursesWithSessions)
         let newCalendarLiveCourses: CalendarLiveCourseData[] = [];
         livecoursesWithSessions.forEach(({ liveCourse, sessions}) => {
           sessions.forEach(session => {
@@ -189,7 +189,7 @@ export class LiveCoursesComponent {
             newCalendarLiveCourses.push(calendarLiveCourseData);
           });
           this.calendarLiveCourses = newCalendarLiveCourses.sort((a, b) => a.sessionDate - b.sessionDate);
-          console.log("calendarLiveCourses in live-course component", this.calendarLiveCourses);
+          // console.log("calendarLiveCourses in live-course component", this.calendarLiveCourses);
         });
       });
 
