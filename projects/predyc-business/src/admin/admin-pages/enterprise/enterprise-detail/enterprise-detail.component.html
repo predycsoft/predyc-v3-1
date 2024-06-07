@@ -18,6 +18,12 @@
                 <span class="chip  pd05 radius20">{{enterpriseId }}</span>
             </div>
         </div>
+        <div  *ngIf="enterpriseId" fxLayout="row" fxLayoutGap="4.5rem" fxLayoutAlign=" center" class="mgt05">
+            <span class="">Acciones: </span>
+            <div *ngIf="enterprise" >
+                <span class="chip  pd05 radius20 cursorPointer">Procesar datos de uso</span>
+            </div>
+        </div>
     </div>
     
     <div class="mgl20 mgr20">

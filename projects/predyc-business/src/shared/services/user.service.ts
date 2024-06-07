@@ -43,6 +43,7 @@ export class UserService {
   ) {
     //this.fixUsersEmpresasLastActivity();
     console.log("Se instancio el user service");
+    //this.normalizeProfileTestsByStudent()
     //this.generateCourseCompletionReport(this.afs)
     this.enterpriseService.enterpriseLoaded$.subscribe((enterpriseIsLoaded) => {
       if (enterpriseIsLoaded) {
@@ -421,6 +422,44 @@ export class UserService {
   
     console.log('fin fixUsersLastActivity');
   }
+
+  async normalizeProfileTestsByStudent() {
+    console.log('Normalization start');
+
+    try {
+      const profileTestsByStudentRef = this.afs.collection('profileTestsByStudent').ref;
+      const batch = this.afs.firestore.batch();
+  
+      // Obtener todos los documentos de profileTestsByStudent
+      const profileTestsSnapshot = await profileTestsByStudentRef.get();
+      
+      for (const doc of profileTestsSnapshot.docs) {
+        const profileTestData = doc.data();
+        // Verificar si el campo enterpriseRef no existe o es null
+        if (!profileTestData['enterpriseRef']) {
+          const userRef = profileTestData['userRef']; // userRef es el DocumentReference del usuario
+          const userDoc = await userRef.get();
+          
+          if (userDoc.exists) {
+            const userData = userDoc.data();
+            const enterpriseRef = userData.enterprise;
+            
+            if (enterpriseRef) {
+              batch.update(doc.ref, { enterpriseRef: enterpriseRef });
+            }
+          }
+        }
+      }
+      
+      await batch.commit();
+      console.log('Normalization completed successfully');
+    } catch (error) {
+      console.error('Error normalizing profileTestsByStudent:', error);
+    }
+  }
+  
+  
+  
 
   async addUser(newUser: User): Promise<void> {
     // console.log(newUser.name);
@@ -819,6 +858,7 @@ export class UserService {
   getPerformanceWithDetails(
     userStudyPlan
   ): "no plan" | "high" | "medium" | "low" | "no iniciado" {
+    
 
     const today = new Date().getTime();
 
@@ -859,6 +899,7 @@ export class UserService {
 
 
     let performance: "no plan" | "high" | "medium" | "low" | "no iniciado";
+
     
 
     let validator = userStudyPlan.find((x) => x.progressTime > 0);
@@ -873,6 +914,10 @@ export class UserService {
     } else {
       performance = "low";
     }
+
+
+    console.log('datos ritmo',performance,userStudyPlan)
+
 
 
     return performance;

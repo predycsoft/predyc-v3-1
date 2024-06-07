@@ -1,4 +1,4 @@
-import { Component, Input, SimpleChanges } from "@angular/core";
+import { Component, EventEmitter, Input, Output, SimpleChanges } from "@angular/core";
 import { AngularFirestore, DocumentReference,} from "@angular/fire/compat/firestore";
 import { Chart } from "chart.js";
 import { Subscription, combineLatest } from "rxjs";
@@ -14,7 +14,7 @@ import { IconService } from "projects/predyc-business/src/shared/services/icon.s
 import { ProfileService } from "projects/predyc-business/src/shared/services/profile.service";
 import { SkillService } from "projects/predyc-business/src/shared/services/skill.service";
 import { UserService } from "projects/predyc-business/src/shared/services/user.service";
-import { firestoreTimestampToNumberTimestamp } from "projects/shared/utils";
+import { firestoreTimestampToNumberTimestamp,obtenerUltimoDiaDelMes,obtenerUltimoDiaDelMesAnterior } from "projects/shared/utils";
 import annotationPlugin from "chartjs-plugin-annotation";
 import { AlertsService } from "projects/predyc-business/src/shared/services/alerts.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
@@ -59,6 +59,13 @@ export class StudentStudyPlanAndCompetencesComponent {
 
   @Input() student: UserJson;
   @Input() selectedProfile: Profile;
+
+  @Output() coursesStudent = new EventEmitter<any[]>()
+  @Output() userRitmo = new EventEmitter<any>()
+  @Output() copletacion = new EventEmitter<any>()
+
+
+
 
   coursesData: any;
 
@@ -126,6 +133,32 @@ export class StudentStudyPlanAndCompetencesComponent {
             if(this.coursesByStudent.length>0){
               this.studyPlanView = this.showInitForm ? false : true;
               console.log('datos revisar',coursesByStudent,coursesData)
+              coursesByStudent.forEach(course => {
+                const courseJson = this.coursesData.find(item => item.id === course.courseRef.id);
+                if (courseJson) {
+                  course.courseTime = courseJson.duracion
+                }
+              });
+              const today = new Date().getTime();
+
+              let cursosTarde = []
+
+              let targetComparisonDate = today;
+              let lastDayPast = obtenerUltimoDiaDelMesAnterior(targetComparisonDate)
+
+
+              let userStudyPlanUntilLastMonth = coursesByStudent.filter(x=>x.dateEndPlan  && (x.dateEndPlan?.seconds*1000)<=lastDayPast)
+              cursosTarde = userStudyPlanUntilLastMonth.filter(x=>x.progress<100)
+
+              console.log('cursosTarde',cursosTarde)
+
+
+              let ritmo =this.student.status =='active'? this.userService.getPerformanceWithDetails(coursesByStudent):'SinLicencia'
+              let ritmoObj = {
+                ritmo:ritmo,
+                retrasados:cursosTarde
+              }
+              this.userRitmo.emit(ritmoObj);
               this.buildMonths(this.coursesByStudent, coursesData);
             }
             // Extra courses case
@@ -215,6 +248,34 @@ export class StudentStudyPlanAndCompetencesComponent {
 
   diagnosticTestSubscription: Subscription;
   diagnosticTest;
+  diagnosticTestoriginal;
+
+
+
+  async duplicateTestInit(idUser = null){
+
+    if(this.diagnosticTestoriginal && this.diagnosticTestoriginal.length>=0){
+      console.log('diagnosticTestoriginal',this.diagnosticTestoriginal)
+      let test = this.diagnosticTestoriginal[0]
+      test.userRef = this.afs.collection<any>('user').doc(idUser).ref;
+      test.createByAdmin = true;
+      console.log('testDuplicate',test)
+
+      try {
+        //console.log('certificate add',certificate)
+        const ref = this.afs.collection<any>('profileTestsByStudent').doc().ref;
+        await ref.set({...test, id: ref.id}, { merge: true });
+        test.id = ref.id;
+        console.log('NewTest',test,ref.id)
+      } catch (error) {
+        //console.log(error)
+      }
+
+    }
+
+
+
+  }
 
   getDiagnosticTestForProfile() {
     if (this.diagnosticTestSubscription)
@@ -222,9 +283,12 @@ export class StudentStudyPlanAndCompetencesComponent {
     this.diagnosticTestSubscription = this.profileService
       .getDiagnosticTestForUser$(this.student)
       .subscribe((diagnosticTests) => {
+        console.log('diagnosticTests',diagnosticTests)
         if (diagnosticTests.length === 0) return;
+        this.diagnosticTestoriginal = diagnosticTests
 
         let diagnosticTest
+
 
         let certificationTest = diagnosticTests.find(x=>x.diagnosticTests)
 
@@ -246,6 +310,9 @@ export class StudentStudyPlanAndCompetencesComponent {
           ...diagnosticTest,
           date: firestoreTimestampToNumberTimestamp(diagnosticTest.date),
         };
+
+        console.log('this.diagnosticTest ',this.diagnosticTest )
+
       });
   }
 
@@ -302,6 +369,7 @@ export class StudentStudyPlanAndCompetencesComponent {
   }
 
   buildMonths(coursesByStudent: CourseByStudent[], coursesData) {
+    this.studyPlanDuration = 0;
     const months = {};
     coursesByStudent.forEach((courseByStudent) => {
       // console.log("courseByStudent.id", courseByStudent.id)
@@ -604,9 +672,9 @@ export class StudentStudyPlanAndCompetencesComponent {
       horasCompletadas += curso?.progressTime ? curso?.progressTime : 0;
     });
 
-    this.progreso =
-      (horasCompletadas * 100) /
-      (horasPlanDeEstudio == 0 ? 1 : horasPlanDeEstudio);
+    this.progreso = (horasCompletadas * 100) /(horasPlanDeEstudio == 0 ? 1 : horasPlanDeEstudio);
+
+    this.copletacion.emit(this.progreso)
 
     let cursosRadarDone = this.coursesByStudent.filter(
       (x) => x.progress == 100

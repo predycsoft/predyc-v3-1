@@ -1,0 +1,17 @@
+<div class="contenedor" fxLayout="row">
+    <!-- <div *ngFor="let item of data; let i = index" class="fw" fxLayout="column" fxLayoutAlign=" center">
+        <div class="w-60 fh">
+            <div class="value" fxLayout="column" fxLayoutAlign="start center">
+                <span class="value-text gray-6 nowrap ft10" *ngIf="item.value > 0">{{item.value | number:"1.1-1"}}</span>
+            </div>
+            <div class="barra" fxLayout="column" fxLayoutAlign="end">
+                <div [ngClass]="{'barra-fill': true, 'barra-fill2': item.label == currentLabel && hasProgress }" [style.height.%]="item.value*100/max"></div>
+
+            </div>
+            <div class="label" fxLayout="column" fxLayoutAlign="end center">
+                <span class="label-text gray-6 ft13" [ngClass]="item.label == currentLabel?'ft600 blue-5':'gray-6'">{{item.label | titlecase}}</span>
+            </div>
+        </div>
+    </div> -->
+    <canvas id="myLineChart"></canvas>
+</div>

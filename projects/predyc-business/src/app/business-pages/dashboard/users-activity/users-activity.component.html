@@ -1,0 +1,56 @@
+<div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
+    <div class="iconContainer" fxLayoutAlign="center center">
+        <img [src]="icon.activity" class="makeBlue h20px" alt="">
+    </div>
+    <span class="ft500 ft14 black  ">Actividad</span>
+</div>
+
+<div fxLayout="column" fxLayoutGap="8px" fxLayoutAlign="center center" class="fw mgt10">
+
+    <div (click)="navigateToStudents('ultimos15Dias')" class="fw backGray2 radius6 pd10 shadowLight cursorPointer" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="16px">
+      <span class="ft500">
+        Personas que han avanzado en los últimos 15 días.
+      </span>
+      <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="8px">
+        <span class="ft500">
+          {{ultimos15Dias}}/{{usersTotal}}
+        </span>
+        <div class="backGreen5 circle" fxFlexAlign="center"></div>   
+      </div>
+    </div>
+
+    <div (click)="navigateToStudents('ultimos30Dias')" class="fw backGray2 radius6 pd10 shadowLight cursorPointer" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="16px">
+        <span class="ft500">
+          Personas que han avanzado entre los últimos 15 y 30 días.
+        </span>
+        <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="8px">
+          <span class="ft500">
+            {{ultimos30Dias}}/{{usersTotal}}
+          </span>
+          <div class="backYellow5 circle" fxFlexAlign="center"></div>                  
+        </div>
+      </div>
+
+      <div (click)="navigateToStudents('mas30Dias')" class="fw backGray2 radius6 pd10 shadowLight cursorPointer" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="16px">
+        <span class="ft500">
+          Personas que no han avanzado en más de 30 días
+        </span>
+        <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="8px">
+          <span class="ft500">
+            {{mas30Dias}}/{{usersTotal}}
+          </span>
+          <div  class="backRed5 circle" fxFlexAlign="center"></div>          
+        </div>
+      </div>
+      <div (click)="navigateToStudents('sinActividad')" class="fw backGray2 radius6 pd10 shadowLight cursorPointer" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="16px">
+        <span class="ft500">
+          Personas que no han tenido actividad
+        </span>
+        <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="8px">
+          <span class="ft500">
+            {{sinActividad}}/{{usersTotal}}
+          </span>
+          <div class="backGray5 circle" fxFlexAlign="center"></div>          
+        </div>
+      </div>
+  </div>
