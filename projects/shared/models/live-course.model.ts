@@ -85,38 +85,38 @@ export class LiveCourse {
     public static collection = 'live-course'
 
     constructor(
-        public id: string,
         public companyName: string,
-        public title: string,
-        public photoUrl: string,
         public description: string,
-        public instructorRef: DocumentReference,
-        public proximamente: boolean,
-        public skillsRef: DocumentReference<Skill>[],
         public duration: number,
-        public vimeoFolderId: string = "",
+        public emailLastDate: any,
+        public id: string,
+        public identifierText: string,
+        public instructorRef: DocumentReference,
         public liveCourseTemplateRef: DocumentReference,
         public meetingLink: string,
-        public identifierText: string,
-        public emailLastDate: any,
+        public photoUrl: string,
+        public proximamente: boolean,
+        public skillsRef: DocumentReference<Skill>[],
+        public title: string,
+        public vimeoFolderId: string = "",
     ) {}
 
     public static fromJson(liveCourseJson: LiveCourseJson): LiveCourse {
         return new LiveCourse(
-            liveCourseJson.id,
             liveCourseJson.companyName,
-            liveCourseJson.title,
-            liveCourseJson.photoUrl,
             liveCourseJson.description,
-            liveCourseJson.instructorRef,
-            liveCourseJson.proximamente,
-            liveCourseJson.skillsRef,
             liveCourseJson.duration,
-            liveCourseJson.vimeoFolderId,
+            liveCourseJson.emailLastDate,
+            liveCourseJson.id,
+            liveCourseJson.identifierText,
+            liveCourseJson.instructorRef,
             liveCourseJson.liveCourseTemplateRef,
             liveCourseJson.meetingLink,
-            liveCourseJson.identifierText,
-            liveCourseJson.emailLastDate,
+            liveCourseJson.photoUrl,
+            liveCourseJson.proximamente,
+            liveCourseJson.skillsRef,
+            liveCourseJson.title,
+            liveCourseJson.vimeoFolderId,
         )
     }
 

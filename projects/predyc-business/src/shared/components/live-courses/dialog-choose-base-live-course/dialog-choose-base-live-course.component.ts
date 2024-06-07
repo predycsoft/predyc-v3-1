@@ -106,7 +106,7 @@ export class DialogChooseBaseLiveCourseComponent {
       const liveCourseTemplateData = {...formValue.baseCourse}
       delete liveCourseTemplateData.sessions
       // Save live course son
-      let liveCourse: LiveCourseJson = {
+      let liveCourse: any = {
         ...liveCourseTemplateData,
         id: null,
         liveCourseTemplateRef: this.liveCourseService.getLiveCourseTemplateRefById(liveCourseTemplateData.id),
@@ -122,7 +122,7 @@ export class DialogChooseBaseLiveCourseComponent {
       // copy the template data
       const sessionTemplateData = {...this.sessions[0]}
       delete sessionTemplateData.liveCourseTemplateRef
-      const firstSession: SessionJson = {
+      const firstSession: any = {
         ...sessionTemplateData,
         id: null,
         date: firstSessionDate,
@@ -138,7 +138,7 @@ export class DialogChooseBaseLiveCourseComponent {
       for (let i = 1; i < this.sessions.length; i++) {
         const followingSessionTemplateData = {...this.sessions[i]}
         delete followingSessionTemplateData.liveCourseTemplateRef
-        const followingSession: SessionJson = {
+        const followingSession: any = {
           ...followingSessionTemplateData,
           id: null,
           date: null,

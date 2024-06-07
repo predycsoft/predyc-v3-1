@@ -64,32 +64,32 @@ export class Session {
     public static collection = 'session'
 
     constructor(
-        public id: string,
-        public title: string,
+        public date: any,
         public duration: number,
         public files: any[],
-        public orderNumber: number,
-        public sessionTemplateRef: DocumentReference,
-        public date: any,
-        public weeksToKeep: number,
+        public id: string,
         public liveCourseRef: DocumentReference,
+        public orderNumber: number,
+        public title: string,
+        public sessionTemplateRef: DocumentReference,
         public vimeoId1: number,
         public vimeoId2: string,
+        public weeksToKeep: number,
     ) {}
 
     public static fromJson(SessionJson: SessionJson): Session {
         return new Session(
-            SessionJson.id,
-            SessionJson.title,
+            SessionJson.date,
             SessionJson.duration,
             SessionJson.files,
-            SessionJson.orderNumber,
-            SessionJson.sessionTemplateRef,
-            SessionJson.date,
-            SessionJson.weeksToKeep,
+            SessionJson.id,
             SessionJson.liveCourseRef,
+            SessionJson.orderNumber,
+            SessionJson.title,
+            SessionJson.sessionTemplateRef,
             SessionJson.vimeoId1,
             SessionJson.vimeoId2,
+            SessionJson.weeksToKeep,
         )
     }
 

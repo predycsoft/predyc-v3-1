@@ -207,9 +207,14 @@ export class LiveCourseService {
   async saveLiveCourseTemplate(newLiveCourseTemplate: LiveCourseTemplate): Promise<void> {
     try {
       // console.log("test saveCourse", newLiveCourse);
+      let liveCourseTemplateId = newLiveCourseTemplate.id
+      if (!liveCourseTemplateId) {
+        liveCourseTemplateId = (this.afs.collection(LiveCourse.collection).doc().ref).id
+        newLiveCourseTemplate.id = liveCourseTemplateId
+      }
       const dataToSave = typeof newLiveCourseTemplate.toJson === "function" ? newLiveCourseTemplate.toJson() : newLiveCourseTemplate;
 
-      await this.afs.collection(LiveCourseTemplate.collection).doc(newLiveCourseTemplate.id).set(dataToSave, { merge: true });
+      await this.afs.collection(LiveCourseTemplate.collection).doc(liveCourseTemplateId).set(dataToSave, { merge: true });
     } catch (error) {
       throw error;
     }
@@ -219,9 +224,14 @@ export class LiveCourseService {
   async saveSessionTemplate(newSessionTemplate: SessionTemplate): Promise<void> {
     try {
       // console.log("test saveCourse", newSession);
+      let sessionTemplateId = newSessionTemplate.id
+      if (!newSessionTemplate) {
+        sessionTemplateId = (this.afs.collection(Session.collection).doc().ref).id
+        newSessionTemplate.id = sessionTemplateId
+      }
       const dataToSave = typeof newSessionTemplate.toJson === "function" ? newSessionTemplate.toJson() : newSessionTemplate;
 
-      await this.afs.collection(SessionTemplate.collection).doc(newSessionTemplate.id).set(dataToSave, { merge: true });
+      await this.afs.collection(SessionTemplate.collection).doc(sessionTemplateId).set(dataToSave, { merge: true });
     } catch (error) {
       throw error;
     }
@@ -249,13 +259,17 @@ export class LiveCourseService {
   // // }
 
 
-  async saveLiveCourse(newLiveCourse: LiveCourseJson): Promise<string> {
+  async saveLiveCourse(newLiveCourse: LiveCourse): Promise<string> {
     try {
       // console.log("test saveCourse", newLiveCourse);
-      const liveCourseId = (this.afs.collection(LiveCourse.collection).doc().ref).id
-      newLiveCourse.id = liveCourseId
+      let liveCourseId = newLiveCourse.id
+      if (!liveCourseId) {
+        liveCourseId = (this.afs.collection(LiveCourse.collection).doc().ref).id
+        newLiveCourse.id = liveCourseId
+      }
+      const dataToSave = typeof newLiveCourse.toJson === "function" ? newLiveCourse.toJson() : newLiveCourse;
 
-      await this.afs.collection(LiveCourse.collection).doc(liveCourseId).set(newLiveCourse, { merge: true });
+      await this.afs.collection(LiveCourse.collection).doc(liveCourseId).set(dataToSave, { merge: true });
       return liveCourseId
     } catch (error) {
       throw error;
@@ -263,13 +277,17 @@ export class LiveCourseService {
     // console.log("Has agregado una nuevo curso exitosamente.");
   }
 
-  async saveSession(newSession: SessionJson): Promise<void> {
+  async saveSession(newSession: Session): Promise<void> {
     try {
       // console.log("test saveCourse", newSessionSon);
-      const sessionId = (this.afs.collection(Session.collection).doc().ref).id
-      newSession.id = sessionId
+      let sessionId = newSession.id
+      if (!newSession) {
+        sessionId = (this.afs.collection(Session.collection).doc().ref).id
+        newSession.id = sessionId
+      }
+      const dataToSave = typeof newSession.toJson === "function" ? newSession.toJson() : newSession;
 
-      await this.afs.collection(Session.collection).doc(sessionId).set(newSession, { merge: true });
+      await this.afs.collection(Session.collection).doc(sessionId).set(dataToSave, { merge: true });
     } catch (error) {
       throw error;
     }
