@@ -133,6 +133,7 @@ export class DashboardComponent {
       (enterprise) => {
         if (enterprise) {
           this.enterprise = enterprise;
+          console.log('enterpriseDashboard',enterprise)
           this.loaderService.setLoading(false);
           if(this.enterprise.examenInicial  === undefined || this.enterprise?.examenInicial){
             this.examenInicial = true

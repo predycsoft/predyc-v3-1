@@ -3,6 +3,9 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { Enterprise } from 'projects/shared/models/enterprise.model';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
+import { AngularFireFunctions } from "@angular/fire/compat/functions";
+import { firstValueFrom } from 'rxjs';
+
 
 @Component({
   selector: 'app-enterprise-detail',
@@ -19,7 +22,9 @@ export class EnterpriseDetailComponent {
   constructor(
     private titleService: Title,
     private route: ActivatedRoute,
-    private enterpriseService: EnterpriseService
+    private enterpriseService: EnterpriseService,
+    private fireFunctions: AngularFireFunctions,
+
   ) {}
 
 
@@ -36,6 +41,20 @@ export class EnterpriseDetailComponent {
       this.firstLoad = true
       this.tab = 0
     } 
+  }
+
+  async procesarDatosEmpresa(){
+
+
+    await firstValueFrom(
+      this.fireFunctions.httpsCallable("updateDataEnterpriseUsage")({
+        enterpriseId: this.enterpriseId as string,
+      })
+    );
+
+
+
+
   }
 
 

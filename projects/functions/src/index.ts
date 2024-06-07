@@ -7,6 +7,12 @@ admin.initializeApp(functions.config().firebase);
 import { onActivityUpdated } from './activity';
 export { onActivityUpdated }
 
+
+import { updateDataEnterpriseUsage } from './enterprise';
+export { updateDataEnterpriseUsage }
+
+
+
 import { createUserWithEmailAndPassword,deleteUser, generatePasswordResetLink, emptyDatabase } from './authentication';
 export { createUserWithEmailAndPassword,deleteUser, generatePasswordResetLink, emptyDatabase }
 

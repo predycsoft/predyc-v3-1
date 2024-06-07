@@ -30,7 +30,7 @@ export class RankingListComponent {
   ){}
 
   ranking: UserRanking[]
-  listLength: number = 10
+  listLength: number = 15
   showPointsTooltip = false
   combinedObservableSubscription: Subscription
 

@@ -21,7 +21,7 @@
         <div  *ngIf="enterpriseId" fxLayout="row" fxLayoutGap="4.5rem" fxLayoutAlign=" center" class="mgt05">
             <span class="">Acciones: </span>
             <div *ngIf="enterprise" >
-                <span class="chip  pd05 radius20 cursorPointer">Procesar datos de uso</span>
+                <span (click)="procesarDatosEmpresa()" class="chip  pd05 radius20 cursorPointer">Procesar datos de uso</span>
             </div>
         </div>
     </div>

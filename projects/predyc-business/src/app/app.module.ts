@@ -55,6 +55,7 @@ import { CertificationsTestComponent } from './business-pages/management/certifi
 import { ProfilesListComponent } from './business-pages/management/profiles-list/profiles-list.component';
 import { UsersOnboardingComponent } from './business-pages/dashboard/users-onboarding/users-onboarding.component';
 import { UsersaAtivityComponent } from './business-pages/dashboard/users-activity/users-activity.component';
+import { UsersUsageComponent } from './business-pages/dashboard/users-usage/users-usage.component';
 
 
 @NgModule({
@@ -84,6 +85,7 @@ import { UsersaAtivityComponent } from './business-pages/dashboard/users-activit
     EditValidationTestComponent,
     RankingListComponent,
     UsersOnboardingComponent,
+    UsersUsageComponent,
     UsersaAtivityComponent,
     StudentStatsComponent,
     StudentDetailsComponent,
