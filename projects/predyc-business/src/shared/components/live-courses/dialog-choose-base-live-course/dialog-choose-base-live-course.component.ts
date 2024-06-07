@@ -88,7 +88,7 @@ export class DialogChooseBaseLiveCourseComponent {
     this.liveCourseTestSubscription = this.activityClassesService.getActivityCoruse(idCourse, "liveCourseTemplate").pipe(filter(data=>data!=null),take(1)).subscribe(data => {
       if (data) {
         this.liveCourseTest = data;
-        console.log("data", data)
+        // console.log("data", data)
       }
     });
   }

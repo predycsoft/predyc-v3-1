@@ -150,7 +150,7 @@ export class LiveCourseService {
     try {
       // console.log("test saveCourse", newSession);
       let sessionTemplateId = newSessionTemplate.id
-      if (!newSessionTemplate) {
+      if (!sessionTemplateId) {
         sessionTemplateId = (this.afs.collection(Session.collection).doc().ref).id
         newSessionTemplate.id = sessionTemplateId
       }
@@ -185,7 +185,7 @@ export class LiveCourseService {
     try {
       // console.log("test saveCourse", newSessionSon);
       let sessionId = newSession.id
-      if (!newSession) {
+      if (!sessionId) {
         sessionId = (this.afs.collection(Session.collection).doc().ref).id
         newSession.id = sessionId
       }
