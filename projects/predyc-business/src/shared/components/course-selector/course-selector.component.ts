@@ -81,7 +81,7 @@ export class CourseSelectorComponent {
 
   getExamCourse(course){
     //console.log('idCourse search activity', idCourse);
-    this.activityClassesService.getActivityCoruse(course.id, false).pipe(take(1)).subscribe(data => {
+    this.activityClassesService.getActivityCoruse(course.id, "course").pipe(take(1)).subscribe(data => {
       if (data) {
         ////console.log('Activity:', data);
         ////console.log('Questions:', data.questions);

@@ -3,7 +3,7 @@
         <mat-spinner class="spinner-dark" diameter="50"></mat-spinner>
     </div>
 </ng-container>
-
+ 
 <ng-container *ngIf="formNewCourse">
     <div class="fw" class="fw fh backWhite radius10" fxLayout="column">    <div [ngClass]="true ? 'header--edit' : ''" fxLayout="row" fxLayoutAlign="space-between " class="header pdr20 pdl10">
         <div fxLayout="row" fxLayoutAlign="space-between center" class="fw fh pdt05 pdb05"  >
@@ -88,7 +88,7 @@
                                             <div class="image-scroll">
                                                 <img *ngIf="formNewCourse.get('photoUrl').value" [src]="formNewCourse.get('photoUrl').value" alt="Imagen seleccionada" class="avatarSquare8 radius6">
                                             </div>
-                                            <div *ngIf="mode !== 'edit' " class="fw">
+                                            <div class="fw">
                                                 <button (click)="cursoImage.click()" class="grayButton pd03 radius6 ft12 ft500 h28px mgr10 gray-8" fxLayoutGap="0.625" >
                                                     <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
                                                     Adjuntar imagen
@@ -130,10 +130,10 @@
                                                 <div style="display: inline-block; margin-right: 5px; margin-bottom: 5px; margin-top: 5px;"
                                                 class="skill-badge-complete ListHover radius10 backGray2  ft12 pdl08 pdr08 gray-8 mgt08">
                                                     {{skill.name}}
-                                                    <img *ngIf=" mode !== 'edit' " style="cursor: pointer;" (click)="removeSkill(skill)" [src]="icon.close"  class="h16px makeGray"  alt="">
+                                                    <img style="cursor: pointer;" (click)="removeSkill(skill)" [src]="icon.close"  class="h16px makeGray"  alt="">
                                                 </div>
                                             </ng-container>
-                                            <div *ngIf=" mode !== 'edit' " class="pdb10"> 
+                                            <div class="pdb10"> 
                                                 <div *ngIf=" (skillsCurso?.length < 3 && pillarsForm.value) " matTooltip="Agregar competencia"
                                                 style="display: inline-block; margin-right: 5px; "(click)="crearCompetencia(modalCrearSkill)" class="backGray2 radius20  pdl03 pdr03  gray-8 " >
                                                     <img style="cursor: pointer;" [src]="icon.addBlue" class="h16px ft600 "  alt="">
@@ -214,9 +214,9 @@
                                                                                             </ng-template>
                                                                                             <ng-template #ClaseSinTitulo>
                                                                                                 <input #inputRef class="inputInvisible" type="text" [(ngModel)]="session['tituloTMP']" (keydown.space)="preventDefault($event)" 
-                                                                                                (keyup.enter)="preventDefault($event); confirmSessionTitleAndDuration(session)" placeholder="Escriba el título aquí" [disabled]="mode === 'edit'" >
+                                                                                                (keyup.enter)="preventDefault($event); confirmSessionTitleAndDuration(session)" placeholder="Escriba el título aquí" >
 
-                                                                                                <select *ngIf="mode !== 'edit'" [(ngModel)]="session['duration']" class="duration-select">
+                                                                                                <select [(ngModel)]="session['duration']" class="duration-select">
                                                                                                     <option *ngFor="let duration of durations" [ngValue]="duration.value">{{ duration.label }}</option>
                                                                                                 </select>
                                                                                                   
@@ -309,7 +309,7 @@
                                                                                                 </div>
                                                                                             </ng-container> -->
                                                                                             
-                                                                                            <img *ngIf=" mode !== 'edit' " (click)="borrarSession(session)" [src]="icon.trash" class="h16px trash" alt="">
+                                                                                            <img (click)="borrarSession(session)" [src]="icon.trash" class="h16px trash" alt="">
                                                                                         </div>
                                                                                     </mat-panel-title>
                                                                                 </mat-expansion-panel-header>
@@ -331,7 +331,7 @@
                                                                                                             <!-- Lista los archivos comenzando desde el segundo elemento (índice 1) -->
                                                                                                             <li>
                                                                                                                 <span class="cursorPointer blueLink" (click)="descargarArchivo(archivo)">{{ archivo.nombre }}</span>
-                                                                                                                <img *ngIf="mode !== 'edit'" [src]="icon.close" class="h18px pdl10 makeRed cursorPointer" alt="" (click)="borrarArchivo(session,archivo)">
+                                                                                                                <img [src]="icon.close" class="h18px pdl10 makeRed cursorPointer" alt="" (click)="borrarArchivo(session,archivo)">
                                                                                                             </li>
                                                                                                         </ng-container>
                                                                                                     </ol>
@@ -345,14 +345,14 @@
                                                                                         </div> -->
                                                                                     </ng-container>
                                                                                     <!-- Lista de recursos de sesiones hijos -->
-                                                                                    <ng-container *ngIf="mode === 'edit'">
-                                                                                        <div *ngIf="!session['uploading'] && session.sonFiles.length > 0" fxLayout="row" fxLayoutAlign="center center">
+                                                                                    <!-- <ng-container *ngIf="mode === 'edit'">
+                                                                                        <div *ngIf="!session['uploading'] && session.files.length > 0" fxLayout="row" fxLayoutAlign="center center">
                                                                                             <div class="w-90 ContainerFileSon mgl10" style="min-height: 80px;">
                                                                                                 <div fxLayout="row" fxLayoutGap="20px" class="fw pd10" (dragover)="onDragOver($event)" (drop)="onDrop($event, session. type, session)">
                                                                                                     <div fxFlex="20%" fxLayoutAlign="start start">Recursos particulares: </div>
                                                                                                     <div fxFlex="80%" fxLayoutAlign="start start">
                                                                                                         <ol style="padding-left: 10px; margin: 0;">
-                                                                                                            <ng-container *ngFor="let archivo of session.sonFiles; let i = index">
+                                                                                                            <ng-container *ngFor="let archivo of session.files; let i = index">
                                                                                                                 <li>
                                                                                                                     <span class="cursorPointer blueLink" (click)="descargarArchivo(archivo)">{{ archivo.nombre }}</span>
                                                                                                                     <img [src]="icon.close" class="h18px pdl10 makeRed cursorPointer" alt="" (click)="borrarArchivo(session, archivo)">
@@ -363,9 +363,9 @@
                                                                                                 </div>
                                                                                             </div>
                                                                                         </div>
-                                                                                    </ng-container>
+                                                                                    </ng-container> -->
                                                                                     <!-- Añadir recurso para sesiones base -->
-                                                                                    <div *ngIf="mode !=='edit'" fxLayout="row" fxLayoutAlign="center center" class="mgt15 mgb05">
+                                                                                    <div fxLayout="row" fxLayoutAlign="center center" class="mgt15 mgb05">
                                                                                         <input (change)="onFileSelected($event, session, false, true, null, true)" type="file" 
                                                                                         accept="application/pdf, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" 
                                                                                         #FileInputAdicional style="display: none;">
@@ -377,7 +377,7 @@
                                                                                     <input (change)="onFileSelected($event, session, false, false, null, true)" type="file" accept="{{session.type == 'lectura'?'.pdf' : 'video/mp4'}}" 
                                                                                     #FileInput style="display: none;">
                                                                                     <!-- Agregar recursos pra sesiones hijos -->
-                                                                                    <div *ngIf="mode ==='edit'" fxLayout="row" fxLayoutAlign="center center" class="mgt15 mgb05">
+                                                                                    <!-- <div *ngIf="mode ==='edit'" fxLayout="row" fxLayoutAlign="center center" class="mgt15 mgb05">
                                                                                         <input (change)="onFileSelected($event, session, false, true, null, false)" type="file" 
                                                                                         accept="application/pdf, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" 
                                                                                         #FileInputAdicional style="display: none;">
@@ -387,7 +387,7 @@
                                                                                         </button>
                                                                                     </div>
                                                                                     <input (change)="onFileSelected($event, session, false, false, null, false)" type="file" accept="{{session.type == 'lectura'?'.pdf' : 'video/mp4'}}" 
-                                                                                    #FileInput style="display: none;">
+                                                                                    #FileInput style="display: none;"> -->
                                                                                 </ng-container>
 
                                                                                 <ng-container *ngIf="session.type == 'actividad' || session.type == 'corazones' ">
@@ -412,7 +412,7 @@
                                                             </div>
 
                                                             <!-- Agregar sesion -->
-                                                            <div *ngIf=" mode !== 'edit' " fxLayout="column" class="fw" fxLayoutAlign="center center">
+                                                            <div fxLayout="column" class="fw" fxLayoutAlign="center center">
                                                                 <!-- Primer div para "Agregar sesión" -->
                                                                 <div *ngIf="!liveCourseData['addClassMode']" fxLayout="row" class="fw mg10" fxLayoutAlign="center center">
                                                                     <!-- <span (click)="liveCourseData['addClassMode'] = !liveCourseData['addClassMode']" class="blueLink radius4 ft12 h28px no-select"> -->
@@ -580,7 +580,7 @@
                                 <span class="ft500 ft14 black " style="margin-top: 5px;">Usuario inscritos</span>
                             </div>
                             <div fxLayout="row" fxLayoutAlign="center" class="w-100">
-                                <app-live-course-student-list class="w-90" [idBaseLiveCourse]="idBaseLiveCourse" [idLiveCourseSon]="idLiveCourseSon" 
+                                <app-live-course-student-list class="w-90" [idBaseLiveCourse]="liveCourseTemplateId" [idLiveCourseSon]="liveCourseId" 
                                 (userEmailsChanged)="onUserEmailsChanged($event)"></app-live-course-student-list>
                             </div>
                         </div>
@@ -595,7 +595,7 @@
                                 <span class="ft500 ft14 black " style="margin-top: 5px;">Enviar correo</span>
                             </div>
                             <div fxLayout="row" fxLayoutAlign="center" class="w-100">
-                                <app-live-course-following class="w-90" [studentEmails]="studentEmails" [idBaseLiveCourse]="idBaseLiveCourse" [idLiveCourseSon]="idLiveCourseSon">
+                                <app-live-course-following class="w-90" [studentEmails]="studentEmails" [idBaseLiveCourse]="liveCourseTemplateId" [idLiveCourseSon]="liveCourseId">
                                 </app-live-course-following>
                             </div>
                         </div>
