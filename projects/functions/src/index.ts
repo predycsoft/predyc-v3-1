@@ -8,8 +8,8 @@ import { onActivityUpdated } from './activity';
 export { onActivityUpdated }
 
 
-import { updateDataEnterpriseUsage } from './enterprise';
-export { updateDataEnterpriseUsage }
+import { updateDataEnterpriseUsage,updateDataAllEnterprisesUsage,updateDataAllEnterprisesUsageSchedule } from './enterprise';
+export { updateDataEnterpriseUsage,updateDataAllEnterprisesUsage,updateDataAllEnterprisesUsageSchedule }
 
 
 

@@ -44,10 +44,12 @@
                 <img [src]="icon.addNew" class="h16px  makeWhite mgr08" alt="">
                 Crear Demo
             </button> -->
-            <button fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButtonAnim button-animation " 
-            style="border-radius: 24px !important;"  (click)="createEnterprise()">
+            <button fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButtonAnim button-animation "  style="border-radius: 24px !important;"  (click)="createEnterprise()">
                 <img [src]="icon.addNew" class="h16px  makeWhite mgr08" alt="">
                 Nueva Empresa
+            </button>
+            <button  fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="grayButton button-animation gray-10"  style="border-radius: 24px !important;"  (click)="updateEmpresasUsage()">
+                <img [src]="icon.clock" class="h16px mgr08" alt=""> Actualizar datos de uso
             </button>
         </div>
     </div>

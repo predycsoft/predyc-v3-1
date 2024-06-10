@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import { CreateDemoComponent } from '../create-demo/create-demo.component';
+import { firstValueFrom } from 'rxjs';
+import { AngularFireFunctions } from '@angular/fire/compat/functions';
 
 @Component({
   selector: 'app-enterprise',
@@ -15,11 +17,15 @@ export class EnterpriseComponent {
     public icon: IconService,
     private router: Router,
 		private modalService: NgbModal,
-
+    private fireFunctions: AngularFireFunctions,
   ) {}
 
   createEnterprise() {
     this.router.navigate(["/admin/enterprises/form"])
+  }
+
+  async updateEmpresasUsage() {
+    await firstValueFrom(this.fireFunctions.httpsCallable('updateDataAllEnterprisesUsage')(null));
   }
 
 
