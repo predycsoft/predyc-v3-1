@@ -1,194 +1,164 @@
 <div class="mgt20 mgl20 mgr20">
+  <div class="fw mgb15" fxLayout="row" fxLayoutAlign=" center">
+    <div fxLayout="row" fxLayoutGap="2.5rem" fxLayoutAlign="center center" class="pdl10 pdr10 pdb05 pdt05 ft14 ft500" (click)="tab = 0" [ngClass]="tab == 0 ? 'selectedTab gray-10' : 'gray-6 tab'">Calendario</div>
+    <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign="center center" class="pdl10 pdr10 pdb05 pdt05 ft14 ft500" (click)="tab = 1" [ngClass]="tab == 1 ? 'selectedTab gray-10' : 'gray-6 tab'">Lista de cursos</div>
+  </div>
 
-    <div class="fw mgb15" fxLayout="row" fxLayoutAlign=" center">
-        <div fxLayout="row" fxLayoutGap="2.5rem" fxLayoutAlign="center center"
-            class="pdl10 pdr10 pdb05 pdt05 ft14 ft500" (click)="tab = 0" [ngClass]="tab == 0 ? 'selectedTab gray-10' : 'gray-6 tab'">
-            Calendario
-        </div>
-        <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign="center center" 
-            class="pdl10 pdr10 pdb05 pdt05 ft14 ft500" (click)="tab = 1" [ngClass]="tab == 1 ? 'selectedTab gray-10' : 'gray-6 tab'">
-            Lista de cursos
-        </div>
+  <ng-container *ngIf="tab === 0">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <p class="ft600 ft16 gray-10">Lista de Cursos en vivo</p>
+      <button (click)="openModal()" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButton mgt05" style="border-radius: 24px !important"><img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="" />Agregar curso en vivo</button>
     </div>
 
-    <ng-container *ngIf="tab === 0">
-        <div fxLayout="row" fxLayoutAlign="space-between center">    
-            <p class="ft600 ft16 gray-10">Lista de Cursos en vivo</p>
-            <button (click)="openModal()" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButton mgt05" style="border-radius: 24px !important;">
-                <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="">Agregar curso en vivo
-            </button>
-        </div>
+    <div fxLayout="row" class="mgt10 fw fh" fxLayoutGap="2rem">
+      <ng-container *ngIf="calendarLiveCourses.length > 0">
+        <app-calendar-live-courses-selector class="fw" [calendarLiveCourses]="calendarLiveCourses"></app-calendar-live-courses-selector>
+      </ng-container>
+    </div>
+  </ng-container>
 
-        <div fxLayout="row" class="mgt10 fw fh" fxLayoutGap="2rem">
-            <ng-container *ngIf="calendarLiveCourses.length > 0" >
-                <app-calendar-live-courses-selector class="fw" [calendarLiveCourses]="calendarLiveCourses"></app-calendar-live-courses-selector>
-            </ng-container>
-        </div>
+  <ng-container *ngIf="tab === 1">
+    <div fxLayout="row" fxLayoutAlign="space-between center" style="width: 58%">
+      <p class="ft600 ft16 gray-10">Lista de Cursos base</p>
+      <button fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButton mgt05" style="border-radius: 24px !important" routerLink="/management/live/new"><img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="" />Agregar curso base</button>
+    </div>
 
-    </ng-container>
-
-    <ng-container *ngIf="tab === 1">
-        <div fxLayout="row" fxLayoutAlign="space-between center" style="width: 58%;">    
-            <p class="ft600 ft16 gray-10">Lista de Cursos base</p>
-            <button fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButton mgt05" style="border-radius: 24px !important;" routerLink="/management/live/new">
-                <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="">Agregar curso base
-            </button>
-        </div>
-    
-        <div fxLayout="row" class="mgt10 fw fh" fxLayoutGap="2rem">
-            <!-- Columna izquierda que ocupa todo el alto -->
-            <div fxFlex="60%">
-                <div class="left backWhite radius10 " fxLayout="column">
-                    <div class="mgt20  radius10" fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="space-between center">
-                        <div class="fw mgb05 borderLight shadow-animation   catInput2" fxLayout="row" fxLayoutAlign=" center">
-                            <img [src]="icon.search" class="h16px makeGray8 mgl08" alt="">
-                            <input [(ngModel)]="searchValue" type="text" class="searchBar ft13 input " 
-                            style="width: 100%; outline: none; border: 0; background-color: transparent;"
-                            placeholder="¿Qué curso esta buscando?">
-                        </div>
-                    </div>
-                    <div fxLayout="row" class="fw">
-                        <div class="fw" style=" overflow-y: hidden;">
-                            <div class="mgt10">
-                                <ng-container>
-                                    <app-live-courses-selector [categories]="categories" [searchValue]="searchValue" (selectedCourseOut)="selectedCourse = $event">
-                                    </app-live-courses-selector>
-                                </ng-container>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <div fxLayout="row" class="mgt10 fw fh" fxLayoutGap="2rem">
+      <!-- Columna izquierda que ocupa todo el alto -->
+      <div fxFlex="60%">
+        <div class="left backWhite radius10" fxLayout="column">
+          <div class="mgt20 radius10" fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="space-between center">
+            <div class="fw mgb05 borderLight shadow-animation catInput2" fxLayout="row" fxLayoutAlign=" center">
+              <img [src]="icon.search" class="h16px makeGray8 mgl08" alt="" />
+              <input [(ngModel)]="searchValue" type="text" class="searchBar ft13 input" style="width: 100%; outline: none; border: 0; background-color: transparent" placeholder="¿Qué curso esta buscando?" />
             </div>
-            <!-- Columna derecha con dos filas -->
-            <div fxLayout="column" class="radius10 fh pdt10" fxFlex="40%">
-                <div class="fh pdb40" fxLayout="column">
-                    <!-- detalle curso -->
-                    <div class="w-100 fh" fxLayout="column">
-                        <div fxLayout="row" class="radius6 mgt20" style="height: calc(100% - 200px);" *ngIf="!selectedCourse"
-                            fxLayoutAlign="center center">
-                            <div class="radius6 mgt20" fxLayoutAlign="center center">
-                                <div fxLayout="column"  class="fh fw" fxLayoutAlign="center center">
-                                    <span class="ft400 gray-6 ft16 ft400 pd05" style="margin-top:50% ;">Haz clic en un curso para ver sus detalles</span>
-                                </div>
-                            </div>
-                        </div>
-    
-                        <div class="borderLight radius6 mgt10" *ngIf="selectedCourse" >
-                            <div class="border-bl pdl10 pdt05 pdr10 pdb10 fw" fxLayout="column">
-                                <div  fxLayout="row" fxLayoutAlign="space-between center" >
-                                    <div class="gray-10 ft14 ft500 mgr08">{{selectedCourse.title }}</div>
-                                    <div routerLink="/management/live/{{selectedCourse.id}}" fxLayout="row"  fxLayoutGap=".5rem"  >
-                                        <div class="blueLink mgt05 white cursorPointer ft14 fw mgb10" fxLayoutAlign="space-between center">
-                                            <!-- <img [src]="icon.edit" class="makeWhite h16px mgr08" alt=""> -->
-                                            Editar 
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Left side content -->
-                                <div fxLayout="row" fxLayoutGap="1rem" class="mgt05 fw">
-                                    <img *ngIf="selectedCourse['photoUrl']" [src]="selectedCourse['photoUrl']" class="avatarSquare8 radius6" alt="">
-                                    <img *ngIf="!selectedCourse['photoUrl']" [src]="icon.examenPredyc2" class="avatarSquare8 radius6" alt="">
-                                    <div fxLayout="column" class="containerTitulo">
-                                        <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="space-between">
-                                            <div *ngIf="selectedCourse?.duracion" fxLayout="row" fxLayoutGap=".5rem"> <!-- -->
-                                                <div class="backGray2 pd05 w40px radius6" fxLayoutAlign="center center">
-                                                    <img [src]="icon.clock" class="makeYellow fw" alt="">
-                                                </div>
-                                                <div fxLayout="column">
-                                                    <div class="gray-6 ft10">Duración de curso</div> 
-                                                    <div class="gray-8 ft10">
-                                                        <ng-container>
-                                                            {{ getFormattedDuration()}} <!-- -->
-                                                        </ng-container>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div *ngIf="selectedCourse['skills']" class="mgt05">
-                                            <div class="ft10 gray-10">Competencias</div>
-                                            <div fxLayout="row wrap" fxLayoutGap=".5rem" class="mgt05">
-                                                <div *ngFor="let skill of selectedCourse['skills']" class="ft10 gray-8 backGray2 pd03 radius6 pdl05 pdr05 mgb05">{{skill.name}}</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div fxLayout="row" fxLayoutAlign=" center">
-                                <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign="center center" class="pdl10 pdr10 pdb05 pdt05 ft11" 
-                                (click)="detailCourseTab = 0" [ngClass]="detailCourseTab == 0 ? 'selectedTab gray-10' : 'gray-8 tab'">
-                                    Sesiones
-                                </div>
-                                <div *ngIf="selectedCourse?.description" fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign="center center" class="pdl10 pdr10 pdb05 pdt05 ft11" 
-                                (click)="detailCourseTab = 1" [ngClass]="detailCourseTab == 1 ? 'selectedTab gray-10' : 'gray-8 tab'">
-                                    Descripción
-                                </div>
-                                <div *ngIf="selectedCourse?.instructorRef"  fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign="center center"
-                                    class="pdl10 pdr10 pdb05 pdt05 ft11" (click)="detailCourseTab = 2" [ngClass]="detailCourseTab == 2 ? 'selectedTab gray-10' : 'gray-8 tab'">
-                                    Instructor
-                                </div>
-                            </div>
-    
-                            <!-- Sessions -->
-                            <div fxLayout="column" class="contentContainer pd10 hideScroll" *ngIf="detailCourseTab == 0">
-                                <div *ngFor="let session of selectedCourse['sessions']" fxLayout="column" class="fw  mgb05 backWhite radius6">
-                                    <div class="pd05" fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="space-between center">
-                                        <div fxLayout="row" fxLayoutGap=".6rem" fxLayoutAlign="center">
-                                            <img [src]="icon.chevronRight" class="" alt="">
-                                            <span class="ft12 gray-10">{{session.title }}</span>
-                                        </div>
-                                        <div fxLayoutAlign="center center">
-                                            <span *ngIf="session.duracion" class="gray-6 ft12 nowrap">
-                                                {{getFloor(session.duracion/60) | number:"1.0-0"}}:{{session.duracion % 60 | number:"2.0-0"}} hrs
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div fxLayout="column" class="fw  mgb05 backWhite radius6">
-                                    <div *ngIf="selectedCourse['test']" class="pd05" fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="space-between center">
-                                        <div fxLayout="row" fxLayoutGap=".6rem" fxLayoutAlign="center">
-                                            <img [src]="icon.activity" class="h14px makeGray8" alt="">
-                                            <span class="ft12 gray-10">Examen Final</span>
-                                        </div>
-                                        <div fxLayoutAlign="center center">
-                                            <span class="gray-6 ft12 nowrap">{{getFloor(selectedCourse['testDuration']/60) |
-                                                number:"1.0-0"}}:{{selectedCourse['testDuration']%60 | number:"2.0-0"}} hrs
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Description -->
-                            <div fxLayout="column" class="contentContainer pd10 hideScroll" *ngIf="detailCourseTab == 1">
-                                <div class=" backWhite radius6 pd10 center"  >
-                                    <p class="ft12 gray-10  mgt05 " fxLayoutAlign="center center" >{{selectedCourse.description}}</p>
-                                </div>
-                            </div>
-                            <!-- instructor -->
-                            <div fxLayout="column" class="contentContainer pd10 hideScroll" *ngIf="detailCourseTab == 2">
-                                <div class=" backWhite radius6 pd10 left "  >
-                                    <div fxShow.lt-md="false" fxShow="true" class="fw " fxLayout="column">
-                                        <div class="" fxLayout="row" fxLayoutGap="2rem" fxLayoutAlign=" center">
-                                            <div>
-                                                <img [src]="selectedCourse['instructorPhoto'] ? selectedCourse['instructorPhoto'] : 'assets/images/default/default-user-image.jpg'" class="avatar4 shadow8" alt="" (error)="handleImageError()"/>
-                                            </div>
-                                            <div fxLayout="column">
-                                                <span class="ft14 ft500 gray-10">{{selectedCourse.instructorName}}</span>
-                                                <p class="ft12 gray-8 mgb0">{{selectedCourse.instructorSummary }}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+          </div>
+          <div fxLayout="row" class="fw">
+            <div class="fw" style="overflow-y: hidden">
+              <div class="mgt10">
+                <ng-container>
+                  <app-live-courses-selector [categories]="categories" [searchValue]="searchValue" (selectedCourseOut)="selectedCourse = $event"> </app-live-courses-selector>
+                </ng-container>
+              </div>
             </div>
+          </div>
         </div>
-    </ng-container>
+      </div>
+      <!-- Columna derecha con dos filas -->
+      <div fxLayout="column" class="radius10 fh pdt10" fxFlex="40%">
+        <div class="fh pdb40" fxLayout="column">
+          <!-- detalle curso -->
+          <div class="w-100 fh" fxLayout="column">
+            <div fxLayout="row" class="radius6 mgt20" style="height: calc(100% - 200px)" *ngIf="!selectedCourse" fxLayoutAlign="center center">
+              <div class="radius6 mgt20" fxLayoutAlign="center center">
+                <div fxLayout="column" class="fh fw" fxLayoutAlign="center center">
+                  <span class="ft400 gray-6 ft16 ft400 pd05" style="margin-top: 50%">Haz clic en un curso para ver sus detalles</span>
+                </div>
+              </div>
+            </div>
 
+            <div class="borderLight radius6 mgt10" *ngIf="selectedCourse">
+              <div class="border-bl pdl10 pdt05 pdr10 pdb10 fw" fxLayout="column">
+                <div fxLayout="row" fxLayoutAlign="space-between center">
+                  <div class="gray-10 ft14 ft500 mgr08">{{ selectedCourse.title }}</div>
+                  <div routerLink="/management/live/{{ selectedCourse.id }}" fxLayout="row" fxLayoutGap=".5rem">
+                    <div class="blueLink mgt05 white cursorPointer ft14 fw mgb10" fxLayoutAlign="space-between center">
+                      <!-- <img [src]="icon.edit" class="makeWhite h16px mgr08" alt=""> -->
+                      Editar
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Left side content -->
+                <div fxLayout="row" fxLayoutGap="1rem" class="mgt05 fw">
+                  <img *ngIf="selectedCourse['photoUrl']" [src]="selectedCourse['photoUrl']" class="avatarSquare8 radius6" alt="" />
+                  <img *ngIf="!selectedCourse['photoUrl']" [src]="icon.examenPredyc2" class="avatarSquare8 radius6" alt="" />
+                  <div fxLayout="column" class="containerTitulo">
+                    <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="space-between">
+                      <div *ngIf="selectedCourse?.duration" fxLayout="row" fxLayoutGap=".5rem">
+                        <!-- -->
+                        <div class="backGray2 pd05 w40px radius6" fxLayoutAlign="center center">
+                          <img [src]="icon.clock" class="makeYellow fw" alt="" />
+                        </div>
+                        <div fxLayout="column">
+                          <div class="gray-6 ft10">Duración de curso</div>
+                          <div class="gray-8 ft10">
+                            <ng-container>
+                              {{ getFormattedDuration() }}
+                              <!-- -->
+                            </ng-container>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="selectedCourse['skills']" class="mgt05">
+                      <div class="ft10 gray-10">Competencias</div>
+                      <div fxLayout="row wrap" fxLayoutGap=".5rem" class="mgt05">
+                        <div *ngFor="let skill of selectedCourse['skills']" class="ft10 gray-8 backGray2 pd03 radius6 pdl05 pdr05 mgb05">{{ skill.name }}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div fxLayout="row" fxLayoutAlign=" center">
+                <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign="center center" class="pdl10 pdr10 pdb05 pdt05 ft11" (click)="detailCourseTab = 0" [ngClass]="detailCourseTab == 0 ? 'selectedTab gray-10' : 'gray-8 tab'">Sesiones</div>
+                <div *ngIf="selectedCourse?.description" fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign="center center" class="pdl10 pdr10 pdb05 pdt05 ft11" (click)="detailCourseTab = 1" [ngClass]="detailCourseTab == 1 ? 'selectedTab gray-10' : 'gray-8 tab'">Descripción</div>
+                <div *ngIf="selectedCourse?.instructorRef" fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign="center center" class="pdl10 pdr10 pdb05 pdt05 ft11" (click)="detailCourseTab = 2" [ngClass]="detailCourseTab == 2 ? 'selectedTab gray-10' : 'gray-8 tab'">Instructor</div>
+              </div>
+
+              <!-- Sessions -->
+              <div fxLayout="column" class="contentContainer pd10 hideScroll" *ngIf="detailCourseTab == 0">
+                <div *ngFor="let session of selectedCourse['sessions']" fxLayout="column" class="fw mgb05 backWhite radius6">
+                  <div class="pd05" fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="space-between center">
+                    <div fxLayout="row" fxLayoutGap=".6rem" fxLayoutAlign="center">
+                      <span class="ft12 gray-10">{{ session.title }}</span>
+                    </div>
+                    <div fxLayoutAlign="center center">
+                      <span *ngIf="session.duracion" class="gray-6 ft12 nowrap"> {{ getFloor(session.duracion / 60) | number : "1.0-0" }}:{{ session.duracion % 60 | number : "2.0-0" }} hrs </span>
+                    </div>
+                  </div>
+                </div>
+                <div fxLayout="column" class="fw mgb05 backWhite radius6">
+                  <div *ngIf="selectedCourse['test']" class="pd05" fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="space-between center">
+                    <div fxLayout="row" fxLayoutGap=".6rem" fxLayoutAlign="center">
+                      <img [src]="icon.activity" class="h14px makeGray8" alt="" />
+                      <span class="ft12 gray-10">Examen Final</span>
+                    </div>
+                    <div fxLayoutAlign="center center">
+                      <span class="gray-6 ft12 nowrap">{{ getFloor(selectedCourse["testDuration"] / 60) | number : "1.0-0" }}:{{ selectedCourse["testDuration"] % 60 | number : "2.0-0" }} hrs </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Description -->
+              <div fxLayout="column" class="contentContainer pd10 hideScroll" *ngIf="detailCourseTab == 1">
+                <div class="backWhite radius6 pd10">
+                  <p class="ft12 gray-10 mgt05">{{ selectedCourse.description }}</p>
+                </div>
+              </div>
+              <!-- instructor -->
+              <div fxLayout="column" class="contentContainer pd10 hideScroll" *ngIf="detailCourseTab == 2">
+                <div class="backWhite radius6 pd10 left">
+                  <div fxShow.lt-md="false" fxShow="true" class="fw" fxLayout="column">
+                    <div class="" fxLayout="row" fxLayoutGap="2rem" fxLayoutAlign=" center">
+                      <div>
+                        <img [src]="selectedCourse['instructorPhoto'] ? selectedCourse['instructorPhoto'] : 'assets/images/default/default-user-image.jpg'" class="avatar4 shadow8" alt="" (error)="handleImageError()" />
+                      </div>
+                      <div fxLayout="column">
+                        <span class="ft14 ft500 gray-10">{{ selectedCourse.instructorName }}</span>
+                        <p class="ft12 gray-8 mgb0">{{ selectedCourse.instructorSummary }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
 </div>
-
 
 <!-- <div fxLayout="column" class="mgt20">
     <span class="ft16 ft500">Prueba sesiones</span>
