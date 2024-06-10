@@ -578,7 +578,7 @@ export class StudentListComponent {
           let diffTime = Math.abs(today.getTime() - date.getTime());
           let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Diferencia en días
 
-          if(diffDays >= 15 && diffDays <= 30){
+          if(diffDays > 15 && diffDays <= 30){
             groupedLastActivityRange ='Entre 15 y 30 días'
           }
 

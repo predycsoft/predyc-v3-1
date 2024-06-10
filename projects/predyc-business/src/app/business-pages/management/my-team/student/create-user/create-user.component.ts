@@ -211,6 +211,14 @@ export class CreateUserComponent {
     }
   }
 
+  onRoleChange(event: any): void {
+    if (event.checked) {
+      this.userForm.get('role').setValue('admin');
+    } else {
+      this.userForm.get('role').setValue('student');
+    }
+  }
+
   async setupForm() {
     this.userForm = this.fb.group({
       displayName: [null, [Validators.required]],
@@ -226,10 +234,11 @@ export class CreateUserComponent {
       job: [null],
       hiringDate: [null],
       experience: [null],
+      role:['student']
     });
     // Edit mode
     if (this.studentToEdit) {
-      // console.log("this.studentToEdit", this.studentToEdit);
+      console.log("this.studentToEdit", this.studentToEdit);
       const department = this.studentToEdit.departmentRef
         ? (await this.studentToEdit.departmentRef.get()).data()
         : null;
@@ -246,6 +255,7 @@ export class CreateUserComponent {
         email: this.studentToEdit.email,
         job: this.studentToEdit.job,
         experience: this.studentToEdit.experience,
+        role:this.studentToEdit.role,
       });
       this.studentToEdit.birthdate
         ? this.timestampToFormFormat(this.studentToEdit.birthdate, "birthdate")
@@ -617,6 +627,7 @@ export class CreateUserComponent {
         : null,
       email: formData.email ? formData.email.toLowerCase() : null,
       photoUrl: formData.photoUrl,
+      role:formData.role 
     };
 
     let user = null;

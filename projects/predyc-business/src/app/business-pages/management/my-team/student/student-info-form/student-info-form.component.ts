@@ -51,6 +51,7 @@ export class StudentInfoFormComponent {
         country: new FormControl(''),
         profile: new FormControl(null),
         photoUrl: new FormControl(''),
+        role: new FormControl(''),
       });
   
       if (this.student) {
@@ -61,7 +62,8 @@ export class StudentInfoFormComponent {
           phoneNumber: this.student.phoneNumber,
           country: this.student.country,
           profile: this.studentProfile ? this.studentProfile.id : null,
-          photoUrl: this.student.photoUrl
+          photoUrl: this.student.photoUrl,
+          role:this.student.role
         });
       }
       if (this.student.photoUrl) {
@@ -84,6 +86,7 @@ export class StudentInfoFormComponent {
     }
 
   openCreateUserModal(student: User | null) {
+    console.log('student',student)
     const modalRef = this.modalService.open(CreateUserComponent, {
       animation: true,
       centered: true,
@@ -104,6 +107,7 @@ export class StudentInfoFormComponent {
     // console.log('formData', formData)
     this.studentForm.patchValue(formData)
     this.student.displayName = formData.displayName
+    this.student.role = formData.role
     this.student.phoneNumber = formData.phoneNumber
     this.student.country = formData.country
     this.student.profile = formData.profile ? this.profileService.getProfileRefById(formData.profile) : null

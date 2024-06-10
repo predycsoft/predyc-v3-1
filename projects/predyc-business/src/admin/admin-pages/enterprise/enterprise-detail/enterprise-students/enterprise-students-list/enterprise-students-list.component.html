@@ -1,6 +1,6 @@
 <div class="">
     <div fxLayout="row" fxLayoutAlign=" center">
-        <h6 class="ft16 ft500 mgt0 mgb0"> Estudiantes </h6>
+        <h6 class="ft16 ft500 mgt0 mgb0"> Personal </h6>
         <mat-icon (click)="openCreateUserModal()" class="mgl10 gray-5 cursorPointer ft20 linkIcon">add_circle</mat-icon>
         <img [matMenuTriggerFor]="tagMenu" [src]="icon.tableShortcut" class="h16px pdl05 cursorPointer" alt="">
     </div>
@@ -27,6 +27,16 @@
             <ng-container matColumnDef="displayName">
                 <th mat-header-cell *matHeaderCellDef class="ft14 align-start"> Nombre</th>
                 <td mat-cell *matCellDef="let data" class="align-start ft12"> {{ data.displayName | titlecase }} </td>
+            </ng-container>
+
+
+              <ng-container matColumnDef="role">
+                <th mat-header-cell *matHeaderCellDef class="ft13 centertext">Tipo</th>
+                <td mat-cell *matCellDef="let user" class="centertext ft12">
+                <div class="pdt03 pdb03 radius6" [ngClass]="user.role == 'admin' ? 'backGreen2 green-5' : 'backBlue2 blue-5'">
+                    {{ user.role == 'admin' ? 'Administrador':'Estudiante'  }}
+                </div>
+                </td>
             </ng-container>
 
             <!-- Departamento Column -->

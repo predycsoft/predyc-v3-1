@@ -56,8 +56,9 @@ export class EnterpriseStudentsListComponent {
 
   displayedColumns: string[] = [
     "displayName",
+    "role",
     "department",
-    "profile",
+    // "profile",
     "email",
     "status"
     // "delete",
@@ -81,7 +82,7 @@ export class EnterpriseStudentsListComponent {
     this.combinedSubscription = combineLatest([
       this.profileService.getProfiles$(),
       this.departmentService.getDepartments$(),
-      this.userService.getStudentUsersByEnterpriseRef$(this.enterpriseRef),
+      this.userService.getUsersByEnterpriseRef$(this.enterpriseRef),
     ]).pipe(
       switchMap(([profiles, departments, users]) => {
         // Mapear cada usuario a un observable que obtiene sus suscripciones
@@ -121,6 +122,7 @@ export class EnterpriseStudentsListComponent {
                 displayName: user.displayName,
                 departmentName: userDepartmentName,
                 profileName: userProfileName,
+                role: user.role,
                 email: user.email,
                 id:user.uid,
                 status: SubscriptionClass.statusToDisplayValueDict[status],
