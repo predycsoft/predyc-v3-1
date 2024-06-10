@@ -1,52 +1,24 @@
-import * as functionsV2 from 'firebase-functions/v2';
+import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import { ClassByStudent, Enterprise, License, StudyPlanClass, User } from 'shared';
 
 const db = admin.firestore();
 
-
-// export const updateDataAllEnterprisesUsageSchedule = functions.pubsub.schedule('every monday 06:00').onRun(async (context) => {
-//   try {
-//     await updateDataAllEnterprisesUsageLocal();
-//     console.log('Updated all enterprises usage');
-//   } catch (error) {
-//     console.error('Error updating all enterprises usage:', error);
-//   }
-// });
-
-// export const updateDataEnterpriseUsage = functions.https.onCall(async (data, _) => {
-//   try {
-//     const batch = admin.firestore().batch();
-//     const enterpriseId = data.enterpriseId;
-//     await updateDataEnterpriseUsageLocal(enterpriseId,batch)
-//     await batch.commit();
-//     console.log(`Actualización empresas ${enterpriseId}`)
-//   } catch (error: any) {
-//     console.log(error);
-//     throw new functions.https.HttpsError("unknown", error.message);
-//   }
-// });
-
-export const updateDataEnterpriseUsage = functionsV2.https.onCall({
-  timeoutSeconds: 3600 // Establece el tiempo de espera a 3600 segundos (1 hora)
-}, async (request: functionsV2.https.CallableRequest) => {
+export const updateDataEnterpriseUsage = functions.https.onCall(async (data, _) => {
   try {
-    const data = request.data;
     const batch = admin.firestore().batch();
     const enterpriseId = data.enterpriseId;
-    await updateDataEnterpriseUsageLocal(enterpriseId, batch);
+    await updateDataEnterpriseUsageLocal(enterpriseId,batch)
     await batch.commit();
-    console.log(`Actualización empresas ${enterpriseId}`);
-  } catch (error) {
-    console.error(error);
-    throw new functionsV2.https.HttpsError('unknown', (error as Error).message);
+    console.log(`Actualización empresas ${enterpriseId}`)
+  } catch (error: any) {
+    console.log(error);
+    throw new functions.https.HttpsError("unknown", error.message);
   }
 });
 
-export const updateDataAllEnterprisesUsageSchedule = functionsV2.scheduler.onSchedule({
-  schedule: '0 6 * * MON',
-  timeoutSeconds: 3600 // Establece el tiempo de espera a 3600 segundos (1 hora)
-}, async (context) => {
+
+export const updateDataAllEnterprisesUsageSchedule = functions.pubsub.schedule('every monday 06:00').onRun(async (context) => {
   try {
     await updateDataAllEnterprisesUsageLocal();
     console.log('Updated all enterprises usage');
@@ -55,41 +27,39 @@ export const updateDataAllEnterprisesUsageSchedule = functionsV2.scheduler.onSch
   }
 });
 
-export const updateDataAllEnterprisesUsage = functionsV2.https.onRequest({
-  timeoutSeconds: 3600, // Establece el tiempo de espera a 3600 segundos (1 hora)
-}, async (req, res) => {
+export const updateDataAllEnterprisesUsage = functions.https.onCall(async () => {
   try {
-    console.log('updateDataAllEnterprisesUsageStart');
+    console.log('updateDataAllEnterprisesUsageStart')
     await updateDataAllEnterprisesUsageLocal();
-    console.log('updateDataAllEnterprisesUsageEnd');
-    res.status(200).send('Update completed successfully');
+    console.log('updateDataAllEnterprisesUsageEnd')
   } catch (error: any) {
     console.log(error);
-    res.status(500).send(`Error: ${error.message}`);
+    throw new functions.https.HttpsError("unknown", error.message);
   }
 });
+
 
 async function updateDataAllEnterprisesUsageLocal() {
   const batch = admin.firestore().batch();
   
   try {
     const licensesSnapshot = await admin.firestore().collection(License.collection).where('status', '==', 'active').get();
-    const enterpriseRefsIds = new Set<string>();
+    const enterpriseRefs = new Set<FirebaseFirestore.DocumentReference>();
+    const enterpriseIds = new Set<string>();
 
 
     licensesSnapshot?.forEach(doc => {
       const licenseData = doc.data();
       if (licenseData?.enterpriseRef) {
-        enterpriseRefsIds.add(licenseData.enterpriseRef.id);
+        enterpriseRefs.add(licenseData.enterpriseRef);
+        enterpriseIds.add(licenseData.enterpriseRef.id);
       }
     });
 
-    const uniqueEnterpriseRefsIds = Array.from(enterpriseRefsIds);
+    const uniqueEnterpriseRefs = Array.from(enterpriseRefs);
+    const uniqueEnterpriseIds = Array.from(enterpriseIds);
 
-    console.log('uniqueEnterpriseRefs',uniqueEnterpriseRefsIds)
-
-    for (const enterpriseId of uniqueEnterpriseRefsIds) {
-      console.log(`Actualización incio empresa ${enterpriseId}`);
+    for (const enterpriseId of uniqueEnterpriseIds) {
       await updateDataEnterpriseUsageLocal(enterpriseId, batch);
     }
 
@@ -106,7 +76,21 @@ async function updateDataAllEnterprisesUsageLocal() {
 async function updateDataEnterpriseUsageLocal(enterpriseId: string, batch: FirebaseFirestore.WriteBatch) {
   try {
     const enterpriseRef = admin.firestore().collection(Enterprise.collection).doc(enterpriseId);
-    const usersSnapshot = await admin.firestore().collection(User.collection).where('enterprise', '==', enterpriseRef).get();
+    
+    // Verificar si la referencia de la empresa existe
+    const enterpriseDoc = await enterpriseRef.get();
+    if (!enterpriseDoc.exists) {
+      console.log(`Enterprise with ID ${enterpriseId} does not exist.`);
+      return;
+    }
+
+    console.log(`Editing enterprise ID ${enterpriseId}.`);
+
+
+    const usersSnapshot = await admin.firestore().collection(User.collection)
+      .where('enterprise', '==', enterpriseRef)
+      .where('status', '==', 'active') // Filtrar usuarios con status active
+      .get();
     
     const users: FirebaseFirestore.DocumentData[] = usersSnapshot.docs.map(doc => doc.data());
     let allClasses: FirebaseFirestore.DocumentData[] = [];
@@ -131,7 +115,7 @@ async function updateDataEnterpriseUsageLocal(enterpriseId: string, batch: Fireb
       allClasses = allClasses.concat(classes);
     }
 
-    allClasses?.forEach(classData => {
+    allClasses.forEach(classData => {
       const dateEnd = classData.dateEnd.toDate();
       const dayOfWeek = dateEnd.getUTCDay();
       const hour = dateEnd.getUTCHours();
@@ -156,9 +140,7 @@ async function updateDataEnterpriseUsageLocal(enterpriseId: string, batch: Fireb
   }
 }
 
-  
-  
-  
+
   
   
   

@@ -52,7 +52,17 @@
       ],
       "predeploy": [
         "npm --prefix \"$RESOURCE_DIR\" run build"
-      ]
+      ],
+      "timeouts": {
+        "updateDataEnterpriseUsage": "540s",
+        "updateDataAllEnterprisesUsage": "540s",
+        "updateDataAllEnterprisesUsageSchedule": "540s"
+      },
+      "memory": {
+        "updateDataEnterpriseUsage": "2GB",
+        "updateDataAllEnterprisesUsage": "2GB",
+        "updateDataAllEnterprisesUsageSchedule": "2GB"
+      }
     }
   ],
   "storage": {
