@@ -19,7 +19,9 @@
         </div>
         <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign=" center">
           <div class="radius20 pdl10 pdr10 pdt05 pdb05 backWhite ft14 cursorPointer" routerLink="/management/live">Cancelar</div>
-          <button fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButton ft14 cursorPointer" (click)="saveDraftPre()" style="border-radius: 24px !important">Guardar Curso <img [src]="icon.save" class="h16px pdl05 makeWhite" alt="" /></button>
+          <button fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButton ft14 cursorPointer" (click)="saveDraftPre()" style="border-radius: 24px !important">
+            Guardar Curso <img [src]="icon.save" class="h16px pdl05 makeWhite" alt="" />
+          </button>
         </div>
       </div>
     </div>
@@ -418,7 +420,12 @@
           <div fxLayout="row" class="containerCurso h-100" fxLayoutGap="1.5rem">
             <div fxLayout="row" fxLayoutAlign="center" class="w-100">
               <div style="width: 800px">
-                <app-questions type="test" class="mgr10" [questionMaxSize]="100" [courseData]="modulos" [nameCurso]="formNewCourse?.get('title').value ? formNewCourse?.get('title').value : 'Temporal'" [nameEmpresa]="empresa?.name" (changeQuestion)="validExam = $event; formatExamQuestions()" (emmitForm)="validExam = $event" [questionsArray]="examen?.questions ? examen?.questions : []" [checkQuestions]="updateTriggeQuestionsExam" [selectedTestSkills]="[]" [mode]="mode" [enableImportQuestions]="false" [enableSortQuestions]="false"></app-questions>
+                <app-questions type="test" class="mgr10" [questionMaxSize]="100" [courseData]="modulos" 
+                [nameCurso]="formNewCourse?.get('title').value ? formNewCourse?.get('title').value : 'Temporal'" 
+                [nameEmpresa]="empresa?.name" (changeQuestion)="validExam = $event; formatExamQuestions()" 
+                (emmitForm)="validExam = $event" [questionsArray]="examen?.questions ? examen?.questions : []" 
+                [checkQuestions]="updateTriggeQuestionsExam" [selectedTestSkills]="[]" 
+                [mode]="mode" [enableImportQuestions]="false" [enableSortQuestions]="false"></app-questions>
               </div>
             </div>
 
@@ -501,6 +508,21 @@
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+
+        <mat-tab [label]="'Examen Final (' + examen?.questions?.length + ' Pregunta' + (examen?.questions?.length > 1 ? 's' : '') + ')'">
+          <div fxLayout="row" class="containerCurso h-100" fxLayoutGap="1.5rem">
+            <div fxLayout="row" fxLayoutAlign="center" class="w-100">
+              <div style="width: 800px">
+                <app-questions type="final-test" class="mgr10" [questionMaxSize]="100" [courseData]="modulos" 
+                [nameCurso]="formNewCourse?.get('title').value ? formNewCourse?.get('title').value : 'Temporal'" 
+                [nameEmpresa]="empresa?.name" (changeQuestion)="validFinalExam = $event; formatFinalExamQuestions()" 
+                (emmitForm)="validFinalExam = $event" [questionsArray]="examenFinal?.questions ? examenFinal?.questions : []" 
+                [checkQuestions]="updateTriggeQuestionsExam" [selectedTestSkills]="[]" 
+                [mode]="mode" [enableImportQuestions]="false" [enableSortQuestions]="false"></app-questions>
               </div>
             </div>
           </div>

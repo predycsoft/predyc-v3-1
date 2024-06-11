@@ -240,6 +240,32 @@ export class ActivityClassesService {
       );
   }
 
+  getCourseActivities(idCourse: string, type: "course" | "liveCourse" | "liveCourseTemplate") {
+    let courseRef: DocumentReference;
+    if (type === "course") courseRef = this.courseService.getCourseRefById(idCourse);
+    else if (type === "liveCourseTemplate") courseRef = this.liveCourseService.getLiveCourseTemplateRefById(idCourse);
+    else if (type === "liveCourse") courseRef = this.liveCourseService.getLiveCourseRefById(idCourse);
+
+    return this.afs.collection('activity', ref => ref.where('coursesRef', 'array-contains', courseRef)).valueChanges()
+    .pipe(
+      switchMap(activities => {
+        if (activities && activities.length > 0) {
+          const activityObservables = activities.map((activity: Activity) => {
+            return this.afs.collection(`${Activity.collection}/${activity.id}/${Question.collection}`).valueChanges()
+              .pipe(
+                map(questions => ({
+                  ...activity,
+                  questions
+                }))
+              );
+          });
+          return combineLatest(activityObservables);
+        }
+        return of([]); // Return an empty array if no activities are found
+      })
+    );
+  }
+
   getActivityById(idActivity: string): Observable<any> {
     const activityDocRef = this.afs.doc<Activity>(`${Activity.collection}/${idActivity}`);
 
