@@ -20,7 +20,7 @@
   <ng-container *ngIf="tab === 1">
     <div fxLayout="row" fxLayoutAlign="space-between center" style="width: 58%">
       <p class="ft600 ft16 gray-10">Lista de Cursos base</p>
-      <button fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButton mgt05" style="border-radius: 24px !important" routerLink="/management/live/new"><img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="" />Agregar curso base</button>
+      <button fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButton mgt05" style="border-radius: 24px !important" routerLink="/admin/live/new"><img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="" />Agregar curso base</button>
     </div>
 
     <div fxLayout="row" class="mgt10 fw fh" fxLayoutGap="2rem">
@@ -61,7 +61,7 @@
               <div class="border-bl pdl10 pdt05 pdr10 pdb10 fw" fxLayout="column">
                 <div fxLayout="row" fxLayoutAlign="space-between center">
                   <div class="gray-10 ft14 ft500 mgr08">{{ selectedCourse.title }}</div>
-                  <div routerLink="/management/live/{{ selectedCourse.id }}" fxLayout="row" fxLayoutGap=".5rem">
+                  <div routerLink="/admin/live/{{ selectedCourse.id }}" fxLayout="row" fxLayoutGap=".5rem">
                     <div class="blueLink mgt05 white cursorPointer ft14 fw mgb10" fxLayoutAlign="space-between center">
                       <!-- <img [src]="icon.edit" class="makeWhite h16px mgr08" alt=""> -->
                       Editar
