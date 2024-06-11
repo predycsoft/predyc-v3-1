@@ -48,11 +48,6 @@ export class SideNavComponent {
       link: "management/courses",
       icon: "../../assets/iconsUI/courses-1.svg",
     },
-    // {
-    //   name: "Cursos en vivo",
-    //   link: "management/live",
-    //   icon: "../../assets/iconsUI/courses-1.svg",
-    // },
     {
       name: "Licencias",
       link: "settings",
@@ -107,6 +102,11 @@ export class SideNavComponent {
       icon: "../../assets/iconsUI/courses-1.svg",
     },
     {
+      name: "Cursos en vivo",
+      link: "/admin/live",
+      icon: "../../assets/iconsUI/courses-1.svg",
+    },
+    {
       name: "Freebies",
       link: "/admin/freebies",
       icon: "../../assets/iconsUI/puzzle.svg",
@@ -135,9 +135,7 @@ export class SideNavComponent {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.currentUrl) {
-      this.pages = this.currentUrl.startsWith("/admin")
-        ? this.adminPages
-        : this.businessPages;
+      this.pages = this.currentUrl.startsWith("/admin") ? this.adminPages : this.businessPages;
     }
   }
 }

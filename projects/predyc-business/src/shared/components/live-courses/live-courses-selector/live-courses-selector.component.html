@@ -1,48 +1,39 @@
 <div class="list">
-    <!-- <span class="ft400 gray-8 ft13 pd05">Cursos Predyc</span> -->
-    <div class="fw categories" *ngFor="let category of processedCategories">
-        <div *ngIf="filteredCourses(category.courses)?.length > 0" 
-            [ngClass]="category.expanded ? 'headCategoryExpanded hoverGray mgt05' : 'headCategory hoverGray'" 
-            fxLayout="row"  fxLayoutAlign="space-between center"  (click)="category.expanded =! category.expanded">
-            <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
-                <ng-container>
-                    <img *ngIf="!category.expanded" [src]="icon.chevronRight" class=" cursorPointer" alt="">
-                    <img *ngIf="category.expanded" [src]="icon.chevronDown" class=" cursorPointer" alt="">
-                </ng-container>
-                <span [ngClass]="category.expanded ? 'ft12 gray-10 ft500' : 'ft12 gray-10 ft500'">
-                    {{category.name}}
-                </span>
+  <!-- <span class="ft400 gray-8 ft13 pd05">Cursos Predyc</span> -->
+  <div class="fw categories" *ngFor="let category of processedCategories">
+    <div *ngIf="filteredCourses(category.courses)?.length > 0" [ngClass]="category.expanded ? 'headCategoryExpanded hoverGray mgt05' : 'headCategory hoverGray'" fxLayout="row" fxLayoutAlign="space-between center" (click)="category.expanded = !category.expanded">
+      <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
+        <ng-container>
+          <img *ngIf="!category.expanded" [src]="icon.chevronRight" class="cursorPointer" alt="" />
+          <img *ngIf="category.expanded" [src]="icon.chevronDown" class="cursorPointer" alt="" />
+        </ng-container>
+        <span [ngClass]="category.expanded ? 'ft12 gray-10 ft500' : 'ft12 gray-10 ft500'">
+          {{ category.name }}
+        </span>
+      </div>
+    </div>
+    <div fxLayout="column" fxLayoutAlign="start start" [ngClass]="category.expanded ? 'bodyCategoryExpanded' : 'bodyCategory'">
+      <ng-container *ngFor="let course of filteredCourses(category.courses)">
+        <div *ngIf="!course.dontshow" class="fw pd05 h40px cursorPointer hoverGray courseContainer" [ngClass]="selectedCourse == course ? 'backBlue1' : ''" (click)="selectCourse(course)" fxLayout="row" fxLayoutAlign="space-between center">
+          <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
+            <img *ngIf="course['photoUrl']" [src]="course['photoUrl']" class="h24px w24px radius4" alt="" />
+            <img *ngIf="!course['photoUrl']" [src]="icon.examenPredyc2" class="h24px w24px radius4" alt="" />
+            <span class="ft12" [ngClass]="selectedCourse == course ? 'blue-5 ft500' : 'gray-10'">
+              {{ course.title }}
+            </span>
+          </div>
+          <div fxLayoutAlign="center center" fxLayout="row" fxLayoutGap=".5rem">
+            <div fxLayout="row" fxLayoutGap=".3rem">
+              <div *ngIf="course['proximamente']" style="display: inline-block; margin-right: 5px; margin-bottom: 5px" class="skill-badge-complete ListHover radius10 backGray2 ft12 pdl05 pdr05 yellow-5">Borrador</div>
             </div>
+            <span *ngIf="course?.duration" class="gray-6 ft12 nowrap"> {{ getRounded(course.duration / 60) }}{{ getRounded(course.duration / 60) == 1 ? "hr" : "hrs" }} </span>
+          </div>
         </div>
-        <div fxLayout="column" fxLayoutAlign="start start" [ngClass]="category.expanded ? 'bodyCategoryExpanded' : 'bodyCategory'">
-             <ng-container *ngFor="let course of filteredCourses(category.courses)">
-                <div *ngIf="!course.dontshow" class="fw pd05 h40px  cursorPointer hoverGray courseContainer" [ngClass]="selectedCourse == course ? 'backBlue1' : ''"  
-                    (click)="selectCourse(course)"  fxLayout="row"  fxLayoutAlign="space-between center">
-                    <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
-                        <img *ngIf="course['photoUrl']" [src]="course['photoUrl']" class="h24px w24px radius4" alt="">
-                        <img *ngIf="!course['photoUrl']" [src]="icon.examenPredyc2" class="h24px w24px radius4" alt="">
-                        <span class="ft12" [ngClass]="selectedCourse == course ? 'blue-5 ft500' : 'gray-10'">
-                            {{course.title }}
-                        </span>
-                    </div>
-                    <div fxLayoutAlign="center center" fxLayout="row" fxLayoutGap=".5rem">
-                        <div fxLayout="row" fxLayoutGap=".3rem">
-                            <div *ngIf="course['proximamente']" style="display: inline-block; margin-right: 5px; margin-bottom: 5px;"
-                                class="skill-badge-complete ListHover radius10 backGray2  ft12 pdl05 pdr05 yellow-5">
-                                Borrador
-                            </div>
-                        </div>
-                        <span *ngIf="course?.duracion" class="gray-6 ft12 nowrap">
-                            {{ getRounded(course.duracion / 60) }}{{getRounded(course.duracion / 60) == 1 ? 'hr' : 'hrs'}}
-                        </span>
-                    </div>
-                </div>
-             </ng-container>
-        </div>
+      </ng-container>
     </div>
+  </div>
 
-    <div *ngIf="!processedCategories || processedCategories.length === 0">
-        <span class="ft14 ft500"> Aún no hay cursos en vivo</span>
-    </div>
+  <div *ngIf="!processedCategories || processedCategories.length === 0">
+    <span class="ft14 ft500"> Aún no hay cursos en vivo</span>
+  </div>
 </div>
-
