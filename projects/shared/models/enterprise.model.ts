@@ -25,6 +25,13 @@ export interface EnterpriseJson {
     vimeoFolderId: string | null
     vimeoFolderUri: string | null
     showEnterpriseLogoInCertificates: boolean
+    allUsersExtraCourses: boolean | false
+    congratulationsEndCourse: boolean | false
+    sendMailtoAdmin: boolean | false
+    sendMailtoUsers: boolean | false
+    mondlyMeetings: boolean | false
+    useWhatsapp: boolean | false
+
 }
 
 export class Enterprise {
@@ -44,6 +51,12 @@ export class Enterprise {
         public photoUrl: string | null,
         public examenInicial: boolean | true,
         public examenFinal: boolean | true,
+        public allUsersExtraCourses: boolean | false,
+        public sendMailtoAdmin: boolean | false,
+        public sendMailtoUsers: boolean | false,
+        public mondlyMeetings: boolean | false,
+        public useWhatsapp: boolean | false,
+        public congratulationsEndCourse: boolean | false,
         public demo: boolean | true,
         public profilesNo: number,
         public zipCode: number | null,
@@ -79,6 +92,12 @@ export class Enterprise {
             examenInicial:true,
             demo:false,
             examenFinal:true,
+            allUsersExtraCourses:false,
+            sendMailtoAdmin: false,
+            sendMailtoUsers: false,
+            mondlyMeetings: false,
+            useWhatsapp: false,
+            congratulationsEndCourse:false,
             profilesNo: 0,
             zipCode: null,
             workField: null,
@@ -114,6 +133,12 @@ export class Enterprise {
             enterpriseJson.examenInicial,
             enterpriseJson.demo,
             enterpriseJson.examenFinal,
+            enterpriseJson.allUsersExtraCourses,
+            enterpriseJson.sendMailtoAdmin,
+            enterpriseJson.sendMailtoUsers,
+            enterpriseJson.mondlyMeetings,
+            enterpriseJson.useWhatsapp,
+            enterpriseJson.congratulationsEndCourse,
             enterpriseJson.profilesNo,
             enterpriseJson.zipCode,
             enterpriseJson.workField,
@@ -138,6 +163,12 @@ export class Enterprise {
             examenInicial:this.examenInicial,
             demo:this.demo,
             examenFinal:this.examenFinal,
+            allUsersExtraCourses:this.allUsersExtraCourses,
+            sendMailtoAdmin:this.sendMailtoAdmin,
+            sendMailtoUsers:this.sendMailtoUsers,
+            mondlyMeetings:this.mondlyMeetings,
+            useWhatsapp:this.useWhatsapp,
+            congratulationsEndCourse:this.congratulationsEndCourse,
             profilesNo: this.profilesNo,
             zipCode: this.zipCode,
             workField: this.workField,

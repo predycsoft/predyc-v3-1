@@ -9,10 +9,9 @@
   <!-- Sección de días -->
   <div fxFlex="50">
     <div fxLayout="column" fxLayoutGap="8px" fxLayoutAlign="center center" class="fw">
-      <div class="fw backGray2 radius6 pd10" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="8px">
+      <div *ngIf="textoDiasMasUsoDetail" class="fw backGray2 radius6 pd10" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="8px">
         <img [src]="icon.calendar" class="makeBlue h22px" alt="">
         <!-- <span class="ft500 ft14 pdb05">{{textoDiasMasUso}}</span> -->
-
         <span class="ft500 ft14 pdb05">Los <span class="ft600">{{textoDiasMasUsoDetail}}</span> {{textoDiasMasUso}} </span>
       </div>
       <div *ngFor="let day of usageByDay" class="fw backGray2 radius6 pd10" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="16px">

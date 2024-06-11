@@ -69,6 +69,9 @@ export class EnterpriseService {
     await this.afs.collection(Enterprise.collection).doc(enteprise.id as string).set(
       enteprise, { merge: true }
     );
+    console.log('enteprise edit',enteprise)
+
+
   }
 
   public getEnterpriseRefById(id: string): DocumentReference<Enterprise> {
@@ -99,6 +102,31 @@ export class EnterpriseService {
 
   public getEnterpriseById$(enterpriseId: string): Observable<Enterprise> {
     return this.afs.collection<Enterprise>(Enterprise.collection).doc(enterpriseId).valueChanges()
+  }
+
+  public getEnterpriseByIdPromise(enterpriseId: string): Promise<Enterprise> {
+    return firstValueFrom(this.afs.collection<Enterprise>(Enterprise.collection).doc(enterpriseId).valueChanges());
+  }
+
+  async changeAllusersEnterpriseEnrollExtra(enterpriseId,value){
+    const enterpriseRef = this.afs.collection('enterprise').doc(enterpriseId).ref;
+    try {
+      const batch = this.afs.firestore.batch();
+      // Obtener documentos relacionados en la colección 'user'
+      const usersSnapshot = await this.afs.collection('user', ref => ref.where('enterprise', '==', enterpriseRef)).get().toPromise();
+      usersSnapshot.docs.forEach(doc => {
+        batch.update(doc.ref, {
+          canEnrollParticularCourses: value,
+        });
+      });
+      await batch.commit();
+    }
+    catch (error) {
+      console.error('Error editando usuarios emepresa:', error);
+      // Manejo de errores adicional si es necesario
+    }
+
+
   }
 
   public async deleteEnterprise(enterpriseId: string): Promise<void> {

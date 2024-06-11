@@ -220,10 +220,28 @@ export class CreateUserComponent {
   }
 
   async setupForm() {
+
+    let enterprise = null
+
+    if(this.enterpriseRef){
+      enterprise  = await this.enterpriseService.getEnterpriseByIdPromise(this.enterpriseRef.id);
+    }
+    else {
+      let enterpriseRef = this.enterpriseService.getEnterpriseRef()
+      enterprise = await this.enterpriseService.getEnterpriseByIdPromise(enterpriseRef.id);
+    }
+
+    console.log('enterprise',enterprise)
+    let canEnrollParticularCourses = false
+    if(enterprise.allUsersExtraCourses){
+      canEnrollParticularCourses = true
+    }
+
     this.userForm = this.fb.group({
       displayName: [null, [Validators.required]],
       profile: [null],
       photoUrl: [null],
+      canEnrollParticularCourses: [canEnrollParticularCourses],
       startDateStudy: [null],
       endDateStudy: [null],
       phoneNumber: [null, [Validators.pattern(/^\d*$/)]],
@@ -247,6 +265,7 @@ export class CreateUserComponent {
         : null;
       this.userForm.patchValue({
         displayName: this.studentToEdit.displayName,
+        canEnrollParticularCourses:this.studentToEdit.canEnrollParticularCourses,
         profile: profile ? profile.id : null,
         photoUrl: this.studentToEdit.photoUrl,
         phoneNumber: this.studentToEdit.phoneNumber,
@@ -613,6 +632,7 @@ export class CreateUserComponent {
         : null,
       phoneNumber: formData.phoneNumber ? formData.phoneNumber : null,
       departmentRef: department,
+      canEnrollParticularCourses:formData.canEnrollParticularCourses ? formData.canEnrollParticularCourses : false,
       country: formData.country ? formData.country : null,
       birthdate: formData.birthdate
         ? dateFromCalendarToTimestamp(formData.birthdate)

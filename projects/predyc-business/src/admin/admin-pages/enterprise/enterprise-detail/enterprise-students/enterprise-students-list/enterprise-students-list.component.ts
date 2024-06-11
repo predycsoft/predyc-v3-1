@@ -134,6 +134,18 @@ export class EnterpriseStudentsListComponent {
         );
       })
     ).subscribe((studentsInList) => {
+      // Ordena studentsInList por el campo 'role'
+      studentsInList.sort((a, b) => {
+        if (a.role < b.role) {
+          return -1;
+        }
+        if (a.role > b.role) {
+          return 1;
+        }
+        return 0;
+      });
+      // Asigna el arreglo ordenado a dataSource.data
+      this.dataSource.data = studentsInList;
       this.dataSource.data = studentsInList;
       console.log('studentsInList', studentsInList);
     });

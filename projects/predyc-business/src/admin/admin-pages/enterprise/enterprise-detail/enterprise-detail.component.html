@@ -4,10 +4,9 @@
         <!-- <h6 class="ft600 ft16 gray-10"> {{enterpriseId ? "Editar" : "Agregar"}} empresa cliente: {{enterpriseId ? enterprise.name : ""}}</h6> -->
 
     </div>    
-    <div fxLayoutAlign="start start" fxLayout="column" class="mgt10  mgl20 mgr20">
+    <div *ngIf="false" fxLayoutAlign="start start" fxLayout="column" class="mgt10  mgl20 mgr20">
         <div *ngIf="enterpriseId" fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign=" center">
             <span class="mgr10">Status suscripción: </span> 
-            <!-- <span class="chip">{{enterprise.status}}</span> -->
             <div *ngIf="enterprise" >
                 <span *ngIf="enterprise" class="chip pd05 radius20 ">{{"STATUS"}}</span>
             </div>
@@ -33,7 +32,7 @@
             <!-- <span *ngIf="enterpriseId" class="pdl10 pdr10 pdb05 pdt05 ft11 cursorPointer" (click)="tab = 2"[ngClass]="tab == 2 ? 'selectedTab gray-10' : 'gray-8 tab'">Pagos</span> -->
         </div>
     
-        <div *ngIf="tab === 0" fxLayout="column" class="mgt10">
+        <div *ngIf="tab === 0" fxLayout="column" class="mgt10 fw">
             <app-enterprise-info [enterprise]="enterprise" ></app-enterprise-info>
         </div>
         <div *ngIf="tab === 1" fxLayout="column" class="mgt10">

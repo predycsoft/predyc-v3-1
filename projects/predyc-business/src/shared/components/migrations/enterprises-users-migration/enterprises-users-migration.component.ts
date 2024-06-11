@@ -230,6 +230,12 @@ export class EnterprisesUsersMigrationComponent {
       return {
         examenInicial: true,
         demo:false,
+        sendMailtoAdmin:false,
+        sendMailtoUsers:false,
+        mondlyMeetings:false,
+        useWhatsapp:false,
+        congratulationsEndCourse:false,
+        allUsersExtraCourses:false,
         examenFinal: true,
         showEnterpriseLogoInCertificates: true,
         city: null,

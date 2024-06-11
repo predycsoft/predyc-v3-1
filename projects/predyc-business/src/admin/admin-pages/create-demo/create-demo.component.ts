@@ -333,7 +333,13 @@ export class CreateDemoComponent {
       examenInicial: true,
       examenFinal: true,
       showEnterpriseLogoInCertificates: true,
-      demo: false
+      demo: false,
+      allUsersExtraCourses: false,
+      congratulationsEndCourse: false,
+      sendMailtoAdmin: false,
+      sendMailtoUsers: false,
+      mondlyMeetings: false,
+      useWhatsapp: false
     });
     //console.log("Enterprise", enterprise.toJson())
     await this.enterpriseService.addEnterprise(enterprise);

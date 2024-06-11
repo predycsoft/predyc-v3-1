@@ -2,6 +2,18 @@ export const capitalizeFirstLetter = (str: string) => {
 	return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
+
+export const titleCase = (str: string) =>  {
+    if (!str) return str;
+    return str
+      .toLowerCase()
+      .split(" ")
+      .map((word) => {
+        return word.charAt(0).toUpperCase() + word.slice(1);
+      })
+      .join(" ");
+  }
+
 export const dateFromCalendarToTimestamp = (date: { day: number; month: number; year: number }): number => {
 	return Date.UTC(date.year, date.month - 1, date.day);
 };

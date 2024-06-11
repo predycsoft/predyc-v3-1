@@ -1,7 +1,7 @@
 import { EnterpriseJson } from 'projects/shared/models/enterprise.model'
 
 export const enterpriseData: EnterpriseJson = {
-    demo:false,
+    demo: false,
     city: "Santiago de Querétaro",
     country: "México",
     createdAt: 1695141743802,
@@ -33,14 +33,20 @@ export const enterpriseData: EnterpriseJson = {
     vimeoFolderUri: null,
     examenInicial: true,
     examenFinal: true,
-    showEnterpriseLogoInCertificates: true
+    showEnterpriseLogoInCertificates: true,
+    allUsersExtraCourses: false,
+    congratulationsEndCourse: false,
+    sendMailtoAdmin: false,
+    sendMailtoUsers: false,
+    mondlyMeetings: false,
+    useWhatsapp: false
 }
 
 
 export const enterpriseDataPredyc: EnterpriseJson = {
     city: "Santiago de Querétaro",
     country: "México",
-    demo:false,
+    demo: false,
     createdAt: 1695141743802,
     description: "Admin Predyc",
     employesNo: 0,
@@ -70,5 +76,11 @@ export const enterpriseDataPredyc: EnterpriseJson = {
     vimeoFolderUri: null,
     examenInicial: true,
     examenFinal: true,
-    showEnterpriseLogoInCertificates: true
+    showEnterpriseLogoInCertificates: true,
+    allUsersExtraCourses: false,
+    congratulationsEndCourse: false,
+    sendMailtoAdmin: false,
+    sendMailtoUsers: false,
+    mondlyMeetings: false,
+    useWhatsapp: false
 }

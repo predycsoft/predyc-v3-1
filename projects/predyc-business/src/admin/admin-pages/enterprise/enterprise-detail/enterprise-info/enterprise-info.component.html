@@ -1,123 +1,142 @@
-<form [formGroup]="enterpriseForm" (ngSubmit)="onSubmit()">
-    <div fxLayoutAlign="start center" fxLayout="row" class="fw">
-
-        <div  fxLayout="column"  class="mgt10 mgr20 "style="align-items: flex-start;">
-            <!-- <div (click)="fileInput.click()" class="cursorPointer">
-                <img onerror="this.src='assets/images/default/default-user-image.jpg'" [src]="imageUrl" class="avatar10" alt="">
-            </div> -->
-            <div fxLayoutAlign="start center" fxLayout="column">
-                <div (click)="fileInput.click()" class="cursorPointer mgb05 ">
-                    <img onerror="this.src='assets/images/default/default-user-image.jpg'" [src]="imageUrl" alt="Imagen seleccionada" class="avatarSquare8 radius6">
-                </div>
-                <input #fileInput type="file" style="display: none;" (change)="onFileSelected($event)" hidden accept="image/jpeg, image/png" >
-                <label> Foto de Empresa </label> 
-            </div>            
+<div fxLayout="row" fxLayoutAlign="center center" class="fw mgt10">
+    <form [formGroup]="enterpriseForm" (ngSubmit)="onSubmit()" fxFlex="55" class="w-70">
+      <div fxLayoutAlign="center" fxLayout="row" class="fw">
+      
+        <div fxLayout="row" fxLayoutAlign="center center" class="mgt10 mgr20">
+          <div (click)="fileInput.click()" class="cursorPointer mgb05">
+            <img onerror="this.src='assets/images/default/default-user-image.jpg'" [src]="imageUrl" alt="Imagen seleccionada" class="avatar10">
+          </div>
+          <div fxLayout="column" fxLayoutAlign="center center" class="mgl10">
+            <input #fileInput type="file" style="display: none;" (change)="onFileSelected($event)" hidden accept="image/jpeg, image/png">
+            <!-- <label> Foto de Empresa </label>  -->
+          </div>            
         </div>
-
-        <div fxLayout="column" class="fw mgt03 mgr20 " >
-            <div class="form-group mgt02 fw">
-                <label class="ft12">Nombre de la empresa</label>
-                <input [class.is-invalid]="enterpriseForm.controls['name'].errors && showError"
-                formControlName="name" type="text" class="form-control ft14  shadow-animation pdl05 pdr05 radius20  borderLight ">
-                <div class="invalid-feedback" *ngIf="enterpriseForm.controls['name'].errors && showError"> 
-                    Debe indicar el nombre de la empresa
-                </div>
+      
+        <div fxLayout="column" fxLayoutAlign="center center" class="fw mgt03 mgr20">
+          <div class="form-group mgt02 fw">
+            <!-- <label class="ft12">Nombre de la empresa</label> -->
+            <input [class.is-invalid]="enterpriseForm.controls['name'].errors && showError"
+            formControlName="name" type="text" class="form-control ft14 shadow-animation pdl05 pdr05 radius20 borderLight">
+            <div class="invalid-feedback" *ngIf="enterpriseForm.controls['name'].errors && showError"> 
+              Debe indicar el nombre de la empresa
             </div>
-            <div fxLayoutAlign="center center" fxLayout="row" fxLayoutGap="1rem">
-                <div class="form-group mgt08 fw">
-                    <label class="ft12 mgr10">Sitio web</label>
-                    <input
-                    [class.is-invalid]="enterpriseForm.controls['website'].errors && showError"
-                    formControlName="website" type="text" class="form-control ft14  shadow-animation   pdl05 pdr05 radius20  borderLight ">
-                    <div class="invalid-feedback" *ngIf="enterpriseForm.controls['website'].errors && showError"> 
-                        Debe indicar el sitio web
-                    </div>
-                </div>
-                <div class="form-group mgt08 fw">
-                    <label class="ft12">Enlace Linkedin</label>
-                    <input
-                    [class.is-invalid]="enterpriseForm.controls['linkedin'].errors && showError"
-                    formControlName="linkedin" type="text" class="form-control ft14  shadow-animation   pdl05 pdr05 radius20  borderLight ">
-                    <div class="invalid-feedback" *ngIf="enterpriseForm.controls['linkedin'].errors && showError"> 
-                        Debe indicar el Linkedin
-                    </div>
-                </div>
-            </div>
-            
+          </div>
         </div>
-        
-
-    </div>
-    <div fxLayoutAlign="center center" fxLayout="row">
-        <!-- <div class="form-group mgt08">
-            <label class="ft12 " >Descripcion</label>
-            <textarea style="resize: none;" class="fw" maxlength="5000" formControlName="description"> </textarea>
-        </div> -->
+      </div>
+  
+      <div *ngIf="enterprise.id" fxLayoutAlign="center center" fxLayout="row">
         <div class="mgt08 fw">
-            <label class="ft12 " >Descripción</label>
-            <textarea name=""  id="description"  ormControlName="description"  placeholder="Introduzca la descripción" class="pd05     radius10 backWhite shadow-animation borderLight form-group"
-            style=" overflow-y: hidden;  width: 100%; height: 100px; resize:none; background-color: transparent !important; " maxlength="200"  ></textarea>
+          <app-enterprise-licenses-cards [enterpriseRef]="enterpriseRef"></app-enterprise-licenses-cards>
         </div>
+      </div>
+
+      <div fxLayout="row" class="mgt15 mgb15">
+        <span class="ft20 ft500">Demo</span>
     </div>
 
-    <div fxLayoutAlign="center center" fxLayout="row" fxLayoutGap="1rem">
-        <div class="form-group mgt08 fw">
-            <label class="ft12 mgr10">Sitio web</label>
-            <input
-            [class.is-invalid]="enterpriseForm.controls['website'].errors && showError"
-            formControlName="website" type="text" class="form-control ft14  shadow-animation   pdl05 pdr05 radius20  borderLight ">
-            <div class="invalid-feedback" *ngIf="enterpriseForm.controls['website'].errors && showError"> 
-                Debe indicar el sitio web
-            </div>
+      <div fxLayout="row">
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="fw backGray1 radius6 pd10">
+          <span class="ft16 ft500">Es una empresa demo</span>
+          <mat-slide-toggle class="" color="primary" formControlName="demo"></mat-slide-toggle>
         </div>
-        <div class="form-group mgt08 fw">
-            <label class="ft12">Enlace Linkedin</label>
-            <input
-            [class.is-invalid]="enterpriseForm.controls['linkedin'].errors && showError"
-            formControlName="linkedin" type="text" class="form-control ft14  shadow-animation   pdl05 pdr05 radius20  borderLight ">
-            <div class="invalid-feedback" *ngIf="enterpriseForm.controls['linkedin'].errors && showError"> 
-                Debe indicar el Linkedin
-            </div>
+      </div>
+
+      <div fxLayout="row" class="mgt15 mgb15">
+        <span class="ft20 ft500">Account Management</span>
+      </div>
+
+      <div fxLayout="row">
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="fw backGray1 radius6 pd10">
+          <div fxLayout="column">
+            <span class="ft16 ft600">Enviar correos de progreso a los administradores</span>
+            <span *ngIf="lastDayAdminMail" class="ft16 ft500">Último envio: {{lastDayAdminMail}}</span>
+            <span class="ft16 ft500 blueLink">Realizar envio manual ahora</span>
+
+          </div>
+          <mat-slide-toggle class="" color="primary" formControlName="sendMailtoAdmin"></mat-slide-toggle>
         </div>
-    </div>
+      </div>
+
+      <div fxLayout="row">
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt08 fw backGray1 radius6 pd10">
+          <div fxLayout="column">
+            <span class="ft16 ft600">Enviar correos de progreso a los usuarios.</span>
+            <span *ngIf="lastDayUsersMail" class="ft16 ft500">Último envio: {{lastDayUsersMail}}</span>
+            <span class="ft16 ft500 blueLink">Realizar envio manual ahora</span>
+          </div>
+          <mat-slide-toggle class="" color="primary" formControlName="sendMailtoUsers"></mat-slide-toggle>
+        </div>
+      </div>
+
+      <div fxLayout="row">
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt08 fw backGray1 radius6 pd10">
+          <span class="ft16 ft600">A favor de usar Whatsapp para control</span>
+          <mat-slide-toggle class="" color="primary" formControlName="useWhatsapp"></mat-slide-toggle>
+        </div>
+      </div>
+
+      <div fxLayout="row">
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt08 fw backGray1 radius6 pd10">
+          <span class="ft16 ft600">Reuniones mensuales</span>
+          <mat-slide-toggle class="" color="primary" formControlName="mondlyMeetings"></mat-slide-toggle>
+        </div>
+      </div>
 
 
-    <div fxLayoutAlign="start center" fxLayout="row" fxLayoutGap="1rem">
-        <div class="mgt10" fxLayout="" fxLayoutAlign="start center" fxLayoutGap=".5rem">
-            <span class="ft12 makeBlue">Se requiere diagnóstico inicial.</span>
-            <mat-slide-toggle class=" " color="primary" formControlName="examenInicial"></mat-slide-toggle>
-        </div>
-        <div class="mgt10" fxLayout="" fxLayoutAlign="start center" fxLayoutGap=".5rem">
-            <span class="ft12 makeBlue">Se requiere diagnóstico final.</span>
-            <mat-slide-toggle class=" " color="primary" formControlName="examenFinal"></mat-slide-toggle>
-        </div>
-        <div class="mgt10" fxLayout="" fxLayoutAlign="start center" fxLayoutGap=".5rem">
-            <span class="ft12 makeBlue">Mostrar logo de la empresa en certificados.</span>
-            <mat-slide-toggle class="" color="primary" formControlName="showEnterpriseLogoInCertificates"></mat-slide-toggle>
-        </div>
+      
 
-        <div class="mgt10" fxLayout="" fxLayoutAlign="start center" fxLayoutGap=".5rem">
-            <span class="ft12 makeBlue">Empresa Demo.</span>
-            <mat-slide-toggle class="" color="primary" formControlName="demo"></mat-slide-toggle>
-        </div>
-    </div>
+      <div fxLayout="row" class="mgt15 mgb15">
+          <span class="ft20 ft500">Aprendizaje</span>
+      </div>
 
-    <div fxLayoutAlign="start center" fxLayout="row" fxLayoutGap="1rem">
-        <button *ngIf="enterprise.id" class=" redButtonAnim button-animation h28px mgr10 " fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" 
-        type="button" (click)="deleteEnterprise()" >
-            Eliminar empresa
+      <div fxLayout="row">
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="fw backGray1 radius6 pd10">
+          <span class="ft16 ft600">Diagnóstico inicial</span>
+          <mat-slide-toggle class="" color="primary" formControlName="examenInicial"></mat-slide-toggle>
+        </div>
+      </div>
+
+      <div fxLayout="row">
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt08 fw backGray1 radius6 pd10">
+          <span class="ft16 ft600">Examen final (diagnóstico inicial)</span>
+          <mat-slide-toggle class="" color="primary" formControlName="examenFinal"></mat-slide-toggle>
+        </div>
+      </div>
+
+      <div fxLayout="row">
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt08 fw backGray1 radius6 pd10">
+          <span class="ft16 ft600">Permitir a todos los usuarios inscribir cursos extra</span>
+          <mat-slide-toggle class="" color="primary" formControlName="allUsersExtraCourses"></mat-slide-toggle>
+        </div>
+      </div>
+
+
+      <div fxLayout="row" class="mgt15 mgb15">
+        <span class="ft20 ft500">Logros</span>
+      </div>
+
+      <div fxLayout="row">
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="fw backGray1 radius6 pd10">
+          <span class="ft16 ft600">Mostrar logo de la empresa en certificados</span>
+          <mat-slide-toggle class="" color="primary" formControlName="showEnterpriseLogoInCertificates"></mat-slide-toggle>
+        </div>
+      </div>
+
+      <div fxLayout="row">
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="fw backGray1 radius6 pd10 mgt08">
+          <span class="ft16 ft600">Enviar felicitación cada vez que se completa un curso + certificado</span>
+          <mat-slide-toggle class="" color="primary" formControlName="congratulationsEndCourse"></mat-slide-toggle>
+        </div>
+      </div>
+  
+      <div fxLayout="row" class="mgt15" fxLayoutAlign="space-between">
+        <button *ngIf="enterprise.id" class="redButtonAnim button-animation h28px mgr10" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" type="button" (click)="deleteEnterprise()">
+          Eliminar empresa
         </button>
-    </div>
-
-
-    <div fxLayout="row" class="mgt10" fxLayoutAlign="end ">
-        <button class=" blueButtonAnim button-animation h28px  " fxLayout="row" fxLayoutAlign="center center" type="submit" style="margin-right: -1px;">
-            {{enterprise.id ? "Guardar" : "Crear"}} empresa
-        </button> 
-        <!-- <button *ngIf="enterprise.id" class=" redButtonAnim button-animation h28px mgr10 " fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" 
-        type="button" (click)="deleteEnterprise()" >
-            Eliminar empresa
-        </button>   -->
-    </div>
-
-</form>
+        <button class="blueButtonAnim button-animation h28px" fxLayout="row" fxLayoutAlign="center center" type="submit" style="margin-right: -1px;">
+          {{enterprise.id ? "Guardar" : "Crear"}} empresa
+        </button>
+      </div>
+    </form>
+  </div>
+  

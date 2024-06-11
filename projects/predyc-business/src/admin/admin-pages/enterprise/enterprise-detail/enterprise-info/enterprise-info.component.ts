@@ -9,6 +9,7 @@ import { DialogService } from "projects/predyc-business/src/shared/services/dial
 import { EnterpriseService } from "projects/predyc-business/src/shared/services/enterprise.service";
 import { cleanFileName } from "projects/shared";
 import Swal from 'sweetalert2';
+import { DocumentReference } from "@angular/fire/compat/firestore";
 
 @Component({
 	selector: "app-enterprise-info",
@@ -24,17 +25,25 @@ export class EnterpriseInfoComponent {
 		private alertService: AlertsService,
 		private dialogService: DialogService,
 		private router: Router,
-		private storage: AngularFireStorage
+		private storage: AngularFireStorage,
+		private entepriseService: EnterpriseService,
 	) {}
 
 	enterpriseForm: FormGroup;
 	showError
+	enterpriseRef: DocumentReference<Enterprise>
+
 
 	imageUrl: string | ArrayBuffer | null = null;
 	uploadedImage: File | null = null;
 
+	lastDayAdminMail = null
+	lastDayUsersMail = null
+
+
 	ngOnInit() {
-		// console.log("this.enterprise", this.enterprise)
+		this.enterpriseRef = this.entepriseService.getEnterpriseRefById(this.enterprise?.id)
+		console.log("this.enterprise", this.enterprise)
 		this.setupForm();
 	}
 
@@ -48,23 +57,34 @@ export class EnterpriseInfoComponent {
 			photoUrl: [null],
 			examenInicial: [true],
 			examenFinal: [true],
+			allUsersExtraCourses: [false],
 			demo: [false],
+			congratulationsEndCourse: [false],
+			sendMailtoAdmin: [false],
+			sendMailtoUsers: [false],
+			mondlyMeetings: [false],
+			useWhatsapp: [false],
 			showEnterpriseLogoInCertificates: [false],
 		});
 		// Edit mode
 		if (this.enterprise) {
 
+
+			this.lastDayAdminMail = this.enterprise['lastDayAdminMail']
+			this.lastDayUsersMail = this.enterprise['lastDayUsersMail']
+
 			console.log('empresaDatos',this.enterprise)
 
 			if(this.enterprise.examenInicial  === undefined ){
 				this.enterprise.examenInicial = true
-
 			}
-
 			if(this.enterprise.examenFinal  === undefined ){
 				this.enterprise.examenFinal = true
 			}
 
+			if(this.enterprise.allUsersExtraCourses  === undefined ){
+				this.enterprise.allUsersExtraCourses= false
+			}
 			// if(this.enterprise.demo  === undefined ){
 			// 	this.enterprise.demo = true
 			// }
@@ -81,6 +101,12 @@ export class EnterpriseInfoComponent {
 				examenFinal:this.enterprise.examenFinal,
 				demo:this.enterprise.demo,
 				showEnterpriseLogoInCertificates: this.enterprise?.showEnterpriseLogoInCertificates ?this.enterprise?.showEnterpriseLogoInCertificates : false,
+				allUsersExtraCourses:this.enterprise.allUsersExtraCourses?this.enterprise.allUsersExtraCourses:false,
+				congratulationsEndCourse : this.enterprise.congratulationsEndCourse?this.enterprise.congratulationsEndCourse:false,
+				sendMailtoAdmin : this.enterprise.sendMailtoAdmin?this.enterprise.sendMailtoAdmin:false,
+				sendMailtoUsers : this.enterprise.sendMailtoUsers?this.enterprise.sendMailtoUsers:false,
+				mondlyMeetings : this.enterprise.mondlyMeetings?this.enterprise.mondlyMeetings:false,
+				useWhatsapp : this.enterprise.useWhatsapp?this.enterprise.useWhatsapp:false,
 			});
 			// this.enterpriseForm.get('name')?.disable();
 			if (this.enterprise.photoUrl) {
@@ -162,6 +188,8 @@ export class EnterpriseInfoComponent {
 		const formValue = this.enterpriseForm.value;
 		// console.log("form", formValue)
 
+		let userEnroll = this.enterprise?.allUsersExtraCourses
+
 		const enterprise = this.enterprise;
 		enterprise.name = formValue.name;
 		// enterprise.summary = formValue.summary
@@ -170,16 +198,37 @@ export class EnterpriseInfoComponent {
 		enterprise.socialNetworks.linkedin = formValue.linkedin;
 		enterprise.photoUrl = formValue.photoUrl;
 		enterprise.examenFinal = formValue.examenFinal;
+		enterprise.allUsersExtraCourses = formValue.allUsersExtraCourses;
 		enterprise.demo = formValue.demo;
+		enterprise.congratulationsEndCourse = formValue.congratulationsEndCourse;
+		enterprise.sendMailtoAdmin = formValue.sendMailtoAdmin;
+		enterprise.sendMailtoUsers = formValue.sendMailtoUsers;
+		enterprise.mondlyMeetings = formValue.mondlyMeetings;
+		enterprise.useWhatsapp = formValue.useWhatsapp;
 		enterprise.examenInicial = formValue.examenInicial;
 		enterprise.showEnterpriseLogoInCertificates = formValue.showEnterpriseLogoInCertificates;
 
 
 		console.log("enterprise Actualizado: ", enterprise);
 
+		console.log(this.enterprise,enterprise,userEnroll)
+
 		try {
 			if (this.enterprise.id) {
+				Swal.fire({
+					title: 'Editando empresa',
+					text: 'Por favor, espera.',
+					allowOutsideClick: false,
+					didOpen: () => {
+					  Swal.showLoading()
+					}
+				});
 				await this.enterpriseService.editEnterprise(enterprise);
+				if(userEnroll != enterprise.allUsersExtraCourses){
+					await this.enterpriseService.changeAllusersEnterpriseEnrollExtra(this.enterprise.id,enterprise.allUsersExtraCourses)
+				}
+				userEnroll = enterprise.allUsersExtraCourses
+				Swal.close();
 				this.alertService.succesAlert("Empresa editada exitosamente");
 			} else {
 				const newEnterpriseId = await this.enterpriseService.addEnterprise(enterprise);

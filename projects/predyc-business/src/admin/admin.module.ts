@@ -43,6 +43,7 @@ import { DiplomadosComponent } from "./admin-pages/diplomados/diplomados.compone
 import { DiplomadosListComponent } from "./admin-pages/diplomados/diplomados-list/diplomados-list.component";
 import { DiplomadoFormComponent } from "./admin-pages/diplomados/diplomado-form/diplomado-form.component";
 import { StudentDiplomadosListComponent } from "./admin-pages/students/student-detail/student-diplomados-list/student-diplomados-list.component";
+import { EnterpriseLicensesCardsComponent } from "./admin-pages/enterprise/enterprise-detail/enterprise-students/enterprise-licenses-cards/enterprise-licenses-cards.component";
 
 
 @NgModule({
@@ -75,6 +76,7 @@ import { StudentDiplomadosListComponent } from "./admin-pages/students/student-d
     EnterpriseStudentsComponent,
     EnterprisePaymentsComponent,
     EnterpriseLicensesListComponent,
+    EnterpriseLicensesCardsComponent,
     EnterpriseAdminsListComponent,
     EnterpriseStudentsListComponent,
     StudentChargeListComponent,

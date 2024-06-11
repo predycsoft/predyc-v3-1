@@ -42,7 +42,9 @@ export class UsersaAtivityComponent {
     
     this.data = [];
 
-    let usersActive = this.users.filter(x=>x.status == 'active')
+    if(!this.users) return
+
+    let usersActive = this.users?.filter(x=>x.status == 'active')
     this.usersTotal = usersActive.length
     console.log('usersActiveActivities',usersActive)
 
