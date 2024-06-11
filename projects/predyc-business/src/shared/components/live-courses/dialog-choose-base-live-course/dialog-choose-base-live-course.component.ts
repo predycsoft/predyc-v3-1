@@ -32,7 +32,8 @@ export class DialogChooseBaseLiveCourseComponent {
   combinedServicesSubscription: Subscription;
   baseLiveCourses: LiveCourseTemplateWithSessionsTemplates[];
   sessions: SessionTemplate[];
-  liveCourseTest;
+  liveCourseDiagnosticTest;
+  liveCourseFinalTest;
   liveCourseTestSubscription: Subscription;
   formNewCourse: FormGroup;
 
@@ -68,7 +69,8 @@ export class DialogChooseBaseLiveCourseComponent {
     const firstSession = baseCourse.sessions[0];
     sessionGroup.addControl(firstSession.id, this.fb.control("", Validators.required));
 
-    this.liveCourseTest = null;
+    this.liveCourseDiagnosticTest = null;
+    this.liveCourseFinalTest = null;
     this.getExamCourse(baseCourse.id);
   }
 
@@ -76,17 +78,35 @@ export class DialogChooseBaseLiveCourseComponent {
     //console.log('idCourse search activity', idCourse);
     if (this.liveCourseTestSubscription) this.liveCourseTestSubscription.unsubscribe();
     this.liveCourseTestSubscription = this.activityClassesService
-      .getActivityCourse(idCourse, "liveCourseTemplate")
-      .pipe(
-        filter((data) => data != null),
-        take(1)
-      )
-      .subscribe((data) => {
-        if (data) {
-          this.liveCourseTest = data;
-          // console.log("data", data)
-        }
-      });
+    .getCourseActivities(idCourse, "liveCourseTemplate")
+    .pipe(
+      filter((data) => data != null),
+      take(1)
+    )
+    .subscribe((courseActivities) => {
+      if (courseActivities) {
+        // console.log('Activity:', courseActivities);
+        const diagnosticTest = courseActivities.filter(x => x.type == "test")[0]
+        const finalTest = courseActivities.filter(x => x.type == "final-test")[0]
+
+
+        //console.log('Questions:', data.questions);
+        diagnosticTest.questions.forEach((question) => {
+          // //console.log('preguntas posibles test',question)
+          question.competencias = question.skills;
+        });
+        this.liveCourseDiagnosticTest = diagnosticTest;
+        // console.log('examen data edit',this.liveCourseDiagnosticTest)
+
+        //console.log('Questions:', data.questions);
+        finalTest.questions.forEach((question) => {
+          // //console.log('preguntas posibles test',question)
+          question.competencias = question.skills;
+        });
+        this.liveCourseFinalTest = finalTest;
+        // console.log('examen data edit',this.examen)
+      }
+    });
   }
 
   getOptionText(option: LiveCourseTemplateWithSessionsTemplates) {
@@ -148,14 +168,33 @@ export class DialogChooseBaseLiveCourseComponent {
         await this.liveCourseService.saveSession(followingSession);
       }
 
-      // Save test
-      if (this.liveCourseTest) {
-        this.liveCourseTest.id = null;
-        this.liveCourseTest.coursesRef = [liveCourseRef];
-        const activityId = await this.activityClassesService.saveActivity(this.liveCourseTest);
+      // Save tests
+      if (this.liveCourseDiagnosticTest) {
+        this.liveCourseDiagnosticTest.id = null;
+        this.liveCourseDiagnosticTest.coursesRef = [liveCourseRef];
+        const activityId = await this.activityClassesService.saveActivity(this.liveCourseDiagnosticTest);
 
         let questions: Question[] = [];
-        questions = structuredClone(this.liveCourseTest.questions);
+        questions = structuredClone(this.liveCourseDiagnosticTest.questions);
+        for (let pregunta of questions) {
+          delete pregunta["competencias_tmp"];
+          delete pregunta["competencias"];
+          delete pregunta["isInvalid"];
+          delete pregunta["InvalidMessages"];
+          delete pregunta["expanded_categorias"];
+          delete pregunta["expanded"];
+          delete pregunta["uploading_file_progress"];
+          delete pregunta["uploading"];
+          await this.activityClassesService.saveQuestion(pregunta, activityId);
+        }
+      }
+      if (this.liveCourseFinalTest) {
+        this.liveCourseFinalTest.id = null;
+        this.liveCourseFinalTest.coursesRef = [liveCourseRef];
+        const activityId = await this.activityClassesService.saveActivity(this.liveCourseFinalTest);
+
+        let questions: Question[] = [];
+        questions = structuredClone(this.liveCourseFinalTest.questions);
         for (let pregunta of questions) {
           delete pregunta["competencias_tmp"];
           delete pregunta["competencias"];
