@@ -205,7 +205,7 @@ export class LiveCourseStudentListComponent {
 
 	async assignLiveCourse(userId: string) {
 		const userRef = this.userService.getUserRefById(userId)
-		const liveCourseByStudent = new LiveCourseByStudent("", false, userRef, this.liveCourseRef, false)
+		const liveCourseByStudent = new LiveCourseByStudent("", false, userRef, this.liveCourseRef, false, false, null, false, null)
 		try {
 			await this.liveCourseService.createLiveCourseByStudent(liveCourseByStudent)
 			console.log("***liveCourseByStudent created***")
