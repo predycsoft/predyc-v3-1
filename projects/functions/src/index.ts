@@ -46,3 +46,6 @@ export { checkExpiredSubscriptionsAndNotify5DaysBefore, checkDelayedStudyPlans, 
 
 import { sendLiveCourseEmail, } from './live-course'
 export { sendLiveCourseEmail, }
+
+import { mailAccountManagementAdmin, } from './reports'
+export { mailAccountManagementAdmin, }

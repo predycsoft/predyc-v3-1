@@ -234,6 +234,8 @@ export class EnterprisesUsersMigrationComponent {
         sendMailtoUsers:false,
         mondlyMeetings:false,
         useWhatsapp:false,
+        accountManagerName: null,
+        accountManagerPhone: null,
         congratulationsEndCourse:false,
         allUsersExtraCourses:false,
         examenFinal: true,

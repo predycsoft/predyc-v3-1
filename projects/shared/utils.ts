@@ -190,3 +190,15 @@ export const cleanFileName = (fileName: string): string => {
 	// Replace spaces with underscores
 	return cleanedFileName.replace(/\s+/g, "_");
 };
+
+
+export const getMonthProgress = (): number => {
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const nextMonth = now.getMonth() === 11 ? new Date(now.getFullYear() + 1, 0, 1) : new Date(now.getFullYear(), now.getMonth() + 1, 1);
+    
+    const totalDaysInMonth = (nextMonth.getTime() - startOfMonth.getTime()) / (1000 * 60 * 60 * 24);
+    const daysElapsed = (now.getTime() - startOfMonth.getTime()) / (1000 * 60 * 60 * 24);
+
+    return Number((daysElapsed / totalDaysInMonth).toFixed(2)); // Redondea a dos decimales y retorna como número
+  }
