@@ -63,10 +63,10 @@ async function generateReportEnterpriseAdminLocal(idEmpresa: string) {
       let htmlMailFinal = ` <!DOCTYPE html><html><head>${style}</head><body><p><strong>${titleCase(user.displayName)}</strong>,</p>${htmlMail}</body></html>`;
       console.log('htmlMailFinal',htmlMailFinal)
       const sender = "desarrollo@predyc.com";
-      const recipients = [user.email];
+      const recipients = ['arturo.romero@predyc.com'];
       const subject = `Reporte de progresos en PREDYC de tu empresa ${enterpriseData.name.toUpperCase()}`;
       const htmlContent = htmlMailFinal;
-      const cc = ["desarrollo@predyc.com"];
+      const cc = ["desarrollo@predyc.com,arturo.romero@predyc.com"];
       const mailObj = { sender, recipients, subject, cc, htmlContent };
       await _sendMailHTML(mailObj);
     }
