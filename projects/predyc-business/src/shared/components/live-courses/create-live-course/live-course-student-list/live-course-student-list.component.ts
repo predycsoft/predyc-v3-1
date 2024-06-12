@@ -21,8 +21,8 @@ interface DataToShow {
 	id: string
 	userEmail: string
 	userName: string
-	diagnosticTest: string
-	finalTest: string
+	diagnosticTestScore: number
+	finalTestScore: number
 	certificate: string
 	isAttending: boolean
 }
@@ -90,8 +90,8 @@ export class LiveCourseStudentListComponent {
 					id: liveCourseByStudent.id,
 					userEmail: userData.email,
 					userName: userData.displayName,
-					diagnosticTest: null,
-					finalTest: null,
+					diagnosticTestScore: liveCourseByStudent.diagnosticTestScore,
+					finalTestScore: liveCourseByStudent.finalTestScore,
 					certificate: null,
 					isAttending: liveCourseByStudent.isAttending
 				}))
@@ -101,7 +101,7 @@ export class LiveCourseStudentListComponent {
 			return combineLatest(userObservables);
 		  })
 		).subscribe(dataTosShow => {
-		//   console.log("dataTosShow", dataTosShow);
+		  console.log("dataTosShow", dataTosShow);
 		  this.paginator.pageIndex = page - 1;
 		  this.dataSource.data = dataTosShow;
 		  this.totalLength = dataTosShow.length;
@@ -161,9 +161,9 @@ export class LiveCourseStudentListComponent {
 		  const obj = {};
 		  obj[columnTitles[0]] = row.userEmail;
 		  obj[columnTitles[1]] = row.userName;
-		  obj[columnTitles[2]] = row.diagnosticTest;
-		  obj[columnTitles[3]] = row.finalTest;
-		  obj[columnTitles[4]] = row.certificate;
+		  obj[columnTitles[2]] = row.diagnosticTestScore ? row.diagnosticTestScore : "No ha presentado";
+		  obj[columnTitles[3]] = row.finalTestScore ? row.finalTestScore : "No ha presentado";
+		  obj[columnTitles[4]] = row.certificate ? row.certificate : "No disponible";
 		  obj[columnTitles[5]] = row.isAttending ? 'Sí' : 'No';
 		  return obj;
 		});

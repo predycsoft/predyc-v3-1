@@ -21,17 +21,17 @@
 
 		<ng-container matColumnDef="diagnosticTest">
 			<th mat-header-cell *matHeaderCellDef class="ft14 centertext">Diagnostico</th>
-			<td mat-cell *matCellDef="let data" class="centertext ft14">{{ "Diagnostico" }}</td>
+			<td mat-cell *matCellDef="let data" class="centertext ft14">{{ data.diagnosticTestScore ? data.diagnosticTestScore : "No ha presentado" }}</td>
 		</ng-container>
 
 		<ng-container matColumnDef="finalTest">
 			<th mat-header-cell *matHeaderCellDef class="ft14 centertext">Fin</th>
-			<td mat-cell *matCellDef="let data" class="centertext ft14">{{ "Fin"}}</td>
+			<td mat-cell *matCellDef="let data" class="centertext ft14">{{ data.finalTestScore ? data.finalTestScore : "No ha presentado" }}</td>
 		</ng-container>
 
 		<ng-container matColumnDef="certificate">
 			<th mat-header-cell *matHeaderCellDef class="ft14 centertext">Certificado</th>
-			<td mat-cell *matCellDef="let data" class="centertext ft14">{{ "Certificado" }}</td>
+			<td mat-cell *matCellDef="let data" class="centertext ft14">{{ data.certificate ? data.certificate : "No disponible" }}</td>
 		</ng-container>
 
 		<ng-container matColumnDef="attendance">
