@@ -33,6 +33,7 @@ export interface EnterpriseJson {
     useWhatsapp: boolean | false
     accountManagerName : string,
     accountManagerPhone : string
+    reportMails:string
 
 }
 
@@ -73,7 +74,8 @@ export class Enterprise {
         public vimeoFolderUri: string | null,
         public showEnterpriseLogoInCertificates: boolean,
         public accountManagerName : string,
-        public accountManagerPhone : string
+        public accountManagerPhone : string,
+        public reportMails:string,
     ) {}
 
     public static getEnterpriseTemplate(): Enterprise {
@@ -116,6 +118,7 @@ export class Enterprise {
             showEnterpriseLogoInCertificates: true,
             accountManagerName : null,
             accountManagerPhone : null,
+            reportMails:null,
           });
     }
 
@@ -154,6 +157,7 @@ export class Enterprise {
             enterpriseJson.showEnterpriseLogoInCertificates,
             enterpriseJson.accountManagerName,
             enterpriseJson.accountManagerPhone,
+            enterpriseJson.reportMails,
         )
     }
 
@@ -186,6 +190,7 @@ export class Enterprise {
             showEnterpriseLogoInCertificates: this.showEnterpriseLogoInCertificates,
             accountManagerName : this.accountManagerName,
             accountManagerPhone : this.accountManagerPhone,
+            reportMails: this.reportMails,
         }
     }
 }

@@ -341,7 +341,8 @@ export class CreateDemoComponent {
       mondlyMeetings: false,
       useWhatsapp: false,
       accountManagerName: "",
-      accountManagerPhone: ""
+      accountManagerPhone: "",
+      reportMails: ""
     });
     //console.log("Enterprise", enterprise.toJson())
     await this.enterpriseService.addEnterprise(enterprise);

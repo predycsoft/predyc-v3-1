@@ -41,7 +41,8 @@ export const enterpriseData: EnterpriseJson = {
     mondlyMeetings: false,
     useWhatsapp: false,
     accountManagerName: '',
-    accountManagerPhone: ''
+    accountManagerPhone: '',
+    reportMails: ''
 }
 
 
@@ -86,5 +87,6 @@ export const enterpriseDataPredyc: EnterpriseJson = {
     mondlyMeetings: false,
     useWhatsapp: false,
     accountManagerName: '',
-    accountManagerPhone: ''
+    accountManagerPhone: '',
+    reportMails: ''
 }

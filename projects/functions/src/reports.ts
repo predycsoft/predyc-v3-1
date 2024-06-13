@@ -1,9 +1,39 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import { Enterprise, User, getMonthProgress, obtenerUltimoDiaDelMes, obtenerUltimoDiaDelMesAnterior,CourseByStudent,Curso, titleCase } from 'shared';
+import { Enterprise, User, getMonthProgress, obtenerUltimoDiaDelMes, obtenerUltimoDiaDelMesAnterior,CourseByStudent,Curso, titleCase, firestoreTimestampToNumberTimestamp } from 'shared';
 import { _sendMailHTML } from './email';
 
 const db = admin.firestore();
+
+const firma = `<p>Saludos cordiales,</p>
+<img src="https://predictiva21.com/wp-content/uploads/2024/06/LOGOPREDYC-BACKWHITE.webp" alt="Predyc" style="width: 150px; height: auto;">`;
+const styleMail = `
+<style>
+  table {
+    max-width: 100%;
+    border-collapse: collapse;
+  }
+  th, td {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+  }
+  th {
+    background-color: #f2f2f2;
+  }
+  .high {
+    color: green;
+  }
+  .medium {
+    color: orange;
+  }
+  .low {
+    color: red;
+  }
+  .no-iniciado, .no-plan {
+    color: gray;
+  }
+</style>`;
 
 export const mailAccountManagementAdmin = functions.https.onCall(async (data, _) => {
   try {
@@ -15,37 +45,19 @@ export const mailAccountManagementAdmin = functions.https.onCall(async (data, _)
   }
 });
 
+export const mailAccountManagementUsers = functions.https.onCall(async (data, _) => {
+  try {
+    let idEmpresa = data.idEmpresa;
+    await generateReportEnterpriseUsersLocal(idEmpresa)
+  } catch (error: any) {
+    console.log(error);
+    throw new functions.https.HttpsError("unknown", error.message);
+  }
+});
+
 async function generateReportEnterpriseAdminLocal(idEmpresa: string) {
   try{
-
-    const style = `
-    <style>
-      table {
-        width: 100%;
-        border-collapse: collapse;
-      }
-      th, td {
-        border: 1px solid #dddddd;
-        text-align: left;
-        padding: 8px;
-      }
-      th {
-        background-color: #f2f2f2;
-      }
-      .high {
-        color: green;
-      }
-      .medium {
-        color: orange;
-      }
-      .low {
-        color: red;
-      }
-      .no-iniciado, .no-plan {
-        color: gray;
-      }
-    </style>`;
-
+    const style = styleMail
     const users = await generateReportEnterpriseAdmin(idEmpresa);
     const enterpriseDoc = await admin.firestore().collection(Enterprise.collection).doc(idEmpresa).get();
     const enterpriseData = enterpriseDoc.data();
@@ -57,24 +69,258 @@ async function generateReportEnterpriseAdminLocal(idEmpresa: string) {
       htmlMail+= `<br><p>Habla con tu account manager${enterpriseData?.accountManagerName? ' ' + titleCase(enterpriseData?.accountManagerName): '' } vía WhatsApp: <a href="https://wa.me/${accountManagerNumber}">${accountManagerNumber}</a></p>`;
     }
     htmlMail+= `<p>Inicia sesión en PREDYC : <a href="https://predyc.com">https://predyc.com</a></p>`;
-    let adminUsers = users.users.filter(x=>x.role == 'admin')
-    for (let i = 0; i < adminUsers.length; i++) {
-      const user = adminUsers[i];
-      let htmlMailFinal = ` <!DOCTYPE html><html><head>${style}</head><body><p><strong>${titleCase(user.displayName)}</strong>,</p>${htmlMail}</body></html>`;
-      console.log('htmlMailFinal',htmlMailFinal)
-      const sender = "desarrollo@predyc.com";
-      const recipients = ['arturo.romero@predyc.com'];
-      const subject = `Reporte de progresos en PREDYC de tu empresa ${enterpriseData.name.toUpperCase()}`;
-      const htmlContent = htmlMailFinal;
-      const cc = ["desarrollo@predyc.com,arturo.romero@predyc.com"];
-      const mailObj = { sender, recipients, subject, cc, htmlContent };
-      await _sendMailHTML(mailObj);
-    }
+    let recipientMail = enterpriseData?.reportMails ? enterpriseData?.reportMails.split(','): ['arturo.romero@predyc.com']
+    let htmlMailFinal = ` <!DOCTYPE html><html><head>${style}</head><body><p><strong>Estimado administrador ${enterpriseData.name.toUpperCase()}</strong>,</p>${htmlMail}<br>${firma}
+    </body></html>`;
+    console.log('htmlMailFinal',htmlMailFinal)
+    const sender = "desarrollo@predyc.com";
+    const recipients = recipientMail;
+    // const recipients = ['arturo.romero@predyc.com'];
+    const subject = `Reporte de progresos en PREDYC de tu empresa ${enterpriseData.name.toUpperCase()}`;
+    const htmlContent = htmlMailFinal;
+    const cc = ["desarrollo@predyc.com,arturo.romero@predyc.com"];
+    const mailObj = { sender, recipients, subject, cc, htmlContent };
+    console.log(mailObj)
+    const now = new Date();
+    enterpriseDoc.ref.update({
+      lastDayAdminMail: now
+    })
+    _sendMailHTML(mailObj);
   }
   catch(error: any) {
     console.log(error);
     throw error.message;
   }
+
+}
+
+async function generateReportEnterpriseUsersLocal(idEmpresa: string) {
+  try{
+    const dataReport = await generateReportEnterpriseUsers(idEmpresa);
+
+  }
+  catch(error: any) {
+    console.log(error);
+    throw error.message;
+  }
+
+
+}
+
+async function generateReportEnterpriseUsers(idEmpresa: string) {
+
+  try{
+    // Obtener referencia de la empresa
+    const enterpriseRef = admin.firestore().collection(Enterprise.collection).doc(idEmpresa);
+
+    // Buscar usuarios de la empresa con estado activo
+    const usersSnapshot = await admin.firestore().collection(User.collection)
+      .where('enterprise', '==', enterpriseRef)
+      .where('status', '==', 'active')
+      .get();
+    // Mapear los usuarios encontrados
+    const users = usersSnapshot.docs.map(doc => doc.data());
+    const userRefs = usersSnapshot.docs.map(doc => doc.ref);
+    // Buscar cursos que coincidan con la empresa o que tengan enterpriseRef null
+    const coursesSnapshot = await admin.firestore().collection(Curso.collection)
+      .where('enterpriseRef', '==', enterpriseRef)
+      .get();
+
+    const nullCoursesSnapshot = await admin.firestore().collection(Curso.collection)
+      .where('enterpriseRef', '==', null)
+      .get();
+
+      // Unir los cursos con enterpriseRef igual al enterpriseRef de la empresa y los que tienen enterpriseRef null
+      const courses = coursesSnapshot.docs.map(doc => doc.data()).concat(nullCoursesSnapshot.docs.map(doc => doc.data()));
+      // Dividir userRefs en grupos de 10
+      const chunks = [];
+      for (let i = 0; i < userRefs.length; i += 10) {
+        chunks.push(userRefs.slice(i, i + 10));
+      }
+      // Obtener coursesByStudent para los usuarios en chunks
+      let allCoursesByStudent = [];
+      for (const chunk of chunks) {
+        const coursesByStudentSnapshot = await admin.firestore().collection(CourseByStudent.collection)
+          .where('userRef', 'in', chunk)
+          .where('isExtraCourse', '==', false)
+          .where('active', '==', true)
+          .get();
+        allCoursesByStudent = allCoursesByStudent.concat(coursesByStudentSnapshot.docs.map(doc => doc.data()));
+      }
+      let respuesta = [];
+      users.forEach(user => {
+        let cursosPlan = allCoursesByStudent.filter(x=>x.userRef.id == user.uid)
+        if(cursosPlan.length){
+          let cursos = buildMonths(cursosPlan,courses)
+          const datos = generateUsersProgressTableHTML(cursos)
+          let html = `<p><strong>${titleCase(user.displayName)}</strong>,</p><p>A continuación, te presentamos el estatus de tu plan de estudios:</p><br>${datos}
+          <br><p>Necesitas ayuda, habla con alguien de PREDYC via Whasapp: <a href="https://wa.me/524271797182">524271797182</a></p>`
+          let respuestaItem = {
+            user:user,
+            html:html,
+          }
+          respuesta.push(respuestaItem)
+        }
+      });
+      if(respuesta.length>0){
+        const now = new Date();
+        enterpriseRef.update({
+          lastDayUsersMail: now
+        })
+      }
+      respuesta.forEach(correo => {
+        const htmlContent = ` <!DOCTYPE html><html><head>${styleMail}</head><body>${correo.html}${firma}</body></html>`;
+        const sender = "desarrollo@predyc.com";
+        const recipients = [correo.user.email];
+        // const recipients = ['arturo.romero@predyc.com'];
+        const subject = `Tu progreso semanal en PREDYC`;
+        const cc = ["desarrollo@predyc.com,arturo.romero@predyc.com"];
+        const mailObj = { sender, recipients, subject, cc, htmlContent };
+        console.log(mailObj)
+        _sendMailHTML(mailObj);
+      });
+  }
+  catch(error){
+    throw error.message
+
+  }
+
+
+}
+
+function generateUsersProgressTableHTML(monthCourses: any[]): string {
+
+  let html = '';
+
+  monthCourses.forEach(month => {
+    // Añadir el nombre del mes y el año en negrita
+    html += `<p><strong>${titleCase(month.monthName)} ${month.yearNumber}</strong></p>`;
+
+    // Iniciar la tabla
+    html += `
+      <table>
+        <thead>
+          <tr>
+            <th>Curso</th>
+            <th>Progreso</th>
+            <th>Estatus</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    // Añadir las filas de la tabla
+    const today = new Date().getTime();
+    let targetComparisonDate = today;
+    let lastDayPast = obtenerUltimoDiaDelMesAnterior(targetComparisonDate)
+
+    month.courses.forEach(course => {
+      let retrasado = false;
+      if(course.dateEndPlan  && (course.dateEndPlan?.seconds*1000)<=lastDayPast){
+        retrasado = true
+      }
+      const progressText = `${course.progress.toFixed(2)}%`;
+      let  statusText = ''
+      if(course.progress === 100){
+        statusText = '<span class="high">Completado</span>'
+      }
+      else if (retrasado){
+        statusText = '<span class="low">Retradaso</span>'
+      }
+      else{
+        statusText = '<span> - </span>'
+      }
+      html += `
+        <tr>
+          <td>${course.courseTitle}</td>
+          <td style='text-align: center;'>${progressText}</td>
+          <td style='text-align: center;'>${statusText}</td>
+        </tr>
+      `;
+    });
+
+    // Cerrar la tabla
+    html += `
+        </tbody>
+      </table>
+      <br>
+    `;
+  });
+
+  return html;
+}
+
+
+function buildMonths(coursesByStudent: CourseByStudent[], coursesData) {
+
+  const months = {};
+  coursesByStudent.forEach((courseByStudent) => {
+    // console.log("courseByStudent.id", courseByStudent.id)
+    const courseData = coursesData.find(
+      (courseData) => courseData.id === courseByStudent.courseRef.id
+    );
+
+    if (courseData) {
+      // this.studyPlanDuration+=courseData.duracion ;
+      const studyPlanData = {
+        duration: courseData.duracion / 60,
+        courseTitle: courseData.titulo,
+        dateStartPlan: firestoreTimestampToNumberTimestamp(
+          courseByStudent.dateStartPlan
+        ),
+        dateEndPlan: firestoreTimestampToNumberTimestamp(
+          courseByStudent.dateEndPlan
+        ),
+        dateStart: firestoreTimestampToNumberTimestamp(
+          courseByStudent.dateStart
+        ),
+        dateEnd: firestoreTimestampToNumberTimestamp(courseByStudent.dateEnd),
+        progress:courseByStudent.progress,
+        finalScore: courseByStudent.finalScore,
+        id: courseByStudent.courseRef.id,
+      };
+
+      const monthName = new Date(studyPlanData.dateEndPlan).toLocaleString(
+        "es",
+        { month: "long", year: "2-digit" }
+      );
+
+      if (!months[monthName]) {
+        months[monthName] = [];
+      }
+
+      // Add course to the related month
+      months[monthName].push(studyPlanData);
+    } else {
+      console.log("No exite el curso");
+      return;
+    }
+  });
+  // Transform data to the desired structure
+  const monthsResp = Object.keys(months).map((monthName) => {
+    const date = new Date(months[monthName][0].dateEndPlan);
+    const monthNumber = date.getUTCMonth();
+    const yearNumber = date.getUTCFullYear();
+    const realMonthname = date.toLocaleString("es", { month: "long" });
+    const sortedCourses = months[monthName].sort((a, b) => {
+      return a.dateEndPlan - b.dateEndPlan;
+    });
+
+    return {
+      monthName: realMonthname,
+      monthNumber,
+      yearNumber,
+      courses: sortedCourses,
+    };
+  });
+  
+  monthsResp.sort((a, b) => {
+    const yearDiff = a.yearNumber - b.yearNumber;
+    if (yearDiff !== 0) return yearDiff;
+    return a.monthNumber - b.monthNumber;
+  });
+
+  return monthsResp;
 
 }
 
@@ -120,6 +366,7 @@ async function generateReportEnterpriseAdmin(idEmpresa: string) {
       const coursesByStudentSnapshot = await admin.firestore().collection(CourseByStudent.collection)
         .where('userRef', 'in', chunk)
         .where('isExtraCourse', '==', false)
+        .where('active', '==', true)
         .get();
       allCoursesByStudent = allCoursesByStudent.concat(coursesByStudentSnapshot.docs.map(doc => doc.data()));
     }
