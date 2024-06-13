@@ -415,9 +415,11 @@
         </mat-tab>
 
         <mat-tab [label]="'Examen Inicial' + (examen?.questions?.length ? ' (' + examen?.questions?.length + ' Pregunta' + (examen?.questions?.length > 1 ? 's' : '') + ')' : '')">
-          <div *ngIf="mode === 'edit' " fxLayout="row" fxLayoutAlign="start center" class="w-100" fxLayoutGap="1.5rem">
-            <span>Habilitar exámen</span>
-            <mat-slide-toggle [checked]="liveCourseData.canTakeDiagnosticTest" (change)="toggleDiagnosticTest($event, false)"></mat-slide-toggle>
+          <div fxLayout="row" fxLayoutAlign="center" class="w-100">
+            <div *ngIf="mode === 'edit' " fxLayout="row" fxLayoutAlign="start center" class="w800px pdl10" fxLayoutGap="1.5rem">
+              <span>Habilitar examen</span>
+              <mat-slide-toggle [checked]="liveCourseData.canTakeDiagnosticTest" (change)="toggleDiagnosticTest($event, false)"></mat-slide-toggle>
+            </div>
           </div>
           <div fxLayout="row" class="containerCurso h-100" fxLayoutGap="1.5rem">
             <div fxLayout="row" fxLayoutAlign="center" class="w-100">
@@ -429,9 +431,11 @@
         </mat-tab>
 
         <mat-tab [label]="'Examen Final' + (examen?.questions?.length ? ' (' + examen?.questions?.length + ' Pregunta' + (examen?.questions?.length > 1 ? 's' : '') + ')' : '')">
-          <div *ngIf="mode === 'edit' " fxLayout="row" fxLayoutAlign="start center" class="w-100" fxLayoutGap="1.5rem">
-            <span>Habilitar exámen</span>
-            <mat-slide-toggle [checked]="liveCourseData.canTakeFinalTest" (change)="toggleDiagnosticTest($event, true)"></mat-slide-toggle>
+          <div fxLayout="row" fxLayoutAlign="center" class="w-100">
+            <div *ngIf="mode === 'edit' " fxLayout="row" fxLayoutAlign="start center" class="w800px pdl10" fxLayoutGap="1.5rem">
+              <span>Habilitar examen</span>
+              <mat-slide-toggle [checked]="liveCourseData.canTakeFinalTest" (change)="toggleDiagnosticTest($event, true)"></mat-slide-toggle>
+            </div>
           </div>
           <div fxLayout="row" class="containerCurso h-100" fxLayoutGap="1.5rem">
             <div fxLayout="row" fxLayoutAlign="center" class="w-100">
