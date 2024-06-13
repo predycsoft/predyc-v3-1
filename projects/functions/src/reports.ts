@@ -33,6 +33,17 @@ const styleMail = `
   .no-iniciado, .no-plan {
     color: gray;
   }
+  .month-row {
+    border: none;
+    padding-top: 20px;
+    font-weight: bold;
+  }
+  .month-name {
+    padding-top: 20px;
+    font-weight: bold;
+    border: none;
+    text-align: left;
+  }
 </style>`;
 
 export const mailAccountManagementAdmin = functions.https.onCall(async (data, _) => {
@@ -74,8 +85,8 @@ async function generateReportEnterpriseAdminLocal(idEmpresa: string) {
     </body></html>`;
     console.log('htmlMailFinal',htmlMailFinal)
     const sender = "desarrollo@predyc.com";
-    // const recipients = recipientMail;
-    const recipients = ['arturo.romero@predyc.com'];
+    const recipients = recipientMail;
+    //const recipients = ['arturo.romero@predyc.com'];
     const subject = `Reporte de progresos en PREDYC de tu empresa ${enterpriseData.name.toUpperCase()}`;
     const htmlContent = htmlMailFinal;
     const cc = ["desarrollo@predyc.com,arturo.romero@predyc.com"];
@@ -173,8 +184,8 @@ async function generateReportEnterpriseUsers(idEmpresa: string) {
         respuesta.forEach(correo => {
           const htmlContent = ` <!DOCTYPE html><html><head>${styleMail}</head><body>${correo.html}${firma}</body></html>`;
           const sender = "desarrollo@predyc.com";
-          // const recipients = [correo.user.email];
-          const recipients = ['arturo.romero@predyc.com'];
+          const recipients = [correo.user.email];
+          //const recipients = ['arturo.romero@predyc.com'];
           const subject = `Tu progreso semanal en PREDYC`;
           const cc = ["desarrollo@predyc.com,arturo.romero@predyc.com"];
           const mailObj = { sender, recipients, subject, cc, htmlContent };
@@ -194,63 +205,55 @@ async function generateReportEnterpriseUsers(idEmpresa: string) {
 }
 
 function generateUsersProgressTableHTML(monthCourses: any[]): string {
-
-  let html = '';
+  let html = `
+    <table>
+      <tbody>
+  `;
 
   monthCourses.forEach(month => {
-    // Añadir el nombre del mes y el año en negrita
-    html += `<p><strong>${titleCase(month.monthName)} ${month.yearNumber}</strong></p>`;
-
-    // Iniciar la tabla
     html += `
-      <table>
-        <thead>
-          <tr>
-            <th>Curso</th>
-            <th>Progreso</th>
-            <th>Estatus</th>
-          </tr>
-        </thead>
-        <tbody>
+      <tr class="month-row">
+        <td colspan="3" class="month-name">${titleCase(month.monthName)} ${month.yearNumber}</td>
+      </tr>
+      <tr>
+        <th>Curso</th>
+        <th>Progreso</th>
+        <th>Estatus</th>
+      </tr>
     `;
 
-    // Añadir las filas de la tabla
     const today = new Date().getTime();
     let targetComparisonDate = today;
-    let lastDayPast = obtenerUltimoDiaDelMesAnterior(targetComparisonDate)
+    let lastDayPast = obtenerUltimoDiaDelMesAnterior(targetComparisonDate);
 
     month.courses.forEach(course => {
       let retrasado = false;
-      if(course.dateEndPlan  && (course.dateEndPlan?.seconds*1000)<=lastDayPast){
-        retrasado = true
+      if (course.dateEndPlan && (course.dateEndPlan.seconds * 1000) <= lastDayPast) {
+        retrasado = true;
       }
       const progressText = `${course.progress.toFixed(2)}%`;
-      let  statusText = ''
-      if(course.progress === 100){
-        statusText = '<span class="high">Completado</span>'
-      }
-      else if (retrasado){
-        statusText = '<span class="low">Retradaso</span>'
-      }
-      else{
-        statusText = '<span> - </span>'
+      let statusText = '';
+      if (course.progress === 100) {
+        statusText = '<span class="high">Completado</span>';
+      } else if (retrasado) {
+        statusText = '<span class="low">Retrasado</span>';
+      } else {
+        statusText = '<span> - </span>';
       }
       html += `
         <tr>
           <td>${course.courseTitle}</td>
-          <td style='text-align: center;'>${progressText}</td>
-          <td style='text-align: center;'>${statusText}</td>
+          <td style="text-align: center;">${progressText}</td>
+          <td style="text-align: center;">${statusText}</td>
         </tr>
       `;
     });
-
-    // Cerrar la tabla
-    html += `
-        </tbody>
-      </table>
-      <br>
-    `;
   });
+
+  html += `
+      </tbody>
+    </table>
+  `;
 
   return html;
 }
