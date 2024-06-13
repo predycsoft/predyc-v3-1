@@ -68,7 +68,7 @@ table.mat-table tfoot tr {
 .mat-mdc-row .mat-mdc-cell {
 border-bottom: 1px solid transparent;
 border-top: 1px solid transparent;
-cursor: pointer;
+/* cursor: pointer; */
 
 
 
@@ -92,4 +92,12 @@ transform: translateX(0);
 transform: translateX(5px);
 transform: translateX(5px);
 color: #0f3b56 !important;
+}
+
+.enterprise-input {
+	width: 100%;
+	border: none;
+	text-align: center;
+	font-size: 14px;
+    border-radius: 10px;
 }

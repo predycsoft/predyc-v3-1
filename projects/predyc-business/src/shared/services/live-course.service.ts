@@ -23,14 +23,26 @@ export class LiveCourseService {
     return this.afs.collection<LiveCourseByStudent>(LiveCourseByStudent.collection, (ref) =>ref.where("liveCourseRef", "==", liveCourseRef)).valueChanges();
   }
 
+  async updateCompanyNameLiveCourseByStudent(liveCourseByStudentId: string, companyName: string): Promise<void> {
+    return this.afs.collection<LiveCourseByStudent>(LiveCourseByStudent.collection).doc(liveCourseByStudentId).update({
+      companyName: companyName
+    })
+  }
+
   async createLiveCourseByStudent(liveCourseByStudent: LiveCourseByStudent): Promise<void> {
     const liveCourseByStudentRef = this.afs.collection<LiveCourseByStudent>(LiveCourseByStudent.collection).doc().ref;
 		await liveCourseByStudentRef.set({...liveCourseByStudent.toJson(), id: liveCourseByStudentRef.id}, { merge: true });
   }
 
-  updateIsAttendingLiveCourseByStudent(liveCourseByStudentId: string, isAttending: boolean): Promise<void> {
+  async updateIsAttendingLiveCourseByStudent(liveCourseByStudentId: string, isAttending: boolean): Promise<void> {
     return this.afs.collection<LiveCourseByStudent>(LiveCourseByStudent.collection).doc(liveCourseByStudentId).update({
       isAttending: isAttending
+    })
+  }
+
+  async updateIsActiveLiveCourseByStudent(liveCourseByStudentId: string, isActive: boolean): Promise<void> {
+    return this.afs.collection<LiveCourseByStudent>(LiveCourseByStudent.collection).doc(liveCourseByStudentId).update({
+      isActive: isActive
     })
   }
 
@@ -210,15 +222,6 @@ export class LiveCourseService {
     return this.afs.collection<SessionTemplate>(SessionTemplate.collection).doc(sessionTemplateId).ref
   }
 
-
-  // getLiveCourseSonsByLiveCourseId$(liveCourseId: string): Observable<LiveCourseSon[]> {
-  //   return this.afs.collection<LiveCourse>(LiveCourse.collection).doc(liveCourseId).collection<LiveCourseSon>(LiveCourseSon.subCollection).valueChanges()
-  // }
-
-  // getSessionSonsBySessionId$(sessionId: string): Observable<SessionSon[]> {
-  //   return this.afs.collection<Session>(Session.collection).doc(sessionId).collection<SessionSon>(SessionSon.subCollection).valueChanges()
-  // }
-
   async updateLiveCourseMeetingLinkAndIdentifierText(liveCourseId: string,  meetingLink: string, identifierText: string): Promise<any> {
     await this.afs.collection<LiveCourse>(LiveCourse.collection).doc(liveCourseId).update({
       meetingLink: meetingLink,
@@ -242,20 +245,9 @@ export class LiveCourseService {
     await this.afs.collection<SessionTemplate>(SessionTemplate.collection).doc(sessionTemplateId).delete()
   }
 
-  // async deleteSessionSons(sessionId: string): Promise<void> {
-  //   const subCollectionRef = this.afs.collection<Session>(Session.collection).doc(sessionId).collection<SessionSon>(SessionSon.subCollection);
-  //   const batch = this.afs.firestore.batch();
-  
-  //   const snapshot = await firstValueFrom(subCollectionRef.get());
-
-  //   if (snapshot.docs) {
-  //     snapshot.docs.forEach(doc => {
-  //       batch.delete(doc.ref);
-  //     });
-  //     return await batch.commit();
-  //   }
-  //   return null
-  // }
+  getLiveCourseUserCertificate$(courseId: string, userId: string): Observable<any[]> {
+    return this.afs.collection('userCertificate', ref =>ref.where("liveCourseId", "==", courseId).where("usuarioId", "==", userId)).valueChanges()
+  }
 
   
 

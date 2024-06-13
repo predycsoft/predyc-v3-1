@@ -4,6 +4,8 @@ import { LiveCourse } from "./live-course.model";
 
 export interface LiveCourseByStudentJson {
 	id: string;
+	isActive: boolean;
+	companyName: string;
 	completed: boolean;
 	userRef: DocumentReference;
 	liveCourseRef: DocumentReference<LiveCourse>;
@@ -19,6 +21,8 @@ export class LiveCourseByStudent {
 
 	constructor(
 		public id: string, 
+		public isActive: boolean, 
+		public companyName: string, 
 		public completed: boolean, 
 		public userRef: DocumentReference, 
 		public liveCourseRef: DocumentReference<LiveCourse>, 
@@ -32,6 +36,8 @@ export class LiveCourseByStudent {
 	public static fromJson(liveCourseByStudentJson: LiveCourseByStudentJson): LiveCourseByStudent {
 		return new LiveCourseByStudent(
 			liveCourseByStudentJson.id, 
+			liveCourseByStudentJson.isActive, 
+			liveCourseByStudentJson.companyName, 
 			liveCourseByStudentJson.completed, 
 			liveCourseByStudentJson.userRef, 
 			liveCourseByStudentJson.liveCourseRef, 
@@ -47,6 +53,8 @@ export class LiveCourseByStudent {
 	public toJson(): LiveCourseByStudentJson {
 		return {
 			id: this.id,
+			isActive: this.isActive,
+			companyName: this.companyName,
 			completed: this.completed,
 			userRef: this.userRef,
 			liveCourseRef: this.liveCourseRef,
