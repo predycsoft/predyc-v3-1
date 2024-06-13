@@ -1,4 +1,4 @@
-import { Component, ElementRef, QueryList, TemplateRef, ViewChild, ViewChildren } from "@angular/core";
+import { ChangeDetectorRef, Component, ElementRef, QueryList, TemplateRef, ViewChild, ViewChildren } from "@angular/core";
 import { IconService } from "../../../services/icon.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { AngularFireStorage } from "@angular/fire/compat/storage";
@@ -31,6 +31,7 @@ import { VimeoComponent } from "../../vimeo/vimeo.component";
 import { LiveCourse, LiveCourseJson, LiveCourseTemplate, LiveCourseTemplateJson } from "projects/shared/models/live-course.model";
 import { Session, SessionJson, SessionTemplate, SessionTemplateJson } from "projects/shared/models/session.model";
 import { LiveCourseService } from "../../../services/live-course.service";
+import { MatSlideToggleChange } from "@angular/material/slide-toggle";
 
 interface LiveCourseData extends LiveCourseTemplateJson {
   sessions: SessionData[];
@@ -40,6 +41,8 @@ interface LiveCourseData extends LiveCourseTemplateJson {
   addClassMode: boolean;
   isInvalid: boolean;
   InvalidMessages: string[];
+  canTakeDiagnosticTest: boolean
+	canTakeFinalTest: boolean
 }
 
 interface SessionData extends SessionTemplateJson {
@@ -315,6 +318,8 @@ export class CreateLiveCourseComponent {
 
   initializeLiveCourseAsLiveCourseData(): void {
     this.liveCourseData = {
+      canTakeDiagnosticTest: true,
+	    canTakeFinalTest: true,
       id: "",
       companyName: "",
       title: "",
@@ -519,6 +524,33 @@ export class CreateLiveCourseComponent {
           });
       });
   }
+
+  toggleDiagnosticTest(event: MatSlideToggleChange, isFinalTest: boolean): void {
+    const originalValue = isFinalTest ? this.liveCourseData.canTakeFinalTest : this.liveCourseData.canTakeDiagnosticTest;
+
+    // Temporarily disable the toggle
+    event.source.checked = originalValue;
+
+    Swal.fire({
+      title: "Cambiaremos la habilitación del examen",
+      text: "¿Deseas continuar?",
+      icon: "info",
+      showCancelButton: true,
+      confirmButtonText: "Guardar",
+      confirmButtonColor: 'var(--blue-5)',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        if (isFinalTest) this.liveCourseData.canTakeFinalTest = event.checked;
+        else this.liveCourseData.canTakeDiagnosticTest = event.checked;
+        
+        await this.liveCourseService.updateLiveCourseCanTakeTest(this.liveCourseId, event.checked, isFinalTest);
+      } else {
+        // Reset the toggle to its original value
+        event.source.checked = originalValue;
+      }
+    });
+}
+
 
   convertTimestampToDatetimeLocalString(timestamp: any): string {
     if (!timestamp) return "";
@@ -1689,7 +1721,22 @@ export class CreateLiveCourseComponent {
   }
 
   LiveCourseDataModelToLiveCourse(liveCourseData: LiveCourseData) {
-    return new LiveCourse(liveCourseData.companyName, liveCourseData.description, liveCourseData.duration, liveCourseData.emailLastDate, liveCourseData.id, liveCourseData.identifierText, liveCourseData.instructorRef, this.liveCourseService.getLiveCourseTemplateRefById(this.liveCourseTemplateId), liveCourseData.meetingLink, liveCourseData.photoUrl, liveCourseData.proximamente, liveCourseData.skillsRef, liveCourseData.title, liveCourseData.vimeoFolderId);
+    return new LiveCourse(
+      liveCourseData.canTakeDiagnosticTest, 
+      liveCourseData.canTakeFinalTest, 
+      liveCourseData.description, 
+      liveCourseData.duration, 
+      liveCourseData.emailLastDate, 
+      liveCourseData.id, 
+      liveCourseData.identifierText, 
+      liveCourseData.instructorRef, 
+      this.liveCourseService.getLiveCourseTemplateRefById(this.liveCourseTemplateId), 
+      liveCourseData.meetingLink, 
+      liveCourseData.photoUrl, 
+      liveCourseData.proximamente, 
+      liveCourseData.skillsRef, 
+      liveCourseData.title, 
+      liveCourseData.vimeoFolderId);
   }
 
   SessionDataModelToLiveCourseSessionTemplate(sessionData: SessionData) {

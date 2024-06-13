@@ -64,7 +64,8 @@ export class LiveCourseTemplate {
 }
 
 export interface LiveCourseJson {
-    companyName: string // currently not in use
+    canTakeDiagnosticTest: boolean
+	canTakeFinalTest: boolean
     description: string
     duration: number,
     id: string
@@ -84,8 +85,9 @@ export class LiveCourse {
 
     public static collection = 'live-course'
 
-    constructor(
-        public companyName: string,
+    constructor (
+        public canTakeDiagnosticTest: boolean,
+		public canTakeFinalTest: boolean,
         public description: string,
         public duration: number,
         public emailLastDate: any,
@@ -103,7 +105,8 @@ export class LiveCourse {
 
     public static fromJson(liveCourseJson: LiveCourseJson): LiveCourse {
         return new LiveCourse(
-            liveCourseJson.companyName,
+            liveCourseJson.canTakeDiagnosticTest,
+			liveCourseJson.canTakeFinalTest,
             liveCourseJson.description,
             liveCourseJson.duration,
             liveCourseJson.emailLastDate,
@@ -122,11 +125,12 @@ export class LiveCourse {
 
     public toJson(): LiveCourseJson {
         return {
-            id:this.id,
-            companyName:this.companyName,
-            title:this.title,
-            photoUrl:this.photoUrl,
-            description:this.description,
+            canTakeDiagnosticTest: this.canTakeDiagnosticTest,
+			canTakeFinalTest: this.canTakeFinalTest,
+            id: this.id,
+            title: this.title,
+            photoUrl: this.photoUrl,
+            description: this.description,
             instructorRef : this.instructorRef,
             proximamente : this.proximamente,
             skillsRef : this.skillsRef,

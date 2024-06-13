@@ -15,16 +15,19 @@ import * as XLSX from "xlsx-js-style";
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { DialogAssignLiveCoursesComponent } from './dialog-assign-live-courses/dialog-assign-live-courses.component';
 import { CreateUserComponent } from 'projects/predyc-business/src/app/business-pages/management/my-team/student/create-user/create-user.component';
-
+import { environment } from 'projects/predyc-business/src/environments/environment';
 
 interface DataToShow {
-	id: string
+	liveCourseByStudentId: string
 	userEmail: string
 	userName: string
-	diagnosticTest: string
-	finalTest: string
-	certificate: string
+	userPhone: string
+	diagnosticTestScore: number
+	finalTestScore: number
+	certificateId: string
 	isAttending: boolean
+	isActive: boolean
+	companyName: string
 }
 
 @Component({
@@ -49,7 +52,7 @@ export class LiveCourseStudentListComponent {
 	@Input() liveCourseId: string
 	@Output() userEmailsChanged = new EventEmitter<string[]>();
 
-	displayedColumns: string[] = ["userEmail", "userName", "diagnosticTest", "finalTest", "certificate", "attendance"];
+	displayedColumns: string[] = ["userName", "userEmail", "enterprise", "diagnosticTest", "finalTest", "certificate", "attendance", "status"];
 
 	dataSource = new MatTableDataSource<DataToShow>();
 
@@ -67,6 +70,8 @@ export class LiveCourseStudentListComponent {
 	
 	liveCourseRef: DocumentReference<LiveCourse>
 
+	environment = environment
+
 
 	ngOnInit() {
 		this.liveCourseRef = this.liveCourseService.getLiveCourseRefById(this.liveCourseId)
@@ -83,24 +88,34 @@ export class LiveCourseStudentListComponent {
 
 	performSearch(page: number) {
 		this.liveCourseServiceSubscription = this.liveCourseService.getLiveCoursesByStudentByLivecourseSon$(this.liveCourseRef).pipe(
-		  switchMap(liveCoursesByStudent => {
-			const userObservables: Observable<DataToShow>[] = liveCoursesByStudent.map(liveCourseByStudent => {
-			  return this.userService.getUser$(liveCourseByStudent.userRef.id).pipe(
-				map(userData => ({
-					id: liveCourseByStudent.id,
-					userEmail: userData.email,
-					userName: userData.displayName,
-					diagnosticTest: null,
-					finalTest: null,
-					certificate: null,
-					isAttending: liveCourseByStudent.isAttending
-				}))
-			  );
-			});
-	  
-			return combineLatest(userObservables);
-		  })
-		).subscribe(dataTosShow => {
+			switchMap(liveCoursesByStudent => {
+			  const userObservables: Observable<DataToShow>[] = liveCoursesByStudent.map(liveCourseByStudent => {
+				return this.userService.getUser$(liveCourseByStudent.userRef.id).pipe(
+				  switchMap(userData => {
+					return this.liveCourseService.getLiveCourseUserCertificate$(this.liveCourseId, userData.uid).pipe(
+					  map(certificateData => {
+						const certificate = certificateData.length > 0 ? certificateData[0] : null;
+						return {
+						  liveCourseByStudentId: liveCourseByStudent.id,
+						  userEmail: userData.email,
+						  userName: userData.displayName,
+						  userPhone: userData.phoneNumber,
+						  companyName: liveCourseByStudent.companyName,
+						  diagnosticTestScore: liveCourseByStudent.diagnosticTestScore,
+						  finalTestScore: liveCourseByStudent.finalTestScore,
+						  certificateId: certificate ? certificate.id : null,
+						  isAttending: liveCourseByStudent.isAttending,
+						  isActive: liveCourseByStudent.isActive,
+						};
+					  })
+					);
+				  })
+				);
+			  });
+		
+			  return combineLatest(userObservables);
+			})
+		  ).subscribe(dataTosShow => {
 		//   console.log("dataTosShow", dataTosShow);
 		  this.paginator.pageIndex = page - 1;
 		  this.dataSource.data = dataTosShow;
@@ -115,6 +130,30 @@ export class LiveCourseStudentListComponent {
 		this.router.navigate([], {
 			queryParams: { page },
 			queryParamsHandling: "merge",
+		});
+	}
+
+	onCompanyNameInput(event: Event, data: DataToShow) {
+		const inputElement = event.target as HTMLInputElement;
+		data.companyName = inputElement.value;
+	}
+
+	saveCompanyName(event: Event, data: DataToShow): void {
+		event.preventDefault();  // Prevent default form submission behavior
+
+		Swal.fire({
+			title: "Cambiaremos el nombre de la empresa",
+			text: "¿Deseas continuar?",
+			icon: "info",
+			showCancelButton: true,
+			confirmButtonText: "Guardar",
+			confirmButtonColor: 'var(--blue-5)',
+		}).then(async (result) => {
+			if (result.isConfirmed) {
+				await this.liveCourseService.updateCompanyNameLiveCourseByStudent(data.liveCourseByStudentId, data.companyName)
+			} else {
+				
+			}
 		});
 	}
 
@@ -140,7 +179,7 @@ export class LiveCourseStudentListComponent {
 		}).then(async (result) => {
 		  if (result.isConfirmed) {
 			// Proceed with updating the database
-			await this.liveCourseService.updateIsAttendingLiveCourseByStudent(data.id, newValue);
+			await this.liveCourseService.updateIsAttendingLiveCourseByStudent(data.liveCourseByStudentId, newValue);
 			console.log("Attendance updated:", data);
 		  } else {
 			// Revert the change if not confirmed
@@ -148,6 +187,23 @@ export class LiveCourseStudentListComponent {
 			target.checked = originalValue;
 		  }
 		});
+	}
+
+	changeStatus(liveCourseByStudentId: string, isActive: boolean) {
+		Swal.fire({
+			title: "Eliminaremos al usuario del curso en vivo",
+			text: "¿Deseas continuar?",
+			icon: "info",
+			showCancelButton: true,
+			confirmButtonText: "Guardar",
+			confirmButtonColor: 'var(--blue-5)',
+		  }).then(async (result) => {
+			if (result.isConfirmed) {
+			  await this.liveCourseService.updateIsActiveLiveCourseByStudent(liveCourseByStudentId, isActive);
+			} else {
+			  
+			}
+		  });
 	}
 
 	onSelect(data) {
@@ -161,9 +217,9 @@ export class LiveCourseStudentListComponent {
 		  const obj = {};
 		  obj[columnTitles[0]] = row.userEmail;
 		  obj[columnTitles[1]] = row.userName;
-		  obj[columnTitles[2]] = row.diagnosticTest;
-		  obj[columnTitles[3]] = row.finalTest;
-		  obj[columnTitles[4]] = row.certificate;
+		  obj[columnTitles[2]] = row.diagnosticTestScore ? row.diagnosticTestScore : "No ha presentado";
+		  obj[columnTitles[3]] = row.finalTestScore ? row.finalTestScore : "No ha presentado";
+		  obj[columnTitles[4]] = row.certificateId ? `${environment.predycUrl}/certificado/${row.certificateId}` : "No disponible";
 		  obj[columnTitles[5]] = row.isAttending ? 'Sí' : 'No';
 		  return obj;
 		});
@@ -205,7 +261,7 @@ export class LiveCourseStudentListComponent {
 
 	async assignLiveCourse(userId: string) {
 		const userRef = this.userService.getUserRefById(userId)
-		const liveCourseByStudent = new LiveCourseByStudent("", false, userRef, this.liveCourseRef, false)
+		const liveCourseByStudent = new LiveCourseByStudent("", true, null, false, userRef, this.liveCourseRef, false, false, null, false, null, true, true)
 		try {
 			await this.liveCourseService.createLiveCourseByStudent(liveCourseByStudent)
 			console.log("***liveCourseByStudent created***")
