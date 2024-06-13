@@ -10,6 +10,7 @@ import { EnterpriseService } from "projects/predyc-business/src/shared/services/
 import { cleanFileName } from "projects/shared";
 import Swal from 'sweetalert2';
 import { DocumentReference } from "@angular/fire/compat/firestore";
+import { AngularFireFunctions } from "@angular/fire/compat/functions";
 
 @Component({
 	selector: "app-enterprise-info",
@@ -27,6 +28,7 @@ export class EnterpriseInfoComponent {
 		private router: Router,
 		private storage: AngularFireStorage,
 		private entepriseService: EnterpriseService,
+		private functions: AngularFireFunctions,
 	) {}
 
 	enterpriseForm: FormGroup;
@@ -47,6 +49,20 @@ export class EnterpriseInfoComponent {
 		this.setupForm();
 	}
 
+	
+
+	async sendMailAdmin(){
+
+		let idEmpresa = this.enterprise.id
+		await firstValueFrom(this.functions.httpsCallable("mailAccountManagementAdmin")({idEmpresa:idEmpresa}))
+	}
+
+	async sendMailUsers(){
+
+		let idEmpresa = this.enterprise.id
+		await firstValueFrom(this.functions.httpsCallable("mailAccountManagementUsers")({idEmpresa:idEmpresa}))
+	}
+
 	async setupForm() {
 		this.enterpriseForm = this.fb.group({
 			name: [null, [Validators.required]],
@@ -65,6 +81,9 @@ export class EnterpriseInfoComponent {
 			mondlyMeetings: [false],
 			useWhatsapp: [false],
 			showEnterpriseLogoInCertificates: [false],
+			accountManagerName: [null],
+			accountManagerPhone: [null],
+			reportMails: [null],
 		});
 		// Edit mode
 		if (this.enterprise) {
@@ -101,6 +120,10 @@ export class EnterpriseInfoComponent {
 				examenFinal:this.enterprise.examenFinal,
 				demo:this.enterprise.demo,
 				showEnterpriseLogoInCertificates: this.enterprise?.showEnterpriseLogoInCertificates ?this.enterprise?.showEnterpriseLogoInCertificates : false,
+				accountManagerName: this.enterprise?.accountManagerName ? this.enterprise.accountManagerName : null,
+				accountManagerPhone: this.enterprise?.accountManagerPhone ? this.enterprise.accountManagerPhone : null,
+
+				reportMails: this.enterprise?.reportMails ? this.enterprise.reportMails : null,
 				allUsersExtraCourses:this.enterprise.allUsersExtraCourses?this.enterprise.allUsersExtraCourses:false,
 				congratulationsEndCourse : this.enterprise.congratulationsEndCourse?this.enterprise.congratulationsEndCourse:false,
 				sendMailtoAdmin : this.enterprise.sendMailtoAdmin?this.enterprise.sendMailtoAdmin:false,
@@ -207,6 +230,9 @@ export class EnterpriseInfoComponent {
 		enterprise.useWhatsapp = formValue.useWhatsapp;
 		enterprise.examenInicial = formValue.examenInicial;
 		enterprise.showEnterpriseLogoInCertificates = formValue.showEnterpriseLogoInCertificates;
+		enterprise.accountManagerName = formValue.accountManagerName;
+		enterprise.accountManagerPhone = formValue.accountManagerPhone;
+		enterprise.reportMails = formValue.reportMails;
 
 
 		console.log("enterprise Actualizado: ", enterprise);

@@ -228,12 +228,15 @@ export class EnterprisesUsersMigrationComponent {
       const permissions = new Permissions();
       if (oldEnterpriseData.hoursPerWeek) permissions.hoursPerWeek = oldEnterpriseData.hoursPerWeek;
       return {
+        reportMails:null,
         examenInicial: true,
         demo:false,
         sendMailtoAdmin:false,
         sendMailtoUsers:false,
         mondlyMeetings:false,
         useWhatsapp:false,
+        accountManagerName: null,
+        accountManagerPhone: null,
         congratulationsEndCourse:false,
         allUsersExtraCourses:false,
         examenFinal: true,

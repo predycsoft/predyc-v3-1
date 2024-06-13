@@ -339,7 +339,10 @@ export class CreateDemoComponent {
       sendMailtoAdmin: false,
       sendMailtoUsers: false,
       mondlyMeetings: false,
-      useWhatsapp: false
+      useWhatsapp: false,
+      accountManagerName: "",
+      accountManagerPhone: "",
+      reportMails: ""
     });
     //console.log("Enterprise", enterprise.toJson())
     await this.enterpriseService.addEnterprise(enterprise);

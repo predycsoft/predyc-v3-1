@@ -9,20 +9,10 @@ const db = admin.firestore();
 export const _sendMailHTML = async (data: { sender: string; recipients: string[]; subject: string; cc: string[];htmlContent:string }) => {
   const APP_NAME = "Predyc";
 
-  // let sender = process.env.EMAIL_USER_A
-  // let password = process.env.EMAIL_PASSWORD_A
-
   let sender = process.env.EMAIL_USER_D;
   let password = process.env.EMAIL_PASSWORD_D;
 
-  // if (["contacto@predyc.com", "capacitacion@predyc.com"].includes(data.sender) ){
-  //     sender = process.env.EMAIL_USER_A
-  //     password = process.env.EMAIL_PASSWORD_A
-  // }
-  // else if (data.sender === "ventas@predyc.com") {
-  //     sender = process.env.EMAIL_USER_L
-  //     password = process.env.EMAIL_PASSWORD_L
-  // }
+  console.log('data.htmlContent',data.htmlContent)
 
   const smtpTransport = nodemailer.createTransport({
     host: "smtp.gmail.com",
@@ -33,14 +23,12 @@ export const _sendMailHTML = async (data: { sender: string; recipients: string[]
       pass: password,
     },
     tls: {
-      // do not fail on invalid certs
       rejectUnauthorized: false,
     },
   } as SMTPTransport.Options);
   const mailOptions = {
     from: `${APP_NAME} <${data.sender}>`,
     to: process.env.PRODUCTION === "true" ? data.recipients : ["desarrollo@predyc.com"],
-    // to: ['diegonegrette42@gmail.com'],
     subject: data.subject,
     html: data.htmlContent,
     cc: data.cc,

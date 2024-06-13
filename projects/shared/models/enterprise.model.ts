@@ -31,6 +31,9 @@ export interface EnterpriseJson {
     sendMailtoUsers: boolean | false
     mondlyMeetings: boolean | false
     useWhatsapp: boolean | false
+    accountManagerName : string,
+    accountManagerPhone : string
+    reportMails:string
 
 }
 
@@ -69,7 +72,10 @@ export class Enterprise {
         },
         public vimeoFolderId: string | null,
         public vimeoFolderUri: string | null,
-        public showEnterpriseLogoInCertificates: boolean
+        public showEnterpriseLogoInCertificates: boolean,
+        public accountManagerName : string,
+        public accountManagerPhone : string,
+        public reportMails:string,
     ) {}
 
     public static getEnterpriseTemplate(): Enterprise {
@@ -109,7 +115,10 @@ export class Enterprise {
             },
             vimeoFolderId: null,
             vimeoFolderUri: null,
-            showEnterpriseLogoInCertificates: true
+            showEnterpriseLogoInCertificates: true,
+            accountManagerName : null,
+            accountManagerPhone : null,
+            reportMails:null,
           });
     }
 
@@ -146,6 +155,9 @@ export class Enterprise {
             enterpriseJson.vimeoFolderId,
             enterpriseJson.vimeoFolderUri,
             enterpriseJson.showEnterpriseLogoInCertificates,
+            enterpriseJson.accountManagerName,
+            enterpriseJson.accountManagerPhone,
+            enterpriseJson.reportMails,
         )
     }
 
@@ -176,6 +188,9 @@ export class Enterprise {
             vimeoFolderId: this.vimeoFolderId,
             vimeoFolderUri: this.vimeoFolderUri,
             showEnterpriseLogoInCertificates: this.showEnterpriseLogoInCertificates,
+            accountManagerName : this.accountManagerName,
+            accountManagerPhone : this.accountManagerPhone,
+            reportMails: this.reportMails,
         }
     }
 }
