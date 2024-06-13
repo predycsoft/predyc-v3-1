@@ -14,6 +14,8 @@ export interface LiveCourseByStudentJson {
 	diagnosticTestScore: number | null
 	finalTestPresented: boolean
 	finalTestScore: number | null
+	canTakeDiagnosticTest: boolean
+	canTakeFinalTest: boolean
 }
 
 export class LiveCourseByStudent {
@@ -30,7 +32,9 @@ export class LiveCourseByStudent {
 		public diagnosticTestPresented: boolean,
 		public diagnosticTestScore: number | null,
 		public finalTestPresented: boolean,
-		public finalTestScore: number | null
+		public finalTestScore: number | null,
+		public canTakeDiagnosticTest: boolean,
+		public canTakeFinalTest: boolean,
 	) {}
 
 	public static fromJson(liveCourseByStudentJson: LiveCourseByStudentJson): LiveCourseByStudent {
@@ -45,7 +49,9 @@ export class LiveCourseByStudent {
 			liveCourseByStudentJson.diagnosticTestPresented,
 			liveCourseByStudentJson.diagnosticTestScore,
 			liveCourseByStudentJson.finalTestPresented,
-			liveCourseByStudentJson.finalTestScore
+			liveCourseByStudentJson.finalTestScore,
+			liveCourseByStudentJson.canTakeDiagnosticTest,
+			liveCourseByStudentJson.canTakeFinalTest,
 		);
 	
 	}
@@ -63,6 +69,8 @@ export class LiveCourseByStudent {
 			diagnosticTestScore: this.diagnosticTestScore,
 			finalTestPresented: this.finalTestPresented,
 			finalTestScore: this.finalTestScore,
+			canTakeDiagnosticTest: this.canTakeDiagnosticTest,
+			canTakeFinalTest: this.canTakeFinalTest,
 		};
 	}
 }

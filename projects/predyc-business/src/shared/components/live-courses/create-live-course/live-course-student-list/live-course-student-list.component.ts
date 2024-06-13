@@ -116,7 +116,7 @@ export class LiveCourseStudentListComponent {
 			  return combineLatest(userObservables);
 			})
 		  ).subscribe(dataTosShow => {
-		  console.log("dataTosShow", dataTosShow);
+		//   console.log("dataTosShow", dataTosShow);
 		  this.paginator.pageIndex = page - 1;
 		  this.dataSource.data = dataTosShow;
 		  this.totalLength = dataTosShow.length;
@@ -132,11 +132,6 @@ export class LiveCourseStudentListComponent {
 			queryParamsHandling: "merge",
 		});
 	}
-
-	// onEnter(event: KeyboardEvent, data: DataToShow): void {
-	// 	event.preventDefault();
-	// 	this.saveCompanyName(data);
-	// }
 
 	onCompanyNameInput(event: Event, data: DataToShow) {
 		const inputElement = event.target as HTMLInputElement;
@@ -266,7 +261,7 @@ export class LiveCourseStudentListComponent {
 
 	async assignLiveCourse(userId: string) {
 		const userRef = this.userService.getUserRefById(userId)
-		const liveCourseByStudent = new LiveCourseByStudent("", true, null, false, userRef, this.liveCourseRef, false, false, null, false, null)
+		const liveCourseByStudent = new LiveCourseByStudent("", true, null, false, userRef, this.liveCourseRef, false, false, null, false, null, true, true)
 		try {
 			await this.liveCourseService.createLiveCourseByStudent(liveCourseByStudent)
 			console.log("***liveCourseByStudent created***")

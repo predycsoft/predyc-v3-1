@@ -229,6 +229,20 @@ export class LiveCourseService {
     })
   }
 
+  async updateLiveCourseCanTakeTest(liveCourseId: string,  canTake: boolean, isFinalTest: boolean): Promise<any> {
+    if (isFinalTest) {
+      await this.afs.collection<LiveCourse>(LiveCourse.collection).doc(liveCourseId).update({
+        canTakeFinalTest: canTake,
+      })
+    }
+    // diagnostic tes
+    else {
+      await this.afs.collection<LiveCourse>(LiveCourse.collection).doc(liveCourseId).update({
+        canTakeDiagnosticTest: canTake,
+      })
+    }
+  }
+
   async updateSessionData(sessionId: string, data: any) {
     await this.afs.collection<Session>(Session.collection).doc(sessionId).update({
       date: data.date ? data.date : null,

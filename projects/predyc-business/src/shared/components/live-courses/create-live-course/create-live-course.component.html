@@ -415,98 +415,24 @@
         </mat-tab>
 
         <mat-tab [label]="'Examen Inicial' + (examen?.questions?.length ? ' (' + examen?.questions?.length + ' Pregunta' + (examen?.questions?.length > 1 ? 's' : '') + ')' : '')">
+          <div *ngIf="mode === 'edit' " fxLayout="row" fxLayoutAlign="start center" class="w-100" fxLayoutGap="1.5rem">
+            <span>Habilitar exámen</span>
+            <mat-slide-toggle [checked]="liveCourseData.canTakeDiagnosticTest" (change)="toggleDiagnosticTest($event, false)"></mat-slide-toggle>
+          </div>
           <div fxLayout="row" class="containerCurso h-100" fxLayoutGap="1.5rem">
             <div fxLayout="row" fxLayoutAlign="center" class="w-100">
               <div style="width: 800px">
                 <app-questions type="test" class="mgr10" [questionMaxSize]="100" [courseData]="modulos" [nameCurso]="formNewCourse?.get('title').value ? formNewCourse?.get('title').value : 'Temporal'" [nameEmpresa]="empresa?.name" (changeQuestion)="validExam = $event; formatExamQuestions()" (emmitForm)="validExam = $event" [questionsArray]="examen?.questions ? examen?.questions : []" [checkQuestions]="updateTriggeQuestionsExam" [selectedTestSkills]="[]" [mode]="mode" [enableImportQuestions]="false" [enableSortQuestions]="false"></app-questions>
               </div>
             </div>
-
-            <div *ngIf="false" class="column w-50 mgr25" fxLayoutGap="2rem">
-              <div *ngIf="examen && questionsFormated" class="mgt15 mgl10 fw" fxLayout="column">
-                <div fxLayout="column" class="radius10 fh hideScroll shadowLight" style="overflow-y: auto; background-color: rgba(244, 244, 244, 0.362)">
-                  <div>
-                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="mgl10 mgt15 mgr10">
-                      <img [src]="icon.document" class="makeBlue h20px" alt="" />
-                      <span class="ft500 ft14 black" style="margin-top: 5px">Vista Previa Examen</span>
-                    </div>
-                    <div class="pdl10 pdr10 pdt10 fw fh smallScroll modulesContainer" style="overflow-y: auto">
-                      <ng-container>
-                        <div class="fw border radius10 shadow10 pd10 mgb20" *ngFor="let question of examen.questions; let questionIndex = index">
-                          <div class="mgb20" fxLayout.lt-md="column" fxLayout="row" fxLayout.lt-md=" start" fxLayoutAlign="space-between center">
-                            <span class="ft14 ft500">{{ questionIndex + 1 }}. Instrucciones: </span>
-                            <span ngClass="ft14 ft500" ngClass.lt-md="ft14 ft500 mgt10">
-                              Puntaje:
-                              <span *ngIf="isSuccess === true"></span>
-                              {{ question.points }}</span
-                            >
-                          </div>
-                          <div class="fw" *ngIf="question.image">
-                            <img [src]="question.image.url" alt="" style="max-height: 500px" />
-                          </div>
-                          <div *ngIf="question.typeFormated.value == questionTypes.TYPE_SINGLE_CHOICE_VALUE">
-                            <span class="ft14 ft500"> {{ question.text }} </span>
-                            <div class="mgt10" fxLayout="column">
-                              <div fxLayout="row" fxLayoutAlign="space-between center" *ngFor="let option of question.options; let optionIndex = index" class="mgt05">
-                                <span
-                                  [ngClass]="{
-                                    'white-text': isSuccess === true && activityAnswers[questionIndex].answerItems[optionIndex].answer
-                                  }"
-                                  >{{ optionIndex + 1 }}. {{ option.text }}</span
-                                >
-                                <input type="radio" [name]="questionIndex" (change)="checkAnswer(questionIndex, optionIndex)" [disabled]="isSuccess !== null" />
-                              </div>
-                            </div>
-                          </div>
-                          <div *ngIf="question.typeFormated.value == questionTypes.TYPE_MULTIPLE_CHOICE_VALUE">
-                            <span class="ft14 ft500"> {{ question.text }} </span>
-                            <div class="mgt10" fxLayout="column">
-                              <div fxLayout="row" fxLayoutAlign="space-between center" *ngFor="let option of question.options; let optionIndex = index" class="mgt05">
-                                <span [ngClass]="{ 'white-text': isSuccess === true }">{{ optionIndex + 1 }}. {{ option.text }}</span>
-                                <input type="checkbox" (change)="checkAnswer(questionIndex, optionIndex)" [disabled]="isSuccess !== null" />
-                              </div>
-                            </div>
-                          </div>
-                          <div *ngIf="question.typeFormated.value == questionTypes.TYPE_COMPLETE_VALUE">
-                            <div [innerHTML]="question.render"></div>
-                          </div>
-                          <div *ngIf="question.typeFormated.value == questionTypes.TYPE_TRUE_OR_FALSE_VALUE">
-                            <span class="ft14 ft500"> {{ question.text }} </span>
-                            <div class="mgt10" fxLayout="column">
-                              <div fxLayout="row" fxLayoutAlign="space-between center">
-                                <span fxFlex="60" class="ft14 ft500">Enunciado</span>
-                                <div class="centertext w200px">
-                                  <span fxFlex="50" class="ft14 ft500">V</span>
-                                  <span fxFlex="50" class="ft14 ft500">F</span>
-                                </div>
-                              </div>
-                              <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt05" *ngFor="let option of question.options; let optionIndex = index">
-                                <div fxFlex="60" fxLayout="row" fxLayoutGap="1rem">
-                                  <span
-                                    [ngClass]="{
-                                      'white-text': isSuccess === true && activityAnswers[questionIndex].answerItems[optionIndex].answer !== null
-                                    }"
-                                    >{{ optionIndex + 1 }}. {{ option.text }}</span
-                                  >
-                                </div>
-                                <div class="centertext w200px">
-                                  <input fxFlex="50" [name]="questionIndex?.toString() + optionIndex?.toString()" type="radio" [value]="true" [disabled]="isSuccess !== null" />
-                                  <input fxFlex="50" [name]="questionIndex?.toString() + optionIndex?.toString()" type="radio" [value]="false" [disabled]="isSuccess !== null" />
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </ng-container>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </mat-tab>
 
         <mat-tab [label]="'Examen Final' + (examen?.questions?.length ? ' (' + examen?.questions?.length + ' Pregunta' + (examen?.questions?.length > 1 ? 's' : '') + ')' : '')">
+          <div *ngIf="mode === 'edit' " fxLayout="row" fxLayoutAlign="start center" class="w-100" fxLayoutGap="1.5rem">
+            <span>Habilitar exámen</span>
+            <mat-slide-toggle [checked]="liveCourseData.canTakeFinalTest" (change)="toggleDiagnosticTest($event, true)"></mat-slide-toggle>
+          </div>
           <div fxLayout="row" class="containerCurso h-100" fxLayoutGap="1.5rem">
             <div fxLayout="row" fxLayoutAlign="center" class="w-100">
               <div style="width: 800px">
