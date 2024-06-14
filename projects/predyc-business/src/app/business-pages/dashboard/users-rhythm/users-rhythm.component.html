@@ -15,27 +15,27 @@
     </div>
     <div fxLayout="column" fxLayoutGap=".5rem">
         <span class="ft11 gray-6 ">
-            <span class="  ft12 gray-7"> {{goodRhythmPercentage | number:"1.0-0"}}%</span> de tu equipo lleva un buen ritmo
+            <span class="  ft12 gray-7"> {{goodRhythmPercentage | number:"1.0-0"}}% - {{rythms.high + rythms.medium}} {{rythms.high + rythms.medium>1? 'persona': 'personas'}}  </span> de tu equipo lleva un buen ritmo
         </span>
         <div  (click)="navigateToStudens('high')"  class="mgt10 cursorPointer" fxLayout="row" fxLayoutAlign=" center">
             <div class="cuadrito altoPunto"></div>
             <span class="gray-10 ft12 nowrap w120px">Ritmo alto</span>
-            <span class="gray-10 ft12 nowrap mgl15  ft500"   >{{highPercentage | number:"1.0-0"}}%</span>
+            <span class="gray-10 ft12 nowrap mgl15  ft500">{{highPercentage | number:"1.0-0"}}% ({{rythms.high}} {{rythms.high>1?'persona':'personas'}})</span>
         </div>
         <div  (click)="navigateToStudens('medium')" fxLayout="row" class="cursorPointer" fxLayoutAlign=" center">
             <div class="cuadrito medioPunto"></div>
             <span class="gray-10 ft12 nowrap w120px">Ritmo medio</span>
-            <span class="gray-10 ft12 nowrap mgl15  ft500"   >{{mediumPercentage | number:"1.0-0"}}%</span>
+            <span class="gray-10 ft12 nowrap mgl15  ft500">{{mediumPercentage | number:"1.0-0"}}% ({{rythms.medium}} {{rythms.medium>1?'persona':'personas'}})</span>
         </div>
         <div  (click)="navigateToStudens('low')" fxLayout="row" class="cursorPointer" fxLayoutAlign=" center">
             <div class="cuadrito backRed5"></div>
             <span class="gray-10 ft12 nowrap w120px">Ritmo bajo</span>
-            <span class="gray-10 ft12 nowrap mgl15  ft500"   >{{lowPercentage | number:"1.0-0"}}%</span>
+            <span class="gray-10 ft12 nowrap mgl15  ft500">{{lowPercentage | number:"1.0-0"}}% ({{rythms.low}} {{rythms.low>1?'persona':'personas'}})</span>
         </div>
         <div  (click)="navigateToStudens('no iniciado')" fxLayout="row" class="cursorPointer" fxLayoutAlign=" center">
             <div class="cuadrito backGray4"></div>
             <span class="gray-10 ft12 nowrap w120px">Sin avances</span>
-            <span class="gray-10 ft12 nowrap mgl15  ft500"   >{{noPlanPercentage | number:"1.0-0"}}%</span>
+            <span class="gray-10 ft12 nowrap mgl15  ft500">{{noPlanPercentage | number:"1.0-0"}}% ({{rythms.noPlan}} {{rythms.noPlan>1?'persona':'personas'}})</span>
         </div>
     </div>
 </div>
