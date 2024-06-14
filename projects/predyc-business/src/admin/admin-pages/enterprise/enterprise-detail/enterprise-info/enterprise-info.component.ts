@@ -50,9 +50,6 @@ export class EnterpriseInfoComponent {
 	}
 
 
-
-	
-
 	async sendMailAdmin(){
 
 		let date = new Date()
@@ -98,8 +95,8 @@ export class EnterpriseInfoComponent {
 		if (this.enterprise) {
 
 
-			this.lastDayAdminMail = this.enterprise['lastDayAdminMail'].seconds*1000
-			this.lastDayUsersMail = this.enterprise['lastDayUsersMail'].seconds*1000
+			this.lastDayAdminMail = this.enterprise['lastDayAdminMail']?.seconds*1000
+			this.lastDayUsersMail = this.enterprise['lastDayUsersMail']?.seconds*1000
 
 			console.log('empresaDatos',this.enterprise)
 

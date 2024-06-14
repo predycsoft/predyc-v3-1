@@ -207,7 +207,7 @@ export const generateMailCertificate = functions.https.onCall(async (data, _) =>
       const pdf = await generatePDF()
       const sender = "desarrollo@predyc.com";
       const recipients = ['arturo.romero@predyc.com'];
-      const subject = `Prueba Certificado`;
+      const subject = `Haz aprobado el ${tipo} ${tituloCurso}`;
       const htmlContent = '<p>Prueba</p>';
       const adjunto = pdf
       const cc = ["desarrollo@predyc.com,arturo.romero@predyc.com"];
