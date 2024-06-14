@@ -104,7 +104,7 @@ export class CreateLiveCourseComponent {
   modulos: Modulo[] = [];
 
   activitiesCourse;
-  examen: Activity;
+  examenDiagnostico: Activity;
   examenFinal: Activity;
   categoriasArray;
   competenciasSelected;
@@ -216,7 +216,7 @@ export class CreateLiveCourseComponent {
   updateTriggeFinalQuestions = 0;
   updateTriggeFinalQuestionsExam = 0;
 
-  validActividad;
+  validDiagnosticoActividad;
   validExam;
 
   validFinalActividad;
@@ -549,7 +549,7 @@ export class CreateLiveCourseComponent {
         event.source.checked = originalValue;
       }
     });
-}
+  }
 
 
   convertTimestampToDatetimeLocalString(timestamp: any): string {
@@ -615,8 +615,8 @@ export class CreateLiveCourseComponent {
             // //console.log('preguntas posibles test',question)
             question.competencias = question.skills;
           });
-          this.examen = diagnosticTest;
-          // console.log('examen data edit',this.examen)
+          this.examenDiagnostico = diagnosticTest;
+          // console.log('examen data edit',this.examenDiagnostico)
 
           //console.log('Questions:', data.questions);
           finalTest.questions.forEach((question) => {
@@ -624,7 +624,7 @@ export class CreateLiveCourseComponent {
             question.competencias = question.skills;
           });
           this.examenFinal = finalTest;
-          // console.log('examen data edit',this.examen)
+          // console.log('examen data edit',this.examenFinal)
         }
       });
   }
@@ -1001,6 +1001,7 @@ export class CreateLiveCourseComponent {
     if (!this.validarModulosSessions()) valid = false;
 
     this.updateTriggeQuestionsExam++;
+    this.updateTriggeFinalQuestionsExam++;
 
     await new Promise((resolve) => setTimeout(resolve, 30));
 
@@ -1019,9 +1020,9 @@ export class CreateLiveCourseComponent {
           }
         }
       });
-      // console.log('revisar',this.examen,questions)
-      if (this.examen) {
-        this.examen.questions = questions;
+      // console.log('revisar',this.examenDiagnostico,questions)
+      if (this.examenDiagnostico) {
+        this.examenDiagnostico.questions = questions;
       } else {
         // Diagnostico
         let exam = new Activity();
@@ -1030,10 +1031,10 @@ export class CreateLiveCourseComponent {
         exam.title = `Questionario Diagnóstico: ${this.liveCourseData.title}`;
         exam.updatedAt = new Date().getTime();
         exam.createdAt = new Date().getTime();
-        this.examen = exam;
+        this.examenDiagnostico = exam;
       }
 
-      // console.log('examen',this.examen)
+      // console.log('examen',this.examenDiagnostico)
       //this.openModal(this.endCourseModal)
     }
     // Examen Final
@@ -1050,7 +1051,7 @@ export class CreateLiveCourseComponent {
           }
         }
       });
-      // console.log('revisar',this.examen,questions)
+      // console.log('revisar',this.examenDiagnostico,questions)
       if (this.examenFinal) {
         this.examenFinal.questions = questions;
       } else {
@@ -1064,7 +1065,7 @@ export class CreateLiveCourseComponent {
         this.examenFinal = finalExam;
       }
 
-      // console.log('examen',this.examen)
+      // console.log('examen',this.examenDiagnostico)
       //this.openModal(this.endCourseModal)
     }
 
@@ -1220,8 +1221,8 @@ export class CreateLiveCourseComponent {
     }
 
     // For "examen diagnostico" ... check later
-    if (this.examen) {
-      console.log("this.examen", this.examen);
+    if (this.examenDiagnostico) {
+      console.log("this.examenDiagnostico", this.examenDiagnostico);
       let courseRef = null;
       if (this.mode === "edit") courseRef = this.liveCourseService.getLiveCourseRefById(this.liveCourseData.id);
       else courseRef = this.liveCourseService.getLiveCourseTemplateRefById(this.liveCourseData.id);
@@ -1229,26 +1230,26 @@ export class CreateLiveCourseComponent {
       let activityClass = new Activity();
       // console.log('this.activityClass',activityClass)
       let questions: Question[] = [];
-      questions = structuredClone(this.examen.questions);
-      let auxCoursesRef = this.examen.coursesRef;
-      this.examen.coursesRef = null;
-      // console.log('this.examen',this.examen)
+      questions = structuredClone(this.examenDiagnostico.questions);
+      let auxCoursesRef = this.examenDiagnostico.coursesRef;
+      this.examenDiagnostico.coursesRef = null;
+      // console.log('this.examenDiagnostico',this.examenDiagnostico)
 
-      activityClass.activityCorazon = this.examen.activityCorazon;
-      activityClass.claseRef = this.examen.claseRef;
-      activityClass.coursesRef = this.examen.coursesRef;
-      activityClass.createdAt = this.examen.createdAt;
-      activityClass.description = this.examen.description;
-      activityClass.duration = this.examen.duration;
-      activityClass.enterpriseRef = this.examen.enterpriseRef;
-      activityClass.files = this.examen.files;
-      activityClass.id = this.examen.id;
-      activityClass.title = this.examen.title;
-      activityClass.type = this.examen.type;
-      activityClass.updatedAt = this.examen.updatedAt;
+      activityClass.activityCorazon = this.examenDiagnostico.activityCorazon;
+      activityClass.claseRef = this.examenDiagnostico.claseRef;
+      activityClass.coursesRef = this.examenDiagnostico.coursesRef;
+      activityClass.createdAt = this.examenDiagnostico.createdAt;
+      activityClass.description = this.examenDiagnostico.description;
+      activityClass.duration = this.examenDiagnostico.duration;
+      activityClass.enterpriseRef = this.examenDiagnostico.enterpriseRef;
+      activityClass.files = this.examenDiagnostico.files;
+      activityClass.id = this.examenDiagnostico.id;
+      activityClass.title = this.examenDiagnostico.title;
+      activityClass.type = this.examenDiagnostico.type;
+      activityClass.updatedAt = this.examenDiagnostico.updatedAt;
       activityClass.enterpriseRef = null;
 
-      this.examen.coursesRef = auxCoursesRef;
+      this.examenDiagnostico.coursesRef = auxCoursesRef;
       activityClass.coursesRef = [courseRef];
       activityClass.type = Activity.TYPE_TEST;
 
@@ -1258,7 +1259,7 @@ export class CreateLiveCourseComponent {
       let questionsIds = [];
       let questionsClasses = [];
 
-      this.examen.id = activityClass.id;
+      this.examenDiagnostico.id = activityClass.id;
       for (let pregunta of questions) {
         delete pregunta["competencias_tmp"];
         delete pregunta["competencias"];
@@ -1755,101 +1756,29 @@ export class CreateLiveCourseComponent {
     }
   }
 
-  async avanceTab() {
-    // this.updateTriggeQuestionsExam=0;
-    // if (this.activeStep < 6) {
-    //   this.showErrorCurso = false;
-    //   let valid = true;
-    //   if(this.activeStep == 1){
-    //     console.log(this.formNewCourse)
-    //     if(!this.formNewCourse.valid){
-    //       valid = false;
-    //     }
-    //     else{
-    //       console.log('datos curso',this.formNewCourse.value)
-    //       if(this.liveCourseData){
-    //         this.liveCourseData = this.formNewCourse.value;
-    //         this.liveCourseData.instructorNombre = this.liveCourseData.instructor
-    //       }
-    //       else{
-    //         let id = await this.afs.collection<Curso>(Curso.collection).doc().ref.id;
-    //         let newCurso = new Curso;
-    //         this.formNewCourse.get("id").patchValue(id);
-    //         newCurso = this.formNewCourse.value;
-    //         this.liveCourseData = newCurso
-    //         this.liveCourseData.instructorNombre = this.liveCourseData.instructor
-    //       }
-    //     }
-    //   }
-    //   if(this.activeStep == 2){
-    //     if(!this.validarModulosClases()){
-    //       valid = false;
-    //     }
-    //   }
-    //   if(this.activeStep == 3){
-    //     this.updateTriggeQuestionsExam++;
-    //     setTimeout(() => {
-    //       if(this.validExam ==null || !this.validExam?.valid || this.validExam.value?.questions?.length == 0){
-    //         valid = false
-    //         this.updateTriggeQuestionsExam++;
-    //       }
-    //       else{
-    //         let questions = structuredClone(this.validExam.value.questions)
-    //         questions.forEach(question => {
-    //           if(!question.typeFormated){
-    //             question.typeFormated = this.getTypeQuestion(question.type)
-    //             if(question.type == 'complete'){
-    //               this.showDisplayText(question)
-    //             }
-    //           }
-    //         });
-    //         console.log('revisar',this.examen,questions)
-    //         if(this.examen){
-    //           this.examen.questions = questions
-    //         }
-    //         else{
-    //           let exam = new Activity();
-    //           exam.questions = questions
-    //           exam.type = 'test'
-    //           exam.title = `Questionario Final: ${this.liveCourseData.title}`
-    //           exam.updatedAt = new Date().getTime()
-    //           exam.createdAt = new Date().getTime()
-    //           this.examen = exam;
-    //         }
-    //         console.log('examen',this.examen)
-    //         this.openModal(this.endCourseModal)
-    //       }
-    //     }, 10);
-    //   }
-    //   else{
-    //     if(valid) {
-    //       this.activeStep++
-    //     }
-    //     else {
-    //       this.showErrorCurso = true;
-    //     }
-    //   }
-    // } else {
-    //   this.openModal(this.endCourseModal)
-    // }
-  }
 
   onTabChange(event: MatTabChangeEvent) {
     this.currentTab = "Contenido del Curso";
-    if (event.tab.textLabel === "Examen") {
-      this.currentTab = "Examen";
+    if (event.tab.textLabel === "Examen Inicial") {
+      this.currentTab = "Examen Inicial";
       // console.log('El tab Examen fue seleccionado');
 
-      if (!this.examen) {
+      if (!this.examenDiagnostico) {
         let exam = new Activity();
         exam.type = "test";
         exam.title = `Questionario Diagnóstico: ${this.formNewCourse.get("title")?.value}`;
         exam.updatedAt = new Date().getTime();
         exam.createdAt = new Date().getTime();
         this.questionsFormated = true;
-        this.examen = exam;
+        this.examenDiagnostico = exam;
       }
       this.formatExamQuestions();
+    }
+
+    if (event.tab.textLabel === "Examen Final") {
+      this.currentTab = "Examen Final";
+      // console.log('El tab Examen fue seleccionado');
+
       if (!this.examenFinal) {
         let examFinal = new Activity();
         examFinal.type = "final-test";
@@ -1864,7 +1793,7 @@ export class CreateLiveCourseComponent {
   }
 
   checkAnswer(questionIndex: number, optionIndex: number): void {
-    switch (this.examen.questions[questionIndex].type.value) {
+    switch (this.examenDiagnostico.questions[questionIndex].type.value) {
       case QuestionType.TYPE_SINGLE_CHOICE_VALUE:
         {
           this.activityAnswers[questionIndex].answerItems.forEach((answerItem, index) => {
@@ -1894,20 +1823,21 @@ export class CreateLiveCourseComponent {
   }
 
   formatExamQuestions() {
-    // console.log('formatExamQuestions')
+    console.log('formatExamQuestions')
 
     setTimeout(() => {
       this.updateTriggeQuestionsExam++;
       setTimeout(() => {
+        console.log("this.validExam", this.validExam)
         if (this.validExam == null || !this.validExam?.valid || this.validExam.value?.questions?.length == 0) {
           this.updateTriggeQuestionsExam++;
           console.log("formatExamQuestions invalid", this.validExam.controls.questions);
           let formArray: FormArray = this.validExam.get("questions") as FormArray;
           // let preguntasValidas = formArray.controls.filter(control => control.status === 'VALID');
           let preguntasValidas = formArray.controls;
-          console.log("preguntasValidas", preguntasValidas);
+          // console.log("preguntasValidas", preguntasValidas);
           let valoresPreguntasValidas = preguntasValidas.map((pregunta) => pregunta.value);
-          console.log("valoresPreguntasValidas", valoresPreguntasValidas);
+          // console.log("valoresPreguntasValidas", valoresPreguntasValidas);
 
           if (valoresPreguntasValidas.length > 0) {
             let questions = structuredClone(valoresPreguntasValidas);
@@ -1919,8 +1849,8 @@ export class CreateLiveCourseComponent {
                 }
               }
             });
-            if (this.examen) {
-              this.examen.questions = questions;
+            if (this.examenDiagnostico) {
+              this.examenDiagnostico.questions = questions;
               this.questionsFormated = true;
             }
           }
@@ -1934,9 +1864,9 @@ export class CreateLiveCourseComponent {
               }
             }
           });
-          console.log("revisar", this.examen, questions);
-          if (this.examen) {
-            this.examen.questions = questions;
+          console.log("revisar", this.examenDiagnostico, questions);
+          if (this.examenDiagnostico) {
+            this.examenDiagnostico.questions = questions;
             this.questionsFormated = true;
           }
         }
@@ -1945,20 +1875,21 @@ export class CreateLiveCourseComponent {
   }
 
   formatFinalExamQuestions() {
-    // console.log('formatExamQuestions')
+    console.log('formatFinalExamQuestions')
 
     setTimeout(() => {
       this.updateTriggeFinalQuestionsExam++;
       setTimeout(() => {
+        console.log("this.validFinalExam", this.validFinalExam)
         if (this.validFinalExam == null || !this.validFinalExam?.valid || this.validFinalExam.value?.questions?.length == 0) {
           this.updateTriggeFinalQuestionsExam++;
-          console.log("formatExamQuestions invalid", this.validFinalExam.controls.questions);
+          console.log("formatFinalExamQuestions invalid", this.validFinalExam.controls.questions);
           let formArray: FormArray = this.validFinalExam.get("questions") as FormArray;
           // let preguntasValidas = formArray.controls.filter(control => control.status === 'VALID');
           let preguntasValidas = formArray.controls;
-          console.log("preguntasValidas", preguntasValidas);
+          // console.log("preguntasValidas", preguntasValidas);
           let valoresPreguntasValidas = preguntasValidas.map((pregunta) => pregunta.value);
-          console.log("valoresPreguntasValidas", valoresPreguntasValidas);
+          // console.log("valoresPreguntasValidas", valoresPreguntasValidas);
 
           if (valoresPreguntasValidas.length > 0) {
             let questions = structuredClone(valoresPreguntasValidas);
@@ -3338,7 +3269,7 @@ export class CreateLiveCourseComponent {
     this.showErrorActividad = false;
     let valid = true;
 
-    this.validActividad == null;
+    this.validDiagnosticoActividad == null;
 
     //console.log('tab actividad',this.activeStepActividad);
 
@@ -3368,11 +3299,11 @@ export class CreateLiveCourseComponent {
     if (this.activeStepActividad == 2) {
       this.updateTriggeQuestions++;
       setTimeout(() => {
-        if (this.validActividad == null || !this.validActividad?.valid || this.validActividad.value?.questions?.length == 0) {
+        if (this.validDiagnosticoActividad == null || !this.validDiagnosticoActividad?.valid || this.validDiagnosticoActividad.value?.questions?.length == 0) {
           valid = false;
           this.updateTriggeQuestions++;
         } else {
-          let questions = structuredClone(this.validActividad.value.questions);
+          let questions = structuredClone(this.validDiagnosticoActividad.value.questions);
           questions.forEach((question) => {
             if (!question.typeFormated) {
               question.typeFormated = this.getTypeQuestion(question.type);

@@ -108,6 +108,8 @@ export class QuestionsComponent {
   @Output() emmitForm = new EventEmitter();
   @Output() changeQuestion = new EventEmitter();
 
+  constructor(private fb: FormBuilder, public icon: IconService, private alertService: AlertsService, public sanitizer: DomSanitizer, private modalService: NgbModal, private storage: AngularFireStorage, private authService: AuthService) {}
+
   questionTypesModel = QuestionType;
   isSuccess: boolean = null;
   activityAnswers: Array<any>;
@@ -122,6 +124,114 @@ export class QuestionsComponent {
       this.init();
     }
   }
+
+  user;
+
+  ngOnInit() {
+    this.authService.user$.subscribe((user) => {
+      if (user) {
+        // console.log('user',user)
+        this.user = user;
+        this.init();
+      }
+    });
+  }
+
+  classesArray = [];
+  
+  init() {
+    this.classesArray = [];
+    if (this.courseData) {
+      this.courseData.forEach((modulo, moduloIndex) => {
+        modulo.clases.forEach((clase, claseIndex) => {
+          // Agregar propiedades de índices al objeto de clase
+          const claseConIndices = {
+            ...clase,
+            moduloIndex: moduloIndex,
+            claseIndex: claseIndex,
+          };
+          if (clase.tipo != "actividad" && clase.tipo != "corazones") this.classesArray.push(claseConIndices);
+        });
+      });
+    }
+    this.emmitForm.emit(null);
+    // console.log('selectedTestSkills',this.selectedTestSkills,this.nameCurso,this.nameEmpresa)
+    this.setupForm();
+
+    if (this.heartsActivity) {
+      this.questionTypes = this.questionTypes.filter((q) => q.value == "single_choice");
+    }
+
+    // console.log('questionTypes',this.questionTypes,this.questions)
+  }
+
+  setupForm() {
+    this.questionStatus = [];
+    this.mainForm = this.fb.group({
+      questions: this.fb.array([]),
+    });
+
+    if (this.questionsArray) {
+      this.questionsArray.forEach((questionData) => {
+        this.addQuestionInit(questionData);
+      });
+    }
+
+    this.formatExamQuestions();
+  }
+
+  appliedOrder = "";
+
+  addQuestionInit(question: any): void {
+    const questionType = question.type;
+
+    const newQuestionGroup = this.fb.group(
+      {
+        text: [question.text, [Validators.required]],
+        idUser: [question.idUser, [Validators.required]],
+        type: [questionType],
+        image: this.fb.group({
+          url: [question?.image?.url || ""],
+          file: [question?.image?.file || null],
+        }),
+        id: [question?.id || null],
+        options: this.fb.array([]),
+        points: [question.points, [Validators.required, Validators.min(1), Validators.pattern(/^\d*$/)]],
+        skills: this.fb.array([]),
+        explanation: [question.explanation, []],
+        classId: [question.classId, []],
+      },
+      { validators: questionTypeToValidators[questionType] }
+    );
+
+    this.questions.push(newQuestionGroup);
+
+    this.questions.controls.forEach((control) => {
+      control.get("idUser")?.setValidators([Validators.required, this.uniqueIdUserValidator(this.questions)]);
+      control.get("idUser")?.updateValueAndValidity();
+    });
+
+    const questionIndex = this.questions.length - 1;
+    if (question.options && question.options.length > 0) {
+      this.initializeOptions(questionIndex, question.options);
+    }
+    this.selectedQuestionsSkills.push([]);
+
+    // Initialize skills
+    if (question.skills && question.skills.length > 0) {
+      this.initializeQuestionSkills(questionIndex, question.skills);
+    }
+
+    this.questionStatus.push({
+      editing: false,
+      expanded: true,
+      visibleImage: true,
+      placeholders: [],
+      textToRender: null,
+      formated: null,
+    });
+  }
+
 
   submitForm(): void {
     this.displayErrors = false;
@@ -189,8 +299,6 @@ export class QuestionsComponent {
     this.formatExamQuestions();
   }
 
-  constructor(private fb: FormBuilder, public icon: IconService, private alertService: AlertsService, public sanitizer: DomSanitizer, private modalService: NgbModal, private storage: AngularFireStorage, private authService: AuthService) {}
-
   questionStatus: { expanded: boolean; editing: boolean; visibleImage: boolean; placeholders: string[]; textToRender: SafeHtml; formated }[] = [];
 
   mainForm: FormGroup;
@@ -210,16 +318,6 @@ export class QuestionsComponent {
     if (seach) return seach.displayName;
 
     return null;
-  }
-  user;
-  ngOnInit() {
-    this.authService.user$.subscribe((user) => {
-      if (user) {
-        // console.log('user',user)
-        this.user = user;
-        this.init();
-      }
-    });
   }
 
   extraerModuloYClase(claseRelacionada) {
@@ -482,48 +580,6 @@ export class QuestionsComponent {
     return respuesta;
   }
 
-  classesArray = [];
-  init() {
-    this.classesArray = [];
-    if (this.courseData) {
-      this.courseData.forEach((modulo, moduloIndex) => {
-        modulo.clases.forEach((clase, claseIndex) => {
-          // Agregar propiedades de índices al objeto de clase
-          const claseConIndices = {
-            ...clase,
-            moduloIndex: moduloIndex,
-            claseIndex: claseIndex,
-          };
-          if (clase.tipo != "actividad" && clase.tipo != "corazones") this.classesArray.push(claseConIndices);
-        });
-      });
-    }
-    this.emmitForm.emit(null);
-    // console.log('selectedTestSkills',this.selectedTestSkills,this.nameCurso,this.nameEmpresa)
-    this.setupForm();
-
-    if (this.heartsActivity) {
-      this.questionTypes = this.questionTypes.filter((q) => q.value == "single_choice");
-    }
-
-    // console.log('questionTypes',this.questionTypes,this.questions)
-  }
-
-  setupForm() {
-    this.questionStatus = [];
-    this.mainForm = this.fb.group({
-      questions: this.fb.array([]),
-    });
-
-    if (this.questionsArray) {
-      this.questionsArray.forEach((questionData) => {
-        this.addQuestionInit(questionData);
-      });
-    }
-
-    this.formatExamQuestions();
-  }
-
   get questions(): FormArray {
     return <FormArray>this.mainForm.get("questions");
   }
@@ -535,58 +591,6 @@ export class QuestionsComponent {
 
       return idUserExists ? { nonUniqueUserId: true } : null;
     };
-  }
-
-  appliedOrder = "";
-
-  addQuestionInit(question: any): void {
-    const questionType = question.type;
-
-    const newQuestionGroup = this.fb.group(
-      {
-        text: [question.text, [Validators.required]],
-        idUser: [question.idUser, [Validators.required]],
-        type: [questionType],
-        image: this.fb.group({
-          url: [question?.image?.url || ""],
-          file: [question?.image?.file || null],
-        }),
-        id: [question?.id || null],
-        options: this.fb.array([]),
-        points: [question.points, [Validators.required, Validators.min(1), Validators.pattern(/^\d*$/)]],
-        skills: this.fb.array([]),
-        explanation: [question.explanation, []],
-        classId: [question.classId, []],
-      },
-      { validators: questionTypeToValidators[questionType] }
-    );
-
-    this.questions.push(newQuestionGroup);
-
-    this.questions.controls.forEach((control) => {
-      control.get("idUser")?.setValidators([Validators.required, this.uniqueIdUserValidator(this.questions)]);
-      control.get("idUser")?.updateValueAndValidity();
-    });
-
-    const questionIndex = this.questions.length - 1;
-    if (question.options && question.options.length > 0) {
-      this.initializeOptions(questionIndex, question.options);
-    }
-    this.selectedQuestionsSkills.push([]);
-
-    // Initialize skills
-    if (question.skills && question.skills.length > 0) {
-      this.initializeQuestionSkills(questionIndex, question.skills);
-    }
-
-    this.questionStatus.push({
-      editing: false,
-      expanded: true,
-      visibleImage: true,
-      placeholders: [],
-      textToRender: null,
-      formated: null,
-    });
   }
 
   initializeOptions(questionIndex: number, options: any[]): void {

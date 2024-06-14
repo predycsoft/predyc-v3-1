@@ -414,7 +414,7 @@
           </ng-container>
         </mat-tab>
 
-        <mat-tab [label]="'Examen Inicial' + (examen?.questions?.length ? ' (' + examen?.questions?.length + ' Pregunta' + (examen?.questions?.length > 1 ? 's' : '') + ')' : '')">
+        <mat-tab [label]="'Examen Inicial' + (examenDiagnostico?.questions?.length ? ' (' + examenDiagnostico?.questions?.length + ' Pregunta' + (examenDiagnostico?.questions?.length > 1 ? 's' : '') + ')' : '')">
           <div fxLayout="row" fxLayoutAlign="center" class="w-100">
             <div *ngIf="mode === 'edit' " fxLayout="row" fxLayoutAlign="start center" class="w800px pdl10" fxLayoutGap="1.5rem">
               <span>Habilitar examen</span>
@@ -424,13 +424,17 @@
           <div fxLayout="row" class="containerCurso h-100" fxLayoutGap="1.5rem">
             <div fxLayout="row" fxLayoutAlign="center" class="w-100">
               <div style="width: 800px">
-                <app-questions type="test" class="mgr10" [questionMaxSize]="100" [courseData]="modulos" [nameCurso]="formNewCourse?.get('title').value ? formNewCourse?.get('title').value : 'Temporal'" [nameEmpresa]="empresa?.name" (changeQuestion)="validExam = $event; formatExamQuestions()" (emmitForm)="validExam = $event" [questionsArray]="examen?.questions ? examen?.questions : []" [checkQuestions]="updateTriggeQuestionsExam" [selectedTestSkills]="[]" [mode]="mode" [enableImportQuestions]="false" [enableSortQuestions]="false"></app-questions>
+                <app-questions type="test" class="mgr10" [questionMaxSize]="100" [courseData]="modulos" 
+                [nameCurso]="formNewCourse?.get('title').value ? formNewCourse?.get('title').value : 'Temporal'" [nameEmpresa]="empresa?.name" 
+                (changeQuestion)="validExam = $event; formatExamQuestions()" (emmitForm)="validExam = $event" 
+                [questionsArray]="examenDiagnostico?.questions ? examenDiagnostico?.questions : []" [checkQuestions]="updateTriggeQuestionsExam" [selectedTestSkills]="[]" 
+                [mode]="mode" [enableImportQuestions]="false" [enableSortQuestions]="false"></app-questions>
               </div>
             </div>
           </div>
         </mat-tab>
 
-        <mat-tab [label]="'Examen Final' + (examen?.questions?.length ? ' (' + examen?.questions?.length + ' Pregunta' + (examen?.questions?.length > 1 ? 's' : '') + ')' : '')">
+        <mat-tab [label]="'Examen Final' + (examenFinal?.questions?.length ? ' (' + examenFinal?.questions?.length + ' Pregunta' + (examenFinal?.questions?.length > 1 ? 's' : '') + ')' : '')">
           <div fxLayout="row" fxLayoutAlign="center" class="w-100">
             <div *ngIf="mode === 'edit' " fxLayout="row" fxLayoutAlign="start center" class="w800px pdl10" fxLayoutGap="1.5rem">
               <span>Habilitar examen</span>
@@ -440,7 +444,11 @@
           <div fxLayout="row" class="containerCurso h-100" fxLayoutGap="1.5rem">
             <div fxLayout="row" fxLayoutAlign="center" class="w-100">
               <div style="width: 800px">
-                <app-questions type="final-test" class="mgr10" [questionMaxSize]="100" [courseData]="modulos" [nameCurso]="formNewCourse?.get('title').value ? formNewCourse?.get('title').value : 'Temporal'" [nameEmpresa]="empresa?.name" (changeQuestion)="validFinalExam = $event; formatFinalExamQuestions()" (emmitForm)="validFinalExam = $event" [questionsArray]="examenFinal?.questions ? examenFinal?.questions : []" [checkQuestions]="updateTriggeQuestionsExam" [selectedTestSkills]="[]" [mode]="mode" [enableImportQuestions]="false" [enableSortQuestions]="false"></app-questions>
+                <app-questions type="final-test" class="mgr10" [questionMaxSize]="100" [courseData]="modulos" 
+                [nameCurso]="formNewCourse?.get('title').value ? formNewCourse?.get('title').value : 'Temporal'" [nameEmpresa]="empresa?.name" 
+                (changeQuestion)="validFinalExam = $event; formatFinalExamQuestions()" (emmitForm)="validFinalExam = $event" 
+                [questionsArray]="examenFinal?.questions ? examenFinal?.questions : []" [checkQuestions]="updateTriggeFinalQuestionsExam" [selectedTestSkills]="[]" 
+                [mode]="mode" [enableImportQuestions]="false" [enableSortQuestions]="false"></app-questions>
               </div>
             </div>
           </div>
@@ -697,7 +705,7 @@
                     </div>
                   </div>
                 </ng-container>
-                <app-questions [nameCurso]="formNewCourse.get('title').value ? this.formNewCourse.get('title').value : 'Temporal'" [nameEmpresa]="empresa.name" (emmitForm)="validActividad = $event" [heartsActivity]="selectedSession.tipo == 'corazones' ? true : false" [questionsArray]="selectedSession?.activity?.questions ? selectedSession.activity.questions : []" [checkQuestions]="updateTriggeQuestions" [selectedTestSkills]="competenciasSelectedClaseFormated"></app-questions>
+                <app-questions [nameCurso]="formNewCourse.get('title').value ? this.formNewCourse.get('title').value : 'Temporal'" [nameEmpresa]="empresa.name" (emmitForm)="validDiagnosticoActividad = $event" [heartsActivity]="selectedSession.tipo == 'corazones' ? true : false" [questionsArray]="selectedSession?.activity?.questions ? selectedSession.activity.questions : []" [checkQuestions]="updateTriggeQuestions" [selectedTestSkills]="competenciasSelectedClaseFormated"></app-questions>
                 <!-- <div fxLayout="row" class="fw">
                                     <div class="mgl40 mgr10 fw">
                                         <div class="fw mgb10">
