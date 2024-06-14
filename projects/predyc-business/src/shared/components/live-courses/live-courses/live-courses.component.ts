@@ -45,7 +45,7 @@ export class LiveCoursesComponent {
 
   cursos: Curso[] = [];
   selectedCourse: any = null;
-  tab = 1;
+  tab = 0;
   detailCourseTab = 0;
   searchValue = "";
   creatingCategory = false;
