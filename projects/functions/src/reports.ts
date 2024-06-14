@@ -77,7 +77,7 @@ async function generateReportEnterpriseAdminLocal(idEmpresa: string) {
     <p><strong>Usuario activos:</strong><p>`
     htmlMail+= users.table
     if(accountManagerNumber){
-      htmlMail+= `<br><p>Habla con tu account manager${enterpriseData?.accountManagerName? ' ' + titleCase(enterpriseData?.accountManagerName): '' } vía WhatsApp: <a href="https://wa.me/${accountManagerNumber}">${accountManagerNumber}</a></p>`;
+      htmlMail+= `<br><p>Habla con tu account manager${enterpriseData?.accountManagerName? ' ' + titleCase(enterpriseData?.accountManagerName): '' } vía Whatsapp: <a href="https://wa.me/${accountManagerNumber}">${accountManagerNumber}</a></p>`;
     }
     htmlMail+= `<p>Inicia sesión en PREDYC : <a href="https://predyc.com">https://predyc.com</a></p>`;
     let recipientMail = enterpriseData?.reportMails ? enterpriseData?.reportMails.split(','): ['arturo.romero@predyc.com']
@@ -165,7 +165,7 @@ async function generateReportEnterpriseUsers(idEmpresa: string) {
           let cursos = buildMonths(cursosPlan,courses)
           const datos = generateUsersProgressTableHTML(cursos)
           let html = `<p><strong>${titleCase(user.displayName)}</strong>,</p><p>A continuación, te presentamos el estatus de tu plan de estudios:</p><br>${datos}
-          <br><p>Necesitas ayuda, habla con alguien de PREDYC via Whasapp: <a href="https://wa.me/524271797182">524271797182</a></p>`
+          <br><p>Necesitas ayuda, habla con alguien de PREDYC vía Whatsapp: <a href="https://wa.me/524271797182">524271797182</a></p>`
           html+= `<p>Inicia sesión en PREDYC : <a href="https://predyc.com">https://predyc.com</a></p><br>`;
           let respuestaItem = {
             user:user,
