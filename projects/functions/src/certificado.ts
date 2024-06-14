@@ -116,7 +116,7 @@ export const generateMailCertificate = functions.https.onCall(async (data, _) =>
       let enterpriseId: string = null;
       const dataUser = userDoc.data();
       nombreUsuario = titleCase(dataUser["displayName"]);
-      enterpriseId = dataUser["enterprise"].id;
+      enterpriseId = dataUser["enterprise"]?.id;
   
       if (enterpriseId) {
         const enterpriseRef = admin.firestore().collection(Enterprise.collection).doc(enterpriseId);
@@ -126,6 +126,9 @@ export const generateMailCertificate = functions.https.onCall(async (data, _) =>
           throw new functions.https.HttpsError('not-found', 'No se encontró la empresa.');
         }
         const dataEnterprise = enterpriseDoc.data();
+        if(!dataEnterprise.congratulationsEndCourse){
+          throw new functions.https.HttpsError('not-found', 'Empresa sin corrreo final cursos');
+        }
         logoUsuarioEmpresa = dataEnterprise["photoUrl"];
         mostrarLogoUsuarioEmpresa = dataEnterprise["showEnterpriseLogoInCertificates"];
         
@@ -188,29 +191,22 @@ export const generateMailCertificate = functions.https.onCall(async (data, _) =>
             }
 
           }
-        // Redimensionar la imagen de la firma del instructor
-        // if (firmaInstructor) {
-        //     const imgBuffer = await downloadImage(firmaInstructor);
-        //     if(imgBuffer){
-        //         const resizedBuffer = await sharp(imgBuffer).toBuffer();
-        //         firmaInstructor = `data:image/png;base64,${resizedBuffer.toString('base64')}`;
-        //     }
-        //     else{
-        //         firmaInstructor = null;
-        //     }
 
-        // }
       } else if (liveCourseId) {
         throw new functions.https.HttpsError("not-found", 'not yet implemented');
       }
   
       const pdf = await generatePDF()
       const sender = "desarrollo@predyc.com";
-      const recipients = ['arturo.romero@predyc.com'];
-      const subject = `Haz aprobado el ${tipo} ${tituloCurso}`;
-      const htmlContent = '<p>Prueba</p>';
+      // const recipients = ['arturo.romero@predyc.com'];
+      const recipients =  [dataUser['email']]
+      const subject = `Has aprobado el ${tipo} ${tituloCurso} en PREDYC`;
+      let correo = `<strong>${titleCase(nombreUsuario)}</strong>,</p><p>Felicidades por haber completado el ${tipo} <strong>${tituloCurso} en PREDYC.</strong> Puedes ver y compartir tu certificado siguiendo este enlace: <a href="https://predyc-user.web.app/certificado/${id}">Ver certificado en línea</a>.</p>
+      <p>También puedes ver tu certificado adjunto en este correo.</p>`;
+      let htmlMailFinal = `<!DOCTYPE html><html><head></head><body><p>${correo}<br>${firma}</body></html>`;
+      const htmlContent = htmlMailFinal;
       const adjunto = pdf
-      const cc = ["desarrollo@predyc.com,arturo.romero@predyc.com"];
+      const cc = ["desarrollo@predyc.com"];
       const mailObj = { sender, recipients, subject, cc, htmlContent,adjunto };
       //console.log(mailObj)
       _sendMailHTML(mailObj);
