@@ -49,16 +49,22 @@ export class EnterpriseInfoComponent {
 		this.setupForm();
 	}
 
-	
 
 	async sendMailAdmin(){
 
+		let date = new Date()
+
+		this.lastDayAdminMail = (date.getTime());
 		let idEmpresa = this.enterprise.id
 		await firstValueFrom(this.functions.httpsCallable("mailAccountManagementAdmin")({idEmpresa:idEmpresa}))
 	}
 
 	async sendMailUsers(){
 
+		let date = new Date()
+
+
+		this.lastDayUsersMail = (date.getTime());
 		let idEmpresa = this.enterprise.id
 		await firstValueFrom(this.functions.httpsCallable("mailAccountManagementUsers")({idEmpresa:idEmpresa}))
 	}
@@ -89,8 +95,8 @@ export class EnterpriseInfoComponent {
 		if (this.enterprise) {
 
 
-			this.lastDayAdminMail = this.enterprise['lastDayAdminMail']
-			this.lastDayUsersMail = this.enterprise['lastDayUsersMail']
+			this.lastDayAdminMail = this.enterprise['lastDayAdminMail']?.seconds*1000
+			this.lastDayUsersMail = this.enterprise['lastDayUsersMail']?.seconds*1000
 
 			console.log('empresaDatos',this.enterprise)
 

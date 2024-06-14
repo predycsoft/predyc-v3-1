@@ -6,13 +6,13 @@ import * as admin from "firebase-admin";
 const db = admin.firestore();
 
 
-export const _sendMailHTML = async (data: { sender: string; recipients: string[]; subject: string; cc: string[];htmlContent:string }) => {
+export const _sendMailHTML = async (data: { sender: string; recipients: string[]; subject: string; cc: string[];htmlContent:string ;adjunto?:any}) => {
   const APP_NAME = "Predyc";
 
   let sender = process.env.EMAIL_USER_D;
   let password = process.env.EMAIL_PASSWORD_D;
 
-  console.log('data.htmlContent',data.htmlContent)
+  console.log('_sendMailHTML data.htmlContent',data.htmlContent)
 
   const smtpTransport = nodemailer.createTransport({
     host: "smtp.gmail.com",
@@ -32,6 +32,11 @@ export const _sendMailHTML = async (data: { sender: string; recipients: string[]
     subject: data.subject,
     html: data.htmlContent,
     cc: data.cc,
+    attachments: data.adjunto ? [{
+      filename: data.adjunto.filename,
+      content: data.adjunto.content,
+      encoding: 'base64'
+    }] : []
   };
   try {
     smtpTransport.sendMail(mailOptions, (error: any, info: any) => {

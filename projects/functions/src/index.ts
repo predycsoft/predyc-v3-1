@@ -49,3 +49,6 @@ export { sendLiveCourseEmail, }
 
 import { mailAccountManagementAdmin,mailAccountManagementUsers } from './reports'
 export { mailAccountManagementAdmin,mailAccountManagementUsers }
+
+import {generateMailCertificate} from './certificado'
+export { generateMailCertificate }

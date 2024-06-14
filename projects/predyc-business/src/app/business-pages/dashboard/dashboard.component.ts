@@ -170,6 +170,7 @@ export class DashboardComponent {
                 if (users && users.length > 1) {
                   // first response is an 1 element array corresponded to admin
                   const performances = [];
+                  users = users.filter(x=>x.status == 'active')
                   for (let user of users) {
 
                     let test = this.testUsers.filter(x=>x.userRef.id == user.uid && x.type == 'inicial')
@@ -253,7 +254,7 @@ export class DashboardComponent {
                     
                   }
                   this.users = users
-                  console.log('this.users',this.users,performances)
+                  console.log('this.user performance',this.users,performances)
                   this.getUsersRythmData(performances);
                 }
               }

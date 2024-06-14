@@ -72,12 +72,12 @@ async function generateReportEnterpriseAdminLocal(idEmpresa: string) {
     const users = await generateReportEnterpriseAdmin(idEmpresa);
     const enterpriseDoc = await admin.firestore().collection(Enterprise.collection).doc(idEmpresa).get();
     const enterpriseData = enterpriseDoc.data();
-    let accountManagerNumber = enterpriseData.accountManagerNumber ? enterpriseData.accountManagerNumber : '524271797182'
+    let accountManagerNumber = enterpriseData.accountManagerPhone ? enterpriseData.accountManagerPhone : '524271797182'
     let htmlMail = `<p>Encuentra a continuación el resumen de tu equipo de usuarios activos en PREDYC.</p>
     <p><strong>Usuario activos:</strong><p>`
     htmlMail+= users.table
     if(accountManagerNumber){
-      htmlMail+= `<br><p>Habla con tu account manager${enterpriseData?.accountManagerName? ' ' + titleCase(enterpriseData?.accountManagerName): '' } vía WhatsApp: <a href="https://wa.me/${accountManagerNumber}">${accountManagerNumber}</a></p>`;
+      htmlMail+= `<br><p>Habla con tu account manager${enterpriseData?.accountManagerName? ' ' + titleCase(enterpriseData?.accountManagerName): '' } vía Whatsapp: <a href="https://wa.me/${accountManagerNumber}">${accountManagerNumber}</a></p>`;
     }
     htmlMail+= `<p>Inicia sesión en PREDYC : <a href="https://predyc.com">https://predyc.com</a></p>`;
     let recipientMail = enterpriseData?.reportMails ? enterpriseData?.reportMails.split(','): ['arturo.romero@predyc.com']
@@ -86,7 +86,7 @@ async function generateReportEnterpriseAdminLocal(idEmpresa: string) {
     console.log('htmlMailFinal',htmlMailFinal)
     const sender = "desarrollo@predyc.com";
     const recipients = recipientMail;
-    //const recipients = ['arturo.romero@predyc.com'];
+    //const recipients = ['andres.gonzalez@predyc.com'];
     const subject = `Reporte de progresos en PREDYC de tu empresa ${enterpriseData.name.toUpperCase()}`;
     const htmlContent = htmlMailFinal;
     const cc = ["desarrollo@predyc.com,arturo.romero@predyc.com"];
@@ -165,7 +165,7 @@ async function generateReportEnterpriseUsers(idEmpresa: string) {
           let cursos = buildMonths(cursosPlan,courses)
           const datos = generateUsersProgressTableHTML(cursos)
           let html = `<p><strong>${titleCase(user.displayName)}</strong>,</p><p>A continuación, te presentamos el estatus de tu plan de estudios:</p><br>${datos}
-          <br><p>Necesitas ayuda, habla con alguien de PREDYC via Whasapp: <a href="https://wa.me/524271797182">524271797182</a></p>`
+          <br><p>Necesitas ayuda, habla con alguien de PREDYC vía Whatsapp: <a href="https://wa.me/524271797182">524271797182</a></p>`
           html+= `<p>Inicia sesión en PREDYC : <a href="https://predyc.com">https://predyc.com</a></p><br>`;
           let respuestaItem = {
             user:user,
@@ -180,14 +180,14 @@ async function generateReportEnterpriseUsers(idEmpresa: string) {
           lastDayUsersMail: now
         })
         // para pruebas 
-        respuesta = [respuesta[0]]
+        // respuesta = [respuesta[0]]
         respuesta.forEach(correo => {
           const htmlContent = ` <!DOCTYPE html><html><head>${styleMail}</head><body>${correo.html}${firma}</body></html>`;
           const sender = "desarrollo@predyc.com";
           const recipients = [correo.user.email];
-          //const recipients = ['arturo.romero@predyc.com'];
+          //const recipients = ['andres.gonzalez@predyc.com'];
           const subject = `Tu progreso semanal en PREDYC`;
-          const cc = ["desarrollo@predyc.com,arturo.romero@predyc.com"];
+          const cc = ["desarrollo@predyc.com"];
           const mailObj = { sender, recipients, subject, cc, htmlContent };
           console.log(mailObj)
           _sendMailHTML(mailObj);
