@@ -26,12 +26,15 @@ export class EnterpriseComponent {
 
   async updateEmpresasUsage() {
     await firstValueFrom(this.fireFunctions.httpsCallable('updateDataAllEnterprisesUsage')(null));
+    await firstValueFrom(this.fireFunctions.httpsCallable('updateDataAllEnterprisesRhythm')(null));
   }
 
 
   empresasActive = 0
   empresasInactive = 0
   empresasTotales = 0
+  empresasDemo = 0
+
 
 
   createDemo() {
@@ -47,9 +50,11 @@ export class EnterpriseComponent {
   getEmpresas(empresas){
     let inactives = empresas.filter(x=>x.status == 'inactive')
     let actives = empresas.filter(x=>x.status == 'active')
+    let demo = empresas.filter(x=>x.demo)
     console.log('empresas',actives,inactives,empresas)
     this.empresasActive = actives.length
     this.empresasInactive = inactives.length
+    this.empresasDemo= demo.length
     this.empresasTotales = empresas.length
   }
 

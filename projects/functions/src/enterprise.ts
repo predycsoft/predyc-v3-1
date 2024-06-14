@@ -1,14 +1,30 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import { ClassByStudent, Enterprise, License, StudyPlanClass, User } from 'shared';
+import { ClassByStudent, CourseByStudent, Curso, Enterprise, License, StudyPlanClass, User,getPerformanceWithDetails } from 'shared';
 
 const db = admin.firestore();
 
 export const updateDataEnterpriseUsage = functions.https.onCall(async (data, _) => {
   try {
+    
     const batch = admin.firestore().batch();
     const enterpriseId = data.enterpriseId;
+    console.log(`Actualización empresas ${enterpriseId}`)
     await updateDataEnterpriseUsageLocal(enterpriseId,batch)
+    await batch.commit();
+    console.log(`Actualización empresas ${enterpriseId}`)
+  } catch (error: any) {
+    console.log(error);
+    throw new functions.https.HttpsError("unknown", error.message);
+  }
+});
+
+
+export const updateDataEnterpriseRhythm = functions.https.onCall(async (data, _) => {
+  try {
+    const batch = admin.firestore().batch();
+    const enterpriseId = data.enterpriseId;
+    await updateDataEnterpriseRhythmLocal(enterpriseId,batch)
     await batch.commit();
     console.log(`Actualización empresas ${enterpriseId}`)
   } catch (error: any) {
@@ -27,6 +43,15 @@ export const updateDataAllEnterprisesUsageSchedule = functions.pubsub.schedule('
   }
 });
 
+export const updateDataAllEnterprisesRhythmSchedule = functions.pubsub.schedule('every day 06:00').onRun(async (context) => {
+  try {
+    await updateDataAllEnterprisesRhythmLocal();
+    console.log('Updated all enterprises usage');
+  } catch (error) {
+    console.error('Error updating all enterprises usage:', error);
+  }
+});
+
 export const updateDataAllEnterprisesUsage = functions.https.onCall(async () => {
   try {
     console.log('updateDataAllEnterprisesUsageStart')
@@ -37,6 +62,50 @@ export const updateDataAllEnterprisesUsage = functions.https.onCall(async () => 
     throw new functions.https.HttpsError("unknown", error.message);
   }
 });
+
+
+export const updateDataAllEnterprisesRhythm = functions.https.onCall(async () => {
+  try {
+    console.log('updateDataAllEnterprisesRhythmStart')
+    await updateDataAllEnterprisesRhythmLocal();
+    console.log('updateDataAllEnterprisesRhythmEnd')
+  } catch (error: any) {
+    console.log(error);
+    throw new functions.https.HttpsError("unknown", error.message);
+  }
+});
+
+async function updateDataAllEnterprisesRhythmLocal() {
+  const batch = admin.firestore().batch();
+  
+  try {
+    const licensesSnapshot = await admin.firestore().collection(License.collection).where('status', '==', 'active').get();
+    const enterpriseRefs = new Set<FirebaseFirestore.DocumentReference>();
+    const enterpriseIds = new Set<string>();
+
+
+    licensesSnapshot?.forEach(doc => {
+      const licenseData = doc.data();
+      if (licenseData?.enterpriseRef) {
+        enterpriseRefs.add(licenseData.enterpriseRef);
+        enterpriseIds.add(licenseData.enterpriseRef.id);
+      }
+    });
+    const uniqueEnterpriseRefs = Array.from(enterpriseRefs);
+    const uniqueEnterpriseIds = Array.from(enterpriseIds);
+
+    for (const enterpriseId of uniqueEnterpriseIds) {
+      await updateDataEnterpriseRhythmLocal(enterpriseId, batch);
+    }
+
+    await batch.commit();
+    console.log('Actualización completada para todas las empresas.');
+
+  } catch (error: any) {
+    console.log(error);
+    throw new Error(error.message);
+  }
+}
 
 
 async function updateDataAllEnterprisesUsageLocal() {
@@ -71,6 +140,116 @@ async function updateDataAllEnterprisesUsageLocal() {
     throw new Error(error.message);
   }
 }
+
+async function updateDataEnterpriseRhythmLocal(enterpriseId: string,batch?: FirebaseFirestore.WriteBatch) {
+
+  try{
+
+  const enterpriseRef = admin.firestore().collection(Enterprise.collection).doc(enterpriseId);
+    
+  // Verificar si la referencia de la empresa existe
+  const enterpriseDoc = await enterpriseRef.get();
+  if (!enterpriseDoc.exists) {
+    console.log(`Enterprise with ID ${enterpriseId} does not exist.`);
+    return;
+  }
+
+  console.log(`Editing enterprise ID ${enterpriseId}.`);
+
+  const usersSnapshot = await admin.firestore().collection(User.collection)
+  .where('enterprise', '==', enterpriseRef)
+  .where('status', '==', 'active') // Filtrar usuarios con status active
+  .get();
+
+  const users: FirebaseFirestore.DocumentData[] = usersSnapshot.docs.map(doc => doc.data());
+
+  const userRefs = usersSnapshot.docs.map(doc => doc.ref);
+
+  // Buscar cursos que coincidan con la empresa o que tengan enterpriseRef null
+  const coursesSnapshot = await admin.firestore().collection(Curso.collection)
+    .where('enterpriseRef', '==', enterpriseRef)
+    .get();
+
+  const nullCoursesSnapshot = await admin.firestore().collection(Curso.collection)
+    .where('enterpriseRef', '==', null)
+    .get();
+
+  // Unir los cursos con enterpriseRef igual al enterpriseRef de la empresa y los que tienen enterpriseRef null
+  const courses = coursesSnapshot.docs.map(doc => doc.data()).concat(nullCoursesSnapshot.docs.map(doc => doc.data()));
+
+    // Dividir userRefs en grupos de 10
+    const chunks = [];
+    for (let i = 0; i < userRefs.length; i += 10) {
+      chunks.push(userRefs.slice(i, i + 10));
+    }
+
+    // Obtener coursesByStudent para los usuarios en chunks
+    let allCoursesByStudent = [];
+    for (const chunk of chunks) {
+      const coursesByStudentSnapshot = await admin.firestore().collection(CourseByStudent.collection)
+        .where('userRef', 'in', chunk)
+        .where('isExtraCourse', '==', false)
+        .where('active', '==', true)
+        .get();
+      allCoursesByStudent = allCoursesByStudent.concat(coursesByStudentSnapshot.docs.map(doc => doc.data()));
+    }
+
+    users.forEach(user => {
+      let cursosPlan = allCoursesByStudent.filter(x=>x.userRef.id == user.uid)
+      cursosPlan?.forEach(course => {
+        const courseJson = courses.find(item => item.id === course.courseRef.id);
+        if (courseJson) {
+          course.courseTime = courseJson.duracion
+        }
+      });
+      let ritmo = getPerformanceWithDetails(cursosPlan)
+      user['ritmo'] = ritmo
+    });
+    console.log(users)
+    const rythms = {
+      high: 0,
+      medium: 0,
+      low: 0,
+      noPlan: 0,
+      noIniciado:0
+    };
+    for (const user of users) {
+      switch (user.ritmo) {
+        case "no plan":
+          rythms.noPlan += 1;
+          break;
+        case "high":
+          rythms.high += 1;
+          break;
+        case "medium":
+          rythms.medium += 1;
+          break;
+        case "low":
+          rythms.low += 1;
+          break;
+        case "no iniciado":
+          rythms.noIniciado += 1;
+          break;
+      }
+    }
+    console.log(rythms)
+
+    batch.update(enterpriseRef, {
+      rythms: rythms,
+      rythmsDate: new Date()
+    });
+
+  
+  }
+  catch (error: any) {
+    console.log(error);
+    throw new Error(error.message);
+  }
+
+
+
+}
+
 
 
 async function updateDataEnterpriseUsageLocal(enterpriseId: string, batch: FirebaseFirestore.WriteBatch) {

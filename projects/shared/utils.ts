@@ -145,6 +145,66 @@ export const obtenerUltimoDiaDelMes = (fecha: number): number => {
 	return ultimoDiaDelMes.getTime();
 };
 
+export function getPerformanceWithDetails(userStudyPlan:any): "no plan" | "high" | "medium" | "low" | "no iniciado" {
+  
+
+	const today = new Date().getTime();
+  
+	let targetComparisonDate = today;
+  
+	let lastDayPast = obtenerUltimoDiaDelMesAnterior(targetComparisonDate)
+	let lastDayCurrent = obtenerUltimoDiaDelMes(targetComparisonDate)
+  
+	let progressMonth = getMonthProgress()
+  
+  
+  
+	let userStudyPlanUntilLastMonth = userStudyPlan.filter(x=>x.dateEndPlan  && (x.dateEndPlan?.seconds*1000)<=lastDayPast)
+	let userStudyPlanCurrent = userStudyPlan.filter(x=>x.dateEndPlan  && (x.dateEndPlan?.seconds*1000)>lastDayPast && (x.dateEndPlan?.seconds*1000)<=lastDayCurrent )
+  
+	let studentHours = 0
+	let studentExpectedHours = 0
+  
+	userStudyPlanUntilLastMonth.forEach(course => {
+	  if(course.progress >=100){
+		studentExpectedHours +=course.courseTime
+		studentHours +=course.courseTime
+	  }
+	  else{
+		studentExpectedHours +=course.courseTime
+		studentHours +=course.progressTime
+	  }
+	});
+  
+	userStudyPlanCurrent.forEach(course => {
+	  
+	  studentExpectedHours +=(course.courseTime * progressMonth)
+	  studentHours +=course.progressTime?course.progressTime:0
+	});
+  
+  
+	let procentaje = studentHours*100/studentExpectedHours
+  
+  
+	let performance: "no plan" | "high" | "medium" | "low" | "no iniciado";
+  
+  
+	let validator = userStudyPlan.find((x) => x.progressTime > 0);
+	if (!validator && userStudyPlan.length > 0) {
+	  performance = "no iniciado";
+	} else if (userStudyPlan.length == 0) {
+	  performance = "no plan";
+	} else if (procentaje >=80) {
+	  performance = "high";
+	} else if (procentaje >=50) {
+	  performance = "medium";
+	} else {
+	  performance = "low";
+	}
+  
+	return performance;
+  }
+
 export const obtenerPrimerDiaDelMes = (fecha: number): number => {
 	let fechaOriginal = new Date(fecha);
 	const anio = fechaOriginal.getFullYear();

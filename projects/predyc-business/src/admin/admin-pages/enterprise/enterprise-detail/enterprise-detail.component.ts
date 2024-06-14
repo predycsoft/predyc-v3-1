@@ -53,6 +53,13 @@ export class EnterpriseDetailComponent {
     );
 
 
+    await firstValueFrom(
+      this.fireFunctions.httpsCallable("updateDataEnterpriseRhythm")({
+        enterpriseId: this.enterpriseId as string,
+      })
+    );
+
+
 
 
   }

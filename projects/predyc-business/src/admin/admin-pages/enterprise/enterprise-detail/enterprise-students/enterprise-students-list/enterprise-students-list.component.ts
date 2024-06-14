@@ -11,7 +11,7 @@ import { DepartmentService } from 'projects/predyc-business/src/shared/services/
 import { DialogService } from 'projects/predyc-business/src/shared/services/dialog.service';
 import { ProfileService } from 'projects/predyc-business/src/shared/services/profile.service';
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
-import { Subscription, combineLatest, forkJoin, map, switchMap, take } from 'rxjs';
+import { Subscription, combineLatest, firstValueFrom, forkJoin, map, switchMap, take } from 'rxjs';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import * as XLSX from 'xlsx-js-style';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -20,6 +20,7 @@ import Swal from 'sweetalert2';
 import { AlertsService } from 'projects/predyc-business/src/shared/services/alerts.service';
 import { Subscription as SubscriptionClass } from "shared";
 import { Router } from '@angular/router';
+import { AngularFireFunctions } from '@angular/fire/compat/functions';
 
 
 
@@ -29,6 +30,7 @@ interface studentInList {
   profileName: string,
   email: string,
   status: string,
+  
 }
 
 @Component({
@@ -50,6 +52,8 @@ export class EnterpriseStudentsListComponent {
     private fb: FormBuilder,
     private alertService: AlertsService,
     private router: Router,
+    private functions: AngularFireFunctions,
+
 
   ){}
 
@@ -312,6 +316,13 @@ export class EnterpriseStudentsListComponent {
     this.router.navigate([`admin/students/${data.id}`])
 
     
+  }
+
+  async updateUsage(){
+    await firstValueFrom(this.functions.httpsCallable("updateDataEnterpriseUsage")({enterpriseId:this.enterpriseRef.id}))
+    await firstValueFrom(this.functions.httpsCallable("updateDataEnterpriseRhythm")({enterpriseId:this.enterpriseRef.id}))
+
+
   }
 
 

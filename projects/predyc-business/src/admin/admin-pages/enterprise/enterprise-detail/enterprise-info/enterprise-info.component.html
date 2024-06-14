@@ -69,7 +69,7 @@
             <span class="ft16 ft600 mgb08">Enviar correos de progreso a los administradores</span>
             <label class="ft12">Destinatarios reporte</label>
             <input [class.is-invalid]="enterpriseForm.controls['reportMails'].errors && showError" formControlName="reportMails" type="text" class="mgb08 form-control ft14 shadow-animation pdl05 pdr05 radius8 borderLight fw">
-            <span *ngIf="lastDayAdminMail" class="ft16 ft500 pft03 mgb08">Último envio: {{lastDayAdminMail | date:"dd/MM/yyyy"}}</span>
+            <span *ngIf="lastDayAdminMail" class="ft16 ft500 pft03 mgb08">Último envio: {{lastDayAdminMail | date:"dd/MM/yyyy HH:mm"}}</span>
             <span (click)="sendMailAdmin()" class="ft16 ft500 blueLink">Realizar envio manual ahora</span>
           </div>
           <mat-slide-toggle class="" color="primary" formControlName="sendMailtoAdmin"></mat-slide-toggle>
@@ -81,7 +81,7 @@
           <div fxLayout="column">
             <span class="ft16 ft600 mgb08">Enviar correos de progreso a los usuarios.</span>
             <!-- <span *ngIf="lastDayUsersMail" class="ft16 ft500">Último envio: {{lastDayUsersMail}}</span> -->
-            <span *ngIf="lastDayUsersMail" class="ft16 ft500 pft03 mgb08">Último envio: {{lastDayUsersMail | date:"dd/MM/yyyy"}}</span>
+            <span *ngIf="lastDayUsersMail" class="ft16 ft500 pft03 mgb08">Último envio: {{lastDayUsersMail | date:"dd/MM/yyyy HH:mm"}}</span>
             <span (click)="sendMailUsers()"class="ft16 ft500 blueLink">Realizar envio manual ahora</span>
           </div>
           <mat-slide-toggle class="" color="primary" formControlName="sendMailtoUsers"></mat-slide-toggle>

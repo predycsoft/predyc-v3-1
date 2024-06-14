@@ -24,9 +24,23 @@
         </div>
       </td>
     </ng-container>
+
+    <ng-container matColumnDef="ritmo">
+      <th mat-header-cell *matHeaderCellDef class="ft14"></th>
+      <th mat-header-cell *matHeaderCellDef class="gray-8"> Ritmo </th>
+      <td mat-cell *matCellDef="let enterprise">
+        <div class="bar-container">
+          <div class="bar-segment bar-high" [style.width.%]="(enterprise.ritmos.high / enterprise.totalRitmos) * 100"></div>
+          <div class="bar-segment bar-medium" [style.width.%]="(enterprise.ritmos.medium / enterprise.totalRitmos) * 100"></div>
+          <div class="bar-segment bar-low" [style.width.%]="(enterprise.ritmos.low / enterprise.totalRitmos) * 100"></div>
+          <div class="bar-segment bar-no-iniciado" [style.width.%]="(enterprise.ritmos.noIniciado / enterprise.totalRitmos) * 100"></div>
+          <div class="bar-segment bar-no-plan" [style.width.%]="(enterprise.ritmos.noPlan / enterprise.totalRitmos) * 100"></div>
+        </div>
+      </td>
+    </ng-container>
     <!-- Users Qty Column -->
     <ng-container matColumnDef="userQty">
-      <th mat-header-cell *matHeaderCellDef class="ft14">Cant. Usuarios</th>
+      <th mat-header-cell *matHeaderCellDef class="ft14">Usuarios</th>
 
       <td mat-cell *matCellDef="let enterprise" class="ft14">
         {{ enterprise.userQty | number : "1.0-0" }}
@@ -44,13 +58,10 @@
     </ng-container>
     <!-- In Use Licences Column -->
     <ng-container matColumnDef="inUseLicenses">
-      <th mat-header-cell *matHeaderCellDef class="ft14">Licencias en uso</th>
+      <th mat-header-cell *matHeaderCellDef class="ft14">Licencias en uso / Disponibles</th>
 
       <td mat-cell *matCellDef="let enterprise" class="ft14">
-        {{
-          enterprise.totalLicenses - enterprise.availableLicenses
-            | number : "1.0-0"
-        }}
+        {{ enterprise.totalLicenses - enterprise.availableLicenses| number : "1.0-0"}} / {{enterprise.availableLicenses| number : "1.0-0"}}
       </td>
     </ng-container>
     <!-- Rotations Column -->
@@ -81,6 +92,20 @@
       </td>
     </ng-container>
 
+
+    <!-- Product Column -->
+    <ng-container matColumnDef="demo">
+      <th mat-header-cell *matHeaderCellDef class="ft14">Demo</th>
+
+      <td mat-cell *matCellDef="let enterprise" class="centertext ft12">
+        <div *ngIf="enterprise.demo" fxLayout="row" fxLayoutGap="6px" fxLayoutAlign=" center">
+          <div
+            class="pdt03 pdb03 radius6 fw backOrange1 orange-3"> Demo
+          </div>
+        </div>
+      </td>
+    </ng-container>
+
     <!-- Status Column -->
     <ng-container matColumnDef="status">
       <th mat-header-cell *matHeaderCellDef class="ft13 centertext">
@@ -90,7 +115,7 @@
           fxLayoutAlign=" center"
           [matMenuTriggerFor]="menu"
         >
-          <span>Estatus</span>
+          <span>Fecha licnecia</span>
           <mat-icon>expand_more</mat-icon>
         </div>
         <mat-menu #menu="matMenu" class="radius6 shadow16 pd0">
@@ -101,9 +126,7 @@
               fxLayout="row"
               fxLayoutAlign=" center"
               (click)="search('all')"
-              [ngClass]="
-                status == 'all' ? 'backGray2 green-5 ft500' : 'gray-10'
-              "
+              [ngClass]="status == 'all' ? 'backGray2 green-5 ft500' : 'gray-10'"
             >
               <span class="pdl05">Todos</span>
             </div>
@@ -113,9 +136,7 @@
               fxLayout="row"
               fxLayoutAlign=" center"
               (click)="search('active')"
-              [ngClass]="
-                status == 'active' ? 'backGray2 green-5 ft500' : 'gray-10'
-              "
+              [ngClass]="status == 'active' ? 'backGray2 green-5 ft500' : 'gray-10'"
             >
               <span class="pdl05">Activos</span>
             </div>
@@ -153,12 +174,8 @@
           <div
             class="pdt03 pdb03 radius6 fw"
             [ngClass]="
-              enterprise.status == SubscriptionClass.STATUS_ACTIVE
-                ? 'backGreen2 green-5'
-                : 'backGray3 gray-5'
-            "
-          >
-            {{ enterprise.status }}
+              enterprise.status == SubscriptionClass.STATUS_ACTIVE? 'backGreen2 green-6' : 'backGray3 gray-5'">
+            {{ enterprise.status == 'active'? 'Activa' : enterprise.status }}  {{ enterprise.product }}: {{ enterprise.expirationDate | date : "MMM yy" }}
           </div>
           <div
             fxLayout="row"
