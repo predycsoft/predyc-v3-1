@@ -150,7 +150,7 @@ export class CreateCourseComponent {
   async ngOnInit(): Promise<void> {
     //console.log(this.competenciasArray)
 
-    console.log("mode on init", this.mode);
+    // console.log("mode on init", this.mode);
 
     this.filteredinstructores = this.instructoresForm.valueChanges.pipe(
       startWith(""),
@@ -168,14 +168,14 @@ export class CreateCourseComponent {
         take(1)
       )
       .subscribe((enterprise) => {
-        console.log("enterprise", enterprise);
+        // console.log("enterprise", enterprise);
         if (enterprise) {
           this.empresa = enterprise;
           this.instructorsService
             .getInstructorsObservable()
             .pipe()
             .subscribe((instructores) => {
-              console.log("instructores", instructores);
+              // console.log("instructores", instructores);
               this.instructores = instructores;
             });
 
@@ -185,7 +185,7 @@ export class CreateCourseComponent {
               take(1)
             )
             .subscribe((user) => {
-              console.log("user", user);
+              // console.log("user", user);
               this.user = user;
               this.inicializarformNewCourse();
               // if (!user?.isSystemUser) {
@@ -222,7 +222,7 @@ export class CreateCourseComponent {
   }
 
   anidarCompetenciasInicial(categorias: any[], competencias: any[]): any[] {
-    console.log("anidarCompetenciasInicial", categorias, competencias);
+    // console.log("anidarCompetenciasInicial", categorias, competencias);
     return categorias.map((categoria) => {
       let skills = competencias
         .filter((comp) => comp.category.id === categoria.id)
@@ -318,19 +318,19 @@ export class CreateCourseComponent {
       .getCategoriesObservable()
       .pipe()
       .subscribe((category) => {
-        console.log("category from service", category);
+        // console.log("category from service", category);
         this.skillService
           .getSkillsObservable()
           .pipe()
           .subscribe((skill) => {
-            console.log("skill from service", skill);
+            // console.log("skill from service", skill);
             this.allskills = skill;
             skill.map((skillIn) => {
               delete skillIn["selected"];
             });
 
             this.categoriasArray = this.anidarCompetenciasInicial(category, skill);
-            console.log("categoriasArray", this.categoriasArray, this.curso);
+            // console.log("categoriasArray", this.categoriasArray, this.curso);
             if (!this.skillsInit) {
               if (this.mode == "edit") {
                 //console.log('curso edit', this.curso)
@@ -438,7 +438,7 @@ export class CreateCourseComponent {
   async inicializarformNewCourse() {
     let id;
     if (this.mode == "create") {
-      console.log("this.empresa", this.empresa);
+      // console.log("this.empresa", this.empresa);
 
       if (!this.user.isSystemUser && !this.empresa.permissions?.createCourses) {
         this.router.navigate(["management/courses"]);
