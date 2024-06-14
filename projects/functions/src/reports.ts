@@ -85,8 +85,8 @@ async function generateReportEnterpriseAdminLocal(idEmpresa: string) {
     </body></html>`;
     console.log('htmlMailFinal',htmlMailFinal)
     const sender = "desarrollo@predyc.com";
-    const recipients = recipientMail;
-    //const recipients = ['arturo.romero@predyc.com'];
+    //const recipients = recipientMail;
+    const recipients = ['andres.gonzalez@predyc.com'];
     const subject = `Reporte de progresos en PREDYC de tu empresa ${enterpriseData.name.toUpperCase()}`;
     const htmlContent = htmlMailFinal;
     const cc = ["desarrollo@predyc.com,arturo.romero@predyc.com"];
@@ -180,12 +180,12 @@ async function generateReportEnterpriseUsers(idEmpresa: string) {
           lastDayUsersMail: now
         })
         // para pruebas 
-        respuesta = [respuesta[0]]
+        // respuesta = [respuesta[0]]
         respuesta.forEach(correo => {
           const htmlContent = ` <!DOCTYPE html><html><head>${styleMail}</head><body>${correo.html}${firma}</body></html>`;
           const sender = "desarrollo@predyc.com";
-          const recipients = [correo.user.email];
-          //const recipients = ['arturo.romero@predyc.com'];
+          //const recipients = [correo.user.email];
+          const recipients = ['andres.gonzalez@predyc.com'];
           const subject = `Tu progreso semanal en PREDYC`;
           const cc = ["desarrollo@predyc.com,arturo.romero@predyc.com"];
           const mailObj = { sender, recipients, subject, cc, htmlContent };

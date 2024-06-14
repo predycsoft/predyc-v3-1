@@ -82,8 +82,9 @@ let tipo = 'curso'
 let id
 
 async function downloadImage(url: string): Promise<Buffer> {
+    console.log('downloadImage:',url)
     const response = await fetch(url);
-    if (!response.ok) throw new Error(`Failed to fetch image: ${response.statusText}`);
+    if (!response.ok) return null;
     return await response.buffer();
   }
 
@@ -132,8 +133,14 @@ export const generateMailCertificate = functions.https.onCall(async (data, _) =>
         // Descargar y redimensionar la imagen del logo del usuario
         if (logoUsuarioEmpresa) {
             const imgBuffer = await downloadImage(logoUsuarioEmpresa);
-            const resizedBuffer = await sharp(imgBuffer).toBuffer();
-            logoUsuarioEmpresa = `data:image/png;base64,${resizedBuffer.toString('base64')}`;
+            if(imgBuffer){
+                const resizedBuffer = await sharp(imgBuffer).toBuffer();
+                logoUsuarioEmpresa = `data:image/png;base64,${resizedBuffer.toString('base64')}`;
+            }
+            else{
+                logoUsuarioEmpresa = null
+            }
+
         }
       }
   
@@ -172,25 +179,36 @@ export const generateMailCertificate = functions.https.onCall(async (data, _) =>
         // Redimensionar la imagen del logo del instructor
         if (logoInstructorEmpresa) {
             const imgBuffer = await downloadImage(logoInstructorEmpresa);
-            const resizedBuffer = await sharp(imgBuffer).toBuffer();
-            logoInstructorEmpresa = `data:image/png;base64,${resizedBuffer.toString('base64')}`;
+            if(imgBuffer){
+                const resizedBuffer = await sharp(imgBuffer).toBuffer();
+                logoInstructorEmpresa = `data:image/png;base64,${resizedBuffer.toString('base64')}`;
+            }
+            else{
+                logoInstructorEmpresa = null
+            }
+
           }
         // Redimensionar la imagen de la firma del instructor
-        if (firmaInstructor) {
-            const imgBuffer = await downloadImage(firmaInstructor);
-            const resizedBuffer = await sharp(imgBuffer).toBuffer();
-            firmaInstructor = `data:image/png;base64,${resizedBuffer.toString('base64')}`;
-          }
+        // if (firmaInstructor) {
+        //     const imgBuffer = await downloadImage(firmaInstructor);
+        //     if(imgBuffer){
+        //         const resizedBuffer = await sharp(imgBuffer).toBuffer();
+        //         firmaInstructor = `data:image/png;base64,${resizedBuffer.toString('base64')}`;
+        //     }
+        //     else{
+        //         firmaInstructor = null;
+        //     }
+
+        // }
       } else if (liveCourseId) {
         throw new functions.https.HttpsError("not-found", 'not yet implemented');
       }
   
       const pdf = await generatePDF()
-      console.log('aqui',pdf);
       const sender = "desarrollo@predyc.com";
       const recipients = ['arturo.romero@predyc.com'];
-      const subject = `Prueba CErtificado`;
-      const htmlContent = '<p></p>';
+      const subject = `Prueba Certificado`;
+      const htmlContent = '<p>Prueba</p>';
       const adjunto = pdf
       const cc = ["desarrollo@predyc.com,arturo.romero@predyc.com"];
       const mailObj = { sender, recipients, subject, cc, htmlContent,adjunto };

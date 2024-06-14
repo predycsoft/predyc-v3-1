@@ -12,7 +12,7 @@ export const _sendMailHTML = async (data: { sender: string; recipients: string[]
   let sender = process.env.EMAIL_USER_D;
   let password = process.env.EMAIL_PASSWORD_D;
 
-  console.log('data.htmlContent',data.htmlContent)
+  console.log('_sendMailHTML data.htmlContent',data.htmlContent)
 
   const smtpTransport = nodemailer.createTransport({
     host: "smtp.gmail.com",
