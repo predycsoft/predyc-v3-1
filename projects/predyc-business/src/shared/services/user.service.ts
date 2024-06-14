@@ -747,10 +747,9 @@ export class UserService {
     if(!searchTerm) return of([])
     return this.afs.collection<User>(User.collection, (ref) => {
       let query: CollectionReference | Query = ref;
-      query = query.where('displayName', '>=', searchTerm).where('displayName', '<=', searchTerm+ '\uf8ff')
-      console.log("queryLimit", queryLimit)
+      query = query.where('email', '>=', searchTerm).where('email', '<=', searchTerm+ '\uf8ff')
       if (queryLimit) query = query.limit(queryLimit)
-      return query.orderBy("displayName");
+      return query.orderBy("email");
     }).valueChanges()
   }
 
