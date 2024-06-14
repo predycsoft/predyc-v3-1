@@ -26,8 +26,7 @@
     </ng-container>
 
     <ng-container matColumnDef="ritmo">
-      <th mat-header-cell *matHeaderCellDef class="ft14"></th>
-      <th mat-header-cell *matHeaderCellDef class="gray-8"> Ritmo </th>
+      <th mat-header-cell *matHeaderCellDef class="ft14">Ritmo Usuarios</th>
       <td mat-cell *matCellDef="let enterprise">
         <div class="bar-container">
           <div class="bar-segment bar-high" [style.width.%]="(enterprise.ritmos.high / enterprise.totalRitmos) * 100"></div>
