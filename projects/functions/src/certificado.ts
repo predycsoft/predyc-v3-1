@@ -198,17 +198,15 @@ export const generateMailCertificate = functions.https.onCall(async (data, _) =>
   
       const pdf = await generatePDF()
       const sender = "desarrollo@predyc.com";
-      const recipients = ['arturo.romero@predyc.com'];
+      // const recipients = ['arturo.romero@predyc.com'];
+      const recipients =  [dataUser['email']]
       const subject = `Has aprobado el ${tipo} ${tituloCurso} en PREDYC`;
-
       let correo = `<strong>${titleCase(nombreUsuario)}</strong>,</p><p>Felicidades por haber completado el ${tipo} <strong>${tituloCurso} en PREDYC.</strong> Puedes ver y compartir tu certificado siguiendo este enlace: <a href="https://predyc-user.web.app/certificado/${id}">Ver certificado en línea</a>.</p>
       <p>También puedes ver tu certificado adjunto en este correo.</p>`;
-
       let htmlMailFinal = `<!DOCTYPE html><html><head></head><body><p>${correo}<br>${firma}</body></html>`;
-      
       const htmlContent = htmlMailFinal;
       const adjunto = pdf
-      const cc = ["desarrollo@predyc.com,arturo.romero@predyc.com"];
+      const cc = ["desarrollo@predyc.com"];
       const mailObj = { sender, recipients, subject, cc, htmlContent,adjunto };
       //console.log(mailObj)
       _sendMailHTML(mailObj);
