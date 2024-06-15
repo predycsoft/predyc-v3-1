@@ -37,11 +37,17 @@ export class DepartmentService {
   }
 
 
-  public getDepartments$(): Observable<Department[]> {
+  public getDepartments$(enterpriseRefIn?): Observable<Department[]> {
     return this.enterpriseService.enterpriseLoaded$.pipe(
       switchMap(isLoaded => {
         if (!isLoaded) return []
-        const enterpriseRef = this.enterpriseService.getEnterpriseRef();
+        let enterpriseRef
+        if(enterpriseRefIn){
+          enterpriseRef = enterpriseRefIn
+
+        }else{
+          enterpriseRef = this.enterpriseService.getEnterpriseRef();
+        }
             
         // Query to get courses matching enterpriseRef
         const enterpriseMatch$ = this.afs.collection<Department>(Department.collection, ref =>

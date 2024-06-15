@@ -75,12 +75,18 @@ export class ProfileService {
     return this.profiles$
   }
 
-  public getProfiles$(): Observable<Profile[]> {
+  public getProfiles$(enterpriseRefIn?): Observable<Profile[]> {
     return this.enterpriseService.enterpriseLoaded$.pipe(
       switchMap(isLoaded => {
         if (!isLoaded) return []
-        const enterpriseRef = this.enterpriseService.getEnterpriseRef();
-            
+        let  enterpriseRef
+        if(enterpriseRefIn){
+          enterpriseRef = enterpriseRefIn
+        }
+        else{
+          enterpriseRef = this.enterpriseService.getEnterpriseRef();
+        }
+          
         // Query to get courses matching enterpriseRef
         const enterpriseMatch$ = this.afs.collection<Profile>(Profile.collection, ref =>
           ref.where('enterpriseRef', '==', enterpriseRef)
@@ -98,6 +104,7 @@ export class ProfileService {
       })
     )
   }
+  
 
   public whenProfilesLoaded(): Promise<void> {
     return this.profilesLoaded;
