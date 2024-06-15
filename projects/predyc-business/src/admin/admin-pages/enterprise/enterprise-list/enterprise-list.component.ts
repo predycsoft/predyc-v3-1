@@ -32,13 +32,16 @@ export class EnterpriseListComponent {
 
   displayedColumns: string[] = [
     "name",
+    "ritmo",
+    "complete",
     "userQty",
-    "availableLicenses",
+    // "availableLicenses",
     "inUseLicenses",
-    "rotations",
-    "expirationDate",
-    "product",
+    // "rotations",
+    // "expirationDate",
+    // "product",
     "status",
+    "demo"
   ];
 
   dataSource = new MatTableDataSource<EnterpriseInfo>();
@@ -89,6 +92,10 @@ export class EnterpriseListComponent {
         this.performSearch(searchTerm, page);
       }
     );
+  }
+
+  getTotalRitmo(ritmos: { high: number, medium: number, low: number, noIniciado: number, noPlan: number }): number {
+    return ritmos.high + ritmos.medium + ritmos.low + ritmos.noIniciado + ritmos.noPlan;
   }
 
   ngAfterViewInit() {
@@ -199,6 +206,24 @@ export class EnterpriseListComponent {
             )
               this.atLeastOneExpired = true;
 
+              if(!enterpriseInfo?.enterprise?.rythms){
+                enterpriseInfo.enterprise.rythms = {
+                  high: 0,
+                  medium: 0,
+                  low: 0,
+                  noPlan: 0,
+                  noIniciado:0
+                }
+              }
+
+            let progress = enterpriseInfo?.enterprise?.progress
+            let complete = 0
+            let completeExpected = 0
+            if(progress && progress.studentExpectedHoursTotal>0){
+              complete= progress.studentHours*100/progress.studentExpectedHoursTotal
+              completeExpected = progress.studentExpectedHours*100/progress.studentExpectedHoursTotal
+            }
+
             let datos = {
               name: enterpriseInfo.enterprise.name,
               photoUrl: enterpriseInfo.enterprise.photoUrl,
@@ -207,9 +232,13 @@ export class EnterpriseListComponent {
               totalLicenses: enterpriseInfo.totalLicenses,
               availableLicenses: enterpriseInfo.availableLicenses,
               availableRotations: enterpriseInfo.availableRotations,
+              complete:complete,
+              completeExpected:completeExpected,
               rotacionWarningCount: enterpriseInfo.rotacionWarningCount,
               expirationDate: enterpriseInfo.expirationDate,
               id: enterpriseInfo.enterprise.id,
+              ritmos: enterpriseInfo.enterprise.rythms,
+              totalRitmos:this.getTotalRitmo(enterpriseInfo.enterprise.rythms),
               status:
                 enterpriseInfo.licenses.filter(
                   (x) => x.status === SubscriptionClass.STATUS_ACTIVE
@@ -237,6 +266,7 @@ export class EnterpriseListComponent {
                 .includes(searchTerm.toLocaleLowerCase())
             );
           })
+        console.log('enterprises',enterprises)
         this.paginator.pageIndex = page - 1; // Update the paginator's page index
         this.dataSource.data = enterprises; // Assuming the data is in 'items'
         this.totalLength = response.length; // Assuming total length is returned
