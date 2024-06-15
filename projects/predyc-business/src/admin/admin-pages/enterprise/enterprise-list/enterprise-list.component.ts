@@ -74,8 +74,10 @@ export class EnterpriseListComponent {
   }
 
   products: Product[];
+  first = true
 
   ngOnInit() {
+    this.first = true
     this.productService.getProducts$().subscribe((products) => {
       this.products = products;
     });
@@ -90,7 +92,13 @@ export class EnterpriseListComponent {
       (params) => {
         const page = Number(params["page"]) || 1;
         const searchTerm = params["search"] || "";
-        this.performSearch(searchTerm, page);
+        if(this.first){
+          this.performSearch(searchTerm, page);
+        }
+        else{
+          this.performSearchLocal(searchTerm, page);
+
+        }
       }
     );
   }
@@ -109,6 +117,28 @@ export class EnterpriseListComponent {
       queryParams: { page },
       queryParamsHandling: "merge",
     });
+  }
+
+  performSearchLocal(searchTerm: string, page: number) {
+
+    let empresas = structuredClone(this.empresas);
+
+    empresas = empresas.filter((x) => {
+      if (!searchTerm || searchTerm === "") return true;
+      return (
+        x.name
+          .toLocaleLowerCase()
+          .includes(searchTerm.toLocaleLowerCase())
+      );
+    })
+
+    this.paginator.pageIndex = page - 1; // Update the paginator's page index
+    this.dataSource.data = empresas; // Assuming the data is in 'items'
+    this.totalLength = empresas.length; // Assuming total length is returned
+    this.first = false
+
+
+
   }
 
   performSearch(searchTerm: string, page: number) {
@@ -225,6 +255,19 @@ export class EnterpriseListComponent {
               completeExpected = progress.studentExpectedHours*100/progress.studentExpectedHoursTotal
             }
 
+            if(enterpriseInfo.enterprise.tractian ){
+            
+            }
+            
+
+            let lastDate = null
+            if(enterpriseInfo.licenses.length>0){
+              lastDate = enterpriseInfo.licenses[0].currentPeriodEnd
+
+            }
+
+
+
             let datos = {
               name: enterpriseInfo.enterprise.name,
               photoUrl: enterpriseInfo.enterprise.photoUrl,
@@ -236,6 +279,8 @@ export class EnterpriseListComponent {
               availableLicenses: enterpriseInfo.availableLicenses,
               availableRotations: enterpriseInfo.availableRotations,
               complete:complete,
+              lastDate:lastDate,
+              // licenses:enterpriseInfo.licenses,
               completeExpected:completeExpected,
               rotacionWarningCount: enterpriseInfo.rotacionWarningCount,
               expirationDate: enterpriseInfo.expirationDate,
@@ -256,11 +301,12 @@ export class EnterpriseListComponent {
                     x.currentPeriodEnd < today
                   );
                 }).length > 0,
-              product: product ? product.name : "N/A",
+              product: product ? product.name :  (enterpriseInfo.enterprise.tractian? 'Demo': 'N/A'),
             };
             return datos
           })
           this.totalEmpresas.emit(enterprises)
+          this.empresas = enterprises
           enterprises = enterprises.filter((x) => {
             if (!searchTerm || searchTerm === "") return true;
             return (
@@ -273,10 +319,13 @@ export class EnterpriseListComponent {
         this.paginator.pageIndex = page - 1; // Update the paginator's page index
         this.dataSource.data = enterprises; // Assuming the data is in 'items'
         this.totalLength = response.length; // Assuming total length is returned
+        this.first = false
       });
   }
 
   atLeastOneExpired = false;
+
+  empresas
 
   ngOnDestroy() {
     if (this.queryParamsSubscription)

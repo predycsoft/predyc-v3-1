@@ -209,7 +209,8 @@
             class="pdt03 pdb03 radius6 fw"
             [ngClass]="
               enterprise.status == SubscriptionClass.STATUS_ACTIVE? 'backGreen2 green-6' : 'backGray3 gray-5'">
-            {{ enterprise.status == 'active'? 'Activa' : enterprise.status }}  {{ enterprise.product }}: {{ enterprise.expirationDate | date : "MMM yy" }}
+            {{ enterprise.status == 'active'? 'Activa' : enterprise.status }}  {{ enterprise.product }}: 
+            {{ (enterprise.expirationDate  ? enterprise.expirationDate : enterprise.lastDate) | date : "MMM yy" }}
           </div>
           <div
             fxLayout="row"
