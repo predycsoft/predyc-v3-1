@@ -25,9 +25,11 @@ export class EnterpriseComponent {
   }
 
   async updateEmpresasUsage() {
+    console.log('updateEmpresasUsage')
     firstValueFrom(this.fireFunctions.httpsCallable('updateDataAllEnterprisesUsage')(null));
     firstValueFrom(this.fireFunctions.httpsCallable('updateDataAllEnterprisesRhythm')(null));
     firstValueFrom(this.fireFunctions.httpsCallable('updateAllDataEnterpriseProgressPlan')(null));
+
   }
 
 
