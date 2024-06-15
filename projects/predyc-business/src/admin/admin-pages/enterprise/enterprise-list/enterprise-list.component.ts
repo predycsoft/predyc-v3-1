@@ -279,6 +279,7 @@ export class EnterpriseListComponent {
               availableLicenses: enterpriseInfo.availableLicenses,
               availableRotations: enterpriseInfo.availableRotations,
               complete:complete,
+              accountManagerName: enterpriseInfo.enterprise.accountManagerName,
               lastDate:lastDate,
               // licenses:enterpriseInfo.licenses,
               completeExpected:completeExpected,

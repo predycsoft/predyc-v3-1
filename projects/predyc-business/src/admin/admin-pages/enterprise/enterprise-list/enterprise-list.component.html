@@ -107,14 +107,11 @@
 
       <td mat-cell *matCellDef="let enterprise" class="centertext ft12">
         <div *ngIf="enterprise.requireAccountManagement" fxLayout="row" fxLayoutAlign="center center">
-          <div>
             <mat-icon style="color: var(--green-5)">check_circle_outline</mat-icon>
-          </div>
+            <span>{{enterprise.accountManagerName}}</span>
         </div>
         <div *ngIf="!enterprise.requireAccountManagement" fxLayout="row" fxLayoutAlign="center center">
-          <div>
-            <mat-icon style="color: var(--red-5)">error_outline</mat-icon>
-          </div>
+          <span>{{enterprise.accountManagerName}}</span>
         </div>
       </td>
     </ng-container>
