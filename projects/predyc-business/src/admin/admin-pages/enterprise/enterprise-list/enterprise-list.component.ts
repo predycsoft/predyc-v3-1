@@ -41,7 +41,8 @@ export class EnterpriseListComponent {
     // "expirationDate",
     // "product",
     "status",
-    "demo"
+    "accountManagement",
+    "demo",
   ];
 
   dataSource = new MatTableDataSource<EnterpriseInfo>();
@@ -229,6 +230,8 @@ export class EnterpriseListComponent {
               photoUrl: enterpriseInfo.enterprise.photoUrl,
               userQty: enterpriseInfo.userQty,
               demo:enterpriseInfo.enterprise.demo ? enterpriseInfo.enterprise.demo : false,
+              tractian:enterpriseInfo.enterprise.tractian ? enterpriseInfo.enterprise.tractian : false,
+              requireAccountManagement:enterpriseInfo.enterprise.requireAccountManagement ? enterpriseInfo.enterprise.requireAccountManagement : false,
               totalLicenses: enterpriseInfo.totalLicenses,
               availableLicenses: enterpriseInfo.availableLicenses,
               availableRotations: enterpriseInfo.availableRotations,

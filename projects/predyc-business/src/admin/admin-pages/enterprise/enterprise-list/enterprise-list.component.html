@@ -102,15 +102,41 @@
 
 
     <!-- Product Column -->
-    <ng-container matColumnDef="demo">
-      <th mat-header-cell *matHeaderCellDef class="ft14">Demo</th>
+    <ng-container matColumnDef="accountManagement">
+      <th mat-header-cell *matHeaderCellDef class="ft14 centertext">Account M.</th>
 
       <td mat-cell *matCellDef="let enterprise" class="centertext ft12">
-        <div *ngIf="enterprise.demo" fxLayout="row" fxLayoutGap="6px" fxLayoutAlign=" center">
-          <div
-            class="pdt03 pdb03 radius6 fw backOrange1 orange-3"> Demo
+        <div *ngIf="enterprise.requireAccountManagement" fxLayout="row" fxLayoutAlign="center center">
+          <div>
+            <mat-icon style="color: var(--green-5)">check_circle_outline</mat-icon>
           </div>
         </div>
+        <div *ngIf="!enterprise.requireAccountManagement" fxLayout="row" fxLayoutAlign="center center">
+          <div>
+            <mat-icon style="color: var(--red-5)">error_outline</mat-icon>
+          </div>
+        </div>
+      </td>
+    </ng-container>
+
+    <!-- Product Column -->
+    <ng-container matColumnDef="demo">
+      <th mat-header-cell *matHeaderCellDef class="ft14 centertext">Tipo</th>
+
+      <td mat-cell *matCellDef="let enterprise" class="centertext ft12">
+        <div fxLayout="row" fxLayoutGap="6px" fxLayoutAlign="center center">
+          <div *ngIf="enterprise.demo" fxLayout="row">
+            <div
+              class="pd03 radius6 fw backOrange1 orange-3"> Demo
+            </div>
+          </div>
+          <div *ngIf="enterprise.tractian" fxLayout="row">
+            <div
+              class="pd03 radius6 fw backBlue2 blue-5"> Tractian
+            </div>
+          </div>
+        </div>
+
       </td>
     </ng-container>
 

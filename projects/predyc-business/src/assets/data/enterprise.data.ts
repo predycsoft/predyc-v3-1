@@ -42,7 +42,13 @@ export const enterpriseData: EnterpriseJson = {
     useWhatsapp: false,
     accountManagerName: '',
     accountManagerPhone: '',
-    reportMails: ''
+    reportMails: '',
+    tractian: false,
+    contactPerson: '',
+    mailContactPerson: '',
+    phoneContactPerson: '',
+    salesMan: '',
+    requireAccountManagement: false
 }
 
 
@@ -88,5 +94,11 @@ export const enterpriseDataPredyc: EnterpriseJson = {
     useWhatsapp: false,
     accountManagerName: '',
     accountManagerPhone: '',
-    reportMails: ''
+    reportMails: '',
+    tractian: false,
+    contactPerson: '',
+    mailContactPerson: '',
+    phoneContactPerson: '',
+    salesMan: '',
+    requireAccountManagement: false
 }
