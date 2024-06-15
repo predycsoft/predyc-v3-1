@@ -1,8 +1,34 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import { ClassByStudent, CourseByStudent, Curso, Enterprise, License, StudyPlanClass, User,getPerformanceWithDetails } from 'shared';
+import { ClassByStudent, CourseByStudent, Curso, Enterprise, License, StudyPlanClass, User,getMonthProgress,getPerformanceWithDetails, obtenerUltimoDiaDelMes, obtenerUltimoDiaDelMesAnterior } from 'shared';
 
 const db = admin.firestore();
+
+
+export const updateDataEnterpriseProgressPlan = functions.https.onCall(async (data, _) => {
+  try {
+    const batch = admin.firestore().batch();
+    const enterpriseId = data.enterpriseId;
+    console.log(`Actualización empresas ${enterpriseId}`)
+    await updateDataEnterpriseProgressPlanLocal(enterpriseId,batch)
+    await batch.commit();
+    console.log(`Actualización empresas end${enterpriseId}`)
+  } catch (error: any) {
+    console.log(error);
+    throw new functions.https.HttpsError("unknown", error.message);
+  }
+});
+
+export const updateAllDataEnterpriseProgressPlan = functions.https.onCall(async () => {
+  try {
+    console.log('updateDataAllEnterprisesUsageStart')
+    await updateDataAllEnterprisesProgressPlanLocal();
+    console.log('updateDataAllEnterprisesUsageEnd')
+  } catch (error: any) {
+    console.log(error);
+    throw new functions.https.HttpsError("unknown", error.message);
+  }
+});
 
 export const updateDataEnterpriseUsage = functions.https.onCall(async (data, _) => {
   try {
@@ -30,6 +56,16 @@ export const updateDataEnterpriseRhythm = functions.https.onCall(async (data, _)
   } catch (error: any) {
     console.log(error);
     throw new functions.https.HttpsError("unknown", error.message);
+  }
+});
+
+
+export const updateAllDataEnterpriseProgressPlanSchedule = functions.pubsub.schedule('every day 06:00').onRun(async (context) => {
+  try {
+    await updateDataAllEnterprisesProgressPlanLocal();
+    console.log('Updated all enterprises usage');
+  } catch (error) {
+    console.error('Error updating all enterprises usage:', error);
   }
 });
 
@@ -318,6 +354,157 @@ async function updateDataEnterpriseUsageLocal(enterpriseId: string, batch: Fireb
     throw new Error(error.message);
   }
 }
+
+async function updateDataEnterpriseProgressPlanLocal(enterpriseId: string,batch?: FirebaseFirestore.WriteBatch) {
+
+  try{
+    const enterpriseRef = admin.firestore().collection(Enterprise.collection).doc(enterpriseId);
+    // Verificar si la referencia de la empresa existe
+    const enterpriseDoc = await enterpriseRef.get();
+    if (!enterpriseDoc.exists) {
+      console.log(`Enterprise with ID ${enterpriseId} does not exist.`);
+      return;
+    }
+    console.log(`Editing enterprise ID ${enterpriseId}.`);
+    const usersSnapshot = await admin.firestore().collection(User.collection)
+    .where('enterprise', '==', enterpriseRef)
+    .where('status', '==', 'active') // Filtrar usuarios con status active
+    .get();
+  
+    const userRefs = usersSnapshot.docs.map(doc => doc.ref);
+  
+    // Buscar cursos que coincidan con la empresa o que tengan enterpriseRef null
+    const coursesSnapshot = await admin.firestore().collection(Curso.collection)
+      .where('enterpriseRef', '==', enterpriseRef)
+      .get();
+  
+    const nullCoursesSnapshot = await admin.firestore().collection(Curso.collection)
+      .where('enterpriseRef', '==', null)
+      .get();
+  
+    // Unir los cursos con enterpriseRef igual al enterpriseRef de la empresa y los que tienen enterpriseRef null
+    const courses = coursesSnapshot.docs.map(doc => doc.data()).concat(nullCoursesSnapshot.docs.map(doc => doc.data()));
+  
+      // Dividir userRefs en grupos de 10
+      const chunks = [];
+      for (let i = 0; i < userRefs.length; i += 10) {
+        chunks.push(userRefs.slice(i, i + 10));
+      }
+      // Obtener coursesByStudent para los usuarios en chunks
+      let allCoursesByStudent = [];
+      for (const chunk of chunks) {
+        const coursesByStudentSnapshot = await admin.firestore().collection(CourseByStudent.collection)
+          .where('userRef', 'in', chunk)
+          .where('isExtraCourse', '==', false)
+          .where('active', '==', true)
+          .get();
+        allCoursesByStudent = allCoursesByStudent.concat(coursesByStudentSnapshot.docs.map(doc => doc.data()));
+      }
+
+  
+      allCoursesByStudent?.forEach(course => {
+        const courseJson = courses.find(item => item.id === course.courseRef.id);
+        if (courseJson) {
+          course.courseTime = courseJson.duracion
+        }
+      });
+
+
+      const today = new Date().getTime();
+    
+      let targetComparisonDate = today;
+      
+      let lastDayPast = obtenerUltimoDiaDelMesAnterior(targetComparisonDate)
+      let lastDayCurrent = obtenerUltimoDiaDelMes(targetComparisonDate)
+      
+      let progressMonth = getMonthProgress()
+      
+      
+      let userStudyPlanUntilLastMonth = allCoursesByStudent.filter(x=>x.dateEndPlan  && (x.dateEndPlan?.seconds*1000)<=lastDayPast)
+      let userStudyPlanCurrent = allCoursesByStudent.filter(x=>x.dateEndPlan  && (x.dateEndPlan?.seconds*1000)>lastDayPast && (x.dateEndPlan?.seconds*1000)<=lastDayCurrent )
+      
+      console.log('userStudyPlanUntilLastMonth',userStudyPlanUntilLastMonth,'userStudyPlanCurrent',userStudyPlanCurrent,lastDayPast,lastDayCurrent)
+
+
+      let studentHours = 0
+      let studentExpectedHours = 0
+      let studentExpectedHoursTotal = 0
+
+
+      allCoursesByStudent.forEach(course => {
+        studentHours +=course.progressTime?course.progressTime:0
+        studentExpectedHoursTotal +=(course.courseTime * progressMonth)
+      });
+
+      
+      userStudyPlanUntilLastMonth.forEach(course => {
+        if(course.progress >=100){
+        studentExpectedHours +=course.courseTime
+        }
+        else{
+        studentExpectedHours +=course.courseTime
+        }
+      });
+      
+      userStudyPlanCurrent.forEach(course => {
+        studentExpectedHours +=(course.courseTime * progressMonth)
+      });
+
+
+      const respuesta = {
+        studentHours,
+        studentExpectedHours,
+        studentExpectedHoursTotal,
+      }
+      console.log('respuesta',respuesta)
+      batch.update(enterpriseRef, {
+        progress: respuesta,
+        progressDate: new Date()
+      });
+
+  }
+  
+  catch (error: any) {
+    console.log(error);
+    throw new Error(error.message);
+  }
+
+  
+}
+
+async function updateDataAllEnterprisesProgressPlanLocal() {
+  const batch = admin.firestore().batch();
+  
+  try {
+    const licensesSnapshot = await admin.firestore().collection(License.collection).where('status', '==', 'active').get();
+    const enterpriseRefs = new Set<FirebaseFirestore.DocumentReference>();
+    const enterpriseIds = new Set<string>();
+
+
+    licensesSnapshot?.forEach(doc => {
+      const licenseData = doc.data();
+      if (licenseData?.enterpriseRef) {
+        enterpriseRefs.add(licenseData.enterpriseRef);
+        enterpriseIds.add(licenseData.enterpriseRef.id);
+      }
+    });
+
+    const uniqueEnterpriseRefs = Array.from(enterpriseRefs);
+    const uniqueEnterpriseIds = Array.from(enterpriseIds);
+
+    for (const enterpriseId of uniqueEnterpriseIds) {
+      await updateDataEnterpriseProgressPlanLocal(enterpriseId, batch);
+    }
+
+    await batch.commit();
+    console.log('Actualización completada para todas las empresas.');
+
+  } catch (error: any) {
+    console.log(error);
+    throw new Error(error.message);
+  }
+}
+  
 
 
   

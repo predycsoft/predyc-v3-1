@@ -25,8 +25,9 @@ export class EnterpriseComponent {
   }
 
   async updateEmpresasUsage() {
-    await firstValueFrom(this.fireFunctions.httpsCallable('updateDataAllEnterprisesUsage')(null));
-    await firstValueFrom(this.fireFunctions.httpsCallable('updateDataAllEnterprisesRhythm')(null));
+    firstValueFrom(this.fireFunctions.httpsCallable('updateDataAllEnterprisesUsage')(null));
+    firstValueFrom(this.fireFunctions.httpsCallable('updateDataAllEnterprisesRhythm')(null));
+    firstValueFrom(this.fireFunctions.httpsCallable('updateAllDataEnterpriseProgressPlan')(null));
   }
 
 
@@ -34,8 +35,6 @@ export class EnterpriseComponent {
   empresasInactive = 0
   empresasTotales = 0
   empresasDemo = 0
-
-
 
   createDemo() {
     this.modalService.open(CreateDemoComponent, {

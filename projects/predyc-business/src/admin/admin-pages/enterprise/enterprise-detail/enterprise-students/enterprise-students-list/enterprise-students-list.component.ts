@@ -321,6 +321,7 @@ export class EnterpriseStudentsListComponent {
   async updateUsage(){
     await firstValueFrom(this.functions.httpsCallable("updateDataEnterpriseUsage")({enterpriseId:this.enterpriseRef.id}))
     await firstValueFrom(this.functions.httpsCallable("updateDataEnterpriseRhythm")({enterpriseId:this.enterpriseRef.id}))
+    await firstValueFrom(this.functions.httpsCallable("updateDataEnterpriseProgressPlan")({enterpriseId:this.enterpriseRef.id}))
 
 
   }
