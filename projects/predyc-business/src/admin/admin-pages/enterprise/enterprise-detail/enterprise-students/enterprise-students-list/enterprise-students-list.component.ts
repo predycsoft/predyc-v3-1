@@ -322,7 +322,6 @@ export class EnterpriseStudentsListComponent {
     firstValueFrom(this.functions.httpsCallable("updateDataEnterpriseUsage")({enterpriseId:this.enterpriseRef.id}))
     firstValueFrom(this.functions.httpsCallable("updateDataEnterpriseRhythm")({enterpriseId:this.enterpriseRef.id}))
     firstValueFrom(this.functions.httpsCallable("updateDataEnterpriseProgressPlan")({enterpriseId:this.enterpriseRef.id}))
-
   }
 
 
