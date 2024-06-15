@@ -433,17 +433,12 @@ async function updateDataEnterpriseProgressPlanLocal(enterpriseId: string,batch?
 
       allCoursesByStudent.forEach(course => {
         studentHours +=course.progressTime?course.progressTime:0
-        studentExpectedHoursTotal +=(course.courseTime * progressMonth)
+        studentExpectedHoursTotal +=course.courseTime
       });
 
       
       userStudyPlanUntilLastMonth.forEach(course => {
-        if(course.progress >=100){
         studentExpectedHours +=course.courseTime
-        }
-        else{
-        studentExpectedHours +=course.courseTime
-        }
       });
       
       userStudyPlanCurrent.forEach(course => {

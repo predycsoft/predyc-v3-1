@@ -33,6 +33,7 @@ export class EnterpriseListComponent {
   displayedColumns: string[] = [
     "name",
     "ritmo",
+    "complete",
     "userQty",
     // "availableLicenses",
     "inUseLicenses",
@@ -215,6 +216,14 @@ export class EnterpriseListComponent {
                 }
               }
 
+            let progress = enterpriseInfo?.enterprise?.progress
+            let complete = 0
+            let completeExpected = 0
+            if(progress && progress.studentExpectedHoursTotal>0){
+              complete= progress.studentHours*100/progress.studentExpectedHoursTotal
+              completeExpected = progress.studentExpectedHours*100/progress.studentExpectedHoursTotal
+            }
+
             let datos = {
               name: enterpriseInfo.enterprise.name,
               photoUrl: enterpriseInfo.enterprise.photoUrl,
@@ -223,6 +232,8 @@ export class EnterpriseListComponent {
               totalLicenses: enterpriseInfo.totalLicenses,
               availableLicenses: enterpriseInfo.availableLicenses,
               availableRotations: enterpriseInfo.availableRotations,
+              complete:complete,
+              completeExpected:completeExpected,
               rotacionWarningCount: enterpriseInfo.rotacionWarningCount,
               expirationDate: enterpriseInfo.expirationDate,
               id: enterpriseInfo.enterprise.id,
