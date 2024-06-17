@@ -1211,18 +1211,18 @@ export class CreateLiveCourseComponent {
 
       if (this.mode === "edit") {
         formatedLiveCourseData = this.LiveCourseDataModelToLiveCourse(this.liveCourseData);
-        console.log("formatedLiveCourseData", formatedLiveCourseData);
+        // console.log("formatedLiveCourseData", formatedLiveCourseData);
         await this.liveCourseService.saveLiveCourse(formatedLiveCourseData as LiveCourse);
       } else {
         formatedLiveCourseData = this.LiveCourseDataModelToLiveCourseTemplate(this.liveCourseData);
-        console.log("formatedLiveCourseData as template", formatedLiveCourseData);
+        // console.log("formatedLiveCourseData as template", formatedLiveCourseData);
         await this.liveCourseService.saveLiveCourseTemplate(formatedLiveCourseData as LiveCourseTemplate);
       }
     }
 
     // For "examen diagnostico" ... check later
     if (this.examenDiagnostico) {
-      console.log("this.examenDiagnostico", this.examenDiagnostico);
+      // console.log("this.examenDiagnostico", this.examenDiagnostico);
       let courseRef = null;
       if (this.mode === "edit") courseRef = this.liveCourseService.getLiveCourseRefById(this.liveCourseData.id);
       else courseRef = this.liveCourseService.getLiveCourseTemplateRefById(this.liveCourseData.id);
@@ -1253,7 +1253,7 @@ export class CreateLiveCourseComponent {
       activityClass.coursesRef = [courseRef];
       activityClass.type = Activity.TYPE_TEST;
 
-      console.log("activityExamen diagnostico", activityClass);
+      // console.log("activityExamen diagnostico", activityClass);
       await this.activityClassesService.saveActivity(activityClass);
 
       let questionsIds = [];
@@ -1392,7 +1392,7 @@ export class CreateLiveCourseComponent {
 
     // For "examen final" ... check later
     if (this.examenFinal) {
-      console.log("this.examenFinal", this.examenFinal);
+      // console.log("this.examenFinal", this.examenFinal);
       let courseRef = null;
       if (this.mode === "edit") courseRef = this.liveCourseService.getLiveCourseRefById(this.liveCourseData.id);
       else courseRef = this.liveCourseService.getLiveCourseTemplateRefById(this.liveCourseData.id);
@@ -1423,7 +1423,7 @@ export class CreateLiveCourseComponent {
       activityClass.coursesRef = [courseRef];
       activityClass.type = "final-test";
 
-      console.log("activityExamen final", activityClass);
+      // console.log("activityExamen final", activityClass);
       await this.activityClassesService.saveActivity(activityClass);
 
       let questionsIds = [];
