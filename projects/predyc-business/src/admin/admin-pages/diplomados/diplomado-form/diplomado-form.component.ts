@@ -271,9 +271,7 @@ export class DiplomadoFormComponent {
               });
             }
             if (searchText) {
-              const filterValue = searchText.toLowerCase();
-              filteredCourses = filteredCourses.filter((course) =>
-                course.titulo.toLowerCase().includes(filterValue)
+              const filterValue = this.removeAccents(searchText.toLowerCase());filteredCourses = filteredCourses.filter((course) => this.removeAccents(course.titulo.toLowerCase()).includes(filterValue)
               );
             }
             return filteredCourses;
@@ -281,6 +279,10 @@ export class DiplomadoFormComponent {
         );
       }
     );
+  }
+
+  removeAccents(str: string): string {
+    return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   }
 
   onCategoryHover(item: any) {

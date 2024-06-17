@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { CoursesComponent } from "projects/predyc-business/src/app/business-pages/management/courses/courses.component";
-import { RoyaltyComponent } from "./admin-pages/royalty/royalty.component";
+import { InstructorsComponent } from "./admin-pages/instructors/instructors.component";
 import { SalesComponent } from "./admin-pages/sales/sales.component";
 import { StudentsComponent } from "./admin-pages/students/students.component";
 import { EnterpriseComponent } from "./admin-pages/enterprise/enterprise.component";
@@ -32,7 +32,7 @@ const routes: Routes = [
   { path: "enterprises/form/:id", title: MAIN_TITLE + "Empresas", component: EnterpriseDetailComponent },
   { path: "products", title: MAIN_TITLE + "Productos", component: ProductsComponent },
   { path: "licenses-and-subscriptions", title: MAIN_TITLE + "L&S", component: LicensesSubscriptionsComponent },
-  { path: "royalties", title: MAIN_TITLE + "Regalias", component: RoyaltyComponent },
+  { path: "instructors", title: MAIN_TITLE + "Instructores", component: InstructorsComponent },
   { path: "sales", title: MAIN_TITLE + "Ventas", component: SalesComponent },
   { path: "questions", title: MAIN_TITLE + "Preguntas", component: QuestionsComponent },
   { path: "certifications", title: MAIN_TITLE + "Certificados", component: CertificationsComponent },

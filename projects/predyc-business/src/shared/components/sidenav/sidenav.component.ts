@@ -86,11 +86,11 @@ export class SideNavComponent {
     // 	link: "/admin/licenses-and-subscriptions",
     // 	icon: "../../assets/iconsUI/Vector.svg",
     // },
-    // {
-    // 	name: "Regalias",
-    // 	link: "/admin/royalties",
-    // 	icon: "../../assets/iconsUI/suitcase.svg",
-    // },
+    {
+    	name: "Instructores",
+    	link: "/admin/instructors",
+    	icon: "../../assets/iconsUI/suitcase.svg",
+    },
     {
       name: "Ventas",
       link: "/admin/sales",
@@ -104,7 +104,7 @@ export class SideNavComponent {
     {
       name: "Cursos en vivo",
       link: "/admin/live",
-      icon: "../../assets/iconsUI/courses-1.svg",
+      icon: "../../assets/iconsUI/demo.svg",
     },
     {
       name: "Freebies",

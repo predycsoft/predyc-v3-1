@@ -6,7 +6,7 @@ import { HomeComponent } from "./admin-pages/home/home.component";
 import { SharedModule } from "projects/predyc-business/src/shared/shared.module";
 import { CreateDemoComponent } from "./admin-pages/create-demo/create-demo.component";
 import { EnterpriseListComponent } from "./admin-pages/enterprise/enterprise-list/enterprise-list.component";
-import { RoyaltyComponent } from "./admin-pages/royalty/royalty.component";
+import { InstructorsComponent } from "./admin-pages/instructors/instructors.component";
 import { SalesComponent } from "./admin-pages/sales/sales.component";
 import { StudentsComponent } from "./admin-pages/students/students.component";
 import { AdminStudentListComponent } from "./admin-pages/students/admin-student-list/admin-student-list.component";
@@ -52,7 +52,7 @@ import { EnterpriseLicensesCardsComponent } from "./admin-pages/enterprise/enter
     CreateDemoComponent,
     EnterpriseListComponent,
     ProductListComponent,
-    RoyaltyComponent,
+    InstructorsComponent,
     SalesComponent,
     QuestionsComponent,
     CertificationsComponent,
