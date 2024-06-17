@@ -1,45 +1,50 @@
 <div class="">
     <table mat-table [dataSource]="dataSource">
-
         <!-- Nombre Column -->
         <ng-container matColumnDef="displayName">
-
             <th mat-header-cell *matHeaderCellDef class="ft14"> 
                 <div class="cursorPointer" fxLayout="row"fxLayoutAlign=" center" >
                 <span  class="gray-7">Nombre</span>
                 <mat-icon>expand_more</mat-icon>
               </div>
             </th>
-
             <!-- <th mat-header-cell *matHeaderCellDef class="gray-8"> Nombre </th> -->
             <td mat-cell *matCellDef="let user"> 
                 <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign=" center" >
                     <img
-                        [src]="user.photoUrl ? user.photoUrl : 'assets/images/default/default-user-image.jpg'"
+                        [src]="user.foto ? user.foto : 'assets/images/default/default-user-image.jpg'"
                         class="avatar2"
                         alt=""
                         >
                     <div fxLayout="column" fxLayoutAlign="center ">
-                        <div  fxLayout="row" class="ft500 ft14  gray-10">{{ user.displayName | titlecase }}
-                            <div *ngIf="user.role == 'admin'" class="chip backGreen2 mgl05" fxLayoutAlign="center center">
-                                <span class="ft9 nowrap ft500 green-5 pdl03 pdr03" >Administrador</span>
-                            </div>
+                        <div  fxLayout="row" class="ft500 ft14  gray-10">{{ user.nombre | titlecase }}
                         </div> 
-                        <div *ngIf="!user.profile"
-                            class="ft400 ft13 gray-6">
-                            Perfil sin asignar
-                        </div>
-                        <div
-                            *ngIf="user.profile" fxLayout="row" fxLayoutGap="5px"  >
-                            <div *ngIf="user.profile" class="ft400 ft13 blue-4" >
-                                {{ user.profile  | titlecase }}
-                            </div>
-                            <!-- <img [src]="icon.arrowForward" alt="Forward Arrow" class="makeBlue" > -->
-                        </div>
                     </div>
                 </div>
             </td>
         </ng-container>
+
+        <!-- Department Column -->
+        <ng-container matColumnDef="courses" class=" ">
+            <th mat-header-cell *matHeaderCellDef class="ft14"> Cursos </th>
+            <td mat-cell *matCellDef="let user" class=""> 
+                <div>
+                    <span>{{user.courses.length}}</span>
+                </div>
+            </td>
+        </ng-container>
+
+        <!-- Department Column -->
+        <ng-container matColumnDef="liveCourses" class=" ">
+            <th mat-header-cell *matHeaderCellDef class="ft14"> Cursos en vivo </th>
+            <td mat-cell *matCellDef="let user" class=""> 
+                <div>
+                    <span>{{user.liveCourses.length}}</span>
+                </div>
+            </td>
+        </ng-container>
+        
+
 
     
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
