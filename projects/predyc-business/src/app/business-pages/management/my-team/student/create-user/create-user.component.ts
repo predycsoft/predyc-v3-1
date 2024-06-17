@@ -1,8 +1,8 @@
 import { Component, Input } from "@angular/core";
 import { AngularFireStorage } from "@angular/fire/compat/storage";
-import { FormBuilder, FormControl, FormGroup, Validators,} from "@angular/forms";
+import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { finalize, firstValueFrom, map, Observable, startWith, Subscription, take,} from "rxjs";
+import { finalize, firstValueFrom, map, Observable, startWith, Subscription, take } from "rxjs";
 import { Department } from "projects/shared/models/department.model";
 import { Profile } from "projects/shared/models/profile.model";
 import { User } from "projects/shared/models/user.model";
@@ -12,16 +12,17 @@ import { EnterpriseService } from "projects/predyc-business/src/shared/services/
 import { IconService } from "projects/predyc-business/src/shared/services/icon.service";
 import { ProfileService } from "projects/predyc-business/src/shared/services/profile.service";
 import { UserService } from "projects/predyc-business/src/shared/services/user.service";
-import { cleanFileName, dateFromCalendarToTimestamp, timestampToDateNumbers,obtenerPrimerDiaDelMes} from "projects/shared/utils";
+import { cleanFileName, dateFromCalendarToTimestamp, timestampToDateNumbers, obtenerPrimerDiaDelMes } from "projects/shared/utils";
 import { countriesData } from "projects/predyc-business/src/assets/data/countries.data";
-import { AngularFirestore, DocumentReference,} from "@angular/fire/compat/firestore";
+import { AngularFirestore, DocumentReference } from "@angular/fire/compat/firestore";
 import { Enterprise } from "projects/shared/models/enterprise.model";
 // import { departmentsData } from '../../../../../../../../../.firebase/predyc-empresa/hosting/assets/data/departments.data';
 import Swal from "sweetalert2";
 import { CourseService } from "../../../../../../shared/services/course.service";
 import { roundNumber } from "projects/shared/utils";
 import { formatDate } from "@angular/common";
-import { CourseByStudent, Curso } from "shared";
+import { CourseByStudent } from "projects/shared/models/course-by-student.model";
+import { Curso } from "projects/shared/models/course.model";
 
 @Component({
   selector: "app-create-user",
@@ -29,20 +30,7 @@ import { CourseByStudent, Curso } from "shared";
   styleUrls: ["./create-user.component.css"],
 })
 export class CreateUserComponent {
-  constructor(
-    private activeModal: NgbActiveModal,
-    private alertService: AlertsService,
-    private enterpriseService: EnterpriseService,
-    private fb: FormBuilder,
-    private profileService: ProfileService,
-    private userService: UserService,
-    public icon: IconService,
-    private departmentService: DepartmentService,
-    private storage: AngularFireStorage,
-    private afs: AngularFirestore,
-    private modalService: NgbModal,
-    private courseService: CourseService
-  ) {
+  constructor(private activeModal: NgbActiveModal, private alertService: AlertsService, private enterpriseService: EnterpriseService, private fb: FormBuilder, private profileService: ProfileService, private userService: UserService, public icon: IconService, private departmentService: DepartmentService, private storage: AngularFireStorage, private afs: AngularFirestore, private modalService: NgbModal, private courseService: CourseService) {
     // Obtener la fecha actual
     const today = new Date();
 
@@ -79,32 +67,27 @@ export class CreateUserComponent {
   async ngOnInit() {
     this.isDepartmentInvalid = false;
     this.getCourses();
-    this.departmentServiceSubscription = this.departmentService
-      .getDepartments$(this.enterpriseRef)
-      .subscribe({
-        next: (departments) => {
-          let departmentsBase = [];
-          departments.forEach((element) => {
-            if (element?.baseDepartment?.id) {
-              departmentsBase.push(element?.baseDepartment?.id);
-            }
-          });
+    this.departmentServiceSubscription = this.departmentService.getDepartments$(this.enterpriseRef).subscribe({
+      next: (departments) => {
+        let departmentsBase = [];
+        departments.forEach((element) => {
+          if (element?.baseDepartment?.id) {
+            departmentsBase.push(element?.baseDepartment?.id);
+          }
+        });
 
-          this.departments = departments.filter(
-            (department) => !departmentsBase.includes(department.id)
-          );
-          // console.log("Filtrados", this.departments);
+        this.departments = departments.filter((department) => !departmentsBase.includes(department.id));
+        // console.log("Filtrados", this.departments);
 
-          this.filteredDepartments =
-            this.userForm.controls.department.valueChanges.pipe(
-              startWith(""),
-              map((value) => this._filter(value || ""))
-            );
-        },
-        error: (error) => {
-          this.alertService.errorAlert(error.message);
-        },
-      });
+        this.filteredDepartments = this.userForm.controls.department.valueChanges.pipe(
+          startWith(""),
+          map((value) => this._filter(value || ""))
+        );
+      },
+      error: (error) => {
+        this.alertService.errorAlert(error.message);
+      },
+    });
     await this.setupForm();
   }
 
@@ -124,9 +107,7 @@ export class CreateUserComponent {
             }
           });
 
-          let profilesFilteres = profiles.filter(
-            (profile) => !profilesBase.includes(profile.id)
-          );
+          let profilesFilteres = profiles.filter((profile) => !profilesBase.includes(profile.id));
           profilesFilteres.forEach((perfil) => {
             if (perfil?.coursesRef.length > 0) {
               let cursos = [];
@@ -134,7 +115,7 @@ export class CreateUserComponent {
               perfil.coursesRef
                 // .map((item) => item.courseRef)
                 .forEach((cursoRef) => {
-                  let id = cursoRef['courseRef']['id']
+                  let id = cursoRef["courseRef"]["id"];
                   let curso = this.cursos.find((x) => x.id == id);
                   cursos.push(curso);
                   duracion += curso.duracion;
@@ -154,9 +135,7 @@ export class CreateUserComponent {
     // console.log("filter", value, this.departments);
     const filterValue = value.toLowerCase();
     // console.log("this.departments", this.departments, filterValue);
-    return this.departments
-      .map((department) => department.name)
-      .filter((option) => option.toLowerCase().includes(filterValue));
+    return this.departments.map((department) => department.name).filter((option) => option.toLowerCase().includes(filterValue));
   }
 
   formNewDepartment: FormGroup;
@@ -181,9 +160,7 @@ export class CreateUserComponent {
     this.showErrorDepartment = false;
 
     if (this.formNewDepartment.valid) {
-      let ValidateName = this.departments.filter(
-        (x) => x.name == this.formNewDepartment.value.nombre
-      );
+      let ValidateName = this.departments.filter((x) => x.name == this.formNewDepartment.value.nombre);
 
       console.log("ValidateName", ValidateName, this.departments);
 
@@ -196,12 +173,7 @@ export class CreateUserComponent {
         });
       } else {
         let enterpriseRef = this.enterpriseService.getEnterpriseRef();
-        let deparment = new Department(
-          null,
-          this.formNewDepartment.value.nombre,
-          enterpriseRef,
-          null
-        );
+        let deparment = new Department(null, this.formNewDepartment.value.nombre, enterpriseRef, null);
         await this.departmentService.add(deparment);
         this.modalCrearDepartment.close();
         this.userForm.get("department").patchValue(deparment.name);
@@ -213,28 +185,26 @@ export class CreateUserComponent {
 
   onRoleChange(event: any): void {
     if (event.checked) {
-      this.userForm.get('role').setValue('admin');
+      this.userForm.get("role").setValue("admin");
     } else {
-      this.userForm.get('role').setValue('student');
+      this.userForm.get("role").setValue("student");
     }
   }
 
   async setupForm() {
+    let enterprise = null;
 
-    let enterprise = null
-
-    if(this.enterpriseRef){
-      enterprise  = await this.enterpriseService.getEnterpriseByIdPromise(this.enterpriseRef.id);
-    }
-    else {
-      let enterpriseRef = this.enterpriseService.getEnterpriseRef()
+    if (this.enterpriseRef) {
+      enterprise = await this.enterpriseService.getEnterpriseByIdPromise(this.enterpriseRef.id);
+    } else {
+      let enterpriseRef = this.enterpriseService.getEnterpriseRef();
       enterprise = await this.enterpriseService.getEnterpriseByIdPromise(enterpriseRef.id);
     }
 
-    console.log('enterprise',enterprise)
-    let canEnrollParticularCourses = false
-    if(enterprise.allUsersExtraCourses){
-      canEnrollParticularCourses = true
+    console.log("enterprise", enterprise);
+    let canEnrollParticularCourses = false;
+    if (enterprise.allUsersExtraCourses) {
+      canEnrollParticularCourses = true;
     }
 
     this.userForm = this.fb.group({
@@ -252,20 +222,16 @@ export class CreateUserComponent {
       job: [null],
       hiringDate: [null],
       experience: [null],
-      role:['student']
+      role: ["student"],
     });
     // Edit mode
     if (this.studentToEdit) {
       console.log("this.studentToEdit", this.studentToEdit);
-      const department = this.studentToEdit.departmentRef
-        ? (await this.studentToEdit.departmentRef.get()).data()
-        : null;
-      const profile = this.studentToEdit.profile
-        ? (await this.studentToEdit.profile.get()).data()
-        : null;
+      const department = this.studentToEdit.departmentRef ? (await this.studentToEdit.departmentRef.get()).data() : null;
+      const profile = this.studentToEdit.profile ? (await this.studentToEdit.profile.get()).data() : null;
       this.userForm.patchValue({
         displayName: this.studentToEdit.displayName,
-        canEnrollParticularCourses:this.studentToEdit.canEnrollParticularCourses,
+        canEnrollParticularCourses: this.studentToEdit.canEnrollParticularCourses,
         profile: profile ? profile.id : null,
         photoUrl: this.studentToEdit.photoUrl,
         phoneNumber: this.studentToEdit.phoneNumber,
@@ -274,25 +240,16 @@ export class CreateUserComponent {
         email: this.studentToEdit.email,
         job: this.studentToEdit.job,
         experience: this.studentToEdit.experience,
-        role:this.studentToEdit.role,
+        role: this.studentToEdit.role,
       });
-      this.studentToEdit.birthdate
-        ? this.timestampToFormFormat(this.studentToEdit.birthdate, "birthdate")
-        : null;
-      this.studentToEdit.hiringDate
-        ? this.timestampToFormFormat(
-            this.studentToEdit.hiringDate,
-            "hiringDate"
-          )
-        : null;
+      this.studentToEdit.birthdate ? this.timestampToFormFormat(this.studentToEdit.birthdate, "birthdate") : null;
+      this.studentToEdit.hiringDate ? this.timestampToFormFormat(this.studentToEdit.hiringDate, "hiringDate") : null;
       this.userForm.get("email")?.disable();
       if (this.studentToEdit.photoUrl) {
         this.imageUrl = this.studentToEdit.photoUrl;
       }
 
-      let userRef = this.afs
-        .collection<User>(User.collection)
-        .doc(this.studentToEdit.uid).ref;
+      let userRef = this.afs.collection<User>(User.collection).doc(this.studentToEdit.uid).ref;
 
       this.courseService
         .getActiveCoursesByStudent$(userRef)
@@ -322,11 +279,7 @@ export class CreateUserComponent {
             console.log("Mayor fecha de fin:", maxEndDateFormatted);
 
             if (maxEndDateFormatted) {
-              this.MaxDateProfile = formatDate(
-                maxEndDateFormatted,
-                "yyyy-MM-dd",
-                "en"
-              );
+              this.MaxDateProfile = formatDate(maxEndDateFormatted, "yyyy-MM-dd", "en");
             }
 
             this.userForm.patchValue({
@@ -341,9 +294,7 @@ export class CreateUserComponent {
   changeProfile() {
     this.hoursPlan = 0;
 
-    const profile = this.profiles.find(
-      (x) => x.id == this.userForm.get("profile").value
-    );
+    const profile = this.profiles.find((x) => x.id == this.userForm.get("profile").value);
     const endDate = this.userForm.get("endDateStudy").value;
     const startDate = this.userForm.get("startDateStudy").value;
 
@@ -351,13 +302,8 @@ export class CreateUserComponent {
       let endDateObjet = this.toDateFromInput(endDate);
       const startDateObjet = this.toDateFromInput(startDate);
       endDateObjet = this.obtenerUltimoDiaDelMes(endDateObjet.getTime() / 1000);
-      const difMeses = this.calculateMonthsDifference(
-        startDateObjet,
-        endDateObjet
-      );
-      const profile = this.profiles.find(
-        (x) => x.id == this.userForm.get("profile").value
-      );
+      const difMeses = this.calculateMonthsDifference(startDateObjet, endDateObjet);
+      const profile = this.profiles.find((x) => x.id == this.userForm.get("profile").value);
       const duracionPlan = Math.ceil(profile["duracion"] / 60);
       const hoursMes = Math.ceil(duracionPlan / difMeses);
       this.hoursPlan = hoursMes;
@@ -401,15 +347,7 @@ export class CreateUserComponent {
     const lastDay = new Date(finalYear, finalMonth + 1, 0); // Usar 0 devuelve el último día del mes anterior, que es nuestro mes final.
 
     // Ajusta para que sea el último momento del último día del mes
-    const finalDateWithLastMoment = new Date(
-      lastDay.getFullYear(),
-      lastDay.getMonth(),
-      lastDay.getDate(),
-      23,
-      59,
-      59,
-      999
-    );
+    const finalDateWithLastMoment = new Date(lastDay.getFullYear(), lastDay.getMonth(), lastDay.getDate(), 23, 59, 59, 999);
 
     return finalDateWithLastMoment;
   }
@@ -436,16 +374,9 @@ export class CreateUserComponent {
 
       if (endDate) {
         const endDateObjet = this.toDateFromInput(endDate);
-        startDateObjet = this.obtenerUltimoDiaDelMes(
-          startDateObjet.getTime() / 1000
-        );
-        const difMeses = this.calculateMonthsDifference(
-          startDateObjet,
-          endDateObjet
-        );
-        const profile = this.profiles.find(
-          (x) => x.id == this.userForm.get("profile").value
-        );
+        startDateObjet = this.obtenerUltimoDiaDelMes(startDateObjet.getTime() / 1000);
+        const difMeses = this.calculateMonthsDifference(startDateObjet, endDateObjet);
+        const profile = this.profiles.find((x) => x.id == this.userForm.get("profile").value);
         const duracionPlan = Math.ceil(profile["duracion"] / 60);
         const hoursMes = Math.ceil(duracionPlan / difMeses);
         this.hoursPlan = hoursMes;
@@ -456,16 +387,9 @@ export class CreateUserComponent {
       this.MaxDateProfile = formatDate(endDateObjet, "yyyy-MM-dd", "en");
       if (startDate) {
         const startDateObjet = this.toDateFromInput(startDate);
-        endDateObjet = this.obtenerUltimoDiaDelMes(
-          endDateObjet.getTime() / 1000
-        );
-        const difMeses = this.calculateMonthsDifference(
-          startDateObjet,
-          endDateObjet
-        );
-        const profile = this.profiles.find(
-          (x) => x.id == this.userForm.get("profile").value
-        );
+        endDateObjet = this.obtenerUltimoDiaDelMes(endDateObjet.getTime() / 1000);
+        const difMeses = this.calculateMonthsDifference(startDateObjet, endDateObjet);
+        const profile = this.profiles.find((x) => x.id == this.userForm.get("profile").value);
         const duracionPlan = Math.ceil(profile["duracion"] / 60);
         const hoursMes = Math.ceil(duracionPlan / difMeses);
         this.hoursPlan = hoursMes;
@@ -482,15 +406,12 @@ export class CreateUserComponent {
     const startMonth = startDate.getMonth();
     const endMonth = endDate.getMonth();
 
-    const monthsDifference =
-      (endYear - startYear) * 12 + (endMonth - startMonth);
+    const monthsDifference = (endYear - startYear) * 12 + (endMonth - startMonth);
     return monthsDifference >= 0 ? monthsDifference + 1 : 0;
   }
 
   toDateFromInput(inputValue) {
-    const [year, month, day] = inputValue
-      .split("-")
-      .map((num) => parseInt(num, 10));
+    const [year, month, day] = inputValue.split("-").map((num) => parseInt(num, 10));
     // Ten en cuenta que los meses en JavaScript son 0-indexados (0 = enero, 11 = diciembre),
     // así que resta 1 al mes al crear el objeto Date.
     return new Date(year, month - 1, day);
@@ -524,10 +445,7 @@ export class CreateUserComponent {
     return ultimoDiaDelMes;
   }
 
-  timestampToFormFormat(
-    timestamp: number,
-    property: "birthdate" | "hiringDate"
-  ) {
+  timestampToFormFormat(timestamp: number, property: "birthdate" | "hiringDate") {
     const date = timestampToDateNumbers(timestamp);
     this.userForm.get(property)?.setValue({
       day: date.day,
@@ -553,9 +471,7 @@ export class CreateUserComponent {
     /* checking size here - 10MB */
     const imageMaxSize = 10000000;
     if (file.size > imageMaxSize) {
-      this.alertService.errorAlert(
-        `El archivo es mayor a 1MB por favor incluya una imagen de menor tamaño`
-      );
+      this.alertService.errorAlert(`El archivo es mayor a 1MB por favor incluya una imagen de menor tamaño`);
       return;
     }
 
@@ -581,9 +497,7 @@ export class CreateUserComponent {
       const formData = this.userForm.getRawValue(); // use getRawValue instead of value because "value" doesnt contain disabled fields (email)
 
       if (formData.department && formData.department !== "null") {
-        const departmentId = this.departments.find(
-          (department) => department.name === formData?.department
-        )?.id;
+        const departmentId = this.departments.find((department) => department.name === formData?.department)?.id;
         if (!departmentId) {
           this.isDepartmentInvalid = true;
           return false; // Indicate that the form is invalid
@@ -594,9 +508,7 @@ export class CreateUserComponent {
     } else {
       const formData = this.userForm.getRawValue(); // use getRawValue instead of value because "value" doesnt contain disabled fields (email)
       if (formData.department && formData.department !== "null") {
-        const departmentId = this.departments.find(
-          (department) => department.name === formData?.department
-        )?.id;
+        const departmentId = this.departments.find((department) => department.name === formData?.department)?.id;
         if (!departmentId) {
           this.isDepartmentInvalid = true;
           return false; // Indicate that the form is invalid
@@ -614,53 +526,37 @@ export class CreateUserComponent {
     const formData = this.userForm.getRawValue(); // use getRawValue instead of value because "value" doesnt contain disabled fields (email)
     let department = null;
     if (formData.department && formData.department !== "null") {
-      const departmentId = this.departments.find(
-        (department) => department.name === formData?.department
-      )?.id;
+      const departmentId = this.departments.find((department) => department.name === formData?.department)?.id;
       if (departmentId) {
-        department = departmentId
-          ? this.departmentService.getDepartmentRefById(departmentId)
-          : null;
+        department = departmentId ? this.departmentService.getDepartmentRefById(departmentId) : null;
       } else {
         this.isDepartmentInvalid = true;
       }
     }
     const userObj = {
       name: formData.displayName ? formData.displayName.toLowerCase() : null,
-      displayName: formData.displayName
-        ? formData.displayName.toLowerCase()
-        : null,
+      displayName: formData.displayName ? formData.displayName.toLowerCase() : null,
       phoneNumber: formData.phoneNumber ? formData.phoneNumber : null,
       departmentRef: department,
-      canEnrollParticularCourses:formData.canEnrollParticularCourses ? formData.canEnrollParticularCourses : false,
+      canEnrollParticularCourses: formData.canEnrollParticularCourses ? formData.canEnrollParticularCourses : false,
       country: formData.country ? formData.country : null,
-      birthdate: formData.birthdate
-        ? dateFromCalendarToTimestamp(formData.birthdate)
-        : null,
+      birthdate: formData.birthdate ? dateFromCalendarToTimestamp(formData.birthdate) : null,
       job: formData.job ? formData.job : null,
-      hiringDate: formData.hiringDate
-        ? dateFromCalendarToTimestamp(formData.hiringDate)
-        : null,
+      hiringDate: formData.hiringDate ? dateFromCalendarToTimestamp(formData.hiringDate) : null,
       experience: formData.experience ? formData.experience : null,
-      profile: formData.profile
-        ? this.profileService.getProfileRefById(formData.profile)
-        : null,
+      profile: formData.profile ? this.profileService.getProfileRefById(formData.profile) : null,
       email: formData.email ? formData.email.toLowerCase() : null,
       photoUrl: formData.photoUrl,
-      role:formData.role 
+      role: formData.role,
     };
 
     let user = null;
-    if (this.isParticularStudent) user = User.getStudentUser()
+    if (this.isParticularStudent) user = User.getStudentUser();
     else {
       if (this.studentToEdit?.role === User.ROLE_ADMIN) {
-        user = User.getEnterpriseAdminUser(
-          this.enterpriseService.getEnterpriseRef()
-        );
+        user = User.getEnterpriseAdminUser(this.enterpriseService.getEnterpriseRef());
       } else {
-        user = User.getEnterpriseStudentUser(
-          this.enterpriseService.getEnterpriseRef()
-        );
+        user = User.getEnterpriseStudentUser(this.enterpriseService.getEnterpriseRef());
       }
     }
 
@@ -688,11 +584,7 @@ export class CreateUserComponent {
     if (this.uploadedImage) {
       if (this.userForm.controls.photoUrl) {
         // Existing image must be deleted before
-        await firstValueFrom(
-          this.storage
-            .refFromURL(this.userForm.controls.photoUrl.value)
-            .delete()
-        ).catch((error) => console.log(error));
+        await firstValueFrom(this.storage.refFromURL(this.userForm.controls.photoUrl.value).delete()).catch((error) => console.log(error));
         console.log("Old image has been deleted!");
       }
       // Upload new image
@@ -740,9 +632,7 @@ export class CreateUserComponent {
 
       if (profileNew && !profileNew.enterpriseRef) {
         // console.log("profileNew", profileNew);
-        let baseProfile = this.afs
-          .collection<Profile>(Profile.collection)
-          .doc(profileNew.id).ref;
+        let baseProfile = this.afs.collection<Profile>(Profile.collection).doc(profileNew.id).ref;
         profileNew.baseProfile = baseProfile;
 
         const profile: Profile = Profile.fromJson({
@@ -756,33 +646,20 @@ export class CreateUserComponent {
           hoursPerMonth: profileNew.hoursPerMonth,
         });
         const profileId = await this.profileService.saveProfile(profile);
-        let profileRef = await this.afs
-          .collection<Profile>(Profile.collection)
-          .doc(profileId).ref;
+        let profileRef = await this.afs.collection<Profile>(Profile.collection).doc(profileId).ref;
         user.profile = profileRef;
       }
 
-      let departmentNew = this.departments.find(
-        (x) => x?.id == user?.departmentRef?.id
-      );
+      let departmentNew = this.departments.find((x) => x?.id == user?.departmentRef?.id);
 
       if (departmentNew && !departmentNew?.enterpriseRef) {
-        let baseDepartment = this.afs
-          .collection<Department>(Department.collection)
-          .doc(departmentNew.id).ref;
+        let baseDepartment = this.afs.collection<Department>(Department.collection).doc(departmentNew.id).ref;
         let enterpriseRef = this.enterpriseService.getEnterpriseRef();
 
-        let deparment = new Department(
-          null,
-          departmentNew.name,
-          enterpriseRef,
-          baseDepartment
-        );
+        let deparment = new Department(null, departmentNew.name, enterpriseRef, baseDepartment);
         console.log("deparmentadd", deparment);
         await this.departmentService.add(deparment);
-        let departmentRef = await this.afs
-          .collection<Department>(Department.collection)
-          .doc(deparment.id).ref;
+        let departmentRef = await this.afs.collection<Department>(Department.collection).doc(deparment.id).ref;
         user.departmentRef = departmentRef;
       }
 
@@ -795,29 +672,19 @@ export class CreateUserComponent {
       let valores = this.userForm.value;
 
       if (valores.startDateStudy && valores.profile && this.hoursPlan > 0) {
-        console.log(
-          user,
-          valores.startDateStudy,
-          valores.profile,
-          this.hoursPlan
-        );
+        console.log(user, valores.startDateStudy, valores.profile, this.hoursPlan);
         let fehcaInicio = this.toDateFromInput(valores.startDateStudy);
-        let fechaInicioMes = new Date(obtenerPrimerDiaDelMes(fehcaInicio.getTime()))
-        await this.saveInitForm(
-          user.uid,
-          this.hoursPlan,
-          fechaInicioMes,
-          profileNew
-        );
+        let fechaInicioMes = new Date(obtenerPrimerDiaDelMes(fehcaInicio.getTime()));
+        await this.saveInitForm(user.uid, this.hoursPlan, fechaInicioMes, profileNew);
       }
 
-      this.userForm.value.uid = user?.uid
+      this.userForm.value.uid = user?.uid;
 
       this.activeModal.close(this.userForm.value);
       this.alertService.succesAlert("Estudiante agregado exitosamente");
       this.savingChanges = false;
     } catch (error) {
-      console.error("Error",error)
+      console.error("Error", error);
       this.alertService.errorAlert("");
       this.savingChanges = false;
     }
@@ -830,27 +697,18 @@ export class CreateUserComponent {
 
   async createStudyPlan(uid, hoursPerMonth, profile, startDateStudy) {
     console.log("startDateStudy", startDateStudy);
-    const coursesRefs: any[] = profile.coursesRef
-      .sort(
-        (
-          b: { courseRef: DocumentReference<Curso>; studyPlanOrder: number },
-          a: { courseRef: DocumentReference<Curso>; studyPlanOrder: number }
-        ) => b.studyPlanOrder - a.studyPlanOrder
-      )
-      // .map((item) => item.courseRef);
+    const coursesRefs: any[] = profile.coursesRef.sort((b: { courseRef: DocumentReference<Curso>; studyPlanOrder: number }, a: { courseRef: DocumentReference<Curso>; studyPlanOrder: number }) => b.studyPlanOrder - a.studyPlanOrder);
+    // .map((item) => item.courseRef);
     let dateStartPlan: number;
     let dateEndPlan: number;
     let now = new Date();
     let hoy = +new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const hoursPermonth = hoursPerMonth;
-    console.log("hoursPermonth", hoursPermonth,coursesRefs);
+    console.log("hoursPermonth", hoursPermonth, coursesRefs);
 
-    const userRef: DocumentReference | DocumentReference<User> =
-      this.userService.getUserRefById(uid);
+    const userRef: DocumentReference | DocumentReference<User> = this.userService.getUserRefById(uid);
     for (let i = 0; i < coursesRefs.length; i++) {
-      const courseData = this.cursos.find(
-        (courseData) => courseData.id === coursesRefs[i].courseRef.id
-      );
+      const courseData = this.cursos.find((courseData) => courseData.id === coursesRefs[i].courseRef.id);
       const courseDuration = courseData.duracion;
 
       if (startDateStudy) {
@@ -858,34 +716,15 @@ export class CreateUserComponent {
         startDateStudy = null;
       } else dateStartPlan = dateEndPlan ? dateEndPlan : hoy;
 
-      dateEndPlan = this.courseService.calculatEndDatePlan(
-        dateStartPlan,
-        courseDuration,
-        hoursPermonth
-      );
-      console.log("dates", dateStartPlan, dateEndPlan);//estoy aqui
+      dateEndPlan = this.courseService.calculatEndDatePlan(dateStartPlan, courseDuration, hoursPermonth);
+      console.log("dates", dateStartPlan, dateEndPlan); //estoy aqui
       //  ---------- if it already exists, activate it as studyPlan, otherwise, create it as studyPlan ----------
-      const courseByStudent: CourseByStudent | null =
-        await this.courseService.getCourseByStudent(
-          userRef as DocumentReference<User>,
-          coursesRefs[i].courseRef as DocumentReference<Curso>
-        );
+      const courseByStudent: CourseByStudent | null = await this.courseService.getCourseByStudent(userRef as DocumentReference<User>, coursesRefs[i].courseRef as DocumentReference<Curso>);
       // console.log("courseByStudent", courseByStudent)
       if (courseByStudent) {
-        await this.courseService.setCourseByStudentActive(
-          courseByStudent.id,
-          new Date(dateStartPlan),
-          new Date(dateEndPlan)
-        );
+        await this.courseService.setCourseByStudentActive(courseByStudent.id, new Date(dateStartPlan), new Date(dateEndPlan));
       } else {
-        await this.courseService.saveCourseByStudent(
-          coursesRefs[i].courseRef,
-          userRef,
-          new Date(dateStartPlan),
-          new Date(dateEndPlan),
-          false,
-          i
-        );
+        await this.courseService.saveCourseByStudent(coursesRefs[i].courseRef, userRef, new Date(dateStartPlan), new Date(dateEndPlan), false, i);
       }
     }
   }
