@@ -170,106 +170,34 @@
                                     <mat-accordion multi="false" class="fw">
                                       <mat-expansion-panel [ngClass]="{ ContainerClase: session['isInvalid'] }" [disabled]="!session.title || session.type == 'lectura'" [expanded]="session['expanded'] || session.type == 'video'" (opened)="closeOtherSessions(session)">
                                         <mat-expansion-panel-header>
-                                          <mat-panel-title (click)="onPanelTitleClick($event)" fxLayout="row" fxLayoutAlign="space-between center">
-                                            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1.5rem">
-                                              <!-- <img [src]="icon[getIconClase(session.type)]" class="h18px pdr05" alt=""> -->
-                                              <div *ngIf="session.title && !session['editarTitulo']; then tituloPresenteClase; else ClaseSinTitulo"></div>
-                                              <ng-template #tituloPresenteClase>
-                                                <span (click)="session['editarTitulo'] = true; session['tituloTMP'] = session?.title; editarTituloSession(iClase)">
-                                                  {{ session.title }} - {{ session.duration | formatDuration }}
-                                                  {{ mode === "edit" ? " - " + (session["dateFormatted"] ? "Inicia el " + (session["dateFormatted"] | customDatetime) : "Sin fecha") + " - Disponible durante " + session["weeksToKeep"] + " sem." : "" }}
-                                                </span>
-                                              </ng-template>
-                                              <ng-template #ClaseSinTitulo>
+                                          <mat-panel-title (click)="onPanelTitleClick($event)">
+                                            <div *ngIf="session.title && !session['editarTitulo']; then tituloPresenteClase; else ClaseSinTitulo"></div>
+                                            <ng-template #tituloPresenteClase>
+                                              <div fxLayout="row" class="fw" fxLayoutAlign="space-between center" (click)="session['editarTitulo'] = true; session['tituloTMP'] = session?.title; editarTituloSession(iClase)">
+                                                <div>{{ session.title }}</div>
+                                                <div *ngIf="mode === 'edit'">
+                                                  <span>{{ session["dateFormatted"] ? "Inicia el " + (session["dateFormatted"] | customDatetime) : "Sin fecha" }}</span>
+                                                  <span class="mgl10">Duración: {{ session.duration | formatDuration }}</span>
+                                                  <img (click)="borrarSession(session)" [src]="icon.trash" class="h16px trash mgl10" alt="" />
+                                                </div>
+                                              </div>
+                                            </ng-template>
+                                            <ng-template #ClaseSinTitulo>
+                                              <div fxLayout="row" class="fw" fxLayoutAlign="space-between center">
                                                 <input #inputRef class="inputInvisible" type="text" [(ngModel)]="session['tituloTMP']" (keydown.space)="preventDefault($event)" (keyup.enter)="preventDefault($event); confirmSessionTitleAndDuration(session)" placeholder="Escriba el título aquí" />
-
-                                                <select [(ngModel)]="session['duration']" class="duration-select">
-                                                  <option *ngFor="let duration of durations" [ngValue]="duration.value">{{ duration.label }}</option>
-                                                </select>
-
-                                                <div *ngIf="mode === 'edit'" fxLayout="row" fxLayoutAlign=" center" fxLayoutGap=".25rem" class="form-group">
-                                                  <label class="ft12 ft500" for="fecha-inicio">Fecha y hora: </label>
-                                                  <input type="datetime-local" id="fecha-inicio" class="form-control w225px" [(ngModel)]="session['dateFormatted']" />
-                                                </div>
-
-                                                <div *ngIf="mode === 'edit'" fxLayout="row" fxLayoutAlign=" center" fxLayoutGap=".25rem" class="">
-                                                  <label class="ft12 ft500" for="">Repetición: </label>
-                                                  <select class="duration-select" [(ngModel)]="session['weeksToKeep']">
-                                                    <option [ngValue]="2">2 Sem</option>
-                                                    <option [ngValue]="3">3 Sem</option>
-                                                    <option [ngValue]="4">4 Sem</option>
-                                                  </select>
-                                                </div>
-                                                <img (click)="confirmSessionTitleAndDuration(session)" matTooltip="Confirmar título" [src]="icon.check" class="h18px pdl05 makeGray edit cursorPointer" alt="" />
-                                              </ng-template>
-                                            </div>
-
-                                            <div fxLayout="row" fxLayoutAlign="space-between center">
-                                              <ng-container *ngIf="mode === 'edit'">
-                                                <div *ngIf="!session.vimeoId1">
-                                                  <span (click)="FileInputTitle.click()" *ngIf="session.title && !session['videoUpload'] && !session['uploading']" class="blueLink mgr10"> Agregar video </span>
-                                                  <div *ngIf="session.type == 'video' && session['videoUpload']">
-                                                    <span *ngIf="session['videoUpload'] < 100 && session['videoUpload'] > 0" class="pdl05 mgr10"> Subiendo video: {{ session["videoUpload"] }}% </span>
+                                                <div fxLayout="row" fxLayoutAlign=" center">
+                                                  <div *ngIf="mode === 'edit'" fxLayout="row" fxLayoutAlign=" center" fxLayoutGap=".25rem" class="form-group">
+                                                    <label class="ft12 ft500" for="fecha-inicio">Fecha y hora: </label>
+                                                    <input type="datetime-local" id="fecha-inicio" class="form-control w225px" [(ngModel)]="session['dateFormatted']" />
                                                   </div>
-                                                  <span *ngIf="!session.title" class="gray-6 cursorPointer mgr10">Agregar video</span>
-                                                  <input (change)="session.type = 'video'; onFileSelected($event, session, false, false, null, true)" type="file" accept="video/mp4" #FileInputTitle style="display: none" />
+
+                                                  <select [(ngModel)]="session['duration']" class="duration-select mgl10">
+                                                    <option *ngFor="let duration of durations" [ngValue]="duration.value">{{ duration.label }}</option>
+                                                  </select>
+                                                  <img (click)="confirmSessionTitleAndDuration(session)" matTooltip="Confirmar título" [src]="icon.check" class="h18px pdl05 makeGray edit cursorPointer mgl10" alt="" />
                                                 </div>
-
-                                                <div *ngIf="session.vimeoId1" fxLayout="row" fxLayoutAlign="start center">
-                                                  <span (click)="quitarVideoSession(session)" class="blueLink mgr05">Eliminar</span>
-                                                  <button (click)="verVideoVimeo(session)" class="grayButton pd03 radius4 ft12 h28px mgr10 w130px" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
-                                                    <img [src]="icon.playOutline" class="h16px pdr05" alt="" />
-                                                    Reproducir video
-                                                  </button>
-                                                </div>
-                                              </ng-container>
-
-                                              <!-- <ng-container *ngIf="session.type == 'video'">
-                                                                                                <div *ngIf="!session.vimeoId1">
-                                                                                                    <span (click)="FileInputTitle.click()" *ngIf=" mode === 'edit' && session.title && !session['videoUpload'] && !session['uploading']" class="blueLink mgr10">
-                                                                                                        Agregar video
-                                                                                                    </span>
-                                                                                                    <div *ngIf="session.type == 'video' && session['videoUpload']">
-                                                                                                        <span *ngIf="session['videoUpload'] < 100 && session['videoUpload'] > 0" class="pdl05 mgr10">
-                                                                                                            Subiendo video: {{session['videoUpload']}}%
-                                                                                                        </span>
-                                                                                                    </div>
-                                                                                                    <span *ngIf="!session.title && mode === 'edit' " class="gray-6 cursorPointer mgr10">Agregar video</span>
-                                                                                                    <input (change)="onFileSelected($event, session, false) " type="file" accept="video/mp4" #FileInputTitle style="display: none;">
-                                                                                                </div>
-                                                                                                <div *ngIf="session.vimeoId1" fxLayout="row" fxLayoutAlign="start center">
-                                                                                                    <span (click)="quitarVideoSession(session)" class="blueLink mgr05">Eliminar</span>
-                                                                                                    <button (click)="verVideoVimeo(session)" class="grayButton pd03 radius4 ft12 h28px mgr10 w130px" fxLayout="row" 
-                                                                                                    fxLayoutGap="0.625" fxLayoutAlign="center center">
-                                                                                                        <img [src]="icon.playOutline" class="h16px pdr05" alt="">
-                                                                                                        Reproducir video
-                                                                                                    </button>
-                                                                                                </div>
-                                                                                            </ng-container>
-                                                                                            <ng-container *ngIf="session.type == 'lectura'">
-                                                                                                <div *ngIf="!session.vimeoId1">
-                                                                                                    <span (click)="FileInputTitle.click()" *ngIf="session.title && !session['uploading'] && !session?.files[0]" class="blueLink mgr10">
-                                                                                                        Agregar archivo
-                                                                                                    </span>
-                                                                                                    <div *ngIf="session?.files[0]?.uploading_file_progress">
-                                                                                                        <span *ngIf="session.files[0].uploading_file_progress < 100" class="pdl05 mgr10">
-                                                                                                            {{session.files[0].uploading_file_progress}}%
-                                                                                                        </span>
-                                                                                                    </div>
-                                                                                                    <span *ngIf="!session.title" class="gray-6 mgr10">Agregar archivo</span>
-                                                                                                    <input (change)="onFileSelected($event, session, false)" type="file" accept="lectura" #FileInputTitle style="display: none;">
-                                                                                                </div>
-                                                                                                <div *ngIf="session.files[0]" fxLayout="row" fxLayoutAlign="start center">
-                                                                                                    <span (click)="deleteFileClass(session)" class="blueLink mgr05">Eliminar</span>
-                                                                                                    <button (click)="descargarArchivo(session?.files[0])" class="grayButton pd03 radius4 ft12 h28px mgr10 w130px" fxLayout="row" 
-                                                                                                    fxLayoutGap="0.625" fxLayoutAlign="center center">
-                                                                                                        <img [src]="icon.pdf" class="h16px pdr05" alt="">Ver archivo
-                                                                                                    </button>
-                                                                                                </div>
-                                                                                            </ng-container> -->
-
-                                              <img (click)="borrarSession(session)" [src]="icon.trash" class="h16px trash" alt="" />
-                                            </div>
+                                              </div>
+                                            </ng-template>
                                           </mat-panel-title>
                                         </mat-expansion-panel-header>
 
@@ -277,9 +205,37 @@
 
                                         <!-- si es de archivo es un drop -->
                                         <ng-container *ngIf="session.type != 'actividad' && session.type != 'corazones'">
+                                          <div fxLayout="row" class="fw" fxLayoutAlign="space-between center">
+                                            <ng-container *ngIf="mode === 'edit'">
+                                              <div *ngIf="session.vimeoId1" fxLayout="row" fxLayoutAlign="start center">
+                                                <button (click)="verVideoVimeo(session)" class="grayButton pd03 radius4 ft12 h28px mgr10 w130px" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                  <img [src]="icon.playOutline" class="h16px pdr05" alt="" />
+                                                  Reproducir video
+                                                </button>
+                                                <span (click)="quitarVideoSession(session)" class="blueLink mgr05">Eliminar</span>
+                                              </div>
+                                              <div *ngIf="!session.vimeoId1">
+                                                <span (click)="FileInputTitle.click()" *ngIf="session.title && !session['videoUpload'] && !session['uploading']" class="blueLink mgr10"> Agregar video </span>
+                                                <div *ngIf="session.type == 'video' && session['videoUpload']">
+                                                  <span *ngIf="session['videoUpload'] < 100 && session['videoUpload'] > 0" class="pdl05 mgr10"> Subiendo video: {{ session["videoUpload"] }}% </span>
+                                                </div>
+                                                <span *ngIf="!session.title" class="gray-6 cursorPointer mgr10">Agregar video</span>
+                                                <input (change)="session.type = 'video'; onFileSelected($event, session, false, false, null, true)" type="file" accept="video/mp4" #FileInputTitle style="display: none" />
+                                              </div>
+                                              <div *ngIf="session['editarTitulo']" fxLayout="row" fxLayoutAlign=" center" fxLayoutGap=".25rem" class="">
+                                                <label class="ft12 ft500" for="">Repetición: </label>
+                                                <select class="duration-select" [(ngModel)]="session['weeksToKeep']">
+                                                  <option [ngValue]="2">2 Sem</option>
+                                                  <option [ngValue]="3">3 Sem</option>
+                                                  <option [ngValue]="4">4 Sem</option>
+                                                </select>
+                                              </div>
+                                            </ng-container>
+                                            <span *ngIf="!session['editarTitulo']">{{ "Disponible durante " + session["weeksToKeep"] + " sem." }}</span>
+                                          </div>
                                           <!-- Lista de recursos de sesiones base -->
                                           <ng-container>
-                                            <div *ngIf="!session['uploading'] && session.files.length > 0" class="fw ContainerFile" style="min-height: 80px">
+                                            <div *ngIf="!session['uploading'] && session.files.length > 0" class="fw ContainerFile mgt10" style="min-height: 80px">
                                               <div fxLayout="row" fxLayoutGap="20px" class="fw pd10" (dragover)="onDragOver($event)" (drop)="onDrop($event, session.type, session)">
                                                 <!-- Columna izquierda con el texto "Recursos:" -->
                                                 <div fxFlex="10%" fxLayoutAlign="start start">Recursos:</div>
@@ -297,33 +253,7 @@
                                                 </div>
                                               </div>
                                             </div>
-                                            <!-- <div *ngIf="mode ==='edit' && !session['uploading'] && (session.files.length === 0)" class="fw h80px ContainerFile">
-                                                                                            <div (dragover)="onDragOver($event)" (drop)="onDrop($event, session. type, session)"class="fw fh no-select" fxLayout="row" fxLayoutAlign="center center">
-                                                                                                Arrastre el archivo aquí para agregarlo.
-                                                                                            </div>
-                                                                                        </div> -->
                                           </ng-container>
-                                          <!-- Lista de recursos de sesiones hijos -->
-                                          <!-- <ng-container *ngIf="mode === 'edit'">
-                                                                                        <div *ngIf="!session['uploading'] && session.files.length > 0" fxLayout="row" fxLayoutAlign="center center">
-                                                                                            <div class="w-90 ContainerFileSon mgl10" style="min-height: 80px;">
-                                                                                                <div fxLayout="row" fxLayoutGap="20px" class="fw pd10" (dragover)="onDragOver($event)" (drop)="onDrop($event, session. type, session)">
-                                                                                                    <div fxFlex="20%" fxLayoutAlign="start start">Recursos particulares: </div>
-                                                                                                    <div fxFlex="80%" fxLayoutAlign="start start">
-                                                                                                        <ol style="padding-left: 10px; margin: 0;">
-                                                                                                            <ng-container *ngFor="let archivo of session.files; let i = index">
-                                                                                                                <li>
-                                                                                                                    <span class="cursorPointer blueLink" (click)="descargarArchivo(archivo)">{{ archivo.nombre }}</span>
-                                                                                                                    <img [src]="icon.close" class="h18px pdl10 makeRed cursorPointer" alt="" (click)="borrarArchivo(session, archivo)">
-                                                                                                                </li>
-                                                                                                            </ng-container>
-                                                                                                        </ol>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </ng-container> -->
-                                          <!-- Añadir recurso para sesiones base -->
                                           <div fxLayout="row" fxLayoutAlign="center center" class="mgt15 mgb05">
                                             <input (change)="onFileSelected($event, session, false, true, null, true)" type="file" accept="application/pdf, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" #FileInputAdicional style="display: none" />
                                             <button (click)="FileInputAdicional.click()" class="grayButton pd03 radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
@@ -332,27 +262,6 @@
                                             </button>
                                           </div>
                                           <input (change)="onFileSelected($event, session, false, false, null, true)" type="file" accept="{{ session.type == 'lectura' ? '.pdf' : 'video/mp4' }}" #FileInput style="display: none" />
-                                          <!-- Agregar recursos pra sesiones hijos -->
-                                          <!-- <div *ngIf="mode ==='edit'" fxLayout="row" fxLayoutAlign="center center" class="mgt15 mgb05">
-                                                                                        <input (change)="onFileSelected($event, session, false, true, null, false)" type="file" 
-                                                                                        accept="application/pdf, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" 
-                                                                                        #FileInputAdicional style="display: none;">
-                                                                                        <button (click)="FileInputAdicional.click()" class="grayButton pd03 radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
-                                                                                            <img [src]="icon.folderUp" class="h16px pdr05" alt="">
-                                                                                            Añadir recursos particulares
-                                                                                        </button>
-                                                                                    </div>
-                                                                                    <input (change)="onFileSelected($event, session, false, false, null, false)" type="file" accept="{{session.type == 'lectura'?'.pdf' : 'video/mp4'}}" 
-                                                                                    #FileInput style="display: none;"> -->
-                                        </ng-container>
-
-                                        <ng-container *ngIf="session.type == 'actividad' || session.type == 'corazones'">
-                                          <div fxLayout="row" fxLayoutAlign="center center" class="mgt15 mgb05">
-                                            <button (click)="structureActivity(modalActividadDetail, session); showErrorActividad = false" class="grayButton pd03 radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
-                                              <img [src]="icon.taskAdd" class="h16px pdr05" alt="" />
-                                              Estructurar actividad
-                                            </button>
-                                          </div>
                                         </ng-container>
                                         <ng-container *ngIf="session['isInvalid']">
                                           <div class="mgl05 mgr10 fw" *ngFor="let mensaje of session['InvalidMessages']" fxLayoutAlign="start center">
@@ -416,7 +325,7 @@
 
         <mat-tab [label]="'Examen Inicial' + (examenDiagnostico?.questions?.length ? ' (' + examenDiagnostico?.questions?.length + ' Pregunta' + (examenDiagnostico?.questions?.length > 1 ? 's' : '') + ')' : '')">
           <div fxLayout="column" fxLayoutAlign=" center" class="w-100 containerActivitiesTab pdt10">
-            <div *ngIf="mode === 'edit'" fxLayout="row" fxLayoutAlign="start center" class="w800px pdl10" fxLayoutGap="1.5rem">
+            <div *ngIf="mode === 'edit'" fxLayout="row" fxLayoutAlign="center center" class="w800px pdt10 pdb10" fxLayoutGap="1.5rem">
               <span>Habilitar examen</span>
               <mat-slide-toggle [checked]="liveCourseData.canTakeDiagnosticTest" (change)="toggleDiagnosticTest($event, false)"></mat-slide-toggle>
             </div>
@@ -426,7 +335,7 @@
 
         <mat-tab [label]="'Examen Final' + (examenFinal?.questions?.length ? ' (' + examenFinal?.questions?.length + ' Pregunta' + (examenFinal?.questions?.length > 1 ? 's' : '') + ')' : '')">
           <div fxLayout="column" fxLayoutAlign=" center" class="w-100 containerActivitiesTab pdt10">
-            <div *ngIf="mode === 'edit'" fxLayout="row" fxLayoutAlign="start center" class="w800px pdl10" fxLayoutGap="1.5rem">
+            <div *ngIf="mode === 'edit'" fxLayout="row" fxLayoutAlign="center center" class="w800px pdt10 pdb10" fxLayoutGap="1.5rem">
               <span>Habilitar examen</span>
               <mat-slide-toggle [checked]="liveCourseData.canTakeFinalTest" (change)="toggleDiagnosticTest($event, true)"></mat-slide-toggle>
             </div>

@@ -11,7 +11,7 @@ import { DepartmentService } from 'projects/predyc-business/src/shared/services/
 import { DialogService } from 'projects/predyc-business/src/shared/services/dialog.service';
 import { ProfileService } from 'projects/predyc-business/src/shared/services/profile.service';
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
-import { Subscription, combineLatest, forkJoin, map, switchMap, take } from 'rxjs';
+import { Subscription, combineLatest, firstValueFrom, forkJoin, map, switchMap, take } from 'rxjs';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import * as XLSX from 'xlsx-js-style';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -19,7 +19,9 @@ import { timestampToDateNumbers } from 'projects/shared/utils';
 import Swal from 'sweetalert2';
 import { AlertsService } from 'projects/predyc-business/src/shared/services/alerts.service';
 import { Subscription as SubscriptionClass } from "shared";
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AngularFireFunctions } from '@angular/fire/compat/functions';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 
@@ -29,6 +31,7 @@ interface studentInList {
   profileName: string,
   email: string,
   status: string,
+  
 }
 
 @Component({
@@ -50,8 +53,14 @@ export class EnterpriseStudentsListComponent {
     private fb: FormBuilder,
     private alertService: AlertsService,
     private router: Router,
+    private functions: AngularFireFunctions,
+    private activatedRoute: ActivatedRoute,
+    private _snackBar: MatSnackBar,
 
   ){}
+
+  filter = false
+
 
 
   displayedColumns: string[] = [
@@ -74,11 +83,61 @@ export class EnterpriseStudentsListComponent {
 
   addingStudent: boolean = false;
   newStudent: User
+  private queryParamsSubscription: Subscription
 
 
+  selectedProfile: string
+
+  usersMails = null
+
+
+  copiaExitosa(message: string = 'Correos copiados', action: string = '') {
+    navigator.clipboard.writeText(this.usersMails).then(() => {
+      this._snackBar.open(message, action, {
+        duration: 1000,
+        panelClass: ['gray-snackbar'],
+      });
+    }).catch(err => {
+      console.error('Error al copiar al portapapeles: ', err);
+    });
+  }
+
+  usersOnListProcess(users){
+
+    if(users){
+      // console.log('usersOnListProcess',users)
+      let respuesta = [];
+      users.forEach(usuario => {
+        respuesta.push(usuario.mail)
+      });
+  
+      this.usersMails = respuesta.toString();
+    }
+    else{
+      this.usersMails = null;
+    }
+
+  }
 
 
   ngOnInit() {
+
+
+    this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
+      this.filter = false; // Inicializar filter en false
+
+      // Verificar si params tiene alguna clave y si no es solo 'page' con valor 1
+      const keys = Object.keys(params);
+      if (keys.length > 0) {
+        // Excluir el caso donde solo hay 'page' con valor 1
+        if (!(keys.length === 1 && keys[0] === 'page' && params['page'] === '1')) {
+          this.filter = true;
+        }
+      }
+      const profile = params['profile'] || '';
+      this.selectedProfile = profile
+    })
+
     this.combinedSubscription = combineLatest([
       this.profileService.getProfiles$(),
       this.departmentService.getDepartments$(),
@@ -312,6 +371,16 @@ export class EnterpriseStudentsListComponent {
     this.router.navigate([`admin/students/${data.id}`])
 
     
+  }
+
+  async updateUsage(){
+    firstValueFrom(this.functions.httpsCallable("updateDataEnterpriseUsage")({enterpriseId:this.enterpriseRef.id}))
+    firstValueFrom(this.functions.httpsCallable("updateDataEnterpriseRhythm")({enterpriseId:this.enterpriseRef.id}))
+    firstValueFrom(this.functions.httpsCallable("updateDataEnterpriseProgressPlan")({enterpriseId:this.enterpriseRef.id}))
+  }
+
+  removeAllFilter(){
+    this.router.navigate([`admin/enterprises/form/${this.enterpriseRef.id}`])
   }
 
 

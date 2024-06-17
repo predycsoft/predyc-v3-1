@@ -126,6 +126,7 @@ const createEnterprise = async (enterpriseData: EnterpriseData): Promise<Documen
 		await newEnterprise.set({
 			...enterprise.toJson(),
 			id: newEnterprise.id,
+			tractian:true,
 		});
 		enterpriseRef = newEnterprise;
 		const successMessage = `Created enterprise with name "${enterprise.name}"`;

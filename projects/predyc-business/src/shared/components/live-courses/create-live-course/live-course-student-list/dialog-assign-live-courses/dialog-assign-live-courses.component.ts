@@ -6,7 +6,7 @@ import { IconService } from "projects/predyc-business/src/shared/services/icon.s
 import { UserService } from "projects/predyc-business/src/shared/services/user.service";
 import { Enterprise } from "projects/shared/models/enterprise.model";
 import { User } from "projects/shared/models/user.model";
-import { Observable, map, switchMap } from "rxjs";
+import { Observable, debounceTime, map, switchMap } from "rxjs";
 
 @Component({
   selector: "app-dialog-assign-live-courses",
@@ -25,6 +25,7 @@ export class DialogAssignLiveCoursesComponent {
 
   ngOnInit() {
     this.filteredOptions = this.myControl.valueChanges.pipe(
+      debounceTime(500),
       switchMap((value) => this.userService.getAllUsersForLiveCourses$(value, this.QUERYLIMYT)),
       map((users) => users.filter((user) => !this.emailsAssigned.includes(user.email)))
     );

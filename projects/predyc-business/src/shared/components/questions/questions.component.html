@@ -1,6 +1,5 @@
 <form [formGroup]="mainForm">
-  <ng-container>
-    <div formArrayName="questions" fxFlex fxLayout="column" class="containerAllQustions hideScroll pdl10 pdt10">
+  <div formArrayName="questions" fxFlex fxLayout="column" class="pdl10 pdt10">
       <ng-container>
         <!-- aqui van los preguntas que se van creando -->
         <div fxLayout="row" fxLayoutAlign="space-between center" class="fw pdb05">
@@ -401,7 +400,6 @@
         </div>
       </div>
     </div>
-  </ng-container>
 </form>
 
 <!-- CLASE COMPETENCIAS MODAL -->

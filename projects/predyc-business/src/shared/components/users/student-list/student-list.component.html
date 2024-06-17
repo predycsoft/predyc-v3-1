@@ -27,9 +27,12 @@
                         alt=""
                         >
                     <div fxLayout="column" fxLayoutAlign="center ">
-                        <div class="ft500 ft14  gray-10">{{ user.displayName | titlecase }}</div>
-                        <div
-                        *ngIf="!user.profile"
+                        <div  fxLayout="row" class="ft500 ft14  gray-10">{{ user.displayName | titlecase }}
+                            <div *ngIf="user.role == 'admin'" class="chip backGreen2 mgl05" fxLayoutAlign="center center">
+                                <span class="ft9 nowrap ft500 green-5 pdl03 pdr03" >Administrador</span>
+                            </div>
+                        </div> 
+                        <div *ngIf="!user.profile"
                             class="ft400 ft13 gray-6">
                             Perfil sin asignar
                         </div>

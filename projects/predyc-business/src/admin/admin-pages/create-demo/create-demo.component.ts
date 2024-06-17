@@ -342,7 +342,13 @@ export class CreateDemoComponent {
       useWhatsapp: false,
       accountManagerName: "",
       accountManagerPhone: "",
-      reportMails: ""
+      reportMails: "",
+      tractian: false,
+      contactPerson: "",
+      mailContactPerson: "",
+      phoneContactPerson: "",
+      salesMan: "",
+      requireAccountManagement: true
     });
     //console.log("Enterprise", enterprise.toJson())
     await this.enterpriseService.addEnterprise(enterprise);

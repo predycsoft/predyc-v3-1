@@ -89,3 +89,33 @@ table.mat-table tfoot tr {
   padding-right: 14px;
   padding-left: 14px;
 }
+
+
+.bar-container {
+  width: 200px;
+  height: 10px;
+  display: flex;
+  background-color: #ddd;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.bar-segment {
+  height: 100%;
+}
+
+.bar-high {
+  background-color: green;
+}
+
+.bar-medium {
+  background-color: orange;
+}
+
+.bar-low {
+  background-color: red;
+}
+
+.bar-no-plan, .bar-no-iniciado {
+  background-color: #ddd;
+}

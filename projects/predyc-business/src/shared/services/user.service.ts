@@ -618,12 +618,19 @@ export class UserService {
   getUsers$(
     searchTerm = null,
     profileFilter = null,
-    statusFilter = null
+    statusFilter = null,
+    enterpriseRefIn?
   ): Observable<User[]> {
     return this.enterpriseService.enterpriseLoaded$.pipe(
       switchMap((isLoaded) => {
         if (!isLoaded) return [];
-        const enterpriseRef = this.enterpriseService.getEnterpriseRef();
+        let  enterpriseRef
+        if(enterpriseRefIn){
+          enterpriseRef = enterpriseRefIn
+        }
+        else{
+          enterpriseRef = this.enterpriseService.getEnterpriseRef();
+        }
         return this.afs
           .collection<User>(User.collection, (ref) => {
             let query: CollectionReference | Query = ref;

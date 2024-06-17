@@ -80,7 +80,7 @@ export class CreateUserComponent {
     this.isDepartmentInvalid = false;
     this.getCourses();
     this.departmentServiceSubscription = this.departmentService
-      .getDepartments$()
+      .getDepartments$(this.enterpriseRef)
       .subscribe({
         next: (departments) => {
           let departmentsBase = [];
@@ -111,10 +111,10 @@ export class CreateUserComponent {
   cursos = [];
 
   getCourses() {
-    this.courseService.getCourses$().subscribe((cursos) => {
+    this.courseService.getCourses$(this.enterpriseRef).subscribe((cursos) => {
       // console.log("cursos", cursos);
       this.cursos = cursos;
-      this.profileServiceSubscription = this.profileService.getProfiles$().subscribe((profiles) => {
+      this.profileServiceSubscription = this.profileService.getProfiles$(this.enterpriseRef).subscribe((profiles) => {
         if (profiles) {
           // console.log("profiles", profiles);
           let profilesBase = [];

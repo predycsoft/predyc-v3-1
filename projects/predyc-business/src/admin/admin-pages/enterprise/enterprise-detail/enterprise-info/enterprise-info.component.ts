@@ -81,6 +81,7 @@ export class EnterpriseInfoComponent {
 			examenFinal: [true],
 			allUsersExtraCourses: [false],
 			demo: [false],
+			tractian: [false],
 			congratulationsEndCourse: [false],
 			sendMailtoAdmin: [false],
 			sendMailtoUsers: [false],
@@ -90,6 +91,11 @@ export class EnterpriseInfoComponent {
 			accountManagerName: [null],
 			accountManagerPhone: [null],
 			reportMails: [null],
+			requireAccountManagement: [true],
+			salesMan: [null],
+			phoneContactPerson:[null],
+			contactPerson:[null],
+			mailContactPerson:[null],
 		});
 		// Edit mode
 		if (this.enterprise) {
@@ -125,10 +131,13 @@ export class EnterpriseInfoComponent {
 				examenInicial:this.enterprise.examenInicial,
 				examenFinal:this.enterprise.examenFinal,
 				demo:this.enterprise.demo,
+				requireAccountManagement:this.enterprise.requireAccountManagement,
+				salesMan:this.enterprise.salesMan,
+				tractian:this.enterprise.tractian,
 				showEnterpriseLogoInCertificates: this.enterprise?.showEnterpriseLogoInCertificates ?this.enterprise?.showEnterpriseLogoInCertificates : false,
 				accountManagerName: this.enterprise?.accountManagerName ? this.enterprise.accountManagerName : null,
 				accountManagerPhone: this.enterprise?.accountManagerPhone ? this.enterprise.accountManagerPhone : null,
-
+				phoneContactPerson:this.enterprise.phoneContactPerson,
 				reportMails: this.enterprise?.reportMails ? this.enterprise.reportMails : null,
 				allUsersExtraCourses:this.enterprise.allUsersExtraCourses?this.enterprise.allUsersExtraCourses:false,
 				congratulationsEndCourse : this.enterprise.congratulationsEndCourse?this.enterprise.congratulationsEndCourse:false,
@@ -136,6 +145,8 @@ export class EnterpriseInfoComponent {
 				sendMailtoUsers : this.enterprise.sendMailtoUsers?this.enterprise.sendMailtoUsers:false,
 				mondlyMeetings : this.enterprise.mondlyMeetings?this.enterprise.mondlyMeetings:false,
 				useWhatsapp : this.enterprise.useWhatsapp?this.enterprise.useWhatsapp:false,
+				contactPerson:this.enterprise.contactPerson,
+				mailContactPerson:this.enterprise.mailContactPerson,
 			});
 			// this.enterpriseForm.get('name')?.disable();
 			if (this.enterprise.photoUrl) {
@@ -229,6 +240,7 @@ export class EnterpriseInfoComponent {
 		enterprise.examenFinal = formValue.examenFinal;
 		enterprise.allUsersExtraCourses = formValue.allUsersExtraCourses;
 		enterprise.demo = formValue.demo;
+		enterprise.tractian = formValue.tractian,
 		enterprise.congratulationsEndCourse = formValue.congratulationsEndCourse;
 		enterprise.sendMailtoAdmin = formValue.sendMailtoAdmin;
 		enterprise.sendMailtoUsers = formValue.sendMailtoUsers;
@@ -238,7 +250,12 @@ export class EnterpriseInfoComponent {
 		enterprise.showEnterpriseLogoInCertificates = formValue.showEnterpriseLogoInCertificates;
 		enterprise.accountManagerName = formValue.accountManagerName;
 		enterprise.accountManagerPhone = formValue.accountManagerPhone;
+		enterprise.phoneContactPerson = formValue.phoneContactPerson;
 		enterprise.reportMails = formValue.reportMails;
+		enterprise.requireAccountManagement = formValue.requireAccountManagement;
+		enterprise.salesMan= formValue.salesMan;
+		enterprise.contactPerson = formValue.contactPerson;
+		enterprise.mailContactPerson = formValue.mailContactPerson;
 
 
 		console.log("enterprise Actualizado: ", enterprise);

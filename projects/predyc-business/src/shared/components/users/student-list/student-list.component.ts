@@ -54,6 +54,10 @@ export class StudentListComponent {
 
   @Output() studentsOnList = new EventEmitter<User[]>()
 
+  @Input() origen: string = 'enterprise'
+  @Input() enterpriseRef: any = null
+
+
 
   queryParamsSubscription: Subscription
   profilesSubscription: Subscription
@@ -83,25 +87,26 @@ export class StudentListComponent {
 
   ngOnInit() {
 
-    this.enterpriseService.enterpriseLoaded$.subscribe(isLoaded => {
+    this.enterpriseService.enterpriseLoaded$.subscribe(async isLoaded => {
       if (isLoaded) {
-        let enterpriseRef = this.enterpriseService.getEnterpriseRef();
-        console.log(enterpriseRef)
-        this.enterprise = this.enterpriseService.getEnterprise();
-        console.log('this.enterprise',this.enterprise)
-
+        let enterpriseRef
+        if (this.origen == 'admin'){
+          enterpriseRef = this.enterpriseRef
+          this.enterprise = await this.enterpriseService.getEnterpriseByIdPromise(enterpriseRef.id)
+        }else{
+          enterpriseRef = this.enterpriseService.getEnterpriseRef();
+          this.enterprise = this.enterpriseService.getEnterprise();
+        }
+        console.log('this.enterprise',this.enterprise,enterpriseRef)
         if(this.enterprise.examenInicial  === undefined || this.enterprise?.examenInicial){
           this.examenInicial = true
-  
         }
         else{
           this.examenInicial = false
         }
-
         this.first = true
         this.profileService.loadProfiles()
-        
-        this.profilesSubscription = combineLatest([this.profileService.getProfiles$(), this.departmentService.getDepartments$(), this.courseService.getCourses$()]).subscribe(([profiles, departments, courses]) => {
+        this.profilesSubscription = combineLatest([this.profileService.getProfiles$(enterpriseRef), this.departmentService.getDepartments$(enterpriseRef), this.courseService.getCourses$(enterpriseRef)]).subscribe(([profiles, departments, courses]) => {
             this.profiles = profiles
             this.departments = departments.sort((a, b) => a.name.localeCompare(b.name));        
             console.log('departments',departments)
@@ -478,7 +483,7 @@ export class StudentListComponent {
       this.userServiceSubscription.unsubscribe();
     }
   
-    this.userServiceSubscription = this.userService.getUsers$(null, null, null).pipe(
+    this.userServiceSubscription = this.userService.getUsers$(null, null, null, this.origen == 'admin' ? this.enterpriseRef : null).pipe(
       switchMap(users => {
         const userCourseObservables = users.map(user => {
           const userRef = this.userService.getUserRefById(user.uid);
@@ -649,6 +654,7 @@ export class StudentListComponent {
           status:user.status =='active'? 'active':'inactive',
           photoUrl: user.photoUrl,
           extraHours,
+          role:user.role,
           extraTargetHours,
           extraCoursesCount:coursesExtra.length,
           extraCoursesCompletedCount:coursesExtra.filter(x=>x.progress >= 100).length,
@@ -810,11 +816,17 @@ export class StudentListComponent {
 
     // console.log('user',user)
 
-    if (this.enableNavigateToUser && user.profile && user.targetHours>0) {
-      this.router.navigate([`management/students/${user.uid}`])
-    } else {
-      this.onStudentSelected.emit(user)
+    if(this.origen !='admin'){
+      if (this.enableNavigateToUser && user.profile && user.targetHours>0) {
+        this.router.navigate([`management/students/${user.uid}`])
+      } else {
+        this.onStudentSelected.emit(user)
+      }
     }
+    else{
+      this.router.navigate([`admin/students/${user.uid}`])
+    }
+
   }
 
   ngOnDestroy() {

@@ -33,7 +33,14 @@ export interface EnterpriseJson {
     useWhatsapp: boolean | false
     accountManagerName : string,
     accountManagerPhone : string
-    reportMails:string
+    reportMails:string,
+    tractian: boolean | false,
+
+    contactPerson:string,
+    mailContactPerson:string,
+    phoneContactPerson:string,
+    salesMan:string,
+    requireAccountManagement: boolean | true,
 
 }
 
@@ -76,6 +83,13 @@ export class Enterprise {
         public accountManagerName : string,
         public accountManagerPhone : string,
         public reportMails:string,
+        public tractian: boolean | false,
+
+        public contactPerson:string,
+        public mailContactPerson:string,
+        public phoneContactPerson:string,
+        public salesMan:string,
+        public requireAccountManagement: boolean | true,
     ) {}
 
     public static getEnterpriseTemplate(): Enterprise {
@@ -119,6 +133,13 @@ export class Enterprise {
             accountManagerName : null,
             accountManagerPhone : null,
             reportMails:null,
+            tractian:false,
+            contactPerson:null,
+            mailContactPerson:null,
+            phoneContactPerson:null,
+            salesMan:null,
+            requireAccountManagement:true,
+            
           });
     }
 
@@ -158,6 +179,12 @@ export class Enterprise {
             enterpriseJson.accountManagerName,
             enterpriseJson.accountManagerPhone,
             enterpriseJson.reportMails,
+            enterpriseJson.tractian,
+            enterpriseJson.contactPerson,
+            enterpriseJson.mailContactPerson,
+            enterpriseJson.phoneContactPerson,
+            enterpriseJson.salesMan,
+            enterpriseJson.requireAccountManagement
         )
     }
 
@@ -191,6 +218,13 @@ export class Enterprise {
             accountManagerName : this.accountManagerName,
             accountManagerPhone : this.accountManagerPhone,
             reportMails: this.reportMails,
+            tractian:this.tractian,
+            contactPerson:this.contactPerson,
+            mailContactPerson:this.mailContactPerson,
+            phoneContactPerson:this.phoneContactPerson,
+            salesMan:this.salesMan,
+            requireAccountManagement:this.requireAccountManagement,
+            
         }
     }
 }

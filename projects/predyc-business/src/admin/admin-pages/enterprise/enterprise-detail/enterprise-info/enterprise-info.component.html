@@ -1,6 +1,6 @@
 <div fxLayout="row" fxLayoutAlign="center center" class="fw mgt10">
     <form [formGroup]="enterpriseForm" (ngSubmit)="onSubmit()" fxFlex="55" class="w-70">
-      <div fxLayout="row" fxLayoutAlign="center center" class="fw">
+      <div fxLayout="row" fxLayoutAlign="" class="fw">
         <div fxLayout="row" fxLayoutAlign="center center" class="mgt10 mgr20">
           <div (click)="fileInput.click()" class="cursorPointer mgb05">
             <img onerror="this.src='assets/images/default/default-user-image.jpg'" [src]="imageUrl" alt="Imagen seleccionada" class="avatar10">
@@ -11,7 +11,7 @@
           </div>            
         </div>
       
-        <div fxLayout="column" fxLayoutAlign="center stretch" class="fw mgt03">
+        <div fxLayout="column" class="fw">
           <div class="form-group mgt02 fw">
             <label class="ft12">Nombre de la empresa</label>
             <input [class.is-invalid]="enterpriseForm.controls['name'].errors && showError"
@@ -38,6 +38,47 @@
               Debe indicar el nombre de la empresa
             </div>
           </div>
+
+
+          <div class="form-group mgt10 fw">
+            <label class="ft12">Vendedor</label>
+            <input [class.is-invalid]="enterpriseForm.controls['salesMan'].errors && showError"
+              formControlName="salesMan" type="text" class="form-control ft14 shadow-animation pdl05 pdr05 radius20 borderLight">
+            <div class="invalid-feedback" *ngIf="enterpriseForm.controls['salesMan'].errors && showError"> 
+              Debe indicar el nombre de la empresa
+            </div>
+          </div>
+
+        </div>
+
+        <div fxLayout="column" class="fw mgl10">
+          <div class="form-group fw">
+            <label class="ft12">Persona de contacto</label>
+            <input [class.is-invalid]="enterpriseForm.controls['contactPerson'].errors && showError"
+              formControlName="contactPerson" type="text" class="form-control ft14 shadow-animation pdl05 pdr05 radius20 borderLight">
+            <div class="invalid-feedback" *ngIf="enterpriseForm.controls['contactPerson'].errors && showError"> 
+              Debe indicar el nombre de la empresa
+            </div>
+          </div>
+
+          <div class="form-group mgt10 fw">
+            <label class="ft12">Correo persona de contacto</label>
+            <input [class.is-invalid]="enterpriseForm.controls['mailContactPerson'].errors && showError"
+              formControlName="mailContactPerson" type="text" class="form-control ft14 shadow-animation pdl05 pdr05 radius20 borderLight">
+            <div class="invalid-feedback" *ngIf="enterpriseForm.controls['mailContactPerson'].errors && showError"> 
+              Debe indicar el nombre de la empresa
+            </div>
+          </div>
+
+          <div class="form-group mgt10 fw">
+            <label class="ft12">teléfono persona de contacto</label>
+            <input [class.is-invalid]="enterpriseForm.controls['phoneContactPerson'].errors && showError"
+              formControlName="phoneContactPerson" type="number" class="form-control ft14 shadow-animation pdl05 pdr05 radius20 borderLight">
+            <div class="invalid-feedback" *ngIf="enterpriseForm.controls['phoneContactPerson'].errors && showError"> 
+              Debe indicar el nombre de la empresa
+            </div>
+          </div>
+
         </div>
       </div>
       
@@ -59,29 +100,45 @@
         </div>
       </div>
 
+      <div fxLayout="row">
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="fw backGray1 radius6 pd10 mgt08">
+          <span class="ft16 ft500">Proviene de Tractian</span>
+          <mat-slide-toggle class="" color="primary" formControlName="tractian"></mat-slide-toggle>
+        </div>
+      </div>
+
       <div fxLayout="row" class="mgt15 mgb15">
         <span class="ft20 ft500">Account Management</span>
       </div>
 
+
       <div fxLayout="row">
-        <div fxLayout="row" fxLayoutAlign="space-between center" class="fw backGray1 radius6 pd10">
-          <div fxLayout="column">
-            <span class="ft16 ft600 mgb08">Enviar correos de progreso a los administradores</span>
-            <label class="ft12">Destinatarios reporte</label>
-            <input [class.is-invalid]="enterpriseForm.controls['reportMails'].errors && showError" formControlName="reportMails" type="text" class="mgb08 form-control ft14 shadow-animation pdl05 pdr05 radius8 borderLight fw">
-            <span *ngIf="lastDayAdminMail" class="ft16 ft500 pft03 mgb08">Último envio: {{lastDayAdminMail | date:"dd/MM/yyyy"}}</span>
-            <span (click)="sendMailAdmin()" class="ft16 ft500 blueLink">Realizar envio manual ahora</span>
-          </div>
-          <mat-slide-toggle class="" color="primary" formControlName="sendMailtoAdmin"></mat-slide-toggle>
+        <div fxLayout="row" fxLayoutAlign="space-between center" class=" fw backGray1 radius6 pd10">
+          <span class="ft16 ft500">Requiere account management</span>
+          <mat-slide-toggle class="" color="primary" formControlName="requireAccountManagement"></mat-slide-toggle>
         </div>
       </div>
 
       <div fxLayout="row">
         <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt08 fw backGray1 radius6 pd10">
           <div fxLayout="column">
+            <span class="ft16 ft600 mgb08">Enviar correos de progreso a los administradores</span>
+            <label class="ft12">Destinatarios reporte</label>
+            <input [class.is-invalid]="enterpriseForm.controls['reportMails'].errors && showError" formControlName="reportMails" type="text" class="mgb08 form-control ft14 shadow-animation pdl05 pdr05 radius8 borderLight fw">
+            <span *ngIf="lastDayAdminMail" class="ft16 ft500 pft03 mgb08">Último envio: {{lastDayAdminMail | date:"dd/MM/yyyy HH:mm"}}</span>
+            <span (click)="sendMailAdmin()" class="ft16 ft500 blueLink">Realizar envio manual ahora</span>
+          </div>
+          <mat-slide-toggle class="" color="primary" formControlName="sendMailtoAdmin"></mat-slide-toggle>
+        </div>
+      </div>
+      
+
+      <div fxLayout="row">
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt08 fw backGray1 radius6 pd10">
+          <div fxLayout="column">
             <span class="ft16 ft600 mgb08">Enviar correos de progreso a los usuarios.</span>
             <!-- <span *ngIf="lastDayUsersMail" class="ft16 ft500">Último envio: {{lastDayUsersMail}}</span> -->
-            <span *ngIf="lastDayUsersMail" class="ft16 ft500 pft03 mgb08">Último envio: {{lastDayUsersMail | date:"dd/MM/yyyy"}}</span>
+            <span *ngIf="lastDayUsersMail" class="ft16 ft500 pft03 mgb08">Último envio: {{lastDayUsersMail | date:"dd/MM/yyyy HH:mm"}}</span>
             <span (click)="sendMailUsers()"class="ft16 ft500 blueLink">Realizar envio manual ahora</span>
           </div>
           <mat-slide-toggle class="" color="primary" formControlName="sendMailtoUsers"></mat-slide-toggle>

@@ -56,12 +56,18 @@
       "timeouts": {
         "updateDataEnterpriseUsage": "540s",
         "updateDataAllEnterprisesUsage": "540s",
-        "updateDataAllEnterprisesUsageSchedule": "540s"
+        "updateDataAllEnterprisesUsageSchedule": "540s",
+        "updateDataEnterpriseRhythm": "540s",
+        "updateDataAllEnterprisesRhythm": "540s",
+        "updateDataAllEnterprisesRhythmSchedule": "540s"
       },
       "memory": {
         "updateDataEnterpriseUsage": "2GB",
         "updateDataAllEnterprisesUsage": "2GB",
-        "updateDataAllEnterprisesUsageSchedule": "2GB"
+        "updateDataAllEnterprisesUsageSchedule": "2GB",
+        "updateDataEnterpriseRhythm": "2GB",
+        "updateDataAllEnterprisesRhythm": "2GB",
+        "updateDataAllEnterprisesRhythmSchedule": "2GB"
       }
     }
   ],
