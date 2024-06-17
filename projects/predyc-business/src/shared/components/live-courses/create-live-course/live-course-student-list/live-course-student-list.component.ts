@@ -140,54 +140,21 @@ export class LiveCourseStudentListComponent {
     data.companyName = inputElement.value;
   }
 
-  saveCompanyName(event: Event, data: DataToShow): void {
-    event.preventDefault(); // Prevent default form submission behavior
-
-    Swal.fire({
-      title: "Cambiaremos el nombre de la empresa",
-      text: "¿Deseas continuar?",
-      icon: "info",
-      showCancelButton: true,
-      confirmButtonText: "Guardar",
-      confirmButtonColor: "var(--blue-5)",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        await this.liveCourseService.updateCompanyNameLiveCourseByStudent(data.liveCourseByStudentId, data.companyName);
-      } else {
-      }
-    });
+  async saveCompanyName(event: Event, data: DataToShow): Promise<void> {
+    try {
+      await this.liveCourseService.updateCompanyNameLiveCourseByStudent(data.liveCourseByStudentId, data.companyName);
+      console.log("Company name saved")
+    } catch (error) {
+      console.error("ERROR: ", error)
+    }
   }
 
   async onAttendanceChange(event: Event, data: DataToShow) {
-    // Get the current checkbox state
     const target = event.target as HTMLInputElement;
     const newValue = target.checked;
+    await this.liveCourseService.updateIsAttendingLiveCourseByStudent(data.liveCourseByStudentId, newValue);
+    console.log("Attendance updated:", data);
 
-    // Store the original value to revert if necessary
-    const originalValue = data.isAttending;
-
-    // Temporarily update the isAttending value
-    data.isAttending = newValue;
-
-    // Show confirmation dialog
-    Swal.fire({
-      title: "Actualizaremos tu asistencia",
-      text: "¿Deseas continuar?",
-      icon: "info",
-      showCancelButton: true,
-      confirmButtonText: "Guardar",
-      confirmButtonColor: "var(--blue-5)",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        // Proceed with updating the database
-        await this.liveCourseService.updateIsAttendingLiveCourseByStudent(data.liveCourseByStudentId, newValue);
-        console.log("Attendance updated:", data);
-      } else {
-        // Revert the change if not confirmed
-        data.isAttending = originalValue;
-        target.checked = originalValue;
-      }
-    });
   }
 
   changeStatus(liveCourseByStudentId: string, isActive: boolean) {
