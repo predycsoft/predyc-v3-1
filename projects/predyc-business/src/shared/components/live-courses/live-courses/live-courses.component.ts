@@ -27,6 +27,7 @@ export interface CalendarLiveCourseData {
   courseIdentifierText: string;
   courseMeetingLink: string;
   sessionDuration: number;
+  sessionOrderNumber: number;
   sessionTitle: string;
   sessionDate: number;
   sessionVimeoId1: number;
@@ -154,6 +155,7 @@ export class LiveCoursesComponent {
               courseMeetingLink: liveCourse.meetingLink,
               sessionTitle: session.title,
               sessionDuration: session.duration,
+              sessionOrderNumber: session.orderNumber,
               sessionDate: firestoreTimestampToNumberTimestamp(session.date),
               sessionVimeoId1: session.vimeoId1,
               sessionVimeoId2: session.vimeoId2,

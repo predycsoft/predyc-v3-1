@@ -18,8 +18,8 @@ export class CalendarLiveCoursesSelectorComponent implements OnInit {
   groupedCourses: { [key: string]: CalendarLiveCourseData[] };
 
   ngOnInit() {
-    this.groupCoursesByMonth();
     // console.log("this.calendarLiveCourses", this.calendarLiveCourses);
+    this.groupCoursesByMonth();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -30,7 +30,7 @@ export class CalendarLiveCoursesSelectorComponent implements OnInit {
 
   groupCoursesByMonth() {
     this.groupedCourses = this.calendarLiveCourses.reduce((groups, course) => {
-      if (course.sessionDate) {
+      if (course.sessionOrderNumber === 1) {
         const date = new Date(course.sessionDate);
         const monthYear = date.toLocaleString("default", { month: "long", year: "numeric" });
         if (!groups[monthYear]) {

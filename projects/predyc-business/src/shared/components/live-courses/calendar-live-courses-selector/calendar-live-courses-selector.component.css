@@ -8,15 +8,6 @@
     margin-bottom: 20px;
   }
   
-  .month-header {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    /* background-color: #f0f0f0; */
-    padding: 10px;
-    border-radius: 5px;
-  }
-  
   .course-item {
     background-color: #fff;
     border: 1px solid #e0e0e0;
