@@ -13,6 +13,8 @@ import { DepartmentService } from 'projects/predyc-business/src/shared/services/
 import { ProfileService } from 'projects/predyc-business/src/shared/services/profile.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EnterpriseService } from '../../../services/enterprise.service';
+import { InstructorsService } from '../../../services/instructors.service';
+import { LiveCourseService } from '../../../services/live-course.service';
 
 interface User {
   displayName: string,
@@ -37,6 +39,9 @@ export class InstructorListComponent {
 
   displayedColumns: string[] = [
     'displayName',
+    'courses',
+    'liveCourses'
+
   ];
 
   dataSource = new MatTableDataSource<User>(); // Replace 'any' with your data type;
@@ -65,15 +70,105 @@ export class InstructorListComponent {
   examenInicial = true
 
   constructor(
+    private activatedRoute: ActivatedRoute,
     public icon: IconService,
     private router: Router,
+    private instructorsService: InstructorsService,
     private _snackBar: MatSnackBar,
+    private enterpriseService: EnterpriseService,
+    private courseService: CourseService,
+    private liveCourseService:LiveCourseService
   ) {}
+
+  instructores;
+
 
   ngOnInit() {
 
+    this.first = true
+
+    this.enterpriseService.enterpriseLoaded$.subscribe(async isLoaded => {
+      if (isLoaded) {
 
 
+        this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
+          let sortOrder = []
+          const page = Number(params['page']) || 1;
+          const searchTerm = params['search'] || '';
+    
+          if(this.first){
+            this.performSearch(searchTerm,page)
+          }
+          else{
+            this.performSearchLocal(searchTerm,page)
+    
+          }
+        })
+
+
+      }
+      
+    })
+
+
+
+
+
+  }
+
+  instructorsSubscription: Subscription
+
+
+  performSearch(searchTerm: string, page: number,sortOrder?) {
+
+    this.paginator.pageIndex = page - 1;
+    this.dataSource.data = [];
+    this.totalLength = 0;
+
+
+    this.instructorsSubscription = combineLatest([this.instructorsService.getInstructorsObservable(),this.courseService.getCourses$(),this.liveCourseService.getAllLiveCourses$()]).subscribe(([instructores,cursos,cursosEnVivo]) => {
+      
+      cursos.forEach(curso => {
+        curso['instructorId'] = curso.instructorRef.id
+        delete curso.instructorRef
+        delete curso.enterpriseRef
+        delete curso.skillsRef
+      });
+      cursosEnVivo.forEach(curso => {
+        curso['instructorId'] = curso.instructorRef.id
+        delete curso.instructorRef
+        delete curso.skillsRef
+      });
+      instructores = instructores.map(instructor => {
+        return{
+          nombre: instructor.nombre,
+          foto:instructor.foto,
+          courses:cursos.filter(x=>x['instructorId']== instructor.id),
+          liveCourses:cursosEnVivo.filter(x=>x['instructorId'] == instructor.id)
+        }
+      });
+      this.instructores = structuredClone(instructores)
+
+      console.log('instructores',instructores)
+
+      this.paginator.pageIndex = page - 1;
+      this.dataSource.data = instructores;
+      this.totalLength = instructores.length;
+      this.first = false
+
+          
+    })
+
+    this.instructorsService.getInstructorsObservable().pipe().subscribe((instructores) => {
+
+    });
+
+
+  }
+
+  performSearchLocal(searchTerm: string, page: number,sortOrder?) {
+
+    
   }
 
   ngAfterViewInit() {
@@ -114,6 +209,7 @@ export class InstructorListComponent {
 
   ngOnDestroy() {
     if (this.queryParamsSubscription) this.queryParamsSubscription.unsubscribe()
+    if (this.instructorsSubscription) this.instructorsSubscription.unsubscribe()
   }
 
 
