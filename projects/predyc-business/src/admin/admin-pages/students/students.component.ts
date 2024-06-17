@@ -19,18 +19,6 @@ export class StudentsComponent {
     this.openCreateUserModal(null);
   }
 
-  async test() {
-    await firstValueFrom(
-      this.fireFunctions.httpsCallable("sendMail")({
-        sender: "capacitacion@predyc.com",
-        // recipients: ,
-        subject: "Prueba de correo",
-        text: "Texto de prueba",
-      })
-    );
-    console.log("Prueba de correo exitoso!");
-  }
-
   estadisticas = {
     usuariosActivos: 0,
     usuariosInactivos: 0,
