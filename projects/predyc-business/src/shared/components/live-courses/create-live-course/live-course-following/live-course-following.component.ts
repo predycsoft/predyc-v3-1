@@ -27,6 +27,7 @@ export class LiveCourseFollowingComponent {
   emailLastDate: string
   emailSent: boolean
   emailContent = ""
+  hasBeenAnError = false
 
   liveCourseServiceSubscription: Subscription
 
@@ -47,7 +48,7 @@ export class LiveCourseFollowingComponent {
   async onSubmit() {
     // console.log("this.studentEmails", this.studentEmails)
 
-    let sender = "desarrollo@predyc.com"
+    let sender = "capacitacion@predyc.com"
     let recipients = this.studentEmails
     // let recipients = ["diegonegrette42@gmail.com"]
     let subject = `Aviso del curso en vivo ${this.liveCourse.title}`
@@ -67,9 +68,10 @@ export class LiveCourseFollowingComponent {
       this.emailContent = ""
       console.log("Email enviado")
     } catch (error) {
-      console.log("error", error)
+      console.error("error", error)
       this.emailSent = true
       this.emailContent = ""
+      this.hasBeenAnError = true
       this.alertService.errorAlert("")
     }
   }
