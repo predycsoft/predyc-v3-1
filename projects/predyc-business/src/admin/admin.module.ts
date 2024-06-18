@@ -46,6 +46,7 @@ import { StudentDiplomadosListComponent } from "./admin-pages/students/student-d
 import { EnterpriseLicensesCardsComponent } from "./admin-pages/enterprise/enterprise-detail/enterprise-students/enterprise-licenses-cards/enterprise-licenses-cards.component";
 import { ArticlesComponent } from './admin-pages/articles/articles.component';
 import { ArticlesListComponent } from './admin-pages/articles/articles-list/articles-list.component';
+import { ArticleComponent } from './admin-pages/articles/article/article.component';
 
 
 @NgModule({
@@ -93,7 +94,8 @@ import { ArticlesListComponent } from './admin-pages/articles/articles-list/arti
     DiplomadosListComponent,
     CertificationsFormComponent,
     ArticlesComponent,
-    ArticlesListComponent
+    ArticlesListComponent,
+    ArticleComponent
   ],
   imports: [SharedModule, CommonModule, AdminRoutingModule],
 })
