@@ -178,8 +178,8 @@
                                                 <div *ngIf="mode === 'edit'">
                                                   <span>{{ session["dateFormatted"] ? "Inicia el " + (session["dateFormatted"] | customDatetime) : "Sin fecha" }}</span>
                                                   <span class="mgl10">Duración: {{ session.duration | formatDuration }}</span>
-                                                  <img (click)="borrarSession(session)" [src]="icon.trash" class="h16px trash mgl10" alt="" />
                                                 </div>
+                                                <img (click)="borrarSession(session)" [src]="icon.trash" class="h16px trash mgl10" alt="" />
                                               </div>
                                             </ng-template>
                                             <ng-template #ClaseSinTitulo>

@@ -1563,13 +1563,13 @@ export class CreateLiveCourseComponent {
     // Remove sessions ... check later
     if (this.deletedClasses.length > 0) {
       for (let clase of this.deletedClasses) {
-        console.log("deletedClasses", clase);
+        // console.log("deletedClasses", clase);
         // await this.courseClassService.deleteClassAndReference(clase.claseInId,this.liveCourseData.id,clase.moduloInId,clase?.activityId);
-        if (clase.vimeoId1) {
-          // this.uploadControl.deleteVideo(clase.vimeoId1).subscribe(respuesta => {
-          //   console.log('respuesta.respuesta')
-          // })
-        }
+        // if (clase.vimeoId1) {
+        //   this.uploadControl.deleteVideo(clase.vimeoId1).subscribe(respuesta => {
+        //     console.log('respuesta.respuesta')
+        //   })
+        // }
       }
     }
 
@@ -2295,7 +2295,8 @@ export class CreateLiveCourseComponent {
         };
 
         this.deletedClasses.push(classDelete);
-        await this.liveCourseService.deleteSession(session.id);
+        const isTemplate = this.mode === "edit-base"
+        await this.liveCourseService.deleteSession(session.id, isTemplate);
         Swal.fire({
           title: "Borrado!",
           text: `La sesión ${session.title ? session.title : "Sin título"} fue borrada`,
