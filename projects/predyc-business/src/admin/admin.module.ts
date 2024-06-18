@@ -44,6 +44,8 @@ import { DiplomadosListComponent } from "./admin-pages/diplomados/diplomados-lis
 import { DiplomadoFormComponent } from "./admin-pages/diplomados/diplomado-form/diplomado-form.component";
 import { StudentDiplomadosListComponent } from "./admin-pages/students/student-detail/student-diplomados-list/student-diplomados-list.component";
 import { EnterpriseLicensesCardsComponent } from "./admin-pages/enterprise/enterprise-detail/enterprise-students/enterprise-licenses-cards/enterprise-licenses-cards.component";
+import { ArticlesComponent } from './admin-pages/articles/articles.component';
+import { ArticlesListComponent } from './admin-pages/articles/articles-list/articles-list.component';
 
 
 @NgModule({
@@ -89,7 +91,9 @@ import { EnterpriseLicensesCardsComponent } from "./admin-pages/enterprise/enter
     CertificationsListComponent,
     DiplomadoFormComponent,
     DiplomadosListComponent,
-    CertificationsFormComponent
+    CertificationsFormComponent,
+    ArticlesComponent,
+    ArticlesListComponent
   ],
   imports: [SharedModule, CommonModule, AdminRoutingModule],
 })

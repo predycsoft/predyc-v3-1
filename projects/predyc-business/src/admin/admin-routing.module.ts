@@ -20,6 +20,7 @@ import { DiplomadosComponent } from "./admin-pages/diplomados/diplomados.compone
 import { DiplomadoFormComponent } from "./admin-pages/diplomados/diplomado-form/diplomado-form.component";
 import { CreateLiveCourseComponent } from "../shared/components/live-courses/create-live-course/create-live-course.component";
 import { LiveCoursesComponent } from "../shared/components/live-courses/live-courses/live-courses.component";
+import { ArticlesComponent } from "./admin-pages/articles/articles.component";
 
 export const MAIN_TITLE = "Predyc Admin - ";
 
@@ -53,6 +54,8 @@ const routes: Routes = [
   { path: "freebies", title: MAIN_TITLE + "Freebies", component: FreebiesComponent },
 
   { path: "diplomados", title: MAIN_TITLE + "Diplomados", component: DiplomadosComponent },
+
+  { path: "articles", title: MAIN_TITLE + "Articulos", component: ArticlesComponent },
 
   { path: "**", redirectTo: "", pathMatch: "full" }, // Wildcard Route
 ];

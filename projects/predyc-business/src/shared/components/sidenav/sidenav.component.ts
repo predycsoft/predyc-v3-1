@@ -87,9 +87,9 @@ export class SideNavComponent {
     // 	icon: "../../assets/iconsUI/Vector.svg",
     // },
     {
-    	name: "Instructores",
-    	link: "/admin/instructors",
-    	icon: "../../assets/iconsUI/suitcase.svg",
+      name: "Instructores",
+      link: "/admin/instructors",
+      icon: "../../assets/iconsUI/suitcase.svg",
     },
     {
       name: "Ventas",
@@ -125,6 +125,11 @@ export class SideNavComponent {
       name: "Certificaciones",
       link: "/admin/certifications",
       icon: "../../assets/iconsUI/certificate.svg",
+    },
+    {
+      name: "Artículos",
+      link: "/admin/articles",
+      icon: "../../assets/iconsUI/bookmark.svg",
     },
   ];
 
