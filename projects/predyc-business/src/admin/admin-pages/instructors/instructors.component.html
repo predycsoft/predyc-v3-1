@@ -1,29 +1,67 @@
 <div class="mgt20 mgl20 mgr20">
 	<p class="ft600 ft16 gray-10">Instructores</p>
-    <mat-tab-group mat-stretch-tabs="false" class="swal-overlay mgt10">
+    <mat-tab-group (selectedTabChange)="onTabChange($event)" mat-stretch-tabs="false" class="swal-overlay mgt10">
         <mat-tab label="Gestionar instructores">
             <div fxLayout="row" fxLayoutAlign="space-between center" class="pdt10" >
                 <app-search-input-box  fxLayoutAlign=" center" class="shadow-animation radius20 w-50" style="height: 38px;  "></app-search-input-box>
                 <button (click)="createInstructor()" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButtonAnim button-animation "  style="border-radius: 24px !important; height: 38px;" >
                     <img [src]="icon.addNew" class="h16px  makeWhite mgr08" alt="">
-                    Nuevo instrcutor
+                    Nuevo instructor
                 </button>
             </div>
-            <app-instructor-list (instructosOnList)="instrcutors=$event" origen="admin"></app-instructor-list>
+            <app-instructor-list (instructosOnList)="instructors=$event" origen="admin"></app-instructor-list>
         </mat-tab>
         <mat-tab label="Regalias">
             <div fxLayout="row" fxLayoutAlign="space-between center" class="pdt10" >
                 <!-- <app-search-input-box  fxLayoutAlign=" center" class="shadow-animation radius20 w-50" style="height: 38px;  "></app-search-input-box> -->
                 <div fxLayout="row" class="w-30" fxLayoutAlign="center center" fxLayoutGap="1rem" >
                     <label for="">Período: </label>
-                    <select [(ngModel)]="currentPeriod" class="form-control select radius20 shadow-animation borderLight" style="border-radius: 20px!important;">
+                    <select (change)="periodChange($event.target)" [(ngModel)]="currentPeriod" class="form-control select radius20 shadow-animation borderLight" style="border-radius: 20px!important;">
                         <option [value]="null"> &nbsp; Seleccione un período</option>
+                        <option *ngFor="let item of royalties" [value]="item.id"> &nbsp; {{item.name}}</option>
+                        <option value='new'> &nbsp; Nuevo período</option>
                     </select>
                 </div>
-                <button (click)="crearNuevoPeriodo(modalPeriodo)" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButtonAnim button-animation "  style="border-radius: 24px !important; height: 38px;" >
+                <!-- <button (click)="crearNuevoPeriodo(modalPeriodo)" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButtonAnim button-animation "  style="border-radius: 24px !important; height: 38px;" >
                     <img [src]="icon.addNew" class="h16px  makeWhite mgr08" alt="">
                     Nuevo período
-                </button>
+                </button> -->
+            </div>
+            <div *ngIf="datosPeriodo"  fxLayout="column" class="fw border-tl mgt15">
+                <div *ngIf="datosPeriodo" fxLayout="row" class="mgt10 fw"  fxLayoutAlign="space-between center">
+                    <div>
+                        <span>Período:</span>
+                        <span class="pdl03">{{datosPeriodo.name}}</span>
+
+                        <span class="pdl15">Horas totales:</span>
+                        <span class="pdl03">{{(datosPeriodo.tiempoPeriodoMinutes)/60 | number:"1.2-2"}} Hrs.</span>
+
+
+                        <span class="pdl15">Fechas:</span>
+                        <span class="pdl03">{{datosPeriodo.startDate}} - {{datosPeriodo.endDate}}</span>
+
+
+                        <span class="pdl15">Monto Total:</span>
+                        <span class="pdl03">{{datosPeriodo.amount | number:"1.2-2" }} USD</span>
+
+                        <span class="pdl15">Monto Predyc:</span>
+                        <span class="pdl03">{{datosPeriodo.totalPredyc | number:"1.2-2" }} USD</span>
+
+                        <span class="pdl15">Monto Instructores:</span>
+                        <span class="pdl03">{{datosPeriodo.totalInstructores | number:"1.2-2" }}USD</span>
+
+                        <span class="pdl15">Borrador:</span>
+                        <mat-slide-toggle class="pdl03" color="primary" [(ngModel)]="datosPeriodo.borrador" ></mat-slide-toggle>
+
+                    </div>
+                    <button  (click)="savePeriod()"  class="blueButtonAnim button-animation h28px mgr10" fxLayout="row" fxLayoutAlign="center center">
+                        <img [src]="icon.save" class="h16px  makeWhite mgr08" alt="">
+                        Guardar período
+                    </button>
+                </div>
+                <div fxLayout="row" class="pdt10 fw">
+                    <app-instructor-royalties class="fw pdt10" [royaltiesData]="datosPeriodo" />
+                </div>
             </div>
         </mat-tab>
     </mat-tab-group>

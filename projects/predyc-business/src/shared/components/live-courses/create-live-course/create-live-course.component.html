@@ -222,15 +222,15 @@
                                                 <span *ngIf="!session.title" class="gray-6 cursorPointer mgr10">Agregar video</span>
                                                 <input (change)="session.type = 'video'; onFileSelected($event, session, false, false, null, true)" type="file" accept="video/mp4" #FileInputTitle style="display: none" />
                                               </div>
-                                              <div *ngIf="session['editarTitulo']" fxLayout="row" fxLayoutAlign=" center" fxLayoutGap=".25rem" class="">
-                                                <label class="ft12 ft500" for="">Repetición: </label>
-                                                <select class="duration-select" [(ngModel)]="session['weeksToKeep']">
-                                                  <option [ngValue]="2">2 Sem</option>
-                                                  <option [ngValue]="3">3 Sem</option>
-                                                  <option [ngValue]="4">4 Sem</option>
-                                                </select>
-                                              </div>
                                             </ng-container>
+                                            <div *ngIf="session['editarTitulo']" fxLayout="row" fxLayoutAlign=" center" fxLayoutGap=".25rem" class="">
+                                              <label class="ft12 ft500" for="">Repetición: </label>
+                                              <select class="duration-select" [(ngModel)]="session['weeksToKeep']">
+                                                <option [ngValue]="2">2 Sem</option>
+                                                <option [ngValue]="3">3 Sem</option>
+                                                <option [ngValue]="4">4 Sem</option>
+                                              </select>
+                                            </div>
                                             <span *ngIf="!session['editarTitulo']">{{ "Disponible durante " + session["weeksToKeep"] + " sem." }}</span>
                                           </div>
                                           <!-- Lista de recursos de sesiones base -->
