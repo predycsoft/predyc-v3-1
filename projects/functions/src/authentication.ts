@@ -26,7 +26,8 @@ export const createUserWithEmailAndPassword = functions.https.onCall(async (data
     const recipients = [data.email];
     const subject = "Bienvenido a Predyc, conoce tu usuario y contraseña temporal";
     const text = `Hola ${capitalizeFirstLetter(name)},\n\n¡Te damos la bienvenida a Predyc, tu plataforma de capacitación industrial! Ha sido creado tu usuario en nuestra plataforma , aquí está tu acceso inicial:\n\nUsuario: ${data.email}\nContraseña: ${password}\n\nCambia tu contraseña aquí: ${link}\n\nIngresa a Predyc aquí: https://predyc-user.web.app/auth/login\n\nPara cualquier consulta, estamos a tu disposición.\n\nSaludos,\nEl Equipo de Predyc`;
-    const cc = ["desarrollo@predyc.com", "liliana.giraldo@predyc.com"];
+    // const cc = ["desarrollo@predyc.com", "liliana.giraldo@predyc.com"];
+    const cc = ["desarrollo@predyc.com", "liliana.giraldo@predyc.com", "capacitacion@predyc.com"];
     const mailObj = { sender, recipients, subject, text, cc };
     await _sendMail(mailObj);
 
