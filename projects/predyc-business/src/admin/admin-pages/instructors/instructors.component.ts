@@ -44,7 +44,7 @@ export class InstructorsComponent {
 
   courses
   classes
-  instrcutors 
+  instructors 
 
   ngOnInit(): void {
     this.royalties = null
@@ -172,7 +172,7 @@ export class InstructorsComponent {
         totalTime+= classe.duracion
       });
 
-      this.instrcutors.forEach(instructor => {
+      this.instructors.forEach(instructor => {
 
         let classesInPeriod = completedClasses.filter(x=>x.clase.instructorRef.id == instructor.id)
         let datosClases = classesInPeriod.map(clase => {
@@ -235,7 +235,7 @@ export class InstructorsComponent {
 
       });
 
-      let instuctorWithData = this.instrcutors.filter(x=>x.factorVisualizacion>0)
+      let instuctorWithData = this.instructors.filter(x=>x.factorVisualizacion>0)
       let instructoresFinal =  instuctorWithData.map(inst => {
         return {
           id:inst.id,
