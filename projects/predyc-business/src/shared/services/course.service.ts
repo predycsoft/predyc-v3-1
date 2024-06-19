@@ -1537,5 +1537,15 @@ export class CourseService {
   }
 
 
+  async saveRoyalties(data: any) {
+    await this.afs.collection('royalties').doc(data.id).set(
+      {
+        ...data
+      },
+      { merge: true }
+    );
+  }
+
+
 
 }

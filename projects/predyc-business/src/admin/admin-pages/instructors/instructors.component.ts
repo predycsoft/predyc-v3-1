@@ -1,11 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, TemplateRef, ViewChild } from '@angular/core';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CreateInstrcutorComponent } from 'projects/predyc-business/src/shared/components/instructors/create-instructor/create-instructor.component';
+import { AlertsService } from 'projects/predyc-business/src/shared/services/alerts.service';
 import { CourseService } from 'projects/predyc-business/src/shared/services/course.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import { InstructorsService } from 'projects/predyc-business/src/shared/services/instructors.service';
-import { Subscription, filter, take } from 'rxjs';
+import { RoyaltiesService } from 'projects/predyc-business/src/shared/services/royalties.service';
+import { Subscription, combineLatest, filter, take } from 'rxjs';
 import Swal from "sweetalert2";
 
 @Component({
@@ -21,7 +25,12 @@ export class InstructorsComponent {
     private modalService: NgbModal,
     private instructorsService: InstructorsService,
     private fb: FormBuilder,
-    private courseService:CourseService
+    private afs: AngularFirestore,
+    private alertService: AlertsService,
+    private courseService:CourseService,
+    private royaltiesService:RoyaltiesService,
+
+
 
   ) 
   {
@@ -38,18 +47,16 @@ export class InstructorsComponent {
   instrcutors 
 
   ngOnInit(): void {
+    this.royalties = null
 
     this.courseServiceSubscription = this.courseService.getCoursesObservable().pipe(filter((course) => course.length > 0),take(1)).subscribe((courses) => {
       let classes = []
       courses.forEach(course => {
         let classesCourse = []
         course['modules'].forEach(modulo => {
-
           modulo.clases.forEach(clase => {
             clase.idCurso = course.id
           });
-
-
           classes = classes.concat(modulo.clases);
           classesCourse = classes.concat(modulo.clases);
         });
@@ -61,6 +68,59 @@ export class InstructorsComponent {
     });
 
     this.currentPeriod = null
+
+
+    this.royaltiesService.getRoyalties$().subscribe((tableRoyalties)=>{
+
+      console.log('tableRoyalties',tableRoyalties)
+    
+      this.royalties = tableRoyalties;
+
+      // Ordenar por dateSaved de más reciente a más antiguo
+      this.royalties = tableRoyalties.sort((a, b) => {
+        return b.dateSaved.seconds - a.dateSaved.seconds;
+      });
+      if(this.royalties?.length>0){
+        this.currentPeriod = this.royalties[0].id
+        this.datosPeriodo = this.royalties[0]
+      }
+      else{
+        //this.crearNuevoPeriodo(this.modalPeriodo)
+      }
+    })
+  }
+
+  onTabChange(event: MatTabChangeEvent) {
+    if (event.tab.textLabel === 'Gestionar instructores') {
+
+    }
+    else if(event.tab.textLabel === 'Regalias'){
+
+      console.log('this.royalties',this.royalties)
+      if(!this.royalties || this.royalties?.length==0){
+        this.crearNuevoPeriodo(this.modalPeriodo)
+      }
+
+    }
+  }
+
+  royalties = null
+
+  @ViewChild('modalPeriodo') modalPeriodo: TemplateRef<any>;
+
+
+  periodChange(event){
+    const idRoyalties = event.value
+    let datosRoyalties = this.royalties.find(x=>x.id == idRoyalties)
+
+    if(datosRoyalties){
+      this.datosPeriodo = datosRoyalties
+    }
+    else{
+      this.crearNuevoPeriodo(this.modalPeriodo)
+    }
+
+
   }
 
   createInstructor(){
@@ -90,7 +150,16 @@ export class InstructorsComponent {
       let startDate = new Date(valores.startDate)
       let endDate = new Date(valores.endDate)
 
-      const completedClasses = await this.courseService.getCompletedClassesByDateRange(startDate,endDate);
+      const completedClassesPrev = await this.courseService.getCompletedClassesByDateRange(startDate,endDate);
+
+      console.log('completedClasses',completedClassesPrev)
+      //removeDuplicates
+
+      const completedClasses = this.removeDuplicates(completedClassesPrev)
+
+      console.log('completedClassesSinDuplicados',completedClasses)
+
+
       let totalTime = 0;
       completedClasses.forEach(completedClass => {
         let classe = this.classes.find(x=>x.id == completedClass.classRef.id)
@@ -140,19 +209,25 @@ export class InstructorsComponent {
           let datosCurso = this.courses.find(x=>x.id == idCurso)
           let clases = this.classes.filter(x=>x.idCurso == idCurso)
           let tiempoCurso = 0
+          let clasesVistasArray = []
           clases.forEach(clase => {
             let clasesVistas = classesInPeriod.filter(x=>x.classRef.id == clase.id )
+            clasesVistasArray = clasesVistasArray.concat(clasesVistas)
             tiempoCurso+= (clase.duracion*clasesVistas.length)
           });
           let FactorVisualizacion = tiempoCurso*100/totalTime; 
           const montoTotal = (FactorVisualizacion/100)*valores.amount
+
+          //let duplicados = this.findDuplicates(clasesVistasArray)
           let curso = {
             name:datosCurso.titulo,
             tiempoVistoMinutes:tiempoCurso,
-            factorVisualizacion:FactorVisualizacion.toFixed(2),
-            montoTotal:montoTotal.toFixed(2),
-            montoInstructor:(montoTotal*(instructor.porcentaje)/100).toFixed(2),
-            montoPredyc:(montoTotal*(1-(instructor.porcentaje/100))).toFixed(2)
+            factorVisualizacion:FactorVisualizacion,
+            //clasesVistas:clasesVistasArray,
+            //clasesVistasDuplicate:duplicados,
+            montoTotal:montoTotal,
+            montoInstructor:(montoTotal*(instructor.porcentaje)/100),
+            montoPredyc:(montoTotal*(1-(instructor.porcentaje/100)))
           }
           cursosWithTime.push(curso)
         });
@@ -166,34 +241,79 @@ export class InstructorsComponent {
           id:inst.id,
           nombre:inst.nombre,
           cursos:inst.cursosWithTime,
-          factorVisualizacion:inst.factorVisualizacion.toFixed(2),
+          factorVisualizacion:inst.factorVisualizacion,
           tiempoTotalMinutes:inst.tiempoTotal,
           porcentaje:inst.porcentaje,
-          montoTotal:(inst.montoTotal).toFixed(2),
-          montoInstructor:(inst.montoInstructor).toFixed(2),
-          montoPredyc:(inst.montoPredyc).toFixed(2),
+          montoTotal:(inst.montoTotal),
+          montoInstructor:(inst.montoInstructor),
+          montoPredyc:(inst.montoPredyc),
         }
       });
       let datos = {
+        borrador:true,
         ...valores,
-        totalPredyc:totalPredyc.toFixed(2),
-        totalInstructores:totalInstructores.toFixed(2),
+        totalPredyc:totalPredyc,
+        totalInstructores:totalInstructores,
         tiempoPeriodoMinutes:totalTime,
         instructores:instructoresFinal
       }
       console.log('datos',datos)
-
+      this.datosPeriodo = datos
       Swal.close();
+      this.modalPeriodoCreate.close()
 
+      console.log('valores',valores)
     }
     else{
       this.displayErrors = true
-
     }
   }
 
   datosPeriodo = null;
+
+
+  removeDuplicates(completedClasses: any[]): any[] {
+    let seen = new Set<string>();
+    let uniqueClasses: any[] = [];
   
+    completedClasses.forEach(claseVista => {
+      let pairKey = `${claseVista.classRef.id}-${claseVista.userRef.id}`;
+  
+      if (!seen.has(pairKey)) {
+        seen.add(pairKey);
+        uniqueClasses.push(claseVista);
+      }
+    });
+  
+    return uniqueClasses;
+  }
+
+// Función para encontrar duplicados
+findDuplicates(clasesVistasArray: any[]): any[] {
+  let pairCount = new Map<string, any>();
+  let duplicates: any[] = [];
+
+  clasesVistasArray.forEach(claseVista => {
+    let pairKey = `${claseVista.classRef.id}-${claseVista.userRef.id}`;
+
+    if (pairCount.has(pairKey)) {
+      pairCount.get(pairKey)!.count += 1;
+      pairCount.get(pairKey)!.items.push(claseVista);
+    } else {
+      pairCount.set(pairKey, { count: 1, items: [claseVista] });
+    }
+  });
+
+  pairCount.forEach((value, key) => {
+    if (value.count > 1) {
+      duplicates.push(value);
+    }
+  });
+
+  return duplicates;
+}
+
+
   crearNuevoPeriodo(modal){
 
     this.displayErrors = false
@@ -206,19 +326,15 @@ export class InstructorsComponent {
       amount: [null, [Validators.required]],
     });
 
-    const modalRef = this.modalService.open(modal, {
+    this.modalPeriodoCreate= this.modalService.open(modal, {
       animation: true,
       centered: true,
       backdrop: 'static',
     })
 
-    modalRef.result.then(async result => {
-      console.log(result)
-    }).catch(error => {
-      console.log(error)
-    })
-
   }
+
+  modalPeriodoCreate
   
 
   openCreateInstructorrModal(instructor: any | null) {
@@ -238,6 +354,22 @@ export class InstructorsComponent {
     }).catch(error => {
       console.log(error)
     })
+  }
+
+  async savePeriod(){
+
+    try{
+      if(!this.datosPeriodo.id){
+        this.datosPeriodo.id = await this.afs.collection<any>('royalties').doc().ref.id;
+      }
+      await this.royaltiesService.saveRoyalties(this.datosPeriodo)
+      console.log('datosPeriodo',this.datosPeriodo)
+      this.alertService.succesAlert("El período se ha guardado exitosamente")
+    }
+    catch{
+      this.alertService.errorAlert("Error al guardar el período")
+    }
+
   }
 
 

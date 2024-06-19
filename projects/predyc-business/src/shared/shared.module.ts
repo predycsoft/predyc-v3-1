@@ -94,6 +94,7 @@ import { LiveCourseFollowingComponent } from './components/live-courses/create-l
 import { CustomDatetimePipe } from './pipes/custom-datetime.pipe';
 import { DialogAssignLiveCoursesComponent } from './components/live-courses/create-live-course/live-course-student-list/dialog-assign-live-courses/dialog-assign-live-courses.component';
 import { InstructorListComponent } from "./components/instructors/instructor-list/instructor-list.component";
+import { InstructorRoyaltiesComponent } from "./components/instructors/instructor-royalties/instructor-royalties.component";
 
 
 @NgModule({
@@ -104,6 +105,7 @@ import { InstructorListComponent } from "./components/instructors/instructor-lis
     StudentProfileComponent,
     StudentListComponent,
     InstructorListComponent,
+    InstructorRoyaltiesComponent,
     ProfileListComponent,
     SafePipe,
     CustomDatePipe,
@@ -204,6 +206,7 @@ import { InstructorListComponent } from "./components/instructors/instructor-lis
     StudentProfileComponent,
     StudentListComponent,
     InstructorListComponent,
+    InstructorRoyaltiesComponent,
     ProfileListComponent,
     SafePipe,
     CustomDatePipe,
