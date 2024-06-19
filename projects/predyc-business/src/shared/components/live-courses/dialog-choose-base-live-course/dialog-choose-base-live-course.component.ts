@@ -9,6 +9,8 @@ import { Session, SessionJson, SessionTemplate } from "projects/shared/models/se
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivityClassesService } from "../../../services/activity-classes.service";
 import { Question } from "projects/shared/models/activity-classes.model";
+import Swal from "sweetalert2";
+import { AlertsService } from "../../../services/alerts.service";
 
 interface LiveCourseTemplateWithSessionsTemplates extends LiveCourseTemplateJson {
   sessions: SessionTemplate[];
@@ -27,7 +29,7 @@ interface FormValue {
   styleUrls: ["./dialog-choose-base-live-course.component.css"],
 })
 export class DialogChooseBaseLiveCourseComponent {
-  constructor(public activeModal: NgbActiveModal, public icon: IconService, public dialogService: DialogService, private liveCourseService: LiveCourseService, private fb: FormBuilder, public activityClassesService: ActivityClassesService) {}
+  constructor(private alertService: AlertsService, public activeModal: NgbActiveModal, public icon: IconService, public dialogService: DialogService, private liveCourseService: LiveCourseService, private fb: FormBuilder, public activityClassesService: ActivityClassesService) {}
 
   combinedServicesSubscription: Subscription;
   baseLiveCourses: LiveCourseTemplateWithSessionsTemplates[];
@@ -114,6 +116,14 @@ export class DialogChooseBaseLiveCourseComponent {
   }
 
   async onSave() {
+    Swal.fire({
+      title: "Generando curso en vivo...",
+      text: "Por favor, espera.",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
     // console.log("this.formNewCourse", this.formNewCourse)
     if (this.formNewCourse.valid) {
       const formValue: FormValue = this.formNewCourse.value;
@@ -121,7 +131,7 @@ export class DialogChooseBaseLiveCourseComponent {
       // copy the template data
       const liveCourseTemplateData = { ...formValue.baseCourse };
       delete liveCourseTemplateData.sessions;
-      // Save live course son
+      // Save live course
       let liveCourse: any = {
         ...liveCourseTemplateData,
         id: null,
@@ -207,7 +217,7 @@ export class DialogChooseBaseLiveCourseComponent {
           await this.activityClassesService.saveQuestion(pregunta, activityId);
         }
       }
-
+      this.alertService.succesAlert("El curso en vivo se ha guardado exitosamente");
       this.closeDialog();
     } else console.log("Form is invalid");
   }
