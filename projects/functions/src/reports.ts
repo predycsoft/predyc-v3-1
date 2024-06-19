@@ -76,7 +76,7 @@ async function generateReportEnterpriseAdminLocal(idEmpresa: string) {
     let htmlMail = `<p>Encuentra a continuación el resumen de tu equipo de usuarios activos en PREDYC.</p>
     <p><strong>Usuario activos:</strong><p>`
     htmlMail+= users.table
-    if(accountManagerNumber){
+    if(accountManagerNumber && enterpriseData.requireAccountManagement){
       htmlMail+= `<br><p>Habla con tu account manager${enterpriseData?.accountManagerName? ' ' + titleCase(enterpriseData?.accountManagerName): '' } vía Whatsapp: <a href="https://wa.me/${accountManagerNumber}">${accountManagerNumber}</a></p>`;
     }
     htmlMail+= `<p>Inicia sesión en PREDYC : <a href="https://predyc.com">https://predyc.com</a></p>`;
@@ -84,12 +84,12 @@ async function generateReportEnterpriseAdminLocal(idEmpresa: string) {
     let htmlMailFinal = ` <!DOCTYPE html><html><head>${style}</head><body><p><strong>Estimado administrador ${enterpriseData.name.toUpperCase()}</strong>,</p>${htmlMail}<br>${firma}
     </body></html>`;
     console.log('htmlMailFinal',htmlMailFinal)
-    const sender = "desarrollo@predyc.com";
+    const sender = "capacitacion@predyc.com";
     const recipients = recipientMail;
     //const recipients = ['andres.gonzalez@predyc.com'];
     const subject = `Reporte de progresos en PREDYC de tu empresa ${enterpriseData.name.toUpperCase()}`;
     const htmlContent = htmlMailFinal;
-    const cc = ["desarrollo@predyc.com,arturo.romero@predyc.com"];
+    const cc = ["capacitacion@predyc.com"];
     const mailObj = { sender, recipients, subject, cc, htmlContent };
     console.log(mailObj)
     const now = new Date();
@@ -183,11 +183,11 @@ async function generateReportEnterpriseUsers(idEmpresa: string) {
         // respuesta = [respuesta[0]]
         respuesta.forEach(correo => {
           const htmlContent = ` <!DOCTYPE html><html><head>${styleMail}</head><body>${correo.html}${firma}</body></html>`;
-          const sender = "desarrollo@predyc.com";
+          const sender = "capacitacion@predyc.com";
           const recipients = [correo.user.email];
           //const recipients = ['andres.gonzalez@predyc.com'];
           const subject = `Tu progreso semanal en PREDYC`;
-          const cc = ["desarrollo@predyc.com"];
+          const cc = ["capacitacion@predyc.com"];
           const mailObj = { sender, recipients, subject, cc, htmlContent };
           console.log(mailObj)
           _sendMailHTML(mailObj);
