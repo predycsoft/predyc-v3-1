@@ -2953,15 +2953,9 @@ export class CreateLiveCourseComponent {
     video.addEventListener(
       "loadedmetadata",
       () => {
-        const duration = video.duration;
+        // const duration = video.duration;
         //console.log('Video Duration: ', duration);
-
-        if (session.type == "video") {
-          session.duration = Math.ceil(duration / 60);
-        }
-
-        // You can proceed with your Vimeo upload logic here
-        // Your logic to use duration.
+        // if (session.type == "video") session.duration = Math.ceil(duration / 60);
 
         // Important to revoke the URL after its use to release the reference
         URL.revokeObjectURL(url);
