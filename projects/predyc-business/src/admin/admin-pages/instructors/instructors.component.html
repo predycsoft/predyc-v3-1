@@ -6,7 +6,7 @@
                 <app-search-input-box  fxLayoutAlign=" center" class="shadow-animation radius20 w-50" style="height: 38px;  "></app-search-input-box>
                 <button (click)="createInstructor()" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButtonAnim button-animation "  style="border-radius: 24px !important; height: 38px;" >
                     <img [src]="icon.addNew" class="h16px  makeWhite mgr08" alt="">
-                    Nuevo instrcutor
+                    Nuevo instructor
                 </button>
             </div>
             <app-instructor-list (instructosOnList)="instructors=$event" origen="admin"></app-instructor-list>
