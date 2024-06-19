@@ -5,14 +5,18 @@ import * as admin from "firebase-admin";
 
 const db = admin.firestore();
 
-
-export const _sendMailHTML = async (data: { sender: string; recipients: string[]; subject: string; cc: string[];htmlContent:string ;adjunto?:any}) => {
+export const _sendMailHTML = async (data: { sender: string; recipients: string[]; subject: string; cc: string[]; htmlContent: string; adjunto?: any }) => {
   const APP_NAME = "Predyc";
 
   let sender = process.env.EMAIL_USER_D;
   let password = process.env.EMAIL_PASSWORD_D;
 
-  console.log('_sendMailHTML data.htmlContent',data.htmlContent)
+  if (["capacitacion@predyc.com"].includes(data.sender)) {
+    sender = process.env.EMAIL_USER_CAP;
+    password = process.env.EMAIL_PASSWORD_CAP;
+  }
+
+  console.log("_sendMailHTML data.htmlContent", data.htmlContent);
 
   const smtpTransport = nodemailer.createTransport({
     host: "smtp.gmail.com",
@@ -32,19 +36,22 @@ export const _sendMailHTML = async (data: { sender: string; recipients: string[]
     subject: data.subject,
     html: data.htmlContent,
     cc: data.cc,
-    attachments: data.adjunto ? [{
-      filename: data.adjunto.filename,
-      content: data.adjunto.content,
-      encoding: 'base64'
-    }] : []
+    attachments: data.adjunto
+      ? [
+          {
+            filename: data.adjunto.filename,
+            content: data.adjunto.content,
+            encoding: "base64",
+          },
+        ]
+      : [],
   };
   try {
     smtpTransport.sendMail(mailOptions, (error: any, info: any) => {
       if (error) {
         console.log("smtp transport error: ", error);
         smtpTransport.close();
-      }
-      else {
+      } else {
         console.log("Correo enviado!", mailOptions);
       }
       return "mail sent";
@@ -56,14 +63,21 @@ export const _sendMailHTML = async (data: { sender: string; recipients: string[]
   }
 };
 
-export const _sendMail = async (data: { sender: string; recipients: string[]; subject: string; text: string; cc: string[];htmlText?:string }) => {
+export const _sendMail = async (data: { sender: string; recipients: string[]; subject: string; text: string; cc: string[]; htmlText?: string }) => {
   const APP_NAME = "Predyc";
+
+  console.log("PRUEBA");
 
   // let sender = process.env.EMAIL_USER_A
   // let password = process.env.EMAIL_PASSWORD_A
 
   let sender = process.env.EMAIL_USER_D;
   let password = process.env.EMAIL_PASSWORD_D;
+
+  if (["capacitacion@predyc.com"].includes(data.sender)) {
+    sender = process.env.EMAIL_USER_CAP;
+    password = process.env.EMAIL_PASSWORD_CAP;
+  }
 
   // if (["contacto@predyc.com", "capacitacion@predyc.com"].includes(data.sender) ){
   //     sender = process.env.EMAIL_USER_A
@@ -101,8 +115,7 @@ export const _sendMail = async (data: { sender: string; recipients: string[]; su
       if (error) {
         console.log("smtp transport error: ", error);
         smtpTransport.close();
-      }
-      else {
+      } else {
         console.log("Correo enviado!", mailOptions);
       }
       return "mail sent";

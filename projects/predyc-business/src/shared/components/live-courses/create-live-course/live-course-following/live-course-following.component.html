@@ -13,8 +13,9 @@
         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".75rem" class="fw mgt10">
             <span *ngIf="emailContent" class="ft500 ft14 blue-5">Enviando ...</span>
             <ng-container *ngIf="!emailContent">
-                <span class="ft500 ft14 gray-8">Tu correo ha sido enviado!</span>
-                <button class="blueButtonAnim button-animation" style="border-radius: 24px !important" (click)="emailSent = false">
+                <span *ngIf="!hasBeenAnError" class="ft500 ft14 gray-8">Tu correo ha sido enviado!</span>
+                <!-- <span *ngIf="hasBeenAnError"></span> -->
+                <button class="blueButtonAnim button-animation" style="border-radius: 24px !important" (click)="emailSent = false; hasBeenAnError = false">
                     <img [src]="icon.add" class="h16px pdr05 makeWhite" alt="" />Redactar nuevo correo
                 </button>
             </ng-container>

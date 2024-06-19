@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
 // import { oldProducts } from './old data/product.data';
 // import { oldPrices } from './old data/prices.data';
 import { Product, ProductJson } from "projects/shared/models/product.model";
@@ -9,36 +9,26 @@ import { License, LicenseJson } from "projects/shared/models/license.model";
 import { Subscription as SubscriptionClass } from "projects/shared/models/subscription.model";
 import { LicenseService } from "../../../services/license.service";
 import { ProfileJson } from "projects/shared/models/profile.model";
-import { Permissions, PermissionsJson, firestoreTimestampToNumberTimestamp, oldUser } from "projects/shared";
+import { Activity, Clase, ClassByStudent, ClassByStudentJson, CourseByStudent, CourseByStudentJson, Curso, Modulo, Permissions, PermissionsJson, Skill, User, UserJson, capitalizeFirstLetter, firestoreTimestampToNumberTimestamp, oldUser } from "projects/shared";
 import { ProfileService } from "../../../services/profile.service";
 import { CategoryService } from "../../../services/category.service";
-import { CategoryJson } from "projects/shared/models/category.model";
+import { Category, CategoryJson } from "projects/shared/models/category.model";
 import { oldCategoriesNames } from "./../old data/enterprises users/categories.data";
 import { oldEmpresasCLientes } from "./../old data/enterprises users/empresasCliente.data";
 import { oldUsers } from "./../old data/enterprises users/usuarios.data";
-import { User, UserJson } from "projects/functions/dist/shared/models/user.model";
 import { UserService } from "../../../services/user.service";
 import { categoriesData } from "projects/predyc-business/src/assets/data/categories.data";
-import { Category } from "projects/functions/dist/shared/models/category.model";
-import { Skill } from "projects/functions/dist/shared/models/skill.model";
 import { skillsData } from "projects/predyc-business/src/assets/data/skills.data";
 import { SkillService } from "../../../services/skill.service";
 import { instructorsData } from "projects/predyc-business/src/assets/data/instructors.data";
 import { InstructorsService } from "../../../services/instructors.service";
-import { Clase } from "projects/functions/dist/shared/models/course-class.model";
 import { AngularFirestore, DocumentReference, QuerySnapshot } from "@angular/fire/compat/firestore";
 import { coursesData } from "projects/predyc-business/src/assets/data/courses.data";
-import { Curso } from "projects/functions/dist/shared/models/course.model";
-import { capitalizeFirstLetter } from "projects/functions/dist/shared/utils";
 import { courseCategoryAndSkillsRelation } from "projects/predyc-business/src/assets/data/courseCategoryAndSkillsRelation.data";
 import { CourseService } from "../../../services/course.service";
-import { CourseByStudent, CourseByStudentJson } from "projects/functions/dist/shared/models/course-by-student.model";
-import { Activity } from "projects/functions/dist/shared/models/activity-classes.model";
 import { ActivityClassesService } from "../../../services/activity-classes.service";
 import { CourseClassService } from "../../../services/course-class.service";
 import { ModuleService } from "../../../services/module.service";
-import { Modulo } from "projects/functions/dist/shared/models/module.model";
-import { ClassByStudent, ClassByStudentJson } from "projects/functions/dist/shared/models/class-by-student.model";
 import { oldCursosInscritos } from "./../old data/enterprises users/cursosInscritos.data";
 import { combineLatest, filter, firstValueFrom, map, switchMap, take } from "rxjs";
 
@@ -48,9 +38,9 @@ import { usersData } from "projects/predyc-business/src/assets/data/users.data";
 import { oldUsersCertificates } from "./../old data/usuariosCertificados.data";
 
 @Component({
-  selector: 'app-enterprises-users-migration',
-  templateUrl: './enterprises-users-migration.component.html',
-  styleUrls: ['./enterprises-users-migration.component.css']
+  selector: "app-enterprises-users-migration",
+  templateUrl: "./enterprises-users-migration.component.html",
+  styleUrls: ["./enterprises-users-migration.component.css"],
 })
 export class EnterprisesUsersMigrationComponent {
   instructors = [];
@@ -66,7 +56,7 @@ export class EnterprisesUsersMigrationComponent {
   allCoursesData: any;
   allCurrentUsersData: User[];
 
-  icafluorExisitngUsers: User[]
+  icafluorExisitngUsers: User[];
 
   constructor(private enterpriseService: EnterpriseService, private userService: UserService, private productService: ProductService, private licenseService: LicenseService, private profileService: ProfileService, private categoryService: CategoryService, private skillService: SkillService, private instructorsService: InstructorsService, public courseService: CourseService, private afs: AngularFirestore, private activityClassesService: ActivityClassesService, public courseClassService: CourseClassService, public moduleService: ModuleService) {}
 
@@ -90,30 +80,26 @@ export class EnterprisesUsersMigrationComponent {
   }
 
   async getCoursesByStudent(): Promise<CourseByStudent[]> {
-    let coursesByStudent = []
+    let coursesByStudent = [];
     for (let user of this.icafluorExisitngUsers) {
-
-      const userRef = this.userService.getUserRefById(user.uid)
-      const userCoursesByStudentSnapshot: QuerySnapshot<any> = (await this.afs.collection(CourseByStudent.collection).ref.where("userRef", "==", userRef).get())
-      const userCoursesByStudent = userCoursesByStudentSnapshot.docs.map(doc => {
-          return { ...doc.data() };
+      const userRef = this.userService.getUserRefById(user.uid);
+      const userCoursesByStudentSnapshot: QuerySnapshot<any> = await this.afs.collection(CourseByStudent.collection).ref.where("userRef", "==", userRef).get();
+      const userCoursesByStudent = userCoursesByStudentSnapshot.docs.map((doc) => {
+        return { ...doc.data() };
       });
-      coursesByStudent.push(...userCoursesByStudent)
+      coursesByStudent.push(...userCoursesByStudent);
     }
 
-    return coursesByStudent
+    return coursesByStudent;
   }
 
   async debug() {
-
     // this.userService.getUsersByEnterpriseRef$(this.enterpriseService.getEnterpriseRefById("aura-minerals")).pipe(
     //   switchMap(users => {
     //     const usersArr = users.map(user => {
     //       const userRef = this.afs.collection(User.collection).doc(user.uid).ref;
     //       return this.afs.collection<CourseByStudent>(CourseByStudent.collection, ref => ref.where("userRef", "==", userRef)).valueChanges();
-
     //     })
-
     //     return combineLatest(usersArr)
     //   })
     // ).subscribe(async usersCourseByStudents => {
@@ -125,8 +111,6 @@ export class EnterprisesUsersMigrationComponent {
     //     }
     //   }
     // })
-
-
     // "rigoberto.ortega@icafluor.com" "fg8mOSw6okUiWaIBFOiZ4yHIvsV2"
     // "adi.roman@icafluor.com" "GAR0iUIEGvQXMc0ViqZChCw1Mq13"
     // const coursesByStudent: CourseByStudent[] = await this.getCoursesByStudent("fg8mOSw6okUiWaIBFOiZ4yHIvsV2")
@@ -134,7 +118,6 @@ export class EnterprisesUsersMigrationComponent {
     //   console.log("eliminado", courseByStudent.id)
     //   // await this.afs.collection(ClassByStudent.collection).doc(courseByStudent.id).delete()
     // }
-
     // const classesByStudent = []
     // const userRef = this.userService.getUserRefById("fg8mOSw6okUiWaIBFOiZ4yHIvsV2")
     // const userClassByStudentSnapshot: QuerySnapshot<any> = (await this.afs.collection(ClassByStudent.collection).ref.where("userRef", "==", userRef).get())
@@ -142,41 +125,36 @@ export class EnterprisesUsersMigrationComponent {
     //     return { ...doc.data() };
     // });
     // classesByStudent.push(...userClassByStudent)
-
     // console.log("classesByStudent", classesByStudent)
-
     // for (let classByStudent of classesByStudent) {
     //   console.log("eliminado", classByStudent.id)
     //   // await this.afs.collection(ClassByStudent.collection).doc(classByStudent.id).delete()
     // }
-
-
   }
 
   async deleteEnterpriseClassesByStudent() {
-    const enterpriseRef = this.enterpriseService.getEnterpriseRefById("gente-oil")
-    const enterpriseUsersSnapshot: QuerySnapshot<any> = (await this.afs.collection(User.collection).ref.where("enterprise", "==", enterpriseRef).get())
-    const enterpriseUsers = enterpriseUsersSnapshot.docs.map(doc => {
-        return { ...doc.data() };
+    const enterpriseRef = this.enterpriseService.getEnterpriseRefById("gente-oil");
+    const enterpriseUsersSnapshot: QuerySnapshot<any> = await this.afs.collection(User.collection).ref.where("enterprise", "==", enterpriseRef).get();
+    const enterpriseUsers = enterpriseUsersSnapshot.docs.map((doc) => {
+      return { ...doc.data() };
     });
 
-    const classesByStudent = []
+    const classesByStudent = [];
     for (let user of enterpriseUsers) {
-      const userRef = this.userService.getUserRefById(user.uid)
-      const userClassByStudentSnapshot: QuerySnapshot<any> = (await this.afs.collection(ClassByStudent.collection).ref.where("userRef", "==", userRef).get())
-      const userClassByStudent = userClassByStudentSnapshot.docs.map(doc => {
-          return { ...doc.data() };
+      const userRef = this.userService.getUserRefById(user.uid);
+      const userClassByStudentSnapshot: QuerySnapshot<any> = await this.afs.collection(ClassByStudent.collection).ref.where("userRef", "==", userRef).get();
+      const userClassByStudent = userClassByStudentSnapshot.docs.map((doc) => {
+        return { ...doc.data() };
       });
-      classesByStudent.push(...userClassByStudent)
+      classesByStudent.push(...userClassByStudent);
     }
 
-    console.log("classesByStudent", classesByStudent)
+    console.log("classesByStudent", classesByStudent);
 
     for (let classByStudent of classesByStudent) {
-      console.log("eliminado", classByStudent.id)
-      await this.afs.collection(ClassByStudent.collection).doc(classByStudent.id).delete()
+      console.log("eliminado", classByStudent.id);
+      await this.afs.collection(ClassByStudent.collection).doc(classByStudent.id).delete();
     }
-
   }
 
   getCourses() {
@@ -228,23 +206,23 @@ export class EnterprisesUsersMigrationComponent {
       const permissions = new Permissions();
       if (oldEnterpriseData.hoursPerWeek) permissions.hoursPerWeek = oldEnterpriseData.hoursPerWeek;
       return {
-        contactPerson:null,
-        mailContactPerson:null,
-        phoneContactPerson:null,
-        salesMan:null,
+        contactPerson: null,
+        mailContactPerson: null,
+        phoneContactPerson: null,
+        salesMan: null,
         requireAccountManagement: true,
-        reportMails:null,
+        reportMails: null,
         examenInicial: true,
-        demo:false,
-        tractian:false,
-        sendMailtoAdmin:false,
-        sendMailtoUsers:false,
-        mondlyMeetings:false,
-        useWhatsapp:false,
+        demo: false,
+        tractian: false,
+        sendMailtoAdmin: false,
+        sendMailtoUsers: false,
+        mondlyMeetings: false,
+        useWhatsapp: false,
         accountManagerName: null,
         accountManagerPhone: null,
-        congratulationsEndCourse:false,
-        allUsersExtraCourses:false,
+        congratulationsEndCourse: false,
+        allUsersExtraCourses: false,
         examenFinal: true,
         showEnterpriseLogoInCertificates: true,
         city: null,
@@ -321,10 +299,10 @@ export class EnterprisesUsersMigrationComponent {
     console.log("usersInNewModel", usersInNewModel);
 
     for (let user of usersInNewModel) {
-        if (user) this.usersIdMap[user.uid] = await this.userService.addUserInMigrations(User.fromJson(user));
-    } 
+      if (user) this.usersIdMap[user.uid] = await this.userService.addUserInMigrations(User.fromJson(user));
+    }
     console.log("ALL USERS CREATED");
-}
+  }
 
   async migrateCoursesByStudent() {
     const snapshot = await firstValueFrom(this.afs.collection(Curso.collection).get());
@@ -335,7 +313,7 @@ export class EnterprisesUsersMigrationComponent {
 
     if (Object.keys(this.coursesIdMap).length === 0) {
       this.coursesIdMap = await this.courseService.getCourseIdMappings();
-    } 
+    }
 
     // console.log("coursesIdMap", this.coursesIdMap)
 
@@ -345,12 +323,10 @@ export class EnterprisesUsersMigrationComponent {
       const coursesByStudent: CourseByStudentJson[] = oldUser.studyPlan
         .sort((a, b) => a.fechaInicio - b.fechaInicio)
         .map((studyPlanCourse, idx) => {
-
           if (!this.coursesIdMap[studyPlanCourse.cursoId]) {
-            console.log(" XXXXXXXXXXXXXXXXXXXXX this course doesnt exist in new data base XXXXXXXXXXXXXXXXXXXXX")
-            return null
-          }
-          else {
+            console.log(" XXXXXXXXXXXXXXXXXXXXX this course doesnt exist in new data base XXXXXXXXXXXXXXXXXXXXX");
+            return null;
+          } else {
             const courseOldData = oldCoursesData.find((x) => x.cursoId === studyPlanCourse.cursoId && x.usuarioId === oldUser.uid);
             const currentUserData = this.allCurrentUsersData.find((x) => x.oldUid === oldUser.uid);
             return {
@@ -359,11 +335,9 @@ export class EnterprisesUsersMigrationComponent {
               // courseRef: this.courseService.getCourseRefById(this.coursesIdMap[studyPlanCourse.cursoId]), // UNCONMENT THIS WHEN ALL COURSES ARE CREATED
               dateEnd: studyPlanCourse.fechaCompletacion ? new Date(studyPlanCourse.fechaCompletacion) : null,
               dateEndPlan: studyPlanCourse.fechaFin ? new Date(studyPlanCourse.fechaFin) : null,
-              dateStart: courseOldData.fechaInscripcion ? new Date(courseOldData.fechaInscripcion) : 
-                          studyPlanCourse.fechaInicio ? new Date(studyPlanCourse.fechaInicio) : null,
+              dateStart: courseOldData.fechaInscripcion ? new Date(courseOldData.fechaInscripcion) : studyPlanCourse.fechaInicio ? new Date(studyPlanCourse.fechaInicio) : null,
               dateStartPlan: studyPlanCourse.fechaInicio ? new Date(studyPlanCourse.fechaInicio) : null,
-              finalScore: courseOldData?.puntaje ? courseOldData.puntaje : 
-              studyPlanCourse.fechaCompletacion ? this.getRandomNumber(80, 100) : 0,
+              finalScore: courseOldData?.puntaje ? courseOldData.puntaje : studyPlanCourse.fechaCompletacion ? this.getRandomNumber(80, 100) : 0,
               id: null,
               progress: courseOldData.progreso,
               // userRef: this.userService.getUserRefById(this.usersIdMap[oldUser.uid]),
@@ -374,12 +348,11 @@ export class EnterprisesUsersMigrationComponent {
               studyPlanOrder: idx + 1,
             };
           }
-
         });
       allCoursesByStudent.push(...coursesByStudent);
     }
 
-    this.coursesByStudent = allCoursesByStudent.filter(x => x !== null);
+    this.coursesByStudent = allCoursesByStudent.filter((x) => x !== null);
     console.log("allCoursesByStudent to migrate", this.coursesByStudent);
     const batch = this.afs.firestore.batch();
     for (let courseByStudent of this.coursesByStudent) {
@@ -387,7 +360,7 @@ export class EnterprisesUsersMigrationComponent {
       courseByStudent.id = ref.id;
       // await this.afs.collection(CourseByStudent.collection).doc(courseByStudent.id).set(courseByStudent);
       batch.set(ref, courseByStudent);
-      console.log("courseByStudent", courseByStudent.id)
+      console.log("courseByStudent", courseByStudent.id);
     }
     await batch.commit();
     console.log("*********CoursesByStudent migrated*********");
@@ -400,17 +373,16 @@ export class EnterprisesUsersMigrationComponent {
 
     if (Object.keys(this.coursesIdMap).length === 0) {
       this.coursesIdMap = await this.courseService.getCourseIdMappings();
-    } 
+    }
 
     for (let oldCourse of oldCoursesData) {
       if (oldCourse.clases) {
         const olCourseClasses = oldCourse.clases.sort((a, b) => a.numero - b.numero);
         console.log("--- ", oldCourse.cursoId);
         if (!this.coursesIdMap[oldCourse.cursoId]) {
-          console.log(" XXXXXXXXXXXXXXXXXXXXX this course doesnt exist in new data base XXXXXXXXXXXXXXXXXXXXX")
-          continue
+          console.log(" XXXXXXXXXXXXXXXXXXXXX this course doesnt exist in new data base XXXXXXXXXXXXXXXXXXXXX");
+          continue;
         }
-
 
         let prevClaseModule = 1;
         let claseIndex = 0; // In course -> module, clasesRef array is already sorted
@@ -456,7 +428,7 @@ export class EnterprisesUsersMigrationComponent {
     console.log("--------- SETTING IN DATA BASE -------------");
     const batch = this.afs.firestore.batch();
     for (let classByStudent of allClassesByStudent) {
-      console.log("user id", classByStudent.userRef.id)
+      console.log("user id", classByStudent.userRef.id);
       const ref = this.afs.collection<ClassByStudent>(ClassByStudent.collection).doc().ref;
       classByStudent.id = ref.id;
       // await this.afs.collection(ClassByStudent.collection).doc(classByStudent.id).set(classByStudent);
@@ -470,18 +442,18 @@ export class EnterprisesUsersMigrationComponent {
     console.log("***** Creating user certificates");
     if (Object.keys(this.coursesIdMap).length === 0) {
       this.coursesIdMap = await this.courseService.getCourseIdMappings();
-    } 
+    }
     const instructorsIdMap = await this.getinstructoIdMappings();
-    console.log("instructorsIdMap", instructorsIdMap)
+    console.log("instructorsIdMap", instructorsIdMap);
 
     const oldCertificatesData = oldUsersCertificates;
     const allCertificatesInNewModel = [];
 
     for (let oldCertificate of oldCertificatesData) {
       if (!this.coursesIdMap[oldCertificate.cursoId]) {
-        console.log("curso: ", oldCertificate.cursoId, "no existe en la bbdd nueva")
-        if (oldCertificate.cursoId === null) console.log(oldCertificate)
-        continue
+        console.log("curso: ", oldCertificate.cursoId, "no existe en la bbdd nueva");
+        if (oldCertificate.cursoId === null) console.log(oldCertificate);
+        continue;
       }
       const userData: User = this.allCurrentUsersData.find((x) => x.oldUid === oldCertificate.usuarioId);
       const certificateInNewModel = {
@@ -508,20 +480,17 @@ export class EnterprisesUsersMigrationComponent {
   async getinstructoIdMappings(): Promise<{ [key: string]: string }> {
     // Object to store the mapping
     let idMappings: { [key: string]: string } = {};
-  
+
     const instructorsSnapshot = await firstValueFrom(this.afs.collection<any>("instructors").get());
-  
-    instructorsSnapshot.forEach(doc => {
+
+    instructorsSnapshot.forEach((doc) => {
       const data = doc.data();
       if (data.idOld && data.id) {
         idMappings[data.idOld] = data.id;
       }
     });
-    return idMappings;
+    return idMappings;
   }
-
-
-
 
   public permissionsToJson(permissions: Permissions): PermissionsJson {
     return {
@@ -801,7 +770,7 @@ export class EnterprisesUsersMigrationComponent {
   async saveCertificates(certificates: any[]): Promise<void> {
     const batch = this.afs.firestore.batch();
     certificates.forEach((certificate) => {
-      console.log("-----certificate", certificate)
+      console.log("-----certificate", certificate);
       const docRef = this.afs.firestore.collection("userCertificate").doc(certificate.id);
       batch.set(docRef, certificate, { merge: true });
     });

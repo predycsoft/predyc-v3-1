@@ -252,11 +252,9 @@ export class LiveCourseService {
     })
   }
 
-  async deleteSession(sessionTemplateId: string): Promise<void> {
-    // Delete sub collection
-    // await this.deleteSessionSons(sessionId)
-    // Delete collection
-    await this.afs.collection<SessionTemplate>(SessionTemplate.collection).doc(sessionTemplateId).delete()
+  async deleteSession(sessionId: string, isTemplate: boolean): Promise<void> {
+    if (isTemplate) await this.afs.collection<SessionTemplate>(SessionTemplate.collection).doc(sessionId).delete()
+    else await this.afs.collection<Session>(Session.collection).doc(sessionId).delete()
   }
 
   getLiveCourseUserCertificate$(courseId: string, userId: string): Observable<any[]> {

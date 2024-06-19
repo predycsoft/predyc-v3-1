@@ -1211,18 +1211,18 @@ export class CreateLiveCourseComponent {
 
       if (this.mode === "edit") {
         formatedLiveCourseData = this.LiveCourseDataModelToLiveCourse(this.liveCourseData);
-        console.log("formatedLiveCourseData", formatedLiveCourseData);
+        // console.log("formatedLiveCourseData", formatedLiveCourseData);
         await this.liveCourseService.saveLiveCourse(formatedLiveCourseData as LiveCourse);
       } else {
         formatedLiveCourseData = this.LiveCourseDataModelToLiveCourseTemplate(this.liveCourseData);
-        console.log("formatedLiveCourseData as template", formatedLiveCourseData);
+        // console.log("formatedLiveCourseData as template", formatedLiveCourseData);
         await this.liveCourseService.saveLiveCourseTemplate(formatedLiveCourseData as LiveCourseTemplate);
       }
     }
 
     // For "examen diagnostico" ... check later
     if (this.examenDiagnostico) {
-      console.log("this.examenDiagnostico", this.examenDiagnostico);
+      // console.log("this.examenDiagnostico", this.examenDiagnostico);
       let courseRef = null;
       if (this.mode === "edit") courseRef = this.liveCourseService.getLiveCourseRefById(this.liveCourseData.id);
       else courseRef = this.liveCourseService.getLiveCourseTemplateRefById(this.liveCourseData.id);
@@ -1253,7 +1253,7 @@ export class CreateLiveCourseComponent {
       activityClass.coursesRef = [courseRef];
       activityClass.type = Activity.TYPE_TEST;
 
-      console.log("activityExamen diagnostico", activityClass);
+      // console.log("activityExamen diagnostico", activityClass);
       await this.activityClassesService.saveActivity(activityClass);
 
       let questionsIds = [];
@@ -1392,7 +1392,7 @@ export class CreateLiveCourseComponent {
 
     // For "examen final" ... check later
     if (this.examenFinal) {
-      console.log("this.examenFinal", this.examenFinal);
+      // console.log("this.examenFinal", this.examenFinal);
       let courseRef = null;
       if (this.mode === "edit") courseRef = this.liveCourseService.getLiveCourseRefById(this.liveCourseData.id);
       else courseRef = this.liveCourseService.getLiveCourseTemplateRefById(this.liveCourseData.id);
@@ -1423,7 +1423,7 @@ export class CreateLiveCourseComponent {
       activityClass.coursesRef = [courseRef];
       activityClass.type = "final-test";
 
-      console.log("activityExamen final", activityClass);
+      // console.log("activityExamen final", activityClass);
       await this.activityClassesService.saveActivity(activityClass);
 
       let questionsIds = [];
@@ -1563,13 +1563,13 @@ export class CreateLiveCourseComponent {
     // Remove sessions ... check later
     if (this.deletedClasses.length > 0) {
       for (let clase of this.deletedClasses) {
-        console.log("deletedClasses", clase);
+        // console.log("deletedClasses", clase);
         // await this.courseClassService.deleteClassAndReference(clase.claseInId,this.liveCourseData.id,clase.moduloInId,clase?.activityId);
-        if (clase.vimeoId1) {
-          // this.uploadControl.deleteVideo(clase.vimeoId1).subscribe(respuesta => {
-          //   console.log('respuesta.respuesta')
-          // })
-        }
+        // if (clase.vimeoId1) {
+        //   this.uploadControl.deleteVideo(clase.vimeoId1).subscribe(respuesta => {
+        //     console.log('respuesta.respuesta')
+        //   })
+        // }
       }
     }
 
@@ -2295,7 +2295,8 @@ export class CreateLiveCourseComponent {
         };
 
         this.deletedClasses.push(classDelete);
-        await this.liveCourseService.deleteSession(session.id);
+        const isTemplate = this.mode === "edit-base"
+        await this.liveCourseService.deleteSession(session.id, isTemplate);
         Swal.fire({
           title: "Borrado!",
           text: `La sesión ${session.title ? session.title : "Sin título"} fue borrada`,
