@@ -1,1 +1,77 @@
-<div id="editor"></div>
+<div style="display: flex; flex-direction: row; gap: 20px; margin-top: 20px; justify-content: center;">
+    <button (click)="format = 'html'" class="blueButton">HTML</button>
+    <button (click)="format = 'object'" class="blueButton">Object</button>
+    <button (click)="format = 'json'" class="blueButton">Json</button>
+    <button (click)="format = 'text'" class="blueButton">Text</button>
+    <button (click)="debug()" class="blueButton">Print result</button>
+    <button (click)="save()" class="blueButton">Save result</button>
+</div>
+<div style="display: flex; flex-direction: row; justify-content: end; width: 100%; margin-top: 100px;">
+    <quill-editor [modules]="modules" [(ngModel)]="test" [format]="format" (onEditorCreated)="onEditorCreated($event)">
+        <div above-quill-editor-toolbar>above</div>
+        <div quill-editor-toolbar class="ql-toolbar">
+            <span class="ql-formats">
+                <button class="ql-bold"></button>
+                <button class="ql-italic"></button>
+                <!-- <button class="ql-underline"></button>
+                <button class="ql-strike"></button> -->
+                <button class="ql-blockquote"></button>
+                <button class="ql-code-block"></button>
+                <button class="ql-header" value="1"></button>
+                <button class="ql-header" value="2"></button>
+            </span>
+            <span class="ql-formats">
+                <button class="ql-list" value="ordered"></button>
+                <button class="ql-list" value="bullet"></button>
+                <!-- <select class="ql-align">
+                    <option selected></option>
+                    <option value="center"></option>
+                    <option value="right"></option>
+                    <option value="justify"></option>
+                </select> -->
+            </span>
+            <!-- <span class="ql-formats">
+                <button class="ql-script" value="sub"></button>
+                <button class="ql-script" value="super"></button>
+                <button class="ql-indent" value="-1"></button>
+                <button class="ql-indent" value="+1"></button>
+                <button class="ql-direction" value="rt1"></button>
+            </span> -->
+            <!-- <span class="ql-formats">
+                <select class="ql-header">
+                    <option selected></option>
+                    <option value="1"></option>
+                    <option value="2"></option>
+                    <option value="3"></option>
+                    <option value="4"></option>
+                    <option value="5"></option>
+                    <option value="6"></option>
+                </select>
+                <select class="ql-font">
+                    <option selected></option>
+                    <option value="serif"></option>
+                    <option value="monospace"></option>
+                </select>
+                <select class="ql-size">
+                    <option value="small"></option>
+                    <option selected></option>
+                    <option value="large"></option>
+                    <option value="huge"></option>
+                </select>
+            </span> -->
+    
+            <!-- <span class="ql-formats">
+                <select class="ql-color"></select>
+                <select class="ql-background"></select>
+            </span> -->
+    
+            <span class="ql-formats">
+                <!-- <button class="ql-clean"></button> -->
+                <button class="ql-link"></button>
+                <button class="ql-image"></button>
+                <!-- <button class="ql-video"></button> -->
+            </span>
+        </div>
+        <div below-quill-editor-toolbar>below</div>
+    </quill-editor>
+</div>

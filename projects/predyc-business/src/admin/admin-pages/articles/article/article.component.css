@@ -1,0 +1,17 @@
+/* .ql-toolbar {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    background-color: ;
+}
+ */
+
+.ql-toolbar {
+    display: flex;
+    flex-direction: row;
+}
+.ql-formats {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}

@@ -95,6 +95,8 @@ import { CustomDatetimePipe } from './pipes/custom-datetime.pipe';
 import { DialogAssignLiveCoursesComponent } from './components/live-courses/create-live-course/live-course-student-list/dialog-assign-live-courses/dialog-assign-live-courses.component';
 import { InstructorListComponent } from "./components/instructors/instructor-list/instructor-list.component";
 
+import { QuillModule } from "ngx-quill";
+
 
 @NgModule({
   declarations: [
@@ -196,6 +198,7 @@ import { InstructorListComponent } from "./components/instructors/instructor-lis
     NgxExtendedPdfViewerModule,
     DragDropModule,
     MatSlideToggleModule,
+    QuillModule
   ],
   exports: [
     SideNavComponent,
@@ -281,6 +284,7 @@ import { InstructorListComponent } from "./components/instructors/instructor-lis
     DialogCreateLicenseComponent,
     LiveCoursesComponent,
     CustomDatetimePipe,
+    QuillModule
   ],
 
   providers: [VimeoUploadService],
