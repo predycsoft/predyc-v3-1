@@ -16,7 +16,7 @@ export const createUserWithEmailAndPassword = functions.https.onCall(async (data
     // Enlace de restablecimiento de contraseña
     const link = await _generatePasswordResetLink(data.email);
 
-    const sender = "desarrollo@predyc.com";
+    const sender = "capacitacion@predyc.com";
 
     const arrayName = data.name.split(" ")
     arrayName.map((word: string) => capitalizeFirstLetter(word))
@@ -55,7 +55,7 @@ export const _generatePasswordResetLink = async (email: string): Promise<string>
 export const generatePasswordResetLink = functions.https.onCall(async (data, _) => {
   try {
     const link = await _generatePasswordResetLink(data.email);
-    const sender = "desarrollo@predyc.com";
+    const sender = "capacitacion@predyc.com";
     const recipients = [data.email];
     const subject = "Restablece tu contraseña en Predyc";
     const text = `Hola,\nHaz clic en el siguiente enlace para establecer tu contraseña: ${link}`;
