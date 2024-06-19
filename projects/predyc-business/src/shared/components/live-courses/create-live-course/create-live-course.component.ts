@@ -2203,7 +2203,9 @@ export class CreateLiveCourseComponent {
     clase.type = tipo;
     clase.files = [];
     clase["edited"] = true;
+    clase["editarTitulo"] = true;
     clase["duration"] = 120;
+    clase["weeksToKeep"] = 2;
     //clase.id = Date.now().toString();
     clase.id = this.afs.collection<Session>(Session.collection).doc().ref.id;
 
