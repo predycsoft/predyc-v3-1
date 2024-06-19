@@ -56,6 +56,7 @@ import { ProfilesListComponent } from './business-pages/management/profiles-list
 import { UsersOnboardingComponent } from './business-pages/dashboard/users-onboarding/users-onboarding.component';
 import { UsersaAtivityComponent } from './business-pages/dashboard/users-activity/users-activity.component';
 import { UsersUsageComponent } from './business-pages/dashboard/users-usage/users-usage.component';
+import { CreateInstrcutorComponent } from '../shared/components/instructors/create-instructor/create-instructor.component';
 
 
 @NgModule({
@@ -94,6 +95,7 @@ import { UsersUsageComponent } from './business-pages/dashboard/users-usage/user
     StudyTimeWeeklyChartComponent,
     StudyTimeMonthlyChartComponent,
     CreateUserComponent,
+    CreateInstrcutorComponent,
     ProfilesComponent,
     StudentInfoFormComponent,
     StudentStudyPlanAndCompetencesComponent,

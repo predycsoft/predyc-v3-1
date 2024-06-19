@@ -1519,4 +1519,23 @@ export class CourseService {
 
   }
 
+  async getCompletedClassesByDateRange(startDate: Date, endDate: Date): Promise<any[]> {
+    try {
+      const snapshot = await firstValueFrom(
+        this.afs.collection(ClassByStudent.collection, ref => 
+          ref.where('completed', '==', true)
+             .where('dateEnd', '>=', startDate)
+             .where('dateEnd', '<=', endDate)
+        ).get()
+      );
+      console.log('datos getCompletedClassesByDateRange',snapshot)
+      return snapshot.docs.map(doc => doc.data());
+    } catch (error) {
+      console.error('Error fetching completed classes:', error);
+      throw new Error('Error fetching completed classes');
+    }
+  }
+
+
+
 }

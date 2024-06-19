@@ -2,12 +2,92 @@
 	<p class="ft600 ft16 gray-10">Instructores</p>
     <mat-tab-group mat-stretch-tabs="false" class="swal-overlay mgt10">
         <mat-tab label="Gestionar instructores">
-            <app-instructor-list origen="admin"></app-instructor-list>
+            <div fxLayout="row" fxLayoutAlign="space-between center" class="pdt10" >
+                <app-search-input-box  fxLayoutAlign=" center" class="shadow-animation radius20 w-50" style="height: 38px;  "></app-search-input-box>
+                <button (click)="createInstructor()" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButtonAnim button-animation "  style="border-radius: 24px !important; height: 38px;" >
+                    <img [src]="icon.addNew" class="h16px  makeWhite mgr08" alt="">
+                    Nuevo instrcutor
+                </button>
+            </div>
+            <app-instructor-list (instructosOnList)="instrcutors=$event" origen="admin"></app-instructor-list>
         </mat-tab>
         <mat-tab label="Regalias">
-
+            <div fxLayout="row" fxLayoutAlign="space-between center" class="pdt10" >
+                <!-- <app-search-input-box  fxLayoutAlign=" center" class="shadow-animation radius20 w-50" style="height: 38px;  "></app-search-input-box> -->
+                <div fxLayout="row" class="w-30" fxLayoutAlign="center center" fxLayoutGap="1rem" >
+                    <label for="">Período: </label>
+                    <select [(ngModel)]="currentPeriod" class="form-control select radius20 shadow-animation borderLight" style="border-radius: 20px!important;">
+                        <option [value]="null"> &nbsp; Seleccione un período</option>
+                    </select>
+                </div>
+                <button (click)="crearNuevoPeriodo(modalPeriodo)" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButtonAnim button-animation "  style="border-radius: 24px !important; height: 38px;" >
+                    <img [src]="icon.addNew" class="h16px  makeWhite mgr08" alt="">
+                    Nuevo período
+                </button>
+            </div>
         </mat-tab>
     </mat-tab-group>
-
 </div>
+
+
+<ng-template #modalPeriodo let-modal>
+    <div class="modal-header bg-web-primary text-white px-3 py-1" fxLayoutAlign="space-between center" >
+        <div class="modal-title pd10 ">
+            <span class="ft16 ft600 gray-10">
+                Nuevo Período
+            </span>
+        </div>
+        <img [src]="icon.close" class="h24px pdl5  pdr10 cursorPointer" alt="" (click)="modal.dismiss()">
+    </div>
+    <div class="modal-body" style="overflow-y: auto; max-height: 80vh;">
+
+
+        <form [formGroup]="newPeriodoForm" (ngSubmit)="onSubmit()" >  
+            <div fxLayout="column">
+                <label>Nombre</label>
+                <div style="position: relative">
+                    <img [src]="icon.information" class="makeGray h16px" alt="" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
+                    <input  formControlName="name" [class.is-invalid]="newPeriodoForm.get('name').errors && displayErrors" type="text" class="form-control pdl20 radius20 shadow-animation borderLight" placeholder="Nombre">
+                </div>
+            </div>
+            <div fxLayout="row" fxLayoutGap="20px" class="mgt10">
+                <!-- Primeras dos columnas -->
+                <div fxFlex="50" fxLayout="column">
+                    <label>Fecha inicio</label>
+                    <div style="position: relative">
+                        <img [src]="icon.calendarAdd" class="makeGray h16px" alt="" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
+                        <input  formControlName="startDate" [class.is-invalid]="newPeriodoForm.get('startDate').errors && displayErrors" type="date" class="form-control pdl20 radius20 shadow-animation borderLight" placeholder="Fecha inicio">
+                    </div>
+                </div>
+                <div fxFlex="50" fxLayout="column">
+                    <label>Fecha fin</label>
+                    <div style="position: relative">
+                        <img [src]="icon.calendarAdd" class="makeGray h16px" alt="" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
+                        <input formControlName="endDate" [class.is-invalid]="newPeriodoForm.get('endDate').errors && displayErrors" type="date" class="form-control pdl20 radius20 shadow-animation borderLight" placeholder="Fecha fin">
+                    </div>
+                </div>
+            </div>
+            <div fxLayout="column" class="mgt10">
+                <label>Monto</label>
+                <div style="position: relative">
+                    <img [src]="icon.currency" class="makeGray h16px" alt="" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
+                    <input  formControlName="amount" [class.is-invalid]="newPeriodoForm.get('amount').errors && displayErrors" type="number" class="form-control pdl20 radius20 shadow-animation borderLight" placeholder="Monto">
+                </div>
+            </div>
+            <div class="mgt10" style="display: flex; align-items: center; justify-content: center">
+                <!-- Contenedor para los dos botones de la derecha -->
+                <button 
+                class="blueButtonAnim button-animation h28px mgr10"
+                fxLayout="row"
+                fxLayoutAlign="center center"
+                type="submit">
+                Visualizar período
+                </button>
+            </div>
+        </form>
+    </div>
+  </ng-template>
+  
+
+
 

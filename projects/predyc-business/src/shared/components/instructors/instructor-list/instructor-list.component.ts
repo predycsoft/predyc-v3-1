@@ -15,6 +15,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { EnterpriseService } from '../../../services/enterprise.service';
 import { InstructorsService } from '../../../services/instructors.service';
 import { LiveCourseService } from '../../../services/live-course.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { CreateInstrcutorComponent } from '../create-instructor/create-instructor.component';
 
 interface User {
   displayName: string,
@@ -39,6 +41,7 @@ export class InstructorListComponent {
 
   displayedColumns: string[] = [
     'displayName',
+    'porcentaje',
     'courses',
     'liveCourses'
 
@@ -48,9 +51,8 @@ export class InstructorListComponent {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @Input() enableNavigateToUser: boolean = true
-  @Output() onStudentSelected = new EventEmitter<User>()
 
-  @Output() studentsOnList = new EventEmitter<User[]>()
+  @Output() instructosOnList = new EventEmitter<any[]>()
 
   @Input() origen: string = 'enterprise'
   @Input() enterpriseRef: any = null
@@ -77,20 +79,46 @@ export class InstructorListComponent {
     private _snackBar: MatSnackBar,
     private enterpriseService: EnterpriseService,
     private courseService: CourseService,
-    private liveCourseService:LiveCourseService
+    private liveCourseService:LiveCourseService,
+    private modalService: NgbModal,
   ) {}
 
   instructores;
 
 
+  openCreateInstructorrModal(instructor: any | null) {
+    console.log('instructor',instructor)
+    const modalRef = this.modalService.open(CreateInstrcutorComponent, {
+      animation: true,
+      centered: true,
+      size: 'lg',
+      backdrop: 'static',
+      keyboard: false 
+    })
+    modalRef.componentInstance.instructorToEdit = instructor;
+    modalRef.result.then(async result => {
+      console.log(result)
+      await this.instructorsService.addInstructor(result)
+      //this.save(result)
+    }).catch(error => {
+      console.log(error)
+    })
+  }
+
+
+
   ngOnInit() {
 
+    // this.loadInstrcutor()
+
+  }
+
+  loadInstrcutor(){
     this.first = true
+    this.dataSource.paginator = this.paginator;
 
     this.enterpriseService.enterpriseLoaded$.subscribe(async isLoaded => {
       if (isLoaded) {
-
-
         this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
           let sortOrder = []
           const page = Number(params['page']) || 1;
@@ -109,11 +137,6 @@ export class InstructorListComponent {
       }
       
     })
-
-
-
-
-
   }
 
   instructorsSubscription: Subscription
@@ -124,32 +147,48 @@ export class InstructorListComponent {
     this.paginator.pageIndex = page - 1;
     this.dataSource.data = [];
     this.totalLength = 0;
-
-
     this.instructorsSubscription = combineLatest([this.instructorsService.getInstructorsObservable(),this.courseService.getCourses$(),this.liveCourseService.getAllLiveCourses$()]).subscribe(([instructores,cursos,cursosEnVivo]) => {
       
       cursos.forEach(curso => {
-        curso['instructorId'] = curso.instructorRef.id
+        if(! curso['instructorId']){
+          curso['instructorId'] = curso.instructorRef.id
+        }
         delete curso.instructorRef
         delete curso.enterpriseRef
         delete curso.skillsRef
       });
       cursosEnVivo.forEach(curso => {
-        curso['instructorId'] = curso.instructorRef.id
+        if(! curso['instructorId']){
+          curso['instructorId'] = curso.instructorRef.id
+        }
         delete curso.instructorRef
         delete curso.skillsRef
+        delete curso.liveCourseTemplateRef
       });
       instructores = instructores.map(instructor => {
         return{
           nombre: instructor.nombre,
+          porcentaje:instructor.porcentaje ? instructor.porcentaje: 0 ,
+          firma:instructor.firma,
+          id:instructor.id,
+          email:instructor.email,
+          enterpriseId:instructor.enterpriseRef?.id ? instructor.enterpriseRef.id: null ,
+          resumen:instructor.resumen,
+          descripcion:instructor.descripcion,
           foto:instructor.foto,
           courses:cursos.filter(x=>x['instructorId']== instructor.id),
           liveCourses:cursosEnVivo.filter(x=>x['instructorId'] == instructor.id)
         }
       });
       this.instructores = structuredClone(instructores)
-
+      this.instructosOnList.emit(instructores)
       console.log('instructores',instructores)
+    
+      instructores = instructores.filter((x) => {
+        if (!searchTerm || searchTerm === "") return true;
+        return (this.removeAccents(x.nombre.toLocaleLowerCase()).includes(this.removeAccents(searchTerm.toLocaleLowerCase()))
+        );
+      })
 
       this.paginator.pageIndex = page - 1;
       this.dataSource.data = instructores;
@@ -166,7 +205,24 @@ export class InstructorListComponent {
 
   }
 
+  
+
   performSearchLocal(searchTerm: string, page: number,sortOrder?) {
+
+    let instructores = structuredClone(this.instructores);
+
+    instructores = instructores.filter((x) => {
+      if (!searchTerm || searchTerm === "") return true;
+      return (this.removeAccents(x.nombre.toLocaleLowerCase()).includes(this.removeAccents(searchTerm.toLocaleLowerCase()))
+      );
+    })
+
+    this.paginator.pageIndex = page - 1; // Update the paginator's page index
+    this.dataSource.data = instructores; // Assuming the data is in 'items'
+    this.totalLength = instructores.length; // Assuming total length is returned
+    this.first = false
+
+
 
     
   }
@@ -174,6 +230,9 @@ export class InstructorListComponent {
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.paginator.pageSize = this.pageSize;
+
+    this.loadInstrcutor()
+
   }
 
 

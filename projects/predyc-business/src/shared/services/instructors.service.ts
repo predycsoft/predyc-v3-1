@@ -33,15 +33,21 @@ export class InstructorsService {
   
   async addInstructor(Instructor): Promise<void> {
     try {
-      const ref = this.afs.collection('instructors').doc().ref;
-      let idOld = Instructor?.id ? Instructor?.id : null;
-      // console.log('idOld',idOld)
-      await ref.set({...Instructor,idOld:idOld,id:ref.id}, { merge: true });
-      Instructor.id = ref.id;
-      Instructor.idOld = idOld
-      // console.log('Instructor agregado',Instructor);
+      if (Instructor?.id) {
+        // Si Instructor tiene un id, actualizar el documento existente
+        const ref = this.afs.collection('instructors').doc(Instructor.id).ref;
+        await ref.set(Instructor, { merge: true });
+        console.log('Instructor actualizado', Instructor);
+      } else {
+        // Si Instructor no tiene un id, crear un nuevo documento
+        const ref = this.afs.collection('instructors').doc().ref;
+        Instructor.id = ref.id;
+        Instructor.idOld = null;
+        await ref.set(Instructor, { merge: true });
+        console.log('Instructor agregado', Instructor);
+      }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
 

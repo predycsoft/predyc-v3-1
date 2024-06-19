@@ -5,21 +5,26 @@
             <th mat-header-cell *matHeaderCellDef class="ft14"> 
                 <div class="cursorPointer" fxLayout="row"fxLayoutAlign=" center" >
                 <span  class="gray-7">Nombre</span>
-                <mat-icon>expand_more</mat-icon>
+                <!-- <mat-icon>expand_more</mat-icon> -->
               </div>
             </th>
             <!-- <th mat-header-cell *matHeaderCellDef class="gray-8"> Nombre </th> -->
             <td mat-cell *matCellDef="let user"> 
                 <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign=" center" >
-                    <img
-                        [src]="user.foto ? user.foto : 'assets/images/default/default-user-image.jpg'"
-                        class="avatar2"
-                        alt=""
-                        >
+                    <img [src]="user.foto ? user.foto : 'assets/images/default/default-user-image.jpg'" class="avatar2" alt="">
                     <div fxLayout="column" fxLayoutAlign="center ">
-                        <div  fxLayout="row" class="ft500 ft14  gray-10">{{ user.nombre | titlecase }}
-                        </div> 
+                        <div  fxLayout="row" class="ft500 ft14  gray-10">{{ user.nombre | titlecase }}</div> 
                     </div>
+                </div>
+            </td>
+        </ng-container>
+
+        <!-- Department Column -->
+        <ng-container matColumnDef="porcentaje" class=" ">
+            <th mat-header-cell *matHeaderCellDef class="ft14"> Porcentaje </th>
+            <td mat-cell *matCellDef="let user" class=""> 
+                <div>
+                    <span>{{user.porcentaje}}</span>
                 </div>
             </td>
         </ng-container>
@@ -43,13 +48,11 @@
                 </div>
             </td>
         </ng-container>
-        
-
-
     
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <ng-container>
             <tr mat-row
+                (click)="openCreateInstructorrModal(user)"
                 *matRowDef="let user; columns: displayedColumns;"
                 class="cursorPointer move-right">
             </tr>

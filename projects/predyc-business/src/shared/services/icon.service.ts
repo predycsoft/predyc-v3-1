@@ -248,5 +248,7 @@ export class IconService {
 
   help: string ="assets/iconsUI/help.svg"
 
+  currency:string="assets/iconsUI/currency.svg"
+
   constructor() { }
 }
