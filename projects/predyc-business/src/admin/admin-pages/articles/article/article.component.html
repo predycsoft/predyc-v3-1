@@ -6,19 +6,20 @@
     <button (click)="debug()" class="blueButton">Print result</button>
     <button (click)="save()" class="blueButton">Save result</button>
 </div>
-<div style="display: flex; flex-direction: row; justify-content: end; width: 100%; margin-top: 100px;">
+<div style="display: flex; flex-direction: row; justify-content: center; width: 100%; margin-top: 100px;">
     <quill-editor [modules]="modules" [(ngModel)]="test" [format]="format" (onEditorCreated)="onEditorCreated($event)">
         <div above-quill-editor-toolbar>above</div>
         <div quill-editor-toolbar class="ql-toolbar">
+            <span class="ql-formats">
+                <button class="ql-header" value="1"></button>
+                <button class="ql-header" value="2"></button>
+            </span>
             <span class="ql-formats">
                 <button class="ql-bold"></button>
                 <button class="ql-italic"></button>
                 <!-- <button class="ql-underline"></button>
                 <button class="ql-strike"></button> -->
-                <button class="ql-blockquote"></button>
-                <button class="ql-code-block"></button>
-                <button class="ql-header" value="1"></button>
-                <button class="ql-header" value="2"></button>
+                
             </span>
             <span class="ql-formats">
                 <button class="ql-list" value="ordered"></button>
@@ -29,6 +30,10 @@
                     <option value="right"></option>
                     <option value="justify"></option>
                 </select> -->
+            </span>
+            <span class="ql-formats">
+                <button class="ql-blockquote"></button>
+                <button class="ql-code-block"></button>
             </span>
             <!-- <span class="ql-formats">
                 <button class="ql-script" value="sub"></button>
