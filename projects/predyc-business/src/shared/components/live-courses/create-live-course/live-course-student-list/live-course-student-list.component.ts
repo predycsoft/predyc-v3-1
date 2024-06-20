@@ -23,6 +23,7 @@ interface DataToShow {
   userEmail: string;
   userName: string;
   userPhone: string;
+  userRef: DocumentReference;
   diagnosticTestScore: number;
   finalTestScore: number;
   certificateId: string;
@@ -89,7 +90,7 @@ export class LiveCourseStudentListComponent {
 
   performSearch(page: number) {
     this.liveCourseServiceSubscription = this.liveCourseService
-      .getLiveCoursesByStudentByLivecourseSon$(this.liveCourseRef)
+      .getLiveCoursesByStudentByLivecourse$(this.liveCourseRef)
       .pipe(
         switchMap((liveCoursesByStudent) => {
           const userObservables: Observable<DataToShow>[] = liveCoursesByStudent.map((liveCourseByStudent) => {
@@ -103,6 +104,7 @@ export class LiveCourseStudentListComponent {
                       userEmail: userData.email,
                       userName: userData.displayName,
                       userPhone: userData.phoneNumber,
+                      userRef: liveCourseByStudent.userRef,
                       companyName: liveCourseByStudent.companyName,
                       diagnosticTestScore: liveCourseByStudent.diagnosticTestScore,
                       finalTestScore: liveCourseByStudent.finalTestScore,
@@ -177,18 +179,19 @@ export class LiveCourseStudentListComponent {
 
   onSelect(data) {}
 
-  downloadExcel() {
+  async downloadExcel() {
     const columnTitles = ["Correo del estudiante", "Nombre del estudiante", "Diagnostico", "Fin", "Certificado", "Asistencia"];
 
+    // PRINCIPAL SHEET
     const dataToExport = this.dataSource.data.map((row) => {
-      const obj = {};
-      obj[columnTitles[0]] = row.userEmail;
-      obj[columnTitles[1]] = row.userName;
-      obj[columnTitles[2]] = row.diagnosticTestScore ? row.diagnosticTestScore : "No ha presentado";
-      obj[columnTitles[3]] = row.finalTestScore ? row.finalTestScore : "No ha presentado";
-      obj[columnTitles[4]] = row.certificateId ? `${environment.predycUrl}/certificado/${row.certificateId}` : "No disponible";
-      obj[columnTitles[5]] = row.isAttending ? "Sí" : "No";
-      return obj;
+        const obj = {};
+        obj[columnTitles[0]] = row.userEmail;
+        obj[columnTitles[1]] = row.userName;
+        obj[columnTitles[2]] = row.diagnosticTestScore ? row.diagnosticTestScore : "No ha presentado";
+        obj[columnTitles[3]] = row.finalTestScore ? row.finalTestScore : "No ha presentado";
+        obj[columnTitles[4]] = row.certificateId ? `${environment.predycUrl}/certificado/${row.certificateId}` : "No disponible";
+        obj[columnTitles[5]] = row.isAttending ? "Sí" : "No";
+        return obj;
     });
 
     const worksheet = XLSX.utils.json_to_sheet(dataToExport);
@@ -200,7 +203,94 @@ export class LiveCourseStudentListComponent {
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Estudiantes");
 
+    // STUDENTS SHEETS
+    const allUsersTests = await this.getUsersTestsData()
+    const userColumnTitles = ["Tipo de pregunta", "Texto de la pregunta", "Opc. Selec.", "Opc. Correc.", "Resultado"];
+    let sheetIndex = 1
+    this.dataSource.data.forEach((row) => {
+      // const userTests = allUsersTests.filter(x => x.userRef === row.userRef)
+      const userTests = allUsersTests.filter(x => x.userRef.id === row.userRef.id)
+      console.log("userTests", userTests)
+
+      const diagnosticTestsRows = []
+      const finalTestsRows = []
+      if (userTests.length > 0) {
+        const userDiagnosticTest = userTests.find(x => x.type === "test")
+        const userFinalTest = userTests.find(x => x.type === "final-test")
+        if (userDiagnosticTest) {
+          const testQuestions = userDiagnosticTest.questions
+          const testAnswers = userDiagnosticTest.answers
+          diagnosticTestsRows.push(...this.processQuestions(testQuestions, testAnswers));
+        }
+        if (userFinalTest) {
+          const testQuestions = userFinalTest.questions
+          const testAnswers = userFinalTest.answers
+          finalTestsRows.push(this.processQuestions(testQuestions, testAnswers));
+        }          
+        
+        console.log("userDiagnosticTest", userDiagnosticTest)
+        console.log("userFinalTest", userFinalTest)
+      }
+
+      const studentData = [
+        ["Examen Diagnostico", "", "", "", ""],
+        userColumnTitles,
+        ...diagnosticTestsRows,
+        [],
+        [],
+        ["Examen Final", "", "", "", ""],
+        userColumnTitles,
+        ...finalTestsRows,
+      ];
+
+      const studentWorksheet = XLSX.utils.aoa_to_sheet(studentData);
+
+      // Set the width for each column
+      const columnWidths = userColumnTitles.map((title) => ({ wch: title.length + 5 }));
+      studentWorksheet["!cols"] = columnWidths;
+
+      // Ensure the sheet name is valid by replacing any invalid characters
+      const sheetName = row.userName.replace(/[\[\]:*?/\\]/g, '_').substring(0, 31);
+      XLSX.utils.book_append_sheet(workbook, studentWorksheet, `${sheetIndex}-${sheetName}`);
+      sheetIndex++;
+    });
+
     XLSX.writeFile(workbook, "Estudiantes.xlsx");
+  }
+
+  processQuestions(questions, answers) {
+    console.log("answers", answers)
+    return questions.map(question => {
+      const answer = answers.find(x => x.id === question.id)
+      console.log("answer", answer)
+      let questionTextValue: string = `Pregunta: "${answer.text}"\n`;
+      let questionOpSelected = "";
+      let questionOpCorrect = "";
+      let optionIndex = 1
+      question.options.forEach(option => {
+        questionTextValue = `${questionTextValue}\n${optionIndex}) ${option.text}`;
+        if (option.isCorrect) questionOpCorrect = `${questionOpCorrect}\n${optionIndex}) ${option.text}`;
+        const optionAnswer = answer.answerItems.find(x => x.text === option.text) // the selected option is saved in answers field
+        if (optionAnswer && optionAnswer.answer) questionOpSelected = `${questionOpSelected}\n${optionIndex}) ${option.text}`;
+        optionIndex++
+      });
+
+      return [
+          question.newTrueFalseFormat ? "Verdadero o falso" : question.type.displayName,
+          questionTextValue.trim(),
+          questionOpSelected.trim(),
+          questionOpCorrect.trim(),
+          questionOpCorrect.trim() === questionOpSelected.trim() ? "Correcta" : "Incorrecta"
+      ];
+    });
+  };
+
+  async getUsersTestsData() {
+    const usersData = this.dataSource.data
+    const usersRefsArray = usersData.map( x => x.userRef)
+    const allUsersTests = await this.liveCourseService.getUsersTestsData(this.liveCourseRef, usersRefsArray)
+    console.log("allUsersTests", allUsersTests)
+    return allUsersTests
   }
 
   openModal() {
