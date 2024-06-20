@@ -12,6 +12,7 @@ import { Curso } from 'projects/shared/models/course.model';
 import { firestoreTimestampToNumberTimestamp } from 'shared';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DialogQuestionsDetailComponent } from 'projects/predyc-business/src/shared/components/questions/dialog-questions-detail/dialog-questions-detail.component';
+import { DocumentReference } from "@angular/fire/compat/firestore"
 
   interface CourseQuestionsData {
     courseQuestions: Question[]
@@ -62,6 +63,10 @@ export class QuestionsListComponent {
   @Input() enableNavigateToUser: boolean = true
   @Output() totalsCalculated = new EventEmitter<{answered: number, pending: number}>();
 
+  @Input() instructor: any
+  @Input() origin: string = 'admin'
+
+
   pageSize: number = 16
   totalLength: number
   
@@ -76,22 +81,44 @@ export class QuestionsListComponent {
   oneDay = 24*60*60*1000
 
   ngOnInit() {
-
-    this.combinedServicesSubscription = combineLatest(
-      [ 
-        this.questionService.getAllQuestions$(),
-        this.instructorService.getInstructors$(),
-      ]
-    ).
-    subscribe(([ questions, instructors]) => {
-      this.instructors = instructors
-      this.questions = questions.filter(x => !x.respondidaAI)
-      this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
-        const page = Number(params['page']) || 1;
-        const searchTerm = params['search'] || '';
-        this.performSearch(searchTerm, page);
+    if(this.origin == 'admin'){
+      this.combinedServicesSubscription = combineLatest(
+        [ 
+          this.questionService.getAllQuestions$(),
+          this.instructorService.getInstructors$(),
+        ]
+      ).
+      subscribe(([ questions, instructors]) => {
+        this.instructors = instructors
+        this.questions = questions.filter(x => !x.respondidaAI)
+        this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
+          const page = Number(params['page']) || 1;
+          const searchTerm = params['search'] || '';
+          this.performSearch(searchTerm, page);
+        })
       })
-    })
+    }
+    else if (this.origin == 'instructor'){
+      this.combinedServicesSubscription = combineLatest(
+        [ 
+          this.questionService.getAllQuestionsByInstructor$(this.instructor.ref),
+        ]
+      ).
+      subscribe(([questions]) => {
+        this.instructors = [this.instructor]
+        this.questions = questions.filter(x => !x.respondidaAI)
+
+        //console.log(this.instructors,this.questions)
+        this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
+          const page = Number(params['page']) || 1;
+          const searchTerm = params['search'] || '';
+          this.performSearch(searchTerm, page);
+        })
+      })
+
+    }
+
+
   }
 
 
@@ -101,8 +128,11 @@ export class QuestionsListComponent {
   }
 
   performSearch(searchTerm:string, page: number) {
-    this.courseSubscription = this.courseService.getAllCourses$().subscribe(courses => {
+    this.courseSubscription = this.courseService.getAllCourses$(this.instructor?.ref).subscribe(courses => {
       const dataInList: any[] = courses.map(course => {
+
+        console.log(this.instructors,course)
+
         const instructorData = this.instructors.find( x => x.id === course.instructorRef.id)
         return this.getDataToShow(course, instructorData)
       })
@@ -190,6 +220,9 @@ export class QuestionsListComponent {
 		});
 
 		modalRef.componentInstance.courseQuestionsData = data;
+    if(this.instructor){
+      modalRef.componentInstance.mode = 'instructor';
+    }
   }
 
   ngOnDestroy() {

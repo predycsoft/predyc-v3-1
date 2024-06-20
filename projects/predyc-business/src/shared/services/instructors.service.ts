@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { AngularFireFunctions } from '@angular/fire/compat/functions';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, firstValueFrom } from 'rxjs';
 import { EnterpriseService } from './enterprise.service';
 @Injectable({
   providedIn: 'root'
@@ -130,5 +130,18 @@ export class InstructorsService {
 
   public getInstructorRefById(id: string): DocumentReference {
     return this.afs.collection<any>("instructors").doc(id).ref
+  }
+
+
+  async getInstructorByEmail(email: string): Promise<any> {
+    const snapshot = await firstValueFrom(
+      this.afs.collection<any>('instructors', ref => ref.where('email', '==', email)).get()
+    );
+
+    if (snapshot.empty) {
+      return null;
+    }
+
+    return snapshot.docs.map(doc => doc.data());
   }
 }

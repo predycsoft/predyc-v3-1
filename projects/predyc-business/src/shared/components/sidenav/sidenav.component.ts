@@ -133,6 +133,22 @@ export class SideNavComponent {
     },
   ];
 
+
+  public instructorPages: Page[] = [
+
+    {
+      name: "Preguntas",
+      link: "/instructor/questions",
+      icon: "../../assets/iconsUI/help.svg",
+    },
+    {
+      name: "Regalías",
+      link: "/instructor/regalias",
+      icon: "../../assets/iconsUI/currency.svg",
+    },
+    
+  ];
+
   constructor(public icon: IconService, private authService: AuthService) {}
 
   @Input() menuExpanded = false;
@@ -140,7 +156,15 @@ export class SideNavComponent {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.currentUrl) {
-      this.pages = this.currentUrl.startsWith("/admin") ? this.adminPages : this.businessPages;
+      if(this.currentUrl.startsWith("/admin")){
+        this.pages = this.adminPages;
+      }
+      else if(this.currentUrl.startsWith("/instructor")){
+        this.pages =  this.instructorPages;
+      }
+      else{
+        this.pages =  this.businessPages;
+      }
     }
   }
 }

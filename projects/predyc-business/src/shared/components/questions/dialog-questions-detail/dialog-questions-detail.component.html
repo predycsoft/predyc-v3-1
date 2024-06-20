@@ -58,8 +58,8 @@
                                 <textarea [(ngModel)]="item.data.respuesta" class="fw fh"></textarea>
                             </div>
                             <div fxLayout="column" fxLayoutAlign=" start" fxLayoutGap=".25rem" class="">
-                                <button class="yellowButton ft12 shadow8" (click)="responder(i, false)">Enviar como administrador</button>
-                                <button class="greenButton ft12 shadow8" (click)="responder(i, true)">Enviar como instructor</button>
+                                <button *ngIf="mode == 'admin'"  class="yellowButton ft12 shadow8" (click)="responder(i, false)">Enviar como administrador</button>
+                                <button class="greenButton ft12 shadow8" (click)="responder(i, true)">{{mode == 'admin'?'Enviar como instructor':'Enviar respuesta'}}</button>
                                 <button class="redButton ft12 shadow8" (click)="item.respondiendo=false">Cancelar</button>
                             </div>
                         </div>
@@ -85,7 +85,7 @@
                                             Hoy a las {{item.data.timestampRespuesta | date:"hh:mm"}}
                                         </span>
                                     </div>
-                                    <div fxLayout="column">
+                                    <div *ngIf="mode=='admin' || true" fxLayout="column">
                                         <span class="ft11 gray/8">{{item.data.respuesta}} - 
                                             <span class="ft11 blueLink" (click)="item.respondiendo = true; item.data.respondida = false">
                                                 Actualizar Respuesta

@@ -22,6 +22,7 @@ import { roundNumber } from "projects/shared/utils";
 import { formatDate } from "@angular/common";
 import { CourseByStudent, Curso } from "shared";
 import { CourseService } from "../../../services/course.service";
+import { AngularFireFunctions } from "@angular/fire/compat/functions";
 
 @Component({
   selector: "app-create-instructor",
@@ -41,7 +42,9 @@ export class CreateInstrcutorComponent {
     private storage: AngularFireStorage,
     private afs: AngularFirestore,
     private modalService: NgbModal,
-    private courseService: CourseService
+    private courseService: CourseService,
+    private fireFunctions: AngularFireFunctions,
+
   ) 
   {
 
@@ -75,13 +78,22 @@ export class CreateInstrcutorComponent {
       firma:[null],
       porcentaje:[null],
       enterpriseRef:[null],
+      userRef:[null]
     });
 
     if (this.instructorToEdit) {
 
       let enterpriseRef = null
+      let userRef = null
       if(this.instructorToEdit?.enterpriseId){
         enterpriseRef = await this.afs.collection<Enterprise>(Enterprise.collection).doc(this.instructorToEdit.enterpriseId).ref;
+      }
+
+      console.log('this.instructorToEdit',this.instructorToEdit)
+
+      if(this.instructorToEdit?.uid){
+        userRef = await this.afs.collection<User>(User.collection).doc(this.instructorToEdit.uid).ref;
+        console.log('userRef',userRef)
       }
 
       this.instructorForm.patchValue({
@@ -92,6 +104,7 @@ export class CreateInstrcutorComponent {
         porcentaje: this.instructorToEdit.porcentaje,
         email:this.instructorToEdit.email,
         enterpriseRef: enterpriseRef,
+        userRef: userRef,
      })
 
      if (this.instructorToEdit.foto) {
@@ -271,5 +284,115 @@ export class CreateInstrcutorComponent {
           });
       });
     }
+  }
+
+  async createUser(){
+
+    let valores = this.instructorForm.value;
+
+    if(valores.email && valores.nombre){
+
+      const user = await firstValueFrom(
+        this.afs
+          .collection<User>(User.collection, (ref) =>
+            ref.where("email", "==", valores.email)
+          )
+          .valueChanges()
+      );
+
+      if (user.length === 0) {// no tiene usuario crear
+
+        Swal.fire({
+          title: "Generando usuario...",
+          text: "Por favor, espera.",
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          },
+        });
+
+        const userObj = User.getStudentUser()
+
+        console.log('userObj',userObj)
+
+        userObj.displayName =  valores.name
+        userObj.name = valores.name
+        userObj.email = valores.email
+        userObj.role = 'instructor'
+
+        const { uid } = await firstValueFrom(
+          this.fireFunctions.httpsCallable("createUserWithEmailAndPassword")({
+            email: valores.email as string,
+            name: valores.nombre,
+          })
+        );
+
+        const dataToSave =
+        typeof userObj.toJson === "function" ? userObj.toJson() : userObj;
+
+        await this.afs
+        .collection(User.collection)
+        .doc(uid)
+        .set({ ...dataToSave, uid: uid });
+
+       this.instructorToEdit.uid = uid;
+
+       const usereRef = await this.afs.collection<User>(User.collection).doc(uid).ref;
+
+       await this.afs
+       .collection('instructors')
+       .doc(this.instructorToEdit.id)
+       .update({ userRef:usereRef });
+
+       Swal.close();
+       this.alertService.succesAlert("Usuario Creado");
+       
+       this.instructorForm.get("userRef").patchValue(usereRef);
+      }
+
+      else{ // ya tiene usuario editar
+
+
+        Swal.fire({
+          title: "Generando usuario...",
+          text: "Por favor, espera.",
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          },
+        });
+
+        console.log(user)
+        const userI = user[0]
+
+        this.instructorToEdit.uid = userI.uid;
+        const usereRef = await this.afs.collection<User>(User.collection).doc(userI.uid).ref;
+        this.instructorForm.get("userRef").patchValue(usereRef);
+
+
+        await this.afs
+        .collection('instructors')
+        .doc(this.instructorToEdit.id)
+        .update({ userRef:usereRef });
+
+        await this.afs
+        .collection(User.collection)
+        .doc(userI.uid)
+        .update({ role:'instructor' });
+
+
+        Swal.close();
+
+        this.alertService.succesAlert("Usuario asignado");
+
+
+
+      }
+  
+
+    }
+
+
+
   }
 }

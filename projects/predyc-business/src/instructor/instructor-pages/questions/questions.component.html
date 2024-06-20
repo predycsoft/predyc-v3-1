@@ -1,0 +1,35 @@
+<div class="mgt20 mgl20 mgr20">
+    <p class="ft600 ft16 gray-10">Preguntas</p>
+    <div fxLayout="row" class="mgb05 fw" fxLayoutAlign="space-between center">
+        <div fxLayout="row" fxLayoutAlign="start" >
+            <div class="radius10 shadowLight pdt10   cards" alt="stats-empresas" fxLayoutAlign="center center" fxLayout="column" style="height: 10vh; background-color: rgba(244, 244, 244, 0.362); ">
+                <div fxLayout="row" class="mgb08" fxLayoutAlign="center center" >
+                    <div fxLayout="row" fxLayoutAlign="center center" class="border-rl">
+                        <div fxLayout="column" class="mgr20 mgl20" fxLayoutAlign="center center">
+                            <span class="ft08 ft500 mgt08" fxLayoutAlign="center center">Pendientes</span>
+                            <span class="fh ft12 ft500 makeGray mgb10 mgt10" fxLayoutAlign="center center">{{ totalPending }}</span>
+                        </div>
+                    </div>
+
+                    <div fxLayout="row" fxLayoutAlign="center center" class="border-rl">
+                        <div fxLayout="column" class="mgr20 mgl20" fxLayoutAlign="center center">
+                            <span class="ft08 ft500 mgt08" fxLayoutAlign="center center">Respondidas</span>
+                            <span class="fh ft12 ft500 makeGray mgb10 mgt10" fxLayoutAlign="center center">{{ totalAnswered }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div fxLayout="column" fxLayoutAlign="center end" fxLayoutGap=".25rem">
+            <div fxLayout="row"  class="radius20 mgr05  fw">
+                <app-search-input-box  fxLayoutAlign=" center" class="shadow-animation radius20 fw" style="height: 38px;  "></app-search-input-box>
+            </div>
+            
+        </div>
+    </div>
+    <!-- Questions list -->
+    <div fxLayout="columm" fxLayoutAlign="center center" class="fw vh50  " >
+        <app-questions-list *ngIf="intructor" origin="instructor" [instructor]="intructor" class="fw mgr03" (totalsCalculated)="updateTotals($event)"></app-questions-list>
+    </div>
+</div>    

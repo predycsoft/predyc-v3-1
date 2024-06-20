@@ -48,6 +48,8 @@ export class DialogQuestionsDetailComponent {
   ) { }
 
   @Input() courseQuestionsData: CourseQuestionsData;
+  @Input() mode: string = 'admin';
+
 
   preguntas: { data: Question, respondiendo: boolean, claseTitulo: string, instructorNombre: string, instructorFoto: string, usuarioNombre: string }[] = [];
   cantPreguntas = 0

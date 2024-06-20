@@ -31,22 +31,19 @@
                           Es obligatorio especificar el nombre del instructor
                         </div>
                       </div>
-
-
                       <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px">
                         <input formControlName="email" [class.is-invalid]="instructorForm.get('email').errors && displayErrors" type="email" 
-                               class="form-control radius20 shadow-animation borderLight"
-                               placeholder="email del instructor"  >
-                      </div>
+                            class="form-control radius20 shadow-animation borderLight"  placeholder="email del instructor"  >
+                            <button type="button" (click)="createUser()" *ngIf="instructorToEdit && !instructorToEdit?.uid" [disabled]="savingChanges" class="blueButtonAnim button-animation h28px" fxLayout="row" fxLayoutAlign="center center" >
+                                Crear usuario
+                            </button>
+                        </div>
                       <div class="custom-invalid-feedback"
                            *ngIf="instructorForm.get('email').errors && displayErrors">
                         <div *ngIf="instructorForm.get('email').errors?.required">
                           Es obligatorio especificar el email del instructor
                         </div>
                       </div>
-
-  
-
                 </div>
                 
             </div>

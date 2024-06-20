@@ -43,8 +43,8 @@ export class InstructorListComponent {
     'displayName',
     'porcentaje',
     'courses',
-    'liveCourses'
-
+    'liveCourses',
+    'user'
   ];
 
   dataSource = new MatTableDataSource<User>(); // Replace 'any' with your data type;
@@ -173,6 +173,7 @@ export class InstructorListComponent {
           id:instructor.id,
           email:instructor.email,
           enterpriseId:instructor.enterpriseRef?.id ? instructor.enterpriseRef.id: null ,
+          uid:instructor.userRef?.id ? instructor.userRef.id: null ,
           resumen:instructor.resumen,
           descripcion:instructor.descripcion,
           foto:instructor.foto,

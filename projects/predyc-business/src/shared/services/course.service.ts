@@ -669,8 +669,17 @@ export class CourseService {
     return this.afs.collection<Clase>(Clase.collection).valueChanges();
   }
 
-  getAllCourses$(): Observable<Curso[]> {
-    return this.afs.collection<Curso>(Curso.collection).valueChanges();
+  getAllCourses$(instructorRef?): Observable<Curso[]> {
+
+    if(instructorRef){
+      return this.afs.collection<Curso>(Curso.collection ,ref =>
+        ref.where('instructorRef', '==', instructorRef)
+      ).valueChanges();
+    }
+    else{
+      return this.afs.collection<Curso>(Curso.collection).valueChanges();
+
+    }
   }
 
 

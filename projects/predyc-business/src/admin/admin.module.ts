@@ -21,7 +21,6 @@ import { ProductFormComponent } from "./admin-pages/products/product-list/dialog
 import { StudentDetailComponent } from "./admin-pages/students/student-detail/student-detail.component";
 import { StudentSubscriptionListComponent } from "./admin-pages/students/student-detail/student-subscription-list/student-subscription-list.component";
 import { SalesListComponent } from "./admin-pages/sales/sales-list/sales-list.component";
-import { QuestionsListComponent } from "./admin-pages/questions/questions-list/questions-list.component";
 import { EnterpriseDetailComponent } from "./admin-pages/enterprise/enterprise-detail/enterprise-detail.component";
 import { EnterpriseInfoComponent } from "./admin-pages/enterprise/enterprise-detail/enterprise-info/enterprise-info.component";
 import { EnterpriseStudentsComponent } from "./admin-pages/enterprise/enterprise-detail/enterprise-students/enterprise-students.component";
@@ -73,7 +72,6 @@ import { ArticleComponent } from './admin-pages/articles/article/article.compone
     ProductFormComponent,
     StudentSubscriptionListComponent,
     SalesListComponent,
-    QuestionsListComponent,
     EnterpriseDetailComponent,
     EnterpriseInfoComponent,
     EnterpriseStudentsComponent,
