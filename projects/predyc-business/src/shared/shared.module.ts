@@ -97,6 +97,8 @@ import { InstructorListComponent } from "./components/instructors/instructor-lis
 import { InstructorRoyaltiesComponent } from "./components/instructors/instructor-royalties/instructor-royalties.component";
 import { QuestionsListComponent } from "./components/questions-list/questions-list.component";
 
+import { QuillModule } from "ngx-quill";
+
 
 @NgModule({
   declarations: [
@@ -200,6 +202,7 @@ import { QuestionsListComponent } from "./components/questions-list/questions-li
     NgxExtendedPdfViewerModule,
     DragDropModule,
     MatSlideToggleModule,
+    QuillModule
   ],
   exports: [
     SideNavComponent,
@@ -287,6 +290,7 @@ import { QuestionsListComponent } from "./components/questions-list/questions-li
     DialogCreateLicenseComponent,
     LiveCoursesComponent,
     CustomDatetimePipe,
+    QuillModule
   ],
 
   providers: [VimeoUploadService],

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
+import { AngularFirestore, DocumentReference, QuerySnapshot } from '@angular/fire/compat/firestore';
 import { LiveCourseByStudent } from 'projects/shared/models/live-course-by-student.model';
 import { LiveCourse, LiveCourseJson, LiveCourseTemplate } from 'projects/shared/models/live-course.model';
 import { Session, SessionJson, SessionTemplate } from 'projects/shared/models/session.model';
@@ -19,7 +19,7 @@ export class LiveCourseService {
     return this.afs.collection<LiveCourse>(LiveCourse.collection).doc(liveCourseId).valueChanges()
   }
 
-  getLiveCoursesByStudentByLivecourseSon$(liveCourseRef: DocumentReference<LiveCourse>): Observable<LiveCourseByStudent[]> {
+  getLiveCoursesByStudentByLivecourse$(liveCourseRef: DocumentReference<LiveCourse>): Observable<LiveCourseByStudent[]> {
     return this.afs.collection<LiveCourseByStudent>(LiveCourseByStudent.collection, (ref) =>ref.where("liveCourseRef", "==", liveCourseRef)).valueChanges();
   }
 
@@ -261,6 +261,30 @@ export class LiveCourseService {
     return this.afs.collection('userCertificate', ref =>ref.where("liveCourseId", "==", courseId).where("usuarioId", "==", userId)).valueChanges()
   }
 
+  async getUsersTestsData(courseRef: DocumentReference, userRefs: DocumentReference[]): Promise<any[]> {
+    if (userRefs.length === 0) return [];
+  
+    const chunkSize = 10;
+    const userChunks: DocumentReference[][] = [];
+  
+    for (let i = 0; i < userRefs.length; i += chunkSize) {
+      userChunks.push(userRefs.slice(i, i + chunkSize));
+    }
+  
+    const promises = userChunks.map(async chunk => {
+      console.log("chunk", chunk)
+      const querySnapshot = (await this.afs.collection<any>('coursesTestsByStudent')
+      .ref.where('courseRef', '==', courseRef).where('userRef', 'in', chunk)
+      .get());
+  
+      return querySnapshot.docs.map(doc => doc.data());
+    });
+  
+    const results = await Promise.all(promises);
+    return results.flat();
+  }
+  
+  
   
 
 }
