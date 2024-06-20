@@ -11,6 +11,9 @@
     </div>
 
     <div fxLayout="row" class="mgt10 fw fh" fxLayoutGap="2rem">
+      <ng-container *ngIf="calendarLiveCourses.length === 0">
+        <span class="ft14 ft500"> Aún no hay cursos en vivo.</span>
+      </ng-container>
       <ng-container *ngIf="calendarLiveCourses.length > 0">
         <app-calendar-live-courses-selector class="fw" [calendarLiveCourses]="calendarLiveCourses"></app-calendar-live-courses-selector>
       </ng-container>
