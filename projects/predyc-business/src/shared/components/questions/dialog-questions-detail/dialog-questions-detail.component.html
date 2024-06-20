@@ -44,6 +44,10 @@
                                     <a class="blue-5 ft11 ft500" target="_blank">
                                         {{item.claseTitulo}}
                                     </a>
+                                    <button *ngIf="item.claseType == 'video' && item.vimeoId1" (click)="verVideoVimeo(item)" class="grayButton pd03 radius4 ft12 h28px mgr10 w130px gray-10" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                        <img [src]="icon.playOutline" class="h16px pdr05" alt="">
+                                        Reproducir video
+                                    </button>
                                 </div>
                                 <div>
                                     <span class="ft11 gray-8">{{item.data.pregunta}}</span>
