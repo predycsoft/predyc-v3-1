@@ -47,6 +47,7 @@ import { EnterpriseLicensesCardsComponent } from "./admin-pages/enterprise/enter
 import { ArticlesComponent } from './admin-pages/articles/articles.component';
 import { ArticlesListComponent } from './admin-pages/articles/articles-list/articles-list.component';
 import { ArticleComponent } from './admin-pages/articles/article/article.component';
+import { ArticlePreviewComponent } from './admin-pages/articles/article-preview/article-preview.component';
 
 
 @NgModule({
@@ -95,7 +96,8 @@ import { ArticleComponent } from './admin-pages/articles/article/article.compone
     CertificationsFormComponent,
     ArticlesComponent,
     ArticlesListComponent,
-    ArticleComponent
+    ArticleComponent,
+    ArticlePreviewComponent
   ],
   imports: [SharedModule, CommonModule, AdminRoutingModule],
 })
