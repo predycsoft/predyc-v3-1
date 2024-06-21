@@ -20,8 +20,12 @@ export class ArticleService {
     return await this.afs.collection(this.collectionName).doc(articleId).set(articleData);
   }
 
-  getArticles(): Observable<any> {
+  getArticles$(): Observable<any> {
     return this.afs.collection(this.collectionName).valueChanges()
+  }
+
+  getArticleById$(articleId: string): Observable<any> {
+    return this.afs.collection(this.collectionName).doc(articleId).valueChanges()
   }
 
 }
