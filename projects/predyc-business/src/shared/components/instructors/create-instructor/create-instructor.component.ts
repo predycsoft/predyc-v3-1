@@ -339,9 +339,6 @@ export class CreateInstructorComponent {
 
       else{ // ya tiene usuario editar
 
-        alert('aqui')
-
-
         Swal.fire({
           title: "Generando usuario...",
           text: "Por favor, espera.",
