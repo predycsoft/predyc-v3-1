@@ -22,6 +22,7 @@ import { CreateLiveCourseComponent } from "../shared/components/live-courses/cre
 import { LiveCoursesComponent } from "../shared/components/live-courses/live-courses/live-courses.component";
 import { ArticlesComponent } from "./admin-pages/articles/articles.component";
 import { ArticleComponent } from "./admin-pages/articles/article/article.component";
+import { ArticlePreviewComponent } from "./admin-pages/articles/article-preview/article-preview.component";
 
 export const MAIN_TITLE = "Predyc Admin - ";
 
@@ -58,6 +59,7 @@ const routes: Routes = [
 
   { path: "articles", title: MAIN_TITLE + "Articulos", component: ArticlesComponent },
   { path: "articles/new", title: MAIN_TITLE + "Editar artículo", component: ArticleComponent },
+  { path: "articles/preview", title: MAIN_TITLE + "Editar artículo", component: ArticlePreviewComponent },
 
   { path: "**", redirectTo: "", pathMatch: "full" }, // Wildcard Route
 ];

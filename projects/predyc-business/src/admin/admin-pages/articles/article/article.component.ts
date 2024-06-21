@@ -1,8 +1,11 @@
 import { Component } from "@angular/core";
 import { AngularFirestore } from "@angular/fire/compat/firestore";
+import { AlertsService } from "projects/predyc-business/src/shared/services/alerts.service";
+import { ArticleService } from "projects/predyc-business/src/shared/services/article.service";
 
 import Quill from "quill";
 import BlotFormatter from "quill-blot-formatter/dist/BlotFormatter";
+import Swal from "sweetalert2";
 
 const Module = Quill.import("core/module");
 const BlockEmbed = Quill.import("blots/block/embed");
@@ -126,7 +129,10 @@ Quill.register({
   styleUrls: ["./article.component.css"],
 })
 export class ArticleComponent {
-  constructor(private _afs: AngularFirestore) {}
+  constructor(
+    private alertService: AlertsService,
+    private articleService: ArticleService,
+  ) {}
 
   test;
   format: "object" | "html" | "text" | "json" = "object";
@@ -153,18 +159,69 @@ export class ArticleComponent {
 
   editor: Quill;
 
-  public onEditorCreated(editor) {
+  author: string = ""
+  title: string = ""
+
+  onEditorCreated(editor) {
     this.editor = editor;
-    console.log(this.editor);
+    console.log("this.editor", this.editor);
   }
 
-  public debug() {
+  debug() {
     console.log("format", this.format);
     console.log("test", this.test);
     console.log("editor", this.editor.getContents());
   }
 
-  public save() {
-    this._afs.collection("article").doc().set({ data: this.editor.getContents().ops });
+  async save() {
+    Swal.fire({
+      title: "Generando artículo...",
+      text: "Por favor, espera.",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
+    try {
+      const dataToSave = {
+        author: this.author,
+        data: this.editor.getContents().ops,
+        date: new Date(),
+        id: null,
+        title: this.title
+      };
+
+      if (this.checkDocSize(dataToSave)) {
+        await this.articleService.saveArticle(dataToSave)
+        this.alertService.succesAlert("El artículo se ha guardado exitosamente");
+      }
+      else this.alertService.errorAlert("El artículo es muy pesado")
+
+    } 
+    catch (error) {
+      console.error("Error: ", error)
+    }
+     
+  }
+
+  checkDocSize(docData) {
+
+    // Convert the document data to a JSON string
+    const docDataJson = JSON.stringify(docData);
+
+    // Get the size of the document data in bytes
+    const docSizeInBytes = new TextEncoder().encode(docDataJson).length;
+
+    // Optionally, convert the size to kilobytes or megabytes
+    const docSizeInKB = docSizeInBytes / 1024;
+    const docSizeInMB = docSizeInKB / 1024;
+
+    console.log("Document size in bytes:", docSizeInBytes);
+    console.log("Document size in kilobytes:", docSizeInKB);
+    console.log("Document size in megabytes:", docSizeInMB);
+
+    return docSizeInBytes < 1048570 // the limit is 1.048.576 bytes
+    
   }
 }

@@ -249,6 +249,17 @@ export class LiveCourseStudentListComponent {
       const columnWidths = userColumnTitles.map((title) => ({ wch: title.length + 5 }));
       studentWorksheet["!cols"] = columnWidths;
 
+      // Set wrap text for all cells
+      Object.keys(studentWorksheet).forEach(cell => {
+        if (cell[0] !== '!') {
+          studentWorksheet[cell].s = {
+            alignment: {
+              wrapText: true
+            }
+          };
+        }
+      });
+
       // Ensure the sheet name is valid by replacing any invalid characters
       const sheetName = row.userName.replace(/[\[\]:*?/\\]/g, '_').substring(0, 31);
       XLSX.utils.book_append_sheet(workbook, studentWorksheet, `${sheetIndex}-${sheetName}`);
