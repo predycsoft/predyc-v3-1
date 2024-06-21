@@ -1,6 +1,7 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { QuestionsComponent } from "./instructor-pages/questions/questions.component";
+import { RoyaltiesComponent } from "./instructor-pages/royalties/royalties.component";
 
 
 export const MAIN_TITLE = "Predyc Instructor - ";
@@ -8,7 +9,7 @@ export const MAIN_TITLE = "Predyc Instructor - ";
 const routes: Routes = [
   { path: "", title: MAIN_TITLE + "Empresas", component: QuestionsComponent },
   { path: "questions", title: MAIN_TITLE + "Preguntas", component: QuestionsComponent },
-  { path: "regalias", title: MAIN_TITLE + "Regalías", component: QuestionsComponent },
+  { path: "regalias", title: MAIN_TITLE + "Regalías", component: RoyaltiesComponent },
   { path: "**", redirectTo: "", pathMatch: "full" }, // Wildcard Route
 ];
 
