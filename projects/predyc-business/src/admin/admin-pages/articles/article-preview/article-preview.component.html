@@ -1,3 +1,17 @@
+<app-navigate-back class="ft600 ft16 gray-10">Artículos</app-navigate-back>
 <div *ngIf="article" class="pd20">
-    <quill-view [content]="article.data" format="object" theme="snow"></quill-view>
+    <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap=".5rem" class="">
+        <span class="ft600 ft20"> {{article.title}} </span>
+        <quill-view [content]="article.data" format="object" theme="snow"></quill-view>
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".75rem" class="">
+            <span class="ft600 ft16"> Autor: </span>
+            <span class="ft500 ft16"> {{article.author | titlecase}} </span>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".75rem" class="">
+            <span class="ft600 ft14"> Etiquetas: </span>
+            <ng-container *ngFor="let tag of article.tags">
+                <span class="ft500 ft14"> {{tag | titlecase}}, </span>
+            </ng-container>
+        </div>
+    </div>
 </div>

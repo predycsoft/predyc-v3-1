@@ -1,9 +1,13 @@
-import { Component } from "@angular/core";
+import { Component, ViewChild } from "@angular/core";
 import { DocumentReference } from "@angular/fire/compat/firestore";
-import { Router } from "@angular/router";
+import { MatPaginator } from "@angular/material/paginator";
+import { MatTableDataSource } from "@angular/material/table";
+import { ActivatedRoute, Router } from "@angular/router";
+import { ArticleService } from "projects/predyc-business/src/shared/services/article.service";
 import { IconService } from "projects/predyc-business/src/shared/services/icon.service";
 import { UserJson } from "projects/shared";
-import { Observable, of } from "rxjs";
+import { Observable, Subscription, of } from "rxjs";
+import { firestoreTimestampToNumberTimestamp } from "shared";
 
 interface Owner {
   id: string;
@@ -69,24 +73,49 @@ const TEST_ARTICLES: Article[] = [
   styleUrls: ["./articles-list.component.css"],
 })
 export class ArticlesListComponent {
-  constructor(public icon: IconService, private _router: Router) {}
+  constructor(public icon: IconService, private router: Router, private activatedRoute: ActivatedRoute, private articleService: ArticleService) {}
 
-  displayedColumns: string[] = ["title", "owner", "tags", "createdAt"];
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  displayedColumns: string[] = ["title", "owner", "tags", "createdAt", "edit", "preview"];
   pageSize: number = 5;
   totalLength: number;
 
-  public dataSource: Observable<Article[]>;
+  queryParamsSubscription: Subscription;
+  articleServiceSubscription: Subscription;
+
+  dataSource = new MatTableDataSource<any>();
+
 
   ngOnInit() {
-    this.dataSource = of(TEST_ARTICLES);
+    this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe((params) => {
+      const page = Number(params["page"]) || 1;
+      this.performSearch(page);
+    });
   }
 
-  public onPageChange(page: number): void {
-    this._router.navigate([], {
+  performSearch(page: number) {
+    this.articleServiceSubscription = this.articleService.getArticles$().subscribe((articles) => {
+      console.log("articles", articles);
+      articles.forEach(article => {
+        article.createdAt = firestoreTimestampToNumberTimestamp(article.createdAt)
+      });
+      this.paginator.pageIndex = page - 1;
+      this.dataSource.data = articles;
+      this.totalLength = articles.length;
+    });
+  }
+
+  onPageChange(page: number): void {
+    this.router.navigate([], {
       queryParams: { page },
       queryParamsHandling: "merge",
     });
   }
 
   public delete(id: string): void {}
+
+  ngOnDestroy() {
+    if (this.queryParamsSubscription) this.queryParamsSubscription.unsubscribe();
+  }
 }
