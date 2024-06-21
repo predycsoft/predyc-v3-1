@@ -1,7 +1,9 @@
 import { Component } from "@angular/core";
 import { AngularFirestore } from "@angular/fire/compat/firestore";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { AlertsService } from "projects/predyc-business/src/shared/services/alerts.service";
 import { ArticleService } from "projects/predyc-business/src/shared/services/article.service";
+import { IconService } from "projects/predyc-business/src/shared/services/icon.service";
 
 import Quill from "quill";
 import BlotFormatter from "quill-blot-formatter/dist/BlotFormatter";
@@ -132,6 +134,8 @@ export class ArticleComponent {
   constructor(
     private alertService: AlertsService,
     private articleService: ArticleService,
+    private modalService: NgbModal,
+    public icon: IconService,
   ) {}
 
   test;
@@ -159,8 +163,11 @@ export class ArticleComponent {
 
   editor: Quill;
 
+  createTagModal
   author: string = ""
   title: string = ""
+  newTag: string = ""
+  tags: string[] = []
 
   onEditorCreated(editor) {
     this.editor = editor;
@@ -187,8 +194,9 @@ export class ArticleComponent {
       const dataToSave = {
         author: this.author,
         data: this.editor.getContents().ops,
-        date: new Date(),
+        createdAt: new Date(),
         id: null,
+        tags: this.tags,
         title: this.title
       };
 
@@ -223,5 +231,26 @@ export class ArticleComponent {
 
     return docSizeInBytes < 1048570 // the limit is 1.048.576 bytes
     
+  }
+
+  createTag(modal) {
+    this.newTag  = ""
+    this.createTagModal = this.modalService.open(modal, {
+      ariaLabelledBy: "modal-basic-title",
+      centered: true,
+      size: "sm",
+    });
+  }
+
+  saveTag() {
+    if (this.newTag) this.tags.push(this.newTag)
+    console.log("this.tags", this.tags)
+    this.createTagModal.close();
+  }
+
+  removeTag(tagIndex) {
+    this.tags.splice(tagIndex, 1)
+    console.log("this.tags", this.tags)
+
   }
 }

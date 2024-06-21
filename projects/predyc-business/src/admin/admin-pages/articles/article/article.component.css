@@ -16,3 +16,8 @@
     flex-direction: row;
     gap: 20px;
 }
+
+.customInput {
+    color: var(--gray-9) !important;
+    font-size: 12px;
+}
