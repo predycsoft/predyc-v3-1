@@ -223,11 +223,12 @@ export class ArticleComponent {
         updatedAt: this.articleId ? new Date() : null
       };
 
-      if (this.checkDocSize(dataToSave)) {
+      // if (this.checkDocSize(dataToSave)) {
         await this.articleService.saveArticle(dataToSave)
+        // await this.articleService.saveArticle(dataToSave, !!this.articleId) //To save in sub collections
         this.alertService.succesAlert("El artículo se ha guardado exitosamente");
-      }
-      else this.alertService.errorAlert("El artículo es muy pesado")
+      // }
+      // else this.alertService.errorAlert("El artículo es muy pesado")
 
     } 
     catch (error) {
