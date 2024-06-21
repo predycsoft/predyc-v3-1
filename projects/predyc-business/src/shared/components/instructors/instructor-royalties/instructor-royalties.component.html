@@ -1,6 +1,6 @@
 <div class="fw">
     <table *ngIf="royaltiesData" class="fw pdb20">
-        <thead>
+        <thead *ngIf="origen!='instructor'">
             <th>Instructor</th>
             <th>Hrs Tot</th>
             <th>Fv Tot.</th>
@@ -10,7 +10,7 @@
             <th>Inst USD</th>
         </thead>
         <ng-container *ngFor="let instructor of royaltiesData.instructores">
-            <tr>
+            <tr *ngIf="origen!='instructor'">
                 <td class="backGray5 gray-2">{{instructor.nombre}}</td>
                 <td class="backGray5 centertext gray-2">{{(instructor.tiempoTotalMinutes / 60) | number:"1.2-2"}} h</td>
                 <td class="backGray5 centertext gray-2">{{instructor.factorVisualizacion | number:"1.2-2"}}%</td>
@@ -23,7 +23,7 @@
                 <th>Curso</th>
                 <th>Hrs Tot</th>
                 <th>Fv Tot.</th>
-                <th>% Reg.</th>
+                <th *ngIf="origen!='instructor'">% Reg.</th>
                 <th>Tot USD</th>
                 <th>Predyc USD</th>
                 <th>Inst USD</th>
@@ -32,7 +32,7 @@
                 <td class="centertext">{{curso.name}}</td>
                 <td class="centertext">{{(curso.tiempoVistoMinutes)/60 | number: "1.2-2"}} h</td>
                 <td class="centertext">{{curso.factorVisualizacion | number:"1.2-2"}}%</td>
-                <td class="centertext">{{instructor.porcentaje}}%</td>
+                <td *ngIf="origen!='instructor'" class="centertext">{{instructor.porcentaje}}%</td>
                 <td class="centertext">{{curso.montoTotal | number:"1.2-2"}} USD</td>
                 <td class="centertext">{{curso.montoPredyc | number:"1.2-2"}} USD</td>
                 <td class="centertext">{{curso.montoInstructor | number:"1.2-2"}} USD</td>

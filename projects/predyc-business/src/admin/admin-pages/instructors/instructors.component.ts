@@ -3,7 +3,7 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { CreateInstrcutorComponent } from 'projects/predyc-business/src/shared/components/instructors/create-instructor/create-instructor.component';
+import { CreateInstructorComponent } from 'projects/predyc-business/src/shared/components/instructors/create-instructor/create-instructor.component';
 import { AlertsService } from 'projects/predyc-business/src/shared/services/alerts.service';
 import { CourseService } from 'projects/predyc-business/src/shared/services/course.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
@@ -179,13 +179,13 @@ export class InstructorsComponent {
           return clase.clase
         });
         instructor.datosClases = datosClases.length>0 ? datosClases : []
-        let tiempoInstrcutor = 0
+        let tiempoInstructor = 0
         datosClases.forEach(clasesVistas => {
-          tiempoInstrcutor+=clasesVistas.duracion
+          tiempoInstructor+=clasesVistas.duracion
         });
-        let FactorVisualizacion = tiempoInstrcutor*100/totalTime;
+        let FactorVisualizacion = tiempoInstructor*100/totalTime;
 
-        instructor.tiempoTotal = tiempoInstrcutor
+        instructor.tiempoTotal = tiempoInstructor
         instructor.factorVisualizacion = FactorVisualizacion
 
         const montoTotal = (FactorVisualizacion/100)*valores.amount
@@ -339,7 +339,7 @@ findDuplicates(clasesVistasArray: any[]): any[] {
 
   openCreateInstructorrModal(instructor: any | null) {
     console.log('instructor',instructor)
-    const modalRef = this.modalService.open(CreateInstrcutorComponent, {
+    const modalRef = this.modalService.open(CreateInstructorComponent, {
       animation: true,
       centered: true,
       size: 'lg',

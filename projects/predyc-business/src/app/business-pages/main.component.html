@@ -2,10 +2,14 @@
     <div class="main_top" fxLayout="row" fxLayoutAlign="space-between center">
         <ng-container *ngIf="user$ | async as user">
             <div fxLayout="row" fxLayoutAlign=" center">
-                <div fxLayout="row" class="cursorPointer" [routerLink]="isAdminPage ? '/admin' : ''">
+                <div fxLayout="row" class="cursorPointer" [routerLink]="routerLink">
                     <img [src]="icon.predyc" class="h24px" alt="">
-                    <div class="ft600 gray-10 mgl05">Predyc <span *ngIf="isAdminPage" class="gray-6">ADMIN</span><span *ngIf="isInstructorPage" class="gray-6">INSTRUCTOR</span></div>
-                </div>
+                    <div class="ft600 gray-10 mgl05">
+                      Predyc 
+                      <span *ngIf="isAdminPage" class="gray-6">ADMIN</span>
+                      <span *ngIf="isInstructorPage" class="gray-6">INSTRUCTOR</span>
+                    </div>
+                  </div>
                 <!-- <div class="radius20 searchBar pdl05 pdr05" fxLayout="row" fxLayoutAlign=" center">
                     <img [src]="icon.search" class="h20px" alt="">
                     <input type="text" class="inputSearchBar ft12 fw pdl05" placeholder="Buscar en usuarios y perfiles">

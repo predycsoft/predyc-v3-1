@@ -95,4 +95,14 @@ export class MainComponent {
     this.router.navigate([""])
     this.authService.signOut();
   }
+
+  get routerLink(): string {
+    if (this.isAdminPage) {
+      return '/admin';
+    } else if (this.isInstructorPage) {
+      return '/instructor';
+    } else {
+      return '';
+    }
+  }
 }

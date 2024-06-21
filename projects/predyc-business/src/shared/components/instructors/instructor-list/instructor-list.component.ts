@@ -16,7 +16,7 @@ import { EnterpriseService } from '../../../services/enterprise.service';
 import { InstructorsService } from '../../../services/instructors.service';
 import { LiveCourseService } from '../../../services/live-course.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { CreateInstrcutorComponent } from '../create-instructor/create-instructor.component';
+import { CreateInstructorComponent } from '../create-instructor/create-instructor.component';
 
 interface User {
   displayName: string,
@@ -88,7 +88,7 @@ export class InstructorListComponent {
 
   openCreateInstructorrModal(instructor: any | null) {
     console.log('instructor',instructor)
-    const modalRef = this.modalService.open(CreateInstrcutorComponent, {
+    const modalRef = this.modalService.open(CreateInstructorComponent, {
       animation: true,
       centered: true,
       size: 'lg',
@@ -109,11 +109,11 @@ export class InstructorListComponent {
 
   ngOnInit() {
 
-    // this.loadInstrcutor()
+    // this.loadInstructor()
 
   }
 
-  loadInstrcutor(){
+  loadInstructor(){
     this.first = true
     this.dataSource.paginator = this.paginator;
 
@@ -232,7 +232,7 @@ export class InstructorListComponent {
     this.dataSource.paginator = this.paginator;
     this.dataSource.paginator.pageSize = this.pageSize;
 
-    this.loadInstrcutor()
+    this.loadInstructor()
 
   }
 

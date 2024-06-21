@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { User } from 'projects/shared/models/user.model';
 
 @Injectable({
@@ -15,7 +15,9 @@ export class AuthService {
   constructor(
     private afAuth: AngularFireAuth,
     private afs: AngularFirestore,
-  ) {}
+  ) {
+    console.log('Se instancio el AuthService service')
+  }
 
   subscribeToAuthState() {
     this.afAuth.authState.subscribe(async user => {
@@ -52,4 +54,17 @@ export class AuthService {
       window.location.reload();   
     }, 10);
   }
+
+
+
+  async waitForUser(): Promise<User | null> {
+    while (true) {
+      const user = await new Promise<User | null>(resolve => {
+        this.user$.subscribe(u => resolve(u));
+      });
+      if (user !== null) return user;
+      await new Promise(resolve => setTimeout(resolve, 100)); // esperar 100ms
+    }
+  }
+
 }

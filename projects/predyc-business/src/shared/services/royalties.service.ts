@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { AngularFirestore} from "@angular/fire/compat/firestore";
-import { BehaviorSubject, Observable } from "rxjs";
+import { BehaviorSubject, Observable, firstValueFrom } from "rxjs";
 
 
 @Injectable({
@@ -22,11 +22,33 @@ export class RoyaltiesService {
     );
   }
 
-  // private royaltiesSubject = new BehaviorSubject<any[]>([]);
-  // private royalties$ = this.royaltiesSubject.asObservable();
 
   getRoyalties$(): Observable<any[]> {
     return this.afs.collection<'any'>('royalties').valueChanges();
+  }
+
+
+
+
+  async getRoyaltiesInstructor(idInstructor?: string): Promise<any> {
+
+    const snapshot = await firstValueFrom(
+      this.afs.collection<any>('royalties', ref => ref.where('borrador', '==', false)).get()
+    );
+    if (snapshot.empty) {
+      return null;
+    }
+    const datos = snapshot.docs.map(doc => doc.data())
+    datos?.forEach(royalties => {
+      delete royalties.totalPredyc
+      delete royalties.totalInstructores
+      delete royalties.amount
+      let instructorData = royalties.instructores.find(x=>x.id == idInstructor)
+      delete royalties.instructores
+      royalties.instructores = instructorData ? [instructorData] : null
+    });
+
+    return datos;
   }
 
   

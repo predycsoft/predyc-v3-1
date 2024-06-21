@@ -19,7 +19,7 @@ export class InstructorUserGuard {
   ): Observable<boolean> {
     return this.afAuth.authState.pipe(
         switchMap(user => {
-            return  this.afs.collection<User>(User.collection).doc(user.uid).valueChanges().pipe(
+            return  this.afs.collection<User>(User.collection).doc(user?.uid).valueChanges().pipe(
                 map(user => {
                     if (user?.role=='instructor') {
                         return true

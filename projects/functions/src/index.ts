@@ -52,3 +52,8 @@ export { mailAccountManagementAdmin,mailAccountManagementUsers }
 
 import {generateMailCertificate} from './certificado'
 export { generateMailCertificate }
+
+
+
+import {getRoyaltiesInstructor} from './royalties'
+export { getRoyaltiesInstructor }
