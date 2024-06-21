@@ -9,6 +9,7 @@
 .ql-toolbar {
     display: flex;
     flex-direction: row;
+    justify-content: center;
 }
 .ql-formats {
     display: flex;
