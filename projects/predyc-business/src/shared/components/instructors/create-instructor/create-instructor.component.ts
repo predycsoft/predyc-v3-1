@@ -29,7 +29,7 @@ import { AngularFireFunctions } from "@angular/fire/compat/functions";
   templateUrl: "./create-instructor.component.html",
   styleUrls: ["./create-instructor.component.css"],
 })
-export class CreateInstrcutorComponent {
+export class CreateInstructorComponent {
   constructor(
     private activeModal: NgbActiveModal,
     private alertService: AlertsService,
@@ -138,8 +138,8 @@ export class CreateInstrcutorComponent {
 
     if(this.instructorForm.valid){
 
-      await this.saveInstrcutorFirma();
-      await this.saveInstrcutorPhoto();
+      await this.saveInstructorFirma();
+      await this.saveInstructorPhoto();
 
       let valores = this.instructorForm.value;
       valores.id = null;
@@ -212,7 +212,7 @@ export class CreateInstrcutorComponent {
   }
 
 
-  async saveInstrcutorFirma() {
+  async saveInstructorFirma() {
     if (this.uploadedImageFirma) {
       if (this.instructorForm.controls.firma) {
         try {
@@ -249,7 +249,7 @@ export class CreateInstrcutorComponent {
     }
   }
 
-  async saveInstrcutorPhoto() {
+  async saveInstructorPhoto() {
     if (this.uploadedImagePhoto) {
       if (this.instructorForm.controls.foto) {
         try {

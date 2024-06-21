@@ -54,12 +54,12 @@ import { ProfilesListComponent } from "./business-pages/management/profiles-list
 import { UsersOnboardingComponent } from "./business-pages/dashboard/users-onboarding/users-onboarding.component";
 import { UsersaAtivityComponent } from "./business-pages/dashboard/users-activity/users-activity.component";
 import { UsersUsageComponent } from "./business-pages/dashboard/users-usage/users-usage.component";
-import { CreateInstrcutorComponent } from "../shared/components/instructors/create-instructor/create-instructor.component";
+import { CreateInstructorComponent } from "../shared/components/instructors/create-instructor/create-instructor.component";
 
 import { QuillModule } from "ngx-quill";
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, DashboardComponent, ManagementComponent, CoursesComponent, ValidationComponent, SettingsComponent, MyTeamComponent, ProfilesListComponent, NotificationsComponent, StudentComponent, MainComponent, CreateCourseComponent, CertificationsTestComponent, MyAccountComponent, EnterprisePresentationFormComponent, EnterpriseInfoFormComponent, AdminPresentationFormComponent, AdminInfoFormComponent, EnterpriseDataComponent, AdminDataComponent, ValidationListComponent, EditValidationTestComponent, RankingListComponent, UsersOnboardingComponent, UsersUsageComponent, UsersaAtivityComponent, StudentStatsComponent, StudentDetailsComponent, UsersRhythmComponent, UsersStudyTimeContainerComponent, StudyTimeWeeklyChartComponent, StudyTimeMonthlyChartComponent, CreateUserComponent, ProfilesComponent, StudentInfoFormComponent, StudentStudyPlanAndCompetencesComponent, StudyTimeMonthlyLineChartComponent, CreateInstrcutorComponent],
+  declarations: [AppComponent, LoginComponent, DashboardComponent, ManagementComponent, CoursesComponent, ValidationComponent, SettingsComponent, MyTeamComponent, ProfilesListComponent, NotificationsComponent, StudentComponent, MainComponent, CreateCourseComponent, CertificationsTestComponent, MyAccountComponent, EnterprisePresentationFormComponent, EnterpriseInfoFormComponent, AdminPresentationFormComponent, AdminInfoFormComponent, EnterpriseDataComponent, AdminDataComponent, ValidationListComponent, EditValidationTestComponent, RankingListComponent, UsersOnboardingComponent, UsersUsageComponent, UsersaAtivityComponent, StudentStatsComponent, StudentDetailsComponent, UsersRhythmComponent, UsersStudyTimeContainerComponent, StudyTimeWeeklyChartComponent, StudyTimeMonthlyChartComponent, CreateUserComponent, ProfilesComponent, StudentInfoFormComponent, StudentStudyPlanAndCompetencesComponent, StudyTimeMonthlyLineChartComponent, CreateInstructorComponent],
   imports: [BrowserModule, BrowserAnimationsModule, SharedModule, AppRoutingModule, AngularFireModule.initializeApp(environment.firebase), NgbModule, QuillModule.forRoot()],
   providers: [
     { provide: SETTINGS, useValue: { ignoreUndefinedProperties: true } },

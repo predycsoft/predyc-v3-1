@@ -11,6 +11,8 @@ import { Component, Input, SimpleChanges } from '@angular/core';
 export class InstructorRoyaltiesComponent {
 
   @Input() royaltiesData: any;
+  @Input() origen: string = 'admin'
+
 
 
   constructor(

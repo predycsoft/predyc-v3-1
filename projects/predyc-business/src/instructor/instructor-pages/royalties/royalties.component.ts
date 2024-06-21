@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AuthService } from 'projects/predyc-business/src/shared/services/auth.service';
 import { InstructorsService } from 'projects/predyc-business/src/shared/services/instructors.service';
@@ -41,20 +41,21 @@ export class RoyaltiesComponent {
 
       let royalties = await this.royaltiesService.getRoyaltiesInstructor(this.intructor.id)
 
-      if( royalties && royalties?.instructor){
-        this.royalties = royalties.instrcutor
-        console.log('this.royalties', this.royalties)
+      // Ordenar por dateSaved de más reciente a más antiguo
+      royalties = royalties.sort((a, b) => {
+        return b.dateSaved.seconds - a.dateSaved.seconds;
+      });
 
+      if(royalties){
+        this.royalties = royalties
+        console.log(this.royalties )
       }
-
-
-
-
-
 
     })
 
   }
+  
+
 
 
 

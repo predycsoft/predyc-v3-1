@@ -45,7 +45,7 @@ export class RoyaltiesService {
       delete royalties.amount
       let instructorData = royalties.instructores.find(x=>x.id == idInstructor)
       delete royalties.instructores
-      royalties.instructor = instructorData ? instructorData : null
+      royalties.instructores = instructorData ? [instructorData] : null
     });
 
     return datos;
