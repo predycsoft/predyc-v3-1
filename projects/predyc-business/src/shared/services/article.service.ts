@@ -13,12 +13,20 @@ export class ArticleService {
     private afs: AngularFirestore
   ) { }
 
-  async saveArticle(articleData:any): Promise<void> {
-    const articleId = (this.afs.collection(this.collectionName).doc().ref).id
-    articleData.id = articleId
+  async saveArticle(articleData: any): Promise<void> {
+    let articleId: string = articleData.id;
 
-    return await this.afs.collection(this.collectionName).doc(articleId).set(articleData);
+    if (!articleId) {
+      articleId = this.afs.createId();
+      articleData.id = articleId;
+      return await this.afs.collection(this.collectionName).doc(articleId).set(articleData);
+    } else {
+        // Excluding createdAt from the update
+        const { createdAt, ...dataToUpdate } = articleData;
+        return await this.afs.collection(this.collectionName).doc(articleId).update(dataToUpdate);
+    }
   }
+
 
   getArticles$(): Observable<any> {
     return this.afs.collection(this.collectionName).valueChanges()

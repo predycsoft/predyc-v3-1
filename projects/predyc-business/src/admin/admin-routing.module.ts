@@ -59,7 +59,8 @@ const routes: Routes = [
 
   { path: "articles", title: MAIN_TITLE + "Articulos", component: ArticlesComponent },
   { path: "articles/new", title: MAIN_TITLE + "Editar artículo", component: ArticleComponent },
-  { path: "articles/:articleId", title: MAIN_TITLE + "Artículo", component: ArticlePreviewComponent },
+  { path: "articles/edit/:articleId", title: MAIN_TITLE + "Artículo", component: ArticleComponent },
+  { path: "articles/preview/:articleId", title: MAIN_TITLE + "Artículo", component: ArticlePreviewComponent },
 
   { path: "**", redirectTo: "", pathMatch: "full" }, // Wildcard Route
 ];

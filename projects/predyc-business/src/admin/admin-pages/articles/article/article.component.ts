@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import { AngularFirestore } from "@angular/fire/compat/firestore";
+import { ActivatedRoute } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { AlertsService } from "projects/predyc-business/src/shared/services/alerts.service";
 import { ArticleService } from "projects/predyc-business/src/shared/services/article.service";
@@ -136,7 +137,10 @@ export class ArticleComponent {
     private articleService: ArticleService,
     private modalService: NgbModal,
     public icon: IconService,
+    private route: ActivatedRoute
   ) {}
+
+  articleId = this.route.snapshot.paramMap.get("articleId");
 
   test;
   format: "object" | "html" | "text" | "json" = "object";
@@ -169,6 +173,24 @@ export class ArticleComponent {
   newTag: string = ""
   tags: string[] = []
 
+  ngOnInit() {
+    if (this.articleId) this.loadArticle(this.articleId);
+  }
+
+  async loadArticle(articleId: string) {
+    try {
+      this.articleService.getArticleById$(articleId).subscribe(article => {
+        this.author = article.author;
+        this.title = article.title;
+        this.tags = article.tags;
+        this.editor.setContents(article.data);
+      })
+    } catch (error) {
+      console.error('Error fetching article:', error);
+      this.alertService.errorAlert('Error fetching article');
+    }
+  }
+
   onEditorCreated(editor) {
     this.editor = editor;
     console.log("this.editor", this.editor);
@@ -194,10 +216,11 @@ export class ArticleComponent {
       const dataToSave = {
         author: this.author,
         data: this.editor.getContents().ops,
-        createdAt: new Date(),
-        id: null,
+        createdAt: this.articleId ? null : new Date(),
+        id: this.articleId ? this.articleId : null,
         tags: this.tags,
-        title: this.title
+        title: this.title,
+        updatedAt: this.articleId ? new Date() : null
       };
 
       if (this.checkDocSize(dataToSave)) {
