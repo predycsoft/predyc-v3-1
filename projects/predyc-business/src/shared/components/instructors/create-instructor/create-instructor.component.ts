@@ -301,7 +301,6 @@ export class CreateInstructorComponent {
       );
 
       if (user.length === 0) {// no tiene usuario crear
-
         Swal.fire({
           title: "Generando usuario...",
           text: "Por favor, espera.",
@@ -310,47 +309,37 @@ export class CreateInstructorComponent {
             Swal.showLoading();
           },
         });
-
         const userObj = User.getStudentUser()
-
-        console.log('userObj',userObj)
-
         userObj.displayName =  valores.name
         userObj.name = valores.name
         userObj.email = valores.email
         userObj.role = 'instructor'
-
         const { uid } = await firstValueFrom(
-          this.fireFunctions.httpsCallable("createUserWithEmailAndPassword")({
+          this.fireFunctions.httpsCallable("createInstructorWithEmailAndPassword")({
             email: valores.email as string,
             name: valores.nombre,
           })
         );
-
         const dataToSave =
         typeof userObj.toJson === "function" ? userObj.toJson() : userObj;
-
         await this.afs
         .collection(User.collection)
         .doc(uid)
         .set({ ...dataToSave, uid: uid });
-
        this.instructorToEdit.uid = uid;
-
        const usereRef = await this.afs.collection<User>(User.collection).doc(uid).ref;
-
        await this.afs
        .collection('instructors')
        .doc(this.instructorToEdit.id)
        .update({ userRef:usereRef });
-
        Swal.close();
        this.alertService.succesAlert("Usuario Creado");
-       
        this.instructorForm.get("userRef").patchValue(usereRef);
       }
 
       else{ // ya tiene usuario editar
+
+        alert('aqui')
 
 
         Swal.fire({
@@ -379,6 +368,14 @@ export class CreateInstructorComponent {
         .collection(User.collection)
         .doc(userI.uid)
         .update({ role:'instructor' });
+
+
+        await firstValueFrom(
+          this.fireFunctions.httpsCallable("rememberInstructorWithEmailAndPassword")({
+            email: valores.email as string,
+            name: valores.nombre,
+          })
+        );
 
 
         Swal.close();

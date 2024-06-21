@@ -13,8 +13,8 @@ export { updateDataEnterpriseUsage,updateDataAllEnterprisesUsage,updateDataAllEn
 
 
 
-import { createUserWithEmailAndPassword,deleteUser, generatePasswordResetLink, emptyDatabase } from './authentication';
-export { createUserWithEmailAndPassword,deleteUser, generatePasswordResetLink, emptyDatabase }
+import { createUserWithEmailAndPassword,deleteUser, generatePasswordResetLink, emptyDatabase,createInstructorWithEmailAndPassword,rememberInstructorWithEmailAndPassword } from './authentication';
+export { createUserWithEmailAndPassword,deleteUser, generatePasswordResetLink, emptyDatabase,createInstructorWithEmailAndPassword,rememberInstructorWithEmailAndPassword }
 
 import { createTractianUser } from './tractian';
 export { createTractianUser }
