@@ -95,6 +95,7 @@ import { CustomDatetimePipe } from './pipes/custom-datetime.pipe';
 import { DialogAssignLiveCoursesComponent } from './components/live-courses/create-live-course/live-course-student-list/dialog-assign-live-courses/dialog-assign-live-courses.component';
 import { InstructorListComponent } from "./components/instructors/instructor-list/instructor-list.component";
 import { InstructorRoyaltiesComponent } from "./components/instructors/instructor-royalties/instructor-royalties.component";
+import { QuestionsListComponent } from "./components/questions-list/questions-list.component";
 
 import { QuillModule } from "ngx-quill";
 
@@ -160,6 +161,7 @@ import { QuillModule } from "ngx-quill";
     LiveCourseFollowingComponent,
     CustomDatetimePipe,
     DialogAssignLiveCoursesComponent,
+    QuestionsListComponent,
   ],
   imports: [
     CommonModule,
@@ -210,6 +212,7 @@ import { QuillModule } from "ngx-quill";
     StudentListComponent,
     InstructorListComponent,
     InstructorRoyaltiesComponent,
+    QuestionsListComponent,
     ProfileListComponent,
     SafePipe,
     CustomDatePipe,

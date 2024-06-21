@@ -190,6 +190,7 @@ export class AdminStudentListComponent {
                 uid: user.uid,
                 photoUrl: user.photoUrl,
                 email: user.email,
+                role:user.role,
                 createdAt: user.createdAt,
                 updatedAt: user.updatedAt,
                 phoneNumber: user.phoneNumber,

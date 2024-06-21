@@ -22,9 +22,16 @@ export class QuestionService {
     return this.afs.collection<Question>(Question.collection).valueChanges();
   }
 
+
+  getAllQuestionsByInstructor$(instructorRef): Observable<Question[]> {
+    return this.afs.collection<Question>(Question.collection, (ref) =>ref.where("instructorRef", "==", instructorRef)).valueChanges();
+  }
+
+
   getCourseQuestions$(courseRef): Observable<Question[]> {
     return this.afs.collection<Question>(Question.collection, (ref) =>ref.where("courseRef", "==", courseRef)).valueChanges();
   }
+  
 
   answereQuestion(questionId: string, timestampRespuesta, respuesta: string, respondidaInstructor: boolean) {
     this.afs.collection(Question.collection).doc(questionId).set({

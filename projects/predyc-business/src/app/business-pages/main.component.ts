@@ -34,11 +34,15 @@ export class MainComponent {
       this.currentUrl = event.url;
       // console.log("CurrentUrl" , this.currentUrl)
       this.isAdminPage =  this.currentUrl.startsWith("/admin")
+      this.isInstructorPage =  this.currentUrl.startsWith("/instructor")
+
     });
   }
 
   currentUrl: string;
   isAdminPage: boolean
+  isInstructorPage: boolean
+
 
   user: User
   user$: Observable<User> = this.authService.user$
@@ -84,5 +88,11 @@ export class MainComponent {
     else {
       this.router.navigate(["/admin"])
     }
+  }
+
+
+  signOut() {
+    this.router.navigate([""])
+    this.authService.signOut();
   }
 }

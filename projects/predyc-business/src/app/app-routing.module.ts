@@ -21,6 +21,7 @@ import { SystemUserGuard } from "projects/predyc-business/src/admin/guards/syste
 import { MigrationsComponent } from "../shared/components/migrations/migrations.component";
 import { CertificationsTestComponent } from "./business-pages/management/certificationsTest/certificationsTest.component";
 import { ProfilesListComponent } from "./business-pages/management/profiles-list/profiles-list.component";
+import { InstructorUserGuard } from "../instructor/guards/instructorUser.guard";
 
 const MAIN_TITLE = "Predyc - ";
 
@@ -58,12 +59,17 @@ const routes: Routes = [
         loadChildren: () => import("../admin/admin.module").then((m) => m.AdminModule),
         canActivate: [SystemUserGuard],
       },
+      {
+        path: "instructor",
+        loadChildren: () => import("../instructor/instructor.module").then((m) => m.InstructorModule),
+        canActivate: [InstructorUserGuard],
+      },
     ],
   },
   {
     path: "login",
     component: LoginComponent,
-    canActivate: [AuthGuard],
+    canActivate: [],
     children: [
       // other non-authenticated routes like signup...
     ],

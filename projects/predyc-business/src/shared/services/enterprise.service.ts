@@ -28,7 +28,7 @@ export class EnterpriseService {
   ) {
     console.log("Se instancio el enterprise service")
     this.authService.user$.subscribe(async (user) => {
-      if (user) {
+      if (user && user.role!='instructor') {
         // Load the enterprise data based on the authenticated user
         // const enterpriseDocumentReference = await ((user.enterprise as DocumentReference).get())
         // const enterprise = enterpriseDocumentReference.data() as Enterprise
