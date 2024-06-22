@@ -3,6 +3,8 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AuthService } from 'projects/predyc-business/src/shared/services/auth.service';
 import { InstructorsService } from 'projects/predyc-business/src/shared/services/instructors.service';
 import { RoyaltiesService } from '../../../shared/services/royalties.service';
+import { firstValueFrom } from 'rxjs';
+import { AngularFireFunctions } from '@angular/fire/compat/functions';
 
 @Component({
   selector: 'app-royalties-courses',
@@ -15,7 +17,9 @@ export class RoyaltiesComponent {
     private authService: AuthService,
     private instructorsService:InstructorsService,
     private afs: AngularFirestore,
-    private royaltiesService:RoyaltiesService
+    private royaltiesService:RoyaltiesService,
+    private fireFunctions: AngularFireFunctions,
+
   ) 
   {
 
@@ -39,16 +43,29 @@ export class RoyaltiesComponent {
       console.log(intructor)
       this.intructor = intructor
 
-      let royalties = await this.royaltiesService.getRoyaltiesInstructor(this.intructor.id)
+      //let royalties = await this.royaltiesService.getRoyaltiesInstructor(this.intructor.id)
 
-      // Ordenar por dateSaved de más reciente a más antiguo
-      royalties = royalties.sort((a, b) => {
-        return b.dateSaved.seconds - a.dateSaved.seconds;
-      });
-
-      if(royalties){
-        this.royalties = royalties
-        console.log(this.royalties )
+      try{
+        let royalties = await firstValueFrom(
+          this.fireFunctions.httpsCallable("getRoyaltiesInstructor")({
+            idInstructor:this.intructor.id as string,
+          })
+        );
+  
+        console.log(royalties)
+  
+        // Ordenar por dateSaved de más reciente a más antiguo
+        royalties = royalties.sort((a, b) => {
+          return b.dateSaved.seconds - a.dateSaved.seconds;
+        });
+  
+        if(royalties){
+          this.royalties = royalties
+          console.log(this.royalties )
+        }
+      }
+      catch{
+        this.royalties = null
       }
 
     })
