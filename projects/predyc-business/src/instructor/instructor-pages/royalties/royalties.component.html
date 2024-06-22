@@ -1,42 +1,33 @@
 <div class="mgt20 mgl20 mgr20">
-    <p class="ft600 ft16 gray-10">Regalías</p>
-    <div fxLayout="row" class="mgb05 fw" fxLayoutAlign="space-between center">
-        
-
-    </div>
-
-
-    <div fxLayout="columm" fxLayoutAlign=" center" class="fw" >
-
-
-        <mat-accordion *ngIf="royalties" class="fw">
-            <mat-expansion-panel *ngFor="let item of royalties" >
-              <mat-expansion-panel-header>
-                <mat-panel-title> 
-                    <div fxLayout="columm" fxLayoutAlign=" center"  fxLayoutGap="16px" >
-                        <div><span class="pdr03">Periodo:</span><span>{{item.name}}</span></div>
-                        <div><span class="pdr03">Fecha Inicio:</span><span>{{item.startDate | date: 'dd/MM/yy'}}</span></div>
-                        <div><span class="pdr03">Fecha Fin:</span><span>{{item.endDate | date: 'dd/MM/yy'}}</span></div>
-                    </div>
-                </mat-panel-title>
-                <mat-panel-description>
-                    <div fxLayout="columm" fxLayoutAlign=" center"  fxLayoutGap="16px" >
-                        <div><span class="pdr03">Hrs Tot:</span><span>{{(item.instructores[0].tiempoTotalMinutes)/60 | number:"1.2-2"}} Hrs.</span></div>
-                        <div><span class="pdr03">Fv Tot:</span><span>{{(item.instructores[0].factorVisualizacion) | number:"1.2-2"}} %.</span></div>
-                        <div><span class="pdr03">Reg:</span><span>{{(item.instructores[0].porcentaje) | number:"1.2-2"}} %.</span></div>
-                        <div><span class="pdr03">Monto Tot:</span><span>{{(item.instructores[0].montoTotal) | number:"1.2-2"}} USD.</span></div>
-                        <div><span class="pdr03">Monto Predyc:</span><span>{{(item.instructores[0].montoPredyc) | number:"1.2-2"}} USD.</span></div>
-                        <div><span class="pdr03">Monto Inst:</span><span>{{(item.instructores[0].montoInstructor) | number:"1.2-2"}} USD.</span></div>
-                    </div>                
-                </mat-panel-description>
-              </mat-expansion-panel-header>
-
-              <div>
-                <app-instructor-royalties class="fw pdt10" [royaltiesData]="item" origen="instructor"  />
+  <p class="ft600 ft16 gray-10">Regalías</p>
+  <div fxLayout="columm" fxLayoutAlign=" center" class="fw" >
+    <mat-accordion *ngIf="royalties" class="fw">
+      <mat-expansion-panel *ngFor="let item of royalties" >
+        <mat-expansion-panel-header>
+          <mat-panel-title> 
+              <div fxLayout="columm" fxLayoutAlign=" center"  fxLayoutGap="16px" >
+                  <div><span class="pdr03">Periodo:</span><span>{{item.name}}</span></div>
+                  <div><span class="pdr03">Fecha Inicio:</span><span>{{item.startDate | date: 'dd/MM/yy'}}</span></div>
+                  <div><span class="pdr03">Fecha Fin:</span><span>{{item.endDate | date: 'dd/MM/yy'}}</span></div>
               </div>
-
-
-            </mat-expansion-panel>
-          </mat-accordion>
-
+          </mat-panel-title>
+          <mat-panel-description>
+              <div fxLayout="columm" fxLayoutAlign=" center"  fxLayoutGap="16px" >
+                  <div><span class="pdr03">Hrs Tot:</span><span>{{(item.instructores[0].tiempoTotalMinutes)/60 | number:"1.2-2"}} Hrs.</span></div>
+                  <div><span class="pdr03">Fv Tot:</span><span>{{(item.instructores[0].factorVisualizacion) | number:"1.2-2"}} %.</span></div>
+                  <div *ngIf="item.instructores[0].porcentaje>0"><span class="pdr03">Reg:</span><span>{{(item.instructores[0].porcentaje) | number:"1.2-2"}} %.</span></div>
+                  <div *ngIf="item.instructores[0]?.montoTotal"><span class="pdr03">Monto Tot:</span><span>{{(item.instructores[0].montoTotal) | number:"1.2-2"}} USD.</span></div>
+                  <div *ngIf="item.instructores[0]?.montoPredyc"><span class="pdr03">Monto Predyc:</span><span>{{(item.instructores[0].montoPredyc) | number:"1.2-2"}} USD.</span></div>
+                  <div *ngIf="item.instructores[0]?.montoInstructor"><span class="pdr03">Monto Inst:</span><span>{{(item.instructores[0].montoInstructor) | number:"1.2-2"}} USD.</span></div>
+              </div>                
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <div>
+          <app-instructor-royalties class="fw pdt10" [royaltiesData]="item" origen="instructor"  />
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+    <div *ngIf="!royalties" fxLayout="row" fxLayoutAlign="center center" class="fw" style="height: 90vh !important;" >
+      <span class="ft20">No hay información disponible</span>
+    </div>
 </div>    

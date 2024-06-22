@@ -14,7 +14,7 @@ export const getRoyaltiesInstructor = functions.https.onCall(async (data, _) => 
     const snapshot = await db.collection('royalties').where('borrador', '==', false).get();
 
     if (snapshot.empty) {
-      return null;
+      throw new functions.https.HttpsError('not-found', 'No se encontraro datos.');
     }
 
     const datos = snapshot.docs.map(doc => doc.data());
@@ -24,11 +24,24 @@ export const getRoyaltiesInstructor = functions.https.onCall(async (data, _) => 
       delete royalties.totalInstructores;
       delete royalties.amount;
       let instructorData = royalties.instructores.find(x => x.id == idInstructor);
+      if(instructorData.porcentaje == 0){
+        delete instructorData.montoTotal
+        delete instructorData.montoPredyc
+        delete instructorData.montoInstructor
+
+        instructorData.cursos.forEach(curso => {
+          delete curso.montoTotal
+          delete curso.montoPredyc
+          delete curso.montoInstructor
+        });
+      }
       delete royalties.instructores;
       royalties.instructores = instructorData ? [instructorData] : null
     });
 
-    return { datos };
+    console.log('datos',datos)
+
+    return  datos ;
   } catch (error: any) {
     console.log(error);
     throw new functions.https.HttpsError("unknown", error.message);
