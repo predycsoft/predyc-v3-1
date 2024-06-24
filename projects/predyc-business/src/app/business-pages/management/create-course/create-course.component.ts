@@ -542,7 +542,7 @@ export class CreateCourseComponent {
   }
 
   async setInstructor(instructor) {
-    let instructorRef = await this.afs.collection<any>("instructor").doc(instructor.id).ref;
+    let instructorRef = await this.afs.collection<any>("instructors").doc(instructor.id).ref;
     this.formNewCourse.get("instructorRef").patchValue(instructorRef);
     this.formNewCourse.get("instructor").patchValue(instructor.nombre);
     this.formNewCourse.get("resumen_instructor").patchValue(instructor.resumen);
