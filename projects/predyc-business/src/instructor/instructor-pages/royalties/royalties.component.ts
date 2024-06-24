@@ -32,9 +32,11 @@ export class RoyaltiesComponent {
   intructor
   royalties
 
+  showLoading = true
+
 
   ngOnInit() {
-
+    this.showLoading = true;
     this.authService.user$.subscribe(async (user) => {
       let intructor = await this.instructorsService.getInstructorByEmail(user.email)
       intructor = intructor[0]
@@ -53,20 +55,22 @@ export class RoyaltiesComponent {
         );
   
         console.log(royalties)
-  
         // Ordenar por dateSaved de más reciente a más antiguo
-        royalties = royalties.sort((a, b) => {
-          return b.dateSaved.seconds - a.dateSaved.seconds;
-        });
-  
         if(royalties){
+          royalties = royalties.sort((a, b) => {
+            return b.dateSaved._seconds - a.dateSaved._seconds;
+          });
           this.royalties = royalties
           console.log(this.royalties )
         }
+        this.showLoading = false;
       }
       catch{
         this.royalties = null
+        this.showLoading = false;
+
       }
+
 
     })
 
