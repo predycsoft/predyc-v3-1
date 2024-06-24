@@ -57,3 +57,6 @@ export { generateMailCertificate }
 
 import {getRoyaltiesInstructor} from './royalties'
 export { getRoyaltiesInstructor }
+
+import {sendEmailQuestionInstructor} from './questions'
+export { sendEmailQuestionInstructor }
