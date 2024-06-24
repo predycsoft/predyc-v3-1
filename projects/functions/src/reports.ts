@@ -46,6 +46,75 @@ const styleMail = `
   }
 </style>`;
 
+
+export const generateReportsAdminAllEnterprisesSchedule = functions.pubsub.schedule('0 6 * * 1,4').onRun(async (context) => { // aun sin deploy
+  try {
+    await generateReportsAdminAllEnterprises();
+  } catch (error: any) {
+    console.log(error);
+    throw new functions.https.HttpsError("unknown", error.message);
+  }
+});
+
+export const generateReportsUsersAllEnterprisesSchedule = functions.pubsub.schedule('0 6 * * 1,4').onRun(async (context) => { // aun sin deploy
+  try {
+    await generateReportsAdminAllEnterprises();
+  } catch (error: any) {
+    console.log(error);
+    throw new functions.https.HttpsError("unknown", error.message);
+  }
+});
+
+
+
+export const generateReportsAdminAllEnterprisesMnual = functions.https.onCall(async (data, _) => {
+  try {
+    await generateReportsAdminAllEnterprises();
+  } catch (error: any) {
+    console.log(error);
+    throw new functions.https.HttpsError("unknown", error.message);
+  }
+});
+
+export const generateReportsUsersAllEnterprisesMnual = functions.https.onCall(async (data, _) => {
+  try {
+    await generateReportsUsersAllEnterprises();
+  } catch (error: any) {
+    console.log(error);
+    throw new functions.https.HttpsError("unknown", error.message);
+  }
+});
+
+async function generateReportsAdminAllEnterprises(){
+
+    // Buscar usuarios de la empresa con estado activo
+      const enterpriseSnapshot = await admin.firestore().collection(Enterprise.collection)
+      .where('sendMailtoAdmin', '==', true)
+      .get();
+    // Mapear los usuarios encontrados
+    const enterprise = enterpriseSnapshot.docs.map(doc => doc.data());
+
+    enterprise.forEach(empresa => {
+      generateReportEnterpriseAdminLocal(empresa.id)
+    });
+
+}
+
+async function generateReportsUsersAllEnterprises(){
+
+  // Buscar usuarios de la empresa con estado activo
+    const enterpriseSnapshot = await admin.firestore().collection(Enterprise.collection)
+    .where('sendMailtoUsers', '==', true)
+    .get();
+  // Mapear los usuarios encontrados
+  const enterprise = enterpriseSnapshot.docs.map(doc => doc.data());
+
+  enterprise.forEach(empresa => {
+    generateReportEnterpriseUsersLocal(empresa.id)
+  });
+
+}
+
 export const mailAccountManagementAdmin = functions.https.onCall(async (data, _) => {
   try {
     let idEmpresa = data.idEmpresa;
