@@ -3,11 +3,13 @@ import { DocumentReference } from "@angular/fire/compat/firestore";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 import { ActivatedRoute, Router } from "@angular/router";
+import { AlertsService } from "projects/predyc-business/src/shared/services/alerts.service";
 import { ArticleService } from "projects/predyc-business/src/shared/services/article.service";
 import { IconService } from "projects/predyc-business/src/shared/services/icon.service";
 import { UserJson } from "projects/shared";
 import { Observable, Subscription, of } from "rxjs";
 import { firestoreTimestampToNumberTimestamp } from "shared";
+import Swal from "sweetalert2";
 
 interface Owner {
   id: string;
@@ -73,11 +75,17 @@ const TEST_ARTICLES: Article[] = [
   styleUrls: ["./articles-list.component.css"],
 })
 export class ArticlesListComponent {
-  constructor(public icon: IconService, private router: Router, private activatedRoute: ActivatedRoute, private articleService: ArticleService) {}
+  constructor(
+    public icon: IconService, 
+    private router: Router, 
+    private activatedRoute: ActivatedRoute, 
+    private articleService: ArticleService,
+    private alertService: AlertsService,
+  ) {}
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  displayedColumns: string[] = ["title", "owner", "tags", "createdAt", "edit", "preview"];
+  displayedColumns: string[] = ["title", "owner", "tags", "createdAt", "edit", "preview", "delete"];
   pageSize: number = 5;
   totalLength: number;
 
@@ -114,6 +122,24 @@ export class ArticlesListComponent {
   }
 
   public delete(id: string): void {}
+
+  async deleteArticle(articleId: string) {
+    Swal.fire({
+      title: "Eliminaremos el artículo",
+      text: "¿Deseas continuar?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Continuar",
+      confirmButtonColor: 'var(--blue-5)',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await this.articleService.deleteArticleById(articleId)
+        this.alertService.succesAlert("El artículo se ha eliminado exitosamente");
+      } 
+      else {}
+    });
+    
+  }
 
   ngOnDestroy() {
     if (this.queryParamsSubscription) this.queryParamsSubscription.unsubscribe();

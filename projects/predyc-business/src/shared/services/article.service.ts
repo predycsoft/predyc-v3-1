@@ -35,14 +35,6 @@ export class ArticleService {
       // console.log("dataToUpdate", dataToUpdate)
       await articleDocRef.update(dataToUpdate);
 
-      // // Delete subcollection data
-      // const dataChunksCollectionRef = articleDocRef.collection(this.subcollectionName);
-      // const dataChunksQuerySnapshot = await dataChunksCollectionRef.ref.get();
-      // const batch = this.afs.firestore.batch();
-      // dataChunksQuerySnapshot.forEach(doc => {
-      //   batch.delete(doc.ref);
-      // });
-      // await batch.commit();
     }
   
     // Save "data" in subcollection
@@ -117,5 +109,23 @@ export class ArticleService {
       })
     );
   }
+
+  async deleteArticleById(articleId: string): Promise<void> {
+    const articleDocRef = this.afs.collection(this.collectionName).doc(articleId);
+    const dataChunksCollectionRef = articleDocRef.collection(this.subcollectionName);
+  
+    // Get all documents in the subcollection
+    const dataChunksQuerySnapshot = await dataChunksCollectionRef.ref.get();
+    const batch = this.afs.firestore.batch();
+  
+    dataChunksQuerySnapshot.forEach(doc => {
+      batch.delete(doc.ref);
+    });
+  
+    batch.delete(articleDocRef.ref);
+  
+    await batch.commit();
+  }
+  
 
 }
