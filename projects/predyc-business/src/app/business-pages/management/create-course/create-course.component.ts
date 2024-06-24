@@ -980,6 +980,8 @@ export class CreateCourseComponent {
           ////console.log('modulo clase borrador add/edit',modulo)
           let arrayClasesRef = [];
           const clases = modulo["clases"];
+          //this.formNewCourse.get("instructorRef").patchValue(instructorRef)
+          const instructorRef = this.formNewCourse.get("instructorRef")?.value
           console.log("claseModuloSave", modulo, clases);
           for (let i = 0; i < clases.length; i++) {
             try {
@@ -1003,6 +1005,7 @@ export class CreateCourseComponent {
                 claseLocal.skillsRef = clase.skillsRef;
                 claseLocal.tipo = clase.tipo;
                 claseLocal.titulo = clase.titulo;
+                claseLocal.instructorRef = instructorRef ? instructorRef : null
                 claseLocal.vigente = clase.vigente;
                 if (this.user.isSystemUser) {
                   claseLocal.enterpriseRef = null;

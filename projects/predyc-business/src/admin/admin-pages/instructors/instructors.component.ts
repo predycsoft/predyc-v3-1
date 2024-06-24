@@ -128,145 +128,206 @@ export class InstructorsComponent {
 
   }
   displayErrors = false
+  importData = false;
 
   async onSubmit(){
     this.displayErrors = false
+    if(this.importData){
+      this.importData = false;
+      if(this.newPeriodoForm.valid){
+        let totalPredyc = 0
+        let totalInstructores = 0
+        let totalTime = 0
 
-    if(this.newPeriodoForm.valid){
-
-      Swal.fire({
-        title: "Obteniendo datos...",
-        text: "Por favor, espera.",
-        allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading();
-        },
-      });
-
-      let totalPredyc = 0;
-      let totalInstructores = 0;
-
-      let valores =  this.newPeriodoForm.value
-      let startDate = new Date(valores.startDate)
-      let endDate = new Date(valores.endDate)
-
-      const completedClassesPrev = await this.courseService.getCompletedClassesByDateRange(startDate,endDate);
-
-      console.log('completedClasses',completedClassesPrev)
-      //removeDuplicates
-
-      const completedClasses = this.removeDuplicates(completedClassesPrev)
-
-      console.log('completedClassesSinDuplicados',completedClasses)
-
-
-      let totalTime = 0;
-      completedClasses.forEach(completedClass => {
-        let classe = this.classes.find(x=>x.id == completedClass.classRef.id)
-        if(!classe.instructorRef){
-          let curso = this.courses.find(x=>x.id == classe.idCurso)
-          classe.instructorRef = curso.instructorRef
-        }
-        // console.log('classe',classe)
-        completedClass.clase = classe
-        totalTime+= classe.duracion
-      });
-
-      this.instructors.forEach(instructor => {
-
-        let classesInPeriod = completedClasses.filter(x=>x.clase.instructorRef.id == instructor.id)
-        let datosClases = classesInPeriod.map(clase => {
-          return clase.clase
-        });
-        instructor.datosClases = datosClases.length>0 ? datosClases : []
-        let tiempoInstructor = 0
-        datosClases.forEach(clasesVistas => {
-          tiempoInstructor+=clasesVistas.duracion
-        });
-        let FactorVisualizacion = tiempoInstructor*100/totalTime;
-
-        instructor.tiempoTotal = tiempoInstructor
-        instructor.factorVisualizacion = FactorVisualizacion
-
-        const montoTotal = (FactorVisualizacion/100)*valores.amount
-
-        instructor.montoTotal=montoTotal
-        instructor.montoInstructor=montoTotal*(instructor.porcentaje/100)
-        instructor.montoPredyc=montoTotal*(1-(instructor.porcentaje/100))
-
-        totalPredyc += instructor.montoPredyc
-        totalInstructores += instructor.montoInstructor
-
-
-        instructor.classInPeriod = classesInPeriod
-        let idCursosVistos = instructor.datosClases.map(clase => {
-          return clase.idCurso
-        });
-        idCursosVistos = [...new Set(idCursosVistos)];
-        instructor.idCursosVistos = idCursosVistos.length>0 ? idCursosVistos : []
-        let cursosWithTime = []
-        idCursosVistos.forEach(idCurso => {
-          let datosCurso = this.courses.find(x=>x.id == idCurso)
-          let clases = this.classes.filter(x=>x.idCurso == idCurso)
-          let tiempoCurso = 0
-          let clasesVistasArray = []
-          clases.forEach(clase => {
-            let clasesVistas = classesInPeriod.filter(x=>x.classRef.id == clase.id )
-            clasesVistasArray = clasesVistasArray.concat(clasesVistas)
-            tiempoCurso+= (clase.duracion*clasesVistas.length)
+        let datos = this.periodDatamported.map(instructorPre => {
+          console.log(instructorPre)
+          let cursosProceced = instructorPre.cursos.map(curso => {
+            return {
+              factorVisualizacion: curso.fvTot,
+              montoInstructor: curso.instUSD,
+              montoPredyc: curso.predycUSD,
+              montoTotal: curso.totUSD,
+              name: curso.titulo,
+              tiempoVistoMinutes:curso.hrsTot*60
+            }
           });
-          let FactorVisualizacion = tiempoCurso*100/totalTime; 
-          const montoTotal = (FactorVisualizacion/100)*valores.amount
+          totalPredyc+=instructorPre.predycUSD
+          totalInstructores+=instructorPre.instUSD
+          totalTime+=(instructorPre.hrsTot*60)
 
-          //let duplicados = this.findDuplicates(clasesVistasArray)
-          let curso = {
-            name:datosCurso.titulo,
-            tiempoVistoMinutes:tiempoCurso,
-            factorVisualizacion:FactorVisualizacion,
-            //clasesVistas:clasesVistasArray,
-            //clasesVistasDuplicate:duplicados,
-            montoTotal:montoTotal,
-            montoInstructor:(montoTotal*(instructor.porcentaje)/100),
-            montoPredyc:(montoTotal*(1-(instructor.porcentaje/100)))
+          return {
+            cursos:cursosProceced,
+            factorVisualizacion:instructorPre.fvTot,
+            id:this.instructors.find(x=>this.removeAccents(x.nombre.toLowerCase()) == this.removeAccents(instructorPre.nombre.toLowerCase()))?.id,
+            montoInstructor:instructorPre.instUSD,
+            montoPredyc:instructorPre.predycUSD,
+            montoTotal:instructorPre.totUSD,
+            nombre:instructorPre.nombre,
+            porcentaje:instructorPre.reg,
+            tiempoTotalMinutes:instructorPre.hrsTot*60
           }
-          cursosWithTime.push(curso)
         });
-        instructor.cursosWithTime = cursosWithTime;
 
-      });
-
-      let instuctorWithData = this.instructors.filter(x=>x.factorVisualizacion>0)
-      let instructoresFinal =  instuctorWithData.map(inst => {
-        return {
-          id:inst.id,
-          nombre:inst.nombre,
-          cursos:inst.cursosWithTime,
-          factorVisualizacion:inst.factorVisualizacion,
-          tiempoTotalMinutes:inst.tiempoTotal,
-          porcentaje:inst.porcentaje,
-          montoTotal:(inst.montoTotal),
-          montoInstructor:(inst.montoInstructor),
-          montoPredyc:(inst.montoPredyc),
+        let valores =  this.newPeriodoForm.value
+        let datosFinal = {
+          borrador:true,
+          ...valores,
+          totalPredyc:totalPredyc,
+          totalInstructores:totalInstructores,
+          tiempoPeriodoMinutes:totalTime,
+          instructores:datos
         }
-      });
-      let datos = {
-        borrador:true,
-        ...valores,
-        totalPredyc:totalPredyc,
-        totalInstructores:totalInstructores,
-        tiempoPeriodoMinutes:totalTime,
-        instructores:instructoresFinal
-      }
-      console.log('datos',datos)
-      this.datosPeriodo = datos
-      Swal.close();
-      this.modalPeriodoCreate.close()
 
-      console.log('valores',valores)
+        console.log('datosFinal',datosFinal)
+
+        this.datosPeriodo = datosFinal
+        this.modalPeriodoCreate.close()
+
+        
+       
+      }
+      else{
+        this.displayErrors = true
+      }
     }
     else{
-      this.displayErrors = true
+      if(this.newPeriodoForm.valid){
+
+        Swal.fire({
+          title: "Obteniendo datos...",
+          text: "Por favor, espera.",
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          },
+        });
+  
+        let totalPredyc = 0;
+        let totalInstructores = 0;
+  
+        let valores =  this.newPeriodoForm.value
+        let startDate = new Date(valores.startDate)
+        let endDate = new Date(valores.endDate)
+  
+        const completedClassesPrev = await this.courseService.getCompletedClassesByDateRange(startDate,endDate);
+  
+        console.log('completedClasses',completedClassesPrev)
+        //removeDuplicates
+  
+        const completedClasses = this.removeDuplicates(completedClassesPrev)
+  
+        console.log('completedClassesSinDuplicados',completedClasses)
+  
+  
+        let totalTime = 0;
+        completedClasses.forEach(completedClass => {
+          let classe = this.classes.find(x=>x.id == completedClass.classRef.id)
+          if(!classe.instructorRef){
+            let curso = this.courses.find(x=>x.id == classe.idCurso)
+            classe.instructorRef = curso.instructorRef
+          }
+          // console.log('classe',classe)
+          completedClass.clase = classe
+          totalTime+= classe.duracion
+        });
+  
+        this.instructors.forEach(instructor => {
+  
+          let classesInPeriod = completedClasses.filter(x=>x.clase.instructorRef.id == instructor.id)
+          let datosClases = classesInPeriod.map(clase => {
+            return clase.clase
+          });
+          instructor.datosClases = datosClases.length>0 ? datosClases : []
+          let tiempoInstructor = 0
+          datosClases.forEach(clasesVistas => {
+            tiempoInstructor+=clasesVistas.duracion
+          });
+          let FactorVisualizacion = tiempoInstructor*100/totalTime;
+  
+          instructor.tiempoTotal = tiempoInstructor
+          instructor.factorVisualizacion = FactorVisualizacion
+  
+          const montoTotal = (FactorVisualizacion/100)*valores.amount
+  
+          instructor.montoTotal=montoTotal
+          instructor.montoInstructor=montoTotal*(instructor.porcentaje/100)
+          instructor.montoPredyc=montoTotal*(1-(instructor.porcentaje/100))
+  
+          totalPredyc += instructor.montoPredyc
+          totalInstructores += instructor.montoInstructor
+  
+  
+          instructor.classInPeriod = classesInPeriod
+          let idCursosVistos = instructor.datosClases.map(clase => {
+            return clase.idCurso
+          });
+          idCursosVistos = [...new Set(idCursosVistos)];
+          instructor.idCursosVistos = idCursosVistos.length>0 ? idCursosVistos : []
+          let cursosWithTime = []
+          idCursosVistos.forEach(idCurso => {
+            let datosCurso = this.courses.find(x=>x.id == idCurso)
+            let clases = this.classes.filter(x=>x.idCurso == idCurso)
+            let tiempoCurso = 0
+            let clasesVistasArray = []
+            clases.forEach(clase => {
+              let clasesVistas = classesInPeriod.filter(x=>x.classRef.id == clase.id )
+              clasesVistasArray = clasesVistasArray.concat(clasesVistas)
+              tiempoCurso+= (clase.duracion*clasesVistas.length)
+            });
+            let FactorVisualizacion = tiempoCurso*100/totalTime; 
+            const montoTotal = (FactorVisualizacion/100)*valores.amount
+  
+            //let duplicados = this.findDuplicates(clasesVistasArray)
+            let curso = {
+              name:datosCurso.titulo,
+              tiempoVistoMinutes:tiempoCurso,
+              factorVisualizacion:FactorVisualizacion,
+              //clasesVistas:clasesVistasArray,
+              //clasesVistasDuplicate:duplicados,
+              montoTotal:montoTotal,
+              montoInstructor:(montoTotal*(instructor.porcentaje)/100),
+              montoPredyc:(montoTotal*(1-(instructor.porcentaje/100)))
+            }
+            cursosWithTime.push(curso)
+          });
+          instructor.cursosWithTime = cursosWithTime;
+  
+        });
+  
+        let instuctorWithData = this.instructors.filter(x=>x.factorVisualizacion>0)
+        let instructoresFinal =  instuctorWithData.map(inst => {
+          return {
+            id:inst.id,
+            nombre:inst.nombre,
+            cursos:inst.cursosWithTime,
+            factorVisualizacion:inst.factorVisualizacion,
+            tiempoTotalMinutes:inst.tiempoTotal,
+            porcentaje:inst.porcentaje,
+            montoTotal:(inst.montoTotal),
+            montoInstructor:(inst.montoInstructor),
+            montoPredyc:(inst.montoPredyc),
+          }
+        });
+        let datos = {
+          borrador:true,
+          ...valores,
+          totalPredyc:totalPredyc,
+          totalInstructores:totalInstructores,
+          tiempoPeriodoMinutes:totalTime,
+          instructores:instructoresFinal
+        }
+        console.log('datos',datos)
+        this.datosPeriodo = datos
+        Swal.close();
+        this.modalPeriodoCreate.close()
+  
+        console.log('valores',valores)
+      }
+      else{
+        this.displayErrors = true
+      }
     }
+    
   }
 
   datosPeriodo = null;
@@ -369,8 +430,42 @@ findDuplicates(clasesVistasArray: any[]): any[] {
     catch{
       this.alertService.errorAlert("Error al guardar el período")
     }
-
   }
+
+  periodDatamported = null
+
+  onFileSelected(event: Event): void {
+    this.periodDatamported = null
+    const input = event.target as HTMLInputElement;
+  
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      console.log('Selected file:', file);
+  
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const fileContent = e.target?.result as string;
+          const jsonData = JSON.parse(fileContent);
+          if (Array.isArray(jsonData)) {
+            //console.log('Parsed JSON data:', jsonData);
+            this.periodDatamported = jsonData
+          } else {
+            console.error('The file content is not an array of objects.');
+          }
+        } catch (error) {
+          console.error('Error parsing JSON:', error);
+        }
+      };
+      reader.readAsText(file);
+    }
+  }
+
+  removeAccents(str: string): string {
+    return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  }
+
+  
 
 
 }

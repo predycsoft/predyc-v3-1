@@ -1,5 +1,5 @@
 <div class="fw">
-    <table *ngIf="royaltiesData" class="fw pdb20">
+    <table *ngIf="royaltiesData" class="fw pdb20 mgb20">
         <thead *ngIf="origen!='instructor'">
             <th>Instructor</th>
             <th>Hrs Tot</th>
@@ -24,18 +24,18 @@
                 <th>Hrs Tot</th>
                 <th>Fv Tot.</th>
                 <th *ngIf="origen!='instructor'">% Reg.</th>
-                <th *ngIf="instructor.montoTotal">Tot USD</th>
-                <th *ngIf="instructor.montoPredyc">Predyc USD</th>
-                <th *ngIf="instructor.montoInstructor !== null && instructor.montoInstructor !== undefined">Inst USD</th>
+                <th *ngIf="instructor.montoTotal || origen!='instructor'">Tot USD</th>
+                <th *ngIf="instructor.montoPredyc || origen!='instructor'">Predyc USD</th>
+                <th *ngIf="(instructor.montoInstructor !== null && instructor.montoInstructor !== undefined) || origen!='instructor'">Inst USD</th>
             </thead>
             <tr *ngFor="let curso of instructor.cursos; let i = index">
                 <td class="centertext">{{curso.name}}</td>
                 <td class="centertext">{{(curso.tiempoVistoMinutes)/60 | number: "1.2-2"}} h</td>
                 <td class="centertext">{{curso.factorVisualizacion | number:"1.2-2"}}%</td>
                 <td *ngIf="origen!='instructor'" class="centertext">{{instructor.porcentaje}}%</td>
-                <td *ngIf="curso.montoTotal" class="centertext">{{curso.montoTotal | number:"1.2-2"}} USD</td>
-                <td *ngIf="curso.montoPredyc" class="centertext">{{curso.montoPredyc | number:"1.2-2"}} USD</td>
-                <td *ngIf="curso.montoInstructor !== null && curso.montoInstructor !== undefined" class="centertext">{{curso.montoInstructor | number:"1.2-2"}} USD</td>
+                <td *ngIf="curso.montoTotal || origen!='instructor'" class="centertext">{{curso.montoTotal | number:"1.2-2"}} USD</td>
+                <td *ngIf="curso.montoPredyc || origen!='instructor'" class="centertext">{{curso.montoPredyc | number:"1.2-2"}} USD</td>
+                <td *ngIf="(curso.montoInstructor !== null && curso.montoInstructor !== undefined) || origen!='instructor'" class="centertext">{{curso.montoInstructor | number:"1.2-2"}} USD</td>
             </tr>
         </ng-container>
     </table>

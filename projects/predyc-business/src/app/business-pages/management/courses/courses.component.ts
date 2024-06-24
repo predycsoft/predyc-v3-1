@@ -316,5 +316,9 @@ export class CoursesComponent implements AfterViewInit {
     }
   }
 
+  fixClassesinstructors(){
+    this.courseService.fixClasesInstructors()
+  }
+
 }
 
