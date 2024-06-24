@@ -204,31 +204,34 @@ export class ArticleComponent {
   }
 
   async save() {
-    Swal.fire({
-      title: "Generando artículo...",
-      text: "Por favor, espera.",
-      allowOutsideClick: false,
-      didOpen: () => {
-        Swal.showLoading();
-      },
-    });
+    if (!this.checkValidationForm()) this.alertService.errorAlert("Debes llenar todos los campos")
+    else {
+      Swal.fire({
+        title: "Generando artículo...",
+        text: "Por favor, espera.",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
 
-    try {
-      const dataToSave = {
-        author: this.author,
-        data: this.editor.getContents().ops,
-        createdAt: this.articleId ? null : new Date(),
-        id: this.articleId ? this.articleId : null,
-        tags: this.tags,
-        title: this.title,
-        updatedAt: this.articleId ? new Date() : null
-      };
-      const articleId = await this.articleService.saveArticle(dataToSave, !!this.articleId)
-      this.alertService.succesAlert("El artículo se ha guardado exitosamente");
-      if (!this.articleId) this.router.navigate([`admin/articles/edit/${articleId}`]);
-    } 
-    catch (error) {
-      console.error("Error: ", error)
+      try {
+        const dataToSave = {
+          author: this.author,
+          data: this.editor.getContents().ops,
+          createdAt: this.articleId ? null : new Date(),
+          id: this.articleId ? this.articleId : null,
+          tags: this.tags,
+          title: this.title,
+          updatedAt: this.articleId ? new Date() : null
+        };
+        const articleId = await this.articleService.saveArticle(dataToSave, !!this.articleId)
+        this.alertService.succesAlert("El artículo se ha guardado exitosamente");
+        if (!this.articleId) this.router.navigate([`admin/articles/edit/${articleId}`]);
+      } 
+      catch (error) {
+        console.error("Error: ", error)
+      }
     }
      
   }
@@ -253,4 +256,24 @@ export class ArticleComponent {
     console.log("this.tags", this.tags)
 
   }
+
+  checkValidationForm(): boolean {
+    let valid = true
+
+    if (!this.author) {
+      valid = false
+    }
+    if (!this.title) {
+      valid = false
+    }
+    if (this.tags.length === 0) {
+      valid = false
+    }
+    if (this.editor.getText().trim().length === 0) {
+      valid = false
+    }
+    console.log("valid", valid)
+    return valid
+  }
+
 }
