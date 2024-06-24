@@ -223,38 +223,14 @@ export class ArticleComponent {
         updatedAt: this.articleId ? new Date() : null
       };
 
-      // if (this.checkDocSize(dataToSave)) {
-        await this.articleService.saveArticle(dataToSave)
-        // await this.articleService.saveArticle(dataToSave, !!this.articleId) //To save in sub collections
-        this.alertService.succesAlert("El artículo se ha guardado exitosamente");
-      // }
-      // else this.alertService.errorAlert("El artículo es muy pesado")
+      await this.articleService.saveArticle(dataToSave, !!this.articleId)
+      this.alertService.succesAlert("El artículo se ha guardado exitosamente");
 
     } 
     catch (error) {
       console.error("Error: ", error)
     }
      
-  }
-
-  checkDocSize(docData) {
-
-    // Convert the document data to a JSON string
-    const docDataJson = JSON.stringify(docData);
-
-    // Get the size of the document data in bytes
-    const docSizeInBytes = new TextEncoder().encode(docDataJson).length;
-
-    // Optionally, convert the size to kilobytes or megabytes
-    const docSizeInKB = docSizeInBytes / 1024;
-    const docSizeInMB = docSizeInKB / 1024;
-
-    console.log("Document size in bytes:", docSizeInBytes);
-    console.log("Document size in kilobytes:", docSizeInKB);
-    console.log("Document size in megabytes:", docSizeInMB);
-
-    return docSizeInBytes < 1048570 // the limit is 1.048.576 bytes
-    
   }
 
   createTag(modal) {
