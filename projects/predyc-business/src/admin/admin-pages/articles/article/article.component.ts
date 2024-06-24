@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { AngularFirestore } from "@angular/fire/compat/firestore";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { AlertsService } from "projects/predyc-business/src/shared/services/alerts.service";
 import { ArticleService } from "projects/predyc-business/src/shared/services/article.service";
@@ -137,7 +137,8 @@ export class ArticleComponent {
     private articleService: ArticleService,
     private modalService: NgbModal,
     public icon: IconService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    public router: Router
   ) {}
 
   articleId = this.route.snapshot.paramMap.get("articleId");
@@ -222,38 +223,14 @@ export class ArticleComponent {
         title: this.title,
         updatedAt: this.articleId ? new Date() : null
       };
-
-      if (this.checkDocSize(dataToSave)) {
-        await this.articleService.saveArticle(dataToSave)
-        this.alertService.succesAlert("El artículo se ha guardado exitosamente");
-      }
-      else this.alertService.errorAlert("El artículo es muy pesado")
-
+      const articleId = await this.articleService.saveArticle(dataToSave, !!this.articleId)
+      this.alertService.succesAlert("El artículo se ha guardado exitosamente");
+      if (!this.articleId) this.router.navigate([`admin/articles/edit/${articleId}`]);
     } 
     catch (error) {
       console.error("Error: ", error)
     }
      
-  }
-
-  checkDocSize(docData) {
-
-    // Convert the document data to a JSON string
-    const docDataJson = JSON.stringify(docData);
-
-    // Get the size of the document data in bytes
-    const docSizeInBytes = new TextEncoder().encode(docDataJson).length;
-
-    // Optionally, convert the size to kilobytes or megabytes
-    const docSizeInKB = docSizeInBytes / 1024;
-    const docSizeInMB = docSizeInKB / 1024;
-
-    console.log("Document size in bytes:", docSizeInBytes);
-    console.log("Document size in kilobytes:", docSizeInKB);
-    console.log("Document size in megabytes:", docSizeInMB);
-
-    return docSizeInBytes < 1048570 // the limit is 1.048.576 bytes
-    
   }
 
   createTag(modal) {
