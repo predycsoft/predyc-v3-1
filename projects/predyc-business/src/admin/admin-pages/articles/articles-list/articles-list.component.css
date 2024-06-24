@@ -82,3 +82,18 @@ table.mat-table tfoot tr {
   transform: translateX(5px);
   color: #0f3b56 !important;
 }
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  justify-content: statr;
+  width: 100% !important;
+  cursor: pointer;
+  align-self: center !important;
+  text-align: center;
+}
+
+.menuItem:hover {
+  background: var(--gray-1) !important;
+}
+

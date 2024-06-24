@@ -85,7 +85,7 @@ export class ArticlesListComponent {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  displayedColumns: string[] = ["title", "owner", "tags", "createdAt", "edit", "preview", "delete"];
+  displayedColumns: string[] = ["title", "owner", "tags", "createdAt", "actions"];
   pageSize: number = 5;
   totalLength: number;
 
@@ -93,7 +93,6 @@ export class ArticlesListComponent {
   articleServiceSubscription: Subscription;
 
   dataSource = new MatTableDataSource<any>();
-
 
   ngOnInit() {
     this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe((params) => {
