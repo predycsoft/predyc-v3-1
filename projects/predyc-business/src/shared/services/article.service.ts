@@ -14,7 +14,7 @@ export class ArticleService {
     private afs: AngularFirestore
   ) { }
 
-  async saveArticle(articleData: any, isEditMode: boolean): Promise<void> {
+  async saveArticle(articleData: any, isEditMode: boolean): Promise<string> {
     let articleId: string = articleData.id;
   
     if (!articleId) {
@@ -31,13 +31,23 @@ export class ArticleService {
     if (!isEditMode) await articleDocRef.set(metadata);
     else {
       // Excluding createdAt from the update
-      const { createdAt, ...dataToUpdate } = articleData;
+      const { createdAt, ...dataToUpdate } = metadata;
+      // console.log("dataToUpdate", dataToUpdate)
       await articleDocRef.update(dataToUpdate);
+
+      // // Delete subcollection data
+      // const dataChunksCollectionRef = articleDocRef.collection(this.subcollectionName);
+      // const dataChunksQuerySnapshot = await dataChunksCollectionRef.ref.get();
+      // const batch = this.afs.firestore.batch();
+      // dataChunksQuerySnapshot.forEach(doc => {
+      //   batch.delete(doc.ref);
+      // });
+      // await batch.commit();
     }
   
     // Save "data" in subcollection
     await this.saveContentChunks(articleId, data);
-  
+    return articleId
   }
 
   checkDocSize(docData) {
@@ -50,7 +60,8 @@ export class ArticleService {
     // console.log("Document size in bytes:", docSizeInBytes);
     return docSizeInBytes < 1000000 // the limit is 1.048.576 bytes
   }
-  
+
+
   async saveContentChunks(articleId: string, content: any[]): Promise<void> {
     const articleDocRef = this.afs.collection(this.collectionName).doc(articleId).ref;
   

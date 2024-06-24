@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { AngularFirestore } from "@angular/fire/compat/firestore";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { AlertsService } from "projects/predyc-business/src/shared/services/alerts.service";
 import { ArticleService } from "projects/predyc-business/src/shared/services/article.service";
@@ -137,7 +137,8 @@ export class ArticleComponent {
     private articleService: ArticleService,
     private modalService: NgbModal,
     public icon: IconService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    public router: Router
   ) {}
 
   articleId = this.route.snapshot.paramMap.get("articleId");
@@ -222,10 +223,9 @@ export class ArticleComponent {
         title: this.title,
         updatedAt: this.articleId ? new Date() : null
       };
-
-      await this.articleService.saveArticle(dataToSave, !!this.articleId)
+      const articleId = await this.articleService.saveArticle(dataToSave, !!this.articleId)
       this.alertService.succesAlert("El artículo se ha guardado exitosamente");
-
+      if (!this.articleId) this.router.navigate([`admin/articles/edit/${articleId}`]);
     } 
     catch (error) {
       console.error("Error: ", error)
