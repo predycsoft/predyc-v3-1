@@ -6,7 +6,7 @@ import { BehaviorSubject, firstValueFrom, forkJoin, Observable, of } from "rxjs"
 import { EnterpriseService } from "./enterprise.service";
 import { AlertsService } from "./alerts.service";
 import { combineLatest } from "rxjs";
-import { defaultIfEmpty, map, switchMap } from "rxjs/operators";
+import { defaultIfEmpty, filter, map, switchMap, take } from "rxjs/operators";
 import { Curso } from "projects/shared/models/course.model";
 import { Modulo } from "projects/shared/models/module.model";
 import { Clase } from "projects/shared/models/course-class.model";
@@ -1553,6 +1553,44 @@ export class CourseService {
       },
       { merge: true }
     );
+  }
+
+  async fixClasesInstructors(){
+
+
+    this.getCoursesObservable().pipe(filter((course) => course.length > 0),take(1)).subscribe(async (courses) => {
+      let classes = []
+      courses.forEach(course => {
+        let classesCourse = []
+        course['modules'].forEach(modulo => {
+          modulo.clases.forEach(clase => {
+            clase.idCurso = course.id
+          });
+          classes = classes.concat(modulo.clases);
+          classesCourse = classes.concat(modulo.clases);
+        });
+        course['classes'] = classesCourse;
+      });
+      let clasesRevisar = classes.filter(x=>!x.instructorRef)
+      console.log("classes instructor fixed inicio",courses,clasesRevisar,classes);
+
+      //const batch = this.afs.firestore.batch();
+      clasesRevisar.forEach(clase => {
+        const instructorRef = courses.find(x => x.id == clase.idCurso).instructorRef;
+        clase.instructorRef = instructorRef;
+        const classDocRef = this.afs.collection('class').doc(clase.id).ref; // Accede a la referencia de Firestore
+        //batch.update(classDocRef, { instructorRef: instructorRef });
+        console.log('clase',clase,classDocRef)
+      });
+      //await batch.commit();
+      console.log('classes instructor fixed fin')
+
+
+    });
+
+
+
+
   }
 
 
