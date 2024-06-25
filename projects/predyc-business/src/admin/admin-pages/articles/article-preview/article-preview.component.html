@@ -1,7 +1,7 @@
 <app-navigate-back class="ft600 ft16 gray-10">Artículos</app-navigate-back>
 <div *ngIf="article" class="pd20">
     <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap=".5rem" class="">
-        <span class="ft600 ft20"> {{article.title}} </span>
+        <h1 class="ft600 ft20"> {{article.title}} </h1>
         <quill-view [content]="article.data" format="object" theme="snow"></quill-view>
         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".75rem" class="">
             <span class="ft600 ft16"> Autor: </span>

@@ -11,12 +11,14 @@
     <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap=".5rem" class="w-90">
         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1rem" class="">
             <span>Autor:</span>
-            <input type="text" [(ngModel)]="author" class="ft14 shadow-animation pdl05 pdr05 radius20 borderLight" style="text-align: center" />
+            <input type="text" [(ngModel)]="author" class="ft14 shadow-animation pdl05 pdr05 radius20 borderLight"
+                style="text-align: center" />
         </div>
 
         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1rem" class="">
             <span>Título:</span>
-            <input type="text" [(ngModel)]="title" class="ft14 shadow-animation pdl05 pdr05 radius20 borderLight" style="text-align: center" />
+            <input type="text" [(ngModel)]="title" class="ft14 shadow-animation pdl05 pdr05 radius20 borderLight"
+                style="text-align: center" />
         </div>
 
         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1rem" class="">
@@ -24,23 +26,31 @@
             <ng-container *ngFor="let tag of tags; let tagIndex = index">
                 <div class="skill-badge-complete ListHover radius10 backGray2 ft12 pdl08 pdr08 gray-8">
                     {{ tag }}
-                    <img style="cursor: pointer" (click)="removeTag(tagIndex)" [src]="icon.close" class="h16px makeGray" alt="" />
+                    <img style="cursor: pointer" (click)="removeTag(tagIndex)" [src]="icon.close" class="h16px makeGray"
+                        alt="" />
                 </div>
             </ng-container>
             <div class="">
                 <div matTooltip="Agregar etiqueta" style="display: inline-block; margin-right: 5px"
-                (click)="createTag(createTagModal)" class="backGray2 radius20 pdl03 pdr03 gray-8">
+                    (click)="createTag(createTagModal)" class="backGray2 radius20 pdl03 pdr03 gray-8">
                     <img style="cursor: pointer" [src]="icon.addBlue" class="h16px ft600" alt="" />
                 </div>
             </div>
         </div>
 
-        <quill-editor [modules]="modules" [(ngModel)]="test" [format]="format" (onEditorCreated)="onEditorCreated($event)">
+        <quill-editor [modules]="modules" [(ngModel)]="test" [format]="format"
+            (onEditorCreated)="onEditorCreated($event)">
             <div above-quill-editor-toolbar>above</div>
             <div quill-editor-toolbar class="ql-toolbar">
                 <span class="ql-formats">
-                    <button class="ql-header" value="1"></button>
-                    <button class="ql-header" value="2"></button>
+                    <!-- <button class="ql-header" value="2"></button> -->
+
+                    <select class="ql-header">
+                        <option value="2">Heading 2</option>
+                        <option value="3">Heading 3</option>
+                        <option value="" selected>Normal</option>
+                      </select>
+
                 </span>
                 <span class="ql-formats">
                     <button class="ql-bold"></button>
@@ -113,22 +123,24 @@
 <!-- Modal de tags -->
 <ng-template #createTagModal let-modal>
     <div class="modal-header bg-web-primary text-white px-3 py-1" fxLayout="row" fxLayoutAlign="space-between center">
-      <div class="modal-title pd10">
-        <span class="ft16 ft500 gray-10">Asignar etiqueta</span>
-      </div>
-      <img style="cursor: pointer" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px" alt="" />
+        <div class="modal-title pd10">
+            <span class="ft16 ft500 gray-10">Asignar etiqueta</span>
+        </div>
+        <img style="cursor: pointer" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px" alt="" />
     </div>
     <div class="modal-body" style="overflow-y: auto; max-height: 80vh">
         <div fxLayout="row" class="fw">
             <div class="form-group fw">
                 <label>Nombre de la etiqueta</label>
-                <input type="text" class="form-control customInput" [(ngModel)]="newTag" placeholder="Escriba el nombre de la etiqueta" />
+                <input type="text" class="form-control customInput" [(ngModel)]="newTag"
+                    placeholder="Escriba el nombre de la etiqueta" />
                 <!-- <div class="invalid-feedback" *ngIf="formNewSkill.controls['nombre'].errors && showErrorSkill">Debe indicar el nombre de la competencia.</div> -->
             </div>
         </div>
         <!-- Botón de guardar en la esquina inferior derecha -->
         <div fxLayout="row" fxLayoutAlign="end end" class="pdt03" style="width: 100%">
-            <button (click)="saveTag()" class="blueButton gray-1 radius4 ft12 h28px mgt10" fxLayout="row" fxLayoutGap="0.625rem" fxLayoutAlign="center center">
+            <button (click)="saveTag()" class="blueButton gray-1 radius4 ft12 h28px mgt10" fxLayout="row"
+                fxLayoutGap="0.625rem" fxLayoutAlign="center center">
                 <img [src]="icon.check" class="h16px pdr05 makeWhite" alt="" />
                 Asignar competencia
             </button>
@@ -138,4 +150,4 @@
             </button> -->
         </div>
     </div>
-  </ng-template>
+</ng-template>
