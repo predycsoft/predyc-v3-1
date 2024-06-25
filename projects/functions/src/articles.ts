@@ -3,11 +3,17 @@ import * as admin from "firebase-admin";
 
 const db = admin.firestore();
 
-export const getArticlesId = functions.https.onRequest(async (req, res) => {
+export const getArticlesSlug = functions.https.onRequest(async (req, res) => {
     if (req.method !== "GET") throw new Error("Method not allowed");
-    const articlesId = (
-        await (db.collection("articles"))
+    const articlesSlug = (
+        await (db.collection("article"))
             .get()
-    ).docs.map((article) => article.id);
-    res.status(200).send(articlesId);
+    ).docs.map((article: any) => {
+        const data = article.data()
+        return {
+            slug: data.slug,
+            updatedAt: data.updatedAt
+        }
+    });
+    res.status(200).send(articlesSlug);
 });

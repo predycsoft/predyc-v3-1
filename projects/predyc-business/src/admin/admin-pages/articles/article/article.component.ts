@@ -119,12 +119,15 @@ class CardEditableModule extends Module {
 }
 
 // Quill.register("modules/blotFormatter", BlotFormatter);
-Quill.register({
-  // Other formats or modules
-  'formats/image': ImageBlot,
-  'modules/cardEditable': CardEditableModule,
-  "modules/blotFormatter": BlotFormatter
-}, true);
+Quill.register(
+  {
+    // Other formats or modules
+    "formats/image": ImageBlot,
+    "modules/cardEditable": CardEditableModule,
+    "modules/blotFormatter": BlotFormatter,
+  },
+  true
+);
 
 @Component({
   selector: "app-article",
@@ -132,14 +135,7 @@ Quill.register({
   styleUrls: ["./article.component.css"],
 })
 export class ArticleComponent {
-  constructor(
-    private alertService: AlertsService,
-    private articleService: ArticleService,
-    private modalService: NgbModal,
-    public icon: IconService,
-    private route: ActivatedRoute,
-    public router: Router
-  ) {}
+  constructor(private alertService: AlertsService, private articleService: ArticleService, private modalService: NgbModal, public icon: IconService, private route: ActivatedRoute, public router: Router) {}
 
   articleId = this.route.snapshot.paramMap.get("articleId");
 
@@ -163,16 +159,17 @@ export class ArticleComponent {
     //   ["link", "image", "video"], // link and image, video
     // ],
     // blotFormatter: {}
-    cardEditable: true
+    cardEditable: true,
   };
 
   editor: Quill;
 
-  createTagModal
-  author: string = ""
-  title: string = ""
-  newTag: string = ""
-  tags: string[] = []
+  createTagModal;
+  author: string = "";
+  title: string = "";
+  slug: string = "";
+  newTag: string = "";
+  tags: string[] = [];
 
   ngOnInit() {
     if (this.articleId) this.loadArticle(this.articleId);
@@ -180,15 +177,16 @@ export class ArticleComponent {
 
   async loadArticle(articleId: string) {
     try {
-      this.articleService.getArticleById$(articleId).subscribe(article => {
+      this.articleService.getArticleById$(articleId).subscribe((article) => {
         this.author = article.author;
         this.title = article.title;
         this.tags = article.tags;
+        this.slug = article.slug;
         this.editor.setContents(article.data);
-      })
+      });
     } catch (error) {
-      console.error('Error fetching article:', error);
-      this.alertService.errorAlert('Error fetching article');
+      console.error("Error fetching article:", error);
+      this.alertService.errorAlert("Error fetching article");
     }
   }
 
@@ -204,7 +202,7 @@ export class ArticleComponent {
   }
 
   async save() {
-    if (!this.checkValidationForm()) this.alertService.errorAlert("Debes llenar todos los campos")
+    if (!this.checkValidationForm()) this.alertService.errorAlert("Debes llenar todos los campos");
     else {
       Swal.fire({
         title: "Generando artículo...",
@@ -223,21 +221,20 @@ export class ArticleComponent {
           id: this.articleId ? this.articleId : null,
           tags: this.tags,
           title: this.title,
-          updatedAt: this.articleId ? new Date() : null
+          slug: this.slug,
+          updatedAt: this.articleId ? new Date() : null,
         };
-        const articleId = await this.articleService.saveArticle(dataToSave, !!this.articleId)
+        const articleId = await this.articleService.saveArticle(dataToSave, !!this.articleId);
         this.alertService.succesAlert("El artículo se ha guardado exitosamente");
         if (!this.articleId) this.router.navigate([`admin/articles/edit/${articleId}`]);
-      } 
-      catch (error) {
-        console.error("Error: ", error)
+      } catch (error) {
+        console.error("Error: ", error);
       }
     }
-     
   }
 
   createTag(modal) {
-    this.newTag  = ""
+    this.newTag = "";
     this.createTagModal = this.modalService.open(modal, {
       ariaLabelledBy: "modal-basic-title",
       centered: true,
@@ -246,34 +243,32 @@ export class ArticleComponent {
   }
 
   saveTag() {
-    if (this.newTag) this.tags.push(this.newTag)
-    console.log("this.tags", this.tags)
+    if (this.newTag) this.tags.push(this.newTag);
+    console.log("this.tags", this.tags);
     this.createTagModal.close();
   }
 
   removeTag(tagIndex) {
-    this.tags.splice(tagIndex, 1)
-    console.log("this.tags", this.tags)
-
+    this.tags.splice(tagIndex, 1);
+    console.log("this.tags", this.tags);
   }
 
   checkValidationForm(): boolean {
-    let valid = true
+    let valid = true;
 
     if (!this.author) {
-      valid = false
+      valid = false;
     }
     if (!this.title) {
-      valid = false
+      valid = false;
     }
     if (this.tags.length === 0) {
-      valid = false
+      valid = false;
     }
     if (this.editor.getText().trim().length === 0) {
-      valid = false
+      valid = false;
     }
-    console.log("valid", valid)
-    return valid
+    console.log("valid", valid);
+    return valid;
   }
-
 }

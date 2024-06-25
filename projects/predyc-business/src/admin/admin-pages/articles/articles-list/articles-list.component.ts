@@ -85,7 +85,7 @@ export class ArticlesListComponent {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  displayedColumns: string[] = ["title", "owner", "tags", "createdAt", "actions"];
+  displayedColumns: string[] = ["title", "owner", "tags", "updatedAt", "actions"];
   pageSize: number = 5;
   totalLength: number;
 
