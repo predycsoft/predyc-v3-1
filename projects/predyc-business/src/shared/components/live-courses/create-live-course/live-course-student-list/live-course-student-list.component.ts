@@ -455,6 +455,7 @@ export class LiveCourseStudentListComponent {
         sender: sender,
         recipients: recipients,
         subject: subject,
+        cc:["capacitacion@predyc.com"],
         htmlContent: htmlContentFinal,
       }));
       console.log("Email enviado")
