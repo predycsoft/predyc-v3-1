@@ -1,20 +1,19 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { Observable, combineLatest, map, switchMap } from 'rxjs';
+import { Article, ArticleJson } from 'projects/shared/models/article.model';
+import { Observable, combineLatest, map } from 'rxjs';
+import { ArticleData } from '../../admin/admin-pages/articles/articles.component';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ArticleService {
 
-  collectionName = "article"
-  subcollectionName = "dataChunks"
-
   constructor(
     private afs: AngularFirestore
   ) { }
 
-  async saveArticle(articleData: any, isEditMode: boolean): Promise<string> {
+  async saveArticle(articleData: ArticleData, isEditMode: boolean): Promise<string> {
     let articleId: string = articleData.id;
   
     if (!articleId) {
@@ -22,7 +21,7 @@ export class ArticleService {
       articleData.id = articleId;
     }
 
-    const articleDocRef = this.afs.collection(this.collectionName).doc(articleId);
+    const articleDocRef = this.afs.collection<ArticleJson>(Article.collection).doc(articleId);
   
     // Exclude "data" property
     const { data, ...metadata } = articleData;
@@ -42,20 +41,9 @@ export class ArticleService {
     return articleId
   }
 
-  checkDocSize(docData) {
-    // Convert the document data to a JSON string
-    const docDataJson = JSON.stringify(docData);
-
-    // Get the size of the document data in bytes
-    const docSizeInBytes = new TextEncoder().encode(docDataJson).length;
-
-    // console.log("Document size in bytes:", docSizeInBytes);
-    return docSizeInBytes < 1000000 // the limit is 1.048.576 bytes
-  }
-
-
-  async saveContentChunks(articleId: string, content: any[]): Promise<void> {
-    const articleDocRef = this.afs.collection(this.collectionName).doc(articleId).ref;
+  async saveContentChunks(articleId: string, content: Object[]): Promise<void> {
+    const articleDocRef = this.afs.collection<ArticleJson>(Article.collection).doc(articleId).ref;
+    const dataChunksCollectionRef = articleDocRef.collection(Article.subcollectionName);
   
     const contentChunks = [];
     let currentChunk = [];
@@ -76,24 +64,40 @@ export class ArticleService {
       contentChunks.push(currentChunk);
     }
     
-    // Save each chunk in the dataChunks subcollection
     const batch = this.afs.firestore.batch();
+    // Delete existing docs in dataChunks subcollection
+    const dataChunksQuerySnapshot = await dataChunksCollectionRef.get();
+    dataChunksQuerySnapshot.forEach(doc => {
+      batch.delete(doc.ref);
+    });
+    // Save each new chunk in the dataChunks subcollection
     contentChunks.forEach((chunk, index) => {
-      const chunkDocRef = articleDocRef.collection(this.subcollectionName).doc(`${index}`);
+      const chunkDocRef = dataChunksCollectionRef.doc(`${index}`);
       batch.set(chunkDocRef, { content: chunk });
     });
   
     await batch.commit();
   }
+
+  checkDocSize(docData: any[]) {
+    // Convert the document data to a JSON string
+    const docDataJson = JSON.stringify(docData);
+
+    // Get the size of the document data in bytes
+    const docSizeInBytes = new TextEncoder().encode(docDataJson).length;
+
+    // console.log("Document size in bytes:", docSizeInBytes);
+    return docSizeInBytes < 1000000 // the limit is 1.048.576 bytes
+  }
   
-  getArticles$(): Observable<any> {
-    return this.afs.collection(this.collectionName).valueChanges()
+  getArticles$(): Observable<ArticleJson[]> {
+    return this.afs.collection<ArticleJson>(Article.collection).valueChanges()
   }
 
-  getArticleById$(articleId: string): Observable<any> {
+  getArticleWithDataById$(articleId: string): Observable<ArticleData> {
     return combineLatest([
-      this.afs.collection(this.collectionName).doc(articleId).valueChanges(),
-      this.afs.collection(this.collectionName).doc(articleId).collection(this.subcollectionName).valueChanges()
+      this.afs.collection(Article.collection).doc(articleId).valueChanges(),
+      this.afs.collection(Article.collection).doc(articleId).collection(Article.subcollectionName).valueChanges()
     ]).pipe(
       map(([articleMainData, dataChunks]: [any, any[]]) => {
         // console.log("dataChunks", dataChunks);
@@ -111,8 +115,8 @@ export class ArticleService {
   }
 
   async deleteArticleById(articleId: string): Promise<void> {
-    const articleDocRef = this.afs.collection(this.collectionName).doc(articleId);
-    const dataChunksCollectionRef = articleDocRef.collection(this.subcollectionName);
+    const articleDocRef = this.afs.collection(Article.collection).doc(articleId);
+    const dataChunksCollectionRef = articleDocRef.collection(Article.subcollectionName);
   
     // Get all documents in the subcollection
     const dataChunksQuerySnapshot = await dataChunksCollectionRef.ref.get();
@@ -127,5 +131,4 @@ export class ArticleService {
     await batch.commit();
   }
   
-
 }

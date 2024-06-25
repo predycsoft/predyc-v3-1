@@ -16,9 +16,6 @@ export class IsActivePipe implements PipeTransform {
     else if(link =='management/courses' && currentUrl.includes('course')){
       return true
     }
-    else if(link =='management/live' && currentUrl.includes('live')){
-      return true
-    }
     else if(link =='settings' && currentUrl.includes('settings')){
       return true
     }
@@ -61,6 +58,9 @@ export class IsActivePipe implements PipeTransform {
     else if (link == '/admin/courses' && currentUrl.includes('courses')) {
       return true;
     }
+    else if(link =='/admin/live' && currentUrl.includes('live')){
+      return true
+    }
     else if (link == '/admin/freebies' && currentUrl.includes('freebies')) {
       return true;
     }
@@ -73,18 +73,19 @@ export class IsActivePipe implements PipeTransform {
     else if (link == '/admin/certifications' && currentUrl.includes('certifications')) {
       return true;
     }
-
     else if (link == '/admin/instructors' && currentUrl.includes('instructors')) {
       return true;
     }
-
     else if (link == '/instructor/questions' && currentUrl.includes('questions')) {
       return true;
     }
-
     else if (link == '/instructor/regalias' && currentUrl.includes('regalias')) {
       return true;
     }
+    else if (link == '/admin/articles' && currentUrl.includes('articles')) {
+      return true;
+    }
+
     return false
 
   }

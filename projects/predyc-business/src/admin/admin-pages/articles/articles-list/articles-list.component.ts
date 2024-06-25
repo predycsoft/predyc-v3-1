@@ -1,73 +1,14 @@
 import { Component, ViewChild } from "@angular/core";
-import { DocumentReference } from "@angular/fire/compat/firestore";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 import { ActivatedRoute, Router } from "@angular/router";
 import { AlertsService } from "projects/predyc-business/src/shared/services/alerts.service";
 import { ArticleService } from "projects/predyc-business/src/shared/services/article.service";
 import { IconService } from "projects/predyc-business/src/shared/services/icon.service";
-import { UserJson } from "projects/shared";
-import { Observable, Subscription, of } from "rxjs";
+import { ArticleJson } from "projects/shared/models/article.model";
+import { Subscription } from "rxjs";
 import { firestoreTimestampToNumberTimestamp } from "shared";
 import Swal from "sweetalert2";
-
-interface Owner {
-  id: string;
-  name: string;
-  photoUrl: string;
-}
-
-interface Article {
-  createdAt: number;
-  updatedAt: number;
-  title: string;
-  photoUrl: string;
-  tags: string[];
-  html: string;
-  owner: Owner;
-}
-
-const TEST_ARTICLES: Article[] = [
-  {
-    createdAt: 1672531200,
-    updatedAt: 1672531200,
-    title: "Articulo 1",
-    photoUrl: null,
-    tags: ["Tag 1", "Tag 2", "Tag 3"],
-    html: null,
-    owner: {
-      id: null,
-      name: "Diego",
-      photoUrl: null,
-    },
-  },
-  {
-    createdAt: 1688256000,
-    updatedAt: 1688256000,
-    title: "Articulo 2",
-    photoUrl: null,
-    tags: ["Tag 2", "Tag 3"],
-    html: null,
-    owner: {
-      id: null,
-      name: "Diego",
-      photoUrl: null,
-    },
-  },
-  {
-    createdAt: 1703980800,
-    updatedAt: 1703980800,
-    title: "Articulo 3",
-    photoUrl: null,
-    tags: ["Tag 1", "Tag 3"],
-    html: null,
-    owner: {
-      id: null,
-      name: "Diego",
-      photoUrl: null,
-    },
-  },
-];
 
 @Component({
   selector: "app-articles-list",
@@ -92,7 +33,7 @@ export class ArticlesListComponent {
   queryParamsSubscription: Subscription;
   articleServiceSubscription: Subscription;
 
-  dataSource = new MatTableDataSource<any>();
+  dataSource = new MatTableDataSource<ArticleJson>();
 
   ngOnInit() {
     this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe((params) => {
@@ -107,9 +48,11 @@ export class ArticlesListComponent {
       articles.forEach(article => {
         article.createdAt = firestoreTimestampToNumberTimestamp(article.createdAt)
       });
-      this.paginator.pageIndex = page - 1;
-      this.dataSource.data = articles;
       this.totalLength = articles.length;
+      const startIndex = (page - 1) * this.pageSize;
+      const endIndex = startIndex + this.pageSize;
+      this.dataSource.data = articles.slice(startIndex, endIndex);
+      this.paginator.pageIndex = page - 1;
     });
   }
 

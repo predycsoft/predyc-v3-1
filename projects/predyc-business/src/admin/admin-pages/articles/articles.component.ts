@@ -1,4 +1,9 @@
 import { Component } from "@angular/core";
+import { ArticleJson } from "projects/shared/models/article.model";
+
+export interface ArticleData extends ArticleJson {
+  data: Object[]
+}
 
 @Component({
   selector: "app-articles",

@@ -5,10 +5,11 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { AlertsService } from "projects/predyc-business/src/shared/services/alerts.service";
 import { ArticleService } from "projects/predyc-business/src/shared/services/article.service";
 import { IconService } from "projects/predyc-business/src/shared/services/icon.service";
-
 import Quill from "quill";
 import BlotFormatter from "quill-blot-formatter/dist/BlotFormatter";
+import { Subscription } from "rxjs";
 import Swal from "sweetalert2";
+import { ArticleData } from "../articles.component";
 
 const Module = Quill.import("core/module");
 const BlockEmbed = Quill.import("blots/block/embed");
@@ -143,7 +144,6 @@ export class ArticleComponent {
 
   articleId = this.route.snapshot.paramMap.get("articleId");
 
-  test;
   format: "object" | "html" | "text" | "json" = "object";
   modules = {
     // toolbar: [
@@ -168,38 +168,35 @@ export class ArticleComponent {
 
   editor: Quill;
 
-  createTagModal
+  createTagModal: any
   author: string = ""
   title: string = ""
   newTag: string = ""
   tags: string[] = []
 
+  articleSubscription: Subscription
+
   ngOnInit() {
     if (this.articleId) this.loadArticle(this.articleId);
   }
 
-  async loadArticle(articleId: string) {
-    try {
-      this.articleService.getArticleById$(articleId).subscribe(article => {
-        this.author = article.author;
-        this.title = article.title;
-        this.tags = article.tags;
-        this.editor.setContents(article.data);
-      })
-    } catch (error) {
-      console.error('Error fetching article:', error);
-      this.alertService.errorAlert('Error fetching article');
-    }
+  loadArticle(articleId: string) {
+    if (this.articleSubscription) this.articleSubscription.unsubscribe()
+    this.articleSubscription = this.articleService.getArticleWithDataById$(articleId).subscribe(article => {
+      this.author = article.author;
+      this.title = article.title;
+      this.tags = article.tags;
+      this.editor.setContents(article.data);
+    })
   }
 
   onEditorCreated(editor) {
     this.editor = editor;
-    console.log("this.editor", this.editor);
+    // console.log("this.editor", this.editor);
   }
 
   debug() {
     console.log("format", this.format);
-    console.log("test", this.test);
     console.log("editor", this.editor.getContents());
   }
 
@@ -216,7 +213,7 @@ export class ArticleComponent {
       });
 
       try {
-        const dataToSave = {
+        const dataToSave: ArticleData = {
           author: this.author,
           data: this.editor.getContents().ops,
           createdAt: this.articleId ? null : new Date(),
@@ -247,14 +244,11 @@ export class ArticleComponent {
 
   saveTag() {
     if (this.newTag) this.tags.push(this.newTag)
-    console.log("this.tags", this.tags)
     this.createTagModal.close();
   }
 
-  removeTag(tagIndex) {
+  removeTag(tagIndex: number) {
     this.tags.splice(tagIndex, 1)
-    console.log("this.tags", this.tags)
-
   }
 
   checkValidationForm(): boolean {
@@ -274,6 +268,10 @@ export class ArticleComponent {
     }
     console.log("valid", valid)
     return valid
+  }
+
+  ngOnDestroy() {
+    if (this.articleSubscription) this.articleSubscription.unsubscribe()
   }
 
 }

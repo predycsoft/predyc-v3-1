@@ -1,15 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ArticleService } from 'projects/predyc-business/src/shared/services/article.service';
-
-interface Article {
-  author: string
-  data: any[]
-  createdAt: any
-  id: string
-  tags: string[]
-  title: string
-}
+import { ArticleData } from '../articles.component';
 
 @Component({
   selector: 'app-article-preview',
@@ -25,10 +17,10 @@ export class ArticlePreviewComponent {
 
   articleId = this.route.snapshot.paramMap.get("articleId");
 
-  article: Article
+  article: ArticleData
 
   ngOnInit() {
-    this.articleService.getArticleById$(this.articleId).subscribe(article => {
+    this.articleService.getArticleWithDataById$(this.articleId).subscribe(article => {
       this.article = article
       console.log("this.article", this.article)
     })

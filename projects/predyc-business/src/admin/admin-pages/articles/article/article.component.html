@@ -9,14 +9,15 @@
         <button (click)="save()" class="blueButton">Save result</button>
     </div>
     <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap=".5rem" class="w-90">
-        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1rem" class="">
-            <span>Autor:</span>
-            <input type="text" [(ngModel)]="author" class="ft14 shadow-animation pdl05 pdr05 radius20 borderLight" style="text-align: center" />
-        </div>
 
         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1rem" class="">
             <span>Título:</span>
-            <input type="text" [(ngModel)]="title" class="ft14 shadow-animation pdl05 pdr05 radius20 borderLight" style="text-align: center" />
+            <input type="text" [(ngModel)]="title" class="ft14 shadow-animation pdl05 pdr05 radius20 borderLight" style="text-align: center; width: 32vw;" />
+        </div>
+
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1rem" class="">
+            <span>Autor:</span>
+            <input type="text" [(ngModel)]="author" class="ft14 shadow-animation pdl05 pdr05 radius20 borderLight" style="text-align: center; width: 23vw;" />
         </div>
 
         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1rem" class="">
@@ -35,7 +36,7 @@
             </div>
         </div>
 
-        <quill-editor [modules]="modules" [(ngModel)]="test" [format]="format" (onEditorCreated)="onEditorCreated($event)">
+        <quill-editor [modules]="modules" [format]="format" (onEditorCreated)="onEditorCreated($event)" class="w-60">
             <div above-quill-editor-toolbar>above</div>
             <div quill-editor-toolbar class="ql-toolbar">
                 <span class="ql-formats">
