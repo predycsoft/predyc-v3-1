@@ -245,8 +245,7 @@
                                           </ng-container>
                                           <div fxLayout="row" fxLayoutAlign="center center" class="mgt15 mgb05">
                                             <input (change)="onFileSelected($event, session, false, true, null, true)" type="file" #FileInputAdicional style="display: none"
-                                            accept="application/pdf, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document" 
-                                            />
+                                            accept="application/pdf, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, image/png, image/jpeg" />
                                             <button (click)="FileInputAdicional.click()" class="grayButton pd03 radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                                               <img [src]="icon.folderUp" class="h16px pdr05" alt="" />
                                               Añadir recursos
@@ -339,7 +338,7 @@
         <mat-tab *ngIf="mode === 'edit'" label="Usuarios">
           <div fxLayout="row" fxLayoutAlign="center " class="containerCurso h-100" fxLayoutGap="1.5rem">
             <div fxLayout="row" fxLayoutAlign="center" class="w-100">
-              <app-live-course-student-list class="w-90" [liveCourseTemplateId]="liveCourseTemplateId" [liveCourseId]="liveCourseId" (userEmailsChanged)="onUserEmailsChanged($event)"></app-live-course-student-list>
+              <app-live-course-student-list class="w-90" [courseDetails]="liveCourseData" [liveCourseTemplateId]="liveCourseTemplateId" [liveCourseId]="liveCourseId" (userEmailsChanged)="onUserEmailsChanged($event)"></app-live-course-student-list>
             </div>
           </div>
         </mat-tab>

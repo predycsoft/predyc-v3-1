@@ -22,8 +22,8 @@ export { createTractianUser }
 import { getArticlesSlug } from './articles';
 export { getArticlesSlug }
 
-import { sendMail } from './email';
-export { sendMail }
+import { sendMail,sendMailHTML } from './email';
+export { sendMail,sendMailHTML }
 
 // import { createProfilesFromExcel } from './handleExcel';
 // export { createProfilesFromExcel }

@@ -2736,11 +2736,18 @@ export class CreateLiveCourseComponent {
               // Busca un proyecto con el mismo nombre que el video
               // const project = projects.data.find(p => p.name === this.empresa.nombre);
               let projectOperation: Observable<any>;
-              if (this.empresa.vimeoFolderId) {
+              if (this.empresa.vimeoFolderIdLive) {
                 if (!this.formNewCourse.get("vimeoFolderId")?.value) {
                   // Crear un subproyecto con un nombre temporal dentro del proyecto de la empresa
                   //alert('crear carpeta proyecto')
-                  projectOperation = this.uploadControl.createSubProject(this.formNewCourse.get("title").value, this.empresa.vimeoFolderUri).pipe(
+                  const firstDate = this.liveCourseData?.sessions[0]["dateFormatted"]
+                  let firstDateFormated = ''
+                  if(firstDate){
+                    console.log(firstDate)
+                    firstDateFormated = firstDate.split('T')[0]
+                  }
+
+                  projectOperation = this.uploadControl.createSubProject(`${firstDateFormated} -> ${this.formNewCourse.get("title").value} -> ${this.formNewCourse.get("identifierText").value}`, this.empresa.vimeoFolderUriLive).pipe(
                     tap((newSubProject) => {
                       //Actualizar Firebase con el ID del subproyecto si es necesario
                       const subProjectId = newSubProject.uri.split("/").pop();
@@ -2766,7 +2773,15 @@ export class CreateLiveCourseComponent {
                 //     }),
                 //     switchMap(newProject => this.uploadControl.addVideoToProject(newProject.uri.split('/').pop(), response.uri))
                 // );
-                projectOperation = this.uploadControl.createProject(this.empresa.name).pipe(
+
+                const firstDate = this.liveCourseData?.sessions[0]["dateFormatted"]
+                let firstDateFormated = ''
+                if(firstDate){
+                  console.log(firstDate)
+                  firstDateFormated = firstDate.split('T')[0]
+                }
+
+                projectOperation = this.uploadControl.createProject(`Cursos en vivo ${this.empresa.name}`).pipe(
                   tap((newProject) => {
                     // Aquí es donde actualizamos Firebase con la nueva carpeta de empresa
                     const projectId = newProject.uri.split("/").pop();
@@ -2774,7 +2789,7 @@ export class CreateLiveCourseComponent {
                   }),
                   // Después de crear la carpeta de empresa, crea el subproyecto dentro de esta nueva carpeta
                   switchMap((newProject) =>
-                    this.uploadControl.createSubProject(this.formNewCourse.get("title").value, newProject.uri).pipe(
+                    this.uploadControl.createSubProject(`${firstDateFormated} -> ${this.formNewCourse.get("title").value} -> ${this.formNewCourse.get("identifierText").value}`, newProject.uri).pipe(
                       tap((newSubProject) => {
                         // Actualizar Firebase con el ID del subproyecto si es necesario
                         const subProjectId = newSubProject.uri.split("/").pop();
@@ -2908,10 +2923,10 @@ export class CreateLiveCourseComponent {
     //console.log(idFolder);
     //console.log(this.empresa)
     await this.afs.collection("enterprise").doc(this.empresa.id).update({
-      vimeoFolderId: idFolder,
-      vimeoFolderUri: folderUri,
+      vimeoFolderIdLive: idFolder,
+      vimeoFolderUriLive: folderUri,
     });
-    this.empresa.vimeoFolderId = idFolder;
+    this.empresa.vimeoFolderIdLive = idFolder;
   }
 
   deleteQuestionImage(question: Question, warnign = false): void {

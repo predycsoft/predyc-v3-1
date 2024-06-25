@@ -130,3 +130,7 @@ export const _sendMail = async (data: { sender: string; recipients: string[]; su
 export const sendMail = functions.https.onCall(async (data, context) => {
   _sendMail(data);
 });
+
+export const sendMailHTML = functions.https.onCall(async (data, context) => {
+  _sendMailHTML(data);
+});
