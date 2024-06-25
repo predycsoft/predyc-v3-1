@@ -2,6 +2,7 @@ export interface ArticleJson {
     author: string
     createdAt: any
     id: string
+    slug: string
     tags: string[]
     title: string
     updatedAt: any
@@ -16,6 +17,7 @@ export class Article {
         public author: string,
         public createdAt: any,
         public id: string,
+        public slug: string,
         public tags: string[],
         public title: string,
         public updatedAt: any,
@@ -27,6 +29,7 @@ export class Article {
             articleJson.author,
             articleJson.createdAt,
             articleJson.id,
+            articleJson.slug,
             articleJson.tags,
             articleJson.title,
             articleJson.updatedAt,
@@ -38,6 +41,7 @@ export class Article {
             author: this.author,
             createdAt: this.createdAt,
             id: this.id,
+            slug: this.slug,
             tags: this.tags,
             title: this.title,
             updatedAt: this.updatedAt,
