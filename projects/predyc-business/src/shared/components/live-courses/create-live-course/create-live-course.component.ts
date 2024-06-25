@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, QueryList, TemplateRef, ViewChild, ViewChildren } from "@angular/core";
+import { Component, ElementRef, QueryList, TemplateRef, ViewChild, ViewChildren } from "@angular/core";
 import { IconService } from "../../../services/icon.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { AngularFireStorage } from "@angular/fire/compat/storage";
@@ -28,8 +28,8 @@ import { Category } from "projects/shared/models/category.model";
 import { Skill } from "projects/shared/models/skill.model";
 import VimeoPlayer from "@vimeo/player";
 import { VimeoComponent } from "../../vimeo/vimeo.component";
-import { LiveCourse, LiveCourseJson, LiveCourseTemplate, LiveCourseTemplateJson } from "projects/shared/models/live-course.model";
-import { Session, SessionJson, SessionTemplate, SessionTemplateJson } from "projects/shared/models/session.model";
+import { LiveCourse, LiveCourseTemplate, LiveCourseTemplateJson } from "projects/shared/models/live-course.model";
+import { Session, SessionTemplate, SessionTemplateJson } from "projects/shared/models/session.model";
 import { LiveCourseService } from "../../../services/live-course.service";
 import { MatSlideToggleChange } from "@angular/material/slide-toggle";
 
@@ -74,14 +74,11 @@ interface SessionData extends SessionTemplateJson {
 export class CreateLiveCourseComponent {
   constructor(public icon: IconService, public router: Router, private storage: AngularFireStorage, private modalService: NgbModal, private uploadControl: VimeoUploadService, private afs: AngularFirestore, private dialog: DialogService, public sanitizer: DomSanitizer, private enterpriseService: EnterpriseService, public categoryService: CategoryService, public skillService: SkillService, public moduleService: ModuleService, public courseClassService: CourseClassService, public activityClassesService: ActivityClassesService, private route: ActivatedRoute, private authService: AuthService, private instructorsService: InstructorsService, private alertService: AlertsService, private liveCourseService: LiveCourseService) {}
 
-  @ViewChild("endCourseModal") endCourseModal: ElementRef;
   @ViewChild("modalCrearInstructor") modalCrearInstructorContent: TemplateRef<any>;
   @ViewChild("modalCrearPilar") modalCrearPilarContent: TemplateRef<any>;
   @ViewChildren("inputRef") inputElements: QueryList<ElementRef>;
-  @ViewChildren("inputRefModulo") inputElementsModulo: QueryList<ElementRef>;
 
   activeStep = 1;
-  steps = ["Información del curso", "Clases", "Examen"];
   durations = [
     { value: 60 * 2, label: "2 hrs" },
     { value: 60 * 3, label: "3 hrs" },
@@ -92,16 +89,13 @@ export class CreateLiveCourseComponent {
     { value: 60 * 8, label: "8 hrs" },
   ];
 
-  mode: "create" | "edit-base" | "edit"; // "edit" for live course sessions sons edition
+  mode: "create" | "edit-base" | "edit"; // "edit-base" for live course templates
   liveCourseTemplateId = this.route.snapshot.paramMap.get("idCurso");
   liveCourseId = this.route.snapshot.paramMap.get("idLiveCourseSon");
-
   initDataSubscription: Subscription;
-
   textModulo = "Crear nuevo curso";
 
   liveCourseData: LiveCourseData;
-  modulos: Modulo[] = [];
 
   activitiesCourse;
   examenDiagnostico: Activity;
@@ -449,22 +443,6 @@ export class CreateLiveCourseComponent {
       // this.pillarsForm = new FormControl({ value: '', disabled: true }); // disabled inside initSkills()
       this.instructoresForm = new FormControl(instructor);
     }
-
-    // this.activityClassesService.getActivityAndQuestionsForCourse(this.liveCourseTemplateId, true).pipe(filter(activities=>activities!=null),take(1)).subscribe(activities => {
-    //   console.log('activities clases', activities);
-    //   this.activitiesCourse = activities;
-    //   this.modulos.forEach(module => {
-    //     let clases = module['clases'];
-    //     clases.forEach(clase => {
-    //       if (clase.tipo == 'actividad' || clase.tipo == 'corazones') {
-    //         //console.log('activities clases clase', clase);
-    //         let activity = activities.find(activity => activity.claseRef.id == clase.id);
-    //         console.log('activities clases activity', activity);
-    //         clase.activity = activity;
-    //       }
-    //     });
-    //   });
-    // });
   }
 
   initSkills() {
@@ -1283,111 +1261,6 @@ export class CreateLiveCourseComponent {
         await this.activityClassesService.removeQuestions(questionsIds, activityClass.id);
       }
 
-      if (questionsClasses.length > 0) {
-        //existen preguntan en los examenes con refrencias de clases y se debe generar la actividad
-        if (this.modulos.length > 0) {
-          //let validModules = this.modulos.filter(moduleCheck => !moduleCheck['isInvalid'])
-          let validModules = this.modulos;
-
-          for (let modulo of validModules) {
-            let clases = modulo["clases"];
-            const clasesNoOuNoAutoGenerated = clases.filter((clase) => !clase?.activity?.autoGenerated);
-            const clasesAutoGenerated = clases.filter((clase) => clase?.activity?.autoGenerated);
-            modulo["clases"] = [...clasesNoOuNoAutoGenerated, ...clasesAutoGenerated];
-            clases = modulo["clases"];
-            console.log("ClasesModulo", clases);
-            let classOfQuestion = clases.find((x) => x.id == questionsClasses.find((y) => y.classId == x.id)?.classId);
-            if (classOfQuestion) {
-              console.log("classeOfQuestion", classOfQuestion);
-              let activityClassArray = clases.filter((x) => x.tipo == "actividad" && x?.activity?.autoGenerated);
-              if (activityClassArray.length > 0) {
-                let activityClass = activityClassArray[0];
-                activityClass["edited"] = true;
-                activityClass["deleted"] = false;
-
-                console.log("update activityauto");
-                let preguntasFiltradas = questionsClasses.filter((question) => clases.some((clase) => clase.id === question.classId));
-                activityClass.titulo = `${modulo.titulo}`;
-                activityClass.activity.questions = preguntasFiltradas;
-                let duracion = 0;
-                if (preguntasFiltradas.length >= 20) {
-                  duracion = 20;
-                } else {
-                  duracion = preguntasFiltradas.length;
-                }
-                activityClass.duracion = duracion;
-                activityClass.activity.duration = duracion;
-                activityClass.activity.autoGenerated = true;
-                activityClass.activity.title = `${modulo.titulo}`;
-                console.log("activityClassAuto", activityClass);
-              } else {
-                let preguntasFiltradas = questionsClasses.filter((question) => clases.some((clase) => clase.id === question.classId));
-                let clase = new Clase();
-                console.log("Create activityauto");
-                clase.duracion = preguntasFiltradas.length;
-                clase.titulo = `${modulo.titulo}`;
-                clase.tipo = "actividad";
-                clase["edited"] = true;
-                clase["deleted"] = false;
-                clase["modulo"];
-                clase.id = await this.afs.collection<Clase>(Clase.collection).doc().ref.id;
-                clase["modulo"] = modulo.numero;
-                let numero = this.obtenerNumeroMasGrandeModulo(modulo);
-                clase["numero"] = numero;
-                clase.date = numero;
-                let actividad = new Activity();
-                actividad.questions = preguntasFiltradas;
-                actividad.title = `${modulo.titulo}`;
-                actividad.autoGenerated = true;
-                actividad["isInvalid"] = true;
-                clase["activity"] = actividad;
-                clase["expanded"] = false;
-                clases.push(clase);
-              }
-            } else {
-              let activityClassArray = clases.filter((x) => x.tipo == "actividad" && x?.activity?.autoGenerated);
-              console.log("activityClassArrayDelete", activityClassArray);
-              if (activityClassArray.length > 0) {
-                let clase = activityClassArray[0];
-                clase["deleted"] = true;
-                clase["edited"] = false;
-                let classDelete = {
-                  claseInId: clase.id,
-                  cursoId: this.liveCourseData.id,
-                  moduloInId: modulo.id,
-                  activityId: clase?.activity?.id,
-                };
-                this.deletedClasses.push(classDelete);
-                clases = clases.filter((clase) => clase.id != classDelete.claseInId);
-              }
-            }
-          }
-        }
-      } else {
-        // ninguna pregunta esta asociada a clases (borrar todas las actividades automaticas)
-        if (this.modulos.length > 0) {
-          //let validModules = this.modulos.filter(moduleCheck => !moduleCheck['isInvalid'])
-          let validModules = this.modulos;
-          for (let modulo of validModules) {
-            let clases = modulo["clases"];
-            let activityClassArray = clases.filter((x) => x.tipo == "actividad" && x?.activity?.autoGenerated);
-            if (activityClassArray.length > 0) {
-              let clase = activityClassArray[0];
-              clase["deleted"] = true;
-              clase["edited"] = false;
-              let classDelete = {
-                claseInId: clase.id,
-                cursoId: this.liveCourseData.id,
-                moduloInId: modulo.id,
-                activityId: clase?.activity?.id,
-              };
-              this.deletedClasses.push(classDelete);
-              clases = clases.filter((clase) => clase.id != classDelete.claseInId);
-              console.log("clasesAfterDelete", clases);
-            }
-          }
-        }
-      }
     }
 
     // For "examen final" ... check later
@@ -1451,125 +1324,6 @@ export class CreateLiveCourseComponent {
       if (questionsIds.length > 0) {
         //remove not present questions
         await this.activityClassesService.removeQuestions(questionsIds, activityClass.id);
-      }
-
-      if (questionsClasses.length > 0) {
-        //existen preguntan en los examenes con refrencias de clases y se debe generar la actividad
-        if (this.modulos.length > 0) {
-          //let validModules = this.modulos.filter(moduleCheck => !moduleCheck['isInvalid'])
-          let validModules = this.modulos;
-
-          for (let modulo of validModules) {
-            let clases = modulo["clases"];
-            const clasesNoOuNoAutoGenerated = clases.filter((clase) => !clase?.activity?.autoGenerated);
-            const clasesAutoGenerated = clases.filter((clase) => clase?.activity?.autoGenerated);
-            modulo["clases"] = [...clasesNoOuNoAutoGenerated, ...clasesAutoGenerated];
-            clases = modulo["clases"];
-            console.log("ClasesModulo", clases);
-            let classOfQuestion = clases.find((x) => x.id == questionsClasses.find((y) => y.classId == x.id)?.classId);
-            if (classOfQuestion) {
-              console.log("classeOfQuestion", classOfQuestion);
-              let activityClassArray = clases.filter((x) => x.tipo == "actividad" && x?.activity?.autoGenerated);
-              if (activityClassArray.length > 0) {
-                let activityClass = activityClassArray[0];
-                activityClass["edited"] = true;
-                activityClass["deleted"] = false;
-
-                console.log("update activityauto");
-                let preguntasFiltradas = questionsClasses.filter((question) => clases.some((clase) => clase.id === question.classId));
-                activityClass.titulo = `${modulo.titulo}`;
-                activityClass.activity.questions = preguntasFiltradas;
-                let duracion = 0;
-                if (preguntasFiltradas.length >= 20) {
-                  duracion = 20;
-                } else {
-                  duracion = preguntasFiltradas.length;
-                }
-                activityClass.duracion = duracion;
-                activityClass.activity.duration = duracion;
-                activityClass.activity.autoGenerated = true;
-                activityClass.activity.title = `${modulo.titulo}`;
-                console.log("activityClassAuto", activityClass);
-              } else {
-                let preguntasFiltradas = questionsClasses.filter((question) => clases.some((clase) => clase.id === question.classId));
-                let clase = new Clase();
-                console.log("Create activityauto");
-                clase.duracion = preguntasFiltradas.length;
-                clase.titulo = `${modulo.titulo}`;
-                clase.tipo = "actividad";
-                clase["edited"] = true;
-                clase["deleted"] = false;
-                clase["modulo"];
-                clase.id = await this.afs.collection<Clase>(Clase.collection).doc().ref.id;
-                clase["modulo"] = modulo.numero;
-                let numero = this.obtenerNumeroMasGrandeModulo(modulo);
-                clase["numero"] = numero;
-                clase.date = numero;
-                let actividad = new Activity();
-                actividad.questions = preguntasFiltradas;
-                actividad.title = `${modulo.titulo}`;
-                actividad.autoGenerated = true;
-                actividad["isInvalid"] = true;
-                clase["activity"] = actividad;
-                clase["expanded"] = false;
-                clases.push(clase);
-              }
-            } else {
-              let activityClassArray = clases.filter((x) => x.tipo == "actividad" && x?.activity?.autoGenerated);
-              console.log("activityClassArrayDelete", activityClassArray);
-              if (activityClassArray.length > 0) {
-                let clase = activityClassArray[0];
-                clase["deleted"] = true;
-                clase["edited"] = false;
-                let classDelete = {
-                  claseInId: clase.id,
-                  cursoId: this.liveCourseData.id,
-                  moduloInId: modulo.id,
-                  activityId: clase?.activity?.id,
-                };
-                this.deletedClasses.push(classDelete);
-                clases = clases.filter((clase) => clase.id != classDelete.claseInId);
-              }
-            }
-          }
-        }
-      } else {
-        // ninguna pregunta esta asociada a clases (borrar todas las actividades automaticas)
-        if (this.modulos.length > 0) {
-          //let validModules = this.modulos.filter(moduleCheck => !moduleCheck['isInvalid'])
-          let validModules = this.modulos;
-          for (let modulo of validModules) {
-            let clases = modulo["clases"];
-            let activityClassArray = clases.filter((x) => x.tipo == "actividad" && x?.activity?.autoGenerated);
-            if (activityClassArray.length > 0) {
-              let clase = activityClassArray[0];
-              clase["deleted"] = true;
-              clase["edited"] = false;
-              let classDelete = {
-                claseInId: clase.id,
-                cursoId: this.liveCourseData.id,
-                moduloInId: modulo.id,
-                activityId: clase?.activity?.id,
-              };
-              this.deletedClasses.push(classDelete);
-              clases = clases.filter((clase) => clase.id != classDelete.claseInId);
-              console.log("clasesAfterDelete", clases);
-            }
-          }
-        }
-      }
-    }
-
-    // Remove sessions ... check later
-    if (this.deletedClasses.length > 0) {
-      for (let clase of this.deletedClasses) {
-        // console.log("deletedClasses", clase);
-        // await this.courseClassService.deleteClassAndReference(clase.claseInId,this.liveCourseData.id,clase.moduloInId,clase?.activityId);
-        // if (clase.vimeoId1) {
-        //   this.uploadControl.deleteVideo(clase.vimeoId1).subscribe(respuesta => {
-        //     console.log('respuesta.respuesta')
-        //   })
-        // }
       }
     }
 
@@ -1703,10 +1457,6 @@ export class CreateLiveCourseComponent {
         await this.liveCourseService.updateSessionData(session.id, sessionSonDataToUpdate);
       }
     }
-
-    // await this.afs.collection(LiveCourse.collection).doc(this.liveCourseData.id).update({
-    //   duration: duration
-    // })
 
     Swal.close();
     this.savingCourse = false;
@@ -2026,30 +1776,27 @@ export class CreateLiveCourseComponent {
           });
 
           // Observa el progreso de la carga del archivo y haz algo cuando se complete.
-          task
-            .snapshotChanges()
-            .pipe(
-              finalize(() => {
-                // Obtén la URL de descarga del archivo.
-                fileRef.getDownloadURL().subscribe((url) => {
-                  if (tipo == "instructor") {
-                    this.uploadingImgInstuctor = false;
-                    if (!newInstructor) {
-                      this.formNewCourse.get("imagen_instructor").patchValue(url);
-                      this.avatarInstructor.unshift(url);
-                    } else {
-                      this.formNewInstructor.get("foto").patchValue(url);
-                    }
+          task.snapshotChanges().pipe(
+            finalize(() => {
+              // Obtén la URL de descarga del archivo.
+              fileRef.getDownloadURL().subscribe((url) => {
+                if (tipo == "instructor") {
+                  this.uploadingImgInstuctor = false;
+                  if (!newInstructor) {
+                    this.formNewCourse.get("imagen_instructor").patchValue(url);
+                    this.avatarInstructor.unshift(url);
                   } else {
-                    this.uploadingImgCurso = false;
-                    this.formNewCourse.get("photoUrl").patchValue(url);
-                    this.imagenesCurso.unshift(url);
+                    this.formNewInstructor.get("foto").patchValue(url);
                   }
-                  //console.log(`File URL: ${url}`);
-                });
-              })
-            )
-            .subscribe();
+                } else {
+                  this.uploadingImgCurso = false;
+                  this.formNewCourse.get("photoUrl").patchValue(url);
+                  this.imagenesCurso.unshift(url);
+                }
+                //console.log(`File URL: ${url}`);
+              });
+            })
+          ).subscribe();
         }
       };
     };
@@ -2118,10 +1865,6 @@ export class CreateLiveCourseComponent {
 
   getnumerClassTipo(claseIn) {
     let valor = 0;
-
-    // let modulo = this.modulos.find(modulo=>modulo.numero == moduloIn.numero );
-    // let clases = modulo['clases'].filter( clase => clase.tipo == claseIn.tipo);
-    // valor = clases.findIndex( clase => clase.id == claseIn.id);
     return valor + 1;
   }
 
@@ -2170,16 +1913,6 @@ export class CreateLiveCourseComponent {
         competencias: skills,
       };
     });
-  }
-
-  obtenerNumeroMasGrande(): number {
-    return this.modulos.reduce((maximoActual, modulo) => {
-      const maximoModulo = modulo["clases"].reduce((maximoClase, clase) => {
-        return Math.max(maximoClase, clase.numero);
-      }, -0);
-
-      return Math.max(maximoActual, maximoModulo);
-    }, -0);
   }
 
   obtenerNumeroMasGrandeModulo(moduloIn): number {
@@ -2318,24 +2051,6 @@ export class CreateLiveCourseComponent {
     // Espera hasta que los cambios en la vista se apliquen
     setTimeout(() => {
       const inputElementsArray = this.inputElements.toArray();
-      const inputElement = inputElementsArray[index]?.nativeElement;
-      if (inputElement) {
-        const longitudTexto = inputElement.value.length;
-        inputElement.focus();
-        inputElement.setSelectionRange(longitudTexto, longitudTexto);
-      }
-    });
-  }
-
-  editarTituloModulo(index: number) {
-    // Configura el estado de edición como prefieras
-    this.moverCursorAlFinalModulo(index);
-  }
-
-  moverCursorAlFinalModulo(index: number) {
-    // Espera hasta que los cambios en la vista se apliquen
-    setTimeout(() => {
-      const inputElementsArray = this.inputElementsModulo.toArray();
       const inputElement = inputElementsArray[index]?.nativeElement;
       if (inputElement) {
         const longitudTexto = inputElement.value.length;
