@@ -22,6 +22,17 @@
         </div>
 
         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1rem" class="">
+            <span>Slug:</span>
+            <input id="slug" name="slug" [(ngModel)]="slug" #slugCtrl="ngModel"
+                class="ft14 shadow-animation pdl05 pdr05 radius20 borderLight" required
+                pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$" />
+        </div>
+        <div *ngIf="slugCtrl.invalid && slugCtrl.touched">
+            <span style="color: red" *ngIf="slugCtrl.errors?.required">Slug is required.</span>
+            <span style="color: red" *ngIf="slugCtrl.errors?.pattern">Invalid slug format.</span>
+        </div>
+
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1rem" class="">
             <span>Etiquetas:</span>
             <ng-container *ngFor="let tag of tags; let tagIndex = index">
                 <div class="skill-badge-complete ListHover radius10 backGray2 ft12 pdl08 pdr08 gray-8">
@@ -49,7 +60,7 @@
                         <option value="2">Heading 2</option>
                         <option value="3">Heading 3</option>
                         <option value="" selected>Normal</option>
-                      </select>
+                    </select>
 
                 </span>
                 <span class="ql-formats">
