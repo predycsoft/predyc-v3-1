@@ -17,6 +17,7 @@ import { DialogAssignLiveCoursesComponent } from "./dialog-assign-live-courses/d
 import { CreateUserComponent } from "projects/predyc-business/src/app/business-pages/management/my-team/student/create-user/create-user.component";
 import { environment } from "projects/predyc-business/src/environments/environment";
 import { AngularFireFunctions } from "@angular/fire/compat/functions";
+import { capitalizeFirstLetter, titleCase } from "projects/shared";
 
 interface DataToShow {
   liveCourseByStudentId: string;
@@ -180,13 +181,13 @@ export class LiveCourseStudentListComponent {
   onSelect(data) {}
 
   async downloadExcel() {
-    const columnTitles = ["Correo del estudiante", "Nombre del estudiante", "Diagnostico", "Fin", "Certificado", "Asistencia"];
+    const columnTitles = ["Correo del estudiante", "Nombre del estudiante", "Ex. Diagnóstico", "Ex. Final", "Certificado", "Asistencia"];
 
     // PRINCIPAL SHEET
     const dataToExport = this.dataSource.data.map((row) => {
         const obj = {};
         obj[columnTitles[0]] = row.userEmail;
-        obj[columnTitles[1]] = row.userName;
+        obj[columnTitles[1]] = titleCase(row.userName);
         obj[columnTitles[2]] = row.diagnosticTestScore ? row.diagnosticTestScore : "No ha presentado";
         obj[columnTitles[3]] = row.finalTestScore ? row.finalTestScore : "No ha presentado";
         obj[columnTitles[4]] = row.certificateId ? `${environment.predycUrl}/certificado/${row.certificateId}` : "No disponible";
@@ -197,8 +198,29 @@ export class LiveCourseStudentListComponent {
     const worksheet = XLSX.utils.json_to_sheet(dataToExport);
 
     // Set the width for each column
-    const columnWidths = columnTitles.map((title) => ({ wch: title.length + 2 }));
+    const columnWidths = columnTitles.map((title) => ({ wch: title.length + 4 }));
+    columnWidths[3] = { wch: 16 }; // for "fin" column
     worksheet["!cols"] = columnWidths;
+
+    // Set style to title row
+    Object.keys(worksheet).forEach(cell => {
+      if (cell[0] !== '!') {
+        worksheet[cell].s = {
+          alignment: { horizontal: "center",}
+        }
+        const cellAddress = XLSX.utils.decode_cell(cell);
+        if (cellAddress.r === 0) {
+          worksheet[cell].s = {
+            font: { 
+              // italic: true,
+              sz: 13,
+              bold: true 
+            },
+            alignment: { horizontal: "center",}
+          };
+        }
+      }
+    });
 
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Estudiantes");
@@ -208,7 +230,6 @@ export class LiveCourseStudentListComponent {
     const userColumnTitles = ["Tipo de pregunta", "Texto de la pregunta", "Opc. Selec.", "Opc. Correc.", "Resultado"];
     let sheetIndex = 1
     this.dataSource.data.forEach((row) => {
-      // const userTests = allUsersTests.filter(x => x.userRef === row.userRef)
       const userTests = allUsersTests.filter(x => x.userRef.id === row.userRef.id)
       console.log("userTests", userTests)
 
@@ -218,14 +239,14 @@ export class LiveCourseStudentListComponent {
         const userDiagnosticTest = userTests.find(x => x.type === "test")
         const userFinalTest = userTests.find(x => x.type === "final-test")
         if (userDiagnosticTest) {
-          const testQuestions = userDiagnosticTest.questions
-          const testAnswers = userDiagnosticTest.answers
-          diagnosticTestsRows.push(...this.processQuestions(testQuestions, testAnswers));
+          const diagnosticTestQuestions = userDiagnosticTest.questions
+          const diagnosticTestAnswers = userDiagnosticTest.answers
+          diagnosticTestsRows.push(...this.processQuestions(diagnosticTestQuestions, diagnosticTestAnswers));
         }
         if (userFinalTest) {
-          const testQuestions = userFinalTest.questions
-          const testAnswers = userFinalTest.answers
-          finalTestsRows.push(this.processQuestions(testQuestions, testAnswers));
+          const finalTestQuestions = userFinalTest.questions
+          const finalTestAnswers = userFinalTest.answers
+          finalTestsRows.push(...this.processQuestions(finalTestQuestions, finalTestAnswers));
         }          
         
         console.log("userDiagnosticTest", userDiagnosticTest)
@@ -246,17 +267,44 @@ export class LiveCourseStudentListComponent {
       const studentWorksheet = XLSX.utils.aoa_to_sheet(studentData);
 
       // Set the width for each column
-      const columnWidths = userColumnTitles.map((title) => ({ wch: title.length + 5 }));
+      const columnWidths = userColumnTitles.map((title) => ({ wch: title.length + 8 }));
       studentWorksheet["!cols"] = columnWidths;
 
-      // Set wrap text for all cells
+      // Set styles to cells 
       Object.keys(studentWorksheet).forEach(cell => {
         if (cell[0] !== '!') {
-          studentWorksheet[cell].s = {
-            alignment: {
-              wrapText: true
+          // Set style to "Examen Diagnostico" and "Examen Final" cells
+          if (cell === "A1" || cell === "A8") {
+            studentWorksheet[cell].s = {
+              font: { 
+                sz: 15,
+                bold: true 
+              }
+            };
+          } 
+          else {
+            studentWorksheet[cell].s = {
+              alignment: { 
+                vertical: "center",
+                wrapText: true, // To be able to see line breaks
+              }
+            };
+            // Set style to titles rows
+            const cellAddress = XLSX.utils.decode_cell(cell);
+            if (cellAddress.r === 1 || cellAddress.r === 8) {
+              studentWorksheet[cell].s = {
+                // ...studentWorksheet[cell].s,
+                font: { 
+                  italic: true,
+                  sz: 13,
+                  bold: true 
+                },
+                alignment: {
+                  horizontal: "center",
+                }
+              };
             }
-          };
+          }
         }
       });
 
