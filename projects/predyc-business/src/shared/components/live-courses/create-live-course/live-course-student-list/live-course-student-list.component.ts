@@ -428,7 +428,7 @@ export class LiveCourseStudentListComponent {
 
     htmlContent += `</ul><br>
     <p><strong>Por favor sigue estos sencillos pasos: <strong></p>
-    <p><strong>Paso 1: </strong>Ingresa desde tu computador a nuestra plataforma <a href="https://predyc-user.web.app/auth/login">Predyc</a> e inicia sesión con tu correo ${userEmail} y las credenciales que te llegaron anteriormente ${gmail? '(clic en botón continuar con Google)': ''}</p>
+    <p><strong>Paso 1: </strong>Ingresa desde tu computador a nuestra plataforma <a href="https://predyc-user.web.app/auth/login">Predyc</a> e inicia sesión con tu correo ${userEmail} ${gmail? '(clic en botón continuar con Google)': 'y las credenciales que te llegarón anteriormente'}</p>
     <p><strong>Paso 2: </strong>Ve a la seccion "Cursos en vivo" donde deberas ver en la lista este curso (${this.courseDetails.title})</p>
     <br>
     <p>¡Listo! El curso está disponible en la sección “Cursos en vivo”</p>
