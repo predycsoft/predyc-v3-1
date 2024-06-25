@@ -1,5 +1,5 @@
 import { NgModule } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { CommonModule, DatePipe } from "@angular/common";
 import { SideNavComponent } from "./components/sidenav/sidenav.component";
 import { NavigationCardComponent } from "./widgets/navigation-card/navigation-card.component";
 import { NavigateBackComponent } from "./widgets/navigate-back/navigate-back.component";
@@ -293,6 +293,6 @@ import { QuillModule } from "ngx-quill";
     QuillModule
   ],
 
-  providers: [VimeoUploadService],
+  providers: [VimeoUploadService,DatePipe],
 })
 export class SharedModule {}

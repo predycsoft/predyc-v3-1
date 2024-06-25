@@ -55,6 +55,9 @@ export class IsActivePipe implements PipeTransform {
     else if (link == '/admin/royalties' && currentUrl.includes('royalties')) {
       return true;
     }
+    else if (link == '/admin/live' && currentUrl.includes('live')) {
+      return true;
+    }
     else if (link == '/admin/sales' && currentUrl.includes('sales')) {
       return true;
     }

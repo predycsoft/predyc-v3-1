@@ -19,8 +19,8 @@ export { createUserWithEmailAndPassword,deleteUser, generatePasswordResetLink, e
 import { createTractianUser } from './tractian';
 export { createTractianUser }
 
-import { sendMail } from './email';
-export { sendMail }
+import { sendMail,sendMailHTML } from './email';
+export { sendMail,sendMailHTML }
 
 // import { createProfilesFromExcel } from './handleExcel';
 // export { createProfilesFromExcel }

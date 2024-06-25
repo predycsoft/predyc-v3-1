@@ -17,6 +17,8 @@ import { DialogAssignLiveCoursesComponent } from "./dialog-assign-live-courses/d
 import { CreateUserComponent } from "projects/predyc-business/src/app/business-pages/management/my-team/student/create-user/create-user.component";
 import { environment } from "projects/predyc-business/src/environments/environment";
 import { AngularFireFunctions } from "@angular/fire/compat/functions";
+import { titleCase } from "shared";
+import { DatePipe } from "@angular/common";
 
 interface DataToShow {
   liveCourseByStudentId: string;
@@ -46,13 +48,15 @@ export class LiveCourseStudentListComponent {
     public userService: UserService,
     private modalService: NgbModal,
     private fireFunctions: AngularFireFunctions,
-
+    private datePipe: DatePipe,
     // test
     private afs: AngularFirestore
   ) {}
 
   @Input() liveCourseTemplateId: string;
   @Input() liveCourseId: string;
+  @Input() courseDetails: any;
+
   @Output() userEmailsChanged = new EventEmitter<string[]>();
 
   displayedColumns: string[] = ["userName", "userEmail", "enterprise", "diagnosticTest", "finalTest", "certificate", "attendance", "status"];
@@ -322,17 +326,17 @@ export class LiveCourseStudentListComponent {
 
   async handleUserSelected(user: User) {
     console.log("Selected user:", user);
-    if (user) await this.assignLiveCourse(user.uid, user.email);
+    if (user) await this.assignLiveCourse(user.uid, user.email,user);
     else this.openCreateUserModal();
   }
 
-  async assignLiveCourse(userId: string, userEmail: string) {
+  async assignLiveCourse(userId: string, userEmail: string,user:User) {
     const userRef = this.userService.getUserRefById(userId);
     const liveCourseByStudent = new LiveCourseByStudent("", true, null, false, userRef, this.liveCourseRef, false, false, null, false, null, true, true);
     try {
       await this.liveCourseService.createLiveCourseByStudent(liveCourseByStudent);
       console.log("***liveCourseByStudent created***");
-      await this.sendEmail(userEmail)
+      await this.sendEmail(userEmail,user)
     } catch (error) {
       console.log("XXXerror creating liveCourseByStudentXXX", error);
     }
@@ -349,27 +353,109 @@ export class LiveCourseStudentListComponent {
 
     modalRef.result.then(async (userData) => {
       // console.log("userData", userData)
-      await this.assignLiveCourse(userData.uid, userData.email);
+      await this.assignLiveCourse(userData.uid, userData.email,userData);
     });
 
     return modalRef;
   }
 
-  async sendEmail(userEmail: string) {
-    console.log("userEmail", userEmail)
+  async sendEmail(userEmail: string,user) {
+
+    const firma = `
+    <p style="margin: 5px 0;">Saludos cordiales,</p>
+    <p style="margin: 5px 0; color: #073763;">L.T. Daniela Rodríguez</p>
+    <p style="margin: 5px 0;">Coordinadora en Capacitación</p>
+    <p style="margin: 5px 0;">Tel: 442 169 2090</p>
+    <img src="https://predictiva21.com/wp-content/uploads/2024/06/PbP21-logo-1.webp" alt="Predyc" style="width: 150px; height: auto;">`;    
+    const styleMail = `
+    <style>
+      table {
+        max-width: 100%;
+        border-collapse: collapse;
+      }
+      th, td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+      .high {
+        color: green;
+      }
+      .medium {
+        color: orange;
+      }
+      .low {
+        color: red;
+      }
+      .no-iniciado, .no-plan {
+        color: gray;
+      }
+      .month-row {
+        border: none;
+        padding-top: 20px;
+        font-weight: bold;
+      }
+      .month-name {
+        padding-top: 20px;
+        font-weight: bold;
+        border: none;
+        text-align: left;
+      }
+    </style>`;
+
+
+    console.log("userEmail", userEmail,this.courseDetails,user)
     let sender = "capacitacion@predyc.com"
     let recipients = [userEmail]
     // let recipients = ["diegonegrette42@gmail.com"]
-    let subject = `Has sido inscrito en un curso en vivo` // get liveCourse data from parent component if needed 
-    let text = `Te han asignado un curso en vivo. 
-    \nAccede a la plataforma de predyc para ver toda la información.` 
+    let subject = `Has sido inscrito en un curso en vivo`
+    let startDate = this.courseDetails.sessions[0].dateFormatted
+    let formattedDate = this.datePipe.transform(startDate, 'd \'de\' MMMM', 'es');
+    let htmlContent = `<p>Estimado <strong>${titleCase(user.name)}</strong></p> 
+    <p>Mi nombre es Daniela Rodríguez, Coordinadora de Capacitación en <a href="https://predictiva21.com/">Predictiva21</a>,  me gustaría guiarlo en los pasos para que pueda acceder al aula virtual del curso, donde podrá ver las sesiones en vivo, exámenes, material descargable y certificado.</p>
+    <p>El curso <strong>${this.courseDetails.title}</strong> se llevará a cabo en un total de ${Math.round(this.courseDetails.duration / 60)} horas, desde el <strong>${formattedDate}</strong> en ${this.courseDetails.sessions.length} sesiones de la siguiente manera:</p>
+    <ul>` 
+
+    this.courseDetails.sessions.forEach(session => {
+      let sessionDate = this.datePipe.transform(session.dateFormatted, 'd \'de\' MMMM \'a las\' HH:mm \'hrs\'', 'es');
+      htmlContent += `<li>${session.title} - ${sessionDate} hora CDMX (México)</li>`;
+    });
+
+    let gmail = userEmail.includes("@gmail.com");
+
+    htmlContent += `</ul><br>
+    <p><strong>Por favor sigue estos sencillos pasos: <strong></p>
+    <p><strong>Paso 1: </strong>Ingresa desde tu computador a nuestra plataforma <a href="https://predyc-user.web.app/auth/login">Predyc</a> e inicia sesión con tu correo ${userEmail} y las credenciales que te llegaron anteriormente ${gmail? '(clic en botón continuar con Google)': ''}</p>
+    <p><strong>Paso 2: </strong>Ve a la seccion "Cursos en vivo" donde deberas ver en la lista este curso (${this.courseDetails.title})</p>
+    <br>
+    <p>¡Listo! El curso está disponible en la sección “Cursos en vivo”</p>
+    <p>El link a las sesiones y el material del curso estarán disponibles 20 minutos antes del inicio.</p><br>
+    
+    <p><strong>Recomendaciones para las sesiones en vivo:</strong></p>
+
+    <ul>
+      <li>Conéctate 15 minutos antes para que puedas verificar tu configuración de audio. El inicio de las sesiones se hará a la hora programada.</li>
+      <li>Una vez iniciada la clase colócate en mute, si deseas realizar una consulta activa tu micrófono y hazla, al culminar tu consulta vuelve a colocar el mute.</li>
+      <li>sulta vuelve a colocar el mute.
+      Si pierdes una sesión no te preocupes, todas nuestras clases son grabadas. El enlace de la grabación aparecerá al día siguiente y estará activo por un tiempo determinado.</li>
+    </ul>
+    <br>
+
+    <p><strong>Nota: Si tienes restricciones por parte de tu organización para acceder a alguna página web desde tu computador, puedes acceder desde tu teléfono móvil o cualquier otro dispositivo electrónico.</strong></p>
+    <br>
+    <p>Recuerde que si tiene alguna duda en el proceso puede contactarnos por este medio.</p><br>`;
+
+    const htmlContentFinal = ` <!DOCTYPE html><html><head>${styleMail}</head><body>${htmlContent}${firma}</body></html>`;
 
     try {
-      await firstValueFrom(this.fireFunctions.httpsCallable('sendMail')({
+      await firstValueFrom(this.fireFunctions.httpsCallable('sendMailHTML')({
         sender: sender,
         recipients: recipients,
         subject: subject,
-        text: text,
+        htmlContent: htmlContentFinal,
       }));
       console.log("Email enviado")
     } catch (error) {

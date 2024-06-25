@@ -1,4 +1,6 @@
-import { NgModule } from "@angular/core";
+import { LOCALE_ID,NgModule } from "@angular/core";
+import localeEs from '@angular/common/locales/es';
+import { registerLocaleData } from '@angular/common';
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { environment } from "projects/predyc-business/src/environments/environment";
@@ -58,10 +60,14 @@ import { CreateInstructorComponent } from "../shared/components/instructors/crea
 
 import { QuillModule } from "ngx-quill";
 
+registerLocaleData(localeEs);
+
+
 @NgModule({
   declarations: [AppComponent, LoginComponent, DashboardComponent, ManagementComponent, CoursesComponent, ValidationComponent, SettingsComponent, MyTeamComponent, ProfilesListComponent, NotificationsComponent, StudentComponent, MainComponent, CreateCourseComponent, CertificationsTestComponent, MyAccountComponent, EnterprisePresentationFormComponent, EnterpriseInfoFormComponent, AdminPresentationFormComponent, AdminInfoFormComponent, EnterpriseDataComponent, AdminDataComponent, ValidationListComponent, EditValidationTestComponent, RankingListComponent, UsersOnboardingComponent, UsersUsageComponent, UsersaAtivityComponent, StudentStatsComponent, StudentDetailsComponent, UsersRhythmComponent, UsersStudyTimeContainerComponent, StudyTimeWeeklyChartComponent, StudyTimeMonthlyChartComponent, CreateUserComponent, ProfilesComponent, StudentInfoFormComponent, StudentStudyPlanAndCompetencesComponent, StudyTimeMonthlyLineChartComponent, CreateInstructorComponent],
   imports: [BrowserModule, BrowserAnimationsModule, SharedModule, AppRoutingModule, AngularFireModule.initializeApp(environment.firebase), NgbModule, QuillModule.forRoot()],
   providers: [
+    { provide: LOCALE_ID, useValue: 'es' }, // Configurando el localismo a español
     { provide: SETTINGS, useValue: { ignoreUndefinedProperties: true } },
     {
       provide: USE_FIRESTORE_EMULATOR,
