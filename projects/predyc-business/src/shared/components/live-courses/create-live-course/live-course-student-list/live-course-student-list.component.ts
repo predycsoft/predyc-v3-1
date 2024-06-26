@@ -398,9 +398,11 @@ export class LiveCourseStudentListComponent {
       backdrop: "static",
       keyboard: false,
     });
+    modalRef.componentInstance.isParticularStudent = true
 
     modalRef.result.then(async (userData) => {
-      // console.log("userData", userData)
+      console.log("userData", userData)
+      userData.name = userData.displayName
       await this.assignLiveCourse(userData.uid, userData.email,userData);
     });
 
@@ -494,7 +496,12 @@ export class LiveCourseStudentListComponent {
 
     <p><strong>Nota: Si tienes restricciones por parte de tu organización para acceder a alguna página web desde tu computador, puedes acceder desde tu teléfono móvil o cualquier otro dispositivo electrónico.</strong></p>
     <br>
-    <p>Recuerde que si tiene alguna duda en el proceso puede contactarnos por este medio.</p><br>`;
+    <p>Recuerde que si tiene alguna duda en el proceso puede contactarnos por este medio.</p><br>
+    
+    <p><strong>Necesitas ayuda, escribenos</strong></p>
+    <p>
+      <a href="https://wa.me/524421692090"><img src="https://cdn.icon-icons.com/icons2/3685/PNG/512/whatsapp_logo_icon_229310.png" alt="WhatsApp" style="width: 50px; height: auto;"></a>
+    <p>`;
 
     const htmlContentFinal = ` <!DOCTYPE html><html><head>${styleMail}</head><body>${htmlContent}${firma}</body></html>`;
 
