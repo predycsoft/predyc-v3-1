@@ -5,6 +5,7 @@ import { Enterprise, EnterpriseJson } from 'projects/shared/models/enterprise.mo
 import { AlertsService } from './alerts.service';
 import { AuthService } from './auth.service';
 import { AngularFireFunctions } from "@angular/fire/compat/functions";
+import { User } from 'shared';
 
 
 @Injectable({
@@ -279,6 +280,36 @@ export class EnterpriseService {
       vimeoFolderId: idFolder,
       vimeoFolderUri: folderUri
     })
+  }
+
+
+  public async getCertificatesEnterprise(enterprise: Enterprise): Promise<any[]> {
+    const batchLimit = 10; // Tamaño del lote
+    let certificates: any[] = [];
+
+    try {
+      // 1. Buscar todos los usuarios de la empresa
+      const usersSnapshot = await this.afs.collection<User>(User.collection, ref => ref.where('enterprise', '==', this.afs.doc(`enterprise/${enterprise.id}`).ref)).get().toPromise();
+
+      const users = usersSnapshot.docs.map(doc => doc.data());
+
+      // 2. Buscar los certificados de cada usuario en lotes
+      for (let i = 0; i < users.length; i += batchLimit) {
+        const batch = users.slice(i, i + batchLimit);
+        const userIds = batch.map(user => user.uid);
+
+        // Obtener los certificados para el lote actual de usuarios
+        const certificatesSnapshot = await this.afs.collection<any>('userCertificate', ref => ref.where('usuarioId', 'in', userIds)).get().toPromise();
+        const batchCertificates = certificatesSnapshot.docs.map(doc => doc.data());
+
+        certificates = certificates.concat(batchCertificates);
+      }
+    } catch (error) {
+      console.error('Error fetching certificates:', error);
+      throw error;
+    }
+
+    return certificates;
   }
 
 }
