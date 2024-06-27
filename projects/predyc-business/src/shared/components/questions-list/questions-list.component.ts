@@ -197,7 +197,7 @@ export class QuestionsListComponent {
     return {
       courseQuestions: courseQuestions,
       courseId: course.id,
-      coursePhoto: course.foto,
+      coursePhoto: course.imagen? course.imagen : course.foto,
       courseTitle: course.titulo,
       instructorPhoto: instructor.foto,
       instructorName: instructor.nombre,

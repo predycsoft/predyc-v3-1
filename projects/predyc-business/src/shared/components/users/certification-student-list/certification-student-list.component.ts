@@ -43,6 +43,9 @@ export class CertificationStudentListComponent {
 
   @Input() resultadosExamen: any = []
 
+  @Output() DatosUserEmpresas = new EventEmitter<any>();
+
+
 
   queryParamsSubscription: Subscription
   profilesSubscription: Subscription
@@ -138,6 +141,7 @@ export class CertificationStudentListComponent {
       users.sort(
         (a, b) => b.ratingPoints - a.ratingPoints
       );
+      this.DatosUserEmpresas.emit(users)
       this.dataSource.data = users;
       this.totalLength = response.length;
       console.log('users',users);

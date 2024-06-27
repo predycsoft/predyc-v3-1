@@ -48,6 +48,6 @@
         </div>
     </div>  
     <div class="fw" class="mgt30" *ngIf="origen=='empresa'" fxLayout="row" fxLayoutAlign="center center">
-        <app-certification-student-list class="fw" [resultadosExamen]="resultadosCrudosEmpresa" />
+        <app-certification-student-list class="fw" (DatosUserEmpresas)="datosUserEmpresasRecived($event)" [resultadosExamen]="resultadosCrudosEmpresa" />
     </div>
 </div>

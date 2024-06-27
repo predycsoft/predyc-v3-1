@@ -1,12 +1,17 @@
 <div class="mgt20 mgl20 mgr20">
-    <p class="ft600 ft16 gray-10" >Diagnóstico inicial</p>
-
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+        <p class="ft600 ft16 gray-10" >Diagnóstico inicial</p>
+        <button *ngIf="datosReporte" class="blueButtonAnim button-animation" style="border-radius: 24px !important;"
+        (click)="downloadReportData()">
+           Descargar reporte
+        </button>
+    </div>
     <div fxLayout="row" fxLayoutAlign="">
         <div fxLayout="column" class="w-100 ">
             <div class="pdr20 mgt10 ">
                 <div fxLayout="row" fxLayoutAlign="center" class="w-100">
                     <div style="width: 800px;">
-                        <app-stats-certifications origen="empresa" [makeChart]="makeChart"></app-stats-certifications>
+                        <app-stats-certifications (DatosUserEmpresas)="datosReporte = $event" origen="empresa" [makeChart]="makeChart"></app-stats-certifications>
                     </div>
                 </div>
             </div>
