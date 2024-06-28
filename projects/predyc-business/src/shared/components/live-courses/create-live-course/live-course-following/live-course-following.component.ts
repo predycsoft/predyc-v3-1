@@ -254,6 +254,11 @@ export class LiveCourseFollowingComponent {
     let subject = `Aviso del curso en vivo ${this.liveCourse.title}`
     let htmlContent = this.editor.root.innerHTML
 
+    htmlContent+=`<br><p><strong>Necesitas ayuda, escribenos</strong></p>
+    <p>
+      <a href="https://wa.me/524421692090"><img src="https://cdn.icon-icons.com/icons2/3685/PNG/512/whatsapp_logo_icon_229310.png" alt="WhatsApp" style="width: 50px; height: auto;"></a>
+    <p>`
+
     try {
       this.emailSent = true
 

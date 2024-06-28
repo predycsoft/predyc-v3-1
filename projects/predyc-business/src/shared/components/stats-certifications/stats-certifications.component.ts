@@ -1,4 +1,4 @@
-import { Component, Input, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
 import { LoaderService } from '../../services/loader.service';
 import { ActivityClassesService } from '../../services/activity-classes.service';
 import { Chart } from "chart.js";
@@ -33,6 +33,8 @@ export class StatsCertificationsComponent {
   @Input() makeChart = 0;
   @Input() origen = 'edit';
   @Input() resultado;
+  @Output() DatosUserEmpresas = new EventEmitter<any>();
+
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.makeChart) {
@@ -133,6 +135,10 @@ export class StatsCertificationsComponent {
 
       }
     })
+  }
+
+  datosUserEmpresasRecived(data){
+    this.DatosUserEmpresas.emit(data)
   }
 
   resultadosCrudos

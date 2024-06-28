@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import { Enterprise, User, getMonthProgress, obtenerUltimoDiaDelMes, obtenerUltimoDiaDelMesAnterior,CourseByStudent,Curso, titleCase, firestoreTimestampToNumberTimestamp, Clase, Modulo } from 'shared';
+import { Enterprise, User, getMonthProgress, obtenerUltimoDiaDelMes, obtenerUltimoDiaDelMesAnterior,CourseByStudent,Curso, titleCase, firestoreTimestampToNumberTimestamp, Clase, Modulo, LiveCourse } from 'shared';
 import { _sendMailHTML } from './email';
 import fetch from 'node-fetch';
 import jspdf, { ImageOptions, jsPDF } from 'jspdf';
@@ -193,7 +193,40 @@ export const generateMailCertificate = functions.https.onCall(async (data, _) =>
           }
 
       } else if (liveCourseId) {
-        throw new functions.https.HttpsError("not-found", 'not yet implemented');
+        // throw new functions.https.HttpsError("not-found", 'not yet implemented');
+        const dataCurso = await getLiveCourseById(liveCourseId);
+
+        console.log(dataCurso)
+        tituloCurso = dataCurso['title'];
+        descripcionCurso = dataCurso['identifierText'];
+  
+        duracionCurso = parseFloat(Math.ceil(dataCurso['duration'] / 60).toFixed(0));
+        dataCurso['duration'] = duracionCurso;
+
+        if (duracionCurso >= 2) { horas = 'horas'; }
+        const instructorId = dataCurso['instructorRef'].id;
+        const instructorRef = admin.firestore().collection('instructors').doc(instructorId);
+        const instructorDoc = await instructorRef.get();
+        if (!instructorDoc.exists) {
+          throw new functions.https.HttpsError('not-found', 'No se encontró el instructor.');
+        }
+        const dataInstructor = instructorDoc.data();
+        nombreInstructor = dataInstructor['nombre'];
+        firmaInstructor = dataInstructor['firma'];
+        logoInstructorEmpresa = dataInstructor['empresaFoto'];
+        instructorEmpresaNombre = dataInstructor['empresaNombre'];
+        // Redimensionar la imagen del logo del instructor
+        if (logoInstructorEmpresa) {
+            const imgBuffer = await downloadImage(logoInstructorEmpresa);
+            if(imgBuffer){
+                const resizedBuffer = await sharp(imgBuffer).toBuffer();
+                logoInstructorEmpresa = `data:image/png;base64,${resizedBuffer.toString('base64')}`;
+            }
+            else{
+                logoInstructorEmpresa = null
+            }
+
+          }
       }
   
       const pdf = await generatePDF()
@@ -216,6 +249,22 @@ export const generateMailCertificate = functions.https.onCall(async (data, _) =>
       throw new functions.https.HttpsError("unknown", error.message);
     }
   });
+
+  async function getLiveCourseById(courseId: string): Promise<any> {
+    try {
+      // Fetch the course data
+      const courseDoc = await admin.firestore().collection(LiveCourse.collection).doc(courseId).get();
+      if (!courseDoc.exists) {
+        throw new Error('No se encontró el curso.');
+      }
+      const courseData = courseDoc.data();
+  
+      return courseData;
+    } catch (error) {
+      console.error('Error al obtener los datos del curso:', error);
+      throw error;
+    }
+  }
 
 async function getCourseById(courseId: string): Promise<any> {
     try {

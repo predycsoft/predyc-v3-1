@@ -130,8 +130,11 @@ export class DashboardComponent {
   ngOnInit() {
     this.loaderService.setLoading(true);
     this.enterpriseSubscription = this.enterpriseService.enterprise$.subscribe(
-      (enterprise) => {
+      async (enterprise) => {
         if (enterprise) {
+
+          //let certicates = await this.enterpriseService.getCertificatesEnterprise(enterprise)
+          //console.log('certicates',certicates)
           this.enterprise = enterprise;
           console.log('enterpriseDashboard',enterprise)
           this.loaderService.setLoading(false);
