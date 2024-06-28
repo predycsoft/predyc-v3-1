@@ -19,8 +19,8 @@ export { createUserWithEmailAndPassword,deleteUser, generatePasswordResetLink, e
 import { createTractianUser } from './tractian';
 export { createTractianUser }
 
-import { getArticlesSlug } from './articles';
-export { getArticlesSlug }
+import { getArticlesSlug, api } from './articles';
+export { getArticlesSlug, api }
 
 import { sendMail,sendMailHTML } from './email';
 export { sendMail,sendMailHTML }
