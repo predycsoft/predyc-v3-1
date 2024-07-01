@@ -4,11 +4,16 @@ import { MatTableDataSource } from "@angular/material/table";
 import { ActivatedRoute, Router } from "@angular/router";
 import { AlertsService } from "projects/predyc-business/src/shared/services/alerts.service";
 import { ArticleService } from "projects/predyc-business/src/shared/services/article.service";
+import { AuthorService } from "projects/predyc-business/src/shared/services/author.service";
 import { IconService } from "projects/predyc-business/src/shared/services/icon.service";
 import { ArticleJson } from "projects/shared/models/article.model";
-import { Subscription } from "rxjs";
+import { Subscription, combineLatest } from "rxjs";
 import { firestoreTimestampToNumberTimestamp } from "shared";
 import Swal from "sweetalert2";
+
+interface ArticleWithAuthorName extends ArticleJson {
+  authorName: string
+}
 
 @Component({
   selector: "app-articles-list",
@@ -21,6 +26,7 @@ export class ArticlesListComponent {
     private router: Router, 
     private activatedRoute: ActivatedRoute, 
     private articleService: ArticleService,
+    private authorService: AuthorService,
     private alertService: AlertsService,
   ) {}
 
@@ -33,7 +39,7 @@ export class ArticlesListComponent {
   queryParamsSubscription: Subscription;
   articleServiceSubscription: Subscription;
 
-  dataSource = new MatTableDataSource<ArticleJson>();
+  dataSource = new MatTableDataSource<ArticleWithAuthorName>();
 
   ngOnInit() {
     this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe((params) => {
@@ -43,15 +49,21 @@ export class ArticlesListComponent {
   }
 
   performSearch(page: number) {
-    this.articleServiceSubscription = this.articleService.getArticles$().subscribe((articles) => {
+    this.articleServiceSubscription = combineLatest([this.articleService.getArticles$(), this.authorService.getAuthors$()]).subscribe(([articles, authors]) => {
       console.log("articles", articles);
-      articles.forEach(article => {
-        article.createdAt = firestoreTimestampToNumberTimestamp(article.createdAt)
-      });
-      this.totalLength = articles.length;
+
+      const dataToShow: ArticleWithAuthorName[] = articles.map(article => {
+        const author = authors.find( x => x.id === article.author.id)
+        return {
+          ...article,
+          updatedAt: article.updatedAt ? firestoreTimestampToNumberTimestamp(article.updatedAt) : null,
+          authorName: author.name
+        }
+      })
+      this.totalLength = dataToShow.length;
       const startIndex = (page - 1) * this.pageSize;
       const endIndex = startIndex + this.pageSize;
-      this.dataSource.data = articles.slice(startIndex, endIndex);
+      this.dataSource.data = dataToShow.slice(startIndex, endIndex);
       this.paginator.pageIndex = page - 1;
     });
   }
@@ -85,5 +97,6 @@ export class ArticlesListComponent {
 
   ngOnDestroy() {
     if (this.queryParamsSubscription) this.queryParamsSubscription.unsubscribe();
+    if (this.articleServiceSubscription) this.articleServiceSubscription.unsubscribe();
   }
 }

@@ -1,5 +1,7 @@
+import { DocumentReference } from "@angular/fire/compat/firestore"
+
 export interface ArticleJson {
-    author: string
+    author: DocumentReference
     createdAt: any
     id: string
     slug: string
@@ -14,7 +16,7 @@ export class Article {
     public static subcollectionName = "dataChunks"
 
     constructor(
-        public author: string,
+        public author: DocumentReference,
         public createdAt: any,
         public id: string,
         public slug: string,

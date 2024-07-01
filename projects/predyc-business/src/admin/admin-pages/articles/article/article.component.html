@@ -1,4 +1,5 @@
 <app-navigate-back class="ft600 ft16 gray-10" targetUrl="/admin/articles">Artículos</app-navigate-back>
+<!-- <button (click)="createAuthors()" >Create test authors</button> -->
 <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="3rem" class="fw pd20">
     <div style="display: flex; flex-direction: row; gap: 20px; margin-top: 20px; justify-content: center;">
         <button (click)="format = 'html'" class="blueButton">HTML</button>
@@ -18,8 +19,9 @@
 
         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1rem" class="">
             <span>Autor:</span>
-            <input type="text" [(ngModel)]="author" class="ft14 shadow-animation pdl05 pdr05 radius20 borderLight"
-                style="text-align: center; width: 23vw;" />
+            <select [(ngModel)]="selectedAuthorId" class="ft14 shadow-animation pdl05 pdr05 radius20 borderLight" style="text-align: center; width: 23vw;">
+                <option *ngFor="let author of authors" [value]="author.id">{{ author.name }}</option>
+            </select>
         </div>
 
         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1rem" class="">

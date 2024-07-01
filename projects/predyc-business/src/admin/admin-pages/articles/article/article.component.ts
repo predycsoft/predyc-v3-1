@@ -10,6 +10,8 @@ import BlotFormatter from "quill-blot-formatter/dist/BlotFormatter";
 import { Subscription } from "rxjs";
 import Swal from "sweetalert2";
 import { ArticleData } from "../articles.component";
+import { Author } from "projects/shared/models/author.model";
+import { AuthorService } from "projects/predyc-business/src/shared/services/author.service";
 
 const Module = Quill.import("core/module");
 const BlockEmbed = Quill.import("blots/block/embed");
@@ -136,7 +138,7 @@ Quill.register(
   styleUrls: ["./article.component.css"],
 })
 export class ArticleComponent {
-  constructor(private alertService: AlertsService, private articleService: ArticleService, private modalService: NgbModal, public icon: IconService, private route: ActivatedRoute, public router: Router) {}
+  constructor( private authorService: AuthorService, private afs: AngularFirestore, private alertService: AlertsService, private articleService: ArticleService, private modalService: NgbModal, public icon: IconService, private route: ActivatedRoute, public router: Router) {}
 
   articleId = this.route.snapshot.paramMap.get("articleId");
 
@@ -165,22 +167,28 @@ export class ArticleComponent {
   editor: Quill;
 
   createTagModal;
-  author: string = "";
+  selectedAuthorId: string = "";
   title: string = "";
   slug: string = "";
   newTag: string = "";
   tags: string[] = [];
 
   articleSubscription: Subscription
+  authorSubscription: Subscription
+
+  authors: Author[]
 
   ngOnInit() {
+    this.authorSubscription = this.authorService.getAuthors$().subscribe(authors => {
+      this.authors = authors
+    })
     if (this.articleId) this.loadArticle(this.articleId);
   }
 
-  async loadArticle(articleId: string) {
+  loadArticle(articleId: string) {
     try {
-      this.articleService.getArticleWithDataById$(articleId).subscribe((article) => {
-        this.author = article.author;
+      this.articleSubscription = this.articleService.getArticleWithDataById$(articleId).subscribe((article) => {
+        this.selectedAuthorId = article.author.id
         this.title = article.title;
         this.tags = article.tags;
         this.slug = article.slug;
@@ -216,7 +224,7 @@ export class ArticleComponent {
 
       try {
         const dataToSave: ArticleData = {
-          author: this.author,
+          author: this.authorService.getAuthorRefById(this.selectedAuthorId),
           data: this.editor.getContents().ops,
           createdAt: this.articleId ? null : new Date(),
           id: this.articleId ? this.articleId : null,
@@ -225,6 +233,7 @@ export class ArticleComponent {
           slug: this.slug,
           updatedAt: this.articleId ? new Date() : null,
         };
+        console.log("dataToSave", dataToSave)
         const articleId = await this.articleService.saveArticle(dataToSave, !!this.articleId);
         this.alertService.succesAlert("El artículo se ha guardado exitosamente");
         if (!this.articleId) this.router.navigate([`admin/articles/edit/${articleId}`]);
@@ -255,7 +264,7 @@ export class ArticleComponent {
   checkValidationForm(): boolean {
     let valid = true;
 
-    if (!this.author) {
+    if (!this.selectedAuthorId) {
       valid = false;
     }
     if (!this.title) {
@@ -273,6 +282,39 @@ export class ArticleComponent {
 
   ngOnDestroy() {
     if (this.articleSubscription) this.articleSubscription.unsubscribe()
+  }
+
+  // -----
+  testData = [
+    {
+      email: "carlos@autor.com",
+      id: null,
+      linkedin: null,
+      name: "Carlos",
+      photoUrl: null,
+    },
+    {
+      email: "andres@autor.com",
+      id: null,
+      linkedin: null,
+      name: "Andres",
+      photoUrl: null,
+    },
+    {
+      email: "raul@autor.com",
+      id: null,
+      linkedin: null,
+      name: "Raul",
+      photoUrl: null,
+    },
+  ]
+
+  async createAuthors() {
+    this.testData.forEach(async author => {
+      const authorId = (this.afs.collection(Author.collection).doc().ref).id
+      author.id = authorId
+      await this.afs.collection(Author.collection).doc(authorId).set(author)
+    });
   }
 
 }
