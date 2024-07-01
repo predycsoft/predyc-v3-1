@@ -56,7 +56,11 @@ export { mailAccountManagementAdmin,mailAccountManagementUsers,generateReportsAd
 import {generateMailCertificate} from './certificado'
 export { generateMailCertificate }
 
+import { getAllCourseIds}  from './course'
+export { getAllCourseIds }
 
+import { getAllFreebiesIds}  from './freebies'
+export { getAllFreebiesIds }
 
 import {getRoyaltiesInstructor} from './royalties'
 export { getRoyaltiesInstructor }

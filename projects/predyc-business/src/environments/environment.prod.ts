@@ -14,4 +14,5 @@ export const environment = {
   vimeoAccessToken: "73f2eb055ec905e9a48175cd3c87b6af",
   openAiApiKey: "sk-proj-6eQUv66PrqRzzHUhwGnMT3BlbkFJKPB0pXRqnNS720PUgLTd",
   predycUrl: "https://predyc-user.web.app",
+  cloudFunc: "https://us-central1-predyc2023.cloudfunctions.net"
 };
