@@ -288,8 +288,8 @@ export class InstructorsComponent {
               //clasesVistasDuplicate:duplicados,
               montoTotal:montoTotal,
               porcentajeInstructor:datosCurso.porcentajeInstructor,
-              montoInstructor:(montoTotal*((datosCurso.porcentajeInstructor ?instructor.porcentaje : instructor.porcentaje))/100),
-              montoPredyc:(montoTotal*(1-((datosCurso.porcentajeInstructor ?instructor.porcentaje : instructor.porcentaje)/100)))
+              montoInstructor:(montoTotal*((datosCurso.porcentajeInstructor ?datosCurso.porcentajeInstructor : instructor.porcentaje))/100),
+              montoPredyc:(montoTotal*(1-((datosCurso.porcentajeInstructor ?datosCurso.porcentajeInstructor : instructor.porcentaje)/100)))
             }
             montoInstructor+=curso.montoInstructor
             montoPredyc+=curso.montoPredyc
