@@ -23,7 +23,7 @@
                 <th class="align-start pdl10">Curso</th>
                 <th>Hrs Tot</th>
                 <th>Fv Tot.</th>
-                <th *ngIf="origen!='instructor'">% Reg.</th>
+                <th>% Reg.</th>
                 <th *ngIf="(instructor.montoTotal !== null && instructor.montoTotal !== undefined )|| origen!='instructor'">Tot USD</th>
                 <th *ngIf="(instructor.montoPredyc !== null && instructor.montoPredyc !== undefined )|| origen!='instructor'">Predyc USD</th>
                 <th *ngIf="(instructor.montoInstructor !== null && instructor.montoInstructor !== undefined) || origen!='instructor'">Inst USD</th>
@@ -32,7 +32,7 @@
                 <td class="">{{curso.name}}</td>
                 <td class="centertext">{{(curso.tiempoVistoMinutes)/60 | number: "1.2-2"}} h</td>
                 <td class="centertext">{{curso.factorVisualizacion | number:"1.2-2"}}%</td>
-                <td *ngIf="origen!='instructor'" class="centertext">{{instructor.porcentaje}}%</td>
+                <td class="centertext">{{(curso.porcentajeInstructor ? curso.porcentajeInstructor :  instructor.porcentaje) | number:"1.2-2" }}%</td>
                 <td *ngIf="(curso.montoTotal !== null && curso.montoTotal !== undefined) || origen!='instructor'" class="centertext">{{(curso.montoTotal?curso.montoTotal:0 ) | number:"1.2-2"}} USD</td>
                 <td *ngIf="(curso.montoPredyc !== null && curso.montoPredyc !== undefined) || origen!='instructor'" class="centertext">{{(curso.montoPredyc?curso.montoPredyc:0) | number:"1.2-2"}} USD</td>
                 <td *ngIf="(curso.montoInstructor !== null && curso.montoInstructor !== undefined) || origen!='instructor'" class="centertext">{{curso.montoInstructor | number:"1.2-2"}} USD</td>

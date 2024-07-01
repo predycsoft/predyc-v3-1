@@ -250,11 +250,11 @@ export class InstructorsComponent {
           const montoTotal = (FactorVisualizacion/100)*valores.amount
   
           instructor.montoTotal=montoTotal
-          instructor.montoInstructor=montoTotal*(instructor.porcentaje/100)
-          instructor.montoPredyc=montoTotal*(1-(instructor.porcentaje/100))
+          // instructor.montoInstructor=montoTotal*(instructor.porcentaje/100)
+          // instructor.montoPredyc=montoTotal*(1-(instructor.porcentaje/100))
   
-          totalPredyc += instructor.montoPredyc
-          totalInstructores += instructor.montoInstructor
+          // totalPredyc += instructor.montoPredyc
+          // totalInstructores += instructor.montoInstructor
   
   
           instructor.classInPeriod = classesInPeriod
@@ -264,6 +264,8 @@ export class InstructorsComponent {
           idCursosVistos = [...new Set(idCursosVistos)];
           instructor.idCursosVistos = idCursosVistos.length>0 ? idCursosVistos : []
           let cursosWithTime = []
+          let montoInstructor =0
+          let montoPredyc =0
           idCursosVistos.forEach(idCurso => {
             let datosCurso = this.courses.find(x=>x.id == idCurso)
             let clases = this.classes.filter(x=>x.idCurso == idCurso)
@@ -285,11 +287,21 @@ export class InstructorsComponent {
               //clasesVistas:clasesVistasArray,
               //clasesVistasDuplicate:duplicados,
               montoTotal:montoTotal,
-              montoInstructor:(montoTotal*(instructor.porcentaje)/100),
-              montoPredyc:(montoTotal*(1-(instructor.porcentaje/100)))
+              porcentajeInstructor:datosCurso.porcentajeInstructor,
+              montoInstructor:(montoTotal*((datosCurso.porcentajeInstructor ?instructor.porcentaje : instructor.porcentaje))/100),
+              montoPredyc:(montoTotal*(1-((datosCurso.porcentajeInstructor ?instructor.porcentaje : instructor.porcentaje)/100)))
             }
+            montoInstructor+=curso.montoInstructor
+            montoPredyc+=curso.montoPredyc
             cursosWithTime.push(curso)
           });
+
+          instructor.montoInstructor=montoInstructor
+          instructor.montoPredyc= montoPredyc
+
+          totalPredyc += instructor.montoPredyc
+          totalInstructores += instructor.montoInstructor
+
           instructor.cursosWithTime = cursosWithTime;
   
         });
