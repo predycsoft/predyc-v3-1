@@ -18,13 +18,17 @@ export const getAllCourseIds = functions.https.onRequest(async (req, res) => {
               return;
             }
         
-            const courseIds: string[] = (snapshot).docs.map((article: any) => {
-                const data = article.data()
-                return data.id
+            // const courseIds: string[] = (snapshot).docs.map((article: any) => {
+            //     const data = article.data()
+            //     return data.id
+            // });
+
+            const courses: any[] = (snapshot).docs.map((article: any) => {
+                return article.data()
             });
         
         
-            res.status(200).send(courseIds);
+            res.status(200).send(courses);
             // res.status(200).json(courseIds);
         } catch (error) {
             console.error('Error retrieving course IDs: ', error);

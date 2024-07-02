@@ -17,13 +17,17 @@ export const getAllFreebiesIds = functions.https.onRequest(async (req, res) => {
               return;
             }
         
-            const freebieIds: string[] = (snapshot).docs.map((article: any) => {
-                const data = article.data()
-                return data.id
+            // const freebieIds: string[] = (snapshot).docs.map((article: any) => {
+            //     const data = article.data()
+            //     return data.id
+            // }); 
+
+            const freebies: any[] = (snapshot).docs.map((article: any) => {
+                return article.data()
             }); 
         
         
-            res.status(200).send(freebieIds);
+            res.status(200).send(freebies);
             // res.status(200).json(freebieIds);
         } catch (error) {
             console.error('Error retrieving freebie IDs: ', error);
