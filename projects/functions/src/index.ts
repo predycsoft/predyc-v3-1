@@ -53,17 +53,17 @@ export { sendLiveCourseEmail, }
 import { mailAccountManagementAdmin,mailAccountManagementUsers,generateReportsAdminAllEnterprisesMnual,generateReportsUsersAllEnterprisesMnual } from './reports'
 export { mailAccountManagementAdmin,mailAccountManagementUsers,generateReportsAdminAllEnterprisesMnual,generateReportsUsersAllEnterprisesMnual }
 
-import {generateMailCertificate} from './certificado'
+import { generateMailCertificate } from './certificado'
 export { generateMailCertificate }
 
-import { getAllCourseIds}  from './course'
-export { getAllCourseIds }
+import { getAllCourseIds, onCourseUpdated, onCourseCreated }  from './course'
+export { getAllCourseIds, onCourseUpdated, onCourseCreated }
 
-import { getAllFreebiesIds}  from './freebies'
-export { getAllFreebiesIds }
+import { getAllFreebiesIds, onFreebieUpdated }  from './freebies'
+export { getAllFreebiesIds, onFreebieUpdated }
 
-import {getRoyaltiesInstructor} from './royalties'
+import { getRoyaltiesInstructor } from './royalties'
 export { getRoyaltiesInstructor }
 
-import {sendEmailQuestionInstructor} from './questions'
+import { sendEmailQuestionInstructor } from './questions'
 export { sendEmailQuestionInstructor }

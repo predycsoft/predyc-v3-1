@@ -1,6 +1,7 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import cors from 'cors';
+import { Curso } from 'shared';
 
 
 const db = admin.firestore();
@@ -32,3 +33,57 @@ export const getAllCourseIds = functions.https.onRequest(async (req, res) => {
     })
   
 });
+
+export const onCourseUpdated = functions.firestore.document('course/{doc}').onUpdate(async (change, context) => {
+    const afterData = change.after.data();
+    const beforeData = change.before.data();
+
+    let changed = false;
+    for (const field in beforeData) {
+      if(field === 'updatedAt') continue;
+
+      const beforeValue = beforeData[field];
+      const afterValue = afterData[field];
+
+      // Si el campo es un DocumentReference
+      if (beforeValue instanceof admin.firestore.DocumentReference) {
+          changed = beforeValue.id !== (afterValue ? afterValue.id : null);
+      } else {
+          changed = JSON.stringify(beforeValue) !== JSON.stringify(afterValue);
+      }
+
+      if (changed) break;  // Si se detectó un cambio, sale del bucle  
+      
+  }
+
+  // Si hubo un cambio y no es sólo el campo updatedAt
+  if (changed && !(Object.keys(beforeData).length === 1 && 'updatedAt' in beforeData)) {
+      return db.collection(Curso.collection).doc(afterData.id).update({
+          updatedAt: new Date()
+      })
+      .then(() => {
+          return console.log(`Updated course: ${afterData.titulo}`);
+      })
+      .catch((error) => {
+          return console.error('Error updating updatedAt in activity document:', error);
+      });
+  }
+
+  return null;
+
+});
+
+export const onCourseCreated = functions.firestore.document('course/{doc}').onCreate(async (snap, context) => {
+    const data = snap.data();
+    try {
+        await db.collection(Curso.collection).doc(data.id).update({
+            updatedAt: new Date()
+        });
+        console.log(`Update on created course: ${data.titulo}`);
+    } catch (error) {
+        console.error('Error updating updatedAt in course document:', error);
+    }
+
+    return null;
+
+})

@@ -59,7 +59,7 @@ export class DialogFreebiesFormComponent {
 			const ref = this.freebie
 				? this.afs.collection<Freebie>("freebie").doc(this.freebie.id).ref
 				: this.afs.collection<Freebie>("freebie").doc().ref;
-			await ref.set({ ...this.freebieForm.value, id: ref.id }, { merge: true });
+			await ref.set({ ...this.freebieForm.value, id: ref.id, updatedAt: new Date() }, { merge: true });
 			this.closeDialog();
 		} catch (error) {
 			this.alertService.errorAlert(error);
