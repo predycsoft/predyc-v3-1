@@ -28,13 +28,14 @@ export interface CursoJson {
   idOld: string
   duracion: number,
   customUrl: string
+  updatedAt: any
 }
 
 
 export class Curso {
 
-
   public static collection = 'course'
+  
   descripcion: string = ""
   resumen: string = ""
   nuevo: boolean = false
@@ -61,6 +62,7 @@ export class Curso {
   idOld: string = ""
   duracion: number = 0
   customUrl: string = ""
+  updatedAt: any = null
 
 
   public toJson(): CursoJson {
@@ -88,7 +90,8 @@ export class Curso {
       enterpriseRef:this.enterpriseRef,
       idOld:this.idOld,
       duracion:this.duracion,
-      customUrl:this.customUrl
+      customUrl:this.customUrl,
+      updatedAt:this.updatedAt,
 
     }
   }

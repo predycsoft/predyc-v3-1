@@ -11,4 +11,5 @@ export interface Freebie {
 	file: string;
 	extension: string;
 	customUrl: string;
+	updatedAt: any;
 }
