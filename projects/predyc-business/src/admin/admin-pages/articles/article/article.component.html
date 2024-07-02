@@ -1,5 +1,5 @@
 <app-navigate-back class="ft600 ft16 gray-10" targetUrl="/admin/articles">Artículos</app-navigate-back>
-<!-- <button (click)="createAuthors()" >Create test authors</button> -->
+<button (click)="createAuthors()" >Create test authors</button>
 <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="3rem" class="fw pd20">
     <div style="display: flex; flex-direction: row; gap: 20px; margin-top: 20px; justify-content: center;">
         <button (click)="format = 'html'" class="blueButton">HTML</button>
@@ -145,22 +145,15 @@
         <div fxLayout="row" class="fw">
             <div class="form-group fw">
                 <label>Nombre de la etiqueta</label>
-                <input type="text" class="form-control customInput" [(ngModel)]="newTag"
-                    placeholder="Escriba el nombre de la etiqueta" />
-                <!-- <div class="invalid-feedback" *ngIf="formNewSkill.controls['nombre'].errors && showErrorSkill">Debe indicar el nombre de la competencia.</div> -->
+                <input type="text" class="form-control customInput" [(ngModel)]="newTag" placeholder="Escriba el nombre de la etiqueta" />
             </div>
         </div>
-        <!-- Botón de guardar en la esquina inferior derecha -->
         <div fxLayout="row" fxLayoutAlign="end end" class="pdt03" style="width: 100%">
             <button (click)="saveTag()" class="blueButton gray-1 radius4 ft12 h28px mgt10" fxLayout="row"
                 fxLayoutGap="0.625rem" fxLayoutAlign="center center">
                 <img [src]="icon.check" class="h16px pdr05 makeWhite" alt="" />
-                Asignar competencia
+                Asignar etiqueta
             </button>
-            <!-- <button disabled *ngIf="savingSkill" (click)="saveNewSkill()" class="grayButton gray-8 radius4 ft12 h28px mgt10" fxLayout="row" fxLayoutGap="0.625rem" fxLayoutAlign="center center">
-                <mat-spinner class="spinner-dark" diameter="20"></mat-spinner>
-                Asignar competencia
-            </button> -->
         </div>
     </div>
 </ng-template>
