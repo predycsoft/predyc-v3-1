@@ -31,3 +31,24 @@
   margin-left: 1px;
   font-size: 14px;
 } */
+
+
+.avatar-scroll {
+  display: flex;
+  overflow-x: auto; /* Permite el scroll horizontal */
+  white-space: nowrap; /* Esto evita que las imágenes salten a la siguiente línea */
+  }
+  
+  .avatar-scroll img {
+  border-radius: 50%; /* Esto hará que las imágenes tengan bordes redondos */
+  margin-right: 10px;
+  width: 50px;
+  height: 50px;
+  border: 1px solid var(--gray-8)
+  
+  }
+  
+  /* Este estilo es opcional, pero eliminará el scroll por defecto en algunos navegadores */
+  .avatar-scroll::-webkit-scrollbar {
+  display: none;
+  }

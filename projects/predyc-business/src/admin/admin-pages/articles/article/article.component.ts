@@ -1,5 +1,4 @@
 import { Component } from "@angular/core";
-import { AngularFirestore } from "@angular/fire/compat/firestore";
 import { ActivatedRoute, Router } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { AlertsService } from "projects/predyc-business/src/shared/services/alerts.service";
@@ -12,6 +11,7 @@ import Swal from "sweetalert2";
 import { ArticleData } from "../articles.component";
 import { Author } from "projects/shared/models/author.model";
 import { AuthorService } from "projects/predyc-business/src/shared/services/author.service";
+import { AngularFireStorage } from "@angular/fire/compat/storage";
 
 const Module = Quill.import("core/module");
 const BlockEmbed = Quill.import("blots/block/embed");
@@ -138,7 +138,7 @@ Quill.register(
   styleUrls: ["./article.component.css"],
 })
 export class ArticleComponent {
-  constructor( private authorService: AuthorService, private afs: AngularFirestore, private alertService: AlertsService, private articleService: ArticleService, private modalService: NgbModal, public icon: IconService, private route: ActivatedRoute, public router: Router) {}
+  constructor( private storage: AngularFireStorage, private authorService: AuthorService, private alertService: AlertsService, private articleService: ArticleService, private modalService: NgbModal, public icon: IconService, private route: ActivatedRoute, public router: Router) {}
 
   articleId = this.route.snapshot.paramMap.get("articleId");
 
@@ -172,11 +172,15 @@ export class ArticleComponent {
   slug: string = "";
   newTag: string = "";
   tags: string[] = [];
+  duration: number = 1;
 
   articleSubscription: Subscription
   authorSubscription: Subscription
 
   authors: Author[]
+
+  selectedFile: File | null = null;
+  previewImage: string | ArrayBuffer | null = null;
 
   ngOnInit() {
     this.authorSubscription = this.authorService.getAuthors$().subscribe(authors => {
@@ -210,6 +214,17 @@ export class ArticleComponent {
     console.log("editor", this.editor.getContents());
   }
 
+  setImage(event: any): void {
+    if (event.target.files && event.target.files.length > 0) {
+      this.selectedFile = event.target.files[0];
+      const reader = new FileReader();
+      reader.readAsDataURL(this.selectedFile);
+      reader.onload = () => {
+        this.previewImage = reader.result as string;
+      };
+    }
+  }
+
   async save() {
     if (!this.checkValidationForm()) this.alertService.errorAlert("Debes llenar todos los campos");
     else {
@@ -223,6 +238,8 @@ export class ArticleComponent {
       });
 
       try {
+        const downloadURL = await this.uploadImage();
+
         const dataToSave: ArticleData = {
           author: this.authorService.getAuthorRefById(this.selectedAuthorId),
           data: this.editor.getContents().ops,
@@ -232,6 +249,8 @@ export class ArticleComponent {
           title: this.title,
           slug: this.slug,
           updatedAt: this.articleId ? new Date() : null,
+          photoUrl: downloadURL,
+          duration: this.duration,
         };
         console.log("dataToSave", dataToSave)
         const articleId = await this.articleService.saveArticle(dataToSave, !!this.articleId);
@@ -240,6 +259,28 @@ export class ArticleComponent {
       } catch (error) {
         console.error("Error: ", error);
       }
+    }
+  }
+
+  async uploadImage(): Promise<string> {
+    if (!this.selectedFile) {
+      throw new Error('No file selected');
+    }
+
+    let fileBaseName = this.selectedFile.name.split('.').slice(0, -1).join('.');
+    let fileExtension = this.selectedFile.name.split('.').pop();
+    let articleTitle = this.title || "Temporal";
+    let endName = `${fileBaseName}-${Date.now().toString()}.${fileExtension}`;
+    const filePath = `Articulos/${articleTitle}/${endName}`;
+    const fileRef = this.storage.ref(filePath);
+    const task = this.storage.upload(filePath, this.selectedFile);
+
+    try {
+      await task;
+      return await fileRef.getDownloadURL().toPromise();
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      throw error;
     }
   }
 

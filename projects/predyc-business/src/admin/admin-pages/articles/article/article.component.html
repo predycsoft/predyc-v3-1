@@ -11,23 +11,22 @@
     <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap=".5rem" class="w-60">
 
         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1rem" class="">
-            <span>Título:</span>
+            <span class="w70px">Título:</span>
             <input type="text" [(ngModel)]="title" class="ft14 shadow-animation pdl05 pdr05 radius20 borderLight"
                 style="text-align: center; width: 32vw;" />
         </div>
 
         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1rem" class="">
-            <span>Autor:</span>
+            <span class="w70px">Autor:</span>
             <select [(ngModel)]="selectedAuthorId" class="ft14 shadow-animation pdl05 pdr05 radius20 borderLight" style="text-align: center; width: 23vw;">
                 <option *ngFor="let author of authors" [value]="author.id">{{ author.name }}</option>
             </select>
         </div>
 
         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1rem" class="">
-            <span>Slug:</span>
-            <input id="slug" name="slug" [(ngModel)]="slug" #slugCtrl="ngModel"
-                class="ft14 shadow-animation pdl05 pdr05 radius20 borderLight" required
-                pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$" />
+            <span class="w70px">Slug:</span>
+            <input id="slug" name="slug" [(ngModel)]="slug" #slugCtrl="ngModel" class="ft14 shadow-animation pdl05 pdr05 radius20 borderLight" 
+            required pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$" />
         </div>
         <div *ngIf="slugCtrl.invalid && slugCtrl.touched">
             <span style="color: red" *ngIf="slugCtrl.errors?.required">Slug is required.</span>
@@ -35,12 +34,20 @@
         </div>
 
         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1rem" class="">
-            <span>Etiquetas:</span>
+            <span class="w70px">Duración:</span>
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".3rem" class="">
+                <input type="number" min="1" [(ngModel)]="duration" class="ft14 shadow-animation pdl05 pdr05 radius20 borderLight"
+                    style="text-align: center; width: 5vw;" />
+                <span>min</span>
+            </div>
+        </div>
+
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1rem" class="">
+            <span class="w70px">Etiquetas:</span>
             <ng-container *ngFor="let tag of tags; let tagIndex = index">
                 <div class="skill-badge-complete ListHover radius10 backGray2 ft12 pdl08 pdr08 gray-8">
                     {{ tag }}
-                    <img style="cursor: pointer" (click)="removeTag(tagIndex)" [src]="icon.close" class="h16px makeGray"
-                        alt="" />
+                    <img style="cursor: pointer" (click)="removeTag(tagIndex)" [src]="icon.close" class="h16px makeGray" alt="" />
                 </div>
             </ng-container>
             <div class="">
@@ -50,6 +57,21 @@
                 </div>
             </div>
         </div>
+
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1rem" class="">
+            <span class="w70px">Foto:</span>
+            <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="start center">
+                <button (click)="authorImage.click()" class="grayButton pd03 radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                    <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
+                    Adjuntar imagen
+                </button>
+                <input #authorImage type="file" (change)="setImage($event)" hidden accept="image/jpeg, image/png" [src]="selectedFile">
+                <div class="avatar-scroll">
+                    <img *ngIf="selectedFile" [src]="previewImage" alt="Imagen seleccionada" class="image shadow8">
+                </div>
+            </div>
+        </div>
+          
 
     </div>
     <quill-editor [modules]="modules" [format]="format" (onEditorCreated)="onEditorCreated($event)" class="w-60">
