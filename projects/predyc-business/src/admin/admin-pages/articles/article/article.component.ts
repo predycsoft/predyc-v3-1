@@ -284,37 +284,4 @@ export class ArticleComponent {
     if (this.articleSubscription) this.articleSubscription.unsubscribe()
   }
 
-  // -----
-  testData = [
-    {
-      email: "carlos@autor.com",
-      id: null,
-      linkedin: null,
-      name: "Carlos",
-      photoUrl: null,
-    },
-    {
-      email: "andres@autor.com",
-      id: null,
-      linkedin: null,
-      name: "Andres",
-      photoUrl: null,
-    },
-    {
-      email: "raul@autor.com",
-      id: null,
-      linkedin: null,
-      name: "Raul",
-      photoUrl: null,
-    },
-  ]
-
-  async createAuthors() {
-    this.testData.forEach(async author => {
-      const authorId = (this.afs.collection(Author.collection).doc().ref).id
-      author.id = authorId
-      await this.afs.collection(Author.collection).doc(authorId).set(author)
-    });
-  }
-
 }

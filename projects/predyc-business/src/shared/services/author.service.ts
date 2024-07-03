@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
-import { Author } from 'projects/shared/models/author.model';
+import { Author, AuthorJson } from 'projects/shared/models/author.model';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -25,4 +25,9 @@ export class AuthorService {
     return this.afs.collection<Author>(Author.collection).doc(authorId).ref
   }
 
+  async saveAuthor(authorData: AuthorJson): Promise<void> {
+    const authorId = (this.afs.collection(Author.collection).doc().ref).id
+    authorData.id = authorId
+    return await this.afs.collection(Author.collection).doc(authorId).set(authorData)
+  }
 }
