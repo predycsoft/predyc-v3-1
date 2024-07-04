@@ -382,7 +382,11 @@ export class CourseService {
   async saveCourse(newCourse: Curso): Promise<void> {
     try {
       try {
-        // console.log("test saveCourse", newCourse);
+        console.log("test saveCourse", newCourse);
+
+        if(!newCourse.customUrl){
+          newCourse.customUrl = newCourse.id
+        }
         delete newCourse["modules"];
         const dataToSave =
           typeof newCourse.toJson === "function"
