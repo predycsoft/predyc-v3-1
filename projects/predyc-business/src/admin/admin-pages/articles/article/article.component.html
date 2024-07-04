@@ -42,22 +42,6 @@
             </div>
         </div>
 
-        <!-- <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1rem" class="">
-            <span class="w70px">Etiquetas:</span>
-            <ng-container *ngFor="let tag of tags; let tagIndex = index">
-                <div class="skill-badge-complete ListHover radius10 backGray2 ft12 pdl08 pdr08 gray-8">
-                    {{ tag }}
-                    <img style="cursor: pointer" (click)="removeTag(tagIndex)" [src]="icon.close" class="h16px makeGray" alt="" />
-                </div>
-            </ng-container>
-            <div class="">
-                <div matTooltip="Agregar etiqueta" style="display: inline-block; margin-right: 5px"
-                    (click)="createTag(createTagModal)" class="backGray2 radius20 pdl03 pdr03 gray-8">
-                    <img style="cursor: pointer" [src]="icon.addBlue" class="h16px ft600" alt="" />
-                </div>
-            </div>
-        </div> -->
-
         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1rem" class="">
             <span class="w70px">Etiquetas:</span>
             <form class="fw">
@@ -69,6 +53,7 @@
                         <mat-option (click)="changeTag(option)" class="multiline-mat-option ft12" *ngFor="let option of filteredTags | async" [value]="option">
                             <div fxLayout="row" fxLayoutAlign="space-between">
                                 <div fxLayout="col" fxLayoutAlign="center center">{{ option.name | titlecase }}</div>
+                                <!-- <mat-icon *ngIf="isTagSelected(option)">check</mat-icon> -->
                             </div>
                         </mat-option>
                         <mat-option (click)="createTag(createTagModal)" class="multiline-mat-option" value="null">
@@ -77,18 +62,12 @@
                     </mat-autocomplete>
                 </mat-form-field>
             </form>
-            <ng-container *ngFor="let tag of tags; let tagIndex = index">
+            <ng-container *ngFor="let tag of articleTags; let tagIndex = index">
                 <div class="skill-badge-complete ListHover radius10 backGray2 ft12 pdl08 pdr08 gray-8 fw">
                     {{ tag.name | titlecase }}
                     <img style="cursor: pointer" (click)="removeTag(tagIndex)" [src]="icon.close" class="h16px makeGray" alt="" />
                 </div>
             </ng-container>
-            <!-- <div class="">
-                <div matTooltip="Agregar etiqueta" style="display: inline-block; margin-right: 5px"
-                    (click)="createTag(createTagModal)" class="backGray2 radius20 pdl03 pdr03 gray-8">
-                    <img style="cursor: pointer" [src]="icon.addBlue" class="h16px ft600" alt="" />
-                </div>
-            </div> -->
         </div>
 
 
@@ -101,7 +80,7 @@
                 </button>
                 <input #authorImage type="file" (change)="setImage($event)" hidden accept="image/jpeg, image/png" [src]="selectedFile">
                 <div class="avatar-scroll">
-                    <img *ngIf="(selectedFile || articleId) && previewImage" [src]="previewImage" alt="Imagen seleccionada" class="image shadow8">
+                    <img *ngIf="previewImage" [src]="previewImage" alt="Imagen seleccionada" class="image shadow8">
                 </div>
             </div>
         </div>

@@ -109,7 +109,7 @@ export class ArticlesListComponent {
   getMatchingTags(articleTagsRef: DocumentReference[], allTags: ArticleTagJson[]) {
     return articleTagsRef.map(tagRef => {
       return allTags.find(tag => tag.id === tagRef.id);
-    }).filter(tag => tag !== undefined);
+    }).filter(tag => tag);
   };
 
   onPageChange(page: number): void {

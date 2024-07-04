@@ -173,7 +173,7 @@ export class ArticleComponent {
   title: string = "";
   slug: string = "";
   newTagName: string = "";
-  tags: ArticleTagJson[] = [];
+  articleTags: ArticleTagJson[] = [];
   duration: number = 1;
 
   articleSubscription: Subscription
@@ -182,6 +182,7 @@ export class ArticleComponent {
   authors: Author[]
 
   selectedFile: File | null = null;
+  pastPreviewImage: string | null = null; //To check if the photo has been changed
   previewImage: string | ArrayBuffer | null = null;
 
   allTags: ArticleTagJson[] = [];
@@ -194,7 +195,7 @@ export class ArticleComponent {
       this.allTags = tags;
       this.filteredTags = this.tagsForm.valueChanges.pipe(
         startWith(''),
-        map(value =>this._filterTags(value))
+        map(value => this._filterTags(value))
       );
     });
     
@@ -202,21 +203,6 @@ export class ArticleComponent {
       this.authors = authors
     })
     if (this.articleId) this.loadArticle(this.articleId);
-  }
-
-  _filterTags(value: string | ArticleTagJson): ArticleTagJson[] {
-    const filterValue = (typeof value === 'string') ? value.toLowerCase() : value.name.toLowerCase();
-    return this.allTags.filter(tag => tag.name.toLowerCase().includes(filterValue));
-  }
-
-  getOptionTextTag(option: ArticleTagJson): string {
-    return option ? option.name : '';
-  }
-
-  changeTag(tag: ArticleTagJson): void {
-    // Implement logic to handle the tag change
-    this.tags.push(tag)
-    this.tagsForm.setValue('');
   }
 
   loadArticle(articleId: string) {
@@ -233,28 +219,65 @@ export class ArticleComponent {
         })
       )
       .subscribe(articleWithTagsData => {
+        this.duration = articleWithTagsData.duration
         this.selectedAuthorId = articleWithTagsData.authorRef.id
         this.title = articleWithTagsData.title;
-        this.tags = articleWithTagsData.tags;
+        this.articleTags = articleWithTagsData.tags;
         this.slug = articleWithTagsData.slug;
         this.previewImage = articleWithTagsData.photoUrl
+        this.pastPreviewImage = articleWithTagsData.photoUrl
         this.editor.setContents(articleWithTagsData.data);
       })
-
-
-      // this.articleSubscription = this.articleService.getArticleWithDataById$(articleId).subscribe((article) => {
-      //   this.selectedAuthorId = article.authorRef.id
-      //   this.title = article.title;
-      //   this.tags = []; // Fix this
-      //   this.slug = article.slug;
-      //   this.editor.setContents(article.data);
-      // });
 
     } catch (error) {
       console.error("Error fetching article:", error);
       this.alertService.errorAlert("Error fetching article");
     }
   }
+
+  _filterTags(value: string | ArticleTagJson): ArticleTagJson[] {
+    const filterValue = (typeof value === 'string') ? value.toLowerCase() : value.name.toLowerCase();
+    return this.allTags.filter(tag => tag.name.toLowerCase().includes(filterValue));
+  }
+
+  getOptionTextTag(option: ArticleTagJson): string {
+    return option ? option.name : '';
+  }
+
+  isTagSelected(tag: ArticleTagJson): boolean {
+    console.log("XXX")
+    return this.articleTags.some(selectedTag => selectedTag.name === tag.name);
+  }
+
+  changeTag(tag: ArticleTagJson): void {
+    if (!this.isTagSelected(tag)) {
+      this.articleTags.push(tag);
+    }
+    this.tagsForm.setValue(''); // Add the tag to the array but reset the mat form field
+  }
+
+  createTag(modal) {
+    this.newTagName = "";
+    this.createTagModal = this.modalService.open(modal, {
+      ariaLabelledBy: "modal-basic-title",
+      centered: true,
+      size: "sm",
+    });
+  }
+
+  saveTag() {
+    if (this.newTagName) {
+      this.articleTags.push({name: this.newTagName, id:null})
+      this.allTags.push({ name: this.newTagName, id: null });
+      this.tagsForm.setValue('');
+    } 
+    this.createTagModal.close();
+  }
+
+  removeTag(tagIndex: number) {
+    this.articleTags.splice(tagIndex, 1)
+  }
+
 
   onEditorCreated(editor) {
     this.editor = editor;
@@ -290,16 +313,21 @@ export class ArticleComponent {
       });
 
       try {
-        const downloadURL = await this.uploadImage();
+        let downloadURL
+        if (this.articleId) { //edit mode
+          //Only if image has changed
+          if (this.previewImage !== this.pastPreviewImage) downloadURL = await this.uploadImage();
+        }
+        else downloadURL = await this.uploadImage();
 
         // First save Only the new tags
-        const existingTags = this.tags.filter(x => x.id)
-        const newTagsToSave = this.tags.filter(x => !x.id)
+        const existingTags = this.articleTags.filter(x => x.id)
+        const newTagsToSave = this.articleTags.filter(x => !x.id)
         const newTagsSaved = await this.articleService.saveArticleTags(newTagsToSave)
-        this.tags = [...existingTags, ...newTagsSaved]
-        console.log("this.tags", this.tags)
+        this.articleTags = [...existingTags, ...newTagsSaved]
+        console.log("this.articleTags", this.articleTags)
         // Then get the references
-        const tagsReferences = this.tags.map(x => this.articleService.getArticleTagRefById(x.id))
+        const tagsReferences = this.articleTags.map(x => this.articleService.getArticleTagRefById(x.id))
 
 
         const dataToSave: ArticleData = {
@@ -310,7 +338,7 @@ export class ArticleComponent {
           tagsRef: tagsReferences,
           title: this.title,
           slug: this.slug,
-          updatedAt: this.articleId ? new Date() : null,
+          updatedAt: new Date(),
           photoUrl: downloadURL,
           duration: this.duration,
         };
@@ -346,24 +374,6 @@ export class ArticleComponent {
     }
   }
 
-  createTag(modal) {
-    this.newTagName = "";
-    this.createTagModal = this.modalService.open(modal, {
-      ariaLabelledBy: "modal-basic-title",
-      centered: true,
-      size: "sm",
-    });
-  }
-
-  saveTag() {
-    if (this.newTagName) this.tags.push({name: this.newTagName, id:null})
-    this.createTagModal.close();
-  }
-
-  removeTag(tagIndex: number) {
-    this.tags.splice(tagIndex, 1)
-  }
-
   checkValidationForm(): boolean {
     let valid = true;
 
@@ -373,16 +383,15 @@ export class ArticleComponent {
     if (!this.title) {
       valid = false;
     }
-    if (this.tags.length === 0) {
+    if (this.articleTags.length === 0) {
       valid = false;
     }
-    if (!this.selectedFile) {
+    if (!this.previewImage) {
       valid = false;
     }
     if (this.editor.getText().trim().length === 0) {
       valid = false;
     }
-    // Add validation for duration and photo
     console.log("valid", valid);
     return valid;
   }
