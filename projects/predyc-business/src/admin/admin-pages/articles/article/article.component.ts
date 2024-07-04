@@ -6,12 +6,14 @@ import { ArticleService } from "projects/predyc-business/src/shared/services/art
 import { IconService } from "projects/predyc-business/src/shared/services/icon.service";
 import Quill from "quill";
 import BlotFormatter from "quill-blot-formatter/dist/BlotFormatter";
-import { Subscription } from "rxjs";
+import { Observable, Subscription, map, startWith, switchMap } from "rxjs";
 import Swal from "sweetalert2";
 import { ArticleData } from "../articles.component";
 import { Author } from "projects/shared/models/author.model";
 import { AuthorService } from "projects/predyc-business/src/shared/services/author.service";
 import { AngularFireStorage } from "@angular/fire/compat/storage";
+import { FormControl } from "@angular/forms";
+import { ArticleTagJson } from "projects/shared/models/article.model";
 
 const Module = Quill.import("core/module");
 const BlockEmbed = Quill.import("blots/block/embed");
@@ -170,8 +172,8 @@ export class ArticleComponent {
   selectedAuthorId: string = "";
   title: string = "";
   slug: string = "";
-  newTag: string = "";
-  tags: string[] = [];
+  newTagName: string = "";
+  tags: ArticleTagJson[] = [];
   duration: number = 1;
 
   articleSubscription: Subscription
@@ -182,22 +184,72 @@ export class ArticleComponent {
   selectedFile: File | null = null;
   previewImage: string | ArrayBuffer | null = null;
 
+  allTags: ArticleTagJson[] = [];
+  filteredTags: Observable<any[]>;
+  tagsForm = new FormControl();
+  tagsSubscription: Subscription
+
   ngOnInit() {
+    this.tagsSubscription = this.articleService.getAllArticleTags$().subscribe(tags => {
+      this.allTags = tags;
+      this.filteredTags = this.tagsForm.valueChanges.pipe(
+        startWith(''),
+        map(value =>this._filterTags(value))
+      );
+    });
+    
     this.authorSubscription = this.authorService.getAuthors$().subscribe(authors => {
       this.authors = authors
     })
     if (this.articleId) this.loadArticle(this.articleId);
   }
 
+  _filterTags(value: string | ArticleTagJson): ArticleTagJson[] {
+    const filterValue = (typeof value === 'string') ? value.toLowerCase() : value.name.toLowerCase();
+    return this.allTags.filter(tag => tag.name.toLowerCase().includes(filterValue));
+  }
+
+  getOptionTextTag(option: ArticleTagJson): string {
+    return option ? option.name : '';
+  }
+
+  changeTag(tag: ArticleTagJson): void {
+    // Implement logic to handle the tag change
+    this.tags.push(tag)
+    this.tagsForm.setValue('');
+  }
+
   loadArticle(articleId: string) {
     try {
-      this.articleSubscription = this.articleService.getArticleWithDataById$(articleId).subscribe((article) => {
-        this.selectedAuthorId = article.author.id
-        this.title = article.title;
-        this.tags = article.tags;
-        this.slug = article.slug;
-        this.editor.setContents(article.data);
-      });
+      this.articleSubscription =this.articleService.getArticleWithDataById$(articleId).pipe(
+        switchMap((article: ArticleData) => {
+          const tagsIds = article.tagsRef.map(x => x.id)
+            return this.articleService.getArticleTagsByIds(tagsIds).pipe(
+              map(tags => ({
+                ...article,
+                tags
+              }))
+            );
+        })
+      )
+      .subscribe(articleWithTagsData => {
+        this.selectedAuthorId = articleWithTagsData.authorRef.id
+        this.title = articleWithTagsData.title;
+        this.tags = articleWithTagsData.tags;
+        this.slug = articleWithTagsData.slug;
+        this.previewImage = articleWithTagsData.photoUrl
+        this.editor.setContents(articleWithTagsData.data);
+      })
+
+
+      // this.articleSubscription = this.articleService.getArticleWithDataById$(articleId).subscribe((article) => {
+      //   this.selectedAuthorId = article.authorRef.id
+      //   this.title = article.title;
+      //   this.tags = []; // Fix this
+      //   this.slug = article.slug;
+      //   this.editor.setContents(article.data);
+      // });
+
     } catch (error) {
       console.error("Error fetching article:", error);
       this.alertService.errorAlert("Error fetching article");
@@ -240,12 +292,22 @@ export class ArticleComponent {
       try {
         const downloadURL = await this.uploadImage();
 
+        // First save Only the new tags
+        const existingTags = this.tags.filter(x => x.id)
+        const newTagsToSave = this.tags.filter(x => !x.id)
+        const newTagsSaved = await this.articleService.saveArticleTags(newTagsToSave)
+        this.tags = [...existingTags, ...newTagsSaved]
+        console.log("this.tags", this.tags)
+        // Then get the references
+        const tagsReferences = this.tags.map(x => this.articleService.getArticleTagRefById(x.id))
+
+
         const dataToSave: ArticleData = {
-          author: this.authorService.getAuthorRefById(this.selectedAuthorId),
+          authorRef: this.authorService.getAuthorRefById(this.selectedAuthorId),
           data: this.editor.getContents().ops,
           createdAt: this.articleId ? null : new Date(),
           id: this.articleId ? this.articleId : null,
-          tags: this.tags,
+          tagsRef: tagsReferences,
           title: this.title,
           slug: this.slug,
           updatedAt: this.articleId ? new Date() : null,
@@ -285,7 +347,7 @@ export class ArticleComponent {
   }
 
   createTag(modal) {
-    this.newTag = "";
+    this.newTagName = "";
     this.createTagModal = this.modalService.open(modal, {
       ariaLabelledBy: "modal-basic-title",
       centered: true,
@@ -294,7 +356,7 @@ export class ArticleComponent {
   }
 
   saveTag() {
-    if (this.newTag) this.tags.push(this.newTag)
+    if (this.newTagName) this.tags.push({name: this.newTagName, id:null})
     this.createTagModal.close();
   }
 
@@ -314,15 +376,20 @@ export class ArticleComponent {
     if (this.tags.length === 0) {
       valid = false;
     }
+    if (!this.selectedFile) {
+      valid = false;
+    }
     if (this.editor.getText().trim().length === 0) {
       valid = false;
     }
+    // Add validation for duration and photo
     console.log("valid", valid);
     return valid;
   }
 
   ngOnDestroy() {
     if (this.articleSubscription) this.articleSubscription.unsubscribe()
+    if (this.tagsSubscription) this.tagsSubscription.unsubscribe()
   }
 
 }

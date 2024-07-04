@@ -1,4 +1,5 @@
 import { Component, ViewChild } from "@angular/core";
+import { DocumentReference } from "@angular/fire/compat/firestore";
 import { AngularFireStorage } from "@angular/fire/compat/storage";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MatPaginator } from "@angular/material/paginator";
@@ -9,14 +10,16 @@ import { AlertsService } from "projects/predyc-business/src/shared/services/aler
 import { ArticleService } from "projects/predyc-business/src/shared/services/article.service";
 import { AuthorService } from "projects/predyc-business/src/shared/services/author.service";
 import { IconService } from "projects/predyc-business/src/shared/services/icon.service";
-import { ArticleJson } from "projects/shared/models/article.model";
+import { ArticleJson, ArticleTagJson } from "projects/shared/models/article.model";
 import { AuthorJson } from "projects/shared/models/author.model";
 import { Subscription, combineLatest, finalize, firstValueFrom } from "rxjs";
 import { firestoreTimestampToNumberTimestamp } from "shared";
 import Swal from "sweetalert2";
 
-interface ArticleWithAuthorName extends ArticleJson {
+interface ArticleWithExtraData extends ArticleJson {
   authorName: string
+  tagsNames: string[]
+
 }
 
 @Component({
@@ -47,7 +50,7 @@ export class ArticlesListComponent {
   queryParamsSubscription: Subscription;
   articleServiceSubscription: Subscription;
 
-  dataSource = new MatTableDataSource<ArticleWithAuthorName>();
+  dataSource = new MatTableDataSource<ArticleWithExtraData>();
 
   createTagModal 
   @ViewChild('createAuthorModal') createAuthorModal: any;
@@ -75,15 +78,24 @@ export class ArticlesListComponent {
   }
 
   performSearch(page: number) {
-    this.articleServiceSubscription = combineLatest([this.articleService.getArticles$(), this.authorService.getAuthors$()]).subscribe(([articles, authors]) => {
+    this.articleServiceSubscription = combineLatest(
+      [
+        this.articleService.getArticles$(), 
+        this.authorService.getAuthors$(),
+        this.articleService.getAllArticleTags$(),
+      ]
+    ).subscribe(([articles, authors, tags]) => {
       console.log("articles", articles);
 
-      const dataToShow: ArticleWithAuthorName[] = articles.map(article => {
-        const author = authors.find( x => x.id === article.author.id)
+      const dataToShow: ArticleWithExtraData[] = articles.map(article => {
+        const author = authors.find( x => x.id === article.authorRef.id)
+        const tagsData = this.getMatchingTags(article.tagsRef, tags)
+        const tagsNames = tagsData.map(x => x.name)
         return {
           ...article,
           updatedAt: article.updatedAt ? firestoreTimestampToNumberTimestamp(article.updatedAt) : null,
-          authorName: author.name
+          authorName: author.name,
+          tagsNames
         }
       })
       this.totalLength = dataToShow.length;
@@ -93,6 +105,12 @@ export class ArticlesListComponent {
       this.paginator.pageIndex = page - 1;
     });
   }
+
+  getMatchingTags(articleTagsRef: DocumentReference[], allTags: ArticleTagJson[]) {
+    return articleTagsRef.map(tagRef => {
+      return allTags.find(tag => tag.id === tagRef.id);
+    }).filter(tag => tag !== undefined);
+  };
 
   onPageChange(page: number): void {
     this.router.navigate([], {

@@ -9,8 +9,8 @@
         </div>
         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".75rem" class="">
             <span class="ft600 ft14"> Etiquetas: </span>
-            <ng-container *ngFor="let tag of article.tags">
-                <span class="ft500 ft14"> {{tag | titlecase}}, </span>
+            <ng-container *ngFor="let tag of article.tagsData">
+                <span class="ft500 ft14"> {{tag.name | titlecase}}, </span>
             </ng-container>
         </div>
     </div>

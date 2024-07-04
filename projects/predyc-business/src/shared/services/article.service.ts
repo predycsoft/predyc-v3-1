@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { Article, ArticleJson } from 'projects/shared/models/article.model';
-import { Observable, combineLatest, map } from 'rxjs';
+import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
+import { Article, ArticleJson, ArticleTag, ArticleTagJson } from 'projects/shared/models/article.model';
+import { Observable, combineLatest, map, of } from 'rxjs';
 import { ArticleData } from '../../admin/admin-pages/articles/articles.component';
 
 @Injectable({
@@ -129,6 +129,46 @@ export class ArticleService {
     batch.delete(articleDocRef.ref);
   
     await batch.commit();
+  }
+
+  
+  // --------- TAGS
+  async saveArticleTags(tagDataArray: ArticleTagJson[]): Promise<ArticleTagJson[]> {
+    const batch = this.afs.firestore.batch();
+    const tagsWithId: ArticleTagJson[] = [];
+  
+    tagDataArray.forEach(tagData => {
+      const tagId = this.afs.createId();
+      tagData.id = tagId;
+      const tagRef = this.afs.collection<ArticleTagJson>(ArticleTag.collection).doc(tagId).ref;
+      batch.set(tagRef, tagData);
+      tagsWithId.push(tagData);
+    });
+  
+    try {
+      await batch.commit();
+      return tagsWithId;
+    } catch (error) {
+      console.error("Error saving tags: ", error);
+      throw error;
+    }
+  }
+
+  getArticleTagRefById(tagId: string): DocumentReference<ArticleTag> {
+    return this.afs.collection<ArticleTag>(ArticleTag.collection).doc(tagId).ref
+  }
+
+  getAllArticleTags$() {
+    return this.afs.collection<ArticleTag>(ArticleTag.collection).valueChanges()
+  }
+
+  getArticleTagsByIds(tagsIds: string[]): Observable<ArticleTagJson[]> {
+    if (!tagsIds || tagsIds.length === 0) {
+      return of([]);
+    }
+
+    const tagObservables = tagsIds.map(tagId => this.afs.collection<ArticleTagJson>(ArticleTag.collection).doc(tagId).valueChanges());
+    return combineLatest(tagObservables)
   }
   
 }

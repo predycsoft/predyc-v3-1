@@ -1,13 +1,13 @@
 import { DocumentReference } from "@angular/fire/compat/firestore"
 
 export interface ArticleJson {
-    author: DocumentReference
+    authorRef: DocumentReference
     createdAt: any
     duration: number
     id: string
     photoUrl: string
     slug: string
-    tags: string[]
+    tagsRef: DocumentReference[]
     title: string
     updatedAt: any
 }
@@ -18,13 +18,13 @@ export class Article {
     public static subcollectionName = "dataChunks"
 
     constructor(
-        public author: DocumentReference,
+        public authorRef: DocumentReference,
         public createdAt: any,
         public duration: number,
         public id: string,
         public photoUrl: string,
         public slug: string,
-        public tags: string[],
+        public tagsRef: DocumentReference[],
         public title: string,
         public updatedAt: any,
 
@@ -32,13 +32,13 @@ export class Article {
 
     public static fromJson(articleJson: ArticleJson): Article {
         return new Article(
-            articleJson.author,
+            articleJson.authorRef,
             articleJson.createdAt,
             articleJson.duration,
             articleJson.id,
             articleJson.photoUrl,
             articleJson.slug,
-            articleJson.tags,
+            articleJson.tagsRef,
             articleJson.title,
             articleJson.updatedAt,
         )
@@ -46,13 +46,13 @@ export class Article {
 
     public toJson(): ArticleJson {
         return {
-            author: this.author,
+            authorRef: this.authorRef,
             createdAt: this.createdAt,
             duration: this.duration,
             id: this.id,
             photoUrl: this.photoUrl,
             slug: this.slug,
-            tags: this.tags,
+            tagsRef: this.tagsRef,
             title: this.title,
             updatedAt: this.updatedAt,
         }
@@ -61,4 +61,34 @@ export class Article {
 
 export interface ArticleSubCollectionData {
     content: Object[]
+}
+
+export interface ArticleTagJson {
+    id: string | null,
+    name: string,
+}
+
+export class ArticleTag {
+
+    public static collection = 'article-tag'
+
+    constructor(
+        public id: string | null,
+        public name: string,
+    ){}
+
+    public static fromJson(articleJson: ArticleTagJson): ArticleTag {
+        return new ArticleTag(
+            articleJson.id,
+            articleJson.name,
+        )
+    }
+
+    public toJson(): ArticleTagJson {
+        return {
+            id: this.id,
+            name: this.name,
+        }
+    }
+
 }

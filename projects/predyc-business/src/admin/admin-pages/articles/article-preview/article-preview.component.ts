@@ -2,11 +2,13 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ArticleService } from 'projects/predyc-business/src/shared/services/article.service';
 import { ArticleData } from '../articles.component';
-import { Subscription, map, switchMap } from 'rxjs';
+import { Subscription, combineLatest, map, switchMap } from 'rxjs';
 import { AuthorService } from 'projects/predyc-business/src/shared/services/author.service';
+import { ArticleTagJson } from 'projects/shared/models/article.model';
 
-interface ArticleWithAuthorName extends ArticleData {
+interface ArticleWithExtraData extends ArticleData {
   authorName: string
+  tagsData: ArticleTagJson[]
 }
 
 @Component({
@@ -24,25 +26,29 @@ export class ArticlePreviewComponent {
 
   articleId = this.route.snapshot.paramMap.get("articleId");
 
-  article: ArticleWithAuthorName
+  article: ArticleWithExtraData
   articleSubscription: Subscription
 
 
   ngOnInit() {
-    this.articleSubscription =this.articleService.getArticleWithDataById$(this.articleId).pipe(
+    this.articleSubscription = this.articleService.getArticleWithDataById$(this.articleId).pipe(
       switchMap((article: ArticleData) => {
-          return this.authorService.getAuthorById$(article.author.id).pipe(
-            map(author => ({
-              ...article,
-              authorName: author.name
-            }))
-          );
+        const tagsIds = article.tagsRef.map(x => x.id)
+        return combineLatest([
+          this.authorService.getAuthorById$(article.authorRef.id),
+          this.articleService.getArticleTagsByIds(tagsIds)
+        ]).pipe(
+          map(([author, tagsData]) => ({
+            ...article,
+            authorName: author.name,
+            tagsData
+          }))
+        );
       })
-    )
-    .subscribe(articleWithAuthorName => {
-      this.article = articleWithAuthorName
+    ).subscribe(articleWithExtraData => {
+      this.article = articleWithExtraData;
       // console.log("this.article", this.article)
-    })
+    });
   }
 
   ngOnDestroy() {
