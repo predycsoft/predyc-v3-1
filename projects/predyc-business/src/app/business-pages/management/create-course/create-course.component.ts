@@ -495,6 +495,14 @@ export class CreateCourseComponent {
           // resumen_instructor
           // imagen_instructor
 
+          let customUrl = curso.customUrl
+
+          if(customUrl == curso.id){
+            customUrl = null
+          }
+
+
+
           this.formNewCourse = new FormGroup({
             id: new FormControl(curso.id, Validators.required),
             vimeoFolderId: new FormControl(curso.vimeoFolderId),
@@ -511,7 +519,7 @@ export class CreateCourseComponent {
             imagen_instructor: new FormControl(instructor.foto, Validators.required),
             skills: new FormControl(curso.skillsRef, Validators.required),
             proximamente: new FormControl(curso.proximamente),
-            customUrl: new FormControl(curso.customUrl),
+            customUrl: new FormControl(customUrl),
           });
 
           //this.formNewCourse.get('resumen_instructor').disable();
