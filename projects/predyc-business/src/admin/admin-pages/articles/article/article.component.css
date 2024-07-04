@@ -52,8 +52,7 @@
   display: none;
 }
 
-
-/*it doesnt work*/
-/* ::ng-deep .mat-option .mat-pseudo-checkbox { 
-  display: none !important; 
-} */
+::ng-deep .mat-mdc-option .mdc-list-item__primary-text {
+  width: 100% !important;
+  color: black !important;
+}

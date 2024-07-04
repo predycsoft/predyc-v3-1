@@ -49,11 +49,11 @@
                     <mat-label>Buscar etiqueta</mat-label>
                     <input  type="text" class="ft14 fw" placeholder="Seleccione uno" aria-label="Number" matInput #autoTrigger="matAutocompleteTrigger" 
                     [formControl]="tagsForm" [matAutocomplete]="autoTags"/>
-                    <mat-autocomplete [displayWith]="getOptionTextTag" #autoTags="matAutocomplete" class="options">
-                        <mat-option (click)="changeTag(option)" class="multiline-mat-option ft12" *ngFor="let option of filteredTags | async" [value]="option">
-                            <div fxLayout="row" fxLayoutAlign="space-between">
+                    <mat-autocomplete [hideSingleSelectionIndicator]="true" [displayWith]="getOptionTextTag" #autoTags="matAutocomplete" class="options">
+                        <mat-option (click)="changeTag(option)" class="multiline-mat-option ft12 fw" *ngFor="let option of filteredTags | async" [value]="option">
+                            <div fxLayout="row" fxLayoutAlign="space-between" class="fw">
                                 <div fxLayout="col" fxLayoutAlign="center center">{{ option.name | titlecase }}</div>
-                                <!-- <mat-icon *ngIf="isTagSelected(option)">check</mat-icon> -->
+                                <mat-icon class="makeBlue" *ngIf="isTagSelected(option)">check</mat-icon>
                             </div>
                         </mat-option>
                         <mat-option (click)="createTag(createTagModal)" class="multiline-mat-option" value="null">
