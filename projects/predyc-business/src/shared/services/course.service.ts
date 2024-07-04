@@ -36,6 +36,7 @@ export class CourseService {
     this.getCourses();
     //this.removeCheater('q5B5fsOhjcOoMuLUcLg8KfVB13Q2');
     //this.fixCertificates()
+    //this.fixCoursesCustomURL()
   }
 
   private coursesSubject = new BehaviorSubject<Curso[]>([]);
@@ -43,7 +44,7 @@ export class CourseService {
 
   private enterpriseRef: DocumentReference;
 
-  async fixCoursesCustomURL() {
+  async _fixCoursesCustomURL() {
     console.log("fixCoursesCustomURL");
 
     const batch = this.afs.firestore.batch();
@@ -61,6 +62,31 @@ export class CourseService {
 
     // Ejecuta el batch write
     await batch.commit();
+  }
+
+  async fixCoursesCustomURL() {
+    console.log("fixCoursesCustomURL");
+  
+    const batch = this.afs.firestore.batch();
+  
+    // Referencia a la colección de 'curso'
+    const collectionRef = this.afs.collection(Curso.collection).ref;
+  
+    // Obtiene todos los documentos de la colección 'curso'
+    const snapshot = await collectionRef.get();
+  
+    // Itera sobre cada documento y actualiza el campo 'customUrl' solo si está vacío o es undefined
+    snapshot.docs.forEach((doc) => {
+      const data = doc.data();
+      if (!data['customUrl']) {
+        batch.update(doc.ref, { customUrl: doc.id });
+      }
+    });
+  
+    // Ejecuta el batch write
+    await batch.commit();
+    console.log("end fixCoursesCustomURL");
+
   }
 
 
@@ -1596,6 +1622,8 @@ export class CourseService {
 
 
   }
+
+  
 
 
 
