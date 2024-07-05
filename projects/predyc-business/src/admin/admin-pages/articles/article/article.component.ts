@@ -245,7 +245,6 @@ export class ArticleComponent {
   }
 
   isTagSelected(tag: ArticleTagJson): boolean {
-    console.log("XXX")
     return this.articleTags.some(selectedTag => selectedTag.name === tag.name);
   }
 
