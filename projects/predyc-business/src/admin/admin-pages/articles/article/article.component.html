@@ -78,7 +78,7 @@
                     <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
                     Adjuntar imagen
                 </button>
-                <input #authorImage type="file" (change)="setImage($event)" hidden accept="image/jpeg, image/png" [src]="selectedFile">
+                <input #authorImage type="file" (change)="setImage($event)" hidden accept="image/jpeg, image/png, image/webp" [src]="selectedFile">
                 <div class="avatar-scroll">
                     <img *ngIf="previewImage" [src]="previewImage" alt="Imagen seleccionada" class="image shadow8">
                 </div>

@@ -85,7 +85,7 @@ export class ArticlesListComponent {
         this.articleService.getAllArticleTags$(),
       ]
     ).subscribe(([articles, authors, tags]) => {
-      console.log("articles", articles);
+      // console.log("articles", articles);
 
       const dataToShow: ArticleWithExtraData[] = articles.map(article => {
         const author = authors.find( x => x.id === article.authorRef.id)
