@@ -96,14 +96,14 @@
         <div fxLayout="column" fxLayoutAlign="start" fxLayoutGap="1rem">
           <div class="form-group">
               <label>Nombre del autor</label>
-              <input formControlName="name" [class.is-invalid]="authorForm.controls['name'].errors && showFormError" type="text" class="form-control customInput" placeholder="Escriba el nombre del autor">
+              <input formControlName="name" [class.is-invalid]="authorForm.controls['name'].errors && showFormError" type="text" class="form-control " placeholder="Escriba el nombre del autor">
               <div class="invalid-feedback" *ngIf="authorForm.controls['name'].errors && showFormError"> 
                   Debe indicar el nombre.
               </div>
           </div>
           <div class="form-group">
               <label>Correo del autor</label>
-              <input formControlName="email" [class.is-invalid]="authorForm.controls['email'].errors && showFormError" type="text" class="form-control customInput" placeholder="Escriba el correo del autor">
+              <input formControlName="email" [class.is-invalid]="authorForm.controls['email'].errors && showFormError" type="text" class="form-control " placeholder="Escriba el correo del autor">
               <div class="invalid-feedback" *ngIf="authorForm.controls['email'].errors?.required && showFormError"> 
                   Debe indicar el correo del autor.
               </div>
@@ -113,10 +113,20 @@
           </div>
           <div class="form-group">
               <label>Linkedin</label>
-              <input formControlName="linkedin" [class.is-invalid]="authorForm.controls['linkedin'].errors && showFormError" type="text" class="form-control customInput" placeholder="Escriba el linkedin del autor">
+              <input formControlName="linkedin" [class.is-invalid]="authorForm.controls['linkedin'].errors && showFormError" type="text" class="form-control " placeholder="Escriba el linkedin del autor">
               <div class="invalid-feedback" *ngIf="authorForm.controls['linkedin'].errors && showFormError"> 
                   Debe indicar el linkedin.
               </div>
+          </div>
+          <div class="form-group">
+          <label>Descripción</label>
+            <div class="">
+              <textarea [class.is-invalid]="authorForm.controls['description'].errors && showFormError" formControlName="description" type="text" maxlength="200"
+              class="form-control" style="overflow-y: hidden;  width: 100%; height: 100px; resize:none; background-color: transparent !important;"></textarea>  
+            </div>
+            <div class="invalid-feedback" *ngIf="authorForm.controls['description'].errors && showFormError"> 
+              Debe indicar la descripción.
+            </div>
           </div>
           <div class="form-group">
               <label>Foto del autor</label>

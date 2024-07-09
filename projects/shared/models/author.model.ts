@@ -1,5 +1,6 @@
 
 export interface AuthorJson {
+    description: string
     email: string
     id: string
     linkedin: string
@@ -12,6 +13,7 @@ export class Author {
     public static collection = 'author'
 
     constructor(
+        public description: string,
         public email: string,
         public id: string,
         public linkedin: string,
@@ -21,6 +23,7 @@ export class Author {
 
     public static fromJson(articleJson: AuthorJson): Author {
         return new Author(
+            articleJson.description,
             articleJson.email,
             articleJson.id,
             articleJson.linkedin,
@@ -31,6 +34,7 @@ export class Author {
 
     public toJson(): AuthorJson {
         return {
+            description: this.description,
             email: this.email,
             id: this.id,
             linkedin: this.linkedin,

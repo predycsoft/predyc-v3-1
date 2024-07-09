@@ -70,10 +70,11 @@ export class ArticlesListComponent {
 
   loadAuthorForm() {
     this.authorForm = this.fb.group({
+      description: ['', Validators.required],
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       linkedin: ['', Validators.required],
-      photoUrl: ['', Validators.required]
+      photoUrl: ['', Validators.required],
     });
   }
 
