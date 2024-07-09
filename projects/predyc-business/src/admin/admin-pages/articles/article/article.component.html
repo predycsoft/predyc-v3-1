@@ -10,22 +10,24 @@
     </div>
     <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap=".5rem" class="w-60">
 
-        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1rem" class="">
-            <span class="w70px">Título:</span>
-            <input type="text" [(ngModel)]="title" class="ft14 shadow-animation pdl05 pdr05 radius20 borderLight"
+        <!-- Title -->
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1.5rem" class="">
+            <span class="w60px">Título:</span>
+            <input type="text" [(ngModel)]="title" class="ft14 shadow-animation pdl05 pdr05 radius4 borderLight"
                 style="text-align: center; width: 32vw;" />
         </div>
 
-        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1rem" class="">
-            <span class="w70px">Autor:</span>
-            <select [(ngModel)]="selectedAuthorId" class="ft14 shadow-animation pdl05 pdr05 radius20 borderLight" style="text-align: center; width: 23vw;">
-                <option *ngFor="let author of authors" [value]="author.id">{{ author.name }}</option>
-            </select>
+        <!-- Summary -->
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1.5rem" class="">
+            <span class="w60px">Resumen:</span>
+            <textarea class="form-control radius4" style="overflow-y: hidden; resize:none; background-color: transparent !important; width: 32vw; height: 100px;" 
+            type="text" maxlength="180" [(ngModel)]="summary" class="ft12 borderLight"></textarea> 
         </div>
 
-        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1rem" class="">
-            <span class="w70px">Slug:</span>
-            <input id="slug" name="slug" [(ngModel)]="slug" #slugCtrl="ngModel" class="ft14 shadow-animation pdl05 pdr05 radius20 borderLight" 
+        <!-- Slug -->
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1.5rem" class="">
+            <span class="w60px">Slug:</span>
+            <input id="slug" name="slug" [(ngModel)]="slug" #slugCtrl="ngModel" class="ft14 shadow-animation pdl05 pdr05 radius4 borderLight" 
             required pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$" />
         </div>
         <div *ngIf="slugCtrl.invalid && slugCtrl.touched">
@@ -33,17 +35,63 @@
             <span style="color: red" *ngIf="slugCtrl.errors?.pattern">Invalid slug format.</span>
         </div>
 
-        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1rem" class="">
-            <span class="w70px">Duración:</span>
-            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".3rem" class="">
-                <input type="number" min="1" [(ngModel)]="duration" class="ft14 shadow-animation pdl05 pdr05 radius20 borderLight"
-                    style="text-align: center; width: 5vw;" />
-                <span>min</span>
+        <!-- Author -->
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1.5rem" class="">
+            <span class="w60px">Autor:</span>
+            <select [(ngModel)]="selectedAuthorId" class="ft14 shadow-animation pdl05 pdr05 borderLight cursorPointer" style="text-align: center; width: 23vw;">
+                <option *ngFor="let author of authors" [value]="author.id">{{ author.name }}</option>
+            </select>
+        </div>
+
+        <!-- Categories -->
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1.5rem" class="">
+            <span class="w60px">Categorias:</span>
+            <select [(ngModel)]="selectedCategory" (change)="onCategoryChange($event)" class="ft14 shadow-animation pdl05 pdr05 borderLight cursorPointer" style="text-align: center; width: 23vw;">
+                <option value="" disabled selected>Selecciona las categorias</option>
+                <option *ngFor="let category of categoriesOptions" [value]="category">{{ category }}</option>
+            </select>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="margin-left-custom">
+            <div *ngFor="let category of categories; let categoryIndex = index" class="skill-badge-complete ListHover radius10 backGray2 ft12 pdl08 pdr08 gray-8">
+                <span>{{ category | titlecase }}</span>
+                <img style="cursor: pointer" (click)="removeCategory(categoryIndex)" [src]="icon.close" class="h16px makeGray" alt="" />
             </div>
         </div>
 
-        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1rem" class="">
-            <span class="w70px">Etiquetas:</span>
+        <!-- Pillars -->
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="2.5rem" class="cursorPointer">
+            <span class="w60px">Pilares:</span>
+            <form class="fw">
+                <mat-form-field class="example-full-width fw">
+                    <mat-label>Buscar pilar</mat-label>
+                    <input type="text" class="ft14 fw" placeholder="Seleccione uno" aria-label="Number" matInput #pillarAutoTrigger="matAutocompleteTrigger" 
+                    [formControl]="pillarsForm" [matAutocomplete]="autoPillars"/>
+                    <mat-autocomplete [hideSingleSelectionIndicator]="true" [displayWith]="getOptionTextPillar" #autoPillars="matAutocomplete" class="options">
+                        <mat-option (click)="changePillar(option)" class="multiline-mat-option ft12 fw" *ngFor="let option of filteredPillars | async" [value]="option">
+                            <div fxLayout="row" fxLayoutAlign="space-between" class="fw">
+                                <div fxLayout="col" fxLayoutAlign="center center">{{ option.name | titlecase }}</div>
+                                <mat-icon class="makeBlue" *ngIf="isPillarSelected(option)">check</mat-icon>
+                            </div>
+                        </mat-option>
+                        <mat-option (click)="createPillar(createPillarModal)" class="multiline-mat-option" value="null">
+                            <span class="ft13 blueLink">Crear nuevo pilar</span>
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+            </form>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="margin-left-custom">
+            <ng-container *ngFor="let pillar of articlePillars; let pillarIndex = index" class="margin-left-custom">
+                <div class="skill-badge-complete ListHover radius10 backGray2 ft12 pdl08 pdr08 gray-8">
+                    {{ pillar.name | titlecase }}
+                    <img style="cursor: pointer" (click)="removePillar(pillarIndex)" [src]="icon.close" class="h16px makeGray" alt="" />
+                </div>
+            </ng-container>
+        </div>
+
+        <!-- Tags -->
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1.5rem" class="cursorPointer">
+            <span class="w60px">Etiquetas:</span>
             <form class="fw">
                 <mat-form-field class="example-full-width fw">
                     <mat-label>Buscar etiqueta</mat-label>
@@ -62,17 +110,19 @@
                     </mat-autocomplete>
                 </mat-form-field>
             </form>
-            <ng-container *ngFor="let tag of articleTags; let tagIndex = index">
-                <div class="skill-badge-complete ListHover radius10 backGray2 ft12 pdl08 pdr08 gray-8 fw">
+        </div>
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="margin-left-custom">
+            <ng-container *ngFor="let tag of articleTags; let tagIndex = index" class="margin-left-custom">
+                <div class="skill-badge-complete ListHover radius10 backGray2 ft12 pdl08 pdr08 gray-8">
                     {{ tag.name | titlecase }}
                     <img style="cursor: pointer" (click)="removeTag(tagIndex)" [src]="icon.close" class="h16px makeGray" alt="" />
                 </div>
             </ng-container>
         </div>
 
-
-        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1rem" class="">
-            <span class="w70px">Foto:</span>
+        <!-- Photo -->
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1.5rem" class="">
+            <span class="w60px">Foto:</span>
             <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="start center">
                 <button (click)="authorImage.click()" class="grayButton pd03 radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                     <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
@@ -187,6 +237,31 @@
                 fxLayoutGap="0.625rem" fxLayoutAlign="center center">
                 <img [src]="icon.check" class="h16px pdr05 makeWhite" alt="" />
                 Asignar etiqueta
+            </button>
+        </div>
+    </div>
+</ng-template>
+
+<!-- Modal de pilares -->
+<ng-template #createPillarModal let-modal>
+    <div class="modal-header bg-web-primary text-white px-3 py-1" fxLayout="row" fxLayoutAlign="space-between center">
+        <div class="modal-title pd10">
+            <span class="ft16 ft500 gray-10">Asignar pilar</span>
+        </div>
+        <img style="cursor: pointer" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px" alt="" />
+    </div>
+    <div class="modal-body" style="overflow-y: auto; max-height: 80vh">
+        <div fxLayout="row" class="fw">
+            <div class="form-group fw">
+                <label>Nombre del pilar</label>
+                <input type="text" class="form-control customInput" [(ngModel)]="newPillarName" placeholder="Escriba el nombre del pilar" />
+            </div>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="end end" class="pdt03" style="width: 100%">
+            <button (click)="savePillar()" class="blueButton gray-1 radius4 ft12 h28px mgt10" fxLayout="row"
+                fxLayoutGap="0.625rem" fxLayoutAlign="center center">
+                <img [src]="icon.check" class="h16px pdr05 makeWhite" alt="" />
+                Asignar pilar
             </button>
         </div>
     </div>

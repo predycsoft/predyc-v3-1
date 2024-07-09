@@ -36,7 +36,7 @@ export class ArticlePreviewComponent {
         const tagsIds = article.tagsRef.map(x => x.id)
         return combineLatest([
           this.authorService.getAuthorById$(article.authorRef.id),
-          this.articleService.getArticleTagsByIds(tagsIds)
+          this.articleService.getArticleTagsByIds$(tagsIds)
         ]).pipe(
           map(([author, tagsData]) => ({
             ...article,

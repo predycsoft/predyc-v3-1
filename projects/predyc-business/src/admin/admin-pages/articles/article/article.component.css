@@ -56,3 +56,7 @@
   width: 100% !important;
   color: black !important;
 }
+
+.margin-left-custom {
+  margin-left: calc(60px + 1.5rem) !important;
+}

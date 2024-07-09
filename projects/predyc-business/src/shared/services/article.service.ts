@@ -162,7 +162,7 @@ export class ArticleService {
     return this.afs.collection<ArticleTag>(ArticleTag.collection).valueChanges()
   }
 
-  getArticleTagsByIds(tagsIds: string[]): Observable<ArticleTagJson[]> {
+  getArticleTagsByIds$(tagsIds: string[]): Observable<ArticleTagJson[]> {
     if (!tagsIds || tagsIds.length === 0) {
       return of([]);
     }

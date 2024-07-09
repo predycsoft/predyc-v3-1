@@ -6,14 +6,17 @@ import { ArticleService } from "projects/predyc-business/src/shared/services/art
 import { IconService } from "projects/predyc-business/src/shared/services/icon.service";
 import Quill from "quill";
 import BlotFormatter from "quill-blot-formatter/dist/BlotFormatter";
-import { Observable, Subscription, map, startWith, switchMap } from "rxjs";
+import { Observable, Subscription, combineLatest, map, startWith, switchMap } from "rxjs";
 import Swal from "sweetalert2";
 import { ArticleData } from "../articles.component";
 import { Author } from "projects/shared/models/author.model";
 import { AuthorService } from "projects/predyc-business/src/shared/services/author.service";
 import { AngularFireStorage } from "@angular/fire/compat/storage";
 import { FormControl } from "@angular/forms";
-import { ArticleTagJson } from "projects/shared/models/article.model";
+import { Article, ArticleTagJson } from "projects/shared/models/article.model";
+import { DocumentReference } from "@angular/fire/compat/firestore";
+import { CategoryService } from "projects/predyc-business/src/shared/services/category.service";
+import { CategoryJson } from "projects/shared/models/category.model";
 
 const Module = Quill.import("core/module");
 const BlockEmbed = Quill.import("blots/block/embed");
@@ -140,7 +143,7 @@ Quill.register(
   styleUrls: ["./article.component.css"],
 })
 export class ArticleComponent {
-  constructor( private storage: AngularFireStorage, private authorService: AuthorService, private alertService: AlertsService, private articleService: ArticleService, private modalService: NgbModal, public icon: IconService, private route: ActivatedRoute, public router: Router) {}
+  constructor( private categoryService: CategoryService, private storage: AngularFireStorage, private authorService: AuthorService, private alertService: AlertsService, private articleService: ArticleService, private modalService: NgbModal, public icon: IconService, private route: ActivatedRoute, public router: Router) {}
 
   articleId = this.route.snapshot.paramMap.get("articleId");
 
@@ -169,17 +172,27 @@ export class ArticleComponent {
   editor: Quill;
 
   createTagModal;
-  selectedAuthorId: string = "";
-  title: string = "";
-  slug: string = "";
-  newTagName: string = "";
+  createPillarModal;
+
+  selectedAuthorId = "";
   articleTags: ArticleTagJson[] = [];
-  duration: number = 1;
+  title = "";
+  slug = "";
+  categories: Array<typeof Article.CATEGORY_ARTICLE_OPTION | typeof Article.CATEGORY_INTERVIEW_OPTION | typeof Article.CATEGORY_SUCCEED_OPTION> = []
+  selectedCategory: string = "";
+  pillars: DocumentReference[] = []
+  summary = ""
+
+  newTagName: string = "";
+  authors: Author[]
+
+  categoriesOptions = []
 
   articleSubscription: Subscription
+  tagsSubscription: Subscription
   authorSubscription: Subscription
+  pillarsSubscription: Subscription
 
-  authors: Author[]
 
   selectedFile: File | null = null;
   pastPreviewImage: string | null = null; //To check if the photo has been changed
@@ -188,9 +201,17 @@ export class ArticleComponent {
   allTags: ArticleTagJson[] = [];
   filteredTags: Observable<any[]>;
   tagsForm = new FormControl();
-  tagsSubscription: Subscription
+
+  allCategories: CategoryJson[] = []
+
+  articlePillars: CategoryJson[] = [];
+  pillarsForm = new FormControl();
+  filteredPillars: Observable<CategoryJson[]>;
+  newPillarName: string = '';
 
   ngOnInit() {
+    this.categoriesOptions = Article.CATEGORY_OPTIONS
+
     this.tagsSubscription = this.articleService.getAllArticleTags$().subscribe(tags => {
       this.allTags = tags;
       this.filteredTags = this.tagsForm.valueChanges.pipe(
@@ -198,37 +219,53 @@ export class ArticleComponent {
         map(value => this._filterTags(value))
       );
     });
+
+    this.pillarsSubscription = this.categoryService.getCategoriesObservable().subscribe(categories => {
+      this.allCategories = categories;
+      this.filteredPillars = this.pillarsForm.valueChanges.pipe(
+        startWith(''),
+        map(value => this._filterPillars(value))
+      );
+    });
     
     this.authorSubscription = this.authorService.getAuthors$().subscribe(authors => {
       this.authors = authors
     })
+
     if (this.articleId) this.loadArticle(this.articleId);
   }
 
   loadArticle(articleId: string) {
     try {
-      this.articleSubscription =this.articleService.getArticleWithDataById$(articleId).pipe(
+      this.articleSubscription = this.articleService.getArticleWithDataById$(articleId).pipe(
         switchMap((article: ArticleData) => {
-          const tagsIds = article.tagsRef.map(x => x.id)
-            return this.articleService.getArticleTagsByIds(tagsIds).pipe(
-              map(tags => ({
-                ...article,
-                tags
-              }))
-            );
+          const tagsIds = article.tagsRef.map(x => x.id);
+          const pillarsIds = article.pillarsRef.map(x => x.id);
+  
+          return combineLatest([
+            this.articleService.getArticleTagsByIds$(tagsIds),
+            this.categoryService.getCategoriesByIds(pillarsIds)
+          ]).pipe(
+            map(([tags, pillars]) => ({
+              ...article,
+              tags,
+              pillars
+            }))
+          );
         })
-      )
-      .subscribe(articleWithTagsData => {
-        this.duration = articleWithTagsData.duration
-        this.selectedAuthorId = articleWithTagsData.authorRef.id
-        this.title = articleWithTagsData.title;
-        this.articleTags = articleWithTagsData.tags;
-        this.slug = articleWithTagsData.slug;
-        this.previewImage = articleWithTagsData.photoUrl
-        this.pastPreviewImage = articleWithTagsData.photoUrl
-        this.editor.setContents(articleWithTagsData.data);
-      })
-
+      ).subscribe(articleWithTagsAndPillarsData => {
+        this.selectedAuthorId = articleWithTagsAndPillarsData.authorRef.id;
+        this.title = articleWithTagsAndPillarsData.title;
+        this.slug = articleWithTagsAndPillarsData.slug;
+        this.previewImage = articleWithTagsAndPillarsData.photoUrl;
+        this.pastPreviewImage = articleWithTagsAndPillarsData.photoUrl;
+        this.editor.setContents(articleWithTagsAndPillarsData.data);
+        this.summary = articleWithTagsAndPillarsData.summary;
+        this.categories = articleWithTagsAndPillarsData.categories;
+        this.articleTags = articleWithTagsAndPillarsData.tags;
+        this.articlePillars = articleWithTagsAndPillarsData.pillars; 
+      });
+  
     } catch (error) {
       console.error("Error fetching article:", error);
       this.alertService.errorAlert("Error fetching article");
@@ -277,6 +314,53 @@ export class ArticleComponent {
     this.articleTags.splice(tagIndex, 1)
   }
 
+  _filterPillars(value: string | CategoryJson): CategoryJson[] {
+    const filterValue = (typeof value === 'string') ? value.toLowerCase() : value.name.toLowerCase();
+    return this.allCategories.filter(pillar => pillar.name.toLowerCase().includes(filterValue));
+  }
+
+  getOptionTextPillar(option: CategoryJson): string {
+    return option ? option.name : '';
+  }
+
+  isPillarSelected(pillar: CategoryJson): boolean {
+    return this.articlePillars.some(selectedPillar => selectedPillar.name === pillar.name);
+  }
+
+  changePillar(pillar: CategoryJson): void {
+    if (!this.isPillarSelected(pillar)) {
+      this.articlePillars.push(pillar);
+    }
+    this.pillarsForm.setValue(''); // Add the pillar to the array but reset the mat form field
+  }
+
+  createPillar(modal) {
+    this.newPillarName = '';
+    this.createPillarModal = this.modalService.open(modal, {
+      ariaLabelledBy: 'modal-basic-title',
+      centered: true,
+      size: 'sm',
+    });
+  }
+
+  savePillar() {
+    if (this.newPillarName) {
+      const newPillar: CategoryJson = { 
+        name: this.newPillarName, 
+        id: null, 
+        enterprise: null //Check this
+      };
+      this.articlePillars.push(newPillar);
+      this.allCategories.push(newPillar);
+      this.pillarsForm.setValue('');
+    }
+    this.createPillarModal.close();
+  }
+
+  removePillar(pillarIndex: number) {
+    this.articlePillars.splice(pillarIndex, 1);
+  }
+
 
   onEditorCreated(editor) {
     this.editor = editor;
@@ -299,6 +383,17 @@ export class ArticleComponent {
     }
   }
 
+  onCategoryChange(event: any): void {
+    const selectedCategory = event.target.value;
+    if (selectedCategory && !this.categories.includes(selectedCategory)) this.categories.push(selectedCategory);
+    // console.log('Selected Categories:', this.categories);
+  }
+
+  removeCategory(tagIndex: number) {
+    this.categories.splice(tagIndex, 1)
+    this.selectedCategory = ""
+  }
+
   async save() {
     if (!this.checkValidationForm()) this.alertService.errorAlert("Debes llenar todos los campos");
     else {
@@ -319,27 +414,36 @@ export class ArticleComponent {
         }
         else downloadURL = await this.uploadImage();
 
-        // First save Only the new tags
+        // First save the new tags and new pillars
         const existingTags = this.articleTags.filter(x => x.id)
         const newTagsToSave = this.articleTags.filter(x => !x.id)
         const newTagsSaved = await this.articleService.saveArticleTags(newTagsToSave)
         this.articleTags = [...existingTags, ...newTagsSaved]
         console.log("this.articleTags", this.articleTags)
+        
+        const existingPillars = this.articlePillars.filter(x => x.id)
+        const newPillarsToSave = this.articlePillars.filter(x => !x.id)
+        const newPillarsSaved = await this.categoryService.saveCategories(newPillarsToSave)
+        this.articlePillars = [...existingPillars, ...newPillarsSaved]
+        console.log("this.articlePillars", this.articlePillars)
         // Then get the references
         const tagsReferences = this.articleTags.map(x => this.articleService.getArticleTagRefById(x.id))
+        const pillarsReferences = this.articlePillars.map(x => this.categoryService.getCategoryRefById(x.id))
 
 
         const dataToSave: ArticleData = {
           authorRef: this.authorService.getAuthorRefById(this.selectedAuthorId),
+          categories: this.categories,
+          pillarsRef: pillarsReferences,
           data: this.editor.getContents().ops,
           createdAt: this.articleId ? null : new Date(),
           id: this.articleId ? this.articleId : null,
           tagsRef: tagsReferences,
           title: this.title,
+          summary: this.summary,
           slug: this.slug,
           updatedAt: new Date(),
           photoUrl: downloadURL,
-          duration: this.duration,
         };
         console.log("dataToSave", dataToSave)
         const articleId = await this.articleService.saveArticle(dataToSave, !!this.articleId);
@@ -375,14 +479,19 @@ export class ArticleComponent {
 
   checkValidationForm(): boolean {
     let valid = true;
-
-    if (!this.selectedAuthorId) {
-      valid = false;
-    }
     if (!this.title) {
       valid = false;
     }
-    if (this.articleTags.length === 0) {
+    if (!this.summary) {
+      valid = false;
+    }
+    if (!this.selectedAuthorId) {
+      valid = false;
+    }
+    if (this.categories.length === 0) {
+      valid = false;
+    }
+    if (this.articlePillars.length === 0) {
       valid = false;
     }
     if (!this.previewImage) {
@@ -398,6 +507,8 @@ export class ArticleComponent {
   ngOnDestroy() {
     if (this.articleSubscription) this.articleSubscription.unsubscribe()
     if (this.tagsSubscription) this.tagsSubscription.unsubscribe()
+    if (this.authorSubscription) this.authorSubscription.unsubscribe()
+    if (this.pillarsSubscription) this.pillarsSubscription.unsubscribe()
   }
 
 }

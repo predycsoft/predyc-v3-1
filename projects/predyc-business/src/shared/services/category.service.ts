@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
-import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs'
+import { BehaviorSubject, firstValueFrom, Observable, of } from 'rxjs'
 import { EnterpriseService } from './enterprise.service';
 import { AlertsService } from './alerts.service';
 import { Enterprise } from 'projects/shared/models/enterprise.model';
@@ -45,8 +45,10 @@ export class CategoryService {
     newCategory.id = ref.id;
   }
 
-  async saveCategories(categories: CategoryJson[]): Promise<void> {
+  async saveCategories(categories: CategoryJson[]): Promise<CategoryJson[]> {
     const batch = this.afs.firestore.batch();
+    const pillarsWithId: CategoryJson[] = [];
+
     categories.forEach((category) => {
       const docRef = this.afs.firestore.collection(Category.collection).doc();
       const updatedCategory = {
@@ -54,9 +56,16 @@ export class CategoryService {
         id: docRef.id,
       };
       batch.set(docRef, updatedCategory, { merge: true });
+      pillarsWithId.push(updatedCategory)
     });
     // Commit the batch write to Firestore
-    await batch.commit();
+    try {
+      await batch.commit();
+      return pillarsWithId;
+    } catch (error) {
+      console.error("Error saving tags: ", error);
+      throw error;
+    }
   } 
 
   // Arguments could be pageSize, sort, currentPage
@@ -129,5 +138,14 @@ export class CategoryService {
 
   public getCategoryRefById(id: string): DocumentReference<Category> {
     return this.afs.collection<Category>(Category.collection).doc(id).ref
+  }
+
+  getCategoriesByIds(categorieIDs: string[]): Observable<CategoryJson[]> {
+    if (!categorieIDs || categorieIDs.length === 0) {
+      return of([]);
+    }
+
+    const categoryObservables = categorieIDs.map(tagId => this.afs.collection<Category>(Category.collection).doc(tagId).valueChanges());
+    return combineLatest(categoryObservables)
   }
 }

@@ -1,13 +1,17 @@
 import { DocumentReference } from "@angular/fire/compat/firestore"
+import { Category } from "./category.model"
+import { Author } from "./author.model"
 
 export interface ArticleJson {
-    authorRef: DocumentReference
+    authorRef: DocumentReference<Author>
+    categories: Array<typeof Article.CATEGORY_ARTICLE_OPTION | typeof Article.CATEGORY_INTERVIEW_OPTION | typeof Article.CATEGORY_SUCCEED_OPTION>
     createdAt: any
-    duration: number
     id: string
     photoUrl: string
+    pillarsRef: DocumentReference<Category>[]
     slug: string
-    tagsRef: DocumentReference[]
+    summary: string
+    tagsRef: DocumentReference<ArticleTag>[]
     title: string
     updatedAt: any
 }
@@ -17,14 +21,25 @@ export class Article {
     public static collection = 'article'
     public static subcollectionName = "dataChunks"
 
+    public static CATEGORY_ARTICLE_OPTION = 'Artículo'
+    public static CATEGORY_INTERVIEW_OPTION = 'Entrevista'
+    public static CATEGORY_SUCCEED_OPTION = 'Caso de éxito'
+    public static CATEGORY_OPTIONS = [
+        this.CATEGORY_ARTICLE_OPTION,
+        this.CATEGORY_INTERVIEW_OPTION,
+        this.CATEGORY_SUCCEED_OPTION
+    ]
+
     constructor(
-        public authorRef: DocumentReference,
+        public authorRef: DocumentReference<Author>,
+        public categories: Array<typeof Article.CATEGORY_ARTICLE_OPTION | typeof Article.CATEGORY_INTERVIEW_OPTION | typeof Article.CATEGORY_SUCCEED_OPTION>,
         public createdAt: any,
-        public duration: number,
         public id: string,
         public photoUrl: string,
+        public pillarsRef: DocumentReference<Category>[],
         public slug: string,
-        public tagsRef: DocumentReference[],
+        public summary: string,
+        public tagsRef: DocumentReference<ArticleTag>[],
         public title: string,
         public updatedAt: any,
 
@@ -33,11 +48,13 @@ export class Article {
     public static fromJson(articleJson: ArticleJson): Article {
         return new Article(
             articleJson.authorRef,
+            articleJson.categories,
             articleJson.createdAt,
-            articleJson.duration,
             articleJson.id,
             articleJson.photoUrl,
+            articleJson.pillarsRef,
             articleJson.slug,
+            articleJson.summary,
             articleJson.tagsRef,
             articleJson.title,
             articleJson.updatedAt,
@@ -47,11 +64,13 @@ export class Article {
     public toJson(): ArticleJson {
         return {
             authorRef: this.authorRef,
+            categories: this.categories,
             createdAt: this.createdAt,
-            duration: this.duration,
             id: this.id,
             photoUrl: this.photoUrl,
+            pillarsRef: this.pillarsRef,
             slug: this.slug,
+            summary: this.summary,
             tagsRef: this.tagsRef,
             title: this.title,
             updatedAt: this.updatedAt,
