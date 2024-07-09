@@ -494,6 +494,9 @@ export class ArticleComponent {
     if (this.articlePillars.length === 0) {
       valid = false;
     }
+    if (this.articleTags.length === 0) {
+      valid = false;
+    }
     if (!this.previewImage) {
       valid = false;
     }
