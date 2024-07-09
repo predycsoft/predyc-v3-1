@@ -126,7 +126,7 @@ class CardEditableModule extends Module {
   }
 }
 
-// Quill.register("modules/blotFormatter", BlotFormatter);
+Quill.register("modules/blotFormatter", BlotFormatter);
 Quill.register(
   {
     // Other formats or modules
@@ -165,7 +165,7 @@ export class ArticleComponent {
     //   ["clean"], // remove formatting button
     //   ["link", "image", "video"], // link and image, video
     // ],
-    // blotFormatter: {}
+    blotFormatter: {},
     cardEditable: true,
   };
 
