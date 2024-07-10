@@ -152,18 +152,20 @@ export class DialogDownloadReportComponent {
           const userRef = this.userService.getUserRefById(user.uid);
           // Obtener cursos activos por usuario
           const coursesObservable = this.courseService.getActiveCoursesByStudentDateFiltered$(userRef,fechaInicio,fechaFin).pipe(take(1));
+          const inactiveCoursesObservable = this.courseService.getInactiveCoursesByStudentDateFiltered$(userRef,fechaInicio,fechaFin).pipe(take(1));
           // Obtener clases asociadas al usuario, independientemente de los cursos
           const classesObservable = this.courseService.getClassesByStudentDatefilterd$(userRef,fechaInicio,fechaFin).pipe(take(1));
 
           const allCoursesObservable = this.courseService.getActiveCoursesByStudent(userRef)
+          // const allCoursesObservable = this.courseService.getCoursesByStudent(userRef) // capo active
 
           const certificatesObservable = this.courseService.getCertificatestDatefilterd$(userRef,fechaInicio,fechaFin).pipe(take(1))
       
-          return combineLatest([coursesObservable, classesObservable,certificatesObservable,allCoursesObservable]).pipe(
-            map(([courses, classes,certificados,allCourses]) => {
+          return combineLatest([coursesObservable, inactiveCoursesObservable,classesObservable,certificatesObservable,allCoursesObservable]).pipe(
+            map(([courses, inactiveCourses,classes,certificados,allCourses]) => {
               // Aquí tienes un objeto que incluye tanto los cursos como las clases asociadas a ese usuario
               // Cursos y clases están en sus propios objetos y no anidadas
-              return { user, courses, classes,certificados,allCourses };
+              return { user, courses, inactiveCourses,classes,certificados,allCourses };
             })
           );
         });
@@ -171,7 +173,7 @@ export class DialogDownloadReportComponent {
         return combineLatest(userCourseObservables).pipe(take(1));
         })).subscribe(response => {
         console.log('datos reporte',response)
-        const users: User[] = response.map(({user, courses,classes,certificados,allCourses}) => {
+        const users: User[] = response.map(({user, courses,inactiveCourses,classes,certificados,allCourses}) => {
           const profile = this.profiles.find(profile => {
             if(user.profile) {
               return profile.id === user.profile.id
@@ -188,6 +190,7 @@ export class DialogDownloadReportComponent {
           let hoursAllCourses = 0
           let coursesUser = [];
           let allcoursesUser = [];
+          let inactivecoursesUser = [];
           let classesUser= []
           courses.forEach(course => {
             hours += (course?.progressTime ? course.progressTime : 0)/60
@@ -195,7 +198,7 @@ export class DialogDownloadReportComponent {
             let courseIn = {...courseJson,progress:course}
             courseIn.completed = course.progress >= 100? true : false
             coursesUser.push(courseIn)
-            targetHours += (courseJson.duracion/60)
+            targetHours += (course.courseTime? course.courseTime :  courseJson.duracion) / 60;
           })
 
           allCourses.forEach(course => {
@@ -204,7 +207,14 @@ export class DialogDownloadReportComponent {
             let courseIn = {...courseJson,progress:course}
             courseIn.completed = course.progress >= 100? true : false
             allcoursesUser.push(courseIn)            
-            targetHoursAllCourses += (courseJson.duracion/60)
+            targetHoursAllCourses += (course.courseTime? course.courseTime :  courseJson.duracion) / 60;
+          })
+
+          inactiveCourses.forEach(course => {
+            const courseJson = this.courses.find(item => item.id === course.courseRef.id)
+            let courseIn = {...courseJson,progress:course}
+            courseIn.completed = course.progress >= 100? true : false
+            inactivecoursesUser.push(courseIn)            
           })
 
           classes.forEach(clase => {
@@ -232,7 +242,8 @@ export class DialogDownloadReportComponent {
             courses:coursesUser,
             clases:classesUser,
             certificados:certificados,
-            allCourses:allcoursesUser
+            allCourses:allcoursesUser,
+            inactivecourses:inactivecoursesUser,
           }
         })
         this.users = users; // Assuming the data is in 'items'
@@ -582,8 +593,8 @@ export class DialogDownloadReportComponent {
     currentLine += this.pdf.getLineHeight()/2 + 5
     this.pdf.line(this.horizontalMargin, currentLine, this.formattedPageWidth, currentLine)
     // Student info
-    const studyPlanInsidePeriod = student.courses
-
+    let studyPlanInsidePeriod = student.courses
+    studyPlanInsidePeriod = studyPlanInsidePeriod.concat(student.inactivecourses)
 
     let clases = this.getAllClasses([student])
 
@@ -623,10 +634,10 @@ export class DialogDownloadReportComponent {
       "Calificación promedio"
     ]   
     const values = [
-      student.allCourses.filter(x=>x.completed).length,
+      student.allCourses.filter(x=>x.completed).length + student.inactivecourses.filter(x=>x.completed).length,
       coursesRetarded.length,
-      student.allCourses.filter(x=>!x.completed && x.progress.progress>0).length,
-      student.allCourses.length,
+      student.allCourses.filter(x=>!x.completed && x.progress.progress>0).length + student.inactivecourses.filter(x=>!x.completed && x.progress.progress>0).length,
+      student.allCourses.length + student.inactivecourses.length,
       this.getTotalHours([student]),
       promedioTiempo?.valor? promedioTiempo?.valor : 0,
       student.certificados.length,
@@ -730,7 +741,7 @@ export class DialogDownloadReportComponent {
         course.titulo, 
         (course.duracion/60).toFixed(2), 
         `${course.progress.progress.toFixed(0)} %`, 
-        this.timestampToDateFormat(this.obtenerUltimoDiaDelMes(course.progress.dateEndPlan.seconds)),
+        course.progress?.dateEndPlan?.seconds? this.timestampToDateFormat(this.obtenerUltimoDiaDelMes(course.progress.dateEndPlan.seconds)): 'Extracurricular',
         course.progress?.dateEnd?this.timestampToDateFormat(course.progress.dateEnd.seconds*1000):'NA', 
         this.getStatus(course), 
         course.progress.finalScore>=100 ? 100 : course.progress.finalScore
@@ -1170,6 +1181,7 @@ export class DialogDownloadReportComponent {
     let allCourses = []
     usersData.forEach(user => {
       allCourses = allCourses.concat(user.courses);
+      allCourses = allCourses.concat(user.inactivecoursesUser);
     });
     return allCourses
   }

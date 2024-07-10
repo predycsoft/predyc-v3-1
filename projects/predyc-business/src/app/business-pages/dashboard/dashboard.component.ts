@@ -1993,8 +1993,10 @@ export class DashboardComponent {
               let courseIn = { ...courseJson, progress: course };
               courseIn.completed = course.progress >= 100 ? true : false;
               coursesUser.push(courseIn);
-              targetHours += courseJson.duracion / 60;
-              course.courseTime = courseJson.duracion
+              targetHours += (course.courseTime? course.courseTime :  courseJson.duracion) / 60;
+              if(!course.courseTime){
+                course.courseTime = courseJson.duracion
+              }
             });
 
             allCourses.forEach((course) => {
@@ -2006,7 +2008,7 @@ export class DashboardComponent {
               let courseIn = { ...courseJson, progress: course };
               courseIn.completed = course.progress >= 100 ? true : false;
               allcoursesUser.push(courseIn);
-              targetHoursAllCourses += courseJson.duracion / 60;
+              targetHoursAllCourses += (course.courseTime? course.courseTime :  courseJson.duracion) / 60;
             });
 
             classes.forEach((clase) => {
@@ -2054,9 +2056,7 @@ export class DashboardComponent {
               allCourses: allcoursesUser,
               allsubscriptions: allsubscriptions,
               completacion: targetHours ? (hours * 100) / targetHours : "",
-              completacionAll: targetHoursAllCourses
-                ? (hoursAllCourses * 100) / targetHoursAllCourses
-                : "",
+              completacionAll: targetHoursAllCourses ? (hoursAllCourses * 100) / targetHoursAllCourses : "",
             };
           }
         );
