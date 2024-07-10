@@ -1,4 +1,4 @@
-import { Component, ViewChild } from "@angular/core";
+import { Component, Input, ViewChild } from "@angular/core";
 import { DocumentReference } from "@angular/fire/compat/firestore";
 import { AngularFireStorage } from "@angular/fire/compat/storage";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
@@ -10,8 +10,8 @@ import { AlertsService } from "projects/predyc-business/src/shared/services/aler
 import { ArticleService } from "projects/predyc-business/src/shared/services/article.service";
 import { AuthorService } from "projects/predyc-business/src/shared/services/author.service";
 import { IconService } from "projects/predyc-business/src/shared/services/icon.service";
-import { ArticleJson, ArticleTagJson } from "projects/shared/models/article.model";
-import { AuthorJson } from "projects/shared/models/author.model";
+import { ArticleJson, ArticleTag, ArticleTagJson } from "projects/shared/models/article.model";
+import { Author, AuthorJson } from "projects/shared/models/author.model";
 import { Subscription, combineLatest, finalize, firstValueFrom } from "rxjs";
 import { firestoreTimestampToNumberTimestamp } from "shared";
 import Swal from "sweetalert2";
@@ -37,10 +37,14 @@ export class ArticlesListComponent {
     private alertService: AlertsService,
   ) {}
 
+  @Input() articles: ArticleJson[]
+  @Input() authors: Author[]
+  @Input() tags: ArticleTag[]
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   displayedColumns: string[] = ["title", "owner", "tags", "updatedAt", "actions"];
-  pageSize: number = 5;
+  pageSize: number = 2;
   totalLength: number;
 
   queryParamsSubscription: Subscription;
@@ -50,40 +54,38 @@ export class ArticlesListComponent {
 
   createTagModal 
 
+  queryParamsPage:number
+
   ngOnInit() {
     this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe((params) => {
-      const page = Number(params["page"]) || 1;
-      this.performSearch(page);
+      this.queryParamsPage = Number(params["page"]) || 1;
+      if (this.articles && this.authors && this.tags) {
+        this.performSearch(this.articles, this.authors, this.tags, this.queryParamsPage);
+      }
     });
   }
 
-  performSearch(page: number) {
-    this.articleServiceSubscription = combineLatest(
-      [
-        this.articleService.getArticles$(), 
-        this.authorService.getAuthors$(),
-        this.articleService.getAllArticleTags$(),
-      ]
-    ).subscribe(([articles, authors, tags]) => {
-      // console.log("articles", articles);
+  ngOnChanges() {
+    if (this.articles && this.authors && this.tags) this.performSearch(this.articles, this.authors, this.tags, this.queryParamsPage);
+  }
 
-      const dataToShow: ArticleWithExtraData[] = articles.map(article => {
-        const author = authors.find( x => x.id === article.authorRef.id)
-        const tagsData = this.getMatchingTags(article.tagsRef, tags)
-        const tagsNames = tagsData.map(x => x.name)
-        return {
-          ...article,
-          updatedAt: article.updatedAt ? firestoreTimestampToNumberTimestamp(article.updatedAt) : null,
-          authorName: author.name,
-          tagsNames
-        }
-      })
-      this.totalLength = dataToShow.length;
-      const startIndex = (page - 1) * this.pageSize;
-      const endIndex = startIndex + this.pageSize;
-      this.dataSource.data = dataToShow.slice(startIndex, endIndex);
-      this.paginator.pageIndex = page - 1;
+  performSearch(articles: ArticleJson[], authors: Author[], tags: ArticleTag[], page: number) {
+    const dataToShow: ArticleWithExtraData[] = articles.map(article => {
+      const author = authors.find(x => x.id === article.authorRef.id);
+      const tagsData = this.getMatchingTags(article.tagsRef, tags);
+      const tagsNames = tagsData.map(x => x.name);
+      return {
+        ...article,
+        updatedAt: article.updatedAt ? firestoreTimestampToNumberTimestamp(article.updatedAt) : null,
+        authorName: author.name,
+        tagsNames
+      };
     });
+    this.totalLength = dataToShow.length;
+    const startIndex = (page - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.dataSource.data = dataToShow.slice(startIndex, endIndex);
+    this.paginator.pageIndex = page - 1;
   }
 
   getMatchingTags(articleTagsRef: DocumentReference[], allTags: ArticleTagJson[]) {
