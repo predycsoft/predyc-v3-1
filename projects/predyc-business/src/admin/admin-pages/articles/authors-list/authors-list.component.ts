@@ -147,11 +147,30 @@ export class AuthorsListComponent {
       });
       return;
     }
-    this.selectedFile = event.target.files[0];
+    
+    const file = event.target.files[0];
     const reader = new FileReader();
-    reader.readAsDataURL(this.selectedFile);
+    reader.readAsDataURL(file);
     reader.onload = () => {
-      this.authorForm.get('photoUrl')?.patchValue(reader.result as string);
+      const image = new Image();
+      image.src = reader.result as string;
+      image.onload = () => {
+        const width = image.width;
+        const height = image.height;
+
+        if (width !== height) {
+          Swal.fire({
+            title: "Error!",
+            text: `Debe seleccionar una imagen de dimensiones 1:1`,
+            icon: "warning",
+            confirmButtonColor: "var(--blue-5)",
+          });
+          return;
+        }
+  
+        this.selectedFile = file;
+        this.authorForm.get('photoUrl')?.patchValue(reader.result as string);
+      };
     };
   }
 
