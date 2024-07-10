@@ -374,14 +374,40 @@ export class ArticleComponent {
 
   setImage(event: any): void {
     if (event.target.files && event.target.files.length > 0) {
-      this.selectedFile = event.target.files[0];
+      const file = event.target.files[0];
       const reader = new FileReader();
-      reader.readAsDataURL(this.selectedFile);
+      reader.readAsDataURL(file);
       reader.onload = () => {
-        this.previewImage = reader.result as string;
+        const image = new Image();
+        image.src = reader.result as string;
+        image.onload = () => {
+          const width = image.width;
+          const height = image.height;
+
+          const aspectRatio = width / height;
+          // const ratioRestriction = 6 / 9
+          // const ratioRestriction = 16 / 15 // for 1920px x 1080px
+          const ratioRestriction = 1920 / 1080 //1.7778
+          const tolerance = 0.01
+          console.log("aspectRatio", aspectRatio)
+          console.log("ratioRestriction", ratioRestriction)
+          if (Math.abs(aspectRatio - ratioRestriction) > tolerance) {
+            Swal.fire({
+              title: "Error!",
+              text: `La imagen debe tener una proporción aproximada de 16:15`,
+              icon: "warning",
+              confirmButtonColor: "var(--blue-5)",
+            });
+            return;
+          }
+  
+          this.selectedFile = file;
+          this.previewImage = reader.result as string;
+        };
       };
     }
   }
+  
 
   onCategoryChange(event: any): void {
     const selectedCategory = event.target.value;

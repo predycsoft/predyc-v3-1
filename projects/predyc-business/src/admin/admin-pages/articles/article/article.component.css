@@ -60,3 +60,10 @@
 .margin-left-custom {
   margin-left: calc(60px + 1.5rem) !important;
 }
+
+.imageBanner {
+  width: 40vw;
+  /* height: calc((6/9)*35vw); */
+  height: calc((1080/1920)*40vw);
+  cursor: pointer;
+}
