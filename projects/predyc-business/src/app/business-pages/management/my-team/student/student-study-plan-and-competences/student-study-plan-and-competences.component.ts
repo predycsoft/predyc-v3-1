@@ -668,7 +668,7 @@ export class StudentStudyPlanAndCompetencesComponent {
     // console.log('this.studyPlan', this.coursesData,this.coursesByStudent,this.studyPlan,cursosdataComplete);
 
     cursosdataComplete.forEach((curso) => {
-      horasPlanDeEstudio += curso.duracion;
+      horasPlanDeEstudio += curso.courseDuration? curso.courseDuration:curso.duracion;
       horasCompletadas += curso?.progressTime ? curso?.progressTime : 0;
     });
 

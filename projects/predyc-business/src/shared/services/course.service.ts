@@ -35,11 +35,12 @@ export class CourseService {
   ) {
 
     //this.findAndDeleteNullUserIds()
-    this.findAndLogDuplicates()
+    //this.findAndLogDuplicates()
     this.getCourses();
     //this.removeCheater('q5B5fsOhjcOoMuLUcLg8KfVB13Q2');
     //this.fixCertificates()
     //this.fixCoursesCustomURL()
+    //La última actividad fue hace this.findCoursesWithFinalScoreAndIncompleteProgress()
   }
 
   private coursesSubject = new BehaviorSubject<Curso[]>([]);
@@ -1745,6 +1746,88 @@ export class CourseService {
       console.error("Error deleting null usuarioId certificates: ", error);
     }
   }
+
+  async findCoursesWithFinalScoreAndIncompleteProgress() {
+    try {
+      // Primero, obtener todos los cursos que tienen finalScore
+      const snapshot = await this.afs.collection('coursesByStudent', ref => ref
+        .where('finalScore', '>', 0)
+      ).get().toPromise();
+
+      // Luego, filtrar los cursos que tienen progress < 100 en el cliente
+      const courses = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data() as any
+      })).filter(course => course.progress < 100);
+
+      console.log('Found courses with finalScore and progress < 100:', courses);
+
+      // Buscar certificados para los cursos
+      await this.findCertificatesForCourses(courses);
+
+    } catch (error) {
+      console.error("Error finding courses: ", error);
+    }
+  }
+
+  async findCertificatesForCourses(courses: any[]) {
+    console.log('aqui',courses)
+    const coursesWithCertificates: any[] = [];
+    const coursesWithoutCertificates: any[] = [];
+
+    try {
+      for (const course of courses) {
+        const userId = course.userRef.id;
+        const courseId = course.courseRef.id;
+
+        const snapshot = await this.afs.collection('userCertificate', ref => ref
+          .where('usuarioId', '==', userId)
+          .where('cursoId', '==', courseId)
+        ).get().toPromise();
+
+        const certificates = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data() as any
+        }));
+
+        if (certificates.length > 0) {
+          course.certificates = certificates;
+          coursesWithCertificates.push(course);
+        } else {
+          coursesWithoutCertificates.push(course);
+        }
+      }
+
+      console.log('Courses with certificates:', coursesWithCertificates);
+      console.log('Courses without certificates:', coursesWithoutCertificates);
+
+    } catch (error) {
+      console.error("Error finding certificates: ", error);
+    }
+  }
+
+  async updateCoursesProgress(courses: any[]) {
+    const batch = this.afs.firestore.batch();
+
+    courses.forEach(course => {
+      if (course.progress === 90 && course.dateEnd) {
+        const courseRef = this.afs.collection('coursesByStudent').doc(course.id).ref;
+        batch.update(courseRef, {
+          progress: 100,
+          progressTime: course.courseTime
+        });
+      }
+    });
+
+    try {
+      await batch.commit();
+      console.log('Successfully updated courses');
+    } catch (error) {
+      console.error("Error updating courses: ", error);
+    }
+  }
+
+  
 
   
 

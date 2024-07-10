@@ -1884,9 +1884,6 @@ export class DashboardComponent {
       );
     }
 
-
-    
-
     this.userServiceSubscription = this.userService
       .getUsersReport$(null, null, null, null, fechaInicio, fechaFin)
       .pipe(
@@ -1910,11 +1907,8 @@ export class DashboardComponent {
               const initTestObservable = this.profileService
               .getDiagnosticTestForUser$(user)
               .pipe(take(1));
-            const allCoursesObservable =
-              this.courseService.getActiveCoursesByStudent(userRef);
-            const certificatesObservable = this.courseService
-              .getCertificatestDatefilterd$(userRef, fechaInicio, fechaFin)
-              .pipe(take(1));
+            const allCoursesObservable = this.courseService.getActiveCoursesByStudent(userRef);
+            const certificatesObservable = this.courseService.getCertificatestDatefilterd$(userRef, fechaInicio, fechaFin).pipe(take(1));
             const subscriptionsObservable = this.userService
               .getSubscriptionByStudentDateFiltered$(
                 userRef,
