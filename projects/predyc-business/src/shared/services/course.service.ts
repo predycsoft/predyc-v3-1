@@ -33,6 +33,9 @@ export class CourseService {
     private subscriptionService: SubscriptionService,
     private productService: ProductService
   ) {
+
+    //this.findAndDeleteNullUserIds()
+    this.findAndLogDuplicates()
     this.getCourses();
     //this.removeCheater('q5B5fsOhjcOoMuLUcLg8KfVB13Q2');
     //this.fixCertificates()
@@ -1618,9 +1621,129 @@ export class CourseService {
 
     });
 
+  }
+
+  async findAndLogDuplicates() {
+    console.log('findAndLogDuplicates');
+    try {
+      const snapshot = await this.afs.collection('userCertificate').get().toPromise();
+      const certificates: any[] = snapshot.docs.map(doc => {
+        const data = doc.data() as any;
+        data.id = doc.id;
+        return data;
+      });
+
+      const counts = new Map<string, number>();
+      const duplicates: any[] = [];
+
+      certificates.forEach(cert => {
+        if (!cert.cursoId) {
+          return; // Ignorar si cursoId es null
+        }
+        const key = `${cert.cursoId}_${cert.usuarioId}`;
+        if (counts.has(key)) {
+          counts.set(key, counts.get(key) + 1);
+        } else {
+          counts.set(key, 1);
+        }
+      });
+
+      counts.forEach((count, key) => {
+        if (count > 1) {
+          const [cursoId, usuarioId] = key.split('_');
+          const duplicateCerts = certificates.filter(cert => cert.cursoId === cursoId && cert.usuarioId === usuarioId);
+          const userIndex = duplicates.findIndex(dup => dup.usuarioId === usuarioId);
+          if (userIndex === -1) {
+            duplicates.push({
+              usuarioId,
+              cursos: [{
+                cursoId,
+                certificates: duplicateCerts
+              }]
+            });
+          } else {
+            const courseIndex = duplicates[userIndex].cursos.findIndex(curso => curso.cursoId === cursoId);
+            if (courseIndex === -1) {
+              duplicates[userIndex].cursos.push({
+                cursoId,
+                certificates: duplicateCerts
+              });
+            } else {
+              duplicates[userIndex].cursos[courseIndex].certificates.push(...duplicateCerts);
+            }
+          }
+        }
+      });
+
+      console.log('Found duplicates:', duplicates);
+      await this.deleteDuplicateCertificates(duplicates);
+    } catch (error) {
+      console.error("Error finding duplicates: ", error);
+    }
+  }
+
+  async deleteDuplicateCertificates(duplicates: any[]) {
+    try {
+      let deleted = []
+      for (const user of duplicates) {
+        for (const curso of user.cursos) {
+          const sortedCerts = curso.certificates.sort((a: any, b: any) => b.date.seconds - a.date.seconds);
+          const certsToDelete = sortedCerts.slice(1); // Todos menos el más reciente
+
+          for (const cert of certsToDelete) {
+            //await this.afs.collection('userCertificate').doc(cert.id).delete();
+            //console.log(`Deleted certificate: ${cert.id}`);
+            deleted.push(cert)
+          }
+        }
+      }
+      console.log('Duplicate certificates deleted successfully.',deleted);
+    } catch (error) {
+      console.error("Error deleting duplicates: ", error);
+    }
+  }
 
 
+  async findAndLogNullUserIds() {
+    try {
+      const snapshot = await this.afs.collection('userCertificate', ref => ref.where('usuarioId', '==', null)).get().toPromise();
+      const nullUserIdCertificates: any[] = snapshot.docs.map(doc => {
+        const data = doc.data() as any;
+        data.id = doc.id;
+        return data;
+      });
 
+      console.log('Certificates with null usuarioId:', nullUserIdCertificates);
+    } catch (error) {
+      console.error("Error finding null usuarioId certificates: ", error);
+    }
+  }
+
+  async _findAndDeleteNullUserIds() {
+    try {
+      const snapshot = await this.afs.collection('userCertificate', ref => ref.where('usuarioId', '==', null)).get().toPromise();
+      const nullUserIdCertificates = snapshot.docs.map(doc => {
+        const data = doc.data() as any;
+        data.id = doc.id;
+        return data;
+      });
+
+      console.log('Certificates with null usuarioId:', nullUserIdCertificates);
+
+      const batch = this.afs.firestore.batch();
+
+      nullUserIdCertificates.forEach(cert => {
+        const certRef = this.afs.collection('userCertificate').doc(cert.id).ref;
+        batch.delete(certRef);
+        console.log('certificado borrado',certRef)
+      });
+
+      await batch.commit();
+      console.log('certificados borrados')
+      console.log('Deleted certificates with null usuarioId');
+    } catch (error) {
+      console.error("Error deleting null usuarioId certificates: ", error);
+    }
   }
 
   
