@@ -26,6 +26,7 @@ class ImageBlot extends BlockEmbed {
   static tagName = ["figure", "image"];
 
   static create(value) {
+    // console.log("value", value)
     let node = super.create();
     let img = window.document.createElement("img");
     if (value.alt || value.caption) {
@@ -34,6 +35,18 @@ class ImageBlot extends BlockEmbed {
     if (value.src || typeof value === "string") {
       img.setAttribute("src", value.src || value);
     }
+    if (value.width) {
+      // img.style.width = value.width;
+      img.setAttribute("width", value.width);
+    }
+    if (value.height) {
+      // img.style.height = value.height;
+      img.setAttribute("height", value.height);
+    }
+    // if (value["data-align"]) {
+    //   img.setAttribute("data-align", value["data-align"]);
+    //   img.style.textAlign = value["data-align"]; 
+    // }
     node.appendChild(img);
     if (value.caption) {
       let caption = window.document.createElement("figcaption");
@@ -76,12 +89,16 @@ class ImageBlot extends BlockEmbed {
 
   static value(node) {
     let img = node.querySelector("img");
+    // console.log("img", img)
     let figcaption = node.querySelector("figcaption");
     if (!img) return false;
     return {
       alt: img.getAttribute("alt"),
       src: img.getAttribute("src"),
       caption: figcaption ? figcaption.innerText : null,
+      width: img.getAttribute("width"),
+      height: img.getAttribute("height"),
+      // "data-align": img.getAttribute("data-align")
     };
   }
 }
@@ -408,7 +425,6 @@ export class ArticleComponent {
     }
   }
   
-
   onCategoryChange(event: any): void {
     const selectedCategory = event.target.value;
     if (selectedCategory && !this.categories.includes(selectedCategory)) this.categories.push(selectedCategory);
@@ -445,17 +461,16 @@ export class ArticleComponent {
         const newTagsToSave = this.articleTags.filter(x => !x.id)
         const newTagsSaved = await this.articleService.saveArticleTags(newTagsToSave)
         this.articleTags = [...existingTags, ...newTagsSaved]
-        console.log("this.articleTags", this.articleTags)
+        // console.log("this.articleTags", this.articleTags)
         
         const existingPillars = this.articlePillars.filter(x => x.id)
         const newPillarsToSave = this.articlePillars.filter(x => !x.id)
         const newPillarsSaved = await this.categoryService.saveCategories(newPillarsToSave)
         this.articlePillars = [...existingPillars, ...newPillarsSaved]
-        console.log("this.articlePillars", this.articlePillars)
+        // console.log("this.articlePillars", this.articlePillars)
         // Then get the references
         const tagsReferences = this.articleTags.map(x => this.articleService.getArticleTagRefById(x.id))
         const pillarsReferences = this.articlePillars.map(x => this.categoryService.getCategoryRefById(x.id))
-
 
         const dataToSave: ArticleData = {
           authorRef: this.authorService.getAuthorRefById(this.selectedAuthorId),
