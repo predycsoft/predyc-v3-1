@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, Input, ViewChild } from "@angular/core";
 import { DocumentReference } from "@angular/fire/compat/firestore";
 import { AngularFireStorage } from "@angular/fire/compat/storage";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
@@ -33,8 +33,8 @@ export class ArticlesListComponent {
     private router: Router, 
     private activatedRoute: ActivatedRoute, 
     private articleService: ArticleService,
-    private authorService: AuthorService,
     private alertService: AlertsService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   @Input() articles: ArticleJson[]
@@ -44,7 +44,7 @@ export class ArticlesListComponent {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   displayedColumns: string[] = ["title", "owner", "tags", "updatedAt", "actions"];
-  pageSize: number = 2;
+  pageSize: number = 5;
   totalLength: number;
 
   queryParamsSubscription: Subscription;
@@ -56,17 +56,21 @@ export class ArticlesListComponent {
 
   queryParamsPage:number
 
+  ngOnChanges() {
+    if (this.articles && this.authors && this.tags) this.performSearch(this.articles, this.authors, this.tags, this.queryParamsPage);
+  }
+
   ngOnInit() {
+  }
+  
+  ngAfterViewInit() {
     this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe((params) => {
       this.queryParamsPage = Number(params["page"]) || 1;
       if (this.articles && this.authors && this.tags) {
         this.performSearch(this.articles, this.authors, this.tags, this.queryParamsPage);
       }
+      this.cdr.detectChanges(); // Manually trigger change detection
     });
-  }
-
-  ngOnChanges() {
-    if (this.articles && this.authors && this.tags) this.performSearch(this.articles, this.authors, this.tags, this.queryParamsPage);
   }
 
   performSearch(articles: ArticleJson[], authors: Author[], tags: ArticleTag[], page: number) {
@@ -85,7 +89,7 @@ export class ArticlesListComponent {
     const startIndex = (page - 1) * this.pageSize;
     const endIndex = startIndex + this.pageSize;
     this.dataSource.data = dataToShow.slice(startIndex, endIndex);
-    this.paginator.pageIndex = page - 1;
+    if (this.paginator) this.paginator.pageIndex = page - 1; 
   }
 
   getMatchingTags(articleTagsRef: DocumentReference[], allTags: ArticleTagJson[]) {
