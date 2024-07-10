@@ -10,4 +10,6 @@ export interface ArticleData extends ArticleJson {
   templateUrl: "./articles.component.html",
   styleUrls: ["./articles.component.css"],
 })
-export class ArticlesComponent {}
+export class ArticlesComponent {
+  tab = 0
+}

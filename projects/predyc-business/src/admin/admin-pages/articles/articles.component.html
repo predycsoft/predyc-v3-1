@@ -1,6 +1,22 @@
 <div class="mgt20 mgl20 mgr20">
-  <p class="ft600 ft16 gray-10">Artículos</p>
-  <div fxLayout="column" class="mgt03">
-    <app-articles-list class=""></app-articles-list>
+  <div class="fw mgb15" fxLayout="row" fxLayoutAlign=" center">
+    <div fxLayout="row" fxLayoutGap="2.5rem" fxLayoutAlign="center center" class="pdl10 pdr10 pdb05 pdt05 ft14 ft500" (click)="tab = 0" [ngClass]="tab == 0 ? 'selectedTab gray-10' : 'gray-6 tab'">
+      Artículos
+    </div>
+    <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign="center center" class="pdl10 pdr10 pdb05 pdt05 ft14 ft500" (click)="tab = 1" [ngClass]="tab == 1 ? 'selectedTab gray-10' : 'gray-6 tab'">
+      Autores
+    </div>
   </div>
+  <ng-container *ngIf="tab === 0">
+    <p class="ft600 ft16 gray-10">Artículos</p>
+    <div fxLayout="column" class="mgt03">
+      <app-articles-list class=""></app-articles-list>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="tab === 1">
+    <p class="ft600 ft16 gray-10">Autores</p>
+    <div fxLayout="column" class="mgt03">
+      <app-authors-list class=""></app-authors-list>
+    </div>
+  </ng-container>
 </div>

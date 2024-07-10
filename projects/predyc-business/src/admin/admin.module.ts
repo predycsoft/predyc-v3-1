@@ -47,6 +47,7 @@ import { ArticlesComponent } from './admin-pages/articles/articles.component';
 import { ArticlesListComponent } from './admin-pages/articles/articles-list/articles-list.component';
 import { ArticleComponent } from './admin-pages/articles/article/article.component';
 import { ArticlePreviewComponent } from './admin-pages/articles/article-preview/article-preview.component';
+import { AuthorsListComponent } from './admin-pages/articles/authors-list/authors-list.component';
 
 
 @NgModule({
@@ -95,7 +96,8 @@ import { ArticlePreviewComponent } from './admin-pages/articles/article-preview/
     ArticlesComponent,
     ArticlesListComponent,
     ArticleComponent,
-    ArticlePreviewComponent
+    ArticlePreviewComponent,
+    AuthorsListComponent
   ],
   imports: [SharedModule, CommonModule, AdminRoutingModule],
 })
