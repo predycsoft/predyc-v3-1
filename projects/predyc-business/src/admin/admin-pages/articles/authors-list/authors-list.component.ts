@@ -1,10 +1,11 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AlertsService } from 'projects/predyc-business/src/shared/services/alerts.service';
 import { AuthorService } from 'projects/predyc-business/src/shared/services/author.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
+import { Author } from 'projects/shared/models/author.model';
 import { firstValueFrom } from 'rxjs';
 import Swal from 'sweetalert2';
 
@@ -22,8 +23,9 @@ export class AuthorsListComponent {
     private modalService: NgbModal,
     private storage: AngularFireStorage,
     private fb: FormBuilder
-
   ){}
+
+  @Input() authors: Author[]
 
   @ViewChild('createAuthorModal') createAuthorModal: any;
   createTagModal
@@ -33,7 +35,7 @@ export class AuthorsListComponent {
   savingAuthor = false
 
   ngOnInit() {
-    this.loadAuthorForm()
+    
   }
 
   loadAuthorForm() {
@@ -47,6 +49,7 @@ export class AuthorsListComponent {
   }
 
   openAuthorModal(modal) {
+    this.loadAuthorForm()
     this.createTagModal = this.modalService.open(modal, {
       ariaLabelledBy: "modal-basic-title",
       centered: true,
