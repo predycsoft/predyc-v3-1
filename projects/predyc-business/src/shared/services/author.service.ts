@@ -17,7 +17,6 @@ export class AuthorService {
   }
 
   getAuthorById$(authorId: string): Observable<Author> {
-    console.log("authorId", authorId)
     return this.afs.collection<Author>(Author.collection).doc(authorId).valueChanges()
   }
 
@@ -26,8 +25,15 @@ export class AuthorService {
   }
 
   async saveAuthor(authorData: AuthorJson): Promise<void> {
-    const authorId = (this.afs.collection(Author.collection).doc().ref).id
-    authorData.id = authorId
+    let authorId = authorData.id
+    if (!authorId) {
+      authorId = (this.afs.collection(Author.collection).doc().ref).id
+      authorData.id = authorId
+    }
     return await this.afs.collection(Author.collection).doc(authorId).set(authorData)
+  }
+
+  async deleteAuthorById(authorId: string): Promise<void> {
+    return await this.afs.collection(Author.collection).doc(authorId).delete()
   }
 }
