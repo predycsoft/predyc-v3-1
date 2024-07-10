@@ -539,18 +539,29 @@ export class StudentListComponent {
         cursosPlan.forEach(course => {
           hours += course?.progressTime ? course.progressTime : 0;
           const courseJson = this.courses.find(item => item.id === course.courseRef.id);
-          if (courseJson) {
-            targetHours += courseJson.duracion / 60;
-            course.courseTime = courseJson.duracion
+          if(!course.courseTime){
+            if (courseJson) {
+              targetHours += courseJson.duracion / 60;
+              course.courseTime = courseJson.duracion
+            }
           }
+          else{
+            targetHours += course.courseTime / 60;
+          }
+
         });
 
         coursesExtra.forEach(course => {
           extraHours += course?.progressTime ? course.progressTime : 0;
           const courseJson = this.courses.find(item => item.id === course.courseRef.id);
-          if (courseJson) {
-            extraTargetHours += courseJson.duracion / 60;
-            course.courseTime = courseJson.duracion
+          if(!course.courseTime){
+            if (courseJson) {
+              extraTargetHours += courseJson.duracion / 60;
+              course.courseTime = courseJson.duracion
+            } 
+          }
+          else{
+            extraTargetHours += course.courseTime / 60;
           }
         });
 

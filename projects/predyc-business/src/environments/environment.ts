@@ -10,7 +10,7 @@ export const environment = {
     appId: "1:303790869910:web:0bf38e4746d8cbdc05e1b7",
     measurementId: "G-K58Y5S7FC9",
   },
-  useEmulators: true,
+  useEmulators: false,
   vimeoAccessToken: "73f2eb055ec905e9a48175cd3c87b6af",
   openAiApiKey: "sk-proj-6eQUv66PrqRzzHUhwGnMT3BlbkFJKPB0pXRqnNS720PUgLTd",
   predycUrl: "http://localhost:4201",
