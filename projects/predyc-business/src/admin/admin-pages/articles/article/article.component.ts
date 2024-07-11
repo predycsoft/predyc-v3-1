@@ -17,6 +17,8 @@ import { Article, ArticleTagJson } from "projects/shared/models/article.model";
 import { DocumentReference } from "@angular/fire/compat/firestore";
 import { CategoryService } from "projects/predyc-business/src/shared/services/category.service";
 import { CategoryJson } from "projects/shared/models/category.model";
+import ResizeAction from 'quill-blot-formatter/dist/actions/ResizeAction';
+import ImageSpec from 'quill-blot-formatter/dist/specs/ImageSpec';
 
 const Module = Quill.import("core/module");
 const BlockEmbed = Quill.import("blots/block/embed");
@@ -34,25 +36,19 @@ class ImageBlot extends BlockEmbed {
     }
     if (value.src || typeof value === "string") {
       img.setAttribute("src", value.src || value);
+      if (value.src) img.style.display = "block"; img.style.margin = "auto"; // center the images
     }
     if (value.width) {
-      // img.style.width = value.width;
       img.setAttribute("width", value.width);
     }
     if (value.height) {
-      // img.style.height = value.height;
       img.setAttribute("height", value.height);
     }
-    if (value["data-align"]) {
-      img.setAttribute("data-align", value["data-align"]);
-      if (value["data-align"] != "center") img.style.float = value["data-align"];
-      else img.style.display = "block"; img.style.margin = "auto";
-    }
-    // console.log("img en create", img)
     node.appendChild(img);
     if (value.caption) {
       let caption = window.document.createElement("figcaption");
       caption.innerHTML = value.caption;
+      caption.style.textAlign = "center";
       node.appendChild(caption);
     }
     node.className = "ql-card-editable ql-card-figure";
@@ -94,13 +90,16 @@ class ImageBlot extends BlockEmbed {
     // console.log("img", img)
     let figcaption = node.querySelector("figcaption");
     if (!img) return false;
+
+    img.style.display = "block"; img.style.margin = "auto"; // center the images
+    if (figcaption) figcaption.style.textAlign = "center" // center the captions
+
     return {
       alt: img.getAttribute("alt"),
       src: img.getAttribute("src"),
       caption: figcaption ? figcaption.innerText : null,
       width: img.getAttribute("width"),
       height: img.getAttribute("height"),
-      "data-align": img.getAttribute("data-align")
     };
   }
 }
@@ -145,7 +144,13 @@ class CardEditableModule extends Module {
   }
 }
 
-Quill.register("modules/blotFormatter", BlotFormatter);
+class CustomImageSpec extends ImageSpec {
+  getActions() {
+    return [ResizeAction]; // Only allow resize (exclude align)
+  }
+}
+
+Quill.register("modules/blotFormatter", BlotFormatter); //
 Quill.register(
   {
     // Other formats or modules
@@ -184,7 +189,14 @@ export class ArticleComponent {
     //   ["clean"], // remove formatting button
     //   ["link", "image", "video"], // link and image, video
     // ],
-    blotFormatter: {},
+    blotFormatter: {
+      specs: [CustomImageSpec],
+      // overlay: {
+      //   style: {
+      //     border: '2px solid red',
+      //   },
+      // },
+    },
     cardEditable: true,
   };
 
@@ -256,7 +268,7 @@ export class ArticleComponent {
     this.editor = editor;
     if (this.articleId) this.loadArticle(this.articleId);
   }
-  
+
   loadArticle(articleId: string) {
     try {
       this.articleSubscription = this.articleService.getArticleWithDataById$(articleId).pipe(
