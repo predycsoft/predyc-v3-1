@@ -250,9 +250,13 @@ export class ArticleComponent {
       this.authors = authors
     })
 
-    if (this.articleId) this.loadArticle(this.articleId);
   }
 
+  onEditorCreated(editor) {
+    this.editor = editor;
+    if (this.articleId) this.loadArticle(this.articleId);
+  }
+  
   loadArticle(articleId: string) {
     try {
       this.articleSubscription = this.articleService.getArticleWithDataById$(articleId).pipe(
@@ -288,11 +292,6 @@ export class ArticleComponent {
       console.error("Error fetching article:", error);
       this.alertService.errorAlert("Error fetching article");
     }
-  }
-
-  onEditorCreated(editor) {
-    this.editor = editor;
-    // console.log("this.editor", this.editor);
   }
 
   _filterTags(value: string | ArticleTagJson): ArticleTagJson[] {
