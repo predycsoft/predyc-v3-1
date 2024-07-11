@@ -5,7 +5,8 @@
             <p class="ft600 ft16 gray-10">
                 Lista de Cursos
             </p>
-            <button *ngIf="(user.isSystemUser || product && product.accesses.enableCreateParticularCourses)"
+            <div fxLayout="row"  fxLayoutGap="1rem">
+                <button *ngIf="(user.isSystemUser || product && product.accesses.enableCreateParticularCourses)"
                 fxLayout="row"
                 fxLayoutGap="0.625"
                 fxLayoutAlign="center center"
@@ -14,7 +15,19 @@
                 routerLink="/management/create-course/create/new">
                 <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="">
                 Agregar curso
-            </button>
+                </button>
+                    <button *ngIf="courses.length>0"
+                    (click)="downloadPDFAllCourse()"
+                    fxLayout="row"
+                    fxLayoutGap="0.625"
+                    fxLayoutAlign="center center"
+                    class="blueButton mgt05"
+                    style="border-radius: 24px !important;">
+                    <img [src]="icon.download" class="h16px pdr05 makeWhite" alt="">
+                    Descargar catálogo
+                </button>
+            </div>
+
             <!-- <button (click)="fixClassesinstructors()">Temporal</button> -->
         </div>
 
@@ -104,12 +117,15 @@
                             <div  fxLayout="row" fxLayoutAlign="space-between center" >
                                 <div class="gray-10 ft14 ft500 mgr08">{{selectedCourse.titulo }}</div>
                                 <div *ngIf="(user.isSystemUser || selectedCourse.enterpriseRef?.id == enterpriseRef?.id) && selectedCourse.id" 
-                                        routerLink="/management/create-course/edit/{{selectedCourse.id}}" 
                                         fxLayout="row" 
                                         fxLayoutGap=".5rem"  >
-                                        <div class="blueLink mgt05 white cursorPointer ft14 fw mgb10" fxLayoutAlign="space-between center">
+                                        <div  routerLink="/management/create-course/edit/{{selectedCourse.id}}"  class="blueLink mgt05 white cursorPointer ft14 fw mgb10" fxLayoutAlign="space-between center">
                                             <!-- <img [src]="icon.edit" class="makeWhite h16px mgr08" alt=""> -->
                                             Editar 
+                                        </div>
+                                        <div (click)="downloadPDFCourse()" class="blueLink mgt05 white cursorPointer ft14 fw mgb10" fxLayoutAlign="space-between center">
+                                            <!-- <img [src]="icon.edit" class="makeWhite h16px mgr08" alt=""> -->
+                                            PDF 
                                         </div>
                                 </div>
 

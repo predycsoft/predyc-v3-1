@@ -1365,7 +1365,7 @@ export class CourseService {
           query = query.where("dateStart", ">=", dateIni);
         }
         if (dateEnd) {
-          query = query.where("dateEnd", "<=", dateEnd);
+          query = query.where("dateStart", "<=", dateEnd);
         }
         return query;
       })

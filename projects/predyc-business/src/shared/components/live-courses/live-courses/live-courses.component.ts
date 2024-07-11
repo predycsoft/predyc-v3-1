@@ -215,7 +215,7 @@ export class LiveCoursesComponent {
     let displayedCourses = categoryCourses;
     if (this.searchValue) {
       displayedCourses = categoryCourses.filter((x) => x.titulo.toLocaleLowerCase().includes(this.searchValue.toLocaleLowerCase()));
-      if (displayedCourses.length > 0) {
+      if (displayedCourses?.length > 0) {
         // console.log('search',displayedCourses);
         let categoriesCourse = displayedCourses[0].categories;
         let categoryIds = [];

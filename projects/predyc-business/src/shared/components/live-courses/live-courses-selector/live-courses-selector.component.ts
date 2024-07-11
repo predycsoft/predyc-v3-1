@@ -79,7 +79,7 @@ export class LiveCoursesSelectorComponent {
     let displayedCourses = categoryCourses;
     if (this.searchValue && this.searchValue.length > 0) {
       displayedCourses = categoryCourses.filter((x) => x.title.toLocaleLowerCase().includes(this.searchValue.toLocaleLowerCase()));
-      if (displayedCourses.length > 0) {
+      if (displayedCourses?.length > 0) {
         let categoriesCourse = displayedCourses[0].categories;
         let categoryIds = [];
         categoriesCourse.forEach((skillRef) => {
