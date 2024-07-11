@@ -43,10 +43,12 @@ class ImageBlot extends BlockEmbed {
       // img.style.height = value.height;
       img.setAttribute("height", value.height);
     }
-    // if (value["data-align"]) {
-    //   img.setAttribute("data-align", value["data-align"]);
-    //   img.style.textAlign = value["data-align"]; 
-    // }
+    if (value["data-align"]) {
+      img.setAttribute("data-align", value["data-align"]);
+      if (value["data-align"] != "center") img.style.float = value["data-align"];
+      else img.style.display = "block"; img.style.margin = "auto";
+    }
+    // console.log("img en create", img)
     node.appendChild(img);
     if (value.caption) {
       let caption = window.document.createElement("figcaption");
@@ -98,7 +100,7 @@ class ImageBlot extends BlockEmbed {
       caption: figcaption ? figcaption.innerText : null,
       width: img.getAttribute("width"),
       height: img.getAttribute("height"),
-      // "data-align": img.getAttribute("data-align")
+      "data-align": img.getAttribute("data-align")
     };
   }
 }
@@ -210,7 +212,6 @@ export class ArticleComponent {
   authorSubscription: Subscription
   pillarsSubscription: Subscription
 
-
   selectedFile: File | null = null;
   pastPreviewImage: string | null = null; //To check if the photo has been changed
   previewImage: string | ArrayBuffer | null = null;
@@ -287,6 +288,11 @@ export class ArticleComponent {
       console.error("Error fetching article:", error);
       this.alertService.errorAlert("Error fetching article");
     }
+  }
+
+  onEditorCreated(editor) {
+    this.editor = editor;
+    // console.log("this.editor", this.editor);
   }
 
   _filterTags(value: string | ArticleTagJson): ArticleTagJson[] {
@@ -376,17 +382,6 @@ export class ArticleComponent {
 
   removePillar(pillarIndex: number) {
     this.articlePillars.splice(pillarIndex, 1);
-  }
-
-
-  onEditorCreated(editor) {
-    this.editor = editor;
-    // console.log("this.editor", this.editor);
-  }
-
-  debug() {
-    console.log("format", this.format);
-    console.log("editor", this.editor.getContents());
   }
 
   setImage(event: any): void {
