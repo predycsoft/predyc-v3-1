@@ -95,8 +95,8 @@ export class CourseSelectorComponent {
     //console.log('categoryCourses',categoryCourses)
     let displayedCourses = categoryCourses;
     if (this.searchValue && this.searchValue.length > 0) {
-      displayedCourses = categoryCourses.filter((x) => x.titulo.toLocaleLowerCase().includes(this.searchValue.toLocaleLowerCase()));
-      if (displayedCourses.length > 0) {
+      displayedCourses = categoryCourses?.filter((x) => x.titulo.toLocaleLowerCase().includes(this.searchValue.toLocaleLowerCase()));
+      if (displayedCourses?.length > 0) {
         let categoriesCourse = displayedCourses[0].categories;
         let categoryIds = [];
         categoriesCourse.forEach((skillRef) => {
