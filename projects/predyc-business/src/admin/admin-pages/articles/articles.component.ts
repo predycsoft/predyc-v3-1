@@ -8,6 +8,7 @@ import { combineLatest, Subscription } from "rxjs";
 
 export interface ArticleData extends ArticleJson {
   data: Object[]
+  dataHTML:string
 }
 
 @Component({
