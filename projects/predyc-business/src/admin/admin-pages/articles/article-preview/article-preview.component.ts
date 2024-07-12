@@ -31,24 +31,30 @@ export class ArticlePreviewComponent {
 
 
   ngOnInit() {
-    this.articleSubscription = this.articleService.getArticleWithDataById$(this.articleId).pipe(
-      switchMap((article: ArticleData) => {
-        const tagsIds = article.tagsRef.map(x => x.id)
-        return combineLatest([
-          this.authorService.getAuthorById$(article.authorRef.id),
-          this.articleService.getArticleTagsByIds$(tagsIds)
-        ]).pipe(
-          map(([author, tagsData]) => ({
-            ...article,
-            authorName: author.name,
-            tagsData
-          }))
-        );
-      })
-    ).subscribe(articleWithExtraData => {
-      this.article = articleWithExtraData;
-      // console.log("this.article", this.article)
-    });
+    // this.articleSubscription = this.articleService.getArticleWithDataById$(this.articleId).pipe(
+    //   switchMap((article: ArticleData) => {
+    //     const tagsIds = article.tagsRef.map(x => x.id)
+    //     return combineLatest([
+    //       this.authorService.getAuthorById$(article.authorRef.id),
+    //       this.articleService.getArticleTagsByIds$(tagsIds)
+    //     ]).pipe(
+    //       map(([author, tagsData]) => ({
+    //         ...article,
+    //         authorName: author.name,
+    //         tagsData
+    //       }))
+    //     );
+    //   })
+    // ).subscribe(articleWithExtraData => {
+    //   this.article = articleWithExtraData;
+    //   // console.log("this.article", this.article)
+    // });
+
+    // TEST
+    this.articleSubscription = this.articleService.getArticleById$(this.articleId).subscribe(article => {
+      this.article = article
+    })
+
   }
 
   ngOnDestroy() {

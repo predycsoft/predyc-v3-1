@@ -78,6 +78,10 @@ export class Article {
     }
 }
 
+export interface ArticleWithHtmlContent extends ArticleJson {
+    editorData: string
+}
+
 export interface ArticleSubCollectionData {
     content: Object[]
 }

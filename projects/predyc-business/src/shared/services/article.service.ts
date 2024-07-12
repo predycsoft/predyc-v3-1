@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
-import { Article, ArticleJson, ArticleTag, ArticleTagJson } from 'projects/shared/models/article.model';
+import { Article, ArticleJson, ArticleTag, ArticleTagJson, ArticleWithHtmlContent } from 'projects/shared/models/article.model';
 import { Observable, combineLatest, map, of } from 'rxjs';
 import { ArticleData } from '../../admin/admin-pages/articles/articles.component';
 
@@ -40,6 +40,24 @@ export class ArticleService {
     await this.saveContentChunks(articleId, data);
     return articleId
   }
+
+
+  async saveArticleWithHtmlContent(articleData: ArticleWithHtmlContent): Promise<string> {
+    let articleId: string = articleData.id;
+  
+    if (!articleId) {
+      articleId = this.afs.createId();
+      articleData.id = articleId;
+    }
+
+    await this.afs.collection(Article.collection).doc(articleId).set(articleData)
+    return articleId
+  }
+
+  getArticleById$(articleId): Observable<any> {
+    return this.afs.collection(Article.collection).doc(articleId).valueChanges()
+  }
+
 
   async saveContentChunks(articleId: string, content: Object[]): Promise<void> {
     const articleDocRef = this.afs.collection<ArticleJson>(Article.collection).doc(articleId).ref;
@@ -92,26 +110,6 @@ export class ArticleService {
   
   getArticles$(): Observable<ArticleJson[]> {
     return this.afs.collection<ArticleJson>(Article.collection).valueChanges()
-  }
-
-  getArticleWithDataById$(articleId: string): Observable<ArticleData> {
-    return combineLatest([
-      this.afs.collection(Article.collection).doc(articleId).valueChanges(),
-      this.afs.collection(Article.collection).doc(articleId).collection(Article.subcollectionName).valueChanges()
-    ]).pipe(
-      map(([articleMainData, dataChunks]: [any, any[]]) => {
-        // console.log("dataChunks", dataChunks);
-        const data = []
-        dataChunks.forEach(chunk => {
-          const chunkContent: any[] = chunk.content
-          data.push(...chunkContent)
-        });
-        return {
-          ...articleMainData,
-          data
-        };
-      })
-    );
   }
 
   async deleteArticleById(articleId: string): Promise<void> {
@@ -170,5 +168,25 @@ export class ArticleService {
     const tagObservables = tagsIds.map(tagId => this.afs.collection<ArticleTagJson>(ArticleTag.collection).doc(tagId).valueChanges());
     return combineLatest(tagObservables)
   }
-  
+
+  // Old methods
+  getArticleWithDataById$(articleId: string): Observable<ArticleData> {
+    return combineLatest([
+      this.afs.collection(Article.collection).doc(articleId).valueChanges(),
+      this.afs.collection(Article.collection).doc(articleId).collection(Article.subcollectionName).valueChanges()
+    ]).pipe(
+      map(([articleMainData, dataChunks]: [any, any[]]) => {
+        // console.log("dataChunks", dataChunks);
+        const data = []
+        dataChunks.forEach(chunk => {
+          const chunkContent: any[] = chunk.content
+          data.push(...chunkContent)
+        });
+        return {
+          ...articleMainData,
+          data
+        };
+      })
+    );
+  }
 }

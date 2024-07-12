@@ -2,8 +2,8 @@
 <div *ngIf="article" fxLayout="column" fxLayoutAlign="center center" class="mgt10 mgb10">
     <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap=".5rem" class="radius10 shadowLight w-60 pd20" style="background-color: rgba(244, 244, 244, 0.362); ">
         <span class="ft600 ft20"> {{article.title}} </span>
-        <quill-view [content]="article.data" format="object" theme="snow" class="fw"></quill-view>
-        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".75rem" class="">
+        <quill-view [content]="article.data" format="html" theme="snow" class="fw"></quill-view>
+        <!-- <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".75rem" class="">
             <span class="ft600 ft16"> Autor: </span>
             <span class="ft500 ft16"> {{article.authorName | titlecase}} </span>
         </div>
@@ -12,6 +12,6 @@
             <ng-container *ngFor="let tag of article.tagsData">
                 <span class="ft500 ft14"> {{tag.name | titlecase}}, </span>
             </ng-container>
-        </div>
+        </div> -->
     </div>
 </div>

@@ -13,7 +13,7 @@ import { Author } from "projects/shared/models/author.model";
 import { AuthorService } from "projects/predyc-business/src/shared/services/author.service";
 import { AngularFireStorage } from "@angular/fire/compat/storage";
 import { FormControl } from "@angular/forms";
-import { Article, ArticleTagJson } from "projects/shared/models/article.model";
+import { Article, ArticleTagJson, ArticleWithHtmlContent } from "projects/shared/models/article.model";
 import { DocumentReference } from "@angular/fire/compat/firestore";
 import { CategoryService } from "projects/predyc-business/src/shared/services/category.service";
 import { CategoryJson } from "projects/shared/models/category.model";
@@ -171,7 +171,7 @@ export class ArticleComponent {
 
   articleId = this.route.snapshot.paramMap.get("articleId");
 
-  format: "object" | "html" | "text" | "json" = "object";
+  format: "object" | "html" | "text" | "json" = "html";
   modules = {
     // toolbar: [
     //   ["bold", "italic", "underline", "strike"], // toggled buttons
@@ -239,6 +239,13 @@ export class ArticleComponent {
   filteredPillars: Observable<CategoryJson[]>;
   newPillarName: string = '';
 
+  debug() {
+    console.log("format", this.format);
+    if (this.format == "object") console.log("editor object: ", this.editor.getContents());
+    else if (this.format == "html") console.log("editor html: ", this.editor.root.innerHTML);
+  }
+
+
   ngOnInit() {
     this.categoriesOptions = Article.CATEGORY_OPTIONS
 
@@ -293,7 +300,8 @@ export class ArticleComponent {
         this.slug = articleWithTagsAndPillarsData.slug;
         this.previewImage = articleWithTagsAndPillarsData.photoUrl;
         this.pastPreviewImage = articleWithTagsAndPillarsData.photoUrl;
-        this.editor.setContents(articleWithTagsAndPillarsData.data);
+        // this.editor.setContents(articleWithTagsAndPillarsData.data);
+        this.editor.clipboard.dangerouslyPasteHTML(articleWithTagsAndPillarsData.data);
         this.summary = articleWithTagsAndPillarsData.summary;
         this.categories = articleWithTagsAndPillarsData.categories;
         this.articleTags = articleWithTagsAndPillarsData.tags;
@@ -478,11 +486,12 @@ export class ArticleComponent {
         const tagsReferences = this.articleTags.map(x => this.articleService.getArticleTagRefById(x.id))
         const pillarsReferences = this.articlePillars.map(x => this.categoryService.getCategoryRefById(x.id))
 
-        const dataToSave: ArticleData = {
+        const quillsData = this.format === "object" ? this.editor.getContents().ops : this.editor.root.innerHTML
+        const dataToSave: ArticleWithHtmlContent = {
           authorRef: this.authorService.getAuthorRefById(this.selectedAuthorId),
           categories: this.categories,
           pillarsRef: pillarsReferences,
-          data: this.editor.getContents().ops,
+          editorData: quillsData,
           createdAt: this.articleId ? null : new Date(),
           id: this.articleId ? this.articleId : null,
           tagsRef: tagsReferences,
@@ -493,7 +502,8 @@ export class ArticleComponent {
           photoUrl: downloadURL,
         };
         console.log("dataToSave", dataToSave)
-        const articleId = await this.articleService.saveArticle(dataToSave, !!this.articleId);
+        // const articleId = await this.articleService.saveArticle(dataToSave, !!this.articleId);
+        const articleId = await this.articleService.saveArticleWithHtmlContent(dataToSave);
         this.alertService.succesAlert("El artículo se ha guardado exitosamente");
         if (!this.articleId) this.router.navigate([`admin/articles/edit/${articleId}`]);
       } catch (error) {
