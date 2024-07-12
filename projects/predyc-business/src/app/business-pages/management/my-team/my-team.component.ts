@@ -10,7 +10,6 @@ import { Profile } from 'projects/shared/models/profile.model';
 import { CreateUserComponent } from './student/create-user/create-user.component';
 import { User } from 'projects/shared/models/user.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Meta } from '@angular/platform-browser';
 
 
 @Component({
@@ -28,7 +27,6 @@ export class MyTeamComponent {
     private router: Router,
     private userService: UserService,
     private _snackBar: MatSnackBar,
-    private metaService: Meta
 
   ){}
 
@@ -41,9 +39,6 @@ export class MyTeamComponent {
   filter = false
 
   ngOnInit() {
-    // this.metaService.updateTag({ name: 'description', content: 'Descripción detallada de estudiantes' })
-    // this.metaService.updateTag({ name: 'keywords', content: 'students' })
-    // this.metaService.removeTag( "name = 'author'" )
     
     this.profileService.loadProfiles()
     this.profileSubscription = this.profileService.getProfiles$().subscribe(profiles => {

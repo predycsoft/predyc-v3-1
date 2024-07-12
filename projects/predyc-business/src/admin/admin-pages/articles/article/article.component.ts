@@ -239,6 +239,9 @@ export class ArticleComponent {
   filteredPillars: Observable<CategoryJson[]>;
   newPillarName: string = '';
 
+  titleMaxLength = 90
+  summaryMaxLength = 141
+
   ngOnInit() {
     this.categoriesOptions = Article.CATEGORY_OPTIONS
 
@@ -382,7 +385,7 @@ export class ArticleComponent {
       const newPillar: CategoryJson = { 
         name: this.newPillarName, 
         id: null, 
-        enterprise: null //Check this
+        enterprise: null
       };
       this.articlePillars.push(newPillar);
       this.allCategories.push(newPillar);

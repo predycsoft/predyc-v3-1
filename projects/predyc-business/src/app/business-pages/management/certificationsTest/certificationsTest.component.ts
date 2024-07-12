@@ -5,7 +5,6 @@ import * as XLSX from "xlsx-js-style";
 import { DatePipe } from "@angular/common";
 import { Subscription } from 'rxjs';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
-import { Meta } from '@angular/platform-browser';
 
 
 @Component({
@@ -20,7 +19,6 @@ export class CertificationsTestComponent {
     private activityClassesService:ActivityClassesService,
     private datePipe: DatePipe,
     private enterpriseService: EnterpriseService,
-    private metaService: Meta
   ){
 
   }
@@ -33,10 +31,6 @@ export class CertificationsTestComponent {
   enterprise
 
   ngOnInit(): void {
-    // this.metaService.updateTag({ name: 'description', content: 'Descripción detallada de diagnosticos' },)
-    // this.metaService.updateTag({ name: 'keywords', content: 'diagnostic' },)
-    // this.metaService.removeTag( "name = 'author'" )
-
     this.enterpriseSubscription = this.enterpriseService.enterprise$.subscribe(
       async (enterprise) => {
         if (enterprise) {

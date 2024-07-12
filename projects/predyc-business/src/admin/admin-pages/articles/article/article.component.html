@@ -14,7 +14,12 @@
                 <!-- Title -->
                 <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="fw">
                     <span class="w100px">Título:</span>
-                    <input type="text" [(ngModel)]="title" class="ft14 shadow-animation pdl05 pdr05 radius4 borderLight fw" style="text-align: center;" />
+                    <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap=".2rem" class="fw">
+                        <input type="text" [maxlength]="titleMaxLength" [(ngModel)]="title" class="h28px ft14 shadow-animation pdl05 pdr05 radius4 borderLight fw" style="text-align: center;" />
+                        <div class="progress-bar-container fw">
+                            <div class="progress-bar" [style.width.%]="(title.length / titleMaxLength) * 100"></div>
+                        </div>
+                    </div>
                 </div>
                 <!-- Author -->
                 <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="fw">
@@ -26,8 +31,13 @@
                 <!-- Slug -->
                 <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="fw">
                     <span class="w100px">Slug:</span>
-                    <input id="slug" name="slug" [(ngModel)]="slug" #slugCtrl="ngModel" class="ft14 shadow-animation pdl05 pdr05 radius4 borderLight fw" 
-                    required pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$" />
+                    <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap=".2rem" class="fw">
+                        <input id="slug" name="slug" [(ngModel)]="slug" #slugCtrl="ngModel" class="h28px ft14 shadow-animation pdl05 pdr05 radius4 borderLight fw" 
+                        required pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$" />
+                        <!-- <div class="progress-bar-container fw">
+                            <div class="progress-bar" [style.width.%]="(slug.length / 90) * 100"></div>
+                        </div> -->
+                    </div>
                 </div>
                 <div *ngIf="slugCtrl.invalid && slugCtrl.touched">
                     <span style="color: red" *ngIf="slugCtrl.errors?.required">Slug is required.</span>
@@ -121,8 +131,13 @@
         <!-- Summary -->
         <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap=".5rem" class="fw">
             <span class="">Resumen:</span>
-            <textarea class="form-control radius4 fw h60px ft12 borderLight" style="overflow-y: hidden; resize:none; background-color: transparent !important;" 
-            type="text" maxlength="280" [(ngModel)]="summary"></textarea> 
+            <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap=".2rem" class="fw">
+                <textarea class="form-control radius4 fw h60px ft12 borderLight" style="overflow-y: hidden; resize:none; background-color: transparent !important;" 
+                type="text" [maxlength]="summaryMaxLength" [(ngModel)]="summary"></textarea>
+                <div class="progress-bar-container fw">
+                    <div class="progress-bar" [style.width.%]="(summary.length / summaryMaxLength) * 100"></div>
+                </div>
+            </div>
         </div>
         <!-- Photo -->
         <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap=".5rem" class="fw">
