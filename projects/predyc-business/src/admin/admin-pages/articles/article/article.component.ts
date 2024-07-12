@@ -6,7 +6,7 @@ import { ArticleService } from "projects/predyc-business/src/shared/services/art
 import { IconService } from "projects/predyc-business/src/shared/services/icon.service";
 import Quill from "quill";
 import BlotFormatter from "quill-blot-formatter/dist/BlotFormatter";
-import { Observable, Subscription, combineLatest, map, startWith, switchMap } from "rxjs";
+import { Observable, Subscription, combineLatest, firstValueFrom, map, startWith, switchMap } from "rxjs";
 import Swal from "sweetalert2";
 import { ArticleData } from "../articles.component";
 import { Author } from "projects/shared/models/author.model";
@@ -28,9 +28,11 @@ class ImageBlot extends BlockEmbed {
   static tagName = ["figure", "image"];
 
   static create(value) {
-    // console.log("value", value)
+    console.log("value", value)
     let node = super.create();
     let img = window.document.createElement("img");
+
+    
     if (value.alt || value.caption) {
       img.setAttribute("alt", value.alt || value.caption);
     }
@@ -173,34 +175,14 @@ export class ArticleComponent {
 
   format: "object" | "html" | "text" | "json" = "object";
   modules = {
-    // toolbar: [
-    //   ["bold", "italic", "underline", "strike"], // toggled buttons
-    //   ["blockquote", "code-block"],
-    //   [{ header: 1 }, { header: 2 }], // custom button values
-    //   [{ list: "ordered" }, { list: "bullet" }],
-    //   [{ script: "sub" }, { script: "super" }], // superscript/subscript
-    //   [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
-    //   [{ direction: "rtl" }], // text direction
-    //   [{ size: ["small", false, "large", "huge"] }], // custom dropdown
-    //   [{ header: [1, 2, 3, 4, 5, 6, false] }],
-    //   [{ color: [] }, { background: [] }], // dropdown with defaults from theme
-    //   [{ font: [] }],
-    //   [{ align: [] }],
-    //   ["clean"], // remove formatting button
-    //   ["link", "image", "video"], // link and image, video
-    // ],
     blotFormatter: {
       specs: [CustomImageSpec],
-      // overlay: {
-      //   style: {
-      //     border: '2px solid red',
-      //   },
-      // },
     },
-    cardEditable: true,
   };
 
   editor: Quill;
+
+  
 
   createTagModal;
   createPillarModal;
@@ -446,6 +428,7 @@ export class ArticleComponent {
   }
 
   async save() {
+    console.log(this.editor)
     if (!this.checkValidationForm()) this.alertService.errorAlert("Debes llenar todos los campos");
     else {
       Swal.fire({
@@ -481,11 +464,15 @@ export class ArticleComponent {
         const tagsReferences = this.articleTags.map(x => this.articleService.getArticleTagRefById(x.id))
         const pillarsReferences = this.articlePillars.map(x => this.categoryService.getCategoryRefById(x.id))
 
+        const processedData = await this.processImagesInContent(this.editor.getContents().ops);
+        const processedHtml = this.convertDeltaToHtml(processedData);
+
         const dataToSave: ArticleData = {
           authorRef: this.authorService.getAuthorRefById(this.selectedAuthorId),
           categories: this.categories,
           pillarsRef: pillarsReferences,
-          data: this.editor.getContents().ops,
+          data: processedData,
+          dataHTML: processedHtml,
           createdAt: this.articleId ? null : new Date(),
           id: this.articleId ? this.articleId : null,
           tagsRef: tagsReferences,
@@ -495,7 +482,7 @@ export class ArticleComponent {
           updatedAt: new Date(),
           photoUrl: downloadURL,
         };
-        console.log("dataToSave", dataToSave)
+        console.log("dataToSave",dataToSave, processedHtml)
         const articleId = await this.articleService.saveArticle(dataToSave, !!this.articleId);
         this.alertService.succesAlert("El artículo se ha guardado exitosamente");
         if (!this.articleId) this.router.navigate([`admin/articles/edit/${articleId}`]);
@@ -504,6 +491,79 @@ export class ArticleComponent {
       }
     }
   }
+
+  convertDeltaToHtml(delta: any): string {
+    const quill = new Quill(document.createElement('div'));
+    quill.setContents(delta);
+    return quill.root.innerHTML;
+  }
+
+  async urlToBlob(url: string): Promise<Blob> {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    return blob;
+  }
+
+  base64ToBlob(base64: string): Blob {
+    const byteString = atob(base64.split(',')[1]);
+    const mimeString = base64.split(',')[0].split(':')[1].split(';')[0];
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([ab], { type: mimeString });
+  }
+
+async processImagesInContent(content: any[]): Promise<any[]> {
+  const newContent = [];
+  
+  for (const item of content) {
+    console.log('item', item);
+    
+    if (item.insert && item.insert.image) {
+      let blob: Blob;
+      
+      // Es una imagen en base64
+      if (item.insert.image.src.startsWith('data:')) {
+        blob = this.base64ToBlob(item.insert.image.src);
+      } else {
+        // Es una imagen con URL
+        blob = await this.urlToBlob(item.insert.image.src);
+      }
+      
+      const file = new File([blob], `image-${Date.now()}.png`, { type: blob.type });
+      const url = await this.uploadImageArticle(file);
+      
+      // Crear una nueva imagen con la URL subida
+      const newImage = { ...item.insert.image, src: url };
+      newContent.push({ ...item, insert: { image: newImage } });
+    } else {
+      newContent.push(item);
+    }
+  }
+  
+  return newContent;
+}
+
+
+async uploadImageArticle(image: File): Promise<string> {
+  let fileBaseName = image.name.split('.').slice(0, -1).join('.');
+  let fileExtension = image.name.split('.').pop();
+  let articleTitle = this.title || "Temporal";
+  let endName = `${fileBaseName}-${Date.now().toString()}.${fileExtension}`;
+  const filePath = `Articulos/${articleTitle}/${endName}`;
+  const fileRef = this.storage.ref(filePath);
+  const task = this.storage.upload(filePath, image);
+
+  try {
+    await task;
+    return await firstValueFrom(fileRef.getDownloadURL());
+  } catch (error) {
+    console.error("Error uploading image:", error);
+    throw error;
+  }
+}
 
   async uploadImage(): Promise<string> {
     if (!this.selectedFile) {
@@ -526,6 +586,7 @@ export class ArticleComponent {
       throw error;
     }
   }
+
 
   checkValidationForm(): boolean {
     let valid = true;
