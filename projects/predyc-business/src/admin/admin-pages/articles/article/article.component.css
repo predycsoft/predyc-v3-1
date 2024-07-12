@@ -62,8 +62,8 @@
 }
 
 .imageBanner {
-  width: 40vw;
+  width: 35vw;
   /* height: calc((6/9)*35vw); */
-  height: calc((1080/1920)*40vw);
+  height: calc((1080/1920)*35vw);
   cursor: pointer;
 }

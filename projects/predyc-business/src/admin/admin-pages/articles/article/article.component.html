@@ -1,5 +1,5 @@
 <app-navigate-back class="ft600 ft16 gray-10" targetUrl="/admin/articles">Artículos</app-navigate-back>
-<div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="3rem" class="fw pd20">
+<div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="2rem" class="fw pd20">
     <div style="display: flex; flex-direction: row; gap: 20px; margin-top: 20px; justify-content: center;">
         <!-- <button (click)="format = 'html'" class="blueButton">HTML</button>
         <button (click)="format = 'object'" class="blueButton">Object</button>
@@ -9,126 +9,126 @@
         <button (click)="save()" class="blueButton">Save result</button>
     </div>
     <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="1.5rem" class="w-60">
-
-        <!-- Title -->
-        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1.5rem" class="">
-            <span class="w60px">Título:</span>
-            <input type="text" [(ngModel)]="title" class="ft14 shadow-animation pdl05 pdr05 radius4 borderLight"
-                style="text-align: center; width: 32vw;" />
-        </div>
-
-        <!-- Summary -->
-        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1.5rem" class="">
-            <span class="w60px">Resumen:</span>
-            <textarea class="form-control radius4" style="overflow-y: hidden; resize:none; background-color: transparent !important; width: 32vw; height: 100px;" 
-            type="text" maxlength="180" [(ngModel)]="summary" class="ft12 borderLight"></textarea> 
-        </div>
-
-        <!-- Slug -->
-        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1.5rem" class="">
-            <span class="w60px">Slug:</span>
-            <input id="slug" name="slug" [(ngModel)]="slug" #slugCtrl="ngModel" class="ft14 shadow-animation pdl05 pdr05 radius4 borderLight" 
-            required pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$" />
-        </div>
-        <div *ngIf="slugCtrl.invalid && slugCtrl.touched">
-            <span style="color: red" *ngIf="slugCtrl.errors?.required">Slug is required.</span>
-            <span style="color: red" *ngIf="slugCtrl.errors?.pattern">Invalid slug format.</span>
-        </div>
-
-        <!-- Author -->
-        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1.5rem" class="">
-            <span class="w60px">Autor:</span>
-            <select [(ngModel)]="selectedAuthorId" class="ft14 shadow-animation pdl05 pdr05 borderLight cursorPointer" style="text-align: center; width: 23vw;">
-                <option *ngFor="let author of authors" [value]="author.id">{{ author.name }}</option>
-            </select>
-        </div>
-
-        <!-- Categories -->
-        <div fxLayout="column" fxLayoutGap=".5rem">
-            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1.5rem" class="">
-                <span class="w60px">Categorias:</span>
-                <select [(ngModel)]="selectedCategory" (change)="onCategoryChange($event)" class="ft14 shadow-animation pdl05 pdr05 borderLight cursorPointer" style="text-align: center; width: 23vw;">
-                    <option value="" disabled selected>Selecciona las categorias</option>
-                    <option *ngFor="let category of categoriesOptions" [value]="category">{{ category }}</option>
-                </select>
+        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="1.5rem" class="fw">
+            <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="1.5rem" class="w-50">
+                <!-- Title -->
+                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="fw">
+                    <span class="w100px">Título:</span>
+                    <input type="text" [(ngModel)]="title" class="ft14 shadow-animation pdl05 pdr05 radius4 borderLight fw" style="text-align: center;" />
+                </div>
+                <!-- Author -->
+                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="fw">
+                    <span class="w100px">Autor:</span>
+                    <select [(ngModel)]="selectedAuthorId" class="ft14 shadow-animation pdl05 pdr05 borderLight cursorPointer fw" style="text-align: center;">
+                        <option *ngFor="let author of authors" [value]="author.id">{{ author.name }}</option>
+                    </select>
+                </div>
+                <!-- Slug -->
+                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="fw">
+                    <span class="w100px">Slug:</span>
+                    <input id="slug" name="slug" [(ngModel)]="slug" #slugCtrl="ngModel" class="ft14 shadow-animation pdl05 pdr05 radius4 borderLight fw" 
+                    required pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$" />
+                </div>
+                <div *ngIf="slugCtrl.invalid && slugCtrl.touched">
+                    <span style="color: red" *ngIf="slugCtrl.errors?.required">Slug is required.</span>
+                    <span style="color: red" *ngIf="slugCtrl.errors?.pattern">Invalid slug format.</span>
+                </div>
+                <!-- Categories -->
+                <div fxLayout="column" fxLayoutGap=".5rem" class="fw">
+                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="fw">
+                        <span class="w100px">Categorias:</span>
+                        <select [(ngModel)]="selectedCategory" (change)="onCategoryChange($event)" class="ft14 shadow-animation pdl05 pdr05 borderLight cursorPointer fw" style="text-align: center;">
+                            <option value="" disabled selected>Selecciona las categorias</option>
+                            <option *ngFor="let category of categoriesOptions" [value]="category">{{ category }}</option>
+                        </select>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="margin-left-custom">
+                        <div *ngFor="let category of categories; let categoryIndex = index" class="skill-badge-complete ListHover radius10 backGray2 ft12 pdl08 pdr08 gray-8">
+                            <span>{{ category | titlecase }}</span>
+                            <img style="cursor: pointer" (click)="removeCategory(categoryIndex)" [src]="icon.close" class="h16px makeGray" alt="" />
+                        </div>
+                    </div>
+                </div>
+                
             </div>
-            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="margin-left-custom">
-                <div *ngFor="let category of categories; let categoryIndex = index" class="skill-badge-complete ListHover radius10 backGray2 ft12 pdl08 pdr08 gray-8">
-                    <span>{{ category | titlecase }}</span>
-                    <img style="cursor: pointer" (click)="removeCategory(categoryIndex)" [src]="icon.close" class="h16px makeGray" alt="" />
+            <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap=".5rem" class="w-50">
+                <!-- Pillars -->
+                <div fxLayout="column" fxLayoutGap=".5rem" class="fw">
+                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="2.5rem" class="cursorPointer">
+                        <span class="w60px">Pilares:</span>
+                        <form class="fw">
+                            <mat-form-field class="example-full-width fw">
+                                <mat-label>Buscar pilar</mat-label>
+                                <input type="text" class="ft14 fw" placeholder="Seleccione uno" aria-label="Number" matInput #pillarAutoTrigger="matAutocompleteTrigger" 
+                                [formControl]="pillarsForm" [matAutocomplete]="autoPillars"/>
+                                <mat-autocomplete [hideSingleSelectionIndicator]="true" [displayWith]="getOptionTextPillar" #autoPillars="matAutocomplete" class="options">
+                                    <mat-option (click)="changePillar(option)" class="multiline-mat-option ft12 fw" *ngFor="let option of filteredPillars | async" [value]="option">
+                                        <div fxLayout="row" fxLayoutAlign="space-between" class="fw">
+                                            <div fxLayout="col" fxLayoutAlign="center center">{{ option.name | titlecase }}</div>
+                                            <mat-icon class="makeBlue" *ngIf="isPillarSelected(option)">check</mat-icon>
+                                        </div>
+                                    </mat-option>
+                                    <mat-option (click)="createPillar(createPillarModal)" class="multiline-mat-option" value="null">
+                                        <span class="ft13 blueLink">Crear nuevo pilar</span>
+                                    </mat-option>
+                                </mat-autocomplete>
+                            </mat-form-field>
+                        </form>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="margin-left-custom">
+                        <ng-container *ngFor="let pillar of articlePillars; let pillarIndex = index" class="margin-left-custom">
+                            <div class="skill-badge-complete ListHover radius10 backGray2 ft12 pdl08 pdr08 gray-8">
+                                {{ pillar.name | titlecase }}
+                                <img style="cursor: pointer" (click)="removePillar(pillarIndex)" [src]="icon.close" class="h16px makeGray" alt="" />
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+                <!-- Tags -->
+                <div fxLayout="column" fxLayoutGap=".5rem" class="fw">
+                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1.5rem" class="cursorPointer fw">
+                        <span class="w60px">Etiquetas:</span>
+                        <form class="fw">
+                            <mat-form-field class="example-full-width fw">
+                                <mat-label>Buscar etiqueta</mat-label>
+                                <input  type="text" class="ft14 fw" placeholder="Seleccione uno" aria-label="Number" matInput #autoTrigger="matAutocompleteTrigger" 
+                                [formControl]="tagsForm" [matAutocomplete]="autoTags"/>
+                                <mat-autocomplete [hideSingleSelectionIndicator]="true" [displayWith]="getOptionTextTag" #autoTags="matAutocomplete" class="options">
+                                    <mat-option (click)="changeTag(option)" class="multiline-mat-option ft12 fw" *ngFor="let option of filteredTags | async" [value]="option">
+                                        <div fxLayout="row" fxLayoutAlign="space-between" class="fw">
+                                            <div fxLayout="col" fxLayoutAlign="center center">{{ option.name | titlecase }}</div>
+                                            <mat-icon class="makeBlue" *ngIf="isTagSelected(option)">check</mat-icon>
+                                        </div>
+                                    </mat-option>
+                                    <mat-option (click)="createTag(createTagModal)" class="multiline-mat-option" value="null">
+                                        <span class="ft13 blueLink">Crear nueva etiqueta</span>
+                                    </mat-option>
+                                </mat-autocomplete>
+                            </mat-form-field>
+                        </form>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="margin-left-custom">
+                        <ng-container *ngFor="let tag of articleTags; let tagIndex = index" class="margin-left-custom">
+                            <div class="skill-badge-complete ListHover radius10 backGray2 ft12 pdl08 pdr08 gray-8">
+                                {{ tag.name | titlecase }}
+                                <img style="cursor: pointer" (click)="removeTag(tagIndex)" [src]="icon.close" class="h16px makeGray" alt="" />
+                            </div>
+                        </ng-container>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <!-- Pillars -->
-        <div fxLayout="column" fxLayoutGap=".5rem">
-            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="2.5rem" class="cursorPointer">
-                <span class="w60px">Pilares:</span>
-                <form class="fw">
-                    <mat-form-field class="example-full-width fw">
-                        <mat-label>Buscar pilar</mat-label>
-                        <input type="text" class="ft14 fw" placeholder="Seleccione uno" aria-label="Number" matInput #pillarAutoTrigger="matAutocompleteTrigger" 
-                        [formControl]="pillarsForm" [matAutocomplete]="autoPillars"/>
-                        <mat-autocomplete [hideSingleSelectionIndicator]="true" [displayWith]="getOptionTextPillar" #autoPillars="matAutocomplete" class="options">
-                            <mat-option (click)="changePillar(option)" class="multiline-mat-option ft12 fw" *ngFor="let option of filteredPillars | async" [value]="option">
-                                <div fxLayout="row" fxLayoutAlign="space-between" class="fw">
-                                    <div fxLayout="col" fxLayoutAlign="center center">{{ option.name | titlecase }}</div>
-                                    <mat-icon class="makeBlue" *ngIf="isPillarSelected(option)">check</mat-icon>
-                                </div>
-                            </mat-option>
-                            <mat-option (click)="createPillar(createPillarModal)" class="multiline-mat-option" value="null">
-                                <span class="ft13 blueLink">Crear nuevo pilar</span>
-                            </mat-option>
-                        </mat-autocomplete>
-                    </mat-form-field>
-                </form>
-            </div>
-            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="margin-left-custom">
-                <ng-container *ngFor="let pillar of articlePillars; let pillarIndex = index" class="margin-left-custom">
-                    <div class="skill-badge-complete ListHover radius10 backGray2 ft12 pdl08 pdr08 gray-8">
-                        {{ pillar.name | titlecase }}
-                        <img style="cursor: pointer" (click)="removePillar(pillarIndex)" [src]="icon.close" class="h16px makeGray" alt="" />
-                    </div>
-                </ng-container>
-            </div>
+        <!-- Summary -->
+        <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap=".5rem" class="fw">
+            <span class="">Resumen:</span>
+            <textarea class="form-control radius4 fw h60px ft12 borderLight" style="overflow-y: hidden; resize:none; background-color: transparent !important;" 
+            type="text" maxlength="280" [(ngModel)]="summary"></textarea> 
         </div>
-
-        <!-- Tags -->
-        <div fxLayout="column" fxLayoutGap=".5rem">
-            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1.5rem" class="cursorPointer">
-                <span class="w60px">Etiquetas:</span>
-                <form class="fw">
-                    <mat-form-field class="example-full-width fw">
-                        <mat-label>Buscar etiqueta</mat-label>
-                        <input  type="text" class="ft14 fw" placeholder="Seleccione uno" aria-label="Number" matInput #autoTrigger="matAutocompleteTrigger" 
-                        [formControl]="tagsForm" [matAutocomplete]="autoTags"/>
-                        <mat-autocomplete [hideSingleSelectionIndicator]="true" [displayWith]="getOptionTextTag" #autoTags="matAutocomplete" class="options">
-                            <mat-option (click)="changeTag(option)" class="multiline-mat-option ft12 fw" *ngFor="let option of filteredTags | async" [value]="option">
-                                <div fxLayout="row" fxLayoutAlign="space-between" class="fw">
-                                    <div fxLayout="col" fxLayoutAlign="center center">{{ option.name | titlecase }}</div>
-                                    <mat-icon class="makeBlue" *ngIf="isTagSelected(option)">check</mat-icon>
-                                </div>
-                            </mat-option>
-                            <mat-option (click)="createTag(createTagModal)" class="multiline-mat-option" value="null">
-                                <span class="ft13 blueLink">Crear nueva etiqueta</span>
-                            </mat-option>
-                        </mat-autocomplete>
-                    </mat-form-field>
-                </form>
-            </div>
-            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="margin-left-custom">
-                <ng-container *ngFor="let tag of articleTags; let tagIndex = index" class="margin-left-custom">
-                    <div class="skill-badge-complete ListHover radius10 backGray2 ft12 pdl08 pdr08 gray-8">
-                        {{ tag.name | titlecase }}
-                        <img style="cursor: pointer" (click)="removeTag(tagIndex)" [src]="icon.close" class="h16px makeGray" alt="" />
-                    </div>
-                </ng-container>
-            </div>
-        </div>
-
         <!-- Photo -->
-        <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap=".5rem" class="">
-            <span class="w60px">Foto:</span>
+        <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap=".5rem" class="fw">
+            <div fxLayout="row" fxLayoutAlign="start center" class="fw">
+                <span class="">Foto:</span>
+            </div>
             <div fxLayout="column" fxLayoutGap="1rem" fxLayoutAlign="center">
                 <input #authorImage type="file" (change)="setImage($event)" hidden accept="image/jpeg, image/png, image/webp" [src]="selectedFile">
                 <div *ngIf="!previewImage" (click)="authorImage.click()" class="imageBanner radius10 backGray2 shadowLight" fxLayout="row" fxLayoutAlign="center center">
@@ -143,7 +143,6 @@
                 </button> -->
             </div>
         </div>
-
     </div>
     <quill-editor [modules]="modules" [format]="format" (onEditorCreated)="onEditorCreated($event)" class="w-60">
         <div above-quill-editor-toolbar>above</div>
