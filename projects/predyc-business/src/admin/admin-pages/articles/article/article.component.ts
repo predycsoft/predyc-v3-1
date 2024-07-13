@@ -28,7 +28,7 @@ class ImageBlot extends BlockEmbed {
   static tagName = ["figure", "image"];
 
   static create(value) {
-    console.log("value", value)
+    // console.log("value", value)
     let node = super.create();
     let img = window.document.createElement("img");
 
@@ -283,12 +283,29 @@ export class ArticleComponent {
         this.categories = articleWithTagsAndPillarsData.categories;
         this.articleTags = articleWithTagsAndPillarsData.tags;
         this.articlePillars = articleWithTagsAndPillarsData.pillars; 
+        this.originalContent = structuredClone(articleWithTagsAndPillarsData.data)
+        console.log('originalContent',this.originalContent)
       });
   
     } catch (error) {
       console.error("Error fetching article:", error);
       this.alertService.errorAlert("Error fetching article");
     }
+  }
+
+  originalContent
+
+  deleteImages(){
+    this.originalContent.forEach(item => {
+      
+      if (item.insert && item.insert.image && item.insert.image?.src!=null) {
+
+        console.log('delete',item)
+        this.deleteImgStorage(item.insert.image.src)
+
+      }
+      
+    });
   }
 
   _filterTags(value: string | ArticleTagJson): ArticleTagJson[] {
@@ -464,6 +481,8 @@ export class ArticleComponent {
         const tagsReferences = this.articleTags.map(x => this.articleService.getArticleTagRefById(x.id))
         const pillarsReferences = this.articlePillars.map(x => this.categoryService.getCategoryRefById(x.id))
 
+        this.deleteImages();
+
         const processedData = await this.processImagesInContent(this.editor.getContents().ops);
         const processedHtml = this.convertDeltaToHtml(processedData);
 
@@ -482,7 +501,7 @@ export class ArticleComponent {
           updatedAt: new Date(),
           photoUrl: downloadURL,
         };
-        console.log("dataToSave",dataToSave, processedHtml)
+        console.log("dataToSave",dataToSave)
         const articleId = await this.articleService.saveArticle(dataToSave, !!this.articleId);
         this.alertService.succesAlert("El artículo se ha guardado exitosamente");
         if (!this.articleId) this.router.navigate([`admin/articles/edit/${articleId}`]);
@@ -515,20 +534,34 @@ export class ArticleComponent {
     return new Blob([ab], { type: mimeString });
   }
 
+async deleteImgStorage(url){
+  // Eliminar fotos asociadas del Storage
+  console.log('url delete',url)
+  try{
+    const fileRef = this.storage.refFromURL(url);
+    firstValueFrom(fileRef.delete());
+  }
+  catch(error){
+    console.log('deleteImgStorageError',error)
+  }
+
+}
+
 async processImagesInContent(content: any[]): Promise<any[]> {
   const newContent = [];
   
   for (const item of content) {
-    console.log('item', item);
     
-    if (item.insert && item.insert.image) {
+    if (item.insert && item.insert.image && item.insert.image?.src!=null) {
       let blob: Blob;
       
       // Es una imagen en base64
+      console.log('item', item);
       if (item.insert.image.src.startsWith('data:')) {
         blob = this.base64ToBlob(item.insert.image.src);
       } else {
         // Es una imagen con URL
+        await this.deleteImgStorage(item.insert.image.src)
         blob = await this.urlToBlob(item.insert.image.src);
       }
       
@@ -614,7 +647,6 @@ async uploadImageArticle(image: File): Promise<string> {
     if (this.editor.getText().trim().length === 0) {
       valid = false;
     }
-    console.log("valid", valid);
     return valid;
   }
 
