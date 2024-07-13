@@ -296,12 +296,12 @@ export class ArticleComponent {
   originalContent
 
   deleteImages(){
-    this.originalContent.forEach(item => {
+    this.originalContent.forEach(async item => {
       
       if (item.insert && item.insert.image && item.insert.image?.src!=null) {
 
         console.log('delete',item)
-        this.deleteImgStorage(item.insert.image.src)
+        await this.deleteImgStorage(item.insert.image.src)
 
       }
       
@@ -481,10 +481,12 @@ export class ArticleComponent {
         const tagsReferences = this.articleTags.map(x => this.articleService.getArticleTagRefById(x.id))
         const pillarsReferences = this.articlePillars.map(x => this.categoryService.getCategoryRefById(x.id))
 
-        this.deleteImages();
 
         const processedData = await this.processImagesInContent(this.editor.getContents().ops);
         const processedHtml = this.convertDeltaToHtml(processedData);
+
+        this.deleteImages();
+
 
         const dataToSave: ArticleData = {
           authorRef: this.authorService.getAuthorRefById(this.selectedAuthorId),
@@ -539,7 +541,7 @@ async deleteImgStorage(url){
   console.log('url delete',url)
   try{
     const fileRef = this.storage.refFromURL(url);
-    firstValueFrom(fileRef.delete());
+    await firstValueFrom(fileRef.delete());
   }
   catch(error){
     console.log('deleteImgStorageError',error)
@@ -561,7 +563,6 @@ async processImagesInContent(content: any[]): Promise<any[]> {
         blob = this.base64ToBlob(item.insert.image.src);
       } else {
         // Es una imagen con URL
-        await this.deleteImgStorage(item.insert.image.src)
         blob = await this.urlToBlob(item.insert.image.src);
       }
       
