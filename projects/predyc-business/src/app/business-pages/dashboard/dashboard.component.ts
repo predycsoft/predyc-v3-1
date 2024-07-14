@@ -1901,6 +1901,7 @@ export class DashboardComponent {
               )
               .pipe(take(1));
             // Obtener clases asociadas al usuario, independientemente de los cursos
+            const inactiveCoursesObservable = this.courseService.getInactiveCoursesByStudentDateFiltered$(userRef,fechaInicio,fechaFin).pipe(take(1));
             const classesObservable = this.courseService
               .getClassesByStudentDatefilterd$(userRef, fechaInicio, fechaFin)
               .pipe(take(1));
@@ -1918,6 +1919,7 @@ export class DashboardComponent {
               .pipe(take(1));
             return combineLatest([
               coursesObservable,
+              inactiveCoursesObservable,
               classesObservable,
               initTestObservable,
               certificatesObservable,
@@ -1927,6 +1929,7 @@ export class DashboardComponent {
               map(
                 ([
                   courses,
+                  inactiveCourses,
                   classes,
                   initTest,
                   certificados,
@@ -1938,6 +1941,7 @@ export class DashboardComponent {
                   return {
                     user,
                     courses,
+                    inactiveCourses,
                     initTest,
                     classes,
                     certificados,
@@ -1958,6 +1962,7 @@ export class DashboardComponent {
           ({
             user,
             courses,
+            inactiveCourses,
             initTest,
             classes,
             certificados,
@@ -1981,6 +1986,8 @@ export class DashboardComponent {
             let coursesUser = [];
             let allcoursesUser = [];
             let classesUser = [];
+            let inactivecoursesUser = [];
+
 
             console.log('revisarCursosReporte',courses,this.courses)
 
@@ -2010,6 +2017,13 @@ export class DashboardComponent {
               allcoursesUser.push(courseIn);
               targetHoursAllCourses += (course.courseTime? course.courseTime :  courseJson.duracion) / 60;
             });
+
+            inactiveCourses.forEach(course => {
+              const courseJson = this.courses.find(item => item.id === course.courseRef.id)
+              let courseIn = {...courseJson,progress:course}
+              courseIn.completed = course.progress >= 100? true : false
+              inactivecoursesUser.push(courseIn)            
+            })
 
             classes.forEach((clase) => {
               const classJson = this.classes.find(
@@ -2057,6 +2071,7 @@ export class DashboardComponent {
               allsubscriptions: allsubscriptions,
               completacion: targetHours ? (hours * 100) / targetHours : "",
               completacionAll: targetHoursAllCourses ? (hoursAllCourses * 100) / targetHoursAllCourses : "",
+              inactivecourses:inactivecoursesUser,
             };
           }
         );
