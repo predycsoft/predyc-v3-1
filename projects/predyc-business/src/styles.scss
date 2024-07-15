@@ -312,7 +312,22 @@ textarea:focus {
   --oaText2: rgba(255, 255, 255, 1); /* Hover */
   --oaText3: rgba(255, 255, 255, 1); /* Pressed */
   --oaTextD: rgba(255, 255, 255, 1); /* Disabled */
-}
+
+  /* QUILL */
+
+  --black-a90: rgb(0 0 0/.9);
+  --color-text: var(--black-a90);
+
+  --font-weight-regular: 400;
+  --font-weight-bold: 600;
+
+  --line-height-default: 1.25;
+  --line-height-open: 1.5;
+
+  --font-size-small: 1rem;
+  --font-size-medium: 1.1rem;
+  --font-size-large: 1.3rem;
+  --font-size-xlarge: 1.5rem;
 
 /* ------------------------------------------------------------------------ COLORS */
 
@@ -3442,4 +3457,49 @@ span {
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 400px; /* Ajusta esto según el tamaño deseado */
+}
+
+// QUILL
+
+
+.ql-editor p{
+  color: var(--color-text);
+  font-size: var(--font-size-medium);
+  line-height: var(--line-height-open);
+  margin: 1.6rem 2.4rem;
+}
+
+.ql-editor a{
+  font-size: var(--font-size-medium);
+}
+
+.ql-editor li{
+  color: var(--color-text);
+  font-size: var(--font-size-medium) !important;
+  margin: 1rem 2.4rem;
+}
+
+.ql-editor h2{
+  font-size: var(--font-size-xlarge);
+  font-weight: var(--font-weight-bold);
+  margin: 1.6rem 2.4rem;
+  line-height: var(--line-height-default);
+}
+.ql-editor h3{
+    font-size: var(--font-size-large);
+    font-weight: var(--font-weight-bold);
+    margin: 1.6rem 2.4rem;
+    line-height: var(--line-height-default);
+  }
+
+  .ql-editor blockquote{
+    color: var(--color-text);
+    font-size: var(--font-size-small);
+    line-height: var(--line-height-open);
+    margin: 1.1rem 2.4rem;
+
+  }
+
+
+
 }
