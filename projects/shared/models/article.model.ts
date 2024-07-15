@@ -21,7 +21,8 @@ export interface ArticleJson {
 export class Article {
 
     public static collection = 'article'
-    public static subcollectionName = "dataChunks"
+    public static objectSubcollectionName = "dataChunks"
+    public static HTMLSubcollectionName = "dataChunksHTML"
 
     public static CATEGORY_ARTICLE_OPTION = 'Artículo'
     public static CATEGORY_INTERVIEW_OPTION = 'Entrevista'

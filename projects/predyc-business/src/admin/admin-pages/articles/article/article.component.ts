@@ -289,7 +289,7 @@ export class ArticleComponent {
         this.articleTags = articleWithTagsAndPillarsData.tags;
         this.articlePillars = articleWithTagsAndPillarsData.pillars; 
         this.originalContent = structuredClone(articleWithTagsAndPillarsData.data)
-        console.log('originalContent',this.originalContent)
+        // console.log('originalContent',this.originalContent)
       });
   
     } catch (error) {
@@ -302,14 +302,10 @@ export class ArticleComponent {
 
   async deleteImages(){
     this.originalContent.forEach(async item => {
-      
       if (item.insert && item.insert.image && item.insert.image?.src!=null) {
-
-        console.log('delete',item)
+        // console.log('delete',item)
         await this.deleteImgStorage(item.insert.image.src)
-
       }
-      
     });
   }
 
@@ -450,7 +446,7 @@ export class ArticleComponent {
   }
 
   async save() {
-    console.log(this.editor)
+    // console.log(this.editor)
     if (!this.checkValidationForm()) this.alertService.errorAlert("Debes llenar todos los campos");
     else {
       Swal.fire({
@@ -544,7 +540,7 @@ export class ArticleComponent {
 
 async deleteImgStorage(url){
   // Eliminar fotos asociadas del Storage
-  console.log('url delete',url)
+  // console.log('url delete',url)
   try{
     const fileRef = this.storage.refFromURL(url);
     await firstValueFrom(fileRef.delete());
@@ -564,7 +560,7 @@ async processImagesInContent(content: any[]): Promise<any[]> {
       let blob: Blob;
       
       // Es una imagen en base64
-      console.log('item', item);
+      // console.log('item', item);
       if (item.insert.image.src.startsWith('data:')) {
         blob = this.base64ToBlob(item.insert.image.src);
       } else {

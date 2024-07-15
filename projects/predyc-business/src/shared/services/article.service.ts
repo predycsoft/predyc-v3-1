@@ -23,8 +23,8 @@ export class ArticleService {
 
     const articleDocRef = this.afs.collection<ArticleJson>(Article.collection).doc(articleId);
   
-    // Exclude "data" property
-    const { data, ...metadata } = articleData;
+    // Exclude "data" and "dataHTML" properties
+    const { data, dataHTML, ...metadata } = articleData;
   
     // Save rest of data
     if (!isEditMode) await articleDocRef.set(metadata);
@@ -35,33 +35,55 @@ export class ArticleService {
       await articleDocRef.update(dataToUpdate);
 
     }
-  
+
     // Save "data" in subcollection
-    await this.saveContentChunks(articleId, data);
+    await this.saveChunks(articleId, data);
+    // Save "dataHTML" in subcollection
+    await this.saveChunks(articleId, dataHTML);
     return articleId
   }
 
-  async saveContentChunks(articleId: string, content: Object[]): Promise<void> {
+  async saveChunks(articleId: string, content: Object[] | string): Promise<void> {
+    const subcollection = typeof content === 'string' ? Article.HTMLSubcollectionName : Article.objectSubcollectionName
     const articleDocRef = this.afs.collection<ArticleJson>(Article.collection).doc(articleId).ref;
-    const dataChunksCollectionRef = articleDocRef.collection(Article.subcollectionName);
+    const dataChunksCollectionRef = articleDocRef.collection(subcollection);
   
     const contentChunks = [];
-    let currentChunk = [];
-  
-    for (const item of content) {
-      const tempChunk = [...currentChunk, item];
-  
-      if (this.checkDocSize(tempChunk)) {
-        currentChunk = tempChunk;
-      } else {
-        console.log("Exceeds size limit")
-        contentChunks.push(currentChunk);
-        currentChunk = [item];
+
+    if (typeof content !== 'string') {
+      let currentChunk = []; 
+      for (const item of content) {
+        const tempChunk = [...currentChunk, item];
+    
+        if (this.checkDocSize(tempChunk)) {
+          currentChunk = tempChunk;
+        } else {
+          console.log("Exceeds size limit")
+          contentChunks.push(currentChunk);
+          currentChunk = [item];
+        }
       }
-    }
-  
-    if (currentChunk.length > 0) {
-      contentChunks.push(currentChunk);
+      
+      if (currentChunk.length > 0) {
+        contentChunks.push(currentChunk);
+      }
+    } else {
+      let currentChunk = '';
+      for (let i = 0; i < content.length; i++) {
+        const tempChunk = currentChunk + content[i];
+    
+        if (this.checkDocSize(tempChunk)) {
+          currentChunk = tempChunk;
+        } else {
+          console.log("Exceeds size limit");
+          contentChunks.push(currentChunk);
+          currentChunk = content[i];
+        }
+      }
+    
+      if (currentChunk.length > 0) {
+        contentChunks.push(currentChunk);
+      }
     }
     
     const batch = this.afs.firestore.batch();
@@ -79,9 +101,52 @@ export class ArticleService {
     await batch.commit();
   }
 
-  checkDocSize(docData: any[]) {
-    // Convert the document data to a JSON string
-    const docDataJson = JSON.stringify(docData);
+  // async saveHTMLChunks(articleId: string, content: string): Promise<void> {
+  //   const articleDocRef = this.afs.collection<ArticleJson>(Article.collection).doc(articleId).ref;
+  //   const dataChunksCollectionRef = articleDocRef.collection(Article.HTMLSubcollectionName);
+  
+  //   const contentChunks = [];
+  //   let currentChunk = '';
+  
+  //   for (let i = 0; i < content.length; i++) {
+  //     const tempChunk = currentChunk + content[i];
+  
+  //     if (this.checkDocSize(tempChunk)) {
+  //       currentChunk = tempChunk;
+  //     } else {
+  //       console.log("Exceeds size limit");
+  //       contentChunks.push(currentChunk);
+  //       currentChunk = content[i];
+  //     }
+  //   }
+  
+  //   if (currentChunk.length > 0) {
+  //     contentChunks.push(currentChunk);
+  //   }
+  
+  //   const batch = this.afs.firestore.batch();
+  //   // Delete existing docs in the specified subcollection
+  //   const dataChunksQuerySnapshot = await dataChunksCollectionRef.get();
+  //   dataChunksQuerySnapshot.forEach(doc => {
+  //     batch.delete(doc.ref);
+  //   });
+  //   // Save each new chunk in the specified subcollection
+  //   contentChunks.forEach((chunk, index) => {
+  //     const chunkDocRef = dataChunksCollectionRef.doc(`${index}`);
+  //     batch.set(chunkDocRef, { content: chunk });
+  //   });
+  
+  //   await batch.commit();
+  // } 
+  
+  checkDocSize(docData: any[] | string): boolean {
+    let docDataJson: string
+    if (typeof docData !== "string" ) {
+      // Convert the document data to a JSON string
+      docDataJson = JSON.stringify(docData);
+    } else {
+      docDataJson = docData
+    }
 
     // Get the size of the document data in bytes
     const docSizeInBytes = new TextEncoder().encode(docDataJson).length;
@@ -97,39 +162,51 @@ export class ArticleService {
   getArticleWithDataById$(articleId: string): Observable<ArticleData> {
     return combineLatest([
       this.afs.collection(Article.collection).doc(articleId).valueChanges(),
-      this.afs.collection(Article.collection).doc(articleId).collection(Article.subcollectionName).valueChanges()
+      this.afs.collection(Article.collection).doc(articleId).collection(Article.objectSubcollectionName).valueChanges(),
+      this.afs.collection(Article.collection).doc(articleId).collection(Article.HTMLSubcollectionName).valueChanges()
     ]).pipe(
-      map(([articleMainData, dataChunks]: [any, any[]]) => {
-        // console.log("dataChunks", dataChunks);
-        const data = []
+      map(([articleMainData, dataChunks, htmlChunks]: [any, any[], any[]]) => {
+        const data = [];
         dataChunks.forEach(chunk => {
-          const chunkContent: any[] = chunk.content
-          data.push(...chunkContent)
+          const chunkContent: any[] = chunk.content;
+          data.push(...chunkContent);
         });
+        const dataHTML = htmlChunks.map(chunk => chunk.content).join('');
         return {
           ...articleMainData,
-          data
+          data,
+          dataHTML
         };
       })
     );
   }
+  
 
   async deleteArticleById(articleId: string): Promise<void> {
     const articleDocRef = this.afs.collection(Article.collection).doc(articleId);
-    const dataChunksCollectionRef = articleDocRef.collection(Article.subcollectionName);
+    const dataChunksCollectionRef = articleDocRef.collection(Article.objectSubcollectionName);
+    const htmlChunksCollectionRef = articleDocRef.collection(Article.HTMLSubcollectionName);
   
-    // Get all documents in the subcollection
-    const dataChunksQuerySnapshot = await dataChunksCollectionRef.ref.get();
     const batch = this.afs.firestore.batch();
   
+    // Get all documents in the object subcollection
+    const dataChunksQuerySnapshot = await dataChunksCollectionRef.ref.get();
     dataChunksQuerySnapshot.forEach(doc => {
       batch.delete(doc.ref);
     });
   
+    // Get all documents in the HTML subcollection
+    const htmlChunksQuerySnapshot = await htmlChunksCollectionRef.ref.get();
+    htmlChunksQuerySnapshot.forEach(doc => {
+      batch.delete(doc.ref);
+    });
+  
+    // Delete the main article document
     batch.delete(articleDocRef.ref);
   
     await batch.commit();
   }
+  
 
   
   // --------- TAGS
