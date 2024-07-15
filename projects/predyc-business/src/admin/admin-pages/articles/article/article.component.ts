@@ -190,6 +190,7 @@ export class ArticleComponent {
   selectedAuthorId = "";
   articleTags: ArticleTagJson[] = [];
   title = "";
+  titleSEO = "";
   slug = "";
   categories: Array<typeof Article.CATEGORY_ARTICLE_OPTION | typeof Article.CATEGORY_INTERVIEW_OPTION | typeof Article.CATEGORY_SUCCEED_OPTION> = []
   selectedCategory: string = "";
@@ -224,6 +225,7 @@ export class ArticleComponent {
   newPillarName: string = '';
 
   titleMaxLength = 90
+  titleSEOMaxLength = 90
   summaryMaxLength = 141
   metaDescriptionMaxLength = 141
 
@@ -278,6 +280,7 @@ export class ArticleComponent {
       ).subscribe(articleWithTagsAndPillarsData => {
         this.selectedAuthorId = articleWithTagsAndPillarsData.authorRef.id;
         this.title = articleWithTagsAndPillarsData.title;
+        this.titleSEO = articleWithTagsAndPillarsData.titleSEO;
         this.slug = articleWithTagsAndPillarsData.slug;
         this.previewImage = articleWithTagsAndPillarsData.photoUrl;
         this.pastPreviewImage = articleWithTagsAndPillarsData.photoUrl;
@@ -498,6 +501,7 @@ export class ArticleComponent {
           id: this.articleId ? this.articleId : null,
           tagsRef: tagsReferences,
           title: this.title,
+          titleSEO: this.titleSEO,
           summary: this.summary,
           metaDescription: this.metaDescription,
           isDraft: this.isDraft,
@@ -627,6 +631,9 @@ async processImagesInContent(content: any[]): Promise<any[]> {
   checkValidationForm(): boolean {
     let valid = true;
     if (!this.title) {
+      valid = false;
+    }
+    if (!this.titleSEO) {
       valid = false;
     }
     if (!this.summary) {

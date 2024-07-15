@@ -28,7 +28,7 @@
                 <!-- Author -->
                 <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="fw">
                     <span class="w100px">Autor:</span>
-                    <select [(ngModel)]="selectedAuthorId" class="ft14 shadow-animation pdl05 pdr05 borderLight cursorPointer fw" style="text-align: center;">
+                    <select [(ngModel)]="selectedAuthorId" class="ft14 shadow-animation pdl05 pdr05 borderLight cursorPointer fw h28px" style="text-align: center;">
                         <option *ngFor="let author of authors" [value]="author.id">{{ author.name }}</option>
                     </select>
                 </div>
@@ -68,22 +68,15 @@
                 
             </div>
             <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="1rem" class="w-50">
-                <!-- Categories -->
-                <div fxLayout="column" fxLayoutGap=".2rem" class="fw">
-                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="fw">
-                        <span class="w100px">Categorias:</span>
-                        <select [(ngModel)]="selectedCategory" (change)="onCategoryChange($event)" class="ft14 shadow-animation pdl05 pdr05 borderLight cursorPointer fw" style="text-align: center;">
-                            <option value="" disabled selected>Selecciona las categorias</option>
-                            <option *ngFor="let category of categoriesOptions" [value]="category">{{ category }}</option>
-                        </select>
-                    </div>
-                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="margin-left-custom">
-                        <div *ngFor="let category of categories; let categoryIndex = index" class="skill-badge-complete ListHover radius10 backGray2 ft12 pdl08 pdr08 gray-8">
-                            <span>{{ category | titlecase }}</span>
-                            <img style="cursor: pointer" (click)="removeCategory(categoryIndex)" [src]="icon.close" class="h16px makeGray" alt="" />
+                <!-- Title SEO-->
+                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="fw">
+                    <span class="w100px">Título SEO:</span>
+                    <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap=".5rem" class="fw">
+                        <input type="text" [maxlength]="titleSEOMaxLength" [(ngModel)]="titleSEO" class="h32px ft14 shadow-animation pdl05 pdr05 radius4 borderLight fw" style="text-align: center;" />
+                        <div class="progress-bar-container fw">
+                            <div class="progress-bar" [style.width.%]="(titleSEO.length / titleSEOMaxLength) * 100"></div>
                         </div>
                     </div>
-                    <span *ngIf="categories.length === 0" class="ft10 redText">Debes seleccionar por lo menos una categoria</span>
                 </div>
                 <!-- Slug -->
                 <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="fw">
@@ -99,7 +92,7 @@
                 <div *ngIf="slugCtrl.invalid && slugCtrl.touched">
                     <span class="ft10 redText" *ngIf="slugCtrl.errors?.required">Slug is required.</span>
                     <span class="ft10 redText" *ngIf="slugCtrl.errors?.pattern">Invalid slug format.</span>
-                </div>     
+                </div>   
                 <!-- Tags -->
                 <div fxLayout="column" fxLayoutGap=".2rem" class="fw">
                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1.5rem" class="cursorPointer fw">
@@ -133,6 +126,23 @@
                     </div>
                     <span *ngIf="articleTags.length === 0" class="ft10 redText">Debes seleccionar por lo menos una etiqueta</span>
                 </div>
+                <!-- Categories -->
+                <div fxLayout="column" fxLayoutGap=".2rem" class="fw">
+                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="fw">
+                        <span class="w100px">Categorias:</span>
+                        <select [(ngModel)]="selectedCategory" (change)="onCategoryChange($event)" class="ft14 shadow-animation pdl05 pdr05 borderLight cursorPointer fw" style="text-align: center;">
+                            <option value="" disabled selected>Selecciona las categorias</option>
+                            <option *ngFor="let category of categoriesOptions" [value]="category">{{ category }}</option>
+                        </select>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="margin-left-custom">
+                        <div *ngFor="let category of categories; let categoryIndex = index" class="skill-badge-complete ListHover radius10 backGray2 ft12 pdl08 pdr08 gray-8">
+                            <span>{{ category | titlecase }}</span>
+                            <img style="cursor: pointer" (click)="removeCategory(categoryIndex)" [src]="icon.close" class="h16px makeGray" alt="" />
+                        </div>
+                    </div>
+                    <span *ngIf="categories.length === 0" class="ft10 redText">Debes seleccionar por lo menos una categoria</span>
+                </div>  
             </div>
         </div>
         <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="1rem" class="fw">

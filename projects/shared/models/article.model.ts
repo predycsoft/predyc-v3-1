@@ -15,6 +15,7 @@ export interface ArticleJson {
     summary: string
     tagsRef: DocumentReference<ArticleTag>[]
     title: string
+    titleSEO: string
     updatedAt: any
 }
 
@@ -46,6 +47,7 @@ export class Article {
         public summary: string,
         public tagsRef: DocumentReference<ArticleTag>[],
         public title: string,
+        public titleSEO: string,
         public updatedAt: any,
 
     ) {}
@@ -64,6 +66,7 @@ export class Article {
             articleJson.summary,
             articleJson.tagsRef,
             articleJson.title,
+            articleJson.titleSEO,
             articleJson.updatedAt,
         )
     }
@@ -82,6 +85,7 @@ export class Article {
             summary: this.summary,
             tagsRef: this.tagsRef,
             title: this.title,
+            titleSEO: this.titleSEO,
             updatedAt: this.updatedAt,
         }
     }
