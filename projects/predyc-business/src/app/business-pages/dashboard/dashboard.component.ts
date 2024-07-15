@@ -1146,11 +1146,15 @@ export class DashboardComponent {
       v: "Cursos asignados",
       s: grayCalibriBoldCenterCenterBordered,
     };
+
+
     wsResumenEstudiantes["H5"] = {
       t: "s",
-      v: "Cursos completados",
+      v: "Cursos asignados completados",
       s: grayCalibriBoldCenterCenterBordered,
     };
+
+
     wsResumenEstudiantes["I5"] = {
       t: "s",
       v: "Horas asignadas",
@@ -1167,39 +1171,69 @@ export class DashboardComponent {
       s: grayCalibriBoldCenterCenterBordered,
     };
 
+
     wsResumenEstudiantes["L5"] = {
       t: "s",
-      v: "Calificación promedio",
+      v: "Cursos extra",
       s: grayCalibriBoldCenterCenterBordered,
     };
 
+
     wsResumenEstudiantes["M5"] = {
       t: "s",
-      v: "Ritmo",
+      v: "Cursos extra completados",
       s: grayCalibriBoldCenterCenterBordered,
     };
+
+
     wsResumenEstudiantes["N5"] = {
       t: "s",
-      v: "Fecha límite de completación",
+      v: "Horas extra asignadas",
       s: grayCalibriBoldCenterCenterBordered,
     };
+
     wsResumenEstudiantes["O5"] = {
       t: "s",
-      v: "Examen diagnóstico",
+      v: "Horas extra completadas",
       s: grayCalibriBoldCenterCenterBordered,
     };
 
     wsResumenEstudiantes["P5"] = {
       t: "s",
+      v: "Calificación promedio",
+      s: grayCalibriBoldCenterCenterBordered,
+    };
+    
+    wsResumenEstudiantes["Q5"] = {
+      t: "s",
+      v: "Ritmo",
+      s: grayCalibriBoldCenterCenterBordered,
+    };
+    
+    wsResumenEstudiantes["R5"] = {
+      t: "s",
+      v: "Fecha límite de completación",
+      s: grayCalibriBoldCenterCenterBordered,
+    };
+    
+    wsResumenEstudiantes["S5"] = {
+      t: "s",
+      v: "Examen diagnóstico",
+      s: grayCalibriBoldCenterCenterBordered,
+    };
+    
+    wsResumenEstudiantes["T5"] = {
+      t: "s",
       v: "Resultado diagnóstico",
       s: grayCalibriBoldCenterCenterBordered,
     };
-
-    wsResumenEstudiantes["Q5"] = {
+    
+    wsResumenEstudiantes["U5"] = {
       t: "s",
       v: "Fecha examen diagnóstico",
       s: grayCalibriBoldCenterCenterBordered,
     };
+
 
     const rhythmOrder = {
       high: 1,
@@ -1271,6 +1305,7 @@ export class DashboardComponent {
         s: whiteCalibriCenteredBordered,
       };
 
+
       wsResumenEstudiantes[`H${j}`] = {
         t: "s",
         v: `${
@@ -1279,61 +1314,100 @@ export class DashboardComponent {
         s: whiteCalibriCenteredBordered,
       };
 
+
+      
       let targetHoursAllCourses =
         Math.round(usuario.targetHoursAllCourses * 10) / 10; // Convierte minutos a horas y redondea a 1 decimal
-
+      
       wsResumenEstudiantes[`I${j}`] = {
         t: "s",
         v: targetHoursAllCourses,
         s: whiteCalibriCenteredBordered,
       };
-
+      
       let completedHoursAllCourses =
         Math.round(usuario.hoursAllCourses * 10) / 10; // Convierte minutos a horas y redondea a 1 decimal
-
+      
       wsResumenEstudiantes[`J${j}`] = {
         t: "s",
         v: completedHoursAllCourses,
         s: whiteCalibriCenteredBordered,
       };
-
+      
       let progreso = Math.round(usuario.completacionAll * 10) / 10; // Convierte minutos a horas y redondea a 1 decimal
-
+      
       wsResumenEstudiantes[`K${j}`] = {
         t: "s",
         v: `${progreso}%`,
         s: whiteCalibriCenteredBordered,
       };
-
+      
       let notas = 0;
       let coursesCompleted = usuario.allCourses.filter(
         (x) => x.progress.progress >= 100
       );
-
+      
       coursesCompleted?.forEach((course) => {
         notas += course.progress.finalScore;
       });
-
+      
       notas = notas / coursesCompleted.length;
       notas = Math.round(notas * 10) / 10;
 
+
       wsResumenEstudiantes[`L${j}`] = {
+        t: "s",
+        v: `${usuario.inactivecourses.length}`,
+        s: whiteCalibriCenteredBordered,
+      };
+
+      wsResumenEstudiantes[`M${j}`] = {
+        t: "s",
+        v: `${
+          usuario?.inactivecourses?.filter((x) => x.progress.progress >= 100)?.length
+        }`,
+        s: whiteCalibriCenteredBordered,
+      };
+
+
+
+      let targetHoursExtraCourses =
+        Math.round(usuario.targetHoursExtra * 10) / 10; // Convierte minutos a horas y redondea a 1 decimal
+      
+      wsResumenEstudiantes[`N${j}`] = {
+        t: "s",
+        v: targetHoursExtraCourses,
+        s: whiteCalibriCenteredBordered,
+      };
+
+
+
+      let completedHoursExtraCourses =
+      Math.round(usuario.hoursExtra * 10) / 10; // Convierte minutos a horas y redondea a 1 decimal
+    
+    wsResumenEstudiantes[`O${j}`] = {
+      t: "s",
+      v: completedHoursExtraCourses,
+      s: whiteCalibriCenteredBordered,
+    };
+
+      wsResumenEstudiantes[`P${j}`] = {
         t: "s",
         v: notas >= 0 ? notas : "-",
         s: whiteCalibriCenteredBordered,
       };
-
+      
       let ritmo = this.getRitmoAndStyleUser(usuario);
-
-      wsResumenEstudiantes[`M${j}`] = {
+      
+      wsResumenEstudiantes[`Q${j}`] = {
         t: "s",
         v: ritmo.ritmo,
         s: eval(ritmo.estilo),
       };
-
+      
       let fechaFin = this.getLastDateStudyPlan(usuario);
-
-      wsResumenEstudiantes[`N${j}`] = {
+      
+      wsResumenEstudiantes[`R${j}`] = {
         t: "s",
         v: fechaFin,
         s:
@@ -1341,51 +1415,50 @@ export class DashboardComponent {
             ? whiteCalibriRedCenteredBordered
             : whiteCalibriCenteredBordered,
       };
-
+      
       let initTest = usuario.initTest[0]
-
-      console.log('usuarioReporte',initTest)
-
+      
+      console.log('usuarioReporte', initTest)
+      
       let resultadoTestInit = '-'
       let score = '-'
-
-      let dateExamenInicial= '-'
       
-
-      if(initTest){
+      let dateExamenInicial = '-'
+      
+      if (initTest) {
         resultadoTestInit = `Completado`
-
-        let latestDate = new Date(initTest.date.seconds*1000);
+      
+        let latestDate = new Date(initTest.date.seconds * 1000);
         let options: Intl.DateTimeFormatOptions = {
-          day:'numeric',
+          day: 'numeric',
           year: "numeric",
           month: "long",
         };
-         dateExamenInicial = latestDate.toLocaleDateString("es-ES", options);
+        dateExamenInicial = latestDate.toLocaleDateString("es-ES", options);
       }
-
-      if(initTest && initTest?.certificationTest){
+      
+      if (initTest && initTest?.certificationTest) {
         score = `${initTest.score}`
       }
-
-      wsResumenEstudiantes[`O${j}`] = {
+      
+      wsResumenEstudiantes[`S${j}`] = {
         t: "s",
         v: resultadoTestInit,
         s: whiteCalibriCenteredBordered,
       };
-
-      wsResumenEstudiantes[`P${j}`] = {
+      
+      wsResumenEstudiantes[`T${j}`] = {
         t: "s",
         v: score,
         s: whiteCalibriCenteredBordered,
       };
-      wsResumenEstudiantes[`Q${j}`] = {
+      
+      wsResumenEstudiantes[`U${j}`] = {
         t: "s",
         v: dateExamenInicial,
         s: whiteCalibriCenteredBordered,
       };
-
-
+      
 
     });
     // Fin Hoja 3 (Resumen por usuario)
@@ -1485,6 +1558,12 @@ export class DashboardComponent {
           (a, b) =>
             a.progress.dateStartPlan.seconds - b.progress.dateStartPlan.seconds
         );
+
+        
+
+        coursesUser = coursesUser.concat(usuario.inactivecourses)
+
+
         coursesUser.forEach((curso, IndexCurso) => {
           wsDetalleEstudiantes[`B${userDetail}`] = {
             t: "s",
@@ -1525,12 +1604,6 @@ export class DashboardComponent {
               : whiteCalibriRedCenteredBordered,
           };
 
-          wsDetalleEstudiantes[`G${userDetail}`] = {
-            t: "s",
-            v: IndexCurso + 1,
-            s: whiteCalibriCenteredBordered,
-          };
-
           wsDetalleEstudiantes[`H${userDetail}`] = {
             t: "s",
             v: curso.titulo,
@@ -1568,20 +1641,46 @@ export class DashboardComponent {
             s: whiteCalibriCenteredBordered,
           };
 
-          let fechaFin = curso.progress.dateEndPlan.seconds * 1000;
+          if(!curso.extra){
 
-          let latestDate = new Date(fechaFin);
-          let options: Intl.DateTimeFormatOptions = {
-            year: "numeric",
-            month: "long",
-          };
-          let dateString = latestDate.toLocaleDateString("es-ES", options);
+            wsDetalleEstudiantes[`G${userDetail}`] = {
+              t: "s",
+              v: IndexCurso + 1,
+              s: whiteCalibriCenteredBordered,
+            };
 
-          wsDetalleEstudiantes[`M${userDetail}`] = {
-            t: "s",
-            v: dateString,
-            s: whiteCalibriCenteredBordered,
-          };
+            let fechaFin = curso.progress.dateEndPlan.seconds * 1000;
+
+            let latestDate = new Date(fechaFin);
+            let options: Intl.DateTimeFormatOptions = {
+              year: "numeric",
+              month: "long",
+            };
+            let dateString = latestDate.toLocaleDateString("es-ES", options);
+  
+            wsDetalleEstudiantes[`M${userDetail}`] = {
+              t: "s",
+              v: dateString,
+              s: whiteCalibriCenteredBordered,
+            };
+          }
+
+          else{
+
+
+            wsDetalleEstudiantes[`G${userDetail}`] = {
+              t: "s",
+              v: 'Extracurricular',
+              s: whiteCalibriCenteredBordered,
+            };
+
+            wsDetalleEstudiantes[`M${userDetail}`] = {
+              t: "s",
+              v: '-',
+              s: whiteCalibriCenteredBordered,
+            };
+          }
+
 
           userDetail = userDetail + 1;
         });
@@ -1988,6 +2087,9 @@ export class DashboardComponent {
             let classesUser = [];
             let inactivecoursesUser = [];
 
+            let hoursExtra = 0;
+            let targetHoursExtra = 0;
+
 
             console.log('revisarCursosReporte',courses,this.courses)
 
@@ -2018,12 +2120,27 @@ export class DashboardComponent {
               targetHoursAllCourses += (course.courseTime? course.courseTime :  courseJson.duracion) / 60;
             });
 
-            inactiveCourses.forEach(course => {
-              const courseJson = this.courses.find(item => item.id === course.courseRef.id)
-              let courseIn = {...courseJson,progress:course}
-              courseIn.completed = course.progress >= 100? true : false
-              inactivecoursesUser.push(courseIn)            
-            })
+            // inactiveCourses.forEach(course => {
+            //   const courseJson = this.courses.find(item => item.id === course.courseRef.id)
+            //   let courseIn = {...courseJson,progress:course}
+            //   courseIn.completed = course.progress >= 100? true : false
+            //   inactivecoursesUser.push(courseIn)            
+            // })
+
+            inactiveCourses.forEach((course) => {
+              hoursExtra += (course?.progressTime ? course.progressTime : 0) / 60;
+              const courseJson = this.courses.find(
+                (item) => item.id === course.courseRef.id
+              );
+              let courseIn = { ...courseJson, progress: course };
+              courseIn.completed = course.progress >= 100 ? true : false;
+              courseIn.extra = true
+              inactivecoursesUser.push(courseIn);
+              targetHoursExtra += (course.courseTime? course.courseTime :  courseJson.duracion) / 60;
+              if(!course.courseTime){
+                course.courseTime = courseJson.duracion
+              }
+            });
 
             classes.forEach((clase) => {
               const classJson = this.classes.find(
@@ -2072,6 +2189,8 @@ export class DashboardComponent {
               completacion: targetHours ? (hours * 100) / targetHours : "",
               completacionAll: targetHoursAllCourses ? (hoursAllCourses * 100) / targetHoursAllCourses : "",
               inactivecourses:inactivecoursesUser,
+              hoursExtra,
+              targetHoursExtra
             };
           }
         );
