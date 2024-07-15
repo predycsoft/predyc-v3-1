@@ -487,7 +487,6 @@ export class ArticleComponent {
 
         this.deleteImages();
 
-
         const dataToSave: ArticleData = {
           authorRef: this.authorService.getAuthorRefById(this.selectedAuthorId),
           categories: this.categories,
@@ -581,23 +580,23 @@ async processImagesInContent(content: any[]): Promise<any[]> {
 }
 
 
-async uploadImageArticle(image: File): Promise<string> {
-  let fileBaseName = image.name.split('.').slice(0, -1).join('.');
-  let fileExtension = image.name.split('.').pop();
-  let articleTitle = this.title || "Temporal";
-  let endName = `${fileBaseName}-${Date.now().toString()}.${fileExtension}`;
-  const filePath = `Articulos/${articleTitle}/${endName}`;
-  const fileRef = this.storage.ref(filePath);
-  const task = this.storage.upload(filePath, image);
+  async uploadImageArticle(image: File): Promise<string> {
+    let fileBaseName = image.name.split('.').slice(0, -1).join('.');
+    let fileExtension = image.name.split('.').pop();
+    let articleTitle = this.title || "Temporal";
+    let endName = `${fileBaseName}-${Date.now().toString()}.${fileExtension}`;
+    const filePath = `Articulos/${articleTitle}/${endName}`;
+    const fileRef = this.storage.ref(filePath);
+    const task = this.storage.upload(filePath, image);
 
-  try {
-    await task;
-    return await firstValueFrom(fileRef.getDownloadURL());
-  } catch (error) {
-    console.error("Error uploading image:", error);
-    throw error;
+    try {
+      await task;
+      return await firstValueFrom(fileRef.getDownloadURL());
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      throw error;
+    }
   }
-}
 
   async uploadImage(): Promise<string> {
     if (!this.selectedFile) {
