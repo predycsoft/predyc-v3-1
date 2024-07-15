@@ -6,7 +6,11 @@
         <button (click)="format = 'json'" class="blueButton">Json</button>
         <button (click)="format = 'text'" class="blueButton">Text</button>
         <button (click)="debug()" class="blueButton">Print result</button> -->
-        <button (click)="save()" class="blueButton">Save result</button>
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="fw">
+            <span class="">Borrador:</span>
+            <mat-slide-toggle class="pdl03" color="primary" [(ngModel)]="isDraft"></mat-slide-toggle>
+        </div>
+        <button (click)="save()" class="blueButton">Guardar artículo</button>
     </div>
     <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="1.5rem" class="w-60">
         <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="1.5rem" class="fw">
@@ -131,16 +135,30 @@
                 </div>
             </div>
         </div>
-        <!-- Summary -->
-        <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap=".5rem" class="fw">
-            <span class="">Resumen:</span>
-            <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap=".2rem" class="fw">
-                <textarea class="form-control radius4 fw h60px ft12 borderLight" style="overflow-y: hidden; resize:none; background-color: transparent !important;" 
-                type="text" [maxlength]="summaryMaxLength" [(ngModel)]="summary"></textarea>
-                <div class="progress-bar-container fw">
-                    <div class="progress-bar" [style.width.%]="(summary.length / summaryMaxLength) * 100"></div>
+        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="1rem" class="fw">
+            <!-- Summary -->
+            <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap=".5rem" class="fw">
+                <span class="">Resumen:</span>
+                <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap=".2rem" class="fw">
+                    <textarea class="form-control radius4 fw h80px ft12 borderLight" style="overflow-y: hidden; resize:none; background-color: transparent !important;" 
+                    type="text" [maxlength]="summaryMaxLength" [(ngModel)]="summary"></textarea>
+                    <div class="progress-bar-container fw">
+                        <div class="progress-bar" [style.width.%]="(summary.length / summaryMaxLength) * 100"></div>
+                    </div>
                 </div>
             </div>
+            <!-- Meta description -->
+            <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap=".5rem" class="fw">
+                <span class="">Meta descripción:</span>
+                <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap=".2rem" class="fw">
+                    <textarea class="form-control radius4 fw h80px ft12 borderLight" style="overflow-y: hidden; resize:none; background-color: transparent !important;" 
+                    type="text" [maxlength]="metaDescriptionMaxLength" [(ngModel)]="metaDescription"></textarea>
+                    <div class="progress-bar-container fw">
+                        <div class="progress-bar" [style.width.%]="(metaDescription.length / metaDescriptionMaxLength) * 100"></div>
+                    </div>
+                </div>
+            </div>
+
         </div>
         <!-- Photo -->
         <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap=".5rem" class="fw">

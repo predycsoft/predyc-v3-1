@@ -4,9 +4,11 @@ import { Author } from "./author.model"
 
 export interface ArticleJson {
     authorRef: DocumentReference<Author>
+    isDraft: boolean
     categories: Array<typeof Article.CATEGORY_ARTICLE_OPTION | typeof Article.CATEGORY_INTERVIEW_OPTION | typeof Article.CATEGORY_SUCCEED_OPTION>
     createdAt: any
     id: string
+    metaDescription: string
     photoUrl: string
     pillarsRef: DocumentReference<Category>[]
     slug: string
@@ -32,9 +34,11 @@ export class Article {
 
     constructor(
         public authorRef: DocumentReference<Author>,
+        public isDraft: boolean,
         public categories: Array<typeof Article.CATEGORY_ARTICLE_OPTION | typeof Article.CATEGORY_INTERVIEW_OPTION | typeof Article.CATEGORY_SUCCEED_OPTION>,
         public createdAt: any,
         public id: string,
+        public metaDescription: string,
         public photoUrl: string,
         public pillarsRef: DocumentReference<Category>[],
         public slug: string,
@@ -48,9 +52,11 @@ export class Article {
     public static fromJson(articleJson: ArticleJson): Article {
         return new Article(
             articleJson.authorRef,
+            articleJson.isDraft,
             articleJson.categories,
             articleJson.createdAt,
             articleJson.id,
+            articleJson.metaDescription,
             articleJson.photoUrl,
             articleJson.pillarsRef,
             articleJson.slug,
@@ -64,9 +70,11 @@ export class Article {
     public toJson(): ArticleJson {
         return {
             authorRef: this.authorRef,
+            isDraft: this.isDraft,
             categories: this.categories,
             createdAt: this.createdAt,
             id: this.id,
+            metaDescription: this.metaDescription,
             photoUrl: this.photoUrl,
             pillarsRef: this.pillarsRef,
             slug: this.slug,

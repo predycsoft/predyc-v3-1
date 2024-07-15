@@ -195,6 +195,8 @@ export class ArticleComponent {
   selectedCategory: string = "";
   pillars: DocumentReference[] = []
   summary = ""
+  metaDescription = ""
+  isDraft = false
 
   newTagName: string = "";
   authors: Author[]
@@ -223,6 +225,7 @@ export class ArticleComponent {
 
   titleMaxLength = 90
   summaryMaxLength = 141
+  metaDescriptionMaxLength = 141
 
   ngOnInit() {
     this.categoriesOptions = Article.CATEGORY_OPTIONS
@@ -280,6 +283,8 @@ export class ArticleComponent {
         this.pastPreviewImage = articleWithTagsAndPillarsData.photoUrl;
         this.editor.setContents(articleWithTagsAndPillarsData.data);
         this.summary = articleWithTagsAndPillarsData.summary;
+        this.metaDescription = articleWithTagsAndPillarsData.metaDescription;
+        this.isDraft = articleWithTagsAndPillarsData.isDraft;
         this.categories = articleWithTagsAndPillarsData.categories;
         this.articleTags = articleWithTagsAndPillarsData.tags;
         this.articlePillars = articleWithTagsAndPillarsData.pillars; 
@@ -293,9 +298,9 @@ export class ArticleComponent {
     }
   }
 
-  originalContent
+  originalContent = []
 
-  deleteImages(){
+  async deleteImages(){
     this.originalContent.forEach(async item => {
       
       if (item.insert && item.insert.image && item.insert.image?.src!=null) {
@@ -485,7 +490,7 @@ export class ArticleComponent {
         const processedData = await this.processImagesInContent(this.editor.getContents().ops);
         const processedHtml = this.convertDeltaToHtml(processedData);
 
-        this.deleteImages();
+        await this.deleteImages();
 
         const dataToSave: ArticleData = {
           authorRef: this.authorService.getAuthorRefById(this.selectedAuthorId),
@@ -498,6 +503,8 @@ export class ArticleComponent {
           tagsRef: tagsReferences,
           title: this.title,
           summary: this.summary,
+          metaDescription: this.metaDescription,
+          isDraft: this.isDraft,
           slug: this.slug,
           updatedAt: new Date(),
           photoUrl: downloadURL,
@@ -627,6 +634,9 @@ async processImagesInContent(content: any[]): Promise<any[]> {
       valid = false;
     }
     if (!this.summary) {
+      valid = false;
+    }
+    if (!this.metaDescription) {
       valid = false;
     }
     if (!this.selectedAuthorId) {
