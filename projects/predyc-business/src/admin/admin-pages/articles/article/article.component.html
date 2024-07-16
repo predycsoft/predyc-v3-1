@@ -65,6 +65,11 @@
                     </div>
                     <span *ngIf="articlePillars.length === 0" class="ft10 redText">Debes seleccionar por lo menos un pilar</span>
                 </div>
+                <!-- Order number -->
+                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="fw">
+                    <span class="w100px">Orden:</span>
+                    <input [(ngModel)]="orderNumber" type="number" min="1" class="h32px ft14 shadow-animation pdl05 pdr05 radius4 borderLight fw" style="text-align: center;" />
+                </div>
                 
             </div>
             <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="1rem" class="w-50">

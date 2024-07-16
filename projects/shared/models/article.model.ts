@@ -17,6 +17,7 @@ export interface ArticleJson {
     title: string
     titleSEO: string
     updatedAt: any
+    orderNumber: number
 }
 
 export class Article {
@@ -49,6 +50,7 @@ export class Article {
         public title: string,
         public titleSEO: string,
         public updatedAt: any,
+        public orderNumber: number,
 
     ) {}
 
@@ -68,6 +70,7 @@ export class Article {
             articleJson.title,
             articleJson.titleSEO,
             articleJson.updatedAt,
+            articleJson.orderNumber,
         )
     }
 
@@ -87,6 +90,7 @@ export class Article {
             title: this.title,
             titleSEO: this.titleSEO,
             updatedAt: this.updatedAt,
+            orderNumber: this.orderNumber,
         }
     }
 }

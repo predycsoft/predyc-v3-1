@@ -198,6 +198,7 @@ export class ArticleComponent {
   summary = ""
   metaDescription = ""
   isDraft = false
+  orderNumber = 1
 
   newTagName: string = "";
   authors: Author[]
@@ -288,6 +289,7 @@ export class ArticleComponent {
         this.summary = articleWithTagsAndPillarsData.summary;
         this.metaDescription = articleWithTagsAndPillarsData.metaDescription;
         this.isDraft = articleWithTagsAndPillarsData.isDraft;
+        this.orderNumber = articleWithTagsAndPillarsData.orderNumber;
         this.categories = articleWithTagsAndPillarsData.categories;
         this.articleTags = articleWithTagsAndPillarsData.tags;
         this.articlePillars = articleWithTagsAndPillarsData.pillars; 
@@ -508,6 +510,7 @@ export class ArticleComponent {
           slug: this.slug,
           updatedAt: new Date(),
           photoUrl: downloadURL,
+          orderNumber: this.orderNumber
         };
         console.log("dataToSave",dataToSave)
         const articleId = await this.articleService.saveArticle(dataToSave, !!this.articleId);
