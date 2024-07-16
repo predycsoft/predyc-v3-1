@@ -5,6 +5,8 @@ import * as XLSX from "xlsx-js-style";
 import { DatePipe } from "@angular/common";
 import { Subscription } from 'rxjs';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
+import { coursesData } from 'projects/predyc-business/src/assets/data/courses.data';
+import { CourseService } from 'projects/predyc-business/src/shared/services/course.service';
 
 
 @Component({
@@ -19,6 +21,8 @@ export class CertificationsTestComponent {
     private activityClassesService:ActivityClassesService,
     private datePipe: DatePipe,
     private enterpriseService: EnterpriseService,
+    //
+    private courseService: CourseService
   ){
 
   }
@@ -543,10 +547,6 @@ export class CertificationsTestComponent {
     XLSX.writeFile(wb, `Resultados diagnóstico ${nombreEmpresa.toUpperCase()} ${fechaActual}.xlsx`);
   }
 
-
-
-
-
   toColumnName(num) {
     let ret = "",
       a = 1,
@@ -562,6 +562,14 @@ export class CertificationsTestComponent {
     setTimeout(() => {
       this.makeChart=this.makeChart+1
     }, 1000);
+  }
+
+  // ---------
+
+  async newFieldsToDatabaseCourses() {
+    // Adds "metaDescription" and "objetivos"
+    await this.courseService.addNewCoursesFields()
+    console.log("finished")
   }
 
 

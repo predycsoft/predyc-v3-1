@@ -1,9 +1,9 @@
 import { Component, ElementRef, QueryList, TemplateRef, ViewChild, ViewChildren } from "@angular/core";
 import { IconService } from "projects/predyc-business/src/shared/services/icon.service";
-import { FormControl, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn, FormArray } from "@angular/forms";
+import { FormControl, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn, FormArray, FormBuilder } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 
-import { Curso } from "projects/shared/models/course.model";
+import { Curso, ObjetivoCurso } from "projects/shared/models/course.model";
 import { Modulo } from "projects/shared/models/module.model";
 import { Clase } from "projects/shared/models/course-class.model";
 
@@ -78,7 +78,9 @@ export class CreateCourseComponent {
     private route: ActivatedRoute,
     private authService: AuthService,
     private instructorsService: InstructorsService,
-    private alertService: AlertsService
+    private alertService: AlertsService,
+		private fb: FormBuilder,
+
   ) {}
 
   activeStep = 1;
@@ -435,8 +437,14 @@ export class CreateCourseComponent {
     });
   }
 
+  objetivosValidator(min: number): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (control.value && control.value.length >= min) return null;
+      return { minLengthArray: true };
+    };
+  }
+
   async inicializarformNewCourse() {
-    let id;
     if (this.mode == "create") {
       // console.log("this.empresa", this.empresa);
 
@@ -451,6 +459,8 @@ export class CreateCourseComponent {
           titulo: new FormControl(null, Validators.required),
           // resumen: new FormControl(null, Validators.required),
           descripcion: new FormControl(null, Validators.required),
+          metaDescripcion: new FormControl(null, Validators.required),
+          objetivos: this.fb.array([], this.objetivosValidator(1)),
           nivel: new FormControl(null, Validators.required),
           //categoria: new FormControl(null, Validators.required),
           idioma: new FormControl(null, Validators.required),
@@ -501,14 +511,14 @@ export class CreateCourseComponent {
             customUrl = null
           }
 
-
-
           this.formNewCourse = new FormGroup({
             id: new FormControl(curso.id, Validators.required),
             vimeoFolderId: new FormControl(curso.vimeoFolderId),
             titulo: new FormControl(curso.titulo, Validators.required),
             // resumen: new FormControl(curso.resumen, Validators.required),
             descripcion: new FormControl(curso.descripcion, Validators.required),
+            metaDescripcion: new FormControl(curso.metaDescripcion, Validators.required),
+            objetivos: this.fb.array([], this.objetivosValidator(1)),
             nivel: new FormControl(curso.nivel, Validators.required),
             idioma: new FormControl(curso.idioma, Validators.required),
             // contenido: new FormControl(curso.contenido, Validators.required),
@@ -521,6 +531,7 @@ export class CreateCourseComponent {
             proximamente: new FormControl(curso.proximamente),
             customUrl: new FormControl(customUrl),
           });
+          curso.objetivos.forEach(objetivo => this.addObjetivo(objetivo));
 
           //this.formNewCourse.get('resumen_instructor').disable();
           this.initSkills(); // Asegúrate de que initSkills también maneje las suscripciones correctamente
@@ -547,6 +558,36 @@ export class CreateCourseComponent {
             });
         });
     }
+  }
+
+  loadObjetivos(objetivos: ObjetivoCurso[]) {
+    const formArray = this.objetivos;
+    objetivos.forEach(objetivo => {
+      formArray.push(new FormGroup({
+        title: new FormControl(objetivo.titulo),
+        description: new FormControl(objetivo.descripcion)
+      }));
+    });
+    this.formNewCourse.patchValue({ objetivos: formArray });
+  }
+
+  get objetivos(): FormArray {
+    return this.formNewCourse.get("objetivos") as FormArray;
+  }
+
+  newObjetivo(objetivo = { titulo: '', descripcion: '' }) {
+    return this.fb.group({
+        titulo: [objetivo.titulo, Validators.required],
+        descripcion: [objetivo.descripcion, Validators.required]
+    });
+  }
+
+  addObjetivo(objetivo = { titulo: '', descripcion: '' }) {
+    this.objetivos.push(this.newObjetivo(objetivo));
+  }
+
+	removeObjetivo(index: number) {
+    this.objetivos.removeAt(index);
   }
 
   async setInstructor(instructor) {

@@ -7,7 +7,7 @@ import { EnterpriseService } from "./enterprise.service";
 import { AlertsService } from "./alerts.service";
 import { combineLatest } from "rxjs";
 import { defaultIfEmpty, filter, map, switchMap, take } from "rxjs/operators";
-import { Curso } from "projects/shared/models/course.model";
+import { Curso, CursoJson } from "projects/shared/models/course.model";
 import { Modulo } from "projects/shared/models/module.model";
 import { Clase } from "projects/shared/models/course-class.model";
 import { CourseByStudent, CourseByStudentJson } from "projects/shared/models/course-by-student.model";
@@ -1861,10 +1861,23 @@ export class CourseService {
     }
   }
 
+  // -----------
+  async addNewCoursesFields() {
+    const batch = this.afs.firestore.batch();
   
-
+    const collectionRef = this.afs.collection(Curso.collection).ref;
+    const snapshot = await collectionRef.get();
   
-
-
-
+    snapshot.docs.forEach((doc) => {
+      const courseData = doc.data() as CursoJson;
+      // console.log(courseData, "courseData")
+      batch.update(doc.ref, {
+        metaDescripcion: 'Meta - ' + courseData.descripcion,
+        objetivos: [],
+      });    
+    });
+  
+    await batch.commit();
+  }
+  
 }

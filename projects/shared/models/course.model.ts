@@ -6,6 +6,7 @@ import { DocumentReference } from "@angular/fire/compat/firestore"
 export interface CursoJson {
 
   descripcion: string
+  metaDescripcion: string
   resumen: string
   nuevo: boolean
   proximamente: boolean
@@ -28,15 +29,16 @@ export interface CursoJson {
   idOld: string
   duracion: number,
   customUrl: string
+  objetivos: ObjetivoCurso[] 
   updatedAt: any
 }
-
 
 export class Curso {
 
   public static collection = 'course'
   
   descripcion: string = ""
+  metaDescripcion: string = ""
   resumen: string = ""
   nuevo: boolean = false
   proximamente: boolean = false;
@@ -62,6 +64,7 @@ export class Curso {
   idOld: string = ""
   duracion: number = 0
   customUrl: string = ""
+  objetivos: ObjetivoCurso[] = []
   updatedAt: any = null
 
 
@@ -69,6 +72,7 @@ export class Curso {
     return {
 
       descripcion:this.descripcion,
+      metaDescripcion:this.metaDescripcion,
       resumen:this.resumen,
       nuevo:this.nuevo,
       proximamente:this.proximamente,
@@ -91,8 +95,14 @@ export class Curso {
       idOld:this.idOld,
       duracion:this.duracion,
       customUrl:this.customUrl,
+      objetivos:this.objetivos,
       updatedAt:this.updatedAt,
 
     }
   }
-  }
+}
+
+export interface ObjetivoCurso {
+  titulo: string
+  descripcion: string
+}
