@@ -83,3 +83,13 @@
   transition: width 0.3s ease; /* Smooth transition for the width */
   border-radius: 5px;
 }
+
+.sticky-toolbar {
+  position: -webkit-sticky; /* Para compatibilidad con Safari */
+  position: sticky;
+  top: 0;
+  z-index: 10; /* Asegúrate de que la barra de herramientas se superponga al contenido */
+  background-color: white; /* Fondo blanco para que se vea bien cuando sea sticky */
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Opcional: Agrega una sombra para destacar la barra de herramientas */
+}
