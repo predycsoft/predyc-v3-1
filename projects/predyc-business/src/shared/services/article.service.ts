@@ -13,7 +13,7 @@ export class ArticleService {
     private afs: AngularFirestore
   ) { }
 
-  async saveArticle(articleData: ArticleData, isEditMode: boolean): Promise<string> {
+  async saveArticle(articleData: ArticleData, isEditMode: boolean, prevOrderNumber: number): Promise<string> {
     let articleId: string = articleData.id;
   
     if (!articleId) {
@@ -40,6 +40,8 @@ export class ArticleService {
     await this.saveChunks(articleId, data);
     // Save "dataHTML" in subcollection
     await this.saveChunks(articleId, dataHTML);
+    // Update orderNumber of all articles
+    await this.updateOrderNumbers(articleId, prevOrderNumber) // Check this
     return articleId
   }
 
@@ -156,7 +158,18 @@ export class ArticleService {
   }
   
   getArticles$(): Observable<ArticleJson[]> {
-    return this.afs.collection<ArticleJson>(Article.collection).valueChanges()
+    return this.afs.collection<ArticleJson>(Article.collection, ref => ref.orderBy("orderNumber", "asc")).valueChanges()
+  }
+
+  async getArticles(): Promise<ArticleJson[]> {
+    try {
+      const snapshot = await this.afs.collection<ArticleJson>(Article.collection,ref => ref.orderBy('orderNumber', 'asc')).ref.get();
+      const articles: ArticleJson[] = snapshot.docs.map(doc => doc.data() as ArticleJson);
+      return articles;
+    } catch (error) {
+      console.error('Error getting articles: ', error);
+      throw new Error('Failed to get articles');
+    }
   }
 
   getArticleWithDataById$(articleId: string): Observable<ArticleData> {
@@ -204,10 +217,89 @@ export class ArticleService {
     // Delete the main article document
     batch.delete(articleDocRef.ref);
   
+    // Update order numbers of the remaining articles
+    await this.updateOrderNumbersAfterDeletion(articleId);
     await batch.commit();
-  }
-  
 
+  }
+
+  async updateOrderNumbers(articleId: string, prevOrderNumber: number) {
+    let allArticles = (await this.getArticles()).sort((a, b) => a.orderNumber -b.orderNumber );
+    // console.log("allArticles", allArticles.map(x => {return {orderNumbe: x.orderNumber, title: x.title}}));
+
+    // Find the index of the updated article
+    const updatedArticleIndex = allArticles.findIndex(article => article.id === articleId);
+    // console.log("updatedArticleIndex", updatedArticleIndex)
+    const updatedArticle = allArticles[updatedArticleIndex];
+    const updatedOrderNumber = updatedArticle.orderNumber;
+
+    const batch = this.afs.firestore.batch();
+
+    // Remove the updated article from its current position
+    allArticles.splice(updatedArticleIndex, 1);
+
+    // Determine the new position of the updated article
+    let newArticleIndex = allArticles.findIndex(article => article.orderNumber >= updatedOrderNumber);
+    // console.log("newArticleIndex", newArticleIndex)
+
+    if (prevOrderNumber && prevOrderNumber < updatedOrderNumber) {
+      // Place after the article with the same orderNumber
+      newArticleIndex++;
+    }
+
+    if (newArticleIndex === -1) {
+      newArticleIndex = allArticles.length;
+    }
+
+    // Insert the updated article at the new position
+    allArticles.splice(newArticleIndex, 0, updatedArticle);
+
+    // console.log("Final allArticles", allArticles.map(x => {return {orderNumbe: x.orderNumber, title: x.title}}))
+    // Reorder all articles based on the sorted array
+    for (let index = 0; index < allArticles.length; index++) {
+      const article = allArticles[index];
+      const articleRef = this.afs.collection('article').doc(article.id).ref;
+      if (article.orderNumber !== index + 1) {
+        console.log(article.title, " order number updated")
+        batch.update(articleRef, { orderNumber: index + 1 });
+      } else {
+        console.log(article.title, "order number didnt need to be updated")
+      }
+    }
+
+    // Commit the batch update
+    await batch.commit();
+    console.log('Order numbers updated successfully');
+  }
+
+  async updateOrderNumbersAfterDeletion(articleId: string) {
+    let allArticles = (await this.getArticles()).sort((a, b) => a.orderNumber - b.orderNumber);
+    // console.log("allArticles before deletion", allArticles.map(x => { return { orderNumber: x.orderNumber, title: x.title } }));
+  
+    // Find the index of the article to be deleted
+    const deletedArticleIndex = allArticles.findIndex(article => article.id === articleId);
+  
+    const batch = this.afs.firestore.batch();
+  
+    // Remove the article to be deleted from the list
+    allArticles.splice(deletedArticleIndex, 1);
+  
+    // Reorder the remaining articles
+    for (let index = 0; index < allArticles.length; index++) {
+      const article = allArticles[index];
+      const articleRef = this.afs.collection('article').doc(article.id).ref;
+      if (article.orderNumber !== index + 1) {
+        console.log(article.title, " order number updated");
+        batch.update(articleRef, { orderNumber: index + 1 });
+      } else {
+        console.log(article.title, "order number didn't need to be updated");
+      }
+    }
+  
+    // Commit the batch update
+    await batch.commit();
+    // console.log('Order numbers updated successfully before deletion');
+  }
   
   // --------- TAGS
   async saveArticleTags(tagDataArray: ArticleTagJson[]): Promise<ArticleTagJson[]> {
