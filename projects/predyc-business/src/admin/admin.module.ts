@@ -48,6 +48,7 @@ import { ArticlesListComponent } from './admin-pages/articles/articles-list/arti
 import { ArticleComponent } from './admin-pages/articles/article/article.component';
 import { ArticlePreviewComponent } from './admin-pages/articles/article-preview/article-preview.component';
 import { AuthorsListComponent } from './admin-pages/articles/authors-list/authors-list.component';
+import { DiplomadoLiveFormComponent } from "../shared/components/live-courses/live-courses-diplomados/diplomado-form/diplomado-form.component";
 
 
 @NgModule({
@@ -91,6 +92,7 @@ import { AuthorsListComponent } from './admin-pages/articles/authors-list/author
     DialogFreebiesFormComponent,
     CertificationsListComponent,
     DiplomadoFormComponent,
+    DiplomadoLiveFormComponent,
     DiplomadosListComponent,
     CertificationsFormComponent,
     ArticlesComponent,

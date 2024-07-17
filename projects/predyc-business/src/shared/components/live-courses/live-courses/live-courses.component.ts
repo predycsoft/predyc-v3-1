@@ -138,7 +138,7 @@ export class LiveCoursesComponent {
         category.expanded = false;
         category.courses = filteredCourses;
       });
-      // console.log("this.categories", this.categories)
+      console.log("this.categories", this.categories)
       // ---------
 
       // For Calendario (Observables)
