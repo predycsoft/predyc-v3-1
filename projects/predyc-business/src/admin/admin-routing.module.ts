@@ -23,6 +23,7 @@ import { LiveCoursesComponent } from "../shared/components/live-courses/live-cou
 import { ArticlesComponent } from "./admin-pages/articles/articles.component";
 import { ArticleComponent } from "./admin-pages/articles/article/article.component";
 import { ArticlePreviewComponent } from "./admin-pages/articles/article-preview/article-preview.component";
+import { DiplomadoLiveFormComponent } from "../shared/components/live-courses/live-courses-diplomados/diplomado-form/diplomado-form.component";
 
 export const MAIN_TITLE = "Predyc Admin - ";
 
@@ -52,6 +53,9 @@ const routes: Routes = [
   { path: "live/new", title: MAIN_TITLE + "Crear curso en vivo", component: CreateLiveCourseComponent },
   { path: "live/:idCurso", title: MAIN_TITLE + "Editar curso en vivo", component: CreateLiveCourseComponent },
   { path: "live-sessions/:idCurso/:idLiveCourseSon", title: MAIN_TITLE + "Editar sessiones en vivo", component: CreateLiveCourseComponent },
+
+  { path: "live-sessions/diplomates-live/form", title: MAIN_TITLE + "Crear Diplomado", component: DiplomadoLiveFormComponent },
+  { path: "live-sessions/diplomates-live/form/:id", title: MAIN_TITLE + "Editar Diplomado", component: DiplomadoLiveFormComponent },
 
   { path: "freebies", title: MAIN_TITLE + "Freebies", component: FreebiesComponent },
 
