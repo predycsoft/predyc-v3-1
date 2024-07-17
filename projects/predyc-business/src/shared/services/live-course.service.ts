@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentReference, QuerySnapshot } from '@angular/fire/compat/firestore';
 import { LiveCourseByStudent } from 'projects/shared/models/live-course-by-student.model';
 import { LiveCourse, LiveCourseJson, LiveCourseTemplate } from 'projects/shared/models/live-course.model';
+import { LiveDiplomado } from 'projects/shared/models/live-diplomado.model';
 import { Session, SessionJson, SessionTemplate } from 'projects/shared/models/session.model';
 import { User } from 'projects/shared/models/user.model';
 import { Observable, catchError, combineLatest, firstValueFrom, forkJoin, from, map, mergeMap, of, switchMap, toArray } from 'rxjs';
@@ -283,6 +284,41 @@ export class LiveCourseService {
     const results = await Promise.all(promises);
     return results.flat();
   }
+
+  public getDiplomados$(): Observable<any[]> {
+    // Query to get courses where enterpriseRef is empty
+    return  this.afs.collection<any>('live-diplomado').valueChanges({ idField: 'id' });
+  
+  }
+
+  public getDiplomado$(id: string): Observable<LiveDiplomado> {
+    return this.afs.collection<LiveDiplomado>(LiveDiplomado.collection).doc(id).valueChanges()
+  }
+
+
+  public getCourseRefById(id: string): DocumentReference<LiveCourse> {
+    return this.afs.collection<LiveCourse>(LiveCourse.collection).doc(id).ref;
+  }
+
+  async saveDiplomado(diplomado: LiveDiplomado): Promise<string> {
+    let ref: DocumentReference;
+    console.log('diplomado save',diplomado)
+    // If diplomado has an ID, then it's an update
+    if (diplomado?.id) {
+      ref = this.afs.collection<LiveDiplomado>(LiveDiplomado.collection).doc(diplomado.id).ref;
+    } else {
+      // Else, it's a new profile
+      ref = this.afs.collection<LiveDiplomado>(LiveDiplomado.collection).doc().ref;
+      diplomado.id = ref.id; // Assign the generated ID to the diplomado
+    }
+    const dataToSave = typeof diplomado.toJson === 'function' ? diplomado.toJson() : diplomado;
+    console.log('dataToSave diplomado',dataToSave)
+    await ref.set(dataToSave, { merge: true });
+    diplomado.id = ref.id; // Assign the generated ID to the profile
+    return diplomado.id
+  }
+
+
   
   
   

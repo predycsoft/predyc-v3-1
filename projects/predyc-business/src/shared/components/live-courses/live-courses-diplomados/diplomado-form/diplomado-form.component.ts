@@ -34,7 +34,7 @@ import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
 import Swal from 'sweetalert2';
 import { Diplomado, DiplomadoJson } from "projects/shared/models/diplomado.model";
 
-import { cleanFileName } from "projects/shared";
+import { LiveCourse, cleanFileName } from "projects/shared";
 import { AngularFireStorage } from "@angular/fire/compat/storage";
 import { ActivityClassesService } from "projects/predyc-business/src/shared/services/activity-classes.service";
 import { Activity } from "projects/functions/dist/shared/models";
@@ -42,6 +42,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { DiplomadoService } from "projects/predyc-business/src/shared/services/diplomado.service";
 import { LiveCourseService } from "projects/predyc-business/src/shared/services/live-course.service";
 import { InstructorsService } from '../../../../services/instructors.service';
+import { LiveDiplomado, LiveDiplomadoJson } from "projects/shared/models/live-diplomado.model";
 
 
 const MAIN_TITLE = "Predyc - ";
@@ -89,7 +90,7 @@ export class DiplomadoLiveFormComponent {
   categories: Category[];
   // courses: Curso[]
   skills: Skill[];
-  diplomado: DiplomadoJson;
+  diplomado: LiveDiplomadoJson;
 
   coursesForExplorer: CoursesForExplorer[];
   filteredCourses: Observable<CoursesForExplorer[]>;
@@ -99,7 +100,6 @@ export class DiplomadoLiveFormComponent {
 
   diplomadoName: string = "";
   profileDescription: string = "";
-  profileHoursPerMonth: number = 8;
 
   profileBackup;
 
@@ -107,7 +107,7 @@ export class DiplomadoLiveFormComponent {
   baseDiplomado: string;
   user;
   profileServiceSubscription: Subscription;
-  diplomados: Diplomado[] = [];
+  diplomados: LiveDiplomado[] = [];
 
   activitySubscription: Subscription;
   activities = []
@@ -129,7 +129,7 @@ export class DiplomadoLiveFormComponent {
 
     })
 
-    this.profileServiceSubscription = this.diplomadoService.getDiplomados$()
+    this.profileServiceSubscription = this.liveCourseService.getDiplomados$()
       .subscribe((diplomados) => {
         if (diplomados) {
           // console.log('diplomados',diplomados)
@@ -141,7 +141,7 @@ export class DiplomadoLiveFormComponent {
           });
 
           this.diplomados = diplomados;
-          // console.log('perfiles', this.diplomados);
+          console.log('perfiles', this.diplomados);
         }
       });
 
@@ -152,7 +152,7 @@ export class DiplomadoLiveFormComponent {
     this.hoverItem$ = this.hoverSubject.asObservable();
     this.baseDiplomado = this.route.snapshot.queryParams["baseDiplomado"] || null;
     const observablesArray: Observable<
-      Category[] | Diplomado | Skill[] | Curso[] | any[]
+      Category[] | Diplomado | Skill[] | Curso[] | any[] | LiveDiplomado
     >[] = [
       this.categoryService.getCategories$(),
       this.skillService.getSkills$(),
@@ -165,12 +165,12 @@ export class DiplomadoLiveFormComponent {
       this.titleService.setTitle(title);
       if (this.baseDiplomado) {
         observablesArray.push(
-          this.diplomadoService.getDiplomado$(this.baseDiplomado)
+          this.liveCourseService.getDiplomado$(this.baseDiplomado)
         );
       }
     } else {
       this.isEditing = false;
-      observablesArray.push(this.diplomadoService.getDiplomado$(this.id));
+      observablesArray.push(this.liveCourseService.getDiplomado$(this.id));
     }
     this.serviceSubscription = combineLatest(observablesArray).subscribe(
       (result) => {
@@ -194,12 +194,12 @@ export class DiplomadoLiveFormComponent {
         console.log('courses',courses,instrcutorsData)
         //courses = courses.filter((x) => !x.proximamente);
         if (result.length === 5) {
-          const diplomado = result[4] as DiplomadoJson;
+          const diplomado = result[4] as LiveDiplomadoJson;
           this.diplomado = {
             ...diplomado,
             name: this.baseDiplomado ? "" : diplomado.name,
             id: this.baseDiplomado ? null : diplomado.id,
-          } as DiplomadoJson;
+          } as LiveDiplomadoJson;
         }
         this.categories = categories;
         this.skills = skills;
@@ -217,7 +217,6 @@ export class DiplomadoLiveFormComponent {
           }
 
           this.profileDescription = this.diplomado.description;
-          this.profileHoursPerMonth = this.diplomado.hoursPerMonth;
         }
         this.studyPlan = [];
         // this.courses = courses
@@ -371,7 +370,7 @@ export class DiplomadoLiveFormComponent {
 
   onCancel() {
     if (this.id === "new") {
-      this.router.navigate(["/admin/diplomados"]);
+      this.router.navigate(["/admin/live"]);
     } else {
       window.location.reload();
     }
@@ -603,7 +602,7 @@ export class DiplomadoLiveFormComponent {
   async onSave() {
     try {
       if (!this.diplomadoName)
-        throw new Error("Debe indicar un nombre para el perfil");
+        throw new Error("Debe indicar un nombre para el diplomado");
 
       if (
         this.diplomados.find(
@@ -621,7 +620,7 @@ export class DiplomadoLiveFormComponent {
       );
 
       Swal.fire({
-        title: 'Editando plan de estudio...',
+        title: 'Editando diplomado...',
         text: 'Por favor, espera.',
         allowOutsideClick: false,
         didOpen: () => {
@@ -629,11 +628,11 @@ export class DiplomadoLiveFormComponent {
         }
       });
       const coursesRef: {
-        courseRef: DocumentReference<Curso>;
+        courseRef: DocumentReference<LiveCourse>;
         studyPlanOrder: number;
       }[] = this.studyPlan.map((course) => {
         return {
-          courseRef: this.courseService.getCourseRefById(course.id),
+          courseRef: this.liveCourseService.getCourseRefById(course.id),
           studyPlanOrder: course.studyPlanOrder,
         };
       });
@@ -651,13 +650,8 @@ export class DiplomadoLiveFormComponent {
         enterpriseRef = null;
       }
       let baseDiplomado = null;
-      if (this.baseDiplomado) {
-        baseDiplomado = this.afs
-          .collection<Diplomado>(Diplomado.collection)
-          .doc(this.baseDiplomado).ref;
-      }
 
-      const diplomado: Diplomado = Diplomado.fromJson({
+      const diplomado: LiveDiplomado = LiveDiplomado.fromJson({
         id: this.diplomado ? this.diplomado.id : null,
         name: this.diplomadoName,
         photoUrl:this.photoUrl?this.photoUrl:null,
@@ -671,7 +665,6 @@ export class DiplomadoLiveFormComponent {
           : baseDiplomado,
         enterpriseRef: enterpriseRef,
         //permissions: this.diplomado ? this.diplomado.permissions : null,
-        hoursPerMonth: this.profileHoursPerMonth,
       });
 
       console.log('diplomado save',diplomado)
@@ -706,13 +699,13 @@ export class DiplomadoLiveFormComponent {
           }
         });
 
-        await this.profileService.saveDiplomado(diplomado);
+        await this.liveCourseService.saveDiplomado(diplomado);
       } else {
         console.log("diplomado", diplomado);
-        const diplomadoId = await this.profileService.saveDiplomado(diplomado);
+        const diplomadoId = await this.liveCourseService.saveDiplomado(diplomado);
         this.id = diplomadoId;
         this.diplomado = diplomado;
-        this.router.navigate([`admin/diplomados/form/${diplomadoId}`]);
+        this.router.navigate([`live-sessions/diplomates-live/form/${diplomadoId}`]);
         this.titleService.setTitle(MAIN_TITLE + this.diplomado.name);
       }
       Swal.close();

@@ -21,6 +21,7 @@ export class category {
 }
 
 export interface CalendarLiveCourseData {
+  type: string;
   courseTitle: string;
   coursePhoto: string;
   courseId: string;
@@ -148,6 +149,7 @@ export class LiveCoursesComponent {
         livecoursesWithSessions.forEach(({ liveCourse, sessions }) => {
           sessions.forEach((session) => {
             const calendarLiveCourseData: CalendarLiveCourseData = {
+              type:'coruse',
               courseTitle: liveCourse.title,
               coursePhoto: liveCourse.photoUrl,
               courseId: liveCourse.id,
@@ -163,7 +165,7 @@ export class LiveCoursesComponent {
             newCalendarLiveCourses.push(calendarLiveCourseData);
           });
           this.calendarLiveCourses = newCalendarLiveCourses.sort((a, b) => a.sessionDate - b.sessionDate);
-          // console.log("calendarLiveCourses in live-course component", this.calendarLiveCourses);
+          console.log("calendarLiveCourses in live-course component", this.calendarLiveCourses);
         });
       });
     });
