@@ -68,7 +68,8 @@
                 <!-- Order number -->
                 <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="fw">
                     <span class="w100px">Orden:</span>
-                    <input [(ngModel)]="orderNumber" type="number" min="1" class="h32px ft14 shadow-animation pdl05 pdr05 radius4 borderLight fw" style="text-align: center;" />
+                    <input [(ngModel)]="orderNumber" type="number" min="1" [max]="maxOrderNumber" style="text-align: center;"
+                    class="h32px ft14 shadow-animation pdl05 pdr05 radius4 borderLight fw" />
                 </div>
                 
             </div>

@@ -182,8 +182,6 @@ export class ArticleComponent {
 
   editor: Quill;
 
-  
-
   createTagModal;
   createPillarModal;
 
@@ -199,6 +197,7 @@ export class ArticleComponent {
   metaDescription = ""
   isDraft = false
   orderNumber = 1
+  prevOrderNumber: number | null = null
 
   newTagName: string = "";
   authors: Author[]
@@ -229,8 +228,9 @@ export class ArticleComponent {
   titleSEOMaxLength = 90
   summaryMaxLength = 141
   metaDescriptionMaxLength = 141
+  maxOrderNumber: number
 
-  ngOnInit() {
+  async ngOnInit() {
     this.categoriesOptions = Article.CATEGORY_OPTIONS
 
     this.tagsSubscription = this.articleService.getAllArticleTags$().subscribe(tags => {
@@ -252,6 +252,8 @@ export class ArticleComponent {
     this.authorSubscription = this.authorService.getAuthors$().subscribe(authors => {
       this.authors = authors
     })
+
+    this.maxOrderNumber = (await this.articleService.getArticles()).length + 1
 
   }
 
@@ -290,6 +292,7 @@ export class ArticleComponent {
         this.metaDescription = articleWithTagsAndPillarsData.metaDescription;
         this.isDraft = articleWithTagsAndPillarsData.isDraft;
         this.orderNumber = articleWithTagsAndPillarsData.orderNumber;
+        this.prevOrderNumber = articleWithTagsAndPillarsData.orderNumber;
         this.categories = articleWithTagsAndPillarsData.categories;
         this.articleTags = articleWithTagsAndPillarsData.tags;
         this.articlePillars = articleWithTagsAndPillarsData.pillars; 
@@ -513,7 +516,7 @@ export class ArticleComponent {
           orderNumber: this.orderNumber
         };
         console.log("dataToSave",dataToSave)
-        const articleId = await this.articleService.saveArticle(dataToSave, !!this.articleId);
+        const articleId = await this.articleService.saveArticle(dataToSave, !!this.articleId, this.prevOrderNumber);
         this.alertService.succesAlert("El artículo se ha guardado exitosamente");
         if (!this.articleId) this.router.navigate([`admin/articles/edit/${articleId}`]);
       } catch (error) {

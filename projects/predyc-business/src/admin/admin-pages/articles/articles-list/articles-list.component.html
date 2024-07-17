@@ -23,6 +23,13 @@
       </td>
     </ng-container>
 
+    <ng-container matColumnDef="order">
+      <th mat-header-cell *matHeaderCellDef class="ft14 centertext">Orden</th>
+      <td mat-cell *matCellDef="let article" class="centertext ft14">
+        {{ article.orderNumber }}
+      </td>
+    </ng-container>
+    
     <ng-container matColumnDef="owner">
       <th mat-header-cell *matHeaderCellDef class="ft14 centertext">Autor</th>
       <td mat-cell *matCellDef="let article" class="centertext ft14">
