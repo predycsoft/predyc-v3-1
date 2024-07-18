@@ -675,18 +675,18 @@ export class DiplomadoLiveFormComponent {
       const diplomado: LiveDiplomado = LiveDiplomado.fromJson({
         id: this.diplomado ? this.diplomado.id : null,
         name: this.diplomadoName,
-        startDate:diplomadoDate,
-        photoUrl:this.photoUrl?this.photoUrl:null,
-        duration:this.duration,
-        type:this.type,
-        activityRef:this.activityRef?this.activityRef:null,
+        startDate: diplomadoDate,
+        photoUrl: this.photoUrl ? this.photoUrl : null,
+        duration: this.duration,
+        type: this.type,
+        activityRef: this.activityRef ? this.activityRef : null,
         description: this.profileDescription,
         coursesRef: coursesRef,
         baseDiplomado: this.diplomado?.baseDiplomado
           ? this.diplomado?.baseDiplomado
           : baseDiplomado,
         enterpriseRef: enterpriseRef,
-        //permissions: this.diplomado ? this.diplomado.permissions : null,
+        emailLastDate: null
       });
 
       console.log('diplomado save',diplomado)

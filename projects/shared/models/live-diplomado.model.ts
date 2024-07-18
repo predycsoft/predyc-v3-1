@@ -21,6 +21,8 @@ export interface LiveDiplomadoJson {
   baseDiplomado: DocumentReference<LiveDiplomado>;
   activityRef: DocumentReference<Activity>;
   startDate: string;
+  emailLastDate: any;
+
 
 }
 
@@ -28,6 +30,7 @@ export class LiveDiplomado {
   public static collection: string = "live-diplomado";
 
   public id: string;
+  public emailLastDate: any;
   public name: string;
   public startDate:string;
   public photoUrl:string;
@@ -48,6 +51,7 @@ export class LiveDiplomado {
   public static fromJson(profileJson: LiveDiplomadoJson): LiveDiplomado {
     let profile = new LiveDiplomado();
     profile.id = profileJson.id;
+    profile.emailLastDate = profileJson.emailLastDate
     profile.startDate = profileJson.startDate,
     profile.name = profileJson.name;
     profile.duration = profileJson.duration;
@@ -65,6 +69,7 @@ export class LiveDiplomado {
   toJson(): LiveDiplomadoJson {
     return {
       id: this.id,
+      emailLastDate:this.emailLastDate,
       startDate:this.startDate,
       type:this.type,
       name: this.name,
