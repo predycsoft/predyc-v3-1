@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { AlertsService } from "projects/predyc-business/src/shared/services/alerts.service";
@@ -169,7 +170,8 @@ Quill.register(
   styleUrls: ["./article.component.css"],
 })
 export class ArticleComponent {
-  constructor( private categoryService: CategoryService, private storage: AngularFireStorage, private authorService: AuthorService, private alertService: AlertsService, private articleService: ArticleService, private modalService: NgbModal, public icon: IconService, private route: ActivatedRoute, public router: Router) {}
+  constructor( private categoryService: CategoryService, private storage: AngularFireStorage, private authorService: AuthorService, private alertService: AlertsService, private articleService: ArticleService, private modalService: NgbModal, public icon: IconService, private route: ActivatedRoute, public router: Router,private location: Location
+  ) {}
 
   articleId = this.route.snapshot.paramMap.get("articleId");
 
@@ -181,6 +183,7 @@ export class ArticleComponent {
     cardEditable: true,
   };
 
+  tab = 1
   editor: Quill;
 
   createTagModal;
@@ -262,7 +265,6 @@ export class ArticleComponent {
     this.editor = editor;
     if (this.articleId) this.loadArticle(this.articleId);
     this.preventToolbarScroll();
-
   }
 
   loadArticle(articleId: string) {
@@ -373,6 +375,10 @@ export class ArticleComponent {
 
   isPillarSelected(pillar: CategoryJson): boolean {
     return this.articlePillars.some(selectedPillar => selectedPillar.name === pillar.name);
+  }
+
+  navigateBackOrToTarget() {
+    this.location.back();
   }
 
   changePillar(pillar: CategoryJson): void {
@@ -542,6 +548,24 @@ export class ArticleComponent {
 
   preventToolbarScroll() {
     document.querySelectorAll(".ql-picker").forEach(tool => {
+      tool.addEventListener("mousedown", function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+      });
+    });
+    document.querySelectorAll(".ql-picker-label").forEach(tool => {
+      tool.addEventListener("mousedown", function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+      });
+    });
+    document.querySelectorAll(".ql-picker-options").forEach(tool => {
+      tool.addEventListener("mousedown", function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+      });
+    });
+    document.querySelectorAll(".ql-picker-item").forEach(tool => {
       tool.addEventListener("mousedown", function(event) {
         event.preventDefault();
         event.stopPropagation();
