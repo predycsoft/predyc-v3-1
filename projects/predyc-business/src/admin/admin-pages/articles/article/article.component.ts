@@ -178,6 +178,7 @@ export class ArticleComponent {
     blotFormatter: {
       specs: [CustomImageSpec],
     },
+    cardEditable: true,
   };
 
   editor: Quill;
