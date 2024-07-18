@@ -16,16 +16,10 @@ export const getAllFreebiesIds = functions.https.onRequest(async (req, res) => {
               res.status(404).send('No freebie found.');
               return;
             }
-        
-            // const freebieIds: string[] = (snapshot).docs.map((article: any) => {
-            //     const data = article.data()
-            //     return data.id
-            // }); 
 
             const freebies: any[] = (snapshot).docs.map((article: any) => {
                 return article.data()
-            }); 
-        
+            });         
         
             res.status(200).send(freebies);
             // res.status(200).json(freebieIds);
