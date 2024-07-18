@@ -3,21 +3,18 @@
     [ngClass]="isEditing ? 'header--edit' : ''"
     fxLayout="row"
     fxLayoutAlign="space-between "
-    class="header pdr10 pdl10"
-  >
+    class="header pdr10 pdl10">
     <app-navigate-back
       *ngIf="!isEditing"
       targetUrl="/admin/live"
-      class="pdt10"
-    >
+      class="pdt10">
       {{ isEditing ? "" : diplomadoName }}
     </app-navigate-back>
     <div
       *ngIf="isEditing; else profileTitle"
       fxLayout="row"
       fxLayoutAlign="space-between center"
-      class="fw fh pdt05 pdb05"
-    >
+      class="fw fh pdt05 pdb05">
       <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign=" center">
         <!-- <input class="input-box ft12" placeholder="Nombre del perfil" [(ngModel)]="diplomadoName" maxlength="43"> -->
         <div class="edit-button">Diplomado en vivo</div>
@@ -25,8 +22,7 @@
       <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign=" center">
         <div
           class="radius20 pdl10 pdr10 pdt05 pdb05 backWhite ft14 cursorPointer"
-          (click)="onCancel()"
-        >
+          (click)="onCancel()">
           Cancelar
         </div>
         <button
@@ -36,8 +32,7 @@
           class="blueButton ft14 cursorPointer"
           style="border-radius: 24px !important"
           (click)="onSave()"
-          [disabled]="disableSaveButton"
-        >
+          [disabled]="disableSaveButton">
           {{ id === "new" ? "Agregar diplomado" : "Guardar diplomado" }}
           <img [src]="icon.save" class="h16px pdl05 makeWhite" alt="" />
         </button>
@@ -51,8 +46,7 @@
           fxLayoutAlign=" center center"
           class="blueButton mgt10 ft14"
           style="border-radius: 24px !important"
-          (click)="onEdit()"
-        >
+          (click)="onEdit()">
           {{
             user.isSystemUser || diplomado?.enterpriseRef ? "Editar" : "Editar"
           }}
@@ -96,13 +90,11 @@
             fxLayout="row"
             fxLayoutGap=""
             fxLayoutAlign="space-between center"
-            style="margin-top: 25px; border: none"
-          >
+            style="margin-top: 25px; border: none">
             <div
               class="searchBarContainer cursorPointer radius20 fw"
               fxLayout="row"
-              fxLayoutAlign=" center"
-            >
+              fxLayoutAlign=" center">
               <textarea
                 name=""
                 id=""
@@ -115,10 +107,34 @@
                   resize: none;
                   border: none;
                   padding-left: 15px !important;
-                  background-color: #ffffff !important;
-                "
-                class="shadow-animation radius20 pd05"
-              ></textarea>
+                  background-color: #ffffff !important;"
+                class="shadow-animation radius20 pd05"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="mgt15 radius20" *ngIf="isEditing">
+          <div
+            class="fw"
+            fxLayout="row"
+            fxLayoutGap=""
+            fxLayoutAlign="space-between center"
+            style="margin-top: 25px; border: none">
+            <div
+              class="searchBarContainer cursorPointer radius20 fw"
+              fxLayout="row"
+              fxLayoutAlign="center">
+              <input
+                type="date"
+                [(ngModel)]="diplomadoDate"
+                maxlength="43"
+                placeholder="fecha de inicio diplomado"
+                style="
+                  width: 100%;
+                  border: none;
+                  padding-left: 15px !important;
+                  background-color: #ffffff !important;"
+                class="shadow-animation radius20 pd05"/>
             </div>
           </div>
         </div>
@@ -130,6 +146,17 @@
           <input #fileInput accept="image/*" type="file" hidden (change)="onFileSelected($event, 'photoUrl')" />
         </div>
         <!-- <input class="input-box ft12" placeholder="Nombre del perfil" [(ngModel)]="diplomadoName" maxlength="43"> -->
+
+        <div class="pd05 mgt10 radius10" *ngIf="!isEditing">
+          <p
+            class="ft12 gray-8"
+            *ngIf="!isEditing"
+            style="overflow-y: hidden; word-wrap: break-word; max-height: 122px">
+            fecha Inicio: {{ diplomadoDate }}
+          </p>
+        </div>
+        
+
         <div class="pd05 mgt10 radius10" *ngIf="!isEditing">
           <p
             class="ft12 gray-8"

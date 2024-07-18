@@ -10,6 +10,7 @@ import {
   BehaviorSubject,
   finalize,
   firstValueFrom,
+  retry,
 } from "rxjs";
 import { Category } from "projects/shared/models/category.model";
 import { Curso, CursoJson } from "projects/shared/models/course.model";
@@ -99,6 +100,7 @@ export class DiplomadoLiveFormComponent {
   private hoverSubject = new BehaviorSubject<any>(null);
 
   diplomadoName: string = "";
+  diplomadoDate:string
   profileDescription: string = "";
 
   profileBackup;
@@ -116,6 +118,19 @@ export class DiplomadoLiveFormComponent {
   activityRef;
 
   type = 'diplomado'
+
+  formatDate(seconds: number): string {
+    if (!seconds) return '';
+
+    // Convertir los segundos a un objeto Date de JavaScript
+    const jsDate = new Date(seconds * 1000);
+
+    const year = jsDate.getFullYear();
+    const month = (jsDate.getMonth() + 1).toString().padStart(2, '0');
+    const day = jsDate.getDate().toString().padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+  }
 
 
   ngOnInit() {
@@ -207,6 +222,7 @@ export class DiplomadoLiveFormComponent {
           const title = MAIN_TITLE + this.diplomado.name;
           this.titleService.setTitle(title);
           this.diplomadoName = this.diplomado.name;
+          this.diplomadoDate = this.diplomado.startDate;
           this.photoUrl = this.diplomado.photoUrl;
           this.type = this.diplomado.type ? this.diplomado.type : 'diplomado' ;
           this.duration = this.diplomado.duration;
@@ -349,6 +365,7 @@ export class DiplomadoLiveFormComponent {
     if (this.user.isSystemUser || this.diplomado.enterpriseRef) {
       this.profileBackup = {
         name: this.diplomadoName,
+        startDate:this.diplomadoDate,
         photoUrl:this.photoUrl,
         type:this.type,
         duration:this.duration,
@@ -600,10 +617,12 @@ export class DiplomadoLiveFormComponent {
   disableSaveButton: boolean = false;
 
   async onSave() {
-    try {
-      if (!this.diplomadoName)
-        throw new Error("Debe indicar un nombre para el diplomado");
 
+    try {
+      if (!this.diplomadoDate)
+        throw new Error("Debe indicar la fecha inicial diplomado");
+      if (!this.diplomadoDate)
+        throw new Error("Debe indicar un nombre para el diplomado");
       if (
         this.diplomados.find(
           (x) =>
@@ -651,9 +670,12 @@ export class DiplomadoLiveFormComponent {
       }
       let baseDiplomado = null;
 
+      let diplomadoDate =this.diplomadoDate;
+
       const diplomado: LiveDiplomado = LiveDiplomado.fromJson({
         id: this.diplomado ? this.diplomado.id : null,
         name: this.diplomadoName,
+        startDate:diplomadoDate,
         photoUrl:this.photoUrl?this.photoUrl:null,
         duration:this.duration,
         type:this.type,
@@ -705,7 +727,7 @@ export class DiplomadoLiveFormComponent {
         const diplomadoId = await this.liveCourseService.saveDiplomado(diplomado);
         this.id = diplomadoId;
         this.diplomado = diplomado;
-        this.router.navigate([`live-sessions/diplomates-live/form/${diplomadoId}`]);
+        this.router.navigate([`/admin/live-sessions/diplomates-live/form/${diplomadoId}`]);
         this.titleService.setTitle(MAIN_TITLE + this.diplomado.name);
       }
       Swal.close();

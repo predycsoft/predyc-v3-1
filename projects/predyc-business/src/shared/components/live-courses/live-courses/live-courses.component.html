@@ -1,13 +1,18 @@
 <div class="mgt20 mgl20 mgr20">
   <div class="fw mgb15" fxLayout="row" fxLayoutAlign=" center">
     <div fxLayout="row" fxLayoutGap="2.5rem" fxLayoutAlign="center center" class="pdl10 pdr10 pdb05 pdt05 ft14 ft500" (click)="tab = 0" [ngClass]="tab == 0 ? 'selectedTab gray-10' : 'gray-6 tab'">Calendario</div>
-    <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign="center center" class="pdl10 pdr10 pdb05 pdt05 ft14 ft500" (click)="tab = 1" [ngClass]="tab == 1 ? 'selectedTab gray-10' : 'gray-6 tab'">Lista de cursos</div>
+    <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign="center center" class="pdl10 pdr10 pdb05 pdt05 ft14 ft500" (click)="tab = 1" [ngClass]="tab == 1 ? 'selectedTab gray-10' : 'gray-6 tab'">Diplomados</div>
+    <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign="center center" class="pdl10 pdr10 pdb05 pdt05 ft14 ft500" (click)="tab = 2" [ngClass]="tab == 2 ? 'selectedTab gray-10' : 'gray-6 tab'">Lista de cursos</div>
   </div>
 
   <ng-container *ngIf="tab === 0">
     <div fxLayout="row" fxLayoutAlign="space-between center">
       <p class="ft600 ft16 gray-10">Lista de Cursos en vivo</p>
-      <button (click)="openModal()" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButton mgt05" style="border-radius: 24px !important"><img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="" />Agregar curso en vivo</button>
+      <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="0.625rem">
+        <button (click)="openModal()" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButton mgt05" style="border-radius: 24px !important">
+          <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="" />Agregar curso en vivo
+        </button>
+      </div>
     </div>
 
     <div fxLayout="row" class="mgt10 fw fh" fxLayoutGap="2rem">
@@ -19,8 +24,28 @@
       </ng-container>
     </div>
   </ng-container>
+  <!-- diplomados -->
+  <ng-container *ngIf="tab === 1"> 
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <p class="ft600 ft16 gray-10">Lista de Diplomados</p>
+      <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="0.625rem">
+        <button routerLink="/admin/live-sessions/diplomates-live/form/new" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButton mgt05" style="border-radius: 24px !important">
+          <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="" />Agregar Diplomado
+        </button>
+      </div>
+    </div>
 
-  <ng-container *ngIf="tab === 1">
+    <div fxLayout="row" class="mgt10 fw fh" fxLayoutGap="2rem">
+      <ng-container *ngIf="diplomados.length === 0">
+        <span class="ft14 ft500"> Aún no hay cursos en vivo.</span>
+      </ng-container>
+      <ng-container *ngIf="diplomados.length > 0">
+        <app-calendar-live-courses-selector class="fw" [calendarLiveCourses]="calendarLiveDiplomados"></app-calendar-live-courses-selector>
+      </ng-container>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="tab === 2">
     <div fxLayout="row" fxLayoutAlign="space-between center" style="width: 58%">
       <p class="ft600 ft16 gray-10">Lista de Cursos base</p>
       <button fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButton mgt05" style="border-radius: 24px !important" routerLink="/admin/live/new"><img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="" />Agregar curso base</button>

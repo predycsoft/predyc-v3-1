@@ -53,8 +53,13 @@ export class CalendarLiveCoursesSelectorComponent implements OnInit {
   };
 
   onSelectCourse(selectedCourse: CalendarLiveCourseData) {
-    // console.log("selectedCourse", selectedCourse)
-    this.router.navigate([`/admin/live-sessions/${selectedCourse.courseId}/${selectedCourse.courseId}`]);
+    console.log("selectedCourse", selectedCourse)
+    if(selectedCourse.type == 'diplomado'){
+      this.router.navigate([`/admin/live-sessions/diplomates-live/form/${selectedCourse.courseId}`]);
+    }
+    else{
+      this.router.navigate([`/admin/live-sessions/${selectedCourse.courseId}/${selectedCourse.courseId}`]);
+    }
   }
 
   verVideoVimeo(course: CalendarLiveCourseData): NgbModalRef {
