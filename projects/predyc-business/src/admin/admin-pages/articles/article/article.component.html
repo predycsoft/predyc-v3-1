@@ -1,5 +1,5 @@
 <app-navigate-back class="ft600 ft16 gray-10" targetUrl="/admin/articles">Artículos</app-navigate-back>
-<div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="1rem" style="margin-top: -45px;">
+<div fxLayout="row" fxLayoutAlign="center end" fxLayoutGap="1rem" style="margin-top: -45px;">
     <div fxFlex="20%">
         <!-- Espacio vacío a la izquierda para centrar los tabs -->
     </div>
@@ -60,7 +60,7 @@
                             </mat-form-field>
                         </form>
                     </div>
-                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="margin-left-custom">
+                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="margin-left-custom pdt03">
                         <ng-container *ngFor="let pillar of articlePillars; let pillarIndex = index" class="margin-left-custom">
                             <div class="skill-badge-complete ListHover radius10 backGray2 ft12 pdl08 pdr08 gray-8">
                                 {{ pillar.name | titlecase }}
@@ -127,7 +127,7 @@
                             </mat-form-field>
                         </form>
                     </div>
-                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="margin-left-custom">
+                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="margin-left-custom pdt03">
                         <ng-container *ngFor="let tag of articleTags; let tagIndex = index" class="margin-left-custom">
                             <div class="skill-badge-complete ListHover radius10 backGray2 ft12 pdl08 pdr08 gray-8">
                                 {{ tag.name | titlecase }}
@@ -146,7 +146,7 @@
                             <option *ngFor="let category of categoriesOptions" [value]="category">{{ category }}</option>
                         </select>
                     </div>
-                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="margin-left-custom">
+                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="margin-left-custom pdt03">
                         <div *ngFor="let category of categories; let categoryIndex = index" class="skill-badge-complete ListHover radius10 backGray2 ft12 pdl08 pdr08 gray-8">
                             <span>{{ category | titlecase }}</span>
                             <img style="cursor: pointer" (click)="removeCategory(categoryIndex)" [src]="icon.close" class="h16px makeGray" alt="" />
