@@ -6,7 +6,7 @@ import { ArticleService } from "projects/predyc-business/src/shared/services/art
 import { IconService } from "projects/predyc-business/src/shared/services/icon.service";
 import Quill from "quill";
 import BlotFormatter from "quill-blot-formatter/dist/BlotFormatter";
-import { Observable, Subscription, combineLatest, firstValueFrom, map, startWith, switchMap } from "rxjs";
+import { Observable, Subscription, combineLatest, firstValueFrom, map, startWith, switchMap, take } from "rxjs";
 import Swal from "sweetalert2";
 import { ArticleData } from "../articles.component";
 import { Author } from "projects/shared/models/author.model";
@@ -260,11 +260,13 @@ export class ArticleComponent {
   onEditorCreated(editor) {
     this.editor = editor;
     if (this.articleId) this.loadArticle(this.articleId);
+    this.preventToolbarScroll();
+
   }
 
   loadArticle(articleId: string) {
     try {
-      this.articleSubscription = this.articleService.getArticleWithDataById$(articleId).pipe(
+      this.articleSubscription = this.articleService.getArticleWithDataById$(articleId).pipe(take(1),
         switchMap((article: ArticleData) => {
           const tagsIds = article.tagsRef.map(x => x.id);
           const pillarsIds = article.pillarsRef.map(x => x.id);
@@ -297,7 +299,7 @@ export class ArticleComponent {
         this.articleTags = articleWithTagsAndPillarsData.tags;
         this.articlePillars = articleWithTagsAndPillarsData.pillars; 
         this.originalContent = structuredClone(articleWithTagsAndPillarsData.data)
-        // console.log('originalContent',this.originalContent)
+        console.log('originalContent',this.originalContent)
       });
   
     } catch (error) {
@@ -536,6 +538,16 @@ export class ArticleComponent {
     const blob = await response.blob();
     return blob;
   }
+
+  preventToolbarScroll() {
+    document.querySelectorAll(".ql-picker").forEach(tool => {
+      tool.addEventListener("mousedown", function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+      });
+    });
+  }
+  
 
   base64ToBlob(base64: string): Blob {
     const byteString = atob(base64.split(',')[1]);

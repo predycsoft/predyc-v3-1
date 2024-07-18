@@ -3461,6 +3461,12 @@ span {
 
 // QUILL
 
+.ql-clipboard {
+  position: fixed !important;
+  display: none;
+  left: 50%;
+  top: 50%;
+}
 
 .ql-editor p{
   color: var(--color-text);
