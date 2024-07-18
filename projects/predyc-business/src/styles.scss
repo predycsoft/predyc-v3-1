@@ -3461,41 +3461,56 @@ span {
 
 // QUILL
 
+.ql-clipboard {
+  position: fixed !important;
+  display: none;
+  left: 50%;
+  top: 50%;
+}
 
 .ql-editor p{
-  color: var(--color-text);
-  font-size: var(--font-size-medium);
-  line-height: var(--line-height-open);
-  margin: 1.6rem 2.4rem;
+  color: var(--color-text) !important;
+  font-size: var(--font-size-medium) !important;
+  line-height: var(--line-height-open) !important;
+  margin: 1.6rem 2.4rem !important;
 }
 
 .ql-editor a{
-  font-size: var(--font-size-medium);
+  font-size: var(--font-size-medium) !important;
 }
 
 .ql-editor li{
-  color: var(--color-text);
+  color: var(--color-text) !important;
   font-size: var(--font-size-medium) !important;
-  margin: 1rem 2.4rem;
+  margin: 1rem 2.4rem !important;
 }
 
 .ql-editor h2{
-  font-size: var(--font-size-xlarge);
-  font-weight: var(--font-weight-bold);
-  margin: 1.6rem 2.4rem;
-  line-height: var(--line-height-default);
+  font-size: var(--font-size-xlarge) !important;
+  font-weight: var(--font-weight-bold) !important;
+  margin: 1.6rem 2.4rem !important;
+  line-height: var(--line-height-default) !important; 
 }
+
 .ql-editor h3{
-    font-size: var(--font-size-large);
-    font-weight: var(--font-weight-bold);
-    margin: 1.6rem 2.4rem;
-    line-height: var(--line-height-default);
+    font-size: var(--font-size-large) !important;
+    font-weight: var(--font-weight-bold) !important;
+    margin: 1.6rem 2.4rem !important;
+    line-height: var(--line-height-default) !important;
   }
 
   .ql-editor blockquote{
-    color: var(--color-text);
-    font-size: var(--font-size-small);
-    line-height: var(--line-height-open);
-    margin: 1.1rem 2.4rem;
+    color: var(--color-text) !important;
+    font-size: var(--font-size-small) !important;
+    line-height: var(--line-height-open) !important;
+    margin: 1.1rem 2.4rem !important; 
+  }
 
+  .ql-editor p span,
+  .ql-editor h2 span,
+  .ql-editor h3 span,
+  .ql-editor blockquote span {
+    color: inherit !important;
+    font-size: inherit !important;
+    line-height: inherit !important;
   }
