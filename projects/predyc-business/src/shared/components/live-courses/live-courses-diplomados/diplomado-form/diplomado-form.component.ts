@@ -45,6 +45,8 @@ import { LiveCourseService } from "projects/predyc-business/src/shared/services/
 import { InstructorsService } from '../../../../services/instructors.service';
 import { LiveDiplomado, LiveDiplomadoJson } from "projects/shared/models/live-diplomado.model";
 
+import { DialogChooseBaseLiveCourseComponent } from "../../dialog-choose-base-live-course/dialog-choose-base-live-course.component";
+
 
 const MAIN_TITLE = "Predyc - ";
 
@@ -78,7 +80,7 @@ export class DiplomadoLiveFormComponent {
     private modalService: NgbModal,
     private diplomadoService: DiplomadoService,
     private liveCourseService:LiveCourseService,
-    private instructorsService:InstructorsService
+    private instructorsService:InstructorsService,
   ) {}
 
   isEditing: boolean;
@@ -633,6 +635,11 @@ export class DiplomadoLiveFormComponent {
       )
         throw new Error("El nombre del diplomado se encuentra en uso");
 
+      if (
+        this.studyPlan.find((x) => !x.datosLive)
+      )
+        throw new Error("Hay cursos con datos incompletos");
+
       this.disableSaveButton = true;
       this.alertService.infoAlert(
         "Se procederá a actualizar los datos del plan de estudio del perfil y de sus usuarios relacionados, por favor espere hasta que se complete la operación"
@@ -727,6 +734,24 @@ export class DiplomadoLiveFormComponent {
         const diplomadoId = await this.liveCourseService.saveDiplomado(diplomado);
         this.id = diplomadoId;
         this.diplomado = diplomado;
+        
+
+        for (let cursoEnVivo of this.studyPlan) {
+          try {
+            await this.liveCourseService.saveLiveCourseComplete(
+              this.activityClassesService,
+              cursoEnVivo.datosLive.formValue,
+              cursoEnVivo.datosLive.sessions,
+              cursoEnVivo.datosLive.liveCourseDiagnosticTest,
+              cursoEnVivo.datosLive.liveCourseFinalTest,
+              diplomado.id
+            );
+          } catch (error) {
+            console.error('Error saving live course:', error);
+          }
+        }
+
+        
         this.router.navigate([`/admin/live-sessions/diplomates-live/form/${diplomadoId}`]);
         this.titleService.setTitle(MAIN_TITLE + this.diplomado.name);
       }
@@ -900,6 +925,68 @@ export class DiplomadoLiveFormComponent {
       };
       reader.readAsText(file);
     }
+  }
+
+
+
+
+  openModalCurso(curso) {
+    const modalRef = this.modalService.open(DialogChooseBaseLiveCourseComponent, {
+      animation: true,
+      centered: true,
+      //size: 'lg',
+      backdrop: "static",
+      keyboard: false,
+    });
+
+    let data = {
+      curso: curso,
+      date:curso?.datosLive?.date ? curso.datosLive.date : null,
+      meetingLink:curso?.datosLive?.formValue?.meetingLink ? curso.datosLive.formValue.meetingLink : null,
+      identifyingText:curso?.datosLive?.formValue?.identifyingText ? curso.datosLive.formValue.identifyingText : null
+    };
+
+    modalRef.componentInstance.datosCurso = data;
+    modalRef.result.then(async (result) => {
+        if (result) {
+          try {
+            console.log(result)
+            curso.datosLive = result
+            curso.datosLive.date = this.parseDateString(result.formValue.sessionsDates[result.sessions[0].id]);
+            //studyPlan
+            this.studyPlan.sort((a, b) => {
+              const dateA = a.datosLive?.date;
+              const dateB = b.datosLive?.date;
+          
+              if (dateA && dateB) {
+                return dateA - dateB;
+              } else if (dateA) {
+                return -1;
+              } else if (dateB) {
+                return 1;
+              } else {
+                return 0;
+              }
+            });
+
+          } catch (error) {
+            console.error(error);
+          }
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+
+  parseDateString(date: string): Date {
+    date = date.replace("T", "-");
+    let parts = date.split("-");
+    let timeParts = parts[3].split(":");
+
+    // new Date(year, month [, day [, hours[, minutes[, seconds[, ms]]]]])
+    return new Date(+parts[0], +parts[1] - 1, +parts[2], +timeParts[0], +timeParts[1]); // Note: months are 0-based
   }
 
 

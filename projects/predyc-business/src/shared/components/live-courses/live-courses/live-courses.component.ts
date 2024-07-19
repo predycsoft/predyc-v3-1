@@ -33,6 +33,7 @@ export interface CalendarLiveCourseData {
   sessionDate: number;
   sessionVimeoId1: number;
   sessionVimeoId2: string;
+  diplomadoLiveRef: any;
   
 }
 
@@ -68,7 +69,7 @@ export class LiveCoursesComponent {
   calendarLiveCourses: CalendarLiveCourseData[] = [];
   calendarLiveDiplomados: CalendarLiveCourseData[] = [];
 
-  diplomados
+  diplomados = []
 
   ngAfterViewInit() {
     this.handleImageError();
@@ -180,6 +181,7 @@ export class LiveCoursesComponent {
                   sessionDate: new Date(diploamdo.startDate).getTime(),
                   sessionVimeoId1: null,
                   sessionVimeoId2: null,
+                  diplomadoLiveRef:null
                 };
                 newCalendarLiveCourses.push(calendarLiveCourseData);
               this.calendarLiveDiplomados = newCalendarLiveCourses.sort((a, b) => a.sessionDate - b.sessionDate);
@@ -204,6 +206,7 @@ export class LiveCoursesComponent {
                 sessionDate: firestoreTimestampToNumberTimestamp(session.date),
                 sessionVimeoId1: session.vimeoId1,
                 sessionVimeoId2: session.vimeoId2,
+                diplomadoLiveRef:liveCourse['diplomadoLiveRef'],
               };
               newCalendarLiveCourses.push(calendarLiveCourseData);
             });

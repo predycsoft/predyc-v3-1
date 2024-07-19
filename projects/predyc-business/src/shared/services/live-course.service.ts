@@ -6,6 +6,7 @@ import { LiveDiplomado } from 'projects/shared/models/live-diplomado.model';
 import { Session, SessionJson, SessionTemplate } from 'projects/shared/models/session.model';
 import { User } from 'projects/shared/models/user.model';
 import { Observable, catchError, combineLatest, firstValueFrom, forkJoin, from, map, mergeMap, of, switchMap, toArray } from 'rxjs';
+import { Question } from 'shared';
 
 @Injectable({
   providedIn: 'root'
@@ -316,6 +317,115 @@ export class LiveCourseService {
     await ref.set(dataToSave, { merge: true });
     diplomado.id = ref.id; // Assign the generated ID to the profile
     return diplomado.id
+  }
+
+  parseDateString(date: string): Date {
+    date = date.replace("T", "-");
+    let parts = date.split("-");
+    let timeParts = parts[3].split(":");
+
+    // new Date(year, month [, day [, hours[, minutes[, seconds[, ms]]]]])
+    return new Date(+parts[0], +parts[1] - 1, +parts[2], +timeParts[0], +timeParts[1]); // Note: months are 0-based
+  }
+
+
+  async saveLiveCourseComplete(activityClassesService,formValue,sessions,liveCourseDiagnosticTest = null,liveCourseFinalTest =null,idDiplomado = null){
+    // console.log('Form Value:', formValue);
+    // copy the template data
+    const liveCourseTemplateData = { ...formValue.baseCourse };
+    delete liveCourseTemplateData.sessions;
+    // Save live course
+    let diplomadoLiveRef = null
+    if(idDiplomado){
+      diplomadoLiveRef = this.afs.collection(LiveDiplomado.collection).doc(idDiplomado).ref;
+    }
+
+    let liveCourse: any = {
+      ...liveCourseTemplateData,
+      id: null,
+      liveCourseTemplateRef: this.getLiveCourseTemplateRefById(liveCourseTemplateData.id),
+      meetingLink: formValue.meetingLink,
+      identifierText: formValue.identifyingText,
+      emailLastDate: null,
+      diplomadoLiveRef:diplomadoLiveRef
+    };
+    // console.log("liveCourse", liveCourse)
+    const liveCourseId = await this.saveLiveCourse(liveCourse);
+    const liveCourseRef = this.getLiveCourseRefById(liveCourseId);
+    // Save first session with date
+    const firstSessionDate = this.parseDateString(formValue.sessionsDates[sessions[0].id]);
+    // copy the template data
+    const sessionTemplateData = { ...sessions[0] };
+    delete sessionTemplateData.liveCourseTemplateRef;
+    const firstSession: any = {
+      ...sessionTemplateData,
+      id: null,
+      date: firstSessionDate,
+      liveCourseRef: liveCourseRef,
+      sessionTemplateRef: this.getSessionTemplateRefById(sessionTemplateData.id),
+      vimeoId1: null,
+      vimeoId2: null,
+      weeksToKeep: 2,
+    };
+    // console.log("firstSession", firstSession)
+    await this.saveSession(firstSession);
+    // Save rest of sessions without date
+    for (let i = 1; i < sessions.length; i++) {
+      const followingSessionTemplateData = { ...sessions[i] };
+      delete followingSessionTemplateData.liveCourseTemplateRef;
+      const followingSession: any = {
+        ...followingSessionTemplateData,
+        id: null,
+        date: null,
+        liveCourseRef: liveCourseRef,
+        sessionTemplateRef: this.getSessionTemplateRefById(followingSessionTemplateData.id),
+        vimeoId1: null,
+        vimeoId2: null,
+        weeksToKeep: 2,
+      };
+      // console.log("followingSession", followingSession)
+      await this.saveSession(followingSession);
+    }
+
+    // Save tests
+    if (liveCourseDiagnosticTest) {
+      liveCourseDiagnosticTest.id = null;
+      liveCourseDiagnosticTest.coursesRef = [liveCourseRef];
+      const activityId = await activityClassesService.saveActivity(liveCourseDiagnosticTest);
+
+      let questions: Question[] = [];
+      questions = structuredClone(liveCourseDiagnosticTest.questions);
+      for (let pregunta of questions) {
+        delete pregunta["competencias_tmp"];
+        delete pregunta["competencias"];
+        delete pregunta["isInvalid"];
+        delete pregunta["InvalidMessages"];
+        delete pregunta["expanded_categorias"];
+        delete pregunta["expanded"];
+        delete pregunta["uploading_file_progress"];
+        delete pregunta["uploading"];
+        await activityClassesService.saveQuestion(pregunta, activityId);
+      }
+    }
+    if (liveCourseFinalTest) {
+      liveCourseFinalTest.id = null;
+      liveCourseFinalTest.coursesRef = [liveCourseRef];
+      const activityId = await activityClassesService.saveActivity(liveCourseFinalTest);
+
+      let questions: Question[] = [];
+      questions = structuredClone(liveCourseFinalTest.questions);
+      for (let pregunta of questions) {
+        delete pregunta["competencias_tmp"];
+        delete pregunta["competencias"];
+        delete pregunta["isInvalid"];
+        delete pregunta["InvalidMessages"];
+        delete pregunta["expanded_categorias"];
+        delete pregunta["expanded"];
+        delete pregunta["uploading_file_progress"];
+        delete pregunta["uploading"];
+        await activityClassesService.saveQuestion(pregunta, activityId);
+      }
+    }
   }
 
 

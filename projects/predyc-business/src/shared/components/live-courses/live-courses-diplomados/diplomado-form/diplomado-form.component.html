@@ -499,65 +499,8 @@
           </div>
         </div>
 
-        <ng-container *ngIf="studyPlan.length > 0 && isEditing">
-          <div
-            cdkDropList
-            [cdkDropListData]="studyPlan"
-            (cdkDropListDropped)="onDrop($event)"
-            class="list-container hoverBlue"
-            style="overflow: hidden; background-color: #fcfcfc"
-            class="radius10 borderLight mgt20"
-          >
-            <div
-              *ngFor="let item of studyPlan; let i = index"
-              cdkDrag
-              class="fw pd05 h40px border-bl hoverBlue item-container cursorPointer"
-              fxLayout="row"
-              fxLayoutAlign="space-between center"
-              fxLayoutGap="1rem"
-            >
-              <div
-                fxLayout="row"
-                fxLayoutAlign="space-between center  "
-                class="fw"
-                fxLayoutGap="0.5rem"
-              >
-                <div fxLayout="column" fxLayoutGap="5px" class="ft11">
-                  <span class="ft12 gray-10">
-                    <img
-                      [src]="icon.drag"
-                      class="h14px cursorPointer"
-                      alt=""
-                      class="pdr05"
-                    />
-                    {{item.instructorData.nombre}} - {{ item.titulo }}
-                  </span>
-                  <!-- <span>Orden: {{ item.studyPlanOrder }}</span> -->
-                </div>
-                <div
-                  fxLayout="row"
-                  class=""
-                  fxLayoutGap="0.5rem"
-                  style="margin-left: 5px"
-                >
-                  <span class="gray-10 ft11 nowrap"
-                    >{{ roundNumber(item.duracion / 60) }} hrs</span
-                  >
-                  <img
-                    [src]="icon.trash"
-                    class="h14px makeGray cursorPointer"
-                    (click)="toggleCourseInPlan(item)"
-                    alt=""
-                  />
-                </div>
-              </div>
-              <div *cdkDragPlaceholder class="placeholder"></div>
-            </div>
-          </div>
-        </ng-container>
-
         <div
-          *ngIf="studyPlan.length > 0 && !isEditing"
+          *ngIf="studyPlan.length > 0"
           style="overflow: hidden; background-color: #fcfcfc"
           class="radius10 borderLight mgt20"
         >
@@ -566,25 +509,25 @@
             fxLayout="row"
             fxLayoutAlign="space-between center"
             fxLayoutGap="1rem"
-            *ngFor="let item of studyPlan; let i = index"
-          >
+            *ngFor="let item of studyPlan; let i = index">
             <div
               fxLayout="row"
               fxLayoutAlign="space-between center"
               class="fw"
-              fxLayoutGap="0.5rem"
-            >
-              <div fxLayout="column" fxLayoutGap="5px" class="ft11">
+              fxLayoutGap="0.5rem">
+              <div (click)="openModalCurso(item)" fxLayout="column" fxLayoutGap="5px" class="ft11 cursorPointer">
                 <span class="ft12 gray-10">
                   {{item.instructorData.nombre}} - {{ item.titulo }}
+                </span>
+                <span *ngIf="item.datosLive" class="ft12 gray-10">
+                  Inicio: {{item?.datosLive?.date | date}}
                 </span>
               </div>
               <div
                 fxLayout="row"
                 class=""
                 fxLayoutGap="0.5rem"
-                style="margin-left: 5px"
-              >
+                style="margin-left: 5px">
                 <span class="gray-10 ft11 nowrap">
                   {{ roundNumber(item.duracion / 60) }} hrs
                 </span>
@@ -593,8 +536,7 @@
                   [src]="icon.trash"
                   class="h14px makeGray cursorPointer"
                   (click)="toggleCourseInPlan(item)"
-                  alt=""
-                />
+                  alt=""/>
               </div>
             </div>
           </div>

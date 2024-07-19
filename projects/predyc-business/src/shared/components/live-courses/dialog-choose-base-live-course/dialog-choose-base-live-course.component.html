@@ -3,7 +3,7 @@
         <img [src]="icon.close" (click)="closeDialog()" class="makeGray h20px cursorPointer">
     </div>
 
-    <div fxLayout="column" class="form-group">
+    <div *ngIf="!datosCurso" fxLayout="column" class="form-group">
         <label class="ft14 ft500" for="baseCourse">Elegir curso base</label>
         <div fxLayout="row" fxLayoutAlign="center center" class="mgt05 fw">
             <div fxFlex="100">
@@ -41,7 +41,7 @@
     </div>
 
     <button *ngIf="formNewCourse.valid" (click)="onSave()" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButton mgt05" style="border-radius: 24px !important;">
-        <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="">Agregar curso en vivo
+        <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="">{{textoBtnConfirmar}}
     </button>
 </div>
   

@@ -39,6 +39,10 @@ export class DialogChooseBaseLiveCourseComponent {
   liveCourseTestSubscription: Subscription;
   formNewCourse: FormGroup;
 
+  textoBtnConfirmar = 'Agregar curso en vivo'
+
+  @Input() datosCurso: any
+
   ngOnInit(): void {
     this.formNewCourse = this.fb.group({
       baseCourse: ["", Validators.required],
@@ -55,11 +59,58 @@ export class DialogChooseBaseLiveCourseComponent {
         };
       });
       // console.log("baseLiveCourses", liveCoursesTemplates)
+      if(this.datosCurso){
+        this.textoBtnConfirmar = 'Configurar curso en vivo'
+        console.log('datos',this.datosCurso,this.baseLiveCourses)
+        let baseCurso = this.baseLiveCourses.find(x=>x.id ==this.datosCurso.curso.id )
+        let  currentDate = null
+        if(this.datosCurso.date){
+          currentDate =  this.formatDateLiteral(this.datosCurso.date)
+        }
+        this.setBaseCourse(baseCurso, currentDate);
+        this.formNewCourse.patchValue({ baseCourse: baseCurso });
+
+        if(this.datosCurso?.meetingLink){
+          this.formNewCourse.patchValue({ meetingLink: this.datosCurso.meetingLink });
+        }
+
+        if(this.datosCurso?.identifyingText){
+          this.formNewCourse.patchValue({ identifyingText: this.datosCurso.identifyingText });
+        }
+      }
     });
+
   }
 
-  setBaseCourse(baseCourse: LiveCourseTemplateWithSessionsTemplates) {
-    // console.log("baseCourse", baseCourse);
+  formatDateLiteral(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Los meses en JS son 0-indexados
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+  
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  }
+
+  setBaseCourse(baseCourse: any, startDate?: string) {
+    this.sessions = baseCourse.sessions;
+
+    const sessionGroup = this.formNewCourse.get("sessionsDates") as FormGroup;
+
+    Object.keys(sessionGroup.controls).forEach((key) => {
+      sessionGroup.removeControl(key);
+    });
+
+    const firstSession = baseCourse.sessions[0];
+    sessionGroup.addControl(firstSession.id, this.fb.control(startDate || "", Validators.required));
+
+    this.liveCourseDiagnosticTest = null;
+    this.liveCourseFinalTest = null;
+    this.getExamCourse(baseCourse.id);
+  }
+
+  _setBaseCourse(baseCourse: LiveCourseTemplateWithSessionsTemplates) {
+    console.log("baseCourse", baseCourse);
     this.sessions = baseCourse.sessions;
 
     const sessionGroup = this.formNewCourse.get("sessionsDates") as FormGroup;
@@ -116,109 +167,34 @@ export class DialogChooseBaseLiveCourseComponent {
   }
 
   async onSave() {
-    Swal.fire({
-      title: "Generando curso en vivo...",
-      text: "Por favor, espera.",
-      allowOutsideClick: false,
-      didOpen: () => {
-        Swal.showLoading();
-      },
-    });
     // console.log("this.formNewCourse", this.formNewCourse)
     if (this.formNewCourse.valid) {
       const formValue: FormValue = this.formNewCourse.value;
-      // console.log('Form Value:', formValue);
-      // copy the template data
-      const liveCourseTemplateData = { ...formValue.baseCourse };
-      delete liveCourseTemplateData.sessions;
-      // Save live course
-      let liveCourse: any = {
-        ...liveCourseTemplateData,
-        id: null,
-        liveCourseTemplateRef: this.liveCourseService.getLiveCourseTemplateRefById(liveCourseTemplateData.id),
-        meetingLink: formValue.meetingLink,
-        identifierText: formValue.identifyingText,
-        emailLastDate: null,
-      };
-      // console.log("liveCourse", liveCourse)
-      const liveCourseId = await this.liveCourseService.saveLiveCourse(liveCourse);
-      const liveCourseRef = this.liveCourseService.getLiveCourseRefById(liveCourseId);
-      // Save first session with date
-      const firstSessionDate = this.parseDateString(formValue.sessionsDates[this.sessions[0].id]);
-      // copy the template data
-      const sessionTemplateData = { ...this.sessions[0] };
-      delete sessionTemplateData.liveCourseTemplateRef;
-      const firstSession: any = {
-        ...sessionTemplateData,
-        id: null,
-        date: firstSessionDate,
-        liveCourseRef: liveCourseRef,
-        sessionTemplateRef: this.liveCourseService.getSessionTemplateRefById(sessionTemplateData.id),
-        vimeoId1: null,
-        vimeoId2: null,
-        weeksToKeep: 2,
-      };
-      // console.log("firstSession", firstSession)
-      await this.liveCourseService.saveSession(firstSession);
-      // Save rest of sessions without date
-      for (let i = 1; i < this.sessions.length; i++) {
-        const followingSessionTemplateData = { ...this.sessions[i] };
-        delete followingSessionTemplateData.liveCourseTemplateRef;
-        const followingSession: any = {
-          ...followingSessionTemplateData,
-          id: null,
-          date: null,
-          liveCourseRef: liveCourseRef,
-          sessionTemplateRef: this.liveCourseService.getSessionTemplateRefById(followingSessionTemplateData.id),
-          vimeoId1: null,
-          vimeoId2: null,
-          weeksToKeep: 2,
-        };
-        // console.log("followingSession", followingSession)
-        await this.liveCourseService.saveSession(followingSession);
+      if(!this.datosCurso){
+
+        Swal.fire({
+          title: "Generando curso en vivo...",
+          text: "Por favor, espera.",
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          },
+        });
+        
+        await this.liveCourseService.saveLiveCourseComplete(this.activityClassesService,formValue,this.sessions,this.liveCourseDiagnosticTest,this.liveCourseFinalTest)
+        this.alertService.succesAlert("El curso en vivo se ha guardado exitosamente");
+        this.activeModal.close();
       }
-
-      // Save tests
-      if (this.liveCourseDiagnosticTest) {
-        this.liveCourseDiagnosticTest.id = null;
-        this.liveCourseDiagnosticTest.coursesRef = [liveCourseRef];
-        const activityId = await this.activityClassesService.saveActivity(this.liveCourseDiagnosticTest);
-
-        let questions: Question[] = [];
-        questions = structuredClone(this.liveCourseDiagnosticTest.questions);
-        for (let pregunta of questions) {
-          delete pregunta["competencias_tmp"];
-          delete pregunta["competencias"];
-          delete pregunta["isInvalid"];
-          delete pregunta["InvalidMessages"];
-          delete pregunta["expanded_categorias"];
-          delete pregunta["expanded"];
-          delete pregunta["uploading_file_progress"];
-          delete pregunta["uploading"];
-          await this.activityClassesService.saveQuestion(pregunta, activityId);
+      else{
+        let datos = {
+          formValue:formValue,
+          sessions:this.sessions,
+          liveCourseDiagnosticTest:this.liveCourseDiagnosticTest,
+          liveCourseFinalTest:this.liveCourseFinalTest
         }
+        this.activeModal.close(datos);
       }
-      if (this.liveCourseFinalTest) {
-        this.liveCourseFinalTest.id = null;
-        this.liveCourseFinalTest.coursesRef = [liveCourseRef];
-        const activityId = await this.activityClassesService.saveActivity(this.liveCourseFinalTest);
-
-        let questions: Question[] = [];
-        questions = structuredClone(this.liveCourseFinalTest.questions);
-        for (let pregunta of questions) {
-          delete pregunta["competencias_tmp"];
-          delete pregunta["competencias"];
-          delete pregunta["isInvalid"];
-          delete pregunta["InvalidMessages"];
-          delete pregunta["expanded_categorias"];
-          delete pregunta["expanded"];
-          delete pregunta["uploading_file_progress"];
-          delete pregunta["uploading"];
-          await this.activityClassesService.saveQuestion(pregunta, activityId);
-        }
-      }
-      this.alertService.succesAlert("El curso en vivo se ha guardado exitosamente");
-      this.closeDialog();
+      //this.closeDialog();
     } else console.log("Form is invalid");
   }
 
@@ -232,6 +208,6 @@ export class DialogChooseBaseLiveCourseComponent {
   }
 
   closeDialog() {
-    this.activeModal.dismiss("Cross click");
+    this.activeModal.dismiss();
   }
 }
