@@ -1,4 +1,7 @@
 <div fxLayout="row" fxLayoutAlign="end center" class="mgt10">
+  <div *ngIf="courseDetails.diplomadoLiveRef" class="mgr10" style="border-radius: 24px !important">
+    Este curso es parte de un diplomado.
+  </div>
   <button class="botonSecundario" style="border-radius: 24px !important" (click)="downloadExcel()">
     <img [src]="icon.addNew" class="h16px pdr05 makeBlue" alt="" />Descargar Datos
   </button>

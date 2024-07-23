@@ -306,10 +306,13 @@ export class CreateLiveCourseComponent {
         .pipe(take(1))
         .subscribe((liveCourseData) => {
           console.log('daliveCourseDatata',liveCourseData.liveCourse)
+          this.diplomadoRef = liveCourseData.liveCourse['diplomadoLiveRef']
           this.setForm(liveCourseData);
         });
     }
   }
+
+  diplomadoRef
 
   initializeLiveCourseAsLiveCourseData(): void {
     this.liveCourseData = {

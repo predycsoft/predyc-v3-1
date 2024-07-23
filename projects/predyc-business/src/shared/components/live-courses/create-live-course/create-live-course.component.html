@@ -344,7 +344,7 @@
           </div>
         </mat-tab>
 
-        <mat-tab *ngIf="mode === 'edit'" label="Seguimiento">
+        <mat-tab *ngIf="mode === 'edit' && !diplomadoRef" label="Seguimiento">
           <div fxLayout="row" fxLayoutAlign="center " class="containerCurso h-100" fxLayoutGap="1.5rem">
             <div fxLayout="row" fxLayoutAlign="center" class="w-100">
               <app-live-course-following class="w-90" [studentEmails]="studentEmails" [idBaseLiveCourse]="liveCourseTemplateId" [liveCourseId]="liveCourseId"> </app-live-course-following>
