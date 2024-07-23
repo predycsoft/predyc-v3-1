@@ -81,6 +81,7 @@ export class LiveCourseStudentListComponent {
   environment = environment;
 
   ngOnInit() {
+    console.log('courseDetailsStudentList',this.courseDetails)
     this.liveCourseRef = this.liveCourseService.getLiveCourseRefById(this.liveCourseId);
     this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe((params) => {
       const page = Number(params["page"]) || 1;

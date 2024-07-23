@@ -2,7 +2,7 @@
   <button class="botonSecundario" style="border-radius: 24px !important" (click)="downloadExcel()">
     <img [src]="icon.addNew" class="h16px pdr05 makeBlue" alt="" />Descargar Datos
   </button>
-  <button class="blueButtonAnim button-animation" style="border-radius: 24px !important" (click)="openModal()">
+  <button *ngIf="!courseDetails.diplomadoLiveRef" class="blueButtonAnim button-animation" style="border-radius: 24px !important" (click)="openModal()">
     <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="" />Asignar a usuario
   </button>
 </div>

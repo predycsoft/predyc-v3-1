@@ -13,6 +13,7 @@ import { LiveCourseService } from "../../../services/live-course.service";
 import { InstructorsService } from "../../../services/instructors.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { DialogChooseBaseLiveCourseComponent } from "../dialog-choose-base-live-course/dialog-choose-base-live-course.component";
+import { Diplomado } from '../../../../../../shared/models/diplomado.model';
 
 export class category {
   name: string = "";
@@ -34,6 +35,7 @@ export interface CalendarLiveCourseData {
   sessionVimeoId1: number;
   sessionVimeoId2: string;
   diplomadoLiveRef: any;
+  diplomadoData:any
   
 }
 
@@ -181,7 +183,8 @@ export class LiveCoursesComponent {
                   sessionDate: new Date(diploamdo.startDate).getTime(),
                   sessionVimeoId1: null,
                   sessionVimeoId2: null,
-                  diplomadoLiveRef:null
+                  diplomadoLiveRef:null,
+                  diplomadoData:null
                 };
                 newCalendarLiveCourses.push(calendarLiveCourseData);
               this.calendarLiveDiplomados = newCalendarLiveCourses.sort((a, b) => a.sessionDate - b.sessionDate);
@@ -207,6 +210,7 @@ export class LiveCoursesComponent {
                 sessionVimeoId1: session.vimeoId1,
                 sessionVimeoId2: session.vimeoId2,
                 diplomadoLiveRef:liveCourse['diplomadoLiveRef'],
+                diplomadoData:this.diplomados.find(x=>x.id == liveCourse['diplomadoLiveRef']?.id)
               };
               newCalendarLiveCourses.push(calendarLiveCourseData);
             });

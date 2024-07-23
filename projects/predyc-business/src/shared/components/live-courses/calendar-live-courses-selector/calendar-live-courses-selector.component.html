@@ -1,16 +1,23 @@
 <div class="calendar-container fw">
     <div *ngFor="let group of groupedCourses | keyvalue: keyvalueAscOrder" class="month-group">
-        <div class="ft17 ft700 mgb10 mgt05">{{ group.key | titlecase}}</div>
+        <div class="ft17 ft700 mgb10 mgt05">{{ group.key | titlecase }}</div>
         <div *ngFor="let value of group.value" class="course-item cursorPointer" fxLayout="row" fxLayoutAlign="space-between center">
-            <div class="course-info" (click)="onSelectCourse(value)">
+            <div class="course-info" (click)="onSelectCourse(value)" fxFlex>
                 <img [src]="value.coursePhoto" class="course-image" alt="">
                 <div>
-                    <div class="course-title">{{ value.courseTitle }} </div>
+                    <div class="course-title">
+                        {{ value.courseTitle }}
+                    </div>
                     <div class="course-description">{{ value.courseIdentifierText }}</div>
                 </div>
             </div>
-            <div class="course-time">
-                {{ value.sessionDate | date: 'EEE d' }} - {{value.sessionDuration / 60}} {{(value.sessionDuration / 60) > 1 ? "horas" : "hora" }} 
+            <div class="course-time" fxLayout="column" fxLayoutAlign="end end">
+                <div *ngIf="value.diplomadoData" class="skill-badge radius10 backGray2 pdl05 pdr05 gray-8">
+                    Diplomado: {{value.diplomadoData.name}}
+                </div>
+                <div class="course-date">
+                    {{ value.sessionDate | date: 'EEE d' }} - {{value.sessionDuration / 60}} {{(value.sessionDuration / 60) > 1 ? "horas" : "hora" }}
+                </div>
             </div>
         </div>
     </div>

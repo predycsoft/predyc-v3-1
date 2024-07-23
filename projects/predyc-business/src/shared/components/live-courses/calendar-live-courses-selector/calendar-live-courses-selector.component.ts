@@ -18,7 +18,7 @@ export class CalendarLiveCoursesSelectorComponent implements OnInit {
   groupedCourses: { [key: string]: CalendarLiveCourseData[] };
 
   ngOnInit() {
-    // console.log("this.calendarLiveCourses", this.calendarLiveCourses);
+     console.log("this.calendarLiveCourses", this.calendarLiveCourses);
     this.groupCoursesByMonth();
   }
 

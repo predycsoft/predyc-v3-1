@@ -305,6 +305,7 @@ export class CreateLiveCourseComponent {
         .getLiveCourseWithSessionsById$(this.liveCourseId)
         .pipe(take(1))
         .subscribe((liveCourseData) => {
+          console.log('daliveCourseDatata',liveCourseData.liveCourse)
           this.setForm(liveCourseData);
         });
     }
