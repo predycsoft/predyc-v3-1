@@ -303,7 +303,7 @@
           </div>
         </div>
         <div
-          *ngIf="isEditing"
+          *ngIf="isEditing && id == 'new'"
           ngbDropdown
           [autoClose]="'outside'"
           fxLayout="row"
@@ -532,7 +532,7 @@
                   {{ roundNumber(item.duracion / 60) }} hrs
                 </span>
                 <img
-                  *ngIf="isEditing"
+                  *ngIf="isEditing && this.id == 'new'"
                   [src]="icon.trash"
                   class="h14px makeGray cursorPointer"
                   (click)="toggleCourseInPlan(item)"

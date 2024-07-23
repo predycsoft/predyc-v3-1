@@ -308,6 +308,7 @@ export class CreateLiveCourseComponent {
           console.log('daliveCourseDatata',liveCourseData.liveCourse)
           this.diplomadoRef = liveCourseData.liveCourse['diplomadoLiveRef']
           this.setForm(liveCourseData);
+          this.liveCourseTemplateId = liveCourseData.liveCourse.liveCourseTemplateRef.id
         });
     }
   }

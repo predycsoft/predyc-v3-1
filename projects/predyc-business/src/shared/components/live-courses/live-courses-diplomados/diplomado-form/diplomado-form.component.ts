@@ -188,6 +188,8 @@ export class DiplomadoLiveFormComponent {
     } else {
       this.isEditing = false;
       observablesArray.push(this.liveCourseService.getDiplomado$(this.id));
+      observablesArray.push(this.liveCourseService.getLiveCoursesWithSessionsByDiplomadoId$(this.id));
+
     }
     this.serviceSubscription = combineLatest(observablesArray).subscribe(
       (result) => {
@@ -196,7 +198,7 @@ export class DiplomadoLiveFormComponent {
         let coursesData = result[2] as any[];
         let instrcutorsData = result[3] as any[];
         let courses = coursesData.map((x) => {
-          console.log(x.liveCourseTemplate.instructorRef.id)
+          //console.log(x.liveCourseTemplate.instructorRef.id)
           let idInstructor = x.liveCourseTemplate.instructorRef.id
           return {
             idInstructor,
@@ -210,7 +212,9 @@ export class DiplomadoLiveFormComponent {
         });
         console.log('courses',courses,instrcutorsData)
         //courses = courses.filter((x) => !x.proximamente);
-        if (result.length === 5) {
+        let cursosLive = null
+        if (result.length === 6) {
+          cursosLive = result[5]
           const diplomado = result[4] as LiveDiplomadoJson;
           this.diplomado = {
             ...diplomado,
@@ -266,11 +270,41 @@ export class DiplomadoLiveFormComponent {
               : null,
           };
           console.log('courseForExplorer',courseForExplorer)
-          if (inStudyPlan) this.studyPlan.push(courseForExplorer);
+          if (inStudyPlan){
+            if(cursosLive){
+              console.log('cursosLive',cursosLive,courseForExplorer.id)
+              let curso = cursosLive.find(x=>x.liveCourse?.liveCourseTemplateRef?.id == courseForExplorer.id)
+              console.log('curso',curso)
+              courseForExplorer.titulo = curso.liveCourse.title
+              let datosLive = {
+                date:curso.sessions[0].date.seconds * 1000,
+                curso:curso
+              }
+              courseForExplorer.datosLive = datosLive
+            }
+            this.studyPlan.push(courseForExplorer)
+          }
           return courseForExplorer;
         });
 
-        this.studyPlan.sort((a, b) => a.studyPlanOrder - b.studyPlanOrder);
+        console.log('studyPlan',this.studyPlan)
+
+        //this.studyPlan.sort((a, b) => a.studyPlanOrder - b.studyPlanOrder);
+
+        this.studyPlan.sort((a, b) => {
+          const dateA = a.datosLive?.date;
+          const dateB = b.datosLive?.date;
+      
+          if (dateA && dateB) {
+            return dateA - dateB;
+          } else if (dateA) {
+            return -1;
+          } else if (dateB) {
+            return 1;
+          } else {
+            return 0;
+          }
+        });
 
         this.updateWidgets();
 
@@ -635,10 +669,7 @@ export class DiplomadoLiveFormComponent {
       )
         throw new Error("El nombre del diplomado se encuentra en uso");
 
-      if (
-        this.studyPlan.find((x) => !x.datosLive)
-      )
-        throw new Error("Hay cursos con datos incompletos");
+      if (this.studyPlan.find((x) => !x.datosLive) && this.id == 'new') throw new Error("Hay cursos con datos incompletos");
 
       this.disableSaveButton = true;
       this.alertService.infoAlert(
@@ -732,25 +763,25 @@ export class DiplomadoLiveFormComponent {
       } else {
         console.log("diplomado", diplomado);
         const diplomadoId = await this.liveCourseService.saveDiplomado(diplomado);
-        this.id = diplomadoId;
         this.diplomado = diplomado;
         
-
-        for (let cursoEnVivo of this.studyPlan) {
-          try {
-            await this.liveCourseService.saveLiveCourseComplete(
-              this.activityClassesService,
-              cursoEnVivo.datosLive.formValue,
-              cursoEnVivo.datosLive.sessions,
-              cursoEnVivo.datosLive.liveCourseDiagnosticTest,
-              cursoEnVivo.datosLive.liveCourseFinalTest,
-              diplomado.id
-            );
-          } catch (error) {
-            console.error('Error saving live course:', error);
+        if(this.id == 'new'){
+          for (let cursoEnVivo of this.studyPlan) {
+            try {
+              await this.liveCourseService.saveLiveCourseComplete(
+                this.activityClassesService,
+                cursoEnVivo.datosLive.formValue,
+                cursoEnVivo.datosLive.sessions,
+                cursoEnVivo.datosLive.liveCourseDiagnosticTest,
+                cursoEnVivo.datosLive.liveCourseFinalTest,
+                diplomado.id
+              );
+            } catch (error) {
+              console.error('Error saving live course:', error);
+            }
           }
         }
-
+        this.id = diplomadoId;
         
         this.router.navigate([`/admin/live-sessions/diplomates-live/form/${diplomadoId}`]);
         this.titleService.setTitle(MAIN_TITLE + this.diplomado.name);
@@ -931,6 +962,13 @@ export class DiplomadoLiveFormComponent {
 
 
   openModalCurso(curso) {
+
+    if (this.id != 'new'){
+      const id = curso.datosLive.curso.liveCourse.id;
+      const url = this.router.serializeUrl(this.router.createUrlTree([`/admin/live-sessions/${id}/${id}`]));
+      window.open(url, '_blank');
+      return;
+    }
     const modalRef = this.modalService.open(DialogChooseBaseLiveCourseComponent, {
       animation: true,
       centered: true,

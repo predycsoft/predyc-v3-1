@@ -428,6 +428,33 @@ export class LiveCourseService {
     }
   }
 
+  public getLiveCoursesDiplomado$(diplomadoId: string): Observable<LiveCourse[]> {
+    const diplomadoDocRef = this.afs.collection<LiveDiplomado>(LiveDiplomado.collection).doc(diplomadoId).ref;
+    return this.afs.collection<LiveCourse>(LiveCourse.collection, ref => ref.where('diplomadoLiveRef', '==', diplomadoDocRef)).valueChanges();
+  }
+
+  getLiveCoursesWithSessionsByDiplomadoId$(diplomadoId: string): Observable<{ liveCourse: LiveCourse, sessions: Session[] }[]> {
+    // Obtener la referencia del documento del diplomado
+    const diplomadoRef = this.afs.doc<LiveDiplomado>(`${LiveDiplomado.collection}/${diplomadoId}`).ref;
+  
+    // Obtener los cursos en vivo asociados con el diplomado
+    return this.afs.collection<LiveCourse>(LiveCourse.collection, ref => ref.where('diplomadoLiveRef', '==', diplomadoRef)).valueChanges().pipe(
+      switchMap((liveCourses: LiveCourse[]) => {
+        // Para cada curso en vivo, obtener las sesiones asociadas
+        const coursesWithSessions$ = liveCourses.map((liveCourse: LiveCourse) => {
+          const liveCourseRef = this.getLiveCourseRefById(liveCourse.id);
+          return this.getSessionsByLiveCourseRef$(liveCourseRef).pipe(
+            map((sessions: Session[]) => ({
+              liveCourse,
+              sessions
+            }))
+          );
+        });
+        // Combinar todos los observables de sesiones en un solo observable
+        return combineLatest(coursesWithSessions$);
+      })
+    );
+  }
 
   
   
