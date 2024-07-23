@@ -40,6 +40,13 @@ export class QuestionService {
       respuesta: respuesta,
       respondidaInstructor
     }, {merge: true})
-  } 
+  }
+
+  async updateMostrarPregunta(questionId: string, value: boolean) {
+    await this.afs.collection(Question.collection).doc(questionId).update({
+      mostrarPregunta: value
+    })
+    console.log("mostrarRespuesta actualizado a: ", value)
+  }
 
 }
