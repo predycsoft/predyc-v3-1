@@ -8,13 +8,14 @@ export interface QuestionJson {
     instructorRef: DocumentReference
     respondida: boolean
     respuesta: string
-    timestamp: any // Date
-    timestampRespuesta: any // Date
+    timestamp: Date
+    timestampRespuesta: Date
     respondidaInstructor: boolean
     respondidaAI: boolean
     score: number
     //userName: string
     pregunta:string
+    mostrarPregunta:boolean
 }
 
 export class Question {
@@ -34,11 +35,10 @@ export class Question {
         public score: number,
         public respondidaInstructor:boolean,
         public respondidaAI:boolean,
-        public pregunta: string
+        public pregunta: string,
+        public mostrarPregunta:boolean,
         //public userName: string
     ) {}
-
-
 
     public static fromJson(QuestionJson: QuestionJson): Question {
         return new Question(
@@ -55,7 +55,8 @@ export class Question {
             QuestionJson.respondidaInstructor,
             QuestionJson.respondidaAI,
             //QuestionJson.userName
-            QuestionJson.pregunta
+            QuestionJson.pregunta,
+            QuestionJson.mostrarPregunta
         )
     }
 
@@ -74,7 +75,8 @@ export class Question {
             respondidaInstructor:this.respondidaInstructor,
             respondidaAI:this.respondidaAI,
             //userName: this.userName
-            pregunta:this.pregunta
+            pregunta:this.pregunta,
+            mostrarPregunta:this.mostrarPregunta
 
         }
     }

@@ -131,7 +131,7 @@ export class QuestionsListComponent {
     this.courseSubscription = this.courseService.getAllCourses$(this.instructor?.ref).subscribe(courses => {
       const dataInList: any[] = courses.map(course => {
 
-        console.log(this.instructors,course)
+        // console.log(this.instructors,course)
 
         const instructorData = this.instructors.find( x => x.id === course.instructorRef.id)
         return this.getDataToShow(course, instructorData)

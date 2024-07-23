@@ -173,4 +173,8 @@ export class DialogQuestionsDetailComponent {
     return modalRef;
   }
 
+  async cambiarMostrarRespuesta(questionId: string, value: boolean) {
+    await this.questionService.updateMostrarPregunta(questionId, value)
+  }
+
 }
