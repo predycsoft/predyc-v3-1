@@ -1,6 +1,7 @@
 import { DocumentReference } from "@angular/fire/compat/firestore"
 import { Category } from "./category.model"
 import { Author } from "./author.model"
+import { Curso } from "./course.model"
 
 export interface ArticleJson {
     authorRef: DocumentReference<Author>
@@ -18,6 +19,7 @@ export interface ArticleJson {
     titleSEO: string
     updatedAt: any
     orderNumber: number
+    coursesRef: DocumentReference<Curso>[]
 }
 
 export class Article {
@@ -51,6 +53,7 @@ export class Article {
         public titleSEO: string,
         public updatedAt: any,
         public orderNumber: number,
+        public coursesRef: DocumentReference<Curso>[],
 
     ) {}
 
@@ -71,6 +74,7 @@ export class Article {
             articleJson.titleSEO,
             articleJson.updatedAt,
             articleJson.orderNumber,
+            articleJson.coursesRef,
         )
     }
 
@@ -91,6 +95,7 @@ export class Article {
             titleSEO: this.titleSEO,
             updatedAt: this.updatedAt,
             orderNumber: this.orderNumber,
+            coursesRef: this.coursesRef,
         }
     }
 }

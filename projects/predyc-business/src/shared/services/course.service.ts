@@ -93,7 +93,6 @@ export class CourseService {
 
   }
 
-
   async _fixClassByStudentDate() {
     console.log('fixClassByStudentDate');
     
@@ -212,8 +211,6 @@ export class CourseService {
     console.log('fixClassByStudentDate completed');
   }
 
-
-
   async fixCourseByStudentDate(){
 
     console.log('fixClassByStudentDate')
@@ -246,8 +243,6 @@ export class CourseService {
 
   }
 
-
-
   async removeCheater(idUser: string) {
     console.log("removeCheater");
   
@@ -275,9 +270,6 @@ export class CourseService {
     await batch.commit();
     console.log("removeCheater classes updated");
   }
-
-
-
 
   async fixCertificates() {
     // Buscar en la colección coursesByStudent todos los registros con progress = 100
@@ -333,8 +325,6 @@ export class CourseService {
     }
     console.log('finish create certificates')
   }
-
-
 
   async saveCertificate(certificate) {
     try {
@@ -1263,6 +1253,15 @@ export class CourseService {
 
     // Return the day of the month, which is the number of days in that month
     return nextMonth.getDate();
+  }
+
+  getCoursesByIds$(coursesIds: string[]): Observable<CursoJson[]> {
+    if (!coursesIds || coursesIds.length === 0) {
+      return of([]);
+    }
+
+    const courseObservables = coursesIds.map(courseId => this.afs.collection<CursoJson>(Curso.collection).doc(courseId).valueChanges());
+    return combineLatest(courseObservables)
   }
 
   // ---- classeByStudent Collection methods

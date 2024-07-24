@@ -20,6 +20,8 @@ import { CategoryService } from "projects/predyc-business/src/shared/services/ca
 import { CategoryJson } from "projects/shared/models/category.model";
 import ResizeAction from 'quill-blot-formatter/dist/actions/ResizeAction';
 import ImageSpec from 'quill-blot-formatter/dist/specs/ImageSpec';
+import { CourseService } from "projects/predyc-business/src/shared/services/course.service";
+import { CursoJson } from "projects/shared/models/course.model";
 
 const Module = Quill.import("core/module");
 const BlockEmbed = Quill.import("blots/block/embed");
@@ -170,7 +172,7 @@ Quill.register(
   styleUrls: ["./article.component.css"],
 })
 export class ArticleComponent {
-  constructor( private categoryService: CategoryService, private storage: AngularFireStorage, private authorService: AuthorService, private alertService: AlertsService, private articleService: ArticleService, private modalService: NgbModal, public icon: IconService, private route: ActivatedRoute, public router: Router,private location: Location
+  constructor( private courseService: CourseService, private categoryService: CategoryService, private storage: AngularFireStorage, private authorService: AuthorService, private alertService: AlertsService, private articleService: ArticleService, private modalService: NgbModal, public icon: IconService, private route: ActivatedRoute, public router: Router,private location: Location
   ) {}
 
   articleId = this.route.snapshot.paramMap.get("articleId");
@@ -197,13 +199,13 @@ export class ArticleComponent {
   categories: Array<typeof Article.CATEGORY_ARTICLE_OPTION | typeof Article.CATEGORY_INTERVIEW_OPTION | typeof Article.CATEGORY_SUCCEED_OPTION> = []
   selectedCategory: string = "";
   pillars: DocumentReference[] = []
+  courses: DocumentReference[] = []
   summary = ""
   metaDescription = ""
   isDraft = false
   orderNumber = 1
   prevOrderNumber: number | null = null
 
-  newTagName: string = "";
   authors: Author[]
 
   categoriesOptions = []
@@ -212,22 +214,29 @@ export class ArticleComponent {
   tagsSubscription: Subscription
   authorSubscription: Subscription
   pillarsSubscription: Subscription
+  coursesSubscription: Subscription
 
   selectedFile: File | null = null;
   pastPreviewImage: string | null = null; //To check if the photo has been changed
   previewImage: string | ArrayBuffer | null = null;
 
   allTags: ArticleTagJson[] = [];
-  filteredTags: Observable<any[]>;
   tagsForm = new FormControl();
+  filteredTags: Observable<any[]>;
+  newTagName: string = "";
 
-  allCategories: CategoryJson[] = []
+  allCourses: CursoJson[] = [];
+  coursesForm = new FormControl();
+  filteredCourses: Observable<CursoJson[]>;
+  articleCourses: CursoJson[] = [];
 
   articlePillars: CategoryJson[] = [];
   pillarsForm = new FormControl();
   filteredPillars: Observable<CategoryJson[]>;
   newPillarName: string = '';
 
+  allCategories: CategoryJson[] = []
+  
   titleMaxLength = 90
   titleSEOMaxLength = 90
   summaryMaxLength = 141
@@ -252,6 +261,14 @@ export class ArticleComponent {
         map(value => this._filterPillars(value))
       );
     });
+
+    this.coursesSubscription = this.courseService.getAllCourses$().subscribe(courses => {
+      this.allCourses = courses;
+      this.filteredCourses = this.coursesForm.valueChanges.pipe(
+        startWith(''),
+        map(value => this._filterCourses(value))
+      );
+    });
     
     this.authorSubscription = this.authorService.getAuthors$().subscribe(authors => {
       this.authors = authors
@@ -273,35 +290,39 @@ export class ArticleComponent {
         switchMap((article: ArticleData) => {
           const tagsIds = article.tagsRef.map(x => x.id);
           const pillarsIds = article.pillarsRef.map(x => x.id);
+          const coursesIds = article.coursesRef.map(x => x.id);
   
           return combineLatest([
             this.articleService.getArticleTagsByIds$(tagsIds),
-            this.categoryService.getCategoriesByIds(pillarsIds)
+            this.categoryService.getCategoriesByIds(pillarsIds),
+            this.courseService.getCoursesByIds$(coursesIds)
           ]).pipe(
-            map(([tags, pillars]) => ({
+            map(([tags, pillars, courses]) => ({
               ...article,
               tags,
-              pillars
+              pillars,
+              courses
             }))
           );
         })
-      ).subscribe(articleWithTagsAndPillarsData => {
-        this.selectedAuthorId = articleWithTagsAndPillarsData.authorRef.id;
-        this.title = articleWithTagsAndPillarsData.title;
-        this.titleSEO = articleWithTagsAndPillarsData.titleSEO;
-        this.slug = articleWithTagsAndPillarsData.slug;
-        this.previewImage = articleWithTagsAndPillarsData.photoUrl;
-        this.pastPreviewImage = articleWithTagsAndPillarsData.photoUrl;
-        this.editor.setContents(articleWithTagsAndPillarsData.data);
-        this.summary = articleWithTagsAndPillarsData.summary;
-        this.metaDescription = articleWithTagsAndPillarsData.metaDescription;
-        this.isDraft = articleWithTagsAndPillarsData.isDraft;
-        this.orderNumber = articleWithTagsAndPillarsData.orderNumber;
-        this.prevOrderNumber = articleWithTagsAndPillarsData.orderNumber;
-        this.categories = articleWithTagsAndPillarsData.categories;
-        this.articleTags = articleWithTagsAndPillarsData.tags;
-        this.articlePillars = articleWithTagsAndPillarsData.pillars; 
-        this.originalContent = structuredClone(articleWithTagsAndPillarsData.data)
+      ).subscribe(articleWithTagPillarsAndCoursesData => {
+        this.selectedAuthorId = articleWithTagPillarsAndCoursesData.authorRef.id;
+        this.title = articleWithTagPillarsAndCoursesData.title;
+        this.titleSEO = articleWithTagPillarsAndCoursesData.titleSEO;
+        this.slug = articleWithTagPillarsAndCoursesData.slug;
+        this.previewImage = articleWithTagPillarsAndCoursesData.photoUrl;
+        this.pastPreviewImage = articleWithTagPillarsAndCoursesData.photoUrl;
+        this.editor.setContents(articleWithTagPillarsAndCoursesData.data);
+        this.summary = articleWithTagPillarsAndCoursesData.summary;
+        this.metaDescription = articleWithTagPillarsAndCoursesData.metaDescription;
+        this.isDraft = articleWithTagPillarsAndCoursesData.isDraft;
+        this.orderNumber = articleWithTagPillarsAndCoursesData.orderNumber;
+        this.prevOrderNumber = articleWithTagPillarsAndCoursesData.orderNumber;
+        this.categories = articleWithTagPillarsAndCoursesData.categories;
+        this.articleTags = articleWithTagPillarsAndCoursesData.tags;
+        this.articlePillars = articleWithTagPillarsAndCoursesData.pillars; 
+        this.articleCourses = articleWithTagPillarsAndCoursesData.courses;
+        this.originalContent = structuredClone(articleWithTagPillarsAndCoursesData.data)
         console.log('originalContent',this.originalContent)
       });
   
@@ -362,6 +383,30 @@ export class ArticleComponent {
 
   removeTag(tagIndex: number) {
     this.articleTags.splice(tagIndex, 1)
+  }
+
+  _filterCourses(value: string | CursoJson): any[] {
+    const filterValue = (typeof value === 'string') ? value.toLowerCase() : value.titulo.toLowerCase();
+    return this.allCourses.filter(course => course.titulo.toLowerCase().includes(filterValue));
+  }
+
+  getOptionTextCourse(option: CursoJson): string {
+    return option ? option.titulo : '';
+  }
+
+  isCourseSelected(course: CursoJson): boolean {
+    return this.articleCourses.some(selectedCourse => selectedCourse.titulo === course.titulo);
+  }
+
+  changeCourse(course: CursoJson): void {
+    if (!this.isCourseSelected(course)) {
+      this.articleCourses.push(course);
+    }
+    this.coursesForm.setValue(''); // Add the course to the array but reset the mat form field
+  }
+
+  removeCourse(courseIndex: number) {
+    this.articleCourses.splice(courseIndex, 1);
   }
 
   _filterPillars(value: string | CategoryJson): CategoryJson[] {
@@ -498,6 +543,7 @@ export class ArticleComponent {
         // Then get the references
         const tagsReferences = this.articleTags.map(x => this.articleService.getArticleTagRefById(x.id))
         const pillarsReferences = this.articlePillars.map(x => this.categoryService.getCategoryRefById(x.id))
+        const coursesReferences = this.articleCourses.map(x => this.courseService.getCourseRefById(x.id))
 
 
         const processedData = await this.processImagesInContent(this.editor.getContents().ops);
@@ -522,7 +568,8 @@ export class ArticleComponent {
           slug: this.slug,
           updatedAt: new Date(),
           photoUrl: downloadURL,
-          orderNumber: this.orderNumber
+          orderNumber: this.orderNumber,
+          coursesRef: coursesReferences,
         };
         console.log("dataToSave",dataToSave)
         const articleId = await this.articleService.saveArticle(dataToSave, !!this.articleId, this.prevOrderNumber);
@@ -695,6 +742,9 @@ async processImagesInContent(content: any[]): Promise<any[]> {
       valid = false;
     }
     if (this.articleTags.length === 0) {
+      valid = false;
+    }
+    if (this.articleCourses.length === 0) {
       valid = false;
     }
     if (!this.previewImage) {

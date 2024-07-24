@@ -156,6 +156,40 @@
                 </div>  
             </div>
         </div>
+
+        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="1.5rem" class="fw">
+            <!-- Courses -->
+            <div fxLayout="column" fxLayoutGap=".2rem" class="fw">
+                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1.5rem" class="cursorPointer fw">
+                    <span class="w60px">Cursos:</span>
+                    <form class="fw">
+                        <mat-form-field subscriptSizing="dynamic" class="example-full-width fw h50px">
+                        <mat-label>Buscar curso</mat-label>
+                        <input type="text" class="ft14 fw" placeholder="Seleccione uno" aria-label="Number" matInput #autoTrigger="matAutocompleteTrigger" 
+                        [formControl]="coursesForm" [matAutocomplete]="autoCourses"/>
+                        <mat-autocomplete [hideSingleSelectionIndicator]="true" [displayWith]="getOptionTextCourse" #autoCourses="matAutocomplete" class="options">
+                            <mat-option (click)="changeCourse(option)" class="multiline-mat-option ft12 fw" *ngFor="let option of filteredCourses | async" [value]="option">
+                            <div fxLayout="row" fxLayoutAlign="space-between" class="fw">
+                                <div fxLayout="col" fxLayoutAlign="center center">{{ option.titulo | titlecase }}</div>
+                                <mat-icon class="makeBlue" *ngIf="isCourseSelected(option)">check</mat-icon>
+                            </div>
+                            </mat-option>
+                        </mat-autocomplete>
+                        </mat-form-field>
+                    </form>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="margin-left-custom pdt03">
+                    <ng-container *ngFor="let course of articleCourses; let courseIndex = index" class="margin-left-custom">
+                        <div class="skill-badge-complete ListHover radius10 backGray2 ft12 pdl08 pdr08 gray-8">
+                        {{ course.titulo | titlecase }}
+                        <img style="cursor: pointer" (click)="removeCourse(courseIndex)" [src]="icon.close" class="h16px makeGray" alt="" />
+                        </div>
+                    </ng-container>
+                </div>
+                <span *ngIf="articleCourses.length === 0" class="ft10 redText">Debes seleccionar por lo menos un curso</span>
+            </div>
+        </div>
+
         <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="1rem" class="fw">
             <!-- Summary -->
             <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap=".5rem" class="fw">
