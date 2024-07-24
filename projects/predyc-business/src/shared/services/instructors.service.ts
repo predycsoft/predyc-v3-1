@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { AngularFireFunctions } from '@angular/fire/compat/functions';
-import { BehaviorSubject, Observable, firstValueFrom } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, combineLatest, firstValueFrom, of } from 'rxjs';
 import { EnterpriseService } from './enterprise.service';
 @Injectable({
   providedIn: 'root'
@@ -72,42 +72,53 @@ export class InstructorsService {
   }
   
   enterpriseRef
-
   getInstructors() {
     this.enterpriseService.enterpriseLoaded$.subscribe(isLoaded => {
       if (!isLoaded) {
-        return
+        return;
       }
-      this.enterpriseRef =this.enterpriseService.getEnterpriseRef()
-
-      // console.log('empresa',this.empresa)
-
-      if(this.empresa.name.toLowerCase() == 'predyc'){
+      this.enterpriseRef = this.enterpriseService.getEnterpriseRef();
+  
+      console.log('empresa', this.empresa);
+  
+      if (this.empresa?.name?.toLowerCase() == 'predyc') {
         this.afs.collection<any>('instructors', ref => 
-        ref.where('enterpriseRef', '==', null)
+          ref.where('enterpriseRef', '==', null)
         ).valueChanges().subscribe({
           next: instructor => {
-            this.InstructorsSubject.next(instructor)
+            this.InstructorsSubject.next(instructor);
           },
           error: error => {
-            console.log(error)
+            console.log(error);
           }
-        })
-      }
-      else{
-        this.afs.collection<any>('instructors', ref => 
-        ref.where('enterpriseRef', '==', this.enterpriseRef)
-        ).valueChanges().subscribe({
-        next: instructor => {
-          this.InstructorsSubject.next(instructor);
-        },
-        error: error => {
-          console.error(error);
-        }
         });
-
+      } else {
+        const enterpriseInstructors$ = this.afs.collection<any>('instructors', ref => 
+          ref.where('enterpriseRef', '==', this.enterpriseRef)
+        ).valueChanges();
+  
+        const nullInstructors$ = this.afs.collection<any>('instructors', ref => 
+          ref.where('enterpriseRef', '==', null)
+        ).valueChanges();
+  
+        combineLatest([enterpriseInstructors$, nullInstructors$])
+          .pipe(
+            catchError(error => {
+              console.error(error);
+              return of([[], []]);
+            })
+          )
+          .subscribe({
+            next: ([enterpriseInstructors, nullInstructors]) => {
+              const combinedInstructors = [...enterpriseInstructors, ...nullInstructors];
+              this.InstructorsSubject.next(combinedInstructors);
+            },
+            error: error => {
+              console.error(error);
+            }
+          });
       }
-    })
+    });
   }
 
 

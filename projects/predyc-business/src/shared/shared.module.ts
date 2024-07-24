@@ -98,6 +98,7 @@ import { InstructorRoyaltiesComponent } from "./components/instructors/instructo
 import { QuestionsListComponent } from "./components/questions-list/questions-list.component";
 
 import { QuillModule } from "ngx-quill";
+import { FloatingNotificationComponent } from "./components/floating-notification/floating-notification.component";
 
 
 @NgModule({
@@ -162,6 +163,7 @@ import { QuillModule } from "ngx-quill";
     CustomDatetimePipe,
     DialogAssignLiveCoursesComponent,
     QuestionsListComponent,
+    FloatingNotificationComponent,
   ],
   imports: [
     CommonModule,
@@ -290,7 +292,9 @@ import { QuillModule } from "ngx-quill";
     DialogCreateLicenseComponent,
     LiveCoursesComponent,
     CustomDatetimePipe,
-    QuillModule
+    QuillModule,
+    LiveCourseStudentListComponent,
+    FloatingNotificationComponent
   ],
 
   providers: [VimeoUploadService,DatePipe],

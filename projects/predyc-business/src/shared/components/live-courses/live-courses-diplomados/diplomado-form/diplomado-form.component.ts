@@ -1027,6 +1027,14 @@ export class DiplomadoLiveFormComponent {
     return new Date(+parts[0], +parts[1] - 1, +parts[2], +timeParts[0], +timeParts[1]); // Note: months are 0-based
   }
 
+  studentEmails: string[] = [];
+
+
+  onUserEmailsChanged(emails: string[]): void {
+    // console.log("emails in parent", emails)
+    this.studentEmails = emails;
+  }
+  
 
   
 

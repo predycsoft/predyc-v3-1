@@ -8,6 +8,7 @@ import {
   map,
   startWith,
   BehaviorSubject,
+  take,
 } from "rxjs";
 import { Category } from "projects/shared/models/category.model";
 import { Curso, CursoJson } from "projects/shared/models/course.model";
@@ -31,6 +32,8 @@ import { EnterpriseService } from "projects/predyc-business/src/shared/services/
 import { AuthService } from "projects/predyc-business/src/shared/services/auth.service";
 import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
 import Swal from 'sweetalert2';
+import { PDFService } from "projects/predyc-business/src/shared/services/pdf.service";
+import { InstructorsService } from "projects/predyc-business/src/shared/services/instructors.service";
 
 const MAIN_TITLE = "Predyc - ";
 
@@ -59,7 +62,9 @@ export class ProfilesComponent {
     private userService: UserService,
     private titleService: Title,
     private authService: AuthService,
-    private afs: AngularFirestore
+    private afs: AngularFirestore,
+    private instructorsService:InstructorsService,
+    private pdfService: PDFService
   ) {}
 
   isEditing: boolean;
@@ -91,8 +96,15 @@ export class ProfilesComponent {
   user;
   profileServiceSubscription: Subscription;
   profiles: Profile[] = [];
+  instrcutores
+  courses
 
   ngOnInit() {
+
+    this.instructorsService.getInstructorsObservable().pipe(take(2)).subscribe((instructores)=>{
+      this.instrcutores = instructores
+    })
+
     this.profileServiceSubscription = this.profileService
       .getProfiles$()
       .subscribe((profiles) => {
@@ -121,7 +133,7 @@ export class ProfilesComponent {
     >[] = [
       this.categoryService.getCategories$(),
       this.skillService.getSkills$(),
-      this.courseService.getCourses$(),
+      this.courseService.getCoursesObservable(),
     ];
     if (this.id === "new") {
       this.isEditing = true;
@@ -160,7 +172,49 @@ export class ProfilesComponent {
           this.profileHoursPerMonth = this.profile.hoursPerMonth;
         }
         this.studyPlan = [];
-        // this.courses = courses
+
+        courses.forEach(curso => {
+          let skillIds = new Set();
+          curso.skillsRef.forEach(skillRef => {
+            skillIds.add(skillRef.id); // Assuming skillRef has an id property
+          });
+          let filteredSkills = skills.filter(skillIn => skillIds.has(skillIn.id));
+          let categoryIds = new Set();
+          filteredSkills.forEach(skillRef => {
+            categoryIds.add(skillRef.category.id); // Assuming skillRef has an id property
+          });
+          let filteredCategories = categories.filter(categoryIn => categoryIds.has(categoryIn.id));
+          curso['skills'] = filteredSkills;
+          curso['categories'] = filteredCategories;
+      
+          curso['modules'].sort((a, b) => a.numero - b.numero);
+      
+          let modulos = curso['modules'];
+          let duracionCourse = 0;
+          modulos.forEach(modulo => {
+            modulo.expanded = false;
+            let duracion = 0;
+            modulo.clases.forEach(clase => {
+              duracion += clase?.duracion ? clase?.duracion : 0;
+            });
+            modulo.duracion = duracion;
+            duracionCourse += duracion;
+          });
+          if (!curso['duracion']) {
+            curso['duracion'] = duracionCourse;
+          }
+  
+          if(curso.duracion>=duracionCourse){
+            if(!curso['modules'].find(x=>x.titulo == 'Examen Final'))
+            curso['modules'].push({dontshow:true, titulo:'Examen Final',clases:[{titulo:'Examen Final',duracion:curso.duracion-duracionCourse}]})
+          }
+          else{
+            if(!curso['modules'].find(x=>x.titulo == 'Examen Final'))
+            curso['modules'].push({dontshow:true, titulo:'Examen Final',clases:[{titulo:'Examen Final',duracion:null}]})
+          }
+          curso['instructorData'] = this.instrcutores.find(x=>x.id == curso.instructorRef.id)
+        });
+        this.courses = courses
         this.coursesForExplorer = courses.map((course) => {
           const skills = course.skillsRef.map((skillRef) => {
             return this.skills.find((skill) => skill.id === skillRef.id);
@@ -252,7 +306,6 @@ export class ProfilesComponent {
   }
 
   getStudyPlanLength(){
-    console.log(this.studyPlan)
 
     let duracion = 0
 
@@ -707,5 +760,25 @@ export class ProfilesComponent {
     this.studyPlan.forEach((course, idx) => {
       course.studyPlanOrder = idx + 1;
     });
+  }
+  showNotification: boolean = false;
+  notificationMessage: string = '';
+
+
+  async downloadPdfStudyPlan(): Promise<void> {
+    this.showNotification = true;
+    this.notificationMessage = "Descargado archivo... Por favor, espera.";
+    try {
+      let cursosPDF = this.studyPlan
+      let nombreArchivo = 'Ficha técnica perfil'
+      if(this.profile.name){
+        nombreArchivo = `Ficha técnica ${this.profile.name}`
+      }
+      await this.pdfService.downloadFichaTecnicaMultiple(cursosPDF, nombreArchivo, false);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      this.showNotification = false;
+    }
   }
 }

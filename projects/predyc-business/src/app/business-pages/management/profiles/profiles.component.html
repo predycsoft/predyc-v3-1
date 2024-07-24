@@ -51,8 +51,7 @@
           fxLayoutAlign=" center center"
           class="blueButton mgt10 ft14"
           style="border-radius: 24px !important"
-          (click)="onEdit()"
-        >
+          (click)="onEdit()">
           {{
             user.isSystemUser || profile?.enterpriseRef ? "Editar" : "Editar"
           }}
@@ -220,15 +219,18 @@
       "
     >
       <div class="study-plan" style="padding: 5px">
-        <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign=" right">
-          <img
-            [src]="icon.course"
-            class="makeBlue h20px"
-            alt="Plan de estudios"
-          />
-          <span class="ft500 ft14 black">Plan de estudios</span>
-          <!-- <span class="ft500 ft12 gray-5">{{getStudyPlanLength()}}</span> -->
+        <div fxLayout="row" fxLayoutAlign="space-between center">
+          <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+            <img
+              [src]="icon.course"
+              class="makeBlue h20px"
+              alt="Plan de estudios"
+            />
+            <span class="ft500 ft14 black">Plan de estudios</span>
+          </div>
+          <span *ngIf="studyPlan.length>0"  (click)="downloadPdfStudyPlan()" class="blueLink">Descargar</span>
         </div>
+        
         <div class="mgt20" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="2rem">
           <div fxLayoutGap=".5rem" fxLayout="row" fxLayoutAlign=" center" class="mgl05">
             <div class="fw">
@@ -578,3 +580,5 @@
     </div>
   </div>
 </div>
+
+<app-floating-notification *ngIf="showNotification" [message]="notificationMessage"></app-floating-notification>

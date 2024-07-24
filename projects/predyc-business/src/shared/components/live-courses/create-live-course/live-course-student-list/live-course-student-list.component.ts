@@ -58,6 +58,13 @@ export class LiveCourseStudentListComponent {
   @Input() liveCourseId: string;
   @Input() courseDetails: any;
 
+  @Input() diplomadoDetails: any;
+  @Input() deplomadoId: any;
+  @Input() deplomadoStudyPlan: any;
+
+
+
+
   @Output() userEmailsChanged = new EventEmitter<string[]>();
 
   displayedColumns: string[] = ["userName", "userEmail", "enterprise", "diagnosticTest", "finalTest", "certificate", "attendance", "status"];
@@ -82,16 +89,31 @@ export class LiveCourseStudentListComponent {
 
   ngOnInit() {
     console.log('courseDetailsStudentList',this.courseDetails)
-    this.liveCourseRef = this.liveCourseService.getLiveCourseRefById(this.liveCourseId);
-    this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe((params) => {
-      const page = Number(params["page"]) || 1;
-      this.performSearch(page);
-    });
+    if(!this.liveCourseId){
+      this.displayedColumns = ["userName", "userEmail", "status"];
+      this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe((params) => {
+        const page = Number(params["page"]) || 1;
+        this.performSearchDiplomado(page);
+      });
+    }else{
+      this.liveCourseRef = this.liveCourseService.getLiveCourseRefById(this.liveCourseId);
+      this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe((params) => {
+        const page = Number(params["page"]) || 1;
+        this.performSearch(page);
+      });
+    }
+
   }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.paginator.pageSize = this.pageSize;
+  }
+
+  performSearchDiplomado(page: number){
+
+    console.log(this.diplomadoDetails)
+
   }
 
   performSearch(page: number) {
