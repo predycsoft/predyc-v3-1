@@ -61,6 +61,7 @@ export class DialogQuestionsDetailComponent {
   respuesta = ""
   tab = 0
   filteredPreguntas = []
+  mostrarPregunta: boolean
 
   async ngOnInit() {
     console.log("this.courseQuestionsData", this.courseQuestionsData)
@@ -173,7 +174,9 @@ export class DialogQuestionsDetailComponent {
     return modalRef;
   }
 
-  async cambiarMostrarRespuesta(questionId: string, value: boolean) {
+  async cambiarMostrarPregunta(i, questionId: string, value: boolean) {
+    // console.log("this.preguntas[i]", this.preguntas[i])
+    this.preguntas[i].data.mostrarPregunta = value
     await this.questionService.updateMostrarPregunta(questionId, value)
   }
 
