@@ -724,7 +724,8 @@ export class DiplomadoLiveFormComponent {
           ? this.diplomado?.baseDiplomado
           : baseDiplomado,
         enterpriseRef: enterpriseRef,
-        emailLastDate: null
+        emailLastDate: null,
+        users: []
       });
 
       console.log('diplomado save',diplomado)
@@ -785,6 +786,7 @@ export class DiplomadoLiveFormComponent {
         
         this.router.navigate([`/admin/live-sessions/diplomates-live/form/${diplomadoId}`]);
         this.titleService.setTitle(MAIN_TITLE + this.diplomado.name);
+        this.ngOnInit()
       }
       Swal.close();
       this.alertService.succesAlert("Completado");

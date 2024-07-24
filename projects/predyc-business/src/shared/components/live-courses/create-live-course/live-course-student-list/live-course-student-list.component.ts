@@ -1,10 +1,10 @@
-import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
+import { Component, EventEmitter, Input, Output, SimpleChanges, ViewChild } from "@angular/core";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 import { ActivatedRoute, Router } from "@angular/router";
 import { IconService } from "projects/predyc-business/src/shared/services/icon.service";
 import { LiveCourseByStudent } from "projects/shared/models/live-course-by-student.model";
-import { Observable, Subscription, combineLatest, firstValueFrom, map, switchMap } from "rxjs";
+import { Observable, Subscription, combineLatest, firstValueFrom, forkJoin, map, switchMap } from "rxjs";
 import { AngularFirestore, DocumentReference } from "@angular/fire/compat/firestore";
 import { User, UserJson } from "projects/shared/models/user.model";
 import { LiveCourse } from "projects/shared/models/live-course.model";
@@ -22,17 +22,17 @@ import { titleCase } from "shared";
 import { DatePipe } from "@angular/common";
 
 interface DataToShow {
-  liveCourseByStudentId: string;
-  userEmail: string;
-  userName: string;
-  userPhone: string;
+  liveCourseByStudentId?: string;
+  userEmail?: string;
+  userName?: string;
+  userPhone?: string;
   userRef: DocumentReference;
-  diagnosticTestScore: number;
-  finalTestScore: number;
-  certificateId: string;
-  isAttending: boolean;
-  isActive: boolean;
-  companyName: string;
+  diagnosticTestScore?: number;
+  finalTestScore?: number;
+  certificateId?: string;
+  isAttending?: boolean;
+  isActive?: boolean;
+  companyName?: string;
 }
 
 @Component({
@@ -59,7 +59,7 @@ export class LiveCourseStudentListComponent {
   @Input() courseDetails: any;
 
   @Input() diplomadoDetails: any;
-  @Input() deplomadoId: any;
+  @Input() diplomadoId: any;
   @Input() deplomadoStudyPlan: any;
 
 
@@ -109,12 +109,48 @@ export class LiveCourseStudentListComponent {
     this.dataSource.paginator = this.paginator;
     this.dataSource.paginator.pageSize = this.pageSize;
   }
+  
 
   performSearchDiplomado(page: number){
+    this.liveCourseServiceSubscription = this.liveCourseService.getDiplomado$(this.diplomadoId).subscribe((diplomado)=>{
+      console.log('performSearchDiplomado',diplomado)
+      this.diplomadoDetails=diplomado
+      console.log('performSearchDiplomado',diplomado)
 
-    console.log(this.diplomadoDetails)
 
+      this.liveCourseService.getUsersFromLiveDiplomado(this.diplomadoId).subscribe(async (enrolledUsers)=>{
+        try {
+          const userIds = enrolledUsers.map(user => user.uid); // Ajusta según la estructura de datos
+          const users = await this.userService.getUsersByIds(userIds);
+    
+          let dataToShow = users.map(user => {
+            const enrolledUserData = enrolledUsers.find(x => x.uid === user.uid); // Ajusta según la estructura de datos
+            return {
+              uid: user.uid,
+              userEmail: user.email,
+              userName: user.displayName,
+              userPhone: user.phoneNumber,
+              userRef: enrolledUserData.userRef,
+              isActive: enrolledUserData.isActive
+            };
+          });
+          console.log('dataToShow:', dataToShow);
+
+          this.paginator.pageIndex = page - 1;
+          this.dataSource.data = dataToShow;
+          this.totalLength = dataToShow.length;
+          // Emit the user emails
+          this.userEmails = dataToShow.map((data) => data.userEmail);
+          this.userEmailsChanged.emit(this.userEmails);
+        } catch (error) {
+          console.error('Error obteniendo datos de usuarios:', error);
+        }
+      })
+
+    })
   }
+
+  
 
   performSearch(page: number) {
     this.liveCourseServiceSubscription = this.liveCourseService
@@ -397,17 +433,37 @@ export class LiveCourseStudentListComponent {
 
   async handleUserSelected(user: User) {
     console.log("Selected user:", user);
-    if (user) await this.assignLiveCourse(user.uid, user.email,user);
+    if (user) {
+      if(this.diplomadoId){
+        console.log(this.deplomadoStudyPlan,user)
+        this.deplomadoStudyPlan.forEach(async liveCourse => {
+          let liveCourseRef = this.liveCourseService.getLiveCourseRefById(liveCourse.datosLive.curso.liveCourse.id);
+          await this.assignLiveCourse(user.uid, user.email,user,liveCourseRef,false)
+        });
+        let userIn = {
+          uid:user.uid,
+          userRef:this.userService.getUserRefById(user.uid),
+          email:user.email,
+          isActive:true,
+        }
+        await this.liveCourseService.updateLiveDiplomadoUsers(this.diplomadoId,userIn)
+      }
+      else{
+        await this.assignLiveCourse(user.uid, user.email,user);
+      }
+    }
     else this.openCreateUserModal();
   }
 
-  async assignLiveCourse(userId: string, userEmail: string,user:User) {
+  async assignLiveCourse(userId: string, userEmail: string,user:User,liveCourseRef=this.liveCourseRef,sendMail = true) {
     const userRef = this.userService.getUserRefById(userId);
-    const liveCourseByStudent = new LiveCourseByStudent("", true, null, false, userRef, this.liveCourseRef, false, false, null, false, null, true, true);
+    const liveCourseByStudent = new LiveCourseByStudent("", true, null, false, userRef,liveCourseRef, false, false, null, false, null, true, true);
     try {
       await this.liveCourseService.createLiveCourseByStudent(liveCourseByStudent);
       console.log("***liveCourseByStudent created***");
-      await this.sendEmail(userEmail,user)
+      if(sendMail){
+        await this.sendEmail(userEmail,user)
+      }
     } catch (error) {
       console.log("XXXerror creating liveCourseByStudentXXX", error);
     }

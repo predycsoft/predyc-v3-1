@@ -456,8 +456,31 @@ export class LiveCourseService {
     );
   }
 
+  async updateLiveDiplomadoUsers(liveDiplomadoId: string, newUser: any): Promise<void> {
+    console.log('updateLiveDiplomadoUsers')
+    const liveDiplomadoByStudentRef = this.afs.collection('live-diplomado-by-student').doc();
+  
+    try {
+      // Insertar el usuario directamente con las claves adicionales
+      await liveDiplomadoByStudentRef.set({
+        liveDiplomadoId,
+        liveDiplomadoRef: this.afs.collection('live-diplomado').doc(liveDiplomadoId).ref,
+        ...newUser
+      });
+    } catch (error) {
+      console.error("Error adding user to live-diplomado-by-student: ", error);
+      throw error;
+    }
+  }
+
+  getUsersFromLiveDiplomado(liveDiplomadoId: string): Observable<any[]> {
+    return this.afs.collection('live-diplomado-by-student', ref => ref.where('liveDiplomadoId', '==', liveDiplomadoId)).valueChanges();
+  }
   
   
+
+  
+
   
 
 }
