@@ -771,7 +771,7 @@ export class ProfilesComponent {
     try {
       let cursosPDF = this.studyPlan
       let nombreArchivo = 'Ficha técnica perfil'
-      if(this.profile.name){
+      if(this.profile?.name){
         nombreArchivo = `Ficha técnica ${this.profile.name}`
       }
       await this.pdfService.downloadFichaTecnicaMultiple(cursosPDF, nombreArchivo, false);
