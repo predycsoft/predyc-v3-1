@@ -476,6 +476,57 @@ export class LiveCourseService {
   getUsersFromLiveDiplomado(liveDiplomadoId: string): Observable<any[]> {
     return this.afs.collection('live-diplomado-by-student', ref => ref.where('liveDiplomadoId', '==', liveDiplomadoId)).valueChanges();
   }
+
+  async updateUserDiplomadoStatus(userId: string, liveDiplomadoId: string, active: boolean): Promise<void> {
+    const liveDiplomadoByStudentRef = this.afs.collection('live-diplomado-by-student');
+    const liveCourseRef = this.afs.collection(LiveCourse.collection);
+    const liveCourseByStudentRef = this.afs.collection(LiveCourseByStudent.collection);
+    const batch = this.afs.firestore.batch();
+  
+    // Constantes para las referencias
+    const userRef = this.afs.doc(`${User.collection}/${userId}`).ref;
+    const liveDiplomadoRef = this.afs.doc(`${LiveDiplomado.collection}/${liveDiplomadoId}`).ref;
+  
+    try {
+      // Paso 1: Actualizar isActive en live-diplomado-by-student
+      const liveDiplomadoSnapshot = await liveDiplomadoByStudentRef.ref
+        .where('userRef', '==', userRef)
+        .where('liveDiplomadoRef', '==', liveDiplomadoRef)
+        .get();
+  
+      liveDiplomadoSnapshot.forEach(doc => {
+        batch.update(doc.ref, { isActive: active });
+      });
+  
+      // Paso 2: Buscar todos los live-course que tengan diplomadoLiveRef que haga match
+      const liveCoursesSnapshot = await liveCourseRef.ref
+        .where('diplomadoLiveRef', '==', liveDiplomadoRef)
+        .get();
+  
+      const liveCourseIds = liveCoursesSnapshot.docs.map(doc => doc.id);
+  
+      // Paso 3: Buscar todos los registros en live-course-by-student que tengan userRef y liveCourseRef obtenidos en el paso anterior y actualizar isActive
+      for (const liveCourseId of liveCourseIds) {
+        const liveCourseRef = this.afs.doc(`${LiveCourse.collection}/${liveCourseId}`).ref;
+        const liveCourseByStudentSnapshot = await liveCourseByStudentRef.ref
+          .where('userRef', '==', userRef)
+          .where('liveCourseRef', '==', liveCourseRef)
+          .get();
+  
+        liveCourseByStudentSnapshot.forEach(doc => {
+          batch.update(doc.ref, { isActive: active });
+        });
+      }
+  
+      // Commit del batch
+      await batch.commit();
+    } catch (error) {
+      console.error('Error updating user diplomado status: ', error);
+      throw error;
+    }
+  }
+  
+  
   
   
 

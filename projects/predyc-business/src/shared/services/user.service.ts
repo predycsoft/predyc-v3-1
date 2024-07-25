@@ -1002,14 +1002,16 @@ export class UserService {
     // Crear promesas para cada lote
     const promises = batches.map(batch => {
       return this.afs.collection<User>(User.collection, ref => ref.where('uid', 'in', batch))
-        .valueChanges()
-        .pipe(take(1)) // Tomar solo el primer valor emitido
-        .toPromise();
+        .get()
+        .pipe(take(1))
+        .toPromise()
+        .then(querySnapshot => querySnapshot.docs.map(doc => doc.data() as User));
     });
 
     // Resolver todas las promesas y aplanar los resultados
     return Promise.all(promises).then(results => results.flat());
   }
+  
 
   public getUserRefById(id: string): DocumentReference<User> {
     return this.afs.collection<User>(User.collection).doc(id).ref;

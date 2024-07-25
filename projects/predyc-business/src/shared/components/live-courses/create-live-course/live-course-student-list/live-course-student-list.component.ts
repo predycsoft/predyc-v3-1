@@ -122,6 +122,8 @@ export class LiveCourseStudentListComponent {
         try {
           const userIds = enrolledUsers.map(user => user.uid); // Ajusta según la estructura de datos
           const users = await this.userService.getUsersByIds(userIds);
+
+          console.log('datosrevisar',userIds,enrolledUsers,users)
     
           let dataToShow = users.map(user => {
             const enrolledUserData = enrolledUsers.find(x => x.uid === user.uid); // Ajusta según la estructura de datos
@@ -225,7 +227,7 @@ export class LiveCourseStudentListComponent {
 
   }
 
-  changeStatus(liveCourseByStudentId: string, isActive: boolean) {
+  changeStatus(liveCourseByStudentId: string, isActive: boolean,data:any) {
     Swal.fire({
       title: isActive ? "Agregaremos al usuario al curso en vivo" : "Eliminaremos al usuario del curso en vivo",
       text: "¿Deseas continuar?",
@@ -235,8 +237,13 @@ export class LiveCourseStudentListComponent {
       confirmButtonColor: "var(--blue-5)",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await this.liveCourseService.updateIsActiveLiveCourseByStudent(liveCourseByStudentId, isActive);
-      } else {
+        if (!this.diplomadoId){
+          await this.liveCourseService.updateIsActiveLiveCourseByStudent(liveCourseByStudentId, isActive);
+        }
+        else{
+          console.log(data.uid,this.diplomadoId,isActive)
+          await this.liveCourseService.updateUserDiplomadoStatus(data.uid, this.diplomadoId,isActive);
+        }
       }
     });
   }
@@ -431,29 +438,6 @@ export class LiveCourseStudentListComponent {
     });
   }
 
-  async handleUserSelected(user: User) {
-    console.log("Selected user:", user);
-    if (user) {
-      if(this.diplomadoId){
-        console.log(this.deplomadoStudyPlan,user)
-        this.deplomadoStudyPlan.forEach(async liveCourse => {
-          let liveCourseRef = this.liveCourseService.getLiveCourseRefById(liveCourse.datosLive.curso.liveCourse.id);
-          await this.assignLiveCourse(user.uid, user.email,user,liveCourseRef,false)
-        });
-        let userIn = {
-          uid:user.uid,
-          userRef:this.userService.getUserRefById(user.uid),
-          email:user.email,
-          isActive:true,
-        }
-        await this.liveCourseService.updateLiveDiplomadoUsers(this.diplomadoId,userIn)
-      }
-      else{
-        await this.assignLiveCourse(user.uid, user.email,user);
-      }
-    }
-    else this.openCreateUserModal();
-  }
 
   async assignLiveCourse(userId: string, userEmail: string,user:User,liveCourseRef=this.liveCourseRef,sendMail = true) {
     const userRef = this.userService.getUserRefById(userId);
@@ -482,10 +466,35 @@ export class LiveCourseStudentListComponent {
     modalRef.result.then(async (userData) => {
       console.log("userData", userData)
       userData.name = userData.displayName
-      await this.assignLiveCourse(userData.uid, userData.email,userData);
+      await this.handleUserSelected(userData)
+      //await this.assignLiveCourse(userData.uid, userData.email,userData);
     });
 
     return modalRef;
+  }
+
+  async handleUserSelected(user: User) {
+    console.log("Selected user:", user);
+    if (user) {
+      if(this.diplomadoId){
+        console.log(this.deplomadoStudyPlan,user)
+        this.deplomadoStudyPlan.forEach(async liveCourse => {
+          let liveCourseRef = this.liveCourseService.getLiveCourseRefById(liveCourse.datosLive.curso.liveCourse.id);
+          await this.assignLiveCourse(user.uid, user.email,user,liveCourseRef,false)
+        });
+        let userIn = {
+          uid:user.uid,
+          userRef:this.userService.getUserRefById(user.uid),
+          email:user.email,
+          isActive:true,
+        }
+        await this.liveCourseService.updateLiveDiplomadoUsers(this.diplomadoId,userIn)
+      }
+      else{
+        await this.assignLiveCourse(user.uid, user.email,user);
+      }
+    }
+    else this.openCreateUserModal();
   }
 
   async sendEmail(userEmail: string,user) {
