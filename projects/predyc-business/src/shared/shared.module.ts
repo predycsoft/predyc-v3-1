@@ -294,7 +294,8 @@ import { FloatingNotificationComponent } from "./components/floating-notificatio
     CustomDatetimePipe,
     QuillModule,
     LiveCourseStudentListComponent,
-    FloatingNotificationComponent
+    FloatingNotificationComponent,
+    LiveCourseFollowingComponent
   ],
 
   providers: [VimeoUploadService,DatePipe],

@@ -96,6 +96,9 @@ export class LiveCourseStudentListComponent {
         this.performSearchDiplomado(page);
       });
     }else{
+      if (this.courseDetails?.diplomadoLiveRef){
+        this.displayedColumns = ["userName", "userEmail", "enterprise", "diagnosticTest", "finalTest", "certificate", "attendance"];
+      }
       this.liveCourseRef = this.liveCourseService.getLiveCourseRefById(this.liveCourseId);
       this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe((params) => {
         const page = Number(params["page"]) || 1;
@@ -489,6 +492,8 @@ export class LiveCourseStudentListComponent {
           isActive:true,
         }
         await this.liveCourseService.updateLiveDiplomadoUsers(this.diplomadoId,userIn)
+        await this.sendEmail(user.email,user,'diplomado')
+
       }
       else{
         await this.assignLiveCourse(user.uid, user.email,user);
@@ -497,7 +502,8 @@ export class LiveCourseStudentListComponent {
     else this.openCreateUserModal();
   }
 
-  async sendEmail(userEmail: string,user) {
+
+  async sendEmail(userEmail: string,user, type='curso') {
 
     const firma = `
     <p style="margin: 5px 0;">Saludos cordiales,</p>
@@ -544,32 +550,55 @@ export class LiveCourseStudentListComponent {
       }
     </style>`;
 
-
-    console.log("userEmail", userEmail,this.courseDetails,user)
+    console.log("userEmail", userEmail,this.courseDetails,user,this.diplomadoDetails,this.deplomadoStudyPlan)
     let sender = "capacitacion@predyc.com"
     let recipients = [userEmail]
     // let recipients = ["diegonegrette42@gmail.com"]
-    let subject = `Has sido inscrito en un curso en vivo`
-    let startDate = this.courseDetails.sessions[0].dateFormatted
+    let subject = `Has sido inscrito en un ${type} en vivo`
+    let duracion = Math.round(this.courseDetails?.duration / 60)
+    let startDate
+    let cantidadModulos = 0
+    if (type == 'curso'){
+      startDate = this.courseDetails.sessions[0].dateFormatted
+      cantidadModulos = this.courseDetails.sessions.length
+    }
+    else{
+      startDate = this.deplomadoStudyPlan[0].datosLive.date
+      duracion = Math.round(this.diplomadoDetails.duration / 60)
+      cantidadModulos = this.deplomadoStudyPlan.length
+    }
     let formattedDate = this.datePipe.transform(startDate, 'd \'de\' MMMM', 'es');
-    let htmlContent = `<p>Estimado <strong>${titleCase(user.name)}</strong></p> 
-    <p>Mi nombre es Daniela Rodríguez, Coordinadora de Capacitación en <a href="https://predictiva21.com/">Predictiva21</a>,  me gustaría guiarlo en los pasos para que pueda acceder al aula virtual del curso, donde podrá ver las sesiones en vivo, exámenes, material descargable y certificado.</p>
-    <p>El curso <strong>${this.courseDetails.title}</strong> se llevará a cabo en un total de ${Math.round(this.courseDetails.duration / 60)} horas, desde el <strong>${formattedDate}</strong> en ${this.courseDetails.sessions.length} sesiones de la siguiente manera:</p>
-    <ul>` 
+    
 
-    this.courseDetails.sessions.forEach(session => {
-      let sessionDate = this.datePipe.transform(session.dateFormatted, 'd \'de\' MMMM \'a las\' HH:mm \'hrs\'', 'es');
-      htmlContent += `<li>${session.title} - ${sessionDate} hora CDMX (México)</li>`;
-    });
+    let htmlContent = `<p>Estimado <strong>${titleCase(user.name)}</strong></p> 
+    <p>Mi nombre es Daniela Rodríguez, Coordinadora de Capacitación en <a href="https://predictiva21.com/">Predictiva21</a>,  me gustaría guiarlo en los pasos para que pueda acceder al aula virtual del ${type}, donde podrá ver las sesiones en vivo, exámenes, material descargable y certificado.</p>
+    <p>El ${type} <strong>${this.courseDetails?.title ? this.courseDetails.title : this.diplomadoDetails?.name }</strong> se llevará a cabo en un total de ${duracion} horas, desde el <strong>${formattedDate}</strong> en ${cantidadModulos} sesiones de la siguiente manera:</p>
+    <ul>`
+
+    if (type == 'curso'){
+      this.courseDetails.sessions.forEach(session => {
+        let sessionDate = this.datePipe.transform(session.dateFormatted, 'd \'de\' MMMM \'a las\' HH:mm \'hrs\'', 'es');
+        htmlContent += `<li>${session.title} - ${sessionDate} hora CDMX (México)</li>`;
+      });
+    }
+    else{
+      this.deplomadoStudyPlan.forEach(session => {
+        let sessionDate = this.datePipe.transform(session.datosLive.date, 'd \'de\' MMMM \'a las\' HH:mm \'hrs\'', 'es');
+        htmlContent += `<li>${session.title} - ${sessionDate} hora CDMX (México)</li>`;
+      });
+    }
+
+
+
 
     let gmail = userEmail.includes("@gmail.com");
 
     htmlContent += `</ul><br>
     <p><strong>Por favor sigue estos sencillos pasos: <strong></p>
     <p><strong>Paso 1: </strong>Ingresa desde tu computador a nuestra plataforma <a href="https://predyc-user.web.app/auth/login">Predyc</a> e inicia sesión con tu correo ${userEmail} ${gmail? '(clic en botón continuar con Google)': 'y las credenciales que te llegarón anteriormente'}</p>
-    <p><strong>Paso 2: </strong>Ve a la seccion "Cursos en vivo" donde deberas ver en la lista este curso (${this.courseDetails.title})</p>
+    <p><strong>Paso 2: </strong>Ve a la seccion "Cursos en vivo" donde deberas ver en la lista este ${type} (${this.courseDetails?.title ? this.courseDetails.title : this.diplomadoDetails?.name })</p>
     <br>
-    <p>¡Listo! El curso está disponible en la sección “Cursos en vivo”</p>
+    <p>¡Listo! El ${type} está disponible en la sección “Cursos en vivo”</p>
     <p>El link a las sesiones y el material del curso estarán disponibles 20 minutos antes del inicio.</p><br>
     
     <p><strong>Recomendaciones para las sesiones en vivo:</strong></p>

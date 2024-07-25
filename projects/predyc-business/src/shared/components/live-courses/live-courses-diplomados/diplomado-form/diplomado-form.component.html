@@ -564,7 +564,11 @@
         </div>
       </mat-tab>
       <mat-tab label="Seguimiento">
-
+        <div fxLayout="row" fxLayoutAlign="center " class="containerCurso h-100" fxLayoutGap="1.5rem">
+          <div fxLayout="row" fxLayoutAlign="center" class="w-100">
+            <app-live-course-following class="w-90" [studentEmails]="studentEmails" [diplomadoId]="id" [diplomadoDetails]="diplomado" > </app-live-course-following>
+          </div>
+        </div>
       </mat-tab>
     </mat-tab-group>
     
