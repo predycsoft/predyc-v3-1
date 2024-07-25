@@ -48,8 +48,8 @@
                                         <img [src]="icon.playOutline" class="h16px pdr05" alt="">
                                         Reproducir video
                                     </button>
-                                    <button *ngIf="!item.data.mostrarPregunta" class="greenButton" (click)="cambiarMostrarPregunta(i, item.data.id, !item.data.mostrarPregunta)" >Mostrar pregunta</button>
-                                    <button *ngIf="item.data.mostrarPregunta" class="redButton" (click)="cambiarMostrarPregunta(i, item.data.id, !item.data.mostrarPregunta)" >Ocultar pregunta</button>
+                                    <button *ngIf="!item.data.mostrarPregunta && mode == 'admin'" class="greenButton" (click)="cambiarMostrarPregunta(i, item.data.id, !item.data.mostrarPregunta)" >Mostrar pregunta</button>
+                                    <button *ngIf="item.data.mostrarPregunta && mode == 'admin' " class="redButton" (click)="cambiarMostrarPregunta(i, item.data.id, !item.data.mostrarPregunta)" >Ocultar pregunta</button>
                                 </div>
                                 <div>
                                     <span class="ft11 gray-8">{{item.data.pregunta}}</span>
