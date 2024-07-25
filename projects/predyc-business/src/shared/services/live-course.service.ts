@@ -274,7 +274,7 @@ export class LiveCourseService {
     }
   
     const promises = userChunks.map(async chunk => {
-      console.log("chunk", chunk)
+      // console.log("chunk", chunk)
       const querySnapshot = (await this.afs.collection<any>('coursesTestsByStudent')
       .ref.where('courseRef', '==', courseRef).where('userRef', 'in', chunk)
       .get());

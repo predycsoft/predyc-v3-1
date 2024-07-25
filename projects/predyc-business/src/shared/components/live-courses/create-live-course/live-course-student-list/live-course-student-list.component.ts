@@ -382,8 +382,11 @@ export class LiveCourseStudentListComponent {
       });
 
       // Ensure the sheet name is valid by replacing any invalid characters
-      const sheetName = row.userName.replace(/[\[\]:*?/\\]/g, '_').substring(0, 31);
-      XLSX.utils.book_append_sheet(workbook, studentWorksheet, `${sheetIndex}-${sheetName}`);
+      let sheetName = row.userName.replace(/[\[\]:*?/\\]/g, '_');
+      sheetName= `${sheetIndex}-${sheetName}`
+      sheetName=sheetName.substring(0, 31);
+
+      XLSX.utils.book_append_sheet(workbook, studentWorksheet,`${sheetName}`);
       sheetIndex++;
     });
 
@@ -391,10 +394,8 @@ export class LiveCourseStudentListComponent {
   }
 
   processQuestions(questions, answers) {
-    console.log("answers", answers)
     return questions.map(question => {
       const answer = answers.find(x => x.id === question.id)
-      console.log("answer", answer)
       let questionTextValue: string = `Pregunta: "${answer.text}"\n`;
       let questionOpSelected = "";
       let questionOpCorrect = "";
