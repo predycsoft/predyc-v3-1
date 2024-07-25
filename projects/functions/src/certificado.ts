@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import { Enterprise, User,Curso, Clase, Modulo, LiveCourse,titleCaseWithExceptions} from 'shared';
+import { Enterprise, User, getMonthProgress, obtenerUltimoDiaDelMes, obtenerUltimoDiaDelMesAnterior,CourseByStudent,Curso, titleCase, firestoreTimestampToNumberTimestamp, Clase, Modulo, LiveCourse } from 'shared';
 import { _sendMailHTML } from './email';
 import fetch from 'node-fetch';
 import jspdf, { ImageOptions, jsPDF } from 'jspdf';
@@ -115,7 +115,7 @@ export const generateMailCertificate = functions.https.onCall(async (data, _) =>
   
       let enterpriseId: string = null;
       const dataUser = userDoc.data();
-      nombreUsuario = titleCaseWithExceptions(dataUser["displayName"]);
+      nombreUsuario = titleCase(dataUser["displayName"]);
       enterpriseId = dataUser["enterprise"]?.id;
   
       if (enterpriseId) {
@@ -234,7 +234,7 @@ export const generateMailCertificate = functions.https.onCall(async (data, _) =>
       // const recipients = ['arturo.romero@predyc.com'];
       const recipients =  [dataUser['email']]
       const subject = `Has aprobado el ${tipo} ${tituloCurso} en PREDYC`;
-      let correo = `<strong>${titleCaseWithExceptions(nombreUsuario)}</strong>,</p><p>Felicidades por haber completado el ${tipo} <strong>${tituloCurso} en PREDYC.</strong> Puedes ver y compartir tu certificado siguiendo este enlace: <a href="https://predyc-user.web.app/certificado/${id}">Ver certificado en línea</a>.</p>
+      let correo = `<strong>${titleCase(nombreUsuario)}</strong>,</p><p>Felicidades por haber completado el ${tipo} <strong>${tituloCurso} en PREDYC.</strong> Puedes ver y compartir tu certificado siguiendo este enlace: <a href="https://predyc-user.web.app/certificado/${id}">Ver certificado en línea</a>.</p>
       <p>También puedes ver tu certificado adjunto en este correo.</p>`;
       let htmlMailFinal = `<!DOCTYPE html><html><head></head><body><p>${correo}<br>${firma}</body></html>`;
       const htmlContent = htmlMailFinal;
@@ -309,9 +309,6 @@ async function getCourseById(courseId: string): Promise<any> {
     doc.setFontSize(27);
     doc.setTextColor(21, 27, 38);
     doc.setFont('helvetica', 'bold');
-    if(this.user.name.length>=40){
-			doc.setFontSize(this.user.name.length/1.8) // mejorar 
-		}
     doc.text(nombreUsuario, 19, 80); // Nombre usuario
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(13);
@@ -364,7 +361,7 @@ async function getCourseById(courseId: string): Promise<any> {
     const pdfDataUri = doc.output('datauristring');
     const base64Content = pdfDataUri.split(',')[1];
 
-    const fileName = "Certificado "+titleCaseWithExceptions(nombreUsuario)+" - "+tituloCurso+'.pdf'
+    const fileName = "Certificado "+titleCase(nombreUsuario)+" - "+tituloCurso+'.pdf'
 
 
     return {
