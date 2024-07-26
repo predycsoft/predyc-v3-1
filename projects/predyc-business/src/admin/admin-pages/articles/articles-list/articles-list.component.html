@@ -51,6 +51,13 @@
       </td>
     </ng-container>
 
+    <ng-container matColumnDef="isDraft">
+      <th mat-header-cell *matHeaderCellDef class="ft14 centertext">Borrador</th>
+      <td mat-cell *matCellDef="let article" class="centertext ft14">
+        {{ article.isDraft ? "Si" : "No" }}
+      </td>
+    </ng-container>
+
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef class="ft14 centertext">Acciones</th>
       <td mat-cell *matCellDef="let article" class="centertext ft14 cursorPointer">
