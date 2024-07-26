@@ -128,6 +128,13 @@
                                             PDF 
                                         </div>
                                 </div>
+                                <div *ngIf="!(user.isSystemUser || selectedCourse.enterpriseRef?.id == enterpriseRef?.id) && selectedCourse.id" 
+                                fxLayout="row" 
+                                fxLayoutGap=".5rem"  >
+                                <div (click)="downloadPDFCourse()" class="blueLink mgt05 white cursorPointer ft14 fw mgb10" fxLayoutAlign="end center">
+                                    PDF 
+                                </div>
+                        </div>
 
 
                             </div>
@@ -439,3 +446,4 @@
         </div>
     </div>
 </div>
+<app-floating-notification *ngIf="showNotification" [message]="notificationMessage"></app-floating-notification>

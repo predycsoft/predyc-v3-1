@@ -88,6 +88,11 @@ export class DialogQuestionsDetailComponent {
         const preguntasPromises = this.courseQuestionsData.courseQuestions.map(async question => {
           const userData = await this.userService.getUserByUid(question.userRef.id)
           const claseData = classMap.find(x=>x.id == question.claseRef.id)
+
+          if (typeof question.mostrarPregunta === 'undefined') {
+            question.mostrarPregunta = true;
+          }
+
           return {
             data: question,
             respondiendo: false,

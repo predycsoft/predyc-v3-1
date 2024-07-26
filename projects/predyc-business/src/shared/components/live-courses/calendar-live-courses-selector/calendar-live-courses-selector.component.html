@@ -16,7 +16,7 @@
                     Diplomado: {{value.diplomadoData.name}}
                 </div>
                 <div class="course-date">
-                    {{ value.sessionDate | date: 'EEE d' }} - {{value.sessionDuration / 60}} {{(value.sessionDuration / 60) > 1 ? "horas" : "hora" }}
+                    {{ value.sessionDate | date: 'EEE d' }} - {{value.duration / 60}} {{(value.duration / 60) > 1 ? "horas" : "hora" }}
                 </div>
             </div>
         </div>

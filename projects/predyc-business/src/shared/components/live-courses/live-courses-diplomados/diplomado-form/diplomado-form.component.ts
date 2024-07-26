@@ -724,7 +724,8 @@ export class DiplomadoLiveFormComponent {
           ? this.diplomado?.baseDiplomado
           : baseDiplomado,
         enterpriseRef: enterpriseRef,
-        emailLastDate: null
+        emailLastDate: null,
+        users: []
       });
 
       console.log('diplomado save',diplomado)
@@ -785,6 +786,7 @@ export class DiplomadoLiveFormComponent {
         
         this.router.navigate([`/admin/live-sessions/diplomates-live/form/${diplomadoId}`]);
         this.titleService.setTitle(MAIN_TITLE + this.diplomado.name);
+        this.ngOnInit()
       }
       Swal.close();
       this.alertService.succesAlert("Completado");
@@ -1027,6 +1029,14 @@ export class DiplomadoLiveFormComponent {
     return new Date(+parts[0], +parts[1] - 1, +parts[2], +timeParts[0], +timeParts[1]); // Note: months are 0-based
   }
 
+  studentEmails: string[] = [];
+
+
+  onUserEmailsChanged(emails: string[]): void {
+    // console.log("emails in parent", emails)
+    this.studentEmails = emails;
+  }
+  
 
   
 

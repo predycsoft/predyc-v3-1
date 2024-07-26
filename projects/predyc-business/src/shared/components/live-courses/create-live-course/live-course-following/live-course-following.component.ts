@@ -148,6 +148,9 @@ export class LiveCourseFollowingComponent {
   @Input() idBaseLiveCourse: string
 	@Input() liveCourseId: string
 
+  @Input() diplomadoId: string
+  @Input()  diplomadoDetails: any
+
   format: "object" | "html" | "text" | "json" = "object";
 
   modules = {
@@ -186,18 +189,29 @@ export class LiveCourseFollowingComponent {
 
   liveCourseServiceSubscription: Subscription
 
-  liveCourse: LiveCourse
+  liveCourse: any
 
   ngOnInit() {
     this.emailSent = false
 
-    this.liveCourseService.getLiveCourseById$(this.liveCourseId).subscribe(liveCourse => {
-      if (liveCourse) {
-        this.liveCourse = liveCourse
-        // console.log("liveCourseSon.emailLastDate", liveCourseSon.emailLastDate)
-        this.emailLastDate = this.convertTimestampToDatetimeLocalString(liveCourse.emailLastDate)
-      }
-    })
+    if(this.liveCourseId){
+      this.liveCourseService.getLiveCourseById$(this.liveCourseId).subscribe(liveCourse => {
+        if (liveCourse) {
+          this.liveCourse = liveCourse
+          // console.log("liveCourseSon.emailLastDate", liveCourseSon.emailLastDate)
+          this.emailLastDate = this.convertTimestampToDatetimeLocalString(liveCourse.emailLastDate)
+        }
+      })
+    }
+    else if(this.diplomadoId){
+      this.liveCourseService.getDiplomado$(this.diplomadoId).subscribe(liveCourse => {
+        if (liveCourse) {
+          this.liveCourse = liveCourse
+          // console.log("liveCourseSon.emailLastDate", liveCourseSon.emailLastDate)
+          this.emailLastDate = this.convertTimestampToDatetimeLocalString(liveCourse.emailLastDate)
+        }
+      })    
+    }
   }
 
   async onSubmit() {
@@ -251,7 +265,13 @@ export class LiveCourseFollowingComponent {
     let sender = "capacitacion@predyc.com"
     let recipients = this.studentEmails
     // let recipients = ["diegonegrette42@gmail.com"]
-    let subject = `Aviso del curso en vivo ${this.liveCourse.title}`
+    let subject
+    if(this.diplomadoId){
+      subject = `Aviso del diplomado ${this.liveCourse.name}`
+    }
+    else if (this.liveCourseId){
+      subject = `Aviso del curso en vivo ${this.liveCourse.title}`
+    }
     let htmlContent = this.editor.root.innerHTML
 
     htmlContent+=`<br><p><strong>Necesitas ayuda, escribenos</strong></p>
@@ -271,6 +291,7 @@ export class LiveCourseFollowingComponent {
         subject: subject,
         htmlContent: htmlContentFinal,
         liveCourseId: this.idBaseLiveCourse,
+        liveDiplomadoId:this.diplomadoId
       }));
 
       this.emailContent = ""

@@ -186,9 +186,11 @@ export class CoursesComponent implements AfterViewInit {
         }
 
         if(curso.duracion>=duracionCourse){
+          if(!curso['modules'].find(x=>x.titulo == 'Examen Final'))
           curso['modules'].push({dontshow:true, titulo:'Examen Final',clases:[{titulo:'Examen Final',duracion:curso.duracion-duracionCourse}]})
         }
         else{
+          if(!curso['modules'].find(x=>x.titulo == 'Examen Final'))
           curso['modules'].push({dontshow:true, titulo:'Examen Final',clases:[{titulo:'Examen Final',duracion:null}]})
         }
         curso['instructorData'] = instructors.find(x=>x.id == curso.instructorRef.id)
@@ -313,10 +315,22 @@ export class CoursesComponent implements AfterViewInit {
     console.log(this.selectedCourse)
     this.pdfService.downloadFichaTecnica(this.selectedCourse,this.selectedCourse['instructorData'])
   }
-  downloadPDFAllCourse(){
 
-    let cursosReady = this.courses.filter(x=>!x.proximamente)
-    this.pdfService.downloadFichaTecnicaMultiple(cursosReady)
+  showNotification: boolean = false;
+  notificationMessage: string = '';
+
+
+  async downloadPDFAllCourse(): Promise<void> {
+    this.showNotification = true;
+    this.notificationMessage = "Descargado archivo... Por favor, espera.";
+    try {
+      let cursosPDF = this.courses.filter(x=>!x.proximamente)
+      await this.pdfService.downloadFichaTecnicaMultiple(cursosPDF, 'Catálogo cursos', false);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      this.showNotification = false;
+    }
   }
 
 }

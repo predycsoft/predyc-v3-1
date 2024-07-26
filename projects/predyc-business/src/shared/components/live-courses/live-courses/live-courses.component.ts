@@ -26,6 +26,7 @@ export interface CalendarLiveCourseData {
   courseTitle: string;
   coursePhoto: string;
   courseId: string;
+  duration: number
   courseIdentifierText: string;
   courseMeetingLink: string;
   sessionDuration: number;
@@ -171,7 +172,7 @@ export class LiveCoursesComponent {
             let newCalendarLiveCourses: CalendarLiveCourseData[] = [];
             diplomados.forEach((diploamdo) => {
                 const calendarLiveCourseData: CalendarLiveCourseData = {
-                  type:'diplomado',
+                  type: 'diplomado',
                   courseTitle: diploamdo.name,
                   coursePhoto: diploamdo.photoUrl,
                   courseId: diploamdo.id,
@@ -183,8 +184,9 @@ export class LiveCoursesComponent {
                   sessionDate: new Date(diploamdo.startDate).getTime(),
                   sessionVimeoId1: null,
                   sessionVimeoId2: null,
-                  diplomadoLiveRef:null,
-                  diplomadoData:null
+                  diplomadoLiveRef: null,
+                  diplomadoData: null,
+                  duration: diploamdo.duration
                 };
                 newCalendarLiveCourses.push(calendarLiveCourseData);
               this.calendarLiveDiplomados = newCalendarLiveCourses.sort((a, b) => a.sessionDate - b.sessionDate);
@@ -197,7 +199,7 @@ export class LiveCoursesComponent {
           livecoursesWithSessions.forEach(({ liveCourse, sessions }) => {
             sessions.forEach((session) => {
               const calendarLiveCourseData: CalendarLiveCourseData = {
-                type:'coruse',
+                type: 'coruse',
                 courseTitle: liveCourse.title,
                 coursePhoto: liveCourse.photoUrl,
                 courseId: liveCourse.id,
@@ -209,8 +211,9 @@ export class LiveCoursesComponent {
                 sessionDate: firestoreTimestampToNumberTimestamp(session.date),
                 sessionVimeoId1: session.vimeoId1,
                 sessionVimeoId2: session.vimeoId2,
-                diplomadoLiveRef:liveCourse['diplomadoLiveRef'],
-                diplomadoData:this.diplomados.find(x=>x.id == liveCourse['diplomadoLiveRef']?.id)
+                diplomadoLiveRef: liveCourse['diplomadoLiveRef'],
+                diplomadoData: this.diplomados.find(x => x.id == liveCourse['diplomadoLiveRef']?.id),
+                duration: liveCourse.duration
               };
               newCalendarLiveCourses.push(calendarLiveCourseData);
             });

@@ -1,10 +1,10 @@
-import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
+import { Component, EventEmitter, Input, Output, SimpleChanges, ViewChild } from "@angular/core";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 import { ActivatedRoute, Router } from "@angular/router";
 import { IconService } from "projects/predyc-business/src/shared/services/icon.service";
 import { LiveCourseByStudent } from "projects/shared/models/live-course-by-student.model";
-import { Observable, Subscription, combineLatest, firstValueFrom, map, switchMap } from "rxjs";
+import { Observable, Subscription, combineLatest, firstValueFrom, forkJoin, map, switchMap } from "rxjs";
 import { AngularFirestore, DocumentReference } from "@angular/fire/compat/firestore";
 import { User, UserJson } from "projects/shared/models/user.model";
 import { LiveCourse } from "projects/shared/models/live-course.model";
@@ -22,17 +22,17 @@ import { titleCase } from "shared";
 import { DatePipe } from "@angular/common";
 
 interface DataToShow {
-  liveCourseByStudentId: string;
-  userEmail: string;
-  userName: string;
-  userPhone: string;
+  liveCourseByStudentId?: string;
+  userEmail?: string;
+  userName?: string;
+  userPhone?: string;
   userRef: DocumentReference;
-  diagnosticTestScore: number;
-  finalTestScore: number;
-  certificateId: string;
-  isAttending: boolean;
-  isActive: boolean;
-  companyName: string;
+  diagnosticTestScore?: number;
+  finalTestScore?: number;
+  certificateId?: string;
+  isAttending?: boolean;
+  isActive?: boolean;
+  companyName?: string;
 }
 
 @Component({
@@ -58,6 +58,13 @@ export class LiveCourseStudentListComponent {
   @Input() liveCourseId: string;
   @Input() courseDetails: any;
 
+  @Input() diplomadoDetails: any;
+  @Input() diplomadoId: any;
+  @Input() deplomadoStudyPlan: any;
+
+
+
+
   @Output() userEmailsChanged = new EventEmitter<string[]>();
 
   displayedColumns: string[] = ["userName", "userEmail", "enterprise", "diagnosticTest", "finalTest", "certificate", "attendance", "status"];
@@ -82,17 +89,73 @@ export class LiveCourseStudentListComponent {
 
   ngOnInit() {
     console.log('courseDetailsStudentList',this.courseDetails)
-    this.liveCourseRef = this.liveCourseService.getLiveCourseRefById(this.liveCourseId);
-    this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe((params) => {
-      const page = Number(params["page"]) || 1;
-      this.performSearch(page);
-    });
+    if(!this.liveCourseId){
+      this.displayedColumns = ["userName", "userEmail", "status"];
+      this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe((params) => {
+        const page = Number(params["page"]) || 1;
+        this.performSearchDiplomado(page);
+      });
+    }else{
+      if (this.courseDetails?.diplomadoLiveRef){
+        this.displayedColumns = ["userName", "userEmail", "enterprise", "diagnosticTest", "finalTest", "certificate", "attendance"];
+      }
+      this.liveCourseRef = this.liveCourseService.getLiveCourseRefById(this.liveCourseId);
+      this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe((params) => {
+        const page = Number(params["page"]) || 1;
+        this.performSearch(page);
+      });
+    }
+
   }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.paginator.pageSize = this.pageSize;
   }
+  
+
+  performSearchDiplomado(page: number){
+    this.liveCourseServiceSubscription = this.liveCourseService.getDiplomado$(this.diplomadoId).subscribe((diplomado)=>{
+      console.log('performSearchDiplomado',diplomado)
+      this.diplomadoDetails=diplomado
+      console.log('performSearchDiplomado',diplomado)
+
+
+      this.liveCourseService.getUsersFromLiveDiplomado(this.diplomadoId).subscribe(async (enrolledUsers)=>{
+        try {
+          const userIds = enrolledUsers.map(user => user.uid); // Ajusta según la estructura de datos
+          const users = await this.userService.getUsersByIds(userIds);
+
+          console.log('datosrevisar',userIds,enrolledUsers,users)
+    
+          let dataToShow = users.map(user => {
+            const enrolledUserData = enrolledUsers.find(x => x.uid === user.uid); // Ajusta según la estructura de datos
+            return {
+              uid: user.uid,
+              userEmail: user.email,
+              userName: user.displayName,
+              userPhone: user.phoneNumber,
+              userRef: enrolledUserData.userRef,
+              isActive: enrolledUserData.isActive
+            };
+          });
+          console.log('dataToShow:', dataToShow);
+
+          this.paginator.pageIndex = page - 1;
+          this.dataSource.data = dataToShow;
+          this.totalLength = dataToShow.length;
+          // Emit the user emails
+          this.userEmails = dataToShow.map((data) => data.userEmail);
+          this.userEmailsChanged.emit(this.userEmails);
+        } catch (error) {
+          console.error('Error obteniendo datos de usuarios:', error);
+        }
+      })
+
+    })
+  }
+
+  
 
   performSearch(page: number) {
     this.liveCourseServiceSubscription = this.liveCourseService
@@ -167,7 +230,7 @@ export class LiveCourseStudentListComponent {
 
   }
 
-  changeStatus(liveCourseByStudentId: string, isActive: boolean) {
+  changeStatus(liveCourseByStudentId: string, isActive: boolean,data:any) {
     Swal.fire({
       title: isActive ? "Agregaremos al usuario al curso en vivo" : "Eliminaremos al usuario del curso en vivo",
       text: "¿Deseas continuar?",
@@ -177,8 +240,13 @@ export class LiveCourseStudentListComponent {
       confirmButtonColor: "var(--blue-5)",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await this.liveCourseService.updateIsActiveLiveCourseByStudent(liveCourseByStudentId, isActive);
-      } else {
+        if (!this.diplomadoId){
+          await this.liveCourseService.updateIsActiveLiveCourseByStudent(liveCourseByStudentId, isActive);
+        }
+        else{
+          console.log(data.uid,this.diplomadoId,isActive)
+          await this.liveCourseService.updateUserDiplomadoStatus(data.uid, this.diplomadoId,isActive);
+        }
       }
     });
   }
@@ -314,8 +382,11 @@ export class LiveCourseStudentListComponent {
       });
 
       // Ensure the sheet name is valid by replacing any invalid characters
-      const sheetName = row.userName.replace(/[\[\]:*?/\\]/g, '_').substring(0, 31);
-      XLSX.utils.book_append_sheet(workbook, studentWorksheet, `${sheetIndex}-${sheetName}`);
+      let sheetName = row.userName.replace(/[\[\]:*?/\\]/g, '_');
+      sheetName= `${sheetIndex}-${sheetName}`
+      sheetName=sheetName.substring(0, 31);
+
+      XLSX.utils.book_append_sheet(workbook, studentWorksheet,`${sheetName}`);
       sheetIndex++;
     });
 
@@ -323,10 +394,8 @@ export class LiveCourseStudentListComponent {
   }
 
   processQuestions(questions, answers) {
-    console.log("answers", answers)
     return questions.map(question => {
       const answer = answers.find(x => x.id === question.id)
-      console.log("answer", answer)
       let questionTextValue: string = `Pregunta: "${answer.text}"\n`;
       let questionOpSelected = "";
       let questionOpCorrect = "";
@@ -373,19 +442,16 @@ export class LiveCourseStudentListComponent {
     });
   }
 
-  async handleUserSelected(user: User) {
-    console.log("Selected user:", user);
-    if (user) await this.assignLiveCourse(user.uid, user.email,user);
-    else this.openCreateUserModal();
-  }
 
-  async assignLiveCourse(userId: string, userEmail: string,user:User) {
+  async assignLiveCourse(userId: string, userEmail: string,user:User,liveCourseRef=this.liveCourseRef,sendMail = true) {
     const userRef = this.userService.getUserRefById(userId);
-    const liveCourseByStudent = new LiveCourseByStudent("", true, null, false, userRef, this.liveCourseRef, false, false, null, false, null, true, true);
+    const liveCourseByStudent = new LiveCourseByStudent("", true, null, false, userRef,liveCourseRef, false, false, null, false, null, true, true);
     try {
       await this.liveCourseService.createLiveCourseByStudent(liveCourseByStudent);
       console.log("***liveCourseByStudent created***");
-      await this.sendEmail(userEmail,user)
+      if(sendMail){
+        await this.sendEmail(userEmail,user)
+      }
     } catch (error) {
       console.log("XXXerror creating liveCourseByStudentXXX", error);
     }
@@ -404,13 +470,41 @@ export class LiveCourseStudentListComponent {
     modalRef.result.then(async (userData) => {
       console.log("userData", userData)
       userData.name = userData.displayName
-      await this.assignLiveCourse(userData.uid, userData.email,userData);
+      await this.handleUserSelected(userData)
+      //await this.assignLiveCourse(userData.uid, userData.email,userData);
     });
 
     return modalRef;
   }
 
-  async sendEmail(userEmail: string,user) {
+  async handleUserSelected(user: User) {
+    console.log("Selected user:", user);
+    if (user) {
+      if(this.diplomadoId){
+        console.log(this.deplomadoStudyPlan,user)
+        this.deplomadoStudyPlan.forEach(async liveCourse => {
+          let liveCourseRef = this.liveCourseService.getLiveCourseRefById(liveCourse.datosLive.curso.liveCourse.id);
+          await this.assignLiveCourse(user.uid, user.email,user,liveCourseRef,false)
+        });
+        let userIn = {
+          uid:user.uid,
+          userRef:this.userService.getUserRefById(user.uid),
+          email:user.email,
+          isActive:true,
+        }
+        await this.liveCourseService.updateLiveDiplomadoUsers(this.diplomadoId,userIn)
+        await this.sendEmail(user.email,user,'diplomado')
+
+      }
+      else{
+        await this.assignLiveCourse(user.uid, user.email,user);
+      }
+    }
+    else this.openCreateUserModal();
+  }
+
+
+  async sendEmail(userEmail: string,user, type='curso') {
 
     const firma = `
     <p style="margin: 5px 0;">Saludos cordiales,</p>
@@ -457,32 +551,55 @@ export class LiveCourseStudentListComponent {
       }
     </style>`;
 
-
-    console.log("userEmail", userEmail,this.courseDetails,user)
+    console.log("userEmail", userEmail,this.courseDetails,user,this.diplomadoDetails,this.deplomadoStudyPlan)
     let sender = "capacitacion@predyc.com"
     let recipients = [userEmail]
     // let recipients = ["diegonegrette42@gmail.com"]
-    let subject = `Has sido inscrito en un curso en vivo`
-    let startDate = this.courseDetails.sessions[0].dateFormatted
+    let subject = `Has sido inscrito en un ${type} en vivo`
+    let duracion = Math.round(this.courseDetails?.duration / 60)
+    let startDate
+    let cantidadModulos = 0
+    if (type == 'curso'){
+      startDate = this.courseDetails.sessions[0].dateFormatted
+      cantidadModulos = this.courseDetails.sessions.length
+    }
+    else{
+      startDate = this.deplomadoStudyPlan[0].datosLive.date
+      duracion = Math.round(this.diplomadoDetails.duration / 60)
+      cantidadModulos = this.deplomadoStudyPlan.length
+    }
     let formattedDate = this.datePipe.transform(startDate, 'd \'de\' MMMM', 'es');
-    let htmlContent = `<p>Estimado <strong>${titleCase(user.name)}</strong></p> 
-    <p>Mi nombre es Daniela Rodríguez, Coordinadora de Capacitación en <a href="https://predictiva21.com/">Predictiva21</a>,  me gustaría guiarlo en los pasos para que pueda acceder al aula virtual del curso, donde podrá ver las sesiones en vivo, exámenes, material descargable y certificado.</p>
-    <p>El curso <strong>${this.courseDetails.title}</strong> se llevará a cabo en un total de ${Math.round(this.courseDetails.duration / 60)} horas, desde el <strong>${formattedDate}</strong> en ${this.courseDetails.sessions.length} sesiones de la siguiente manera:</p>
-    <ul>` 
+    
 
-    this.courseDetails.sessions.forEach(session => {
-      let sessionDate = this.datePipe.transform(session.dateFormatted, 'd \'de\' MMMM \'a las\' HH:mm \'hrs\'', 'es');
-      htmlContent += `<li>${session.title} - ${sessionDate} hora CDMX (México)</li>`;
-    });
+    let htmlContent = `<p>Estimado <strong>${titleCase(user.name)}</strong></p> 
+    <p>Mi nombre es Daniela Rodríguez, Coordinadora de Capacitación en <a href="https://predictiva21.com/">Predictiva21</a>,  me gustaría guiarlo en los pasos para que pueda acceder al aula virtual del ${type}, donde podrá ver las sesiones en vivo, exámenes, material descargable y certificado.</p>
+    <p>El ${type} <strong>${this.courseDetails?.title ? this.courseDetails.title : this.diplomadoDetails?.name }</strong> se llevará a cabo en un total de ${duracion} horas, desde el <strong>${formattedDate}</strong> en ${cantidadModulos} sesiones de la siguiente manera:</p>
+    <ul>`
+
+    if (type == 'curso'){
+      this.courseDetails.sessions.forEach(session => {
+        let sessionDate = this.datePipe.transform(session.dateFormatted, 'd \'de\' MMMM \'a las\' HH:mm \'hrs\'', 'es');
+        htmlContent += `<li>${session.title} - ${sessionDate} hora CDMX (México)</li>`;
+      });
+    }
+    else{
+      this.deplomadoStudyPlan.forEach(session => {
+        let sessionDate = this.datePipe.transform(session.datosLive.date, 'd \'de\' MMMM \'a las\' HH:mm \'hrs\'', 'es');
+        htmlContent += `<li>${session.title} - ${sessionDate} hora CDMX (México)</li>`;
+      });
+    }
+
+
+
 
     let gmail = userEmail.includes("@gmail.com");
 
     htmlContent += `</ul><br>
     <p><strong>Por favor sigue estos sencillos pasos: <strong></p>
     <p><strong>Paso 1: </strong>Ingresa desde tu computador a nuestra plataforma <a href="https://predyc-user.web.app/auth/login">Predyc</a> e inicia sesión con tu correo ${userEmail} ${gmail? '(clic en botón continuar con Google)': 'y las credenciales que te llegarón anteriormente'}</p>
-    <p><strong>Paso 2: </strong>Ve a la seccion "Cursos en vivo" donde deberas ver en la lista este curso (${this.courseDetails.title})</p>
+    <p><strong>Paso 2: </strong>Ve a la seccion "Cursos en vivo" donde deberas ver en la lista este ${type} (${this.courseDetails?.title ? this.courseDetails.title : this.diplomadoDetails?.name })</p>
     <br>
-    <p>¡Listo! El curso está disponible en la sección “Cursos en vivo”</p>
+    <p>¡Listo! El ${type} está disponible en la sección “Cursos en vivo”</p>
     <p>El link a las sesiones y el material del curso estarán disponibles 20 minutos antes del inicio.</p><br>
     
     <p><strong>Recomendaciones para las sesiones en vivo:</strong></p>

@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { User, UserJson } from "projects/shared/models/user.model";
 import { AngularFirestore, CollectionReference, DocumentReference, Query } from "@angular/fire/compat/firestore";
-import { BehaviorSubject, combineLatest, filter, firstValueFrom, map, Observable, of, shareReplay, Subscription, switchMap,} from "rxjs";
+import { BehaviorSubject, combineLatest, filter, firstValueFrom, map, Observable, of, shareReplay, Subscription, switchMap, take,} from "rxjs";
 import { Subscription as SubscriptionClass } from "projects/shared/models/subscription.model";
 import { EnterpriseService } from "./enterprise.service";
 import { AlertsService } from "./alerts.service";
@@ -989,6 +989,29 @@ export class UserService {
   getUser$(uid: string): Observable<User> {
     return this.afs.collection<User>(User.collection).doc(uid).valueChanges();
   }
+
+  getUsersByIds(userIds: string[]): Promise<User[]> {
+    const batches = [];
+    
+    // Dividir los userIds en lotes de 10
+    for (let i = 0; i < userIds.length; i += 10) {
+      const batch = userIds.slice(i, i + 10);
+      batches.push(batch);
+    }
+
+    // Crear promesas para cada lote
+    const promises = batches.map(batch => {
+      return this.afs.collection<User>(User.collection, ref => ref.where('uid', 'in', batch))
+        .get()
+        .pipe(take(1))
+        .toPromise()
+        .then(querySnapshot => querySnapshot.docs.map(doc => doc.data() as User));
+    });
+
+    // Resolver todas las promesas y aplanar los resultados
+    return Promise.all(promises).then(results => results.flat());
+  }
+  
 
   public getUserRefById(id: string): DocumentReference<User> {
     return this.afs.collection<User>(User.collection).doc(id).ref;

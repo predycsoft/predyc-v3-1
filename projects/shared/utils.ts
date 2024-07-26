@@ -14,6 +14,22 @@ export const titleCase = (str: string) =>  {
       .join(" ");
   }
 
+  export const titleCaseWithExceptions = (str: string) => {
+	const exceptions = []; // Palabras que no se deben cambiar
+	const uppercaseWords = ['dni:']; // Palabras que deben ser convertidas a mayúsculas completas
+  
+	return str.split(' ').map(word => {
+	  console.log(word)
+	  if (exceptions.includes(word)) {
+		return word; // No cambiar la palabra
+	  } else if (uppercaseWords.includes(word)) {
+		return word.toUpperCase(); // Convertir la palabra a mayúsculas completas
+	  } else {
+		return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(); // Cambiar a Title Case
+	  }
+	}).join(' ');
+}
+
 export const dateFromCalendarToTimestamp = (date: { day: number; month: number; year: number }): number => {
 	return Date.UTC(date.year, date.month - 1, date.day);
 };

@@ -284,16 +284,20 @@ export class PDFService {
     }
   }
 
-  async downloadFichaTecnicaMultiple(courses) {
+  async downloadFichaTecnicaMultiple(courses,titulo='Ficha_tecnica_Cursos',showLoading = true) {
 
-    Swal.fire({
-      title: "Generando Catálogo...",
-      text: "Por favor, espera.",
-      allowOutsideClick: false,
-      didOpen: () => {
-        Swal.showLoading();
-      },
-    });
+    if(showLoading){
+      Swal.fire({
+        title: "Generando documento...",
+        text: "Por favor, espera.",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+    }
+
+
 
     const pdf = new jsPDF("p", "mm", "a4", true) as jsPDF;
   
@@ -313,9 +317,10 @@ export class PDFService {
         pdf.addPage(); // Solo agregar una nueva página si no es el último curso
       }
     }
-    pdf.save("Ficha_tecnica_Cursos.pdf");
-    Swal.close();
-
+    pdf.save(`${this.sanitizeFilename(titulo)}.pdf`);
+    if(showLoading){
+      Swal.close();
+    }
   }
   
   
