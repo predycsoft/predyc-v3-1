@@ -14,7 +14,7 @@ import { Author } from "projects/shared/models/author.model";
 import { AuthorService } from "projects/predyc-business/src/shared/services/author.service";
 import { AngularFireStorage } from "@angular/fire/compat/storage";
 import { FormControl } from "@angular/forms";
-import { Article, ArticleTagJson } from "projects/shared/models/article.model";
+import { Article, ArticleJson, ArticleTagJson } from "projects/shared/models/article.model";
 import { DocumentReference } from "@angular/fire/compat/firestore";
 import { CategoryService } from "projects/predyc-business/src/shared/services/category.service";
 import { CategoryJson } from "projects/shared/models/category.model";
@@ -200,6 +200,7 @@ export class ArticleComponent {
   selectedCategory: string = "";
   pillars: DocumentReference[] = []
   courses: DocumentReference[] = []
+  relatedArticles: DocumentReference[] = []
   summary = ""
   metaDescription = ""
   isDraft = false
@@ -210,6 +211,7 @@ export class ArticleComponent {
 
   categoriesOptions = []
 
+  loadArticleSubscription: Subscription
   articleSubscription: Subscription
   tagsSubscription: Subscription
   authorSubscription: Subscription
@@ -229,6 +231,11 @@ export class ArticleComponent {
   coursesForm = new FormControl();
   filteredCourses: Observable<CursoJson[]>;
   articleCourses: CursoJson[] = [];
+
+  allRelatedArticles: ArticleJson[] = [];
+  relatedArticlesForm = new FormControl();
+  filteredRelatedArticles: Observable<ArticleJson[]>;
+  articleRelatedArticles: ArticleJson[] = [];
 
   articlePillars: CategoryJson[] = [];
   pillarsForm = new FormControl();
@@ -269,6 +276,14 @@ export class ArticleComponent {
         map(value => this._filterCourses(value))
       );
     });
+
+    this.articleSubscription = this.articleService.getArticles$().subscribe(relatedArticles => {
+      this.allRelatedArticles = relatedArticles;
+      this.filteredRelatedArticles = this.relatedArticlesForm.valueChanges.pipe(
+        startWith(''),
+        map(value => this._filterRelatedArticles(value))
+      );
+    });
     
     this.authorSubscription = this.authorService.getAuthors$().subscribe(authors => {
       this.authors = authors
@@ -286,22 +301,25 @@ export class ArticleComponent {
 
   loadArticle(articleId: string) {
     try {
-      this.articleSubscription = this.articleService.getArticleWithDataById$(articleId).pipe(take(1),
+      this.loadArticleSubscription = this.articleService.getArticleWithDataById$(articleId).pipe(take(1),
         switchMap((article: ArticleData) => {
           const tagsIds = article.tagsRef.map(x => x.id);
           const pillarsIds = article.pillarsRef.map(x => x.id);
           const coursesIds = article.coursesRef.map(x => x.id);
+          const relatedArticlesIds = article.relatedArticlesRef.map(x => x.id);
   
           return combineLatest([
             this.articleService.getArticleTagsByIds$(tagsIds),
             this.categoryService.getCategoriesByIds(pillarsIds),
-            this.courseService.getCoursesByIds$(coursesIds)
+            this.courseService.getCoursesByIds$(coursesIds),
+            this.articleService.getArticlesByIds$(relatedArticlesIds)
           ]).pipe(
-            map(([tags, pillars, courses]) => ({
+            map(([tags, pillars, courses, relatedArticles]) => ({
               ...article,
               tags,
               pillars,
-              courses
+              courses,
+              relatedArticles
             }))
           );
         })
@@ -322,6 +340,7 @@ export class ArticleComponent {
         this.articleTags = articleWithTagPillarsAndCoursesData.tags;
         this.articlePillars = articleWithTagPillarsAndCoursesData.pillars; 
         this.articleCourses = articleWithTagPillarsAndCoursesData.courses;
+        this.articleRelatedArticles = articleWithTagPillarsAndCoursesData.relatedArticles;
         this.originalContent = structuredClone(articleWithTagPillarsAndCoursesData.data)
         console.log('originalContent',this.originalContent)
       });
@@ -407,6 +426,30 @@ export class ArticleComponent {
 
   removeCourse(courseIndex: number) {
     this.articleCourses.splice(courseIndex, 1);
+  }
+
+  _filterRelatedArticles(value: string | ArticleJson): any[] {
+    const filterValue = (typeof value === 'string') ? value.toLowerCase() : value.title.toLowerCase();
+    return this.allRelatedArticles.filter(article => article.title.toLowerCase().includes(filterValue));
+  }
+
+  getOptionTextRelatedArticle(option: ArticleJson): string {
+    return option ? option.title : '';
+  }
+
+  isRelatedArticleSelected(article: ArticleJson): boolean {
+    return this.articleRelatedArticles.some(selectedArticle => selectedArticle.title === article.title);
+  }
+
+  changeRelatedArticle(article: ArticleJson): void {
+    if (!this.isRelatedArticleSelected(article)) {
+      this.articleRelatedArticles.push(article);
+    }
+    this.relatedArticlesForm.setValue('');
+  }
+
+  removeRelatedArticle(index: number) {
+    this.articleRelatedArticles.splice(index, 1);
   }
 
   _filterPillars(value: string | CategoryJson): CategoryJson[] {
@@ -544,7 +587,7 @@ export class ArticleComponent {
         const tagsReferences = this.articleTags.map(x => this.articleService.getArticleTagRefById(x.id))
         const pillarsReferences = this.articlePillars.map(x => this.categoryService.getCategoryRefById(x.id))
         const coursesReferences = this.articleCourses.map(x => this.courseService.getCourseRefById(x.id))
-
+        const relatedArticlesReferences = this.articleRelatedArticles.map(x => this.articleService.getArticleRefById(x.id))
 
         const processedData = await this.processImagesInContent(this.editor.getContents().ops);
         const processedHtml = this.convertDeltaToHtml(processedData);
@@ -570,6 +613,7 @@ export class ArticleComponent {
           photoUrl: downloadURL,
           orderNumber: this.orderNumber,
           coursesRef: coursesReferences,
+          relatedArticlesRef: relatedArticlesReferences,
         };
         console.log("dataToSave",dataToSave)
         const articleId = await this.articleService.saveArticle(dataToSave, !!this.articleId, this.prevOrderNumber);

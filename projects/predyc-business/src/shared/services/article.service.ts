@@ -172,6 +172,10 @@ export class ArticleService {
     }
   }
 
+  getArticleById$(articleId: string): Observable<ArticleJson> {
+    return this.afs.collection<ArticleJson>(Article.collection).doc(articleId).valueChanges()
+  }
+
   getArticleWithDataById$(articleId: string): Observable<ArticleData> {
     return combineLatest([
       this.afs.collection(Article.collection).doc(articleId).valueChanges(),
@@ -193,7 +197,19 @@ export class ArticleService {
       })
     );
   }
-  
+
+  getArticlesByIds$(articlesIds: string[]): Observable<ArticleJson[]> {
+    if (!articlesIds || articlesIds.length === 0) {
+      return of([]);
+    }
+
+    const articleObservables = articlesIds.map(articleId => this.afs.collection<ArticleJson>(Article.collection).doc(articleId).valueChanges());
+    return combineLatest(articleObservables)
+  }
+
+  getArticleRefById(id: string): DocumentReference<Article> {
+    return this.afs.collection<Article>(Article.collection).doc(id).ref;
+  }
 
   async deleteArticleById(articleId: string): Promise<void> {
     const articleDocRef = this.afs.collection(Article.collection).doc(articleId);

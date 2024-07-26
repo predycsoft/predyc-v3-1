@@ -190,6 +190,39 @@
             </div>
         </div>
 
+        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="1.5rem" class="fw">
+            <!-- Related Articles -->
+            <div fxLayout="column" fxLayoutGap=".2rem" class="fw">
+                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1.5rem" class="cursorPointer fw">
+                    <span class="w60px">Artículos relacionados:</span>
+                    <form class="fw">
+                        <mat-form-field subscriptSizing="dynamic" class="example-full-width fw h50px">
+                            <mat-label>Buscar artículo</mat-label>
+                            <input type="text" class="ft14 fw" placeholder="Seleccione uno" aria-label="Number" matInput #autoTrigger="matAutocompleteTrigger" 
+                            [formControl]="relatedArticlesForm" [matAutocomplete]="autoRelatedArticles"/>
+                            <mat-autocomplete [hideSingleSelectionIndicator]="true" [displayWith]="getOptionTextRelatedArticle" #autoRelatedArticles="matAutocomplete" class="options">
+                                <mat-option (click)="changeRelatedArticle(option)" class="multiline-mat-option ft12 fw" *ngFor="let option of filteredRelatedArticles | async" [value]="option">
+                                    <div fxLayout="row" fxLayoutAlign="space-between" class="fw">
+                                        <div fxLayout="col" fxLayoutAlign="center center">{{ option.title | titlecase }}</div>
+                                        <mat-icon class="makeBlue" *ngIf="isRelatedArticleSelected(option)">check</mat-icon>
+                                    </div>
+                                </mat-option>
+                            </mat-autocomplete>
+                        </mat-form-field>
+                    </form>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="margin-left-custom pdt03">
+                    <ng-container *ngFor="let relatedArticle of articleRelatedArticles; let relatedArticleIndex = index" class="margin-left-custom">
+                        <div class="skill-badge-complete ListHover radius10 backGray2 ft12 pdl08 pdr08 gray-8">
+                            {{ relatedArticle.title | titlecase }}
+                            <img style="cursor: pointer" (click)="removeRelatedArticle(relatedArticleIndex)" [src]="icon.close" class="h16px makeGray" alt="" />
+                        </div>
+                    </ng-container>
+                </div>
+                <!-- <span *ngIf="articleRelatedArticles.length === 0" class="ft10 redText">Debes seleccionar por lo menos un artículo relacionado</span> -->
+            </div>
+        </div>        
+
         <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="1rem" class="fw">
             <!-- Summary -->
             <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap=".5rem" class="fw">

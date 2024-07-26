@@ -20,6 +20,7 @@ export interface ArticleJson {
     updatedAt: any
     orderNumber: number
     coursesRef: DocumentReference<Curso>[]
+    relatedArticlesRef: DocumentReference<Article>[]
 }
 
 export class Article {
@@ -54,6 +55,7 @@ export class Article {
         public updatedAt: any,
         public orderNumber: number,
         public coursesRef: DocumentReference<Curso>[],
+        public relatedArticlesRef: DocumentReference<Article>[],
 
     ) {}
 
@@ -75,6 +77,7 @@ export class Article {
             articleJson.updatedAt,
             articleJson.orderNumber,
             articleJson.coursesRef,
+            articleJson.relatedArticlesRef,
         )
     }
 
@@ -96,6 +99,7 @@ export class Article {
             updatedAt: this.updatedAt,
             orderNumber: this.orderNumber,
             coursesRef: this.coursesRef,
+            relatedArticlesRef: this.relatedArticlesRef,
         }
     }
 }
