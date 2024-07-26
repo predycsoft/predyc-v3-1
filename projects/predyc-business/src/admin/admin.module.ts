@@ -49,6 +49,10 @@ import { ArticleComponent } from './admin-pages/articles/article/article.compone
 import { ArticlePreviewComponent } from './admin-pages/articles/article-preview/article-preview.component';
 import { AuthorsListComponent } from './admin-pages/articles/authors-list/authors-list.component';
 import { DiplomadoLiveFormComponent } from "../shared/components/live-courses/live-courses-diplomados/diplomado-form/diplomado-form.component";
+import { CategoriesComponent } from './admin-pages/categories/categories.component';
+import { PillarsComponent } from './admin-pages/pillars/pillars.component';
+import { CategoriesListComponent } from './admin-pages/categories/categories-list/categories-list.component';
+import { PillarsListComponent } from './admin-pages/pillars/pillars-list/pillars-list.component';
 
 
 @NgModule({
@@ -99,7 +103,11 @@ import { DiplomadoLiveFormComponent } from "../shared/components/live-courses/li
     ArticlesListComponent,
     ArticleComponent,
     ArticlePreviewComponent,
-    AuthorsListComponent
+    AuthorsListComponent,
+    CategoriesComponent,
+    PillarsComponent,
+    CategoriesListComponent,
+    PillarsListComponent
   ],
   imports: [SharedModule, CommonModule, AdminRoutingModule],
 })

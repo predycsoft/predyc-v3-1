@@ -131,6 +131,16 @@ export class SideNavComponent {
       link: "/admin/articles",
       icon: "../../assets/iconsUI/bookmark.svg",
     },
+    // {
+    //   name: "Categorias",
+    //   link: "/admin/categories",
+    //   icon: "../../assets/iconsUI/bookmark.svg",
+    // },
+    // {
+    //   name: "Pilares",
+    //   link: "/admin/pillars",
+    //   icon: "../../assets/iconsUI/bookmark.svg",
+    // },
   ];
 
 

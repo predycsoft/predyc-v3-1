@@ -1,0 +1,52 @@
+<div class="">
+    <table mat-table [dataSource]="dataSource">
+
+        <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef class="ft14"> Título </th>
+            <td mat-cell *matCellDef="let category">
+                <div fxLayout="row" fxLayoutGap="20px"fxLayoutAlign=" center">
+                    <div class="ft500 ft14 gray-10 w-50">{{category.name }}</div>
+                </div>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="enterprise">
+            <th mat-header-cell *matHeaderCellDef class="ft14"> Empresa </th>
+            <td mat-cell *matCellDef="let category">
+                <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign=" center">
+                    <div class="ft500 ft12 gray-8 w-50">{{category.enterprise ? category.enterprise : "Sin empresa" }}</div>
+                </div>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef class="ft14 centertext">Acciones</th>
+            <td mat-cell *matCellDef="let article" class="centertext ft14 cursorPointer">
+              <mat-menu #menu="matMenu" class="containerMenu" style="padding: 20px !important;">
+                <div fxLayout="column" fxLayoutGap="" fxLayoutAlign="center center">
+                  <span class="menuItem pdr10 pdl10 h36px">Editar</span>
+                  <span class="menuItem pdr10 pdl10 h36px" >Eliminar</span>
+                </div>
+              </mat-menu>
+              <div fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                <mat-icon class="iconButton centerText" [matMenuTriggerFor]="menu">more_horiz</mat-icon>
+              </div>
+            </td>
+        </ng-container>
+
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <ng-container>
+            <tr mat-row *matRowDef="let charge; columns: displayedColumns;">
+            </tr>
+        </ng-container>
+
+        <!-- Row shown when there is no matching data. -->
+        <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" colspan="10">No se han encontrado pagos para el criterio de busqueda</td>
+        </tr>
+    </table>
+
+    <mat-paginator aria-label="Select page of users" [pageSize]="pageSize" [length]="totalLength"
+        (page)="onPageChange($event.pageIndex + 1)"></mat-paginator>
+</div>
