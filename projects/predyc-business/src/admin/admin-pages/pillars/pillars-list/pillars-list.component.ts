@@ -4,7 +4,12 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CategoryService } from 'projects/predyc-business/src/shared/services/category.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
-import { Subscription } from 'rxjs';
+import { CategoryJson } from 'projects/shared/models/category.model';
+import { combineLatest, map, of, Subscription, switchMap } from 'rxjs';
+import { DialogPillarsFormComponent } from '../dialog-pillars-form/dialog-pillars-form.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-pillars-list',
@@ -15,8 +20,10 @@ export class PillarsListComponent {
   constructor(
     private activatedRoute: ActivatedRoute,
     private categoriesService: CategoryService,
+    private enterpriseService: EnterpriseService,
     public icon: IconService,
     private router: Router,
+		private modalService: NgbModal,
   ){}
 
   displayedColumns: string[] = [
@@ -51,14 +58,24 @@ export class PillarsListComponent {
     this.dataSource.paginator.pageSize = this.pageSize;
   }
 
-  performSearch( page: number) {
-    this.categoriesSubscription = this.categoriesService.getCategories$().subscribe(category => {
-      // console.log('datos',category)
-      const categoryInList = category
+  performSearch(page: number) {
+    this.categoriesSubscription = this.categoriesService.getAllCategories$().pipe(
+      switchMap(categories => {
+        if (categories.length === 0) return of(categories);
+        const categoriesWithEnterpriseNames$ = categories.map(category =>
+          category.enterprise ? 
+            this.enterpriseService.getEnterpriseById$(category.enterprise.id).pipe(
+              map(enterprise => ({ ...category, enterpriseName: enterprise.name }))
+            ) : 
+            of({ ...category, enterpriseName: 'Sin empresa' })
+        );
+        return combineLatest(categoriesWithEnterpriseNames$);
+      })
+    ).subscribe(categoryInList => {
       this.paginator.pageIndex = page - 1;
-      this.dataSource.data = categoryInList
+      this.dataSource.data = categoryInList;
       this.totalLength = categoryInList.length;
-    })
+    });
   }
 
   onPageChange(page: number): void {
@@ -68,7 +85,27 @@ export class PillarsListComponent {
     });
   }
 
-  actions() {
+  openEditPillarModal(pillar: CategoryJson) {
+    const modalRef = this.modalService.open(DialogPillarsFormComponent, {
+      ariaLabelledBy: 'modal-basic-title',
+      centered: true,
+      backdrop: 'static'
+    });
+    modalRef.componentInstance.pillar = pillar;
 
   }
+
+  async deletePillar(pillarId: string) {
+    Swal.fire({
+      title: "Eliminando pilar...",
+      text: "Por favor, espera.",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+    await this.categoriesService.deleteCategoryById(pillarId)
+    Swal.close();
+  }
+
 }

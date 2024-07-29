@@ -1,0 +1,42 @@
+<div class="modal-header bg-web-primary text-white px-3 py-1" fxLayout="row" fxLayoutAlign="space-between center">
+    <div class="modal-title pd10">
+        <span class="ft16 ft500 gray-10">Asignar pilar</span>
+    </div>
+    <img style="cursor: pointer" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px" alt="" />
+</div>
+<div *ngIf="pillarForm" fxLayout="column" fxLayoutGap="1.25rem" class="modal-body" style="overflow-y: auto; max-height: 80vh">
+    <form [formGroup]="pillarForm">
+        <div fxLayout="row" class="fw">
+            <div class="form-group fw">
+                <label>Nombre del pilar</label>
+                <input type="text" class="form-control customInput" formControlName="pillarName" placeholder="Escriba el nombre del pilar" />
+                <div class="custom-invalid-feedback red-5" *ngIf="pillarForm.controls['pillarName'].errors && showFormError"> 
+                    Debe indicar el nombre.
+                </div>
+            </div>
+        </div>
+        <div fxLayout="row" class="fw">
+            <div class="form-group fw">
+                <label>Empresa</label>
+                <mat-form-field subscriptSizing="dynamic" class="example-full-width fw h50px">
+                    <mat-label>Buscar empresa: </mat-label>
+                    <input type="text" class="ft14 fw" placeholder="Seleccione uno" aria-label="Number" matInput #pillarAutoTrigger="matAutocompleteTrigger" 
+                    formControlName="enterprise" [matAutocomplete]="autoPillars"/>
+                    <mat-autocomplete [hideSingleSelectionIndicator]="true" [displayWith]="getOptionTextEnterprise" #autoPillars="matAutocomplete" class="options">
+                        <mat-option (click)="onEnterpriseSelected(option)" class="multiline-mat-option ft12 fw" *ngFor="let option of filteredEnterprises | async" [value]="option">
+                            <div fxLayout="row" fxLayoutAlign="space-between" class="fw">
+                                <div fxLayout="col" fxLayoutAlign="center center">{{ option.name | titlecase }}</div>
+                            </div>
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+            </div>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="end end" class="pdt03" style="width: 100%">
+            <button (click)="savePillar()" class="blueButton gray-1 radius4 ft12 h28px mgt10" fxLayout="row" fxLayoutGap="0.625rem" fxLayoutAlign="center center">
+                <img [src]="icon.check" class="h16px pdr05 makeWhite" alt="" />
+                Asignar pilar
+            </button>
+        </div>
+    </form>
+</div>

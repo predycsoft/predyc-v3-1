@@ -39,10 +39,20 @@ export class CategoryService {
   private empresa
 
 
-  async addCategory(newCategory: Category): Promise<void> {
-    const ref = this.afs.collection<Category>(Category.collection).doc().ref;
-    await ref.set({...newCategory.toJson(), id: ref.id}, { merge: true });
-    newCategory.id = ref.id;
+  async addCategory(category: Category): Promise<void> {
+    let categoryId: string = category.id;
+  
+    if (!categoryId) {
+      categoryId = this.afs.createId();
+      category.id = categoryId;
+    }
+
+    const ref = this.afs.collection<Category>(Category.collection).doc(categoryId).ref;
+    await ref.set({...category.toJson()}, { merge: true });
+  }
+
+  async deleteCategoryById(categoryId: string): Promise<void> {
+    return await this.afs.collection(Category.collection).doc(categoryId).delete()
   }
 
   async saveCategories(categories: CategoryJson[]): Promise<CategoryJson[]> {
@@ -147,5 +157,9 @@ export class CategoryService {
 
     const categoryObservables = categorieIDs.map(tagId => this.afs.collection<Category>(Category.collection).doc(tagId).valueChanges());
     return combineLatest(categoryObservables)
+  }
+
+  getAllCategories$(): Observable<Category[]> {
+    return this.afs.collection<Category>(Category.collection).valueChanges()
   }
 }

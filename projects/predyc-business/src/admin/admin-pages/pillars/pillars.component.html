@@ -2,13 +2,12 @@
     <p class="ft600 ft16 gray-10">Pilares</p>
     <div fxLayout="row" class="mgb05 fw" fxLayoutAlign="end center">
         <div fxLayout="row" fxLayoutAlign="center center" >
-            <button (click)="null" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButtonAnim button-animation "  style="border-radius: 24px !important;" >
+            <button (click)="openCreatePillarModal()" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButtonAnim button-animation "  style="border-radius: 24px !important;" >
                 <img [src]="icon.addNew" class="h16px  makeWhite mgr08" alt=""> Nuevo pillar
             </button>
         </div>
     </div>
-    <div fxLayout="columm" fxLayoutAlign="center center" class="fw vh50  " >
+    <div fxLayout="column" fxLayoutAlign="center center" class="fw vh50  " >
         <app-pillars-list class="fw mgr03"></app-pillars-list>
     </div>
-</div>    
-
+</div>

@@ -53,6 +53,7 @@ import { CategoriesComponent } from './admin-pages/categories/categories.compone
 import { PillarsComponent } from './admin-pages/pillars/pillars.component';
 import { CategoriesListComponent } from './admin-pages/categories/categories-list/categories-list.component';
 import { PillarsListComponent } from './admin-pages/pillars/pillars-list/pillars-list.component';
+import { DialogPillarsFormComponent } from './admin-pages/pillars/dialog-pillars-form/dialog-pillars-form.component';
 
 
 @NgModule({
@@ -107,7 +108,8 @@ import { PillarsListComponent } from './admin-pages/pillars/pillars-list/pillars
     CategoriesComponent,
     PillarsComponent,
     CategoriesListComponent,
-    PillarsListComponent
+    PillarsListComponent,
+    DialogPillarsFormComponent
   ],
   imports: [SharedModule, CommonModule, AdminRoutingModule],
 })
