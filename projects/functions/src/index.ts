@@ -55,7 +55,7 @@ export { mailAccountManagementAdmin,mailAccountManagementUsers,generateReportsAd
 
 import { generateMailCertificate } from './certificado'
 export { generateMailCertificate }
-
+ 
 import { getAllCourseIds, onCourseUpdated, onCourseCreated }  from './course'
 export { getAllCourseIds, onCourseUpdated, onCourseCreated }
 

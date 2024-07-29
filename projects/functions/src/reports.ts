@@ -58,7 +58,7 @@ export const generateReportsAdminAllEnterprisesSchedule = functions.pubsub.sched
 
 export const generateReportsUsersAllEnterprisesSchedule = functions.pubsub.schedule('0 6 * * 1,4').onRun(async (context) => { // aun sin deploy
   try {
-    await generateReportsAdminAllEnterprises();
+    await generateReportsUsersAllEnterprises();
   } catch (error: any) {
     console.log(error);
     throw new functions.https.HttpsError("unknown", error.message);
@@ -296,8 +296,9 @@ function generateUsersProgressTableHTML(monthCourses: any[]): string {
     let lastDayPast = obtenerUltimoDiaDelMesAnterior(targetComparisonDate);
 
     month.courses.forEach(course => {
+      console.log(course)
       let retrasado = false;
-      if (course.dateEndPlan && (course.dateEndPlan.seconds * 1000) <= lastDayPast) {
+      if (course.dateEndPlan && (course.dateEndPlan <= lastDayPast)) {
         retrasado = true;
       }
       const progressText = `${course.progress.toFixed(2)}%`;
