@@ -29,7 +29,8 @@ export interface CursoJson {
   idOld: string
   duracion: number,
   customUrl: string
-  objetivos: ObjetivoCurso[] 
+  objetivos: ObjetivoCurso[] ,
+  KeyWords:string,
   updatedAt: any
 }
 
@@ -65,6 +66,7 @@ export class Curso {
   duracion: number = 0
   customUrl: string = ""
   objetivos: ObjetivoCurso[] = []
+  KeyWords:string = ""
   updatedAt: any = null
 
 
@@ -96,6 +98,7 @@ export class Curso {
       duracion:this.duracion,
       customUrl:this.customUrl,
       objetivos:this.objetivos,
+      KeyWords:this.KeyWords,
       updatedAt:this.updatedAt,
 
     }

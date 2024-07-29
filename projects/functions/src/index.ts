@@ -50,12 +50,12 @@ export { checkExpiredSubscriptionsAndNotify5DaysBefore, checkDelayedStudyPlans, 
 import { sendLiveCourseEmail, } from './live-course'
 export { sendLiveCourseEmail, }
 
-import { mailAccountManagementAdmin,mailAccountManagementUsers,generateReportsAdminAllEnterprisesMnual,generateReportsUsersAllEnterprisesMnual } from './reports'
-export { mailAccountManagementAdmin,mailAccountManagementUsers,generateReportsAdminAllEnterprisesMnual,generateReportsUsersAllEnterprisesMnual }
+import { mailAccountManagementAdmin,mailAccountManagementUsers,generateReportsAdminAllEnterprisesMnual,generateReportsUsersAllEnterprisesMnual,generateReportsAdminAllEnterprisesSchedule,generateReportsUsersAllEnterprisesSchedule } from './reports'
+export { mailAccountManagementAdmin,mailAccountManagementUsers,generateReportsAdminAllEnterprisesMnual,generateReportsUsersAllEnterprisesMnual,generateReportsAdminAllEnterprisesSchedule,generateReportsUsersAllEnterprisesSchedule }
 
 import { generateMailCertificate } from './certificado'
 export { generateMailCertificate }
-
+ 
 import { getAllCourseIds, onCourseUpdated, onCourseCreated }  from './course'
 export { getAllCourseIds, onCourseUpdated, onCourseCreated }
 

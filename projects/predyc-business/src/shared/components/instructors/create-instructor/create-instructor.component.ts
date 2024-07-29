@@ -214,7 +214,7 @@ export class CreateInstructorComponent {
 
   async saveInstructorFirma() {
     if (this.uploadedImageFirma) {
-      if (this.instructorForm.controls.firma) {
+      if (this.instructorForm?.controls?.firma) {
         try {
           await firstValueFrom(
             this.storage.refFromURL(this.instructorForm.controls.firma.value).delete()
