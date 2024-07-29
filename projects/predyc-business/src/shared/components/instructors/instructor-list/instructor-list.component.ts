@@ -44,7 +44,8 @@ export class InstructorListComponent {
     'porcentaje',
     'courses',
     'liveCourses',
-    'user'
+    'user',
+    'firma'
   ];
 
   dataSource = new MatTableDataSource<User>(); // Replace 'any' with your data type;
