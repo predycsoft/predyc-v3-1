@@ -131,7 +131,7 @@ export class DialogQuestionsDetailComponent {
 
   async onSendMail(data: any) {
 
-    const sender = "desarrollo@predyc.com";
+    const sender = "capacitacion@predyc.com";
     const recipients = [data.usuarioEmail];
     // const recipients = ['diegonegrette42@gmail.com'];
     const subject = "¡Han respondido tu consulta en Predyc!";
@@ -141,7 +141,7 @@ export class DialogQuestionsDetailComponent {
     \nTe invitamos a entrar a tu cuenta y ver información o material adicional que este disponible para los estudiantes. 
     \nSi tienes alguna duda, el equipo de Predyc estará para asesorarte.
     \n¡Felicidades por acelerar tu formación profesional con Predyc!`
-    const cc = ["desarrollo@predyc.com", "liliana.giraldo@predyc.com"];
+    const cc = ["desarrollo@predyc.com"];
 
     const mailObj = { sender, recipients, subject, text, cc };
 
