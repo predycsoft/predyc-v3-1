@@ -32,6 +32,7 @@ export interface CursoJson {
   objetivos: ObjetivoCurso[] ,
   KeyWords:string,
   updatedAt: any
+  isFree: boolean
 }
 
 export class Curso {
@@ -68,6 +69,7 @@ export class Curso {
   objetivos: ObjetivoCurso[] = []
   KeyWords:string = ""
   updatedAt: any = null
+  isFree: boolean = false
 
 
   public toJson(): CursoJson {
@@ -100,6 +102,7 @@ export class Curso {
       objetivos:this.objetivos,
       KeyWords:this.KeyWords,
       updatedAt:this.updatedAt,
+      isFree: this.isFree,
 
     }
   }
