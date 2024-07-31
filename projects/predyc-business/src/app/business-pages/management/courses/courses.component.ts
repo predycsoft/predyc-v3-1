@@ -333,5 +333,22 @@ export class CoursesComponent implements AfterViewInit {
     }
   }
 
+
+  // ---------
+  // addIsFreePropertyToCourses() {
+  //   this.afs.collection<Curso>(Curso.collection).get().subscribe(snapshot => {
+  //     const batch = this.afs.firestore.batch();
+  //     snapshot.forEach(doc => {
+  //       const docRef = this.afs.collection(Curso.collection).doc(doc.id).ref;
+  //       batch.update(docRef, { isFree: false });
+  //     });
+  //     batch.commit().then(() => {
+  //       console.log('All documents have been updated');
+  //     }).catch(error => {
+  //       console.error('Error updating documents: ', error);
+  //     });
+  //   });
+  // }
+
 }
 
