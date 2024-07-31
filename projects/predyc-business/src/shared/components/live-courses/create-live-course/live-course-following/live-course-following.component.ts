@@ -262,9 +262,8 @@ export class LiveCourseFollowingComponent {
       }
     </style>`;
     
-    let sender = "capacitacion@predyc.com"
+    let sender = "capacitacion@predictiva21.com"
     let recipients = this.studentEmails
-    // let recipients = ["diegonegrette42@gmail.com"]
     let subject
     if(this.diplomadoId){
       subject = `Aviso del diplomado ${this.liveCourse.name}`

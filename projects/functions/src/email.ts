@@ -14,6 +14,9 @@ export const _sendMailHTML = async (data: { sender: string; recipients: string[]
   if (["capacitacion@predyc.com"].includes(data.sender)) {
     sender = process.env.EMAIL_USER_CAP;
     password = process.env.EMAIL_PASSWORD_CAP;
+  } else if (['capacitacion@predictiva21.com'].includes(data.sender)) {
+    sender = process.env.EMAIL_USER_P21_CAP;
+    password = process.env.EMAIL_PASSWORD_P21_CAP;
   }
 
   console.log("_sendMailHTML data.htmlContent", data.htmlContent);
@@ -77,6 +80,9 @@ export const _sendMail = async (data: { sender: string; recipients: string[]; su
   if (["capacitacion@predyc.com"].includes(data.sender)) {
     sender = process.env.EMAIL_USER_CAP;
     password = process.env.EMAIL_PASSWORD_CAP;
+  } else if (['capacitacion@predictiva21.com'].includes(data.sender)) {
+    sender = process.env.EMAIL_USER_P21_CAP;
+    password = process.env.EMAIL_PASSWORD_P21_CAP;
   }
 
   // if (["contacto@predyc.com", "capacitacion@predyc.com"].includes(data.sender) ){
