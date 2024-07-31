@@ -162,6 +162,7 @@ export class InstructorListComponent {
         if(! curso['instructorId']){
           curso['instructorId'] = curso.instructorRef.id
         }
+        delete curso['diplomadoLiveRef']
         delete curso.instructorRef
         delete curso.skillsRef
         delete curso.liveCourseTemplateRef
@@ -182,9 +183,9 @@ export class InstructorListComponent {
           liveCourses:cursosEnVivo.filter(x=>x['instructorId'] == instructor.id)
         }
       });
+      console.log('instructores',instructores)
       this.instructores = structuredClone(instructores)
       this.instructosOnList.emit(instructores)
-      console.log('instructores',instructores)
     
       instructores = instructores.filter((x) => {
         if (!searchTerm || searchTerm === "") return true;

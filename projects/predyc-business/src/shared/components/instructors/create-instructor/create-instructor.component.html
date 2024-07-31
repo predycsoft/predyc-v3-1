@@ -73,7 +73,6 @@
                             class="form-control pdl20  radius20 shadow-animation borderLight"
                             placeholder="Porcentaje regalias" >
                     </div>
-
                     <label for="">Firma</label>
                     <div (click)="fileInputFirma.click()" fxLayout="row" fxLayoutAlign="center center" class="radius20 shadow-animation borderLight cursorPointer" style="height: 100%; max-height: 100% !important;">
                       <img *ngIf="imageUrlFirma && !imageLoadError" [src]="imageUrlFirma" (error)="handleImageError()" alt="Firma" style="width: 100%; max-height: 219px; object-fit: contain;">

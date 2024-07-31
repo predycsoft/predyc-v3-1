@@ -58,10 +58,12 @@ const backCertificado2: string = "https://predyc-user.web.app/assets/images/cert
 const backCertificadoTractian: string = "https://predyc-user.web.app/assets/images/certificado/certificado-tractian.png"
 const skeleton: string = "https://predyc-user.web.app/assets/images/certificado/skeletonCertificate.png"
 const firmaCEO: string = "https://predyc-user.web.app/assets/images/certificado/firma-ceo.png"
+const firmaCOO: string = "https://predyc-user.web.app/assets/images/certificado/firma-coo.png"
 const certificado = "https://predyc-user.web.app/assets/images/logos/certificado.avif"
 
 
 let nombreInstructor;
+let dataInstructorGlobal
 let imgTest;
 let instructorEmpresaNombre: string;
 
@@ -175,6 +177,7 @@ export const generateMailCertificate = functions.https.onCall(async (data, _) =>
           throw new functions.https.HttpsError('not-found', 'No se encontró el instructor.');
         }
         const dataInstructor = instructorDoc.data();
+        dataInstructorGlobal = dataInstructor
         nombreInstructor = dataInstructor['nombre'];
         firmaInstructor = dataInstructor['firma'];
         logoInstructorEmpresa = dataInstructor['empresaFoto'];
@@ -190,7 +193,20 @@ export const generateMailCertificate = functions.https.onCall(async (data, _) =>
                 logoInstructorEmpresa = null
             }
 
+        }
+        if(firmaInstructor){
+
+          const imgBuffer = await downloadImage(firmaInstructor);
+          if(imgBuffer){
+              const resizedBuffer = await sharp(imgBuffer).toBuffer();
+              firmaInstructor = `data:image/png;base64,${resizedBuffer.toString('base64')}`;
           }
+          else{
+            firmaInstructor = null
+          }
+
+
+        }
 
       } else if (liveCourseId) {
         // throw new functions.https.HttpsError("not-found", 'not yet implemented');
@@ -211,6 +227,7 @@ export const generateMailCertificate = functions.https.onCall(async (data, _) =>
           throw new functions.https.HttpsError('not-found', 'No se encontró el instructor.');
         }
         const dataInstructor = instructorDoc.data();
+        dataInstructorGlobal = dataInstructor
         nombreInstructor = dataInstructor['nombre'];
         firmaInstructor = dataInstructor['firma'];
         logoInstructorEmpresa = dataInstructor['empresaFoto'];
@@ -226,6 +243,19 @@ export const generateMailCertificate = functions.https.onCall(async (data, _) =>
                 logoInstructorEmpresa = null
             }
 
+          }
+          if(firmaInstructor){
+
+            const imgBuffer = await downloadImage(firmaInstructor);
+            if(imgBuffer){
+                const resizedBuffer = await sharp(imgBuffer).toBuffer();
+                firmaInstructor = `data:image/png;base64,${resizedBuffer.toString('base64')}`;
+            }
+            else{
+              firmaInstructor = null
+            }
+  
+  
           }
       }
   
@@ -305,7 +335,7 @@ async function getCourseById(courseId: string): Promise<any> {
     const bufferbackCertificado = await sharp(imgBufferbackCertificado).toBuffer();
     const backCertificadoBase64 = `data:image/png;base64,${bufferbackCertificado.toString('base64')}`;
   
-    doc.addImage(backCertificadoBase64, 'PNG', 0, 0, 297, 210);
+    doc.addImage(backCertificadoBase64, 'PNG', 0, 0, 297, 210,'','FAST');
     doc.setFontSize(27);
     doc.setTextColor(21, 27, 38);
     doc.setFont('helvetica', 'bold');
@@ -325,38 +355,65 @@ async function getCourseById(courseId: string): Promise<any> {
   
 // Agregar imágenes redimensionadas en base64
     if (mostrarLogoUsuarioEmpresa) {
-        if (logoUsuarioEmpresa) {
-            const dimensions = await getImageDimensions(logoUsuarioEmpresa);
-            doc.addImage(logoUsuarioEmpresa, 'PNG', 17, 10, 50, dimensions.height);
-        } else if (logoInstructorEmpresa) {
-            const dimensions = await getImageDimensions(logoInstructorEmpresa);
-            doc.addImage(logoInstructorEmpresa, 'PNG', 17, 10, 50, dimensions.height);
-        }
+      if (logoUsuarioEmpresa) {
+          const dimensions = await getImageDimensions(logoUsuarioEmpresa);
+          doc.addImage(logoUsuarioEmpresa, 'PNG', 17, 10, 50, dimensions.height,'','FAST');
+      } else if (logoInstructorEmpresa) {
+          const dimensions = await getImageDimensions(logoInstructorEmpresa);
+          doc.addImage(logoInstructorEmpresa, 'PNG', 17, 10, 50, dimensions.height,'','FAST');;
+      }
     } else {
-        if (logoInstructorEmpresa) {
-            const dimensions = await getImageDimensions(logoInstructorEmpresa);
-            doc.addImage(logoInstructorEmpresa, 'PNG', 17, 10, 50, dimensions.height);
-        }
+      if (logoInstructorEmpresa) {
+          const dimensions = await getImageDimensions(logoInstructorEmpresa);
+          doc.addImage(logoInstructorEmpresa, 'PNG', 17, 10, 50, dimensions.height,'','FAST');
+      }
     }
-    doc.setFontSize(12);
-    doc.setFont('helvetica', 'bold');
-    doc.setTextColor(132, 143, 153);
 
-    const imgBufferfirmaCEO = await downloadImage(firmaCEO);
+    doc.setTextColor(132, 143, 153);
+    doc.setFontSize(12);
+
+
+    if(firmaInstructor){
+      const dimensions = await getImageDimensions(firmaInstructor,40);
+      doc.addImage(firmaInstructor, 'PNG', 110, 136, 40, dimensions.height,'','FAST');
+      doc.line(100, 160, 171,160);
+      doc.setFont('helvetica', 'bold')
+      doc.text(nombreInstructor, 100, 168) // Nombre usuario
+      doc.setFont('helvetica', 'normal')
+      doc.text('Instructor', 100, 175) // Nombre usuario
+    }
+    
+    doc.setFont('helvetica', 'bold');
+    let imgBufferfirmaCEO = await downloadImage((dataInstructorGlobal.id == 'RW5RwaDyai2gvoKNhnlo')?firmaCOO:firmaCEO);
+    
     const bufferfirmaCEO = await sharp(imgBufferfirmaCEO).toBuffer();
     const firmaCEOBase64 = `data:image/png;base64,${bufferfirmaCEO.toString('base64')}`;
     
-    doc.addImage(firmaCEOBase64, 'PNG', 12, 136, 80, 30);
-    doc.text('Andrés Enrique González Giraldo', 19, 168);
+    doc.addImage(firmaCEOBase64, 'PNG', 12, 136, 80, 30,'','FAST');
+
+
+    if(dataInstructorGlobal.id == 'RW5RwaDyai2gvoKNhnlo'){
+      doc.text('Alejandro Godoy', 19, 168);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(13);
+      doc.text('COO de Predyc', 19, 175);
+    }
+    else{
+      doc.text('Andrés Enrique González Giraldo', 19, 168);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(13);
+      doc.text('CEO de Predyc', 19, 175);
+    }
+    doc.line(19, 160, 80,160);
+
+    
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(16);
-    if (nombreInstructor) {
+    if (nombreInstructor && !firmaInstructor) {
       doc.text('Instructor: ' + nombreInstructor, 19, 120);
     }
   
     doc.setFont('helvetica', 'normal');
-    doc.setFontSize(13);
-    doc.text('CEO de Predyc', 19, 175);
     doc.setFontSize(15);
     doc.text(fechaTransformada, 19, 190);
     doc.setFontSize(11);
@@ -373,11 +430,11 @@ async function getCourseById(courseId: string): Promise<any> {
     }; 
  }
   
- async function getImageDimensions(base64Image: string): Promise<{ width: number, height: number }> {
+ async function getImageDimensions(base64Image: string,tamano:number = 50): Promise<{ width: number, height: number }> {
     const buffer = Buffer.from(base64Image.split(',')[1], 'base64');
     const metadata = await sharp(buffer).metadata();
     const aspectRatio = metadata.width / metadata.height;
-    const width = 50;
+    const width = tamano;
     const height = width / aspectRatio;
     return { width, height };
 }
