@@ -475,6 +475,7 @@ export class CreateCourseComponent {
           skills: new FormControl(null, Validators.required),
           vimeoFolderId: new FormControl(null),
           proximamente: new FormControl(false),
+          isFree: new FormControl(false),
           customUrl: new FormControl(""),
         });
         this.initSkills();
@@ -532,6 +533,7 @@ export class CreateCourseComponent {
             imagen_instructor: new FormControl(instructor.foto, Validators.required),
             skills: new FormControl(curso.skillsRef, Validators.required),
             proximamente: new FormControl(curso.proximamente),
+            isFree: new FormControl(curso.isFree),
             customUrl: new FormControl(customUrl),
           });
           curso.objetivos.forEach(objetivo => this.addObjetivo(objetivo));
@@ -617,6 +619,19 @@ export class CreateCourseComponent {
 
     // Opcionalmente, imprime si el checkbox quedó marcado o no
     console.log("El checkbox Borrador está:", isChecked ? "marcado (true)" : "desmarcado (false)");
+  }
+
+  changeIsFree(event: Event) {
+    // Accede a la propiedad 'checked' del checkbox
+    const isChecked = (event.target as HTMLInputElement).checked;
+
+    this.formNewCourse.get("isFree").setValue(isChecked);
+
+    if (this.curso) {
+      this.curso.isFree = isChecked;
+    }
+
+    console.log("El checkbox isFree está:", isChecked ? "marcado (true)" : "desmarcado (false)");
   }
 
   openModal(content, size = "lg") {
