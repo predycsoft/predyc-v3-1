@@ -1,16 +1,7 @@
 import { Component } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { Chart } from "chart.js";
-import {
-  Observable,
-  Subscription,
-  combineLatest,
-  map,
-  startWith,
-  BehaviorSubject,
-  finalize,
-  firstValueFrom,
-} from "rxjs";
+import { Observable, Subscription, combineLatest, map, startWith, BehaviorSubject, finalize, firstValueFrom } from "rxjs";
 import { Category } from "projects/shared/models/category.model";
 import { Curso, CursoJson } from "projects/shared/models/course.model";
 import { Skill } from "projects/shared/models/skill.model";
@@ -23,10 +14,7 @@ import { Title } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ProfileService } from "projects/predyc-business/src/shared/services/profile.service";
 import { Profile, ProfileJson } from "projects/shared/models/profile.model";
-import {
-  AngularFirestore,
-  DocumentReference,
-} from "@angular/fire/compat/firestore";
+import { AngularFirestore, DocumentReference } from "@angular/fire/compat/firestore";
 import { AlertsService } from "projects/predyc-business/src/shared/services/alerts.service";
 import { EnterpriseService } from "projects/predyc-business/src/shared/services/enterprise.service";
 import { AuthService } from "projects/predyc-business/src/shared/services/auth.service";
@@ -97,6 +85,8 @@ export class DiplomadoFormComponent {
 
   diplomadoName: string = "";
   profileDescription: string = "";
+  metaDescription: string = "";
+  slug: string = "";
   profileHoursPerMonth: number = 8;
 
   profileBackup;
@@ -117,14 +107,11 @@ export class DiplomadoFormComponent {
 
 
   ngOnInit() {
-
-
     this.activitySubscription = this.activityClassesService.getActivityCertifications().subscribe(activities => {
       //let activitiesFiltered = activities.filter(x=>x.subType !="initTest")
       let activitiesFiltered = activities
-      console.log('activitiesFiltered',activitiesFiltered)
+      // console.log('activitiesFiltered',activitiesFiltered)
       this.activities = activitiesFiltered
-
     })
 
     this.profileServiceSubscription = this.diplomadoService.getDiplomados$()
@@ -199,6 +186,8 @@ export class DiplomadoFormComponent {
           }
 
           this.profileDescription = this.diplomado.description;
+          this.metaDescription = this.diplomado.metaDescription;
+          this.slug = this.diplomado.slug;
           this.profileHoursPerMonth = this.diplomado.hoursPerMonth;
         }
         this.studyPlan = [];
@@ -342,6 +331,8 @@ export class DiplomadoFormComponent {
         duration:this.duration,
         activityRef:this.activityRef,
         description: this.profileDescription,
+        metaDescription: this.metaDescription,
+        slug: this.slug,
         selectedCourses: this.studyPlan.map((item) => {
           return {
             courseId: item.id,
@@ -589,8 +580,12 @@ export class DiplomadoFormComponent {
 
   async onSave() {
     try {
-      if (!this.diplomadoName)
-        throw new Error("Debe indicar un nombre para el perfil");
+      if (!this.diplomadoName)throw new Error("Debe indicar un nombre para el diplomado");
+      if (!this.slug)throw new Error("Debe indicar el slug para el diplomado");
+      const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+      if (!slugPattern.test(this.slug)) throw new Error("El formato del slug es inválido");
+      if (!this.profileDescription)throw new Error("Debe indicar una descripción para el diplomado");
+      if (!this.metaDescription)throw new Error("Debe indicar una meta descripción para el diplomado");
 
       if (
         this.diplomados.find(
@@ -615,10 +610,7 @@ export class DiplomadoFormComponent {
           Swal.showLoading()
         }
       });
-      const coursesRef: {
-        courseRef: DocumentReference<Curso>;
-        studyPlanOrder: number;
-      }[] = this.studyPlan.map((course) => {
+      const coursesRef: {courseRef: DocumentReference<Curso>; studyPlanOrder: number;}[] = this.studyPlan.map((course) => {
         return {
           courseRef: this.courseService.getCourseRefById(course.id),
           studyPlanOrder: course.studyPlanOrder,
@@ -639,18 +631,16 @@ export class DiplomadoFormComponent {
       }
       let baseDiplomado = null;
       if (this.baseDiplomado) {
-        baseDiplomado = this.afs
-          .collection<Diplomado>(Diplomado.collection)
-          .doc(this.baseDiplomado).ref;
+        baseDiplomado = this.afs.collection<Diplomado>(Diplomado.collection).doc(this.baseDiplomado).ref;
       }
 
       const diplomado: Diplomado = Diplomado.fromJson({
         id: this.diplomado ? this.diplomado.id : null,
         name: this.diplomadoName,
-        photoUrl:this.photoUrl?this.photoUrl:null,
-        duration:this.duration,
-        type:this.type,
-        activityRef:this.activityRef?this.activityRef:null,
+        photoUrl: this.photoUrl?this.photoUrl:null,
+        duration: this.duration,
+        type: this.type,
+        activityRef: this.activityRef?this.activityRef:null,
         description: this.profileDescription,
         coursesRef: coursesRef,
         baseDiplomado: this.diplomado?.baseDiplomado
@@ -659,6 +649,8 @@ export class DiplomadoFormComponent {
         enterpriseRef: enterpriseRef,
         //permissions: this.diplomado ? this.diplomado.permissions : null,
         hoursPerMonth: this.profileHoursPerMonth,
+        metaDescription: this.metaDescription,
+        slug: this.slug
       });
 
       console.log('diplomado save',diplomado)

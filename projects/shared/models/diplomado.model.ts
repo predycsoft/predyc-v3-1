@@ -20,6 +20,8 @@ export interface DiplomadoJson {
   hoursPerMonth: number;
   baseDiplomado: DocumentReference<Diplomado>;
   activityRef: DocumentReference<Activity>;
+  metaDescription: string;
+  slug: string;
 
 }
 
@@ -40,25 +42,29 @@ export class Diplomado {
   public hoursPerMonth: number;
   public baseDiplomado: DocumentReference<Diplomado>;
   public activityRef: DocumentReference<Activity>;
+  public metaDescription: string;
+  public slug: string;
 
   public users?: User[];
   public enterprise?: Enterprise;
 
-  public static fromJson(profileJson: DiplomadoJson): Diplomado {
-    let profile = new Diplomado();
-    profile.id = profileJson.id;
-    profile.name = profileJson.name;
-    profile.duration = profileJson.duration;
-    profile.description = profileJson.description;
-    profile.photoUrl = profileJson.photoUrl;
-    profile.coursesRef = [...profileJson.coursesRef];
-    profile.enterpriseRef = profileJson.enterpriseRef;
-    //profile.permissions = profileJson.permissions;
-    profile.hoursPerMonth = profileJson.hoursPerMonth;
-    profile.baseDiplomado = profileJson.baseDiplomado;
-    profile.type = profileJson.type;
-    profile.activityRef = profileJson.activityRef;
-    return profile;
+  public static fromJson(diplomadoJson: DiplomadoJson): Diplomado {
+    let diplomado = new Diplomado();
+    diplomado.id = diplomadoJson.id;
+    diplomado.name = diplomadoJson.name;
+    diplomado.duration = diplomadoJson.duration;
+    diplomado.description = diplomadoJson.description;
+    diplomado.photoUrl = diplomadoJson.photoUrl;
+    diplomado.coursesRef = [...diplomadoJson.coursesRef];
+    diplomado.enterpriseRef = diplomadoJson.enterpriseRef;
+    //diplomado.permissions = diplomadoJson.permissions;
+    diplomado.hoursPerMonth = diplomadoJson.hoursPerMonth;
+    diplomado.baseDiplomado = diplomadoJson.baseDiplomado;
+    diplomado.type = diplomadoJson.type;
+    diplomado.activityRef = diplomadoJson.activityRef;
+    diplomado.metaDescription = diplomadoJson.metaDescription;
+    diplomado.slug = diplomadoJson.slug;
+    return diplomado;
   }
 
   toJson(): DiplomadoJson {
@@ -74,6 +80,8 @@ export class Diplomado {
       hoursPerMonth: this.hoursPerMonth,
       baseDiplomado: this.baseDiplomado,
       activityRef: this.activityRef,
+      metaDescription: this.metaDescription,
+      slug: this.slug,
       duration:this.duration
     };
   }

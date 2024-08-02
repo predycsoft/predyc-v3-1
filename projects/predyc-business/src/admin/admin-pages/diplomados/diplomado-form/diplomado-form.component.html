@@ -91,34 +91,10 @@
         </div>
         <div class="mgt15 radius20" *ngIf="isEditing">
           <!-- <p class="ft13 gray-8 mgl03" *ngIf="isEditing">Nombre del perfil</p> -->
-          <div
-            class="fw"
-            fxLayout="row"
-            fxLayoutGap=""
-            fxLayoutAlign="space-between center"
-            style="margin-top: 25px; border: none"
-          >
-            <div
-              class="searchBarContainer cursorPointer radius20 fw"
-              fxLayout="row"
-              fxLayoutAlign=" center"
-            >
-              <textarea
-                name=""
-                id=""
-                rows="1"
-                [(ngModel)]="diplomadoName"
-                maxlength="43"
-                placeholder="Nombre del diplomado"
-                style="
-                  width: 100%;
-                  resize: none;
-                  border: none;
-                  padding-left: 15px !important;
-                  background-color: #ffffff !important;
-                "
-                class="shadow-animation radius20 pd05"
-              ></textarea>
+          <div class="fw" fxLayout="row" fxLayoutGap="" fxLayoutAlign="space-between center" style="margin-top: 25px; border: none" >
+            <div class="searchBarContainer cursorPointer radius20 fw" fxLayout="row" fxLayoutAlign=" center" >
+              <textarea name="" id="" rows="1" [(ngModel)]="diplomadoName" maxlength="43" placeholder="Nombre del diplomado" class="shadow-animation radius20 pd05" 
+              style=" width: 100%; resize: none; border: none; padding-left: 15px !important; background-color: #ffffff !important; " ></textarea>
             </div>
           </div>
         </div>
@@ -130,18 +106,9 @@
           <input #fileInput accept="image/*" type="file" hidden (change)="onFileSelected($event, 'photoUrl')" />
         </div>
         <!-- <input class="input-box ft12" placeholder="Nombre del perfil" [(ngModel)]="diplomadoName" maxlength="43"> -->
-        <div class="pd05 mgt10 radius10" *ngIf="!isEditing">
-          <p
-            class="ft12 gray-8"
-            *ngIf="!isEditing"
-            style="overflow-y: hidden; word-wrap: break-word; max-height: 122px"
-          >
-            {{ profileDescription }}
-          </p>
-        </div>
         
         <ng-container *ngIf="isEditing">
-          <span>Examen final</span>
+          <span class="mgt10">Examen final</span>
           <div class="fw" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px">
             <div  style="position: relative; flex-grow: 1; border-radius: 20px !important;" class="">
               <img [src]="icon.userProfile" class="makeGray h16px" alt="" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
@@ -155,19 +122,8 @@
           </div>
         </ng-container>
 
-        <ng-container *ngIf="!isEditing">
-          <div class="fw mgb10" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px">
-            <!-- <select  [(ngModel)] = "activityId" (change)="changedActivity()" class="form-control select radius20 shadow-animation borderLight" style="border-radius: 20px!important;">
-                <option [ngValue]="null"> &nbsp; Sin Examen</option>
-                <option *ngFor="let activity of activities" [value]="activity?.id">&nbsp;{{activity.title}}</option>
-            </select> -->
-            <span>{{getActivityName()}}</span>
-            <img (click)="showExamenDetails(modalExamen)" *ngIf="activityId" [src]="icon.info" class="h22px makeBlue cursorPointer" alt="" style="align-self: center;">
-          </div>
-        </ng-container>
-
         <ng-container *ngIf="isEditing">
-          <span>Tipo</span>
+          <span class="mgt10">Tipo</span>
           <div class="fw" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px">
             <div  style="position: relative; flex-grow: 1; border-radius: 20px !important;" class="">
               <img [src]="icon.userProfile" class="makeGray h16px" alt="" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
@@ -181,36 +137,66 @@
           </div>
         </ng-container>
 
+        <div class="mgt10 radius20" *ngIf="isEditing">
+          <span class="">Slug</span>
+          <div class="fw" fxLayout="row" fxLayoutGap="" fxLayoutAlign="space-between center" style="border: none" >
+            <div class="searchBarContainer cursorPointer radius20 fw" fxLayout="row" fxLayoutAlign=" center" >
+              <textarea name="" id="" rows="1" [(ngModel)]="slug" maxlength="43" placeholder="slug" class="shadow-animation radius10 pd05" 
+              style=" width: 100%; resize: none; border: none; padding-left: 15px !important; background-color: #ffffff !important; " 
+              #slugCtrl="ngModel" required pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$" ></textarea>
+            </div>
+          </div>
+          <div *ngIf="slugCtrl.invalid && slugCtrl.touched">
+            <span class="ft10 redText" *ngIf="slugCtrl.errors?.required">Slug es requerido.</span>
+            <span class="ft10 redText" *ngIf="slugCtrl.errors?.pattern">El formato del slug es inválido.</span>
+          </div>   
+        </div>
+
+        <ng-container *ngIf="isEditing">
+          <span class="mgt10">Descripción</span>
+          <div class="pd05 radius10 backWhite shadow-animation" style="border: none" >
+            <textarea name="" id="" rows="3" [(ngModel)]="profileDescription" placeholder="Introduzca la descripción" 
+            style=" overflow-y: hidden; width: 100%; resize: none; border: none; background-color: transparent !important; " ></textarea>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="isEditing" style="margin-bottom: 25px;">
+          <span class="mgt10">Metadescripción</span>
+          <div class="pd05 radius10 backWhite shadow-animation" style="border: none" >
+            <textarea name="" id="" rows="3" [(ngModel)]="metaDescription" placeholder="Introduzca la meta descripción" 
+            style=" overflow-y: hidden; width: 100%; resize: none; border: none; background-color: transparent !important; " ></textarea>
+          </div>
+        </ng-container>
+
         <ng-container *ngIf="!isEditing">
-          <div class="fw mgb10" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px">
+          <div class="fw mgt10 mgb10" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px">
             <!-- <select  [(ngModel)] = "activityId" (change)="changedActivity()" class="form-control select radius20 shadow-animation borderLight" style="border-radius: 20px!important;">
                 <option [ngValue]="null"> &nbsp; Sin Examen</option>
                 <option *ngFor="let activity of activities" [value]="activity?.id">&nbsp;{{activity.title}}</option>
             </select> -->
+            <span>{{getActivityName()}}</span>
+            <img (click)="showExamenDetails(modalExamen)" *ngIf="activityId" [src]="icon.info" class="h22px makeBlue cursorPointer" alt="" style="align-self: center;">
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="!isEditing">
+          <div class="fw mgb10" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px">
             <span>Tipo - {{type | titlecase}}</span>
           </div>
         </ng-container>
-        
-        <div
-          class="pd05 mgt10 radius10 backWhite shadow-animation"
-          *ngIf="isEditing"
-          style="margin-bottom: 55px; border: none"
-        >
-          <textarea
-            name=""
-            id=""
-            rows="3"
-            *ngIf="isEditing"
-            [(ngModel)]="profileDescription"
-            placeholder="Introduzca la descripción"
-            style="
-              overflow-y: hidden;
-              width: 100%;
-              resize: none;
-              border: none;
-              background-color: transparent !important;
-            "
-          ></textarea>
+
+        <ng-container *ngIf="!isEditing">
+          <div class="fw mgb10" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px">
+            <span>{{slug}}</span>
+          </div>
+        </ng-container>
+
+        <div class="pd05 mgt10 radius10" *ngIf="!isEditing">
+          <p class="ft12 gray-8" style="overflow-y: hidden; word-wrap: break-word; max-height: 122px">{{ profileDescription }}</p>
+        </div>
+
+        <div class="pd05 radius10" *ngIf="!isEditing">
+          <p class="ft12 gray-8" style="overflow-y: hidden; word-wrap: break-word; max-height: 122px">{{ metaDescription }}</p>
         </div>
 
         <!-- <div class="pdt10" fxLayout="row" fxLayoutGap="0.5rem" fxLayoutAlign="start center">
