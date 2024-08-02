@@ -536,7 +536,7 @@ export class CreateCourseComponent {
             isFree: new FormControl(curso.isFree),
             customUrl: new FormControl(customUrl),
           });
-          curso.objetivos.forEach(objetivo => this.addObjetivo(objetivo));
+          curso?.objetivos?.forEach(objetivo => this.addObjetivo(objetivo));
 
           //this.formNewCourse.get('resumen_instructor').disable();
           this.initSkills(); // Asegúrate de que initSkills también maneje las suscripciones correctamente

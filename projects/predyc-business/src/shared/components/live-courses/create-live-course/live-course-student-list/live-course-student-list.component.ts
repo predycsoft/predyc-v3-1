@@ -552,7 +552,7 @@ export class LiveCourseStudentListComponent {
     </style>`;
 
     console.log("userEmail", userEmail,this.courseDetails,user,this.diplomadoDetails,this.deplomadoStudyPlan)
-    let sender = "capacitacion@predyc.com"
+    let sender = "capacitacion@predictiva21.com"
     let recipients = [userEmail]
     // let recipients = ["diegonegrette42@gmail.com"]
     let subject = `Has sido inscrito en un ${type} en vivo`
