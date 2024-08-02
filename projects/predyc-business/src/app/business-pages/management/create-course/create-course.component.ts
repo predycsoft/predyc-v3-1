@@ -120,6 +120,9 @@ export class CreateCourseComponent {
   formNewCourse: FormGroup;
   formNewInstructor: FormGroup;
 
+  metaDescriptionMaxLength = 141
+  keyWordsMaxLength = 100
+
   getOptionText(option) {
     let name = option.nombre;
     return name;

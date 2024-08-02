@@ -22,6 +22,7 @@ export interface DiplomadoJson {
   activityRef: DocumentReference<Activity>;
   metaDescription: string;
   slug: string;
+  keyWords: string;
 
 }
 
@@ -44,6 +45,7 @@ export class Diplomado {
   public activityRef: DocumentReference<Activity>;
   public metaDescription: string;
   public slug: string;
+  public keyWords: string;
 
   public users?: User[];
   public enterprise?: Enterprise;
@@ -64,6 +66,7 @@ export class Diplomado {
     diplomado.activityRef = diplomadoJson.activityRef;
     diplomado.metaDescription = diplomadoJson.metaDescription;
     diplomado.slug = diplomadoJson.slug;
+    diplomado.keyWords = diplomadoJson.keyWords;
     return diplomado;
   }
 
@@ -82,6 +85,7 @@ export class Diplomado {
       activityRef: this.activityRef,
       metaDescription: this.metaDescription,
       slug: this.slug,
+      keyWords: this.keyWords,
       duration:this.duration
     };
   }

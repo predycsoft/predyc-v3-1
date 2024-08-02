@@ -82,7 +82,7 @@
                                             placeholder="Escriba el URL del curso aquí"
                                             >
                                             <div class="input-group-append">
-                                            <span class="input-group-text">{{ formNewCourse?.controls['customUrl']?.value?.length || 0 }}</span>
+                                                <span class="input-group-text">{{ formNewCourse?.controls['customUrl']?.value?.length || 0 }}</span>
                                             </div>
                                         </div>
                                         <div class="invalid-feedback" *ngIf="formNewCourse?.controls['customUrl']?.errors && showErrorCurso">
@@ -100,28 +100,35 @@
                                     </div> -->
                                     <div class="ft12 form-group pdt10">
                                         <label>Descripción del curso</label>
-                                        <textarea
-                                        [class.is-invalid]="formNewCourse.controls['descripcion'].errors && showErrorCurso"
-                                            rows="3"  formControlName="descripcion" type="text" class="form-control ft12  customInput2" placeholder="Escriba la descripción del curso aquí" style="resize: none;"></textarea>
-                                            <div class="invalid-feedback" *ngIf="formNewCourse.controls['descripcion'].errors && showErrorCurso"> 
+                                        <textarea [class.is-invalid]="formNewCourse.controls['descripcion'].errors && showErrorCurso"
+                                        rows="3"  formControlName="descripcion" type="text" class="form-control ft12  customInput2" 
+                                        placeholder="Escriba la descripción del curso aquí" style="resize: none;"></textarea>
+                                        <div class="invalid-feedback" *ngIf="formNewCourse.controls['descripcion'].errors && showErrorCurso"> 
                                             Debe indicar la descripción del curso
                                         </div>
                                     </div>
                                     <div class="ft12 form-group pdt10">
                                         <label>Meta descripción del curso</label>
                                         <textarea
-                                        [class.is-invalid]="formNewCourse.controls['metaDescripcion'].errors && showErrorCurso"
-                                            rows="3"  formControlName="metaDescripcion" type="text" class="form-control ft12  customInput2" placeholder="Escriba la descripción del curso aquí" style="resize: none;"></textarea>
-                                            <div class="invalid-feedback" *ngIf="formNewCourse.controls['metaDescripcion'].errors && showErrorCurso"> 
+                                        [class.is-invalid]="formNewCourse.controls['metaDescripcion'].errors && showErrorCurso" rows="3"  
+                                        formControlName="metaDescripcion" type="text" class="form-control ft12  customInput2" [maxLength]="metaDescriptionMaxLength"
+                                        placeholder="Escriba la descripción del curso aquí" style="resize: none;"></textarea>
+                                        <div class="progress-bar-container fw mgt03">
+                                            <div class="progress-bar" [style.width.%]="(formNewCourse?.controls['metaDescripcion']?.value?.length / metaDescriptionMaxLength) * 100"></div>
+                                        </div>
+
+                                        <div class="invalid-feedback" *ngIf="formNewCourse.controls['metaDescripcion'].errors && showErrorCurso"> 
                                             Debe indicar la meta descripción del curso
                                         </div>
                                     </div>
                                     <div class="ft12 form-group pdt10">
                                         <label>KeyWords</label>
-                                        <textarea
-                                        [class.is-invalid]="formNewCourse.controls['KeyWords'].errors && showErrorCurso"
-                                            rows="3"  formControlName="KeyWords" type="text" class="form-control ft12  customInput2" placeholder="Escriba los KeyWords del curso aquí" style="resize: none;"></textarea>
-                                            <div class="invalid-feedback" *ngIf="formNewCourse.controls['KeyWords'].errors && showErrorCurso"> 
+                                        <textarea [class.is-invalid]="formNewCourse.controls['KeyWords'].errors && showErrorCurso" [maxLength]="keyWordsMaxLength"
+                                        rows="3" formControlName="KeyWords" type="text" class="form-control ft12 customInput2" placeholder="Escriba los KeyWords del curso aquí" style="resize: none;"></textarea>
+                                        <div class="progress-bar-container fw mgt03">
+                                            <div class="progress-bar" [style.width.%]="(formNewCourse?.controls['KeyWords']?.value?.length / keyWordsMaxLength) * 100"></div>
+                                        </div>
+                                        <div class="invalid-feedback" *ngIf="formNewCourse.controls['KeyWords'].errors && showErrorCurso"> 
                                             Debe indicar los KeyWords del curso
                                         </div>
                                     </div>

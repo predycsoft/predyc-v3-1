@@ -86,8 +86,13 @@ export class DiplomadoFormComponent {
   diplomadoName: string = "";
   profileDescription: string = "";
   metaDescription: string = "";
+  keyWords: string = "";
   slug: string = "";
   profileHoursPerMonth: number = 8;
+
+  slugMaxLength = 15
+  metaDescriptionMaxLength = 141
+  keyWordsMaxLength = 100
 
   profileBackup;
 
@@ -187,6 +192,7 @@ export class DiplomadoFormComponent {
 
           this.profileDescription = this.diplomado.description;
           this.metaDescription = this.diplomado.metaDescription;
+          this.keyWords = this.diplomado.keyWords;
           this.slug = this.diplomado.slug;
           this.profileHoursPerMonth = this.diplomado.hoursPerMonth;
         }
@@ -332,6 +338,7 @@ export class DiplomadoFormComponent {
         activityRef:this.activityRef,
         description: this.profileDescription,
         metaDescription: this.metaDescription,
+        keyWords: this.keyWords,
         slug: this.slug,
         selectedCourses: this.studyPlan.map((item) => {
           return {
@@ -586,6 +593,7 @@ export class DiplomadoFormComponent {
       if (!slugPattern.test(this.slug)) throw new Error("El formato del slug es inválido");
       if (!this.profileDescription)throw new Error("Debe indicar una descripción para el diplomado");
       if (!this.metaDescription)throw new Error("Debe indicar una meta descripción para el diplomado");
+      if (!this.keyWords)throw new Error("Debe indicar los key words para el diplomado");
 
       if (
         this.diplomados.find(
@@ -650,6 +658,7 @@ export class DiplomadoFormComponent {
         //permissions: this.diplomado ? this.diplomado.permissions : null,
         hoursPerMonth: this.profileHoursPerMonth,
         metaDescription: this.metaDescription,
+        keyWords: this.keyWords,
         slug: this.slug
       });
 
