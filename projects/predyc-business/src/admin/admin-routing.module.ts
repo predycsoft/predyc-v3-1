@@ -24,7 +24,6 @@ import { ArticlesComponent } from "./admin-pages/articles/articles.component";
 import { ArticleComponent } from "./admin-pages/articles/article/article.component";
 import { ArticlePreviewComponent } from "./admin-pages/articles/article-preview/article-preview.component";
 import { DiplomadoLiveFormComponent } from "../shared/components/live-courses/live-courses-diplomados/diplomado-form/diplomado-form.component";
-import { CategoriesComponent } from "./admin-pages/categories/categories.component";
 import { PillarsComponent } from "./admin-pages/pillars/pillars.component";
 
 export const MAIN_TITLE = "Predyc Admin - ";
@@ -68,7 +67,6 @@ const routes: Routes = [
   { path: "articles/edit/:articleId", title: MAIN_TITLE + "Artículo", component: ArticleComponent },
   { path: "articles/preview/:articleId", title: MAIN_TITLE + "Artículo", component: ArticlePreviewComponent },
 
-  { path: "categories", title: MAIN_TITLE + "Categories", component: CategoriesComponent },
   { path: "pillars", title: MAIN_TITLE + "Pillars", component: PillarsComponent },
 
   { path: "**", redirectTo: "", pathMatch: "full" }, // Wildcard Route
