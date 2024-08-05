@@ -139,21 +139,37 @@
                 </div>
                 <!-- Categories -->
                 <div fxLayout="column" fxLayoutGap=".2rem" class="fw">
-                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="fw">
+                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1.5rem" class="cursorPointer fw">
                         <span class="w100px">Categorias:</span>
-                        <select [(ngModel)]="selectedCategory" (change)="onCategoryChange($event)" class="ft14 shadow-animation pdl05 pdr05 borderLight cursorPointer fw" style="text-align: center;">
-                            <option value="" disabled selected>Selecciona las categorias</option>
-                            <option *ngFor="let category of categoriesOptions" [value]="category">{{ category }}</option>
-                        </select>
+                        <form class="fw">
+                            <mat-form-field subscriptSizing="dynamic" class="example-full-width fw h50px">
+                                <mat-label>Buscar categoria</mat-label>
+                                <input type="text" class="ft14 fw" placeholder="Seleccione una" aria-label="Category" matInput #autoCategoryTrigger="matAutocompleteTrigger" 
+                                [formControl]="categoriesForm" [matAutocomplete]="autoCategories"/>
+                                <mat-autocomplete [hideSingleSelectionIndicator]="true" [displayWith]="getOptionTextCategory" #autoCategories="matAutocomplete" class="options">
+                                    <mat-option (click)="changeCategory(option)" class="multiline-mat-option ft12 fw" *ngFor="let option of filteredCategories | async" [value]="option">
+                                        <div fxLayout="row" fxLayoutAlign="space-between" class="fw">
+                                            <div fxLayout="col" fxLayoutAlign="center center">{{ option.name | titlecase }}</div>
+                                            <mat-icon class="makeBlue" *ngIf="isCategorySelected(option)">check</mat-icon>
+                                        </div>
+                                    </mat-option>
+                                    <mat-option (click)="createCategory(createCategoryModal)" class="multiline-mat-option" value="null">
+                                        <span class="ft13 blueLink">Crear nueva categoria</span>
+                                    </mat-option>
+                                </mat-autocomplete>
+                            </mat-form-field>
+                        </form>
                     </div>
                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="margin-left-custom pdt03">
-                        <div *ngFor="let category of categories; let categoryIndex = index" class="skill-badge-complete ListHover radius10 backGray2 ft12 pdl08 pdr08 gray-8">
-                            <span>{{ category | titlecase }}</span>
-                            <img style="cursor: pointer" (click)="removeCategory(categoryIndex)" [src]="icon.close" class="h16px makeGray" alt="" />
-                        </div>
+                        <ng-container *ngFor="let category of articleCategories; let categoryIndex = index" class="margin-left-custom">
+                            <div class="skill-badge-complete ListHover radius10 backGray2 ft12 pdl08 pdr08 gray-8">
+                                {{ category.name | titlecase }}
+                                <img style="cursor: pointer" (click)="removeCategory(categoryIndex)" [src]="icon.close" class="h16px makeGray" alt="" />
+                            </div>
+                        </ng-container>
                     </div>
-                    <span *ngIf="categories.length === 0" class="ft10 redText">Debes seleccionar por lo menos una categoria</span>
-                </div>  
+                    <span *ngIf="articleCategories.length === 0" class="ft10 redText">Debes seleccionar por lo menos una categoria</span>
+                </div> 
             </div>
         </div>
 
@@ -311,6 +327,7 @@
         <div below-quill-editor-toolbar>below</div>
     </quill-editor>
 </div>
+
 <!-- Modal de tags -->
 <ng-template #createTagModal let-modal>
     <div class="modal-header bg-web-primary text-white px-3 py-1" fxLayout="row" fxLayoutAlign="space-between center">
@@ -331,6 +348,31 @@
                 fxLayoutGap="0.625rem" fxLayoutAlign="center center">
                 <img [src]="icon.check" class="h16px pdr05 makeWhite" alt="" />
                 Asignar etiqueta
+            </button>
+        </div>
+    </div>
+</ng-template>
+
+<!-- Modal de categories -->
+<ng-template #createCategoryModal let-modal>
+    <div class="modal-header bg-web-primary text-white px-3 py-1" fxLayout="row" fxLayoutAlign="space-between center">
+        <div class="modal-title pd10">
+            <span class="ft16 ft500 gray-10">Asignar categoria</span>
+        </div>
+        <img style="cursor: pointer" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px" alt="" />
+    </div>
+    <div class="modal-body" style="overflow-y: auto; max-height: 80vh">
+        <div fxLayout="row" class="fw">
+            <div class="form-group fw">
+                <label>Nombre de la categoria</label>
+                <input type="text" class="form-control customInput" [(ngModel)]="newCategoryName" placeholder="Escriba el nombre de la categoria" />
+            </div>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="end end" class="pdt03" style="width: 100%">
+            <button (click)="saveCategory()" class="blueButton gray-1 radius4 ft12 h28px mgt10" fxLayout="row"
+                fxLayoutGap="0.625rem" fxLayoutAlign="center center">
+                <img [src]="icon.check" class="h16px pdr05 makeWhite" alt="" />
+                Asignar categoria
             </button>
         </div>
     </div>

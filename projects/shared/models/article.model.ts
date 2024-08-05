@@ -6,7 +6,7 @@ import { Curso } from "./course.model"
 export interface ArticleJson {
     authorRef: DocumentReference<Author>
     isDraft: boolean
-    categories: Array<typeof Article.CATEGORY_ARTICLE_OPTION | typeof Article.CATEGORY_INTERVIEW_OPTION | typeof Article.CATEGORY_SUCCEED_OPTION>
+    categoriesRef: DocumentReference<ArticleCategory>[]
     createdAt: any
     id: string
     metaDescription: string
@@ -29,19 +29,10 @@ export class Article {
     public static objectSubcollectionName = "dataChunks"
     public static HTMLSubcollectionName = "dataChunksHTML"
 
-    public static CATEGORY_ARTICLE_OPTION = 'Artículo'
-    public static CATEGORY_INTERVIEW_OPTION = 'Entrevista'
-    public static CATEGORY_SUCCEED_OPTION = 'Caso de éxito'
-    public static CATEGORY_OPTIONS = [
-        this.CATEGORY_ARTICLE_OPTION,
-        this.CATEGORY_INTERVIEW_OPTION,
-        this.CATEGORY_SUCCEED_OPTION
-    ]
-
     constructor(
         public authorRef: DocumentReference<Author>,
         public isDraft: boolean,
-        public categories: Array<typeof Article.CATEGORY_ARTICLE_OPTION | typeof Article.CATEGORY_INTERVIEW_OPTION | typeof Article.CATEGORY_SUCCEED_OPTION>,
+        public categoriesRef: DocumentReference<ArticleCategory>[],
         public createdAt: any,
         public id: string,
         public metaDescription: string,
@@ -63,7 +54,7 @@ export class Article {
         return new Article(
             articleJson.authorRef,
             articleJson.isDraft,
-            articleJson.categories,
+            articleJson.categoriesRef,
             articleJson.createdAt,
             articleJson.id,
             articleJson.metaDescription,
@@ -85,7 +76,7 @@ export class Article {
         return {
             authorRef: this.authorRef,
             isDraft: this.isDraft,
-            categories: this.categories,
+            categoriesRef: this.categoriesRef,
             createdAt: this.createdAt,
             id: this.id,
             metaDescription: this.metaDescription,
@@ -130,6 +121,36 @@ export class ArticleTag {
     }
 
     public toJson(): ArticleTagJson {
+        return {
+            id: this.id,
+            name: this.name,
+        }
+    }
+
+}
+
+export interface ArticleCategoryJson {
+    id: string | null,
+    name: string,
+}
+
+export class ArticleCategory {
+
+    public static collection = 'article-category'
+
+    constructor(
+        public id: string | null,
+        public name: string,
+    ){}
+
+    public static fromJson(articleJson: ArticleCategoryJson): ArticleCategory {
+        return new ArticleCategory(
+            articleJson.id,
+            articleJson.name,
+        )
+    }
+
+    public toJson(): ArticleCategoryJson {
         return {
             id: this.id,
             name: this.name,

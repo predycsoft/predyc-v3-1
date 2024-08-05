@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
-import { Article, ArticleJson, ArticleTag, ArticleTagJson } from 'projects/shared/models/article.model';
+import { Article, ArticleCategory, ArticleCategoryJson, ArticleJson, ArticleTag, ArticleTagJson } from 'projects/shared/models/article.model';
 import { Observable, combineLatest, map, of } from 'rxjs';
 import { ArticleData } from '../../admin/admin-pages/articles/articles.component';
 
@@ -355,5 +355,45 @@ export class ArticleService {
     const tagObservables = tagsIds.map(tagId => this.afs.collection<ArticleTagJson>(ArticleTag.collection).doc(tagId).valueChanges());
     return combineLatest(tagObservables)
   }
+
+
+  // --------- Categories
+
+  getAllArticleCategories$() {
+    return this.afs.collection<ArticleCategory>(ArticleCategory.collection).valueChanges()
+  }
   
+  getArticleCategoriesByIds$(categoriesIds: string[]): Observable<ArticleCategoryJson[]> {
+    if (!categoriesIds || categoriesIds.length === 0) {
+      return of([]);
+    }
+
+    const categoryObservables = categoriesIds.map(categoryId => this.afs.collection<ArticleCategoryJson>(ArticleCategory.collection).doc(categoryId).valueChanges());
+    return combineLatest(categoryObservables)
+  }
+
+  async saveArticleCategories(categoryDataArray: ArticleCategoryJson[]): Promise<ArticleCategoryJson[]> {
+    const batch = this.afs.firestore.batch();
+    const categoriesWithId: ArticleCategoryJson[] = [];
+  
+    categoryDataArray.forEach(categoryData => {
+      const categoryId = this.afs.createId();
+      categoryData.id = categoryId;
+      const categoryRef = this.afs.collection<ArticleCategoryJson>(ArticleCategory.collection).doc(categoryId).ref;
+      batch.set(categoryRef, categoryData);
+      categoriesWithId.push(categoryData);
+    });
+  
+    try {
+      await batch.commit();
+      return categoriesWithId;
+    } catch (error) {
+      console.error("Error saving categories: ", error);
+      throw error;
+    }
+  }
+
+  getArticleCategoryRefById(categoryId: string): DocumentReference<ArticleCategory> {
+    return this.afs.collection<ArticleCategory>(ArticleCategory.collection).doc(categoryId).ref
+  }
 }
