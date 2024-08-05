@@ -15,6 +15,7 @@ import { Author, AuthorJson } from "projects/shared/models/author.model";
 import { Subscription, combineLatest, finalize, firstValueFrom } from "rxjs";
 import { firestoreTimestampToNumberTimestamp } from "shared";
 import Swal from "sweetalert2";
+import { AuthorWithArticleQty } from "../articles.component";
 
 interface ArticleWithExtraData extends ArticleJson {
   authorName: string
@@ -38,7 +39,7 @@ export class ArticlesListComponent {
   ) {}
 
   @Input() articles: ArticleJson[]
-  @Input() authors: Author[]
+  @Input() authors: AuthorWithArticleQty[]
   @Input() tags: ArticleTag[]
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -73,7 +74,7 @@ export class ArticlesListComponent {
     });
   }
 
-  performSearch(articles: ArticleJson[], authors: Author[], tags: ArticleTag[], page: number) {
+  performSearch(articles: ArticleJson[], authors: AuthorWithArticleQty[], tags: ArticleTag[], page: number) {
     const dataToShow: ArticleWithExtraData[] = articles.map(article => {
       const author = authors.find(x => x.id === article.authorRef.id);
       const tagsData = this.getMatchingTags(article.tagsRef, tags);

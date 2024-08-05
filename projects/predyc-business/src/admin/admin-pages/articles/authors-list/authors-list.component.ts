@@ -11,6 +11,7 @@ import { IconService } from 'projects/predyc-business/src/shared/services/icon.s
 import { Author } from 'projects/shared/models/author.model';
 import { firstValueFrom, Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
+import { AuthorWithArticleQty } from '../articles.component';
 
 @Component({
   selector: 'app-authors-list',
@@ -31,7 +32,7 @@ export class AuthorsListComponent {
     private cdr: ChangeDetectorRef
   ){}
 
-  @Input() authors: Author[]
+  @Input() authors: AuthorWithArticleQty[]
 
   @ViewChild('createAuthorModal') createAuthorModal: any;
   modal
@@ -42,11 +43,11 @@ export class AuthorsListComponent {
   editingAuthorId: string | null = null;  // To keep track if we are editing
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  displayedColumns: string[] = ["name", "email", "linkedin", "actions"];
+  displayedColumns: string[] = ["name", "email", "articlesQty", "linkedin", "actions"];
   pageSize: number = 5;
   totalLength: number;
 
-  dataSource = new MatTableDataSource<Author>();
+  dataSource = new MatTableDataSource<AuthorWithArticleQty>();
   queryParamsSubscription: Subscription;
   queryParamsPage:number
 
@@ -65,7 +66,7 @@ export class AuthorsListComponent {
     });
   }
 
-  performSearch(authors: Author[], page: number) {
+  performSearch(authors: AuthorWithArticleQty[], page: number) {
     this.totalLength = authors.length;
     const startIndex = (page - 1) * this.pageSize;
     const endIndex = startIndex + this.pageSize;
