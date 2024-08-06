@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
@@ -33,6 +33,7 @@ export class AuthorsListComponent {
   ){}
 
   @Input() authors: AuthorWithArticleQty[]
+  @Output() authorSelected = new EventEmitter<string>();
 
   @ViewChild('createAuthorModal') createAuthorModal: any;
   modal
@@ -96,6 +97,10 @@ export class AuthorsListComponent {
       } 
       else {}
     }); 
+  }
+
+  goToArticlesFilteredByAuthor(authorId: string) {
+    this.authorSelected.emit(authorId);
   }
 
   // ---- For the form

@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { ArticleService } from "projects/predyc-business/src/shared/services/article.service";
 import { AuthorService } from "projects/predyc-business/src/shared/services/author.service";
 import { IconService } from "projects/predyc-business/src/shared/services/icon.service";
@@ -27,6 +27,7 @@ export class ArticlesComponent {
     private articleService: ArticleService,
     private authorService: AuthorService,
     public icon: IconService, 
+    private router: Router
   ) {}
 
   tab = 0
@@ -55,6 +56,14 @@ export class ArticlesComponent {
       // console.log("this.authors", this.authors)
       // console.log("this.selectorOptions", this.selectorOptions)
 
+    });
+  }
+
+  onAuthorSelected(authorId: string) {
+    this.tab = 0;
+    this.router.navigate([], {
+      queryParams: { status: authorId },
+      queryParamsHandling: 'merge'
     });
   }
 }

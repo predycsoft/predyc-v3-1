@@ -28,7 +28,7 @@
   <ng-container *ngIf="tab === 1">
     <p class="ft600 ft16 gray-10">Autores</p>
     <div fxLayout="column" class="mgt03">
-      <app-authors-list [authors]="authors" class=""></app-authors-list>
+      <app-authors-list [authors]="authors" (authorSelected)="onAuthorSelected($event)" class=""></app-authors-list>
     </div>
   </ng-container>
 </div>
