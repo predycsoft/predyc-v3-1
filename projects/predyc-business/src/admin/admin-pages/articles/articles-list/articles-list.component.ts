@@ -19,6 +19,7 @@ import { AuthorWithArticleQty } from "../articles.component";
 
 interface ArticleWithExtraData extends ArticleJson {
   authorName: string
+  authorId: string
   tagsNames: string[]
 
 }
@@ -55,10 +56,12 @@ export class ArticlesListComponent {
 
   createTagModal 
 
-  queryParamsPage:number
+  queryParamPage:number
+  queryParamsSearch:string
+  queryParamStatus:string
 
   ngOnChanges() {
-    if (this.articles && this.authors && this.tags) this.performSearch(this.articles, this.authors, this.tags, this.queryParamsPage);
+    if (this.articles && this.authors && this.tags) this.performSearch(this.articles, this.authors, this.tags);
   }
 
   ngOnInit() {
@@ -66,15 +69,17 @@ export class ArticlesListComponent {
   
   ngAfterViewInit() {
     this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe((params) => {
-      this.queryParamsPage = Number(params["page"]) || 1;
+      this.queryParamPage = Number(params["page"]) || 1;
+      this.queryParamsSearch = params["search"] || "";
+      this.queryParamStatus =params["status"] || "all"
       if (this.articles && this.authors && this.tags) {
-        this.performSearch(this.articles, this.authors, this.tags, this.queryParamsPage);
+        this.performSearch(this.articles, this.authors, this.tags);
       }
       this.cdr.detectChanges(); // Manually trigger change detection
     });
   }
 
-  performSearch(articles: ArticleJson[], authors: AuthorWithArticleQty[], tags: ArticleTag[], page: number) {
+  performSearch(articles: ArticleJson[], authors: AuthorWithArticleQty[], tags: ArticleTag[]) {
     const dataToShow: ArticleWithExtraData[] = articles.map(article => {
       const author = authors.find(x => x.id === article.authorRef.id);
       const tagsData = this.getMatchingTags(article.tagsRef, tags);
@@ -83,14 +88,29 @@ export class ArticlesListComponent {
         ...article,
         updatedAt: article.updatedAt ? firestoreTimestampToNumberTimestamp(article.updatedAt) : null,
         authorName: author.name,
+        authorId: author.id,
         tagsNames
       };
     });
-    this.totalLength = dataToShow.length;
-    const startIndex = (page - 1) * this.pageSize;
+
+    const articlesSearchFilter = dataToShow.filter(x => {
+      if (!this.queryParamsSearch || this.queryParamsSearch === '') return true;
+      return this.removeAccents(x.title.toLocaleLowerCase()).includes(this.removeAccents(this.queryParamsSearch.toLocaleLowerCase()));
+    });
+
+    const filteredArticlesByAuthor = articlesSearchFilter.filter(x => {
+      const matchesAuthor = this.queryParamStatus ? 
+      this.queryParamStatus === "all" ? true :
+      x.authorId === this.queryParamStatus : 
+      true;
+      return matchesAuthor;
+    }); 
+
+    this.totalLength = filteredArticlesByAuthor.length;
+    const startIndex = (this.queryParamPage - 1) * this.pageSize;
     const endIndex = startIndex + this.pageSize;
-    this.dataSource.data = dataToShow.slice(startIndex, endIndex);
-    if (this.paginator) this.paginator.pageIndex = page - 1; 
+    this.dataSource.data = filteredArticlesByAuthor.slice(startIndex, endIndex);
+    if (this.paginator) this.paginator.pageIndex = this.queryParamPage - 1; 
   }
 
   getMatchingTags(articleTagsRef: DocumentReference[], allTags: ArticleTagJson[]) {
@@ -124,6 +144,10 @@ export class ArticlesListComponent {
       else {}
     });
     
+  }
+
+  removeAccents(str: string): string {
+    return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   }
 
   ngOnDestroy() {

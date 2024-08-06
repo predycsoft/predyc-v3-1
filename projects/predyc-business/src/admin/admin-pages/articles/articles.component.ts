@@ -2,6 +2,7 @@ import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { ArticleService } from "projects/predyc-business/src/shared/services/article.service";
 import { AuthorService } from "projects/predyc-business/src/shared/services/author.service";
+import { IconService } from "projects/predyc-business/src/shared/services/icon.service";
 import { ArticleJson, ArticleTag } from "projects/shared/models/article.model";
 import { Author, AuthorJson } from "projects/shared/models/author.model";
 import { combineLatest, Subscription } from "rxjs";
@@ -25,6 +26,7 @@ export class ArticlesComponent {
   constructor(
     private articleService: ArticleService,
     private authorService: AuthorService,
+    public icon: IconService, 
   ) {}
 
   tab = 0
@@ -32,6 +34,9 @@ export class ArticlesComponent {
   articles: ArticleJson[]
   authors: AuthorWithArticleQty[]
   tags: ArticleTag[]
+  selectorOptions: { value: string, label: string }[] = [
+    {value: "all", label: "Todos los autores"}
+  ]
 
   ngOnInit() {
     this.combinedSubscription = combineLatest([
@@ -43,10 +48,13 @@ export class ArticlesComponent {
       this.tags = tags
 
       this.authors = authors.map(author => {
+        this.selectorOptions.push({value: author.id, label: author.name})
         const articlesQty = articles.filter(article => article.authorRef.id === author.id).length;
         return { ...author, articlesQty };
       }).sort((a,b) => b.articlesQty - a.articlesQty)
       // console.log("this.authors", this.authors)
+      // console.log("this.selectorOptions", this.selectorOptions)
+
     });
   }
 }

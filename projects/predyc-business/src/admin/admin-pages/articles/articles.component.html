@@ -10,6 +10,18 @@
   <ng-container *ngIf="tab === 0">
     <p class="ft600 ft16 gray-10">Artículos</p>
     <div fxLayout="column" class="mgt03">
+      <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign=" center">
+        <div fxLayout="row" fxLayoutAlign=" center" class="h36px radius20 shadow-animation w-40" style="overflow: hidden">
+           <app-general-selector [options]="selectorOptions" class="fh"></app-general-selector>
+          <app-search-input-box class="fw"></app-search-input-box>
+        </div>
+        <a routerLink="./new">
+          <button fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButtonAnim button-animation" style="border-radius: 24px !important">
+            <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="" />
+            Agregar nuevo artículo
+          </button>
+        </a>
+      </div>
       <app-articles-list [articles]="articles" [authors]="authors" [tags]="tags" class=""></app-articles-list>
     </div>
   </ng-container>
