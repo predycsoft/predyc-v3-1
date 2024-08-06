@@ -1,0 +1,5 @@
+<div class="backGray2 pdl10 pdr10 fh" fxLayout="row" fxLayoutAlign=" center">
+    <select class="cursorPointer ft14 select" [(ngModel)]="selectedStatus" (change)="onProfileSelectedChange()">
+        <option *ngFor="let option of options" [value]="option.value">{{ option.label }}</option>
+    </select>
+</div>

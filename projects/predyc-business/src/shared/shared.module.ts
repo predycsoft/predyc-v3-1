@@ -99,6 +99,7 @@ import { QuestionsListComponent } from "./components/questions-list/questions-li
 
 import { QuillModule } from "ngx-quill";
 import { FloatingNotificationComponent } from "./components/floating-notification/floating-notification.component";
+import { GeneralSelectorComponent } from './widgets/general-selector/general-selector.component';
 
 
 @NgModule({
@@ -164,6 +165,7 @@ import { FloatingNotificationComponent } from "./components/floating-notificatio
     DialogAssignLiveCoursesComponent,
     QuestionsListComponent,
     FloatingNotificationComponent,
+    GeneralSelectorComponent,
   ],
   imports: [
     CommonModule,
@@ -295,7 +297,8 @@ import { FloatingNotificationComponent } from "./components/floating-notificatio
     QuillModule,
     LiveCourseStudentListComponent,
     FloatingNotificationComponent,
-    LiveCourseFollowingComponent
+    LiveCourseFollowingComponent,
+    GeneralSelectorComponent,
   ],
 
   providers: [VimeoUploadService,DatePipe],
