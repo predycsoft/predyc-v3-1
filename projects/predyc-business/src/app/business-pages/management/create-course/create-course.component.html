@@ -20,7 +20,7 @@
                             [checked]="formNewCourse?.get('proximamente')?.value">
                             <label style="padding-left: 5px; color:white">Borrador</label>
                         </div>
-                        <div fxLayout="row" fxLayoutAlign="start center">
+                        <div  *ngIf="user.isSystemUser" fxLayout="row" fxLayoutAlign="start center">
                             <input
                             (change)="changeIsFree($event)"
                             type="checkbox" 
@@ -107,7 +107,7 @@
                                             Debe indicar la descripción del curso
                                         </div>
                                     </div>
-                                    <div class="ft12 form-group pdt10">
+                                    <div *ngIf="user.isSystemUser" class="ft12 form-group pdt10">
                                         <label>Meta descripción del curso</label>
                                         <textarea
                                         [class.is-invalid]="formNewCourse.controls['metaDescripcion'].errors && showErrorCurso" rows="3"  
@@ -121,7 +121,7 @@
                                             Debe indicar la meta descripción del curso
                                         </div>
                                     </div>
-                                    <div class="ft12 form-group pdt10">
+                                    <div  *ngIf="user.isSystemUser" class="ft12 form-group pdt10">
                                         <label>KeyWords</label>
                                         <textarea [class.is-invalid]="formNewCourse.controls['KeyWords'].errors && showErrorCurso" [maxLength]="keyWordsMaxLength"
                                         rows="3" formControlName="KeyWords" type="text" class="form-control ft12 customInput2" placeholder="Escriba los KeyWords del curso aquí" style="resize: none;"></textarea>

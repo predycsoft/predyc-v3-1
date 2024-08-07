@@ -181,7 +181,12 @@ export class CreateCourseComponent {
             .pipe()
             .subscribe((instructores) => {
               // console.log("instructores", instructores);
-              this.instructores = instructores;
+              if(this.user.isSystemUser){
+                this.instructores = instructores; // estoy aqui
+              }
+              else{
+                this.instructores = instructores.filter(x=>x.enterpriseRef); // estoy aqui
+              }
             });
 
           this.authService.user$
