@@ -145,7 +145,7 @@ export class DialogDownloadReportComponent {
     console.log('fechas reporte',fechaInicio,fechaFin)
 
 
-    this.userServiceSubscription = this.userService.getUsersReport$(null,null,null,null,fechaInicio,fechaFin).pipe(
+    this.userServiceSubscription = this.userService.getUsersReport$(null,null,'active',null,fechaInicio,fechaFin).pipe(
       filter(user=>user !=null),take(1),
       switchMap(users => {
         const userCourseObservables = users.map(user => {
@@ -247,7 +247,7 @@ export class DialogDownloadReportComponent {
             inactivecourses:inactivecoursesUser,
           }
         })
-        this.users = users.filter(x=>x['status'] =='active'); // Assuming the data is in 'items'
+        this.users = users
         console.log('data reporte',this.users)
         this.download()
       }
