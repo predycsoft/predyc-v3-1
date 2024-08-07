@@ -373,15 +373,42 @@ async function getCourseById(courseId: string): Promise<any> {
     doc.setFontSize(12);
 
 
-    if(firmaInstructor){
-      const dimensions = await getImageDimensions(firmaInstructor,40);
-      doc.addImage(firmaInstructor, 'PNG', 110, 136, 40, dimensions.height,'','FAST');
-      doc.line(100, 160, 171,160);
-      doc.setFont('helvetica', 'bold')
-      doc.text(nombreInstructor, 100, 168) // Nombre usuario
-      doc.setFont('helvetica', 'normal')
-      doc.text('Instructor', 100, 175) // Nombre usuario
+    // if(firmaInstructor){
+    //   const dimensions = await getImageDimensionsSignature(firmaInstructor,70,30);
+    //   doc.addImage(firmaInstructor, 'PNG', 110, 136, 40, dimensions.height,'','FAST');
+    //   doc.line(100, 160, 171,160);
+    //   doc.setFont('helvetica', 'bold')
+    //   doc.text(nombreInstructor, 100, 168)
+    //   doc.setFont('helvetica', 'normal')
+    //   doc.text('Instructor', 100, 175)
+    // }
+    if (firmaInstructor) {
+      const dimensions = await getImageDimensionsSignature(firmaInstructor, 70, 30);
+  
+      // Coordenadas de la línea y el texto
+      const xLinea = 100;
+      const yLinea = 160;
+      const yNombre = 168;
+      const yTitulo = 175;
+  
+      // Ajustar la coordenada y de la firma para que se alinee con la línea
+      const yFirma = yLinea - dimensions.height;
+  
+      // Añadir la imagen de la firma
+      doc.addImage(firmaInstructor, 'PNG', xLinea, yFirma+4, dimensions.width, dimensions.height, '', 'FAST');
+  
+      // Dibujar la línea
+      doc.line(xLinea, yLinea, 171, yLinea);
+  
+      // Añadir el nombre del instructor
+      doc.setFont('helvetica', 'bold');
+      doc.text(nombreInstructor, xLinea, yNombre);
+  
+      // Añadir el título del instructor
+      doc.setFont('helvetica', 'normal');
+      doc.text('Instructor', xLinea, yTitulo);
     }
+  
     
     doc.setFont('helvetica', 'bold');
     let imgBufferfirmaCEO = await downloadImage((dataInstructorGlobal.id == 'RW5RwaDyai2gvoKNhnlo')?firmaCOO:firmaCEO);
@@ -437,4 +464,24 @@ async function getCourseById(courseId: string): Promise<any> {
     const width = tamano;
     const height = width / aspectRatio;
     return { width, height };
+}
+
+async function getImageDimensionsSignature(base64Image: string, maxAncho: number = 50, maxAlto: number = 40): Promise<{ width: number, height: number }> {
+  const buffer = Buffer.from(base64Image.split(',')[1], 'base64');
+  const metadata = await sharp(buffer).metadata();
+  const aspectRatio = metadata.width / metadata.height;
+  let width = metadata.width;
+  let height = metadata.height;
+
+  if (width > maxAncho) {
+      width = maxAncho;
+      height = width / aspectRatio;
+  }
+
+  if (height > maxAlto) {
+      height = maxAlto;
+      width = height * aspectRatio;
+  }
+
+  return { width, height };
 }
