@@ -234,6 +234,7 @@ export class DialogDownloadReportComponent {
             targetHours: targetHours,
             targetHoursAllCourses:targetHoursAllCourses,
             profile: profileName,
+            status:user.status,
             profileId: profile?.id ? profile.id : '',
             ratingPoints: ratingPoints,
             rhythm: userPerformance, // Calculation pending
@@ -246,7 +247,7 @@ export class DialogDownloadReportComponent {
             inactivecourses:inactivecoursesUser,
           }
         })
-        this.users = users; // Assuming the data is in 'items'
+        this.users = users.filter(x=>x['status'] =='active'); // Assuming the data is in 'items'
         console.log('data reporte',this.users)
         this.download()
       }
