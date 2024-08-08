@@ -175,19 +175,7 @@ export class CreateCourseComponent {
       .subscribe((enterprise) => {
         // console.log("enterprise", enterprise);
         if (enterprise) {
-          this.empresa = enterprise;
-          this.instructorsService
-            .getInstructorsObservable()
-            .pipe()
-            .subscribe((instructores) => {
-              // console.log("instructores", instructores);
-              if(this.user.isSystemUser){
-                this.instructores = instructores; // estoy aqui
-              }
-              else{
-                this.instructores = instructores.filter(x=>x.enterpriseRef); // estoy aqui
-              }
-            });
+          this.empresa = enterprise
 
           this.authService.user$
             .pipe(
@@ -198,6 +186,19 @@ export class CreateCourseComponent {
               // console.log("user", user);
               this.user = user;
               this.inicializarformNewCourse();
+
+              this.instructorsService
+              .getInstructorsObservable()
+              .pipe()
+              .subscribe((instructores) => {
+                // console.log("instructores", instructores);
+                if(this.user.isSystemUser){
+                  this.instructores = instructores; // estoy aqui
+                }
+                else{
+                  this.instructores = instructores.filter(x=>x.enterpriseRef); // estoy aqui
+                }
+              });
               // if (!user?.isSystemUser) {
               //   this.router.navigate(["management/courses"])
               // }

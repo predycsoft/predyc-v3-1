@@ -16,7 +16,7 @@
                 <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="">
                 Agregar curso
                 </button>
-                    <button *ngIf="courses.length>0"
+                    <button *ngIf="courses?.length>0"
                     (click)="downloadPDFAllCourse()"
                     fxLayout="row"
                     fxLayoutGap="0.625"
