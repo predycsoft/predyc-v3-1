@@ -160,6 +160,6 @@ export class CategoryService {
   }
 
   getAllCategories$(): Observable<Category[]> {
-    return this.afs.collection<Category>(Category.collection).valueChanges()
+    return this.afs.collection<Category>(Category.collection, ref => ref.orderBy("name", "asc")).valueChanges()
   }
 }

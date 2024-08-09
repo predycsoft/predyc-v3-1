@@ -5,11 +5,30 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CategoryService } from 'projects/predyc-business/src/shared/services/category.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import { CategoryJson } from 'projects/shared/models/category.model';
-import { combineLatest, map, of, Subscription, switchMap } from 'rxjs';
+import { combineLatest, map, Observable, of, Subscription, switchMap } from 'rxjs';
 import { DialogPillarsFormComponent } from '../dialog-pillars-form/dialog-pillars-form.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
 import Swal from 'sweetalert2';
+import { CourseService } from 'projects/predyc-business/src/shared/services/course.service';
+import { SkillService } from 'projects/predyc-business/src/shared/services/skill.service';
+import { Skill } from 'projects/shared/models/skill.model';
+import { DocumentReference } from '@angular/fire/compat/firestore';
+
+interface CategoryWithSkills extends CategoryJson {
+  skills: {
+    categoryId: string;
+    enterprise: DocumentReference | null;
+    id: string;
+    name: string;
+  }[];
+}
+
+interface CategoriesInList extends CategoryWithSkills {
+  coursesQty: number
+  enterpriseName: string
+}
+
 
 @Component({
   selector: 'app-pillars-list',
@@ -21,6 +40,8 @@ export class PillarsListComponent {
     private activatedRoute: ActivatedRoute,
     private categoriesService: CategoryService,
     private enterpriseService: EnterpriseService,
+    public skillService: SkillService,
+    private courseService: CourseService,
     public icon: IconService,
     private router: Router,
 		private modalService: NgbModal,
@@ -28,11 +49,12 @@ export class PillarsListComponent {
 
   displayedColumns: string[] = [
     "name",
+    "coursesQty",
     "enterprise",
     "actions",
   ];
 
-  dataSource = new MatTableDataSource<any>();
+  dataSource = new MatTableDataSource<CategoriesInList>();
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @Input() enableNavigateToUser: boolean = true
@@ -59,22 +81,66 @@ export class PillarsListComponent {
   }
 
   performSearch(page: number) {
-    this.categoriesSubscription = this.categoriesService.getAllCategories$().pipe(
-      switchMap(categories => {
-        if (categories.length === 0) return of(categories);
-        const categoriesWithEnterpriseNames$ = categories.map(category =>
-          category.enterprise ? 
+    this.categoriesSubscription = combineLatest([
+      this.categoriesService.getAllCategories$(),
+      this.skillService.getSkillsObservable(),
+      this.courseService.getCoursesObservable(),
+    ]).pipe(
+      switchMap(([categories, skills, courses]) => {
+        if (categories.length === 0) return of([]);
+  
+        const categoriesWithSkills = this.getCategoriesWithSkills(categories, skills);
+  
+        const categoriesInList$: Observable<CategoriesInList>[] = categoriesWithSkills.map(category => {
+          const coursesQty = courses.filter(course => 
+            course.skillsRef.some(skillRef => 
+              category.skills.some(skill => skill.id === skillRef.id)
+            )
+          ).length;
+  
+          return category.enterprise ? 
             this.enterpriseService.getEnterpriseById$(category.enterprise.id).pipe(
-              map(enterprise => ({ ...category, enterpriseName: enterprise.name }))
+              map(enterprise => ({ 
+                ...category, 
+                enterpriseName: enterprise.name, 
+                coursesQty: coursesQty 
+              }))
             ) : 
-            of({ ...category, enterpriseName: 'Sin empresa' })
-        );
-        return combineLatest(categoriesWithEnterpriseNames$);
+            of({ 
+              ...category, 
+              enterpriseName: 'Sin empresa', 
+              coursesQty: coursesQty 
+            });
+        });
+        return combineLatest(categoriesInList$);
       })
     ).subscribe(categoryInList => {
+      // console.log("categoryInList", categoryInList)
       this.paginator.pageIndex = page - 1;
       this.dataSource.data = categoryInList;
       this.totalLength = categoryInList.length;
+    });
+  }
+  
+  
+  getCategoriesWithSkills(categorias: CategoryJson[], competencias: Skill[]): CategoryWithSkills[] {
+    return categorias.map(categoria => {
+      let skills = competencias
+        .filter(comp => comp.category.id === categoria.id)
+        .map(skill => {
+          // Por cada skill, retornamos un nuevo objeto sin la propiedad category,
+          // pero añadimos la propiedad categoryId con el valor de category.id
+          const { category, ...rest } = skill;
+          return {
+            ...rest,
+            categoryId: category.id
+          };
+        });
+  
+      return {
+        ...categoria,
+        skills
+      };
     });
   }
 
