@@ -161,17 +161,40 @@ export class PillarsListComponent {
 
   }
 
-  async deletePillar(pillarId: string) {
-    Swal.fire({
-      title: "Eliminando pilar...",
-      text: "Por favor, espera.",
-      allowOutsideClick: false,
-      didOpen: () => {
-        Swal.showLoading();
-      },
-    });
-    await this.categoriesService.deleteCategoryById(pillarId)
-    Swal.close();
+  async deletePillar(pillar: CategoriesInList) {
+    if (pillar.coursesQty > 0) {
+      Swal.fire({
+        text: `No se puede eliminar el pilar ya que tiene cursos asociados.`,
+        icon: "info",
+        confirmButtonColor: "var(--blue-5)",
+      });
+    }
+    else {
+      Swal.fire({
+        title: `Se eliminará el pilar ${pillar.name}`,
+        text: "¿Deseas continuar?",
+        icon: "info",
+        showCancelButton: true,
+        confirmButtonText: "Guardar",
+        cancelButtonText: "Cancelar",
+        confirmButtonColor: 'var(--blue-5)',
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            title: "Eliminando pilar...",
+            text: "Por favor, espera.",
+            allowOutsideClick: false,
+            didOpen: () => {
+              Swal.showLoading();
+            },
+          });
+          await this.categoriesService.deleteCategoryById(pillar.id)
+          Swal.close();
+        } else {
+        }
+      });
+    }
+    
   }
 
 }
