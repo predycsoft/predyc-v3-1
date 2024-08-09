@@ -418,6 +418,7 @@ export class CreateCourseComponent {
       if (pilar.id != newPillar.id) {
         this.curso.skillsRef = [];
         this.skillsCurso = [];
+        this.formNewCourse.get("skills").setValue([]);
       }
     }
   }
@@ -758,7 +759,7 @@ export class CreateCourseComponent {
       return;
     }
 
-    let enterpriseRef = this.enterpriseService.getEnterpriseRef();
+    let enterpriseRef = this.enterpriseService.getEnterpriseRef(); //here
     if (this.user.isSystemUser) {
       enterpriseRef = null;
     }
@@ -3705,6 +3706,7 @@ export class CreateCourseComponent {
       let competencia = competencias.find((x) => x.name.toLowerCase() == this.formNewSkill.get("nombre")?.value.toLowerCase().trim());
 
       let skills = this.formNewCourse.get("skills")?.value;
+      console.log("skills aqui ", skills)
       if (skills) {
         this.tmpSkillRefArray = skills;
       } else {
@@ -3734,7 +3736,7 @@ export class CreateCourseComponent {
       } else {
         // crear y asignar
         let categoryRef = this.afs.collection<any>("category").doc(pilar["id"]).ref;
-        let enterpriseRef = this.enterpriseService.getEnterpriseRef();
+        let enterpriseRef = this.enterpriseService.getEnterpriseRef(); //Here
         if (this.user.isSystemUser) {
           enterpriseRef = null;
         }
