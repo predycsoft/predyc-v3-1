@@ -188,7 +188,8 @@ export class QuestionsComponent {
     const newQuestionGroup = this.fb.group(
       {
         text: [question.text, [Validators.required]],
-        idUser: [question.idUser, [Validators.required]],
+        // idUser: [question.idUser, [Validators.required]],
+        idUser: [question.idUser],
         type: [questionType],
         image: this.fb.group({
           url: [question?.image?.url || ""],
@@ -206,10 +207,10 @@ export class QuestionsComponent {
 
     this.questions.push(newQuestionGroup);
 
-    this.questions.controls.forEach((control) => {
-      control.get("idUser")?.setValidators([Validators.required, this.uniqueIdUserValidator(this.questions)]);
-      control.get("idUser")?.updateValueAndValidity();
-    });
+    // this.questions.controls.forEach((control) => {
+    //   control.get("idUser")?.setValidators([Validators.required, this.uniqueIdUserValidator(this.questions)]);
+    //   control.get("idUser")?.updateValueAndValidity();
+    // });
 
     const questionIndex = this.questions.length - 1;
     if (question.options && question.options.length > 0) {
@@ -450,7 +451,8 @@ export class QuestionsComponent {
       this.fb.group(
         {
           text: [pregunta.pregunta, [Validators.required]],
-          idUser: [idUser, [Validators.required, this.uniqueIdUserValidator(this.questions)]],
+          // idUser: [idUser, [Validators.required, this.uniqueIdUserValidator(this.questions)]],
+          idUser: [idUser],
           type: [newType],
           image: this.fb.group({
             url: [""],
@@ -627,7 +629,8 @@ export class QuestionsComponent {
       this.fb.group(
         {
           text: ["", [Validators.required]],
-          idUser: ["", [Validators.required, this.uniqueIdUserValidator(this.questions)]],
+          // idUser: ["", [Validators.required, this.uniqueIdUserValidator(this.questions)]],
+          idUser: ["", []],
           type: [defaultQuestionType],
           image: this.fb.group({
             url: [""],
