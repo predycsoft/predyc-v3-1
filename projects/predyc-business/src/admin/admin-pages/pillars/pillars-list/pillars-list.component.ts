@@ -24,7 +24,7 @@ interface CategoryWithSkills extends CategoryJson {
   }[];
 }
 
-interface CategoriesInList extends CategoryWithSkills {
+export interface CategoryInList extends CategoryWithSkills {
   coursesQty: number
   enterpriseName: string
 }
@@ -54,7 +54,7 @@ export class PillarsListComponent {
     "actions",
   ];
 
-  dataSource = new MatTableDataSource<CategoriesInList>();
+  dataSource = new MatTableDataSource<CategoryInList>();
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @Input() enableNavigateToUser: boolean = true
@@ -91,7 +91,7 @@ export class PillarsListComponent {
   
         const categoriesWithSkills = this.getCategoriesWithSkills(categories, skills);
   
-        const categoriesInList$: Observable<CategoriesInList>[] = categoriesWithSkills.map(category => {
+        const categoriesInList$: Observable<CategoryInList>[] = categoriesWithSkills.map(category => {
           const coursesQty = courses.filter(course => 
             course.skillsRef.some(skillRef => 
               category.skills.some(skill => skill.id === skillRef.id)
@@ -161,7 +161,7 @@ export class PillarsListComponent {
 
   }
 
-  async deletePillar(pillar: CategoriesInList) {
+  async deletePillar(pillar: CategoryInList) {
     if (pillar.coursesQty > 0) {
       Swal.fire({
         text: `No se puede eliminar el pilar ya que tiene cursos asociados.`,

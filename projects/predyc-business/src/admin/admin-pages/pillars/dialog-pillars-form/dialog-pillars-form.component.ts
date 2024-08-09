@@ -8,6 +8,7 @@ import { CategoryJson, Category } from 'projects/shared/models/category.model';
 import { Subscription, Observable, startWith, map } from 'rxjs';
 import { EnterpriseJson } from 'shared';
 import Swal from 'sweetalert2';
+import { CategoryInList } from '../pillars-list/pillars-list.component';
 
 @Component({
   selector: 'app-dialog-pillars-form',
@@ -16,7 +17,7 @@ import Swal from 'sweetalert2';
 })
 
 export class DialogPillarsFormComponent {
-  @Input() pillar: CategoryJson;
+  @Input() pillar: CategoryInList;
   
   pillarForm: FormGroup;
   showFormError: boolean = false;
@@ -92,7 +93,7 @@ export class DialogPillarsFormComponent {
       const selectedEnterprise: EnterpriseJson = this.pillarForm.get('enterprise').value;
       const newPillar: CategoryJson = {
         name: pillarName,
-        id: this.pillar.id ? this.pillar.id : null,
+        id: this.pillar ? this.pillar.id : null,
         enterprise: selectedEnterprise ? this.enterpriseService.getEnterpriseRefById(selectedEnterprise.id) : null
       };
       console.log("newPillar", newPillar)

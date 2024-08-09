@@ -1,0 +1,10 @@
+.skills-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem; /* Horizontal gap between items */
+    margin-bottom: -0.25rem; /* Adjust the margin to ensure no extra space at the bottom */
+}
+
+.skills-container > .skill-badge-complete {
+    margin-bottom: 0.25rem; /* Vertical margin between rows */
+}
