@@ -90,7 +90,7 @@ export class DiplomadoFormComponent {
   slug: string = "";
   profileHoursPerMonth: number = 8;
 
-  slugMaxLength = 15
+  slugMaxLength = 200
   metaDescriptionMaxLength = 141
   keyWordsMaxLength = 100
 
