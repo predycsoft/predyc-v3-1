@@ -168,6 +168,7 @@ export class LiveCourseStudentListComponent {
                 return this.liveCourseService.getLiveCourseUserCertificate$(this.liveCourseId, userData.uid).pipe(
                   map((certificateData) => {
                     const certificate = certificateData.length > 0 ? certificateData[0] : null;
+                    console.log('liveCourseByStudent',liveCourseByStudent,userData.displayName)
                     return {
                       liveCourseByStudentId: liveCourseByStudent.id,
                       userEmail: userData.email,

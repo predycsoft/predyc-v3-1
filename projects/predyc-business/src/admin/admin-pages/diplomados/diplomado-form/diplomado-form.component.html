@@ -147,7 +147,7 @@
               #slugCtrl="ngModel" required pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$" ></textarea>
             </div>
             <div class="progress-bar-container fw mgt03">
-              <div class="progress-bar" [style.width.%]="(slug.length / slugMaxLength) * 100"></div>
+              <div class="progress-bar" [style.width.%]="(slug?.length / slugMaxLength) * 100"></div>
             </div>
           </div>
           <div *ngIf="slugCtrl.invalid && slugCtrl.touched">
@@ -171,7 +171,7 @@
             style=" overflow-y: hidden; width: 100%; resize: none; border: none; background-color: transparent !important;"></textarea>
           </div>
           <div class="progress-bar-container fw mgt03">
-            <div class="progress-bar" [style.width.%]="(metaDescription.length / metaDescriptionMaxLength) * 100"></div>
+            <div class="progress-bar" [style.width.%]="(metaDescription?.length / metaDescriptionMaxLength) * 100"></div>
           </div>
         </ng-container>
 
@@ -182,7 +182,7 @@
             style=" overflow-y: hidden; width: 100%; resize: none; border: none; background-color: transparent !important;"></textarea>
           </div>
           <div class="progress-bar-container fw mgt03">
-            <div class="progress-bar" [style.width.%]="(keyWords.length / keyWordsMaxLength) * 100"></div>
+            <div class="progress-bar" [style.width.%]="(keyWords?.length / keyWordsMaxLength) * 100"></div>
           </div>
         </ng-container>
 
