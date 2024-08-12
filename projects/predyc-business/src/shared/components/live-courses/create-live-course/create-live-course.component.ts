@@ -63,6 +63,7 @@ interface SessionData extends SessionTemplateJson {
   deleted: boolean;
   activity: any;
   HTMLcontent: any;
+  hidden:boolean;
 }
 
 @Component({
@@ -371,7 +372,8 @@ export class CreateLiveCourseComponent {
       HTMLcontent: null,
       weeksToKeep: 2,
       orderNumber: null,
-      links: []
+      links: [],
+      hidden:false
     };
   }
 
@@ -793,6 +795,7 @@ export class CreateLiveCourseComponent {
       }
       this.sesionActual.files = this.sesionActual.files.concat(link);
       this.sesionActual["edited"] = true;
+      this.modalLink.close();
     }
     else{
       this.showErrorLink = true
@@ -1400,6 +1403,7 @@ export class CreateLiveCourseComponent {
               url: archivo.url,
             }));
             localeSession.links = clase.links
+            localeSession.hidden= clase.hidden
             localeSession.duration = clase.duration;
             localeSession.id = clase.id;
             localeSession.type = clase.type;
@@ -1548,11 +1552,11 @@ export class CreateLiveCourseComponent {
   }
 
   SessionDataModelToLiveCourseSessionTemplate(sessionData: SessionData) {
-    return new SessionTemplate(sessionData.id, sessionData.title, sessionData.liveCourseTemplateRef, sessionData.duration, sessionData.files, sessionData.orderNumber,sessionData.links);
+    return new SessionTemplate(sessionData.id, sessionData.title, sessionData.liveCourseTemplateRef, sessionData.duration, sessionData.files, sessionData.orderNumber,sessionData.links,sessionData.hidden);
   }
 
   SessionDataModelToLiveCourseSession(sessionData: SessionData) {
-    return new Session(sessionData.date, sessionData.duration, sessionData.files, sessionData.id, this.liveCourseService.getLiveCourseRefById(this.liveCourseId), sessionData.orderNumber, sessionData.title, null, sessionData.vimeoId1, sessionData.vimeoId2, sessionData.weeksToKeep,sessionData.links);
+    return new Session(sessionData.date, sessionData.duration, sessionData.files, sessionData.id, this.liveCourseService.getLiveCourseRefById(this.liveCourseId), sessionData.orderNumber, sessionData.title, null, sessionData.vimeoId1, sessionData.vimeoId2, sessionData.weeksToKeep,sessionData.links,sessionData.hidden);
   }
 
   previousTab() {
@@ -3396,7 +3400,12 @@ export class CreateLiveCourseComponent {
     this.studentEmails = emails;
   }
 
+  changedHidden(session){
+    session["edited"] = true;
+  }
+
   ngOnDestroy() {
     if (this.initDataSubscription) this.initDataSubscription.unsubscribe();
   }
+  
 }

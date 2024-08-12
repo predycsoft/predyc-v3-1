@@ -265,6 +265,12 @@
                                               Añadir enlaces
                                             </button>
                                           </div>
+                                          <div fxLayout="row" class="mgt10">
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="fw">
+                                              <span class="ft12">Oculta</span>
+                                              <mat-slide-toggle (change)="changedHidden(session)" [(ngModel)]="session['hidden']" class="pdl10" color="primary"></mat-slide-toggle>
+                                            </div>
+                                          </div>
                                           <input (change)="onFileSelected($event, session, false, false, null, true)" type="file" accept="{{ session.type == 'lectura' ? '.pdf' : 'video/mp4' }}" #FileInput style="display: none" />
                                         </ng-container>
                                         <ng-container *ngIf="session['isInvalid']">
