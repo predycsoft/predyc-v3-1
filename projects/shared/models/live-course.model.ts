@@ -12,6 +12,7 @@ export interface LiveCourseTemplateJson {
     skillsRef: DocumentReference<Skill>[]
     duration: number,
     vimeoFolderId: string,
+    orderExam:boolean
 }
 
 export class LiveCourseTemplate {
@@ -28,7 +29,8 @@ export class LiveCourseTemplate {
         public proximamente: boolean,
         public skillsRef: DocumentReference<Skill>[],
         public duration: number,
-        public vimeoFolderId: string = ""
+        public vimeoFolderId: string = "",
+        public orderExam: boolean = false
 
     ) {}
 
@@ -44,6 +46,7 @@ export class LiveCourseTemplate {
             liveCourseTemplateJson.skillsRef,
             liveCourseTemplateJson.duration,
             liveCourseTemplateJson.vimeoFolderId,
+            liveCourseTemplateJson.orderExam
         )
     }
 
@@ -59,6 +62,7 @@ export class LiveCourseTemplate {
             skillsRef : this.skillsRef,
             duration : this.duration,
             vimeoFolderId : this.vimeoFolderId,
+            orderExam:this.orderExam,
         }
     }
 }
@@ -79,6 +83,7 @@ export interface LiveCourseJson {
     identifierText: string
     emailLastDate: any
     vimeoFolderId: string,
+    orderExam:boolean
 }
 
 export class LiveCourse {
@@ -101,6 +106,7 @@ export class LiveCourse {
         public skillsRef: DocumentReference<Skill>[],
         public title: string,
         public vimeoFolderId: string = "",
+        public orderExam:boolean = false,
     ) {}
 
     public static fromJson(liveCourseJson: LiveCourseJson): LiveCourse {
@@ -120,6 +126,7 @@ export class LiveCourse {
             liveCourseJson.skillsRef,
             liveCourseJson.title,
             liveCourseJson.vimeoFolderId,
+            liveCourseJson.orderExam
         )
     }
 
@@ -140,116 +147,7 @@ export class LiveCourse {
             meetingLink : this.meetingLink,
             identifierText : this.identifierText,
             emailLastDate : this.emailLastDate,
+            orderExam:this.orderExam,
         }
     }
 }
-
-
-// export interface LiveCourseJson {
-//     id: string
-//     companyName: string
-//     title: string
-//     photoUrl: string
-//     // meetingLink: string
-//     description: string
-//     instructorRef: DocumentReference
-//     proximamente: boolean
-//     skillsRef: DocumentReference<Skill>[]
-//     duration: number,
-//     vimeoFolderId: string,
-//     // nivel: string,
-    
-// }
-
-// export class LiveCourse {
-
-//     public static collection = 'live-course'
-
-//     constructor(
-//         public id: string,
-//         public companyName: string,
-//         public title: string,
-//         public photoUrl: string,
-//         // public meetingLink: string,
-//         public description: string,
-//         public instructorRef: DocumentReference,
-//         public proximamente: boolean,
-//         public skillsRef: DocumentReference<Skill>[],
-//         public duration: number,
-//         public vimeoFolderId: string = ""
-
-//     ) {}
-
-//     public static fromJson(liveCourseJson: LiveCourseJson): LiveCourse {
-//         return new LiveCourse(
-//             liveCourseJson.id,
-//             liveCourseJson.companyName,
-//             liveCourseJson.title,
-//             liveCourseJson.photoUrl,
-//             // liveCourseJson.meetingLink,
-//             liveCourseJson.description,
-//             liveCourseJson.instructorRef,
-//             liveCourseJson.proximamente,
-//             liveCourseJson.skillsRef,
-//             liveCourseJson.duration,
-//             liveCourseJson.vimeoFolderId,
-//         )
-//     }
-
-//     public toJson(): LiveCourseJson {
-//         return {
-//             id:this.id,
-//             companyName:this.companyName,
-//             title:this.title,
-//             photoUrl:this.photoUrl,
-//             // meetingLink:this.meetingLink,
-//             description:this.description,
-//             instructorRef : this.instructorRef,
-//             proximamente : this.proximamente,
-//             skillsRef : this.skillsRef,
-//             duration : this.duration,
-//             vimeoFolderId : this.vimeoFolderId,
-//         }
-//     }
-// }
-
-// export interface LiveCourseSonJson {
-//     id: string
-//     parentId: string
-//     meetingLink: string
-//     identifierText: string
-//     emailLastDate: any
-// }
-
-// export class LiveCourseSon {
-
-//     public static subCollection = 'live-course-son'
-
-//     constructor(
-//         public id: string,
-//         public parentId: string,
-//         public meetingLink: string,
-//         public identifierText: string,
-//         public emailLastDate: any,
-//     ) {}
-
-//     public static fromJson(liveCourseSon: LiveCourseSonJson): LiveCourseSon {
-//         return new LiveCourseSon(
-//             liveCourseSon.id,
-//             liveCourseSon.parentId,
-//             liveCourseSon.meetingLink,
-//             liveCourseSon.identifierText,
-//             liveCourseSon.emailLastDate,
-//         )
-//     }
-
-//     public toJson(): LiveCourseSonJson {
-//         return {
-//             id: this.id,
-//             parentId: this.parentId,
-//             meetingLink: this.meetingLink,
-//             identifierText: this.identifierText,
-//             emailLastDate: this.emailLastDate,
-//         }
-//     }
-// }

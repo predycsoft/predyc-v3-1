@@ -203,6 +203,7 @@ export class ArticleComponent {
   relatedArticles: DocumentReference[] = []
   summary = ""
   metaDescription = ""
+  keyWords = ""
   isDraft = false
   orderNumber = 1
   prevOrderNumber: number | null = null
@@ -347,6 +348,7 @@ export class ArticleComponent {
         this.editor.setContents(articleWithTagPillarsAndCoursesData.data);
         this.summary = articleWithTagPillarsAndCoursesData.summary;
         this.metaDescription = articleWithTagPillarsAndCoursesData.metaDescription;
+        this.keyWords=articleWithTagPillarsAndCoursesData.keyWords
         this.isDraft = articleWithTagPillarsAndCoursesData.isDraft;
         this.orderNumber = articleWithTagPillarsAndCoursesData.orderNumber;
         this.prevOrderNumber = articleWithTagPillarsAndCoursesData.orderNumber;
@@ -659,6 +661,7 @@ export class ArticleComponent {
           titleSEO: this.titleSEO,
           summary: this.summary,
           metaDescription: this.metaDescription,
+          keyWords:this.keyWords,
           isDraft: this.isDraft,
           slug: this.slug,
           updatedAt: new Date(),
@@ -824,6 +827,9 @@ export class ArticleComponent {
       valid = false;
     }
     if (!this.metaDescription) {
+      valid = false;
+    }
+    if (!this.keyWords) {
       valid = false;
     }
     if (!this.selectedAuthorId) {

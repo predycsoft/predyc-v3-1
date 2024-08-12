@@ -76,6 +76,8 @@ export class CreateLiveCourseComponent {
 
   @ViewChild("modalCrearInstructor") modalCrearInstructorContent: TemplateRef<any>;
   @ViewChild("modalCrearPilar") modalCrearPilarContent: TemplateRef<any>;
+  @ViewChild("modalCrearEnlace") modalCrearEnlace: TemplateRef<any>;
+
   @ViewChildren("inputRef") inputElements: QueryList<ElementRef>;
 
   activeStep = 1;
@@ -132,7 +134,10 @@ export class CreateLiveCourseComponent {
   showErrorPillar;
   showErrorPillarSkill;
   formNewPillar: FormGroup;
+  formNewLink: FormGroup;
+
   modalPillar;
+  modalLink
 
   savingPillar = false;
 
@@ -283,6 +288,7 @@ export class CreateLiveCourseComponent {
           instructor: new FormControl(null, Validators.required),
           vimeoFolderId: new FormControl(null),
           proximamente: new FormControl(false),
+          orderExam: new FormControl(false)
         });
         this.initializeLiveCourseAsLiveCourseData();
         this.initSkills();
@@ -336,6 +342,7 @@ export class CreateLiveCourseComponent {
       addClassMode: false,
       isInvalid: false,
       InvalidMessages: [],
+      orderExam:false
     };
   }
 
@@ -364,6 +371,7 @@ export class CreateLiveCourseComponent {
       HTMLcontent: null,
       weeksToKeep: 2,
       orderNumber: null,
+      links: []
     };
   }
 
@@ -416,6 +424,8 @@ export class CreateLiveCourseComponent {
       };
     }
 
+    console.log('liveCourseData',this.liveCourseData)
+
     // let enterpriseREf = this.enterpriseService.getEnterpriseRef()
     // if(!this.user.isSystemUser && !(curso.enterpriseRef.id == enterpriseREf.id)){
     //   this.router.navigate(["management/courses"])
@@ -440,6 +450,7 @@ export class CreateLiveCourseComponent {
       resumen_instructor: new FormControl(instructor.resumen, Validators.required),
       imagen_instructor: new FormControl(instructor.foto, Validators.required),
       proximamente: new FormControl(this.liveCourseData.proximamente),
+      orderExam: new FormControl(this.liveCourseData.orderExam),
     });
 
     //this.formNewCourse.get('resumen_instructor').disable();
@@ -755,6 +766,41 @@ export class CreateLiveCourseComponent {
     });
   }
 
+  sesionActual;
+  createLink(session: SessionData) {
+    this.showErrorLink = false
+    this.formNewLink = new FormGroup({
+      nombre: new FormControl(null, Validators.required),
+      url: new FormControl(null, Validators.required),
+    });
+    this.sesionActual = session
+    this.modalLink = this.modalService.open(this.modalCrearEnlace, {
+      ariaLabelledBy: "modal-basic-title",
+      centered: true,
+    });
+  }
+
+  saveLink(){
+    this.showErrorLink = false
+    if(this.formNewLink.valid){
+      console.log(this.formNewLink.value)
+      let link = this.formNewLink.value
+      link.id = new Date().getTime()
+      link.type = 'enlace'
+
+      if(!this.sesionActual?.files){
+        this.sesionActual.files =[]
+      }
+      this.sesionActual.files = this.sesionActual.files.concat(link);
+      this.sesionActual["edited"] = true;
+    }
+    else{
+      this.showErrorLink = true
+    }
+
+
+  }
+
   async setInstructor(instructor) {
     let instructorRef = await this.afs.collection<any>("instructors").doc(instructor.id).ref;
     this.formNewCourse.get("instructorRef").patchValue(instructorRef);
@@ -777,6 +823,7 @@ export class CreateLiveCourseComponent {
     // Opcionalmente, imprime si el checkbox quedó marcado o no
     console.log("El checkbox Borrador está:", isChecked ? "marcado (true)" : "desmarcado (false)");
   }
+  
 
   openModal(content, size = "lg") {
     this.tmpSkillRefArray = [];
@@ -796,6 +843,8 @@ export class CreateLiveCourseComponent {
       size: size,
     });
   }
+
+  showErrorLink = false
 
   emailValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
@@ -1350,6 +1399,7 @@ export class CreateLiveCourseComponent {
               type: archivo.type,
               url: archivo.url,
             }));
+            localeSession.links = clase.links
             localeSession.duration = clase.duration;
             localeSession.id = clase.id;
             localeSession.type = clase.type;
@@ -1473,7 +1523,7 @@ export class CreateLiveCourseComponent {
   }
 
   LiveCourseDataModelToLiveCourseTemplate(liveCourseData: LiveCourseData) {
-    return new LiveCourseTemplate(liveCourseData.id, liveCourseData.companyName, liveCourseData.title, liveCourseData.photoUrl, liveCourseData.description, liveCourseData.instructorRef, liveCourseData.proximamente, liveCourseData.skillsRef, liveCourseData.duration, liveCourseData.vimeoFolderId);
+    return new LiveCourseTemplate(liveCourseData.id, liveCourseData.companyName, liveCourseData.title, liveCourseData.photoUrl, liveCourseData.description, liveCourseData.instructorRef, liveCourseData.proximamente, liveCourseData.skillsRef, liveCourseData.duration, liveCourseData.vimeoFolderId,liveCourseData.orderExam);
   }
 
   LiveCourseDataModelToLiveCourse(liveCourseData: LiveCourseData) {
@@ -1492,15 +1542,17 @@ export class CreateLiveCourseComponent {
       liveCourseData.proximamente, 
       liveCourseData.skillsRef, 
       liveCourseData.title, 
-      liveCourseData.vimeoFolderId);
+      liveCourseData.vimeoFolderId,
+      liveCourseData.orderExam
+    );
   }
 
   SessionDataModelToLiveCourseSessionTemplate(sessionData: SessionData) {
-    return new SessionTemplate(sessionData.id, sessionData.title, sessionData.liveCourseTemplateRef, sessionData.duration, sessionData.files, sessionData.orderNumber);
+    return new SessionTemplate(sessionData.id, sessionData.title, sessionData.liveCourseTemplateRef, sessionData.duration, sessionData.files, sessionData.orderNumber,sessionData.links);
   }
 
   SessionDataModelToLiveCourseSession(sessionData: SessionData) {
-    return new Session(sessionData.date, sessionData.duration, sessionData.files, sessionData.id, this.liveCourseService.getLiveCourseRefById(this.liveCourseId), sessionData.orderNumber, sessionData.title, null, sessionData.vimeoId1, sessionData.vimeoId2, sessionData.weeksToKeep);
+    return new Session(sessionData.date, sessionData.duration, sessionData.files, sessionData.id, this.liveCourseService.getLiveCourseRefById(this.liveCourseId), sessionData.orderNumber, sessionData.title, null, sessionData.vimeoId1, sessionData.vimeoId2, sessionData.weeksToKeep,sessionData.links);
   }
 
   previousTab() {
@@ -2087,30 +2139,42 @@ export class CreateLiveCourseComponent {
   async descargarArchivo(archivo) {
     //console.log('pdf actual', this.srsView);
     try {
-      const response = await fetch(archivo.url);
-      const blob = await response.blob();
-      // Extract the filename from the URL
-      // Decode the URI and split by '/'
-      const decodedUrl = decodeURIComponent(archivo.url);
-      const parts = decodedUrl.split("/");
-      // Extract the filename which is before the '?' character
-      const filenamePart = parts.pop().split("?")[0];
+      
+      if(archivo.type == 'enlace'){
 
-      // Create a URL for the blob
-      const blobUrl = window.URL.createObjectURL(blob);
+        let url = archivo.url
+        if (!/^https?:\/\//i.test(url)) {
+            url = 'http://' + url;
+        }
+        window.open(url, '_blank');
+      }
+      else{
+        const response = await fetch(archivo.url);
+        const blob = await response.blob();
+        // Extract the filename from the URL
+        // Decode the URI and split by '/'
+        const decodedUrl = decodeURIComponent(archivo.url);
+        const parts = decodedUrl.split("/");
+        // Extract the filename which is before the '?' character
+        const filenamePart = parts.pop().split("?")[0];
+  
+        // Create a URL for the blob
+        const blobUrl = window.URL.createObjectURL(blob);
+  
+        // Create a temporary anchor element
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.download = filenamePart; // Use the original filename or a default
+  
+        // Append to the document and trigger the download
+        document.body.appendChild(link);
+        link.click();
+  
+        // Remove the anchor element and revoke the object URL
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(blobUrl);
 
-      // Create a temporary anchor element
-      const link = document.createElement("a");
-      link.href = blobUrl;
-      link.download = filenamePart; // Use the original filename or a default
-
-      // Append to the document and trigger the download
-      document.body.appendChild(link);
-      link.click();
-
-      // Remove the anchor element and revoke the object URL
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(blobUrl);
+      }
     } catch (error) {
       console.error("Error downloading the file:", error);
     }
