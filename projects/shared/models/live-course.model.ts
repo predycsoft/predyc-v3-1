@@ -12,7 +12,9 @@ export interface LiveCourseTemplateJson {
     skillsRef: DocumentReference<Skill>[]
     duration: number,
     vimeoFolderId: string,
-    orderExam:boolean
+    orderExam:boolean,
+    presencial:boolean
+
 }
 
 export class LiveCourseTemplate {
@@ -30,7 +32,8 @@ export class LiveCourseTemplate {
         public skillsRef: DocumentReference<Skill>[],
         public duration: number,
         public vimeoFolderId: string = "",
-        public orderExam: boolean = false
+        public orderExam: boolean = false,
+        public presencial:boolean = false
 
     ) {}
 
@@ -46,7 +49,8 @@ export class LiveCourseTemplate {
             liveCourseTemplateJson.skillsRef,
             liveCourseTemplateJson.duration,
             liveCourseTemplateJson.vimeoFolderId,
-            liveCourseTemplateJson.orderExam
+            liveCourseTemplateJson.orderExam,
+            liveCourseTemplateJson.presencial
         )
     }
 
@@ -63,6 +67,7 @@ export class LiveCourseTemplate {
             duration : this.duration,
             vimeoFolderId : this.vimeoFolderId,
             orderExam:this.orderExam,
+            presencial:this.presencial
         }
     }
 }
@@ -83,7 +88,8 @@ export interface LiveCourseJson {
     identifierText: string
     emailLastDate: any
     vimeoFolderId: string,
-    orderExam:boolean
+    orderExam:boolean,
+    presencial:boolean
 }
 
 export class LiveCourse {
@@ -107,6 +113,7 @@ export class LiveCourse {
         public title: string,
         public vimeoFolderId: string = "",
         public orderExam:boolean = false,
+        public presencial:boolean = false
     ) {}
 
     public static fromJson(liveCourseJson: LiveCourseJson): LiveCourse {
@@ -126,7 +133,8 @@ export class LiveCourse {
             liveCourseJson.skillsRef,
             liveCourseJson.title,
             liveCourseJson.vimeoFolderId,
-            liveCourseJson.orderExam
+            liveCourseJson.orderExam,
+            liveCourseJson.presencial
         )
     }
 
@@ -148,6 +156,7 @@ export class LiveCourse {
             identifierText : this.identifierText,
             emailLastDate : this.emailLastDate,
             orderExam:this.orderExam,
+            presencial:this.presencial
         }
     }
 }
