@@ -595,7 +595,7 @@ export class CreateLiveCourseComponent {
   }
 
   getExamCourse(idCourse: string) {
-    // console.log('idCourse search activity', idCourse);
+    console.log('idCourse search activity', idCourse);
     const liveCourseType = this.mode === "edit-base" ? "liveCourseTemplate" : "liveCourse";
     this.activityClassesService
       .getCourseActivities(idCourse, liveCourseType)
@@ -605,12 +605,12 @@ export class CreateLiveCourseComponent {
       )
       .subscribe((courseActivities) => {
         if (courseActivities) {
-          // console.log('Activity:', courseActivities);
+          console.log('Activity:', courseActivities);
           const diagnosticTest = courseActivities.filter((x) => x.type == "test")[0];
           const finalTest = courseActivities.filter((x) => x.type == "final-test")[0];
 
           //console.log('Questions:', data.questions);
-          diagnosticTest.questions.forEach((question) => {
+          diagnosticTest?.questions?.forEach((question) => {
             // //console.log('preguntas posibles test',question)
             question.competencias = question.skills;
           });
@@ -618,7 +618,7 @@ export class CreateLiveCourseComponent {
           // console.log('examen data edit',this.examenDiagnostico)
 
           //console.log('Questions:', data.questions);
-          finalTest.questions.forEach((question) => {
+          finalTest?.questions?.forEach((question) => {
             // //console.log('preguntas posibles test',question)
             question.competencias = question.skills;
           });
