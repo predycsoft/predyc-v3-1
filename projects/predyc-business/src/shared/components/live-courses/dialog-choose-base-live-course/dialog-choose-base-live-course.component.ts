@@ -144,7 +144,7 @@ export class DialogChooseBaseLiveCourseComponent {
 
 
         //console.log('Questions:', data.questions);
-        diagnosticTest.questions.forEach((question) => {
+        diagnosticTest?.questions?.forEach((question) => {
           // //console.log('preguntas posibles test',question)
           question.competencias = question.skills;
         });
@@ -152,7 +152,7 @@ export class DialogChooseBaseLiveCourseComponent {
         // console.log('examen data edit',this.liveCourseDiagnosticTest)
 
         //console.log('Questions:', data.questions);
-        finalTest.questions.forEach((question) => {
+        finalTest?.questions?.forEach((question) => {
           // //console.log('preguntas posibles test',question)
           question.competencias = question.skills;
         });
