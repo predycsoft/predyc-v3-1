@@ -80,14 +80,27 @@ export class DialogPillarsFormComponent {
       this.formNewSkill.reset(); // Reset the form
       modal.close(); // Close the modal
     } else {
-      // Handle form errors
-      Object.keys(this.formNewSkill.controls).forEach(field => {
-        const control = this.formNewSkill.get(field);
-        control.markAsTouched({ onlySelf: true });
-      });
     }
   }
 
+  deleteSkill(skill) {
+    if (skill.id) { // Delete skill in database
+      Swal.fire({
+        title: "Se eliminará la competencia",
+        text: "¿Deseas continuar?",
+        icon: "info",
+        showCancelButton: true,
+        confirmButtonText: "Guardar",
+        confirmButtonColor: 'var(--blue-5)',
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          this.skillService.deleteSkill(skill.id)          
+        }
+      });
+    }
+    const index = this.pillarSkills.indexOf(skill);
+    if (index > -1) this.pillarSkills.splice(index, 1);
+  }
 
   async savePillar() {
     Swal.fire({

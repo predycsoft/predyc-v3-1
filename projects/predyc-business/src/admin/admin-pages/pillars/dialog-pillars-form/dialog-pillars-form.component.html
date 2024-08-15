@@ -22,6 +22,7 @@
                     <div fxLayout="row wrap" fxLayoutGap="0.625rem" fxLayoutAlign="start center" class="skills-container">
                         <div *ngFor="let skill of pillarSkills" class="skill-badge-complete ListHover radius10 backGray2 ft12 pdl08 pdr08 gray-8">
                             {{ skill.name | titlecase }}
+                            <img style="cursor: pointer" [src]="icon.close"  class="h14px mgl05 makeGray" alt="" (click)="deleteSkill(skill)" />
                         </div>
                     </div>
                     <span *ngIf="pillarSkills.length === 0">Este pilar aún no posee competencias</span>
