@@ -18,14 +18,14 @@ import { CategoryInList } from '../pillars-list/pillars-list.component';
 
 export class DialogPillarsFormComponent {
   @Input() pillar: CategoryInList;
-  
+
   pillarForm: FormGroup;
   showFormError: boolean = false;
-  
-  enterpriseSubscription: Subscription;
-  filteredEnterprises: Observable<EnterpriseJson[]>;
-  enterprises: EnterpriseJson[] = [];
-  selectedEnterprise: EnterpriseJson;
+
+  // enterpriseSubscription: Subscription;
+  // filteredEnterprises: Observable<EnterpriseJson[]>;
+  // enterprises: EnterpriseJson[] = [];
+  // selectedEnterprise: EnterpriseJson;
 
   constructor(
     public icon: IconService,
@@ -37,46 +37,46 @@ export class DialogPillarsFormComponent {
 
   ngOnInit() {
     this.loadPillarForm(this.pillar);
-    
-    this.enterpriseSubscription = this.enterpriseService.getAllEnterprises$().subscribe(enterprises => {
-      this.enterprises = enterprises;
-      this.filteredEnterprises = this.pillarForm.get('enterprise').valueChanges.pipe(
-        startWith(''),
-        map(value => this._filterEnterprises(value))
-      );
-      // Update the form with the loaded enterprises
-      this.updateFormWithEnterprise();
-    });
+
+    // this.enterpriseSubscription = this.enterpriseService.getAllEnterprises$().subscribe(enterprises => {
+    //   this.enterprises = enterprises;
+    //   this.filteredEnterprises = this.pillarForm.get('enterprise').valueChanges.pipe(
+    //     startWith(''),
+    //     map(value => this._filterEnterprises(value))
+    //   );
+    //   // Update the form with the loaded enterprises
+    //   this.updateFormWithEnterprise();
+    // });
   }
 
   loadPillarForm(pillar: CategoryJson) {
     this.pillarForm = this.fb.group({
       pillarName: [pillar ? pillar.name : '', Validators.required],
-      enterprise: ['']
+      // enterprise: ['']
     });
   }
 
-  updateFormWithEnterprise() {
-    if (this.pillar && this.pillar.enterprise) {
-      const enterprise = this.enterprises.find(x => x.id === this.pillar.enterprise.id);
-      if (enterprise) {
-        this.pillarForm.patchValue({ enterprise });
-      }
-    }
-  }
+  // updateFormWithEnterprise() {
+  //   if (this.pillar && this.pillar.enterprise) {
+  //     const enterprise = this.enterprises.find(x => x.id === this.pillar.enterprise.id);
+  //     if (enterprise) {
+  //       this.pillarForm.patchValue({ enterprise });
+  //     }
+  //   }
+  // }
 
-  _filterEnterprises(value: string | EnterpriseJson): EnterpriseJson[] {
-    const filterValue = (typeof value === 'string') ? value.toLowerCase() : value.name.toLowerCase();
-    return this.enterprises.filter(pillar => pillar.name.toLowerCase().includes(filterValue));
-  }
+  // _filterEnterprises(value: string | EnterpriseJson): EnterpriseJson[] {
+  //   const filterValue = (typeof value === 'string') ? value.toLowerCase() : value.name.toLowerCase();
+  //   return this.enterprises.filter(pillar => pillar.name.toLowerCase().includes(filterValue));
+  // }
 
-  getOptionTextEnterprise(option: EnterpriseJson): string {
-    return option ? option.name : '';
-  }
+  // getOptionTextEnterprise(option: EnterpriseJson): string {
+  //   return option ? option.name : '';
+  // }
 
-  onEnterpriseSelected(enterprise: EnterpriseJson) {
-    this.selectedEnterprise = enterprise;
-  }
+  // onEnterpriseSelected(enterprise: EnterpriseJson) {
+  //   this.selectedEnterprise = enterprise;
+  // }
 
   async savePillar() {
     Swal.fire({
@@ -90,11 +90,11 @@ export class DialogPillarsFormComponent {
 
     if (this.pillarForm.valid) {
       const pillarName = this.pillarForm.get('pillarName').value;
-      const selectedEnterprise: EnterpriseJson = this.pillarForm.get('enterprise').value;
+      // const selectedEnterprise: EnterpriseJson = this.pillarForm.get('enterprise').value;
       const newPillar: CategoryJson = {
         name: pillarName,
         id: this.pillar ? this.pillar.id : null,
-        enterprise: selectedEnterprise ? this.enterpriseService.getEnterpriseRefById(selectedEnterprise.id) : null
+        enterprise: null
       };
       console.log("newPillar", newPillar)
       try {
@@ -119,6 +119,6 @@ export class DialogPillarsFormComponent {
   }
 
   ngOnDestroy() {
-    if (this.enterpriseSubscription) this.enterpriseSubscription.unsubscribe();
+    // if (this.enterpriseSubscription) this.enterpriseSubscription.unsubscribe();
   }
 }
