@@ -16,34 +16,24 @@
                     </div>
                 </div>
             </div>
-            <div *ngIf="pillar" fxLayout="row" class="fw">
+            <div fxLayout="row" class="fw">
                 <div class="form-group fw">
                     <label class="ft14 ft500">Competencias relacionadas</label>
                     <div fxLayout="row wrap" fxLayoutGap="0.625rem" fxLayoutAlign="start center" class="skills-container">
-                        <div *ngFor="let skill of pillar.skills" class="skill-badge-complete ListHover radius10 backGray2 ft12 pdl08 pdr08 gray-8">
+                        <div *ngFor="let skill of pillarSkills" class="skill-badge-complete ListHover radius10 backGray2 ft12 pdl08 pdr08 gray-8">
                             {{ skill.name | titlecase }}
                         </div>
                     </div>
-                    <span *ngIf="pillar.skills.length === 0">Este pilar aún no posee competencias</span>
+                    <span *ngIf="pillarSkills.length === 0">Este pilar aún no posee competencias</span>
                 </div>
             </div>
-            <!-- <div fxLayout="row" class="fw">
-                <div class="form-group fw">
-                    <label class="ft14 ft500">Empresa</label>
-                    <mat-form-field subscriptSizing="dynamic" class="example-full-width fw h50px">
-                        <mat-label>Buscar empresa: </mat-label>
-                        <input type="text" class="ft14 fw" placeholder="Seleccione uno" aria-label="Number" matInput #pillarAutoTrigger="matAutocompleteTrigger" 
-                        formControlName="enterprise" [matAutocomplete]="autoPillars"/>
-                        <mat-autocomplete [hideSingleSelectionIndicator]="true" [displayWith]="getOptionTextEnterprise" #autoPillars="matAutocomplete" class="options">
-                            <mat-option (click)="onEnterpriseSelected(option)" class="multiline-mat-option ft12 fw" *ngFor="let option of filteredEnterprises | async" [value]="option">
-                                <div fxLayout="row" fxLayoutAlign="space-between" class="fw">
-                                    <div fxLayout="col" fxLayoutAlign="center center">{{ option.name | titlecase }}</div>
-                                </div>
-                            </mat-option>
-                        </mat-autocomplete>
-                    </mat-form-field>
+            <div fxLayout="row" fxLayoutAlign=" center" class="fw">
+                <div matTooltip="Agregar competencia" style="display: inline-block; margin-right: 5px" (click)="crearCompetencia(modalCrearSkill)" class="backGray2 radius20 pdl03 pdr03 gray-8">
+                    <img style="cursor: pointer" [src]="icon.addBlue" class="h16px ft600" alt="" />
                 </div>
-            </div> -->
+                <div *ngIf="pillarForm.controls['skills'].errors" class="custom-invalid-feedback pdt05">Debe seleccionar al menos una competencia.</div>
+            </div>
+
             <div fxLayout="row" fxLayoutAlign="end end" class="pdt03" style="width: 100%">
                 <button (click)="savePillar()" class="blueButton gray-1 radius4 ft12 h28px mgt10" fxLayout="row" fxLayoutGap="0.625rem" fxLayoutAlign="center center">
                     <img [src]="icon.check" class="h16px pdr05 makeWhite" alt="" />
@@ -53,3 +43,32 @@
         </div>
     </form>
 </div>
+
+
+<!-- Create skill modal -->
+<ng-template #modalCrearSkill let-modal>
+    <div class="modal-header bg-web-primary text-white px-3 py-1" fxLayout="row" fxLayoutAlign="space-between center">
+        <div class="modal-title pd10">
+            <span class="ft16 ft500 gray-10">Asignar Competencia</span>
+        </div>
+        <img style="cursor: pointer" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px" alt="" />
+    </div>
+    <div class="modal-body" style="overflow-y: auto; max-height: 80vh">
+        <form [formGroup]="formNewSkill" class="fw">
+            <div fxLayout="row" class="fw">
+                <div class="form-group fw">
+                    <label>Nombre de la competencia</label>
+                    <input formControlName="nombre" [class.is-invalid]="formNewSkill.controls['nombre'].errors" type="text" class="form-control customInput" placeholder="Escriba el nombre de la competencia" />
+                    <div class="invalid-feedback" *ngIf="formNewSkill.controls['nombre'].errors">Debe indicar el nombre de la competencia.</div>
+                </div>
+            </div>
+        </form>
+        <!-- Botón de guardar en la esquina inferior derecha -->
+        <div fxLayout="row" fxLayoutAlign="end end" class="pdt03" style="width: 100%">
+            <button (click)="saveNewSkill(modal)" class="blueButton gray-1 radius4 ft12 h28px mgt10" fxLayout="row" fxLayoutGap="0.625rem" fxLayoutAlign="center center">
+                <img [src]="icon.check" class="h16px pdr05 makeWhite" alt="" />
+                Asignar competencia
+            </button>
+        </div>
+    </div>
+</ng-template>

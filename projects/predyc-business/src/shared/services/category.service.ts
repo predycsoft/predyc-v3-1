@@ -39,7 +39,7 @@ export class CategoryService {
   private empresa
 
 
-  async addCategory(category: Category): Promise<void> {
+  async addCategory(category: Category): Promise<string> {
     let categoryId: string = category.id;
   
     if (!categoryId) {
@@ -49,6 +49,7 @@ export class CategoryService {
 
     const ref = this.afs.collection<Category>(Category.collection).doc(categoryId).ref;
     await ref.set({...category.toJson()}, { merge: true });
+    return categoryId
   }
 
   async deleteCategoryById(categoryId: string): Promise<void> {
