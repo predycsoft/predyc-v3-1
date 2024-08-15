@@ -10,6 +10,7 @@ export interface ArticleJson {
     createdAt: any
     id: string
     metaDescription: string
+    keyWords:string
     photoUrl: string
     pillarsRef: DocumentReference<Category>[]
     slug: string
@@ -36,6 +37,7 @@ export class Article {
         public createdAt: any,
         public id: string,
         public metaDescription: string,
+        public keyWords:string,
         public photoUrl: string,
         public pillarsRef: DocumentReference<Category>[],
         public slug: string,
@@ -58,6 +60,7 @@ export class Article {
             articleJson.createdAt,
             articleJson.id,
             articleJson.metaDescription,
+            articleJson.keyWords,
             articleJson.photoUrl,
             articleJson.pillarsRef,
             articleJson.slug,
@@ -80,6 +83,7 @@ export class Article {
             createdAt: this.createdAt,
             id: this.id,
             metaDescription: this.metaDescription,
+            keyWords:this.keyWords,
             photoUrl: this.photoUrl,
             pillarsRef: this.pillarsRef,
             slug: this.slug,

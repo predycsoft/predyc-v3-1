@@ -53,13 +53,16 @@ const styleMail = `
 
 const title = 'ngsdfsdf';
 const imgCurso: string = "https://predyc-user.web.app/assets/images/cursos/curso1.jpg"
-const backCertificado: string = "https://predyc-user.web.app/assets/images/certificado/certificado.png"
+let backCertificado: string = "https://predyc-user.web.app/assets/images/certificado/certificado.png"
+const backCertificadoP21: string = "https://predyc-user.web.app/assets/images/certificado/certificado-p21T.png"
 const backCertificado2: string = "https://predyc-user.web.app/assets/images/certificado/certificado-2.png"
 const backCertificadoTractian: string = "https://predyc-user.web.app/assets/images/certificado/certificado-tractian.png"
 const skeleton: string = "https://predyc-user.web.app/assets/images/certificado/skeletonCertificate.png"
 const firmaCEO: string = "https://predyc-user.web.app/assets/images/certificado/firma-ceo.png"
 const firmaCOO: string = "https://predyc-user.web.app/assets/images/certificado/firma-coo.png"
 const certificado = "https://predyc-user.web.app/assets/images/logos/certificado.avif"
+
+let temporalidad = 'en línea'
 
 
 let nombreInstructor;
@@ -92,6 +95,8 @@ async function downloadImage(url: string): Promise<Buffer> {
 
 export const generateMailCertificate = functions.https.onCall(async (data, _) => {
     try {
+      backCertificado = 'https://predyc-user.web.app/assets/images/certificado/certificado.png'
+      temporalidad = 'en línea'
       id = data.idCertificate;
       const userCertificateRef = admin.firestore().collection('userCertificate').doc(id);
       const userCertificateDoc = await userCertificateRef.get();
@@ -210,6 +215,7 @@ export const generateMailCertificate = functions.https.onCall(async (data, _) =>
 
       } else if (liveCourseId) {
         // throw new functions.https.HttpsError("not-found", 'not yet implemented');
+        backCertificado = backCertificadoP21
         const dataCurso = await getLiveCourseById(liveCourseId);
 
         console.log(dataCurso)
@@ -254,8 +260,10 @@ export const generateMailCertificate = functions.https.onCall(async (data, _) =>
             else{
               firmaInstructor = null
             }
-  
-  
+          }
+
+          if(dataCurso['presencial']){
+            temporalidad = 'presencial'
           }
       }
   
@@ -346,7 +354,7 @@ async function getCourseById(courseId: string): Promise<any> {
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(13);
     doc.setTextColor(156, 166, 175);
-    doc.text('Por completar exitosamente el '+tipo+' en línea con duración de ' + duracionCurso + ' ' + horas , 19, 91) // Nombre usuario
+    doc.text('Por completar exitosamente el '+tipo+' '+temporalidad+' con duración de ' + duracionCurso + ' ' + horas , 19, 91) // Nombre usuario
     doc.setFontSize(19);
     doc.setTextColor(100, 111, 121);
     const tituloCursoSplit = doc.splitTextToSize(tituloCurso, 170);

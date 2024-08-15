@@ -250,5 +250,9 @@ export class IconService {
 
   currency:string="assets/iconsUI/currency.svg"
 
+
+  link = "assets/iconsUI/link.svg"
+
+
   constructor() { }
 }

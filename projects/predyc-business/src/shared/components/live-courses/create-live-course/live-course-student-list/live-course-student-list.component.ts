@@ -4,7 +4,7 @@ import { MatTableDataSource } from "@angular/material/table";
 import { ActivatedRoute, Router } from "@angular/router";
 import { IconService } from "projects/predyc-business/src/shared/services/icon.service";
 import { LiveCourseByStudent } from "projects/shared/models/live-course-by-student.model";
-import { Observable, Subscription, combineLatest, firstValueFrom, forkJoin, map, switchMap } from "rxjs";
+import { Observable, Subscription, combineLatest, firstValueFrom, forkJoin, map, switchMap, filter } from 'rxjs';
 import { AngularFirestore, DocumentReference } from "@angular/fire/compat/firestore";
 import { User, UserJson } from "projects/shared/models/user.model";
 import { LiveCourse } from "projects/shared/models/live-course.model";
@@ -168,6 +168,7 @@ export class LiveCourseStudentListComponent {
                 return this.liveCourseService.getLiveCourseUserCertificate$(this.liveCourseId, userData.uid).pipe(
                   map((certificateData) => {
                     const certificate = certificateData.length > 0 ? certificateData[0] : null;
+                    console.log('liveCourseByStudent',liveCourseByStudent,userData.displayName)
                     return {
                       liveCourseByStudentId: liveCourseByStudent.id,
                       userEmail: userData.email,
@@ -555,7 +556,11 @@ export class LiveCourseStudentListComponent {
     let sender = "capacitacion@predictiva21.com"
     let recipients = [userEmail]
     // let recipients = ["diegonegrette42@gmail.com"]
-    let subject = `Has sido inscrito en un ${type} en vivo`
+    let temporalidad = 'en vivo'
+    if(this?.courseDetails?.presencial){
+      temporalidad = 'presencial'
+    }
+    let subject = `Has sido inscrito en un ${type} ${temporalidad}`
     let duracion = Math.round(this.courseDetails?.duration / 60)
     let startDate
     let cantidadModulos = 0
@@ -572,25 +577,35 @@ export class LiveCourseStudentListComponent {
     
 
     let htmlContent = `<p>Estimado <strong>${titleCase(user.name)}</strong></p> 
-    <p>Mi nombre es Daniela Rodríguez, Coordinadora de Capacitación en <a href="https://predictiva21.com/">Predictiva21</a>,  me gustaría guiarlo en los pasos para que pueda acceder al aula virtual del ${type}, donde podrá ver las sesiones en vivo, exámenes, material descargable y certificado.</p>
-    <p>El ${type} <strong>${this.courseDetails?.title ? this.courseDetails.title : this.diplomadoDetails?.name }</strong> se llevará a cabo en un total de ${duracion} horas, desde el <strong>${formattedDate}</strong> en ${cantidadModulos} sesiones de la siguiente manera:</p>
-    <ul>`
-
+    <p>Mi nombre es Daniela Rodríguez, Coordinadora de Capacitación en <a href="https://predictiva21.com/">Predictiva21</a>,  me gustaría guiarlo en los pasos para que pueda acceder al aula virtual del ${type}, donde podrá ver las sesiones en vivo, exámenes, material descargable y certificado.</p`
+    
+    console.log('datos',this.courseDetails)
+    
     if (type == 'curso'){
-      this.courseDetails.sessions.forEach(session => {
-        let sessionDate = this.datePipe.transform(session.dateFormatted, 'd \'de\' MMMM \'a las\' HH:mm \'hrs\'', 'es');
-        htmlContent += `<li>${session.title} - ${sessionDate} hora CDMX (México)</li>`;
-      });
+
+      let sessionesVisibles = this.courseDetails.sessions.filter(x=>!x.hidden)
+
+      if(sessionesVisibles.length>0){
+        htmlContent+=`<p>El ${type} <strong>${this.courseDetails?.title ? this.courseDetails.title : this.diplomadoDetails?.name }</strong> se llevará a cabo en un total de ${duracion} horas, desde el <strong>${formattedDate}</strong> en ${cantidadModulos} sesiones de la siguiente manera:</p>
+        <ul>`
+
+        sessionesVisibles.forEach(session => {
+          let sessionDate = this.datePipe.transform(session.dateFormatted, 'd \'de\' MMMM \'a las\' HH:mm \'hrs\'', 'es');
+          if(sessionDate){
+            htmlContent += `<li>${session.title} - ${sessionDate} hora CDMX (México)</li>`;
+          }
+        });
+      }
     }
+
     else{
+      htmlContent+=`<p>El ${type} <strong>${this.courseDetails?.title ? this.courseDetails.title : this.diplomadoDetails?.name }</strong> se llevará a cabo en un total de ${duracion} horas, desde el <strong>${formattedDate}</strong> en ${cantidadModulos} sesiones de la siguiente manera:</p>
+      <ul>`
       this.deplomadoStudyPlan.forEach(session => {
         let sessionDate = this.datePipe.transform(session.datosLive.date, 'd \'de\' MMMM \'a las\' HH:mm \'hrs\'', 'es');
         htmlContent += `<li>${session.title} - ${sessionDate} hora CDMX (México)</li>`;
       });
     }
-
-
-
 
     let gmail = userEmail.includes("@gmail.com");
 
@@ -622,7 +637,6 @@ export class LiveCourseStudentListComponent {
     <p>`;
 
     const htmlContentFinal = ` <!DOCTYPE html><html><head>${styleMail}</head><body>${htmlContent}${firma}</body></html>`;
-
     try {
       await firstValueFrom(this.fireFunctions.httpsCallable('sendMailHTML')({
         sender: sender,

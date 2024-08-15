@@ -90,7 +90,7 @@ export class DiplomadoFormComponent {
   slug: string = "";
   profileHoursPerMonth: number = 8;
 
-  slugMaxLength = 15
+  slugMaxLength = 200
   metaDescriptionMaxLength = 141
   keyWordsMaxLength = 100
 
@@ -591,9 +591,9 @@ export class DiplomadoFormComponent {
       if (!this.slug)throw new Error("Debe indicar el slug para el diplomado");
       const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
       if (!slugPattern.test(this.slug)) throw new Error("El formato del slug es inválido");
-      if (!this.profileDescription)throw new Error("Debe indicar una descripción para el diplomado");
-      if (!this.metaDescription)throw new Error("Debe indicar una meta descripción para el diplomado");
-      if (!this.keyWords)throw new Error("Debe indicar los key words para el diplomado");
+      // if (!this.profileDescription)throw new Error("Debe indicar una descripción para el diplomado");
+      // if (!this.metaDescription)throw new Error("Debe indicar una meta descripción para el diplomado");
+      // if (!this.keyWords)throw new Error("Debe indicar los key words para el diplomado");
 
       if (
         this.diplomados.find(

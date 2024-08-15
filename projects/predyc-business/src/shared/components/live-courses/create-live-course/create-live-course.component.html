@@ -77,6 +77,21 @@
                     </div>
                   </div>
                   <div *ngIf="formNewCourse.controls['photoUrl'].errors && showErrorCurso" class="custom-invalid-feedback pdt05">Debe seleccionar o subir la imagen del curso</div>
+                  
+                  <div fxLayout="row" class="mgt10">
+                    <div fxLayout="row" fxLayoutAlign="space-between center" class="fw">
+                      <span class="ft12">Examen con orden estricto</span>
+                      <mat-slide-toggle class="" color="primary" formControlName="orderExam"></mat-slide-toggle>
+                    </div>
+                  </div>
+
+                  <div fxLayout="row" class="mgt10">
+                    <div fxLayout="row" fxLayoutAlign="space-between center" class="fw">
+                      <span class="ft12">Presencial</span>
+                      <mat-slide-toggle class="" color="primary" formControlName="presencial"></mat-slide-toggle>
+                    </div>
+                  </div>
+                  
                   <div fxLayout="row" fxLayoutAlign=" center" class="mgt10 fw">
                     <form class="fw">
                       <mat-form-field class="example-full-width fw">
@@ -249,8 +264,19 @@
                                             accept="application/pdf, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, image/png, image/jpeg, application/zip, application/vnd.ms-powerpoint, application/vnd.openxmlformats-officedocument.presentationml.presentation" />
                                             <button (click)="FileInputAdicional.click()" class="grayButton pd03 radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                                               <img [src]="icon.folderUp" class="h16px pdr05" alt="" />
-                                              Añadir recursos
+                                              Añadir archivos
                                             </button>
+
+                                            <button (click)="createLink(session)" class="grayButton pd03 radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                              <img [src]="icon.link" class="h16px pdr05" alt="" />
+                                              Añadir enlaces
+                                            </button>
+                                          </div>
+                                          <div fxLayout="row" class="mgt10">
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="fw">
+                                              <span class="ft12">Oculta</span>
+                                              <mat-slide-toggle (change)="changedHidden(session)" [(ngModel)]="session['hidden']" class="pdl10" color="primary"></mat-slide-toggle>
+                                            </div>
                                           </div>
                                           <input (change)="onFileSelected($event, session, false, false, null, true)" type="file" accept="{{ session.type == 'lectura' ? '.pdf' : 'video/mp4' }}" #FileInput style="display: none" />
                                         </ng-container>
@@ -463,6 +489,41 @@
         <button (click)="!savingPillar ? saveNewPillar() : ''" class="{{ !savingPillar ? 'blueButton gray-1' : 'grayButton pd03 gray-8 ' }} radius4 ft12 h28px mgt08" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
           <img [src]="icon.save" class="h16px = makeWhite" alt="" />
           Guardar Pilar
+        </button>
+      </div>
+    </div>
+  </ng-template>
+
+
+  <ng-template #modalCrearEnlace let-modal>
+    <div class="modal-header bg-web-primary text-white px-3 py-1">
+      <div class="modal-title pd10" fxLayout="row" fxLayoutAlign="start center">
+        <span class="ft16 ft500 gray-10">Crear Enlace</span>
+      </div>
+      <img style="cursor: pointer" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px" alt="" />
+    </div>
+    <div class="modal-body" style="overflow-y: auto; max-height: 80vh">
+      <form [formGroup]="formNewLink" class="fw">
+        <div fxLayout="row" class="fw">
+          <div class="form-group fw">
+            <label>Nombre</label>
+            <input formControlName="nombre" [class.is-invalid]="formNewLink.controls['nombre'].errors && showErrorLink" type="text" class="form-control customInput" placeholder="Escriba el nombre" />
+            <div class="invalid-feedback" *ngIf="formNewLink.controls['nombre'].errors && showErrorLink">Debe indicar el nombre.</div>
+          </div>
+        </div>
+        <div fxLayout="row" class="fw">
+          <div class="form-group fw">
+            <label>Enlace</label>
+            <input formControlName="url" [class.is-invalid]="formNewLink.controls['url'].errors && showErrorLink" type="text" class="form-control customInput" placeholder="Escriba el enlace" />
+            <div class="invalid-feedback" *ngIf="formNewLink.controls['url'].errors && showErrorLink">Debe indicar el enlace.</div>
+          </div>
+        </div>
+      </form>
+      <!-- Botón de guardar en la esquina inferior derecha -->
+      <div fxLayout="row" fxLayoutAlign="end" class="pdt03">
+        <button (click)="!savingPillar ? saveLink() : ''" class="{{ !savingPillar ? 'blueButton gray-1' : 'grayButton pd03 gray-8 ' }} radius4 ft12 h28px mgt08" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+          <img [src]="icon.save" class="h16px = makeWhite" alt="" />
+          Asignar enlace
         </button>
       </div>
     </div>

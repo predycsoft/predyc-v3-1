@@ -6,7 +6,9 @@ export interface SessionTemplateJson {
     liveCourseTemplateRef: DocumentReference
     duration: number
     files: any[]
-    orderNumber: number
+    orderNumber: number,
+    links:any[]
+    hidden:boolean,
 }
 
 export class SessionTemplate {
@@ -20,6 +22,9 @@ export class SessionTemplate {
         public duration: number,
         public files: any[],
         public orderNumber: number,
+        public links:any[],
+        public hidden:boolean,
+
     ) {}
 
     public static fromJson(SessionJson: SessionTemplateJson): SessionTemplate {
@@ -30,6 +35,8 @@ export class SessionTemplate {
             SessionJson.duration,
             SessionJson.files,
             SessionJson.orderNumber,
+            SessionJson.links,
+            SessionJson.hidden,
         )
     }
 
@@ -41,6 +48,8 @@ export class SessionTemplate {
             duration : this.duration,
             files : this.files,
             orderNumber : this.orderNumber,
+            links:this.links,
+            hidden:this.hidden
         }
     }
 }
@@ -57,6 +66,8 @@ export interface SessionJson {
     vimeoId1: number //
     vimeoId2: string //
     weeksToKeep: number //
+    links:any[],
+    hidden:boolean
 }
 
 export class Session {
@@ -75,6 +86,8 @@ export class Session {
         public vimeoId1: number,
         public vimeoId2: string,
         public weeksToKeep: number,
+        public links: any[],
+        public hidden:boolean
     ) {}
 
     public static fromJson(SessionJson: SessionJson): Session {
@@ -90,6 +103,8 @@ export class Session {
             SessionJson.vimeoId1,
             SessionJson.vimeoId2,
             SessionJson.weeksToKeep,
+            SessionJson.links,
+            SessionJson.hidden
         )
     }
 
@@ -106,6 +121,8 @@ export class Session {
             liveCourseRef : this.liveCourseRef,
             vimeoId1 : this.vimeoId1,
             vimeoId2 : this.vimeoId2,
+            links:this.links,
+            hidden:this.hidden
         }
     }
 }
