@@ -39,6 +39,7 @@ export class EnterpriseService {
           if (!this.enterpriseLoadedSubject.value) {
             this.enterpriseLoadedSubject.next(true)
             console.log("La empresa fue cargada", enterprise)
+            //this.getUsersWithEnterpriseAndClassesByDevice()
           }
         })
       }
@@ -311,5 +312,54 @@ export class EnterpriseService {
 
     return certificates;
   }
+
+
+  async getUsersWithEnterpriseAndClassesByDevice(firestore = this.afs) {
+    // Paso 1: Obtener todos los usuarios con enterprise
+    const usersSnapshot = await firestore.collection('user', ref => ref.where('enterprise', '!=', null)).get().toPromise();
+    
+    // Si no hay usuarios con enterprise, terminar la función
+    if (usersSnapshot.empty) {
+        console.log('No users with enterprise found.');
+        return;
+    }
+
+    // Obtener referencias de los usuarios
+    const userRefs = usersSnapshot.docs.map(doc => doc.ref);
+
+    // Paso 2: Obtener clases completadas por estos usuarios que tienen device definido
+    const classesSnapshot = await firestore.collection('classesByStudent', ref => 
+        ref.where('completed', '==', true)
+    ).get().toPromise();
+
+    // Filtrar clases por usuarios con enterprise y que tengan device definido
+    const classesWithDevice = classesSnapshot.docs.filter(doc => {
+        const data = doc.data();
+        return data['device'] && userRefs.some(userRef => userRef.isEqual(data['userRef']));
+    });
+
+    // Si no hay clases con device, terminar la función
+    if (classesWithDevice.length === 0) {
+        console.log('No classes with device found.');
+        return;
+    }
+
+    // Paso 3: Calcular el porcentaje por device
+    const deviceCounts = classesWithDevice.reduce((counts, classDoc) => {
+        const device = classDoc.data()['device'];
+        counts[device] = (counts[device] || 0) + 1;
+        return counts;
+    }, {} as Record<string, number>);
+
+    const totalClasses = classesWithDevice.length;
+    const devicePercentages = Object.keys(deviceCounts).reduce((percentages, device) => {
+        percentages[device] = (deviceCounts[device] / totalClasses) * 100;
+        return percentages;
+    }, {} as Record<string, number>);
+
+    // Imprimir los resultados
+    console.log('Device Percentages:', devicePercentages);
+  }
+
 
 }
