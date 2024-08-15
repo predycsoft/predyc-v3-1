@@ -347,8 +347,8 @@ async function getCourseById(courseId: string): Promise<any> {
     doc.setFontSize(27);
     doc.setTextColor(21, 27, 38);
     doc.setFont('helvetica', 'bold');
-    if(nombreUsuario>=40){
-			doc.setFontSize(nombreUsuario/1.8) // mejorar 
+    if(nombreUsuario.length>=40){
+			doc.setFontSize(nombreUsuario.length/1.8) // mejorar 
 		}
     doc.text(nombreUsuario, 19, 80); // Nombre usuario
     doc.setFont('helvetica', 'normal');
