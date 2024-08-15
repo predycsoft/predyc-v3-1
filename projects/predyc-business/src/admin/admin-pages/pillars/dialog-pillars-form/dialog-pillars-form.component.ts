@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CategoryService } from 'projects/predyc-business/src/shared/services/category.service';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
@@ -9,6 +9,8 @@ import { Subscription, Observable, startWith, map } from 'rxjs';
 import { EnterpriseJson } from 'shared';
 import Swal from 'sweetalert2';
 import { CategoryInList } from '../pillars-list/pillars-list.component';
+import { SkillService } from 'projects/predyc-business/src/shared/services/skill.service';
+import { Skill, SkillJson } from 'projects/shared/models/skill.model';
 
 @Component({
   selector: 'app-dialog-pillars-form',
@@ -18,64 +20,86 @@ import { CategoryInList } from '../pillars-list/pillars-list.component';
 
 export class DialogPillarsFormComponent {
   @Input() pillar: CategoryInList;
-  
+
   pillarForm: FormGroup;
   showFormError: boolean = false;
-  
-  enterpriseSubscription: Subscription;
-  filteredEnterprises: Observable<EnterpriseJson[]>;
-  enterprises: EnterpriseJson[] = [];
-  selectedEnterprise: EnterpriseJson;
+
+  formNewSkill: FormGroup;
+  createSkillModal: any;
+
+  pillarSkills = []
 
   constructor(
     public icon: IconService,
     public modal: NgbActiveModal,
     private categoryService: CategoryService,
     private enterpriseService: EnterpriseService,
+    private skillService: SkillService,
+    private modalService: NgbModal,
     private fb: FormBuilder
   ) {}
 
   ngOnInit() {
     this.loadPillarForm(this.pillar);
-    
-    this.enterpriseSubscription = this.enterpriseService.getAllEnterprises$().subscribe(enterprises => {
-      this.enterprises = enterprises;
-      this.filteredEnterprises = this.pillarForm.get('enterprise').valueChanges.pipe(
-        startWith(''),
-        map(value => this._filterEnterprises(value))
-      );
-      // Update the form with the loaded enterprises
-      this.updateFormWithEnterprise();
-    });
+    this.initSkillForm();
+    if (this.pillar) this.pillarSkills = this.pillar.skills // In editing mode
   }
 
   loadPillarForm(pillar: CategoryJson) {
     this.pillarForm = this.fb.group({
       pillarName: [pillar ? pillar.name : '', Validators.required],
-      enterprise: ['']
+      skills: ['']
     });
   }
 
-  updateFormWithEnterprise() {
-    if (this.pillar && this.pillar.enterprise) {
-      const enterprise = this.enterprises.find(x => x.id === this.pillar.enterprise.id);
-      if (enterprise) {
-        this.pillarForm.patchValue({ enterprise });
-      }
+  initSkillForm() {
+    this.formNewSkill = this.fb.group({
+      nombre: ['', Validators.required]
+    });
+  }
+
+  crearCompetencia(modal) {
+    this.createSkillModal = this.modalService.open(modal, {
+      ariaLabelledBy: "modal-basic-title",
+      centered: true,
+      size: "md",
+    });
+  }
+
+  saveNewSkill(modal) {
+    if (this.formNewSkill.valid) {
+      const newSkill = {
+        name: this.formNewSkill.get('nombre').value,
+        id: null,
+        enterprise: null,
+        categoryId: this.pillar ? this.pillar.id : null
+      };
+
+      // Add the new skill to the pillar's skills array
+      this.pillarSkills.push(newSkill);
+      this.formNewSkill.reset(); // Reset the form
+      modal.close(); // Close the modal
+    } else {
     }
   }
 
-  _filterEnterprises(value: string | EnterpriseJson): EnterpriseJson[] {
-    const filterValue = (typeof value === 'string') ? value.toLowerCase() : value.name.toLowerCase();
-    return this.enterprises.filter(pillar => pillar.name.toLowerCase().includes(filterValue));
-  }
-
-  getOptionTextEnterprise(option: EnterpriseJson): string {
-    return option ? option.name : '';
-  }
-
-  onEnterpriseSelected(enterprise: EnterpriseJson) {
-    this.selectedEnterprise = enterprise;
+  deleteSkill(skill) {
+    if (skill.id) { // Delete skill in database
+      Swal.fire({
+        title: "Se eliminará la competencia",
+        text: "¿Deseas continuar?",
+        icon: "info",
+        showCancelButton: true,
+        confirmButtonText: "Guardar",
+        confirmButtonColor: 'var(--blue-5)',
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          this.skillService.deleteSkill(skill.id)          
+        }
+      });
+    }
+    const index = this.pillarSkills.indexOf(skill);
+    if (index > -1) this.pillarSkills.splice(index, 1);
   }
 
   async savePillar() {
@@ -90,16 +114,25 @@ export class DialogPillarsFormComponent {
 
     if (this.pillarForm.valid) {
       const pillarName = this.pillarForm.get('pillarName').value;
-      const selectedEnterprise: EnterpriseJson = this.pillarForm.get('enterprise').value;
       const newPillar: CategoryJson = {
         name: pillarName,
         id: this.pillar ? this.pillar.id : null,
-        enterprise: selectedEnterprise ? this.enterpriseService.getEnterpriseRefById(selectedEnterprise.id) : null
+        enterprise: null
       };
-      console.log("newPillar", newPillar)
       try {
-        await this.categoryService.addCategory(Category.fromJson(newPillar));
-        console.log("Pilar guardado")
+        console.log("newPillar", newPillar)
+        const pillarId = await this.categoryService.addCategory(Category.fromJson(newPillar));
+        console.log("Pillar saved")
+        if (this.pillarSkills) {
+          const newSkillsToSave: SkillJson[] = []
+          for (let skill of this.pillarSkills) {
+            const skillToSave = new Skill(null, skill.name, this.categoryService.getCategoryRefById(pillarId), null).toJson();
+            if (!skill.id) newSkillsToSave.push(skillToSave)
+          }
+          console.log("newSkillsToSave", newSkillsToSave)
+          await this.skillService.addSkills(newSkillsToSave)
+          console.log("Skills saved")
+        }
         Swal.close();
         this.modal.close();
       } catch (error) {
@@ -119,6 +152,6 @@ export class DialogPillarsFormComponent {
   }
 
   ngOnDestroy() {
-    if (this.enterpriseSubscription) this.enterpriseSubscription.unsubscribe();
+    
   }
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
-import { BehaviorSubject, firstValueFrom, Observable, of } from 'rxjs'
+import { BehaviorSubject, firstValueFrom, lastValueFrom, Observable, of } from 'rxjs'
 import { EnterpriseService } from './enterprise.service';
 import { AlertsService } from './alerts.service';
 import { Enterprise } from 'projects/shared/models/enterprise.model';
@@ -10,6 +10,8 @@ import { Category, CategoryJson } from 'projects/shared/models/category.model';
 
 import { combineLatest } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
+import { SkillJson } from 'projects/shared/models/skill.model';
+import { Skill } from 'shared';
 
 
 @Injectable({
@@ -39,7 +41,7 @@ export class CategoryService {
   private empresa
 
 
-  async addCategory(category: Category): Promise<void> {
+  async addCategory(category: Category): Promise<string> {
     let categoryId: string = category.id;
   
     if (!categoryId) {
@@ -49,11 +51,35 @@ export class CategoryService {
 
     const ref = this.afs.collection<Category>(Category.collection).doc(categoryId).ref;
     await ref.set({...category.toJson()}, { merge: true });
+    return categoryId
   }
 
   async deleteCategoryById(categoryId: string): Promise<void> {
-    return await this.afs.collection(Category.collection).doc(categoryId).delete()
+    const categoryDocRef = this.afs.collection(Category.collection).doc(categoryId).ref;
+  
+    try {
+      // Query to get all skills related to the category
+      const skillsQuerySnapshot = await firstValueFrom(this.afs.collection<SkillJson>(Skill.collection, ref => ref.where('category', '==', categoryDocRef)).valueChanges())
+  
+      // Start a batch operation
+      const batch = this.afs.firestore.batch();
+  
+      // Iterate over the related skills and delete each one
+      skillsQuerySnapshot.forEach(doc => {
+        const skillRef = this.afs.collection<SkillJson>(Skill.collection).doc(doc.id).ref;
+        batch.delete(skillRef);
+      });
+      // Add the deletion of the category to the batch
+      batch.delete(categoryDocRef);
+      // Commit the batch to delete all related skills
+      await batch.commit();
+      console.log("Skills and pillar deleted succesfully")
+    } catch (error) {
+      console.error("Error deleting category and related skills: ", error);
+      throw error; // Rethrow the error to handle it appropriately in the calling code
+    }
   }
+  
 
   async saveCategories(categories: CategoryJson[]): Promise<CategoryJson[]> {
     const batch = this.afs.firestore.batch();

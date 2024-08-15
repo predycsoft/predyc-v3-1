@@ -5,13 +5,9 @@ import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firest
 import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs'
 import { EnterpriseService } from './enterprise.service';
 import { AlertsService } from './alerts.service';
-import { Enterprise } from 'projects/shared/models/enterprise.model';
-
-import { Category } from 'projects/shared/models/category.model';
-
 import { combineLatest } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { Skill } from 'projects/shared/models/skill.model';
+import { Skill, SkillJson } from 'projects/shared/models/skill.model';
 
 
 @Injectable({
@@ -39,6 +35,29 @@ export class SkillService {
     const ref = this.afs.collection<Skill>(Skill.collection).doc().ref;
     await ref.set({...newSkill.toJson(), id: ref.id}, { merge: true });
     newSkill.id = ref.id;
+  }
+
+  async addSkills(skillDataArray: SkillJson[]) {
+    if (skillDataArray.length === 0) return
+    
+    const batch = this.afs.firestore.batch();
+    // const skillsWithId: SkillJson[] = [];
+  
+    skillDataArray.forEach(skillData => {
+      const skillId = this.afs.createId();
+      skillData.id = skillId;
+      const skillRef = this.afs.collection<SkillJson>(Skill.collection).doc(skillId).ref;
+      batch.set(skillRef, skillData);
+      // skillsWithId.push(skillData);
+    });
+  
+    try {
+      await batch.commit();
+      // return skillsWithId;
+    } catch (error) {
+      console.error("Error saving skills: ", error);
+      throw error;
+    }
   }
 
   // Arguments could be pageSize, sort, currentPage
