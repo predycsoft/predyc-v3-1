@@ -122,6 +122,11 @@ export class SideNavComponent {
       icon: "../../assets/iconsUI/education.svg",
     },
     {
+      name: "Pilares",
+      link: "/admin/pillars",
+      icon: "../../assets/iconsUI/information.svg",
+    },
+    {
       name: "Certificaciones",
       link: "/admin/certifications",
       icon: "../../assets/iconsUI/certificate.svg",
