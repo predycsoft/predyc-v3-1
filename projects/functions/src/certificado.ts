@@ -343,6 +343,11 @@ async function getCourseById(courseId: string): Promise<any> {
     const imgBufferbackCertificado = await downloadImage(backCertificado);
     const bufferbackCertificado = await sharp(imgBufferbackCertificado).toBuffer();
     const backCertificadoBase64 = `data:image/png;base64,${bufferbackCertificado.toString('base64')}`;
+
+
+    const imgBufferbackCertificadoWater = await downloadImage(backCertificadoWater);
+    const bufferbackCertificadoWater = await sharp(imgBufferbackCertificadoWater).toBuffer();
+    const backCertificadoWaterBase64 = `data:image/png;base64,${bufferbackCertificadoWater.toString('base64')}`;
   
     doc.addImage(backCertificadoBase64, 'PNG', 0, 0, 297, 210,'','FAST');
     doc.setFontSize(27);
@@ -454,7 +459,7 @@ async function getCourseById(courseId: string): Promise<any> {
     doc.text(fechaTransformada, 19, 190);
     doc.setFontSize(11);
     doc.text('Certificado por Predyc. Código de certificado: ' + id, 19, 197);
-    doc.addImage(backCertificadoWater, "PNG", 0, 0, 297, 210);
+    doc.addImage(backCertificadoWaterBase64, "PNG", 0, 0, 297, 210);
     const pdfDataUri = doc.output('datauristring');
     const base64Content = pdfDataUri.split(',')[1];
     const fileName = "Certificado "+titleCaseWithExceptions(nombreUsuario)+" - "+tituloCurso+'.pdf'
