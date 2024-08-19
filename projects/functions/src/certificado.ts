@@ -459,7 +459,7 @@ async function getCourseById(courseId: string): Promise<any> {
     doc.text(fechaTransformada, 19, 190);
     doc.setFontSize(11);
     doc.text('Certificado por Predyc. Código de certificado: ' + id, 19, 197);
-    doc.addImage(backCertificadoWaterBase64, "PNG", 0, 0, 297, 210,'FAST');
+    doc.addImage(backCertificadoWaterBase64, "PNG", 0, 0, 297, 210,'','FAST');
     const pdfDataUri = doc.output('datauristring');
     const base64Content = pdfDataUri.split(',')[1];
     const fileName = "Certificado "+titleCaseWithExceptions(nombreUsuario)+" - "+tituloCurso+'.pdf'
