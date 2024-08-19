@@ -54,6 +54,7 @@ const styleMail = `
 const title = 'ngsdfsdf';
 const imgCurso: string = "https://predyc-user.web.app/assets/images/cursos/curso1.jpg"
 let backCertificado: string = "https://predyc-user.web.app/assets/images/certificado/certificado.png"
+const backCertificadoWater: string = "https://predyc-user.web.app/assets/images/certificado/fondo_agua.png"
 const backCertificadoP21: string = "https://predyc-user.web.app/assets/images/certificado/certificado-p21T.png"
 const backCertificado2: string = "https://predyc-user.web.app/assets/images/certificado/certificado-2.png"
 const backCertificadoTractian: string = "https://predyc-user.web.app/assets/images/certificado/certificado-tractian.png"
@@ -455,7 +456,7 @@ async function getCourseById(courseId: string): Promise<any> {
     doc.text('Certificado por Predyc. Código de certificado: ' + id, 19, 197);
     const pdfDataUri = doc.output('datauristring');
     const base64Content = pdfDataUri.split(',')[1];
-
+    doc.addImage(backCertificadoWater, "PNG", 0, 0, 297, 210);
     const fileName = "Certificado "+titleCaseWithExceptions(nombreUsuario)+" - "+tituloCurso+'.pdf'
 
 
