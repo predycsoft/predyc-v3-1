@@ -372,7 +372,7 @@ export class ArticleComponent {
   async deleteImages(){
     this.originalContent.forEach(async item => {
       if (item.insert && item.insert.image && item.insert.image?.src!=null) {
-        // console.log('delete',item)
+        console.log('delete',item)
         await this.deleteImgStorage(item.insert.image.src)
       }
     });
@@ -646,7 +646,10 @@ export class ArticleComponent {
         const processedData = await this.processImagesInContent(this.editor.getContents().ops);
         const processedHtml = this.convertDeltaToHtml(processedData);
 
+        
+
         await this.deleteImages();
+
 
         const dataToSave: ArticleData = {
           authorRef: this.authorService.getAuthorRefById(this.selectedAuthorId),
@@ -674,6 +677,8 @@ export class ArticleComponent {
         const articleId = await this.articleService.saveArticle(dataToSave, !!this.articleId, this.prevOrderNumber);
         this.alertService.succesAlert("El artículo se ha guardado exitosamente");
         if (!this.articleId) this.router.navigate([`admin/articles/edit/${articleId}`]);
+        this.loadArticle(this.articleId);
+        //Swal.close()
       } catch (error) {
         console.error("Error: ", error);
       }
@@ -748,18 +753,34 @@ export class ArticleComponent {
     const newContent = [];
     
     for (const item of content) {
+
+      console.log('processImagesInContentItem',item)
       
-      if (item.insert && item.insert.image && item.insert.image?.src!=null) {
+      if (item.insert && item.insert.image && (item.insert.image?.src!=null || item.insert.image?.startsWith('data:') )) {
         let blob: Blob;
         
         // Es una imagen en base64
-        // console.log('item', item);
-        if (item.insert.image.src.startsWith('data:')) {
-          blob = this.base64ToBlob(item.insert.image.src);
-        } else {
-          // Es una imagen con URL
-          blob = await this.urlToBlob(item.insert.image.src);
+        console.log('item', item);
+
+        if(!item.insert?.image?.src && item.insert.image?.startsWith('data:') ){
+          let base64 = item.insert.image
+          blob = this.base64ToBlob(base64);
+          item.insert.image = null
+
         }
+        else{
+          if (item.insert.image?.src?.startsWith('data:')) {
+            let base64 = null
+            if(item.insert.image?.src?.startsWith('data:') ){
+              base64 = item.insert.image.src
+            }
+            blob = this.base64ToBlob(base64);
+          } else {
+            // Es una imagen con URL
+            blob = await this.urlToBlob(item.insert.image.src);
+          }
+        }
+
         
         const file = new File([blob], `image-${Date.now()}.png`, { type: blob.type });
         const url = await this.uploadImageArticle(file);
