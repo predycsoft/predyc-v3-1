@@ -105,7 +105,7 @@ export class EnterpriseLicensesCardsComponent {
           const startFormated = this.getFormattedDate(startDate)
           const endFormated = this.getFormattedDate(endDate)
 
-          console.log('fechasFormated',startFormated,endFormated)
+          // console.log('fechasFormated',startFormated,endFormated)
 
           return {
             productName: licenseProduct?.name
@@ -145,8 +145,7 @@ export class EnterpriseLicensesCardsComponent {
           return result;
         });
 
-
-      console.log("licensesInList", licensesInList)
+      // console.log("licensesInList", licensesInList)
       this.licenses = licensesInList
       //this.dataSource.data = licensesInList;
     });

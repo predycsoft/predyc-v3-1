@@ -23,8 +23,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AngularFireFunctions } from '@angular/fire/compat/functions';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-
-
 interface studentInList {
   displayName: string,
   departmentName: string,
@@ -170,7 +168,7 @@ export class EnterpriseStudentsListComponent {
                 (x) => x.status === SubscriptionClass.STATUS_ACTIVE
               );
 
-              console.log('activeSubscriptions',activeSubscriptions,subscriptions)
+              // console.log('activeSubscriptions',activeSubscriptions,subscriptions)
 
               const status =
                 activeSubscriptions.length > 0

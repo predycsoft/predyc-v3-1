@@ -215,7 +215,7 @@ export class EnterpriseListComponent {
         })
       )
       .subscribe((response) => {
-        console.log(response);
+        // console.log(response);
 
         let enterprises: EnterpriseInfo[] = response
           .map((enterpriseInfo) => {

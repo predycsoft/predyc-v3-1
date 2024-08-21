@@ -4,7 +4,9 @@ import { ActivatedRoute } from '@angular/router';
 import { Enterprise } from 'projects/shared/models/enterprise.model';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
 import { AngularFireFunctions } from "@angular/fire/compat/functions";
-import { firstValueFrom } from 'rxjs';
+import { combineLatest, firstValueFrom } from 'rxjs';
+import { CourseService } from 'projects/predyc-business/src/shared/services/course.service';
+import { Curso } from 'projects/shared/models/course.model';
 
 
 @Component({
@@ -27,7 +29,6 @@ export class EnterpriseDetailComponent {
 
   ) {}
 
-
   ngOnInit() {
 
     if (this.enterpriseId) {
@@ -37,7 +38,7 @@ export class EnterpriseDetailComponent {
         this.firstLoad = true //check this
       })
     }
-    else{
+    else {
       this.firstLoad = true
       this.tab = 0
     } 
@@ -45,22 +46,17 @@ export class EnterpriseDetailComponent {
 
   async procesarDatosEmpresa(){
 
-
     await firstValueFrom(
       this.fireFunctions.httpsCallable("updateDataEnterpriseUsage")({
         enterpriseId: this.enterpriseId as string,
       })
     );
 
-
     await firstValueFrom(
       this.fireFunctions.httpsCallable("updateDataEnterpriseRhythm")({
         enterpriseId: this.enterpriseId as string,
       })
     );
-
-
-
 
   }
 

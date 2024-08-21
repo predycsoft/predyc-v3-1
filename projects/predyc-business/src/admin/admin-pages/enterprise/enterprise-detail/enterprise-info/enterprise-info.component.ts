@@ -1,16 +1,18 @@
 import { Component, Input } from "@angular/core";
 import { AngularFireStorage } from "@angular/fire/compat/storage";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { finalize, firstValueFrom } from "rxjs";
+import { finalize, firstValueFrom, map, Observable, startWith, Subscription } from "rxjs";
 import { Enterprise } from "projects/shared/models/enterprise.model";
 import { AlertsService } from "projects/predyc-business/src/shared/services/alerts.service";
 import { DialogService } from "projects/predyc-business/src/shared/services/dialog.service";
 import { EnterpriseService } from "projects/predyc-business/src/shared/services/enterprise.service";
-import { cleanFileName } from "projects/shared";
+import { cleanFileName, Curso, CursoJson } from "projects/shared";
 import Swal from 'sweetalert2';
 import { DocumentReference } from "@angular/fire/compat/firestore";
 import { AngularFireFunctions } from "@angular/fire/compat/functions";
+import { IconService } from "projects/predyc-business/src/shared/services/icon.service";
+import { CourseService } from "projects/predyc-business/src/shared/services/course.service";
 
 @Component({
 	selector: "app-enterprise-info",
@@ -28,13 +30,14 @@ export class EnterpriseInfoComponent {
 		private router: Router,
 		private storage: AngularFireStorage,
 		private entepriseService: EnterpriseService,
+		private courseService: CourseService,
 		private functions: AngularFireFunctions,
+		public icon: IconService
 	) {}
 
 	enterpriseForm: FormGroup;
 	showError
 	enterpriseRef: DocumentReference<Enterprise>
-
 
 	imageUrl: string | ArrayBuffer | null = null;
 	uploadedImage: File | null = null;
@@ -42,13 +45,26 @@ export class EnterpriseInfoComponent {
 	lastDayAdminMail = null
 	lastDayUsersMail = null
 
+	allCourses: CursoJson[] = [];
+	coursesSubscription: Subscription
+	coursesForm = new FormControl();
+	filteredCourses: Observable<CursoJson[]>;
+	enterpriseCourses: CursoJson[] = [];
 
 	ngOnInit() {
 		this.enterpriseRef = this.entepriseService.getEnterpriseRefById(this.enterprise?.id)
+		this.coursesSubscription = this.courseService.getAllCourses$().subscribe((courses) => {
+			this.allCourses = courses
+			// console.log("this.allCourses", this.allCourses)
+			this.filteredCourses = this.coursesForm.valueChanges.pipe(
+				startWith(''),
+				map(value => this._filterCourses(value))
+			  );
+		  })
 		console.log("this.enterprise", this.enterprise)
 		this.setupForm();
+		// this.coursesForm.setValue('');
 	}
-
 
 	async sendMailAdmin(){
 
@@ -62,7 +78,6 @@ export class EnterpriseInfoComponent {
 	async sendMailUsers(){
 
 		let date = new Date()
-
 
 		this.lastDayUsersMail = (date.getTime());
 		let idEmpresa = this.enterprise.id
@@ -97,29 +112,26 @@ export class EnterpriseInfoComponent {
 			contactPerson:[null],
 			mailContactPerson:[null],
 		});
+		// For courses mat form 
+		this.filteredCourses = this.coursesForm.valueChanges.pipe(
+			startWith(''),
+			map(value => this._filterCourses(value))
+		);
 		// Edit mode
 		if (this.enterprise) {
-
 
 			this.lastDayAdminMail = this.enterprise['lastDayAdminMail']?.seconds*1000
 			this.lastDayUsersMail = this.enterprise['lastDayUsersMail']?.seconds*1000
 
-			console.log('empresaDatos',this.enterprise)
-
-			if(this.enterprise.examenInicial  === undefined ){
-				this.enterprise.examenInicial = true
-			}
-			if(this.enterprise.examenFinal  === undefined ){
-				this.enterprise.examenFinal = true
-			}
-
-			if(this.enterprise.allUsersExtraCourses  === undefined ){
-				this.enterprise.allUsersExtraCourses= false
-			}
+			if(this.enterprise.examenInicial  === undefined ) this.enterprise.examenInicial = true
+			
+			if(this.enterprise.examenFinal  === undefined ) this.enterprise.examenFinal = true
+			
+			if(this.enterprise.allUsersExtraCourses  === undefined ) this.enterprise.allUsersExtraCourses= false
+			
 			// if(this.enterprise.demo  === undefined ){
 			// 	this.enterprise.demo = true
 			// }
-
 
 			this.enterpriseForm.patchValue({
 				name: this.enterprise.name,
@@ -149,9 +161,12 @@ export class EnterpriseInfoComponent {
 				mailContactPerson:this.enterprise.mailContactPerson,
 			});
 			// this.enterpriseForm.get('name')?.disable();
-			if (this.enterprise.photoUrl) {
-				this.imageUrl = this.enterprise.photoUrl;
-			}
+			if (this.enterprise.photoUrl) this.imageUrl = this.enterprise.photoUrl;
+			const coursesIds = this.enterprise.coursesRef.map(x => x.id);
+			this.courseService.getCoursesByIds$(coursesIds).subscribe(enterpriseCourses => {
+				// console.log("enterpriseCourses", enterpriseCourses)
+				this.enterpriseCourses = enterpriseCourses
+			})
 		} else {
 			this.enterprise = Enterprise.fromJson({ ...Enterprise.getEnterpriseTemplate() });
 		}
@@ -228,6 +243,8 @@ export class EnterpriseInfoComponent {
 		const formValue = this.enterpriseForm.value;
 		// console.log("form", formValue)
 
+		const coursesReferences = this.enterpriseCourses.map(x => this.courseService.getCourseRefById(x.id))
+
 		let userEnroll = this.enterprise?.allUsersExtraCourses
 
 		const enterprise = this.enterprise;
@@ -256,11 +273,11 @@ export class EnterpriseInfoComponent {
 		enterprise.salesMan= formValue.salesMan;
 		enterprise.contactPerson = formValue.contactPerson;
 		enterprise.mailContactPerson = formValue.mailContactPerson;
-
+		enterprise.coursesRef = coursesReferences
 
 		console.log("enterprise Actualizado: ", enterprise);
 
-		console.log(this.enterprise,enterprise,userEnroll)
+		// console.log(this.enterprise, enterprise, userEnroll)
 
 		try {
 			if (this.enterprise.id) {
@@ -333,4 +350,29 @@ export class EnterpriseInfoComponent {
 		//   throw new Error('Operación cancelada');
 		// }
 	}
+
+	getOptionTextCourse(option: CursoJson): string {
+		return option ? option.titulo : '';
+	}
+
+	changeCourse(course: CursoJson): void {
+		if (!this.isCourseSelected(course)) {
+		  this.enterpriseCourses.push(course);
+		}
+		this.coursesForm.setValue(''); // Add the course to the array but reset the mat form field
+	}
+
+	isCourseSelected(course: CursoJson): boolean {
+		return this.enterpriseCourses.some(selectedCourse => selectedCourse.titulo === course.titulo);
+	}
+
+	removeCourse(courseIndex: number) {
+		this.enterpriseCourses.splice(courseIndex, 1);
+	}
+
+	_filterCourses(value: string | CursoJson): any[] {
+		const filterValue = (typeof value === 'string') ? value.toLowerCase() : value.titulo.toLowerCase();
+		return this.allCourses.filter(course => course.titulo.toLowerCase().includes(filterValue));
+	}
+	
 }
