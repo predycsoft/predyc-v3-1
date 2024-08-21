@@ -472,12 +472,10 @@ export class StudentListComponent {
 
   performSearch(searchTerm: string, page: number, profileFilter: string,departmentFilter: string,ritmoFilter: string,filtroUltimaActividad:string,statusFilter :string,sortOrder) {
 
-
     this.paginator.pageIndex = page - 1;
     this.dataSource.data = [];
     this.totalLength = 0;
     this.studentsOnList.emit(null)
-
 
     if (this.userServiceSubscription) {
       this.userServiceSubscription.unsubscribe();
@@ -632,11 +630,10 @@ export class StudentListComponent {
         //console.log('cursos revisar',courses)      
         if(groupedLastActivityRange){
           groupedLastActivityArray.push(groupedLastActivityRange)
-
         }
         if(groupedLastActivity) groupedLastActivityArray.push(groupedLastActivity)
 
-        console.log('RevisarDatosUser',user,groupedLastActivity)
+        // console.log('RevisarDatosUser',user,groupedLastActivity)
 
         return {
           displayName: user.displayName,
@@ -846,59 +843,56 @@ export class StudentListComponent {
     if (this.profilesSubscription) this.profilesSubscription.unsubscribe()
   }
 
+  statusFilter = ''
+  ritmoFilter = ''
+  filtroDepartamento = ''
+  filtroUltimaActividad=''
+  sortUltimaActividad=''
+  sortRitmo=''
+  sortRatingPoints = ''
+  sortDepartamento = ''
+  sortDatesPlan=''
+  sortHoras = ''
+  sortNombre = ''
 
-    statusFilter = ''
-    ritmoFilter = ''
-    filtroDepartamento = ''
-    filtroUltimaActividad=''
-    sortUltimaActividad=''
-    sortRitmo=''
-    sortRatingPoints = ''
-    sortDepartamento = ''
-    sortDatesPlan=''
-    sortHoras = ''
-    sortNombre = ''
+  cleanDepartments(){
 
+    this.search('sortDepartamento','')
+    setTimeout(() => {
+      this.search('iddepartment','')
+    }, 10);
 
-
-    cleanDepartments(){
-
-      this.search('sortDepartamento','')
-      setTimeout(() => {
-        this.search('iddepartment','')
-      }, 10);
-
-    }
+  }
 
 
 
-    clearUltActividad(){
+  clearUltActividad(){
 
-      this.search('sortUltimaActividad','')
-      setTimeout(() => {
-        this.search('ultActivity','')
-      }, 10);
+    this.search('sortUltimaActividad','')
+    setTimeout(() => {
+      this.search('ultActivity','')
+    }, 10);
 
-    }
-
-
-    clearRitmo(){
-
-      this.search('sortRitmo','')
-      setTimeout(() => {
-        this.search('ritmo','')
-      }, 10);
-
-    }
+  }
 
 
+  clearRitmo(){
 
-    search(filed: string, search: string) {
-      this.router.navigate([], {
-        queryParams: { [filed]: search ? search : null, page: 1 },
-        queryParamsHandling: 'merge'
-      });
-    }
+    this.search('sortRitmo','')
+    setTimeout(() => {
+      this.search('ritmo','')
+    }, 10);
+
+  }
+
+
+
+  search(filed: string, search: string) {
+    this.router.navigate([], {
+      queryParams: { [filed]: search ? search : null, page: 1 },
+      queryParamsHandling: 'merge'
+    });
+  }
 
 
 

@@ -100,7 +100,7 @@ export class Enterprise {
         return Enterprise.fromJson({
             city: null,
             country: null,
-            coursesRef: null,
+            coursesRef: [],
             createdAt: null,
             description: null,
             employesNo: 0,

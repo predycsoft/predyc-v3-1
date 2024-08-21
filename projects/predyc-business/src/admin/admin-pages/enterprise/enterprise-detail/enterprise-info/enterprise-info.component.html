@@ -185,6 +185,36 @@
         </div>
       </div>
 
+      <div fxLayout="column" fxLayoutGap="1rem" class="mgt08 fw backGray1 radius6 pd10">
+        <div fxLayout="row" fxLayoutAlign="space-between center">
+          <span class="ft16 ft600">Asignar cursos a los usuarios</span>
+          <div fxLayout="column" fxLayoutGap=".2rem" class="w-60">
+              <form class="fw">
+                  <mat-form-field subscriptSizing="dynamic" class="example-full-width fw h50px">
+                    <mat-label>Buscar curso</mat-label>
+                    <input type="text" class="ft14 fw" placeholder="Seleccione uno" aria-label="Number" matInput #autoTrigger="matAutocompleteTrigger" 
+                    [formControl]="coursesForm" [matAutocomplete]="autoCourses"/>
+                    <mat-autocomplete [hideSingleSelectionIndicator]="true" [displayWith]="getOptionTextCourse" #autoCourses="matAutocomplete" class="options">
+                        <mat-option (click)="changeCourse(option)" class="multiline-mat-option ft12 fw" *ngFor="let option of filteredCourses | async" [value]="option">
+                        <div fxLayout="row" fxLayoutAlign="space-between" class="fw">
+                            <div fxLayout="col" fxLayoutAlign="center center">{{ option.titulo | titlecase }}</div>
+                            <mat-icon class="makeBlue" *ngIf="isCourseSelected(option)">check</mat-icon>
+                        </div>
+                        </mat-option>
+                    </mat-autocomplete>
+                  </mat-form-field>
+              </form>
+          </div>
+        </div>
+        <div *ngIf="enterpriseCourses.length > 0" fxLayout="row wrap" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="">
+          <ng-container *ngFor="let course of enterpriseCourses; let courseIndex = index" class="">
+              <div class="skill-badge-complete ListHover radius10 backGray2 ft12 pdl08 pdr08 gray-8">
+                {{ course.titulo | titlecase }}
+                <img style="cursor: pointer" (click)="removeCourse(courseIndex)" [src]="icon.close" class="h16px makeGray" alt="" />
+              </div>
+          </ng-container>
+        </div>
+      </div>
 
       <div fxLayout="row" class="mgt15 mgb15">
         <span class="ft20 ft500">Logros</span>
