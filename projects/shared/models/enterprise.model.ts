@@ -1,8 +1,11 @@
+import { DocumentReference } from "@angular/fire/compat/firestore"
 import { Permissions } from "./permissions.model"
+import { Curso } from "./course.model"
 
 export interface EnterpriseJson {
     city: string | null
     country: string | null
+    coursesRef: DocumentReference<Curso>[] | null
     createdAt: number
     description: string | null // Is this required?
     employesNo: number
@@ -52,6 +55,7 @@ export class Enterprise {
     constructor(
         public city: string | null,
         public country: string | null,
+        public coursesRef: DocumentReference<Curso>[] | null,
         public createdAt: number,
         public description: string | null, // Is this required?
         public employesNo: number,        
@@ -96,6 +100,7 @@ export class Enterprise {
         return Enterprise.fromJson({
             city: null,
             country: null,
+            coursesRef: null,
             createdAt: null,
             description: null,
             employesNo: 0,
@@ -153,6 +158,7 @@ export class Enterprise {
         return new Enterprise(
             enterpriseJson.city,
             enterpriseJson.country,
+            enterpriseJson.coursesRef,
             enterpriseJson.createdAt,
             enterpriseJson.description,
             enterpriseJson.employesNo,            
@@ -192,6 +198,7 @@ export class Enterprise {
         return {
             city: this.city,
             country: this.country,
+            coursesRef: this.coursesRef,
             createdAt: this.createdAt,
             description: this.description,
             employesNo: this.employesNo,            

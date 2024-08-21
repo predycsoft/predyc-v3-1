@@ -4,6 +4,7 @@ export const enterpriseData: EnterpriseJson = {
     demo: false,
     city: "Santiago de Querétaro",
     country: "México",
+    coursesRef: [],
     createdAt: 1695141743802,
     description: "Esta es una empresa de prueba",
     employesNo: 0,
@@ -55,6 +56,7 @@ export const enterpriseData: EnterpriseJson = {
 export const enterpriseDataPredyc: EnterpriseJson = {
     city: "Santiago de Querétaro",
     country: "México",
+    coursesRef: [],
     demo: false,
     createdAt: 1695141743802,
     description: "Admin Predyc",

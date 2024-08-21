@@ -227,6 +227,7 @@ export class EnterprisesUsersMigrationComponent {
         showEnterpriseLogoInCertificates: true,
         city: null,
         country: null,
+        coursesRef: [],
         createdAt: oldEnterpriseData.fechaCreacion ? oldEnterpriseData.fechaCreacion : +new Date(),
         description: oldEnterpriseData.description ? oldEnterpriseData.description : oldEnterpriseData.resumen ? oldEnterpriseData.resumen : null,
         employesNo: oldEnterpriseData.students ? oldEnterpriseData.students.length : oldEnterpriseData.usuarios ? oldEnterpriseData.usuarios.length : 0,

@@ -304,13 +304,12 @@ export class CreateDemoComponent {
     const enterprise: Enterprise = Enterprise.fromJson({
       city: "Santiago de Querétaro",
       country: "México",
+      coursesRef: [],
       createdAt: this.now,
       description: `Demo para ${this.createDemoForm.controls.enterpriseName.value}`,
       employesNo: 0,
       id: null,
-      name: this.createDemoForm.controls.enterpriseName.value
-        .trim()
-        .toLowerCase(),
+      name: this.createDemoForm.controls.enterpriseName.value.trim().toLowerCase(),
       permissions: {
         hoursPerWeek: 8,
         studyLiberty: "Estricto",
