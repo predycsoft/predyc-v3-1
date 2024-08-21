@@ -329,7 +329,7 @@ async function updateDataEnterpriseUsageLocal(enterpriseId: string, batch: Fireb
       const classes: FirebaseFirestore.DocumentData[] = classesSnapshot.docs.map(doc => doc.data());
       allClasses = allClasses.concat(classes);
     }
-
+    const devicesUsage = { movil: 0, desktop: 0 };
     allClasses.forEach(classData => {
       const dateEnd = classData.dateEnd.toDate();
       const dayOfWeek = dateEnd.getUTCDay();
@@ -342,11 +342,18 @@ async function updateDataEnterpriseUsageLocal(enterpriseId: string, batch: Fireb
           hourData.classesTerminadas += 1;
         }
       }
+
+      // Procesar el conteo por dispositivo
+      const device = classData.device;
+      if (device && devicesUsage[device] !== undefined) {
+        devicesUsage[device] += 1;
+      }
     });
 
     batch.update(enterpriseRef, {
       usage: daysOfWeekWithHours,
-      usageDate: new Date()
+      usageDate: new Date(),
+      devices: devicesUsage  // Guardar el uso de dispositivo
     });
 
   } catch (error: any) {
