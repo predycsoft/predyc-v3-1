@@ -49,5 +49,46 @@
       </div>
     </div>
   </div>
+</div>
+<div *ngIf="enterprise?.devices?.desktop >0 || enterprise?.devices?.movil >0" fxLayout="row" fxLayoutAlign="center center" class="fw mgt10" fxLayoutGap="16px">
+  <!-- Sección de días -->
+  <div fxFlex="50">
+    <div fxLayout="column" fxLayoutGap="8px" fxLayoutAlign="center center" class="fw">
+      <div *ngIf="textoDiasMasUsoDetail" class="fw backGray2 radius6 pd10" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="8px">
+        <img *ngIf="enterprise?.devices?.desktop>= enterprise?.devices?.movil" [src]="icon.laptop" class="makeBlue h22px" alt="">
+        <img *ngIf="enterprise?.devices?.desktop< enterprise?.devices?.movil" [src]="icon.cellPhone" class="makeBlue h22px" alt="">
+        <!-- <span class="ft500 ft14 pdb05">{{textoDiasMasUso}}</span> -->
+        <span class="ft500 ft14 pdb05">Dispositivos que usan los usuarios de tu empresa.</span>
+      </div>
+      <div class="fw backGray2 radius6 pd10" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="16px">
+        <span class="ft500">
+          <img [src]="icon.laptop" class="makeBlue h22px" alt="" style="padding-right: 2px;">
+          Computador
+        </span>
+        <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="8px">
+          <span class="ft500">
+            {{desktopUsage | number : "1.2-2"}} %
+          </span>
+          <!-- <div class="backGreen5 circle" fxFlexAlign="center"></div> -->
+        </div>
+      </div>
+      <div class="fw backGray2 radius6 pd10" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="16px">
+        <span class="ft500">
+          <img [src]="icon.cellPhone" class="makeBlue h22px" alt="">
+          Teléfono móvil
+        </span>
+        <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="8px">
+          <span class="ft500">
+            {{ movilUsage | number : '1.2-2' }} %
+          </span>
+          <!-- <div class="backGreen5 circle" fxFlexAlign="center"></div> -->
+        </div>
+      </div>
+    </div>
+  </div>
 
+  <!-- Sección de horas -->
+  <div fxFlex="50">
+
+  </div>
 </div>

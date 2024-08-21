@@ -31,8 +31,22 @@ export class UsersUsageComponent {
   textoDiasMasUso = null
   textoDiasMasUsoDetail = null
 
+  movilUsage = 0;
+  desktopUsage = 0;
+
 
   processData(){
+
+    if(this.enterprise?.devices?.desktop >0 || this.enterprise?.devices?.movil >0){
+
+      let total = this.enterprise.devices.desktop + this.enterprise.devices.movil
+
+      this.movilUsage = (this.enterprise.devices.movil*100)/total
+      this.desktopUsage = (this.enterprise.devices.desktop*100)/total
+
+      console.log(this.movilUsage,this.desktopUsage)
+
+    }
 
     const adjustedUsage = this.adjustUsageForTimezone(this.enterprise.usage);
 

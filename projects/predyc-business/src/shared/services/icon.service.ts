@@ -253,6 +253,9 @@ export class IconService {
 
   link = "assets/iconsUI/link.svg"
 
+  cellPhone = "assets/iconsUI/mobile.svg"
+
+
 
   constructor() { }
 }
