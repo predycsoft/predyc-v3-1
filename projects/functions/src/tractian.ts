@@ -140,6 +140,12 @@ const createEnterprise = async (enterpriseData: EnterpriseData): Promise<Documen
 	return enterpriseRef;
 };
 
+const sendEmail = async (sender: string, recipients: string[], subject: string, text: string, cc: string[] = []): Promise<void> => {
+	const mailObj = { sender, recipients, subject, text, cc };
+	await _sendMail(mailObj);
+}
+  
+
 export const createTractianUser = functions.https.onRequest(async (req, res) => {
 	try {
 		if (req.method !== "POST") throw new Error("Method not allowed");
@@ -210,21 +216,26 @@ export const createTractianUser = functions.https.onRequest(async (req, res) => 
 			throw new Error("Problem creating subscription");
 		}
 
-		// Send Mail
+		// Send Mail to user
 		const link = await _generatePasswordResetLink(user.email);
-
 		const sender = "capacitacion@predyc.com";
-
 		const recipients = [user.email];
 		const subject = "Bienvenido a Predyc, conoce tu usuario y contraseña temporal";
-		const text = `Hola ${capitalizeFirstLetter(
-			user.name
-		)},\n\n¡Te damos la bienvenida a Predyc, tu plataforma de capacitación industrial! Ha sido creado tu usuario en nuestra plataforma , aquí está tu acceso inicial:\n\nUsuario: ${
-			user.email
-		}\nContraseña: ${password}\n\nCambia tu contraseña aquí: ${link}\n\nIngresa a Predyc aquí: https://predyc-user.web.app/auth/login\n\nPara cualquier consulta, estamos a tu disposición.\n\nSaludos,\nEl Equipo de Predyc`;
+		const text = `Hola ${capitalizeFirstLetter(user.name)},\n\n¡Te damos la bienvenida a Predyc, tu plataforma de capacitación industrial! Ha sido creado tu usuario en nuestra plataforma , aquí está tu acceso inicial:\n\nUsuario: 
+		${user.email}\nContraseña: ${password}\n\nCambia tu contraseña aquí: ${link}\n\nIngresa a Predyc aquí: https://predyc-user.web.app/auth/login\n\nPara cualquier consulta, estamos a tu disposición.\n\nSaludos,\nEl Equipo de Predyc`;
 		const cc = ["desarrollo@predyc.com", "liliana.giraldo@predyc.com","capacitacion@predyc.com"];
-		const mailObj = { sender, recipients, subject, text, cc };
-		await _sendMail(mailObj);
+		await sendEmail(sender, recipients, subject, text, cc);
+
+		// Send Mail to predyc
+		const predycRecipients = ["liliana.giraldo@predyc.com", "paola.mendoza@predyc.com"];
+		const predycSubject = "Registro de usuario de Tractian";
+		const predycText = `Se ha registrado un nuevo usuario de Tractian con los siguientes datos:\n\n
+		Nombre: ${user.displayName}\n
+		Email: ${user.email}\n
+		Número de telefono: ${user.phoneNumber}\n
+		`;
+		const ccPredyc = [""];
+		await sendEmail(sender, predycRecipients, predycSubject, predycText, ccPredyc);
 
 		res.status(200).send({ loginUrl: "https://predyc-user.web.app/auth/login" });
 		// res.status(200).send(tractianInfo)
