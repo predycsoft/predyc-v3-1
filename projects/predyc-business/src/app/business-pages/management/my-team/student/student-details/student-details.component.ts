@@ -60,7 +60,7 @@ export class StudentDetailsComponent {
   }
 
   getRitmo(ritmoIn){
-    console.log('ritmoIn',ritmoIn)
+    // console.log('ritmoIn',ritmoIn)
 
     let ritmo = ritmoIn.ritmo
 
@@ -145,7 +145,7 @@ export class StudentDetailsComponent {
       if (isLoaded) {
         let enterpriseRef = this.enterpriseService.getEnterpriseRef();
         this.enterprise = this.enterpriseService.getEnterprise();
-        console.log('Datos',this.enterprise, this.student)
+        // console.log('Datos',this.enterprise, this.student)
         this.getDiagnosticTestForProfile()
       }
     })

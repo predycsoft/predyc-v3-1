@@ -458,9 +458,6 @@ export class UserService {
     }
   }
   
-  
-  
-
   async addUser(newUser: User): Promise<void> {
     // console.log(newUser.name);
     newUser.name = newUser.name.toLocaleLowerCase();
@@ -921,10 +918,7 @@ export class UserService {
       performance = "low";
     }
 
-
-    console.log('datos ritmo',performance,userStudyPlan)
-
-
+    // console.log('datos ritmo',performance,userStudyPlan)
 
     return performance;
   }

@@ -201,7 +201,7 @@ export class CreateUserComponent {
       enterprise = await this.enterpriseService.getEnterpriseByIdPromise(enterpriseRef.id);
     }
 
-    console.log("enterprise", enterprise);
+    // console.log("enterprise", enterprise);
     let canEnrollParticularCourses = false;
     if (enterprise.allUsersExtraCourses) {
       canEnrollParticularCourses = true;
@@ -646,7 +646,7 @@ export class CreateUserComponent {
           hoursPerMonth: profileNew.hoursPerMonth,
         });
         const profileId = await this.profileService.saveProfile(profile);
-        let profileRef = await this.afs.collection<Profile>(Profile.collection).doc(profileId).ref;
+        let profileRef = this.afs.collection<Profile>(Profile.collection).doc(profileId).ref;
         user.profile = profileRef;
       }
 

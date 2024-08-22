@@ -59,8 +59,6 @@ export class EnterpriseStudentsListComponent {
 
   filter = false
 
-
-
   displayedColumns: string[] = [
     "displayName",
     "role",
@@ -83,11 +81,9 @@ export class EnterpriseStudentsListComponent {
   newStudent: User
   private queryParamsSubscription: Subscription
 
-
   selectedProfile: string
 
   usersMails = null
-
 
   copiaExitosa(message: string = 'Correos copiados', action: string = '') {
     navigator.clipboard.writeText(this.usersMails).then(() => {
@@ -117,9 +113,7 @@ export class EnterpriseStudentsListComponent {
 
   }
 
-
   ngOnInit() {
-
 
     this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
       this.filter = false; // Inicializar filter en false
@@ -226,7 +220,6 @@ export class EnterpriseStudentsListComponent {
     }
     else return null
   }
-
 
   async addAdmin() {
     this.addingStudent = true

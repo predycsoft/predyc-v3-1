@@ -66,7 +66,7 @@ export class DialogEnrollCoursesComponent {
   ngOnInit() {
     this.studentEnrolledCourses = this.data.studentEnrolledCourses
 
-    console.log("this.studentEnrolledCourses", this.studentEnrolledCourses)
+    // console.log("this.studentEnrolledCourses", this.studentEnrolledCourses)
 
     this.combinedSubscription = combineLatest([this.categoryService.getCategories$(), this.courseService.getCourses$()]).subscribe(([categories, courses]) => {
       this.courses = courses.filter(x=> (!x.proximamente))
@@ -106,26 +106,24 @@ export class DialogEnrollCoursesComponent {
     this.matDialogRef.close(false)
   }
 
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.nonEnrolleddataSource.data.length;
+    return numSelected == numRows;
+  }
 
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  toggleAllRows() {
+    this.isAllSelected()
+      ? this.selection.clear()
+      : this.nonEnrolleddataSource.data.forEach((row) => this.selection.select(row.id));
+  }
 
-    /** Whether the number of selected elements matches the total number of rows. */
-    isAllSelected() {
-      const numSelected = this.selection.selected.length;
-      const numRows = this.nonEnrolleddataSource.data.length;
-      return numSelected == numRows;
-    }
-  
-    /** Selects all rows if they are not all selected; otherwise clear selection. */
-    toggleAllRows() {
-      this.isAllSelected()
-        ? this.selection.clear()
-        : this.nonEnrolleddataSource.data.forEach((row) => this.selection.select(row.id));
-    }
-
-    onSubmit() {
-      console.log("this.selection.selected", this.selection.selected)
-      this.matDialogRef.close(this.selection.selected);
-    }
+  onSubmit() {
+    console.log("this.selection.selected", this.selection.selected)
+    this.matDialogRef.close(this.selection.selected);
+  }
     
   
     

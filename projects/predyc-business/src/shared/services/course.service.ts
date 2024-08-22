@@ -339,7 +339,6 @@ export class CourseService {
 
   }
 
-
   async deleteCompletedAdminClasses() {
     console.log("deleteCompletedAdminClasses");
   
@@ -754,9 +753,7 @@ export class CourseService {
   }
 
   // ---- courseByStudent Collection methods
-  getCoursesByStudent$(
-    userRef: DocumentReference<User>
-  ): Observable<CourseByStudent[]> {
+  getCoursesByStudent$(userRef: DocumentReference<User>): Observable<CourseByStudent[]> {
     return this.afs
       .collection<CourseByStudent>(CourseByStudent.collection, (ref) =>
         ref.where("userRef", "==", userRef)
@@ -764,22 +761,15 @@ export class CourseService {
       .valueChanges();
   }
 
-    // ---- courseByStudent Collection methods
-    getCoursesByStudentWithRef$(
-      courseByStudentRef: DocumentReference<any>
-    ): Observable<CourseByStudent[]> {
-      return this.afs
-        .collection<CourseByStudent>(CourseByStudent.collection, (ref) =>
-          ref.where("id", "==", courseByStudentRef.id)
-        )
-        .valueChanges();
-    }
-  
+  getCoursesByStudentWithRef$(courseByStudentRef: DocumentReference<any>): Observable<CourseByStudent[]> {
+    return this.afs
+      .collection<CourseByStudent>(CourseByStudent.collection, (ref) =>
+        ref.where("id", "==", courseByStudentRef.id)
+      )
+      .valueChanges();
+  }
 
-  async getCourseByStudent(
-    userRef: DocumentReference<User>,
-    courseRef: DocumentReference<Curso>
-  ): Promise<CourseByStudent> {
+  async getCourseByStudent(userRef: DocumentReference<User>,courseRef: DocumentReference<Curso>): Promise<CourseByStudent> {
     const courseByStudent = await firstValueFrom(
       this.afs
         .collection<CourseByStudent>(CourseByStudent.collection, (ref) =>
@@ -798,17 +788,8 @@ export class CourseService {
       .doc(id).ref;
   }
 
-  async saveCourseByStudent(
-    courseRef: DocumentReference,
-    userRef: DocumentReference,
-    dateStartPlan: Date,
-    dateEndPlan: Date,
-    isExtraCourse: boolean,
-    idx: number
-  ): Promise<CourseByStudent> {
-    const ref = this.afs
-      .collection<CourseByStudent>(CourseByStudent.collection)
-      .doc().ref;
+  async saveCourseByStudent(courseRef: DocumentReference, userRef: DocumentReference, dateStartPlan: Date, dateEndPlan: Date, isExtraCourse: boolean, idx: number ): Promise<CourseByStudent> {
+    const ref = this.afs.collection<CourseByStudent>(CourseByStudent.collection).doc().ref;
     const courseByStudent = {
       id: ref.id,
       userRef: userRef,
@@ -824,10 +805,7 @@ export class CourseService {
       studyPlanOrder: idx + 1,
     } as CourseByStudent;
 
-    await this.afs
-      .collection(CourseByStudent.collection)
-      .doc(courseByStudent.id)
-      .set(courseByStudent);
+    await this.afs.collection(CourseByStudent.collection).doc(courseByStudent.id).set(courseByStudent);
     console.log("Course by student doc saved");
 
     return courseByStudent; // Devuelve el objeto recién insertado

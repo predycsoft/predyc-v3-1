@@ -403,7 +403,7 @@ export class StudentDetailComponent {
     const coursesByStudent = await this.courseService.getActiveCoursesByStudent(
       this.userRef
     );
-    console.log("coursesByStudent", coursesByStudent);
+    // console.log("coursesByStudent", coursesByStudent);
     const coursesRefs = coursesByStudent.map((courseByStudent) => {
       return courseByStudent.courseRef;
     });

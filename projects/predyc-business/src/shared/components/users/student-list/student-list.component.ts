@@ -97,7 +97,7 @@ export class StudentListComponent {
           enterpriseRef = this.enterpriseService.getEnterpriseRef();
           this.enterprise = this.enterpriseService.getEnterprise();
         }
-        console.log('this.enterprise',this.enterprise,enterpriseRef)
+        // console.log('this.enterprise',this.enterprise,enterpriseRef)
         if(this.enterprise.examenInicial  === undefined || this.enterprise?.examenInicial){
           this.examenInicial = true
         }
@@ -109,7 +109,7 @@ export class StudentListComponent {
         this.profilesSubscription = combineLatest([this.profileService.getProfiles$(enterpriseRef), this.departmentService.getDepartments$(enterpriseRef), this.courseService.getCourses$(enterpriseRef)]).subscribe(([profiles, departments, courses]) => {
             this.profiles = profiles
             this.departments = departments.sort((a, b) => a.name.localeCompare(b.name));        
-            console.log('departments',departments)
+            // console.log('departments',departments)
             this.courses = courses
             this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
               let sortOrder = []
@@ -682,7 +682,7 @@ export class StudentListComponent {
         groupedLastActivityArray.push('Sin inicio y sin clases vistas')
       }
 
-      console.log('groupedLastActivityArray',groupedLastActivityArray)
+      // console.log('groupedLastActivityArray',groupedLastActivityArray)
       const groupedLastActivityArrayUnique = this.removeDuplicates(groupedLastActivityArray);
       this.actStatusDaus = groupedLastActivityArrayUnique
 

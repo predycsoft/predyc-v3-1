@@ -94,9 +94,9 @@ export class StudentStudyPlanAndCompetencesComponent {
     this.enterpriseService.enterpriseLoaded$.subscribe(isLoaded => {
       if (isLoaded) {
         let enterpriseRef = this.enterpriseService.getEnterpriseRef();
-        console.log(enterpriseRef)
+        // console.log(enterpriseRef)
         this.enterprise = this.enterpriseService.getEnterprise();
-        console.log('this.enterprise ',this.enterprise )
+        // console.log('this.enterprise ',this.enterprise )
       }
     })
 
@@ -125,14 +125,14 @@ export class StudentStudyPlanAndCompetencesComponent {
             // if (!coursesByStudent[0].isExtraCourse ||) {
             if(coursesInActiveByStudent.length>0){
               this.buildInactiveCourses(coursesInActiveByStudent,coursesData)
-              console.log('coursesInActiveByStudent',this.inactiveCourses)
+              // console.log('coursesInActiveByStudent',this.inactiveCourses)
               this.inactiveCourses.sort((a, b) => {
                 return b.progress - a.progress;
               });
             }
             if(this.coursesByStudent.length>0){
               this.studyPlanView = this.showInitForm ? false : true;
-              console.log('datos revisar',coursesByStudent,coursesData)
+              // console.log('datos revisar',coursesByStudent,coursesData)
               coursesByStudent.forEach(course => {
                 const courseJson = this.coursesData.find(item => item.id === course.courseRef.id);
                 if (courseJson) {
@@ -150,8 +150,7 @@ export class StudentStudyPlanAndCompetencesComponent {
               let userStudyPlanUntilLastMonth = coursesByStudent.filter(x=>x.dateEndPlan  && (x.dateEndPlan?.seconds*1000)<=lastDayPast)
               cursosTarde = userStudyPlanUntilLastMonth.filter(x=>x.progress<100)
 
-              console.log('cursosTarde',cursosTarde)
-
+              // console.log('cursosTarde',cursosTarde)
 
               let ritmo =this.student.status =='active'? this.userService.getPerformanceWithDetails(coursesByStudent):'SinLicencia'
               let ritmoObj = {
@@ -273,8 +272,6 @@ export class StudentStudyPlanAndCompetencesComponent {
 
     }
 
-
-
   }
 
   getDiagnosticTestForProfile() {
@@ -283,7 +280,7 @@ export class StudentStudyPlanAndCompetencesComponent {
     this.diagnosticTestSubscription = this.profileService
       .getDiagnosticTestForUser$(this.student)
       .subscribe((diagnosticTests) => {
-        console.log('diagnosticTests',diagnosticTests)
+        // console.log('diagnosticTests',diagnosticTests)
         if (diagnosticTests.length === 0) return;
         this.diagnosticTestoriginal = diagnosticTests
 
