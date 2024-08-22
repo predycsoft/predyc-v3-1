@@ -7,12 +7,13 @@ import { Enterprise } from "projects/shared/models/enterprise.model";
 import { AlertsService } from "projects/predyc-business/src/shared/services/alerts.service";
 import { DialogService } from "projects/predyc-business/src/shared/services/dialog.service";
 import { EnterpriseService } from "projects/predyc-business/src/shared/services/enterprise.service";
-import { cleanFileName, Curso, CursoJson } from "projects/shared";
+import { cleanFileName, CourseByStudent, Curso, CursoJson, User } from "projects/shared";
 import Swal from 'sweetalert2';
 import { DocumentReference } from "@angular/fire/compat/firestore";
 import { AngularFireFunctions } from "@angular/fire/compat/functions";
 import { IconService } from "projects/predyc-business/src/shared/services/icon.service";
 import { CourseService } from "projects/predyc-business/src/shared/services/course.service";
+import { UserService } from "projects/predyc-business/src/shared/services/user.service";
 
 @Component({
 	selector: "app-enterprise-info",
@@ -30,6 +31,7 @@ export class EnterpriseInfoComponent {
 		private router: Router,
 		private storage: AngularFireStorage,
 		private entepriseService: EnterpriseService,
+		private userService: UserService,
 		private courseService: CourseService,
 		private functions: AngularFireFunctions,
 		public icon: IconService
@@ -51,6 +53,9 @@ export class EnterpriseInfoComponent {
 	filteredCourses: Observable<CursoJson[]>;
 	enterpriseCourses: CursoJson[] = [];
 
+	usersSubscription: Subscription
+	enterpriseUsers: User[]
+
 	ngOnInit() {
 		this.enterpriseRef = this.entepriseService.getEnterpriseRefById(this.enterprise?.id)
 		this.coursesSubscription = this.courseService.getAllCourses$().subscribe((courses) => {
@@ -60,7 +65,10 @@ export class EnterpriseInfoComponent {
 				startWith(''),
 				map(value => this._filterCourses(value))
 			  );
-		  })
+		})
+		this.usersSubscription = this.userService.getUsersByEnterpriseRef$(this.enterpriseRef).subscribe((users) => {
+			this.enterpriseUsers = users
+		})
 		console.log("this.enterprise", this.enterprise)
 		this.setupForm();
 		// this.coursesForm.setValue('');
@@ -300,6 +308,21 @@ export class EnterpriseInfoComponent {
 				const newEnterpriseId = await this.enterpriseService.addEnterprise(enterprise);
 				this.alertService.succesAlert("Empresa agregada exitosamente");
 				this.router.navigate(["/admin/enterprises/form/" + newEnterpriseId]);
+			}
+
+			if (enterprise.coursesRef && enterprise.coursesRef.length > 0) {
+				for (let user of this.enterpriseUsers) {
+					const userRef = this.userService.getUserRefById(user.uid)
+					const coursesByStudent: CourseByStudent[] = await this.courseService.getCoursesByStudent(userRef)
+					const userEnrolledCoursesIds: string[] = coursesByStudent.map(x => x.courseRef.id)
+
+					const coursesToEnroll: DocumentReference<Curso>[] = enterprise.coursesRef.filter(course => !userEnrolledCoursesIds.includes(course.id));
+
+					for (let i = 0; i < coursesToEnroll.length; i++) {
+						const courseRef = coursesToEnroll[i]
+						await this.courseService.saveCourseByStudent(courseRef, userRef, null, null, true, coursesByStudent.length + i);
+					}
+				}
 			}
 		} catch (error) {
 			this.alertService.errorAlert(error);
