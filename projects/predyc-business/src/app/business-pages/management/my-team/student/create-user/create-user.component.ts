@@ -64,6 +64,8 @@ export class CreateUserComponent {
 
   filteredDepartments: Observable<string[]>;
 
+  enterprise: Enterprise = null
+
   async ngOnInit() {
     this.isDepartmentInvalid = false;
     this.getCourses();
@@ -192,18 +194,17 @@ export class CreateUserComponent {
   }
 
   async setupForm() {
-    let enterprise = null;
 
     if (this.enterpriseRef) {
-      enterprise = await this.enterpriseService.getEnterpriseByIdPromise(this.enterpriseRef.id);
+      this.enterprise = await this.enterpriseService.getEnterpriseByIdPromise(this.enterpriseRef.id);
     } else {
       let enterpriseRef = this.enterpriseService.getEnterpriseRef();
-      enterprise = await this.enterpriseService.getEnterpriseByIdPromise(enterpriseRef.id);
+      this.enterprise = await this.enterpriseService.getEnterpriseByIdPromise(enterpriseRef.id);
     }
 
     // console.log("enterprise", enterprise);
     let canEnrollParticularCourses = false;
-    if (enterprise.allUsersExtraCourses) {
+    if (this.enterprise.allUsersExtraCourses) {
       canEnrollParticularCourses = true;
     }
 
@@ -667,6 +668,14 @@ export class CreateUserComponent {
         await this.userService.editUser(user.toJson());
       } else {
         await this.userService.addUser(user);
+      }
+
+      const enterpriseCoursesToEnroll: DocumentReference<Curso>[] = this.enterprise.coursesRef
+      if (enterpriseCoursesToEnroll && enterpriseCoursesToEnroll.length > 0) {
+        for (let i = 0; i < enterpriseCoursesToEnroll.length; i++) {
+          const courseRef = enterpriseCoursesToEnroll[i]
+          await this.courseService.saveCourseByStudent(courseRef, this.userService.getUserRefById(user.uid), null, null, true, i);
+        }
       }
 
       let valores = this.userForm.value;

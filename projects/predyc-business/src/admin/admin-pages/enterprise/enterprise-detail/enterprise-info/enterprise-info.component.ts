@@ -302,6 +302,9 @@ export class EnterpriseInfoComponent {
 					await this.enterpriseService.changeAllusersEnterpriseEnrollExtra(this.enterprise.id,enterprise.allUsersExtraCourses)
 				}
 				userEnroll = enterprise.allUsersExtraCourses
+
+				await this.assignEnterpriseCoursesToUsers(enterprise)
+
 				Swal.close();
 				this.alertService.succesAlert("Empresa editada exitosamente");
 			} else {
@@ -309,23 +312,25 @@ export class EnterpriseInfoComponent {
 				this.alertService.succesAlert("Empresa agregada exitosamente");
 				this.router.navigate(["/admin/enterprises/form/" + newEnterpriseId]);
 			}
-
-			if (enterprise.coursesRef && enterprise.coursesRef.length > 0) {
-				for (let user of this.enterpriseUsers) {
-					const userRef = this.userService.getUserRefById(user.uid)
-					const coursesByStudent: CourseByStudent[] = await this.courseService.getCoursesByStudent(userRef)
-					const userEnrolledCoursesIds: string[] = coursesByStudent.map(x => x.courseRef.id)
-
-					const coursesToEnroll: DocumentReference<Curso>[] = enterprise.coursesRef.filter(course => !userEnrolledCoursesIds.includes(course.id));
-
-					for (let i = 0; i < coursesToEnroll.length; i++) {
-						const courseRef = coursesToEnroll[i]
-						await this.courseService.saveCourseByStudent(courseRef, userRef, null, null, true, coursesByStudent.length + i);
-					}
-				}
-			}
 		} catch (error) {
 			this.alertService.errorAlert(error);
+		}
+	}
+
+	async assignEnterpriseCoursesToUsers(enterprise: Enterprise) {
+		if (enterprise.coursesRef && enterprise.coursesRef.length > 0) {
+			for (let user of this.enterpriseUsers) {
+				const userRef = this.userService.getUserRefById(user.uid)
+				const coursesByStudent: CourseByStudent[] = await this.courseService.getCoursesByStudent(userRef)
+				const userEnrolledCoursesIds: string[] = coursesByStudent.map(x => x.courseRef.id)
+
+				const coursesToEnroll: DocumentReference<Curso>[] = enterprise.coursesRef.filter(course => !userEnrolledCoursesIds.includes(course.id));
+
+				for (let i = 0; i < coursesToEnroll.length; i++) {
+					const courseRef = coursesToEnroll[i]
+					await this.courseService.saveCourseByStudent(courseRef, userRef, null, null, true, coursesByStudent.length + i);
+				}
+			}
 		}
 	}
 
