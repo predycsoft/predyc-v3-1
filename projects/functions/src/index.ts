@@ -7,11 +7,8 @@ admin.initializeApp(functions.config().firebase);
 import { onActivityUpdated } from './activity';
 export { onActivityUpdated }
 
-
 import { updateDataEnterpriseUsage,updateDataAllEnterprisesUsage,updateDataAllEnterprisesUsageSchedule,updateDataEnterpriseRhythm,updateDataAllEnterprisesRhythm,updateDataAllEnterprisesRhythmSchedule,updateDataEnterpriseProgressPlan,updateAllDataEnterpriseProgressPlan,updateAllDataEnterpriseProgressPlanSchedule} from './enterprise';
 export { updateDataEnterpriseUsage,updateDataAllEnterprisesUsage,updateDataAllEnterprisesUsageSchedule,updateDataEnterpriseRhythm,updateDataAllEnterprisesRhythm,updateDataAllEnterprisesRhythmSchedule,updateDataEnterpriseProgressPlan,updateAllDataEnterpriseProgressPlan,updateAllDataEnterpriseProgressPlanSchedule}
-
-
 
 import { createUserWithEmailAndPassword,deleteUser, generatePasswordResetLink, emptyDatabase,createInstructorWithEmailAndPassword,rememberInstructorWithEmailAndPassword } from './authentication';
 export { createUserWithEmailAndPassword,deleteUser, generatePasswordResetLink, emptyDatabase,createInstructorWithEmailAndPassword,rememberInstructorWithEmailAndPassword }
@@ -67,3 +64,6 @@ export { getRoyaltiesInstructor }
 
 import { sendEmailQuestionInstructor } from './questions'
 export { sendEmailQuestionInstructor }
+
+import { valorarCurso2 } from './progress'
+export { valorarCurso2 }

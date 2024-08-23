@@ -1590,7 +1590,6 @@ export class CourseService {
     }
   }
 
-
   async saveRoyalties(data: any) {
     await this.afs.collection('royalties').doc(data.id).set(
       {
@@ -1714,7 +1713,6 @@ export class CourseService {
       console.error("Error deleting duplicates: ", error);
     }
   }
-
 
   async findAndLogNullUserIds() {
     try {
@@ -1855,6 +1853,30 @@ export class CourseService {
     });
   
     await batch.commit();
+  }
+
+  // cursosValoraciones
+  async getCourseAverageRating(courseId: string): Promise<number> {
+    const indice = (await this.afs.collection('cursosValoraciones').doc(courseId).ref.get()).data();
+    const valoraciones: any[] = Object.keys(indice).map((key) => indice[key]);
+    let suma = 0;
+    for (let index = 0; index < valoraciones.length; index++) {
+      const element = valoraciones[index];
+      suma += element.valoracion.global;
+    }
+    const promedio = suma / valoraciones.length;
+    return promedio
+  }
+
+  async getCourseRatingByUserEmail(courseId: string, userEmail: string) {
+    const courseRatings = (await this.afs.collection('cursosValoraciones').doc(courseId).ref.get()).data();
+    if (!courseRatings) {
+      console.log("The course has no ratings")
+      return null
+    }
+    // console.log("courseRatings", courseRatings)
+    const userRating = courseRatings[userEmail]
+    return userRating
   }
   
 }
