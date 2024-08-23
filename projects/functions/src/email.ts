@@ -20,8 +20,8 @@ export const _sendMailHTML = async (data: { sender: string; recipients: string[]
     APP_NAME = "Predictiva21";
   }
   else if (['ventas@predyc.com'].includes(data.sender)) {
-    sender = process.env.EMAIL_VENTAS;
-    password = process.env.EMAIL_VENTAS;
+    sender = process.env.EMAIL_L;
+    password = process.env.EMAIL_PASSWORD_VENTAS;
   }
 
   console.log("_sendMailHTML data.htmlContent", data.htmlContent);
