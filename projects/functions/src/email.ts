@@ -20,8 +20,9 @@ export const _sendMailHTML = async (data: { sender: string; recipients: string[]
     APP_NAME = "Predictiva21";
   }
   else if (['ventas@predyc.com'].includes(data.sender)) {
-    sender = process.env.EMAIL_VENTAS;
-    password = process.env.EMAIL_PASSWORD_VENTAS;
+    sender = process.env.EMAIL_USER_L;
+    password = process.env.EMAIL_PASSWORD_L;
+    APP_NAME = "Predyc Ventas";
   }
 
   console.log("_sendMailHTML data.htmlContent", data.htmlContent);
@@ -89,8 +90,9 @@ export const _sendMail = async (data: { sender: string; recipients: string[]; su
     APP_NAME = "Predictiva21";
   }
   else if (['ventas@predyc.com'].includes(data.sender)) {
-    sender = process.env.EMAIL_VENTAS;
-    password = process.env.EMAIL_PASSWORD_VENTAS;
+    sender = process.env.EMAIL_USER_L;
+    password = process.env.EMAIL_PASSWORD_L;
+    APP_NAME = "Predyc Ventas";
   }
 
   // if (["contacto@predyc.com", "capacitacion@predyc.com"].includes(data.sender) ){
