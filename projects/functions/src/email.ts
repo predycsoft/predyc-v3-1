@@ -11,6 +11,8 @@ export const _sendMailHTML = async (data: { sender: string; recipients: string[]
   let sender = process.env.EMAIL_USER_D;
   let password = process.env.EMAIL_PASSWORD_D;
 
+  let alias = null
+
   if (["capacitacion@predyc.com"].includes(data.sender)) {
     sender = process.env.EMAIL_USER_CAP;
     password = process.env.EMAIL_PASSWORD_CAP;
@@ -18,6 +20,11 @@ export const _sendMailHTML = async (data: { sender: string; recipients: string[]
     sender = process.env.EMAIL_USER_P21_CAP;
     password = process.env.EMAIL_PASSWORD_P21_CAP;
     APP_NAME = "Predictiva21";
+  }
+  else if (['ventas@predyc.com'].includes(data.sender)) {
+    sender = process.env.EMAIL_USER_L;
+    password = process.env.EMAIL_PASSWORD_L;
+    alias = 'ventas@predyc.com'
   }
 
   console.log("_sendMailHTML data.htmlContent", data.htmlContent);
@@ -35,7 +42,7 @@ export const _sendMailHTML = async (data: { sender: string; recipients: string[]
     },
   } as SMTPTransport.Options);
   const mailOptions = {
-    from: `${APP_NAME} <${data.sender}>`,
+    from: `${APP_NAME} <${alias? alias : data.sender}>`,
     to: process.env.PRODUCTION === "true" ? data.recipients : ["desarrollo@predyc.com"],
     subject: data.subject,
     html: data.htmlContent,
@@ -69,6 +76,7 @@ export const _sendMailHTML = async (data: { sender: string; recipients: string[]
 
 export const _sendMail = async (data: { sender: string; recipients: string[]; subject: string; text: string; cc: string[]; htmlText?: string }) => {
   let APP_NAME = "Predyc";
+  let alias = null
 
   // let sender = process.env.EMAIL_USER_A
   // let password = process.env.EMAIL_PASSWORD_A
@@ -83,6 +91,11 @@ export const _sendMail = async (data: { sender: string; recipients: string[]; su
     sender = process.env.EMAIL_USER_P21_CAP;
     password = process.env.EMAIL_PASSWORD_P21_CAP;
     APP_NAME = "Predictiva21";
+  }
+  else if (['ventas@predyc.com'].includes(data.sender)) {
+    sender = process.env.EMAIL_USER_L;
+    password = process.env.EMAIL_PASSWORD_L;
+    alias = 'ventas@predyc.com'
   }
 
   // if (["contacto@predyc.com", "capacitacion@predyc.com"].includes(data.sender) ){
@@ -108,7 +121,7 @@ export const _sendMail = async (data: { sender: string; recipients: string[]; su
     },
   } as SMTPTransport.Options);
   const mailOptions = {
-    from: `${APP_NAME} <${data.sender}>`,
+    from: `${APP_NAME} <${alias? alias : data.sender}>`,
     to: process.env.PRODUCTION === "true" ? data.recipients : ["desarrollo@predyc.com"],
     // to: ['diegonegrette42@gmail.com'],
     subject: data.subject,
