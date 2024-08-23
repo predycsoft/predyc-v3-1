@@ -90,7 +90,7 @@ export const _sendMail = async (data: { sender: string; recipients: string[]; su
   }
   else if (['ventas@predyc.com'].includes(data.sender)) {
     sender = process.env.EMAIL_VENTAS;
-    password = process.env.EMAIL_VENTAS;
+    password = process.env.EMAIL_PASSWORD_VENTAS;
   }
 
   // if (["contacto@predyc.com", "capacitacion@predyc.com"].includes(data.sender) ){
