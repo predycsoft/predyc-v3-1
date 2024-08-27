@@ -69,7 +69,7 @@ const routes: Routes = [
   {
     path: "login",
     component: LoginComponent,
-    canActivate: [],
+    canActivate: [AuthGuard],
     children: [
       // other non-authenticated routes like signup...
     ],
