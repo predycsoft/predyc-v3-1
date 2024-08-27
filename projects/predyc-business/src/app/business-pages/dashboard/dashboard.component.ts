@@ -136,7 +136,7 @@ export class DashboardComponent {
           //let certicates = await this.enterpriseService.getCertificatesEnterprise(enterprise)
           //console.log('certicates',certicates)
           this.enterprise = enterprise;
-          console.log('enterpriseDashboard',enterprise)
+          // console.log('enterpriseDashboard',enterprise)
           this.loaderService.setLoading(false);
           if(this.enterprise.examenInicial  === undefined || this.enterprise?.examenInicial){
             this.examenInicial = true
@@ -183,12 +183,12 @@ export class DashboardComponent {
                     // Determinar el estado de la actividad
                     let activityStatus = 'Sin inicio sesión';
                     if (user['lastActivityDate']?.seconds) {
-                      console.log('lastActivityDate',user['lastActivityDate']?.seconds,user.uid)
+                      // console.log('lastActivityDate',user['lastActivityDate']?.seconds,user.uid)
                       let date = new Date(user['lastActivityDate'].seconds * 1000);
                       date.setHours(0, 0, 0, 0); // Establecer la hora a 00:00:00.000
                       activityStatus = date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long' });
                       dateLastActivity = date.getTime();
-                      console.log('dateLastActivity',dateLastActivity)
+                      // console.log('dateLastActivity',dateLastActivity)
                       // Crear la variable de texto para indicar hace cuánto fue la última actividad
                       let today = new Date();
                       today.setHours(0, 0, 0, 0);
@@ -257,7 +257,7 @@ export class DashboardComponent {
                     
                   }
                   this.users = users
-                  console.log('this.user performance',this.users,performances)
+                  // console.log('this.user performance',this.users,performances)
                   this.getUsersRythmData(performances);
                 }
               }

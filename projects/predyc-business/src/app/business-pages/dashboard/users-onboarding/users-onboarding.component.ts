@@ -46,7 +46,7 @@ export class UsersOnboardingComponent {
 
       let usersActive = this.users.filter(x=>x.status == 'active')
       this.usersTotal = usersActive.length
-      console.log('usersActive',usersActive)
+      // console.log('usersActive',usersActive)
   
       if(this.enterprise.examenInicial  === undefined || this.enterprise?.examenInicial){
         this.examenInicial = true

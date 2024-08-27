@@ -144,7 +144,7 @@ getDataGraph() {
     this.max = max;
   }
 
-  console.log('dataGrafico', this.data);
+  // console.log('dataGrafico', this.data);
   this.createChart();
 
   // Asegúrate de llamar a detectChanges para que Angular actualice la vista

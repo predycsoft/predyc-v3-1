@@ -48,7 +48,7 @@ export class UsersRhythmComponent {
 
 
   chartExample() {
-    console.log('this.chartData',this.chartData)
+    // console.log('this.chartData',this.chartData)
     if (this.chart) {
       this.chart.destroy();
     }
@@ -65,7 +65,7 @@ export class UsersRhythmComponent {
     this.chartDatalabels.push('Sin asignaciones');
   
     this.ctx = document.getElementById('myChart');
-    console.log('this.chartData',this.chartData)
+    // console.log('this.chartData',this.chartData)
     this.config = {
       type: 'doughnut',
       data: {
