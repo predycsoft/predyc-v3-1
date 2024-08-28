@@ -52,6 +52,8 @@ import { DiplomadoLiveFormComponent } from "../shared/components/live-courses/li
 import { PillarsComponent } from './admin-pages/pillars/pillars.component';
 import { PillarsListComponent } from './admin-pages/pillars/pillars-list/pillars-list.component';
 import { DialogPillarsFormComponent } from './admin-pages/pillars/dialog-pillars-form/dialog-pillars-form.component';
+import { ReviewsComponent } from './admin-pages/reviews/reviews.component';
+import { ReviewsListComponent } from './admin-pages/reviews/reviews-list/reviews-list.component';
 
 
 @NgModule({
@@ -105,7 +107,9 @@ import { DialogPillarsFormComponent } from './admin-pages/pillars/dialog-pillars
     AuthorsListComponent,
     PillarsComponent,
     PillarsListComponent,
-    DialogPillarsFormComponent
+    DialogPillarsFormComponent,
+    ReviewsComponent,
+    ReviewsListComponent
   ],
   imports: [SharedModule, CommonModule, AdminRoutingModule],
 })

@@ -2,6 +2,7 @@ import { Enterprise } from "./enterprise.model";
 import { Modulo } from "./module.model";
 import { Skill } from './skill.model';
 import { DocumentReference } from "@angular/fire/compat/firestore"
+import { User } from "./user.model";
 
 export interface CursoJson {
 
@@ -111,4 +112,23 @@ export class Curso {
 export interface ObjetivoCurso {
   titulo: string
   descripcion: string
+}
+
+export class CourseRating {
+
+  public static collection = 'cursosValoraciones'
+
+  userRef: DocumentReference<User>
+  courseRef: DocumentReference<Curso>
+  id: string
+  valoracion: {
+    comentario: string
+    completado: boolean
+    conocimientos: number
+    fecha: string
+    global: number
+    instructor: number
+    material: number
+    plataforma: number
+  }
 }

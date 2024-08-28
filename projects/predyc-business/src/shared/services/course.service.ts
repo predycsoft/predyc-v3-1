@@ -7,7 +7,7 @@ import { EnterpriseService } from "./enterprise.service";
 import { AlertsService } from "./alerts.service";
 import { combineLatest } from "rxjs";
 import { defaultIfEmpty, filter, map, switchMap, take } from "rxjs/operators";
-import { Curso, CursoJson } from "projects/shared/models/course.model";
+import { CourseRating, Curso, CursoJson } from "projects/shared/models/course.model";
 import { Modulo } from "projects/shared/models/module.model";
 import { Clase } from "projects/shared/models/course-class.model";
 import { CourseByStudent, CourseByStudentJson } from "projects/shared/models/course-by-student.model";
@@ -1856,27 +1856,52 @@ export class CourseService {
   }
 
   // cursosValoraciones
+  courseRatingsCollection: string = "cursosValoraciones"
+
   async getCourseAverageRating(courseId: string): Promise<number> {
-    const indice = (await this.afs.collection('cursosValoraciones').doc(courseId).ref.get()).data();
-    const valoraciones: any[] = Object.keys(indice).map((key) => indice[key]);
-    let suma = 0;
-    for (let index = 0; index < valoraciones.length; index++) {
-      const element = valoraciones[index];
-      suma += element.valoracion.global;
+    const courseRef = this.getCourseRefById(courseId)
+    const ratingsSnapshot = await this.afs.collection<CourseRating>(CourseRating.collection).ref.where('courseRef', '==', courseRef).get();
+
+    if (ratingsSnapshot.empty) {
+      console.log("No ratings found for this course");
+      return 0;
     }
-    const promedio = suma / valoraciones.length;
-    return promedio
+
+    const ratings = ratingsSnapshot.docs.map((doc) => doc.data());
+
+    let sum = 0;
+    let count = 0;
+
+    ratings.forEach(rating => {
+      if (rating && rating.valoracion && rating.valoracion.global !== undefined) {
+        sum += rating.valoracion.global;
+        count++;
+      }
+    });
+
+    const average = count > 0 ? sum / count : 0;
+    return average;
   }
 
-  async getCourseRatingByUserEmail(courseId: string, userEmail: string) {
-    const courseRatings = (await this.afs.collection('cursosValoraciones').doc(courseId).ref.get()).data();
-    if (!courseRatings) {
-      console.log("The course has no ratings")
-      return null
+  async getCourseRatingByUserRef(courseRef: DocumentReference, userRef: DocumentReference) {
+    // Query to find the specific rating by the user for the course
+    const ratingSnapshot = await this.afs.collection<CourseRating>(CourseRating.collection).ref
+    .where('courseRef', '==', courseRef)
+    .where('userRef', '==', userRef)
+    .get();
+
+    if (ratingSnapshot.empty) {
+      console.log("No rating found for this user and course");
+      return null;
     }
-    // console.log("courseRatings", courseRatings)
-    const userRating = courseRatings[userEmail]
-    return userRating
+
+    const userRating = ratingSnapshot.docs[0].data();
+    return userRating;
+  }
+
+
+  getCoursesRatings$(): Observable<CourseRating[]> {
+    return this.afs.collection<CourseRating>(this.courseRatingsCollection).valueChanges()
   }
   
 }

@@ -2,44 +2,30 @@ import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import { Curso, User } from 'shared';
 
-
 const db = admin.firestore();
+const courseRatingsCollection: string = "cursosValoraciones"
 
 export const valorarCurso2 = functions.https.onCall(async (data, context) => {
-    const usuarioId = context.auth?.uid;
-    const cursoId = data['cursoId'];
-    const valoracion = data['valoracion'];
-    const usuarioNombreCompleto = data['usuarioNombreCompleto'];
-    const usuarioPhotoURL = data['usuarioPhotoURL'];
-    if (usuarioId) {
-      const usuario: any = (await db.collection(User.collection).doc(usuarioId).get()).data();
+  const userId = data.userId;
+  const courseId = data.courseId;
+  const valoracion = data.valoracion;
 
-    // ---------
-    //   // colocar la valoracion en el progreso del usuario
-    //   await db.collection('cursos').doc(cursoId).collection('inscritos').doc(usuario.email).update(
-    //     {
-    //       valorado: true,
-    //       valoracion: valoracion.global,
-    //     }
-    //   ).catch((error) => {
-    //     return console.log(error);
-    //   });
-    // ---------
+  if (courseId && userId && valoracion) {
+    // Reconstruct DocumentReference from IDs
+    const userRef = db.collection(User.collection).doc(userId);
+    const courseRef = db.collection(Curso.collection).doc(courseId);
 
     // Guardar en la coleccion de valoraciones
-    await db.collection('cursosValoraciones').doc(cursoId).set(
-    {
-        [usuario.email]: {
+    const ref = db.collection(courseRatingsCollection).doc();
+    await ref.set(
+      {
         valoracion: valoracion,
-        usuarioId: usuarioId,
-        cursoId: cursoId,
-        usuarioNombreCompleto: usuarioNombreCompleto,
-        usuarioPhotoURL: usuarioPhotoURL,
-        },
-    },
-    { merge: true }
+        userRef: userRef,
+        courseRef: courseRef,
+        id: ref.id
+      }, { merge: true }
     ).catch((error) => {
-    return console.log(error);
+      return console.log(error);
     });
 
     // ---------
@@ -57,6 +43,9 @@ export const valorarCurso2 = functions.https.onCall(async (data, context) => {
     // ---------
 
     } else {
+      console.log("courseId", courseId)
+      console.log("userId", userId)
+      console.log("valoracion", valoracion)
       return null;
     }
 });
