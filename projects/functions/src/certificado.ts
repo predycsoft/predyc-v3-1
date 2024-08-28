@@ -4,7 +4,9 @@ import { Enterprise, User,Curso, Clase, Modulo, LiveCourse,titleCaseWithExceptio
 import { _sendMailHTML } from './email';
 import fetch from 'node-fetch';
 import jspdf, { ImageOptions, jsPDF } from 'jspdf';
+import * as QRCode from 'qrcode';
 const sharp = require('sharp');
+
 
 
 const db = admin.firestore();
@@ -92,7 +94,12 @@ async function downloadImage(url: string): Promise<Buffer> {
     const response = await fetch(url);
     if (!response.ok) return null;
     return await response.buffer();
-  }
+}
+
+async function generateQrImage(certificadoId: string): Promise<string> {
+  const url = `https://app.predyc.com/certificado/${certificadoId}`;
+  return QRCode.toDataURL(url, { width: 80 });
+}
 
 export const generateMailCertificate = functions.https.onCall(async (data, _) => {
     try {
@@ -459,7 +466,17 @@ async function getCourseById(courseId: string): Promise<any> {
     doc.text(fechaTransformada, 19, 190);
     doc.setFontSize(11);
     doc.text('Certificado por Predyc. Código de certificado: ' + id, 19, 197);
+
+    // Generar la imagen QR
+    const qrImage = await generateQrImage(id);
+    // Agregar la imagen del QR en la esquina inferior izquierda
+    const pageHeight = doc.internal.pageSize.height;
+    doc.addImage(qrImage, 'PNG', 0, pageHeight-18, 18, 18,'','FAST'); // Ajusta la posición y el tamaño del QR
+
     doc.addImage(backCertificadoWaterBase64, "PNG", 0, 0, 297, 210,'','FAST');
+
+
+
     const pdfDataUri = doc.output('datauristring');
     const base64Content = pdfDataUri.split(',')[1];
     const fileName = "Certificado "+titleCaseWithExceptions(nombreUsuario)+" - "+tituloCurso+'.pdf'
