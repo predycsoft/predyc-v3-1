@@ -61,3 +61,7 @@
      */
     overflow: auto;
   }
+
+  .containerFormCurso {
+    overflow-y: auto;
+    }

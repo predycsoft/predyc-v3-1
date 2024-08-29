@@ -1,5 +1,5 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { FormArray } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -7,9 +7,10 @@ import { ActivityClassesService } from 'projects/predyc-business/src/shared/serv
 import { AlertsService } from 'projects/predyc-business/src/shared/services/alerts.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import { Activity, Question } from 'projects/shared';
-import { take } from 'rxjs';
+import { Observable, finalize, take } from 'rxjs';
 import Swal from 'sweetalert2';
 import { Chart } from "chart.js";
+import { AngularFireStorage } from '@angular/fire/compat/storage';
 
 
 
@@ -29,12 +30,17 @@ export class CertificationsFormComponent {
     public activityClassesService:ActivityClassesService,
     private alertService: AlertsService,
     public router: Router,
+    private storage: AngularFireStorage,
 
   ){}
 
   mode
   results = []
   averageScores = []
+  showErrorCertification = false;
+  formNewCertification: FormGroup;
+  metaDescriptionMaxLength = 141
+  keyWordsMaxLength = 100
 
   ngOnInit(): void {
 
@@ -60,7 +66,111 @@ export class CertificationsFormComponent {
       this.examen = exam;
     }
     this.formatExamQuestions();
+    this.inicializarformNewCourse()
 
+  }
+
+
+  async inicializarformNewCourse() {
+    if (this.mode == "new") {
+      setTimeout(() => {
+        this.formNewCertification = new FormGroup({
+          id: new FormControl(null),
+          titulo: new FormControl(null, Validators.required),
+          // resumen: new FormControl(null, Validators.required),
+          descripcion: new FormControl(null, Validators.required),
+          metaDescripcion: new FormControl(null),
+          KeyWords: new FormControl(null),
+          // objetivos: this.fb.array([], this.objetivosValidator(1)),
+          nivel: new FormControl(null, Validators.required),
+          //categoria: new FormControl(null, Validators.required),
+          idioma: new FormControl(null, Validators.required),
+          // contenido: new FormControl(null, Validators.required),
+          imagen: new FormControl(null, Validators.required),
+          customUrl: new FormControl(""),
+        });
+      }, 1);
+    } else {
+
+    }
+  }
+
+  uploadingImgCurso
+  fileNameImgCurso
+  uploadProgress$: Observable<number>;
+  uploading_file_progressImgCurso = 0;
+  imagenesCurso = ["../../../assets/images/cursos/placeholder1.jpg", "../../../assets/images/cursos/placeholder2.jpg", "../../../assets/images/cursos/placeholder3.jpg", "../../../assets/images/cursos/placeholder4.jpg"];
+
+
+  uploadCourseImage(event, tipo, newInstructor = false) {
+    if (!event.target.files[0] || event.target.files[0].length === 0) {
+      Swal.fire({
+        title: "Borrado!",
+        text: `Debe seleccionar una imagen`,
+        icon: "warning",
+        confirmButtonColor: "var(--blue-5)",
+      });
+      return;
+    }
+    const file = event.target.files[0];
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = async (_event) => {
+      //this.deleteQuestionImage(pregunta);
+
+      if (file) {
+
+        this.uploadingImgCurso = true;
+        
+        let fileBaseName = file.name.split(".").slice(0, -1).join(".");
+        let fileExtension = file.name.split(".").pop();
+
+        let nombre = fileBaseName + "." + fileExtension;
+        this.fileNameImgCurso = nombre;
+
+        //console.log(nombre)
+
+        // Reorganizar el nombre para que el timestamp esté antes de la extensión
+        let newName = `${fileBaseName}-${Date.now().toString()}.${fileExtension}`;
+
+        let nombreCurso = this.examen.title ? this.examen.title : "Temporal";
+
+        let filePath;
+
+        filePath = `Tests_Certifications/${nombreCurso}/${newName}`;
+
+
+        const task = this.storage.upload(filePath, file);
+
+        // Crea una referencia a la ruta del archivo.
+        const fileRef = this.storage.ref(filePath);
+
+        // Obtener el progreso como un Observable
+        this.uploadProgress$ = task.percentageChanges();
+
+        // Suscríbete al Observable para actualizar tu componente de barra de progreso
+        this.uploadProgress$.subscribe((progress) => {
+          this.uploading_file_progressImgCurso = Math.floor(progress);
+        });
+
+        // Observa el progreso de la carga del archivo y haz algo cuando se complete.
+        task
+          .snapshotChanges()
+          .pipe(
+            finalize(() => {
+              // Obtén la URL de descarga del archivo.
+              fileRef.getDownloadURL().subscribe((url) => {
+                this.uploadingImgCurso = false;
+                this.formNewCertification.get("imagen").patchValue(url);
+                this.imagenesCurso.unshift(url);
+                //console.log(`File URL: ${url}`);
+              });
+            })
+          )
+          .subscribe();
+      }
+    };
   }
 
   onTabChange(event: MatTabChangeEvent) {

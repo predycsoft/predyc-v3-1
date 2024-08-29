@@ -3487,17 +3487,25 @@ span {
 
 .ql-editor h2{
   font-size: var(--font-size-xlarge) !important;
+  font-weight: var(--font-weight-bold)!important;
+  margin: 1.6rem 0rem !important;
+  line-height: var(--line-height-default) !important;
+}
+.ql-editor h3 {
+  font-size: var(--font-size-large) !important;
   font-weight: var(--font-weight-bold) !important;
-  margin: 1.6rem 2.4rem !important;
-  line-height: var(--line-height-default) !important; 
+  margin: 1.6rem 0rem !important;
+  line-height: var(--line-height-default) !important;
 }
 
-.ql-editor h3{
-    font-size: var(--font-size-large) !important;
-    font-weight: var(--font-weight-bold) !important;
-    margin: 1.6rem 2.4rem !important;
-    line-height: var(--line-height-default) !important;
+@media (min-width: 768px) {
+  .ql-editor h3 {
+    margin-top: 2.8rem !important; /* Aumenta el margen superior en pantallas grandes */
   }
+  .ql-editor h2 {
+    margin-top: 2.8rem !important; /* Aumenta el margen superior en pantallas grandes */
+  }
+}
 
   .ql-editor blockquote{
     color: var(--color-text) !important;
