@@ -34,6 +34,8 @@ export interface CursoJson {
   KeyWords:string,
   updatedAt: any
   isFree: boolean
+  reviewsScore: number
+  reviewsQty: number
 }
 
 export class Curso {
@@ -71,6 +73,8 @@ export class Curso {
   KeyWords:string = ""
   updatedAt: any = null
   isFree: boolean = false
+  reviewsScore: number = 0
+  reviewsQty: number = 0
 
 
   public toJson(): CursoJson {
@@ -104,7 +108,8 @@ export class Curso {
       KeyWords:this.KeyWords,
       updatedAt:this.updatedAt,
       isFree: this.isFree,
-
+      reviewsScore: this.reviewsScore,
+      reviewsQty: this.reviewsQty,
     }
   }
 }

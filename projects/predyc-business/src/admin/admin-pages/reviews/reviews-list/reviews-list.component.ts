@@ -4,6 +4,8 @@ import { MatTableDataSource } from '@angular/material/table';
 import { combineLatest, Subscription } from 'rxjs';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CourseService } from 'projects/predyc-business/src/shared/services/course.service';
+import { DialogReviewsComponent } from './dialog-reviews/dialog-reviews.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 export interface CourseRatingData {
   courseName: string;
@@ -24,7 +26,7 @@ export class ReviewsListComponent {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private courseService: CourseService,
-
+    private _modalService: NgbModal
   ) {}
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -36,7 +38,7 @@ export class ReviewsListComponent {
     "totalRatings",
   ];
 
-  pageSize: number = 2
+  pageSize: number = 10
   totalLength: number
   
   queryParamsSubscription: Subscription
@@ -62,6 +64,7 @@ export class ReviewsListComponent {
       this.courseService.getCoursesRatings$(),
       this.courseService.getAllCourses$()  
     ]).subscribe(([ratings, courses]) => {
+      console.log("courses", courses)
       const courseRatingsData = []
       courses.forEach(course => {
         // Filter ratings for the current course
@@ -78,11 +81,13 @@ export class ReviewsListComponent {
           courseId: course.id,
           averageRating: averageRating,
           totalRatings: totalRatings,
-          totalCompleted: totalCompleted
+          totalCompleted: totalCompleted,
+          courseRatings: courseRatings
         });
       });
 
     courseRatingsData.sort((a, b) => b.averageRating - a.averageRating);
+    console.log("courseRatingsData", courseRatingsData)
 
     // console.log("courseRatingsData", this.courseRatingsData);
 
@@ -101,8 +106,17 @@ export class ReviewsListComponent {
     });
   }
 
-  openCourseReviewsModal(review: CourseRatingData) {
+  openCourseReviewsModal(courseRatingData: CourseRatingData) {
+    const modalRef = this._modalService.open(DialogReviewsComponent, {
+			animation: true,
+			centered: true,
+			size: "md",
+			backdrop: "static",
+			keyboard: false,
+			// windowClass: 'modWidth'
+		});
 
+		modalRef.componentInstance.courseRatingData = courseRatingData;
   }
 
   ngOnDestroy() {

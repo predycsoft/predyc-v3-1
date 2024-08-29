@@ -54,6 +54,7 @@ import { PillarsListComponent } from './admin-pages/pillars/pillars-list/pillars
 import { DialogPillarsFormComponent } from './admin-pages/pillars/dialog-pillars-form/dialog-pillars-form.component';
 import { ReviewsComponent } from './admin-pages/reviews/reviews.component';
 import { ReviewsListComponent } from './admin-pages/reviews/reviews-list/reviews-list.component';
+import { DialogReviewsComponent } from './admin-pages/reviews/reviews-list/dialog-reviews/dialog-reviews.component';
 
 
 @NgModule({
@@ -109,7 +110,8 @@ import { ReviewsListComponent } from './admin-pages/reviews/reviews-list/reviews
     PillarsListComponent,
     DialogPillarsFormComponent,
     ReviewsComponent,
-    ReviewsListComponent
+    ReviewsListComponent,
+    DialogReviewsComponent
   ],
   imports: [SharedModule, CommonModule, AdminRoutingModule],
 })

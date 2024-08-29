@@ -137,8 +137,8 @@ export class SideNavComponent {
       icon: "../../assets/iconsUI/bookmark.svg",
     },
     // {
-    //   name: "Categorias",
-    //   link: "/admin/categories",
+    //   name: "Reviews",
+    //   link: "/admin/reviews",
     //   icon: "../../assets/iconsUI/bookmark.svg",
     // },
     // {

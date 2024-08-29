@@ -28,19 +28,20 @@ export const valorarCurso2 = functions.https.onCall(async (data, context) => {
       return console.log(error);
     });
 
-    // ---------
-    //   const indice: any = (await db.collection('cursosValoraciones').doc(cursoId).get()).data();
-    //   const valoraciones: any[] = Object.keys(indice).map((key) => indice[key]);
-    //   let promedio = 0;
-    //   for (let index = 0; index < valoraciones.length; index++) {
-    //     const element = valoraciones[index];
-    //     promedio += element.valoracion.global;
-    //   }
-    //   promedio = promedio / valoraciones.length;
-    //   return db.collection(Curso.collection).doc(cursoId).update({
-    //     valoracion: promedio,
-    //   });
-    // ---------
+    // const indice: any = (await db.collection('cursosValoraciones').where("courseRef", "==", courseRef).get());
+    
+    // const valoraciones: any[] = Object.keys(indice).map((key) => indice[key]);
+    // let promedio = 0;
+    // for (let index = 0; index < valoraciones.length; index++) {
+    //   const element = valoraciones[index];
+    //   promedio += element.valoracion.global;
+    // }
+    // console.log("Promedio", promedio)
+    // promedio = promedio / valoraciones.length;
+    // await db.collection(Curso.collection).doc(courseId).update({
+    //   reviewsScore: promedio,
+    //   reviewsQty: valoraciones.length
+    // });
 
     } else {
       console.log("courseId", courseId)
