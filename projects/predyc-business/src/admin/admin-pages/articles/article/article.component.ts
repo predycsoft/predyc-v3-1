@@ -734,6 +734,18 @@ export class ArticleComponent {
         event.stopPropagation();
       });
     });
+    document.querySelectorAll(".blot-formatter__overlay").forEach(tool => {
+      tool.addEventListener("mouseup", function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+      });
+    });
+    document.querySelectorAll(".blot-formatter__resize-handle").forEach(tool => {
+      tool.addEventListener("mouseup", function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+      });
+    });
   }
   
 
