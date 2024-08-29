@@ -722,6 +722,18 @@ export class ArticleComponent {
         event.stopPropagation();
       });
     });
+    document.querySelectorAll(".blot-formatter__overlay").forEach(tool => {
+      tool.addEventListener("mousedown", function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+      });
+    });
+    document.querySelectorAll(".blot-formatter__resize-handle").forEach(tool => {
+      tool.addEventListener("mousedown", function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+      });
+    });
   }
   
 
