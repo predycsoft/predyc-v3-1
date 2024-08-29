@@ -9,7 +9,7 @@ import { Clase } from "projects/shared/models/course-class.model";
 
 import { AngularFireStorage } from "@angular/fire/compat/storage";
 import Swal from "sweetalert2";
-import { Observable, Subject, finalize, firstValueFrom, switchMap, tap, filter, take, first, startWith, map } from "rxjs";
+import { Observable, Subject, finalize, firstValueFrom, switchMap, tap, filter, take, first, startWith, map, Subscription } from "rxjs";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { AngularFirestore, DocumentReference } from "@angular/fire/compat/firestore";
 
@@ -39,6 +39,9 @@ import { AlertsService } from "projects/predyc-business/src/shared/services/aler
 import { VimeoComponent } from "projects/predyc-business/src/shared/components/vimeo/vimeo.component";
 import VimeoPlayer from "@vimeo/player";
 import { MatTabChangeEvent } from "@angular/material/tabs";
+import { License, Product } from "shared";
+import { LicenseService } from "projects/predyc-business/src/shared/services/license.service";
+import { ProductService } from "projects/predyc-business/src/shared/services/product.service";
 
 interface Categoria {
   id: number;
@@ -79,7 +82,9 @@ export class CreateCourseComponent {
     private authService: AuthService,
     private instructorsService: InstructorsService,
     private alertService: AlertsService,
-		private fb: FormBuilder,
+		private fb: FormBuilder,   
+    public licenseService: LicenseService,
+    private productService: ProductService,
 
   ) {}
 
@@ -199,15 +204,35 @@ export class CreateCourseComponent {
                   this.instructores = instructores.filter(x=>x.enterpriseRef); // estoy aqui
                 }
               });
+              if(!user.isSystemUser){ // alterado por Arturo para buscar licencia activa de la empresa y no el usuario admin
+                this.licensesSubscription = this.licenses$.subscribe(licenses => {
+                  let licenseActive = licenses.find(x=>x.status == 'active')
+                  console.log('licenseActive',licenseActive)
+                  if(licenseActive){
+                    this.productServiceSubscription = this.productService.getProductById$(licenseActive.productRef.id).subscribe(product => {
+                      if (!product) return
+                      this.product = product
+                      this.inicializarformNewCourse();
+                    })
+                    
+                  }
+                })
+              }
+              else{
+                this.inicializarformNewCourse();
+              }
               // if (!user?.isSystemUser) {
               //   this.router.navigate(["management/courses"])
               // }
             });
-
-          //this.inicializarformNewCourse();
         }
       });
   }
+  licensesSubscription: Subscription;
+  productServiceSubscription: Subscription
+  licenses$: Observable<License[]> = this.licenseService.getCurrentEnterpriseLicenses$()
+  product: Product
+
 
   getExamCourse(idCourse) {
     //console.log('idCourse search activity', idCourse);
@@ -458,7 +483,7 @@ export class CreateCourseComponent {
     if (this.mode == "create") {
       // console.log("this.empresa", this.empresa);
 
-      if (!this.user.isSystemUser && !this.empresa.permissions?.createCourses) {
+      if (!this.user.isSystemUser && !this.product.accesses.enableCreateParticularCourses) {
         this.router.navigate(["management/courses"]);
       }
 
