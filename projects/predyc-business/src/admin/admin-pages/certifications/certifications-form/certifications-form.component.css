@@ -65,3 +65,24 @@
   .containerFormCurso {
     overflow-y: auto;
     }
+
+    .progress-bar-container {
+      width: 100px; 
+      height: 10px; 
+      background-color: #e0e0e0; 
+      border-radius: 5px; 
+      overflow: hidden; 
+    }
+    
+    .progress-bar {
+      height: 100%;
+      background-color: #76c7c0;
+      transition: width 0.3s ease; /* Smooth transition for the width */
+      border-radius: 5px;
+    }
+    .complete-progress-bar {
+
+      .mdc-linear-progress__bar-inner::after {
+        border-color: var(--green-4) !important;
+      }
+    }
