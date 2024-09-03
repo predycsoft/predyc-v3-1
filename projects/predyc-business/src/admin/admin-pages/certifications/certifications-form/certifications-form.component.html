@@ -48,6 +48,28 @@
                                             Debe indicar el título del curso
                                         </div>
                                     </div>
+                                    <div class="form-group pdt10">
+                                        <label class="ft12 pdb05 ">Foto de la evaluación</label>
+                                        <div fxLayout="row" fxLayoutAlign="start end" >
+                                                <!-- <button class="add-button">Adjuntar nueva</button> -->
+                                                <input #cursoImage type="file" (change)="uploadCourseImage($event,'curso')" hidden accept="image/jpeg, image/png" />
+                                                <!-- <div class="image-scroll">
+                                                    <img *ngFor="let imagen of imagenesCurso" (click)="seleccionarImagenCurso(imagen)" [src]="imagen" alt="Imagen seleccionada" class="image cursorPointer {{this.formNewCertification.get('imagen').value == imagen? 'img-active': ''}}">
+                                                </div> -->
+                                                <div class="image-scroll">
+                                                    <img *ngIf="formNewCertification.get('imagen').value" [src]="formNewCertification.get('imagen').value" alt="Imagen seleccionada" class="avatarSquare8 radius6">
+                                                </div>
+                                                <div class="fw" >
+                                                    <button (click)="cursoImage.click()" class="grayButton pd03 radius6 ft12 ft500 h28px mgr10 gray-8" fxLayoutGap="0.625" >
+                                                        <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
+                                                        Adjuntar imagen
+                                                    </button>
+                                                </div>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="formNewCertification.controls['imagen'].errors && showErrorCertification" class="custom-invalid-feedback pdt05">
+                                        Debe seleccionar o subir la imagen del curso
+                                    </div>
                                     <div class="form-group mgt08">
                                         <label class="ft12">URL personalizado</label>
                                         <div class="input-group">
@@ -108,28 +130,6 @@
                                         <div class="invalid-feedback" *ngIf="formNewCertification.controls['KeyWords'].errors && showErrorCertification"> 
                                             Debe indicar los KeyWords del curso
                                         </div>
-                                    </div>
-                                    <div class="form-group pdt10">
-                                        <label class="ft12 pdb05 "  >Foto del curso</label>
-                                        <div fxLayout="row" fxLayoutAlign="start end" >
-                                                <!-- <button class="add-button">Adjuntar nueva</button> -->
-                                                <input #cursoImage type="file" (change)="uploadCourseImage($event,'curso')" hidden accept="image/jpeg, image/png" />
-                                                <!-- <div class="image-scroll">
-                                                    <img *ngFor="let imagen of imagenesCurso" (click)="seleccionarImagenCurso(imagen)" [src]="imagen" alt="Imagen seleccionada" class="image cursorPointer {{this.formNewCertification.get('imagen').value == imagen? 'img-active': ''}}">
-                                                </div> -->
-                                                <div class="image-scroll">
-                                                    <img *ngIf="formNewCertification.get('imagen').value" [src]="formNewCertification.get('imagen').value" alt="Imagen seleccionada" class="avatarSquare8 radius6">
-                                                </div>
-                                                <div class="fw" >
-                                                    <button (click)="cursoImage.click()" class="grayButton pd03 radius6 ft12 ft500 h28px mgr10 gray-8" fxLayoutGap="0.625" >
-                                                        <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
-                                                        Adjuntar imagen
-                                                    </button>
-                                                </div>
-                                        </div>
-                                    </div>
-                                    <div *ngIf="formNewCertification.controls['imagen'].errors && showErrorCertification" class="custom-invalid-feedback pdt05">
-                                        Debe seleccionar o subir la imagen del curso
                                     </div>
                                     <div fxLayout="row" class="fw" fxLayoutGap="1rem">
                                         <div  fxFlex="50%" >

@@ -26,6 +26,11 @@ export const _sendMailHTML = async (data: { sender: string; recipients: string[]
     password = process.env.EMAIL_PASSWORD_L;
     alias = 'ventas@predyc.com'
   }
+  else if (['lisset.chavez@predyc.com'].includes(data.sender)) {
+    sender = process.env.EMAIL_USER_LIS;
+    password = process.env.EMAIL_PASSWORD_LIS;
+    APP_NAME = "Lis de Predyc";
+  }
 
   console.log("_sendMailHTML data.htmlContent", data.htmlContent);
 
