@@ -87,7 +87,10 @@ export class LoginComponent {
       else if (adminUsers[0].role == 'instructor'){
         targetRoute = "/instructor/questions" 
       }
-      else{
+      else if (adminUsers[0].role == 'crm'){
+        targetRoute = "/crm/dashboard" 
+      }
+        else{
         targetRoute = "/" 
       }
 

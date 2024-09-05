@@ -22,6 +22,7 @@ import { MigrationsComponent } from "../shared/components/migrations/migrations.
 import { CertificationsTestComponent } from "./business-pages/management/certificationsTest/certificationsTest.component";
 import { ProfilesListComponent } from "./business-pages/management/profiles-list/profiles-list.component";
 import { InstructorUserGuard } from "../instructor/guards/instructorUser.guard";
+import { CrmUserGuard } from "../crm/guards/crmUser.guard";
 
 const MAIN_TITLE = "Predyc - ";
 
@@ -63,6 +64,11 @@ const routes: Routes = [
         path: "instructor",
         loadChildren: () => import("../instructor/instructor.module").then((m) => m.InstructorModule),
         canActivate: [InstructorUserGuard],
+      },
+      {
+        path: "crm",
+        loadChildren: () => import("../crm/crm.module").then((m) => m.CrmModule),
+        canActivate: [CrmUserGuard],
       },
     ],
   },

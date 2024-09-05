@@ -164,6 +164,17 @@ export class SideNavComponent {
     
   ];
 
+
+  public CrmPages: Page[] = [
+
+    {
+      name: "Pizarra",
+      link: "/crm/dashboard",
+      icon: "../../assets/iconsUI/dashboard-1.svg",
+    },
+    
+  ];
+
   constructor(public icon: IconService, private authService: AuthService) {}
 
   @Input() menuExpanded = false;
@@ -176,6 +187,9 @@ export class SideNavComponent {
       }
       else if(this.currentUrl.startsWith("/instructor")){
         this.pages =  this.instructorPages;
+      }
+      else if(this.currentUrl.startsWith("/crm")){
+        this.pages =  this.CrmPages;
       }
       else{
         this.pages =  this.businessPages;

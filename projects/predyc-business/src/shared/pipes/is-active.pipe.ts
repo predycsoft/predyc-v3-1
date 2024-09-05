@@ -89,6 +89,10 @@ export class IsActivePipe implements PipeTransform {
       return true;
     }
 
+    else if (link == '/crm/dashboard' && currentUrl.includes('dashboard')) {
+      return true;
+    }
+
     return false
 
   }

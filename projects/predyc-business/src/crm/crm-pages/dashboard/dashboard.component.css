@@ -1,0 +1,54 @@
+.kanban-board {
+  height: 85vh;
+  overflow-x: hidden; /* Evita el overflow horizontal */
+}
+
+.kanban-column {
+  border: 1px solid #ccc;
+  overflow-y: auto; /* Permite scroll vertical */
+  overflow-x: hidden; /* Evita el scroll horizontal */
+  height: 100%;
+}
+
+.kanban-header {
+  padding: 3px;
+  font-weight: bold;
+  text-align: center;
+  font-size: 12px;
+}
+
+.kanban-content {
+  padding: 10px;
+}
+
+.lead-card {
+  border: 1px solid #ddd;
+  background-color: #fff;
+  padding: 10px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+.leadCard {
+  padding: auto;
+}
+.leadCard span {
+  white-space: normal;   /* Permite que el texto ocupe varias líneas */
+  word-wrap: break-word; /* Corta la palabra cuando llega al final del contenedor */
+  display: inline-block; /* Mantén el comportamiento inline */
+  width: 100%;           /* Asegura que ocupe el ancho total del contenedor */
+}
+
+.contactoLead{
+  width: 100%;
+  padding: 8px;
+  background-color: var(--gray-2);
+  border-radius: 4px;
+}
+
+.formLead{  
+  width: 100%;
+  padding: 8px;
+
+}

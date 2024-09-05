@@ -8,6 +8,8 @@
                       Predyc 
                       <span *ngIf="isAdminPage" class="gray-6">ADMIN</span>
                       <span *ngIf="isInstructorPage" class="gray-6">INSTRUCTOR</span>
+                      <span *ngIf="isCrmPage" class="gray-6">CRM</span>
+
                     </div>
                   </div>
                 <!-- <div class="radius20 searchBar pdl05 pdr05" fxLayout="row" fxLayoutAlign=" center">
@@ -41,16 +43,16 @@
                 <div *ngIf="!isAdminPage" (click)="openSupport()">
                     <img [src]="icon.headset" alt="" class="h24px cursorPointer makeGray"/>
                 </div>
-                <div *ngIf="!isInstructorPage" class="positionRelative">
+                <div *ngIf="!isInstructorPage && !isCrmPage" class="positionRelative">
                     <img [src]="icon.notification" class="h24px cursorPointer makeGray"    routerLinkActive='makeGray8' routerLink="management/notifications" alt=""> 
                     <div class="redDot"></div>
                 </div>
-                <div *ngIf="!isInstructorPage"  fxLayout="column" fxLayoutAlign="center">
+                <div *ngIf="!isInstructorPage && !isCrmPage"  fxLayout="column" fxLayoutAlign="center">
                     <a class="cursorPointer" routerLink="my-account">
                         <img  [src]="user.photoUrl ? user.photoUrl : 'assets/images/default/default-user-image.jpg'" style="height: 2rem; width: 2rem; border-radius: 50%;"  alt="">
                     </a>
                 </div>
-                <div *ngIf="isInstructorPage"  fxLayout="column" fxLayoutAlign="center">
+                <div *ngIf="isInstructorPage || isCrmPage"  fxLayout="column" fxLayoutAlign="center">
                     <span class="blueLink cursorPointer" (click)="signOut()">
                         Cerrar sesión
                     </span>

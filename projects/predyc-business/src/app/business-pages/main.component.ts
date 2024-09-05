@@ -35,6 +35,7 @@ export class MainComponent {
       // console.log("CurrentUrl" , this.currentUrl)
       this.isAdminPage =  this.currentUrl.startsWith("/admin")
       this.isInstructorPage =  this.currentUrl.startsWith("/instructor")
+      this.isCrmPage =  this.currentUrl.startsWith("/crm")
 
     });
   }
@@ -42,6 +43,7 @@ export class MainComponent {
   currentUrl: string;
   isAdminPage: boolean
   isInstructorPage: boolean
+  isCrmPage: boolean
 
 
   user: User
@@ -101,7 +103,10 @@ export class MainComponent {
       return '/admin';
     } else if (this.isInstructorPage) {
       return '/instructor';
-    } else {
+    } else if (this.isCrmPage){
+      return '/crm';
+    }
+    else {
       return '';
     }
   }
