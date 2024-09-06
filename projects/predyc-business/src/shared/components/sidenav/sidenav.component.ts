@@ -106,11 +106,11 @@ export class SideNavComponent {
       link: "/admin/live",
       icon: "../../assets/iconsUI/demo.svg",
     },
-    {
-      name: "Freebies",
-      link: "/admin/freebies",
-      icon: "../../assets/iconsUI/puzzle.svg",
-    },
+    // {
+    //   name: "Freebies",
+    //   link: "/admin/freebies",
+    //   icon: "../../assets/iconsUI/puzzle.svg",
+    // },
     {
       name: "Preguntas",
       link: "/admin/questions",
