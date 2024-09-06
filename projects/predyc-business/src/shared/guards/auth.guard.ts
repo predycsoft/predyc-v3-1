@@ -34,6 +34,10 @@ export class AuthGuard {
                 this.router.navigate(['/instructor']);
                 return false;
               }
+              else if (userInfo && userInfo.role === 'crm' && state.url === '/') {
+                this.router.navigate(['/crm']);
+                return false;
+              }
               return true;
             })
           );
