@@ -49,6 +49,7 @@ export class CertificationsFormComponent {
       this.activityClassesService.getActivityById(this.certificationId).pipe(take(1)).subscribe((actividad)=>{
         console.log('actividad',actividad);
         this.examen = actividad;
+        this.inicializarformNewCourse(actividad)
       })
     }
     else{
@@ -64,33 +65,53 @@ export class CertificationsFormComponent {
       exam.createdAt = new Date().getTime()
       this.questionsFormated = true
       this.examen = exam;
+      this.inicializarformNewCourse(null)
     }
     this.formatExamQuestions();
-    this.inicializarformNewCourse()
 
   }
 
+  changeP21(event: Event) {
+    // Accede a la propiedad 'checked' del checkbox
+    const isChecked = (event.target as HTMLInputElement).checked;
 
-  async inicializarformNewCourse() {
-    if (this.mode == "new") {
+    // Actualiza el valor del campo 'proximamente' en el formulario con el nuevo estado
+    this.formNewCertification.get("isPageTest").setValue(isChecked);
+
+    // Opcionalmente, imprime si el checkbox quedó marcado o no
+    console.log("El checkbox Borrador está:", isChecked ? "marcado (true)" : "desmarcado (false)");
+  }
+
+
+  async inicializarformNewCourse(examen) {
+    console.log('exam',examen)
+    if (this.mode == "new" || !this.examen) {
       setTimeout(() => {
         this.formNewCertification = new FormGroup({
-          id: new FormControl(null),
-          titulo: new FormControl(null, Validators.required),
           // resumen: new FormControl(null, Validators.required),
           descripcion: new FormControl(null, Validators.required),
           metaDescripcion: new FormControl(null),
           KeyWords: new FormControl(null),
-          // objetivos: this.fb.array([], this.objetivosValidator(1)),
           nivel: new FormControl(null, Validators.required),
-          //categoria: new FormControl(null, Validators.required),
-          idioma: new FormControl(null, Validators.required),
-          // contenido: new FormControl(null, Validators.required),
           imagen: new FormControl(null, Validators.required),
           customUrl: new FormControl(""),
+          isPageTest:new FormControl(false),
         });
       }, 1);
     } else {
+      setTimeout(() => {
+        this.formNewCertification = new FormGroup({
+          // resumen: new FormControl(null, Validators.required),
+          descripcion: new FormControl( examen?.descripcion, Validators.required),
+          metaDescripcion: new FormControl(examen?.metaDescripcion),
+          KeyWords: new FormControl(examen?.KeyWords),
+          nivel: new FormControl(examen?.nivel, Validators.required),
+          imagen: new FormControl(examen?.imagen, Validators.required),
+          idioma: new FormControl(examen?.idioma, Validators.required),
+          customUrl: new FormControl(examen?.customUrl),
+          isPageTest:new FormControl(examen?.isPageTest),
+        });
+      }, 1);
 
     }
   }
@@ -380,7 +401,6 @@ export class CertificationsFormComponent {
         }
       });
 
-
       let courseRef = null
       let activityClass = new Activity
       console.log('this.activityClass',activityClass)
@@ -408,8 +428,16 @@ export class CertificationsFormComponent {
       this.examen.coursesRef = null
       activityClass.coursesRef = null
       activityClass.type = Activity.TYPE_TEST_CERTIFICATIONS;
+
+      if (this.formNewCertification && this.formNewCertification?.get('isPageTest')?.value) {
+        let values = this.formNewCertification.value;
+        activityClass = {
+          ...activityClass,
+          ...values
+        }
+      }
   
-      //console.log('activityExamen',activityClass)
+      console.log('activityExamen',activityClass)
       await this.activityClassesService.saveActivity(activityClass);
 
       let questionsIds = [];

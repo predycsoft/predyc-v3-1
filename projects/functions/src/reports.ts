@@ -94,9 +94,9 @@ async function generateReportsAdminAllEnterprises(){
     // Mapear los usuarios encontrados
     const enterprise = enterpriseSnapshot.docs.map(doc => doc.data());
 
-    enterprise.forEach(empresa => {
-      generateReportEnterpriseAdminLocal(empresa.id)
-    });
+    for (const empresa of enterprise) {
+      await generateReportEnterpriseAdminLocal(empresa.id);
+    }
 
 }
 
@@ -109,9 +109,9 @@ async function generateReportsUsersAllEnterprises(){
   // Mapear los usuarios encontrados
   const enterprise = enterpriseSnapshot.docs.map(doc => doc.data());
 
-  enterprise.forEach(empresa => {
-    generateReportEnterpriseUsersLocal(empresa.id)
-  });
+  for (const empresa of enterprise) {
+    await generateReportEnterpriseUsersLocal(empresa.id)
+  }
 
 }
 
@@ -152,7 +152,7 @@ async function generateReportEnterpriseAdminLocal(idEmpresa: string) {
     let recipientMail = enterpriseData?.reportMails ? enterpriseData?.reportMails.split(','): ['arturo.romero@predyc.com']
     let htmlMailFinal = ` <!DOCTYPE html><html><head>${style}</head><body><p><strong>Estimado administrador ${enterpriseData.name.toUpperCase()}</strong>,</p>${htmlMail}<br>${firma}
     </body></html>`;
-    console.log('htmlMailFinal',htmlMailFinal)
+    //console.log('htmlMailFinal',htmlMailFinal)
     const sender = "capacitacion@predyc.com";
     const recipients = recipientMail;
     //const recipients = ['andres.gonzalez@predyc.com'];
@@ -165,7 +165,8 @@ async function generateReportEnterpriseAdminLocal(idEmpresa: string) {
     enterpriseDoc.ref.update({
       lastDayAdminMail: now
     })
-    _sendMailHTML(mailObj);
+    console.log('mailObj',mailObj)
+    await _sendMailHTML(mailObj);
   }
   catch(error: any) {
     console.log(error);
@@ -250,17 +251,17 @@ async function generateReportEnterpriseUsers(idEmpresa: string) {
         })
         // para pruebas 
         // respuesta = [respuesta[0]]
-        respuesta.forEach(correo => {
-          const htmlContent = ` <!DOCTYPE html><html><head>${styleMail}</head><body>${correo.html}${firma}</body></html>`;
+        for (const correo of respuesta) {
+          const htmlContent = `<!DOCTYPE html><html><head>${styleMail}</head><body>${correo.html}${firma}</body></html>`;
           const sender = "capacitacion@predyc.com";
           const recipients = [correo.user.email];
-          //const recipients = ['andres.gonzalez@predyc.com'];
+          // const recipients = ['andres.gonzalez@predyc.com'];
           const subject = `Tu progreso semanal en PREDYC`;
           const cc = ["capacitacion@predyc.com"];
           const mailObj = { sender, recipients, subject, cc, htmlContent };
-          console.log(mailObj)
-          _sendMailHTML(mailObj);
-        });
+          console.log(mailObj);
+          await _sendMailHTML(mailObj);  // Esperar a que se envíe el correo antes de continuar
+        }        
       }
 
 

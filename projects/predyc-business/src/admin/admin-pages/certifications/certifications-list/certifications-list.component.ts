@@ -92,6 +92,7 @@ export class CertificationsListComponent {
       const chargesInList = charges
       const filteredCharges = chargesInList
       this.paginator.pageIndex = page - 1;
+      console.log('data',filteredCharges)
       this.dataSource.data = filteredCharges
       this.totalLength = filteredCharges.length;
     })
@@ -104,10 +105,15 @@ export class CertificationsListComponent {
     });
   }
 
-  getTypeName(subType){
+  getTypeName(activity){
+
+    const subType = activity.subType
 
     if(subType == 'initTest'){
       return 'Diagnostico Inicial'
+    }
+    else if(activity.isPageTest){
+      return 'Diagnóstico Web'
     }
 
     return 'Diplomado'

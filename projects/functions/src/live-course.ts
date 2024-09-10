@@ -10,7 +10,7 @@ const db = admin.firestore();
 export const sendLiveCourseEmail = functions.https.onCall(async (data, _) => {
   try {
     // Send the email
-    const sender = data.sender; const recipients = data.recipients; const subject = data.subject; const htmlContent = data.htmlContent; const cc = [""]
+    const sender = data.sender; const recipients = data.recipients; const subject = data.subject; const htmlContent = data.htmlContent; const cc = ["paola.mendoza@predyc.com","capacitacion@predyc.com"]
     const mailObj = { sender, recipients, subject, cc ,htmlContent};
     await _sendMailHTML(mailObj);
 
