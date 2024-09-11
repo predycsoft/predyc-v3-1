@@ -177,7 +177,7 @@
                         <img [src]="icon.document" class="makeBlue h20px" alt="">
                         <span class="ft500 ft14 black " style="margin-top: 5px;"> {{ examen?.questions?.length }} Preguntas</span>
                     </div>
-                    <div fxLayout="row" fxLayoutAlign="center" class="w-100"> <!-- Centrar contenido -->
+                    <div fxLayout="row" fxLayoutAlign="center" class="w-100" style="padding-bottom: 200px;"> <!-- Centrar contenido -->
                         <div style="width: 800px;"> <!-- Ancho fijo -->
                             <!-- <app-questions type="test" class="mgr10" [questionMaxSize]="100" [courseData]="modulos" [nameCurso]="formNewCertification?.get('titulo').value?  formNewCertification?.get('titulo').value : 'Temporal'" [nameEmpresa]="empresa?.name" (changeQuestion)="validExam = $event;formatExamQuestions()" (emmitForm)="validExam = $event;" [questionsArray]="examen?.questions ? examen?.questions:[]" [checkQuestions]="updateTriggeQuestionsExam" [selectedTestSkills]="[]"></app-questions> -->
                             <app-questions type="certification" class="mgr10" [questionMaxSize]="100" [courseData]="[]" [nameCurso]="" [nameEmpresa]="" (changeQuestion)="validExam = $event;formatExamQuestions()" (emmitForm)="validExam = $event;" [questionsArray]="examen?.questions ? examen?.questions:[]" [checkQuestions]="updateTriggeQuestionsExam" [selectedTestSkills]="[]"></app-questions>
