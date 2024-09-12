@@ -585,7 +585,7 @@ export class LiveCourseStudentListComponent {
     if(this.courseDetails?.diagnostico){
       htmlContent = `<p>Estimado <strong>${titleCase(user.name)}</strong></p> 
     <p>Mi nombre es Daniela Rodríguez, Coordinadora de Capacitación en <a href="https://predictiva21.com/">Predictiva21</a></p
-    <p> A continuación, le indico cómo acceder al aula virtual para realizar el examen diagnóstico, el cual nos ayudará a conocer su nivel de conocimiento.</p`
+    <p> A continuación, le indico cómo acceder al aula virtual para realizar el examen diagnóstico <strong>${this.courseDetails?.title ? this.courseDetails.title : this.diplomadoDetails?.name }</strong>, el cual nos ayudará a conocer su nivel de conocimiento.</p`
     }
     console.log('datos',this.courseDetails)
     
@@ -649,7 +649,7 @@ export class LiveCourseStudentListComponent {
       htmlContent += `</ul><br>
       <p><strong>Por favor sigue estos sencillos pasos: <strong></p>
       <p><strong>Paso 1: </strong>Ingresa desde tu computador a nuestra plataforma <a href="https://predyc-user.web.app/auth/login">Predyc</a> e inicia sesión con tu correo ${userEmail} ${gmail? '(clic en botón continuar con Google)': 'y el código de acceso recibido en el correo anterior.'}</p>
-      <p><strong>Paso 2: </strong>Ve a la seccion "Cursos en vivo" donde deberas ver en la lista este ${type} (${this.courseDetails?.title ? this.courseDetails.title : this.diplomadoDetails?.name })</p>
+      <p><strong>Paso 2: </strong>Ve a la seccion "Cursos en vivo" donde deberas ver en la lista <strong>${this.courseDetails?.title ? this.courseDetails.title : this.diplomadoDetails?.name }</strong></p>
       <br>
       <p>¡Listo! Puedes presentar tu examen diagnostico en la sección “Cursos en vivo”</p>
       <p><strong>Nota: Si tienes restricciones por parte de tu organización para acceder a alguna página web desde tu computador, puedes acceder desde tu teléfono móvil o cualquier otro dispositivo electrónico.</strong></p>
