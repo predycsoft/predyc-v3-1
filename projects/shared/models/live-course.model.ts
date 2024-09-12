@@ -13,8 +13,8 @@ export interface LiveCourseTemplateJson {
     duration: number,
     vimeoFolderId: string,
     orderExam:boolean,
-    presencial:boolean
-
+    presencial:boolean,
+    diagnostico:boolean
 }
 
 export class LiveCourseTemplate {
@@ -33,7 +33,8 @@ export class LiveCourseTemplate {
         public duration: number,
         public vimeoFolderId: string = "",
         public orderExam: boolean = false,
-        public presencial:boolean = false
+        public presencial:boolean = false,
+        public diagnostico:boolean = false
 
     ) {}
 
@@ -50,7 +51,9 @@ export class LiveCourseTemplate {
             liveCourseTemplateJson.duration,
             liveCourseTemplateJson.vimeoFolderId,
             liveCourseTemplateJson.orderExam,
-            liveCourseTemplateJson.presencial
+            liveCourseTemplateJson.presencial,
+            liveCourseTemplateJson.diagnostico
+
         )
     }
 
@@ -67,7 +70,8 @@ export class LiveCourseTemplate {
             duration : this.duration,
             vimeoFolderId : this.vimeoFolderId,
             orderExam:this.orderExam,
-            presencial:this.presencial
+            presencial:this.presencial,
+            diagnostico:this.diagnostico
         }
     }
 }
@@ -89,7 +93,8 @@ export interface LiveCourseJson {
     emailLastDate: any
     vimeoFolderId: string,
     orderExam:boolean,
-    presencial:boolean
+    presencial:boolean,
+    diagnostico:boolean
 }
 
 export class LiveCourse {
@@ -113,7 +118,9 @@ export class LiveCourse {
         public title: string,
         public vimeoFolderId: string = "",
         public orderExam:boolean = false,
-        public presencial:boolean = false
+        public presencial:boolean = false,
+        public diagnostico:boolean = false
+
     ) {}
 
     public static fromJson(liveCourseJson: LiveCourseJson): LiveCourse {
@@ -134,7 +141,8 @@ export class LiveCourse {
             liveCourseJson.title,
             liveCourseJson.vimeoFolderId,
             liveCourseJson.orderExam,
-            liveCourseJson.presencial
+            liveCourseJson.presencial,
+            liveCourseJson.diagnostico
         )
     }
 
@@ -156,7 +164,8 @@ export class LiveCourse {
             identifierText : this.identifierText,
             emailLastDate : this.emailLastDate,
             orderExam:this.orderExam,
-            presencial:this.presencial
+            presencial:this.presencial,
+            diagnostico:this.diagnostico
         }
     }
 }

@@ -561,6 +561,9 @@ export class LiveCourseStudentListComponent {
       temporalidad = 'presencial'
     }
     let subject = `Has sido inscrito en un ${type} ${temporalidad}`
+    if(this.courseDetails?.diagnostico){
+      subject = `Acceso al aula virtual y examen diagnóstico`
+    }
     let duracion = Math.round(this.courseDetails?.duration / 60)
     let startDate
     let cantidadModulos = 0
@@ -575,10 +578,15 @@ export class LiveCourseStudentListComponent {
     }
     let formattedDate = this.datePipe.transform(startDate, 'd \'de\' MMMM', 'es');
     
-
-    let htmlContent = `<p>Estimado <strong>${titleCase(user.name)}</strong></p> 
+    let htmlContent = ''
+    htmlContent = `<p>Estimado <strong>${titleCase(user.name)}</strong></p> 
     <p>Mi nombre es Daniela Rodríguez, Coordinadora de Capacitación en <a href="https://predictiva21.com/">Predictiva21</a>,  me gustaría guiarlo en los pasos para que pueda acceder al aula virtual del ${type}, donde podrá ver las sesiones en vivo, exámenes, material descargable y certificado.</p`
     
+    if(this.courseDetails?.diagnostico){
+      htmlContent = `<p>Estimado <strong>${titleCase(user.name)}</strong></p> 
+    <p>Mi nombre es Daniela Rodríguez, Coordinadora de Capacitación en <a href="https://predictiva21.com/">Predictiva21</a></p
+    <p> A continuación, le indico cómo acceder al aula virtual para realizar el examen diagnóstico, el cual nos ayudará a conocer su nivel de conocimiento.</p`
+    }
     console.log('datos',this.courseDetails)
     
     if (type == 'curso'){
@@ -609,32 +617,49 @@ export class LiveCourseStudentListComponent {
 
     let gmail = userEmail.includes("@gmail.com");
 
-    htmlContent += `</ul><br>
-    <p><strong>Por favor sigue estos sencillos pasos: <strong></p>
-    <p><strong>Paso 1: </strong>Ingresa desde tu computador a nuestra plataforma <a href="https://predyc-user.web.app/auth/login">Predyc</a> e inicia sesión con tu correo ${userEmail} ${gmail? '(clic en botón continuar con Google)': 'y las credenciales que te llegarón anteriormente'}</p>
-    <p><strong>Paso 2: </strong>Ve a la seccion "Cursos en vivo" donde deberas ver en la lista este ${type} (${this.courseDetails?.title ? this.courseDetails.title : this.diplomadoDetails?.name })</p>
-    <br>
-    <p>¡Listo! El ${type} está disponible en la sección “Cursos en vivo”</p>
-    <p>El link a las sesiones y el material del curso estarán disponibles 20 minutos antes del inicio.</p><br>
-    
-    <p><strong>Recomendaciones para las sesiones en vivo:</strong></p>
-
-    <ul>
-      <li>Conéctate 15 minutos antes para que puedas verificar tu configuración de audio. El inicio de las sesiones se hará a la hora programada.</li>
-      <li>Una vez iniciada la clase colócate en mute, si deseas realizar una consulta activa tu micrófono y hazla, al culminar tu consulta vuelve a colocar el mute.</li>
-      <li>sulta vuelve a colocar el mute.
-      Si pierdes una sesión no te preocupes, todas nuestras clases son grabadas. El enlace de la grabación aparecerá al día siguiente y estará activo por un tiempo determinado.</li>
-    </ul>
-    <br>
-
-    <p><strong>Nota: Si tienes restricciones por parte de tu organización para acceder a alguna página web desde tu computador, puedes acceder desde tu teléfono móvil o cualquier otro dispositivo electrónico.</strong></p>
-    <br>
-    <p>Recuerde que si tiene alguna duda en el proceso puede contactarnos por este medio.</p><br>
-    
-    <p><strong>Necesitas ayuda, escribenos</strong></p>
-    <p>
-      <a href="https://wa.me/524421692090"><img src="https://cdn.icon-icons.com/icons2/3685/PNG/512/whatsapp_logo_icon_229310.png" alt="WhatsApp" style="width: 50px; height: auto;"></a>
-    <p>`;
+    if(!this.courseDetails?.diagnostico){
+      htmlContent += `</ul><br>
+      <p><strong>Por favor sigue estos sencillos pasos: <strong></p>
+      <p><strong>Paso 1: </strong>Ingresa desde tu computador a nuestra plataforma <a href="https://predyc-user.web.app/auth/login">Predyc</a> e inicia sesión con tu correo ${userEmail} ${gmail? '(clic en botón continuar con Google)': 'y el código de acceso recibido en el correo anterior.'}</p>
+      <p><strong>Paso 2: </strong>Ve a la seccion "Cursos en vivo" donde deberas ver en la lista este ${type} (${this.courseDetails?.title ? this.courseDetails.title : this.diplomadoDetails?.name })</p>
+      <br>
+      <p>¡Listo! El ${type} está disponible en la sección “Cursos en vivo”</p>
+      <p>El link a las sesiones y el material del curso estarán disponibles 20 minutos antes del inicio.</p><br>
+      
+      <p><strong>Recomendaciones para las sesiones en vivo:</strong></p>
+  
+      <ul>
+        <li>Conéctate 15 minutos antes para que puedas verificar tu configuración de audio. El inicio de las sesiones se hará a la hora programada.</li>
+        <li>Una vez iniciada la clase colócate en mute, si deseas realizar una consulta activa tu micrófono y hazla, al culminar tu consulta vuelve a colocar el mute.</li>
+        <li>sulta vuelve a colocar el mute.
+        Si pierdes una sesión no te preocupes, todas nuestras clases son grabadas. El enlace de la grabación aparecerá al día siguiente y estará activo por un tiempo determinado.</li>
+      </ul>
+      <br>
+  
+      <p><strong>Nota: Si tienes restricciones por parte de tu organización para acceder a alguna página web desde tu computador, puedes acceder desde tu teléfono móvil o cualquier otro dispositivo electrónico.</strong></p>
+      <br>
+      <p>Recuerde que si tiene alguna duda en el proceso puede contactarnos por este medio.</p><br>
+      
+      <p><strong>Necesitas ayuda, escribenos</strong></p>
+      <p>
+        <a href="https://wa.me/524421692090"><img src="https://cdn.icon-icons.com/icons2/3685/PNG/512/whatsapp_logo_icon_229310.png" alt="WhatsApp" style="width: 50px; height: auto;"></a>
+      <p>`;
+    }
+    else{
+      htmlContent += `</ul><br>
+      <p><strong>Por favor sigue estos sencillos pasos: <strong></p>
+      <p><strong>Paso 1: </strong>Ingresa desde tu computador a nuestra plataforma <a href="https://predyc-user.web.app/auth/login">Predyc</a> e inicia sesión con tu correo ${userEmail} ${gmail? '(clic en botón continuar con Google)': 'y el código de acceso recibido en el correo anterior.'}</p>
+      <p><strong>Paso 2: </strong>Ve a la seccion "Cursos en vivo" donde deberas ver en la lista este ${type} (${this.courseDetails?.title ? this.courseDetails.title : this.diplomadoDetails?.name })</p>
+      <br>
+      <p>¡Listo! Puedes presentar tu examen diagnostico en la sección “Cursos en vivo”</p>
+      <p><strong>Nota: Si tienes restricciones por parte de tu organización para acceder a alguna página web desde tu computador, puedes acceder desde tu teléfono móvil o cualquier otro dispositivo electrónico.</strong></p>
+      <br>
+      <p>Recuerde que si tiene alguna duda en el proceso puede contactarnos por este medio.</p><br>
+      <p><strong>Necesitas ayuda, escribenos</strong></p>
+      <p>
+        <a href="https://wa.me/524421692090"><img src="https://cdn.icon-icons.com/icons2/3685/PNG/512/whatsapp_logo_icon_229310.png" alt="WhatsApp" style="width: 50px; height: auto;"></a>
+      <p>`;
+    }
 
     const htmlContentFinal = ` <!DOCTYPE html><html><head>${styleMail}</head><body>${htmlContent}${firma}</body></html>`;
     try {

@@ -290,7 +290,9 @@ export class CreateLiveCourseComponent {
           vimeoFolderId: new FormControl(null),
           proximamente: new FormControl(false),
           orderExam: new FormControl(false),
-          presencial: new FormControl(false)
+          presencial: new FormControl(false),
+          diagnostico: new FormControl(false)
+
         });
         this.initializeLiveCourseAsLiveCourseData();
         this.initSkills();
@@ -346,6 +348,7 @@ export class CreateLiveCourseComponent {
       InvalidMessages: [],
       orderExam:false,
       presencial:false,
+      diagnostico:false,
     };
   }
 
@@ -456,6 +459,7 @@ export class CreateLiveCourseComponent {
       proximamente: new FormControl(this.liveCourseData.proximamente),
       orderExam: new FormControl(this.liveCourseData.orderExam),
       presencial:new FormControl(this.liveCourseData.presencial),
+      diagnostico:new FormControl(this.liveCourseData.diagnostico),
     });
 
     //this.formNewCourse.get('resumen_instructor').disable();
@@ -1530,7 +1534,7 @@ export class CreateLiveCourseComponent {
   }
 
   LiveCourseDataModelToLiveCourseTemplate(liveCourseData: LiveCourseData) {
-    return new LiveCourseTemplate(liveCourseData.id, liveCourseData.companyName, liveCourseData.title, liveCourseData.photoUrl, liveCourseData.description, liveCourseData.instructorRef, liveCourseData.proximamente, liveCourseData.skillsRef, liveCourseData.duration, liveCourseData.vimeoFolderId,liveCourseData.orderExam,liveCourseData.presencial);
+    return new LiveCourseTemplate(liveCourseData.id, liveCourseData.companyName, liveCourseData.title, liveCourseData.photoUrl, liveCourseData.description, liveCourseData.instructorRef, liveCourseData.proximamente, liveCourseData.skillsRef, liveCourseData.duration, liveCourseData.vimeoFolderId,liveCourseData.orderExam,liveCourseData.presencial,liveCourseData.diagnostico);
   }
 
   LiveCourseDataModelToLiveCourse(liveCourseData: LiveCourseData) {
@@ -1551,7 +1555,8 @@ export class CreateLiveCourseComponent {
       liveCourseData.title, 
       liveCourseData.vimeoFolderId,
       liveCourseData.orderExam,
-      liveCourseData.presencial
+      liveCourseData.presencial,
+      liveCourseData.diagnostico
     );
   }
 

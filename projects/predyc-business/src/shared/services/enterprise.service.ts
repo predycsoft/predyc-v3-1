@@ -80,6 +80,8 @@ export class EnterpriseService {
     return this.afs.collection<Enterprise>(Enterprise.collection).doc(id).ref
   }
 
+  
+
   public enterpriseIsLoaded(): boolean {
     return this.enterpriseLoadedSubject.value;
   }
@@ -359,6 +361,17 @@ export class EnterpriseService {
 
     // Imprimir los resultados
     console.log('Device Percentages:', devicePercentages);
+  }
+
+
+  public getEventRegister$(searchTerm=null): Observable<Enterprise[]> {
+    return this.afs.collection<any>('eventosRegister', ref => {
+      let query: CollectionReference | Query = ref;
+      if (searchTerm) {
+        query = query.where('campana', '==', searchTerm)
+      }
+      return query
+    }).valueChanges()
   }
 
 

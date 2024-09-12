@@ -10,6 +10,8 @@ import { EnterpriseService } from "projects/predyc-business/src/shared/services/
 import { Subscription as SubscriptionClass } from "projects/shared/models/subscription.model";
 import { ProductService } from "projects/predyc-business/src/shared/services/product.service";
 import { Product } from "projects/shared";
+import * as XLSX from "xlsx-js-style";
+
 
 interface EnterpriseInfo {
   name: string;
@@ -76,7 +78,46 @@ export class EnterpriseListComponent {
   products: Product[];
   first = true
 
+    // Método para convertir las marcas de tiempo de Firebase a formato legible para Excel
+    convertirFechasFirebase(obj: any): any {
+      Object.keys(obj).forEach(key => {
+        const value = obj[key];
+
+        // Verificar si el valor es un objeto con la propiedad `seconds`
+        if (value && value.seconds) {
+          const date = new Date(value.seconds * 1000);
+          
+          // Convertir a formato legible para Excel (DD/MM/YYYY HH:mm:ss)
+          const formattedDate = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+          obj[key] = formattedDate;
+        }
+      });
+
+      return obj; // Devolver el objeto con las fechas convertidas
+    }
+
+    // Método para exportar a Excel
+    exportToExcel(jsonData: any[], fileName: string): void {
+      const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(jsonData);
+      const workbook: XLSX.WorkBook = {
+        Sheets: { 'data': worksheet },
+        SheetNames: ['data']
+      };
+      XLSX.writeFile(workbook, `${fileName}.xlsx`);
+    }
+
   ngOnInit() {
+
+		// this.enterpriseService.getEventRegister$().subscribe((eventos) => {
+		// 	console.log('eventos',eventos)
+    //     const eventosConFechasConvertidas = eventos.map(evento => {
+    //       return this.convertirFechasFirebase(evento);
+    //     });
+    //     if (eventosConFechasConvertidas && eventosConFechasConvertidas.length > 0) {
+    //       this.exportToExcel(eventosConFechasConvertidas, 'eventos_registrados');
+    //     }
+		// })
+
     this.first = true
     this.productService.getProducts$().subscribe((products) => {
       this.products = products;
