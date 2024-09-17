@@ -260,7 +260,7 @@ export class ProfileService {
     try {
       const snapshot = await this.afs.collection('profileTestsByStudent', ref => 
         ref.where("userRef", "==", userRef)
-           .where("profileRef", "==", user.profile)
+           //.where("profileRef", "==", user.profile)
       ).get().toPromise();
 
       return snapshot.docs.map(doc => doc.data());

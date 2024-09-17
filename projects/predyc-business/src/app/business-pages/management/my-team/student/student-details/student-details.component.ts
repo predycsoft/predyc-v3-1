@@ -180,10 +180,10 @@ export class StudentDetailsComponent {
 
         let diagnosticTest
 
-        let certificationTest = diagnosticTests.find(x=>x.diagnosticTests)
+        let certificationTest = diagnosticTests.find(x=>x.diagnosticTests || x.certificationTest)
 
         if(certificationTest){
-
+          
           certificationTest?.resultByClass?.forEach(element => {
             element.averageScore = element.score
           });

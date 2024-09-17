@@ -280,14 +280,14 @@ export class StudentStudyPlanAndCompetencesComponent {
     this.diagnosticTestSubscription = this.profileService
       .getDiagnosticTestForUser$(this.student)
       .subscribe((diagnosticTests) => {
-        // console.log('diagnosticTests',diagnosticTests)
+        //console.log('diagnosticTestsRevisar',diagnosticTests)
         if (diagnosticTests.length === 0) return;
         this.diagnosticTestoriginal = diagnosticTests
 
         let diagnosticTest
 
 
-        let certificationTest = diagnosticTests.find(x=>x.diagnosticTests)
+        let certificationTest = diagnosticTests.find(x=>x.diagnosticTests || x.certificationTest)
 
         if(certificationTest){
 
@@ -301,7 +301,7 @@ export class StudentStudyPlanAndCompetencesComponent {
           diagnosticTest = diagnosticTests.find(x=>x.profileRef.id == this.student.profile.id)
         }
 
-
+        
 
         this.diagnosticTest = {
           ...diagnosticTest,

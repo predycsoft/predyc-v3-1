@@ -50,7 +50,7 @@ export class CertificationsTestComponent {
 
   downloadReportData() {
     let datosReporte = this.datosReporte.filter(x => x.test.length > 0 && x.test.find(y => y.type == 'inicial' && y.certificationTest));
-    console.log('datosReporte', datosReporte);
+    console.log('datosReporte', datosReporte,this.datosReporte);
   
     let columnasResultados = [];
   
