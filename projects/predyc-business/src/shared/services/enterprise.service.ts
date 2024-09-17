@@ -374,5 +374,16 @@ export class EnterpriseService {
     }).valueChanges()
   }
 
+  public getFormsData$(searchTerm=null): Observable<Enterprise[]> {
+    return this.afs.collection<any>('infoRequestRegister', ref => {
+      let query: CollectionReference | Query = ref;
+      if (searchTerm) {
+        query = query.where('origen', '==', searchTerm)
+      }
+      return query
+    }).valueChanges()
+  }
+
+
 
 }
