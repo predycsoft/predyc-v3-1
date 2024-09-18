@@ -16,6 +16,7 @@ import { DepartmentService } from "projects/predyc-business/src/shared/services/
 import { AngularFirestore, QuerySnapshot } from "@angular/fire/compat/firestore";
 import { Curso, Profile, ProfileJson, User as UserClass, UserJson } from "projects/shared";
 import { ActivityClassesService } from '../../../shared/services/activity-classes.service';
+import { AuthService } from "projects/predyc-business/src/shared/services/auth.service";
 
 interface User {
   displayName: string;
@@ -60,7 +61,9 @@ export class DashboardComponent {
     private profileService: ProfileService,
     private departmentService: DepartmentService,
     private afs: AngularFirestore,
-    private activityClassesService: ActivityClassesService
+    private activityClassesService: ActivityClassesService,
+    private authService: AuthService,
+
   ) {}
 
   displayErrors;
@@ -127,7 +130,65 @@ export class DashboardComponent {
   testUsers
   examenInicial
 
+
+  descargarDatosMEC(){
+    this.enterpriseService.getEventRegister$().pipe(take(1)).subscribe((eventos) => {
+			console.log('eventos',eventos)
+        const eventosConFechasConvertidas = eventos.map(evento => {
+          return this.convertirFechasFirebase(evento);
+        });
+        if (eventosConFechasConvertidas && eventosConFechasConvertidas.length > 0) {
+          this.exportToExcel(eventosConFechasConvertidas, 'MenAccuion_data');
+        }
+		})
+  }
+
+  descargarDatosFoms(){
+
+    this.enterpriseService.getFormsData$().pipe(take(1)).subscribe((eventos) => {
+			console.log('eventos',eventos)
+        const eventosConFechasConvertidas = eventos.map(evento => {
+          return this.convertirFechasFirebase(evento);
+        });
+        if (eventosConFechasConvertidas && eventosConFechasConvertidas.length > 0) {
+          this.exportToExcel(eventosConFechasConvertidas, 'forms_data');
+        }
+		})
+  }
+
+   // Método para convertir las marcas de tiempo de Firebase a formato legible para Excel
+   convertirFechasFirebase(obj: any): any {
+    Object.keys(obj).forEach(key => {
+      const value = obj[key];
+
+      // Verificar si el valor es un objeto con la propiedad `seconds`
+      if (value && value.seconds) {
+        const date = new Date(value.seconds * 1000);
+        
+        // Convertir a formato legible para Excel (DD/MM/YYYY HH:mm:ss)
+        const formattedDate = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+        obj[key] = formattedDate;
+      }
+    });
+
+    return obj; // Devolver el objeto con las fechas convertidas
+  }
+
+  // Método para exportar a Excel
+  exportToExcel(jsonData: any[], fileName: string): void {
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(jsonData);
+    const workbook: XLSX.WorkBook = {
+      Sheets: { 'data': worksheet },
+      SheetNames: ['data']
+    };
+    XLSX.writeFile(workbook, `${fileName}.xlsx`);
+  }
+
+  user
   ngOnInit() {
+    this.authService.user$.subscribe((user) => {
+      this.user = user;
+    });
     this.loaderService.setLoading(true);
     this.enterpriseSubscription = this.enterpriseService.enterprise$.subscribe(
       async (enterprise) => {

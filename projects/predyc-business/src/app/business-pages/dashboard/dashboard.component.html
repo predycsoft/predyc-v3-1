@@ -76,5 +76,23 @@
     >
       <span class="pdl05 ft12 gray-10">Excel</span>
     </div>
-  </div>
+      <div
+      *ngIf="this.user.isSystemUser"
+      (click)="descargarDatosFoms()"
+      mat-menu-item
+      class="opcionMenu"
+      fxLayout="row"
+      fxLayoutAlign=" center" >
+        <span class="pdl05 ft12 gray-10">Formularios</span>
+      </div>
+      <div
+      *ngIf="this.user.isSystemUser"
+      (click)="descargarDatosMEC()"
+      mat-menu-item
+      class="opcionMenu"
+      fxLayout="row"
+      fxLayoutAlign=" center" >
+        <span class="pdl05 ft12 gray-10">Man. en acción</span>
+      </div>
+    </div>
 </mat-menu>
