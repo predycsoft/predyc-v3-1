@@ -31,11 +31,11 @@ export class DashboardComponent {
   currentUrl
   intructor
   columns = [
-    { name: 'Leads', color: '#f0e68c' ,cards:[],total:0},
-    { name: 'Sin negocio', color: '#f5deb3',cards:[],total:0 },
-    { name: 'Con negocio abierto', color: '#ffa07a',cards:[],total:0 },
-    { name: 'Solo negocios cerrados', color: '#90ee90' ,cards:[],total:0},
-    { name: 'Stats 2024', color: '#d3d3d3',cards:[],total:0 }
+    { name: 'Leads', color: '#f0e68c' ,cards:[],total:0,cantidad:0},
+    { name: 'Sin negocio', color: '#f5deb3',cards:[],total:0,cantidad:0 },
+    { name: 'Con negocio abierto', color: '#ffa07a',cards:[],total:0,cantidad:0 },
+    { name: 'Solo negocios cerrados', color: '#90ee90' ,cards:[],total:0,cantidad:0},
+    { name: 'Stats 2024', color: '#d3d3d3',cards:[],total:0 ,cantidad:0}
   ];
 
   asesores = []
@@ -80,16 +80,20 @@ export class DashboardComponent {
           // Actualizar la columna Leads con los datos procesados
           let leadsColumn = this.columns.find(x => x.name == 'Leads');
           if (leadsColumn && leadsColumn.name && leadsData.length > 0) {
-            leadsColumn.cards = leadsData.filter(x=>!x.archivado);
+            leadsColumn.cards = leadsData
           }
   
           // Obtener el total de la sección
           let amaount = this.getTotalAmountSeccion('Leads');
+          let cantidad = this.getTotalSeccion('Leads');
           leadsColumn.total = amaount;
+          leadsColumn.cantidad = cantidad;
+
         });
     });
   }
-  
+
+  showArchivados = false
 
   copiarContacto(message: string = 'Correos copiados', texto,action: string = '') {
     navigator.clipboard.writeText(texto).then(() => {
@@ -128,15 +132,21 @@ export class DashboardComponent {
     
     console.log(respuesta)
   }
+  getTotalSeccion(seccion) {
+    console.log(seccion, this.columns);
 
+    // Encuentra las tarjetas en la sección especificada.
+    let cards = this.columns.find(x => x.name === seccion).cards;
+    cards = cards.filter(x=>!x.archivado)
+
+    return cards.length;
+  }
   getTotalAmountSeccion(seccion) {
     console.log(seccion, this.columns);
 
     // Encuentra las tarjetas en la sección especificada.
-    const cards = this.columns.find(x => x.name === seccion).cards;
-
-    console.log(cards);
-
+    let cards = this.columns.find(x => x.name === seccion).cards;
+    cards = cards.filter(x=>!x.archivado)
     let amount = 0;
 
     // Recorre cada tarjeta y suma los valores numéricos válidos.
@@ -152,7 +162,7 @@ export class DashboardComponent {
 
     console.log('Total Amount:', amount); // Opcional: para verificación
     return amount;
-}
+  }
 
 handleKeydown(event: KeyboardEvent, card: any, editingField: string): void {
   if (event.keyCode === 13 || event.keyCode === 9) {
@@ -191,21 +201,41 @@ handleKeydown(event: KeyboardEvent, card: any, editingField: string): void {
 
 
   archivarCard() {
-    Swal.fire({
-        title: `¿Está seguro que desea archivar la tarjeta ${this.selectedLead.title}?`,
-        text: "Esta acción no se puede deshacer.",
+
+    if( this.selectedLead?.archivado){
+      Swal.fire({
+        title: `¿Está seguro que desea desarchivar la tarjeta ${this.selectedLead.title}?`,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#9ca6af',
         confirmButtonText: 'Archivar',
         cancelButtonText: 'Cancelar'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            this.selectedLead.archivado = true
-            this.savelead(this.selectedLead);
-        }
-    });
+      }).then((result) => {
+          if (result.isConfirmed) {
+              this.selectedLead.archivado = false
+              this.savelead(this.selectedLead);
+          }
+      });
+    }
+    else{
+      Swal.fire({
+        title: `¿Está seguro que desea archivar la tarjeta ${this.selectedLead.title}?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#9ca6af',
+        confirmButtonText: 'Archivar',
+        cancelButtonText: 'Cancelar'
+      }).then((result) => {
+          if (result.isConfirmed) {
+              this.selectedLead.archivado = true
+              this.savelead(this.selectedLead);
+          }
+      });
+
+    }
+
 }
 
 
