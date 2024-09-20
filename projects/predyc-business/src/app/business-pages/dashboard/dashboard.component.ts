@@ -131,32 +131,69 @@ export class DashboardComponent {
   examenInicial
 
 
-  descargarDatosMEC(){
+  descargarDatosMEC() {
     this.enterpriseService.getEventRegister$().pipe(take(1)).subscribe((eventos) => {
-			console.log('eventos',eventos)
-        const eventosConFechasConvertidas = eventos.map(evento => {
-          return this.convertirFechasFirebase(evento);
-        });
-        if (eventosConFechasConvertidas && eventosConFechasConvertidas.length > 0) {
-          this.exportToExcel(eventosConFechasConvertidas, 'MenAccuion_data');
+      const eventosProcesados = eventos.map(evento => {
+        // Convertir fechas de Firebase
+        const eventoConFecha = this.convertirFechasFirebase(evento);
+
+        if(eventoConFecha?.origen){
+          // Extraer valores de 'origen'
+          const urlParts = eventoConFecha.origen.split('?');
+          const baseUrl = 'https://predyc.com'; // Base URL
+          // Asignar los parámetros UTM si existen
+          const url = new URLSearchParams(urlParts[1] || '');
+          eventoConFecha.source = url.get('utm_source') || '';
+          eventoConFecha.medium = url.get('utm_medium') || '';
+          eventoConFecha.campaign = url.get('utm_campaign') || '';
+          // Crear el nuevo campo con el origen sin parámetros
+          eventoConFecha.origenBase = `${baseUrl}${urlParts[0]}`;
         }
-		})
+        return eventoConFecha;
+      });
+  
+      // Exportar a Excel si hay datos
+      if (eventosProcesados && eventosProcesados.length > 0) {
+        this.exportToExcel(eventosProcesados, 'MenAccuion_data');
+      }
+    });
   }
+  
+  
 
-  descargarDatosFoms(){
-
+  descargarDatosFoms() {
     this.enterpriseService.getFormsData$().pipe(take(1)).subscribe((eventos) => {
-			console.log('eventos',eventos)
-        const eventosConFechasConvertidas = eventos.map(evento => {
-          return this.convertirFechasFirebase(evento);
-        });
-        if (eventosConFechasConvertidas && eventosConFechasConvertidas.length > 0) {
-          this.exportToExcel(eventosConFechasConvertidas, 'forms_data');
+      const eventosProcesados = eventos.map(evento => {
+        // Convertir fechas de Firebase
+        const eventoConFecha = this.convertirFechasFirebase(evento);
+  
+        // Extraer valores de 'origen'
+        if(eventoConFecha?.origen){
+          const urlParts = eventoConFecha.origen.split('?');
+          const baseUrl = 'https://predyc.com'; // Base URL
+    
+          // Asignar los parámetros UTM si existen
+          const url = new URLSearchParams(urlParts[1] || '');
+          eventoConFecha.source = url.get('utm_source') || '';
+          eventoConFecha.medium = url.get('utm_medium') || '';
+          eventoConFecha.campaign = url.get('utm_campaign') || '';
+    
+          // Crear el nuevo campo con el origen sin parámetros
+          eventoConFecha.origenBase = `${baseUrl}${urlParts[0]}`;
+    
         }
-		})
-  }
 
-   // Método para convertir las marcas de tiempo de Firebase a formato legible para Excel
+        return eventoConFecha;
+      });
+  
+      // Exportar a Excel si hay datos
+      if (eventosProcesados && eventosProcesados.length > 0) {
+        this.exportToExcel(eventosProcesados, 'forms_data');
+      }
+    });
+  }
+  
+
   // Método para convertir las marcas de tiempo de Firebase a objetos Date
   convertirFechasFirebase(obj: any): any {
     Object.keys(obj).forEach(key => {
