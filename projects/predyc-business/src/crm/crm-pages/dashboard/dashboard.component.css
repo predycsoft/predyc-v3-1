@@ -15,6 +15,10 @@
   font-weight: bold;
   text-align: center;
   font-size: 12px;
+  background-color: #f0f0f0; /* Asegura que el color de fondo cubra el contenido mientras es sticky */
+  position: sticky; /* Mantiene el encabezado fijo */
+  top: 0; /* Fija el encabezado en la parte superior */
+  z-index: 10; /* Asegura que el encabezado esté por encima del contenido */
 }
 
 .kanban-content {
@@ -52,3 +56,4 @@
   padding: 8px;
 
 }
+

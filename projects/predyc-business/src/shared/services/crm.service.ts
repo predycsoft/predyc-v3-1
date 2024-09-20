@@ -61,6 +61,22 @@ export class CrmService {
     getLeadsObservable(): Observable<any[]> {
       return this.leads$;
     }
+
+    saveLead(lead: any): Promise<void> {
+      if (lead.id) {
+        // Si el lead tiene un ID, actualizamos el documento en Firestore
+        const leadRef: DocumentReference = this.afs.collection('infoRequestRegister').doc(lead.id).ref;
+        // Actualiza todos los campos del lead que sean proporcionados
+        return leadRef.update({ ...lead });
+      } else {
+        // Si no tiene un ID, podrías lanzar un error o manejarlo de alguna forma
+        return Promise.reject('El lead no tiene un ID');
+      }
+    }
+
+    getUserCRM(){
+      //users
+    }
   
 
   

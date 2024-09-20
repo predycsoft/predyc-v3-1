@@ -157,21 +157,19 @@ export class DashboardComponent {
   }
 
    // Método para convertir las marcas de tiempo de Firebase a formato legible para Excel
-   convertirFechasFirebase(obj: any): any {
+  // Método para convertir las marcas de tiempo de Firebase a objetos Date
+  convertirFechasFirebase(obj: any): any {
     Object.keys(obj).forEach(key => {
       const value = obj[key];
 
       // Verificar si el valor es un objeto con la propiedad `seconds`
       if (value && value.seconds) {
         const date = new Date(value.seconds * 1000);
-        
-        // Convertir a formato legible para Excel (DD/MM/YYYY HH:mm:ss)
-        const formattedDate = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
-        obj[key] = formattedDate;
+        obj[key] = date;  // Asigna directamente el objeto Date
       }
     });
 
-    return obj; // Devolver el objeto con las fechas convertidas
+    return obj;  // Devolver el objeto con las fechas convertidas a Date
   }
 
   // Método para exportar a Excel

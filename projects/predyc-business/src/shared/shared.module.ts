@@ -100,6 +100,9 @@ import { QuestionsListComponent } from "./components/questions-list/questions-li
 import { QuillModule } from "ngx-quill";
 import { FloatingNotificationComponent } from "./components/floating-notification/floating-notification.component";
 import { GeneralSelectorComponent } from './widgets/general-selector/general-selector.component';
+import { TextFieldModule } from "@angular/cdk/text-field";
+
+
 
 
 @NgModule({
@@ -206,7 +209,8 @@ import { GeneralSelectorComponent } from './widgets/general-selector/general-sel
     NgxExtendedPdfViewerModule,
     DragDropModule,
     MatSlideToggleModule,
-    QuillModule
+    QuillModule,
+    TextFieldModule
   ],
   exports: [
     SideNavComponent,
@@ -299,6 +303,7 @@ import { GeneralSelectorComponent } from './widgets/general-selector/general-sel
     FloatingNotificationComponent,
     LiveCourseFollowingComponent,
     GeneralSelectorComponent,
+    TextFieldModule
   ],
 
   providers: [VimeoUploadService,DatePipe],
