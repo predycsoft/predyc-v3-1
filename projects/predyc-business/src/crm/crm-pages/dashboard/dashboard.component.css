@@ -28,14 +28,10 @@
 .lead-card {
   border: 1px solid #ddd;
   background-color: #fff;
-  padding: 10px;
+  padding: 0;
   margin-bottom: 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   border-radius: 4px;
-}
-
-.leadCard {
-  padding: auto;
 }
 .leadCard span {
   white-space: normal;   /* Permite que el texto ocupe varias líneas */
@@ -55,5 +51,11 @@
   width: 100%;
   padding: 8px;
 
+}
+
+.card-footer {
+  padding: 8px; /* Espaciado interno */
+  background-color: #f0f0f0; /* Color de fondo del footer */
+  border-top: 1px solid #ccc; /* Línea superior para separar el contenido */
 }
 

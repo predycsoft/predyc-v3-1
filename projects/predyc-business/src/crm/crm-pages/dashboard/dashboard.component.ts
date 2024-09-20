@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from 'projects/predyc-business/src/shared/services/auth.service';
 import { CrmService } from 'projects/predyc-business/src/shared/services/crm.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import { InstructorsService } from 'projects/predyc-business/src/shared/services/instructors.service';
 import { filter, take } from 'rxjs';
+import Swal from "sweetalert2";
 
 @Component({
   selector: 'app-dashboard-crm',
@@ -21,6 +23,7 @@ export class DashboardComponent {
     private crmService: CrmService,
     public icon:IconService,
     private _snackBar: MatSnackBar,
+    private modalService: NgbModal
 
   ) 
   {
@@ -35,32 +38,58 @@ export class DashboardComponent {
     { name: 'Stats 2024', color: '#d3d3d3',cards:[],total:0 }
   ];
 
+  asesores = []
+
 
   ngOnInit() {
     this.authService.user$.subscribe(async (user) => {
+
+
+      let validUsers = await this.crmService.getUserCRM()
+      console.log('validUsers',validUsers)
+      this.asesores = validUsers
+
       this.crmService.getLeadsObservable()
-      .pipe()
-      .subscribe((leadsData) => {
-        console.log("this.leads", leadsData);
+        .pipe()
+        .subscribe((leadsData) => {
+          console.log("this.leads", leadsData);
+          leadsData.forEach(lead => {
+            lead.type = 'lead';
+  
+            // Extraer valores del campo 'origen' si existe
+            if (lead.origen && !lead.origenBase) {
+              const urlParts = lead.origen.split('?');
+              const url = new URLSearchParams(urlParts[1] || '');
+  
+              // Agregar los campos source, medium, y campaign
+              lead.source = url.get('utm_source') || '';
+              lead.medium = url.get('utm_medium') || '';
+              lead.campaign = url.get('utm_campaign') || '';
+  
+              // Crear el nuevo campo con el origen base
+              lead.origenBase = `https://predyc.com${urlParts[0]}`;
+            }
 
-        leadsData.forEach(lead => {
-          lead.type = 'lead'
+            if(lead.idAsesor){
+
+              const asesor = this.asesores.find(x=>x.id == lead.idAsesor)
+              lead.nameAsesor = asesor.name
+            }
+          });
+  
+          // Actualizar la columna Leads con los datos procesados
+          let leadsColumn = this.columns.find(x => x.name == 'Leads');
+          if (leadsColumn && leadsColumn.name && leadsData.length > 0) {
+            leadsColumn.cards = leadsData.filter(x=>!x.archivado);
+          }
+  
+          // Obtener el total de la sección
+          let amaount = this.getTotalAmountSeccion('Leads');
+          leadsColumn.total = amaount;
         });
-
-        let leadsColumn = this.columns.find(x=>x.name == 'Leads')
-        if(leadsColumn && leadsColumn.name && leadsData.length>0){
-          //leadsColumn.name = leadsColumn?.name + ` (${leadsData.length})`
-          leadsColumn.cards = leadsData
-        }
-        let amaount = this.getTotalAmountSeccion('Leads')
-        leadsColumn.total = amaount
-      });
-
-
-
-    })
-
+    });
   }
+  
 
   copiarContacto(message: string = 'Correos copiados', texto,action: string = '') {
     navigator.clipboard.writeText(texto).then(() => {
@@ -81,8 +110,20 @@ export class DashboardComponent {
     delete leadToSave['editingValor']
     delete leadToSave['editingProducto']
     delete leadToSave['editingOrigen']
+    delete leadToSave['editingCantidad']
 
-    let respuesta = this.crmService.saveLead(lead)
+    delete leadToSave['editingSource']
+    delete leadToSave['editingMedium']
+    delete leadToSave['editingCampaign']
+
+    delete leadToSave['nameAsesor']
+
+
+
+    console.log('leadToSave',leadToSave)
+    
+
+    let respuesta = this.crmService.saveLead(leadToSave)
 
     
     console.log(respuesta)
@@ -121,10 +162,53 @@ handleKeydown(event: KeyboardEvent, card: any, editingField: string): void {
   }
 }
 
-handleBlur(editingField: string, card: any): void {
-  card[editingField] = false;
-  this.savelead(card);
+  selectedLead = null
+
+  handleBlur(editingField: string, card: any): void {
+    card[editingField] = false;
+    this.savelead(card);
+  }
+
+    currentModal
+    openModal(modal,size = 'sm') {
+      this.currentModal = this.modalService.open(modal, {
+        ariaLabelledBy: "modal-basic-title",
+        centered: true,
+        size: size,
+      });
+    }
+
+    asignarAsesor(event: Event, lead: any): void {
+      const selectedValue = (event.target as HTMLSelectElement).value;
+      lead.idAsesor = selectedValue;
+      this.savelead(lead)
+
+      const asesor = this.asesores.find(x=>x.id == lead.idAsesor)
+      lead.nameAsesor = asesor.name   
+      // Lógica adicional para guardar el cambio si es necesario
+      console.log('Asesor asignado:', lead.idAsesor);
+  }
+
+
+  archivarCard() {
+    Swal.fire({
+        title: `¿Está seguro que desea archivar la tarjeta ${this.selectedLead.title}?`,
+        text: "Esta acción no se puede deshacer.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#9ca6af',
+        confirmButtonText: 'Archivar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            this.selectedLead.archivado = true
+            this.savelead(this.selectedLead);
+        }
+    });
 }
+
+
 
 
 

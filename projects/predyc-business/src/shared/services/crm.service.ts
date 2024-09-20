@@ -74,9 +74,27 @@ export class CrmService {
       }
     }
 
-    getUserCRM(){
-      //users
+    getUserCRM(): Promise<any[]> {
+      return this.afs.collection('user', ref => 
+        ref.where('role', '>=', 'crm') // Empieza a partir de 'crm'
+           .where('role', '<=', 'crm\uf8ff') // Termina justo después de 'crm'
+      ).get().toPromise()
+      .then(querySnapshot => {
+        const users = [];
+        querySnapshot.forEach(doc => {
+          const data = doc.data(); // Obtener los datos del documento
+          users.push({ id: doc.id, ...data as User}); // Asegúrate de que 'data' es un objeto
+        });
+        return users; // Retorna un arreglo con los usuarios que cumplen con la condición
+      })
+      .catch(error => {
+        console.error('Error al obtener usuarios:', error);
+        throw error; // Manejo de errores
+      });
     }
+    
+
+    
   
 
   
