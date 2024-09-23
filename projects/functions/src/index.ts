@@ -29,8 +29,8 @@ export { sendMail,sendMailHTML }
 // export { onNotificationAdded, onNotificationReadByAdmin }
 
 
-import { onUserAdded, onUserDeleted, onUserUpdated } from './users'
-export { onUserAdded, onUserDeleted, onUserUpdated }
+import { onUserAdded, onUserDeleted, onUserUpdated,createUserDocument } from './users'
+export { onUserAdded, onUserDeleted, onUserUpdated,createUserDocument }
 
 import { onProfileAdded, } from './profile'
 export { onProfileAdded, }

@@ -8,7 +8,7 @@
         <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="8px">
             <span class="ft12">Ver Archivados</span>
             <mat-slide-toggle [(ngModel)]="showArchivados" color="primary"></mat-slide-toggle>
-            <button class="backBlue5 button-animation" style="border-radius: 24px !important;">
+            <button (click)="openModal(nuevaEmpresaModal,'md')" class="backBlue5 button-animation" style="border-radius: 24px !important;">
                 <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="">
                 Nueva empresa
             </button>
@@ -165,7 +165,7 @@
 </mat-menu>
 
 <!-- Modal crear empresa -->
-<ng-template #AsignarResponsableModal let-modal>
+<ng-template #nuevaEmpresaModal let-modal>
     <div class="modal-header bg-web-primary text-white px-3 py-1" fxLayout="row" fxLayoutAlign="space-between center">
         <div class="modal-title pd10">
             <span class="ft16 ft500 gray-10">Crear nueva empresa</span>
