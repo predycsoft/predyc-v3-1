@@ -4,10 +4,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from 'projects/predyc-business/src/shared/services/auth.service';
 import { CrmService } from 'projects/predyc-business/src/shared/services/crm.service';
+import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import { InstructorsService } from 'projects/predyc-business/src/shared/services/instructors.service';
 import { filter, take } from 'rxjs';
 import Swal from "sweetalert2";
+import * as XLSX from "xlsx-js-style";
 
 @Component({
   selector: 'app-dashboard-crm',
@@ -23,7 +25,9 @@ export class DashboardComponent {
     private crmService: CrmService,
     public icon:IconService,
     private _snackBar: MatSnackBar,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private enterpriseService: EnterpriseService,
+
 
   ) 
   {
@@ -54,7 +58,7 @@ export class DashboardComponent {
         .subscribe((leadsData) => {
           console.log("this.leads", leadsData);
           leadsData.forEach(lead => {
-            lead.type = 'lead';
+            lead.typeCard = 'lead';
   
             // Extraer valores del campo 'origen' si existe
             if (lead.origen && !lead.origenBase) {
@@ -236,6 +240,64 @@ handleKeydown(event: KeyboardEvent, card: any, editingField: string): void {
 
     }
 
+}
+
+descargarDatosFoms() {
+  this.enterpriseService.getFormsData$().pipe(take(1)).subscribe((eventos) => {
+    const eventosProcesados = eventos.map(evento => {
+      // Convertir fechas de Firebase
+      const eventoConFecha = this.convertirFechasFirebase(evento);
+
+      // Extraer valores de 'origen'
+      if(eventoConFecha?.origen){
+        const urlParts = eventoConFecha.origen.split('?');
+        const baseUrl = 'https://predyc.com'; // Base URL
+  
+        // Asignar los parámetros UTM si existen
+        const url = new URLSearchParams(urlParts[1] || '');
+        eventoConFecha.source = url.get('utm_source') || '';
+        eventoConFecha.medium = url.get('utm_medium') || '';
+        eventoConFecha.campaign = url.get('utm_campaign') || '';
+  
+        // Crear el nuevo campo con el origen sin parámetros
+        eventoConFecha.origenBase = `${baseUrl}${urlParts[0]}`;
+  
+      }
+
+      return eventoConFecha;
+    });
+
+    // Exportar a Excel si hay datos
+    if (eventosProcesados && eventosProcesados.length > 0) {
+      this.exportToExcel(eventosProcesados, 'forms_data');
+    }
+  });
+}
+
+
+// Método para convertir las marcas de tiempo de Firebase a objetos Date
+convertirFechasFirebase(obj: any): any {
+  Object.keys(obj).forEach(key => {
+    const value = obj[key];
+
+    // Verificar si el valor es un objeto con la propiedad `seconds`
+    if (value && value.seconds) {
+      const date = new Date(value.seconds * 1000);
+      obj[key] = date;  // Asigna directamente el objeto Date
+    }
+  });
+
+  return obj;  // Devolver el objeto con las fechas convertidas a Date
+}
+
+// Método para exportar a Excel
+exportToExcel(jsonData: any[], fileName: string): void {
+  const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(jsonData);
+  const workbook: XLSX.WorkBook = {
+    Sheets: { 'data': worksheet },
+    SheetNames: ['data']
+  };
+  XLSX.writeFile(workbook, `${fileName}.xlsx`);
 }
 
 

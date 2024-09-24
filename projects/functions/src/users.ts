@@ -94,13 +94,19 @@ export const onUserUpdated = functions.firestore.document('user/{doc}').onUpdate
 export const createUserDocument = functions.https.onCall(async (data, context) => {
     try {
         const userDataToSave = data.userDataToSave;
+        const mailchimpTag = data.mailchimpTag; // Asegúrate de que el tag esté en el objeto correcto
 
         if (!userDataToSave) {
             throw new functions.https.HttpsError("invalid-argument", "The function must be called with valid user data.");
         }
+
         const userRef = admin.firestore().collection('user').doc(userDataToSave.uid); // Asegúrate de tener el ID del usuario
 
+        // Guardar los datos del usuario
         await userRef.set(userDataToSave, { merge: true });
+
+        // Actualizar mailchimpTag inmediatamente después
+        await userRef.set({ mailchimpTag: mailchimpTag }, { merge: true });
 
         return { success: true, message: 'User document created/updated successfully.' };
     } catch (error: any) {
@@ -108,4 +114,3 @@ export const createUserDocument = functions.https.onCall(async (data, context) =
         throw new functions.https.HttpsError("unknown", error.message);
     }
 });
-  

@@ -8,6 +8,10 @@
         <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="8px">
             <span class="ft12">Ver Archivados</span>
             <mat-slide-toggle [(ngModel)]="showArchivados" color="primary"></mat-slide-toggle>
+            <button (click)="descargarDatosFoms()" class="backBlue5 button-animation" style="border-radius: 24px !important;">
+                <img [src]="icon.download" class="h16px pdr05 makeWhite" alt="">
+                Descargar formularios
+            </button>
             <button (click)="openModal(nuevaEmpresaModal,'md')" class="backBlue5 button-animation" style="border-radius: 24px !important;">
                 <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="">
                 Nueva empresa
@@ -26,7 +30,7 @@
           <div class="kanban-content">
             <ng-container *ngFor="let card of column.cards">
                 <div *ngIf="showArchivados || !card.archivado" class="lead-card" [ngClass]="{'backGray5': card.archivado }">
-                    <ng-container *ngIf="(card.type == 'lead')">
+                    <ng-container *ngIf="(card.typeCard == 'lead')">
                         <div style="padding: 10px;">
                             <div>
                                 <span *ngIf="!card['editingTitle']" (click)="card['editingTitle'] = true" class="ft14 ft500 cursorPointer" >{{card.title ? card.title : 'Sin titulo'}}</span>
