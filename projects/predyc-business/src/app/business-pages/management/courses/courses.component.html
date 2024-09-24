@@ -76,12 +76,12 @@
                         <div class="mgt10">
                             <ng-container>
                                 <app-course-selector type="predyc" [categories]="categories" [searchValue]="searchValue"
-                                    (selectedCourseOut)="selectedCourse = $event">
+                                    (selectedCourseOut)="selectedCourse = $event" [user]="user">
                                 </app-course-selector>
                             </ng-container>
                             <ng-container>
                                 <app-course-selector type="propios" [categories]="categories" [searchValue]="searchValue"
-                                    (selectedCourseOut)="selectedCourse = $event">
+                                    (selectedCourseOut)="selectedCourse = $event" [user]="user">
                                 </app-course-selector>
                             </ng-container>
                         </div>

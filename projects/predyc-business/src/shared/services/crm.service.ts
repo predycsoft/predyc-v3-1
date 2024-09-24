@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, CollectionReference, DocumentReference, Query } from '@angular/fire/compat/firestore';
+import { AngularFirestore, AngularFirestoreDocument, CollectionReference, DocumentReference, Query } from '@angular/fire/compat/firestore';
 import { BehaviorSubject, Observable, Subscription, combineLatest, firstValueFrom, map } from 'rxjs';
 import { Enterprise, EnterpriseJson } from 'projects/shared/models/enterprise.model';
 import { AlertsService } from './alerts.service';
@@ -27,72 +27,94 @@ export class CrmService {
     private fireFunctions: AngularFireFunctions,
   ) {
     console.log("Se instancio el crm service")
-    this.getLeads()
+    this.getDashboardData()
 
   }
 
-  private leadSubject = new BehaviorSubject<any[]>([]);
-  private leads$ = this.leadSubject.asObservable();
+  private dasboardSubject = new BehaviorSubject<any[]>([]);
+  private dasboardData$ = this.dasboardSubject.asObservable();
 
     // Arguments could be pageSize, sort, currentPage
-    getLeads() {
-
-      // Query para traer por enterprise match
+    getDashboardData() {
+      // Query para traer leads
       const leadMatch$ = this.afs.collection<any>('infoRequestRegister').valueChanges();
-
+  
+      // Query para traer enterprises
+      const enterpriseMatch$ = this.afs.collection<any>('crmEnterpise').valueChanges();
   
       // Combinar ambos queries
-      combineLatest([leadMatch$])
+      combineLatest([leadMatch$, enterpriseMatch$])
         .pipe(
-          map(([matched]) => [...matched])
+          map(([matchedLeads, matchedEnterprises]) => ({
+            leads: matchedLeads,
+            enterprises: matchedEnterprises
+          }))
         )
         .subscribe({
-          next: lead => {
-            this.leadSubject.next(lead);
+          next: result => {
+            this.dasboardSubject.next(result as any); // Emitir el objeto completo
           },
           error: error => {
             console.log(error);
             // this.alertService.errorAlert(JSON.stringify(error));
           }
         });
-    }
-    
+  }
+  
+  
+  
 
-    getLeadsObservable(): Observable<any[]> {
-      return this.leads$;
-    }
+  getDashboardDataObservable(): Observable<any[]> {
+    return this.dasboardData$;
+  }
 
-    saveLead(lead: any): Promise<void> {
-      if (lead.id) {
-        // Si el lead tiene un ID, actualizamos el documento en Firestore
-        const leadRef: DocumentReference = this.afs.collection('infoRequestRegister').doc(lead.id).ref;
-        // Actualiza todos los campos del lead que sean proporcionados
-        return leadRef.update({ ...lead });
-      } else {
-        // Si no tiene un ID, podrías lanzar un error o manejarlo de alguna forma
-        return Promise.reject('El lead no tiene un ID');
-      }
+  saveLead(lead: any): Promise<void> {
+    if (lead.id) {
+      // Si el lead tiene un ID, actualizamos el documento en Firestore
+      const leadRef: DocumentReference = this.afs.collection('infoRequestRegister').doc(lead.id).ref;
+      // Actualiza todos los campos del lead que sean proporcionados
+      return leadRef.update({ ...lead });
+    } else {
+      // Si no tiene un ID, podrías lanzar un error o manejarlo de alguna forma
+      return Promise.reject('El lead no tiene un ID');
     }
+  }
 
-    getUserCRM(): Promise<any[]> {
-      return this.afs.collection('user', ref => 
-        ref.where('role', '>=', 'crm') // Empieza a partir de 'crm'
-           .where('role', '<=', 'crm\uf8ff') // Termina justo después de 'crm'
-      ).get().toPromise()
-      .then(querySnapshot => {
-        const users = [];
-        querySnapshot.forEach(doc => {
-          const data = doc.data(); // Obtener los datos del documento
-          users.push({ id: doc.id, ...data as User}); // Asegúrate de que 'data' es un objeto
-        });
-        return users; // Retorna un arreglo con los usuarios que cumplen con la condición
-      })
-      .catch(error => {
-        console.error('Error al obtener usuarios:', error);
-        throw error; // Manejo de errores
+  getUserCRM(): Promise<any[]> {
+    return this.afs.collection('user', ref => 
+      ref.where('role', '>=', 'crm') // Empieza a partir de 'crm'
+          .where('role', '<=', 'crm\uf8ff') // Termina justo después de 'crm'
+    ).get().toPromise()
+    .then(querySnapshot => {
+      const users = [];
+      querySnapshot.forEach(doc => {
+        const data = doc.data(); // Obtener los datos del documento
+        users.push({ id: doc.id, ...data as User}); // Asegúrate de que 'data' es un objeto
       });
+      return users; // Retorna un arreglo con los usuarios que cumplen con la condición
+    })
+    .catch(error => {
+      console.error('Error al obtener usuarios:', error);
+      throw error; // Manejo de errores
+    });
+  }
+
+saveEmpresa(empresa: any): Promise<void> {
+    if (empresa.id) {
+        // Si el lead tiene un ID, actualizamos el documento en Firestore
+        const leadRef: AngularFirestoreDocument<any> = this.afs.collection('crmEnterpise').doc(empresa.id);
+        // Actualiza todos los campos del lead que sean proporcionados
+        return leadRef.update({ ...empresa });
+    } else {
+        // Si no tiene un ID, creamos una nueva empresa
+        const leadRef: AngularFirestoreDocument<any> = this.afs.collection('crmEnterpise').doc(); // Genera un nuevo ID
+        empresa.id = leadRef.ref.id; // Agrega el ID generado al objeto empresa
+
+        // Agrega el nuevo documento a la colección
+        return leadRef.set({ ...empresa });
     }
-    
+}
+
 
     
   

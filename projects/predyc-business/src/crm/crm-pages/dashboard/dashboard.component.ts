@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from 'projects/predyc-business/src/shared/services/auth.service';
@@ -26,10 +27,7 @@ export class DashboardComponent {
     public icon:IconService,
     private _snackBar: MatSnackBar,
     private modalService: NgbModal,
-    private enterpriseService: EnterpriseService,
-
-
-  ) 
+    private enterpriseService: EnterpriseService,) 
   {
   }
   currentUrl
@@ -44,22 +42,26 @@ export class DashboardComponent {
 
   asesores = []
 
+  formNewEmpresa: FormGroup;
+
+
 
   ngOnInit() {
     this.authService.user$.subscribe(async (user) => {
 
-
+      console.log('user',user)
       let validUsers = await this.crmService.getUserCRM()
       console.log('validUsers',validUsers)
       this.asesores = validUsers
-
-      this.crmService.getLeadsObservable()
+      this.crmService.getDashboardDataObservable()
         .pipe()
-        .subscribe((leadsData) => {
-          console.log("this.leads", leadsData);
-          leadsData.forEach(lead => {
+        .subscribe((dashboardData) => {
+          console.log("this.leads", dashboardData);
+          let leads = dashboardData['leads']
+
+          //Leads INICIO
+          leads.forEach(lead => {
             lead.typeCard = 'lead';
-  
             // Extraer valores del campo 'origen' si existe
             if (lead.origen && !lead.origenBase) {
               const urlParts = lead.origen.split('?');
@@ -80,18 +82,27 @@ export class DashboardComponent {
               lead.nameAsesor = asesor.name
             }
           });
-  
           // Actualizar la columna Leads con los datos procesados
           let leadsColumn = this.columns.find(x => x.name == 'Leads');
-          if (leadsColumn && leadsColumn.name && leadsData.length > 0) {
-            leadsColumn.cards = leadsData
+          if (leadsColumn && leadsColumn.name && leads.length > 0) {
+            leadsColumn.cards = leads
           }
-  
           // Obtener el total de la sección
           let amaount = this.getTotalAmountSeccion('Leads');
           let cantidad = this.getTotalSeccion('Leads');
           leadsColumn.total = amaount;
           leadsColumn.cantidad = cantidad;
+
+          //Leads FIN
+
+          let empresas = dashboardData['enterprises']
+
+          console.log('empresas',empresas)
+
+
+
+
+
 
         });
     });
@@ -178,6 +189,8 @@ handleKeydown(event: KeyboardEvent, card: any, editingField: string): void {
 
   selectedLead = null
 
+  showErrorEmpresaNew = false
+
   handleBlur(editingField: string, card: any): void {
     card[editingField] = false;
     this.savelead(card);
@@ -190,6 +203,34 @@ handleKeydown(event: KeyboardEvent, card: any, editingField: string): void {
         centered: true,
         size: size,
       });
+    }
+
+
+    openModalEmpresasNew(modal,size = 'sm'){
+
+      this.formNewEmpresa = new FormGroup({
+        nombre: new FormControl("", Validators.required),
+        idAsesor: new FormControl("", Validators.required),
+      });
+      this.openModal(modal,size)
+    }
+
+    saveEmpresaNew(){
+
+      this.showErrorEmpresaNew = false
+      if(this.formNewEmpresa.valid){
+
+
+        let empresa = this.formNewEmpresa.value
+        console.log(empresa)
+
+
+
+      }
+      else{
+        this.showErrorEmpresaNew = true
+      }
+
     }
 
     asignarAsesor(event: Event, lead: any): void {

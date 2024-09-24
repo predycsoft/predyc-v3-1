@@ -65,5 +65,5 @@ export { getRoyaltiesInstructor }
 import { sendEmailQuestionInstructor } from './questions'
 export { sendEmailQuestionInstructor }
 
-import { valorarCurso2 } from './progress'
-export { valorarCurso2 }
+import { valorarCurso2,valorarCursoLive } from './progress'
+export { valorarCurso2,valorarCursoLive }

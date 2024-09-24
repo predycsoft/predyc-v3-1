@@ -15,6 +15,8 @@ export class CourseSelectorComponent {
   @Input() type = "propios";
   @Input() searchValue;
   @Output() selectedCourseOut = new EventEmitter<any>();
+  @Input() user
+
 
   processedCategories;
   selectedCourse;

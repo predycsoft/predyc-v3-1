@@ -12,7 +12,7 @@
                 <img [src]="icon.download" class="h16px pdr05 makeWhite" alt="">
                 Descargar formularios
             </button>
-            <button (click)="openModal(nuevaEmpresaModal,'md')" class="backBlue5 button-animation" style="border-radius: 24px !important;">
+            <button (click)="openModalEmpresasNew(nuevaEmpresaModal,'md')" class="backBlue5 button-animation" style="border-radius: 24px !important;">
                 <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="">
                 Nueva empresa
             </button>
@@ -177,13 +177,37 @@
         <img style="cursor: pointer" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px" alt="" />
     </div>
     <div class="modal-body" style="overflow-y: auto; max-height: 80vh">
-        <div fxLayout="row" class="fw">
-            shjdhjh
+        <div fxLayout="column" class="fw">
+
+            <form [formGroup]="formNewEmpresa" class="fw">
+                <div fxLayout="row" class="fw">
+                    <div class="form-group fw">
+                        <label>Nombre empresa</label>
+                        <input formControlName="nombre" [class.is-invalid]="formNewEmpresa.controls['nombre'].errors && showErrorEmpresaNew" type="text" class="form-control customInput" placeholder="Escriba el nombre de la empresa">
+                        <div class="invalid-feedback" *ngIf="formNewEmpresa.controls['nombre'].errors && showErrorEmpresaNew"> 
+                            Debe indicar el nombre de la empresa.
+                        </div>
+                    </div>
+                </div>
+                <div fxLayout="row" class="fw">
+                    <div class="form-group fw">
+                        <label>Responsable</label>
+                        <select
+                        [class.is-invalid]="formNewEmpresa.controls['idAsesor'].errors && showErrorEmpresaNew"
+                        class="form-control customInput radius10" formControlName="idAsesor">
+                        <option value="" disabled>Seleccionar responsable</option>
+                        <option *ngFor="let asesor of asesores" [value]="asesor.id">{{ asesor.name | titlecase }}</option></select>
+                        <div class="invalid-feedback" *ngIf="formNewEmpresa.controls['idAsesor'].errors && showErrorEmpresaNew"> 
+                            Debe seleccionar el responsable
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
         <div fxLayout="row" fxLayoutAlign="end end" class="pdt03" style="width: 100%">
-            <button class="blueButton gray-1 radius4 ft12 h28px mgt10" fxLayout="row"
+            <button (click)="saveEmpresaNew()" class="blueButton gray-1 radius4 ft12 h28px mgt10" fxLayout="row"
                 fxLayoutGap="0.625rem" fxLayoutAlign="center center">
-                <img [src]="icon.check" class="h16px pdr05 makeWhite" alt="" />
+                <img [src]="icon.save" class="h16px pdr05 makeWhite" alt="" />
                 Crear empresa
             </button>
         </div>
