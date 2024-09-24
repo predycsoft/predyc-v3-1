@@ -384,6 +384,73 @@ export class EnterpriseService {
     }).valueChanges()
   }
 
+  async getCursosValoraciones(): Promise<any[]> {
+    try {
+        // Obtener todos los cursos
+        const cursosSnapshot = await this.afs.collection('course').get().toPromise();
+        const cursosData: any[] = cursosSnapshot.docs.map(doc => doc.data()); // Solo los datos
+
+        // Obtener todas las valoraciones
+        const valoracionesSnapshot = await this.afs.collection('cursosValoraciones').get().toPromise();
+        const valoracionesData: any[] = valoracionesSnapshot.docs.map(doc => doc.data()); // Solo los datos
+
+        // Extraer los userRef de las valoraciones
+        const userRefs = valoracionesData.map(valoracion => valoracion.userRef);
+        const uniqueUserRefs = Array.from(new Set(userRefs.map(ref => ref.id))); // Obtener IDs únicos
+
+        // Dividir en grupos de 10
+        const userPromises = [];
+        for (let i = 0; i < uniqueUserRefs.length; i += 10) {
+            const batch = uniqueUserRefs.slice(i, i + 10);
+            userPromises.push(this.afs.collection('user', ref => ref.where('uid', 'in', batch)).get().toPromise());
+        }
+
+        // Obtener los usuarios en lotes
+        const userSnapshots = await Promise.all(userPromises);
+        const usersData: any[] = userSnapshots.flatMap(snapshot => snapshot.docs.map(doc => doc.data())); // Obtener todos los datos de usuarios
+
+        // Obtener todas las empresas
+        const enterprisesSnapshot = await this.afs.collection('enterprise').get().toPromise();
+        const enterprisesData: any[] = enterprisesSnapshot.docs.map(doc =>doc.data()); // Datos de empresas
+
+        // Combinar valoraciones con detalles del curso, usuario y empresa
+        const valoracionesConCursosYUsuarios = valoracionesData.map(valoracion => {
+            const courseRef = valoracion.courseRef; // Obtén la referencia del curso
+            const cursoDetalles = cursosData.find(curso => curso.id === courseRef.id); // Encuentra el curso correspondiente
+
+            // Encuentra el usuario correspondiente
+            const userRef = valoracion.userRef; // Asumiendo que userRef es un documento de referencia
+            const usuarioDetalles = usersData.find(user => user.uid === userRef.id); // Encuentra el usuario
+
+            // Si el usuario tiene enterpriseRef, busca la empresa
+            const enterpriseRef = usuarioDetalles?.enterprise;
+            const empresaDetalles = enterpriseRef ? enterprisesData.find(enterprise => enterprise.id === enterpriseRef.id) : null; // Encuentra la empresa
+
+            // Agrega los detalles del curso, del usuario y de la empresa a la valoración
+            return {
+                ...valoracion,
+                cursoDetalles: cursoDetalles || null, // Agrega los detalles del curso
+                usuarioDetalles: usuarioDetalles || null, // Agrega los detalles del usuario
+                empresaDetalles: empresaDetalles || null // Agrega los detalles de la empresa
+            };
+        });
+
+        return valoracionesConCursosYUsuarios; // Devuelve un arreglo de valoraciones con los detalles del curso, usuario y empresa
+    } catch (error) {
+        console.error('Error obteniendo cursos, valoraciones, usuarios y empresas:', error);
+        throw new Error('Error al obtener los datos');
+    }
+}
+
+
+
+
+
+
+
+
+
+
 
 
 }

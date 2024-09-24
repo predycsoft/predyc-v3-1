@@ -94,5 +94,14 @@
       fxLayoutAlign=" center" >
         <span class="pdl05 ft12 gray-10">Man. en acción</span>
       </div>
+      <div
+      *ngIf="this.user.isSystemUser"
+      (click)="getValoraciones()"
+      mat-menu-item
+      class="opcionMenu"
+      fxLayout="row"
+      fxLayoutAlign=" center" >
+        <span class="pdl05 ft12 gray-10">Obtener valoraciones</span>
+      </div>
     </div>
 </mat-menu>
