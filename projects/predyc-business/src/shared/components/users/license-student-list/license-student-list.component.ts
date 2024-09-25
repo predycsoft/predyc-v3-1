@@ -160,8 +160,7 @@ export class LicenseStudentListComponent {
             displayName: item.displayName,
             profile: profileName,
             status: item.status,
-            statusDisplayText:
-              SubscriptionClass.statusToDisplayValueDict[item.status],
+            statusDisplayText:SubscriptionClass.statusToDisplayValueDict[item.status],
             uid: item.uid,
             email: item.email,
             photoUrl: item.photoUrl,

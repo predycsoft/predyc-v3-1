@@ -59,6 +59,8 @@ export class Subscription {
     active: "Activo",
     inactive: "Inactivo",
     expired: "Vencida",
+    canceled: "Inactivo",
+
   };
 
   public static getSubscriptionTemplate(): Subscription {

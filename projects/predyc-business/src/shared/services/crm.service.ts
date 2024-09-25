@@ -18,13 +18,10 @@ export class CrmService {
   public enterprise$ = this.enterpriseSubject.asObservable()
   private enterpriseLoadedSubject = new BehaviorSubject<boolean>(false)
   public enterpriseLoaded$ = this.enterpriseLoadedSubject.asObservable()
-  private enterpriseRef: DocumentReference<Enterprise>
 
 
   constructor(
-    private authService: AuthService,
     private afs: AngularFirestore,
-    private fireFunctions: AngularFireFunctions,
   ) {
     console.log("Se instancio el crm service")
     this.getDashboardData()
@@ -114,6 +111,12 @@ saveEmpresa(empresa: any): Promise<void> {
         return leadRef.set({ ...empresa });
     }
 }
+
+
+getEmpresabyID(empresaId: string): Observable<any> {
+  return this.afs.collection('crmEnterpise').doc(empresaId).valueChanges();
+}
+
 
 
     

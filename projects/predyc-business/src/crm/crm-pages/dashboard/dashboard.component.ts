@@ -2,13 +2,14 @@ import { Component } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from 'projects/predyc-business/src/shared/services/auth.service';
 import { CrmService } from 'projects/predyc-business/src/shared/services/crm.service';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import { InstructorsService } from 'projects/predyc-business/src/shared/services/instructors.service';
-import { filter, take } from 'rxjs';
+import { Observable, filter, map, startWith, take } from 'rxjs';
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx-js-style";
 
@@ -27,7 +28,8 @@ export class DashboardComponent {
     public icon:IconService,
     private _snackBar: MatSnackBar,
     private modalService: NgbModal,
-    private enterpriseService: EnterpriseService,) 
+    private enterpriseService: EnterpriseService,
+    private router: Router) 
   {
   }
   currentUrl
@@ -43,8 +45,36 @@ export class DashboardComponent {
   asesores = []
 
   formNewEmpresa: FormGroup;
-  empresas = []
 
+  empresaControl = new FormControl(); // Control del formulario
+  filteredEmpresas: Observable<any[]>; // Empresas filtradas
+  empresas: any[] = []; // Lista completa de empresas
+
+
+    _filterEmpresas(value: string | any): any[] {
+      const filterValue = (typeof value === 'string') ? value.toLowerCase() : value.nombre.toLowerCase();
+      return this.empresas.filter(article => article.nombre.toLowerCase().includes(filterValue));
+    }
+
+
+    currentEmpresaSelectedLead
+ // Función para asignar la empresa seleccionada por id
+    asignarEmpresa(empresa: any) {
+      if(empresa){
+        const selectedEmpresa = empresa
+        console.log('selectedEmpresa',selectedEmpresa)
+        this.currentEmpresaSelectedLead= selectedEmpresa
+      }
+      else {
+        alert('crear empresa')
+      }
+
+    }
+
+    getOptionTextEmpresa(empresa: any): string {
+      return empresa ? empresa.nombre : '';
+    }
+  
 
   ngOnInit() {
     this.authService.user$.subscribe(async (user) => {
@@ -95,9 +125,64 @@ export class DashboardComponent {
 
           //Leads FIN
 
+          //Empresas Inicio
+
+
+          let sinNegociosColumn = this.columns.find(x => x.name == 'Sin negocio');
+          sinNegociosColumn.cards = []
+
           let empresas = dashboardData['enterprises']
           console.log('empresas',empresas)
           this.empresas = empresas
+
+          // Lógica de filtrado
+          this.filteredEmpresas = this.empresaControl.valueChanges.pipe(
+            startWith(''),
+            map(value => this._filterEmpresas(value))
+          );
+
+          empresas.forEach(empresa => {
+            let cards = []
+
+            const asesor = this.asesores.find(x=>x.id == empresa.idAsesor)
+
+            cards = empresa?.cards
+            let cardEmpresa = {
+              name:empresa.nombre,
+              archivado:empresa?.archivado?empresa.archivado : false,
+              idAsesor:empresa.idAsesor,
+              id:empresa.id,
+              typeCard:null,
+              nameAsesor:asesor.name
+
+            }
+            if(cards && cards.length>0){
+              let sinNegcios = cards.filter(x=>x.status == null || !x.status)
+              let abiertos = cards.filter(x=>x.status == 'open')
+              let cerrados = cards.filter(x=>x.status == 'closed')
+              if(abiertos.length == 0 && cerrados.length == 0){
+                alert('ok')
+  
+  
+              }
+            }
+            else{ // empresa vacia (sin tarjetas)
+              let sinNegociosColumn = this.columns.find(x => x.name == 'Sin negocio');
+              cardEmpresa.typeCard='empresaSinNefocios'
+              sinNegociosColumn.cards.push(cardEmpresa)
+              
+            }
+
+
+
+
+
+          });
+
+
+          
+
+
 
 
 
@@ -121,31 +206,48 @@ export class DashboardComponent {
     });
   }
 
-  savelead(lead){
+
+  saveleadModal(lead){
+
+    this.savelead(lead,false)
+
+    if(this.currentEmpresaSelectedLead){
+      // validar que campos necesarios esten llenos
+
+      if(!lead.idAsesor){
+        Swal.fire({
+          icon: 'warning',
+          title: 'Advertencia',
+          text: 'El lead no tiene responsable.',
+          confirmButtonText: 'Aceptar'
+      });
+        return
+      }
+      lead.idEnterpise = this.currentEmpresaSelectedLead.id
+
+    }
+
+  }
+
+  savelead(lead,close = true){
 
     let leadToSave = structuredClone(lead)
-    
     delete leadToSave['editingTitle']
     delete leadToSave['editingValor']
     delete leadToSave['editingProducto']
     delete leadToSave['editingOrigen']
     delete leadToSave['editingCantidad']
-
     delete leadToSave['editingSource']
     delete leadToSave['editingMedium']
     delete leadToSave['editingCampaign']
-
     delete leadToSave['nameAsesor']
-
-
-
     console.log('leadToSave',leadToSave)
-    
-
     let respuesta = this.crmService.saveLead(leadToSave)
-
-    
     console.log(respuesta)
+    if(close){
+      this.currentModal.close()
+    }
+
   }
   getTotalSeccion(seccion) {
     console.log(seccion, this.columns);
@@ -215,11 +317,18 @@ handleKeydown(event: KeyboardEvent, card: any, editingField: string): void {
       this.openModal(modal,size)
     }
 
+
+    openModalAjustesLead(modal,lead,size = 'sm'){
+      this.currentEmpresaSelectedLead = null
+      this.selectedLead=structuredClone(lead);
+
+      this.openModal(modal,size)
+    }
+
     async saveEmpresaNew(){
 
       this.showErrorEmpresaNew = false
       if(this.formNewEmpresa.valid){
-
         let empresa = this.formNewEmpresa.value
         console.log(empresa)
         empresa.nombre = empresa.nombre.toLowerCase().trim()
@@ -236,6 +345,7 @@ handleKeydown(event: KeyboardEvent, card: any, editingField: string): void {
               confirmButtonText: 'Aceptar'
           });
       } else {
+          this.currentModal.close()
           await this.crmService.saveEmpresa(empresa);
           
           Swal.fire({
@@ -248,8 +358,8 @@ handleKeydown(event: KeyboardEvent, card: any, editingField: string): void {
           }).then((result) => {
               if (result.isConfirmed) {
                   // Redirigir al enlace de la empresa creada
-                  window.location.href = `/ruta-a-la-empresa/${empresa.id}`; // Ajusta la ruta según sea necesario
-              }
+                  this.router.navigate([`/crm/empresa/${empresa.id}`]); // Ajusta la ruta según sea necesario
+                }
           });
       }
       
@@ -368,6 +478,10 @@ exportToExcel(jsonData: any[], fileName: string): void {
   XLSX.writeFile(workbook, `${fileName}.xlsx`);
 }
 
+redirectToEmpresa(card: any) {
+
+  this.router.navigate([`/crm/empresa/${card.id}`]); // Ajusta la ruta según sea necesario
+}
 
 
 

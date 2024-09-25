@@ -122,8 +122,22 @@
                         </div>
                         <!-- Footer de la tarjeta -->
                         <div fxLayout="row" fxLayoutAlign="space-between center" class="card-footer" style="margin: 0; padding: 8px;">
-                            <span>{{card.nameAsesor? (card.nameAsesor | titlecase):'Sin responsable'}}</span>
-                            <span class="blueLink" (click)="selectedLead=card" [matMenuTriggerFor]="menuLeadAccions">Ajustes</span>
+                            <span class="ftxs">{{card.nameAsesor? (card.nameAsesor | titlecase):'Sin responsable'}}</span>
+                            <span class="ftxs blueLink" (click)="openModalAjustesLead(ajustesLeadModal,card,'lg')">Ajustes</span>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="(card.typeCard == 'empresaSinNefocios')">
+                        <div class="cursorPointer" (dblclick)="redirectToEmpresa(card)">
+                            <div style="padding: 6px; padding-bottom: 0px;">
+                                <div>
+                                    <span class="ft14 ft500" >{{card.name | titlecase}}</span>
+                                </div>
+                            </div>
+                            <!-- Footer de la tarjeta -->
+                            <div fxLayout="row" fxLayoutAlign="space-between center" style="margin: 0; padding: 8px; padding-top: 0px; padding-bottom: 8px;">
+                                <span class="ftxs">{{card.nameAsesor? (card.nameAsesor | titlecase):'Sin responsable'}}</span>
+                                <!-- <span class="blueLink" (click)="selectedLead=card" [matMenuTriggerFor]="menuLeadAccions">Ajustes</span> -->
+                            </div>
                         </div>
                     </ng-container>
                 </div>
@@ -209,6 +223,147 @@
                 fxLayoutGap="0.625rem" fxLayoutAlign="center center">
                 <img [src]="icon.save" class="h16px pdr05 makeWhite" alt="" />
                 Crear empresa
+            </button>
+        </div>
+    </div>
+</ng-template>
+
+
+<!-- Modal ajuestes lead -->
+<ng-template #ajustesLeadModal let-modal>
+    <div class="modal-header bg-web-primary text-white px-3 py-1" fxLayout="row" fxLayoutAlign="space-between center">
+        <div class="modal-title pd10">
+            <span class="ft16 ft500 gray-10">Ajustes Lead</span>
+        </div>
+        <img style="cursor: pointer" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px" alt="" />
+    </div>
+    <div class="modal-body" style="overflow-y: auto; max-height: 80vh">
+        <div fxLayout="row" class="fw">
+            <div fxFlex="60">
+                <div>
+                    <span *ngIf="!selectedLead['editingTitle']" (click)="selectedLead['editingTitle'] = true" class="ft14 ft500 cursorPointer" >{{selectedLead.title ? selectedLead.title : 'Sin titulo'}}</span>
+                    <input (blur)="selectedLead['editingTitle'] = false;"  (keydown)="handleKeydown($event, selectedLead, 'editingTitle')"  *ngIf="selectedLead['editingTitle']"  type="text" [(ngModel)]="selectedLead.title" class="h32px ft14 shadow-animation pdl05 pdr05 radius4 borderLight fw" style="text-align: center;" />
+                </div>
+                <div class="contactoLead mgt05" fxLayout="column">
+                    <div fxLayout="row" class="pdb05">
+                        <span class="ft12">{{selectedLead.name | titlecase}}&nbsp;-&nbsp;{{selectedLead.empresa}}&nbsp;- &nbsp;{{selectedLead.cargo}}</span> 
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="space-between stretch">
+                        <a (click)="copiarContacto('Correo copiado',selectedLead.email)" [href]="'mailto:' + selectedLead.email" class="ft12 blueLink">{{ selectedLead.email }}</a>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="space-between stretch">
+                        <a (click)="copiarContacto('Teléfono copiado',selectedLead.telefono)" [href]="'https://wa.me/' + selectedLead.telefono" target="_blank" class="ft12 gray-10">Tel:&nbsp;{{ selectedLead.telefono }}</a>
+                    </div>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="space-between center" class="pdt05">
+                    <span>Valor:</span>
+                    <!-- <input [(ngModel)]="selectedLead.valor" (blur)=" type="number"/> -->
+                    <span *ngIf="!selectedLead['editingValor']" (click)="selectedLead['editingValor'] = true" class="cursorPointer" [ngClass]="{ 'greenText4 ft600': selectedLead.valor }">{{ selectedLead.valor ? (selectedLead.valor | currency:'USD':'symbol':'1.2-2') : 'Sin valor establecido' }}</span>
+                    <input (blur)="selectedLead['editingValor'] = false;" (keydown)="handleKeydown($event, selectedLead, 'editingValor')"  *ngIf="selectedLead['editingValor']"  type="number" [(ngModel)]="selectedLead.valor" class="h32px ft14 shadow-animation pdl05 pdr05 radius4 borderLight fw" style="text-align: center;" />
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="space-between center" class="pdt05">
+                    <span>Interes:</span>
+                    <!-- Select para elegir entre 'Empresa' o 'Independiente' -->
+                    <span *ngIf="!selectedLead['editingProducto']" (click)="selectedLead['editingProducto'] = true" class="cursorPointer">
+                        {{ selectedLead.interesUser ? (selectedLead.interesUser | titlecase) : 'Sin valor establecido' }}
+                    </span>
+                    <select (keydown)="handleKeydown($event, selectedLead, 'editingProducto')"  (blur)="selectedLead['editingProducto'] = false;" *ngIf="selectedLead['editingProducto']" [(ngModel)]="selectedLead.interesUser" class="h32px ft14 shadow-animation pdl05 pdr05 radius4 borderLight fw">
+                        <option [ngValue]="'empresa'">Empresa</option>
+                        <option [ngValue]="'individual'">Individual</option>
+                    </select>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="space-between center" class="pdt05">
+                    <span>Cantidad:</span>
+                    <!-- Select para elegir entre 'Empresa' o 'Independiente' -->
+                    <span *ngIf="!selectedLead['editingCantidad']" (click)="selectedLead['editingCantidad'] = true" class="cursorPointer">
+                        {{ selectedLead.cantidad ? (selectedLead.cantidad ) : 'Sin valor establecido' }}
+                    </span>
+                    <select (keydown)="handleKeydown($event, selectedLead, 'editingCantidad')"  (blur)="selectedLead['editingCantidad'] = false;" *ngIf="selectedLead['editingCantidad']" [(ngModel)]="selectedLead.cantidad" class="h32px ft14 shadow-animation pdl05 pdr05 radius4 borderLight fw">
+                        <option [ngValue]="'1'">Para 1 persona</option>
+                        <option [ngValue]="'2'">Para 2 personas</option>
+                        <option [ngValue]="'5'">Para 5 personas</option>
+                        <option [ngValue]="'+10'">Para más de 10 personas</option>
+                        <option [ngValue]="'+25'">Para más de 25 personas</option>
+                    </select>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="start start" class="pdt05">
+                    <div fxLayout="column" fxFlex="20">
+                        <span>Origen:</span>
+                    </div>
+                    <div fxLayout="column" fxFlex="80">
+                        <span *ngIf="!selectedLead['editingOrigen']" (click)="selectedLead['editingOrigen'] = true" class="cursorPointer" style="text-align: right; display: block; overflow-wrap: break-word; max-width: 100%;">
+                            {{ selectedLead.origenBase ? selectedLead.origenBase : 'Sin valor establecido' }}
+                        </span>
+                        <textarea cdkTextareaAutosize
+                        #autosize="cdkTextareaAutosize"
+                        cdkAutosizeMinRows="1"
+                        cdkAutosizeMaxRows="99"
+                        [(ngModel)]="selectedLead.origenBase"
+                        (blur)="selectedLead['editingOrigen'] = false;"
+                        *ngIf="selectedLead['editingOrigen']"></textarea>
+                    </div>
+                </div>
+                <!-- source	medium	campaign -->
+                <div fxLayout="row" fxLayoutAlign="space-between center" class="pdt05">
+                    <span>Source:</span>
+                    <!-- <input [(ngModel)]="card.valor" (blur)="savelead(card)" type="number"/> -->
+                    <span *ngIf="!selectedLead['editingSource']" (click)="selectedLead['editingSource'] = true" class="cursorPointer" >{{ selectedLead.source ? (selectedLead.source) : '-' }}</span>
+                    <input (blur)="selectedLead['editingSource'] = false;" (keydown)="handleKeydown($event, selectedLead, 'editingSource')"  *ngIf="selectedLead['editingSource']"  type="text" [(ngModel)]="selectedLead.source" class="h32px ft14 shadow-animation pdl05 pdr05 radius4 borderLight fw" style="text-align: center;" />
+                </div>
+                <div fxLayout="row" fxLayoutAlign="space-between center" class="pdt05">
+                    <span>Medium:</span>
+                    <!-- <input [(ngModel)]="selectedLead.valor" (blur)=" type="number"/> -->
+                    <span *ngIf="!selectedLead['editingMedium']" (click)="selectedLead['editingMedium'] = true" class="cursorPointer" >{{ selectedLead.medium ? (selectedLead.medium) : '-' }}</span>
+                    <input (blur)="selectedLead['editingMedium'] = false;" (keydown)="handleKeydown($event, selectedLead, 'editingMedium')"  *ngIf="selectedLead['editingMedium']"  type="text" [(ngModel)]="selectedLead.medium" class="h32px ft14 shadow-animation pdl05 pdr05 radius4 borderLight fw" style="text-align: center;" />
+                </div>
+                <div fxLayout="row" fxLayoutAlign="space-between center" class="pdt05">
+                    <span>Campaign:</span>
+                    <!-- <input [(ngModel)]="selectedLead.valor" (blur)=" type="number"/> -->
+                    <span *ngIf="!selectedLead['editingCampaign']" (click)="selectedLead['editingCampaign'] = true" class="cursorPointer" >{{ selectedLead.campaign ? (selectedLead.campaign) : '-' }}</span>
+                    <input (blur)="selectedLead['editingCampaign'] = false;" (keydown)="handleKeydown($event, selectedLead, 'editingCampaign')"  *ngIf="selectedLead['editingCampaign']"  type="text" [(ngModel)]="selectedLead.campaign" class="h32px ft14 shadow-animation pdl05 pdr05 radius4 borderLight fw" style="text-align: center;" />
+                </div>
+                <div fxLayout="row" fxLayoutAlign="space-between center" class="pdt05">
+                    <span>Fecha:</span>
+                    <span>{{selectedLead.date.seconds * 1000 | date}}</span>
+                </div>
+            </div>
+            <div fxFlex="40">
+                <div fxLayout="column" fxLayoutAlign="" class="mgl10 mgr10" style="margin-top: 12px;">
+                    <span style="padding-bottom: 8px;">Responsable</span>
+                    <select class="fw" (click)="$event.stopPropagation()" (change)="asignarAsesor($event, selectedLead)">
+                        <option value="" disabled [selected]="!selectedLead?.idAsesor">Asignar</option>
+                        <option *ngFor="let asesor of asesores" [value]="asesor.id" [selected]="asesor.id === selectedLead?.idAsesor">{{ asesor.name | titlecase }}</option>
+                    </select>
+                </div>
+                <div fxLayout="column" fxLayoutAlign="" class="mgl10 mgr10" style="margin-top: 12px;">
+                    <span style="padding-bottom: 8px;">Empresa</span>
+                    <!-- Input con autocomplete -->
+                    <mat-form-field class="fw">
+                      <input type="text"
+                             placeholder="Asignar empresa"
+                             aria-label="Number"
+                             matInput
+                             [formControl]="empresaControl"
+                             [matAutocomplete]="auto">
+                             
+                      <mat-autocomplete #auto="matAutocomplete"  [displayWith]="getOptionTextEmpresa"  (optionSelected)="asignarEmpresa($event.option.value)">
+                        <mat-option *ngFor="let empresa of filteredEmpresas | async" [value]="empresa">
+                          {{ empresa.nombre | titlecase }}
+                        </mat-option>
+                        <mat-option [value]="null">
+                           Crear empresa (not yet implemented)
+                          </mat-option>
+                      </mat-autocomplete>
+                    </mat-form-field>
+                  </div>
+            </div>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="end end" class="pdt03" style="width: 100%">
+            <button (click)="saveleadModal(selectedLead);" class="blueButton gray-1 radius4 ft12 h28px mgt10" fxLayout="row"
+                fxLayoutGap="0.625rem" fxLayoutAlign="center center">
+                <img [src]="icon.save" class="h16px pdr05 makeWhite" alt="" />
+                Aceptar
             </button>
         </div>
     </div>
