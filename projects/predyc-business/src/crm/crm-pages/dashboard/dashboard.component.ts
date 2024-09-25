@@ -43,7 +43,7 @@ export class DashboardComponent {
   asesores = []
 
   formNewEmpresa: FormGroup;
-
+  empresas = []
 
 
   ngOnInit() {
@@ -96,8 +96,8 @@ export class DashboardComponent {
           //Leads FIN
 
           let empresas = dashboardData['enterprises']
-
           console.log('empresas',empresas)
+          this.empresas = empresas
 
 
 
@@ -215,17 +215,44 @@ handleKeydown(event: KeyboardEvent, card: any, editingField: string): void {
       this.openModal(modal,size)
     }
 
-    saveEmpresaNew(){
+    async saveEmpresaNew(){
 
       this.showErrorEmpresaNew = false
       if(this.formNewEmpresa.valid){
 
-
         let empresa = this.formNewEmpresa.value
         console.log(empresa)
+        empresa.nombre = empresa.nombre.toLowerCase().trim()
 
+        let empresaFind =this.empresas.find(x => x.nombre == empresa.nombre)
 
+        console.log('empresaFind',empresaFind)
 
+        if (empresaFind) { // Ya hay una empresa con ese nombre
+          Swal.fire({
+              icon: 'warning',
+              title: 'Advertencia',
+              text: 'Ya existe una empresa con ese nombre.',
+              confirmButtonText: 'Aceptar'
+          });
+      } else {
+          await this.crmService.saveEmpresa(empresa);
+          
+          Swal.fire({
+              icon: 'success',
+              title: 'Éxito',
+              text: 'La empresa se ha guardado exitosamente.',
+              confirmButtonText: 'Ir a la empresa',
+              showCancelButton: true,
+              cancelButtonText: 'cerrar'
+          }).then((result) => {
+              if (result.isConfirmed) {
+                  // Redirigir al enlace de la empresa creada
+                  window.location.href = `/ruta-a-la-empresa/${empresa.id}`; // Ajusta la ruta según sea necesario
+              }
+          });
+      }
+      
       }
       else{
         this.showErrorEmpresaNew = true
