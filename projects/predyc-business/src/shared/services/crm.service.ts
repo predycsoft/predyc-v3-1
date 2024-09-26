@@ -77,6 +77,54 @@ export class CrmService {
     }
   }
 
+  async saveLeadEmpresa(idEmpresa: string, lead: any): Promise<void> {
+    if (!lead.id) {
+      return Promise.reject('El lead no tiene un ID');
+    }
+  
+    const leadRef = this.afs.collection('infoRequestRegister').doc(lead.id).ref;
+    const empresaRef = this.afs.collection('crmEnterpise').doc(idEmpresa).ref;
+  
+    try {
+      // Inicia la transacción para asegurar que ambos documentos se actualizan
+      await this.afs.firestore.runTransaction(async (transaction) => {
+        // Primero lee el documento de la empresa
+        const empresaDoc = await transaction.get(empresaRef);
+        if (!empresaDoc.exists) {
+          throw new Error(`El documento de la empresa con ID ${idEmpresa} no existe.`);
+        }
+  
+        // Ahora que la lectura está hecha, puedes proceder con la escritura
+        // Actualiza el lead en 'infoRequestRegister'
+        transaction.update(leadRef, { ...lead });
+  
+        // Actualiza el arreglo 'leads' en el documento de la empresa
+        const empresaData = empresaDoc.data();
+        let leads = empresaData['leads'] || [];
+  
+        // Encuentra el lead a actualizar en el arreglo de leads
+        const leadIndex = leads.findIndex((l: any) => l.id === lead.id);
+        if (leadIndex !== -1) {
+          // Actualiza el lead en el arreglo
+          leads[leadIndex] = { ...leads[leadIndex], ...lead };
+        } else {
+          // Si el lead no existe en el arreglo, lo agrega (opcional)
+          leads.push(lead);
+        }
+  
+        // Actualiza el documento de la empresa con el nuevo arreglo de leads
+        transaction.update(empresaRef, { leads });
+      });
+  
+      console.log('Lead y empresa actualizados correctamente');
+    } catch (error) {
+      console.error('Error al actualizar el lead o la empresa:', error);
+      throw error;
+    }
+  }
+  
+  
+
   getUserCRM(): Promise<any[]> {
     return this.afs.collection('user', ref => 
       ref.where('role', '>=', 'crm') // Empieza a partir de 'crm'
@@ -115,6 +163,25 @@ saveEmpresa(empresa: any): Promise<void> {
 
 getEmpresabyID(empresaId: string): Observable<any> {
   return this.afs.collection('crmEnterpise').doc(empresaId).valueChanges();
+}
+
+addLeadToEnterprise(lead: any, idEmpresa: string): Promise<void> {
+  const enterpriseRef = this.afs.collection('crmEnterpise').doc(idEmpresa);
+
+  return enterpriseRef.ref.get().then(async (doc) => {
+      if (doc.exists) {
+          const enterpriseData = doc.data();
+          const leadsArray = enterpriseData['leads'] || []; // Obtén el arreglo existente o inicializa uno nuevo
+
+          // Agrega el nuevo lead al arreglo
+          leadsArray.push(lead);
+
+          // Actualiza el documento de la empresa con el nuevo arreglo de leads
+          await enterpriseRef.update({ leads: leadsArray });
+      } else {
+          throw new Error('La empresa no existe');
+      }
+  });
 }
 
 

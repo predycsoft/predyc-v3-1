@@ -41,7 +41,7 @@ export class EmpresaCRMComponent {
     { name: 'Sin negocio', color: '#f5deb3',cards:[],total:0,cantidad:0 },
     { name: 'Con negocio abierto', color: '#ffa07a',cards:[],total:0,cantidad:0 },
     { name: 'Solo negocios cerrados', color: '#90ee90' ,cards:[],total:0,cantidad:0},
-    { name: 'Stats 2024', color: '#d3d3d3',cards:[],total:0 ,cantidad:0}
+    { name: 'Notas', color: '#d3d3d3',cards:[],total:0 ,cantidad:0}
   ];
 
   asesores = []
@@ -50,7 +50,7 @@ export class EmpresaCRMComponent {
   empresa
 
   empresaId = this.route.snapshot.paramMap.get('id');
-
+  asesorEmpresa = null
 
   ngOnInit() {
     this.authService.user$.subscribe(async (user) => {
@@ -65,6 +65,44 @@ export class EmpresaCRMComponent {
             console.log('Datos de la empresa:', empresaData);
 
             this.empresa = empresaData
+            this.asesorEmpresa = this.asesores.find(x=>x.uid ==empresaData.idAsesor )
+
+            let leads =  this.empresa.leads
+            //Leads INICIO
+            leads.forEach(lead => {
+              lead.typeCard = 'lead';
+              // Extraer valores del campo 'origen' si existe
+              if (lead.origen && !lead.origenBase) {
+                const urlParts = lead.origen.split('?');
+                const url = new URLSearchParams(urlParts[1] || '');
+    
+                // Agregar los campos source, medium, y campaign
+                lead.source = url.get('utm_source') || '';
+                lead.medium = url.get('utm_medium') || '';
+                lead.campaign = url.get('utm_campaign') || '';
+    
+                // Crear el nuevo campo con el origen base
+                lead.origenBase = `https://predyc.com${urlParts[0]}`;
+              }
+
+              if(lead.idAsesor){
+
+                const asesor = this.asesores.find(x=>x.id == lead.idAsesor)
+                lead.nameAsesor = asesor.name
+              }
+            });
+            // Actualizar la columna Leads con los datos procesados
+            let leadsColumn = this.columns.find(x => x.name == 'Leads');
+            if (leadsColumn && leadsColumn.name && leads.length > 0) {
+              leadsColumn.cards = leads
+            }
+            // Obtener el total de la sección
+            let amaount = this.getTotalAmountSeccion('Leads');
+            let cantidad = this.getTotalSeccion('Leads');
+            leadsColumn.total = amaount;
+            leadsColumn.cantidad = cantidad;
+
+
             // Aquí puedes hacer algo con los datos de la empresa
         },
         error: (error) => {
@@ -91,7 +129,7 @@ export class EmpresaCRMComponent {
     });
   }
 
-  savelead(lead){
+  async savelead(lead){
 
     let leadToSave = structuredClone(lead)
     
@@ -111,8 +149,22 @@ export class EmpresaCRMComponent {
 
     console.log('leadToSave',leadToSave)
     
+    try {
+      // Invoca el método saveLeadEmpresa
+      let respuesta = await this.crmService.saveLeadEmpresa(this.empresaId, leadToSave);
+  
+      // Si la operación es exitosa, puedes agregar alguna acción aquí (opcional)
+      console.log('Lead guardado con éxito:', respuesta);
+    } catch (error) {
+      // Si ocurre un error, muestra el mensaje en un SweetAlert2
+      Swal.fire({
+        icon: 'error',
+        title: 'Error al guardar el lead',
+        text: 'Ocurrió un error al intentar guardar el lead. Por favor, intenta de nuevo.',
+        footer: `Detalles del error: ${error.message || error}`
+      });
+    }
 
-    //let respuesta = this.crmService.saveLead(leadToSave)
 
   }
   getTotalSeccion(seccion) {

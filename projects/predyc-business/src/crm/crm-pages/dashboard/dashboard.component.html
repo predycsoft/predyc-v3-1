@@ -126,7 +126,7 @@
                             <span class="ftxs blueLink" (click)="openModalAjustesLead(ajustesLeadModal,card,'lg')">Ajustes</span>
                         </div>
                     </ng-container>
-                    <ng-container *ngIf="(card.typeCard == 'empresaSinNefocios')">
+                    <ng-container *ngIf="(card.typeCard == 'empresaSinNegocios')">
                         <div class="cursorPointer" (dblclick)="redirectToEmpresa(card)">
                             <div style="padding: 6px; padding-bottom: 0px;">
                                 <div>
@@ -331,7 +331,7 @@
             <div fxFlex="40">
                 <div fxLayout="column" fxLayoutAlign="" class="mgl10 mgr10" style="margin-top: 12px;">
                     <span style="padding-bottom: 8px;">Responsable</span>
-                    <select class="fw" (click)="$event.stopPropagation()" (change)="asignarAsesor($event, selectedLead)">
+                    <select class="fw" (click)="$event.stopPropagation()" (change)="asignarAsesor($event, selectedLead,false)">
                         <option value="" disabled [selected]="!selectedLead?.idAsesor">Asignar</option>
                         <option *ngFor="let asesor of asesores" [value]="asesor.id" [selected]="asesor.id === selectedLead?.idAsesor">{{ asesor.name | titlecase }}</option>
                     </select>
@@ -356,6 +356,10 @@
                           </mat-option>
                       </mat-autocomplete>
                     </mat-form-field>
+                  </div>
+                  <div fxLayout="column" fxLayoutAlign="" class="mgl10 mgr10" style="margin-top: 12px;">
+                    <span class="ft12">Archivado</span>
+                    <mat-slide-toggle [(ngModel)]="selectedLead.archivado" color="primary"></mat-slide-toggle>
                   </div>
             </div>
         </div>

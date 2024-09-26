@@ -5,6 +5,10 @@
         <div>
             <span class="ft600 ft16 gray-10">{{empresa?.nombre | titlecase}}</span>
         </div>
+        <div>
+            <span class="ft600 ft16 gray-10">{{asesorEmpresa?.displayName | titlecase}}</span>
+        </div>
+        
         <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="8px">
             <span class="ft12">Ver Dormidos</span>
             <mat-slide-toggle [(ngModel)]="showArchivados" color="primary"></mat-slide-toggle>
@@ -18,9 +22,13 @@
 
     <div class="kanban-board" fxLayout="row" fxLayoutAlign="space-between stretch">
         <div class="kanban-column" *ngFor="let column of columns" fxLayout="column" fxFlex="20">
-          <div class="kanban-header" [ngStyle]="{'background-color': column.color}">
+          <div *ngIf="column.name!='Notas'" class="kanban-header" [ngStyle]="{'background-color': column.color}">
             {{ column.name }}( {{column.cantidad}} - {{column.total | currency:'USD':'symbol':'1.2-2' }})
           </div>
+          <div *ngIf="column.name=='Notas'" class="kanban-header" [ngStyle]="{'background-color': column.color}">
+            {{ column.name }}
+          </div>
+      
       
           <div class="kanban-content">
             <ng-container *ngFor="let card of column.cards">
@@ -117,8 +125,8 @@
                         </div>
                         <!-- Footer de la tarjeta -->
                         <div fxLayout="row" fxLayoutAlign="space-between center" class="card-footer" style="margin: 0; padding: 8px;">
-                            <span class="ftxs">{{card.nameAsesor? (card.nameAsesor | titlecase):'Sin responsable'}}</span>
-                            <span class="ftxs blueLink" (click)="selectedLead=card" [matMenuTriggerFor]="menuLeadAccions">Ajustes</span>
+                            <span (click)="selectedLead=card" [matMenuTriggerFor]="menuResposnable" class="ftxs cursorPointer ">{{card.nameAsesor? (card.nameAsesor | titlecase):'Sin responsable'}}</span>
+                            <span class="ftxs blueLink" (click)="selectedLead=card" [matMenuTriggerFor]="menuDormir">Dormir (WIP)</span>
                         </div>
                     </ng-container>
                 </div>
@@ -129,9 +137,9 @@
 
         </div>
     </div>
-</div>   
+</div>
 
-<mat-menu #menuLeadAccions="matMenu" class="containerMenu" style="padding: 20px !important;">
+<mat-menu #menuResposnable="matMenu" class="containerMenu" style="padding: 20px !important;">
     <div fxLayout="column" fxLayoutGap="" fxLayoutAlign="center center">
         <div
             mat-menu-item
@@ -144,21 +152,47 @@
                 <option *ngFor="let asesor of asesores" [value]="asesor.id" [selected]="asesor.id === selectedLead?.idAsesor">{{ asesor.name | titlecase }}</option>
             </select>
         </div>
-    
+    </div>
+</mat-menu>
+
+
+
+<mat-menu #menuDormir="matMenu" class="containerMenu" style="padding: 20px !important;">
+    <div fxLayout="column" fxLayoutGap="" fxLayoutAlign="">
         <div
             mat-menu-item
             class="opcionMenu"
             fxLayout="row"
-            fxLayoutAlign=" center">
-            <span class="pdl05">Asignar a empresa</span>
+            fxLayoutAlign="">
+            <span class="pdl05">1 Día</span>
         </div>
         <div
-            (click)="archivarCard()"
             mat-menu-item
             class="opcionMenu"
             fxLayout="row"
-            fxLayoutAlign=" center">
-            <span class="pdl05">{{selectedLead?.archivado?'Desarchivar':'Archivar'}}</span>
+            fxLayoutAlign="">
+            <span class="pdl05">2 Días</span>
+        </div>
+        <div
+            mat-menu-item
+            class="opcionMenu"
+            fxLayout="row"
+            fxLayoutAlign="">
+            <span class="pdl05">1 Semana</span>
+        </div>
+        <div
+            mat-menu-item
+            class="opcionMenu"
+            fxLayout="row"
+            fxLayoutAlign="">
+            <span class="pdl05">1 Mes</span>
+        </div>
+        <div
+            mat-menu-item
+            class="opcionMenu"
+            fxLayout="row"
+            fxLayoutAlign="">
+            <span class="pdl05">Seleccionar Fecha</span>
         </div>
     </div>
 </mat-menu>

@@ -89,6 +89,9 @@ export class DashboardComponent {
           console.log("this.leads", dashboardData);
           let leads = dashboardData['leads']
 
+
+          leads  = leads.filter(x=>!x.idEnterpise)
+
           //Leads INICIO
           leads.forEach(lead => {
             lead.typeCard = 'lead';
@@ -146,29 +149,33 @@ export class DashboardComponent {
 
             const asesor = this.asesores.find(x=>x.id == empresa.idAsesor)
 
-            cards = empresa?.cards
             let cardEmpresa = {
               name:empresa.nombre,
               archivado:empresa?.archivado?empresa.archivado : false,
               idAsesor:empresa.idAsesor,
               id:empresa.id,
               typeCard:null,
-              nameAsesor:asesor.name
+              nameAsesor:asesor.name,
+              sinNegcios:empresa.sinNegcios,
+              leads: empresa.leads,
+              opened: empresa.open,
+              closed: empresa.closed,
 
             }
+            cards = cards.concat(empresa.sinNegocios || [], empresa.leads || [], empresa.opened || [], empresa.closed || []);
+
             if(cards && cards.length>0){
-              let sinNegcios = cards.filter(x=>x.status == null || !x.status)
-              let abiertos = cards.filter(x=>x.status == 'open')
-              let cerrados = cards.filter(x=>x.status == 'closed')
-              if(abiertos.length == 0 && cerrados.length == 0){
-                alert('ok')
-  
-  
+              if(empresa.opened.length == 0 && empresa.closed.length == 0 ){ // empresa cae en sin negocios 
+                cardEmpresa.typeCard='empresaSinNegocios'
+                sinNegociosColumn.cards.push(cardEmpresa)              
               }
+
+
+
             }
             else{ // empresa vacia (sin tarjetas)
               let sinNegociosColumn = this.columns.find(x => x.name == 'Sin negocio');
-              cardEmpresa.typeCard='empresaSinNefocios'
+              cardEmpresa.typeCard='empresaSinNegocios'
               sinNegociosColumn.cards.push(cardEmpresa)
               
             }
@@ -207,13 +214,11 @@ export class DashboardComponent {
   }
 
 
-  saveleadModal(lead){
+  async saveleadModal(lead){
 
-    this.savelead(lead,false)
 
     if(this.currentEmpresaSelectedLead){
       // validar que campos necesarios esten llenos
-
       if(!lead.idAsesor){
         Swal.fire({
           icon: 'warning',
@@ -224,6 +229,12 @@ export class DashboardComponent {
         return
       }
       lead.idEnterpise = this.currentEmpresaSelectedLead.id
+      lead.dateAsignacion = new Date()
+      await this.crmService.addLeadToEnterprise(lead,lead.idEnterpise)
+      this.savelead(lead,true)
+    }
+    else{
+      this.savelead(lead,true)
 
     }
 
@@ -325,13 +336,18 @@ handleKeydown(event: KeyboardEvent, card: any, editingField: string): void {
       this.openModal(modal,size)
     }
 
-    async saveEmpresaNew(){
+    async saveEmpresaNew(){ //crear empresa
 
       this.showErrorEmpresaNew = false
       if(this.formNewEmpresa.valid){
         let empresa = this.formNewEmpresa.value
         console.log(empresa)
         empresa.nombre = empresa.nombre.toLowerCase().trim()
+        empresa.leads = []
+        empresa.opened = []
+        empresa.closed = []
+        empresa.sinNegcios = []
+
 
         let empresaFind =this.empresas.find(x => x.nombre == empresa.nombre)
 
@@ -370,16 +386,20 @@ handleKeydown(event: KeyboardEvent, card: any, editingField: string): void {
 
     }
 
-    asignarAsesor(event: Event, lead: any): void {
+    asignarAsesor(event: Event, lead: any,save = true): void {
       const selectedValue = (event.target as HTMLSelectElement).value;
       lead.idAsesor = selectedValue;
-      this.savelead(lead)
+
+      if(save){
+        this.savelead(lead)
+      }
 
       const asesor = this.asesores.find(x=>x.id == lead.idAsesor)
       lead.nameAsesor = asesor.name   
       // Lógica adicional para guardar el cambio si es necesario
       console.log('Asesor asignado:', lead.idAsesor);
   }
+  
 
 
   archivarCard() {
