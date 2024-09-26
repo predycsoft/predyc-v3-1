@@ -3,7 +3,7 @@
 
     <div fxLayout="row" fxLayoutAlign="space-between center" class="mgb05">
         <div>
-            <span class="ft600 ft16 gray-10">{{empresa?.nombre | titlecase}}</span>
+            <app-navigate-back targetUrl="/crm/dashboard" >{{empresa?.nombre | titlecase}}</app-navigate-back>
         </div>
         <div>
             <span class="ft600 ft16 gray-10">{{asesorEmpresa?.displayName | titlecase}}</span>
@@ -19,21 +19,20 @@
         </div>
     </div>
     
-
     <div class="kanban-board" fxLayout="row" fxLayoutAlign="space-between stretch">
         <div class="kanban-column" *ngFor="let column of columns" fxLayout="column" fxFlex="20">
-          <div *ngIf="column.name!='Notas'" class="kanban-header" [ngStyle]="{'background-color': column.color}">
-            {{ column.name }}( {{column.cantidad}} - {{column.total | currency:'USD':'symbol':'1.2-2' }})
-          </div>
-          <div *ngIf="column.name=='Notas'" class="kanban-header" [ngStyle]="{'background-color': column.color}">
-            {{ column.name }}
-          </div>
-      
-      
-          <div class="kanban-content">
-            <ng-container *ngFor="let card of column.cards">
-                <div *ngIf="showArchivados || !card.archivado" class="lead-card" [ngClass]="{'backGray5': card.archivado }">
-                    <ng-container *ngIf="(card.typeCard == 'lead')">
+            <div *ngIf="column.name!='Notas'" class="kanban-header" [ngStyle]="{'background-color': column.color}">
+                {{ column.name }} ({{ column.cantidad }} - {{ column.total | currency:'USD':'symbol':'1.2-2' }})
+            </div>
+            <div *ngIf="column.name=='Notas'" class="kanban-header" [ngStyle]="{'background-color': column.color}">
+                {{ column.name }}
+            </div>
+    
+            <div class="kanban-content" cdkDropList [attr.id-column]="column.id" (cdkDropListDropped)="onDrop($event)">
+            <ng-container *ngFor="let card of column.cards" >
+                <div *ngIf="showArchivados || !card.archivado" cdkDrag class="lead-card" [attr.id]="card.id" [ngClass]="{'backGray5': card.archivado }">
+                    <!-- <ng-container *ngIf="(card.typeCard == 'lead' || card.typeCard == 'sinNegcios')"> -->
+                    <ng-container>
                         <div style="padding: 10px;">
                             <div>
                                 <span *ngIf="!card['editingTitle']" (click)="card['editingTitle'] = true" class="ft14 ft500 cursorPointer" >{{card.title ? card.title : 'Sin titulo'}}</span>
@@ -41,7 +40,7 @@
                             </div>
                             <div class="contactoLead mgt05" fxLayout="column">
                                 <div fxLayout="row" class="pdb05">
-                                    <span class="ft12">{{card.name | titlecase}}&nbsp;-&nbsp;{{card.empresa}}&nbsp;- &nbsp;{{card.cargo}}</span> 
+                                    <span class="ft12">{{card.name | titlecase}}&nbsp;- &nbsp;{{card.cargo}}</span> 
                                 </div>
                                 <div fxLayout="row" fxLayoutAlign="space-between stretch">
                                     <a (click)="copiarContacto('Correo copiado',card.email)" [href]="'mailto:' + card.email" class="ft12 blueLink">{{ card.email }}</a>
@@ -131,8 +130,6 @@
                     </ng-container>
                 </div>
             </ng-container>
-            
-
           </div>
 
         </div>
@@ -163,35 +160,35 @@
             mat-menu-item
             class="opcionMenu"
             fxLayout="row"
-            fxLayoutAlign="">
+            fxLayoutAlign=" center">
             <span class="pdl05">1 Día</span>
         </div>
         <div
             mat-menu-item
             class="opcionMenu"
             fxLayout="row"
-            fxLayoutAlign="">
+            fxLayoutAlign=" center">
             <span class="pdl05">2 Días</span>
         </div>
         <div
             mat-menu-item
             class="opcionMenu"
             fxLayout="row"
-            fxLayoutAlign="">
+            fxLayoutAlign=" center">
             <span class="pdl05">1 Semana</span>
         </div>
         <div
             mat-menu-item
             class="opcionMenu"
             fxLayout="row"
-            fxLayoutAlign="">
+            fxLayoutAlign=" center">
             <span class="pdl05">1 Mes</span>
         </div>
         <div
             mat-menu-item
             class="opcionMenu"
             fxLayout="row"
-            fxLayoutAlign="">
+            fxLayoutAlign=" center">
             <span class="pdl05">Seleccionar Fecha</span>
         </div>
     </div>

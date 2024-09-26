@@ -140,6 +140,34 @@
                             </div>
                         </div>
                     </ng-container>
+                    <ng-container *ngIf="(card.typeCard == 'empresaConNegocios')">
+                        <div class="cursorPointer" (dblclick)="redirectToEmpresa(card)">
+                            <div style="padding: 6px; padding-bottom: 0px;">
+                                <div>
+                                    <span class="ft14 ft500" >{{card.name | titlecase}}</span>
+                                </div>
+                            </div>
+                            <!-- Footer de la tarjeta -->
+                            <div fxLayout="row" fxLayoutAlign="space-between center" style="margin: 0; padding: 8px; padding-top: 0px; padding-bottom: 8px;">
+                                <span class="ftxs">{{card.nameAsesor? (card.nameAsesor | titlecase):'Sin responsable'}}</span>
+                                <!-- <span class="blueLink" (click)="selectedLead=card" [matMenuTriggerFor]="menuLeadAccions">Ajustes</span> -->
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="(card.typeCard == 'empresaSoloCerrados')">
+                        <div class="cursorPointer" (dblclick)="redirectToEmpresa(card)">
+                            <div style="padding: 6px; padding-bottom: 0px;">
+                                <div>
+                                    <span class="ft14 ft500" >{{card.name | titlecase}}</span>
+                                </div>
+                            </div>
+                            <!-- Footer de la tarjeta -->
+                            <div fxLayout="row" fxLayoutAlign="space-between center" style="margin: 0; padding: 8px; padding-top: 0px; padding-bottom: 8px;">
+                                <span class="ftxs">{{card.nameAsesor? (card.nameAsesor | titlecase):'Sin responsable'}}</span>
+                                <!-- <span class="blueLink" (click)="selectedLead=card" [matMenuTriggerFor]="menuLeadAccions">Ajustes</span> -->
+                            </div>
+                        </div>
+                    </ng-container>
                 </div>
             </ng-container>
             

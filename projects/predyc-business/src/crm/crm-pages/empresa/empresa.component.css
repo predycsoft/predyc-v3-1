@@ -23,6 +23,7 @@
 
 .kanban-content {
   padding: 10px;
+  min-height: 80vh;
 }
 
 .lead-card {

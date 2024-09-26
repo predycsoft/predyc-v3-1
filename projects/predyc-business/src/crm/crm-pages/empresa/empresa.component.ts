@@ -1,3 +1,4 @@
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -36,13 +37,24 @@ export class EmpresaCRMComponent {
   }
   currentUrl
   intructor
-  columns = [
-    { name: 'Leads', color: '#f0e68c' ,cards:[],total:0,cantidad:0},
-    { name: 'Sin negocio', color: '#f5deb3',cards:[],total:0,cantidad:0 },
-    { name: 'Con negocio abierto', color: '#ffa07a',cards:[],total:0,cantidad:0 },
-    { name: 'Solo negocios cerrados', color: '#90ee90' ,cards:[],total:0,cantidad:0},
-    { name: 'Notas', color: '#d3d3d3',cards:[],total:0 ,cantidad:0}
+
+
+  columnsOG = [
+    { name: 'Leads', id:'leads',color: '#f0e68c' ,cards:[],total:0,cantidad:0},
+    { name: 'Sin negocio',id:'sinNegcios', color: '#f5deb3',cards:[],total:0,cantidad:0 },
+    { name: 'Con negocio abierto',id:'opened', color: '#ffa07a',cards:[],total:0,cantidad:0 },
+    { name: 'Solo negocios cerrados',id:'closed', color: '#90ee90' ,cards:[],total:0,cantidad:0},
+    { name: 'Notas',id:'', color: '#d3d3d3',cards:[],total:0 ,cantidad:0}
   ];
+
+  columns = [
+    { name: 'Leads', id:'leads',color: '#f0e68c' ,cards:[],total:0,cantidad:0},
+    { name: 'Sin negocio',id:'sinNegcios', color: '#f5deb3',cards:[],total:0,cantidad:0 },
+    { name: 'Con negocio abierto',id:'opened', color: '#ffa07a',cards:[],total:0,cantidad:0 },
+    { name: 'Solo negocios cerrados',id:'closed', color: '#90ee90' ,cards:[],total:0,cantidad:0},
+    { name: 'Notas',id:'', color: '#d3d3d3',cards:[],total:0 ,cantidad:0}
+  ];
+
 
   asesores = []
 
@@ -63,6 +75,7 @@ export class EmpresaCRMComponent {
       this.crmService.getEmpresabyID(this.empresaId).subscribe({
         next: (empresaData) => {
             console.log('Datos de la empresa:', empresaData);
+            this.columns =  structuredClone (this.columnsOG)
 
             this.empresa = empresaData
             this.asesorEmpresa = this.asesores.find(x=>x.uid ==empresaData.idAsesor )
@@ -101,6 +114,127 @@ export class EmpresaCRMComponent {
             let cantidad = this.getTotalSeccion('Leads');
             leadsColumn.total = amaount;
             leadsColumn.cantidad = cantidad;
+            //Leads FIN
+
+
+            //Sin Negocios INICIO
+
+            let sinNegcios =  this.empresa.sinNegcios
+            sinNegcios.forEach(lead => {
+              lead.typeCard = 'sinNegcios';
+              // Extraer valores del campo 'origen' si existe
+              if (lead.origen && !lead.origenBase) {
+                const urlParts = lead.origen.split('?');
+                const url = new URLSearchParams(urlParts[1] || '');
+    
+                // Agregar los campos source, medium, y campaign
+                lead.source = url.get('utm_source') || '';
+                lead.medium = url.get('utm_medium') || '';
+                lead.campaign = url.get('utm_campaign') || '';
+    
+                // Crear el nuevo campo con el origen base
+                lead.origenBase = `https://predyc.com${urlParts[0]}`;
+              }
+
+              if(lead.idAsesor){
+
+                const asesor = this.asesores.find(x=>x.id == lead.idAsesor)
+                lead.nameAsesor = asesor.name
+              }
+            });
+            // Actualizar la columna Leads con los datos procesados
+            let sinNegciosColumn = this.columns.find(x => x.name == 'Sin negocio');
+            if (sinNegciosColumn && sinNegciosColumn.name && sinNegcios.length > 0) {
+              sinNegciosColumn.cards = sinNegcios
+            }
+            // Obtener el total de la sección
+            amaount = this.getTotalAmountSeccion('Sin negocio');
+            cantidad = this.getTotalSeccion('Sin negocio');
+            sinNegciosColumn.total = amaount;
+            sinNegciosColumn.cantidad = cantidad;
+
+            //Sin Negocios FIN
+
+            //Abiertos INICIO
+
+            let opened =  this.empresa.opened
+            opened.forEach(lead => {
+              lead.typeCard = 'opened';
+              // Extraer valores del campo 'origen' si existe
+              if (lead.origen && !lead.origenBase) {
+                const urlParts = lead.origen.split('?');
+                const url = new URLSearchParams(urlParts[1] || '');
+    
+                // Agregar los campos source, medium, y campaign
+                lead.source = url.get('utm_source') || '';
+                lead.medium = url.get('utm_medium') || '';
+                lead.campaign = url.get('utm_campaign') || '';
+    
+                // Crear el nuevo campo con el origen base
+                lead.origenBase = `https://predyc.com${urlParts[0]}`;
+              }
+
+              if(lead.idAsesor){
+
+                const asesor = this.asesores.find(x=>x.id == lead.idAsesor)
+                lead.nameAsesor = asesor.name
+              }
+            });
+            // Actualizar la columna Leads con los datos procesados
+            let openedColumn = this.columns.find(x => x.name == 'Con negocio abierto');
+            if (openedColumn && openedColumn.name && opened.length > 0) {
+              openedColumn.cards = opened
+            }
+            // Obtener el total de la sección
+            amaount = this.getTotalAmountSeccion('Con negocio abierto');
+            cantidad = this.getTotalSeccion('Con negocio abierto');
+            openedColumn.total = amaount;
+            openedColumn.cantidad = cantidad;
+
+          //Abiertos FIN
+
+
+
+          //Cerrados INICIO
+
+          let closed =  this.empresa.closed
+          closed.forEach(lead => {
+            lead.typeCard = 'closed';
+            // Extraer valores del campo 'origen' si existe
+            if (lead.origen && !lead.origenBase) {
+              const urlParts = lead.origen.split('?');
+              const url = new URLSearchParams(urlParts[1] || '');
+  
+              // Agregar los campos source, medium, y campaign
+              lead.source = url.get('utm_source') || '';
+              lead.medium = url.get('utm_medium') || '';
+              lead.campaign = url.get('utm_campaign') || '';
+  
+              // Crear el nuevo campo con el origen base
+              lead.origenBase = `https://predyc.com${urlParts[0]}`;
+            }
+
+            if(lead.idAsesor){
+
+              const asesor = this.asesores.find(x=>x.id == lead.idAsesor)
+              lead.nameAsesor = asesor.name
+            }
+          });
+          // Actualizar la columna Leads con los datos procesados
+          let closedColumn = this.columns.find(x => x.name == 'Solo negocios cerrados');
+          if (closedColumn && closedColumn.name && closed.length > 0) {
+            closedColumn.cards = closed
+          }
+          // Obtener el total de la sección
+          amaount = this.getTotalAmountSeccion('Solo negocios cerrados');
+          cantidad = this.getTotalSeccion('Solo negocios cerrados');
+          closedColumn.total = amaount;
+          closedColumn.cantidad = cantidad;
+
+          //Sin Cerrados FIN
+
+
+
 
 
             // Aquí puedes hacer algo con los datos de la empresa
@@ -277,7 +411,24 @@ handleKeydown(event: KeyboardEvent, card: any, editingField: string): void {
 
 }
 
+  async onDrop(event: CdkDragDrop<any[]>) {
+  // Obtener el ID de la tarjeta que se ha movido
+  const cardId = event.item.element.nativeElement.getAttribute('id');
+  // Asegúrate de que event.event.target sea un elemento HTML
+  const targetElement = event.event.target as HTMLElement;
+  // Obtener el ID de la columna de destino
+  const columnDestino = targetElement.getAttribute('id-column'); // Asegúrate de que la columna tenga el atributo name-column
+  // Obtener el ID de la columna de origen
+  const columnOrigen = event.container.element.nativeElement.getAttribute('id-column');
+  // Aquí puedes manejar la lógica para actualizar el estado de la tarjeta, si es necesario
 
+  if(columnDestino && (columnOrigen != columnDestino)){
+    await this.crmService.moveCardEmpresa(this.empresaId,cardId,columnOrigen,columnDestino)
+    //moveCardEmpresa()
+
+  }
+
+}
 
 
 

@@ -184,6 +184,48 @@ addLeadToEnterprise(lead: any, idEmpresa: string): Promise<void> {
   });
 }
 
+moveCardEmpresa(idEmpresa: string, cardID: string, origen: string, destino: string): Promise<void> {
+  return new Promise(async (resolve, reject) => {
+    try {
+      // Obtén la referencia al documento de la empresa
+      const empresaRef = this.afs.collection('crmEnterpise').doc(idEmpresa);
+
+      // Obtener el documento actual de la empresa
+      const empresaDoc = await empresaRef.get().toPromise();
+      if (!empresaDoc.exists) {
+        return reject('La empresa no existe.');
+      }
+
+      const empresaData = empresaDoc.data();
+
+      // Elimina la tarjeta del arreglo de origen
+      const index = empresaData[origen].findIndex((item: any) => item.id === cardID);
+      if (index !== -1) {
+        // Eliminar la tarjeta del arreglo de origen
+        const cardToMove = empresaData[origen][index]; // Guarda la tarjeta a mover
+        empresaData[origen].splice(index, 1); // Eliminar la tarjeta
+
+        // Agrega la tarjeta al arreglo de destino
+        if (!empresaData[destino]) {
+          // Si no existe el arreglo de destino, créalo
+          empresaData[destino] = [];
+        }
+        empresaData[destino].push(cardToMove); // Mover la tarjeta al nuevo arreglo
+
+        // Actualiza el documento de la empresa en Firestore
+        await empresaRef.set(empresaData, { merge: true });
+        resolve(); // Resuelve la promesa
+      } else {
+        reject('La tarjeta no se encontró en el origen.');
+      }
+    } catch (error) {
+      console.error('Error al mover la tarjeta:', error);
+      reject(error); // Rechaza la promesa si hay un error
+    }
+  });
+}
+
+
 
 
     

@@ -134,6 +134,12 @@ export class DashboardComponent {
           let sinNegociosColumn = this.columns.find(x => x.name == 'Sin negocio');
           sinNegociosColumn.cards = []
 
+          let conNegociosColumn = this.columns.find(x => x.name == 'Con negocio abierto');
+          conNegociosColumn.cards = []
+
+          let cerradosColumn = this.columns.find(x => x.name == 'Solo negocios cerrados');
+          cerradosColumn.cards = []
+
           let empresas = dashboardData['enterprises']
           console.log('empresas',empresas)
           this.empresas = empresas
@@ -169,7 +175,14 @@ export class DashboardComponent {
                 cardEmpresa.typeCard='empresaSinNegocios'
                 sinNegociosColumn.cards.push(cardEmpresa)              
               }
-
+              if(empresa.opened.length >0  ){ // empresa cae en sin negocios 
+                cardEmpresa.typeCard='empresaConNegocios'
+                conNegociosColumn.cards.push(cardEmpresa)              
+              }
+              if(empresa.closed.length > 0 && (empresa.opened.length ==0 )){ // empresa cae en sin negocios 
+                cardEmpresa.typeCard='empresaSoloCerrados'
+                cerradosColumn.cards.push(cardEmpresa)              
+              }
 
 
             }
