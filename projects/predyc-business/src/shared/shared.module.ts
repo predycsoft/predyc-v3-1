@@ -102,6 +102,7 @@ import { FloatingNotificationComponent } from "./components/floating-notificatio
 import { GeneralSelectorComponent } from './widgets/general-selector/general-selector.component';
 import { TextFieldModule } from "@angular/cdk/text-field";
 import { NumberAbbreviatePipe } from "./pipes/number-abbreviate.pipe";
+import { NgxIntlTelInputModule } from "ngx-intl-tel-input";
 
 
 
@@ -212,7 +213,8 @@ import { NumberAbbreviatePipe } from "./pipes/number-abbreviate.pipe";
     DragDropModule,
     MatSlideToggleModule,
     QuillModule,
-    TextFieldModule
+    TextFieldModule,
+    NgxIntlTelInputModule
   ],
   exports: [
     SideNavComponent,
@@ -307,6 +309,7 @@ import { NumberAbbreviatePipe } from "./pipes/number-abbreviate.pipe";
     GeneralSelectorComponent,
     TextFieldModule,
     NumberAbbreviatePipe,
+    NgxIntlTelInputModule,
   ],
 
   providers: [VimeoUploadService,DatePipe],

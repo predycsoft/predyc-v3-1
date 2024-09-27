@@ -61,7 +61,8 @@ export class EmpresaCRMComponent {
 
   asesores = []
 
-  formNewEmpresa: FormGroup;
+  formNewNegocio: FormGroup;
+  
   empresa
 
   empresaId = this.route.snapshot.paramMap.get('id');
@@ -363,14 +364,10 @@ export class EmpresaCRMComponent {
     delete leadToSave['editingProducto']
     delete leadToSave['editingOrigen']
     delete leadToSave['editingCantidad']
-
     delete leadToSave['editingSource']
     delete leadToSave['editingMedium']
     delete leadToSave['editingCampaign']
-
     delete leadToSave['nameAsesor']
-
-
 
     console.log('leadToSave',leadToSave)
     
@@ -434,7 +431,7 @@ handleKeydown(event: KeyboardEvent, card: any, editingField: string): void {
 
   selectedLead = null
 
-  showErrorEmpresaNew = false
+  showErrorNegocioNew = false
 
   handleBlur(editingField: string, card: any): void {
     card[editingField] = false;
@@ -469,6 +466,61 @@ handleKeydown(event: KeyboardEvent, card: any, editingField: string): void {
 
     this.openModal(nuevaNotaModal,'md')
 
+  }
+
+  addNegocio(nuevaNegocioModal){
+    this.showErrorNegocioNew = false
+
+    this.formNewNegocio = new FormGroup({
+      name: new FormControl("", Validators.required),
+      email: new FormControl("", [Validators.required, Validators.email]), // Validador de email
+      telefono: new FormControl("", [Validators.required, Validators.pattern(/^\+?[1-9]\d{1,14}$/)]), // Validador de teléfono internacional
+      idEnterpise: new FormControl(this.empresaId, Validators.required),
+      idAsesor:new FormControl(this.user.uid, Validators.required),
+      origen: new FormControl("CRM", Validators.required),
+      cargo: new FormControl("", Validators.required),
+      cantidad: new FormControl("", Validators.required),
+      interesUser: new FormControl("empresa", Validators.required),
+      valor: new FormControl("0",[]),
+
+    });
+
+    this.openModal(nuevaNegocioModal,'md')
+  }
+
+  async saveNegocioNew(){
+    this.showErrorNegocioNew = false
+
+    console.log(this.formNewNegocio)
+
+    if (this.formNewNegocio.valid) {
+      try {
+        // Obtener el valor del formulario
+        const formData = this.formNewNegocio.value;
+        formData.date = new Date()
+
+        console.log('formData',formData)
+    
+        // Llamada a la función de servicio pasando el valor del formulario
+        await this.crmService.addToOpened(this.empresaId, formData);
+    
+        // Mensaje de éxito
+        console.log('El objeto del formulario se ha agregado correctamente al arreglo opened');
+      } catch (error) {
+        // Manejo de errores
+        console.error('Error al agregar el objeto del formulario al arreglo opened:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Hubo un problema al procesar el formulario. Inténtalo de nuevo.',
+          footer: `Detalles del error: ${error.message || error}`
+        });
+      }
+    } else {
+      this.showErrorNegocioNew = true
+
+    }
+  
   }
 
 

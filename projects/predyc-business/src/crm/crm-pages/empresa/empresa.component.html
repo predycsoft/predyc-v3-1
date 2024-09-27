@@ -37,8 +37,6 @@
                     <option value="Transporte">Transporte</option>
                     <option value="Vidriera">Vidriera</option>
                   </select>
-                
-                
                 <!-- <input (blur)="editingIndustria = false; savelead(card)"  (keydown)="handleKeydown($event, card, 'editingTitle')"  *ngIf="card['editingTitle']"  type="text" [(ngModel)]="card.title" class="h32px ft14 shadow-animation pdl05 pdr05 radius4 borderLight fw" style="text-align: center;" /> -->
             </app-navigate-back>
         </div>
@@ -49,7 +47,7 @@
         <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="8px">
             <span class="ft12">Ver Perdidas</span>
             <mat-slide-toggle [(ngModel)]="showLost" color="primary"></mat-slide-toggle>
-            <button class="backBlue5 button-animation" style="border-radius: 24px !important;">
+            <button (click)="addNegocio(nuevoNegocioModal)" class="backBlue5 button-animation" style="border-radius: 24px !important;">
                 <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="">
                 Nuevo Negocio
             </button>
@@ -325,6 +323,113 @@
                 fxLayoutGap="0.625rem" fxLayoutAlign="center center">
                 <img [src]="icon.save" class="h16px pdr05 makeWhite" alt="" />
                 Crear Nota
+            </button>
+        </div>
+    </div>
+</ng-template>
+
+
+<!-- Modal crear negocio -->
+<ng-template #nuevoNegocioModal let-modal>
+    <div class="modal-header bg-web-primary text-white px-3 py-1" fxLayout="row" fxLayoutAlign="space-between center">
+        <div class="modal-title pd10">
+            <span class="ft16 ft500 gray-10">Crear nuevo negocio</span>
+        </div>
+        <img style="cursor: pointer" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px" alt="" />
+    </div>
+    <div class="modal-body" style="overflow-y: auto; max-height: 80vh">
+        <div fxLayout="column" class="fw">
+            <form [formGroup]="formNewNegocio" class="fw">
+                <div fxLayout="row" class="fw">
+                  <div class="form-group fw">
+                    <label>Nombre contacto</label>
+                    <input formControlName="name" [class.is-invalid]="formNewNegocio.controls['name'].errors && showErrorNegocioNew" type="text" class="form-control customInput" placeholder="Escriba el nombre del contacto">
+                    <div class="invalid-feedback" *ngIf="formNewNegocio.controls['name'].errors && showErrorNegocioNew">
+                      Debe indicar el nombre del contacto.
+                    </div>
+                  </div>
+                </div>
+              
+                <div fxLayout="row" class="fw">
+                  <div class="form-group fw">
+                    <label>Email</label>
+                    <input formControlName="email" [class.is-invalid]="formNewNegocio.controls['email'].errors && showErrorNegocioNew" type="email" class="form-control customInput" placeholder="Escriba el email del contacto">
+                    <div class="invalid-feedback" *ngIf="formNewNegocio.controls['email'].errors && showErrorNegocioNew">
+                      Debe indicar un email válido.
+                    </div>
+                  </div>
+                </div>
+              
+                <div fxLayout="row" class="fw">
+                  <div class="form-group fw">
+                    <label>Teléfono</label>
+                    <input formControlName="telefono" [class.is-invalid]="formNewNegocio.controls['telefono'].errors && showErrorNegocioNew" type="text" class="form-control customInput" placeholder="Escriba el teléfono del contacto">
+                    <div class="invalid-feedback" *ngIf="formNewNegocio.controls['telefono'].errors && showErrorNegocioNew">
+                      Debe indicar un número de teléfono válido.
+                    </div>
+                  </div>
+                </div>
+                <div fxLayout="row" class="fw">
+                  <div class="form-group fw">
+                    <label>Cargo</label>
+                    <!-- <input formControlName="cargo" [class.is-invalid]="formNewNegocio.controls['cargo'].errors && showErrorNegocioNew" type="text" class="form-control customInput" placeholder="Escriba el cargo del contacto"> -->
+                    <select style="border-radius: 4px !important;" [class.is-invalid]="formNewNegocio.controls['cargo'].errors && showErrorNegocioNew" class="form-control customInput" formControlName="cargo">
+                        <option value="" disabled selected>Seleccione su cargo</option>
+                        <option value="Director">Director</option>
+                        <option value="Gerente de Mantenimiento / Operaciones">Gerente de Mantenimiento / Operaciones</option>
+                        <option value="Ingeniero de Mantenimiento / Confiabilidad">Ingeniero de Mantenimiento / Confiabilidad
+                        </option>
+                        <option value="Jefe de Mantenimiento">Jefe de Mantenimiento</option>
+                        <option value="Supervisor de Mantenimiento">Supervisor de Mantenimiento</option>
+                        <option value="Coordinador / Planificador / Programador">Coordinador / Planificador / Programador</option>
+                        <option value="Téc. de Mantto / Téc. de Predictivo">Téc. de Mantto / Téc. de Predictivo</option>
+                        <option value="Operador">Operador</option>
+                        <option value="Consultor">Consultor</option>
+                        <option value="Recursos Humanos">Recursos Humanos</option>
+                        <option value="Compras">Compras</option>
+                        <option value="Asistente o Aprendiz">Asistente o Aprendiz</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                    <div class="invalid-feedback" *ngIf="formNewNegocio.controls['cargo'].errors && showErrorNegocioNew">
+                      Debe indicar el cargo del contacto.
+                    </div>
+                  </div>
+                </div>
+              
+                <div fxLayout="row" class="fw">
+                  <div class="form-group fw">
+                    <label>Cantidad Interesados</label>
+                    <select [class.is-invalid]="formNewNegocio.controls['cantidad'].errors && showErrorNegocioNew" style="border-radius: 4px !important;" class="form-control customInput"  formControlName="cantidad">
+                        <option value="" disabled selected>Para cuantas personas</option>
+                        <option value="1">Para 1 persona</option>
+                        <option value="2">Para 2 personas</option>
+                        <option value="5">Para 5 personas</option>
+                        <option value="+10">Para más de 10 personas</option>
+                        <option value="+25">Para más de 25 personas</option>
+                    </select>
+                    <!-- <input formControlName="cantidad" [class.is-invalid]="formNewNegocio.controls['cantidad'].errors && showErrorNegocioNew" type="number" class="form-control customInput" placeholder="Escriba la cantidad"> -->
+                    <div class="invalid-feedback" *ngIf="formNewNegocio.controls['cantidad'].errors && showErrorNegocioNew">
+                      Debe indicar una cantidad válida.
+                    </div>
+                  </div>
+                </div>
+                <div fxLayout="row" class="fw">
+                    <div class="form-group fw">
+                      <label>Valor</label>
+                      <input formControlName="valor" [class.is-invalid]="formNewNegocio.controls['valor'].errors && showErrorNegocioNew" type="number" class="form-control customInput" placeholder="Escriba el valor">
+                      <div class="invalid-feedback" *ngIf="formNewNegocio.controls['valor'].errors && showErrorNegocioNew">
+                        Debe indicar un valor válido.
+                      </div>
+                    </div>
+                  </div>
+              </form>
+              
+        </div>
+        <div fxLayout="row" fxLayoutAlign="end end" class="pdt03" style="width: 100%">
+            <button (click)="saveNegocioNew()" class="blueButton gray-1 radius4 ft12 h28px mgt10" fxLayout="row"
+                fxLayoutGap="0.625rem" fxLayoutAlign="center center">
+                <img [src]="icon.save" class="h16px pdr05 makeWhite" alt="" />
+                Crear negocio
             </button>
         </div>
     </div>

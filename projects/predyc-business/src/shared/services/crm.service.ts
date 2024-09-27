@@ -78,11 +78,17 @@ export class CrmService {
   }
 
   async saveCardEmpresa(idEmpresa: string, lead: any): Promise<void> {
+
     if (!lead.id) {
       return Promise.reject('El lead no tiene un ID');
     }
-  
-    const leadRef = this.afs.collection('infoRequestRegister').doc(lead.id).ref;
+
+    let leadRef = null
+
+    // Verifica que lead.id existe y no es numérico
+    if (lead.id && isNaN(Number(lead.id))) {
+      leadRef = this.afs.collection('infoRequestRegister').doc(lead.id).ref;
+    }
     const empresaRef = this.afs.collection('crmEnterpise').doc(idEmpresa).ref;
   
     try {
@@ -94,28 +100,25 @@ export class CrmService {
           throw new Error(`El documento de la empresa con ID ${idEmpresa} no existe.`);
         }
   
-        // Ahora que la lectura está hecha, puedes proceder con la escritura
-        // Actualiza el lead en 'infoRequestRegister'
-        transaction.update(leadRef, { ...lead });
+        // Actualiza el lead en 'infoRequestRegister' si existe
+        if (leadRef) {
+          transaction.update(leadRef, { ...lead });
+        }
   
         // Actualiza los arreglos 'opened', 'inprocess', 'closing', 'closed', 'lost' en el documento de la empresa
         const empresaData = empresaDoc.data();
         
         // List of arrays to search in
-        const leadArrays = ['opened', 'inprocess', 'clossing', 'closed', 'lost'];
+        const leadArrays = ['opened', 'inprocess', 'closing', 'closed', 'lost'];
         
-        // Variable to track if the lead was found and updated
-        let leadUpdated = false;
-  
         // Recorre todos los arreglos para encontrar y actualizar el lead
         leadArrays.forEach((arrayName) => {
           let leads = empresaData[arrayName] || [];
-          const leadIndex = leads.findIndex((l: any) => l.id === lead.id);
+          const leadIndex = leads.findIndex((l: any) => l.id == lead.id);
   
           if (leadIndex !== -1) {
             // Actualiza el lead en el arreglo
             leads[leadIndex] = { ...leads[leadIndex], ...lead };
-            leadUpdated = true;
             empresaData[arrayName] = leads; // Guarda los cambios en el arreglo de leads
           }
         });
@@ -130,6 +133,7 @@ export class CrmService {
       throw error;
     }
   }
+  
   
   
   
@@ -208,7 +212,8 @@ moveCardEmpresa(idEmpresa: string, cardID: string, origen: string, destino: stri
       const empresaData = empresaDoc.data();
 
       // Elimina la tarjeta del arreglo de origen
-      const index = empresaData[origen].findIndex((item: any) => item.id === cardID);
+      console.log(empresaData[origen],cardID)
+      const index = empresaData[origen].findIndex((item: any) => item.id == cardID);
       if (index !== -1) {
         // Eliminar la tarjeta del arreglo de origen
         const cardToMove = empresaData[origen][index]; // Guarda la tarjeta a mover
@@ -350,6 +355,43 @@ async deleteNote(idEmpresa: string, idNote: string): Promise<void> {
     console.log('Nota eliminada correctamente.');
   } catch (error) {
     console.error('Error al eliminar la nota:', error);
+    throw error;
+  }
+}
+async addToOpened(idEmpresa: string, nuevoObjeto: any): Promise<void> {
+  const empresaRef = this.afs.collection('crmEnterpise').doc(idEmpresa);
+
+  try {
+    // Genera un ID basado en el timestamp actual
+    const objetoConId = {
+      ...nuevoObjeto,
+      id: Date.now() // Asignar un ID único usando el timestamp
+    };
+
+    // Inicia la transacción para asegurar que el dato se actualiza correctamente
+    await this.afs.firestore.runTransaction(async (transaction) => {
+      const empresaDoc = await transaction.get(empresaRef.ref);
+
+      if (!empresaDoc.exists) {
+        throw new Error(`La empresa con ID ${idEmpresa} no existe.`);
+      }
+
+      // Obtener los datos de la empresa
+      const empresaData = empresaDoc.data() as { opened?: any[] };
+
+      // Obtener el arreglo 'opened' o inicializarlo si no existe
+      const opened = empresaData?.opened || [];
+
+      // Agregar el nuevo objeto al arreglo 'opened'
+      opened.push(objetoConId);
+
+      // Actualizar el documento de la empresa con el nuevo arreglo 'opened'
+      transaction.update(empresaRef.ref, { opened: opened });
+    });
+
+    console.log('Objeto agregado correctamente al arreglo opened.');
+  } catch (error) {
+    console.error('Error al agregar el objeto al arreglo opened:', error);
     throw error;
   }
 }
