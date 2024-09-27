@@ -591,6 +591,47 @@ selectedNote
       });
     }
   }
+
+  async deleteNote() {
+    console.log(this.empresaId, this.selectedIdNote);
+  
+    try {
+      // Mostrar advertencia antes de eliminar la nota
+      const result = await Swal.fire({
+        title: '¿Estás seguro?',
+        text: 'No podrás deshacer esta acción.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, borrar',
+        cancelButtonText: 'Cancelar'
+      });
+  
+      if (result.isConfirmed) {
+        // Llamada al servicio CrmService para eliminar la nota
+        await this.crmService.deleteNote(this.empresaId, this.selectedIdNote);
+  
+        // Mensaje de éxito después de eliminar la nota
+        // Swal.fire({
+        //   icon: 'success',
+        //   title: 'Eliminada',
+        //   text: 'La nota ha sido eliminada con éxito.'
+        // });
+      }
+    } catch (error) {
+      // Si ocurre un error, muestra el mensaje en la consola y un SweetAlert2
+      console.error('Error al eliminar la nota:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Hubo un problema al eliminar la nota. Inténtalo de nuevo.',
+        footer: `Detalles del error: ${error.message || error}`
+      });
+    }
+  }
+  
+  
   
 
 

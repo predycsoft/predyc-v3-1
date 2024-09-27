@@ -326,6 +326,33 @@ async updateNoteColor(idEmpresa: string, idNote: string, color: string): Promise
     throw error;
   }
 }
+async deleteNote(idEmpresa: string, idNote: string): Promise<void> {
+  const empresaRef = this.afs.collection('crmEnterpise').doc(idEmpresa);
+
+  try {
+    await this.afs.firestore.runTransaction(async (transaction) => {
+      const empresaDoc = await transaction.get(empresaRef.ref);
+
+      if (!empresaDoc.exists) {
+        throw new Error(`La empresa con ID ${idEmpresa} no existe.`);
+      }
+
+      const empresaData = empresaDoc.data() as { notas?: any[] };
+      const notas = empresaData?.notas || [];
+
+      // Filtrar las notas para eliminar la que tiene el ID especificado
+      const updatedNotas = notas.filter((note: any) => note.id !== idNote);
+
+      // Actualizar el documento con el nuevo arreglo de notas
+      transaction.update(empresaRef.ref, { notas: updatedNotas });
+    });
+
+    console.log('Nota eliminada correctamente.');
+  } catch (error) {
+    console.error('Error al eliminar la nota:', error);
+    throw error;
+  }
+}
 
 
 
