@@ -40,18 +40,20 @@ export class EmpresaCRMComponent {
 
 
   columnsOG = [
-    { name: 'Leads', id:'leads',color: '#f0e68c' ,cards:[],total:0,cantidad:0},
-    { name: 'Sin negocio',id:'sinNegcios', color: '#f5deb3',cards:[],total:0,cantidad:0 },
-    { name: 'Con negocio abierto',id:'opened', color: '#ffa07a',cards:[],total:0,cantidad:0 },
-    { name: 'Solo negocios cerrados',id:'closed', color: '#90ee90' ,cards:[],total:0,cantidad:0},
+    { name: 'Abiertas', id:'opened',color: '#f0e68c' ,cards:[],total:0,cantidad:0},
+    { name: 'En proceso',id:'inprocess', color: '#f5deb3',cards:[],total:0,cantidad:0 },
+    { name: 'En cierre',id:'clossing', color: '#ffa07a',cards:[],total:0,cantidad:0 },
+    { name: 'Ganadas',id:'closed', color: '#90ee90' ,cards:[],total:0,cantidad:0},
+    { name: 'Perdidas',id:'lost', color: '#808080' ,cards:[],total:0,cantidad:0},
     { name: 'Notas',id:'', color: '#d3d3d3',cards:[],total:0 ,cantidad:0}
   ];
 
   columns = [
-    { name: 'Leads', id:'leads',color: '#f0e68c' ,cards:[],total:0,cantidad:0},
-    { name: 'Sin negocio',id:'sinNegcios', color: '#f5deb3',cards:[],total:0,cantidad:0 },
-    { name: 'Con negocio abierto',id:'opened', color: '#ffa07a',cards:[],total:0,cantidad:0 },
-    { name: 'Solo negocios cerrados',id:'closed', color: '#90ee90' ,cards:[],total:0,cantidad:0},
+    { name: 'Abiertas', id:'opened',color: '#f0e68c' ,cards:[],total:0,cantidad:0},
+    { name: 'En proceso',id:'inprocess', color: '#f5deb3',cards:[],total:0,cantidad:0 },
+    { name: 'En cierre',id:'clossing', color: '#ffa07a',cards:[],total:0,cantidad:0 },
+    { name: 'Ganadas',id:'closed', color: '#90ee90' ,cards:[],total:0,cantidad:0},
+    { name: 'Perdidas',id:'lost', color: '#808080' ,cards:[],total:0,cantidad:0},
     { name: 'Notas',id:'', color: '#d3d3d3',cards:[],total:0 ,cantidad:0}
   ];
 
@@ -80,9 +82,9 @@ export class EmpresaCRMComponent {
             this.empresa = empresaData
             this.asesorEmpresa = this.asesores.find(x=>x.uid ==empresaData.idAsesor )
 
-            let leads =  this.empresa.leads
-            //Leads INICIO
-            leads.forEach(lead => {
+            //Abiertas INICIO
+            let opened =  this.empresa.opened
+            opened.forEach(lead => {
               lead.typeCard = 'lead';
               // Extraer valores del campo 'origen' si existe
               if (lead.origen && !lead.origenBase) {
@@ -104,134 +106,167 @@ export class EmpresaCRMComponent {
                 lead.nameAsesor = asesor.name
               }
             });
-            // Actualizar la columna Leads con los datos procesados
-            let leadsColumn = this.columns.find(x => x.name == 'Leads');
-            if (leadsColumn && leadsColumn.name && leads.length > 0) {
-              leadsColumn.cards = leads
-            }
-            // Obtener el total de la sección
-            let amaount = this.getTotalAmountSeccion('Leads');
-            let cantidad = this.getTotalSeccion('Leads');
-            leadsColumn.total = amaount;
-            leadsColumn.cantidad = cantidad;
-            //Leads FIN
-
-
-            //Sin Negocios INICIO
-
-            let sinNegcios =  this.empresa.sinNegcios
-            sinNegcios.forEach(lead => {
-              lead.typeCard = 'sinNegcios';
-              // Extraer valores del campo 'origen' si existe
-              if (lead.origen && !lead.origenBase) {
-                const urlParts = lead.origen.split('?');
-                const url = new URLSearchParams(urlParts[1] || '');
-    
-                // Agregar los campos source, medium, y campaign
-                lead.source = url.get('utm_source') || '';
-                lead.medium = url.get('utm_medium') || '';
-                lead.campaign = url.get('utm_campaign') || '';
-    
-                // Crear el nuevo campo con el origen base
-                lead.origenBase = `https://predyc.com${urlParts[0]}`;
-              }
-
-              if(lead.idAsesor){
-
-                const asesor = this.asesores.find(x=>x.id == lead.idAsesor)
-                lead.nameAsesor = asesor.name
-              }
-            });
-            // Actualizar la columna Leads con los datos procesados
-            let sinNegciosColumn = this.columns.find(x => x.name == 'Sin negocio');
-            if (sinNegciosColumn && sinNegciosColumn.name && sinNegcios.length > 0) {
-              sinNegciosColumn.cards = sinNegcios
-            }
-            // Obtener el total de la sección
-            amaount = this.getTotalAmountSeccion('Sin negocio');
-            cantidad = this.getTotalSeccion('Sin negocio');
-            sinNegciosColumn.total = amaount;
-            sinNegciosColumn.cantidad = cantidad;
-
-            //Sin Negocios FIN
-
-            //Abiertos INICIO
-
-            let opened =  this.empresa.opened
-            opened.forEach(lead => {
-              lead.typeCard = 'opened';
-              // Extraer valores del campo 'origen' si existe
-              if (lead.origen && !lead.origenBase) {
-                const urlParts = lead.origen.split('?');
-                const url = new URLSearchParams(urlParts[1] || '');
-    
-                // Agregar los campos source, medium, y campaign
-                lead.source = url.get('utm_source') || '';
-                lead.medium = url.get('utm_medium') || '';
-                lead.campaign = url.get('utm_campaign') || '';
-    
-                // Crear el nuevo campo con el origen base
-                lead.origenBase = `https://predyc.com${urlParts[0]}`;
-              }
-
-              if(lead.idAsesor){
-
-                const asesor = this.asesores.find(x=>x.id == lead.idAsesor)
-                lead.nameAsesor = asesor.name
-              }
-            });
-            // Actualizar la columna Leads con los datos procesados
-            let openedColumn = this.columns.find(x => x.name == 'Con negocio abierto');
+            // Actualizar la columna opened con los datos procesados
+            let openedColumn = this.columns.find(x => x.name == 'Abiertas');
             if (openedColumn && openedColumn.name && opened.length > 0) {
               openedColumn.cards = opened
             }
             // Obtener el total de la sección
-            amaount = this.getTotalAmountSeccion('Con negocio abierto');
-            cantidad = this.getTotalSeccion('Con negocio abierto');
+            let amaount = this.getTotalAmountSeccion('Abiertas');
+            let cantidad = this.getTotalSeccion('Abiertas');
             openedColumn.total = amaount;
             openedColumn.cantidad = cantidad;
+            //Abiertas FIN
 
-          //Abiertos FIN
+            //inprocess INICIO
+            let inprocess =  this.empresa.inprocess
+            inprocess.forEach(lead => {
+              lead.typeCard = 'inprocess';
+              // Extraer valores del campo 'origen' si existe
+              if (lead.origen && !lead.origenBase) {
+                const urlParts = lead.origen.split('?');
+                const url = new URLSearchParams(urlParts[1] || '');
+    
+                // Agregar los campos source, medium, y campaign
+                lead.source = url.get('utm_source') || '';
+                lead.medium = url.get('utm_medium') || '';
+                lead.campaign = url.get('utm_campaign') || '';
+    
+                // Crear el nuevo campo con el origen base
+                lead.origenBase = `https://predyc.com${urlParts[0]}`;
+              }
 
+              if(lead.idAsesor){
 
-
-          //Cerrados INICIO
-
-          let closed =  this.empresa.closed
-          closed.forEach(lead => {
-            lead.typeCard = 'closed';
-            // Extraer valores del campo 'origen' si existe
-            if (lead.origen && !lead.origenBase) {
-              const urlParts = lead.origen.split('?');
-              const url = new URLSearchParams(urlParts[1] || '');
-  
-              // Agregar los campos source, medium, y campaign
-              lead.source = url.get('utm_source') || '';
-              lead.medium = url.get('utm_medium') || '';
-              lead.campaign = url.get('utm_campaign') || '';
-  
-              // Crear el nuevo campo con el origen base
-              lead.origenBase = `https://predyc.com${urlParts[0]}`;
+                const asesor = this.asesores.find(x=>x.id == lead.idAsesor)
+                lead.nameAsesor = asesor.name
+              }
+            });
+            // Actualizar la columna inprocess con los datos procesados
+            let inprocessColumn = this.columns.find(x => x.name == 'En proceso');
+            if (inprocessColumn && inprocessColumn.name && inprocess.length > 0) {
+              inprocessColumn.cards = inprocess
             }
+            // Obtener el total de la sección
+            amaount = this.getTotalAmountSeccion('En proceso');
+            cantidad = this.getTotalSeccion('En proceso');
+            inprocessColumn.total = amaount;
+            inprocessColumn.cantidad = cantidad;
+            //inprocess FIN
 
-            if(lead.idAsesor){
 
-              const asesor = this.asesores.find(x=>x.id == lead.idAsesor)
-              lead.nameAsesor = asesor.name
+            //clossing INICIO
+            let clossing =  this.empresa.clossing
+            clossing.forEach(lead => {
+              lead.typeCard = 'clossing';
+              // Extraer valores del campo 'origen' si existe
+              if (lead.origen && !lead.origenBase) {
+                const urlParts = lead.origen.split('?');
+                const url = new URLSearchParams(urlParts[1] || '');
+    
+                // Agregar los campos source, medium, y campaign
+                lead.source = url.get('utm_source') || '';
+                lead.medium = url.get('utm_medium') || '';
+                lead.campaign = url.get('utm_campaign') || '';
+    
+                // Crear el nuevo campo con el origen base
+                lead.origenBase = `https://predyc.com${urlParts[0]}`;
+              }
+
+              if(lead.idAsesor){
+
+                const asesor = this.asesores.find(x=>x.id == lead.idAsesor)
+                lead.nameAsesor = asesor.name
+              }
+            });
+            // Actualizar la columna clossing con los datos procesados
+            let clossingColumn = this.columns.find(x => x.name == 'En cierre');
+            if (clossingColumn && clossingColumn.name && clossing.length > 0) {
+              clossingColumn.cards = clossing
             }
-          });
-          // Actualizar la columna Leads con los datos procesados
-          let closedColumn = this.columns.find(x => x.name == 'Solo negocios cerrados');
-          if (closedColumn && closedColumn.name && closed.length > 0) {
-            closedColumn.cards = closed
-          }
-          // Obtener el total de la sección
-          amaount = this.getTotalAmountSeccion('Solo negocios cerrados');
-          cantidad = this.getTotalSeccion('Solo negocios cerrados');
-          closedColumn.total = amaount;
-          closedColumn.cantidad = cantidad;
+            // Obtener el total de la sección
+            amaount = this.getTotalAmountSeccion('En cierre');
+            cantidad = this.getTotalSeccion('En cierre');
+            clossingColumn.total = amaount;
+            clossingColumn.cantidad = cantidad;
+            //clossing FIN
 
-          //Sin Cerrados FIN
+
+            //closed INICIO
+            let closed =  this.empresa.closed
+            closed.forEach(lead => {
+              lead.typeCard = 'closed';
+              // Extraer valores del campo 'origen' si existe
+              if (lead.origen && !lead.origenBase) {
+                const urlParts = lead.origen.split('?');
+                const url = new URLSearchParams(urlParts[1] || '');
+    
+                // Agregar los campos source, medium, y campaign
+                lead.source = url.get('utm_source') || '';
+                lead.medium = url.get('utm_medium') || '';
+                lead.campaign = url.get('utm_campaign') || '';
+    
+                // Crear el nuevo campo con el origen base
+                lead.origenBase = `https://predyc.com${urlParts[0]}`;
+              }
+
+              if(lead.idAsesor){
+
+                const asesor = this.asesores.find(x=>x.id == lead.idAsesor)
+                lead.nameAsesor = asesor.name
+              }
+            });
+            // Actualizar la columna closed con los datos procesados
+            let closedColumn = this.columns.find(x => x.name == 'Ganadas');
+            if (closedColumn && closedColumn.name && closed.length > 0) {
+              closedColumn.cards = closed
+            }
+            // Obtener el total de la sección
+            amaount = this.getTotalAmountSeccion('Ganadas');
+            cantidad = this.getTotalSeccion('Ganadas');
+            closedColumn.total = amaount;
+            closedColumn.cantidad = cantidad;
+            //closed FIN
+
+
+            //closed INICIO
+            let lost =  this.empresa.lost
+            lost.forEach(lead => {
+              lead.typeCard = 'lost';
+              // Extraer valores del campo 'origen' si existe
+              if (lead.origen && !lead.origenBase) {
+                const urlParts = lead.origen.split('?');
+                const url = new URLSearchParams(urlParts[1] || '');
+    
+                // Agregar los campos source, medium, y campaign
+                lead.source = url.get('utm_source') || '';
+                lead.medium = url.get('utm_medium') || '';
+                lead.campaign = url.get('utm_campaign') || '';
+    
+                // Crear el nuevo campo con el origen base
+                lead.origenBase = `https://predyc.com${urlParts[0]}`;
+              }
+
+              if(lead.idAsesor){
+
+                const asesor = this.asesores.find(x=>x.id == lead.idAsesor)
+                lead.nameAsesor = asesor.name
+              }
+            });
+            // Actualizar la columna lost con los datos procesados
+            let lostColumn = this.columns.find(x => x.name == 'Perdidas');
+            if (lostColumn && lostColumn.name && lost.length > 0) {
+              lostColumn.cards = lost
+            }
+            // Obtener el total de la sección
+            amaount = this.getTotalAmountSeccion('Perdidas');
+            cantidad = this.getTotalSeccion('Perdidas');
+            lostColumn.total = amaount;
+            lostColumn.cantidad = cantidad;
+            //closed FIN
+
+
+
 
 
 
@@ -250,7 +285,7 @@ export class EmpresaCRMComponent {
     });
   }
 
-  showArchivados = false
+  showLost = false
 
   copiarContacto(message: string = 'Correos copiados', texto,action: string = '') {
     navigator.clipboard.writeText(texto).then(() => {
@@ -264,6 +299,7 @@ export class EmpresaCRMComponent {
   }
 
   async savelead(lead){
+    //alert ('aqui')
 
     let leadToSave = structuredClone(lead)
     
@@ -285,7 +321,7 @@ export class EmpresaCRMComponent {
     
     try {
       // Invoca el método saveLeadEmpresa
-      let respuesta = await this.crmService.saveLeadEmpresa(this.empresaId, leadToSave);
+      let respuesta = await this.crmService.saveCardEmpresa(this.empresaId, leadToSave);
   
       // Si la operación es exitosa, puedes agregar alguna acción aquí (opcional)
       console.log('Lead guardado con éxito:', respuesta);

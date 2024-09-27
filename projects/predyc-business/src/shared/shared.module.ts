@@ -101,6 +101,7 @@ import { QuillModule } from "ngx-quill";
 import { FloatingNotificationComponent } from "./components/floating-notification/floating-notification.component";
 import { GeneralSelectorComponent } from './widgets/general-selector/general-selector.component';
 import { TextFieldModule } from "@angular/cdk/text-field";
+import { NumberAbbreviatePipe } from "./pipes/number-abbreviate.pipe";
 
 
 
@@ -169,6 +170,7 @@ import { TextFieldModule } from "@angular/cdk/text-field";
     QuestionsListComponent,
     FloatingNotificationComponent,
     GeneralSelectorComponent,
+    NumberAbbreviatePipe,
   ],
   imports: [
     CommonModule,
@@ -303,7 +305,8 @@ import { TextFieldModule } from "@angular/cdk/text-field";
     FloatingNotificationComponent,
     LiveCourseFollowingComponent,
     GeneralSelectorComponent,
-    TextFieldModule
+    TextFieldModule,
+    NumberAbbreviatePipe,
   ],
 
   providers: [VimeoUploadService,DatePipe],

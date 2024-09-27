@@ -77,7 +77,7 @@ export class CrmService {
     }
   }
 
-  async saveLeadEmpresa(idEmpresa: string, lead: any): Promise<void> {
+  async saveCardEmpresa(idEmpresa: string, lead: any): Promise<void> {
     if (!lead.id) {
       return Promise.reject('El lead no tiene un ID');
     }
@@ -98,22 +98,30 @@ export class CrmService {
         // Actualiza el lead en 'infoRequestRegister'
         transaction.update(leadRef, { ...lead });
   
-        // Actualiza el arreglo 'leads' en el documento de la empresa
+        // Actualiza los arreglos 'opened', 'inprocess', 'closing', 'closed', 'lost' en el documento de la empresa
         const empresaData = empresaDoc.data();
-        let leads = empresaData['leads'] || [];
+        
+        // List of arrays to search in
+        const leadArrays = ['opened', 'inprocess', 'clossing', 'closed', 'lost'];
+        
+        // Variable to track if the lead was found and updated
+        let leadUpdated = false;
   
-        // Encuentra el lead a actualizar en el arreglo de leads
-        const leadIndex = leads.findIndex((l: any) => l.id === lead.id);
-        if (leadIndex !== -1) {
-          // Actualiza el lead en el arreglo
-          leads[leadIndex] = { ...leads[leadIndex], ...lead };
-        } else {
-          // Si el lead no existe en el arreglo, lo agrega (opcional)
-          leads.push(lead);
-        }
+        // Recorre todos los arreglos para encontrar y actualizar el lead
+        leadArrays.forEach((arrayName) => {
+          let leads = empresaData[arrayName] || [];
+          const leadIndex = leads.findIndex((l: any) => l.id === lead.id);
   
-        // Actualiza el documento de la empresa con el nuevo arreglo de leads
-        transaction.update(empresaRef, { leads });
+          if (leadIndex !== -1) {
+            // Actualiza el lead en el arreglo
+            leads[leadIndex] = { ...leads[leadIndex], ...lead };
+            leadUpdated = true;
+            empresaData[arrayName] = leads; // Guarda los cambios en el arreglo de leads
+          }
+        });
+  
+        // Actualiza el documento de la empresa con los nuevos arreglos de leads
+        transaction.update(empresaRef, empresaData);
       });
   
       console.log('Lead y empresa actualizados correctamente');
@@ -122,6 +130,7 @@ export class CrmService {
       throw error;
     }
   }
+  
   
   
 
@@ -171,13 +180,13 @@ addLeadToEnterprise(lead: any, idEmpresa: string): Promise<void> {
   return enterpriseRef.ref.get().then(async (doc) => {
       if (doc.exists) {
           const enterpriseData = doc.data();
-          const leadsArray = enterpriseData['leads'] || []; // Obtén el arreglo existente o inicializa uno nuevo
+          const leadsArray = enterpriseData['opened'] || []; // Obtén el arreglo existente o inicializa uno nuevo
 
           // Agrega el nuevo lead al arreglo
           leadsArray.push(lead);
 
           // Actualiza el documento de la empresa con el nuevo arreglo de leads
-          await enterpriseRef.update({ leads: leadsArray });
+          await enterpriseRef.update({ opened: leadsArray });
       } else {
           throw new Error('La empresa no existe');
       }

@@ -10,129 +10,130 @@
         </div>
         
         <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="8px">
-            <span class="ft12">Ver Dormidos</span>
-            <mat-slide-toggle [(ngModel)]="showArchivados" color="primary"></mat-slide-toggle>
+            <span class="ft12">Ver Perdidas</span>
+            <mat-slide-toggle [(ngModel)]="showLost" color="primary"></mat-slide-toggle>
             <button class="backBlue5 button-animation" style="border-radius: 24px !important;">
                 <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="">
-                Nuevo Lead
+                Nuevo Negocio
             </button>
         </div>
     </div>
     
     <div class="kanban-board" fxLayout="row" fxLayoutAlign="space-between stretch">
-        <div class="kanban-column" *ngFor="let column of columns" fxLayout="column" fxFlex="20">
-            <div *ngIf="column.name!='Notas'" class="kanban-header" [ngStyle]="{'background-color': column.color}">
-                {{ column.name }} ({{ column.cantidad }} - {{ column.total | currency:'USD':'symbol':'1.2-2' }})
-            </div>
-            <div *ngIf="column.name=='Notas'" class="kanban-header" [ngStyle]="{'background-color': column.color}">
-                {{ column.name }}
-            </div>
-    
-            <div class="kanban-content" cdkDropList [attr.id-column]="column.id" (cdkDropListDropped)="onDrop($event)">
-            <ng-container *ngFor="let card of column.cards" >
-                <div *ngIf="showArchivados || !card.archivado" cdkDrag class="lead-card" [attr.id]="card.id" [ngClass]="{'backGray5': card.archivado }">
-                    <!-- <ng-container *ngIf="(card.typeCard == 'lead' || card.typeCard == 'sinNegcios')"> -->
-                    <ng-container>
-                        <div style="padding: 10px;">
-                            <div>
-                                <span *ngIf="!card['editingTitle']" (click)="card['editingTitle'] = true" class="ft14 ft500 cursorPointer" >{{card.title ? card.title : 'Sin titulo'}}</span>
-                                <input (blur)="card['editingTitle'] = false; savelead(card)"  (keydown)="handleKeydown($event, card, 'editingTitle')"  *ngIf="card['editingTitle']"  type="text" [(ngModel)]="card.title" class="h32px ft14 shadow-animation pdl05 pdr05 radius4 borderLight fw" style="text-align: center;" />
-                            </div>
-                            <div class="contactoLead mgt05" fxLayout="column">
-                                <div fxLayout="row" class="pdb05">
-                                    <span class="ft12">{{card.name | titlecase}}&nbsp;- &nbsp;{{card.cargo}}</span> 
-                                </div>
-                                <div fxLayout="row" fxLayoutAlign="space-between stretch">
-                                    <a (click)="copiarContacto('Correo copiado',card.email)" [href]="'mailto:' + card.email" class="ft12 blueLink">{{ card.email }}</a>
-                                </div>
-                                <div fxLayout="row" fxLayoutAlign="space-between stretch">
-                                    <a (click)="copiarContacto('Teléfono copiado',card.telefono)" [href]="'https://wa.me/' + card.telefono" target="_blank" class="ft12 gray-10">Tel:&nbsp;{{ card.telefono }}</a>
-                                </div>
-                            </div>
-                            <div fxLayout="row" fxLayoutAlign="space-between center" class="pdt05">
-                                <span>Valor:</span>
-                                <!-- <input [(ngModel)]="card.valor" (blur)="savelead(card)" type="number"/> -->
-                                <span *ngIf="!card['editingValor']" (click)="card['editingValor'] = true" class="cursorPointer" [ngClass]="{ 'greenText4 ft600': card.valor }">{{ card.valor ? (card.valor | currency:'USD':'symbol':'1.2-2') : 'Sin valor establecido' }}</span>
-                                <input (blur)="card['editingValor'] = false; savelead(card)" (keydown)="handleKeydown($event, card, 'editingValor')"  *ngIf="card['editingValor']"  type="number" [(ngModel)]="card.valor" class="h32px ft14 shadow-animation pdl05 pdr05 radius4 borderLight fw" style="text-align: center;" />
-                            </div>
-        
-                            <div fxLayout="row" fxLayoutAlign="space-between center" class="pdt05">
-                                <span>Interes:</span>
-                                <!-- Select para elegir entre 'Empresa' o 'Independiente' -->
-                                <span *ngIf="!card['editingProducto']" (click)="card['editingProducto'] = true" class="cursorPointer">
-                                    {{ card.interesUser ? (card.interesUser | titlecase) : 'Sin valor establecido' }}
-                                </span>
-                                <select (keydown)="handleKeydown($event, card, 'editingProducto')"  (blur)="card['editingProducto'] = false; savelead(card)" *ngIf="card['editingProducto']" [(ngModel)]="card.interesUser" class="h32px ft14 shadow-animation pdl05 pdr05 radius4 borderLight fw">
-                                    <option [ngValue]="'empresa'">Empresa</option>
-                                    <option [ngValue]="'individual'">Individual</option>
-                                </select>
-                            </div>
-                            <div fxLayout="row" fxLayoutAlign="space-between center" class="pdt05">
-                                <span>Cantidad:</span>
-                                <!-- Select para elegir entre 'Empresa' o 'Independiente' -->
-                                <span *ngIf="!card['editingCantidad']" (click)="card['editingCantidad'] = true" class="cursorPointer">
-                                    {{ card.cantidad ? (card.cantidad ) : 'Sin valor establecido' }}
-                                </span>
-                                <select (keydown)="handleKeydown($event, card, 'editingCantidad')"  (blur)="card['editingCantidad'] = false; savelead(card)" *ngIf="card['editingCantidad']" [(ngModel)]="card.cantidad" class="h32px ft14 shadow-animation pdl05 pdr05 radius4 borderLight fw">
-                                    <option [ngValue]="'1'">Para 1 persona</option>
-                                    <option [ngValue]="'2'">Para 2 personas</option>
-                                    <option [ngValue]="'5'">Para 5 personas</option>
-                                    <option [ngValue]="'+10'">Para más de 10 personas</option>
-                                    <option [ngValue]="'+25'">Para más de 25 personas</option>
-                                </select>
-                            </div>
-                            <div fxLayout="row" fxLayoutAlign="start start" class="pdt05">
-                                <div fxLayout="column" fxFlex="20">
-                                    <span>Origen:</span>
-                                </div>
-                                <div fxLayout="column" fxFlex="80">
-                                    <span *ngIf="!card['editingOrigen']" (click)="card['editingOrigen'] = true" class="cursorPointer" style="text-align: right; display: block; overflow-wrap: break-word; max-width: 100%;">
-                                        {{ card.origenBase ? card.origenBase : 'Sin valor establecido' }}
-                                    </span>
-                                    <textarea cdkTextareaAutosize
-                                    #autosize="cdkTextareaAutosize"
-                                    cdkAutosizeMinRows="1"
-                                    cdkAutosizeMaxRows="99"
-                                    [(ngModel)]="card.origenBase"
-                                    (blur)="card['editingOrigen'] = false; savelead(card)"
-                                    *ngIf="card['editingOrigen']"></textarea>
-                                </div>
-                            </div>
-                            <!-- source	medium	campaign -->
-                            <div fxLayout="row" fxLayoutAlign="space-between center" class="pdt05">
-                                <span>Source:</span>
-                                <!-- <input [(ngModel)]="card.valor" (blur)="savelead(card)" type="number"/> -->
-                                <span *ngIf="!card['editingSource']" (click)="card['editingSource'] = true" class="cursorPointer" >{{ card.source ? (card.source) : '-' }}</span>
-                                <input (blur)="card['editingSource'] = false; savelead(card)" (keydown)="handleKeydown($event, card, 'editingSource')"  *ngIf="card['editingSource']"  type="text" [(ngModel)]="card.source" class="h32px ft14 shadow-animation pdl05 pdr05 radius4 borderLight fw" style="text-align: center;" />
-                            </div>
-                            <div fxLayout="row" fxLayoutAlign="space-between center" class="pdt05">
-                                <span>Medium:</span>
-                                <!-- <input [(ngModel)]="card.valor" (blur)="savelead(card)" type="number"/> -->
-                                <span *ngIf="!card['editingMedium']" (click)="card['editingMedium'] = true" class="cursorPointer" >{{ card.medium ? (card.medium) : '-' }}</span>
-                                <input (blur)="card['editingMedium'] = false; savelead(card)" (keydown)="handleKeydown($event, card, 'editingMedium')"  *ngIf="card['editingMedium']"  type="text" [(ngModel)]="card.medium" class="h32px ft14 shadow-animation pdl05 pdr05 radius4 borderLight fw" style="text-align: center;" />
-                            </div>
-                            <div fxLayout="row" fxLayoutAlign="space-between center" class="pdt05">
-                                <span>Campaign:</span>
-                                <!-- <input [(ngModel)]="card.valor" (blur)="savelead(card)" type="number"/> -->
-                                <span *ngIf="!card['editingCampaign']" (click)="card['editingCampaign'] = true" class="cursorPointer" >{{ card.campaign ? (card.campaign) : '-' }}</span>
-                                <input (blur)="card['editingCampaign'] = false; savelead(card)" (keydown)="handleKeydown($event, card, 'editingCampaign')"  *ngIf="card['editingCampaign']"  type="text" [(ngModel)]="card.campaign" class="h32px ft14 shadow-animation pdl05 pdr05 radius4 borderLight fw" style="text-align: center;" />
-                            </div>
-                            <div fxLayout="row" fxLayoutAlign="space-between center" class="pdt05">
-                                <span>Fecha:</span>
-                                <span>{{card.date.seconds * 1000 | date}}</span>
-                            </div>
-                        </div>
-                        <!-- Footer de la tarjeta -->
-                        <div fxLayout="row" fxLayoutAlign="space-between center" class="card-footer" style="margin: 0; padding: 8px;">
-                            <span (click)="selectedLead=card" [matMenuTriggerFor]="menuResposnable" class="ftxs cursorPointer ">{{card.nameAsesor? (card.nameAsesor | titlecase):'Sin responsable'}}</span>
-                            <span class="ftxs blueLink" (click)="selectedLead=card" [matMenuTriggerFor]="menuDormir">Dormir (WIP)</span>
-                        </div>
-                    </ng-container>
+        <ng-container *ngFor="let column of columns">
+            <div *ngIf="(column.id !== 'lost' && column.id !== 'closed') || (column.id === 'lost' && showLost) || (column.id === 'closed' && !showLost)" class="kanban-column"  fxLayout="column" fxFlex="20">
+                <div *ngIf="column.name!='Notas'" class="kanban-header" [ngStyle]="{'background-color': column.color}">
+                    {{ column.name }} ({{ column.cantidad }} - {{ column.total | numberAbbreviate:'USD' }})
                 </div>
-            </ng-container>
-          </div>
-
-        </div>
+                <div *ngIf="column.name=='Notas'" class="kanban-header" [ngStyle]="{'background-color': column.color}">
+                    {{ column.name }}
+                </div>
+        
+                <div class="kanban-content" cdkDropList [attr.id-column]="column.id" (cdkDropListDropped)="onDrop($event)">
+                <ng-container *ngFor="let card of column.cards" >
+                    <div cdkDrag class="lead-card" [attr.id]="card.id" [ngClass]="{'backGray5': card.archivado }">
+                        <!-- <ng-container *ngIf="(card.typeCard == 'lead' || card.typeCard == 'sinNegcios')"> -->
+                        <ng-container>
+                            <div style="padding: 10px;">
+                                <div>
+                                    <span *ngIf="!card['editingTitle']" (click)="card['editingTitle'] = true" class="ft14 ft500 cursorPointer" >{{card.title ? card.title : 'Sin titulo'}}</span>
+                                    <input (blur)="card['editingTitle'] = false; savelead(card)"  (keydown)="handleKeydown($event, card, 'editingTitle')"  *ngIf="card['editingTitle']"  type="text" [(ngModel)]="card.title" class="h32px ft14 shadow-animation pdl05 pdr05 radius4 borderLight fw" style="text-align: center;" />
+                                </div>
+                                <div class="contactoLead mgt05" fxLayout="column">
+                                    <div fxLayout="row" class="pdb05">
+                                        <span class="ft12">{{card.name | titlecase}}&nbsp;- &nbsp;{{card.cargo}}</span> 
+                                    </div>
+                                    <div fxLayout="row" fxLayoutAlign="space-between stretch">
+                                        <a (click)="copiarContacto('Correo copiado',card.email)" [href]="'mailto:' + card.email" class="ft12 blueLink">{{ card.email }}</a>
+                                    </div>
+                                    <div fxLayout="row" fxLayoutAlign="space-between stretch">
+                                        <a (click)="copiarContacto('Teléfono copiado',card.telefono)" [href]="'https://wa.me/' + card.telefono" target="_blank" class="ft12 gray-10">Tel:&nbsp;{{ card.telefono }}</a>
+                                    </div>
+                                </div>
+                                <div fxLayout="row" fxLayoutAlign="space-between center" class="pdt05">
+                                    <span>Valor:</span>
+                                    <!-- <input [(ngModel)]="card.valor" (blur)="savelead(card)" type="number"/> -->
+                                    <span *ngIf="!card['editingValor']" (click)="card['editingValor'] = true" class="cursorPointer" [ngClass]="{ 'greenText4 ft600': card.valor }">{{ card.valor ? (card.valor | numberAbbreviate:'USD') : 'Sin valor establecido' }}</span>
+                                    <input (blur)="card['editingValor'] = false; savelead(card)" (keydown)="handleKeydown($event, card, 'editingValor')"  *ngIf="card['editingValor']"  type="number" [(ngModel)]="card.valor" class="h32px ft14 shadow-animation pdl05 pdr05 radius4 borderLight fw" style="text-align: center;" />
+                                </div>
+            
+                                <div fxLayout="row" fxLayoutAlign="space-between center" class="pdt05">
+                                    <span>Interes:</span>
+                                    <!-- Select para elegir entre 'Empresa' o 'Independiente' -->
+                                    <span *ngIf="!card['editingProducto']" (click)="card['editingProducto'] = true" class="cursorPointer">
+                                        {{ card.interesUser ? (card.interesUser | titlecase) : 'Sin valor establecido' }}
+                                    </span>
+                                    <select (keydown)="handleKeydown($event, card, 'editingProducto')"  (blur)="card['editingProducto'] = false; savelead(card)" *ngIf="card['editingProducto']" [(ngModel)]="card.interesUser" class="h32px ft14 shadow-animation pdl05 pdr05 radius4 borderLight fw">
+                                        <option [ngValue]="'empresa'">Empresa</option>
+                                        <option [ngValue]="'individual'">Individual</option>
+                                    </select>
+                                </div>
+                                <div fxLayout="row" fxLayoutAlign="space-between center" class="pdt05">
+                                    <span>Cantidad:</span>
+                                    <!-- Select para elegir entre 'Empresa' o 'Independiente' -->
+                                    <span *ngIf="!card['editingCantidad']" (click)="card['editingCantidad'] = true" class="cursorPointer">
+                                        {{ card.cantidad ? (card.cantidad ) : 'Sin valor establecido' }}
+                                    </span>
+                                    <select (keydown)="handleKeydown($event, card, 'editingCantidad')"  (blur)="card['editingCantidad'] = false; savelead(card)" *ngIf="card['editingCantidad']" [(ngModel)]="card.cantidad" class="h32px ft14 shadow-animation pdl05 pdr05 radius4 borderLight fw">
+                                        <option [ngValue]="'1'">Para 1 persona</option>
+                                        <option [ngValue]="'2'">Para 2 personas</option>
+                                        <option [ngValue]="'5'">Para 5 personas</option>
+                                        <option [ngValue]="'+10'">Para más de 10 personas</option>
+                                        <option [ngValue]="'+25'">Para más de 25 personas</option>
+                                    </select>
+                                </div>
+                                <div fxLayout="row" fxLayoutAlign="start start" class="pdt05">
+                                    <div fxLayout="column" fxFlex="20">
+                                        <span>Origen:</span>
+                                    </div>
+                                    <div fxLayout="column" fxFlex="80">
+                                        <span *ngIf="!card['editingOrigen']" (click)="card['editingOrigen'] = true" class="cursorPointer" style="text-align: right; display: block; overflow-wrap: break-word; max-width: 100%;">
+                                            {{ card.origenBase ? card.origenBase : 'Sin valor establecido' }}
+                                        </span>
+                                        <textarea cdkTextareaAutosize
+                                        #autosize="cdkTextareaAutosize"
+                                        cdkAutosizeMinRows="1"
+                                        cdkAutosizeMaxRows="99"
+                                        [(ngModel)]="card.origenBase"
+                                        (blur)="card['editingOrigen'] = false; savelead(card)"
+                                        *ngIf="card['editingOrigen']"></textarea>
+                                    </div>
+                                </div>
+                                <!-- source	medium	campaign -->
+                                <div fxLayout="row" fxLayoutAlign="space-between center" class="pdt05">
+                                    <span>Source:</span>
+                                    <!-- <input [(ngModel)]="card.valor" (blur)="savelead(card)" type="number"/> -->
+                                    <span *ngIf="!card['editingSource']" (click)="card['editingSource'] = true" class="cursorPointer" >{{ card.source ? (card.source) : '-' }}</span>
+                                    <input (blur)="card['editingSource'] = false; savelead(card)" (keydown)="handleKeydown($event, card, 'editingSource')"  *ngIf="card['editingSource']"  type="text" [(ngModel)]="card.source" class="h32px ft14 shadow-animation pdl05 pdr05 radius4 borderLight fw" style="text-align: center;" />
+                                </div>
+                                <div fxLayout="row" fxLayoutAlign="space-between center" class="pdt05">
+                                    <span>Medium:</span>
+                                    <!-- <input [(ngModel)]="card.valor" (blur)="savelead(card)" type="number"/> -->
+                                    <span *ngIf="!card['editingMedium']" (click)="card['editingMedium'] = true" class="cursorPointer" >{{ card.medium ? (card.medium) : '-' }}</span>
+                                    <input (blur)="card['editingMedium'] = false; savelead(card)" (keydown)="handleKeydown($event, card, 'editingMedium')"  *ngIf="card['editingMedium']"  type="text" [(ngModel)]="card.medium" class="h32px ft14 shadow-animation pdl05 pdr05 radius4 borderLight fw" style="text-align: center;" />
+                                </div>
+                                <div fxLayout="row" fxLayoutAlign="space-between center" class="pdt05">
+                                    <span>Campaign:</span>
+                                    <!-- <input [(ngModel)]="card.valor" (blur)="savelead(card)" type="number"/> -->
+                                    <span *ngIf="!card['editingCampaign']" (click)="card['editingCampaign'] = true" class="cursorPointer" >{{ card.campaign ? (card.campaign) : '-' }}</span>
+                                    <input (blur)="card['editingCampaign'] = false; savelead(card)" (keydown)="handleKeydown($event, card, 'editingCampaign')"  *ngIf="card['editingCampaign']"  type="text" [(ngModel)]="card.campaign" class="h32px ft14 shadow-animation pdl05 pdr05 radius4 borderLight fw" style="text-align: center;" />
+                                </div>
+                                <div fxLayout="row" fxLayoutAlign="space-between center" class="pdt05">
+                                    <span>Fecha:</span>
+                                    <span>{{card.date.seconds * 1000 | date}}</span>
+                                </div>
+                            </div>
+                            <!-- Footer de la tarjeta -->
+                            <div fxLayout="row" fxLayoutAlign="space-between center" class="card-footer" style="margin: 0; padding: 8px;">
+                                <span (click)="selectedLead=card" [matMenuTriggerFor]="menuResposnable" class="ftxs cursorPointer ">{{card.nameAsesor? (card.nameAsesor | titlecase):'Sin responsable'}}</span>
+                                <span class="ftxs blueLink" (click)="selectedLead=card" [matMenuTriggerFor]="menuDormir">Dormir (WIP)</span>
+                            </div>
+                        </ng-container>
+                    </div>
+                </ng-container>
+              </div>
+            </div>
+        </ng-container>
     </div>
 </div>
 

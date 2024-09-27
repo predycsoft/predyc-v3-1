@@ -74,6 +74,28 @@ export class DashboardComponent {
     getOptionTextEmpresa(empresa: any): string {
       return empresa ? empresa.nombre : '';
     }
+
+
+  calcularTotalesTipoEmpresa(tipo = []){
+
+    let amount = 0
+
+    tipo?.forEach(card => {
+      if (card.valor) {
+        let valor = parseFloat(card.valor);
+        // Comprueba si el valor es un número después de convertirlo.
+        if (!isNaN(valor)) {
+            amount += valor;
+        }
+    }
+    });
+
+    return {
+      amount:amount,
+      cantidad: tipo.length
+    }
+
+  }
   
 
   ngOnInit() {
@@ -152,6 +174,7 @@ export class DashboardComponent {
 
           empresas.forEach(empresa => {
             let cards = []
+            let cardsPoened = []
 
             const asesor = this.asesores.find(x=>x.id == empresa.idAsesor)
 
@@ -163,25 +186,48 @@ export class DashboardComponent {
               typeCard:null,
               nameAsesor:asesor.name,
               sinNegcios:empresa.sinNegcios,
-              leads: empresa.leads,
-              opened: empresa.open,
-              closed: empresa.closed,
 
+              opened:empresa.opened,
+              inprocess:empresa.inprocess,
+              clossing:empresa.clossing,
+              closed:empresa.closed,
+              lost:empresa.lost,
+
+              openedDetalle : this.calcularTotalesTipoEmpresa(empresa.opened),
+              inprocessDetalle : this.calcularTotalesTipoEmpresa(empresa.inprocess),
+              clossingDetalle : this.calcularTotalesTipoEmpresa(empresa.clossing),
+              closedDetalle : this.calcularTotalesTipoEmpresa(empresa.closed),
+              lostDetalle : this.calcularTotalesTipoEmpresa(empresa.lost),
+              cardsOpenDetail:null
             }
-            cards = cards.concat(empresa.sinNegocios || [], empresa.leads || [], empresa.opened || [], empresa.closed || []);
+            cards = cards.concat(empresa.opened || [], empresa.inprocess || [], empresa.clossing || [], empresa.closed || [], empresa.lost || []);
+
+            cardsPoened = cardsPoened.concat(empresa.opened || [], empresa.inprocess || [], empresa.clossing || []);
+
+            cardEmpresa.cardsOpenDetail =  this.calcularTotalesTipoEmpresa(cardsPoened),
+
+            console.log('cardsPoened',cardsPoened,empresa)
 
             if(cards && cards.length>0){
-              if(empresa.opened.length == 0 && empresa.closed.length == 0 ){ // empresa cae en sin negocios 
+
+              if(cardsPoened.length == 0 && empresa.closed.length == 0 ){ // empresa cae en sin negocios 
                 cardEmpresa.typeCard='empresaSinNegocios'
-                sinNegociosColumn.cards.push(cardEmpresa)              
+                sinNegociosColumn.cards.push(cardEmpresa)
+                            
               }
-              if(empresa.opened.length >0  ){ // empresa cae en sin negocios 
+              if( cardsPoened.length>0){ // empresa cae en sin negocios 
                 cardEmpresa.typeCard='empresaConNegocios'
-                conNegociosColumn.cards.push(cardEmpresa)              
+                conNegociosColumn.cards.push(cardEmpresa)
+                conNegociosColumn.total+=cardEmpresa.cardsOpenDetail.amount
+                conNegociosColumn.cantidad++
+                
+                
               }
-              if(empresa.closed.length > 0 && (empresa.opened.length ==0 )){ // empresa cae en sin negocios 
+              if(empresa.closed.length > 0 && (cardsPoened.length ==0 )){ // empresa cae en sin negocios 
                 cardEmpresa.typeCard='empresaSoloCerrados'
-                cerradosColumn.cards.push(cardEmpresa)              
+                cerradosColumn.cards.push(cardEmpresa)   
+                cerradosColumn.total+=cardEmpresa.closedDetalle.amount
+                cerradosColumn.cantidad++           
               }
 
 
@@ -190,25 +236,10 @@ export class DashboardComponent {
               let sinNegociosColumn = this.columns.find(x => x.name == 'Sin negocio');
               cardEmpresa.typeCard='empresaSinNegocios'
               sinNegociosColumn.cards.push(cardEmpresa)
+              sinNegociosColumn.cantidad++           
               
             }
-
-
-
-
-
           });
-
-
-          
-
-
-
-
-
-
-
-
         });
     });
   }
@@ -356,10 +387,11 @@ handleKeydown(event: KeyboardEvent, card: any, editingField: string): void {
         let empresa = this.formNewEmpresa.value
         console.log(empresa)
         empresa.nombre = empresa.nombre.toLowerCase().trim()
-        empresa.leads = []
         empresa.opened = []
+        empresa.inprocess = []
+        empresa.clossing = []
         empresa.closed = []
-        empresa.sinNegcios = []
+        empresa.lost = []
 
 
         let empresaFind =this.empresas.find(x => x.nombre == empresa.nombre)

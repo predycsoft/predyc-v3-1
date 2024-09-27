@@ -24,7 +24,10 @@
     <div class="kanban-board" fxLayout="row" fxLayoutAlign="space-between stretch">
         <div class="kanban-column" *ngFor="let column of columns" fxLayout="column" fxFlex="20">
           <div class="kanban-header" [ngStyle]="{'background-color': column.color}">
-            {{ column.name }}( {{column.cantidad}} - {{column.total | currency:'USD':'symbol':'1.2-2' }})
+            {{ column.name }}  ({{column.cantidad}}{{column.total==0?'&#x29;':''}}
+            <ng-container *ngIf="column.total>0">
+                - {{column.total | numberAbbreviate:'USD' }})
+            </ng-container>
           </div>
       
           <div class="kanban-content">
@@ -50,7 +53,7 @@
                             <div fxLayout="row" fxLayoutAlign="space-between center" class="pdt05">
                                 <span>Valor:</span>
                                 <!-- <input [(ngModel)]="card.valor" (blur)="savelead(card)" type="number"/> -->
-                                <span *ngIf="!card['editingValor']" (click)="card['editingValor'] = true" class="cursorPointer" [ngClass]="{ 'greenText4 ft600': card.valor }">{{ card.valor ? (card.valor | currency:'USD':'symbol':'1.2-2') : 'Sin valor establecido' }}</span>
+                                <span *ngIf="!card['editingValor']" (click)="card['editingValor'] = true" class="cursorPointer" [ngClass]="{ 'greenText4 ft600': card.valor }">{{ card.valor ? (card.valor | numberAbbreviate:'USD') : 'Sin valor establecido' }}</span>
                                 <input (blur)="card['editingValor'] = false; savelead(card)" (keydown)="handleKeydown($event, card, 'editingValor')"  *ngIf="card['editingValor']"  type="number" [(ngModel)]="card.valor" class="h32px ft14 shadow-animation pdl05 pdr05 radius4 borderLight fw" style="text-align: center;" />
                             </div>
         
@@ -146,6 +149,10 @@
                                 <div>
                                     <span class="ft14 ft500" >{{card.name | titlecase}}</span>
                                 </div>
+                                <div>
+                                    <span class="ft12" >{{card.cardsOpenDetail.cantidad}} ABIERTOS ({{card.cardsOpenDetail.amount | numberAbbreviate:'USD'}})</span>
+                                    <span class="ft12" >{{card.closedDetalle.cantidad}} CERRADOS ({{card.closedDetalle.amount | numberAbbreviate:'USD'}})</span>
+                                </div>
                             </div>
                             <!-- Footer de la tarjeta -->
                             <div fxLayout="row" fxLayoutAlign="space-between center" style="margin: 0; padding: 8px; padding-top: 0px; padding-bottom: 8px;">
@@ -159,6 +166,10 @@
                             <div style="padding: 6px; padding-bottom: 0px;">
                                 <div>
                                     <span class="ft14 ft500" >{{card.name | titlecase}}</span>
+                                </div>
+                                <div>
+                                    <!-- <span class="ft14 ft500" >ABIERTOS</span> -  -->
+                                    <span class="ft12" >{{card.closedDetalle.cantidad}} CERRADOS ({{card.closedDetalle.amount | numberAbbreviate:'USD'}})</span>
                                 </div>
                             </div>
                             <!-- Footer de la tarjeta -->
@@ -286,7 +297,7 @@
                 <div fxLayout="row" fxLayoutAlign="space-between center" class="pdt05">
                     <span>Valor:</span>
                     <!-- <input [(ngModel)]="selectedLead.valor" (blur)=" type="number"/> -->
-                    <span *ngIf="!selectedLead['editingValor']" (click)="selectedLead['editingValor'] = true" class="cursorPointer" [ngClass]="{ 'greenText4 ft600': selectedLead.valor }">{{ selectedLead.valor ? (selectedLead.valor | currency:'USD':'symbol':'1.2-2') : 'Sin valor establecido' }}</span>
+                    <span *ngIf="!selectedLead['editingValor']" (click)="selectedLead['editingValor'] = true" class="cursorPointer" [ngClass]="{ 'greenText4 ft600': selectedLead.valor }">{{ selectedLead.valor ? (selectedLead.valor | numberAbbreviate:'USD') : 'Sin valor establecido' }}</span>
                     <input (blur)="selectedLead['editingValor'] = false;" (keydown)="handleKeydown($event, selectedLead, 'editingValor')"  *ngIf="selectedLead['editingValor']"  type="number" [(ngModel)]="selectedLead.valor" class="h32px ft14 shadow-animation pdl05 pdr05 radius4 borderLight fw" style="text-align: center;" />
                 </div>
 
@@ -379,9 +390,9 @@
                         <mat-option *ngFor="let empresa of filteredEmpresas | async" [value]="empresa">
                           {{ empresa.nombre | titlecase }}
                         </mat-option>
-                        <mat-option [value]="null">
+                        <!-- <mat-option [value]="null">
                            Crear empresa (not yet implemented)
-                          </mat-option>
+                          </mat-option> -->
                       </mat-autocomplete>
                     </mat-form-field>
                   </div>
