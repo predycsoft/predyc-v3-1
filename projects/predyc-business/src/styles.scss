@@ -2366,6 +2366,25 @@ textarea:focus {
   align-items: left;
 }
 
+
+.makeRedComentario { //#FFACA9
+  filter: invert(67%) sepia(57%) saturate(520%) hue-rotate(322deg) brightness(102%) contrast(101%);
+}
+.makeYellowComentario { //#FFB94E
+  filter: invert(73%) sepia(42%) saturate(663%) hue-rotate(344deg) brightness(100%) contrast(103%);
+}
+
+.makeBlueComentario { //#0094FF
+  filter: invert(41%) sepia(53%) saturate(3461%) hue-rotate(185deg) brightness(102%) contrast(107%);
+}
+
+
+
+
+
+
+
+
 .makeBlue {
   filter: invert(43%) sepia(91%) saturate(3168%) hue-rotate(180deg) brightness(94%) contrast(101%) !important;
 }

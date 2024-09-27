@@ -2,6 +2,7 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatMenuTrigger } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -65,11 +66,12 @@ export class EmpresaCRMComponent {
 
   empresaId = this.route.snapshot.paramMap.get('id');
   asesorEmpresa = null
-
+  user
   ngOnInit() {
     this.authService.user$.subscribe(async (user) => {
 
       console.log('user',user)
+      this.user = user
       let validUsers = await this.crmService.getUserCRM()
       console.log('validUsers',validUsers)
       this.asesores = validUsers
@@ -229,7 +231,7 @@ export class EmpresaCRMComponent {
             //closed FIN
 
 
-            //closed INICIO
+            //lost INICIO
             let lost =  this.empresa.lost
             lost.forEach(lead => {
               lead.typeCard = 'lost';
@@ -263,7 +265,33 @@ export class EmpresaCRMComponent {
             cantidad = this.getTotalSeccion('Perdidas');
             lostColumn.total = amaount;
             lostColumn.cantidad = cantidad;
-            //closed FIN
+            //lost FIN
+
+
+            //notas INICIO
+            let notas =  this.empresa.notas
+            notas.sort((a: any, b: any) => {
+              return b.date.seconds - a.date.seconds;
+            });
+
+
+            notas.forEach(nota => {
+              nota.typeCard = 'nota';
+              if(nota.idUser){
+
+                const asesor = this.asesores.find(x=>x.id == nota.idUser)
+                nota.nameAsesor = asesor.name
+              }
+            });
+            // Actualizar la columna notas con los datos procesados
+            let notasColumn = this.columns.find(x => x.name == 'Notas');
+            if (notasColumn && notasColumn.name && notas.length > 0) {
+              notasColumn.cards = notas
+            }
+            // Obtener el total de la sección
+            cantidad = this.getTotalSeccion('Notas');
+            notasColumn.cantidad = cantidad;
+            //notas FIN
 
 
 
@@ -296,6 +324,33 @@ export class EmpresaCRMComponent {
     }).catch(err => {
       console.error('Error al copiar al portapapeles: ', err);
     });
+  }
+
+  editingIndustria = false
+
+  handleKeydownIndustria(event: KeyboardEvent): void {
+    if (event.keyCode === 13 || event.keyCode === 9 || event.keyCode === 27) {
+        event.preventDefault();  // Previene la funcionalidad por defecto de la tecla
+        this.handleBlurIndustria();
+        (event.target as HTMLInputElement).blur();
+    }
+  }
+    
+  handleBlurIndustria(): void {
+    this.editingIndustria = false;
+    this.saveIndustria();
+  }
+
+  saveIndustria(){
+
+    this.crmService.updateEmpresaIndustria(this.empresaId,this.empresa.industria).then(() => {
+    // Aquí puedes manejar lo que sucederá después de la actualización, si es necesario
+  })
+  .catch((error) => {
+    // Manejo del error si ocurre
+    console.error('Error al actualizar la industria:', error);
+  });
+    
   }
 
   async savelead(lead){
@@ -408,6 +463,47 @@ handleKeydown(event: KeyboardEvent, card: any, editingField: string): void {
       console.log('Asesor asignado:', lead.idAsesor);
   }
 
+  notaTexto = ''
+  addNote(nuevaNotaModal){
+    this.notaTexto = ''
+
+    this.openModal(nuevaNotaModal,'md')
+
+  }
+
+
+  async saveNota() {
+    let notaTexto = this.notaTexto.trim(); // Quita espacios en blanco
+  
+    if (notaTexto) {
+      try {
+        // Intentamos guardar la nota
+        await this.crmService.saveNoteEmpresa(notaTexto, this.empresaId, this.user.uid);
+        console.log('Guardando nota:', notaTexto);
+  
+        // Si es exitoso, mostrar un alert por ahora
+        this.currentModal.close()
+      } catch (error) {
+        // Si ocurre un error, muestra el mensaje en un SweetAlert2
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Hubo un problema al guardar la nota. Inténtalo de nuevo.',
+          footer: `Detalles del error: ${error.message || error}`
+        });
+      }
+    } else {
+      // Muestra un mensaje de advertencia si no hay texto
+      Swal.fire({
+        icon: 'warning',
+        title: 'Advertencia',
+        text: 'No hay texto en la nota. Por favor, escribe algo antes de guardar.',
+      });
+    }
+  }
+  
+
+
 
   archivarCard() {
 
@@ -447,6 +543,8 @@ handleKeydown(event: KeyboardEvent, card: any, editingField: string): void {
 
 }
 
+selectedIdNote
+
   async onDrop(event: CdkDragDrop<any[]>) {
   // Obtener el ID de la tarjeta que se ha movido
   const cardId = event.item.element.nativeElement.getAttribute('id');
@@ -458,14 +556,42 @@ handleKeydown(event: KeyboardEvent, card: any, editingField: string): void {
   const columnOrigen = event.container.element.nativeElement.getAttribute('id-column');
   // Aquí puedes manejar la lógica para actualizar el estado de la tarjeta, si es necesario
 
-  if(columnDestino && (columnOrigen != columnDestino)){
+  if(columnDestino && (columnOrigen != columnDestino || ((columnOrigen == 'Notas') ))){
     await this.crmService.moveCardEmpresa(this.empresaId,cardId,columnOrigen,columnDestino)
     //moveCardEmpresa()
 
   }
 
 }
+selectedNote
+  rightClickCard(event: MouseEvent,nota) {
+    event.preventDefault(); // Esto previene el menú contextual predeterminado del navegador
+    let item = document.getElementById(`menuCard-${nota.id}`);
+    console.log(item)
+    item.click();
+  }
+  async makeBgNote(color: string) {
+    console.log(this.empresaId, this.selectedIdNote, color);
+  
+    try {
+      // Llamada al servicio CrmService para actualizar el color de la nota
 
+      this.selectedNote.color = color;
+      await this.crmService.updateNoteColor(this.empresaId, this.selectedIdNote, color);
+      
+      // Aquí puedes agregar un alert o mensaje de éxito si lo necesitas
+    } catch (error) {
+      // Si ocurre un error, muestra el mensaje en la consola y un SweetAlert2
+      console.error('Error al actualizar el color de la nota:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Hubo un problema al actualizar el color de la nota. Inténtalo de nuevo.',
+        footer: `Detalles del error: ${error.message || error}`
+      });
+    }
+  }
+  
 
 
 }

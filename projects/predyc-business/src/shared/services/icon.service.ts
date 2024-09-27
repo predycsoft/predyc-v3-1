@@ -188,6 +188,8 @@ export class IconService {
   userCertification = "assets/icons/user-certification.svg"
   manyPeople = "assets/icons/many-people.svg"
 
+  circleFill = "assets/iconsUI/circle-fill.svg"
+
   // Tipo de estudiante
   bat = "assets/icons/bat.svg"
   suitcase = "assets/iconsUI/suitcase.svg"

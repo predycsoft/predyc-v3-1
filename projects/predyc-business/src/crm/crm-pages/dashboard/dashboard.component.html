@@ -146,10 +146,11 @@
                     <ng-container *ngIf="(card.typeCard == 'empresaConNegocios')">
                         <div class="cursorPointer" (dblclick)="redirectToEmpresa(card)">
                             <div style="padding: 6px; padding-bottom: 0px;">
-                                <div>
+                                <div fxLayout="column">
                                     <span class="ft14 ft500" >{{card.name | titlecase}}</span>
+                                    <span class="ft12" >{{card?.industria}}</span>
                                 </div>
-                                <div>
+                                <div  fxLayout="column" class="pdt05 pdb05">
                                     <span class="ft12" >{{card.cardsOpenDetail.cantidad}} ABIERTOS ({{card.cardsOpenDetail.amount | numberAbbreviate:'USD'}})</span>
                                     <span class="ft12" >{{card.closedDetalle.cantidad}} CERRADOS ({{card.closedDetalle.amount | numberAbbreviate:'USD'}})</span>
                                 </div>
@@ -164,10 +165,10 @@
                     <ng-container *ngIf="(card.typeCard == 'empresaSoloCerrados')">
                         <div class="cursorPointer" (dblclick)="redirectToEmpresa(card)">
                             <div style="padding: 6px; padding-bottom: 0px;">
-                                <div>
+                                <div fxLayout="row">
                                     <span class="ft14 ft500" >{{card.name | titlecase}}</span>
                                 </div>
-                                <div>
+                                <div  fxLayout="column" class="pdt05 pdb05">
                                     <!-- <span class="ft14 ft500" >ABIERTOS</span> -  -->
                                     <span class="ft12" >{{card.closedDetalle.cantidad}} CERRADOS ({{card.closedDetalle.amount | numberAbbreviate:'USD'}})</span>
                                 </div>
@@ -239,6 +240,45 @@
                         <input formControlName="nombre" [class.is-invalid]="formNewEmpresa.controls['nombre'].errors && showErrorEmpresaNew" type="text" class="form-control customInput" placeholder="Escriba el nombre de la empresa">
                         <div class="invalid-feedback" *ngIf="formNewEmpresa.controls['nombre'].errors && showErrorEmpresaNew"> 
                             Debe indicar el nombre de la empresa.
+                        </div>
+                    </div>
+                </div>
+                <div fxLayout="row" class="fw">
+                    <div class="form-group fw">
+                        <label>Industria</label>
+                        <select formControlName="industria" [class.is-invalid]="formNewEmpresa.controls['industria'].errors && showErrorEmpresaNew"  class="form-control customInput" >
+                            <option value="" disabled>Seleccionar industria</option>
+                            <option value="Aeroespacial / Aerea">Aeroespacial / Aérea</option>
+                            <option value="Agrícola">Agrícola</option>
+                            <option value="Alimenticia / Bebidas">Alimenticia / Bebidas</option>
+                            <option value="Automatización Industrial">Automatización Industrial</option>
+                            <option value="Automotriz">Automotriz</option>
+                            <option value="Cementera">Cementera</option>
+                            <option value="Construcción">Construcción</option>
+                            <option value="Energía Nuclear">Energía Nuclear</option>
+                            <option value="Energía renovable">Energía renovable</option>
+                            <option value="Farmacéutica / Cosmética">Farmacéutica / Cosmética</option>
+                            <option value="Ferroviaria">Ferroviaria</option>
+                            <option value="Ganadera">Ganadera</option>
+                            <option value="Generación de energía">Generación de energía</option>
+                            <option value="Hidroeléctrica">Hidroeléctrica</option>
+                            <option value="Maderera">Maderera</option>
+                            <option value="Manufacturera">Manufacturera</option>
+                            <option value="Militar">Militar</option>
+                            <option value="Minería">Minería</option>
+                            <option value="Naval">Naval</option>
+                            <option value="Nuclear">Nuclear</option>
+                            <option value="Papelera">Papelera</option>
+                            <option value="Petróleo / Gas">Petróleo / Gas</option>
+                            <option value="Petroquímica">Petroquímica</option>
+                            <option value="Química">Química</option>
+                            <option value="Siderúrgica / Acerera">Siderúrgica / Acerera</option>
+                            <option value="Textil">Textil</option>
+                            <option value="Transporte">Transporte</option>
+                            <option value="Vidriera">Vidriera</option>
+                          </select>
+                        <div class="invalid-feedback" *ngIf="formNewEmpresa.controls['industria'].errors && showErrorEmpresaNew"> 
+                            Debe indicar la industria de la empresa.
                         </div>
                     </div>
                 </div>

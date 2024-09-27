@@ -3,7 +3,44 @@
 
     <div fxLayout="row" fxLayoutAlign="space-between center" class="mgb05">
         <div>
-            <app-navigate-back targetUrl="/crm/dashboard" >{{empresa?.nombre | titlecase}}</app-navigate-back>
+            <app-navigate-back targetUrl="/crm/dashboard">
+                {{empresa?.nombre | titlecase}}
+                <span *ngIf="!editingIndustria" (click)="editingIndustria = true" class="ft14 ft500 cursorPointer" >{{empresa.industria ? empresa.industria : 'Sin Industria'}}</span>
+                <select [(ngModel)]="empresa.industria"   *ngIf="editingIndustria"  (blur)="editingIndustria = false; saveIndustria()" (keydown)="handleKeydownIndustria($event)" class="form-control customInput" >
+                    <option value="" disabled>Seleccionar industria</option>
+                    <option value="Aeroespacial / Aerea">Aeroespacial / Aérea</option>
+                    <option value="Agrícola">Agrícola</option>
+                    <option value="Alimenticia / Bebidas">Alimenticia / Bebidas</option>
+                    <option value="Automatización Industrial">Automatización Industrial</option>
+                    <option value="Automotriz">Automotriz</option>
+                    <option value="Cementera">Cementera</option>
+                    <option value="Construcción">Construcción</option>
+                    <option value="Energía Nuclear">Energía Nuclear</option>
+                    <option value="Energía renovable">Energía renovable</option>
+                    <option value="Farmacéutica / Cosmética">Farmacéutica / Cosmética</option>
+                    <option value="Ferroviaria">Ferroviaria</option>
+                    <option value="Ganadera">Ganadera</option>
+                    <option value="Generación de energía">Generación de energía</option>
+                    <option value="Hidroeléctrica">Hidroeléctrica</option>
+                    <option value="Maderera">Maderera</option>
+                    <option value="Manufacturera">Manufacturera</option>
+                    <option value="Militar">Militar</option>
+                    <option value="Minería">Minería</option>
+                    <option value="Naval">Naval</option>
+                    <option value="Nuclear">Nuclear</option>
+                    <option value="Papelera">Papelera</option>
+                    <option value="Petróleo / Gas">Petróleo / Gas</option>
+                    <option value="Petroquímica">Petroquímica</option>
+                    <option value="Química">Química</option>
+                    <option value="Siderúrgica / Acerera">Siderúrgica / Acerera</option>
+                    <option value="Textil">Textil</option>
+                    <option value="Transporte">Transporte</option>
+                    <option value="Vidriera">Vidriera</option>
+                  </select>
+                
+                
+                <!-- <input (blur)="editingIndustria = false; savelead(card)"  (keydown)="handleKeydown($event, card, 'editingTitle')"  *ngIf="card['editingTitle']"  type="text" [(ngModel)]="card.title" class="h32px ft14 shadow-animation pdl05 pdr05 radius4 borderLight fw" style="text-align: center;" /> -->
+            </app-navigate-back>
         </div>
         <div>
             <span class="ft600 ft16 gray-10">{{asesorEmpresa?.displayName | titlecase}}</span>
@@ -26,14 +63,20 @@
                     {{ column.name }} ({{ column.cantidad }} - {{ column.total | numberAbbreviate:'USD' }})
                 </div>
                 <div *ngIf="column.name=='Notas'" class="kanban-header" [ngStyle]="{'background-color': column.color}">
-                    {{ column.name }}
+                    <div fxLayout="row" fxLayoutAlign="space-between center" fxFlex>
+                        <div></div>
+                        <span>{{ column.name }}</span>
+                        <div class="pdr05 cursorPointer" (click)="addNote(nuevaNotaModal)">
+                            <img [src]="icon.addNew" alt="">
+                        </div>
+                    </div>
                 </div>
         
                 <div class="kanban-content" cdkDropList [attr.id-column]="column.id" (cdkDropListDropped)="onDrop($event)">
                 <ng-container *ngFor="let card of column.cards" >
                     <div cdkDrag class="lead-card" [attr.id]="card.id" [ngClass]="{'backGray5': card.archivado }">
                         <!-- <ng-container *ngIf="(card.typeCard == 'lead' || card.typeCard == 'sinNegcios')"> -->
-                        <ng-container>
+                        <ng-container *ngIf="card.typeCard !== 'nota'">
                             <div style="padding: 10px;">
                                 <div>
                                     <span *ngIf="!card['editingTitle']" (click)="card['editingTitle'] = true" class="ft14 ft500 cursorPointer" >{{card.title ? card.title : 'Sin titulo'}}</span>
@@ -129,6 +172,27 @@
                                 <span class="ftxs blueLink" (click)="selectedLead=card" [matMenuTriggerFor]="menuDormir">Dormir (WIP)</span>
                             </div>
                         </ng-container>
+                        <ng-container *ngIf="card.typeCard == 'nota'">
+                            <div style="padding: 10px;"
+                            [ngClass]="{
+                                'bg-red': card.color === 'red',
+                                'bg-blue': card.color === 'blue',
+                                'bg-yellow': card.color === 'yellow'
+                              }"
+                            (contextmenu)="rightClickCard($event,card);">
+                                <div fxLayout="row">
+                                    <span class="ft12">
+                                        {{card.nameAsesor | titlecase}} - {{(card.date.seconds * 1000 )| date:"dd/MM/yyyy HH:mm"}}
+                                    </span>
+                                </div>
+                                <div fxLayout="row" class="pdt05">
+                                    <span>{{card.texto}}</span>
+                                </div>
+                            </div>
+                            <div [attr.id]="'menuCard-' + card.id" (click)="selectedNote=card;selectedIdNote = card.id;" [matMenuTriggerFor]="menuNota">
+                            </div>
+                        </ng-container>
+                        
                     </div>
                 </ng-container>
               </div>
@@ -152,7 +216,53 @@
         </div>
     </div>
 </mat-menu>
-
+<mat-menu #menuNota="matMenu" class="containerMenu" style="padding: 20px !important;">
+    <div fxLayout="column" fxLayoutGap="" fxLayoutAlign="center center">
+        <div
+        (click)="makeBgNote('red')"
+        mat-menu-item class="opcionMenu"
+        fxLayout="row"
+        fxLayoutAlign=" center">
+        <img [src]="icon.circleFill" alt="" class="makeRedComentario">
+        <span class="pdl05">Roja</span>
+        </div>
+        
+        <div
+            (click)="makeBgNote('yellow')"
+            mat-menu-item class="opcionMenu"
+            fxLayout="row"
+            fxLayoutAlign=" center">
+            <img [src]="icon.circleFill" alt="" class="makeYellowComentario">
+            <span class="pdl05">Amarilla</span>
+        </div>
+        
+        <div
+            (click)="makeBgNote('blue')"
+            mat-menu-item class="opcionMenu"
+            fxLayout="row"
+            fxLayoutAlign=" center">
+            <img [src]="icon.circleFill" alt="" class="makeBlueComentario">
+            <span class="pdl05">Azul</span>
+        </div>
+        
+        <div
+            (click)="makeBgNote('white')"
+            mat-menu-item class="opcionMenu"
+            fxLayout="row"
+            fxLayoutAlign=" center">
+            <img [src]="icon.circleFill" alt="" class="makeWhite">
+            <span class="pdl05">Blanca</span>
+        </div>
+    
+        <div
+            mat-menu-item class="opcionMenu"
+            fxLayout="row"
+            fxLayoutAlign=" center">
+            <img [src]="icon.trash" alt="" class="makeRed">
+            <span class="pdl05">Eliminar</span>
+        </div>
+    </div>
+</mat-menu>
 
 
 <mat-menu #menuDormir="matMenu" class="containerMenu" style="padding: 20px !important;">
@@ -194,3 +304,27 @@
         </div>
     </div>
 </mat-menu>
+
+<!-- Modal crear empresa -->
+<ng-template #nuevaNotaModal let-modal>
+    <div class="modal-header bg-web-primary text-white px-3 py-1" fxLayout="row" fxLayoutAlign="space-between center">
+        <div class="modal-title pd10">
+            <span class="ft16 ft500 gray-10">Crear nueva nota</span>
+        </div>
+        <img style="cursor: pointer" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px" alt="" />
+    </div>
+    <div class="modal-body" style="overflow-y: auto; max-height: 80vh">
+        <div fxLayout="column" class="fw">
+            <div fxLayout="column" class="fw">
+                <textarea [(ngModel)]="notaTexto" rows="8" placeholder="Escribe una nota" class="textarea-class"></textarea>
+              </div>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="end end" class="pdt03" style="width: 100%">
+            <button (click)="saveNota()"  class="blueButton gray-1 radius4 ft12 h28px mgt10" fxLayout="row"
+                fxLayoutGap="0.625rem" fxLayoutAlign="center center">
+                <img [src]="icon.save" class="h16px pdr05 makeWhite" alt="" />
+                Crear Nota
+            </button>
+        </div>
+    </div>
+</ng-template>

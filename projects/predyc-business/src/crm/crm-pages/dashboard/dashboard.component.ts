@@ -115,6 +115,11 @@ export class DashboardComponent {
           leads  = leads.filter(x=>!x.idEnterpise)
 
           //Leads INICIO
+
+          leads.sort((a: any, b: any) => {
+            return b.date.seconds - a.date.seconds;
+          });
+
           leads.forEach(lead => {
             lead.typeCard = 'lead';
             // Extraer valores del campo 'origen' si existe
@@ -180,6 +185,7 @@ export class DashboardComponent {
 
             let cardEmpresa = {
               name:empresa.nombre,
+              industria:empresa?.industria?empresa?.industria:null,
               archivado:empresa?.archivado?empresa.archivado : false,
               idAsesor:empresa.idAsesor,
               id:empresa.id,
@@ -367,6 +373,7 @@ handleKeydown(event: KeyboardEvent, card: any, editingField: string): void {
 
       this.formNewEmpresa = new FormGroup({
         nombre: new FormControl("", Validators.required),
+        industria: new FormControl("", Validators.required),
         idAsesor: new FormControl("", Validators.required),
       });
       this.openModal(modal,size)

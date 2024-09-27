@@ -60,3 +60,25 @@
   border-top: 1px solid #ccc; /* Línea superior para separar el contenido */
 }
 
+.color-circle {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.opcionMenu{
+  background-color: #f0f0f0 !important; /* Color de fondo del footer */
+}
+
+.bg-red {
+  background-color: #FF9F7A;
+}
+
+.bg-blue {
+  background-color: #4545ff7a;
+}
+
+.bg-yellow {
+  background-color: #FFFF00;
+}

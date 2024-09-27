@@ -234,6 +234,102 @@ moveCardEmpresa(idEmpresa: string, cardID: string, origen: string, destino: stri
   });
 }
 
+updateEmpresaIndustria(idEmpresa: string, industria: string): Promise<void> {
+  const empresaRef = this.afs.collection('crmEnterpise').doc(idEmpresa);
+
+  // Actualizar el campo "industria" en el documento de la empresa
+  return empresaRef.update({ industria: industria })
+    .then(() => {
+      console.log('Industria actualizada correctamente');
+    })
+    .catch((error) => {
+      console.error('Error al actualizar la industria:', error);
+      throw error; // Propaga el error si es necesario
+    });
+}
+
+async saveNoteEmpresa(texto: string, idEmpresa: string, idUser: string): Promise<void> {
+  const empresaRef = this.afs.collection('crmEnterpise').doc(idEmpresa);
+  const notaId = Date.now(); // También puedes usar: new Date().getTime()
+
+  // Creación de la nota con los parámetros proporcionados
+  const nuevaNota = {
+    id:notaId,
+    texto: texto,
+    date: new Date(), // Fecha actual
+    idUser: idUser
+  };
+
+  try {
+    // Inicia la transacción para asegurar la integridad de los datos
+    await this.afs.firestore.runTransaction(async (transaction) => {
+      const empresaDoc = await transaction.get(empresaRef.ref);
+
+      if (!empresaDoc.exists) {
+        throw new Error(`La empresa con ID ${idEmpresa} no existe.`);
+      }
+
+      // Aserción de tipo para los datos de la empresa
+      const empresaData = empresaDoc.data() as { notas?: any[] };
+
+      // Obtener el arreglo de notas o inicializarlo si no existe
+      const notas = empresaData?.notas || [];
+
+      // Agregar la nueva nota al arreglo de notas
+      notas.push(nuevaNota);
+
+      // Actualizar el documento de la empresa con el nuevo arreglo de notas
+      transaction.update(empresaRef.ref, { notas: notas });
+    });
+
+    console.log('Nota guardada correctamente en la empresa.');
+  } catch (error) {
+    console.error('Error al guardar la nota:', error);
+    throw error;
+  }
+}
+
+async updateNoteColor(idEmpresa: string, idNote: string, color: string): Promise<void> {
+  const empresaRef = this.afs.collection('crmEnterpise').doc(idEmpresa);
+
+  try {
+    // Inicia la transacción para asegurar la integridad de los datos
+    await this.afs.firestore.runTransaction(async (transaction) => {
+      const empresaDoc = await transaction.get(empresaRef.ref);
+
+      if (!empresaDoc.exists) {
+        throw new Error(`La empresa con ID ${idEmpresa} no existe.`);
+      }
+
+      // Aserción de tipo para los datos de la empresa
+      const empresaData = empresaDoc.data() as { notas?: any[] };
+
+      // Obtener el arreglo de notas o inicializarlo si no existe
+      const notas = empresaData?.notas || [];
+
+      // Encontrar la nota por su ID
+      const noteIndex = notas.findIndex((note: any) => note.id === idNote);
+      if (noteIndex === -1) {
+        throw new Error(`La nota con ID ${idNote} no existe.`);
+      }
+
+      // Actualizar el color de la nota
+      notas[noteIndex].color = color;
+
+      // Actualizar el documento de la empresa con el nuevo arreglo de notas
+      transaction.update(empresaRef.ref, { notas: notas });
+    });
+
+    console.log('Color de la nota actualizado correctamente.');
+  } catch (error) {
+    console.error('Error al actualizar el color de la nota:', error);
+    throw error;
+  }
+}
+
+
+
+
 
 
 
