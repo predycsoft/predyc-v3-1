@@ -220,6 +220,15 @@ convertirFechaString(fechaString: string): Date | null {
           // Crear el nuevo campo con el origen sin parámetros
           eventoConFecha.origenBase = `${baseUrl}${urlParts[0]}`;
         }
+
+        if(eventoConFecha.assistanceData){
+          let days = eventoConFecha.assistanceData.map(element => {
+            return element.id
+          });
+          days = days.toString();
+          eventoConFecha.asistencia = days
+          delete eventoConFecha.assistanceData
+        }
         return eventoConFecha;
       });
   
