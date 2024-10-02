@@ -67,3 +67,9 @@ export { sendEmailQuestionInstructor }
 
 import { valorarCurso2,valorarCursoLive } from './progress'
 export { valorarCurso2,valorarCursoLive }
+
+import { createEventCertificate } from './events'
+export { createEventCertificate }
+
+
+//
