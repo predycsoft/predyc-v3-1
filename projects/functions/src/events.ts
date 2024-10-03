@@ -197,8 +197,10 @@ export const createEventCertificate = functions.https.onCall(async (data, contex
         // const recipients = ['arturo.romero@predyc.com'];
         const recipients =  [eventData['email']]
         const subject = `Has completado el evento Mantenimiento en acción en PREDYC`;
-        let correo = `<strong>${titleCaseWithExceptions(eventData.name)}</strong>,</p><p>Felicidades por haber completado el evento <strong>Mantenimiento en acción.</strong> Puedes ver y compartir tu diploma siguiendo este enlace: <a href="https://predyc.com/mantenimiento-en-accion?email=${eventData.email}">Ver diploma en línea</a>.</p>
-        <p>También puedes ver tu certificado adjunto en este correo.</p>`;
+        let correo = `<strong>${titleCaseWithExceptions(eventData.name)}</strong>,</p><p>¡Felicidades por haber completado <strong>Mantenimiento en acción!</strong><a href="https://predyc.com/mantenimiento-en-accion?email=${eventData.email}"> Aquí</a> está tu diploma de participación.</p>
+        <p>Te invitamos a compartir este logro con tu red profesional en LinkedIn. No olvides etiquetarnos con el hashtag #MantenimientoEnAccion para que podamos celebrar contigo este importante paso en tu desarrollo profesional.</p>
+        <p>¡Estamos orgullosos de tu dedicación y compromiso!.</p>`;
+        
         let htmlMailFinal = `<!DOCTYPE html><html><head></head><body><p>${correo}<br>${firma}</body></html>`;
         const htmlContent = htmlMailFinal;
         const adjunto = pdf
