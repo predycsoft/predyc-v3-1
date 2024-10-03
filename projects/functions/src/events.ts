@@ -86,7 +86,7 @@ async function generatePDF(userData): Promise<{ filename: string, content: strin
     const centerX = (297 - textWidth) / 2 + (offsetX+2);
 
     doc.setFont('helvetica', 'bold')
-    doc.text(userData.name, centerX, 95); // Nombre del usuario centrado con offset
+    doc.text(titleCaseWithExceptions(userData.name), centerX, 95); // Nombre del usuario centrado con offset
 
 
     doc.setFontSize(35)
