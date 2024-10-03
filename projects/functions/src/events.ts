@@ -91,8 +91,8 @@ async function generatePDF(userData): Promise<{ filename: string, content: strin
 
     doc.setFontSize(35)
     doc.setTextColor(29, 34, 36)
-    doc.text('DIPLOMA DE', centerX-2, 30); // Nombre del usuario centrado con offset
-    doc.text('PARTICIPACIÓN', centerX-10, 45); // Nombre del usuario centrado con offset
+    doc.text('DIPLOMA DE', 150, 30); // Nombre del usuario centrado con offset
+    doc.text('PARTICIPACIÓN', 140, 45); // Nombre del usuario centrado con offset
 
 
     // Generar la imagen QR
