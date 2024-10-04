@@ -232,7 +232,7 @@
                             </div>
                         </div>
                         <label>Notas</label>
-                        <textarea formControlName="notas" rows="5" class="custom-textarea"></textarea>
+                        <textarea formControlName="notas" rows="5" [ngClass]="{'custom-textarea': !createSaleForm.get('tipoCliente').value, 'custom-textarea-large': createSaleForm.get('tipoCliente').value}"></textarea>
                         <!-- Aquí puedes agregar contenido futuro -->
                     </div>
 

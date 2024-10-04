@@ -102,3 +102,9 @@ table.mat-table tfoot tr {
   resize: none; /* Desactiva la redimensión */
   overflow: auto; /* Permite el desplazamiento si el contenido es mayor */
 }
+
+.custom-textarea-large {
+  height: 196px; /* Ajusta esta altura a tu necesidad */
+  resize: none; /* Desactiva la redimensión */
+  overflow: auto; /* Permite el desplazamiento si el contenido es mayor */
+}
