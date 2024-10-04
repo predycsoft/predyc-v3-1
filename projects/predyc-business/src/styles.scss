@@ -3548,3 +3548,15 @@ span {
     font-size: inherit !important;
     line-height: inherit !important;
   }
+
+  .mat-form-field-no-padding .mat-mdc-form-field-infix {
+    margin-bottom: -1.25em !important;
+  } 
+
+   .mdc-line-ripple{
+    display: none  !important;
+
+  }
+  .mat-form-field-no-padding .mat-mdc-form-field-subscript-wrapper{
+    display: none !important;
+  }

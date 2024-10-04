@@ -1,12 +1,253 @@
 <div class="mgt20 mgl20 mgr20">
     <p class="ft600 ft16 gray-10">Ventas</p>
-    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".7rem" class=" ">
+    <div fxLayout="row" fxLayoutAlign="space-between" fxLayoutGap=".7rem" class=" ">
         <div fxLayout="row" fxLayoutAlign=" center" class="shadow-animation radius20">
             <app-search-input-box class=""></app-search-input-box>
         </div>
-        <span class="ft12">Introduce el nombre del cliente</span>
+        <div>
+            <button (click)="createVenta(createSale)" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButtonAnim button-animation" style="border-radius: 24px !important">
+                <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="" />
+                Agregar venta
+            </button>
+        </div>
     </div>
     <div fxLayout="columm" fxLayoutAlign="center center" class="fw vh50 pdr20" >
-        <app-sales-list class="fw"></app-sales-list>
+        <app-sales-list (datosClientes)="getDatosClientes($event)" class="fw"></app-sales-list>
     </div>
-</div>    
+</div>
+
+<!-- Modal de tags -->
+<ng-template #createSale let-modal>
+    <div class="modal-header bg-web-primary text-white px-3 py-1" fxLayout="row" fxLayoutAlign="space-between center">
+        <div class="modal-title pd10">
+            <span class="ft16 ft500 gray-10">Registrar venta</span>
+        </div>
+        <img style="cursor: pointer" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px" alt="" />
+    </div>
+    <div class="modal-body" style="overflow-y: auto; max-height: 80vh">
+        <form [formGroup]="createSaleForm" (ngSubmit)="onSubmit()">
+            <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="start stretch">
+                <!-- Columna 1: Contiene todo lo que está actualmente en el formulario -->
+                <div fxFlex="50">
+                    <div fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="center">
+                        <!-- Select para tipo de cliente -->
+                        <label>Tipo Cliente</label>
+                        <select
+                            formControlName="tipoCliente"
+                            [class.is-invalid]="createSaleForm.get('tipoCliente').errors && displayErrors"
+                            class="form-control ft14 shadow-animation pdl05 pdr05 radius20 borderLight"
+                            (change)="onTipoClienteChange($event)">
+                            <option value="" disabled selected>Selecciona el tipo de cliente</option>
+                            <option value="empresa">Empresa</option>
+                            <option value="independiente">Independiente</option>
+                        </select>
+                        <div
+                            class="custom-invalid-feedback"
+                            *ngIf="createSaleForm.get('tipoCliente').errors && displayErrors">
+                            <div *ngIf="createSaleForm.get('tipoCliente').errors?.required" class="ft12" style="margin-top: -12px;">
+                                Es obligatorio seleccionar el tipo de cliente
+                            </div>
+                        </div>
+    
+                        <label *ngIf="tipoCliente">Cliente</label>
+                        <!-- Autocomplete para Independiente -->
+                        <mat-form-field  *ngIf="tipoCliente === 'independiente'" class="example-full-width mat-form-field-no-padding">
+                            <input type="text" matInput [matAutocomplete]="autoIndependiente" placeholder="Selecciona un cliente" 
+                                   formControlName="user" (input)="filterUsers($event)" [matAutocomplete]="autoIndependiente">
+                            <mat-autocomplete [displayWith]="displayEmail" #autoIndependiente="matAutocomplete">
+                                <mat-option *ngFor="let user of filteredUsers | async" [value]="user">
+                                    {{ user.email }}
+                                </mat-option>
+                            </mat-autocomplete>
+                        </mat-form-field>
+    
+                        <!-- Autocomplete para Empresa -->
+                        <mat-form-field *ngIf="tipoCliente === 'empresa'" class="example-full-width mat-form-field-no-padding">
+                            <input type="text" matInput [matAutocomplete]="autoEmpresa" placeholder="Selecciona una empresa" 
+                                   formControlName="enterprise" (input)="filterEmpresas($event)" [matAutocomplete]="autoEmpresa">
+                            <mat-autocomplete [displayWith]="displayName" #autoEmpresa="matAutocomplete">
+                                <mat-option *ngFor="let empresa of filteredEmpresas | async" [value]="empresa">
+                                    {{ empresa.name }}
+                                </mat-option>
+                            </mat-autocomplete>
+                        </mat-form-field>
+    
+                        <label>Plan</label>
+                        <select
+                          formControlName="plan"
+                          [class.is-invalid]="createSaleForm.get('plan').errors && displayErrors"
+                          class="form-control ft14 shadow-animation pdl05 pdr05 radius20 borderLight">
+                          <option value="" disabled selected>Selecciona el plan</option>
+                          <option *ngFor="let item of productos" [value]="item">{{item.name}}</option>
+                        </select>
+                        <div
+                          class="custom-invalid-feedback"
+                          *ngIf="createSaleForm.get('plan').errors && displayErrors">
+                          <div *ngIf="createSaleForm.get('plan').errors?.required" class="ft12">
+                            Es obligatorio seleccionar el plan
+                          </div>
+                        </div>
+
+                        <div  fxLayoutGap="10px" >
+                            <div fxFlex="50">
+
+                                <label  style="margin-bottom: 6px !important;">Monto</label>
+                                <input type="number" formControlName="monto" 
+                                       [class.is-invalid]="createSaleForm.get('monto').errors && displayErrors"
+                                       class="form-control ft14 shadow-animation pdl05 pdr05 radius4 borderLight">
+                                <div
+                                    class="custom-invalid-feedback"
+                                    *ngIf="createSaleForm.get('monto').errors && displayErrors">
+                                    <div *ngIf="createSaleForm.get('monto').errors?.required" class="ft12">
+                                        Es obligatorio el monto
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div fxFlex="50">
+
+                                <label  style="margin-bottom: 6px !important;">Vendedor</label>
+                                <select
+                                    formControlName="vendedor"
+                                    [class.is-invalid]="createSaleForm.get('vendedor').errors && displayErrors"
+                                    class="form-control ft14 shadow-animation pdl05 pdr05 radius20 borderLight">
+                                    <option value="" disabled selected>Selecciona el vendedor</option>
+                                    <option value="Alejandro">Alejandro</option>
+                                    <option value="Andres">Andres</option>
+                                    <option value="Guillermo">Guillermo</option>
+                                    <option value="Liliana">Liliana</option>
+                                    <option value="Lisset">Lisset</option>                                                             
+                                 </select>
+                                <div
+                                    class="custom-invalid-feedback"
+                                    *ngIf="createSaleForm.get('vendedor').errors && displayErrors">
+                                    <div *ngIf="createSaleForm.get('vendedor').errors?.required" class="ft12">
+                                        Es obligatorio el vendedor
+                                    </div>
+                                </div>
+                                
+                            </div>
+
+                        </div>
+    
+    
+                        <label>Fecha</label>
+                        <div style="position: relative">
+                            <img [src]="icon.calendarAdd" class="makeGray h16px" alt="" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
+                            <input formControlName="fecha" [class.is-invalid]="createSaleForm.get('fecha').errors && displayErrors" 
+                                   type="date" class="form-control pdl20 radius4 shadow-animation borderLight" placeholder="Fecha">
+                        </div>
+                        <div
+                            class="custom-invalid-feedback"
+                            *ngIf="createSaleForm.get('fecha').errors && displayErrors">
+                            <div *ngIf="createSaleForm.get('fecha').errors?.required" class="ft12">
+                                Es obligatorio seleccionar la fecha
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Columna 2: Actualmente vacía -->
+                <div fxFlex="50">
+                    <div fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="center">
+                        <div fxLayoutGap="10px" >
+                            <div fxFlex="50">
+                                <label style="margin-bottom: 6px !important;">P21 o Predyc</label>
+                                <select
+                                formControlName="p21Predyc"
+                                [class.is-invalid]="createSaleForm.get('p21Predyc').errors && displayErrors"
+                                class="form-control ft14 shadow-animation pdl05 pdr05 radius20 borderLight">
+                                <option value="" disabled selected>Selecciona</option>
+                                <option value="P21">P21</option>
+                                <option value="Predyc">Predyc</option>
+                                </select>
+                                <div
+                                class="custom-invalid-feedback"
+                                *ngIf="createSaleForm.get('p21Predyc').errors && displayErrors">
+                                <div *ngIf="createSaleForm.get('p21Predyc').errors?.required" class="ft12">
+                                    Es obligatorio seleccionar el destino
+                                </div>
+                                </div>
+                            </div>
+                            <div fxFlex="50">
+                                <label style="margin-bottom: 6px !important;">Método de pago</label>
+                                <select
+                                formControlName="metodoPago"
+                                [class.is-invalid]="createSaleForm.get('metodoPago').errors && displayErrors"
+                                class="form-control ft14 shadow-animation pdl05 pdr05 radius20 borderLight">
+                                <option value="" disabled selected>Selecciona</option>
+                                <option value="STRIPE PREDYC">STRIPE PREDYC</option>
+                                <option value="STRIPE P21">STRIPE P21</option>
+                                <option value="PAYPAL P21">PAYPAL P21</option>
+                                <option value="TRANSF P21 BBVA">TRANSF P21 BBVA</option>
+                                <option value="TRANSF P21 SCOTIA">TRANSF P21 SCOTIA</option>
+                                <option value="TRANSF PREDYC MERC">TRANSF PREDYC MERC</option>
+                                <option value="TRANSF PREDYC BOFA">TRANSF PREDYC BOFA</option>                          
+                                </select>
+                                <div
+                                class="custom-invalid-feedback"
+                                *ngIf="createSaleForm.get('metodoPago').errors && displayErrors">
+                                <div *ngIf="createSaleForm.get('metodoPago').errors?.required" class="ft12">
+                                    Es obligatorio seleccionar el destino
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div  fxLayoutGap="10px" >
+                            <div fxFlex="50">
+                                <label style="margin-bottom: 6px !important;">Divididir</label>
+                                <select
+                                formControlName="dividir"
+                                [class.is-invalid]="createSaleForm.get('dividir').errors && displayErrors"
+                                class="form-control ft14 shadow-animation pdl05 pdr05 radius20 borderLight">
+                                    <option value="" disabled selected>Selecciona</option>
+                                    <option [value]="true">Si</option>
+                                    <option [value]="false">No</option>
+                                </select>
+                                <div
+                                class="custom-invalid-feedback"
+                                *ngIf="createSaleForm.get('dividir').errors && displayErrors">
+                                <div *ngIf="createSaleForm.get('dividir').errors?.required" class="ft12">
+                                  Es obligatorio
+                                </div>
+                              </div>
+                            </div>
+                            <div  fxFlex="50">
+                                <label style="margin-bottom: 6px !important;">Tipo</label>
+                                <select
+                                formControlName="tipo"
+                                [class.is-invalid]="createSaleForm.get('tipo').errors && displayErrors"
+                                class="form-control ft14 shadow-animation pdl05 pdr05 radius20 borderLight">
+                                    <option value="" disabled selected>Selecciona</option>
+                                    <option value="Parcial">Parcial</option>
+                                    <option value="Completo">Completo</option>
+                                </select>
+                                <div
+                                class="custom-invalid-feedback"
+                                *ngIf="createSaleForm.get('tipo').errors && displayErrors">
+                                <div *ngIf="createSaleForm.get('tipo').errors?.required" class="ft12">
+                                  Es obligatorio
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                        <label>Notas</label>
+                        <textarea formControlName="notas" rows="5" class="custom-textarea"></textarea>
+                        <!-- Aquí puedes agregar contenido futuro -->
+                    </div>
+
+                </div>
+            </div>
+    
+            <!-- Botón para guardar, en la esquina inferior derecha -->
+            <div fxLayout="row" fxLayoutAlign="end end" class="pdt03" style="width: 100%">
+              <button class="blueButton gray-1 radius4 ft12 h28px mgt10" fxLayout="row" fxLayoutGap="0.625rem" fxLayoutAlign="center center">
+                <img [src]="icon.save" class="h16px pdr05 makeWhite" alt="" />
+                Guardar
+              </button>
+            </div>
+        </form>
+    </div>
+    
+</ng-template>
+

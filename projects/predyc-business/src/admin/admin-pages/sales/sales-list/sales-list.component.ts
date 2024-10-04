@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -66,6 +66,9 @@ export class SalesListComponent {
   users: User[]
   enterprises: Enterprise[]
 
+  @Output() datosClientes = new EventEmitter<any>();
+
+
   ngOnInit() {
 
     this.combinedServicesSubscription = combineLatest(
@@ -79,6 +82,14 @@ export class SalesListComponent {
       this.products = products
       this.users = users
       this.enterprises = enterprises
+
+      let datos = {
+        products: products,
+        users: users,
+        enterprises: enterprises,
+      }
+      this.datosClientes.emit(datos)
+
       this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
         const page = Number(params['page']) || 1;
         const searchTerm = params['search'] || '';

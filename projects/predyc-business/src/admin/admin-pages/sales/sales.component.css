@@ -87,3 +87,18 @@ table.mat-table tfoot tr {
     transform: translateX(5px);
     color: #0f3b56 !important;
   }
+
+  .custom-invalid-feedback {
+    width: 100%;
+    margin-top: 0.25rem;
+    font-size: 0.875em;
+    color: #dc3545;
+}
+.mat-mdc-autocomplete-trigger{
+  font-size: 14px !important;
+}
+.custom-textarea {
+  height: 116px; /* Ajusta esta altura a tu necesidad */
+  resize: none; /* Desactiva la redimensión */
+  overflow: auto; /* Permite el desplazamiento si el contenido es mayor */
+}
