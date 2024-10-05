@@ -37,6 +37,7 @@ export class CourseService {
     //this.findAndDeleteNullUserIds()
     //this.findAndLogDuplicates()
     this.getCourses();
+    //this.checkAndUpdateSkills()
     //this.removeCheater('q5B5fsOhjcOoMuLUcLg8KfVB13Q2');
     //this.fixCertificates()
     //this.fixCoursesCustomURL()
@@ -1903,5 +1904,90 @@ export class CourseService {
   getCoursesRatings$(): Observable<CourseRating[]> {
     return this.afs.collection<CourseRating>(this.courseRatingsCollection).valueChanges()
   }
+  
+
+  //3amvhFWj9nYwLbQAWhTc
+
+  async checkAndUpdateSkills() {
+    //const batch = this.afs.firestore.batch(); // Batch para actualizar todos los documentos de una sola vez
+    const defaultSkillRef = this.afs.doc('/skill/3amvhFWj9nYwLbQAWhTc').ref;
+    const coursesToUpdate = []; // Arreglo para almacenar los cursos que necesitan actualización
+  
+    try {
+      // Paso 1: Traer todos los documentos de las colecciones 'skills' y 'categories'
+      const skillsSnapshot = await this.afs.collection('skill').get().toPromise();
+      const categoriesSnapshot = await this.afs.collection('category').get().toPromise();
+      
+      const skills = skillsSnapshot.docs.map(doc => doc.data());
+      const categories = categoriesSnapshot.docs.map(doc => doc.data());
+  
+      // Paso 2: Traer todos los documentos de la colección 'live-course'
+      const liveCoursesSnapshot = await this.afs.collection('live-course-template').get().toPromise();
+      const liveCourses = liveCoursesSnapshot.docs;
+  
+      // Iterar sobre cada documento de 'live-course'
+      for (const courseDoc of liveCourses) {
+        const courseData = courseDoc.data();
+        let needsUpdate = false; // Bandera para verificar si el curso necesita actualización
+  
+        // Paso 3: Actualizar el campo 'skillsRef' si tiene skills referenciados
+        if (courseData['skillsRef'] && Array.isArray(courseData['skillsRef'])) {
+          const updatedSkillsRef = courseData['skillsRef'].map((skillRef: any) => {
+            // Encontrar el skill en la colección de skills
+            const skillInCollection = skills.find(skill => skill['id'] === skillRef.id);
+  
+            // Si el skill existe, ahora verificamos si también existe su categoría
+            if (skillInCollection) {
+              const categoryRef = skillInCollection['category'];
+              
+              // Comprobamos si la categoría referenciada existe
+              const categoryExists = categories.some(category => category['id'] === categoryRef.id);
+  
+              // Si la categoría no existe, devolvemos el skill por defecto y marcamos que necesita actualización
+              if (!categoryExists) {
+                needsUpdate = true;
+                return defaultSkillRef;
+              }
+              
+              // Si todo está bien, devolvemos la referencia original del skill
+              return skillRef;
+            } else {
+              // Si el skill no existe, devolvemos la referencia por defecto y marcamos que necesita actualización
+              needsUpdate = true;
+              return defaultSkillRef;
+            }
+          });
+  
+          // Paso 4: Eliminar duplicados (si hay duplicados)
+          const uniqueSkillsRef = Array.from(new Set(updatedSkillsRef.map(ref => ref.path)))
+            .map(path => this.afs.doc(path).ref);
+  
+          // Si se detectó que necesita actualización, agregamos el curso al arreglo 'coursesToUpdate'
+          if (needsUpdate) {
+            coursesToUpdate.push({
+              ref: courseDoc.ref,
+              skillsRef: uniqueSkillsRef
+            });
+          }
+        }
+      }
+  
+      // Paso 5: Registrar los cursos que se van a actualizar y preparar el batch
+      console.log('Cursos que necesitan actualización:', coursesToUpdate);
+      coursesToUpdate.forEach(course => {
+        console.log('Curso a actualizar:', course.ref.id, 'con skills:', course.skillsRef);
+        // Aquí puedes agregar al batch, pero está comentado por ahora para pruebas
+        // batch.update(course.ref, { skillsRef: course.skillsRef });
+      });
+  
+      // Paso 6: Ejecutar el batch de actualizaciones (descomentar cuando todo esté listo)
+      // await batch.commit();
+      console.log('Batch commit successful: Skills references updated.');
+    } catch (error) {
+      console.error('Error al actualizar las referencias de skills:', error);
+    }
+  }
+  
+  
   
 }
