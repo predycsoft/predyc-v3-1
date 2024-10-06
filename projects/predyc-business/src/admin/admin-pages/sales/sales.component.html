@@ -78,7 +78,7 @@
                           [class.is-invalid]="createSaleForm.get('plan').errors && displayErrors"
                           class="form-control ft14 shadow-animation pdl05 pdr05 radius20 borderLight">
                           <option value="" disabled selected>Selecciona el plan</option>
-                          <option *ngFor="let item of productos" [value]="item">{{item.name}}</option>
+                          <option *ngFor="let item of productos" [value]="item.id">{{item.name}}</option>
                         </select>
                         <div
                           class="custom-invalid-feedback"
@@ -91,7 +91,7 @@
                         <div  fxLayoutGap="10px" >
                             <div fxFlex="50">
 
-                                <label  style="margin-bottom: 6px !important;">Monto</label>
+                                <label  style="margin-bottom: 6px !important;">Monto (USD)</label>
                                 <input type="number" formControlName="monto" 
                                        [class.is-invalid]="createSaleForm.get('monto').errors && displayErrors"
                                        class="form-control ft14 shadow-animation pdl05 pdr05 radius4 borderLight">
@@ -241,7 +241,7 @@
     
             <!-- Botón para guardar, en la esquina inferior derecha -->
             <div fxLayout="row" fxLayoutAlign="end end" class="pdt03" style="width: 100%">
-              <button class="blueButton gray-1 radius4 ft12 h28px mgt10" fxLayout="row" fxLayoutGap="0.625rem" fxLayoutAlign="center center">
+              <button [disabled]="savingSale"  class="blueButton gray-1 radius4 ft12 h28px mgt10" fxLayout="row" fxLayoutGap="0.625rem" fxLayoutAlign="center center">
                 <img [src]="icon.save" class="h16px pdr05 makeWhite" alt="" />
                 Guardar
               </button>

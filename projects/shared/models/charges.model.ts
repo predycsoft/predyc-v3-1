@@ -50,7 +50,7 @@ export class Charge {
   // via: 'Stripe' | 'Paypal' | 'Predyc';
   // quantity: number | null;
 
-  public static collection = 'charge'
+  public static collection = 'sales'
 
   public static getChargeTemplate(): Charge {
     return Charge.fromJson({

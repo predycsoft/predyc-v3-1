@@ -13,58 +13,69 @@
             </td>
         </ng-container>
 
-        <!-- Estatus Column -->
-        <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef class="ft14 centertext">Estatus</th>
-            <td mat-cell *matCellDef="let charge" class="centertext ft14"> 
-                <span *ngIf="charge.status == 'succeeded'" class="backGreen1 radius6 pd05 fw ft11 green-4">Exitoso</span>
-                <span *ngIf="charge.status == 'failed'" class="backRed1 radius6 pd05 fw ft11 red-5" [matTooltip]="charge.failureMessage">Fallido</span>
-            </td>
-        </ng-container>
-
         <!-- Producto Column -->
         <ng-container matColumnDef="product">
-            <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Producto</th>
+            <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Plan</th>
             <td mat-cell *matCellDef="let charge" class="centertext ft14"> {{ charge.productName }} </td>
         </ng-container>
 
-        <!-- Descripción Column -->
-        <ng-container matColumnDef="description">
-            <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Descripción</th>
-            <td mat-cell *matCellDef="let charge" class="centertext ft14"> {{ charge.description }} </td>
+
+        <!-- Cliente Column -->
+        <ng-container matColumnDef="clientShow">
+            <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Cliente</th>
+            <td mat-cell *matCellDef="let charge" class="centertext ft14"> {{ charge.clientShow }} </td>
         </ng-container>
 
-        <!-- Cliente (nombre y correo) Column -->
-        <ng-container matColumnDef="client">
-            <th mat-header-cell *matHeaderCellDef class="ft14 centertext centertext">Cliente</th>
-            <td mat-cell *matCellDef="let charge" class="ft14"> 
-                <div fxLayout="row"  fxLayoutGap=".75rem" fxLayoutAlign=" center" >
-                    <div class="ft500 ft14 gray-10 w-50">{{ charge.customerName | titlecase }}</div>
-                    <div class="ft500 ft12 gray-8">{{ charge.customerEmail }}</div>
-                </div>
-            </td>
+        <!-- Monto Column -->
+        <ng-container matColumnDef="monto">
+            <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Monto</th>
+            <td mat-cell *matCellDef="let charge" class="centertext ft14">   {{ charge.monto | currency:'USD':'symbol':'1.2-2' }} </td>
         </ng-container>
 
         <!-- Fecha Column -->
-        <ng-container matColumnDef="startDate">
-            <th mat-header-cell *matHeaderCellDef class="ft14 centertext">Fecha de inicio</th>
-            <td mat-cell *matCellDef="let charge" class="centertext ft12"> {{ charge.startDate | date:"dd/MM/yyyy"}} </td>
-        </ng-container>    
-
-        <!-- Fecha Column -->
-        <ng-container matColumnDef="endDate">
-            <th mat-header-cell *matHeaderCellDef class="ft14 centertext">Fecha fin</th>
-            <td mat-cell *matCellDef="let charge" class="centertext ft12"> {{ charge.endDate | date:"dd/MM/yyyy"}} </td>
-        </ng-container> 
-
-        <!-- Pagado Column -->
-        <ng-container matColumnDef="payed">
-            <th mat-header-cell *matHeaderCellDef class="ft13 centertext">Pagado</th>
-            <td mat-cell *matCellDef="let charge" class="centertext ft11"> 
-                <mat-icon *ngIf="charge.isPayed" class="green-5">check</mat-icon>
-                <mat-icon *ngIf="!charge.isPayed" class="red-5">close</mat-icon>
-            </td>
+        <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Fecha de pago </th>
+            <td mat-cell *matCellDef="let charge" class="centertext ft14">   {{ charge.date.seconds *1000 | date : "dd/MM/yy"}} </td>
         </ng-container>
+
+        <!-- p21Predyc Column -->
+        <ng-container matColumnDef="p21Predyc">
+            <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> P21 / Predyc </th>
+            <td mat-cell *matCellDef="let charge" class="centertext ft14">   {{ charge.p21Predyc}} </td>
+        </ng-container>
+
+
+        <!-- metodoPago Column -->
+        <ng-container matColumnDef="metodoPago">
+            <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Método de pago </th>
+            <td mat-cell *matCellDef="let charge" class="centertext ft14">   {{ charge.metodoPago}} </td>
+        </ng-container>
+
+        <!-- dividir Column -->
+        <ng-container matColumnDef="dividir">
+            <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Dividir </th>
+            <td mat-cell *matCellDef="let charge" class="centertext ft14">   {{ charge.dividir ? 'Si':'No'}} </td>
+        </ng-container>
+
+        <!-- tipo Column -->
+        <ng-container matColumnDef="tipo">
+            <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Tipo </th>
+            <td mat-cell *matCellDef="let charge" class="centertext ft14">   {{ charge.tipo}} </td>
+        </ng-container>
+
+
+        <!-- vendedor Column -->
+        <ng-container matColumnDef="vendedor">
+            <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Vendedor </th>
+            <td mat-cell *matCellDef="let charge" class="centertext ft14">   {{ charge.vendedor}} </td>
+        </ng-container>
+
+        <!-- Notas Column -->
+        <ng-container matColumnDef="notas">
+            <th mat-header-cell *matHeaderCellDef class="ft14 centertext"> Notas </th>
+            <td mat-cell *matCellDef="let charge" class="centertext ft14">   {{ charge.notas}} </td>
+        </ng-container>
+        
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <ng-container>

@@ -1,8 +1,11 @@
 import { Component } from '@angular/core';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import { Observable, map, of, startWith } from 'rxjs';
+import { Enterprise, Product, User } from 'shared';
+import { ChargeService } from '../../../shared/services/charge.service';
 
 @Component({
   selector: 'app-sales',
@@ -15,6 +18,9 @@ export class SalesComponent {
     public icon:IconService,
     private modalService: NgbModal,
     private fb: FormBuilder,
+    private afs: AngularFirestore,
+    private chargeService:ChargeService
+
   ){
 
 
@@ -140,11 +146,63 @@ export class SalesComponent {
     }
 
   // Método para enviar el formulario
-  onSubmit() {
+
+  savingSale = false
+  async onSubmit() {
     this.displayErrors = false
     console.log(this.createSaleForm)
     if (this.createSaleForm.valid) {
+      this.savingSale = true
       console.log('Formulario válido:', this.createSaleForm.value);
+
+      const saleValues = this.createSaleForm.value
+
+      let saleToSave = {
+        ...saleValues
+      }
+
+      saleToSave.user = null
+      saleToSave.enterprise = null
+
+
+      let productRef = await this.afs.collection<any>(Product.collection).doc(saleValues.plan).ref;
+      saleToSave.productRef = productRef
+      saleToSave.iDproduct = productRef.id
+
+      if(saleValues.enterprise){
+        let enterpriseRef = await this.afs.collection<any>(Enterprise.collection).doc(saleValues.enterprise.id).ref;
+        saleToSave.enterpriseRef = enterpriseRef
+        saleToSave.enterprise = saleValues.enterprise.name
+        saleToSave.idEnterprise = saleValues.enterprise.id
+        saleToSave.clientShow = saleToSave.enterprise
+      }
+      else{
+        let userRef = await this.afs.collection<any>(User.collection).doc(saleValues.user.uid).ref;
+        saleToSave.userRef = userRef
+        saleToSave.user = saleValues.user.name
+        saleToSave.idUser = saleValues.user.uid
+        saleToSave.clientShow = saleValues.user.email
+
+      }
+
+      saleToSave.dateSave = new Date()
+      const [year, month, day] = saleToSave.fecha.split('-').map(Number); // Dividir la fecha en partes
+      saleToSave.date = new Date(year, month - 1, day); // Crear un objeto Date en hora local (meses son 0-indexados)
+
+
+      const producto = this.productos.find(x=>x.id == saleValues.plan)
+
+      saleToSave.productName = producto.name
+    
+      console.log('saleValues',saleValues,saleToSave)
+      await this.chargeService.saveSale(saleToSave)
+      this.savingSale = false
+      
+
+      this.createSaleModal.close()
+
+
+
     } else {
       this.displayErrors = true
       console.log('Formulario no válido');

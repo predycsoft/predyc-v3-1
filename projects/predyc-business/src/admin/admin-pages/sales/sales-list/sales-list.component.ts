@@ -14,12 +14,6 @@ import { IconService } from 'projects/predyc-business/src/shared/services/icon.s
 import { ProductService } from 'projects/predyc-business/src/shared/services/product.service';
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
 
-interface ChargeInList extends ChargeJson {
-  productName: string
-  customerName: string
-  customerEmail: string
-}
-
 
 @Component({
   selector: 'app-sales-list',
@@ -39,23 +33,24 @@ export class SalesListComponent {
   ){}
 
   displayedColumns: string[] = [
-    "amount",
-    "status",
     "product",
-    "description",
-    "client",
-    "startDate",
-    "endDate",
-    "payed",
-
+    "clientShow",
+    "monto",
+    "date",
+    "p21Predyc",
+    "metodoPago",
+    "dividir",
+    "tipo",
+    "vendedor",
+    "notas"
   ];
 
-  dataSource = new MatTableDataSource<ChargeInList>();
+  dataSource = new MatTableDataSource<any>();
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @Input() enableNavigateToUser: boolean = true
 
-  pageSize: number = 16
+  pageSize: number = 20
   totalLength: number
   
   combinedServicesSubscription: Subscription
@@ -106,17 +101,18 @@ export class SalesListComponent {
 
   performSearch(searchTerm:string, page: number) {
     this.chargeSubscription = this.chargeService.getCharges$().subscribe(charges => {
-      const chargesInList: ChargeInList[] = charges.map(charge => {
-        const productData = this.getProductData(charge.productRef.id)
+      const chargesInList: any[] = charges.map(charge => {
         return {
           ... charge,
-          productName: productData.name,
-          customerName: this.getCustomerName(charge),
-          customerEmail: this.getCustomerEmail(charge),
+          // productName: productData.name,
+          // customerName: this.getCustomerName(charge),
+          // customerEmail: this.getCustomerEmail(charge),
         }
       })
 
-      const filteredCharges = searchTerm ? chargesInList.filter(sub => sub.customerName.toLowerCase().includes(searchTerm.toLowerCase())) : chargesInList;
+      console.log('chargesInList',chargesInList)
+
+      const filteredCharges = searchTerm ? chargesInList.filter(sub => sub.clientShow.toLowerCase().includes(searchTerm.toLowerCase())) : chargesInList;
       this.paginator.pageIndex = page - 1;
       this.dataSource.data = filteredCharges
       this.totalLength = filteredCharges.length;
