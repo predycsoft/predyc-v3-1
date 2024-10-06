@@ -88,7 +88,8 @@ export class SalesListComponent {
       this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
         const page = Number(params['page']) || 1;
         const searchTerm = params['search'] || '';
-        this.performSearch(searchTerm, page);
+        const quarter = params['filterQuarter'] || '';
+        this.performSearch(searchTerm, quarter,page);
       })
     })
   }
@@ -99,7 +100,10 @@ export class SalesListComponent {
     this.dataSource.paginator.pageSize = this.pageSize;
   }
 
-  performSearch(searchTerm:string, page: number) {
+  allCharges
+  
+
+  performSearch(searchTerm:string,quarter:string, page: number) {
     this.chargeSubscription = this.chargeService.getCharges$().subscribe(charges => {
       const chargesInList: any[] = charges.map(charge => {
         return {
@@ -111,13 +115,71 @@ export class SalesListComponent {
       })
 
       console.log('chargesInList',chargesInList)
+      this.allCharges= chargesInList
 
-      const filteredCharges = searchTerm ? chargesInList.filter(sub => sub.clientShow.toLowerCase().includes(searchTerm.toLowerCase())) : chargesInList;
+      let filteredCharges = chargesInList;
+
+      // Filtrado por trimestre si quarter está definido
+      if (quarter && quarter.trim() !== '') {
+        const { start, end } = this.getQuarterDates(quarter); // Usamos la función para obtener las fechas de inicio y fin
+        filteredCharges = filteredCharges.filter(sub => {
+          const chargeDate = sub.date.seconds * 1000; // Convertimos la fecha de Firebase a milisegundos
+          return chargeDate >= start && chargeDate <= end; // Filtramos las transacciones que están dentro del rango
+        });
+      }
+  
+      // Filtrado por término de búsqueda si searchTerm está definido
+      if (searchTerm && searchTerm.trim() !== '') {
+        filteredCharges = filteredCharges.filter(sub => 
+          sub.clientShow.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      }
+
       this.paginator.pageIndex = page - 1;
-      this.dataSource.data = filteredCharges
+      this.dataSource.data = filteredCharges;
       this.totalLength = filteredCharges.length;
+
+
     })
   }
+
+  getQuarterDates(quarterString: string): { start: number, end: number } {
+    // Dividimos el string para obtener el trimestre y el año
+    const [quarter, yearString] = quarterString.split(' ');
+    const year = parseInt(yearString, 10); // Convertimos el año a número
+    
+    let startMonth: number;
+    let endMonth: number;
+  
+    // Determinamos los meses según el trimestre
+    switch (quarter) {
+      case 'Q1':
+        startMonth = 0; // Enero (mes 0)
+        endMonth = 2;   // Marzo (mes 2)
+        break;
+      case 'Q2':
+        startMonth = 3; // Abril (mes 3)
+        endMonth = 5;   // Junio (mes 5)
+        break;
+      case 'Q3':
+        startMonth = 6; // Julio (mes 6)
+        endMonth = 8;   // Septiembre (mes 8)
+        break;
+      case 'Q4':
+        startMonth = 9; // Octubre (mes 9)
+        endMonth = 11;  // Diciembre (mes 11)
+        break;
+      default:
+        throw new Error('Invalid quarter');
+    }
+  
+    // Creamos las fechas de inicio y fin en timestamp (milisegundos)
+    const startDate = new Date(year, startMonth, 1).getTime(); // Primer día del mes de inicio
+    const endDate = new Date(year, endMonth + 1, 0, 23, 59, 59, 999).getTime(); // Último día del mes de fin
+  
+    return { start: startDate, end: endDate };
+  }
+  
 
   onPageChange(page: number): void {
     this.router.navigate([], {

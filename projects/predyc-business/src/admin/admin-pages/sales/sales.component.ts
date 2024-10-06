@@ -3,9 +3,10 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
-import { Observable, map, of, startWith } from 'rxjs';
+import { Observable, Subscription, map, of, startWith } from 'rxjs';
 import { Enterprise, Product, User } from 'shared';
 import { ChargeService } from '../../../shared/services/charge.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-sales',
@@ -19,7 +20,8 @@ export class SalesComponent {
     private modalService: NgbModal,
     private fb: FormBuilder,
     private afs: AngularFirestore,
-    private chargeService:ChargeService
+    private chargeService:ChargeService,
+    private router: Router, private route: ActivatedRoute
 
   ){
 
@@ -34,6 +36,10 @@ export class SalesComponent {
   users
   empresas
   productos
+  selectedQuarter
+
+  queryParamsSubscription: Subscription
+
 
 
   filteredUsers: Observable<any[]>; // Observable para el autocomplete de independientes
@@ -43,6 +49,16 @@ export class SalesComponent {
   selectedEmpresa: any; // Valor seleccionado para empresa
 
   tipoCliente
+
+  ngOnInit(): void {
+    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
+    //Add 'implements OnInit' to the class.
+    this.queryParamsSubscription = this.route.queryParams.subscribe(params => {
+      this.selectedQuarter = params['filterQuarter'] || '';
+    })
+    this.generateQuarters();
+
+  }
 
   getDatosClientes(datosClientes){
     console.log(datosClientes)
@@ -208,6 +224,51 @@ export class SalesComponent {
       console.log('Formulario no válido');
     }
   }
+
+  quarters: string[] = [];
+
+
+    // Generar trimestres desde 2024 hasta el trimestre actual
+    generateQuarters() {
+      const startYear = 2024;
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear();
+      const currentQuarter = Math.floor((currentDate.getMonth() + 3) / 3); // 1-based quarter calculation
+  
+      for (let year = startYear; year <= currentYear; year++) {
+        for (let quarter = 1; quarter <= 4; quarter++) {
+          if (year === currentYear && quarter > currentQuarter) {
+            break; // No generar trimestres futuros
+          }
+          this.quarters.push(`Q${quarter} ${year}`);
+        }
+      }
+    }
+  
+    // Al cambiar el trimestre, actualizar la URL con el query param
+    onQuarterChange(event: Event): void {
+      const quarter = (event.target as HTMLSelectElement).value; // Obtenemos el valor del evento dentro de la función
+  
+      if (quarter === '') {
+          // Si es "Todos", eliminamos el query param 'filterQuarter'
+          this.router.navigate([], {
+              queryParams: {
+                  filterQuarter: null
+              },
+              queryParamsHandling: 'merge'
+          });
+      } else {
+          // Si no, actualizamos el query param con el valor del trimestre seleccionado
+          console.log(quarter)
+          this.router.navigate([], {
+              queryParams: {
+                  filterQuarter: quarter
+              },
+              queryParamsHandling: 'merge'
+          });
+      }
+  }
+  
 
 
   
