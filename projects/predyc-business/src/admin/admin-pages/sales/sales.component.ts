@@ -323,7 +323,7 @@ export class SalesComponent {
 
 
       Swal.fire({
-        title: 'Generando usuarios...',
+        title: 'Generando ventas...',
         text: 'Por favor, espera.',
         allowOutsideClick: false,
         didOpen: () => {
