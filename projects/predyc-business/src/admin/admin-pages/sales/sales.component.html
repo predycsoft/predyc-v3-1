@@ -25,7 +25,7 @@
         </div>
     </div>
     <div fxLayout="columm" fxLayoutAlign="center center" class="fw vh50 pdr20" >
-        <app-sales-list (datosClientes)="getDatosClientes($event)" class="fw"></app-sales-list>
+        <app-sales-list [updateList]="updateSales" (datosClientes)="getDatosClientes($event)" class="fw"></app-sales-list>
     </div>
 </div>
 
@@ -254,7 +254,7 @@
     
             <!-- Botón para guardar, en la esquina inferior derecha -->
             <div fxLayout="row" fxLayoutAlign="end end" class="pdt03" style="width: 100%">
-              <button [disabled]="savingSale"  class="blueButton gray-1 radius4 ft12 h28px mgt10" fxLayout="row" fxLayoutGap="0.625rem" fxLayoutAlign="center center">
+              <button  [disabled]="savingSale"  class="blueButton gray-1 radius4 ft12 h28px mgt10" fxLayout="row" fxLayoutGap="0.625rem" fxLayoutAlign="center center">
                 <img [src]="icon.save" class="h16px pdr05 makeWhite" alt="" />
                 Guardar
               </button>

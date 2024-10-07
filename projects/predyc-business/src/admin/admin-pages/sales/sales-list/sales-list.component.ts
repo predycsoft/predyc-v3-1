@@ -1,8 +1,8 @@
-import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Subscription, combineLatest, firstValueFrom } from 'rxjs';
+import { Subscription, combineLatest, firstValueFrom, take } from 'rxjs';
 import { chargeData } from 'projects/predyc-business/src/assets/data/charge.data';
 import { Charge, ChargeJson } from 'projects/shared/models/charges.model';
 import { Enterprise } from 'projects/shared/models/enterprise.model';
@@ -50,6 +50,9 @@ export class SalesListComponent {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @Input() enableNavigateToUser: boolean = true
 
+  @Input() updateList: number = 0
+
+
   pageSize: number = 20
   totalLength: number
   
@@ -62,6 +65,18 @@ export class SalesListComponent {
   enterprises: Enterprise[]
 
   @Output() datosClientes = new EventEmitter<any>();
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.updateList) {
+      this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
+        const page = Number(params['page']) || 1;
+        const searchTerm = params['search'] || '';
+        const quarter = params['filterQuarter'] || '';
+        this.performSearch(searchTerm, quarter,page);
+      })    
+    }
+  }
+
 
 
   ngOnInit() {
@@ -104,7 +119,7 @@ export class SalesListComponent {
   
 
   performSearch(searchTerm:string,quarter:string, page: number) {
-    this.chargeSubscription = this.chargeService.getCharges$().subscribe(charges => {
+    this.chargeSubscription = this.chargeService.getCharges$().pipe(take(1)).subscribe(charges => {
       const chargesInList: any[] = charges.map(charge => {
         return {
           ... charge,

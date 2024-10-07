@@ -220,7 +220,7 @@ export class SalesComponent {
       
 
       this.createSaleModal.close()
-
+      this.updateSales ++
 
 
     } else {
@@ -228,6 +228,7 @@ export class SalesComponent {
       console.log('Formulario no válido');
     }
   }
+  updateSales = 0
 
   quarters: string[] = [];
 
@@ -438,14 +439,13 @@ export class SalesComponent {
           }
 
           console.log('venta',venta,objVenta)
-
           await this.chargeService.saveSale(objVenta)
-
 
         }
         Swal.close();
         setTimeout(() => {
           this.alertService.succesAlert("Usuarios generados existosamente")
+          this.updateSales ++
         }, 100);
       }
       catch (error){
