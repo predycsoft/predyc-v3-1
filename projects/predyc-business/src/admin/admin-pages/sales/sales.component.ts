@@ -7,6 +7,9 @@ import { Observable, Subscription, map, of, startWith } from 'rxjs';
 import { Enterprise, Product, User } from 'shared';
 import { ChargeService } from '../../../shared/services/charge.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import * as XLSX from 'xlsx-js-style';
+import Swal from 'sweetalert2';
+import { AlertsService } from 'projects/predyc-business/src/shared/services/alerts.service';
 
 @Component({
   selector: 'app-sales',
@@ -21,7 +24,8 @@ export class SalesComponent {
     private fb: FormBuilder,
     private afs: AngularFirestore,
     private chargeService:ChargeService,
-    private router: Router, private route: ActivatedRoute
+    private router: Router, private route: ActivatedRoute,
+    private alertService: AlertsService,
 
   ){
 
@@ -268,7 +272,193 @@ export class SalesComponent {
           });
       }
   }
+
+  downloadTemplate() {
+    // Construye la URL hacia el documento en la carpeta assets
+    const url = 'assets/files/plantilla carga ventas.xlsx';
   
+    // Crea un elemento <a> temporalmente
+    const a = document.createElement('a');
+    a.href = url;
+    //a.download = 'NombreDelArchivoDescargado.docx'; // Puedes especificar el nombre del archivo para la descarga
+    document.body.appendChild(a); // Agrega el enlace al documento
+    a.click(); // Simula un clic en el enlace para iniciar la descarga
+    document.body.removeChild(a); // Elimina el enlace del documento
+  }
+
+  excelSerialDateToJSDate(serial: number): Date {
+    // Excel considera el 1 de enero de 1900 como el día 1, y JavaScript como el día 0
+    const excelStartDate = new Date(1899, 11, 30); // Restamos un día para compensar
+  
+    // Sumamos el número de días del valor serial
+    const days = Math.floor(serial);
+    const millisecondsPerDay = 24 * 60 * 60 * 1000; // Milisegundos en un día
+    const date = new Date(excelStartDate.getTime() + days * millisecondsPerDay);
+  
+    // Ahora calculamos la hora a partir de la parte decimal
+    const fractionalDay = serial - days;
+    const totalSeconds = Math.round(fractionalDay * millisecondsPerDay);
+  
+    // Añadimos la fracción de segundos a la fecha
+    date.setTime(date.getTime() + totalSeconds);
+  
+    return date;
+  }
+  
+  uploadVentas(evt) {
+
+
+    const target: DataTransfer = <DataTransfer>(evt.target);
+    if (target.files.length !== 1) {
+      throw new Error('Cannot use multiple files');
+    }
+    const reader: FileReader = new FileReader();
+    reader.onload = async (e: any) => {
+      const bstr: string = e.target.result;
+      const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
+      const wsname: string = wb.SheetNames[0];
+      const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+      let data = XLSX.utils.sheet_to_json(ws);
+
+
+      Swal.fire({
+        title: 'Generando usuarios...',
+        text: 'Por favor, espera.',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading()
+        }
+      });
+
+      try {
+        for (let venta of data as any){
+
+          let fechaPagoRaw = venta['Fecha de pago (dd/mm/yy)']; // Asume que esta es la clave donde está el dato de la fecha
+          let fecha: Date;
+        
+          // Verifica si el valor es numérico (número de serie de Excel)
+          if (!isNaN(fechaPagoRaw)) {
+            // Si es numérico, es un número de serie de Excel
+            fecha = this.excelSerialDateToJSDate(parseFloat(fechaPagoRaw));
+          } else {
+            // Si no es numérico, asumimos que es un string en formato 'dd/mm/yy'
+            const [day, month, year] = fechaPagoRaw.split('/').map(Number);
+            // El año lo ajustamos dependiendo si es un formato de dos dígitos o cuatro
+            const fullYear = year < 100 ? 2000 + year : year;
+            fecha = new Date(fullYear, month - 1, day);
+          }
+
+          let dividir = false
+          let tipo = 'Parcial'
+
+
+          if(venta['DIVIDIR'].toLowerCase().trim() == 'si' || venta['DIVIDIR'].toLowerCase().trim() == 'sí' ){
+            dividir = true
+          }
+
+
+
+          if(venta['TIPO'].toLowerCase().trim() == 'completo'){
+            tipo = 'Completo'
+          }
+
+          // tipoCliente: ['', [Validators.required]],
+          // user: [''],  // Campo para 'independiente'
+          // enterprise: [''],  // Campo para 'empresa'
+          // plan: ['', [Validators.required]],
+          // monto: ['', [Validators.required]],
+          // fecha: ['', [Validators.required]],
+          // p21Predyc: ['', [Validators.required]],
+          // metodoPago: ['', [Validators.required]],
+          // dividir: ['', [Validators.required]],
+          // tipo: ['', [Validators.required]],
+          // vendedor: ['', [Validators.required]],
+          // notas: [''],
+
+          
+          let user = this.users.find(x=>x.email.toLowerCase().trim() == venta.Cliente.toLowerCase().trim())
+          let empresa =  this.empresas.find(x=>x.name.toLowerCase().trim() == venta.Cliente.toLowerCase().trim())
+          console.log('user',user,this.users)
+          let userRef = null
+          let userName = null
+          let enterpriseName = null
+          let empresaRef = null
+          let idEnterprise = null
+          let idUser = null
+
+          let cliente = venta.Cliente.toLowerCase().trim();
+
+          // Expresión regular para validar si es un email
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+          let tipoCliente: string;
+
+          // Verificamos si el cliente coincide con la expresión regular de un email
+          if (emailRegex.test(cliente)) {
+            tipoCliente = 'independiente';
+          } else {
+            tipoCliente = 'empresa';
+          }
+
+
+          if(user){
+            userRef = await this.afs.collection<User>(User.collection).doc(user.uid).ref;
+            tipoCliente = 'independiente'
+            userName = user.name
+            console.log('userRef',userRef),
+            idUser=user.uid
+          }
+          else if(empresa){
+            empresaRef = await this.afs.collection<Enterprise>(Enterprise.collection).doc(empresa.id).ref;
+            tipoCliente = 'empresa'
+            enterpriseName = user.name
+            console.log('empresaRef',empresaRef)
+            idEnterprise = empresa.id
+          }
+
+          let objVenta = {
+            date:fecha,
+            dateSave: new Date(),
+            dividir:dividir,
+            monto:venta['Monto'],
+            tipo:tipo,
+            notas:venta.Notas?venta.Notas:'',
+            vendedor:venta.Vendedor,
+            clientShow:venta.Cliente,
+            productName:venta.PLAN,
+            p21Predyc:venta['P21 / Predyc'],
+            metodoPago:venta['Modo de pago'],
+            userRef:userRef,
+            tipoCliente:tipoCliente,
+            user:userName,
+            idUser:idUser,
+            idEnterprise:idEnterprise,
+            enterpriseRef:empresaRef,
+            enterprise:enterpriseName
+          }
+
+          console.log('venta',venta,objVenta)
+
+          await this.chargeService.saveSale(objVenta)
+
+
+        }
+        Swal.close();
+        setTimeout(() => {
+          this.alertService.succesAlert("Usuarios generados existosamente")
+        }, 100);
+      }
+      catch (error){
+        Swal.close();
+        this.alertService.errorAlert(error)
+
+      }
+    };
+    reader.readAsBinaryString(target.files[0]); 
+
+
+
+  }
 
 
   

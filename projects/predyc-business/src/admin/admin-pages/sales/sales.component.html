@@ -13,7 +13,11 @@
                 </select>
             </div>
         </div>
-        <div>
+        <div  fxLayout="row"  fxLayoutAlign=" center">
+            <button  [matMenuTriggerFor]="tagMenu"  fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="grayButton button-animation  gray-10" style="border-radius: 24px !important">
+                <img [src]="icon.tableShortcut" class="h16px pdr05" alt="" />
+                Importar ventas
+            </button>
             <button (click)="createVenta(createSale)" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButtonAnim button-animation" style="border-radius: 24px !important">
                 <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="" />
                 Agregar venta
@@ -259,4 +263,20 @@
     </div>
     
 </ng-template>
+
+<mat-menu #tagMenu="matMenu" class="radius6 shadow16 pd0">
+    <div fxLayout="column" class="pd0">
+        <div (click)="downloadTemplate();" mat-menu-item class="opcionMenu"
+            fxLayout="row" fxLayoutAlign=" center">
+            <span class="pdl05 ft12 gray-10">Descargar Plantilla</span>
+        </div>
+        <div (click)="uploadfileVentas.click()"  mat-menu-item class="opcionMenu"
+            fxLayout="row" fxLayoutAlign=" center">
+            <span class="pdl05 ft12 gray-10">Cargar Archivo</span>
+        </div>
+    </div>
+</mat-menu>
+
+<input type="file" (change)="uploadVentas($event)" #uploadfileVentas style="display: none" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
+
 
