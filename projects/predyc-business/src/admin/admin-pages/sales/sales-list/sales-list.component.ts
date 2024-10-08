@@ -65,6 +65,8 @@ export class SalesListComponent {
   enterprises: Enterprise[]
 
   @Output() datosClientes = new EventEmitter<any>();
+  @Output() datosVentas = new EventEmitter<any>();
+
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.updateList) {
@@ -77,7 +79,66 @@ export class SalesListComponent {
     }
   }
 
+  montoPeriodo = 0
+  montoPeriodoProcesed = 0
 
+  chargesProceced = [];
+
+  procesarPagosNormalizadoas(charges){
+
+    let quearterInit ='Q3 2023';
+    this.chargesProceced = [];
+    const { start, end } = this.getQuarterDates(quearterInit); // Usamos la función para obtener las fechas de inicio y fin
+    let display = charges.filter(x => x.date.seconds * 1000 > start);
+    display = structuredClone(display);
+    display.forEach(charge => {
+      if(charge.payAt){
+        charge.createdAt = charge.payAt;
+      }
+      if(charge.dividir){
+        let fechaini = charge.date.seconds * 1000;
+        let amountpagos = ((charge.monto)/12).toFixed(2);
+        for(let i = 0; i < 12; i++) {
+          let date = new Date(fechaini);
+          let originalDay = date.getDate(); // Guardamos el día original
+        
+          // Ajustamos el mes
+          date.setMonth(date.getMonth() + i);
+        
+          // Si el nuevo mes no tiene el día original, ajustamos al último día del mes
+          if (date.getDate() !== originalDay) {
+            // Seteamos al día 0 del siguiente mes, que siempre será el último día del mes actual
+            date.setDate(0);
+          }
+        
+          let newTimestamp = date.getTime();
+          let payLocal = null;
+          payLocal = structuredClone(charge);
+          payLocal.monto = parseFloat(amountpagos);
+          payLocal.description =`Pago Normalizado ${i+1}/12`
+          payLocal.date = newTimestamp;
+          payLocal.metodoPago = charge.metodoPago;
+          payLocal['original'] = charge;
+          //console.log(payLocal);
+          this.chargesProceced.push(payLocal);
+        }
+      }
+      else{
+        let date = new Date(charge.date.seconds * 1000);
+        let newTimestamp = date.getTime();
+        let payLocal = null;
+        payLocal = structuredClone(charge);
+        payLocal.monto = parseFloat(charge.monto);
+        payLocal.description = `Pago Normalizado (único)`
+        payLocal.date = newTimestamp;
+        payLocal.metodoPago = charge.metodoPago;
+        //console.log(payLocal);
+        this.chargesProceced.push(payLocal);
+      }
+    });
+    this.chargesProceced.sort((a, b) => b.date - a.date)
+    //console.log('chargesProceced',this.chargesProceced)
+  }
 
   ngOnInit() {
 
@@ -116,7 +177,7 @@ export class SalesListComponent {
   }
 
   allCharges
-  
+  filteredChargesNormaliced
 
   performSearch(searchTerm:string,quarter:string, page: number) {
     this.chargeSubscription = this.chargeService.getCharges$().pipe(take(1)).subscribe(charges => {
@@ -129,16 +190,23 @@ export class SalesListComponent {
         }
       })
 
-      console.log('chargesInList',chargesInList)
+      //console.log('chargesInList',chargesInList)
       this.allCharges= chargesInList
+      this.procesarPagosNormalizadoas(this.allCharges)
 
       let filteredCharges = chargesInList;
+      let filteredChargesNormaliced = this.chargesProceced;
+
 
       // Filtrado por trimestre si quarter está definido
       if (quarter && quarter.trim() !== '') {
         const { start, end } = this.getQuarterDates(quarter); // Usamos la función para obtener las fechas de inicio y fin
         filteredCharges = filteredCharges.filter(sub => {
           const chargeDate = sub.date.seconds * 1000; // Convertimos la fecha de Firebase a milisegundos
+          return chargeDate >= start && chargeDate <= end; // Filtramos las transacciones que están dentro del rango
+        });
+        filteredChargesNormaliced = filteredChargesNormaliced.filter(sub => {
+          const chargeDate = sub.date; // Convertimos la fecha de Firebase a milisegundos
           return chargeDate >= start && chargeDate <= end; // Filtramos las transacciones que están dentro del rango
         });
       }
@@ -150,6 +218,35 @@ export class SalesListComponent {
         );
       }
 
+
+      this.montoPeriodo = 0
+      this.montoPeriodoProcesed = 0
+
+      //console.log('filteredCharges',filteredCharges)
+
+      filteredChargesNormaliced.forEach(element => {
+        //console.log('elementfilteredChargesNormaliced',element)
+        this.montoPeriodoProcesed+=(element.monto?element.monto:0)
+      });
+      filteredCharges.forEach(element => {
+        if(!element.monto){
+          //console.log('element.monto',element)
+        }
+        this.montoPeriodo+=(element.monto?element.monto:0)
+      });
+      filteredChargesNormaliced = filteredChargesNormaliced.sort((a, b) => b.date - a.date)
+      //console.log('montoPeriodo',this.montoPeriodo,this.montoPeriodoProcesed)
+
+      let datos = {
+        montoPeriodo:this.montoPeriodo,
+        montoPeriodoProcesed:this.montoPeriodoProcesed,
+        ventasNormalizado:filteredChargesNormaliced,
+      }
+
+      this.datosVentas.emit(datos)
+
+
+      this.filteredChargesNormaliced = filteredChargesNormaliced
       this.paginator.pageIndex = page - 1;
       this.dataSource.data = filteredCharges;
       this.totalLength = filteredCharges.length;

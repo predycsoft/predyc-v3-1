@@ -221,14 +221,19 @@ convertirFechaString(fechaString: string): Date | null {
           eventoConFecha.origenBase = `${baseUrl}${urlParts[0]}`;
         }
 
-        if(eventoConFecha.assistanceData){
+        if(eventoConFecha.assistanceData) {
           let days = eventoConFecha.assistanceData.map(element => {
-            return element.id
+            return element.id;
           });
+        
+          // Ordenar alfabéticamente
+          days.sort();
+        
           days = days.toString();
-          eventoConFecha.asistencia = days
-          delete eventoConFecha.assistanceData
+          eventoConFecha.asistencia = days;
+          delete eventoConFecha.assistanceData;
         }
+        
         return eventoConFecha;
       });
   

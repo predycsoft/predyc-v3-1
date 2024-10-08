@@ -71,6 +71,22 @@ export class SalesComponent {
     this.productos=datosClientes.products
   }
 
+  getDatosVentas(datosVentas){
+    console.log('datosVentas',datosVentas)
+    this.datosVentas = datosVentas
+
+  }
+
+  modalNewPayments
+  showModalNewPayments(content){
+
+    this.modalNewPayments = this.modalService.open(content, {
+      windowClass: 'custom-modal',
+      ariaLabelledBy: 'modal-basic-title',
+      centered: true
+    });
+  }
+
 
   createVenta(modal) {
     this.displayErrors = false
@@ -167,6 +183,8 @@ export class SalesComponent {
 
   // Método para enviar el formulario
 
+  datosVentas = null
+
   savingSale = false
   async onSubmit() {
     this.displayErrors = false
@@ -233,9 +251,9 @@ export class SalesComponent {
   quarters: string[] = [];
 
 
-    // Generar trimestres desde 2024 hasta el trimestre actual
+    // Generar trimestres desde 2023 hasta el trimestre actual
     generateQuarters() {
-      const startYear = 2024;
+      const startYear = 2023;
       const currentDate = new Date();
       const currentYear = currentDate.getFullYear();
       const currentQuarter = Math.floor((currentDate.getMonth() + 3) / 3); // 1-based quarter calculation
@@ -427,7 +445,7 @@ export class SalesComponent {
             vendedor:venta.Vendedor,
             clientShow:venta.Cliente,
             productName:venta.PLAN,
-            p21Predyc:venta['P21 / Predyc'],
+            p21Predyc:venta['P21 / Predyc']?venta['P21 / Predyc']:'Predyc',
             metodoPago:venta['Modo de pago'],
             userRef:userRef,
             tipoCliente:tipoCliente,

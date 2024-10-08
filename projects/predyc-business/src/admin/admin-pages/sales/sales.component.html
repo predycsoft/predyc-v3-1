@@ -6,12 +6,20 @@
                 <app-search-input-box class=""></app-search-input-box>
             </div>
             <div fxLayout="columm" fxLayoutAlign="center center" class="mgl10">
-                <span class="pdr03">Quarter:</span>
+                <span class="pdr03">Periodo:</span>
                 <select [(ngModel)]="selectedQuarter" (change)="onQuarterChange($event)">
                     <option value="" selected>Todos</option>
                     <option *ngFor="let quarter of quarters" [value]="quarter"> {{ quarter }}</option>
                 </select>
             </div>
+            <div class="mgl10" fxLayout="column" fxLayoutAlign="center ">
+                <div fxLayout="row" fxLayoutGap="1rem">
+                  <span class="nowrap ft11">Período: ${{datosVentas?.montoPeriodo | number:"1.2-2"}}</span>
+                </div>
+                <div fxLayout="row" fxLayoutGap="1rem">
+                  <span class="nowrap ft11">Período Normalizado: ${{datosVentas?.montoPeriodoProcesed | number:"1.2-2"}}</span>
+                  <img [src]="icon.info" (click)="showModalNewPayments(modalCrearCompetencias)"  matTooltip="Para el cálculo de estos valores si el pago es anual se toma en cuanta y se divide el pago entre los meses correspondientes,solo se consideran los pagos en estatus exitoso, solo está disponible a partir del Q3-2023" class="cursorPointer" />        </div>
+              </div>
         </div>
         <div  fxLayout="row"  fxLayoutAlign=" center">
             <button  [matMenuTriggerFor]="tagMenu"  fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="grayButton button-animation  gray-10" style="border-radius: 24px !important">
@@ -25,7 +33,7 @@
         </div>
     </div>
     <div fxLayout="columm" fxLayoutAlign="center center" class="fw vh50 pdr20" >
-        <app-sales-list [updateList]="updateSales" (datosClientes)="getDatosClientes($event)" class="fw"></app-sales-list>
+        <app-sales-list (datosVentas)="getDatosVentas($event)" [updateList]="updateSales" (datosClientes)="getDatosClientes($event)" class="fw"></app-sales-list>
     </div>
 </div>
 
@@ -280,3 +288,39 @@
 <input type="file" (change)="uploadVentas($event)" #uploadfileVentas style="display: none" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
 
 
+<!-- PYAMENTS NORMALICED MODAL -->
+<ng-template #modalCrearCompetencias let-modal>
+    <div class="modal-header bg-web-primary text-white px-3 py-1">
+        <div class="modal-title pd10" fxLayout="row" fxLayoutAlign="start center">
+        </div>
+        <img style="cursor: pointer;" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px"  alt="">
+    </div>
+    <div class="modal-body">
+      <table class="tableBody sticky">
+        <thead class="tableHeader sticky">
+          <tr>
+            <!-- <th class="gray-10 ft12 align-start ft500 mw" colspan="4">ID</th> -->
+            <th class="gray-10 ft12 align-start ft500 mw">Monto</th>
+            <th class="gray-9 ft12 align-start ft500">Producto</th>
+            <th class="gray-9 ft12 align-start ft500">Cliente</th>
+            <th class="gray-9 ft12 align-start ft500">Description</th>
+            <th class="gray-9 ft12 align-start ft500">Fecha</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of datosVentas.ventasNormalizado; let i = index" class="paymentElement"><!-- <td>{{item.id}}</td> -->
+            <td class="ft11 gray-8">{{item.monto | number:"1.2-2"}} USD</td>
+            <td class="ft11 gray-8">{{item.productName}}</td>
+            <td class="ft11 gray-8">{{item.clientShow }}</td>
+            <td class="ft11 gray-8">{{item.description }}</td>
+            <td class="ft11 gray-8">{{item.date | date:"dd/MM/yyyy"}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="modal-footer">
+        <button (click)="modal.dismiss()" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+            Cancelar
+        </button>
+    </div>
+  </ng-template>

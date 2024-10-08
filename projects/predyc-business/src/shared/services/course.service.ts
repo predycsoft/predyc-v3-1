@@ -1581,6 +1581,7 @@ export class CourseService {
           ref.where('completed', '==', true)
              .where('dateEnd', '>=', startDate)
              .where('dateEnd', '<=', endDate)
+             .where('hasSubscription','==',true)
         ).get()
       );
       console.log('datos getCompletedClassesByDateRange',snapshot)
