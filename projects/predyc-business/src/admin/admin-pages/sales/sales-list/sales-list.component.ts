@@ -115,7 +115,8 @@ export class SalesListComponent {
           let payLocal = null;
           payLocal = structuredClone(charge);
           payLocal.monto = parseFloat(amountpagos);
-          payLocal.description =`Pago Normalizado ${i+1}/12`
+          const dateFormatted = new Date(charge.date.seconds * 1000).toLocaleDateString('en-GB'); // Formato dd/mm/yy
+          payLocal.description = `Pago Normalizado ${i+1}/12 - Fecha ${dateFormatted} por (${charge.monto.toFixed(2)} USD)`;
           payLocal.date = newTimestamp;
           payLocal.metodoPago = charge.metodoPago;
           payLocal['original'] = charge;
@@ -129,7 +130,7 @@ export class SalesListComponent {
         let payLocal = null;
         payLocal = structuredClone(charge);
         payLocal.monto = parseFloat(charge.monto);
-        payLocal.description = `Pago Normalizado (único)`
+        payLocal.description = `Pago único`
         payLocal.date = newTimestamp;
         payLocal.metodoPago = charge.metodoPago;
         //console.log(payLocal);

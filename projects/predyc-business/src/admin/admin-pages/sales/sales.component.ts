@@ -87,6 +87,31 @@ export class SalesComponent {
     });
   }
 
+  downloadDataModal() {
+
+    let datos = structuredClone(this.datosVentas.ventasNormalizado)
+    // Crear una copia de los datos y convertir el timestamp en una fecha legible
+    const ventasData = datos.map(venta => {
+      return {
+        ...venta,
+        fecha: new Date(venta.date).toLocaleDateString('en-GB') // Convierte el timestamp a una fecha en formato dd/mm/yyyy
+      };
+    });
+  
+    // Crear la hoja de cálculo con los datos convertidos
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(ventasData);
+  
+    // Crear un libro de trabajo (workbook)
+    const workbook: XLSX.WorkBook = {
+      Sheets: { 'data': worksheet },
+      SheetNames: ['data']
+    };
+  
+    // Descargar el archivo Excel
+    XLSX.writeFile(workbook, `datosExport.xlsx`);
+  }
+  
+
 
   createVenta(modal) {
     this.displayErrors = false

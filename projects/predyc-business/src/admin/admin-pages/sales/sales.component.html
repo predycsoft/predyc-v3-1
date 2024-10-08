@@ -290,10 +290,13 @@
 
 <!-- PYAMENTS NORMALICED MODAL -->
 <ng-template #modalCrearCompetencias let-modal>
-    <div class="modal-header bg-web-primary text-white px-3 py-1">
-        <div class="modal-title pd10" fxLayout="row" fxLayoutAlign="start center">
+    <div class="modal-header bg-web-primary text-white px-3 py-1" fxLayout="row" fxLayoutAlign="space-between center">
+        <div class="modal-title pd10">
+            <span class="ft16 ft500 gray-10">Datos Normalizados</span>
         </div>
-        <img style="cursor: pointer;" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px"  alt="">
+        <div fxLayout="column">
+            <img style="cursor: pointer" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px" alt="" />
+        </div>
     </div>
     <div class="modal-body">
       <table class="tableBody sticky">
@@ -319,6 +322,10 @@
       </table>
     </div>
     <div class="modal-footer">
+        <button (click)="downloadDataModal()" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButtonAnim button-animation" style="border-radius: 24px !important">
+            <img [src]="icon.download" class="h16px pdr05 makeWhite" alt="" />
+            Descargar Datos
+        </button>
         <button (click)="modal.dismiss()" class="grayButton radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
             Cancelar
         </button>
