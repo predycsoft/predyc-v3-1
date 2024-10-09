@@ -6,7 +6,7 @@ import { Observable, Subscription, map, switchMap, take } from "rxjs";
 import { MAIN_TITLE } from "projects/predyc-business/src/admin/admin-routing.module";
 import { Enterprise } from "projects/shared/models/enterprise.model";
 import { User } from "projects/shared/models/user.model";
-import { calculateAgeFromTimestamp } from "projects/shared/utils";
+import { calculateAgeFromTimestamp, titleCase } from "projects/shared/utils";
 import { MatDialog } from "@angular/material/dialog";
 import { DialogCreateSubscriptionComponent } from "projects/predyc-business/src/shared/components/subscription/dialog-create-subscription/dialog-create-subscription.component";
 import { Subscription as SubscriptionClass } from "projects/shared/models/subscription.model";
@@ -31,6 +31,8 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { DialogEnrollCoursesComponent } from "projects/predyc-business/src/shared/components/courses/dialog-enroll-courses/dialog-enroll-courses.component";
 import { DiplomadoService } from "projects/predyc-business/src/shared/services/diplomado.service";
 import { DialogEnrollDiplomadosComponent } from "projects/predyc-business/src/shared/components/diplomados/dialog-enroll-diplomados/dialog-enroll-diplomados.component";
+import { IconService } from "projects/predyc-business/src/shared/services/icon.service";
+import Swal from "sweetalert2";
 
 @Component({
   selector: "app-student-detail",
@@ -61,6 +63,7 @@ export class StudentDetailComponent {
     private courseService: CourseService,
     private modalService: NgbModal,
     private diplomadoService: DiplomadoService,
+    public icon:IconService
 
   ) {}
 
@@ -71,6 +74,8 @@ export class StudentDetailComponent {
 
   totalCourses: number;
   totalClasses: number;userClassesSubscription
+
+  mailUserSearch = null
 
 
   fixClassStudentsTime(){
@@ -473,17 +478,95 @@ export class StudentDetailComponent {
     this.editSubscription(sub);
   }
 
+  modalMigrar;
+
   migrarUsuario(modal){
-    const dialogRef = this.modalService.open(
+    this.mailUserSearch = null
+    this.modalMigrar = this.modalService.open(
       modal,
       {
         animation: true,
         centered: true,
         //size: 'lg',
-        backdrop: "static",
-        keyboard: false,
       }
     );
 
   }
+
+  async searchUser() {
+    if (!this.mailUserSearch) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Advertencia',
+        text: 'Debes ingresar un correo electrónico para buscar.',
+      });
+      return;
+    }
+  
+    try {
+      const user = await this.userService.getUserByEmail(this.mailUserSearch);
+      
+      if (user) {
+        Swal.fire({
+          title: 'Confirmación',
+          text: `¿Estás seguro de que deseas migrar los datos a ${titleCase(user.name)} (${user.email})?`,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Sí, migrar',
+          cancelButtonText: 'Cancelar',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            console.log('Migración confirmada para el usuario:', user);
+            // Aquí puedes invocar el proceso de migración
+
+            Swal.fire({
+              title: "Migrando datos...",
+              text: "Por favor, espera.",
+              allowOutsideClick: false,
+              didOpen: () => {
+                Swal.showLoading();
+              },
+            });
+            
+            this.userService.migrateUser(this.userId, user.uid)
+            .then((message) => {
+              Swal.close()
+              this.modalMigrar.close()
+              Swal.fire({
+                icon: 'success',
+                title: 'Migración exitosa',
+                text: message,
+              });
+            })
+            .catch((error) => {
+              Swal.close()
+              Swal.fire({
+                icon: 'error',
+                title: 'Error en la migración',
+                text: `Ocurrió un error al migrar los datos: ${error.message}`,
+              });
+            });
+
+          }
+        });
+      } else {
+        Swal.fire({
+          icon: 'info',
+          title: 'Usuario no encontrado',
+          text: 'No se encontró ningún usuario con este correo electrónico.',
+        });
+      }
+    } catch (error) {
+      console.error('Error buscando el usuario:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Hubo un error al buscar el usuario.',
+      });
+    }
+  }
+  
+  
 }

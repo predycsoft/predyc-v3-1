@@ -18,7 +18,7 @@
       <span class="ft24 gray-10">{{ user.displayName | titlecase }}</span>
       <span class="ft11 backGray4 radius20 gray-8 pdr05 pdl05">ID: {{ user.uid }}</span>
       <span class="ft11 backGray4 radius20 gray-8 pdr05 pdl05">Rol: {{ user.role }}</span>
-      <span (click)="migrarUsuario('')" class="ft11 backGray4 radius20 gray-8 pdr05 pdl05 cursorPointer no-select">Migrar Usuario</span>
+      <span (click)="migrarUsuario(modalMigrarUsuario)" class="ft11 backGray4 radius20 gray-8 pdr05 pdl05 cursorPointer no-select">Migrar Usuario</span>
     </div>
     <div fxLayout="row" fxLayoutGap="1.5rem">
       <!-- <span class="ft11 gray-8">Registrado el {{ user.createdAt | date : "dd/MM/yyyy" }}</span> -->
@@ -200,3 +200,27 @@
     </div>
   </div>
 </div>
+
+
+
+<!-- Modal de pilares -->
+<ng-template #modalMigrarUsuario let-modal>
+  <div class="modal-header bg-web-primary text-white px-3 py-1" fxLayout="row" fxLayoutAlign="space-between center">
+      <div class="modal-title pd10">
+          <span class="ft16 ft500 gray-10">Migrar usuario</span>
+      </div>
+      <img style="cursor: pointer" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px" alt="" />
+  </div>
+  <div class="modal-body" style="overflow-y: auto; max-height: 80vh">
+
+    <div class="form-group">
+      <label>Email usuario</label>
+      <input type="text" [(ngModel)]="mailUserSearch"  class="form-control customInput" placeholder="Escriba el email del usuario al que se desea migrar.">
+    </div>
+    <div class="mgt10" fxLayout="row"  fxLayoutAlign="end center">
+      <button (click)="searchUser()" class="blueButton">Buscar usuario</button>
+
+    </div>
+
+  </div>
+</ng-template>

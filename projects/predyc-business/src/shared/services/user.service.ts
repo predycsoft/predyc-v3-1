@@ -1115,7 +1115,7 @@ export class UserService {
       .set({ canEnrollParticularCourses: value }, { merge: true });
   }
 
-  async migrateUser(idUserOld: string, idUserNew: string): Promise<void> {
+  async migrateUser(idUserOld: string, idUserNew: string): Promise<string> {
     // Crear un batch para realizar todas las operaciones de manera atómica
     const batch = this.afs.firestore.batch();
   
@@ -1264,8 +1264,7 @@ export class UserService {
   
       // Después de añadir todas las operaciones al batch, lo ejecutamos
       await batch.commit();
-  
-      console.log('Migración completada con éxito.');
+      return 'Migración completada con éxito.'; // Mensaje de éxito que se puede usar en el Swal o cualquier otra notificación
     } catch (error) {
       console.error('Error al migrar usuarios:', error);
       throw error;
@@ -1326,6 +1325,25 @@ export class UserService {
       throw error;
     }
   }
+
+  async getUserByEmail(email: string): Promise<any> {
+    try {
+      // Buscar el usuario en la colección "users" filtrando por el email
+      const userSnapshot = await this.afs.collection(User.collection, ref => ref.where('email', '==', email)).get().toPromise();
+      
+      // Si no hay resultados, devolver null
+      if (userSnapshot.empty) {
+        return null;
+      }
+  
+      // Retornar el primer documento encontrado (asumimos que el email es único)
+      return userSnapshot.docs[0].data();
+    } catch (error) {
+      console.error('Error buscando el usuario por email:', error);
+      throw error;
+    }
+  }
+  
   
   
   
