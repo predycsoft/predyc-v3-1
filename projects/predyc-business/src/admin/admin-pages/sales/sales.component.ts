@@ -229,19 +229,19 @@ export class SalesComponent {
 
 
       let productRef = await this.afs.collection<any>(Product.collection).doc(saleValues.plan).ref;
-      saleToSave.productRef = productRef
+      //saleToSave.productRef = productRef
       saleToSave.iDproduct = productRef.id
 
       if(saleValues.enterprise){
-        let enterpriseRef = await this.afs.collection<any>(Enterprise.collection).doc(saleValues.enterprise.id).ref;
-        saleToSave.enterpriseRef = enterpriseRef
+        //let enterpriseRef = await this.afs.collection<any>(Enterprise.collection).doc(saleValues.enterprise.id).ref;
+        //saleToSave.enterpriseRef = enterpriseRef
         saleToSave.enterprise = saleValues.enterprise.name
         saleToSave.idEnterprise = saleValues.enterprise.id
         saleToSave.clientShow = saleToSave.enterprise
       }
       else{
-        let userRef = await this.afs.collection<any>(User.collection).doc(saleValues.user.uid).ref;
-        saleToSave.userRef = userRef
+        //let userRef = await this.afs.collection<any>(User.collection).doc(saleValues.user.uid).ref;
+        //saleToSave.userRef = userRef
         saleToSave.user = saleValues.user.name
         saleToSave.idUser = saleValues.user.uid
         saleToSave.clientShow = saleValues.user.email
@@ -420,8 +420,8 @@ export class SalesComponent {
           // notas: [''],
 
           
-          let user = this.users.find(x=>x.email.toLowerCase().trim() == venta.Cliente.toLowerCase().trim())
-          let empresa =  this.empresas.find(x=>x.name.toLowerCase().trim() == venta.Cliente.toLowerCase().trim())
+          let user = this.users.find(x=>x.email.toLowerCase().trim() == venta.Cliente.toLowerCase().trim()) as User
+          let empresa =  this.empresas.find(x=>x.name.toLowerCase().trim() == venta.Cliente.toLowerCase().trim()) as Enterprise
           console.log('user',user,this.users)
           let userRef = null
           let userName = null
@@ -448,14 +448,14 @@ export class SalesComponent {
           if(user){
             userRef = await this.afs.collection<User>(User.collection).doc(user.uid).ref;
             tipoCliente = 'independiente'
-            userName = user.name
+            userName = user?.name?user?.name:user.displayName
             console.log('userRef',userRef),
             idUser=user.uid
           }
           else if(empresa){
             empresaRef = await this.afs.collection<Enterprise>(Enterprise.collection).doc(empresa.id).ref;
             tipoCliente = 'empresa'
-            enterpriseName = user.name
+            enterpriseName = empresa.name
             console.log('empresaRef',empresaRef)
             idEnterprise = empresa.id
           }
@@ -472,12 +472,12 @@ export class SalesComponent {
             productName:venta.PLAN,
             p21Predyc:venta['P21 / Predyc']?venta['P21 / Predyc']:'Predyc',
             metodoPago:venta['Modo de pago'],
-            userRef:userRef,
+            //userRef:userRef,
             tipoCliente:tipoCliente,
             user:userName,
             idUser:idUser,
             idEnterprise:idEnterprise,
-            enterpriseRef:empresaRef,
+            //enterpriseRef:empresaRef,
             enterprise:enterpriseName
           }
 
