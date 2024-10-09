@@ -472,4 +472,18 @@ export class StudentDetailComponent {
   subSelected(sub) {
     this.editSubscription(sub);
   }
+
+  migrarUsuario(modal){
+    const dialogRef = this.modalService.open(
+      modal,
+      {
+        animation: true,
+        centered: true,
+        //size: 'lg',
+        backdrop: "static",
+        keyboard: false,
+      }
+    );
+
+  }
 }

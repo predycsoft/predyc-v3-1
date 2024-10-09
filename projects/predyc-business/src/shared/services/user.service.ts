@@ -12,6 +12,9 @@ import { ProfileService } from "./profile.service";
 import { CourseByStudent } from "projects/shared/models/course-by-student.model";
 import { Curso } from "projects/shared/models/course.model";
 import { DepartmentService } from "./department.service";
+import { Enterprise } from "shared";
+import * as XLSX from 'xlsx-js-style';
+
 @Injectable({
   providedIn: "root",
 })
@@ -48,6 +51,7 @@ export class UserService {
     this.enterpriseService.enterpriseLoaded$.subscribe((enterpriseIsLoaded) => {
       if (enterpriseIsLoaded) {
         this.getUsers();
+        //this.getUsersWithEnterprise()
       }
     });
   }
@@ -1086,4 +1090,221 @@ export class UserService {
       .doc(userId)
       .set({ canEnrollParticularCourses: value }, { merge: true });
   }
+
+  async migrateUser(idUserOld: string, idUserNew: string): Promise<void> {
+    // Crear un batch para realizar todas las operaciones de manera atómica
+    const batch = this.afs.firestore.batch();
+  
+    try {
+      // Obtener referencias de los documentos de los usuarios antiguo y nuevo
+      const oldUserRef = this.afs.collection(User.collection).doc(idUserOld).ref;
+      const newUserRef = this.afs.collection(User.collection).doc(idUserNew).ref;
+  
+      // Obtener datos de los usuarios antiguos y nuevos
+      const oldUserSnapshot = await oldUserRef.get();
+      const newUserSnapshot = await newUserRef.get();
+  
+      // Verificar si ambos usuarios existen
+      if (!oldUserSnapshot.exists) {
+        throw new Error(`El usuario con ID ${idUserOld} no existe.`);
+      }
+      
+      if (!newUserSnapshot.exists) {
+        throw new Error(`El usuario con ID ${idUserNew} no existe.`);
+      }
+  
+      // Comenzamos a migrar colecciones y datos. Aquí puedes ir agregando lógica por colección.
+  
+      console.log('Referencias obtenidas con éxito. Iniciando migración de datos...');
+      const newUserData = newUserSnapshot.data() as User;
+
+
+      // Buscar todos los documentos en la colección 'coursesActivityByStudent' que tienen la referencia del usuario viejo
+      const coursesActivitySnapshot = await this.afs.collection('coursesActivityByStudent', ref => ref.where('userRef', '==', oldUserRef)).get().toPromise();
+      // Iterar sobre los documentos y preparar los cambios para el batch
+      coursesActivitySnapshot.forEach(doc => {
+        // Actualizar el campo userRef con la nueva referencia
+        batch.update(doc.ref, { userRef: newUserRef });
+      });
+
+
+      // Buscar todos los documentos en la colección 'coursesByStudent' que tienen la referencia del usuario viejo
+      const coursesByStudentSnapshot = await this.afs.collection('coursesByStudent', ref => ref.where('userRef', '==', oldUserRef)).get().toPromise();
+      // Iterar sobre los documentos y preparar los cambios para el batch
+      coursesByStudentSnapshot.forEach(doc => {
+        // Actualizar el campo userRef con la nueva referencia
+        batch.update(doc.ref, { userRef: newUserRef,isExtraCourse:true,dateStartPlan:null,dateEndPlan:null });
+      });
+
+
+      // Buscar todos los documentos en la colección 'classesByStudent' que tienen la referencia del usuario viejo
+      const classesByStudentSnapshot = await this.afs.collection('classesByStudent', ref => ref.where('userRef', '==', oldUserRef)).get().toPromise();
+      // Iterar sobre los documentos y preparar los cambios para el batch
+      classesByStudentSnapshot.forEach(doc => {
+        // Actualizar el campo userRef con la nueva referencia
+        batch.update(doc.ref, { userRef: newUserRef});
+      });
+      
+      // Buscar todos los documentos en la colección 'coursesTestsByStudent' que tienen la referencia del usuario viejo
+      const coursesTestsByStudentSnapshot = await this.afs.collection('coursesTestsByStudent', ref => ref.where('userRef', '==', oldUserRef)).get().toPromise();
+      // Iterar sobre los documentos y preparar los cambios para el batch
+      coursesTestsByStudentSnapshot.forEach(doc => {
+        // Actualizar el campo userRef con la nueva referencia
+        batch.update(doc.ref, { userRef: newUserRef });
+      });
+
+      // Buscar todos los documentos en la colección 'cursosLiveValoraciones' que tienen la referencia del usuario viejo
+      const cursosLiveValoracionesSnapshot = await this.afs.collection('cursosLiveValoraciones', ref => ref.where('userRef', '==', oldUserRef)).get().toPromise();
+      // Iterar sobre los documentos y preparar los cambios para el batch
+      cursosLiveValoracionesSnapshot.forEach(doc => {
+        // Actualizar el campo userRef con la nueva referencia
+        batch.update(doc.ref, { userRef: newUserRef });
+      });
+
+      // Buscar todos los documentos en la colección 'cursosValoraciones' que tienen la referencia del usuario viejo
+      const cursosValoracionesSnapshot = await this.afs.collection('cursosValoraciones', ref => ref.where('userRef', '==', oldUserRef)).get().toPromise();
+      // Iterar sobre los documentos y preparar los cambios para el batch
+      cursosValoracionesSnapshot.forEach(doc => {
+        // Actualizar el campo userRef con la nueva referencia
+        batch.update(doc.ref, { userRef: newUserRef });
+      });
+
+      // Buscar todos los documentos en la colección 'diplomadoByStudent' que tienen la referencia del usuario viejo
+      const diplomadoByStudentSnapshot = await this.afs.collection('diplomadoByStudent', ref => ref.where('userRef', '==', oldUserRef)).get().toPromise();
+      // Iterar sobre los documentos y preparar los cambios para el batch
+      diplomadoByStudentSnapshot.forEach(doc => {
+        // Actualizar el campo userRef con la nueva referencia
+        batch.update(doc.ref, { userRef: newUserRef });
+      });
+
+      // Buscar todos los documentos en la colección 'live-course-by-student' que tienen la referencia del usuario viejo
+      const livecoursebystudentSnapshot = await this.afs.collection('live-course-by-student', ref => ref.where('userRef', '==', oldUserRef)).get().toPromise();
+      // Iterar sobre los documentos y preparar los cambios para el batch
+      livecoursebystudentSnapshot.forEach(doc => {
+        // Actualizar el campo userRef con la nueva referencia
+        batch.update(doc.ref, { userRef: newUserRef });
+      });
+
+      // Buscar todos los documentos en la colección 'live-diplomado-by-student' que tienen la referencia del usuario viejo
+      const livediplomadobystudent = await this.afs.collection('live-diplomado-by-student', ref => ref.where('userRef', '==', oldUserRef)).get().toPromise();
+      // Iterar sobre los documentos y preparar los cambios para el batch
+      livediplomadobystudent.forEach(doc => {
+        // Actualizar el campo userRef con la nueva referencia
+        batch.update(doc.ref, { userRef: newUserRef });
+      });
+
+
+      // Buscar todos los documentos en la colección 'notification' que tienen la referencia del usuario viejo
+      const notificationSnapshot = await this.afs.collection('notification', ref => ref.where('userRef', '==', oldUserRef)).get().toPromise();
+      // Iterar sobre los documentos y preparar los cambios para el batch
+      notificationSnapshot.forEach(doc => {
+        // Actualizar el campo userRef con la nueva referencia
+        batch.update(doc.ref, { userRef: newUserRef });
+      });
+
+
+      // Buscar todos los documentos en la colección 'profileTestsByStudent' que tienen la referencia del usuario viejo
+      const profileTestsByStudentSnapshot = await this.afs.collection('profileTestsByStudent', ref => ref.where('userRef', '==', oldUserRef)).get().toPromise();
+      // Iterar sobre los documentos y preparar los cambios para el batch
+      profileTestsByStudentSnapshot.forEach(doc => {
+        // Actualizar el campo userRef con la nueva referencia
+        batch.update(doc.ref, { userRef: newUserRef });
+      });
+
+
+      // Buscar todos los documentos en la colección 'profileTestsByStudentProgress' que tienen la referencia del usuario viejo
+      const profileTestsByStudentProgressSnapshot = await this.afs.collection('profileTestsByStudentProgress', ref => ref.where('userRef', '==', oldUserRef)).get().toPromise();
+      // Iterar sobre los documentos y preparar los cambios para el batch
+      profileTestsByStudentProgressSnapshot.forEach(doc => {
+        // Actualizar el campo userRef con la nueva referencia
+        batch.update(doc.ref, { userRef: newUserRef });
+      });
+
+      // Buscar todos los documentos en la colección 'question' que tienen la referencia del usuario viejo
+      const questionSnapshot = await this.afs.collection('question', ref => ref.where('userRef', '==', oldUserRef)).get().toPromise();
+      // Iterar sobre los documentos y preparar los cambios para el batch
+      questionSnapshot.forEach(doc => {
+        // Actualizar el campo userRef con la nueva referencia
+        batch.update(doc.ref, { userRef: newUserRef });
+      });
+      const newUserEmail = newUserData?.email;
+      const usuarioNombre = newUserData?.name;
+
+      // Buscar todos los documentos en la colección 'userCertificate' que tienen la referencia del usuario viejo
+      const userCertificateSnapshot = await this.afs.collection('userCertificate', ref => ref.where('usuarioId', '==', idUserOld)).get().toPromise();
+      // Iterar sobre los documentos y preparar los cambios para el batch
+      userCertificateSnapshot.forEach(doc => {
+        // Actualizar el campo userRef con la nueva referencia
+        batch.update(doc.ref, { usuarioId: idUserNew, usuarioEmail: newUserEmail,usuarioNombre:usuarioNombre });
+      });
+  
+      // Después de añadir todas las operaciones al batch, lo ejecutamos
+      await batch.commit();
+  
+      console.log('Migración completada con éxito.');
+    } catch (error) {
+      console.error('Error al migrar usuarios:', error);
+      throw error;
+    }
+  }
+
+  async getUsersWithEnterprise(): Promise<any[]> {
+    try {
+      // Paso 1: Obtener todos los usuarios que tengan el campo enterprise (un DocumentReference)
+      const usersSnapshot = await this.afs.collection(User.collection, ref => ref.where('enterprise', '!=', null)).get().toPromise();
+      const users = usersSnapshot.docs.map(doc => doc.data() as User);
+    
+      // Paso 2: Obtener todas las empresas
+      const enterprisesSnapshot = await this.afs.collection(Enterprise.collection).get().toPromise();
+      const enterprises = enterprisesSnapshot.docs.map(doc => doc.data() as Enterprise);
+    
+      // Paso 3: Asignar la empresa a cada usuario, y eliminar aquellos que no tienen empresa
+      const usersWithEnterprise = users.filter(user => {
+        // Buscar la empresa correspondiente usando el id del enterprise en el usuario
+        const userEnterprise = enterprises.find(enterprise => enterprise.id === user.enterprise.id);
+        
+        // Asignar la empresa al usuario si se encuentra, si no, lo filtramos fuera
+        if (userEnterprise) {
+          user['enterpriseData'] = userEnterprise;
+          return true; // Mantener el usuario en la lista
+        }
+        return false; // Filtrar el usuario si no tiene empresa
+      });
+      let usersFixed = []
+      usersWithEnterprise.forEach(user => {
+        let userFixed = {
+          email:user.email,
+          nombre:user.name,
+          empresa:user.enterpriseData.name,
+        }
+        usersFixed.push(userFixed)
+      });
+      
+      console.log('usersWithEnterprise',usersFixed)
+
+
+      // Crear la hoja de cálculo con los datos convertidos
+        const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(usersFixed);
+      
+        // Crear un libro de trabajo (workbook)
+        const workbook: XLSX.WorkBook = {
+          Sheets: { 'data': worksheet },
+          SheetNames: ['data']
+        };
+      
+        // Descargar el archivo Excel
+        XLSX.writeFile(workbook, `usuariosEmpresas.xlsx`);
+      
+
+      return usersWithEnterprise; // Devolver los usuarios con la empresa asignada
+    } catch (error) {
+      console.error('Error obteniendo usuarios con empresa:', error);
+      throw error;
+    }
+  }
+  
+  
+  
+
 }
+

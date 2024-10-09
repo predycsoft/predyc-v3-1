@@ -1,5 +1,4 @@
-<app-navigate-back class="ft600 ft16 gray-10">Estudiantes</app-navigate-back
->
+<app-navigate-back class="ft600 ft16 gray-10">Estudiantes</app-navigate-back>
 <div
   class="fw pdt20 pdl20 pdr30 backWhite"
   fxLayout="row"
@@ -17,11 +16,12 @@
   <div class="fw" fxLayout="column" *ngIf="user">
     <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="1rem">
       <span class="ft24 gray-10">{{ user.displayName | titlecase }}</span>
-      <span (click)="fixClassStudentsTime()" class="ft11 backGray4 radius20 gray-8 pdr05 pdl05">ID: {{ user.uid }}</span>
-      <span (click)="fixClassStudentsTime()" class="ft11 backGray4 radius20 gray-8 pdr05 pdl05">Rol: {{ user.role }}</span>
+      <span class="ft11 backGray4 radius20 gray-8 pdr05 pdl05">ID: {{ user.uid }}</span>
+      <span class="ft11 backGray4 radius20 gray-8 pdr05 pdl05">Rol: {{ user.role }}</span>
+      <span (click)="migrarUsuario('')" class="ft11 backGray4 radius20 gray-8 pdr05 pdl05 cursorPointer no-select">Migrar Usuario</span>
     </div>
     <div fxLayout="row" fxLayoutGap="1.5rem">
-      <span class="ft11 gray-8">Registrado el {{ user.createdAt | date : "dd/MM/yyyy" }}</span>
+      <!-- <span class="ft11 gray-8">Registrado el {{ user.createdAt | date : "dd/MM/yyyy" }}</span> -->
       <span class="ft11 gray-8">{{ user.email }}</span>
       <!-- <a
         [href]="'https://wa.me/' + user.phoneNumber?.split('-').join('')"
