@@ -473,13 +473,37 @@ export class UserService {
         name: newUser.name,
       })
     );
-    const dataToSave =
-      typeof newUser.toJson === "function" ? newUser.toJson() : newUser;
+    newUser.uid = uid;
 
-    await this.afs
-      .collection(User.collection)
-      .doc(uid)
-      .set({ ...dataToSave, uid: uid });
+    let mailchimpTag = 'Empresa'
+
+    const dataToSave = typeof newUser.toJson === "function" ? newUser.toJson() : newUser;
+
+    if (dataToSave.enterprise){
+      dataToSave['idEnterprise'] = dataToSave.enterprise.id
+      dataToSave.enterprise = null
+      mailchimpTag  = 'Empresa'
+    }
+    else{
+      mailchimpTag  = 'login'
+    }
+
+    if (dataToSave.profile){
+      dataToSave['idProfile'] = dataToSave.profile.id
+      dataToSave.profile = null
+    }
+
+    // await this.afs
+    //   .collection(User.collection)
+    //   .doc(uid)
+    //   .set({ ...dataToSave, uid: uid });
+    
+    console.log('dataToSaveUser',dataToSave)
+    await firstValueFrom(this.fireFunctions.httpsCallable("createUserDocument")({
+      userDataToSave: dataToSave,
+      mailchimpTag:mailchimpTag
+    }))
+
     newUser.uid = uid;
     if (newUser.profile) {
       const userRef = this.getUserRefById(uid);
