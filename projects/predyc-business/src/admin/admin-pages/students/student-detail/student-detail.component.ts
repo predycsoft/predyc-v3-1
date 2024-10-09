@@ -504,7 +504,7 @@ export class StudentDetailComponent {
     }
   
     try {
-      const user = await this.userService.getUserByEmail(this.mailUserSearch);
+      const user = await this.userService.getUserByEmail(this.mailUserSearch.toLowerCase());
       
       if (user) {
         Swal.fire({
