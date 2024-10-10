@@ -3836,6 +3836,17 @@ export class CreateCourseComponent {
     return modalRef;
   }
 
+
+  abrirEnVimeo(clase){
+    let vimeoUrl = `https://vimeo.com/manage/videos/${clase.vimeoId1}`;
+
+    if(clase.vimeoId2){
+      vimeoUrl+='/'+clase.vimeoId2
+    }
+
+    window.open(vimeoUrl, '_blank');
+  }
+
   confirmarTitulo(modulo: any) {
     modulo["editarTitulo"] = false;
     modulo.titulo = modulo["tituloTMP"];

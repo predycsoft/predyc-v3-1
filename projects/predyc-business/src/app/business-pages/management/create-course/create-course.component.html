@@ -424,6 +424,10 @@
                                                                                                             <img [src]="icon.playOutline" class="h16px pdr05" alt="">
                                                                                                             Reproducir video
                                                                                                         </button>
+                                                                                                        <button  *ngIf="user.isSystemUser"  (click)="abrirEnVimeo(clase)" class="grayButton pd03 radius4 ft12 h28px mgr10 w130px" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                                                                            <img [src]="icon.send" class="h16px pdr05" alt="">
+                                                                                                            Abrir en Vimeo
+                                                                                                        </button>
                                                                                                     </div>
                                                                                                 </ng-container>
 
