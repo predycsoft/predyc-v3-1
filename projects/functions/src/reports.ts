@@ -47,7 +47,7 @@ const styleMail = `
 </style>`;
 
 
-export const generateReportsAdminAllEnterprisesSchedule = functions.pubsub.schedule('0 6 * * 1,4').onRun(async (context) => { // aun sin deploy
+export const generateReportsAdminAllEnterprisesSchedule = functions.pubsub.schedule('0 4 * * 1,4').onRun(async (context) => { // aun sin deploy
   try {
     await generateReportsAdminAllEnterprises();
   } catch (error: any) {
