@@ -12,8 +12,8 @@ import { ProfileService } from "./profile.service";
 import { CourseByStudent } from "projects/shared/models/course-by-student.model";
 import { Curso } from "projects/shared/models/course.model";
 import { DepartmentService } from "./department.service";
-import { Enterprise } from "shared";
 import * as XLSX from 'xlsx-js-style';
+import { Enterprise } from "projects/shared/models/enterprise.model";
 
 @Injectable({
   providedIn: "root",

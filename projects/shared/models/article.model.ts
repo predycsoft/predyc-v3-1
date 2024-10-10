@@ -6,6 +6,7 @@ import { Curso } from "./course.model"
 export interface ArticleJson {
     authorRef: DocumentReference<Author>
     isDraft: boolean
+    isFromPredyc: boolean
     categoriesRef: DocumentReference<ArticleCategory>[]
     createdAt: any
     id: string
@@ -33,11 +34,12 @@ export class Article {
     constructor(
         public authorRef: DocumentReference<Author>,
         public isDraft: boolean,
+        public isFromPredyc: boolean,
         public categoriesRef: DocumentReference<ArticleCategory>[],
         public createdAt: any,
         public id: string,
         public metaDescription: string,
-        public keyWords:string,
+        public keyWords: string,
         public photoUrl: string,
         public pillarsRef: DocumentReference<Category>[],
         public slug: string,
@@ -49,13 +51,13 @@ export class Article {
         public orderNumber: number,
         public coursesRef: DocumentReference<Curso>[],
         public relatedArticlesRef: DocumentReference<Article>[],
-
     ) {}
 
     public static fromJson(articleJson: ArticleJson): Article {
         return new Article(
             articleJson.authorRef,
             articleJson.isDraft,
+            articleJson.isFromPredyc,
             articleJson.categoriesRef,
             articleJson.createdAt,
             articleJson.id,
@@ -79,11 +81,12 @@ export class Article {
         return {
             authorRef: this.authorRef,
             isDraft: this.isDraft,
+            isFromPredyc: this.isFromPredyc,
             categoriesRef: this.categoriesRef,
             createdAt: this.createdAt,
             id: this.id,
             metaDescription: this.metaDescription,
-            keyWords:this.keyWords,
+            keyWords: this.keyWords,
             photoUrl: this.photoUrl,
             pillarsRef: this.pillarsRef,
             slug: this.slug,

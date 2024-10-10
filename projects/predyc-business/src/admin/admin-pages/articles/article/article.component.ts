@@ -205,6 +205,7 @@ export class ArticleComponent {
   metaDescription = ""
   keyWords = ""
   isDraft = false
+  isFromPredyc = true;
   orderNumber = 1
   prevOrderNumber: number | null = null
 
@@ -350,6 +351,7 @@ export class ArticleComponent {
         this.metaDescription = articleWithTagPillarsAndCoursesData.metaDescription;
         this.keyWords=articleWithTagPillarsAndCoursesData.keyWords
         this.isDraft = articleWithTagPillarsAndCoursesData.isDraft;
+        this.isFromPredyc = articleWithTagPillarsAndCoursesData.isFromPredyc;
         this.orderNumber = articleWithTagPillarsAndCoursesData.orderNumber;
         this.prevOrderNumber = articleWithTagPillarsAndCoursesData.orderNumber;
         this.articleCategories = articleWithTagPillarsAndCoursesData.categories;
@@ -358,7 +360,7 @@ export class ArticleComponent {
         this.articleCourses = articleWithTagPillarsAndCoursesData.courses;
         this.articleRelatedArticles = articleWithTagPillarsAndCoursesData.relatedArticles;
         this.originalContent = structuredClone(articleWithTagPillarsAndCoursesData.data)
-        console.log('originalContent',this.originalContent)
+        // console.log('originalContent',this.originalContent)
       });
   
     } catch (error) {
@@ -666,6 +668,7 @@ export class ArticleComponent {
           metaDescription: this.metaDescription,
           keyWords:this.keyWords,
           isDraft: this.isDraft,
+          isFromPredyc: this.isFromPredyc,
           slug: this.slug,
           updatedAt: new Date(),
           photoUrl: downloadURL,
