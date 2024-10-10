@@ -3,12 +3,12 @@
     <div fxFlex="20%">
         <!-- Espacio vacío a la izquierda para centrar los tabs -->
     </div>
-    <div fxLayout="row" fxLayoutAlign="center center" fxFlex="60%" fxLayoutGap="1rem">
-        <div (click)="tab = 1" [ngClass]="{'active-tab': tab === 1, 'inactive-tab': tab !== 1}" class="tab">Datos</div>
-        <div (click)="tab = 2" [ngClass]="{'active-tab': tab === 2, 'inactive-tab': tab !== 2}" class="tab">Contenido</div>
-    </div>
-    <div fxFlex="20%" class="pdr05" fxLayout="row" fxLayoutAlign="end center" fxLayoutGap=".2rem" style="margin-top: 20px;">
-        <div class="" fxLayout="column" fxLayoutAlign="center start" fxLayoutGap=".2rem">
+    <div fxLayout="row" fxLayoutAlign="space-between center" fxFlex="60%" fxLayoutGap="">
+        <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="1rem" fxFlex="60%">
+            <div (click)="tab = 1" [ngClass]="{'active-tab': tab === 1, 'inactive-tab': tab !== 1}" class="tab fh">Datos</div>
+            <div (click)="tab = 2" [ngClass]="{'active-tab': tab === 2, 'inactive-tab': tab !== 2}" class="tab fh">Contenido</div>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap=".75rem">
             <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="">
                 <span>Borrador:</span>
                 <mat-slide-toggle class="pdl03" color="primary" [(ngModel)]="isDraft"></mat-slide-toggle>
@@ -21,6 +21,8 @@
                 </select>
             </div>
         </div>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="center center" fxFlex="20%">
         <button (click)="save()" class="blueButton">Guardar artículo</button>
     </div>
 </div>
