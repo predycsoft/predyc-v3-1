@@ -22,6 +22,7 @@ import ResizeAction from 'quill-blot-formatter/dist/actions/ResizeAction';
 import ImageSpec from 'quill-blot-formatter/dist/specs/ImageSpec';
 import { CourseService } from "projects/predyc-business/src/shared/services/course.service";
 import { CursoJson } from "projects/shared/models/course.model";
+import { marked } from 'marked';
 
 const Module = Quill.import("core/module");
 const BlockEmbed = Quill.import("blots/block/embed");
@@ -910,6 +911,22 @@ export class ArticleComponent {
     if (this.categorySubscription) this.categorySubscription.unsubscribe()
     if (this.authorSubscription) this.authorSubscription.unsubscribe()
     if (this.pillarsSubscription) this.pillarsSubscription.unsubscribe()
+  }
+
+  importarMD(event: any) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+  
+    reader.onload = () => {
+      // Convertir el contenido del archivo de Markdown a HTML
+      const markdownContent = reader.result as string;
+      const htmlContent = marked(markdownContent);
+  
+      // Insertar el contenido HTML en el editor de Quill
+      this.editor.clipboard.dangerouslyPasteHTML(htmlContent);
+    };
+  
+    reader.readAsText(file);
   }
 
 }
