@@ -22,7 +22,14 @@ export interface ArticleJson {
     updatedAt: any
     orderNumber: number
     coursesRef: DocumentReference<Curso>[]
-    relatedArticlesRef: DocumentReference<Article>[]
+    relatedArticlesRef: DocumentReference<Article>[],
+    cursosDatos:any,
+    categoriesData:any,
+    authorData:any,
+    pillarsData:any,
+    articleRelatedArticlesData:any,
+    articleTagsData:any
+    
 }
 
 export class Article {
@@ -51,6 +58,12 @@ export class Article {
         public orderNumber: number,
         public coursesRef: DocumentReference<Curso>[],
         public relatedArticlesRef: DocumentReference<Article>[],
+        public cursosDatos:any,
+        public categoriesData:any,
+        public authorData:any,
+        public pillarsData:any,
+        public articleRelatedArticlesData:any,
+        public articleTagsData:any
     ) {}
 
     public static fromJson(articleJson: ArticleJson): Article {
@@ -74,6 +87,12 @@ export class Article {
             articleJson.orderNumber,
             articleJson.coursesRef,
             articleJson.relatedArticlesRef,
+            articleJson.cursosDatos,
+            articleJson.categoriesData,
+            articleJson.authorData,
+            articleJson.pillarsData,
+            articleJson.articleRelatedArticlesData,
+            articleJson.articleTagsData
         )
     }
 
@@ -98,6 +117,12 @@ export class Article {
             orderNumber: this.orderNumber,
             coursesRef: this.coursesRef,
             relatedArticlesRef: this.relatedArticlesRef,
+            cursosDatos:this.cursosDatos,
+            categoriesData:this.categoriesData,
+            authorData:this.authorData,
+            pillarsData:this.pillarsData,
+            articleRelatedArticlesData:this.articleRelatedArticlesData,
+            articleTagsData:this.articleTagsData
         }
     }
 }

@@ -30,8 +30,9 @@ export class ArticleService {
     if (!isEditMode) await articleDocRef.set(metadata);
     else {
       // Excluding createdAt from the update
-      const { createdAt, ...dataToUpdate } = metadata;
+      let { createdAt, ...dataToUpdate } = metadata;
       // console.log("dataToUpdate", dataToUpdate)
+      dataToUpdate['dataHTML'] = dataHTML
       await articleDocRef.update(dataToUpdate);
 
     }

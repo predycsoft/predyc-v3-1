@@ -650,11 +650,31 @@ export class ArticleComponent {
         const processedData = await this.processImagesInContent(this.editor.getContents().ops);
         const processedHtml = this.convertDeltaToHtml(processedData);
 
+
+        let cursosDatos = this.articleCourses.map(curso => {
+          return {
+            id:curso.id,
+            duracion:curso.duracion,
+            instructorNombre:curso.instructorNombre,
+            titulo:curso.titulo,
+            imagen_instructor:curso.imagen_instructor,
+            imagen:curso.imagen,
+            customUrl:curso.customUrl
+          }
+        });
+
+        let articleRelatedArticlesData = this.articleRelatedArticles.map(articulo => {
+          return {
+            id:articulo.id,
+            title:articulo.title,
+            authorData:articulo.authorData,
+            photoUrl:articulo.photoUrl,
+          }
+        });
+
         
 
         await this.deleteImages();
-
-
         const dataToSave: ArticleData = {
           authorRef: this.authorService.getAuthorRefById(this.selectedAuthorId),
           categoriesRef: categoriesReferences,
@@ -677,7 +697,15 @@ export class ArticleComponent {
           orderNumber: this.orderNumber,
           coursesRef: coursesReferences,
           relatedArticlesRef: relatedArticlesReferences,
+          //datos planos
+          cursosDatos:cursosDatos,
+          categoriesData:this.articleCategories,
+          authorData:this.authors.find(x=>x.id == this.selectedAuthorId),
+          pillarsData:this.articlePillars,
+          articleRelatedArticlesData:articleRelatedArticlesData,
+          articleTagsData:this.articleTags
         };
+        
         console.log("dataToSave",dataToSave)
         const articleId = await this.articleService.saveArticle(dataToSave, !!this.articleId, this.prevOrderNumber);
         this.alertService.succesAlert("El artículo se ha guardado exitosamente");
