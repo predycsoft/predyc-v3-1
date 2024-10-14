@@ -22,6 +22,7 @@ import ResizeAction from 'quill-blot-formatter/dist/actions/ResizeAction';
 import ImageSpec from 'quill-blot-formatter/dist/specs/ImageSpec';
 import { CourseService } from "projects/predyc-business/src/shared/services/course.service";
 import { CursoJson } from "projects/shared/models/course.model";
+import frontMatter from 'front-matter';
 import { marked } from 'marked';
 
 const Module = Quill.import("core/module");
@@ -918,12 +919,25 @@ export class ArticleComponent {
     const reader = new FileReader();
   
     reader.onload = () => {
-      // Convertir el contenido del archivo de Markdown a HTML
+      // Leer el contenido del archivo .md
       const markdownContent = reader.result as string;
-      const htmlContent = marked(markdownContent);
+      
+      // Analizar el YAML Front Matter
+      const parsed = frontMatter(markdownContent);
   
-      // Insertar el contenido HTML en el editor de Quill
+      // Extraer el contenido de Markdown (sin metadatos)
+      const content = parsed.body;
+  
+      // Obtener el título del YAML
+      const title = parsed.attributes['title'];
+      
+      // Insertar el contenido Markdown convertido a HTML en el editor de Quill
+      const htmlContent = marked(content);
       this.editor.clipboard.dangerouslyPasteHTML(htmlContent);
+  
+      // Asignar el título a un formulario (por ejemplo, un campo de título)
+      //this.formulario.controls['title'].setValue(title);
+      this.title=title
     };
   
     reader.readAsText(file);
