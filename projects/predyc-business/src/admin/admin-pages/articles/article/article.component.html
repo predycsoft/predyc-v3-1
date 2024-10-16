@@ -307,6 +307,12 @@
             </div>
         </div>
     </div>
+    <button (click)="fileInput.click()" class="blueButton gray-1 radius4 ft12 h28px mgt10" fxLayout="row"
+    fxLayoutGap="0.625rem" fxLayoutAlign="center center">
+    <img [src]="icon.arrowUp" class="h16px pdr05 makeWhite" alt="" />
+        Cargar desde MD
+    </button>
+    <input #fileInput type="file" (change)="importarMD($event)" accept=".md" style="display: none;">
     <quill-editor [modules]="modules" [format]="format" (onEditorCreated)="onEditorCreated($event)" class="w-70">
         <div above-quill-editor-toolbar>above</div>
         <div quill-editor-toolbar class="ql-toolbar sticky-toolbar">

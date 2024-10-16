@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { Article, ArticleCategory, ArticleCategoryJson, ArticleJson, ArticleTag, ArticleTagJson } from 'projects/shared/models/article.model';
-import { Observable, combineLatest, map, of } from 'rxjs';
+import { Observable, combineLatest, finalize, map, of } from 'rxjs';
 import { ArticleData } from '../../admin/admin-pages/articles/articles.component';
+import { AngularFireStorage } from "@angular/fire/compat/storage";
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,9 @@ import { ArticleData } from '../../admin/admin-pages/articles/articles.component
 export class ArticleService {
 
   constructor(
-    private afs: AngularFirestore
+    private afs: AngularFirestore,
+    private storage: AngularFireStorage,
+
   ) { }
 
   async saveArticle(articleData: ArticleData, isEditMode: boolean, prevOrderNumber: number): Promise<string> {
@@ -23,28 +26,51 @@ export class ArticleService {
 
     const articleDocRef = this.afs.collection<ArticleJson>(Article.collection).doc(articleId);
   
-    // Exclude "data" and "dataHTML" properties
+    // Excluir "data" y "dataHTML" de los metadatos que se guardarán en Firestore
     const { data, dataHTML, ...metadata } = articleData;
   
-    // Save rest of data
+    // Guardar el resto de los metadatos
     if (!isEditMode) await articleDocRef.set(metadata);
     else {
-      // Excluding createdAt from the update
-      const { createdAt, ...dataToUpdate } = metadata;
-      // console.log("dataToUpdate", dataToUpdate)
-      await articleDocRef.update(dataToUpdate);
+      let { createdAt, ...dataToUpdate } = metadata;
+      
+      // Aquí subimos el archivo HTML a Firebase Storage
+      const filePath = `Articulos/${articleData.slug}.html`; // Definir la ruta en el storage
+      const fileRef = this.storage.ref(filePath);
 
+      // Crear un Blob con el contenido de dataHTML
+      const fileBlob = new Blob([dataHTML], { type: 'text/html' });
+
+      // Subir el archivo a Firebase Storage
+      const task = this.storage.upload(filePath, fileBlob);
+
+      // Esperar a que la subida termine y luego obtener la URL del archivo
+      await new Promise((resolve, reject) => {
+        task.snapshotChanges().pipe(
+          finalize(async () => {
+            try {
+              const fileUrl = await fileRef.getDownloadURL().toPromise();
+              dataToUpdate['dataHTMLUrl'] = fileUrl; // Guardar la URL en lugar de dataHTML
+              dataToUpdate['dataHTML'] = null; // Guardar la URL en lugar de dataHTML
+              await articleDocRef.update(dataToUpdate); // Actualizar el documento con la URL
+              resolve(true);
+            } catch (error) {
+              reject(error);
+            }
+          })
+        ).subscribe();
+      });
     }
 
-    // Save "data" in subcollection
+    // Guardar "data" en una subcolección
     await this.saveChunks(articleId, data);
-    // Save "dataHTML" in subcollection
-    await this.saveChunks(articleId, dataHTML);
-    // Update orderNumber of all articles
-    await this.updateOrderNumbers(articleId, prevOrderNumber) // Check this
-    return articleId
+    // Guardar el "dataHTML" también como subcolección (opcional)
+    //await this.saveChunks(articleId, dataHTML);
+    // Actualizar el número de orden de todos los artículos
+    await this.updateOrderNumbers(articleId, prevOrderNumber); // Verificar esto
+    return articleId;
   }
-
+  
   async saveChunks(articleId: string, content: Object[] | string): Promise<void> {
     const subcollection = typeof content === 'string' ? Article.HTMLSubcollectionName : Article.objectSubcollectionName
     const articleDocRef = this.afs.collection<ArticleJson>(Article.collection).doc(articleId).ref;

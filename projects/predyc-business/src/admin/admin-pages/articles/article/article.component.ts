@@ -22,6 +22,8 @@ import ResizeAction from 'quill-blot-formatter/dist/actions/ResizeAction';
 import ImageSpec from 'quill-blot-formatter/dist/specs/ImageSpec';
 import { CourseService } from "projects/predyc-business/src/shared/services/course.service";
 import { CursoJson } from "projects/shared/models/course.model";
+import frontMatter from 'front-matter';
+import { marked } from 'marked';
 
 const Module = Quill.import("core/module");
 const BlockEmbed = Quill.import("blots/block/embed");
@@ -648,11 +650,31 @@ export class ArticleComponent {
         const processedData = await this.processImagesInContent(this.editor.getContents().ops);
         const processedHtml = this.convertDeltaToHtml(processedData);
 
+
+        let cursosDatos = this.articleCourses.map(curso => {
+          return {
+            id:curso.id,
+            duracion:curso.duracion,
+            instructorNombre:curso.instructorNombre,
+            titulo:curso.titulo,
+            imagen_instructor:curso.imagen_instructor,
+            imagen:curso.imagen,
+            customUrl:curso.customUrl
+          }
+        });
+
+        let articleRelatedArticlesData = this.articleRelatedArticles.map(articulo => {
+          return {
+            id:articulo.id,
+            title:articulo.title,
+            authorData:articulo.authorData,
+            photoUrl:articulo.photoUrl,
+          }
+        });
+
         
 
         await this.deleteImages();
-
-
         const dataToSave: ArticleData = {
           authorRef: this.authorService.getAuthorRefById(this.selectedAuthorId),
           categoriesRef: categoriesReferences,
@@ -675,7 +697,15 @@ export class ArticleComponent {
           orderNumber: this.orderNumber,
           coursesRef: coursesReferences,
           relatedArticlesRef: relatedArticlesReferences,
+          //datos planos
+          cursosDatos:cursosDatos,
+          categoriesData:this.articleCategories,
+          authorData:this.authors.find(x=>x.id == this.selectedAuthorId),
+          pillarsData:this.articlePillars,
+          articleRelatedArticlesData:articleRelatedArticlesData,
+          articleTagsData:this.articleTags
         };
+        
         console.log("dataToSave",dataToSave)
         const articleId = await this.articleService.saveArticle(dataToSave, !!this.articleId, this.prevOrderNumber);
         this.alertService.succesAlert("El artículo se ha guardado exitosamente");
@@ -910,6 +940,35 @@ export class ArticleComponent {
     if (this.categorySubscription) this.categorySubscription.unsubscribe()
     if (this.authorSubscription) this.authorSubscription.unsubscribe()
     if (this.pillarsSubscription) this.pillarsSubscription.unsubscribe()
+  }
+
+  importarMD(event: any) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+  
+    reader.onload = () => {
+      // Leer el contenido del archivo .md
+      const markdownContent = reader.result as string;
+      
+      // Analizar el YAML Front Matter
+      const parsed = frontMatter(markdownContent);
+  
+      // Extraer el contenido de Markdown (sin metadatos)
+      const content = parsed.body;
+  
+      // Obtener el título del YAML
+      const title = parsed.attributes['title'];
+      
+      // Insertar el contenido Markdown convertido a HTML en el editor de Quill
+      const htmlContent = marked(content);
+      this.editor.clipboard.dangerouslyPasteHTML(htmlContent);
+  
+      // Asignar el título a un formulario (por ejemplo, un campo de título)
+      //this.formulario.controls['title'].setValue(title);
+      this.title=title
+    };
+  
+    reader.readAsText(file);
   }
 
 }
