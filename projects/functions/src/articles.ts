@@ -14,6 +14,24 @@ export const getArticlesSlug = functions.https.onRequest(async (req, res) => {
     res.status(200).send(articlesSlug);
 });
 
+export const getPredictivaArticlesSlug = functions.https.onRequest(async (req, res) => {
+  if (req.method !== "GET") throw new Error("Method not allowed");
+  const articlesSlug = (await (db.collection("article")).where('isFromPredyc', '==', false).get()).docs.map((article: any) => {
+    const data = article.data()
+    return data
+  });
+  res.status(200).send(articlesSlug);
+});
+
+export const getPredycArticlesSlug = functions.https.onRequest(async (req, res) => {
+  if (req.method !== "GET") throw new Error("Method not allowed");
+  const articlesSlug = (await (db.collection("article")).where('isFromPredyc', '==', true).get()).docs.map((article: any) => {
+    const data = article.data()
+    return data
+  });
+  res.status(200).send(articlesSlug);
+});
+
 //TESTING SIDEMAP
 const bucket = admin.storage().bucket();
 const app = express();
