@@ -55,6 +55,7 @@ import { DialogPillarsFormComponent } from './admin-pages/pillars/dialog-pillars
 import { ReviewsComponent } from './admin-pages/reviews/reviews.component';
 import { ReviewsListComponent } from './admin-pages/reviews/reviews-list/reviews-list.component';
 import { DialogReviewsComponent } from './admin-pages/reviews/reviews-list/dialog-reviews/dialog-reviews.component';
+import { CoursesP21Component } from "../shared/components/courses-p21/courses-p21.component";
 
 
 @NgModule({
@@ -65,6 +66,7 @@ import { DialogReviewsComponent } from './admin-pages/reviews/reviews-list/dialo
     ProductListComponent,
     InstructorsComponent,
     SalesComponent,
+    CoursesP21Component,
     QuestionsComponent,
     CertificationsComponent,
     DiplomadosComponent,

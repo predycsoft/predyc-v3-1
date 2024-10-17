@@ -102,6 +102,11 @@ export class SideNavComponent {
       icon: "../../assets/iconsUI/courses-1.svg",
     },
     {
+      name: "Cursos P21",
+      link: "/admin/cursos-P21",
+      icon: "../../assets/iconsUI/wikis.svg",
+    },
+    {
       name: "Cursos en vivo",
       link: "/admin/live",
       icon: "../../assets/iconsUI/demo.svg",

@@ -26,6 +26,7 @@ import { ArticlePreviewComponent } from "./admin-pages/articles/article-preview/
 import { DiplomadoLiveFormComponent } from "../shared/components/live-courses/live-courses-diplomados/diplomado-form/diplomado-form.component";
 import { PillarsComponent } from "./admin-pages/pillars/pillars.component";
 import { ReviewsComponent } from "./admin-pages/reviews/reviews.component";
+import { CoursesP21Component } from "../shared/components/courses-p21/courses-p21.component";
 
 export const MAIN_TITLE = "Predyc Admin - ";
 
@@ -50,6 +51,9 @@ const routes: Routes = [
   { path: "diplomados/form/:id", title: MAIN_TITLE + "Editar Diplomado", component: DiplomadoFormComponent },
 
   { path: "courses", title: MAIN_TITLE + "Cursos", component: CoursesComponent },
+
+  { path: "cursos-P21", title: MAIN_TITLE + "Cursos P21", component: CoursesP21Component },
+
 
   { path: "live", title: MAIN_TITLE + "Cursos en vivo", component: LiveCoursesComponent },
   { path: "live/new", title: MAIN_TITLE + "Crear curso en vivo", component: CreateLiveCourseComponent },
