@@ -51,7 +51,7 @@ export class ArticleService {
             try {
               const fileUrl = await fileRef.getDownloadURL().toPromise();
               dataToUpdate['dataHTMLUrl'] = fileUrl; // Guardar la URL en lugar de dataHTML
-              dataToUpdate['dataHTML'] = null; // Guardar la URL en lugar de dataHTML
+              dataToUpdate['dataHTML'] = dataHTML; // Guardar la URL en lugar de dataHTML
               await articleDocRef.update(dataToUpdate); // Actualizar el documento con la URL
               resolve(true);
             } catch (error) {
@@ -65,7 +65,7 @@ export class ArticleService {
     // Guardar "data" en una subcolección
     await this.saveChunks(articleId, data);
     // Guardar el "dataHTML" también como subcolección (opcional)
-    //await this.saveChunks(articleId, dataHTML);
+    await this.saveChunks(articleId, dataHTML);
     // Actualizar el número de orden de todos los artículos
     await this.updateOrderNumbers(articleId, prevOrderNumber); // Verificar esto
     return articleId;
