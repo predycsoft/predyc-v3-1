@@ -490,8 +490,8 @@
                                                                                                 <div fxLayout="row" fxLayoutGap="20px" class="fw pd10" (dragover)="onDragOver($event)" (drop)="onDrop($event,clase.tipo,clase,modulo)">
                                                                                                     <!-- Columna izquierda con el texto "Recursos:" -->
                                                                                                      <!-- Contenedor de la imagen, solo visible si existe la imagen -->
-                                                                                                  <div *ngIf="clase.imagen" fxFlex="15" fxLayout="row" fxLayoutAlign="center center">
-                                                                                                    <img [src]="clase.imagen" alt="img-clase" style="height: 64px; object-fit: contain;">
+                                                                                                  <div *ngIf="clase?.imagen" fxFlex="15" fxLayout="row" fxLayoutAlign="center center">
+                                                                                                    <img [src]="clase?.imagen" alt="img-clase" style="height: 64px; object-fit: contain;">
                                                                                                   </div>
                                                                                                     <div fxFlex="10%" fxLayoutAlign="start start">
                                                                                                         Recursos:
@@ -515,8 +515,8 @@
                                                                                                      class="fw fh no-select" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
                                                                                                   
                                                                                                   <!-- Contenedor de la imagen, solo visible si existe la imagen -->
-                                                                                                  <div *ngIf="clase.imagen" fxFlex="15" fxLayout="row" fxLayoutAlign="center center">
-                                                                                                    <img [src]="clase.imagen" alt="img-clase" style="height: 64px; object-fit: contain;">
+                                                                                                  <div *ngIf="clase?.imagen" fxFlex="15" fxLayout="row" fxLayoutAlign="center center">
+                                                                                                    <img [src]="clase?.imagen" alt="img-clase" style="height: 64px; object-fit: contain;">
                                                                                                   </div>
                                                                                               
                                                                                                   <!-- Contenedor del texto, ajusta el espacio si no hay imagen -->

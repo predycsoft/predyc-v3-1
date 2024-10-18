@@ -1246,7 +1246,7 @@ export class CreateCourseComponent {
             duracion:clase.duracion,
             tipo:clase.tipo,
             titulo:clase.titulo,
-            imagen:clase.imagen?clase.imagen:null
+            imagen:clase?.imagen?clase.imagen:null
           }
           clases.push(claseLocal)
         });
