@@ -125,6 +125,15 @@
                                             Debe indicar la descripción del curso
                                         </div>
                                     </div>
+                                    <div class="ft12 form-group pdt10">
+                                        <label>Enlace Stripe</label>
+                                        <input formControlName="stripeUrl"
+                                            [class.is-invalid]="formNewCourse.controls['precioOferta'].errors && showErrorCurso"
+                                            type="text" class="form-control customInput2">
+                                        <div class="invalid-feedback" *ngIf="formNewCourse.controls['precioOferta'].errors && showErrorCurso"> 
+                                            Debe indicar la descripción del curso
+                                        </div>
+                                    </div>
                                     <div *ngIf="user.isSystemUser" class="ft12 form-group pdt10">
                                         <label>Meta descripción del curso</label>
                                         <textarea
@@ -481,14 +490,14 @@
                                                                                                 <div fxLayout="row" fxLayoutGap="20px" class="fw pd10" (dragover)="onDragOver($event)" (drop)="onDrop($event,clase.tipo,clase,modulo)">
                                                                                                     <!-- Columna izquierda con el texto "Recursos:" -->
                                                                                                      <!-- Contenedor de la imagen, solo visible si existe la imagen -->
-                                                                                                  <div *ngIf="clase.imagen" fxFlex="10" fxLayout="row" fxLayoutAlign="center center">
+                                                                                                  <div *ngIf="clase.imagen" fxFlex="15" fxLayout="row" fxLayoutAlign="center center">
                                                                                                     <img [src]="clase.imagen" alt="img-clase" style="height: 64px; object-fit: contain;">
                                                                                                   </div>
                                                                                                     <div fxFlex="10%" fxLayoutAlign="start start">
                                                                                                         Recursos:
                                                                                                     </div>
                                                                                                     <!-- Columna derecha con la lista de archivos -->
-                                                                                                    <div [fxFlex]="clase.imagen ? 80 : 90"  fxLayoutAlign="start start">
+                                                                                                    <div [fxFlex]="clase.imagen ? 75 : 90"  fxLayoutAlign="start start">
                                                                                                         <ol style="padding-left: 10px; margin: 0;">
                                                                                                             <ng-container *ngFor="let archivo of clase.archivos; let i = index">
                                                                                                                 <!-- Lista los archivos comenzando desde el segundo elemento (índice 1) -->
@@ -506,12 +515,12 @@
                                                                                                      class="fw fh no-select" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
                                                                                                   
                                                                                                   <!-- Contenedor de la imagen, solo visible si existe la imagen -->
-                                                                                                  <div *ngIf="clase.imagen" fxFlex="10" fxLayout="row" fxLayoutAlign="center center">
+                                                                                                  <div *ngIf="clase.imagen" fxFlex="15" fxLayout="row" fxLayoutAlign="center center">
                                                                                                     <img [src]="clase.imagen" alt="img-clase" style="height: 64px; object-fit: contain;">
                                                                                                   </div>
                                                                                               
                                                                                                   <!-- Contenedor del texto, ajusta el espacio si no hay imagen -->
-                                                                                                  <div [fxFlex]="clase.imagen ? 90 : 100" fxLayout="row" fxLayoutAlign="center center">
+                                                                                                  <div [fxFlex]="clase.imagen ? 85 : 100" fxLayout="row" fxLayoutAlign="center center">
                                                                                                     <span>Arrastre el archivo aquí para agregarlo.</span>
                                                                                                   </div>
                                                                                                 </div>

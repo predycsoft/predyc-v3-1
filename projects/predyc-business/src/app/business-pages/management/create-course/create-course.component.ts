@@ -514,6 +514,7 @@ export class CreateCourseComponent {
           customUrl: new FormControl(""),
           precio: new FormControl(""),
           precioOferta: new FormControl(""),
+          stripeUrl: new FormControl(""),
 
         });
         this.initSkills();
@@ -575,6 +576,8 @@ export class CreateCourseComponent {
             customUrl: new FormControl(customUrl),
             precio: new FormControl(curso.precio),
             precioOferta: new FormControl(curso.precioOferta),
+            stripeUrl: new FormControl(curso.stripeUrl),
+
           });
           curso?.objetivos?.forEach(objetivo => this.addObjetivo(objetivo));
 
@@ -2280,7 +2283,7 @@ export class CreateCourseComponent {
 
           console.log('dimeciones',width,height)
 
-          if(width == 192 && height == 180){
+          if(width == 192 && height == 108){
             //this.uploadingImgCurso = true;
             let fileBaseName = file.name.split(".").slice(0, -1).join(".");
             let fileExtension = file.name.split(".").pop();
@@ -2330,7 +2333,7 @@ export class CreateCourseComponent {
           else{
             Swal.fire({
               title: "Aviso!",
-              text: `La imagen debe tener dimensiones 192 * 180`,
+              text: `La imagen debe tener dimensiones 192 * 108`,
               icon: "warning",
               confirmButtonColor: "var(--blue-5)",
             });

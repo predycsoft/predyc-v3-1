@@ -39,6 +39,7 @@ export interface CursoJson {
   precio: number
   precioOferta: number
   modules:any
+  stripeUrl:string
 }
 
 export class Curso {
@@ -81,6 +82,7 @@ export class Curso {
   precio: number = null
   precioOferta: number = null
   modules:any
+  stripeUrl:string = ""
 
 
   public toJson(): CursoJson {
@@ -118,7 +120,9 @@ export class Curso {
       reviewsQty: this.reviewsQty,
       precio: this.precio,
       precioOferta: this.precioOferta,
-      modules: this.modules
+      modules: this.modules,
+      stripeUrl:this.stripeUrl
+
     }
   }
 }
