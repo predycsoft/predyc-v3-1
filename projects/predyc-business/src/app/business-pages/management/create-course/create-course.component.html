@@ -107,7 +107,7 @@
                                             Debe indicar la descripción del curso
                                         </div>
                                     </div>
-                                    <div class="ft12 form-group pdt10">
+                                    <div  *ngIf="user.isSystemUser"  class="ft12 form-group pdt10">
                                         <label>Precio</label>
                                         <input formControlName="precio"
                                             [class.is-invalid]="formNewCourse.controls['precio'].errors && showErrorCurso"
@@ -116,7 +116,7 @@
                                             Debe indicar la descripción del curso
                                         </div>
                                     </div>
-                                    <div class="ft12 form-group pdt10">
+                                    <div  *ngIf="user.isSystemUser"  class="ft12 form-group pdt10">
                                         <label>Precio con descuento</label>
                                         <input formControlName="precioOferta"
                                             [class.is-invalid]="formNewCourse.controls['precioOferta'].errors && showErrorCurso"
@@ -125,7 +125,7 @@
                                             Debe indicar la descripción del curso
                                         </div>
                                     </div>
-                                    <div class="ft12 form-group pdt10">
+                                    <div  *ngIf="user.isSystemUser"  class="ft12 form-group pdt10">
                                         <label>Enlace Stripe</label>
                                         <input formControlName="stripeUrl"
                                             [class.is-invalid]="formNewCourse.controls['precioOferta'].errors && showErrorCurso"
