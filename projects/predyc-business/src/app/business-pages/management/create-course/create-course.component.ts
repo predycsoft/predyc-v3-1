@@ -512,6 +512,9 @@ export class CreateCourseComponent {
           proximamente: new FormControl(false),
           isFree: new FormControl(false),
           customUrl: new FormControl(""),
+          precio: new FormControl(""),
+          precioOferta: new FormControl(""),
+
         });
         this.initSkills();
       }, 2000);
@@ -570,6 +573,8 @@ export class CreateCourseComponent {
             proximamente: new FormControl(curso.proximamente),
             isFree: new FormControl(curso.isFree),
             customUrl: new FormControl(customUrl),
+            precio: new FormControl(curso.precio),
+            precioOferta: new FormControl(curso.precioOferta),
           });
           curso?.objetivos?.forEach(objetivo => this.addObjetivo(objetivo));
 
@@ -1109,6 +1114,7 @@ export class CreateCourseComponent {
                 claseLocal.titulo = clase.titulo;
                 claseLocal.instructorRef = instructorRef ? instructorRef : null
                 claseLocal.vigente = clase.vigente;
+                claseLocal.imagen = clase?.imagen ? clase.imagen:null
                 if (this.user.isSystemUser) {
                   claseLocal.enterpriseRef = null;
                 } else {
@@ -1224,8 +1230,34 @@ export class CreateCourseComponent {
       let duracion = this.getDurationModuleCourse();
       this.curso.duracion = duracion;
 
+      let modulosToSave = []
+
+      console.log('modulosToSave',this.modulos)
+
+      this.modulos.forEach(modulo => {
+        let clases = []
+        modulo['clases'].forEach(clase => {
+          console.log('clasesToSave',clase)
+          let claseLocal = {
+            id:clase.id,
+            duracion:clase.duracion,
+            tipo:clase.tipo,
+            titulo:clase.titulo
+          }
+          clases.push(claseLocal)
+        });
+
+        let moduloLocal ={
+          numero:modulo.numero,
+          clases:clases,
+          titulo:modulo.titulo
+        }
+        modulosToSave.push(moduloLocal)
+      });
+
       await this.afs.collection("course").doc(this.curso.id).update({
         duracion: duracion,
+        modulos:modulosToSave
       });
 
       Swal.close();
@@ -2216,6 +2248,99 @@ export class CreateCourseComponent {
 
   viewFileActivity = false;
   viewVideoActivity = false;
+
+
+
+  async onFileSelectedImageClass(event, clase) {
+    if (!event.target.files[0] || event.target.files[0].length === 0) {
+      Swal.fire({
+        title: "Aviso!",
+        text: `Debe seleccionar una imagen`,
+        icon: "warning",
+        confirmButtonColor: "var(--blue-5)",
+      });
+      return;
+    }
+    const file = event.target.files[0];
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = async (_event) => {
+      //this.deleteQuestionImage(pregunta);
+
+      if (file) {
+
+        const image = new Image();
+        image.src = reader.result as string;
+
+        image.onload = () => {
+
+          const width = image.width;
+          const height = image.height;
+
+          console.log('dimeciones',width,height)
+
+          if(width == 192 && height == 180){
+            //this.uploadingImgCurso = true;
+            let fileBaseName = file.name.split(".").slice(0, -1).join(".");
+            let fileExtension = file.name.split(".").pop();
+
+            let nombre = fileBaseName + "." + fileExtension;
+            this.fileNameImgCurso = nombre;
+            //console.log(nombre)
+
+            // Reorganizar el nombre para que el timestamp esté antes de la extensión
+            let newName = `${fileBaseName}-${Date.now().toString()}.${fileExtension}`;
+
+            let nombreCurso = this.formNewCourse.get("titulo").value ? this.formNewCourse.get("titulo").value : "Temporal";
+            let filePath;
+
+            filePath = `Clientes/${this.empresa.name}/Cursos/${nombreCurso}/Imagen/${clase.titulo}/${newName}`;
+
+            const task = this.storage.upload(filePath, file);
+
+            // Crea una referencia a la ruta del archivo.
+            const fileRef = this.storage.ref(filePath);
+
+            // Obtener el progreso como un Observable
+            this.uploadProgress$ = task.percentageChanges();
+
+            // Suscríbete al Observable para actualizar tu componente de barra de progreso
+            this.uploadProgress$.subscribe((progress) => {
+              //this.uploading_file_progressImgCurso = Math.floor(progress);
+            });
+
+            // Observa el progreso de la carga del archivo y haz algo cuando se complete.
+            task
+              .snapshotChanges()
+              .pipe(
+                finalize(() => {
+                  // Obtén la URL de descarga del archivo.
+                  fileRef.getDownloadURL().subscribe((url) => {
+                    this.uploadingImgCurso = false;
+                    clase.imagen = url
+                    clase["edited"] = true;
+                    //this.formNewCourse.get("imagen").patchValue(url);
+                    //this.imagenesCurso.unshift(url);
+                  });
+                })
+              )
+              .subscribe();
+          }
+          else{
+            Swal.fire({
+              title: "Aviso!",
+              text: `La imagen debe tener dimensiones 192 * 180`,
+              icon: "warning",
+              confirmButtonColor: "var(--blue-5)",
+            });
+          }
+         
+        }
+      }
+    };
+  }
+
 
   async onFileSelected(event, clase, local = false, modulo, adicional = false, tipo = null) {
     clase["uploading"] = true;

@@ -36,6 +36,9 @@ export interface CursoJson {
   isFree: boolean
   reviewsScore: number
   reviewsQty: number
+  precio: number
+  precioOferta: number
+  modules:any
 }
 
 export class Curso {
@@ -75,6 +78,9 @@ export class Curso {
   isFree: boolean = false
   reviewsScore: number = 0
   reviewsQty: number = 0
+  precio: number = null
+  precioOferta: number = null
+  modules:any
 
 
   public toJson(): CursoJson {
@@ -110,6 +116,9 @@ export class Curso {
       isFree: this.isFree,
       reviewsScore: this.reviewsScore,
       reviewsQty: this.reviewsQty,
+      precio: this.precio,
+      precioOferta: this.precioOferta,
+      modules: this.modules
     }
   }
 }

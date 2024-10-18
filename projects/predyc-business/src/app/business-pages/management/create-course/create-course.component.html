@@ -107,6 +107,24 @@
                                             Debe indicar la descripción del curso
                                         </div>
                                     </div>
+                                    <div class="ft12 form-group pdt10">
+                                        <label>Precio</label>
+                                        <input formControlName="precio"
+                                            [class.is-invalid]="formNewCourse.controls['precio'].errors && showErrorCurso"
+                                            type="number" min="1" class="form-control customInput2">
+                                        <div class="invalid-feedback" *ngIf="formNewCourse.controls['precio'].errors && showErrorCurso"> 
+                                            Debe indicar la descripción del curso
+                                        </div>
+                                    </div>
+                                    <div class="ft12 form-group pdt10">
+                                        <label>Precio con descuento</label>
+                                        <input formControlName="precioOferta"
+                                            [class.is-invalid]="formNewCourse.controls['precioOferta'].errors && showErrorCurso"
+                                            type="number" min="1" class="form-control customInput2">
+                                        <div class="invalid-feedback" *ngIf="formNewCourse.controls['precioOferta'].errors && showErrorCurso"> 
+                                            Debe indicar la descripción del curso
+                                        </div>
+                                    </div>
                                     <div *ngIf="user.isSystemUser" class="ft12 form-group pdt10">
                                         <label>Meta descripción del curso</label>
                                         <textarea
@@ -455,17 +473,22 @@
                                                                                         </mat-panel-title>
                                                                                     </mat-expansion-panel-header>
                                                                                     
+
                                                                                     <!-- si es de archivo es un drop -->
                                                                                     <ng-container *ngIf="clase.tipo != 'actividad' &&  clase.tipo !='corazones'">
                                                                                         <ng-container *ngIf="clase.tipo == 'video'">
                                                                                             <div *ngIf="!clase['uploading'] && clase.archivos.length>0" class="fw ContainerFile" style="min-height: 80px;">
                                                                                                 <div fxLayout="row" fxLayoutGap="20px" class="fw pd10" (dragover)="onDragOver($event)" (drop)="onDrop($event,clase.tipo,clase,modulo)">
                                                                                                     <!-- Columna izquierda con el texto "Recursos:" -->
+                                                                                                     <!-- Contenedor de la imagen, solo visible si existe la imagen -->
+                                                                                                  <div *ngIf="clase.imagen" fxFlex="10" fxLayout="row" fxLayoutAlign="center center">
+                                                                                                    <img [src]="clase.imagen" alt="img-clase" style="height: 64px; object-fit: contain;">
+                                                                                                  </div>
                                                                                                     <div fxFlex="10%" fxLayoutAlign="start start">
                                                                                                         Recursos:
                                                                                                     </div>
                                                                                                     <!-- Columna derecha con la lista de archivos -->
-                                                                                                    <div fxFlex="90%" fxLayoutAlign="start start">
+                                                                                                    <div [fxFlex]="clase.imagen ? 80 : 90"  fxLayoutAlign="start start">
                                                                                                         <ol style="padding-left: 10px; margin: 0;">
                                                                                                             <ng-container *ngFor="let archivo of clase.archivos; let i = index">
                                                                                                                 <!-- Lista los archivos comenzando desde el segundo elemento (índice 1) -->
@@ -478,47 +501,35 @@
                                                                                                     </div>
                                                                                                 </div>
                                                                                             </div>
-                                                                                            <div *ngIf="!clase['uploading'] && (clase.archivos.length==0)" class="fw h80px ContainerFile">
-                                                                                                <div (dragover)="onDragOver($event)" (drop)="onDrop($event,clase.tipo,clase,modulo)"class="fw fh no-select" fxLayout="row" fxLayoutAlign="center center">
-                                                                                                    Arrastre el archivo aquí para agregarlo.
+                                                                                            <div *ngIf="!clase['uploading'] && (clase.archivos.length == 0)" class="fw h80px ContainerFile">
+                                                                                                <div (dragover)="onDragOver($event)" (drop)="onDrop($event, clase.tipo, clase, modulo)"
+                                                                                                     class="fw fh no-select" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+                                                                                                  
+                                                                                                  <!-- Contenedor de la imagen, solo visible si existe la imagen -->
+                                                                                                  <div *ngIf="clase.imagen" fxFlex="10" fxLayout="row" fxLayoutAlign="center center">
+                                                                                                    <img [src]="clase.imagen" alt="img-clase" style="height: 64px; object-fit: contain;">
+                                                                                                  </div>
+                                                                                              
+                                                                                                  <!-- Contenedor del texto, ajusta el espacio si no hay imagen -->
+                                                                                                  <div [fxFlex]="clase.imagen ? 90 : 100" fxLayout="row" fxLayoutAlign="center center">
+                                                                                                    <span>Arrastre el archivo aquí para agregarlo.</span>
+                                                                                                  </div>
                                                                                                 </div>
-                                                                                            </div>
+                                                                                              </div>
                                                                                         </ng-container>
-                                                                                        
                                                                                         <div fxLayout="row" fxLayoutAlign="center center" class="mgt15 mgb05">
-                                                                                            <!-- <button (click)="FileInput.click()" class="grayButton pd03 radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
-                                                                                                <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
-                                                                                                {{ ((clase.tipo == 'lectura' && !clase.archivos[0]) || (clase.tipo == 'video' && !clase.vimeoId1))? 'Seleccionar archivo' : 'Remplazar archivo'}}
-                                                                                            </button>
-                                                                                            <button (click)="verVideoVimeo(clase)" *ngIf="clase.tipo == 'video' && clase.vimeoId1" class="grayButton pd03 radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
-                                                                                                <img [src]="icon.playOutline" class="h16px pdr05" alt="">
-                                                                                                Reproducir video
-                                                                                            </button> -->
-                                                                                            <!-- <button (click)="structureActivity(modalClaseDetail,clase,modulo)"  *ngIf="clase.archivos[0] || clase.tipo == 'video' && (clase['base64Video'] || clase.vimeoId1)" class="grayButton pd03 radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
-                                                                                                <img [src]="icon.folderUp" class="h16px pdr05" alt="">
-                                                                                                Añadir recursos
-                                                                                            </button> -->
-
                                                                                             <input (change)="onFileSelected($event,clase, false, modulo, true)" type="file" accept="application/pdf, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/zip, image/png, image/jpeg" #FileInputAdicional style="display: none;">
                                                                                             <button (click)="FileInputAdicional.click()" class="grayButton pd03 radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                                                                                                 <img [src]="icon.folderUp" class="h16px pdr05" alt="">
                                                                                                 Añadir recursos
                                                                                             </button>
-                                                                                                                                                            
-                                                                                            <!-- <button (click)="openModalAsignarCompetencia(modalAsignarCompetenciasClases,clase)" class="grayButton pd03 radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
-                                                                                                <img [src]="icon.flash" class="h16px pdr05" alt="">
-                                                                                                Seleccionar competencias
-                                                                                            </button> -->
+                                                                                            <input (change)="onFileSelectedImageClass($event, clase)" type="file" accept="image/png, image/jpeg, image/jpg, image/webp" #FileImageAdicional style="display: none;">
+                                                                                            <button (click)="FileImageAdicional.click()" class="grayButton pd03 radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                                                                                                <img [src]="icon.image" class="h16px pdr05" alt="">
+                                                                                                Añadir Imagen
+                                                                                            </button>
                                                                                             <ng-container *ngIf="clase.tipo == 'lectura'">
-                                                                                                <!-- <button (click)="openModalAsignarCompetencia(modalAsignarCompetenciasClases,clase)" class="grayButton pd03 radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
-                                                                                                    <img [src]="icon.flash" class="h16px pdr05" alt="">
-                                                                                                    Seleccionar sas
-                                                                                                </button> -->
-                                                                                                <!-- <span class="pdr05">Duración:</span>
-                                                                                                <div class="w-40"><input [(ngModel)]="clase.duracion" (change)="clase['edited'] = true" type="number" min="1" class="form-control customInput"></div>
-                                                                                                <span class="pdl05">minutos</span> -->
                                                                                             </ng-container>
-                                                                                            
                                                                                         </div>
                                                                                             <input (change)="onFileSelected($event,clase,false,modulo)" type="file" accept="{{clase.tipo == 'lectura'?'.pdf' : 'video/mp4'}}"  #FileInput style="display: none;">
                                                                                     </ng-container>
