@@ -194,9 +194,9 @@
                                     <span class="ft12 gray-10">{{modulo.titulo }}</span>
                                 </div>
                                 <div fxLayoutAlign="center center">
-                                    <span *ngIf="modulo?.duracion" class="gray-6 ft12 nowrap">{{getFloor(modulo.duracion/60) |
+                                    <!-- <span *ngIf="modulo?.duracion" class="gray-6 ft12 nowrap">{{getFloor(modulo.duracion/60) |
                                         number:"1.0-0"}}:{{modulo.duracion%60 | number:"2.0-0"}} hrs
-                                    </span>
+                                    </span> -->
                                 </div>
                             </div>
                             <div [class]="modulo['expanded'] ? 'bodyClasesExpanded' : 'bodyClases'"
@@ -215,9 +215,9 @@
                                         <span *ngIf="!clase.dontTitle" class="ft11 gray-8">{{clase.titulo  }}</span>
                                         <span *ngIf="clase.dontTitle" class="ft11 gray-8">{{clase.titulo }}</span>
                                     </div>
-                                    <div fxLayoutAlign="center center">
+                                    <!-- <div fxLayoutAlign="center center">
                                         <span *ngIf="clase?.duracion" class="gray-6 ft11 nowrap">{{clase.duracion}} min</span>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
                         </div>

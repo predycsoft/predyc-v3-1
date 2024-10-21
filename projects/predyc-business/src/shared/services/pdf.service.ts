@@ -194,7 +194,14 @@ export class PDFService {
     pdf.setTextColor(0, 0, 0);
     pdf.text(`${courseTitle} - ${this.fecha}`, 6, (posY + imgHeight / 2) + 2, { align: 'left' });
     pdf.setFontSize(9);  // Ajustar el tamaño de la fuente
-    pdf.text(`Predyc`, this.pageWidth-20, (posY + imgHeight / 2) + 2, { align: 'left' });
+
+    let textoEmpresa = 'Predyc'
+    let margen = 20
+    if(!isPredyc){
+      textoEmpresa = 'Predictiva21'
+      margen = 25
+    }
+    pdf.text(textoEmpresa, this.pageWidth-margen, (posY + imgHeight / 2) + 2, { align: 'left' });
   
     const imgWidtLogoWhite = 27;  // Puedes ajustar este valor según tus necesidades
     const imgHeightLogoWhite = imgWidtLogoWhite / 4.3;
@@ -438,7 +445,13 @@ export class PDFService {
               pdf.setTextColor(0, 0, 0);
               pdf.text(`${courseTitle} - ${this.fecha}`, 6, (posY + imgHeight / 2) + 2, { align: 'left' });
               pdf.setFontSize(9);  // Ajustar el tamaño de la fuente
-              pdf.text(`Predyc`, this.pageWidth-20, (posY + imgHeight / 2) + 2, { align: 'left' });
+              let textoEmpresa = 'Predyc'
+              let margen = 20
+              if(!isPredyc){
+                textoEmpresa = 'Predictiva21'
+                margen = 25
+              }
+              pdf.text(textoEmpresa, this.pageWidth-margen, (posY + imgHeight / 2) + 2, { align: 'left' });
               //pdf.addImage(this.logoBlack, 'png', this.pageWidth - imgWidth - 5, posY, imgWidth, imgHeight, '', 'FAST');
     
               currentLine = 15;
@@ -498,7 +511,15 @@ export class PDFService {
                       pdf.setTextColor(0, 0, 0);
                       pdf.text(`${courseTitle} - ${this.fecha}`, 6, (posY + imgHeight / 2) + 2, { align: 'left' });
                       pdf.setFontSize(9);  // Ajustar el tamaño de la fuente
-                      pdf.text(`Predyc`, this.pageWidth-20, (posY + imgHeight / 2) + 2, { align: 'left' });
+
+                      let textoEmpresa = 'Predyc'
+                      let margen = 20
+                      if(!isPredyc){
+                        textoEmpresa = 'Predictiva21'
+                        margen = 25
+                      }
+
+                      pdf.text(textoEmpresa, this.pageWidth-margen, (posY + imgHeight / 2) + 2, { align: 'left' });
                       //pdf.addImage(this.logoBlack, 'png', this.pageWidth - imgWidth - 5, posY, imgWidth, imgHeight, '', 'FAST');
     
                       currentLine = 15;
@@ -547,6 +568,7 @@ export class PDFService {
         pdf.text(`${courseTitle} - ${this.fecha}`, 6, (posY + imgHeight / 2) + 2, { align: 'left' });
         //pdf.addImage(this.logoBlack, 'png', this.pageWidth - imgWidth - 5, posY, imgWidth, imgHeight, '', 'FAST');
         pdf.setFontSize(9);  // Ajustar el tamaño de la fuente
+        
         pdf.text(`Predyc`, this.pageWidth-20, (posY + imgHeight / 2) + 2, { align: 'left' });
 
         opts.y = 10;

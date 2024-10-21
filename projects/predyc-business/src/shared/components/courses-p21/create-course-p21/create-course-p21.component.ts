@@ -1010,7 +1010,7 @@ export class CreateCourseP21Component {
       this.alertService.succesAlert("El curso se ha guardado exitosamente");
 
       if (this.mode == "create") {
-        this.router.navigate([`management/create-course/edit/${this.curso.id}`]);
+        this.router.navigate([`admin/create-cursos-p21/edit/${this.curso.id}`]);
       }
     } else {
       Swal.close();
