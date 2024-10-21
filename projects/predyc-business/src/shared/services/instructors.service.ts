@@ -130,6 +130,21 @@ export class InstructorsService {
     const instructorRef = this.afs.doc<any>(`instructors/${instructorId}`).ref;
     return this.afs.doc<any>(instructorRef).valueChanges();
   }
+
+  fetchInstructorDataByIdPromise(instructorId: string): Promise<any> {
+    const instructorRef = this.afs.doc<any>(`instructors/${instructorId}`).ref;
+    return instructorRef.get().then(doc => {
+      if (doc.exists) {
+        return doc.data(); // Retorna los datos del instructor si el documento existe
+      } else {
+        return null; // Retorna null si no existe el documento
+      }
+    }).catch(error => {
+      console.error("Error fetching instructor data: ", error);
+      throw error; // Manejo de errores
+    });
+  }
+  
   
   fetchInstructorDataByRef(instructorRef: DocumentReference): Observable<any> {
     return this.afs.doc<any>(instructorRef).valueChanges();

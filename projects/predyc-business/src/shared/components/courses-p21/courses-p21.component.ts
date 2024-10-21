@@ -91,7 +91,7 @@ export class CoursesP21Component {
     combineLatest([
       this.categoryService.getCategoriesObservable().pipe(take(2)),
       this.skillService.getSkillsObservable().pipe(take(2)),
-      this.courseService.getCoursesObservable().pipe(take(2)),
+      this.courseService.getCoursesObservableP21().pipe(take(2)),
       this.instructorsService.getInstructorsObservable().pipe(take(2)),
     ]).subscribe(([categories, skills, courses,instructors]) => {
       console.log('categories from service', categories);
@@ -119,7 +119,7 @@ export class CoursesP21Component {
         let filteredCategories = categories.filter(categoryIn => categoryIds.has(categoryIn.id));
         curso['skills'] = filteredSkills;
         curso['categories'] = filteredCategories;
-    
+        curso.modules = curso['modulos']
         curso['modules'].sort((a, b) => a.numero - b.numero);
     
         let modulos = curso['modules'];
@@ -137,14 +137,14 @@ export class CoursesP21Component {
           curso['duracion'] = duracionCourse;
         }
 
-        if(curso.duracion>=duracionCourse){
-          if(!curso['modules'].find(x=>x.titulo == 'Examen Final'))
-          curso['modules'].push({dontshow:true, titulo:'Examen Final',clases:[{titulo:'Examen Final',duracion:curso.duracion-duracionCourse}]})
-        }
-        else{
-          if(!curso['modules'].find(x=>x.titulo == 'Examen Final'))
-          curso['modules'].push({dontshow:true, titulo:'Examen Final',clases:[{titulo:'Examen Final',duracion:null}]})
-        }
+        // if(curso.duracion>=duracionCourse){
+        //   if(!curso['modules'].find(x=>x.titulo == 'Examen Final'))
+        //   curso['modules'].push({dontshow:true, titulo:'Examen Final',clases:[{titulo:'Examen Final',duracion:curso.duracion-duracionCourse}]})
+        // }
+        // else{
+        //   if(!curso['modules'].find(x=>x.titulo == 'Examen Final'))
+        //   curso['modules'].push({dontshow:true, titulo:'Examen Final',clases:[{titulo:'Examen Final',duracion:null}]})
+        // }
         curso['instructorData'] = instructors.find(x=>x.id == curso.instructorRef.id)
       });
       this.courses = courses;
@@ -197,7 +197,7 @@ export class CoursesP21Component {
 
   downloadPDFCourse(){
     console.log(this.selectedCourse)
-    this.pdfService.downloadFichaTecnica(this.selectedCourse,this.selectedCourse['instructorData'])
+    this.pdfService.downloadFichaTecnica(this.selectedCourse,this.selectedCourse['instructorData'],null,null,false)
   }
 
   showNotification: boolean = false;
@@ -209,7 +209,7 @@ export class CoursesP21Component {
     this.notificationMessage = "Descargado archivo... Por favor, espera.";
     try {
       let cursosPDF = this.courses.filter(x=>!x.proximamente)
-      await this.pdfService.downloadFichaTecnicaMultiple(cursosPDF, 'Catálogo cursos', false);
+      await this.pdfService.downloadFichaTecnicaMultiple(cursosPDF, 'Catálogo cursos', false,false);
     } catch (error) {
       console.error(error);
     } finally {

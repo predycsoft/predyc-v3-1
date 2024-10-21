@@ -1,5 +1,5 @@
 <div class="list">
-    <span *ngIf="type == 'predyc'" class="ft400 gray-8 ft13 pd05">Cursos Predyc</span>
+    <span *ngIf="type == 'predyc'" class="ft400 gray-8 ft13 pd05">{{showTitle?'Cursos Predyc':''}}</span>
     <span *ngIf="type == 'propios' && hasOwnCourses()" class="ft400 gray-8 ft13 pd05">Cursos Propios</span>
     <div class="fw categories" *ngFor="let category of processedCategories">
         <!-- <div *ngIf="filteredCourses(type == 'propios' ? category.coursesPropios : category.courses)?.length>0" [ngClass]="(type == 'propios' ? category.expandedPropios : category.expandedPredyc) ? 'headCategoryExpanded hoverGray mgt05' : 'headCategory hoverGray'"  -->

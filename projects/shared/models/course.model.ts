@@ -45,6 +45,8 @@ export interface CursoJson {
 export class Curso {
 
   public static collection = 'course'
+  public static collectionP21 = 'courseP21'
+
   
   descripcion: string = ""
   metaDescripcion: string = ""

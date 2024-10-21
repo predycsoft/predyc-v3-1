@@ -3,7 +3,7 @@
 
     <div fxLayout="row" fxLayoutAlign="space-between center" style="width: 58%;">    
         <p class="ft600 ft16 gray-10">
-            Lista de Cursos
+            Lista de Cursos Predictiva21
         </p>
         <div fxLayout="row"  fxLayoutGap="1rem">
             <button *ngIf="(user.isSystemUser || product && product.accesses.enableCreateParticularCourses)"
@@ -12,11 +12,11 @@
             fxLayoutAlign="center center"
             class="blueButton mgt05"
             style="border-radius: 24px !important;"
-            routerLink="/management/create-course/create/new">
+            routerLink="/admin/create-cursos-p21/create/new">
             <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="">
             Agregar curso
             </button>
-                <button *ngIf="courses?.length>0"
+            <button *ngIf="courses?.length>0"
                 (click)="downloadPDFAllCourse()"
                 fxLayout="row"
                 fxLayoutGap="0.625"
@@ -31,27 +31,6 @@
         <!-- <button (click)="fixClassesinstructors()">Temporal</button> -->
     </div>
 
-<!-- <div fxLayout="row" fxLayoutAlign=" center">
-    <div class="ft600 ft20">Explora</div>
-</div>
-<div fxLayout="row" class="mgt10">
-    <div class="h36px radius20 w500px shadow12" style="overflow: hidden;" fxLayout="row">
-        <div class="backGray2 pdl10 pdr10" fxLayout="row" fxLayoutAlign=" center">
-            <select name="" id="" class="catSelect">
-                <option value="">Categorias</option>
-                <option value="" *ngFor="let category of categories">{{category.name}}</option>
-            </select>
-        </div>
-        <div class="fw pdr10 pdl10" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem">
-            <input type="text" class="catInput" placeholder="Buscar">
-            <div fxLayoutAlign="center center">
-                <img [src]="icon.search" alt="">
-            </div>
-        </div>
-    </div>
-</div>
-<div class="fw line mgt10">
-</div> -->
 
 <div fxLayout="row" class="mgt10 fw fh" fxLayoutGap="2rem">
     <!-- Columna izquierda que ocupa todo el alto -->
@@ -75,7 +54,7 @@
                 <div class="fw" style=" overflow-y: hidden;">
                     <div class="mgt10">
                         <ng-container>
-                            <app-course-selector type="predyc" [categories]="categories" [searchValue]="searchValue"
+                            <app-course-selector [showTitle]="false" type="predyc" [categories]="categories" [searchValue]="searchValue"
                                 (selectedCourseOut)="selectedCourse = $event" [user]="user">
                             </app-course-selector>
                         </ng-container>
@@ -114,7 +93,7 @@
                             <div *ngIf="(user.isSystemUser || selectedCourse.enterpriseRef?.id == enterpriseRef?.id) && selectedCourse.id" 
                                     fxLayout="row" 
                                     fxLayoutGap=".5rem"  >
-                                    <div  routerLink="/management/create-course/edit/{{selectedCourse.id}}"  class="blueLink mgt05 white cursorPointer ft14 fw mgb10" fxLayoutAlign="space-between center">
+                                    <div  routerLink="/admin/create-cursos-p21/edit/{{selectedCourse.id}}"  class="blueLink mgt05 white cursorPointer ft14 fw mgb10" fxLayoutAlign="space-between center">
                                         <!-- <img [src]="icon.edit" class="makeWhite h16px mgr08" alt=""> -->
                                         Editar 
                                     </div>

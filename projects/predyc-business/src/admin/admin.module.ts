@@ -56,6 +56,7 @@ import { ReviewsComponent } from './admin-pages/reviews/reviews.component';
 import { ReviewsListComponent } from './admin-pages/reviews/reviews-list/reviews-list.component';
 import { DialogReviewsComponent } from './admin-pages/reviews/reviews-list/dialog-reviews/dialog-reviews.component';
 import { CoursesP21Component } from "../shared/components/courses-p21/courses-p21.component";
+import { CreateCourseP21Component } from "../shared/components/courses-p21/create-course-p21/create-course-p21.component";
 
 
 @NgModule({
@@ -67,6 +68,7 @@ import { CoursesP21Component } from "../shared/components/courses-p21/courses-p2
     InstructorsComponent,
     SalesComponent,
     CoursesP21Component,
+    CreateCourseP21Component,
     QuestionsComponent,
     CertificationsComponent,
     DiplomadosComponent,

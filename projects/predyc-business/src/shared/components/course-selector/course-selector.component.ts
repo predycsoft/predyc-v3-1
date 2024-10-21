@@ -16,6 +16,7 @@ export class CourseSelectorComponent {
   @Input() searchValue;
   @Output() selectedCourseOut = new EventEmitter<any>();
   @Input() user
+  @Input() showTitle = true
 
 
   processedCategories;

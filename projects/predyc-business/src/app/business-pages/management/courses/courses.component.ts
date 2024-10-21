@@ -320,12 +320,12 @@ export class CoursesComponent implements AfterViewInit {
   notificationMessage: string = '';
 
 
-  async downloadPDFAllCourse(): Promise<void> {
+  async downloadPDFAllCourse(isPredyc = true): Promise<void> {
     this.showNotification = true;
     this.notificationMessage = "Descargado archivo... Por favor, espera.";
     try {
       let cursosPDF = this.courses.filter(x=>!x.proximamente)
-      await this.pdfService.downloadFichaTecnicaMultiple(cursosPDF, 'Catálogo cursos', false);
+      await this.pdfService.downloadFichaTecnicaMultiple(cursosPDF, 'Catálogo cursos', false,true);
     } catch (error) {
       console.error(error);
     } finally {

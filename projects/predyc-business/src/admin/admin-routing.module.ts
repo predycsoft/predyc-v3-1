@@ -27,6 +27,7 @@ import { DiplomadoLiveFormComponent } from "../shared/components/live-courses/li
 import { PillarsComponent } from "./admin-pages/pillars/pillars.component";
 import { ReviewsComponent } from "./admin-pages/reviews/reviews.component";
 import { CoursesP21Component } from "../shared/components/courses-p21/courses-p21.component";
+import { CreateCourseP21Component } from "../shared/components/courses-p21/create-course-p21/create-course-p21.component";
 
 export const MAIN_TITLE = "Predyc Admin - ";
 
@@ -53,6 +54,9 @@ const routes: Routes = [
   { path: "courses", title: MAIN_TITLE + "Cursos", component: CoursesComponent },
 
   { path: "cursos-P21", title: MAIN_TITLE + "Cursos P21", component: CoursesP21Component },
+
+  { path: "create-cursos-p21/:mode/:idCurso", title: "Predictiva 21 - Crear / Editar curso", component: CreateCourseP21Component},
+
 
 
   { path: "live", title: MAIN_TITLE + "Cursos en vivo", component: LiveCoursesComponent },

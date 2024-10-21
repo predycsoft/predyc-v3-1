@@ -45,6 +45,7 @@ export class PDFService {
     logoWhite ="/assets/images/design/PredycWhite.png"
     logoBlack ="/assets/images/design/predyc-logoNegro.png"
     reloj = "assets/iconsUI/clock.png"
+    logoWhiteP21 = "/assets/images/logos/logo-predictiva-blanco-lg.png"
   
     // Función para convertir imágenes a PNG
     convertImageToPNG(imageUrl: string): Promise<string> {
@@ -159,7 +160,7 @@ export class PDFService {
       // pdf.line(0, endY, this.pageWidth, endY); // Línea en el extremo inferior
   }
 
-  async downloadFichaTecnica(course, instructor, pdf: jsPDF = null, addToDocument: boolean = false) {
+  async downloadFichaTecnica(course, instructor, pdf: jsPDF = null, addToDocument: boolean = false,isPredyc = true) {
     if (!pdf) {
       pdf = new jsPDF("p", "mm", "a4", true) as jsPDF;
   
@@ -197,8 +198,16 @@ export class PDFService {
   
     const imgWidtLogoWhite = 27;  // Puedes ajustar este valor según tus necesidades
     const imgHeightLogoWhite = imgWidtLogoWhite / 4.3;
-  
-    pdf.addImage(this.logoWhite, 'png', 180, 3, imgWidtLogoWhite, imgHeightLogoWhite, '', 'FAST');
+    
+    if(isPredyc){
+      pdf.addImage(this.logoWhite, 'png', 180, 3, imgWidtLogoWhite, imgHeightLogoWhite, '', 'FAST');
+    }
+    else{
+      //logo predicti21
+      pdf.addImage(this.logoWhiteP21, 'png', 180, 3, imgWidtLogoWhite, imgHeightLogoWhite, '', 'FAST');
+
+      
+    }
   
     pdf.setFontSize(18);
     currentLine = this.addFormatedText({
@@ -277,14 +286,14 @@ export class PDFService {
     }, pdf);
     pdf.setFontSize(10);
     currentLine = currentLine + 10;
-    currentLine = this.addFormattedTable(course, currentLine, pdf);
+    currentLine = this.addFormattedTable(course, currentLine, pdf,isPredyc);
   
     if (!addToDocument) {
       pdf.save("Ficha_tecnica_Curso_" + this.sanitizeFilename(course.titulo) + ".pdf");
     }
   }
 
-  async downloadFichaTecnicaMultiple(courses,titulo='Ficha_tecnica_Cursos',showLoading = true) {
+  async downloadFichaTecnicaMultiple(courses,titulo='Ficha_tecnica_Cursos',showLoading = true,isPredyc = true) {
 
     if(showLoading){
       Swal.fire({
@@ -311,7 +320,7 @@ export class PDFService {
       const course = courses[i];
       const instructor = course.instructorData; // Suponiendo que tienes una manera de obtener el instructor para cada curso
       console.log(course, instructor);
-      await this.downloadFichaTecnica(course, instructor, pdf, true);
+      await this.downloadFichaTecnica(course, instructor, pdf, true,isPredyc);
       
       if (i < courses.length - 1) {
         pdf.addPage(); // Solo agregar una nueva página si no es el último curso
@@ -364,7 +373,7 @@ export class PDFService {
   
     }
   
-    addFormattedTable(course: any, currentLine: number, pdf: jsPDF): number {
+    addFormattedTable(course: any, currentLine: number, pdf: jsPDF,isPredyc = true): number {
       const imgWidth = 30;  // Puedes ajustar este valor según tus necesidades
       const imgHeight = imgWidth / 4.65517241379;
       const tableMargin = this.pageWidth * 0.05; // Márgenes para centrar la tabla (5% de cada lado)
@@ -390,13 +399,16 @@ export class PDFService {
                       duracion += clase.duracion;
                   });
                   let duracionModulo = this.getFormattedDuration(duracion);
-                  if (duracion > 60) {
+                  if(isPredyc){
+                    if (duracion > 60) {
                       pdf.text(`${duracionModulo}`, 179, textYPosition, { align: 'left' }); // Centrar el texto verticalmente
                   } else if (duracion % 60 == 0) {
                       pdf.text(`${duracionModulo}`, 186, textYPosition, { align: 'left' }); // Centrar el texto verticalmente
                   } else {
                       pdf.text(`${duracionModulo}`, 183, textYPosition, { align: 'left' }); // Centrar el texto verticalmente
                   }
+                  }
+
               }
               currentLine += headerHeight; // Espacio entre el encabezado y la primera clase
               // Dibujar línea gruesa debajo del encabezado del módulo
@@ -447,14 +459,15 @@ export class PDFService {
                   tituloClase = tituloClase.slice(0, 122) + '...';
               }
               pdf.text(`${tituloClase}`, tableMargin + 5, textYPosition, { align: 'left' }); // Centrar el texto verticalmente
-              if (clase.duracion >= 10 && clase.duracion % 60 != 0) {
+              if(isPredyc){
+                if (clase.duracion >= 10 && clase.duracion % 60 != 0) {
                   pdf.text(`${duracionClase}`, 185, textYPosition, { align: 'left' }); // Centrar el texto verticalmente
-              } else if (clase.duracion % 60 == 0) {
-                  pdf.text(`${duracionClase}`, 186, textYPosition, { align: 'left' }); // Centrar el texto verticalmente
-              } else {
-                  pdf.text(`${duracionClase}`, 186, textYPosition, { align: 'left' }); // Centrar el texto verticalmente
+                } else if (clase.duracion % 60 == 0) {
+                    pdf.text(`${duracionClase}`, 186, textYPosition, { align: 'left' }); // Centrar el texto verticalmente
+                } else {
+                    pdf.text(`${duracionClase}`, 186, textYPosition, { align: 'left' }); // Centrar el texto verticalmente
+                }
               }
-    
               pdf.setDrawColor(200, 200, 200); // Color de la línea
               pdf.setLineWidth(0.2); // Grosor de la línea ajustado
               if (index < modulo.clases.length - 1) { // quitar si se quiere poner la linea en ultima clase

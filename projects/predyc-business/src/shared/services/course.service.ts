@@ -399,6 +399,36 @@ export class CourseService {
     await batch.commit();
   }
 
+  async saveCourseP21(newCourse: Curso): Promise<void> {
+    try {
+      try {
+        console.log("test saveCourse", newCourse);
+
+        if(!newCourse.customUrl){
+          newCourse.customUrl = newCourse.id
+        }
+        delete newCourse["modules"];
+        const dataToSave =
+          typeof newCourse.toJson === "function"
+            ? newCourse.toJson()
+            : newCourse;
+
+        await this.afs
+          .collection(Curso.collectionP21)
+          .doc(newCourse?.id)
+          .set(dataToSave, { merge: true });
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
+      // console.log("Has agregado una nuevo curso exitosamente.");
+    } catch (error) {
+      console.log(error);
+      this.alertService.errorAlert(JSON.stringify(error));
+    }
+  }
+
+
   async saveCourse(newCourse: Curso): Promise<void> {
     try {
       try {
@@ -645,6 +675,11 @@ export class CourseService {
 
   getCoursesObservable(): Observable<Curso[]> {
     return this.course$;
+  }
+
+
+  getCoursesObservableP21(): Observable<Curso[]> {
+    return this.afs.collection<Curso>(Curso.collectionP21).valueChanges();
   }
 
   public getCourseRefById(id: string): DocumentReference<Curso> {
