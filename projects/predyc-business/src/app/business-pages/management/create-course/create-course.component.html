@@ -27,6 +27,18 @@
                             [checked]="formNewCourse?.get('isFree')?.value">
                             <label style="padding-left: 5px; color:white">Gratuito</label>
                         </div>
+                        <div  *ngIf="user.isSystemUser" fxLayout="row" fxLayoutAlign="start center">
+                            <button
+                            fxLayout="row"
+                            fxLayoutGap="0.625"
+                            fxLayoutAlign="center center"
+                            (click)="descargarPDF()"
+                            class="blueButton ft14 cursorPointer"
+                            style="border-radius: 24px !important;">
+                            Descargar PDF
+                            <img [src]="icon.download" class="h16px pdl05 makeWhite" alt="">
+                        </button>                        
+                    </div>
                     </div>
                 </ng-container>
             </div>

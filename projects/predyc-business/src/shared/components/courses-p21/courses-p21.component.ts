@@ -28,8 +28,6 @@ export class category {
   expanded: boolean = false
 }
 
-
-@AfterOnInitResetLoading
 @Component({
   selector: 'app-courses-p21',
   templateUrl: './courses-p21.component.html',
@@ -38,16 +36,14 @@ export class category {
 export class CoursesP21Component {
 
   constructor(
-    private instructorsService:InstructorsService,
     public icon: IconService,
     public categoryService : CategoryService,
     public courseService : CourseService,
     public skillService: SkillService,
-    private enterpriseService: EnterpriseService,
     private authService: AuthService,
-    private productService: ProductService,
     public licenseService: LicenseService,
-    private pdfService:PDFService
+    private pdfService:PDFService,
+    private instructorsService:InstructorsService,
 
   ) {}
 
@@ -72,29 +68,224 @@ export class CoursesP21Component {
   subscriptionObservableSubs: Subscription
   productServiceSubscription: Subscription
 
-
   enterprise
   product: Product
 
-  ngOnDestroy() {
-    if (this.subscriptionObservableSubs) this.subscriptionObservableSubs.unsubscribe()
-  }
 
   getFormattedDuration() {
     const hours = Math.floor(this.selectedCourse.duracion / 60);
     const minutes = this.selectedCourse.duracion % 60;
     return `${hours} hrs ${minutes} min`;
   }
+  ngOnInit() {
 
-  licenses$: Observable<License[]> = this.licenseService.getCurrentEnterpriseLicenses$()
-  licenses: License[];
-  licensesSubscription: Subscription;
+    this.authService.user$.subscribe(user=> {
+      if (user) {
+        console.log('user',user)
+        this.user = user
+      }
+    })
 
-  async ngOnInit() {
-    alert('aqui')
+    this.buildCategories()
+
+    combineLatest([
+      this.categoryService.getCategoriesObservable().pipe(take(2)),
+      this.skillService.getSkillsObservable().pipe(take(2)),
+      this.courseService.getCoursesObservable().pipe(take(2)),
+      this.instructorsService.getInstructorsObservable().pipe(take(2)),
+    ]).subscribe(([categories, skills, courses,instructors]) => {
+      console.log('categories from service', categories);
+      console.log('skills from service', skills);
+      console.log('courses from service', courses);
+      console.log('instructors from service', instructors);
+
+    
+      this.categories = this.anidarCompetenciasInicial(categories, skills);
+    
+      if (!this.user.isSystemUser) {
+        courses = courses.filter(x => (!x.enterpriseRef && !x.proximamente || x.enterpriseRef));
+      }
+    
+      courses.forEach(curso => {
+        let skillIds = new Set();
+        curso.skillsRef.forEach(skillRef => {
+          skillIds.add(skillRef.id); // Assuming skillRef has an id property
+        });
+        let filteredSkills = skills.filter(skillIn => skillIds.has(skillIn.id));
+        let categoryIds = new Set();
+        filteredSkills.forEach(skillRef => {
+          categoryIds.add(skillRef.category.id); // Assuming skillRef has an id property
+        });
+        let filteredCategories = categories.filter(categoryIn => categoryIds.has(categoryIn.id));
+        curso['skills'] = filteredSkills;
+        curso['categories'] = filteredCategories;
+    
+        curso['modules'].sort((a, b) => a.numero - b.numero);
+    
+        let modulos = curso['modules'];
+        let duracionCourse = 0;
+        modulos.forEach(modulo => {
+          modulo.expanded = false;
+          let duracion = 0;
+          modulo.clases.forEach(clase => {
+            duracion += clase?.duracion ? clase?.duracion : 0;
+          });
+          modulo.duracion = duracion;
+          duracionCourse += duracion;
+        });
+        if (!curso['duracion']) {
+          curso['duracion'] = duracionCourse;
+        }
+
+        if(curso.duracion>=duracionCourse){
+          if(!curso['modules'].find(x=>x.titulo == 'Examen Final'))
+          curso['modules'].push({dontshow:true, titulo:'Examen Final',clases:[{titulo:'Examen Final',duracion:curso.duracion-duracionCourse}]})
+        }
+        else{
+          if(!curso['modules'].find(x=>x.titulo == 'Examen Final'))
+          curso['modules'].push({dontshow:true, titulo:'Examen Final',clases:[{titulo:'Examen Final',duracion:null}]})
+        }
+        curso['instructorData'] = instructors.find(x=>x.id == curso.instructorRef.id)
+      });
+      this.courses = courses;
+    
+      this.categories.forEach(category => {
+        let filteredCourses = courses.filter(course =>
+          course['categories'].some(cat => cat.id === category.id)
+        );
+        let filteredCoursesPropios = courses.filter(course =>
+          course['categories'].some(cat => cat.id === category.id) && course.enterpriseRef != null
+        );
+        let filteredCoursesPredyc = courses.filter(course =>
+          course['categories'].some(cat => cat.id === category.id) && course.enterpriseRef == null
+        );
+        category.expanded = false;
+        category.expandedPropios = false;
+        category.expandedPredyc = false;
+    
+        category.courses = filteredCourses;
+        category.coursesPropios = filteredCoursesPropios;
+        category.coursesPredyc = filteredCoursesPredyc;
+      });
+    });
+
 
 
   }
+
+  anidarCompetenciasInicial(categorias: any[], competencias: any[]): any[] {
+    return categorias.map(categoria => {
+      let skills = competencias
+        .filter(comp => comp.category.id === categoria.id)
+        .map(skill => {
+          // Por cada skill, retornamos un nuevo objeto sin la propiedad category,
+          // pero añadimos la propiedad categoryId con el valor de category.id
+          const { category, ...rest } = skill;
+          return {
+            ...rest,
+            categoriaId: category.id
+          };
+        });
+  
+      return {
+        ...categoria,
+        competencias: skills
+      };
+    });
+  }
+
+
+  downloadPDFCourse(){
+    console.log(this.selectedCourse)
+    this.pdfService.downloadFichaTecnica(this.selectedCourse,this.selectedCourse['instructorData'])
+  }
+
+  showNotification: boolean = false;
+  notificationMessage: string = '';
+
+
+  async downloadPDFAllCourse(): Promise<void> {
+    this.showNotification = true;
+    this.notificationMessage = "Descargado archivo... Por favor, espera.";
+    try {
+      let cursosPDF = this.courses.filter(x=>!x.proximamente)
+      await this.pdfService.downloadFichaTecnicaMultiple(cursosPDF, 'Catálogo cursos', false);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      this.showNotification = false;
+    }
+  }
+
+  getRounded(num: number): number {
+    return Math.round(num);
+  }
+
+  getFloor(num: number): number {
+    return Math.floor(num);
+  }
+
+  handleImageError() {
+    if (this.selectedCourse) {
+      this.selectedCourse['imagen_instructor'] = 'assets/images/default/default-user-image.jpg';
+    }
+  }
+
+  filteredCourses(categoryCourses) {
+    //console.log('categoryCourses',categoryCourses)
+    let displayedCourses = categoryCourses
+    if (this.searchValue) {
+      displayedCourses= categoryCourses.filter(x => x.titulo.toLocaleLowerCase().includes(this.searchValue.toLocaleLowerCase()))
+      if(displayedCourses.length > 0){
+        console.log('search',displayedCourses);
+        let categoriesCourse = displayedCourses[0].categories
+        let categoryIds =[]
+        categoriesCourse.forEach(skillRef => {
+          categoryIds.push(skillRef.id); // Assuming skillRef has an id property
+        });
+        categoryIds.forEach(categoryId => {
+          let category = this.categories.find(x => x.id == categoryId);
+          category.expanded = true;
+        });
+       // this.categories.find(x => displayedCourses[0].categoria == x.name).expanded = true
+      }
+    }
+    return displayedCourses
+  }
+
+  saveNewCategory() {
+
+    this.categories.push(this.newCategory)
+    this.creatingCategory=false
+    this.newCategory = new category
+  }
+  
+
+  buildCategories(){
+    let categories: category[] = []
+    let categoriasStrings = this.getUniqueCategoria(this.cursos)
+    categoriasStrings.forEach(cat => {
+      let category: category = {
+        name: cat,
+        courses: this.cursos.filter(x => x['categoria'] == cat),
+        expanded: false
+      }
+      categories.push(category)
+    })
+    this.categories = categories
+  }
+
+  getUniqueCategoria(array) {
+    let distinc = []
+    for (let index = 0; index < array.length; index++) {
+      if (!distinc.includes(array[index].categoria)) {
+        distinc.push(array[index].categoria)
+      }
+    }
+    return distinc
+  }
+
+
 
   
 

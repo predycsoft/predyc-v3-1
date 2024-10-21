@@ -42,6 +42,7 @@ import { MatTabChangeEvent } from "@angular/material/tabs";
 import { License, Product } from "shared";
 import { LicenseService } from "projects/predyc-business/src/shared/services/license.service";
 import { ProductService } from "projects/predyc-business/src/shared/services/product.service";
+import { PDFService } from '../../../../shared/services/pdf.service';
 
 interface Categoria {
   id: number;
@@ -85,6 +86,7 @@ export class CreateCourseComponent {
 		private fb: FormBuilder,   
     public licenseService: LicenseService,
     private productService: ProductService,
+    private PDFService: PDFService
 
   ) {}
 
@@ -3986,5 +3988,23 @@ export class CreateCourseComponent {
     clase.titulo = clase["tituloTMP"];
     clase["edited"] = true; // Marca la clase como editada
     // Aquí puedes añadir cualquier otra lógica necesaria después de confirmar el título
+  }
+
+  descargarPDF(){
+    if(!this.curso){
+      this.curso = this.formNewCourse.value;
+      this.curso.modules = this.modulos
+
+      let duracion = this.getDurationModuleCourse();
+      this.curso.duracion = duracion;
+    }
+
+    console.log(this.curso,this.modulos,this.instructores)
+    
+
+    let instrctor = this.instructores.find(x=>x.id == this.curso.instructorRef.id)
+
+    this.PDFService.downloadFichaTecnica(this.curso,instrctor)
+    
   }
 }
