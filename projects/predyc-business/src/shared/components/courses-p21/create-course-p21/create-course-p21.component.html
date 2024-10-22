@@ -18,7 +18,14 @@
                             (change)="changeBorrador($event)"
                             type="checkbox" 
                             [checked]="formNewCourse?.get('proximamente')?.value">
-                            <label style="padding-left: 5px; color:white">Borrador</label>
+                            <label style="padding-left: 5px; color:white">Es público</label>
+                        </div>
+                        <div fxLayout="row" fxLayoutAlign="start center">
+                            <input
+                            (change)="changeEnCalendario($event)"
+                            type="checkbox" 
+                            [checked]="formNewCourse?.get('enCalendario')?.value">
+                            <label style="padding-left: 5px; color:white">En calendario</label>
                         </div>
                         <div  *ngIf="user.isSystemUser" fxLayout="row" fxLayoutAlign="start center">
                             <button
@@ -58,7 +65,7 @@
                     <ng-container >
                         <div fxLayout="row" class=" " fxLayoutGap=""  style="overflow-y: auto; height: 150% !important; width: 100%; ">
                             <!-- <div fxFlex="50%" class="pdl10 pdt10 fw"> -->
-                            <div *ngIf="formNewCourse" class="radius10 w-30 mgt15 mgb10 mgl10 shadowLight  " fxLayout="column" style="background-color: rgba(244, 244, 244, 0.362); height: fit-content;">
+                            <div *ngIf="formNewCourse" class="radius10 w-30 mgt15 mgb10 mgl10 shadowLight  hideScroll" fxLayout="column" style="background-color: rgba(244, 244, 244, 0.362); height: 80vh !important; overflow-y: auto;">
                                 <!-- Informacion -->
                                 <form [formGroup]="formNewCourse" class="mgl10 mgt15 mgr10 mgb20">
                                     <div class="fw" fxLayoutAlign="space-between center" fxLayout="row">
@@ -83,6 +90,59 @@
                                         formControlName="duracion" type="number" class="form-control customInput2 radius6 " placeholder="Escriba el duración del curso en minutos aquí">
                                         <div class="invalid-feedback" *ngIf="formNewCourse.controls['duracion'].errors && showErrorCurso"> 
                                             Debe indicar la duración del curso
+                                        </div>
+                                    </div>
+                                    <label>Fecha inicio</label>
+                                    <div style="position: relative">
+                                        <img [src]="icon.calendarAdd" class="makeGray h16px" alt="" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
+                                        <input formControlName="fechaInicio" [class.is-invalid]="formNewCourse.get('fechaInicio').errors && showErrorCurso" type="date" class="form-control pdl20 radius6 shadow-animation borderLight" placeholder="Ingrese los detalles de las fechas de las seciones">
+                                    </div>
+                                    <div class="form-group mgt08">
+                                        <label class="ft12 " >Fecha sesiones</label>
+                                        <textarea
+                                        [class.is-invalid]="formNewCourse.controls['fehcaSesiones'].errors && showErrorCurso"
+                                        formControlName="fehcaSesiones" 
+                                        class="form-control customInput2 radius6" 
+                                        placeholder="Escriba la duración del curso en minutos aquí"
+                                        rows="3"></textarea>
+                                        <div class="invalid-feedback" *ngIf="formNewCourse.controls['fehcaSesiones'].errors && showErrorCurso"> 
+                                            Debe indicar las fechas de las sesiones del curso
+                                        </div>
+                                    </div>
+                                    <div class="form-group mgt08">
+                                        <label class="ft12 " >Que Incluye</label>
+                                        <textarea
+                                        [class.is-invalid]="formNewCourse.controls['queIncluye'].errors && showErrorCurso"
+                                        formControlName="queIncluye" 
+                                        class="form-control customInput2 radius6" 
+                                        placeholder="Escriba la duración del curso en minutos aquí"
+                                        rows="3"></textarea>
+                                        <div class="invalid-feedback" *ngIf="formNewCourse.controls['queIncluye'].errors && showErrorCurso"> 
+                                            Debe indicar las fechas de las sesiones del curso
+                                        </div>
+                                    </div>
+                                    <div class="form-group mgt08">
+                                        <label class="ft12 " >A quien va dirigido</label>
+                                        <textarea
+                                        [class.is-invalid]="formNewCourse.controls['aQuienVaDirigido'].errors && showErrorCurso"
+                                        formControlName="aQuienVaDirigido" 
+                                        class="form-control customInput2 radius6" 
+                                        placeholder="Escriba la duración del curso en minutos aquí"
+                                        rows="3"></textarea>
+                                        <div class="invalid-feedback" *ngIf="formNewCourse.controls['aQuienVaDirigido'].errors && showErrorCurso"> 
+                                            Debe indicar las fechas de las sesiones del curso
+                                        </div>
+                                    </div>
+                                    <div class="form-group mgt08">
+                                        <label class="ft12 " >Descuentos</label>
+                                        <textarea
+                                        [class.is-invalid]="formNewCourse.controls['descuentos'].errors && showErrorCurso"
+                                        formControlName="descuentos" 
+                                        class="form-control customInput2 radius6" 
+                                        placeholder="Escriba el texto de descuentos"
+                                        rows="3"></textarea>
+                                        <div class="invalid-feedback" *ngIf="formNewCourse.controls['descuentos'].errors && showErrorCurso"> 
+                                            Debe indicar las fechas de las sesiones del curso
                                         </div>
                                     </div>
                                     <div *ngIf="user?.isSystemUser" class="form-group mgt08">
@@ -205,7 +265,7 @@
                                         <label class="ft12 pdb05 "  >Foto del curso</label>
                                         <div fxLayout="row" fxLayoutAlign="start end" >
                                                 <!-- <button class="add-button">Adjuntar nueva</button> -->
-                                                <input #cursoImage type="file" (change)="uploadCourseImage($event,'curso')" hidden accept="image/jpeg, image/png" />
+                                                <input #cursoImage type="file" (change)="uploadCourseImage($event,'curso')" hidden accept="image/jpeg, image/png,image/webp" />
                                                 <!-- <div class="image-scroll">
                                                     <img *ngFor="let imagen of imagenesCurso" (click)="seleccionarImagenCurso(imagen)" [src]="imagen" alt="Imagen seleccionada" class="image cursorPointer {{this.formNewCourse.get('imagen').value == imagen? 'img-active': ''}}">
                                                 </div> -->
@@ -441,7 +501,7 @@
                                                                                                 <img [src]="icon[getIconClase(clase.tipo)]" class="h18px pdr05" alt="">
                                                                                                 <div *ngIf="clase.titulo && !clase['editarTitulo']; then tituloPresenteClase; else ClaseSinTitulo"></div>
                                                                                                 <ng-template #tituloPresenteClase>
-                                                                                                    <span (click)="clase['editarTitulo'] = true; clase['tituloTMP'] = clase?.titulo; editarTituloClase(iClase)">{{'Clase' | titlecase }} {{getnumerClassTipo(modulo,clase)}}: {{clase.titulo}}</span>
+                                                                                                    <span (click)="clase['editarTitulo'] = true; clase['tituloTMP'] = clase?.titulo; editarTituloClase(iClase)">{{'Clase' | titlecase }} {{iClase + 1}}: {{clase.titulo}}</span>
                                                                                                 </ng-template>
                                                                                                 <ng-template #ClaseSinTitulo>
                                                                                                     <input #inputRef *ngIf="!clase.titulo" type="text" [(ngModel)]="clase['tituloTMP']" (keydown.space)="preventDefault($event)" (keyup.enter)="preventDefault($event);confirmarTituloClase(clase)" placeholder="Escriba título aquí" class="inputInvisible">

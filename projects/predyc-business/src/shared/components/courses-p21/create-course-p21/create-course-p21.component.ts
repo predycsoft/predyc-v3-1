@@ -453,6 +453,12 @@ export class CreateCourseP21Component {
     };
   }
 
+    // Validador personalizado para verificar que el valor sea mayor que 0
+  
+  greaterThanZeroValidator(control: AbstractControl): ValidationErrors | null {
+    return control.value > 0 ? null : { greaterThanZero: true };
+  }
+
   async inicializarformNewCourse() {
     if (this.mode == "create") {
       // console.log("this.empresa", this.empresa);
@@ -489,7 +495,13 @@ export class CreateCourseP21Component {
           precio: new FormControl(""),
           precioOferta: new FormControl(""),
           stripeUrl: new FormControl(""),
-          duracion: new FormControl(0, Validators.required),
+          duracion: new FormControl(0, [Validators.required,this.greaterThanZeroValidator]),
+          fechaInicio:new FormControl(""),
+          fehcaSesiones:new FormControl(""),
+          aQuienVaDirigido:new FormControl(""),
+          queIncluye:new FormControl(""),
+          enCalendario: new FormControl(false),
+          descuentos: new FormControl(""),
 
         });
         this.initSkills();
@@ -561,7 +573,15 @@ export class CreateCourseP21Component {
             precio: new FormControl(curso.precio),
             precioOferta: new FormControl(curso.precioOferta),
             stripeUrl: new FormControl(curso.stripeUrl),
-            duracion:new FormControl(curso.duracion, Validators.required),
+            duracion:new FormControl(curso.duracion, [Validators.required,this.greaterThanZeroValidator]),
+            fechaInicio:new FormControl(curso['fechaInicio']),
+            fehcaSesiones:new FormControl(curso['fehcaSesiones']),
+            aQuienVaDirigido:new FormControl(curso['aQuienVaDirigido']),
+            queIncluye:new FormControl(curso['queIncluye']),
+            enCalendario: new FormControl(curso['enCalendario']),
+            descuentos: new FormControl(curso['descuentos']),
+
+
           });
           curso?.objetivos?.forEach(objetivo => this.addObjetivo(objetivo));
 
@@ -646,6 +666,20 @@ export class CreateCourseP21Component {
 
     // Opcionalmente, imprime si el checkbox quedó marcado o no
     console.log("El checkbox Borrador está:", isChecked ? "marcado (true)" : "desmarcado (false)");
+  }
+
+  changeEnCalendario(event: Event) {
+    // Accede a la propiedad 'checked' del checkbox
+    const isChecked = (event.target as HTMLInputElement).checked;
+
+    // Actualiza el valor del campo 'proximamente' en el formulario con el nuevo estado
+    this.formNewCourse.get("enCalendario").setValue(isChecked);
+
+    if (this.curso) {
+      this.curso['enCalendario'] = isChecked;
+    }
+
+    // Opcionalmente, imprime si el checkbox quedó marcado o no
   }
 
   changeIsFree(event: Event) {

@@ -160,7 +160,21 @@ export class PDFService {
       // pdf.line(0, endY, this.pageWidth, endY); // Línea en el extremo inferior
   }
 
+  meses = [
+    'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 
+    'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+  ];
+  
+  formatearFecha(fecha: string): string {
+      const [anio, mes, dia] = fecha.split('-');
+      // return `${parseInt(dia)} de ${this.meses[parseInt(mes) - 1]} de ${anio}`;
+      return `${parseInt(dia)} de ${this.meses[parseInt(mes) - 1]}`;
+    }
+
+  isPredyc = true
+
   async downloadFichaTecnica(course, instructor, pdf: jsPDF = null, addToDocument: boolean = false,isPredyc = true) {
+    this.isPredyc = isPredyc
     if (!pdf) {
       pdf = new jsPDF("p", "mm", "a4", true) as jsPDF;
   
@@ -258,7 +272,7 @@ export class PDFService {
   
     pdf.setFontSize(14);
     currentLine = 53;
-    currentLine = this.addFormatedText({
+    currentLine = this._addFormatedText({
       text: "Descripción del curso",
       course: course,
       x: 0,
@@ -270,7 +284,7 @@ export class PDFService {
     }, pdf);
   
     pdf.setFontSize(10);
-    currentLine = this.addFormatedText({
+    currentLine = this._addFormatedText({
       text: course.descripcion,
       course: course,
       x: 0,
@@ -281,6 +295,180 @@ export class PDFService {
       textAlign: "left"
     }, pdf);
     pdf.setFontSize(14);
+
+
+    if(course.fechaInicio){
+
+      currentLine = currentLine + 3;
+      currentLine = this._addFormatedText({
+        text: "Fecha de inicio",
+        course: course,
+        x: 0,
+        y: currentLine,
+        size: 11,
+        color: 'black',
+        bold: true,
+        textAlign: "left"
+      }, pdf);
+
+      pdf.setFontSize(10);
+      currentLine = this._addFormatedText({
+        text: this.formatearFecha(course.fechaInicio),
+        course: course,
+        x: 0,
+        y: currentLine + 3,
+        size: 8,
+        color: 'black',
+        bold: false,
+        textAlign: "left"
+      }, pdf);
+
+      if(course.fehcaSesiones){
+        currentLine = this._addFormatedText({
+          text: course.fehcaSesiones,
+          course: course,
+          x: 0,
+          y: currentLine,
+          size: 8,
+          color: 'black',
+          bold: false,
+          textAlign: "left"
+        }, pdf);
+      }
+
+    }
+
+    if(course.descuentos){
+      pdf.setFontSize(14);
+      currentLine = currentLine + 3;
+      currentLine = this._addFormatedText({
+        text: "Descuentos",
+        course: course,
+        x: 0,
+        y: currentLine,
+        size: 11,
+        color: 'black',
+        bold: true,
+        textAlign: "left"
+      }, pdf);
+
+      pdf.setFontSize(10);
+      currentLine = this._addFormatedText({
+        text: course.descuentos,
+        course: course,
+        x: 0,
+        y: currentLine + 3,
+        size: 8,
+        color: 'black',
+        bold: false,
+        textAlign: "left"
+      }, pdf);
+
+    }
+
+    
+    pdf.setFontSize(14);
+
+    if(course.aQuienVaDirigido){
+
+      pdf.setFontSize(14);
+      currentLine = currentLine + 3;
+      currentLine = this._addFormatedText({
+        text: "A quién va dirigido",
+        course: course,
+        x: 0,
+        y: currentLine,
+        size: 11,
+        color: 'black',
+        bold: true,
+        textAlign: "left"
+      }, pdf);
+
+      pdf.setFontSize(10);
+      currentLine = this._addFormatedText({
+        text: course.aQuienVaDirigido,
+        course: course,
+        x: 0,
+        y: currentLine + 3,
+        size: 8,
+        color: 'black',
+        bold: false,
+        textAlign: "left"
+      }, pdf);
+
+
+    }
+
+    if(course.objetivos.length>0){
+
+      pdf.setFontSize(14);
+      currentLine = currentLine + 3;
+      currentLine = this._addFormatedText({
+        text: "Objetivos",
+        course: course,
+        x: 0,
+        y: currentLine,
+        size: 11,
+        color: 'black',
+        bold: true,
+        textAlign: "left"
+      }, pdf);
+
+
+      console.log('objetivos',course.objetivos)
+
+      course?.objetivos?.forEach(objetivo => {
+
+          pdf.setFontSize(10);
+          let text = `${objetivo.titulo.trim()}: ${objetivo.descripcion.trim()}`
+          currentLine = this._addFormatedText({
+            text: text,
+            course: course,
+            x: 0,
+            y: currentLine+3,
+            size: 8,
+            color: 'black',
+            bold: false,
+            textAlign: "left"
+          }, pdf);
+        
+
+        
+      });
+
+    }
+
+    if(course.queIncluye){
+      currentLine = currentLine + 3;
+
+
+      currentLine = this._addFormatedText({
+        text: "Qué incluye",
+        course: course,
+        x: 0,
+        y: currentLine,
+        size: 11,
+        color: 'black',
+        bold: true,
+        textAlign: "left"
+      }, pdf);
+
+      pdf.setFontSize(10);
+      currentLine = this._addFormatedText({
+        text: course.queIncluye,
+        course: course,
+        x: 0,
+        y: currentLine + 3,
+        size: 8,
+        color: 'black',
+        bold: false,
+        textAlign: "left"
+      }, pdf);
+
+    }
+
+    pdf.setFontSize(14);
+
     currentLine = this.addFormatedText({
       text: "Contenido del curso",
       course: course,
@@ -539,6 +727,112 @@ export class PDFService {
     }
     
   
+    _addFormatedText(opts: textOpts, pdf: jsPDF): number {
+      const imgWidth = 30;  // Ajustar el tamaño según sea necesario
+      const imgHeight = imgWidth / 4.65517241379;
+  
+      const addFooterAndTitle = () => {
+          let oldFontSize = pdf.getFontSize();
+          
+          // Agregar pie de página (nombre del curso y fecha) en la esquina inferior
+          const posY = this.pageHeigth - imgHeight - 5;
+          const maxTextWidth = this.pageWidth - imgWidth - 15;  // Ancho máximo del texto
+          let courseTitle = opts.course.titulo;
+  
+          // Ajustar el texto del curso si es demasiado largo
+          while (pdf.getTextWidth(courseTitle) > maxTextWidth) {
+              courseTitle = courseTitle.slice(0, -1);  // Recortar el texto
+          }
+  
+          const textWidth = pdf.getTextWidth(courseTitle);
+          const posX = this.pageWidth - imgWidth - textWidth - 15; // Ajustar el espaciado según sea necesario
+  
+          let textoEmpresa = 'Predyc';
+          let margen = 20;
+          if (!this.isPredyc) {
+              textoEmpresa = 'Predictiva21';
+              margen = 25;
+          }
+  
+          pdf.setFontSize(8);  // Ajustar el tamaño de la fuente
+          pdf.setFont("Roboto", "normal");
+          pdf.setTextColor(0, 0, 0);
+          pdf.text(`${courseTitle} - ${this.fecha}`, 6, (posY + imgHeight / 2) + 2, { align: 'left' });
+          pdf.setFontSize(9);
+          pdf.text(textoEmpresa, this.pageWidth - margen, (posY + imgHeight / 2) + 2, { align: 'left' });
+          pdf.setFontSize(oldFontSize);
+      };
+  
+      // Reducir el margen inferior en la página actual
+      if (opts.y > this.pageHeigth - 30) {  // Ajustar aquí el valor para menos espacio inferior
+          pdf.addPage();
+          addFooterAndTitle();  // Agregar pie de página en la nueva página
+  
+          // Reducir el espacio superior en la nueva página
+          opts.y = 15;  // Ajustar el espacio superior al agregar una nueva página
+      }
+  
+      pdf.setFont("Roboto", opts?.bold ? "bold" : "normal");
+      if (opts?.size) {
+          pdf.setFontSize(opts.size);
+      }
+  
+      opts.color == 'white' ? pdf.setTextColor(255, 255, 255) : pdf.setTextColor(0, 0, 0);
+  
+      const maxLineWidth = opts?.maxLineWidth ? opts.maxLineWidth : this.pageWidth - this.horizontalMargin * 2;
+      const firstLineMaxWidth = opts?.firstLineMaxWidth ?? maxLineWidth;
+  
+      let textLines = [];
+      if (opts.firstLineMaxWidth) {
+          // Dividir el texto usando firstLineMaxWidth solo para la primera línea
+          let remainingText = opts.text;
+          const firstLine = pdf.splitTextToSize(remainingText, firstLineMaxWidth)[0];
+          textLines.push(firstLine);
+          remainingText = remainingText.substring(firstLine.length).trim();
+  
+          // Dividir el resto del texto usando maxLineWidth
+          if (remainingText.length > 0) {
+              const remainingLines = pdf.splitTextToSize(remainingText, maxLineWidth);
+              textLines = textLines.concat(remainingLines);
+          }
+      } else {
+          // Dividir todo el texto usando maxLineWidth si firstLineMaxWidth no está definido
+          textLines = pdf.splitTextToSize(opts.text, maxLineWidth);
+      }
+  
+      // Define un factor de ajuste para el interlineado
+      const lineSpacingFactor = opts.lineSpacingFactor ?? 1; // Valor por defecto de 1
+  
+      for (let index = 0; index < textLines.length; index++) {
+          const lineHeight = pdf.getLineHeight() * lineSpacingFactor;
+  
+          // Chequear si la próxima línea cabe en la página actual, si no, agregar una nueva página
+          if (opts.y + (index + 1) * lineHeight > this.pageHeigth - 30) {  // Ajustar el valor para el margen inferior
+              pdf.addPage();
+              addFooterAndTitle();  // Agregar el pie de página antes de cambiar de página
+              opts.y = 15;  // Reiniciar la posición Y con menos espacio superior
+              index--;  // Retroceder el índice para procesar la línea actual en la nueva página
+              continue;
+          }
+  
+          // Agregar texto a la página actual
+          if (opts.textAlign === "justify" && index < textLines.length - 1) {
+              this.justifyLine(textLines[index], opts.x + this.horizontalMargin, opts.y + this.verticalMargin + lineHeight * (index + 1) / 2, index === 0 && opts.firstLineMaxWidth ? firstLineMaxWidth : maxLineWidth, pdf);
+          } else {
+              pdf.text(
+                  textLines[index],
+                  opts.x + this.horizontalMargin,
+                  opts.y + this.verticalMargin + lineHeight * (index + 1) / 2,
+                  { align: opts.textAlign }
+              );
+          }
+      }
+  
+      let nextHeightValue = opts.y + textLines.length * pdf.getLineHeight() * lineSpacingFactor / 2;
+  
+      return nextHeightValue;
+  }
+  
   
   
   addFormatedText(opts: textOpts,pdf:jsPDF): number {
@@ -562,6 +856,14 @@ export class PDFService {
         const textWidth = pdf.getTextWidth(courseTitle);
         const posX = this.pageWidth - imgWidth - textWidth - 15; // Ajustar el espaciado según sea necesario
 
+        let textoEmpresa = 'Predyc'
+        let margen = 20
+        if(!this.isPredyc){
+          textoEmpresa = 'Predictiva21'
+          margen = 25
+        }
+
+
         pdf.setFontSize(8);  // Ajustar el tamaño de la fuente
         pdf.setFont("Roboto", "normal");
         pdf.setTextColor(0, 0, 0);
@@ -569,7 +871,7 @@ export class PDFService {
         //pdf.addImage(this.logoBlack, 'png', this.pageWidth - imgWidth - 5, posY, imgWidth, imgHeight, '', 'FAST');
         pdf.setFontSize(9);  // Ajustar el tamaño de la fuente
         
-        pdf.text(`Predyc`, this.pageWidth-20, (posY + imgHeight / 2) + 2, { align: 'left' });
+        pdf.text(textoEmpresa, this.pageWidth-margen, (posY + imgHeight / 2) + 2, { align: 'left' });
 
         opts.y = 10;
         pdf.setFontSize(old);
