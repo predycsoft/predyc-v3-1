@@ -98,11 +98,10 @@ export class PillarsListComponent {
             )
           ).length;
   
-          return category.enterprise ? 
-            this.enterpriseService.getEnterpriseById$(category.enterprise.id).pipe(
+          return category.enterprise ? this.enterpriseService.getEnterpriseById$(category.enterprise.id).pipe(
               map(enterprise => ({ 
                 ...category, 
-                enterpriseName: enterprise.name, 
+                enterpriseName: enterprise?.name, 
                 coursesQty: coursesQty 
               }))
             ) : 
