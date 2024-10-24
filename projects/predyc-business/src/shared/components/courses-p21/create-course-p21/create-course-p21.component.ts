@@ -3174,21 +3174,11 @@ export class CreateCourseP21Component {
   }
 
   descargarPDF(){
-    if(!this.curso || this.mode == "create"){
-      this.curso = this.formNewCourse.value;
-      this.curso.modules = this.modulos
-
-      // let duracion = this.getDurationModuleCourse();
-      // this.curso.duracion = duracion;
-    }
-
-    console.log(this.curso,this.modulos,this.instructores)
-
-    if(! this.curso?.modules ){
-      this.curso.modules = this.modulos
-
-    }
     
+    
+    this.curso = this.formNewCourse.value;
+    this.curso.modules = this.modulos
+
 
     let instrctor = this.instructores.find(x=>x.id == this.curso.instructorRef.id)
 

@@ -14,7 +14,7 @@ max-height: calc(75vh);
 }
 
 .containerCrearCurso{
-height: calc(100vh);
+/* height: calc(100vh); */
 }
 
 .stepper {

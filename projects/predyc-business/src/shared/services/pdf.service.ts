@@ -399,7 +399,7 @@ export class PDFService {
 
     }
 
-    if(course.objetivos.length>0){
+    if(course?.objetivos?.length>0){
 
       pdf.setFontSize(14);
       currentLine = currentLine + 3;
@@ -657,9 +657,36 @@ export class PDFService {
               let duracionClase = this.getFormattedDuration(clase.duracion);
               let tituloClase = clase.titulo.trim();
               if (tituloClase.length >= 125) {
-                  tituloClase = tituloClase.slice(0, 122) + '...';
+                
+                  //tituloClase = tituloClase.slice(0, 122) + '...';
               }
-              pdf.text(`${tituloClase}`, tableMargin + 5, textYPosition, { align: 'left' }); // Centrar el texto verticalmente
+              // this._addFormatedText
+              //pdf.text(`${tituloClase}`, tableMargin + 5, textYPosition, { align: 'left' }); // Centrar el texto verticalmente
+              
+              let pageWithOrg = this.pageWidth
+
+              let marginOffSet = 0
+
+              if(isPredyc){
+                marginOffSet = 25
+              }
+              else{
+                marginOffSet = 8
+              }
+              this.pageWidth = this.pageWidth - marginOffSet
+
+              currentLine = this._addFormatedText({
+                text: tituloClase,
+                course: course,
+                x: 5,
+                y: currentLine-4,
+                size: 8,
+                color: 'black',
+                bold: false,
+                textAlign: "left"
+              }, pdf);
+
+              this.pageWidth = pageWithOrg
               if(isPredyc){
                 if (clase.duracion >= 10 && clase.duracion % 60 != 0) {
                   pdf.text(`${duracionClase}`, 185, textYPosition, { align: 'left' }); // Centrar el texto verticalmente
@@ -725,7 +752,9 @@ export class PDFService {
     
       return currentLine;
     }
-    
+
+
+
   
     _addFormatedText(opts: textOpts, pdf: jsPDF): number {
       const imgWidth = 30;  // Ajustar el tamaño según sea necesario
@@ -743,10 +772,7 @@ export class PDFService {
           while (pdf.getTextWidth(courseTitle) > maxTextWidth) {
               courseTitle = courseTitle.slice(0, -1);  // Recortar el texto
           }
-  
-          const textWidth = pdf.getTextWidth(courseTitle);
-          const posX = this.pageWidth - imgWidth - textWidth - 15; // Ajustar el espaciado según sea necesario
-  
+          
           let textoEmpresa = 'Predyc';
           let margen = 20;
           if (!this.isPredyc) {
@@ -807,10 +833,10 @@ export class PDFService {
           const lineHeight = pdf.getLineHeight() * lineSpacingFactor;
   
           // Chequear si la próxima línea cabe en la página actual, si no, agregar una nueva página
-          if (opts.y + (index + 1) * lineHeight > this.pageHeigth - 30) {  // Ajustar el valor para el margen inferior
+          if (opts.y + (index + 1) * lineHeight > this.pageHeigth - 2) {  // Ajustar el valor para el margen inferior
               pdf.addPage();
               addFooterAndTitle();  // Agregar el pie de página antes de cambiar de página
-              opts.y = 15;  // Reiniciar la posición Y con menos espacio superior
+              opts.y = -10;  // Reiniciar la posición Y con menos espacio superior
               index--;  // Retroceder el índice para procesar la línea actual en la nueva página
               continue;
           }
