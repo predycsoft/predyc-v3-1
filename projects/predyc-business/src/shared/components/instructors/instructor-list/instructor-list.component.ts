@@ -180,7 +180,13 @@ export class InstructorListComponent {
           descripcion:instructor.descripcion,
           foto:instructor.foto,
           courses:cursos.filter(x=>x['instructorId']== instructor.id),
-          liveCourses:cursosEnVivo.filter(x=>x['instructorId'] == instructor.id)
+          liveCourses:cursosEnVivo.filter(x=>x['instructorId'] == instructor.id),
+          experienciaLaboral:instructor?.experienciaLaboral,
+          destrezas:instructor?.destrezas,
+          certificacion:instructor?.certificacion,
+          formacion:instructor?.formacion,
+          cursosConferenciasYtrabajos:instructor?.cursosConferenciasYtrabajos,
+          resumenCV:instructor?.resumenCV,
         }
       });
       console.log('instructores',instructores)

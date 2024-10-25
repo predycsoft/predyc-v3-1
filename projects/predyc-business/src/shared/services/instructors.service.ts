@@ -33,6 +33,7 @@ export class InstructorsService {
   
   async addInstructor(Instructor): Promise<void> {
     try {
+      console.log('instructorsToSave',Instructor)
       if (Instructor?.id) {
         // Si Instructor tiene un id, actualizar el documento existente
         const ref = this.afs.collection('instructors').doc(Instructor.id).ref;

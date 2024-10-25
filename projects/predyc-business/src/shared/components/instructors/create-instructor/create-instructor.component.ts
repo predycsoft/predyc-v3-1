@@ -78,7 +78,13 @@ export class CreateInstructorComponent {
       firma:[null],
       porcentaje:[null],
       enterpriseRef:[null],
-      userRef:[null]
+      userRef:[null],
+      experienciaLaboral:[null],
+      destrezas:[null],
+      certificacion:[null],
+      formacion:[null],
+      cursosConferenciasYtrabajos:[null],
+      resumenCV:[null],
     });
 
     if (this.instructorToEdit) {
@@ -105,6 +111,12 @@ export class CreateInstructorComponent {
         email:this.instructorToEdit.email,
         enterpriseRef: enterpriseRef,
         userRef: userRef,
+        experienciaLaboral:this.instructorToEdit?.experienciaLaboral,
+        destrezas:this.instructorToEdit?.destrezas,
+        certificacion:this.instructorToEdit?.certificacion,
+        formacion:this.instructorToEdit?.formacion,
+        cursosConferenciasYtrabajos:this.instructorToEdit?.cursosConferenciasYtrabajos,
+        resumenCV:this.instructorToEdit?.resumenCV,
      })
 
      if (this.instructorToEdit.foto) {

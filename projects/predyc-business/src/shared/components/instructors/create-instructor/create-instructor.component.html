@@ -47,7 +47,90 @@
                 </div>
                 
             </div>
-            <div fxLayout="row"  fxLayoutAlign="left " class="pdt10 border-tl">
+            <div fxLayout="column"  fxLayoutAlign="left " class="pdt10 border-tl">
+                <div fxLayout="row">
+                    <div fxLayout="column" fxLayoutGap="10px" fxLayoutAlign=" left" class="w-50  mgr05">
+                        <label for="">Experiencia Laboral</label>
+                        <div style="position: relative">
+                            <textarea
+                                maxlength="500"
+                                style="height:150px; resize: none;"
+                                formControlName="experienciaLaboral"
+                                [class.is-invalid]="instructorForm.get('experienciaLaboral').errors && displayErrors"
+                                class="form-control pdl20  radius20 shadow-animation borderLight hideScroll"
+                                placeholder="Experiencia Laboral">
+                            </textarea>
+                        </div>
+                    </div><div fxLayout="column" fxLayoutGap="10px" fxLayoutAlign=" left" class="w-50  mgl05">
+                        <label for="">Destrezas</label>
+                        <div style="position: relative">
+                            <textarea
+                                maxlength="500"
+                                style="height: 150px; resize: none;"
+                                formControlName="destrezas"
+                                [class.is-invalid]="instructorForm.get('destrezas').errors && displayErrors"
+                                class="form-control pdl20  radius20 shadow-animation borderLight hideScroll"
+                                placeholder="Destrezas">
+                            </textarea>
+                        </div>
+                    </div>
+                </div>
+                <div fxLayout="row" class="pdt10">
+                    <div fxLayout="column" fxLayoutGap="10px" fxLayoutAlign=" left" class="w-50  mgr05">
+                        <label for="">Certificacion</label>
+                        <div style="position: relative">
+                            <textarea
+                                maxlength="500"
+                                style="height:150px; resize: none;"
+                                formControlName="certificacion"
+                                [class.is-invalid]="instructorForm.get('certificacion').errors && displayErrors"
+                                class="form-control pdl20  radius20 shadow-animation borderLight hideScroll"
+                                placeholder="Certificacion">
+                            </textarea>
+                        </div>
+                    </div><div fxLayout="column" fxLayoutGap="10px" fxLayoutAlign=" left" class="w-50  mgl05">
+                        <label for="">Formación</label>
+                        <div style="position: relative">
+                            <textarea
+                                maxlength="500"
+                                style="height: 150px; resize: none;"
+                                formControlName="formacion"
+                                [class.is-invalid]="instructorForm.get('formacion').errors && displayErrors"
+                                class="form-control pdl20  radius20 shadow-animation borderLight hideScroll"
+                                placeholder="Formacion">
+                            </textarea>
+                        </div>
+                    </div>
+                </div>
+                <div fxLayout="row" class="pdt10">
+                    <div fxLayout="column" fxLayoutGap="10px" fxLayoutAlign=" left" class="w-50  mgr05">
+                        <label for="">Cursos, conferencias y trabajos</label>
+                        <div style="position: relative">
+                            <textarea
+                                maxlength="500"
+                                style="height:150px; resize: none;"
+                                formControlName="cursosConferenciasYtrabajos"
+                                [class.is-invalid]="instructorForm.get('cursosConferenciasYtrabajos').errors && displayErrors"
+                                class="form-control pdl20  radius20 shadow-animation borderLight hideScroll"
+                                placeholder="Cursos, conferencias y trabajos">
+                            </textarea>
+                        </div>
+                    </div><div fxLayout="column" fxLayoutGap="10px" fxLayoutAlign=" left" class="w-50  mgl05">
+                        <label for="">Resumen</label>
+                        <div style="position: relative">
+                            <textarea
+                                maxlength="500"
+                                style="height: 150px; resize: none;"
+                                formControlName="resumenCV"
+                                [class.is-invalid]="instructorForm.get('resumenCV').errors && displayErrors"
+                                class="form-control pdl20  radius20 shadow-animation borderLight hideScroll"
+                                placeholder="Resumen">
+                            </textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div fxLayout="row"  fxLayoutAlign="left " class="pdt10">
                 <div fxLayout="column" fxLayoutGap="10px" fxLayoutAlign=" left" class="w-50  mgr05">
                     <label for="">Descripción</label>
                     <div style="position: relative">
