@@ -374,7 +374,7 @@ export class PDFService {
 
       currentLine = currentLine + 1;
       currentLine = this._addFormatedText({
-        text: "Fecha de inicio",
+        text: "Sesiones",
         course: course,
         x: 0,
         y: currentLine,
@@ -385,16 +385,19 @@ export class PDFService {
       }, pdf);
 
       pdf.setFontSize(10);
-      currentLine = this._addFormatedText({
-        text: this.formatearFecha(course.fechaInicio),
-        course: course,
-        x: 0,
-        y: currentLine + 3,
-        size: 8,
-        color: 'black',
-        bold: false,
-        textAlign: "left"
-      }, pdf);
+      // currentLine = this._addFormatedText({
+      //   text: this.formatearFecha(course.fechaInicio),
+      //   course: course,
+      //   x: 0,
+      //   y: currentLine + 3,
+      //   size: 8,
+      //   color: 'black',
+      //   bold: false,
+      //   textAlign: "left"
+      // }, pdf);
+
+      currentLine = currentLine + 3;
+
 
       if(course.fehcaSesiones){
         currentLine = this._addFormatedText({

@@ -3081,11 +3081,11 @@ export class CreateCourseP21Component {
           }
           this.skillsCurso = this.getCursoSkills();
           this.savingSkill = false;
-          this.modalCrearSkill.close();
+          this.modalCrearSkill?.close();
         } else {
           this.skillsCurso = this.getCursoSkills();
           this.savingSkill = false;
-          this.modalCrearSkill.close();
+          this.modalCrearSkill?.close();
         }
       } else {
         // crear y asignar
