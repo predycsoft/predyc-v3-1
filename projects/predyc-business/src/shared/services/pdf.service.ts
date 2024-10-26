@@ -499,7 +499,7 @@ export class PDFService {
 
         pdf.setFontSize(10);
         currentLine = this._addFormatedText({
-          text: texto,
+          text: `*${texto}`,
           course: course,
           x: 0,
           y: currentLine+3,
