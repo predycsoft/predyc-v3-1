@@ -545,7 +545,7 @@ export class PDFService {
     }
 
 
-    if(true){
+    if(!isPredyc){
       await this.addInstrcutorCV(pdf,course,instructor,isPredyc)
     }
   
