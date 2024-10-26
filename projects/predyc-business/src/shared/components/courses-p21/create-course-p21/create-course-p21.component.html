@@ -403,7 +403,7 @@
                                                         </div>
                                                     </div>
                                                     </mat-option>
-                                                    <mat-option  (click)="createInstructor()" class="multiline-mat-option" value="null">Crear nuevo instructor</mat-option>
+                                                    <!-- <mat-option  (click)="createInstructor()" class="multiline-mat-option" value="null">Crear nuevo instructor</mat-option> -->
                                                 </mat-autocomplete>
                                                 </mat-form-field>
                                             </form>
@@ -421,13 +421,13 @@
                                         </div>
                                         
                                         <!-- Resto del formulario -->
-                                        <div class="form-group pdb10">
+                                        <!-- <div class="form-group pdb10">
                                             <label class=" ft12" >Resumen del instructor</label>
                                             <textarea rows="3" [class.is-invalid]="formNewCourse.controls['resumen_instructor'].errors && showErrorCurso" formControlName="resumen_instructor" type="text" class="form-control customInput2" placeholder="Escriba el resumen del instructor aquí." style="resize: none;"></textarea>
                                             <div class="invalid-feedback" *ngIf="formNewCourse.controls['resumen_instructor'].errors && showErrorCurso"> 
                                                 Debe indicar el resumen del instructor.
                                             </div>
-                                        </div>
+                                        </div> -->
                                     </ng-container>         
                                 </form>
                             </div>

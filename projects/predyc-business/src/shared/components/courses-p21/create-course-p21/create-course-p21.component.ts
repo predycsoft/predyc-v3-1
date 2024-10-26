@@ -233,7 +233,7 @@ export class CreateCourseP21Component {
 
 
   anidarCompetenciasInicial(categorias: any[], competencias: any[]): any[] {
-    // console.log("anidarCompetenciasInicial", categorias, competencias);
+    console.log("anidarCompetenciasInicial", categorias, competencias);
     return categorias.map((categoria) => {
       let skills = competencias
         .filter((comp) => comp.category.id === categoria.id)
@@ -327,13 +327,17 @@ export class CreateCourseP21Component {
   initSkills() {
     this.categoryService
       .getCategoriesObservable()
-      .pipe()
-      .subscribe((category) => {
+      .pipe(
+          filter((category) => category && category.length > 0), // Verifica que el resultado no sea vacío
+          take(1) // Toma el primer valor una vez que existe
+        ).subscribe((category) => {
         // console.log("category from service", category);
         this.skillService
           .getSkillsObservable()
-          .pipe()
-          .subscribe((skill) => {
+          .pipe(
+              filter((skill) => skill && skill.length > 0), // Verifica que el resultado no sea vacío
+              take(1) // Toma el primer valor una vez que existe
+            ).subscribe((skill) => {
             // console.log("skill from service", skill);
             this.allskills = skill;
             skill.map((skillIn) => {
@@ -361,11 +365,12 @@ export class CreateCourseP21Component {
                   let pilar;
                   let skillId = this.curso.skillsRef[0]?.id;
                   if (skillId) {
+                    console.log('categoriasArray',this.categoriasArray)
                     pilar = this.categoriasArray.find((x) => x.competencias.find((y) => y.id == skillId));
                   } else if (this.pillarsForm.value["id"]) {
                     pilar = this.categoriasArray.find((x) => x.id == this.pillarsForm.value["id"]);
                   }
-                  console.log("pilar", pilar);
+                  console.log("pilarPatch", pilar,this.curso.skillsRef);
                   this.pillarsForm.patchValue(pilar);
                 }
                 // this.getExamCourse(this.curso.id);
