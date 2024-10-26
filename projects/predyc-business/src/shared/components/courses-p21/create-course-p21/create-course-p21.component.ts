@@ -411,7 +411,7 @@ export class CreateCourseP21Component {
     }
   }
 
-  changePillar(newPillar) {
+  async changePillar(newPillar) {//estoy aqui
     if (this.curso?.skillsRef[0]?.id) {
       let pilar = this.categoriasArray.find((x) => x.competencias.find((y) => y.id == this.curso?.skillsRef[0]?.id));
       //this.pillarsForm.patchValue(pilar)
@@ -419,6 +419,7 @@ export class CreateCourseP21Component {
         this.curso.skillsRef = [];
         this.skillsCurso = [];
         this.formNewCourse.get("skills").setValue([]);
+        await this.saveNewSkill(newPillar.name)
       }
     }
   }
@@ -629,7 +630,7 @@ export class CreateCourseP21Component {
 
   newObjetivo(objetivo = { titulo: '', descripcion: '' }) {
     return this.fb.group({
-        titulo: [objetivo.titulo, Validators.required],
+        titulo: [objetivo.titulo],
         descripcion: [objetivo.descripcion, Validators.required]
     });
   }
@@ -3033,9 +3034,16 @@ export class CreateCourseP21Component {
 
   savingSkill = false;
 
-  async saveNewSkill() {
+  async saveNewSkill(nameSkill = null) {
     this.savingSkill = true;
     //console.log(this.pillarsForm.value)
+
+    if(nameSkill){
+      console.log('nameSkill',nameSkill)
+      this.formNewSkill = new FormGroup({
+        nombre: new FormControl(nameSkill, Validators.required),
+      });
+    }
     this.showErrorSkill = false;
     if (this.formNewSkill.valid) {
       this.tmpSkillRefArray = [];
@@ -3043,6 +3051,7 @@ export class CreateCourseP21Component {
 
       let pilar = this.pillarsForm.value;
       let competencias = pilar["competencias"] || [];
+      console.log('this.formNewSkill',this.formNewSkill.value)
       let competencia = competencias.find((x) => x.name.toLowerCase() == this.formNewSkill.get("nombre")?.value.toLowerCase().trim());
 
       let skills = this.formNewCourse.get("skills")?.value;
@@ -3096,7 +3105,7 @@ export class CreateCourseP21Component {
         console.log("tmpSkillRefArray", this.tmpSkillRefArray);
         this.skillsCurso = this.getCursoSkills();
         this.savingSkill = false;
-        this.modalCrearSkill.close();
+        this.modalCrearSkill?.close();
       }
     } else {
       this.showErrorSkill = true;

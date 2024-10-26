@@ -16,7 +16,8 @@ interface textOpts {
     maxLineWidth?: number,
     lineSpacingFactor?: number;  // Nueva propiedad opcional para ajustar el interlineado
     firstLineMaxWidth?:number
-    course?:any
+    course?:any,
+    lastTitle?:string
   }
 
 @Injectable({
@@ -160,6 +161,63 @@ export class PDFService {
       // pdf.line(0, endY, this.pageWidth, endY); // Línea en el extremo inferior
   }
 
+  async addFormattedInstructorCV(instructor:any,startY: number, endY: number, pdf: jsPDF) {
+    const sectionHeight = endY - startY;
+    const imageSize = 40;
+    const textMargin = 3;
+    const maxLineWidth = this.pageWidth - 40; // Ajustar el margen derecho
+
+    // Convertir la imagen del instructor a base64
+    const imageInstrcutorUrl = instructor.foto;
+    const imgInstrctorData = await this.convertImageToPNG(imageInstrcutorUrl);
+    const circularImage = await this.createCircularImage(imgInstrctorData, 250);
+
+    // Añadir la imagen circular al PDF
+    pdf.addImage(circularImage, 'PNG', 10, startY + (sectionHeight - imageSize) / 2, imageSize, imageSize, '', 'FAST');
+
+    // Calcular la altura del texto
+    const instructorName = `${instructor.nombre}`;
+    pdf.setFont("Roboto", "bold");
+    pdf.setFontSize(9);
+    const instructorNameLines = pdf.splitTextToSize(instructorName, maxLineWidth);
+    const instructorNameHeight = instructorNameLines.length * pdf.getLineHeight() / 2;
+
+    pdf.setFont("Roboto", "normal");
+    pdf.setFontSize(14);
+    const instructorSummaryLines = pdf.splitTextToSize(instructor.resumen, maxLineWidth);
+
+    const totalLines = instructorNameLines.length + instructorSummaryLines.length; // Calcular el total de líneas
+
+    // Mostrar en la consola el total de líneas de texto
+    console.log('Total lines of text:', totalLines);
+
+    // Calcular la posición vertical del texto para que esté centrado
+    const fineTuneOffset = -3; // Ajuste fino de la posición vertical del texto
+    const textStartY = startY + ((sectionHeight - (totalLines*2.2)) / 2) + fineTuneOffset;
+
+    // Dibujar las líneas de texto del nombre del instructor
+    let currentLineYPosition = textStartY;
+    pdf.setFont("Roboto", "bold");
+    pdf.setTextColor(255, 255, 255);
+    instructorNameLines.forEach(line => {
+        pdf.text(line, 60, currentLineYPosition, { align: 'left' });
+        pdf.setFontSize(10);
+        currentLineYPosition += pdf.getLineHeight() / 2;
+    });
+
+    // Dibujar las líneas de texto del resumen del instructor
+    pdf.setFont("Roboto", "normal");
+    instructorSummaryLines.forEach(line => {
+        pdf.text(line, 60, currentLineYPosition, { align: 'left' });
+        currentLineYPosition += pdf.getLineHeight() / 2;
+    });
+
+    // // Dibujar líneas horizontales en los márgenes superior e inferior
+    // pdf.setDrawColor(200, 200, 200); // Color de la línea
+    // pdf.line(0, startY, this.pageWidth, startY); // Línea en el extremo superior
+    // pdf.line(0, endY, this.pageWidth, endY); // Línea en el extremo inferior
+}
+
   meses = [
     'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 
     'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
@@ -226,8 +284,6 @@ export class PDFService {
     else{
       //logo predicti21
       pdf.addImage(this.logoWhiteP21, 'png', 180, 3, imgWidtLogoWhite, imgHeightLogoWhite, '', 'FAST');
-
-      
     }
   
     pdf.setFontSize(18);
@@ -296,10 +352,26 @@ export class PDFService {
     }, pdf);
     pdf.setFontSize(14);
 
+    pdf.setFontSize(14);
+
+    currentLine = this.addFormatedText({
+      text: "Contenido del curso",
+      course: course,
+      x: 0,
+      size: 11,
+      y: currentLine + 3,
+      color: 'black',
+      bold: true,
+      textAlign: "left"
+    }, pdf);
+    pdf.setFontSize(10);
+    currentLine = currentLine + 10;
+    currentLine = this.addFormattedTable(course, currentLine, pdf,isPredyc);
+
 
     if(course.fechaInicio){
 
-      currentLine = currentLine + 3;
+      currentLine = currentLine + 1;
       currentLine = this._addFormatedText({
         text: "Fecha de inicio",
         course: course,
@@ -367,7 +439,6 @@ export class PDFService {
     }
 
     
-    pdf.setFontSize(14);
 
     if(course.aQuienVaDirigido){
 
@@ -419,26 +490,31 @@ export class PDFService {
 
       course?.objetivos?.forEach(objetivo => {
 
-          pdf.setFontSize(10);
-          let text = `${objetivo.titulo.trim()}: ${objetivo.descripcion.trim()}`
-          currentLine = this._addFormatedText({
-            text: text,
-            course: course,
-            x: 0,
-            y: currentLine+3,
-            size: 8,
-            color: 'black',
-            bold: false,
-            textAlign: "left"
-          }, pdf);
-        
+        let texto = ''
+        if(objetivo?.titulo?.trim()){
+          texto += `${objetivo.titulo.trim()}: `
+        }
+        texto += `${objetivo.descripcion.trim()}`
 
-        
+        pdf.setFontSize(10);
+        currentLine = this._addFormatedText({
+          text: texto,
+          course: course,
+          x: 0,
+          y: currentLine+3,
+          size: 8,
+          color: 'black',
+          bold: false,
+          textAlign: "left"
+        }, pdf);
+      
+
       });
 
     }
 
     if(course.queIncluye){
+      pdf.setFontSize(14);
       currentLine = currentLine + 3;
 
 
@@ -467,25 +543,86 @@ export class PDFService {
 
     }
 
-    pdf.setFontSize(14);
 
-    currentLine = this.addFormatedText({
-      text: "Contenido del curso",
-      course: course,
-      x: 0,
-      size: 11,
-      y: currentLine + 3,
-      color: 'black',
-      bold: true,
-      textAlign: "left"
-    }, pdf);
-    pdf.setFontSize(10);
-    currentLine = currentLine + 10;
-    currentLine = this.addFormattedTable(course, currentLine, pdf,isPredyc);
+    if(true){
+      await this.addInstrcutorCV(pdf,course,instructor,isPredyc)
+    }
   
     if (!addToDocument) {
       pdf.save("Ficha_tecnica_Curso_" + this.sanitizeFilename(course.titulo) + ".pdf");
     }
+  }
+
+
+
+  async addInstrcutorCV(pdf,course,instructor,isPredyc){
+
+    console.log(pdf,instructor)
+    
+    pdf.addPage();
+
+
+    pdf.setFillColor(35, 43, 56);
+    pdf.rect(0, 0, this.pageWidth, 55, 'F');
+    let currentLine = 0;
+  
+    const imageUrl = instructor.foto;
+    const imgData = await this.convertImageToPNG(imageUrl);
+  
+    //pdf.addImage(imgData, 'PNG', 6, 5, 45, 45, '', 'FAST');
+  
+    const imgWidth = 30;
+    const imgHeight = imgWidth / 4.65517241379;
+  
+    const posY = this.pageHeigth - imgHeight - 5;
+    let courseTitle = course.titulo;
+  
+    pdf.setFontSize(8);
+    pdf.setFont("Roboto", "normal");
+    pdf.setTextColor(0, 0, 0);
+    pdf.text(`${courseTitle} - ${this.fecha}`, 6, (posY + imgHeight / 2) + 2, { align: 'left' });
+    pdf.setFontSize(9);
+
+    let textoEmpresa = 'Predyc'
+    let margen = 20
+    if(!isPredyc){
+      textoEmpresa = 'Predictiva21'
+      margen = 25
+    }
+    pdf.text(textoEmpresa, this.pageWidth-margen, (posY + imgHeight / 2) + 2, { align: 'left' });
+    
+  
+    const imgWidtLogoWhite = 27;
+    const imgHeightLogoWhite = imgWidtLogoWhite / 4.3;
+
+
+    pdf.setFontSize(18);
+
+    const instructorSectionStartY = 0;
+    const instructorSectionEndY = 55;
+  
+    await this.addFormattedInstructorCV(instructor, instructorSectionStartY, instructorSectionEndY, pdf);
+    // currentLine = this.addFormatedText({
+    //   text: instructor.nombre,
+    //   course: course,
+    //   x: 48,
+    //   y: -2,
+    //   color: 'white',
+    //   bold: true,
+    //   size: 18,
+    //   textAlign: "left",
+    //   maxLineWidth: this.pageWidth - 20,
+    //   firstLineMaxWidth: this.pageWidth - 95,
+    //   lineSpacingFactor: 0.8
+    // }, pdf);
+    
+    if(isPredyc){
+      pdf.addImage(this.logoWhite, 'png', 180, 3, imgWidtLogoWhite, imgHeightLogoWhite, '', 'FAST');
+    }
+    else{
+      pdf.addImage(this.logoWhiteP21, 'png', 180, 3, imgWidtLogoWhite, imgHeightLogoWhite, '', 'FAST');      
+    }
+
   }
 
   async downloadFichaTecnicaMultiple(courses,titulo='Ficha_tecnica_Cursos',showLoading = true,isPredyc = true) {
@@ -698,9 +835,9 @@ export class PDFService {
               }
               pdf.setDrawColor(200, 200, 200); // Color de la línea
               pdf.setLineWidth(0.2); // Grosor de la línea ajustado
-              if (index < modulo.clases.length - 1) { // quitar si se quiere poner la linea en ultima clase
-                  pdf.line(tableMargin, currentLine + classHeight, tableMargin + tableWidth, currentLine + classHeight); // Línea debajo de cada clase
-              }
+              //if (index < modulo.clases.length - 1) { // quitar si se quiere poner la linea en ultima clase
+              pdf.line(tableMargin, currentLine + classHeight, tableMargin + tableWidth, currentLine + classHeight); // Línea debajo de cada clase
+              //}
               currentLine += classHeight; // Espacio entre las clases
     
               // Verificar si se necesita una nueva página después de dibujar una clase

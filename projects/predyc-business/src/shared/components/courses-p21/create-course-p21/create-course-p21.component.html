@@ -145,7 +145,7 @@
                                             Debe indicar las fechas de las sesiones del curso
                                         </div>
                                     </div>
-                                    <div *ngIf="user?.isSystemUser" class="form-group mgt08">
+                                    <!-- <div *ngIf="user?.isSystemUser" class="form-group mgt08">
                                         <label class="ft12">URL personalizado</label>
                                         <div class="input-group">
                                             <input
@@ -162,7 +162,7 @@
                                         <div class="invalid-feedback" *ngIf="formNewCourse?.controls['customUrl']?.errors && showErrorCurso">
                                             Debe indicar el URL del curso
                                         </div>
-                                        </div>                                          
+                                    </div>-->
                                     <!-- <div class="form-group pdt10">
                                         <label>Resumen del curso</label>
                                         <textarea 
@@ -181,7 +181,7 @@
                                             Debe indicar la descripción del curso
                                         </div>
                                     </div>
-                                    <div  *ngIf="user.isSystemUser"  class="ft12 form-group pdt10">
+                                    <!-- <div  *ngIf="user.isSystemUser"  class="ft12 form-group pdt10">
                                         <label>Precio</label>
                                         <input formControlName="precio"
                                             [class.is-invalid]="formNewCourse.controls['precio'].errors && showErrorCurso"
@@ -232,7 +232,7 @@
                                         <div class="invalid-feedback" *ngIf="formNewCourse.controls['KeyWords'].errors && showErrorCurso"> 
                                             Debe indicar los KeyWords del curso
                                         </div>
-                                    </div>
+                                    </div> -->
 
                                     <div class="form-group pdt10">
                                         <div fxLayout="row" fxLayoutGap="1.5rem" fxLayoutAlign="start center">
@@ -351,16 +351,16 @@
                                             </mat-form-field>
                                         </form>
                                     </div>
-                                    <div fxLayout="row" fxLayoutAlign=" center" class="fw">
+                                    <div *ngIf="false" fxLayout="row" fxLayoutAlign=" center" class="fw">
                                         <div class="skills-container">
-                                            <ng-container *ngFor="let skill of skillsCurso; let indexSkill = index">
+                                            <!-- <ng-container *ngFor="let skill of skillsCurso; let indexSkill = index">
                                                 <div
                                                     style="display: inline-block; margin-right: 5px; margin-bottom: 5px; margin-top: 5px;"
                                                     class="skill-badge-complete ListHover radius10 backGray2  ft12 pdl08 pdr08 gray-8 mgt08">
                                                     {{skill?.name}}
                                                     <img style="cursor: pointer;" (click)="removeSkill(skill)" [src]="icon.close"  class="h16px makeGray"  alt="">
                                                 </div>
-                                            </ng-container>
+                                            </ng-container> -->
                                             <!-- estoy aqui (click)="crearCompetencia(modalCrearSkill)"-->
                                             <!-- <div class="pdb10"> 
                                                 <div *ngIf="skillsCurso?.length<3 && pillarsForm.value" matTooltip="Agregar competencia"
@@ -369,17 +369,17 @@
                                                     <img style="cursor: pointer;"  [src]="icon.addBlue"  class="h16px ft600 "  alt="">
                                                 </div>
                                             </div> -->
-                                            <div class="pdb10"> 
+                                            <!-- <div class="pdb10"> 
                                                 <div *ngIf="skillsCurso?.length<3 && pillarsForm.value" matTooltip="Agregar competencia"
                                                 style="display: inline-block; margin-right: 5px; "
                                                 (click)="crearCompetencia(modalCrearSkill)" class="backGray2 radius20  pdl03 pdr03  gray-8 " >
                                                     <img style="cursor: pointer;"  [src]="icon.addBlue"  class="h16px ft600 "  alt="">
                                                 </div>
-                                            </div>
+                                            </div> -->
                                         </div>
-                                        <div *ngIf="formNewCourse.controls['skills'].errors && showErrorCurso" class="custom-invalid-feedback pdt05">
+                                        <!-- <div *ngIf="formNewCourse.controls['skills'].errors && showErrorCurso" class="custom-invalid-feedback pdt05">
                                             Debe seleccionar al menos una competencia.
-                                        </div>
+                                        </div> -->
                                     </div>
                                     <ng-container>
                                         <div fxLayout="row" fxLayoutAlign="center center" class="mgt05 fw">
