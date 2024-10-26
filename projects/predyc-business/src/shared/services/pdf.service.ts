@@ -47,6 +47,7 @@ export class PDFService {
     logoWhite ="/assets/images/design/PredycWhite.png"
     logoBlack ="/assets/images/design/predyc-logoNegro.png"
     reloj = "assets/iconsUI/clock.png"
+    calendar =  "assets/iconsUI/calendar-1.png"
     logoWhiteP21 = "/assets/images/logos/logo-predictiva-blanco-lg.png"
   
     // Función para convertir imágenes a PNG
@@ -310,11 +311,19 @@ export class PDFService {
     pdf.setFontSize(17);
   
     let duracionCurso = this.getFormattedDuration(course.duracion);
+    
   
     pdf.addImage(this.reloj, 'png', 57.69, 45.02, 6, 6, '', 'FAST');
+
+    let txtDuracion = `Duración del curso: ${duracionCurso}`
+
+    if(course.modalidad){
+      txtDuracion = `${course.modalidad} | ${txtDuracion}`
+    }
+
   
     currentLine = this.addFormatedText({
-      text: `Duración del curso: ${duracionCurso}`,
+      text: `${txtDuracion}`,
       course: course,
       x: 55,
       y: 40.5,
@@ -324,6 +333,26 @@ export class PDFService {
       textAlign: "left",
       maxLineWidth: this.pageWidth - 120
     }, pdf);
+
+    if(course.fechaInicio){
+      let txtFecha = this.formatearFecha(course.fechaInicio)
+      pdf.addImage(this.calendar, 'png', 150, 45.02, 6, 6, '', 'FAST');
+      currentLine = this.addFormatedText({
+        text: `Fecha de inicio: ${txtFecha}`,
+        course: course,
+        x: 148,
+        y: 40.5,
+        size: 8,
+        color: 'white',
+        bold: true,
+        textAlign: "left",
+        maxLineWidth: this.pageWidth - 120
+      }, pdf);
+
+
+    }
+
+
   
     pdf.setFontSize(16);
   

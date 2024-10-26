@@ -508,6 +508,7 @@ export class CreateCourseP21Component {
           queIncluye:new FormControl(""),
           enCalendario: new FormControl(false),
           descuentos: new FormControl(""),
+          modalidad: new FormControl("",Validators.required),
 
         });
         this.initSkills();
@@ -586,6 +587,7 @@ export class CreateCourseP21Component {
             queIncluye:new FormControl(curso['queIncluye']),
             enCalendario: new FormControl(curso['enCalendario']),
             descuentos: new FormControl(curso['descuentos']),
+            modalidad: new FormControl(curso['modalidad'],Validators.required),
 
 
           });

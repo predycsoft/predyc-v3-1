@@ -84,6 +84,20 @@
                                         </div>
                                     </div>
                                     <div class="form-group mgt08">
+                                        <label class="ft12 " >Modalidad</label>
+                                        <select
+                                            [class.is-invalid]="formNewCourse.controls['modalidad'].errors && showErrorCurso"
+                                            class="form-control customInput radius10" formControlName="modalidad">
+                                                <option value=null>Selecciona la modalidad</option>
+                                                <option value="En línea en vivo">En línea en vivo</option>
+                                                <option value="Presencial">Presencial</option>
+                                                <option value="Grabado">Grabado</option>
+                                        </select>
+                                        <div class="invalid-feedback" *ngIf="formNewCourse.controls['modalidad'].errors && showErrorCurso"> 
+                                            Debe indicar la modalidad del curso
+                                        </div>
+                                    </div>
+                                    <div class="form-group mgt08">
                                         <label class="ft12 " >Duración (minutos)</label>
                                         <input
                                         [class.is-invalid]="formNewCourse.controls['duracion'].errors && showErrorCurso"
