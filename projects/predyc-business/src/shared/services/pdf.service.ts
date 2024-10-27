@@ -409,7 +409,7 @@ export class PDFService {
     }, pdf);
     pdf.setFontSize(10);
     currentLine = currentLine + 10;
-    currentLine = await this.addFormattedTable(course, currentLine, pdf,true);
+    currentLine = await this.addFormattedTable(course, currentLine, pdf,isPredyc);
 
 
     if(course.fechaInicio){
@@ -650,7 +650,6 @@ export class PDFService {
     
     pdf.addPage();
 
-
     pdf.setFillColor(35, 43, 56);
     pdf.rect(0, 0, this.pageWidth, 55, 'F');
     let currentLine = 0;
@@ -689,6 +688,13 @@ export class PDFService {
 
     const instructorSectionStartY = 0;
     const instructorSectionEndY = 55;
+
+    if(isPredyc){
+      pdf.addImage(this.logoWhite, 'png', 180, 3, imgWidtLogoWhite, imgHeightLogoWhite, '', 'SLOW');
+    }
+    else{
+      pdf.addImage(this.logoWhiteP21, 'png', 180, 3, imgWidtLogoWhite, imgHeightLogoWhite, '', 'SLOW');      
+    }
   
     await this.addFormattedInstructorCV(instructor, instructorSectionStartY, instructorSectionEndY, pdf);
 
@@ -850,13 +856,7 @@ export class PDFService {
     }
 
 
-  
-    if(isPredyc){
-      pdf.addImage(this.logoWhite, 'png', 180, 3, imgWidtLogoWhite, imgHeightLogoWhite, '', 'SLOW');
-    }
-    else{
-      pdf.addImage(this.logoWhiteP21, 'png', 180, 3, imgWidtLogoWhite, imgHeightLogoWhite, '', 'SLOW');      
-    }
+
 
   }
 
@@ -1673,10 +1673,10 @@ export class PDFService {
           const lineHeight = pdf.getLineHeight() * lineSpacingFactor;
           const { text, offset, isBullet } = textLines[index];
   
-          if (opts.y + (index + 1) * lineHeight > this.pageHeigth - 2) {
+          if (opts.y + (index + 1) * lineHeight > (this.pageHeigth+20)) {
               pdf.addPage();
               addFooterAndTitle();
-              opts.y = 15;
+              opts.y = -30;
               index--;
               continue;
           }
