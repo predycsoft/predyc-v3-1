@@ -49,6 +49,19 @@ export class PDFService {
     reloj = "assets/iconsUI/clock.png"
     calendar =  "assets/iconsUI/calendar-1.png"
     logoWhiteP21 = "/assets/images/logos/logo-predictiva-blanco-lg.png"
+    backPortada = "/assets/images/brosure_Predyc/backPortada.jpg"
+
+    portadasCategories = [
+      '/assets/images/brosure_Predyc/back_categoty_1.jpg',
+      '/assets/images/brosure_Predyc/back_categoty_2.jpg',
+      '/assets/images/brosure_Predyc/back_categoty_3.jpg',
+      '/assets/images/brosure_Predyc/back_categoty_4.jpg',
+      '/assets/images/brosure_Predyc/back_categoty_5.jpg',
+      '/assets/images/brosure_Predyc/back_categoty_6.jpg',
+      '/assets/images/brosure_Predyc/back_categoty_7.jpg',
+      '/assets/images/brosure_Predyc/back_categoty_8.jpg',
+      '/assets/images/brosure_Predyc/back_categoty_9.jpg',
+    ]
   
     // Función para convertir imágenes a PNG
     convertImageToPNG(imageUrl: string): Promise<string> {
@@ -119,7 +132,7 @@ export class PDFService {
       const circularImage = await this.createCircularImage(imgInstrctorData, 250);
   
       // Añadir la imagen circular al PDF
-      pdf.addImage(circularImage, 'PNG', 58.5, startY + (sectionHeight - imageSize) / 2, imageSize, imageSize, '', 'FAST');
+      pdf.addImage(circularImage, 'PNG', 58.5, startY + (sectionHeight - imageSize) / 2, imageSize, imageSize, '', 'SLOW');
   
       // Calcular la altura del texto
       const instructorName = `Instructor: ${instructor.nombre}`;
@@ -175,7 +188,7 @@ export class PDFService {
     const circularImage = await this.createCircularImage(imgInstrctorData, 250);
 
     // Añadir la imagen circular al PDF
-    pdf.addImage(circularImage, 'PNG', 10, startY + (sectionHeight - imageSize) / 2, imageSize, imageSize, '', 'FAST');
+    pdf.addImage(circularImage, 'PNG', 10, startY + (sectionHeight - imageSize) / 2, imageSize, imageSize, '', 'SLOW');
 
     // Calcular la altura del texto
     const instructorName = `${instructor.nombre}`;
@@ -254,7 +267,7 @@ export class PDFService {
     const imageUrl = course.imagen;
     const imgData = await this.convertImageToPNG(imageUrl);
   
-    pdf.addImage(imgData, 'PNG', 6, 5, 45, 45, '', 'FAST');
+    pdf.addImage(imgData, 'PNG', 6, 5, 45, 45, '', 'SLOW');
   
     const imgWidth = 30;  // Puedes ajustar este valor según tus necesidades
     const imgHeight = imgWidth / 4.65517241379;
@@ -281,11 +294,11 @@ export class PDFService {
     const imgHeightLogoWhite = imgWidtLogoWhite / 4.3;
     
     if(isPredyc){
-      pdf.addImage(this.logoWhite, 'png', 180, 3, imgWidtLogoWhite, imgHeightLogoWhite, '', 'FAST');
+      pdf.addImage(this.logoWhite, 'png', 180, 3, imgWidtLogoWhite, imgHeightLogoWhite, '', 'SLOW');
     }
     else{
       //logo predicti21
-      pdf.addImage(this.logoWhiteP21, 'png', 180, 3, imgWidtLogoWhite, imgHeightLogoWhite, '', 'FAST');
+      pdf.addImage(this.logoWhiteP21, 'png', 180, 3, imgWidtLogoWhite, imgHeightLogoWhite, '', 'SLOW');
     }
   
     pdf.setFontSize(18);
@@ -313,7 +326,7 @@ export class PDFService {
     let duracionCurso = this.getFormattedDuration(course.duracion);
     
   
-    pdf.addImage(this.reloj, 'png', 57.69, 45.02, 6, 6, '', 'FAST');
+    pdf.addImage(this.reloj, 'png', 57.69, 45.02, 6, 6, '', 'SLOW');
 
     let txtDuracion = `Duración del curso: ${duracionCurso}`
 
@@ -336,7 +349,7 @@ export class PDFService {
 
     if(course.fechaInicio){
       let txtFecha = this.formatearFecha(course.fechaInicio)
-      pdf.addImage(this.calendar, 'png', 150, 45.02, 6, 6, '', 'FAST');
+      pdf.addImage(this.calendar, 'png', 150, 45.02, 6, 6, '', 'SLOW');
       currentLine = this.addFormatedText({
         text: `Fecha de inicio: ${txtFecha}`,
         course: course,
@@ -396,7 +409,7 @@ export class PDFService {
     }, pdf);
     pdf.setFontSize(10);
     currentLine = currentLine + 10;
-    currentLine = this.addFormattedTable(course, currentLine, pdf,isPredyc);
+    currentLine = await this.addFormattedTable(course, currentLine, pdf,true);
 
 
     if(course.fechaInicio){
@@ -586,6 +599,49 @@ export class PDFService {
     }
   }
 
+  async addCategoryPage(category,pdf,isPredyc){
+    
+    pdf.addPage();
+
+
+    pdf.setFillColor(35, 43, 56);
+    pdf.rect(0, 0, this.pageWidth, 55, 'F');
+    let currentLine = 0;
+  
+  
+    const imgWidth = 30;
+    const imgHeight = imgWidth / 4.65517241379;
+  
+    const posY = this.pageHeigth - imgHeight - 5;
+    let courseTitle = category.name;
+  
+    pdf.setFontSize(8);
+    pdf.setFont("Roboto", "normal");
+    pdf.setTextColor(0, 0, 0);
+    pdf.text(`${courseTitle} - ${this.fecha}`, 6, (posY + imgHeight / 2) + 2, { align: 'left' });
+    pdf.setFontSize(9);
+
+    let textoEmpresa = 'Predyc'
+    let margen = 20
+    if(!isPredyc){
+      textoEmpresa = 'Predictiva21'
+      margen = 25
+    }
+    pdf.text(textoEmpresa, this.pageWidth-margen, (posY + imgHeight / 2) + 2, { align: 'left' });
+    
+  
+    const imgWidtLogoWhite = 27;
+    const imgHeightLogoWhite = imgWidtLogoWhite / 4.3;
+
+    if(isPredyc){
+      pdf.addImage(this.logoWhite, 'png', 180, 3, imgWidtLogoWhite, imgHeightLogoWhite, '', 'SLOW');
+    }
+    else{
+      pdf.addImage(this.logoWhiteP21, 'png', 180, 3, imgWidtLogoWhite, imgHeightLogoWhite, '', 'SLOW');      
+    }
+
+  }
+
 
 
   async addInstrcutorCV(pdf,course,instructor,isPredyc){
@@ -602,7 +658,7 @@ export class PDFService {
     const imageUrl = instructor.foto;
     const imgData = await this.convertImageToPNG(imageUrl);
   
-    //pdf.addImage(imgData, 'PNG', 6, 5, 45, 45, '', 'FAST');
+    //pdf.addImage(imgData, 'PNG', 6, 5, 45, 45, '', 'SLOW');
   
     const imgWidth = 30;
     const imgHeight = imgWidth / 4.65517241379;
@@ -796,11 +852,419 @@ export class PDFService {
 
   
     if(isPredyc){
-      pdf.addImage(this.logoWhite, 'png', 180, 3, imgWidtLogoWhite, imgHeightLogoWhite, '', 'FAST');
+      pdf.addImage(this.logoWhite, 'png', 180, 3, imgWidtLogoWhite, imgHeightLogoWhite, '', 'SLOW');
     }
     else{
-      pdf.addImage(this.logoWhiteP21, 'png', 180, 3, imgWidtLogoWhite, imgHeightLogoWhite, '', 'FAST');      
+      pdf.addImage(this.logoWhiteP21, 'png', 180, 3, imgWidtLogoWhite, imgHeightLogoWhite, '', 'SLOW');      
     }
+
+  }
+
+  loadImage(src: string): Promise<HTMLImageElement> {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.src = src;
+        img.onload = () => resolve(img);
+        img.onerror = (error) => reject(error);
+    });
+  }
+
+
+
+  async addTableOfContent(pdf: jsPDF, categories,isPredyc = true) {
+
+    // Definimos el color como una tupla para TypeScript
+    const headerColor: [number, number, number] = [35, 43, 56];
+
+    // Añadir una nueva página
+    pdf.addPage();
+
+    // Establecer el color de relleno para el encabezado
+    pdf.setFillColor(...headerColor);
+
+    // Dibujar el rectángulo de color en la parte superior con altura variable (por ejemplo, 55)
+    const headerHeight = 20; // Ajusta esta altura según tus necesidades
+    pdf.rect(0, 0, this.pageWidth, headerHeight, 'F'); 
+
+    // Establecer el color de texto y tamaño de fuente para el encabezado
+    pdf.setTextColor(255, 255, 255); // Color de texto blanco
+
+    const imgWidth = 30;  // Puedes ajustar este valor según tus necesidades
+    const imgHeight = imgWidth / 4.65517241379;
+  
+    // Agregar nombre del curso y logo en la esquina inferior derecha
+    const posY = this.pageHeigth - imgHeight - 5;
+    let courseTitle = 'Tabla de contenido';
+  
+    pdf.setFontSize(8);  // Ajustar el tamaño de la fuente
+    pdf.setFont("Roboto", "normal");
+    pdf.setTextColor(0, 0, 0);
+    pdf.text(`${courseTitle} - ${this.fecha}`, 6, (posY + imgHeight / 2) + 2, { align: 'left' });
+    pdf.setFontSize(9);  // Ajustar el tamaño de la fuente
+
+    let textoEmpresa = 'Predyc'
+    let margen = 20
+    if(!isPredyc){
+      textoEmpresa = 'Predictiva21'
+      margen = 25
+    }
+    pdf.text(textoEmpresa, this.pageWidth-margen, (posY + imgHeight / 2) + 2, { align: 'left' });
+
+    const imgWidtLogoWhite = 27;  // Puedes ajustar este valor según tus necesidades
+    const imgHeightLogoWhite = imgWidtLogoWhite / 4.3;
+    
+    if(isPredyc){
+      pdf.addImage(this.logoWhite, 'png', 180, 7, imgWidtLogoWhite, imgHeightLogoWhite, '', 'SLOW');
+    }
+
+    let currentLine = 0
+    pdf.setFontSize(18);
+    currentLine = this.addFormatedText({
+      text: courseTitle,
+      course: null,
+      x: 0,
+      y: -1,
+      color: 'white',
+      bold: true,
+      size: 20,
+      textAlign: "left",
+      maxLineWidth: this.pageWidth - 20,
+      firstLineMaxWidth: this.pageWidth - 90,
+      lineSpacingFactor: 0.8
+    }, pdf);
+
+
+    pdf.setFontSize(14);
+
+    currentLine = 25
+
+
+    for (let i = 0; i < categories.length; i++) {
+
+      let category = categories[i]
+      // currentLine = this.addFormatedText({
+      //   text: `Cursos de ${category.name}`,
+      //   course: null,
+      //   x: 0,
+      //   size: 11,
+      //   y: currentLine + 3,
+      //   color: 'black',
+      //   bold: true,
+      //   textAlign: "left"
+      // }, pdf);
+
+      const courses = category.courses
+        let modulo = [{
+          titulo:category.name,
+          clases:courses
+        }]
+
+        let table ={
+          titulo:courseTitle,
+          modules:modulo
+        }
+
+      currentLine = currentLine+3
+      console.log('table',table)
+      currentLine = await this.addFormattedTable(table, currentLine, pdf,isPredyc,true);
+
+    }
+
+
+
+
+  
+
+ }
+
+  async addcategoryTable(pdf: jsPDF, category: any,index,courses,isPredyc = true) {
+
+     // Definimos el color como una tupla para TypeScript
+     const headerColor: [number, number, number] = [35, 43, 56];
+
+     // Añadir una nueva página
+     pdf.addPage();
+
+     // Establecer el color de relleno para el encabezado
+     pdf.setFillColor(...headerColor);
+
+     // Dibujar el rectángulo de color en la parte superior con altura variable (por ejemplo, 55)
+     const headerHeight = 20; // Ajusta esta altura según tus necesidades
+     pdf.rect(0, 0, this.pageWidth, headerHeight, 'F'); 
+
+     // Establecer el color de texto y tamaño de fuente para el encabezado
+     pdf.setTextColor(255, 255, 255); // Color de texto blanco
+
+     const imgWidth = 30;  // Puedes ajustar este valor según tus necesidades
+     const imgHeight = imgWidth / 4.65517241379;
+   
+     // Agregar nombre del curso y logo en la esquina inferior derecha
+     const posY = this.pageHeigth - imgHeight - 5;
+     let courseTitle = category.name;
+   
+     pdf.setFontSize(8);  // Ajustar el tamaño de la fuente
+     pdf.setFont("Roboto", "normal");
+     pdf.setTextColor(0, 0, 0);
+     pdf.text(`${courseTitle} - ${this.fecha}`, 6, (posY + imgHeight / 2) + 2, { align: 'left' });
+     pdf.setFontSize(9);  // Ajustar el tamaño de la fuente
+ 
+     let textoEmpresa = 'Predyc'
+     let margen = 20
+     if(!isPredyc){
+       textoEmpresa = 'Predictiva21'
+       margen = 25
+     }
+     pdf.text(textoEmpresa, this.pageWidth-margen, (posY + imgHeight / 2) + 2, { align: 'left' });
+
+     const imgWidtLogoWhite = 27;  // Puedes ajustar este valor según tus necesidades
+     const imgHeightLogoWhite = imgWidtLogoWhite / 4.3;
+     
+     if(isPredyc){
+       pdf.addImage(this.logoWhite, 'png', 180, 3, imgWidtLogoWhite, imgHeightLogoWhite, '', 'SLOW');
+     }
+
+     let currentLine = 0
+     pdf.setFontSize(18);
+     currentLine = this.addFormatedText({
+       text: courseTitle,
+       course: null,
+       x: 0,
+       y: -1,
+       color: 'white',
+       bold: true,
+       size: 20,
+       textAlign: "left",
+       maxLineWidth: this.pageWidth - 20,
+       firstLineMaxWidth: this.pageWidth - 90,
+       lineSpacingFactor: 0.8
+     }, pdf);
+
+
+     pdf.setFontSize(14);
+
+     currentLine = 20
+
+     currentLine = this.addFormatedText({
+       text: "Cursos del pilar",
+       course: null,
+       x: 0,
+       size: 11,
+       y: currentLine + 3,
+       color: 'black',
+       bold: true,
+       textAlign: "left"
+     }, pdf);
+
+
+     let modulo = [{
+       titulo:category.name,
+       clases:courses
+     }]
+
+     let table ={
+       modules:modulo
+     }
+
+     currentLine = currentLine+10
+   
+
+     currentLine = await this.addFormattedTable(table, currentLine, pdf,isPredyc,true);
+  }
+
+  async addCategoryCover(pdf: jsPDF, category: any,index) {
+
+    pdf.addPage(); // HOJA PORTADA PILAR
+
+    // Agregar la imagen de fondo de la portada
+    pdf.addImage(this.portadasCategories[index], 'JPG', 0, 0, 210, 297, '', 'SLOW');
+
+    // Configuración del texto
+    pdf.setFont("Roboto", "bold");
+    pdf.setFontSize(50);
+    pdf.setTextColor(255, 255, 255); // Ajustar color si es necesario
+
+    // Calcular las posiciones centrales de la página
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const maxLineWidth = pageWidth * 0.8; // Ancho máximo para el texto (80% del ancho de la página)
+    
+    // Dividir el texto en líneas según el ancho máximo permitido
+    const lines = pdf.splitTextToSize(category.name, maxLineWidth);
+    const lineHeight = pdf.getTextDimensions("M").h * 1.1; // Obtener altura de línea con factor de espaciado
+    const totalTextHeight = lines.length * lineHeight;
+    
+    // Posicionar el texto centrado
+    const textX = pageWidth / 2;
+    const textY = ((pageHeight / 2) - (totalTextHeight / 2))+15;
+
+    lines.forEach((line, index) => {
+        pdf.text(line, textX, textY + (index * lineHeight), { align: 'center' });
+    });
+
+    // Configuración del logo
+    const logoPath = '/assets/images/brosure_Predyc/logoWhite.png';
+    const logoWidth = 50; // Ancho deseado del logo
+    const logoMarginTop = - 10; // Margen superior del logo desde el texto
+
+    // Cargar la imagen
+    const image = await this.loadImage(logoPath);
+    
+    // Mantener la relación de aspecto del logo
+    const aspectRatio = image.width / image.height;
+    const logoHeight = logoWidth / aspectRatio;
+
+    // Posición del logo justo debajo del texto
+    const logoX = (pageWidth - logoWidth) / 2;
+    const logoY = textY + totalTextHeight + logoMarginTop;
+
+    // Añadir el logo al PDF
+    pdf.addImage(image, 'PNG', logoX, logoY, logoWidth, logoHeight);
+  }
+
+  
+
+
+  async downloadCatalogCourses(categories,titulo='Ficha_tecnica_Cursos',showLoading = true,isPredyc = true,idAdmin = true) {
+
+    let categoriesPDF = []
+    if(idAdmin){
+      console.log('categories',categories) 
+      categories = categories.filter(x=>x.enterprise == null && x.coursesPredyc?.length>0)
+      categories = categories.sort((a, b) => {
+       return a.order - b.order;
+       });
+   
+       categories.forEach(category => {
+        let categoryToPush ={
+          name:category.name,
+          courses:category.coursesPredyc.filter(x=>!x.proximamente)
+        }
+        categoriesPDF.push(categoryToPush)
+       });
+    }
+    else{
+
+    }
+
+    //categoriesPDF = categoriesPDF.splice(1,8)
+
+    console.log('categoriesPDF',categoriesPDF)
+
+    if(showLoading){
+      Swal.fire({
+        title: "Generando documento...",
+        text: "Por favor, espera.",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+    }
+
+    const pdf = new jsPDF("p", "mm", "a4", true) as jsPDF;
+  
+    pdf.addFileToVFS("Roboto-Regular.ttf", robotoRegular);
+    pdf.addFont("Roboto-Regular.ttf", "Roboto", "normal");
+  
+    pdf.addFileToVFS("Roboto-Bold.ttf", robotoBold);
+    pdf.addFont("Roboto-Bold.ttf", "Roboto", "bold");
+
+    // incio portada general
+
+    pdf.addImage(this.backPortada, 'JPG', 0, 0, 210, 297,'','SLOW')
+
+    // 'CURSOS PREDYC'
+
+    // Configuración del texto
+    pdf.setFont("Roboto", "bold");
+    pdf.setFontSize(58);
+    pdf.setTextColor(255, 255, 255);
+
+    // Calcular las posiciones centrales de la página
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    this.pageHeigth= pageHeight
+    this.pageWidth = pageWidth
+    const textX = pageWidth / 2;
+    const textY = pageHeight / 2;
+
+    // Dibujar el texto centrado
+    pdf.text('CURSOS', textX, textY - 12, { align: 'center' }); // Ajuste vertical para "CURSOS"
+    pdf.setFontSize(56);
+    pdf.text('PREDYC', textX, textY + 10, { align: 'center' }); // Ajuste vertical para "PREDYC"
+
+    // assets/images/brosure_Predyc/logoBlack.png
+
+    // Configuración del logo
+  const logoPath = 'assets/images/brosure_Predyc/logoBlack.png';
+  const logoWidth = 50; // Ajusta el ancho del logo como desees
+  const logoMarginBottom = 10; // Margen desde el borde inferior de la página
+
+  const image = await this.loadImage(logoPath);
+        
+  // Mantener la relación de aspecto
+  const aspectRatio = image.width / image.height;
+  const logoHeight = logoWidth / aspectRatio;
+
+  // Posición centrada en la parte inferior
+  const logoX = (pageWidth - logoWidth) / 2;
+  const logoY = pageHeight - logoHeight - logoMarginBottom;
+
+  // Añadir el logo al PDF
+  pdf.addImage(image, 'PNG', logoX, logoY, logoWidth, logoHeight);
+
+
+    // fin portada general
+    // for (let i = 0; i < categoriesPDF.length; i++) {
+    //   const category = categoriesPDF[i];
+    //   const courses = category.courses.sort((a, b) => {
+    //     return a.titulo - b.titulo;
+    //     });
+
+    //   await this.addcategoryTable(pdf,category,i,courses,true)
+    // }
+
+    await this.addTableOfContent(pdf,categoriesPDF,true)
+
+    for (let i = 0; i < categoriesPDF.length; i++) {
+
+
+      const category = categoriesPDF[i];
+      const courses = category.courses.sort((a, b) => {
+        return a.titulo - b.titulo;
+        });
+
+      // incio portada pilar
+
+      await this.addCategoryCover(pdf, category,i)  
+      //await this.addcategoryTable(pdf,category,i,courses,true)
+
+
+      // incio pilar tabla cursos
+
+      pdf.addPage();
+
+
+    
+      for (let i = 0; i < courses.length; i++) {
+        const course = courses[i];
+        const instructor = course.instructorData;
+        console.log(course, instructor);
+        await this.downloadFichaTecnica(course, instructor, pdf, true,isPredyc);
+        
+        if (i < courses.length - 1) {
+          pdf.addPage();
+        }
+      }
+
+      
+    };
+
+    pdf.save(`${this.sanitizeFilename(titulo)}.pdf`);
+    if(showLoading){
+      Swal.close();
+    }
+
 
   }
 
@@ -816,6 +1280,8 @@ export class PDFService {
         },
       });
     }
+
+    console.log('courses',courses)
 
 
 
@@ -884,15 +1350,20 @@ export class PDFService {
   
     }
   
-    addFormattedTable(course: any, currentLine: number, pdf: jsPDF,isPredyc = true): number {
+    async addFormattedTable(course: any, currentLine: number, pdf: jsPDF,isPredyc = true,isPillar=false): Promise<number> {
       const imgWidth = 30;  // Puedes ajustar este valor según tus necesidades
       const imgHeight = imgWidth / 4.65517241379;
       const tableMargin = this.pageWidth * 0.05; // Márgenes para centrar la tabla (5% de cada lado)
       const tableWidth = this.pageWidth * 0.9; // Ancho de la tabla (90% del ancho de la página)
       const headerHeight = 8; // Altura del encabezado del módulo
-      const classHeight = 6.8; // Altura de las clases
-    
-      course.modules.forEach((modulo, moduleIndex) => {
+      let classHeight = 6.8; // Altura de las clases
+
+      if(isPillar){
+        classHeight= 8.8
+      }
+
+      for (let moduleIndex = 0; moduleIndex <course.modules.length; moduleIndex++){
+          let modulo = course.modules[moduleIndex]
           // Dibujar encabezado del módulo
           const drawModuleHeader = (showDuration) => {
               const textYPosition = currentLine + (headerHeight / 2) + 1; // Ajuste para centrar verticalmente el texto
@@ -903,21 +1374,21 @@ export class PDFService {
               pdf.setFont("Roboto", "bold");
               pdf.setFontSize(9);
               pdf.setTextColor(0, 0, 0);
-              pdf.text(modulo.titulo.trim(), tableMargin + 3, textYPosition, { align: 'left' }); // Centrar el texto verticalmente
+              pdf.text(`${isPillar?'Cursos de':''} ${modulo.titulo.trim()}`, tableMargin + 3, textYPosition, { align: 'left' }); // Centrar el texto verticalmente
               if (showDuration) {
                   let duracion = 0;
                   modulo.clases.forEach(clase => {
                       duracion += clase.duracion;
                   });
                   let duracionModulo = this.getFormattedDuration(duracion);
-                  if(isPredyc){
+                  if(isPredyc && !isPillar){
                     if (duracion > 60) {
                       pdf.text(`${duracionModulo}`, 179, textYPosition, { align: 'left' }); // Centrar el texto verticalmente
-                  } else if (duracion % 60 == 0) {
-                      pdf.text(`${duracionModulo}`, 186, textYPosition, { align: 'left' }); // Centrar el texto verticalmente
-                  } else {
-                      pdf.text(`${duracionModulo}`, 183, textYPosition, { align: 'left' }); // Centrar el texto verticalmente
-                  }
+                    } else if (duracion % 60 == 0) {
+                        pdf.text(`${duracionModulo}`, 186, textYPosition, { align: 'left' }); // Centrar el texto verticalmente
+                    } else {
+                        pdf.text(`${duracionModulo}`, 183, textYPosition, { align: 'left' }); // Centrar el texto verticalmente
+                    }
                   }
 
               }
@@ -956,16 +1427,22 @@ export class PDFService {
                 margen = 25
               }
               pdf.text(textoEmpresa, this.pageWidth-margen, (posY + imgHeight / 2) + 2, { align: 'left' });
-              //pdf.addImage(this.logoBlack, 'png', this.pageWidth - imgWidth - 5, posY, imgWidth, imgHeight, '', 'FAST');
+              //pdf.addImage(this.logoBlack, 'png', this.pageWidth - imgWidth - 5, posY, imgWidth, imgHeight, '', 'SLOW');
     
               currentLine = 15;
               pdf.setFontSize(old);
           }
+
+          //if(!isPillar){
+            drawModuleHeader(true);
+          //}
     
-          drawModuleHeader(true);
     
           // Dibujar clases del módulo
-          modulo.clases.forEach((clase, index) => {
+
+
+          for (let index = 0; index < modulo.clases.length; index++) {
+              let clase =  modulo.clases[index]              
               const textYPosition = currentLine + (classHeight / 2) + 1; // Ajuste para centrar verticalmente el texto
               pdf.setFont("Roboto", "normal");
               pdf.setFontSize(8);
@@ -991,32 +1468,68 @@ export class PDFService {
               }
               this.pageWidth = this.pageWidth - marginOffSet
 
+              let offset = 4
+
+              if(isPillar){
+                offset = 2
+
+                if(clase.imagen){
+                  const imgSize = 120;  // Tamaño deseado para la imagen cuadrada
+                  try {
+                      const response = await fetch(clase.imagen);
+                      const blob = await response.blob();
+                       // Crear un canvas para redimensionar y convertir la imagen a PNG
+                      const imageBitmap = await createImageBitmap(blob);
+                      const canvas = document.createElement("canvas");
+                      canvas.width = imgSize;
+                      canvas.height = imgSize;
+                      const ctx = canvas.getContext("2d");
+
+                      // Dibujar la imagen en el canvas cuadrado
+                      ctx?.drawImage(imageBitmap, 0, 0, imgSize, imgSize);
+
+                      // Convertir la imagen del canvas a formato PNG
+                      const imageData = canvas.toDataURL("image/png");
+
+                      // Insertar la imagen en el PDF
+                      pdf.addImage(imageData, 'PNG', 12, currentLine+1 , 9, 9,'','SLOW');
+
+                  } catch (error) {
+                      console.error("Error al cargar o transformar la imagen:", error);
+                  }
+                }
+              }
+              
               currentLine = this._addFormatedText({
-                text: tituloClase,
+                text: clase.titulo,
                 course: course,
-                x: 5,
-                y: currentLine-4,
+                x: 5 + (isPillar?8:0),
+                y: currentLine-offset,
                 size: 8,
                 color: 'black',
                 bold: false,
-                textAlign: "left"
+                textAlign: "left",
+                maxLineWidth:isPillar?(this.pageWidth - 30):null
               }, pdf);
 
               this.pageWidth = pageWithOrg
               if(isPredyc){
-                if (clase.duracion >= 10 && clase.duracion % 60 != 0) {
-                  pdf.text(`${duracionClase}`, 185, textYPosition, { align: 'left' }); // Centrar el texto verticalmente
+                if (clase.duracion > 60) {
+                  pdf.text(`${duracionClase}`, 180, textYPosition + (isPillar?1:0), { align: 'left' }); // Centrar el texto verticalmente
+                }
+                else if (clase.duracion >= 10 && clase.duracion % 60 != 0) {
+                  pdf.text(`${duracionClase}`, 185, textYPosition + (isPillar?1:0), { align: 'left' }); // Centrar el texto verticalmente
                 } else if (clase.duracion % 60 == 0) {
-                    pdf.text(`${duracionClase}`, 186, textYPosition, { align: 'left' }); // Centrar el texto verticalmente
+                    pdf.text(`${duracionClase}`, 186, textYPosition + (isPillar?1:0), { align: 'left' }); // Centrar el texto verticalmente
                 } else {
-                    pdf.text(`${duracionClase}`, 186, textYPosition, { align: 'left' }); // Centrar el texto verticalmente
+                    pdf.text(`${duracionClase}`, 186, textYPosition + (isPillar?1:0), { align: 'left' }); // Centrar el texto verticalmente
                 }
               }
               pdf.setDrawColor(200, 200, 200); // Color de la línea
               pdf.setLineWidth(0.2); // Grosor de la línea ajustado
-              //if (index < modulo.clases.length - 1) { // quitar si se quiere poner la linea en ultima clase
-              pdf.line(tableMargin, currentLine + classHeight, tableMargin + tableWidth, currentLine + classHeight); // Línea debajo de cada clase
-              //}
+              if (index < modulo.clases.length - 1) { // quitar si se quiere poner la linea en ultima clase
+                pdf.line(tableMargin, currentLine + classHeight, tableMargin + tableWidth, currentLine + classHeight); // Línea debajo de cada clase
+              }
               currentLine += classHeight; // Espacio entre las clases
     
               // Verificar si se necesita una nueva página después de dibujar una clase
@@ -1031,6 +1544,7 @@ export class PDFService {
                       let courseTitle = course.titulo;
     
                       // Ajustar el texto del curso si es demasiado largo
+                      console.log('courseTitle',course,courseTitle,maxTextWidth)
                       while (pdf.getTextWidth(courseTitle) > maxTextWidth) {
                           courseTitle = courseTitle.slice(0, -1);  // Recortar el texto
                       }
@@ -1051,7 +1565,7 @@ export class PDFService {
                       }
 
                       pdf.text(textoEmpresa, this.pageWidth-margen, (posY + imgHeight / 2) + 2, { align: 'left' });
-                      //pdf.addImage(this.logoBlack, 'png', this.pageWidth - imgWidth - 5, posY, imgWidth, imgHeight, '', 'FAST');
+                      //pdf.addImage(this.logoBlack, 'png', this.pageWidth - imgWidth - 5, posY, imgWidth, imgHeight, '', 'SLOW');
     
                       currentLine = 15;
                       pdf.setFontSize(old);
@@ -1061,10 +1575,10 @@ export class PDFService {
                       }
                   }
               }
-          });
+          };
     
           currentLine += 0; // Espaciado entre módulos
-      });
+      };
     
       return currentLine;
     }
@@ -1081,7 +1595,7 @@ export class PDFService {
           
           const posY = this.pageHeigth - imgHeight - 5;
           const maxTextWidth = this.pageWidth - imgWidth - 15;
-          let courseTitle = opts.course.titulo;
+          let courseTitle = opts.course.titulo?  opts.course.titulo: '';
   
           while (pdf.getTextWidth(courseTitle) > maxTextWidth) {
               courseTitle = courseTitle.slice(0, -1);
@@ -1227,7 +1741,7 @@ export class PDFService {
         pdf.setFont("Roboto", "normal");
         pdf.setTextColor(0, 0, 0);
         pdf.text(`${courseTitle} - ${this.fecha}`, 6, (posY + imgHeight / 2) + 2, { align: 'left' });
-        //pdf.addImage(this.logoBlack, 'png', this.pageWidth - imgWidth - 5, posY, imgWidth, imgHeight, '', 'FAST');
+        //pdf.addImage(this.logoBlack, 'png', this.pageWidth - imgWidth - 5, posY, imgWidth, imgHeight, '', 'SLOW');
         pdf.setFontSize(9);  // Ajustar el tamaño de la fuente
         
         pdf.text(textoEmpresa, this.pageWidth-margen, (posY + imgHeight / 2) + 2, { align: 'left' });
