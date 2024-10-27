@@ -427,6 +427,11 @@ export class CreateCourseP21Component {
         await this.saveNewSkill(newPillar.name)
       }
     }
+    else{
+      this.skillsCurso = [];
+      this.formNewCourse.get("skills").setValue([]);
+      await this.saveNewSkill(newPillar.name)
+    }
   }
 
   createPillar() {

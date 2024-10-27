@@ -936,7 +936,7 @@ export class PDFService {
 
     pdf.setFontSize(14);
 
-    currentLine = 25
+    currentLine = 30
 
 
     for (let i = 0; i < categories.length; i++) {
@@ -964,7 +964,7 @@ export class PDFService {
           modules:modulo
         }
 
-      currentLine = currentLine+3
+      currentLine = currentLine+4
       console.log('table',table)
       currentLine = await this.addFormattedTable(table, currentLine, pdf,isPredyc,true);
 
@@ -1319,10 +1319,17 @@ export class PDFService {
       const nameWithoutAccents = this.removeAccents(name);
       return nameWithoutAccents.replace(/[^a-z0-9]/gi, '_').toLowerCase();
     }
+
+    getRounded(num: number): number {
+      return Math.round(num);
+    }
   
-    getFormattedDuration(tiempo) {
+    getFormattedDuration(tiempo,formatt = 'complete') {
       if(!tiempo){
         return ''
+      }
+      if(formatt == 'short'){
+        return `${this.getRounded(tiempo / 60) }${this.getRounded(tiempo / 60) == 1 ? 'hr' : 'hrs'}`
       }
       const hours = Math.floor(tiempo / 60);
       const minutes = tiempo % 60;
@@ -1396,9 +1403,13 @@ export class PDFService {
               // Dibujar línea gruesa debajo del encabezado del módulo
               pdf.line(tableMargin, currentLine, tableMargin + tableWidth, currentLine);
           };
-    
+
+          let offsetSpace = 0
+          if(isPillar){
+            offsetSpace = 10
+          }
           // Verificar si se necesita una nueva página antes de dibujar el encabezado del módulo
-          if (currentLine > this.pageHeigth - 25) {
+          if (currentLine > this.pageHeigth - (25+offsetSpace)) {
               let old = pdf.getFontSize();
               pdf.addPage();
     
@@ -1447,7 +1458,7 @@ export class PDFService {
               pdf.setFont("Roboto", "normal");
               pdf.setFontSize(8);
               pdf.setTextColor(0, 0, 0);
-              let duracionClase = this.getFormattedDuration(clase.duracion);
+              let duracionClase = this.getFormattedDuration(clase.duracion,isPillar?'short':'complete');
               let tituloClase = clase.titulo.trim();
               if (tituloClase.length >= 125) {
                 
@@ -1514,8 +1525,8 @@ export class PDFService {
 
               this.pageWidth = pageWithOrg
               if(isPredyc){
-                if (clase.duracion > 60) {
-                  pdf.text(`${duracionClase}`, 180, textYPosition + (isPillar?1:0), { align: 'left' }); // Centrar el texto verticalmente
+                if (isPillar) {
+                  pdf.text(`${duracionClase}`, this.pageWidth-20, textYPosition + (isPillar?1:0), { align: 'center' }); // Centrar el texto verticalmente
                 }
                 else if (clase.duracion >= 10 && clase.duracion % 60 != 0) {
                   pdf.text(`${duracionClase}`, 185, textYPosition + (isPillar?1:0), { align: 'left' }); // Centrar el texto verticalmente
