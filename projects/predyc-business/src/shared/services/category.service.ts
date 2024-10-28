@@ -131,6 +131,7 @@ export class CategoryService {
       )
       .subscribe({
         next: categories => {
+          // console.log("categories en service", categories)
           this.categorySubject.next(categories);
         },
         error: error => {

@@ -8,7 +8,7 @@ import { CategoryService } from 'projects/predyc-business/src/shared/services/ca
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { SkillService } from 'projects/predyc-business/src/shared/services/skill.service';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
-import { take, Subscription, Observable, combineLatest } from 'rxjs';
+import { take, Subscription, Observable, combineLatest, firstValueFrom } from 'rxjs';
 import { CourseService } from 'projects/predyc-business/src/shared/services/course.service';
 
 import { cursosProximos } from 'projects/predyc-business/src/assets/data/proximamente.data'
@@ -79,8 +79,7 @@ export class CoursesComponent implements AfterViewInit {
 
 
   ngAfterViewInit() {
-  this.handleImageError();
-
+    this.handleImageError();
   }
 
   enterprise
@@ -96,58 +95,52 @@ export class CoursesComponent implements AfterViewInit {
     return `${hours} hrs ${minutes} min`;
   }
 
-  licenses$: Observable<License[]> = this.licenseService.getCurrentEnterpriseLicenses$()
+  // licenses$: Observable<License[]> = this.licenseService.getCurrentEnterpriseLicenses$()
   licenses: License[];
   licensesSubscription: Subscription;
 
   async ngOnInit() {
 
-    this.authService.user$.subscribe(user=> {
+    this.authService.user$.subscribe(async user=> {
       if (user) {
-        console.log('user',user)
+        // console.log('user',user)
         this.user = user
 
-        if(!user.isSystemUser){ // alterado por Arturo para buscar licencia activa de la empresa y no el usuario admin
-          this.licensesSubscription = this.licenses$.subscribe(licenses => {
-            let licenseActive = licenses.find(x=>x.status == 'active')
-            console.log('licenseActive',licenseActive)
-            if(licenseActive){
-              this.productServiceSubscription = this.productService.getProductById$(licenseActive.productRef.id).subscribe(product => {
-                if (!product) return
-                this.product = product
-              })
-              
-            }
-          })
+        if (!user.isSystemUser) { // alterado por Arturo para buscar licencia activa de la empresa y no el usuario admin
+          const licenses = await firstValueFrom(this.licenseService.getCurrentEnterpriseLicenses$())
+          let licenseActive = licenses.find(x=>x.status == 'active')
+          // console.log('licenseActive',licenseActive)
+          if (licenseActive) {
+            const product = await firstValueFrom(this.productService.getProductById$(licenseActive.productRef.id))
+            if (!product) return
+            this.product = product 
+          }
         }
       }
     })
-
-    
 
     this.cursos = []
     this.buildCategories()
     this.enterpriseService.enterpriseLoaded$.subscribe(isLoaded => {
       if (isLoaded) {
         let enterpriseRef = this.enterpriseService.getEnterpriseRef();
-        console.log(enterpriseRef)
+        // console.log(enterpriseRef)
         this.enterpriseRef = enterpriseRef
         this.enterprise = this.enterpriseService.getEnterprise();
       }
     })
-
-    combineLatest([
+    
+    this.subscriptionObservableSubs = combineLatest([
       this.categoryService.getCategoriesObservable().pipe(take(2)),
       this.skillService.getSkillsObservable().pipe(take(2)),
       this.courseService.getCoursesObservable().pipe(take(2)),
       this.instructorsService.getInstructorsObservable().pipe(take(2)),
     ]).subscribe(([categories, skills, courses,instructors]) => {
-      console.log('categories from service', categories);
-      console.log('skills from service', skills);
-      console.log('courses from service', courses);
-      console.log('instructors from service', instructors);
+      // console.log('categories from service', categories);
+      // console.log('skills from service', skills);
+      // console.log('courses from service', courses);
+      // console.log('instructors from service', instructors);
 
-    
       this.categories = this.anidarCompetenciasInicial(categories, skills);
     
       if (!this.user.isSystemUser) {
@@ -278,7 +271,7 @@ export class CoursesComponent implements AfterViewInit {
     if (this.searchValue) {
       displayedCourses= categoryCourses.filter(x => x.titulo.toLocaleLowerCase().includes(this.searchValue.toLocaleLowerCase()))
       if(displayedCourses.length > 0){
-        console.log('search',displayedCourses);
+        // console.log('search',displayedCourses);
         let categoriesCourse = displayedCourses[0].categories
         let categoryIds =[]
         categoriesCourse.forEach(skillRef => {
