@@ -4,7 +4,7 @@ import { UserService } from 'projects/predyc-business/src/shared/services/user.s
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { firstValueFrom, Subscription } from 'rxjs';
 import { ProfileService } from 'projects/predyc-business/src/shared/services/profile.service';
 import { Profile } from 'projects/shared/models/profile.model';
 import { CreateUserComponent } from './student/create-user/create-user.component';
@@ -38,15 +38,13 @@ export class MyTeamComponent {
 
   filter = false
 
-  ngOnInit() {
+  async ngOnInit() {
     
-    this.profileService.loadProfiles()
-    this.profileSubscription = this.profileService.getProfiles$().subscribe(profiles => {
+    const profiles = await firstValueFrom(this.profileService.getProfiles$())
       if (profiles){
         this.profiles = profiles.filter(x=>x.enterpriseRef)
         this.profilesPredyc = profiles.filter(x=>!x.enterpriseRef)
       }
-    })
     this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
       this.filter = false; // Inicializar filter en false
 
