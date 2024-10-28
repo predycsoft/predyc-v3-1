@@ -63,7 +63,7 @@ export class SettingsComponent {
     });
 
     this.licensesSubscription = this.licenses$.subscribe(licenses => {
-      console.log('licenses',licenses)
+      // console.log('licenses',licenses)
       if (licenses && licenses.length > 0) {
         this.licenses = licenses;
         let totalLicenses = 0
@@ -75,7 +75,7 @@ export class SettingsComponent {
         licenses.forEach(license => {
           if (license.status !== 'active') return
           totalLicenses += license.quantity
-          console.log('license.rotationsWaitingCount',license.rotationsWaitingCount)
+          // console.log('license.rotationsWaitingCount',license.rotationsWaitingCount)
           rotationsWaitingCount += license.rotationsWaitingCount
           availableLicenses += license.quantity - license.quantityUsed
           availableRotations += license.rotations - license.rotationsUsed
@@ -88,7 +88,7 @@ export class SettingsComponent {
         this.availableRotations = availableRotations
         this.expirationDate = expirationDate
         this.rotacionWarningCount = failedRotationCount
-        console.log('rotationsWaitingCount',this.rotationsWaitingCount)
+        // console.log('rotationsWaitingCount',this.rotationsWaitingCount)
         if (!this.selectedLicense) this.selectedLicense = licenses[0]
         else {
           // update selectedLicense values

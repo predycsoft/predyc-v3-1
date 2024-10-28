@@ -28,7 +28,7 @@ export class AuthGuard {
         } else if (user) {
           return from(this.authService.waitForUser()).pipe(
             map(userInfo => {
-              console.log('Firebase Auth User:', user);
+              // console.log('Firebase Auth User:', user);
               // console.log('User Information from AuthService:', userInfo);
               if (userInfo && userInfo.role === 'instructor' && state.url === '/') {
                 this.router.navigate(['/instructor']);

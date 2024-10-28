@@ -80,9 +80,9 @@ export class ProfileListComponent {
     this.enterpriseService.enterpriseLoaded$.subscribe(async isLoaded => {
       if (isLoaded) {
         let enterpriseRef = this.enterpriseService.getEnterpriseRef();
-        console.log(enterpriseRef)
+        // console.log(enterpriseRef)
         this.enterprise = this.enterpriseService.getEnterprise();
-        console.log('this.enterprise',this.enterprise)
+        // console.log('this.enterprise',this.enterprise)
 
         if(this.enterprise.examenInicial  === undefined || this.enterprise?.examenInicial){
           this.examenInicial = true
@@ -186,7 +186,7 @@ export class ProfileListComponent {
 
       sortOrder.forEach(sort => {
 
-        console.log('sort',sort)
+        // console.log('sort',sort)
 
         if(sort.key === 'sortNombre'){
 

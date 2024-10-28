@@ -41,7 +41,7 @@ export class UsersUsageComponent {
       this.movilUsage = (this.enterprise.devices.movil*100)/total
       this.desktopUsage = (this.enterprise.devices.desktop*100)/total
 
-      console.log(this.movilUsage,this.desktopUsage)
+      // console.log(this.movilUsage,this.desktopUsage)
 
     }
 
@@ -118,7 +118,7 @@ export class UsersUsageComponent {
 
     }
 
-    console.log('usageByHour',HorasSorted,daysSorted);
+    // console.log('usageByHour',HorasSorted,daysSorted);
 
   }
 

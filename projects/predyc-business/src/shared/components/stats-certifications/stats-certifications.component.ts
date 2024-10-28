@@ -46,7 +46,7 @@ export class StatsCertificationsComponent {
 
 
   procesarDatos(resultados,type='general'){
-    console.log('resultados',resultados);
+    // console.log('resultados',resultados);
     if(type=='general'){
       this.results=resultados
     }
@@ -58,7 +58,7 @@ export class StatsCertificationsComponent {
 
     resultados.forEach(result => {
       allClassResults = allClassResults.concat(result.resultByClass);
-      console.log('resultado',result)
+      // console.log('resultado',result)
       score+=result.score
     });
 
@@ -94,7 +94,7 @@ export class StatsCertificationsComponent {
         averageScore: totalScore / count
       };
     });
-    console.log('averageScores',averageScores);
+    // console.log('averageScores',averageScores);
     averageScores.sort((a, b) => b['averageScore'] - a['averageScore']);
 
     if(type=='general'){
@@ -107,10 +107,8 @@ export class StatsCertificationsComponent {
   }
 
   ngOnInit() {
-
-
-    if(this.resultado){
-      console.log('resultadongOnInit',this.resultado)
+    if (this.resultado) {
+      // console.log('resultadongOnInit',this.resultado)
       this.resultado.resultByClass.forEach(element => {
         element.averageScore = element.score
       });
@@ -198,7 +196,7 @@ export class StatsCertificationsComponent {
     }
 
 
-    console.log('grafico',numericData,this.datosTMP)
+    // console.log('grafico',numericData,this.datosTMP)
 
     if(this.origen == 'empresa' || this.origen=='usuario'){
 
@@ -206,7 +204,7 @@ export class StatsCertificationsComponent {
 
         const datosTMP = this.datosTMP
 
-        console.log('datosRevisar',numericData,datosTMP)
+        // console.log('datosRevisar',numericData,datosTMP)
 
         let sum = numericData.map(function (num, idx) {
           return num + datosTMP[idx];
@@ -216,7 +214,7 @@ export class StatsCertificationsComponent {
     }
 
     let maxData = numericData[promedio]
-    console.log('datos promedio y valor maximo',promedio,maxData)
+    // console.log('datos promedio y valor maximo',promedio,maxData)
 
     new Chart(ctx, {
       type: 'line',

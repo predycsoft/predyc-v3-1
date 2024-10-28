@@ -301,7 +301,9 @@ convertirFechaString(fechaString: string): Date | null {
 
   user
   async ngOnInit() {
-    this.user = await firstValueFrom(this.authService.user$)
+    this.authService.user$.subscribe((user) => {
+      this.user = user;
+    });
     // console.log("this.user", this.user)
     this.loaderService.setLoading(true);
     this.enterpriseSubscription = this.enterpriseService.enterprise$.subscribe(async (enterprise) => {

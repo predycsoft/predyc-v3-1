@@ -92,9 +92,9 @@ export class LicenseStudentListComponent {
 
   ngOnChanges(changes: SimpleChanges) {
     // clear checkboxes after license assign or removed
-    console.log(changes);
+    // console.log(changes);
     if (changes["hasLicenseChanged"]) {
-      console.log("Esto esta siendo llamado");
+      // console.log("Esto esta siendo llamado");
       this.selection.clear();
       this.emitSelectedUsers();
     }
@@ -114,7 +114,7 @@ export class LicenseStudentListComponent {
     this.userServiceSubscription = this.userService
       .getUsers$(searchTerm, null, statusFilter)
       .subscribe((response) => {
-        console.log('statusFilter',statusFilter)
+        // console.log('statusFilter',statusFilter)
         if(statusFilter == 'all'){
           response = response
         }
@@ -128,11 +128,7 @@ export class LicenseStudentListComponent {
             (item) => item.status !== SubscriptionClass.STATUS_ACTIVE
           );
         }
-        console.log(
-          "Url",
-          this.router.url,
-          this.router.url.startsWith("/settings")
-        );
+        // console.log("Url",this.router.url,this.router.url.startsWith("/settings"));
         if (
           response.length === 0 &&
           statusFilter === SubscriptionClass.STATUS_INACTIVE &&

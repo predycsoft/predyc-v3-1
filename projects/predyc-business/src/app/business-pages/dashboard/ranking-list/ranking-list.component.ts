@@ -102,7 +102,7 @@ export class RankingListComponent {
       };
     }).sort((a, b) => b.hours30Days - a.hours30Days);
 
-    console.log("this.ranking", this.ranking)
+    // console.log("this.ranking", this.ranking)
   }
   
   ngOnDestroy() {

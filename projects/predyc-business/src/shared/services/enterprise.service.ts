@@ -38,7 +38,7 @@ export class EnterpriseService {
           this.enterpriseRef = this.afs.collection<Enterprise>(Enterprise.collection).doc(enterprise.id).ref
           if (!this.enterpriseLoadedSubject.value) {
             this.enterpriseLoadedSubject.next(true)
-            console.log("La empresa fue cargada", enterprise)
+            // console.log("La empresa fue cargada", enterprise)
             //this.getUsersWithEnterpriseAndClassesByDevice()
           }
         })

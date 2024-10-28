@@ -88,7 +88,7 @@ export class CertificationStudentListComponent {
 
   performSearch(searchTerm: string, page: number, profileFilter: string) {
 
-    console.log('resultadosExamen',this.resultadosExamen)
+    // console.log('resultadosExamen',this.resultadosExamen)
 
     if (this.userServiceSubscription) {
       this.userServiceSubscription.unsubscribe();
@@ -144,7 +144,7 @@ export class CertificationStudentListComponent {
       this.DatosUserEmpresas.emit(users)
       this.dataSource.data = users;
       this.totalLength = response.length;
-      console.log('users',users);
+      // console.log('users',users);
 
     });
   }
@@ -152,7 +152,7 @@ export class CertificationStudentListComponent {
   getTestResult(user){
     let result = this.resultadosExamen?.find(x=>x.userRef.id == user.uid)
 
-    console.log('result',result)
+    // console.log('result',result)
 
     if(!result) {
       return null
@@ -171,7 +171,7 @@ export class CertificationStudentListComponent {
 
   onSelectUser(user: User) {
 
-    console.log('user',user)
+    // console.log('user',user)
 
     if (this.enableNavigateToUser && user.profile && user.targetHours>0) {
       this.router.navigate([`management/students/${user.uid}`])
