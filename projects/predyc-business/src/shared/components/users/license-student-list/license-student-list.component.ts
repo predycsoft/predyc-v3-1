@@ -10,7 +10,7 @@ import {
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Subscription } from "rxjs";
+import { firstValueFrom, Subscription } from "rxjs";
 import { Subscription as SubscriptionClass } from "projects/shared/models/subscription.model";
 import { Profile } from "projects/shared/models/profile.model";
 import { IconService } from "projects/predyc-business/src/shared/services/icon.service";
@@ -65,29 +65,24 @@ export class LicenseStudentListComponent {
     private userService: UserService
   ) {}
 
-  ngOnInit() {
-    this.profileService.loadProfiles();
-    this.profilesSubscription = this.profileService
-      .getProfilesObservable()
-      .subscribe((profiles) => {
-        if (profiles) {
-          this.profiles = profiles;
-          this.queryParamsSubscription =
-            this.activatedRoute.queryParams.subscribe((params) => {
-              const page = Number(params["page"]) || 1;
-              const searchTerm = params["search"] || "";
-              const statusFilter =
-                params["status"] || SubscriptionClass.STATUS_INACTIVE;
-              // clear checkboxes selection if status filter changed
-              if (this.lastStatusFilter !== statusFilter) {
-                this.selection.clear();
-                this.emitSelectedUsers();
-                this.lastStatusFilter = statusFilter;
-              }
-              this.performSearch(searchTerm, page, statusFilter);
-            });
+  async ngOnInit() {
+    const profiles = await firstValueFrom(this.profileService.getProfiles$())
+    if (profiles) {
+      this.profiles = profiles;
+      this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe((params) => {
+        const page = Number(params["page"]) || 1;
+        const searchTerm = params["search"] || "";
+        const statusFilter =
+          params["status"] || SubscriptionClass.STATUS_INACTIVE;
+        // clear checkboxes selection if status filter changed
+        if (this.lastStatusFilter !== statusFilter) {
+          this.selection.clear();
+          this.emitSelectedUsers();
+          this.lastStatusFilter = statusFilter;
         }
+        this.performSearch(searchTerm, page, statusFilter);
       });
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -107,13 +102,13 @@ export class LicenseStudentListComponent {
 
   firstRedirectToActive: boolean = false;
 
-  performSearch(searchTerm: string, page: number, statusFilter: string) {
+  async performSearch(searchTerm: string, page: number, statusFilter: string) {
     if (this.userServiceSubscription) {
       this.userServiceSubscription.unsubscribe();
     }
-    this.userServiceSubscription = this.userService
-      .getUsers$(searchTerm, null, statusFilter)
-      .subscribe((response) => {
+
+    let response = await firstValueFrom(this.userService.getUsers$(searchTerm, null, statusFilter))
+    // this.userServiceSubscription = this.userService.getUsers$(searchTerm, null, statusFilter).subscribe((response) => {
         // console.log('statusFilter',statusFilter)
         if(statusFilter == 'all'){
           response = response
@@ -167,7 +162,7 @@ export class LicenseStudentListComponent {
         this.dataSource.data = users; // Assuming the data is in 'items'
         // // this.paginator.length = response.count; // Assuming total length is returned
         this.totalLength = response.length; // Assuming total length is returned
-      });
+    // });
   }
 
   onPageChange(page: number): void {
@@ -196,10 +191,8 @@ export class LicenseStudentListComponent {
   }
 
   ngOnDestroy() {
-    if (this.queryParamsSubscription)
-      this.queryParamsSubscription.unsubscribe();
-    if (this.userServiceSubscription)
-      this.userServiceSubscription.unsubscribe();
+    if (this.queryParamsSubscription) this.queryParamsSubscription.unsubscribe();
+    if (this.userServiceSubscription) this.userServiceSubscription.unsubscribe();
     if (this.profilesSubscription) this.profilesSubscription.unsubscribe();
   }
 }
