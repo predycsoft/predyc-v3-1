@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { firstValueFrom, Subscription } from 'rxjs';
 import { Profile } from 'projects/shared/models/profile.model';
 import { ProfileService } from '../../services/profile.service';
 import { IconService } from '../../services/icon.service';
@@ -27,29 +27,20 @@ export class ProfileSelectorComponent {
   @Input() enterpriseRef: DocumentReference<Enterprise>
 
 
-  ngOnInit() {
-
+  async ngOnInit() {
     // console.log('perfil reviar',this.profiles)
-    this.profileService.loadProfiles()
 
-    if(this.enterpriseRef){
-
-      this.profileService.getProfiles$(this.enterpriseRef).subscribe(profiles => {
-        if (profiles){
-          profiles = profiles.filter(x=>x.enterpriseRef)
-          this.profiles = profiles
-        }
-      })
+    if (this.enterpriseRef) {
+      const profiles = await firstValueFrom(this.profileService.getProfiles$(this.enterpriseRef))
+      if (profiles) {
+        this.profiles = profiles.filter(x=>x.enterpriseRef)
+      }
     }
     else{
-
-      this.profileService.getProfiles$().subscribe(profiles => {
-        if (profiles){
-          profiles = profiles.filter(x=>x.enterpriseRef)
-          this.profiles = profiles
-        }
-      })
-
+      const profiles = await firstValueFrom(this.profileService.getProfiles$())
+      if (profiles) {
+        this.profiles = profiles.filter(x=>x.enterpriseRef)
+      }
     }
 
     this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
