@@ -17,10 +17,8 @@ export class UsersaAtivityComponent {
   constructor(
     public icon: IconService,
     private router: Router
-
-
-
   ){}
+  
   @Input() users
   @Input() enterprise
   examenInicial

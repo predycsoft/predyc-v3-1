@@ -17,10 +17,8 @@ export class UsersOnboardingComponent {
   constructor(
     public icon: IconService,
     private router: Router
-
-
-
   ){}
+
   @Input() users
   @Input() enterprise
   examenInicial
@@ -30,7 +28,6 @@ export class UsersOnboardingComponent {
   withDiagnostic = 0
   withFistClass = 0
 
-
   studentWihPLanPorcentage = 0
   fistAccesCompletedPorcentage = 0
   withDiagnosticPorcentage = 0
@@ -38,7 +35,7 @@ export class UsersOnboardingComponent {
 
   data = [];
 
-  processData(){
+  processData() {
 
     if(this.users){
 
@@ -64,14 +61,10 @@ export class UsersOnboardingComponent {
       this.withDiagnosticPorcentage = this.withDiagnostic*100/this.usersTotal
       this.withFistClass = usersActive.filter(x=>x.activityStatusText!='Sin inicio sesión' && x.activityStatusText!='Sin diagnostico completado' &&  x.activityStatusText!='Sin clases vistas').length
       this.withFistClassPorcentage = this.withFistClass*100/this.usersTotal
-  
-  
     }
-
-
   }
 
-  navigateToStudents(filter){
+  navigateToStudents(filter) {
 
     if(filter=='planDeEstudio'){
       this.router.navigate(['management/students'], { queryParams: { status: "active" ,ritmo:'no plan'}});
@@ -91,24 +84,13 @@ export class UsersOnboardingComponent {
         this.router.navigate(['management/students'], { queryParams: { status: "active" ,ultActivity:'Sin inicio y sin clases vistas'}});
       }
     }
-
-
   }
 
-  
-
   ngOnInit() {
-
-
   }
 
   ngOnChanges(changes: SimpleChanges) {
     this.processData()
-    
-
-
   }
-
-
 
 }

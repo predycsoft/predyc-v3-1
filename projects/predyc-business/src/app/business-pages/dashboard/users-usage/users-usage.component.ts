@@ -17,10 +17,8 @@ export class UsersUsageComponent {
   constructor(
     public icon: IconService,
     private router: Router
-
-
-
   ){}
+
   @Input() enterprise
 
   data = [];
@@ -34,10 +32,9 @@ export class UsersUsageComponent {
   movilUsage = 0;
   desktopUsage = 0;
 
+  processData() {
 
-  processData(){
-
-    if(this.enterprise?.devices?.desktop >0 || this.enterprise?.devices?.movil >0){
+    if (this.enterprise?.devices?.desktop >0 || this.enterprise?.devices?.movil >0) {
 
       let total = this.enterprise.devices.desktop + this.enterprise.devices.movil
 
@@ -59,9 +56,9 @@ export class UsersUsageComponent {
     let daysSorted =  structuredClone(usageByDay).sort((a, b) => b.porcentaje - a.porcentaje);
     let HorasSorted =  structuredClone(usageByHour).sort((a, b) => b.porcentaje - a.porcentaje);
 
-    if(daysSorted[0].porcentaje>0){
+    if (daysSorted[0].porcentaje > 0) {
 
-      if(daysSorted[1].porcentaje>0){
+      if (daysSorted[1].porcentaje > 0) {
 
         let dia1 = daysSorted[0].name;
         let dia2 = daysSorted[1].name;
@@ -113,8 +110,6 @@ export class UsersUsageComponent {
 
     }
 
-
-
     if(HorasSorted[0].porcentaje>0){
       this.textoHorasMasUsoDetail= ` ${HorasSorted[0].range}`
     }
@@ -123,13 +118,7 @@ export class UsersUsageComponent {
 
     }
 
-
-
-
     console.log('usageByHour',HorasSorted,daysSorted);
-
-
-
 
   }
 
@@ -140,21 +129,11 @@ export class UsersUsageComponent {
     }).join(' ');
   }
 
-
-
-
-
-
   ngOnInit() {
-
-
   }
 
   ngOnChanges(changes: SimpleChanges) {
     this.processData()
-    
-
-
   }
 
   adjustUsageForTimezone(usage) {
@@ -227,7 +206,6 @@ export class UsersUsageComponent {
     return finalData;
   }
 
-
   calculateHourBlockStatistics(adjustedUsage) {
     // Definir los bloques de horas
     const hourBlocks = [
@@ -262,11 +240,5 @@ export class UsersUsageComponent {
   
     return hourBlocks;
   }
-  
-  
-
-  
-
-
 
 }
