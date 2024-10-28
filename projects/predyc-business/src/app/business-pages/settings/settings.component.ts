@@ -31,7 +31,7 @@ export class SettingsComponent {
 
   ){}
 
-  licenses$: Observable<License[]> = this.licenseService.getCurrentEnterpriseLicenses$()
+  // licenses$: Observable<License[]> = this.licenseService.getCurrentEnterpriseLicenses$()
   licenses: License[];
   licensesSubscription: Subscription;
 
@@ -55,14 +55,14 @@ export class SettingsComponent {
   rotationsWaitingCount : number
   rotacionWarningCount: number
 
-  ngOnInit() {
+  async ngOnInit() {
     this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
       if (params['status']) {
         this.currentStatus = params['status'];
       }
     });
 
-    this.licensesSubscription = this.licenses$.subscribe(licenses => {
+    const licenses = await firstValueFrom(this.licenseService.getCurrentEnterpriseLicenses$())
       // console.log('licenses',licenses)
       if (licenses && licenses.length > 0) {
         this.licenses = licenses;
@@ -95,7 +95,6 @@ export class SettingsComponent {
           this.selectedLicense = licenses.find(license => license.id === this.selectedLicense.id)
         }
       }
-    });
   }
 
   handleSelectedUsers(users: any[]) {
@@ -235,9 +234,7 @@ export class SettingsComponent {
 
 
   ngOnDestroy() {
-    if (this.queryParamsSubscription) {
-      this.queryParamsSubscription.unsubscribe();
-      this.licensesSubscription.unsubscribe()
-    }
+    if (this.queryParamsSubscription) {this.queryParamsSubscription.unsubscribe();}
+    if (this.licensesSubscription) this.licensesSubscription.unsubscribe()
   }
 }
