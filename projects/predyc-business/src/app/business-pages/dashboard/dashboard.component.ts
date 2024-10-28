@@ -198,9 +198,7 @@ convertirFechaString(fechaString: string): Date | null {
     return null; // Si no se pudo analizar, devolver null
 }
 
-// Asegúrate de manejar el formateo de la fecha en el método exportToExcel si es necesario.
-
-
+  // Asegúrate de manejar el formateo de la fecha en el método exportToExcel si es necesario.
 
   descargarDatosMEC() {
     this.enterpriseService.getEventRegister$().pipe(take(1)).subscribe((eventos) => {
@@ -243,8 +241,6 @@ convertirFechaString(fechaString: string): Date | null {
       }
     });
   }
-  
-  
 
   descargarDatosFoms() {
     this.enterpriseService.getFormsData$().pipe(take(1)).subscribe((eventos) => {
@@ -277,7 +273,6 @@ convertirFechaString(fechaString: string): Date | null {
       }
     });
   }
-  
 
   // Método para convertir las marcas de tiempo de Firebase a objetos Date
   convertirFechasFirebase(obj: any): any {
@@ -305,154 +300,140 @@ convertirFechaString(fechaString: string): Date | null {
   }
 
   user
-  ngOnInit() {
-    this.authService.user$.subscribe((user) => {
-      this.user = user;
-    });
+  async ngOnInit() {
+    this.user = await firstValueFrom(this.authService.user$)
+    // console.log("this.user", this.user)
     this.loaderService.setLoading(true);
-    this.enterpriseSubscription = this.enterpriseService.enterprise$.subscribe(
-      async (enterprise) => {
-        if (enterprise) {
+    this.enterpriseSubscription = this.enterpriseService.enterprise$.subscribe(async (enterprise) => {
+      if (enterprise) {
 
-          //let certicates = await this.enterpriseService.getCertificatesEnterprise(enterprise)
-          //console.log('certicates',certicates)
-          this.enterprise = enterprise;
-          // console.log('enterpriseDashboard',enterprise)
-          this.loaderService.setLoading(false);
-          if(this.enterprise.examenInicial  === undefined || this.enterprise?.examenInicial){
-            this.examenInicial = true
-    
-          }
-          else{
-            this.examenInicial = false
-          }
-
-          this.generatinReport = false;
-          this.displayErrors = false;
-          this.enterpriseSubscription = this.enterpriseService.enterprise$.subscribe(
-            async (enterprise) => {
-              if (enterprise) {
-                this.enterprise = enterprise;
-              }
-            }
-          );
-          this.profileService.loadProfiles();
-          this.profilesSubscription = combineLatest([
-            this.profileService.getProfiles$(),
-            this.departmentService.getDepartments$(),
-            this.courseService.getCourses$(),
-            this.courseService.getClassesEnterprise$(),
-            this.activityClassesService.getTestProfileResultsEnterprise()
-          ]).subscribe(([profiles, departments, courses, classes,tests]) => {
-            this.profiles = profiles;
-            this.departments = departments;
-            this.courses = courses;
-            this.classes = classes;
-            this.testUsers = tests
-            this.userServiceSubscription = this.userService.users$.subscribe(
-              async (users) => {
-                if (users && users.length > 1) {
-                  // first response is an 1 element array corresponded to admin
-                  const performances = [];
-                  users = users.filter(x=>x.status == 'active')
-                  for (let user of users) {
-
-                    let test = this.testUsers.filter(x=>x.userRef.id == user.uid && x.type == 'inicial')
-                    let dateLastActivity = null
-                    let lastActivityText: string;
-                    let groupedLastActivity ='Más de 30 días'
-                    // Determinar el estado de la actividad
-                    let activityStatus = 'Sin inicio sesión';
-                    if (user['lastActivityDate']?.seconds) {
-                      // console.log('lastActivityDate',user['lastActivityDate']?.seconds,user.uid)
-                      let date = new Date(user['lastActivityDate'].seconds * 1000);
-                      date.setHours(0, 0, 0, 0); // Establecer la hora a 00:00:00.000
-                      activityStatus = date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long' });
-                      dateLastActivity = date.getTime();
-                      // console.log('dateLastActivity',dateLastActivity)
-                      // Crear la variable de texto para indicar hace cuánto fue la última actividad
-                      let today = new Date();
-                      today.setHours(0, 0, 0, 0);
-                      let diffTime = Math.abs(today.getTime() - date.getTime());
-                      let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Diferencia en días
-            
-                      if(diffDays <= 15){
-                        groupedLastActivity ='Menos de 15 días'
-                      }
-                      else if(diffDays <= 30){
-                        groupedLastActivity ='Menos de 30 días'
-                      }
-                      else{
-                        groupedLastActivity ='Más de 30 días'
-                      }
-
-                      if (diffDays === 0) {
-                        lastActivityText = 'Hoy';
-                      } else if (diffDays <= 30) {
-                        if(diffDays == 1){
-                          lastActivityText = `Hace 1 día`;
-                        }
-                        else{
-                          lastActivityText = `Hace ${diffDays} días`;
-                        }
-                      } else {
-                        lastActivityText = 'Más de 30 días';
-                      }
-                    } else if (!user['lastActivityDate']?.seconds && this.examenInicial && test.length === 0 && user['lastViewDate']) {
-                      activityStatus = 'Sin diagnostico completado';
-                      groupedLastActivity ='Más de 30 días'
-                      // actStatus.push(activityStatus)
-                    } else if (!user['lastActivityDate']?.seconds && this.examenInicial && test.length > 0) {
-                      activityStatus = 'Sin clases vistas';
-                      groupedLastActivity ='Más de 30 días'
-                      // actStatus.push(activityStatus)
-                    }
-
-                    user['groupedLastActivity'] = groupedLastActivity
-                    user['activityStatusText'] = activityStatus
-                    user['lastActivity'] =  user['lastActivity']?user['lastActivity']:null
-
-                    
-                    const userRef = this.userService.getUserRefById(user.uid);
-                    const studyPlan: CourseByStudent[] =
-                      await this.courseService.getActiveCoursesByStudent(userRef);
-                      studyPlan.forEach(course => {
-                        const courseJson = this.courses.find(item => item.id === course.courseRef.id);
-                        // console.log('cursosRevisarPlan',this.courses,courseJson)
-                        if (courseJson) {
-                          course.courseTime = courseJson.duracion
-                        }
-                      });
-                    const userPerformance:
-                      | "no plan"
-                      | "high"
-                      | "medium"
-                      | "low"
-                      | "no iniciado" =
-                      this.userService.getPerformanceWithDetails(studyPlan);
-                      user.performance = userPerformance,
-                      user['studyPlan'] = studyPlan
-                      // console.log('studyPlanReporteUser',user,userPerformance)
-                    performances.push(userPerformance);
-                    // user['ready'] = true
-                    
-                  }
-                  this.users = users
-                  // console.log('this.user performance',this.users,performances)
-                  this.getUsersRythmData(performances);
-                }
-              }
-            );
-            //this.getData();
-          });
+        //let certicates = await this.enterpriseService.getCertificatesEnterprise(enterprise)
+        //console.log('certicates',certicates)
+        this.enterprise = enterprise;
+        // console.log('enterpriseDashboard',enterprise)
+        this.loaderService.setLoading(false);
+        if(this.enterprise.examenInicial  === undefined || this.enterprise?.examenInicial){
+          this.examenInicial = true
         }
+        else{
+          this.examenInicial = false
+        }
+
+        this.generatinReport = false;
+        this.displayErrors = false;
+
+        // await this.profileService.loadProfiles();
+        const profiles = await firstValueFrom(this.profileService.getProfiles$())
+        const departments = await firstValueFrom(this.departmentService.getDepartments$())
+        const courses = await firstValueFrom(this.courseService.getCourses$())
+        const classes = await firstValueFrom(this.courseService.getClassesEnterprise$())
+        const tests = await firstValueFrom(this.activityClassesService.getTestProfileResultsEnterprise())
+
+        this.profiles = profiles;
+        this.departments = departments;
+        this.courses = courses;
+        this.classes = classes;
+        this.testUsers = tests
+
+        let users = await firstValueFrom(this.userService.users$)
+        if (users && users.length > 1) {
+          // first response is an 1 element array corresponded to admin
+          const performances = [];
+          users = users.filter(x=>x.status == 'active')
+          for (let user of users) {
+
+            let test = this.testUsers.filter(x=>x.userRef.id == user.uid && x.type == 'inicial')
+            let dateLastActivity = null
+            let lastActivityText: string;
+            let groupedLastActivity ='Más de 30 días'
+            // Determinar el estado de la actividad
+            let activityStatus = 'Sin inicio sesión';
+            if (user['lastActivityDate']?.seconds) {
+              // console.log('lastActivityDate',user['lastActivityDate']?.seconds,user.uid)
+              let date = new Date(user['lastActivityDate'].seconds * 1000);
+              date.setHours(0, 0, 0, 0); // Establecer la hora a 00:00:00.000
+              activityStatus = date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long' });
+              dateLastActivity = date.getTime();
+              // console.log('dateLastActivity',dateLastActivity)
+              // Crear la variable de texto para indicar hace cuánto fue la última actividad
+              let today = new Date();
+              today.setHours(0, 0, 0, 0);
+              let diffTime = Math.abs(today.getTime() - date.getTime());
+              let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Diferencia en días
+    
+              if(diffDays <= 15){
+                groupedLastActivity ='Menos de 15 días'
+              }
+              else if(diffDays <= 30){
+                groupedLastActivity ='Menos de 30 días'
+              }
+              else{
+                groupedLastActivity ='Más de 30 días'
+              }
+
+              if (diffDays === 0) {
+                lastActivityText = 'Hoy';
+              } else if (diffDays <= 30) {
+                if(diffDays == 1){
+                  lastActivityText = `Hace 1 día`;
+                }
+                else{
+                  lastActivityText = `Hace ${diffDays} días`;
+                }
+              } else {
+                lastActivityText = 'Más de 30 días';
+              }
+            } else if (!user['lastActivityDate']?.seconds && this.examenInicial && test.length === 0 && user['lastViewDate']) {
+              activityStatus = 'Sin diagnostico completado';
+              groupedLastActivity ='Más de 30 días'
+              // actStatus.push(activityStatus)
+            } else if (!user['lastActivityDate']?.seconds && this.examenInicial && test.length > 0) {
+              activityStatus = 'Sin clases vistas';
+              groupedLastActivity ='Más de 30 días'
+              // actStatus.push(activityStatus)
+            }
+
+            user['groupedLastActivity'] = groupedLastActivity
+            user['activityStatusText'] = activityStatus
+            user['lastActivity'] =  user['lastActivity']?user['lastActivity']:null
+
+            
+            const userRef = this.userService.getUserRefById(user.uid);
+            const studyPlan: CourseByStudent[] =
+              await this.courseService.getActiveCoursesByStudent(userRef);
+              studyPlan.forEach(course => {
+                const courseJson = this.courses.find(item => item.id === course.courseRef.id);
+                // console.log('cursosRevisarPlan',this.courses,courseJson)
+                if (courseJson) {
+                  course.courseTime = courseJson.duracion
+                }
+              });
+            const userPerformance:
+              | "no plan"
+              | "high"
+              | "medium"
+              | "low"
+              | "no iniciado" =
+              this.userService.getPerformanceWithDetails(studyPlan);
+              user.performance = userPerformance,
+              user['studyPlan'] = studyPlan
+              // console.log('studyPlanReporteUser',user,userPerformance)
+            performances.push(userPerformance);
+            // user['ready'] = true
+            
+          }
+          this.users = users
+          // console.log('this.user performance',this.users, performances)
+          this.getUsersRythmData(performances);
+        }
+        //this.getData();
       }
-    );
+    });
   }
 
   ngOnDestroy() {
-    this.enterpriseSubscription.unsubscribe();
-    this.userServiceSubscription.unsubscribe();
+    if (this.enterpriseSubscription) this.enterpriseSubscription.unsubscribe();
+    if (this.userServiceSubscription) this.userServiceSubscription.unsubscribe();
   }
 
   openDownloadReportModal(): NgbModalRef {
@@ -2142,9 +2123,7 @@ convertirFechaString(fechaString: string): Date | null {
   downloadReport() {
     //alert('inicio reporte')
     this.generatinReport = true;
-    if (this.userServiceSubscription) {
-      this.userServiceSubscription.unsubscribe();
-    }
+    if (this.userServiceSubscription) this.userServiceSubscription.unsubscribe();
 
     let fechaInicio = null;
     let fechaFin = null;
@@ -2164,221 +2143,200 @@ convertirFechaString(fechaString: string): Date | null {
       );
     }
 
-    this.userServiceSubscription = this.userService
-      .getUsersReport$(null, null, null, null, fechaInicio, fechaFin)
-      .pipe(
-        filter((user) => user != null),
-        take(1),
-        switchMap((users) => {
-          const userCourseObservables = users.map((user) => {
-            const userRef = this.userService.getUserRefById(user.uid);
-            // Obtener cursos activos por usuario
-            const coursesObservable = this.courseService
-              .getActiveCoursesByStudentDateFiltered$(
-                userRef,
-                fechaInicio,
-                fechaFin
-              )
-              .pipe(take(1));
-            // Obtener clases asociadas al usuario, independientemente de los cursos
-            const inactiveCoursesObservable = this.courseService.getInactiveCoursesByStudentDateFiltered$(userRef,fechaInicio,fechaFin).pipe(take(1));
-            const classesObservable = this.courseService
-              .getClassesByStudentDatefilterd$(userRef, fechaInicio, fechaFin)
-              .pipe(take(1));
-              const initTestObservable = this.profileService
-              .getDiagnosticTestForUser$(user)
-              .pipe(take(1));
-            const allCoursesObservable = this.courseService.getActiveCoursesByStudent(userRef);
-            const certificatesObservable = this.courseService.getCertificatestDatefilterd$(userRef, fechaInicio, fechaFin).pipe(take(1));
-            const subscriptionsObservable = this.userService
-              .getSubscriptionByStudentDateFiltered$(
-                userRef,
-                fechaInicio,
-                fechaFin
-              )
-              .pipe(take(1));
-            return combineLatest([
-              coursesObservable,
-              inactiveCoursesObservable,
-              classesObservable,
-              initTestObservable,
-              certificatesObservable,
-              allCoursesObservable,
-              subscriptionsObservable,
-            ]).pipe(
-              map(
-                ([
+    this.userServiceSubscription = this.userService.getUsersReport$(null, null, null, null, fechaInicio, fechaFin).pipe(
+      filter((user) => user != null),
+      take(1),
+      switchMap((users) => {
+        const userCourseObservables = users.map((user) => {
+          const userRef = this.userService.getUserRefById(user.uid);
+          // Obtener cursos activos por usuario
+          const coursesObservable = this.courseService.getActiveCoursesByStudentDateFiltered$(userRef,fechaInicio,fechaFin).pipe(take(1));
+          // Obtener clases asociadas al usuario, independientemente de los cursos
+          const inactiveCoursesObservable = this.courseService.getInactiveCoursesByStudentDateFiltered$(userRef,fechaInicio,fechaFin).pipe(take(1));
+          const classesObservable = this.courseService.getClassesByStudentDatefilterd$(userRef, fechaInicio, fechaFin).pipe(take(1));
+          const initTestObservable = this.profileService.getDiagnosticTestForUser$(user).pipe(take(1));
+          const allCoursesObservable = this.courseService.getActiveCoursesByStudent(userRef);
+          const certificatesObservable = this.courseService.getCertificatestDatefilterd$(userRef, fechaInicio, fechaFin).pipe(take(1));
+          const subscriptionsObservable = this.userService.getSubscriptionByStudentDateFiltered$( userRef, fechaInicio, fechaFin ).pipe(take(1));
+          return combineLatest([
+            coursesObservable,
+            inactiveCoursesObservable,
+            classesObservable,
+            initTestObservable,
+            certificatesObservable,
+            allCoursesObservable,
+            subscriptionsObservable,
+          ]).pipe(
+            map(
+              ([
+                courses,
+                inactiveCourses,
+                classes,
+                initTest,
+                certificados,
+                allCourses,
+                allsubscriptions,
+              ]) => {
+                // Aquí tienes un objeto que incluye tanto los cursos como las clases asociadas a ese usuario
+                // Cursos y clases están en sus propios objetos y no anidadas
+                return {
+                  user,
                   courses,
                   inactiveCourses,
-                  classes,
                   initTest,
+                  classes,
                   certificados,
                   allCourses,
                   allsubscriptions,
-                ]) => {
-                  // Aquí tienes un objeto que incluye tanto los cursos como las clases asociadas a ese usuario
-                  // Cursos y clases están en sus propios objetos y no anidadas
-                  return {
-                    user,
-                    courses,
-                    inactiveCourses,
-                    initTest,
-                    classes,
-                    certificados,
-                    allCourses,
-                    allsubscriptions,
-                  };
-                }
-              )
-            );
-          });
-          // Combina los observables de todos los usuarios con sus cursos y clases
-          return combineLatest(userCourseObservables).pipe(take(1));
-        })
-      )
-      .subscribe((response) => {
-        console.log("datos reporte", response);
-        const users: User[] = response.map(
-          ({
-            user,
-            courses,
-            inactiveCourses,
-            initTest,
-            classes,
-            certificados,
-            allCourses,
-            allsubscriptions,
-          }) => {
-            const profile = this.profiles.find((profile) => {
-              if (user.profile) {
-                return profile.id === user.profile.id;
+                };
               }
-              return false;
-            });
-            let profileName = "";
-            if (profile) {
-              profileName = profile.name;
+            )
+          );
+        });
+        // Combina los observables de todos los usuarios con sus cursos y clases
+        return combineLatest(userCourseObservables).pipe(take(1));
+      })
+    ).subscribe((response) => {
+      console.log("datos reporte", response);
+      const users: User[] = response.map(
+        ({
+          user,
+          courses,
+          inactiveCourses,
+          initTest,
+          classes,
+          certificados,
+          allCourses,
+          allsubscriptions,
+        }) => {
+          const profile = this.profiles.find((profile) => {
+            if (user.profile) {
+              return profile.id === user.profile.id;
             }
-            let hours = 0;
-            let targetHours = 0;
-            let targetHoursAllCourses = 0;
-            let hoursAllCourses = 0;
-            let coursesUser = [];
-            let allcoursesUser = [];
-            let classesUser = [];
-            let inactivecoursesUser = [];
-
-            let hoursExtra = 0;
-            let targetHoursExtra = 0;
-
-
-            console.log('revisarCursosReporte',courses,this.courses)
-
-
-            courses.forEach((course) => {
-              hours += (course?.progressTime ? course.progressTime : 0) / 60;
-              const courseJson = this.courses.find(
-                (item) => item.id === course.courseRef.id
-              );
-              let courseIn = { ...courseJson, progress: course };
-              courseIn.completed = course.progress >= 100 ? true : false;
-              coursesUser.push(courseIn);
-              targetHours += (course.courseTime? course.courseTime :  courseJson.duracion) / 60;
-              if(!course.courseTime){
-                course.courseTime = courseJson.duracion
-              }
-            });
-
-            allCourses.forEach((course) => {
-              hoursAllCourses +=
-                (course?.progressTime ? course.progressTime : 0) / 60;
-              const courseJson = this.courses.find(
-                (item) => item.id === course.courseRef.id
-              );
-              let courseIn = { ...courseJson, progress: course };
-              courseIn.completed = course.progress >= 100 ? true : false;
-              allcoursesUser.push(courseIn);
-              targetHoursAllCourses += (course.courseTime? course.courseTime :  courseJson.duracion) / 60;
-            });
-
-            // inactiveCourses.forEach(course => {
-            //   const courseJson = this.courses.find(item => item.id === course.courseRef.id)
-            //   let courseIn = {...courseJson,progress:course}
-            //   courseIn.completed = course.progress >= 100? true : false
-            //   inactivecoursesUser.push(courseIn)            
-            // })
-
-            inactiveCourses.forEach((course) => {
-              hoursExtra += (course?.progressTime ? course.progressTime : 0) / 60;
-              const courseJson = this.courses.find(
-                (item) => item.id === course.courseRef.id
-              );
-              let courseIn = { ...courseJson, progress: course };
-              courseIn.completed = course.progress >= 100 ? true : false;
-              courseIn.extra = true
-              inactivecoursesUser.push(courseIn);
-              targetHoursExtra += (course.courseTime? course.courseTime :  courseJson.duracion) / 60;
-              if(!course.courseTime){
-                course.courseTime = courseJson.duracion
-              }
-            });
-
-            classes.forEach((clase) => {
-              const classJson = this.classes.find(
-                (item) => item.id === clase.classRef.id
-              );
-              let claseData = { ...classJson, ...clase };
-              classesUser.push(claseData);
-            });
-            const userPerformance:
-              | "no plan"
-              | "high"
-              | "medium"
-              | "low"
-              | "no iniciado" =
-              this.userService.getPerformanceWithDetails(courses);
-            const department = this.departments.find(
-              (department) => department.id === user.departmentRef?.id
-            );
-            const ratingPoints: number =
-              this.userService.getRatingPointsFromStudyPlan(
-                courses,
-                this.courses
-              );
-            return {
-              email: user.email,
-              displayName: user.displayName,
-              department: department?.name ? department.name : "",
-              departmentId: department?.id ? department.id : "",
-              hours: hours, // Calculation pending
-              hoursAllCourses: hoursAllCourses,
-              targetHours: targetHours,
-              targetHoursAllCourses: targetHoursAllCourses,
-              profile: profileName,
-              profileId: profile?.id ? profile.id : "",
-              ratingPoints: ratingPoints,
-              rhythm: userPerformance, // Calculation pending
-              uid: user.uid,
-              initTest:initTest,
-              jog: user.job,
-              photoUrl: user.photoUrl,
-              courses: coursesUser,
-              clases: classesUser,
-              certificados: certificados,
-              allCourses: allcoursesUser,
-              allsubscriptions: allsubscriptions,
-              completacion: targetHours ? (hours * 100) / targetHours : "",
-              completacionAll: targetHoursAllCourses ? (hoursAllCourses * 100) / targetHoursAllCourses : "",
-              inactivecourses:inactivecoursesUser,
-              hoursExtra,
-              targetHoursExtra
-            };
+            return false;
+          });
+          let profileName = "";
+          if (profile) {
+            profileName = profile.name;
           }
-        );
-        this.users = users; // Assuming the data is in 'items'
-        console.log("data reporte", this.users);
-        this.downloadExcelReport();
-      });
+          let hours = 0;
+          let targetHours = 0;
+          let targetHoursAllCourses = 0;
+          let hoursAllCourses = 0;
+          let coursesUser = [];
+          let allcoursesUser = [];
+          let classesUser = [];
+          let inactivecoursesUser = [];
+
+          let hoursExtra = 0;
+          let targetHoursExtra = 0;
+
+          console.log('revisarCursosReporte',courses,this.courses)
+
+          courses.forEach((course) => {
+            hours += (course?.progressTime ? course.progressTime : 0) / 60;
+            const courseJson = this.courses.find(
+              (item) => item.id === course.courseRef.id
+            );
+            let courseIn = { ...courseJson, progress: course };
+            courseIn.completed = course.progress >= 100 ? true : false;
+            coursesUser.push(courseIn);
+            targetHours += (course.courseTime? course.courseTime :  courseJson.duracion) / 60;
+            if(!course.courseTime){
+              course.courseTime = courseJson.duracion
+            }
+          });
+
+          allCourses.forEach((course) => {
+            hoursAllCourses +=
+              (course?.progressTime ? course.progressTime : 0) / 60;
+            const courseJson = this.courses.find(
+              (item) => item.id === course.courseRef.id
+            );
+            let courseIn = { ...courseJson, progress: course };
+            courseIn.completed = course.progress >= 100 ? true : false;
+            allcoursesUser.push(courseIn);
+            targetHoursAllCourses += (course.courseTime? course.courseTime :  courseJson.duracion) / 60;
+          });
+
+          // inactiveCourses.forEach(course => {
+          //   const courseJson = this.courses.find(item => item.id === course.courseRef.id)
+          //   let courseIn = {...courseJson,progress:course}
+          //   courseIn.completed = course.progress >= 100? true : false
+          //   inactivecoursesUser.push(courseIn)            
+          // })
+
+          inactiveCourses.forEach((course) => {
+            hoursExtra += (course?.progressTime ? course.progressTime : 0) / 60;
+            const courseJson = this.courses.find(
+              (item) => item.id === course.courseRef.id
+            );
+            let courseIn = { ...courseJson, progress: course };
+            courseIn.completed = course.progress >= 100 ? true : false;
+            courseIn.extra = true
+            inactivecoursesUser.push(courseIn);
+            targetHoursExtra += (course.courseTime? course.courseTime :  courseJson.duracion) / 60;
+            if(!course.courseTime){
+              course.courseTime = courseJson.duracion
+            }
+          });
+
+          classes.forEach((clase) => {
+            const classJson = this.classes.find(
+              (item) => item.id === clase.classRef.id
+            );
+            let claseData = { ...classJson, ...clase };
+            classesUser.push(claseData);
+          });
+          const userPerformance:
+            | "no plan"
+            | "high"
+            | "medium"
+            | "low"
+            | "no iniciado" =
+            this.userService.getPerformanceWithDetails(courses);
+          const department = this.departments.find(
+            (department) => department.id === user.departmentRef?.id
+          );
+          const ratingPoints: number =
+            this.userService.getRatingPointsFromStudyPlan(
+              courses,
+              this.courses
+            );
+          return {
+            email: user.email,
+            displayName: user.displayName,
+            department: department?.name ? department.name : "",
+            departmentId: department?.id ? department.id : "",
+            hours: hours, // Calculation pending
+            hoursAllCourses: hoursAllCourses,
+            targetHours: targetHours,
+            targetHoursAllCourses: targetHoursAllCourses,
+            profile: profileName,
+            profileId: profile?.id ? profile.id : "",
+            ratingPoints: ratingPoints,
+            rhythm: userPerformance, // Calculation pending
+            uid: user.uid,
+            initTest:initTest,
+            jog: user.job,
+            photoUrl: user.photoUrl,
+            courses: coursesUser,
+            clases: classesUser,
+            certificados: certificados,
+            allCourses: allcoursesUser,
+            allsubscriptions: allsubscriptions,
+            completacion: targetHours ? (hours * 100) / targetHours : "",
+            completacionAll: targetHoursAllCourses ? (hoursAllCourses * 100) / targetHoursAllCourses : "",
+            inactivecourses:inactivecoursesUser,
+            hoursExtra,
+            targetHoursExtra
+          };
+        }
+      );
+      this.users = users; // Assuming the data is in 'items'
+      console.log("data reporte", this.users);
+      this.downloadExcelReport();
+    });
   }
 
   titleCase(str: string): string {
