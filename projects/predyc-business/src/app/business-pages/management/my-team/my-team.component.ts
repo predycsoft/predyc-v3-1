@@ -144,8 +144,8 @@ export class MyTeamComponent {
   }
 
   ngOnDestroy() {
-    this.profileSubscription.unsubscribe()
-    this.queryParamsSubscription.unsubscribe()
+    if (this.profileSubscription) this.profileSubscription.unsubscribe()
+    if (this.queryParamsSubscription) this.queryParamsSubscription.unsubscribe()
   }
 
 }
