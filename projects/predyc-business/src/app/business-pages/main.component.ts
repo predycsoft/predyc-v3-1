@@ -3,7 +3,7 @@ import { EnterpriseService } from 'projects/predyc-business/src/shared/services/
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import { User } from 'projects/shared/models/user.model';
-import { Observable, Subscription, filter } from 'rxjs';
+import { Observable, Subscription, filter, firstValueFrom } from 'rxjs';
 import { AuthService } from 'projects/predyc-business/src/shared/services/auth.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SupportComponent } from 'projects/predyc-business/src/shared/components/support/support.component';
@@ -53,8 +53,9 @@ export class MainComponent {
   licensesSubscription: Subscription
   daysToExpire: number
 
-  ngOnInit() {
-    this.licensesSubscription = this.licenseService.getCurrentEnterpriseLicenses$().subscribe(licenses => {
+  async ngOnInit() {
+    const licenses = await firstValueFrom(this.licenseService.getCurrentEnterpriseLicenses$())
+    // this.licensesSubscription = this.licenseService.getCurrentEnterpriseLicenses$().subscribe(licenses => {
       const now = Date.now()
       if (licenses && licenses.length > 0) {
         const validLicenses = licenses.filter(license => {
@@ -70,7 +71,7 @@ export class MainComponent {
           this.daysToExpire = Math.floor(differenceInMilliseconds / millisecondsInDay);
         }
       }
-    });
+    // });
   }
 
   openSupport() {
@@ -79,7 +80,7 @@ export class MainComponent {
       centered: true,
       size: 'lg',
       backdrop: 'static',
-      keyboard: false 
+      keyboard: false
     })
   }
 
