@@ -40,6 +40,7 @@ const routes: Routes = [
         children: [
           { path: "students", title: MAIN_TITLE + "Mi equipo", component: MyTeamComponent, canActivate: [AuthGuard] },
           // {path:"profiles", title: MAIN_TITLE + 'Nuevo perfil', component: ProfilesComponent, canActivate: [AuthGuard]},
+          { path: "profiles", title: MAIN_TITLE + "Perfiles", component: ProfilesListComponent, canActivate: [AuthGuard] },
           { path: "profiles/:id", title: MAIN_TITLE, component: ProfilesComponent, canActivate: [AuthGuard, ProfileGuard] },
           { path: "courses", title: MAIN_TITLE + "Cursos", component: CoursesComponent, canActivate: [AuthGuard] },
           { path: "create-course/:mode/:idCurso", title: MAIN_TITLE + "Crear / Editar curso", component: CreateCourseComponent, canActivate: [AuthGuard] },
@@ -47,8 +48,6 @@ const routes: Routes = [
           { path: "notifications", title: MAIN_TITLE + "Notificaciones", component: NotificationsComponent, canActivate: [AuthGuard] },
           { path: "students/:uid", title: MAIN_TITLE + "Mi equipo", component: StudentComponent, canActivate: [AuthGuard] },
           { path: "certifications", title: MAIN_TITLE + "Certificaciones", component: CertificationsTestComponent, canActivate: [AuthGuard] },
-
-          { path: "profiles", title: MAIN_TITLE + "Perfiles", component: ProfilesListComponent, canActivate: [AuthGuard] },
         ],
       },
       { path: "validation", title: MAIN_TITLE + "Validación de competencias", component: ValidationComponent, canActivate: [AuthGuard] },

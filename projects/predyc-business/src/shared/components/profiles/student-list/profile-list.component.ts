@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core
 import { MatPaginator } from '@angular/material/paginator';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
-import { combineLatest, filter, forkJoin, map, merge, mergeMap, Observable, of, Subscription, switchMap } from 'rxjs';
+import { combineLatest, filter, firstValueFrom, forkJoin, map, merge, mergeMap, Observable, of, Subscription, switchMap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 import { Curso } from 'projects/shared/models/course.model';
@@ -75,9 +75,9 @@ export class ProfileListComponent {
     private enterpriseService: EnterpriseService,
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
 
-    this.enterpriseService.enterpriseLoaded$.subscribe(isLoaded => {
+    this.enterpriseService.enterpriseLoaded$.subscribe(async isLoaded => {
       if (isLoaded) {
         let enterpriseRef = this.enterpriseService.getEnterpriseRef();
         console.log(enterpriseRef)
@@ -93,57 +93,51 @@ export class ProfileListComponent {
         }
 
         this.first = true
-        this.profileService.loadProfiles()
         
-        this.profilesSubscription = combineLatest([this.profileService.getProfiles$(),this.courseService.getCourses$()]).subscribe(([profiles,cursos]) => {
-            this.profiles = profiles.filter(x=>x.enterpriseRef)
-            this.courses = cursos
-            console.log('perfilesAfterFilter',profiles)
-            this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
-              let sortOrder = []
-              const page = Number(params['page']) || 1;
-              const searchTerm = params['search'] || '';
-              const sortNombre =  params['sortNombre'] || '';
-              const sortHoras =  params['sortHoras'] || '';
-              const sortStudents = params['sortStudents'] || '';
-              const sortCourses = params['sortCourses'] || '';
+        const profiles = await firstValueFrom(this.profileService.getProfiles$())
+        const cursos = await firstValueFrom(this.courseService.getCourses$())
+        this.profiles = profiles.filter(x=>x.enterpriseRef)
+        this.courses = cursos
+        // console.log('perfilesAfterFilter',profiles)
+        this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
+          let sortOrder = []
+          const page = Number(params['page']) || 1;
+          const searchTerm = params['search'] || '';
+          const sortNombre =  params['sortNombre'] || '';
+          const sortHoras =  params['sortHoras'] || '';
+          const sortStudents = params['sortStudents'] || '';
+          const sortCourses = params['sortCourses'] || '';
 
-              this.sortHoras = sortHoras
-              this.sortStudents = sortStudents
-              this.sortCourses = sortCourses
-              this.sortNombre = sortNombre
+          this.sortHoras = sortHoras
+          this.sortStudents = sortStudents
+          this.sortCourses = sortCourses
+          this.sortNombre = sortNombre
 
-              // Obtener el orden de los sorts desde los parámetros de la URL
-              const urlParams = new URLSearchParams(window.location.search);
-              urlParams.forEach((value, key) => {
-                if (key === 'sortHoras' || key === 'sortStudents' || key === 'sortCourses' || key == 'sortNombre') {
-                  sortOrder.push({ key, value });
-                }
-              sortOrder = sortOrder.reverse();
-            })
-
-                            
-            if(this.first){
-              this.performSearch(searchTerm, page,sortOrder);
+          // Obtener el orden de los sorts desde los parámetros de la URL
+          const urlParams = new URLSearchParams(window.location.search);
+          urlParams.forEach((value, key) => {
+            if (key === 'sortHoras' || key === 'sortStudents' || key === 'sortCourses' || key == 'sortNombre') {
+              sortOrder.push({ key, value });
             }
-            else{
-              this.performSearchLocal(searchTerm, page,sortOrder);
-            }
+          sortOrder = sortOrder.reverse();
+          })
+                          
+          if (this.first) {
+            this.performSearch(searchTerm, page,sortOrder);
+          }
+          else {
+            this.performSearchLocal(searchTerm, page,sortOrder);
+          }
         })
         
-      })
-    }
+      }
     })
   }
-
-
-  
 
   sortHoras = ''
   sortStudents = ''
   sortCourses = ''
   sortNombre = ''
-
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
@@ -172,8 +166,6 @@ export class ProfileListComponent {
     //sorts
 
     this.appySort(sortOrder,profiles)
-
-
 
     this.paginator.pageIndex = page - 1;
     this.dataSource.data = profiles;
@@ -239,24 +231,15 @@ export class ProfileListComponent {
           }
 
         }
-
-
-
-
       });
-
     }
-
   }
-
-
 
   goToProfile(data){
     this.router.navigate(['/management/profiles/' + data.id])
   }
 
-  performSearch(searchTerm: string, page: number,sortOrder) {
-
+  async performSearch(searchTerm: string, page: number,sortOrder) {
 
     this.paginator.pageIndex = page - 1;
     this.dataSource.data = [];
@@ -264,8 +247,8 @@ export class ProfileListComponent {
 
     // {{getDurationModuleCourse() | formatDuration}}
 
-
-    this.userServiceSubscription = this.userService.getUsers$(null, null, null).subscribe( (usersIn)=> {
+    const usersIn = await firstValueFrom(this.userService.getUsers$(null, null, null))
+    // this.userServiceSubscription = this.userService.getUsers$(null, null, null).subscribe( (usersIn)=> {
 
       let users = usersIn
       let profiles  = this.profiles.map((profile) => {
@@ -313,34 +296,23 @@ export class ProfileListComponent {
       this.appySort(sortOrder,profiles)
 
 
-      console.log(profiles)
+      // console.log(profiles)
   
       this.paginator.pageIndex = page - 1;
       this.dataSource.data = profiles;
       this.totalLength = profiles.length;
       this.first = false
 
-    })
-
-
+    // })
  
   }
+
   actStatus
   allProfiles;
-
-
-
-  
-
-
-
-
 
   removeAccents(str: string): string {
     return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   }
-
-
 
   onPageChange(page: number): void {
     this.router.navigate([], {
@@ -349,25 +321,17 @@ export class ProfileListComponent {
     });
   }
 
-
   ngOnDestroy() {
     if (this.queryParamsSubscription) this.queryParamsSubscription.unsubscribe()
     if (this.userServiceSubscription) this.userServiceSubscription.unsubscribe()
     if (this.profilesSubscription) this.profilesSubscription.unsubscribe()
   }
 
-
-
-
-    search(filed: string, search: string) {
-      this.router.navigate([], {
-        queryParams: { [filed]: search ? search : null, page: 1 },
-        queryParamsHandling: 'merge'
-      });
-    }
-
-
-
-
+  search(filed: string, search: string) {
+    this.router.navigate([], {
+      queryParams: { [filed]: search ? search : null, page: 1 },
+      queryParamsHandling: 'merge'
+    });
+  }
 
 }

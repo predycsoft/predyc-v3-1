@@ -59,6 +59,4 @@ export class ProfilesListComponent {
     this.router.navigate(["/management/profiles"])
   }
 
- 
-
 }
