@@ -1673,10 +1673,10 @@ export class PDFService {
           const lineHeight = pdf.getLineHeight() * lineSpacingFactor;
           const { text, offset, isBullet } = textLines[index];
   
-          if (opts.y + (index + 1) * lineHeight > (this.pageHeigth+20)) {
+          if (opts.y + (index + 1) * lineHeight > (this.pageHeigth+10)) {
               pdf.addPage();
               addFooterAndTitle();
-              opts.y = -30;
+              opts.y = -18;
               index--;
               continue;
           }
