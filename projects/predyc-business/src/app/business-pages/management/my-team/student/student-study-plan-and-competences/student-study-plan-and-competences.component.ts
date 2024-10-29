@@ -125,7 +125,7 @@ export class StudentStudyPlanAndCompetencesComponent {
             // if (!coursesByStudent[0].isExtraCourse ||) {
             if(coursesInActiveByStudent.length>0){
               this.buildInactiveCourses(coursesInActiveByStudent,coursesData)
-              // console.log('coursesInActiveByStudent',this.inactiveCourses)
+              console.log('coursesInActiveByStudent',this.inactiveCourses)
               this.inactiveCourses.sort((a, b) => {
                 return b.progress - a.progress;
               });

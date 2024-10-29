@@ -1296,7 +1296,7 @@ export class UserService {
       // Iterar sobre los documentos y preparar los cambios para el batch
       coursesByStudentSnapshot.forEach(doc => {
         // Actualizar el campo userRef con la nueva referencia
-        batch.update(doc.ref, {isExtraCourse:true,dateStartPlan:null,dateEndPlan:null });
+        batch.update(doc.ref, {active:false,isExtraCourse:true,dateStartPlan:null,dateEndPlan:null });
       });
       batch.update(UserRef, { profile: null });
 
