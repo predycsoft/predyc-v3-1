@@ -1271,6 +1271,44 @@ export class UserService {
     }
   }
 
+
+  async creanSudyPlanuser(idUser: string): Promise<string> {
+    // Crear un batch para realizar todas las operaciones de manera atómica
+    const batch = this.afs.firestore.batch();
+  
+    try {
+      // Obtener referencias de los documentos de los usuarios antiguo y nuevo
+      const UserRef = this.afs.collection(User.collection).doc(idUser).ref;
+  
+      // Obtener datos de los usuarios antiguos y nuevos
+      const oldUserSnapshot = await UserRef.get();
+  
+      // Verificar si ambos usuarios existen
+      if (!oldUserSnapshot.exists) {
+        throw new Error(`El usuario con ID ${idUser} no existe.`);
+      }
+
+      // Comenzamos a migrar colecciones y datos. Aquí puedes ir agregando lógica por colección.
+      console.log('Referencias obtenidas con éxito. Iniciando limpieza de datos...');
+
+      // Buscar todos los documentos en la colección 'coursesByStudent' que tienen la referencia del usuario viejo
+      const coursesByStudentSnapshot = await this.afs.collection('coursesByStudent', ref => ref.where('userRef', '==', UserRef)).get().toPromise();
+      // Iterar sobre los documentos y preparar los cambios para el batch
+      coursesByStudentSnapshot.forEach(doc => {
+        // Actualizar el campo userRef con la nueva referencia
+        batch.update(doc.ref, {active:false,isExtraCourse:true,dateStartPlan:null,dateEndPlan:null });
+      });
+      batch.update(UserRef, { profile: null });
+
+      // Después de añadir todas las operaciones al batch, lo ejecutamos
+      await batch.commit();
+      return 'Limieza completada con éxito.'; // Mensaje de éxito que se puede usar en el Swal o cualquier otra notificación
+    } catch (error) {
+      console.error('Error al limpiar datos de usuarios:', error);
+      throw error;
+    }
+  }
+
   async getUsersWithEnterprise(): Promise<any[]> {
     try {
       // Paso 1: Obtener todos los usuarios que tengan el campo enterprise (un DocumentReference)

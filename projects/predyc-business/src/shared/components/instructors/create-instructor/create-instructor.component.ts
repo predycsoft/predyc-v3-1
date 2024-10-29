@@ -72,7 +72,7 @@ export class CreateInstructorComponent {
 
     this.instructorForm = this.fb.group({
       nombre: [null, [Validators.required]],
-      descripcion: [null, [Validators.required]],
+      resumen: [null, [Validators.required]],
       email: [null, [Validators.required,Validators.email]],
       foto: [null, [Validators.required]],
       firma:[null],
@@ -104,7 +104,7 @@ export class CreateInstructorComponent {
 
       this.instructorForm.patchValue({
         nombre: this.instructorToEdit.nombre,
-        descripcion:this.instructorToEdit.descripcion,
+        resumen:this.instructorToEdit?.resumen?this.instructorToEdit.resumen:this.instructorToEdit.descripcion,
         foto: this.instructorToEdit.foto,
         firma: this.instructorToEdit.firma,
         porcentaje: this.instructorToEdit.porcentaje,

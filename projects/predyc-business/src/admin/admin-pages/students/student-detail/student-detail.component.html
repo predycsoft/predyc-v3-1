@@ -19,6 +19,7 @@
       <span class="ft11 backGray4 radius20 gray-8 pdr05 pdl05">ID: {{ user.uid }}</span>
       <span class="ft11 backGray4 radius20 gray-8 pdr05 pdl05">Rol: {{ user.role }}</span>
       <span (click)="migrarUsuario(modalMigrarUsuario)" class="ft11 backGray4 radius20 gray-8 pdr05 pdl05 cursorPointer no-select">Migrar Usuario</span>
+      <span (click)="creanSudyPlan()" class="ft11 backGray4 radius20 gray-8 pdr05 pdl05 cursorPointer no-select">Limpar plan de estudio</span>
     </div>
     <div fxLayout="row" fxLayoutGap="1.5rem">
       <!-- <span class="ft11 gray-8">Registrado el {{ user.createdAt | date : "dd/MM/yyyy" }}</span> -->
