@@ -567,6 +567,54 @@ export class StudentDetailComponent {
       });
     }
   }
+
+  creanSudyPlan(){
+
+    let user = this.user
+    Swal.fire({
+      title: 'Confirmación',
+      text: `¿Estás seguro de que deseas limpiar el plan de estudios de ${titleCase(user.name)}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, limpiar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+
+        Swal.fire({
+          title: "Limpiando plan de estdios...",
+          text: "Por favor, espera.",
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          },
+        });
+
+        try{
+          this.userService.creanSudyPlanuser(this.userId)
+          .then((message) => {
+            Swal.close()
+            this.modalMigrar.close()
+            Swal.fire({
+              icon: 'success',
+              title: 'Limpieza exitosa',
+              text: message,
+            });
+          })
+        }
+        catch(error){
+          console.error('Error buscando el usuario:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Hubo un error al buscar el usuario.',
+          });
+        }
+      }
+    });
+  }
   
   
 }
