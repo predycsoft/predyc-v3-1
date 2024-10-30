@@ -9,7 +9,7 @@ import { CourseService } from 'projects/predyc-business/src/shared/services/cour
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import { InstructorsService } from 'projects/predyc-business/src/shared/services/instructors.service';
 import { RoyaltiesService } from 'projects/predyc-business/src/shared/services/royalties.service';
-import { Subscription, combineLatest, filter, take } from 'rxjs';
+import { Subscription, combineLatest, filter, firstValueFrom, take } from 'rxjs';
 import Swal from "sweetalert2";
 
 @Component({
@@ -29,14 +29,8 @@ export class InstructorsComponent {
     private alertService: AlertsService,
     private courseService:CourseService,
     private royaltiesService:RoyaltiesService,
-
-
-
   ) 
-  {
-
-  }
-
+  {}
 
   currentPeriod = null
   newPeriodoForm: FormGroup;
@@ -46,10 +40,13 @@ export class InstructorsComponent {
   classes
   instructors 
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.royalties = null
 
-    this.courseServiceSubscription = this.courseService.getCoursesObservable().pipe(filter((course) => course.length > 0),take(1)).subscribe((courses) => {
+    this.courseServiceSubscription = this.courseService.getCoursesObservable().pipe(
+      filter((course) => course.length > 0),
+      take(1)
+    ).subscribe((courses) => {
       let classes = []
       courses.forEach(course => {
         let classesCourse = []
@@ -64,30 +61,28 @@ export class InstructorsComponent {
       });
       this.classes = classes
       this.courses = courses;
-      console.log("this.courses", this.courses);
+      // console.log("this.courses", this.courses);
     });
 
     this.currentPeriod = null
 
+    const tableRoyalties = await firstValueFrom(this.royaltiesService.getRoyalties$())
 
-    this.royaltiesService.getRoyalties$().subscribe((tableRoyalties)=>{
+    // console.log('tableRoyalties',tableRoyalties)
+  
+    this.royalties = tableRoyalties;
 
-      console.log('tableRoyalties',tableRoyalties)
-    
-      this.royalties = tableRoyalties;
-
-      // Ordenar por dateSaved de más reciente a más antiguo
-      this.royalties = tableRoyalties.sort((a, b) => {
-        return b.dateSaved.seconds - a.dateSaved.seconds;
-      });
-      if(this.royalties?.length>0){
-        this.currentPeriod = this.royalties[0].id
-        this.datosPeriodo = this.royalties[0]
-      }
-      else{
-        //this.crearNuevoPeriodo(this.modalPeriodo)
-      }
-    })
+    // Ordenar por dateSaved de más reciente a más antiguo
+    this.royalties = tableRoyalties.sort((a, b) => {
+      return b.dateSaved.seconds - a.dateSaved.seconds;
+    });
+    if(this.royalties?.length>0){
+      this.currentPeriod = this.royalties[0].id
+      this.datosPeriodo = this.royalties[0]
+    }
+    else{
+      //this.crearNuevoPeriodo(this.modalPeriodo)
+    }
   }
 
   onTabChange(event: MatTabChangeEvent) {
@@ -96,7 +91,7 @@ export class InstructorsComponent {
     }
     else if(event.tab.textLabel === 'Regalias'){
 
-      console.log('this.royalties',this.royalties)
+      // console.log('this.royalties',this.royalties)
       if(!this.royalties || this.royalties?.length==0){
         this.crearNuevoPeriodo(this.modalPeriodo)
       }

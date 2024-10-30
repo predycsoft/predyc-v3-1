@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core
 import { MatPaginator } from '@angular/material/paginator';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
-import { combineLatest, filter, forkJoin, map, merge, mergeMap, Observable, of, Subscription, switchMap } from 'rxjs';
+import { combineLatest, filter, forkJoin, map, merge, mergeMap, Observable, of, Subscription, switchMap, take } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 import { Curso } from 'projects/shared/models/course.model';
@@ -121,7 +121,6 @@ export class InstructorListComponent {
     this.enterpriseService.enterpriseLoaded$.subscribe(async isLoaded => {
       if (isLoaded) {
         this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
-          let sortOrder = []
           const page = Number(params['page']) || 1;
           const searchTerm = params['search'] || '';
     
@@ -143,12 +142,23 @@ export class InstructorListComponent {
   instructorsSubscription: Subscription
 
 
-  performSearch(searchTerm: string, page: number,sortOrder?) {
+  performSearch(searchTerm: string, page: number, sortOrder?) {
 
     this.paginator.pageIndex = page - 1;
     this.dataSource.data = [];
     this.totalLength = 0;
-    this.instructorsSubscription = combineLatest([this.instructorsService.getInstructorsObservable(),this.courseService.getCourses$(),this.liveCourseService.getAllLiveCourses$()]).subscribe(([instructores,cursos,cursosEnVivo]) => {
+    this.instructorsSubscription = combineLatest(
+      [
+        this.instructorsService.getInstructorsObservable(),
+        this.courseService.getCourses$(),
+        this.liveCourseService.getAllLiveCourses$()
+      ]
+    )
+    .pipe(take(1))
+    .subscribe(([instructores, cursos, cursosEnVivo] ) => {
+      // console.log("instructores", instructores)
+      // console.log("cursos", cursos)
+      // console.log("cursosEnVivo", cursosEnVivo)
       
       cursos.forEach(curso => {
         if(! curso['instructorId']){
@@ -189,7 +199,7 @@ export class InstructorListComponent {
           resumenCV:instructor?.resumenCV,
         }
       });
-      console.log('instructores',instructores)
+      // console.log('instructores',instructores)
       this.instructores = structuredClone(instructores)
       this.instructosOnList.emit(instructores)
     
@@ -206,11 +216,6 @@ export class InstructorListComponent {
 
           
     })
-
-    this.instructorsService.getInstructorsObservable().pipe().subscribe((instructores) => {
-
-    });
-
 
   }
 
