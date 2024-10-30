@@ -3,7 +3,7 @@ import { AngularFirestore } from "@angular/fire/compat/firestore";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Subject, Subscription, combineLatest, firstValueFrom, map, of, switchMap, take } from "rxjs";
+import { Subject, Subscription, combineLatest, filter, firstValueFrom, map, of, switchMap, take } from "rxjs";
 import { License } from "projects/shared/models/license.model";
 import { User } from "projects/shared/models/user.model";
 import { EnterpriseService } from "projects/predyc-business/src/shared/services/enterprise.service";
@@ -55,6 +55,7 @@ export class EnterpriseListComponent {
 
   queryParamsSubscription: Subscription;
   enterpriseSubscription: Subscription;
+  statusSubscription: Subscription;
 
   products: Product[];
   first = true
@@ -75,13 +76,12 @@ export class EnterpriseListComponent {
     this.statusFilterTerm.next(status);
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.first = true
-    this.productService.getProducts$().subscribe((products) => {
-      this.products = products;
-    });
+    const products = await firstValueFrom(this.productService.getProducts$())
+    this.products = products;
     this.status = this.activatedRoute.snapshot.queryParams["status"] || "all";
-    this.statusFilterTerm.subscribe((term) => {
+    this.statusSubscription = this.statusFilterTerm.subscribe((term) => {
       this.router.navigate([], {
         queryParams: { status: term ? term : null, page: 1 },
         queryParamsHandling: "merge",
@@ -137,6 +137,8 @@ export class EnterpriseListComponent {
   performSearch(searchTerm: string, page: number) {
     if (this.enterpriseSubscription) this.enterpriseSubscription.unsubscribe();
     this.enterpriseSubscription = this.enterpriseService.getEnterprises$().pipe(
+      // Only proceed if the emitted value has more than 1 enterprise (predyc enterprise)
+      filter((enterprises) => enterprises.length > 1),
       // Users Qty
       switchMap((enterprises) => {
         // For each enterprise, query their active students
@@ -203,7 +205,8 @@ export class EnterpriseListComponent {
             );
         });
         return observables.length > 0 ? combineLatest(observables) : of([]);
-      })
+      }),
+      take(1)
     ).subscribe((response) => {
       // console.log(response);
 
@@ -296,7 +299,7 @@ export class EnterpriseListComponent {
         if (!searchTerm || searchTerm === "") return true;
         return (x.name.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase()));
       })
-      console.log('enterprises',enterprises)
+      // console.log('enterprises',enterprises)
       this.paginator.pageIndex = page - 1; // Update the paginator's page index
       this.dataSource.data = enterprises; // Assuming the data is in 'items'
       this.totalLength = response.length; // Assuming total length is returned
@@ -309,8 +312,8 @@ export class EnterpriseListComponent {
   empresas
 
   ngOnDestroy() {
-    if (this.queryParamsSubscription)
-      this.queryParamsSubscription.unsubscribe();
+    if (this.queryParamsSubscription) this.queryParamsSubscription.unsubscribe();
     if (this.enterpriseSubscription) this.enterpriseSubscription.unsubscribe();
+    if (this.statusSubscription) this.statusSubscription.unsubscribe();
   }
 }

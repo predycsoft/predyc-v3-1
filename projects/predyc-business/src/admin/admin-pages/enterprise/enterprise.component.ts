@@ -48,7 +48,7 @@ export class EnterpriseComponent {
   }
 
   getEmpresas(empresas) {
-    console.log("Enterprise component")
+    // console.log("Enterprise component")
     let inactives = empresas.filter(x=>x.status == 'inactive')
     let actives = empresas.filter(x=>x.status == 'active')
     let demo = empresas.filter(x=>x.demo)
