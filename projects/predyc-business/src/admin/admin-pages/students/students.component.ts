@@ -26,7 +26,7 @@ export class StudentsComponent {
   };
 
   getUsers(users) {
-    console.log("usersGet", users);
+    // console.log("usersGet", users);
     // Usuarios Activos
     // Usuarios Inactivos
     // Usuarios Totales
