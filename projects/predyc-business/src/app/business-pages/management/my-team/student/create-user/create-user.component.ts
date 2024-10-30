@@ -59,6 +59,7 @@ export class CreateUserComponent {
   countries: { name: string; code: string; isoCode: string }[] = countriesData;
   profileServiceSubscription: Subscription;
   departmentServiceSubscription: Subscription;
+  coursesByStudentSubscription: Subscription;
   departments: Department[] = [];
   courses = [];
 
@@ -95,42 +96,40 @@ export class CreateUserComponent {
 
   cursos = [];
 
-  getCourses() {
-    this.courseService.getCourses$(this.enterpriseRef).subscribe((cursos) => {
-      // console.log("cursos", cursos);
-      this.cursos = cursos;
-      this.profileServiceSubscription = this.profileService.getProfiles$(this.enterpriseRef).subscribe((profiles) => {
-        if (profiles) {
-          // console.log("profiles", profiles);
-          let profilesBase = [];
-          profiles.forEach((element) => {
-            if (element?.baseProfile?.id) {
-              profilesBase.push(element?.baseProfile?.id);
-            }
-          });
-
-          let profilesFilteres = profiles.filter((profile) => !profilesBase.includes(profile.id));
-          profilesFilteres.forEach((perfil) => {
-            if (perfil?.coursesRef.length > 0) {
-              let cursos = [];
-              let duracion = 0;
-              perfil.coursesRef
-                // .map((item) => item.courseRef)
-                .forEach((cursoRef) => {
-                  let id = cursoRef["courseRef"]["id"];
-                  let curso = this.cursos.find((x) => x.id == id);
-                  cursos.push(curso);
-                  duracion += curso.duracion;
-                });
-              perfil["cursos"] = cursos;
-              perfil["duracion"] = duracion;
-            }
-          });
-          this.profiles = profilesFilteres;
-          // console.log("profiles Filtrados", this.profiles);
+  async getCourses() {
+    const cursos = await firstValueFrom(this.courseService.getCourses$(this.enterpriseRef))
+    // console.log("cursos", cursos);
+    this.cursos = cursos;
+    const profiles = await firstValueFrom(this.profileService.getProfiles$(this.enterpriseRef))
+    if (profiles) {
+      // console.log("profiles", profiles);
+      let profilesBase = [];
+      profiles.forEach((element) => {
+        if (element?.baseProfile?.id) {
+          profilesBase.push(element?.baseProfile?.id);
         }
       });
-    });
+
+      let profilesFilteres = profiles.filter((profile) => !profilesBase.includes(profile.id));
+      profilesFilteres.forEach((perfil) => {
+        if (perfil?.coursesRef.length > 0) {
+          let cursos = [];
+          let duracion = 0;
+          perfil.coursesRef
+            // .map((item) => item.courseRef)
+            .forEach((cursoRef) => {
+              let id = cursoRef["courseRef"]["id"];
+              let curso = this.cursos.find((x) => x.id == id);
+              cursos.push(curso);
+              duracion += curso.duracion;
+            });
+          perfil["cursos"] = cursos;
+          perfil["duracion"] = duracion;
+        }
+      });
+      this.profiles = profilesFilteres;
+      // console.log("profiles Filtrados", this.profiles);
+    }
   }
 
   private _filter(value: string): string[] {
@@ -252,43 +251,40 @@ export class CreateUserComponent {
 
       let userRef = this.afs.collection<User>(User.collection).doc(this.studentToEdit.uid).ref;
 
-      this.courseService
-        .getActiveCoursesByStudent$(userRef)
-        .pipe(take(1))
-        .subscribe((cursos) => {
-          // console.log("cursos", cursos);
-          if (cursos && cursos.length > 0) {
-            // Inicializar las variables para almacenar los valores mínimos y máximos
-            let minStartDate = Number.MAX_SAFE_INTEGER;
-            let maxEndDate = 0;
-            cursos.forEach((curso) => {
-              // Actualizar el valor mínimo de la fecha de inicio si el curso actual tiene una fecha menor
-              if (curso.dateStartPlan.seconds < minStartDate) {
-                minStartDate = curso.dateStartPlan.seconds;
-              }
-              // Actualizar el valor máximo de la fecha de fin si el curso actual tiene una fecha mayor
-              if (curso.dateEndPlan.seconds > maxEndDate) {
-                maxEndDate = curso.dateEndPlan.seconds;
-              }
-            });
-
-            // Convertir los segundos a fechas para una mejor visualización (opcional)
-            const minStartDateFormatted = new Date(minStartDate * 1000);
-            const maxEndDateFormatted = this.obtenerUltimoDiaDelMes(maxEndDate);
-
-            console.log("Menor fecha de inicio:", minStartDateFormatted);
-            console.log("Mayor fecha de fin:", maxEndDateFormatted);
-
-            if (maxEndDateFormatted) {
-              this.MaxDateProfile = formatDate(maxEndDateFormatted, "yyyy-MM-dd", "en");
+      this.coursesByStudentSubscription = this.courseService.getActiveCoursesByStudent$(userRef).pipe(take(1)).subscribe((cursos) => {
+        // console.log("cursos", cursos);
+        if (cursos && cursos.length > 0) {
+          // Inicializar las variables para almacenar los valores mínimos y máximos
+          let minStartDate = Number.MAX_SAFE_INTEGER;
+          let maxEndDate = 0;
+          cursos.forEach((curso) => {
+            // Actualizar el valor mínimo de la fecha de inicio si el curso actual tiene una fecha menor
+            if (curso.dateStartPlan.seconds < minStartDate) {
+              minStartDate = curso.dateStartPlan.seconds;
             }
+            // Actualizar el valor máximo de la fecha de fin si el curso actual tiene una fecha mayor
+            if (curso.dateEndPlan.seconds > maxEndDate) {
+              maxEndDate = curso.dateEndPlan.seconds;
+            }
+          });
 
-            this.userForm.patchValue({
-              startDateStudy: this.formatDateToInput(minStartDateFormatted),
-              endDateStudy: this.formatDateToInput(maxEndDateFormatted),
-            });
+          // Convertir los segundos a fechas para una mejor visualización (opcional)
+          const minStartDateFormatted = new Date(minStartDate * 1000);
+          const maxEndDateFormatted = this.obtenerUltimoDiaDelMes(maxEndDate);
+
+          console.log("Menor fecha de inicio:", minStartDateFormatted);
+          console.log("Mayor fecha de fin:", maxEndDateFormatted);
+
+          if (maxEndDateFormatted) {
+            this.MaxDateProfile = formatDate(maxEndDateFormatted, "yyyy-MM-dd", "en");
           }
-        });
+
+          this.userForm.patchValue({
+            startDateStudy: this.formatDateToInput(minStartDateFormatted),
+            endDateStudy: this.formatDateToInput(maxEndDateFormatted),
+          });
+        }
+      });
     }
   }
 
@@ -743,8 +739,9 @@ export class CreateUserComponent {
   }
 
   ngOnDestroy() {
-    this.profileServiceSubscription.unsubscribe();
-    this.departmentServiceSubscription.unsubscribe();
+    if (this.profileServiceSubscription) this.profileServiceSubscription.unsubscribe();
+    if (this.departmentServiceSubscription) this.departmentServiceSubscription.unsubscribe();
+    if (this.coursesByStudentSubscription) this.coursesByStudentSubscription.unsubscribe();
   }
 
   getFormattedDuration(perfil) {
