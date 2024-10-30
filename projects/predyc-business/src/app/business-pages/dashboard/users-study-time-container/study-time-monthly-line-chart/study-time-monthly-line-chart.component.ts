@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Chart } from 'chart.js';
-import { Subscription, combineLatest } from 'rxjs';
+import { Subscription, combineLatest, take } from 'rxjs';
 import { ClassByStudent } from 'projects/shared/models/class-by-student.model';
 import { CourseByStudent } from 'projects/shared/models/course-by-student.model';
 import { Curso } from 'projects/shared/models/course.model';
@@ -36,7 +36,18 @@ export class StudyTimeMonthlyLineChartComponent {
   async ngOnInit() {
     this.student = await this.userService.getUserByUid(this.uid)
     const userRef = this.userService.getUserRefById(this.uid)
-    this.courseServiceSubscription = combineLatest([this.courseService.getCoursesByStudent$(userRef), this.courseService.getClassesByStudent$(userRef), this.courseService.getCourses$(),this.courseService.getClassesEnterprise$()]).subscribe(async ([studentCourses, studentClasses, allCourses,allClases]) => {
+    this.courseServiceSubscription = combineLatest([
+      this.courseService.getCoursesByStudent$(userRef), 
+      this.courseService.getClassesByStudent$(userRef), 
+      this.courseService.getCourses$(),
+      this.courseService.getClassesEnterprise$()
+    ])
+    .pipe(take(1))
+    .subscribe(async ([studentCourses, studentClasses, allCourses,allClases]) => {
+      // console.log("studentCourses", studentCourses)
+      // console.log("studentClasses", studentClasses)
+      // console.log("allCourses", allCourses)
+      // console.log("allClases", allClases)
       this.courses = allCourses
       this.allClasses = allClases
       this.studentCourses = studentCourses.filter(item => item.active && item.dateStartPlan).sort((a, b) => a.dateEndPlan - b.dateEndPlan)

@@ -134,16 +134,12 @@ export class StudentDetailsComponent {
       }
     }
     return lastActivityText
-  }
-
-
-  
+  }  
 
   ngOnInit() {
     this.listDetailWarning = []
     this.enterpriseService.enterpriseLoaded$.subscribe(isLoaded => {
       if (isLoaded) {
-        let enterpriseRef = this.enterpriseService.getEnterpriseRef();
         this.enterprise = this.enterpriseService.getEnterprise();
         // console.log('Datos',this.enterprise, this.student)
         this.getDiagnosticTestForProfile()
@@ -160,47 +156,43 @@ export class StudentDetailsComponent {
   noMoreMensajes = false
 
   getDiagnosticTestForProfile() {
-    if (this.diagnosticTestSubscription)
-      this.diagnosticTestSubscription.unsubscribe();
-    this.diagnosticTestSubscription = this.profileService
-      .getDiagnosticTestForUser$(this.student)
-      .subscribe((diagnosticTests) => {
-        if (diagnosticTests.length === 0){
-          
-          if((this.enterprise?.examenInicial !== false)){
-            this.textWarning = 'No ha presentado el examen diagnóstico'
-            this.colorWarning = 'red'
-            this.iconWarning = this.icon.redWarning2
-            this.listDetailWarning.push('Debe completar el examen diagnóstico para continuar')
-            this.noMoreMensajes = true
-          }
-          
-          return
-        } ;
-
-        let diagnosticTest
-
-        let certificationTest = diagnosticTests.find(x=>x.diagnosticTests || x.certificationTest)
-
-        if(certificationTest){
-          
-          certificationTest?.resultByClass?.forEach(element => {
-            element.averageScore = element.score
-          });
-          diagnosticTest = certificationTest
-
-        }
-        else{
-          diagnosticTest = diagnosticTests.find(x=>x.profileRef.id == this.student.profile.id)
-        }
-
-        this.diagnosticTest = {
-          ...diagnosticTest,
-          date: firestoreTimestampToNumberTimestamp(diagnosticTest.date),
-        };
+    if (this.diagnosticTestSubscription) this.diagnosticTestSubscription.unsubscribe();
+    this.diagnosticTestSubscription = this.profileService.getDiagnosticTestForUser$(this.student).subscribe((diagnosticTests) => {
+      if (diagnosticTests.length === 0) {
         
+        if (this.enterprise?.examenInicial !== false) {
+          this.textWarning = 'No ha presentado el examen diagnóstico'
+          this.colorWarning = 'red'
+          this.iconWarning = this.icon.redWarning2
+          this.listDetailWarning.push('Debe completar el examen diagnóstico para continuar')
+          this.noMoreMensajes = true
+        }
+        
+        return
+      } ;
 
-      });
+      let diagnosticTest
+
+      let certificationTest = diagnosticTests.find(x=>x.diagnosticTests || x.certificationTest)
+
+      if(certificationTest){
+        
+        certificationTest?.resultByClass?.forEach(element => {
+          element.averageScore = element.score
+        });
+        diagnosticTest = certificationTest
+
+      }
+      else{
+        diagnosticTest = diagnosticTests.find(x=>x.profileRef.id == this.student.profile.id)
+      }
+
+      this.diagnosticTest = {
+        ...diagnosticTest,
+        date: firestoreTimestampToNumberTimestamp(diagnosticTest.date),
+      };  
+
+    });
   }
 
   async onStudentSaveHandler(student: User) {

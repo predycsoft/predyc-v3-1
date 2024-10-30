@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Subscription, finalize, firstValueFrom } from 'rxjs';
+import { Subscription, finalize, firstValueFrom, take } from 'rxjs';
 import { Profile } from 'projects/shared/models/profile.model';
 import { User, UserJson } from 'projects/shared/models/user.model';
 import { AlertsService } from 'projects/predyc-business/src/shared/services/alerts.service';
@@ -39,9 +39,9 @@ export class StudentInfoFormComponent {
     private userService: UserService
     ) {}
 
-    ngOnInit() {
-      this.profileService.loadProfiles()
-      this.profileSubscription = this.profileService.getProfilesObservable().subscribe(profiles => {if (profiles) this.profiles = profiles})
+    async ngOnInit() {
+      await this.profileService.loadProfiles()
+      this.profileSubscription = this.profileService.getProfilesObservable().pipe(take(1)).subscribe(profiles => {if (profiles) this.profiles = profiles})
   
       this.studentForm = new FormGroup({
         canEnrollParticularCourses: new FormControl(false),

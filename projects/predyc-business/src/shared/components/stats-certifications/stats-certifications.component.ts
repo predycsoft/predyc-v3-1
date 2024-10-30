@@ -3,6 +3,7 @@ import { LoaderService } from '../../services/loader.service';
 import { ActivityClassesService } from '../../services/activity-classes.service';
 import { Chart } from "chart.js";
 import annotationPlugin from "chartjs-plugin-annotation";
+import { firstValueFrom } from 'rxjs';
 
 
 @Component({
@@ -106,7 +107,7 @@ export class StatsCertificationsComponent {
 
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     if (this.resultado) {
       // console.log('resultadongOnInit',this.resultado)
       this.resultado.resultByClass.forEach(element => {
@@ -114,25 +115,28 @@ export class StatsCertificationsComponent {
       });
     }
 
-    this.activityClassesService.getActivityCertificationAll().subscribe((resultados)=>{
+
+    // const resultados = await firstValueFrom(this.activityClassesService.getActivityCertificationAll())
+    this.activityClassesService.getActivityCertificationAll().subscribe(async (resultados)=>{
+      console.log("resultados", resultados)
       if(resultados.length>0){
         this.resultadosCrudos = resultados
         this.procesarDatos(resultados)
-        if(this.origen=='empresa' || this.origen=='usuario'){
+  
+        if (this.origen=='empresa' || this.origen=='usuario') {
 
-
-
-          this.activityClassesService.getActivityCertificationResultsEnterprise().subscribe((resultados)=>{
-            if(resultados.length>0){
-              this.resultadosCrudosEmpresa = resultados
-              this.procesarDatos(resultados,this.origen)
+          // const resultadosEmpresas = await firstValueFrom(this.activityClassesService.getActivityCertificationResultsEnterprise())
+          this.activityClassesService.getActivityCertificationResultsEnterprise().subscribe(async (resultadosEmpresas)=>{
+            console.log("resultadosEmpresas", resultadosEmpresas)
+            if ( resultadosEmpresas.length > 0 ) {
+              this.resultadosCrudosEmpresa = resultadosEmpresas
+              this.procesarDatos(resultadosEmpresas,this.origen)
             }
           })
         }
-
-
       }
     })
+
   }
 
   datosUserEmpresasRecived(data){

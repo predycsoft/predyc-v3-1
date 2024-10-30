@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output, SimpleChanges } from "@angular/core";
 import { AngularFirestore, DocumentReference,} from "@angular/fire/compat/firestore";
 import { Chart } from "chart.js";
-import { Subscription, combineLatest } from "rxjs";
+import { Subscription, combineLatest, firstValueFrom, take } from "rxjs";
 import { Category } from "projects/shared/models/category.model";
 import { CourseByStudent } from "projects/shared/models/course-by-student.model";
 import { Curso, CursoJson } from "projects/shared/models/course.model";
@@ -93,7 +93,6 @@ export class StudentStudyPlanAndCompetencesComponent {
 
     this.enterpriseService.enterpriseLoaded$.subscribe(isLoaded => {
       if (isLoaded) {
-        let enterpriseRef = this.enterpriseService.getEnterpriseRef();
         // console.log(enterpriseRef)
         this.enterprise = this.enterpriseService.getEnterprise();
         // console.log('this.enterprise ',this.enterprise )
@@ -108,7 +107,14 @@ export class StudentStudyPlanAndCompetencesComponent {
       this.courseService.getInActiveCoursesByStudent$(userRef),
       this.categoryService.getCategories$(),
       this.skillService.getSkills$(),
-    ]).subscribe(([coursesData, coursesByStudent,coursesInActiveByStudent, categories, skills]) => {
+    ])
+    .pipe(take(1))
+    .subscribe(([coursesData, coursesByStudent,coursesInActiveByStudent, categories, skills]) => {
+      // console.log("coursesData", coursesData)
+      // console.log("coursesByStudent", coursesByStudent)
+      // console.log("coursesInActiveByStudent", coursesInActiveByStudent)
+      // console.log("categories", categories)
+      // console.log("skills", skills)
       this.categories = categories;
       this.skills = skills;
       this.studyPlan = [];
@@ -125,7 +131,7 @@ export class StudentStudyPlanAndCompetencesComponent {
             // if (!coursesByStudent[0].isExtraCourse ||) {
             if(coursesInActiveByStudent.length>0){
               this.buildInactiveCourses(coursesInActiveByStudent,coursesData)
-              console.log('coursesInActiveByStudent',this.inactiveCourses)
+              // console.log('coursesInActiveByStudent',this.inactiveCourses)
               this.inactiveCourses.sort((a, b) => {
                 return b.progress - a.progress;
               });
@@ -274,43 +280,35 @@ export class StudentStudyPlanAndCompetencesComponent {
 
   }
 
-  getDiagnosticTestForProfile() {
-    if (this.diagnosticTestSubscription)
-      this.diagnosticTestSubscription.unsubscribe();
-    this.diagnosticTestSubscription = this.profileService
-      .getDiagnosticTestForUser$(this.student)
-      .subscribe((diagnosticTests) => {
-        //console.log('diagnosticTestsRevisar',diagnosticTests)
-        if (diagnosticTests.length === 0) return;
-        this.diagnosticTestoriginal = diagnosticTests
+  async getDiagnosticTestForProfile() {
+    const diagnosticTests = await firstValueFrom(this.profileService.getDiagnosticTestForUser$(this.student))
+    // console.log('diagnosticTestsRevisar',diagnosticTests)
+    if (diagnosticTests.length === 0) return;
+    this.diagnosticTestoriginal = diagnosticTests
 
-        let diagnosticTest
+    let diagnosticTest
 
+    let certificationTest = diagnosticTests.find(x=>x.diagnosticTests || x.certificationTest)
 
-        let certificationTest = diagnosticTests.find(x=>x.diagnosticTests || x.certificationTest)
+    if (certificationTest) {
 
-        if(certificationTest){
-
-          certificationTest?.resultByClass?.forEach(element => {
-            element.averageScore = element.score
-          });
-          diagnosticTest = certificationTest
-
-        }
-        else{
-          diagnosticTest = diagnosticTests.find(x=>x.profileRef.id == this.student.profile.id)
-        }
-
-        
-
-        this.diagnosticTest = {
-          ...diagnosticTest,
-          date: firestoreTimestampToNumberTimestamp(diagnosticTest.date),
-        };
-
-        console.log('this.diagnosticTest ',this.diagnosticTest )
-
+      certificationTest?.resultByClass?.forEach(element => {
+        element.averageScore = element.score
       });
+      diagnosticTest = certificationTest
+
+    }
+    else{
+      diagnosticTest = diagnosticTests.find(x=>x.profileRef.id == this.student.profile.id)
+    }
+
+    this.diagnosticTest = {
+      ...diagnosticTest,
+      date: firestoreTimestampToNumberTimestamp(diagnosticTest.date),
+    };
+
+    // console.log('this.diagnosticTest ',this.diagnosticTest )
+
   }
 
   studyPlanDuration=0;
@@ -592,10 +590,8 @@ export class StudentStudyPlanAndCompetencesComponent {
 
 
   ngOnDestroy() {
-    if (this.combinedObservableSubscription)
-      this.combinedObservableSubscription.unsubscribe();
-    if (this.diagnosticTestSubscription)
-      this.diagnosticTestSubscription.unsubscribe();
+    if (this.combinedObservableSubscription) this.combinedObservableSubscription.unsubscribe();
+    if (this.diagnosticTestSubscription) this.diagnosticTestSubscription.unsubscribe();
   }
 
   // ---------------------------------------------------- Skills
