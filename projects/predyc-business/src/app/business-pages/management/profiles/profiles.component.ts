@@ -9,6 +9,7 @@ import {
   startWith,
   BehaviorSubject,
   take,
+  firstValueFrom,
 } from "rxjs";
 import { Category } from "projects/shared/models/category.model";
 import { Curso, CursoJson } from "projects/shared/models/course.model";
@@ -99,28 +100,28 @@ export class ProfilesComponent {
   instrcutores
   courses
 
-  ngOnInit() {
+  async ngOnInit() {
 
     this.instructorsService.getInstructorsObservable().pipe(take(2)).subscribe((instructores)=>{
+      // console.log("instructores", instructores)
       this.instrcutores = instructores
     })
 
-    this.profileServiceSubscription = this.profileService
-      .getProfiles$()
-      .subscribe((profiles) => {
-        if (profiles) {
-          // console.log('profiles',profiles)
-          let profilesBase = [];
-          profiles.forEach((element) => {
-            if (element?.baseProfile?.id) {
-              profilesBase.push(element?.baseProfile?.id);
-            }
-          });
+    // const profiles = await firstValueFrom(this.profileService.getProfiles$())
+    this.profileServiceSubscription = this.profileService.getProfiles$().pipe(take(1)).subscribe((profiles) => {
+      if (profiles) {
+        // console.log('profiles',profiles)
+        let profilesBase = [];
+        profiles.forEach((element) => {
+          if (element?.baseProfile?.id) {
+            profilesBase.push(element?.baseProfile?.id);
+          }
+        });
 
-          this.profiles = profiles;
-          // console.log('perfiles', this.profiles);
-        }
-      });
+        this.profiles = profiles;
+        // console.log('perfiles', this.profiles);
+      }
+    });
 
     this.authService.user$.subscribe((user) => {
       this.user = user;
@@ -128,9 +129,7 @@ export class ProfilesComponent {
 
     this.hoverItem$ = this.hoverSubject.asObservable();
     this.baseProfile = this.route.snapshot.queryParams["baseProfile"] || null;
-    const observablesArray: Observable<
-      Category[] | Profile | Skill[] | Curso[]
-    >[] = [
+    const observablesArray: Observable<Category[] | Profile | Skill[] | Curso[]>[] = [
       this.categoryService.getCategories$(),
       this.skillService.getSkills$(),
       this.courseService.getCoursesObservable(),
@@ -140,157 +139,156 @@ export class ProfilesComponent {
       const title = MAIN_TITLE + "Nuevo perfil";
       this.titleService.setTitle(title);
       if (this.baseProfile) {
-        observablesArray.push(
-          this.profileService.getProfile$(this.baseProfile)
-        );
+        observablesArray.push(this.profileService.getProfile$(this.baseProfile));
       }
     } else {
       this.isEditing = false;
       observablesArray.push(this.profileService.getProfile$(this.id));
     }
-    this.serviceSubscription = combineLatest(observablesArray).subscribe(
-      (result) => {
-        const categories = result[0] as Category[];
-        const skills = result[1] as Skill[];
-        let courses = result[2] as Curso[];
-        courses = courses.filter((x) => !x.proximamente);
-        if (result.length === 4) {
-          const profile = result[3] as ProfileJson;
-          this.profile = {
-            ...profile,
-            name: this.baseProfile ? "" : profile.name,
-            id: this.baseProfile ? null : profile.id,
-          } as ProfileJson;
-        }
-        this.categories = categories;
-        this.skills = skills;
-        if (this.profile) {
-          const title = MAIN_TITLE + this.profile.name;
-          this.titleService.setTitle(title);
-          this.profileName = this.profile.name;
-          this.profileDescription = this.profile.description;
-          this.profileHoursPerMonth = this.profile.hoursPerMonth;
-        }
-        this.studyPlan = [];
+    this.serviceSubscription = combineLatest(observablesArray)
+    .pipe(take(1))
+    .subscribe((result) => {
+      console.log("result", result)
+      const categories = result[0] as Category[];
+      const skills = result[1] as Skill[];
+      let courses = result[2] as Curso[];
+      courses = courses.filter((x) => !x.proximamente);
+      if (result.length === 4) {
+        const profile = result[3] as ProfileJson;
+        this.profile = {
+          ...profile,
+          name: this.baseProfile ? "" : profile.name,
+          id: this.baseProfile ? null : profile.id,
+        } as ProfileJson;
+      }
+      this.categories = categories;
+      this.skills = skills;
+      if (this.profile) {
+        const title = MAIN_TITLE + this.profile.name;
+        this.titleService.setTitle(title);
+        this.profileName = this.profile.name;
+        this.profileDescription = this.profile.description;
+        this.profileHoursPerMonth = this.profile.hoursPerMonth;
+      }
+      this.studyPlan = [];
 
-        courses.forEach(curso => {
-          let skillIds = new Set();
-          curso.skillsRef.forEach(skillRef => {
-            skillIds.add(skillRef.id); // Assuming skillRef has an id property
-          });
-          let filteredSkills = skills.filter(skillIn => skillIds.has(skillIn.id));
-          let categoryIds = new Set();
-          filteredSkills.forEach(skillRef => {
-            categoryIds.add(skillRef.category.id); // Assuming skillRef has an id property
-          });
-          let filteredCategories = categories.filter(categoryIn => categoryIds.has(categoryIn.id));
-          curso['skills'] = filteredSkills;
-          curso['categories'] = filteredCategories;
-      
-          curso['modules'].sort((a, b) => a.numero - b.numero);
-      
-          let modulos = curso['modules'];
-          let duracionCourse = 0;
-          modulos.forEach(modulo => {
-            modulo.expanded = false;
-            let duracion = 0;
-            modulo.clases.forEach(clase => {
-              duracion += clase?.duracion ? clase?.duracion : 0;
-            });
-            modulo.duracion = duracion;
-            duracionCourse += duracion;
-          });
-          if (!curso['duracion']) {
-            curso['duracion'] = duracionCourse;
-          }
-  
-          if(curso.duracion>=duracionCourse){
-            if(!curso['modules'].find(x=>x.titulo == 'Examen Final'))
-            curso['modules'].push({dontshow:true, titulo:'Examen Final',clases:[{titulo:'Examen Final',duracion:curso.duracion-duracionCourse}]})
-          }
-          else{
-            if(!curso['modules'].find(x=>x.titulo == 'Examen Final'))
-            curso['modules'].push({dontshow:true, titulo:'Examen Final',clases:[{titulo:'Examen Final',duracion:null}]})
-          }
-          curso['instructorData'] = this.instrcutores.find(x=>x.id == curso.instructorRef.id)
+      courses.forEach(curso => {
+        let skillIds = new Set();
+        curso.skillsRef.forEach(skillRef => {
+          skillIds.add(skillRef.id); // Assuming skillRef has an id property
         });
-        this.courses = courses
-        this.coursesForExplorer = courses.map((course) => {
-          const skills = course.skillsRef.map((skillRef) => {
-            return this.skills.find((skill) => skill.id === skillRef.id);
+        let filteredSkills = skills.filter(skillIn => skillIds.has(skillIn.id));
+        let categoryIds = new Set();
+        filteredSkills.forEach(skillRef => {
+          categoryIds.add(skillRef.category.id); // Assuming skillRef has an id property
+        });
+        let filteredCategories = categories.filter(categoryIn => categoryIds.has(categoryIn.id));
+        curso['skills'] = filteredSkills;
+        curso['categories'] = filteredCategories;
+    
+        curso['modules'].sort((a, b) => a.numero - b.numero);
+    
+        let modulos = curso['modules'];
+        let duracionCourse = 0;
+        modulos.forEach(modulo => {
+          modulo.expanded = false;
+          let duracion = 0;
+          modulo.clases.forEach(clase => {
+            duracion += clase?.duracion ? clase?.duracion : 0;
           });
-          const categories = [];
-          skills.forEach((skill) => {
-            const category = this.categories.find(
-              (category) => category.id === skill.category.id
+          modulo.duracion = duracion;
+          duracionCourse += duracion;
+        });
+        if (!curso['duracion']) {
+          curso['duracion'] = duracionCourse;
+        }
+
+        if(curso.duracion>=duracionCourse){
+          if(!curso['modules'].find(x=>x.titulo == 'Examen Final'))
+          curso['modules'].push({dontshow:true, titulo:'Examen Final',clases:[{titulo:'Examen Final',duracion:curso.duracion-duracionCourse}]})
+        }
+        else{
+          if(!curso['modules'].find(x=>x.titulo == 'Examen Final'))
+          curso['modules'].push({dontshow:true, titulo:'Examen Final',clases:[{titulo:'Examen Final',duracion:null}]})
+        }
+        curso['instructorData'] = this.instrcutores.find(x=>x.id == curso.instructorRef.id)
+      });
+      this.courses = courses
+      this.coursesForExplorer = courses.map((course) => {
+        const skills = course.skillsRef.map((skillRef) => {
+          return this.skills.find((skill) => skill.id === skillRef.id);
+        });
+        const categories = [];
+        skills.forEach((skill) => {
+          const category = this.categories.find(
+            (category) => category.id === skill.category.id
+          );
+          if (!categories.map((item) => item.id).includes(category.id))
+            categories.push(category);
+        });
+        const studyPlanItemCourseRefItem = this.profile
+          ? this.profile.coursesRef.find((x: any) => {
+              return x.courseRef.id === course.id;
+            })
+          : null;
+        const inStudyPlan = studyPlanItemCourseRefItem ? true : false;
+        const courseForExplorer = {
+          ...course,
+          skills: skills,
+          categories: categories,
+          inStudyPlan: inStudyPlan,
+          studyPlanOrder: studyPlanItemCourseRefItem
+            ? studyPlanItemCourseRefItem.studyPlanOrder
+            : null,
+        };
+        // console.log('courseForExplorer',courseForExplorer)
+        if (inStudyPlan) this.studyPlan.push(courseForExplorer);
+        return courseForExplorer;
+      });
+
+      this.studyPlan.sort((a, b) => a.studyPlanOrder - b.studyPlanOrder);
+
+      this.updateWidgets();
+
+      this.categories = this.categories.filter((category) => {
+        const coursesWithThisCategory = this.coursesForExplorer.filter(
+          (course) => {
+            const categories = course.categories.map(
+              (category) => category.name
             );
-            if (!categories.map((item) => item.id).includes(category.id))
-              categories.push(category);
-          });
-          const studyPlanItemCourseRefItem = this.profile
-            ? this.profile.coursesRef.find((x: any) => {
-                return x.courseRef.id === course.id;
-              })
-            : null;
-          const inStudyPlan = studyPlanItemCourseRefItem ? true : false;
-          const courseForExplorer = {
-            ...course,
-            skills: skills,
-            categories: categories,
-            inStudyPlan: inStudyPlan,
-            studyPlanOrder: studyPlanItemCourseRefItem
-              ? studyPlanItemCourseRefItem.studyPlanOrder
-              : null,
-          };
-          // console.log('courseForExplorer',courseForExplorer)
-          if (inStudyPlan) this.studyPlan.push(courseForExplorer);
-          return courseForExplorer;
-        });
+            return categories.includes(category.name);
+          }
+        );
+        return coursesWithThisCategory.length > 0;
+      });
 
-        this.studyPlan.sort((a, b) => a.studyPlanOrder - b.studyPlanOrder);
-
-        this.updateWidgets();
-
-        this.categories = this.categories.filter((category) => {
-          const coursesWithThisCategory = this.coursesForExplorer.filter(
-            (course) => {
+      // console.log("categories", categories)
+      // console.log("skills", skills)
+      // console.log("courses", courses)
+      // console.log("coursesForExplorer", this.coursesForExplorer)
+      this.filteredCourses = combineLatest([
+        this.searchControl.valueChanges.pipe(startWith("")),
+        this.hoverItem$,
+      ]).pipe(
+        map(([searchText, hoverCategory]) => {
+          if (!searchText && !hoverCategory) return [];
+          let filteredCourses = this.coursesForExplorer;
+          if (hoverCategory) {
+            filteredCourses = filteredCourses.filter((course) => {
               const categories = course.categories.map(
                 (category) => category.name
               );
-              return categories.includes(category.name);
-            }
-          );
-          return coursesWithThisCategory.length > 0;
-        });
-
-        // console.log("categories", categories)
-        // console.log("skills", skills)
-        // console.log("courses", courses)
-        // console.log("coursesForExplorer", this.coursesForExplorer)
-        this.filteredCourses = combineLatest([
-          this.searchControl.valueChanges.pipe(startWith("")),
-          this.hoverItem$,
-        ]).pipe(
-          map(([searchText, hoverCategory]) => {
-            if (!searchText && !hoverCategory) return [];
-            let filteredCourses = this.coursesForExplorer;
-            if (hoverCategory) {
-              filteredCourses = filteredCourses.filter((course) => {
-                const categories = course.categories.map(
-                  (category) => category.name
-                );
-                return categories.includes(hoverCategory.name);
-              });
-            }
-            if (searchText) {
-              const filterValue = this.removeAccents(searchText.toLowerCase());filteredCourses = filteredCourses.filter((course) => this.removeAccents(course.titulo.toLowerCase()).includes(filterValue)
-              );
-            }
-            return filteredCourses;
-          })
-        );
-      }
-    );
+              return categories.includes(hoverCategory.name);
+            });
+          }
+          if (searchText) {
+            const filterValue = this.removeAccents(searchText.toLowerCase());filteredCourses = filteredCourses.filter((course) => this.removeAccents(course.titulo.toLowerCase()).includes(filterValue)
+            );
+          }
+          return filteredCourses;
+        })
+      );
+    });
   }
 
   removeAccents(str: string): string {
