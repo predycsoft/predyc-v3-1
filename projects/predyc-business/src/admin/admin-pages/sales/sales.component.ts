@@ -26,11 +26,7 @@ export class SalesComponent {
     private chargeService:ChargeService,
     private router: Router, private route: ActivatedRoute,
     private alertService: AlertsService,
-
-  ){
-
-
-  }
+  ){}
 
   datosClientes
   createSaleModal
@@ -65,14 +61,14 @@ export class SalesComponent {
   }
 
   getDatosClientes(datosClientes){
-    console.log(datosClientes)
+    // console.log(datosClientes)
     this.users = datosClientes.users.filter(x=>!x.enterprise)
     this.empresas = datosClientes.enterprises
     this.productos=datosClientes.products
   }
 
   getDatosVentas(datosVentas){
-    console.log('datosVentas',datosVentas)
+    // console.log('datosVentas',datosVentas)
     this.datosVentas = datosVentas
 
   }

@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output, SimpleChanges, ViewChild } from
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Subscription, combineLatest, firstValueFrom, take } from 'rxjs';
+import { Subscription, combineLatest, filter, firstValueFrom, take } from 'rxjs';
 import { chargeData } from 'projects/predyc-business/src/assets/data/charge.data';
 import { Charge, ChargeJson } from 'projects/shared/models/charges.model';
 import { Enterprise } from 'projects/shared/models/enterprise.model';
@@ -141,7 +141,7 @@ export class SalesListComponent {
     //console.log('chargesProceced',this.chargesProceced)
   }
 
-  ngOnInit() {
+  async ngOnInit() {
 
     this.combinedServicesSubscription = combineLatest(
       [ 
@@ -149,8 +149,16 @@ export class SalesListComponent {
         this.userService.getAllUsers$(),
         this.enterpriseService.getAllEnterprises$(),
       ]
-    ).
-    subscribe(([ products, users, enterprises]) => {
+    )
+    .pipe(
+      // Only proceed if the emitted users and enterprises values have more than 1 (admin@predyc.com and predyc enterprise)
+      filter(([products, users, enterprises]) => users.length > 1 && enterprises.length > 1),
+      take(1),
+    )
+    .subscribe(([ products, users, enterprises]) => {
+      // console.log("products", products)
+      // console.log("users", users)
+      // console.log("enterprises", enterprises)
       this.products = products
       this.users = users
       this.enterprises = enterprises
@@ -323,31 +331,6 @@ export class SalesListComponent {
 
   ngOnDestroy() {
     if (this.queryParamsSubscription) this.queryParamsSubscription.unsubscribe()
+    if (this.combinedServicesSubscription) this.combinedServicesSubscription.unsubscribe()
   }
-
-  // -------------------------------------
-  // async createTestData() {
-  //   // const prices = await firstValueFrom(this.priceService.getPrices$())
-  //   const pricesRef = this.prices.map(price => { return this.priceService.getPriceRefById(price.id) } )
-
-  //   const users = await firstValueFrom(this.userService.getAllUsers$())
-  //   const usersRef = users.map(user=> { return this.userService.getUserRefById(user.uid) } )
-
-  //   const enterprises = await firstValueFrom(this.enterpriseService.getAllEnterprises$())
-  //   const enterprisesRef = enterprises.map(enterprise => { return this.enterpriseService.getEnterpriseRefById(enterprise.id) } )
-    
-  //   // const customerRefs = [...usersRef, ...enterprisesRef];
-  //   const getRandomElement = (arr: any) => arr[Math.floor(Math.random() * arr.length)];
-
-  //   for (let charge of chargeData ) {
-  //     charge.price = getRandomElement(pricesRef);
-
-  //     if (Math.random() > 0.5) charge.customer = getRandomElement(enterprisesRef)
-  //     else charge.customer = getRandomElement(usersRef)
-
-  //     await this.chargeService.saveCharge(charge as Charge)
-  //   }
-  //   console.log(`Finished Creating charges`)
-  // }
-  // -------------------------------------
 }
