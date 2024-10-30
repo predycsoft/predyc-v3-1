@@ -2,7 +2,7 @@ import { Component, Input, ViewChild } from "@angular/core";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 import { Router, ActivatedRoute } from "@angular/router";
-import { Subscription } from "rxjs";
+import { firstValueFrom, Subscription } from "rxjs";
 import { ProductService } from "projects/predyc-business/src/shared/services/product.service";
 import { stripeTimestampToNumberTimestamp } from "projects/shared/utils";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
@@ -40,12 +40,12 @@ export class ProductListComponent {
 
 	templateNewProduct = Product.fromJson(Product.newProduct) as Product;
 
-	ngOnInit() {
-		this.queryParamsSubscription =
-			this.activatedRoute.queryParams.subscribe((params) => {
-				const page = Number(params["page"]) || 1;
-				this.performSearch(page);
-			});
+	async ngOnInit() {
+		const products = await firstValueFrom(this.productService.getProducts$())
+		this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe((params) => {
+			const page = Number(params["page"]) || 1;
+			this.performSearch(page, products);
+		});
 	}
 
 	ngAfterViewInit() {
@@ -53,14 +53,10 @@ export class ProductListComponent {
 		this.dataSource.paginator.pageSize = this.pageSize;
 	}
 
-	performSearch(page: number) {
-		this.productSubscription = this.productService
-			.getProducts$()
-			.subscribe((products) => {
-				this.paginator.pageIndex = page - 1;
-				this.dataSource.data = products;
-				this.totalLength = products.length;
-			});
+	performSearch(page: number, products: Product[]) {
+		this.paginator.pageIndex = page - 1;
+		this.dataSource.data = products;
+		this.totalLength = products.length;
 	}
 
 	onPageChange(page: number): void {
@@ -84,7 +80,6 @@ export class ProductListComponent {
 	}
 
 	ngOnDestroy() {
-		if (this.queryParamsSubscription)
-			this.queryParamsSubscription.unsubscribe();
+		if (this.queryParamsSubscription) this.queryParamsSubscription.unsubscribe();
 	}
 }
