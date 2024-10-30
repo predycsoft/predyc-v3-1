@@ -148,7 +148,7 @@ export class ProfilesComponent {
     this.serviceSubscription = combineLatest(observablesArray)
     .pipe(take(1))
     .subscribe((result) => {
-      console.log("result", result)
+      // console.log("result", result)
       const categories = result[0] as Category[];
       const skills = result[1] as Skill[];
       let courses = result[2] as Curso[];
