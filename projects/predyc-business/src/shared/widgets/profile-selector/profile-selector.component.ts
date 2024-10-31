@@ -61,7 +61,7 @@ export class ProfileSelectorComponent {
   }
 
   ngOnDestroy() {
-    this.queryParamsSubscription.unsubscribe()
+    if (this.queryParamsSubscription) this.queryParamsSubscription.unsubscribe()
   }
 
 }

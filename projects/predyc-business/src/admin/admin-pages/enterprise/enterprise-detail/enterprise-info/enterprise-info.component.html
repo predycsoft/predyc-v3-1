@@ -1,247 +1,247 @@
 <div fxLayout="row" fxLayoutAlign="center center" class="fw mgt10">
-    <form [formGroup]="enterpriseForm" (ngSubmit)="onSubmit()" fxFlex="55" class="w-70">
-      <div fxLayout="row" fxLayoutAlign="" class="fw">
-        <div fxLayout="row" fxLayoutAlign="center center" class="mgt10 mgr20">
-          <div (click)="fileInput.click()" class="cursorPointer mgb05">
-            <img onerror="this.src='assets/images/default/default-user-image.jpg'" [src]="imageUrl" alt="Imagen seleccionada" class="avatar10">
-          </div>
-          <div fxLayout="column" fxLayoutAlign="center center" class="mgl10">
-            <input #fileInput type="file" style="display: none;" (change)="onFileSelected($event)" hidden accept="image/jpeg, image/png">
-            <!-- <label> Foto de Empresa </label>  -->
-          </div>            
+  <form [formGroup]="enterpriseForm" (ngSubmit)="onSubmit()" fxFlex="55" class="w-70">
+    <div fxLayout="row" fxLayoutAlign="" class="fw">
+      <div fxLayout="row" fxLayoutAlign="center center" class="mgt10 mgr20">
+        <div (click)="fileInput.click()" class="cursorPointer mgb05">
+          <img onerror="this.src='assets/images/default/default-user-image.jpg'" [src]="imageUrl" alt="Imagen seleccionada" class="avatar10">
         </div>
-      
-        <div fxLayout="column" class="fw">
-          <div class="form-group mgt02 fw">
-            <label class="ft12">Nombre de la empresa</label>
-            <input [class.is-invalid]="enterpriseForm.controls['name'].errors && showError"
-              formControlName="name" type="text" class="form-control ft14 shadow-animation pdl05 pdr05 radius20 borderLight">
-            <div class="invalid-feedback" *ngIf="enterpriseForm.controls['name'].errors && showError"> 
-              Debe indicar el nombre de la empresa
+        <div fxLayout="column" fxLayoutAlign="center center" class="mgl10">
+          <input #fileInput type="file" style="display: none;" (change)="onFileSelected($event)" hidden accept="image/jpeg, image/png">
+          <!-- <label> Foto de Empresa </label>  -->
+        </div>            
+      </div>
+    
+      <div fxLayout="column" class="fw">
+        <div class="form-group mgt02 fw">
+          <label class="ft12">Nombre de la empresa</label>
+          <input [class.is-invalid]="enterpriseForm.controls['name'].errors && showError"
+            formControlName="name" type="text" class="form-control ft14 shadow-animation pdl05 pdr05 radius20 borderLight">
+          <div class="invalid-feedback" *ngIf="enterpriseForm.controls['name'].errors && showError"> 
+            Debe indicar el nombre de la empresa
+          </div>
+        </div>
+    
+        <div class="form-group mgt10 fw">
+          <label class="ft12">Nombre del account manager</label>
+          <input [class.is-invalid]="enterpriseForm.controls['accountManagerName'].errors && showError"
+            formControlName="accountManagerName" type="text" class="form-control ft14 shadow-animation pdl05 pdr05 radius20 borderLight">
+          <div class="invalid-feedback" *ngIf="enterpriseForm.controls['accountManagerName'].errors && showError"> 
+            Debe indicar el nombre de la empresa
+          </div>
+        </div>
+
+        <div class="form-group mgt10 fw">
+          <label class="ft12">teléfono del account manager</label>
+          <input [class.is-invalid]="enterpriseForm.controls['accountManagerPhone'].errors && showError"
+            formControlName="accountManagerPhone" type="number" class="form-control ft14 shadow-animation pdl05 pdr05 radius20 borderLight">
+          <div class="invalid-feedback" *ngIf="enterpriseForm.controls['accountManagerPhone'].errors && showError"> 
+            Debe indicar el nombre de la empresa
+          </div>
+        </div>
+
+
+        <div class="form-group mgt10 fw">
+          <label class="ft12">Vendedor</label>
+          <input [class.is-invalid]="enterpriseForm.controls['salesMan'].errors && showError"
+            formControlName="salesMan" type="text" class="form-control ft14 shadow-animation pdl05 pdr05 radius20 borderLight">
+          <div class="invalid-feedback" *ngIf="enterpriseForm.controls['salesMan'].errors && showError"> 
+            Debe indicar el nombre de la empresa
+          </div>
+        </div>
+
+      </div>
+
+      <div fxLayout="column" class="fw mgl10">
+        <div class="form-group fw">
+          <label class="ft12">Persona de contacto</label>
+          <input [class.is-invalid]="enterpriseForm.controls['contactPerson'].errors && showError"
+            formControlName="contactPerson" type="text" class="form-control ft14 shadow-animation pdl05 pdr05 radius20 borderLight">
+          <div class="invalid-feedback" *ngIf="enterpriseForm.controls['contactPerson'].errors && showError"> 
+            Debe indicar el nombre de la empresa
+          </div>
+        </div>
+
+        <div class="form-group mgt10 fw">
+          <label class="ft12">Correo persona de contacto</label>
+          <input [class.is-invalid]="enterpriseForm.controls['mailContactPerson'].errors && showError"
+            formControlName="mailContactPerson" type="text" class="form-control ft14 shadow-animation pdl05 pdr05 radius20 borderLight">
+          <div class="invalid-feedback" *ngIf="enterpriseForm.controls['mailContactPerson'].errors && showError"> 
+            Debe indicar el nombre de la empresa
+          </div>
+        </div>
+
+        <div class="form-group mgt10 fw">
+          <label class="ft12">teléfono persona de contacto</label>
+          <input [class.is-invalid]="enterpriseForm.controls['phoneContactPerson'].errors && showError"
+            formControlName="phoneContactPerson" type="number" class="form-control ft14 shadow-animation pdl05 pdr05 radius20 borderLight">
+          <div class="invalid-feedback" *ngIf="enterpriseForm.controls['phoneContactPerson'].errors && showError"> 
+            Debe indicar el nombre de la empresa
+          </div>
+        </div>
+
+      </div>
+    </div>
+    
+
+    <div *ngIf="enterprise.id" fxLayoutAlign="center center" fxLayout="row">
+      <div class="mgt08 fw">
+        <app-enterprise-licenses-cards [enterpriseRef]="enterpriseRef"></app-enterprise-licenses-cards>
+      </div>
+    </div>
+
+    <div fxLayout="row" class="mgt15 mgb15">
+      <span class="ft20 ft500">Demo</span>
+    </div>
+
+    <div fxLayout="row">
+      <div fxLayout="row" fxLayoutAlign="space-between center" class="fw backGray1 radius6 pd10">
+        <span class="ft16 ft500">Es una empresa demo</span>
+        <mat-slide-toggle class="" color="primary" formControlName="demo"></mat-slide-toggle>
+      </div>
+    </div>
+
+    <div fxLayout="row">
+      <div fxLayout="row" fxLayoutAlign="space-between center" class="fw backGray1 radius6 pd10 mgt08">
+        <span class="ft16 ft500">Proviene de Tractian</span>
+        <mat-slide-toggle class="" color="primary" formControlName="tractian"></mat-slide-toggle>
+      </div>
+    </div>
+
+    <div fxLayout="row" class="mgt15 mgb15">
+      <span class="ft20 ft500">Account Management</span>
+    </div>
+
+
+    <div fxLayout="row">
+      <div fxLayout="row" fxLayoutAlign="space-between center" class=" fw backGray1 radius6 pd10">
+        <span class="ft16 ft500">Requiere account management</span>
+        <mat-slide-toggle class="" color="primary" formControlName="requireAccountManagement"></mat-slide-toggle>
+      </div>
+    </div>
+
+    <div fxLayout="row">
+      <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt08 fw backGray1 radius6 pd10">
+        <div fxLayout="column">
+          <span class="ft16 ft600 mgb08">Enviar correos de progreso a los administradores</span>
+          <label class="ft12">Destinatarios reporte</label>
+          <input [class.is-invalid]="enterpriseForm.controls['reportMails'].errors && showError" formControlName="reportMails" type="text" class="mgb08 form-control ft14 shadow-animation pdl05 pdr05 radius8 borderLight fw">
+          <span *ngIf="lastDayAdminMail" class="ft16 ft500 pft03 mgb08">Último envio: {{lastDayAdminMail | date:"dd/MM/yyyy HH:mm"}}</span>
+          <span (click)="sendMailAdmin()" class="ft16 ft500 blueLink">Realizar envio manual ahora</span>
+        </div>
+        <mat-slide-toggle class="" color="primary" formControlName="sendMailtoAdmin"></mat-slide-toggle>
+      </div>
+    </div>
+    
+
+    <div fxLayout="row">
+      <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt08 fw backGray1 radius6 pd10">
+        <div fxLayout="column">
+          <span class="ft16 ft600 mgb08">Enviar correos de progreso a los usuarios.</span>
+          <!-- <span *ngIf="lastDayUsersMail" class="ft16 ft500">Último envio: {{lastDayUsersMail}}</span> -->
+          <span *ngIf="lastDayUsersMail" class="ft16 ft500 pft03 mgb08">Último envio: {{lastDayUsersMail | date:"dd/MM/yyyy HH:mm"}}</span>
+          <span (click)="sendMailUsers()"class="ft16 ft500 blueLink">Realizar envio manual ahora</span>
+        </div>
+        <mat-slide-toggle class="" color="primary" formControlName="sendMailtoUsers"></mat-slide-toggle>
+      </div>
+    </div>
+
+    <div fxLayout="row">
+      <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt08 fw backGray1 radius6 pd10">
+        <span class="ft16 ft600">A favor de usar Whatsapp para control</span>
+        <mat-slide-toggle class="" color="primary" formControlName="useWhatsapp"></mat-slide-toggle>
+      </div>
+    </div>
+
+    <div fxLayout="row">
+      <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt08 fw backGray1 radius6 pd10">
+        <span class="ft16 ft600">Reuniones mensuales</span>
+        <mat-slide-toggle class="" color="primary" formControlName="mondlyMeetings"></mat-slide-toggle>
+      </div>
+    </div>
+    
+
+    <div fxLayout="row" class="mgt15 mgb15">
+        <span class="ft20 ft500">Aprendizaje</span>
+    </div>
+
+    <div fxLayout="row">
+      <div fxLayout="row" fxLayoutAlign="space-between center" class="fw backGray1 radius6 pd10">
+        <span class="ft16 ft600">Diagnóstico inicial</span>
+        <mat-slide-toggle class="" color="primary" formControlName="examenInicial"></mat-slide-toggle>
+      </div>
+    </div>
+
+    <div fxLayout="row">
+      <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt08 fw backGray1 radius6 pd10">
+        <span class="ft16 ft600">Diagnóstico final</span>
+        <mat-slide-toggle class="" color="primary" formControlName="examenFinal"></mat-slide-toggle>
+      </div>
+    </div>
+
+    <div fxLayout="row">
+      <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt08 fw backGray1 radius6 pd10">
+        <span class="ft16 ft600">Permitir a todos los usuarios inscribir cursos extra</span>
+        <mat-slide-toggle class="" color="primary" formControlName="allUsersExtraCourses"></mat-slide-toggle>
+      </div>
+    </div>
+
+    <div fxLayout="column" fxLayoutGap="1rem" class="mgt08 fw backGray1 radius6 pd10">
+      <div fxLayout="row" fxLayoutAlign="space-between center">
+        <span class="ft16 ft600">Asignar cursos a los usuarios</span>
+        <div fxLayout="column" fxLayoutGap=".2rem" class="w-60">
+            <form class="fw">
+                <mat-form-field subscriptSizing="dynamic" class="example-full-width fw h50px">
+                  <mat-label>Buscar curso</mat-label>
+                  <input type="text" class="ft14 fw" placeholder="Seleccione uno" aria-label="Number" matInput #autoTrigger="matAutocompleteTrigger" 
+                  [formControl]="coursesForm" [matAutocomplete]="autoCourses"/>
+                  <mat-autocomplete [hideSingleSelectionIndicator]="true" [displayWith]="getOptionTextCourse" #autoCourses="matAutocomplete" class="options">
+                      <mat-option (click)="changeCourse(option)" class="multiline-mat-option ft12 fw" *ngFor="let option of filteredCourses | async" [value]="option">
+                      <div fxLayout="row" fxLayoutAlign="space-between" class="fw">
+                          <div fxLayout="col" fxLayoutAlign="center center">{{ option.titulo | titlecase }}</div>
+                          <mat-icon class="makeBlue" *ngIf="isCourseSelected(option)">check</mat-icon>
+                      </div>
+                      </mat-option>
+                  </mat-autocomplete>
+                </mat-form-field>
+            </form>
+        </div>
+      </div>
+      <div *ngIf="enterpriseCourses.length > 0" fxLayout="row wrap" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="">
+        <ng-container *ngFor="let course of enterpriseCourses; let courseIndex = index" class="">
+            <div class="skill-badge-complete ListHover radius10 backGray2 ft12 pdl08 pdr08 gray-8">
+              {{ course.titulo | titlecase }}
+              <img style="cursor: pointer" (click)="removeCourse(courseIndex)" [src]="icon.close" class="h16px makeGray" alt="" />
             </div>
-          </div>
-      
-          <div class="form-group mgt10 fw">
-            <label class="ft12">Nombre del account manager</label>
-            <input [class.is-invalid]="enterpriseForm.controls['accountManagerName'].errors && showError"
-              formControlName="accountManagerName" type="text" class="form-control ft14 shadow-animation pdl05 pdr05 radius20 borderLight">
-            <div class="invalid-feedback" *ngIf="enterpriseForm.controls['accountManagerName'].errors && showError"> 
-              Debe indicar el nombre de la empresa
-            </div>
-          </div>
-
-          <div class="form-group mgt10 fw">
-            <label class="ft12">teléfono del account manager</label>
-            <input [class.is-invalid]="enterpriseForm.controls['accountManagerPhone'].errors && showError"
-              formControlName="accountManagerPhone" type="number" class="form-control ft14 shadow-animation pdl05 pdr05 radius20 borderLight">
-            <div class="invalid-feedback" *ngIf="enterpriseForm.controls['accountManagerPhone'].errors && showError"> 
-              Debe indicar el nombre de la empresa
-            </div>
-          </div>
-
-
-          <div class="form-group mgt10 fw">
-            <label class="ft12">Vendedor</label>
-            <input [class.is-invalid]="enterpriseForm.controls['salesMan'].errors && showError"
-              formControlName="salesMan" type="text" class="form-control ft14 shadow-animation pdl05 pdr05 radius20 borderLight">
-            <div class="invalid-feedback" *ngIf="enterpriseForm.controls['salesMan'].errors && showError"> 
-              Debe indicar el nombre de la empresa
-            </div>
-          </div>
-
-        </div>
-
-        <div fxLayout="column" class="fw mgl10">
-          <div class="form-group fw">
-            <label class="ft12">Persona de contacto</label>
-            <input [class.is-invalid]="enterpriseForm.controls['contactPerson'].errors && showError"
-              formControlName="contactPerson" type="text" class="form-control ft14 shadow-animation pdl05 pdr05 radius20 borderLight">
-            <div class="invalid-feedback" *ngIf="enterpriseForm.controls['contactPerson'].errors && showError"> 
-              Debe indicar el nombre de la empresa
-            </div>
-          </div>
-
-          <div class="form-group mgt10 fw">
-            <label class="ft12">Correo persona de contacto</label>
-            <input [class.is-invalid]="enterpriseForm.controls['mailContactPerson'].errors && showError"
-              formControlName="mailContactPerson" type="text" class="form-control ft14 shadow-animation pdl05 pdr05 radius20 borderLight">
-            <div class="invalid-feedback" *ngIf="enterpriseForm.controls['mailContactPerson'].errors && showError"> 
-              Debe indicar el nombre de la empresa
-            </div>
-          </div>
-
-          <div class="form-group mgt10 fw">
-            <label class="ft12">teléfono persona de contacto</label>
-            <input [class.is-invalid]="enterpriseForm.controls['phoneContactPerson'].errors && showError"
-              formControlName="phoneContactPerson" type="number" class="form-control ft14 shadow-animation pdl05 pdr05 radius20 borderLight">
-            <div class="invalid-feedback" *ngIf="enterpriseForm.controls['phoneContactPerson'].errors && showError"> 
-              Debe indicar el nombre de la empresa
-            </div>
-          </div>
-
-        </div>
+        </ng-container>
       </div>
-      
-  
-      <div *ngIf="enterprise.id" fxLayoutAlign="center center" fxLayout="row">
-        <div class="mgt08 fw">
-          <app-enterprise-licenses-cards [enterpriseRef]="enterpriseRef"></app-enterprise-licenses-cards>
-        </div>
-      </div>
+    </div>
 
-      <div fxLayout="row" class="mgt15 mgb15">
-        <span class="ft20 ft500">Demo</span>
-      </div>
+    <div fxLayout="row" class="mgt15 mgb15">
+      <span class="ft20 ft500">Logros</span>
+    </div>
 
-      <div fxLayout="row">
-        <div fxLayout="row" fxLayoutAlign="space-between center" class="fw backGray1 radius6 pd10">
-          <span class="ft16 ft500">Es una empresa demo</span>
-          <mat-slide-toggle class="" color="primary" formControlName="demo"></mat-slide-toggle>
-        </div>
+    <div fxLayout="row">
+      <div fxLayout="row" fxLayoutAlign="space-between center" class="fw backGray1 radius6 pd10">
+        <span class="ft16 ft600">Mostrar logo de la empresa en certificados</span>
+        <mat-slide-toggle class="" color="primary" formControlName="showEnterpriseLogoInCertificates"></mat-slide-toggle>
       </div>
+    </div>
 
-      <div fxLayout="row">
-        <div fxLayout="row" fxLayoutAlign="space-between center" class="fw backGray1 radius6 pd10 mgt08">
-          <span class="ft16 ft500">Proviene de Tractian</span>
-          <mat-slide-toggle class="" color="primary" formControlName="tractian"></mat-slide-toggle>
-        </div>
+    <div fxLayout="row">
+      <div fxLayout="row" fxLayoutAlign="space-between center" class="fw backGray1 radius6 pd10 mgt08">
+        <span class="ft16 ft600">Enviar felicitación cada vez que se completa un curso + certificado</span>
+        <mat-slide-toggle class="" color="primary" formControlName="congratulationsEndCourse"></mat-slide-toggle>
       </div>
+    </div>
 
-      <div fxLayout="row" class="mgt15 mgb15">
-        <span class="ft20 ft500">Account Management</span>
-      </div>
-
-
-      <div fxLayout="row">
-        <div fxLayout="row" fxLayoutAlign="space-between center" class=" fw backGray1 radius6 pd10">
-          <span class="ft16 ft500">Requiere account management</span>
-          <mat-slide-toggle class="" color="primary" formControlName="requireAccountManagement"></mat-slide-toggle>
-        </div>
-      </div>
-
-      <div fxLayout="row">
-        <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt08 fw backGray1 radius6 pd10">
-          <div fxLayout="column">
-            <span class="ft16 ft600 mgb08">Enviar correos de progreso a los administradores</span>
-            <label class="ft12">Destinatarios reporte</label>
-            <input [class.is-invalid]="enterpriseForm.controls['reportMails'].errors && showError" formControlName="reportMails" type="text" class="mgb08 form-control ft14 shadow-animation pdl05 pdr05 radius8 borderLight fw">
-            <span *ngIf="lastDayAdminMail" class="ft16 ft500 pft03 mgb08">Último envio: {{lastDayAdminMail | date:"dd/MM/yyyy HH:mm"}}</span>
-            <span (click)="sendMailAdmin()" class="ft16 ft500 blueLink">Realizar envio manual ahora</span>
-          </div>
-          <mat-slide-toggle class="" color="primary" formControlName="sendMailtoAdmin"></mat-slide-toggle>
-        </div>
-      </div>
-      
-
-      <div fxLayout="row">
-        <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt08 fw backGray1 radius6 pd10">
-          <div fxLayout="column">
-            <span class="ft16 ft600 mgb08">Enviar correos de progreso a los usuarios.</span>
-            <!-- <span *ngIf="lastDayUsersMail" class="ft16 ft500">Último envio: {{lastDayUsersMail}}</span> -->
-            <span *ngIf="lastDayUsersMail" class="ft16 ft500 pft03 mgb08">Último envio: {{lastDayUsersMail | date:"dd/MM/yyyy HH:mm"}}</span>
-            <span (click)="sendMailUsers()"class="ft16 ft500 blueLink">Realizar envio manual ahora</span>
-          </div>
-          <mat-slide-toggle class="" color="primary" formControlName="sendMailtoUsers"></mat-slide-toggle>
-        </div>
-      </div>
-
-      <div fxLayout="row">
-        <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt08 fw backGray1 radius6 pd10">
-          <span class="ft16 ft600">A favor de usar Whatsapp para control</span>
-          <mat-slide-toggle class="" color="primary" formControlName="useWhatsapp"></mat-slide-toggle>
-        </div>
-      </div>
-
-      <div fxLayout="row">
-        <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt08 fw backGray1 radius6 pd10">
-          <span class="ft16 ft600">Reuniones mensuales</span>
-          <mat-slide-toggle class="" color="primary" formControlName="mondlyMeetings"></mat-slide-toggle>
-        </div>
-      </div>
-      
-
-      <div fxLayout="row" class="mgt15 mgb15">
-          <span class="ft20 ft500">Aprendizaje</span>
-      </div>
-
-      <div fxLayout="row">
-        <div fxLayout="row" fxLayoutAlign="space-between center" class="fw backGray1 radius6 pd10">
-          <span class="ft16 ft600">Diagnóstico inicial</span>
-          <mat-slide-toggle class="" color="primary" formControlName="examenInicial"></mat-slide-toggle>
-        </div>
-      </div>
-
-      <div fxLayout="row">
-        <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt08 fw backGray1 radius6 pd10">
-          <span class="ft16 ft600">Diagnóstico final</span>
-          <mat-slide-toggle class="" color="primary" formControlName="examenFinal"></mat-slide-toggle>
-        </div>
-      </div>
-
-      <div fxLayout="row">
-        <div fxLayout="row" fxLayoutAlign="space-between center" class="mgt08 fw backGray1 radius6 pd10">
-          <span class="ft16 ft600">Permitir a todos los usuarios inscribir cursos extra</span>
-          <mat-slide-toggle class="" color="primary" formControlName="allUsersExtraCourses"></mat-slide-toggle>
-        </div>
-      </div>
-
-      <div fxLayout="column" fxLayoutGap="1rem" class="mgt08 fw backGray1 radius6 pd10">
-        <div fxLayout="row" fxLayoutAlign="space-between center">
-          <span class="ft16 ft600">Asignar cursos a los usuarios</span>
-          <div fxLayout="column" fxLayoutGap=".2rem" class="w-60">
-              <form class="fw">
-                  <mat-form-field subscriptSizing="dynamic" class="example-full-width fw h50px">
-                    <mat-label>Buscar curso</mat-label>
-                    <input type="text" class="ft14 fw" placeholder="Seleccione uno" aria-label="Number" matInput #autoTrigger="matAutocompleteTrigger" 
-                    [formControl]="coursesForm" [matAutocomplete]="autoCourses"/>
-                    <mat-autocomplete [hideSingleSelectionIndicator]="true" [displayWith]="getOptionTextCourse" #autoCourses="matAutocomplete" class="options">
-                        <mat-option (click)="changeCourse(option)" class="multiline-mat-option ft12 fw" *ngFor="let option of filteredCourses | async" [value]="option">
-                        <div fxLayout="row" fxLayoutAlign="space-between" class="fw">
-                            <div fxLayout="col" fxLayoutAlign="center center">{{ option.titulo | titlecase }}</div>
-                            <mat-icon class="makeBlue" *ngIf="isCourseSelected(option)">check</mat-icon>
-                        </div>
-                        </mat-option>
-                    </mat-autocomplete>
-                  </mat-form-field>
-              </form>
-          </div>
-        </div>
-        <div *ngIf="enterpriseCourses.length > 0" fxLayout="row wrap" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="">
-          <ng-container *ngFor="let course of enterpriseCourses; let courseIndex = index" class="">
-              <div class="skill-badge-complete ListHover radius10 backGray2 ft12 pdl08 pdr08 gray-8">
-                {{ course.titulo | titlecase }}
-                <img style="cursor: pointer" (click)="removeCourse(courseIndex)" [src]="icon.close" class="h16px makeGray" alt="" />
-              </div>
-          </ng-container>
-        </div>
-      </div>
-
-      <div fxLayout="row" class="mgt15 mgb15">
-        <span class="ft20 ft500">Logros</span>
-      </div>
-
-      <div fxLayout="row">
-        <div fxLayout="row" fxLayoutAlign="space-between center" class="fw backGray1 radius6 pd10">
-          <span class="ft16 ft600">Mostrar logo de la empresa en certificados</span>
-          <mat-slide-toggle class="" color="primary" formControlName="showEnterpriseLogoInCertificates"></mat-slide-toggle>
-        </div>
-      </div>
-
-      <div fxLayout="row">
-        <div fxLayout="row" fxLayoutAlign="space-between center" class="fw backGray1 radius6 pd10 mgt08">
-          <span class="ft16 ft600">Enviar felicitación cada vez que se completa un curso + certificado</span>
-          <mat-slide-toggle class="" color="primary" formControlName="congratulationsEndCourse"></mat-slide-toggle>
-        </div>
-      </div>
-  
-      <div fxLayout="row" class="mgt15" fxLayoutAlign="space-between">
-        <button *ngIf="enterprise.id" class="redButtonAnim button-animation h28px mgr10" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" type="button" (click)="deleteEnterprise()">
-          Eliminar empresa
-        </button>
-        <button class="blueButtonAnim button-animation h28px" fxLayout="row" fxLayoutAlign="center center" type="submit" style="margin-right: -1px;">
-          {{enterprise.id ? "Guardar" : "Crear"}} empresa
-        </button>
-      </div>
-    </form>
-  </div>
+    <div fxLayout="row" class="mgt15" fxLayoutAlign="space-between">
+      <button *ngIf="enterprise.id" class="redButtonAnim button-animation h28px mgr10" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" type="button" (click)="deleteEnterprise()">
+        Eliminar empresa
+      </button>
+      <button class="blueButtonAnim button-animation h28px" fxLayout="row" fxLayoutAlign="center center" type="submit" style="margin-right: -1px;">
+        {{enterprise.id ? "Guardar" : "Crear"}} empresa
+      </button>
+    </div>
+  </form>
+</div>
   

@@ -7,7 +7,7 @@ import { Enterprise } from "projects/shared/models/enterprise.model";
 import { AlertsService } from "projects/predyc-business/src/shared/services/alerts.service";
 import { DialogService } from "projects/predyc-business/src/shared/services/dialog.service";
 import { EnterpriseService } from "projects/predyc-business/src/shared/services/enterprise.service";
-import { cleanFileName, CourseByStudent, Curso, CursoJson, User } from "projects/shared";
+import { cleanFileName, CourseByStudent, Curso, CursoJson, titleCase, User } from "projects/shared";
 import Swal from 'sweetalert2';
 import { DocumentReference } from "@angular/fire/compat/firestore";
 import { AngularFireFunctions } from "@angular/fire/compat/functions";
@@ -256,7 +256,8 @@ export class EnterpriseInfoComponent {
 		let userEnroll = this.enterprise?.allUsersExtraCourses
 
 		const enterprise = this.enterprise;
-		enterprise.name = formValue.name;
+
+		enterprise.name = titleCase(formValue.name.trim().toLowerCase())
 		// enterprise.summary = formValue.summary
 		enterprise.description = formValue.description;
 		enterprise.socialNetworks.website = formValue.website;
