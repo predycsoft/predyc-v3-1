@@ -136,6 +136,7 @@ export class EnterpriseStudentsListComponent {
       this.userService.getUsersByEnterpriseRef$(this.enterpriseRef),
     ]).pipe(
       switchMap(([profiles, departments, users]) => {
+        this.departments = departments
         // Mapear cada usuario a un observable que obtiene sus suscripciones
         const usersWithSubscriptionsObservables = users.map(user => {
           const userRef = this.userService.getUserRefById(user.uid);
@@ -257,8 +258,6 @@ export class EnterpriseStudentsListComponent {
   }
 
   uploadUsers(evt) {
-
-
     const target: DataTransfer = <DataTransfer>(evt.target);
     if (target.files.length !== 1) {
       throw new Error('Cannot use multiple files');
@@ -292,7 +291,7 @@ export class EnterpriseStudentsListComponent {
             profile: [null],
             photoUrl: [null],
             phoneNumber: [null, [Validators.pattern(/^\d*$/)]],
-            department: [null],
+            departmentRef: [null],
             country: [null],
             birthdate: [null],
             email: [null, [Validators.required, Validators.email]],
@@ -303,6 +302,13 @@ export class EnterpriseStudentsListComponent {
             role:['student']
           });
 
+          const studentDepartmentName = student['Departamento'] ? student['Departamento'] : null
+          let studentDepartmentRef
+          if (studentDepartmentName) {
+            const studentDepartment = this.departments.find(x => x.name.toLocaleLowerCase() === studentDepartmentName.toLocaleLowerCase() )
+            if (studentDepartment) studentDepartmentRef = this.departmentService.getDepartmentRefById(studentDepartment.id)
+          }
+
           userForm.patchValue({
             displayName: student['Nombre']?student['Nombre']:null,
             name: student['Nombre']?student['Nombre']:null,
@@ -310,7 +316,9 @@ export class EnterpriseStudentsListComponent {
             country: student['País']?student['País']:null,
             email: student['Correo']?student['Correo']:null,
             experience: student['Años Experiencia']?student['Años Experiencia']:null,
-            enterprise: enterpriseRef
+            enterprise: enterpriseRef,
+            job: student['Cargo']?student['Cargo']:null,
+            departmentRef: studentDepartmentRef?studentDepartmentRef:null,
           });
   
           this.timestampToFormFormat(userForm,student['Fecha Nacimiento (YYYY/MM/DD)'], "birthdate")
@@ -331,8 +339,6 @@ export class EnterpriseStudentsListComponent {
       }
     };
     reader.readAsBinaryString(target.files[0]); 
-
-
 
   }
 
