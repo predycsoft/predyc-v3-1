@@ -85,7 +85,7 @@
 
     <div *ngIf="enterprise.id" fxLayoutAlign="center center" fxLayout="row">
       <div class="mgt08 fw">
-        <app-enterprise-licenses-cards [enterpriseRef]="enterpriseRef"></app-enterprise-licenses-cards>
+        <app-enterprise-licenses-cards [enterpriseRef]="enterpriseRef" (licenseDeactivated)="onLicenseStatusChange($event)"></app-enterprise-licenses-cards>
       </div>
     </div>
 

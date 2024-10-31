@@ -7,7 +7,7 @@ import { Enterprise } from "projects/shared/models/enterprise.model";
 import { AlertsService } from "projects/predyc-business/src/shared/services/alerts.service";
 import { DialogService } from "projects/predyc-business/src/shared/services/dialog.service";
 import { EnterpriseService } from "projects/predyc-business/src/shared/services/enterprise.service";
-import { cleanFileName, CourseByStudent, Curso, CursoJson, titleCase, User } from "projects/shared";
+import { cleanFileName, CourseByStudent, Curso, CursoJson, LicenseJson, titleCase, User } from "projects/shared";
 import Swal from 'sweetalert2';
 import { DocumentReference } from "@angular/fire/compat/firestore";
 import { AngularFireFunctions } from "@angular/fire/compat/functions";
@@ -69,7 +69,7 @@ export class EnterpriseInfoComponent {
 		this.usersSubscription = this.userService.getUsersByEnterpriseRef$(this.enterpriseRef).subscribe((users) => {
 			this.enterpriseUsers = users
 		})
-		console.log("this.enterprise", this.enterprise)
+		// console.log("this.enterprise", this.enterprise)
 		this.setupForm();
 		// this.coursesForm.setValue('');
 	}
@@ -337,7 +337,6 @@ export class EnterpriseInfoComponent {
 
 	async deleteEnterprise() {
 
-
 		Swal.fire({
 			title: `Borrar empresa ${this.enterpriseForm.controls['name'].value} `,
 			text: "Esta operación es irreversible, ¿deseas continuar?",
@@ -402,6 +401,17 @@ export class EnterpriseInfoComponent {
 	_filterCourses(value: string | CursoJson): any[] {
 		const filterValue = (typeof value === 'string') ? value.toLowerCase() : value.titulo.toLowerCase();
 		return this.allCourses.filter(course => course.titulo.toLowerCase().includes(filterValue));
+	}
+
+	async onLicenseStatusChange(license: LicenseJson) {
+		if (license.status  === "inactive") {
+			console.log("All licenses have being disabled:");
+			this.enterpriseForm.patchValue({
+				sendMailtoAdmin: false,
+				sendMailtoUsers: false
+			});
+			await this.onSubmit()
+		}
 	}
 	
 }

@@ -1,8 +1,8 @@
-import { Component, Input } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { MatTableDataSource } from "@angular/material/table";
 import { Subject, Subscription, combineLatest } from "rxjs";
-import { License } from "projects/shared/models/license.model";
+import { License, LicenseJson } from "projects/shared/models/license.model";
 import { Product } from "projects/shared/models/product.model";
 import { LicenseService } from "projects/predyc-business/src/shared/services/license.service";
 import { ProductService } from "projects/predyc-business/src/shared/services/product.service";
@@ -35,6 +35,7 @@ interface LicensesInList {
 })
 export class EnterpriseLicensesCardsComponent {
   @Input() enterpriseRef: DocumentReference<Enterprise>;
+  @Output() licenseDeactivated = new EventEmitter<LicenseJson>();
 
   constructor(
     private dialog: MatDialog,
@@ -47,7 +48,6 @@ export class EnterpriseLicensesCardsComponent {
   ) {}
 
   SubscriptionClass = SubscriptionClass;
-
 
   products: Product[] = [];
 
@@ -152,7 +152,7 @@ export class EnterpriseLicensesCardsComponent {
   }
 
   async editLicense(license: License) {
-    console.log(license)
+    // console.log("license", license)
     const dialogRef = this.dialog.open(DialogCreateLicenseComponent, {
       data: {
         license: license,
@@ -168,10 +168,7 @@ export class EnterpriseLicensesCardsComponent {
           const licenseJson = result.toJson();
           await this.licenseService.saveLicense(licenseJson);
           // Update all subscriptions
-          const subscriptions =
-            await this.subscriptionService.getSubscriptionsByLicense(
-              this.licenseService.getLicenseRefById(licenseJson.id)
-            );
+          const subscriptions =await this.subscriptionService.getSubscriptionsByLicense(this.licenseService.getLicenseRefById(licenseJson.id));
           for (let subscription of subscriptions) {
             const modifiedSubscription = {
               ...subscription,
@@ -193,11 +190,15 @@ export class EnterpriseLicensesCardsComponent {
               modifiedSubscription
             );
           }
+          if (license.status !== licenseJson.status) {
+            console.log("License status changed");
+            if (this.licenses.filter(x => x.status === "inactive").length === this.licenses.length) {
+              this.licenseDeactivated.emit(licenseJson);
+            }
+          }
           this.dialogService.dialogExito();
         } catch (error) {
-          this.dialogService.dialogAlerta(
-            "Hubo un error al guardar la licencia. Inténtalo de nuevo."
-          );
+          this.dialogService.dialogAlerta("Hubo un error al guardar la licencia. Inténtalo de nuevo.");
           console.log(error);
         }
       }
