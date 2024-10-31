@@ -1014,7 +1014,7 @@ convertirFechaString(fechaString: string): Date | null {
     };
     wsGeneral["B13"] = {
       t: "s",
-      v: "Estudiantes sin plan de estudio",
+      v: "Estudiantes sin plan de estudio o sin iniciar",
       s: gray6CalibriBoldGreyLeftBordered,
     };
 
@@ -1040,7 +1040,7 @@ convertirFechaString(fechaString: string): Date | null {
     };
     wsGeneral["B19"] = {
       t: "s",
-      v: "Estudiantes sin plan de estudio",
+      v: "Estudiantes sin plan de estudio o sin iniciar",
       s: gray6CalibriBoldGreyLeftBordered,
     };
 
@@ -1161,7 +1161,7 @@ convertirFechaString(fechaString: string): Date | null {
     };
     wsResumenPorPuesto["I5"] = {
       t: "s",
-      v: "Cant. de Est. sin plan de estudio",
+      v: "Cant. de Est. sin plan de estudio o sin iniciar",
       s: gray6CalibriBoldGreyCenterBordered,
     };
     wsResumenPorPuesto["J5"] = {
@@ -2145,7 +2145,8 @@ convertirFechaString(fechaString: string): Date | null {
       );
     }
 
-    this.userServiceSubscription = this.userService.getUsersReport$(null, null, null, null, fechaInicio, fechaFin).pipe(
+    this.userServiceSubscription = this.userService.getUsersReport$(null, null, null, null, fechaInicio, fechaFin)
+    .pipe(
       filter((user) => user != null),
       take(1),
       switchMap((users) => {
