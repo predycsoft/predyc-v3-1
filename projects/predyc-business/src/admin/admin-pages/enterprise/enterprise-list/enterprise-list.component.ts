@@ -206,9 +206,9 @@ export class EnterpriseListComponent {
         });
         return observables.length > 0 ? combineLatest(observables) : of([]);
       }),
-      take(1)
+      take(2)
     ).subscribe((response) => {
-      // console.log(response);
+      // console.log("response", response);
 
       let enterprises: EnterpriseInfo[] = response
       .map((enterpriseInfo) => {
