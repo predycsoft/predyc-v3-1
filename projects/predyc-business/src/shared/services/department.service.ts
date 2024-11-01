@@ -18,10 +18,11 @@ export class DepartmentService {
 
   }
 
-  public async add(department: Department) {
+  public async add(department: Department): Promise<string> {
     const ref = this.afs.collection<Department>(Department.collection).doc().ref;
     await ref.set({...department.toJson(), id: ref.id}, { merge: true });
     department.id = ref.id;
+    return ref.id
   }
 
   public _getDepartments$(): Observable<Department[]> {

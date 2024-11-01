@@ -15,7 +15,7 @@ import { Subscription, combineLatest, firstValueFrom, forkJoin, map, switchMap, 
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import * as XLSX from 'xlsx-js-style';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { timestampToDateNumbers } from 'projects/shared/utils';
+import { compareStrings, timestampToDateNumbers } from 'projects/shared/utils';
 import Swal from 'sweetalert2';
 import { AlertsService } from 'projects/predyc-business/src/shared/services/alerts.service';
 import { Subscription as SubscriptionClass } from "shared";
@@ -201,7 +201,7 @@ export class EnterpriseStudentsListComponent {
       // Asigna el arreglo ordenado a dataSource.data
       this.dataSource.data = studentsInList;
       this.dataSource.data = studentsInList;
-      console.log('studentsInList', studentsInList);
+      // console.log('studentsInList', studentsInList);
     });
   }
 
@@ -284,7 +284,8 @@ export class EnterpriseStudentsListComponent {
       });
 
       try {
-        for (let student of data){
+        for (let student of data) {
+          console.log("Name:", student['Nombre']?student['Nombre']:null)
           let userForm: FormGroup
           userForm = this.fb.group({
             displayName: [null, [Validators.required]],
@@ -304,12 +305,21 @@ export class EnterpriseStudentsListComponent {
             role:['student']
           });
 
-          // const studentDepartmentName = student['Departamento'] ? student['Departamento'] : null
-          // let studentDepartmentRef
-          // if (studentDepartmentName) {
-          //   const studentDepartment = this.departments.find(x => x.name.toLocaleLowerCase() === studentDepartmentName.toLocaleLowerCase() )
-          //   if (studentDepartment) studentDepartmentRef = this.departmentService.getDepartmentRefById(studentDepartment.id)
-          // }
+          const studentDepartmentName = student['Departamento'] ? student['Departamento'] : null
+          let studentDepartmentRef
+          let newDepartment: Department
+          // console.log("studentDepartmentName", studentDepartmentName)
+          if (studentDepartmentName) {
+            const studentDepartment = this.departments.find(x => compareStrings(x.name, studentDepartmentName));
+            // console.log("studentDepartment", studentDepartment)
+            if (studentDepartment) studentDepartmentRef = this.departmentService.getDepartmentRefById(studentDepartment.id)
+            else {
+              newDepartment = new Department(null, studentDepartmentName, enterpriseRef, null);
+              const newDepartmentId = await this.departmentService.add(newDepartment);
+              studentDepartmentRef = this.departmentService.getDepartmentRefById(newDepartmentId)
+            }
+          }
+          // console.log("studentDepartmentRef", studentDepartmentRef)
 
           userForm.patchValue({
             displayName: student['Nombre']?student['Nombre']:null,
@@ -320,14 +330,14 @@ export class EnterpriseStudentsListComponent {
             experience: student['Años Experiencia']?student['Años Experiencia']:null,
             enterprise: enterpriseRef,
             job: student['Cargo']?student['Cargo']:null,
-            // departmentRef: studentDepartmentRef?studentDepartmentRef:null,
+            departmentRef: studentDepartmentRef?studentDepartmentRef:null,
           });
   
           this.timestampToFormFormat(userForm,student['Fecha Nacimiento (YYYY/MM/DD)'], "birthdate")
           this.timestampToFormFormat(userForm,student['Fecha Ingreso (YYYY/MM/DD)'], "hiringDate")
           if(userForm.valid){
             const formData = userForm.getRawValue()
-            console.log(formData)
+            // console.log("formData", formData)
             await this.userService.addUser(formData)
           }
           else console.log("Datos invalidos")
@@ -353,7 +363,7 @@ export class EnterpriseStudentsListComponent {
     }
 
     let timestamp = new Date(timestampIn).getTime()
-    console.log(timestamp,timestampIn)
+    // console.log(timestamp,timestampIn)
     const date = timestampToDateNumbers(timestamp)
     userForm.get(property)?.setValue({
       day: date.day, month: date.month, year: date.year

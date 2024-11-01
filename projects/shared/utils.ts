@@ -267,7 +267,6 @@ export const cleanFileName = (fileName: string): string => {
 	return cleanedFileName.replace(/\s+/g, "_");
 };
 
-
 export const getMonthProgress = (): number => {
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -277,4 +276,20 @@ export const getMonthProgress = (): number => {
     const daysElapsed = (now.getTime() - startOfMonth.getTime()) / (1000 * 60 * 60 * 24);
 
     return Number((daysElapsed / totalDaysInMonth).toFixed(2)); // Redondea a dos decimales y retorna como número
-  }
+}
+
+export const compareStrings = (a: string, b: string): boolean => {
+    const normalizeString = (str: string) =>
+        str
+            .toLowerCase()
+            .normalize("NFD") // descompone caracteres acentuados en el carácter base y su marca diacrítica.
+            .replace(/[\u0300-\u036f]/g, "") // elimina marcas diacríticas
+            .trim()
+            .replace(/\s+/g, ' ');
+
+    const result = normalizeString(a) === normalizeString(b);
+    console.log(`Comparing "${a}" with "${b}" - Result: ${result}`);
+    return result;
+};
+
+  
