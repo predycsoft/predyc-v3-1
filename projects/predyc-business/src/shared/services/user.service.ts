@@ -493,6 +493,11 @@ export class UserService {
       dataToSave.profile = null
     }
 
+    if (dataToSave.departmentRef){
+      dataToSave['idDepartment'] = dataToSave.departmentRef.id
+      dataToSave.departmentRef = null
+    }
+
     // await this.afs
     //   .collection(User.collection)
     //   .doc(uid)

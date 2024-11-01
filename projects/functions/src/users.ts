@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import { Enterprise, Profile, User } from 'shared';
+import { Department, Enterprise, Profile, User } from 'shared';
 
 const db = admin.firestore();
 
@@ -102,16 +102,22 @@ export const createUserDocument = functions.https.onCall(async (data, context) =
 
         const userRef = admin.firestore().collection('user').doc(userDataToSave.uid); // Asegúrate de tener el ID del usuario
 
-        if(userDataToSave?.idEnterprise){
+        if (userDataToSave?.idEnterprise) {
             const enterpriseRef = await admin.firestore().collection(Enterprise.collection).doc(userDataToSave.idEnterprise)
             userDataToSave.enterprise = enterpriseRef
             delete userDataToSave.idEnterprise
         }
 
-        if(userDataToSave?.idProfile){
+        if (userDataToSave?.idProfile) {
             const profileRef = await admin.firestore().collection(Profile.collection).doc(userDataToSave.idProfile)
             userDataToSave.profile = profileRef
             delete userDataToSave.idProfile
+        }
+
+        if (userDataToSave?.idDepartment) {
+            const departmentRef = await admin.firestore().collection(Department.collection).doc(userDataToSave.idDepartment)
+            userDataToSave.departmentRef = departmentRef
+            delete userDataToSave.idDepartment
         }
         // Guardar los datos del usuario
         await userRef.set(userDataToSave, { merge: true });
