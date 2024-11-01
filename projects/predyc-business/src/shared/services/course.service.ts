@@ -904,23 +904,16 @@ export class CourseService {
     return courses;
   }
 
-  async setCourseByStudentActive(
-    courseByStudentId: string,
-    startDate: any,
-    endDate: any
-  ) {
-    await this.afs
-      .collection(CourseByStudent.collection)
-      .doc(courseByStudentId)
-      .set(
-        {
-          active: true,
-          dateStartPlan: startDate,
-          dateEndPlan: endDate,
-          isExtraCourse: startDate ? false : true,
-        },
-        { merge: true }
-      );
+  async setCourseByStudentActive(courseByStudentId: string, startDate: any, endDate: any) {
+    await this.afs.collection(CourseByStudent.collection).doc(courseByStudentId).set(
+      {
+        active: true,
+        dateStartPlan: startDate,
+        dateEndPlan: endDate,
+        isExtraCourse: startDate ? false : true,
+      },
+      { merge: true }
+    );
     console.log(`${courseByStudentId} has been activated`);
   }
 

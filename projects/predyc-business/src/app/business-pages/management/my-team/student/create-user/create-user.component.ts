@@ -666,11 +666,14 @@ export class CreateUserComponent {
         await this.userService.addUser(user);
       }
 
+      // Assign courses of the enterprise (set in admin) to user as extraplans
       const enterpriseCoursesToEnroll: DocumentReference<Curso>[] = this.enterprise.coursesRef
       if (enterpriseCoursesToEnroll && enterpriseCoursesToEnroll.length > 0) {
+        const userRef = this.userService.getUserRefById(user.uid);
         for (let i = 0; i < enterpriseCoursesToEnroll.length; i++) {
           const courseRef = enterpriseCoursesToEnroll[i]
-          await this.courseService.saveCourseByStudent(courseRef, this.userService.getUserRefById(user.uid), null, null, true, i);
+          const existedCourseByStudent: CourseByStudent | null = await this.courseService.getCourseByStudent(userRef as DocumentReference<User>, courseRef);
+          if (!existedCourseByStudent) await this.courseService.saveCourseByStudent(courseRef, userRef, null, null, true, i);
         }
       }
 
@@ -727,6 +730,8 @@ export class CreateUserComponent {
       const courseByStudent: CourseByStudent | null = await this.courseService.getCourseByStudent(userRef as DocumentReference<User>, coursesRefs[i].courseRef as DocumentReference<Curso>);
       // console.log("courseByStudent", courseByStudent)
       if (courseByStudent) {
+        console.log("courseByStudent already exists", courseByStudent)
+        console.log("courseByStudent.progress", courseByStudent.progress)
         await this.courseService.setCourseByStudentActive(courseByStudent.id, new Date(dateStartPlan), new Date(dateEndPlan));
       } else {
         await this.courseService.saveCourseByStudent(coursesRefs[i].courseRef, userRef, new Date(dateStartPlan), new Date(dateEndPlan), false, i);

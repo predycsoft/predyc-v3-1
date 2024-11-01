@@ -108,11 +108,11 @@ export class StudentStudyPlanAndCompetencesComponent {
       this.categoryService.getCategories$(),
       this.skillService.getSkills$(),
     ])
-    .pipe(take(1))
-    .subscribe(([coursesData, coursesByStudent,coursesInActiveByStudent, categories, skills]) => {
+    // .pipe(take(1))
+    .subscribe(([coursesData, coursesByStudent,inactiveCourseByStudent, categories, skills]) => {
       // console.log("coursesData", coursesData)
-      // console.log("coursesByStudent", coursesByStudent)
-      // console.log("coursesInActiveByStudent", coursesInActiveByStudent)
+      // console.log("active coursesByStudent", coursesByStudent)
+      // console.log("inactiveCourseByStudent", inactiveCourseByStudent)
       // console.log("categories", categories)
       // console.log("skills", skills)
       this.categories = categories;
@@ -127,11 +127,12 @@ export class StudentStudyPlanAndCompetencesComponent {
             this.showInitForm = false;
             this.hoursPermonthInitForm = this.student.studyHours;
             this.coursesByStudent = coursesByStudent.filter(x=>x.active && x.dateStartPlan); // active courses
+            // console.log("active cousesByStudent in stduyplan", this.coursesByStudent)
             // Studyplan case
             // if (!coursesByStudent[0].isExtraCourse ||) {
-            if(coursesInActiveByStudent.length>0){
-              this.buildInactiveCourses(coursesInActiveByStudent,coursesData)
-              // console.log('coursesInActiveByStudent',this.inactiveCourses)
+            if(inactiveCourseByStudent.length>0){
+              this.buildInactiveCourses(inactiveCourseByStudent,coursesData)
+              // console.log('this.inactiveCourses',this.inactiveCourses)
               this.inactiveCourses.sort((a, b) => {
                 return b.progress - a.progress;
               });
