@@ -70,6 +70,7 @@ export class CreateUserComponent {
   async ngOnInit() {
     this.isDepartmentInvalid = false;
     this.getCourses();
+    await this.setupForm();
     this.departmentServiceSubscription = this.departmentService.getDepartments$(this.enterpriseRef).subscribe({
       next: (departments) => {
         let departmentsBase = [];
@@ -91,7 +92,6 @@ export class CreateUserComponent {
         this.alertService.errorAlert(error.message);
       },
     });
-    await this.setupForm();
   }
 
   cursos = [];

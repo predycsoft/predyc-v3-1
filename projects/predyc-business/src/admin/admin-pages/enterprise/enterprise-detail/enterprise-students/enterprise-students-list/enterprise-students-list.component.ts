@@ -132,11 +132,13 @@ export class EnterpriseStudentsListComponent {
 
     this.combinedSubscription = combineLatest([
       this.profileService.getProfiles$(),
-      this.departmentService.getDepartments$(),
+      this.departmentService.getDepartments$(this.enterpriseRef),
       this.userService.getUsersByEnterpriseRef$(this.enterpriseRef),
     ]).pipe(
       switchMap(([profiles, departments, users]) => {
         this.departments = departments
+        // console.log("departments", departments)
+        // console.log("users", users)
         // Mapear cada usuario a un observable que obtiene sus suscripciones
         const usersWithSubscriptionsObservables = users.map(user => {
           const userRef = this.userService.getUserRefById(user.uid);
@@ -302,12 +304,12 @@ export class EnterpriseStudentsListComponent {
             role:['student']
           });
 
-          const studentDepartmentName = student['Departamento'] ? student['Departamento'] : null
-          let studentDepartmentRef
-          if (studentDepartmentName) {
-            const studentDepartment = this.departments.find(x => x.name.toLocaleLowerCase() === studentDepartmentName.toLocaleLowerCase() )
-            if (studentDepartment) studentDepartmentRef = this.departmentService.getDepartmentRefById(studentDepartment.id)
-          }
+          // const studentDepartmentName = student['Departamento'] ? student['Departamento'] : null
+          // let studentDepartmentRef
+          // if (studentDepartmentName) {
+          //   const studentDepartment = this.departments.find(x => x.name.toLocaleLowerCase() === studentDepartmentName.toLocaleLowerCase() )
+          //   if (studentDepartment) studentDepartmentRef = this.departmentService.getDepartmentRefById(studentDepartment.id)
+          // }
 
           userForm.patchValue({
             displayName: student['Nombre']?student['Nombre']:null,
@@ -318,7 +320,7 @@ export class EnterpriseStudentsListComponent {
             experience: student['Años Experiencia']?student['Años Experiencia']:null,
             enterprise: enterpriseRef,
             job: student['Cargo']?student['Cargo']:null,
-            departmentRef: studentDepartmentRef?studentDepartmentRef:null,
+            // departmentRef: studentDepartmentRef?studentDepartmentRef:null,
           });
   
           this.timestampToFormFormat(userForm,student['Fecha Nacimiento (YYYY/MM/DD)'], "birthdate")
@@ -328,6 +330,7 @@ export class EnterpriseStudentsListComponent {
             console.log(formData)
             await this.userService.addUser(formData)
           }
+          else console.log("Datos invalidos")
         }
         Swal.close();
         this.alertService.succesAlert("Usuarios generados existosamente")
