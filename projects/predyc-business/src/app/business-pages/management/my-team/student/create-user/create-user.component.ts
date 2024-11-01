@@ -163,7 +163,7 @@ export class CreateUserComponent {
     if (this.formNewDepartment.valid) {
       let ValidateName = this.departments.filter((x) => x.name == this.formNewDepartment.value.nombre);
 
-      console.log("ValidateName", ValidateName, this.departments);
+      // console.log("ValidateName", ValidateName, this.departments);
 
       if (ValidateName.length >= 1) {
         Swal.fire({
@@ -272,8 +272,8 @@ export class CreateUserComponent {
           const minStartDateFormatted = new Date(minStartDate * 1000);
           const maxEndDateFormatted = this.obtenerUltimoDiaDelMes(maxEndDate);
 
-          console.log("Menor fecha de inicio:", minStartDateFormatted);
-          console.log("Mayor fecha de fin:", maxEndDateFormatted);
+          // console.log("Menor fecha de inicio:", minStartDateFormatted);
+          // console.log("Mayor fecha de fin:", maxEndDateFormatted);
 
           if (maxEndDateFormatted) {
             this.MaxDateProfile = formatDate(maxEndDateFormatted, "yyyy-MM-dd", "en");
@@ -306,7 +306,7 @@ export class CreateUserComponent {
       this.hoursPlan = hoursMes;
     }
     if (profile && (!endDate || !startDate)) {
-      console.log(profile.hoursPerMonth);
+      // console.log(profile.hoursPerMonth);
 
       let hoursPerMonth = profile.hoursPerMonth;
       let hoursPlan = profile["duracion"] / 60;
@@ -424,7 +424,7 @@ export class CreateUserComponent {
     if (day.length < 2) day = "0" + day;
 
     let respuesta = [year, month, day].join("-");
-    console.log("formatDateToInput", respuesta);
+    // console.log("formatDateToInput", respuesta);
 
     return respuesta;
   }
@@ -612,7 +612,7 @@ export class CreateUserComponent {
   savingChanges = false;
 
   async onSubmit() {
-    console.log("form", this.userForm.value, this.hoursPlan);
+    // console.log("form", this.userForm.value, this.hoursPlan);
     if (this.validateCurrentModalPage()) {
       this.displayErrors = false;
     } else {
@@ -654,7 +654,7 @@ export class CreateUserComponent {
         let enterpriseRef = this.enterpriseService.getEnterpriseRef();
 
         let deparment = new Department(null, departmentNew.name, enterpriseRef, baseDepartment);
-        console.log("deparmentadd", deparment);
+        // console.log("deparmentadd", deparment);
         await this.departmentService.add(deparment);
         let departmentRef = await this.afs.collection<Department>(Department.collection).doc(deparment.id).ref;
         user.departmentRef = departmentRef;
@@ -677,7 +677,7 @@ export class CreateUserComponent {
       let valores = this.userForm.value;
 
       if (valores.startDateStudy && valores.profile && this.hoursPlan > 0) {
-        console.log(user, valores.startDateStudy, valores.profile, this.hoursPlan);
+        // console.log(user, valores.startDateStudy, valores.profile, this.hoursPlan);
         let fehcaInicio = this.toDateFromInput(valores.startDateStudy);
         let fechaInicioMes = new Date(obtenerPrimerDiaDelMes(fehcaInicio.getTime()));
         await this.saveInitForm(user.uid, this.hoursPlan, fechaInicioMes, profileNew);
@@ -701,7 +701,7 @@ export class CreateUserComponent {
   }
 
   async createStudyPlan(uid, hoursPerMonth, profile, startDateStudy) {
-    console.log("startDateStudy", startDateStudy);
+    // console.log("startDateStudy", startDateStudy);
     const coursesRefs: any[] = profile.coursesRef.sort((b: { courseRef: DocumentReference<Curso>; studyPlanOrder: number }, a: { courseRef: DocumentReference<Curso>; studyPlanOrder: number }) => b.studyPlanOrder - a.studyPlanOrder);
     // .map((item) => item.courseRef);
     let dateStartPlan: number;
@@ -709,7 +709,7 @@ export class CreateUserComponent {
     let now = new Date();
     let hoy = +new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const hoursPermonth = hoursPerMonth;
-    console.log("hoursPermonth", hoursPermonth, coursesRefs);
+    // console.log("hoursPermonth", hoursPermonth, coursesRefs);
 
     const userRef: DocumentReference | DocumentReference<User> = this.userService.getUserRefById(uid);
     for (let i = 0; i < coursesRefs.length; i++) {
@@ -722,7 +722,7 @@ export class CreateUserComponent {
       } else dateStartPlan = dateEndPlan ? dateEndPlan : hoy;
 
       dateEndPlan = this.courseService.calculatEndDatePlan(dateStartPlan, courseDuration, hoursPermonth);
-      console.log("dates", dateStartPlan, dateEndPlan); //estoy aqui
+      // console.log("dates", dateStartPlan, dateEndPlan); //estoy aqui
       //  ---------- if it already exists, activate it as studyPlan, otherwise, create it as studyPlan ----------
       const courseByStudent: CourseByStudent | null = await this.courseService.getCourseByStudent(userRef as DocumentReference<User>, coursesRefs[i].courseRef as DocumentReference<Curso>);
       // console.log("courseByStudent", courseByStudent)
