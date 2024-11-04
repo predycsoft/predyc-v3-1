@@ -293,6 +293,9 @@ export class EnterpriseListComponent {
         };
         return datos
       })
+      enterprises = enterprises.sort((a, b) => {
+        return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+      });
       this.totalEmpresas.emit(enterprises)
       this.empresas = enterprises
       enterprises = enterprises.filter((x) => {
