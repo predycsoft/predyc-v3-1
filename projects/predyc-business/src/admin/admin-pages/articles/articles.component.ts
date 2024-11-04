@@ -5,7 +5,7 @@ import { AuthorService } from "projects/predyc-business/src/shared/services/auth
 import { IconService } from "projects/predyc-business/src/shared/services/icon.service";
 import { ArticleJson, ArticleTag } from "projects/shared/models/article.model";
 import { Author, AuthorJson } from "projects/shared/models/author.model";
-import { combineLatest, Subscription } from "rxjs";
+import { combineLatest, Subscription, take } from "rxjs";
 
 export interface ArticleData extends ArticleJson {
   data: Object[]
@@ -44,7 +44,12 @@ export class ArticlesComponent {
       this.articleService.getArticles$(),
       this.authorService.getAuthors$(),
       this.articleService.getAllArticleTags$(),
-    ]).subscribe(([articles, authors, tags]) => {
+    ])
+    .pipe(take(1))
+    .subscribe(([articles, authors, tags]) => {
+      console.log("articles", articles)
+      console.log("authors", authors)
+      console.log("tags", tags)
       this.articles = articles
       this.tags = tags
 

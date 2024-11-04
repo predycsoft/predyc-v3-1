@@ -50,7 +50,6 @@ export class ArticlesListComponent {
   totalLength: number;
 
   queryParamsSubscription: Subscription;
-  articleServiceSubscription: Subscription;
 
   dataSource = new MatTableDataSource<ArticleWithExtraData>();
 
@@ -152,6 +151,5 @@ export class ArticlesListComponent {
 
   ngOnDestroy() {
     if (this.queryParamsSubscription) this.queryParamsSubscription.unsubscribe();
-    if (this.articleServiceSubscription) this.articleServiceSubscription.unsubscribe();
   }
 }
