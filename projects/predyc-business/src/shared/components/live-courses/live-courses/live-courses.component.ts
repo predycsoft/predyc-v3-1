@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { Subscription, Observable, take, combineLatest, mergeMap, map } from "rxjs";
+import { Subscription, Observable, take, combineLatest, mergeMap, map, firstValueFrom } from "rxjs";
 import { AuthService } from "../../../services/auth.service";
 import { CategoryService } from "../../../services/category.service";
 import { CourseService } from "../../../services/course.service";
@@ -79,17 +79,17 @@ export class LiveCoursesComponent {
   }
 
   async ngOnInit() {
-    this.authService.user$.subscribe((user) => {
+    this.authService.user$.pipe(take(1)).subscribe((user) => {
       if (user) {
         // console.log('user',user)
         this.user = user;
         if (!user.isSystemUser) {
           // alterado por Arturo para buscar licencia activa de la empresa y no el usuario admin
-          this.licensesSubscription = this.licenses$.subscribe((licenses) => {
+          this.licensesSubscription = this.licenses$.pipe(take(1)).subscribe((licenses) => {
             let licenseActive = licenses.find((x) => x.status == "active");
             // console.log('licenseActive',licenseActive)
             if (licenseActive) {
-              this.productServiceSubscription = this.productService.getProductById$(licenseActive.productRef.id).subscribe((product) => {
+              this.productServiceSubscription = this.productService.getProductById$(licenseActive.productRef.id).pipe(take(1)).subscribe((product) => {
                 if (!product) return;
                 this.product = product;
               });
@@ -106,7 +106,20 @@ export class LiveCoursesComponent {
       }
     });
 
-    combineLatest([this.categoryService.getCategoriesObservable(), this.skillService.getSkills$(), this.liveCourseService.getAllLiveCoursesTemplatesWithSessionsTemplates$(), this.instructorService.getInstructors$()]).subscribe(async ([categories, skills, coursesData, instructors]) => {
+    this.subscriptionObservableSubs = combineLatest(
+      [
+        this.categoryService.getCategoriesObservable(), 
+        this.skillService.getSkills$(), 
+        this.liveCourseService.getAllLiveCoursesTemplatesWithSessionsTemplates$(), 
+        this.instructorService.getInstructors$()
+      ]
+    )
+    .pipe(take(1))
+    .subscribe(async ([categories, skills, coursesData, instructors]) => {
+      // console.log('categories from service', categories);
+      // console.log('skills from service', skills);
+      // console.log('courses from service', coursesData);
+      // console.log('instructors from service', instructors);
       this.categories = this.anidarCompetenciasInicial(categories, skills);
 
       let courses = coursesData.map((x) => {
@@ -147,16 +160,18 @@ export class LiveCoursesComponent {
         category.expanded = false;
         category.courses = filteredCourses;
       });
-      console.log("this.categories", this.categories)
+      // console.log("this.categories", this.categories)
       // ---------
 
 
 
       // For Calendario (Observables)
-      this.liveCourseService.getAllLiveCoursesWithSessions$().subscribe((livecoursesWithSessions) => {
+      this.liveCourseService.getAllLiveCoursesWithSessions$()
+      .pipe(take(1))
+      .subscribe((livecoursesWithSessions) => {
         // console.log(`livecoursesWithSessions`, livecoursesWithSessions)
 
-        this.liveCourseService.getDiplomados$().subscribe((diplomados) => {
+        this.liveCourseService.getDiplomados$().pipe(take(1)).subscribe((diplomados) => {
           if (diplomados) {
             // console.log('diplomados',diplomados)
             let profilesBase = [];
@@ -167,7 +182,7 @@ export class LiveCoursesComponent {
             });
   
             this.diplomados = diplomados;
-            console.log('perfiles', this.diplomados);
+            // console.log('perfiles', this.diplomados);
 
             let newCalendarLiveCourses: CalendarLiveCourseData[] = [];
             diplomados.forEach((diploamdo) => {
@@ -190,7 +205,7 @@ export class LiveCoursesComponent {
                 };
                 newCalendarLiveCourses.push(calendarLiveCourseData);
               this.calendarLiveDiplomados = newCalendarLiveCourses.sort((a, b) => a.sessionDate - b.sessionDate);
-              console.log("calendarLiveDiplomados in live-course component", this.calendarLiveDiplomados);
+              // console.log("calendarLiveDiplomados in live-course component", this.calendarLiveDiplomados);
             });
 
             
@@ -218,7 +233,7 @@ export class LiveCoursesComponent {
               newCalendarLiveCourses.push(calendarLiveCourseData);
             });
             this.calendarLiveCourses = newCalendarLiveCourses.sort((a, b) => a.sessionDate - b.sessionDate);
-            console.log("calendarLiveCourses in live-course component", this.calendarLiveCourses);
+            // console.log("calendarLiveCourses in live-course component", this.calendarLiveCourses);
           });
         });
       });
