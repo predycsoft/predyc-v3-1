@@ -128,7 +128,6 @@ export class StudentStudyPlanAndCompetencesComponent {
             this.hoursPermonthInitForm = this.student.studyHours;
             this.coursesByStudent = coursesByStudent.filter(x=>x.active && x.dateStartPlan); // active courses
             // console.log("active cousesByStudent in stduyplan", this.coursesByStudent)
-            // Studyplan case
             // if (!coursesByStudent[0].isExtraCourse ||) {
             if(inactiveCourseByStudent.length>0){
               this.buildInactiveCourses(inactiveCourseByStudent,coursesData)
@@ -137,6 +136,7 @@ export class StudentStudyPlanAndCompetencesComponent {
                 return b.progress - a.progress;
               });
             }
+            // Studyplan case
             if(this.coursesByStudent.length>0){
               this.studyPlanView = this.showInitForm ? false : true;
               // console.log('datos revisar',coursesByStudent,coursesData)
@@ -451,66 +451,39 @@ export class StudentStudyPlanAndCompetencesComponent {
 
   async createStudyPlan() {
     const coursesRefs: DocumentReference[] = this.selectedProfile.coursesRef
-      .sort(
-        (
-          b: { courseRef: DocumentReference<Curso>; studyPlanOrder: number },
-          a: { courseRef: DocumentReference<Curso>; studyPlanOrder: number }
-        ) => b.studyPlanOrder - a.studyPlanOrder
-      )
-      .map((item) => item.courseRef);
+    .sort(
+      (
+        b: { courseRef: DocumentReference<Curso>; studyPlanOrder: number },
+        a: { courseRef: DocumentReference<Curso>; studyPlanOrder: number }
+      ) => b.studyPlanOrder - a.studyPlanOrder
+    )
+    .map((item) => item.courseRef);
     let dateStartPlan: number;
     let dateEndPlan: number;
     let now = new Date();
     let hoy = +new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const hoursPermonth = (this.hoursPermonthInitForm = 0
-      ? this.student.studyHours
-      : this.hoursPermonthInitForm);
+    const hoursPermonth = (this.hoursPermonthInitForm = 0 ? this.student.studyHours : this.hoursPermonthInitForm);
     // console.log("hoursPermonth", hoursPermonth)
 
-    const userRef: DocumentReference | DocumentReference<User> =
-      this.userService.getUserRefById(this.student.uid);
+    const userRef: DocumentReference | DocumentReference<User> = this.userService.getUserRefById(this.student.uid);
     for (let i = 0; i < coursesRefs.length; i++) {
-      const courseData = this.coursesData.find(
-        (courseData) => courseData.id === coursesRefs[i].id
-      );
+      const courseData = this.coursesData.find((courseData) => courseData.id === coursesRefs[i].id);
       const courseDuration = courseData.duracion;
 
       if (this.startDateInitForm) {
-        dateStartPlan = +new Date(
-          this.startDateInitForm.year,
-          this.startDateInitForm.month - 1,
-          this.startDateInitForm.day
-        );
+        dateStartPlan = +new Date(this.startDateInitForm.year, this.startDateInitForm.month - 1, this.startDateInitForm.day);
         this.startDateInitForm = null;
       } else dateStartPlan = dateEndPlan ? dateEndPlan : hoy;
 
-      dateEndPlan = this.courseService.calculatEndDatePlan(
-        dateStartPlan,
-        courseDuration,
-        hoursPermonth
-      );
+      dateEndPlan = this.courseService.calculatEndDatePlan(dateStartPlan, courseDuration, hoursPermonth);
       //  ---------- if it already exists, activate it as studyPlan, otherwise, create it as studyPlan ----------
       const courseByStudent: CourseByStudent | null =
-        await this.courseService.getCourseByStudent(
-          userRef as DocumentReference<User>,
-          coursesRefs[i] as DocumentReference<Curso>
-        );
+        await this.courseService.getCourseByStudent(userRef as DocumentReference<User>, coursesRefs[i] as DocumentReference<Curso>);
       // console.log("courseByStudent", courseByStudent)
       if (courseByStudent) {
-        await this.courseService.setCourseByStudentActive(
-          courseByStudent.id,
-          new Date(dateStartPlan),
-          new Date(dateEndPlan)
-        );
+        await this.courseService.setCourseByStudentActive(courseByStudent.id, new Date(dateStartPlan), new Date(dateEndPlan));
       } else {
-        await this.courseService.saveCourseByStudent(
-          coursesRefs[i],
-          userRef,
-          new Date(dateStartPlan),
-          new Date(dateEndPlan),
-          false,
-          i
-        );
+        await this.courseService.saveCourseByStudent(coursesRefs[i], userRef, new Date(dateStartPlan), new Date(dateEndPlan), false, i);
       }
     }
   }
