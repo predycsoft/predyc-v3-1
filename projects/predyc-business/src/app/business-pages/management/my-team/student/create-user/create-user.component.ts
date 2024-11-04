@@ -673,7 +673,10 @@ export class CreateUserComponent {
         for (let i = 0; i < enterpriseCoursesToEnroll.length; i++) {
           const courseRef = enterpriseCoursesToEnroll[i]
           const existedCourseByStudent: CourseByStudent | null = await this.courseService.getCourseByStudent(userRef as DocumentReference<User>, courseRef);
-          if (!existedCourseByStudent) await this.courseService.saveCourseByStudent(courseRef, userRef, null, null, true, i);
+          if (!existedCourseByStudent) {
+            console.log("Enrolling enterprise course to user: ", courseRef.id)
+            await this.courseService.saveCourseByStudent(courseRef, userRef, null, null, true, i);
+          } 
         }
       }
 
@@ -705,7 +708,9 @@ export class CreateUserComponent {
 
   async createStudyPlan(uid, hoursPerMonth, profile, startDateStudy) {
     // console.log("startDateStudy", startDateStudy);
-    const coursesRefs: any[] = profile.coursesRef.sort((b: { courseRef: DocumentReference<Curso>; studyPlanOrder: number }, a: { courseRef: DocumentReference<Curso>; studyPlanOrder: number }) => b.studyPlanOrder - a.studyPlanOrder);
+    const coursesRefs: any[] = profile.coursesRef.sort(
+      (b: { courseRef: DocumentReference<Curso>; studyPlanOrder: number }, a: { courseRef: DocumentReference<Curso>; studyPlanOrder: number }) => b.studyPlanOrder - a.studyPlanOrder
+    );
     // .map((item) => item.courseRef);
     let dateStartPlan: number;
     let dateEndPlan: number;
@@ -716,6 +721,14 @@ export class CreateUserComponent {
 
     const userRef: DocumentReference | DocumentReference<User> = this.userService.getUserRefById(uid);
     for (let i = 0; i < coursesRefs.length; i++) {
+      const courseByStudent: CourseByStudent | null = await this.courseService.getCourseByStudent(userRef as DocumentReference<User>, coursesRefs[i].courseRef as DocumentReference<Curso>);
+      if (courseByStudent && courseByStudent.dateEnd) { // If it already exists and is completed, deactivate it to avoid puting it into the studyplan
+        console.log(courseByStudent.id, "is completed")
+        await this.courseService.setCourseByStudentInactive(courseByStudent.id);
+        continue
+      }
+      // console.log("Continue to studyPlan")
+
       const courseData = this.cursos.find((courseData) => courseData.id === coursesRefs[i].courseRef.id);
       const courseDuration = courseData.duracion;
 
@@ -726,12 +739,11 @@ export class CreateUserComponent {
 
       dateEndPlan = this.courseService.calculatEndDatePlan(dateStartPlan, courseDuration, hoursPermonth);
       // console.log("dates", dateStartPlan, dateEndPlan); //estoy aqui
-      //  ---------- if it already exists, activate it as studyPlan, otherwise, create it as studyPlan ----------
-      const courseByStudent: CourseByStudent | null = await this.courseService.getCourseByStudent(userRef as DocumentReference<User>, coursesRefs[i].courseRef as DocumentReference<Curso>);
+
       // console.log("courseByStudent", courseByStudent)
+      //  ---------- if it already exists, activate it as studyPlan, otherwise, create it as studyPlan ----------
       if (courseByStudent) {
-        console.log("courseByStudent already exists", courseByStudent)
-        console.log("courseByStudent.progress", courseByStudent.progress)
+        // console.log("courseByStudent already exists", courseByStudent)
         await this.courseService.setCourseByStudentActive(courseByStudent.id, new Date(dateStartPlan), new Date(dateEndPlan));
       } else {
         await this.courseService.saveCourseByStudent(coursesRefs[i].courseRef, userRef, new Date(dateStartPlan), new Date(dateEndPlan), false, i);

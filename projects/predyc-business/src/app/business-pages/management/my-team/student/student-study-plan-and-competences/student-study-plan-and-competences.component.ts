@@ -129,7 +129,8 @@ export class StudentStudyPlanAndCompetencesComponent {
             this.coursesByStudent = coursesByStudent.filter(x=>x.active && x.dateStartPlan); // active courses
             // console.log("active cousesByStudent in stduyplan", this.coursesByStudent)
             // if (!coursesByStudent[0].isExtraCourse ||) {
-            if(inactiveCourseByStudent.length>0){
+            if(inactiveCourseByStudent.length>0) {
+              this.inactiveCourses = []
               this.buildInactiveCourses(inactiveCourseByStudent,coursesData)
               // console.log('this.inactiveCourses',this.inactiveCourses)
               this.inactiveCourses.sort((a, b) => {
@@ -467,6 +468,14 @@ export class StudentStudyPlanAndCompetencesComponent {
 
     const userRef: DocumentReference | DocumentReference<User> = this.userService.getUserRefById(this.student.uid);
     for (let i = 0; i < coursesRefs.length; i++) {
+      const courseByStudent: CourseByStudent | null = await this.courseService.getCourseByStudent(userRef as DocumentReference<User>, coursesRefs[i] as DocumentReference<Curso>);      
+      if (courseByStudent && courseByStudent.dateEnd) { // If it already exists and is completed, deactivate it to avoid puting it into the studyplan
+        console.log(courseByStudent.id, "is completed")
+        await this.courseService.setCourseByStudentInactive(courseByStudent.id);
+        continue
+      }
+      // console.log("Continue to studyPlan")
+
       const courseData = this.coursesData.find((courseData) => courseData.id === coursesRefs[i].id);
       const courseDuration = courseData.duracion;
 
@@ -476,10 +485,8 @@ export class StudentStudyPlanAndCompetencesComponent {
       } else dateStartPlan = dateEndPlan ? dateEndPlan : hoy;
 
       dateEndPlan = this.courseService.calculatEndDatePlan(dateStartPlan, courseDuration, hoursPermonth);
-      //  ---------- if it already exists, activate it as studyPlan, otherwise, create it as studyPlan ----------
-      const courseByStudent: CourseByStudent | null =
-        await this.courseService.getCourseByStudent(userRef as DocumentReference<User>, coursesRefs[i] as DocumentReference<Curso>);
       // console.log("courseByStudent", courseByStudent)
+      //  ---------- if it already exists, activate it as studyPlan, otherwise, create it as studyPlan ----------
       if (courseByStudent) {
         await this.courseService.setCourseByStudentActive(courseByStudent.id, new Date(dateStartPlan), new Date(dateEndPlan));
       } else {

@@ -917,6 +917,18 @@ export class CourseService {
     console.log(`${courseByStudentId} has been activated`);
   }
 
+  async setCourseByStudentInactive(courseByStudentId: string) {
+    await this.afs.collection(CourseByStudent.collection).doc(courseByStudentId).set(
+      {
+        active: false,
+        dateStartPlan: null,
+        dateEndPlan: null,
+      },
+      { merge: true }
+    );
+    console.log(`${courseByStudentId} has been desactivated`);
+  }
+
   async setCoursesByStudentInactive(userRef: DocumentReference<User>) {
     this.afs
       .collection<CourseByStudent>(CourseByStudent.collection, (ref) =>
