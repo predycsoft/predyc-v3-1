@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CategoryService } from 'projects/predyc-business/src/shared/services/category.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import { CategoryJson } from 'projects/shared/models/category.model';
-import { combineLatest, map, Observable, of, Subscription, switchMap } from 'rxjs';
+import { combineLatest, map, Observable, of, Subscription, switchMap, take } from 'rxjs';
 import { DialogPillarsFormComponent } from '../dialog-pillars-form/dialog-pillars-form.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EnterpriseService } from 'projects/predyc-business/src/shared/services/enterprise.service';
@@ -85,9 +85,10 @@ export class PillarsListComponent {
       this.categoriesService.getAllCategories$(),
       this.skillService.getSkillsObservable(),
       this.courseService.getCoursesObservable(),
-    ]).pipe(
+    ])
+    .pipe(
       switchMap(([categories, skills, courses]) => {
-        if (categories.length === 0) return of([]);
+        if (categories.length === 0)  return of([]);
   
         const categoriesWithSkills = this.getCategoriesWithSkills(categories, skills);
   
@@ -112,9 +113,10 @@ export class PillarsListComponent {
             });
         });
         return combineLatest(categoriesInList$);
-      })
+      }),
+      take(2),
     ).subscribe(categoryInList => {
-      // console.log("categoryInList", categoryInList)
+      console.log("categoryInList", categoryInList)
       this.paginator.pageIndex = page - 1;
       this.dataSource.data = categoryInList;
       this.totalLength = categoryInList.length;
