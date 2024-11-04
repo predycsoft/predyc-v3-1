@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Subscription, combineLatest, firstValueFrom } from 'rxjs';
+import { Subscription, combineLatest, firstValueFrom, take } from 'rxjs';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import { QuestionService } from 'projects/predyc-business/src/shared/services/question.service';
 import { InstructorsService } from 'projects/predyc-business/src/shared/services/instructors.service';
@@ -81,14 +81,17 @@ export class QuestionsListComponent {
   oneDay = 24*60*60*1000
 
   ngOnInit() {
-    if(this.origin == 'admin'){
+    if(this.origin == 'admin') {
       this.combinedServicesSubscription = combineLatest(
         [ 
           this.questionService.getAllQuestions$(),
           this.instructorService.getInstructors$(),
         ]
-      ).
-      subscribe(([ questions, instructors]) => {
+      )
+      .pipe(take(1))
+      .subscribe(([questions, instructors]) => {
+        // console.log("questions", questions)
+        // console.log("instructors", instructors)
         this.instructors = instructors
         this.questions = questions.filter(x => !x.respondidaAI)
         this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
@@ -103,8 +106,9 @@ export class QuestionsListComponent {
         [ 
           this.questionService.getAllQuestionsByInstructor$(this.instructor.ref),
         ]
-      ).
-      subscribe(([questions]) => {
+      )
+      .pipe(take(1))
+      .subscribe(([questions]) => {
         this.instructors = [this.instructor]
         this.questions = questions.filter(x => !x.respondidaAI)
 
@@ -115,10 +119,7 @@ export class QuestionsListComponent {
           this.performSearch(searchTerm, page);
         })
       })
-
     }
-
-
   }
 
 
@@ -128,7 +129,8 @@ export class QuestionsListComponent {
   }
 
   performSearch(searchTerm:string, page: number) {
-    this.courseSubscription = this.courseService.getAllCourses$(this.instructor?.ref).subscribe(courses => {
+    this.courseSubscription = this.courseService.getAllCourses$(this.instructor?.ref).pipe(take(1)).subscribe(courses => {
+      console.log("courses", courses)
       const dataInList: any[] = courses.map(course => {
 
         // console.log(this.instructors,course)
