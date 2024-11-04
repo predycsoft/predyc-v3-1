@@ -2,7 +2,7 @@ import { Component, Input, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Subscription, combineLatest, firstValueFrom } from 'rxjs';
+import { Subscription, combineLatest, firstValueFrom, take } from 'rxjs';
 import { chargeData } from 'projects/predyc-business/src/assets/data/charge.data';
 import { Charge, ChargeJson } from 'projects/shared/models/charges.model';
 import { Enterprise } from 'projects/shared/models/enterprise.model';
@@ -61,21 +61,30 @@ export class CertificationsListComponent {
 
   ngOnInit() {
 
-    this.combinedServicesSubscription = combineLatest(
-      [ 
-        this.productService.getProducts$(), 
-        this.userService.getAllUsers$(),
-        this.enterpriseService.getAllEnterprises$(),
-      ]
-    ).
-    subscribe(([ products, users, enterprises]) => {
-      // this.products = products
-      // this.users = users
-      // this.enterprises = enterprises
+    // this.combinedServicesSubscription = combineLatest(
+    //   [ 
+    //     this.productService.getProducts$(), 
+    //     this.userService.getAllUsers$(),
+    //     this.enterpriseService.getAllEnterprises$(),
+    //   ]
+    // ).
+    // subscribe(([ products, users, enterprises]) => {
+    //   // this.products = products
+    //   // this.users = users
+    //   // this.enterprises = enterprises
+    //   this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
+    //     const page = Number(params['page']) || 1;
+    //     const searchTerm = params['search'] || '';
+    //     this.performSearch(searchTerm, page);
+    //   })
+    // })
+
+    this.chargeSubscription = this.activityClassesService.getActivityCertifications().pipe(take(1)).subscribe(charges => {
+
       this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
         const page = Number(params['page']) || 1;
         const searchTerm = params['search'] || '';
-        this.performSearch(searchTerm, page);
+        this.performSearch(charges, searchTerm, page);
       })
     })
   }
@@ -86,16 +95,13 @@ export class CertificationsListComponent {
     this.dataSource.paginator.pageSize = this.pageSize;
   }
 
-  performSearch(searchTerm:string, page: number) {
-    this.chargeSubscription = this.activityClassesService.getActivityCertifications().subscribe(charges => {
+  performSearch(charges: any, searchTerm: string, page: number) {
       // console.log('datos',charges)
-      const chargesInList = charges
-      const filteredCharges = chargesInList
+      const filteredCharges = charges
       this.paginator.pageIndex = page - 1;
       console.log('data',filteredCharges)
       this.dataSource.data = filteredCharges
       this.totalLength = filteredCharges.length;
-    })
   }
 
   onPageChange(page: number): void {
