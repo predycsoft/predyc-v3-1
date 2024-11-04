@@ -2,7 +2,7 @@ import { Component, Input, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Subscription, combineLatest, firstValueFrom } from 'rxjs';
+import { Subscription, combineLatest, firstValueFrom, take } from 'rxjs';
 import { Charge } from 'projects/shared/models/charges.model';
 import { Enterprise } from 'projects/shared/models/enterprise.model';
 import { Product } from 'projects/shared/models/product.model';
@@ -59,9 +59,8 @@ export class DiplomadosListComponent {
 
   ngOnInit() {
 
-
-    this.activitySubscription = this.activityClassesService.getActivityCertifications().subscribe(activities => {
-      console.log('activities',activities)
+    this.activitySubscription = this.activityClassesService.getActivityCertifications().pipe(take(1)).subscribe(activities => {
+      // console.log('activities',activities)
       this.activities = activities;
       this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
         const page = Number(params['page']) || 1;
@@ -79,8 +78,8 @@ export class DiplomadosListComponent {
   }
 
   performSearch(searchTerm:string, page: number) {
-    this.chargeSubscription = this.diplomadoService.getDiplomados$().subscribe(diplomados => {
-      console.log('diplomados',diplomados)
+    this.chargeSubscription = this.diplomadoService.getDiplomados$().pipe(take(1)).subscribe(diplomados => {
+      // console.log('diplomados',diplomados)
       const chargesInList = diplomados
       const filteredCharges = chargesInList
       this.paginator.pageIndex = page - 1;
