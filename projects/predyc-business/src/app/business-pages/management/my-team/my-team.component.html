@@ -45,7 +45,7 @@
     </div>
     <div fxLayout="row">
         <div class=" fw vh50" >
-            <app-student-list (onStudentSelected)="onStudentSelected($event)" (studentsOnList)="usersOnListProcess($event)"/>
+            <app-student-list (onStudentSelected)="onStudentSelected($event)" (studentsOnList)="usersOnListProcess($event)" [newUser]="newUser"/>
         </div>
         <div *ngIf="false" class="w-20 pdl15 " fxLayout="column" fxLayoutGap="15px" style="margin-top: -40px;">
 

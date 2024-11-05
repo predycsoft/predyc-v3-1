@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
@@ -56,7 +56,7 @@ export class StudentListComponent {
 
   @Input() origen: string = 'enterprise'
   @Input() enterpriseRef: any = null
-
+  @Input() newUser: any = null;
 
 
   queryParamsSubscription: Subscription
@@ -84,6 +84,27 @@ export class StudentListComponent {
     private _snackBar: MatSnackBar,
     private enterpriseService: EnterpriseService,
   ) {}
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.newUser && changes.newUser.currentValue) {
+      let newUser = changes.newUser.currentValue
+      newUser.profile = (this.profiles.find(x => x.id === newUser.profile)).name
+      newUser.mail = newUser.email
+      newUser.phone = newUser.phoneNumber
+      newUser.dateStartPlan = new Date(newUser.dateStartPlan).getTime()
+      newUser.dateEndPlan = new Date(newUser.startDateStudy).getTime()
+      newUser.rhythm = 'SinLicencia'
+      newUser.status = 'inactive'
+      newUser.ratingPoints = newUser.profile ? 0 : null
+      newUser.activityStatusText = "Sin inicio sesión"
+
+      this.dataSource.data.push(newUser)
+      this.dataSource.data = this.dataSource.data.sort((a, b) => {
+        return a.displayName.toLowerCase().localeCompare(b.displayName.toLowerCase());
+      });
+      // console.log(newUser.displayName, " added")
+    }
+  }
 
   ngOnInit() {
 
@@ -787,6 +808,8 @@ export class StudentListComponent {
       }
 
       this.appySort(sortOrder,users)
+
+      console.log("users", users)
 
       this.paginator.pageIndex = page - 1;
       this.dataSource.data = users;

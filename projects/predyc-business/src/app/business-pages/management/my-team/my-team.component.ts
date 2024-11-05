@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
@@ -18,6 +18,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['./my-team.component.css'],
 })
 export class MyTeamComponent {
+  
   constructor(
     private activatedRoute: ActivatedRoute,
     public icon: IconService,
@@ -37,6 +38,7 @@ export class MyTeamComponent {
   private queryParamsSubscription: Subscription
 
   filter = false
+  newUser = null
 
   async ngOnInit() {
     
@@ -105,6 +107,12 @@ export class MyTeamComponent {
         keyboard: false 
       })
       if (!isNewUser) modalRef.componentInstance.studentToEdit = student;
+      modalRef.result.then(async result => {
+        // console.log("result", result)
+        this.newUser = result
+      }).catch(error => {
+        console.log(error)
+      })
       return modalRef
     }
     else return null
