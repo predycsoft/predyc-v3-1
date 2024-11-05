@@ -45,10 +45,7 @@ export class CreateInstructorComponent {
     private courseService: CourseService,
     private fireFunctions: AngularFireFunctions,
 
-  ) 
-  {
-
-  }
+  ) {}
 
   @Input() instructorToEdit: any | null = null;
   @Input() enterpriseRef: DocumentReference<Enterprise> | null = null;
@@ -161,17 +158,11 @@ export class CreateInstructorComponent {
 
       this.activeModal.close(this.instructorForm.value);
       this.alertService.succesAlert("Instructor guardado exitosamente");
-
-
     }
     else{
       console.log(this.instructorForm)
       this.displayErrors = true
     }
-
-
-
-
   }
 
   ngOnInit(): void {

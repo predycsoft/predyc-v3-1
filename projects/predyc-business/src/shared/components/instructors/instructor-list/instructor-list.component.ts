@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core
 import { MatPaginator } from '@angular/material/paginator';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
-import { combineLatest, filter, forkJoin, map, merge, mergeMap, Observable, of, Subscription, switchMap, take } from 'rxjs';
+import { combineLatest, filter, firstValueFrom, forkJoin, map, merge, mergeMap, Observable, of, Subscription, switchMap, take } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 import { Curso } from 'projects/shared/models/course.model';
@@ -17,6 +17,7 @@ import { InstructorsService } from '../../../services/instructors.service';
 import { LiveCourseService } from '../../../services/live-course.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CreateInstructorComponent } from '../create-instructor/create-instructor.component';
+import { LiveCourse } from 'projects/shared/models/live-course.model';
 
 interface User {
   displayName: string,
@@ -66,6 +67,7 @@ export class InstructorListComponent {
   profiles: Profile[] = []
   departments: Department[] = []
   courses: Curso[] = []
+  liveCourses: LiveCourse[] = []
   first = true
   profilefilter;
   profilefilterOld;
@@ -106,17 +108,19 @@ export class InstructorListComponent {
     })
   }
 
-
-
   ngOnInit() {
-
-    // this.loadInstructor()
-
+    // this.loadInstructors()
   }
 
-  loadInstructor(){
+
+  async loadInstructors(){
     this.first = true
     this.dataSource.paginator = this.paginator;
+
+    this.courses = await firstValueFrom(this.courseService.getCourses$())
+    this.liveCourses = await firstValueFrom(this.liveCourseService.getAllLiveCourses$())
+    // console.log("liveCourses", this.liveCourses)
+    // console.log("courses", this.courses)
 
     this.enterpriseService.enterpriseLoaded$.subscribe(async isLoaded => {
       if (isLoaded) {
@@ -129,38 +133,25 @@ export class InstructorListComponent {
           }
           else{
             this.performSearchLocal(searchTerm,page)
-    
           }
         })
-
-
       }
-      
     })
   }
 
   instructorsSubscription: Subscription
-
 
   performSearch(searchTerm: string, page: number, sortOrder?) {
 
     this.paginator.pageIndex = page - 1;
     this.dataSource.data = [];
     this.totalLength = 0;
-    this.instructorsSubscription = combineLatest(
-      [
-        this.instructorsService.getInstructorsObservable(),
-        this.courseService.getCourses$(),
-        this.liveCourseService.getAllLiveCourses$()
-      ]
-    )
-    .pipe(take(1))
-    .subscribe(([instructores, cursos, cursosEnVivo] ) => {
+    this.instructorsSubscription = this.instructorsService.getInstructorsObservable()
+    // .pipe(take(1))
+    .subscribe((instructores) => {
       // console.log("instructores", instructores)
-      // console.log("cursos", cursos)
-      // console.log("cursosEnVivo", cursosEnVivo)
       
-      cursos.forEach(curso => {
+      this.courses.forEach(curso => {
         if(! curso['instructorId']){
           curso['instructorId'] = curso.instructorRef.id
         }
@@ -168,7 +159,7 @@ export class InstructorListComponent {
         delete curso.enterpriseRef
         delete curso.skillsRef
       });
-      cursosEnVivo.forEach(curso => {
+      this.liveCourses.forEach(curso => {
         if(! curso['instructorId']){
           curso['instructorId'] = curso.instructorRef.id
         }
@@ -189,8 +180,8 @@ export class InstructorListComponent {
           resumen:instructor.resumen,
           descripcion:instructor.descripcion,
           foto:instructor.foto,
-          courses:cursos.filter(x=>x['instructorId']== instructor.id),
-          liveCourses:cursosEnVivo.filter(x=>x['instructorId'] == instructor.id),
+          courses:this.courses.filter(x=>x['instructorId']== instructor.id),
+          liveCourses:this.liveCourses.filter(x=>x['instructorId'] == instructor.id),
           experienciaLaboral:instructor?.experienciaLaboral,
           destrezas:instructor?.destrezas,
           certificacion:instructor?.certificacion,
@@ -213,13 +204,8 @@ export class InstructorListComponent {
       this.dataSource.data = instructores;
       this.totalLength = instructores.length;
       this.first = false
-
-          
     })
-
   }
-
-  
 
   performSearchLocal(searchTerm: string, page: number,sortOrder?) {
 
@@ -235,18 +221,13 @@ export class InstructorListComponent {
     this.dataSource.data = instructores; // Assuming the data is in 'items'
     this.totalLength = instructores.length; // Assuming total length is returned
     this.first = false
-
-
-
-    
   }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.paginator.pageSize = this.pageSize;
 
-    this.loadInstructor()
-
+    this.loadInstructors()
   }
 
 
