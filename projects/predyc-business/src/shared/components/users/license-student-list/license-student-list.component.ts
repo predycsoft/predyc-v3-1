@@ -1,12 +1,5 @@
 import { SelectionModel } from "@angular/cdk/collections";
-import {
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-  SimpleChanges,
-  ViewChild,
-} from "@angular/core";
+import { Component, EventEmitter, Input, Output, SimpleChanges, ViewChild } from "@angular/core";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -103,12 +96,10 @@ export class LicenseStudentListComponent {
   firstRedirectToActive: boolean = false;
 
   async performSearch(searchTerm: string, page: number, statusFilter: string) {
-    if (this.userServiceSubscription) {
-      this.userServiceSubscription.unsubscribe();
-    }
+    if (this.userServiceSubscription) { this.userServiceSubscription.unsubscribe(); }
 
-    let response = await firstValueFrom(this.userService.getUsers$(searchTerm, null, statusFilter))
-    // this.userServiceSubscription = this.userService.getUsers$(searchTerm, null, statusFilter).subscribe((response) => {
+    // let response = await firstValueFrom(this.userService.getUsers$(searchTerm, null, statusFilter))
+    this.userServiceSubscription = this.userService.getUsers$(searchTerm, null, statusFilter).subscribe((response) => {
         // console.log('statusFilter',statusFilter)
         if(statusFilter == 'all'){
           response = response
@@ -162,7 +153,7 @@ export class LicenseStudentListComponent {
         this.dataSource.data = users; // Assuming the data is in 'items'
         // // this.paginator.length = response.count; // Assuming total length is returned
         this.totalLength = response.length; // Assuming total length is returned
-    // });
+    });
   }
 
   onPageChange(page: number): void {
