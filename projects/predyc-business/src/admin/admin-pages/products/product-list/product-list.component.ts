@@ -40,12 +40,14 @@ export class ProductListComponent {
 
 	templateNewProduct = Product.fromJson(Product.newProduct) as Product;
 
-	async ngOnInit() {
-		const products = await firstValueFrom(this.productService.getProducts$())
-		this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe((params) => {
-			const page = Number(params["page"]) || 1;
-			this.performSearch(page, products);
+	ngOnInit() {
+		this.productSubscription = this.productService.getProducts$().subscribe((products) => {
+			this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe((params) => {
+				const page = Number(params["page"]) || 1;
+				this.performSearch(page, products);
+			});
 		});
+
 	}
 
 	ngAfterViewInit() {
