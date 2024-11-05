@@ -3,6 +3,7 @@ import {
   EventEmitter,
   Input,
   Output,
+  SimpleChanges,
   ViewChild,
 } from "@angular/core";
 import { MatPaginator } from "@angular/material/paginator";
@@ -55,6 +56,7 @@ export class AdminStudentListComponent {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @Input() enableNavigateToUser: boolean = true;
+  @Input() newUser: any = null;
   @Output() onStudentSelected = new EventEmitter<UserInList>();
   @Output() totalUsers = new EventEmitter<any>();
 
@@ -79,6 +81,17 @@ export class AdminStudentListComponent {
     private productService: ProductService,
 
   ) {}
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.newUser && changes.newUser.currentValue) {
+      const newUser = changes.newUser.currentValue
+      this.dataSource.data.push(newUser)
+      this.dataSource.data = this.dataSource.data.sort((a, b) => {
+        return a.displayName.toLowerCase().localeCompare(b.displayName.toLowerCase());
+      });
+      // console.log(newUser.displayName, " added")
+    }
+  }
 
   async ngOnInit() {
     const enterprises = await firstValueFrom(this.enterpriseService.getAllEnterprises$())

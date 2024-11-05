@@ -36,6 +36,6 @@
   </div>
   <!-- student list -->
   <div fxLayout="columm" fxLayoutAlign="center center" class="fw vh50 pdr20">
-    <app-admin-student-list class="fw" (totalUsers)="getUsers($event)" (onStudentSelected)="onStudentSelected($event)"></app-admin-student-list>
+    <app-admin-student-list class="fw" (totalUsers)="getUsers($event)" (onStudentSelected)="onStudentSelected($event)" [newUser]="newUser"></app-admin-student-list>
   </div>
 </div>

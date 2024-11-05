@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core
 import { MatPaginator } from '@angular/material/paginator';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
-import { combineLatest, filter, firstValueFrom, forkJoin, map, merge, mergeMap, Observable, of, Subscription, switchMap } from 'rxjs';
+import { combineLatest, filter, firstValueFrom, forkJoin, map, merge, mergeMap, Observable, of, Subscription, switchMap, take } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 import { Curso } from 'projects/shared/models/course.model';
@@ -501,7 +501,8 @@ export class StudentListComponent {
           });
         });
         return Promise.all(userTestObservables);
-      })
+      }),
+      take(1)
     ).subscribe(response => {
       let actStatus = ['Sin inicio sesión']
       let groupedLastActivityArray = ['Más de 30 días']

@@ -47,9 +47,9 @@ export class ArticlesComponent {
     ])
     .pipe(take(1))
     .subscribe(([articles, authors, tags]) => {
-      console.log("articles", articles)
-      console.log("authors", authors)
-      console.log("tags", tags)
+      // console.log("articles", articles)
+      // console.log("authors", authors)
+      // console.log("tags", tags)
       this.articles = articles
       this.tags = tags
 

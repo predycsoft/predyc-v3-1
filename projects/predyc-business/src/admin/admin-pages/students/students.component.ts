@@ -25,6 +25,8 @@ export class StudentsComponent {
     usuariosTotales: 0,
   };
 
+  newUser = null
+
   getUsers(users) {
     // console.log("usersGet", users);
     // Usuarios Activos
@@ -62,6 +64,14 @@ export class StudentsComponent {
       });
       if (!isNewUser) modalRef.componentInstance.studentToEdit = student;
       else modalRef.componentInstance.isParticularStudent = true;
+
+      modalRef.result.then(async result => {
+        // console.log("result", result)
+        this.newUser = result
+      }).catch(error => {
+        console.log(error)
+      })
+
       return modalRef;
     } else return null;
   }
