@@ -33,9 +33,10 @@ export const MAIN_TITLE = "Predyc Admin - ";
 
 const routes: Routes = [
   // { path: "", title: MAIN_TITLE + "home", component: HomeComponent },
+  { path: '', redirectTo: 'students', pathMatch: 'full' },
+  { path: "enterprises", title: MAIN_TITLE + "Empresas", component: EnterpriseComponent },
   { path: "students", title: MAIN_TITLE + "Estudiantes", component: StudentsComponent },
   { path: "students/:uid", title: MAIN_TITLE + "Estudiantes", component: StudentDetailComponent },
-  { path: "", title: MAIN_TITLE + "Empresas", component: EnterpriseComponent },
   { path: "enterprises/form", title: MAIN_TITLE + "Empresas", component: EnterpriseDetailComponent },
   { path: "enterprises/form/:id", title: MAIN_TITLE + "Empresas", component: EnterpriseDetailComponent },
   { path: "products", title: MAIN_TITLE + "Productos", component: ProductsComponent },
