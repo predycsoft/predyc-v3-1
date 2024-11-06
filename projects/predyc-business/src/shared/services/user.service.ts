@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { User, UserJson } from "projects/shared/models/user.model";
 import { AngularFirestore, CollectionReference, DocumentReference, Query } from "@angular/fire/compat/firestore";
-import { BehaviorSubject, combineLatest, filter, firstValueFrom, map, Observable, of, shareReplay, Subscription, switchMap, take,} from "rxjs";
+import { BehaviorSubject, combineLatest, filter, firstValueFrom, map, merge, Observable, of, shareReplay, Subscription, switchMap, take,} from "rxjs";
 import { Subscription as SubscriptionClass } from "projects/shared/models/subscription.model";
 import { EnterpriseService } from "./enterprise.service";
 import { AlertsService } from "./alerts.service";
@@ -695,6 +695,51 @@ export class UserService {
     );
   }
 
+  async getFilteredUsers(searchTerm = null): Promise<User[]> {
+  
+    let finalDisplayNameQuery;
+    let finalEmailQuery;
+  
+    if (searchTerm) {
+      finalDisplayNameQuery = this.afs.collection<User>(User.collection).ref
+        .where("displayName", ">=", searchTerm)
+        .where("displayName", "<=", searchTerm + "\uf8ff");
+  
+      finalEmailQuery = this.afs.collection<User>(User.collection).ref
+        .where("email", ">=", searchTerm)
+        .where("email", "<=", searchTerm + "\uf8ff");
+    }
+  
+    // if (statusFilter) {
+    //   switch (statusFilter) {
+    //     case SubscriptionClass.STATUS_ACTIVE:
+    //       finalDisplayNameQuery = finalDisplayNameQuery.where("status", "==", SubscriptionClass.STATUS_ACTIVE);
+    //       finalEmailQuery = finalEmailQuery.where("status", "==", SubscriptionClass.STATUS_ACTIVE);
+    //       break;
+    //     case SubscriptionClass.STATUS_INACTIVE:
+    //       finalDisplayNameQuery = finalDisplayNameQuery.where("status", "==", SubscriptionClass.STATUS_INACTIVE);
+    //       finalEmailQuery = finalEmailQuery.where("status", "==", SubscriptionClass.STATUS_INACTIVE);
+    //       break;
+    //   }
+    // }
+  
+    const displayNameSnapshot = await finalDisplayNameQuery.get();
+    const emailSnapshot = await finalEmailQuery.get();
+    // console.log("displayName users", displayNameSnapshot.docs.map(doc => doc.data() as User))
+    // console.log("email users", emailSnapshot.docs.map(doc => doc.data() as User))
+  
+    const allUsers = [
+      ...displayNameSnapshot.docs.map(doc => doc.data() as User),
+      ...emailSnapshot.docs.map(doc => doc.data() as User)
+    ].sort((a, b) => {
+      return a.displayName.localeCompare(b.displayName);
+    });    
+  
+    // Remove duplicates by `uid`
+    const uniqueUsersMap = new Map(allUsers.map(user => [user.uid, user]));
+    return Array.from(uniqueUsersMap.values());
+  }
+  
   getUsersReport$(
     searchTerm = null,
     profileFilter = null,

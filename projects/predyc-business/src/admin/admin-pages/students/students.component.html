@@ -1,5 +1,14 @@
 <div class="mgt20 mgl20 mgr20">
-  <p class="ft600 ft16 gray-10">Usuarios</p>
+  <div fxLayout="row" fxLayoutAlign="space-between center" class="">
+    <p class="ft600 ft16 gray-10">Usuarios</p>
+    <div fxLayout="row" fxLayoutAlign="start center" class="">
+      <span class="pdr03">Selecciona el tipo de tabla que deseas cargar:</span>
+        <select [(ngModel)]="view">
+            <option [ngValue]="0">Usuarios por buscador</option>
+            <option [ngValue]="1">Todos los usuarios</option>
+        </select>
+    </div>
+  </div>
   <div fxLayout="row" fxLayoutAlign="space-between center" class="mgb05">
     <div class="radius10 shadowLight pdt10 cards" alt="stats-users" fxLayoutAlign="center center" fxLayout="column" style="height: 10vh; background-color: rgba(244, 244, 244, 0.362)">
       <div fxLayout="row" class="mgb08" fxLayoutAlign="center center">
@@ -35,7 +44,10 @@
     </div>
   </div>
   <!-- student list -->
-  <div fxLayout="columm" fxLayoutAlign="center center" class="fw vh50 pdr20">
-    <app-admin-student-list class="fw" (totalUsers)="getUsers($event)" (onStudentSelected)="onStudentSelected($event)" [newUser]="newUser"></app-admin-student-list>
+  <div fxLayout="column" fxLayoutAlign="center center" class="fw vh50 pdr20">
+    <app-admin-student-list-light *ngIf="view === 0" class="fw" (totalUsers)="getUsers($event)" (onStudentSelected)="onStudentSelected($event)" [newUser]="newUser"></app-admin-student-list-light>
+  </div>
+  <div fxLayout="column" fxLayoutAlign="center center" class="fw vh50 pdr20">
+    <app-admin-student-list *ngIf="view === 1" class="fw" (totalUsers)="getUsers($event)" (onStudentSelected)="onStudentSelected($event)" [newUser]="newUser"></app-admin-student-list>
   </div>
 </div>

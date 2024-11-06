@@ -1,10 +1,5 @@
 import { Injectable } from "@angular/core";
-import {
-  AngularFirestore,
-  CollectionReference,
-  DocumentReference,
-  Query,
-} from "@angular/fire/compat/firestore";
+import { AngularFirestore, CollectionReference, DocumentReference, Query, QuerySnapshot,} from "@angular/fire/compat/firestore";
 import { EnterpriseService } from "./enterprise.service";
 import {
   Subscription,
@@ -46,6 +41,33 @@ export class SubscriptionService {
         .valueChanges()
     );
   }
+
+  async getUsersSubscriptions(usersRef: DocumentReference<User>[]): Promise<Subscription[]> {
+    if (usersRef.length === 0) {
+      return []; // Return early if there are no user references
+    }
+  
+    // Break `usersRef` into chunks of 10 to respect Firestore's `in` limit
+    const userRefChunks: DocumentReference<User>[][] = [];
+    for (let i = 0; i < usersRef.length; i += 10) {
+      userRefChunks.push(usersRef.slice(i, i + 10));
+    }
+  
+    // Fetch subscriptions for each chunk in parallel
+    const subscriptionPromises = userRefChunks.map(async (usersRefsChunk) => {
+      // const userRefIds = usersRefsChunk.map(ref => ref.id);
+      const snapshot: QuerySnapshot<Subscription> = await this.afs.collection<Subscription>(Subscription.collection).ref
+        .where("userRef", "in", usersRefsChunk).orderBy("createdAt", "desc")
+        .get();
+        
+      return snapshot.docs.map(doc => ({ ...doc.data() } as Subscription));
+    });
+  
+    const subscriptionsArray = await Promise.all(subscriptionPromises);
+    return subscriptionsArray.flat();
+  }
+  
+  
 
   getSubscriptions$(): Observable<Subscription[]> {
     return this.afs

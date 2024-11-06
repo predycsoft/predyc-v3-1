@@ -25,13 +25,12 @@ interface UserInList {
   fechaVencimiento:number;
   productName:string
 }
-
 @Component({
-  selector: "app-admin-student-list",
-  templateUrl: "./admin-student-list.component.html",
-  styleUrls: ["./admin-student-list.component.css"],
+  selector: 'app-admin-student-list-light',
+  templateUrl: './admin-student-list-light.component.html',
+  styleUrls: ['./admin-student-list-light.component.css']
 })
-export class AdminStudentListComponent {
+export class AdminStudentListLightComponent {
   displayedColumns: string[] = [
     "displayName",
     // 'email',
@@ -63,6 +62,10 @@ export class AdminStudentListComponent {
 
   productSubscription
   products
+  searchTerm
+  users
+  previousSearchTerm: string = "";
+  usersInList: UserInList[] = [];
   
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -72,42 +75,59 @@ export class AdminStudentListComponent {
     private enterpriseService: EnterpriseService,
     private subscriptionService: SubscriptionService,
     private productService: ProductService,
-
   ) {}
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes.newUser && changes.newUser.currentValue) {
-      const newUser = changes.newUser.currentValue
-      this.dataSource.data.push(newUser)
-      this.dataSource.data = this.dataSource.data.sort((a, b) => {
-        return a.displayName.toLowerCase().localeCompare(b.displayName.toLowerCase());
-      });
-      // console.log(newUser.displayName, " added")
-    }
-  }
 
   async ngOnInit() {
-    console.log("All users")
+    console.log("Users by searchbar")
     const enterprises = await firstValueFrom(this.enterpriseService.getAllEnterprises$())
     this.enterprises = enterprises;
 
     const products = await firstValueFrom(this.productService.getProducts$())
     this.products = products
 
-    this.combinedSubscription = combineLatest([
-      this.userService.getAllUsers$(),
-      this.subscriptionService.getSubscriptions$()
-    ]).pipe(take(1))
-    .subscribe(([users, subscriptions]) => {
-      console.log("users in all users table", users)
-      // console.log("subscriptions", subscriptions)
-      // Map each subscription to its user
-      const userSubscriptionsMap = subscriptions.reduce((acc, sub) => {
+    this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe((params) => {
+      const page = Number(params["page"]) || 1; 
+      this.searchTerm = params["search"] || "";
+      const statusTerm = params["status"] || "";
+      
+      if (this.searchTerm) {
+        this.performSearch(this.searchTerm, statusTerm, page);
+      } else {
+        this.paginator.pageIndex = page - 1;
+        this.dataSource.data = [];
+        this.totalLength = 0;
+      }
+    });
+
+
+  }
+
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.paginator.pageSize = this.pageSize;
+  }
+  
+  async performSearch(searchTerm: string, statusTerm: string, page: number) {
+
+    if (searchTerm !== this.previousSearchTerm) {
+      this.previousSearchTerm = searchTerm;
+
+      this.users = await this.userService.getFilteredUsers(searchTerm)
+      // if (this.userServiceSubscription) this.userServiceSubscription.unsubscribe()
+      // this.userServiceSubscription = this.userService.getFilteredUsers$(searchTerm, null, statusTerm).subscribe(users => {
+      console.log("this.users", this.users)
+  
+      const usersRef = this.users.map(x => this.userService.getUserRefById(x.uid))
+      const usersSubscriptions = await this.subscriptionService.getUsersSubscriptions(usersRef)
+      console.log("usersSubscriptions", usersSubscriptions)
+
+      const userSubscriptionsMap = usersSubscriptions.reduce((acc, sub) => {
         (acc[sub.userRef.id] = acc[sub.userRef.id] || []).push(sub);
         return acc;
       }, {});
-
-      const response: any = users.map(user => ({
+  
+      const response: any = this.users.map(user => ({
         user,
         subscriptions: userSubscriptionsMap[user.uid] || []
       }));
@@ -115,7 +135,7 @@ export class AdminStudentListComponent {
       let today = new Date()
       let todayTime = today.getTime()
   
-      let usersInList: UserInList[] = response
+      this.usersInList = response
       .map(({ user, subscriptions }) => {
         const enterprise = this.enterprises.find(
           (enterprise) => enterprise.id === user.enterprise?.id
@@ -180,55 +200,32 @@ export class AdminStudentListComponent {
           productName:subscriptionWithLatestEndPeriod?.product.name?subscriptionWithLatestEndPeriod?.product.name:'N/A',
         };
       })
-      this.totalUsers.emit(usersInList);
+      this.totalUsers.emit(this.usersInList);
   
-      this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe((params) => {
-        const page = Number(params["page"]) || 1;
-        const searchTerm = params["search"] || "";
-        const statusTerm = params["status"] || "";
-        this.performSearch(searchTerm,statusTerm, page, usersInList);
-      });
-    })
-  }
-
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.paginator.pageSize = this.pageSize;
-  }
-  
-  performSearch(searchTerm: string, statusTerm:string, page: number, usersInList: UserInList[]) {
-    if (searchTerm) {
-      usersInList = usersInList.filter((x) => {
-        return (
-          x.displayName.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase()) ||
-          x.email.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
-        );
-      })
+      // })
     }
 
-    // console.log('statusTerm',statusTerm)
-    if (statusTerm && statusTerm!='all') {
-      let filter = 'x.statusId == statusTerm'
-
-      if (statusTerm == 'active') {
-        filter = filter+" || x.statusId == 'expired'"
-      }
-
-      usersInList = usersInList.filter((x) => {
+    // Apply status filtering and pagination
+    let filteredUsers = [...this.usersInList];
+    if (statusTerm && statusTerm !== 'all') {
+      filteredUsers = filteredUsers.filter((x) => {
         if (statusTerm === 'particular') {
           return !x.enterprise;
         } else if (statusTerm === 'enterprise') {
           return x.enterprise;
+        } else if (statusTerm === 'active') {
+          return x.statusId === SubscriptionClass.STATUS_ACTIVE || x.statusId === SubscriptionClass.STATUS_EXPIRED;
         } else {
-          return eval(filter);
+          return x.statusId === statusTerm;
         }
-      })
-      
+      });
     }
-    console.log("usersInList", usersInList)
+
+    // Update the paginator and dataSource with filtered results
     this.paginator.pageIndex = page - 1;
-    this.dataSource.data = usersInList;
-    this.totalLength = usersInList.length;
+    this.dataSource.data = filteredUsers;
+    this.totalLength = filteredUsers.length;
+
   }
 
 

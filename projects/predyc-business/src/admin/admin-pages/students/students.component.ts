@@ -25,6 +25,7 @@ export class StudentsComponent {
     usuariosTotales: 0,
   };
 
+  view = 0
   newUser = null
 
   getUsers(users) {
