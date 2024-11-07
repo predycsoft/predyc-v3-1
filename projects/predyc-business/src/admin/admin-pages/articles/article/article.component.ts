@@ -7,7 +7,7 @@ import { ArticleService } from "projects/predyc-business/src/shared/services/art
 import { IconService } from "projects/predyc-business/src/shared/services/icon.service";
 import Quill from "quill";
 import BlotFormatter from "quill-blot-formatter/dist/BlotFormatter";
-import { Observable, Subscription, combineLatest, firstValueFrom, map, startWith, switchMap, take } from "rxjs";
+import { Observable, Subscription, combineLatest, finalize, firstValueFrom, map, startWith, switchMap, take } from "rxjs";
 import Swal from "sweetalert2";
 import { ArticleData } from "../articles.component";
 import { Author } from "projects/shared/models/author.model";
@@ -178,6 +178,7 @@ export class ArticleComponent {
   ) {}
 
   articleId = this.route.snapshot.paramMap.get("articleId");
+  uploadProgress$: Observable<number>;
 
   format: "object" | "html" | "text" | "json" = "object";
   modules = {
@@ -222,8 +223,13 @@ export class ArticleComponent {
   coursesSubscription: Subscription
 
   selectedFile: File | null = null;
+  selectedFileFreebi: File | null = null;
+
   pastPreviewImage: string | null = null; //To check if the photo has been changed
   previewImage: string | ArrayBuffer | null = null;
+
+  pastPreviewImageFreebi: string | null = null; //To check if the photo has been changed
+  previewImageFreebi: string | ArrayBuffer | null = null;
 
   allTags: ArticleTagJson[] = [];
   tagsForm = new FormControl();
@@ -257,6 +263,9 @@ export class ArticleComponent {
   summaryMaxLength = 141
   metaDescriptionMaxLength = 141
   maxOrderNumber: number
+
+  freebiTitulo = ""
+  freebiResumen = ""
 
   async ngOnInit() {
 
@@ -362,6 +371,13 @@ export class ArticleComponent {
         this.articleCourses = articleWithTagPillarsAndCoursesData.courses;
         this.articleRelatedArticles = articleWithTagPillarsAndCoursesData.relatedArticles;
         this.originalContent = structuredClone(articleWithTagPillarsAndCoursesData.data)
+        this.freebiFileInfo = structuredClone(articleWithTagPillarsAndCoursesData.freebiFileInfo)
+        this.freebiTitulo = articleWithTagPillarsAndCoursesData.freebiTitulo,
+        this.freebiResumen = articleWithTagPillarsAndCoursesData.freebiResumen
+
+        this.previewImageFreebi = articleWithTagPillarsAndCoursesData?.urlImageFreebi;
+        this.pastPreviewImageFreebi = articleWithTagPillarsAndCoursesData?.urlImageFreebi;
+
         // console.log('originalContent',this.originalContent)
       });
   
@@ -601,6 +617,44 @@ export class ArticleComponent {
     }
   }
 
+  setImageFreebi(event: any): void {
+    if (event.target.files && event.target.files.length > 0) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const image = new Image();
+        image.src = reader.result as string;
+        image.onload = () => {
+          const width = image.width;
+          const height = image.height;
+
+          const aspectRatio = width / height;
+          // const ratioRestriction = 6 / 9
+          // const ratioRestriction = 16 / 15 // for 1920px x 1080px
+          const ratioRestriction = 1920 / 1080 //1.7778
+          const tolerance = 0.01
+          console.log("aspectRatio", aspectRatio)
+          console.log("ratioRestriction", ratioRestriction)
+          if (Math.abs(aspectRatio - ratioRestriction) > tolerance) {
+            Swal.fire({
+              title: "Error!",
+              text: `La imagen debe tener una proporción aproximada de 16:15`,
+              icon: "warning",
+              confirmButtonColor: "var(--blue-5)",
+            });
+            return;
+          }
+  
+          this.selectedFileFreebi = file;
+          this.previewImageFreebi = reader.result as string;
+        };
+      };
+    }
+  }
+
+  
+
   async save() {
     // console.log(this.editor)
     if (!this.checkValidationForm()) this.alertService.errorAlert("Debes llenar todos los campos");
@@ -616,11 +670,19 @@ export class ArticleComponent {
 
       try {
         let downloadURL
+        let downloadURLFrebi
+
         if (this.articleId) { //edit mode
           //Only if image has changed
           if (this.previewImage !== this.pastPreviewImage) downloadURL = await this.uploadImage();
+          if (this.previewImageFreebi !== this.pastPreviewImageFreebi) downloadURLFrebi = await this.uploadImage(this.selectedFileFreebi);
+
         }
-        else downloadURL = await this.uploadImage();
+        else {
+          downloadURL = await this.uploadImage();
+          downloadURLFrebi = await this.uploadImage(this.selectedFileFreebi);
+
+        }
 
         // First save the new tags and new pillars
         const existingTags = this.articleTags.filter(x => x.id)
@@ -703,7 +765,11 @@ export class ArticleComponent {
           authorData:this.authors.find(x=>x.id == this.selectedAuthorId),
           pillarsData:this.articlePillars,
           articleRelatedArticlesData:articleRelatedArticlesData,
-          articleTagsData:this.articleTags
+          articleTagsData:this.articleTags,
+          freebiFileInfo:this.freebiFileInfo,
+          freebiTitulo:this.freebiTitulo,
+          freebiResumen:this.freebiResumen,
+          urlImageFreebi:downloadURLFrebi
         };
         
         console.log("dataToSave",dataToSave)
@@ -871,18 +937,18 @@ export class ArticleComponent {
     }
   }
 
-  async uploadImage(): Promise<string> {
-    if (!this.selectedFile) {
+  async uploadImage(file = this.selectedFile): Promise<string> {
+    if (!file) {
       throw new Error('No file selected');
     }
 
-    let fileBaseName = this.selectedFile.name.split('.').slice(0, -1).join('.');
-    let fileExtension = this.selectedFile.name.split('.').pop();
+    let fileBaseName = file.name.split('.').slice(0, -1).join('.');
+    let fileExtension = file.name.split('.').pop();
     let articleTitle = this.title || "Temporal";
     let endName = `${fileBaseName}-${Date.now().toString()}.${fileExtension}`;
     const filePath = `Articulos/${articleTitle}/${endName}`;
     const fileRef = this.storage.ref(filePath);
-    const task = this.storage.upload(filePath, this.selectedFile);
+    const task = this.storage.upload(filePath, file);
 
     try {
       await task;
@@ -969,6 +1035,159 @@ export class ArticleComponent {
     };
   
     reader.readAsText(file);
+  }
+
+  async fileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (event: any) => {
+        const base64content = event.target.result.split(",")[1];
+        resolve(base64content);
+      };
+      reader.onerror = (error) => {
+        reject(error);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  freebiFileInfo = null
+
+  async onFileSelected(event, local = false) {
+    // console.log("event", event)
+    // console.log("session", session)
+
+    
+
+    let file;
+
+    if (!local) {
+      file = event.target.files[0];
+    } else {
+      file = event[0];
+    }
+
+    if (file) {
+      let fileBaseName = file.name.split(".").slice(0, -1).join(".");
+      let fileExtension = file.name.split(".").pop();
+
+      let base64content;
+      base64content = await this.fileToBase64(file);
+      let idFile = Date.now();
+      let fileInfo = {
+        id: idFile,
+        nombre: fileBaseName + "." + fileExtension,
+        size: file.size,
+        type: file.type,
+        uploading: true,
+        uploading_file_progress: 0,
+        url: null,
+        base64: base64content,
+      };
+
+      // Reorganizar el nombre para que el timestamp esté antes de la extensión
+      let newName = `${fileBaseName}-${Date.now().toString()}.${fileExtension}`;
+
+      let articleTitle = this.title || "Temporal";
+      const filePath = `Articulos/${articleTitle}/${newName}`;
+      const task = this.storage.upload(filePath, file);
+
+      // Crea una referencia a la ruta del archivo.
+      const fileRef = this.storage.ref(filePath);
+
+      // Obtener el progreso como un Observable
+      this.uploadProgress$ = task.percentageChanges();
+
+      // Suscríbete al Observable para actualizar tu componente de barra de progreso
+      this.uploadProgress$.subscribe((progress) => {
+        //console.log(progress);
+        fileInfo.uploading_file_progress = Math.floor(progress);
+      });
+
+      // Observa el progreso de la carga del archivo y haz algo cuando se complete.
+      task
+        .snapshotChanges()
+        .pipe(
+          finalize(() => {
+            // Obtén la URL de descarga del archivo.
+            fileRef.getDownloadURL().subscribe((url) => {
+              // session["uploading"] = false;
+              //console.log(`File URL: ${url}`);
+              let freebiFileInfo = {
+                url:url,
+                nombre:fileInfo.nombre,
+                size: file.size,
+                type: file.type,
+              } 
+              
+              this.freebiFileInfo = freebiFileInfo
+            });
+          })
+        )
+        .subscribe();
+      
+      
+    }
+  }
+
+  async descargarArchivo(archivo) {
+    //console.log('pdf actual', this.srsView);
+    try {
+      
+      if(archivo.type == 'enlace'){
+
+        let url = archivo.url
+        if (!/^https?:\/\//i.test(url)) {
+            url = 'http://' + url;
+        }
+        window.open(url, '_blank');
+      }
+      else{
+        const response = await fetch(archivo.url);
+        const blob = await response.blob();
+        // Extract the filename from the URL
+        // Decode the URI and split by '/'
+        const decodedUrl = decodeURIComponent(archivo.url);
+        const parts = decodedUrl.split("/");
+        // Extract the filename which is before the '?' character
+        const filenamePart = parts.pop().split("?")[0];
+  
+        // Create a URL for the blob
+        const blobUrl = window.URL.createObjectURL(blob);
+  
+        // Create a temporary anchor element
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.download = filenamePart; // Use the original filename or a default
+  
+        // Append to the document and trigger the download
+        document.body.appendChild(link);
+        link.click();
+  
+        // Remove the anchor element and revoke the object URL
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(blobUrl);
+
+      }
+    } catch (error) {
+      console.error("Error downloading the file:", error);
+    }
+  }
+
+  borrarArchivo( archivo) {
+    Swal.fire({
+      title: "Advertencia",
+      text: `¿Desea borrar el archivo ${archivo.nombre}?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Borrar",
+      confirmButtonColor: "var(--red-5)",
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        this.freebiFileInfo = null
+      }
+    });
   }
 
 }

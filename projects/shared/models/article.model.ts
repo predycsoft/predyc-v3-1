@@ -28,8 +28,11 @@ export interface ArticleJson {
     authorData:any,
     pillarsData:any,
     articleRelatedArticlesData:any,
-    articleTagsData:any
-    
+    articleTagsData:any,
+    freebiFileInfo:any,
+    freebiTitulo:string,
+    freebiResumen:string,
+    urlImageFreebi:string,
 }
 
 export class Article {
@@ -63,7 +66,11 @@ export class Article {
         public authorData:any,
         public pillarsData:any,
         public articleRelatedArticlesData:any,
-        public articleTagsData:any
+        public articleTagsData:any,
+        public freebiFileInfo:any,
+        public freebiTitulo:string,
+        public freebiResumen:string,
+        public urlImageFreebi:string
     ) {}
 
     public static fromJson(articleJson: ArticleJson): Article {
@@ -92,7 +99,11 @@ export class Article {
             articleJson.authorData,
             articleJson.pillarsData,
             articleJson.articleRelatedArticlesData,
-            articleJson.articleTagsData
+            articleJson.articleTagsData,
+            articleJson.freebiFileInfo,
+            articleJson.freebiTitulo,
+            articleJson.freebiResumen,
+            articleJson.urlImageFreebi
         )
     }
 
@@ -122,7 +133,11 @@ export class Article {
             authorData:this.authorData,
             pillarsData:this.pillarsData,
             articleRelatedArticlesData:this.articleRelatedArticlesData,
-            articleTagsData:this.articleTagsData
+            articleTagsData:this.articleTagsData,
+            freebiFileInfo:this.freebiFileInfo,
+            freebiTitulo:this.freebiTitulo,
+            freebiResumen:this.freebiResumen,
+            urlImageFreebi:this.urlImageFreebi,
         }
     }
 }
