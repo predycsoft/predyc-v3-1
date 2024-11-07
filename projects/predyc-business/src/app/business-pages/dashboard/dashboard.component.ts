@@ -47,6 +47,7 @@ export class DashboardComponent {
   testUsers
   examenInicial
   user
+  allUsers
 
   // rythms
   rythms = {
@@ -103,10 +104,11 @@ export class DashboardComponent {
         this.generatinReport = false;
         this.displayErrors = false;
 
-        const [profiles, departments, courses, tests] = await Promise.all([
+        const [profiles, departments, courses, classes, tests] = await Promise.all([
           firstValueFrom(this.profileService.getProfiles$()),
           firstValueFrom(this.departmentService.getDepartments$()),
           firstValueFrom(this.courseService.getCourses$()),
+          firstValueFrom(this.courseService.getClassesEnterprise$()),
           firstValueFrom(this.activityClassesService.getTestProfileResultsEnterprise())
         ]);
         
@@ -114,14 +116,16 @@ export class DashboardComponent {
         // console.log("departments", departments)
         // console.log("courses", courses)
         // console.log("tests", tests)
-        
+        this.allUsers = await this.userService.getEnterpriseUsers();
         this.profiles = profiles;
         this.departments = departments;
         this.courses = courses;
+        this.classes = classes
         this.testUsers = tests
 
-        let users = await firstValueFrom(this.userService.users$)
+        let users = {...this.allUsers}
         // console.log("users", users)
+
         if (users && users.length > 1) {
           // first response is an 1 element array corresponded to admin
           const performances = [];
@@ -2132,8 +2136,6 @@ export class DashboardComponent {
         this.endDate.day
       );
     }
-
-    this.classes = await firstValueFrom(this.courseService.getClassesEnterprise$())
 
     this.userServiceSubscription = this.userService.getUsersReport$(null, null, null, null, fechaInicio, fechaFin)
     .pipe(

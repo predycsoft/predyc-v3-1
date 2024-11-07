@@ -679,6 +679,42 @@ export class UserService {
     );
   }
 
+  async getEnterpriseUsers(searchTerm = null, profileFilter = null, statusFilter = null, enterpriseRefIn? ): Promise<User[]> {
+    // Wait for the enterprise to be loaded
+    const isLoaded = await firstValueFrom(this.enterpriseService.enterpriseLoaded$);
+    if (!isLoaded) return [];
+  
+    // Determine the enterprise reference
+    const enterpriseRef = enterpriseRefIn || this.enterpriseService.getEnterpriseRef();
+  
+    // Construct the query with .get() for a one-time read
+    let query = this.afs.collection<User>(User.collection).ref.where("enterprise", "==", enterpriseRef).where("isActive", "==", true);
+  
+    // Apply search term filter
+    if (searchTerm) {
+      query = query.where("displayName", ">=", searchTerm).where("displayName", "<=", searchTerm + "\uf8ff");
+    }
+  
+    // Apply profile filter
+    if (profileFilter) {
+      const profileRef = this.profileService.getProfileRefById(profileFilter);
+      query = query.where("profile", "==", profileRef);
+    }
+  
+    // Apply status filter
+    if (statusFilter === SubscriptionClass.STATUS_ACTIVE) {
+      query = query.where("status", "==", SubscriptionClass.STATUS_ACTIVE);
+    }
+  
+    // Order by display name
+    query = query.orderBy("displayName");
+  
+    // Fetch the data with .get()
+    const snapshot = await query.get();
+    return snapshot.docs.map(doc => doc.data() as User);
+  }
+  
+
   async getFilteredUsers(searchTerm = null): Promise<User[]> {
   
     let finalDisplayNameQuery;

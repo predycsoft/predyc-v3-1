@@ -782,6 +782,28 @@ export class CourseService {
     );
   }
 
+  async getClassesEnterprise(): Promise<any[]> {
+    // Wait for the enterprise to be loaded
+    const isLoaded = await firstValueFrom(this.enterpriseService.enterpriseLoaded$);
+    if (!isLoaded) return [];
+  
+    const enterpriseRef = this.enterpriseService.getEnterpriseRef();
+  
+    const enterpriseMatchQuery = this.afs.collection<Clase>(Clase.collection).ref.where("enterpriseRef", "==", enterpriseRef);
+    const enterpriseEmptyQuery = this.afs.collection<Clase>(Clase.collection).ref.where("enterpriseRef", "==", null);
+  
+    // Execute both queries in parallel and combine results
+    const [enterpriseMatchSnapshot, enterpriseEmptySnapshot] = await Promise.all([
+      enterpriseMatchQuery.get(),
+      enterpriseEmptyQuery.get()
+    ]);
+  
+    const enterpriseMatchData = enterpriseMatchSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const enterpriseEmptyData = enterpriseEmptySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  
+    return [...enterpriseMatchData, ...enterpriseEmptyData];
+  }
+
   public async getCourseById(id: string): Promise<Curso> {
     return await firstValueFrom(
       this.afs.collection<Curso>(Curso.collection).doc(id).valueChanges()

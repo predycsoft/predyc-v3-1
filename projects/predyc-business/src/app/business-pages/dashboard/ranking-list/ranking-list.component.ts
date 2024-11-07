@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Observable, Subscription, combineLatest, firstValueFrom, map, of, switchMap } from 'rxjs';
 import { CourseByStudent } from 'projects/shared/models/course-by-student.model';
 import { User, UserJson } from 'projects/shared/models/user.model';
@@ -28,30 +28,33 @@ export class RankingListComponent {
     private profileService: ProfileService,
     private courseService: CourseService
   ){}
-
+  @Input() classes
+  @Input() profiles
+  @Input() courses
+  @Input() allUsers
   ranking: UserRanking[]
   listLength: number = 15
   showPointsTooltip = false
   combinedObservableSubscription: Subscription
 
   async ngOnInit() {
-    const usersAndCourses = await firstValueFrom(
-      this.userService.getUsers$().pipe(
-        switchMap(users => {
-          const observables = users.map(async user => {
-            const userRef = this.userService.getUserRefById(user.uid);
-            const courses = await firstValueFrom(this.courseService.getActiveCoursesByStudent$(userRef));
-            const classes = await firstValueFrom(this.courseService.getClassesByStudent$(userRef));
-            return { user, courses, classes };
-          });
-          return Promise.all(observables);
-        })
-      )
+    const users = this.allUsers
+    // console.log("users promise", users)
+    const usersAndCourses = await Promise.all(
+      users.map(async user => {
+        const userRef = this.userService.getUserRefById(user.uid);
+        const courses = await this.courseService.getActiveCoursesByStudent(userRef);
+        const classes = await firstValueFrom(this.courseService.getClassesByStudent$(userRef));
+        return { user, courses, classes };
+      })
     );
 
-    const profiles = await firstValueFrom(this.profileService.getProfiles$());
-    const allCourses = await firstValueFrom(this.courseService.getCourses$());
-    const allClasses = await firstValueFrom(this.courseService.getClasses$());
+    // console.log("usersAndCourses", usersAndCourses);
+
+    const profiles = this.profiles
+    const allCourses = this.courses
+    const allClasses = this.classes
+    // console.log("allClasses", allClasses)
   
     this.ranking = usersAndCourses.map(({ user, courses, classes }) => {
       // console.log('revisar', user, courses, classes,allClasses);
