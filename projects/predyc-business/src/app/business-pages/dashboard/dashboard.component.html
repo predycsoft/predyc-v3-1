@@ -58,49 +58,19 @@
 
 <mat-menu #formatMenu="matMenu" class="radius6 shadow16 pd0">
   <div fxLayout="column" class="pd0">
-    <div
-      (click)="openDownloadReportModal()"
-      mat-menu-item
-      class="opcionMenu"
-      fxLayout="row"
-      fxLayoutAlign=" center"
-    >
+    <div (click)="openDownloadReportModal()" mat-menu-item class="opcionMenu" fxLayout="row" fxLayoutAlign=" center" >
       <span class="pdl05 ft12 gray-10">PDF</span>
     </div>
-    <div
-      (click)="downloadReport()"
-      mat-menu-item
-      class="opcionMenu"
-      fxLayout="row"
-      fxLayoutAlign=" center"
-    >
+    <div (click)="downloadReport()" mat-menu-item class="opcionMenu" fxLayout="row" fxLayoutAlign=" center" >
       <span class="pdl05 ft12 gray-10">Excel</span>
     </div>
-      <div
-      *ngIf="this.user.isSystemUser"
-      (click)="descargarDatosFoms()"
-      mat-menu-item
-      class="opcionMenu"
-      fxLayout="row"
-      fxLayoutAlign=" center" >
+      <div *ngIf="this.user.isSystemUser" (click)="descargarDatosFoms()" mat-menu-item class="opcionMenu" fxLayout="row" fxLayoutAlign=" center" >
         <span class="pdl05 ft12 gray-10">Formularios</span>
       </div>
-      <div
-      *ngIf="this.user.isSystemUser"
-      (click)="descargarDatosMEC()"
-      mat-menu-item
-      class="opcionMenu"
-      fxLayout="row"
-      fxLayoutAlign=" center" >
+      <div *ngIf="this.user.isSystemUser" (click)="descargarDatosMEC()" mat-menu-item class="opcionMenu" fxLayout="row" fxLayoutAlign=" center" >
         <span class="pdl05 ft12 gray-10">Man. en acción</span>
       </div>
-      <div
-      *ngIf="this.user.isSystemUser"
-      (click)="getValoraciones()"
-      mat-menu-item
-      class="opcionMenu"
-      fxLayout="row"
-      fxLayoutAlign=" center" >
+      <div *ngIf="this.user.isSystemUser" (click)="getValoraciones()" mat-menu-item class="opcionMenu" fxLayout="row" fxLayoutAlign=" center" >
         <span class="pdl05 ft12 gray-10">Obtener valoraciones</span>
       </div>
     </div>

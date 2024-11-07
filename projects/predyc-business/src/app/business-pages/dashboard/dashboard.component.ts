@@ -70,9 +70,7 @@ export class DashboardComponent {
   profilesSubscription: Subscription;
 
   async fixProfiles() {
-    const profilesSnapshot: QuerySnapshot<ProfileJson> = (await this.afs
-      .collection(Profile.collection)
-      .ref.get()) as QuerySnapshot<ProfileJson>;
+    const profilesSnapshot: QuerySnapshot<ProfileJson> = (await this.afs.collection(Profile.collection).ref.get()) as QuerySnapshot<ProfileJson>;
     const profiles = profilesSnapshot.docs.map((doc) => doc.data());
     for (let profile of profiles) {
       const newCoursesRef = profile.coursesRef.map((item, idx) => {
@@ -81,48 +79,31 @@ export class DashboardComponent {
           studyPlanOrder: idx + 1,
         };
       });
-      const usersSnapshot: QuerySnapshot<UserJson> = (await this.afs
-        .collection(UserClass.collection)
-        .ref.where(
-          "profile",
-          "==",
-          this.profileService.getProfileRefById(profile.id)
-        )
-        .get()) as QuerySnapshot<UserJson>;
+      const usersSnapshot: QuerySnapshot<UserJson> = (await this.afs.collection(UserClass.collection).ref
+      .where("profile","==",this.profileService.getProfileRefById(profile.id))
+      .get()) as QuerySnapshot<UserJson>;
       const users = usersSnapshot.docs.map((doc) => doc.data());
       for (let user of users) {
-        const coursesSnapshot: QuerySnapshot<CourseByStudentJson> =
-          (await this.afs
-            .collection(CourseByStudent.collection)
-            .ref.where(
-              "userRef",
-              "==",
-              this.userService.getUserRefById(user.uid)
-            )
-            .get()) as QuerySnapshot<CourseByStudentJson>;
+        const coursesSnapshot: QuerySnapshot<CourseByStudentJson> = (await this.afs.collection(CourseByStudent.collection).ref
+        .where("userRef","==",this.userService.getUserRefById(user.uid))
+        .get()) as QuerySnapshot<CourseByStudentJson>;
         const courses = coursesSnapshot.docs.map((doc) => doc.data());
         if (courses.length > 0) {
           for (let item of newCoursesRef) {
             const targetCourseRef = courses.find(
               (x) => x.courseRef.id === item.courseRef.id
             );
-            await this.afs
-              .collection<CourseByStudentJson>(CourseByStudent.collection)
-              .doc(targetCourseRef.id)
-              .set(
-                {
-                  ...targetCourseRef,
-                  studyPlanOrder: item.studyPlanOrder,
-                },
-                { merge: true }
-              );
+            await this.afs.collection<CourseByStudentJson>(CourseByStudent.collection).doc(targetCourseRef.id).set(
+              {
+                ...targetCourseRef,
+                studyPlanOrder: item.studyPlanOrder,
+              },
+              { merge: true }
+            );
           }
         }
       }
-      await this.afs
-        .collection<ProfileJson>(Profile.collection)
-        .doc(profile.id)
-        .set({ ...profile, coursesRef: newCoursesRef }, { merge: true });
+      await this.afs.collection<ProfileJson>(Profile.collection).doc(profile.id).set({ ...profile, coursesRef: newCoursesRef }, { merge: true });
     }
     this.courseService.fixStudyPlanEnterprise();
   }
