@@ -35,6 +35,13 @@ export class UsersOnboardingComponent {
 
   data = [];
 
+  ngOnInit() {
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    this.processData()
+  }
+
   processData() {
 
     if(this.users){
@@ -84,13 +91,6 @@ export class UsersOnboardingComponent {
         this.router.navigate(['management/students'], { queryParams: { status: "active" ,ultActivity:'Sin inicio y sin clases vistas'}});
       }
     }
-  }
-
-  ngOnInit() {
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    this.processData()
   }
 
 }

@@ -33,11 +33,16 @@ export class UsersaAtivityComponent {
   mas30DiasPorcentage = 100
   sinActividadPorcentage  = 0
 
-
   data = [];
 
-  processData(){
-    
+  ngOnChanges(changes: SimpleChanges) {
+    this.processData()
+  }
+
+  ngOnInit() {
+  }
+
+  processData() {
     this.data = [];
 
     if(!this.users) return
@@ -59,9 +64,7 @@ export class UsersaAtivityComponent {
     fifteenDaysAgo.setDate(now.getDate() - 15);
 
     const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(now.getDate() - 30);
-
-    
+    thirtyDaysAgo.setDate(now.getDate() - 30);    
     
     this.ultimos15Dias = usersActive.filter(user => {
       const lastActivityDate = user.lastActivityDate ? new Date(user.lastActivityDate.seconds * 1000) : null;
@@ -85,25 +88,9 @@ export class UsersaAtivityComponent {
 
     this.sinActividad = usersActive.filter(x=>x.activityStatusText=='Sin inicio sesión' || x.activityStatusText=='Sin diagnostico completado' ||  x.activityStatusText=='Sin clases vistas').length
     this.sinActividadPorcentage = this.sinActividad*100/this.usersTotal
-
-
-  }
-  
-
-  ngOnInit() {
-
-
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    this.processData()
-    
-
-
-  }
-
-
-  navigateToStudents(filter){
+  navigateToStudents(filter) {
 
     if(filter=='ultimos15Dias'){
       this.router.navigate(['management/students'], { queryParams: { status: "active" ,ultActivity:'Menos de 15 días'}});
@@ -124,7 +111,5 @@ export class UsersaAtivityComponent {
     }
 
   }
-
-
 
 }

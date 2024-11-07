@@ -32,6 +32,13 @@ export class UsersUsageComponent {
   movilUsage = 0;
   desktopUsage = 0;
 
+  ngOnChanges(changes: SimpleChanges) {
+    this.processData()
+  }
+
+  ngOnInit() {
+  }
+
   processData() {
 
     if (this.enterprise?.devices?.desktop >0 || this.enterprise?.devices?.movil >0) {
@@ -42,7 +49,6 @@ export class UsersUsageComponent {
       this.desktopUsage = (this.enterprise.devices.desktop*100)/total
 
       // console.log(this.movilUsage,this.desktopUsage)
-
     }
 
     const adjustedUsage = this.adjustUsageForTimezone(this.enterprise.usage);
@@ -92,9 +98,8 @@ export class UsersUsageComponent {
         this.textoDiasMasUsoDetail = `${dia1Order} y ${dia2Order}`
         this.textoDiasMasUso = `son los días en donde tu equipo más avanza en los cursos`;
 
-
       }
-      else{
+      else {
         let dia =daysSorted[0].name;
         if (!dia.endsWith('s')) {
           dia += 's';
@@ -105,15 +110,15 @@ export class UsersUsageComponent {
 
       }
     }
-    else{
+    else {
       this.textoHorasMasUso= null
 
     }
 
-    if(HorasSorted[0].porcentaje>0){
+    if (HorasSorted[0].porcentaje>0) {
       this.textoHorasMasUsoDetail= ` ${HorasSorted[0].range}`
     }
-    else{
+    else {
       this.textoHorasMasUso= null
 
     }
@@ -127,13 +132,6 @@ export class UsersUsageComponent {
     return str.toLowerCase().split(' ').map(word => {
       return (word.charAt(0).toUpperCase() + word.slice(1));
     }).join(' ');
-  }
-
-  ngOnInit() {
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    this.processData()
   }
 
   adjustUsageForTimezone(usage) {

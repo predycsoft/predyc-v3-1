@@ -645,52 +645,36 @@ export class UserService {
     }
   }
 
-  getUsers$(
-    searchTerm = null,
-    profileFilter = null,
-    statusFilter = null,
-    enterpriseRefIn?
-  ): Observable<User[]> {
+  getUsers$( searchTerm = null, profileFilter = null, statusFilter = null, enterpriseRefIn?): Observable<User[]> {
     return this.enterpriseService.enterpriseLoaded$.pipe(
       switchMap((isLoaded) => {
         if (!isLoaded) return [];
-        let  enterpriseRef
+        let enterpriseRef
         if(enterpriseRefIn){
           enterpriseRef = enterpriseRefIn
         }
         else{
           enterpriseRef = this.enterpriseService.getEnterpriseRef();
         }
-        return this.afs
-          .collection<User>(User.collection, (ref) => {
-            let query: CollectionReference | Query = ref;
-            query = query.where("enterprise", "==", enterpriseRef);
-            query = query.where("isActive", "==", true);
-            if (searchTerm) {
-              // query = query.where('displayName', '==', searchTerm)
-              query = query
-                .where("displayName", ">=", searchTerm)
-                .where("displayName", "<=", searchTerm + "\uf8ff");
-            }
-            if (profileFilter) {
-              const profileRef =
-                this.profileService.getProfileRefById(profileFilter);
-              query = query.where("profile", "==", profileRef);
-            }
-
-            if (
-              statusFilter &&
-              statusFilter === SubscriptionClass.STATUS_ACTIVE
-            ) {
-              query = query.where(
-                "status",
-                "==",
-                SubscriptionClass.STATUS_ACTIVE
-              );
-            }
-            return query.orderBy("displayName");
-          })
-          .valueChanges();
+        return this.afs.collection<User>(User.collection, (ref) => {
+          let query: CollectionReference | Query = ref;
+          query = query.where("enterprise", "==", enterpriseRef);
+          query = query.where("isActive", "==", true);
+          if (searchTerm) {
+            // query = query.where('displayName', '==', searchTerm)
+            query = query
+              .where("displayName", ">=", searchTerm)
+              .where("displayName", "<=", searchTerm + "\uf8ff");
+          }
+          if (profileFilter) {
+            const profileRef = this.profileService.getProfileRefById(profileFilter);
+            query = query.where("profile", "==", profileRef);
+          }
+          if ( statusFilter && statusFilter === SubscriptionClass.STATUS_ACTIVE ) {
+            query = query.where("status", "==", SubscriptionClass.STATUS_ACTIVE);
+          }
+          return query.orderBy("displayName");
+        }).valueChanges();
       })
     );
   }

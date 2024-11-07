@@ -1428,17 +1428,9 @@ export class CourseService {
         const observableArray = [];
         users.forEach((user) => {
           observableArray.push(
-            this.afs
-              .collection("classesByStudent", (ref) =>
-                ref
-                  .where(
-                    "userRef",
-                    "==",
-                    this.userService.getUserRefById(user.uid)
-                  )
-                  .where("completed", "==", true)
-              )
-              .valueChanges()
+            this.afs.collection("classesByStudent", (ref) =>
+              ref.where("userRef","==",this.userService.getUserRefById(user.uid)).where("completed", "==", true)
+            ).valueChanges()
           );
         });
         return combineLatest(observableArray);
