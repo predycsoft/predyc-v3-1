@@ -936,11 +936,8 @@ export class UserService {
   }
 
   // getPerformanceWithDetails(student): { performance:"no plan" | "high" | "medium" | "low", score: number, grade: number } {
-  getPerformanceWithDetails(
-    userStudyPlan
-  ): "no plan" | "high" | "medium" | "low" | "no iniciado" {
+  getPerformanceWithDetails(userStudyPlan): "no plan" | "high" | "medium" | "low" | "no iniciado" {
     
-
     const today = new Date().getTime();
 
     let targetComparisonDate = today;
@@ -949,8 +946,6 @@ export class UserService {
     let lastDayCurrent = obtenerUltimoDiaDelMes(targetComparisonDate)
 
     let progressMonth = this.getMonthProgress()
-
-
 
     let userStudyPlanUntilLastMonth = userStudyPlan.filter(x=>x.dateEndPlan  && (x.dateEndPlan?.seconds*1000)<=lastDayPast)
     let userStudyPlanCurrent = userStudyPlan.filter(x=>x.dateEndPlan  && (x.dateEndPlan?.seconds*1000)>lastDayPast && (x.dateEndPlan?.seconds*1000)<=lastDayCurrent )
@@ -970,18 +965,13 @@ export class UserService {
     });
 
     userStudyPlanCurrent.forEach(course => {
-      
       studentExpectedHours +=(course.courseTime * progressMonth)
       studentHours +=course.progressTime?course.progressTime:0
     });
 
-
     let procentaje = studentHours*100/studentExpectedHours
 
-
     let performance: "no plan" | "high" | "medium" | "low" | "no iniciado";
-
-    
 
     let validator = userStudyPlan.find((x) => x.progressTime > 0);
     if (!validator && userStudyPlan.length > 0) {

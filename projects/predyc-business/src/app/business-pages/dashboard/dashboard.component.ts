@@ -77,7 +77,15 @@ export class DashboardComponent {
     });
     // console.log("this.user", this.user)
     this.loaderService.setLoading(true);
-    this.enterpriseSubscription = this.enterpriseService.enterprise$.subscribe(async (enterprise) => {
+    // this.enterpriseSubscription = this.enterpriseService.enterprise$.subscribe(async (enterprise) => {
+    this.enterpriseSubscription = this.enterpriseService.enterprise$
+    .pipe(
+      // Proceed only if the enterprise exists (is not null or undefined)
+      filter(enterprise => !!enterprise),
+      take(1)
+    )
+    .subscribe(async (enterprise) => {
+      // console.log("enterprise", enterprise)
       if (enterprise) {
 
         //let certicates = await this.enterpriseService.getCertificatesEnterprise(enterprise)
@@ -95,20 +103,25 @@ export class DashboardComponent {
         this.generatinReport = false;
         this.displayErrors = false;
 
-        // await this.profileService.loadProfiles();
-        const profiles = await firstValueFrom(this.profileService.getProfiles$())
-        const departments = await firstValueFrom(this.departmentService.getDepartments$())
-        const courses = await firstValueFrom(this.courseService.getCourses$())
-        const classes = await firstValueFrom(this.courseService.getClassesEnterprise$())
-        const tests = await firstValueFrom(this.activityClassesService.getTestProfileResultsEnterprise())
-
+        const [profiles, departments, courses, tests] = await Promise.all([
+          firstValueFrom(this.profileService.getProfiles$()),
+          firstValueFrom(this.departmentService.getDepartments$()),
+          firstValueFrom(this.courseService.getCourses$()),
+          firstValueFrom(this.activityClassesService.getTestProfileResultsEnterprise())
+        ]);
+        
+        // console.log("profiles", profiles)
+        // console.log("departments", departments)
+        // console.log("courses", courses)
+        // console.log("tests", tests)
+        
         this.profiles = profiles;
         this.departments = departments;
         this.courses = courses;
-        this.classes = classes;
         this.testUsers = tests
 
         let users = await firstValueFrom(this.userService.users$)
+        // console.log("users", users)
         if (users && users.length > 1) {
           // first response is an 1 element array corresponded to admin
           const performances = [];
@@ -169,18 +182,17 @@ export class DashboardComponent {
             user['groupedLastActivity'] = groupedLastActivity
             user['activityStatusText'] = activityStatus
             user['lastActivity'] =  user['lastActivity']?user['lastActivity']:null
-
             
             const userRef = this.userService.getUserRefById(user.uid);
-            const studyPlan: CourseByStudent[] =
-              await this.courseService.getActiveCoursesByStudent(userRef);
-              studyPlan.forEach(course => {
-                const courseJson = this.courses.find(item => item.id === course.courseRef.id);
-                // console.log('cursosRevisarPlan',this.courses,courseJson)
-                if (courseJson) {
-                  course.courseTime = courseJson.duracion
-                }
-              });
+            const studyPlan: CourseByStudent[] = await this.courseService.getActiveCoursesByStudent(userRef);
+            // console.log("studyPlan", studyPlan)
+            studyPlan.forEach(course => {
+              const courseJson = this.courses.find(item => item.id === course.courseRef.id);
+              // console.log('cursosRevisarPlan',this.courses,courseJson)
+              if (courseJson) {
+                course.courseTime = courseJson.duracion
+              }
+            });
             const userPerformance:
               | "no plan"
               | "high"
@@ -198,50 +210,81 @@ export class DashboardComponent {
           this.users = users
           // console.log('this.user performance',this.users, performances)
           this.getUsersRythmData(performances);
+          // console.log("Performances calculated")
         }
         //this.getData();
       }
     });
   }
 
-  async fixProfiles() {
-    const profilesSnapshot: QuerySnapshot<ProfileJson> = (await this.afs.collection(Profile.collection).ref.get()) as QuerySnapshot<ProfileJson>;
-    const profiles = profilesSnapshot.docs.map((doc) => doc.data());
-    for (let profile of profiles) {
-      const newCoursesRef = profile.coursesRef.map((item, idx) => {
-        return {
-          courseRef: item,
-          studyPlanOrder: idx + 1,
-        };
-      });
-      const usersSnapshot: QuerySnapshot<UserJson> = (await this.afs.collection(UserClass.collection).ref
-      .where("profile","==",this.profileService.getProfileRefById(profile.id))
-      .get()) as QuerySnapshot<UserJson>;
-      const users = usersSnapshot.docs.map((doc) => doc.data());
-      for (let user of users) {
-        const coursesSnapshot: QuerySnapshot<CourseByStudentJson> = (await this.afs.collection(CourseByStudent.collection).ref
-        .where("userRef","==",this.userService.getUserRefById(user.uid))
-        .get()) as QuerySnapshot<CourseByStudentJson>;
-        const courses = coursesSnapshot.docs.map((doc) => doc.data());
-        if (courses.length > 0) {
-          for (let item of newCoursesRef) {
-            const targetCourseRef = courses.find(
-              (x) => x.courseRef.id === item.courseRef.id
-            );
-            await this.afs.collection<CourseByStudentJson>(CourseByStudent.collection).doc(targetCourseRef.id).set(
-              {
-                ...targetCourseRef,
-                studyPlanOrder: item.studyPlanOrder,
-              },
-              { merge: true }
-            );
-          }
-        }
+  getUsersRythmData(performances: Array<"no plan" | "high" | "medium" | "low" | "no iniciado">) {
+    this.rythms = {
+      high: 0,
+      medium: 0,
+      low: 0,
+      noPlan: 0,
+    };
+    // Iterar sobre el array de performances
+    for (const performance of performances) {
+      switch (performance) {
+        case "no plan":
+          this.rythms.noPlan += 1;
+          break;
+        case "high":
+          this.rythms.high += 1;
+          break;
+        case "medium":
+          this.rythms.medium += 1;
+          break;
+        case "low":
+          this.rythms.low += 1;
+          break;
+        case "no iniciado":
+          this.rythms.noPlan += 1;
+          break;
       }
-      await this.afs.collection<ProfileJson>(Profile.collection).doc(profile.id).set({ ...profile, coursesRef: newCoursesRef }, { merge: true });
     }
-    this.courseService.fixStudyPlanEnterprise();
+    // console.log(`No Plan: ${this.rythms.noPlan}, High: ${this.rythms.high}, Medium: ${this.rythms.medium}, Low: ${this.rythms.low}`);
   }
+
+  // async fixProfiles() {
+  //   const profilesSnapshot: QuerySnapshot<ProfileJson> = (await this.afs.collection(Profile.collection).ref.get()) as QuerySnapshot<ProfileJson>;
+  //   const profiles = profilesSnapshot.docs.map((doc) => doc.data());
+  //   for (let profile of profiles) {
+  //     const newCoursesRef = profile.coursesRef.map((item, idx) => {
+  //       return {
+  //         courseRef: item,
+  //         studyPlanOrder: idx + 1,
+  //       };
+  //     });
+  //     const usersSnapshot: QuerySnapshot<UserJson> = (await this.afs.collection(UserClass.collection).ref
+  //     .where("profile","==",this.profileService.getProfileRefById(profile.id))
+  //     .get()) as QuerySnapshot<UserJson>;
+  //     const users = usersSnapshot.docs.map((doc) => doc.data());
+  //     for (let user of users) {
+  //       const coursesSnapshot: QuerySnapshot<CourseByStudentJson> = (await this.afs.collection(CourseByStudent.collection).ref
+  //       .where("userRef","==",this.userService.getUserRefById(user.uid))
+  //       .get()) as QuerySnapshot<CourseByStudentJson>;
+  //       const courses = coursesSnapshot.docs.map((doc) => doc.data());
+  //       if (courses.length > 0) {
+  //         for (let item of newCoursesRef) {
+  //           const targetCourseRef = courses.find(
+  //             (x) => x.courseRef.id === item.courseRef.id
+  //           );
+  //           await this.afs.collection<CourseByStudentJson>(CourseByStudent.collection).doc(targetCourseRef.id).set(
+  //             {
+  //               ...targetCourseRef,
+  //               studyPlanOrder: item.studyPlanOrder,
+  //             },
+  //             { merge: true }
+  //           );
+  //         }
+  //       }
+  //     }
+  //     await this.afs.collection<ProfileJson>(Profile.collection).doc(profile.id).set({ ...profile, coursesRef: newCoursesRef }, { merge: true });
+  //   }
+  //   this.courseService.fixStudyPlanEnterprise();
+  // }
 
   async getValoraciones() {
     const valoraciones = await this.enterpriseService.getCursosValoraciones();
@@ -424,38 +467,6 @@ export class DashboardComponent {
       keyboard: false,
     });
     return modalRef;
-  }
-
-  getUsersRythmData(
-    performances: Array<"no plan" | "high" | "medium" | "low" | "no iniciado">
-  ) {
-    this.rythms = {
-      high: 0,
-      medium: 0,
-      low: 0,
-      noPlan: 0,
-    };
-    // Iterar sobre el array de performances
-    for (const performance of performances) {
-      switch (performance) {
-        case "no plan":
-          this.rythms.noPlan += 1;
-          break;
-        case "high":
-          this.rythms.high += 1;
-          break;
-        case "medium":
-          this.rythms.medium += 1;
-          break;
-        case "low":
-          this.rythms.low += 1;
-          break;
-        case "no iniciado":
-          this.rythms.noPlan += 1;
-          break;
-      }
-    }
-    // console.log(`No Plan: ${this.rythms.noPlan}, High: ${this.rythms.high}, Medium: ${this.rythms.medium}, Low: ${this.rythms.low}`);
   }
 
   downloadExcelReport() {
@@ -2099,7 +2110,7 @@ export class DashboardComponent {
   departments;
   users;
 
-  downloadReport() {
+  async downloadReport() {
     //alert('inicio reporte')
     this.generatinReport = true;
     if (this.userServiceSubscription) this.userServiceSubscription.unsubscribe();
@@ -2121,6 +2132,8 @@ export class DashboardComponent {
         this.endDate.day
       );
     }
+
+    this.classes = await firstValueFrom(this.courseService.getClassesEnterprise$())
 
     this.userServiceSubscription = this.userService.getUsersReport$(null, null, null, null, fechaInicio, fechaFin)
     .pipe(
