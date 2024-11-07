@@ -42,6 +42,11 @@ export class DashboardComponent {
   combinedSubscription: Subscription;
   userServiceSubscription: Subscription;
   performances = [];
+  displayErrors;
+  profilesSubscription: Subscription;
+  testUsers
+  examenInicial
+  user
 
   // rythms
   rythms = {
@@ -66,221 +71,6 @@ export class DashboardComponent {
 
   ) {}
 
-  displayErrors;
-  profilesSubscription: Subscription;
-
-  async fixProfiles() {
-    const profilesSnapshot: QuerySnapshot<ProfileJson> = (await this.afs.collection(Profile.collection).ref.get()) as QuerySnapshot<ProfileJson>;
-    const profiles = profilesSnapshot.docs.map((doc) => doc.data());
-    for (let profile of profiles) {
-      const newCoursesRef = profile.coursesRef.map((item, idx) => {
-        return {
-          courseRef: item,
-          studyPlanOrder: idx + 1,
-        };
-      });
-      const usersSnapshot: QuerySnapshot<UserJson> = (await this.afs.collection(UserClass.collection).ref
-      .where("profile","==",this.profileService.getProfileRefById(profile.id))
-      .get()) as QuerySnapshot<UserJson>;
-      const users = usersSnapshot.docs.map((doc) => doc.data());
-      for (let user of users) {
-        const coursesSnapshot: QuerySnapshot<CourseByStudentJson> = (await this.afs.collection(CourseByStudent.collection).ref
-        .where("userRef","==",this.userService.getUserRefById(user.uid))
-        .get()) as QuerySnapshot<CourseByStudentJson>;
-        const courses = coursesSnapshot.docs.map((doc) => doc.data());
-        if (courses.length > 0) {
-          for (let item of newCoursesRef) {
-            const targetCourseRef = courses.find(
-              (x) => x.courseRef.id === item.courseRef.id
-            );
-            await this.afs.collection<CourseByStudentJson>(CourseByStudent.collection).doc(targetCourseRef.id).set(
-              {
-                ...targetCourseRef,
-                studyPlanOrder: item.studyPlanOrder,
-              },
-              { merge: true }
-            );
-          }
-        }
-      }
-      await this.afs.collection<ProfileJson>(Profile.collection).doc(profile.id).set({ ...profile, coursesRef: newCoursesRef }, { merge: true });
-    }
-    this.courseService.fixStudyPlanEnterprise();
-  }
-
-  testUsers
-  examenInicial
-
-
-  async getValoraciones() {
-    const valoraciones = await this.enterpriseService.getCursosValoraciones();
-    console.log('valoraciones', valoraciones);
-
-    let valoracionesExport = [];
-    valoraciones.forEach(valoracion => {
-        // Convertir la fecha de string a objeto Date
-        const fechaString = valoracion.valoracion.fecha; // Suponiendo que la fecha está en este campo
-        const fecha = this.convertirFechaString(fechaString); // Convertir la fecha usando la función
-        let respuesta = {
-            nombreUsuario: valoracion.usuarioDetalles.name,
-            curso: valoracion.cursoDetalles.titulo,
-            empresa: valoracion?.empresaDetalles?.name ? valoracion.empresaDetalles.name : 'independiente',
-            date: fecha, // Mantener como objeto Date
-            ...valoracion.valoracion
-        };
-        valoracionesExport.push(respuesta);
-    });
-
-    valoracionesExport.forEach(element => {
-      delete element['fecha']
-      delete element['completado']
-    });
-
-    console.log('valoracionesExport', valoracionesExport);
-    this.exportToExcel(valoracionesExport, 'valoracionesExport');
-}
-
-// Función para convertir la fecha de string a objeto Date
-convertirFechaString(fechaString: string): Date | null {
-    const partes = fechaString.split(', '); // Separar fecha y hora
-    const fechaParte = partes[0].trim(); // "10 de septiembre de 2024"
-    const horaParte = partes[1] ? partes[1].trim() : ''; // "09:19"
-
-    const meses = {
-        'enero': 0,
-        'febrero': 1,
-        'marzo': 2,
-        'abril': 3,
-        'mayo': 4,
-        'junio': 5,
-        'julio': 6,
-        'agosto': 7,
-        'septiembre': 8,
-        'octubre': 9,
-        'noviembre': 10,
-        'diciembre': 11
-    };
-
-    // Expresión regular para extraer el día, mes y año
-    const regex = /(\d{1,2}) de ([a-zA-Z]+) de (\d{4})/;
-    const match = fechaParte.match(regex);
-    if (match) {
-        const dia = parseInt(match[1], 10);
-        const mes = meses[match[2].toLowerCase()];
-        const anio = parseInt(match[3], 10);
-
-        const fecha = new Date(anio, mes, dia);
-        if (horaParte) {
-            const [horas, minutos] = horaParte.split(':').map(Number);
-            fecha.setHours(horas, minutos);
-        }
-        return fecha;
-    }
-    return null; // Si no se pudo analizar, devolver null
-}
-
-  // Asegúrate de manejar el formateo de la fecha en el método exportToExcel si es necesario.
-
-  descargarDatosMEC() {
-    this.enterpriseService.getEventRegister$().pipe(take(1)).subscribe((eventos) => {
-      const eventosProcesados = eventos.map(evento => {
-        // Convertir fechas de Firebase
-        const eventoConFecha = this.convertirFechasFirebase(evento);
-
-        if(eventoConFecha?.origen){
-          // Extraer valores de 'origen'
-          const urlParts = eventoConFecha.origen.split('?');
-          const baseUrl = 'https://predyc.com'; // Base URL
-          // Asignar los parámetros UTM si existen
-          const url = new URLSearchParams(urlParts[1] || '');
-          eventoConFecha.source = url.get('utm_source') || '';
-          eventoConFecha.medium = url.get('utm_medium') || '';
-          eventoConFecha.campaign = url.get('utm_campaign') || '';
-          // Crear el nuevo campo con el origen sin parámetros
-          eventoConFecha.origenBase = `${baseUrl}${urlParts[0]}`;
-        }
-
-        if(eventoConFecha.assistanceData) {
-          let days = eventoConFecha.assistanceData.map(element => {
-            return element.id;
-          });
-        
-          // Ordenar alfabéticamente
-          days.sort();
-        
-          days = days.toString();
-          eventoConFecha.asistencia = days;
-          delete eventoConFecha.assistanceData;
-        }
-        
-        return eventoConFecha;
-      });
-  
-      // Exportar a Excel si hay datos
-      if (eventosProcesados && eventosProcesados.length > 0) {
-        this.exportToExcel(eventosProcesados, 'MenAccuion_data');
-      }
-    });
-  }
-
-  descargarDatosFoms() {
-    this.enterpriseService.getFormsData$().pipe(take(1)).subscribe((eventos) => {
-      const eventosProcesados = eventos.map(evento => {
-        // Convertir fechas de Firebase
-        const eventoConFecha = this.convertirFechasFirebase(evento);
-  
-        // Extraer valores de 'origen'
-        if(eventoConFecha?.origen){
-          const urlParts = eventoConFecha.origen.split('?');
-          const baseUrl = 'https://predyc.com'; // Base URL
-    
-          // Asignar los parámetros UTM si existen
-          const url = new URLSearchParams(urlParts[1] || '');
-          eventoConFecha.source = url.get('utm_source') || '';
-          eventoConFecha.medium = url.get('utm_medium') || '';
-          eventoConFecha.campaign = url.get('utm_campaign') || '';
-    
-          // Crear el nuevo campo con el origen sin parámetros
-          eventoConFecha.origenBase = `${baseUrl}${urlParts[0]}`;
-    
-        }
-
-        return eventoConFecha;
-      });
-  
-      // Exportar a Excel si hay datos
-      if (eventosProcesados && eventosProcesados.length > 0) {
-        this.exportToExcel(eventosProcesados, 'forms_data');
-      }
-    });
-  }
-
-  // Método para convertir las marcas de tiempo de Firebase a objetos Date
-  convertirFechasFirebase(obj: any): any {
-    Object.keys(obj).forEach(key => {
-      const value = obj[key];
-
-      // Verificar si el valor es un objeto con la propiedad `seconds`
-      if (value && value.seconds) {
-        const date = new Date(value.seconds * 1000);
-        obj[key] = date;  // Asigna directamente el objeto Date
-      }
-    });
-
-    return obj;  // Devolver el objeto con las fechas convertidas a Date
-  }
-
-  // Método para exportar a Excel
-  exportToExcel(jsonData: any[], fileName: string): void {
-    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(jsonData);
-    const workbook: XLSX.WorkBook = {
-      Sheets: { 'data': worksheet },
-      SheetNames: ['data']
-    };
-    XLSX.writeFile(workbook, `${fileName}.xlsx`);
-  }
-
-  user
   async ngOnInit() {
     this.authService.user$.subscribe((user) => {
       this.user = user;
@@ -412,6 +202,212 @@ convertirFechaString(fechaString: string): Date | null {
         //this.getData();
       }
     });
+  }
+
+  async fixProfiles() {
+    const profilesSnapshot: QuerySnapshot<ProfileJson> = (await this.afs.collection(Profile.collection).ref.get()) as QuerySnapshot<ProfileJson>;
+    const profiles = profilesSnapshot.docs.map((doc) => doc.data());
+    for (let profile of profiles) {
+      const newCoursesRef = profile.coursesRef.map((item, idx) => {
+        return {
+          courseRef: item,
+          studyPlanOrder: idx + 1,
+        };
+      });
+      const usersSnapshot: QuerySnapshot<UserJson> = (await this.afs.collection(UserClass.collection).ref
+      .where("profile","==",this.profileService.getProfileRefById(profile.id))
+      .get()) as QuerySnapshot<UserJson>;
+      const users = usersSnapshot.docs.map((doc) => doc.data());
+      for (let user of users) {
+        const coursesSnapshot: QuerySnapshot<CourseByStudentJson> = (await this.afs.collection(CourseByStudent.collection).ref
+        .where("userRef","==",this.userService.getUserRefById(user.uid))
+        .get()) as QuerySnapshot<CourseByStudentJson>;
+        const courses = coursesSnapshot.docs.map((doc) => doc.data());
+        if (courses.length > 0) {
+          for (let item of newCoursesRef) {
+            const targetCourseRef = courses.find(
+              (x) => x.courseRef.id === item.courseRef.id
+            );
+            await this.afs.collection<CourseByStudentJson>(CourseByStudent.collection).doc(targetCourseRef.id).set(
+              {
+                ...targetCourseRef,
+                studyPlanOrder: item.studyPlanOrder,
+              },
+              { merge: true }
+            );
+          }
+        }
+      }
+      await this.afs.collection<ProfileJson>(Profile.collection).doc(profile.id).set({ ...profile, coursesRef: newCoursesRef }, { merge: true });
+    }
+    this.courseService.fixStudyPlanEnterprise();
+  }
+
+  async getValoraciones() {
+    const valoraciones = await this.enterpriseService.getCursosValoraciones();
+    console.log('valoraciones', valoraciones);
+
+    let valoracionesExport = [];
+    valoraciones.forEach(valoracion => {
+        // Convertir la fecha de string a objeto Date
+        const fechaString = valoracion.valoracion.fecha; // Suponiendo que la fecha está en este campo
+        const fecha = this.convertirFechaString(fechaString); // Convertir la fecha usando la función
+        let respuesta = {
+            nombreUsuario: valoracion.usuarioDetalles.name,
+            curso: valoracion.cursoDetalles.titulo,
+            empresa: valoracion?.empresaDetalles?.name ? valoracion.empresaDetalles.name : 'independiente',
+            date: fecha, // Mantener como objeto Date
+            ...valoracion.valoracion
+        };
+        valoracionesExport.push(respuesta);
+    });
+
+    valoracionesExport.forEach(element => {
+      delete element['fecha']
+      delete element['completado']
+    });
+
+    console.log('valoracionesExport', valoracionesExport);
+    this.exportToExcel(valoracionesExport, 'valoracionesExport');
+  }
+
+  // Función para convertir la fecha de string a objeto Date
+  convertirFechaString(fechaString: string): Date | null {
+      const partes = fechaString.split(', '); // Separar fecha y hora
+      const fechaParte = partes[0].trim(); // "10 de septiembre de 2024"
+      const horaParte = partes[1] ? partes[1].trim() : ''; // "09:19"
+
+      const meses = {
+          'enero': 0,
+          'febrero': 1,
+          'marzo': 2,
+          'abril': 3,
+          'mayo': 4,
+          'junio': 5,
+          'julio': 6,
+          'agosto': 7,
+          'septiembre': 8,
+          'octubre': 9,
+          'noviembre': 10,
+          'diciembre': 11
+      };
+
+      // Expresión regular para extraer el día, mes y año
+      const regex = /(\d{1,2}) de ([a-zA-Z]+) de (\d{4})/;
+      const match = fechaParte.match(regex);
+      if (match) {
+          const dia = parseInt(match[1], 10);
+          const mes = meses[match[2].toLowerCase()];
+          const anio = parseInt(match[3], 10);
+
+          const fecha = new Date(anio, mes, dia);
+          if (horaParte) {
+              const [horas, minutos] = horaParte.split(':').map(Number);
+              fecha.setHours(horas, minutos);
+          }
+          return fecha;
+      }
+      return null; // Si no se pudo analizar, devolver null
+  }
+
+  // Asegúrate de manejar el formateo de la fecha en el método exportToExcel si es necesario.
+  descargarDatosMEC() {
+    this.enterpriseService.getEventRegister$().pipe(take(1)).subscribe((eventos) => {
+      const eventosProcesados = eventos.map(evento => {
+        // Convertir fechas de Firebase
+        const eventoConFecha = this.convertirFechasFirebase(evento);
+
+        if(eventoConFecha?.origen){
+          // Extraer valores de 'origen'
+          const urlParts = eventoConFecha.origen.split('?');
+          const baseUrl = 'https://predyc.com'; // Base URL
+          // Asignar los parámetros UTM si existen
+          const url = new URLSearchParams(urlParts[1] || '');
+          eventoConFecha.source = url.get('utm_source') || '';
+          eventoConFecha.medium = url.get('utm_medium') || '';
+          eventoConFecha.campaign = url.get('utm_campaign') || '';
+          // Crear el nuevo campo con el origen sin parámetros
+          eventoConFecha.origenBase = `${baseUrl}${urlParts[0]}`;
+        }
+
+        if(eventoConFecha.assistanceData) {
+          let days = eventoConFecha.assistanceData.map(element => {
+            return element.id;
+          });
+        
+          // Ordenar alfabéticamente
+          days.sort();
+        
+          days = days.toString();
+          eventoConFecha.asistencia = days;
+          delete eventoConFecha.assistanceData;
+        }
+        
+        return eventoConFecha;
+      });
+  
+      // Exportar a Excel si hay datos
+      if (eventosProcesados && eventosProcesados.length > 0) {
+        this.exportToExcel(eventosProcesados, 'MenAccuion_data');
+      }
+    });
+  }
+
+  descargarDatosFoms() {
+    this.enterpriseService.getFormsData$().pipe(take(1)).subscribe((eventos) => {
+      const eventosProcesados = eventos.map(evento => {
+        // Convertir fechas de Firebase
+        const eventoConFecha = this.convertirFechasFirebase(evento);
+  
+        // Extraer valores de 'origen'
+        if(eventoConFecha?.origen){
+          const urlParts = eventoConFecha.origen.split('?');
+          const baseUrl = 'https://predyc.com'; // Base URL
+    
+          // Asignar los parámetros UTM si existen
+          const url = new URLSearchParams(urlParts[1] || '');
+          eventoConFecha.source = url.get('utm_source') || '';
+          eventoConFecha.medium = url.get('utm_medium') || '';
+          eventoConFecha.campaign = url.get('utm_campaign') || '';
+    
+          // Crear el nuevo campo con el origen sin parámetros
+          eventoConFecha.origenBase = `${baseUrl}${urlParts[0]}`;
+    
+        }
+
+        return eventoConFecha;
+      });
+  
+      // Exportar a Excel si hay datos
+      if (eventosProcesados && eventosProcesados.length > 0) {
+        this.exportToExcel(eventosProcesados, 'forms_data');
+      }
+    });
+  }
+
+  // Método para convertir las marcas de tiempo de Firebase a objetos Date
+  convertirFechasFirebase(obj: any): any {
+    Object.keys(obj).forEach(key => {
+      const value = obj[key];
+
+      // Verificar si el valor es un objeto con la propiedad `seconds`
+      if (value && value.seconds) {
+        const date = new Date(value.seconds * 1000);
+        obj[key] = date;  // Asigna directamente el objeto Date
+      }
+    });
+
+    return obj;  // Devolver el objeto con las fechas convertidas a Date
+  }
+
+  // Método para exportar a Excel
+  exportToExcel(jsonData: any[], fileName: string): void {
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(jsonData);
+    const workbook: XLSX.WorkBook = {
+      Sheets: { 'data': worksheet },
+      SheetNames: ['data']
+    };
+    XLSX.writeFile(workbook, `${fileName}.xlsx`);
   }
 
   ngOnDestroy() {
