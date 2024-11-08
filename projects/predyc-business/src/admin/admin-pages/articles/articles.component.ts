@@ -45,7 +45,7 @@ export class ArticlesComponent {
       this.authorService.getAuthors$(),
       this.articleService.getAllArticleTags$(),
     ])
-    .pipe(take(1))
+    // .pipe(take(1))
     .subscribe(([articles, authors, tags]) => {
       // console.log("articles", articles)
       // console.log("authors", authors)
