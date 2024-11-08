@@ -123,9 +123,8 @@ export class DashboardComponent {
         this.classes = classes
         this.testUsers = tests
 
-        let users = {...this.allUsers}
+        let users = [...this.allUsers]
         // console.log("users", users)
-
         if (users && users.length > 1) {
           // first response is an 1 element array corresponded to admin
           const performances = [];

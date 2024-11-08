@@ -55,40 +55,37 @@ export class UsersStudyTimeContainerComponent {
   currentMonth = new Date().getUTCMonth();  
   currentYear = new Date().getUTCFullYear()
 
-  chartData() {
-    this.courseServiceSubscription = this.courseService.getClassesByEnterprise$()
-    .pipe(
-      switchMap(classesByStudent => {
-        if (classesByStudent.length > 0) {
-          // Obtener un array de Observables para cada clase
-          const classObservables = classesByStudent.map(studentClass =>
-            this.courseService.getClass$(studentClass.classRef.id).pipe(
-              map(clase => ({
-                classDuration: clase.duracion,
-                endDate: firestoreTimestampToNumberTimestamp(studentClass.dateEnd)
-              }))
-            )
-          );
-          return combineLatest(classObservables);
-        } else {
-          return of([]);
-        }
-      }),
-      // filter(logs => logs.length > 0), // Filtra para pasar solo los arrays no vacíos.
-      take(1) // Toma el primer conjunto de datos no vacío.
-    )
-    .subscribe(logs => {
-      // Tu lógica de procesamiento aquí
-      this.logs = logs;
-      // console.log('logs',logs)
-      this.logsInCurrentMonth = logs.filter(log => {
-        const logMonth = new Date(log.endDate).getUTCMonth(); 
-        const logYear = new Date(log.endDate).getUTCFullYear();
-        return logMonth === this.currentMonth && logYear === this.currentYear;
-      });
-      // console.log("this.logsInCurrentMonth", this.logsInCurrentMonth);
-      this.hoursTimeMonth = this.logsInCurrentMonth.reduce((total, currentClass) => total + currentClass.classDuration, 0) / 60;
+  async chartData() {
+    const classesByStudent = await this.courseService.getClassesByEnterprise();
+
+    // const allClassesId = classesByStudent.map(x => x.classRef.id)
+    // console.log("allClassesId", allClassesId)
+    const classesIds: string[] = Array.from(
+      new Set(classesByStudent.map(classItem => classItem.classRef.id))
+    );
+
+    const classesData = await this.courseService.getClassesByIds(classesIds)
+    // console.log("classesData docs", classesData.length)
+
+    const logs = await Promise.all(
+      classesByStudent.map(async classByStudent => {
+        // const clase = await this.courseService.getClass(classByStudent.classRef.id);
+        const clase = classesData.find(x => x.id === classByStudent.classRef.id)
+        return {
+          classDuration: clase.duracion,
+          endDate: firestoreTimestampToNumberTimestamp(classByStudent.dateEnd)
+        };
+      })
+    );
+
+    this.logs = logs
+    this.logsInCurrentMonth = logs.filter(log => {
+      const logMonth = new Date(log.endDate).getUTCMonth(); 
+      const logYear = new Date(log.endDate).getUTCFullYear();
+      return logMonth === this.currentMonth && logYear === this.currentYear;
     });
+    this.hoursTimeMonth = this.logsInCurrentMonth.reduce((total, currentClass) => total + currentClass.classDuration, 0) / 60;
+    
   }
   
   

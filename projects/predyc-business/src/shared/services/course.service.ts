@@ -6,7 +6,7 @@ import { BehaviorSubject, firstValueFrom, forkJoin, Observable, of } from "rxjs"
 import { EnterpriseService } from "./enterprise.service";
 import { AlertsService } from "./alerts.service";
 import { combineLatest } from "rxjs";
-import { defaultIfEmpty, filter, map, switchMap, take } from "rxjs/operators";
+import { defaultIfEmpty, filter, map, switchMap, take, tap } from "rxjs/operators";
 import { CourseRating, Curso, CursoJson } from "projects/shared/models/course.model";
 import { Modulo } from "projects/shared/models/module.model";
 import { Clase } from "projects/shared/models/course-class.model";
@@ -1425,11 +1425,8 @@ export class CourseService {
   }
 
   async getClass(classId: string): Promise<Clase> {
-    return (
-      await firstValueFrom(
-        this.afs.collection<Clase>(Clase.collection).doc(classId).get()
-      )
-    ).data();
+    const snapshot = await this.afs.collection<Clase>(Clase.collection).doc(classId).ref.get()
+    return snapshot.data()
   }
 
   getClassesByEnterprise$(): Observable<any[]> {
@@ -1437,11 +1434,7 @@ export class CourseService {
       switchMap((isLoaded) => {
         if (!isLoaded) return of([]);
         const enterpriseRef = this.enterpriseService.getEnterpriseRef();
-        return this.afs
-          .collection<User>(User.collection, (ref) =>
-            ref.where("enterprise", "==", enterpriseRef)
-          )
-          .valueChanges();
+        return this.afs.collection<User>(User.collection, (ref) =>ref.where("enterprise", "==", enterpriseRef)).valueChanges();
       }),
       switchMap((users) => {
         if (users.length === 0) {
@@ -1459,6 +1452,36 @@ export class CourseService {
       }),
       map((arraysOfClasses) => arraysOfClasses.flat())
     );
+  }
+
+  async getClassesByEnterprise(): Promise<any[]> {
+    
+    const isLoaded = await firstValueFrom(this.enterpriseService.enterpriseLoaded$);
+    if (!isLoaded) return [];
+
+    const enterpriseRef = this.enterpriseService.getEnterpriseRef();
+
+    const usersSnapshot = await this.afs.collection<User>(User.collection).ref.where("enterprise", "==", enterpriseRef).get();
+    const users = usersSnapshot.docs.map(doc => doc.data() as User)
+
+    if (users.length === 0) return [];
+    // console.log("users docs", users.length)
+
+    // Prepare an array of promises for each user's `classesByStudent` query
+    const classPromises = users.map(user => 
+      this.afs.collection("classesByStudent").ref
+        .where("userRef", "==", this.userService.getUserRefById(user.uid))
+        .where("completed", "==", true)
+        .get()
+        .then(snapshot => snapshot.docs.map(doc => doc.data())) // Extract data from each document
+    );
+
+    // Resolve all promises and flatten the results into a single array
+    const classesByStudent = await Promise.all(classPromises);
+    const flattenedClassesByStudent = classesByStudent.flat();
+
+    // console.log("classesByStudent docs", flattenedClassesByStudent.length);
+    return flattenedClassesByStudent;
   }
 
   getClassesByStudentThrougCoursesByStudent$(
@@ -1504,6 +1527,28 @@ export class CourseService {
 
     return combineLatest(observables).pipe(map(results => results.flat()));
   }
+
+  async getClassesByIds(ids: string[]): Promise<Clase[]> {
+    if (ids.length === 0) return [];
+
+    const chunkSize = 10; // Firestore limits to 10 IDs in an `in` query
+    const idChunks = [];
+
+    // Split IDs into chunks
+    for (let i = 0; i < ids.length; i += chunkSize) {
+        idChunks.push(ids.slice(i, i + chunkSize));
+    }
+
+    // Map each chunk to a Firestore query
+    const chunkPromises = idChunks.map(chunk => 
+        this.afs.collection<Clase>(Clase.collection).ref
+        .where('id', 'in', chunk).get().then(snapshot => snapshot.docs.map(doc => doc.data() as Clase))
+    );
+
+    // Resolve all chunk promises and flatten results
+    const chunkResults = await Promise.all(chunkPromises);
+    return chunkResults.flat();
+}
 
   async updateCourseCompletionStatusTEST(idClass: string, idCourse: string, progress: number ,progressTime: number = 0, courseTime: number = 0, cheater: boolean = false) {
     //console.log('update progreso')
