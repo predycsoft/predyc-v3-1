@@ -88,6 +88,9 @@ export class PillarsListComponent {
     ])
     .pipe(
       switchMap(([categories, skills, courses]) => {
+        // console.log("categories", categories)
+        // console.log("skills", skills)
+        // console.log("courses", courses)
         if (categories.length === 0)  return of([]);
   
         const categoriesWithSkills = this.getCategoriesWithSkills(categories, skills);
@@ -114,7 +117,7 @@ export class PillarsListComponent {
         });
         return combineLatest(categoriesInList$);
       }),
-      take(2),
+      // take(2),
     ).subscribe(categoryInList => {
       console.log("categoryInList", categoryInList)
       this.paginator.pageIndex = page - 1;
