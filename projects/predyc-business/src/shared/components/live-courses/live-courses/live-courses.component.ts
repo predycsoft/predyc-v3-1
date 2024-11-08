@@ -67,6 +67,7 @@ export class LiveCoursesComponent {
 
   licensesSubscription: Subscription;
   subscriptionObservableSubs: Subscription;
+  livecoursesSubs: Subscription;
   productServiceSubscription: Subscription;
 
   calendarLiveCourses: CalendarLiveCourseData[] = [];
@@ -162,79 +163,77 @@ export class LiveCoursesComponent {
       });
       // console.log("this.categories", this.categories)
       // ---------
+    });
 
+    // For Calendario (Observables)
+    if (this.livecoursesSubs) this.livecoursesSubs.unsubscribe()
+    this.livecoursesSubs = this.liveCourseService.getAllLiveCoursesWithSessions$()
+    // .pipe(take(1))
+    .subscribe((livecoursesWithSessions) => {
+      // console.log(`livecoursesWithSessions`, livecoursesWithSessions)
+      this.liveCourseService.getDiplomados$().pipe(take(1)).subscribe((diplomados) => {
+        if (diplomados) {
+          // console.log('diplomados',diplomados)
+          let profilesBase = [];
+          diplomados.forEach((element) => {
+            if (element?.baseDiplomado?.id) {
+              profilesBase.push(element?.baseDiplomado?.id);
+            }
+          });
 
+          this.diplomados = diplomados;
+          // console.log('perfiles', this.diplomados);
 
-      // For Calendario (Observables)
-      this.liveCourseService.getAllLiveCoursesWithSessions$()
-      .pipe(take(1))
-      .subscribe((livecoursesWithSessions) => {
-        // console.log(`livecoursesWithSessions`, livecoursesWithSessions)
-
-        this.liveCourseService.getDiplomados$().pipe(take(1)).subscribe((diplomados) => {
-          if (diplomados) {
-            // console.log('diplomados',diplomados)
-            let profilesBase = [];
-            diplomados.forEach((element) => {
-              if (element?.baseDiplomado?.id) {
-                profilesBase.push(element?.baseDiplomado?.id);
-              }
-            });
-  
-            this.diplomados = diplomados;
-            // console.log('perfiles', this.diplomados);
-
-            let newCalendarLiveCourses: CalendarLiveCourseData[] = [];
-            diplomados.forEach((diploamdo) => {
-                const calendarLiveCourseData: CalendarLiveCourseData = {
-                  type: 'diplomado',
-                  courseTitle: diploamdo.name,
-                  coursePhoto: diploamdo.photoUrl,
-                  courseId: diploamdo.id,
-                  courseIdentifierText: null,
-                  courseMeetingLink: null,
-                  sessionTitle: diploamdo.name,
-                  sessionDuration: null,
-                  sessionOrderNumber: 1,
-                  sessionDate: new Date(diploamdo.startDate).getTime(),
-                  sessionVimeoId1: null,
-                  sessionVimeoId2: null,
-                  diplomadoLiveRef: null,
-                  diplomadoData: null,
-                  duration: diploamdo.duration
-                };
-                newCalendarLiveCourses.push(calendarLiveCourseData);
-              this.calendarLiveDiplomados = newCalendarLiveCourses.sort((a, b) => a.sessionDate - b.sessionDate);
-              // console.log("calendarLiveDiplomados in live-course component", this.calendarLiveDiplomados);
-            });
-
-            
-          }
           let newCalendarLiveCourses: CalendarLiveCourseData[] = [];
-          livecoursesWithSessions.forEach(({ liveCourse, sessions }) => {
-            sessions.forEach((session) => {
+          diplomados.forEach((diploamdo) => {
               const calendarLiveCourseData: CalendarLiveCourseData = {
-                type: 'coruse',
-                courseTitle: liveCourse.title,
-                coursePhoto: liveCourse.photoUrl,
-                courseId: liveCourse.id,
-                courseIdentifierText: liveCourse.identifierText,
-                courseMeetingLink: liveCourse.meetingLink,
-                sessionTitle: session.title,
-                sessionDuration: session.duration,
-                sessionOrderNumber: session.orderNumber,
-                sessionDate: firestoreTimestampToNumberTimestamp(session.date),
-                sessionVimeoId1: session.vimeoId1,
-                sessionVimeoId2: session.vimeoId2,
-                diplomadoLiveRef: liveCourse['diplomadoLiveRef'],
-                diplomadoData: this.diplomados.find(x => x.id == liveCourse['diplomadoLiveRef']?.id),
-                duration: liveCourse.duration
+                type: 'diplomado',
+                courseTitle: diploamdo.name,
+                coursePhoto: diploamdo.photoUrl,
+                courseId: diploamdo.id,
+                courseIdentifierText: null,
+                courseMeetingLink: null,
+                sessionTitle: diploamdo.name,
+                sessionDuration: null,
+                sessionOrderNumber: 1,
+                sessionDate: new Date(diploamdo.startDate).getTime(),
+                sessionVimeoId1: null,
+                sessionVimeoId2: null,
+                diplomadoLiveRef: null,
+                diplomadoData: null,
+                duration: diploamdo.duration
               };
               newCalendarLiveCourses.push(calendarLiveCourseData);
-            });
-            this.calendarLiveCourses = newCalendarLiveCourses.sort((a, b) => a.sessionDate - b.sessionDate);
-            // console.log("calendarLiveCourses in live-course component", this.calendarLiveCourses);
+            this.calendarLiveDiplomados = newCalendarLiveCourses.sort((a, b) => a.sessionDate - b.sessionDate);
+            // console.log("calendarLiveDiplomados in live-course component", this.calendarLiveDiplomados);
           });
+
+          
+        }
+        let newCalendarLiveCourses: CalendarLiveCourseData[] = [];
+        livecoursesWithSessions.forEach(({ liveCourse, sessions }) => {
+          sessions.forEach((session) => {
+            const calendarLiveCourseData: CalendarLiveCourseData = {
+              type: 'coruse',
+              courseTitle: liveCourse.title,
+              coursePhoto: liveCourse.photoUrl,
+              courseId: liveCourse.id,
+              courseIdentifierText: liveCourse.identifierText,
+              courseMeetingLink: liveCourse.meetingLink,
+              sessionTitle: session.title,
+              sessionDuration: session.duration,
+              sessionOrderNumber: session.orderNumber,
+              sessionDate: firestoreTimestampToNumberTimestamp(session.date),
+              sessionVimeoId1: session.vimeoId1,
+              sessionVimeoId2: session.vimeoId2,
+              diplomadoLiveRef: liveCourse['diplomadoLiveRef'],
+              diplomadoData: this.diplomados.find(x => x.id == liveCourse['diplomadoLiveRef']?.id),
+              duration: liveCourse.duration
+            };
+            newCalendarLiveCourses.push(calendarLiveCourseData);
+          });
+          this.calendarLiveCourses = newCalendarLiveCourses.sort((a, b) => a.sessionDate - b.sessionDate);
+          // console.log("calendarLiveCourses in live-course component", this.calendarLiveCourses);
         });
       });
     });
@@ -328,5 +327,7 @@ export class LiveCoursesComponent {
 
   ngOnDestroy() {
     if (this.subscriptionObservableSubs) this.subscriptionObservableSubs.unsubscribe();
+    if (this.livecoursesSubs) this.livecoursesSubs.unsubscribe()
+
   }
 }
