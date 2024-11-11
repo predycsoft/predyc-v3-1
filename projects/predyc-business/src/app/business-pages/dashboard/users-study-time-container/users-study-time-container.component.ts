@@ -1,8 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { combineLatest, filter, map, of, Subscription, switchMap, take } from 'rxjs';
 import { CourseService } from 'projects/predyc-business/src/shared/services/course.service';
 import { IconService } from 'projects/predyc-business/src/shared/services/icon.service';
 import { firestoreTimestampToNumberTimestamp } from 'projects/shared/utils';
+import { LoggingService } from 'projects/predyc-business/src/shared/services/logging.service';
+import { Enterprise } from 'projects/shared/models/enterprise.model';
+import { User } from 'projects/shared/models/user.model';
+import { ComponentLog } from 'projects/shared/models/component-log.model';
 
 export class Log {
   endDate: number = 0
@@ -15,9 +19,13 @@ export class Log {
 })
 export class UsersStudyTimeContainerComponent {
 
+  @Input() enterprise: Enterprise = null
+  @Input() authUser: User = null
+
   constructor(
     public icon: IconService,
-    private courseService: CourseService
+    private courseService: CourseService,
+    private loggingService: LoggingService
   ){}
   
   chartTab: number = 0
@@ -30,7 +38,7 @@ export class UsersStudyTimeContainerComponent {
 
   targetHoursPerMonth = 20
 
-  ngOnInit() {
+  async ngOnInit() {
     // Set of first day of the week and first day on the last 12 months
     let startOfWeek = new Date();
     startOfWeek.setUTCDate(this.now.getUTCDate() - ((this.now.getUTCDay() + 6) % 7));
@@ -47,7 +55,8 @@ export class UsersStudyTimeContainerComponent {
     // this.logs = this.generateTestData()
     // console.log("this.logs", this.logs)
     // -----
-    this.chartData()
+    await this.chartData()
+    await this.saveComponentLog()
   }
 
   courseServiceSubscription: Subscription
@@ -88,5 +97,21 @@ export class UsersStudyTimeContainerComponent {
     
   }
   
-  
+  async saveComponentLog() {
+    const log = new ComponentLog(
+      this.authUser.uid,
+      this.authUser.displayName,
+      "UsersStudyTimeContainerComponent",
+      new Date(),
+      this.enterprise.id,
+      this.enterprise.name,
+      null,
+      "/",
+    )
+    try {
+      await this.loggingService.saveComponentLog(log.toJson())
+    } catch (error) {
+      console.error("Error saving component log: ", error)
+    }
+  }
 }

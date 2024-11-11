@@ -11,6 +11,8 @@ import { Subscription as SubscriptionClass } from "projects/shared/models/subscr
 import { SubscriptionService } from "projects/predyc-business/src/shared/services/subscription.service";
 import { ProductService } from "projects/predyc-business/src/shared/services/product.service";
 import { User } from "projects/shared/models/user.model";
+import { LoggingService } from "projects/predyc-business/src/shared/services/logging.service";
+import { ComponentLog } from "projects/shared/models/component-log.model";
 
 interface UserInList {
   displayName: string;
@@ -50,6 +52,7 @@ export class AdminStudentListComponent {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @Input() enableNavigateToUser: boolean = true;
   @Input() newUser: any = null;
+  @Input() authUser: User = null;
   @Output() onStudentSelected = new EventEmitter<UserInList>();
   @Output() totalUsers = new EventEmitter<any>();
 
@@ -72,6 +75,7 @@ export class AdminStudentListComponent {
     private enterpriseService: EnterpriseService,
     private subscriptionService: SubscriptionService,
     private productService: ProductService,
+    private loggingService: LoggingService,
 
   ) {}
 
@@ -98,7 +102,7 @@ export class AdminStudentListComponent {
       this.userService.getAllUsers$(),
       this.subscriptionService.getSubscriptions$()
     ]).pipe(take(1))
-    .subscribe(([users, subscriptions]) => {
+    .subscribe(async ([users, subscriptions]) => {
       console.log("users in all users table", users)
       // console.log("subscriptions", subscriptions)
       // Map each subscription to its user
@@ -188,6 +192,8 @@ export class AdminStudentListComponent {
         const statusTerm = params["status"] || "";
         this.performSearch(searchTerm,statusTerm, page, usersInList);
       });
+
+      await this.saveComponentLog()
     })
   }
 
@@ -237,6 +243,24 @@ export class AdminStudentListComponent {
       queryParams: { page },
       queryParamsHandling: "merge",
     });
+  }
+
+  async saveComponentLog() {
+    const log = new ComponentLog(
+      this.authUser.uid,
+      this.authUser.displayName,
+      "AdminStudentListComponent",
+      new Date(),
+      null,
+      null,
+      null,
+      "/admin/students",
+    )
+    try {
+      await this.loggingService.saveComponentLog(log.toJson())
+    } catch (error) {
+      console.error("Error saving component log: ", error)
+    }
   }
 
   ngOnDestroy() {

@@ -6,6 +6,7 @@ import { UserService } from "projects/predyc-business/src/shared/services/user.s
 import { IconService } from "projects/predyc-business/src/shared/services/icon.service";
 import { AngularFireFunctions } from "@angular/fire/compat/functions";
 import { firstValueFrom } from "rxjs";
+import { AuthService } from "projects/predyc-business/src/shared/services/auth.service";
 
 @Component({
   selector: "app-students",
@@ -13,8 +14,14 @@ import { firstValueFrom } from "rxjs";
   styleUrls: ["./students.component.css"],
 })
 export class StudentsComponent {
-  constructor(private modalService: NgbModal, private userService: UserService, public icon: IconService, private fireFunctions: AngularFireFunctions) {}
+  constructor(private authService: AuthService, private modalService: NgbModal, private userService: UserService, public icon: IconService, private fireFunctions: AngularFireFunctions) {}
+  authUser: User = null
 
+  ngOnInit() {
+    this.authService.user$.subscribe((user) => {
+      this.authUser = user;
+    });
+  }
   createParticularStudent() {
     this.openCreateUserModal(null);
   }

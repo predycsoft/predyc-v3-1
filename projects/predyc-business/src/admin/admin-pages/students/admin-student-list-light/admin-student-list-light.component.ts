@@ -11,6 +11,8 @@ import { Subscription as SubscriptionClass } from "projects/shared/models/subscr
 import { SubscriptionService } from "projects/predyc-business/src/shared/services/subscription.service";
 import { ProductService } from "projects/predyc-business/src/shared/services/product.service";
 import { User } from "projects/shared/models/user.model";
+import { LoggingService } from "projects/predyc-business/src/shared/services/logging.service";
+import { ComponentLog } from "projects/shared/models/component-log.model";
 
 interface UserInList {
   displayName: string;
@@ -49,6 +51,7 @@ export class AdminStudentListLightComponent {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @Input() enableNavigateToUser: boolean = true;
   @Input() newUser: any = null;
+  @Input() authUser: User = null;
   @Output() onStudentSelected = new EventEmitter<UserInList>();
   @Output() totalUsers = new EventEmitter<any>();
 
@@ -75,8 +78,9 @@ export class AdminStudentListLightComponent {
     private enterpriseService: EnterpriseService,
     private subscriptionService: SubscriptionService,
     private productService: ProductService,
-  ) {}
+    private loggingService: LoggingService,
 
+  ) {}
 
   async ngOnInit() {
     console.log("Users by searchbar")
@@ -100,7 +104,7 @@ export class AdminStudentListLightComponent {
       }
     });
 
-
+    await this.saveComponentLog()
   }
 
   ngAfterViewInit() {
@@ -234,6 +238,24 @@ export class AdminStudentListLightComponent {
       queryParams: { page },
       queryParamsHandling: "merge",
     });
+  }
+
+  async saveComponentLog() {
+    const log = new ComponentLog(
+      this.authUser.uid,
+      this.authUser.displayName,
+      "AdminStudentListLightComponent",
+      new Date(),
+      null,
+      null,
+      null,
+      "/admin/students",
+    )
+    try {
+      await this.loggingService.saveComponentLog(log.toJson())
+    } catch (error) {
+      console.error("Error saving component log: ", error)
+    }
   }
 
   ngOnDestroy() {

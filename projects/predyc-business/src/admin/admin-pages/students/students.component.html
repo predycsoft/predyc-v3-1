@@ -45,9 +45,9 @@
   </div>
   <!-- student list -->
   <div fxLayout="column" fxLayoutAlign="center center" class="fw vh50 pdr20">
-    <app-admin-student-list-light *ngIf="view === 0" class="fw" (totalUsers)="getUsers($event)" (onStudentSelected)="onStudentSelected($event)" [newUser]="newUser"></app-admin-student-list-light>
+    <app-admin-student-list-light *ngIf="view === 0" class="fw" (totalUsers)="getUsers($event)" (onStudentSelected)="onStudentSelected($event)" [newUser]="newUser" [authUser]="authUser"></app-admin-student-list-light>
   </div>
   <div fxLayout="column" fxLayoutAlign="center center" class="fw vh50 pdr20">
-    <app-admin-student-list *ngIf="view === 1" class="fw" (totalUsers)="getUsers($event)" (onStudentSelected)="onStudentSelected($event)" [newUser]="newUser"></app-admin-student-list>
+    <app-admin-student-list *ngIf="view === 1" class="fw" (totalUsers)="getUsers($event)" (onStudentSelected)="onStudentSelected($event)" [newUser]="newUser" [authUser]="authUser"></app-admin-student-list>
   </div>
 </div>
