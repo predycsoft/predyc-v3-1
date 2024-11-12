@@ -15,4 +15,16 @@ export class LoggingService {
     await this.afs.collection(ComponentLog.collection).doc(logJson.id).set(logJson)
     console.log("Component log saved")
   }
+
+  async getLogs() {
+    const logsSnapshot = await this.afs.collection<ComponentLog>(ComponentLog.collection).ref.get();
+    const logs = logsSnapshot.docs.map(doc => doc.data() as ComponentLog)
+
+    if (logs.length === 0) return [];
+    return logs
+  }
+
+  async getLogsByDate() {
+
+  }
 }

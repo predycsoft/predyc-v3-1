@@ -28,6 +28,7 @@ import { PillarsComponent } from "./admin-pages/pillars/pillars.component";
 import { ReviewsComponent } from "./admin-pages/reviews/reviews.component";
 import { CoursesP21Component } from "../shared/components/courses-p21/courses-p21.component";
 import { CreateCourseP21Component } from "../shared/components/courses-p21/create-course-p21/create-course-p21.component";
+import { LogsComponent } from "./admin-pages/logs/logs.component";
 
 export const MAIN_TITLE = "Predyc Admin - ";
 
@@ -80,6 +81,7 @@ const routes: Routes = [
   { path: "pillars", title: MAIN_TITLE + "Pillars", component: PillarsComponent },
   
   { path: "reviews", title: MAIN_TITLE + "Reviews", component: ReviewsComponent },
+  { path: "logs", title: MAIN_TITLE + "Logs", component: LogsComponent },
 
   { path: "**", redirectTo: "", pathMatch: "full" }, // Wildcard Route
 ];

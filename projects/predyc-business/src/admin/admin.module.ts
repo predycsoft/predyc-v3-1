@@ -58,6 +58,8 @@ import { DialogReviewsComponent } from './admin-pages/reviews/reviews-list/dialo
 import { CoursesP21Component } from "../shared/components/courses-p21/courses-p21.component";
 import { CreateCourseP21Component } from "../shared/components/courses-p21/create-course-p21/create-course-p21.component";
 import { AdminStudentListLightComponent } from './admin-pages/students/admin-student-list-light/admin-student-list-light.component';
+import { LogsComponent } from './admin-pages/logs/logs.component';
+import { LogsListComponent } from './admin-pages/logs/logs-list/logs-list.component';
 
 
 @NgModule({
@@ -117,7 +119,9 @@ import { AdminStudentListLightComponent } from './admin-pages/students/admin-stu
     ReviewsComponent,
     ReviewsListComponent,
     DialogReviewsComponent,
-    AdminStudentListLightComponent
+    AdminStudentListLightComponent,
+    LogsComponent,
+    LogsListComponent
   ],
   imports: [SharedModule, CommonModule, AdminRoutingModule],
 })

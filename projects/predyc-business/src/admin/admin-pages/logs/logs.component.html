@@ -1,0 +1,23 @@
+<div class="mgt20 mgl20 mgr20">
+    <p class="ft600 ft16 gray-10">Logs</p>
+    <div fxLayout="row" class="mgb05 fw" fxLayoutAlign="start center" fxLayoutGap=".5rem">        
+        <select [(ngModel)]="selectedOption" (change)="onOptionChange()" class="form-control w-20">
+            <option value="Seleccionar dia">Seleccionar día</option>
+            <option value="Ultimos 7 dias">Últimos 7 días</option>
+            <option value="Mes actual">Mes actual</option>
+            <option value="Todos">Todos</option>
+        </select>
+        
+        <!-- Show calendar only when 'Seleccionar dia' is selected -->
+        <input *ngIf="selectedOption === 'Seleccionar dia'" type="date" 
+               class="form-control pdl20 radius20 shadow-animation borderLight w-20" 
+               [(ngModel)]="customDate" 
+               (change)="onCustomDateChange()">
+    </div>
+
+    <!-- logs list -->
+    <div fxLayout="columm" fxLayoutAlign="center center" class="fw vh50" >
+        <app-logs-list *ngIf="filteredLogs.length > 0" class="fw mgr03" [logs]="filteredLogs"></app-logs-list>
+        <span *ngIf="filteredLogs.length === 0 && customDate">No hay registros para la fecha seleccionada</span>
+    </div>
+</div>
