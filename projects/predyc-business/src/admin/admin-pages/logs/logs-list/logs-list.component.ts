@@ -4,6 +4,8 @@ import { GroupedLogs } from '../logs.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { firestoreTimestampToNumberTimestamp } from 'projects/shared/utils';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { DialogComponentLogsDetailComponent } from '../dialog-component-logs-detail/dialog-component-logs-detail.component';
 
 @Component({
   selector: 'app-logs-list',
@@ -12,6 +14,10 @@ import { firestoreTimestampToNumberTimestamp } from 'projects/shared/utils';
 })
 export class LogsListComponent {
   @Input() logs: GroupedLogs[] = [];
+
+  constructor(
+		private modalService: NgbModal,
+  ){}
 
   displayedColumns: string[] = [
     'ComponentName', 
@@ -38,4 +44,17 @@ export class LogsListComponent {
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
   }
+
+  async onSelect(selectedComponentLogs: GroupedLogs) {
+		const modalRef = this.modalService.open(DialogComponentLogsDetailComponent, {
+			animation: true,
+			centered: true,
+			size: "lg",
+			// backdrop: "static",
+			keyboard: false,
+			// windowClass: 'modWidth'
+		});
+
+		modalRef.componentInstance.componentLogs = selectedComponentLogs;
+	}
 }

@@ -25,6 +25,7 @@ export class LogsComponent {
 
   async ngOnInit() {
     const logsData: ComponentLog[] = await this.loggingService.getLogs();
+    // console.log("logsData", logsData)
     logsData.forEach(log => {
       if (log.date) {
         log.date = firestoreTimestampToNumberTimestamp(log.date) as number;
@@ -40,6 +41,7 @@ export class LogsComponent {
         return acc;
       }, {} as { [key: string]: { componentName: string; componentsData: ComponentLog[] } })
     );
+    // console.log("this.groupedLogs", this.groupedLogs)
   }
 
   onOptionChange() {
@@ -56,6 +58,7 @@ export class LogsComponent {
         break;
       case 'Todos':
         this.filteredLogs = [...this.groupedLogs];
+        console.log("this.filteredLogs", this.filteredLogs)
         break;
     }
   }
@@ -72,6 +75,8 @@ export class LogsComponent {
       componentsData: group.componentsData.filter(log => log.date >= startOfDay && log.date <= endOfDay)
     })).filter(group => group.componentsData.length > 0);
 
+    console.log("this.filteredLogs", this.filteredLogs)
+
   }
 
   filterLastNDays(days: number) {
@@ -82,6 +87,9 @@ export class LogsComponent {
       ...group,
       componentsData: group.componentsData.filter(log => log.date >= startDate && log.date <= now)
     })).filter(group => group.componentsData.length > 0);
+
+    console.log("this.filteredLogs", this.filteredLogs)
+
   }
 
   monthSelected() {
@@ -95,6 +103,8 @@ export class LogsComponent {
       ...group,
       componentsData: group.componentsData.filter(log => log.date >= startOfMonth && log.date <= endOfMonth)
     })).filter(group => group.componentsData.length > 0);
+
+    console.log("this.filteredLogs", this.filteredLogs)
     
   }
   
