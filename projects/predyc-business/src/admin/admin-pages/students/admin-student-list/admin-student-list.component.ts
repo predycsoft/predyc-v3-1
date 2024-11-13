@@ -254,6 +254,7 @@ export class AdminStudentListComponent {
       null,
       null,
       null,
+      "Predyc Admin",
       "/admin/students",
     )
     try {

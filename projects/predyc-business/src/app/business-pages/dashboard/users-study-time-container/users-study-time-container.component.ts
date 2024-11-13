@@ -106,6 +106,7 @@ export class UsersStudyTimeContainerComponent {
       this.enterprise.id,
       this.enterprise.name,
       null,
+      "Predyc Empresas",
       "/",
     )
     try {

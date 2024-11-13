@@ -13,6 +13,7 @@ export class DialogComponentLogsDetailComponent {
 
   displayedColumns: string[] = [
     'URL', 
+    'Platform', 
     'AuthUser', 
     'AuthUserId', 
     'enterpriseName',

@@ -249,6 +249,7 @@ export class AdminStudentListLightComponent {
       null,
       null,
       null,
+      "Predyc Admin",
       "/admin/students",
     )
     try {
