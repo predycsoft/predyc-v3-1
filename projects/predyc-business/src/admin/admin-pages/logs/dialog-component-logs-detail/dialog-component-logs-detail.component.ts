@@ -12,6 +12,7 @@ export class DialogComponentLogsDetailComponent {
   @Input() componentLogs: GroupedLogs;
 
   displayedColumns: string[] = [
+    'readOp', 
     'URL', 
     'Platform', 
     'AuthUser', 
