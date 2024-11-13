@@ -715,7 +715,7 @@ export class UserService {
   }
   
 
-  async getFilteredUsers(searchTerm = null): Promise<User[]> {
+  async getFilteredUsers(searchTerm = null): Promise<{ data: User[], readCount: number }> {
   
     let finalDisplayNameQuery;
     let finalEmailQuery;
@@ -747,6 +747,8 @@ export class UserService {
     const emailSnapshot = await finalEmailQuery.get();
     // console.log("displayName users", displayNameSnapshot.docs.map(doc => doc.data() as User))
     // console.log("email users", emailSnapshot.docs.map(doc => doc.data() as User))
+
+    const readCount = displayNameSnapshot.size + emailSnapshot.size;
   
     const allUsers = [
       ...displayNameSnapshot.docs.map(doc => doc.data() as User),
@@ -757,7 +759,9 @@ export class UserService {
   
     // Remove duplicates by `uid`
     const uniqueUsersMap = new Map(allUsers.map(user => [user.uid, user]));
-    return Array.from(uniqueUsersMap.values());
+    const uniqueUsers = Array.from(uniqueUsersMap.values());
+
+    return { data: uniqueUsers, readCount };
   }
   
   getUsersReport$(
@@ -844,6 +848,14 @@ export class UserService {
       .pipe(shareReplay(1));
   }
 
+  async getAllUsersWithReadCount(): Promise<{ data: User[], readCount: number }> {
+    const snapshot = await this.afs.collection<User>(User.collection).ref.orderBy("displayName").get();
+  
+    const data = snapshot.docs.map(doc => doc.data() as User);
+    const readCount = snapshot.size; // Get the count of read documents
+  
+    return { data, readCount };
+  }
   
   getAllUsersForLiveCourses$(searchTerm = null, queryLimit = null): Observable<User[]> {
     if(!searchTerm) return of([])

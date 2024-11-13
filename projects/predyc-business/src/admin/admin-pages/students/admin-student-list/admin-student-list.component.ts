@@ -92,109 +92,112 @@ export class AdminStudentListComponent {
 
   async ngOnInit() {
     console.log("All users")
+    let totalReadCount = 0
+
     const enterprises = await firstValueFrom(this.enterpriseService.getAllEnterprises$())
     this.enterprises = enterprises;
+    totalReadCount += enterprises.length
 
     const products = await firstValueFrom(this.productService.getProducts$())
     this.products = products
+    totalReadCount += products.length
 
-    this.combinedSubscription = combineLatest([
-      this.userService.getAllUsers$(),
-      this.subscriptionService.getSubscriptions$()
-    ]).pipe(take(1))
-    .subscribe(async ([users, subscriptions]) => {
-      console.log("users in all users table", users)
-      // console.log("subscriptions", subscriptions)
-      // Map each subscription to its user
-      const userSubscriptionsMap = subscriptions.reduce((acc, sub) => {
-        (acc[sub.userRef.id] = acc[sub.userRef.id] || []).push(sub);
-        return acc;
-      }, {});
+    const { data: users, readCount: usersReadCount } = await this.userService.getAllUsersWithReadCount();
+    totalReadCount += usersReadCount
+    const { data: subscriptions, readCount: subscriptionsReadCount } = await this.subscriptionService.getSubscriptionsWithReadCount();
+    totalReadCount += subscriptionsReadCount
 
-      const response: any = users.map(user => ({
-        user,
-        subscriptions: userSubscriptionsMap[user.uid] || []
-      }));
-  
-      let today = new Date()
-      let todayTime = today.getTime()
-  
-      let usersInList: UserInList[] = response
-      .map(({ user, subscriptions }) => {
-        const enterprise = this.enterprises.find(
-          (enterprise) => enterprise.id === user.enterprise?.id
-        );
-        let activeSubscriptions = subscriptions.filter(
-          (x) => x.status === SubscriptionClass.STATUS_ACTIVE && x.currentPeriodEnd >= todayTime
-        );
-        let expiredSubscriptions = subscriptions.filter(
-          (x) => x.status === SubscriptionClass.STATUS_ACTIVE && x.currentPeriodEnd < todayTime
-        );
-        let status
-  
-        if(!activeSubscriptions || activeSubscriptions.length==0){
-          activeSubscriptions = []
-        }
-        if(!expiredSubscriptions || expiredSubscriptions.length==0){
-          expiredSubscriptions = []
-        }
-  
-        let AllActiveSubs = [...activeSubscriptions,...expiredSubscriptions]
-  
-        if((activeSubscriptions.length > 0 && expiredSubscriptions.length == 0) || (activeSubscriptions.length >0 && expiredSubscriptions.length > 0)){
-          status = SubscriptionClass.STATUS_ACTIVE
-        }
-        else if (activeSubscriptions.length == 0 && expiredSubscriptions.length > 0){
-          status = SubscriptionClass.STATUS_EXPIRED
-        }
-        else {
-          status = SubscriptionClass.STATUS_INACTIVE
-        }
-  
-        // console.log('revisar licencias',activeSubscriptions,expiredSubscriptions,status,AllActiveSubs)
-        let subscriptionWithLatestEndPeriod
-        if( AllActiveSubs.length > 0) {
-          AllActiveSubs.forEach(sub => {
-            sub.product = this.products.find(x=>x.id == sub.productRef.id)
-          });
-          subscriptionWithLatestEndPeriod = AllActiveSubs?.reduce((latest, current) => {
-            return latest.currentPeriodEnd > current.currentPeriodEnd ? latest : current;
-          });
-        
-        }
-        if (user.createdAt?.seconds) {
-          user.createdAt = user.createdAt.seconds*1000
-        }
-        if (user.updatedAt?.seconds) {
-          user.updatedAt = user.updatedAt.seconds*1000
-        }
-        return {
-          displayName: user.displayName,
-          uid: user.uid,
-          photoUrl: user.photoUrl,
-          email: user.email,
-          role:user.role,
-          createdAt: user.createdAt,
-          updatedAt: user.updatedAt,
-          phoneNumber: user.phoneNumber,
-          enterprise: enterprise ? enterprise.name : null,
-          status: SubscriptionClass.statusToDisplayValueDict[status],
-          statusId: status,
-          fechaVencimiento:subscriptionWithLatestEndPeriod?.currentPeriodEnd?subscriptionWithLatestEndPeriod.currentPeriodEnd:null,
-          productName:subscriptionWithLatestEndPeriod?.product.name?subscriptionWithLatestEndPeriod?.product.name:'N/A',
-        };
-      })
-      this.totalUsers.emit(usersInList);
-  
-      this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe((params) => {
-        const page = Number(params["page"]) || 1;
-        const searchTerm = params["search"] || "";
-        const statusTerm = params["status"] || "";
-        this.performSearch(searchTerm,statusTerm, page, usersInList);
-      });
+    // console.log("users in all users table", users)
+    // console.log("subscriptions", subscriptions)
+    // Map each subscription to its user
+    const userSubscriptionsMap = subscriptions.reduce((acc, sub) => {
+      (acc[sub.userRef.id] = acc[sub.userRef.id] || []).push(sub);
+      return acc;
+    }, {});
 
-      await this.saveComponentLog()
+    const response: any = users.map(user => ({
+      user,
+      subscriptions: userSubscriptionsMap[user.uid] || []
+    }));
+
+    let today = new Date()
+    let todayTime = today.getTime()
+
+    let usersInList: UserInList[] = response
+    .map(({ user, subscriptions }) => {
+      const enterprise = this.enterprises.find(
+        (enterprise) => enterprise.id === user.enterprise?.id
+      );
+      let activeSubscriptions = subscriptions.filter(
+        (x) => x.status === SubscriptionClass.STATUS_ACTIVE && x.currentPeriodEnd >= todayTime
+      );
+      let expiredSubscriptions = subscriptions.filter(
+        (x) => x.status === SubscriptionClass.STATUS_ACTIVE && x.currentPeriodEnd < todayTime
+      );
+      let status
+
+      if(!activeSubscriptions || activeSubscriptions.length==0){
+        activeSubscriptions = []
+      }
+      if(!expiredSubscriptions || expiredSubscriptions.length==0){
+        expiredSubscriptions = []
+      }
+
+      let AllActiveSubs = [...activeSubscriptions,...expiredSubscriptions]
+
+      if((activeSubscriptions.length > 0 && expiredSubscriptions.length == 0) || (activeSubscriptions.length >0 && expiredSubscriptions.length > 0)){
+        status = SubscriptionClass.STATUS_ACTIVE
+      }
+      else if (activeSubscriptions.length == 0 && expiredSubscriptions.length > 0){
+        status = SubscriptionClass.STATUS_EXPIRED
+      }
+      else {
+        status = SubscriptionClass.STATUS_INACTIVE
+      }
+
+      // console.log('revisar licencias',activeSubscriptions,expiredSubscriptions,status,AllActiveSubs)
+      let subscriptionWithLatestEndPeriod
+      if( AllActiveSubs.length > 0) {
+        AllActiveSubs.forEach(sub => {
+          sub.product = this.products.find(x=>x.id == sub.productRef.id)
+        });
+        subscriptionWithLatestEndPeriod = AllActiveSubs?.reduce((latest, current) => {
+          return latest.currentPeriodEnd > current.currentPeriodEnd ? latest : current;
+        });
+      
+      }
+      if (user.createdAt?.seconds) {
+        user.createdAt = user.createdAt.seconds*1000
+      }
+      if (user.updatedAt?.seconds) {
+        user.updatedAt = user.updatedAt.seconds*1000
+      }
+      return {
+        displayName: user.displayName,
+        uid: user.uid,
+        photoUrl: user.photoUrl,
+        email: user.email,
+        role:user.role,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+        phoneNumber: user.phoneNumber,
+        enterprise: enterprise ? enterprise.name : null,
+        status: SubscriptionClass.statusToDisplayValueDict[status],
+        statusId: status,
+        fechaVencimiento:subscriptionWithLatestEndPeriod?.currentPeriodEnd?subscriptionWithLatestEndPeriod.currentPeriodEnd:null,
+        productName:subscriptionWithLatestEndPeriod?.product.name?subscriptionWithLatestEndPeriod?.product.name:'N/A',
+      };
     })
+    this.totalUsers.emit(usersInList);
+
+    this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe((params) => {
+      const page = Number(params["page"]) || 1;
+      const searchTerm = params["search"] || "";
+      const statusTerm = params["status"] || "";
+      this.performSearch(searchTerm,statusTerm, page, usersInList);
+    });
+
+    await this.saveComponentLog(totalReadCount)
   }
 
   ngAfterViewInit() {
@@ -231,7 +234,7 @@ export class AdminStudentListComponent {
       })
       
     }
-    console.log("usersInList", usersInList)
+    // console.log("usersInList", usersInList)
     this.paginator.pageIndex = page - 1;
     this.dataSource.data = usersInList;
     this.totalLength = usersInList.length;
@@ -245,7 +248,7 @@ export class AdminStudentListComponent {
     });
   }
 
-  async saveComponentLog() {
+  async saveComponentLog(totalReadCount: number) {
     const log = new ComponentLog(
       this.authUser.uid,
       this.authUser.displayName,
@@ -255,6 +258,7 @@ export class AdminStudentListComponent {
       null,
       null,
       "Predyc Admin",
+      totalReadCount,
       "/admin/students",
     )
     try {
