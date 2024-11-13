@@ -94,7 +94,7 @@ export class AdminStudentListComponent {
     console.log("All users")
     let totalReadCount = 0
 
-    const enterprises = await firstValueFrom(this.enterpriseService.getAllEnterprises$())
+    const enterprises = await this.enterpriseService.getAllEnterprises()
     this.enterprises = enterprises;
     totalReadCount += enterprises.length
 

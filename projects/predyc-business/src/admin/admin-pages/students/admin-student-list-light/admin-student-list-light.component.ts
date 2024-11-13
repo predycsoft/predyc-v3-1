@@ -86,7 +86,7 @@ export class AdminStudentListLightComponent {
     // console.log("Users by searchbar")
     let firstReadCount = 0
 
-    const enterprises = await firstValueFrom(this.enterpriseService.getAllEnterprises$())
+    const enterprises = await this.enterpriseService.getAllEnterprises()
     this.enterprises = enterprises;
     firstReadCount += enterprises.length
 
