@@ -18,6 +18,13 @@
                             (change)="changeBorrador($event)"
                             type="checkbox" 
                             [checked]="formNewCourse?.get('proximamente')?.value">
+                            <label style="padding-left: 5px; color:white">Borrador</label>
+                        </div>
+                        <div fxLayout="row" fxLayoutAlign="start center">
+                            <input
+                            (change)="changePublic($event)"
+                            type="checkbox" 
+                            [checked]="formNewCourse?.get('public')?.value">
                             <label style="padding-left: 5px; color:white">Es público</label>
                         </div>
                         <div fxLayout="row" fxLayoutAlign="start center">
