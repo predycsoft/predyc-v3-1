@@ -56,7 +56,6 @@ export class UsersStudyTimeContainerComponent {
     // console.log("this.logs", this.logs)
     // -----
     await this.chartData()
-    await this.saveComponentLog()
   }
 
   courseServiceSubscription: Subscription
@@ -65,7 +64,9 @@ export class UsersStudyTimeContainerComponent {
   currentYear = new Date().getUTCFullYear()
 
   async chartData() {
-    const classesByStudent = await this.courseService.getClassesByEnterprise();
+    let totalReadCount = 0
+    const { data: classesByStudent, readCount: getClassesByEnterpriseReadCount } = await this.courseService.getClassesByEnterprise();
+    totalReadCount += getClassesByEnterpriseReadCount
 
     // const allClassesId = classesByStudent.map(x => x.classRef.id)
     // console.log("allClassesId", allClassesId)
@@ -73,19 +74,18 @@ export class UsersStudyTimeContainerComponent {
       new Set(classesByStudent.map(classItem => classItem.classRef.id))
     );
 
-    const classesData = await this.courseService.getClassesByIds(classesIds)
+    const { data: classesData, readCount: getClassesByIdsReadCount } = await this.courseService.getClassesByIds(classesIds);
     // console.log("classesData docs", classesData.length)
+    totalReadCount += getClassesByIdsReadCount
 
-    const logs = await Promise.all(
-      classesByStudent.map(async classByStudent => {
-        // const clase = await this.courseService.getClass(classByStudent.classRef.id);
-        const clase = classesData.find(x => x.id === classByStudent.classRef.id)
-        return {
-          classDuration: clase.duracion,
-          endDate: firestoreTimestampToNumberTimestamp(classByStudent.dateEnd)
-        };
-      })
-    );
+
+    const logs = classesByStudent.map(classByStudent => {
+      const clase = classesData.find(x => x.id === classByStudent.classRef.id)
+      return {
+        classDuration: clase.duracion,
+        endDate: firestoreTimestampToNumberTimestamp(classByStudent.dateEnd)
+      };
+    })
 
     this.logs = logs
     this.logsInCurrentMonth = logs.filter(log => {
@@ -95,9 +95,10 @@ export class UsersStudyTimeContainerComponent {
     });
     this.hoursTimeMonth = this.logsInCurrentMonth.reduce((total, currentClass) => total + currentClass.classDuration, 0) / 60;
     
+    await this.saveComponentLog(totalReadCount)
   }
   
-  async saveComponentLog() {
+  async saveComponentLog(totalReadCount: number) {
     const log = new ComponentLog(
       this.authUser.uid,
       this.authUser.displayName,
@@ -107,6 +108,7 @@ export class UsersStudyTimeContainerComponent {
       this.enterprise.name,
       null,
       "Predyc Empresas",
+      totalReadCount,
       "/",
     )
     try {
