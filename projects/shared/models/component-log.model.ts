@@ -6,6 +6,8 @@ export interface ComponentLogJson {
     enterpriseId: string
     enterpriseName: string
     id: string
+    platform: "Predyc Empresas" | "Predyc Admin" | "Predyc User"
+    readOperationsCount: number;
     url: string
 }
 
@@ -20,6 +22,8 @@ export class ComponentLog {
         public enterpriseId: string,
         public enterpriseName: string,
         public id: string,
+        public platform: "Predyc Empresas" | "Predyc Admin" | "Predyc User",
+        public readOperationsCount: number,
         public url: string,
     ) {}
 
@@ -32,7 +36,9 @@ export class ComponentLog {
             json.enterpriseId,
             json.enterpriseName,
             json.id,
-            json.url
+            json.platform,
+            json.readOperationsCount,
+            json.url,
         );
     }
 
@@ -45,7 +51,9 @@ export class ComponentLog {
             enterpriseId: this.enterpriseId,
             enterpriseName: this.enterpriseName,
             id: this.id,
-            url: this.url
+            platform: this.platform,
+            readOperationsCount: this.readOperationsCount,
+            url: this.url,
         };
     }
 }

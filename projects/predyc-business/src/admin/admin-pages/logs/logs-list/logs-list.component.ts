@@ -49,7 +49,7 @@ export class LogsListComponent {
 		const modalRef = this.modalService.open(DialogComponentLogsDetailComponent, {
 			animation: true,
 			centered: true,
-			size: "lg",
+			size: "xl",
 			// backdrop: "static",
 			keyboard: false,
 			// windowClass: 'modWidth'

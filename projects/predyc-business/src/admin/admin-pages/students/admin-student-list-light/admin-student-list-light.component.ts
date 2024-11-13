@@ -83,28 +83,36 @@ export class AdminStudentListLightComponent {
   ) {}
 
   async ngOnInit() {
-    console.log("Users by searchbar")
-    const enterprises = await firstValueFrom(this.enterpriseService.getAllEnterprises$())
+    // console.log("Users by searchbar")
+    let firstReadCount = 0
+
+    const enterprises = await this.enterpriseService.getAllEnterprises()
     this.enterprises = enterprises;
+    firstReadCount += enterprises.length
 
     const products = await firstValueFrom(this.productService.getProducts$())
     this.products = products
+    firstReadCount += products.length
 
+    let firstLoad = true
     this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe((params) => {
       const page = Number(params["page"]) || 1; 
       this.searchTerm = params["search"] || "";
       const statusTerm = params["status"] || "";
+
+      if (firstLoad && !this.searchTerm) this.saveComponentLog(firstReadCount)
+      const readCount = firstLoad ? firstReadCount : 0
       
       if (this.searchTerm) {
-        this.performSearch(this.searchTerm, statusTerm, page);
+        this.performSearch(this.searchTerm, statusTerm, page, readCount);
       } else {
         this.paginator.pageIndex = page - 1;
         this.dataSource.data = [];
         this.totalLength = 0;
       }
+      firstLoad = false
     });
 
-    await this.saveComponentLog()
   }
 
   ngAfterViewInit() {
@@ -112,19 +120,23 @@ export class AdminStudentListLightComponent {
     this.dataSource.paginator.pageSize = this.pageSize;
   }
   
-  async performSearch(searchTerm: string, statusTerm: string, page: number) {
+  async performSearch(searchTerm: string, statusTerm: string, page: number, totalReadCount: number) {
 
     if (searchTerm !== this.previousSearchTerm) {
       this.previousSearchTerm = searchTerm;
 
-      this.users = await this.userService.getFilteredUsers(searchTerm)
-      // if (this.userServiceSubscription) this.userServiceSubscription.unsubscribe()
-      // this.userServiceSubscription = this.userService.getFilteredUsers$(searchTerm, null, statusTerm).subscribe(users => {
-      console.log("this.users", this.users)
+      // this.users = await this.userService.getFilteredUsers(searchTerm)
+      const { data: filteredUsers, readCount: usersReadCount } = await this.userService.getFilteredUsers(searchTerm);
+      this.users = filteredUsers
+      totalReadCount += usersReadCount
+      // console.log("this.users", this.users)
   
       const usersRef = this.users.map(x => this.userService.getUserRefById(x.uid))
-      const usersSubscriptions = await this.subscriptionService.getUsersSubscriptions(usersRef)
-      console.log("usersSubscriptions", usersSubscriptions)
+
+      // const usersSubscriptions = await this.subscriptionService.getUsersSubscriptions(usersRef)
+      const { data: usersSubscriptions, readCount: userSubscriptionsReadCount } = await this.subscriptionService.getUsersSubscriptions(usersRef);
+      totalReadCount += userSubscriptionsReadCount
+      // console.log("usersSubscriptions", usersSubscriptions)
 
       const userSubscriptionsMap = usersSubscriptions.reduce((acc, sub) => {
         (acc[sub.userRef.id] = acc[sub.userRef.id] || []).push(sub);
@@ -205,8 +217,9 @@ export class AdminStudentListLightComponent {
         };
       })
       this.totalUsers.emit(this.usersInList);
+
+      await this.saveComponentLog(totalReadCount)
   
-      // })
     }
 
     // Apply status filtering and pagination
@@ -240,7 +253,7 @@ export class AdminStudentListLightComponent {
     });
   }
 
-  async saveComponentLog() {
+  async saveComponentLog(totalReadCount: number) {
     const log = new ComponentLog(
       this.authUser.uid,
       this.authUser.displayName,
@@ -249,6 +262,8 @@ export class AdminStudentListLightComponent {
       null,
       null,
       null,
+      "Predyc Admin",
+      totalReadCount,
       "/admin/students",
     )
     try {

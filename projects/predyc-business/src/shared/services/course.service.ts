@@ -1456,35 +1456,44 @@ export class CourseService {
     );
   }
 
-  async getClassesByEnterprise(): Promise<any[]> {
-    
+  async getClassesByEnterprise(): Promise<{ data: any[], readCount: number }> {
+    let readCount = 0;
+  
     const isLoaded = await firstValueFrom(this.enterpriseService.enterpriseLoaded$);
-    if (!isLoaded) return [];
-
+    if (!isLoaded) return { data: [], readCount };
+  
     const enterpriseRef = this.enterpriseService.getEnterpriseRef();
-
-    const usersSnapshot = await this.afs.collection<User>(User.collection).ref.where("enterprise", "==", enterpriseRef).get();
-    const users = usersSnapshot.docs.map(doc => doc.data() as User)
-
-    if (users.length === 0) return [];
-    // console.log("users docs", users.length)
-
+  
+    // Query users based on enterprise reference
+    const usersSnapshot = await this.afs.collection<User>(User.collection).ref
+    .where("enterprise", "==", enterpriseRef)
+    .get();
+  
+    readCount += usersSnapshot.size; // Increment read count by number of documents read
+    const users = usersSnapshot.docs.map(doc => doc.data() as User);
+  
+    if (users.length === 0) return { data: [], readCount };
+    // console.log("users docs", users.length);
+  
     // Prepare an array of promises for each user's `classesByStudent` query
-    const classPromises = users.map(user => 
-      this.afs.collection("classesByStudent").ref
+    const classPromises = users.map(async user => {
+      const snapshot = await this.afs.collection("classesByStudent").ref
         .where("userRef", "==", this.userService.getUserRefById(user.uid))
         .where("completed", "==", true)
-        .get()
-        .then(snapshot => snapshot.docs.map(doc => doc.data())) // Extract data from each document
-    );
-
+        .get();
+  
+        readCount += snapshot.size; // Increment read count by number of documents read
+      return snapshot.docs.map(doc => doc.data()); // Extract data from each document
+    });
+  
     // Resolve all promises and flatten the results into a single array
     const classesByStudent = await Promise.all(classPromises);
     const flattenedClassesByStudent = classesByStudent.flat();
-
     // console.log("classesByStudent docs", flattenedClassesByStudent.length);
-    return flattenedClassesByStudent;
-  }
+
+    // console.log("Total read count:", readCount);
+    return { data: flattenedClassesByStudent, readCount };
+  }  
 
   getClassesByStudentThrougCoursesByStudent$(
     courseByStudentRef: DocumentReference<CourseByStudent>
@@ -1530,27 +1539,33 @@ export class CourseService {
     return combineLatest(observables).pipe(map(results => results.flat()));
   }
 
-  async getClassesByIds(ids: string[]): Promise<Clase[]> {
-    if (ids.length === 0) return [];
-
-    const chunkSize = 10; // Firestore limits to 10 IDs in an `in` query
+  async getClassesByIds(ids: string[]): Promise<{ data: Clase[], readCount: number }> {
+    let readCount = 0;
+  
+    if (ids.length === 0) return { data: [], readCount };
+  
+    const chunkSize = 10;
     const idChunks = [];
-
-    // Split IDs into chunks
+  
     for (let i = 0; i < ids.length; i += chunkSize) {
-        idChunks.push(ids.slice(i, i + chunkSize));
+      idChunks.push(ids.slice(i, i + chunkSize));
     }
-
-    // Map each chunk to a Firestore query
-    const chunkPromises = idChunks.map(chunk => 
-        this.afs.collection<Clase>(Clase.collection).ref
-        .where('id', 'in', chunk).get().then(snapshot => snapshot.docs.map(doc => doc.data() as Clase))
-    );
-
-    // Resolve all chunk promises and flatten results
+  
+    const chunkPromises = idChunks.map(async chunk => {
+      const snapshot = await this.afs.collection<Clase>(Clase.collection).ref
+        .where('id', 'in', chunk)
+        .get();
+  
+      readCount += snapshot.size; // **Track read count for each query**
+      return snapshot.docs.map(doc => doc.data() as Clase);
+    });
+  
     const chunkResults = await Promise.all(chunkPromises);
-    return chunkResults.flat();
-}
+    const flattenedResults = chunkResults.flat();
+  
+    return { data: flattenedResults, readCount }; // **Return data and read count**
+  }
+  
 
   async updateCourseCompletionStatusTEST(idClass: string, idCourse: string, progress: number ,progressTime: number = 0, courseTime: number = 0, cheater: boolean = false) {
     //console.log('update progreso')

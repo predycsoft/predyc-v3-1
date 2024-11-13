@@ -49,6 +49,13 @@ export class EnterpriseService {
   getAllEnterprises$(): Observable<Enterprise[]> {
     return this.afs.collection<Enterprise>(Enterprise.collection).valueChanges()
   }
+  
+  async getAllEnterprises(): Promise<Enterprise[]> {
+    const snapshot = await this.afs.collection<Enterprise>(Enterprise.collection).ref.get();
+    const data = snapshot.docs.map(doc => doc.data() as Enterprise);
+    return data
+  }
+  
 
   async addEnterprise(enterprise: Enterprise): Promise<string> {
     const ref = this.afs.collection<Enterprise>(Enterprise.collection).doc().ref;

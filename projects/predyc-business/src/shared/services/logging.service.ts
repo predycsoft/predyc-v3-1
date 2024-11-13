@@ -13,7 +13,7 @@ export class LoggingService {
   async saveComponentLog(logJson: ComponentLogJson) {
     logJson.id = this.afs.createId()
     await this.afs.collection(ComponentLog.collection).doc(logJson.id).set(logJson)
-    console.log("Component log saved")
+    console.log("Component log saved. Total read operations: ", logJson.readOperationsCount)
   }
 
   async getLogs() {

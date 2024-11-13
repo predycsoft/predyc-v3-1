@@ -42,9 +42,9 @@ export class SubscriptionService {
     );
   }
 
-  async getUsersSubscriptions(usersRef: DocumentReference<User>[]): Promise<Subscription[]> {
+  async getUsersSubscriptions(usersRef: DocumentReference<User>[]): Promise<{ data: Subscription[], readCount: number }> {
     if (usersRef.length === 0) {
-      return []; // Return early if there are no user references
+      return { data: [], readCount: 0 }; // Return early if there are no user references
     }
   
     // Break `usersRef` into chunks of 10 to respect Firestore's `in` limit
@@ -52,28 +52,42 @@ export class SubscriptionService {
     for (let i = 0; i < usersRef.length; i += 10) {
       userRefChunks.push(usersRef.slice(i, i + 10));
     }
+
+    let totalReadCount = 0;
   
     // Fetch subscriptions for each chunk in parallel
     const subscriptionPromises = userRefChunks.map(async (usersRefsChunk) => {
       // const userRefIds = usersRefsChunk.map(ref => ref.id);
       const snapshot: QuerySnapshot<Subscription> = await this.afs.collection<Subscription>(Subscription.collection).ref
-        .where("userRef", "in", usersRefsChunk).orderBy("createdAt", "desc")
-        .get();
+      .where("userRef", "in", usersRefsChunk).orderBy("createdAt", "desc")
+      .get();
+
+      totalReadCount += snapshot.size;
         
       return snapshot.docs.map(doc => ({ ...doc.data() } as Subscription));
     });
   
     const subscriptionsArray = await Promise.all(subscriptionPromises);
-    return subscriptionsArray.flat();
+    const data = subscriptionsArray.flat();
+
+    return { data, readCount: totalReadCount };
   }
   
-  
-
   getSubscriptions$(): Observable<Subscription[]> {
     return this.afs
       .collection<Subscription>(Subscription.collection)
       .valueChanges();
   }
+  
+  async getSubscriptionsWithReadCount(): Promise<{ data: Subscription[], readCount: number }> {
+    const snapshot = await this.afs.collection<Subscription>(Subscription.collection).ref.get();
+  
+    const data = snapshot.docs.map(doc => doc.data() as Subscription);
+    const readCount = snapshot.size; // Get the count of read documents
+  
+    return { data, readCount };
+  }
+  
 
   async createUserSubscriptionByLicense(
     license: License,
