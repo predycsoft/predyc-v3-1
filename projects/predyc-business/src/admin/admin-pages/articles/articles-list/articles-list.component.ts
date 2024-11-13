@@ -45,7 +45,7 @@ export class ArticlesListComponent {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  displayedColumns: string[] = ["title", "order", "owner", "tags", "updatedAt", "isDraft", "actions"];
+  displayedColumns: string[] = ["title","isFromPredyc", "order", "owner", "tags", "updatedAt", "isDraft", "actions"];
   pageSize: number = 5;
   totalLength: number;
 
@@ -58,6 +58,7 @@ export class ArticlesListComponent {
   queryParamPage:number
   queryParamsSearch:string
   queryParamStatus:string
+  queryParamPagina:string
 
   ngOnChanges() {
     if (this.articles && this.authors && this.tags) this.performSearch(this.articles, this.authors, this.tags);
@@ -71,6 +72,7 @@ export class ArticlesListComponent {
       this.queryParamPage = Number(params["page"]) || 1;
       this.queryParamsSearch = params["search"] || "";
       this.queryParamStatus =params["status"] || "all"
+      this.queryParamPagina =params["pagina"] || "all"
       if (this.articles && this.authors && this.tags) {
         this.performSearch(this.articles, this.authors, this.tags);
       }
@@ -97,10 +99,18 @@ export class ArticlesListComponent {
       return this.removeAccents(x.title.toLocaleLowerCase()).includes(this.removeAccents(this.queryParamsSearch.toLocaleLowerCase()));
     });
 
-    const filteredArticlesByAuthor = articlesSearchFilter.filter(x => {
+    let filteredArticlesByAuthor = articlesSearchFilter.filter(x => {
       const matchesAuthor = this.queryParamStatus ? 
       this.queryParamStatus === "all" ? true :
       x.authorId === this.queryParamStatus : 
+      true;
+      return matchesAuthor;
+    }); 
+
+    filteredArticlesByAuthor = filteredArticlesByAuthor.filter(x => {
+      const matchesAuthor = this.queryParamPagina ? 
+      this.queryParamPagina === "all" ? true :
+      x.isFromPredyc == (this.queryParamPagina == 'predyc'?true:false) : 
       true;
       return matchesAuthor;
     }); 

@@ -39,6 +39,13 @@ export class ArticlesComponent {
     {value: "all", label: "Todos los autores"}
   ]
 
+  selectorpaginaOptions: { value: string, label: string }[] = [
+    {value: "all", label: "Todos las paginas"},
+    {value: "predyc", label: "Articulos Predyc"},
+    {value: "predictiva", label: "Articulos predictiva"},
+
+  ]
+
   ngOnInit() {
     this.combinedSubscription = combineLatest([
       this.articleService.getArticles$(),

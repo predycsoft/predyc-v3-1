@@ -10,6 +10,7 @@ import { IconService } from '../../services/icon.service';
 })
 export class GeneralSelectorComponent {
   @Input() origin: string = '';
+  @Input() canpo: string = 'status';
   @Input() options: { value: string, label: string }[] = [];
 
   selectedStatus: string = '';
@@ -25,7 +26,7 @@ export class GeneralSelectorComponent {
     let defaultStatus = 'all';
 
     this.queryParamsSubscription = this.activatedRoute.queryParams.subscribe(params => {
-      const status = params['status'] || defaultStatus;
+      const status = params['canpo'] || defaultStatus;
       this.selectedStatus = status;
     });
   }
@@ -36,7 +37,7 @@ export class GeneralSelectorComponent {
 
   updateQueryParams() {
     this.router.navigate([], {
-      queryParams: { status: this.selectedStatus ? this.selectedStatus : null, page: 1 },
+      queryParams: { [this.canpo]: this.selectedStatus ? this.selectedStatus : null, page: 1 },
       queryParamsHandling: 'merge'
     });
   }
