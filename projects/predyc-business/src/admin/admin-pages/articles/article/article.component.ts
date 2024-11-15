@@ -21,7 +21,7 @@ import { CategoryJson } from "projects/shared/models/category.model";
 import ResizeAction from 'quill-blot-formatter/dist/actions/ResizeAction';
 import ImageSpec from 'quill-blot-formatter/dist/specs/ImageSpec';
 import { CourseService } from "projects/predyc-business/src/shared/services/course.service";
-import { CursoJson } from "projects/shared/models/course.model";
+// import { CursoJson } from "projects/shared/models/course.model";
 import frontMatter from 'front-matter';
 import { marked } from 'marked';
 
@@ -221,6 +221,8 @@ export class ArticleComponent {
   authorSubscription: Subscription
   pillarsSubscription: Subscription
   coursesSubscription: Subscription
+  coursesP21Subscription: Subscription
+
 
   selectedFile: File | null = null;
   selectedFileFreebi: File | null = null;
@@ -241,12 +243,15 @@ export class ArticleComponent {
   filteredCategories: Observable<ArticleCategoryJson[]>;
   newCategoryName: string = "";
 
-  allCourses: CursoJson[] = [];
+  allCourses: any[] = [];
+  allCoursesPredyc: any[] = [];
+  allCoursesP21: any[] = [];
   coursesForm = new FormControl();
-  filteredCourses: Observable<CursoJson[]>;
-  articleCourses: CursoJson[] = [];
+  filteredCourses: Observable<any[]>;
+  articleCourses: any[] = [];
 
   allRelatedArticles: ArticleJson[] = [];
+  allRelatedArticlesComplete: ArticleJson[] = [];
   relatedArticlesForm = new FormControl();
   filteredRelatedArticles: Observable<ArticleJson[]>;
   articleRelatedArticles: ArticleJson[] = [];
@@ -293,7 +298,8 @@ export class ArticleComponent {
       );
     });
 
-    this.coursesSubscription = this.courseService.getAllCourses$().subscribe(courses => {
+    this.coursesSubscription = this.courseService.getAllCourses$().subscribe(courses => { //estoy aqui
+      this.allCoursesPredyc = courses;
       this.allCourses = courses;
       this.filteredCourses = this.coursesForm.valueChanges.pipe(
         startWith(''),
@@ -301,8 +307,18 @@ export class ArticleComponent {
       );
     });
 
+    this.coursesSubscription = this.courseService.getCoursesObservableP21().subscribe(courses => { //estoy aqui
+      this.allCoursesP21 = courses;
+      // this.filteredCourses = this.coursesForm.valueChanges.pipe(
+      //   startWith(''),
+      //   map(value => this._filterCourses(value))
+      // );
+    });
+
+
     this.articleSubscription = this.articleService.getArticles$().subscribe(relatedArticles => {
       this.allRelatedArticles = relatedArticles;
+      this.allRelatedArticlesComplete = relatedArticles
       this.filteredRelatedArticles = this.relatedArticlesForm.valueChanges.pipe(
         startWith(''),
         map(value => this._filterRelatedArticles(value))
@@ -378,13 +394,53 @@ export class ArticleComponent {
         this.previewImageFreebi = articleWithTagPillarsAndCoursesData?.urlImageFreebi;
         this.pastPreviewImageFreebi = articleWithTagPillarsAndCoursesData?.urlImageFreebi;
 
-        // console.log('originalContent',this.originalContent)
+        if(!this.isFromPredyc){
+          this.allCourses=this.allCoursesP21
+           this.filteredCourses = this.coursesForm.valueChanges.pipe(
+            startWith(''),
+            map(value => this._filterCourses(value))
+          );
+          this.articleCourses = articleWithTagPillarsAndCoursesData.cursosDatos
+
+
+        this.allRelatedArticles = this.allRelatedArticlesComplete.filter(x=>!x.isFromPredyc);
+        this.filteredRelatedArticles = this.relatedArticlesForm.valueChanges.pipe(
+          startWith(''),
+          map(value => this._filterRelatedArticles(value))
+        )}
       });
   
     } catch (error) {
       console.error("Error fetching article:", error);
       this.alertService.errorAlert("Error fetching article");
     }
+  }
+
+  changePage(){
+
+
+
+    if(this.isFromPredyc){
+      this.allCourses=this.allCoursesPredyc
+      this.allRelatedArticles = this.allRelatedArticlesComplete.filter(x=>x.isFromPredyc);
+    }
+    else{
+      this.allCourses=this.allCoursesP21
+      this.allRelatedArticles = this.allRelatedArticlesComplete.filter(x=>!x.isFromPredyc);
+
+    }
+
+    this.articleCourses = []
+    this.articleRelatedArticles=[]
+      this.filteredCourses = this.coursesForm.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filterCourses(value))
+    );
+
+    this.filteredRelatedArticles = this.relatedArticlesForm.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filterRelatedArticles(value))
+    )
   }
 
   originalContent = []
@@ -482,20 +538,20 @@ export class ArticleComponent {
     this.articleTags.splice(tagIndex, 1)
   }
 
-  _filterCourses(value: string | CursoJson): any[] {
+  _filterCourses(value: string | any): any[] {
     const filterValue = (typeof value === 'string') ? value.toLowerCase() : value.titulo.toLowerCase();
     return this.allCourses.filter(course => course.titulo.toLowerCase().includes(filterValue));
   }
 
-  getOptionTextCourse(option: CursoJson): string {
+  getOptionTextCourse(option: any): string {
     return option ? option.titulo : '';
   }
 
-  isCourseSelected(course: CursoJson): boolean {
+  isCourseSelected(course: any): boolean {
     return this.articleCourses.some(selectedCourse => selectedCourse.titulo === course.titulo);
   }
 
-  changeCourse(course: CursoJson): void {
+  changeCourse(course: any): void {
     if (!this.isCourseSelected(course)) {
       this.articleCourses.push(course);
     }

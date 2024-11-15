@@ -501,6 +501,7 @@ export class CreateCourseP21Component {
           skills: new FormControl(null, Validators.required),
           vimeoFolderId: new FormControl(null),
           proximamente: new FormControl(false),
+          public: new FormControl(false),
           isFree: new FormControl(false),
           customUrl: new FormControl(""),
           precio: new FormControl(""),
@@ -580,6 +581,7 @@ export class CreateCourseP21Component {
             imagen_instructor: new FormControl(instructor.foto, Validators.required),
             skills: new FormControl(curso.skillsRef, Validators.required),
             proximamente: new FormControl(curso.proximamente),
+            public: new FormControl(curso.public),
             isFree: new FormControl(curso.isFree),
             customUrl: new FormControl(customUrl),
             precio: new FormControl(curso.precio),
@@ -675,6 +677,21 @@ export class CreateCourseP21Component {
 
     if (this.curso) {
       this.curso.proximamente = isChecked;
+    }
+
+    // Opcionalmente, imprime si el checkbox quedó marcado o no
+    console.log("El checkbox Borrador está:", isChecked ? "marcado (true)" : "desmarcado (false)");
+  }
+
+  changePublic(event: Event) {
+    // Accede a la propiedad 'checked' del checkbox
+    const isChecked = (event.target as HTMLInputElement).checked;
+
+    // Actualiza el valor del campo 'proximamente' en el formulario con el nuevo estado
+    this.formNewCourse.get("public").setValue(isChecked);
+
+    if (this.curso) {
+      this.curso.public = isChecked;
     }
 
     // Opcionalmente, imprime si el checkbox quedó marcado o no
@@ -931,6 +948,18 @@ export class CreateCourseP21Component {
 
         // let duracion = this.getDurationModuleCourse();
         // this.curso.duracion = duracion;
+
+        const instructorData = await this.instructorsService.fetchInstructorDataByIdPromise(this.curso.instructorRef.id)
+
+        this.curso['instructorData'] = instructorData
+        //this.curso['pillarData'] = this.pillarsForm.value
+        const pillarData= this.pillarsForm.value
+
+        delete pillarData['competencias']
+        delete pillarData['enterprise']
+
+        this.curso['pillarData'] = pillarData
+
 
         await this.courseService.saveCourseP21(this.curso);
       }

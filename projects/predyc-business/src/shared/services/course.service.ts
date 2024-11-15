@@ -682,6 +682,8 @@ export class CourseService {
     return this.afs.collection<Curso>(Curso.collectionP21).valueChanges();
   }
 
+   
+
   public getCourseRefById(id: string): DocumentReference<Curso> {
     return this.afs.collection<Curso>(Curso.collection).doc(id).ref;
   }

@@ -11,6 +11,7 @@ export interface CursoJson {
   resumen: string
   nuevo: boolean
   proximamente: boolean
+  public:boolean,
   idioma: string
   imagen: string
   contenido: string
@@ -53,6 +54,7 @@ export class Curso {
   resumen: string = ""
   nuevo: boolean = false
   proximamente: boolean = false;
+  public:boolean=false
   idioma: string = "Español"
   imagen: string = ""
   contenido: string = ""
@@ -95,6 +97,7 @@ export class Curso {
       resumen:this.resumen,
       nuevo:this.nuevo,
       proximamente:this.proximamente,
+      public:this.public,
       idioma:this.idioma,
       imagen:this.imagen,
       contenido:this.contenido,

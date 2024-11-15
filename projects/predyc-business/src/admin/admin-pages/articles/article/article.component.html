@@ -16,7 +16,7 @@
             </div>
             <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="">
                 <span>Origen:</span>
-                <select [(ngModel)]="isFromPredyc" class="ft14 shadow-animation borderLight cursorPointer h28px" style="text-align: center;">
+                <select (change)="changePage()" [(ngModel)]="isFromPredyc" class="ft14 shadow-animation borderLight cursorPointer h28px" style="text-align: center;">
                     <option [ngValue]="true">Predyc</option>
                     <option [ngValue]="false">Predictiva</option>
                 </select>
