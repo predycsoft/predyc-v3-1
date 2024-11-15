@@ -20,13 +20,11 @@ export class LogsListComponent {
   ){}
 
   displayedColumns: string[] = [
-    'ComponentName', 
-    'NumberOfVisits', 
-    // 'URL', 
-    // 'UserID', 
-    // 'UserName', 
-    // 'Date'
+    'ComponentName',
+    'NumberOfVisits',
+    'TotalReadCount'
   ];
+  
   dataSource = new MatTableDataSource<GroupedLogs>();
 
   @ViewChild(MatPaginator) paginator: MatPaginator;

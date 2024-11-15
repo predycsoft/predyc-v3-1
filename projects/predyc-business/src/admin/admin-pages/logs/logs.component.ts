@@ -6,7 +6,9 @@ import { firestoreTimestampToNumberTimestamp } from 'projects/shared/utils';
 export interface GroupedLogs {
   componentName: string;
   componentsData: ComponentLog[];
+  totalReadCount: number; // New field
 }
+
 
 @Component({
   selector: 'app-logs',
@@ -33,14 +35,20 @@ export class LogsComponent {
     });
     this.groupedLogs = Object.values(
       logsData.reduce((acc, log) => {
-        const { componentName } = log;
+        const { componentName, readOperationsCount } = log;
         if (!acc[componentName]) {
-            acc[componentName] = { componentName, componentsData: [] };
+          acc[componentName] = {
+            componentName,
+            componentsData: [],
+            totalReadCount: 0
+          };
         }
         acc[componentName].componentsData.push(log);
+        acc[componentName].totalReadCount += readOperationsCount;
         return acc;
-      }, {} as { [key: string]: { componentName: string; componentsData: ComponentLog[] } })
+      }, {} as { [key: string]: GroupedLogs })
     );
+    
     // console.log("this.groupedLogs", this.groupedLogs)
   }
 

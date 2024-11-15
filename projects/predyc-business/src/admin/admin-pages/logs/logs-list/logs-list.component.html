@@ -11,11 +11,20 @@
   
       <!-- Number of Visits Column -->
       <ng-container matColumnDef="NumberOfVisits">
-        <th mat-header-cell *matHeaderCellDef> Cantidad de visitas </th>
-        <td mat-cell *matCellDef="let log">
+        <th mat-header-cell *matHeaderCellDef class="centertext"> Cantidad de visitas </th>
+        <td mat-cell *matCellDef="let log" class="centertext">
           {{ log.componentsData.length }}
         </td>
       </ng-container>
+
+      <!-- Total Read Count Column -->
+      <ng-container matColumnDef="TotalReadCount">
+        <th mat-header-cell *matHeaderCellDef class="centertext"> Total de lecturas </th>
+        <td mat-cell *matCellDef="let log" class="centertext">
+          {{ log.totalReadCount }}
+        </td>
+      </ng-container>
+
   
       <!-- Table Row Definitions -->
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
