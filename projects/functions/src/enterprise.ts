@@ -59,7 +59,7 @@ export const updateDataEnterpriseRhythm = functions.https.onCall(async (data, _)
   }
 });
 
-
+// For enterprise-list.component
 export const updateAllDataEnterpriseProgressPlanSchedule = functions.pubsub.schedule('every day 06:00').onRun(async (context) => {
   try {
     await updateDataAllEnterprisesProgressPlanLocal();
@@ -69,7 +69,7 @@ export const updateAllDataEnterpriseProgressPlanSchedule = functions.pubsub.sche
   }
 });
 
-
+// For users-usage.component
 export const updateDataAllEnterprisesUsageSchedule = functions.pubsub.schedule('every monday 06:00').onRun(async (context) => {
   try {
     await updateDataAllEnterprisesUsageLocal();
@@ -79,6 +79,7 @@ export const updateDataAllEnterprisesUsageSchedule = functions.pubsub.schedule('
   }
 });
 
+// For enterprise-list
 export const updateDataAllEnterprisesRhythmSchedule = functions.pubsub.schedule('every day 06:00').onRun(async (context) => {
   try {
     await updateDataAllEnterprisesRhythmLocal();
@@ -151,7 +152,6 @@ async function updateDataAllEnterprisesUsageLocal() {
     const licensesSnapshot = await admin.firestore().collection(License.collection).where('status', '==', 'active').get();
     const enterpriseRefs = new Set<FirebaseFirestore.DocumentReference>();
     const enterpriseIds = new Set<string>();
-
 
     licensesSnapshot?.forEach(doc => {
       const licenseData = doc.data();
@@ -282,8 +282,6 @@ async function updateDataEnterpriseRhythmLocal(enterpriseId: string,batch?: Fire
     throw new Error(error.message);
   }
 
-
-
 }
 
 
@@ -291,27 +289,27 @@ async function updateDataEnterpriseRhythmLocal(enterpriseId: string,batch?: Fire
 async function updateDataEnterpriseUsageLocal(enterpriseId: string, batch: FirebaseFirestore.WriteBatch) {
   try {
     const enterpriseRef = admin.firestore().collection(Enterprise.collection).doc(enterpriseId);
-    
     // Verificar si la referencia de la empresa existe
     const enterpriseDoc = await enterpriseRef.get();
     if (!enterpriseDoc.exists) {
       console.log(`Enterprise with ID ${enterpriseId} does not exist.`);
       return;
     }
-
     console.log(`Editing enterprise ID ${enterpriseId}.`);
+    const enterpriseData = enterpriseDoc.data();
 
-
-    const usersSnapshot = await admin.firestore().collection(User.collection)
-      .where('enterprise', '==', enterpriseRef)
-      .where('status', '==', 'active') // Filtrar usuarios con status active
-      .get();
-    
-    const users: FirebaseFirestore.DocumentData[] = usersSnapshot.docs.map(doc => doc.data());
-    let allClasses: FirebaseFirestore.DocumentData[] = [];
-    const daysOfWeekWithHours: { day: number, data: { hour: number, classesTerminadas: number }[] }[] = [];
+    const previousUsage: { 
+      day: number, 
+      data: { 
+        hour: number, 
+        classesTerminadas: number 
+      }[] 
+    }[] = enterpriseData.usage ? enterpriseData.usage : null;
+    const previousUsageDate = enterpriseData.usageDate ? enterpriseData.usageDate?.toDate() : null;
+    const devicesUsage = { movil: 0, desktop: 0 };
 
     // Inicializar el arreglo con los días de la semana y las horas del día
+    const daysOfWeekWithHours: { day: number, data: { hour: number, classesTerminadas: number }[] }[] = [];
     for (let day = 0; day < 7; day++) {
       const hoursData = [];
       for (let hour = 0; hour < 24; hour++) {
@@ -320,17 +318,36 @@ async function updateDataEnterpriseUsageLocal(enterpriseId: string, batch: Fireb
       daysOfWeekWithHours.push({ day, data: hoursData });
     }
 
-    for (const user of users) {
-      const classesSnapshot = await admin.firestore().collection('classesByStudent')
-        .where('userRef', '==', admin.firestore().collection('user').doc(user.uid))
-        .where('completed', '==', true)
-        .get();
+    const usersSnapshot = await admin.firestore().collection(User.collection)
+      .where('enterprise', '==', enterpriseRef)
+      .where('status', '==', 'active') // Filtrar usuarios con status active
+      .get();
+    const users: FirebaseFirestore.DocumentData[] = usersSnapshot.docs.map(doc => doc.data());
 
-      const classes: FirebaseFirestore.DocumentData[] = classesSnapshot.docs.map(doc => doc.data());
-      allClasses = allClasses.concat(classes);
+    let classesCompleted: FirebaseFirestore.DocumentData[] = [];
+    for (const user of users) {
+      if (previousUsageDate) {
+        const lastClassesSnapshot = await admin.firestore().collection('classesByStudent')
+          .where('userRef', '==', admin.firestore().collection('user').doc(user.uid))
+          .where('completed', '==', true)
+          .where('dateEnd', '>', previousUsageDate)
+          .get();
+  
+        const classes: FirebaseFirestore.DocumentData[] = lastClassesSnapshot.docs.map(doc => doc.data());
+        classesCompleted = classesCompleted.concat(classes);
+      }
+      else {
+        const allClassesSnapshot = await admin.firestore().collection('classesByStudent')
+          .where('userRef', '==', admin.firestore().collection('user').doc(user.uid))
+          .where('completed', '==', true)
+          .get();
+  
+        const classes: FirebaseFirestore.DocumentData[] = allClassesSnapshot.docs.map(doc => doc.data());
+        classesCompleted = classesCompleted.concat(classes);
+      }
     }
-    const devicesUsage = { movil: 0, desktop: 0 };
-    allClasses.forEach(classData => {
+    console.log("current clases quantity: ", classesCompleted.length)
+    classesCompleted.forEach(classData => {
       const dateEnd = classData.dateEnd.toDate();
       const dayOfWeek = dateEnd.getUTCDay();
       const hour = dateEnd.getUTCHours();
@@ -349,6 +366,26 @@ async function updateDataEnterpriseUsageLocal(enterpriseId: string, batch: Fireb
         devicesUsage[device] += 1;
       }
     });
+
+    // Merge de datos si ya existen datos previos
+    if (previousUsage) {
+      for (let day = 0; day < 7; day++) {
+        const foundDayData = previousUsage.find(dayData => dayData.day === day);
+        const existingDayData = foundDayData === undefined ? [] : foundDayData.data
+        const newDayData = daysOfWeekWithHours[day].data;
+
+        newDayData.forEach((hourData, hour) => {
+          const existingHourData = existingDayData.find((h: any) => h.hour === hour);
+          if (existingHourData) {
+            hourData.classesTerminadas += existingHourData.classesTerminadas;
+          }
+        });
+      }
+
+      // Merge de uso de dispositivos
+      devicesUsage.movil += enterpriseData.devices?.movil ? enterpriseData.devices?.movil : 0;
+      devicesUsage.desktop += enterpriseData.devices?.desktop ? enterpriseData.devices?.desktop : 0;
+    }
 
     batch.update(enterpriseRef, {
       usage: daysOfWeekWithHours,
@@ -408,14 +445,12 @@ async function updateDataEnterpriseProgressPlanLocal(enterpriseId: string,batch?
         allCoursesByStudent = allCoursesByStudent.concat(coursesByStudentSnapshot.docs.map(doc => doc.data()));
       }
 
-  
       allCoursesByStudent?.forEach(course => {
         const courseJson = courses.find(item => item.id === course.courseRef.id);
         if (courseJson) {
           course.courseTime = courseJson.duracion
         }
       });
-
 
       const today = new Date().getTime();
     
@@ -426,23 +461,19 @@ async function updateDataEnterpriseProgressPlanLocal(enterpriseId: string,batch?
       
       let progressMonth = getMonthProgress()
       
-      
       let userStudyPlanUntilLastMonth = allCoursesByStudent.filter(x=>x.dateEndPlan  && (x.dateEndPlan?.seconds*1000)<=lastDayPast)
       let userStudyPlanCurrent = allCoursesByStudent.filter(x=>x.dateEndPlan  && (x.dateEndPlan?.seconds*1000)>lastDayPast && (x.dateEndPlan?.seconds*1000)<=lastDayCurrent )
       
       console.log('userStudyPlanUntilLastMonth',userStudyPlanUntilLastMonth,'userStudyPlanCurrent',userStudyPlanCurrent,lastDayPast,lastDayCurrent)
 
-
       let studentHours = 0
       let studentExpectedHours = 0
       let studentExpectedHoursTotal = 0
-
 
       allCoursesByStudent.forEach(course => {
         studentHours +=course.progressTime?course.progressTime:0
         studentExpectedHoursTotal +=course.courseTime
       });
-
       
       userStudyPlanUntilLastMonth.forEach(course => {
         studentExpectedHours +=course.courseTime
@@ -451,7 +482,6 @@ async function updateDataEnterpriseProgressPlanLocal(enterpriseId: string,batch?
       userStudyPlanCurrent.forEach(course => {
         studentExpectedHours +=(course.courseTime * progressMonth)
       });
-
 
       const respuesta = {
         studentHours,
@@ -470,9 +500,143 @@ async function updateDataEnterpriseProgressPlanLocal(enterpriseId: string,batch?
     console.log(error);
     throw new Error(error.message);
   }
-
-  
+ 
 }
+
+// async function updateDataEnterpriseProgressPlanLocal(enterpriseId: string,batch?: FirebaseFirestore.WriteBatch) {
+
+//   try {
+//     const enterpriseRef = admin.firestore().collection(Enterprise.collection).doc(enterpriseId);
+//     // Verificar si la referencia de la empresa existe
+//     const enterpriseDoc = await enterpriseRef.get();
+//     if (!enterpriseDoc.exists) {
+//       console.log(`Enterprise with ID ${enterpriseId} does not exist.`);
+//       return;
+//     }
+//     console.log(`Editing enterprise ID ${enterpriseId}.`);
+//     const enterpriseData = enterpriseDoc.data();
+
+//     const usersSnapshot = await admin.firestore().collection(User.collection)
+//     .where('enterprise', '==', enterpriseRef)
+//     .where('status', '==', 'active') // Filtrar usuarios con status active
+//     .get();
+  
+//     const userRefs = usersSnapshot.docs.map(doc => doc.ref);
+  
+//     // Buscar cursos que coincidan con la empresa o que tengan enterpriseRef null
+//     const coursesSnapshot = await admin.firestore().collection(Curso.collection)
+//       .where('enterpriseRef', '==', enterpriseRef)
+//       .get();
+  
+//     const nullCoursesSnapshot = await admin.firestore().collection(Curso.collection)
+//       .where('enterpriseRef', '==', null)
+//       .get();
+  
+//     // Unir los cursos con enterpriseRef igual al enterpriseRef de la empresa y los que tienen enterpriseRef null
+//     const courses = coursesSnapshot.docs.map(doc => doc.data()).concat(nullCoursesSnapshot.docs.map(doc => doc.data()));
+  
+//     // Dividir userRefs en grupos de 10
+//     const chunks = [];
+//     for (let i = 0; i < userRefs.length; i += 10) {
+//       chunks.push(userRefs.slice(i, i + 10));
+//     }
+
+//     const previousProgress = enterpriseData?.progress;
+//     const previousProgressDate = new Date(firestoreTimestampToNumberTimestamp(enterpriseData?.progressDate))
+//     // Obtener coursesByStudent para los usuarios en chunks
+//     let allCoursesByStudent = [];
+//     // Solo coursesByStudent despues de la fecha registrada de progreso
+//     if (previousProgressDate) {
+//       for (const chunk of chunks) {
+//         const coursesByStudentSnapshot = await admin.firestore().collection(CourseByStudent.collection)
+//           .where('userRef', 'in', chunk)
+//           .where('isExtraCourse', '==', false)
+//           .where('active', '==', true)
+//           .where('dateEndPlan', '>', previousProgressDate)
+//           .get();
+//         allCoursesByStudent = allCoursesByStudent.concat(coursesByStudentSnapshot.docs.map(doc => doc.data()));
+//       }
+//     }
+//     // Todos los coursesByStudent
+//     else {
+//       for (const chunk of chunks) {
+//         const coursesByStudentSnapshot = await admin.firestore().collection(CourseByStudent.collection)
+//           .where('userRef', 'in', chunk)
+//           .where('isExtraCourse', '==', false)
+//           .where('active', '==', true)
+//           .get();
+//         allCoursesByStudent = allCoursesByStudent.concat(coursesByStudentSnapshot.docs.map(doc => doc.data()));
+//       }
+//     }
+
+//     allCoursesByStudent?.forEach(course => {
+//       const courseJson = courses.find(item => item.id === course.courseRef.id);
+//       if (courseJson) {
+//         course.courseTime = courseJson.duracion
+//       }
+//     });
+
+//     const today = new Date().getTime();
+//     let lastDayPast = obtenerUltimoDiaDelMesAnterior(today)
+//     let lastDayCurrent = obtenerUltimoDiaDelMes(today)
+//     let progressMonth = getMonthProgress()
+
+//     let studentHours = 0
+//     let studentExpectedHours = 0
+//     let studentExpectedHoursTotal = 0
+    
+//     let userStudyPlanUntilLastMonth = allCoursesByStudent.filter(x=>x.dateEndPlan  && (x.dateEndPlan?.seconds*1000)<=lastDayPast)
+//     let userStudyPlanCurrent = allCoursesByStudent.filter(x=>x.dateEndPlan  && (x.dateEndPlan?.seconds*1000)>lastDayPast && (x.dateEndPlan?.seconds*1000)<=lastDayCurrent )
+    
+//     console.log('userStudyPlanUntilLastMonth',userStudyPlanUntilLastMonth,'userStudyPlanCurrent',userStudyPlanCurrent,lastDayPast,lastDayCurrent)
+
+//     if (previousProgressDate) {
+//       studentHours = previousProgress?.studentHours
+//       studentExpectedHours = previousProgress?.studentExpectedHours
+//       studentExpectedHoursTotal = previousProgress?.studentExpectedHoursTotal
+
+//       allCoursesByStudent.forEach(course => {
+//         studentHours += course.progressTime ? course.progressTime : 0
+//         studentExpectedHoursTotal += course.courseTime;
+//         if (firestoreTimestampToNumberTimestamp(course.dateEndPlan) <= lastDayCurrent) {
+//           studentExpectedHours += course.courseTime * progressMonth;
+//         }
+//       });
+
+//     } else {
+//       allCoursesByStudent.forEach(course => {
+//         studentHours +=course.progressTime?course.progressTime:0
+//         studentExpectedHoursTotal += course.courseTime
+//       });
+
+//       userStudyPlanUntilLastMonth.forEach(course => {
+//         studentExpectedHours +=course.courseTime
+//       });
+      
+//       userStudyPlanCurrent.forEach(course => {
+//         studentExpectedHours +=(course.courseTime * progressMonth)
+//       });
+//     }
+
+//     const respuesta = {
+//       studentHours,
+//       studentExpectedHours,
+//       studentExpectedHoursTotal,
+//     }
+//     console.log('respuesta',respuesta)
+//     batch.update(enterpriseRef, {
+//       progress: respuesta,
+//       progressDate: new Date()
+//     });
+
+//   }
+  
+//   catch (error: any) {
+//     console.log(error);
+//     throw new Error(error.message);
+//   }
+  
+// }
 
 async function updateDataAllEnterprisesProgressPlanLocal() {
   const batch = admin.firestore().batch();
