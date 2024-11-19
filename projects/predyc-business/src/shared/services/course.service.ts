@@ -429,6 +429,36 @@ export class CourseService {
   }
 
 
+  async saveDiplomadoP21(newCourse: any): Promise<void> {
+    try {
+      try {
+        console.log("test saveCourse", newCourse);
+
+        if(!newCourse.customUrl){
+          newCourse.customUrl = newCourse.id
+        }
+        delete newCourse["modules"];
+        const dataToSave =
+          typeof newCourse.toJson === "function"
+            ? newCourse.toJson()
+            : newCourse;
+
+        await this.afs
+          .collection(Curso.DiplomadoP21)
+          .doc(newCourse?.id)
+          .set(dataToSave, { merge: true });
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
+      // console.log("Has agregado una nuevo curso exitosamente.");
+    } catch (error) {
+      console.log(error);
+      this.alertService.errorAlert(JSON.stringify(error));
+    }
+  }
+
+
   async saveCourse(newCourse: Curso): Promise<void> {
     try {
       try {
@@ -680,6 +710,10 @@ export class CourseService {
 
   getCoursesObservableP21(): Observable<Curso[]> {
     return this.afs.collection<Curso>(Curso.collectionP21).valueChanges();
+  }
+
+  getDiplomadoObservableP21(): Observable<Curso[]> {
+    return this.afs.collection<Curso>(Curso.DiplomadoP21).valueChanges();
   }
 
    

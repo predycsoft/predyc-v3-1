@@ -47,6 +47,7 @@ export class Curso {
 
   public static collection = 'course'
   public static collectionP21 = 'courseP21'
+  public static DiplomadoP21 = 'diplomadoP21'
 
   
   descripcion: string = ""
