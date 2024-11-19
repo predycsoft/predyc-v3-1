@@ -102,9 +102,10 @@ export class SideNavComponent {
       icon: "../../assets/iconsUI/courses-1.svg",
     },
     {
-      name: "Cursos P21",
+      name: "Predictiva21",
       link: "/admin/cursos-P21",
       icon: "../../assets/iconsUI/wikis.svg",
+      // icon:"../../assets/images/logos/logo-p21-negro.png"
     },
     {
       name: "Cursos en vivo",

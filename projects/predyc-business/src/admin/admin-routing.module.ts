@@ -29,6 +29,7 @@ import { ReviewsComponent } from "./admin-pages/reviews/reviews.component";
 import { CoursesP21Component } from "../shared/components/courses-p21/courses-p21.component";
 import { CreateCourseP21Component } from "../shared/components/courses-p21/create-course-p21/create-course-p21.component";
 import { LogsComponent } from "./admin-pages/logs/logs.component";
+import { CreateProgramP21Component } from "../shared/components/courses-p21/create-program-p21/create-program-p21.component";
 
 export const MAIN_TITLE = "Predyc Admin - ";
 
@@ -58,6 +59,7 @@ const routes: Routes = [
   { path: "cursos-P21", title: MAIN_TITLE + "Cursos P21", component: CoursesP21Component },
 
   { path: "create-cursos-p21/:mode/:idCurso", title: "Predictiva 21 - Crear / Editar curso", component: CreateCourseP21Component},
+  { path: "create-diplomado-p21/:mode/:idPrograma", title: "Predictiva 21 - Crear / Editar Diplomado", component: CreateProgramP21Component},
 
 
 

@@ -61,6 +61,7 @@ import { AdminStudentListLightComponent } from './admin-pages/students/admin-stu
 import { LogsComponent } from './admin-pages/logs/logs.component';
 import { LogsListComponent } from './admin-pages/logs/logs-list/logs-list.component';
 import { DialogComponentLogsDetailComponent } from './admin-pages/logs/dialog-component-logs-detail/dialog-component-logs-detail.component';
+import { CreateProgramP21Component } from '../shared/components/courses-p21/create-program-p21/create-program-p21.component';
 
 
 @NgModule({
@@ -72,6 +73,7 @@ import { DialogComponentLogsDetailComponent } from './admin-pages/logs/dialog-co
     InstructorsComponent,
     SalesComponent,
     CoursesP21Component,
+    CreateProgramP21Component,
     CreateCourseP21Component,
     QuestionsComponent,
     CertificationsComponent,

@@ -53,6 +53,7 @@ export class CoursesP21Component {
   selectedCourse: Curso = null
   //categories: category[] = []
   tab = 0
+  tabP21 = 0
   searchValue = ""
   creatingCategory = false
   newCategory: category = new category
