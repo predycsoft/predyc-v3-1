@@ -2835,6 +2835,11 @@ export class CreateProgramP21Component {
         valid = false;
         modulo["InvalidMessages"].push("El curso debe tener fecha de unicio");
       }
+      if (!modulo['duracion']) {
+        modulo["isInvalid"] = true;
+        valid = false;
+        modulo["InvalidMessages"].push("El curso debe tener duración");
+      }
     });
 
     //console.log('modulos',this.modulos)
