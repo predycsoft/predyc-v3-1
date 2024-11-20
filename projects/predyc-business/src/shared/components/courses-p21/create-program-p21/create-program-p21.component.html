@@ -235,6 +235,19 @@
                                             Debe indicar las fechas de las sesiones del curso
                                         </div>
                                     </div>
+                                    <div class="form-group mgt08">
+                                        <label class="ft12 " >Día sesiones</label>
+                                        <textarea
+                                        [class.is-invalid]="formNewCourse.controls['diaSesiones'].errors && showErrorCurso"
+                                        formControlName="diaSesiones" 
+                                        class="form-control customInput2 radius6" 
+                                        placeholder="Escriba la duración del curso en minutos aquí"
+                                        rows="3"></textarea>
+                                        <div class="invalid-feedback" *ngIf="formNewCourse.controls['diaSesiones'].errors && showErrorCurso"> 
+                                            Debe indicar las fechas de las sesiones del curso
+                                        </div>
+                                    </div>
+                                    <!-- diaSesiones -->
                                     <div fxLayout="row" fxLayoutAlign=" center" class="mgt10 fw">
                                         <form class="fw">
                                             <mat-form-field class="example-full-width fw">
@@ -391,7 +404,7 @@
                                             <div>
                                                 <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="mgl10 mgt15 mgr10">
                                                     <img [src]="icon.document" class="makeBlue h20px" alt="">
-                                                    <span class="ft500 ft14 black " style="margin-top: 5px;">Contenido del diplomado - {{formNewCourse?.get('duracion')?.value | formatDuration}}</span>
+                                                    <span class="ft500 ft14 black " style="margin-top: 5px;">Contenido del diplomado - {{getDurationModuleCourse()| formatDuration}}</span>
                                                 </div>
                                                 <div class="pdl10 pdr10 pdt10 fw ">
                                                     <div fxLayout="column" class="fw fh mgb20"> 

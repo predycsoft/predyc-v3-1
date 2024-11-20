@@ -1,9 +1,9 @@
 <div class="mgt10 mgl20 mgr20">
     <div class="fw mgb15" fxLayout="row" fxLayoutAlign=" center">
-        <div fxLayout="row" fxLayoutGap="2.5rem" fxLayoutAlign="center center" class="pdl10 pdr10 pdb05 pdt05 ft14 ft500" (click)="tabP21 = 0" [ngClass]="tabP21 == 0 ? 'selectedTab gray-10' : 'gray-6 tab'">
+        <div fxLayout="row" fxLayoutGap="2.5rem" fxLayoutAlign="center center" class="pdl10 pdr10 pdb05 pdt05 ft14 ft500" (click)="tabP21 = 0; selectedCourse = null" [ngClass]="tabP21 == 0 ? 'selectedTab gray-10' : 'gray-6 tab'">
           Cursos
         </div>
-        <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign="center center" class="pdl10 pdr10 pdb05 pdt05 ft14 ft500" (click)="tabP21 = 1" [ngClass]="tabP21 == 1 ? 'selectedTab gray-10' : 'gray-6 tab'">
+        <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign="center center" class="pdl10 pdr10 pdb05 pdt05 ft14 ft500" (click)="tabP21 = 1; selectedCourse = null" [ngClass]="tabP21 == 1 ? 'selectedTab gray-10' : 'gray-6 tab'">
           Diplomados
         </div>
     </div>
@@ -100,7 +100,7 @@
                                     <div *ngIf="(user.isSystemUser || selectedCourse.enterpriseRef?.id == enterpriseRef?.id) && selectedCourse.id" 
                                             fxLayout="row" 
                                             fxLayoutGap=".5rem"  >
-                                            <div  routerLink="/admin/create-cursos-p21/edit/{{selectedCourse.id}}"  class="blueLink mgt05 white cursorPointer ft14 fw mgb10" fxLayoutAlign="space-between center">
+                                            <div ngi  routerLink="/admin/create-cursos-p21/edit/{{selectedCourse.id}}"  class="blueLink mgt05 white cursorPointer ft14 fw mgb10" fxLayoutAlign="space-between center">
                                                 <!-- <img [src]="icon.edit" class="makeWhite h16px mgr08" alt=""> -->
                                                 Editar 
                                             </div>
@@ -311,7 +311,7 @@
                         <div class="fw" style=" overflow-y: hidden;">
                             <div class="mgt10">
                                 <ng-container>
-                                    <app-course-selector [showTitle]="false" type="predyc" [categories]="categories" [searchValue]="searchValue"
+                                    <app-course-selector typeFilter="diplomados" [showTitle]="false" type="predyc" [categories]="categories" [searchValue]="searchValue"
                                         (selectedCourseOut)="selectedCourse = $event" [user]="user">
                                     </app-course-selector>
                                 </ng-container>
@@ -338,7 +338,7 @@
                                         style="width: 60%;" alt="Mi SVG">
                                 </div> -->
                                 <div fxLayout="column"  class="fh fw" fxLayoutAlign="center center">
-                                    <span class="ft400 gray-6 ft16 ft400 pd05" style="margin-top:50% ;">Haz clic en un curso para ver sus detalles</span>
+                                    <span class="ft400 gray-6 ft16 ft400 pd05" style="margin-top:50% ;">Haz clic en un diplomado para ver sus detalles</span>
                                 </div>
                             </div>
                         </div>
@@ -350,14 +350,13 @@
                                     <div *ngIf="(user.isSystemUser || selectedCourse.enterpriseRef?.id == enterpriseRef?.id) && selectedCourse.id" 
                                             fxLayout="row" 
                                             fxLayoutGap=".5rem"  >
-                                            <div  routerLink="/admin/create-cursos-p21/edit/{{selectedCourse.id}}"  class="blueLink mgt05 white cursorPointer ft14 fw mgb10" fxLayoutAlign="space-between center">
+                                            <div  routerLink="/admin/create-diplomado-p21/edit/{{selectedCourse.id}}"  class="blueLink mgt05 white cursorPointer ft14 fw mgb10" fxLayoutAlign="space-between center">
                                                 <!-- <img [src]="icon.edit" class="makeWhite h16px mgr08" alt=""> -->
                                                 Editar 
                                             </div>
-                                            <div (click)="downloadPDFCourse()" class="blueLink mgt05 white cursorPointer ft14 fw mgb10" fxLayoutAlign="space-between center">
-                                                <!-- <img [src]="icon.edit" class="makeWhite h16px mgr08" alt=""> -->
+                                            <!-- <div (click)="downloadPDFCourse()" class="blueLink mgt05 white cursorPointer ft14 fw mgb10" fxLayoutAlign="space-between center">
                                                 PDF 
-                                            </div>
+                                            </div> -->
                                     </div>
                                     <div *ngIf="!(user.isSystemUser || selectedCourse.enterpriseRef?.id == enterpriseRef?.id) && selectedCourse.id" 
                                         fxLayout="row" 
@@ -379,10 +378,10 @@
                                                 <img [src]="icon.clock" class="makeYellow fw" alt="">
                                             </div>
                                             <div fxLayout="column">
-                                                <div class="gray-6 ft10">Duración de curso</div>
+                                                <div class="gray-6 ft10">Duración de diplomado</div>
                                                 <div class="gray-8 ft10">
                                                     <ng-container>
-                                                        {{ getFormattedDuration()}}
+                                                        {{ selectedCourse.duracion}}
                                                     </ng-container>
                                                 </div>
                                             </div>

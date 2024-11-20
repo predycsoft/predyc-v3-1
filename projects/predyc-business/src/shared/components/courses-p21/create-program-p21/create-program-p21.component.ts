@@ -511,6 +511,7 @@ export class CreateProgramP21Component {
           // duracion: new FormControl(0, [Validators.required,this.greaterThanZeroValidator]),
           duracion:new FormControl(""),
           fechaInicio:new FormControl(""),
+          diaSesiones:new FormControl(""),
           fehcaSesiones:new FormControl(""),
           aQuienVaDirigido:new FormControl(""),
           queIncluye:new FormControl(""),
@@ -598,6 +599,7 @@ export class CreateProgramP21Component {
             duracion:new FormControl(curso.duracion),
             fechaInicio:new FormControl(curso['fechaInicio']),
             fehcaSesiones:new FormControl(curso['fehcaSesiones']),
+            diaSesiones:new FormControl(curso['diaSesiones']),
             aQuienVaDirigido:new FormControl(curso['aQuienVaDirigido']),
             queIncluye:new FormControl(curso['queIncluye']),
             enCalendario: new FormControl(curso['enCalendario']),
@@ -2567,13 +2569,9 @@ export class CreateProgramP21Component {
     let duracion = 0;
 
     this.modulos.forEach((modulo) => {
-      duracion += this.getDurationModule(modulo);
+      duracion +=(modulo?.duracion)*60
     });
 
-    if (this.examen?.questions) {
-      let duracionExamen = this.examen?.questions.length <= 20 ? 20 : this.examen?.questions.length >= 60 ? 60 : this.examen?.questions.length;
-      duracion += duracionExamen;
-    }
 
     return duracion;
   }

@@ -55,6 +55,7 @@ export class MainComponent {
 
   async ngOnInit() {
     const licenses = await firstValueFrom(this.licenseService.getCurrentEnterpriseLicenses$())
+    console.log('licenses',licenses)
     // this.licensesSubscription = this.licenseService.getCurrentEnterpriseLicenses$().subscribe(licenses => {
       const now = Date.now()
       if (licenses && licenses.length > 0) {
@@ -64,11 +65,21 @@ export class MainComponent {
         const lastLicense = validLicenses.length > 0 ? validLicenses[0] : null
         if (lastLicense) {
           // Calculate the difference in milliseconds
-          const differenceInMilliseconds = Math.abs(now - lastLicense.currentPeriodEnd);
+          if((now - lastLicense.currentPeriodEnd)>0){
+            const differenceInMilliseconds = Math.abs(now - lastLicense.currentPeriodEnd);
 
-          // Convert milliseconds to days
-          const millisecondsInDay = 1000 * 60 * 60 * 24;
-          this.daysToExpire = Math.floor(differenceInMilliseconds / millisecondsInDay);
+            // Convert milliseconds to days
+            const millisecondsInDay = (1000 * 60 * 60 * 24)*-1;
+            this.daysToExpire = Math.floor(differenceInMilliseconds / millisecondsInDay);
+          }
+          else{
+            const differenceInMilliseconds = Math.abs(now - lastLicense.currentPeriodEnd);
+
+            // Convert milliseconds to days
+            const millisecondsInDay = 1000 * 60 * 60 * 24;
+            this.daysToExpire = Math.floor(differenceInMilliseconds / millisecondsInDay);
+          }
+
         }
       }
     // });
