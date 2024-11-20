@@ -42,6 +42,15 @@ export class LicenseService {
     return this.afs.collection<License>(License.collection).valueChanges();
   }
 
+  async getAllLicensesWithReadCount(): Promise<{ data: License[], readCount: number }> {
+    const snapshot = await this.afs.collection<License>(License.collection).ref.get();
+  
+    const data = snapshot.docs.map(doc => doc.data() as License);
+    const readCount = snapshot.size; // Get the count of read documents
+  
+    return { data, readCount };
+  }
+
   getCurrentEnterpriseLicenses$(): Observable<License[]> {
     return this.enterpriseService.enterpriseLoaded$.pipe(
       switchMap((isLoaded) => {
