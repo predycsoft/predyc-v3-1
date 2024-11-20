@@ -32,7 +32,7 @@
                 <div>Tu licencia expira el dia de hoy</div>
             </div>
 
-            <div *ngIf="daysToExpire < 0" class="ft12 red-5 ft500" fxLayout="row" fxLayoutAlign=" center" fxLayoutGap=".5rem">
+            <div *ngIf="daysToExpire && daysToExpire < 0" class="ft12 red-5 ft500" fxLayout="row" fxLayoutAlign=" center" fxLayoutGap=".5rem">
                 <img [src]="icon.warning" alt="" class="makeRed">
                 <div>Su licencia está vencida</div>
             </div>
