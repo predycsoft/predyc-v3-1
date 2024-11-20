@@ -29,14 +29,18 @@ export class LogsListComponent {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   
+  totalReadCountSum = 0
+  
   ngOnChanges(changes: SimpleChanges) {
     if (changes.logs && changes.logs.currentValue) {
       this.dataSource.data = this.logs;
+      this.totalReadCountSum = this.dataSource.data.reduce((sum, log) => sum + (log.totalReadCount || 0), 0);
     }
   }
 
   ngOnInit() {
     this.dataSource.data = this.logs;
+    this.totalReadCountSum = this.dataSource.data.reduce((sum, log) => sum + (log.totalReadCount || 0), 0);
   }
 
   ngAfterViewInit() {

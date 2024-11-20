@@ -31,4 +31,9 @@
       <tr mat-row *matRowDef="let log; columns: displayedColumns;" (click)="onSelect(log)"></tr>
   
     </table>
+
+    <div fxLayout="row" class="mgt05 fw" fxLayoutAlign="start center" fxLayoutGap=".5rem">
+      <span class="ft16 ft500 black">Suma total de lecturas: </span>
+      <span class="ft16 ft500 black">{{totalReadCountSum}}</span>
+    </div>
 </div>
