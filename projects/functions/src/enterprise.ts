@@ -60,7 +60,7 @@ export const updateDataEnterpriseRhythm = functions.https.onCall(async (data, _)
 });
 
 // For enterprise-list.component
-export const updateAllDataEnterpriseProgressPlanSchedule = functions.pubsub.schedule('every day 06:00').onRun(async (context) => {
+export const updateAllDataEnterpriseProgressPlanSchedule = functions.pubsub.schedule('every monday 06:00').onRun(async (context) => {
   try {
     await updateDataAllEnterprisesProgressPlanLocal();
     console.log('Updated all enterprises usage');
@@ -80,7 +80,7 @@ export const updateDataAllEnterprisesUsageSchedule = functions.pubsub.schedule('
 });
 
 // For enterprise-list
-export const updateDataAllEnterprisesRhythmSchedule = functions.pubsub.schedule('every day 06:00').onRun(async (context) => {
+export const updateDataAllEnterprisesRhythmSchedule = functions.pubsub.schedule('every monday 06:00').onRun(async (context) => {
   try {
     await updateDataAllEnterprisesRhythmLocal();
     console.log('Updated all enterprises usage');
