@@ -99,7 +99,7 @@ export class CreateProgramP21Component {
   mode = this.route.snapshot.paramMap.get("mode");
   textModulo = "Crear nuevo curso";
 
-  idCurso = this.route.snapshot.paramMap.get("idCurso");
+  idCurso = this.route.snapshot.paramMap.get("idPrograma");
   curso: Curso;
   modulos: Modulo[] = [];
   activitiesCourse;
@@ -489,15 +489,15 @@ export class CreateProgramP21Component {
           KeyWords: new FormControl(null),
           // objetivos: this.fb.array([], this.objetivosValidator(1)),
           objetivos: this.fb.array([]),
-          nivel: new FormControl(null, Validators.required),
+          //nivel: new FormControl(null, Validators.required),
           //categoria: new FormControl(null, Validators.required),
-          idioma: new FormControl(null, Validators.required),
+          //idioma: new FormControl(null, Validators.required),
           // contenido: new FormControl(null, Validators.required),
-          instructorRef: new FormControl(null),
-          instructor: new FormControl(null, Validators.required),
-          resumen_instructor: new FormControl(null, Validators.required),
+          //instructorRef: new FormControl(null),
+          //instructor: new FormControl(null, Validators.required),
+          //resumen_instructor: new FormControl(null, Validators.required),
           imagen: new FormControl(null, Validators.required),
-          imagen_instructor: new FormControl(null, Validators.required),
+          //imagen_instructor: new FormControl(null, Validators.required),
           skills: new FormControl(null, Validators.required),
           vimeoFolderId: new FormControl(null),
           proximamente: new FormControl(false),
@@ -520,7 +520,7 @@ export class CreateProgramP21Component {
         this.initSkills();
       }, 2000);
     } else {
-      this.courseService.getCoursesObservableP21().pipe(
+      this.courseService.getDiplomadoObservableP21().pipe(
           filter((courses) => courses.length > 0),
           take(1)
         )
@@ -533,6 +533,7 @@ export class CreateProgramP21Component {
             this.router.navigate(["management/courses"]);
           }
           this.curso = curso;
+          console.log('curso',curso,this.idCurso)
           this.curso.modules = this.curso['modulos']
           curso["modules"].sort((a, b) => a.numero - b.numero);
           this.modulos = curso["modules"];
@@ -541,14 +542,14 @@ export class CreateProgramP21Component {
 
           let instructor = null
 
-          if(this.instructores.length>0){
-            instructor = this.instructores.find((x) => x.id == curso.instructorRef.id);
+          // if(this.instructores.length>0){
+          //   instructor = this.instructores.find((x) => x.id == curso.instructorRef.id);
 
-          }
-          else{
-            instructor = await this.instructorsService.fetchInstructorDataByIdPromise(curso.instructorRef.id)
-            console.log('instructor',instructor)
-          }
+          // }
+          // else{
+          //   instructor = await this.instructorsService.fetchInstructorDataByIdPromise(curso.instructorRef.id)
+          //   console.log('instructor',instructor)
+          // }
 
 
           //this.instructoresForm.patchValue(instructor);
@@ -571,14 +572,14 @@ export class CreateProgramP21Component {
             metaDescripcion: new FormControl(curso.metaDescripcion),
             KeyWords:new FormControl(curso.KeyWords),
             objetivos: this.fb.array([]),
-            nivel: new FormControl(curso.nivel, Validators.required),
-            idioma: new FormControl(curso.idioma, Validators.required),
+            //nivel: new FormControl(curso.nivel, Validators.required),
+            //idioma: new FormControl(curso.idioma, Validators.required),
             // contenido: new FormControl(curso.contenido, Validators.required),
-            instructorRef: new FormControl(curso.instructorRef),
-            instructor: new FormControl(instructor.nombre, Validators.required),
-            resumen_instructor: new FormControl(instructor.resumen, Validators.required),
+            //instructorRef: new FormControl(curso.instructorRef),
+            //instructor: new FormControl(instructor.nombre, Validators.required),
+            //resumen_instructor: new FormControl(instructor.resumen, Validators.required),
             imagen: new FormControl(curso.imagen, Validators.required),
-            imagen_instructor: new FormControl(instructor.foto, Validators.required),
+            //imagen_instructor: new FormControl(instructor.foto, Validators.required),
             skills: new FormControl(curso.skillsRef, Validators.required),
             proximamente: new FormControl(curso.proximamente),
             public: new FormControl(curso.public),
@@ -611,16 +612,17 @@ export class CreateProgramP21Component {
             .subscribe((activities) => {
               //console.log('activities clases', activities);
               this.activitiesCourse = activities;
-              this.modulos.forEach((module) => {
-                let clases = module["clases"];
-                clases.forEach((clase) => {
-                  if (clase.tipo == "actividad" || clase.tipo == "corazones") {
-                    //console.log('activities clases clase', clase);
-                    let activity = activities.find((activity) => activity.claseRef.id == clase.id);
-                    console.log("activities clases activity", activity);
-                    clase.activity = activity;
-                  }
-                });
+              this.modulos.forEach((modulo) => {
+                let instructoresForm = new FormControl("");
+                let filteredinstructores: Observable<any[]>;
+                filteredinstructores = instructoresForm.valueChanges.pipe(
+                  startWith(""),
+                  map((value) => this._filter(value || ""))
+                );
+                instructor =  this.instructores.find(x=>x.id == modulo['instructorData'].id)
+                instructoresForm.patchValue(instructor);      
+                modulo['instructoresForm'] = instructoresForm
+                modulo['filteredinstructores'] = filteredinstructores
               });
             });
         });
@@ -657,12 +659,15 @@ export class CreateProgramP21Component {
     this.objetivos.removeAt(index);
   }
 
-  async setInstructor(instructor) {
-    let instructorRef = await this.afs.collection<any>("instructors").doc(instructor.id).ref;
-    this.formNewCourse.get("instructorRef").patchValue(instructorRef);
-    this.formNewCourse.get("instructor").patchValue(instructor.nombre);
-    this.formNewCourse.get("resumen_instructor").patchValue(instructor.resumen);
-    this.formNewCourse.get("imagen_instructor").patchValue(instructor.foto);
+  async setInstructor(instructor,modulo) {
+
+    console.log(instructor,modulo)
+    modulo['instructorData'] = instructor
+    // let instructorRef = await this.afs.collection<any>("instructors").doc(instructor.id).ref;
+    // this.formNewCourse.get("instructorRef").patchValue(instructorRef);
+    // this.formNewCourse.get("instructor").patchValue(instructor.nombre);
+    // this.formNewCourse.get("resumen_instructor").patchValue(instructor.resumen);
+    // this.formNewCourse.get("imagen_instructor").patchValue(instructor.foto);
   }
 
   tmpSkillRefArray = [];
@@ -907,15 +912,7 @@ export class CreateProgramP21Component {
     }
   }
 
-  expandModulo(modulo) {
-    console.log(modulo);
 
-    if (!modulo["expanded"] && modulo.titulo) {
-      modulo["expanded"] = true;
-    } else if (modulo["expanded"]) {
-      modulo["expanded"] = !modulo["expanded"];
-    }
-  }
 
   savingCourse = false;
 
@@ -949,9 +946,9 @@ export class CreateProgramP21Component {
         // let duracion = this.getDurationModuleCourse();
         // this.curso.duracion = duracion;
 
-        const instructorData = await this.instructorsService.fetchInstructorDataByIdPromise(this.curso.instructorRef.id)
+        //const instructorData = await this.instructorsService.fetchInstructorDataByIdPromise(this.curso.instructorRef.id)
 
-        this.curso['instructorData'] = instructorData
+        //this.curso['instructorData'] = instructorData
         //this.curso['pillarData'] = this.pillarsForm.value
         const pillarData= this.pillarsForm.value
 
@@ -961,76 +958,18 @@ export class CreateProgramP21Component {
         this.curso['pillarData'] = pillarData
 
 
-        await this.courseService.saveCourseP21(this.curso);
+        await this.courseService.saveDiplomadoP21(this.curso);
       }
 
       if (this.modulos.length > 0) {
-        //console.log('datos modulos',this.modulos);
-        //let validModules = this.modulos.filter(moduleCheck => !moduleCheck['isInvalid'])
-        let validModules = this.modulos;
 
+        let validModules = this.modulos;
         for (let modulo of validModules) {
-          ////console.log('modulo clase borrador add/edit',modulo)
           let arrayClasesRef = [];
           const clases = modulo["clases"];
-          //this.formNewCourse.get("instructorRef").patchValue(instructorRef)
           const instructorRef = this.formNewCourse.get("instructorRef")?.value
           console.log("claseModuloSave", modulo, clases);
-          for (let i = 0; i < clases.length; i++) {
-            try {
-              let clase = clases[i];
-              if (clase["edited"]) {
-                console.log("clase borrador add/edit", clase);
-                let claseLocal = new Clase();
-                claseLocal.HTMLcontent = clase.HTMLcontent;
-                claseLocal.archivos = clase.archivos.map((archivo) => ({
-                  id: archivo.id,
-                  nombre: archivo.nombre,
-                  size: archivo.size,
-                  type: archivo.type,
-                  url: archivo.url,
-                }));
-                claseLocal.descripcion = clase.descripcion;
-                claseLocal.duracion = clase.duracion;
-                claseLocal.id = clase.id;
-                claseLocal.vimeoId1 = clase.vimeoId1;
-                claseLocal.vimeoId2 = clase.vimeoId2;
-                claseLocal.skillsRef = clase.skillsRef;
-                claseLocal.tipo = clase.tipo;
-                claseLocal.titulo = clase.titulo;
-                claseLocal.instructorRef = instructorRef ? instructorRef : null
-                claseLocal.vigente = clase.vigente;
-                claseLocal.imagen = clase?.imagen ? clase.imagen:null
-                if (this.user.isSystemUser) {
-                  claseLocal.enterpriseRef = null;
-                } else {
-                  claseLocal.enterpriseRef = this.enterpriseService.getEnterpriseRef();
-                }
-
-                const arrayRefSkills = clase.competencias?.map((skillClase) => this.curso.skillsRef.find((skill) => skill.id == skillClase.id)).filter(Boolean) || [];
-                claseLocal.skillsRef = arrayRefSkills;
-                console.log("activityClass", clase);
-              } else {
-                let findDeleted = this.deletedClasses.find((x) => x.claseInId == clase.id);
-                console.log("claseRevisar", clase, findDeleted);
-                if (!findDeleted && !clase["deleted"]) {
-                  // let refClass = await this.afs.collection<Clase>(Clase.collection).doc(clase.id).ref;
-                  // arrayClasesRef.push(refClass);
-                }
-              }
-            } catch (error) {
-              console.error("Error processing clase", error);
-            }
-          }
-
           this.deletedClasses = [];
-
-          //console.log('arrayClasesRef',arrayClasesRef)
-
-          //let id = Date.now().toString();
-
-          //let idRef = await this.afs.collection<Modulo>(Modulo.collection).doc().ref.id;
-
           //moduleService
           let module = new Modulo();
           module.clasesRef = null;
@@ -1039,44 +978,27 @@ export class CreateProgramP21Component {
           module.numero = modulo.numero;
           module.titulo = modulo.titulo;
           module.clasesRef = arrayClasesRef;
-          // if (!modulo.id) {
-          //   module.id = idRef;
-          //   modulo.id = idRef;
-          // }
-          //console.log('module save', module)
-          //await this.moduleService.saveModulo(module, this.curso.id);
         }
       }
-      // let duracion = this.getDurationModuleCourse();
-      // this.curso.duracion = duracion;
-
       let modulosToSave = []
-
       console.log('modulosToSave',this.modulos)
-
       this.modulos.forEach(modulo => {
-        let clases = []
-        modulo['clases'].forEach(clase => {
-          console.log('clasesToSave',clase)
-          let claseLocal = {
-            id:clase.id,
-            duracion:clase.duracion,
-            tipo:clase.tipo,
-            titulo:clase.titulo,
-            imagen:clase?.imagen?clase.imagen:null
-          }
-          clases.push(claseLocal)
-        });
 
+        // modulo['fechaInicio'] = null
+        // modulo['duracion'] = null
+        //instructorData
         let moduloLocal ={
           numero:modulo.numero,
-          clases:clases,
-          titulo:modulo.titulo
+          titulo:modulo.titulo,
+          fechaInicio:modulo['fechaInicio'],
+          duracion:modulo.duracion,
+          instructorData:modulo['instructorData'],
+          
         }
         modulosToSave.push(moduloLocal)
       });
 
-      await this.afs.collection("courseP21").doc(this.curso.id).update({
+      await this.afs.collection('diplomadoP21').doc(this.curso.id).update({
         // duracion: duracion,
         modulos:modulosToSave
       });
@@ -1086,12 +1008,11 @@ export class CreateProgramP21Component {
       this.alertService.succesAlert("El curso se ha guardado exitosamente");
 
       if (this.mode == "create") {
-        this.router.navigate([`admin/create-cursos-p21/edit/${this.curso.id}`]);
+        this.router.navigate([`admin/create-diplomados-p21/edit/${this.curso.id}`]);
       }
     } else {
       Swal.close();
       this.savingCourse = false;
-      //this.alertService.succesAlert("El curso se ha guardado exitosamente")
     }
   }
 
@@ -1466,14 +1387,14 @@ export class CreateProgramP21Component {
         let newName = `${fileBaseName}-${Date.now().toString()}.${fileExtension}`;
 
         let nombreCurso = this.formNewCourse.get("titulo").value ? this.formNewCourse.get("titulo").value : "Temporal";
-        let nombreinstructor = this.formNewCourse.get("instructor").value ? this.formNewCourse.get("instructor").value : "Temporal";
+        //let nombreinstructor = this.formNewCourse.get("instructor").value ? this.formNewCourse.get("instructor").value : "Temporal";
 
         let filePath;
 
         if (tipo == "instructor") {
-          filePath = `Clientes/${this.empresa.name}/Instructor/${nombreinstructor}/${newName}`;
+          //filePath = `Clientes/${this.empresa.name}/Instructor/${nombreinstructor}/${newName}`;
         } else {
-          filePath = `Clientes/${this.empresa.name}/Cursos/${nombreCurso}/Imagen/${newName}`;
+          filePath = `Clientes/${this.empresa.name}/DiplomadosP21/${nombreCurso}/Imagen/${newName}`;
         }
 
         const task = this.storage.upload(filePath, file);
@@ -1591,10 +1512,10 @@ export class CreateProgramP21Component {
   totalClases = 0;
 
   hideModuleClasses(modulo): void {
-    for (const clase of modulo.clases) {
-      clase.expanded = false;
-      this.totalClases++;
-    }
+    // for (const clase of modulo.clases) {
+    //   clase.expanded = false;
+    //   this.totalClases++;
+    // }
   }
 
   hideOtherModules(moduloIn) {
@@ -1840,6 +1761,16 @@ export class CreateProgramP21Component {
   //     questions.push(pregunta)
 
   //   }
+
+  expandModulo(modulo) {
+    console.log(modulo);
+
+    if (!modulo["expanded"] && modulo.titulo) {
+      modulo["expanded"] = true;
+    } else if (modulo["expanded"]) {
+      modulo["expanded"] = !modulo["expanded"];
+    }
+  }
 
   addModulo() {
     //console.log(this.modulos);

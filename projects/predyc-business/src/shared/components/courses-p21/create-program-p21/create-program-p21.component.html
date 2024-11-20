@@ -9,7 +9,7 @@
         <div fxLayout="row" fxLayoutAlign="space-between center" class="fw fh pdt05 pdb05"  >
             <div fxLayout="row" fxLayoutAlign="start center">
                 <div *ngIf="formNewCourse?.get('titulo')?.value"  class="radius20 pdl10 pdr10 mgr10 pdt05 pdb05 backWhite ft14 fh pdl05  " fxLayout="row" fxLayoutGap="8px" fxLayoutAlign=" center">
-                    <span class="input-box ft14" placeholder="Nombre del curso"  >{{formNewCourse?.get('titulo')?.value}}</span>
+                    <span class="input-box ft14" placeholder="Nombre del diplomado"  >{{formNewCourse?.get('titulo')?.value}}</span>
                 </div>
                 <ng-container *ngIf="formNewCourse">
                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
@@ -60,7 +60,7 @@
                     class="blueButton ft14 cursorPointer"
                     (click)="saveDraftPre()"
                     style="border-radius: 24px !important;">
-                    {{mode !== 'edit' ? 'Guardar curso' : 'Guardar curso'}}
+                    {{mode !== 'edit' ? 'Guardar diplomado' : 'Guardar diplomado'}}
                     <img [src]="icon.save" class="h16px pdl05 makeWhite" alt="">
                 </button>
             </div>
@@ -85,9 +85,9 @@
                                         <label class="ft12 " >Título</label>
                                         <input
                                         [class.is-invalid]="formNewCourse.controls['titulo'].errors && showErrorCurso"
-                                        formControlName="titulo" type="text" class="form-control customInput2 radius6 " placeholder="Escriba el título del curso aquí">
+                                        formControlName="titulo" type="text" class="form-control customInput2 radius6 " placeholder="Escriba el título del diplomado aquí">
                                         <div class="invalid-feedback" *ngIf="formNewCourse.controls['titulo'].errors && showErrorCurso"> 
-                                            Debe indicar el título del curso
+                                            Debe indicar el título del diplo
                                         </div>
                                     </div>
                                     <mat-accordion>
@@ -104,7 +104,7 @@
                                                        [class.is-invalid]="formNewCourse.controls['precio'].errors && showErrorCurso"
                                                        type="number" min="1" class="form-control customInput2">
                                                 <div class="invalid-feedback" *ngIf="formNewCourse.controls['precio'].errors && showErrorCurso"> 
-                                                    Debe indicar la descripción del curso
+                                                    Debe indicar la descripción del diplomado
                                                 </div>
                                             </div>
                                     
@@ -114,7 +114,7 @@
                                                        [class.is-invalid]="formNewCourse.controls['precioOferta'].errors && showErrorCurso"
                                                        type="number" min="1" class="form-control customInput2">
                                                 <div class="invalid-feedback" *ngIf="formNewCourse.controls['precioOferta'].errors && showErrorCurso"> 
-                                                    Debe indicar la descripción del curso
+                                                    Debe indicar la descripción del diplomado
                                                 </div>
                                             </div>
                                     
@@ -124,21 +124,21 @@
                                                        [class.is-invalid]="formNewCourse.controls['precioOferta'].errors && showErrorCurso"
                                                        type="text" class="form-control customInput2">
                                                 <div class="invalid-feedback" *ngIf="formNewCourse.controls['precioOferta'].errors && showErrorCurso"> 
-                                                    Debe indicar la descripción del curso
+                                                    Debe indicar la descripción del diplomado
                                                 </div>
                                             </div>
                                     
                                             <div *ngIf="user.isSystemUser" class="ft12 form-group pdt10">
-                                                <label>Meta descripción del curso</label>
+                                                <label>Meta descripción del diplomado</label>
                                                 <textarea [class.is-invalid]="formNewCourse.controls['metaDescripcion'].errors && showErrorCurso" rows="3"
                                                           formControlName="metaDescripcion" type="text" class="form-control ft12 customInput2"
                                                           [maxLength]="metaDescriptionMaxLength"
-                                                          placeholder="Escriba la descripción del curso aquí" style="resize: none;"></textarea>
+                                                          placeholder="Escriba la descripción del diplomado aquí" style="resize: none;"></textarea>
                                                 <div class="progress-bar-container fw mgt03">
                                                     <div class="progress-bar" [style.width.%]="(formNewCourse?.controls['metaDescripcion']?.value?.length / metaDescriptionMaxLength) * 100"></div>
                                                 </div>
                                                 <div class="invalid-feedback" *ngIf="formNewCourse.controls['metaDescripcion'].errors && showErrorCurso"> 
-                                                    Debe indicar la meta descripción del curso
+                                                    Debe indicar la meta descripción del diplomado
                                                 </div>
                                             </div>
                                     
@@ -146,12 +146,12 @@
                                                 <label>KeyWords</label>
                                                 <textarea [class.is-invalid]="formNewCourse.controls['KeyWords'].errors && showErrorCurso" [maxLength]="keyWordsMaxLength"
                                                           rows="3" formControlName="KeyWords" type="text" class="form-control ft12 customInput2"
-                                                          placeholder="Escriba los KeyWords del curso aquí" style="resize: none;"></textarea>
+                                                          placeholder="Escriba los KeyWords del diplomado aquí" style="resize: none;"></textarea>
                                                 <div class="progress-bar-container fw mgt03">
                                                     <div class="progress-bar" [style.width.%]="(formNewCourse?.controls['KeyWords']?.value?.length / keyWordsMaxLength) * 100"></div>
                                                 </div>
                                                 <div class="invalid-feedback" *ngIf="formNewCourse.controls['KeyWords'].errors && showErrorCurso"> 
-                                                    Debe indicar los KeyWords del curso
+                                                    Debe indicar los KeyWords del diplomado
                                                 </div>
                                             </div>
                                     
@@ -169,16 +169,16 @@
                                                 <option value="Grabado">Grabado</option>
                                         </select>
                                         <div class="invalid-feedback" *ngIf="formNewCourse.controls['modalidad'].errors && showErrorCurso"> 
-                                            Debe indicar la modalidad del curso
+                                            Debe indicar la modalidad del diplomado
                                         </div>
                                     </div>
                                     <div class="form-group mgt08">
                                         <label class="ft12 " >Duración (minutos)</label>
                                         <input
                                         [class.is-invalid]="formNewCourse.controls['duracion'].errors && showErrorCurso"
-                                        formControlName="duracion" type="number" class="form-control customInput2 radius6 " placeholder="Escriba el duración del curso en minutos aquí">
+                                        formControlName="duracion" type="number" class="form-control customInput2 radius6 " placeholder="Escriba el duración del diplomado en minutos aquí">
                                         <div class="invalid-feedback" *ngIf="formNewCourse.controls['duracion'].errors && showErrorCurso"> 
-                                            Debe indicar la duración del curso
+                                            Debe indicar la duración del diplomado
                                         </div>
                                     </div>
                                     <label>Fecha inicio</label>
@@ -186,16 +186,34 @@
                                         <img [src]="icon.calendarAdd" class="makeGray h16px" alt="" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
                                         <input formControlName="fechaInicio" [class.is-invalid]="formNewCourse.get('fechaInicio').errors && showErrorCurso" type="date" class="form-control pdl20 radius6 shadow-animation borderLight" placeholder="Ingrese los detalles de las fechas de las seciones">
                                     </div>
+                                    <div fxLayout="row" fxLayoutAlign=" center" class="mgt10 fw">
+                                        <form class="fw">
+                                            <mat-form-field class="example-full-width fw">
+                                                <mat-label>Buscar Pilar</mat-label>
+                                                <input type="text" class="ft14 fw" placeholder="Seleccione uno" aria-label="Number" matInput #autoTrigger="matAutocompleteTrigger" [formControl]="pillarsForm" [matAutocomplete]="autoPillars">
+                                                <mat-autocomplete [displayWith]="getOptionTextPillar" #autoPillars="matAutocomplete" class="options">
+                                                <mat-option (click)="changePillar(option)" class="multiline-mat-option ft12" *ngFor="let option of filteredPillars | async" [value]="option">
+                                                    <div fxLayout="row" fxLayoutAlign="space-between">
+                                                        <div fxLayout="col" fxLayoutAlign="center center">
+                                                            {{option.name | titlecase}}
+                                                        </div>
+                                                    </div>
+                                                </mat-option>
+                                                <mat-option  (click)="createPillar()" class="multiline-mat-option" value="null">Crear nuevo pilar</mat-option>
+                                                </mat-autocomplete>
+                                            </mat-form-field>
+                                        </form>
+                                    </div>
                                     <div class="form-group mgt08">
                                         <label class="ft12 " >Que Incluye</label>
                                         <textarea
                                         [class.is-invalid]="formNewCourse.controls['queIncluye'].errors && showErrorCurso"
                                         formControlName="queIncluye" 
                                         class="form-control customInput2 radius6" 
-                                        placeholder="Escriba la duración del curso en minutos aquí"
+                                        placeholder="Escriba la duración del diplomado en minutos aquí"
                                         rows="3"></textarea>
                                         <div class="invalid-feedback" *ngIf="formNewCourse.controls['queIncluye'].errors && showErrorCurso"> 
-                                            Debe indicar las fechas de las sesiones del curso
+                                            Debe indicar las fechas de las sesiones del diplomado
                                         </div>
                                     </div>
                                     <div class="form-group mgt08">
@@ -204,10 +222,10 @@
                                         [class.is-invalid]="formNewCourse.controls['aQuienVaDirigido'].errors && showErrorCurso"
                                         formControlName="aQuienVaDirigido" 
                                         class="form-control customInput2 radius6" 
-                                        placeholder="Escriba la duración del curso en minutos aquí"
+                                        placeholder="Escriba la duración del diplomado en minutos aquí"
                                         rows="3"></textarea>
                                         <div class="invalid-feedback" *ngIf="formNewCourse.controls['aQuienVaDirigido'].errors && showErrorCurso"> 
-                                            Debe indicar las fechas de las sesiones del curso
+                                            Debe indicar las fechas de las sesiones del diplomado
                                         </div>
                                     </div>
                                     <div class="form-group mgt08">
@@ -219,7 +237,7 @@
                                         placeholder="Escriba el texto de descuentos"
                                         rows="3"></textarea>
                                         <div class="invalid-feedback" *ngIf="formNewCourse.controls['descuentos'].errors && showErrorCurso"> 
-                                            Debe indicar las fechas de las sesiones del curso
+                                            Debe indicar las fechas de las sesiones del diplomado
                                         </div>
                                     </div>
                                     <div *ngIf="user?.isSystemUser" class="form-group mgt08">
@@ -230,14 +248,14 @@
                                             formControlName="customUrl"
                                             type="text"
                                             class="form-control customInput2 radius6"
-                                            placeholder="Escriba el URL del curso aquí"
+                                            placeholder="Escriba el URL del diplomado aquí"
                                             >
                                             <div class="input-group-append">
                                                 <span class="input-group-text">{{ formNewCourse?.controls['customUrl']?.value?.length || 0 }}</span>
                                             </div>
                                         </div>
                                         <div class="invalid-feedback" *ngIf="formNewCourse?.controls['customUrl']?.errors && showErrorCurso">
-                                            Debe indicar el URL del curso
+                                            Debe indicar el URL del diplomado
                                         </div>
                                     </div>
                                     <div class="ft12 form-group pdt10">
@@ -269,7 +287,7 @@
                                         </div>
                                     </div>
                                     <div *ngIf="formNewCourse.controls['imagen'].errors && showErrorCurso" class="custom-invalid-feedback pdt05">
-                                        Debe seleccionar o subir la imagen del curso
+                                        Debe seleccionar o subir la imagen del diplomado
                                     </div>     
                                 </form>
                             </div>
@@ -290,7 +308,7 @@
                                                                 <div fxLayout="row" fxLayoutGap="10px" class="fw">
                                                                     <div class="ft500 ft12 p ">
                                                                         <!-- numero del modulo -->
-                                                                        Curso {{modulo.numero}}:
+                                                                        Diplomado {{modulo.numero}}:
                                                                     </div>
                                                                     <div class="ft12">
                                                                         <!-- nombre del modulo -->
@@ -334,7 +352,7 @@
                                                             <div *ngIf="modulo['expanded']">
                                                                 <!-- Contenedor Principal -->
                                                                 <div fxLayout="row" class="fw" fxLayoutAlign="space-around center" >
-                                                                    <!-- contenedor de detalles curso -->
+                                                                    <!-- contenedor de detalles diplomado -->
                                                                     <div fxLayout="row" fxLayoutAlign="center center">
                                                                         <form class="example-form">
                                                                             <mat-form-field class="example-full-width fw">
@@ -348,7 +366,7 @@
                                                                                 [formControl]="modulo['instructoresForm']"
                                                                                 [matAutocomplete]="autoInstructores">
                                                                             <mat-autocomplete [displayWith]="getOptionText" #autoInstructores="matAutocomplete" class="options">
-                                                                                <mat-option class="multiline-mat-option" *ngFor="let option of modulo['filteredinstructores'] | async" [value]="option">
+                                                                                <mat-option (click)="setInstructor(option,modulo)" class="multiline-mat-option" *ngFor="let option of modulo['filteredinstructores'] | async" [value]="option">
                                                                                 <div fxLayout="row" fxLayoutAlign="space-between">
                                                                                     <div fxLayout="col" fxLayoutAlign="center center" class="ft12">
                                                                                     {{option.nombre | titlecase}}
@@ -392,7 +410,7 @@
                                                         <div fxLayout="row" fxLayoutAlign="center center">
                                                             <span (click)="addModulo()" class="blueLink radius4 ft12 h28px no-select" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
                                                                 <img [src]="icon.addNew" class="h12px pdr05 makeBlue" alt="">
-                                                                Agregar Curso
+                                                                Agregar Diplomado
                                                             </span>
                                                         </div>                                                    
                                                         <ng-container *ngIf="isInvalidCases">
@@ -419,7 +437,7 @@
         <div class="modal-header bg-web-primary text-white px-3 py-1">
             <div class="modal-title pd10" fxLayout="row" fxLayoutAlign="start center">
                 <img [src]="icon.catalog" class="h18px pdr05" alt="">
-                <span class="ft16 ft600 gray-10">¡Creaste un nuevo curso!</span>
+                <span class="ft16 ft600 gray-10">¡Creaste un nuevo diplomado!</span>
             </div>
             <img style="cursor: pointer;" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px"  alt="">
         </div>
@@ -434,7 +452,7 @@
                 <div fxFlex="50" fxLayout="column" fxLayoutAlign="center center">
                     <!-- Texto encima de los botones -->
                     <div class="text-center mb-3">
-                        ¿Deseas publicar el curso?
+                        ¿Deseas publicar el diplomado?
                     </div>
         
                     <!-- Botones -->
@@ -641,7 +659,7 @@
                                             <label>Instrucciones</label>
                                             <textarea formControlName="instrucciones"
                                             [class.is-invalid]="formNuevaActividadGeneral.controls['instrucciones'].errors && showErrorActividad" 
-                                            rows="3"  type="text" class="form-control customInput" placeholder="Escriba el resumen del curso aquí" style="resize: none;"></textarea>
+                                            rows="3"  type="text" class="form-control customInput" placeholder="Escriba el resumen del diplomado aquí" style="resize: none;"></textarea>
                                             <div class="invalid-feedback" *ngIf="formNuevaActividadGeneral.controls['instrucciones'].errors && showErrorActividad">
                                                 Debe indicar las instrucciones de la actividad.
                                             </div>
@@ -1230,7 +1248,7 @@
             <form [formGroup]="formNewInstructor" class="mgr20">
                 <div class="form-group">
                     <label>Nombre del instructor</label>
-                    <input formControlName="nombre" [class.is-invalid]="formNewInstructor.controls['nombre'].errors && showErrorInstructor" type="text" class="form-control customInput" placeholder="Escriba el nombre del instructor del curso aquí">
+                    <input formControlName="nombre" [class.is-invalid]="formNewInstructor.controls['nombre'].errors && showErrorInstructor" type="text" class="form-control customInput" placeholder="Escriba el nombre del instructor del diplomado aquí">
                     <div class="invalid-feedback" *ngIf="formNewInstructor.controls['nombre'].errors && showErrorInstructor"> 
                         Debe indicar el nombre del instructor.
                     </div>
@@ -1238,7 +1256,7 @@
     
                 <div class="form-group">
                     <label>Correo del instructor</label>
-                    <input formControlName="email" [class.is-invalid]="formNewInstructor.controls['email'].errors && showErrorInstructor" type="text" class="form-control customInput" placeholder="Escriba el correo del instructor del curso aquí">
+                    <input formControlName="email" [class.is-invalid]="formNewInstructor.controls['email'].errors && showErrorInstructor" type="text" class="form-control customInput" placeholder="Escriba el correo del instructor del diplomado aquí">
                     <div class="invalid-feedback" *ngIf="formNewInstructor.controls['email'].errors?.required && showErrorInstructor"> 
                         Debe indicar el correo del instructor.
                     </div>
