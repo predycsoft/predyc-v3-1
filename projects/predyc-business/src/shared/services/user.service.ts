@@ -56,6 +56,100 @@ export class UserService {
     });
   }
 
+  async getUsersReport(): Promise<any[]> {
+    const afs = this.afs;
+    try {
+      // 1) Obtener todos los usuarios cuya propiedad `enterprise` sea null
+      const usersSnapshot = await afs.collection('user', ref =>
+        ref.where('enterprise', '==', null)
+      ).get().toPromise();
+      const users = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() as any }));
+  
+      // 2) Obtener todos los documentos de `new-subscription`
+      const subscriptionsSnapshot = await afs.collection('new-subscription').get().toPromise();
+      const subscriptions = subscriptionsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() as any }));
+  
+      // 3) Obtener todos los diplomados
+      const diplomadosSnapshot = await afs.collection('diplomado').get().toPromise();
+      const diplomados = diplomadosSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() as any }));
+
+      diplomados.forEach(diplomado => {
+        delete diplomado.coursesRef
+      });
+  
+      // 4) Obtener todos los diplomados por estudiante desde `diplomadoByStudent`
+      const diplomadosByStudentSnapshot = await afs.collection('diplomadoByStudent').get().toPromise();
+      const diplomadosByStudent = diplomadosByStudentSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() as any }));
+  
+      // 5) Obtener todos los productos desde `new-product`
+      const productsSnapshot = await afs.collection('new-product').get().toPromise();
+      const products = productsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() as any }));
+  
+      // Crear mapas para agrupar los datos
+      const userMap = new Map(users.map(user => [user.id, user]));
+      const productMap = new Map(products.map(product => [product.id, product]));
+  
+      const subscriptionsByUser = subscriptions.reduce((acc, subscription) => {
+        const userId = subscription.userRef.id;
+        const product = productMap.get(subscription.productRef.id);
+  
+        if (userMap.has(userId)) {
+          if (!acc[userId]) acc[userId] = [];
+          acc[userId].push({
+            ...subscription,
+            product: product || null // Agregar datos del producto
+          });
+        }
+        return acc;
+      }, {} as { [key: string]: any[] });
+  
+      const diplomadosByUser = diplomadosByStudent.reduce((acc, record) => {
+        const userId = record.userRef.id;
+        const diplomado = diplomados.find(d => d.id === record.diplomadoRef.id);
+        if (!diplomado) return acc;
+        if (!acc[userId]) acc[userId] = [];
+        acc[userId].push(diplomado);
+        return acc;
+      }, {} as { [key: string]: any[] });
+  
+      // 6) Combinar toda la información dentro de los usuarios
+      const usersWithDetails = users.map(user => {
+        const userSubscriptions = subscriptionsByUser[user.id] || [];
+        const userDiplomados = diplomadosByUser[user.id] || [];
+  
+        // Eliminar referencias para reducir el tamaño de los objetos
+        const sanitizedSubscriptions = userSubscriptions.map(subscription => {
+          const { userRef, productRef, ...sanitized } = subscription;
+          return sanitized;
+        });
+  
+        const sanitizedDiplomados = userDiplomados.map(diplomado => {
+          const { userRef, ...sanitized } = diplomado;
+          return sanitized;
+        });
+  
+        return {
+          ...user,
+          subscriptions: sanitizedSubscriptions,
+          diplomados: sanitizedDiplomados
+        };
+      });
+  
+      console.log('Reporte generado:', JSON.stringify(usersWithDetails, null, 2));
+      localStorage.setItem('datosReporte', JSON.stringify(usersWithDetails, null, 2));
+
+      return usersWithDetails;
+  
+    } catch (error) {
+      console.error('Error generando el reporte:', error);
+      return []; // Manejo de error
+    }
+  }
+  
+  
+  
+  
+
 
   async generateCourseCompletionReport(afs: AngularFirestore): Promise<any[]> {
     try {
