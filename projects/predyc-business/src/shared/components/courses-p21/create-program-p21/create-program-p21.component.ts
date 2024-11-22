@@ -488,7 +488,7 @@ export class CreateProgramP21Component {
           metaDescripcion: new FormControl(null),
           KeyWords: new FormControl(null),
           // objetivos: this.fb.array([], this.objetivosValidator(1)),
-          objetivos: this.fb.array([]),
+          //objetivos: this.fb.array([]),
           //nivel: new FormControl(null, Validators.required),
           //categoria: new FormControl(null, Validators.required),
           //idioma: new FormControl(null, Validators.required),
@@ -497,6 +497,7 @@ export class CreateProgramP21Component {
           //instructor: new FormControl(null, Validators.required),
           //resumen_instructor: new FormControl(null, Validators.required),
           imagen: new FormControl(null, Validators.required),
+          banner: new FormControl(null, Validators.required),
           //imagen_instructor: new FormControl(null, Validators.required),
           skills: new FormControl(null, Validators.required),
           vimeoFolderId: new FormControl(null),
@@ -507,14 +508,19 @@ export class CreateProgramP21Component {
           precio: new FormControl(""),
           precioOferta: new FormControl(""),
           stripeUrl: new FormControl(""),
-          duracion: new FormControl(0, [Validators.required,this.greaterThanZeroValidator]),
+          // duracion: new FormControl(0, [Validators.required,this.greaterThanZeroValidator]),
+          duracion:new FormControl(""),
           fechaInicio:new FormControl(""),
+          diaSesiones:new FormControl(""),
           fehcaSesiones:new FormControl(""),
           aQuienVaDirigido:new FormControl(""),
           queIncluye:new FormControl(""),
           enCalendario: new FormControl(false),
           descuentos: new FormControl(""),
           modalidad: new FormControl("",Validators.required),
+          modalidadCapacitacion: new FormControl(""),
+          objetivo: new FormControl(""),
+          pdf: new FormControl(""),
 
         });
         this.initSkills();
@@ -579,6 +585,7 @@ export class CreateProgramP21Component {
             //instructor: new FormControl(instructor.nombre, Validators.required),
             //resumen_instructor: new FormControl(instructor.resumen, Validators.required),
             imagen: new FormControl(curso.imagen, Validators.required),
+            banner: new FormControl(curso['banner'], Validators.required),
             //imagen_instructor: new FormControl(instructor.foto, Validators.required),
             skills: new FormControl(curso.skillsRef, Validators.required),
             proximamente: new FormControl(curso.proximamente),
@@ -588,14 +595,19 @@ export class CreateProgramP21Component {
             precio: new FormControl(curso.precio),
             precioOferta: new FormControl(curso.precioOferta),
             stripeUrl: new FormControl(curso.stripeUrl),
-            duracion:new FormControl(curso.duracion, [Validators.required,this.greaterThanZeroValidator]),
+            // duracion:new FormControl(curso.duracion, [Validators.required,this.greaterThanZeroValidator]),
+            duracion:new FormControl(curso.duracion),
             fechaInicio:new FormControl(curso['fechaInicio']),
             fehcaSesiones:new FormControl(curso['fehcaSesiones']),
+            diaSesiones:new FormControl(curso['diaSesiones']),
             aQuienVaDirigido:new FormControl(curso['aQuienVaDirigido']),
             queIncluye:new FormControl(curso['queIncluye']),
             enCalendario: new FormControl(curso['enCalendario']),
             descuentos: new FormControl(curso['descuentos']),
             modalidad: new FormControl(curso['modalidad'],Validators.required),
+            modalidadCapacitacion: new FormControl(curso['modalidadCapacitacion']),
+            objetivo: new FormControl(curso['objetivo']),
+            pdf: new FormControl(curso['pdf']),
 
 
           });
@@ -1008,7 +1020,7 @@ export class CreateProgramP21Component {
       this.alertService.succesAlert("El curso se ha guardado exitosamente");
 
       if (this.mode == "create") {
-        this.router.navigate([`admin/create-diplomados-p21/edit/${this.curso.id}`]);
+        this.router.navigate([`admin/create-diplomado-p21/edit/${this.curso.id}`]);
       }
     } else {
       Swal.close();
@@ -1324,11 +1336,13 @@ export class CreateProgramP21Component {
     return false;
   }
   uploadingImgCurso = false;
+  uploadingBannerCurso = false;
   uploadingImgInstuctor = false;
   fileNameImgCurso = "";
   fileNameImgInstuctor = "";
   uploading_file_progressImgCurso = 0;
   uploading_file_progressImgInstuctor = 0;
+  uploading_file_progressbannerCurso = 0;
   uploadProgress$: Observable<number>;
 
   imagenesCurso = ["../../../assets/images/cursos/placeholder1.jpg", "../../../assets/images/cursos/placeholder2.jpg", "../../../assets/images/cursos/placeholder3.jpg", "../../../assets/images/cursos/placeholder4.jpg"];
@@ -1367,7 +1381,13 @@ export class CreateProgramP21Component {
       //this.deleteQuestionImage(pregunta);
 
       if (file) {
-        if (tipo == "instructor") {
+        if(tipo == 'pdf'){
+
+        }
+        else if(tipo == 'banner'){
+          this.uploadingBannerCurso = true;
+        }
+        else if (tipo == "instructor" ) {
           this.uploadingImgInstuctor = true;
         } else {
           this.uploadingImgCurso = true;
@@ -1394,7 +1414,7 @@ export class CreateProgramP21Component {
         if (tipo == "instructor") {
           //filePath = `Clientes/${this.empresa.name}/Instructor/${nombreinstructor}/${newName}`;
         } else {
-          filePath = `Clientes/${this.empresa.name}/DiplomadosP21/${nombreCurso}/Imagen/${newName}`;
+          filePath = `DiplomadosP21/${nombreCurso}/${newName}`;
         }
 
         const task = this.storage.upload(filePath, file);
@@ -1408,7 +1428,10 @@ export class CreateProgramP21Component {
         // Suscríbete al Observable para actualizar tu componente de barra de progreso
         this.uploadProgress$.subscribe((progress) => {
           //console.log(progress);
-          if (tipo == "instructor") {
+          if(tipo == "banner"){
+            this.uploading_file_progressbannerCurso = Math.floor(progress);
+          }
+          else if (tipo == "instructor") {
             this.uploading_file_progressImgInstuctor = Math.floor(progress);
           } else {
             this.uploading_file_progressImgCurso = Math.floor(progress);
@@ -1422,7 +1445,22 @@ export class CreateProgramP21Component {
             finalize(() => {
               // Obtén la URL de descarga del archivo.
               fileRef.getDownloadURL().subscribe((url) => {
-                if (tipo == "instructor") {
+                if(tipo == 'pdf'){
+                  let fileInfo = {
+                    nombre: fileBaseName + "." + fileExtension,
+                    size: file.size,
+                    type: file.type,
+                    url: url,
+                  };
+                  this.formNewCourse.get("pdf").patchValue(fileInfo);
+
+                }
+                else if(tipo == "banner"){
+                  this.uploadingBannerCurso = false;
+                  this.formNewCourse.get("banner").patchValue(url);
+                  //this.imagenesCurso.unshift(url);
+                }
+                else if (tipo == "instructor") {
                   this.uploadingImgInstuctor = false;
                   if (!newInstructor) {
                     this.formNewCourse.get("imagen_instructor").patchValue(url);
@@ -2531,13 +2569,9 @@ export class CreateProgramP21Component {
     let duracion = 0;
 
     this.modulos.forEach((modulo) => {
-      duracion += this.getDurationModule(modulo);
+      duracion +=(modulo?.duracion)*60
     });
 
-    if (this.examen?.questions) {
-      let duracionExamen = this.examen?.questions.length <= 20 ? 20 : this.examen?.questions.length >= 60 ? 60 : this.examen?.questions.length;
-      duracion += duracionExamen;
-    }
 
     return duracion;
   }

@@ -62,6 +62,8 @@ export class CoursesP21Component {
   categoriesPredyc;
   categoriesPropios;
   courses;
+  categoriesDiplomado
+  diplomados;
   user;
   enterpriseRef
   subscription: SubscriptionClass
@@ -94,12 +96,13 @@ export class CoursesP21Component {
       this.skillService.getSkillsObservable().pipe(take(2)),
       this.courseService.getCoursesObservableP21().pipe(take(2)),
       this.instructorsService.getInstructorsObservable().pipe(take(2)),
-    ]).subscribe(([categories, skills, courses,instructors]) => {
+      this.courseService.getDiplomadoObservableP21().pipe(take(2))
+    ]).subscribe(([categories, skills, courses,instructors,diplomados]) => {
       console.log('categories from service', categories);
       console.log('skills from service', skills);
       console.log('courses from service', courses);
       console.log('instructors from service', instructors);
-
+      console.log('diplomados from service', diplomados);
     
       this.categories = this.anidarCompetenciasInicial(categories, skills);
     
@@ -138,17 +141,29 @@ export class CoursesP21Component {
           curso['duracion'] = duracionCourse;
         }
 
-        // if(curso.duracion>=duracionCourse){
-        //   if(!curso['modules'].find(x=>x.titulo == 'Examen Final'))
-        //   curso['modules'].push({dontshow:true, titulo:'Examen Final',clases:[{titulo:'Examen Final',duracion:curso.duracion-duracionCourse}]})
-        // }
-        // else{
-        //   if(!curso['modules'].find(x=>x.titulo == 'Examen Final'))
-        //   curso['modules'].push({dontshow:true, titulo:'Examen Final',clases:[{titulo:'Examen Final',duracion:null}]})
-        // }
         curso['instructorData'] = instructors.find(x=>x.id == curso.instructorRef.id)
       });
+
+      diplomados.forEach(curso => {
+        let skillIds = new Set();
+        curso.skillsRef.forEach(skillRef => {
+          skillIds.add(skillRef.id); // Assuming skillRef has an id property
+        });
+        let filteredSkills = skills.filter(skillIn => skillIds.has(skillIn.id));
+        let categoryIds = new Set();
+        filteredSkills.forEach(skillRef => {
+          categoryIds.add(skillRef.category.id); // Assuming skillRef has an id property
+        });
+        let filteredCategories = categories.filter(categoryIn => categoryIds.has(categoryIn.id));
+        curso['skills'] = filteredSkills;
+        curso['categories'] = filteredCategories;
+        curso.modules = curso['modulos']
+        curso['modules'].sort((a, b) => a.numero - b.numero);    
+      });
+
+
       this.courses = courses;
+      this.diplomados = diplomados;
     
       this.categories.forEach(category => {
         let filteredCourses = courses.filter(course =>
@@ -160,6 +175,18 @@ export class CoursesP21Component {
         let filteredCoursesPredyc = courses.filter(course =>
           course['categories'].some(cat => cat.id === category.id) && course.enterpriseRef == null
         );
+
+
+        let filteredDiplomados = diplomados.filter(course =>
+          course['categories'].some(cat => cat.id === category.id)
+        );
+        let filteredDiplomadosPropios = diplomados.filter(course =>
+          course['categories'].some(cat => cat.id === category.id) && course.enterpriseRef != null
+        );
+        let filteredDiplomadosPredyc = diplomados.filter(course =>
+          course['categories'].some(cat => cat.id === category.id) && course.enterpriseRef == null
+        );
+        
         category.expanded = false;
         category.expandedPropios = false;
         category.expandedPredyc = false;
@@ -167,8 +194,16 @@ export class CoursesP21Component {
         category.courses = filteredCourses;
         category.coursesPropios = filteredCoursesPropios;
         category.coursesPredyc = filteredCoursesPredyc;
+
+        category.diplomados = filteredDiplomados;
+        category.diplomadosPropios = filteredDiplomadosPropios;
+        category.diplomadosPredyc = filteredDiplomadosPredyc;
       });
     });
+
+    const categoriesDiplomado = this.categories
+
+    categoriesDiplomado.coursesPredyc = this.categories.diplomadosPredyc
 
 
 

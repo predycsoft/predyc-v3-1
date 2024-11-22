@@ -17,6 +17,7 @@ export class CourseSelectorComponent {
   @Output() selectedCourseOut = new EventEmitter<any>();
   @Input() user
   @Input() showTitle = true
+  @Input() typeFilter = "courses"
 
 
   processedCategories;
@@ -40,7 +41,7 @@ export class CourseSelectorComponent {
       proximos.courses = cursosProxmosIn;
 
       // console.log('proximos',proximos)
-      // console.log('this.processedCategories',this.processedCategories)
+      console.log('this.processedCategories',this.processedCategories)
     }
   }
 
@@ -96,6 +97,25 @@ export class CourseSelectorComponent {
 
   filteredCourses(categoryCourses) {
     //console.log('categoryCourses',categoryCourses)
+
+    if(this.type == "predyc"){
+      if(this.typeFilter == "courses"){
+        categoryCourses = categoryCourses.coursesPredyc
+      }
+      else{
+        categoryCourses = categoryCourses.diplomadosPredyc
+
+      }
+    }
+    else{
+      if(this.typeFilter == "courses"){
+        categoryCourses = categoryCourses.coursesPropios
+      }
+      else{
+        categoryCourses = categoryCourses.diplomadosPropios
+      }
+    }
+
     let displayedCourses = categoryCourses;
     if (this.searchValue && this.searchValue.length > 0) {
       displayedCourses = categoryCourses?.filter((x) => x.titulo.toLocaleLowerCase().includes(this.searchValue.toLocaleLowerCase()));
