@@ -20,101 +20,12 @@ export class Log {
 export class UsersStudyTimeContainerComponent {
 
   @Input() enterprise: Enterprise = null
-  @Input() authUser: User = null
 
   constructor(
     public icon: IconService,
-    private courseService: CourseService,
-    private loggingService: LoggingService
   ){}
-  
-  chartTab: number = 0
-  hoursTimeWeek: number = 0 // Suma de los tiempos (en horas) empleados en la ultima semana
-  hoursTimeMonth: number = 0
-  logs: Log[] = []
-  now = new Date()
-  startOfWeek: number
-  startOfMonth: number
-
-  targetHoursPerMonth = 20
 
   async ngOnInit() {
-    // Set of first day of the week and first day on the last 12 months
-    let startOfWeek = new Date();
-    startOfWeek.setUTCDate(this.now.getUTCDate() - ((this.now.getUTCDay() + 6) % 7));
-    startOfWeek.setUTCHours(0,0,0,0)
-    this.startOfWeek = +startOfWeek
-
-    const now = new Date();
-    now.setUTCMonth(now.getUTCMonth() - 11);
-    now.setUTCDate(1);
-    now.setUTCHours(0, 0, 0, 0);
-    this.startOfMonth = +now
-
-    //Datos de ejemplo:
-    // this.logs = this.generateTestData()
-    // console.log("this.logs", this.logs)
-    // -----
-    await this.chartData()
   }
 
-  courseServiceSubscription: Subscription
-  logsInCurrentMonth: Log[]
-  currentMonth = new Date().getUTCMonth();  
-  currentYear = new Date().getUTCFullYear()
-
-  async chartData() {
-    let totalReadCount = 0
-    const { data: classesByStudent, readCount: getClassesByEnterpriseReadCount } = await this.courseService.getClassesByEnterprise();
-    totalReadCount += getClassesByEnterpriseReadCount
-
-    // const allClassesId = classesByStudent.map(x => x.classRef.id)
-    // console.log("allClassesId", allClassesId)
-    const classesIds: string[] = Array.from(
-      new Set(classesByStudent.map(classItem => classItem.classRef.id))
-    );
-
-    const { data: classesData, readCount: getClassesByIdsReadCount } = await this.courseService.getClassesByIds(classesIds);
-    // console.log("classesData docs", classesData.length)
-    totalReadCount += getClassesByIdsReadCount
-
-
-    const logs = classesByStudent.map(classByStudent => {
-      const clase = classesData.find(x => x.id === classByStudent.classRef.id)
-      return {
-        classDuration: clase.duracion,
-        endDate: firestoreTimestampToNumberTimestamp(classByStudent.dateEnd)
-      };
-    })
-
-    this.logs = logs
-    this.logsInCurrentMonth = logs.filter(log => {
-      const logMonth = new Date(log.endDate).getUTCMonth(); 
-      const logYear = new Date(log.endDate).getUTCFullYear();
-      return logMonth === this.currentMonth && logYear === this.currentYear;
-    });
-    this.hoursTimeMonth = this.logsInCurrentMonth.reduce((total, currentClass) => total + currentClass.classDuration, 0) / 60;
-    
-    await this.saveComponentLog(totalReadCount)
-  }
-  
-  async saveComponentLog(totalReadCount: number) {
-    const log = new ComponentLog(
-      this.authUser.uid,
-      this.authUser.displayName,
-      "UsersStudyTimeContainerComponent",
-      new Date(),
-      this.enterprise.id,
-      this.enterprise.name,
-      null,
-      "Predyc Empresas",
-      totalReadCount,
-      "/",
-    )
-    try {
-      await this.loggingService.saveComponentLog(log.toJson())
-    } catch (error) {
-      console.error("Error saving component log: ", error)
-    }
-  }
 }

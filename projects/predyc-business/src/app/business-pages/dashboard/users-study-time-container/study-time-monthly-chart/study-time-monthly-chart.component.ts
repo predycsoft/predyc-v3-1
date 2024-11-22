@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, Input, SimpleChanges } from '@angular/cor
 import { format, subMonths } from 'date-fns';
 import { Log } from '../users-study-time-container.component';
 import { Chart } from 'chart.js';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 
 @Component({
@@ -13,49 +14,16 @@ export class StudyTimeMonthlyChartComponent {
 
   constructor(private cdRef: ChangeDetectorRef) { }
 
-  @Input() logs: Log[] = []
-
+  @Input() enterprise: any
 
   data = []
   dayGoalHour = 1
   max = 0
   currentLabel: string | null = null;
-  hasProgress : boolean = false;
- 
+  hasProgress : boolean = false; 
 
   ngOnInit(): void {
-    // this.data = []
-    // let now = new Date();
-    // let currentMonth = now.getUTCMonth();
-    // this.hasProgress = false; 
-
-
-    // for(let i=0; i<12; i++) {
-    //   let month = subMonths(now, i);
-    //   console.log('month',month)
-    //   const utcDate = new Date(Date.UTC(month.getUTCFullYear(), month.getUTCMonth(), month.getUTCDay(), month.getUTCHours(), month.getUTCMinutes(), month.getUTCSeconds()))
-    //   let label = format(utcDate, 'MMM');
-    //   let value = this.logs.reduce((total, log) => {
-    //       let logDate = new Date(log.endDate);
-    //       if(logDate.getUTCMonth() === month.getUTCMonth() && logDate.getUTCFullYear() === month.getUTCFullYear()) {
-    //           return total + (log.classDuration/60);
-    //       }
-    //       return total;
-    //   }, 0);
-    //   this.data.unshift({value, label});
-    //   if (month.getUTCMonth() === currentMonth) {
-    //     this.currentLabel = label;
-    //     if (value > 0) {
-    //       this.hasProgress = true;
-    //     }
-    //   }
-    // }
-    
-    // this.max = this.dayGoalHour
-    // let max = this.data.reduce((max, item) => item.value > max ? item.value : max, this.data[0].value);
-    // if(max > this.max){
-    //     this.max = max;
-    // }
+    this.getDataGraph()
   }
 
   obtenerUltimoDiaDelMes(fecha: number) {
@@ -83,78 +51,9 @@ export class StudyTimeMonthlyChartComponent {
     }
 
     return newDate;
-}
-
-getDataGraph() {
-  this.data = [];
-  let now = new Date();
-  let currentMonth = now.getUTCMonth();
-
-  // Recolectar datos de los últimos 12 meses
-  for (let i = 0; i < 12; i++) {
-    let month = this.getPreviousMonthDate(now, i);
-    const monthLabel = month.toLocaleString('default', { month: 'short' });
-    let label = monthLabel.charAt(0).toUpperCase() + monthLabel.slice(1); // Primera letra en mayúscula
-    let value = this.logs.reduce((total, log) => {
-      let logDate = new Date(log.endDate);
-      if (logDate.getUTCMonth() === month.getUTCMonth() && logDate.getUTCFullYear() === month.getUTCFullYear()) {
-        return total + (log.classDuration / 60);
-      }
-      return total;
-    }, 0);
-    this.data.unshift({ value, label });
-
-    if (month.getUTCMonth() === currentMonth) {
-      this.currentLabel = label;
-    }
-    if (month.getUTCMonth() === currentMonth) {
-      this.hasProgress = value > 0;
-    }
   }
-
-  // Filtrar los meses con valores distintos de 0
-  let nonZeroData = this.data.filter(item => item.value !== 0);
-  let zeroData = this.data.filter(item => item.value === 0);
-
-  // Obtener el primer mes con datos
-  let firstNonZeroIndex = this.data.findIndex(item => item.value !== 0);
-
-  // Ordenar los meses con datos al principio y completar con los meses restantes en orden
-  if (firstNonZeroIndex > -1) {
-    this.data = [
-      ...this.data.slice(firstNonZeroIndex),
-      ...this.data.slice(0, firstNonZeroIndex),
-    ];
-  }
-
-  // Asegurarse de que tenemos exactamente 12 meses, añadiendo meses con valor 0 si es necesario
-  if (this.data.length < 12) {
-    let additionalMonthsNeeded = 12 - this.data.length;
-    for (let i = 0; i < additionalMonthsNeeded; i++) {
-      let month = this.getPreviousMonthDate(now, nonZeroData.length + i);
-      const monthLabel = month.toLocaleString('default', { month: 'short' });
-      let label = monthLabel.charAt(0).toUpperCase() + monthLabel.slice(1); // Primera letra en mayúscula
-      this.data.push({ value: 0, label });
-    }
-  }
-
-  this.max = this.dayGoalHour;
-  let max = this.data.reduce((max, item) => item.value > max ? item.value : max, this.data[0].value);
-  if (max > this.max) {
-    this.max = max;
-  }
-
-  // console.log('dataGrafico', this.data);
-  this.createChart();
-
-  // Asegúrate de llamar a detectChanges para que Angular actualice la vista
-  this.cdRef.detectChanges();
-}
-
 
   chart: Chart;
-
-
 
   createChart() {
     const labels = this.data.map(item => item.label);
@@ -228,16 +127,60 @@ getDataGraph() {
     });
   }
   
-  
-  
+  getDataGraph() {
+    this.data = []
+    let now = new Date();
+    const currentMonthLabel = now.toLocaleString('default', { month: 'short' });
+    const formattedCurrentMonthLabel = currentMonthLabel.charAt(0).toUpperCase() + currentMonthLabel.slice(1);
+    
+    this.data = this.enterprise.monthlyClassesData || []
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes["logs"]) {
-      this.getDataGraph()
+    // Filtrar los meses con valores distintos de 0
+    let nonZeroData = this.data.filter(item => item.value !== 0);
+    let zeroData = this.data.filter(item => item.value === 0);
+
+    // Obtener el primer mes con datos
+    let firstNonZeroIndex = this.data.findIndex(item => item.value !== 0);
+
+    // Ordenar los meses con datos al principio y completar con los meses restantes en orden
+    if (firstNonZeroIndex > -1) {
+      this.data = [
+        ...this.data.slice(firstNonZeroIndex),
+        ...this.data.slice(0, firstNonZeroIndex),
+      ];
     }
-   
 
+    // Asegurarse de que tenemos exactamente 12 meses, añadiendo meses con valor 0 si es necesario
+    if (this.data.length < 12) {
+      let additionalMonthsNeeded = 12 - this.data.length;
+      for (let i = 0; i < additionalMonthsNeeded; i++) {
+        let month = this.getPreviousMonthDate(now, nonZeroData.length + i);
+        const monthLabel = month.toLocaleString('default', { month: 'short' });
+        let label = monthLabel.charAt(0).toUpperCase() + monthLabel.slice(1); // Primera letra en mayúscula
+        this.data.push({ value: 0, label });
+      }
+    }
 
+    // console.log("Final this.data", this.data)
+
+    const currentMonthData = this.data.find(item => item.label === formattedCurrentMonthLabel);
+    if (currentMonthData) {
+      this.currentLabel = currentMonthData.label;
+      this.hasProgress = currentMonthData.value > 0;
+    }
+
+    this.max = this.dayGoalHour;
+    let max = this.data.reduce((max, item) => item.value > max ? item.value : max, this.data[0].value);
+    if (max > this.max) {
+      this.max = max;
+    }
+
+    // console.log('dataGrafico', this.data);
+    this.createChart();
+
+    // Asegúrate de llamar a detectChanges para que Angular actualice la vista
+    this.cdRef.detectChanges();
   }
+  
 
 }
