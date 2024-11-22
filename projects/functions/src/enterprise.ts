@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import { ClassByStudent, CourseByStudent, Curso, Enterprise, License, StudyPlanClass, User,getMonthProgress,getPerformanceWithDetails, obtenerUltimoDiaDelMes, obtenerUltimoDiaDelMesAnterior } from 'shared';
+import { Clase, ClassByStudent, CourseByStudent, Curso, Enterprise, License, StudyPlanClass, User,firestoreTimestampToNumberTimestamp,getMonthProgress,getPerformanceWithDetails, obtenerUltimoDiaDelMes, obtenerUltimoDiaDelMesAnterior } from 'shared';
 
 const db = admin.firestore();
 
@@ -672,7 +672,200 @@ async function updateDataAllEnterprisesProgressPlanLocal() {
 }
   
 
+export const updateAllDataEnterpriseMonthlyClasses = functions.pubsub.schedule('every monday 06:00').onRun(async (context) => {
+  try {
+    await updateDataAllEnterprisesMonthlyClassesLocal();
+    console.log('Updated all enterprises monthly classes');
+  } catch (error) {
+    console.error('Error updating all enterprises usage:', error);
+  }
+})
+
+async function updateDataAllEnterprisesMonthlyClassesLocal() {
+  const batch = admin.firestore().batch();
+  
+  try {
+    const licensesSnapshot = await admin.firestore().collection(License.collection).where('status', '==', 'active').get();
+    const enterpriseRefs = new Set<FirebaseFirestore.DocumentReference>();
+    const enterpriseIds = new Set<string>();
+
+    licensesSnapshot?.forEach(doc => {
+      const licenseData = doc.data();
+      if (licenseData?.enterpriseRef) {
+        enterpriseRefs.add(licenseData.enterpriseRef);
+        enterpriseIds.add(licenseData.enterpriseRef.id);
+      }
+    });
+    const uniqueEnterpriseIds = Array.from(enterpriseIds);
+    
+    // Obtenemos todas las clases
+    const classesSnapshot = await admin.firestore().collection(Clase.collection).get();
+    const classes: FirebaseFirestore.DocumentData[] = classesSnapshot.docs.map(doc => doc.data());
+    // console.log("classes.length", classes.length)
+
+    for (const enterpriseId of uniqueEnterpriseIds) {
+      await updateDataEnterpriseMonthlyClassesLocal(enterpriseId, classes, batch);
+    }
+
+    await batch.commit();
+    console.log('Actualización de datos de clases por meses completada para todas las empresas.');
+
+  } catch (error: any) {
+    console.log(error);
+    throw new Error(error.message);
+  }
+}
+  
+async function updateDataEnterpriseMonthlyClassesLocal(enterpriseId: string, classes: FirebaseFirestore.DocumentData[], batch?: FirebaseFirestore.WriteBatch) {
+
+  try{
+    const enterpriseRef = admin.firestore().collection(Enterprise.collection).doc(enterpriseId);
+      
+    // Verificar si la referencia de la empresa existe
+    const enterpriseDoc = await enterpriseRef.get();
+    if (!enterpriseDoc.exists) {
+      console.log(`Enterprise with ID ${enterpriseId} does not exist.`);
+      return;
+    }
+    console.log(`Editing enterprise ID ${enterpriseId}.`);
+    const enterpriseData = enterpriseDoc.data();
+
+    const usersSnapshot = await admin.firestore().collection(User.collection)
+    .where('enterprise', '==', enterpriseRef)
+    .where('status', '==', 'active') // Filtrar usuarios con status active
+    .get();
+    const users = usersSnapshot.docs.map(doc => doc.data());
+
+    const now = new Date();
+    const currentMonth = now.getUTCMonth();
+    const currentYear = now.getUTCFullYear();
+    const startOfMonth = new Date(currentYear, currentMonth, 1) // Start of the current month
+    const endOfMonth = new Date(currentYear, currentMonth + 1, 0, 23, 59, 59, 999) // End of the current month
+    // console.log("startOfMonth", startOfMonth)
+    // console.log("endendOfMonth",endOfMonth)
+
+    // Saving data in a property for now
+    const monthlyClassesData: {value: number, labe: string}[] = enterpriseData.monthlyClassesData
+    let allUsersClassesByStudent = []
+    for (const user of users) {
+      if (monthlyClassesData) {
+          const allClassesSnapshot = await admin.firestore().collection('classesByStudent')
+          .where('userRef', '==', admin.firestore().collection('user').doc(user.uid))
+          .where('completed', '==', true)
+          .where('dateEnd', '>', startOfMonth)
+          .where('dateEnd', '<=', endOfMonth)
+          .get();
+          const classes: FirebaseFirestore.DocumentData[] = allClassesSnapshot.docs.map(doc => doc.data());
+          allUsersClassesByStudent = allUsersClassesByStudent.concat(classes);
+      } 
+      else {
+        const allClassesSnapshot = await admin.firestore().collection('classesByStudent')
+        .where('userRef', '==', admin.firestore().collection('user').doc(user.uid))
+        .where('completed', '==', true)
+        .get();
+        const classes: FirebaseFirestore.DocumentData[] = allClassesSnapshot.docs.map(doc => doc.data());
+        allUsersClassesByStudent = allUsersClassesByStudent.concat(classes);
+      }
+    }
+
+    // console.log("allUsersClassesByStudent.length", allUsersClassesByStudent.length);
+    // console.log("allUsersClassesByStudent[0]", allUsersClassesByStudent[0])
+  
+    const logs = allUsersClassesByStudent.map(classByStudent => {
+      const clase = classes.find(x => x.id === classByStudent.classRef.id)
+      return {
+        classDuration: clase.duracion as number,
+        endDate: firestoreTimestampToNumberTimestamp(classByStudent.dateEnd)
+      };
+    })
+    // console.log("logs.length", logs.length)
+    // console.log("logs[0]", logs[0])
+
+    let dataToSave = []
+    if (monthlyClassesData) {
+
+      dataToSave = [...monthlyClassesData]
+    
+      const monthLabel = now.toLocaleString('default', { month: 'short' }).replace(/\.$/, '');
+      const label = monthLabel.charAt(0).toUpperCase() + monthLabel.slice(1); // Capitalize the first letter
+  
+      // Step 2: Calculate value for the current month
+      const value = logs.reduce((total, log) => {
+        const logDate = new Date(log.endDate);
+        if ( logDate.getUTCMonth() === currentMonth && logDate.getUTCFullYear() === currentYear ) {
+          return total + log.classDuration / 60; // Convert minutes to hours
+        }
+        return total;
+      }, 0);
+  
+      // Replace or add the current month's data
+      const existingMonthIndex = dataToSave.findIndex(item => item.label === label);
+      if (existingMonthIndex > -1) {
+        // Update existing month's value
+        dataToSave[existingMonthIndex].value = value;
+      } else {
+        // Add new entry for the current month if it doesn't exist
+        dataToSave.unshift({ value, label });
+      }
+
+      console.log("dataToSave after updating current month: ");
+
+    }
+    else {    
+      // Generate data for the last 12 months if no existing data
+      for (let i = 0; i < 12; i++) {
+        const month = getPreviousMonthDate(now, i);
+        const monthLabel = month.toLocaleString('default', { month: 'short' }).replace(/\.$/, '');
+        const label = monthLabel.charAt(0).toUpperCase() + monthLabel.slice(1); // Capitalize the first letter
+    
+        // Calculate values for all months
+        const value = logs.reduce((total, log) => {
+          const logDate = new Date(log.endDate);
+          if ( logDate.getUTCMonth() === month.getUTCMonth() && logDate.getUTCFullYear() === month.getUTCFullYear() ) {
+            return total + log.classDuration / 60; // Convert minutes to hours
+          }
+          return total;
+        }, 0);
+    
+        dataToSave.unshift({ value, label });
+        
+      }
+      console.log("dataToSave after generating last 12 months: ");
+      
+    }
+    // Define the order of months
+    const monthOrder = [
+      "Ene", "Feb", "Mar", "Abr", "May", "Jun",
+      "Jul", "Ago", "Sept", "Oct", "Nov", "Dic"
+    ];
+
+    // Sort data based on month order
+    dataToSave.sort((a, b) => monthOrder.indexOf(a.label) - monthOrder.indexOf(b.label));
+
+    console.log(dataToSave)
+
+    batch.update(enterpriseRef, {
+      monthlyClassesData: dataToSave, 
+    });  
+  }
+  catch (error: any) {
+    console.log(error);
+    throw new Error(error.message);
+  }
 
   
-  
-  
+}
+
+function getPreviousMonthDate(date, monthsToSubtract) {
+  const newDate = new Date(date);
+  newDate.setDate(1); // Establecer el día al 1 para evitar desbordamientos de mes
+  newDate.setMonth(newDate.getMonth() - monthsToSubtract);
+
+  // Ajustar al último día del mes si es necesario
+  const lastDayOfPreviousMonth = new Date(newDate.getFullYear(), newDate.getMonth() + 1, 0).getDate();
+  if (newDate.getDate() > lastDayOfPreviousMonth) {
+      newDate.setDate(lastDayOfPreviousMonth);
+  }
+
+  return newDate;
+}
