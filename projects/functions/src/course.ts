@@ -38,6 +38,38 @@ export const getAllCourseIds = functions.https.onRequest(async (req, res) => {
   
 });
 
+
+export const getAllP21CourseIds = functions.https.onRequest(async (req, res) => {
+    corsHandler(req, res, async () => {
+        try {
+            const snapshot = await db.collection('courseP21').get();
+        
+            if (snapshot.empty) {
+              console.log('No matching documents.');
+              res.status(404).send('No courses found.');
+              return;
+            }
+        
+            // const courseIds: string[] = (snapshot).docs.map((article: any) => {
+            //     const data = article.data()
+            //     return data.id
+            // });
+
+            const courses: any[] = (snapshot).docs.map((course: any) => {
+                return course.data()
+            });
+        
+        
+            res.status(200).send(courses);
+            // res.status(200).json(courseIds);
+        } catch (error) {
+            console.error('Error retrieving course IDs: ', error);
+            res.status(500).send('Error retrieving course IDs.');
+        }
+    })
+  
+});
+
 export const onCourseUpdated = functions.firestore.document('course/{doc}').onUpdate(async (change, context) => {
     const afterData = change.after.data();
     const beforeData = change.before.data();

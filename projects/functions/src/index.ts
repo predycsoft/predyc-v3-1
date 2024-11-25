@@ -53,8 +53,8 @@ export { mailAccountManagementAdmin,mailAccountManagementUsers,generateReportsAd
 import { generateMailCertificate } from './certificado'
 export { generateMailCertificate }
  
-import { getAllCourseIds, onCourseUpdated, onCourseCreated }  from './course'
-export { getAllCourseIds, onCourseUpdated, onCourseCreated }
+import { getAllCourseIds, getAllP21CourseIds, onCourseUpdated, onCourseCreated }  from './course'
+export { getAllCourseIds, getAllP21CourseIds, onCourseUpdated, onCourseCreated }
 
 import { getAllFreebiesIds, onFreebieUpdated }  from './freebies'
 export { getAllFreebiesIds, onFreebieUpdated }
