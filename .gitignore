@@ -50,3 +50,5 @@ database/*
 *.zip
 *.rar
 firebase-export*
+
+projects/predyc-business/src/assets/data/datosReporte.json
