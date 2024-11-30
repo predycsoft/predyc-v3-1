@@ -625,16 +625,32 @@ export class CreateProgramP21Component {
               //console.log('activities clases', activities);
               this.activitiesCourse = activities;
               this.modulos.forEach((modulo) => {
-                let instructoresForm = new FormControl("");
-                let filteredinstructores: Observable<any[]>;
-                filteredinstructores = instructoresForm.valueChanges.pipe(
-                  startWith(""),
-                  map((value) => this._filter(value || ""))
-                );
-                instructor =  this.instructores.find(x=>x.id == modulo['instructorData'].id)
-                instructoresForm.patchValue(instructor);      
-                modulo['instructoresForm'] = instructoresForm
-                modulo['filteredinstructores'] = filteredinstructores
+                // let instructoresForm = new FormControl("");
+                // let filteredinstructores: Observable<any[]>;
+                // filteredinstructores = instructoresForm.valueChanges.pipe(
+                //   startWith(""),
+                //   map((value) => this._filter(value || ""))
+                // );
+                // instructor =  this.instructores.find(x=>x.id == modulo['instructorData'].id)
+                // instructoresForm.patchValue(instructor);      
+                // modulo['instructoresForm'] = instructoresForm
+                // modulo['filteredinstructores'] = filteredinstructores
+
+                modulo['clases']?.forEach(clase => {
+
+                  if(clase['instructorData']){
+                    let instructoresFormClase = new FormControl("");
+                    let filteredinstructoresClase: Observable<any[]>;
+                    filteredinstructoresClase = instructoresFormClase.valueChanges.pipe(
+                      startWith(""),
+                      map((value) => this._filter(value || ""))
+                    );
+                    instructor =  this.instructores.find(x=>x.id == clase['instructorData'].id)
+                    instructoresFormClase.patchValue(instructor);      
+                    clase['instructoresForm'] = instructoresFormClase
+                    clase['filteredinstructores'] = filteredinstructoresClase
+                  }                    
+                });
               });
             });
         });
@@ -671,10 +687,11 @@ export class CreateProgramP21Component {
     this.objetivos.removeAt(index);
   }
 
-  async setInstructor(instructor,modulo) {
+  async setInstructor(instructor,clase) {
 
-    console.log(instructor,modulo)
-    modulo['instructorData'] = instructor
+    console.log(instructor,clase)
+    clase['instructorData'] = instructor
+    clase["edited"] = true
     // let instructorRef = await this.afs.collection<any>("instructors").doc(instructor.id).ref;
     // this.formNewCourse.get("instructorRef").patchValue(instructorRef);
     // this.formNewCourse.get("instructor").patchValue(instructor.nombre);
@@ -980,6 +997,57 @@ export class CreateProgramP21Component {
           let arrayClasesRef = [];
           const clases = modulo["clases"];
           const instructorRef = this.formNewCourse.get("instructorRef")?.value
+
+          for (let i = 0; i < clases.length; i++) {
+            try {
+              let clase = clases[i];
+              if (clase["edited"]) {
+                console.log("clase borrador add/edit", clase);
+                let claseLocal = new Clase();
+                claseLocal['instructorData'] = clase.instructorData? clase.instructorData: null
+                claseLocal['image'] = clase.image? clase.image: null
+                claseLocal['descripcion'] = clase.descripcion? clase.descripcion: null
+
+                claseLocal.HTMLcontent = clase.HTMLcontent;
+                claseLocal.archivos = clase.archivos.map((archivo) => ({
+                  id: archivo.id,
+                  nombre: archivo.nombre,
+                  size: archivo.size,
+                  type: archivo.type,
+                  url: archivo.url,
+                }));
+                claseLocal.descripcion = clase.descripcion;
+                claseLocal.duracion = clase.duracion;
+                claseLocal.id = clase.id;
+                claseLocal.vimeoId1 = clase.vimeoId1;
+                claseLocal.vimeoId2 = clase.vimeoId2;
+                claseLocal.skillsRef = clase.skillsRef;
+                claseLocal.tipo = clase.tipo;
+                claseLocal.titulo = clase.titulo;
+                claseLocal.instructorRef = instructorRef ? instructorRef : null
+                claseLocal.vigente = clase.vigente;
+                claseLocal.imagen = clase?.imagen ? clase.imagen:null
+                if (this.user.isSystemUser) {
+                  claseLocal.enterpriseRef = null;
+                } else {
+                  claseLocal.enterpriseRef = this.enterpriseService.getEnterpriseRef();
+                }
+
+                const arrayRefSkills = clase.competencias?.map((skillClase) => this.curso.skillsRef.find((skill) => skill.id == skillClase.id)).filter(Boolean) || [];
+                claseLocal.skillsRef = arrayRefSkills;
+                console.log("activityClass", clase);
+              } else {
+                let findDeleted = this.deletedClasses.find((x) => x.claseInId == clase.id);
+                console.log("claseRevisar", clase, findDeleted);
+                if (!findDeleted && !clase["deleted"]) {
+                  // let refClass = await this.afs.collection<Clase>(Clase.collection).doc(clase.id).ref;
+                  // arrayClasesRef.push(refClass);
+                }
+              }
+            } catch (error) {
+              console.error("Error processing clase", error);
+            }
+          }
           console.log("claseModuloSave", modulo, clases);
           this.deletedClasses = [];
           //moduleService
@@ -990,25 +1058,46 @@ export class CreateProgramP21Component {
           module.numero = modulo.numero;
           module.titulo = modulo.titulo;
           module.clasesRef = arrayClasesRef;
+
         }
       }
       let modulosToSave = []
-      console.log('modulosToSave',this.modulos)
       this.modulos.forEach(modulo => {
 
         // modulo['fechaInicio'] = null
         // modulo['duracion'] = null
         //instructorData
+
+        let clases = []
+        modulo['clases'].forEach(clase => {
+          console.log('clasesToSave',clase)
+          let claseLocal = {
+            id:clase.id,
+            duracion:clase.duracion,
+            descripcion:clase.descripcion,
+            tipo:clase.tipo,
+            titulo:clase.titulo,
+            imagen:clase?.imagen?clase.imagen:null,
+            instructorData:clase.instructorData,
+            image:clase.image
+          }
+          clases.push(claseLocal)
+        });
+
         let moduloLocal ={
           numero:modulo.numero,
           titulo:modulo.titulo,
           fechaInicio:modulo['fechaInicio'],
           duracion:modulo.duracion,
           instructorData:modulo['instructorData'],
+          clases:clases,
           
         }
         modulosToSave.push(moduloLocal)
       });
+
+      
+      console.log('modulosToSave',modulosToSave)
 
       await this.afs.collection('diplomadoP21').doc(this.curso.id).update({
         // duracion: duracion,
@@ -1363,7 +1452,7 @@ export class CreateProgramP21Component {
     });
   }
 
-  uploadCourseImage(event, tipo, newInstructor = false) {
+  uploadCourseImage(event, tipo, newInstructor = false,clase = null) {
     if (!event.target.files[0] || event.target.files[0].length === 0) {
       Swal.fire({
         title: "Borrado!",
@@ -1396,6 +1485,9 @@ export class CreateProgramP21Component {
         let fileExtension = file.name.split(".").pop();
 
         let nombre = fileBaseName + "." + fileExtension;
+        if(tipo == "clase"){
+
+        }
         if (tipo == "instructor") {
           this.fileNameImgInstuctor = nombre;
         } else {
@@ -1431,6 +1523,9 @@ export class CreateProgramP21Component {
           if(tipo == "banner"){
             this.uploading_file_progressbannerCurso = Math.floor(progress);
           }
+          else if (tipo == "clase"){
+
+          }
           else if (tipo == "instructor") {
             this.uploading_file_progressImgInstuctor = Math.floor(progress);
           } else {
@@ -1459,6 +1554,9 @@ export class CreateProgramP21Component {
                   this.uploadingBannerCurso = false;
                   this.formNewCourse.get("banner").patchValue(url);
                   //this.imagenesCurso.unshift(url);
+                }
+                else if (tipo == "clase"){
+                  clase.image = url
                 }
                 else if (tipo == "instructor") {
                   this.uploadingImgInstuctor = false;
@@ -1712,14 +1810,16 @@ export class CreateProgramP21Component {
 
   async addClase(tipo, moduloIn) {
     let modulo = this.modulos.find((modulo) => modulo.numero == moduloIn.numero);
-    ////console.log('modulo',modulo);
+    ////console.log('modulo',modulo);}
+
+    if(!modulo["clases"])[
+      modulo["clases"] = []
+    ]
     let clases = modulo["clases"];
     let clase = new Clase();
     clase.tipo = tipo;
     clase["edited"] = true;
     clase["modulo"];
-    //clase.id = Date.now().toString();
-    //clase.id = await this.afs.collection<Clase>(Clase.collection).doc().ref.id;
     clase["modulo"] = moduloIn.numero;
 
     let numero = this.obtenerNumeroMasGrandeModulo(moduloIn);
@@ -1727,27 +1827,38 @@ export class CreateProgramP21Component {
     clase.date = numero;
 
     if (clase.tipo == "lectura") {
-      clase.HTMLcontent = '<h4><font face="Arial">Sesi&#243;n de lectura.</font></h4><h6><font face="Arial">&#161;Asegurate de descargar los archivos adjuntos!</font></h6><p><font face="Arial">Encu&#233;ntralos en la secci&#243;n de material descargable</font></p>';
-      clase.duracion = 10;
+      // clase.HTMLcontent = '<h4><font face="Arial">Sesi&#243;n de lectura.</font></h4><h6><font face="Arial">&#161;Asegurate de descargar los archivos adjuntos!</font></h6><p><font face="Arial">Encu&#233;ntralos en la secci&#243;n de material descargable</font></p>';
+      clase.duracion = 0;
     }
 
-    if (clase.tipo == "actividad" || clase.tipo == "corazones") {
-      let actividad = new Activity();
-      //actividad.id = Date.now().toString();
-      actividad.title = clase.titulo;
-      //this.actividades.push(actividad);
-      //console.log('actividades', this.actividades)
-      actividad["isInvalid"] = true;
-      clase["activity"] = actividad;
-    }
-
-    //console.log(numero);
     clase["expanded"] = false;
+
+    let instructoresForm = new FormControl("");
+    let filteredinstructores: Observable<any[]>;
+
+    filteredinstructores = instructoresForm.valueChanges.pipe(
+      startWith(""),
+      map((value) => this._filter(value || ""))
+    );
+
+    clase['instructoresForm'] = instructoresForm
+    clase['filteredinstructores'] = filteredinstructores
+
+    clase['fechaInicio'] = null
+    clase['duracion'] = null
+    clase['image'] = null
+    clase['descripcion']=null
+
 
     clases.push(clase);
 
     //console.log(clases);
   }
+
+  clickAddImgClase(modulo,iClase){
+    document.getElementById('imgClase-' + modulo.numero + '-' + iClase).click()
+  }
+  
 
   hideOtherQuestion(questionIn) {
     //console.log(questionIn);
@@ -1815,14 +1926,13 @@ export class CreateProgramP21Component {
 
     let number = 0;
 
+    // let instructoresForm = new FormControl("");
+    // let filteredinstructores: Observable<any[]>;
 
-    let instructoresForm = new FormControl("");
-    let filteredinstructores: Observable<any[]>;
-
-    filteredinstructores = instructoresForm.valueChanges.pipe(
-      startWith(""),
-      map((value) => this._filter(value || ""))
-    );
+    // filteredinstructores = instructoresForm.valueChanges.pipe(
+    //   startWith(""),
+    //   map((value) => this._filter(value || ""))
+    // );
 
 
 
@@ -1838,8 +1948,8 @@ export class CreateProgramP21Component {
     modulo.numero = number;
     modulo["expanded"] = false;
     modulo["clases"] = [];
-    modulo['instructoresForm'] = instructoresForm
-    modulo['filteredinstructores'] = filteredinstructores
+    // modulo['instructoresForm'] = instructoresForm
+    // modulo['filteredinstructores'] = filteredinstructores
     modulo['fechaInicio'] = null
     modulo['duracion'] = null
 
@@ -2795,16 +2905,84 @@ export class CreateProgramP21Component {
     this.modulos.forEach((modulo) => {
       modulo["InvalidMessages"] = [];
       modulo["isInvalid"] = false;
-      if (!modulo['fechaInicio']) {
+
+      if (modulo["clases"].length == 0) {
         modulo["isInvalid"] = true;
         valid = false;
-        modulo["InvalidMessages"].push("El curso debe tener fecha de unicio");
+        modulo["InvalidMessages"].push("El módulo debe contener al menos una sesión");
       }
-      if (!modulo['duracion']) {
+      if (modulo.titulo == "") {
         modulo["isInvalid"] = true;
         valid = false;
-        modulo["InvalidMessages"].push("El curso debe tener duración");
+        modulo["InvalidMessages"].push("El módulo debe tener título");
       }
+
+      let clases = modulo["clases"];
+      let classIndex = 0;
+      clases.forEach((clase) => {
+        classIndex++
+        console.log("clase", clase);
+        clase["InvalidMessages"] = [];
+        clase["isInvalid"] = false;
+
+        if (clase.titulo == "") {
+          modulo["isInvalid"] = true;
+          clase["isInvalid"] = true;
+          valid = false;
+          modulo["InvalidMessages"].push(`La sesión ${classIndex} no tiene título`);
+          clase["InvalidMessages"].push("La sesión debe tener título");
+        }
+
+        if (clase.duracion == 0) {
+          modulo["isInvalid"] = true;
+          clase["isInvalid"] = true;
+          valid = false;
+          modulo["InvalidMessages"].push(`La sesión ${classIndex} ${clase.titulo} no tiene duración`);
+          clase["InvalidMessages"].push("La sesión debe tener duración");
+        }
+
+        if (!clase.instructorData) {
+          modulo["isInvalid"] = true;
+          clase["isInvalid"] = true;
+          valid = false;
+          modulo["InvalidMessages"].push(`La sesión ${classIndex} ${clase.titulo} no tiene instructor`);
+          clase["InvalidMessages"].push("La sesión debe tener instructor");
+        }
+        if (!clase.fechaInicio) {
+          modulo["isInvalid"] = true;
+          clase["isInvalid"] = true;
+          valid = false;
+          modulo["InvalidMessages"].push(`La sesión ${classIndex} ${clase.titulo} no tiene fecha`);
+          clase["InvalidMessages"].push("La sesión debe tener fecha");
+        }
+
+        if (!clase.descripcion) {
+          modulo["isInvalid"] = true;
+          clase["isInvalid"] = true;
+          valid = false;
+          modulo["InvalidMessages"].push(`La sesión ${classIndex} ${clase.titulo} no tiene descipción`);
+          clase["InvalidMessages"].push("La sesión debe tener descipción");
+        }
+
+        if (!clase.image) {
+          modulo["isInvalid"] = true;
+          clase["isInvalid"] = true;
+          valid = false;
+          modulo["InvalidMessages"].push(`La sesión ${classIndex} ${clase.titulo} no tiene imagen`);
+          clase["InvalidMessages"].push("La sesión debe tener imagen");
+        }
+      })
+
+      // if (!modulo['fechaInicio']) {
+      //   modulo["isInvalid"] = true;
+      //   valid = false;
+      //   modulo["InvalidMessages"].push("El curso debe tener fecha de unicio");
+      // }
+      // if (!modulo['duracion']) {
+      //   modulo["isInvalid"] = true;
+      //   valid = false;
+      //   modulo["InvalidMessages"].push("El curso debe tener duración");
+      // }
     });
 
     //console.log('modulos',this.modulos)

@@ -6,6 +6,9 @@
     <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign="center center" class="pdl10 pdr10 pdb05 pdt05 ft14 ft500" (click)="tab = 1" [ngClass]="tab == 1 ? 'selectedTab gray-10' : 'gray-6 tab'">
       Autores
     </div>
+    <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign="center center" class="pdl10 pdr10 pdb05 pdt05 ft14 ft500" (click)="tab = 2" [ngClass]="tab == 2 ? 'selectedTab gray-10' : 'gray-6 tab'">
+      Revistas P21
+    </div>
   </div>
   <ng-container *ngIf="tab === 0">
     <p class="ft600 ft16 gray-10">Artículos</p>
@@ -30,6 +33,21 @@
     <p class="ft600 ft16 gray-10">Autores</p>
     <div fxLayout="column" class="mgt03">
       <app-authors-list [authors]="authors" (authorSelected)="onAuthorSelected($event)" class=""></app-authors-list>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="tab === 2">
+    <p class="ft600 ft16 gray-10">Revistas</p>
+    <div fxLayout="column" class="mgt03">
+      <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign=" center">
+        <div fxLayout="row" fxLayoutAlign=" center" class="h36px radius20 shadow-animation w-40" style="overflow: hidden">
+          <app-search-input-box class="fw"></app-search-input-box>
+        </div>
+        <button fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButtonAnim button-animation" style="border-radius: 24px !important">
+          <img [src]="icon.addNew" class="h16px pdr05 makeWhite" alt="" />
+          Agregar nueva revista
+        </button>
+      </div>
+      <!-- <app-articles-list [articles]="articles" [authors]="authors" [tags]="tags" class=""></app-articles-list> -->
     </div>
   </ng-container>
 </div>
