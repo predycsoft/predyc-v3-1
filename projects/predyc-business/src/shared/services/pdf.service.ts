@@ -1506,30 +1506,34 @@ export class PDFService {
 
     }
 
-    // Pagina de proyecto final
-    pdf.addPage()
+    if(diplomado.final){
+      // Pagina de proyecto final
+      pdf.addPage()
 
 
-    pdf.setFillColor(35, 43, 56);
-    pdf.rect(0, 0, pdf.internal.pageSize.getWidth(), 35, 'F');
+      pdf.setFillColor(35, 43, 56);
+      pdf.rect(0, 0, pdf.internal.pageSize.getWidth(), 35, 'F');
 
-    pdf.addImage(this.logoWhite, 'png', 150, 5, imgWidtLogoWhiteInit, imgHeightLogoWhiteInit, '', 'SLOW');
-    pdf.addImage(this.logoWhiteP21, 'png', 180, 5, imgWidtLogoWhiteInit, imgHeightLogoWhiteInit, '', 'SLOW');
+      pdf.addImage(this.logoWhite, 'png', 150, 5, imgWidtLogoWhiteInit, imgHeightLogoWhiteInit, '', 'SLOW');
+      pdf.addImage(this.logoWhiteP21, 'png', 180, 5, imgWidtLogoWhiteInit, imgHeightLogoWhiteInit, '', 'SLOW');
 
-    currentLine = 0
+      currentLine = 1
 
-    currentLine = this._addFormatedText({
-      text: 'Proyecto final',
-      course: null,
-      x: 0,
-      tituloFooter: diplomado.titulo,
-      y: currentLine,
-      size: 26,
-      color: 'white',
-      bold: true,
-      textAlign: "left"
-    }, pdf);
+      currentLine = this._addFormatedText({
+        text: 'Proyecto final',
+        course: null,
+        x: 0,
+        tituloFooter: diplomado.titulo,
+        y: currentLine,
+        size: 26,
+        color: 'white',
+        bold: true,
+        textAlign: "left"
+      }, pdf);
 
+    }
+
+   
 
     // Subportada de contenido con fondo
 
