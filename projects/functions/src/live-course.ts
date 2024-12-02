@@ -20,22 +20,22 @@ export const sendLiveCourseEmail = functions.https.onCall(async (data, _) => {
     if(data?.liveCourseId){
       const liveCourseId = data.liveCourseId
       console.log('liveCourseId',liveCourseId)
-      const liveCourseSonRef = db.collection(LiveCourse.collection).doc(liveCourseId)
+      // const liveCourseSonRef = db.collection(LiveCourse.collection).doc(liveCourseId)
   
-      await liveCourseSonRef.update({
-        emailLastDate: now
-      })
+      // await liveCourseSonRef.update({
+      //   emailLastDate: now
+      // })
   
       console.log("emailLasDate Updated")
     }
     else if (data?.liveDiplomadoId){
       const liveDiplomadoId = data.liveDiplomadoId
       console.log('liveDiplomadoId',liveDiplomadoId)
-      const liveDiplomadoSonRef = db.collection('live-diplomado').doc(liveDiplomadoId)
+      // const liveDiplomadoSonRef = db.collection('live-diplomado').doc(liveDiplomadoId)
   
-      await liveDiplomadoSonRef.update({
-        emailLastDate: now
-      })
+      // await liveDiplomadoSonRef.update({
+      //   emailLastDate: now
+      // })
   
       console.log("emailLasDate Updated")
       

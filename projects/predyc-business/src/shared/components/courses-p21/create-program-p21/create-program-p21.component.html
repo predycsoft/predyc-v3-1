@@ -34,7 +34,7 @@
                             [checked]="formNewCourse?.get('enCalendario')?.value">
                             <label style="padding-left: 5px; color:white">En calendario</label>
                         </div>
-                        <!-- <div  *ngIf="user.isSystemUser" fxLayout="row" fxLayoutAlign="start center">
+                        <div  *ngIf="user.isSystemUser" fxLayout="row" fxLayoutAlign="start center">
                             <button
                                 fxLayout="row"
                                 fxLayoutGap="0.625"
@@ -45,7 +45,7 @@
                                 Descargar PDF
                                 <img [src]="icon.download" class="h16px pdl05 makeWhite" alt="">
                             </button>                        
-                        </div> -->
+                        </div>
                     </div>
                 </ng-container>
             </div>
@@ -168,6 +168,19 @@
                                         rows="3"></textarea>
                                         <div class="invalid-feedback" *ngIf="formNewCourse.controls['objetivo'].errors && showErrorCurso"> 
                                             Debe indicar el detalle de la modalidad de capacitación
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group mgt08">
+                                        <label class="ft12 " >Proyecto Final</label>
+                                        <textarea
+                                        [class.is-invalid]="formNewCourse.controls['final'].errors && showErrorCurso"
+                                        formControlName="final" 
+                                        class="form-control customInput2 radius6" 
+                                        placeholder="Escriba el final del diplomado aquí"
+                                        rows="3"></textarea>
+                                        <div class="invalid-feedback" *ngIf="formNewCourse.controls['final'].errors && showErrorCurso"> 
+                                            Debe indicar el detalle de lal proyecto final
                                         </div>
                                     </div>
                                     
@@ -404,7 +417,7 @@
                                             <div>
                                                 <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="mgl10 mgt15 mgr10">
                                                     <img [src]="icon.document" class="makeBlue h20px" alt="">
-                                                    <span class="ft500 ft14 black " style="margin-top: 5px;">Contenido del diplomado - {{getDurationModuleCourse()| formatDuration}}</span>
+                                                    <span class="ft500 ft14 black " style="margin-top: 5px;">Contenido del diplomado - {{getDurationModuleCourse()}} Horas</span>
                                                 </div>
                                                 <div class="pdl10 pdr10 pdt10 fw ">
                                                     <div fxLayout="column" class="fw fh mgb20"> 

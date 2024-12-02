@@ -19,6 +19,8 @@ interface textOpts {
     firstLineMaxWidth?:number
     course?:any,
     lastTitle?:string
+    tituloFooter?: any;
+
   }
 
 @Injectable({
@@ -49,6 +51,7 @@ export class PDFService {
     reloj = "assets/iconsUI/clock.png"
     calendar =  "assets/iconsUI/calendar-1.png"
     logoWhiteP21 = "/assets/images/logos/logo-predictiva-blanco-lg.png"
+    logoBlackP21 = "/assets/images/logos/logo-predictiva-negro-lg.png"
     backPortada = "/assets/images/brosure_Predyc/backPortada.jpg"
 
     portadasCategories = [
@@ -88,6 +91,35 @@ export class PDFService {
         };
       });
     }
+
+    // Función para convertir imágenes a PNG y devolver su relación de aspecto
+    convertImageToPNGWithAspect(imageUrl: string): Promise<{ imgData: string; aspectRatio: number }> {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = "Anonymous"; // Evita problemas de CORS
+        img.src = imageUrl;
+
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+
+          canvas.width = img.width;
+          canvas.height = img.height;
+
+          ctx.drawImage(img, 0, 0);
+
+          const imgData = canvas.toDataURL('image/png');
+          const aspectRatio = img.width / img.height; // Calcular la relación de aspecto
+
+          resolve({ imgData, aspectRatio });
+        };
+
+        img.onerror = (error) => {
+          reject(error);
+        };
+      });
+    }
+
   
     // Función para crear una imagen circular usando canvas
     async createCircularImage(imageData: string, diameter: number): Promise<string> {
@@ -245,6 +277,164 @@ export class PDFService {
     }
 
   isPredyc = true
+
+  async downloadFichaTecnicaCourseDiplomadoP21(modulo,course, instructor, pdf: jsPDF = null, addToDocument: boolean = false,isPredyc = true) {
+
+    console.log(course)
+
+    if (!pdf) {
+      pdf = new jsPDF("p", "mm", "a4", true) as jsPDF;
+  
+      pdf.addFileToVFS("Roboto-Regular.ttf", robotoRegular);
+      pdf.addFont("Roboto-Regular.ttf", "Roboto", "normal");
+  
+      pdf.addFileToVFS("Roboto-Bold.ttf", robotoBold);
+      pdf.addFont("Roboto-Bold.ttf", "Roboto", "bold");
+    }
+
+    this.pageHeigth = pdf.internal.pageSize.height; //297mm
+    this.pageWidth = pdf.internal.pageSize.width; //210mm
+    pdf.setFillColor(35, 43, 56);
+    pdf.rect(0, 0, this.pageWidth, 55, 'F');
+    let currentLine = 0;
+  
+    const imageUrl = course.imagen;
+    const imgData = await this.convertImageToPNG(imageUrl);
+  
+    pdf.addImage(imgData, 'PNG', 6, 5, 45, 45, '', 'SLOW');
+  
+    const imgWidth = 30;  // Puedes ajustar este valor según tus necesidades
+    const imgHeight = imgWidth / 4.65517241379;
+  
+    // Agregar nombre del curso y logo en la esquina inferior derecha
+    const posY = this.pageHeigth - imgHeight - 5;
+    let courseTitle = `Módulo ${modulo.numero} - ${course.titulo}`;
+  
+    pdf.setFontSize(8);  // Ajustar el tamaño de la fuente
+    pdf.setFont("Roboto", "normal");
+    pdf.setTextColor(0, 0, 0);
+    pdf.text(`${courseTitle} - ${this.fecha}`, 6, (posY + imgHeight / 2) + 2, { align: 'left' });
+    pdf.setFontSize(9);  // Ajustar el tamaño de la fuente
+
+    let textoEmpresa = 'Predyc'
+    let margen = 20
+    if(!isPredyc){
+      textoEmpresa = 'Predictiva21'
+      margen = 25
+    }
+    pdf.text(textoEmpresa, this.pageWidth-margen, (posY + imgHeight / 2) + 2, { align: 'left' });
+  
+    const imgWidtLogoWhite = 27;  // Puedes ajustar este valor según tus necesidades
+    const imgHeightLogoWhite = imgWidtLogoWhite / 4.3;
+    
+    if(isPredyc){
+      pdf.addImage(this.logoWhite, 'png', 180, 3, imgWidtLogoWhite, imgHeightLogoWhite, '', 'SLOW');
+    }
+    else{
+      //logo predicti21
+      pdf.addImage(this.logoWhiteP21, 'png', 180, 3, imgWidtLogoWhite, imgHeightLogoWhite, '', 'SLOW');
+    }
+  
+    pdf.setFontSize(18);
+    currentLine = this.addFormatedText({
+      text: courseTitle,
+      course: course,
+      x: 48,
+      y: -2,
+      color: 'white',
+      bold: true,
+      size: 18,
+      textAlign: "left",
+      maxLineWidth: this.pageWidth - 20,
+      firstLineMaxWidth: this.pageWidth - 95,
+      lineSpacingFactor: 0.8
+    }, pdf);
+  
+    const instructorSectionStartY = currentLine + 4;
+    const instructorSectionEndY = 45.5;
+  
+    await this.addFormattedInstructor(instructor, instructorSectionStartY, instructorSectionEndY, pdf);
+  
+    pdf.setFontSize(17);
+  
+    let duracionCurso = this.getFormattedDuration(course.duracion * 60);
+    
+  
+    pdf.addImage(this.reloj, 'png', 57.69, 45.02, 6, 6, '', 'SLOW');
+
+    let txtDuracion = `Duración de la sesión: ${duracionCurso}`
+
+    if(course.modalidad){
+      txtDuracion = `${course.modalidad} | ${txtDuracion}`
+    }
+
+  
+    currentLine = this.addFormatedText({
+      text: `${txtDuracion}`,
+      course: course,
+      x: 55,
+      y: 40.5,
+      size: 8,
+      color: 'white',
+      bold: true,
+      textAlign: "left",
+      maxLineWidth: this.pageWidth - 120
+    }, pdf);
+
+    if(course.fechaInicio){
+      let txtFecha = this.formatearFecha(course.fechaInicio)
+      pdf.addImage(this.calendar, 'png', 150, 45.02, 6, 6, '', 'SLOW');
+      currentLine = this.addFormatedText({
+        text: `Fecha de inicio: ${txtFecha}`,
+        course: course,
+        x: 148,
+        y: 40.5,
+        size: 8,
+        color: 'white',
+        bold: true,
+        textAlign: "left",
+        maxLineWidth: this.pageWidth - 120
+      }, pdf);
+
+
+      pdf.setFontSize(18);
+      currentLine = 60;
+
+      if(course.descripcion){
+
+        currentLine = this._addFormatedText({
+          text: 'Contenido',
+          course: course,
+          x: 0,
+          y:currentLine,
+          color: 'black',
+          bold: true,
+          size: 16,
+          textAlign: "left",
+          maxLineWidth: this.pageWidth - 20,
+          firstLineMaxWidth: this.pageWidth - 95,
+          lineSpacingFactor: 0.8
+        }, pdf);
+
+        currentLine = this._addFormatedText({
+          text: course.descripcion,
+          course: course,
+          x: 0,
+          y:currentLine + 3,
+          color: 'black',
+          bold: false,
+          size: 14,
+          textAlign: "left",
+          maxLineWidth: this.pageWidth - 20,
+          firstLineMaxWidth: this.pageWidth - 95,
+          lineSpacingFactor: 1
+        }, pdf);
+      }
+
+
+
+    }
+  }
 
   async downloadFichaTecnica(course, instructor, pdf: jsPDF = null, addToDocument: boolean = false,isPredyc = true) {
     this.isPredyc = isPredyc
@@ -644,7 +834,7 @@ export class PDFService {
 
 
 
-  async addInstrcutorCV(pdf,course,instructor,isPredyc){
+  async addInstrcutorCV(pdf,course = null,instructor,isPredyc){
 
     console.log(pdf,instructor)
     
@@ -663,7 +853,7 @@ export class PDFService {
     const imgHeight = imgWidth / 4.65517241379;
   
     const posY = this.pageHeigth - imgHeight - 5;
-    let courseTitle = course.titulo;
+    let courseTitle = course?.titulo;
   
     pdf.setFontSize(8);
     pdf.setFont("Roboto", "normal");
@@ -1121,7 +1311,413 @@ export class PDFService {
     pdf.addImage(image, 'PNG', logoX, logoY, logoWidth, logoHeight);
   }
 
+  async downloadP21Diplomado(diplomado) {
+
+    console.log(diplomado)
+    
+
+    let showLoading = true
+    if(showLoading){
+      Swal.fire({
+        title: "Generando documento...",
+        text: "Por favor, espera.",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+    }
+
+    const pdf = new jsPDF("p", "mm", "a4", true) as jsPDF;
   
+    pdf.addFileToVFS("Roboto-Regular.ttf", robotoRegular);
+    pdf.addFont("Roboto-Regular.ttf", "Roboto", "normal");
+  
+    pdf.addFileToVFS("Roboto-Bold.ttf", robotoBold);
+    pdf.addFont("Roboto-Bold.ttf", "Roboto", "bold");
+
+    const imgPortada = await this.convertImageToPNG(diplomado.imagen);
+    pdf.addImage(imgPortada, 'PNG', 0, 0, 210, 297,'','SLOW')
+
+
+    pdf.addPage();
+
+    const imgWidtLogoWhiteInit = 27; // Puedes ajustar este valor según tus necesidades
+    const imgHeightLogoWhiteInit = imgWidtLogoWhiteInit / 4.3;
+
+
+    const imageUrl = diplomado.banner;
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+
+    const { imgData, aspectRatio } = await this.convertImageToPNGWithAspect(imageUrl);
+
+    // Ajustar el ancho y alto de la imagen al 80% del ancho de la página, manteniendo la proporción
+    const imgWidth = pageWidth * 0.8;
+    const imgHeight = imgWidth / aspectRatio;
+
+    // Calcular la posición para centrar la imagen
+    const centerX = Math.round((pageWidth - imgWidth) / 2);
+    const centerY = Math.round((pageHeight - imgHeight) / 2);
+
+    // Añadir la imagen al PDF
+
+    // Ajustar el fondo de color para cubrir hasta un poco debajo del último logo
+    const fondoHeight = 50 + imgHeightLogoWhiteInit + 10; // 10 de margen adicional debajo del último logo
+    pdf.setFillColor(35, 43, 56);
+    pdf.rect(0, 0, pdf.internal.pageSize.getWidth(), fondoHeight, 'F');
+
+    pdf.addImage(imgData, 'PNG', 10, 20, Math.round(imgWidth / 1.5), Math.round(imgHeight / 1.5), '', 'SLOW');
+    pdf.addImage(this.logoWhite, 'png', 150, 5, imgWidtLogoWhiteInit, imgHeightLogoWhiteInit, '', 'SLOW');
+    pdf.addImage(this.logoWhiteP21, 'png', 180, 5, imgWidtLogoWhiteInit, imgHeightLogoWhiteInit, '', 'SLOW');
+
+
+    this.pageHeigth = pdf.internal.pageSize.height; //297mm
+    this.pageWidth = pdf.internal.pageSize.width; //210mm
+    this.isPredyc = false
+    let currentLine = fondoHeight + 10 
+
+    if(diplomado.descripcion){
+      currentLine = this._addFormatedText({
+        text: 'Acerca del Diplomado',
+        course: null,
+        x: 0,
+        tituloFooter: diplomado.titulo,
+        y:currentLine,
+        color: 'black',
+        bold: true,
+        size: 11,
+        textAlign: "left",
+        maxLineWidth: this.pageWidth - 20,
+        firstLineMaxWidth: this.pageWidth - 95,
+        lineSpacingFactor: 0.8
+      }, pdf);
+  
+      currentLine = this._addFormatedText({
+        text: diplomado.descripcion,
+        course: null,
+        x: 0,
+        tituloFooter: diplomado.titulo,
+        y:currentLine + 3,
+        color: 'black',
+        bold: false,
+        size: 8,
+        textAlign: "left",
+        maxLineWidth: this.pageWidth - 20,
+        firstLineMaxWidth: this.pageWidth - 95,
+        lineSpacingFactor: 0.8
+      }, pdf);
+
+    }
+
+    if(diplomado.objetivo){
+
+      currentLine = this._addFormatedText({
+        text: 'Objetivos del Diplomado',
+        course: null,
+        x: 0,
+        tituloFooter: diplomado.titulo,
+        y:currentLine+5,
+        color: 'black',
+        bold: true,
+        size: 11,
+        textAlign: "left",
+        maxLineWidth: this.pageWidth - 20,
+        firstLineMaxWidth: this.pageWidth - 95,
+        lineSpacingFactor: 0.8
+      }, pdf);
+  
+      currentLine = this._addFormatedText({
+        text: diplomado.objetivo,
+        course: null,
+        x: 0,
+        tituloFooter: diplomado.titulo,
+        y:currentLine + 3,
+        color: 'black',
+        bold: false,
+        size: 8,
+        textAlign: "left",
+        maxLineWidth: this.pageWidth - 20,
+        firstLineMaxWidth: this.pageWidth - 95,
+        lineSpacingFactor: 0.8
+      }, pdf);
+    }
+
+
+    if(diplomado.aQuienVaDirigido){
+
+      currentLine = this._addFormatedText({
+        text: "A quién va dirigido",
+        course: null,
+        x: 0,
+        tituloFooter: diplomado.titulo,
+        y:currentLine+5,
+        color: 'black',
+        bold: true,
+        size: 11,
+        textAlign: "left",
+        maxLineWidth: this.pageWidth - 20,
+        firstLineMaxWidth: this.pageWidth - 95,
+        lineSpacingFactor: 0.8
+      }, pdf);
+  
+      currentLine = this._addFormatedText({
+        text: diplomado.aQuienVaDirigido,
+        course: null,
+        x: 0,
+        tituloFooter: diplomado.titulo,
+        y:currentLine + 3,
+        color: 'black',
+        bold: false,
+        size: 8,
+        textAlign: "left",
+        maxLineWidth: this.pageWidth - 20,
+        firstLineMaxWidth: this.pageWidth - 95,
+        lineSpacingFactor: 0.8
+      }, pdf);
+    }
+
+    if(diplomado.queIncluye){
+
+      currentLine = this._addFormatedText({
+        text: "Qué incluye",
+        course: null,
+        x: 0,
+        tituloFooter: diplomado.titulo,
+        y: currentLine+5,
+        size: 11,
+        color: 'black',
+        bold: true,
+        textAlign: "left"
+      }, pdf);
+
+      pdf.setFontSize(10);
+      currentLine = this._addFormatedText({
+        text: diplomado.queIncluye,
+        course: null,
+        x: 0,
+        tituloFooter: diplomado.titulo,
+        y: currentLine + 3,
+        size: 8,
+        color: 'black',
+        bold: false,
+        textAlign: "left"
+      }, pdf);
+
+    }
+
+    // Pagina de proyecto final
+    pdf.addPage()
+
+
+    pdf.setFillColor(35, 43, 56);
+    pdf.rect(0, 0, pdf.internal.pageSize.getWidth(), 35, 'F');
+
+    pdf.addImage(this.logoWhite, 'png', 150, 5, imgWidtLogoWhiteInit, imgHeightLogoWhiteInit, '', 'SLOW');
+    pdf.addImage(this.logoWhiteP21, 'png', 180, 5, imgWidtLogoWhiteInit, imgHeightLogoWhiteInit, '', 'SLOW');
+
+    currentLine = 0
+
+    currentLine = this._addFormatedText({
+      text: 'Proyecto final',
+      course: null,
+      x: 0,
+      tituloFooter: diplomado.titulo,
+      y: currentLine,
+      size: 26,
+      color: 'white',
+      bold: true,
+      textAlign: "left"
+    }, pdf);
+
+
+    // Subportada de contenido con fondo
+
+    pdf.addPage()
+
+
+    pdf.setFillColor(35, 43, 56);
+    pdf.rect(0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight(), 'F');
+
+    // Añadir la imagen al PDF
+    pdf.addImage(imgData, 'PNG', centerX, centerY-20, imgWidth, imgHeight,'','SLOW');
+
+
+
+    // Ajustar la llamada al método `text` con la nueva posición en X
+    pdf.setFontSize(40);  // Ajustar el tamaño de la fuente
+    pdf.setFont("Roboto", "bold");
+
+    // Calcular la posición X para centrar el texto
+    const textWidth = pdf.getTextWidth(`CONTENIDO`);
+    const centerXTxt = (pageWidth - textWidth) / 2;
+
+    pdf.setTextColor(255, 255, 255);
+    pdf.text(`CONTENIDO`, centerXTxt, (centerY - 20 + imgHeight) + 30, { align: 'left' })
+
+    // Configuración del tamaño de los logos
+    const imgWidtLogoWhite = 40;  // Ancho del logo
+    const imgHeightLogoWhite = imgWidtLogoWhite / 4.3;  // Altura manteniendo la proporción
+
+    // Posición vertical para los logos (cerca de la parte inferior)
+    const footerImgHeight = pdf.internal.pageSize.getHeight() - 30;
+
+    // Configuración de espacio entre los logos
+    const spaceBetweenLogos = 10; // Ajusta este valor según el espacio deseado entre los logos
+
+    // Ancho total ocupado por ambos logos y el espacio entre ellos
+    const totalLogosWidth = imgWidtLogoWhite * 2 + spaceBetweenLogos;
+
+    // Posición inicial horizontal para centrar ambos logos
+    const startX = (pdf.internal.pageSize.getWidth() - totalLogosWidth) / 2;
+
+    // Agregar el primer logo
+    pdf.addImage(this.logoWhite, 'png', startX, footerImgHeight, imgWidtLogoWhite, imgHeightLogoWhite, '', 'SLOW');
+
+    // Agregar el segundo logo con espacio entre ellos
+    pdf.addImage(this.logoWhiteP21, 'png', startX + imgWidtLogoWhite + spaceBetweenLogos, footerImgHeight, imgWidtLogoWhite, imgHeightLogoWhite, '', 'SLOW');
+
+    // Agregar una nueva página
+    pdf.addPage();
+
+    const instructores = [];
+    const uniqueInstructorIds = new Set();
+
+    let curso = null
+    
+    const modules = diplomado.modules;
+    for (let i = 0; i < modules.length; i++) {
+      const modulo = modules[i];
+      const cursos = modulo.clases;
+    
+      for (let j = 0; j < cursos.length; j++) {
+        const course = cursos[j];
+        const instructor = course.instructorData;
+    
+        // Agregar instructor único al arreglo
+        if (instructor && !uniqueInstructorIds.has(instructor.id)) {
+          uniqueInstructorIds.add(instructor.id);
+          instructores.push(instructor);
+        }
+        
+        course.imagen = course.image;
+        curso=course
+        await this.downloadFichaTecnicaCourseDiplomadoP21(modulo, course, instructor, pdf, true, false);
+    
+        console.log(modules.length, cursos.length, i, j);
+    
+        // Agregar una nueva página si no es la última clase del último módulo
+        if (i < modules.length - 1 || j < cursos.length - 1) {
+          pdf.addPage();
+        }
+      }
+    }
+    
+    
+
+    pdf.addPage();
+
+
+    // Subportada de instructores con fondo
+    pdf.setFillColor(35, 43, 56);
+    pdf.rect(0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight(), 'F');
+
+
+    // Añadir la imagen al PDF
+    pdf.addImage(imgData, 'PNG', centerX, centerY-20, imgWidth, imgHeight,'','SLOW');
+
+    // Ajustar la llamada al método `text` con la nueva posición en X
+    pdf.setFontSize(40);  // Ajustar el tamaño de la fuente
+    pdf.setFont("Roboto", "bold");
+
+    // Calcular la posición X para centrar el texto
+    // Calcular la posición X para centrar el texto
+    const textWidthIns = pdf.getTextWidth(`INSTRUCTORES`);
+    const centerXIns = (pageWidth - textWidthIns) / 2;
+
+    pdf.setTextColor(255, 255, 255);
+    pdf.text(`INSTRUCTORES`, centerXIns, (centerY - 20 + imgHeight) + 30, { align: 'left' })
+
+    // Agregar el primer logo
+    pdf.addImage(this.logoWhite, 'png', startX, footerImgHeight, imgWidtLogoWhite, imgHeightLogoWhite, '', 'SLOW');
+
+    // Agregar el segundo logo con espacio entre ellos
+    pdf.addImage(this.logoWhiteP21, 'png', startX + imgWidtLogoWhite + spaceBetweenLogos, footerImgHeight, imgWidtLogoWhite, imgHeightLogoWhite, '', 'SLOW');
+
+
+    console.log('Instructores únicos:', instructores);
+    for (let i = 0; i < instructores.length; i++) {
+      const instructor = instructores[i]
+      curso.titulo = diplomado.titulo
+      await this.addInstrcutorCV(pdf,curso,instructor,false)
+      
+    }
+
+    pdf.addPage()
+
+    // Subportada de contenido con fondo
+    pdf.setFillColor(35, 43, 56);
+    pdf.rect(0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight(), 'F');
+
+      // Texto principal centrado
+      pdf.setFont('Roboto', 'bold');
+      pdf.setFontSize(26);
+
+      const mainText = [
+        { text: 'La', color: [255, 255, 255] },
+        { text: ' Confiabilidad', color: [127, 201, 255] },
+        { text: ' inicia con la EDUCACIÓN', color: [255, 255, 255] },
+      ];
+
+      // Calcular el ancho total del texto principal
+      let totalTextWidth = 0;
+      mainText.forEach((line) => {
+        pdf.setTextColor(line.color[0], line.color[1], line.color[2]);
+        totalTextWidth += pdf.getTextWidth(line.text);
+      });
+
+      // Calcular las posiciones para centrar
+      let currentX = (pageWidth - totalTextWidth) / 2;
+      const mainTextY = pageHeight / 2 - 10; // Posición vertical ajustada
+
+      mainText.forEach((line) => {
+        pdf.setTextColor(line.color[0], line.color[1], line.color[2]);
+        pdf.text(line.text, currentX, mainTextY);
+        currentX += pdf.getTextWidth(line.text); // Mover X según el ancho del texto actual
+      });
+
+      // Texto secundario centrado
+      const subText = 'Predictiva21 - La revista de Mantenimiento #1 en LATAM';
+      pdf.setFont('Roboto', 'italic');
+      pdf.setFontSize(12);
+      pdf.setTextColor(255, 255, 255);
+
+      const subTextWidth = pdf.getTextWidth(subText);
+      const subTextX = (pageWidth - subTextWidth) / 2;
+      const subTextY = mainTextY + 10; // Separación vertical ajustada
+
+      pdf.text(subText, subTextX, subTextY);
+
+
+    
+  
+
+    // Agregar el primer logo
+    pdf.addImage(this.logoWhite, 'png', startX, footerImgHeight, imgWidtLogoWhite, imgHeightLogoWhite, '', 'SLOW');
+
+    // Agregar el segundo logo con espacio entre ellos
+    pdf.addImage(this.logoWhiteP21, 'png', startX + imgWidtLogoWhite + spaceBetweenLogos, footerImgHeight, imgWidtLogoWhite, imgHeightLogoWhite, '', 'SLOW');
+
+
+
+    pdf.save(`${this.sanitizeFilename(diplomado.titulo)}.pdf`);
+
+    if(showLoading){
+      Swal.close();
+    }
+
+  }
+
 
 
   async downloadCatalogCourses(categories,titulo='Ficha_tecnica_Cursos',showLoading = true,isPredyc = true,idAdmin = true) {
@@ -1606,7 +2202,7 @@ export class PDFService {
           
           const posY = this.pageHeigth - imgHeight - 5;
           const maxTextWidth = this.pageWidth - imgWidth - 15;
-          let courseTitle = opts.course.titulo?  opts.course.titulo: '';
+          let courseTitle = opts?.course?.titulo?  opts?.course?.titulo: opts.tituloFooter;
   
           while (pdf.getTextWidth(courseTitle) > maxTextWidth) {
               courseTitle = courseTitle.slice(0, -1);
@@ -1649,6 +2245,8 @@ export class PDFService {
       for (const paragraph of paragraphs) {
           let offset = 0;
           let isBullet = false;
+          let isSubBullet = false;
+
   
           let formattedParagraph = paragraph;
           if (formattedParagraph.trim().startsWith('*')) {
@@ -1656,13 +2254,21 @@ export class PDFService {
               offset = 5;
               isBullet = true;
           }
+
+          if (formattedParagraph.trim().startsWith('>')) {
+            formattedParagraph = `‣ ${formattedParagraph.trim().slice(1).trim()}`;
+            offset = 8;
+            isBullet = true;
+            isSubBullet = true
+        }
   
           const lines = pdf.splitTextToSize(formattedParagraph, maxLineWidth);
           lines.forEach((line, index) => {
               textLines.push({
                   text: line,
                   offset: isBullet ? offset : 0,
-                  isBullet: isBullet && index === 0  // Solo la primera línea del bullet
+                  isBullet: isBullet && index === 0,  // Solo la primera línea del bullet
+                  isSubBullet:isSubBullet,
               });
           });
       }
@@ -1671,7 +2277,7 @@ export class PDFService {
   
       for (let index = 0; index < textLines.length; index++) {
           const lineHeight = pdf.getLineHeight() * lineSpacingFactor;
-          const { text, offset, isBullet } = textLines[index];
+          const { text, offset, isBullet,isSubBullet } = textLines[index];
   
           if (opts.y + (index + 1) * lineHeight > (this.pageHeigth+10)) {
               pdf.addPage();
@@ -1688,7 +2294,11 @@ export class PDFService {
   
           if (isBullet) {
               pdf.setFontSize(12);  // Tamaño de fuente más grande para el bullet
-              pdf.text('•', opts.x + this.horizontalMargin + offset, opts.y + this.verticalMargin + lineHeight * (index + 1) / 2, { align: opts.textAlign });
+              let icon = '•'
+              if(isSubBullet){
+                icon = '\u2022'
+              }
+              pdf.text(icon, opts.x + this.horizontalMargin + offset, opts.y + this.verticalMargin + lineHeight * (index + 1) / 2, { align: opts.textAlign });
               pdf.setFontSize(opts.size);  // Restaurar tamaño de fuente normal
               pdf.text(
                   text.slice(2).trim(),
@@ -1709,6 +2319,10 @@ export class PDFService {
       let nextHeightValue = opts.y + textLines.length * pdf.getLineHeight() * lineSpacingFactor / 2;
   
       return nextHeightValue;
+  }
+
+  _addFormatedText2(opts: textOpts, pdf: jsPDF, tituloFooter: string = ''): number {
+    return 3
   }
   
   

@@ -158,6 +158,9 @@ export class CoursesP21Component {
         curso['skills'] = filteredSkills;
         curso['categories'] = filteredCategories;
         curso.modules = curso['modulos']
+        curso.modules.forEach(modulo => {
+          modulo.expanded = false;
+        });
         curso['modules'].sort((a, b) => a.numero - b.numero);    
       });
 

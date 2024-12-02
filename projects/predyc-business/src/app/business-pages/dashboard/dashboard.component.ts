@@ -1709,9 +1709,10 @@ export class DashboardComponent {
       if (usuario.allCourses.length > 0) {
         // tiene cursos
         let coursesUser = usuario.allCourses;
+        console.log('coursesUser',coursesUser)
         coursesUser.sort(
           (a, b) =>
-            a.progress.dateStartPlan.seconds - b.progress.dateStartPlan.seconds
+            a?.progress?.dateStartPlan?.seconds - b?.progress?.dateStartPlan?.seconds
         );
 
         
@@ -1804,7 +1805,7 @@ export class DashboardComponent {
               s: whiteCalibriCenteredBordered,
             };
 
-            let fechaFin = curso.progress.dateEndPlan.seconds * 1000;
+            let fechaFin = curso?.progress?.dateEndPlan?.seconds * 1000;
 
             let latestDate = new Date(fechaFin);
             let options: Intl.DateTimeFormatOptions = {

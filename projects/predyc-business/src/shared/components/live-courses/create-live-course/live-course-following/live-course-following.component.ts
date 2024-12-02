@@ -282,7 +282,7 @@ export class LiveCourseFollowingComponent {
       this.emailSent = true
 
       const htmlContentFinal = ` <!DOCTYPE html><html><head>${styleMail}</head><body>${htmlContent}${firma}</body></html>`;
-      console.log(htmlContentFinal)
+      console.log(htmlContentFinal,subject,recipients)
 
       await firstValueFrom(this.fireFunctions.httpsCallable('sendLiveCourseEmail')({
         sender: sender,

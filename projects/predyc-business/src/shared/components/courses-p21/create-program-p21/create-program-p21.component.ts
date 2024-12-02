@@ -520,6 +520,7 @@ export class CreateProgramP21Component {
           modalidad: new FormControl("",Validators.required),
           modalidadCapacitacion: new FormControl(""),
           objetivo: new FormControl(""),
+          final: new FormControl(""),
           pdf: new FormControl(""),
 
         });
@@ -607,6 +608,7 @@ export class CreateProgramP21Component {
             modalidad: new FormControl(curso['modalidad'],Validators.required),
             modalidadCapacitacion: new FormControl(curso['modalidadCapacitacion']),
             objetivo: new FormControl(curso['objetivo']),
+            final: new FormControl(curso['final']),
             pdf: new FormControl(curso['pdf']),
 
 
@@ -1006,7 +1008,8 @@ export class CreateProgramP21Component {
                 let claseLocal = new Clase();
                 claseLocal['instructorData'] = clase.instructorData? clase.instructorData: null
                 claseLocal['image'] = clase.image? clase.image: null
-                claseLocal['descripcion'] = clase.descripcion? clase.descripcion: null
+                claseLocal['image'] = clase.image? clase.image: null
+                claseLocal['fechaInicio'] = clase.fechaInicio? clase.fechaInicio: null
 
                 claseLocal.HTMLcontent = clase.HTMLcontent;
                 claseLocal.archivos = clase.archivos.map((archivo) => ({
@@ -1079,7 +1082,8 @@ export class CreateProgramP21Component {
             titulo:clase.titulo,
             imagen:clase?.imagen?clase.imagen:null,
             instructorData:clase.instructorData,
-            image:clase.image
+            image:clase.image,
+            fechaInicio:clase.fechaInicio?clase.fechaInicio:null,
           }
           clases.push(claseLocal)
         });
@@ -2679,7 +2683,11 @@ export class CreateProgramP21Component {
     let duracion = 0;
 
     this.modulos.forEach((modulo) => {
-      duracion +=(modulo?.duracion)*60
+      if(modulo['clases'].length>0){
+        modulo['clases'].forEach(clase => {
+          duracion +=(clase?.duracion)
+        });
+      }
     });
 
 
@@ -3333,11 +3341,7 @@ export class CreateProgramP21Component {
     
     this.curso = this.formNewCourse.value;
     this.curso.modules = this.modulos
-
-
-    let instrctor = this.instructores.find(x=>x.id == this.curso.instructorRef.id)
-
-    this.PDFService.downloadFichaTecnica(this.curso,instrctor,null,null,false)
+    this.PDFService.downloadP21Diplomado(this.curso)
     
   }
 }
