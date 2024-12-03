@@ -1401,7 +1401,7 @@ export class PDFService {
         y:currentLine + 3,
         color: 'black',
         bold: false,
-        size: 8,
+        size: 10,
         textAlign: "left",
         maxLineWidth: this.pageWidth - 20,
         firstLineMaxWidth: this.pageWidth - 95,
@@ -1435,7 +1435,7 @@ export class PDFService {
         y:currentLine + 3,
         color: 'black',
         bold: false,
-        size: 8,
+        size: 10,
         textAlign: "left",
         maxLineWidth: this.pageWidth - 20,
         firstLineMaxWidth: this.pageWidth - 95,
@@ -1469,7 +1469,7 @@ export class PDFService {
         y:currentLine + 3,
         color: 'black',
         bold: false,
-        size: 8,
+        size: 10,
         textAlign: "left",
         maxLineWidth: this.pageWidth - 20,
         firstLineMaxWidth: this.pageWidth - 95,
@@ -1498,13 +1498,160 @@ export class PDFService {
         x: 0,
         tituloFooter: diplomado.titulo,
         y: currentLine + 3,
-        size: 8,
+        size: 10,
         color: 'black',
         bold: false,
         textAlign: "left"
       }, pdf);
 
     }
+
+    if(diplomado.modalidadCapacitacion){
+      pdf.setFontSize(14);
+      currentLine = currentLine + 3;
+
+
+      currentLine = this._addFormatedText({
+        text: "Modalidad de la capacitación",
+        course: null,
+        tituloFooter: diplomado.titulo,
+        x: 0,
+        y: currentLine,
+        size: 11,
+        color: 'black',
+        bold: true,
+        textAlign: "left"
+      }, pdf);
+
+      pdf.setFontSize(10);
+      currentLine = this._addFormatedText({
+        text: diplomado.modalidadCapacitacion,
+        course: null,
+        tituloFooter: diplomado.titulo,
+        x: 0,
+        y: currentLine + 3,
+        size: 10,
+        color: 'black',
+        bold: false,
+        textAlign: "left"
+      }, pdf);
+
+    }
+
+    pdf.addPage();
+
+    // Fondo superior
+    pdf.setFillColor(35, 43, 56);
+    pdf.rect(0, 0, pdf.internal.pageSize.getWidth(), 90, 'F');
+
+    //Configuración de la línea
+    const lineWidth = pdf.internal.pageSize.getWidth() * 0.8; // 80% del ancho de la página
+    const lineX = (pdf.internal.pageSize.getWidth() - lineWidth) / 2; // Centrar horizontalmente
+    const lineY = 20
+    const lineHeight = 0.5;
+
+    // Dibujar la línea
+    pdf.setDrawColor(0, 0, 0); // Color negro
+    pdf.setLineWidth(lineHeight);
+    pdf.line(lineX, lineY, lineX + lineWidth, lineY);
+
+    // Configuración del rectángulo
+    const rectWidth = 60; // Ancho del rectángulo
+    const rectHeight = 15; // Alto del rectángulo
+    const rectX = (pdf.internal.pageSize.getWidth() - rectWidth) / 2; // Centrar horizontalmente
+    const rectY = lineY - rectHeight / 2; // Centrar sobre la línea
+
+    // Dibujar el rectángulo
+    pdf.setFillColor(255, 255, 255); // Color de fondo blanco
+    pdf.setDrawColor(0, 0, 0); // Color del borde negro
+    pdf.roundedRect(rectX, rectY, rectWidth, rectHeight, 3, 3, 'FD'); // Con bordes redondeados
+
+
+    pdf.setFontSize(24);
+    pdf.setFont('Roboto', 'bold');
+    pdf.setTextColor(0, 0, 0);
+    pdf.text('+ 3000', 80,23);
+
+
+
+    pdf.setFontSize(10);
+    pdf.setFont('Roboto', 'normal');
+    pdf.setTextColor(0, 0, 0);
+    pdf.text('Profesionales', 108,19.5);
+    pdf.text('capacitados', 108,23);
+
+
+    
+
+    // Fechas con contenido
+    const timeline = [
+      { year: '2013',yearColor:[127, 201, 255], text: 'Iniciamos la Revista Digital más prestigiosa de Mantenimiento, Confiabilidad y Gestión de Activos en LATAM' },
+      { year: '2019',yearColor:[5, 126, 212], text: 'Predictiva21 se constituye como líder en capacitación a nivel online y presencial.' },
+      { year: '2021',yearColor:[255, 186, 0], text: 'Fundación de Predyc, la aplicación de capacitación industrial del futuro para LATAM.' },
+    ];
+
+    const timelineStartY = 50;
+
+    timeline.forEach((item, index) => {
+      const boxStartX = 20 + index * (pdf.internal.pageSize.getWidth() - 40) / timeline.length;
+
+      // Año
+      pdf.setFontSize(20);
+      pdf.setFont('Roboto', 'bold');
+      pdf.setTextColor(item.yearColor[0], item.yearColor[1], item.yearColor[2]);
+      pdf.text(item.year, boxStartX + 10, timelineStartY);
+
+      pdf.setFillColor(item.yearColor[0], item.yearColor[1], item.yearColor[2]); // Ajustado: valores directos en lugar de spread operator
+      pdf.rect(boxStartX + 10, timelineStartY + 3, 10, 0.5, 'F');
+
+      // Descripción
+      pdf.setFontSize(10);
+      pdf.setFont('Roboto', 'normal');
+      pdf.setTextColor(255, 255, 255);
+      pdf.text(item.text, boxStartX + 10, timelineStartY + 10, { maxWidth: (pdf.internal.pageSize.getWidth() - 40) / timeline.length - 10 });
+    });
+
+    // Barra inferior de color
+    const barColors = [
+      [127, 201, 255], // Azul
+      [5, 126, 212], // Azul oscuro
+      [255, 186, 0],   // Amarillo
+    ];
+
+    barColors.forEach((color, index) => {
+      pdf.setFillColor(color[0], color[1], color[2]); // Ajustado: valores directos en lugar de spread operator
+      pdf.rect(index * (pdf.internal.pageSize.getWidth() / 3), 90, pdf.internal.pageSize.getWidth() / 3, 3, 'F');
+    });
+
+    // Sección inferior: "Experiencia de Predictiva21"
+    pdf.setFontSize(18);
+    pdf.setFont('Roboto', 'bold');
+    pdf.setTextColor(5, 126, 212);
+    pdf.text('Experiencia de', 20, 90+25);
+
+    // Logo
+
+    const imgWidtLogoWhiteResumen = 35; // Puedes ajustar este valor según tus necesidades
+    const imgHeightLogoWhiteResumen= imgWidtLogoWhiteResumen / 4.3;
+
+
+    pdf.addImage(this.logoBlackP21, 'png', 64, (90+25-6), imgWidtLogoWhiteResumen, imgHeightLogoWhiteResumen, '', 'SLOW');
+
+    // Texto largo
+    const content = `     Todo comenzó en el año 2013 cuando lanzamos Predictiva21, la revista digital que pronto se convertiría en la más prestigiosa de América Latina en el ámbito de la Ingeniería de Mantenimiento, Confiabilidad y Gestión de Activos. Nuestro objetivo era claro: proporcionar un recurso de alto valor que ofreciera conocimientos, noticias y análisis de vanguardia para profesionales del sector.
+
+    Avanzamos hacia 2019, un año monumental en nuestra historia, ya que Predictiva21 se consolidó como líder indiscutible en capacitación, ofreciendo cursos en línea en vivo y presenciales. Nuestra propuesta de valor se centró en adaptar y responder a las necesidades cambiantes de los profesionales y empresas de América Latina, fortaleciendo sus competencias y conocimiento a través de formación de alta calidad.
+
+    En 2021, nació Predyc, marcando un hito significativo en la capacitación industrial. Concebida específicamente para responder a las crecientes demandas de las grandes corporaciones, Predyc se establece como una plataforma de formación robusta y escalable.
+
+    Predyc ofrece soluciones a medida que permiten a las grandes organizaciones formar a sus equipos y tener acceso a un recurso educativo que entiende la magnitud de sus operaciones y la importancia de la eficiencia y la calidad en la formación de su capital humano.`;
+
+    pdf.setFontSize(12);
+    pdf.setFont('Roboto', 'normal');
+    pdf.setTextColor(0, 0, 0);
+    pdf.text(content, 18, 165-25, { maxWidth: pdf.internal.pageSize.getWidth() - 40 });
+
+    
 
     if(diplomado.final){
       // Pagina de proyecto final
@@ -1528,6 +1675,21 @@ export class PDFService {
         size: 26,
         color: 'white',
         bold: true,
+        textAlign: "left"
+      }, pdf);
+
+      currentLine = 40
+
+
+      currentLine = this._addFormatedText({
+        text: diplomado.final,
+        course: null,
+        x: 0,
+        tituloFooter: diplomado.titulo,
+        y: currentLine,
+        size: 10,
+        color: 'black',
+        bold: false,
         textAlign: "left"
       }, pdf);
 
