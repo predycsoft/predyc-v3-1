@@ -3,7 +3,7 @@ import jsPDF from 'jspdf';
 import { robotoBold } from '../../assets/fonts/Roboto/Roboto-bold';
 import { robotoRegular } from '../../assets/fonts/Roboto/Roboto-normal';
 import Swal from "sweetalert2";
-import { startWith } from 'rxjs';
+import autoTable from 'jspdf-autotable';
 
 
 interface textOpts {
@@ -1261,6 +1261,195 @@ export class PDFService {
      currentLine = await this.addFormattedTable(table, currentLine, pdf,isPredyc,true);
   }
 
+
+  addCalendarTableToPDF(pdf: jsPDF, diplomado: any) {
+    const tableHeaders = ['Módulo', 'Sesión', 'Contenidos', 'Fecha', 'Horas', 'Instructor'];
+    const tableRows: any[] = [];
+    const modulesCalendar = diplomado.modules;
+  
+    for (let i = 0; i < modulesCalendar.length; i++) {
+      const modulo = modulesCalendar[i];
+      const cursos = modulo.clases;
+  
+      // Calcular la duración total del módulo
+      const totalDuration = cursos.reduce((sum: number, course: any) => sum + course.duracion, 0);
+  
+      // Agregar una fila combinada para el módulo (nombre centrado y en negrita)
+      tableRows.push([
+        {
+          content: modulo.titulo,
+          colSpan: 6,
+          styles: {
+            halign: 'center',
+            fillColor: [214, 234, 255],
+            fontStyle: 'bold', // Aplicar negrita
+          },
+        },
+      ]);
+  
+      for (let j = 0; j < cursos.length; j++) {
+        const course = cursos[j];
+        const instructor = course.instructorData;
+  
+        // Formatear la fecha
+        const formattedDate = course.fechaInicio
+          ? new Date(course.fechaInicio).toLocaleDateString('es-ES', {
+              day: '2-digit',
+              month: '2-digit',
+              year: '2-digit',
+            })
+          : 'Sin fecha';
+  
+        // Construir la fila
+        const row = [];
+        if (j === 0) {
+          // Primera fila del módulo
+          row.push({
+            content: i + 1,
+            rowSpan: cursos.length,
+            styles: { halign: 'center', valign: 'middle' },
+          });
+        }
+        row.push({ content: j + 1, styles: { halign: 'center' } }); // Sesión
+        row.push({ content: course.titulo }); // Contenidos
+        row.push({ content: formattedDate, styles: { halign: 'center' } }); // Fecha
+        if (j === 0) {
+          // Primera fila del módulo
+          row.push({
+            content: totalDuration,
+            rowSpan: cursos.length,
+            styles: { halign: 'center', valign: 'middle' },
+          });
+        }
+        row.push({ content: instructor?.nombre || 'Sin asignar', styles: { halign: 'center' } }); // Instructor
+  
+        // Agregar la fila a la tabla
+        tableRows.push(row);
+      }
+    }
+  
+    // Generar la tabla en el PDF
+    autoTable(pdf, {
+      head: [tableHeaders],
+      body: tableRows,
+      theme: 'grid',
+      styles: { font: 'helvetica', fontSize: 10, valign: 'middle' },
+      headStyles: { fillColor: [127, 201, 255], halign: 'center' },
+      columnStyles: {
+        0: { halign: 'center' }, // Módulo
+        1: { halign: 'center' }, // Sesión
+        3: { halign: 'center' }, // Fecha
+        4: { halign: 'center' }, // Horas
+        5: { halign: 'center' }, // Instructor
+      },
+      startY: 35,
+      didDrawPage: (data) => {
+        // Repetir encabezado de página con logos
+        pdf.setFillColor(35, 43, 56);
+        pdf.rect(0, 0, pdf.internal.pageSize.getWidth(), 20, 'F');
+  
+        const imgWidtLogoWhiteInit = 27;
+        const imgHeightLogoWhiteInit = imgWidtLogoWhiteInit / 4.3;
+  
+        pdf.addImage(this.logoWhite, 'png', 150, 5, imgWidtLogoWhiteInit, imgHeightLogoWhiteInit, '', 'SLOW');
+        pdf.addImage(this.logoWhiteP21, 'png', 180, 5, imgWidtLogoWhiteInit, imgHeightLogoWhiteInit, '', 'SLOW');
+  
+        let currentLine = -8;
+  
+        currentLine = this._addFormatedText(
+          {
+            text: 'Cronograma',
+            course: null,
+            x: 0,
+            tituloFooter: diplomado.titulo,
+            y: currentLine,
+            size: 26,
+            color: 'white',
+            bold: true,
+            textAlign: 'left',
+          },
+          pdf
+        );
+      },
+      margin: { top: 40 }, // Espacio para logos y título
+    });
+  }
+  
+
+  generateCalendarHTML(diplomado: any): string {
+    let html = `
+      <table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif;">
+        <thead>
+          <tr style="background-color: #7fc9ff; color: #ffffff;">
+            <th style="border: 1px solid #ddd; padding: 8px; text-align: center;">Módulo</th>
+            <th style="border: 1px solid #ddd; padding: 8px; text-align: center;">Sesión</th>
+            <th style="border: 1px solid #ddd; padding: 8px; text-align: center;">Contenidos</th>
+            <th style="border: 1px solid #ddd; padding: 8px; text-align: center;">Fecha</th>
+            <th style="border: 1px solid #ddd; padding: 8px; text-align: center;">Horas</th>
+            <th style="border: 1px solid #ddd; padding: 8px; text-align: center;">Instructor</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+  
+    const modulesCalendar = diplomado.modules;
+  
+    for (let i = 0; i < modulesCalendar.length; i++) {
+      const modulo = modulesCalendar[i];
+      const cursos = modulo.clases;
+  
+      // Calcular la duración total del módulo
+      const totalDuration = cursos.reduce((sum, course) => sum + course.duracion, 0);
+  
+      // Agregar una fila para el título del módulo
+      html += `
+        <tr style="background-color: #d6eaff; font-weight: bold; text-align: center;">
+          <td style="border: 1px solid #ddd; padding: 8px;" colspan="6">${modulo.titulo}</td>
+        </tr>
+      `;
+  
+      // Agregar filas para las sesiones del módulo
+      for (let j = 0; j < cursos.length; j++) {
+        const course = cursos[j];
+        const instructor = course.instructorData;
+  
+        // Formatear la fecha
+        const formattedDate = course.fechaInicio
+          ? new Date(course.fechaInicio).toLocaleDateString("es-ES", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "2-digit",
+            })
+          : "Sin fecha";
+  
+        // Agregar fila para cada curso
+        html += `
+          <tr>
+            ${j === 0
+              ? `<td style="border: 1px solid #ddd; padding: 8px; text-align: center;" rowspan="${cursos.length}">${i + 1}</td>`
+              : ""}
+            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${j + 1}</td>
+            <td style="border: 1px solid #ddd; padding: 8px;">${course.titulo}</td>
+            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${formattedDate}</td>
+            ${
+              j === 0
+                ? `<td style="border: 1px solid #ddd; padding: 8px; text-align: center;" rowspan="${cursos.length}">${totalDuration}</td>`
+                : ""
+            }
+            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${instructor?.nombre || "Sin asignar"}</td>
+          </tr>
+        `;
+      }
+    }
+  
+    html += `
+        </tbody>
+      </table>
+    `;
+  
+    return html;
+  }
+
   async addCategoryCover(pdf: jsPDF, category: any,index) {
 
     pdf.addPage(); // HOJA PORTADA PILAR
@@ -1651,7 +1840,13 @@ export class PDFService {
     pdf.setTextColor(0, 0, 0);
     pdf.text(content, 18, 165-25, { maxWidth: pdf.internal.pageSize.getWidth() - 40 });
 
-    
+    //calendario
+
+    pdf.addPage()
+
+
+    this.addCalendarTableToPDF(pdf, diplomado);
+
 
     if(diplomado.final){
       // Pagina de proyecto final
@@ -1659,12 +1854,12 @@ export class PDFService {
 
 
       pdf.setFillColor(35, 43, 56);
-      pdf.rect(0, 0, pdf.internal.pageSize.getWidth(), 35, 'F');
+      pdf.rect(0, 0, pdf.internal.pageSize.getWidth(), 20, 'F');
 
       pdf.addImage(this.logoWhite, 'png', 150, 5, imgWidtLogoWhiteInit, imgHeightLogoWhiteInit, '', 'SLOW');
       pdf.addImage(this.logoWhiteP21, 'png', 180, 5, imgWidtLogoWhiteInit, imgHeightLogoWhiteInit, '', 'SLOW');
 
-      currentLine = 1
+      currentLine = -8
 
       currentLine = this._addFormatedText({
         text: 'Proyecto final',
@@ -1678,7 +1873,7 @@ export class PDFService {
         textAlign: "left"
       }, pdf);
 
-      currentLine = 40
+      currentLine = 25
 
 
       currentLine = this._addFormatedText({
