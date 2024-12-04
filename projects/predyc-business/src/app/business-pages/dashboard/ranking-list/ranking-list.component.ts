@@ -78,9 +78,15 @@ export class RankingListComponent {
 
       let minutesLast30Days = 0
 
+      // console.log("recentClasses", recentClasses)
+
       recentClasses.forEach(classStudent => {
         let classe = allClasses.find(x=>x.id == classStudent.classRef.id)
-        minutesLast30Days+=classe.duracion
+        // console.log("classStudent", classStudent)
+        if (classe) minutesLast30Days+=classe.duracion
+        else {
+          // console.log("Class not found: ", classStudent)
+        } 
       });
 
       let hours30Days = minutesLast30Days/60
