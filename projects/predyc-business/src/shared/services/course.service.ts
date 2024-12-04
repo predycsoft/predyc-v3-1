@@ -2141,6 +2141,48 @@ export class CourseService {
       console.error('Error al actualizar las referencias de skills:', error);
     }
   }
+
+
+  async fetchCoursesCalendar(): Promise<any[]> {
+    try {
+      const snapshot = await this.afs
+        .collection('courseP21', (ref) =>
+          ref.where('enCalendario', '==', true)
+        )
+        .get()
+        .toPromise();
+
+      return snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data() as any,
+      }));
+    } catch (error) {
+      console.error('Error fetching courses:', error);
+      return [];
+    }
+  }
+
+  // Función para obtener los diplomados del calendario
+  async fetchDiplomadosCalendar(): Promise<any[]> {
+    try {
+      const snapshot = await this.afs
+        .collection('diplomadoP21', (ref) =>
+          ref.where('enCalendario', '==', true)
+        )
+        .get()
+        .toPromise();
+
+      return snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data() as any,
+      }));
+    } catch (error) {
+      console.error('Error fetching diplomados:', error);
+      return [];
+    }
+  }
+
+
   
   
   

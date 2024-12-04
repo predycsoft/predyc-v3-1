@@ -87,9 +87,47 @@
                                         [class.is-invalid]="formNewCourse.controls['titulo'].errors && showErrorCurso"
                                         formControlName="titulo" type="text" class="form-control customInput2 radius6 " placeholder="Escriba el título del diplomado aquí">
                                         <div class="invalid-feedback" *ngIf="formNewCourse.controls['titulo'].errors && showErrorCurso"> 
-                                            Debe indicar el título del diplo
+                                            Debe indicar el título del diplomado
                                         </div>
                                     </div>
+                                
+                                    <div class="fw" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1rem" class="fw mgt08 mgb08">
+                                        <div class="form-group" fxFlex="70">
+                                          <label class="ft12">Subtítulo</label>
+                                          <input
+                                            [class.is-invalid]="formNewCourse.controls['subtitulo'].errors && showErrorCurso"
+                                            formControlName="subtitulo"
+                                            type="text"
+                                            class="form-control customInput2 radius6"
+                                            placeholder="Escriba el subtítulo del diplomado aquí">
+                                          <div class="invalid-feedback" *ngIf="formNewCourse.controls['subtitulo'].errors && showErrorCurso">
+                                            Debe indicar el subtítulo del diplomado
+                                          </div>
+                                        </div>
+                                        <div class="form-group" fxFlex="30">
+                                          <label class="ft12">Año</label>
+                                          <input
+                                            [class.is-invalid]="formNewCourse.controls['year'].errors && showErrorCurso"
+                                            formControlName="year"
+                                            type="text"
+                                            class="form-control customInput2 radius6"
+                                            placeholder="Escriba el año del diplomado aquí">
+                                          <div class="invalid-feedback" *ngIf="formNewCourse.controls['year'].errors && showErrorCurso">
+                                            Debe indicar el año del diplomado
+                                          </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group mgt08 mgb08">
+                                        <label class="ft12 " >Color</label>
+                                        <input
+                                        [class.is-invalid]="formNewCourse.controls['color'].errors && showErrorCurso"
+                                        formControlName="color" type="color" class="form-control customInput2 radius6 " placeholder="Escriba el color del diplomado aquí">
+                                        <div class="invalid-feedback" *ngIf="formNewCourse.controls['color'].errors && showErrorCurso"> 
+                                            Debe indicar el color del diplomado
+                                        </div>
+                                    </div>
+                                      
                                     <mat-accordion>
                                         <mat-expansion-panel>
                                             <mat-expansion-panel-header>
@@ -575,7 +613,19 @@
                                                                                                 </div>
                                                                                             </div>
                                                                                         </div>
-                                                                                        <div class="pdt10" fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="start start">
+                                                                                        <!-- Row para showDetails -->
+                                                                                        <div class="pdt10" fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="start center">
+                                                                                            <!-- Etiqueta para el slider -->
+                                                                                            <label class="ft12">Mostrar detalles</label>
+                                                                                            <!-- Slider de Angular Material -->
+                                                                                            <mat-slide-toggle 
+                                                                                                [(ngModel)]="clase.showDetails" 
+                                                                                                [id]="'showDetails-' + modulo.numero + '-' + iClase">
+                                                                                                {{ clase.showDetails ? 'Sí' : 'No' }}
+                                                                                            </mat-slide-toggle>
+                                                                                        </div>
+
+                                                                                        <div *ngIf="clase['showDetails']" class="pdt10" fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="start start">
                                                                                             <!-- Columna izquierda: Imagen y botón -->
                                                                                             <div fxFlex="45" fxLayout="column" fxLayoutAlign="start stretch">
                                                                                                 <label class="ft12 pdb05">Imagen sesión</label>
@@ -619,7 +669,6 @@
                                                                                                 </textarea>
                                                                                             </div>
                                                                                         </div>
-                                                                                        
                                                                                     </ng-container>
                                                                                     <ng-container *ngIf="clase['isInvalid']">
                                                                                         <div class="mgl05 mgr10 fw" *ngFor="let mensaje of clase['InvalidMessages']" fxLayoutAlign="start center">
