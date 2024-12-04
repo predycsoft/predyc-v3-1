@@ -318,7 +318,9 @@ export class CoursesComponent implements AfterViewInit {
     this.notificationMessage = "Descargado archivo... Por favor, espera.";
     try {
       let cursosPDF = this.courses.filter(x=>!x.proximamente)
+      const tmp = [this.categories[0]]
       await this.pdfService.downloadCatalogCourses(this.categories, 'Catálogo cursos', false,true);
+      //await this.pdfService.downloadCatalogCourses(tmp, 'Catálogo cursos', false,true);
     } catch (error) {
       console.error(error);
     } finally {

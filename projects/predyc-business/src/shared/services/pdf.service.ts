@@ -1150,16 +1150,6 @@ export class PDFService {
     for (let i = 0; i < categories.length; i++) {
 
       let category = categories[i]
-      // currentLine = this.addFormatedText({
-      //   text: `Cursos de ${category.name}`,
-      //   course: null,
-      //   x: 0,
-      //   size: 11,
-      //   y: currentLine + 3,
-      //   color: 'black',
-      //   bold: true,
-      //   textAlign: "left"
-      // }, pdf);
 
       const courses = category.courses
         let modulo = [{
@@ -2597,7 +2587,7 @@ export class PDFService {
   
     }
   
-    async addFormattedTable(course: any, currentLine: number, pdf: jsPDF,isPredyc = true,isPillar=false): Promise<number> {
+    async addFormattedTable(course: any, currentLine: number, pdf: jsPDF,isPredyc = true,isPillar=false,isCalendar = false): Promise<number> {
       const imgWidth = 30;  // Puedes ajustar este valor según tus necesidades
       const imgHeight = imgWidth / 4.65517241379;
       const tableMargin = this.pageWidth * 0.05; // Márgenes para centrar la tabla (5% de cada lado)
@@ -2628,7 +2618,7 @@ export class PDFService {
                       duracion += clase.duracion;
                   });
                   let duracionModulo = this.getFormattedDuration(duracion);
-                  if(isPredyc && !isPillar){
+                  if(isPredyc && (!isPillar)){
                     if (duracion > 60) {
                       pdf.text(`${duracionModulo}`, 179, textYPosition, { align: 'left' }); // Centrar el texto verticalmente
                     } else if (duracion % 60 == 0) {
@@ -3091,7 +3081,9 @@ export class PDFService {
     });
   }
 
-  async downloadCalendarioP21(courses,year,titulo='Ficha_tecnica_Cursos',showLoading = true) {
+  async downloadCalendarioP21(meses,year,titulo='Ficha_tecnica_Cursos',showLoading = true) {
+
+    console.log(meses)
 
     if(showLoading){
       Swal.fire({
@@ -3129,8 +3121,8 @@ export class PDFService {
 
     pdf.text('CALENDARIO DE CURSOS',134,10);
     pdf.text('En línea, en vivo',162,18);
-    pdf.setFontSize(26);  // Ajustar el tamaño de la fuente
-    pdf.text(String(year),175,28);
+    pdf.setFontSize(30);  // Ajustar el tamaño de la fuente
+    pdf.text(String(year),184,30);
 
 
 

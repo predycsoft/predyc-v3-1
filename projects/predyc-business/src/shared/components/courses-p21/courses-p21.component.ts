@@ -364,6 +364,13 @@ export class CoursesP21Component {
       try {
         let cursosPDF = filteredCursosPDF;
 
+        console.log('cursosPDF',cursosPDF)
+
+        cursosPDF = Object.keys(cursosPDF).map(key => ({
+          titulo: key,
+          clases: cursosPDF[key]
+      }));
+
         await this.pdfService.downloadCalendarioP21(cursosPDF,selectedYear, 'Calendario cursos', false);
       } catch (error) {
         console.error(error);
