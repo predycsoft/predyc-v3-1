@@ -53,8 +53,8 @@ export class ModuleService {
     }
   }
 
-  getModules$(courseId: string): Observable<Modulo[]> {
-    return this.afs.collection<Curso>(Curso.collection).doc(courseId).collection<Modulo>(Modulo.collection).valueChanges()
-  }
+  // getModules$(courseId: string): Observable<Modulo[]> {
+  //   return this.afs.collection<Curso>(Curso.collection).doc(courseId).collection<Modulo>(Modulo.collection).valueChanges()
+  // }
 
 }

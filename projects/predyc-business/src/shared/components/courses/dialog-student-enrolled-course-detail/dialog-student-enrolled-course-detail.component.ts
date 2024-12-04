@@ -44,6 +44,7 @@ export class DialogStudentEnrolledCourseDetailComponent {
       courseByStudentRef: DocumentReference<CourseByStudent>,
       isActive: boolean
       courseDuration:number
+      courseModulos:any
     },
   ) { }
 
@@ -60,6 +61,7 @@ export class DialogStudentEnrolledCourseDetailComponent {
   courseByStudentRef: DocumentReference<CourseByStudent>
   isActive: boolean
   courseDuration:number
+  courseModulos:any
 
   combinedServicesSubscription: Subscription
   subscriptionsSubscription: Subscription
@@ -94,51 +96,55 @@ export class DialogStudentEnrolledCourseDetailComponent {
     this.instructorRef = this.data.instructorRef;
     this.userName = this.data.userName; this.userUid = this.data.userUid 
     this.courseRef = this.data.courseRef ; this.courseTitle = this.data.courseTitle; this.coursePhoto = this.data.coursePhoto; this.courseDuration = this.data.courseDuration
-    this.courseByStudentRef = this.data.courseByStudentRef; this.isActive = this.data.isActive
+    this.courseByStudentRef = this.data.courseByStudentRef; this.isActive = this.data.isActive ; this.courseModulos = this.data.courseModulos
 
-    console.log('DatosRevisar',this.userUid,this.data.courseRef.id)
+    // console.log('DatosRevisar',this.userUid,this.data.courseRef.id)
+    // console.log("this.courseModulos", this.courseModulos)
 
     this.courseService.getCourseActivitiesTry$(this.data.courseRef.id,this.userUid).subscribe(activityTry => {
-
-      console.log('DatosRevisar activityTry',activityTry)
-
+      // console.log('DatosRevisar activityTry',activityTry)
     })
 
-
     this.courseService.getCoursesByStudentWithRef$(this.courseByStudentRef).subscribe(course => {
-
-      console.log('course',course)
+      // console.log('course',course)
       this.coursebyStudentData = course[0]
-
     })
 
     this.combinedServicesSubscription = combineLatest(
       [ 
-        this.moduleService.getModules$(this.courseRef.id), 
+        // this.moduleService.getModules$(this.courseRef.id), 
         this.courseService.getClassesByStudentThrougCoursesByStudent$(this.courseByStudentRef)
       ]
     ).pipe(
-      switchMap(([modules, completedClasses]) => {
-        const allClassIds = modules.flatMap(module => module.clasesRef.map(ref => ref.id));
+      switchMap(([completedClasses]) => {
+        // const allClassIds = modules.flatMap(module => module.clasesRef.map(ref => ref.id));
+        const allClassIds = this.courseModulos.flatMap(module => module.clases.map(ref => ref.id));
         return this.courseService.getClassesByIds$(allClassIds).pipe(
-          map((classes) => [modules, completedClasses, classes] as [Modulo[], ClassByStudent[], Clase[]])
+          map((classes) => [this.courseModulos, completedClasses, classes] as [any[], ClassByStudent[], Clase[]])
         );
       })
     ).subscribe(([modules, completedClasses, courseClasses]) => {
       this.modules = modules
       this.completedClasses = completedClasses
       this.classesAll = []
-      console.log('completedClasses',completedClasses)
+      // console.log('completedClasses',completedClasses)
       const modulesInList: any[] = modules.map(module => {
         let completedClassesInsidemodule = 0
-        module.clasesRef.forEach(classRef => {
-          if (this.completedClasses.find(x => x.classRef.id === classRef.id)) { //check if works comparing refs
+        // module.clasesRef.forEach(classRef => {
+        //   if (this.completedClasses.find(x => x.classRef.id === classRef.id)) { //check if works comparing refs
+        //     completedClassesInsidemodule ++
+        //   }
+        // });
+
+        module.clases.forEach(clase => {
+          if (this.completedClasses.find(x => x.classRef.id === clase.id)) { //check if works comparing refs
             completedClassesInsidemodule ++
           }
         });
 
         let classesInModule = courseClasses
-        .filter(cls => module.clasesRef.some(ref => ref.id === cls.id))
+        // .filter(cls => module.clasesRef.some(ref => ref.id === cls.id))
+        .filter(cls => module.clases.some(ref => ref.id === cls.id))
         .map(cls => {
           const completedClass = this.completedClasses.find(completed => completed.classRef.id === cls.id);
           return {
@@ -153,11 +159,19 @@ export class DialogStudentEnrolledCourseDetailComponent {
 
         let classesModule = []
 
-        module.clasesRef.forEach(classRef => {
-          let clase = classesInModule.find(x=>x.id == classRef.id)
-          if(clase){
-            classesModule.push(clase)
-            this.classesAll.push(clase)
+        // module.clasesRef.forEach(classRef => {
+        //   let clase = classesInModule.find(x=>x.id == classRef.id)
+        //   if(clase){
+        //     classesModule.push(clase)
+        //     this.classesAll.push(clase)
+        //   }
+        // });
+
+        module.clases.forEach(clase => {
+          let clas = classesInModule.find(x=>x.id == clase.id)
+          if(clas){
+            classesModule.push(clas)
+            this.classesAll.push(clas)
           }
         });
 
@@ -168,8 +182,8 @@ export class DialogStudentEnrolledCourseDetailComponent {
           classes: classesModule
         }
       })
-      console.log("modulesInList", modulesInList)
-      console.log('classes',this.classesAll)
+      // console.log("XXXXX modulesInList", modulesInList)
+      // console.log('classes',this.classesAll)
       modulesInList.sort((a,b) => a.numero - b.numero)
       this.dataSource.data = modulesInList
       this.totalLength = modulesInList.length;

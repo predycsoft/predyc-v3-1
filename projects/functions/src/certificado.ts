@@ -327,12 +327,16 @@ async function getCourseById(courseId: string): Promise<any> {
   
       // Fetch modules for this course
       const modulesSnapshot = await admin.firestore().collection(`${Curso.collection}/${courseId}/${Modulo.collection}`).get();
-      const modules = modulesSnapshot.docs.map(doc => doc.data());
+      // const modules = modulesSnapshot.docs.map(doc => doc.data());
+      const modules = courseDoc["modulos"]
   
       // Attach the relevant classes to each module
       const modulesWithClasses = modules.map(module => {
-        const classes = module['clasesRef'].map(claseRef => 
-          allClasses.find(clase => clase.id === claseRef.id)
+        // const classes = module['clasesRef'].map(claseRef => 
+        //   allClasses.find(clase => clase.id === claseRef.id)
+        // );
+        const classes = module["clases"].map((clase) =>
+          allClasses.find((clas) => clas.id === clase.id)
         );
         return { ...module, clases: classes };
       });

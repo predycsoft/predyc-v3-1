@@ -72,7 +72,7 @@ export class StudentCoursesListComponent {
             const courseData: Curso = await this.courseService.getCourseById(
               courseByStundet.courseRef.id
             );
-            console.log('courseData',courseData,courseByStundet)
+            // console.log('courseData',courseData,courseByStundet)
             return {
               ...courseByStundet,
               dateStart: firestoreTimestampToNumberTimestamp(courseByStundet.dateStart),
@@ -84,7 +84,8 @@ export class StudentCoursesListComponent {
               instructorRef: courseData.instructorRef,
               courseId: courseData.id,
               courseByStudentId: courseByStundet.id,
-              duracion: courseData.duracion
+              duracion: courseData.duracion,
+              modulos: courseData["modulos"]
             };
           }
         );
@@ -117,7 +118,8 @@ export class StudentCoursesListComponent {
           coursePhoto: courseData.coursePhoto,
           courseByStudentRef: this.courseService.getCourseByStudentRef(courseData.courseByStudentId),
           isActive: courseData.active,
-          courseDuration: courseData.duracion
+          courseDuration: courseData.duracion,
+          courseModulos: courseData.modulos
         },
       }
     );

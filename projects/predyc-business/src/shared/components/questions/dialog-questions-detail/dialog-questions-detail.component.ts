@@ -4,7 +4,7 @@ import { Question } from 'projects/shared/models/question.model';
 import { IconService } from '../../../services/icon.service';
 import { CourseService } from '../../../services/course.service';
 import { ModuleService } from '../../../services/module.service';
-import { firstValueFrom, map, switchMap } from 'rxjs';
+import { firstValueFrom, map, of, switchMap } from 'rxjs';
 import { UserService } from '../../../services/user.service';
 import { QuestionService } from '../../../services/question.service';
 import { AngularFireFunctions } from '@angular/fire/compat/functions';
@@ -16,6 +16,7 @@ interface CourseQuestionsData { // it has to be he same as the one declared in q
   courseId: string,
   coursePhoto: string,
   courseTitle: string,
+  courseModulos: any[],
   instructorName: string,
   instructorPhoto: string,
   questionsQty: number,
@@ -75,9 +76,13 @@ export class DialogQuestionsDetailComponent {
       this.cantPreguntasRespondidas = this.courseQuestionsData.answeredQuestions
       this.cantPreguntasSinResponder = this.courseQuestionsData.pendingQuestions
 
-      this.moduleService.getModules$(this.courseQuestionsData.courseId).pipe(
+      const modules$ = of(this.courseQuestionsData.courseModulos || [])
+
+      // this.moduleService.getModules$(this.courseQuestionsData.courseId).pipe(
+      modules$.pipe(
         switchMap(modules => {
-          const allClassIds = modules.flatMap(module => module.clasesRef.map(ref => ref.id));
+          // const allClassIds = modules.flatMap(module => module.clasesRef.map(ref => ref.id));
+          const allClassIds = modules.flatMap(module => module.clases.map(ref => ref.id));
           return this.courseService.getClassesByIds$(allClassIds).pipe(
             map(courseClasses => {
               return courseClasses;

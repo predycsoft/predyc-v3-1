@@ -488,55 +488,55 @@ export class CourseService {
     }
   }
 
-  _getCourses() {
-    this.enterpriseService.enterpriseLoaded$.subscribe((isLoaded) => {
-      if (isLoaded) {
-        this.enterpriseRef = this.enterpriseService.getEnterpriseRef();
+  // _getCourses() {
+  //   this.enterpriseService.enterpriseLoaded$.subscribe((isLoaded) => {
+  //     if (isLoaded) {
+  //       this.enterpriseRef = this.enterpriseService.getEnterpriseRef();
 
-        // Query to get courses matching enterpriseRef
-        const enterpriseMatch$ = this.afs
-          .collection<Curso>(Curso.collection, (ref) =>
-            ref.where("enterpriseRef", "==", this.enterpriseRef)
-          )
-          .valueChanges({ idField: "id" });
+  //       // Query to get courses matching enterpriseRef
+  //       const enterpriseMatch$ = this.afs
+  //         .collection<Curso>(Curso.collection, (ref) =>
+  //           ref.where("enterpriseRef", "==", this.enterpriseRef)
+  //         )
+  //         .valueChanges({ idField: "id" });
 
-        // Query to get courses where enterpriseRef is empty
-        const enterpriseEmpty$ = this.afs
-          .collection<Curso>(Curso.collection, (ref) =>
-            ref.where("enterpriseRef", "==", null)
-          )
-          .valueChanges({ idField: "id" });
+  //       // Query to get courses where enterpriseRef is empty
+  //       const enterpriseEmpty$ = this.afs
+  //         .collection<Curso>(Curso.collection, (ref) =>
+  //           ref.where("enterpriseRef", "==", null)
+  //         )
+  //         .valueChanges({ idField: "id" });
 
-        // Combine both queries
-        combineLatest([enterpriseMatch$, enterpriseEmpty$])
-          .pipe(
-            map(([matched, empty]) => [...matched, ...empty]),
-            switchMap((courses) => {
-              if (!courses.length) return of([]); // Return an observable of an empty array if there are no courses.
+  //       // Combine both queries
+  //       combineLatest([enterpriseMatch$, enterpriseEmpty$])
+  //         .pipe(
+  //           map(([matched, empty]) => [...matched, ...empty]),
+  //           switchMap((courses) => {
+  //             if (!courses.length) return of([]); // Return an observable of an empty array if there are no courses.
 
-              const coursesWithModules$ = courses.map((course) => {
-                return this.afs
-                  .collection(
-                    `${Curso.collection}/${course.id}/${Modulo.collection}`
-                  )
-                  .valueChanges({ idField: "moduleId" })
-                  .pipe(map((modules) => ({ ...course, modules })));
-              });
-              return combineLatest(coursesWithModules$);
-            })
-          )
-          .subscribe({
-            next: (courses) => {
-              this.coursesSubject.next(courses);
-            },
-            error: (error) => {
-              console.log(error);
-              this.alertService.errorAlert(JSON.stringify(error));
-            },
-          });
-      }
-    });
-  }
+  //             const coursesWithModules$ = courses.map((course) => {
+  //               return this.afs
+  //                 .collection(
+  //                   `${Curso.collection}/${course.id}/${Modulo.collection}`
+  //                 )
+  //                 .valueChanges({ idField: "moduleId" })
+  //                 .pipe(map((modules) => ({ ...course, modules })));
+  //             });
+  //             return combineLatest(coursesWithModules$);
+  //           })
+  //         )
+  //         .subscribe({
+  //           next: (courses) => {
+  //             this.coursesSubject.next(courses);
+  //           },
+  //           error: (error) => {
+  //             console.log(error);
+  //             this.alertService.errorAlert(JSON.stringify(error));
+  //           },
+  //         });
+  //     }
+  //   });
+  // }
 
   getCourses() {
     try {
@@ -575,18 +575,21 @@ export class CourseService {
               // Process each course
               return combinedCourses.map((course) => {
                 // Fetch modules for each course
-                const modules$ = this.afs
-                  .collection(
-                    `${Curso.collection}/${course.id}/${Modulo.collection}`
-                  )
-                  .valueChanges();
+                // const modules$ = this.afs.collection(`${Curso.collection}/${course.id}/${Modulo.collection}`).valueChanges();
+
+                const modules$ = of(course["modulos"] || [])
+                console.log("getCourses()")
 
                 return modules$.pipe(
                   map((modules) => {
                     // For each module, find and attach the relevant classes
                     const modulesWithClasses = modules.map((module) => {
-                      const classes = module["clasesRef"].map((claseRef) =>
-                        allClasses.find((clase) => clase.id === claseRef.id)
+                      // const classes = module["clasesRef"].map((claseRef) =>
+                      //   allClasses.find((clase) => clase.id === claseRef.id)
+                      // );
+
+                      const classes = module["clases"].map((clase) =>
+                        allClasses.find((clas) => clas.id === clase.id)
                       );
 
                       return { ...(module as Modulo), clases: classes };
@@ -620,88 +623,88 @@ export class CourseService {
     }
   }
 
-  __getCourses() {
-    try {
-      this.enterpriseService.enterpriseLoaded$.subscribe((isLoaded) => {
-        if (isLoaded) {
-          this.enterpriseRef = this.enterpriseService.getEnterpriseRef();
+  // __getCourses() {
+  //   try {
+  //     this.enterpriseService.enterpriseLoaded$.subscribe((isLoaded) => {
+  //       if (isLoaded) {
+  //         this.enterpriseRef = this.enterpriseService.getEnterpriseRef();
 
-          // Query to get by enterprise match
-          const enterpriseMatch$ = this.afs
-            .collection<any>(Curso.collection, (ref) =>
-              ref
-                .where("enterpriseRef", "==", this.enterpriseRef)
-                .where("proximamente", "==", false)
-            )
-            .valueChanges();
+  //         // Query to get by enterprise match
+  //         const enterpriseMatch$ = this.afs
+  //           .collection<any>(Curso.collection, (ref) =>
+  //             ref
+  //               .where("enterpriseRef", "==", this.enterpriseRef)
+  //               .where("proximamente", "==", false)
+  //           )
+  //           .valueChanges();
 
-          // Query to get where enterprise is empty
-          const enterpriseEmpty$ = this.afs
-            .collection<any>(Curso.collection, (ref) =>
-              ref.where("enterpriseRef", "==", null)
-            )
-            .valueChanges();
+  //         // Query to get where enterprise is empty
+  //         const enterpriseEmpty$ = this.afs
+  //           .collection<any>(Curso.collection, (ref) =>
+  //             ref.where("enterpriseRef", "==", null)
+  //           )
+  //           .valueChanges();
 
-          this.course$ = combineLatest([
-            enterpriseMatch$,
-            enterpriseEmpty$,
-          ]).pipe(
-            map(([matched, empty]) => [...matched, ...empty]),
-            switchMap((courses) =>
-              combineLatest(
-                courses.map((course) =>
-                  this.afs
-                    .collection(
-                      `${Curso.collection}/${course.id}/${Modulo.collection}`
-                    )
-                    .valueChanges()
-                    .pipe(
-                      switchMap((modules) =>
-                        combineLatest(
-                          modules.map((module) =>
-                            combineLatest(
-                              module["clasesRef"].map((claseRef) =>
-                                this.afs
-                                  .doc<Clase>(
-                                    `${Clase.collection}/${claseRef.id}`
-                                  )
-                                  .valueChanges()
-                              )
-                            ).pipe(
-                              map((clases) =>
-                                Object.assign({}, module, { clases })
-                              )
-                            )
-                          )
-                        )
-                      ),
-                      map((modulesWithClases) => ({
-                        ...course,
-                        modules: modulesWithClases,
-                      }))
-                    )
-                )
-              )
-            )
-          );
+  //         this.course$ = combineLatest([
+  //           enterpriseMatch$,
+  //           enterpriseEmpty$,
+  //         ]).pipe(
+  //           map(([matched, empty]) => [...matched, ...empty]),
+  //           switchMap((courses) =>
+  //             combineLatest(
+  //               courses.map((course) =>
+  //                 this.afs
+  //                   .collection(
+  //                     `${Curso.collection}/${course.id}/${Modulo.collection}`
+  //                   )
+  //                   .valueChanges()
+  //                   .pipe(
+  //                     switchMap((modules) =>
+  //                       combineLatest(
+  //                         modules.map((module) =>
+  //                           combineLatest(
+  //                             module["clasesRef"].map((claseRef) =>
+  //                               this.afs
+  //                                 .doc<Clase>(
+  //                                   `${Clase.collection}/${claseRef.id}`
+  //                                 )
+  //                                 .valueChanges()
+  //                             )
+  //                           ).pipe(
+  //                             map((clases) =>
+  //                               Object.assign({}, module, { clases })
+  //                             )
+  //                           )
+  //                         )
+  //                       )
+  //                     ),
+  //                     map((modulesWithClases) => ({
+  //                       ...course,
+  //                       modules: modulesWithClases,
+  //                     }))
+  //                   )
+  //               )
+  //             )
+  //           )
+  //         );
 
-          // Subscribing to the final Observable
-          this.course$.subscribe({
-            next: (courses) => {
-              this.coursesSubject.next(courses);
-            },
-            error: (error) => {
-              console.log(error);
-              this.alertService.errorAlert(JSON.stringify(error));
-            },
-          });
-        }
-      });
-    } catch (error) {
-      console.error(error);
-      // Handle the error appropriately
-    }
-  }
+  //         // Subscribing to the final Observable
+  //         this.course$.subscribe({
+  //           next: (courses) => {
+  //             this.coursesSubject.next(courses);
+  //           },
+  //           error: (error) => {
+  //             console.log(error);
+  //             this.alertService.errorAlert(JSON.stringify(error));
+  //           },
+  //         });
+  //       }
+  //     });
+  //   } catch (error) {
+  //     console.error(error);
+  //     // Handle the error appropriately
+  //   }
+  // }
 
   getCoursesObservable(): Observable<Curso[]> {
     return this.course$;
