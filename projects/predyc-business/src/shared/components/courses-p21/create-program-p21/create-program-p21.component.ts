@@ -1822,6 +1822,7 @@ export class CreateProgramP21Component {
     let clases = modulo["clases"];
     let clase = new Clase();
     clase.tipo = tipo;
+    clase.id = String(new Date().getTime()),
     clase["edited"] = true;
     clase["modulo"];
     clase["modulo"] = moduloIn.numero;
@@ -1990,14 +1991,14 @@ export class CreateProgramP21Component {
         modulo["clases"] = clases;
         claseIn["deleted"] = true;
 
-        let classDelete = {
-          claseInId: claseIn.id,
-          cursoId: this.curso.id,
-          moduloInId: moduloIn.id,
-          activityId: claseIn?.activity?.id,
-        };
+        // let classDelete = {
+        //   claseInId: claseIn.id,
+        //   cursoId: this.curso.id,
+        //   moduloInId: moduloIn.id,
+        //   activityId: claseIn?.activity?.id,
+        // };
 
-        this.deletedClasses.push(classDelete);
+        // this.deletedClasses.push(classDelete);
         //this.courseClassService.deleteClassAndReference(claseIn.id,this.curso.id,moduloIn.id);
         Swal.fire({
           title: "Borrado!",

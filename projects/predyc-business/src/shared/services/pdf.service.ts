@@ -409,7 +409,7 @@ export class PDFService {
           y:currentLine,
           color: 'black',
           bold: true,
-          size: 16,
+          size: 11,
           textAlign: "left",
           maxLineWidth: this.pageWidth - 20,
           firstLineMaxWidth: this.pageWidth - 95,
@@ -423,7 +423,7 @@ export class PDFService {
           y:currentLine + 3,
           color: 'black',
           bold: false,
-          size: 14,
+          size: 10,
           textAlign: "left",
           maxLineWidth: this.pageWidth - 20,
           firstLineMaxWidth: this.pageWidth - 95,
@@ -1263,10 +1263,19 @@ export class PDFService {
 
 
   addCalendarTableToPDF(pdf: jsPDF, diplomado: any) {
-    const tableHeaders = ['Módulo', 'Sesión', 'Contenidos', 'Fecha', 'Horas', 'Instructor'];
+
+
+    let tableHeaders = [];
+
+
+    if(diplomado.modules.length==1){
+      tableHeaders = ['Sesión', 'Contenidos', 'Fecha', 'Horas', 'Instructor'];
+    }
+    else{
+      tableHeaders = ['Módulo', 'Sesión', 'Contenidos', 'Fecha', 'Horas', 'Instructor']
+    }
     const tableRows: any[] = [];
     const modulesCalendar = diplomado.modules;
-  
     for (let i = 0; i < modulesCalendar.length; i++) {
       const modulo = modulesCalendar[i];
       const cursos = modulo.clases;
@@ -1274,22 +1283,30 @@ export class PDFService {
       // Calcular la duración total del módulo
       const totalDuration = cursos.reduce((sum: number, course: any) => sum + course.duracion, 0);
   
-      // Agregar una fila combinada para el módulo (nombre centrado y en negrita)
-      tableRows.push([
-        {
-          content: modulo.titulo,
-          colSpan: 6,
-          styles: {
-            halign: 'center',
-            fillColor: [214, 234, 255],
-            fontStyle: 'bold', // Aplicar negrita
+      // Agregar una fila combinada para el módulo
+
+      if( cursos.length>1 && diplomado.modules.length >1){
+
+        tableRows.push([
+          {
+            content: modulo.titulo,
+            colSpan: 6,
+            styles: {
+              halign: 'center',
+              fillColor: [214, 234, 255],
+              fontStyle: 'bold',
+            },
           },
-        },
-      ]);
+        ]);
+
+      }
+
+  
   
       for (let j = 0; j < cursos.length; j++) {
         const course = cursos[j];
-        const instructor = course.instructorData;
+
+        const instructor = course.instructorData?.nombre || 'Sin asignar';
   
         // Formatear la fecha
         const formattedDate = course.fechaInicio
@@ -1302,60 +1319,168 @@ export class PDFService {
   
         // Construir la fila
         const row = [];
-        if (j === 0) {
-          // Primera fila del módulo
+        if (j === 0 && diplomado.modules.length>1) {
+          let colSpan = 1
+          if(cursos.length == 1){
+            colSpan = 2
+          }
           row.push({
             content: i + 1,
             rowSpan: cursos.length,
+            colSpan:colSpan,
             styles: { halign: 'center', valign: 'middle' },
           });
         }
-        row.push({ content: j + 1, styles: { halign: 'center' } }); // Sesión
+        if(cursos.length>1){
+          row.push({ content: j + 1, styles: { halign: 'center' } }); // Sesión
+        }
         row.push({ content: course.titulo }); // Contenidos
-        row.push({ content: formattedDate, styles: { halign: 'center' } }); // Fecha
+        row.push({formattedDate:true, modulo:modulo,content: formattedDate, styles: { halign: 'center' } }); // Fecha
         if (j === 0) {
-          // Primera fila del módulo
           row.push({
             content: totalDuration,
             rowSpan: cursos.length,
             styles: { halign: 'center', valign: 'middle' },
           });
         }
-        row.push({ content: instructor?.nombre || 'Sin asignar', styles: { halign: 'center' } }); // Instructor
-  
-        // Agregar la fila a la tabla
+        row.push({ instructor:true,modulo:modulo,content: instructor,rowSpan:1, styles:  { halign: 'center', valign: 'middle' }});     // Instructor temporal
         tableRows.push(row);
       }
     }
-  
-    // Generar la tabla en el PDF
+
+
+    tableRows.forEach((row, index) => {
+      // Buscar celdas de instructor y fecha
+      const instructorCell = row.find((cell) => cell?.instructor);
+      const fechaCell = row.find((cell) => cell?.formattedDate);
+    
+      // Lógica para combinar instructores consecutivos
+      if (instructorCell) {
+        let currentInstructor = instructorCell.content;
+        let currentModulo = instructorCell.modulo;
+        let instructorRowSpan = 1;
+    
+        for (let i = index + 1; i < tableRows.length; i++) {
+          const nextRow = tableRows[i];
+          const nextInstructorCell = nextRow.find((cell) => cell?.instructor);
+    
+          if (
+            nextInstructorCell &&
+            nextInstructorCell.content === currentInstructor &&
+            nextInstructorCell.modulo === currentModulo
+          ) {
+            instructorRowSpan++;
+            nextRow[nextRow.indexOf(nextInstructorCell)] = null; // Marcar como nulo
+          } else {
+            break;
+          }
+        }
+    
+        instructorCell.rowSpan = instructorRowSpan; // Actualizar rowSpan
+      }
+    
+      // Lógica para combinar fechas consecutivas
+      if (fechaCell) {
+        let currentFecha = fechaCell.content;
+        let currentModulo = fechaCell.modulo;
+        let fechaRowSpan = 1;
+    
+        for (let i = index + 1; i < tableRows.length; i++) {
+          const nextRow = tableRows[i];
+          const nextFechaCell = nextRow.find((cell) => cell?.formattedDate);
+    
+          if (
+            nextFechaCell &&
+            nextFechaCell.content === currentFecha &&
+            nextFechaCell.modulo === currentModulo
+          ) {
+            fechaRowSpan++;
+            nextRow[nextRow.indexOf(nextFechaCell)] = null; // Marcar como nulo
+          } else {
+            break;
+          }
+        }
+    
+        fechaCell.rowSpan = fechaRowSpan; // Actualizar rowSpan
+      }
+    });
+    
+    // Filtrar las filas para eliminar las celdas marcadas como nulas
+    const tableRowsFinal = tableRows.map((row) => row.filter((cell) => cell !== null));
+    let isFirstTablePage = true; // Bandera para controlar la primera página de la tabla
+
     autoTable(pdf, {
       head: [tableHeaders],
-      body: tableRows,
+      body: tableRowsFinal,
       theme: 'grid',
       styles: { font: 'helvetica', fontSize: 10, valign: 'middle' },
       headStyles: { fillColor: [127, 201, 255], halign: 'center' },
       columnStyles: {
-        0: { halign: 'center' }, // Módulo
-        1: { halign: 'center' }, // Sesión
-        3: { halign: 'center' }, // Fecha
-        4: { halign: 'center' }, // Horas
-        5: { halign: 'center' }, // Instructor
+        0: { halign: 'center' },
+        1: { halign: 'center' },
+        3: { halign: 'center' },
+        4: { halign: 'center' },
+        5: { halign: 'center' },
       },
-      startY: 35,
+      startY: 60, // Espacio inicial para la primera página
       didDrawPage: (data) => {
-        // Repetir encabezado de página con logos
+        if (isFirstTablePage) {
+          const legendX = data.settings.margin.left; // Alinear con el margen de la tabla
+          const legendY = 30; // Posición debajo del encabezado
+          const legendPadding = 5;
+    
+          // Formatear la fecha en el estilo solicitado
+          const formattedDate = new Date(diplomado.fechaInicio).toLocaleDateString('es-ES', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric',
+          });
+    
+          // Calcular el ancho del cuadro basado en el texto más largo
+          const textLines = [
+            `Fecha de inicio: ${formattedDate}`,
+            `Duración: ${diplomado.duracion}`,
+            `Sesiones: ${diplomado.diaSesiones}`,
+          ];
+          const maxTextWidth = Math.max(...textLines.map((text) => pdf.getTextWidth(text)));
+          const legendWidth = maxTextWidth + 2 * legendPadding;
+          const legendHeight = textLines.length * 6 + legendPadding; // Altura basada en líneas y padding
+    
+          // Dibujar el cuadro de la leyenda
+          pdf.setFillColor(240, 240, 240);
+          pdf.roundedRect(legendX, legendY, legendWidth, legendHeight, 5, 5, 'F'); // Usar esquinas redondeadas
+    
+          // Dibujar el texto de la leyenda
+          pdf.setFontSize(10);
+          pdf.setTextColor(0, 0, 0);
+          textLines.forEach((text, index) => {
+            const isBold = text.includes(':');
+            const [label, value] = text.split(': ');
+            if (isBold && value) {
+              pdf.setFont("Roboto", 'normal');
+              pdf.text(label + ':', legendX + legendPadding, legendY + 2 + legendPadding + index * 6);
+              pdf.setFont("Roboto", 'bold');
+              pdf.text(value, legendX + legendPadding + pdf.getTextWidth(label + ': '), legendY + 2 + legendPadding + index * 6);
+            } else {
+              pdf.text(text, legendX + legendPadding, legendY + 2 + legendPadding + index * 6);
+            }
+          });
+    
+          isFirstTablePage = false; // Cambiar la bandera después de la primera página
+        }
+    
+        // Encabezado común para todas las páginas
         pdf.setFillColor(35, 43, 56);
         pdf.rect(0, 0, pdf.internal.pageSize.getWidth(), 20, 'F');
-  
+    
         const imgWidtLogoWhiteInit = 27;
         const imgHeightLogoWhiteInit = imgWidtLogoWhiteInit / 4.3;
-  
+    
         pdf.addImage(this.logoWhite, 'png', 150, 5, imgWidtLogoWhiteInit, imgHeightLogoWhiteInit, '', 'SLOW');
         pdf.addImage(this.logoWhiteP21, 'png', 180, 5, imgWidtLogoWhiteInit, imgHeightLogoWhiteInit, '', 'SLOW');
-  
-        let currentLine = -8;
-  
+    
+        let currentLine = -7;
+    
         currentLine = this._addFormatedText(
           {
             text: 'Cronograma',
@@ -1371,9 +1496,12 @@ export class PDFService {
           pdf
         );
       },
-      margin: { top: 40 }, // Espacio para logos y título
+      margin: { top: 40 }, // Ajuste común para las páginas
     });
+    
   }
+  
+  
   
 
   generateCalendarHTML(diplomado: any): string {
@@ -1816,7 +1944,7 @@ export class PDFService {
     pdf.setFontSize(18);
     pdf.setFont('Roboto', 'bold');
     pdf.setTextColor(5, 126, 212);
-    pdf.text('Experiencia de', 20, 90+25);
+    pdf.text('Experiencia de', 10, 90+25);
 
     // Logo
 
@@ -1824,7 +1952,7 @@ export class PDFService {
     const imgHeightLogoWhiteResumen= imgWidtLogoWhiteResumen / 4.3;
 
 
-    pdf.addImage(this.logoBlackP21, 'png', 64, (90+25-6), imgWidtLogoWhiteResumen, imgHeightLogoWhiteResumen, '', 'SLOW');
+    pdf.addImage(this.logoBlackP21, 'png', 54, (90+25-6), imgWidtLogoWhiteResumen, imgHeightLogoWhiteResumen, '', 'SLOW');
 
     // Texto largo
     const content = `     Todo comenzó en el año 2013 cuando lanzamos Predictiva21, la revista digital que pronto se convertiría en la más prestigiosa de América Latina en el ámbito de la Ingeniería de Mantenimiento, Confiabilidad y Gestión de Activos. Nuestro objetivo era claro: proporcionar un recurso de alto valor que ofreciera conocimientos, noticias y análisis de vanguardia para profesionales del sector.
@@ -1835,10 +1963,10 @@ export class PDFService {
 
     Predyc ofrece soluciones a medida que permiten a las grandes organizaciones formar a sus equipos y tener acceso a un recurso educativo que entiende la magnitud de sus operaciones y la importancia de la eficiencia y la calidad en la formación de su capital humano.`;
 
-    pdf.setFontSize(12);
+    pdf.setFontSize(10);
     pdf.setFont('Roboto', 'normal');
     pdf.setTextColor(0, 0, 0);
-    pdf.text(content, 18, 165-25, { maxWidth: pdf.internal.pageSize.getWidth() - 40 });
+    pdf.text(content, 10, 165-30, { maxWidth: pdf.internal.pageSize.getWidth() - 20 });
 
     //calendario
 
@@ -1859,7 +1987,7 @@ export class PDFService {
       pdf.addImage(this.logoWhite, 'png', 150, 5, imgWidtLogoWhiteInit, imgHeightLogoWhiteInit, '', 'SLOW');
       pdf.addImage(this.logoWhiteP21, 'png', 180, 5, imgWidtLogoWhiteInit, imgHeightLogoWhiteInit, '', 'SLOW');
 
-      currentLine = -8
+      currentLine = -7
 
       currentLine = this._addFormatedText({
         text: 'Proyecto final',

@@ -239,6 +239,11 @@ export class CoursesP21Component {
     this.pdfService.downloadFichaTecnica(this.selectedCourse,this.selectedCourse['instructorData'],null,null,false)
   }
 
+
+  downloadP21Diplomado(){
+    this.pdfService.downloadP21Diplomado(this.selectedCourse)
+  }
+
   showNotification: boolean = false;
   notificationMessage: string = '';
 
