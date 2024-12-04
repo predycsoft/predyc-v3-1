@@ -928,6 +928,36 @@ export class CourseService {
       .valueChanges();
   }
 
+  async getActiveCoursesByStudentByUserRefs(userRefs: DocumentReference<User>[]): Promise<CourseByStudent[]> {
+    if (userRefs.length === 0) return []; // Retorna vacío si no hay usuarios
+  
+    const chunkSize = 10; // Tamaño máximo de Firestore 'in' queries
+    const userRefChunks: DocumentReference<User>[][] = [];
+  
+    // Dividir userRefs en bloques de tamaño chunkSize
+    for (let i = 0; i < userRefs.length; i += chunkSize) {
+      userRefChunks.push(userRefs.slice(i, i + chunkSize));
+    }
+  
+    // Ejecutar las consultas por cada bloque
+    const chunkPromises = userRefChunks.map(async (chunk) => {
+      const querySnapshot = await this.afs
+        .collection<CourseByStudent>(CourseByStudent.collection)
+        .ref.where("userRef", "in", chunk)
+        .where("active", "==", true)
+        .get();
+  
+      // Mapear los datos del snapshot
+      return querySnapshot.docs.map((doc) => doc.data() as CourseByStudent);
+    });
+  
+    // Esperar a que todas las promesas se resuelvan y aplanar los resultados
+    const chunkResults = await Promise.all(chunkPromises);
+    const flattenedResults = chunkResults.flat();
+  
+    return flattenedResults; // Retorna los resultados aplanados
+  }
+
 
 
   getInActiveCoursesByStudent$(

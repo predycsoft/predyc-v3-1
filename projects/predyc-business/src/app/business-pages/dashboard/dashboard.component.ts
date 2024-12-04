@@ -92,6 +92,8 @@ export class DashboardComponent {
         //let certicates = await this.enterpriseService.getCertificatesEnterprise(enterprise)
         //console.log('certicates',certicates)
         this.enterprise = enterprise;
+        this.rythms = this.enterprise["rythms"]
+
         // console.log('enterpriseDashboard',enterprise)
         this.loaderService.setLoading(false);
         if(this.enterprise.examenInicial  === undefined || this.enterprise?.examenInicial){
@@ -124,19 +126,21 @@ export class DashboardComponent {
         this.testUsers = tests
 
         let users = [...this.allUsers]
+        const usersRefs = users.map(x => this.userService.getUserRefById(x.uid))
+        const allUsersCoursesByStudent: CourseByStudent[] = await this.courseService.getActiveCoursesByStudentByUserRefs(usersRefs)
         // console.log("users", users)
         if (users && users.length > 1) {
           // first response is an 1 element array corresponded to admin
-          const performances = [];
+          // const performances = [];
           users = users.filter(x=>x.status == 'active')
           for (let user of users) {
 
             let test = this.testUsers.filter(x=>x.userRef.id == user.uid && x.type == 'inicial')
             let dateLastActivity = null
             let lastActivityText: string;
-            let groupedLastActivity ='Más de 30 días'
+            let groupedLastActivity ='Más de 30 días' // Is being used in users-onboarding
             // Determinar el estado de la actividad
-            let activityStatus = 'Sin inicio sesión';
+            let activityStatus = 'Sin inicio sesión'; // Is being used in users-onboarding
             if (user['lastActivityDate']?.seconds) {
               // console.log('lastActivityDate',user['lastActivityDate']?.seconds,user.uid)
               let date = new Date(user['lastActivityDate'].seconds * 1000);
@@ -186,33 +190,33 @@ export class DashboardComponent {
             user['activityStatusText'] = activityStatus
             user['lastActivity'] =  user['lastActivity']?user['lastActivity']:null
             
-            const userRef = this.userService.getUserRefById(user.uid);
-            const studyPlan: CourseByStudent[] = await this.courseService.getActiveCoursesByStudent(userRef);
+            // const userRef = this.userService.getUserRefById(user.uid);
+            const studyPlan: CourseByStudent[] = allUsersCoursesByStudent.filter(x => x.userRef.id === user.uid);
             // console.log("studyPlan", studyPlan)
-            studyPlan.forEach(course => {
-              const courseJson = this.courses.find(item => item.id === course.courseRef.id);
-              // console.log('cursosRevisarPlan',this.courses,courseJson)
-              if (courseJson) {
-                course.courseTime = courseJson.duracion
-              }
-            });
-            const userPerformance:
-              | "no plan"
-              | "high"
-              | "medium"
-              | "low"
-              | "no iniciado" =
-              this.userService.getPerformanceWithDetails(studyPlan);
-              user.performance = userPerformance,
-              user['studyPlan'] = studyPlan
+            // studyPlan.forEach(course => {
+            //   const courseJson = this.courses.find(item => item.id === course.courseRef.id);
+            //   // console.log('cursosRevisarPlan',this.courses,courseJson)
+            //   if (courseJson) {
+            //     course.courseTime = courseJson.duracion
+            //   }
+            // });
+            // const userPerformance:
+            //   | "no plan"
+            //   | "high"
+            //   | "medium"
+            //   | "low"
+            //   | "no iniciado" =
+            //   this.userService.getPerformanceWithDetails(studyPlan);
+            //   user.performance = userPerformance,
+            user['studyPlan'] = studyPlan
               // console.log('studyPlanReporteUser',user,userPerformance)
-            performances.push(userPerformance);
+            // performances.push(userPerformance);
             // user['ready'] = true
             
           }
           this.users = users
           // console.log('this.user performance',this.users, performances)
-          this.getUsersRythmData(performances);
+          // this.getUsersRythmData(performances);
           // console.log("Performances calculated")
         }
         //this.getData();
@@ -220,35 +224,35 @@ export class DashboardComponent {
     });
   }
 
-  getUsersRythmData(performances: Array<"no plan" | "high" | "medium" | "low" | "no iniciado">) {
-    this.rythms = {
-      high: 0,
-      medium: 0,
-      low: 0,
-      noPlan: 0,
-    };
-    // Iterar sobre el array de performances
-    for (const performance of performances) {
-      switch (performance) {
-        case "no plan":
-          this.rythms.noPlan += 1;
-          break;
-        case "high":
-          this.rythms.high += 1;
-          break;
-        case "medium":
-          this.rythms.medium += 1;
-          break;
-        case "low":
-          this.rythms.low += 1;
-          break;
-        case "no iniciado":
-          this.rythms.noPlan += 1;
-          break;
-      }
-    }
-    // console.log(`No Plan: ${this.rythms.noPlan}, High: ${this.rythms.high}, Medium: ${this.rythms.medium}, Low: ${this.rythms.low}`);
-  }
+  // getUsersRythmData(performances: Array<"no plan" | "high" | "medium" | "low" | "no iniciado">) {
+  //   this.rythms = {
+  //     high: 0,
+  //     medium: 0,
+  //     low: 0,
+  //     noPlan: 0,
+  //   };
+  //   // Iterar sobre el array de performances
+  //   for (const performance of performances) {
+  //     switch (performance) {
+  //       case "no plan":
+  //         this.rythms.noPlan += 1;
+  //         break;
+  //       case "high":
+  //         this.rythms.high += 1;
+  //         break;
+  //       case "medium":
+  //         this.rythms.medium += 1;
+  //         break;
+  //       case "low":
+  //         this.rythms.low += 1;
+  //         break;
+  //       case "no iniciado":
+  //         this.rythms.noPlan += 1;
+  //         break;
+  //     }
+  //   }
+  //   // console.log(`No Plan: ${this.rythms.noPlan}, High: ${this.rythms.high}, Medium: ${this.rythms.medium}, Low: ${this.rythms.low}`);
+  // }
 
   // async fixProfiles() {
   //   const profilesSnapshot: QuerySnapshot<ProfileJson> = (await this.afs.collection(Profile.collection).ref.get()) as QuerySnapshot<ProfileJson>;
