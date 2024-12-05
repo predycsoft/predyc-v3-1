@@ -298,32 +298,38 @@ export class CoursesP21Component {
   
     // console.log(calendario)
   
-    // Obtener fecha actual
+   // Obtener fecha actual
     const today = new Date();
     const currentMonth = today.getMonth();
     const currentYear = today.getFullYear();
-  
+
+    // Función auxiliar para manejar fechas literales
+    function parseDateLiteral(dateString: string): Date {
+      const [year, month, day] = dateString.split('-').map(Number);
+      return new Date(year, month - 1, day); // El mes es 0-indexado en JavaScript
+    }
+
     // Filtrar y ordenar los cursos
     const filteredCourses = calendario
       .filter((course) => {
-        const courseDate = new Date(course.fechaInicio);
+        const courseDate = parseDateLiteral(course.fechaInicio); // Usar la función auxiliar
         const courseYear = courseDate.getFullYear();
         const courseMonth = courseDate.getMonth();
-  
+
         return (
           courseYear > currentYear ||
           (courseYear === currentYear && courseMonth >= currentMonth)
         );
       })
-      .sort((a, b) => new Date(a.fechaInicio).getTime() - new Date(b.fechaInicio).getTime());
-  
+      .sort((a, b) => parseDateLiteral(a.fechaInicio).getTime() - parseDateLiteral(b.fechaInicio).getTime());
+
     // Agrupar cursos por mes
     const groupedByMonth = filteredCourses.reduce((acc, course) => {
-      const courseDate = new Date(course.fechaInicio);
+      const courseDate = parseDateLiteral(course.fechaInicio); // Usar la función auxiliar
       const year = courseDate.getFullYear();
       const month = new Intl.DateTimeFormat("es-ES", { month: "long" }).format(courseDate);
       const key = `${month} ${year}`;
-  
+
       if (!acc[key]) {
         acc[key] = [];
       }
