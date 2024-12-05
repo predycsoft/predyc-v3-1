@@ -483,6 +483,9 @@ export class CreateProgramP21Component {
         this.formNewCourse = new FormGroup({
           id: new FormControl(null),
           titulo: new FormControl(null, Validators.required),
+          subtitulo: new FormControl(null),
+          color: new FormControl(null),
+          year: new FormControl(null),
           // resumen: new FormControl(null, Validators.required),
           descripcion: new FormControl(null, Validators.required),
           metaDescripcion: new FormControl(null),
@@ -497,7 +500,7 @@ export class CreateProgramP21Component {
           //instructor: new FormControl(null, Validators.required),
           //resumen_instructor: new FormControl(null, Validators.required),
           imagen: new FormControl(null, Validators.required),
-          banner: new FormControl(null, Validators.required),
+          banner: new FormControl(null),
           //imagen_instructor: new FormControl(null, Validators.required),
           skills: new FormControl(null, Validators.required),
           vimeoFolderId: new FormControl(null),
@@ -574,6 +577,9 @@ export class CreateProgramP21Component {
             id: new FormControl(curso.id, Validators.required),
             vimeoFolderId: new FormControl(curso.vimeoFolderId),
             titulo: new FormControl(curso.titulo, Validators.required),
+            subtitulo: new FormControl(curso['subtitulo']),
+            year: new FormControl(curso['year']),
+            color: new FormControl(curso['color'],null),
             // resumen: new FormControl(curso.resumen, Validators.required),
             descripcion: new FormControl(curso.descripcion, Validators.required),
             metaDescripcion: new FormControl(curso.metaDescripcion),
@@ -586,7 +592,7 @@ export class CreateProgramP21Component {
             //instructor: new FormControl(instructor.nombre, Validators.required),
             //resumen_instructor: new FormControl(instructor.resumen, Validators.required),
             imagen: new FormControl(curso.imagen, Validators.required),
-            banner: new FormControl(curso['banner'], Validators.required),
+            banner: new FormControl(curso['banner']),
             //imagen_instructor: new FormControl(instructor.foto, Validators.required),
             skills: new FormControl(curso.skillsRef, Validators.required),
             proximamente: new FormControl(curso.proximamente),
@@ -639,6 +645,10 @@ export class CreateProgramP21Component {
                 // modulo['filteredinstructores'] = filteredinstructores
 
                 modulo['clases']?.forEach(clase => {
+
+                  if (clase['showDetails'] === undefined){
+                    clase['showDetails'] = false
+                  }
 
                   if(clase['instructorData']){
                     let instructoresFormClase = new FormControl("");
@@ -1009,6 +1019,8 @@ export class CreateProgramP21Component {
                 claseLocal['instructorData'] = clase.instructorData? clase.instructorData: null
                 claseLocal['image'] = clase.image? clase.image: null
                 claseLocal['image'] = clase.image? clase.image: null
+                claseLocal['showDetails'] = clase.showDetails? clase.showDetails: null
+
                 claseLocal['fechaInicio'] = clase.fechaInicio? clase.fechaInicio: null
 
                 claseLocal.HTMLcontent = clase.HTMLcontent;
@@ -1084,6 +1096,8 @@ export class CreateProgramP21Component {
             instructorData:clase.instructorData,
             image:clase.image,
             fechaInicio:clase.fechaInicio?clase.fechaInicio:null,
+            showDetails:clase.showDetails? clase.showDetails: null
+
           }
           clases.push(claseLocal)
         });
@@ -1851,6 +1865,7 @@ export class CreateProgramP21Component {
 
     clase['fechaInicio'] = null
     clase['duracion'] = null
+    clase['showDetails'] = false
     clase['image'] = null
     clase['descripcion']=null
 
@@ -2965,21 +2980,25 @@ export class CreateProgramP21Component {
           clase["InvalidMessages"].push("La sesión debe tener fecha");
         }
 
-        if (!clase.descripcion) {
-          modulo["isInvalid"] = true;
-          clase["isInvalid"] = true;
-          valid = false;
-          modulo["InvalidMessages"].push(`La sesión ${classIndex} ${clase.titulo} no tiene descipción`);
-          clase["InvalidMessages"].push("La sesión debe tener descipción");
+        if(clase.showDetails){
+          if (!clase.descripcion) {
+            modulo["isInvalid"] = true;
+            clase["isInvalid"] = true;
+            valid = false;
+            modulo["InvalidMessages"].push(`La sesión ${classIndex} ${clase.titulo} no tiene descipción`);
+            clase["InvalidMessages"].push("La sesión debe tener descipción");
+          }
+  
+          if (!clase.image) {
+            modulo["isInvalid"] = true;
+            clase["isInvalid"] = true;
+            valid = false;
+            modulo["InvalidMessages"].push(`La sesión ${classIndex} ${clase.titulo} no tiene imagen`);
+            clase["InvalidMessages"].push("La sesión debe tener imagen");
+          }
         }
 
-        if (!clase.image) {
-          modulo["isInvalid"] = true;
-          clase["isInvalid"] = true;
-          valid = false;
-          modulo["InvalidMessages"].push(`La sesión ${classIndex} ${clase.titulo} no tiene imagen`);
-          clase["InvalidMessages"].push("La sesión debe tener imagen");
-        }
+
       })
 
       // if (!modulo['fechaInicio']) {

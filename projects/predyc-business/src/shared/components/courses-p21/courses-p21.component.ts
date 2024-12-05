@@ -20,6 +20,7 @@ import { License, Product, Subscription as SubscriptionClass } from 'projects/sh
 import { ProductService } from 'projects/predyc-business/src/shared/services/product.service';
 import { LicenseService } from 'projects/predyc-business/src/shared/services/license.service';
 import { PDFService } from '../../services/pdf.service';
+import Swal from "sweetalert2";
 
 
 export class category {
@@ -260,6 +261,135 @@ export class CoursesP21Component {
       this.showNotification = false;
     }
   }
+
+
+  async downloadPDFCalendario(): Promise<void> {
+    this.showNotification = true;
+    this.notificationMessage = "Descargado archivo... Por favor, espera.";
+
+    const courses = await this.courseService.fetchCoursesCalendar()
+    const diplomados = await this.courseService.fetchDiplomadosCalendar()
+
+    console.log(courses,diplomados)
+
+    courses.forEach(obj => {
+      obj.typeLocal='curso'
+      delete obj.skillsRef
+      delete obj.instructorRef
+      delete obj?.instructorData?.ultimaEdicion
+      delete obj?.instructorData?.fechaCreacion
+      delete obj?.instructorData?.userRef
+  
+  
+    });
+  
+  
+  
+    diplomados.forEach(obj => {
+      obj.typeLocal='diplomado'
+      delete obj.skillsRef
+      delete obj.modulos
+    });
+  
+    // console.log('diplomados',diplomados)
+  
+  
+    const calendario = courses.concat(diplomados);
+  
+    // console.log(calendario)
+  
+   // Obtener fecha actual
+    const today = new Date();
+    const currentMonth = today.getMonth();
+    const currentYear = today.getFullYear();
+
+    // Función auxiliar para manejar fechas literales
+    function parseDateLiteral(dateString: string): Date {
+      const [year, month, day] = dateString.split('-').map(Number);
+      return new Date(year, month - 1, day); // El mes es 0-indexado en JavaScript
+    }
+
+    // Filtrar y ordenar los cursos
+    const filteredCourses = calendario
+      .filter((course) => {
+        const courseDate = parseDateLiteral(course.fechaInicio); // Usar la función auxiliar
+        const courseYear = courseDate.getFullYear();
+        const courseMonth = courseDate.getMonth();
+
+        return (
+          courseYear > currentYear ||
+          (courseYear === currentYear && courseMonth >= currentMonth)
+        );
+      })
+      .sort((a, b) => parseDateLiteral(a.fechaInicio).getTime() - parseDateLiteral(b.fechaInicio).getTime());
+
+    // Agrupar cursos por mes
+    const groupedByMonth = filteredCourses.reduce((acc, course) => {
+      const courseDate = parseDateLiteral(course.fechaInicio); // Usar la función auxiliar
+      const year = courseDate.getFullYear();
+      const month = new Intl.DateTimeFormat("es-ES", { month: "long" }).format(courseDate);
+      const key = `${month} ${year}`;
+
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      acc[key].push(course);
+      return acc;
+    }, {});
+  
+    console.log(groupedByMonth)
+
+    // Mostrar el Swal para seleccionar el año
+    const years = Object.keys(groupedByMonth)
+      .map((key) => key.split(' ')[1]) // Extraer los años de las claves
+      .filter((year, index, self) => self.indexOf(year) === index); // Eliminar duplicados
+    
+    const { value: selectedYear } = await Swal.fire({
+      title: 'Selecciona un año',
+      input: 'select',
+      inputOptions: years.reduce((acc, year) => {
+        acc[year] = year; // Construir opciones para el select
+        return acc;
+      }, {}),
+      inputPlaceholder: 'Seleccione un año',
+      showCancelButton: true,
+      confirmButtonText: 'Confirmar',
+      cancelButtonText: 'Cancelar',
+    });
+    
+    if (selectedYear) {
+      // Filtrar las claves del objeto que no sean del año seleccionado
+      const filteredCursosPDF = Object.keys(groupedByMonth)
+        .filter((key) => key.includes(selectedYear)) // Mantener solo las claves del año seleccionado
+        .reduce((obj, key) => {
+          obj[key] = groupedByMonth[key]; // Reconstruir el objeto con las claves filtradas
+          return obj;
+        }, {});
+    
+      // Procesar los datos filtrados con el try
+      try {
+        let cursosPDF = filteredCursosPDF;
+
+        console.log('cursosPDF',cursosPDF)
+
+        cursosPDF = Object.keys(cursosPDF).map(key => ({
+          titulo: key,
+          clases: cursosPDF[key]
+      }));
+
+        await this.pdfService.downloadCalendarioP21(cursosPDF,selectedYear, 'Calendario cursos', false);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        this.showNotification = false;
+      }
+    } else {
+      console.log('No se seleccionó un año'); // Cancelación o cierre del Swal
+    }
+
+
+  }
+
 
   getRounded(num: number): number {
     return Math.round(num);
