@@ -239,3 +239,33 @@
     justify-content: flex-end;
     flex: 1;
 }
+
+.imageBanner {
+    width: auto;
+    height: calc(15vh - 10px);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+
+  .position-relative {
+    position: relative;
+  }
+  
+  .legend-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    text-align: center;
+    font-size: 12px;
+    border-radius: 6px 6px 0 0;
+    padding: 5px;
+    pointer-events: none; /* No interfiere con clics en la imagen */
+    z-index: 9999 !important;
+  }

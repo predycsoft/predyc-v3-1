@@ -6,6 +6,9 @@
         <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign="center center" class="pdl10 pdr10 pdb05 pdt05 ft14 ft500" (click)="tabP21 = 1; selectedCourse = null" [ngClass]="tabP21 == 1 ? 'selectedTab gray-10' : 'gray-6 tab'">
           Diplomados
         </div>
+        <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign="center center" class="pdl10 pdr10 pdb05 pdt05 ft14 ft500" (click)="tabP21 = 2; selectedCourse = null" [ngClass]="tabP21 == 2 ? 'selectedTab gray-10' : 'gray-6 tab'">
+            Ajustes Web 
+        </div>
     </div>
     <ng-container *ngIf="tabP21 === 0">
         <div fxLayout="row" fxLayoutAlign="space-between center" style="width: 58%;">    
@@ -527,6 +530,78 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="tabP21 === 2">
+        <div class="fw" fxLayout="row" fxLayoutAlign="space-between center" style="margin-bottom: 10px !important;">    
+            <p class="ft600 ft16 gray-10" style="margin: 0px !important;">
+                Ajustes Web P21
+            </p>
+            <div fxLayout="row"  fxLayoutGap="1rem" fxLayoutAlign="center center">
+                <button *ngIf="(user.isSystemUser)"
+                fxLayout="row"
+                fxLayoutGap="0.625"
+                fxLayoutAlign="center center"
+                class="blueButton mgt05"
+                (click)="saveSettingsP21()"
+                style="border-radius: 24px !important;">
+                <img [src]="icon.save" class="h16px pdr05 makeWhite" alt="">
+                    Guardar
+                </button>
+            </div>
+        </div>
+
+        <div fxLayout="row">
+
+            <div fxLayout="row" fxLayoutAlign="space-between center" style="height: 15vh;" class="pd05 backGray2 borderLight radius6 fw">
+                <!-- Sección izquierda con texto y la imagen -->
+                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1rem">
+                  <span>Banner superior</span>
+              
+                  <!-- Imagen de escritorio -->
+                  <div fxLayout="column" fxLayoutAlign="center" class="position-relative">
+                    <div class="legend-overlay">Banner de escritorio</div>
+                    <input #bannerImage type="file" (change)="setImageBanner($event,'escritorio')" hidden accept="image/jpeg, image/png, image/webp" [src]="selectedFile">
+                    <div class="imageBanner radius10 backGray3 shadowLight" (click)="bannerImage.click()">
+                      <ng-container *ngIf="previewImageBanner; else defaultDesktopBanner">
+                        <img [src]="previewImageBanner" alt="Imagen seleccionada" class="fw fh radius10">
+                      </ng-container>
+                      <ng-template #defaultDesktopBanner>
+                        <span class="pd10">Recomendamos cargar una imagen de 1.920 x 1.080 pixeles</span>
+                      </ng-template>
+                    </div>
+                  </div>
+              
+                  <!-- Imagen de móvil -->
+                  <div fxLayout="column" fxLayoutAlign="center" class="position-relative">
+                    <div class="legend-overlay">Banner móvil</div>
+                    <input #bannerMovilImage type="file" (change)="setImageBanner($event,'movil')" hidden accept="image/jpeg, image/png, image/webp" [src]="selectedFileMovil">
+                    <div class="imageBanner radius10 backGray3 shadowLight" (click)="bannerMovilImage.click()">
+                      <ng-container *ngIf="previewImageBannerMovil; else defaultMobileBanner">
+                        <img [src]="previewImageBannerMovil" alt="Imagen seleccionada" class="fw fh radius10">
+                      </ng-container>
+                      <ng-template #defaultMobileBanner>
+                        <span class="pd10">Recomendamos cargar una imagen de 1024 x 768 pixeles</span>
+                      </ng-template>
+                    </div>
+                  </div>
+              
+                  <!-- Campo de enlace -->
+                  <div fxLayout="row" fxLayoutAlign="center">
+                    <input [(ngModel)]="enlaceBanner" type="text" class="form-control radius6 shadow-animation borderLight" placeholder="Enlace">
+                  </div>
+                </div>
+              
+                <!-- Sección derecha con el texto "WIP" -->
+                <div fxFlex="auto" fxLayout="row" fxLayoutAlign="end center">
+                  <mat-slide-toggle [(ngModel)]="showBanner">
+                    {{ showBanner ? 'Visible' : 'Oculto' }}
+                  </mat-slide-toggle>
+                </div>
+              </div>
+              
+              
+
         </div>
     </ng-container>
     
