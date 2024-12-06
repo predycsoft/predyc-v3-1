@@ -21,6 +21,8 @@ import { ProductService } from 'projects/predyc-business/src/shared/services/pro
 import { LicenseService } from 'projects/predyc-business/src/shared/services/license.service';
 import { PDFService } from '../../services/pdf.service';
 import Swal from "sweetalert2";
+import { AngularFireStorage } from '@angular/fire/compat/storage';
+import { AlertsService } from '../../services/alerts.service';
 
 
 export class category {
@@ -45,7 +47,8 @@ export class CoursesP21Component {
     public licenseService: LicenseService,
     private pdfService:PDFService,
     private instructorsService:InstructorsService,
-
+    private storage: AngularFireStorage,
+    private alertService: AlertsService
   ) {}
 
   subscriptionClass = SubscriptionClass
@@ -81,7 +84,7 @@ export class CoursesP21Component {
     const minutes = this.selectedCourse.duracion % 60;
     return `${hours} hrs ${minutes} min`;
   }
-  ngOnInit() {
+  async ngOnInit() {
 
     this.authService.user$.subscribe(user=> {
       if (user) {
@@ -91,6 +94,18 @@ export class CoursesP21Component {
     })
 
     this.buildCategories()
+
+
+    let p21Settings = await this.courseService.fetchLatestSettingsP21()
+
+    if(p21Settings){
+      this.previewImageBanner = p21Settings?.bannerDesktop ? p21Settings?.bannerDesktop : null
+      this.previewImageBannerMovil = p21Settings?.bannerMovil ?  p21Settings?.bannerMovil : null
+      this.showBanner= p21Settings?.bannerShow ? p21Settings?.bannerShow : null
+      this.enlaceBanner= p21Settings?.bannerUrl ?  p21Settings?.bannerUrl : null
+    }
+
+    console.log('p21Settings',p21Settings)
 
     combineLatest([
       this.categoryService.getCategoriesObservable().pipe(take(2)),
@@ -512,6 +527,79 @@ export class CoursesP21Component {
         };
       };
     }
+  }
+
+  async uploadImage(file = this.selectedFile): Promise<string> {
+    if (!file) {
+      throw new Error('No file selected');
+    }
+
+    let fileBaseName = file.name.split('.').slice(0, -1).join('.');
+    let fileExtension = file.name.split('.').pop();
+    let endName = `${fileBaseName}-${Date.now().toString()}.${fileExtension}`;
+    const filePath = `SettingsP21/${endName}`;
+    const fileRef = this.storage.ref(filePath);
+    const task = this.storage.upload(filePath, file);
+
+    try {
+      await task;
+      return await fileRef.getDownloadURL().toPromise();
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      throw error;
+    }
+  }
+
+  async saveSettingsP21(){
+    
+    let UrlBannerD
+    let UrlBannerM
+
+    if(this.selectedFile){
+      UrlBannerD = await this.uploadImage(this.selectedFile);
+    }
+    if(this.selectedFileMovil){
+      UrlBannerM = await this.uploadImage(this.selectedFileMovil);
+    }
+
+    if(this.previewImageBanner && !this.selectedFile){
+      UrlBannerD = this.previewImageBanner
+    }
+
+    if(this.previewImageBannerMovil && !this.selectedFileMovil){
+      UrlBannerM = this.previewImageBannerMovil
+    }
+
+
+    let objSettings = {
+      bannerDesktop : UrlBannerD?UrlBannerD:null,
+      bannerMovil : UrlBannerM?UrlBannerM:null,
+      bannerShow : this.showBanner?this.showBanner:null,
+      bannerUrl: this.enlaceBanner?this.enlaceBanner:null,
+      fechaCreacion:new Date()
+    }
+    
+
+
+
+    console.log(objSettings)
+
+    Swal.fire({
+      title: "Generando ajustes...",
+      text: "Por favor, espera.",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
+    const result = await this.courseService.saveSettingsP21(objSettings)
+
+    if(result){
+      this.alertService.succesAlert("Los ajustes se han guardado exitosamente");
+    }
+
+
   }
 
 

@@ -2214,6 +2214,47 @@ export class CourseService {
     }
   }
 
+  // Función para obtener el diplomado más reciente del calendario
+  async fetchLatestSettingsP21(): Promise<any | null> {
+    try {
+      const snapshot = await this.afs
+        .collection('settingsP21', (ref) =>
+          ref.orderBy('fechaCreacion', 'desc') // Ordenar por fecha en orden descendente
+            .limit(1) // Limitar la consulta a un solo documento
+        )
+        .get()
+        .toPromise();
+
+      if (!snapshot.empty) {
+        const doc = snapshot.docs[0];
+        return {
+          id: doc.id,
+          ...doc.data() as any,
+        };
+      } else {
+        return null; // No se encontraron registros
+      }
+    } catch (error) {
+      console.error('Error fetching latest diplomado:', error);
+      return null;
+    }
+  }
+
+  async saveSettingsP21(settingsP21) {
+    try {
+      //console.log('certificate add',certificate)
+      const ref = this.afs.collection<any>('settingsP21').doc().ref;
+      await ref.set({...settingsP21, id: ref.id}, { merge: true });
+      settingsP21.id = ref.id;
+      console.log('newCertificate',settingsP21,ref.id)
+      return settingsP21
+    } catch (error) {
+      //console.log(error)
+    }
+
+  }
+
+
 
   
   

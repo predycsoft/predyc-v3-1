@@ -533,10 +533,22 @@
         </div>
     </ng-container>
     <ng-container *ngIf="tabP21 === 2">
-        <div class="fw" fxLayout="row" fxLayoutAlign="space-between center">    
-            <p class="ft600 ft16 gray-10">
+        <div class="fw" fxLayout="row" fxLayoutAlign="space-between center" style="margin-bottom: 10px !important;">    
+            <p class="ft600 ft16 gray-10" style="margin: 0px !important;">
                 Ajustes Web P21
             </p>
+            <div fxLayout="row"  fxLayoutGap="1rem" fxLayoutAlign="center center">
+                <button *ngIf="(user.isSystemUser)"
+                fxLayout="row"
+                fxLayoutGap="0.625"
+                fxLayoutAlign="center center"
+                class="blueButton mgt05"
+                (click)="saveSettingsP21()"
+                style="border-radius: 24px !important;">
+                <img [src]="icon.save" class="h16px pdr05 makeWhite" alt="">
+                    Guardar
+                </button>
+            </div>
         </div>
 
         <div fxLayout="row">
