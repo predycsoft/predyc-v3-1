@@ -459,6 +459,61 @@ export class CoursesP21Component {
     return distinc
   }
 
+  previewImageBanner
+  previewImageBannerMovil
+  selectedFile: File | null = null;
+  selectedFileMovil: File | null = null;
+  enlaceBanner
+  showBanner = false
+
+  setImageBanner(event: any,tipo): void {
+    if (event.target.files && event.target.files.length > 0) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const image = new Image();
+        image.src = reader.result as string;
+        image.onload = () => {
+          const width = image.width;
+          const height = image.height;
+
+          const aspectRatio = width / height;
+          let ratioRestriction = 1920 / 1080 //1.7778
+          if(tipo == 'movil'){
+            ratioRestriction = 1024 / 768 //1.7778
+          }
+          const tolerance = 0.01
+          console.log("aspectRatio", aspectRatio)
+          console.log("ratioRestriction", ratioRestriction)
+          if (Math.abs(aspectRatio - ratioRestriction) > tolerance) {
+            Swal.fire({
+              title: "Error!",
+              text: `La imagen debe tener una proporción aproximada de ${tipo == 'movil'?'4:3':'16:9'}`,
+              icon: "warning",
+              confirmButtonColor: "var(--blue-5)",
+            });
+            return;
+          }
+
+          if(tipo !='movil'){
+            this.selectedFile = file;
+            this.previewImageBanner = reader.result as string;
+
+
+          }
+          else{
+            this.selectedFileMovil = file;
+            this.previewImageBannerMovil = reader.result as string;
+
+
+          }
+  
+        };
+      };
+    }
+  }
+
 
 
   
