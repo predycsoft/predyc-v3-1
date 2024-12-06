@@ -12,6 +12,11 @@ import { User } from 'projects/shared/models/user.model';
 import { License } from 'projects/shared/models/license.model';
 import { Curso } from 'projects/shared/models/course.model';
 import { Enterprise } from 'projects/shared/models/enterprise.model';
+import { CourseService } from 'projects/predyc-business/src/shared/services/course.service';
+import { Modulo } from 'projects/shared/models/module.model';
+import { Clase } from 'projects/shared/models/course-class.model';
+import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
+import { ClassByStudent } from 'projects/shared/models/class-by-student.model';
 
 export interface GroupedLogs {
   componentName: string;
@@ -32,6 +37,8 @@ export class LogsComponent {
     private afs: AngularFirestore,
     private subscriptionService: SubscriptionService,
     private licenseService: LicenseService,
+    private courseService: CourseService,
+    private userService: UserService,
 
   ) {}
 
@@ -383,6 +390,52 @@ export class LogsComponent {
     }
     console.log(`Total read operations: ${readCount}`);
   }
+
+  async debugNewCoursesWithClasses() {
+    const allCoursesSnapshot = await this.afs.collection(Curso.collection).ref.get()
+    const allCourses = allCoursesSnapshot.docs.map(x => x.data() as Curso)
+    console.log("***** allCourses", allCourses)
+
+    // const course = await this.courseService.getCourseById("Uhxd9p7f3jHC8ksJfkjn")
+    for (const course of allCourses) {
+      console.log("-----", course.titulo)
+      const modulesFromDoc = course["modulos"]
+      // console.log("modulesFromDoc before", modulesFromDoc)
+      if (!modulesFromDoc) {
+        console.log("No tiene modulos")
+        continue
+      }
+  
+      for (const module of modulesFromDoc) {
+        const classesDataPromises = module.clases.map(async (clase: DocumentReference) => {
+            const classSnapshot = await this.afs.collection(Clase.collection).doc(clase.id).ref.get();
+            return classSnapshot.exists ? classSnapshot.data() : null; // Si el documento existe, devuelve su data
+        });
+  
+        // Esperar a que se resuelvan todas las promesas para obtener las clases con su data
+        module.clases = await Promise.all(classesDataPromises);
+      }
+      console.log("modulesFromDoc after", modulesFromDoc)
+  
+      await this.afs.collection(Curso.collection).doc(course.id).update(
+        {modulos: modulesFromDoc},
+      )
+    };
+    console.log("XXXXXXX Fin")
+
+  
+  }
+
+  // async debug() {
+  //   const userRef = this.userService.getUserRefById("qy1TEjyACVS4yhYwivMmKTN6mi93") 
+  //   console.log("userRef", userRef)
+  //   // const coursesByStudent = await this.courseService.getActiveCoursesByStudentByUserRefs([userRef])
+  //   const coursesByStudent = (await this.afs.collection(CourseByStudent.collection).ref.where("userRef", "==", userRef).get()).docs.map(x=> x.data())
+  //   console.log("coursesByStudent", coursesByStudent)
+
+  //   const classByStudent = (await this.afs.collection(ClassByStudent.collection).ref.where("userRef", "==", userRef).get()).docs.map(x=> x.data())
+  //   console.log("classByStudent", classByStudent)
+  // }
   
 }
 

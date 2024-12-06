@@ -545,9 +545,9 @@ export class CourseService {
           this.enterpriseRef = this.enterpriseService.getEnterpriseRef();
 
           // Fetch all classes once
-          const allClasses$ = this.afs
-            .collection<Clase>(Clase.collection)
-            .valueChanges();
+          // const allClasses$ = this.afs
+          //   .collection<Clase>(Clase.collection)
+          //   .valueChanges();
 
           // Query to get by enterprise match
           const enterpriseMatch$ = this.afs
@@ -566,9 +566,10 @@ export class CourseService {
           this.course$ = combineLatest([
             enterpriseMatch$,
             enterpriseEmpty$,
-            allClasses$,
+            // allClasses$,
           ]).pipe(
-            map(([matched, empty, allClasses]) => {
+            // map(([matched, empty, allClasses]) => {
+            map(([matched, empty]) => {
               // Combine matched and empty courses
               const combinedCourses = [...matched, ...empty];
 
@@ -578,7 +579,6 @@ export class CourseService {
                 // const modules$ = this.afs.collection(`${Curso.collection}/${course.id}/${Modulo.collection}`).valueChanges();
 
                 const modules$ = of(course["modulos"] || [])
-                console.log("getCourses()")
 
                 return modules$.pipe(
                   map((modules) => {
@@ -588,9 +588,10 @@ export class CourseService {
                       //   allClasses.find((clase) => clase.id === claseRef.id)
                       // );
 
-                      const classes = module["clases"].map((clase) =>
-                        allClasses.find((clas) => clas.id === clase.id)
-                      );
+                      // const classes = module.clases.map(clase =>
+                      //   allClasses.find(clas => clas.id === clase.id)
+                      // );
+                      const classes = module.clases
 
                       return { ...(module as Modulo), clases: classes };
                     });
@@ -608,6 +609,7 @@ export class CourseService {
           // Subscribing to the final Observable
           this.course$.subscribe({
             next: (courses) => {
+              console.log("getCourses()")
               this.coursesSubject.next(courses);
             },
             error: (error) => {
