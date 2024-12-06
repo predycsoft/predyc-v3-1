@@ -322,8 +322,8 @@ async function getCourseById(courseId: string): Promise<any> {
       const courseData = courseDoc.data();
   
       // Fetch all classes
-      const classesSnapshot = await admin.firestore().collection(Clase.collection).get();
-      const allClasses = classesSnapshot.docs.map(doc => doc.data());
+      // const classesSnapshot = await admin.firestore().collection(Clase.collection).get();
+      // const allClasses = classesSnapshot.docs.map(doc => doc.data());
   
       // Fetch modules for this course
       const modulesSnapshot = await admin.firestore().collection(`${Curso.collection}/${courseId}/${Modulo.collection}`).get();
@@ -335,9 +335,10 @@ async function getCourseById(courseId: string): Promise<any> {
         // const classes = module['clasesRef'].map(claseRef => 
         //   allClasses.find(clase => clase.id === claseRef.id)
         // );
-        const classes = module["clases"].map((clase) =>
-          allClasses.find((clas) => clas.id === clase.id)
-        );
+        // const classes = module["clases"].map((clase) =>
+        //   allClasses.find((clas) => clas.id === clase.id)
+        // );
+        const classes = module["clases"]
         return { ...module, clases: classes };
       });
   
