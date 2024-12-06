@@ -1244,6 +1244,7 @@ export class CreateCourseComponent {
         modulo['clases'].forEach(clase => {
           console.log('clasesToSave',clase)
           let claseLocal = {
+            ...clase,
             id:clase.id,
             duracion:clase.duracion,
             tipo:clase.tipo,
