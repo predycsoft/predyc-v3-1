@@ -494,9 +494,9 @@ export class CoursesP21Component {
           const height = image.height;
 
           const aspectRatio = width / height;
-          let ratioRestriction = 1920 / 1080 //1.7778
+          let ratioRestriction = 1680 / 150
           if(tipo == 'movil'){
-            ratioRestriction = 1024 / 768 //1.7778
+            ratioRestriction = 500 / 130
           }
           const tolerance = 0.01
           console.log("aspectRatio", aspectRatio)

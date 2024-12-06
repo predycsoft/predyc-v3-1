@@ -190,8 +190,8 @@ export class InstructorListComponent {
           resumenCV:instructor?.resumenCV,
         }
       });
-      // console.log('instructores',instructores)
-      this.instructores = structuredClone(instructores)
+      console.log('instructores',instructores)
+      this.instructores = (instructores)
       this.instructosOnList.emit(instructores)
     
       instructores = instructores.filter((x) => {

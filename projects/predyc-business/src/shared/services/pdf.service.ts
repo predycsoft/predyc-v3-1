@@ -1817,11 +1817,11 @@ export class PDFService {
     // Añadir la imagen al PDF
 
     // Ajustar el fondo de color para cubrir hasta un poco debajo del último logo
-    const fondoHeight = 50 + imgHeightLogoWhiteInit + 10; // 10 de margen adicional debajo del último logo
+    const fondoHeight = imgHeight - 10; // 10 de margen adicional debajo del último logo
     pdf.setFillColor(35, 43, 56);
     pdf.rect(0, 0, pdf.internal.pageSize.getWidth(), fondoHeight, 'F');
 
-    pdf.addImage(imgData, 'PNG', 10, 20, Math.round(imgWidth / 1.5), Math.round(imgHeight / 1.5), '', 'SLOW');
+    pdf.addImage(imgData, 'PNG', 10, -2, Math.round(imgWidth / 1.5), Math.round(imgHeight / 1.5), '', 'SLOW');
     pdf.addImage(this.logoWhite, 'png', 150, 5, imgWidtLogoWhiteInit, imgHeightLogoWhiteInit, '', 'SLOW');
     pdf.addImage(this.logoWhiteP21, 'png', 180, 5, imgWidtLogoWhiteInit, imgHeightLogoWhiteInit, '', 'SLOW');
 
