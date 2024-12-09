@@ -1228,7 +1228,7 @@ export class CreateCourseComponent {
             module.id = idRef;
             modulo.id = idRef;
           }
-          //console.log('module save', module)
+          console.log('module save', module)
           await this.moduleService.saveModulo(module, this.curso.id);
         }
       }
@@ -1256,9 +1256,11 @@ export class CreateCourseComponent {
         });
 
         let moduloLocal ={
+          // ...modulo,
           numero:modulo.numero,
           clases:clases,
-          titulo:modulo.titulo
+          titulo:modulo.titulo,
+          id:modulo.id
         }
         modulosToSave.push(moduloLocal)
       });
