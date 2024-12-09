@@ -62,6 +62,7 @@ import { LogsComponent } from './admin-pages/logs/logs.component';
 import { LogsListComponent } from './admin-pages/logs/logs-list/logs-list.component';
 import { DialogComponentLogsDetailComponent } from './admin-pages/logs/dialog-component-logs-detail/dialog-component-logs-detail.component';
 import { CreateProgramP21Component } from '../shared/components/courses-p21/create-program-p21/create-program-p21.component';
+import { RevistaComponent } from "./admin-pages/profiles/revista.component";
 
 
 @NgModule({
@@ -125,7 +126,8 @@ import { CreateProgramP21Component } from '../shared/components/courses-p21/crea
     AdminStudentListLightComponent,
     LogsComponent,
     LogsListComponent,
-    DialogComponentLogsDetailComponent
+    DialogComponentLogsDetailComponent,
+    RevistaComponent,
   ],
   imports: [SharedModule, CommonModule, AdminRoutingModule],
 })

@@ -30,6 +30,7 @@ import { CoursesP21Component } from "../shared/components/courses-p21/courses-p2
 import { CreateCourseP21Component } from "../shared/components/courses-p21/create-course-p21/create-course-p21.component";
 import { LogsComponent } from "./admin-pages/logs/logs.component";
 import { CreateProgramP21Component } from "../shared/components/courses-p21/create-program-p21/create-program-p21.component";
+import { RevistaComponent } from "./admin-pages/profiles/revista.component";
 
 export const MAIN_TITLE = "Predyc Admin - ";
 
@@ -84,6 +85,9 @@ const routes: Routes = [
   
   { path: "reviews", title: MAIN_TITLE + "Reviews", component: ReviewsComponent },
   { path: "logs", title: MAIN_TITLE + "Logs", component: LogsComponent },
+
+  { path: "revista/:id", title: MAIN_TITLE, component: RevistaComponent },
+
 
   { path: "**", redirectTo: "", pathMatch: "full" }, // Wildcard Route
 ];
