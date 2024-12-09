@@ -427,21 +427,6 @@ export class PDFService {
           firstLineMaxWidth: this.pageWidth - 95,
           lineSpacingFactor: 1
         }, pdf);
-
-        currentLine = this.addFormatedText({
-          text: 'Contenido',
-          course: course,
-          x: 0,
-          y:currentLine,
-          color: 'black',
-          bold: true,
-          size: 11,
-          textAlign: "left",
-          maxLineWidth: this.pageWidth - 20,
-          firstLineMaxWidth: this.pageWidth - 95,
-          lineSpacingFactor: 0.8
-        }, pdf);
-
         
       }
 
