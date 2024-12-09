@@ -1257,7 +1257,8 @@ export class CreateCourseComponent {
         let moduloLocal ={
           numero:modulo.numero,
           clases:clases,
-          titulo:modulo.titulo
+          titulo:modulo.titulo,
+          id:modulo.id
         }
         modulosToSave.push(moduloLocal)
       });
